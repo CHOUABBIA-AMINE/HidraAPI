@@ -1385,12 +1385,12 @@ Any AI agent executing this file must follow these rules:
 | Commit code | Status | Notes |
 |---|---|---|
 | `KER-001` | Planned | Add this roadmap |
-| `KER-002` | Planned | Add production package skeleton only |
-| `KER-003` | Planned | Add domain exceptions |
-| `KER-004` | Planned | Add domain model contracts |
-| `KER-005` | Planned | Add identity/tracing value objects |
-| `KER-006` | Planned | Add temporal ranges |
-| `KER-007` | Planned | Add domain events |
+| `KER-002` | Completed | Package skeleton created; `find src/main/java/dz/sh/hidra/kernel -type f \| sort` listed production package-info files; `mvn -q -DskipTests compile` passed |
+| `KER-003` | Completed | Domain exception contracts created; `mvn -q -DskipTests compile` passed |
+| `KER-004` | Completed | Domain model contracts created; `mvn -q -DskipTests compile` passed |
+| `KER-005` | Completed | Identity and tracing value objects created; `mvn -q -DskipTests compile` passed |
+| `KER-006` | Completed | Temporal range value objects created; `mvn -q -DskipTests compile` passed |
+| `KER-007` | Completed | Domain event contracts created; `mvn -q -DskipTests compile` passed |
 | `KER-008` | Planned | Add command/query markers |
 | `KER-009` | Planned | Add pagination primitives |
 | `KER-010` | Planned | Add operation result primitives |

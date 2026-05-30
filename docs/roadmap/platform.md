@@ -1462,8 +1462,8 @@ Any AI agent executing this roadmap must follow these rules:
 | Commit code | Status | Notes |
 |---|---|---|
 | `PLAT-001` | Planned | Add this roadmap |
-| `PLAT-002` | Planned | Add production package skeleton only |
-| `PLAT-003` | Planned | Add typed platform properties and configuration |
+| `PLAT-002` | Completed | Package skeleton created; `find src/main/java/dz/sh/hidra/platform -type f | sort` listed production package-info files; `mvn -q -DskipTests compile` passed |
+| `PLAT-003` | Completed | Typed platform properties and base configuration created; `mvn -q -DskipTests compile` passed |
 | `PLAT-004` | Planned | Add correlation support |
 | `PLAT-005` | Planned | Add logging context and masking |
 | `PLAT-006` | Planned | Add global exception handling |

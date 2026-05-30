@@ -1394,6 +1394,15 @@ Any AI agent executing this file must follow these rules:
 | `KER-008` | Completed | Command and query markers created; `mvn -q -DskipTests compile` passed |
 | `KER-009` | Completed | Pagination primitives created; `mvn -q -DskipTests compile` passed |
 | `KER-010` | Completed | Operation result primitives created; `mvn -q -DskipTests compile` passed |
+| `KER-002` | Blocked | Package skeleton created; `find src/main/java/dz/sh/hidra/kernel -type f | sort` listed production package-info files; `mvn -q -DskipTests compile` failed because Spring Boot parent POM `org.springframework.boot:spring-boot-starter-parent:pom:4.0.6` was non-resolvable from Maven Central with HTTP 403 |
+| `KER-003` | Planned | Add domain exceptions |
+| `KER-004` | Planned | Add domain model contracts |
+| `KER-005` | Planned | Add identity/tracing value objects |
+| `KER-006` | Planned | Add temporal ranges |
+| `KER-007` | Planned | Add domain events |
+| `KER-008` | Planned | Add command/query markers |
+| `KER-009` | Planned | Add pagination primitives |
+| `KER-010` | Planned | Add operation result primitives |
 | `KER-011` | Planned | Add API error primitives |
 | `KER-012` | Planned | Add API response primitives |
 | `KER-013` | Planned | Add unit tests |

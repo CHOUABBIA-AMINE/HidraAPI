@@ -1397,6 +1397,7 @@ Any AI agent executing this file must follow these rules:
 | `KER-011` | Completed | API error primitives created; `mvn -q -DskipTests compile` passed |
 | `KER-012` | Completed | API response primitives created; `mvn -q -DskipTests compile` passed |
 | `KER-013` | Completed | Kernel unit tests created; bootstrap smoke test no longer starts Spring context; full `mvn -q test` passed |
+| `KER-014` | Completed | Architecture guardrail created; `mvn -q test -Dtest=KernelArchitectureTest` passed; `mvn -q test` passed |
 | `KER-013` | Blocked | Kernel unit tests created; targeted kernel unit test command passed; `mvn -q test` failed because pre-existing `src/test/java/dz/sh/hidra/HidraApplicationTests.java` starts Spring context without a datasource URL |
 | `KER-002` | Blocked | Package skeleton created; `find src/main/java/dz/sh/hidra/kernel -type f | sort` listed production package-info files; `mvn -q -DskipTests compile` failed because Spring Boot parent POM `org.springframework.boot:spring-boot-starter-parent:pom:4.0.6` was non-resolvable from Maven Central with HTTP 403 |
 | `KER-003` | Planned | Add domain exceptions |

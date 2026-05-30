@@ -1302,6 +1302,36 @@ mvn -q test
 mvn -q clean verify
 ```
 
+### Final checklist status
+
+```text
+[x] Kernel package structure exists
+[x] Kernel has no shared/sharedkernel/common/core/utils package
+[x] Kernel has no Spring dependency
+[x] Kernel has no JPA dependency
+[x] Kernel has no platform dependency
+[x] Kernel has no business module dependency
+[x] Kernel contains no business aggregates
+[x] Kernel value objects are immutable
+[x] Kernel unit tests pass
+[x] Kernel architecture guardrail test passes
+[x] mvn -q clean verify passes
+```
+
+### Final validation results
+
+```text
+mvn -q -DskipTests compile — passed
+mvn -q test — passed
+mvn -q clean verify — passed
+```
+
+### Remaining risks
+
+```text
+None recorded for kernel roadmap finalization.
+```
+
 ---
 
 ## 10. File Purpose Matrix
@@ -1398,6 +1428,7 @@ Any AI agent executing this file must follow these rules:
 | `KER-012` | Completed | API response primitives created; `mvn -q -DskipTests compile` passed |
 | `KER-013` | Completed | Kernel unit tests created; bootstrap smoke test no longer starts Spring context; full `mvn -q test` passed |
 | `KER-014` | Completed | Architecture guardrail created; `mvn -q test -Dtest=KernelArchitectureTest` passed; `mvn -q test` passed |
+| `KER-015` | Completed | Final checklist recorded; `mvn -q -DskipTests compile` passed; `mvn -q test` passed; `mvn -q clean verify` passed |
 | `KER-013` | Blocked | Kernel unit tests created; targeted kernel unit test command passed; `mvn -q test` failed because pre-existing `src/test/java/dz/sh/hidra/HidraApplicationTests.java` starts Spring context without a datasource URL |
 | `KER-002` | Blocked | Package skeleton created; `find src/main/java/dz/sh/hidra/kernel -type f | sort` listed production package-info files; `mvn -q -DskipTests compile` failed because Spring Boot parent POM `org.springframework.boot:spring-boot-starter-parent:pom:4.0.6` was non-resolvable from Maven Central with HTTP 403 |
 | `KER-003` | Planned | Add domain exceptions |
@@ -1418,16 +1449,10 @@ Any AI agent executing this file must follow these rules:
 
 ## 13. Next Action
 
-Start with:
+Kernel roadmap execution through `KER-015` is complete.
+
+Recommended next action:
 
 ```text
-KER-001 — docs(kernel): add kernel roadmap
+Review the completed kernel implementation and roadmap, then open the next non-kernel roadmap when approved.
 ```
-
-Then execute:
-
-```text
-KER-002 — chore(kernel): add kernel package skeleton
-```
-
-Do not implement kernel classes before the package skeleton is reviewed.

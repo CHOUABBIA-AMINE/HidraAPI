@@ -22,9 +22,6 @@ package dz.sh.hidra.kernel.domain.exception;
 public class InvalidValueObjectException extends DomainException {
 
     public InvalidValueObjectException(String message) {
-	private static final long serialVersionUID = -4908003629928893863L;
-
-	public InvalidValueObjectException(String message) {
         super(message);
     }
 

@@ -22,6 +22,9 @@ package dz.sh.hidra.kernel.domain.exception;
 public class BusinessRuleViolationException extends DomainException {
 
     public BusinessRuleViolationException(String message) {
+	private static final long serialVersionUID = 8229009692486299335L;
+
+	public BusinessRuleViolationException(String message) {
         super(message);
     }
 

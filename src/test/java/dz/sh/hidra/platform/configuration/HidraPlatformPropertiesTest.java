@@ -19,12 +19,12 @@
  */
 package dz.sh.hidra.platform.configuration;
 
-import dz.sh.hidra.platform.configuration.HidraPlatformProperties;
-import java.util.List;
-import org.junit.jupiter.api.Test;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
 
 class HidraPlatformPropertiesTest {
 

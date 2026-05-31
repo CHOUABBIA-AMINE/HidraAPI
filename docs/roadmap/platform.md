@@ -1473,6 +1473,7 @@ Any AI agent executing this roadmap must follow these rules:
 | `PLAT-010` | Completed | Event serialization foundation created; `mvn -q -DskipTests compile` passed |
 | `PLAT-011` | Completed | Outbox persistence foundation created; `mvn -q -DskipTests compile` passed; `mvn -q flyway:validate` could not connect because Flyway reported: Unable to connect to the database. Configure the url, user and password! |
 | `PLAT-012` | Completed | Domain event publisher foundation created; `mvn -q -DskipTests compile` passed |
+| `PLAT-013` | Completed | Health indicators and metrics tags created; `mvn -q -DskipTests compile` passed |
 | `PLAT-003` | Planned | Add typed platform properties and configuration |
 | `PLAT-004` | Planned | Add correlation support |
 | `PLAT-005` | Planned | Add logging context and masking |

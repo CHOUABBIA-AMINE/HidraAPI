@@ -1470,6 +1470,7 @@ Any AI agent executing this roadmap must follow these rules:
 | `PLAT-007` | Completed | Security authentication foundation created; `mvn -q -DskipTests compile` passed |
 | `PLAT-008` | Completed | Security context support created; `mvn -q -DskipTests compile` passed |
 | `PLAT-009` | Completed | Persistence and auditing foundation created; `mvn -q -DskipTests compile` passed |
+| `PLAT-010` | Completed | Event serialization foundation created; `mvn -q -DskipTests compile` passed |
 | `PLAT-003` | Planned | Add typed platform properties and configuration |
 | `PLAT-004` | Planned | Add correlation support |
 | `PLAT-005` | Planned | Add logging context and masking |

@@ -1476,6 +1476,19 @@ Any AI agent executing this roadmap must follow these rules:
 | `PLAT-013` | Completed | Health indicators and metrics tags created; `mvn -q -DskipTests compile` passed |
 | `PLAT-014` | Completed | Tenancy context foundation created; `mvn -q -DskipTests compile` passed |
 | `PLAT-015` | Completed | Platform unit and slice tests created; initial `mvn -q test` failed due to test setup issues in serializer/security tests; corrected tests and rerun `mvn -q test` passed |
+| `PLAT-003` | Planned | Add typed platform properties and configuration |
+| `PLAT-004` | Planned | Add correlation support |
+| `PLAT-005` | Planned | Add logging context and masking |
+| `PLAT-006` | Planned | Add global exception handling |
+| `PLAT-007` | Planned | Add security authentication foundation |
+| `PLAT-008` | Planned | Add security context support |
+| `PLAT-009` | Planned | Add persistence and auditing foundation |
+| `PLAT-010` | Planned | Add event serialization foundation |
+| `PLAT-011` | Planned | Add outbox persistence foundation |
+| `PLAT-012` | Planned | Add domain event publisher foundation |
+| `PLAT-013` | Planned | Add health indicators and metrics tags |
+| `PLAT-014` | Planned | Add tenancy context foundation |
+| `PLAT-015` | Planned | Add platform unit and slice tests |
 | `PLAT-016` | Planned | Add platform architecture guardrail if ArchUnit exists |
 | `PLAT-017` | Planned | Finalize checklist |
 

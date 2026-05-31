@@ -1467,6 +1467,7 @@ Any AI agent executing this roadmap must follow these rules:
 | `PLAT-004` | Completed | Correlation/request ID infrastructure created; `mvn -q -DskipTests compile` passed |
 | `PLAT-005` | Completed | Logging context and sensitive value masking support created; `mvn -q -DskipTests compile` passed |
 | `PLAT-006` | Completed | Global exception handling foundation created; `mvn -q -DskipTests compile` passed |
+| `PLAT-007` | Completed | Security authentication foundation created; `mvn -q -DskipTests compile` passed |
 | `PLAT-003` | Planned | Add typed platform properties and configuration |
 | `PLAT-004` | Planned | Add correlation support |
 | `PLAT-005` | Planned | Add logging context and masking |

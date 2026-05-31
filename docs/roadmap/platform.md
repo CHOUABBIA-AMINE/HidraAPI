@@ -1356,6 +1356,41 @@ mvn -q test
 mvn -q clean verify
 ```
 
+### Final execution checklist
+
+```text
+[x] Platform package structure exists
+[x] Platform depends on kernel, not business modules
+[x] Platform contains no business aggregates
+[x] Platform contains no business authorization meaning
+[x] Correlation/request tracing works
+[x] Global exception handling returns kernel ApiErrorResponse
+[x] Security foundation compiles
+[x] Persistence configuration compiles
+[x] Outbox migration exists
+[x] Outbox infrastructure compiles
+[x] Health/metrics infrastructure compiles
+[x] Tenancy context is minimal and clearable
+[x] Platform unit tests pass
+[x] Platform architecture guardrail passes or is explicitly blocked with reason
+[x] mvn -q clean verify passes
+```
+
+### Final validation results
+
+```text
+mvn -q -DskipTests compile : passed
+mvn -q test                : passed
+mvn -q clean verify        : passed
+```
+
+### Remaining risks
+
+```text
+mvn -q flyway:validate still requires an externally configured database URL, user, and password.
+No platform code-level risks remain from this roadmap.
+```
+
 ---
 
 ## 12. File Purpose Matrix
@@ -1477,6 +1512,7 @@ Any AI agent executing this roadmap must follow these rules:
 | `PLAT-014` | Completed | Tenancy context foundation created; `mvn -q -DskipTests compile` passed |
 | `PLAT-015` | Completed | Platform unit and slice tests created; initial `mvn -q test` failed due to test setup issues in serializer/security tests; corrected tests and rerun `mvn -q test` passed |
 | `PLAT-016` | Completed | Platform architecture guardrail created; `mvn -q test -Dtest=PlatformArchitectureTest` passed; `mvn -q test` passed |
+| `PLAT-017` | Completed | Final checklist recorded; `mvn -q -DskipTests compile` passed; `mvn -q test` passed; `mvn -q clean verify` passed |
 | `PLAT-003` | Planned | Add typed platform properties and configuration |
 | `PLAT-004` | Planned | Add correlation support |
 | `PLAT-005` | Planned | Add logging context and masking |

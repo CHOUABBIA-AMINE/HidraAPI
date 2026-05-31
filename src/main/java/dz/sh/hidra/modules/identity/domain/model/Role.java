@@ -19,9 +19,9 @@
  */
 package dz.sh.hidra.modules.identity.domain.model;
 
-import dz.sh.hidra.kernel.domain.exception.BusinessRuleViolationException;
 import dz.sh.hidra.kernel.domain.exception.InvalidValueObjectException;
 import dz.sh.hidra.kernel.domain.model.AggregateRoot;
+import dz.sh.hidra.modules.identity.domain.exception.RoleAssignmentNotAllowedException;
 import dz.sh.hidra.modules.identity.domain.value.PermissionCode;
 import dz.sh.hidra.modules.identity.domain.value.PermissionId;
 import dz.sh.hidra.modules.identity.domain.value.RoleCode;
@@ -155,7 +155,9 @@ public final class Role implements AggregateRoot<RoleId> {
         );
 
         if (hasPermission(permissionCode)) {
-            throw new BusinessRuleViolationException("Role already grants permission: " + permissionCode.value() + ".");
+            throw new RoleAssignmentNotAllowedException(
+                    "Role already grants permission: " + permissionCode.value() + "."
+            );
         }
 
         permissionAssignments.add(assignment);
@@ -192,7 +194,7 @@ public final class Role implements AggregateRoot<RoleId> {
 
     private void requireActiveRole() {
         if (!isActive()) {
-            throw new BusinessRuleViolationException("Disabled roles cannot be changed.");
+            throw new RoleAssignmentNotAllowedException("Disabled roles cannot be changed.");
         }
     }
 
@@ -201,7 +203,9 @@ public final class Role implements AggregateRoot<RoleId> {
                 .anyMatch(assignment -> !id.equals(assignment.roleId()));
 
         if (containsForeignAssignment) {
-            throw new BusinessRuleViolationException("Role cannot contain permission assignments for another role.");
+            throw new RoleAssignmentNotAllowedException(
+                    "Role cannot contain permission assignments for another role."
+            );
         }
     }
 
@@ -212,7 +216,7 @@ public final class Role implements AggregateRoot<RoleId> {
                 .count();
 
         if (distinctPermissionCodes != assignments.size()) {
-            throw new BusinessRuleViolationException("Role cannot contain duplicate permission assignments.");
+            throw new RoleAssignmentNotAllowedException("Role cannot contain duplicate permission assignments.");
         }
     }
 

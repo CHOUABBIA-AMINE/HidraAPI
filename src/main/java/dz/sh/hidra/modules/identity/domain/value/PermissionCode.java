@@ -19,8 +19,8 @@
  */
 package dz.sh.hidra.modules.identity.domain.value;
 
-import dz.sh.hidra.kernel.domain.exception.InvalidValueObjectException;
 import dz.sh.hidra.kernel.domain.model.ValueObject;
+import dz.sh.hidra.modules.identity.domain.exception.InvalidPermissionCodeException;
 
 import java.util.Locale;
 import java.util.regex.Pattern;
@@ -47,13 +47,13 @@ public record PermissionCode(String value) implements ValueObject {
 
     public PermissionCode {
         if (value == null || value.isBlank()) {
-            throw new InvalidValueObjectException("PermissionCode must not be blank.");
+            throw new InvalidPermissionCodeException("PermissionCode must not be blank.");
         }
 
         value = value.trim().toLowerCase(Locale.ROOT);
 
         if (!PERMISSION_CODE_PATTERN.matcher(value).matches()) {
-            throw new InvalidValueObjectException(
+            throw new InvalidPermissionCodeException(
                     "PermissionCode must use the lowercase context:resource:action format."
             );
         }

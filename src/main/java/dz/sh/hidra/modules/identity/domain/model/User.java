@@ -19,9 +19,10 @@
  */
 package dz.sh.hidra.modules.identity.domain.model;
 
-import dz.sh.hidra.kernel.domain.exception.BusinessRuleViolationException;
 import dz.sh.hidra.kernel.domain.exception.InvalidValueObjectException;
 import dz.sh.hidra.kernel.domain.model.AggregateRoot;
+import dz.sh.hidra.modules.identity.domain.exception.RoleAssignmentNotAllowedException;
+import dz.sh.hidra.modules.identity.domain.exception.UserLifecycleException;
 import dz.sh.hidra.modules.identity.domain.value.EmailAddress;
 import dz.sh.hidra.modules.identity.domain.value.EmployeeReference;
 import dz.sh.hidra.modules.identity.domain.value.RoleCode;
@@ -155,7 +156,7 @@ public final class User implements AggregateRoot<UserId> {
 
     public void activate() {
         if (isDisabled()) {
-            throw new BusinessRuleViolationException("Disabled users cannot be activated.");
+            throw new UserLifecycleException("Disabled users cannot be activated.");
         }
 
         this.status = UserStatus.ACTIVE;
@@ -163,7 +164,7 @@ public final class User implements AggregateRoot<UserId> {
 
     public void suspend() {
         if (!isActive()) {
-            throw new BusinessRuleViolationException("Only active users can be suspended.");
+            throw new UserLifecycleException("Only active users can be suspended.");
         }
 
         this.status = UserStatus.SUSPENDED;
@@ -180,7 +181,7 @@ public final class User implements AggregateRoot<UserId> {
         Clock requiredClock = requireNonNull(clock, "Clock");
 
         if (!requiredRole.isActive()) {
-            throw new BusinessRuleViolationException("Only active roles can be assigned to users.");
+            throw new RoleAssignmentNotAllowedException("Only active roles can be assigned to users.");
         }
 
         assignRole(
@@ -201,7 +202,7 @@ public final class User implements AggregateRoot<UserId> {
         );
 
         if (hasRole(roleId)) {
-            throw new BusinessRuleViolationException("User already has role: " + roleCode.value() + ".");
+            throw new RoleAssignmentNotAllowedException("User already has role: " + roleCode.value() + ".");
         }
 
         roleAssignments.add(assignment);
@@ -246,13 +247,13 @@ public final class User implements AggregateRoot<UserId> {
 
     private void requireAssignableUser() {
         if (!isActive()) {
-            throw new BusinessRuleViolationException("Only active users can receive role assignments.");
+            throw new UserLifecycleException("Only active users can receive role assignments.");
         }
     }
 
     private void rejectDisabledUserChange() {
         if (isDisabled()) {
-            throw new BusinessRuleViolationException("Disabled users cannot be changed.");
+            throw new UserLifecycleException("Disabled users cannot be changed.");
         }
     }
 
@@ -261,7 +262,9 @@ public final class User implements AggregateRoot<UserId> {
                 .anyMatch(assignment -> !id.equals(assignment.userId()));
 
         if (containsForeignAssignment) {
-            throw new BusinessRuleViolationException("User cannot contain role assignments for another user.");
+            throw new RoleAssignmentNotAllowedException(
+                    "User cannot contain role assignments for another user."
+            );
         }
     }
 
@@ -272,7 +275,7 @@ public final class User implements AggregateRoot<UserId> {
                 .count();
 
         if (distinctRoleIds != assignments.size()) {
-            throw new BusinessRuleViolationException("User cannot contain duplicate role assignments.");
+            throw new RoleAssignmentNotAllowedException("User cannot contain duplicate role assignments.");
         }
     }
 

@@ -19,7 +19,7 @@
  */
 package dz.sh.hidra.modules.identity.domain.policy;
 
-import dz.sh.hidra.kernel.domain.exception.InvalidValueObjectException;
+import dz.sh.hidra.modules.identity.domain.exception.InvalidPermissionCodeException;
 import dz.sh.hidra.modules.identity.domain.value.PermissionCode;
 
 import java.util.Locale;
@@ -55,7 +55,7 @@ public final class PermissionCodePolicy {
         String normalizedValue = normalize(rawValue);
 
         if (!PERMISSION_CODE_PATTERN.matcher(normalizedValue).matches()) {
-            throw new InvalidValueObjectException(
+            throw new InvalidPermissionCodeException(
                     "PermissionCode must use the lowercase context:resource:action format."
             );
         }
@@ -65,7 +65,7 @@ public final class PermissionCodePolicy {
 
     public static void requireValid(PermissionCode permissionCode) {
         if (permissionCode == null) {
-            throw new InvalidValueObjectException("PermissionCode must not be null.");
+            throw new InvalidPermissionCodeException("PermissionCode must not be null.");
         }
         validate(permissionCode.value());
     }
@@ -74,7 +74,7 @@ public final class PermissionCodePolicy {
         try {
             validate(rawValue);
             return true;
-        } catch (InvalidValueObjectException exception) {
+        } catch (InvalidPermissionCodeException exception) {
             return false;
         }
     }
@@ -96,7 +96,7 @@ public final class PermissionCodePolicy {
 
     private static String normalize(String rawValue) {
         if (rawValue == null || rawValue.isBlank()) {
-            throw new InvalidValueObjectException("PermissionCode must not be blank.");
+            throw new InvalidPermissionCodeException("PermissionCode must not be blank.");
         }
 
         return rawValue.trim().toLowerCase(Locale.ROOT);

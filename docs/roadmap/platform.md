@@ -1475,6 +1475,7 @@ Any AI agent executing this roadmap must follow these rules:
 | `PLAT-012` | Completed | Domain event publisher foundation created; `mvn -q -DskipTests compile` passed |
 | `PLAT-013` | Completed | Health indicators and metrics tags created; `mvn -q -DskipTests compile` passed |
 | `PLAT-014` | Completed | Tenancy context foundation created; `mvn -q -DskipTests compile` passed |
+| `PLAT-015` | Completed | Platform unit and slice tests created; initial `mvn -q test` failed due to test setup issues in serializer/security tests; corrected tests and rerun `mvn -q test` passed |
 | `PLAT-003` | Planned | Add typed platform properties and configuration |
 | `PLAT-004` | Planned | Add correlation support |
 | `PLAT-005` | Planned | Add logging context and masking |

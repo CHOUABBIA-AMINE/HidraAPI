@@ -1474,6 +1474,17 @@ Any AI agent executing this roadmap must follow these rules:
 | `PLAT-011` | Completed | Outbox persistence foundation created; `mvn -q -DskipTests compile` passed; `mvn -q flyway:validate` could not connect because Flyway reported: Unable to connect to the database. Configure the url, user and password! |
 | `PLAT-012` | Completed | Domain event publisher foundation created; `mvn -q -DskipTests compile` passed |
 | `PLAT-013` | Completed | Health indicators and metrics tags created; `mvn -q -DskipTests compile` passed |
+| `PLAT-003` | Planned | Add typed platform properties and configuration |
+| `PLAT-004` | Planned | Add correlation support |
+| `PLAT-005` | Planned | Add logging context and masking |
+| `PLAT-006` | Planned | Add global exception handling |
+| `PLAT-007` | Planned | Add security authentication foundation |
+| `PLAT-008` | Planned | Add security context support |
+| `PLAT-009` | Planned | Add persistence and auditing foundation |
+| `PLAT-010` | Planned | Add event serialization foundation |
+| `PLAT-011` | Planned | Add outbox persistence foundation |
+| `PLAT-012` | Planned | Add domain event publisher foundation |
+| `PLAT-013` | Planned | Add health indicators and metrics tags |
 | `PLAT-014` | Planned | Add tenancy context foundation |
 | `PLAT-015` | Planned | Add platform unit and slice tests |
 | `PLAT-016` | Planned | Add platform architecture guardrail if ArchUnit exists |

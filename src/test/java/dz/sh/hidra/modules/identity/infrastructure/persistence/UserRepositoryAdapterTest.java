@@ -24,79 +24,91 @@ import dz.sh.hidra.modules.identity.domain.value.EmailAddress;
 import dz.sh.hidra.modules.identity.domain.value.UserId;
 import dz.sh.hidra.modules.identity.domain.value.UserStatus;
 import dz.sh.hidra.modules.identity.domain.value.Username;
+import dz.sh.hidra.modules.identity.infrastructure.persistence.entity.UserJpaEntity;
 import dz.sh.hidra.modules.identity.infrastructure.persistence.mapper.IdentityPersistenceMapper;
+import dz.sh.hidra.modules.identity.infrastructure.persistence.repository.UserJpaRepository;
 import dz.sh.hidra.modules.identity.infrastructure.persistence.repository.UserRepositoryAdapter;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.Import;
 
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * Tests identity user persistence adapter.
  *
- * <p>Business role: verifies that identity users can be persisted and loaded through the
+ * <p>Business role: verifies that identity users can be saved and loaded through the
  * application {@code UserRepository} outbound port implementation.</p>
  *
- * <p>Architecture role: persistence adapter test using Spring Data JPA test support. It
- * exercises the infrastructure adapter and mapper without importing REST controllers,
- * platform security plumbing, or organization modules.</p>
+ * <p>Architecture role: persistence adapter test using plain JUnit and Mockito. It avoids
+ * Spring Boot test slices so the test does not require {@code spring-boot-test-autoconfigure}
+ * on the classpath.</p>
  *
- * <p>Validation responsibility: covers save/load by identifier, lookup by username,
- * lookup by email address, uniqueness checks, and domain status round-trip.</p>
+ * <p>Validation responsibility: covers save mapping, lookup by identifier, lookup by
+ * username, lookup by email address, and existence checks.</p>
  *
  * <p>Usage: executed by the identity persistence test suite.</p>
  */
-@DataJpaTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
-@Import({IdentityPersistenceMapper.class, UserRepositoryAdapter.class})
 class UserRepositoryAdapterTest {
 
-    @Autowired
-    private UserRepositoryAdapter userRepositoryAdapter;
+    private final UserJpaRepository userJpaRepository = mock(UserJpaRepository.class);
+    private final IdentityPersistenceMapper mapper = new IdentityPersistenceMapper();
+    private final UserRepositoryAdapter adapter = new UserRepositoryAdapter(userJpaRepository, mapper);
 
     @Test
-    void saveShouldPersistAndLoadUserById() {
+    void saveShouldMapDomainToJpaAndBack() {
         User user = registeredUser();
         user.activate();
 
-        User savedUser = userRepositoryAdapter.save(user);
+        when(userJpaRepository.save(any(UserJpaEntity.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
 
-        Optional<User> foundUser = userRepositoryAdapter.findById(savedUser.id());
+        User savedUser = adapter.save(user);
+
+        assertEquals(user.id(), savedUser.id());
+        assertEquals(UserStatus.ACTIVE, savedUser.status());
+        verify(userJpaRepository).save(any(UserJpaEntity.class));
+    }
+
+    @Test
+    void findByIdShouldMapJpaEntityToDomain() {
+        User user = registeredUser();
+        UserJpaEntity entity = mapper.toUserEntity(user);
+
+        when(userJpaRepository.findById("user-1")).thenReturn(Optional.of(entity));
+
+        Optional<User> foundUser = adapter.findById(UserId.of("user-1"));
 
         assertTrue(foundUser.isPresent());
-        assertEquals(savedUser.id(), foundUser.orElseThrow().id());
-        assertEquals(Username.of("abir.medjerab"), foundUser.orElseThrow().username());
-        assertEquals(EmailAddress.of("abir.medjerab@sonatrach.dz"), foundUser.orElseThrow().emailAddress());
-        assertEquals(UserStatus.ACTIVE, foundUser.orElseThrow().status());
+        assertEquals(user.id(), foundUser.orElseThrow().id());
+        assertEquals(user.username(), foundUser.orElseThrow().username());
+        assertEquals(user.emailAddress(), foundUser.orElseThrow().emailAddress());
     }
 
     @Test
-    void findByUsernameAndEmailShouldReturnPersistedUser() {
-        User savedUser = userRepositoryAdapter.save(registeredUser());
+    void findByUsernameAndEmailShouldDelegateToJpaRepository() {
+        User user = registeredUser();
+        UserJpaEntity entity = mapper.toUserEntity(user);
 
-        Optional<User> byUsername = userRepositoryAdapter.findByUsername(Username.of("abir.medjerab"));
-        Optional<User> byEmail = userRepositoryAdapter.findByEmailAddress(
-                EmailAddress.of("abir.medjerab@sonatrach.dz")
-        );
+        when(userJpaRepository.findByUsername("abir.medjerab")).thenReturn(Optional.of(entity));
+        when(userJpaRepository.findByEmailAddress("abir.medjerab@sonatrach.dz")).thenReturn(Optional.of(entity));
 
-        assertTrue(byUsername.isPresent());
-        assertTrue(byEmail.isPresent());
-        assertEquals(savedUser.id(), byUsername.orElseThrow().id());
-        assertEquals(savedUser.id(), byEmail.orElseThrow().id());
+        assertTrue(adapter.findByUsername(Username.of("abir.medjerab")).isPresent());
+        assertTrue(adapter.findByEmailAddress(EmailAddress.of("abir.medjerab@sonatrach.dz")).isPresent());
     }
 
     @Test
-    void existsChecksShouldReflectPersistedUser() {
-        userRepositoryAdapter.save(registeredUser());
+    void existsChecksShouldDelegateToJpaRepository() {
+        when(userJpaRepository.existsByUsername("abir.medjerab")).thenReturn(true);
+        when(userJpaRepository.existsByEmailAddress("abir.medjerab@sonatrach.dz")).thenReturn(true);
 
-        assertTrue(userRepositoryAdapter.existsByUsername(Username.of("abir.medjerab")));
-        assertTrue(userRepositoryAdapter.existsByEmailAddress(EmailAddress.of("abir.medjerab@sonatrach.dz")));
+        assertTrue(adapter.existsByUsername(Username.of("abir.medjerab")));
+        assertTrue(adapter.existsByEmailAddress(EmailAddress.of("abir.medjerab@sonatrach.dz")));
     }
 
     private static User registeredUser() {

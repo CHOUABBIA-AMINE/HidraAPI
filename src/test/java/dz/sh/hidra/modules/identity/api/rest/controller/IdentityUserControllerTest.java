@@ -44,18 +44,17 @@ import dz.sh.hidra.modules.identity.domain.value.RoleStatus;
 import dz.sh.hidra.modules.identity.domain.value.UserId;
 import dz.sh.hidra.modules.identity.domain.value.UserStatus;
 import dz.sh.hidra.modules.identity.domain.value.Username;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -68,43 +67,48 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * <p>Business role: verifies user registration, activation, role assignment, and
  * effective permission endpoints exposed under {@code /api/v1/identity/users}.</p>
  *
- * <p>Architecture role: API adapter test using Spring MVC slice support. Controllers are
- * tested against mocked application inbound ports and the real REST mapper, without
- * repositories, JPA entities, platform security plumbing, or organization modules.</p>
+ * <p>Architecture role: API adapter test using standalone MockMvc with mocked application
+ * inbound ports and the real REST mapper. It avoids Spring Boot test slices and does not
+ * access repositories, JPA entities, platform security plumbing, or organization modules.</p>
  *
  * <p>Validation responsibility: covers successful JSON request/response mapping and
  * Bean Validation rejection for invalid request bodies.</p>
  *
  * <p>Usage: executed by the identity API test suite.</p>
  */
-@WebMvcTest(IdentityUserController.class)
-@AutoConfigureMockMvc(addFilters = false)
-@Import(IdentityRestMapper.class)
 class IdentityUserControllerTest {
 
-    @Autowired
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    private RegisterUserUseCase registerUserUseCase;
+    private ActivateUserUseCase activateUserUseCase;
+    private AssignRoleToUserUseCase assignRoleToUserUseCase;
+    private GetUserPermissionsUseCase getUserPermissionsUseCase;
     private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    @BeforeEach
+    void setUp() {
+        registerUserUseCase = mock(RegisterUserUseCase.class);
+        activateUserUseCase = mock(ActivateUserUseCase.class);
+        SuspendUserUseCase suspendUserUseCase = mock(SuspendUserUseCase.class);
+        assignRoleToUserUseCase = mock(AssignRoleToUserUseCase.class);
+        RevokeRoleFromUserUseCase revokeRoleFromUserUseCase = mock(RevokeRoleFromUserUseCase.class);
+        getUserPermissionsUseCase = mock(GetUserPermissionsUseCase.class);
 
-    @MockBean
-    private RegisterUserUseCase registerUserUseCase;
+        IdentityUserController controller = new IdentityUserController(
+                registerUserUseCase,
+                activateUserUseCase,
+                suspendUserUseCase,
+                assignRoleToUserUseCase,
+                revokeRoleFromUserUseCase,
+                getUserPermissionsUseCase,
+                new IdentityRestMapper()
+        );
 
-    @MockBean
-    private ActivateUserUseCase activateUserUseCase;
-
-    @MockBean
-    private SuspendUserUseCase suspendUserUseCase;
-
-    @MockBean
-    private AssignRoleToUserUseCase assignRoleToUserUseCase;
-
-    @MockBean
-    private RevokeRoleFromUserUseCase revokeRoleFromUserUseCase;
-
-    @MockBean
-    private GetUserPermissionsUseCase getUserPermissionsUseCase;
+        mockMvc = MockMvcBuilders.standaloneSetup(controller)
+                .setValidator(validator())
+                .build();
+    }
 
     @Test
     void registerUserShouldReturnCreatedUser() throws Exception {
@@ -173,6 +177,12 @@ class IdentityUserControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value("permission-1"))
                 .andExpect(jsonPath("$[0].code").value("identity:user:create"));
+    }
+
+    private static LocalValidatorFactoryBean validator() {
+        LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
+        validator.afterPropertiesSet();
+        return validator;
     }
 
     private static UserDto userDto(UserStatus status, List<RoleDto> roles) {

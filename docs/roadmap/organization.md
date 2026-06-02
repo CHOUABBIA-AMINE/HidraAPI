@@ -15,7 +15,7 @@
 | Author | Abir MEDJERAB |
 | CreatedOn | 2025-06-26 |
 | UpdatedOn | 2026-05-30 |
-| Status | Ready for AI-agent execution after kernel baseline |
+| Status | Ready for AI-agent execution after kernel baseline; updated for station-as-organization-unit and matrix reporting |
 | Execution mode | One commit code at a time |
 
 ---
@@ -30,8 +30,9 @@ It answers:
 Who are the real operational people?
 Which organization unit do they belong to?
 Which position do they hold?
-Who supervises whom?
-How is the organization structured?
+Who reports to whom?
+How is the operational organization structured?
+Which station, region, division, department, team, or direction owns responsibility?
 ```
 
 The organization module owns:
@@ -41,20 +42,22 @@ employees
 organization units
 positions
 employee assignments
-supervisor relationships
+matrix reporting lines
 organization hierarchy
 employee lifecycle
 organization unit lifecycle
+station-as-organization-unit representation
 ```
 
-The organization module does not own:
+The organization module does **not** own:
 
 ```text
 login users
-roles
-permissions
+identity roles
+identity permissions
 permission evaluation
 Spring Security plumbing
+physical topology assets
 ```
 
 Those belong to:
@@ -62,6 +65,7 @@ Those belong to:
 ```text
 dz.sh.hidra.modules.identity
 dz.sh.hidra.platform.security
+dz.sh.hidra.modules.topology later
 ```
 
 The old name `identityaccess` must not be used.
@@ -111,8 +115,8 @@ Correct ownership:
 | Permission evaluation | `modules.identity` |
 | Employee | `modules.organization` |
 | Organization unit | `modules.organization` |
-| Position | `modules.organization` |
-| Supervisor relationship | `modules.organization` |
+| Position / operational function | `modules.organization` |
+| Reporting line | `modules.organization` |
 | Employee assignment | `modules.organization` |
 
 Organization may use a neutral reference:
@@ -147,7 +151,7 @@ platform transaction infrastructure
 
 ### 4.3 Boundary with Kernel
 
-The organization module may use kernel primitives:
+Organization may use kernel primitives:
 
 ```text
 dz.sh.hidra.kernel.domain.model.AggregateRoot
@@ -164,6 +168,65 @@ dz.sh.hidra.kernel.application.pagination.PageResult
 ```
 
 Do not duplicate kernel primitives inside organization.
+
+### 4.4 Boundary with Topology: station asset versus station organization unit
+
+A station exists in two bounded contexts with two different meanings.
+
+```text
+topology.Station = physical/technical asset or facility
+organization.OrganizationUnit = operational people/responsibility structure
+```
+
+A compression station, pumping station, delivery station, metering station, valve station, or any other kind of station belongs technically to the future `topology` module as an asset.
+
+The same real-world station may also be represented in organization as an `OrganizationUnit` of type `STATION`, because people are assigned to the operational organization attached to that station.
+
+Do not use the same class for both meanings.
+
+Correct model:
+
+```text
+topology.CompressionStation
+- physical asset
+- equipment
+- location
+- operating limits
+- technical topology
+
+organization.OrganizationUnit(type = STATION)
+- station boss
+- operators
+- team leaders
+- assignments
+- reporting lines
+- operational responsibility
+```
+
+The organization module must not import topology domain classes.
+
+To connect an organization unit to a future topology station, use:
+
+```text
+OperationalScopeReference
+```
+
+Example:
+
+```text
+OrganizationUnit:
+  code: CS_EAST_01
+  name: Compression Station East 01
+  type: STATION
+  parent: OPERATIONAL_EAST_REGION
+  operationalScopeReference:
+    scopeType: TOPOLOGY_COMPRESSION_STATION
+    scopeCode: CS-EAST-01
+```
+
+This means the organization unit represents the people and responsibility structure attached to the physical topology station `CS-EAST-01`.
+
+It does not mean organization owns the physical station asset.
 
 ---
 
@@ -209,10 +272,14 @@ Employee aggregate
 OrganizationUnit aggregate
 Position model
 EmployeeAssignment model
-SupervisorAssignment model
+ReportingLine model
+OrganizationUnitType
+OperationalScopeReference
+OperationalScopeType
 organization hierarchy policies
 employee lifecycle rules
 organization unit lifecycle rules
+reporting line policies
 organization domain events
 organization application commands and queries
 organization use-case ports
@@ -222,7 +289,7 @@ organization request/response DTOs
 organization persistence entities
 organization JPA adapters
 organization database migrations
-organization unit/application/persistence/API tests
+organization tests
 organization architecture tests
 ```
 
@@ -241,6 +308,7 @@ authentication entry point implementation
 access denied handler implementation
 password management
 Pipeline aggregate
+Topology Station aggregate
 FlowReading aggregate
 WorkflowInstance aggregate
 Incident aggregate
@@ -258,10 +326,11 @@ Do not implement in v1 unless explicitly requested later:
 full HR system
 payroll
 leave management
-complex matrix organization
+complex HR workflows
 identity synchronization
 external HR integration
 organization-scoped permission evaluation
+topology asset management
 ```
 
 ---
@@ -380,17 +449,6 @@ Every production Java type created in the organization module must include:
 2. Class-level JavaDoc immediately after the header.
 3. Clear explanation of business role, architecture role, validation responsibility, and usage.
 
-This applies to:
-
-```text
-class
-record
-interface
-enum
-annotation
-package-info.java
-```
-
 Required JavaDoc structure:
 
 ```java
@@ -398,7 +456,7 @@ Required JavaDoc structure:
  * <One-sentence technical responsibility.>
  *
  * <p>Business role:
- * <Explain what this type means in Hidra organization, employee, unit, position, or hierarchy management.>
+ * <Explain what this type means in Hidra organization, employee, unit, position, station-OU, or reporting management.>
  *
  * <p>Architecture role:
  * <Explain whether this belongs to API, application, domain, infrastructure, or configuration.>
@@ -431,6 +489,8 @@ invariants
 allowed lifecycle transitions
 forbidden state transitions
 domain events raised, if any
+station/operational scope relation when relevant
+matrix reporting behavior when relevant
 ```
 
 When a domain model is implemented as a class with fields, every meaningful field must have field-level JavaDoc.
@@ -459,63 +519,30 @@ REST DTO annotations
 controller logic
 ```
 
-Domain objects must protect invariants even if called outside REST APIs.
-
 Required examples:
 
 ```text
 Employee number cannot be blank.
 Organization unit code must be valid.
+OrganizationUnitType is required.
+A station OU can reference a topology station only through OperationalScopeReference.
+OperationalScopeReference must not import topology.
 A disabled organization unit cannot receive new employee assignments.
 An employee cannot report to themselves.
 An organization unit cannot be its own parent.
 Organization hierarchy cannot contain cycles.
+An employee can have only one active primary LINE reporting line.
+An employee may have multiple active FUNCTIONAL reporting lines.
+A disabled employee cannot receive new reporting lines.
+A disabled employee cannot be assigned as manager.
 A position code must be valid.
 ```
 
 Bean Validation annotations are not allowed in domain model classes.
 
-### 9.4 Domain value documentation and validation rules
+### 9.4 DTO documentation and validation rules
 
-Every value object under:
-
-```text
-src/main/java/dz/sh/hidra/modules/organization/domain/value
-```
-
-must have JavaDoc explaining:
-
-```text
-business meaning
-accepted format
-validation rules
-normalization rules
-usage restrictions
-```
-
-Specific required rules:
-
-| Value object | Required validation/documentation |
-|---|---|
-| `EmployeeNumber` | Document uniqueness and allowed characters |
-| `EmployeeFullName` | Document min/max length and trimming |
-| `OrganizationUnitCode` | Document uppercase snake-case or business code format |
-| `OrganizationUnitName` | Document min/max length |
-| `PositionCode` | Document uppercase snake-case format |
-| `PositionTitle` | Document min/max length |
-| `IdentityUserReference` | Document that it references `modules.identity` without importing identity domain classes |
-
-### 9.5 DTO documentation rules
-
-Every application DTO and REST DTO under:
-
-```text
-src/main/java/dz/sh/hidra/modules/organization/application/dto
-src/main/java/dz/sh/hidra/modules/organization/api/rest/request
-src/main/java/dz/sh/hidra/modules/organization/api/rest/response
-```
-
-must have class-level JavaDoc explaining:
+Every application DTO and REST DTO must have class-level JavaDoc explaining:
 
 ```text
 purpose
@@ -525,15 +552,7 @@ validation constraints
 whether it is input or output
 ```
 
-Request DTOs should preferably be Java records.
-
-For record DTOs, document every component using `@param`.
-
-### 9.6 DTO validation rules
-
-REST request DTOs must use Bean Validation annotations.
-
-Allowed examples:
+REST request DTOs must use Bean Validation annotations where applicable:
 
 ```text
 @NotNull
@@ -543,23 +562,13 @@ Allowed examples:
 @Valid
 ```
 
-Validation belongs to request DTOs only at the API boundary.
-
-Nested request DTOs must use `@Valid`.
-
 Controllers must use `@Valid` on request bodies.
 
 Do not use Bean Validation annotations in domain model classes.
 
-### 9.7 Controller documentation rules
+### 9.5 Controller documentation rules
 
-Every controller under:
-
-```text
-src/main/java/dz/sh/hidra/modules/organization/api/rest/controller
-```
-
-must have:
+Every controller must have:
 
 ```text
 canonical HidraAPI header
@@ -586,11 +595,7 @@ not contain business rules
 
 ## 10. Mandatory Swagger `@Schema` Documentation Rules
 
-This section is mandatory for all AI agents implementing the `organization` module.
-
 If any earlier section treats Swagger/OpenAPI documentation as optional, this section overrides it.
-
-### 10.1 Required dependency assumption
 
 The project is expected to include `springdoc-openapi-starter-webmvc-ui`.
 
@@ -608,19 +613,6 @@ Swagger/OpenAPI annotations must be imported only in the API layer:
 ```text
 src/main/java/dz/sh/hidra/modules/organization/api/**
 ```
-
-Allowed OpenAPI imports in API layer:
-
-```java
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
-```
-
-### 10.2 `@Schema` requirement for REST DTOs
 
 Every REST request and response DTO must use `@Schema` at both:
 
@@ -641,22 +633,13 @@ Required field/component-level `@Schema` attributes:
 ```text
 description
 example
-requiredMode when the field is mandatory
+requiredMode when mandatory
 maxLength/minLength when relevant
 pattern when relevant
-allowableValues when the value is constrained
+allowableValues when constrained
 ```
 
 Swagger `@Schema` documentation must not contradict Bean Validation.
-
-For every request DTO:
-
-| Bean Validation | Matching `@Schema` expectation |
-|---|---|
-| `@NotBlank` / `@NotNull` | `requiredMode = Schema.RequiredMode.REQUIRED` |
-| `@Size(min = x, max = y)` | `minLength = x`, `maxLength = y` when applicable |
-| `@Pattern(regexp = "...")` | `pattern = "..."` |
-| enum-like values | `allowableValues = {...}` |
 
 Recommended examples:
 
@@ -665,24 +648,20 @@ Recommended examples:
 | `employeeNumber` | `EMP-000123` |
 | `fullName` | `Abir MEDJERAB` |
 | `email` | `abir.medjerab@example.com` |
-| `organizationUnitCode` | `TRC_DIGITALIZATION` |
-| `organizationUnitName` | `TRC Digitalization Initiative` |
-| `positionCode` | `PIPELINE_OPERATIONS_ENGINEER` |
-| `positionTitle` | `Pipeline Operations Engineer` |
+| `organizationUnitCode` | `CS_EAST_01` |
+| `organizationUnitName` | `Compression Station East 01` |
+| `organizationUnitType` | `STATION` |
+| `operationalScopeType` | `TOPOLOGY_COMPRESSION_STATION` |
+| `operationalScopeCode` | `CS-EAST-01` |
+| `positionCode` | `STATION_TEAM_LEADER` |
+| `positionTitle` | `Station Team Leader` |
+| `reportingLineType` | `FUNCTIONAL` |
 | `employmentStatus` | `ACTIVE` |
 | `unitStatus` | `ACTIVE` |
 | `effectiveFrom` | `2026-05-30` |
 | `effectiveTo` | `2026-12-31` |
 
-### 10.3 Controller Swagger documentation rules
-
-Every controller must use:
-
-```java
-@Tag
-```
-
-at class level.
+Every controller must use `@Tag` at class level.
 
 Every endpoint method must use:
 
@@ -691,62 +670,182 @@ Every endpoint method must use:
 @ApiResponses
 ```
 
-Path variables and request parameters should use:
-
-```java
-@Parameter
-```
-
-when their business meaning is not obvious.
+Path variables and request parameters should use `@Parameter` when their business meaning is not obvious.
 
 `ORG-015` is incomplete unless all request DTOs, response DTOs, and controllers satisfy these Swagger rules.
 
 ---
 
-## 11. Recommended v1 Domain Model
+## 11. Mandatory Station-OU and Matrix Reporting Model
 
-Implement organization v1 with:
+This section is mandatory.
 
-```text
-Aggregates:
-- Employee
-- OrganizationUnit
+If any earlier text suggests a simple supervisor-only model, this section overrides it.
 
-Domain models/entities:
-- Position
-- EmployeeAssignment
-- SupervisorAssignment
-```
+### 11.1 Station as organization unit
 
-Value objects:
+Organization must support station-like organization units.
+
+A station can be represented as:
 
 ```text
-EmployeeId
-EmployeeNumber
-EmployeeFullName
-EmployeeEmail
-EmploymentStatus
-OrganizationUnitId
-OrganizationUnitCode
-OrganizationUnitName
-OrganizationUnitStatus
-PositionId
-PositionCode
-PositionTitle
-AssignmentId
-IdentityUserReference
+OrganizationUnitType.STATION
 ```
 
-Delay:
+This applies to any operational station type:
 
 ```text
-deep HR features
-payroll
-leave management
-complex matrix organization
-identity synchronization
-external HR integration
+compression station
+pumping station
+delivery station
+metering station
+valve station
+control station
+generic operational station
 ```
+
+The physical station asset belongs to topology.
+
+The operational people structure belongs to organization.
+
+Therefore:
+
+```text
+topology.Station = physical asset
+organization.OrganizationUnit(type = STATION) = operational unit/team/responsibility structure
+```
+
+### 11.2 Operational scope reference
+
+`OperationalScopeReference` is required to connect organization responsibility to future topology assets without importing topology.
+
+Recommended fields:
+
+```text
+OperationalScopeType scopeType
+String scopeId optional
+String scopeCode
+String scopeName optional
+```
+
+Recommended `OperationalScopeType` values:
+
+```text
+TOPOLOGY_STATION
+TOPOLOGY_COMPRESSION_STATION
+TOPOLOGY_PUMPING_STATION
+TOPOLOGY_DELIVERY_STATION
+TOPOLOGY_METERING_STATION
+TOPOLOGY_PIPELINE
+TOPOLOGY_REGION
+TOPOLOGY_FACILITY
+GENERIC_OPERATIONAL_SCOPE
+```
+
+Rules:
+
+```text
+OperationalScopeReference must not import topology classes.
+scopeCode is required.
+scopeType is required.
+scopeName is optional.
+scopeId is optional because topology may not exist yet.
+```
+
+### 11.3 Organization unit type
+
+`OrganizationUnitType` is required.
+
+Recommended values:
+
+```text
+COMPANY
+DIVISION
+DIRECTION
+DEPARTMENT
+REGION
+AREA
+DISTRICT
+STATION
+TEAM
+PROJECT_TEAM
+OTHER
+```
+
+Example hierarchy:
+
+```text
+TRC
+└── Exploitation Division
+    └── Operational East Region
+        └── Compression Station East 01
+            └── CS East 01 Operations Team
+```
+
+### 11.4 Reporting line instead of simple supervisor assignment
+
+Use `ReportingLine`, not `SupervisorAssignment`.
+
+`ReportingLine` supports simple and matrix reporting.
+
+Recommended fields:
+
+```text
+ReportingLineId id
+EmployeeId employeeId
+EmployeeId managerEmployeeId
+ReportingLineType type
+boolean primaryLine
+LocalDate effectiveFrom
+LocalDate effectiveTo optional
+String description optional
+```
+
+Recommended `ReportingLineType` values:
+
+```text
+LINE
+OPERATIONAL
+FUNCTIONAL
+ADMINISTRATIVE
+TECHNICAL
+DOTTED_LINE
+```
+
+Rules:
+
+```text
+An employee cannot report to themselves.
+An employee can have only one active primary LINE reporting line.
+An employee may have multiple active FUNCTIONAL reporting lines.
+An employee may have multiple ADMINISTRATIVE, TECHNICAL, or DOTTED_LINE reporting lines.
+LINE reporting cycles are forbidden.
+A disabled employee cannot receive new reporting lines.
+A disabled employee cannot be assigned as manager.
+Reporting lines must have an effective start date.
+```
+
+### 11.5 Required supported case
+
+The roadmap must support this case:
+
+```text
+Employee A
+- belongs to Compression Station East 01 Operations Team
+- has Position: Station Team Leader
+- operational scope: TOPOLOGY_COMPRESSION_STATION / CS-EAST-01
+- primary reporting line: Station Boss
+
+Station Boss
+- primary reporting line: Operational East Region Director
+
+Operational East Region Director
+- primary LINE reporting line: Exploitation Division Director at TRC
+- FUNCTIONAL reporting line: Gas Flux Director
+- ADMINISTRATIVE reporting line: Department Chief
+```
+
+This is the target organization capability.
 
 ---
 
@@ -763,6 +862,7 @@ src/main/java/dz/sh/hidra/modules/organization
 │       │   ├── EmployeeController.java
 │       │   ├── OrganizationUnitController.java
 │       │   ├── PositionController.java
+│       │   ├── ReportingLineController.java
 │       │   └── package-info.java
 │       ├── mapper
 │       │   ├── OrganizationRestMapper.java
@@ -772,7 +872,7 @@ src/main/java/dz/sh/hidra/modules/organization
 │       │   ├── CreateEmployeeRequest.java
 │       │   ├── CreateOrganizationUnitRequest.java
 │       │   ├── CreatePositionRequest.java
-│       │   ├── SetEmployeeSupervisorRequest.java
+│       │   ├── SetEmployeeReportingLineRequest.java
 │       │   ├── UpdateEmployeeRequest.java
 │       │   ├── UpdateOrganizationUnitRequest.java
 │       │   └── package-info.java
@@ -781,6 +881,7 @@ src/main/java/dz/sh/hidra/modules/organization
 │           ├── EmployeeResponse.java
 │           ├── OrganizationUnitResponse.java
 │           ├── PositionResponse.java
+│           ├── ReportingLineResponse.java
 │           └── package-info.java
 ├── application
 │   ├── package-info.java
@@ -789,7 +890,7 @@ src/main/java/dz/sh/hidra/modules/organization
 │   │   ├── CreateEmployeeCommand.java
 │   │   ├── CreateOrganizationUnitCommand.java
 │   │   ├── CreatePositionCommand.java
-│   │   ├── SetEmployeeSupervisorCommand.java
+│   │   ├── SetEmployeeReportingLineCommand.java
 │   │   ├── UpdateEmployeeCommand.java
 │   │   ├── UpdateOrganizationUnitCommand.java
 │   │   └── package-info.java
@@ -798,6 +899,7 @@ src/main/java/dz/sh/hidra/modules/organization
 │   │   ├── EmployeeDto.java
 │   │   ├── OrganizationUnitDto.java
 │   │   ├── PositionDto.java
+│   │   ├── ReportingLineDto.java
 │   │   └── package-info.java
 │   ├── mapper
 │   │   ├── OrganizationApplicationMapper.java
@@ -813,7 +915,7 @@ src/main/java/dz/sh/hidra/modules/organization
 │   │   │   ├── GetOrganizationUnitUseCase.java
 │   │   │   ├── ListEmployeesUseCase.java
 │   │   │   ├── ListOrganizationUnitsUseCase.java
-│   │   │   ├── SetEmployeeSupervisorUseCase.java
+│   │   │   ├── SetEmployeeReportingLineUseCase.java
 │   │   │   └── package-info.java
 │   │   └── out
 │   │       ├── DomainEventPublisherPort.java
@@ -837,14 +939,14 @@ src/main/java/dz/sh/hidra/modules/organization
 │       ├── GetOrganizationUnitService.java
 │       ├── ListEmployeesService.java
 │       ├── ListOrganizationUnitsService.java
-│       ├── SetEmployeeSupervisorService.java
+│       ├── SetEmployeeReportingLineService.java
 │       └── package-info.java
 ├── domain
 │   ├── package-info.java
 │   ├── event
 │   │   ├── EmployeeAssignedToUnitEvent.java
 │   │   ├── EmployeeCreatedEvent.java
-│   │   ├── EmployeeSupervisorChangedEvent.java
+│   │   ├── EmployeeReportingLineChangedEvent.java
 │   │   ├── OrganizationUnitCreatedEvent.java
 │   │   ├── PositionCreatedEvent.java
 │   │   └── package-info.java
@@ -853,18 +955,21 @@ src/main/java/dz/sh/hidra/modules/organization
 │   │   ├── EmployeeLifecycleException.java
 │   │   ├── OrganizationDomainException.java
 │   │   ├── OrganizationHierarchyException.java
+│   │   ├── ReportingLineException.java
 │   │   └── package-info.java
 │   ├── model
 │   │   ├── Employee.java
 │   │   ├── EmployeeAssignment.java
+│   │   ├── OperationalScopeReference.java
 │   │   ├── OrganizationUnit.java
 │   │   ├── Position.java
-│   │   ├── SupervisorAssignment.java
+│   │   ├── ReportingLine.java
 │   │   └── package-info.java
 │   ├── policy
 │   │   ├── EmployeeAssignmentPolicy.java
 │   │   ├── EmployeeLifecyclePolicy.java
 │   │   ├── OrganizationHierarchyPolicy.java
+│   │   ├── ReportingLinePolicy.java
 │   │   └── package-info.java
 │   ├── repository
 │   │   ├── EmployeeDomainRepository.java
@@ -874,6 +979,7 @@ src/main/java/dz/sh/hidra/modules/organization
 │   ├── service
 │   │   ├── EmployeeAssignmentDomainService.java
 │   │   ├── OrganizationHierarchyDomainService.java
+│   │   ├── ReportingLineDomainService.java
 │   │   └── package-info.java
 │   └── value
 │       ├── AssignmentId.java
@@ -883,13 +989,17 @@ src/main/java/dz/sh/hidra/modules/organization
 │       ├── EmployeeNumber.java
 │       ├── EmploymentStatus.java
 │       ├── IdentityUserReference.java
+│       ├── OperationalScopeType.java
 │       ├── OrganizationUnitCode.java
 │       ├── OrganizationUnitId.java
 │       ├── OrganizationUnitName.java
 │       ├── OrganizationUnitStatus.java
+│       ├── OrganizationUnitType.java
 │       ├── PositionCode.java
 │       ├── PositionId.java
 │       ├── PositionTitle.java
+│       ├── ReportingLineId.java
+│       ├── ReportingLineType.java
 │       └── package-info.java
 └── infrastructure
     ├── package-info.java
@@ -906,7 +1016,7 @@ src/main/java/dz/sh/hidra/modules/organization
         │   ├── EmployeeJpaEntity.java
         │   ├── OrganizationUnitJpaEntity.java
         │   ├── PositionJpaEntity.java
-        │   ├── SupervisorAssignmentJpaEntity.java
+        │   ├── ReportingLineJpaEntity.java
         │   └── package-info.java
         ├── mapper
         │   ├── OrganizationPersistenceMapper.java
@@ -929,53 +1039,19 @@ src/main/resources/db/migration/V020__create_organization_tables.sql
 
 ---
 
-## 13. Final Organization Test File Tree
-
-Do not create test `package-info.java` files.
-
-```text
-src/test/java/dz/sh/hidra/modules/organization
-├── OrganizationArchitectureTest.java
-├── api/rest/controller
-│   ├── EmployeeControllerTest.java
-│   ├── OrganizationUnitControllerTest.java
-│   └── PositionControllerTest.java
-├── application/service
-│   ├── AssignEmployeeToUnitServiceTest.java
-│   ├── CreateEmployeeServiceTest.java
-│   ├── CreateOrganizationUnitServiceTest.java
-│   └── SetEmployeeSupervisorServiceTest.java
-├── domain/model
-│   ├── EmployeeTest.java
-│   └── OrganizationUnitTest.java
-├── domain/policy
-│   ├── EmployeeAssignmentPolicyTest.java
-│   ├── EmployeeLifecyclePolicyTest.java
-│   └── OrganizationHierarchyPolicyTest.java
-├── domain/value
-│   ├── EmployeeNumberTest.java
-│   ├── OrganizationUnitCodeTest.java
-│   └── PositionCodeTest.java
-└── infrastructure/persistence
-    ├── EmployeeRepositoryAdapterTest.java
-    └── OrganizationUnitRepositoryAdapterTest.java
-```
-
----
-
-## 14. Commit Plan Overview
+## 13. Commit Plan Overview
 
 | Commit code | Commit message | Purpose |
 |---|---|---|
 | `ORG-001` | `docs(organization): add organization roadmap` | Add this roadmap file |
 | `ORG-002` | `chore(organization): add organization package skeleton` | Add production `package-info.java` files only |
-| `ORG-003` | `feat(organization): add organization domain value objects` | Add IDs, codes, names, statuses, references |
+| `ORG-003` | `feat(organization): add organization domain value objects` | Add IDs, codes, names, statuses, unit types, reporting types, operational scope types |
 | `ORG-004` | `feat(organization): add position domain model` | Add position model and catalog |
-| `ORG-005` | `feat(organization): add organization unit domain model` | Add organization unit aggregate and hierarchy rules |
-| `ORG-006` | `feat(organization): add employee domain model` | Add employee aggregate and assignment model |
-| `ORG-007` | `feat(organization): add organization domain exceptions` | Add organization-specific exceptions |
-| `ORG-008` | `feat(organization): add organization domain events` | Add employee/unit/position events |
-| `ORG-009` | `feat(organization): add organization domain policies and services` | Add hierarchy, lifecycle, assignment policies/services |
+| `ORG-005` | `feat(organization): add organization unit domain model` | Add organization unit aggregate with unit type and operational scope reference |
+| `ORG-006` | `feat(organization): add employee domain model` | Add employee aggregate, employee assignment, and reporting line model |
+| `ORG-007` | `feat(organization): add organization domain exceptions` | Add organization-specific exceptions including reporting line exception |
+| `ORG-008` | `feat(organization): add organization domain events` | Add employee/unit/position/reporting events |
+| `ORG-009` | `feat(organization): add organization domain policies and services` | Add hierarchy, lifecycle, assignment, and reporting line policies/services |
 | `ORG-010` | `feat(organization): add application commands and queries` | Add command/query records |
 | `ORG-011` | `feat(organization): add application ports and DTOs` | Add inbound/outbound ports and DTOs |
 | `ORG-012` | `feat(organization): add application services` | Add use-case services |
@@ -991,7 +1067,7 @@ src/test/java/dz/sh/hidra/modules/organization
 
 ---
 
-# 15. Detailed Commit Specifications
+# 14. Detailed Commit Specifications
 
 ## ORG-001 — Add Organization Roadmap
 
@@ -1001,21 +1077,11 @@ src/test/java/dz/sh/hidra/modules/organization
 docs(organization): add organization roadmap
 ```
 
-### Description
-
-Create the roadmap file used by AI agents and developers to implement the `organization` module safely.
-
 ### Files to create or update
 
 | Action | File | Purpose |
 |---|---|---|
 | Create | `docs/roadmap/organization.md` | Organization implementation plan and execution memory |
-
-### Acceptance criteria
-
-- File exists at exactly `docs/roadmap/organization.md`.
-- File contains commit codes, messages, descriptions, files, file purposes, acceptance criteria, and validation commands.
-- No Java source files are created in this commit.
 
 ### Validation
 
@@ -1105,10 +1171,6 @@ mvn -q -DskipTests compile
 feat(organization): add organization domain value objects
 ```
 
-### Description
-
-Add immutable domain value objects used by employees, organization units, positions, and assignments.
-
 ### Files to create or update
 
 | Action | File | Purpose |
@@ -1122,10 +1184,14 @@ Add immutable domain value objects used by employees, organization units, positi
 | Create | `domain/value/OrganizationUnitCode.java` | Validated organization unit code |
 | Create | `domain/value/OrganizationUnitName.java` | Validated organization unit name |
 | Create | `domain/value/OrganizationUnitStatus.java` | Organization unit lifecycle status enum |
+| Create | `domain/value/OrganizationUnitType.java` | Classifies units such as division, region, station, or team |
 | Create | `domain/value/PositionId.java` | Stable position identifier |
 | Create | `domain/value/PositionCode.java` | Validated position code |
 | Create | `domain/value/PositionTitle.java` | Validated position title |
 | Create | `domain/value/AssignmentId.java` | Stable assignment identifier |
+| Create | `domain/value/ReportingLineId.java` | Stable reporting line identifier |
+| Create | `domain/value/ReportingLineType.java` | Matrix reporting line type enum |
+| Create | `domain/value/OperationalScopeType.java` | Classifies referenced operational scopes such as topology station or pipeline |
 | Create | `domain/value/IdentityUserReference.java` | Neutral reference to identity user without importing identity domain |
 | Update | `docs/roadmap/organization.md` | Mark `ORG-003` as completed after execution |
 
@@ -1135,8 +1201,11 @@ Add immutable domain value objects used by employees, organization units, positi
 - Invalid inputs are rejected.
 - Every value object has class-level JavaDoc.
 - Record components are documented using `@param` JavaDoc.
+- `OrganizationUnitType` includes `STATION`.
+- `ReportingLineType` includes `LINE`, `OPERATIONAL`, `FUNCTIONAL`, `ADMINISTRATIVE`, `TECHNICAL`, and `DOTTED_LINE`.
+- `OperationalScopeType` includes station-oriented topology references.
 - No Spring/JPA imports.
-- No identity/identityaccess imports.
+- No identity/identityaccess/topology imports.
 - Compile passes.
 
 ### Validation
@@ -1155,10 +1224,6 @@ mvn -q -DskipTests compile
 feat(organization): add position domain model
 ```
 
-### Description
-
-Add position model and position catalog contract.
-
 ### Files to create or update
 
 | Action | File | Purpose |
@@ -1166,14 +1231,6 @@ Add position model and position catalog contract.
 | Create | `domain/model/Position.java` | Domain model for an organizational position/function |
 | Create | `domain/repository/PositionCatalog.java` | Domain contract for position lookup/catalog operations |
 | Update | `docs/roadmap/organization.md` | Mark `ORG-004` as completed after execution |
-
-### Acceptance criteria
-
-- Position model is documented.
-- Position model is generic to organization.
-- No persistence annotations.
-- No framework dependency.
-- Compile passes.
 
 ### Validation
 
@@ -1191,25 +1248,26 @@ mvn -q -DskipTests compile
 feat(organization): add organization unit domain model
 ```
 
-### Description
-
-Add organization unit aggregate and hierarchy rules.
-
 ### Files to create or update
 
 | Action | File | Purpose |
 |---|---|---|
-| Create | `domain/model/OrganizationUnit.java` | Organization unit aggregate |
+| Create | `domain/model/OperationalScopeReference.java` | Neutral reference from an organization unit to a future topology/operational scope |
+| Create | `domain/model/OrganizationUnit.java` | Organization unit aggregate supporting hierarchy, unit type, and optional operational scope |
 | Create | `domain/repository/OrganizationUnitDomainRepository.java` | Domain repository contract for organization units |
 | Update | `docs/roadmap/organization.md` | Mark `ORG-005` as completed after execution |
 
 ### Acceptance criteria
 
 - Organization unit is aggregate root.
+- Organization unit supports `OrganizationUnitType`.
+- Organization unit supports type `STATION`.
+- Organization unit may hold `OperationalScopeReference`.
+- `OperationalScopeReference` does not import topology.
 - Hierarchy references are controlled.
 - Self-parenting is rejected.
 - No persistence/framework dependency.
-- JavaDoc documents lifecycle and hierarchy rules.
+- JavaDoc documents lifecycle, hierarchy, station-as-OU, and operational scope rules.
 - Compile passes.
 
 ### Validation
@@ -1228,28 +1286,28 @@ mvn -q -DskipTests compile
 feat(organization): add employee domain model
 ```
 
-### Description
-
-Add employee aggregate, employee assignment, and supervisor assignment models.
-
 ### Files to create or update
 
 | Action | File | Purpose |
 |---|---|---|
 | Create | `domain/model/Employee.java` | Employee aggregate representing a real operational person |
-| Create | `domain/model/EmployeeAssignment.java` | Assignment of employee to unit/position |
-| Create | `domain/model/SupervisorAssignment.java` | Supervisor relationship for an employee |
+| Create | `domain/model/EmployeeAssignment.java` | Assignment of employee to unit/position and optional operational scope |
+| Create | `domain/model/ReportingLine.java` | Matrix-capable reporting line for employee-to-manager relationships |
 | Create | `domain/repository/EmployeeDomainRepository.java` | Domain repository contract for employees |
 | Update | `docs/roadmap/organization.md` | Mark `ORG-006` as completed after execution |
 
 ### Acceptance criteria
 
 - Employee is aggregate root.
+- Employee supports assignments to station/team organization units.
+- Employee supports reporting lines.
+- `ReportingLine` supports matrix reporting.
 - Lifecycle transitions are controlled.
 - Role/user/permission logic is not introduced.
 - No identity domain import exists.
+- No topology domain import exists.
 - No persistence/framework dependency.
-- JavaDoc documents lifecycle and assignment rules.
+- JavaDoc documents lifecycle, assignment, and reporting rules.
 - Compile passes.
 
 ### Validation
@@ -1268,10 +1326,6 @@ mvn -q -DskipTests compile
 feat(organization): add organization domain exceptions
 ```
 
-### Description
-
-Add organization-specific domain exceptions.
-
 ### Files to create or update
 
 | Action | File | Purpose |
@@ -1280,6 +1334,7 @@ Add organization-specific domain exceptions.
 | Create | `domain/exception/EmployeeLifecycleException.java` | Exception for invalid employee lifecycle transition |
 | Create | `domain/exception/EmployeeAssignmentNotAllowedException.java` | Exception for invalid employee assignment |
 | Create | `domain/exception/OrganizationHierarchyException.java` | Exception for invalid organization hierarchy |
+| Create | `domain/exception/ReportingLineException.java` | Exception for invalid matrix reporting line |
 | Update | Existing value/model/policy files if needed | Replace generic exceptions with organization-specific exceptions where appropriate |
 | Update | `docs/roadmap/organization.md` | Mark `ORG-007` as completed after execution |
 
@@ -1305,18 +1360,10 @@ feat(organization): add organization domain events
 |---|---|---|
 | Create | `domain/event/EmployeeCreatedEvent.java` | Published when an employee is created |
 | Create | `domain/event/EmployeeAssignedToUnitEvent.java` | Published when an employee is assigned to a unit/position |
-| Create | `domain/event/EmployeeSupervisorChangedEvent.java` | Published when supervisor assignment changes |
+| Create | `domain/event/EmployeeReportingLineChangedEvent.java` | Published when reporting line changes |
 | Create | `domain/event/OrganizationUnitCreatedEvent.java` | Published when an organization unit is created |
 | Create | `domain/event/PositionCreatedEvent.java` | Published when a position is created |
 | Update | `docs/roadmap/organization.md` | Mark `ORG-008` as completed after execution |
-
-### Acceptance criteria
-
-- Events are immutable.
-- Events are safe.
-- Events do not import platform.
-- Events do not import identity.
-- Compile passes.
 
 ### Validation
 
@@ -1341,9 +1388,22 @@ feat(organization): add organization domain policies and services
 | Create | `domain/policy/OrganizationHierarchyPolicy.java` | Validates unit parent/child hierarchy constraints |
 | Create | `domain/policy/EmployeeLifecyclePolicy.java` | Validates employee lifecycle transitions |
 | Create | `domain/policy/EmployeeAssignmentPolicy.java` | Validates employee assignment rules |
+| Create | `domain/policy/ReportingLinePolicy.java` | Validates matrix reporting rules |
 | Create | `domain/service/OrganizationHierarchyDomainService.java` | Coordinates hierarchy validation rules |
 | Create | `domain/service/EmployeeAssignmentDomainService.java` | Coordinates employee assignment domain rules |
+| Create | `domain/service/ReportingLineDomainService.java` | Coordinates reporting line validation and matrix reporting rules |
 | Update | `docs/roadmap/organization.md` | Mark `ORG-009` as completed after execution |
+
+### Acceptance criteria
+
+- Policies compile.
+- Reporting line policy prevents self-reporting.
+- Reporting line policy supports one active primary LINE relation.
+- Reporting line policy supports multiple FUNCTIONAL lines.
+- Organization hierarchy policy prevents cycles.
+- No Spring/JPA imports.
+- No identity/identityaccess/topology imports.
+- Compile passes.
 
 ### Validation
 
@@ -1367,25 +1427,17 @@ feat(organization): add application commands and queries
 |---|---|---|
 | Create | `application/command/CreateEmployeeCommand.java` | Input for creating an employee |
 | Create | `application/command/UpdateEmployeeCommand.java` | Input for updating employee basic information |
-| Create | `application/command/CreateOrganizationUnitCommand.java` | Input for creating an organization unit |
+| Create | `application/command/CreateOrganizationUnitCommand.java` | Input for creating an organization unit with optional operational scope |
 | Create | `application/command/UpdateOrganizationUnitCommand.java` | Input for updating an organization unit |
 | Create | `application/command/CreatePositionCommand.java` | Input for creating a position |
 | Create | `application/command/AssignEmployeeToUnitCommand.java` | Input for assigning employee to unit/position |
-| Create | `application/command/SetEmployeeSupervisorCommand.java` | Input for setting supervisor relationship |
+| Create | `application/command/SetEmployeeReportingLineCommand.java` | Input for creating/updating an employee reporting line |
 | Create | `application/query/GetEmployeeByIdQuery.java` | Query for one employee |
 | Create | `application/query/ListEmployeesQuery.java` | Query for employee list/search |
 | Create | `application/query/GetOrganizationUnitByIdQuery.java` | Query for one organization unit |
 | Create | `application/query/ListOrganizationUnitsQuery.java` | Query for organization unit list |
 | Create | `application/query/ListPositionsQuery.java` | Query for position catalog |
 | Update | `docs/roadmap/organization.md` | Mark `ORG-010` as completed after execution |
-
-### Acceptance criteria
-
-- Commands/queries compile.
-- Every command/query has JavaDoc and `@param` docs.
-- No service implementation yet.
-- No framework dependency.
-- Compile passes.
 
 ### Validation
 
@@ -1415,7 +1467,7 @@ feat(organization): add application ports and DTOs
 | Create | `application/port/in/ListOrganizationUnitsUseCase.java` | Inbound port for listing organization units |
 | Create | `application/port/in/CreatePositionUseCase.java` | Inbound port for position creation |
 | Create | `application/port/in/AssignEmployeeToUnitUseCase.java` | Inbound port for employee assignment |
-| Create | `application/port/in/SetEmployeeSupervisorUseCase.java` | Inbound port for supervisor assignment |
+| Create | `application/port/in/SetEmployeeReportingLineUseCase.java` | Inbound port for reporting line creation/update |
 | Create | `application/port/out/EmployeeRepository.java` | Outbound employee persistence port |
 | Create | `application/port/out/OrganizationUnitRepository.java` | Outbound organization unit persistence port |
 | Create | `application/port/out/PositionRepository.java` | Outbound position persistence port |
@@ -1424,15 +1476,9 @@ feat(organization): add application ports and DTOs
 | Create | `application/dto/OrganizationUnitDto.java` | Application organization unit DTO |
 | Create | `application/dto/PositionDto.java` | Application position DTO |
 | Create | `application/dto/EmployeeAssignmentDto.java` | Application employee assignment DTO |
+| Create | `application/dto/ReportingLineDto.java` | Application reporting line DTO |
 | Create | `application/mapper/OrganizationApplicationMapper.java` | Maps domain objects to application DTOs |
 | Update | `docs/roadmap/organization.md` | Mark `ORG-011` as completed after execution |
-
-### Acceptance criteria
-
-- Ports compile and have JavaDoc.
-- DTOs compile and have class/component JavaDoc.
-- Application layer does not depend on API or infrastructure.
-- Compile passes.
 
 ### Validation
 
@@ -1462,7 +1508,7 @@ feat(organization): add application services
 | Create | `application/service/ListOrganizationUnitsService.java` | Implements organization unit listing use case |
 | Create | `application/service/CreatePositionService.java` | Implements position creation use case |
 | Create | `application/service/AssignEmployeeToUnitService.java` | Implements employee assignment use case |
-| Create | `application/service/SetEmployeeSupervisorService.java` | Implements supervisor assignment use case |
+| Create | `application/service/SetEmployeeReportingLineService.java` | Implements reporting line use case |
 | Update | `docs/roadmap/organization.md` | Mark `ORG-012` as completed after execution |
 
 ### Validation
@@ -1486,10 +1532,10 @@ feat(organization): add persistence entities and repositories
 | Action | File | Purpose |
 |---|---|---|
 | Create | `infrastructure/persistence/entity/EmployeeJpaEntity.java` | JPA representation of employee |
-| Create | `infrastructure/persistence/entity/OrganizationUnitJpaEntity.java` | JPA representation of organization unit |
+| Create | `infrastructure/persistence/entity/OrganizationUnitJpaEntity.java` | JPA representation of organization unit, including unit type and operational scope columns |
 | Create | `infrastructure/persistence/entity/PositionJpaEntity.java` | JPA representation of position |
 | Create | `infrastructure/persistence/entity/EmployeeAssignmentJpaEntity.java` | JPA representation of employee assignment |
-| Create | `infrastructure/persistence/entity/SupervisorAssignmentJpaEntity.java` | JPA representation of supervisor assignment |
+| Create | `infrastructure/persistence/entity/ReportingLineJpaEntity.java` | JPA representation of matrix reporting line |
 | Create | `infrastructure/persistence/repository/EmployeeJpaRepository.java` | Spring Data employee repository |
 | Create | `infrastructure/persistence/repository/OrganizationUnitJpaRepository.java` | Spring Data organization unit repository |
 | Create | `infrastructure/persistence/repository/PositionJpaRepository.java` | Spring Data position repository |
@@ -1509,7 +1555,21 @@ hidra_org_employee
 hidra_org_unit
 hidra_org_position
 hidra_org_employee_assignment
-hidra_org_supervisor_assignment
+hidra_org_reporting_line
+```
+
+Additional required schema support:
+
+```text
+hidra_org_unit.unit_type
+hidra_org_unit.operational_scope_type
+hidra_org_unit.operational_scope_code
+hidra_org_unit.operational_scope_id optional
+hidra_org_unit.operational_scope_name optional
+hidra_org_reporting_line.reporting_line_type
+hidra_org_reporting_line.primary_line
+hidra_org_reporting_line.effective_from
+hidra_org_reporting_line.effective_to optional
 ```
 
 ### Validation
@@ -1561,19 +1621,21 @@ feat(organization): add REST API contracts and controllers
 |---|---|---|
 | Create | `api/rest/request/CreateEmployeeRequest.java` | Request body for creating employee |
 | Create | `api/rest/request/UpdateEmployeeRequest.java` | Request body for updating employee |
-| Create | `api/rest/request/CreateOrganizationUnitRequest.java` | Request body for creating organization unit |
+| Create | `api/rest/request/CreateOrganizationUnitRequest.java` | Request body for creating organization unit, including type and optional operational scope |
 | Create | `api/rest/request/UpdateOrganizationUnitRequest.java` | Request body for updating organization unit |
 | Create | `api/rest/request/CreatePositionRequest.java` | Request body for creating position |
 | Create | `api/rest/request/AssignEmployeeToUnitRequest.java` | Request body for assigning employee to unit/position |
-| Create | `api/rest/request/SetEmployeeSupervisorRequest.java` | Request body for setting supervisor |
+| Create | `api/rest/request/SetEmployeeReportingLineRequest.java` | Request body for setting matrix reporting line |
 | Create | `api/rest/response/EmployeeResponse.java` | REST employee response |
-| Create | `api/rest/response/OrganizationUnitResponse.java` | REST organization unit response |
+| Create | `api/rest/response/OrganizationUnitResponse.java` | REST organization unit response, including type and optional operational scope |
 | Create | `api/rest/response/PositionResponse.java` | REST position response |
 | Create | `api/rest/response/EmployeeAssignmentResponse.java` | REST employee assignment response |
+| Create | `api/rest/response/ReportingLineResponse.java` | REST reporting line response |
 | Create | `api/rest/mapper/OrganizationRestMapper.java` | Maps REST request/response to application commands/DTOs |
 | Create | `api/rest/controller/EmployeeController.java` | Employee REST endpoints |
 | Create | `api/rest/controller/OrganizationUnitController.java` | Organization unit REST endpoints |
 | Create | `api/rest/controller/PositionController.java` | Position REST endpoints |
+| Create | `api/rest/controller/ReportingLineController.java` | Reporting line REST endpoints |
 | Update | `docs/roadmap/organization.md` | Mark `ORG-015` as completed after execution |
 
 ### API endpoints
@@ -1592,7 +1654,7 @@ GET    /api/v1/organization/employees/{employeeId}
 GET    /api/v1/organization/employees
 PUT    /api/v1/organization/employees/{employeeId}
 POST   /api/v1/organization/employees/{employeeId}/assignments
-POST   /api/v1/organization/employees/{employeeId}/supervisor
+POST   /api/v1/organization/employees/{employeeId}/reporting-lines
 
 POST   /api/v1/organization/units
 GET    /api/v1/organization/units/{unitId}
@@ -1640,18 +1702,22 @@ test(organization): add organization domain tests
 |---|---|---|
 | Create | `domain/value/EmployeeNumberTest.java` | Verifies employee number validation |
 | Create | `domain/value/OrganizationUnitCodeTest.java` | Verifies organization unit code validation |
+| Create | `domain/value/OrganizationUnitTypeTest.java` | Verifies organization unit type includes station support |
+| Create | `domain/value/OperationalScopeReferenceTest.java` | Verifies operational scope reference rules |
 | Create | `domain/value/PositionCodeTest.java` | Verifies position code validation |
-| Create | `domain/model/EmployeeTest.java` | Verifies employee lifecycle and assignment rules |
-| Create | `domain/model/OrganizationUnitTest.java` | Verifies organization unit lifecycle and hierarchy rules |
+| Create | `domain/value/ReportingLineTypeTest.java` | Verifies reporting line type values |
+| Create | `domain/model/EmployeeTest.java` | Verifies employee lifecycle, assignment, and reporting line rules |
+| Create | `domain/model/OrganizationUnitTest.java` | Verifies organization unit lifecycle, station type, scope, and hierarchy rules |
 | Create | `domain/policy/EmployeeAssignmentPolicyTest.java` | Verifies employee assignment rules |
 | Create | `domain/policy/EmployeeLifecyclePolicyTest.java` | Verifies employee lifecycle rules |
 | Create | `domain/policy/OrganizationHierarchyPolicyTest.java` | Verifies hierarchy constraints |
+| Create | `domain/policy/ReportingLinePolicyTest.java` | Verifies matrix reporting line rules |
 | Update | `docs/roadmap/organization.md` | Mark `ORG-016` as completed after execution |
 
 ### Validation
 
 ```bash
-mvn -q test -Dtest='*Organization*,*EmployeeTest,*OrganizationUnitTest,*EmployeeNumberTest,*OrganizationUnitCodeTest,*PositionCodeTest,*EmployeeAssignmentPolicyTest,*OrganizationHierarchyPolicyTest'
+mvn -q test -Dtest='*Organization*,*EmployeeTest,*OrganizationUnitTest,*EmployeeNumberTest,*OrganizationUnitCodeTest,*OrganizationUnitTypeTest,*OperationalScopeReferenceTest,*ReportingLineTypeTest,*ReportingLinePolicyTest,*OrganizationHierarchyPolicyTest'
 mvn -q test
 ```
 
@@ -1670,9 +1736,9 @@ test(organization): add organization application tests
 | Action | File | Purpose |
 |---|---|---|
 | Create | `application/service/CreateEmployeeServiceTest.java` | Verifies employee creation use case |
-| Create | `application/service/CreateOrganizationUnitServiceTest.java` | Verifies organization unit creation use case |
+| Create | `application/service/CreateOrganizationUnitServiceTest.java` | Verifies organization unit creation use case including station-type unit |
 | Create | `application/service/AssignEmployeeToUnitServiceTest.java` | Verifies employee assignment use case |
-| Create | `application/service/SetEmployeeSupervisorServiceTest.java` | Verifies supervisor assignment use case |
+| Create | `application/service/SetEmployeeReportingLineServiceTest.java` | Verifies reporting line use case |
 | Update | `docs/roadmap/organization.md` | Mark `ORG-017` as completed after execution |
 
 ### Validation
@@ -1697,7 +1763,8 @@ test(organization): add organization persistence tests
 | Action | File | Purpose |
 |---|---|---|
 | Create | `infrastructure/persistence/EmployeeRepositoryAdapterTest.java` | Verifies employee persistence adapter |
-| Create | `infrastructure/persistence/OrganizationUnitRepositoryAdapterTest.java` | Verifies organization unit persistence adapter |
+| Create | `infrastructure/persistence/OrganizationUnitRepositoryAdapterTest.java` | Verifies organization unit persistence including station type and operational scope columns |
+| Create | `infrastructure/persistence/ReportingLineRepositoryAdapterTest.java` | Verifies reporting line persistence |
 | Update | `docs/roadmap/organization.md` | Mark `ORG-018` as completed after execution |
 
 ### Validation
@@ -1721,8 +1788,9 @@ test(organization): add organization API tests
 | Action | File | Purpose |
 |---|---|---|
 | Create | `api/rest/controller/EmployeeControllerTest.java` | Verifies employee REST endpoints |
-| Create | `api/rest/controller/OrganizationUnitControllerTest.java` | Verifies organization unit REST endpoints |
+| Create | `api/rest/controller/OrganizationUnitControllerTest.java` | Verifies organization unit REST endpoints including station-as-OU input |
 | Create | `api/rest/controller/PositionControllerTest.java` | Verifies position REST endpoints |
+| Create | `api/rest/controller/ReportingLineControllerTest.java` | Verifies reporting line REST endpoints |
 | Update | `docs/roadmap/organization.md` | Mark `ORG-019` as completed after execution |
 
 ### Validation
@@ -1763,6 +1831,7 @@ organization.application must not depend on infrastructure
 organization.api must not depend on infrastructure
 organization must not import identity domain model
 organization must not import identityaccess
+organization must not import topology domain model
 organization must not create identityaccess package
 controllers must not access repositories directly
 infrastructure persistence adapters implement application outbound ports
@@ -1799,31 +1868,30 @@ docs(organization): finalize organization checklist
 [ ] Organization domain has no Spring dependency
 [ ] Organization domain has no JPA dependency
 [ ] Organization domain has no identity domain dependency
+[ ] Organization domain has no topology domain dependency
 [ ] Organization application has no API dependency
 [ ] Organization application has no infrastructure dependency
 [ ] Organization API has no repository dependency
 [ ] Employee aggregate exists
 [ ] OrganizationUnit aggregate exists
 [ ] Position model exists
+[ ] OrganizationUnitType exists
+[ ] OrganizationUnit supports STATION as operational OU
+[ ] OperationalScopeReference exists and does not import topology
+[ ] ReportingLine replaces simple SupervisorAssignment
+[ ] ReportingLineType supports LINE, OPERATIONAL, FUNCTIONAL, ADMINISTRATIVE, TECHNICAL, DOTTED_LINE
+[ ] Reporting line policy prevents self-reporting
+[ ] Reporting line policy supports one active primary LINE relation
 [ ] Employee assignment policy works
 [ ] Organization hierarchy policy works
 [ ] REST API compiles
 [ ] Domain models have class-level and field/component documentation
 [ ] Domain model validation does not use Bean Validation
 [ ] Domain value objects have validation and format documentation
-[ ] Application DTOs have class-level and component documentation
 [ ] REST request DTOs have Bean Validation annotations
-[ ] REST request DTOs have class-level and component documentation
-[ ] REST response DTOs have class-level and component documentation
-[ ] REST request DTOs use @Schema at class level
-[ ] REST request DTO fields/components use @Schema
-[ ] REST response DTOs use @Schema at class level
-[ ] REST response DTO fields/components use @Schema
-[ ] @Schema documentation aligns with Bean Validation constraints
-[ ] @Schema examples are realistic and contain no secrets
-[ ] Organization controllers use @Tag
-[ ] Organization controller endpoint methods use @Operation
-[ ] Organization controller endpoint methods use @ApiResponses
+[ ] REST request DTOs use @Schema at class and component level
+[ ] REST response DTOs use @Schema at class and component level
+[ ] Organization controllers use @Tag, @Operation, and @ApiResponses
 [ ] OpenAPI annotations are restricted to organization API layer
 [ ] Controllers depend only on application inbound ports
 [ ] Controllers do not access repositories or JPA entities
@@ -1846,7 +1914,7 @@ mvn -q clean verify
 
 ---
 
-## 16. AI Agent Execution Rules
+## 15. AI Agent Execution Rules
 
 Any AI agent executing this roadmap must follow these rules:
 
@@ -1857,31 +1925,34 @@ Any AI agent executing this roadmap must follow these rules:
 5. Check kernel preconditions before implementation commits.
 6. Do not create `identityaccess`.
 7. Do not create identity implementation files.
-8. Do not create platform security filter-chain code in organization.
-9. Do not create business code in platform.
-10. Always use the canonical HidraAPI header.
-11. Never change `@Author`.
-12. Never change `@CreatedOn`.
-13. Update this roadmap after each completed or blocked commit.
-14. Run validation after each commit.
-15. If validation cannot run, record the exact reason.
-16. If a dependency is missing, stop and report it.
-17. If a requested file does not belong to organization, do not create it.
-18. If an API DTO/controller is missing required JavaDoc or Swagger annotations, the task is incomplete.
-19. If a domain model/value object is missing validation documentation, the task is incomplete.
+8. Do not create topology implementation files.
+9. Do not import topology domain classes.
+10. Do not create platform security filter-chain code in organization.
+11. Always use the canonical HidraAPI header.
+12. Never change `@Author`.
+13. Never change `@CreatedOn`.
+14. Update this roadmap after each completed or blocked commit.
+15. Run validation after each commit.
+16. If validation cannot run, record the exact reason.
+17. If a dependency is missing, stop and report it.
+18. If a requested file does not belong to organization, do not create it.
+19. If an API DTO/controller is missing required JavaDoc or Swagger annotations, the task is incomplete.
+20. If a domain model/value object is missing validation documentation, the task is incomplete.
+21. If a station is modeled as a topology asset inside organization, the task is incomplete.
+22. If `SupervisorAssignment` is created instead of `ReportingLine`, the task is incomplete.
 
 ---
 
-## 17. Current Status Table
+## 16. Current Status Table
 
 | Commit code | Status | Notes |
 |---|---|---|
 | `ORG-001` | Planned | Add this roadmap |
 | `ORG-002` | Planned | Add production package skeleton only |
-| `ORG-003` | Planned | Add organization value objects |
+| `ORG-003` | Planned | Add organization value objects including unit type, reporting line type, and operational scope type |
 | `ORG-004` | Planned | Add position model |
-| `ORG-005` | Planned | Add organization unit aggregate |
-| `ORG-006` | Planned | Add employee aggregate |
+| `ORG-005` | Planned | Add organization unit aggregate with station-as-OU and operational scope reference |
+| `ORG-006` | Planned | Add employee aggregate, assignment, and reporting line model |
 | `ORG-007` | Planned | Add organization domain exceptions |
 | `ORG-008` | Planned | Add organization domain events |
 | `ORG-009` | Planned | Add domain policies and services |
@@ -1900,7 +1971,7 @@ Any AI agent executing this roadmap must follow these rules:
 
 ---
 
-## 18. Next Action
+## 17. Next Action
 
 Start with:
 

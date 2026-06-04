@@ -1965,8 +1965,8 @@ Any AI agent executing this roadmap must follow these rules:
 | `ORG-016` | Planned | Add domain tests |
 | `ORG-017` | Planned | Add application tests |
 | `ORG-018` | Planned | Add persistence tests |
-| `ORG-019` | Planned | Add API tests |
-| `ORG-020` | Planned | Add architecture guardrail if ArchUnit exists |
+| `ORG-019` | Completed | Generated locally in ZIP; organization API/controller/REST mapper tests only; Maven test not run outside full repository workspace |
+| `ORG-020` | Completed | Generated locally in ZIP; ArchUnit organization architecture guardrail test only; Maven test not run outside full repository workspace |
 | `ORG-021` | Planned | Finalize checklist |
 
 ---
@@ -1986,3 +1986,166 @@ ORG-002 — chore(organization): add organization package skeleton
 ```
 
 Do not implement organization classes before the package skeleton is reviewed.
+---
+
+## ORG-018 Local ZIP Execution Note
+
+```text
+Status: Completed locally as downloadable ZIP.
+Commit: Not created because user requested no GitHub push/commit.
+Validation:
+- File generation completed.
+- Persistence adapter test file count verified locally.
+- Tests use JUnit 5 and Mockito.
+- Tests verify repository adapters and persistence mapper behavior without loading a database.
+- No Spring Boot test context, DataJpaTest, identity, identityaccess, topology, platform, API, controller, application service, or ORG-019 files were generated.
+- Maven tests not run because this ZIP is not the full repository workspace.
+Known note:
+- ReportingLineRepositoryAdapterTest verifies reporting-line persistence through EmployeeRepositoryAdapter because ORG-013 stores reporting lines as employee-owned persistence rows and does not define an independent reporting-line repository adapter.
+```
+---
+
+## ORG-019 Local ZIP Execution Note
+
+```text
+Status: Completed locally as downloadable ZIP.
+Commit: Not created because user requested no GitHub push/commit.
+Validation:
+- File generation completed.
+- API mapper and controller test file counts verified locally.
+- Tests use JUnit 5 assertions and fake application inbound ports.
+- Tests do not use Spring Boot test context, MockMvc, Mockito, database, repositories, or persistence adapters.
+- No identity, identityaccess, topology, platform, persistence, application service, architecture guardrail, or ORG-020 files were generated.
+- Maven tests not run because this ZIP is not the full repository workspace.
+Known limitation:
+- Tests assert HTTP 501 placeholders for update employee, update organization unit, and list positions because ORG-011 did not define corresponding inbound ports and ORG-015 generated these endpoints as contract placeholders.
+```
+---
+
+## ORG-020 Local ZIP Execution Note
+
+```text
+Status: Completed locally as downloadable ZIP.
+Commit: Not created because user requested no GitHub push/commit.
+ArchUnit status:
+- ArchUnit dependency exists in pom.xml as com.tngtech.archunit:archunit-junit5.
+Validation:
+- File generation completed.
+- Architecture guardrail test file count verified locally.
+- Test uses ArchUnit only and imports production classes without including test classes.
+- Guardrail covers organization domain, application, API, infrastructure, identityaccess, identity, topology, OpenAPI, Bean Validation, JPA, Spring Data, Spring Web, and Spring configuration boundaries.
+- No domain, application, persistence, API controller, migration, identity, identityaccess, topology, platform, or ORG-021 finalization files were generated.
+- Maven tests not run because this ZIP is not the full repository workspace.
+```
+
+
+| `ORG-021` | Completed | Generated locally in ZIP; final organization checklist/status recorded; Maven compile/test/verify not run outside full repository workspace |
+
+---
+
+# ORG-021 Final Organization Checklist
+
+```text
+Commit code    : ORG-021
+Commit message : docs(organization): finalize organization checklist
+Execution mode : Local ZIP generation only
+GitHub push    : Not performed
+Git commit     : Not created
+```
+
+## Final execution status
+
+The organization module was generated across local ZIP packages from `ORG-002` through `ORG-020`.
+This checklist records what was generated and what still requires validation after copying all ZIP
+contents into the real HidraAPI repository workspace.
+
+Because each ORG task was generated as an isolated downloadable ZIP, this final checklist **does not
+claim that the full repository compiles or that the full Maven test suite passes**. Full validation
+must be run after merging the generated files into the repository.
+
+## Required final checklist
+
+| Item | Status | Evidence / Notes |
+|---|---:|---|
+| Organization package structure exists | Generated locally | `ORG-002` generated production `package-info.java` skeleton files. |
+| No `identityaccess` package exists | Generated locally / needs repo scan | No ORG ZIP intentionally generated `identityaccess`; full repository scan still required. |
+| Organization domain has no Spring dependency | Generated locally / needs Maven + ArchUnit | ORG domain files were generated without Spring imports; ORG-020 guardrail covers this. |
+| Organization domain has no JPA dependency | Generated locally / needs Maven + ArchUnit | JPA was generated only under infrastructure persistence in `ORG-013`; ORG-020 guardrail covers this. |
+| Organization domain has no identity domain dependency | Generated locally / needs ArchUnit | Domain uses neutral references only; full guardrail run still required. |
+| Organization domain has no topology domain dependency | Generated locally / needs ArchUnit | `OperationalScopeReference` is neutral and does not import topology; full guardrail run still required. |
+| Organization application has no API dependency | Generated locally / needs ArchUnit | Application files were generated before API and do not intentionally import API contracts. |
+| Organization application has no infrastructure dependency | Generated locally / needs ArchUnit | Application uses outbound ports, not adapters. |
+| Organization API has no repository dependency | Generated locally / needs ArchUnit | Controllers depend on inbound ports and REST mapper only. |
+| Employee aggregate exists | Generated locally | `ORG-006` generated `Employee`. |
+| OrganizationUnit aggregate exists | Generated locally | `ORG-005` generated `OrganizationUnit`. |
+| Position model exists | Generated locally | `ORG-004` generated `Position`. |
+| OrganizationUnitType exists | Generated locally | `ORG-003` generated `OrganizationUnitType`. |
+| OrganizationUnit supports STATION as operational OU | Generated locally | `ORG-005` and related tests support station-as-organization-unit. |
+| OperationalScopeReference exists and does not import topology | Generated locally / needs ArchUnit | `ORG-003` generated neutral operational scope reference. |
+| ReportingLine replaces simple SupervisorAssignment | Generated locally / needs repo scan | `ORG-006` generated `ReportingLine`; no ORG ZIP intentionally generated `SupervisorAssignment`. |
+| ReportingLineType supports LINE, OPERATIONAL, FUNCTIONAL, ADMINISTRATIVE, TECHNICAL, DOTTED_LINE | Generated locally | `ORG-003` generated matrix reporting types. |
+| Reporting line policy prevents self-reporting | Needs verification / possible gap | `ReportingLine` model may enforce this, but `ORG-009` policy generation should be reviewed because the policy itself may not contain an explicit self-reporting check. |
+| Reporting line policy supports one active primary LINE relation | Generated locally | `ORG-009` policy and `ORG-016` tests target one active primary LINE rule. |
+| Employee assignment policy works | Generated locally / tests not run | `ORG-009` policy and `ORG-016` tests generated. |
+| Organization hierarchy policy works | Generated locally / tests not run | `ORG-009` policy and `ORG-016` tests generated. |
+| REST API compiles | Not verified | Maven compile was not run in a full repository workspace. |
+| Domain models have class-level and field/component documentation | Generated locally / needs review | JavaDoc was generated on domain classes and record components where applicable. |
+| Domain model validation does not use Bean Validation | Generated locally / needs ArchUnit | Bean Validation was intended only for REST request DTOs. |
+| Domain value objects have validation and format documentation | Generated locally / needs review | `ORG-003` generated value object validation and documentation. |
+| REST request DTOs have Bean Validation annotations | Generated locally | `ORG-015` generated request DTOs with Bean Validation annotations. |
+| REST request DTOs use `@Schema` at class and component level | Generated locally | `ORG-015` generated Swagger `@Schema` on request DTO classes and components. |
+| REST response DTOs use `@Schema` at class and component level | Generated locally | `ORG-015` generated Swagger `@Schema` on response DTO classes and components. |
+| Organization controllers use `@Tag`, `@Operation`, and `@ApiResponses` | Not fully satisfied | `ORG-015` generated `@Tag` and `@Operation`; generated controllers should be updated to add `@ApiResponses`. |
+| OpenAPI annotations are restricted to organization API layer | Generated locally / needs ArchUnit | `ORG-020` guardrail covers this. |
+| Controllers depend only on application inbound ports | Generated locally / needs ArchUnit | `ORG-015` controllers depend on inbound ports and mapper. |
+| Controllers do not access repositories or JPA entities | Generated locally / needs ArchUnit | `ORG-015` controllers were generated without repository/JPA access. |
+| Persistence migration exists | Generated locally | `ORG-013` generated `V020__create_organization_tables.sql`. |
+| Domain tests pass | Not verified | `ORG-016` tests were generated but not run. |
+| Application tests pass | Not verified | `ORG-017` tests were generated but not run. |
+| API tests pass | Not verified | `ORG-019` tests were generated but not run. |
+| Persistence tests pass or are blocked with exact reason | Blocked | Persistence tests were generated in `ORG-018`; not run because ZIPs are not the full repository workspace and no full Maven/test environment is available here. |
+| Architecture guardrail passes or is blocked with exact reason | Blocked | ArchUnit guardrail was generated in `ORG-020`; not run because ZIPs are not the full repository workspace. |
+| `mvn -q clean verify` passes or unrelated blocker is recorded | Blocked | Not run because this environment generated isolated ZIPs, not a merged full HidraAPI workspace. |
+
+## Validation commands required after merging ZIPs into HidraAPI
+
+Run from the repository root after copying every ORG ZIP into the same working tree:
+
+```bash
+mvn -q -DskipTests compile
+mvn -q test
+mvn -q clean verify
+```
+
+Recommended targeted commands if the full suite fails because of unrelated pre-existing tests:
+
+```bash
+mvn -q test -Dtest='*OrganizationArchitectureGuardrailTest'
+mvn -q test -Dtest='*ControllerTest,*RestMapperTest'
+mvn -q test -Dtest='*RepositoryAdapterTest'
+mvn -q test -Dtest='*ServiceTest'
+mvn -q test -Dtest='*Organization*,*EmployeeTest,*OrganizationUnitTest,*ReportingLinePolicyTest,*OrganizationHierarchyPolicyTest'
+```
+
+## Known remaining risks before declaring organization complete
+
+1. `@ApiResponses` is missing from the generated ORG-015 controllers and should be added before the checklist item is considered complete.
+2. `UpdateEmployeeUseCase`, `UpdateOrganizationUnitUseCase`, and `ListPositionsUseCase` were not generated in ORG-011, so ORG-015 exposes those endpoints as HTTP 501 placeholders.
+3. `ListEmployeesService` returns an empty page when no `organizationUnitId` filter is supplied because ORG-011 did not define a broad employee search outbound port.
+4. `ListOrganizationUnitsService` returns an empty page when no `parentId` or `type` filter is supplied because ORG-011 did not define a broad organization-unit search outbound port.
+5. `ReportingLinePolicy` should be reviewed for explicit self-reporting protection; if protection exists only in the model, either update the policy or revise the checklist wording.
+6. All generated ORG ZIPs must be merged into one repository workspace before Maven compile/test/verify can produce trustworthy results.
+7. The persistence migration should be checked against the actual Flyway migration sequence already present in the repository before applying it.
+8. The final architecture guardrail may reveal boundary violations after all generated files are merged; fix violations instead of weakening the guardrail.
+
+## ORG-021 validation result
+
+```text
+Local file generation: passed
+Roadmap updated       : passed
+GitHub push           : not performed
+Git commit            : not created
+Maven compile         : not run — isolated ZIP generation, not full repository workspace
+Maven test            : not run — isolated ZIP generation, not full repository workspace
+Maven clean verify    : not run — isolated ZIP generation, not full repository workspace
+```

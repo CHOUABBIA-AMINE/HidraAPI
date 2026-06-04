@@ -88,7 +88,7 @@ public class ReportingLineJpaEntity {
     @Column(name = "description", length = 500)
     private String description;
 
-    protected ReportingLineJpaEntity() {
+    public ReportingLineJpaEntity() {
         // Required by JPA.
     }
 

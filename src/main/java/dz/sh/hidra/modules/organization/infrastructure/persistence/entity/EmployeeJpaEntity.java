@@ -105,7 +105,7 @@ public class EmployeeJpaEntity {
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
-    protected EmployeeJpaEntity() {
+    public EmployeeJpaEntity() {
         // Required by JPA.
     }
 

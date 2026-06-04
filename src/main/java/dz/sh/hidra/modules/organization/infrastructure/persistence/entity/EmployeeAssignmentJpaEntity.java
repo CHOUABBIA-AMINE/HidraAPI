@@ -96,7 +96,7 @@ public class EmployeeAssignmentJpaEntity {
     @Column(name = "effective_to")
     private LocalDate effectiveTo;
 
-    protected EmployeeAssignmentJpaEntity() {
+    public EmployeeAssignmentJpaEntity() {
         // Required by JPA.
     }
 

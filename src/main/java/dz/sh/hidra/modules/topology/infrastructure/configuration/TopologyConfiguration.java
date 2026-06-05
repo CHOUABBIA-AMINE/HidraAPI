@@ -65,17 +65,36 @@ import dz.sh.hidra.modules.topology.domain.policy.TopologyConnectivityPolicy;
 import dz.sh.hidra.modules.topology.domain.service.PipelineAppurtenanceDomainService;
 import dz.sh.hidra.modules.topology.domain.service.TopologyConnectivityDomainService;
 import dz.sh.hidra.modules.topology.domain.service.TopologyRegistrationDomainService;
+import dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.EquipmentRepositoryAdapter;
+import dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.FacilityRepositoryAdapter;
+import dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.PipelineAppurtenanceRepositoryAdapter;
+import dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.PipelineRepositoryAdapter;
+import dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.PipelineSegmentRepositoryAdapter;
+import dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.PipelineSystemRepositoryAdapter;
+import dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.TopologyConnectionRepositoryAdapter;
+import dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.TopologyNodeRepositoryAdapter;
+import dz.sh.hidra.modules.topology.infrastructure.persistence.mapper.TopologyPersistenceMapper;
+import dz.sh.hidra.modules.topology.infrastructure.persistence.repository.EquipmentJpaRepository;
+import dz.sh.hidra.modules.topology.infrastructure.persistence.repository.FacilityJpaRepository;
+import dz.sh.hidra.modules.topology.infrastructure.persistence.repository.PipelineAppurtenanceJpaRepository;
+import dz.sh.hidra.modules.topology.infrastructure.persistence.repository.PipelineJpaRepository;
+import dz.sh.hidra.modules.topology.infrastructure.persistence.repository.PipelineSegmentJpaRepository;
+import dz.sh.hidra.modules.topology.infrastructure.persistence.repository.PipelineSystemJpaRepository;
+import dz.sh.hidra.modules.topology.infrastructure.persistence.repository.TopologyConnectionJpaRepository;
+import dz.sh.hidra.modules.topology.infrastructure.persistence.repository.TopologyNodeJpaRepository;
 
 /**
  * Wires topology module beans.
  *
  * <p>Business role:
- * Assembles physical topology use cases for pipeline systems, pipelines, facilities, nodes, pipeline
- * segments, pipeline appurtenances, topology connections, and equipment.
+ * Assembles physical topology use cases, domain services, policies, and persistence adapters for
+ * pipeline systems, pipelines, facilities, topology nodes, pipeline segments, pipeline appurtenances,
+ * topology connections, and equipment.
  *
  * <p>Architecture role:
- * Infrastructure configuration only. It connects inbound ports, outbound ports, domain policies, and
- * domain services. It does not implement business rules.
+ * Infrastructure configuration only. It connects inbound ports, outbound ports, domain policies,
+ * domain services, persistence mappers, and repository adapters. It does not implement business
+ * rules.
  *
  * <p>Validation:
  * Domain validation remains in topology value objects, domain models, policies, and domain services.
@@ -87,6 +106,75 @@ import dz.sh.hidra.modules.topology.domain.service.TopologyRegistrationDomainSer
  */
 @Configuration
 public class TopologyConfiguration {
+
+    @Bean
+    public TopologyPersistenceMapper topologyPersistenceMapper() {
+        return new TopologyPersistenceMapper();
+    }
+
+    @Bean
+    public PipelineSystemRepositoryPort pipelineSystemRepositoryPort(
+            PipelineSystemJpaRepository repository,
+            TopologyPersistenceMapper mapper) {
+
+        return new PipelineSystemRepositoryAdapter(repository, mapper);
+    }
+
+    @Bean
+    public PipelineRepositoryPort pipelineRepositoryPort(
+            PipelineJpaRepository repository,
+            TopologyPersistenceMapper mapper) {
+
+        return new PipelineRepositoryAdapter(repository, mapper);
+    }
+
+    @Bean
+    public FacilityRepositoryPort facilityRepositoryPort(
+            FacilityJpaRepository repository,
+            TopologyPersistenceMapper mapper) {
+
+        return new FacilityRepositoryAdapter(repository, mapper);
+    }
+
+    @Bean
+    public TopologyNodeRepositoryPort topologyNodeRepositoryPort(
+            TopologyNodeJpaRepository repository,
+            TopologyPersistenceMapper mapper) {
+
+        return new TopologyNodeRepositoryAdapter(repository, mapper);
+    }
+
+    @Bean
+    public PipelineSegmentRepositoryPort pipelineSegmentRepositoryPort(
+            PipelineSegmentJpaRepository repository,
+            TopologyPersistenceMapper mapper) {
+
+        return new PipelineSegmentRepositoryAdapter(repository, mapper);
+    }
+
+    @Bean
+    public PipelineAppurtenanceRepositoryPort pipelineAppurtenanceRepositoryPort(
+            PipelineAppurtenanceJpaRepository repository,
+            TopologyPersistenceMapper mapper) {
+
+        return new PipelineAppurtenanceRepositoryAdapter(repository, mapper);
+    }
+
+    @Bean
+    public TopologyConnectionRepositoryPort topologyConnectionRepositoryPort(
+            TopologyConnectionJpaRepository repository,
+            TopologyPersistenceMapper mapper) {
+
+        return new TopologyConnectionRepositoryAdapter(repository, mapper);
+    }
+
+    @Bean
+    public EquipmentRepositoryPort equipmentRepositoryPort(
+            EquipmentJpaRepository repository,
+            TopologyPersistenceMapper mapper) {
+
+        return new EquipmentRepositoryAdapter(repository, mapper);
+    }
 
     @Bean
     public TopologyAssetStatusPolicy topologyAssetStatusPolicy() {

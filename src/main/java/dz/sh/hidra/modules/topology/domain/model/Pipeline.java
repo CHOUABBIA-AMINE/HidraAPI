@@ -1,0 +1,274 @@
+/**
+ *
+ * @Project     : HidraAPI
+ * @Product     : Hidra - Hydrocarbon Intelligence for Data, Risk, and Analytics
+ * @Author      : Abir MEDJERAB
+ * @Owner       : Sonatrach / TRC : Digitalization Initiative
+ *
+ * @Name        : Pipeline
+ * @CreatedOn   : 2025-06-26
+ * @UpdatedOn   : 2026-05-30
+ *
+ * @Type        : Class
+ * @Layer       : Domain
+ * @Module      : topology
+ * @Package     : dz.sh.hidra.modules.topology.domain.model
+ *
+ * @Description : Pipeline aggregate representing a physical pipeline.
+ *
+ */
+package dz.sh.hidra.modules.topology.domain.model;
+
+import java.time.Instant;
+import java.util.Objects;
+
+import dz.sh.hidra.kernel.domain.exception.BusinessRuleViolationException;
+import dz.sh.hidra.kernel.domain.model.AggregateRoot;
+import dz.sh.hidra.modules.topology.domain.value.DiameterInInches;
+import dz.sh.hidra.modules.topology.domain.value.LengthInKilometers;
+import dz.sh.hidra.modules.topology.domain.value.PipelineId;
+import dz.sh.hidra.modules.topology.domain.value.PipelineSystemId;
+import dz.sh.hidra.modules.topology.domain.value.ProductType;
+import dz.sh.hidra.modules.topology.domain.value.TopologyCode;
+import dz.sh.hidra.modules.topology.domain.value.TopologyName;
+import dz.sh.hidra.modules.topology.domain.value.TopologyStatus;
+
+/**
+ * Represents a physical pipeline belonging to a pipeline system.
+ *
+ * <p>Business role:
+ * A pipeline is a named physical transportation line that contains pipeline segments and point
+ * appurtenances.
+ *
+ * <p>Architecture role:
+ * This is a pure topology domain aggregate. It is independent from Spring, JPA, REST DTOs,
+ * identity, organization implementation, measurement, flow, risk, workflow, and infrastructure.
+ *
+ * <p>Validation:
+ * Pipeline system identifier, code, name, product type, dimensions, status, creation instant, and
+ * update instant are mandatory.
+ */
+public final class Pipeline implements AggregateRoot<PipelineId> {
+
+    private final PipelineId id;
+    private final PipelineSystemId pipelineSystemId;
+    private final TopologyCode code;
+    private final TopologyName name;
+    private final String description;
+    private final ProductType productType;
+    private final DiameterInInches nominalDiameter;
+    private final LengthInKilometers designLength;
+    private final TopologyStatus status;
+    private final Instant createdAt;
+    private final Instant updatedAt;
+
+    private Pipeline(
+            PipelineId id,
+            PipelineSystemId pipelineSystemId,
+            TopologyCode code,
+            TopologyName name,
+            String description,
+            ProductType productType,
+            DiameterInInches nominalDiameter,
+            LengthInKilometers designLength,
+            TopologyStatus status,
+            Instant createdAt,
+            Instant updatedAt) {
+
+        this.id = Objects.requireNonNull(id, "Pipeline id must not be null.");
+        this.pipelineSystemId = Objects.requireNonNull(pipelineSystemId, "Pipeline system id must not be null.");
+        this.code = Objects.requireNonNull(code, "Pipeline code must not be null.");
+        this.name = Objects.requireNonNull(name, "Pipeline name must not be null.");
+        this.description = normalizeOptionalText(description, 500, "Pipeline description");
+        this.productType = Objects.requireNonNull(productType, "Pipeline product type must not be null.");
+        this.nominalDiameter = Objects.requireNonNull(nominalDiameter, "Pipeline nominal diameter must not be null.");
+        this.designLength = Objects.requireNonNull(designLength, "Pipeline design length must not be null.");
+        this.status = Objects.requireNonNull(status, "Pipeline status must not be null.");
+        this.createdAt = requireInstant(createdAt, "Pipeline createdAt");
+        this.updatedAt = requireInstant(updatedAt, "Pipeline updatedAt");
+
+        ensureUpdatedAtIsValid(this.createdAt, this.updatedAt, "Pipeline");
+    }
+
+    public static Pipeline create(
+            PipelineSystemId pipelineSystemId,
+            TopologyCode code,
+            TopologyName name,
+            String description,
+            ProductType productType,
+            DiameterInInches nominalDiameter,
+            LengthInKilometers designLength) {
+
+        Instant now = Instant.now();
+        return new Pipeline(
+                PipelineId.newId(),
+                pipelineSystemId,
+                code,
+                name,
+                description,
+                productType,
+                nominalDiameter,
+                designLength,
+                TopologyStatus.PLANNED,
+                now,
+                now);
+    }
+
+    public static Pipeline restore(
+            PipelineId id,
+            PipelineSystemId pipelineSystemId,
+            TopologyCode code,
+            TopologyName name,
+            String description,
+            ProductType productType,
+            DiameterInInches nominalDiameter,
+            LengthInKilometers designLength,
+            TopologyStatus status,
+            Instant createdAt,
+            Instant updatedAt) {
+
+        return new Pipeline(
+                id,
+                pipelineSystemId,
+                code,
+                name,
+                description,
+                productType,
+                nominalDiameter,
+                designLength,
+                status,
+                createdAt,
+                updatedAt);
+    }
+
+    @Override
+    public PipelineId id() {
+        return id;
+    }
+
+    public PipelineSystemId pipelineSystemId() {
+        return pipelineSystemId;
+    }
+
+    public TopologyCode code() {
+        return code;
+    }
+
+    public TopologyName name() {
+        return name;
+    }
+
+    public String description() {
+        return description;
+    }
+
+    public ProductType productType() {
+        return productType;
+    }
+
+    public DiameterInInches nominalDiameter() {
+        return nominalDiameter;
+    }
+
+    public LengthInKilometers designLength() {
+        return designLength;
+    }
+
+    public TopologyStatus status() {
+        return status;
+    }
+
+    public Instant createdAt() {
+        return createdAt;
+    }
+
+    public Instant updatedAt() {
+        return updatedAt;
+    }
+
+
+    /**
+     * Activates this topology asset.
+     *
+     * @return active topology asset
+     */
+    public Pipeline activate() {
+        return withStatus(TopologyStatus.ACTIVE);
+    }
+
+    /**
+     * Deactivates this topology asset.
+     *
+     * @return inactive topology asset
+     */
+    public Pipeline deactivate() {
+        return withStatus(TopologyStatus.INACTIVE);
+    }
+
+    /**
+     * Marks this topology asset as under maintenance.
+     *
+     * @return topology asset under maintenance
+     */
+    public Pipeline markUnderMaintenance() {
+        return withStatus(TopologyStatus.UNDER_MAINTENANCE);
+    }
+
+    /**
+     * Retires this topology asset.
+     *
+     * @return retired topology asset
+     */
+    public Pipeline retire() {
+        return withStatus(TopologyStatus.RETIRED);
+    }
+
+    /**
+     * Decommissions this topology asset.
+     *
+     * @return decommissioned topology asset
+     */
+    public Pipeline decommission() {
+        return withStatus(TopologyStatus.DECOMMISSIONED);
+    }
+
+    private Pipeline withStatus(TopologyStatus newStatus) {
+        return new Pipeline(
+                id,
+                pipelineSystemId,
+                code,
+                name,
+                description,
+                productType,
+                nominalDiameter,
+                designLength,
+                Objects.requireNonNull(newStatus, "Pipeline status must not be null."),
+                createdAt,
+                Instant.now());
+    }
+
+    private static String normalizeOptionalText(String value, int maxLength, String fieldName) {
+        if (value == null || value.isBlank()) {
+            return null;
+        }
+
+        String normalized = value.trim();
+
+        if (normalized.length() > maxLength) {
+            throw new BusinessRuleViolationException(fieldName + " length must not exceed " + maxLength + " characters.");
+        }
+
+        return normalized;
+    }
+
+    private static Instant requireInstant(Instant value, String fieldName) {
+        return Objects.requireNonNull(value, fieldName + " must not be null.");
+    }
+
+    private static void ensureUpdatedAtIsValid(Instant createdAt, Instant updatedAt, String modelName) {
+        if (updatedAt.isBefore(createdAt)) {
+            throw new BusinessRuleViolationException(modelName + " updatedAt must not be before createdAt.");
+        }
+    }
+
+}

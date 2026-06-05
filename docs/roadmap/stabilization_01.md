@@ -1,4 +1,4 @@
-# HidraAPI Stabilization Roadmap 01
+# HidraAPI Stabilization Roadmap 01 — Final Validation Checklist
 
 ```text
 Roadmap file : docs/roadmap/stabilization_01.md
@@ -9,36 +9,26 @@ Product      : Hidra - Hydrocarbon Intelligence for Data, Risk, and Analytics
 Author       : Abir MEDJERAB
 CreatedOn    : 2025-06-26
 UpdatedOn    : 2026-05-30
+Finalized by : STB-011
 ```
 
 ---
 
-## 1. Purpose
+## 1. Final purpose
 
-This roadmap stabilizes the currently generated HidraAPI foundation before adding new modules.
+This file is the execution memory for the first HidraAPI stabilization phase.
 
-The current foundation includes:
+The stabilization scope covered the current foundation only:
 
 ```text
+bootstrap
 kernel
 platform
 identity
 organization
-bootstrap
 ```
 
-The application has already reached successful startup locally after ad-hoc fixes for:
-
-```text
-REST mapper beans
-platform ObjectMapper bean
-JPA entity constructor visibility
-database schema availability
-```
-
-However, those fixes must be converted into explicit repository tasks so another AI agent can apply, verify, and commit them safely.
-
-This roadmap must be completed before starting:
+This roadmap intentionally did **not** start or create these future modules:
 
 ```text
 topology
@@ -52,410 +42,77 @@ reporting
 notification
 ```
 
+The goal of STB-01 was to convert the boot fixes discovered during local launch into explicit repository tasks and to record the final validation state before topology work begins.
+
 ---
 
-## 2. Stabilization principles
-
-The AI agent must follow these rules for every task in this roadmap:
+## 2. Boundary rules confirmed
 
 ```text
-1. Read AGENTS.md first.
-2. Read docs/roadmap/kernel.md to understand kernel constraints.
-3. Read docs/roadmap/platform.md to understand platform constraints.
-4. Read docs/roadmap/identity.md to understand identity boundaries.
-5. Read docs/roadmap/organization.md to understand organization boundaries.
-6. Do not create new business modules.
-7. Do not create topology, measurement, operations, flow, risk, analytics, workflow, reporting, or notification packages.
-8. Do not recreate identityaccess.
-9. Do not create shared, sharedkernel, common, core, utils, helper, helpers, or misc packages.
-10. Do not rename packages.
-11. Do not change package ownership rules.
-12. Use the canonical HidraAPI Java header for every Java file created or updated.
-13. Keep @Author as Abir MEDJERAB.
-14. Keep @CreatedOn as 2025-06-26.
-15. Use @UpdatedOn as 2026-05-30 unless the repository already uses a later stabilization date.
-16. Keep changes small and task-scoped.
-17. Run the validation commands specified in each task.
-18. Update the status table in this roadmap after each task.
-19. Commit only the files listed by the current task.
-20. Do not execute later tasks unless explicitly requested.
+No identityaccess package was intentionally created.
+No shared/sharedkernel/common/core/utils/helper/helpers/misc package was intentionally created.
+No topology package was intentionally created.
+No measurement, operations, flow, risk, analytics, workflow, reporting, or notification package was intentionally created.
+No production business logic was added outside the stabilization scope.
+No organization controller behavior was changed during OpenAPI documentation stabilization.
+No identity business logic was changed during dev security stabilization.
 ```
 
 ---
 
-## 3. Known current issues to stabilize
+## 3. Final commit plan status
 
-The current application can boot locally, but the following items must be fixed or confirmed in repository form:
-
-```text
-1. Missing or incomplete Flyway migrations for identity and organization.
-2. REST mapper classes are plain classes and require Spring beans.
-3. Platform ObjectMapper bean is required by JacksonDomainEventSerializer.
-4. Organization JPA entity no-arg constructors must be visible to the persistence mapper.
-5. Organization controllers must fully satisfy OpenAPI documentation requirements, including @ApiResponses.
-6. Organization HTTP 501 placeholders must be explicitly documented and isolated.
-7. ReportingLinePolicy must explicitly prevent self-reporting.
-8. Dev security must be explicit instead of relying on generated Spring Security password.
-9. Dev bootstrap/health/Swagger endpoint access must be confirmed.
-10. Full compile, test, and clean verify must pass or produce exact documented blockers.
-```
-
----
-
-## 4. Commit plan
-
-| Commit code | Commit message | Status | Description |
+| Commit code | Commit message | Final status | Result |
 |---|---|---:|---|
-| `STB-001` | `docs(stabilization): add foundation stabilization roadmap` | Planned | Add this roadmap file. |
-| `STB-002` | `fix(organization): expose jpa entity constructors to persistence mapper` | Planned | Make organization JPA no-arg constructors visible to the persistence mapper. |
-| `STB-003` | `fix(api): register rest mapper beans` | Planned | Register identity and organization REST mapper beans. |
-| `STB-004` | `fix(platform): register jackson object mapper bean` | Planned | Register a shared ObjectMapper bean for platform serialization. |
-| `STB-005` | `db(identity): add identity flyway migration` | Planned | Add or confirm identity database migration. |
-| `STB-006` | `db(organization): confirm organization flyway migration` | Planned | Confirm organization database migration is present and aligned with entities. |
-| `STB-007` | `docs(api): complete organization controller openapi responses` | Planned | Add missing @ApiResponses to organization controllers. |
-| `STB-008` | `fix(organization): enforce reporting line self-reporting rule` | Planned | Ensure reporting line policy/model explicitly rejects self-reporting. |
-| `STB-009` | `chore(security): add explicit development security baseline` | Planned | Stop relying on generated Spring Security password for dev. |
-| `STB-010` | `test(stabilization): verify application boot baseline` | Planned | Add or update boot smoke validation. |
-| `STB-011` | `docs(stabilization): finalize foundation validation checklist` | Planned | Record final compile/test/boot results and remaining risks. |
+| `STB-001` | `docs(stabilization): add foundation stabilization roadmap` | Completed | Roadmap file existed before this execution sequence; verified in repository. |
+| `STB-002` | `fix(organization): expose jpa entity constructors to persistence mapper` | Already satisfied | Five organization JPA no-arg constructors were already public on `main`; no new commit created. |
+| `STB-003` | `fix(api): register rest mapper beans` | Already satisfied | Identity and organization REST mapper bean configurations already existed on `main`; no new commit created. |
+| `STB-004` | `fix(platform): register jackson object mapper bean` | Already satisfied | Platform `ObjectMapper` configuration already existed on `main`; no new commit created. |
+| `STB-005` | `db(identity): add identity flyway migration` | Completed | Added identity Flyway migration `V010__create_identity_tables.sql`. |
+| `STB-006` | `db(organization): confirm organization flyway migration` | Completed | Added organization Flyway migration `V020__create_organization_tables.sql`. |
+| `STB-007` | `docs(api): complete organization controller openapi responses` | Completed | Added `@ApiResponses` to organization controllers. |
+| `STB-008` | `fix(organization): enforce reporting line self-reporting rule` | Completed | Added explicit policy-level self-reporting rule and test. |
+| `STB-009` | `chore(security): add explicit development security baseline` | Completed | Added dev-aware security baseline and deterministic dev user. |
+| `STB-010` | `test(stabilization): verify application boot baseline` | Completed / local execution pending | Added PostgreSQL Testcontainers-backed Spring boot smoke test and test profile properties. |
+| `STB-011` | `docs(stabilization): finalize foundation validation checklist` | Completed | This final checklist records validation state, blockers, and next recommended work. |
 
 ---
 
-# STB-001 — Add foundation stabilization roadmap
+## 4. Commit evidence
 
-```text
-Commit code    : STB-001
-Commit message : docs(stabilization): add foundation stabilization roadmap
-Type           : Documentation
-Layer          : Documentation
-Module         : stabilization
-```
+| Commit code | Commit SHA / evidence | Notes |
+|---|---|---|
+| `STB-001` | Existing roadmap verified; no new commit during execution | File already existed on `main` when STB-001 was requested. |
+| `STB-002` | Existing code verified; no new commit during execution | Constructors were already public. |
+| `STB-003` | Existing code verified; no new commit during execution | REST mapper beans were already registered. |
+| `STB-004` | Existing code verified; no new commit during execution | Platform Jackson bean was already registered. |
+| `STB-005` | `7638896b8ba5c2b72350561dfadd32d69b7a7d2f` | Added identity migration. |
+| `STB-006` | `3d21e529f7d843a4bd6203ddbed25afe339ac509` | Added organization migration. |
+| `STB-007` | `14fb35b2323fcf491b20077db918657ed45f81eb` | Updated `EmployeeController`. |
+| `STB-007` | `3b1359eca40a9d0063353a4e45cc007a53acc462` | Updated `OrganizationUnitController`. |
+| `STB-007` | `3c0af11a8ab4d1822702b0461ebce41686cd72f9` | Updated `PositionController`. |
+| `STB-007` | `57a5934c44e996d4dd2ff964f00327e41f2632e1` | Updated `ReportingLineController`. |
+| `STB-008` | `5bceac46c30709228d88bb8a189416e76eb31790` | Updated `ReportingLinePolicy`. |
+| `STB-008` | `f44ef63a3dd1ce606ed4ed7746e24748b824459a` | Updated `ReportingLinePolicyTest`. |
+| `STB-009` | `b2bae8cb573aa9a97cc72cd37f54ac306320644b` | Updated central `SecurityConfiguration`. |
+| `STB-009` | `5fd3f8f61835b74e6ad2a923d07676b5af7e963a` | Added `PlatformDevSecurityConfiguration`. |
+| `STB-010` | `0ca93713879b65b00068823800a027578950752c` | Updated `HidraApplicationTests`. |
+| `STB-010` | `c718eae9c7823e1e61f4404e0e0cf0a9b75bf824` | Added `application-test.properties`. |
+| `STB-011` | Filled by Git commit created for this file | Final roadmap checklist update. |
 
-## Description
-
-Create the stabilization roadmap used by Codex or another AI agent to complete the boot baseline before new module development starts.
-
-## Files to create
-
-| File | Purpose |
-|---|---|
-| `docs/roadmap/stabilization_01.md` | Defines stabilization tasks, file scopes, validation commands, boundaries, and completion criteria. |
-
-## Files to update
-
-None.
-
-## Rules
-
-```text
-- Create only docs/roadmap/stabilization_01.md.
-- Do not update production code.
-- Do not update test code.
-- Do not update migrations.
-- Do not update existing roadmap files.
-- Do not create new module packages.
-```
-
-## Validation commands
-
-```bash
-test -f docs/roadmap/stabilization_01.md
-```
-
-On Windows PowerShell:
-
-```powershell
-Test-Path docs/roadmap/stabilization_01.md
-```
-
-## Completion criteria
-
-```text
-docs/roadmap/stabilization_01.md exists
-the roadmap contains commit code, message, description, files to create/update, and purpose of each file
-```
+> Note: Some tasks produced more than one commit because the GitHub file API committed each file update immediately. Every generated commit used the exact roadmap commit message for that task.
 
 ---
 
-# STB-002 — Expose organization JPA entity constructors to persistence mapper
+## 5. Files created or updated by stabilization
 
-```text
-Commit code    : STB-002
-Commit message : fix(organization): expose jpa entity constructors to persistence mapper
-Type           : Fix
-Layer          : Infrastructure
-Module         : organization
-```
-
-## Description
-
-Fix the constructor visibility error where `OrganizationPersistenceMapper` cannot instantiate organization JPA entities because the entity no-arg constructors are not visible from the mapper package.
-
-The error appears as:
-
-```text
-The constructor OrganizationUnitJpaEntity() is not visible
-The constructor EmployeeJpaEntity() is not visible
-The constructor PositionJpaEntity() is not visible
-The constructor EmployeeAssignmentJpaEntity() is not visible
-The constructor ReportingLineJpaEntity() is not visible
-```
-
-## Root cause
-
-`OrganizationPersistenceMapper` is in:
-
-```text
-dz.sh.hidra.modules.organization.infrastructure.persistence.mapper
-```
-
-The JPA entities are in:
-
-```text
-dz.sh.hidra.modules.organization.infrastructure.persistence.entity
-```
-
-A `protected` no-arg constructor is not visible from a different package unless called through inheritance. The mapper directly calls `new EntityName()`, so the no-arg constructors must be public, package placement must change, or factory methods must be added.
-
-For stabilization, use the smallest fix:
-
-```text
-make the no-arg constructors public
-```
-
-## Files to update
+### STB-005 — Identity migration
 
 | File | Purpose |
 |---|---|
-| `src/main/java/dz/sh/hidra/modules/organization/infrastructure/persistence/entity/EmployeeJpaEntity.java` | Make `EmployeeJpaEntity()` public so `OrganizationPersistenceMapper` can instantiate it. |
-| `src/main/java/dz/sh/hidra/modules/organization/infrastructure/persistence/entity/OrganizationUnitJpaEntity.java` | Make `OrganizationUnitJpaEntity()` public so `OrganizationPersistenceMapper` can instantiate it. |
-| `src/main/java/dz/sh/hidra/modules/organization/infrastructure/persistence/entity/PositionJpaEntity.java` | Make `PositionJpaEntity()` public so `OrganizationPersistenceMapper` can instantiate it. |
-| `src/main/java/dz/sh/hidra/modules/organization/infrastructure/persistence/entity/EmployeeAssignmentJpaEntity.java` | Make `EmployeeAssignmentJpaEntity()` public so `OrganizationPersistenceMapper` can instantiate it. |
-| `src/main/java/dz/sh/hidra/modules/organization/infrastructure/persistence/entity/ReportingLineJpaEntity.java` | Make `ReportingLineJpaEntity()` public so `OrganizationPersistenceMapper` can instantiate it. |
+| `src/main/resources/db/migration/V010__create_identity_tables.sql` | Creates identity-owned persistence tables for users, roles, permissions, user-role links, and role-permission links. |
 
-## Files to create
-
-None.
-
-## Rules
-
-```text
-- Do not move the mapper.
-- Do not move entity classes.
-- Do not add Lombok.
-- Do not change table names.
-- Do not change column names.
-- Do not change business mapping logic.
-- Do not change repositories.
-- Do not change migrations in this task.
-```
-
-## Validation commands
-
-```bash
-mvn -q -DskipTests compile
-```
-
-## Completion criteria
-
-```text
-mvn -q -DskipTests compile passes or fails only on an unrelated documented issue
-no protected no-arg constructors remain for the listed organization JPA entities
-no table/column/mapping logic changed
-```
-
----
-
-# STB-003 — Register REST mapper beans
-
-```text
-Commit code    : STB-003
-Commit message : fix(api): register rest mapper beans
-Type           : Fix
-Layer          : API
-Module         : identity, organization
-```
-
-## Description
-
-Fix Spring startup errors caused by REST mapper classes being plain Java classes without Spring bean registration.
-
-Observed failure:
-
-```text
-Parameter 1 of constructor in dz.sh.hidra.modules.identity.api.rest.controller.IdentityPermissionController
-required a bean of type 'dz.sh.hidra.modules.identity.api.rest.mapper.IdentityRestMapper'
-that could not be found.
-```
-
-Organization has the same risk because organization controllers also depend on `OrganizationRestMapper`.
-
-## Files to create
-
-| File | Purpose |
-|---|---|
-| `src/main/java/dz/sh/hidra/modules/identity/api/rest/configuration/IdentityApiRestConfiguration.java` | Provides `IdentityRestMapper` as a Spring bean for identity REST controllers. |
-| `src/main/java/dz/sh/hidra/modules/organization/api/rest/configuration/OrganizationApiRestConfiguration.java` | Provides `OrganizationRestMapper` as a Spring bean for organization REST controllers. |
-
-## Files to update
-
-None.
-
-## Required implementation
-
-`IdentityApiRestConfiguration` must:
-
-```text
-- be in package dz.sh.hidra.modules.identity.api.rest.configuration
-- be annotated with @Configuration(proxyBeanMethods = false)
-- expose @Bean @ConditionalOnMissingBean IdentityRestMapper identityRestMapper()
-- instantiate new IdentityRestMapper()
-- not configure repositories, services, security, persistence, or platform infrastructure
-```
-
-`OrganizationApiRestConfiguration` must:
-
-```text
-- be in package dz.sh.hidra.modules.organization.api.rest.configuration
-- be annotated with @Configuration(proxyBeanMethods = false)
-- expose @Bean @ConditionalOnMissingBean OrganizationRestMapper organizationRestMapper()
-- instantiate new OrganizationRestMapper()
-- not configure repositories, services, security, persistence, identity implementation, topology implementation, or platform infrastructure
-```
-
-## Rules
-
-```text
-- Do not annotate mapper classes with @Component in this task.
-- Do not change mapper logic.
-- Do not change controllers.
-- Do not change application services.
-- Do not create identityaccess.
-- Do not create topology files.
-```
-
-## Validation commands
-
-```bash
-mvn -q -DskipTests compile
-mvn spring-boot:run -Dspring-boot.run.profiles=dev
-```
-
-## Completion criteria
-
-```text
-Spring no longer fails because IdentityRestMapper bean is missing
-Spring no longer fails because OrganizationRestMapper bean is missing
-```
-
----
-
-# STB-004 — Register platform Jackson ObjectMapper bean
-
-```text
-Commit code    : STB-004
-Commit message : fix(platform): register jackson object mapper bean
-Type           : Fix
-Layer          : Platform
-Module         : platform
-```
-
-## Description
-
-Fix Spring startup error caused by `JacksonDomainEventSerializer` requiring an `ObjectMapper` bean.
-
-Observed failure:
-
-```text
-Parameter 0 of constructor in dz.sh.hidra.platform.events.serialization.JacksonDomainEventSerializer
-required a bean of type 'com.fasterxml.jackson.databind.ObjectMapper' that could not be found.
-```
-
-## Files to create
-
-| File | Purpose |
-|---|---|
-| `src/main/java/dz/sh/hidra/platform/configuration/PlatformJacksonConfiguration.java` | Provides the shared Jackson `ObjectMapper` bean for platform infrastructure, especially domain event serialization. |
-
-## Files to update
-
-None.
-
-## Required implementation
-
-`PlatformJacksonConfiguration` must:
-
-```text
-- be in package dz.sh.hidra.platform.configuration
-- be annotated with @Configuration(proxyBeanMethods = false)
-- expose @Bean @ConditionalOnMissingBean(ObjectMapper.class)
-- return ObjectMapper configured with findAndRegisterModules()
-- disable SerializationFeature.WRITE_DATES_AS_TIMESTAMPS
-- disable DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES
-```
-
-## Rules
-
-```text
-- Do not modify JacksonDomainEventSerializer.
-- Do not place ObjectMapper configuration in identity or organization.
-- Do not create a business module dependency from platform to identity or organization.
-- Do not change domain event payload semantics.
-```
-
-## Validation commands
-
-```bash
-mvn -q -DskipTests compile
-mvn spring-boot:run -Dspring-boot.run.profiles=dev
-```
-
-## Completion criteria
-
-```text
-Spring no longer fails because ObjectMapper bean is missing
-JacksonDomainEventSerializer receives ObjectMapper by constructor injection
-Application still starts with dev profile
-```
-
----
-
-# STB-005 — Add identity Flyway migration
-
-```text
-Commit code    : STB-005
-Commit message : db(identity): add identity flyway migration
-Type           : Database
-Layer          : Infrastructure
-Module         : identity
-```
-
-## Description
-
-Add or confirm the Flyway migration that creates identity tables required by identity JPA entities.
-
-Earlier boot failed with:
-
-```text
-Schema validation: missing table [hidra_identity_permission]
-```
-
-This means Hibernate scans identity JPA entities while the database only has the platform outbox migration.
-
-## Files to create
-
-| File | Purpose |
-|---|---|
-| `src/main/resources/db/migration/V010__create_identity_tables.sql` | Creates identity tables, constraints, indexes, and join tables required by identity persistence. |
-
-## Files to update
-
-None, unless `V010__create_identity_tables.sql` already exists and is incomplete.
-
-## Tables to confirm/create
-
-The migration must create all identity tables required by the current identity JPA entities.
-
-At minimum, confirm the exact `@Table` names from identity entities and include:
+Tables covered:
 
 ```text
 hidra_identity_user
@@ -465,548 +122,248 @@ hidra_identity_user_role
 hidra_identity_role_permission
 ```
 
-If the actual entity table names differ, the migration must follow the entity names exactly.
-
-## Required database design
-
-The migration must include:
-
-```text
-- primary keys
-- unique constraints for stable business identifiers
-- foreign keys for user-role and role-permission join tables
-- created/updated timestamp columns if entities map them
-- boolean active/enabled columns if entities map them
-- indexes for frequent lookups
-```
-
-## Rules
-
-```text
-- Inspect identity JPA entity mappings before writing SQL.
-- Do not guess column names.
-- Match entity @Column names exactly.
-- Do not create organization tables in this migration.
-- Do not create platform tables in this migration.
-- Do not create topology tables.
-- Do not rename existing V001 migration.
-- Do not use Hibernate ddl-auto=update as the permanent fix.
-```
-
-## Validation commands
-
-```bash
-mvn -q -DskipTests compile
-mvn spring-boot:run -Dspring-boot.run.profiles=dev
-```
-
-Recommended DB checks:
-
-```sql
-SELECT installed_rank, version, description, success
-FROM flyway_schema_history
-ORDER BY installed_rank;
-
-SELECT table_name
-FROM information_schema.tables
-WHERE table_schema = 'public'
-ORDER BY table_name;
-```
-
-## Completion criteria
-
-```text
-Flyway applies V010 successfully on a clean dev database
-hidra_identity_permission exists
-all identity entity tables exist
-Hibernate no longer fails on missing identity tables
-```
-
----
-
-# STB-006 — Confirm organization Flyway migration
-
-```text
-Commit code    : STB-006
-Commit message : db(organization): confirm organization flyway migration
-Type           : Database
-Layer          : Infrastructure
-Module         : organization
-```
-
-## Description
-
-Confirm that the organization Flyway migration exists and matches current organization JPA entities.
-
-The organization module previously generated a migration named:
-
-```text
-V020__create_organization_tables.sql
-```
-
-This migration must be present under:
-
-```text
-src/main/resources/db/migration
-```
-
-and must align with organization JPA entity mappings.
-
-## Files to create
+### STB-006 — Organization migration
 
 | File | Purpose |
 |---|---|
-| `src/main/resources/db/migration/V020__create_organization_tables.sql` | Creates organization tables, constraints, indexes, and relationships if missing. |
+| `src/main/resources/db/migration/V020__create_organization_tables.sql` | Creates organization-owned persistence tables for employees, positions, organization units, employee assignments, and reporting lines. |
 
-## Files to update
-
-| File | Purpose |
-|---|---|
-| `src/main/resources/db/migration/V020__create_organization_tables.sql` | Fix the migration if present but inconsistent with current organization JPA entities. |
-
-Only one of the above applies depending on repository state.
-
-## Tables to confirm/create
-
-Confirm exact table names from organization JPA entities. Expected names include:
+Tables covered:
 
 ```text
 hidra_org_employee
 hidra_org_position
-hidra_org_organization_unit
+hidra_org_unit
 hidra_org_employee_assignment
 hidra_org_reporting_line
 ```
 
-If actual entity table names differ, follow the entity mappings exactly.
-
-## Required database design
-
-The migration must include:
+Important correction:
 
 ```text
-- primary keys
-- unique constraints for employee number, organization unit code, and position code
-- foreign keys for assignments and reporting lines
-- columns for station-as-organization-unit neutral operational scope reference
-- indexes for organization unit type, status, parent, operational scope, employee assignment, and reporting line lookups
+The actual organization unit table is hidra_org_unit, not hidra_org_organization_unit.
 ```
 
-## Rules
-
-```text
-- Inspect organization JPA entity mappings before writing SQL.
-- Do not guess column names.
-- Match entity @Column names exactly.
-- Do not create identity tables in this migration.
-- Do not create topology tables.
-- Do not create physical station asset tables here.
-- Keep station-as-organization-unit in organization.
-- Keep physical station assets for future topology.
-```
-
-## Validation commands
-
-```bash
-mvn -q -DskipTests compile
-mvn spring-boot:run -Dspring-boot.run.profiles=dev
-```
-
-Recommended DB checks:
-
-```sql
-SELECT installed_rank, version, description, success
-FROM flyway_schema_history
-ORDER BY installed_rank;
-
-SELECT table_name
-FROM information_schema.tables
-WHERE table_schema = 'public'
-ORDER BY table_name;
-```
-
-## Completion criteria
-
-```text
-Flyway applies V020 successfully on a clean dev database
-all organization entity tables exist
-Hibernate no longer fails on missing organization tables
-application starts with dev profile
-```
-
----
-
-# STB-007 — Complete organization controller OpenAPI responses
-
-```text
-Commit code    : STB-007
-Commit message : docs(api): complete organization controller openapi responses
-Type           : Documentation/Fix
-Layer          : API
-Module         : organization
-```
-
-## Description
-
-Complete the organization controller OpenAPI documentation constraint.
-
-The organization roadmap required controller documentation. Generated controllers included `@Tag` and `@Operation`, but the final ORG checklist recorded that controllers still need `@ApiResponses`.
-
-## Files to update
+### STB-007 — Organization OpenAPI responses
 
 | File | Purpose |
 |---|---|
-| `src/main/java/dz/sh/hidra/modules/organization/api/rest/controller/EmployeeController.java` | Add `@ApiResponses` to every endpoint method. |
-| `src/main/java/dz/sh/hidra/modules/organization/api/rest/controller/OrganizationUnitController.java` | Add `@ApiResponses` to every endpoint method. |
-| `src/main/java/dz/sh/hidra/modules/organization/api/rest/controller/PositionController.java` | Add `@ApiResponses` to every endpoint method. |
-| `src/main/java/dz/sh/hidra/modules/organization/api/rest/controller/ReportingLineController.java` | Add `@ApiResponses` to every endpoint method. |
+| `src/main/java/dz/sh/hidra/modules/organization/api/rest/controller/EmployeeController.java` | Adds `@ApiResponses` to every employee endpoint. |
+| `src/main/java/dz/sh/hidra/modules/organization/api/rest/controller/OrganizationUnitController.java` | Adds `@ApiResponses` to every organization unit endpoint. |
+| `src/main/java/dz/sh/hidra/modules/organization/api/rest/controller/PositionController.java` | Adds `@ApiResponses` to every position endpoint, including the current HTTP 501 placeholder. |
+| `src/main/java/dz/sh/hidra/modules/organization/api/rest/controller/ReportingLineController.java` | Adds `@ApiResponses` to reporting-line endpoint. |
 
-## Files to create
-
-None.
-
-## Required implementation
-
-For each endpoint, add appropriate OpenAPI responses such as:
+Behavior preserved:
 
 ```text
-201 Created
-200 OK
-204 No Content if applicable
-400 Bad Request
-404 Not Found where applicable
-409 Conflict where applicable
-501 Not Implemented for placeholder endpoints
-500 Internal Server Error
+Endpoint paths unchanged.
+Request DTOs unchanged.
+Response DTOs unchanged.
+Controller behavior unchanged.
+HTTP 501 placeholders preserved.
+Controllers still depend on application inbound ports and REST mapper only.
 ```
 
-Use:
-
-```text
-io.swagger.v3.oas.annotations.responses.ApiResponse
-io.swagger.v3.oas.annotations.responses.ApiResponses
-```
-
-## Rules
-
-```text
-- Do not change endpoint paths.
-- Do not change request DTOs.
-- Do not change response DTOs.
-- Do not change controller behavior except documentation annotations.
-- Do not implement HTTP 501 placeholders in this task.
-- Do not access repositories from controllers.
-- Controllers must still depend only on application inbound ports and REST mapper.
-```
-
-## Validation commands
-
-```bash
-mvn -q -DskipTests compile
-mvn -q test -Dtest='*ControllerTest,*RestMapperTest'
-```
-
-## Completion criteria
-
-```text
-all organization controller methods have @Operation and @ApiResponses
-Swagger/OpenAPI generation still works
-API tests pass or exact unrelated blockers are documented
-```
-
----
-
-# STB-008 — Enforce reporting line self-reporting rule
-
-```text
-Commit code    : STB-008
-Commit message : fix(organization): enforce reporting line self-reporting rule
-Type           : Fix
-Layer          : Domain
-Module         : organization
-```
-
-## Description
-
-Ensure the organization domain explicitly prevents an employee from reporting to themselves.
-
-The final ORG checklist recorded this risk:
-
-```text
-ReportingLinePolicy should be reviewed for explicit self-reporting protection.
-```
-
-This stabilization task must confirm whether the rule already exists in `ReportingLine`, `ReportingLinePolicy`, or `ReportingLineDomainService`. If missing, implement it in the domain policy/service path.
-
-## Files to inspect
+### STB-008 — Reporting line self-reporting rule
 
 | File | Purpose |
 |---|---|
-| `src/main/java/dz/sh/hidra/modules/organization/domain/model/ReportingLine.java` | Check whether self-reporting is rejected at model construction. |
-| `src/main/java/dz/sh/hidra/modules/organization/domain/policy/ReportingLinePolicy.java` | Check whether policy explicitly rejects self-reporting. |
-| `src/main/java/dz/sh/hidra/modules/organization/domain/service/ReportingLineDomainService.java` | Check whether service calls the policy for self-reporting checks. |
+| `src/main/java/dz/sh/hidra/modules/organization/domain/policy/ReportingLinePolicy.java` | Adds explicit policy method `ensureNoSelfReporting(EmployeeId, EmployeeId)` and calls it during reporting-line validation. |
+| `src/test/java/dz/sh/hidra/modules/organization/domain/policy/ReportingLinePolicyTest.java` | Adds `shouldRejectSelfReporting()` test proving self-reporting is rejected with `ReportingLineException`. |
 
-## Files to update
+Domain placement confirmed:
+
+```text
+Rule is not in a controller.
+Rule is not in a JPA entity.
+Rule does not introduce identity dependency.
+Rule does not introduce topology dependency.
+SupervisorAssignment was not created.
+```
+
+### STB-009 — Development security baseline
 
 | File | Purpose |
 |---|---|
-| `src/main/java/dz/sh/hidra/modules/organization/domain/policy/ReportingLinePolicy.java` | Add explicit self-reporting validation if missing. |
-| `src/main/java/dz/sh/hidra/modules/organization/domain/service/ReportingLineDomainService.java` | Ensure the policy is called during reporting line creation if missing. |
-| `src/test/java/dz/sh/hidra/modules/organization/domain/policy/ReportingLinePolicyTest.java` | Add a test that self-reporting is rejected. |
-| `src/test/java/dz/sh/hidra/modules/organization/domain/model/EmployeeTest.java` | Add or adjust aggregate test if self-reporting is enforced through aggregate/model behavior. |
+| `src/main/java/dz/sh/hidra/platform/security/authentication/SecurityConfiguration.java` | Makes public endpoint access dev-aware while keeping business APIs authenticated. |
+| `src/main/java/dz/sh/hidra/platform/security/configuration/PlatformDevSecurityConfiguration.java` | Adds deterministic `dev` profile in-memory user so local development no longer relies on Spring Security generated password. |
 
-Update only the files required by the existing implementation shape.
-
-## Files to create
-
-None, unless the listed test file does not exist.
-
-## Required rule
-
-The domain must reject:
-
-```text
-employeeId == managerEmployeeId
-```
-
-with a domain/business exception.
-
-Preferred exception:
-
-```text
-ReportingLineException
-```
-
-unless the existing domain model already uses another organization exception consistently.
-
-## Rules
-
-```text
-- Do not create SupervisorAssignment.
-- Do not introduce identity or topology dependencies.
-- Do not place this rule in the controller.
-- Do not place this rule in a JPA entity.
-- Keep the rule in domain model/policy/service.
-```
-
-## Validation commands
-
-```bash
-mvn -q test -Dtest='ReportingLinePolicyTest,EmployeeTest'
-mvn -q -DskipTests compile
-```
-
-## Completion criteria
-
-```text
-self-reporting is explicitly rejected
-a test proves the rejection
-domain still has no Spring/JPA/API dependency
-```
-
----
-
-# STB-009 — Add explicit development security baseline
-
-```text
-Commit code    : STB-009
-Commit message : chore(security): add explicit development security baseline
-Type           : Configuration
-Layer          : Platform
-Module         : platform
-```
-
-## Description
-
-The app currently starts with Spring Security's generated development password:
-
-```text
-Using generated security password: <generated-password>
-```
-
-This is acceptable for a temporary boot check but not a stable dev baseline.
-
-Create an explicit dev-only security configuration or properties setup that allows predictable local development access without weakening production security.
-
-## Files to inspect
-
-| File | Purpose |
-|---|---|
-| `src/main/resources/application.properties` | Confirm common security and management settings. |
-| `src/main/resources/application-dev.properties` | Confirm dev profile configuration. |
-| `src/main/java/dz/sh/hidra/platform/security/**` | Check whether platform security configuration already exists. |
-
-## Files to create or update
-
-Choose the smallest approach aligned with existing platform architecture.
-
-Preferred option:
-
-| File | Purpose |
-|---|---|
-| `src/main/java/dz/sh/hidra/platform/security/configuration/PlatformDevSecurityConfiguration.java` | Dev-profile-only security filter chain permitting health, Swagger, and API docs while keeping a clear dev-only boundary. |
-
-Alternative if project already has central security config:
-
-| File | Purpose |
-|---|---|
-| existing platform security configuration file | Add dev profile behavior without duplicating security filter chains. |
-
-## Required dev behavior
-
-For profile `dev`, permit unauthenticated access to:
+Dev public endpoints:
 
 ```text
 /actuator/health
+/actuator/health/**
 /actuator/info
-/swagger-ui/**
-/swagger-ui.html
 /v3/api-docs
 /v3/api-docs/**
+/swagger-ui/**
+/swagger-ui.html
 ```
 
-Decide explicitly whether business APIs should be:
+Dev credentials for protected business APIs:
 
 ```text
-A. authenticated with a known dev user
-B. temporarily permitted for local development only
+username: hidra-dev
+password: hidra-dev
 ```
 
-Recommended for this phase:
+Security posture:
 
 ```text
-Permit documentation and health only.
-Keep business APIs protected.
+Business APIs remain authenticated.
+HTTP Basic is enabled only for the dev profile.
+Production profile is not weakened by the dev user configuration.
+JWT/OAuth was not introduced in this stabilization task.
 ```
 
-## Rules
+### STB-010 — Boot smoke validation baseline
+
+| File | Purpose |
+|---|---|
+| `src/test/java/dz/sh/hidra/HidraApplicationTests.java` | Replaces the lightweight class-exists test with a real `@SpringBootTest` using PostgreSQL Testcontainers. |
+| `src/test/resources/application-test.properties` | Adds deterministic test profile settings while datasource values are supplied dynamically by Testcontainers. |
+
+Test baseline:
 
 ```text
-- Do not disable security globally.
-- Do not weaken production security.
-- Add @Profile("dev") if creating dev-only config.
-- Do not hardcode production credentials.
-- Do not implement JWT/OAuth in this stabilization task unless it already exists.
-- Do not modify identity business logic.
+@SpringBootTest(classes = HidraApplication.class)
+@ActiveProfiles("test")
+PostgreSQL Testcontainers
+Flyway enabled
+JPA ddl-auto=validate
+No H2 added
+No new Maven dependency added
+JPA scanning not disabled
 ```
 
-## Validation commands
+Execution requirement:
+
+```text
+A Docker-compatible runtime is required to run HidraApplicationTests because the project now uses PostgreSQL Testcontainers for the boot smoke test.
+```
+
+---
+
+## 6. Final validation checklist
+
+| Item | Status | Notes |
+|---|---:|---|
+| `mvn -q -DskipTests compile` passes | Not run in this execution | Must be run locally from a full working tree. GitHub connector cannot execute Maven. |
+| `mvn -q test` passes | Not run in this execution | Must be run locally. Requires Docker/Testcontainers for `HidraApplicationTests`. |
+| `mvn -q clean verify` passes | Not run in this execution | Must be run locally after compile and test are green. |
+| App starts with dev profile | Not rerun after STB-009/STB-010 | Earlier local startup succeeded before these final stabilization changes; rerun is required. |
+| PostgreSQL dev DB documented | Confirmed | Dev profile uses `jdbc:postgresql://localhost:5432/hidra_dev` by default. |
+| Flyway platform migration exists | Assumed existing | `V001__create_platform_outbox_event.sql` was reported as the original migration. Confirm locally before release. |
+| Flyway identity migration exists | Confirmed by repository update | `V010__create_identity_tables.sql` added in STB-005. |
+| Flyway organization migration exists | Confirmed by repository update | `V020__create_organization_tables.sql` added in STB-006. |
+| REST mapper beans exist | Confirmed by repository inspection | Identity and organization REST mapper configurations existed before STB-003 execution. |
+| Platform ObjectMapper bean exists | Confirmed by repository inspection | Platform Jackson configuration existed before STB-004 execution. |
+| Organization JPA constructors compile | Partially confirmed | Constructors were inspected as public; full Maven compile still required. |
+| Organization controllers have `@ApiResponses` | Confirmed by repository update | Completed in STB-007. |
+| Reporting line self-reporting rejected | Confirmed by repository update | Policy rule and test added in STB-008. |
+| Dev health endpoint accessible | Not manually verified | Check after local boot. |
+| Dev Swagger UI accessible | Not manually verified | Check after local boot. |
+| Dev API docs accessible | Not manually verified | Check after local boot. |
+| Business APIs protected in dev | Confirmed by configuration inspection | Dev public endpoints are limited; remaining requests require authentication. |
+| No `identityaccess` package recreated | Needs final local repo scan | No stabilization task intentionally created it. |
+| No topology package created during stabilization | Needs final local repo scan | No stabilization task intentionally created it. |
+| No new business module created during stabilization | Needs final local repo scan | No stabilization task intentionally created one. |
+
+---
+
+## 7. Required local validation commands
+
+Run these from the repository root after pulling the latest `main`:
 
 ```bash
 mvn -q -DskipTests compile
+mvn -q test -Dtest=HidraApplicationTests
+mvn -q test
+mvn -q clean verify
 mvn spring-boot:run -Dspring-boot.run.profiles=dev
 ```
 
-Manual checks:
+Required manual checks after the dev app starts:
 
 ```text
 GET http://localhost:8080/actuator/health
+GET http://localhost:8080/actuator/info
 GET http://localhost:8080/swagger-ui.html
 GET http://localhost:8080/v3/api-docs
 ```
 
-## Completion criteria
+Expected dev protected API behavior:
 
 ```text
-application no longer relies on generated password for basic dev documentation/health access
-health endpoint is accessible in dev
-Swagger UI is accessible in dev
-business API security behavior is documented
-production profile is not weakened
+Business API without credentials -> 401 Unauthorized
+Business API with HTTP Basic hidra-dev / hidra-dev -> authenticated request reaches controller/security authorization path
 ```
 
----
-
-# STB-010 — Verify application boot baseline
-
-```text
-Commit code    : STB-010
-Commit message : test(stabilization): verify application boot baseline
-Type           : Test
-Layer          : Bootstrap
-Module         : bootstrap, platform
-```
-
-## Description
-
-Add or fix a minimal boot smoke test that proves the current foundation can load its Spring context with the dev/test configuration.
-
-The existing app has previously had test failures because the Spring context required a datasource. This task must create a deterministic test baseline.
-
-## Files to inspect
-
-| File | Purpose |
-|---|---|
-| `src/test/java/dz/sh/hidra/HidraApplicationTests.java` | Check current Spring context test and datasource behavior. |
-| `src/test/resources/application-test.properties` | Check whether test profile exists and supplies DB/test configuration. |
-| `pom.xml` | Confirm H2/Testcontainers availability or avoid requiring either. |
-
-## Files to create or update
-
-Use the existing project style. Preferred:
-
-| File | Purpose |
-|---|---|
-| `src/test/java/dz/sh/hidra/HidraApplicationTests.java` | Make the boot test deterministic and compatible with current infrastructure. |
-| `src/test/resources/application-test.properties` | Provide test profile settings if needed. |
-
-Optional only if the project already supports Testcontainers:
-
-| File | Purpose |
-|---|---|
-| `src/test/java/dz/sh/hidra/support/PostgresTestContainerSupport.java` | Centralize PostgreSQL Testcontainer setup if Testcontainers dependency exists. |
-
-## Rules
-
-```text
-- Do not add H2 unless explicitly approved.
-- Do not add Testcontainers unless dependency already exists or the task explicitly updates pom.xml.
-- Do not disable all JPA scanning just to make the test pass.
-- Do not delete the boot test.
-- Do not make the test meaningless.
-- If a real DB is required, document exact requirement.
-```
-
-## Validation commands
+Recommended boundary scans:
 
 ```bash
-mvn -q test -Dtest=HidraApplicationTests
-mvn -q test
+find src/main/java -type d | grep -E 'identityaccess|sharedkernel|shared|common|core|utils|helper|helpers|misc|topology|measurement|operations|flow|risk|analytics|workflow|reporting|notification'
 ```
 
-## Completion criteria
+On Windows PowerShell:
 
-```text
-HidraApplicationTests passes or exact blocker is documented
-mvn -q test passes or exact unrelated blocker is documented
-test profile behavior is deterministic
+```powershell
+Get-ChildItem src/main/java -Directory -Recurse |
+  Where-Object { $_.FullName -match 'identityaccess|sharedkernel|shared|common|core|utils|helper|helpers|misc|topology|measurement|operations|flow|risk|analytics|workflow|reporting|notification' }
 ```
 
 ---
 
-# STB-011 — Finalize foundation validation checklist
+## 8. Known remaining risks
 
 ```text
-Commit code    : STB-011
-Commit message : docs(stabilization): finalize foundation validation checklist
-Type           : Documentation
-Layer          : Documentation
-Module         : stabilization
+1. Maven compile/test/verify were not run by this execution because the GitHub connector cannot execute build commands.
+2. HidraApplicationTests now requires Docker/Testcontainers.
+3. Flyway migrations V010 and V020 were read back from GitHub but not applied to a clean PostgreSQL database in this execution.
+4. application-dev.properties currently uses spring.jpa.hibernate.ddl-auto=update; this may be acceptable for local development but should be revisited before staging/production readiness.
+5. Dev security now uses a deterministic local user; this is intentionally @Profile("dev") only and must not be copied into production authentication.
+6. HTTP 501 placeholders still exist for organization update/list endpoints where application ports are not yet implemented.
+7. Full local endpoint checks for health, info, Swagger UI, and API docs remain required after boot.
+8. Because several earlier GitHub file updates committed one file at a time, some roadmap tasks have multiple commits with the same exact commit message.
 ```
 
-## Description
+---
 
-Update this roadmap with the final results of stabilization.
+## 9. Local PostgreSQL reminder for dev boot
 
-## Files to update
+Default dev profile values:
 
-| File | Purpose |
-|---|---|
-| `docs/roadmap/stabilization_01.md` | Record final status for all stabilization tasks, validation commands, blockers, and remaining risks. |
+```text
+Database : hidra_dev
+Username : hidra
+Password : hidra
+URL      : jdbc:postgresql://localhost:5432/hidra_dev
+```
 
-## Required final validation commands
+Example local PostgreSQL container:
 
-Run these commands from the repository root:
+```bash
+docker run --name hidra-postgres \
+  -e POSTGRES_DB=hidra_dev \
+  -e POSTGRES_USER=hidra \
+  -e POSTGRES_PASSWORD=hidra \
+  -p 5432:5432 \
+  -d postgres:16
+```
+
+Then run:
+
+```bash
+mvn spring-boot:run -Dspring-boot.run.profiles=dev
+```
+
+---
+
+## 10. Stabilization conclusion
+
+STB-01 repository changes are complete.
+
+The foundation is ready for **local validation**. It is not yet correct to claim full production readiness until these commands pass locally:
 
 ```bash
 mvn -q -DskipTests compile
@@ -1015,93 +372,15 @@ mvn -q clean verify
 mvn spring-boot:run -Dspring-boot.run.profiles=dev
 ```
 
-If the application is started manually, verify:
-
-```text
-http://localhost:8080/actuator/health
-http://localhost:8080/swagger-ui.html
-http://localhost:8080/v3/api-docs
-```
-
-## Required final checklist
-
-| Item | Status | Notes |
-|---|---:|---|
-| `mvn -q -DskipTests compile` passes | Pending | Fill during STB-011. |
-| `mvn -q test` passes | Pending | Fill during STB-011. |
-| `mvn -q clean verify` passes | Pending | Fill during STB-011. |
-| App starts with dev profile | Pending | Fill during STB-011. |
-| PostgreSQL dev DB documented | Pending | Fill during STB-011. |
-| Flyway platform migration exists | Pending | Confirm `V001__create_platform_outbox_event.sql`. |
-| Flyway identity migration exists | Pending | Confirm `V010__create_identity_tables.sql`. |
-| Flyway organization migration exists | Pending | Confirm `V020__create_organization_tables.sql`. |
-| REST mapper beans exist | Pending | Confirm identity and organization REST mapper configs. |
-| Platform ObjectMapper bean exists | Pending | Confirm platform Jackson config. |
-| Organization JPA constructors compile | Pending | Confirm mapper can instantiate entities. |
-| Organization controllers have `@ApiResponses` | Pending | Confirm all endpoint methods. |
-| Reporting line self-reporting rejected | Pending | Confirm test and domain behavior. |
-| Dev health endpoint accessible | Pending | Confirm manually. |
-| Dev Swagger UI accessible | Pending | Confirm manually. |
-| No `identityaccess` package recreated | Pending | Repo scan. |
-| No topology package created during stabilization | Pending | Repo scan. |
-| No new business module created during stabilization | Pending | Repo scan. |
-
-## Rules
-
-```text
-- Do not create new production code in STB-011.
-- Do not create new tests in STB-011.
-- Only update docs/roadmap/stabilization_01.md.
-- If validation fails, record the exact command, exact error, and whether it is related or unrelated.
-```
-
-## Completion criteria
-
-```text
-this roadmap has an accurate final status table
-all validation commands are recorded
-remaining risks are explicit
-foundation is ready for topology roadmap work only after this task is complete
-```
-
----
-
-## 5. Boundaries after stabilization
-
-After this stabilization roadmap is complete, the next module should be:
-
-```text
-topology
-```
-
-The next roadmap file should be:
+After those commands pass and the manual endpoint checks succeed, the next recommended roadmap is:
 
 ```text
 docs/roadmap/topology.md
 ```
 
-The first topology implementation task should be:
+The next implementation sequence should start with:
 
 ```text
+TOP-001 — docs(topology): add topology implementation roadmap
 TOP-002 — chore(topology): add topology package skeleton
 ```
-
-Do not start topology until the stabilization checklist is complete or blockers are explicitly accepted.
-
----
-
-## 6. Final status table
-
-| Commit code | Status | Validation result | Notes |
-|---|---:|---|---|
-| `STB-001` | Planned | Pending | Add this roadmap. |
-| `STB-002` | Planned | Pending | Organization JPA constructor visibility. |
-| `STB-003` | Planned | Pending | REST mapper beans. |
-| `STB-004` | Planned | Pending | Platform ObjectMapper bean. |
-| `STB-005` | Planned | Pending | Identity migration. |
-| `STB-006` | Planned | Pending | Organization migration. |
-| `STB-007` | Planned | Pending | Organization controller OpenAPI responses. |
-| `STB-008` | Planned | Pending | Reporting line self-reporting rule. |
-| `STB-009` | Planned | Pending | Dev security baseline. |
-| `STB-010` | Planned | Pending | Boot smoke validation. |
-| `STB-011` | Planned | Pending | Final validation checklist. |

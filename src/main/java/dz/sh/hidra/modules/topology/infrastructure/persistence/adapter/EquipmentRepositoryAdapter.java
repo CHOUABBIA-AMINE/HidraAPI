@@ -26,7 +26,6 @@ import dz.sh.hidra.modules.topology.application.port.out.EquipmentRepositoryPort
 import dz.sh.hidra.modules.topology.domain.model.Equipment;
 import dz.sh.hidra.modules.topology.domain.value.EquipmentId;
 import dz.sh.hidra.modules.topology.domain.value.TopologyCode;
-import dz.sh.hidra.modules.topology.infrastructure.persistence.entity.EquipmentJpaEntity;
 import dz.sh.hidra.modules.topology.infrastructure.persistence.mapper.TopologyPersistenceMapper;
 import dz.sh.hidra.modules.topology.infrastructure.persistence.repository.EquipmentJpaRepository;
 

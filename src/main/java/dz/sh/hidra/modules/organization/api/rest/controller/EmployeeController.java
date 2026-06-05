@@ -44,6 +44,8 @@ import dz.sh.hidra.modules.organization.application.port.in.GetEmployeeUseCase;
 import dz.sh.hidra.modules.organization.application.port.in.ListEmployeesUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
@@ -93,6 +95,12 @@ public class EmployeeController {
 
     @PostMapping
     @Operation(summary = "Create employee", description = "Creates a real operational employee in the organization module.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Employee created."),
+            @ApiResponse(responseCode = "400", description = "Invalid employee creation request."),
+            @ApiResponse(responseCode = "409", description = "Employee number or identity reference conflicts with an existing employee."),
+            @ApiResponse(responseCode = "500", description = "Unexpected server error.")
+    })
     public ResponseEntity<EmployeeResponse> createEmployee(@Valid @RequestBody CreateEmployeeRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(mapper.toResponse(createEmployeeUseCase.createEmployee(mapper.toCommand(request))));
@@ -100,6 +108,12 @@ public class EmployeeController {
 
     @GetMapping("/{employeeId}")
     @Operation(summary = "Get employee", description = "Retrieves one employee by identifier.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Employee found."),
+            @ApiResponse(responseCode = "400", description = "Invalid employee identifier."),
+            @ApiResponse(responseCode = "404", description = "Employee not found."),
+            @ApiResponse(responseCode = "500", description = "Unexpected server error.")
+    })
     public ResponseEntity<EmployeeResponse> getEmployee(
             @Parameter(description = "Employee identifier.", required = true)
             @PathVariable String employeeId) {
@@ -112,6 +126,11 @@ public class EmployeeController {
 
     @GetMapping
     @Operation(summary = "List employees", description = "Lists employees with optional search, status, and organization unit filters.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Employees listed."),
+            @ApiResponse(responseCode = "400", description = "Invalid list employees query parameters."),
+            @ApiResponse(responseCode = "500", description = "Unexpected server error.")
+    })
     public PageResult<EmployeeResponse> listEmployees(
             @RequestParam(required = false) String searchText,
             @RequestParam(required = false) String status,
@@ -125,6 +144,11 @@ public class EmployeeController {
 
     @PutMapping("/{employeeId}")
     @Operation(summary = "Update employee", description = "Endpoint contract for updating employee information. The update use case is not available in the current application ports.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "501", description = "Update employee use case is not implemented in current application ports."),
+            @ApiResponse(responseCode = "400", description = "Invalid employee update request."),
+            @ApiResponse(responseCode = "500", description = "Unexpected server error.")
+    })
     public EmployeeResponse updateEmployee(
             @Parameter(description = "Employee identifier.", required = true)
             @PathVariable String employeeId,
@@ -136,6 +160,13 @@ public class EmployeeController {
 
     @PostMapping("/{employeeId}/assignments")
     @Operation(summary = "Assign employee to unit", description = "Assigns an employee to an organization unit and position.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Employee assigned to organization unit."),
+            @ApiResponse(responseCode = "400", description = "Invalid assignment request."),
+            @ApiResponse(responseCode = "404", description = "Employee, organization unit, or position not found."),
+            @ApiResponse(responseCode = "409", description = "Assignment conflicts with organization rules."),
+            @ApiResponse(responseCode = "500", description = "Unexpected server error.")
+    })
     public ResponseEntity<EmployeeAssignmentResponse> assignEmployeeToUnit(
             @Parameter(description = "Employee identifier.", required = true)
             @PathVariable String employeeId,

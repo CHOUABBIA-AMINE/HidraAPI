@@ -26,6 +26,7 @@ import java.util.Objects;
 import dz.sh.hidra.modules.organization.domain.exception.ReportingLineException;
 import dz.sh.hidra.modules.organization.domain.model.Employee;
 import dz.sh.hidra.modules.organization.domain.model.ReportingLine;
+import dz.sh.hidra.modules.organization.domain.value.EmployeeId;
 import dz.sh.hidra.modules.organization.domain.value.ReportingLineType;
 
 /**
@@ -70,12 +71,29 @@ public final class ReportingLinePolicy {
         Objects.requireNonNull(reportingLine, "Reporting line must not be null.");
         Objects.requireNonNull(evaluationDate, "Evaluation date must not be null.");
 
+        ensureNoSelfReporting(employee.id(), manager.id());
+        ensureNoSelfReporting(reportingLine.employeeId(), reportingLine.managerEmployeeId());
         ensureReportingLineBelongsToEmployee(employee, reportingLine);
         ensureManagerMatches(manager, reportingLine);
         ensureEmployeeCanReceiveReportingLine(employee);
         ensureManagerCanManage(manager);
         ensurePrimaryLineUniqueness(reportingLine, existingReportingLines, evaluationDate);
         ensureNoDuplicateActiveReportingLine(reportingLine, existingReportingLines, evaluationDate);
+    }
+
+    /**
+     * Ensures an employee does not report to themselves.
+     *
+     * @param employeeId employee identifier
+     * @param managerEmployeeId manager employee identifier
+     */
+    public void ensureNoSelfReporting(EmployeeId employeeId, EmployeeId managerEmployeeId) {
+        Objects.requireNonNull(employeeId, "Employee id must not be null.");
+        Objects.requireNonNull(managerEmployeeId, "Manager employee id must not be null.");
+
+        if (employeeId.equals(managerEmployeeId)) {
+            throw new ReportingLineException("An employee cannot report to themselves.");
+        }
     }
 
     /**

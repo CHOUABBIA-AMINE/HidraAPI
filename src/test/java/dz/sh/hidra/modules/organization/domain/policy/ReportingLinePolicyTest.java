@@ -39,7 +39,8 @@ import dz.sh.hidra.modules.organization.domain.value.ReportingLineType;
  * Tests matrix reporting line policy.
  *
  * <p>Business role:
- * Verifies primary LINE uniqueness, manager validation, and matrix reporting rules.
+ * Verifies primary LINE uniqueness, manager validation, self-reporting rejection, and matrix
+ * reporting rules.
  *
  * <p>Architecture role:
  * This is a domain policy test with no persistence, API, identity, topology, or Spring dependency.
@@ -66,6 +67,15 @@ class ReportingLinePolicyTest {
                 reportingLine,
                 List.of(),
                 LocalDate.now()));
+    }
+
+    @Test
+    void shouldRejectSelfReporting() {
+        Employee employee = activeEmployee("EMP-RPT-SELF-001");
+
+        assertThrows(
+                ReportingLineException.class,
+                () -> policy.ensureNoSelfReporting(employee.id(), employee.id()));
     }
 
     @Test

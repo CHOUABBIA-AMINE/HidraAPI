@@ -35,6 +35,8 @@ import dz.sh.hidra.modules.organization.api.rest.request.CreatePositionRequest;
 import dz.sh.hidra.modules.organization.api.rest.response.PositionResponse;
 import dz.sh.hidra.modules.organization.application.port.in.CreatePositionUseCase;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
@@ -73,6 +75,12 @@ public class PositionController {
 
     @PostMapping
     @Operation(summary = "Create position", description = "Creates an operational position/function.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Position created."),
+            @ApiResponse(responseCode = "400", description = "Invalid position creation request."),
+            @ApiResponse(responseCode = "409", description = "Position code conflicts with an existing position."),
+            @ApiResponse(responseCode = "500", description = "Unexpected server error.")
+    })
     public ResponseEntity<PositionResponse> createPosition(@Valid @RequestBody CreatePositionRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(mapper.toResponse(createPositionUseCase.createPosition(mapper.toCommand(request))));
@@ -80,6 +88,11 @@ public class PositionController {
 
     @GetMapping
     @Operation(summary = "List positions", description = "Endpoint contract for listing positions. The list positions use case is not available in the current application ports.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "501", description = "List positions use case is not implemented in current application ports."),
+            @ApiResponse(responseCode = "400", description = "Invalid list positions query parameters."),
+            @ApiResponse(responseCode = "500", description = "Unexpected server error.")
+    })
     public PageResult<PositionResponse> listPositions(
             @RequestParam(required = false) String searchText,
             @RequestParam(defaultValue = "true") boolean activeOnly,

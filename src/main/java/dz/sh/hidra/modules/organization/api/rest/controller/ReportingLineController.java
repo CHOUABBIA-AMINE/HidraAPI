@@ -33,6 +33,8 @@ import dz.sh.hidra.modules.organization.api.rest.response.ReportingLineResponse;
 import dz.sh.hidra.modules.organization.application.port.in.SetEmployeeReportingLineUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
@@ -70,6 +72,13 @@ public class ReportingLineController {
 
     @PostMapping
     @Operation(summary = "Set employee reporting line", description = "Creates a matrix-capable employee reporting line.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Reporting line created."),
+            @ApiResponse(responseCode = "400", description = "Invalid reporting line request."),
+            @ApiResponse(responseCode = "404", description = "Employee or manager not found."),
+            @ApiResponse(responseCode = "409", description = "Reporting line conflicts with organization reporting rules."),
+            @ApiResponse(responseCode = "500", description = "Unexpected server error.")
+    })
     public ResponseEntity<ReportingLineResponse> setEmployeeReportingLine(
             @Parameter(description = "Employee identifier.", required = true)
             @PathVariable String employeeId,

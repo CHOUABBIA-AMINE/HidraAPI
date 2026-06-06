@@ -46,14 +46,6 @@ import dz.sh.hidra.modules.organization.application.query.ListOrganizationUnitsQ
 
 /**
  * Tests the organization REST mapper.
- *
- * <p>Business role:
- * Verifies that HTTP request contracts are translated into organization application commands and
- * queries without leaking REST objects into the application layer.
- *
- * <p>Architecture role:
- * This is an API-layer unit test. It does not load Spring Boot, JPA, persistence, identity,
- * topology, platform, repositories, or application services.
  */
 class OrganizationRestMapperTest {
 
@@ -92,6 +84,7 @@ class OrganizationRestMapperTest {
         assertEquals("CS_EAST_01", command.code().value());
         assertEquals("Compression Station East 01", command.name().value());
         assertEquals("STATION", command.type().name());
+        assertEquals("organization-out-station", command.type().id());
         assertEquals("TOPOLOGY_COMPRESSION_STATION", command.operationalScopeType().name());
         assertEquals("station-001", command.operationalScopeId());
         assertEquals("CS-EAST-01", command.operationalScopeCode());
@@ -136,12 +129,7 @@ class OrganizationRestMapperTest {
 
     @Test
     void shouldMapListQueriesWithOptionalFilters() {
-        ListEmployeesQuery employeesQuery = mapper.toListEmployeesQuery(
-                "abir",
-                "active",
-                "ou_001",
-                1,
-                25);
+        ListEmployeesQuery employeesQuery = mapper.toListEmployeesQuery("abir", "active", "ou_001", 1, 25);
 
         assertEquals("abir", employeesQuery.searchText());
         assertEquals("ACTIVE", employeesQuery.status().name());
@@ -149,16 +137,11 @@ class OrganizationRestMapperTest {
         assertEquals(1, employeesQuery.pageRequest().page());
         assertEquals(25, employeesQuery.pageRequest().size());
 
-        ListOrganizationUnitsQuery unitsQuery = mapper.toListOrganizationUnitsQuery(
-                "station",
-                "station",
-                "active",
-                null,
-                0,
-                20);
+        ListOrganizationUnitsQuery unitsQuery = mapper.toListOrganizationUnitsQuery("station", "station", "active", null, 0, 20);
 
         assertEquals("station", unitsQuery.searchText());
         assertEquals("STATION", unitsQuery.type().name());
+        assertEquals("organization-out-station", unitsQuery.type().id());
         assertEquals("ACTIVE", unitsQuery.status().name());
         assertNull(unitsQuery.parentId());
     }
@@ -192,6 +175,7 @@ class OrganizationRestMapperTest {
                 "CS_EAST_01",
                 "Compression Station East 01",
                 "ACTIVE",
+                "organization-out-station",
                 "STATION",
                 null,
                 "TOPOLOGY_COMPRESSION_STATION",
@@ -202,10 +186,14 @@ class OrganizationRestMapperTest {
                 now);
 
         PageResult<OrganizationUnitResponse> responsePage = mapper.toOrganizationUnitResponsePage(
-                PageResult.of(List.of(unitDto), 0, 20, 1));
+                PageResult.of(List.of(unitDto), 0, 20, 1),
+                "fr");
 
         assertEquals(1, responsePage.items().size());
         assertEquals("CS_EAST_01", responsePage.items().get(0).code());
+        assertEquals("STATION", responsePage.items().get(0).type().code());
+        assertEquals("Station", responsePage.items().get(0).type().label());
+        assertEquals("fr", responsePage.items().get(0).type().locale());
         assertEquals(1, responsePage.totalElements());
     }
 }

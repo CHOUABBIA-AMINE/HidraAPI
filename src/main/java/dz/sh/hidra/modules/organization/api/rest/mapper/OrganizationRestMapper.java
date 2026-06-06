@@ -34,6 +34,7 @@ import dz.sh.hidra.modules.organization.api.rest.request.UpdateOrganizationUnitR
 import dz.sh.hidra.modules.organization.api.rest.response.EmployeeAssignmentResponse;
 import dz.sh.hidra.modules.organization.api.rest.response.EmployeeResponse;
 import dz.sh.hidra.modules.organization.api.rest.response.OrganizationUnitResponse;
+import dz.sh.hidra.modules.organization.api.rest.response.OrganizationUnitTypeResponse;
 import dz.sh.hidra.modules.organization.api.rest.response.PositionResponse;
 import dz.sh.hidra.modules.organization.api.rest.response.ReportingLineResponse;
 import dz.sh.hidra.modules.organization.application.command.AssignEmployeeToUnitCommand;
@@ -64,28 +65,13 @@ import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitCode;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitId;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitName;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitStatus;
-import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitType;
+import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitTypeReference;
 import dz.sh.hidra.modules.organization.domain.value.PositionCode;
 import dz.sh.hidra.modules.organization.domain.value.PositionTitle;
 import dz.sh.hidra.modules.organization.domain.value.ReportingLineType;
 
 /**
  * Maps organization REST request/response contracts to application commands, queries, and DTOs.
- *
- * <p>Business role:
- * This mapper translates HTTP contracts for employees, organization units, positions, assignments,
- * and reporting lines without leaking REST objects into the application layer.
- *
- * <p>Architecture role:
- * This is an API-layer mapper. It must not access repositories, persistence entities, identity
- * implementation, topology implementation, or platform infrastructure.
- *
- * <p>Validation:
- * Bean Validation validates raw REST inputs before mapping. Domain value objects validate business
- * formats during command/query creation.
- *
- * <p>Usage:
- * Controllers use this mapper to call application ports and shape REST responses.
  */
 public final class OrganizationRestMapper {
 
@@ -111,7 +97,7 @@ public final class OrganizationRestMapper {
         return new CreateOrganizationUnitCommand(
                 OrganizationUnitCode.of(request.code()),
                 OrganizationUnitName.of(request.name()),
-                OrganizationUnitType.valueOf(requiredEnum(request.type())),
+                OrganizationUnitTypeReference.ofCode(request.typeCode()),
                 optionalOrganizationUnitId(request.parentId()),
                 optionalOperationalScopeType(request.operationalScopeType()),
                 request.operationalScopeId(),
@@ -187,7 +173,7 @@ public final class OrganizationRestMapper {
 
     public ListOrganizationUnitsQuery toListOrganizationUnitsQuery(
             String searchText,
-            String type,
+            String typeCode,
             String status,
             String parentId,
             int page,
@@ -195,7 +181,7 @@ public final class OrganizationRestMapper {
 
         return new ListOrganizationUnitsQuery(
                 searchText,
-                optionalOrganizationUnitType(type),
+                optionalOrganizationUnitType(typeCode),
                 optionalOrganizationUnitStatus(status),
                 optionalOrganizationUnitId(parentId),
                 PageRequest.of(page, size));
@@ -252,13 +238,17 @@ public final class OrganizationRestMapper {
     }
 
     public OrganizationUnitResponse toResponse(OrganizationUnitDto dto) {
+        return toResponse(dto, null);
+    }
+
+    public OrganizationUnitResponse toResponse(OrganizationUnitDto dto, String acceptLanguage) {
         Objects.requireNonNull(dto, "Organization unit DTO must not be null.");
         return new OrganizationUnitResponse(
                 dto.organizationUnitId(),
                 dto.code(),
                 dto.name(),
                 dto.status(),
-                dto.type(),
+                toTypeResponse(dto.typeId(), dto.typeCode(), acceptLanguage),
                 dto.parentId(),
                 dto.operationalScopeType(),
                 dto.operationalScopeId(),
@@ -289,8 +279,14 @@ public final class OrganizationRestMapper {
     }
 
     public PageResult<OrganizationUnitResponse> toOrganizationUnitResponsePage(PageResult<OrganizationUnitDto> pageResult) {
+        return toOrganizationUnitResponsePage(pageResult, null);
+    }
+
+    public PageResult<OrganizationUnitResponse> toOrganizationUnitResponsePage(
+            PageResult<OrganizationUnitDto> pageResult,
+            String acceptLanguage) {
         return PageResult.of(
-                pageResult.items().stream().map(this::toResponse).toList(),
+                pageResult.items().stream().map(item -> toResponse(item, acceptLanguage)).toList(),
                 pageResult.page(),
                 pageResult.size(),
                 pageResult.totalElements());
@@ -302,6 +298,25 @@ public final class OrganizationRestMapper {
                 pageResult.page(),
                 pageResult.size(),
                 pageResult.totalElements());
+    }
+
+    private static OrganizationUnitTypeResponse toTypeResponse(String typeId, String typeCode, String acceptLanguage) {
+        OrganizationUnitTypeReference reference = typeId == null
+                ? OrganizationUnitTypeReference.ofCode(typeCode)
+                : OrganizationUnitTypeReference.of(typeId, typeCode);
+        String locale = resolveLocale(acceptLanguage);
+        return new OrganizationUnitTypeResponse(reference.id(), reference.name(), reference.localizedLabel(locale), locale);
+    }
+
+    private static String resolveLocale(String acceptLanguage) {
+        if (acceptLanguage == null || acceptLanguage.isBlank()) {
+            return "en";
+        }
+        String first = acceptLanguage.split(",")[0].trim();
+        if (first.length() < 2) {
+            return "en";
+        }
+        return first.substring(0, 2).toLowerCase(Locale.ROOT);
     }
 
     private static EmployeeEmail optionalEmail(String value) {
@@ -324,8 +339,8 @@ public final class OrganizationRestMapper {
         return blank(value) ? null : EmploymentStatus.valueOf(requiredEnum(value));
     }
 
-    private static OrganizationUnitType optionalOrganizationUnitType(String value) {
-        return blank(value) ? null : OrganizationUnitType.valueOf(requiredEnum(value));
+    private static OrganizationUnitTypeReference optionalOrganizationUnitType(String value) {
+        return blank(value) ? null : OrganizationUnitTypeReference.ofCode(value);
     }
 
     private static OrganizationUnitStatus optionalOrganizationUnitStatus(String value) {

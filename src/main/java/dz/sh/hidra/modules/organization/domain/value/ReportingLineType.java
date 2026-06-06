@@ -9,62 +9,85 @@
  * @CreatedOn   : 2025-06-26
  * @UpdatedOn   : 2026-05-30
  *
- * @Type        : Enum
+ * @Type        : Class
  * @Layer       : Domain
  * @Module      : organization
  * @Package     : dz.sh.hidra.modules.organization.domain.value
  *
- * @Description : Matrix reporting line type enum.
+ * @Description : Deprecated compatibility constant class for reporting line types.
  *
  */
 package dz.sh.hidra.modules.organization.domain.value;
 
+import java.util.Arrays;
+import java.util.Objects;
+
+import dz.sh.hidra.kernel.domain.exception.InvalidValueObjectException;
 import dz.sh.hidra.kernel.domain.model.ValueObject;
 
-/**
- * Represents the type of employee-to-manager reporting relationship.
- *
- * <p>Business role:
- * This enum defines the allowed business states or categories used by organization domain objects.
- *
- * <p>Architecture role:
- * This is a domain value object enum. It must not depend on API, persistence, identity, topology,
- * platform, Spring, or JPA code.
- *
- * <p>Validation:
- * The enum restricts values to the listed constants and prevents unbounded string status/type values.
- *
- * <p>Usage:
- * Use this enum in organization domain and application code when a constrained value is required.
- */
-public enum ReportingLineType implements ValueObject {
+@Deprecated(forRemoval = false)
+public final class ReportingLineType implements ValueObject {
 
-    /** Primary hierarchical reporting line. */
-    LINE,
+    public static final ReportingLineType LINE = new ReportingLineType("LINE");
+    public static final ReportingLineType OPERATIONAL = new ReportingLineType("OPERATIONAL");
+    public static final ReportingLineType FUNCTIONAL = new ReportingLineType("FUNCTIONAL");
+    public static final ReportingLineType ADMINISTRATIVE = new ReportingLineType("ADMINISTRATIVE");
+    public static final ReportingLineType TECHNICAL = new ReportingLineType("TECHNICAL");
+    public static final ReportingLineType DOTTED_LINE = new ReportingLineType("DOTTED_LINE");
 
-    /** Operational reporting line for day-to-day operational responsibility. */
-    OPERATIONAL,
+    private static final ReportingLineType[] VALUES = {LINE, OPERATIONAL, FUNCTIONAL, ADMINISTRATIVE, TECHNICAL, DOTTED_LINE};
 
-    /** Functional reporting line for specialist or cross-functional direction. */
-    FUNCTIONAL,
+    private final String name;
 
-    /** Administrative reporting line. */
-    ADMINISTRATIVE,
+    private ReportingLineType(String name) {
+        this.name = requireName(name);
+    }
 
-    /** Technical reporting line for expertise or engineering authority. */
-    TECHNICAL,
+    public static ReportingLineType valueOf(String name) {
+        String normalizedName = requireName(name);
+        return Arrays.stream(VALUES)
+                .filter(value -> value.name.equals(normalizedName))
+                .findFirst()
+                .orElseThrow(() -> new InvalidValueObjectException("ReportingLineType is not supported: " + name));
+    }
 
-    /** Dotted-line reporting relationship. */
-    DOTTED_LINE;
+    public static ReportingLineType[] values() {
+        return VALUES.clone();
+    }
 
+    public String name() {
+        return name;
+    }
 
-    /**
-     * Indicates whether this reporting type may usually be repeated for the same employee.
-     *
-     * @return true when multiple active reporting lines of this type may be allowed by policy
-     */
     public boolean allowsMultipleActiveLines() {
         return this == FUNCTIONAL || this == ADMINISTRATIVE || this == TECHNICAL || this == DOTTED_LINE;
     }
 
+    @Override
+    public String toString() {
+        return name;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (!(other instanceof ReportingLineType that)) {
+            return false;
+        }
+        return name.equals(that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
+    }
+
+    private static String requireName(String value) {
+        if (value == null || value.isBlank()) {
+            throw new InvalidValueObjectException("ReportingLineType name must not be null or blank.");
+        }
+        return value.trim().toUpperCase();
+    }
 }

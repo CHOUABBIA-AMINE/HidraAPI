@@ -9,77 +9,103 @@
  * @CreatedOn   : 2025-06-26
  * @UpdatedOn   : 2026-05-30
  *
- * @Type        : Enum
+ * @Type        : Class
  * @Layer       : Domain
  * @Module      : organization
  * @Package     : dz.sh.hidra.modules.organization.domain.value
  *
- * @Description : Organization unit type enum.
+ * @Description : Deprecated compatibility wrapper for organization unit type catalog references.
  *
  */
 package dz.sh.hidra.modules.organization.domain.value;
 
+import java.util.Objects;
+
 import dz.sh.hidra.kernel.domain.model.ValueObject;
 
 /**
- * Represents the type of organization unit.
+ * Deprecated compatibility wrapper for organization unit type catalog references.
  *
  * <p>Business role:
- * This enum defines the allowed business states or categories used by organization domain objects.
+ * Keeps older call sites and tests source-compatible while organization unit type is migrated from a
+ * Java enum to catalog-backed multilingual reference data.
  *
  * <p>Architecture role:
- * This is a domain value object enum. It must not depend on API, persistence, identity, topology,
- * platform, Spring, or JPA code.
+ * This is no longer an enum. New code must use {@link OrganizationUnitTypeReference} directly.
  *
- * <p>Validation:
- * The enum restricts values to the listed constants and prevents unbounded string status/type values.
- *
- * <p>Usage:
- * Use this enum in organization domain and application code when a constrained value is required.
+ * @deprecated use {@link OrganizationUnitTypeReference}
  */
-public enum OrganizationUnitType implements ValueObject {
+@Deprecated(forRemoval = false)
+public final class OrganizationUnitType implements ValueObject {
 
-    /** Company-level organization unit. */
-    COMPANY,
+    public static final OrganizationUnitType COMPANY = new OrganizationUnitType(OrganizationUnitTypeReference.COMPANY);
+    public static final OrganizationUnitType DIVISION = new OrganizationUnitType(OrganizationUnitTypeReference.DIVISION);
+    public static final OrganizationUnitType DIRECTION = new OrganizationUnitType(OrganizationUnitTypeReference.DIRECTION);
+    public static final OrganizationUnitType DEPARTMENT = new OrganizationUnitType(OrganizationUnitTypeReference.DEPARTMENT);
+    public static final OrganizationUnitType REGION = new OrganizationUnitType(OrganizationUnitTypeReference.REGION);
+    public static final OrganizationUnitType AREA = new OrganizationUnitType(OrganizationUnitTypeReference.AREA);
+    public static final OrganizationUnitType DISTRICT = new OrganizationUnitType(OrganizationUnitTypeReference.DISTRICT);
+    public static final OrganizationUnitType STATION = new OrganizationUnitType(OrganizationUnitTypeReference.STATION);
+    public static final OrganizationUnitType TEAM = new OrganizationUnitType(OrganizationUnitTypeReference.TEAM);
+    public static final OrganizationUnitType PROJECT_TEAM = new OrganizationUnitType(OrganizationUnitTypeReference.PROJECT_TEAM);
+    public static final OrganizationUnitType OTHER = new OrganizationUnitType(OrganizationUnitTypeReference.OTHER);
 
-    /** Division-level organization unit. */
-    DIVISION,
+    private final OrganizationUnitTypeReference reference;
 
-    /** Direction-level organization unit. */
-    DIRECTION,
-
-    /** Department-level organization unit. */
-    DEPARTMENT,
-
-    /** Operational region organization unit. */
-    REGION,
-
-    /** Operational area organization unit. */
-    AREA,
-
-    /** Operational district organization unit. */
-    DISTRICT,
-
-    /** Station-as-organization-unit for people and responsibility structure; physical station asset belongs to topology. */
-    STATION,
-
-    /** Team-level organization unit. */
-    TEAM,
-
-    /** Temporary project team organization unit. */
-    PROJECT_TEAM,
-
-    /** Other organization unit type not covered by the standard list. */
-    OTHER;
-
-
-    /**
-     * Indicates whether this type represents a station organization unit.
-     *
-     * @return true when the organization unit represents station people and responsibility
-     */
-    public boolean isStationOrganizationUnit() {
-        return this == STATION;
+    private OrganizationUnitType(OrganizationUnitTypeReference reference) {
+        this.reference = Objects.requireNonNull(reference, "Organization unit type reference must not be null.");
     }
 
+    public static OrganizationUnitType valueOf(String code) {
+        return new OrganizationUnitType(OrganizationUnitTypeReference.ofCode(code));
+    }
+
+    public static OrganizationUnitType[] values() {
+        return new OrganizationUnitType[] {
+                COMPANY,
+                DIVISION,
+                DIRECTION,
+                DEPARTMENT,
+                REGION,
+                AREA,
+                DISTRICT,
+                STATION,
+                TEAM,
+                PROJECT_TEAM,
+                OTHER
+        };
+    }
+
+    public OrganizationUnitTypeReference toReference() {
+        return reference;
+    }
+
+    public String name() {
+        return reference.name();
+    }
+
+    public boolean isStationOrganizationUnit() {
+        return reference.isStationOrganizationUnit();
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (!(other instanceof OrganizationUnitType that)) {
+            return false;
+        }
+        return reference.equals(that.reference);
+    }
+
+    @Override
+    public int hashCode() {
+        return reference.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return name();
+    }
 }

@@ -35,17 +35,18 @@ import jakarta.validation.constraints.Size;
  * Creates a physical pipeline under a pipeline system.
  *
  * <p>Architecture role:
- * This is a REST input contract. Controllers map it to CreatePipelineCommand through
- * TopologyRestMapper.
+ * This REST input contract accepts a stable product type catalog code. The API mapper resolves it to
+ * a catalog reference before calling the application layer.
  *
  * <p>Validation:
- * Pipeline system id, code, name, product type, nominal diameter, and design length are required.
+ * Pipeline system id, code, name, product type code, nominal diameter, and design length are
+ * required.
  *
  * @param pipelineSystemId parent pipeline system identifier
  * @param code pipeline business code
  * @param name pipeline display name
  * @param description optional business description
- * @param productType hydrocarbon product type
+ * @param productTypeCode language-neutral product type catalog code
  * @param nominalDiameterInches nominal diameter in inches
  * @param designLengthKm design length in kilometers
  */
@@ -70,10 +71,11 @@ public record CreatePipelineRequest(
         @Size(max = 500)
         String description,
 
-        @Schema(description = "Hydrocarbon product type.", example = "GAS", allowableValues = {"GAS", "CRUDE_OIL", "CONDENSATE", "LPG", "REFINED_PRODUCT", "MULTIPHASE", "UNKNOWN"}, requiredMode = Schema.RequiredMode.REQUIRED)
+        @Schema(description = "Language-neutral product type catalog code.", example = "GAS", requiredMode = Schema.RequiredMode.REQUIRED)
         @NotBlank
-        @Pattern(regexp = "GAS|CRUDE_OIL|CONDENSATE|LPG|REFINED_PRODUCT|MULTIPHASE|UNKNOWN")
-        String productType,
+        @Size(min = 2, max = 80)
+        @Pattern(regexp = "[A-Za-z0-9][A-Za-z0-9_.-]{1,79}")
+        String productTypeCode,
 
         @Schema(description = "Nominal diameter in inches.", example = "42.000", requiredMode = Schema.RequiredMode.REQUIRED)
         @NotNull

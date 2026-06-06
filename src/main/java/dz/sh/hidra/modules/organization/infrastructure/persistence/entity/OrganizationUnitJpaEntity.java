@@ -28,73 +28,45 @@ import jakarta.persistence.Table;
 
 /**
  * JPA representation of an organization unit.
- *
- * <p>Business role:
- * This entity stores an organization unit such as a division, department, region, station as an
- * organization unit, or team. The optional operational scope fields are neutral references and do
- * not make organization own topology assets.
- *
- * <p>Architecture role:
- * This class belongs to the organization infrastructure persistence layer and is used only by
- * repositories, adapters, and persistence mappers.
- *
- * <p>Validation:
- * Domain validation is performed before mapping. Database constraints protect required fields and
- * uniqueness of organization unit code.
- *
- * <p>Usage:
- * Use only inside persistence infrastructure. Do not expose this class through application or API.
  */
 @Entity
 @Table(name = "hidra_org_unit")
 public class OrganizationUnitJpaEntity {
 
-    /** Stable organization unit identifier. */
     @Id
     @Column(name = "id", nullable = false, length = 80)
     private String id;
 
-    /** Unique organization unit business code. */
     @Column(name = "code", nullable = false, unique = true, length = 80)
     private String code;
 
-    /** Organization unit display name. */
     @Column(name = "name", nullable = false, length = 160)
     private String name;
 
-    /** Organization unit lifecycle status. */
     @Column(name = "status", nullable = false, length = 40)
     private String status;
 
-    /** Organization unit type, including STATION for station-as-organization-unit. */
-    @Column(name = "unit_type", nullable = false, length = 60)
-    private String type;
+    @Column(name = "unit_type_id", nullable = false, length = 80)
+    private String typeId;
 
-    /** Optional parent organization unit identifier. */
     @Column(name = "parent_id", length = 80)
     private String parentId;
 
-    /** Optional neutral operational scope type. */
     @Column(name = "operational_scope_type", length = 80)
     private String operationalScopeType;
 
-    /** Optional neutral operational scope identifier. */
     @Column(name = "operational_scope_id", length = 120)
     private String operationalScopeId;
 
-    /** Optional neutral operational scope business code. */
     @Column(name = "operational_scope_code", length = 120)
     private String operationalScopeCode;
 
-    /** Optional neutral operational scope display name. */
     @Column(name = "operational_scope_name", length = 160)
     private String operationalScopeName;
 
-    /** Creation instant. */
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
 
-    /** Last update instant. */
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
@@ -134,12 +106,12 @@ public class OrganizationUnitJpaEntity {
         this.status = status;
     }
 
-    public String getType() {
-        return type;
+    public String getTypeId() {
+        return typeId;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setTypeId(String typeId) {
+        this.typeId = typeId;
     }
 
     public String getParentId() {

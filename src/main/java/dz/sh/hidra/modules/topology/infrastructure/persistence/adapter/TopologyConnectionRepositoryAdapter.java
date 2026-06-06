@@ -19,48 +19,31 @@
  */
 package dz.sh.hidra.modules.topology.infrastructure.persistence.adapter;
 
-import java.util.Objects;
-import java.util.Optional;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
+import java.util.Optional;
 
 import dz.sh.hidra.kernel.application.pagination.PageRequest;
 import dz.sh.hidra.kernel.application.pagination.PageResult;
 import dz.sh.hidra.modules.topology.application.port.out.TopologyConnectionRepositoryPort;
 import dz.sh.hidra.modules.topology.application.query.ListTopologyConnectionsQuery;
 import dz.sh.hidra.modules.topology.domain.model.TopologyConnection;
-import dz.sh.hidra.modules.topology.domain.value.TopologyConnectionId;
 import dz.sh.hidra.modules.topology.domain.value.TopologyCode;
+import dz.sh.hidra.modules.topology.domain.value.TopologyConnectionId;
 import dz.sh.hidra.modules.topology.infrastructure.persistence.entity.TopologyConnectionJpaEntity;
 import dz.sh.hidra.modules.topology.infrastructure.persistence.mapper.TopologyPersistenceMapper;
 import dz.sh.hidra.modules.topology.infrastructure.persistence.repository.TopologyConnectionJpaRepository;
 
 /**
  * Persistence adapter implementing TopologyConnectionRepositoryPort.
- *
- * <p>Business role:
- * Persists and retrieves topology topologyConnection domain models through Spring Data JPA.
- *
- * <p>Architecture role:
- * This class adapts an application outbound port to infrastructure persistence. Application services
- * depend on the port, not on this adapter or Spring Data repository.
- *
- * <p>Validation:
- * Domain validation happens before persistence. Mapping restores domain value objects and model
- * invariants.
- *
- * <p>Usage:
- * Wire this adapter from topology infrastructure configuration.
  */
 public final class TopologyConnectionRepositoryAdapter implements TopologyConnectionRepositoryPort {
 
     private final TopologyConnectionJpaRepository jpaRepository;
     private final TopologyPersistenceMapper mapper;
 
-    public TopologyConnectionRepositoryAdapter(
-            TopologyConnectionJpaRepository jpaRepository,
-            TopologyPersistenceMapper mapper) {
-
+    public TopologyConnectionRepositoryAdapter(TopologyConnectionJpaRepository jpaRepository, TopologyPersistenceMapper mapper) {
         this.jpaRepository = Objects.requireNonNull(jpaRepository, "TopologyConnectionJpaRepository must not be null.");
         this.mapper = Objects.requireNonNull(mapper, "Topology persistence mapper must not be null.");
     }
@@ -97,7 +80,7 @@ public final class TopologyConnectionRepositoryAdapter implements TopologyConnec
                 .filter(entity -> matchesSearchText(entity, query.searchText()))
                 .filter(entity -> query.fromNodeId() == null || entity.getFromNodeId().equals(query.fromNodeId().value()))
                 .filter(entity -> query.toNodeId() == null || entity.getToNodeId().equals(query.toNodeId().value()))
-                .filter(entity -> query.connectionType() == null || entity.getConnectionType().equals(query.connectionType().name()))
+                .filter(entity -> query.connectionType() == null || query.connectionType().id().equals(entity.getConnectionTypeId()))
                 .filter(entity -> query.linkedAssetType() == null || entity.getLinkedAssetType().equals(query.linkedAssetType().name()))
                 .filter(entity -> query.status() == null || entity.getStatus().equals(query.status().name()))
                 .map(mapper::toDomain)
@@ -110,21 +93,17 @@ public final class TopologyConnectionRepositoryAdapter implements TopologyConnec
         if (searchText == null) {
             return true;
         }
-
-        return containsIgnoreCase(entity.getCode(), searchText)
-                || containsIgnoreCase(entity.getName(), searchText);
+        return containsIgnoreCase(entity.getCode(), searchText) || containsIgnoreCase(entity.getName(), searchText);
     }
 
     private static PageResult<TopologyConnection> paginate(List<TopologyConnection> items, PageRequest pageRequest) {
         Objects.requireNonNull(pageRequest, "Page request must not be null.");
-
         int fromIndex = Math.min(pageRequest.page() * pageRequest.size(), items.size());
         int toIndex = Math.min(fromIndex + pageRequest.size(), items.size());
         return PageResult.of(items.subList(fromIndex, toIndex), pageRequest.page(), pageRequest.size(), items.size());
     }
 
     private static boolean containsIgnoreCase(String value, String searchText) {
-        return value != null
-                && value.toLowerCase(Locale.ROOT).contains(searchText.toLowerCase(Locale.ROOT));
+        return value != null && value.toLowerCase(Locale.ROOT).contains(searchText.toLowerCase(Locale.ROOT));
     }
 }

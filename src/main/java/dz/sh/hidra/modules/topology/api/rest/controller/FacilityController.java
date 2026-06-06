@@ -7,7 +7,7 @@
  *
  * @Name        : FacilityController
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-05-30
+ * @UpdatedOn   : 2026-06-06
  *
  * @Type        : Class
  * @Layer       : API
@@ -77,6 +77,7 @@ public class FacilityController {
             @ApiResponse(responseCode = "500", description = "Unexpected server error.")
     })
     public ResponseEntity<FacilityResponse> createFacility(
+            @Parameter(description = "Preferred response language using BCP 47 language tags.", example = "fr")
             @RequestHeader(name = "Accept-Language", required = false) String acceptLanguage,
             @Valid @RequestBody CreateFacilityRequest request) {
 
@@ -95,8 +96,9 @@ public class FacilityController {
             @ApiResponse(responseCode = "500", description = "Unexpected server error.")
     })
     public ResponseEntity<FacilityResponse> getFacility(
+            @Parameter(description = "Preferred response language using BCP 47 language tags.", example = "fr")
             @RequestHeader(name = "Accept-Language", required = false) String acceptLanguage,
-            @Parameter(description = "Facility identifier.", required = true)
+            @Parameter(description = "Facility identifier.", required = true, example = "facility_550e8400-e29b-41d4-a716-446655440000")
             @PathVariable String facilityId) {
 
         return ResponseEntity.ok(mapper.toResponse(
@@ -112,12 +114,19 @@ public class FacilityController {
             @ApiResponse(responseCode = "500", description = "Unexpected server error.")
     })
     public PageResult<FacilityResponse> listFacilities(
+            @Parameter(description = "Preferred response language using BCP 47 language tags.", example = "fr")
             @RequestHeader(name = "Accept-Language", required = false) String acceptLanguage,
+            @Parameter(description = "Optional text filter applied to facility code or labels.", example = "CPF")
             @RequestParam(required = false) String searchText,
+            @Parameter(description = "Optional facility type code filter.", example = "COMPRESSION_STATION")
             @RequestParam(required = false) String facilityTypeCode,
+            @Parameter(description = "Optional product type code filter.", example = "GAS")
             @RequestParam(required = false) String productTypeCode,
+            @Parameter(description = "Optional facility lifecycle status filter.", example = "ACTIVE")
             @RequestParam(required = false) String status,
+            @Parameter(description = "Zero-based page index.", example = "0")
             @RequestParam(defaultValue = "0") @Min(0) int page,
+            @Parameter(description = "Page size between 1 and 200.", example = "20")
             @RequestParam(defaultValue = "20") @Min(1) @Max(200) int size) {
 
         return mapper.toFacilityResponsePage(

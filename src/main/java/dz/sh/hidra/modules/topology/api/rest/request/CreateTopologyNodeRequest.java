@@ -23,8 +23,8 @@ import java.math.BigDecimal;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 /**
@@ -36,16 +36,15 @@ import jakarta.validation.constraints.Size;
  * metering point, sampling point, scraper point, receipt point, delivery point, or connection point.
  *
  * <p>Architecture role:
- * This is a REST input contract. Controllers map it to CreateTopologyNodeCommand through
- * TopologyRestMapper.
+ * This REST input contract accepts a stable node type catalog code instead of an enum-shaped value.
  *
  * <p>Validation:
- * Code, name, and node type are required. Facility id, pipeline appurtenance id, coordinate, and
- * elevation are optional.
+ * Code, name, and node type code are required. Facility id, pipeline appurtenance id, coordinate,
+ * and elevation are optional.
  *
  * @param code topology node business code
  * @param name topology node display name
- * @param nodeType topology node type
+ * @param nodeTypeCode language-neutral node type catalog code
  * @param facilityId optional facility identifier
  * @param pipelineAppurtenanceId optional pipeline appurtenance identifier
  * @param coordinate optional geographical coordinate
@@ -63,10 +62,11 @@ public record CreateTopologyNodeRequest(
         @Size(min = 2, max = 160)
         String name,
 
-        @Schema(description = "Topology node type.", example = "FACILITY_INLET", allowableValues = {"FACILITY_INLET", "FACILITY_OUTLET", "FACILITY_INTERNAL", "PIPELINE_JUNCTION", "PIPELINE_VALVE_POINT", "INJECTION_POINT", "EXTRACTION_POINT", "PURGE_POINT", "VENT_POINT", "DRAIN_POINT", "METERING_POINT", "SAMPLING_POINT", "SCRAPER_POINT", "RECEIPT_POINT", "DELIVERY_POINT", "CONNECTION_POINT", "OTHER"}, requiredMode = Schema.RequiredMode.REQUIRED)
+        @Schema(description = "Language-neutral node type catalog code.", example = "FACILITY_INLET", requiredMode = Schema.RequiredMode.REQUIRED)
         @NotBlank
-        @Pattern(regexp = "FACILITY_INLET|FACILITY_OUTLET|FACILITY_INTERNAL|PIPELINE_JUNCTION|PIPELINE_VALVE_POINT|INJECTION_POINT|EXTRACTION_POINT|PURGE_POINT|VENT_POINT|DRAIN_POINT|METERING_POINT|SAMPLING_POINT|SCRAPER_POINT|RECEIPT_POINT|DELIVERY_POINT|CONNECTION_POINT|OTHER")
-        String nodeType,
+        @Size(min = 2, max = 80)
+        @Pattern(regexp = "[A-Za-z0-9][A-Za-z0-9_.-]{1,79}")
+        String nodeTypeCode,
 
         @Schema(description = "Optional facility identifier.", example = "fac_550e8400-e29b-41d4-a716-446655440000")
         @Size(max = 80)

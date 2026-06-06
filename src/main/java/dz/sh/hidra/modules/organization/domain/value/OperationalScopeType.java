@@ -9,69 +9,61 @@
  * @CreatedOn   : 2025-06-26
  * @UpdatedOn   : 2026-05-30
  *
- * @Type        : Enum
+ * @Type        : Class
  * @Layer       : Domain
  * @Module      : organization
  * @Package     : dz.sh.hidra.modules.organization.domain.value
  *
- * @Description : Operational scope type enum.
+ * @Description : Deprecated compatibility constant class for operational scope types.
  *
  */
 package dz.sh.hidra.modules.organization.domain.value;
 
+import java.util.Arrays;
+import java.util.Objects;
+
+import dz.sh.hidra.kernel.domain.exception.InvalidValueObjectException;
 import dz.sh.hidra.kernel.domain.model.ValueObject;
 
-/**
- * Represents the type of future operational or topology scope referenced by organization.
- *
- * <p>Business role:
- * This enum defines the allowed business states or categories used by organization domain objects.
- *
- * <p>Architecture role:
- * This is a domain value object enum. It must not depend on API, persistence, identity, topology,
- * platform, Spring, or JPA code.
- *
- * <p>Validation:
- * The enum restricts values to the listed constants and prevents unbounded string status/type values.
- *
- * <p>Usage:
- * Use this enum in organization domain and application code when a constrained value is required.
- */
-public enum OperationalScopeType implements ValueObject {
+@Deprecated(forRemoval = false)
+public final class OperationalScopeType implements ValueObject {
 
-    /** Generic future topology station reference. */
-    TOPOLOGY_STATION,
+    public static final OperationalScopeType TOPOLOGY_STATION = new OperationalScopeType("TOPOLOGY_STATION");
+    public static final OperationalScopeType TOPOLOGY_COMPRESSION_STATION = new OperationalScopeType("TOPOLOGY_COMPRESSION_STATION");
+    public static final OperationalScopeType TOPOLOGY_PUMPING_STATION = new OperationalScopeType("TOPOLOGY_PUMPING_STATION");
+    public static final OperationalScopeType TOPOLOGY_DELIVERY_STATION = new OperationalScopeType("TOPOLOGY_DELIVERY_STATION");
+    public static final OperationalScopeType TOPOLOGY_METERING_STATION = new OperationalScopeType("TOPOLOGY_METERING_STATION");
+    public static final OperationalScopeType TOPOLOGY_PIPELINE = new OperationalScopeType("TOPOLOGY_PIPELINE");
+    public static final OperationalScopeType TOPOLOGY_REGION = new OperationalScopeType("TOPOLOGY_REGION");
+    public static final OperationalScopeType TOPOLOGY_FACILITY = new OperationalScopeType("TOPOLOGY_FACILITY");
+    public static final OperationalScopeType GENERIC_OPERATIONAL_SCOPE = new OperationalScopeType("GENERIC_OPERATIONAL_SCOPE");
 
-    /** Future topology compression station reference. */
-    TOPOLOGY_COMPRESSION_STATION,
+    private static final OperationalScopeType[] VALUES = {TOPOLOGY_STATION, TOPOLOGY_COMPRESSION_STATION,
+            TOPOLOGY_PUMPING_STATION, TOPOLOGY_DELIVERY_STATION, TOPOLOGY_METERING_STATION,
+            TOPOLOGY_PIPELINE, TOPOLOGY_REGION, TOPOLOGY_FACILITY, GENERIC_OPERATIONAL_SCOPE};
 
-    /** Future topology pumping station reference. */
-    TOPOLOGY_PUMPING_STATION,
+    private final String name;
 
-    /** Future topology delivery station reference. */
-    TOPOLOGY_DELIVERY_STATION,
+    private OperationalScopeType(String name) {
+        this.name = requireName(name);
+    }
 
-    /** Future topology metering station reference. */
-    TOPOLOGY_METERING_STATION,
+    public static OperationalScopeType valueOf(String name) {
+        String normalizedName = requireName(name);
+        return Arrays.stream(VALUES)
+                .filter(value -> value.name.equals(normalizedName))
+                .findFirst()
+                .orElseThrow(() -> new InvalidValueObjectException("OperationalScopeType is not supported: " + name));
+    }
 
-    /** Future topology pipeline reference. */
-    TOPOLOGY_PIPELINE,
+    public static OperationalScopeType[] values() {
+        return VALUES.clone();
+    }
 
-    /** Future topology or operational region reference. */
-    TOPOLOGY_REGION,
+    public String name() {
+        return name;
+    }
 
-    /** Future topology facility reference. */
-    TOPOLOGY_FACILITY,
-
-    /** Generic operational scope when no specialized topology type exists yet. */
-    GENERIC_OPERATIONAL_SCOPE;
-
-
-    /**
-     * Indicates whether this scope type refers to any station-like topology asset.
-     *
-     * @return true when the scope type is station-oriented
-     */
     public boolean isStationScope() {
         return this == TOPOLOGY_STATION
                 || this == TOPOLOGY_COMPRESSION_STATION
@@ -80,4 +72,31 @@ public enum OperationalScopeType implements ValueObject {
                 || this == TOPOLOGY_METERING_STATION;
     }
 
+    @Override
+    public String toString() {
+        return name;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (!(other instanceof OperationalScopeType that)) {
+            return false;
+        }
+        return name.equals(that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
+    }
+
+    private static String requireName(String value) {
+        if (value == null || value.isBlank()) {
+            throw new InvalidValueObjectException("OperationalScopeType name must not be null or blank.");
+        }
+        return value.trim().toUpperCase();
+    }
 }

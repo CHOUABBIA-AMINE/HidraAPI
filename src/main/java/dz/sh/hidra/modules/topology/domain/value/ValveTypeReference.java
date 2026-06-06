@@ -57,6 +57,21 @@ public record ValveTypeReference(String id, TopologyCode code) implements ValueO
         return new ValveTypeReference(id, TopologyCode.of(code));
     }
 
+    public static ValveTypeReference from(ValveType valveType) {
+        if (valveType == null) {
+            return null;
+        }
+        return of(valveType.name(), valveType.name());
+    }
+
+    public String name() {
+        return code.value();
+    }
+
+    public boolean is(String expectedCode) {
+        return code.value().equals(TopologyCode.of(expectedCode).value());
+    }
+
     private static String requireText(String value, String fieldName) {
         if (value == null || value.isBlank()) {
             throw new InvalidValueObjectException(fieldName + " must not be null or blank.");

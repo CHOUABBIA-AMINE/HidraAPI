@@ -7,7 +7,7 @@
  *
  * @Name        : RoleJpaEntity
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-05-30
+ * @UpdatedOn   : 2026-06-06
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -64,8 +64,14 @@ public class RoleJpaEntity {
     @Column(name = "code", nullable = false, length = 64)
     private String code;
 
-    @Column(name = "name", nullable = false, length = 100)
-    private String name;
+    @Column(name = "name_ar", nullable = false, length = 100)
+    private String nameAr;
+
+    @Column(name = "name_fr", nullable = false, length = 100)
+    private String nameFr;
+
+    @Column(name = "name_en", nullable = false, length = 100)
+    private String nameEn;
 
     @Column(name = "status", nullable = false, length = 32)
     private String status;
@@ -80,13 +86,17 @@ public class RoleJpaEntity {
     private RoleJpaEntity(
             String id,
             String code,
-            String name,
+            String nameAr,
+            String nameFr,
+            String nameEn,
             String status,
             Collection<RolePermissionJpaEntity> permissionAssignments
     ) {
         this.id = id;
         this.code = code;
-        this.name = name;
+        this.nameAr = nameAr;
+        this.nameFr = nameFr;
+        this.nameEn = nameEn;
         this.status = status;
         replacePermissionAssignments(permissionAssignments);
     }
@@ -94,11 +104,13 @@ public class RoleJpaEntity {
     public static RoleJpaEntity of(
             String id,
             String code,
-            String name,
+            String nameAr,
+            String nameFr,
+            String nameEn,
             String status,
             Collection<RolePermissionJpaEntity> permissionAssignments
     ) {
-        return new RoleJpaEntity(id, code, name, status, permissionAssignments);
+        return new RoleJpaEntity(id, code, nameAr, nameFr, nameEn, status, permissionAssignments);
     }
 
     public String getId() {
@@ -109,8 +121,16 @@ public class RoleJpaEntity {
         return code;
     }
 
-    public String getName() {
-        return name;
+    public String getNameAr() {
+        return nameAr;
+    }
+
+    public String getNameFr() {
+        return nameFr;
+    }
+
+    public String getNameEn() {
+        return nameEn;
     }
 
     public String getStatus() {

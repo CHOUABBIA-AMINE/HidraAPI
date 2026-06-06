@@ -27,22 +27,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 /**
  * REST response representing a topology pipeline.
  *
- * <p>Business role:
- * Returns a physical pipeline belonging to a pipeline system.
- *
- * <p>Architecture role:
- * This is a REST output contract mapped from PipelineDto through TopologyRestMapper.
- *
- * <p>Validation:
- * Pipeline validity is enforced by topology domain models, value objects, policies, and services
- * before this response is produced.
- *
  * @param pipelineId pipeline identifier
  * @param pipelineSystemId parent pipeline system identifier
  * @param code pipeline business code
  * @param name pipeline display name
  * @param description optional description
- * @param productType hydrocarbon product type
+ * @param productType localized hydrocarbon product type catalog reference
  * @param nominalDiameterInches nominal diameter in inches
  * @param designLengthKm design length in kilometers
  * @param status lifecycle status
@@ -66,8 +56,8 @@ public record PipelineResponse(
         @Schema(description = "Optional pipeline description.", example = "Main transportation line.")
         String description,
 
-        @Schema(description = "Hydrocarbon product type.", example = "GAS", allowableValues = {"GAS", "CRUDE_OIL", "CONDENSATE", "LPG", "REFINED_PRODUCT", "MULTIPHASE", "UNKNOWN"})
-        String productType,
+        @Schema(description = "Localized hydrocarbon product type catalog reference.")
+        TopologyTypeReferenceResponse productType,
 
         @Schema(description = "Nominal diameter in inches.", example = "42.000")
         BigDecimal nominalDiameterInches,

@@ -29,7 +29,6 @@ import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitCode;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitId;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitName;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitStatus;
-import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitType;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitTypeReference;
 
 /**
@@ -108,20 +107,6 @@ public final class OrganizationUnit implements AggregateRoot<OrganizationUnitId>
                 now);
     }
 
-    /**
-     * @deprecated use {@link #create(OrganizationUnitCode, OrganizationUnitName, OrganizationUnitTypeReference, OrganizationUnitId, OperationalScopeReference)}
-     */
-    @Deprecated(forRemoval = false)
-    public static OrganizationUnit create(
-            OrganizationUnitCode code,
-            OrganizationUnitName name,
-            OrganizationUnitType type,
-            OrganizationUnitId parentId,
-            OperationalScopeReference operationalScopeReference) {
-
-        return create(code, name, OrganizationUnitTypeReference.from(type), parentId, operationalScopeReference);
-    }
-
     public static OrganizationUnit createStation(
             OrganizationUnitCode code,
             OrganizationUnitName name,
@@ -147,24 +132,6 @@ public final class OrganizationUnit implements AggregateRoot<OrganizationUnitId>
             Instant updatedAt) {
 
         return new OrganizationUnit(id, code, name, status, type, parentId, operationalScopeReference, createdAt, updatedAt);
-    }
-
-    /**
-     * @deprecated use {@link #restore(OrganizationUnitId, OrganizationUnitCode, OrganizationUnitName, OrganizationUnitStatus, OrganizationUnitTypeReference, OrganizationUnitId, OperationalScopeReference, Instant, Instant)}
-     */
-    @Deprecated(forRemoval = false)
-    public static OrganizationUnit restore(
-            OrganizationUnitId id,
-            OrganizationUnitCode code,
-            OrganizationUnitName name,
-            OrganizationUnitStatus status,
-            OrganizationUnitType type,
-            OrganizationUnitId parentId,
-            OperationalScopeReference operationalScopeReference,
-            Instant createdAt,
-            Instant updatedAt) {
-
-        return restore(id, code, name, status, OrganizationUnitTypeReference.from(type), parentId, operationalScopeReference, createdAt, updatedAt);
     }
 
     @Override
@@ -262,16 +229,14 @@ public final class OrganizationUnit implements AggregateRoot<OrganizationUnitId>
     }
 
     private void ensureNotSelfParent() {
-        if (parentId != null && id.equals(parentId)) {
+        if (parentId != null && parentId.equals(id)) {
             throw new BusinessRuleViolationException("Organization unit cannot be its own parent.");
         }
     }
 
     private void ensureOperationalScopeMatchesUnitType() {
-        if (type.isStationOrganizationUnit()
-                && operationalScopeReference != null
-                && !operationalScopeReference.isStationScope()) {
-            throw new BusinessRuleViolationException("Station organization unit must reference a station-like operational scope.");
+        if (operationalScopeReference != null && type.isStationOrganizationUnit() && !operationalScopeReference.isStationScope()) {
+            throw new BusinessRuleViolationException("Station organization unit must reference a station-compatible operational scope.");
         }
     }
 }

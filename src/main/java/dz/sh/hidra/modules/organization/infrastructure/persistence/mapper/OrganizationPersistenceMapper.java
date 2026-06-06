@@ -40,7 +40,7 @@ import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitCode;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitId;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitName;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitStatus;
-import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitType;
+import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitTypeReference;
 import dz.sh.hidra.modules.organization.domain.value.PositionCode;
 import dz.sh.hidra.modules.organization.domain.value.PositionId;
 import dz.sh.hidra.modules.organization.domain.value.PositionTitle;
@@ -54,21 +54,6 @@ import dz.sh.hidra.modules.organization.infrastructure.persistence.entity.Report
 
 /**
  * Maps organization domain objects and persistence entities.
- *
- * <p>Business role:
- * Converts employees, assignments, reporting lines, organization units, and positions between the
- * organization domain model and persistence representation.
- *
- * <p>Architecture role:
- * This mapper belongs to infrastructure persistence. It is the only place where JPA entities are
- * translated to domain objects in ORG-013.
- *
- * <p>Validation:
- * Domain factories and value objects validate restored values. Persistence entities are assumed to
- * have passed database constraints.
- *
- * <p>Usage:
- * Use from repository adapters only. Do not use in controllers or domain services.
  */
 public final class OrganizationPersistenceMapper {
 
@@ -129,7 +114,7 @@ public final class OrganizationPersistenceMapper {
         entity.setCode(organizationUnit.code().value());
         entity.setName(organizationUnit.name().value());
         entity.setStatus(organizationUnit.status().name());
-        entity.setType(organizationUnit.type().name());
+        entity.setTypeId(organizationUnit.type().id());
         entity.setParentId(organizationUnit.parentId().map(OrganizationUnitId::value).orElse(null));
         entity.setOperationalScopeType(scope == null ? null : scope.scopeType().name());
         entity.setOperationalScopeId(scope == null ? null : scope.scopeId());
@@ -154,7 +139,7 @@ public final class OrganizationPersistenceMapper {
                 OrganizationUnitCode.of(entity.getCode()),
                 OrganizationUnitName.of(entity.getName()),
                 OrganizationUnitStatus.valueOf(entity.getStatus()),
-                OrganizationUnitType.valueOf(entity.getType()),
+                OrganizationUnitTypeReference.ofId(entity.getTypeId()),
                 entity.getParentId() == null ? null : OrganizationUnitId.of(entity.getParentId()),
                 scope,
                 entity.getCreatedAt(),

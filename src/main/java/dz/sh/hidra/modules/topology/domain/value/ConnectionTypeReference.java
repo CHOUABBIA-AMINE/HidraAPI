@@ -57,6 +57,28 @@ public record ConnectionTypeReference(String id, TopologyCode code) implements V
         return new ConnectionTypeReference(id, TopologyCode.of(code));
     }
 
+    public static ConnectionTypeReference from(ConnectionType connectionType) {
+        Objects.requireNonNull(connectionType, "Connection type must not be null.");
+        return of(connectionType.name(), connectionType.name());
+    }
+
+    public String name() {
+        return code.value();
+    }
+
+    public boolean is(String expectedCode) {
+        return code.value().equals(TopologyCode.of(expectedCode).value());
+    }
+
+    public boolean isAny(String... expectedCodes) {
+        for (String expectedCode : expectedCodes) {
+            if (is(expectedCode)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private static String requireText(String value, String fieldName) {
         if (value == null || value.isBlank()) {
             throw new InvalidValueObjectException(fieldName + " must not be null or blank.");

@@ -7,7 +7,7 @@
  *
  * @Name        : PositionJpaEntity
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-05-30
+ * @UpdatedOn   : 2026-06-06
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -57,13 +57,29 @@ public class PositionJpaEntity {
     @Column(name = "code", nullable = false, unique = true, length = 80)
     private String code;
 
-    /** Position display title. */
-    @Column(name = "title", nullable = false, length = 120)
-    private String title;
+    /** Arabic position display title. */
+    @Column(name = "title_ar", nullable = false, length = 120)
+    private String titleAr;
 
-    /** Optional position description. */
-    @Column(name = "description", length = 500)
-    private String description;
+    /** French position display title. */
+    @Column(name = "title_fr", nullable = false, length = 120)
+    private String titleFr;
+
+    /** English position display title. */
+    @Column(name = "title_en", nullable = false, length = 120)
+    private String titleEn;
+
+    /** Optional Arabic position description. */
+    @Column(name = "description_ar", length = 500)
+    private String descriptionAr;
+
+    /** Optional French position description. */
+    @Column(name = "description_fr", length = 500)
+    private String descriptionFr;
+
+    /** Optional English position description. */
+    @Column(name = "description_en", length = 500)
+    private String descriptionEn;
 
     /** Whether the position can be used for assignments. */
     @Column(name = "active", nullable = false)
@@ -97,20 +113,52 @@ public class PositionJpaEntity {
         this.code = code;
     }
 
-    public String getTitle() {
-        return title;
+    public String getTitleAr() {
+        return titleAr;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setTitleAr(String titleAr) {
+        this.titleAr = titleAr;
     }
 
-    public String getDescription() {
-        return description;
+    public String getTitleFr() {
+        return titleFr;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setTitleFr(String titleFr) {
+        this.titleFr = titleFr;
+    }
+
+    public String getTitleEn() {
+        return titleEn;
+    }
+
+    public void setTitleEn(String titleEn) {
+        this.titleEn = titleEn;
+    }
+
+    public String getDescriptionAr() {
+        return descriptionAr;
+    }
+
+    public void setDescriptionAr(String descriptionAr) {
+        this.descriptionAr = descriptionAr;
+    }
+
+    public String getDescriptionFr() {
+        return descriptionFr;
+    }
+
+    public void setDescriptionFr(String descriptionFr) {
+        this.descriptionFr = descriptionFr;
+    }
+
+    public String getDescriptionEn() {
+        return descriptionEn;
+    }
+
+    public void setDescriptionEn(String descriptionEn) {
+        this.descriptionEn = descriptionEn;
     }
 
     public boolean isActive() {

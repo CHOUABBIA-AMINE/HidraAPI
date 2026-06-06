@@ -14,7 +14,7 @@
  * @Module      : topology
  * @Package     : dz.sh.hidra.modules.topology.domain
  *
- * @Description : Test data factory for topology domain unit tests.
+ * @Description : Deterministic test data factory for topology domain unit tests.
  *
  */
 package dz.sh.hidra.modules.topology.domain;
@@ -31,21 +31,29 @@ import dz.sh.hidra.modules.topology.domain.model.PipelineSystem;
 import dz.sh.hidra.modules.topology.domain.model.TopologyConnection;
 import dz.sh.hidra.modules.topology.domain.model.TopologyNode;
 import dz.sh.hidra.modules.topology.domain.value.ConnectionType;
+import dz.sh.hidra.modules.topology.domain.value.ConnectionTypeReference;
 import dz.sh.hidra.modules.topology.domain.value.DiameterInInches;
+import dz.sh.hidra.modules.topology.domain.value.EquipmentId;
 import dz.sh.hidra.modules.topology.domain.value.EquipmentType;
+import dz.sh.hidra.modules.topology.domain.value.EquipmentTypeReference;
 import dz.sh.hidra.modules.topology.domain.value.FacilityId;
 import dz.sh.hidra.modules.topology.domain.value.FacilityType;
+import dz.sh.hidra.modules.topology.domain.value.FacilityTypeReference;
 import dz.sh.hidra.modules.topology.domain.value.GeoCoordinate;
 import dz.sh.hidra.modules.topology.domain.value.LengthInKilometers;
 import dz.sh.hidra.modules.topology.domain.value.NodeType;
+import dz.sh.hidra.modules.topology.domain.value.NodeTypeReference;
 import dz.sh.hidra.modules.topology.domain.value.OperationalOwnerReference;
 import dz.sh.hidra.modules.topology.domain.value.OrganizationUnitReference;
+import dz.sh.hidra.modules.topology.domain.value.PipelineAppurtenanceId;
 import dz.sh.hidra.modules.topology.domain.value.PipelineAppurtenanceType;
+import dz.sh.hidra.modules.topology.domain.value.PipelineAppurtenanceTypeReference;
 import dz.sh.hidra.modules.topology.domain.value.PipelineId;
 import dz.sh.hidra.modules.topology.domain.value.PipelineKilometerPoint;
 import dz.sh.hidra.modules.topology.domain.value.PipelineSegmentId;
 import dz.sh.hidra.modules.topology.domain.value.PipelineSystemId;
 import dz.sh.hidra.modules.topology.domain.value.ProductType;
+import dz.sh.hidra.modules.topology.domain.value.ProductTypeReference;
 import dz.sh.hidra.modules.topology.domain.value.TopologyAssetType;
 import dz.sh.hidra.modules.topology.domain.value.TopologyCode;
 import dz.sh.hidra.modules.topology.domain.value.TopologyConnectionId;
@@ -53,21 +61,26 @@ import dz.sh.hidra.modules.topology.domain.value.TopologyName;
 import dz.sh.hidra.modules.topology.domain.value.TopologyNodeId;
 import dz.sh.hidra.modules.topology.domain.value.TopologyStatus;
 import dz.sh.hidra.modules.topology.domain.value.ValveType;
+import dz.sh.hidra.modules.topology.domain.value.ValveTypeReference;
 
 /**
  * Test data factory for pure topology domain tests.
  *
  * <p>Business role:
- * Provides representative topology objects for pipeline systems, pipelines, facilities, nodes,
+ * Provides deterministic topology objects for pipeline systems, pipelines, facilities, nodes,
  * segments, appurtenances, connections, and equipment.
  *
  * <p>Architecture role:
  * This class exists in test source only and depends only on topology domain types.
  *
  * <p>Validation:
- * Test data uses valid defaults and intentionally exposes factory methods for invalid scenarios.
+ * Factory methods deliberately restore stable identifiers so tests do not accidentally save one
+ * generated object and query another object created by a second factory call.
  */
 public final class TopologyDomainTestData {
+
+    public static final Instant CREATED_AT = Instant.parse("2026-01-01T00:00:00Z");
+    public static final Instant UPDATED_AT = Instant.parse("2026-01-02T00:00:00Z");
 
     private TopologyDomainTestData() {
     }
@@ -80,6 +93,34 @@ public final class TopologyDomainTestData {
         return TopologyName.of("Topology " + suffix);
     }
 
+    public static ProductTypeReference gasProductType() {
+        return ProductTypeReference.of("GAS", "GAS");
+    }
+
+    public static FacilityTypeReference compressionStationType() {
+        return FacilityTypeReference.of("COMPRESSION_STATION", "COMPRESSION_STATION");
+    }
+
+    public static NodeTypeReference nodeType(NodeType nodeType) {
+        return NodeTypeReference.from(nodeType);
+    }
+
+    public static PipelineAppurtenanceTypeReference appurtenanceType(PipelineAppurtenanceType appurtenanceType) {
+        return PipelineAppurtenanceTypeReference.from(appurtenanceType);
+    }
+
+    public static ValveTypeReference valveType(ValveType valveType) {
+        return ValveTypeReference.from(valveType);
+    }
+
+    public static ConnectionTypeReference connectionType(ConnectionType connectionType) {
+        return ConnectionTypeReference.from(connectionType);
+    }
+
+    public static EquipmentTypeReference equipmentType(EquipmentType equipmentType) {
+        return EquipmentTypeReference.from(equipmentType);
+    }
+
     public static OperationalOwnerReference operationalOwnerReference() {
         return OperationalOwnerReference.of("ORGANIZATION_UNIT", "ou-east", "TRC-OPS-EAST", "Operational East Region");
     }
@@ -89,93 +130,137 @@ public final class TopologyDomainTestData {
     }
 
     public static PipelineSystem pipelineSystem() {
-        return PipelineSystem.create(code("PS"), name("Pipeline System"), " Main system ", ProductType.GAS, operationalOwnerReference());
+        return PipelineSystem.restore(
+                PipelineSystemId.of("ps-test-main"),
+                code("PS"),
+                name("Pipeline System"),
+                "Main system",
+                gasProductType(),
+                TopologyStatus.PLANNED,
+                operationalOwnerReference(),
+                CREATED_AT,
+                UPDATED_AT);
     }
 
     public static PipelineSystem retiredPipelineSystem() {
-        return pipelineSystem().retire();
+        return PipelineSystem.restore(
+                PipelineSystemId.of("ps-test-retired"),
+                code("PS-RETIRED"),
+                name("Retired Pipeline System"),
+                "Retired system",
+                gasProductType(),
+                TopologyStatus.RETIRED,
+                operationalOwnerReference(),
+                CREATED_AT,
+                UPDATED_AT);
     }
 
     public static Pipeline pipeline(PipelineSystem pipelineSystem) {
-        return Pipeline.create(
+        return Pipeline.restore(
+                PipelineId.of("pipe-test-main"),
                 pipelineSystem.id(),
                 code("PIPE"),
                 name("Pipeline"),
-                " Main pipeline ",
-                ProductType.GAS,
+                "Main pipeline",
+                gasProductType(),
                 DiameterInInches.of(new BigDecimal("42.000")),
-                LengthInKilometers.of(new BigDecimal("512.300")));
+                LengthInKilometers.of(new BigDecimal("512.300")),
+                TopologyStatus.PLANNED,
+                CREATED_AT,
+                UPDATED_AT);
     }
 
     public static Pipeline activePipeline(PipelineSystem pipelineSystem) {
-        return pipeline(pipelineSystem).activate();
+        return Pipeline.restore(
+                PipelineId.of("pipe-test-active"),
+                pipelineSystem.id(),
+                code("PIPE-ACTIVE"),
+                name("Active Pipeline"),
+                "Active pipeline",
+                gasProductType(),
+                DiameterInInches.of(new BigDecimal("42.000")),
+                LengthInKilometers.of(new BigDecimal("512.300")),
+                TopologyStatus.ACTIVE,
+                CREATED_AT,
+                UPDATED_AT);
     }
 
     public static Facility facility() {
-        return Facility.create(
+        return Facility.restore(
+                FacilityId.of("fac-test-main"),
                 code("FAC"),
                 name("Facility"),
-                FacilityType.COMPRESSION_STATION,
-                ProductType.GAS,
+                compressionStationType(),
+                gasProductType(),
+                TopologyStatus.PLANNED,
                 GeoCoordinate.of(31.6167, 2.2167),
-                organizationUnitReference());
+                organizationUnitReference(),
+                CREATED_AT,
+                UPDATED_AT);
     }
 
     public static TopologyNode facilityNode(Facility facility, NodeType nodeType) {
-        return TopologyNode.create(
+        return TopologyNode.restore(
+                TopologyNodeId.of("node-test-fac-" + nodeType.name().toLowerCase()),
                 code("NODE-FAC-" + nodeType.name()),
                 name("Facility Node " + nodeType.name()),
-                nodeType,
+                nodeType(nodeType),
                 facility.id(),
                 null,
                 GeoCoordinate.of(31.6168, 2.2168),
-                new BigDecimal("725.300"));
+                new BigDecimal("725.300"),
+                TopologyStatus.PLANNED,
+                CREATED_AT,
+                UPDATED_AT);
     }
 
     public static TopologyNode freeNode(NodeType nodeType, String suffix) {
-        return TopologyNode.create(
+        return TopologyNode.restore(
+                TopologyNodeId.of("node-test-" + suffix.toLowerCase().replace('_', '-')),
                 code("NODE-" + suffix),
                 name("Node " + suffix),
-                nodeType,
+                nodeType(nodeType),
                 null,
                 null,
                 GeoCoordinate.of(31.5000, 2.1000),
-                new BigDecimal("700.000"));
+                new BigDecimal("700.000"),
+                TopologyStatus.PLANNED,
+                CREATED_AT,
+                UPDATED_AT);
     }
 
     public static PipelineSegment segment(Pipeline pipeline, TopologyNode fromNode, TopologyNode toNode) {
-        return PipelineSegment.create(
+        return PipelineSegment.restore(
+                PipelineSegmentId.of("seg-test-main"),
                 pipeline.id(),
                 code("SEG"),
                 name("Segment"),
                 fromNode.id(),
                 toNode.id(),
                 LengthInKilometers.of(new BigDecimal("25.000")),
-                DiameterInInches.of(new BigDecimal("42.000")));
+                DiameterInInches.of(new BigDecimal("42.000")),
+                TopologyStatus.PLANNED,
+                CREATED_AT,
+                UPDATED_AT);
     }
 
     public static PipelineSegment segmentWithPipelineId(PipelineId pipelineId, TopologyNode fromNode, TopologyNode toNode) {
-        return PipelineSegment.create(
+        return PipelineSegment.restore(
+                PipelineSegmentId.of("seg-test-other"),
                 pipelineId,
                 code("SEG-OTHER"),
                 name("Other Segment"),
                 fromNode.id(),
                 toNode.id(),
                 LengthInKilometers.of(new BigDecimal("25.000")),
-                DiameterInInches.of(new BigDecimal("42.000")));
+                DiameterInInches.of(new BigDecimal("42.000")),
+                TopologyStatus.PLANNED,
+                CREATED_AT,
+                UPDATED_AT);
     }
 
     public static PipelineAppurtenance valve(Pipeline pipeline, TopologyNode node) {
-        return PipelineAppurtenance.create(
-                pipeline.id(),
-                node.id(),
-                code("APP-VALVE"),
-                name("Valve Appurtenance"),
-                PipelineAppurtenanceType.VALVE,
-                ValveType.BLOCK_VALVE,
-                PipelineKilometerPoint.of(new BigDecimal("25.000")),
-                GeoCoordinate.of(31.7000, 2.3000),
-                " Block valve ");
+        return appurtenance(pipeline, node, PipelineAppurtenanceType.VALVE, ValveType.BLOCK_VALVE, "VALVE");
     }
 
     public static PipelineAppurtenance appurtenance(
@@ -185,36 +270,48 @@ public final class TopologyDomainTestData {
             ValveType valveType,
             String suffix) {
 
-        return PipelineAppurtenance.create(
+        return PipelineAppurtenance.restore(
+                PipelineAppurtenanceId.of("app-test-" + suffix.toLowerCase().replace('_', '-')),
                 pipeline.id(),
                 node.id(),
                 code("APP-" + suffix),
                 name("Appurtenance " + suffix),
-                appurtenanceType,
-                valveType,
+                appurtenanceType(appurtenanceType),
+                valveType(valveType),
                 PipelineKilometerPoint.of(new BigDecimal("30.000")),
+                TopologyStatus.PLANNED,
                 GeoCoordinate.of(31.7100, 2.3100),
-                " Appurtenance ");
+                "Appurtenance",
+                CREATED_AT,
+                UPDATED_AT);
     }
 
     public static TopologyConnection connection(TopologyNode fromNode, TopologyNode toNode, PipelineSegment segment) {
-        return TopologyConnection.create(
+        return TopologyConnection.restore(
+                TopologyConnectionId.of("conn-test-main"),
                 code("CONN"),
                 name("Connection"),
                 fromNode.id(),
                 toNode.id(),
-                ConnectionType.PIPELINE_SEGMENT,
+                connectionType(ConnectionType.PIPELINE_SEGMENT),
                 TopologyAssetType.SEGMENT,
-                segment.id().value());
+                segment.id().value(),
+                TopologyStatus.PLANNED,
+                CREATED_AT,
+                UPDATED_AT);
     }
 
     public static Equipment equipment(Facility facility) {
-        return Equipment.create(
+        return Equipment.restore(
+                EquipmentId.of("eqp-test-main"),
                 code("EQP"),
                 name("Equipment"),
-                EquipmentType.COMPRESSOR,
+                equipmentType(EquipmentType.COMPRESSOR),
                 TopologyAssetType.FACILITY,
-                facility.id().value());
+                facility.id().value(),
+                TopologyStatus.PLANNED,
+                CREATED_AT,
+                UPDATED_AT);
     }
 
     public static TopologyNode duplicateOf(TopologyNode node) {
@@ -233,9 +330,8 @@ public final class TopologyDomainTestData {
     }
 
     public static PipelineSegment restoredSegmentWithSameNodes(Pipeline pipeline, TopologyNode node) {
-        Instant createdAt = Instant.parse("2026-01-01T00:00:00Z");
         return PipelineSegment.restore(
-                PipelineSegmentId.newId(),
+                PipelineSegmentId.of("seg-test-same-node"),
                 pipeline.id(),
                 code("SEG-SAME"),
                 name("Same Node Segment"),
@@ -244,8 +340,8 @@ public final class TopologyDomainTestData {
                 LengthInKilometers.of(new BigDecimal("10.000")),
                 DiameterInInches.of(new BigDecimal("42.000")),
                 TopologyStatus.PLANNED,
-                createdAt,
-                createdAt);
+                CREATED_AT,
+                UPDATED_AT);
     }
 
     public static TopologyConnection restoredConnection(
@@ -254,60 +350,61 @@ public final class TopologyDomainTestData {
             ConnectionType connectionType,
             TopologyAssetType linkedAssetType) {
 
-        Instant createdAt = Instant.parse("2026-01-01T00:00:00Z");
         return TopologyConnection.restore(
-                TopologyConnectionId.newId(),
+                TopologyConnectionId.of("conn-test-restored"),
                 code("CONN-RESTORED"),
                 name("Restored Connection"),
                 fromNode.id(),
                 toNode.id(),
-                connectionType,
+                connectionType(connectionType),
                 linkedAssetType,
                 "linked-asset-id",
                 TopologyStatus.PLANNED,
-                createdAt,
-                createdAt);
+                CREATED_AT,
+                UPDATED_AT);
     }
 
     public static Facility restoredFacilityWithIdAsOrganizationUnitReference() {
-        FacilityId facilityId = FacilityId.newId();
-        Instant createdAt = Instant.parse("2026-01-01T00:00:00Z");
+        FacilityId facilityId = FacilityId.of("fac-test-reused-id");
 
         return Facility.restore(
                 facilityId,
                 code("FAC-REUSED-ID"),
                 name("Facility Reused Id"),
-                FacilityType.COMPRESSION_STATION,
-                ProductType.GAS,
+                compressionStationType(),
+                gasProductType(),
                 TopologyStatus.PLANNED,
                 GeoCoordinate.of(31.6167, 2.2167),
                 OrganizationUnitReference.of("ORGANIZATION_UNIT", facilityId.value(), "TRC-OPS-EAST-CS-01", "Compression Station East 01"),
-                createdAt,
-                createdAt);
+                CREATED_AT,
+                UPDATED_AT);
     }
 
     public static Equipment equipmentWithEquipmentParent() {
-        return Equipment.create(
+        return Equipment.restore(
+                EquipmentId.of("eqp-test-parent-eqp"),
                 code("EQP-PARENT-EQP"),
                 name("Equipment With Equipment Parent"),
-                EquipmentType.METER,
+                equipmentType(EquipmentType.METER),
                 TopologyAssetType.EQUIPMENT,
-                "eqp-parent");
+                "eqp-parent",
+                TopologyStatus.PLANNED,
+                CREATED_AT,
+                UPDATED_AT);
     }
 
     public static Pipeline pipelineRestoredWithSystemId(PipelineSystemId pipelineSystemId) {
-        Instant createdAt = Instant.parse("2026-01-01T00:00:00Z");
         return Pipeline.restore(
-                PipelineId.newId(),
+                PipelineId.of("pipe-test-restored"),
                 pipelineSystemId,
                 code("PIPE-RESTORED"),
                 name("Restored Pipeline"),
                 "Restored pipeline",
-                ProductType.GAS,
+                gasProductType(),
                 DiameterInInches.of(new BigDecimal("42.000")),
                 LengthInKilometers.of(new BigDecimal("20.000")),
                 TopologyStatus.PLANNED,
-                createdAt,
-                createdAt);
+                CREATED_AT,
+                UPDATED_AT);
     }
 }

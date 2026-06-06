@@ -20,6 +20,7 @@
 package dz.sh.hidra.modules.topology.infrastructure.persistence.entity;
 
 import java.time.Instant;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -64,9 +65,13 @@ public class PipelineSystemJpaEntity {
     @Column(name = "description", nullable = true, length = 500)
     private String description;
 
-    /** Hydrocarbon product type. */
+    /** Legacy language-neutral hydrocarbon product type code retained until COR-013. */
     @Column(name = "product_type", nullable = false, length = 60)
     private String productType;
+
+    /** Catalog foreign key to hidra_topology_product_type. */
+    @Column(name = "product_type_id", nullable = false, length = 80)
+    private String productTypeId;
 
     /** Pipeline system lifecycle status. */
     @Column(name = "status", nullable = false, length = 40)
@@ -138,6 +143,14 @@ public class PipelineSystemJpaEntity {
 
     public void setProductType(String productType) {
         this.productType = productType;
+    }
+
+    public String getProductTypeId() {
+        return productTypeId;
+    }
+
+    public void setProductTypeId(String productTypeId) {
+        this.productTypeId = productTypeId;
     }
 
     public String getStatus() {

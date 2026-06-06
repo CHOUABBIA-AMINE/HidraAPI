@@ -32,17 +32,17 @@ import jakarta.validation.constraints.Size;
  * Creates a physical hydrocarbon transportation system that groups pipelines.
  *
  * <p>Architecture role:
- * This is a REST input contract. Controllers map it to CreatePipelineSystemCommand through
- * TopologyRestMapper.
+ * This REST input contract accepts stable catalog type codes. The API mapper resolves those codes to
+ * topology catalog entries before creating application commands.
  *
  * <p>Validation:
- * Code, name, and product type are required. Description and operational owner reference are
- * optional. Product type must match the topology domain enum.
+ * Code, name, and product type code are required. Description and operational owner reference are
+ * optional.
  *
  * @param code pipeline system business code
  * @param name pipeline system display name
  * @param description optional business description
- * @param productType hydrocarbon product type
+ * @param productTypeCode language-neutral product type catalog code
  * @param operationalOwnerReference optional neutral operational owner reference
  */
 @Schema(name = "CreatePipelineSystemRequest", description = "Request body for creating a topology pipeline system.")
@@ -61,10 +61,11 @@ public record CreatePipelineSystemRequest(
         @Size(max = 500)
         String description,
 
-        @Schema(description = "Hydrocarbon product type.", example = "GAS", allowableValues = {"GAS", "CRUDE_OIL", "CONDENSATE", "LPG", "REFINED_PRODUCT", "MULTIPHASE", "UNKNOWN"}, requiredMode = Schema.RequiredMode.REQUIRED)
+        @Schema(description = "Language-neutral product type catalog code.", example = "GAS", requiredMode = Schema.RequiredMode.REQUIRED)
         @NotBlank
-        @Pattern(regexp = "GAS|CRUDE_OIL|CONDENSATE|LPG|REFINED_PRODUCT|MULTIPHASE|UNKNOWN")
-        String productType,
+        @Size(min = 2, max = 80)
+        @Pattern(regexp = "[A-Za-z0-9][A-Za-z0-9_.-]{1,79}")
+        String productTypeCode,
 
         @Schema(description = "Optional neutral operational owner reference.")
         @Valid

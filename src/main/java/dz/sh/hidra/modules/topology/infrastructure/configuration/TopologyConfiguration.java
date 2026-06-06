@@ -33,21 +33,25 @@ import dz.sh.hidra.modules.topology.application.port.in.GetFacilityUseCase;
 import dz.sh.hidra.modules.topology.application.port.in.GetPipelineAppurtenanceUseCase;
 import dz.sh.hidra.modules.topology.application.port.in.GetPipelineSystemUseCase;
 import dz.sh.hidra.modules.topology.application.port.in.GetPipelineUseCase;
+import dz.sh.hidra.modules.topology.application.port.in.GetTopologyCatalogTypeUseCase;
 import dz.sh.hidra.modules.topology.application.port.in.GetTopologyNodeUseCase;
 import dz.sh.hidra.modules.topology.application.port.in.ListFacilitiesUseCase;
 import dz.sh.hidra.modules.topology.application.port.in.ListPipelineAppurtenancesUseCase;
 import dz.sh.hidra.modules.topology.application.port.in.ListPipelineSegmentsUseCase;
 import dz.sh.hidra.modules.topology.application.port.in.ListPipelineSystemsUseCase;
 import dz.sh.hidra.modules.topology.application.port.in.ListPipelinesUseCase;
+import dz.sh.hidra.modules.topology.application.port.in.ListTopologyCatalogTypesUseCase;
 import dz.sh.hidra.modules.topology.application.port.in.ListTopologyConnectionsUseCase;
 import dz.sh.hidra.modules.topology.application.port.in.ListTopologyNodesUseCase;
 import dz.sh.hidra.modules.topology.application.port.in.RegisterEquipmentUseCase;
+import dz.sh.hidra.modules.topology.application.port.in.ResolveTopologyCatalogTypeUseCase;
 import dz.sh.hidra.modules.topology.application.port.out.EquipmentRepositoryPort;
 import dz.sh.hidra.modules.topology.application.port.out.FacilityRepositoryPort;
 import dz.sh.hidra.modules.topology.application.port.out.PipelineAppurtenanceRepositoryPort;
 import dz.sh.hidra.modules.topology.application.port.out.PipelineRepositoryPort;
 import dz.sh.hidra.modules.topology.application.port.out.PipelineSegmentRepositoryPort;
 import dz.sh.hidra.modules.topology.application.port.out.PipelineSystemRepositoryPort;
+import dz.sh.hidra.modules.topology.application.port.out.TopologyCatalogRepositoryPort;
 import dz.sh.hidra.modules.topology.application.port.out.TopologyConnectionRepositoryPort;
 import dz.sh.hidra.modules.topology.application.port.out.TopologyNodeRepositoryPort;
 import dz.sh.hidra.modules.topology.application.service.EquipmentApplicationService;
@@ -56,6 +60,7 @@ import dz.sh.hidra.modules.topology.application.service.PipelineApplicationServi
 import dz.sh.hidra.modules.topology.application.service.PipelineAppurtenanceApplicationService;
 import dz.sh.hidra.modules.topology.application.service.PipelineSegmentApplicationService;
 import dz.sh.hidra.modules.topology.application.service.PipelineSystemApplicationService;
+import dz.sh.hidra.modules.topology.application.service.TopologyCatalogApplicationService;
 import dz.sh.hidra.modules.topology.application.service.TopologyConnectionApplicationService;
 import dz.sh.hidra.modules.topology.application.service.TopologyNodeApplicationService;
 import dz.sh.hidra.modules.topology.domain.policy.FacilityTopologyPolicy;
@@ -71,8 +76,10 @@ import dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.PipelineA
 import dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.PipelineRepositoryAdapter;
 import dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.PipelineSegmentRepositoryAdapter;
 import dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.PipelineSystemRepositoryAdapter;
+import dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.TopologyCatalogRepositoryAdapter;
 import dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.TopologyConnectionRepositoryAdapter;
 import dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.TopologyNodeRepositoryAdapter;
+import dz.sh.hidra.modules.topology.infrastructure.persistence.mapper.TopologyCatalogPersistenceMapper;
 import dz.sh.hidra.modules.topology.infrastructure.persistence.mapper.TopologyPersistenceMapper;
 import dz.sh.hidra.modules.topology.infrastructure.persistence.repository.EquipmentJpaRepository;
 import dz.sh.hidra.modules.topology.infrastructure.persistence.repository.FacilityJpaRepository;
@@ -80,16 +87,19 @@ import dz.sh.hidra.modules.topology.infrastructure.persistence.repository.Pipeli
 import dz.sh.hidra.modules.topology.infrastructure.persistence.repository.PipelineJpaRepository;
 import dz.sh.hidra.modules.topology.infrastructure.persistence.repository.PipelineSegmentJpaRepository;
 import dz.sh.hidra.modules.topology.infrastructure.persistence.repository.PipelineSystemJpaRepository;
+import dz.sh.hidra.modules.topology.infrastructure.persistence.repository.TopologyCatalogJpaRepository;
+import dz.sh.hidra.modules.topology.infrastructure.persistence.repository.TopologyCatalogTranslationJpaRepository;
 import dz.sh.hidra.modules.topology.infrastructure.persistence.repository.TopologyConnectionJpaRepository;
 import dz.sh.hidra.modules.topology.infrastructure.persistence.repository.TopologyNodeJpaRepository;
+import jakarta.persistence.EntityManager;
 
 /**
  * Wires topology module beans.
  *
  * <p>Business role:
- * Assembles physical topology use cases, domain services, policies, and persistence adapters for
- * pipeline systems, pipelines, facilities, topology nodes, pipeline segments, pipeline appurtenances,
- * topology connections, and equipment.
+ * Assembles physical topology use cases, domain services, policies, persistence adapters, and
+ * multilingual topology catalog services for pipeline systems, pipelines, facilities, topology nodes,
+ * pipeline segments, pipeline appurtenances, topology connections, and equipment.
  *
  * <p>Architecture role:
  * Infrastructure configuration only. It connects inbound ports, outbound ports, domain policies,
@@ -110,6 +120,30 @@ public class TopologyConfiguration {
     @Bean
     public TopologyPersistenceMapper topologyPersistenceMapper() {
         return new TopologyPersistenceMapper();
+    }
+
+    @Bean
+    public TopologyCatalogPersistenceMapper topologyCatalogPersistenceMapper() {
+        return new TopologyCatalogPersistenceMapper();
+    }
+
+    @Bean
+    public TopologyCatalogJpaRepository topologyCatalogJpaRepository(EntityManager entityManager) {
+        return new TopologyCatalogJpaRepository(entityManager);
+    }
+
+    @Bean
+    public TopologyCatalogTranslationJpaRepository topologyCatalogTranslationJpaRepository(EntityManager entityManager) {
+        return new TopologyCatalogTranslationJpaRepository(entityManager);
+    }
+
+    @Bean
+    public TopologyCatalogRepositoryPort topologyCatalogRepositoryPort(
+            TopologyCatalogJpaRepository catalogRepository,
+            TopologyCatalogTranslationJpaRepository translationRepository,
+            TopologyCatalogPersistenceMapper mapper) {
+
+        return new TopologyCatalogRepositoryAdapter(catalogRepository, translationRepository, mapper);
     }
 
     @Bean
@@ -426,6 +460,28 @@ public class TopologyConfiguration {
 
     @Bean
     public RegisterEquipmentUseCase registerEquipmentUseCase(EquipmentApplicationService service) {
+        return service;
+    }
+
+    @Bean
+    public TopologyCatalogApplicationService topologyCatalogApplicationService(
+            TopologyCatalogRepositoryPort topologyCatalogRepository) {
+
+        return new TopologyCatalogApplicationService(topologyCatalogRepository);
+    }
+
+    @Bean
+    public GetTopologyCatalogTypeUseCase getTopologyCatalogTypeUseCase(TopologyCatalogApplicationService service) {
+        return service;
+    }
+
+    @Bean
+    public ListTopologyCatalogTypesUseCase listTopologyCatalogTypesUseCase(TopologyCatalogApplicationService service) {
+        return service;
+    }
+
+    @Bean
+    public ResolveTopologyCatalogTypeUseCase resolveTopologyCatalogTypeUseCase(TopologyCatalogApplicationService service) {
         return service;
     }
 }

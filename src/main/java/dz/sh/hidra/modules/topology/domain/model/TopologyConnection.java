@@ -25,6 +25,7 @@ import java.util.Objects;
 import dz.sh.hidra.kernel.domain.exception.BusinessRuleViolationException;
 import dz.sh.hidra.kernel.domain.model.Entity;
 import dz.sh.hidra.modules.topology.domain.value.ConnectionType;
+import dz.sh.hidra.modules.topology.domain.value.ConnectionTypeReference;
 import dz.sh.hidra.modules.topology.domain.value.TopologyAssetType;
 import dz.sh.hidra.modules.topology.domain.value.TopologyCode;
 import dz.sh.hidra.modules.topology.domain.value.TopologyConnectionId;
@@ -41,8 +42,8 @@ import dz.sh.hidra.modules.topology.domain.value.TopologyStatus;
  * or other physical connectivity.
  *
  * <p>Architecture role:
- * This is a pure topology domain entity and must not depend on Spring, JPA, REST DTOs, identity,
- * organization implementation, measurement, flow, risk, workflow, or infrastructure.
+ * Connection classification is now a catalog reference. Linked asset type remains a technical asset
+ * discriminator until a later roadmap decides otherwise.
  *
  * <p>Validation:
  * From-node and to-node must be different. Linked asset type and identifier are required.
@@ -54,7 +55,7 @@ public final class TopologyConnection implements Entity<TopologyConnectionId> {
     private final TopologyName name;
     private final TopologyNodeId fromNodeId;
     private final TopologyNodeId toNodeId;
-    private final ConnectionType connectionType;
+    private final ConnectionTypeReference connectionType;
     private final TopologyAssetType linkedAssetType;
     private final String linkedAssetId;
     private final TopologyStatus status;
@@ -67,7 +68,7 @@ public final class TopologyConnection implements Entity<TopologyConnectionId> {
             TopologyName name,
             TopologyNodeId fromNodeId,
             TopologyNodeId toNodeId,
-            ConnectionType connectionType,
+            ConnectionTypeReference connectionType,
             TopologyAssetType linkedAssetType,
             String linkedAssetId,
             TopologyStatus status,
@@ -79,7 +80,7 @@ public final class TopologyConnection implements Entity<TopologyConnectionId> {
         this.name = Objects.requireNonNull(name, "Topology connection name must not be null.");
         this.fromNodeId = Objects.requireNonNull(fromNodeId, "Topology connection from node id must not be null.");
         this.toNodeId = Objects.requireNonNull(toNodeId, "Topology connection to node id must not be null.");
-        this.connectionType = Objects.requireNonNull(connectionType, "Topology connection type must not be null.");
+        this.connectionType = Objects.requireNonNull(connectionType, "Topology connection type reference must not be null.");
         this.linkedAssetType = Objects.requireNonNull(linkedAssetType, "Topology connection linked asset type must not be null.");
         this.linkedAssetId = requireText(linkedAssetId, "Topology connection linked asset id");
         this.status = Objects.requireNonNull(status, "Topology connection status must not be null.");
@@ -95,25 +96,44 @@ public final class TopologyConnection implements Entity<TopologyConnectionId> {
             TopologyName name,
             TopologyNodeId fromNodeId,
             TopologyNodeId toNodeId,
-            ConnectionType connectionType,
+            ConnectionTypeReference connectionType,
             TopologyAssetType linkedAssetType,
             String linkedAssetId) {
 
         Instant now = Instant.now();
-        return new TopologyConnection(
-                TopologyConnectionId.newId(),
-                code,
-                name,
-                fromNodeId,
-                toNodeId,
-                connectionType,
-                linkedAssetType,
-                linkedAssetId,
-                TopologyStatus.PLANNED,
-                now,
-                now);
+        return new TopologyConnection(TopologyConnectionId.newId(), code, name, fromNodeId, toNodeId, connectionType, linkedAssetType, linkedAssetId, TopologyStatus.PLANNED, now, now);
     }
 
+    @Deprecated(forRemoval = true)
+    public static TopologyConnection create(
+            TopologyCode code,
+            TopologyName name,
+            TopologyNodeId fromNodeId,
+            TopologyNodeId toNodeId,
+            ConnectionType connectionType,
+            TopologyAssetType linkedAssetType,
+            String linkedAssetId) {
+
+        return create(code, name, fromNodeId, toNodeId, ConnectionTypeReference.from(connectionType), linkedAssetType, linkedAssetId);
+    }
+
+    public static TopologyConnection restore(
+            TopologyConnectionId id,
+            TopologyCode code,
+            TopologyName name,
+            TopologyNodeId fromNodeId,
+            TopologyNodeId toNodeId,
+            ConnectionTypeReference connectionType,
+            TopologyAssetType linkedAssetType,
+            String linkedAssetId,
+            TopologyStatus status,
+            Instant createdAt,
+            Instant updatedAt) {
+
+        return new TopologyConnection(id, code, name, fromNodeId, toNodeId, connectionType, linkedAssetType, linkedAssetId, status, createdAt, updatedAt);
+    }
+
+    @Deprecated(forRemoval = true)
     public static TopologyConnection restore(
             TopologyConnectionId id,
             TopologyCode code,
@@ -127,161 +147,46 @@ public final class TopologyConnection implements Entity<TopologyConnectionId> {
             Instant createdAt,
             Instant updatedAt) {
 
-        return new TopologyConnection(
-                id,
-                code,
-                name,
-                fromNodeId,
-                toNodeId,
-                connectionType,
-                linkedAssetType,
-                linkedAssetId,
-                status,
-                createdAt,
-                updatedAt);
+        return restore(id, code, name, fromNodeId, toNodeId, ConnectionTypeReference.from(connectionType), linkedAssetType, linkedAssetId, status, createdAt, updatedAt);
     }
 
     @Override
-    public TopologyConnectionId id() {
-        return id;
-    }
+    public TopologyConnectionId id() { return id; }
+    public TopologyCode code() { return code; }
+    public TopologyName name() { return name; }
+    public TopologyNodeId fromNodeId() { return fromNodeId; }
+    public TopologyNodeId toNodeId() { return toNodeId; }
+    public ConnectionTypeReference connectionType() { return connectionType; }
+    public TopologyAssetType linkedAssetType() { return linkedAssetType; }
+    public String linkedAssetId() { return linkedAssetId; }
+    public TopologyStatus status() { return status; }
+    public Instant createdAt() { return createdAt; }
+    public Instant updatedAt() { return updatedAt; }
 
-    public TopologyCode code() {
-        return code;
-    }
-
-    public TopologyName name() {
-        return name;
-    }
-
-    public TopologyNodeId fromNodeId() {
-        return fromNodeId;
-    }
-
-    public TopologyNodeId toNodeId() {
-        return toNodeId;
-    }
-
-    public ConnectionType connectionType() {
-        return connectionType;
-    }
-
-    public TopologyAssetType linkedAssetType() {
-        return linkedAssetType;
-    }
-
-    public String linkedAssetId() {
-        return linkedAssetId;
-    }
-
-    public TopologyStatus status() {
-        return status;
-    }
-
-    public Instant createdAt() {
-        return createdAt;
-    }
-
-    public Instant updatedAt() {
-        return updatedAt;
-    }
-
-
-    /**
-     * Activates this topology asset.
-     *
-     * @return active topology asset
-     */
-    public TopologyConnection activate() {
-        return withStatus(TopologyStatus.ACTIVE);
-    }
-
-    /**
-     * Deactivates this topology asset.
-     *
-     * @return inactive topology asset
-     */
-    public TopologyConnection deactivate() {
-        return withStatus(TopologyStatus.INACTIVE);
-    }
-
-    /**
-     * Marks this topology asset as under maintenance.
-     *
-     * @return topology asset under maintenance
-     */
-    public TopologyConnection markUnderMaintenance() {
-        return withStatus(TopologyStatus.UNDER_MAINTENANCE);
-    }
-
-    /**
-     * Retires this topology asset.
-     *
-     * @return retired topology asset
-     */
-    public TopologyConnection retire() {
-        return withStatus(TopologyStatus.RETIRED);
-    }
-
-    /**
-     * Decommissions this topology asset.
-     *
-     * @return decommissioned topology asset
-     */
-    public TopologyConnection decommission() {
-        return withStatus(TopologyStatus.DECOMMISSIONED);
-    }
+    public TopologyConnection activate() { return withStatus(TopologyStatus.ACTIVE); }
+    public TopologyConnection deactivate() { return withStatus(TopologyStatus.INACTIVE); }
+    public TopologyConnection markUnderMaintenance() { return withStatus(TopologyStatus.UNDER_MAINTENANCE); }
+    public TopologyConnection retire() { return withStatus(TopologyStatus.RETIRED); }
+    public TopologyConnection decommission() { return withStatus(TopologyStatus.DECOMMISSIONED); }
 
     private TopologyConnection withStatus(TopologyStatus newStatus) {
-        return new TopologyConnection(
-                id,
-                code,
-                name,
-                fromNodeId,
-                toNodeId,
-                connectionType,
-                linkedAssetType,
-                linkedAssetId,
-                Objects.requireNonNull(newStatus, "Topology connection status must not be null."),
-                createdAt,
-                Instant.now());
+        return new TopologyConnection(id, code, name, fromNodeId, toNodeId, connectionType, linkedAssetType, linkedAssetId, Objects.requireNonNull(newStatus, "Topology connection status must not be null."), createdAt, Instant.now());
     }
 
     private void ensureDifferentNodes() {
         if (fromNodeId.equals(toNodeId)) {
-            throw new BusinessRuleViolationException("TopologyConnection from node and to node must be different.");
+            throw new BusinessRuleViolationException("TopologyConnection fromNodeId and toNodeId must be different.");
         }
     }
 
     private static String requireText(String value, String fieldName) {
-        if (value == null || value.isBlank()) {
-            throw new BusinessRuleViolationException(fieldName + " must not be null or blank.");
-        }
+        if (value == null || value.isBlank()) { throw new BusinessRuleViolationException(fieldName + " must not be null or blank."); }
         return value.trim();
     }
 
-    private static String normalizeOptionalText(String value, int maxLength, String fieldName) {
-        if (value == null || value.isBlank()) {
-            return null;
-        }
-
-        String normalized = value.trim();
-
-        if (normalized.length() > maxLength) {
-            throw new BusinessRuleViolationException(fieldName + " length must not exceed " + maxLength + " characters.");
-        }
-
-        return normalized;
-    }
-
-    private static Instant requireInstant(Instant value, String fieldName) {
-        return Objects.requireNonNull(value, fieldName + " must not be null.");
-    }
+    private static Instant requireInstant(Instant value, String fieldName) { return Objects.requireNonNull(value, fieldName + " must not be null."); }
 
     private static void ensureUpdatedAtIsValid(Instant createdAt, Instant updatedAt, String modelName) {
-        if (updatedAt.isBefore(createdAt)) {
-            throw new BusinessRuleViolationException(modelName + " updatedAt must not be before createdAt.");
-        }
+        if (updatedAt.isBefore(createdAt)) { throw new BusinessRuleViolationException(modelName + " updatedAt must not be before createdAt."); }
     }
-
 }

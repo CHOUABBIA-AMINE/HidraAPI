@@ -32,7 +32,6 @@ import dz.sh.hidra.modules.topology.domain.model.PipelineSystem;
 import dz.sh.hidra.modules.topology.domain.model.TopologyNode;
 import dz.sh.hidra.modules.topology.domain.value.NodeType;
 import dz.sh.hidra.modules.topology.domain.value.PipelineAppurtenanceType;
-import dz.sh.hidra.modules.topology.domain.value.PipelineId;
 import dz.sh.hidra.modules.topology.domain.value.ValveType;
 
 /**

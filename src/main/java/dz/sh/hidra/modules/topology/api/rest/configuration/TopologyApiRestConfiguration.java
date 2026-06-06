@@ -24,6 +24,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import dz.sh.hidra.modules.topology.api.rest.mapper.TopologyRestMapper;
+import dz.sh.hidra.modules.topology.application.port.in.ResolveTopologyCatalogTypeUseCase;
 
 /**
  * Spring configuration for topology REST API mapper beans.
@@ -34,16 +35,11 @@ import dz.sh.hidra.modules.topology.api.rest.mapper.TopologyRestMapper;
  * equipment.
  *
  * <p>Architecture role:
- * This API-layer configuration exposes API mapper beans only. It does not wire application services,
- * repositories, persistence adapters, identity implementation, organization implementation,
- * measurement, flow, risk, workflow, or platform infrastructure.
+ * This API-layer configuration wires the mapper to the topology catalog resolver so REST contracts can
+ * accept type codes and return localized type labels without depending on persistence.
  *
  * <p>Validation:
  * Spring creates the mapper only when no other TopologyRestMapper bean already exists.
- *
- * <p>Usage:
- * Discovered by component scanning so topology REST controllers can receive TopologyRestMapper by
- * constructor injection.
  */
 @Configuration(proxyBeanMethods = false)
 public class TopologyApiRestConfiguration {
@@ -51,11 +47,14 @@ public class TopologyApiRestConfiguration {
     /**
      * Creates the topology REST mapper bean.
      *
+     * @param resolveTopologyCatalogTypeUseCase catalog resolver use case
      * @return topology REST mapper
      */
     @Bean
     @ConditionalOnMissingBean
-    public TopologyRestMapper topologyRestMapper() {
-        return new TopologyRestMapper();
+    public TopologyRestMapper topologyRestMapper(
+            ResolveTopologyCatalogTypeUseCase resolveTopologyCatalogTypeUseCase) {
+
+        return new TopologyRestMapper(resolveTopologyCatalogTypeUseCase);
     }
 }

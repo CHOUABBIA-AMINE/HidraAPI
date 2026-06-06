@@ -28,20 +28,6 @@ import dz.sh.hidra.modules.topology.infrastructure.persistence.entity.PipelineAp
 
 /**
  * Spring Data repository for pipeline appurtenance persistence entities.
- *
- * <p>Business role:
- * Provides storage access for valves, injection points, extraction points, purge points, vents, drains, scraper points, hot taps, bypass points, metering points, sampling points, and connection points.
- *
- * <p>Architecture role:
- * This is an infrastructure repository used only by topology persistence adapters. Application
- * services must depend on outbound ports, not on this interface.
- *
- * <p>Validation:
- * Domain validation occurs before mapping. Database constraints enforce required fields and code
- * uniqueness.
- *
- * <p>Usage:
- * Use only from topology repository adapters created in TOP-012.
  */
 public interface PipelineAppurtenanceJpaRepository extends JpaRepository<PipelineAppurtenanceJpaEntity, String> {
 
@@ -53,9 +39,9 @@ public interface PipelineAppurtenanceJpaRepository extends JpaRepository<Pipelin
 
     List<PipelineAppurtenanceJpaEntity> findByNodeId(String nodeId);
 
-    List<PipelineAppurtenanceJpaEntity> findByAppurtenanceType(String appurtenanceType);
+    List<PipelineAppurtenanceJpaEntity> findByAppurtenanceTypeId(String appurtenanceTypeId);
 
-    List<PipelineAppurtenanceJpaEntity> findByValveType(String valveType);
+    List<PipelineAppurtenanceJpaEntity> findByValveTypeId(String valveTypeId);
 
     List<PipelineAppurtenanceJpaEntity> findByStatus(String status);
 }

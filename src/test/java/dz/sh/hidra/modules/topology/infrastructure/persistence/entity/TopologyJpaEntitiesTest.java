@@ -7,7 +7,7 @@
  *
  * @Name        : TopologyJpaEntitiesTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-05-30
+ * @UpdatedOn   : 2026-06-06
  *
  * @Type        : Test
  * @Layer       : Infrastructure
@@ -80,9 +80,14 @@ class TopologyJpaEntitiesTest {
         entity.setId("pipe-1");
         entity.setPipelineSystemId("ps-1");
         entity.setCode("GZ1-LINE-A");
-        entity.setName("Line A");
-        entity.setDescription("Main line");
+        entity.setNameAr("خط الغاز الرئيسي أ");
+        entity.setNameFr("Ligne principale gaz A");
+        entity.setNameEn("Line A");
+        entity.setDescriptionAr("خط رئيسي");
+        entity.setDescriptionFr("Ligne principale");
+        entity.setDescriptionEn("Main line");
         entity.setProductType("GAS");
+        entity.setProductTypeId("product-gas");
         entity.setNominalDiameterInches(new BigDecimal("42.000"));
         entity.setDesignLengthKm(new BigDecimal("512.300"));
         entity.setStatus("PLANNED");
@@ -90,6 +95,13 @@ class TopologyJpaEntitiesTest {
         assertEquals("pipe-1", entity.getId());
         assertEquals("ps-1", entity.getPipelineSystemId());
         assertEquals("GZ1-LINE-A", entity.getCode());
+        assertEquals("خط الغاز الرئيسي أ", entity.getNameAr());
+        assertEquals("Ligne principale gaz A", entity.getNameFr());
+        assertEquals("Line A", entity.getNameEn());
+        assertEquals("خط رئيسي", entity.getDescriptionAr());
+        assertEquals("Ligne principale", entity.getDescriptionFr());
+        assertEquals("Main line", entity.getDescriptionEn());
+        assertEquals("product-gas", entity.getProductTypeId());
         assertEquals(new BigDecimal("42.000"), entity.getNominalDiameterInches());
         assertEquals(new BigDecimal("512.300"), entity.getDesignLengthKm());
     }

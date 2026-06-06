@@ -20,6 +20,7 @@
 package dz.sh.hidra.modules.topology.infrastructure.persistence.entity;
 
 import java.time.Instant;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -60,9 +61,13 @@ public class EquipmentJpaEntity {
     @Column(name = "name", nullable = false, length = 160)
     private String name;
 
-    /** Topology equipment type. */
+    /** Legacy language-neutral equipment type code retained until COR-013. */
     @Column(name = "equipment_type", nullable = false, length = 80)
     private String equipmentType;
+
+    /** Catalog foreign key to hidra_topology_equipment_type. */
+    @Column(name = "equipment_type_id", nullable = false, length = 80)
+    private String equipmentTypeId;
 
     /** Parent topology asset type. */
     @Column(name = "parent_asset_type", nullable = false, length = 80)
@@ -88,75 +93,43 @@ public class EquipmentJpaEntity {
         // Required by JPA.
     }
 
-    public String getId() {
-        return id;
-    }
+    public String getId() { return id; }
 
-    public void setId(String id) {
-        this.id = id;
-    }
+    public void setId(String id) { this.id = id; }
 
-    public String getCode() {
-        return code;
-    }
+    public String getCode() { return code; }
 
-    public void setCode(String code) {
-        this.code = code;
-    }
+    public void setCode(String code) { this.code = code; }
 
-    public String getName() {
-        return name;
-    }
+    public String getName() { return name; }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    public void setName(String name) { this.name = name; }
 
-    public String getEquipmentType() {
-        return equipmentType;
-    }
+    public String getEquipmentType() { return equipmentType; }
 
-    public void setEquipmentType(String equipmentType) {
-        this.equipmentType = equipmentType;
-    }
+    public void setEquipmentType(String equipmentType) { this.equipmentType = equipmentType; }
 
-    public String getParentAssetType() {
-        return parentAssetType;
-    }
+    public String getEquipmentTypeId() { return equipmentTypeId; }
 
-    public void setParentAssetType(String parentAssetType) {
-        this.parentAssetType = parentAssetType;
-    }
+    public void setEquipmentTypeId(String equipmentTypeId) { this.equipmentTypeId = equipmentTypeId; }
 
-    public String getParentAssetId() {
-        return parentAssetId;
-    }
+    public String getParentAssetType() { return parentAssetType; }
 
-    public void setParentAssetId(String parentAssetId) {
-        this.parentAssetId = parentAssetId;
-    }
+    public void setParentAssetType(String parentAssetType) { this.parentAssetType = parentAssetType; }
 
-    public String getStatus() {
-        return status;
-    }
+    public String getParentAssetId() { return parentAssetId; }
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
+    public void setParentAssetId(String parentAssetId) { this.parentAssetId = parentAssetId; }
 
-    public Instant getCreatedAt() {
-        return createdAt;
-    }
+    public String getStatus() { return status; }
 
-    public void setCreatedAt(Instant createdAt) {
-        this.createdAt = createdAt;
-    }
+    public void setStatus(String status) { this.status = status; }
 
-    public Instant getUpdatedAt() {
-        return updatedAt;
-    }
+    public Instant getCreatedAt() { return createdAt; }
 
-    public void setUpdatedAt(Instant updatedAt) {
-        this.updatedAt = updatedAt;
-    }
+    public void setCreatedAt(Instant createdAt) { this.createdAt = createdAt; }
+
+    public Instant getUpdatedAt() { return updatedAt; }
+
+    public void setUpdatedAt(Instant updatedAt) { this.updatedAt = updatedAt; }
 }

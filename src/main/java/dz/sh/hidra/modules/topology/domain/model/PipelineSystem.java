@@ -27,6 +27,7 @@ import dz.sh.hidra.kernel.domain.model.AggregateRoot;
 import dz.sh.hidra.modules.topology.domain.value.OperationalOwnerReference;
 import dz.sh.hidra.modules.topology.domain.value.PipelineSystemId;
 import dz.sh.hidra.modules.topology.domain.value.ProductType;
+import dz.sh.hidra.modules.topology.domain.value.ProductTypeReference;
 import dz.sh.hidra.modules.topology.domain.value.TopologyCode;
 import dz.sh.hidra.modules.topology.domain.value.TopologyName;
 import dz.sh.hidra.modules.topology.domain.value.TopologyStatus;
@@ -39,14 +40,12 @@ import dz.sh.hidra.modules.topology.domain.value.TopologyStatus;
  * network. It is physical topology master data and not an organization unit.
  *
  * <p>Architecture role:
- * This is a pure topology domain aggregate. It is independent from Spring, JPA, REST DTOs,
- * identity, organization implementation, measurement, flow, risk, workflow, and infrastructure.
+ * This is a pure topology domain aggregate. Product classification is now carried as a catalog
+ * reference so multilingual labels and configurable taxonomies can be resolved outside the asset.
  *
  * <p>Validation:
- * Identifier, code, name, product type, status, creation instant, and update instant are mandatory.
- *
- * <p>Usage:
- * Use this aggregate to create or restore pipeline systems before attaching pipelines.
+ * Identifier, code, name, product type reference, status, creation instant, and update instant are
+ * mandatory.
  */
 public final class PipelineSystem implements AggregateRoot<PipelineSystemId> {
 
@@ -54,7 +53,7 @@ public final class PipelineSystem implements AggregateRoot<PipelineSystemId> {
     private final TopologyCode code;
     private final TopologyName name;
     private final String description;
-    private final ProductType productType;
+    private final ProductTypeReference productType;
     private final TopologyStatus status;
     private final OperationalOwnerReference operationalOwnerReference;
     private final Instant createdAt;
@@ -65,7 +64,7 @@ public final class PipelineSystem implements AggregateRoot<PipelineSystemId> {
             TopologyCode code,
             TopologyName name,
             String description,
-            ProductType productType,
+            ProductTypeReference productType,
             TopologyStatus status,
             OperationalOwnerReference operationalOwnerReference,
             Instant createdAt,
@@ -75,7 +74,7 @@ public final class PipelineSystem implements AggregateRoot<PipelineSystemId> {
         this.code = Objects.requireNonNull(code, "Pipeline system code must not be null.");
         this.name = Objects.requireNonNull(name, "Pipeline system name must not be null.");
         this.description = normalizeOptionalText(description, 500, "Pipeline system description");
-        this.productType = Objects.requireNonNull(productType, "Pipeline system product type must not be null.");
+        this.productType = Objects.requireNonNull(productType, "Pipeline system product type reference must not be null.");
         this.status = Objects.requireNonNull(status, "Pipeline system status must not be null.");
         this.operationalOwnerReference = operationalOwnerReference;
         this.createdAt = requireInstant(createdAt, "Pipeline system createdAt");
@@ -84,21 +83,11 @@ public final class PipelineSystem implements AggregateRoot<PipelineSystemId> {
         ensureUpdatedAtIsValid(this.createdAt, this.updatedAt, "PipelineSystem");
     }
 
-    /**
-     * Creates a planned pipeline system.
-     *
-     * @param code business code
-     * @param name display name
-     * @param description optional description
-     * @param productType product type
-     * @param operationalOwnerReference optional operational owner reference
-     * @return created pipeline system
-     */
     public static PipelineSystem create(
             TopologyCode code,
             TopologyName name,
             String description,
-            ProductType productType,
+            ProductTypeReference productType,
             OperationalOwnerReference operationalOwnerReference) {
 
         Instant now = Instant.now();
@@ -115,14 +104,25 @@ public final class PipelineSystem implements AggregateRoot<PipelineSystemId> {
     }
 
     /**
-     * Restores an existing pipeline system from persistence without importing persistence classes.
+     * Transitional legacy factory retained until REST/persistence callers are migrated.
      */
+    @Deprecated(forRemoval = true)
+    public static PipelineSystem create(
+            TopologyCode code,
+            TopologyName name,
+            String description,
+            ProductType productType,
+            OperationalOwnerReference operationalOwnerReference) {
+
+        return create(code, name, description, ProductTypeReference.from(productType), operationalOwnerReference);
+    }
+
     public static PipelineSystem restore(
             PipelineSystemId id,
             TopologyCode code,
             TopologyName name,
             String description,
-            ProductType productType,
+            ProductTypeReference productType,
             TopologyStatus status,
             OperationalOwnerReference operationalOwnerReference,
             Instant createdAt,
@@ -138,6 +138,24 @@ public final class PipelineSystem implements AggregateRoot<PipelineSystemId> {
                 operationalOwnerReference,
                 createdAt,
                 updatedAt);
+    }
+
+    /**
+     * Transitional legacy restore retained until persistence mapping is migrated to catalog FKs.
+     */
+    @Deprecated(forRemoval = true)
+    public static PipelineSystem restore(
+            PipelineSystemId id,
+            TopologyCode code,
+            TopologyName name,
+            String description,
+            ProductType productType,
+            TopologyStatus status,
+            OperationalOwnerReference operationalOwnerReference,
+            Instant createdAt,
+            Instant updatedAt) {
+
+        return restore(id, code, name, description, ProductTypeReference.from(productType), status, operationalOwnerReference, createdAt, updatedAt);
     }
 
     @Override
@@ -157,7 +175,7 @@ public final class PipelineSystem implements AggregateRoot<PipelineSystemId> {
         return description;
     }
 
-    public ProductType productType() {
+    public ProductTypeReference productType() {
         return productType;
     }
 
@@ -177,48 +195,22 @@ public final class PipelineSystem implements AggregateRoot<PipelineSystemId> {
         return updatedAt;
     }
 
-
-    /**
-     * Activates this topology asset.
-     *
-     * @return active topology asset
-     */
     public PipelineSystem activate() {
         return withStatus(TopologyStatus.ACTIVE);
     }
 
-    /**
-     * Deactivates this topology asset.
-     *
-     * @return inactive topology asset
-     */
     public PipelineSystem deactivate() {
         return withStatus(TopologyStatus.INACTIVE);
     }
 
-    /**
-     * Marks this topology asset as under maintenance.
-     *
-     * @return topology asset under maintenance
-     */
     public PipelineSystem markUnderMaintenance() {
         return withStatus(TopologyStatus.UNDER_MAINTENANCE);
     }
 
-    /**
-     * Retires this topology asset.
-     *
-     * @return retired topology asset
-     */
     public PipelineSystem retire() {
         return withStatus(TopologyStatus.RETIRED);
     }
 
-    /**
-     * Decommissions this topology asset.
-     *
-     * @return decommissioned topology asset
-     */
     public PipelineSystem decommission() {
         return withStatus(TopologyStatus.DECOMMISSIONED);
     }
@@ -259,5 +251,4 @@ public final class PipelineSystem implements AggregateRoot<PipelineSystemId> {
             throw new BusinessRuleViolationException(modelName + " updatedAt must not be before createdAt.");
         }
     }
-
 }

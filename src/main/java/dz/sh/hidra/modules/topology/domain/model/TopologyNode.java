@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.topology.domain.model;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.Objects;
 
@@ -27,13 +28,12 @@ import dz.sh.hidra.kernel.domain.model.Entity;
 import dz.sh.hidra.modules.topology.domain.value.FacilityId;
 import dz.sh.hidra.modules.topology.domain.value.GeoCoordinate;
 import dz.sh.hidra.modules.topology.domain.value.NodeType;
+import dz.sh.hidra.modules.topology.domain.value.NodeTypeReference;
 import dz.sh.hidra.modules.topology.domain.value.PipelineAppurtenanceId;
 import dz.sh.hidra.modules.topology.domain.value.TopologyCode;
 import dz.sh.hidra.modules.topology.domain.value.TopologyName;
 import dz.sh.hidra.modules.topology.domain.value.TopologyNodeId;
 import dz.sh.hidra.modules.topology.domain.value.TopologyStatus;
-
-import java.math.BigDecimal;
 
 /**
  * Represents a physical connection point in the topology graph.
@@ -44,18 +44,19 @@ import java.math.BigDecimal;
  * point, sampling point, receipt point, or delivery point.
  *
  * <p>Architecture role:
- * This is a pure topology domain entity and must not depend on Spring, JPA, REST DTOs, identity,
- * organization implementation, measurement, flow, risk, workflow, or infrastructure.
+ * Node classification is a catalog reference so multilingual labels and configurable node taxonomies
+ * can be resolved outside this entity.
  *
  * <p>Validation:
- * Identifier, code, name, node type, status, creation instant, and update instant are mandatory.
+ * Identifier, code, name, node type reference, status, creation instant, and update instant are
+ * mandatory.
  */
 public final class TopologyNode implements Entity<TopologyNodeId> {
 
     private final TopologyNodeId id;
     private final TopologyCode code;
     private final TopologyName name;
-    private final NodeType nodeType;
+    private final NodeTypeReference nodeType;
     private final FacilityId facilityId;
     private final PipelineAppurtenanceId pipelineAppurtenanceId;
     private final GeoCoordinate coordinate;
@@ -68,7 +69,7 @@ public final class TopologyNode implements Entity<TopologyNodeId> {
             TopologyNodeId id,
             TopologyCode code,
             TopologyName name,
-            NodeType nodeType,
+            NodeTypeReference nodeType,
             FacilityId facilityId,
             PipelineAppurtenanceId pipelineAppurtenanceId,
             GeoCoordinate coordinate,
@@ -80,7 +81,7 @@ public final class TopologyNode implements Entity<TopologyNodeId> {
         this.id = Objects.requireNonNull(id, "Topology node id must not be null.");
         this.code = Objects.requireNonNull(code, "Topology node code must not be null.");
         this.name = Objects.requireNonNull(name, "Topology node name must not be null.");
-        this.nodeType = Objects.requireNonNull(nodeType, "Topology node type must not be null.");
+        this.nodeType = Objects.requireNonNull(nodeType, "Topology node type reference must not be null.");
         this.facilityId = facilityId;
         this.pipelineAppurtenanceId = pipelineAppurtenanceId;
         this.coordinate = coordinate;
@@ -95,27 +96,46 @@ public final class TopologyNode implements Entity<TopologyNodeId> {
     public static TopologyNode create(
             TopologyCode code,
             TopologyName name,
-            NodeType nodeType,
+            NodeTypeReference nodeType,
             FacilityId facilityId,
             PipelineAppurtenanceId pipelineAppurtenanceId,
             GeoCoordinate coordinate,
             BigDecimal elevationMeters) {
 
         Instant now = Instant.now();
-        return new TopologyNode(
-                TopologyNodeId.newId(),
-                code,
-                name,
-                nodeType,
-                facilityId,
-                pipelineAppurtenanceId,
-                coordinate,
-                elevationMeters,
-                TopologyStatus.PLANNED,
-                now,
-                now);
+        return new TopologyNode(TopologyNodeId.newId(), code, name, nodeType, facilityId, pipelineAppurtenanceId, coordinate, elevationMeters, TopologyStatus.PLANNED, now, now);
     }
 
+    @Deprecated(forRemoval = true)
+    public static TopologyNode create(
+            TopologyCode code,
+            TopologyName name,
+            NodeType nodeType,
+            FacilityId facilityId,
+            PipelineAppurtenanceId pipelineAppurtenanceId,
+            GeoCoordinate coordinate,
+            BigDecimal elevationMeters) {
+
+        return create(code, name, NodeTypeReference.from(nodeType), facilityId, pipelineAppurtenanceId, coordinate, elevationMeters);
+    }
+
+    public static TopologyNode restore(
+            TopologyNodeId id,
+            TopologyCode code,
+            TopologyName name,
+            NodeTypeReference nodeType,
+            FacilityId facilityId,
+            PipelineAppurtenanceId pipelineAppurtenanceId,
+            GeoCoordinate coordinate,
+            BigDecimal elevationMeters,
+            TopologyStatus status,
+            Instant createdAt,
+            Instant updatedAt) {
+
+        return new TopologyNode(id, code, name, nodeType, facilityId, pipelineAppurtenanceId, coordinate, elevationMeters, status, createdAt, updatedAt);
+    }
+
+    @Deprecated(forRemoval = true)
     public static TopologyNode restore(
             TopologyNodeId id,
             TopologyCode code,
@@ -129,18 +149,7 @@ public final class TopologyNode implements Entity<TopologyNodeId> {
             Instant createdAt,
             Instant updatedAt) {
 
-        return new TopologyNode(
-                id,
-                code,
-                name,
-                nodeType,
-                facilityId,
-                pipelineAppurtenanceId,
-                coordinate,
-                elevationMeters,
-                status,
-                createdAt,
-                updatedAt);
+        return restore(id, code, name, NodeTypeReference.from(nodeType), facilityId, pipelineAppurtenanceId, coordinate, elevationMeters, status, createdAt, updatedAt);
     }
 
     @Override
@@ -156,7 +165,7 @@ public final class TopologyNode implements Entity<TopologyNodeId> {
         return name;
     }
 
-    public NodeType nodeType() {
+    public NodeTypeReference nodeType() {
         return nodeType;
     }
 
@@ -188,79 +197,28 @@ public final class TopologyNode implements Entity<TopologyNodeId> {
         return updatedAt;
     }
 
-
-    /**
-     * Activates this topology asset.
-     *
-     * @return active topology asset
-     */
     public TopologyNode activate() {
         return withStatus(TopologyStatus.ACTIVE);
     }
 
-    /**
-     * Deactivates this topology asset.
-     *
-     * @return inactive topology asset
-     */
     public TopologyNode deactivate() {
         return withStatus(TopologyStatus.INACTIVE);
     }
 
-    /**
-     * Marks this topology asset as under maintenance.
-     *
-     * @return topology asset under maintenance
-     */
     public TopologyNode markUnderMaintenance() {
         return withStatus(TopologyStatus.UNDER_MAINTENANCE);
     }
 
-    /**
-     * Retires this topology asset.
-     *
-     * @return retired topology asset
-     */
     public TopologyNode retire() {
         return withStatus(TopologyStatus.RETIRED);
     }
 
-    /**
-     * Decommissions this topology asset.
-     *
-     * @return decommissioned topology asset
-     */
     public TopologyNode decommission() {
         return withStatus(TopologyStatus.DECOMMISSIONED);
     }
 
     private TopologyNode withStatus(TopologyStatus newStatus) {
-        return new TopologyNode(
-                id,
-                code,
-                name,
-                nodeType,
-                facilityId,
-                pipelineAppurtenanceId,
-                coordinate,
-                elevationMeters,
-                Objects.requireNonNull(newStatus, "Topology node status must not be null."),
-                createdAt,
-                Instant.now());
-    }
-
-    private static String normalizeOptionalText(String value, int maxLength, String fieldName) {
-        if (value == null || value.isBlank()) {
-            return null;
-        }
-
-        String normalized = value.trim();
-
-        if (normalized.length() > maxLength) {
-            throw new BusinessRuleViolationException(fieldName + " length must not exceed " + maxLength + " characters.");
-        }
-
-        return normalized;
+        return new TopologyNode(id, code, name, nodeType, facilityId, pipelineAppurtenanceId, coordinate, elevationMeters, Objects.requireNonNull(newStatus, "Topology node status must not be null."), createdAt, Instant.now());
     }
 
     private static Instant requireInstant(Instant value, String fieldName) {
@@ -272,5 +230,4 @@ public final class TopologyNode implements Entity<TopologyNodeId> {
             throw new BusinessRuleViolationException(modelName + " updatedAt must not be before createdAt.");
         }
     }
-
 }

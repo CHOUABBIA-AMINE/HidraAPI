@@ -7,7 +7,7 @@
  *
  * @Name        : IdentityPersistenceMapper
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-05-30
+ * @UpdatedOn   : 2026-06-06
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -113,7 +113,9 @@ public final class IdentityPersistenceMapper {
         return RoleJpaEntity.of(
                 requiredRole.id().value(),
                 requiredRole.code().value(),
-                requiredRole.name().value(),
+                requiredRole.name().nameAr(),
+                requiredRole.name().nameFr(),
+                requiredRole.name().nameEn(),
                 requiredRole.status().name(),
                 permissionAssignments
         );
@@ -129,7 +131,7 @@ public final class IdentityPersistenceMapper {
         return Role.rehydrate(
                 RoleId.of(requiredEntity.getId()),
                 RoleCode.of(requiredEntity.getCode()),
-                RoleName.of(requiredEntity.getName()),
+                RoleName.of(requiredEntity.getNameAr(), requiredEntity.getNameFr(), requiredEntity.getNameEn()),
                 RoleStatus.from(requiredEntity.getStatus()),
                 permissionAssignments
         );

@@ -7,7 +7,7 @@
  *
  * @Name        : OrganizationPersistenceMapper
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-05-30
+ * @UpdatedOn   : 2026-06-06
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -112,7 +112,9 @@ public final class OrganizationPersistenceMapper {
         OrganizationUnitJpaEntity entity = new OrganizationUnitJpaEntity();
         entity.setId(organizationUnit.id().value());
         entity.setCode(organizationUnit.code().value());
-        entity.setName(organizationUnit.name().value());
+        entity.setNameAr(organizationUnit.name().nameAr());
+        entity.setNameFr(organizationUnit.name().nameFr());
+        entity.setNameEn(organizationUnit.name().nameEn());
         entity.setStatus(organizationUnit.status().name());
         entity.setTypeId(organizationUnit.type().id());
         entity.setParentId(organizationUnit.parentId().map(OrganizationUnitId::value).orElse(null));
@@ -137,7 +139,7 @@ public final class OrganizationPersistenceMapper {
         return OrganizationUnit.restore(
                 OrganizationUnitId.of(entity.getId()),
                 OrganizationUnitCode.of(entity.getCode()),
-                OrganizationUnitName.of(entity.getName()),
+                OrganizationUnitName.of(entity.getNameAr(), entity.getNameFr(), entity.getNameEn()),
                 OrganizationUnitStatus.valueOf(entity.getStatus()),
                 OrganizationUnitTypeReference.ofId(entity.getTypeId()),
                 entity.getParentId() == null ? null : OrganizationUnitId.of(entity.getParentId()),
@@ -152,8 +154,12 @@ public final class OrganizationPersistenceMapper {
         PositionJpaEntity entity = new PositionJpaEntity();
         entity.setId(position.id().value());
         entity.setCode(position.code().value());
-        entity.setTitle(position.title().value());
-        entity.setDescription(position.description());
+        entity.setTitleAr(position.title().titleAr());
+        entity.setTitleFr(position.title().titleFr());
+        entity.setTitleEn(position.title().titleEn());
+        entity.setDescriptionAr(position.description());
+        entity.setDescriptionFr(position.description());
+        entity.setDescriptionEn(position.description());
         entity.setActive(position.active());
         entity.setCreatedAt(position.createdAt());
         entity.setUpdatedAt(position.updatedAt());
@@ -166,8 +172,8 @@ public final class OrganizationPersistenceMapper {
         return Position.restore(
                 PositionId.of(entity.getId()),
                 PositionCode.of(entity.getCode()),
-                PositionTitle.of(entity.getTitle()),
-                entity.getDescription(),
+                PositionTitle.of(entity.getTitleAr(), entity.getTitleFr(), entity.getTitleEn()),
+                entity.getDescriptionEn(),
                 entity.isActive(),
                 entity.getCreatedAt(),
                 entity.getUpdatedAt());

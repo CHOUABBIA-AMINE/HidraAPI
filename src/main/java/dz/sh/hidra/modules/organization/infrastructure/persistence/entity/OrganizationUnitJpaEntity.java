@@ -7,7 +7,7 @@
  *
  * @Name        : OrganizationUnitJpaEntity
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-05-30
+ * @UpdatedOn   : 2026-06-06
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -40,8 +40,14 @@ public class OrganizationUnitJpaEntity {
     @Column(name = "code", nullable = false, unique = true, length = 80)
     private String code;
 
-    @Column(name = "name", nullable = false, length = 160)
-    private String name;
+    @Column(name = "name_ar", nullable = false, length = 160)
+    private String nameAr;
+
+    @Column(name = "name_fr", nullable = false, length = 160)
+    private String nameFr;
+
+    @Column(name = "name_en", nullable = false, length = 160)
+    private String nameEn;
 
     @Column(name = "status", nullable = false, length = 40)
     private String status;
@@ -90,12 +96,28 @@ public class OrganizationUnitJpaEntity {
         this.code = code;
     }
 
-    public String getName() {
-        return name;
+    public String getNameAr() {
+        return nameAr;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setNameAr(String nameAr) {
+        this.nameAr = nameAr;
+    }
+
+    public String getNameFr() {
+        return nameFr;
+    }
+
+    public void setNameFr(String nameFr) {
+        this.nameFr = nameFr;
+    }
+
+    public String getNameEn() {
+        return nameEn;
+    }
+
+    public void setNameEn(String nameEn) {
+        this.nameEn = nameEn;
     }
 
     public String getStatus() {

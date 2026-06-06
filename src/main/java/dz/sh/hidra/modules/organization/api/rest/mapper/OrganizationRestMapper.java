@@ -305,7 +305,66 @@ public final class OrganizationRestMapper {
                 ? OrganizationUnitTypeReference.ofCode(typeCode)
                 : OrganizationUnitTypeReference.of(typeId, typeCode);
         String locale = resolveLocale(acceptLanguage);
-        return new OrganizationUnitTypeResponse(reference.id(), reference.name(), reference.localizedLabel(locale), locale);
+        return new OrganizationUnitTypeResponse(reference.id(), reference.name(), localizedOrganizationUnitTypeLabel(reference.name(), locale), locale);
+    }
+
+    private static String localizedOrganizationUnitTypeLabel(String code, String locale) {
+        return switch (locale) {
+            case "fr" -> frenchOrganizationUnitTypeLabel(code);
+            case "ar" -> arabicOrganizationUnitTypeLabel(code);
+            default -> englishOrganizationUnitTypeLabel(code);
+        };
+    }
+
+    private static String englishOrganizationUnitTypeLabel(String code) {
+        return switch (code) {
+            case "COMPANY" -> "Company";
+            case "DIVISION" -> "Division";
+            case "DIRECTION" -> "Direction";
+            case "DEPARTMENT" -> "Department";
+            case "REGION" -> "Region";
+            case "AREA" -> "Area";
+            case "DISTRICT" -> "District";
+            case "STATION" -> "Station";
+            case "TEAM" -> "Team";
+            case "PROJECT_TEAM" -> "Project Team";
+            case "OTHER" -> "Other";
+            default -> code;
+        };
+    }
+
+    private static String frenchOrganizationUnitTypeLabel(String code) {
+        return switch (code) {
+            case "COMPANY" -> "Société";
+            case "DIVISION" -> "Division";
+            case "DIRECTION" -> "Direction";
+            case "DEPARTMENT" -> "Département";
+            case "REGION" -> "Région";
+            case "AREA" -> "Zone";
+            case "DISTRICT" -> "District";
+            case "STATION" -> "Station";
+            case "TEAM" -> "Équipe";
+            case "PROJECT_TEAM" -> "Équipe projet";
+            case "OTHER" -> "Autre";
+            default -> code;
+        };
+    }
+
+    private static String arabicOrganizationUnitTypeLabel(String code) {
+        return switch (code) {
+            case "COMPANY" -> "شركة";
+            case "DIVISION" -> "قسم رئيسي";
+            case "DIRECTION" -> "مديرية";
+            case "DEPARTMENT" -> "قسم";
+            case "REGION" -> "منطقة";
+            case "AREA" -> "ناحية";
+            case "DISTRICT" -> "مقاطعة";
+            case "STATION" -> "محطة";
+            case "TEAM" -> "فريق";
+            case "PROJECT_TEAM" -> "فريق مشروع";
+            case "OTHER" -> "أخرى";
+            default -> code;
+        };
     }
 
     private static String resolveLocale(String acceptLanguage) {

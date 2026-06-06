@@ -33,17 +33,10 @@ import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitCode;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitId;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitName;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitStatus;
-import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitType;
+import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitTypeReference;
 
 /**
  * Tests the organization unit aggregate.
- *
- * <p>Business role:
- * Verifies organization units, station-as-organization-unit support, operational scope references,
- * and hierarchy invariants.
- *
- * <p>Architecture role:
- * This is a domain aggregate test with no infrastructure dependencies.
  */
 class OrganizationUnitTest {
 
@@ -52,12 +45,12 @@ class OrganizationUnitTest {
         OrganizationUnit organizationUnit = OrganizationUnit.create(
                 OrganizationUnitCode.of("REGION_EAST"),
                 OrganizationUnitName.of("Operational East Region"),
-                OrganizationUnitType.REGION,
+                OrganizationUnitTypeReference.REGION,
                 null,
                 null);
 
         assertEquals(OrganizationUnitStatus.ACTIVE, organizationUnit.status());
-        assertEquals(OrganizationUnitType.REGION, organizationUnit.type());
+        assertEquals(OrganizationUnitTypeReference.REGION, organizationUnit.type());
         assertTrue(organizationUnit.parentId().isEmpty());
     }
 
@@ -109,7 +102,7 @@ class OrganizationUnitTest {
                         OrganizationUnitCode.of("TEAM_01"),
                         OrganizationUnitName.of("Team 01"),
                         OrganizationUnitStatus.ACTIVE,
-                        OrganizationUnitType.TEAM,
+                        OrganizationUnitTypeReference.TEAM,
                         id,
                         null,
                         now,
@@ -121,7 +114,7 @@ class OrganizationUnitTest {
         OrganizationUnit disabledUnit = OrganizationUnit.create(
                         OrganizationUnitCode.of("DEPT_OPS"),
                         OrganizationUnitName.of("Operations Department"),
-                        OrganizationUnitType.DEPARTMENT,
+                        OrganizationUnitTypeReference.DEPARTMENT,
                         null,
                         null)
                 .disable();

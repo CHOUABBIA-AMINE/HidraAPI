@@ -7,7 +7,7 @@
  *
  * @Name        : PipelineApplicationServiceTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-05-30
+ * @UpdatedOn   : 2026-06-06
  *
  * @Type        : Test
  * @Layer       : Application
@@ -41,6 +41,8 @@ import dz.sh.hidra.modules.topology.domain.service.TopologyRegistrationDomainSer
 import dz.sh.hidra.modules.topology.domain.value.DiameterInInches;
 import dz.sh.hidra.modules.topology.domain.value.LengthInKilometers;
 import dz.sh.hidra.modules.topology.domain.value.PipelineId;
+import dz.sh.hidra.modules.topology.domain.value.TopologyMultilingualDescription;
+import dz.sh.hidra.modules.topology.domain.value.TopologyMultilingualName;
 import dz.sh.hidra.modules.topology.domain.value.TopologyStatus;
 
 /**
@@ -60,8 +62,8 @@ class PipelineApplicationServiceTest {
         PipelineDto dto = service.createPipeline(new CreatePipelineCommand(
                 pipelineSystem.id(),
                 TopologyDomainTestData.code("APP-PIPE"),
-                TopologyDomainTestData.name("Application Pipeline"),
-                " Application pipeline ",
+                multilingualName("Application Pipeline"),
+                multilingualDescription("Application pipeline"),
                 TopologyDomainTestData.gasProductType(),
                 DiameterInInches.of(42.0),
                 LengthInKilometers.of(512.3)));
@@ -82,7 +84,7 @@ class PipelineApplicationServiceTest {
         assertThrows(BusinessRuleViolationException.class, () -> service.createPipeline(new CreatePipelineCommand(
                 dz.sh.hidra.modules.topology.domain.value.PipelineSystemId.newId(),
                 TopologyDomainTestData.code("APP-PIPE-MISSING-PARENT"),
-                TopologyDomainTestData.name("Pipeline Missing Parent"),
+                multilingualName("Pipeline Missing Parent"),
                 null,
                 TopologyDomainTestData.gasProductType(),
                 DiameterInInches.of(42.0),
@@ -102,7 +104,7 @@ class PipelineApplicationServiceTest {
         assertThrows(BusinessRuleViolationException.class, () -> service.createPipeline(new CreatePipelineCommand(
                 pipelineSystem.id(),
                 TopologyDomainTestData.pipeline(pipelineSystem).code(),
-                TopologyDomainTestData.name("Duplicate Pipeline"),
+                multilingualName("Duplicate Pipeline"),
                 null,
                 TopologyDomainTestData.gasProductType(),
                 DiameterInInches.of(42.0),
@@ -143,6 +145,14 @@ class PipelineApplicationServiceTest {
         assertThrows(BusinessRuleViolationException.class, () -> service.getPipeline(new GetPipelineByIdQuery(PipelineId.newId())));
     }
 
+    private static TopologyMultilingualName multilingualName(String value) {
+        return TopologyMultilingualName.of(value, value, value);
+    }
+
+    private static TopologyMultilingualDescription multilingualDescription(String value) {
+        return TopologyMultilingualDescription.of(value, value, value);
+    }
+
     private static TopologyRegistrationDomainService registrationDomainService() {
         return new TopologyRegistrationDomainService(
                 new TopologyAssetStatusPolicy(),
@@ -150,6 +160,4 @@ class PipelineApplicationServiceTest {
                 new FacilityTopologyPolicy(),
                 new PipelineAppurtenancePolicy());
     }
-
-
 }

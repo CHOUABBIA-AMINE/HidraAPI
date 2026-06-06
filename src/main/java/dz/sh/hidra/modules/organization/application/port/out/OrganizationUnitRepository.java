@@ -7,7 +7,7 @@
  *
  * @Name        : OrganizationUnitRepository
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-05-30
+ * @UpdatedOn   : 2026-06-06
  *
  * @Type        : Interface
  * @Layer       : Application
@@ -26,7 +26,6 @@ import dz.sh.hidra.modules.organization.domain.model.OperationalScopeReference;
 import dz.sh.hidra.modules.organization.domain.model.OrganizationUnit;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitCode;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitId;
-import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitType;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitTypeReference;
 
 /**
@@ -45,14 +44,6 @@ public interface OrganizationUnitRepository {
     List<OrganizationUnit> findChildrenOf(OrganizationUnitId parentId);
 
     List<OrganizationUnit> findByType(OrganizationUnitTypeReference type);
-
-    /**
-     * @deprecated use {@link #findByType(OrganizationUnitTypeReference)}
-     */
-    @Deprecated(forRemoval = false)
-    default List<OrganizationUnit> findByType(OrganizationUnitType type) {
-        return findByType(OrganizationUnitTypeReference.from(type));
-    }
 
     List<OrganizationUnit> findByOperationalScope(OperationalScopeReference operationalScopeReference);
 }

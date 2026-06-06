@@ -32,23 +32,9 @@ import dz.sh.hidra.modules.topology.domain.value.ProductTypeReference;
 import dz.sh.hidra.modules.topology.domain.value.TopologyCode;
 import dz.sh.hidra.modules.topology.domain.value.TopologyMultilingualDescription;
 import dz.sh.hidra.modules.topology.domain.value.TopologyMultilingualName;
+import dz.sh.hidra.modules.topology.domain.value.TopologyName;
 import dz.sh.hidra.modules.topology.domain.value.TopologyStatus;
 
-/**
- * Represents a physical pipeline belonging to a pipeline system.
- *
- * <p>Business role:
- * A pipeline is a named physical transportation line that contains pipeline segments and point
- * appurtenances.
- *
- * <p>Architecture role:
- * This aggregate stores product classification as a catalog reference and stores user-facing labels
- * as first-class Arabic, French, and English values.
- *
- * <p>Validation:
- * Pipeline system identifier, code, trilingual name, product type reference, dimensions, status,
- * creation instant, and update instant are mandatory.
- */
 public final class Pipeline implements AggregateRoot<PipelineId> {
 
     private final PipelineId id;
@@ -101,18 +87,19 @@ public final class Pipeline implements AggregateRoot<PipelineId> {
             LengthInKilometers designLength) {
 
         Instant now = Instant.now();
-        return new Pipeline(
-                PipelineId.newId(),
-                pipelineSystemId,
-                code,
-                name,
-                description,
-                productType,
-                nominalDiameter,
-                designLength,
-                TopologyStatus.PLANNED,
-                now,
-                now);
+        return new Pipeline(PipelineId.newId(), pipelineSystemId, code, name, description, productType, nominalDiameter, designLength, TopologyStatus.PLANNED, now, now);
+    }
+
+    public static Pipeline create(
+            PipelineSystemId pipelineSystemId,
+            TopologyCode code,
+            TopologyName name,
+            String description,
+            ProductTypeReference productType,
+            DiameterInInches nominalDiameter,
+            LengthInKilometers designLength) {
+
+        return create(pipelineSystemId, code, multilingualName(name), multilingualDescription(description), productType, nominalDiameter, designLength);
     }
 
     public static Pipeline restore(
@@ -131,73 +118,52 @@ public final class Pipeline implements AggregateRoot<PipelineId> {
         return new Pipeline(id, pipelineSystemId, code, name, description, productType, nominalDiameter, designLength, status, createdAt, updatedAt);
     }
 
+    public static Pipeline restore(
+            PipelineId id,
+            PipelineSystemId pipelineSystemId,
+            TopologyCode code,
+            TopologyName name,
+            String description,
+            ProductTypeReference productType,
+            DiameterInInches nominalDiameter,
+            LengthInKilometers designLength,
+            TopologyStatus status,
+            Instant createdAt,
+            Instant updatedAt) {
+
+        return restore(id, pipelineSystemId, code, multilingualName(name), multilingualDescription(description), productType, nominalDiameter, designLength, status, createdAt, updatedAt);
+    }
+
     @Override
-    public PipelineId id() {
-        return id;
-    }
+    public PipelineId id() { return id; }
+    public PipelineSystemId pipelineSystemId() { return pipelineSystemId; }
+    public TopologyCode code() { return code; }
+    public TopologyMultilingualName name() { return name; }
+    public TopologyMultilingualDescription description() { return description; }
+    public ProductTypeReference productType() { return productType; }
+    public DiameterInInches nominalDiameter() { return nominalDiameter; }
+    public LengthInKilometers designLength() { return designLength; }
+    public TopologyStatus status() { return status; }
+    public Instant createdAt() { return createdAt; }
+    public Instant updatedAt() { return updatedAt; }
 
-    public PipelineSystemId pipelineSystemId() {
-        return pipelineSystemId;
-    }
-
-    public TopologyCode code() {
-        return code;
-    }
-
-    public TopologyMultilingualName name() {
-        return name;
-    }
-
-    public TopologyMultilingualDescription description() {
-        return description;
-    }
-
-    public ProductTypeReference productType() {
-        return productType;
-    }
-
-    public DiameterInInches nominalDiameter() {
-        return nominalDiameter;
-    }
-
-    public LengthInKilometers designLength() {
-        return designLength;
-    }
-
-    public TopologyStatus status() {
-        return status;
-    }
-
-    public Instant createdAt() {
-        return createdAt;
-    }
-
-    public Instant updatedAt() {
-        return updatedAt;
-    }
-
-    public Pipeline activate() {
-        return withStatus(TopologyStatus.ACTIVE);
-    }
-
-    public Pipeline deactivate() {
-        return withStatus(TopologyStatus.INACTIVE);
-    }
-
-    public Pipeline markUnderMaintenance() {
-        return withStatus(TopologyStatus.UNDER_MAINTENANCE);
-    }
-
-    public Pipeline retire() {
-        return withStatus(TopologyStatus.RETIRED);
-    }
-
-    public Pipeline decommission() {
-        return withStatus(TopologyStatus.DECOMMISSIONED);
-    }
+    public Pipeline activate() { return withStatus(TopologyStatus.ACTIVE); }
+    public Pipeline deactivate() { return withStatus(TopologyStatus.INACTIVE); }
+    public Pipeline markUnderMaintenance() { return withStatus(TopologyStatus.UNDER_MAINTENANCE); }
+    public Pipeline retire() { return withStatus(TopologyStatus.RETIRED); }
+    public Pipeline decommission() { return withStatus(TopologyStatus.DECOMMISSIONED); }
 
     private Pipeline withStatus(TopologyStatus newStatus) {
         return new Pipeline(id, pipelineSystemId, code, name, description, productType, nominalDiameter, designLength, Objects.requireNonNull(newStatus, "Pipeline status must not be null."), createdAt, Instant.now());
+    }
+
+    private static TopologyMultilingualName multilingualName(TopologyName name) {
+        String value = Objects.requireNonNull(name, "Pipeline name must not be null.").value();
+        return TopologyMultilingualName.of(value, value, value);
+    }
+
+    private static TopologyMultilingualDescription multilingualDescription(String description) {
+        return TopologyMultilingualDescription.of(description, description, description);
     }
 
     private static Instant requireInstant(Instant value, String fieldName) {

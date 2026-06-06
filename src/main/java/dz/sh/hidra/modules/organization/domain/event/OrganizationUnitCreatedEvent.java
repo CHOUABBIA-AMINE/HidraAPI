@@ -7,7 +7,7 @@
  *
  * @Name        : OrganizationUnitCreatedEvent
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-05-30
+ * @UpdatedOn   : 2026-06-06
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -26,7 +26,6 @@ import dz.sh.hidra.kernel.domain.event.DomainEvent;
 import dz.sh.hidra.kernel.domain.event.DomainEventId;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitCode;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitId;
-import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitType;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitTypeReference;
 
 /**
@@ -64,18 +63,6 @@ public record OrganizationUnitCreatedEvent(
                 organizationUnitId,
                 organizationUnitCode,
                 organizationUnitType);
-    }
-
-    /**
-     * @deprecated use {@link #occurred(OrganizationUnitId, OrganizationUnitCode, OrganizationUnitTypeReference)}
-     */
-    @Deprecated(forRemoval = false)
-    public static OrganizationUnitCreatedEvent occurred(
-            OrganizationUnitId organizationUnitId,
-            OrganizationUnitCode organizationUnitCode,
-            OrganizationUnitType organizationUnitType) {
-
-        return occurred(organizationUnitId, organizationUnitCode, OrganizationUnitTypeReference.from(organizationUnitType));
     }
 
     @Override

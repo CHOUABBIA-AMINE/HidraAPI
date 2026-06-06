@@ -7,7 +7,7 @@
  *
  * @Name        : PipelineRepositoryAdapter
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-05-30
+ * @UpdatedOn   : 2026-06-06
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -91,7 +91,10 @@ public final class PipelineRepositoryAdapter implements PipelineRepositoryPort {
         if (searchText == null) {
             return true;
         }
-        return containsIgnoreCase(entity.getCode(), searchText) || containsIgnoreCase(entity.getName(), searchText);
+        return containsIgnoreCase(entity.getCode(), searchText)
+                || containsIgnoreCase(entity.getNameAr(), searchText)
+                || containsIgnoreCase(entity.getNameFr(), searchText)
+                || containsIgnoreCase(entity.getNameEn(), searchText);
     }
 
     private static PageResult<Pipeline> paginate(List<Pipeline> items, PageRequest pageRequest) {

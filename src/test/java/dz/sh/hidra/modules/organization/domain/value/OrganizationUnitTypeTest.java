@@ -14,42 +14,45 @@
  * @Module      : organization
  * @Package     : dz.sh.hidra.modules.organization.domain.value
  *
- * @Description : Unit tests for OrganizationUnitType station support.
+ * @Description : Unit tests for organization unit type catalog references.
  *
  */
 package dz.sh.hidra.modules.organization.domain.value;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests organization unit type values.
- *
- * <p>Business role:
- * Verifies that station-as-organization-unit is explicitly supported while physical station assets
- * remain outside the organization module.
- *
- * <p>Architecture role:
- * This is a pure enum test with no infrastructure dependencies.
+ * Tests organization unit type catalog references and legacy wrapper compatibility.
  */
 class OrganizationUnitTypeTest {
 
     @Test
     void shouldSupportStationAsOrganizationUnit() {
+        assertTrue(OrganizationUnitTypeReference.STATION.isStationOrganizationUnit());
         assertTrue(OrganizationUnitType.STATION.isStationOrganizationUnit());
     }
 
     @Test
     void shouldNotTreatNonStationTypeAsStationOrganizationUnit() {
+        assertFalse(OrganizationUnitTypeReference.REGION.isStationOrganizationUnit());
         assertFalse(OrganizationUnitType.REGION.isStationOrganizationUnit());
     }
 
     @Test
-    void shouldContainOperationalOrganizationTypes() {
-        assertTrue(OrganizationUnitType.valueOf("DIVISION") == OrganizationUnitType.DIVISION);
-        assertTrue(OrganizationUnitType.valueOf("DEPARTMENT") == OrganizationUnitType.DEPARTMENT);
-        assertTrue(OrganizationUnitType.valueOf("TEAM") == OrganizationUnitType.TEAM);
+    void shouldResolveSeededOrganizationUnitTypeIdsAndCodes() {
+        assertEquals("organization-out-division", OrganizationUnitTypeReference.ofCode("division").id());
+        assertEquals("DIVISION", OrganizationUnitTypeReference.ofId("organization-out-division").name());
+        assertEquals(OrganizationUnitType.DIVISION, OrganizationUnitType.valueOf("DIVISION"));
+    }
+
+    @Test
+    void shouldResolveLocalizedLabels() {
+        assertEquals("Station", OrganizationUnitTypeReference.STATION.localizedLabel("en"));
+        assertEquals("Station", OrganizationUnitTypeReference.STATION.localizedLabel("fr"));
+        assertEquals("محطة", OrganizationUnitTypeReference.STATION.localizedLabel("ar"));
     }
 }

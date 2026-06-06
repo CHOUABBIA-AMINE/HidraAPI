@@ -34,17 +34,16 @@ import jakarta.validation.constraints.Size;
  * delivery facility.
  *
  * <p>Architecture role:
- * This is a REST input contract. It creates topology physical facility data only; station as an
- * organization unit remains owned by organization.
+ * This REST input contract accepts stable catalog type codes instead of Java enum-shaped values.
  *
  * <p>Validation:
- * Code, name, facility type, and product type are required. Coordinate and organization unit
- * reference are optional.
+ * Code, name, facility type code, and product type code are required. Coordinate and organization
+ * unit reference are optional.
  *
  * @param code facility business code
  * @param name facility display name
- * @param facilityType physical facility type
- * @param productType hydrocarbon product type
+ * @param facilityTypeCode language-neutral facility type catalog code
+ * @param productTypeCode language-neutral product type catalog code
  * @param coordinate optional geographical coordinate
  * @param organizationUnitReference optional neutral organization unit reference
  */
@@ -60,15 +59,17 @@ public record CreateFacilityRequest(
         @Size(min = 2, max = 160)
         String name,
 
-        @Schema(description = "Physical facility type.", example = "COMPRESSION_STATION", allowableValues = {"COMPRESSION_STATION", "PUMPING_STATION", "METERING_STATION", "VALVE_STATION", "TERMINAL", "PROCESSING_PLANT", "PRODUCTION_FIELD", "GATHERING_CENTER", "STORAGE_FACILITY", "DELIVERY_FACILITY", "RECEIPT_FACILITY", "DISPATCHING_CENTER", "OTHER"}, requiredMode = Schema.RequiredMode.REQUIRED)
+        @Schema(description = "Language-neutral facility type catalog code.", example = "COMPRESSION_STATION", requiredMode = Schema.RequiredMode.REQUIRED)
         @NotBlank
-        @Pattern(regexp = "COMPRESSION_STATION|PUMPING_STATION|METERING_STATION|VALVE_STATION|TERMINAL|PROCESSING_PLANT|PRODUCTION_FIELD|GATHERING_CENTER|STORAGE_FACILITY|DELIVERY_FACILITY|RECEIPT_FACILITY|DISPATCHING_CENTER|OTHER")
-        String facilityType,
+        @Size(min = 2, max = 80)
+        @Pattern(regexp = "[A-Za-z0-9][A-Za-z0-9_.-]{1,79}")
+        String facilityTypeCode,
 
-        @Schema(description = "Hydrocarbon product type.", example = "GAS", allowableValues = {"GAS", "CRUDE_OIL", "CONDENSATE", "LPG", "REFINED_PRODUCT", "MULTIPHASE", "UNKNOWN"}, requiredMode = Schema.RequiredMode.REQUIRED)
+        @Schema(description = "Language-neutral product type catalog code.", example = "GAS", requiredMode = Schema.RequiredMode.REQUIRED)
         @NotBlank
-        @Pattern(regexp = "GAS|CRUDE_OIL|CONDENSATE|LPG|REFINED_PRODUCT|MULTIPHASE|UNKNOWN")
-        String productType,
+        @Size(min = 2, max = 80)
+        @Pattern(regexp = "[A-Za-z0-9][A-Za-z0-9_.-]{1,79}")
+        String productTypeCode,
 
         @Schema(description = "Optional geographical coordinate.")
         @Valid

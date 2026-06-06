@@ -58,6 +58,38 @@ public record ListFacilitiesQuery(
                 pageRequest);
     }
 
+    @Deprecated(forRemoval = true)
+    public ListFacilitiesQuery(
+            String searchText,
+            FacilityTypeReference facilityType,
+            ProductType productType,
+            TopologyStatus status,
+            PageRequest pageRequest) {
+
+        this(
+                searchText,
+                facilityType,
+                productType == null ? null : ProductTypeReference.from(productType),
+                status,
+                pageRequest);
+    }
+
+    @Deprecated(forRemoval = true)
+    public ListFacilitiesQuery(
+            String searchText,
+            FacilityType facilityType,
+            ProductTypeReference productType,
+            TopologyStatus status,
+            PageRequest pageRequest) {
+
+        this(
+                searchText,
+                facilityType == null ? null : FacilityTypeReference.from(facilityType),
+                productType,
+                status,
+                pageRequest);
+    }
+
     public static ListFacilitiesQuery all(PageRequest pageRequest) {
         return new ListFacilitiesQuery(null, (FacilityTypeReference) null, (ProductTypeReference) null, null, pageRequest);
     }

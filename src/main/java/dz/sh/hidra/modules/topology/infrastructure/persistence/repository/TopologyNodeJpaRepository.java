@@ -28,20 +28,6 @@ import dz.sh.hidra.modules.topology.infrastructure.persistence.entity.TopologyNo
 
 /**
  * Spring Data repository for topology node persistence entities.
- *
- * <p>Business role:
- * Provides storage access for topology graph nodes.
- *
- * <p>Architecture role:
- * This is an infrastructure repository used only by topology persistence adapters. Application
- * services must depend on outbound ports, not on this interface.
- *
- * <p>Validation:
- * Domain validation occurs before mapping. Database constraints enforce required fields and code
- * uniqueness.
- *
- * <p>Usage:
- * Use only from topology repository adapters created in TOP-012.
  */
 public interface TopologyNodeJpaRepository extends JpaRepository<TopologyNodeJpaEntity, String> {
 
@@ -53,7 +39,7 @@ public interface TopologyNodeJpaRepository extends JpaRepository<TopologyNodeJpa
 
     List<TopologyNodeJpaEntity> findByPipelineAppurtenanceId(String pipelineAppurtenanceId);
 
-    List<TopologyNodeJpaEntity> findByNodeType(String nodeType);
+    List<TopologyNodeJpaEntity> findByNodeTypeId(String nodeTypeId);
 
     List<TopologyNodeJpaEntity> findByStatus(String status);
 }

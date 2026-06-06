@@ -28,20 +28,6 @@ import dz.sh.hidra.modules.topology.infrastructure.persistence.entity.FacilityJp
 
 /**
  * Spring Data repository for facility persistence entities.
- *
- * <p>Business role:
- * Provides storage access for physical topology facilities.
- *
- * <p>Architecture role:
- * This is an infrastructure repository used only by topology persistence adapters. Application
- * services must depend on outbound ports, not on this interface.
- *
- * <p>Validation:
- * Domain validation occurs before mapping. Database constraints enforce required fields and code
- * uniqueness.
- *
- * <p>Usage:
- * Use only from topology repository adapters created in TOP-012.
  */
 public interface FacilityJpaRepository extends JpaRepository<FacilityJpaEntity, String> {
 
@@ -49,9 +35,9 @@ public interface FacilityJpaRepository extends JpaRepository<FacilityJpaEntity, 
 
     boolean existsByCode(String code);
 
-    List<FacilityJpaEntity> findByFacilityType(String facilityType);
+    List<FacilityJpaEntity> findByFacilityTypeId(String facilityTypeId);
 
-    List<FacilityJpaEntity> findByProductType(String productType);
+    List<FacilityJpaEntity> findByProductTypeId(String productTypeId);
 
     List<FacilityJpaEntity> findByStatus(String status);
 

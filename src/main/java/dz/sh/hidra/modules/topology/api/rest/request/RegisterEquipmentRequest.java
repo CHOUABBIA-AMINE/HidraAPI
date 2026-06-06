@@ -31,16 +31,16 @@ import jakarta.validation.constraints.Size;
  * Registers optional physical equipment/component references attached to topology assets.
  *
  * <p>Architecture role:
- * This is a REST input contract. It does not create maintenance records, inspections, reliability
- * calculations, telemetry, workflow tasks, or risk scores.
+ * This REST input contract accepts a stable equipment type catalog code. Parent asset type remains an
+ * internal topology asset discriminator.
  *
  * <p>Validation:
- * Code, name, equipment type, parent asset type, and parent asset id are required. Parent asset type
- * cannot be EQUIPMENT.
+ * Code, name, equipment type code, parent asset type, and parent asset id are required. Parent asset
+ * type cannot be EQUIPMENT.
  *
  * @param code equipment business code
  * @param name equipment display name
- * @param equipmentType equipment type
+ * @param equipmentTypeCode language-neutral equipment type catalog code
  * @param parentAssetType parent topology asset type
  * @param parentAssetId parent topology asset identifier
  */
@@ -56,10 +56,11 @@ public record RegisterEquipmentRequest(
         @Size(min = 2, max = 160)
         String name,
 
-        @Schema(description = "Equipment type.", example = "COMPRESSOR", allowableValues = {"COMPRESSOR", "PUMP", "VALVE", "METER", "SEPARATOR", "SCRAPER_LAUNCHER", "SCRAPER_RECEIVER", "ACTUATOR", "CONTROL_PANEL", "INSTRUMENTATION", "OTHER"}, requiredMode = Schema.RequiredMode.REQUIRED)
+        @Schema(description = "Language-neutral equipment type catalog code.", example = "COMPRESSOR", requiredMode = Schema.RequiredMode.REQUIRED)
         @NotBlank
-        @Pattern(regexp = "COMPRESSOR|PUMP|VALVE|METER|SEPARATOR|SCRAPER_LAUNCHER|SCRAPER_RECEIVER|ACTUATOR|CONTROL_PANEL|INSTRUMENTATION|OTHER")
-        String equipmentType,
+        @Size(min = 2, max = 80)
+        @Pattern(regexp = "[A-Za-z0-9][A-Za-z0-9_.-]{1,79}")
+        String equipmentTypeCode,
 
         @Schema(description = "Parent topology asset type. EQUIPMENT is not allowed as a parent.", example = "FACILITY", allowableValues = {"PIPELINE_SYSTEM", "PIPELINE", "FACILITY", "NODE", "SEGMENT", "APPURTENANCE", "CONNECTION"}, requiredMode = Schema.RequiredMode.REQUIRED)
         @NotBlank

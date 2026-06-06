@@ -7,7 +7,7 @@
  *
  * @Name        : OrganizationRestMapper
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-05-30
+ * @UpdatedOn   : 2026-06-06
  *
  * @Type        : Class
  * @Layer       : API
@@ -248,7 +248,7 @@ public final class OrganizationRestMapper {
                 dto.code(),
                 dto.name(),
                 dto.status(),
-                toTypeResponse(dto.typeId(), dto.typeCode(), acceptLanguage),
+                toTypeResponse(dto.typeId(), dto.typeCode()),
                 dto.parentId(),
                 dto.operationalScopeType(),
                 dto.operationalScopeId(),
@@ -300,82 +300,24 @@ public final class OrganizationRestMapper {
                 pageResult.totalElements());
     }
 
-    private static OrganizationUnitTypeResponse toTypeResponse(String typeId, String typeCode, String acceptLanguage) {
+    private static OrganizationUnitTypeResponse toTypeResponse(String typeId, String typeCode) {
         OrganizationUnitTypeReference reference = typeId == null
                 ? OrganizationUnitTypeReference.ofCode(typeCode)
                 : OrganizationUnitTypeReference.of(typeId, typeCode);
-        String locale = resolveLocale(acceptLanguage);
-        return new OrganizationUnitTypeResponse(reference.id(), reference.name(), localizedOrganizationUnitTypeLabel(reference.name(), locale), locale);
-    }
-
-    private static String localizedOrganizationUnitTypeLabel(String code, String locale) {
-        return switch (locale) {
-            case "fr" -> frenchOrganizationUnitTypeLabel(code);
-            case "ar" -> arabicOrganizationUnitTypeLabel(code);
-            default -> englishOrganizationUnitTypeLabel(code);
-        };
-    }
-
-    private static String englishOrganizationUnitTypeLabel(String code) {
-        return switch (code) {
-            case "COMPANY" -> "Company";
-            case "DIVISION" -> "Division";
-            case "DIRECTION" -> "Direction";
-            case "DEPARTMENT" -> "Department";
-            case "REGION" -> "Region";
-            case "AREA" -> "Area";
-            case "DISTRICT" -> "District";
-            case "STATION" -> "Station";
-            case "TEAM" -> "Team";
-            case "PROJECT_TEAM" -> "Project Team";
-            case "OTHER" -> "Other";
-            default -> code;
-        };
-    }
-
-    private static String frenchOrganizationUnitTypeLabel(String code) {
-        return switch (code) {
-            case "COMPANY" -> "Société";
-            case "DIVISION" -> "Division";
-            case "DIRECTION" -> "Direction";
-            case "DEPARTMENT" -> "Département";
-            case "REGION" -> "Région";
-            case "AREA" -> "Zone";
-            case "DISTRICT" -> "District";
-            case "STATION" -> "Station";
-            case "TEAM" -> "Équipe";
-            case "PROJECT_TEAM" -> "Équipe projet";
-            case "OTHER" -> "Autre";
-            default -> code;
-        };
-    }
-
-    private static String arabicOrganizationUnitTypeLabel(String code) {
-        return switch (code) {
-            case "COMPANY" -> "شركة";
-            case "DIVISION" -> "قسم رئيسي";
-            case "DIRECTION" -> "مديرية";
-            case "DEPARTMENT" -> "قسم";
-            case "REGION" -> "منطقة";
-            case "AREA" -> "ناحية";
-            case "DISTRICT" -> "مقاطعة";
-            case "STATION" -> "محطة";
-            case "TEAM" -> "فريق";
-            case "PROJECT_TEAM" -> "فريق مشروع";
-            case "OTHER" -> "أخرى";
-            default -> code;
-        };
-    }
-
-    private static String resolveLocale(String acceptLanguage) {
-        if (acceptLanguage == null || acceptLanguage.isBlank()) {
-            return "en";
-        }
-        String first = acceptLanguage.split(",")[0].trim();
-        if (first.length() < 2) {
-            return "en";
-        }
-        return first.substring(0, 2).toLowerCase(Locale.ROOT);
+        return new OrganizationUnitTypeResponse(
+                reference.id(),
+                reference.code(),
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                0,
+                false,
+                null,
+                null);
     }
 
     private static EmployeeEmail optionalEmail(String value) {

@@ -9,79 +9,92 @@
  * @CreatedOn   : 2025-06-26
  * @UpdatedOn   : 2026-05-30
  *
- * @Type        : Enum
+ * @Type        : Class
  * @Layer       : Domain
  * @Module      : topology
  * @Package     : dz.sh.hidra.modules.topology.domain.value
  *
- * @Description : Pipeline valve type enum.
+ * @Description : Deprecated compatibility constant class for the valve type catalog.
  *
  */
 package dz.sh.hidra.modules.topology.domain.value;
 
+import java.util.Arrays;
+import java.util.Objects;
+
+import dz.sh.hidra.kernel.domain.exception.InvalidValueObjectException;
 import dz.sh.hidra.kernel.domain.model.ValueObject;
 
-/**
- * Pipeline valve type enum.
- *
- * <p>Business role:
- * This enum restricts topology domain values to an explicit controlled set.
- *
- * <p>Architecture role:
- * This is a pure topology domain value object enum and must not depend on API, persistence,
- * identity, organization, platform, Spring, JPA, measurement, flow, risk, or workflow code.
- *
- * <p>Validation:
- * The enum prevents unbounded string values for this topology concept.
- *
- * <p>Usage:
- * Use this enum in topology domain and application code when this constrained value is required.
- */
-public enum ValveType implements ValueObject {
+@Deprecated(forRemoval = false)
+public final class ValveType implements ValueObject {
 
-    /** Block valve. */
-    BLOCK_VALVE,
+    public static final ValveType BLOCK_VALVE = new ValveType("BLOCK_VALVE");
+    public static final ValveType SECTIONALIZING_VALVE = new ValveType("SECTIONALIZING_VALVE");
+    public static final ValveType ISOLATION_VALVE = new ValveType("ISOLATION_VALVE");
+    public static final ValveType SHUTDOWN_VALVE = new ValveType("SHUTDOWN_VALVE");
+    public static final ValveType CONTROL_VALVE = new ValveType("CONTROL_VALVE");
+    public static final ValveType CHECK_VALVE = new ValveType("CHECK_VALVE");
+    public static final ValveType RELIEF_VALVE = new ValveType("RELIEF_VALVE");
+    public static final ValveType PRESSURE_REGULATING_VALVE = new ValveType("PRESSURE_REGULATING_VALVE");
+    public static final ValveType BYPASS_VALVE = new ValveType("BYPASS_VALVE");
+    public static final ValveType DRAIN_VALVE = new ValveType("DRAIN_VALVE");
+    public static final ValveType VENT_VALVE = new ValveType("VENT_VALVE");
+    public static final ValveType ESD_VALVE = new ValveType("ESD_VALVE");
+    public static final ValveType MANUAL_VALVE = new ValveType("MANUAL_VALVE");
+    public static final ValveType MOTORIZED_VALVE = new ValveType("MOTORIZED_VALVE");
+    public static final ValveType OTHER = new ValveType("OTHER");
 
-    /** Sectionalizing valve. */
-    SECTIONALIZING_VALVE,
+    private static final ValveType[] VALUES = {BLOCK_VALVE, SECTIONALIZING_VALVE, ISOLATION_VALVE,
+            SHUTDOWN_VALVE, CONTROL_VALVE, CHECK_VALVE, RELIEF_VALVE, PRESSURE_REGULATING_VALVE,
+            BYPASS_VALVE, DRAIN_VALVE, VENT_VALVE, ESD_VALVE, MANUAL_VALVE, MOTORIZED_VALVE, OTHER};
 
-    /** Isolation valve. */
-    ISOLATION_VALVE,
+    private final String name;
 
-    /** Shutdown valve. */
-    SHUTDOWN_VALVE,
+    private ValveType(String name) {
+        this.name = requireName(name);
+    }
 
-    /** Control valve. */
-    CONTROL_VALVE,
+    public static ValveType valueOf(String name) {
+        String normalizedName = requireName(name);
+        return Arrays.stream(VALUES)
+                .filter(value -> value.name.equals(normalizedName))
+                .findFirst()
+                .orElseThrow(() -> new InvalidValueObjectException("ValveType is not supported: " + name));
+    }
 
-    /** Check valve. */
-    CHECK_VALVE,
+    public static ValveType[] values() {
+        return VALUES.clone();
+    }
 
-    /** Relief valve. */
-    RELIEF_VALVE,
+    public String name() {
+        return name;
+    }
 
-    /** Pressure regulating valve. */
-    PRESSURE_REGULATING_VALVE,
+    @Override
+    public String toString() {
+        return name;
+    }
 
-    /** Bypass valve. */
-    BYPASS_VALVE,
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (!(other instanceof ValveType that)) {
+            return false;
+        }
+        return name.equals(that.name);
+    }
 
-    /** Drain valve. */
-    DRAIN_VALVE,
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
+    }
 
-    /** Vent valve. */
-    VENT_VALVE,
-
-    /** Emergency shutdown valve. */
-    ESD_VALVE,
-
-    /** Manual valve. */
-    MANUAL_VALVE,
-
-    /** Motorized valve. */
-    MOTORIZED_VALVE,
-
-    /** Other valve type. */
-    OTHER;
-
+    private static String requireName(String value) {
+        if (value == null || value.isBlank()) {
+            throw new InvalidValueObjectException("ValveType name must not be null or blank.");
+        }
+        return value.trim().toUpperCase();
+    }
 }

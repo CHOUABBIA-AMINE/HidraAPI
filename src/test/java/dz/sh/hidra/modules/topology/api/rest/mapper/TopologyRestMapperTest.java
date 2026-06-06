@@ -22,6 +22,9 @@ package dz.sh.hidra.modules.topology.api.rest.mapper;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import java.time.Instant;
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 
 import dz.sh.hidra.kernel.application.pagination.PageResult;
@@ -40,43 +43,34 @@ import dz.sh.hidra.modules.topology.application.command.CreatePipelineSegmentCom
 import dz.sh.hidra.modules.topology.application.command.CreatePipelineSystemCommand;
 import dz.sh.hidra.modules.topology.application.command.CreateTopologyConnectionCommand;
 import dz.sh.hidra.modules.topology.application.command.RegisterEquipmentCommand;
+import dz.sh.hidra.modules.topology.application.dto.TopologyCatalogDto;
+import dz.sh.hidra.modules.topology.application.port.in.ResolveTopologyCatalogTypeUseCase;
 import dz.sh.hidra.modules.topology.application.query.ListFacilitiesQuery;
 import dz.sh.hidra.modules.topology.application.query.ListPipelineAppurtenancesQuery;
 import dz.sh.hidra.modules.topology.application.query.ListPipelineSystemsQuery;
 import dz.sh.hidra.modules.topology.application.query.ListPipelinesQuery;
 import dz.sh.hidra.modules.topology.application.query.ListTopologyConnectionsQuery;
 import dz.sh.hidra.modules.topology.application.query.ListTopologyNodesQuery;
-import dz.sh.hidra.modules.topology.domain.value.PipelineAppurtenanceType;
 
 /**
- * Unit tests for TopologyRestMapper.
- *
- * <p>Business role:
- * Verifies REST request strings are converted to topology commands/queries and application DTOs are
- * converted to REST response contracts.
- *
- * <p>Architecture role:
- * API-layer mapper unit test. It does not use controllers, Spring, repositories, or persistence.
- *
- * <p>Validation:
- * Checks enum normalization, nested coordinate/reference mapping, PageResult mapping, and all
- * topology REST response groups.
+ * Unit tests for TopologyRestMapper after catalog type localization.
  */
 class TopologyRestMapperTest {
 
-    private final TopologyRestMapper mapper = new TopologyRestMapper();
+    private final TopologyRestMapper mapper = new TopologyRestMapper(catalogResolver());
 
     @Test
-    void shouldMapRestRequestsToApplicationCommands() {
-        CreatePipelineSystemCommand pipelineSystemCommand = mapper.toCommand(TopologyRestTestData.createPipelineSystemRequest());
-        CreatePipelineCommand pipelineCommand = mapper.toCommand(TopologyRestTestData.createPipelineRequest());
+    void shouldMapRestRequestsToApplicationCommandsWithCatalogReferences() {
+        CreatePipelineSystemCommand pipelineSystemCommand = mapper.toCommand(TopologyRestTestData.createPipelineSystemRequest(), "fr");
+        CreatePipelineCommand pipelineCommand = mapper.toCommand(TopologyRestTestData.createPipelineRequest(), "fr");
         CreatePipelineSegmentCommand segmentCommand = mapper.toCommand(TopologyRestTestData.createPipelineSegmentRequest());
-        CreatePipelineAppurtenanceCommand appurtenanceCommand = mapper.toCommand(TopologyRestTestData.createPipelineAppurtenanceRequest());
-        CreateTopologyConnectionCommand connectionCommand = mapper.toCommand(TopologyRestTestData.createTopologyConnectionRequest());
-        RegisterEquipmentCommand equipmentCommand = mapper.toCommand(TopologyRestTestData.registerEquipmentRequest());
+        CreatePipelineAppurtenanceCommand appurtenanceCommand = mapper.toCommand(TopologyRestTestData.createPipelineAppurtenanceRequest(), "fr");
+        CreateTopologyConnectionCommand connectionCommand = mapper.toCommand(TopologyRestTestData.createTopologyConnectionRequest(), "fr");
+        RegisterEquipmentCommand equipmentCommand = mapper.toCommand(TopologyRestTestData.registerEquipmentRequest(), "fr");
 
         assertEquals("GZ1", pipelineSystemCommand.code().value());
         assertEquals("GAS", pipelineSystemCommand.productType().name());
+        assertEquals("GAS", pipelineSystemCommand.productType().id());
         assertEquals("TRC-OPS-EAST", pipelineSystemCommand.operationalOwnerReference().ownerCode());
         assertEquals("ps-1", pipelineCommand.pipelineSystemId().value());
         assertEquals("GZ1-SEG-001", segmentCommand.code().value());
@@ -90,20 +84,20 @@ class TopologyRestMapperTest {
 
     @Test
     void shouldMapInjectionPointRequestWithoutValveType() {
-        CreatePipelineAppurtenanceCommand command = mapper.toCommand(TopologyRestTestData.createInjectionPointRequest());
+        CreatePipelineAppurtenanceCommand command = mapper.toCommand(TopologyRestTestData.createInjectionPointRequest(), "en");
 
-        assertEquals(PipelineAppurtenanceType.INJECTION_POINT, command.appurtenanceType());
+        assertEquals("INJECTION_POINT", command.appurtenanceType().name());
         assertNull(command.valveType());
     }
 
     @Test
-    void shouldMapListQueryParametersToApplicationQueries() {
-        ListPipelineSystemsQuery systemsQuery = mapper.toListPipelineSystemsQuery("gas", "gas", "planned", 1, 25);
-        ListPipelinesQuery pipelinesQuery = mapper.toListPipelinesQuery("line", "ps-1", "gas", "active", 0, 20);
-        ListFacilitiesQuery facilitiesQuery = mapper.toListFacilitiesQuery("station", "terminal", "gas", "planned", 0, 10);
-        ListTopologyNodesQuery nodesQuery = mapper.toListTopologyNodesQuery("node", "injection_point", "fac-1", null, "planned", 0, 10);
-        ListPipelineAppurtenancesQuery appurtenancesQuery = mapper.toListPipelineAppurtenancesQuery("app", "pipe-1", "purge_point", null, "planned", 0, 10);
-        ListTopologyConnectionsQuery connectionsQuery = mapper.toListTopologyConnectionsQuery("conn", "node-1", "node-2", "pipeline_segment", "segment", "planned", 0, 10);
+    void shouldMapListQueryParametersToCatalogReferenceQueries() {
+        ListPipelineSystemsQuery systemsQuery = mapper.toListPipelineSystemsQuery("gas", "gas", "planned", 1, 25, "fr");
+        ListPipelinesQuery pipelinesQuery = mapper.toListPipelinesQuery("line", "ps-1", "gas", "active", 0, 20, "fr");
+        ListFacilitiesQuery facilitiesQuery = mapper.toListFacilitiesQuery("station", "terminal", "gas", "planned", 0, 10, "fr");
+        ListTopologyNodesQuery nodesQuery = mapper.toListTopologyNodesQuery("node", "injection_point", "fac-1", null, "planned", 0, 10, "fr");
+        ListPipelineAppurtenancesQuery appurtenancesQuery = mapper.toListPipelineAppurtenancesQuery("app", "pipe-1", "purge_point", null, "planned", 0, 10, "fr");
+        ListTopologyConnectionsQuery connectionsQuery = mapper.toListTopologyConnectionsQuery("conn", "node-1", "node-2", "pipeline_segment", "segment", "planned", 0, 10, "fr");
 
         assertEquals("gas", systemsQuery.searchText());
         assertEquals("GAS", systemsQuery.productType().name());
@@ -118,41 +112,43 @@ class TopologyRestMapperTest {
     }
 
     @Test
-    void shouldMapApplicationDtosToRestResponses() {
-        PipelineSystemResponse pipelineSystem = mapper.toResponse(TopologyRestTestData.pipelineSystemDto());
-        PipelineResponse pipeline = mapper.toResponse(TopologyRestTestData.pipelineDto());
-        FacilityResponse facility = mapper.toResponse(TopologyRestTestData.facilityDto());
-        TopologyNodeResponse node = mapper.toResponse(TopologyRestTestData.topologyNodeDto());
+    void shouldMapApplicationDtosToLocalizedRestResponses() {
+        PipelineSystemResponse pipelineSystem = mapper.toResponse(TopologyRestTestData.pipelineSystemDto(), "fr");
+        PipelineResponse pipeline = mapper.toResponse(TopologyRestTestData.pipelineDto(), "fr");
+        FacilityResponse facility = mapper.toResponse(TopologyRestTestData.facilityDto(), "fr");
+        TopologyNodeResponse node = mapper.toResponse(TopologyRestTestData.topologyNodeDto(), "fr");
         PipelineSegmentResponse segment = mapper.toResponse(TopologyRestTestData.pipelineSegmentDto());
-        PipelineAppurtenanceResponse appurtenance = mapper.toResponse(TopologyRestTestData.pipelineAppurtenanceDto());
-        TopologyConnectionResponse connection = mapper.toResponse(TopologyRestTestData.topologyConnectionDto());
-        EquipmentResponse equipment = mapper.toResponse(TopologyRestTestData.equipmentDto());
+        PipelineAppurtenanceResponse appurtenance = mapper.toResponse(TopologyRestTestData.pipelineAppurtenanceDto(), "fr");
+        TopologyConnectionResponse connection = mapper.toResponse(TopologyRestTestData.topologyConnectionDto(), "fr");
+        EquipmentResponse equipment = mapper.toResponse(TopologyRestTestData.equipmentDto(), "fr");
 
         assertEquals("GZ1", pipelineSystem.code());
+        assertEquals("GAS", pipelineSystem.productType().code());
+        assertEquals("fr:GAS", pipelineSystem.productType().label());
         assertEquals("TRC-OPS-EAST-CS-01", pipelineSystem.operationalOwnerReference().ownerCode());
         assertEquals("GZ1-LINE-A", pipeline.code());
-        assertEquals("COMPRESSION_STATION", facility.facilityType());
+        assertEquals("COMPRESSION_STATION", facility.facilityType().code());
         assertEquals("TRC-OPS-EAST-CS-01", facility.organizationUnitReference().referenceCode());
-        assertEquals("FACILITY_INLET", node.nodeType());
+        assertEquals("FACILITY_INLET", node.nodeType().code());
         assertEquals("GZ1-SEG-001", segment.code());
-        assertEquals("VALVE", appurtenance.appurtenanceType());
-        assertEquals("BLOCK_VALVE", appurtenance.valveType());
-        assertEquals("PIPELINE_SEGMENT", connection.connectionType());
-        assertEquals("COMPRESSOR", equipment.equipmentType());
+        assertEquals("VALVE", appurtenance.appurtenanceType().code());
+        assertEquals("BLOCK_VALVE", appurtenance.valveType().code());
+        assertEquals("PIPELINE_SEGMENT", connection.connectionType().code());
+        assertEquals("COMPRESSOR", equipment.equipmentType().code());
     }
 
     @Test
-    void shouldMapApplicationPagesToRestResponsePages() {
-        PageResult<PipelineSystemResponse> systems = mapper.toPipelineSystemResponsePage(TopologyRestTestData.pipelineSystemPage());
-        PageResult<PipelineResponse> pipelines = mapper.toPipelineResponsePage(TopologyRestTestData.pipelinePage());
-        PageResult<FacilityResponse> facilities = mapper.toFacilityResponsePage(TopologyRestTestData.facilityPage());
-        PageResult<TopologyNodeResponse> nodes = mapper.toTopologyNodeResponsePage(TopologyRestTestData.topologyNodePage());
+    void shouldMapApplicationPagesToLocalizedRestResponsePages() {
+        PageResult<PipelineSystemResponse> systems = mapper.toPipelineSystemResponsePage(TopologyRestTestData.pipelineSystemPage(), "ar");
+        PageResult<PipelineResponse> pipelines = mapper.toPipelineResponsePage(TopologyRestTestData.pipelinePage(), "ar");
+        PageResult<FacilityResponse> facilities = mapper.toFacilityResponsePage(TopologyRestTestData.facilityPage(), "ar");
+        PageResult<TopologyNodeResponse> nodes = mapper.toTopologyNodeResponsePage(TopologyRestTestData.topologyNodePage(), "ar");
         PageResult<PipelineSegmentResponse> segments = mapper.toPipelineSegmentResponsePage(TopologyRestTestData.pipelineSegmentPage());
-        PageResult<PipelineAppurtenanceResponse> appurtenances = mapper.toPipelineAppurtenanceResponsePage(TopologyRestTestData.pipelineAppurtenancePage());
-        PageResult<TopologyConnectionResponse> connections = mapper.toTopologyConnectionResponsePage(TopologyRestTestData.topologyConnectionPage());
+        PageResult<PipelineAppurtenanceResponse> appurtenances = mapper.toPipelineAppurtenanceResponsePage(TopologyRestTestData.pipelineAppurtenancePage(), "ar");
+        PageResult<TopologyConnectionResponse> connections = mapper.toTopologyConnectionResponsePage(TopologyRestTestData.topologyConnectionPage(), "ar");
 
         assertEquals(1L, systems.totalElements());
-        assertEquals("GZ1", systems.items().get(0).code());
+        assertEquals("ar:GAS", systems.items().get(0).productType().label());
         assertEquals("GZ1-LINE-A", pipelines.items().get(0).code());
         assertEquals("CS-EAST-01", facilities.items().get(0).code());
         assertEquals("NODE-CS-EAST-01-IN", nodes.items().get(0).code());
@@ -166,5 +162,21 @@ class TopologyRestMapperTest {
         assertNull(mapper.toResponse((dz.sh.hidra.modules.topology.application.dto.GeoCoordinateDto) null));
         assertNull(mapper.toResponse((dz.sh.hidra.modules.topology.application.dto.OrganizationUnitReferenceDto) null));
         assertNull(mapper.toOperationalOwnerReferenceResponse(null));
+    }
+
+    private static ResolveTopologyCatalogTypeUseCase catalogResolver() {
+        return query -> new TopologyCatalogDto(
+                query.code().value(),
+                query.catalogName(),
+                query.code().value(),
+                "ACTIVE",
+                0,
+                true,
+                query.locale() == null ? "en" : query.locale(),
+                (query.locale() == null ? "en" : query.locale()) + ":" + query.code().value(),
+                null,
+                List.of(),
+                Instant.EPOCH,
+                Instant.EPOCH);
     }
 }

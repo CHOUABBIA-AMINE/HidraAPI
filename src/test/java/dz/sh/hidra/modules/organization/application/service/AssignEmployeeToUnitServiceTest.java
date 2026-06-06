@@ -53,21 +53,13 @@ import dz.sh.hidra.modules.organization.domain.value.OperationalScopeType;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitCode;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitId;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitName;
-import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitType;
+import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitTypeReference;
 import dz.sh.hidra.modules.organization.domain.value.PositionCode;
 import dz.sh.hidra.modules.organization.domain.value.PositionId;
 import dz.sh.hidra.modules.organization.domain.value.PositionTitle;
 
 /**
  * Tests the employee assignment application service.
- *
- * <p>Business role:
- * Verifies that active employees can be assigned to active organization units and active positions,
- * including station-as-organization-unit scenarios.
- *
- * <p>Architecture role:
- * This is an application-layer unit test using in-memory fake outbound ports. It does not load
- * Spring, JPA, REST API, identity, topology, platform, or persistence infrastructure.
  */
 class AssignEmployeeToUnitServiceTest {
 
@@ -80,10 +72,7 @@ class AssignEmployeeToUnitServiceTest {
 
         Employee employee = activeEmployee("EMP-ASG-001");
         OrganizationUnit stationUnit = stationOrganizationUnit();
-        Position position = Position.create(
-                PositionCode.of("STATION_TEAM_LEADER"),
-                PositionTitle.of("Station Team Leader"),
-                "Leads station team");
+        Position position = Position.create(PositionCode.of("STATION_TEAM_LEADER"), PositionTitle.of("Station Team Leader"), "Leads station team");
 
         employeeRepository.save(employee);
         organizationUnitRepository.save(stationUnit);
@@ -161,7 +150,7 @@ class AssignEmployeeToUnitServiceTest {
         return OrganizationUnit.create(
                 OrganizationUnitCode.of("TEAM_APP_ASSIGN"),
                 OrganizationUnitName.of("Application Assignment Team"),
-                OrganizationUnitType.TEAM,
+                OrganizationUnitTypeReference.TEAM,
                 null,
                 null);
     }
@@ -214,8 +203,7 @@ class AssignEmployeeToUnitServiceTest {
         @Override
         public List<Employee> findAssignedToOrganizationUnit(OrganizationUnitId organizationUnitId) {
             return employees.stream()
-                    .filter(employee -> employee.assignments().stream()
-                            .anyMatch(assignment -> assignment.organizationUnitId().equals(organizationUnitId)))
+                    .filter(employee -> employee.assignments().stream().anyMatch(assignment -> assignment.organizationUnitId().equals(organizationUnitId)))
                     .toList();
         }
     }
@@ -252,8 +240,8 @@ class AssignEmployeeToUnitServiceTest {
         }
 
         @Override
-        public List<OrganizationUnit> findByType(OrganizationUnitType type) {
-            return organizationUnits.stream().filter(unit -> unit.type() == type).toList();
+        public List<OrganizationUnit> findByType(OrganizationUnitTypeReference type) {
+            return organizationUnits.stream().filter(unit -> unit.type().equals(type)).toList();
         }
 
         @Override

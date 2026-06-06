@@ -21,6 +21,7 @@ package dz.sh.hidra.modules.topology.infrastructure.persistence.entity;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -69,13 +70,21 @@ public class PipelineAppurtenanceJpaEntity {
     @Column(name = "name", nullable = false, length = 160)
     private String name;
 
-    /** Pipeline appurtenance type. */
+    /** Legacy language-neutral appurtenance type code retained until COR-013. */
     @Column(name = "appurtenance_type", nullable = false, length = 80)
     private String appurtenanceType;
 
-    /** Optional valve type, set only for valve appurtenances. */
+    /** Catalog foreign key to hidra_topology_pipeline_appurtenance_type. */
+    @Column(name = "appurtenance_type_id", nullable = false, length = 80)
+    private String appurtenanceTypeId;
+
+    /** Optional legacy valve type code, set only for valve appurtenances and retained until COR-013. */
     @Column(name = "valve_type", nullable = true, length = 80)
     private String valveType;
+
+    /** Optional catalog foreign key to hidra_topology_valve_type. */
+    @Column(name = "valve_type_id", nullable = true, length = 80)
+    private String valveTypeId;
 
     /** KP/PK/chainage value in kilometers. */
     @Column(name = "pipeline_kilometer_point", nullable = false, precision = 19, scale = 3)
@@ -109,115 +118,67 @@ public class PipelineAppurtenanceJpaEntity {
         // Required by JPA.
     }
 
-    public String getId() {
-        return id;
-    }
+    public String getId() { return id; }
 
-    public void setId(String id) {
-        this.id = id;
-    }
+    public void setId(String id) { this.id = id; }
 
-    public String getPipelineId() {
-        return pipelineId;
-    }
+    public String getPipelineId() { return pipelineId; }
 
-    public void setPipelineId(String pipelineId) {
-        this.pipelineId = pipelineId;
-    }
+    public void setPipelineId(String pipelineId) { this.pipelineId = pipelineId; }
 
-    public String getNodeId() {
-        return nodeId;
-    }
+    public String getNodeId() { return nodeId; }
 
-    public void setNodeId(String nodeId) {
-        this.nodeId = nodeId;
-    }
+    public void setNodeId(String nodeId) { this.nodeId = nodeId; }
 
-    public String getCode() {
-        return code;
-    }
+    public String getCode() { return code; }
 
-    public void setCode(String code) {
-        this.code = code;
-    }
+    public void setCode(String code) { this.code = code; }
 
-    public String getName() {
-        return name;
-    }
+    public String getName() { return name; }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    public void setName(String name) { this.name = name; }
 
-    public String getAppurtenanceType() {
-        return appurtenanceType;
-    }
+    public String getAppurtenanceType() { return appurtenanceType; }
 
-    public void setAppurtenanceType(String appurtenanceType) {
-        this.appurtenanceType = appurtenanceType;
-    }
+    public void setAppurtenanceType(String appurtenanceType) { this.appurtenanceType = appurtenanceType; }
 
-    public String getValveType() {
-        return valveType;
-    }
+    public String getAppurtenanceTypeId() { return appurtenanceTypeId; }
 
-    public void setValveType(String valveType) {
-        this.valveType = valveType;
-    }
+    public void setAppurtenanceTypeId(String appurtenanceTypeId) { this.appurtenanceTypeId = appurtenanceTypeId; }
 
-    public BigDecimal getPipelineKilometerPoint() {
-        return pipelineKilometerPoint;
-    }
+    public String getValveType() { return valveType; }
 
-    public void setPipelineKilometerPoint(BigDecimal pipelineKilometerPoint) {
-        this.pipelineKilometerPoint = pipelineKilometerPoint;
-    }
+    public void setValveType(String valveType) { this.valveType = valveType; }
 
-    public String getStatus() {
-        return status;
-    }
+    public String getValveTypeId() { return valveTypeId; }
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
+    public void setValveTypeId(String valveTypeId) { this.valveTypeId = valveTypeId; }
 
-    public BigDecimal getLatitude() {
-        return latitude;
-    }
+    public BigDecimal getPipelineKilometerPoint() { return pipelineKilometerPoint; }
 
-    public void setLatitude(BigDecimal latitude) {
-        this.latitude = latitude;
-    }
+    public void setPipelineKilometerPoint(BigDecimal pipelineKilometerPoint) { this.pipelineKilometerPoint = pipelineKilometerPoint; }
 
-    public BigDecimal getLongitude() {
-        return longitude;
-    }
+    public String getStatus() { return status; }
 
-    public void setLongitude(BigDecimal longitude) {
-        this.longitude = longitude;
-    }
+    public void setStatus(String status) { this.status = status; }
 
-    public String getDescription() {
-        return description;
-    }
+    public BigDecimal getLatitude() { return latitude; }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+    public void setLatitude(BigDecimal latitude) { this.latitude = latitude; }
 
-    public Instant getCreatedAt() {
-        return createdAt;
-    }
+    public BigDecimal getLongitude() { return longitude; }
 
-    public void setCreatedAt(Instant createdAt) {
-        this.createdAt = createdAt;
-    }
+    public void setLongitude(BigDecimal longitude) { this.longitude = longitude; }
 
-    public Instant getUpdatedAt() {
-        return updatedAt;
-    }
+    public String getDescription() { return description; }
 
-    public void setUpdatedAt(Instant updatedAt) {
-        this.updatedAt = updatedAt;
-    }
+    public void setDescription(String description) { this.description = description; }
+
+    public Instant getCreatedAt() { return createdAt; }
+
+    public void setCreatedAt(Instant createdAt) { this.createdAt = createdAt; }
+
+    public Instant getUpdatedAt() { return updatedAt; }
+
+    public void setUpdatedAt(Instant updatedAt) { this.updatedAt = updatedAt; }
 }

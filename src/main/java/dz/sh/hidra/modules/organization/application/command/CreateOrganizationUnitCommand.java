@@ -27,28 +27,14 @@ import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitCode;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitId;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitName;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitType;
+import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitTypeReference;
 
 /**
  * Carries input required to create an organization unit.
  *
- * <p>Business role:
- * This command creates an operational organization unit such as a division, department, region,
- * station-as-organization-unit, or team. A physical station asset remains owned by topology.
- *
- * <p>Architecture role:
- * This is an application command. It may carry neutral operational scope fields but must not
- * import topology domain classes or persistence/API types.
- *
- * <p>Validation:
- * Code, name, and unit type are mandatory. Parent id and operational scope fields are optional.
- * Scope fields are neutral strings and are normalized by this command when present.
- *
- * <p>Usage:
- * Use this command when API or orchestration code requests creation of an organization unit.
- *
  * @param code organization unit business code
  * @param name organization unit display name
- * @param type organization unit type
+ * @param type organization unit type catalog reference
  * @param parentId optional parent organization unit identifier
  * @param operationalScopeType optional neutral operational scope type
  * @param operationalScopeId optional neutral operational scope identifier
@@ -58,7 +44,7 @@ import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitType;
 public record CreateOrganizationUnitCommand(
         OrganizationUnitCode code,
         OrganizationUnitName name,
-        OrganizationUnitType type,
+        OrganizationUnitTypeReference type,
         OrganizationUnitId parentId,
         OperationalScopeType operationalScopeType,
         String operationalScopeId,
@@ -68,11 +54,36 @@ public record CreateOrganizationUnitCommand(
     public CreateOrganizationUnitCommand {
         Objects.requireNonNull(code, "Organization unit code must not be null.");
         Objects.requireNonNull(name, "Organization unit name must not be null.");
-        Objects.requireNonNull(type, "Organization unit type must not be null.");
+        Objects.requireNonNull(type, "Organization unit type reference must not be null.");
 
         operationalScopeId = normalizeOptional(operationalScopeId, "Operational scope id", 120);
         operationalScopeCode = normalizeOptional(operationalScopeCode, "Operational scope code", 120);
         operationalScopeName = normalizeOptional(operationalScopeName, "Operational scope name", 160);
+    }
+
+    /**
+     * @deprecated use the constructor accepting OrganizationUnitTypeReference
+     */
+    @Deprecated(forRemoval = false)
+    public CreateOrganizationUnitCommand(
+            OrganizationUnitCode code,
+            OrganizationUnitName name,
+            OrganizationUnitType type,
+            OrganizationUnitId parentId,
+            OperationalScopeType operationalScopeType,
+            String operationalScopeId,
+            String operationalScopeCode,
+            String operationalScopeName) {
+
+        this(
+                code,
+                name,
+                OrganizationUnitTypeReference.from(type),
+                parentId,
+                operationalScopeType,
+                operationalScopeId,
+                operationalScopeCode,
+                operationalScopeName);
     }
 
     private static String normalizeOptional(String value, String label, int maxLength) {

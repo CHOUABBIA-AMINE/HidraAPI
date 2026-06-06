@@ -21,6 +21,7 @@ package dz.sh.hidra.modules.topology.infrastructure.persistence.entity;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -69,9 +70,13 @@ public class PipelineJpaEntity {
     @Column(name = "description", nullable = true, length = 500)
     private String description;
 
-    /** Hydrocarbon product type. */
+    /** Legacy language-neutral hydrocarbon product type code retained until COR-013. */
     @Column(name = "product_type", nullable = false, length = 60)
     private String productType;
+
+    /** Catalog foreign key to hidra_topology_product_type. */
+    @Column(name = "product_type_id", nullable = false, length = 80)
+    private String productTypeId;
 
     /** Nominal diameter in inches. */
     @Column(name = "nominal_diameter_inches", nullable = false, precision = 19, scale = 3)
@@ -97,91 +102,51 @@ public class PipelineJpaEntity {
         // Required by JPA.
     }
 
-    public String getId() {
-        return id;
-    }
+    public String getId() { return id; }
 
-    public void setId(String id) {
-        this.id = id;
-    }
+    public void setId(String id) { this.id = id; }
 
-    public String getPipelineSystemId() {
-        return pipelineSystemId;
-    }
+    public String getPipelineSystemId() { return pipelineSystemId; }
 
-    public void setPipelineSystemId(String pipelineSystemId) {
-        this.pipelineSystemId = pipelineSystemId;
-    }
+    public void setPipelineSystemId(String pipelineSystemId) { this.pipelineSystemId = pipelineSystemId; }
 
-    public String getCode() {
-        return code;
-    }
+    public String getCode() { return code; }
 
-    public void setCode(String code) {
-        this.code = code;
-    }
+    public void setCode(String code) { this.code = code; }
 
-    public String getName() {
-        return name;
-    }
+    public String getName() { return name; }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    public void setName(String name) { this.name = name; }
 
-    public String getDescription() {
-        return description;
-    }
+    public String getDescription() { return description; }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+    public void setDescription(String description) { this.description = description; }
 
-    public String getProductType() {
-        return productType;
-    }
+    public String getProductType() { return productType; }
 
-    public void setProductType(String productType) {
-        this.productType = productType;
-    }
+    public void setProductType(String productType) { this.productType = productType; }
 
-    public BigDecimal getNominalDiameterInches() {
-        return nominalDiameterInches;
-    }
+    public String getProductTypeId() { return productTypeId; }
 
-    public void setNominalDiameterInches(BigDecimal nominalDiameterInches) {
-        this.nominalDiameterInches = nominalDiameterInches;
-    }
+    public void setProductTypeId(String productTypeId) { this.productTypeId = productTypeId; }
 
-    public BigDecimal getDesignLengthKm() {
-        return designLengthKm;
-    }
+    public BigDecimal getNominalDiameterInches() { return nominalDiameterInches; }
 
-    public void setDesignLengthKm(BigDecimal designLengthKm) {
-        this.designLengthKm = designLengthKm;
-    }
+    public void setNominalDiameterInches(BigDecimal nominalDiameterInches) { this.nominalDiameterInches = nominalDiameterInches; }
 
-    public String getStatus() {
-        return status;
-    }
+    public BigDecimal getDesignLengthKm() { return designLengthKm; }
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
+    public void setDesignLengthKm(BigDecimal designLengthKm) { this.designLengthKm = designLengthKm; }
 
-    public Instant getCreatedAt() {
-        return createdAt;
-    }
+    public String getStatus() { return status; }
 
-    public void setCreatedAt(Instant createdAt) {
-        this.createdAt = createdAt;
-    }
+    public void setStatus(String status) { this.status = status; }
 
-    public Instant getUpdatedAt() {
-        return updatedAt;
-    }
+    public Instant getCreatedAt() { return createdAt; }
 
-    public void setUpdatedAt(Instant updatedAt) {
-        this.updatedAt = updatedAt;
-    }
+    public void setCreatedAt(Instant createdAt) { this.createdAt = createdAt; }
+
+    public Instant getUpdatedAt() { return updatedAt; }
+
+    public void setUpdatedAt(Instant updatedAt) { this.updatedAt = updatedAt; }
 }

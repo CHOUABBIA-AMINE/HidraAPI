@@ -29,6 +29,7 @@ import dz.sh.hidra.modules.topology.domain.policy.PipelineAppurtenancePolicy;
 import dz.sh.hidra.modules.topology.domain.policy.TopologyAssetStatusPolicy;
 import dz.sh.hidra.modules.topology.domain.policy.TopologyConnectivityPolicy;
 import dz.sh.hidra.modules.topology.domain.value.PipelineAppurtenanceType;
+import dz.sh.hidra.modules.topology.domain.value.PipelineAppurtenanceTypeReference;
 
 /**
  * Validates point assets installed along pipelines.
@@ -39,16 +40,11 @@ import dz.sh.hidra.modules.topology.domain.value.PipelineAppurtenanceType;
  * bypass points, and other pipeline point assets.
  *
  * <p>Architecture role:
- * This is a pure topology domain service. It has no Spring annotation, no repository access, no
- * persistence dependency, no REST DTO dependency, and no identity, organization, measurement,
- * operations, flow, risk, workflow, maintenance, or infrastructure dependency.
+ * This service validates appurtenance catalog references by stable language-neutral codes.
  *
  * <p>Validation:
  * Appurtenances must belong to their pipeline, be represented by a compatible topology node, and
  * respect the valve/non-valve type consistency rule.
- *
- * <p>Usage:
- * Application services should call this service before saving pipeline appurtenances.
  */
 public final class PipelineAppurtenanceDomainService {
 
@@ -56,23 +52,10 @@ public final class PipelineAppurtenanceDomainService {
     private final TopologyConnectivityPolicy connectivityPolicy;
     private final TopologyAssetStatusPolicy statusPolicy;
 
-    /**
-     * Creates a service with default pure-domain policies.
-     */
     public PipelineAppurtenanceDomainService() {
-        this(
-                new PipelineAppurtenancePolicy(),
-                new TopologyConnectivityPolicy(),
-                new TopologyAssetStatusPolicy());
+        this(new PipelineAppurtenancePolicy(), new TopologyConnectivityPolicy(), new TopologyAssetStatusPolicy());
     }
 
-    /**
-     * Creates a service with explicit policies.
-     *
-     * @param appurtenancePolicy appurtenance policy
-     * @param connectivityPolicy connectivity policy
-     * @param statusPolicy status policy
-     */
     public PipelineAppurtenanceDomainService(
             PipelineAppurtenancePolicy appurtenancePolicy,
             TopologyConnectivityPolicy connectivityPolicy,
@@ -83,13 +66,6 @@ public final class PipelineAppurtenanceDomainService {
         this.statusPolicy = Objects.requireNonNull(statusPolicy, "Topology status policy must not be null.");
     }
 
-    /**
-     * Validates a pipeline appurtenance before registration.
-     *
-     * @param pipeline parent pipeline
-     * @param appurtenance appurtenance to validate
-     * @param node topology node representing the appurtenance
-     */
     public void validateRegistration(
             Pipeline pipeline,
             PipelineAppurtenance appurtenance,
@@ -106,59 +82,42 @@ public final class PipelineAppurtenanceDomainService {
         connectivityPolicy.validateAppurtenanceNode(appurtenance, node);
     }
 
-    /**
-     * Validates that an appurtenance is a valve point.
-     *
-     * @param appurtenance appurtenance to validate
-     */
     public void requireValveAppurtenance(PipelineAppurtenance appurtenance) {
-        Objects.requireNonNull(appurtenance, "Pipeline appurtenance must not be null.");
-
-        appurtenancePolicy.validateValveTypeConsistency(appurtenance.appurtenanceType(), appurtenance.valveType());
-
-        if (appurtenance.appurtenanceType() != PipelineAppurtenanceType.VALVE) {
-            throw new TopologyValidationException("Pipeline appurtenance must be of type VALVE.");
-        }
+        requireAppurtenanceType(appurtenance, PipelineAppurtenanceTypeReference.of("VALVE", "VALVE"), "Pipeline appurtenance must be of type VALVE.");
     }
 
-    /**
-     * Validates that an appurtenance is an injection point.
-     *
-     * @param appurtenance appurtenance to validate
-     */
     public void requireInjectionPoint(PipelineAppurtenance appurtenance) {
-        requireAppurtenanceType(appurtenance, PipelineAppurtenanceType.INJECTION_POINT, "Pipeline appurtenance must be an injection point.");
+        requireAppurtenanceType(appurtenance, PipelineAppurtenanceTypeReference.of("INJECTION_POINT", "INJECTION_POINT"), "Pipeline appurtenance must be an injection point.");
     }
 
-    /**
-     * Validates that an appurtenance is an extraction point.
-     *
-     * @param appurtenance appurtenance to validate
-     */
     public void requireExtractionPoint(PipelineAppurtenance appurtenance) {
-        requireAppurtenanceType(appurtenance, PipelineAppurtenanceType.EXTRACTION_POINT, "Pipeline appurtenance must be an extraction point.");
+        requireAppurtenanceType(appurtenance, PipelineAppurtenanceTypeReference.of("EXTRACTION_POINT", "EXTRACTION_POINT"), "Pipeline appurtenance must be an extraction point.");
     }
 
-    /**
-     * Validates that an appurtenance is a purge point.
-     *
-     * @param appurtenance appurtenance to validate
-     */
     public void requirePurgePoint(PipelineAppurtenance appurtenance) {
-        requireAppurtenanceType(appurtenance, PipelineAppurtenanceType.PURGE_POINT, "Pipeline appurtenance must be a purge point.");
+        requireAppurtenanceType(appurtenance, PipelineAppurtenanceTypeReference.of("PURGE_POINT", "PURGE_POINT"), "Pipeline appurtenance must be a purge point.");
     }
 
+    @Deprecated(forRemoval = true)
     private void requireAppurtenanceType(
             PipelineAppurtenance appurtenance,
             PipelineAppurtenanceType expectedType,
             String message) {
 
+        requireAppurtenanceType(appurtenance, PipelineAppurtenanceTypeReference.from(expectedType), message);
+    }
+
+    private void requireAppurtenanceType(
+            PipelineAppurtenance appurtenance,
+            PipelineAppurtenanceTypeReference expectedType,
+            String message) {
+
         Objects.requireNonNull(appurtenance, "Pipeline appurtenance must not be null.");
-        Objects.requireNonNull(expectedType, "Expected appurtenance type must not be null.");
+        Objects.requireNonNull(expectedType, "Expected appurtenance type reference must not be null.");
 
         appurtenancePolicy.validateValveTypeConsistency(appurtenance.appurtenanceType(), appurtenance.valveType());
 
-        if (appurtenance.appurtenanceType() != expectedType) {
+        if (!appurtenance.appurtenanceType().is(expectedType.name())) {
             throw new TopologyValidationException(message);
         }
     }

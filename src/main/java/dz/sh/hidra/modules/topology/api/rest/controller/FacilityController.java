@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -45,26 +46,9 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 
-/**
- * REST controller exposing topology facility endpoints.
- *
- * <p>Business role:
- * Exposes physical facility operations for stations, terminals, processing plants, production field
- * interfaces, gathering centers, storage facilities, receipt facilities, and delivery facilities.
- *
- * <p>Architecture role:
- * This controller exposes physical topology assets only. Station as an organization unit remains
- * owned by the organization module.
- *
- * <p>Validation:
- * Request bodies use Bean Validation with @Valid. Query pagination parameters are bounded.
- *
- * <p>Usage:
- * Use endpoints under /api/v1/topology/facilities.
- */
 @RestController
 @RequestMapping("/api/v1/topology/facilities")
-@Tag(name = "Topology Facilities", description = "Topology physical facility endpoints.")
+@Tag(name = "Topology Facilities", description = "Topology facility endpoints.")
 public class FacilityController {
 
     private final CreateFacilityUseCase createFacilityUseCase;
@@ -93,10 +77,13 @@ public class FacilityController {
             @ApiResponse(responseCode = "500", description = "Unexpected server error.")
     })
     public ResponseEntity<FacilityResponse> createFacility(
+            @RequestHeader(name = "Accept-Language", required = false) String acceptLanguage,
             @Valid @RequestBody CreateFacilityRequest request) {
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(mapper.toResponse(createFacilityUseCase.createFacility(mapper.toCommand(request))));
+                .body(mapper.toResponse(
+                        createFacilityUseCase.createFacility(mapper.toCommand(request, acceptLanguage)),
+                        acceptLanguage));
     }
 
     @GetMapping("/{facilityId}")
@@ -108,29 +95,34 @@ public class FacilityController {
             @ApiResponse(responseCode = "500", description = "Unexpected server error.")
     })
     public ResponseEntity<FacilityResponse> getFacility(
+            @RequestHeader(name = "Accept-Language", required = false) String acceptLanguage,
             @Parameter(description = "Facility identifier.", required = true)
             @PathVariable String facilityId) {
 
-        return ResponseEntity.ok(mapper.toResponse(getFacilityUseCase.getFacility(
-                mapper.toGetFacilityByIdQuery(facilityId))));
+        return ResponseEntity.ok(mapper.toResponse(
+                getFacilityUseCase.getFacility(mapper.toGetFacilityByIdQuery(facilityId)),
+                acceptLanguage));
     }
 
     @GetMapping
-    @Operation(summary = "List facilities", description = "Lists physical topology facilities with optional search, facility type, product type, and status filters.")
+    @Operation(summary = "List facilities", description = "Lists physical topology facilities with optional search, facility type code, product type code, and status filters.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Facilities listed."),
             @ApiResponse(responseCode = "400", description = "Invalid list facilities query parameters."),
             @ApiResponse(responseCode = "500", description = "Unexpected server error.")
     })
     public PageResult<FacilityResponse> listFacilities(
+            @RequestHeader(name = "Accept-Language", required = false) String acceptLanguage,
             @RequestParam(required = false) String searchText,
-            @RequestParam(required = false) String facilityType,
-            @RequestParam(required = false) String productType,
+            @RequestParam(required = false) String facilityTypeCode,
+            @RequestParam(required = false) String productTypeCode,
             @RequestParam(required = false) String status,
             @RequestParam(defaultValue = "0") @Min(0) int page,
             @RequestParam(defaultValue = "20") @Min(1) @Max(200) int size) {
 
-        return mapper.toFacilityResponsePage(listFacilitiesUseCase.listFacilities(
-                mapper.toListFacilitiesQuery(searchText, facilityType, productType, status, page, size)));
+        return mapper.toFacilityResponsePage(
+                listFacilitiesUseCase.listFacilities(
+                        mapper.toListFacilitiesQuery(searchText, facilityTypeCode, productTypeCode, status, page, size, acceptLanguage)),
+                acceptLanguage);
     }
 }

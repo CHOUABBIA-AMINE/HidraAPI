@@ -7,7 +7,7 @@
  *
  * @Name        : OrganizationUnitController
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-05-30
+ * @UpdatedOn   : 2026-06-06
  *
  * @Type        : Class
  * @Layer       : API
@@ -49,9 +49,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 
-/**
- * REST controller exposing organization unit endpoints.
- */
 @RestController
 @RequestMapping("/api/v1/organization/units")
 @Tag(name = "Organization Units", description = "Organization unit endpoints.")
@@ -83,6 +80,7 @@ public class OrganizationUnitController {
             @ApiResponse(responseCode = "500", description = "Unexpected server error.")
     })
     public ResponseEntity<OrganizationUnitResponse> createOrganizationUnit(
+            @Parameter(description = "Preferred response language using BCP 47 language tags.", example = "fr")
             @RequestHeader(name = "Accept-Language", required = false) String acceptLanguage,
             @Valid @RequestBody CreateOrganizationUnitRequest request) {
 
@@ -99,8 +97,9 @@ public class OrganizationUnitController {
             @ApiResponse(responseCode = "500", description = "Unexpected server error.")
     })
     public ResponseEntity<OrganizationUnitResponse> getOrganizationUnit(
+            @Parameter(description = "Preferred response language using BCP 47 language tags.", example = "fr")
             @RequestHeader(name = "Accept-Language", required = false) String acceptLanguage,
-            @Parameter(description = "Organization unit identifier.", required = true)
+            @Parameter(description = "Organization unit identifier.", required = true, example = "ou_550e8400-e29b-41d4-a716-446655440000")
             @PathVariable String unitId) {
 
         return getOrganizationUnitUseCase.getOrganizationUnit(mapper.toGetOrganizationUnitByIdQuery(unitId))
@@ -117,12 +116,19 @@ public class OrganizationUnitController {
             @ApiResponse(responseCode = "500", description = "Unexpected server error.")
     })
     public PageResult<OrganizationUnitResponse> listOrganizationUnits(
+            @Parameter(description = "Preferred response language using BCP 47 language tags.", example = "fr")
             @RequestHeader(name = "Accept-Language", required = false) String acceptLanguage,
+            @Parameter(description = "Optional text filter applied to organization unit code or name.", example = "station")
             @RequestParam(required = false) String searchText,
+            @Parameter(description = "Optional organization unit type code filter.", example = "STATION")
             @RequestParam(required = false) String typeCode,
+            @Parameter(description = "Optional organization unit lifecycle status filter.", example = "ACTIVE")
             @RequestParam(required = false) String status,
+            @Parameter(description = "Optional parent organization unit identifier filter.", example = "ou_550e8400-e29b-41d4-a716-446655440000")
             @RequestParam(required = false) String parentId,
+            @Parameter(description = "Zero-based page index.", example = "0")
             @RequestParam(defaultValue = "0") @Min(0) int page,
+            @Parameter(description = "Page size between 1 and 200.", example = "20")
             @RequestParam(defaultValue = "20") @Min(1) @Max(200) int size) {
 
         return mapper.toOrganizationUnitResponsePage(listOrganizationUnitsUseCase.listOrganizationUnits(
@@ -137,7 +143,7 @@ public class OrganizationUnitController {
             @ApiResponse(responseCode = "500", description = "Unexpected server error.")
     })
     public OrganizationUnitResponse updateOrganizationUnit(
-            @Parameter(description = "Organization unit identifier.", required = true)
+            @Parameter(description = "Organization unit identifier.", required = true, example = "ou_550e8400-e29b-41d4-a716-446655440000")
             @PathVariable String unitId,
             @Valid @RequestBody UpdateOrganizationUnitRequest request) {
 

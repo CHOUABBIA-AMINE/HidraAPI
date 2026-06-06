@@ -47,14 +47,6 @@ import dz.sh.hidra.modules.organization.application.query.ListOrganizationUnitsQ
 
 /**
  * Tests the organization unit REST controller.
- *
- * <p>Business role:
- * Verifies API behavior for organization units, including station-as-organization-unit response
- * fields and neutral operational scope values.
- *
- * <p>Architecture role:
- * This API-layer unit test uses fake application inbound ports and does not access persistence,
- * identity, topology, platform, or Spring Boot test context.
  */
 class OrganizationUnitControllerTest {
 
@@ -63,6 +55,7 @@ class OrganizationUnitControllerTest {
         OrganizationUnitController controller = controller();
 
         ResponseEntity<OrganizationUnitResponse> response = controller.createOrganizationUnit(
+                "fr",
                 new CreateOrganizationUnitRequest(
                         "CS_EAST_10",
                         "Compression Station East 10",
@@ -76,7 +69,8 @@ class OrganizationUnitControllerTest {
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals("CS_EAST_10", response.getBody().code());
-        assertEquals("STATION", response.getBody().type());
+        assertEquals("STATION", response.getBody().type().code());
+        assertEquals("fr", response.getBody().type().locale());
         assertEquals("TOPOLOGY_COMPRESSION_STATION", response.getBody().operationalScopeType());
     }
 
@@ -84,7 +78,7 @@ class OrganizationUnitControllerTest {
     void shouldReturnOrganizationUnitWhenFound() {
         OrganizationUnitController controller = controller();
 
-        ResponseEntity<OrganizationUnitResponse> response = controller.getOrganizationUnit("ou_010");
+        ResponseEntity<OrganizationUnitResponse> response = controller.getOrganizationUnit("en", "ou_010");
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
@@ -95,7 +89,7 @@ class OrganizationUnitControllerTest {
     void shouldReturnNotFoundWhenOrganizationUnitDoesNotExist() {
         OrganizationUnitController controller = controller();
 
-        ResponseEntity<OrganizationUnitResponse> response = controller.getOrganizationUnit("missing");
+        ResponseEntity<OrganizationUnitResponse> response = controller.getOrganizationUnit("en", "missing");
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
@@ -105,6 +99,7 @@ class OrganizationUnitControllerTest {
         OrganizationUnitController controller = controller();
 
         PageResult<OrganizationUnitResponse> response = controller.listOrganizationUnits(
+                "en",
                 "station",
                 "STATION",
                 "ACTIVE",
@@ -125,13 +120,7 @@ class OrganizationUnitControllerTest {
                 ResponseStatusException.class,
                 () -> controller.updateOrganizationUnit(
                         "ou_010",
-                        new UpdateOrganizationUnitRequest(
-                                "Updated Station",
-                                null,
-                                null,
-                                null,
-                                null,
-                                null)));
+                        new UpdateOrganizationUnitRequest("Updated Station", null, null, null, null, null)));
 
         assertEquals(HttpStatus.NOT_IMPLEMENTED, exception.getStatusCode());
     }
@@ -152,6 +141,7 @@ class OrganizationUnitControllerTest {
                 "CS_EAST_10",
                 "Compression Station East 10",
                 "ACTIVE",
+                "organization-out-station",
                 "STATION",
                 null,
                 "TOPOLOGY_COMPRESSION_STATION",

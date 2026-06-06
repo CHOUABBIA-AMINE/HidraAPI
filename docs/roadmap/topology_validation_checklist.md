@@ -1,29 +1,33 @@
-# Topology Module Validation Checklist
+# Topology Module Validation Checklist — After Catalog Refactor
 
 ```text
 Roadmap file : docs/roadmap/topology_validation_checklist.md
 Related file : docs/roadmap/topology.md
 Roadmap code : TOP
-Scope        : Final validation gate for the topology module after TOP-023
+Scope        : Final validation gate for the topology module after TOP-023 and topology catalog corrections
 Repository   : HidraAPI
 Product      : Hidra - Hydrocarbon Intelligence for Data, Risk, and Analytics
 Author       : Abir MEDJERAB
 CreatedOn    : 2025-06-26
 UpdatedOn    : 2026-06-06
-Status       : Restored by COR-003
+Status       : Updated by COR-017 after topology catalog refactor
 ```
 
 ---
 
 ## 1. Purpose
 
-This checklist is the final validation gate for the topology module after completing:
+This checklist validates the topology module after the original TOP implementation and the topology catalog correction path.
+
+Expected completed ranges:
 
 ```text
 TOP-001 through TOP-023
+COR-004 through COR-013 for topology catalog correction
+COR-014 for topology test repair
+COR-015 for controlled vocabulary guardrails
+COR-017 for documentation realignment after the catalog refactor
 ```
-
-It is written for a future AI agent or developer who must validate the implemented topology module before starting the next business module.
 
 ---
 
@@ -49,29 +53,34 @@ drains
 valves and valve subtypes
 topology connections
 equipment attached to topology assets
+multilingual controlled vocabularies for topology business types
 ```
 
 Topology does not own measurement, flow calculation, risk, workflow, analytics, reporting, notification, identity, or organization behavior.
 
 ---
 
-## 3. Expected repository files
+## 3. Expected files
 
-Expected roadmap files:
+Roadmap and architecture files:
 
 ```text
 docs/roadmap/topology.md
 docs/roadmap/topology_validation_checklist.md
 docs/roadmap/correction_01.md
+docs/architecture/controlled-vocabulary-policy.md
 ```
 
-Expected topology migration:
+Topology migrations:
 
 ```text
 src/main/resources/db/migration/V002__create_topology_tables.sql
+src/main/resources/db/migration/V003__add_topology_type_catalogs.sql
+src/main/resources/db/migration/V004__link_topology_assets_to_type_catalogs.sql
+src/main/resources/db/migration/V005__remove_topology_enum_type_columns.sql
 ```
 
-Expected topology source roots:
+Topology source roots:
 
 ```text
 src/main/java/dz/sh/hidra/modules/topology
@@ -110,7 +119,27 @@ TOP-023  docs(topology): finalize topology validation checklist
 
 ---
 
-## 5. Boundary validation
+## 5. Expected completed topology catalog correction sequence
+
+```text
+COR-004  docs(architecture): define controlled vocabulary policy
+COR-005  db(topology): add topology type catalog tables
+COR-006  feat(topology): add catalog domain model and references
+COR-007  feat(topology): add topology catalog application services
+COR-008  feat(topology): add topology catalog persistence adapters
+COR-009  refactor(topology): replace enum usage in domain assets with type references
+COR-010  db(topology): migrate topology assets to catalog foreign keys
+COR-011  refactor(topology): update topology persistence mapping to catalog foreign keys
+COR-012  refactor(topology): update topology REST contracts for catalog types and localization
+COR-013  db(topology): remove topology enum-style type constraints
+COR-014  test(topology): repair unstable topology tests
+COR-015  test(architecture): add controlled vocabulary guardrails
+COR-017  docs(topology): update topology roadmap after catalog refactor
+```
+
+---
+
+## 6. Boundary validation
 
 Allowed topology package roots:
 
@@ -160,7 +189,58 @@ OperationalOwnerReference
 
 ---
 
-## 6. REST endpoint checklist
+## 7. Catalog validation
+
+Topology business type concepts must be catalog-backed controlled vocabularies, not Java enums accepted by the roadmap.
+
+Expected topology catalog reference concepts:
+
+```text
+ProductTypeReference
+FacilityTypeReference
+NodeTypeReference
+PipelineAppurtenanceTypeReference
+ValveTypeReference
+EquipmentTypeReference
+ConnectionTypeReference
+```
+
+Expected catalog domain/application/infrastructure concepts:
+
+```text
+TopologyTypeCatalog
+TopologyTypeTranslation
+TopologyCatalogDto
+TopologyCatalogTranslationDto
+TopologyCatalogApplicationService
+TopologyCatalogRepositoryPort
+TopologyCatalogRepositoryAdapter
+TopologyCatalogPersistenceMapper
+```
+
+Expected REST type response shape:
+
+```json
+{
+  "id": "topology-ft-compression-station",
+  "code": "COMPRESSION_STATION",
+  "label": "Station de compression",
+  "locale": "fr"
+}
+```
+
+Expected localization behavior:
+
+```text
+Accept-Language is used for localized type labels.
+A default locale fallback is used when the requested locale is unavailable.
+Create/list requests use stable typeCode fields.
+Responses expose localized type reference objects.
+```
+
+---
+
+## 8. REST endpoint checklist
 
 Expected endpoint groups:
 
@@ -192,9 +272,9 @@ Do not add unsupported get/list/update/delete endpoints unless a later roadmap a
 
 ---
 
-## 7. Database checklist
+## 9. Database checklist
 
-Expected topology-owned tables:
+Expected topology-owned asset tables:
 
 ```text
 hidra_topology_pipeline_system
@@ -207,62 +287,44 @@ hidra_topology_connection
 hidra_topology_equipment
 ```
 
+Expected topology catalog and translation tables:
+
+```text
+hidra_topology_product_type
+hidra_topology_product_type_translation
+hidra_topology_facility_type
+hidra_topology_facility_type_translation
+hidra_topology_node_type
+hidra_topology_node_type_translation
+hidra_topology_pipeline_appurtenance_type
+hidra_topology_pipeline_appurtenance_type_translation
+hidra_topology_valve_type
+hidra_topology_valve_type_translation
+hidra_topology_equipment_type
+hidra_topology_equipment_type_translation
+hidra_topology_connection_type
+hidra_topology_connection_type_translation
+```
+
 Expected database rules:
 
 ```text
-codes are unique where required
-foreign-key relationships stay inside topology tables
+asset tables use catalog foreign-key ids for business taxonomy fields
+catalog translation tables support localized labels
 neutral owner/reference columns do not create foreign keys to organization tables
 timestamps exist for audit baseline
 status fields exist for lifecycle control
+old varchar taxonomy columns are removed by V005
+old enum-style taxonomy CHECK constraints are removed by V005
 ```
 
 ---
 
-## 8. Known correction issue: business types currently need catalog refactor
-
-The current topology baseline uses Java enums and database check constraints for multiple business type concepts.
-
-Examples:
-
-```text
-FacilityType
-PipelineAppurtenanceType
-ValveType
-NodeType
-EquipmentType
-ConnectionType
-ProductType
-```
-
-This is not final for multilingual operation.
-
-These concepts must become module-owned catalog/reference entities with localized labels in the correction roadmap.
-
-Relevant correction tasks:
-
-```text
-COR-004 — docs(architecture): define controlled vocabulary policy
-COR-005 — db(topology): add topology type catalog tables
-COR-006 — feat(topology): add catalog domain model and references
-COR-007 — feat(topology): add catalog application services
-COR-008 — feat(topology): add catalog persistence adapters
-COR-009 — refactor(topology): replace enum usage in domain assets with type references
-COR-010 — db(topology): migrate topology assets to catalog foreign keys
-COR-011 — refactor(topology): update persistence mapping to catalog foreign keys
-COR-012 — refactor(topology): update REST contracts for catalog types and localization
-COR-013 — db(topology): remove enum-style type constraints
-```
-
-Until these corrections are complete, topology is structurally implemented but not ready for multilingual measurement-module dependency.
-
----
-
-## 9. Validation commands
+## 10. Validation commands
 
 Run from repository root.
 
-### 9.1 File existence
+### 10.1 File existence
 
 Linux/macOS/Git Bash:
 
@@ -270,7 +332,11 @@ Linux/macOS/Git Bash:
 test -f docs/roadmap/topology.md
 test -f docs/roadmap/topology_validation_checklist.md
 test -f docs/roadmap/correction_01.md
+test -f docs/architecture/controlled-vocabulary-policy.md
 test -f src/main/resources/db/migration/V002__create_topology_tables.sql
+test -f src/main/resources/db/migration/V003__add_topology_type_catalogs.sql
+test -f src/main/resources/db/migration/V004__link_topology_assets_to_type_catalogs.sql
+test -f src/main/resources/db/migration/V005__remove_topology_enum_type_columns.sql
 test -d src/main/java/dz/sh/hidra/modules/topology
 test -d src/test/java/dz/sh/hidra/modules/topology
 ```
@@ -281,40 +347,28 @@ Windows PowerShell:
 Test-Path docs/roadmap/topology.md
 Test-Path docs/roadmap/topology_validation_checklist.md
 Test-Path docs/roadmap/correction_01.md
+Test-Path docs/architecture/controlled-vocabulary-policy.md
 Test-Path src/main/resources/db/migration/V002__create_topology_tables.sql
+Test-Path src/main/resources/db/migration/V003__add_topology_type_catalogs.sql
+Test-Path src/main/resources/db/migration/V004__link_topology_assets_to_type_catalogs.sql
+Test-Path src/main/resources/db/migration/V005__remove_topology_enum_type_columns.sql
 Test-Path src/main/java/dz/sh/hidra/modules/topology
 Test-Path src/test/java/dz/sh/hidra/modules/topology
 ```
 
-### 9.2 Forbidden lateral imports
-
-Linux/macOS/Git Bash:
+### 10.2 Roadmap catalog wording
 
 ```bash
-grep -R "dz\.sh\.hidra\.modules\.\(identity\|organization\|measurement\|operations\|flow\|risk\|analytics\|workflow\|reporting\|notification\)" \
-  src/main/java/dz/sh/hidra/modules/topology src/test/java/dz/sh/hidra/modules/topology \
-  && exit 1 || exit 0
+grep -n "catalog" docs/roadmap/topology.md
+grep -n "multilingual" docs/roadmap/topology.md
 ```
 
-Windows PowerShell:
-
-```powershell
-Select-String -Path src/main/java/dz/sh/hidra/modules/topology/**/*.java,src/test/java/dz/sh/hidra/modules/topology/**/*.java `
-  -Pattern 'dz\.sh\.hidra\.modules\.(identity|organization|measurement|operations|flow|risk|analytics|workflow|reporting|notification)' `
-  -ErrorAction SilentlyContinue
-```
-
-Expected result:
-
-```text
-no matches
-```
-
-### 9.3 Maven validation
+### 10.3 Maven validation
 
 ```bash
 mvn -q -DskipTests compile
 mvn -q test -Dtest='*Topology*Test'
+mvn -q test -Dtest=ControlledVocabularyArchitectureTest
 mvn -q test -Dtest=TopologyApplicationBootSmokeTest
 mvn -q test
 ```
@@ -323,7 +377,7 @@ The boot smoke test requires Docker/Testcontainers because it starts PostgreSQL.
 
 ---
 
-## 10. Acceptance criteria
+## 11. Acceptance criteria
 
 This checklist is accepted when:
 
@@ -331,21 +385,24 @@ This checklist is accepted when:
 docs/roadmap/topology.md exists
 docs/roadmap/topology_validation_checklist.md exists
 docs/roadmap/correction_01.md exists
+docs/architecture/controlled-vocabulary-policy.md exists
 TOP-013 through TOP-023 are represented as completed in topology.md
-topology_validation_checklist.md documents REST, DB, tests, boundaries, and correction risks
-no Java production code changed for COR-003
-no Java test code changed for COR-003
-no Flyway migration changed for COR-003
+COR-004 through COR-013 are represented as completed for topology catalog correction
+topology_validation_checklist.md documents REST, DB, tests, boundaries, and catalog correction reality
+topology.md contains catalog and multilingual wording
+no Java production code changed for COR-017
+no Java test code changed for COR-017
+no Flyway migration changed for COR-017
 ```
 
 ---
 
-## 11. Next gate
+## 12. Next gate
 
 Do not start measurement yet.
 
 Continue with:
 
 ```text
-COR-004 — docs(architecture): define controlled vocabulary policy
+COR-018 — test(stabilization): validate corrected baseline
 ```

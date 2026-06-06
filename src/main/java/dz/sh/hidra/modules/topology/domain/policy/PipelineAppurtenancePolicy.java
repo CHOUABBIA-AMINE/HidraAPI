@@ -25,9 +25,11 @@ import dz.sh.hidra.modules.topology.domain.exception.TopologyValidationException
 import dz.sh.hidra.modules.topology.domain.model.Pipeline;
 import dz.sh.hidra.modules.topology.domain.model.PipelineAppurtenance;
 import dz.sh.hidra.modules.topology.domain.model.TopologyNode;
-import dz.sh.hidra.modules.topology.domain.value.NodeType;
+import dz.sh.hidra.modules.topology.domain.value.NodeTypeReference;
 import dz.sh.hidra.modules.topology.domain.value.PipelineAppurtenanceType;
+import dz.sh.hidra.modules.topology.domain.value.PipelineAppurtenanceTypeReference;
 import dz.sh.hidra.modules.topology.domain.value.ValveType;
+import dz.sh.hidra.modules.topology.domain.value.ValveTypeReference;
 
 /**
  * Validates pipeline appurtenance rules.
@@ -37,24 +39,15 @@ import dz.sh.hidra.modules.topology.domain.value.ValveType;
  * scraper points, hot taps, bypass points, and other point assets explicit topology concepts.
  *
  * <p>Architecture role:
- * This is a pure domain policy. It must not be annotated as a Spring bean and must not access
- * repositories, persistence adapters, REST DTOs, identity implementation, organization implementation,
- * measurement, operations, flow, risk, workflow, maintenance, or infrastructure code.
+ * This policy evaluates appurtenance and node type catalog references by stable language-neutral
+ * codes, not by Java enum identity.
  *
  * <p>Validation:
  * Valve type is required when appurtenance type is VALVE and forbidden for all non-valve
  * appurtenances. Every appurtenance must belong to a pipeline and must reference a topology node.
- *
- * <p>Usage:
- * Domain/application services may call this policy before registering pipeline point assets.
  */
 public final class PipelineAppurtenancePolicy {
 
-    /**
-     * Validates appurtenance invariants.
-     *
-     * @param appurtenance appurtenance to validate
-     */
     public void validate(PipelineAppurtenance appurtenance) {
         Objects.requireNonNull(appurtenance, "Pipeline appurtenance must not be null.");
 
@@ -73,14 +66,11 @@ public final class PipelineAppurtenancePolicy {
         }
     }
 
-    /**
-     * Validates appurtenance valve type consistency.
-     *
-     * @param appurtenanceType appurtenance type
-     * @param valveType valve type
-     */
-    public void validateValveTypeConsistency(PipelineAppurtenanceType appurtenanceType, ValveType valveType) {
-        Objects.requireNonNull(appurtenanceType, "Pipeline appurtenance type must not be null.");
+    public void validateValveTypeConsistency(
+            PipelineAppurtenanceTypeReference appurtenanceType,
+            ValveTypeReference valveType) {
+
+        Objects.requireNonNull(appurtenanceType, "Pipeline appurtenance type reference must not be null.");
 
         if (appurtenanceType.isValve() && valveType == null) {
             throw new TopologyValidationException("Valve type is required when appurtenance type is VALVE.");
@@ -91,12 +81,13 @@ public final class PipelineAppurtenancePolicy {
         }
     }
 
-    /**
-     * Validates that an appurtenance belongs to the expected pipeline.
-     *
-     * @param appurtenance appurtenance to validate
-     * @param pipeline expected parent pipeline
-     */
+    @Deprecated(forRemoval = true)
+    public void validateValveTypeConsistency(PipelineAppurtenanceType appurtenanceType, ValveType valveType) {
+        validateValveTypeConsistency(
+                PipelineAppurtenanceTypeReference.from(appurtenanceType),
+                ValveTypeReference.from(valveType));
+    }
+
     public void validateBelongsToPipeline(PipelineAppurtenance appurtenance, Pipeline pipeline) {
         Objects.requireNonNull(appurtenance, "Pipeline appurtenance must not be null.");
         Objects.requireNonNull(pipeline, "Pipeline must not be null.");
@@ -106,12 +97,6 @@ public final class PipelineAppurtenancePolicy {
         }
     }
 
-    /**
-     * Validates that an appurtenance has a compatible topology node.
-     *
-     * @param appurtenance appurtenance to validate
-     * @param node topology node to validate
-     */
     public void validateNodeCompatibility(PipelineAppurtenance appurtenance, TopologyNode node) {
         Objects.requireNonNull(appurtenance, "Pipeline appurtenance must not be null.");
         Objects.requireNonNull(node, "Topology node must not be null.");
@@ -125,19 +110,40 @@ public final class PipelineAppurtenancePolicy {
         }
     }
 
-    private boolean nodeTypeMatchesAppurtenanceType(PipelineAppurtenanceType appurtenanceType, NodeType nodeType) {
-        return switch (appurtenanceType) {
-            case VALVE -> nodeType == NodeType.PIPELINE_VALVE_POINT || nodeType == NodeType.CONNECTION_POINT || nodeType == NodeType.OTHER;
-            case INJECTION_POINT -> nodeType == NodeType.INJECTION_POINT || nodeType == NodeType.CONNECTION_POINT || nodeType == NodeType.OTHER;
-            case EXTRACTION_POINT -> nodeType == NodeType.EXTRACTION_POINT || nodeType == NodeType.CONNECTION_POINT || nodeType == NodeType.OTHER;
-            case PURGE_POINT -> nodeType == NodeType.PURGE_POINT || nodeType == NodeType.CONNECTION_POINT || nodeType == NodeType.OTHER;
-            case VENT_POINT -> nodeType == NodeType.VENT_POINT || nodeType == NodeType.CONNECTION_POINT || nodeType == NodeType.OTHER;
-            case DRAIN_POINT -> nodeType == NodeType.DRAIN_POINT || nodeType == NodeType.CONNECTION_POINT || nodeType == NodeType.OTHER;
-            case SAMPLING_POINT -> nodeType == NodeType.SAMPLING_POINT || nodeType == NodeType.CONNECTION_POINT || nodeType == NodeType.OTHER;
-            case METERING_POINT -> nodeType == NodeType.METERING_POINT || nodeType == NodeType.CONNECTION_POINT || nodeType == NodeType.OTHER;
-            case SCRAPER_LAUNCHER, SCRAPER_RECEIVER -> nodeType == NodeType.SCRAPER_POINT || nodeType == NodeType.CONNECTION_POINT || nodeType == NodeType.OTHER;
-            case HOT_TAP_POINT, BYPASS_POINT, CONNECTION_POINT -> nodeType == NodeType.CONNECTION_POINT || nodeType == NodeType.PIPELINE_JUNCTION || nodeType == NodeType.OTHER;
-            case OTHER -> true;
-        };
+    private boolean nodeTypeMatchesAppurtenanceType(
+            PipelineAppurtenanceTypeReference appurtenanceType,
+            NodeTypeReference nodeType) {
+
+        if (appurtenanceType.is("VALVE")) {
+            return nodeType.isAny("PIPELINE_VALVE_POINT", "CONNECTION_POINT", "OTHER");
+        }
+        if (appurtenanceType.is("INJECTION_POINT")) {
+            return nodeType.isAny("INJECTION_POINT", "CONNECTION_POINT", "OTHER");
+        }
+        if (appurtenanceType.is("EXTRACTION_POINT")) {
+            return nodeType.isAny("EXTRACTION_POINT", "CONNECTION_POINT", "OTHER");
+        }
+        if (appurtenanceType.is("PURGE_POINT")) {
+            return nodeType.isAny("PURGE_POINT", "CONNECTION_POINT", "OTHER");
+        }
+        if (appurtenanceType.is("VENT_POINT")) {
+            return nodeType.isAny("VENT_POINT", "CONNECTION_POINT", "OTHER");
+        }
+        if (appurtenanceType.is("DRAIN_POINT")) {
+            return nodeType.isAny("DRAIN_POINT", "CONNECTION_POINT", "OTHER");
+        }
+        if (appurtenanceType.is("SAMPLING_POINT")) {
+            return nodeType.isAny("SAMPLING_POINT", "CONNECTION_POINT", "OTHER");
+        }
+        if (appurtenanceType.is("METERING_POINT")) {
+            return nodeType.isAny("METERING_POINT", "CONNECTION_POINT", "OTHER");
+        }
+        if (appurtenanceType.isAny("SCRAPER_LAUNCHER", "SCRAPER_RECEIVER")) {
+            return nodeType.isAny("SCRAPER_POINT", "CONNECTION_POINT", "OTHER");
+        }
+        if (appurtenanceType.isAny("HOT_TAP_POINT", "BYPASS_POINT", "CONNECTION_POINT")) {
+            return nodeType.isAny("CONNECTION_POINT", "PIPELINE_JUNCTION", "OTHER");
+        }
+        return appurtenanceType.is("OTHER");
     }
 }

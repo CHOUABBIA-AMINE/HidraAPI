@@ -36,7 +36,7 @@ import dz.sh.hidra.modules.organization.domain.model.OrganizationUnit;
 import dz.sh.hidra.modules.organization.domain.value.OperationalScopeType;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitCode;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitName;
-import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitType;
+import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitTypeReference;
 import dz.sh.hidra.modules.organization.infrastructure.persistence.entity.OrganizationUnitJpaEntity;
 import dz.sh.hidra.modules.organization.infrastructure.persistence.mapper.OrganizationPersistenceMapper;
 import dz.sh.hidra.modules.organization.infrastructure.persistence.repository.OrganizationUnitJpaRepository;
@@ -44,18 +44,6 @@ import dz.sh.hidra.modules.organization.infrastructure.persistence.repository.Or
 
 /**
  * Tests the organization unit persistence adapter.
- *
- * <p>Business role:
- * Verifies persistence mapping for organization units, including station-as-organization-unit and
- * neutral operational scope fields.
- *
- * <p>Architecture role:
- * This is an infrastructure persistence unit test. It uses a mocked Spring Data repository and
- * exercises the repository adapter plus persistence mapper.
- *
- * <p>Validation:
- * The test verifies code lookup, save delegation, station type mapping, and operational scope
- * column mapping without importing topology classes.
  */
 class OrganizationUnitRepositoryAdapterTest {
 
@@ -72,7 +60,7 @@ class OrganizationUnitRepositoryAdapterTest {
         OrganizationUnit savedUnit = adapter.save(stationUnit);
 
         assertEquals(stationUnit.id(), savedUnit.id());
-        assertEquals(OrganizationUnitType.STATION, savedUnit.type());
+        assertEquals(OrganizationUnitTypeReference.STATION, savedUnit.type());
         assertTrue(savedUnit.operationalScopeReference().isPresent());
         assertEquals("CS-EAST-01", savedUnit.operationalScopeReference().orElseThrow().scopeCode());
         verify(jpaRepository).save(any(OrganizationUnitJpaEntity.class));
@@ -84,7 +72,7 @@ class OrganizationUnitRepositoryAdapterTest {
 
         OrganizationUnitJpaEntity entity = mapper.toEntity(stationUnit);
 
-        assertEquals("STATION", entity.getType());
+        assertEquals("organization-out-station", entity.getTypeId());
         assertEquals("TOPOLOGY_COMPRESSION_STATION", entity.getOperationalScopeType());
         assertEquals("station-001", entity.getOperationalScopeId());
         assertEquals("CS-EAST-01", entity.getOperationalScopeCode());
@@ -98,9 +86,7 @@ class OrganizationUnitRepositoryAdapterTest {
         OrganizationUnit stationUnit = stationOrganizationUnit();
         OperationalScopeReference scopeReference = stationUnit.operationalScopeReference().orElseThrow();
 
-        when(jpaRepository.findByOperationalScopeTypeAndOperationalScopeCode(
-                "TOPOLOGY_COMPRESSION_STATION",
-                "CS-EAST-01"))
+        when(jpaRepository.findByOperationalScopeTypeAndOperationalScopeCode("TOPOLOGY_COMPRESSION_STATION", "CS-EAST-01"))
                 .thenReturn(List.of(mapper.toEntity(stationUnit)));
 
         List<OrganizationUnit> foundUnits = adapter.findByOperationalScope(scopeReference);
@@ -108,9 +94,7 @@ class OrganizationUnitRepositoryAdapterTest {
         assertEquals(1, foundUnits.size());
         assertEquals("CS_EAST_01", foundUnits.get(0).code().value());
         assertEquals("CS-EAST-01", foundUnits.get(0).operationalScopeReference().orElseThrow().scopeCode());
-        verify(jpaRepository).findByOperationalScopeTypeAndOperationalScopeCode(
-                "TOPOLOGY_COMPRESSION_STATION",
-                "CS-EAST-01");
+        verify(jpaRepository).findByOperationalScopeTypeAndOperationalScopeCode("TOPOLOGY_COMPRESSION_STATION", "CS-EAST-01");
     }
 
     @Test
@@ -120,7 +104,7 @@ class OrganizationUnitRepositoryAdapterTest {
         OrganizationUnit regionUnit = OrganizationUnit.create(
                 OrganizationUnitCode.of("REGION_EAST"),
                 OrganizationUnitName.of("Operational East Region"),
-                OrganizationUnitType.REGION,
+                OrganizationUnitTypeReference.REGION,
                 null,
                 null);
 

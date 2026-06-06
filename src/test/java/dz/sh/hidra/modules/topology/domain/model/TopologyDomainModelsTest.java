@@ -31,10 +31,10 @@ import dz.sh.hidra.kernel.domain.exception.BusinessRuleViolationException;
 import dz.sh.hidra.modules.topology.domain.TopologyDomainTestData;
 import dz.sh.hidra.modules.topology.domain.value.DiameterInInches;
 import dz.sh.hidra.modules.topology.domain.value.LengthInKilometers;
-import dz.sh.hidra.modules.topology.domain.value.PipelineId;
-import dz.sh.hidra.modules.topology.domain.value.PipelineSystemId;
 import dz.sh.hidra.modules.topology.domain.value.PipelineAppurtenanceType;
+import dz.sh.hidra.modules.topology.domain.value.PipelineId;
 import dz.sh.hidra.modules.topology.domain.value.PipelineKilometerPoint;
+import dz.sh.hidra.modules.topology.domain.value.PipelineSystemId;
 import dz.sh.hidra.modules.topology.domain.value.ProductType;
 import dz.sh.hidra.modules.topology.domain.value.TopologyCode;
 import dz.sh.hidra.modules.topology.domain.value.TopologyName;
@@ -53,7 +53,7 @@ class TopologyDomainModelsTest {
 
         assertNotNull(pipelineSystem.id());
         assertEquals(TopologyStatus.PLANNED, pipelineSystem.status());
-        assertEquals(ProductType.GAS, pipelineSystem.productType());
+        assertEquals("GAS", pipelineSystem.productType().name());
         assertEquals("Main system", pipelineSystem.description());
         assertEquals("TRC-OPS-EAST", pipelineSystem.operationalOwnerReference().ownerCode());
     }
@@ -64,6 +64,7 @@ class TopologyDomainModelsTest {
 
         assertNotNull(facility.id());
         assertEquals(TopologyStatus.PLANNED, facility.status());
+        assertEquals("COMPRESSION_STATION", facility.facilityType().name());
         assertEquals("TRC-OPS-EAST-CS-01", facility.organizationUnitReference().referenceCode());
         assertEquals(31.6167, facility.coordinate().latitude());
     }
@@ -75,6 +76,7 @@ class TopologyDomainModelsTest {
 
         assertEquals(pipelineSystem.id(), pipeline.pipelineSystemId());
         assertEquals(TopologyStatus.PLANNED, pipeline.status());
+        assertEquals("GAS", pipeline.productType().name());
         assertEquals("Main pipeline", pipeline.description());
     }
 
@@ -87,25 +89,25 @@ class TopologyDomainModelsTest {
         TopologyNode extractionNode = TopologyDomainTestData.freeNode(dz.sh.hidra.modules.topology.domain.value.NodeType.EXTRACTION_POINT, "EXT");
         TopologyNode purgeNode = TopologyDomainTestData.freeNode(dz.sh.hidra.modules.topology.domain.value.NodeType.PURGE_POINT, "PURGE");
 
-        assertEquals(PipelineAppurtenanceType.VALVE, TopologyDomainTestData.valve(pipeline, valveNode).appurtenanceType());
-        assertEquals(PipelineAppurtenanceType.INJECTION_POINT, TopologyDomainTestData.appurtenance(
+        assertEquals("VALVE", TopologyDomainTestData.valve(pipeline, valveNode).appurtenanceType().name());
+        assertEquals("INJECTION_POINT", TopologyDomainTestData.appurtenance(
                 pipeline,
                 injectionNode,
                 PipelineAppurtenanceType.INJECTION_POINT,
                 null,
-                "INJ").appurtenanceType());
-        assertEquals(PipelineAppurtenanceType.EXTRACTION_POINT, TopologyDomainTestData.appurtenance(
+                "INJ").appurtenanceType().name());
+        assertEquals("EXTRACTION_POINT", TopologyDomainTestData.appurtenance(
                 pipeline,
                 extractionNode,
                 PipelineAppurtenanceType.EXTRACTION_POINT,
                 null,
-                "EXT").appurtenanceType());
-        assertEquals(PipelineAppurtenanceType.PURGE_POINT, TopologyDomainTestData.appurtenance(
+                "EXT").appurtenanceType().name());
+        assertEquals("PURGE_POINT", TopologyDomainTestData.appurtenance(
                 pipeline,
                 purgeNode,
                 PipelineAppurtenanceType.PURGE_POINT,
                 null,
-                "PURGE").appurtenanceType());
+                "PURGE").appurtenanceType().name());
     }
 
     @Test

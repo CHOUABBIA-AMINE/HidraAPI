@@ -29,6 +29,7 @@ import dz.sh.hidra.modules.topology.domain.value.LengthInKilometers;
 import dz.sh.hidra.modules.topology.domain.value.PipelineId;
 import dz.sh.hidra.modules.topology.domain.value.PipelineSystemId;
 import dz.sh.hidra.modules.topology.domain.value.ProductType;
+import dz.sh.hidra.modules.topology.domain.value.ProductTypeReference;
 import dz.sh.hidra.modules.topology.domain.value.TopologyCode;
 import dz.sh.hidra.modules.topology.domain.value.TopologyName;
 import dz.sh.hidra.modules.topology.domain.value.TopologyStatus;
@@ -41,12 +42,12 @@ import dz.sh.hidra.modules.topology.domain.value.TopologyStatus;
  * appurtenances.
  *
  * <p>Architecture role:
- * This is a pure topology domain aggregate. It is independent from Spring, JPA, REST DTOs,
- * identity, organization implementation, measurement, flow, risk, workflow, and infrastructure.
+ * This aggregate stores product classification as a catalog reference so multilingual labels and
+ * configurable product taxonomies can be resolved through topology catalog services.
  *
  * <p>Validation:
- * Pipeline system identifier, code, name, product type, dimensions, status, creation instant, and
- * update instant are mandatory.
+ * Pipeline system identifier, code, name, product type reference, dimensions, status, creation
+ * instant, and update instant are mandatory.
  */
 public final class Pipeline implements AggregateRoot<PipelineId> {
 
@@ -55,7 +56,7 @@ public final class Pipeline implements AggregateRoot<PipelineId> {
     private final TopologyCode code;
     private final TopologyName name;
     private final String description;
-    private final ProductType productType;
+    private final ProductTypeReference productType;
     private final DiameterInInches nominalDiameter;
     private final LengthInKilometers designLength;
     private final TopologyStatus status;
@@ -68,7 +69,7 @@ public final class Pipeline implements AggregateRoot<PipelineId> {
             TopologyCode code,
             TopologyName name,
             String description,
-            ProductType productType,
+            ProductTypeReference productType,
             DiameterInInches nominalDiameter,
             LengthInKilometers designLength,
             TopologyStatus status,
@@ -80,7 +81,7 @@ public final class Pipeline implements AggregateRoot<PipelineId> {
         this.code = Objects.requireNonNull(code, "Pipeline code must not be null.");
         this.name = Objects.requireNonNull(name, "Pipeline name must not be null.");
         this.description = normalizeOptionalText(description, 500, "Pipeline description");
-        this.productType = Objects.requireNonNull(productType, "Pipeline product type must not be null.");
+        this.productType = Objects.requireNonNull(productType, "Pipeline product type reference must not be null.");
         this.nominalDiameter = Objects.requireNonNull(nominalDiameter, "Pipeline nominal diameter must not be null.");
         this.designLength = Objects.requireNonNull(designLength, "Pipeline design length must not be null.");
         this.status = Objects.requireNonNull(status, "Pipeline status must not be null.");
@@ -95,7 +96,7 @@ public final class Pipeline implements AggregateRoot<PipelineId> {
             TopologyCode code,
             TopologyName name,
             String description,
-            ProductType productType,
+            ProductTypeReference productType,
             DiameterInInches nominalDiameter,
             LengthInKilometers designLength) {
 
@@ -114,6 +115,36 @@ public final class Pipeline implements AggregateRoot<PipelineId> {
                 now);
     }
 
+    @Deprecated(forRemoval = true)
+    public static Pipeline create(
+            PipelineSystemId pipelineSystemId,
+            TopologyCode code,
+            TopologyName name,
+            String description,
+            ProductType productType,
+            DiameterInInches nominalDiameter,
+            LengthInKilometers designLength) {
+
+        return create(pipelineSystemId, code, name, description, ProductTypeReference.from(productType), nominalDiameter, designLength);
+    }
+
+    public static Pipeline restore(
+            PipelineId id,
+            PipelineSystemId pipelineSystemId,
+            TopologyCode code,
+            TopologyName name,
+            String description,
+            ProductTypeReference productType,
+            DiameterInInches nominalDiameter,
+            LengthInKilometers designLength,
+            TopologyStatus status,
+            Instant createdAt,
+            Instant updatedAt) {
+
+        return new Pipeline(id, pipelineSystemId, code, name, description, productType, nominalDiameter, designLength, status, createdAt, updatedAt);
+    }
+
+    @Deprecated(forRemoval = true)
     public static Pipeline restore(
             PipelineId id,
             PipelineSystemId pipelineSystemId,
@@ -127,18 +158,7 @@ public final class Pipeline implements AggregateRoot<PipelineId> {
             Instant createdAt,
             Instant updatedAt) {
 
-        return new Pipeline(
-                id,
-                pipelineSystemId,
-                code,
-                name,
-                description,
-                productType,
-                nominalDiameter,
-                designLength,
-                status,
-                createdAt,
-                updatedAt);
+        return restore(id, pipelineSystemId, code, name, description, ProductTypeReference.from(productType), nominalDiameter, designLength, status, createdAt, updatedAt);
     }
 
     @Override
@@ -162,7 +182,7 @@ public final class Pipeline implements AggregateRoot<PipelineId> {
         return description;
     }
 
-    public ProductType productType() {
+    public ProductTypeReference productType() {
         return productType;
     }
 
@@ -186,65 +206,28 @@ public final class Pipeline implements AggregateRoot<PipelineId> {
         return updatedAt;
     }
 
-
-    /**
-     * Activates this topology asset.
-     *
-     * @return active topology asset
-     */
     public Pipeline activate() {
         return withStatus(TopologyStatus.ACTIVE);
     }
 
-    /**
-     * Deactivates this topology asset.
-     *
-     * @return inactive topology asset
-     */
     public Pipeline deactivate() {
         return withStatus(TopologyStatus.INACTIVE);
     }
 
-    /**
-     * Marks this topology asset as under maintenance.
-     *
-     * @return topology asset under maintenance
-     */
     public Pipeline markUnderMaintenance() {
         return withStatus(TopologyStatus.UNDER_MAINTENANCE);
     }
 
-    /**
-     * Retires this topology asset.
-     *
-     * @return retired topology asset
-     */
     public Pipeline retire() {
         return withStatus(TopologyStatus.RETIRED);
     }
 
-    /**
-     * Decommissions this topology asset.
-     *
-     * @return decommissioned topology asset
-     */
     public Pipeline decommission() {
         return withStatus(TopologyStatus.DECOMMISSIONED);
     }
 
     private Pipeline withStatus(TopologyStatus newStatus) {
-        return new Pipeline(
-                id,
-                pipelineSystemId,
-                code,
-                name,
-                description,
-                productType,
-                nominalDiameter,
-                designLength,
-                Objects.requireNonNull(newStatus, "Pipeline status must not be null."),
-                createdAt,
-                Instant.now());
+        return new Pipeline(id, pipelineSystemId, code, name, description, productType, nominalDiameter, designLength, Objects.requireNonNull(newStatus, "Pipeline status must not be null."), createdAt, Instant.now());
     }
 
     private static String normalizeOptionalText(String value, int maxLength, String fieldName) {
@@ -270,5 +253,4 @@ public final class Pipeline implements AggregateRoot<PipelineId> {
             throw new BusinessRuleViolationException(modelName + " updatedAt must not be before createdAt.");
         }
     }
-
 }

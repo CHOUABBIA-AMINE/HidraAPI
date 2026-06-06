@@ -21,7 +21,6 @@
 package dz.sh.hidra.architecture;
 
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
@@ -30,6 +29,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import org.junit.jupiter.api.Test;
 
@@ -139,7 +139,7 @@ class Correction02ArchitectureTest {
 
     @Test
     void forbiddenProductionPackageNamesMustNotExist() {
-        List<String> violations = PRODUCTION_CLASSES.stream()
+        List<String> violations = StreamSupport.stream(PRODUCTION_CLASSES.spliterator(), false)
                 .map(JavaClass::getPackageName)
                 .distinct()
                 .filter(this::hasForbiddenPackageSegment)

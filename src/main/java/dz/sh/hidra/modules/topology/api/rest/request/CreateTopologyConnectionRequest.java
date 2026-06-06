@@ -31,17 +31,18 @@ import jakarta.validation.constraints.Size;
  * Creates a physical graph edge between two topology nodes.
  *
  * <p>Architecture role:
- * This is a REST input contract. Controllers map it to CreateTopologyConnectionCommand through
- * TopologyRestMapper.
+ * This REST input contract accepts a stable connection type catalog code. Linked asset type remains
+ * an internal topology asset discriminator.
  *
  * <p>Validation:
- * Code, name, endpoint nodes, connection type, linked asset type, and linked asset id are required.
+ * Code, name, endpoint nodes, connection type code, linked asset type, and linked asset id are
+ * required.
  *
  * @param code connection business code
  * @param name connection display name
  * @param fromNodeId from-node identifier
  * @param toNodeId to-node identifier
- * @param connectionType connection type
+ * @param connectionTypeCode language-neutral connection type catalog code
  * @param linkedAssetType linked topology asset type
  * @param linkedAssetId linked topology asset identifier
  */
@@ -67,10 +68,11 @@ public record CreateTopologyConnectionRequest(
         @Size(min = 2, max = 80)
         String toNodeId,
 
-        @Schema(description = "Connection type.", example = "PIPELINE_SEGMENT", allowableValues = {"PIPELINE_SEGMENT", "FACILITY_INTERNAL", "VALVE_CONNECTION", "METERING_CONNECTION", "JUNCTION_CONNECTION", "APPURTENANCE_CONNECTION", "OTHER"}, requiredMode = Schema.RequiredMode.REQUIRED)
+        @Schema(description = "Language-neutral connection type catalog code.", example = "PIPELINE_SEGMENT", requiredMode = Schema.RequiredMode.REQUIRED)
         @NotBlank
-        @Pattern(regexp = "PIPELINE_SEGMENT|FACILITY_INTERNAL|VALVE_CONNECTION|METERING_CONNECTION|JUNCTION_CONNECTION|APPURTENANCE_CONNECTION|OTHER")
-        String connectionType,
+        @Size(min = 2, max = 80)
+        @Pattern(regexp = "[A-Za-z0-9][A-Za-z0-9_.-]{1,79}")
+        String connectionTypeCode,
 
         @Schema(description = "Linked topology asset type.", example = "SEGMENT", allowableValues = {"PIPELINE_SYSTEM", "PIPELINE", "FACILITY", "NODE", "SEGMENT", "APPURTENANCE", "CONNECTION", "EQUIPMENT"}, requiredMode = Schema.RequiredMode.REQUIRED)
         @NotBlank

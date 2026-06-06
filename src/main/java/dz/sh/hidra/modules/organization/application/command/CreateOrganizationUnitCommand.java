@@ -26,7 +26,6 @@ import dz.sh.hidra.modules.organization.domain.value.OperationalScopeType;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitCode;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitId;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitName;
-import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitType;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitTypeReference;
 
 /**
@@ -59,31 +58,6 @@ public record CreateOrganizationUnitCommand(
         operationalScopeId = normalizeOptional(operationalScopeId, "Operational scope id", 120);
         operationalScopeCode = normalizeOptional(operationalScopeCode, "Operational scope code", 120);
         operationalScopeName = normalizeOptional(operationalScopeName, "Operational scope name", 160);
-    }
-
-    /**
-     * @deprecated use the constructor accepting OrganizationUnitTypeReference
-     */
-    @Deprecated(forRemoval = false)
-    public CreateOrganizationUnitCommand(
-            OrganizationUnitCode code,
-            OrganizationUnitName name,
-            OrganizationUnitType type,
-            OrganizationUnitId parentId,
-            OperationalScopeType operationalScopeType,
-            String operationalScopeId,
-            String operationalScopeCode,
-            String operationalScopeName) {
-
-        this(
-                code,
-                name,
-                OrganizationUnitTypeReference.from(type),
-                parentId,
-                operationalScopeType,
-                operationalScopeId,
-                operationalScopeCode,
-                operationalScopeName);
     }
 
     private static String normalizeOptional(String value, String label, int maxLength) {

@@ -41,18 +41,10 @@ import dz.sh.hidra.modules.organization.domain.value.OperationalScopeType;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitCode;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitId;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitName;
-import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitType;
+import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitTypeReference;
 
 /**
  * Tests the organization unit creation application service.
- *
- * <p>Business role:
- * Verifies creation of organization units, including station-as-organization-unit with neutral
- * operational scope reference.
- *
- * <p>Architecture role:
- * This is an application-layer unit test using in-memory fake ports. It does not load Spring, JPA,
- * REST API, identity, topology, platform, or persistence infrastructure.
  */
 class CreateOrganizationUnitServiceTest {
 
@@ -68,7 +60,7 @@ class CreateOrganizationUnitServiceTest {
         OrganizationUnitDto createdUnit = service.createOrganizationUnit(new CreateOrganizationUnitCommand(
                 OrganizationUnitCode.of("CS_EAST_01"),
                 OrganizationUnitName.of("Compression Station East 01"),
-                OrganizationUnitType.STATION,
+                OrganizationUnitTypeReference.STATION,
                 null,
                 OperationalScopeType.TOPOLOGY_COMPRESSION_STATION,
                 "station-001",
@@ -76,7 +68,8 @@ class CreateOrganizationUnitServiceTest {
                 "Compression Station East 01"));
 
         assertEquals("CS_EAST_01", createdUnit.code());
-        assertEquals("STATION", createdUnit.type());
+        assertEquals("STATION", createdUnit.typeCode());
+        assertEquals("organization-out-station", createdUnit.typeId());
         assertEquals("TOPOLOGY_COMPRESSION_STATION", createdUnit.operationalScopeType());
         assertEquals(1, organizationUnitRepository.savedOrganizationUnits.size());
         assertEquals(1, eventPublisher.events.size());
@@ -89,7 +82,7 @@ class CreateOrganizationUnitServiceTest {
         organizationUnitRepository.save(OrganizationUnit.create(
                 OrganizationUnitCode.of("REGION_EAST"),
                 OrganizationUnitName.of("Operational East Region"),
-                OrganizationUnitType.REGION,
+                OrganizationUnitTypeReference.REGION,
                 null,
                 null));
 
@@ -101,7 +94,7 @@ class CreateOrganizationUnitServiceTest {
         CreateOrganizationUnitCommand command = new CreateOrganizationUnitCommand(
                 OrganizationUnitCode.of("REGION_EAST"),
                 OrganizationUnitName.of("Duplicate Region"),
-                OrganizationUnitType.REGION,
+                OrganizationUnitTypeReference.REGION,
                 null,
                 null,
                 null,
@@ -121,7 +114,7 @@ class CreateOrganizationUnitServiceTest {
         CreateOrganizationUnitCommand command = new CreateOrganizationUnitCommand(
                 OrganizationUnitCode.of("CS_EAST_02"),
                 OrganizationUnitName.of("Compression Station East 02"),
-                OrganizationUnitType.STATION,
+                OrganizationUnitTypeReference.STATION,
                 null,
                 OperationalScopeType.TOPOLOGY_COMPRESSION_STATION,
                 "station-002",
@@ -144,16 +137,12 @@ class CreateOrganizationUnitServiceTest {
 
         @Override
         public Optional<OrganizationUnit> findById(OrganizationUnitId id) {
-            return savedOrganizationUnits.stream()
-                    .filter(unit -> unit.id().equals(id))
-                    .findFirst();
+            return savedOrganizationUnits.stream().filter(unit -> unit.id().equals(id)).findFirst();
         }
 
         @Override
         public Optional<OrganizationUnit> findByCode(OrganizationUnitCode code) {
-            return savedOrganizationUnits.stream()
-                    .filter(unit -> unit.code().equals(code))
-                    .findFirst();
+            return savedOrganizationUnits.stream().filter(unit -> unit.code().equals(code)).findFirst();
         }
 
         @Override
@@ -169,18 +158,16 @@ class CreateOrganizationUnitServiceTest {
         }
 
         @Override
-        public List<OrganizationUnit> findByType(OrganizationUnitType type) {
+        public List<OrganizationUnit> findByType(OrganizationUnitTypeReference type) {
             return savedOrganizationUnits.stream()
-                    .filter(unit -> unit.type() == type)
+                    .filter(unit -> unit.type().equals(type))
                     .toList();
         }
 
         @Override
         public List<OrganizationUnit> findByOperationalScope(OperationalScopeReference operationalScopeReference) {
             return savedOrganizationUnits.stream()
-                    .filter(unit -> unit.operationalScopeReference()
-                            .map(operationalScopeReference::equals)
-                            .orElse(false))
+                    .filter(unit -> unit.operationalScopeReference().map(operationalScopeReference::equals).orElse(false))
                     .toList();
         }
     }

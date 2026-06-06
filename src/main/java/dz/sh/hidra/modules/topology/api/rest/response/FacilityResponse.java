@@ -14,7 +14,7 @@
  * @Module      : topology
  * @Package     : dz.sh.hidra.modules.topology.api.rest.response
  *
- * @Description : REST response representing a topology facility.
+ * @Description : REST response representing a physical topology facility.
  *
  */
 package dz.sh.hidra.modules.topology.api.rest.response;
@@ -26,24 +26,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 /**
  * REST response representing a physical topology facility.
  *
- * <p>Business role:
- * Returns a physical facility such as a compression station, pumping station, terminal, processing
- * plant, production field interface, gathering center, storage facility, receipt facility, or
- * delivery facility.
- *
- * <p>Architecture role:
- * This is a REST output contract. It returns physical topology facility data only; station as an
- * organization unit remains owned by organization.
- *
- * <p>Validation:
- * Facility validity is enforced by topology domain models, value objects, policies, and services
- * before this response is produced.
- *
  * @param facilityId facility identifier
  * @param code facility business code
  * @param name facility display name
- * @param facilityType physical facility type
- * @param productType hydrocarbon product type
+ * @param facilityType localized facility type catalog reference
+ * @param productType localized product type catalog reference
  * @param status lifecycle status
  * @param coordinate optional geographical coordinate
  * @param organizationUnitReference optional neutral organization unit reference
@@ -61,11 +48,11 @@ public record FacilityResponse(
         @Schema(description = "Facility display name.", example = "Compression Station East 01")
         String name,
 
-        @Schema(description = "Physical facility type.", example = "COMPRESSION_STATION", allowableValues = {"COMPRESSION_STATION", "PUMPING_STATION", "METERING_STATION", "VALVE_STATION", "TERMINAL", "PROCESSING_PLANT", "PRODUCTION_FIELD", "GATHERING_CENTER", "STORAGE_FACILITY", "DELIVERY_FACILITY", "RECEIPT_FACILITY", "DISPATCHING_CENTER", "OTHER"})
-        String facilityType,
+        @Schema(description = "Localized physical facility type catalog reference.")
+        TopologyTypeReferenceResponse facilityType,
 
-        @Schema(description = "Hydrocarbon product type.", example = "GAS", allowableValues = {"GAS", "CRUDE_OIL", "CONDENSATE", "LPG", "REFINED_PRODUCT", "MULTIPHASE", "UNKNOWN"})
-        String productType,
+        @Schema(description = "Localized hydrocarbon product type catalog reference.")
+        TopologyTypeReferenceResponse productType,
 
         @Schema(description = "Facility lifecycle status.", example = "ACTIVE", allowableValues = {"PLANNED", "ACTIVE", "INACTIVE", "UNDER_MAINTENANCE", "RETIRED", "DECOMMISSIONED"})
         String status,

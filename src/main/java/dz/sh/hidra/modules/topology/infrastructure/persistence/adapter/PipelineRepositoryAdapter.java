@@ -19,10 +19,10 @@
  */
 package dz.sh.hidra.modules.topology.infrastructure.persistence.adapter;
 
-import java.util.Objects;
-import java.util.Optional;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
+import java.util.Optional;
 
 import dz.sh.hidra.kernel.application.pagination.PageRequest;
 import dz.sh.hidra.kernel.application.pagination.PageResult;
@@ -37,30 +37,13 @@ import dz.sh.hidra.modules.topology.infrastructure.persistence.repository.Pipeli
 
 /**
  * Persistence adapter implementing PipelineRepositoryPort.
- *
- * <p>Business role:
- * Persists and retrieves topology pipeline domain models through Spring Data JPA.
- *
- * <p>Architecture role:
- * This class adapts an application outbound port to infrastructure persistence. Application services
- * depend on the port, not on this adapter or Spring Data repository.
- *
- * <p>Validation:
- * Domain validation happens before persistence. Mapping restores domain value objects and model
- * invariants.
- *
- * <p>Usage:
- * Wire this adapter from topology infrastructure configuration.
  */
 public final class PipelineRepositoryAdapter implements PipelineRepositoryPort {
 
     private final PipelineJpaRepository jpaRepository;
     private final TopologyPersistenceMapper mapper;
 
-    public PipelineRepositoryAdapter(
-            PipelineJpaRepository jpaRepository,
-            TopologyPersistenceMapper mapper) {
-
+    public PipelineRepositoryAdapter(PipelineJpaRepository jpaRepository, TopologyPersistenceMapper mapper) {
         this.jpaRepository = Objects.requireNonNull(jpaRepository, "PipelineJpaRepository must not be null.");
         this.mapper = Objects.requireNonNull(mapper, "Topology persistence mapper must not be null.");
     }
@@ -95,8 +78,8 @@ public final class PipelineRepositoryAdapter implements PipelineRepositoryPort {
 
         List<Pipeline> filteredItems = jpaRepository.findAll().stream()
                 .filter(entity -> matchesSearchText(entity, query.searchText()))
-                .filter(entity -> query.pipelineSystemId() == null || entity.getPipelineSystemId().equals(query.pipelineSystemId().value()))
-                .filter(entity -> query.productType() == null || entity.getProductType().equals(query.productType().name()))
+                .filter(entity -> query.pipelineSystemId() == null || query.pipelineSystemId().value().equals(entity.getPipelineSystemId()))
+                .filter(entity -> query.productType() == null || query.productType().id().equals(entity.getProductTypeId()))
                 .filter(entity -> query.status() == null || entity.getStatus().equals(query.status().name()))
                 .map(mapper::toDomain)
                 .toList();
@@ -108,21 +91,17 @@ public final class PipelineRepositoryAdapter implements PipelineRepositoryPort {
         if (searchText == null) {
             return true;
         }
-
-        return containsIgnoreCase(entity.getCode(), searchText)
-                || containsIgnoreCase(entity.getName(), searchText);
+        return containsIgnoreCase(entity.getCode(), searchText) || containsIgnoreCase(entity.getName(), searchText);
     }
 
     private static PageResult<Pipeline> paginate(List<Pipeline> items, PageRequest pageRequest) {
         Objects.requireNonNull(pageRequest, "Page request must not be null.");
-
         int fromIndex = Math.min(pageRequest.page() * pageRequest.size(), items.size());
         int toIndex = Math.min(fromIndex + pageRequest.size(), items.size());
         return PageResult.of(items.subList(fromIndex, toIndex), pageRequest.page(), pageRequest.size(), items.size());
     }
 
     private static boolean containsIgnoreCase(String value, String searchText) {
-        return value != null
-                && value.toLowerCase(Locale.ROOT).contains(searchText.toLowerCase(Locale.ROOT));
+        return value != null && value.toLowerCase(Locale.ROOT).contains(searchText.toLowerCase(Locale.ROOT));
     }
 }

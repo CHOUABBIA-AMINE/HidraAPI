@@ -25,7 +25,6 @@ import dz.sh.hidra.kernel.application.pagination.PageRequest;
 import dz.sh.hidra.kernel.application.query.Query;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitId;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitStatus;
-import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitType;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitTypeReference;
 
 /**
@@ -47,20 +46,6 @@ public record ListOrganizationUnitsQuery(
     public ListOrganizationUnitsQuery {
         searchText = normalizeOptional(searchText, "Search text", 120);
         Objects.requireNonNull(pageRequest, "Page request must not be null.");
-    }
-
-    /**
-     * @deprecated use the constructor accepting OrganizationUnitTypeReference
-     */
-    @Deprecated(forRemoval = false)
-    public ListOrganizationUnitsQuery(
-            String searchText,
-            OrganizationUnitType type,
-            OrganizationUnitStatus status,
-            OrganizationUnitId parentId,
-            PageRequest pageRequest) {
-
-        this(searchText, type == null ? null : OrganizationUnitTypeReference.from(type), status, parentId, pageRequest);
     }
 
     public static ListOrganizationUnitsQuery all(PageRequest pageRequest) {

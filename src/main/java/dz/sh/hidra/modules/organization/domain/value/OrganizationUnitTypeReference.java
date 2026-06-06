@@ -21,7 +21,6 @@ package dz.sh.hidra.modules.organization.domain.value;
 
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 
 import dz.sh.hidra.kernel.domain.exception.InvalidValueObjectException;
 import dz.sh.hidra.kernel.domain.model.ValueObject;
@@ -110,11 +109,6 @@ public record OrganizationUnitTypeReference(String id, String code) implements V
         return new OrganizationUnitTypeReference(normalizedId, CODES_BY_ID.getOrDefault(normalizedId, toCustomCode(normalizedId)));
     }
 
-    public static OrganizationUnitTypeReference from(OrganizationUnitType legacyType) {
-        Objects.requireNonNull(legacyType, "Legacy organization unit type must not be null.");
-        return legacyType.toReference();
-    }
-
     public String name() {
         return code;
     }
@@ -125,15 +119,6 @@ public record OrganizationUnitTypeReference(String id, String code) implements V
 
     public boolean isStationOrganizationUnit() {
         return is("STATION");
-    }
-
-    public String localizedLabel(String locale) {
-        String normalizedLocale = locale == null || locale.isBlank() ? "en" : locale.toLowerCase(Locale.ROOT);
-        return switch (normalizedLocale.substring(0, Math.min(2, normalizedLocale.length()))) {
-            case "fr" -> frenchLabel(code);
-            case "ar" -> arabicLabel(code);
-            default -> englishLabel(code);
-        };
     }
 
     private static String normalizeId(String value) {
@@ -167,56 +152,5 @@ public record OrganizationUnitTypeReference(String id, String code) implements V
     private static String toCustomCode(String id) {
         String suffix = id.startsWith(PREFIX) ? id.substring(PREFIX.length()) : id;
         return suffix.toUpperCase(Locale.ROOT).replace('-', '_');
-    }
-
-    private static String englishLabel(String code) {
-        return switch (code) {
-            case "COMPANY" -> "Company";
-            case "DIVISION" -> "Division";
-            case "DIRECTION" -> "Direction";
-            case "DEPARTMENT" -> "Department";
-            case "REGION" -> "Region";
-            case "AREA" -> "Area";
-            case "DISTRICT" -> "District";
-            case "STATION" -> "Station";
-            case "TEAM" -> "Team";
-            case "PROJECT_TEAM" -> "Project Team";
-            case "OTHER" -> "Other";
-            default -> code;
-        };
-    }
-
-    private static String frenchLabel(String code) {
-        return switch (code) {
-            case "COMPANY" -> "Société";
-            case "DIVISION" -> "Division";
-            case "DIRECTION" -> "Direction";
-            case "DEPARTMENT" -> "Département";
-            case "REGION" -> "Région";
-            case "AREA" -> "Zone";
-            case "DISTRICT" -> "District";
-            case "STATION" -> "Station";
-            case "TEAM" -> "Équipe";
-            case "PROJECT_TEAM" -> "Équipe projet";
-            case "OTHER" -> "Autre";
-            default -> code;
-        };
-    }
-
-    private static String arabicLabel(String code) {
-        return switch (code) {
-            case "COMPANY" -> "شركة";
-            case "DIVISION" -> "قسم رئيسي";
-            case "DIRECTION" -> "مديرية";
-            case "DEPARTMENT" -> "قسم";
-            case "REGION" -> "منطقة";
-            case "AREA" -> "ناحية";
-            case "DISTRICT" -> "مقاطعة";
-            case "STATION" -> "محطة";
-            case "TEAM" -> "فريق";
-            case "PROJECT_TEAM" -> "فريق مشروع";
-            case "OTHER" -> "أخرى";
-            default -> code;
-        };
     }
 }

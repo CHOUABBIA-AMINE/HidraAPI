@@ -22,7 +22,8 @@
  * Domain value package for immutable organization concepts.
  *
  * <p>What belongs here:
- * Identifiers, codes, names, statuses, OrganizationUnitType, ReportingLineType, OperationalScopeType, and neutral references such as IdentityUserReference.
+ * Identifiers, codes, names, statuses, OrganizationUnitTypeReference, ReportingLineType,
+ * OperationalScopeType, and neutral references such as IdentityUserReference.
  *
  * <p>What is forbidden here:
  * Mutable entities, Spring or JPA annotations, REST validation annotations, identity domain classes, and topology domain classes.
@@ -43,4 +44,3 @@
  * {@literal SupervisorAssignment}.
  */
 package dz.sh.hidra.modules.organization.domain.value;
-

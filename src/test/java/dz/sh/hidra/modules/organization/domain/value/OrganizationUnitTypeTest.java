@@ -26,33 +26,24 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests organization unit type catalog references and legacy wrapper compatibility.
+ * Tests organization unit type catalog references.
  */
 class OrganizationUnitTypeTest {
 
     @Test
     void shouldSupportStationAsOrganizationUnit() {
         assertTrue(OrganizationUnitTypeReference.STATION.isStationOrganizationUnit());
-        assertTrue(OrganizationUnitType.STATION.isStationOrganizationUnit());
     }
 
     @Test
     void shouldNotTreatNonStationTypeAsStationOrganizationUnit() {
         assertFalse(OrganizationUnitTypeReference.REGION.isStationOrganizationUnit());
-        assertFalse(OrganizationUnitType.REGION.isStationOrganizationUnit());
     }
 
     @Test
     void shouldResolveSeededOrganizationUnitTypeIdsAndCodes() {
         assertEquals("organization-out-division", OrganizationUnitTypeReference.ofCode("division").id());
         assertEquals("DIVISION", OrganizationUnitTypeReference.ofId("organization-out-division").name());
-        assertEquals(OrganizationUnitType.DIVISION, OrganizationUnitType.valueOf("DIVISION"));
-    }
-
-    @Test
-    void shouldResolveLocalizedLabels() {
-        assertEquals("Station", OrganizationUnitTypeReference.STATION.localizedLabel("en"));
-        assertEquals("Station", OrganizationUnitTypeReference.STATION.localizedLabel("fr"));
-        assertEquals("محطة", OrganizationUnitTypeReference.STATION.localizedLabel("ar"));
+        assertEquals(OrganizationUnitTypeReference.DIVISION, OrganizationUnitTypeReference.ofCode("DIVISION"));
     }
 }

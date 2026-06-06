@@ -3,7 +3,7 @@
 ```text
 Roadmap file : docs/roadmap/correction_01.md
 Roadmap code : COR
-Scope        : Correct topology/organization implementation decisions before starting measurement
+Scope        : Correct topology/organization implementation decisions before starting telemetry
 Repository   : CHOUABBIA-AMINE/HidraAPI
 Branch       : main
 Updated      : 2026-06-06
@@ -12,9 +12,9 @@ Mode         : Correction execution memory
 
 ## 1. Executive decision
 
-Do **not** start the measurement module yet.
+Do **not** start the telemetry module yet.
 
-The corrected baseline must be proven by Maven, Flyway, and the topology boot smoke test before `MES-001` starts.
+The corrected baseline must be proven by Maven, Flyway, and the topology boot smoke test before `TEL-001` starts.
 
 The main correction theme remains:
 
@@ -43,9 +43,10 @@ COR-014 completed — repair unstable topology tests
 COR-015 completed — add controlled vocabulary guardrail test
 COR-016 completed — convert organization unit type to catalog entity
 COR-017 completed — update topology roadmap after catalog refactor
-COR-018 blocked   — corrected baseline validation could not pass until remaining enum declarations were removed and Maven/Flyway were run locally
+COR-018 blocked   — corrected baseline validation still requires local Maven/Flyway/Testcontainers execution
 COR-019 completed — remove remaining business taxonomy enum declarations
-COR-020 current   — record COR-019 and corrected baseline validation path; repair reported ListFacilitiesQuery transition constructor
+COR-020 completed — record COR-019 and corrected baseline validation path; repair reported ListFacilitiesQuery transition constructor
+COR-021 current   — replace measurement next-module references with telemetry
 ```
 
 ## 3. Controlled vocabulary policy
@@ -89,205 +90,31 @@ but those classes must not be declared with `enum`.
 
 ## 4. Correction roadmap
 
-### COR-001 — docs(correction): add repository correction roadmap
+| Code | Commit message | Status | Purpose |
+|---|---|---:|---|
+| `COR-001` | `docs(correction): add repository correction roadmap` | Completed | Add correction roadmap. |
+| `COR-002` | `chore(repo): remove generated bin roadmap artifacts` | Completed | Remove committed generated `bin/docs/**` and ignore `bin/`. |
+| `COR-003` | `docs(topology): realign topology roadmap with repository reality` | Completed | Realign topology docs with actual TOP sequence. |
+| `COR-004` | `docs(architecture): define controlled vocabulary policy` | Completed | Define enum-vs-catalog policy. |
+| `COR-005` | `db(topology): add topology type catalog tables` | Completed | Add topology catalog and translation tables in V003. |
+| `COR-006` | `feat(topology): add catalog domain model and references` | Completed | Add topology catalog domain model and type references. |
+| `COR-007` | `feat(topology): add topology catalog application services` | Completed | Add catalog DTOs, queries, ports, and application service. |
+| `COR-008` | `feat(topology): add topology catalog persistence adapters` | Completed | Add catalog persistence adapter and configuration wiring. |
+| `COR-009` | `refactor(topology): replace enum usage in domain assets with type references` | Completed | Refactor topology domain/application asset contracts to use references. |
+| `COR-010` | `db(topology): migrate topology assets to catalog foreign keys` | Completed | Add and backfill topology catalog FK columns in V004. |
+| `COR-011` | `refactor(topology): update topology persistence mapping to catalog foreign keys` | Completed | Use catalog FK ids in topology persistence. |
+| `COR-012` | `refactor(topology): update topology REST contracts for catalog types and localization` | Completed | REST uses `typeCode` and localized type responses. |
+| `COR-013` | `db(topology): remove topology enum-style type constraints` | Completed | Remove old topology type varchar columns/checks in V005. |
+| `COR-014` | `test(topology): repair unstable topology tests` | Completed | Stabilize topology fixtures and tests after catalog conversion. |
+| `COR-015` | `test(architecture): add controlled vocabulary guardrails` | Completed | Add test blocking forbidden business taxonomy enum declarations. |
+| `COR-016` | `refactor(organization): convert organization unit type to catalog entity` | Completed | Convert organization unit type to catalog/reference modeling. |
+| `COR-017` | `docs(topology): update topology roadmap after catalog refactor` | Completed | Update topology roadmap/checklist after catalog refactor. |
+| `COR-018` | `test(stabilization): validate corrected baseline` | Blocked | Validation-only task requiring local Maven/Flyway/Testcontainers execution. |
+| `COR-019` | `refactor(catalog): remove remaining business taxonomy enum declarations` | Completed | Replace remaining forbidden enum declarations with compatibility classes. |
+| `COR-020` | `docs(correction): record COR-019 and corrected baseline validation path` | Completed | Record COR-019/COR-020 and add transition constructor fix. |
+| `COR-021` | `docs(correction): replace measurement next-module references with telemetry` | Current | Correct next-module naming from measurement/MES to telemetry/TEL. |
 
-```text
-Commit code    : COR-001
-Commit message : docs(correction): add repository correction roadmap
-Type           : Documentation
-Module         : correction
-```
-
-Create `docs/roadmap/correction_01.md`.
-
-### COR-002 — chore(repo): remove generated bin roadmap artifacts
-
-```text
-Commit code    : COR-002
-Commit message : chore(repo): remove generated bin roadmap artifacts
-Type           : Chore
-Module         : repository
-```
-
-Remove committed generated `bin/docs/**` artifacts and add `bin/` to `.gitignore`.
-
-### COR-003 — docs(topology): realign topology roadmap with repository reality
-
-```text
-Commit code    : COR-003
-Commit message : docs(topology): realign topology roadmap with repository reality
-Type           : Documentation
-Module         : topology
-```
-
-Realign `docs/roadmap/topology.md` and restore/create `docs/roadmap/topology_validation_checklist.md`.
-
-### COR-004 — docs(architecture): define controlled vocabulary policy
-
-```text
-Commit code    : COR-004
-Commit message : docs(architecture): define controlled vocabulary policy
-Type           : Documentation
-Module         : architecture
-```
-
-Create `docs/architecture/controlled-vocabulary-policy.md`.
-
-### COR-005 — db(topology): add topology type catalog tables
-
-```text
-Commit code    : COR-005
-Commit message : db(topology): add topology type catalog tables
-Type           : Database
-Module         : topology
-```
-
-Create `V003__add_topology_type_catalogs.sql` with topology type catalog and translation tables.
-
-### COR-006 — feat(topology): add catalog domain model and references
-
-```text
-Commit code    : COR-006
-Commit message : feat(topology): add catalog domain model and references
-Type           : Feature
-Module         : topology
-```
-
-Add topology catalog domain model and type reference value objects.
-
-### COR-007 — feat(topology): add topology catalog application services
-
-```text
-Commit code    : COR-007
-Commit message : feat(topology): add topology catalog application services
-Type           : Feature
-Module         : topology
-```
-
-Add catalog DTOs, queries, inbound ports, outbound port, and application service.
-
-### COR-008 — feat(topology): add topology catalog persistence adapters
-
-```text
-Commit code    : COR-008
-Commit message : feat(topology): add topology catalog persistence adapters
-Type           : Feature
-Module         : topology
-```
-
-Add catalog persistence rows/repositories/mapper/adapter and wire `TopologyConfiguration`.
-
-### COR-009 — refactor(topology): replace enum usage in domain assets with type references
-
-```text
-Commit code    : COR-009
-Commit message : refactor(topology): replace enum usage in domain assets with type references
-Type           : Refactor
-Module         : topology
-```
-
-Refactor topology domain/application asset contracts to use type references while temporarily keeping compatibility bridges.
-
-### COR-010 — db(topology): migrate topology assets to catalog foreign keys
-
-```text
-Commit code    : COR-010
-Commit message : db(topology): migrate topology assets to catalog foreign keys
-Type           : Database
-Module         : topology
-```
-
-Create `V004__link_topology_assets_to_type_catalogs.sql`.
-
-### COR-011 — refactor(topology): update topology persistence mapping to catalog foreign keys
-
-```text
-Commit code    : COR-011
-Commit message : refactor(topology): update topology persistence mapping to catalog foreign keys
-Type           : Refactor
-Module         : topology
-```
-
-Update topology JPA entities, repositories, mapper, and adapters to use catalog foreign-key ids.
-
-### COR-012 — refactor(topology): update topology REST contracts for catalog types and localization
-
-```text
-Commit code    : COR-012
-Commit message : refactor(topology): update topology REST contracts for catalog types and localization
-Type           : Refactor
-Module         : topology
-```
-
-REST requests use stable `typeCode`; REST responses expose localized `{ id, code, label, locale }` type references.
-
-### COR-013 — db(topology): remove topology enum-style type constraints
-
-```text
-Commit code    : COR-013
-Commit message : db(topology): remove topology enum-style type constraints
-Type           : Database
-Module         : topology
-```
-
-Create `V005__remove_topology_enum_type_columns.sql`.
-
-### COR-014 — test(topology): repair unstable topology tests
-
-```text
-Commit code    : COR-014
-Commit message : test(topology): repair unstable topology tests
-Type           : Test
-Module         : topology
-```
-
-Stabilize topology fixtures and update topology tests after catalog conversion.
-
-### COR-015 — test(architecture): add controlled vocabulary guardrails
-
-```text
-Commit code    : COR-015
-Commit message : test(architecture): add controlled vocabulary guardrails
-Type           : Test
-Module         : architecture
-```
-
-Add `ControlledVocabularyArchitectureTest` to fail forbidden business taxonomy enum declarations.
-
-### COR-016 — refactor(organization): convert organization unit type to catalog entity
-
-```text
-Commit code    : COR-016
-Commit message : refactor(organization): convert organization unit type to catalog entity
-Type           : Refactor
-Module         : organization
-```
-
-Convert organization unit type from enum modeling to catalog/reference modeling.
-
-### COR-017 — docs(topology): update topology roadmap after catalog refactor
-
-```text
-Commit code    : COR-017
-Commit message : docs(topology): update topology roadmap after catalog refactor
-Type           : Documentation
-Module         : topology
-```
-
-Update topology roadmap/checklist after catalog refactor.
-
-### COR-018 — test(stabilization): validate corrected baseline
-
-```text
-Commit code    : COR-018
-Commit message : test(stabilization): validate corrected baseline
-Type           : Test
-Module         : stabilization
-```
-
-Validation-only task. It is accepted only when all commands in section 5 pass.
-
-### COR-019 — refactor(catalog): remove remaining business taxonomy enum declarations
+## 5. COR-019 record
 
 ```text
 Commit code    : COR-019
@@ -296,11 +123,11 @@ Type           : Refactor
 Module         : catalog
 ```
 
-#### Goal
+### Goal
 
 Remove remaining forbidden Java enum declarations that blocked `ControlledVocabularyArchitectureTest`.
 
-#### Files updated
+### Files updated
 
 ```text
 src/main/java/dz/sh/hidra/modules/topology/domain/value/ProductType.java
@@ -314,11 +141,11 @@ src/main/java/dz/sh/hidra/modules/organization/domain/value/OperationalScopeType
 src/main/java/dz/sh/hidra/modules/organization/domain/value/ReportingLineType.java
 ```
 
-#### Rule
+### Rule
 
 These compatibility files may temporarily remain as final classes, but must not be Java enums.
 
-### COR-020 — docs(correction): record COR-019 and corrected baseline validation path
+## 6. COR-020 record
 
 ```text
 Commit code    : COR-020
@@ -327,7 +154,7 @@ Type           : Documentation / Compile Compatibility
 Module         : correction
 ```
 
-#### Goal
+### Goal
 
 Record COR-019 in the correction roadmap and document the corrected baseline validation path.
 
@@ -337,42 +164,52 @@ Also repair the reported transitional compile error:
 The constructor ListFacilitiesQuery(String, FacilityTypeReference, ProductType, TopologyStatus, PageRequest) is undefined
 ```
 
-#### Files to update
+### Files updated
 
 ```text
 docs/roadmap/correction_01.md
 src/main/java/dz/sh/hidra/modules/topology/application/query/ListFacilitiesQuery.java
 ```
 
-#### Purpose of each file
+## 7. COR-021 record
+
+```text
+Commit code    : COR-021
+Commit message : docs(correction): replace measurement next-module references with telemetry
+Type           : Documentation
+Module         : correction
+```
+
+### Goal
+
+Correct the repository execution memory so the next module is **telemetry**, not measurement.
+
+### Files to update
+
+```text
+docs/roadmap/correction_01.md
+docs/roadmap/topology.md
+```
+
+### Purpose of each file
 
 | File | Purpose |
 |---|---|
-| `docs/roadmap/correction_01.md` | Records COR-019, COR-020, and the corrected baseline validation path before measurement starts. |
-| `ListFacilitiesQuery.java` | Adds narrow deprecated bridge constructors for mixed transitional callers using `FacilityTypeReference` with legacy `ProductType`, or legacy `FacilityType` with `ProductTypeReference`. |
+| `docs/roadmap/correction_01.md` | Replaces measurement/MES next-module gate with telemetry/TEL and records COR-021. |
+| `docs/roadmap/topology.md` | Replaces the topology next gate from `MES-001` to `TEL-001`. |
 
-#### Rules
+### Rules
 
 ```text
-Do not start measurement.
+Do not start telemetry implementation.
+Do not modify production Java code.
+Do not modify test Java code.
 Do not modify migrations.
-Do not modify topology REST contracts.
-Do not modify persistence mapping.
-Do not modify organization code.
-Keep the bridge constructors deprecated for later removal.
+Do not modify topology implementation.
+Do not modify organization implementation.
 ```
 
-#### Validation
-
-```bash
-mvn -q test -Dtest=ControlledVocabularyArchitectureTest
-mvn -q -DskipTests compile
-mvn -q test
-mvn -q test -Dtest=TopologyApplicationBootSmokeTest
-mvn -q -DskipTests flyway:migrate
-```
-
-## 5. Corrected baseline validation path
+## 8. Corrected baseline validation path
 
 Run locally from the repository root:
 
@@ -392,12 +229,12 @@ BUILD SUCCESS
 
 The topology boot smoke test requires Docker/Testcontainers.
 
-## 6. Next module gate
+## 9. Next module gate
 
-Do not start measurement until this gate is true:
+Do not start telemetry until this gate is true:
 
 ```text
-COR-001 through COR-020 are reflected in docs/roadmap/correction_01.md
+COR-001 through COR-021 are reflected in docs/roadmap/correction_01.md
 ControlledVocabularyArchitectureTest passes
 mvn -q -DskipTests compile passes
 mvn -q test passes
@@ -409,17 +246,18 @@ Topology asset tables use catalog foreign keys
 Organization unit type has been converted to catalog/reference modeling
 ```
 
-After the gate passes, the next recommended task remains:
+After the gate passes, the next recommended task is:
 
 ```text
-MES-001 — docs(measurement): add measurement implementation roadmap
+TEL-001 — docs(telemetry): add telemetry implementation roadmap
 ```
 
-## 7. Remaining risks
+## 10. Remaining risks
 
 ```text
 Maven and Flyway have not been run through this GitHub connector workflow.
 Compatibility classes still exist and should be removed later after all callers use catalog references directly.
 Business users must validate French and Arabic catalog terminology.
 Do not edit already-applied Flyway migrations; add new migrations only.
+Telemetry implementation must not begin until the corrected baseline passes locally or in CI.
 ```

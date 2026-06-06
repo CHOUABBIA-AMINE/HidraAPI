@@ -74,4 +74,21 @@ public record OrganizationUnitTypeResponse(
 
         @Schema(description = "Last update instant.", type = "string", format = "date-time")
         Instant updatedAt) {
+
+    public String label() {
+        if (nameEn != null && !nameEn.isBlank()) {
+            return nameEn;
+        }
+        if (nameFr != null && !nameFr.isBlank()) {
+            return nameFr;
+        }
+        if (nameAr != null && !nameAr.isBlank()) {
+            return nameAr;
+        }
+        return code;
+    }
+
+    public String locale() {
+        return "en";
+    }
 }

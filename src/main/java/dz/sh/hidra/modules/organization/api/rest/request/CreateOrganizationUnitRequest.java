@@ -27,20 +27,9 @@ import jakarta.validation.constraints.Size;
 /**
  * Request body used to create an organization unit.
  *
- * <p>Business role:
- * Creates organization units such as divisions, departments, regions, station-as-organization-unit
- * structures, and teams. Physical station assets remain owned by topology.
- *
- * <p>Architecture role:
- * This is a REST input contract. Operational scope fields are neutral strings and do not import
- * topology domain classes.
- *
- * <p>Validation:
- * Code, name, and type are required. Parent and operational scope fields are optional.
- *
  * @param code organization unit business code
  * @param name organization unit display name
- * @param type organization unit type
+ * @param typeCode stable organization unit type catalog code
  * @param parentId optional parent organization unit identifier
  * @param operationalScopeType optional neutral operational scope type
  * @param operationalScopeId optional neutral operational scope identifier
@@ -59,9 +48,9 @@ public record CreateOrganizationUnitRequest(
         @Size(min = 2, max = 160)
         String name,
 
-        @Schema(description = "Organization unit type.", example = "STATION", requiredMode = Schema.RequiredMode.REQUIRED)
+        @Schema(description = "Stable organization unit type catalog code.", example = "STATION", requiredMode = Schema.RequiredMode.REQUIRED)
         @NotNull
-        String type,
+        String typeCode,
 
         @Schema(description = "Optional parent organization unit identifier.", example = "ou_550e8400-e29b-41d4-a716-446655440000")
         @Size(max = 80)

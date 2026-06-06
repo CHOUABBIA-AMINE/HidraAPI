@@ -9,86 +9,95 @@
  * @CreatedOn   : 2025-06-26
  * @UpdatedOn   : 2026-05-30
  *
- * @Type        : Enum
+ * @Type        : Class
  * @Layer       : Domain
  * @Module      : topology
  * @Package     : dz.sh.hidra.modules.topology.domain.value
  *
- * @Description : Pipeline point asset or appurtenance type enum.
+ * @Description : Deprecated compatibility constant class for the pipeline appurtenance type catalog.
  *
  */
 package dz.sh.hidra.modules.topology.domain.value;
 
+import java.util.Arrays;
+import java.util.Objects;
+
+import dz.sh.hidra.kernel.domain.exception.InvalidValueObjectException;
 import dz.sh.hidra.kernel.domain.model.ValueObject;
 
-/**
- * Pipeline point asset or appurtenance type enum.
- *
- * <p>Business role:
- * This enum restricts topology domain values to an explicit controlled set.
- *
- * <p>Architecture role:
- * This is a pure topology domain value object enum and must not depend on API, persistence,
- * identity, organization, platform, Spring, JPA, measurement, flow, risk, or workflow code.
- *
- * <p>Validation:
- * The enum prevents unbounded string values for this topology concept.
- *
- * <p>Usage:
- * Use this enum in topology domain and application code when this constrained value is required.
- */
-public enum PipelineAppurtenanceType implements ValueObject {
+@Deprecated(forRemoval = false)
+public final class PipelineAppurtenanceType implements ValueObject {
 
-    /** Valve installed along a pipeline. */
-    VALVE,
+    public static final PipelineAppurtenanceType VALVE = new PipelineAppurtenanceType("VALVE");
+    public static final PipelineAppurtenanceType INJECTION_POINT = new PipelineAppurtenanceType("INJECTION_POINT");
+    public static final PipelineAppurtenanceType EXTRACTION_POINT = new PipelineAppurtenanceType("EXTRACTION_POINT");
+    public static final PipelineAppurtenanceType PURGE_POINT = new PipelineAppurtenanceType("PURGE_POINT");
+    public static final PipelineAppurtenanceType VENT_POINT = new PipelineAppurtenanceType("VENT_POINT");
+    public static final PipelineAppurtenanceType DRAIN_POINT = new PipelineAppurtenanceType("DRAIN_POINT");
+    public static final PipelineAppurtenanceType SAMPLING_POINT = new PipelineAppurtenanceType("SAMPLING_POINT");
+    public static final PipelineAppurtenanceType METERING_POINT = new PipelineAppurtenanceType("METERING_POINT");
+    public static final PipelineAppurtenanceType SCRAPER_LAUNCHER = new PipelineAppurtenanceType("SCRAPER_LAUNCHER");
+    public static final PipelineAppurtenanceType SCRAPER_RECEIVER = new PipelineAppurtenanceType("SCRAPER_RECEIVER");
+    public static final PipelineAppurtenanceType HOT_TAP_POINT = new PipelineAppurtenanceType("HOT_TAP_POINT");
+    public static final PipelineAppurtenanceType BYPASS_POINT = new PipelineAppurtenanceType("BYPASS_POINT");
+    public static final PipelineAppurtenanceType CONNECTION_POINT = new PipelineAppurtenanceType("CONNECTION_POINT");
+    public static final PipelineAppurtenanceType OTHER = new PipelineAppurtenanceType("OTHER");
 
-    /** Injection point installed along a pipeline. */
-    INJECTION_POINT,
+    private static final PipelineAppurtenanceType[] VALUES = {VALVE, INJECTION_POINT, EXTRACTION_POINT,
+            PURGE_POINT, VENT_POINT, DRAIN_POINT, SAMPLING_POINT, METERING_POINT, SCRAPER_LAUNCHER,
+            SCRAPER_RECEIVER, HOT_TAP_POINT, BYPASS_POINT, CONNECTION_POINT, OTHER};
 
-    /** Extraction point installed along a pipeline. */
-    EXTRACTION_POINT,
+    private final String name;
 
-    /** Purge point installed along a pipeline. */
-    PURGE_POINT,
+    private PipelineAppurtenanceType(String name) {
+        this.name = requireName(name);
+    }
 
-    /** Vent point installed along a pipeline. */
-    VENT_POINT,
+    public static PipelineAppurtenanceType valueOf(String name) {
+        String normalizedName = requireName(name);
+        return Arrays.stream(VALUES)
+                .filter(value -> value.name.equals(normalizedName))
+                .findFirst()
+                .orElseThrow(() -> new InvalidValueObjectException("PipelineAppurtenanceType is not supported: " + name));
+    }
 
-    /** Drain point installed along a pipeline. */
-    DRAIN_POINT,
+    public static PipelineAppurtenanceType[] values() {
+        return VALUES.clone();
+    }
 
-    /** Sampling point installed along a pipeline. */
-    SAMPLING_POINT,
+    public String name() {
+        return name;
+    }
 
-    /** Metering point installed along a pipeline. */
-    METERING_POINT,
-
-    /** Scraper launcher installed along a pipeline. */
-    SCRAPER_LAUNCHER,
-
-    /** Scraper receiver installed along a pipeline. */
-    SCRAPER_RECEIVER,
-
-    /** Hot tap point installed along a pipeline. */
-    HOT_TAP_POINT,
-
-    /** Bypass point installed along a pipeline. */
-    BYPASS_POINT,
-
-    /** Generic connection point installed along a pipeline. */
-    CONNECTION_POINT,
-
-    /** Other pipeline appurtenance type. */
-    OTHER;
-
-
-    /**
-     * Indicates whether this appurtenance type represents a valve.
-     *
-     * @return true when this type is VALVE
-     */
     public boolean isValve() {
         return this == VALVE;
     }
 
+    @Override
+    public String toString() {
+        return name;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (!(other instanceof PipelineAppurtenanceType that)) {
+            return false;
+        }
+        return name.equals(that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
+    }
+
+    private static String requireName(String value) {
+        if (value == null || value.isBlank()) {
+            throw new InvalidValueObjectException("PipelineAppurtenanceType name must not be null or blank.");
+        }
+        return value.trim().toUpperCase();
+    }
 }

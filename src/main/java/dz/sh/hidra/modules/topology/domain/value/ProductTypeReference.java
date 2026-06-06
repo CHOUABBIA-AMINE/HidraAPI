@@ -56,6 +56,19 @@ public record ProductTypeReference(String id, TopologyCode code) implements Valu
         return new ProductTypeReference(id, TopologyCode.of(code));
     }
 
+    public static ProductTypeReference from(ProductType productType) {
+        Objects.requireNonNull(productType, "Product type must not be null.");
+        return of(productType.name(), productType.name());
+    }
+
+    public String name() {
+        return code.value();
+    }
+
+    public boolean is(String expectedCode) {
+        return code.value().equals(TopologyCode.of(expectedCode).value());
+    }
+
     private static String requireText(String value, String fieldName) {
         if (value == null || value.isBlank()) {
             throw new InvalidValueObjectException(fieldName + " must not be null or blank.");

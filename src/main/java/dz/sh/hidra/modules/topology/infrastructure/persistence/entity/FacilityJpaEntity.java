@@ -21,6 +21,7 @@ package dz.sh.hidra.modules.topology.infrastructure.persistence.entity;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -61,13 +62,21 @@ public class FacilityJpaEntity {
     @Column(name = "name", nullable = false, length = 160)
     private String name;
 
-    /** Physical facility type. */
+    /** Legacy language-neutral physical facility type code retained until COR-013. */
     @Column(name = "facility_type", nullable = false, length = 80)
     private String facilityType;
 
-    /** Hydrocarbon product type. */
+    /** Catalog foreign key to hidra_topology_facility_type. */
+    @Column(name = "facility_type_id", nullable = false, length = 80)
+    private String facilityTypeId;
+
+    /** Legacy language-neutral hydrocarbon product type code retained until COR-013. */
     @Column(name = "product_type", nullable = false, length = 60)
     private String productType;
+
+    /** Catalog foreign key to hidra_topology_product_type. */
+    @Column(name = "product_type_id", nullable = false, length = 80)
+    private String productTypeId;
 
     /** Facility lifecycle status. */
     @Column(name = "status", nullable = false, length = 40)
@@ -109,115 +118,67 @@ public class FacilityJpaEntity {
         // Required by JPA.
     }
 
-    public String getId() {
-        return id;
-    }
+    public String getId() { return id; }
 
-    public void setId(String id) {
-        this.id = id;
-    }
+    public void setId(String id) { this.id = id; }
 
-    public String getCode() {
-        return code;
-    }
+    public String getCode() { return code; }
 
-    public void setCode(String code) {
-        this.code = code;
-    }
+    public void setCode(String code) { this.code = code; }
 
-    public String getName() {
-        return name;
-    }
+    public String getName() { return name; }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    public void setName(String name) { this.name = name; }
 
-    public String getFacilityType() {
-        return facilityType;
-    }
+    public String getFacilityType() { return facilityType; }
 
-    public void setFacilityType(String facilityType) {
-        this.facilityType = facilityType;
-    }
+    public void setFacilityType(String facilityType) { this.facilityType = facilityType; }
 
-    public String getProductType() {
-        return productType;
-    }
+    public String getFacilityTypeId() { return facilityTypeId; }
 
-    public void setProductType(String productType) {
-        this.productType = productType;
-    }
+    public void setFacilityTypeId(String facilityTypeId) { this.facilityTypeId = facilityTypeId; }
 
-    public String getStatus() {
-        return status;
-    }
+    public String getProductType() { return productType; }
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
+    public void setProductType(String productType) { this.productType = productType; }
 
-    public BigDecimal getLatitude() {
-        return latitude;
-    }
+    public String getProductTypeId() { return productTypeId; }
 
-    public void setLatitude(BigDecimal latitude) {
-        this.latitude = latitude;
-    }
+    public void setProductTypeId(String productTypeId) { this.productTypeId = productTypeId; }
 
-    public BigDecimal getLongitude() {
-        return longitude;
-    }
+    public String getStatus() { return status; }
 
-    public void setLongitude(BigDecimal longitude) {
-        this.longitude = longitude;
-    }
+    public void setStatus(String status) { this.status = status; }
 
-    public String getOrganizationUnitReferenceType() {
-        return organizationUnitReferenceType;
-    }
+    public BigDecimal getLatitude() { return latitude; }
 
-    public void setOrganizationUnitReferenceType(String organizationUnitReferenceType) {
-        this.organizationUnitReferenceType = organizationUnitReferenceType;
-    }
+    public void setLatitude(BigDecimal latitude) { this.latitude = latitude; }
 
-    public String getOrganizationUnitReferenceId() {
-        return organizationUnitReferenceId;
-    }
+    public BigDecimal getLongitude() { return longitude; }
 
-    public void setOrganizationUnitReferenceId(String organizationUnitReferenceId) {
-        this.organizationUnitReferenceId = organizationUnitReferenceId;
-    }
+    public void setLongitude(BigDecimal longitude) { this.longitude = longitude; }
 
-    public String getOrganizationUnitReferenceCode() {
-        return organizationUnitReferenceCode;
-    }
+    public String getOrganizationUnitReferenceType() { return organizationUnitReferenceType; }
 
-    public void setOrganizationUnitReferenceCode(String organizationUnitReferenceCode) {
-        this.organizationUnitReferenceCode = organizationUnitReferenceCode;
-    }
+    public void setOrganizationUnitReferenceType(String organizationUnitReferenceType) { this.organizationUnitReferenceType = organizationUnitReferenceType; }
 
-    public String getOrganizationUnitReferenceName() {
-        return organizationUnitReferenceName;
-    }
+    public String getOrganizationUnitReferenceId() { return organizationUnitReferenceId; }
 
-    public void setOrganizationUnitReferenceName(String organizationUnitReferenceName) {
-        this.organizationUnitReferenceName = organizationUnitReferenceName;
-    }
+    public void setOrganizationUnitReferenceId(String organizationUnitReferenceId) { this.organizationUnitReferenceId = organizationUnitReferenceId; }
 
-    public Instant getCreatedAt() {
-        return createdAt;
-    }
+    public String getOrganizationUnitReferenceCode() { return organizationUnitReferenceCode; }
 
-    public void setCreatedAt(Instant createdAt) {
-        this.createdAt = createdAt;
-    }
+    public void setOrganizationUnitReferenceCode(String organizationUnitReferenceCode) { this.organizationUnitReferenceCode = organizationUnitReferenceCode; }
 
-    public Instant getUpdatedAt() {
-        return updatedAt;
-    }
+    public String getOrganizationUnitReferenceName() { return organizationUnitReferenceName; }
 
-    public void setUpdatedAt(Instant updatedAt) {
-        this.updatedAt = updatedAt;
-    }
+    public void setOrganizationUnitReferenceName(String organizationUnitReferenceName) { this.organizationUnitReferenceName = organizationUnitReferenceName; }
+
+    public Instant getCreatedAt() { return createdAt; }
+
+    public void setCreatedAt(Instant createdAt) { this.createdAt = createdAt; }
+
+    public Instant getUpdatedAt() { return updatedAt; }
+
+    public void setUpdatedAt(Instant updatedAt) { this.updatedAt = updatedAt; }
 }

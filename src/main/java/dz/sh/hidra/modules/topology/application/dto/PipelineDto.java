@@ -7,14 +7,14 @@
  *
  * @Name        : PipelineDto
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-05-30
+ * @UpdatedOn   : 2026-06-06
  *
  * @Type        : Record
  * @Layer       : Application
  * @Module      : topology
  * @Package     : dz.sh.hidra.modules.topology.application.dto
  *
- * @Description : Application DTO representing a pipeline.
+ * @Description : Application DTO representing a pipeline with trilingual labels.
  *
  */
 package dz.sh.hidra.modules.topology.application.dto;
@@ -29,34 +29,19 @@ import java.time.Instant;
  * This DTO describes a physical pipeline belonging to a pipeline system.
  *
  * <p>Architecture role:
- * This application DTO is framework-independent. It does not expose persistence entities and does
- * not use API, Swagger, JPA, Spring, identity, organization implementation, measurement, flow, risk,
- * workflow, or infrastructure types.
- *
- * <p>Validation:
- * This DTO is an output projection. Pipeline validation is enforced by topology domain objects.
- *
- * <p>Usage:
- * Use this DTO as an application output and map it to REST responses in the API layer later.
- *
- * @param pipelineId pipeline identifier
- * @param pipelineSystemId parent pipeline system identifier
- * @param code business code
- * @param name display name
- * @param description optional description
- * @param productType hydrocarbon product type
- * @param nominalDiameterInches nominal diameter in inches
- * @param designLengthKm design length in kilometers
- * @param status lifecycle status
- * @param createdAt creation instant
- * @param updatedAt last update instant
+ * This application DTO is framework-independent and exposes pipeline business labels as first-class
+ * Arabic, French, and English fields.
  */
 public record PipelineDto(
         String pipelineId,
         String pipelineSystemId,
         String code,
-        String name,
-        String description,
+        String nameAr,
+        String nameFr,
+        String nameEn,
+        String descriptionAr,
+        String descriptionFr,
+        String descriptionEn,
         String productType,
         BigDecimal nominalDiameterInches,
         BigDecimal designLengthKm,

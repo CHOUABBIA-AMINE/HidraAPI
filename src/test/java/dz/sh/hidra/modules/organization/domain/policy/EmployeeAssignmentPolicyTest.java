@@ -39,18 +39,12 @@ import dz.sh.hidra.modules.organization.domain.value.EmployeeNumber;
 import dz.sh.hidra.modules.organization.domain.value.OperationalScopeType;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitCode;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitName;
-import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitType;
+import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitTypeReference;
 import dz.sh.hidra.modules.organization.domain.value.PositionCode;
 import dz.sh.hidra.modules.organization.domain.value.PositionTitle;
 
 /**
  * Tests employee assignment domain policy.
- *
- * <p>Business role:
- * Verifies that employees can only be assigned to valid organization units and positions.
- *
- * <p>Architecture role:
- * This policy test does not load persistence, API, identity, topology, or Spring infrastructure.
  */
 class EmployeeAssignmentPolicyTest {
 
@@ -61,12 +55,7 @@ class EmployeeAssignmentPolicyTest {
         Employee employee = activeEmployee("EMP-ASSIGN-001");
         OrganizationUnit organizationUnit = organizationUnit();
         Position position = position();
-        EmployeeAssignment assignment = EmployeeAssignment.create(
-                employee.id(),
-                organizationUnit.id(),
-                position.id(),
-                null,
-                LocalDate.now());
+        EmployeeAssignment assignment = EmployeeAssignment.create(employee.id(), organizationUnit.id(), position.id(), null, LocalDate.now());
 
         assertDoesNotThrow(() -> policy.ensureAssignmentAllowed(employee, organizationUnit, position, assignment));
     }
@@ -76,16 +65,9 @@ class EmployeeAssignmentPolicyTest {
         Employee employee = registeredEmployee("EMP-ASSIGN-002");
         OrganizationUnit organizationUnit = organizationUnit();
         Position position = position();
-        EmployeeAssignment assignment = EmployeeAssignment.create(
-                employee.id(),
-                organizationUnit.id(),
-                position.id(),
-                null,
-                LocalDate.now());
+        EmployeeAssignment assignment = EmployeeAssignment.create(employee.id(), organizationUnit.id(), position.id(), null, LocalDate.now());
 
-        assertThrows(
-                EmployeeAssignmentNotAllowedException.class,
-                () -> policy.ensureAssignmentAllowed(employee, organizationUnit, position, assignment));
+        assertThrows(EmployeeAssignmentNotAllowedException.class, () -> policy.ensureAssignmentAllowed(employee, organizationUnit, position, assignment));
     }
 
     @Test
@@ -93,16 +75,9 @@ class EmployeeAssignmentPolicyTest {
         Employee employee = activeEmployee("EMP-ASSIGN-003");
         OrganizationUnit organizationUnit = organizationUnit();
         Position position = position();
-        EmployeeAssignment assignment = EmployeeAssignment.create(
-                EmployeeId.newId(),
-                organizationUnit.id(),
-                position.id(),
-                null,
-                LocalDate.now());
+        EmployeeAssignment assignment = EmployeeAssignment.create(EmployeeId.newId(), organizationUnit.id(), position.id(), null, LocalDate.now());
 
-        assertThrows(
-                EmployeeAssignmentNotAllowedException.class,
-                () -> policy.ensureAssignmentAllowed(employee, organizationUnit, position, assignment));
+        assertThrows(EmployeeAssignmentNotAllowedException.class, () -> policy.ensureAssignmentAllowed(employee, organizationUnit, position, assignment));
     }
 
     @Test
@@ -124,16 +99,9 @@ class EmployeeAssignmentPolicyTest {
                 "pipeline-001",
                 "PIPE-01",
                 "Pipeline 01");
-        EmployeeAssignment assignment = EmployeeAssignment.create(
-                employee.id(),
-                stationUnit.id(),
-                position.id(),
-                pipelineScope,
-                LocalDate.now());
+        EmployeeAssignment assignment = EmployeeAssignment.create(employee.id(), stationUnit.id(), position.id(), pipelineScope, LocalDate.now());
 
-        assertThrows(
-                EmployeeAssignmentNotAllowedException.class,
-                () -> policy.ensureAssignmentAllowed(employee, stationUnit, position, assignment));
+        assertThrows(EmployeeAssignmentNotAllowedException.class, () -> policy.ensureAssignmentAllowed(employee, stationUnit, position, assignment));
     }
 
     private static Employee registeredEmployee(String employeeNumber) {
@@ -152,15 +120,12 @@ class EmployeeAssignmentPolicyTest {
         return OrganizationUnit.create(
                 OrganizationUnitCode.of("TEAM_ASSIGN"),
                 OrganizationUnitName.of("Assignment Team"),
-                OrganizationUnitType.TEAM,
+                OrganizationUnitTypeReference.TEAM,
                 null,
                 null);
     }
 
     private static Position position() {
-        return Position.create(
-                PositionCode.of("TEAM_LEADER"),
-                PositionTitle.of("Team Leader"),
-                "Leads a team");
+        return Position.create(PositionCode.of("TEAM_LEADER"), PositionTitle.of("Team Leader"), "Leads a team");
     }
 }

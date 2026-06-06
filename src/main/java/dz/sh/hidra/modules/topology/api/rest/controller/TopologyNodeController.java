@@ -7,7 +7,7 @@
  *
  * @Name        : TopologyNodeController
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-05-30
+ * @UpdatedOn   : 2026-06-06
  *
  * @Type        : Class
  * @Layer       : API
@@ -76,6 +76,7 @@ public class TopologyNodeController {
             @ApiResponse(responseCode = "500", description = "Unexpected server error.")
     })
     public ResponseEntity<TopologyNodeResponse> createTopologyNode(
+            @Parameter(description = "Preferred response language using BCP 47 language tags.", example = "fr")
             @RequestHeader(name = "Accept-Language", required = false) String acceptLanguage,
             @Valid @RequestBody CreateTopologyNodeRequest request) {
 
@@ -94,8 +95,9 @@ public class TopologyNodeController {
             @ApiResponse(responseCode = "500", description = "Unexpected server error.")
     })
     public ResponseEntity<TopologyNodeResponse> getTopologyNode(
+            @Parameter(description = "Preferred response language using BCP 47 language tags.", example = "fr")
             @RequestHeader(name = "Accept-Language", required = false) String acceptLanguage,
-            @Parameter(description = "Topology node identifier.", required = true)
+            @Parameter(description = "Topology node identifier.", required = true, example = "node_550e8400-e29b-41d4-a716-446655440000")
             @PathVariable String topologyNodeId) {
 
         return ResponseEntity.ok(mapper.toResponse(
@@ -111,13 +113,21 @@ public class TopologyNodeController {
             @ApiResponse(responseCode = "500", description = "Unexpected server error.")
     })
     public PageResult<TopologyNodeResponse> listTopologyNodes(
+            @Parameter(description = "Preferred response language using BCP 47 language tags.", example = "fr")
             @RequestHeader(name = "Accept-Language", required = false) String acceptLanguage,
+            @Parameter(description = "Optional text filter applied to node code or labels.", example = "NODE")
             @RequestParam(required = false) String searchText,
+            @Parameter(description = "Optional node type code filter.", example = "JUNCTION")
             @RequestParam(required = false) String nodeTypeCode,
+            @Parameter(description = "Optional facility identifier filter.", example = "facility_550e8400-e29b-41d4-a716-446655440000")
             @RequestParam(required = false) String facilityId,
+            @Parameter(description = "Optional pipeline appurtenance identifier filter.", example = "app_550e8400-e29b-41d4-a716-446655440000")
             @RequestParam(required = false) String pipelineAppurtenanceId,
+            @Parameter(description = "Optional topology node lifecycle status filter.", example = "ACTIVE")
             @RequestParam(required = false) String status,
+            @Parameter(description = "Zero-based page index.", example = "0")
             @RequestParam(defaultValue = "0") @Min(0) int page,
+            @Parameter(description = "Page size between 1 and 200.", example = "20")
             @RequestParam(defaultValue = "20") @Min(1) @Max(200) int size) {
 
         return mapper.toTopologyNodeResponsePage(

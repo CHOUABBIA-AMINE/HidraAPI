@@ -7,7 +7,7 @@
  *
  * @Name        : PipelineAppurtenanceController
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-05-30
+ * @UpdatedOn   : 2026-06-06
  *
  * @Type        : Class
  * @Layer       : API
@@ -76,6 +76,7 @@ public class PipelineAppurtenanceController {
             @ApiResponse(responseCode = "500", description = "Unexpected server error.")
     })
     public ResponseEntity<PipelineAppurtenanceResponse> createPipelineAppurtenance(
+            @Parameter(description = "Preferred response language using BCP 47 language tags.", example = "fr")
             @RequestHeader(name = "Accept-Language", required = false) String acceptLanguage,
             @Valid @RequestBody CreatePipelineAppurtenanceRequest request) {
 
@@ -94,8 +95,9 @@ public class PipelineAppurtenanceController {
             @ApiResponse(responseCode = "500", description = "Unexpected server error.")
     })
     public ResponseEntity<PipelineAppurtenanceResponse> getPipelineAppurtenance(
+            @Parameter(description = "Preferred response language using BCP 47 language tags.", example = "fr")
             @RequestHeader(name = "Accept-Language", required = false) String acceptLanguage,
-            @Parameter(description = "Pipeline appurtenance identifier.", required = true)
+            @Parameter(description = "Pipeline appurtenance identifier.", required = true, example = "app_550e8400-e29b-41d4-a716-446655440000")
             @PathVariable String pipelineAppurtenanceId) {
 
         return ResponseEntity.ok(mapper.toResponse(
@@ -112,13 +114,21 @@ public class PipelineAppurtenanceController {
             @ApiResponse(responseCode = "500", description = "Unexpected server error.")
     })
     public PageResult<PipelineAppurtenanceResponse> listPipelineAppurtenances(
+            @Parameter(description = "Preferred response language using BCP 47 language tags.", example = "fr")
             @RequestHeader(name = "Accept-Language", required = false) String acceptLanguage,
+            @Parameter(description = "Optional text filter applied to appurtenance code or labels.", example = "VALVE")
             @RequestParam(required = false) String searchText,
+            @Parameter(description = "Optional pipeline identifier filter.", example = "pipeline_550e8400-e29b-41d4-a716-446655440000")
             @RequestParam(required = false) String pipelineId,
+            @Parameter(description = "Optional appurtenance type code filter.", example = "VALVE")
             @RequestParam(required = false) String appurtenanceTypeCode,
+            @Parameter(description = "Optional valve type code filter.", example = "BLOCK_VALVE")
             @RequestParam(required = false) String valveTypeCode,
+            @Parameter(description = "Optional appurtenance lifecycle status filter.", example = "ACTIVE")
             @RequestParam(required = false) String status,
+            @Parameter(description = "Zero-based page index.", example = "0")
             @RequestParam(defaultValue = "0") @Min(0) int page,
+            @Parameter(description = "Page size between 1 and 200.", example = "20")
             @RequestParam(defaultValue = "20") @Min(1) @Max(200) int size) {
 
         return mapper.toPipelineAppurtenanceResponsePage(

@@ -7,7 +7,7 @@
  *
  * @Name        : PipelineController
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-05-30
+ * @UpdatedOn   : 2026-06-06
  *
  * @Type        : Class
  * @Layer       : API
@@ -78,6 +78,7 @@ public class PipelineController {
             @ApiResponse(responseCode = "500", description = "Unexpected server error.")
     })
     public ResponseEntity<PipelineResponse> createPipeline(
+            @Parameter(description = "Preferred response language using BCP 47 language tags.", example = "fr")
             @RequestHeader(name = "Accept-Language", required = false) String acceptLanguage,
             @Valid @RequestBody CreatePipelineRequest request) {
 
@@ -96,8 +97,9 @@ public class PipelineController {
             @ApiResponse(responseCode = "500", description = "Unexpected server error.")
     })
     public ResponseEntity<PipelineResponse> getPipeline(
+            @Parameter(description = "Preferred response language using BCP 47 language tags.", example = "fr")
             @RequestHeader(name = "Accept-Language", required = false) String acceptLanguage,
-            @Parameter(description = "Pipeline identifier.", required = true)
+            @Parameter(description = "Pipeline identifier.", required = true, example = "pipeline_550e8400-e29b-41d4-a716-446655440000")
             @PathVariable String pipelineId) {
 
         return ResponseEntity.ok(mapper.toResponse(
@@ -113,12 +115,19 @@ public class PipelineController {
             @ApiResponse(responseCode = "500", description = "Unexpected server error.")
     })
     public PageResult<PipelineResponse> listPipelines(
+            @Parameter(description = "Preferred response language using BCP 47 language tags.", example = "fr")
             @RequestHeader(name = "Accept-Language", required = false) String acceptLanguage,
+            @Parameter(description = "Optional text filter applied to pipeline code or labels.", example = "GZ")
             @RequestParam(required = false) String searchText,
+            @Parameter(description = "Optional parent pipeline system identifier filter.", example = "ps_550e8400-e29b-41d4-a716-446655440000")
             @RequestParam(required = false) String pipelineSystemId,
+            @Parameter(description = "Optional product type code filter.", example = "GAS")
             @RequestParam(required = false) String productTypeCode,
+            @Parameter(description = "Optional pipeline lifecycle status filter.", example = "ACTIVE")
             @RequestParam(required = false) String status,
+            @Parameter(description = "Zero-based page index.", example = "0")
             @RequestParam(defaultValue = "0") @Min(0) int page,
+            @Parameter(description = "Page size between 1 and 200.", example = "20")
             @RequestParam(defaultValue = "20") @Min(1) @Max(200) int size) {
 
         return mapper.toPipelineResponsePage(

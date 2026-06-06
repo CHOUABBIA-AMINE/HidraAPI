@@ -22,6 +22,9 @@ package dz.sh.hidra.modules.topology.api.rest.controller;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.time.Instant;
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -51,6 +54,7 @@ import dz.sh.hidra.modules.topology.application.dto.PipelineAppurtenanceDto;
 import dz.sh.hidra.modules.topology.application.dto.PipelineDto;
 import dz.sh.hidra.modules.topology.application.dto.PipelineSegmentDto;
 import dz.sh.hidra.modules.topology.application.dto.PipelineSystemDto;
+import dz.sh.hidra.modules.topology.application.dto.TopologyCatalogDto;
 import dz.sh.hidra.modules.topology.application.dto.TopologyConnectionDto;
 import dz.sh.hidra.modules.topology.application.dto.TopologyNodeDto;
 import dz.sh.hidra.modules.topology.application.port.in.CreateFacilityUseCase;
@@ -73,6 +77,7 @@ import dz.sh.hidra.modules.topology.application.port.in.ListPipelinesUseCase;
 import dz.sh.hidra.modules.topology.application.port.in.ListTopologyConnectionsUseCase;
 import dz.sh.hidra.modules.topology.application.port.in.ListTopologyNodesUseCase;
 import dz.sh.hidra.modules.topology.application.port.in.RegisterEquipmentUseCase;
+import dz.sh.hidra.modules.topology.application.port.in.ResolveTopologyCatalogTypeUseCase;
 import dz.sh.hidra.modules.topology.application.query.GetFacilityByIdQuery;
 import dz.sh.hidra.modules.topology.application.query.GetPipelineAppurtenanceByIdQuery;
 import dz.sh.hidra.modules.topology.application.query.GetPipelineByIdQuery;
@@ -87,34 +92,24 @@ import dz.sh.hidra.modules.topology.application.query.ListTopologyConnectionsQue
 import dz.sh.hidra.modules.topology.application.query.ListTopologyNodesQuery;
 
 /**
- * Unit tests for topology REST controllers.
- *
- * <p>Business role:
- * Verifies direct HTTP controller orchestration for topology asset groups.
- *
- * <p>Architecture role:
- * Controllers are instantiated directly with fake inbound ports. No Spring context, MockMvc, server,
- * database, persistence adapter, or application service implementation is required.
- *
- * <p>Validation:
- * Tests verify create/get/list delegation, response mapping, CREATED status for commands, and the
- * endpoint boundary where pipeline segments/connections are list-only and equipment is register-only.
+ * Unit tests for topology REST controllers with localized catalog type responses.
  */
 class TopologyRestControllersTest {
 
-    private final TopologyRestMapper mapper = new TopologyRestMapper();
+    private final TopologyRestMapper mapper = new TopologyRestMapper(catalogResolver());
 
     @Test
     void shouldDelegatePipelineSystemControllerOperations() {
         PipelineSystemUseCases useCases = new PipelineSystemUseCases();
         PipelineSystemController controller = new PipelineSystemController(useCases, useCases, useCases, mapper);
 
-        ResponseEntity<PipelineSystemResponse> created = controller.createPipelineSystem(TopologyRestTestData.createPipelineSystemRequest());
-        ResponseEntity<PipelineSystemResponse> found = controller.getPipelineSystem("ps-1");
-        PageResult<PipelineSystemResponse> page = controller.listPipelineSystems("gas", "gas", "planned", 0, 20);
+        ResponseEntity<PipelineSystemResponse> created = controller.createPipelineSystem("fr", TopologyRestTestData.createPipelineSystemRequest());
+        ResponseEntity<PipelineSystemResponse> found = controller.getPipelineSystem("fr", "ps-1");
+        PageResult<PipelineSystemResponse> page = controller.listPipelineSystems("fr", "gas", "gas", "planned", 0, 20);
 
         assertEquals(HttpStatus.CREATED, created.getStatusCode());
         assertEquals("GZ1", created.getBody().code());
+        assertEquals("fr:GAS", created.getBody().productType().label());
         assertEquals("ps-1", found.getBody().pipelineSystemId());
         assertEquals(1L, page.totalElements());
         assertEquals("GZ1", useCases.createdCommand.code().value());
@@ -127,12 +122,13 @@ class TopologyRestControllersTest {
         PipelineUseCases useCases = new PipelineUseCases();
         PipelineController controller = new PipelineController(useCases, useCases, useCases, mapper);
 
-        ResponseEntity<PipelineResponse> created = controller.createPipeline(TopologyRestTestData.createPipelineRequest());
-        ResponseEntity<PipelineResponse> found = controller.getPipeline("pipe-1");
-        PageResult<PipelineResponse> page = controller.listPipelines("line", "ps-1", "gas", "planned", 0, 20);
+        ResponseEntity<PipelineResponse> created = controller.createPipeline("fr", TopologyRestTestData.createPipelineRequest());
+        ResponseEntity<PipelineResponse> found = controller.getPipeline("fr", "pipe-1");
+        PageResult<PipelineResponse> page = controller.listPipelines("fr", "line", "ps-1", "gas", "planned", 0, 20);
 
         assertEquals(HttpStatus.CREATED, created.getStatusCode());
         assertEquals("GZ1-LINE-A", created.getBody().code());
+        assertEquals("fr:GAS", created.getBody().productType().label());
         assertEquals("pipe-1", found.getBody().pipelineId());
         assertEquals(1L, page.totalElements());
         assertEquals("ps-1", useCases.createdCommand.pipelineSystemId().value());
@@ -145,12 +141,13 @@ class TopologyRestControllersTest {
         FacilityUseCases useCases = new FacilityUseCases();
         FacilityController controller = new FacilityController(useCases, useCases, useCases, mapper);
 
-        ResponseEntity<FacilityResponse> created = controller.createFacility(TopologyRestTestData.createFacilityRequest());
-        ResponseEntity<FacilityResponse> found = controller.getFacility("fac-1");
-        PageResult<FacilityResponse> page = controller.listFacilities("station", "compression_station", "gas", "planned", 0, 20);
+        ResponseEntity<FacilityResponse> created = controller.createFacility("fr", TopologyRestTestData.createFacilityRequest());
+        ResponseEntity<FacilityResponse> found = controller.getFacility("fr", "fac-1");
+        PageResult<FacilityResponse> page = controller.listFacilities("fr", "station", "compression_station", "gas", "planned", 0, 20);
 
         assertEquals(HttpStatus.CREATED, created.getStatusCode());
         assertEquals("CS-EAST-01", created.getBody().code());
+        assertEquals("fr:COMPRESSION_STATION", created.getBody().facilityType().label());
         assertEquals("fac-1", found.getBody().facilityId());
         assertEquals(1L, page.totalElements());
         assertEquals("COMPRESSION_STATION", useCases.createdCommand.facilityType().name());
@@ -163,12 +160,13 @@ class TopologyRestControllersTest {
         TopologyNodeUseCases useCases = new TopologyNodeUseCases();
         TopologyNodeController controller = new TopologyNodeController(useCases, useCases, useCases, mapper);
 
-        ResponseEntity<TopologyNodeResponse> created = controller.createTopologyNode(TopologyRestTestData.createTopologyNodeRequest());
-        ResponseEntity<TopologyNodeResponse> found = controller.getTopologyNode("node-1");
-        PageResult<TopologyNodeResponse> page = controller.listTopologyNodes("node", "facility_inlet", "fac-1", null, "planned", 0, 20);
+        ResponseEntity<TopologyNodeResponse> created = controller.createTopologyNode("fr", TopologyRestTestData.createTopologyNodeRequest());
+        ResponseEntity<TopologyNodeResponse> found = controller.getTopologyNode("fr", "node-1");
+        PageResult<TopologyNodeResponse> page = controller.listTopologyNodes("fr", "node", "facility_inlet", "fac-1", null, "planned", 0, 20);
 
         assertEquals(HttpStatus.CREATED, created.getStatusCode());
         assertEquals("NODE-CS-EAST-01-IN", created.getBody().code());
+        assertEquals("fr:FACILITY_INLET", created.getBody().nodeType().label());
         assertEquals("node-1", found.getBody().topologyNodeId());
         assertEquals(1L, page.totalElements());
         assertEquals("FACILITY_INLET", useCases.createdCommand.nodeType().name());
@@ -196,12 +194,13 @@ class TopologyRestControllersTest {
         PipelineAppurtenanceUseCases useCases = new PipelineAppurtenanceUseCases();
         PipelineAppurtenanceController controller = new PipelineAppurtenanceController(useCases, useCases, useCases, mapper);
 
-        ResponseEntity<PipelineAppurtenanceResponse> created = controller.createPipelineAppurtenance(TopologyRestTestData.createPipelineAppurtenanceRequest());
-        ResponseEntity<PipelineAppurtenanceResponse> found = controller.getPipelineAppurtenance("app-1");
-        PageResult<PipelineAppurtenanceResponse> page = controller.listPipelineAppurtenances("valve", "pipe-1", "valve", "block_valve", "planned", 0, 20);
+        ResponseEntity<PipelineAppurtenanceResponse> created = controller.createPipelineAppurtenance("fr", TopologyRestTestData.createPipelineAppurtenanceRequest());
+        ResponseEntity<PipelineAppurtenanceResponse> found = controller.getPipelineAppurtenance("fr", "app-1");
+        PageResult<PipelineAppurtenanceResponse> page = controller.listPipelineAppurtenances("fr", "valve", "pipe-1", "valve", "block_valve", "planned", 0, 20);
 
         assertEquals(HttpStatus.CREATED, created.getStatusCode());
         assertEquals("GZ1-BV-001", created.getBody().code());
+        assertEquals("fr:VALVE", created.getBody().appurtenanceType().label());
         assertEquals("app-1", found.getBody().pipelineAppurtenanceId());
         assertEquals(1L, page.totalElements());
         assertEquals("VALVE", useCases.createdCommand.appurtenanceType().name());
@@ -214,11 +213,12 @@ class TopologyRestControllersTest {
         TopologyConnectionUseCases useCases = new TopologyConnectionUseCases();
         TopologyConnectionController controller = new TopologyConnectionController(useCases, useCases, mapper);
 
-        ResponseEntity<TopologyConnectionResponse> created = controller.createTopologyConnection(TopologyRestTestData.createTopologyConnectionRequest());
-        PageResult<TopologyConnectionResponse> page = controller.listTopologyConnections("conn", "node-1", "node-2", "pipeline_segment", "segment", "planned", 0, 20);
+        ResponseEntity<TopologyConnectionResponse> created = controller.createTopologyConnection("fr", TopologyRestTestData.createTopologyConnectionRequest());
+        PageResult<TopologyConnectionResponse> page = controller.listTopologyConnections("fr", "conn", "node-1", "node-2", "pipeline_segment", "segment", "planned", 0, 20);
 
         assertEquals(HttpStatus.CREATED, created.getStatusCode());
         assertEquals("CONN-GZ1-001", created.getBody().code());
+        assertEquals("fr:PIPELINE_SEGMENT", created.getBody().connectionType().label());
         assertEquals(1L, page.totalElements());
         assertEquals("PIPELINE_SEGMENT", useCases.createdCommand.connectionType().name());
         assertEquals("SEGMENT", useCases.listQuery.linkedAssetType().name());
@@ -229,203 +229,93 @@ class TopologyRestControllersTest {
         EquipmentUseCases useCases = new EquipmentUseCases();
         EquipmentController controller = new EquipmentController(useCases, mapper);
 
-        ResponseEntity<EquipmentResponse> created = controller.registerEquipment(TopologyRestTestData.registerEquipmentRequest());
+        ResponseEntity<EquipmentResponse> created = controller.registerEquipment("fr", TopologyRestTestData.registerEquipmentRequest());
 
         assertEquals(HttpStatus.CREATED, created.getStatusCode());
         assertEquals("CMP-CS-EAST-01-A", created.getBody().code());
+        assertEquals("fr:COMPRESSOR", created.getBody().equipmentType().label());
         assertEquals("COMPRESSOR", useCases.registerCommand.equipmentType().name());
         assertEquals("FACILITY", useCases.registerCommand.parentAssetType().name());
         assertNotNull(created.getBody().createdAt());
     }
 
-    private static final class PipelineSystemUseCases implements
-            CreatePipelineSystemUseCase,
-            GetPipelineSystemUseCase,
-            ListPipelineSystemsUseCase {
+    private static ResolveTopologyCatalogTypeUseCase catalogResolver() {
+        return query -> new TopologyCatalogDto(
+                query.code().value(),
+                query.catalogName(),
+                query.code().value(),
+                "ACTIVE",
+                0,
+                true,
+                query.locale() == null ? "en" : query.locale(),
+                (query.locale() == null ? "en" : query.locale()) + ":" + query.code().value(),
+                null,
+                List.of(),
+                Instant.EPOCH,
+                Instant.EPOCH);
+    }
 
+    private static final class PipelineSystemUseCases implements CreatePipelineSystemUseCase, GetPipelineSystemUseCase, ListPipelineSystemsUseCase {
         private CreatePipelineSystemCommand createdCommand;
         private GetPipelineSystemByIdQuery getQuery;
         private ListPipelineSystemsQuery listQuery;
-
-        @Override
-        public PipelineSystemDto createPipelineSystem(CreatePipelineSystemCommand command) {
-            this.createdCommand = command;
-            return TopologyRestTestData.pipelineSystemDto();
-        }
-
-        @Override
-        public PipelineSystemDto getPipelineSystem(GetPipelineSystemByIdQuery query) {
-            this.getQuery = query;
-            return TopologyRestTestData.pipelineSystemDto();
-        }
-
-        @Override
-        public PageResult<PipelineSystemDto> listPipelineSystems(ListPipelineSystemsQuery query) {
-            this.listQuery = query;
-            return TopologyRestTestData.pipelineSystemPage();
-        }
+        @Override public PipelineSystemDto createPipelineSystem(CreatePipelineSystemCommand command) { this.createdCommand = command; return TopologyRestTestData.pipelineSystemDto(); }
+        @Override public PipelineSystemDto getPipelineSystem(GetPipelineSystemByIdQuery query) { this.getQuery = query; return TopologyRestTestData.pipelineSystemDto(); }
+        @Override public PageResult<PipelineSystemDto> listPipelineSystems(ListPipelineSystemsQuery query) { this.listQuery = query; return TopologyRestTestData.pipelineSystemPage(); }
     }
 
-    private static final class PipelineUseCases implements
-            CreatePipelineUseCase,
-            GetPipelineUseCase,
-            ListPipelinesUseCase {
-
+    private static final class PipelineUseCases implements CreatePipelineUseCase, GetPipelineUseCase, ListPipelinesUseCase {
         private CreatePipelineCommand createdCommand;
         private GetPipelineByIdQuery getQuery;
         private ListPipelinesQuery listQuery;
-
-        @Override
-        public PipelineDto createPipeline(CreatePipelineCommand command) {
-            this.createdCommand = command;
-            return TopologyRestTestData.pipelineDto();
-        }
-
-        @Override
-        public PipelineDto getPipeline(GetPipelineByIdQuery query) {
-            this.getQuery = query;
-            return TopologyRestTestData.pipelineDto();
-        }
-
-        @Override
-        public PageResult<PipelineDto> listPipelines(ListPipelinesQuery query) {
-            this.listQuery = query;
-            return TopologyRestTestData.pipelinePage();
-        }
+        @Override public PipelineDto createPipeline(CreatePipelineCommand command) { this.createdCommand = command; return TopologyRestTestData.pipelineDto(); }
+        @Override public PipelineDto getPipeline(GetPipelineByIdQuery query) { this.getQuery = query; return TopologyRestTestData.pipelineDto(); }
+        @Override public PageResult<PipelineDto> listPipelines(ListPipelinesQuery query) { this.listQuery = query; return TopologyRestTestData.pipelinePage(); }
     }
 
-    private static final class FacilityUseCases implements
-            CreateFacilityUseCase,
-            GetFacilityUseCase,
-            ListFacilitiesUseCase {
-
+    private static final class FacilityUseCases implements CreateFacilityUseCase, GetFacilityUseCase, ListFacilitiesUseCase {
         private CreateFacilityCommand createdCommand;
         private GetFacilityByIdQuery getQuery;
         private ListFacilitiesQuery listQuery;
-
-        @Override
-        public FacilityDto createFacility(CreateFacilityCommand command) {
-            this.createdCommand = command;
-            return TopologyRestTestData.facilityDto();
-        }
-
-        @Override
-        public FacilityDto getFacility(GetFacilityByIdQuery query) {
-            this.getQuery = query;
-            return TopologyRestTestData.facilityDto();
-        }
-
-        @Override
-        public PageResult<FacilityDto> listFacilities(ListFacilitiesQuery query) {
-            this.listQuery = query;
-            return TopologyRestTestData.facilityPage();
-        }
+        @Override public FacilityDto createFacility(CreateFacilityCommand command) { this.createdCommand = command; return TopologyRestTestData.facilityDto(); }
+        @Override public FacilityDto getFacility(GetFacilityByIdQuery query) { this.getQuery = query; return TopologyRestTestData.facilityDto(); }
+        @Override public PageResult<FacilityDto> listFacilities(ListFacilitiesQuery query) { this.listQuery = query; return TopologyRestTestData.facilityPage(); }
     }
 
-    private static final class TopologyNodeUseCases implements
-            CreateTopologyNodeUseCase,
-            GetTopologyNodeUseCase,
-            ListTopologyNodesUseCase {
-
+    private static final class TopologyNodeUseCases implements CreateTopologyNodeUseCase, GetTopologyNodeUseCase, ListTopologyNodesUseCase {
         private CreateTopologyNodeCommand createdCommand;
         private GetTopologyNodeByIdQuery getQuery;
         private ListTopologyNodesQuery listQuery;
-
-        @Override
-        public TopologyNodeDto createTopologyNode(CreateTopologyNodeCommand command) {
-            this.createdCommand = command;
-            return TopologyRestTestData.topologyNodeDto();
-        }
-
-        @Override
-        public TopologyNodeDto getTopologyNode(GetTopologyNodeByIdQuery query) {
-            this.getQuery = query;
-            return TopologyRestTestData.topologyNodeDto();
-        }
-
-        @Override
-        public PageResult<TopologyNodeDto> listTopologyNodes(ListTopologyNodesQuery query) {
-            this.listQuery = query;
-            return TopologyRestTestData.topologyNodePage();
-        }
+        @Override public TopologyNodeDto createTopologyNode(CreateTopologyNodeCommand command) { this.createdCommand = command; return TopologyRestTestData.topologyNodeDto(); }
+        @Override public TopologyNodeDto getTopologyNode(GetTopologyNodeByIdQuery query) { this.getQuery = query; return TopologyRestTestData.topologyNodeDto(); }
+        @Override public PageResult<TopologyNodeDto> listTopologyNodes(ListTopologyNodesQuery query) { this.listQuery = query; return TopologyRestTestData.topologyNodePage(); }
     }
 
-    private static final class PipelineSegmentUseCases implements
-            CreatePipelineSegmentUseCase,
-            ListPipelineSegmentsUseCase {
-
+    private static final class PipelineSegmentUseCases implements CreatePipelineSegmentUseCase, ListPipelineSegmentsUseCase {
         private CreatePipelineSegmentCommand createdCommand;
         private ListPipelineSegmentsQuery listQuery;
-
-        @Override
-        public PipelineSegmentDto createPipelineSegment(CreatePipelineSegmentCommand command) {
-            this.createdCommand = command;
-            return TopologyRestTestData.pipelineSegmentDto();
-        }
-
-        @Override
-        public PageResult<PipelineSegmentDto> listPipelineSegments(ListPipelineSegmentsQuery query) {
-            this.listQuery = query;
-            return TopologyRestTestData.pipelineSegmentPage();
-        }
+        @Override public PipelineSegmentDto createPipelineSegment(CreatePipelineSegmentCommand command) { this.createdCommand = command; return TopologyRestTestData.pipelineSegmentDto(); }
+        @Override public PageResult<PipelineSegmentDto> listPipelineSegments(ListPipelineSegmentsQuery query) { this.listQuery = query; return TopologyRestTestData.pipelineSegmentPage(); }
     }
 
-    private static final class PipelineAppurtenanceUseCases implements
-            CreatePipelineAppurtenanceUseCase,
-            GetPipelineAppurtenanceUseCase,
-            ListPipelineAppurtenancesUseCase {
-
+    private static final class PipelineAppurtenanceUseCases implements CreatePipelineAppurtenanceUseCase, GetPipelineAppurtenanceUseCase, ListPipelineAppurtenancesUseCase {
         private CreatePipelineAppurtenanceCommand createdCommand;
         private GetPipelineAppurtenanceByIdQuery getQuery;
         private ListPipelineAppurtenancesQuery listQuery;
-
-        @Override
-        public PipelineAppurtenanceDto createPipelineAppurtenance(CreatePipelineAppurtenanceCommand command) {
-            this.createdCommand = command;
-            return TopologyRestTestData.pipelineAppurtenanceDto();
-        }
-
-        @Override
-        public PipelineAppurtenanceDto getPipelineAppurtenance(GetPipelineAppurtenanceByIdQuery query) {
-            this.getQuery = query;
-            return TopologyRestTestData.pipelineAppurtenanceDto();
-        }
-
-        @Override
-        public PageResult<PipelineAppurtenanceDto> listPipelineAppurtenances(ListPipelineAppurtenancesQuery query) {
-            this.listQuery = query;
-            return TopologyRestTestData.pipelineAppurtenancePage();
-        }
+        @Override public PipelineAppurtenanceDto createPipelineAppurtenance(CreatePipelineAppurtenanceCommand command) { this.createdCommand = command; return TopologyRestTestData.pipelineAppurtenanceDto(); }
+        @Override public PipelineAppurtenanceDto getPipelineAppurtenance(GetPipelineAppurtenanceByIdQuery query) { this.getQuery = query; return TopologyRestTestData.pipelineAppurtenanceDto(); }
+        @Override public PageResult<PipelineAppurtenanceDto> listPipelineAppurtenances(ListPipelineAppurtenancesQuery query) { this.listQuery = query; return TopologyRestTestData.pipelineAppurtenancePage(); }
     }
 
-    private static final class TopologyConnectionUseCases implements
-            CreateTopologyConnectionUseCase,
-            ListTopologyConnectionsUseCase {
-
+    private static final class TopologyConnectionUseCases implements CreateTopologyConnectionUseCase, ListTopologyConnectionsUseCase {
         private CreateTopologyConnectionCommand createdCommand;
         private ListTopologyConnectionsQuery listQuery;
-
-        @Override
-        public TopologyConnectionDto createTopologyConnection(CreateTopologyConnectionCommand command) {
-            this.createdCommand = command;
-            return TopologyRestTestData.topologyConnectionDto();
-        }
-
-        @Override
-        public PageResult<TopologyConnectionDto> listTopologyConnections(ListTopologyConnectionsQuery query) {
-            this.listQuery = query;
-            return TopologyRestTestData.topologyConnectionPage();
-        }
+        @Override public TopologyConnectionDto createTopologyConnection(CreateTopologyConnectionCommand command) { this.createdCommand = command; return TopologyRestTestData.topologyConnectionDto(); }
+        @Override public PageResult<TopologyConnectionDto> listTopologyConnections(ListTopologyConnectionsQuery query) { this.listQuery = query; return TopologyRestTestData.topologyConnectionPage(); }
     }
 
     private static final class EquipmentUseCases implements RegisterEquipmentUseCase {
-
         private RegisterEquipmentCommand registerCommand;
-
-        @Override
-        public EquipmentDto registerEquipment(RegisterEquipmentCommand command) {
-            this.registerCommand = command;
-            return TopologyRestTestData.equipmentDto();
-        }
+        @Override public EquipmentDto registerEquipment(RegisterEquipmentCommand command) { this.registerCommand = command; return TopologyRestTestData.equipmentDto(); }
     }
 }

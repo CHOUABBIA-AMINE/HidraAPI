@@ -30,7 +30,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * @param code organization unit code
  * @param name organization unit name
  * @param status organization unit status
- * @param type organization unit type
+ * @param type localized organization unit type catalog reference
  * @param parentId optional parent organization unit identifier
  * @param operationalScopeType optional neutral operational scope type
  * @param operationalScopeId optional neutral operational scope identifier
@@ -49,8 +49,8 @@ public record OrganizationUnitResponse(
         String name,
         @Schema(description = "Organization unit status.", example = "ACTIVE")
         String status,
-        @Schema(description = "Organization unit type.", example = "STATION")
-        String type,
+        @Schema(description = "Localized organization unit type catalog reference.")
+        OrganizationUnitTypeResponse type,
         @Schema(description = "Optional parent organization unit identifier.")
         String parentId,
         @Schema(description = "Optional neutral operational scope type.", example = "TOPOLOGY_COMPRESSION_STATION")

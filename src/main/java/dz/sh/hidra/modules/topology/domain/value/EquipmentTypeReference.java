@@ -57,6 +57,19 @@ public record EquipmentTypeReference(String id, TopologyCode code) implements Va
         return new EquipmentTypeReference(id, TopologyCode.of(code));
     }
 
+    public static EquipmentTypeReference from(EquipmentType equipmentType) {
+        Objects.requireNonNull(equipmentType, "Equipment type must not be null.");
+        return of(equipmentType.name(), equipmentType.name());
+    }
+
+    public String name() {
+        return code.value();
+    }
+
+    public boolean is(String expectedCode) {
+        return code.value().equals(TopologyCode.of(expectedCode).value());
+    }
+
     private static String requireText(String value, String fieldName) {
         if (value == null || value.isBlank()) {
             throw new InvalidValueObjectException(fieldName + " must not be null or blank.");

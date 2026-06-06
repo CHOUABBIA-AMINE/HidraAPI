@@ -9,67 +9,87 @@
  * @CreatedOn   : 2025-06-26
  * @UpdatedOn   : 2026-05-30
  *
- * @Type        : Enum
+ * @Type        : Class
  * @Layer       : Domain
  * @Module      : topology
  * @Package     : dz.sh.hidra.modules.topology.domain.value
  *
- * @Description : Topology equipment reference type enum.
+ * @Description : Deprecated compatibility constant class for the equipment type catalog.
  *
  */
 package dz.sh.hidra.modules.topology.domain.value;
 
+import java.util.Arrays;
+import java.util.Objects;
+
+import dz.sh.hidra.kernel.domain.exception.InvalidValueObjectException;
 import dz.sh.hidra.kernel.domain.model.ValueObject;
 
-/**
- * Topology equipment reference type enum.
- *
- * <p>Business role:
- * This enum restricts topology domain values to an explicit controlled set.
- *
- * <p>Architecture role:
- * This is a pure topology domain value object enum and must not depend on API, persistence,
- * identity, organization, platform, Spring, JPA, measurement, flow, risk, or workflow code.
- *
- * <p>Validation:
- * The enum prevents unbounded string values for this topology concept.
- *
- * <p>Usage:
- * Use this enum in topology domain and application code when this constrained value is required.
- */
-public enum EquipmentType implements ValueObject {
+@Deprecated(forRemoval = false)
+public final class EquipmentType implements ValueObject {
 
-    /** Compressor unit or compressor package. */
-    COMPRESSOR,
+    public static final EquipmentType COMPRESSOR = new EquipmentType("COMPRESSOR");
+    public static final EquipmentType PUMP = new EquipmentType("PUMP");
+    public static final EquipmentType VALVE = new EquipmentType("VALVE");
+    public static final EquipmentType METER = new EquipmentType("METER");
+    public static final EquipmentType SEPARATOR = new EquipmentType("SEPARATOR");
+    public static final EquipmentType SCRAPER_LAUNCHER = new EquipmentType("SCRAPER_LAUNCHER");
+    public static final EquipmentType SCRAPER_RECEIVER = new EquipmentType("SCRAPER_RECEIVER");
+    public static final EquipmentType ACTUATOR = new EquipmentType("ACTUATOR");
+    public static final EquipmentType CONTROL_PANEL = new EquipmentType("CONTROL_PANEL");
+    public static final EquipmentType INSTRUMENTATION = new EquipmentType("INSTRUMENTATION");
+    public static final EquipmentType OTHER = new EquipmentType("OTHER");
 
-    /** Pump unit or pump package. */
-    PUMP,
+    private static final EquipmentType[] VALUES = {COMPRESSOR, PUMP, VALVE, METER, SEPARATOR,
+            SCRAPER_LAUNCHER, SCRAPER_RECEIVER, ACTUATOR, CONTROL_PANEL, INSTRUMENTATION, OTHER};
 
-    /** Valve component. */
-    VALVE,
+    private final String name;
 
-    /** Metering equipment. */
-    METER,
+    private EquipmentType(String name) {
+        this.name = requireName(name);
+    }
 
-    /** Separator equipment. */
-    SEPARATOR,
+    public static EquipmentType valueOf(String name) {
+        String normalizedName = requireName(name);
+        return Arrays.stream(VALUES)
+                .filter(value -> value.name.equals(normalizedName))
+                .findFirst()
+                .orElseThrow(() -> new InvalidValueObjectException("EquipmentType is not supported: " + name));
+    }
 
-    /** Scraper launcher equipment. */
-    SCRAPER_LAUNCHER,
+    public static EquipmentType[] values() {
+        return VALUES.clone();
+    }
 
-    /** Scraper receiver equipment. */
-    SCRAPER_RECEIVER,
+    public String name() {
+        return name;
+    }
 
-    /** Actuator component. */
-    ACTUATOR,
+    @Override
+    public String toString() {
+        return name;
+    }
 
-    /** Local control panel or cabinet. */
-    CONTROL_PANEL,
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (!(other instanceof EquipmentType that)) {
+            return false;
+        }
+        return name.equals(that.name);
+    }
 
-    /** Instrumentation component. */
-    INSTRUMENTATION,
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
+    }
 
-    /** Other equipment type. */
-    OTHER;
-
+    private static String requireName(String value) {
+        if (value == null || value.isBlank()) {
+            throw new InvalidValueObjectException("EquipmentType name must not be null or blank.");
+        }
+        return value.trim().toUpperCase();
+    }
 }

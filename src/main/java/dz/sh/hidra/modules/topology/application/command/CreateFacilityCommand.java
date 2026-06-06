@@ -22,11 +22,9 @@ package dz.sh.hidra.modules.topology.application.command;
 import java.util.Objects;
 
 import dz.sh.hidra.kernel.application.command.Command;
-import dz.sh.hidra.modules.topology.domain.value.FacilityType;
 import dz.sh.hidra.modules.topology.domain.value.FacilityTypeReference;
 import dz.sh.hidra.modules.topology.domain.value.GeoCoordinate;
 import dz.sh.hidra.modules.topology.domain.value.OrganizationUnitReference;
-import dz.sh.hidra.modules.topology.domain.value.ProductType;
 import dz.sh.hidra.modules.topology.domain.value.ProductTypeReference;
 import dz.sh.hidra.modules.topology.domain.value.TopologyCode;
 import dz.sh.hidra.modules.topology.domain.value.TopologyName;
@@ -47,17 +45,5 @@ public record CreateFacilityCommand(
         Objects.requireNonNull(name, "Facility name must not be null.");
         Objects.requireNonNull(facilityType, "Facility type reference must not be null.");
         Objects.requireNonNull(productType, "Facility product type reference must not be null.");
-    }
-
-    @Deprecated(forRemoval = true)
-    public CreateFacilityCommand(
-            TopologyCode code,
-            TopologyName name,
-            FacilityType facilityType,
-            ProductType productType,
-            GeoCoordinate coordinate,
-            OrganizationUnitReference organizationUnitReference) {
-
-        this(code, name, FacilityTypeReference.from(facilityType), ProductTypeReference.from(productType), coordinate, organizationUnitReference);
     }
 }

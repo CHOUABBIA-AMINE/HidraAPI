@@ -56,11 +56,6 @@ public record ProductTypeReference(String id, TopologyCode code) implements Valu
         return new ProductTypeReference(id, TopologyCode.of(code));
     }
 
-    public static ProductTypeReference from(ProductType productType) {
-        Objects.requireNonNull(productType, "Product type must not be null.");
-        return of(productType.name(), productType.name());
-    }
-
     public String name() {
         return code.value();
     }

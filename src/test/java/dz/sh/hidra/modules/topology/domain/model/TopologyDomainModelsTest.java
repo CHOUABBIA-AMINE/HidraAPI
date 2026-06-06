@@ -35,7 +35,6 @@ import dz.sh.hidra.modules.topology.domain.value.PipelineAppurtenanceType;
 import dz.sh.hidra.modules.topology.domain.value.PipelineId;
 import dz.sh.hidra.modules.topology.domain.value.PipelineKilometerPoint;
 import dz.sh.hidra.modules.topology.domain.value.PipelineSystemId;
-import dz.sh.hidra.modules.topology.domain.value.ProductType;
 import dz.sh.hidra.modules.topology.domain.value.TopologyCode;
 import dz.sh.hidra.modules.topology.domain.value.TopologyName;
 import dz.sh.hidra.modules.topology.domain.value.TopologyNodeId;
@@ -146,7 +145,7 @@ class TopologyDomainModelsTest {
                 TopologyCode.of("PIPE-BAD-DATES"),
                 TopologyName.of("Bad Date Pipeline"),
                 null,
-                ProductType.GAS,
+                TopologyDomainTestData.gasProductType(),
                 DiameterInInches.of(42.0),
                 LengthInKilometers.of(20.0),
                 TopologyStatus.ACTIVE,

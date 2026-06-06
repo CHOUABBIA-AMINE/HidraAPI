@@ -32,7 +32,6 @@ import dz.sh.hidra.modules.topology.application.dto.PipelineSystemDto;
 import dz.sh.hidra.modules.topology.application.query.GetPipelineSystemByIdQuery;
 import dz.sh.hidra.modules.topology.application.query.ListPipelineSystemsQuery;
 import dz.sh.hidra.modules.topology.domain.TopologyDomainTestData;
-import dz.sh.hidra.modules.topology.domain.value.ProductType;
 import dz.sh.hidra.modules.topology.domain.value.TopologyStatus;
 
 /**
@@ -49,7 +48,7 @@ class PipelineSystemApplicationServiceTest {
                 TopologyDomainTestData.code("APP-PS"),
                 TopologyDomainTestData.name("Application Pipeline System"),
                 " Application system ",
-                ProductType.GAS,
+                TopologyDomainTestData.gasProductType(),
                 TopologyDomainTestData.operationalOwnerReference()));
 
         assertEquals("APP-PS", dto.code());
@@ -69,7 +68,7 @@ class PipelineSystemApplicationServiceTest {
                 TopologyDomainTestData.pipelineSystem().code(),
                 TopologyDomainTestData.name("Duplicate Pipeline System"),
                 null,
-                ProductType.GAS,
+                TopologyDomainTestData.gasProductType(),
                 null)));
     }
 
@@ -86,7 +85,7 @@ class PipelineSystemApplicationServiceTest {
 
         PageResult<PipelineSystemDto> page = service.listPipelineSystems(new ListPipelineSystemsQuery(
                 null,
-                ProductType.GAS,
+                TopologyDomainTestData.gasProductType(),
                 TopologyStatus.PLANNED,
                 PageRequest.of(0, 10)));
 

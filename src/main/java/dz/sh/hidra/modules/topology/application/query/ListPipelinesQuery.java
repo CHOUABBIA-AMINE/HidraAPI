@@ -24,7 +24,6 @@ import java.util.Objects;
 import dz.sh.hidra.kernel.application.pagination.PageRequest;
 import dz.sh.hidra.kernel.application.query.Query;
 import dz.sh.hidra.modules.topology.domain.value.PipelineSystemId;
-import dz.sh.hidra.modules.topology.domain.value.ProductType;
 import dz.sh.hidra.modules.topology.domain.value.ProductTypeReference;
 import dz.sh.hidra.modules.topology.domain.value.TopologyStatus;
 
@@ -39,17 +38,6 @@ public record ListPipelinesQuery(
     public ListPipelinesQuery {
         searchText = normalizeOptional(searchText, "Search text", 120);
         Objects.requireNonNull(pageRequest, "Page request must not be null.");
-    }
-
-    @Deprecated(forRemoval = true)
-    public ListPipelinesQuery(
-            String searchText,
-            PipelineSystemId pipelineSystemId,
-            ProductType productType,
-            TopologyStatus status,
-            PageRequest pageRequest) {
-
-        this(searchText, pipelineSystemId, productType == null ? null : ProductTypeReference.from(productType), status, pageRequest);
     }
 
     public static ListPipelinesQuery all(PageRequest pageRequest) {

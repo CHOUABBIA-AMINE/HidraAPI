@@ -52,7 +52,6 @@ import dz.sh.hidra.modules.topology.domain.value.PipelineId;
 import dz.sh.hidra.modules.topology.domain.value.PipelineKilometerPoint;
 import dz.sh.hidra.modules.topology.domain.value.PipelineSegmentId;
 import dz.sh.hidra.modules.topology.domain.value.PipelineSystemId;
-import dz.sh.hidra.modules.topology.domain.value.ProductType;
 import dz.sh.hidra.modules.topology.domain.value.ProductTypeReference;
 import dz.sh.hidra.modules.topology.domain.value.TopologyAssetType;
 import dz.sh.hidra.modules.topology.domain.value.TopologyCode;

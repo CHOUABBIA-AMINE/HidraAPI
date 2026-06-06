@@ -25,7 +25,6 @@ import dz.sh.hidra.kernel.application.command.Command;
 import dz.sh.hidra.modules.topology.domain.value.DiameterInInches;
 import dz.sh.hidra.modules.topology.domain.value.LengthInKilometers;
 import dz.sh.hidra.modules.topology.domain.value.PipelineSystemId;
-import dz.sh.hidra.modules.topology.domain.value.ProductType;
 import dz.sh.hidra.modules.topology.domain.value.ProductTypeReference;
 import dz.sh.hidra.modules.topology.domain.value.TopologyCode;
 import dz.sh.hidra.modules.topology.domain.value.TopologyName;
@@ -50,19 +49,6 @@ public record CreatePipelineCommand(
         Objects.requireNonNull(nominalDiameter, "Pipeline nominal diameter must not be null.");
         Objects.requireNonNull(designLength, "Pipeline design length must not be null.");
         description = normalizeOptional(description, "Pipeline description", 500);
-    }
-
-    @Deprecated(forRemoval = true)
-    public CreatePipelineCommand(
-            PipelineSystemId pipelineSystemId,
-            TopologyCode code,
-            TopologyName name,
-            String description,
-            ProductType productType,
-            DiameterInInches nominalDiameter,
-            LengthInKilometers designLength) {
-
-        this(pipelineSystemId, code, name, description, ProductTypeReference.from(productType), nominalDiameter, designLength);
     }
 
     private static String normalizeOptional(String value, String label, int maxLength) {

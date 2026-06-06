@@ -43,19 +43,7 @@ import dz.sh.hidra.modules.topology.infrastructure.persistence.entity.PipelineSy
 import dz.sh.hidra.modules.topology.infrastructure.persistence.entity.TopologyConnectionJpaEntity;
 import dz.sh.hidra.modules.topology.infrastructure.persistence.entity.TopologyNodeJpaEntity;
 
-/**
- * Unit tests for topology persistence mapper round trips.
- *
- * <p>Business role:
- * Verifies that physical topology master data keeps its business identity and key fields when mapped
- * to and from JPA entities.
- *
- * <p>Architecture role:
- * These tests isolate mapper behavior from Spring Data repositories and databases.
- *
- * <p>Validation:
- * Domain restore methods re-validate mapped values during entity-to-domain conversion.
- */
+/** Unit tests for topology persistence mapper round trips. */
 class TopologyPersistenceMapperTest {
 
     private final TopologyPersistenceMapper mapper = new TopologyPersistenceMapper();
@@ -158,7 +146,7 @@ class TopologyPersistenceMapperTest {
                 TopologyDomainTestData.code("MAP-NO-OWNER"),
                 TopologyDomainTestData.name("No Owner"),
                 null,
-                dz.sh.hidra.modules.topology.domain.value.ProductType.GAS,
+                TopologyDomainTestData.gasProductType(),
                 null);
         TopologyNode node = TopologyNode.create(
                 TopologyDomainTestData.code("MAP-NO-COORD"),

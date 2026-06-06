@@ -40,7 +40,6 @@ import dz.sh.hidra.modules.topology.domain.service.TopologyRegistrationDomainSer
 import dz.sh.hidra.modules.topology.domain.value.FacilityId;
 import dz.sh.hidra.modules.topology.domain.value.FacilityType;
 import dz.sh.hidra.modules.topology.domain.value.GeoCoordinate;
-import dz.sh.hidra.modules.topology.domain.value.ProductType;
 import dz.sh.hidra.modules.topology.domain.value.TopologyStatus;
 
 /**
@@ -56,8 +55,8 @@ class FacilityApplicationServiceTest {
         FacilityDto dto = service.createFacility(new CreateFacilityCommand(
                 TopologyDomainTestData.code("APP-FAC"),
                 TopologyDomainTestData.name("Application Facility"),
-                FacilityType.COMPRESSION_STATION,
-                ProductType.GAS,
+                TopologyDomainTestData.compressionStationType(),
+                TopologyDomainTestData.gasProductType(),
                 GeoCoordinate.of(31.6167, 2.2167),
                 TopologyDomainTestData.organizationUnitReference()));
 
@@ -77,8 +76,8 @@ class FacilityApplicationServiceTest {
         assertThrows(BusinessRuleViolationException.class, () -> service.createFacility(new CreateFacilityCommand(
                 TopologyDomainTestData.facility().code(),
                 TopologyDomainTestData.name("Duplicate Facility"),
-                FacilityType.COMPRESSION_STATION,
-                ProductType.GAS,
+                TopologyDomainTestData.compressionStationType(),
+                TopologyDomainTestData.gasProductType(),
                 null,
                 null)));
     }
@@ -94,8 +93,8 @@ class FacilityApplicationServiceTest {
 
         PageResult<FacilityDto> page = service.listFacilities(new ListFacilitiesQuery(
                 null,
-                FacilityType.COMPRESSION_STATION,
-                ProductType.GAS,
+                TopologyDomainTestData.compressionStationType(),
+                TopologyDomainTestData.gasProductType(),
                 TopologyStatus.PLANNED,
                 PageRequest.of(0, 10)));
 

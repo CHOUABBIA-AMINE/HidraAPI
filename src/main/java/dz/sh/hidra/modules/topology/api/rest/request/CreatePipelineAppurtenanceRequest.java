@@ -38,19 +38,18 @@ import jakarta.validation.constraints.Size;
  * points, metering points, sampling points, and connection points.
  *
  * <p>Architecture role:
- * This is a REST input contract. It does not create operations, permits, telemetry, hydraulic
- * calculations, maintenance records, risk scores, or workflow tasks.
+ * This REST input contract accepts stable appurtenance and valve type catalog codes.
  *
  * <p>Validation:
- * Pipeline id, node id, code, name, appurtenance type, and KP are required. Valve type is validated
- * later by the REST mapper/domain layer as required only for VALVE and forbidden otherwise.
+ * Pipeline id, node id, code, name, appurtenance type code, and KP are required. Valve type code is
+ * validated later by the mapper/domain layer as required only for valve appurtenances.
  *
  * @param pipelineId parent pipeline identifier
  * @param nodeId topology node identifier
  * @param code appurtenance business code
  * @param name appurtenance display name
- * @param appurtenanceType appurtenance type
- * @param valveType optional valve type
+ * @param appurtenanceTypeCode language-neutral appurtenance type catalog code
+ * @param valveTypeCode optional language-neutral valve type catalog code
  * @param pipelineKilometerPoint KP/PK/chainage value in kilometers
  * @param coordinate optional geographical coordinate
  * @param description optional description
@@ -77,14 +76,16 @@ public record CreatePipelineAppurtenanceRequest(
         @Size(min = 2, max = 160)
         String name,
 
-        @Schema(description = "Pipeline appurtenance type.", example = "VALVE", allowableValues = {"VALVE", "INJECTION_POINT", "EXTRACTION_POINT", "PURGE_POINT", "VENT_POINT", "DRAIN_POINT", "SAMPLING_POINT", "METERING_POINT", "SCRAPER_LAUNCHER", "SCRAPER_RECEIVER", "HOT_TAP_POINT", "BYPASS_POINT", "CONNECTION_POINT", "OTHER"}, requiredMode = Schema.RequiredMode.REQUIRED)
+        @Schema(description = "Language-neutral appurtenance type catalog code.", example = "VALVE", requiredMode = Schema.RequiredMode.REQUIRED)
         @NotBlank
-        @Pattern(regexp = "VALVE|INJECTION_POINT|EXTRACTION_POINT|PURGE_POINT|VENT_POINT|DRAIN_POINT|SAMPLING_POINT|METERING_POINT|SCRAPER_LAUNCHER|SCRAPER_RECEIVER|HOT_TAP_POINT|BYPASS_POINT|CONNECTION_POINT|OTHER")
-        String appurtenanceType,
+        @Size(min = 2, max = 80)
+        @Pattern(regexp = "[A-Za-z0-9][A-Za-z0-9_.-]{1,79}")
+        String appurtenanceTypeCode,
 
-        @Schema(description = "Optional valve type. Required when appurtenanceType is VALVE and must be absent otherwise.", example = "BLOCK_VALVE", allowableValues = {"BLOCK_VALVE", "SECTIONALIZING_VALVE", "ISOLATION_VALVE", "SHUTDOWN_VALVE", "CONTROL_VALVE", "CHECK_VALVE", "RELIEF_VALVE", "PRESSURE_REGULATING_VALVE", "BYPASS_VALVE", "DRAIN_VALVE", "VENT_VALVE", "ESD_VALVE", "MANUAL_VALVE", "MOTORIZED_VALVE", "OTHER"})
-        @Pattern(regexp = "BLOCK_VALVE|SECTIONALIZING_VALVE|ISOLATION_VALVE|SHUTDOWN_VALVE|CONTROL_VALVE|CHECK_VALVE|RELIEF_VALVE|PRESSURE_REGULATING_VALVE|BYPASS_VALVE|DRAIN_VALVE|VENT_VALVE|ESD_VALVE|MANUAL_VALVE|MOTORIZED_VALVE|OTHER")
-        String valveType,
+        @Schema(description = "Optional language-neutral valve type catalog code. Required when the appurtenance type code is VALVE.", example = "BLOCK_VALVE")
+        @Size(min = 2, max = 80)
+        @Pattern(regexp = "[A-Za-z0-9][A-Za-z0-9_.-]{1,79}")
+        String valveTypeCode,
 
         @Schema(description = "KP/PK/chainage value in kilometers.", example = "25.000", requiredMode = Schema.RequiredMode.REQUIRED)
         @NotNull

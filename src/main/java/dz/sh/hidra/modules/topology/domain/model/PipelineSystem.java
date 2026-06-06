@@ -26,7 +26,6 @@ import dz.sh.hidra.kernel.domain.exception.BusinessRuleViolationException;
 import dz.sh.hidra.kernel.domain.model.AggregateRoot;
 import dz.sh.hidra.modules.topology.domain.value.OperationalOwnerReference;
 import dz.sh.hidra.modules.topology.domain.value.PipelineSystemId;
-import dz.sh.hidra.modules.topology.domain.value.ProductType;
 import dz.sh.hidra.modules.topology.domain.value.ProductTypeReference;
 import dz.sh.hidra.modules.topology.domain.value.TopologyCode;
 import dz.sh.hidra.modules.topology.domain.value.TopologyName;
@@ -103,20 +102,6 @@ public final class PipelineSystem implements AggregateRoot<PipelineSystemId> {
                 now);
     }
 
-    /**
-     * Transitional legacy factory retained until REST/persistence callers are migrated.
-     */
-    @Deprecated(forRemoval = true)
-    public static PipelineSystem create(
-            TopologyCode code,
-            TopologyName name,
-            String description,
-            ProductType productType,
-            OperationalOwnerReference operationalOwnerReference) {
-
-        return create(code, name, description, ProductTypeReference.from(productType), operationalOwnerReference);
-    }
-
     public static PipelineSystem restore(
             PipelineSystemId id,
             TopologyCode code,
@@ -138,24 +123,6 @@ public final class PipelineSystem implements AggregateRoot<PipelineSystemId> {
                 operationalOwnerReference,
                 createdAt,
                 updatedAt);
-    }
-
-    /**
-     * Transitional legacy restore retained until persistence mapping is migrated to catalog FKs.
-     */
-    @Deprecated(forRemoval = true)
-    public static PipelineSystem restore(
-            PipelineSystemId id,
-            TopologyCode code,
-            TopologyName name,
-            String description,
-            ProductType productType,
-            TopologyStatus status,
-            OperationalOwnerReference operationalOwnerReference,
-            Instant createdAt,
-            Instant updatedAt) {
-
-        return restore(id, code, name, description, ProductTypeReference.from(productType), status, operationalOwnerReference, createdAt, updatedAt);
     }
 
     @Override

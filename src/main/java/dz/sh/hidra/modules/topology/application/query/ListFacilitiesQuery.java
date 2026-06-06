@@ -23,9 +23,7 @@ import java.util.Objects;
 
 import dz.sh.hidra.kernel.application.pagination.PageRequest;
 import dz.sh.hidra.kernel.application.query.Query;
-import dz.sh.hidra.modules.topology.domain.value.FacilityType;
 import dz.sh.hidra.modules.topology.domain.value.FacilityTypeReference;
-import dz.sh.hidra.modules.topology.domain.value.ProductType;
 import dz.sh.hidra.modules.topology.domain.value.ProductTypeReference;
 import dz.sh.hidra.modules.topology.domain.value.TopologyStatus;
 
@@ -40,54 +38,6 @@ public record ListFacilitiesQuery(
     public ListFacilitiesQuery {
         searchText = normalizeOptional(searchText, "Search text", 120);
         Objects.requireNonNull(pageRequest, "Page request must not be null.");
-    }
-
-    @Deprecated(forRemoval = true)
-    public ListFacilitiesQuery(
-            String searchText,
-            FacilityType facilityType,
-            ProductType productType,
-            TopologyStatus status,
-            PageRequest pageRequest) {
-
-        this(
-                searchText,
-                facilityType == null ? null : FacilityTypeReference.from(facilityType),
-                productType == null ? null : ProductTypeReference.from(productType),
-                status,
-                pageRequest);
-    }
-
-    @Deprecated(forRemoval = true)
-    public ListFacilitiesQuery(
-            String searchText,
-            FacilityTypeReference facilityType,
-            ProductType productType,
-            TopologyStatus status,
-            PageRequest pageRequest) {
-
-        this(
-                searchText,
-                facilityType,
-                productType == null ? null : ProductTypeReference.from(productType),
-                status,
-                pageRequest);
-    }
-
-    @Deprecated(forRemoval = true)
-    public ListFacilitiesQuery(
-            String searchText,
-            FacilityType facilityType,
-            ProductTypeReference productType,
-            TopologyStatus status,
-            PageRequest pageRequest) {
-
-        this(
-                searchText,
-                facilityType == null ? null : FacilityTypeReference.from(facilityType),
-                productType,
-                status,
-                pageRequest);
     }
 
     public static ListFacilitiesQuery all(PageRequest pageRequest) {

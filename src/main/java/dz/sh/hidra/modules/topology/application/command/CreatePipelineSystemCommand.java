@@ -23,7 +23,6 @@ import java.util.Objects;
 
 import dz.sh.hidra.kernel.application.command.Command;
 import dz.sh.hidra.modules.topology.domain.value.OperationalOwnerReference;
-import dz.sh.hidra.modules.topology.domain.value.ProductType;
 import dz.sh.hidra.modules.topology.domain.value.ProductTypeReference;
 import dz.sh.hidra.modules.topology.domain.value.TopologyCode;
 import dz.sh.hidra.modules.topology.domain.value.TopologyName;
@@ -35,8 +34,7 @@ import dz.sh.hidra.modules.topology.domain.value.TopologyName;
  * This command creates a physical hydrocarbon transportation system that groups pipelines.
  *
  * <p>Architecture role:
- * This command carries product type as a catalog reference. The legacy enum constructor is retained
- * only as a temporary bridge for API callers until COR-012.
+ * This command carries product type as a catalog reference.
  *
  * <p>Validation:
  * Code, name, and product type reference are mandatory. Description and operational owner reference
@@ -54,17 +52,6 @@ public record CreatePipelineSystemCommand(
         Objects.requireNonNull(name, "Pipeline system name must not be null.");
         Objects.requireNonNull(productType, "Pipeline system product type reference must not be null.");
         description = normalizeOptional(description, "Pipeline system description", 500);
-    }
-
-    @Deprecated(forRemoval = true)
-    public CreatePipelineSystemCommand(
-            TopologyCode code,
-            TopologyName name,
-            String description,
-            ProductType productType,
-            OperationalOwnerReference operationalOwnerReference) {
-
-        this(code, name, description, ProductTypeReference.from(productType), operationalOwnerReference);
     }
 
     private static String normalizeOptional(String value, String label, int maxLength) {

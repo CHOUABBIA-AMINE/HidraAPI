@@ -41,7 +41,6 @@ import dz.sh.hidra.modules.topology.domain.service.TopologyRegistrationDomainSer
 import dz.sh.hidra.modules.topology.domain.value.DiameterInInches;
 import dz.sh.hidra.modules.topology.domain.value.LengthInKilometers;
 import dz.sh.hidra.modules.topology.domain.value.PipelineId;
-import dz.sh.hidra.modules.topology.domain.value.ProductType;
 import dz.sh.hidra.modules.topology.domain.value.TopologyStatus;
 
 /**
@@ -63,7 +62,7 @@ class PipelineApplicationServiceTest {
                 TopologyDomainTestData.code("APP-PIPE"),
                 TopologyDomainTestData.name("Application Pipeline"),
                 " Application pipeline ",
-                ProductType.GAS,
+                TopologyDomainTestData.gasProductType(),
                 DiameterInInches.of(42.0),
                 LengthInKilometers.of(512.3)));
 
@@ -85,7 +84,7 @@ class PipelineApplicationServiceTest {
                 TopologyDomainTestData.code("APP-PIPE-MISSING-PARENT"),
                 TopologyDomainTestData.name("Pipeline Missing Parent"),
                 null,
-                ProductType.GAS,
+                TopologyDomainTestData.gasProductType(),
                 DiameterInInches.of(42.0),
                 LengthInKilometers.of(512.3))));
     }
@@ -105,7 +104,7 @@ class PipelineApplicationServiceTest {
                 TopologyDomainTestData.pipeline(pipelineSystem).code(),
                 TopologyDomainTestData.name("Duplicate Pipeline"),
                 null,
-                ProductType.GAS,
+                TopologyDomainTestData.gasProductType(),
                 DiameterInInches.of(42.0),
                 LengthInKilometers.of(512.3))));
     }
@@ -126,7 +125,7 @@ class PipelineApplicationServiceTest {
         PageResult<PipelineDto> page = service.listPipelines(new ListPipelinesQuery(
                 null,
                 pipelineSystem.id(),
-                ProductType.GAS,
+                TopologyDomainTestData.gasProductType(),
                 TopologyStatus.PLANNED,
                 PageRequest.of(0, 10)));
 

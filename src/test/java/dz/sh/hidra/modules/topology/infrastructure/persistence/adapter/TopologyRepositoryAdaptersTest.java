@@ -45,7 +45,6 @@ import dz.sh.hidra.modules.topology.domain.model.TopologyNode;
 import dz.sh.hidra.modules.topology.domain.value.ConnectionType;
 import dz.sh.hidra.modules.topology.domain.value.NodeType;
 import dz.sh.hidra.modules.topology.domain.value.PipelineAppurtenanceType;
-import dz.sh.hidra.modules.topology.domain.value.ProductType;
 import dz.sh.hidra.modules.topology.domain.value.TopologyAssetType;
 import dz.sh.hidra.modules.topology.domain.value.TopologyStatus;
 import dz.sh.hidra.modules.topology.domain.value.ValveType;
@@ -96,7 +95,7 @@ class TopologyRepositoryAdaptersTest {
         PipelineSystem saved = adapter.save(pipelineSystem);
         PageResult<PipelineSystem> page = adapter.findAll(new ListPipelineSystemsQuery(
                 "PS",
-                ProductType.GAS,
+                TopologyDomainTestData.gasProductType(),
                 TopologyStatus.PLANNED,
                 PageRequest.of(0, 10)));
 
@@ -119,7 +118,7 @@ class TopologyRepositoryAdaptersTest {
         PageResult<Pipeline> page = adapter.findAll(new ListPipelinesQuery(
                 "PIPE",
                 pipelineSystem.id(),
-                ProductType.GAS,
+                TopologyDomainTestData.gasProductType(),
                 TopologyStatus.PLANNED,
                 PageRequest.of(0, 10)));
 
@@ -141,7 +140,7 @@ class TopologyRepositoryAdaptersTest {
         PageResult<Facility> page = adapter.findAll(new ListFacilitiesQuery(
                 "FAC",
                 facility.facilityType(),
-                ProductType.GAS,
+                TopologyDomainTestData.gasProductType(),
                 TopologyStatus.PLANNED,
                 PageRequest.of(0, 10)));
 

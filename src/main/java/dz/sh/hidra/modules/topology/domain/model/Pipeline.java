@@ -28,7 +28,6 @@ import dz.sh.hidra.modules.topology.domain.value.DiameterInInches;
 import dz.sh.hidra.modules.topology.domain.value.LengthInKilometers;
 import dz.sh.hidra.modules.topology.domain.value.PipelineId;
 import dz.sh.hidra.modules.topology.domain.value.PipelineSystemId;
-import dz.sh.hidra.modules.topology.domain.value.ProductType;
 import dz.sh.hidra.modules.topology.domain.value.ProductTypeReference;
 import dz.sh.hidra.modules.topology.domain.value.TopologyCode;
 import dz.sh.hidra.modules.topology.domain.value.TopologyName;
@@ -115,19 +114,6 @@ public final class Pipeline implements AggregateRoot<PipelineId> {
                 now);
     }
 
-    @Deprecated(forRemoval = true)
-    public static Pipeline create(
-            PipelineSystemId pipelineSystemId,
-            TopologyCode code,
-            TopologyName name,
-            String description,
-            ProductType productType,
-            DiameterInInches nominalDiameter,
-            LengthInKilometers designLength) {
-
-        return create(pipelineSystemId, code, name, description, ProductTypeReference.from(productType), nominalDiameter, designLength);
-    }
-
     public static Pipeline restore(
             PipelineId id,
             PipelineSystemId pipelineSystemId,
@@ -142,23 +128,6 @@ public final class Pipeline implements AggregateRoot<PipelineId> {
             Instant updatedAt) {
 
         return new Pipeline(id, pipelineSystemId, code, name, description, productType, nominalDiameter, designLength, status, createdAt, updatedAt);
-    }
-
-    @Deprecated(forRemoval = true)
-    public static Pipeline restore(
-            PipelineId id,
-            PipelineSystemId pipelineSystemId,
-            TopologyCode code,
-            TopologyName name,
-            String description,
-            ProductType productType,
-            DiameterInInches nominalDiameter,
-            LengthInKilometers designLength,
-            TopologyStatus status,
-            Instant createdAt,
-            Instant updatedAt) {
-
-        return restore(id, pipelineSystemId, code, name, description, ProductTypeReference.from(productType), nominalDiameter, designLength, status, createdAt, updatedAt);
     }
 
     @Override

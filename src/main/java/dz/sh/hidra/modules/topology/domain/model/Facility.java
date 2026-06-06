@@ -25,11 +25,9 @@ import java.util.Objects;
 import dz.sh.hidra.kernel.domain.exception.BusinessRuleViolationException;
 import dz.sh.hidra.kernel.domain.model.AggregateRoot;
 import dz.sh.hidra.modules.topology.domain.value.FacilityId;
-import dz.sh.hidra.modules.topology.domain.value.FacilityType;
 import dz.sh.hidra.modules.topology.domain.value.FacilityTypeReference;
 import dz.sh.hidra.modules.topology.domain.value.GeoCoordinate;
 import dz.sh.hidra.modules.topology.domain.value.OrganizationUnitReference;
-import dz.sh.hidra.modules.topology.domain.value.ProductType;
 import dz.sh.hidra.modules.topology.domain.value.ProductTypeReference;
 import dz.sh.hidra.modules.topology.domain.value.TopologyCode;
 import dz.sh.hidra.modules.topology.domain.value.TopologyName;
@@ -102,18 +100,6 @@ public final class Facility implements AggregateRoot<FacilityId> {
         return new Facility(FacilityId.newId(), code, name, facilityType, productType, TopologyStatus.PLANNED, coordinate, organizationUnitReference, now, now);
     }
 
-    @Deprecated(forRemoval = true)
-    public static Facility create(
-            TopologyCode code,
-            TopologyName name,
-            FacilityType facilityType,
-            ProductType productType,
-            GeoCoordinate coordinate,
-            OrganizationUnitReference organizationUnitReference) {
-
-        return create(code, name, FacilityTypeReference.from(facilityType), ProductTypeReference.from(productType), coordinate, organizationUnitReference);
-    }
-
     public static Facility restore(
             FacilityId id,
             TopologyCode code,
@@ -127,22 +113,6 @@ public final class Facility implements AggregateRoot<FacilityId> {
             Instant updatedAt) {
 
         return new Facility(id, code, name, facilityType, productType, status, coordinate, organizationUnitReference, createdAt, updatedAt);
-    }
-
-    @Deprecated(forRemoval = true)
-    public static Facility restore(
-            FacilityId id,
-            TopologyCode code,
-            TopologyName name,
-            FacilityType facilityType,
-            ProductType productType,
-            TopologyStatus status,
-            GeoCoordinate coordinate,
-            OrganizationUnitReference organizationUnitReference,
-            Instant createdAt,
-            Instant updatedAt) {
-
-        return restore(id, code, name, FacilityTypeReference.from(facilityType), ProductTypeReference.from(productType), status, coordinate, organizationUnitReference, createdAt, updatedAt);
     }
 
     @Override

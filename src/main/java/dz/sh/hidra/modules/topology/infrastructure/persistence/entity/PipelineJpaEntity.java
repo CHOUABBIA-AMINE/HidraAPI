@@ -7,7 +7,7 @@
  *
  * @Name        : PipelineJpaEntity
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-05-30
+ * @UpdatedOn   : 2026-06-06
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -29,72 +29,57 @@ import jakarta.persistence.Table;
 
 /**
  * JPA representation of a topology pipeline.
- *
- * <p>Business role:
- * Stores a physical pipeline belonging to a pipeline system.
- *
- * <p>Architecture role:
- * This class belongs to the topology infrastructure persistence layer and is used only by topology
- * Spring Data repositories, persistence adapters, and persistence mappers.
- *
- * <p>Validation:
- * Domain validation is performed before mapping. Database constraints protect required fields,
- * uniqueness of business codes, topology references, and lifecycle status values.
- *
- * <p>Usage:
- * Use only inside topology persistence infrastructure. Do not expose this class through application,
- * domain, or API layers.
  */
 @Entity
 @Table(name = "hidra_topology_pipeline")
 public class PipelineJpaEntity {
 
-    /** Stable pipeline identifier. */
     @Id
     @Column(name = "id", nullable = false, unique = true, length = 80)
     private String id;
 
-    /** Parent pipeline system identifier. */
     @Column(name = "pipeline_system_id", nullable = false, length = 80)
     private String pipelineSystemId;
 
-    /** Unique pipeline business code. */
     @Column(name = "code", nullable = false, length = 80)
     private String code;
 
-    /** Pipeline display name. */
-    @Column(name = "name", nullable = false, length = 160)
-    private String name;
+    @Column(name = "name_ar", nullable = false, length = 160)
+    private String nameAr;
 
-    /** Optional pipeline description. */
-    @Column(name = "description", nullable = true, length = 500)
-    private String description;
+    @Column(name = "name_fr", nullable = false, length = 160)
+    private String nameFr;
 
-    /** Legacy language-neutral hydrocarbon product type code retained until COR-013. */
+    @Column(name = "name_en", nullable = false, length = 160)
+    private String nameEn;
+
+    @Column(name = "description_ar", nullable = true, length = 500)
+    private String descriptionAr;
+
+    @Column(name = "description_fr", nullable = true, length = 500)
+    private String descriptionFr;
+
+    @Column(name = "description_en", nullable = true, length = 500)
+    private String descriptionEn;
+
     @Column(name = "product_type", nullable = false, length = 60)
     private String productType;
 
-    /** Catalog foreign key to hidra_topology_product_type. */
     @Column(name = "product_type_id", nullable = false, length = 80)
     private String productTypeId;
 
-    /** Nominal diameter in inches. */
     @Column(name = "nominal_diameter_inches", nullable = false, precision = 19, scale = 3)
     private BigDecimal nominalDiameterInches;
 
-    /** Design length in kilometers. */
     @Column(name = "design_length_km", nullable = false, precision = 19, scale = 3)
     private BigDecimal designLengthKm;
 
-    /** Pipeline lifecycle status. */
     @Column(name = "status", nullable = false, length = 40)
     private String status;
 
-    /** Creation instant. */
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
 
-    /** Last update instant. */
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
@@ -103,50 +88,35 @@ public class PipelineJpaEntity {
     }
 
     public String getId() { return id; }
-
     public void setId(String id) { this.id = id; }
-
     public String getPipelineSystemId() { return pipelineSystemId; }
-
     public void setPipelineSystemId(String pipelineSystemId) { this.pipelineSystemId = pipelineSystemId; }
-
     public String getCode() { return code; }
-
     public void setCode(String code) { this.code = code; }
-
-    public String getName() { return name; }
-
-    public void setName(String name) { this.name = name; }
-
-    public String getDescription() { return description; }
-
-    public void setDescription(String description) { this.description = description; }
-
+    public String getNameAr() { return nameAr; }
+    public void setNameAr(String nameAr) { this.nameAr = nameAr; }
+    public String getNameFr() { return nameFr; }
+    public void setNameFr(String nameFr) { this.nameFr = nameFr; }
+    public String getNameEn() { return nameEn; }
+    public void setNameEn(String nameEn) { this.nameEn = nameEn; }
+    public String getDescriptionAr() { return descriptionAr; }
+    public void setDescriptionAr(String descriptionAr) { this.descriptionAr = descriptionAr; }
+    public String getDescriptionFr() { return descriptionFr; }
+    public void setDescriptionFr(String descriptionFr) { this.descriptionFr = descriptionFr; }
+    public String getDescriptionEn() { return descriptionEn; }
+    public void setDescriptionEn(String descriptionEn) { this.descriptionEn = descriptionEn; }
     public String getProductType() { return productType; }
-
     public void setProductType(String productType) { this.productType = productType; }
-
     public String getProductTypeId() { return productTypeId; }
-
     public void setProductTypeId(String productTypeId) { this.productTypeId = productTypeId; }
-
     public BigDecimal getNominalDiameterInches() { return nominalDiameterInches; }
-
     public void setNominalDiameterInches(BigDecimal nominalDiameterInches) { this.nominalDiameterInches = nominalDiameterInches; }
-
     public BigDecimal getDesignLengthKm() { return designLengthKm; }
-
     public void setDesignLengthKm(BigDecimal designLengthKm) { this.designLengthKm = designLengthKm; }
-
     public String getStatus() { return status; }
-
     public void setStatus(String status) { this.status = status; }
-
     public Instant getCreatedAt() { return createdAt; }
-
     public void setCreatedAt(Instant createdAt) { this.createdAt = createdAt; }
-
     public Instant getUpdatedAt() { return updatedAt; }
-
     public void setUpdatedAt(Instant updatedAt) { this.updatedAt = updatedAt; }
 }

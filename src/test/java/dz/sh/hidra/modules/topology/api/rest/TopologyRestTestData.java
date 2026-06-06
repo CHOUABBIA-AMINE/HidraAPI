@@ -7,7 +7,7 @@
  *
  * @Name        : TopologyRestTestData
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-05-30
+ * @UpdatedOn   : 2026-06-06
  *
  * @Type        : Test
  * @Layer       : API
@@ -48,18 +48,6 @@ import dz.sh.hidra.modules.topology.application.dto.TopologyNodeDto;
 
 /**
  * Test data factory for topology REST mapper and controller tests.
- *
- * <p>Business role:
- * Provides representative REST requests and application DTOs for pipeline systems, pipelines,
- * facilities, topology nodes, pipeline segments, appurtenances, connections, and equipment.
- *
- * <p>Architecture role:
- * Test-only helper for API-layer unit tests. It does not touch application services, repositories,
- * persistence, or Spring context.
- *
- * <p>Validation:
- * Values are valid examples that mirror topology domain vocabulary, including terminal/processing
- * plant/production field support and injection/extraction/purge pipeline points.
  */
 public final class TopologyRestTestData {
 
@@ -114,8 +102,12 @@ public final class TopologyRestTestData {
         return new CreatePipelineRequest(
                 "ps-1",
                 "GZ1-LINE-A",
+                "خط الغاز الرئيسي أ",
+                "Ligne principale gaz A",
                 "GZ1 Main Line A",
-                " Main line ",
+                "خط نقل رئيسي للغاز.",
+                "Ligne principale de transport de gaz.",
+                "Main gas transportation line.",
                 "gas",
                 new BigDecimal("42.000"),
                 new BigDecimal("512.300"));
@@ -217,8 +209,12 @@ public final class TopologyRestTestData {
                 "pipe-1",
                 "ps-1",
                 "GZ1-LINE-A",
+                "خط الغاز الرئيسي أ",
+                "Ligne principale gaz A",
                 "GZ1 Main Line A",
-                "Main line",
+                "خط نقل رئيسي للغاز.",
+                "Ligne principale de transport de gaz.",
+                "Main gas transportation line.",
                 "GAS",
                 new BigDecimal("42.000"),
                 new BigDecimal("512.300"),
@@ -281,9 +277,9 @@ public final class TopologyRestTestData {
                 "VALVE",
                 "BLOCK_VALVE",
                 new BigDecimal("25.000"),
-                "PLANNED",
                 coordinateDto(),
                 "Main line block valve",
+                "PLANNED",
                 CREATED_AT,
                 UPDATED_AT);
     }
@@ -305,7 +301,7 @@ public final class TopologyRestTestData {
 
     public static EquipmentDto equipmentDto() {
         return new EquipmentDto(
-                "eqp-1",
+                "eq-1",
                 "CMP-CS-EAST-01-A",
                 "Compressor A",
                 "COMPRESSOR",
@@ -317,30 +313,34 @@ public final class TopologyRestTestData {
     }
 
     public static PageResult<PipelineSystemDto> pipelineSystemPage() {
-        return PageResult.of(List.of(pipelineSystemDto()), 0, 20, 1L);
+        return PageResult.of(List.of(pipelineSystemDto()), 0, 20, 1);
     }
 
     public static PageResult<PipelineDto> pipelinePage() {
-        return PageResult.of(List.of(pipelineDto()), 0, 20, 1L);
+        return PageResult.of(List.of(pipelineDto()), 0, 20, 1);
     }
 
     public static PageResult<FacilityDto> facilityPage() {
-        return PageResult.of(List.of(facilityDto()), 0, 20, 1L);
+        return PageResult.of(List.of(facilityDto()), 0, 20, 1);
     }
 
     public static PageResult<TopologyNodeDto> topologyNodePage() {
-        return PageResult.of(List.of(topologyNodeDto()), 0, 20, 1L);
+        return PageResult.of(List.of(topologyNodeDto()), 0, 20, 1);
     }
 
     public static PageResult<PipelineSegmentDto> pipelineSegmentPage() {
-        return PageResult.of(List.of(pipelineSegmentDto()), 0, 20, 1L);
+        return PageResult.of(List.of(pipelineSegmentDto()), 0, 20, 1);
     }
 
     public static PageResult<PipelineAppurtenanceDto> pipelineAppurtenancePage() {
-        return PageResult.of(List.of(pipelineAppurtenanceDto()), 0, 20, 1L);
+        return PageResult.of(List.of(pipelineAppurtenanceDto()), 0, 20, 1);
     }
 
     public static PageResult<TopologyConnectionDto> topologyConnectionPage() {
-        return PageResult.of(List.of(topologyConnectionDto()), 0, 20, 1L);
+        return PageResult.of(List.of(topologyConnectionDto()), 0, 20, 1);
+    }
+
+    public static PageResult<EquipmentDto> equipmentPage() {
+        return PageResult.of(List.of(equipmentDto()), 0, 20, 1);
     }
 }

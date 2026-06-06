@@ -28,20 +28,6 @@ import dz.sh.hidra.modules.topology.infrastructure.persistence.entity.PipelineSy
 
 /**
  * Spring Data repository for pipeline system persistence entities.
- *
- * <p>Business role:
- * Provides storage access for topology pipeline systems.
- *
- * <p>Architecture role:
- * This is an infrastructure repository used only by topology persistence adapters. Application
- * services must depend on outbound ports, not on this interface.
- *
- * <p>Validation:
- * Domain validation occurs before mapping. Database constraints enforce required fields and code
- * uniqueness.
- *
- * <p>Usage:
- * Use only from topology repository adapters created in TOP-012.
  */
 public interface PipelineSystemJpaRepository extends JpaRepository<PipelineSystemJpaEntity, String> {
 
@@ -49,7 +35,7 @@ public interface PipelineSystemJpaRepository extends JpaRepository<PipelineSyste
 
     boolean existsByCode(String code);
 
-    List<PipelineSystemJpaEntity> findByProductType(String productType);
+    List<PipelineSystemJpaEntity> findByProductTypeId(String productTypeId);
 
     List<PipelineSystemJpaEntity> findByStatus(String status);
 }

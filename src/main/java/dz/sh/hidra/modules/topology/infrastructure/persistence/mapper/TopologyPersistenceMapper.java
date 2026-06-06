@@ -30,31 +30,31 @@ import dz.sh.hidra.modules.topology.domain.model.PipelineSegment;
 import dz.sh.hidra.modules.topology.domain.model.PipelineSystem;
 import dz.sh.hidra.modules.topology.domain.model.TopologyConnection;
 import dz.sh.hidra.modules.topology.domain.model.TopologyNode;
-import dz.sh.hidra.modules.topology.domain.value.ConnectionType;
+import dz.sh.hidra.modules.topology.domain.value.ConnectionTypeReference;
 import dz.sh.hidra.modules.topology.domain.value.DiameterInInches;
 import dz.sh.hidra.modules.topology.domain.value.EquipmentId;
-import dz.sh.hidra.modules.topology.domain.value.EquipmentType;
+import dz.sh.hidra.modules.topology.domain.value.EquipmentTypeReference;
 import dz.sh.hidra.modules.topology.domain.value.FacilityId;
-import dz.sh.hidra.modules.topology.domain.value.FacilityType;
+import dz.sh.hidra.modules.topology.domain.value.FacilityTypeReference;
 import dz.sh.hidra.modules.topology.domain.value.GeoCoordinate;
 import dz.sh.hidra.modules.topology.domain.value.LengthInKilometers;
-import dz.sh.hidra.modules.topology.domain.value.NodeType;
+import dz.sh.hidra.modules.topology.domain.value.NodeTypeReference;
 import dz.sh.hidra.modules.topology.domain.value.OperationalOwnerReference;
 import dz.sh.hidra.modules.topology.domain.value.OrganizationUnitReference;
 import dz.sh.hidra.modules.topology.domain.value.PipelineAppurtenanceId;
-import dz.sh.hidra.modules.topology.domain.value.PipelineAppurtenanceType;
+import dz.sh.hidra.modules.topology.domain.value.PipelineAppurtenanceTypeReference;
 import dz.sh.hidra.modules.topology.domain.value.PipelineId;
 import dz.sh.hidra.modules.topology.domain.value.PipelineKilometerPoint;
 import dz.sh.hidra.modules.topology.domain.value.PipelineSegmentId;
 import dz.sh.hidra.modules.topology.domain.value.PipelineSystemId;
-import dz.sh.hidra.modules.topology.domain.value.ProductType;
+import dz.sh.hidra.modules.topology.domain.value.ProductTypeReference;
 import dz.sh.hidra.modules.topology.domain.value.TopologyAssetType;
 import dz.sh.hidra.modules.topology.domain.value.TopologyCode;
 import dz.sh.hidra.modules.topology.domain.value.TopologyConnectionId;
 import dz.sh.hidra.modules.topology.domain.value.TopologyName;
 import dz.sh.hidra.modules.topology.domain.value.TopologyNodeId;
 import dz.sh.hidra.modules.topology.domain.value.TopologyStatus;
-import dz.sh.hidra.modules.topology.domain.value.ValveType;
+import dz.sh.hidra.modules.topology.domain.value.ValveTypeReference;
 import dz.sh.hidra.modules.topology.infrastructure.persistence.entity.EquipmentJpaEntity;
 import dz.sh.hidra.modules.topology.infrastructure.persistence.entity.FacilityJpaEntity;
 import dz.sh.hidra.modules.topology.infrastructure.persistence.entity.PipelineAppurtenanceJpaEntity;
@@ -88,12 +88,14 @@ public final class TopologyPersistenceMapper {
 
         PipelineSystemJpaEntity entity = new PipelineSystemJpaEntity();
         OperationalOwnerReference owner = pipelineSystem.operationalOwnerReference();
+        ProductTypeReference productType = pipelineSystem.productType();
 
         entity.setId(pipelineSystem.id().value());
         entity.setCode(pipelineSystem.code().value());
         entity.setName(pipelineSystem.name().value());
         entity.setDescription(pipelineSystem.description());
-        entity.setProductType(pipelineSystem.productType().name());
+        entity.setProductType(productType.name());
+        entity.setProductTypeId(productType.id());
         entity.setStatus(pipelineSystem.status().name());
         entity.setOperationalOwnerReferenceType(owner == null ? null : owner.ownerType());
         entity.setOperationalOwnerReferenceId(owner == null ? null : owner.ownerId());
@@ -112,7 +114,7 @@ public final class TopologyPersistenceMapper {
                 TopologyCode.of(entity.getCode()),
                 TopologyName.of(entity.getName()),
                 entity.getDescription(),
-                ProductType.valueOf(entity.getProductType()),
+                ProductTypeReference.of(idOrCode(entity.getProductTypeId(), entity.getProductType()), entity.getProductType()),
                 TopologyStatus.valueOf(entity.getStatus()),
                 toOperationalOwnerReference(
                         entity.getOperationalOwnerReferenceType(),
@@ -127,12 +129,15 @@ public final class TopologyPersistenceMapper {
         Objects.requireNonNull(pipeline, "Pipeline must not be null.");
 
         PipelineJpaEntity entity = new PipelineJpaEntity();
+        ProductTypeReference productType = pipeline.productType();
+
         entity.setId(pipeline.id().value());
         entity.setPipelineSystemId(pipeline.pipelineSystemId().value());
         entity.setCode(pipeline.code().value());
         entity.setName(pipeline.name().value());
         entity.setDescription(pipeline.description());
-        entity.setProductType(pipeline.productType().name());
+        entity.setProductType(productType.name());
+        entity.setProductTypeId(productType.id());
         entity.setNominalDiameterInches(pipeline.nominalDiameter().value());
         entity.setDesignLengthKm(pipeline.designLength().value());
         entity.setStatus(pipeline.status().name());
@@ -150,7 +155,7 @@ public final class TopologyPersistenceMapper {
                 TopologyCode.of(entity.getCode()),
                 TopologyName.of(entity.getName()),
                 entity.getDescription(),
-                ProductType.valueOf(entity.getProductType()),
+                ProductTypeReference.of(idOrCode(entity.getProductTypeId(), entity.getProductType()), entity.getProductType()),
                 DiameterInInches.of(entity.getNominalDiameterInches()),
                 LengthInKilometers.of(entity.getDesignLengthKm()),
                 TopologyStatus.valueOf(entity.getStatus()),
@@ -164,12 +169,16 @@ public final class TopologyPersistenceMapper {
         FacilityJpaEntity entity = new FacilityJpaEntity();
         OrganizationUnitReference reference = facility.organizationUnitReference();
         GeoCoordinate coordinate = facility.coordinate();
+        FacilityTypeReference facilityType = facility.facilityType();
+        ProductTypeReference productType = facility.productType();
 
         entity.setId(facility.id().value());
         entity.setCode(facility.code().value());
         entity.setName(facility.name().value());
-        entity.setFacilityType(facility.facilityType().name());
-        entity.setProductType(facility.productType().name());
+        entity.setFacilityType(facilityType.name());
+        entity.setFacilityTypeId(facilityType.id());
+        entity.setProductType(productType.name());
+        entity.setProductTypeId(productType.id());
         entity.setStatus(facility.status().name());
         entity.setLatitude(toLatitude(coordinate));
         entity.setLongitude(toLongitude(coordinate));
@@ -189,8 +198,8 @@ public final class TopologyPersistenceMapper {
                 FacilityId.of(entity.getId()),
                 TopologyCode.of(entity.getCode()),
                 TopologyName.of(entity.getName()),
-                FacilityType.valueOf(entity.getFacilityType()),
-                ProductType.valueOf(entity.getProductType()),
+                FacilityTypeReference.of(idOrCode(entity.getFacilityTypeId(), entity.getFacilityType()), entity.getFacilityType()),
+                ProductTypeReference.of(idOrCode(entity.getProductTypeId(), entity.getProductType()), entity.getProductType()),
                 TopologyStatus.valueOf(entity.getStatus()),
                 toGeoCoordinate(entity.getLatitude(), entity.getLongitude()),
                 toOrganizationUnitReference(
@@ -207,11 +216,13 @@ public final class TopologyPersistenceMapper {
 
         TopologyNodeJpaEntity entity = new TopologyNodeJpaEntity();
         GeoCoordinate coordinate = node.coordinate();
+        NodeTypeReference nodeType = node.nodeType();
 
         entity.setId(node.id().value());
         entity.setCode(node.code().value());
         entity.setName(node.name().value());
-        entity.setNodeType(node.nodeType().name());
+        entity.setNodeType(nodeType.name());
+        entity.setNodeTypeId(nodeType.id());
         entity.setFacilityId(node.facilityId() == null ? null : node.facilityId().value());
         entity.setPipelineAppurtenanceId(node.pipelineAppurtenanceId() == null ? null : node.pipelineAppurtenanceId().value());
         entity.setLatitude(toLatitude(coordinate));
@@ -230,7 +241,7 @@ public final class TopologyPersistenceMapper {
                 TopologyNodeId.of(entity.getId()),
                 TopologyCode.of(entity.getCode()),
                 TopologyName.of(entity.getName()),
-                NodeType.valueOf(entity.getNodeType()),
+                NodeTypeReference.of(idOrCode(entity.getNodeTypeId(), entity.getNodeType()), entity.getNodeType()),
                 entity.getFacilityId() == null ? null : FacilityId.of(entity.getFacilityId()),
                 entity.getPipelineAppurtenanceId() == null ? null : PipelineAppurtenanceId.of(entity.getPipelineAppurtenanceId()),
                 toGeoCoordinate(entity.getLatitude(), entity.getLongitude()),
@@ -280,14 +291,18 @@ public final class TopologyPersistenceMapper {
 
         PipelineAppurtenanceJpaEntity entity = new PipelineAppurtenanceJpaEntity();
         GeoCoordinate coordinate = appurtenance.coordinate();
+        PipelineAppurtenanceTypeReference appurtenanceType = appurtenance.appurtenanceType();
+        ValveTypeReference valveType = appurtenance.valveType();
 
         entity.setId(appurtenance.id().value());
         entity.setPipelineId(appurtenance.pipelineId().value());
         entity.setNodeId(appurtenance.nodeId().value());
         entity.setCode(appurtenance.code().value());
         entity.setName(appurtenance.name().value());
-        entity.setAppurtenanceType(appurtenance.appurtenanceType().name());
-        entity.setValveType(appurtenance.valveType() == null ? null : appurtenance.valveType().name());
+        entity.setAppurtenanceType(appurtenanceType.name());
+        entity.setAppurtenanceTypeId(appurtenanceType.id());
+        entity.setValveType(valveType == null ? null : valveType.name());
+        entity.setValveTypeId(valveType == null ? null : valveType.id());
         entity.setPipelineKilometerPoint(appurtenance.pipelineKilometerPoint().value());
         entity.setStatus(appurtenance.status().name());
         entity.setLatitude(toLatitude(coordinate));
@@ -307,8 +322,12 @@ public final class TopologyPersistenceMapper {
                 TopologyNodeId.of(entity.getNodeId()),
                 TopologyCode.of(entity.getCode()),
                 TopologyName.of(entity.getName()),
-                PipelineAppurtenanceType.valueOf(entity.getAppurtenanceType()),
-                entity.getValveType() == null ? null : ValveType.valueOf(entity.getValveType()),
+                PipelineAppurtenanceTypeReference.of(
+                        idOrCode(entity.getAppurtenanceTypeId(), entity.getAppurtenanceType()),
+                        entity.getAppurtenanceType()),
+                entity.getValveType() == null ? null : ValveTypeReference.of(
+                        idOrCode(entity.getValveTypeId(), entity.getValveType()),
+                        entity.getValveType()),
                 PipelineKilometerPoint.of(entity.getPipelineKilometerPoint()),
                 TopologyStatus.valueOf(entity.getStatus()),
                 toGeoCoordinate(entity.getLatitude(), entity.getLongitude()),
@@ -321,12 +340,15 @@ public final class TopologyPersistenceMapper {
         Objects.requireNonNull(connection, "Topology connection must not be null.");
 
         TopologyConnectionJpaEntity entity = new TopologyConnectionJpaEntity();
+        ConnectionTypeReference connectionType = connection.connectionType();
+
         entity.setId(connection.id().value());
         entity.setCode(connection.code().value());
         entity.setName(connection.name().value());
         entity.setFromNodeId(connection.fromNodeId().value());
         entity.setToNodeId(connection.toNodeId().value());
-        entity.setConnectionType(connection.connectionType().name());
+        entity.setConnectionType(connectionType.name());
+        entity.setConnectionTypeId(connectionType.id());
         entity.setLinkedAssetType(connection.linkedAssetType().name());
         entity.setLinkedAssetId(connection.linkedAssetId());
         entity.setStatus(connection.status().name());
@@ -344,7 +366,7 @@ public final class TopologyPersistenceMapper {
                 TopologyName.of(entity.getName()),
                 TopologyNodeId.of(entity.getFromNodeId()),
                 TopologyNodeId.of(entity.getToNodeId()),
-                ConnectionType.valueOf(entity.getConnectionType()),
+                ConnectionTypeReference.of(idOrCode(entity.getConnectionTypeId(), entity.getConnectionType()), entity.getConnectionType()),
                 TopologyAssetType.valueOf(entity.getLinkedAssetType()),
                 entity.getLinkedAssetId(),
                 TopologyStatus.valueOf(entity.getStatus()),
@@ -356,10 +378,13 @@ public final class TopologyPersistenceMapper {
         Objects.requireNonNull(equipment, "Equipment must not be null.");
 
         EquipmentJpaEntity entity = new EquipmentJpaEntity();
+        EquipmentTypeReference equipmentType = equipment.equipmentType();
+
         entity.setId(equipment.id().value());
         entity.setCode(equipment.code().value());
         entity.setName(equipment.name().value());
-        entity.setEquipmentType(equipment.equipmentType().name());
+        entity.setEquipmentType(equipmentType.name());
+        entity.setEquipmentTypeId(equipmentType.id());
         entity.setParentAssetType(equipment.parentAssetType().name());
         entity.setParentAssetId(equipment.parentAssetId());
         entity.setStatus(equipment.status().name());
@@ -375,12 +400,16 @@ public final class TopologyPersistenceMapper {
                 EquipmentId.of(entity.getId()),
                 TopologyCode.of(entity.getCode()),
                 TopologyName.of(entity.getName()),
-                EquipmentType.valueOf(entity.getEquipmentType()),
+                EquipmentTypeReference.of(idOrCode(entity.getEquipmentTypeId(), entity.getEquipmentType()), entity.getEquipmentType()),
                 TopologyAssetType.valueOf(entity.getParentAssetType()),
                 entity.getParentAssetId(),
                 TopologyStatus.valueOf(entity.getStatus()),
                 entity.getCreatedAt(),
                 entity.getUpdatedAt());
+    }
+
+    private static String idOrCode(String id, String code) {
+        return id == null || id.isBlank() ? code : id;
     }
 
     private static BigDecimal toLatitude(GeoCoordinate coordinate) {

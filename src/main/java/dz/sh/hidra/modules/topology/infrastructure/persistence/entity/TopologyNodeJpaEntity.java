@@ -21,6 +21,7 @@ package dz.sh.hidra.modules.topology.infrastructure.persistence.entity;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -61,9 +62,13 @@ public class TopologyNodeJpaEntity {
     @Column(name = "name", nullable = false, length = 160)
     private String name;
 
-    /** Topology node type. */
+    /** Legacy language-neutral topology node type code retained until COR-013. */
     @Column(name = "node_type", nullable = false, length = 80)
     private String nodeType;
+
+    /** Catalog foreign key to hidra_topology_node_type. */
+    @Column(name = "node_type_id", nullable = false, length = 80)
+    private String nodeTypeId;
 
     /** Optional owning facility identifier. */
     @Column(name = "facility_id", nullable = true, length = 80)
@@ -101,99 +106,55 @@ public class TopologyNodeJpaEntity {
         // Required by JPA.
     }
 
-    public String getId() {
-        return id;
-    }
+    public String getId() { return id; }
 
-    public void setId(String id) {
-        this.id = id;
-    }
+    public void setId(String id) { this.id = id; }
 
-    public String getCode() {
-        return code;
-    }
+    public String getCode() { return code; }
 
-    public void setCode(String code) {
-        this.code = code;
-    }
+    public void setCode(String code) { this.code = code; }
 
-    public String getName() {
-        return name;
-    }
+    public String getName() { return name; }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    public void setName(String name) { this.name = name; }
 
-    public String getNodeType() {
-        return nodeType;
-    }
+    public String getNodeType() { return nodeType; }
 
-    public void setNodeType(String nodeType) {
-        this.nodeType = nodeType;
-    }
+    public void setNodeType(String nodeType) { this.nodeType = nodeType; }
 
-    public String getFacilityId() {
-        return facilityId;
-    }
+    public String getNodeTypeId() { return nodeTypeId; }
 
-    public void setFacilityId(String facilityId) {
-        this.facilityId = facilityId;
-    }
+    public void setNodeTypeId(String nodeTypeId) { this.nodeTypeId = nodeTypeId; }
 
-    public String getPipelineAppurtenanceId() {
-        return pipelineAppurtenanceId;
-    }
+    public String getFacilityId() { return facilityId; }
 
-    public void setPipelineAppurtenanceId(String pipelineAppurtenanceId) {
-        this.pipelineAppurtenanceId = pipelineAppurtenanceId;
-    }
+    public void setFacilityId(String facilityId) { this.facilityId = facilityId; }
 
-    public BigDecimal getLatitude() {
-        return latitude;
-    }
+    public String getPipelineAppurtenanceId() { return pipelineAppurtenanceId; }
 
-    public void setLatitude(BigDecimal latitude) {
-        this.latitude = latitude;
-    }
+    public void setPipelineAppurtenanceId(String pipelineAppurtenanceId) { this.pipelineAppurtenanceId = pipelineAppurtenanceId; }
 
-    public BigDecimal getLongitude() {
-        return longitude;
-    }
+    public BigDecimal getLatitude() { return latitude; }
 
-    public void setLongitude(BigDecimal longitude) {
-        this.longitude = longitude;
-    }
+    public void setLatitude(BigDecimal latitude) { this.latitude = latitude; }
 
-    public BigDecimal getElevationMeters() {
-        return elevationMeters;
-    }
+    public BigDecimal getLongitude() { return longitude; }
 
-    public void setElevationMeters(BigDecimal elevationMeters) {
-        this.elevationMeters = elevationMeters;
-    }
+    public void setLongitude(BigDecimal longitude) { this.longitude = longitude; }
 
-    public String getStatus() {
-        return status;
-    }
+    public BigDecimal getElevationMeters() { return elevationMeters; }
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
+    public void setElevationMeters(BigDecimal elevationMeters) { this.elevationMeters = elevationMeters; }
 
-    public Instant getCreatedAt() {
-        return createdAt;
-    }
+    public String getStatus() { return status; }
 
-    public void setCreatedAt(Instant createdAt) {
-        this.createdAt = createdAt;
-    }
+    public void setStatus(String status) { this.status = status; }
 
-    public Instant getUpdatedAt() {
-        return updatedAt;
-    }
+    public Instant getCreatedAt() { return createdAt; }
 
-    public void setUpdatedAt(Instant updatedAt) {
-        this.updatedAt = updatedAt;
-    }
+    public void setCreatedAt(Instant createdAt) { this.createdAt = createdAt; }
+
+    public Instant getUpdatedAt() { return updatedAt; }
+
+    public void setUpdatedAt(Instant updatedAt) { this.updatedAt = updatedAt; }
 }

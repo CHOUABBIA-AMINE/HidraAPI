@@ -26,9 +26,11 @@ import dz.sh.hidra.kernel.domain.exception.BusinessRuleViolationException;
 import dz.sh.hidra.kernel.domain.model.AggregateRoot;
 import dz.sh.hidra.modules.topology.domain.value.FacilityId;
 import dz.sh.hidra.modules.topology.domain.value.FacilityType;
+import dz.sh.hidra.modules.topology.domain.value.FacilityTypeReference;
 import dz.sh.hidra.modules.topology.domain.value.GeoCoordinate;
 import dz.sh.hidra.modules.topology.domain.value.OrganizationUnitReference;
 import dz.sh.hidra.modules.topology.domain.value.ProductType;
+import dz.sh.hidra.modules.topology.domain.value.ProductTypeReference;
 import dz.sh.hidra.modules.topology.domain.value.TopologyCode;
 import dz.sh.hidra.modules.topology.domain.value.TopologyName;
 import dz.sh.hidra.modules.topology.domain.value.TopologyStatus;
@@ -42,21 +44,20 @@ import dz.sh.hidra.modules.topology.domain.value.TopologyStatus;
  * or delivery facility.
  *
  * <p>Architecture role:
- * This is a pure topology domain aggregate. It is not an organization unit and does not own people,
- * reporting lines, identity users, telemetry values, process calculations, inventory, or production
- * allocation.
+ * Facility and product classifications are catalog references so multilingual labels and configurable
+ * taxonomies are resolved outside the asset aggregate.
  *
  * <p>Validation:
- * Identifier, code, name, facility type, product type, status, creation instant, and update instant
- * are mandatory.
+ * Identifier, code, name, facility type reference, product type reference, status, creation instant,
+ * and update instant are mandatory.
  */
 public final class Facility implements AggregateRoot<FacilityId> {
 
     private final FacilityId id;
     private final TopologyCode code;
     private final TopologyName name;
-    private final FacilityType facilityType;
-    private final ProductType productType;
+    private final FacilityTypeReference facilityType;
+    private final ProductTypeReference productType;
     private final TopologyStatus status;
     private final GeoCoordinate coordinate;
     private final OrganizationUnitReference organizationUnitReference;
@@ -67,8 +68,8 @@ public final class Facility implements AggregateRoot<FacilityId> {
             FacilityId id,
             TopologyCode code,
             TopologyName name,
-            FacilityType facilityType,
-            ProductType productType,
+            FacilityTypeReference facilityType,
+            ProductTypeReference productType,
             TopologyStatus status,
             GeoCoordinate coordinate,
             OrganizationUnitReference organizationUnitReference,
@@ -78,8 +79,8 @@ public final class Facility implements AggregateRoot<FacilityId> {
         this.id = Objects.requireNonNull(id, "Facility id must not be null.");
         this.code = Objects.requireNonNull(code, "Facility code must not be null.");
         this.name = Objects.requireNonNull(name, "Facility name must not be null.");
-        this.facilityType = Objects.requireNonNull(facilityType, "Facility type must not be null.");
-        this.productType = Objects.requireNonNull(productType, "Facility product type must not be null.");
+        this.facilityType = Objects.requireNonNull(facilityType, "Facility type reference must not be null.");
+        this.productType = Objects.requireNonNull(productType, "Facility product type reference must not be null.");
         this.status = Objects.requireNonNull(status, "Facility status must not be null.");
         this.coordinate = coordinate;
         this.organizationUnitReference = organizationUnitReference;
@@ -92,25 +93,43 @@ public final class Facility implements AggregateRoot<FacilityId> {
     public static Facility create(
             TopologyCode code,
             TopologyName name,
+            FacilityTypeReference facilityType,
+            ProductTypeReference productType,
+            GeoCoordinate coordinate,
+            OrganizationUnitReference organizationUnitReference) {
+
+        Instant now = Instant.now();
+        return new Facility(FacilityId.newId(), code, name, facilityType, productType, TopologyStatus.PLANNED, coordinate, organizationUnitReference, now, now);
+    }
+
+    @Deprecated(forRemoval = true)
+    public static Facility create(
+            TopologyCode code,
+            TopologyName name,
             FacilityType facilityType,
             ProductType productType,
             GeoCoordinate coordinate,
             OrganizationUnitReference organizationUnitReference) {
 
-        Instant now = Instant.now();
-        return new Facility(
-                FacilityId.newId(),
-                code,
-                name,
-                facilityType,
-                productType,
-                TopologyStatus.PLANNED,
-                coordinate,
-                organizationUnitReference,
-                now,
-                now);
+        return create(code, name, FacilityTypeReference.from(facilityType), ProductTypeReference.from(productType), coordinate, organizationUnitReference);
     }
 
+    public static Facility restore(
+            FacilityId id,
+            TopologyCode code,
+            TopologyName name,
+            FacilityTypeReference facilityType,
+            ProductTypeReference productType,
+            TopologyStatus status,
+            GeoCoordinate coordinate,
+            OrganizationUnitReference organizationUnitReference,
+            Instant createdAt,
+            Instant updatedAt) {
+
+        return new Facility(id, code, name, facilityType, productType, status, coordinate, organizationUnitReference, createdAt, updatedAt);
+    }
+
+    @Deprecated(forRemoval = true)
     public static Facility restore(
             FacilityId id,
             TopologyCode code,
@@ -123,17 +142,7 @@ public final class Facility implements AggregateRoot<FacilityId> {
             Instant createdAt,
             Instant updatedAt) {
 
-        return new Facility(
-                id,
-                code,
-                name,
-                facilityType,
-                productType,
-                status,
-                coordinate,
-                organizationUnitReference,
-                createdAt,
-                updatedAt);
+        return restore(id, code, name, FacilityTypeReference.from(facilityType), ProductTypeReference.from(productType), status, coordinate, organizationUnitReference, createdAt, updatedAt);
     }
 
     @Override
@@ -149,11 +158,11 @@ public final class Facility implements AggregateRoot<FacilityId> {
         return name;
     }
 
-    public FacilityType facilityType() {
+    public FacilityTypeReference facilityType() {
         return facilityType;
     }
 
-    public ProductType productType() {
+    public ProductTypeReference productType() {
         return productType;
     }
 
@@ -177,78 +186,28 @@ public final class Facility implements AggregateRoot<FacilityId> {
         return updatedAt;
     }
 
-
-    /**
-     * Activates this topology asset.
-     *
-     * @return active topology asset
-     */
     public Facility activate() {
         return withStatus(TopologyStatus.ACTIVE);
     }
 
-    /**
-     * Deactivates this topology asset.
-     *
-     * @return inactive topology asset
-     */
     public Facility deactivate() {
         return withStatus(TopologyStatus.INACTIVE);
     }
 
-    /**
-     * Marks this topology asset as under maintenance.
-     *
-     * @return topology asset under maintenance
-     */
     public Facility markUnderMaintenance() {
         return withStatus(TopologyStatus.UNDER_MAINTENANCE);
     }
 
-    /**
-     * Retires this topology asset.
-     *
-     * @return retired topology asset
-     */
     public Facility retire() {
         return withStatus(TopologyStatus.RETIRED);
     }
 
-    /**
-     * Decommissions this topology asset.
-     *
-     * @return decommissioned topology asset
-     */
     public Facility decommission() {
         return withStatus(TopologyStatus.DECOMMISSIONED);
     }
 
     private Facility withStatus(TopologyStatus newStatus) {
-        return new Facility(
-                id,
-                code,
-                name,
-                facilityType,
-                productType,
-                Objects.requireNonNull(newStatus, "Facility status must not be null."),
-                coordinate,
-                organizationUnitReference,
-                createdAt,
-                Instant.now());
-    }
-
-    private static String normalizeOptionalText(String value, int maxLength, String fieldName) {
-        if (value == null || value.isBlank()) {
-            return null;
-        }
-
-        String normalized = value.trim();
-
-        if (normalized.length() > maxLength) {
-            throw new BusinessRuleViolationException(fieldName + " length must not exceed " + maxLength + " characters.");
-        }
-
-        return normalized;
+        return new Facility(id, code, name, facilityType, productType, Objects.requireNonNull(newStatus, "Facility status must not be null."), coordinate, organizationUnitReference, createdAt, Instant.now());
     }
 
     private static Instant requireInstant(Instant value, String fieldName) {
@@ -260,5 +219,4 @@ public final class Facility implements AggregateRoot<FacilityId> {
             throw new BusinessRuleViolationException(modelName + " updatedAt must not be before createdAt.");
         }
     }
-
 }

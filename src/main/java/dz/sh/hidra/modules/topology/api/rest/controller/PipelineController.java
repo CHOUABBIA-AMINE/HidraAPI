@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -45,21 +46,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 
-/**
- * REST controller exposing topology pipeline endpoints.
- *
- * <p>Business role:
- * Exposes physical pipeline operations within pipeline systems.
- *
- * <p>Architecture role:
- * This controller depends only on topology pipeline inbound ports and TopologyRestMapper.
- *
- * <p>Validation:
- * Request bodies use Bean Validation with @Valid. Query pagination parameters are bounded.
- *
- * <p>Usage:
- * Use endpoints under /api/v1/topology/pipelines.
- */
 @RestController
 @RequestMapping("/api/v1/topology/pipelines")
 @Tag(name = "Topology Pipelines", description = "Topology pipeline endpoints.")
@@ -92,10 +78,13 @@ public class PipelineController {
             @ApiResponse(responseCode = "500", description = "Unexpected server error.")
     })
     public ResponseEntity<PipelineResponse> createPipeline(
+            @RequestHeader(name = "Accept-Language", required = false) String acceptLanguage,
             @Valid @RequestBody CreatePipelineRequest request) {
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(mapper.toResponse(createPipelineUseCase.createPipeline(mapper.toCommand(request))));
+                .body(mapper.toResponse(
+                        createPipelineUseCase.createPipeline(mapper.toCommand(request, acceptLanguage)),
+                        acceptLanguage));
     }
 
     @GetMapping("/{pipelineId}")
@@ -107,29 +96,34 @@ public class PipelineController {
             @ApiResponse(responseCode = "500", description = "Unexpected server error.")
     })
     public ResponseEntity<PipelineResponse> getPipeline(
+            @RequestHeader(name = "Accept-Language", required = false) String acceptLanguage,
             @Parameter(description = "Pipeline identifier.", required = true)
             @PathVariable String pipelineId) {
 
-        return ResponseEntity.ok(mapper.toResponse(getPipelineUseCase.getPipeline(
-                mapper.toGetPipelineByIdQuery(pipelineId))));
+        return ResponseEntity.ok(mapper.toResponse(
+                getPipelineUseCase.getPipeline(mapper.toGetPipelineByIdQuery(pipelineId)),
+                acceptLanguage));
     }
 
     @GetMapping
-    @Operation(summary = "List pipelines", description = "Lists topology pipelines with optional search, pipeline system, product type, and status filters.")
+    @Operation(summary = "List pipelines", description = "Lists topology pipelines with optional search, pipeline system, product type code, and status filters.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Pipelines listed."),
             @ApiResponse(responseCode = "400", description = "Invalid list pipelines query parameters."),
             @ApiResponse(responseCode = "500", description = "Unexpected server error.")
     })
     public PageResult<PipelineResponse> listPipelines(
+            @RequestHeader(name = "Accept-Language", required = false) String acceptLanguage,
             @RequestParam(required = false) String searchText,
             @RequestParam(required = false) String pipelineSystemId,
-            @RequestParam(required = false) String productType,
+            @RequestParam(required = false) String productTypeCode,
             @RequestParam(required = false) String status,
             @RequestParam(defaultValue = "0") @Min(0) int page,
             @RequestParam(defaultValue = "20") @Min(1) @Max(200) int size) {
 
-        return mapper.toPipelineResponsePage(listPipelinesUseCase.listPipelines(
-                mapper.toListPipelinesQuery(searchText, pipelineSystemId, productType, status, page, size)));
+        return mapper.toPipelineResponsePage(
+                listPipelinesUseCase.listPipelines(
+                        mapper.toListPipelinesQuery(searchText, pipelineSystemId, productTypeCode, status, page, size, acceptLanguage)),
+                acceptLanguage);
     }
 }

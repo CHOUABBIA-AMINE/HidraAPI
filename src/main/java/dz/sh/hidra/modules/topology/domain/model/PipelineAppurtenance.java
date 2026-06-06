@@ -27,6 +27,7 @@ import dz.sh.hidra.kernel.domain.model.Entity;
 import dz.sh.hidra.modules.topology.domain.value.GeoCoordinate;
 import dz.sh.hidra.modules.topology.domain.value.PipelineAppurtenanceId;
 import dz.sh.hidra.modules.topology.domain.value.PipelineAppurtenanceType;
+import dz.sh.hidra.modules.topology.domain.value.PipelineAppurtenanceTypeReference;
 import dz.sh.hidra.modules.topology.domain.value.PipelineId;
 import dz.sh.hidra.modules.topology.domain.value.PipelineKilometerPoint;
 import dz.sh.hidra.modules.topology.domain.value.TopologyCode;
@@ -34,6 +35,7 @@ import dz.sh.hidra.modules.topology.domain.value.TopologyName;
 import dz.sh.hidra.modules.topology.domain.value.TopologyNodeId;
 import dz.sh.hidra.modules.topology.domain.value.TopologyStatus;
 import dz.sh.hidra.modules.topology.domain.value.ValveType;
+import dz.sh.hidra.modules.topology.domain.value.ValveTypeReference;
 
 /**
  * Represents a physical point asset installed along a pipeline.
@@ -44,13 +46,13 @@ import dz.sh.hidra.modules.topology.domain.value.ValveType;
  * scraper receivers, hot tap points, bypass points, and connection points.
  *
  * <p>Architecture role:
- * This is a pure topology domain entity. It owns physical point-asset identity and location only;
- * operations, permits, telemetry values, hydraulic calculations, maintenance, risk, and workflow
- * behavior belong to future modules.
+ * Appurtenance and valve classifications are catalog references so multilingual labels and
+ * configurable taxonomies can be resolved outside this entity.
  *
  * <p>Validation:
- * Pipeline, node, code, name, appurtenance type, KP, status, creation instant, and update instant
- * are mandatory. Valve type is mandatory only for valve appurtenances and forbidden otherwise.
+ * Pipeline, node, code, name, appurtenance type reference, KP, status, creation instant, and update
+ * instant are mandatory. Valve type reference is mandatory only for valve appurtenances and forbidden
+ * otherwise.
  */
 public final class PipelineAppurtenance implements Entity<PipelineAppurtenanceId> {
 
@@ -59,8 +61,8 @@ public final class PipelineAppurtenance implements Entity<PipelineAppurtenanceId
     private final TopologyNodeId nodeId;
     private final TopologyCode code;
     private final TopologyName name;
-    private final PipelineAppurtenanceType appurtenanceType;
-    private final ValveType valveType;
+    private final PipelineAppurtenanceTypeReference appurtenanceType;
+    private final ValveTypeReference valveType;
     private final PipelineKilometerPoint pipelineKilometerPoint;
     private final TopologyStatus status;
     private final GeoCoordinate coordinate;
@@ -74,8 +76,8 @@ public final class PipelineAppurtenance implements Entity<PipelineAppurtenanceId
             TopologyNodeId nodeId,
             TopologyCode code,
             TopologyName name,
-            PipelineAppurtenanceType appurtenanceType,
-            ValveType valveType,
+            PipelineAppurtenanceTypeReference appurtenanceType,
+            ValveTypeReference valveType,
             PipelineKilometerPoint pipelineKilometerPoint,
             TopologyStatus status,
             GeoCoordinate coordinate,
@@ -88,7 +90,7 @@ public final class PipelineAppurtenance implements Entity<PipelineAppurtenanceId
         this.nodeId = Objects.requireNonNull(nodeId, "Pipeline appurtenance node id must not be null.");
         this.code = Objects.requireNonNull(code, "Pipeline appurtenance code must not be null.");
         this.name = Objects.requireNonNull(name, "Pipeline appurtenance name must not be null.");
-        this.appurtenanceType = Objects.requireNonNull(appurtenanceType, "Pipeline appurtenance type must not be null.");
+        this.appurtenanceType = Objects.requireNonNull(appurtenanceType, "Pipeline appurtenance type reference must not be null.");
         this.valveType = valveType;
         this.pipelineKilometerPoint = Objects.requireNonNull(pipelineKilometerPoint, "Pipeline kilometer point must not be null.");
         this.status = Objects.requireNonNull(status, "Pipeline appurtenance status must not be null.");
@@ -106,29 +108,50 @@ public final class PipelineAppurtenance implements Entity<PipelineAppurtenanceId
             TopologyNodeId nodeId,
             TopologyCode code,
             TopologyName name,
+            PipelineAppurtenanceTypeReference appurtenanceType,
+            ValveTypeReference valveType,
+            PipelineKilometerPoint pipelineKilometerPoint,
+            GeoCoordinate coordinate,
+            String description) {
+
+        Instant now = Instant.now();
+        return new PipelineAppurtenance(PipelineAppurtenanceId.newId(), pipelineId, nodeId, code, name, appurtenanceType, valveType, pipelineKilometerPoint, TopologyStatus.PLANNED, coordinate, description, now, now);
+    }
+
+    @Deprecated(forRemoval = true)
+    public static PipelineAppurtenance create(
+            PipelineId pipelineId,
+            TopologyNodeId nodeId,
+            TopologyCode code,
+            TopologyName name,
             PipelineAppurtenanceType appurtenanceType,
             ValveType valveType,
             PipelineKilometerPoint pipelineKilometerPoint,
             GeoCoordinate coordinate,
             String description) {
 
-        Instant now = Instant.now();
-        return new PipelineAppurtenance(
-                PipelineAppurtenanceId.newId(),
-                pipelineId,
-                nodeId,
-                code,
-                name,
-                appurtenanceType,
-                valveType,
-                pipelineKilometerPoint,
-                TopologyStatus.PLANNED,
-                coordinate,
-                description,
-                now,
-                now);
+        return create(pipelineId, nodeId, code, name, PipelineAppurtenanceTypeReference.from(appurtenanceType), ValveTypeReference.from(valveType), pipelineKilometerPoint, coordinate, description);
     }
 
+    public static PipelineAppurtenance restore(
+            PipelineAppurtenanceId id,
+            PipelineId pipelineId,
+            TopologyNodeId nodeId,
+            TopologyCode code,
+            TopologyName name,
+            PipelineAppurtenanceTypeReference appurtenanceType,
+            ValveTypeReference valveType,
+            PipelineKilometerPoint pipelineKilometerPoint,
+            TopologyStatus status,
+            GeoCoordinate coordinate,
+            String description,
+            Instant createdAt,
+            Instant updatedAt) {
+
+        return new PipelineAppurtenance(id, pipelineId, nodeId, code, name, appurtenanceType, valveType, pipelineKilometerPoint, status, coordinate, description, createdAt, updatedAt);
+    }
+
+    @Deprecated(forRemoval = true)
     public static PipelineAppurtenance restore(
             PipelineAppurtenanceId id,
             PipelineId pipelineId,
@@ -144,170 +167,53 @@ public final class PipelineAppurtenance implements Entity<PipelineAppurtenanceId
             Instant createdAt,
             Instant updatedAt) {
 
-        return new PipelineAppurtenance(
-                id,
-                pipelineId,
-                nodeId,
-                code,
-                name,
-                appurtenanceType,
-                valveType,
-                pipelineKilometerPoint,
-                status,
-                coordinate,
-                description,
-                createdAt,
-                updatedAt);
+        return restore(id, pipelineId, nodeId, code, name, PipelineAppurtenanceTypeReference.from(appurtenanceType), ValveTypeReference.from(valveType), pipelineKilometerPoint, status, coordinate, description, createdAt, updatedAt);
     }
 
     @Override
-    public PipelineAppurtenanceId id() {
-        return id;
-    }
+    public PipelineAppurtenanceId id() { return id; }
+    public PipelineId pipelineId() { return pipelineId; }
+    public TopologyNodeId nodeId() { return nodeId; }
+    public TopologyCode code() { return code; }
+    public TopologyName name() { return name; }
+    public PipelineAppurtenanceTypeReference appurtenanceType() { return appurtenanceType; }
+    public ValveTypeReference valveType() { return valveType; }
+    public PipelineKilometerPoint pipelineKilometerPoint() { return pipelineKilometerPoint; }
+    public TopologyStatus status() { return status; }
+    public GeoCoordinate coordinate() { return coordinate; }
+    public String description() { return description; }
+    public Instant createdAt() { return createdAt; }
+    public Instant updatedAt() { return updatedAt; }
 
-    public PipelineId pipelineId() {
-        return pipelineId;
-    }
-
-    public TopologyNodeId nodeId() {
-        return nodeId;
-    }
-
-    public TopologyCode code() {
-        return code;
-    }
-
-    public TopologyName name() {
-        return name;
-    }
-
-    public PipelineAppurtenanceType appurtenanceType() {
-        return appurtenanceType;
-    }
-
-    public ValveType valveType() {
-        return valveType;
-    }
-
-    public PipelineKilometerPoint pipelineKilometerPoint() {
-        return pipelineKilometerPoint;
-    }
-
-    public TopologyStatus status() {
-        return status;
-    }
-
-    public GeoCoordinate coordinate() {
-        return coordinate;
-    }
-
-    public String description() {
-        return description;
-    }
-
-    public Instant createdAt() {
-        return createdAt;
-    }
-
-    public Instant updatedAt() {
-        return updatedAt;
-    }
-
-
-    /**
-     * Activates this topology asset.
-     *
-     * @return active topology asset
-     */
-    public PipelineAppurtenance activate() {
-        return withStatus(TopologyStatus.ACTIVE);
-    }
-
-    /**
-     * Deactivates this topology asset.
-     *
-     * @return inactive topology asset
-     */
-    public PipelineAppurtenance deactivate() {
-        return withStatus(TopologyStatus.INACTIVE);
-    }
-
-    /**
-     * Marks this topology asset as under maintenance.
-     *
-     * @return topology asset under maintenance
-     */
-    public PipelineAppurtenance markUnderMaintenance() {
-        return withStatus(TopologyStatus.UNDER_MAINTENANCE);
-    }
-
-    /**
-     * Retires this topology asset.
-     *
-     * @return retired topology asset
-     */
-    public PipelineAppurtenance retire() {
-        return withStatus(TopologyStatus.RETIRED);
-    }
-
-    /**
-     * Decommissions this topology asset.
-     *
-     * @return decommissioned topology asset
-     */
-    public PipelineAppurtenance decommission() {
-        return withStatus(TopologyStatus.DECOMMISSIONED);
-    }
+    public PipelineAppurtenance activate() { return withStatus(TopologyStatus.ACTIVE); }
+    public PipelineAppurtenance deactivate() { return withStatus(TopologyStatus.INACTIVE); }
+    public PipelineAppurtenance markUnderMaintenance() { return withStatus(TopologyStatus.UNDER_MAINTENANCE); }
+    public PipelineAppurtenance retire() { return withStatus(TopologyStatus.RETIRED); }
+    public PipelineAppurtenance decommission() { return withStatus(TopologyStatus.DECOMMISSIONED); }
 
     private PipelineAppurtenance withStatus(TopologyStatus newStatus) {
-        return new PipelineAppurtenance(
-                id,
-                pipelineId,
-                nodeId,
-                code,
-                name,
-                appurtenanceType,
-                valveType,
-                pipelineKilometerPoint,
-                Objects.requireNonNull(newStatus, "Pipeline appurtenance status must not be null."),
-                coordinate,
-                description,
-                createdAt,
-                Instant.now());
+        return new PipelineAppurtenance(id, pipelineId, nodeId, code, name, appurtenanceType, valveType, pipelineKilometerPoint, Objects.requireNonNull(newStatus, "Pipeline appurtenance status must not be null."), coordinate, description, createdAt, Instant.now());
     }
 
     private void ensureValveTypeConsistency() {
         if (appurtenanceType.isValve() && valveType == null) {
             throw new BusinessRuleViolationException("PipelineAppurtenance valve type is required when appurtenance type is VALVE.");
         }
-
         if (!appurtenanceType.isValve() && valveType != null) {
             throw new BusinessRuleViolationException("PipelineAppurtenance valve type must be null when appurtenance type is not VALVE.");
         }
     }
 
     private static String normalizeOptionalText(String value, int maxLength, String fieldName) {
-        if (value == null || value.isBlank()) {
-            return null;
-        }
-
+        if (value == null || value.isBlank()) { return null; }
         String normalized = value.trim();
-
-        if (normalized.length() > maxLength) {
-            throw new BusinessRuleViolationException(fieldName + " length must not exceed " + maxLength + " characters.");
-        }
-
+        if (normalized.length() > maxLength) { throw new BusinessRuleViolationException(fieldName + " length must not exceed " + maxLength + " characters."); }
         return normalized;
     }
 
-    private static Instant requireInstant(Instant value, String fieldName) {
-        return Objects.requireNonNull(value, fieldName + " must not be null.");
-    }
+    private static Instant requireInstant(Instant value, String fieldName) { return Objects.requireNonNull(value, fieldName + " must not be null."); }
 
     private static void ensureUpdatedAtIsValid(Instant createdAt, Instant updatedAt, String modelName) {
-        if (updatedAt.isBefore(createdAt)) {
-            throw new BusinessRuleViolationException(modelName + " updatedAt must not be before createdAt.");
-        }
+        if (updatedAt.isBefore(createdAt)) { throw new BusinessRuleViolationException(modelName + " updatedAt must not be before createdAt."); }
     }
-
 }

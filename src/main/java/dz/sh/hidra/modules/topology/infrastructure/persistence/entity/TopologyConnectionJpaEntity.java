@@ -20,6 +20,7 @@
 package dz.sh.hidra.modules.topology.infrastructure.persistence.entity;
 
 import java.time.Instant;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -68,9 +69,13 @@ public class TopologyConnectionJpaEntity {
     @Column(name = "to_node_id", nullable = false, length = 80)
     private String toNodeId;
 
-    /** Topology connection type. */
+    /** Legacy language-neutral topology connection type code retained until COR-013. */
     @Column(name = "connection_type", nullable = false, length = 80)
     private String connectionType;
+
+    /** Catalog foreign key to hidra_topology_connection_type. */
+    @Column(name = "connection_type_id", nullable = false, length = 80)
+    private String connectionTypeId;
 
     /** Linked topology asset type. */
     @Column(name = "linked_asset_type", nullable = false, length = 80)
@@ -96,91 +101,51 @@ public class TopologyConnectionJpaEntity {
         // Required by JPA.
     }
 
-    public String getId() {
-        return id;
-    }
+    public String getId() { return id; }
 
-    public void setId(String id) {
-        this.id = id;
-    }
+    public void setId(String id) { this.id = id; }
 
-    public String getCode() {
-        return code;
-    }
+    public String getCode() { return code; }
 
-    public void setCode(String code) {
-        this.code = code;
-    }
+    public void setCode(String code) { this.code = code; }
 
-    public String getName() {
-        return name;
-    }
+    public String getName() { return name; }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    public void setName(String name) { this.name = name; }
 
-    public String getFromNodeId() {
-        return fromNodeId;
-    }
+    public String getFromNodeId() { return fromNodeId; }
 
-    public void setFromNodeId(String fromNodeId) {
-        this.fromNodeId = fromNodeId;
-    }
+    public void setFromNodeId(String fromNodeId) { this.fromNodeId = fromNodeId; }
 
-    public String getToNodeId() {
-        return toNodeId;
-    }
+    public String getToNodeId() { return toNodeId; }
 
-    public void setToNodeId(String toNodeId) {
-        this.toNodeId = toNodeId;
-    }
+    public void setToNodeId(String toNodeId) { this.toNodeId = toNodeId; }
 
-    public String getConnectionType() {
-        return connectionType;
-    }
+    public String getConnectionType() { return connectionType; }
 
-    public void setConnectionType(String connectionType) {
-        this.connectionType = connectionType;
-    }
+    public void setConnectionType(String connectionType) { this.connectionType = connectionType; }
 
-    public String getLinkedAssetType() {
-        return linkedAssetType;
-    }
+    public String getConnectionTypeId() { return connectionTypeId; }
 
-    public void setLinkedAssetType(String linkedAssetType) {
-        this.linkedAssetType = linkedAssetType;
-    }
+    public void setConnectionTypeId(String connectionTypeId) { this.connectionTypeId = connectionTypeId; }
 
-    public String getLinkedAssetId() {
-        return linkedAssetId;
-    }
+    public String getLinkedAssetType() { return linkedAssetType; }
 
-    public void setLinkedAssetId(String linkedAssetId) {
-        this.linkedAssetId = linkedAssetId;
-    }
+    public void setLinkedAssetType(String linkedAssetType) { this.linkedAssetType = linkedAssetType; }
 
-    public String getStatus() {
-        return status;
-    }
+    public String getLinkedAssetId() { return linkedAssetId; }
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
+    public void setLinkedAssetId(String linkedAssetId) { this.linkedAssetId = linkedAssetId; }
 
-    public Instant getCreatedAt() {
-        return createdAt;
-    }
+    public String getStatus() { return status; }
 
-    public void setCreatedAt(Instant createdAt) {
-        this.createdAt = createdAt;
-    }
+    public void setStatus(String status) { this.status = status; }
 
-    public Instant getUpdatedAt() {
-        return updatedAt;
-    }
+    public Instant getCreatedAt() { return createdAt; }
 
-    public void setUpdatedAt(Instant updatedAt) {
-        this.updatedAt = updatedAt;
-    }
+    public void setCreatedAt(Instant createdAt) { this.createdAt = createdAt; }
+
+    public Instant getUpdatedAt() { return updatedAt; }
+
+    public void setUpdatedAt(Instant updatedAt) { this.updatedAt = updatedAt; }
 }

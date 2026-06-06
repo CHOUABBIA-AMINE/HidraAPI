@@ -31,16 +31,10 @@ import dz.sh.hidra.modules.organization.domain.model.OrganizationUnit;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitCode;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitId;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitName;
-import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitType;
+import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitTypeReference;
 
 /**
  * Tests organization hierarchy policy.
- *
- * <p>Business role:
- * Verifies that organization unit parent-child structures do not self-parent or create cycles.
- *
- * <p>Architecture role:
- * This is a pure domain policy test and does not load repositories or infrastructure.
  */
 class OrganizationHierarchyPolicyTest {
 
@@ -48,15 +42,15 @@ class OrganizationHierarchyPolicyTest {
 
     @Test
     void shouldAllowValidParentAssignment() {
-        OrganizationUnit child = organizationUnit("TEAM_HIERARCHY", "Hierarchy Team", OrganizationUnitType.TEAM);
-        OrganizationUnit parent = organizationUnit("DEPT_HIERARCHY", "Hierarchy Department", OrganizationUnitType.DEPARTMENT);
+        OrganizationUnit child = organizationUnit("TEAM_HIERARCHY", "Hierarchy Team", OrganizationUnitTypeReference.TEAM);
+        OrganizationUnit parent = organizationUnit("DEPT_HIERARCHY", "Hierarchy Department", OrganizationUnitTypeReference.DEPARTMENT);
 
         assertDoesNotThrow(() -> policy.ensureCanAssignParent(child, parent, List.of()));
     }
 
     @Test
     void shouldRejectSelfParenting() {
-        OrganizationUnit organizationUnit = organizationUnit("SELF_PARENT", "Self Parent", OrganizationUnitType.TEAM);
+        OrganizationUnit organizationUnit = organizationUnit("SELF_PARENT", "Self Parent", OrganizationUnitTypeReference.TEAM);
 
         assertThrows(
                 OrganizationHierarchyException.class,
@@ -81,7 +75,7 @@ class OrganizationHierarchyPolicyTest {
                 () -> policy.ensureNoCycle(OrganizationUnitId.newId(), List.of(ancestorId, ancestorId)));
     }
 
-    private static OrganizationUnit organizationUnit(String code, String name, OrganizationUnitType type) {
+    private static OrganizationUnit organizationUnit(String code, String name, OrganizationUnitTypeReference type) {
         return OrganizationUnit.create(
                 OrganizationUnitCode.of(code),
                 OrganizationUnitName.of(name),

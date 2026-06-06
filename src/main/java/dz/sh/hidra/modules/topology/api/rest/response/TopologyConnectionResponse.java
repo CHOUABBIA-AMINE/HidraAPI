@@ -26,22 +26,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 /**
  * REST response representing a topology connection.
  *
- * <p>Business role:
- * Returns an explicit physical graph edge between two topology nodes.
- *
- * <p>Architecture role:
- * This is a REST output contract mapped from TopologyConnectionDto through TopologyRestMapper.
- *
- * <p>Validation:
- * Connection validity is enforced by topology domain models, value objects, policies, and services
- * before this response is produced.
- *
  * @param topologyConnectionId topology connection identifier
  * @param code connection business code
  * @param name connection display name
  * @param fromNodeId from-node identifier
  * @param toNodeId to-node identifier
- * @param connectionType connection type
+ * @param connectionType localized connection type catalog reference
  * @param linkedAssetType linked topology asset type
  * @param linkedAssetId linked topology asset identifier
  * @param status lifecycle status
@@ -65,8 +55,8 @@ public record TopologyConnectionResponse(
         @Schema(description = "To-node identifier.", example = "node_660e8400-e29b-41d4-a716-446655440000")
         String toNodeId,
 
-        @Schema(description = "Connection type.", example = "PIPELINE_SEGMENT", allowableValues = {"PIPELINE_SEGMENT", "FACILITY_INTERNAL", "VALVE_CONNECTION", "METERING_CONNECTION", "JUNCTION_CONNECTION", "APPURTENANCE_CONNECTION", "OTHER"})
-        String connectionType,
+        @Schema(description = "Localized connection type catalog reference.")
+        TopologyTypeReferenceResponse connectionType,
 
         @Schema(description = "Linked topology asset type.", example = "SEGMENT", allowableValues = {"PIPELINE_SYSTEM", "PIPELINE", "FACILITY", "NODE", "SEGMENT", "APPURTENANCE", "CONNECTION", "EQUIPMENT"})
         String linkedAssetType,

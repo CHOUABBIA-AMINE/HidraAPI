@@ -50,6 +50,7 @@ import dz.sh.hidra.modules.topology.domain.value.TopologyAssetType;
 import dz.sh.hidra.modules.topology.domain.value.TopologyCode;
 import dz.sh.hidra.modules.topology.domain.value.TopologyConnectionId;
 import dz.sh.hidra.modules.topology.domain.value.TopologyName;
+import dz.sh.hidra.modules.topology.domain.value.TopologyNodeId;
 import dz.sh.hidra.modules.topology.domain.value.TopologyStatus;
 import dz.sh.hidra.modules.topology.domain.value.ValveType;
 

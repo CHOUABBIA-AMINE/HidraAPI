@@ -57,6 +57,32 @@ public record PipelineAppurtenanceTypeReference(String id, TopologyCode code) im
         return new PipelineAppurtenanceTypeReference(id, TopologyCode.of(code));
     }
 
+    public static PipelineAppurtenanceTypeReference from(PipelineAppurtenanceType appurtenanceType) {
+        Objects.requireNonNull(appurtenanceType, "Pipeline appurtenance type must not be null.");
+        return of(appurtenanceType.name(), appurtenanceType.name());
+    }
+
+    public String name() {
+        return code.value();
+    }
+
+    public boolean is(String expectedCode) {
+        return code.value().equals(TopologyCode.of(expectedCode).value());
+    }
+
+    public boolean isAny(String... expectedCodes) {
+        for (String expectedCode : expectedCodes) {
+            if (is(expectedCode)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isValve() {
+        return is("VALVE");
+    }
+
     private static String requireText(String value, String fieldName) {
         if (value == null || value.isBlank()) {
             throw new InvalidValueObjectException(fieldName + " must not be null or blank.");

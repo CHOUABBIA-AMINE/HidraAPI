@@ -915,21 +915,21 @@ inventory     -> terminal/storage stock accounting
 | Commit code | Commit message | Status | Description |
 |---|---|---:|---|
 | `TOP-001` | `docs(topology): add topology implementation roadmap` | Planned | Add this roadmap file only. |
-| `TOP-002` | `chore(topology): add topology package skeleton` | Planned | Add topology package-info.java files only. |
-| `TOP-003` | `feat(topology): add topology domain value objects` | Planned | Add identifiers, codes, names, references, coordinates, dimensions, facility/appurtenance/status values. |
-| `TOP-004` | `feat(topology): add topology domain models` | Planned | Add pipeline system, pipeline, facility, node, segment, appurtenance, connection, and equipment models. |
-| `TOP-005` | `feat(topology): add topology domain policies` | Planned | Add physical connectivity, status transition, facility, and appurtenance policies. |
-| `TOP-006` | `feat(topology): add topology domain services` | Planned | Add domain services for connectivity validation and network registration. |
-| `TOP-007` | `feat(topology): add topology application commands and queries` | Planned | Add application input models for create/get/list operations. |
-| `TOP-008` | `feat(topology): add topology application DTOs` | Planned | Add application-level result DTOs. |
-| `TOP-009` | `feat(topology): add topology application ports` | Planned | Add inbound use-case ports and outbound repository ports. |
-| `TOP-010` | `feat(topology): add topology application services` | Planned | Implement use cases with domain validation and outbound ports. |
-| `TOP-011` | `feat(topology): add topology persistence entities and repositories` | Planned | Add JPA entities and Spring Data repositories. |
-| `TOP-012` | `feat(topology): add topology persistence mapper and adapters` | Planned | Add mapper and repository adapter implementations. |
+| `TOP-002` | `chore(topology): add topology package skeleton` | Completed locally | Added topology production package-info.java skeleton files only; Maven compile not run in this local ZIP generation. |
+| `TOP-003` | `feat(topology): add topology domain value objects` | Completed locally | Added topology domain value records and enums only; Maven compile must be run after copying into the repository. |
+| `TOP-004` | `feat(topology): add topology domain models` | Completed locally | Added topology domain model classes only; Maven compile must be run after copying into the repository. |
+| `TOP-005` | `feat(topology): add topology domain policies` | Completed locally | Added topology domain policies and topology domain exceptions only; Maven compile must be run after copying into the repository. |
+| `TOP-006` | `feat(topology): add topology domain services` | Completed locally | Added pure topology domain services only; Maven compile must be run after copying into the repository. |
+| `TOP-007` | `feat(topology): add topology application commands and queries` | Completed locally | Added topology application command and query records only; Maven compile must be run after copying into the repository. |
+| `TOP-008` | `feat(topology): add topology application DTOs` | Completed locally | Added topology application DTO records only; Maven compile must be run after copying into the repository. |
+| `TOP-009` | `feat(topology): add topology application ports` | Completed locally | Added topology application inbound and outbound port interfaces only; Maven compile must be run after copying into the repository. |
+| `TOP-010` | `feat(topology): add topology application services` | Completed locally | Added topology application service classes and infrastructure bean wiring only; Maven compile must be run after copying into the repository. |
+| `TOP-011` | `feat(topology): add topology persistence entities and repositories` | Completed locally | Added topology JPA entities and Spring Data repository interfaces only; Maven compile must be run after copying into the repository. |
+| `TOP-012` | `feat(topology): add topology persistence mapper and adapters` | Completed locally | Added topology persistence mapper, repository adapters, and configuration wiring updates only; Maven compile must be run after copying into the repository. |
 | `TOP-013` | `db(topology): add topology flyway migration` | Planned | Add topology schema migration. |
 | `TOP-014` | `feat(topology): add topology REST DTOs and mapper` | Planned | Add request/response DTOs and REST mapper. |
 | `TOP-015` | `feat(topology): add topology REST controllers` | Planned | Add documented controllers for topology endpoints. |
-| `TOP-016` | `test(topology): add topology domain tests` | Planned | Add tests for value objects, models, policies, and services. |
+| `TOP-016` | `feat(topology): add topology REST mapper` | Completed locally | Added topology REST mapper and mapper bean configuration only; Maven compile must be run after copying into the repository. |
 | `TOP-017` | `test(topology): add topology application tests` | Planned | Add tests for application services and ports. |
 | `TOP-018` | `test(topology): add topology API and mapper tests` | Planned | Add controller and REST mapper tests. |
 | `TOP-019` | `test(topology): add topology architecture guardrails` | Planned | Add dependency/boundary tests if project strategy supports them. |
@@ -2336,17 +2336,17 @@ Do not start flow before measurement exists.
 | Commit code | Status | Validation result | Notes |
 |---|---:|---|---|
 | `TOP-001` | Planned | Pending | Add this topology roadmap only. |
-| `TOP-002` | Planned | Pending | Add package skeleton only. |
-| `TOP-003` | Planned | Pending | Add domain value objects. |
-| `TOP-004` | Planned | Pending | Add domain models. |
-| `TOP-005` | Planned | Pending | Add domain policies. |
-| `TOP-006` | Planned | Pending | Add domain services. |
-| `TOP-007` | Planned | Pending | Add commands and queries. |
-| `TOP-008` | Planned | Pending | Add application DTOs. |
-| `TOP-009` | Planned | Pending | Add application ports. |
-| `TOP-010` | Planned | Pending | Add application services. |
-| `TOP-011` | Planned | Pending | Add JPA entities and repositories. |
-| `TOP-012` | Planned | Pending | Add persistence mapper and adapters. |
+| `TOP-002` | Completed locally | Static ZIP validation passed | Added production package-info.java skeleton files only; Maven compile must be run after copying into the repository. |
+| `TOP-003` | Completed locally | Static/Javac validation passed for generated value objects | Added topology domain value records and enums only; Maven compile must be run after copying into the repository. |
+| `TOP-004` | Completed locally | Static/Javac validation passed for generated domain models | Added topology domain models only; Maven compile must be run after copying into the repository. |
+| `TOP-005` | Completed locally | Static/Javac validation passed for generated policies and exceptions | Added topology domain policies and topology domain exceptions only; Maven compile must be run after copying into the repository. |
+| `TOP-006` | Completed locally | Static/Javac validation passed for generated domain services | Added pure topology domain services only; Maven compile must be run after copying into the repository. |
+| `TOP-007` | Completed locally | Static/Javac validation passed for generated commands and queries | Added topology application command and query records only; Maven compile must be run after copying into the repository. |
+| `TOP-008` | Completed locally | Static/Javac validation passed for generated application DTOs | Added topology application DTO records only; Maven compile must be run after copying into the repository. |
+| `TOP-009` | Completed locally | Static/Javac validation passed for generated application ports | Added topology application inbound and outbound port interfaces only; Maven compile must be run after copying into the repository. |
+| `TOP-010` | Completed locally | Static/Javac validation passed for generated application services and configuration | Added topology application service classes and infrastructure bean wiring only; Maven compile must be run after copying into the repository. |
+| `TOP-011` | Completed locally | Static/Javac validation passed for generated JPA entities and repository interfaces | Added topology JPA entities and Spring Data repository interfaces only; Maven compile must be run after copying into the repository. |
+| `TOP-012` | Completed locally | Static/Javac validation passed for generated persistence mapper, adapters, and configuration update | Added topology persistence mapper, repository adapters, and configuration wiring updates only; Maven compile must be run after copying into the repository. |
 | `TOP-013` | Planned | Pending | Add Flyway migration. |
 | `TOP-014` | Planned | Pending | Add REST DTOs and mapper. |
 | `TOP-015` | Planned | Pending | Add REST controllers. |
@@ -2355,3 +2355,846 @@ Do not start flow before measurement exists.
 | `TOP-018` | Planned | Pending | Add API and mapper tests. |
 | `TOP-019` | Planned | Pending | Add architecture guardrails or document blocker. |
 | `TOP-020` | Planned | Pending | Finalize roadmap status. |
+
+
+---
+
+## TOP-002 Local Execution Note
+
+```text
+Commit code    : TOP-002
+Commit message : chore(topology): add topology package skeleton
+Execution mode : Local ZIP generation only
+GitHub push    : Not performed
+Git commit     : Not created
+```
+
+### Files generated
+
+Only production `package-info.java` files listed in TOP-002 were generated.
+
+### Validation performed locally
+
+```text
+- verified every listed production package-info.java file exists
+- verified no test package-info.java files were created
+- verified no classes, records, enums, services, repositories, controllers, DTOs, entities, mappers, configurations, migrations, or tests with behavior were created
+- verified no identityaccess package was created
+- verified no shared/sharedkernel/common/core/utils/helper/helpers/misc packages were created
+```
+
+### Validation still required after copying into repository
+
+```bash
+mvn -q -DskipTests compile
+```
+
+
+---
+
+## TOP-003 Local Execution Note
+
+```text
+Commit code    : TOP-003
+Commit message : feat(topology): add topology domain value objects
+Execution mode : Local ZIP generation only
+GitHub push    : Not performed
+Git commit     : Not created
+```
+
+### Files generated
+
+Only topology domain value records and enums listed in TOP-003 were generated.
+
+### Validation performed locally
+
+```text
+- verified all expected value object files exist
+- verified every Java file uses the canonical HidraAPI header
+- verified @Author remains Abir MEDJERAB
+- verified @CreatedOn remains 2025-06-26
+- verified @Module is topology
+- verified @Package matches actual package
+- verified no Spring, JPA, REST, identity, or organization implementation imports exist
+- verified generated value objects compile with local stubs for kernel ValueObject and InvalidValueObjectException
+```
+
+### Validation still required after copying into repository
+
+```bash
+mvn -q -DskipTests compile
+```
+
+
+---
+
+## TOP-004 Local Execution Note
+
+```text
+Commit code    : TOP-004
+Commit message : feat(topology): add topology domain models
+Execution mode : Local ZIP generation only
+GitHub push    : Not performed
+Git commit     : Not created
+```
+
+### Files generated
+
+Only topology domain models listed in TOP-004 were generated.
+
+### Validation performed locally
+
+```text
+- verified all expected domain model files exist
+- verified every Java file uses the canonical HidraAPI header
+- verified @Author remains Abir MEDJERAB
+- verified @CreatedOn remains 2025-06-26
+- verified @Module is topology
+- verified @Package matches actual package
+- verified no Spring, JPA, REST, identity, organization, measurement, flow, risk, workflow, or infrastructure imports exist
+- verified generated domain models compile with local stubs for kernel contracts/exceptions and generated value objects
+```
+
+### Validation still required after copying into repository
+
+```bash
+mvn -q -DskipTests compile
+```
+
+
+---
+
+## TOP-005 Local Execution Note
+
+```text
+Commit code    : TOP-005
+Commit message : feat(topology): add topology domain policies
+Execution mode : Local ZIP generation only
+GitHub push    : Not performed
+Git commit     : Not created
+```
+
+### Files generated
+
+Only topology domain policies and topology domain exceptions listed in TOP-005 were generated.
+
+### Validation performed locally
+
+```text
+- verified all expected policy and exception files exist
+- verified every Java file uses the canonical HidraAPI header
+- verified @Author remains Abir MEDJERAB
+- verified @CreatedOn remains 2025-06-26
+- verified @Module is topology
+- verified @Package matches actual package
+- verified no Spring, JPA, REST, identity, organization, measurement, flow, risk, workflow, application, API, persistence, or infrastructure imports exist
+- verified generated policies and exceptions compile with local stubs for kernel contracts/exceptions and generated topology values/models
+```
+
+### Validation still required after copying into repository
+
+```bash
+mvn -q -DskipTests compile
+```
+
+
+---
+
+## TOP-006 Local Execution Note
+
+```text
+Commit code    : TOP-006
+Commit message : feat(topology): add topology domain services
+Execution mode : Local ZIP generation only
+GitHub push    : Not performed
+Git commit     : Not created
+```
+
+### Files generated
+
+Only topology domain services listed in TOP-006 were generated.
+
+### Validation performed locally
+
+```text
+- verified all expected domain service files exist
+- verified every Java file uses the canonical HidraAPI header
+- verified @Author remains Abir MEDJERAB
+- verified @CreatedOn remains 2025-06-26
+- verified @Module is topology
+- verified @Package matches actual package
+- verified no Spring, JPA, REST, identity, organization, measurement, flow, risk, workflow, application, API, persistence, or infrastructure imports exist
+- verified generated domain services compile with local stubs for kernel contracts/exceptions and generated topology values/models/policies
+```
+
+### Validation still required after copying into repository
+
+```bash
+mvn -q -DskipTests compile
+```
+
+
+---
+
+## TOP-007 Local Execution Note
+
+```text
+Commit code    : TOP-007
+Commit message : feat(topology): add topology application commands and queries
+Execution mode : Local ZIP generation only
+GitHub push    : Not performed
+Git commit     : Not created
+```
+
+### Files generated
+
+Only topology application command and query records listed in TOP-007 were generated.
+
+### Validation performed locally
+
+```text
+- verified all expected command and query files exist
+- verified every Java file uses the canonical HidraAPI header
+- verified @Author remains Abir MEDJERAB
+- verified @CreatedOn remains 2025-06-26
+- verified @Module is topology
+- verified @Package matches actual package
+- verified no Spring, JPA, REST, identity, organization, measurement, flow, risk, workflow, API, persistence, infrastructure, DTO, port, or service imports exist
+- verified generated commands and queries compile with local stubs for kernel contracts and generated topology domain values/models/policies/services
+```
+
+### Validation still required after copying into repository
+
+```bash
+mvn -q -DskipTests compile
+```
+
+
+---
+
+## TOP-008 Local Execution Note
+
+```text
+Commit code    : TOP-008
+Commit message : feat(topology): add topology application DTOs
+Execution mode : Local ZIP generation only
+GitHub push    : Not performed
+Git commit     : Not created
+```
+
+### Files generated
+
+Only topology application DTO records listed in TOP-008 were generated.
+
+### Validation performed locally
+
+```text
+- verified all expected application DTO files exist
+- verified every Java file uses the canonical HidraAPI header
+- verified @Author remains Abir MEDJERAB
+- verified @CreatedOn remains 2025-06-26
+- verified @Module is topology
+- verified @Package matches actual package
+- verified no Spring, JPA, REST, Swagger, identity, organization, measurement, flow, risk, workflow, API, persistence, infrastructure, port, or service imports exist
+- verified generated application DTOs compile with local stubs for kernel contracts and generated topology domain/application files
+```
+
+### Validation still required after copying into repository
+
+```bash
+mvn -q -DskipTests compile
+```
+
+
+---
+
+## TOP-009 Local Execution Note
+
+```text
+Commit code    : TOP-009
+Commit message : feat(topology): add topology application ports
+Execution mode : Local ZIP generation only
+GitHub push    : Not performed
+Git commit     : Not created
+```
+
+### Files generated
+
+Only topology application inbound and outbound port interfaces listed in TOP-009 were generated.
+
+### Validation performed locally
+
+```text
+- verified all expected inbound and outbound port files exist
+- verified every Java file uses the canonical HidraAPI header
+- verified @Author remains Abir MEDJERAB
+- verified @CreatedOn remains 2025-06-26
+- verified @Module is topology
+- verified @Package matches actual package
+- verified no Spring, JPA, REST, Swagger, identity, organization, measurement, flow, risk, workflow, API, persistence, infrastructure, service, or controller imports exist
+- verified generated application ports compile with local stubs for kernel contracts and generated topology domain/application files
+```
+
+### Validation still required after copying into repository
+
+```bash
+mvn -q -DskipTests compile
+```
+
+
+---
+
+## TOP-010 Local Execution Note
+
+```text
+Commit code    : TOP-010
+Commit message : feat(topology): add topology application services
+Execution mode : Local ZIP generation only
+GitHub push    : Not performed
+Git commit     : Not created
+```
+
+### Files generated
+
+Only topology application service classes and `TopologyConfiguration` listed in TOP-010 were generated.
+
+### Validation performed locally
+
+```text
+- verified all expected application service files exist
+- verified TopologyConfiguration exists
+- verified every generated Java file uses the canonical HidraAPI header
+- verified @Author remains Abir MEDJERAB
+- verified @CreatedOn remains 2025-06-26
+- verified @Module is topology
+- verified @Package matches actual package
+- verified application services do not import Spring, JPA, REST, Swagger, identity, organization, measurement, flow, risk, workflow, API, persistence, or infrastructure packages
+- verified TopologyConfiguration is the only Spring-specific generated file
+- verified generated services and configuration compile with local stubs for kernel and Spring annotations
+```
+
+### Validation still required after copying into repository
+
+```bash
+mvn -q -DskipTests compile
+```
+
+
+---
+
+## TOP-011 Local Execution Note
+
+```text
+Commit code    : TOP-011
+Commit message : feat(topology): add topology persistence entities and repositories
+Execution mode : Local ZIP generation only
+GitHub push    : Not performed
+Git commit     : Not created
+```
+
+### Files generated
+
+Only topology JPA entities and Spring Data repository interfaces listed in TOP-011 were generated.
+
+### Validation performed locally
+
+```text
+- verified all expected JPA entity and Spring Data repository files exist
+- verified every generated Java file uses the canonical HidraAPI header
+- verified @Author remains Abir MEDJERAB
+- verified @CreatedOn remains 2025-06-26
+- verified @Module is topology
+- verified @Package matches actual package
+- verified no migration files were created
+- verified no persistence mapper or persistence adapter files were created
+- verified no REST DTOs, controllers, tests, or API files were created
+- verified generated entities and repositories compile with local stubs for kernel, Spring, Spring Data JPA, and Jakarta Persistence
+```
+
+### Validation still required after copying into repository
+
+```bash
+mvn -q -DskipTests compile
+```
+
+
+---
+
+## TOP-012 Local Execution Note
+
+```text
+Commit code    : TOP-012
+Commit message : feat(topology): add topology persistence mapper and adapters
+Execution mode : Local ZIP generation only
+GitHub push    : Not performed
+Git commit     : Not created
+```
+
+### Files generated
+
+Only topology persistence mapper, repository adapters, and `TopologyConfiguration` wiring updates listed in TOP-012 were generated.
+
+### Validation performed locally
+
+```text
+- verified expected persistence mapper and adapter files exist
+- verified every generated Java file uses the canonical HidraAPI header
+- verified @Author remains Abir MEDJERAB
+- verified @CreatedOn remains 2025-06-26
+- verified @Module is topology
+- verified @Package matches actual package
+- verified no Flyway migration files were created
+- verified no controllers, REST DTOs, Swagger files, or tests were created
+- verified generated mapper/adapters/configuration compile with local stubs for kernel, Spring, Spring Data JPA, and Jakarta Persistence
+```
+
+### Validation still required after copying into repository
+
+```bash
+mvn -q -DskipTests compile
+```
+
+
+---
+
+## TOP-013 Local Execution Note
+
+```text
+Commit code    : TOP-013
+Commit message : db(topology): add topology flyway migration
+Execution mode : Local ZIP generation only
+GitHub push    : Not performed
+Git commit     : Not created
+```
+
+### Files generated
+
+Only the topology Flyway migration was generated for TOP-013.
+
+### Validation performed locally
+
+```text
+- verified exactly one new Flyway migration was created for TOP-013
+- verified migration filename is V002__create_topology_tables.sql
+- verified all expected topology tables are declared
+- verified primary keys, unique code constraints, check constraints, foreign keys, and indexes are declared
+- verified no Java files were generated or modified by TOP-013 logic
+- verified no controllers, REST DTOs, Swagger files, tests, or identityaccess files were created
+```
+
+### Validation still required after copying into repository
+
+```bash
+mvn -q -DskipTests compile
+mvn -q -DskipTests flyway:migrate
+```
+
+If Flyway is not configured as a Maven plugin, run the application with the `dev` profile against a clean database and verify the migration is applied.
+
+
+---
+
+## TOP-014 Local Execution Note
+
+```text
+Commit code    : TOP-014
+Commit message : feat(topology): add topology REST request DTOs
+Execution mode : Local ZIP generation only
+GitHub push    : Not performed
+Git commit     : Not created
+```
+
+### Files generated
+
+Only topology REST request DTO records listed in TOP-014 were generated.
+
+### Validation performed locally
+
+```text
+- verified all expected topology REST request DTO files exist
+- verified every generated Java file uses the canonical HidraAPI header
+- verified @Author remains Abir MEDJERAB
+- verified @CreatedOn remains 2025-06-26
+- verified @Module is topology
+- verified @Package matches actual package
+- verified every generated request DTO uses @Schema
+- verified generated request DTOs use Bean Validation constraints
+- verified no controllers, REST response DTOs, REST mappers, application services, persistence files, migrations, or tests were created by TOP-014
+- verified generated request DTOs compile with local stubs for Swagger and Bean Validation annotations
+```
+
+### Validation still required after copying into repository
+
+```bash
+mvn -q -DskipTests compile
+```
+
+
+---
+
+## TOP-015 Local Execution Note
+
+```text
+Commit code    : TOP-015
+Commit message : feat(topology): add topology REST response DTOs
+Execution mode : Local ZIP generation only
+GitHub push    : Not performed
+Git commit     : Not created
+```
+
+### Files generated
+
+Only topology REST response DTO records listed in TOP-015 were generated.
+
+### Validation performed locally
+
+```text
+- verified all expected topology REST response DTO files exist
+- verified every generated Java file uses the canonical HidraAPI header
+- verified @Author remains Abir MEDJERAB
+- verified @CreatedOn remains 2025-06-26
+- verified @Module is topology
+- verified @Package matches actual package
+- verified every generated response DTO uses @Schema
+- verified every response record component has @Schema
+- verified generated response DTOs do not use Bean Validation annotations
+- verified no controllers, REST mapper, request DTO changes, application services, persistence files, migrations, or tests were created by TOP-015
+- verified generated response DTOs compile with local stubs for Swagger annotations
+```
+
+### Validation still required after copying into repository
+
+```bash
+mvn -q -DskipTests compile
+```
+
+
+---
+
+## TOP-016 Local Execution Note
+
+```text
+Commit code    : TOP-016
+Commit message : feat(topology): add topology REST mapper
+Execution mode : Local ZIP generation only
+GitHub push    : Not performed
+Git commit     : Not created
+```
+
+### Files generated
+
+Only the topology REST mapper and mapper bean configuration were generated for TOP-016.
+
+### Validation performed locally
+
+```text
+- verified TopologyRestMapper exists
+- verified TopologyApiRestConfiguration exists
+- verified every generated Java file uses the canonical HidraAPI header
+- verified @Author remains Abir MEDJERAB
+- verified @CreatedOn remains 2025-06-26
+- verified @Module is topology
+- verified @Package matches actual package
+- verified mapper converts REST request DTOs to application commands
+- verified mapper converts application DTOs to REST response DTOs
+- verified mapper converts list query parameters to application queries
+- verified mapper converts PageResult application DTO pages to PageResult response pages
+- verified no controllers, application services, persistence files, migrations, or tests were created by TOP-016
+- verified generated REST mapper and configuration compile with local stubs for kernel, Spring, Swagger, Bean Validation, Spring Data JPA, and Jakarta Persistence
+```
+
+### Validation still required after copying into repository
+
+```bash
+mvn -q -DskipTests compile
+```
+
+
+---
+
+## TOP-017 Local Execution Note
+
+```text
+Commit code    : TOP-017
+Commit message : feat(topology): add topology REST controllers
+Execution mode : Local ZIP generation only
+GitHub push    : Not performed
+Git commit     : Not created
+```
+
+### Files generated
+
+Only topology REST controllers were generated for TOP-017.
+
+### Validation performed locally
+
+```text
+- verified all expected topology REST controller files exist
+- verified every generated Java file uses the canonical HidraAPI header
+- verified @Author remains Abir MEDJERAB
+- verified @CreatedOn remains 2025-06-26
+- verified @Module is topology
+- verified @Package matches actual package
+- verified controllers depend only on topology application inbound ports and TopologyRestMapper
+- verified no unsupported get/list endpoints were invented for ports that do not exist
+- verified no request DTOs, response DTOs, REST mapper, application services, persistence files, migrations, or tests were created by TOP-017
+- verified generated controllers compile with local stubs for kernel, Spring Web, Swagger, Bean Validation, Spring Data JPA, and Jakarta Persistence
+```
+
+### Validation still required after copying into repository
+
+```bash
+mvn -q -DskipTests compile
+```
+
+
+---
+
+## TOP-018 Local Execution Note
+
+```text
+Commit code    : TOP-018
+Commit message : test(topology): add topology domain tests
+Execution mode : Local ZIP generation only
+GitHub push    : Not performed
+Git commit     : Not created
+```
+
+### Files generated
+
+Only topology domain test files were generated for TOP-018.
+
+### Validation performed locally
+
+```text
+- verified all expected topology domain test files exist
+- verified every generated test Java file uses the canonical HidraAPI header
+- verified @Author remains Abir MEDJERAB
+- verified @CreatedOn remains 2025-06-26
+- verified @Module is topology
+- verified @Package matches actual package
+- verified tests target value objects, domain models, domain policies, and domain services
+- verified no production Java files were created or modified by TOP-018
+- verified no API tests, application tests, persistence tests, migrations, controllers, services, mappers, repositories, or DTOs were created by TOP-018
+- verified generated test sources compile with local stubs for kernel and JUnit
+```
+
+### Validation still required after copying into repository
+
+```bash
+mvn -q test
+```
+
+
+---
+
+## TOP-019 Local Execution Note
+
+```text
+Commit code    : TOP-019
+Commit message : test(topology): add topology application service tests
+Execution mode : Local ZIP generation only
+GitHub push    : Not performed
+Git commit     : Not created
+```
+
+### Files generated
+
+Only topology application service test files were generated for TOP-019.
+
+### Validation performed locally
+
+```text
+- verified all expected topology application service test files exist
+- verified every generated test Java file uses the canonical HidraAPI header
+- verified @Author remains Abir MEDJERAB
+- verified @CreatedOn remains 2025-06-26
+- verified @Module is topology
+- verified @Package matches actual package
+- verified tests target application service classes and application outbound ports only
+- verified tests use in-memory outbound port fakes, not Mockito, Spring, JPA, REST, or database infrastructure
+- verified no production Java files were created or modified by TOP-019
+- verified no API tests, persistence tests, migration files, controllers, DTOs, mappers, services, repositories, or adapters were created by TOP-019
+- verified generated test sources compile with local stubs for kernel and JUnit
+```
+
+### Validation still required after copying into repository
+
+```bash
+mvn -q test
+```
+
+
+---
+
+## TOP-020 Local Execution Note
+
+```text
+Commit code    : TOP-020
+Commit message : test(topology): add topology persistence tests
+Execution mode : Local ZIP generation only
+GitHub push    : Not performed
+Git commit     : Not created
+```
+
+### Files generated
+
+Only topology persistence test files were generated for TOP-020.
+
+### Validation performed locally
+
+```text
+- verified all expected topology persistence test files exist
+- verified every generated test Java file uses the canonical HidraAPI header
+- verified @Author remains Abir MEDJERAB
+- verified @CreatedOn remains 2025-06-26
+- verified @Module is topology
+- verified @Package matches actual package
+- verified tests target JPA entities, Spring Data repository interfaces, persistence mapper, and persistence adapters
+- verified tests do not require Spring Boot context, PostgreSQL, Testcontainers, H2, Flyway execution, or Mockito
+- verified no production Java files were created or modified by TOP-020
+- verified no API tests, application service tests, migration files, controllers, DTOs, mappers, repositories, adapters, or services were created by TOP-020
+- verified generated test sources compile with local stubs for kernel, JUnit, Jakarta Persistence, and Spring Data JPA
+```
+
+### Validation still required after copying into repository
+
+```bash
+mvn -q test
+```
+
+
+---
+
+## TOP-021 Local Execution Note
+
+```text
+Commit code    : TOP-021
+Commit message : test(topology): add topology REST mapper and controller tests
+Execution mode : Local ZIP generation only
+GitHub push    : Not performed
+Git commit     : Not created
+```
+
+### Files generated
+
+Only topology REST mapper/controller test files were generated for TOP-021.
+
+### Validation performed locally
+
+```text
+- verified all expected topology REST mapper/controller test files exist
+- verified every generated test Java file uses the canonical HidraAPI header
+- verified @Author remains Abir MEDJERAB
+- verified @CreatedOn remains 2025-06-26
+- verified @Module is topology
+- verified @Package matches actual package
+- verified tests target TopologyRestMapper, TopologyApiRestConfiguration, and REST controllers
+- verified tests instantiate controllers directly with fake inbound ports, without Spring Boot context or MockMvc
+- verified tests do not require databases, Flyway execution, JPA, Mockito, Testcontainers, or web server startup
+- verified no production Java files were created or modified by TOP-021
+- verified no migrations, application service tests, persistence tests, DTOs, controllers, mappers, services, repositories, or adapters were created by TOP-021
+- verified generated test sources compile with local stubs for kernel, JUnit, Spring Web, Swagger, Bean Validation, Spring Data JPA, and Jakarta Persistence
+```
+
+### Validation still required after copying into repository
+
+```bash
+mvn -q test
+```
+
+
+---
+
+## TOP-022 Local Execution Note
+
+```text
+Commit code    : TOP-022
+Commit message : test(topology): add topology application boot smoke test
+Execution mode : Local ZIP generation only
+GitHub push    : Not performed
+Git commit     : Not created
+```
+
+### Files generated
+
+Only one topology application boot smoke test was generated for TOP-022.
+
+### Validation performed locally
+
+```text
+- verified the expected topology boot smoke test file exists
+- verified the generated test Java file uses the canonical HidraAPI header
+- verified @Author remains Abir MEDJERAB
+- verified @CreatedOn remains 2025-06-26
+- verified @Module is topology
+- verified @Package matches actual package
+- verified the test uses @SpringBootTest against HidraApplication
+- verified the test uses PostgreSQL Testcontainers and does not disable JPA, Flyway, repositories, security, or topology wiring
+- verified the test asserts topology REST mapper, controllers, application use cases, application services, domain service/policy beans, persistence mapper, and repository ports are registered
+- verified no production Java files were created or modified by TOP-022
+- verified no migrations, unit tests, controllers, DTOs, mappers, services, repositories, or adapters were created by TOP-022
+- verified generated test source compiles with local stubs for kernel, JUnit, Spring Boot Test, Spring context, Testcontainers, and topology production sources
+```
+
+### Validation still required after copying into repository
+
+```bash
+mvn -q test -Dtest=TopologyApplicationBootSmokeTest
+```
+
+This test requires a Docker-compatible runtime because it starts PostgreSQL with Testcontainers.
+
+| `TOP-023` | `docs(topology): finalize topology validation checklist` | Completed locally | Added final topology validation checklist and validation commands. |
+
+
+---
+
+## TOP-023 Local Execution Note
+
+```text
+Commit code    : TOP-023
+Commit message : docs(topology): finalize topology validation checklist
+Execution mode : Local ZIP generation only
+GitHub push    : Not performed
+Git commit     : Not created
+```
+
+### Files generated or updated
+
+```text
+docs/roadmap/topology.md
+docs/roadmap/topology_validation_checklist.md
+README-TOP-023.md
+```
+
+### Validation performed locally
+
+```text
+- verified the topology validation checklist file exists
+- verified the topology roadmap file exists
+- verified TOP-023 is documented in the roadmap
+- verified the checklist contains commit code, commit message, module scope, validation commands, acceptance criteria, and remaining risks
+- verified the checklist covers topology data conception, including terminals, production fields, processing plants, injection points, extraction points, purge points, and valve subtypes
+- verified the checklist includes Linux/macOS/Git Bash and Windows PowerShell validation commands
+- verified TOP-023 created no production Java files
+- verified TOP-023 created no test Java files
+- verified TOP-023 created no migration files
+- verified TOP-023 created no forbidden packages
+```
+
+### Validation still required after copying into repository
+
+```bash
+test -f docs/roadmap/topology_validation_checklist.md
+test -f docs/roadmap/topology.md
+mvn -q test
+```
+
+Windows PowerShell:
+
+```powershell
+Test-Path docs/roadmap/topology_validation_checklist.md
+Test-Path docs/roadmap/topology.md
+mvn -q test
+```

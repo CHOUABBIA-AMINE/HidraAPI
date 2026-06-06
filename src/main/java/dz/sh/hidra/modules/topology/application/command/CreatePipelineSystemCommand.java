@@ -24,6 +24,7 @@ import java.util.Objects;
 import dz.sh.hidra.kernel.application.command.Command;
 import dz.sh.hidra.modules.topology.domain.value.OperationalOwnerReference;
 import dz.sh.hidra.modules.topology.domain.value.ProductType;
+import dz.sh.hidra.modules.topology.domain.value.ProductTypeReference;
 import dz.sh.hidra.modules.topology.domain.value.TopologyCode;
 import dz.sh.hidra.modules.topology.domain.value.TopologyName;
 
@@ -34,46 +35,46 @@ import dz.sh.hidra.modules.topology.domain.value.TopologyName;
  * This command creates a physical hydrocarbon transportation system that groups pipelines.
  *
  * <p>Architecture role:
- * This is an application command. It must not depend on API, persistence, Spring, JPA, identity,
- * organization implementation, measurement, flow, risk, workflow, or infrastructure code.
+ * This command carries product type as a catalog reference. The legacy enum constructor is retained
+ * only as a temporary bridge for API callers until COR-012.
  *
  * <p>Validation:
- * Code, name, and product type are mandatory. Description and operational owner reference are
- * optional.
- *
- * <p>Usage:
- * Use this command when API or orchestration code requests creation of a pipeline system.
- *
- * @param code business code
- * @param name display name
- * @param description optional description
- * @param productType hydrocarbon product type
- * @param operationalOwnerReference optional neutral operational owner reference
+ * Code, name, and product type reference are mandatory. Description and operational owner reference
+ * are optional.
  */
 public record CreatePipelineSystemCommand(
         TopologyCode code,
         TopologyName name,
         String description,
-        ProductType productType,
+        ProductTypeReference productType,
         OperationalOwnerReference operationalOwnerReference) implements Command {
 
     public CreatePipelineSystemCommand {
         Objects.requireNonNull(code, "Pipeline system code must not be null.");
         Objects.requireNonNull(name, "Pipeline system name must not be null.");
-        Objects.requireNonNull(productType, "Pipeline system product type must not be null.");
+        Objects.requireNonNull(productType, "Pipeline system product type reference must not be null.");
         description = normalizeOptional(description, "Pipeline system description", 500);
+    }
+
+    @Deprecated(forRemoval = true)
+    public CreatePipelineSystemCommand(
+            TopologyCode code,
+            TopologyName name,
+            String description,
+            ProductType productType,
+            OperationalOwnerReference operationalOwnerReference) {
+
+        this(code, name, description, ProductTypeReference.from(productType), operationalOwnerReference);
     }
 
     private static String normalizeOptional(String value, String label, int maxLength) {
         if (value == null || value.isBlank()) {
             return null;
         }
-
         String normalized = value.trim();
         if (normalized.length() > maxLength) {
             throw new IllegalArgumentException(label + " must not exceed " + maxLength + " characters.");
         }
         return normalized;
     }
-
 }

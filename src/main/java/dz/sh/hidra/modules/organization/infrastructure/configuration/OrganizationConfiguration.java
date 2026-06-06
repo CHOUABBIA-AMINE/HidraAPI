@@ -60,7 +60,7 @@ import dz.sh.hidra.modules.organization.domain.service.OrganizationHierarchyDoma
 import dz.sh.hidra.modules.organization.domain.service.ReportingLineDomainService;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitCode;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitId;
-import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitType;
+import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitTypeReference;
 import dz.sh.hidra.modules.organization.infrastructure.adapter.NoOpDomainEventPublisherAdapter;
 import dz.sh.hidra.modules.organization.infrastructure.persistence.mapper.OrganizationPersistenceMapper;
 import dz.sh.hidra.modules.organization.infrastructure.persistence.repository.EmployeeJpaRepository;
@@ -72,21 +72,6 @@ import dz.sh.hidra.modules.organization.infrastructure.persistence.repository.Po
 
 /**
  * Wires organization module beans.
- *
- * <p>Business role:
- * Assembles employees, organization units, positions, assignments, and reporting-line use cases.
- *
- * <p>Architecture role:
- * Infrastructure configuration only. It connects inbound ports, outbound ports, domain policies,
- * domain services, mappers, persistence adapters, and the temporary event publisher.
- *
- * <p>Validation:
- * No business rules are implemented here. Domain validation remains in value objects, aggregates,
- * policies, and services.
- *
- * <p>Usage:
- * Keep this class limited to bean wiring. Do not add REST endpoints, security rules, migrations,
- * identity implementation, topology implementation, or business logic here.
  */
 @Configuration
 public class OrganizationConfiguration {
@@ -277,7 +262,7 @@ public class OrganizationConfiguration {
         }
 
         @Override
-        public List<OrganizationUnit> findByType(OrganizationUnitType type) {
+        public List<OrganizationUnit> findByType(OrganizationUnitTypeReference type) {
             return organizationUnitRepository.findByType(type);
         }
 

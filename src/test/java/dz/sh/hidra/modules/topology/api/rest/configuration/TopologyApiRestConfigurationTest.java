@@ -21,31 +21,42 @@ package dz.sh.hidra.modules.topology.api.rest.configuration;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.time.Instant;
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 
 import dz.sh.hidra.modules.topology.api.rest.mapper.TopologyRestMapper;
+import dz.sh.hidra.modules.topology.application.dto.TopologyCatalogDto;
+import dz.sh.hidra.modules.topology.application.port.in.ResolveTopologyCatalogTypeUseCase;
 
 /**
  * Unit tests for TopologyApiRestConfiguration.
- *
- * <p>Business role:
- * Verifies that the API REST configuration can provide the topology REST mapper bean required by
- * controllers.
- *
- * <p>Architecture role:
- * This is a direct configuration unit test. It does not start Spring Boot.
- *
- * <p>Validation:
- * Prevents the missing mapper bean startup issue by checking the configuration factory method.
  */
 class TopologyApiRestConfigurationTest {
 
     @Test
-    void shouldCreateTopologyRestMapperBean() {
+    void shouldCreateTopologyRestMapperBeanWithCatalogResolver() {
         TopologyApiRestConfiguration configuration = new TopologyApiRestConfiguration();
 
-        TopologyRestMapper mapper = configuration.topologyRestMapper();
+        TopologyRestMapper mapper = configuration.topologyRestMapper(catalogResolver());
 
         assertNotNull(mapper);
+    }
+
+    private static ResolveTopologyCatalogTypeUseCase catalogResolver() {
+        return query -> new TopologyCatalogDto(
+                query.code().value(),
+                query.catalogName(),
+                query.code().value(),
+                "ACTIVE",
+                0,
+                true,
+                query.locale() == null ? "en" : query.locale(),
+                query.code().value(),
+                null,
+                List.of(),
+                Instant.EPOCH,
+                Instant.EPOCH);
     }
 }

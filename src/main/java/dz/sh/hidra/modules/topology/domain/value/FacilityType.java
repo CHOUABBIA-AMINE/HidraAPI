@@ -9,73 +9,115 @@
  * @CreatedOn   : 2025-06-26
  * @UpdatedOn   : 2026-05-30
  *
- * @Type        : Enum
+ * @Type        : Class
  * @Layer       : Domain
  * @Module      : topology
  * @Package     : dz.sh.hidra.modules.topology.domain.value
  *
- * @Description : Physical facility type enum for topology assets.
+ * @Description : Deprecated compatibility constant class for the facility type catalog.
  *
  */
 package dz.sh.hidra.modules.topology.domain.value;
 
+import java.util.Arrays;
+import java.util.Objects;
+
+import dz.sh.hidra.kernel.domain.exception.InvalidValueObjectException;
 import dz.sh.hidra.kernel.domain.model.ValueObject;
 
 /**
- * Physical facility type enum for topology assets.
+ * Deprecated compatibility constant class for the facility type controlled vocabulary.
  *
  * <p>Business role:
- * This enum restricts topology domain values to an explicit controlled set.
+ * Preserves legacy source compatibility while this business taxonomy is governed by catalog
+ * entities with multilingual labels.
  *
  * <p>Architecture role:
- * This is a pure topology domain value object enum and must not depend on API, persistence,
- * identity, organization, platform, Spring, JPA, measurement, flow, risk, or workflow code.
+ * This is intentionally not a Java enum. New code should use FacilityTypeReference instead.
  *
  * <p>Validation:
- * The enum prevents unbounded string values for this topology concept.
- *
- * <p>Usage:
- * Use this enum in topology domain and application code when this constrained value is required.
+ * Only the predefined compatibility constants are accepted through valueOf(String).
  */
-public enum FacilityType implements ValueObject {
+@Deprecated(forRemoval = false)
+public final class FacilityType implements ValueObject {
 
-    /** Gas compression station. */
-    COMPRESSION_STATION,
+    public static final FacilityType COMPRESSION_STATION = new FacilityType("COMPRESSION_STATION");
+    public static final FacilityType PUMPING_STATION = new FacilityType("PUMPING_STATION");
+    public static final FacilityType METERING_STATION = new FacilityType("METERING_STATION");
+    public static final FacilityType VALVE_STATION = new FacilityType("VALVE_STATION");
+    public static final FacilityType TERMINAL = new FacilityType("TERMINAL");
+    public static final FacilityType PROCESSING_PLANT = new FacilityType("PROCESSING_PLANT");
+    public static final FacilityType PRODUCTION_FIELD = new FacilityType("PRODUCTION_FIELD");
+    public static final FacilityType GATHERING_CENTER = new FacilityType("GATHERING_CENTER");
+    public static final FacilityType STORAGE_FACILITY = new FacilityType("STORAGE_FACILITY");
+    public static final FacilityType DELIVERY_FACILITY = new FacilityType("DELIVERY_FACILITY");
+    public static final FacilityType RECEIPT_FACILITY = new FacilityType("RECEIPT_FACILITY");
+    public static final FacilityType DISPATCHING_CENTER = new FacilityType("DISPATCHING_CENTER");
+    public static final FacilityType OTHER = new FacilityType("OTHER");
 
-    /** Liquid pumping station. */
-    PUMPING_STATION,
+    private static final FacilityType[] VALUES = {
+            COMPRESSION_STATION,
+            PUMPING_STATION,
+            METERING_STATION,
+            VALVE_STATION,
+            TERMINAL,
+            PROCESSING_PLANT,
+            PRODUCTION_FIELD,
+            GATHERING_CENTER,
+            STORAGE_FACILITY,
+            DELIVERY_FACILITY,
+            RECEIPT_FACILITY,
+            DISPATCHING_CENTER,
+            OTHER
+    };
 
-    /** Metering facility or station. */
-    METERING_STATION,
+    private final String name;
 
-    /** Valve station. */
-    VALVE_STATION,
+    private FacilityType(String name) {
+        this.name = requireName(name);
+    }
 
-    /** Terminal facility such as export, delivery, marine, or storage terminal. */
-    TERMINAL,
+    public static FacilityType valueOf(String name) {
+        String normalizedName = requireName(name);
+        return Arrays.stream(VALUES)
+                .filter(value -> value.name.equals(normalizedName))
+                .findFirst()
+                .orElseThrow(() -> new InvalidValueObjectException("FacilityType is not supported: " + name));
+    }
 
-    /** Processing plant connected to the hydrocarbon network. */
-    PROCESSING_PLANT,
+    public static FacilityType[] values() {
+        return VALUES.clone();
+    }
 
-    /** Production field interface to the pipeline network. */
-    PRODUCTION_FIELD,
+    public String name() {
+        return name;
+    }
 
-    /** Gathering center or gathering facility. */
-    GATHERING_CENTER,
+    @Override
+    public String toString() {
+        return name;
+    }
 
-    /** Storage facility connected to the network. */
-    STORAGE_FACILITY,
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (!(other instanceof FacilityType that)) {
+            return false;
+        }
+        return name.equals(that.name);
+    }
 
-    /** Delivery facility connected to the network. */
-    DELIVERY_FACILITY,
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
+    }
 
-    /** Receipt facility connected to the network. */
-    RECEIPT_FACILITY,
-
-    /** Dispatching or network supervision center. */
-    DISPATCHING_CENTER,
-
-    /** Other physical facility type. */
-    OTHER;
-
+    private static String requireName(String value) {
+        if (value == null || value.isBlank()) {
+            throw new InvalidValueObjectException("FacilityType name must not be null or blank.");
+        }
+        return value.trim().toUpperCase();
+    }
 }

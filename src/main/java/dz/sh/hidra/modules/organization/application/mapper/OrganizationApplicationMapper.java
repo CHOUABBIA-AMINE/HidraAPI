@@ -36,30 +36,9 @@ import dz.sh.hidra.modules.organization.domain.model.ReportingLine;
 
 /**
  * Maps organization domain objects to application DTOs.
- *
- * <p>Business role:
- * This mapper converts employees, organization units, positions, assignments, and reporting lines
- * into stable application outputs without leaking domain aggregates to outer layers.
- *
- * <p>Architecture role:
- * This is an application-layer mapper. It must not depend on REST request/response DTOs, JPA
- * entities, Spring components, identity domain classes, topology domain classes, or infrastructure
- * code.
- *
- * <p>Validation:
- * Input domain objects are required. Null optional domain fields are mapped to null DTO fields.
- *
- * <p>Usage:
- * Application services should use this mapper before returning DTOs through inbound ports.
  */
 public final class OrganizationApplicationMapper {
 
-    /**
-     * Maps an employee aggregate to an application DTO.
-     *
-     * @param employee employee aggregate
-     * @return employee DTO
-     */
     public EmployeeDto toDto(Employee employee) {
         Objects.requireNonNull(employee, "Employee must not be null.");
 
@@ -87,12 +66,6 @@ public final class OrganizationApplicationMapper {
                 employee.updatedAt());
     }
 
-    /**
-     * Maps an employee assignment to an application DTO.
-     *
-     * @param assignment employee assignment
-     * @return employee assignment DTO
-     */
     public EmployeeAssignmentDto toDto(EmployeeAssignment assignment) {
         Objects.requireNonNull(assignment, "Employee assignment must not be null.");
 
@@ -111,12 +84,6 @@ public final class OrganizationApplicationMapper {
                 assignment.effectiveTo());
     }
 
-    /**
-     * Maps a reporting line to an application DTO.
-     *
-     * @param reportingLine reporting line
-     * @return reporting line DTO
-     */
     public ReportingLineDto toDto(ReportingLine reportingLine) {
         Objects.requireNonNull(reportingLine, "Reporting line must not be null.");
 
@@ -131,12 +98,6 @@ public final class OrganizationApplicationMapper {
                 reportingLine.optionalDescription().orElse(null));
     }
 
-    /**
-     * Maps an organization unit to an application DTO.
-     *
-     * @param organizationUnit organization unit
-     * @return organization unit DTO
-     */
     public OrganizationUnitDto toDto(OrganizationUnit organizationUnit) {
         Objects.requireNonNull(organizationUnit, "Organization unit must not be null.");
 
@@ -147,6 +108,7 @@ public final class OrganizationApplicationMapper {
                 organizationUnit.code().value(),
                 organizationUnit.name().value(),
                 organizationUnit.status().name(),
+                organizationUnit.type().id(),
                 organizationUnit.type().name(),
                 organizationUnit.parentId().map(parentId -> parentId.value()).orElse(null),
                 scopeType(scope),
@@ -157,12 +119,6 @@ public final class OrganizationApplicationMapper {
                 organizationUnit.updatedAt());
     }
 
-    /**
-     * Maps a position to an application DTO.
-     *
-     * @param position position
-     * @return position DTO
-     */
     public PositionDto toDto(Position position) {
         Objects.requireNonNull(position, "Position must not be null.");
 

@@ -40,16 +40,6 @@ import dz.sh.hidra.modules.topology.infrastructure.persistence.entity.TopologyNo
 
 /**
  * Reflection tests for topology Spring Data repository contracts.
- *
- * <p>Business role:
- * Verifies that each topology repository exposes the query methods needed by repository adapters.
- *
- * <p>Architecture role:
- * These tests validate repository interface shape without starting Spring or touching a database.
- *
- * <p>Validation:
- * All repositories must extend JpaRepository and expose findByCode/existsByCode. List-oriented
- * repositories also expose the expected finder method names used for future optimized queries.
  */
 class TopologyJpaRepositoryContractsTest {
 
@@ -78,16 +68,23 @@ class TopologyJpaRepositoryContractsTest {
     }
 
     @Test
-    void shouldExposeExpectedSpecializedFinderMethods() throws NoSuchMethodException {
-        assertListMethod(PipelineSystemJpaRepository.class, "findByProductType", String.class);
+    void shouldExposeExpectedCatalogForeignKeyFinderMethods() throws NoSuchMethodException {
+        assertListMethod(PipelineSystemJpaRepository.class, "findByProductTypeId", String.class);
         assertListMethod(PipelineSystemJpaRepository.class, "findByStatus", String.class);
         assertListMethod(PipelineJpaRepository.class, "findByPipelineSystemId", String.class);
+        assertListMethod(PipelineJpaRepository.class, "findByProductTypeId", String.class);
+        assertListMethod(FacilityJpaRepository.class, "findByFacilityTypeId", String.class);
+        assertListMethod(FacilityJpaRepository.class, "findByProductTypeId", String.class);
         assertListMethod(FacilityJpaRepository.class, "findByOrganizationUnitReferenceCode", String.class);
+        assertListMethod(TopologyNodeJpaRepository.class, "findByNodeTypeId", String.class);
         assertListMethod(TopologyNodeJpaRepository.class, "findByFacilityId", String.class);
         assertListMethod(TopologyNodeJpaRepository.class, "findByPipelineAppurtenanceId", String.class);
         assertListMethod(PipelineSegmentJpaRepository.class, "findByPipelineId", String.class);
-        assertListMethod(PipelineAppurtenanceJpaRepository.class, "findByValveType", String.class);
+        assertListMethod(PipelineAppurtenanceJpaRepository.class, "findByAppurtenanceTypeId", String.class);
+        assertListMethod(PipelineAppurtenanceJpaRepository.class, "findByValveTypeId", String.class);
+        assertListMethod(TopologyConnectionJpaRepository.class, "findByConnectionTypeId", String.class);
         assertListMethod(TopologyConnectionJpaRepository.class, "findByLinkedAssetTypeAndLinkedAssetId", String.class, String.class);
+        assertListMethod(EquipmentJpaRepository.class, "findByEquipmentTypeId", String.class);
         assertListMethod(EquipmentJpaRepository.class, "findByParentAssetTypeAndParentAssetId", String.class, String.class);
     }
 

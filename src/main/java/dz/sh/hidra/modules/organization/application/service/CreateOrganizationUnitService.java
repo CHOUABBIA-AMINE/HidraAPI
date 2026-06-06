@@ -31,26 +31,9 @@ import dz.sh.hidra.modules.organization.application.port.out.OrganizationUnitRep
 import dz.sh.hidra.modules.organization.domain.event.OrganizationUnitCreatedEvent;
 import dz.sh.hidra.modules.organization.domain.model.OperationalScopeReference;
 import dz.sh.hidra.modules.organization.domain.model.OrganizationUnit;
-import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitType;
 
 /**
  * Implements the organization unit creation use case.
- *
- * <p>Business role:
- * This service creates organization units such as divisions, departments, regions, stations as
- * organization units, and teams. Physical station assets remain owned by topology.
- *
- * <p>Architecture role:
- * This is an application service coordinating the organization unit aggregate, outbound
- * repository, mapper, and event publisher without depending on REST, JPA, Spring, identity,
- * topology, platform, or infrastructure code.
- *
- * <p>Validation:
- * The command is required. Organization unit code uniqueness is checked through the outbound port.
- * Station unit creation uses a neutral operational scope reference when supplied.
- *
- * <p>Usage:
- * Wire this class later as the CreateOrganizationUnitUseCase implementation.
  */
 public final class CreateOrganizationUnitService implements CreateOrganizationUnitUseCase {
 
@@ -84,7 +67,7 @@ public final class CreateOrganizationUnitService implements CreateOrganizationUn
                 command.operationalScopeCode(),
                 command.operationalScopeName());
 
-        OrganizationUnit organizationUnit = command.type() == OrganizationUnitType.STATION && scopeReference != null
+        OrganizationUnit organizationUnit = command.type().isStationOrganizationUnit() && scopeReference != null
                 ? OrganizationUnit.createStation(command.code(), command.name(), command.parentId(), scopeReference)
                 : OrganizationUnit.create(command.code(), command.name(), command.type(), command.parentId(), scopeReference);
 

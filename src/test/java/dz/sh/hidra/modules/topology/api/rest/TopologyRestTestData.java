@@ -277,9 +277,9 @@ public final class TopologyRestTestData {
                 "VALVE",
                 "BLOCK_VALVE",
                 new BigDecimal("25.000"),
+                "PLANNED",
                 coordinateDto(),
                 "Main line block valve",
-                "PLANNED",
                 CREATED_AT,
                 UPDATED_AT);
     }

@@ -1,4 +1,4 @@
-# HidraAPI Topology Roadmap — Repository Reality
+# HidraAPI Topology Roadmap — Repository Reality After Catalog Refactor
 
 ```text
 Roadmap file : docs/roadmap/topology.md
@@ -9,7 +9,7 @@ Product      : Hidra - Hydrocarbon Intelligence for Data, Risk, and Analytics
 Author       : Abir MEDJERAB
 CreatedOn    : 2025-06-26
 UpdatedOn    : 2026-06-06
-Status       : Realigned with repository reality after TOP-023
+Status       : Realigned after TOP-023 and updated after topology catalog refactor corrections
 ```
 
 ---
@@ -63,9 +63,7 @@ notifications
 
 The repository contains topology production code, REST code, persistence code, migration code, tests, and the application boot smoke test.
 
-The old roadmap text still described several implemented tasks as planned. This file is now realigned so future agents do not repeat or mis-order topology work.
-
-The authoritative completion sequence is:
+The authoritative completed TOP sequence is:
 
 | Code | Commit message | Repository status | Notes |
 |---|---|---:|---|
@@ -91,11 +89,48 @@ The authoritative completion sequence is:
 | `TOP-020` | `test(topology): add topology persistence tests` | Completed | Persistence mapper/entity/repository/adapter tests. |
 | `TOP-021` | `test(topology): add topology REST mapper and controller tests` | Completed | REST mapper/controller tests. |
 | `TOP-022` | `test(topology): add topology application boot smoke test` | Completed | Spring Boot + PostgreSQL Testcontainers topology smoke test. |
-| `TOP-023` | `docs(topology): finalize topology validation checklist` | Completed by COR-003 realignment | `docs/roadmap/topology_validation_checklist.md` is restored/created by COR-003. |
+| `TOP-023` | `docs(topology): finalize topology validation checklist` | Completed | `docs/roadmap/topology_validation_checklist.md`. |
 
 ---
 
-## 3. Final topology data conception
+## 3. Catalog correction reality after COR-013
+
+A repository analysis found that topology business type concepts were initially implemented as Java enums and database `CHECK` constraints.
+
+The topology correction path has now been applied through the catalog refactor tasks:
+
+| Code | Commit message | Repository status | Notes |
+|---|---|---:|---|
+| `COR-004` | `docs(architecture): define controlled vocabulary policy` | Completed | Defines enum-vs-catalog policy. |
+| `COR-005` | `db(topology): add topology type catalog tables` | Completed | Adds multilingual topology catalog and translation tables in V003. |
+| `COR-006` | `feat(topology): add catalog domain model and references` | Completed | Adds catalog domain model and type reference value objects. |
+| `COR-007` | `feat(topology): add topology catalog application services` | Completed | Adds catalog application DTOs, queries, ports, and service. |
+| `COR-008` | `feat(topology): add topology catalog persistence adapters` | Completed | Adds catalog persistence adapter and configuration wiring. |
+| `COR-009` | `refactor(topology): replace enum usage in domain assets with type references` | Completed | Domain/application assets use catalog reference value objects. |
+| `COR-010` | `db(topology): migrate topology assets to catalog foreign keys` | Completed | Adds and backfills catalog FK columns in V004. |
+| `COR-011` | `refactor(topology): update topology persistence mapping to catalog foreign keys` | Completed | Persistence writes/reads catalog FK references. |
+| `COR-012` | `refactor(topology): update topology REST contracts for catalog types and localization` | Completed | REST requests use `typeCode`; responses expose localized type labels. |
+| `COR-013` | `db(topology): remove topology enum-style type constraints` | Completed | Removes old varchar taxonomy columns and old enum-style checks in V005. |
+
+Topology business taxonomy concepts are no longer roadmap-accepted as Java enums.
+
+The following topology concepts are catalog-backed controlled vocabularies:
+
+```text
+Product type
+Facility type
+Topology node type
+Pipeline appurtenance type
+Valve type
+Equipment type
+Connection type
+```
+
+Lifecycle/status concepts remain technical enums where appropriate.
+
+---
+
+## 4. Final topology data conception
 
 Topology is a physical network graph.
 
@@ -119,6 +154,8 @@ Facility
 PipelineAppurtenance
 TopologyConnection
 Equipment
+TopologyTypeCatalog
+TopologyTypeTranslation
 ```
 
 Do **not** use `Station` as the main physical asset model. Use `Facility`.
@@ -131,9 +168,11 @@ production field interfaces, gathering centers, storage facilities, delivery fac
 and receipt facilities are all physical facilities.
 ```
 
+Business type concepts are modeled as catalog references with stable codes and localized labels, not as fixed Java enum fields.
+
 ---
 
-## 4. Boundary rules
+## 5. Boundary rules
 
 Topology owns physical network structure only.
 
@@ -187,9 +226,9 @@ dz.sh.hidra.modules.notification.*
 
 ---
 
-## 5. REST endpoint reality
+## 6. REST endpoint reality after catalog refactor
 
-Expected endpoint groups after TOP-017:
+Expected endpoint groups:
 
 ```text
 /api/v1/topology/pipeline-systems
@@ -215,19 +254,47 @@ Expected operation shape:
 | topology connections | create, list |
 | equipment | register |
 
+REST create/list requests use stable catalog codes, for example:
+
+```text
+productTypeCode
+facilityTypeCode
+nodeTypeCode
+appurtenanceTypeCode
+valveTypeCode
+connectionTypeCode
+equipmentTypeCode
+```
+
+REST responses expose localized type references:
+
+```json
+{
+  "id": "topology-ft-compression-station",
+  "code": "COMPRESSION_STATION",
+  "label": "Station de compression",
+  "locale": "fr"
+}
+```
+
+Localization is driven by `Accept-Language` with fallback to the configured default locale.
+
 Do not add unsupported get/list/update/delete endpoints unless a later roadmap explicitly adds the matching application use cases.
 
 ---
 
-## 6. Database reality
+## 7. Database reality after catalog refactor
 
-Expected topology migration:
+Topology migrations:
 
 ```text
-src/main/resources/db/migration/V002__create_topology_tables.sql
+V002__create_topology_tables.sql
+V003__add_topology_type_catalogs.sql
+V004__link_topology_assets_to_type_catalogs.sql
+V005__remove_topology_enum_type_columns.sql
 ```
 
-Expected topology-owned table groups:
+Expected topology-owned asset table groups:
 
 ```text
 hidra_topology_pipeline_system
@@ -240,52 +307,37 @@ hidra_topology_connection
 hidra_topology_equipment
 ```
 
-The migration must not alter identity, organization, platform, kernel, or unrelated module tables.
-
----
-
-## 7. Known correction after repository analysis
-
-A later repository analysis identified that several business type concepts were implemented as Java enums and database check constraints.
-
-Examples:
+Expected topology catalog table groups:
 
 ```text
-FacilityType
-PipelineAppurtenanceType
-ValveType
-NodeType
-EquipmentType
-ConnectionType
-ProductType
+hidra_topology_product_type
+hidra_topology_product_type_translation
+hidra_topology_facility_type
+hidra_topology_facility_type_translation
+hidra_topology_node_type
+hidra_topology_node_type_translation
+hidra_topology_pipeline_appurtenance_type
+hidra_topology_pipeline_appurtenance_type_translation
+hidra_topology_valve_type
+hidra_topology_valve_type_translation
+hidra_topology_equipment_type
+hidra_topology_equipment_type_translation
+hidra_topology_connection_type
+hidra_topology_connection_type_translation
 ```
 
-These were acceptable for the initial topology baseline, but they are **not sufficient for multilingual, configurable business taxonomies**.
-
-The correction is intentionally **not performed in COR-003**.
-
-The correction belongs to the dedicated correction roadmap:
+Current database rules:
 
 ```text
-docs/roadmap/correction_01.md
+asset tables use catalog foreign-key ids for business taxonomy fields
+catalog translation tables support localized labels
+neutral owner/reference columns do not create foreign keys to organization tables
+status fields exist for lifecycle control
+old enum-style varchar taxonomy columns are removed by V005
+old enum-style taxonomy CHECK constraints are removed by V005
 ```
 
-Relevant future correction tasks:
-
-```text
-COR-004 — docs(architecture): define controlled vocabulary policy
-COR-005 — db(topology): add topology type catalog tables
-COR-006 — feat(topology): add catalog domain model and references
-COR-007 — feat(topology): add catalog application services
-COR-008 — feat(topology): add catalog persistence adapters
-COR-009 — refactor(topology): replace enum usage in domain assets with type references
-COR-010 — db(topology): migrate topology assets to catalog foreign keys
-COR-011 — refactor(topology): update persistence mapping to catalog foreign keys
-COR-012 — refactor(topology): update REST contracts for catalog types and localization
-COR-013 — db(topology): remove enum-style type constraints
-```
-
-Until those corrections are complete, do not start measurement implementation.
+The migration path must not alter identity, organization, platform, kernel, or unrelated module tables.
 
 ---
 
@@ -301,7 +353,11 @@ Linux/macOS/Git Bash:
 test -f docs/roadmap/topology.md
 test -f docs/roadmap/topology_validation_checklist.md
 test -f docs/roadmap/correction_01.md
+test -f docs/architecture/controlled-vocabulary-policy.md
 test -f src/main/resources/db/migration/V002__create_topology_tables.sql
+test -f src/main/resources/db/migration/V003__add_topology_type_catalogs.sql
+test -f src/main/resources/db/migration/V004__link_topology_assets_to_type_catalogs.sql
+test -f src/main/resources/db/migration/V005__remove_topology_enum_type_columns.sql
 test -d src/main/java/dz/sh/hidra/modules/topology
 test -d src/test/java/dz/sh/hidra/modules/topology
 ```
@@ -312,16 +368,28 @@ Windows PowerShell:
 Test-Path docs/roadmap/topology.md
 Test-Path docs/roadmap/topology_validation_checklist.md
 Test-Path docs/roadmap/correction_01.md
+Test-Path docs/architecture/controlled-vocabulary-policy.md
 Test-Path src/main/resources/db/migration/V002__create_topology_tables.sql
+Test-Path src/main/resources/db/migration/V003__add_topology_type_catalogs.sql
+Test-Path src/main/resources/db/migration/V004__link_topology_assets_to_type_catalogs.sql
+Test-Path src/main/resources/db/migration/V005__remove_topology_enum_type_columns.sql
 Test-Path src/main/java/dz/sh/hidra/modules/topology
 Test-Path src/test/java/dz/sh/hidra/modules/topology
 ```
 
-### 8.2 Compile and test
+### 8.2 Roadmap catalog wording
+
+```bash
+grep -n "catalog" docs/roadmap/topology.md
+grep -n "multilingual" docs/roadmap/topology.md
+```
+
+### 8.3 Compile and test
 
 ```bash
 mvn -q -DskipTests compile
 mvn -q test -Dtest='*Topology*Test'
+mvn -q test -Dtest=ControlledVocabularyArchitectureTest
 mvn -q test -Dtest=TopologyApplicationBootSmokeTest
 mvn -q test
 ```
@@ -338,13 +406,15 @@ Do not start:
 MES-001 — docs(measurement): add measurement implementation roadmap
 ```
 
-until the correction roadmap has completed at least the topology catalog correction path and the full baseline passes:
+until the corrected baseline is validated:
 
 ```text
-COR-001 through COR-018 complete
+COR-018 complete
 mvn -q test passes
+Flyway migrations apply cleanly
+ControlledVocabularyArchitectureTest passes
 Topology type catalogs support multilingual labels
-Topology REST responses can expose localized type labels
+Topology REST responses expose localized type labels
 Topology asset tables use catalog foreign keys
 ```
 
@@ -353,5 +423,5 @@ Topology asset tables use catalog foreign keys
 ## 10. Current next recommended task
 
 ```text
-COR-004 — docs(architecture): define controlled vocabulary policy
+COR-018 — test(stabilization): validate corrected baseline
 ```

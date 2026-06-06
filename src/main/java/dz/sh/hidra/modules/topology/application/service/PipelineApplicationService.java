@@ -7,7 +7,7 @@
  *
  * @Name        : PipelineApplicationService
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-05-30
+ * @UpdatedOn   : 2026-06-06
  *
  * @Type        : Class
  * @Layer       : Application
@@ -35,23 +35,10 @@ import dz.sh.hidra.modules.topology.application.query.ListPipelinesQuery;
 import dz.sh.hidra.modules.topology.domain.model.Pipeline;
 import dz.sh.hidra.modules.topology.domain.model.PipelineSystem;
 import dz.sh.hidra.modules.topology.domain.service.TopologyRegistrationDomainService;
+import dz.sh.hidra.modules.topology.domain.value.TopologyMultilingualDescription;
 
 /**
  * Implements pipeline create, get, and list use cases.
- *
- * <p>Business role:
- * Coordinates creation and retrieval of physical pipelines inside pipeline systems.
- *
- * <p>Architecture role:
- * This application service depends on topology ports, domain services, domain models, and
- * application DTOs only.
- *
- * <p>Validation:
- * Parent pipeline system existence, pipeline code uniqueness, and registration consistency are
- * enforced before saving.
- *
- * <p>Usage:
- * Wire this class as the implementation for pipeline use-case ports.
  */
 public final class PipelineApplicationService
         implements CreatePipelineUseCase, GetPipelineUseCase, ListPipelinesUseCase {
@@ -116,12 +103,17 @@ public final class PipelineApplicationService
     }
 
     private static PipelineDto toDto(Pipeline pipeline) {
+        TopologyMultilingualDescription description = pipeline.description();
         return new PipelineDto(
                 pipeline.id().value(),
                 pipeline.pipelineSystemId().value(),
                 pipeline.code().value(),
-                pipeline.name().value(),
-                pipeline.description(),
+                pipeline.name().nameAr(),
+                pipeline.name().nameFr(),
+                pipeline.name().nameEn(),
+                description == null ? null : description.descriptionAr(),
+                description == null ? null : description.descriptionFr(),
+                description == null ? null : description.descriptionEn(),
                 pipeline.productType().name(),
                 pipeline.nominalDiameter().value(),
                 pipeline.designLength().value(),

@@ -7,7 +7,7 @@
  *
  * @Name        : Pipeline
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-05-30
+ * @UpdatedOn   : 2026-06-06
  *
  * @Type        : Class
  * @Layer       : Domain
@@ -30,7 +30,8 @@ import dz.sh.hidra.modules.topology.domain.value.PipelineId;
 import dz.sh.hidra.modules.topology.domain.value.PipelineSystemId;
 import dz.sh.hidra.modules.topology.domain.value.ProductTypeReference;
 import dz.sh.hidra.modules.topology.domain.value.TopologyCode;
-import dz.sh.hidra.modules.topology.domain.value.TopologyName;
+import dz.sh.hidra.modules.topology.domain.value.TopologyMultilingualDescription;
+import dz.sh.hidra.modules.topology.domain.value.TopologyMultilingualName;
 import dz.sh.hidra.modules.topology.domain.value.TopologyStatus;
 
 /**
@@ -41,20 +42,20 @@ import dz.sh.hidra.modules.topology.domain.value.TopologyStatus;
  * appurtenances.
  *
  * <p>Architecture role:
- * This aggregate stores product classification as a catalog reference so multilingual labels and
- * configurable product taxonomies can be resolved through topology catalog services.
+ * This aggregate stores product classification as a catalog reference and stores user-facing labels
+ * as first-class Arabic, French, and English values.
  *
  * <p>Validation:
- * Pipeline system identifier, code, name, product type reference, dimensions, status, creation
- * instant, and update instant are mandatory.
+ * Pipeline system identifier, code, trilingual name, product type reference, dimensions, status,
+ * creation instant, and update instant are mandatory.
  */
 public final class Pipeline implements AggregateRoot<PipelineId> {
 
     private final PipelineId id;
     private final PipelineSystemId pipelineSystemId;
     private final TopologyCode code;
-    private final TopologyName name;
-    private final String description;
+    private final TopologyMultilingualName name;
+    private final TopologyMultilingualDescription description;
     private final ProductTypeReference productType;
     private final DiameterInInches nominalDiameter;
     private final LengthInKilometers designLength;
@@ -66,8 +67,8 @@ public final class Pipeline implements AggregateRoot<PipelineId> {
             PipelineId id,
             PipelineSystemId pipelineSystemId,
             TopologyCode code,
-            TopologyName name,
-            String description,
+            TopologyMultilingualName name,
+            TopologyMultilingualDescription description,
             ProductTypeReference productType,
             DiameterInInches nominalDiameter,
             LengthInKilometers designLength,
@@ -78,8 +79,8 @@ public final class Pipeline implements AggregateRoot<PipelineId> {
         this.id = Objects.requireNonNull(id, "Pipeline id must not be null.");
         this.pipelineSystemId = Objects.requireNonNull(pipelineSystemId, "Pipeline system id must not be null.");
         this.code = Objects.requireNonNull(code, "Pipeline code must not be null.");
-        this.name = Objects.requireNonNull(name, "Pipeline name must not be null.");
-        this.description = normalizeOptionalText(description, 500, "Pipeline description");
+        this.name = Objects.requireNonNull(name, "Pipeline trilingual name must not be null.");
+        this.description = description;
         this.productType = Objects.requireNonNull(productType, "Pipeline product type reference must not be null.");
         this.nominalDiameter = Objects.requireNonNull(nominalDiameter, "Pipeline nominal diameter must not be null.");
         this.designLength = Objects.requireNonNull(designLength, "Pipeline design length must not be null.");
@@ -93,8 +94,8 @@ public final class Pipeline implements AggregateRoot<PipelineId> {
     public static Pipeline create(
             PipelineSystemId pipelineSystemId,
             TopologyCode code,
-            TopologyName name,
-            String description,
+            TopologyMultilingualName name,
+            TopologyMultilingualDescription description,
             ProductTypeReference productType,
             DiameterInInches nominalDiameter,
             LengthInKilometers designLength) {
@@ -118,8 +119,8 @@ public final class Pipeline implements AggregateRoot<PipelineId> {
             PipelineId id,
             PipelineSystemId pipelineSystemId,
             TopologyCode code,
-            TopologyName name,
-            String description,
+            TopologyMultilingualName name,
+            TopologyMultilingualDescription description,
             ProductTypeReference productType,
             DiameterInInches nominalDiameter,
             LengthInKilometers designLength,
@@ -143,11 +144,11 @@ public final class Pipeline implements AggregateRoot<PipelineId> {
         return code;
     }
 
-    public TopologyName name() {
+    public TopologyMultilingualName name() {
         return name;
     }
 
-    public String description() {
+    public TopologyMultilingualDescription description() {
         return description;
     }
 
@@ -197,20 +198,6 @@ public final class Pipeline implements AggregateRoot<PipelineId> {
 
     private Pipeline withStatus(TopologyStatus newStatus) {
         return new Pipeline(id, pipelineSystemId, code, name, description, productType, nominalDiameter, designLength, Objects.requireNonNull(newStatus, "Pipeline status must not be null."), createdAt, Instant.now());
-    }
-
-    private static String normalizeOptionalText(String value, int maxLength, String fieldName) {
-        if (value == null || value.isBlank()) {
-            return null;
-        }
-
-        String normalized = value.trim();
-
-        if (normalized.length() > maxLength) {
-            throw new BusinessRuleViolationException(fieldName + " length must not exceed " + maxLength + " characters.");
-        }
-
-        return normalized;
     }
 
     private static Instant requireInstant(Instant value, String fieldName) {

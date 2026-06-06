@@ -7,14 +7,14 @@
  *
  * @Name        : PipelineResponse
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-05-30
+ * @UpdatedOn   : 2026-06-06
  *
  * @Type        : Record
  * @Layer       : API
  * @Module      : topology
  * @Package     : dz.sh.hidra.modules.topology.api.rest.response
  *
- * @Description : REST response representing a topology pipeline.
+ * @Description : REST response representing a topology pipeline with trilingual labels.
  *
  */
 package dz.sh.hidra.modules.topology.api.rest.response;
@@ -26,20 +26,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * REST response representing a topology pipeline.
- *
- * @param pipelineId pipeline identifier
- * @param pipelineSystemId parent pipeline system identifier
- * @param code pipeline business code
- * @param name pipeline display name
- * @param description optional description
- * @param productType localized hydrocarbon product type catalog reference
- * @param nominalDiameterInches nominal diameter in inches
- * @param designLengthKm design length in kilometers
- * @param status lifecycle status
- * @param createdAt creation instant
- * @param updatedAt last update instant
  */
-@Schema(name = "PipelineResponse", description = "REST response representing a topology pipeline.")
+@Schema(name = "PipelineResponse", description = "REST response representing a topology pipeline with trilingual labels.")
 public record PipelineResponse(
         @Schema(description = "Pipeline identifier.", example = "pipe_550e8400-e29b-41d4-a716-446655440000")
         String pipelineId,
@@ -50,11 +38,23 @@ public record PipelineResponse(
         @Schema(description = "Pipeline business code.", example = "GZ1-LINE-A")
         String code,
 
-        @Schema(description = "Pipeline display name.", example = "GZ1 Main Line A")
-        String name,
+        @Schema(description = "Arabic pipeline display name.", example = "خط الغاز الرئيسي أ")
+        String nameAr,
 
-        @Schema(description = "Optional pipeline description.", example = "Main transportation line.")
-        String description,
+        @Schema(description = "French pipeline display name.", example = "Ligne principale gaz A")
+        String nameFr,
+
+        @Schema(description = "English pipeline display name.", example = "GZ1 Main Line A")
+        String nameEn,
+
+        @Schema(description = "Arabic pipeline description.", example = "خط نقل رئيسي للغاز.")
+        String descriptionAr,
+
+        @Schema(description = "French pipeline description.", example = "Ligne principale de transport de gaz.")
+        String descriptionFr,
+
+        @Schema(description = "English pipeline description.", example = "Main gas transportation line.")
+        String descriptionEn,
 
         @Schema(description = "Localized hydrocarbon product type catalog reference.")
         TopologyTypeReferenceResponse productType,
@@ -68,9 +68,9 @@ public record PipelineResponse(
         @Schema(description = "Pipeline lifecycle status.", example = "ACTIVE", allowableValues = {"PLANNED", "ACTIVE", "INACTIVE", "UNDER_MAINTENANCE", "RETIRED", "DECOMMISSIONED"})
         String status,
 
-        @Schema(description = "Creation instant.", type = "string", format = "date-time")
+        @Schema(description = "Creation instant.", type = "string", format = "date-time", example = "2026-06-06T12:00:00Z")
         Instant createdAt,
 
-        @Schema(description = "Last update instant.", type = "string", format = "date-time")
+        @Schema(description = "Last update instant.", type = "string", format = "date-time", example = "2026-06-06T12:00:00Z")
         Instant updatedAt) {
 }

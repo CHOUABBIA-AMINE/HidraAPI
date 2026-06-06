@@ -28,25 +28,11 @@ import dz.sh.hidra.modules.organization.domain.model.OperationalScopeReference;
 import dz.sh.hidra.modules.organization.domain.model.OrganizationUnit;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitCode;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitId;
-import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitType;
+import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitTypeReference;
 import dz.sh.hidra.modules.organization.infrastructure.persistence.mapper.OrganizationPersistenceMapper;
 
 /**
  * Persistence adapter implementing the organization unit repository port.
- *
- * <p>Business role:
- * Persists and retrieves organization units, including station-as-organization-unit structures.
- *
- * <p>Architecture role:
- * This class adapts the application outbound OrganizationUnitRepository port to Spring Data JPA
- * without exposing persistence entities outside infrastructure.
- *
- * <p>Validation:
- * Domain validation happens before persistence. Operational scope values remain neutral and do not
- * import topology.
- *
- * <p>Usage:
- * Wire this adapter later in organization configuration.
  */
 public final class OrganizationUnitRepositoryAdapter implements OrganizationUnitRepository {
 
@@ -95,9 +81,9 @@ public final class OrganizationUnitRepositoryAdapter implements OrganizationUnit
     }
 
     @Override
-    public List<OrganizationUnit> findByType(OrganizationUnitType type) {
-        Objects.requireNonNull(type, "Organization unit type must not be null.");
-        return organizationUnitJpaRepository.findByType(type.name()).stream()
+    public List<OrganizationUnit> findByType(OrganizationUnitTypeReference type) {
+        Objects.requireNonNull(type, "Organization unit type reference must not be null.");
+        return organizationUnitJpaRepository.findByTypeId(type.id()).stream()
                 .map(mapper::toDomain)
                 .toList();
     }

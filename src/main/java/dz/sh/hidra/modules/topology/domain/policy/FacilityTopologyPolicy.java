@@ -25,7 +25,8 @@ import dz.sh.hidra.modules.topology.domain.exception.TopologyValidationException
 import dz.sh.hidra.modules.topology.domain.model.Facility;
 import dz.sh.hidra.modules.topology.domain.model.TopologyNode;
 import dz.sh.hidra.modules.topology.domain.value.FacilityType;
-import dz.sh.hidra.modules.topology.domain.value.NodeType;
+import dz.sh.hidra.modules.topology.domain.value.FacilityTypeReference;
+import dz.sh.hidra.modules.topology.domain.value.NodeTypeReference;
 
 /**
  * Validates physical facility rules.
@@ -35,39 +36,24 @@ import dz.sh.hidra.modules.topology.domain.value.NodeType;
  * as an organization unit in organization.
  *
  * <p>Architecture role:
- * This is a pure domain policy. It must not be annotated as a Spring bean and must not access
- * repositories, persistence adapters, REST DTOs, identity implementation, organization implementation,
- * measurement, flow, risk, workflow, or infrastructure code.
+ * This is a pure domain policy. It evaluates configurable facility and node type references by their
+ * stable language-neutral codes.
  *
  * <p>Validation:
  * Facilities are physical assets only. Facility nodes must reference the facility and must use a
  * facility-compatible node type. Terminal, processing plant, and production field are allowed as
  * physical facility types.
- *
- * <p>Usage:
- * Domain/application services may call this policy before attaching nodes to facilities.
  */
 public final class FacilityTopologyPolicy {
 
-    /**
-     * Validates a facility as a physical topology asset.
-     *
-     * @param facility facility to validate
-     */
     public void validateFacility(Facility facility) {
         Objects.requireNonNull(facility, "Facility must not be null.");
 
-        if (facility.facilityType() == FacilityType.DISPATCHING_CENTER && facility.productType() == null) {
+        if (facility.facilityType().is("DISPATCHING_CENTER") && facility.productType() == null) {
             throw new TopologyValidationException("Dispatching center facility must still provide a product type classification.");
         }
     }
 
-    /**
-     * Validates that a node belongs to a physical facility.
-     *
-     * @param facility physical facility
-     * @param node topology node
-     */
     public void validateFacilityNode(Facility facility, TopologyNode node) {
         Objects.requireNonNull(facility, "Facility must not be null.");
         Objects.requireNonNull(node, "Topology node must not be null.");
@@ -85,11 +71,6 @@ public final class FacilityTopologyPolicy {
         }
     }
 
-    /**
-     * Ensures the physical facility is not treated as an organization unit implementation.
-     *
-     * @param facility physical facility
-     */
     public void ensurePhysicalFacilityOnly(Facility facility) {
         Objects.requireNonNull(facility, "Facility must not be null.");
 
@@ -100,39 +81,36 @@ public final class FacilityTopologyPolicy {
         }
     }
 
-    /**
-     * Indicates whether the facility type is a site that can own facility inlet/outlet nodes.
-     *
-     * @param facilityType facility type
-     * @return true when inlet/outlet nodes are allowed
-     */
-    public boolean canOwnFacilityConnectionNodes(FacilityType facilityType) {
-        Objects.requireNonNull(facilityType, "Facility type must not be null.");
+    public boolean canOwnFacilityConnectionNodes(FacilityTypeReference facilityType) {
+        Objects.requireNonNull(facilityType, "Facility type reference must not be null.");
 
-        return switch (facilityType) {
-            case COMPRESSION_STATION,
-                    PUMPING_STATION,
-                    METERING_STATION,
-                    VALVE_STATION,
-                    TERMINAL,
-                    PROCESSING_PLANT,
-                    PRODUCTION_FIELD,
-                    GATHERING_CENTER,
-                    STORAGE_FACILITY,
-                    DELIVERY_FACILITY,
-                    RECEIPT_FACILITY -> true;
-            case DISPATCHING_CENTER,
-                    OTHER -> false;
-        };
+        return facilityType.isAny(
+                "COMPRESSION_STATION",
+                "PUMPING_STATION",
+                "METERING_STATION",
+                "VALVE_STATION",
+                "TERMINAL",
+                "PROCESSING_PLANT",
+                "PRODUCTION_FIELD",
+                "GATHERING_CENTER",
+                "STORAGE_FACILITY",
+                "DELIVERY_FACILITY",
+                "RECEIPT_FACILITY");
     }
 
-    private boolean isFacilityNodeType(NodeType nodeType) {
-        return nodeType == NodeType.FACILITY_INLET
-                || nodeType == NodeType.FACILITY_OUTLET
-                || nodeType == NodeType.FACILITY_INTERNAL
-                || nodeType == NodeType.RECEIPT_POINT
-                || nodeType == NodeType.DELIVERY_POINT
-                || nodeType == NodeType.METERING_POINT
-                || nodeType == NodeType.CONNECTION_POINT;
+    @Deprecated(forRemoval = true)
+    public boolean canOwnFacilityConnectionNodes(FacilityType facilityType) {
+        return canOwnFacilityConnectionNodes(FacilityTypeReference.from(facilityType));
+    }
+
+    private boolean isFacilityNodeType(NodeTypeReference nodeType) {
+        return nodeType.isAny(
+                "FACILITY_INLET",
+                "FACILITY_OUTLET",
+                "FACILITY_INTERNAL",
+                "RECEIPT_POINT",
+                "DELIVERY_POINT",
+                "METERING_POINT",
+                "CONNECTION_POINT");
     }
 }

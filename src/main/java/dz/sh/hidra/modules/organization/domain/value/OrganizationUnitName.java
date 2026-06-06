@@ -7,14 +7,14 @@
  *
  * @Name        : OrganizationUnitName
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-05-30
+ * @UpdatedOn   : 2026-06-06
  *
  * @Type        : Record
  * @Layer       : Domain
  * @Module      : organization
  * @Package     : dz.sh.hidra.modules.organization.domain.value
  *
- * @Description : Validated organization unit name value object.
+ * @Description : Trilingual organization unit display name value object.
  *
  */
 package dz.sh.hidra.modules.organization.domain.value;
@@ -23,51 +23,61 @@ import dz.sh.hidra.kernel.domain.exception.InvalidValueObjectException;
 import dz.sh.hidra.kernel.domain.model.ValueObject;
 
 /**
- * Represents the display name of an organization unit.
+ * Represents the trilingual display name of an organization unit.
  *
  * <p>Business role:
- * This value object captures the display name of an organization unit inside the organization bounded context.
+ * Captures Arabic, French, and English names of an organization unit inside the organization bounded
+ * context.
  *
  * <p>Architecture role:
- * This is a domain value object and must not depend on Spring, JPA, REST DTO validation, identity,
- * topology, or platform infrastructure.
+ * Domain value object independent from Spring, JPA, REST DTO validation, identity, topology, and
+ * platform infrastructure. Compatibility helpers keep existing single-label callers compiling while
+ * new code should use all three fields.
  *
  * <p>Validation:
- * Organization unit names are trimmed and must be 2 to 160 characters long.
+ * Each language value is trimmed and must be 2 to 160 characters long.
  *
- * <p>Usage:
- * Use this type instead of raw strings when organization domain logic requires this concept.
- *
- * @param value validated value, for example <code>Compression Station East 01</code>
+ * @param nameAr Arabic display name
+ * @param nameFr French display name
+ * @param nameEn English display name
  */
-public record OrganizationUnitName(String value) implements ValueObject {
+public record OrganizationUnitName(String nameAr, String nameFr, String nameEn) implements ValueObject {
 
     public OrganizationUnitName {
-        value = normalize(value);
+        nameAr = normalize(nameAr, "OrganizationUnitName Arabic value");
+        nameFr = normalize(nameFr, "OrganizationUnitName French value");
+        nameEn = normalize(nameEn, "OrganizationUnitName English value");
     }
 
-    /**
-     * Creates the value object from raw input.
-     *
-     * @param value raw input value
-     * @return validated value object
-     */
+    public OrganizationUnitName(String value) {
+        this(value, value, value);
+    }
+
     public static OrganizationUnitName of(String value) {
         return new OrganizationUnitName(value);
     }
 
-    private static String normalize(String value) {
+    public static OrganizationUnitName of(String nameAr, String nameFr, String nameEn) {
+        return new OrganizationUnitName(nameAr, nameFr, nameEn);
+    }
+
+    /**
+     * Compatibility projection used by existing single-label code paths.
+     *
+     * @return English display name
+     */
+    public String value() {
+        return nameEn;
+    }
+
+    private static String normalize(String value, String label) {
         if (value == null || value.isBlank()) {
-            throw new InvalidValueObjectException("OrganizationUnitName must not be null or blank.");
+            throw new InvalidValueObjectException(label + " must not be null or blank.");
         }
-
         String normalized = value.trim();
-        
-
         if (normalized.length() < 2 || normalized.length() > 160) {
-            throw new InvalidValueObjectException("OrganizationUnitName length must be between 2 and 160 characters.");
+            throw new InvalidValueObjectException(label + " length must be between 2 and 160 characters.");
         }
-
         return normalized;
     }
 }

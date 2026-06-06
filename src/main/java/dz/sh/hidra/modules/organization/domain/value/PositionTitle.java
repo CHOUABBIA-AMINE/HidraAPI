@@ -7,14 +7,14 @@
  *
  * @Name        : PositionTitle
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-05-30
+ * @UpdatedOn   : 2026-06-06
  *
  * @Type        : Record
  * @Layer       : Domain
  * @Module      : organization
  * @Package     : dz.sh.hidra.modules.organization.domain.value
  *
- * @Description : Validated position title value object.
+ * @Description : Trilingual position title value object.
  *
  */
 package dz.sh.hidra.modules.organization.domain.value;
@@ -23,51 +23,60 @@ import dz.sh.hidra.kernel.domain.exception.InvalidValueObjectException;
 import dz.sh.hidra.kernel.domain.model.ValueObject;
 
 /**
- * Represents the display title of an organization position.
+ * Represents the trilingual display title of an organization position.
  *
  * <p>Business role:
- * This value object captures the display title of an organization position inside the organization bounded context.
+ * Captures Arabic, French, and English titles for a position inside the organization bounded context.
  *
  * <p>Architecture role:
- * This is a domain value object and must not depend on Spring, JPA, REST DTO validation, identity,
- * topology, or platform infrastructure.
+ * Domain value object independent from Spring, JPA, REST DTO validation, identity, topology, and
+ * platform infrastructure. Compatibility helpers keep existing single-label callers compiling while
+ * new code should use all three fields.
  *
  * <p>Validation:
- * Position titles are trimmed and must be 2 to 120 characters long.
+ * Each language value is trimmed and must be 2 to 120 characters long.
  *
- * <p>Usage:
- * Use this type instead of raw strings when organization domain logic requires this concept.
- *
- * @param value validated value, for example <code>Station Team Leader</code>
+ * @param titleAr Arabic display title
+ * @param titleFr French display title
+ * @param titleEn English display title
  */
-public record PositionTitle(String value) implements ValueObject {
+public record PositionTitle(String titleAr, String titleFr, String titleEn) implements ValueObject {
 
     public PositionTitle {
-        value = normalize(value);
+        titleAr = normalize(titleAr, "PositionTitle Arabic value");
+        titleFr = normalize(titleFr, "PositionTitle French value");
+        titleEn = normalize(titleEn, "PositionTitle English value");
     }
 
-    /**
-     * Creates the value object from raw input.
-     *
-     * @param value raw input value
-     * @return validated value object
-     */
+    public PositionTitle(String value) {
+        this(value, value, value);
+    }
+
     public static PositionTitle of(String value) {
         return new PositionTitle(value);
     }
 
-    private static String normalize(String value) {
+    public static PositionTitle of(String titleAr, String titleFr, String titleEn) {
+        return new PositionTitle(titleAr, titleFr, titleEn);
+    }
+
+    /**
+     * Compatibility projection used by existing single-label code paths.
+     *
+     * @return English display title
+     */
+    public String value() {
+        return titleEn;
+    }
+
+    private static String normalize(String value, String label) {
         if (value == null || value.isBlank()) {
-            throw new InvalidValueObjectException("PositionTitle must not be null or blank.");
+            throw new InvalidValueObjectException(label + " must not be null or blank.");
         }
-
         String normalized = value.trim();
-        
-
         if (normalized.length() < 2 || normalized.length() > 120) {
-            throw new InvalidValueObjectException("PositionTitle length must be between 2 and 120 characters.");
+            throw new InvalidValueObjectException(label + " length must be between 2 and 120 characters.");
         }
-
         return normalized;
     }
 }

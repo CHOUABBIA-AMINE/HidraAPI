@@ -27,39 +27,22 @@ import dz.sh.hidra.kernel.domain.event.DomainEventId;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitCode;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitId;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitType;
+import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitTypeReference;
 
 /**
  * Domain event raised when an organization unit is created.
  *
- * <p>Business role:
- * Captures the business fact that an organization unit was created, including station-as-organization-unit structures that represent people and responsibility rather than topology assets.
- *
- * <p>Architecture role:
- * This is an immutable organization domain event. It implements the kernel domain event contract
- * and must not depend on platform event infrastructure, persistence entities, REST DTOs, identity, topology,
- * Spring, JPA, or infrastructure code.
- *
- * <p>Validation:
- * Event id, occurrence instant, organization unit id, code, and type are required.
- *
- * <p>Usage:
- * Raise this event from organization aggregate or application behavior when the related business
- * fact occurs. Keep payloads limited to safe identifiers, codes, and non-secret business context.
- *
  * @param organizationUnitId created organization unit identifier
  * @param organizationUnitCode created organization unit business code
- * @param organizationUnitType created organization unit type
+ * @param organizationUnitType created organization unit type catalog reference
  */
 public record OrganizationUnitCreatedEvent(
         DomainEventId eventId,
         Instant occurredAt,
         OrganizationUnitId organizationUnitId,
         OrganizationUnitCode organizationUnitCode,
-        OrganizationUnitType organizationUnitType) implements DomainEvent {
+        OrganizationUnitTypeReference organizationUnitType) implements DomainEvent {
 
-    /**
-     * Event type emitted for this business fact.
-     */
     public static final String TYPE = "organization.unit.created";
 
     public OrganizationUnitCreatedEvent {
@@ -70,18 +53,10 @@ public record OrganizationUnitCreatedEvent(
         Objects.requireNonNull(organizationUnitType, "organizationUnitType must not be null.");
     }
 
-    /**
-     * Creates a new domain event with generated event id and current occurrence instant.
-     *
-     * @param organizationUnitId created organization unit identifier
-     * @param organizationUnitCode created organization unit business code
-     * @param organizationUnitType created organization unit type
-     * @return created domain event
-     */
     public static OrganizationUnitCreatedEvent occurred(
             OrganizationUnitId organizationUnitId,
             OrganizationUnitCode organizationUnitCode,
-            OrganizationUnitType organizationUnitType) {
+            OrganizationUnitTypeReference organizationUnitType) {
 
         return new OrganizationUnitCreatedEvent(
                 DomainEventId.newId(),
@@ -89,6 +64,18 @@ public record OrganizationUnitCreatedEvent(
                 organizationUnitId,
                 organizationUnitCode,
                 organizationUnitType);
+    }
+
+    /**
+     * @deprecated use {@link #occurred(OrganizationUnitId, OrganizationUnitCode, OrganizationUnitTypeReference)}
+     */
+    @Deprecated(forRemoval = false)
+    public static OrganizationUnitCreatedEvent occurred(
+            OrganizationUnitId organizationUnitId,
+            OrganizationUnitCode organizationUnitCode,
+            OrganizationUnitType organizationUnitType) {
+
+        return occurred(organizationUnitId, organizationUnitCode, OrganizationUnitTypeReference.from(organizationUnitType));
     }
 
     @Override

@@ -7,36 +7,71 @@
  *
  * @Name        : OrganizationUnitTypeResponse
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-05-30
+ * @UpdatedOn   : 2026-06-06
  *
  * @Type        : Record
  * @Layer       : API
  * @Module      : organization
  * @Package     : dz.sh.hidra.modules.organization.api.rest.response
  *
- * @Description : Localized REST response for an organization unit type catalog reference.
+ * @Description : REST response exposing an organization unit type catalog entry with trilingual labels.
  *
  */
 package dz.sh.hidra.modules.organization.api.rest.response;
 
+import java.time.Instant;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
- * Localized REST response for an organization unit type catalog reference.
+ * REST response exposing an organization unit type catalog entry with trilingual labels.
  *
- * @param id organization unit type catalog identifier
- * @param code stable language-neutral type code
- * @param label localized label
- * @param locale resolved locale
+ * <p>Business role:
+ * Gives clients stable organization unit type reference data while treating Arabic, French, and
+ * English labels as first-class API fields.
+ *
+ * <p>Architecture role:
+ * This response is an API-boundary projection. Domain references keep only id and code, while this
+ * response exposes display labels resolved from catalog data.
  */
-@Schema(name = "OrganizationUnitTypeResponse", description = "Localized organization unit type reference.")
+@Schema(name = "OrganizationUnitTypeResponse", description = "Organization unit type catalog entry with trilingual labels.")
 public record OrganizationUnitTypeResponse(
-        @Schema(description = "Organization unit type catalog identifier.", example = "organization-out-station")
+        @Schema(description = "Organization unit type catalog entry identifier.", example = "organization-out-station")
         String id,
+
         @Schema(description = "Stable language-neutral organization unit type code.", example = "STATION")
         String code,
-        @Schema(description = "Localized organization unit type label.", example = "Station")
-        String label,
-        @Schema(description = "Resolved locale.", example = "en")
-        String locale) {
+
+        @Schema(description = "Arabic organization unit type name.", example = "محطة")
+        String nameAr,
+
+        @Schema(description = "French organization unit type name.", example = "Station")
+        String nameFr,
+
+        @Schema(description = "English organization unit type name.", example = "Station")
+        String nameEn,
+
+        @Schema(description = "Arabic organization unit type description.", example = "محطة كوحدة تنظيمية للأفراد والمسؤوليات.")
+        String descriptionAr,
+
+        @Schema(description = "French organization unit type description.", example = "Station comme unité organisationnelle pour les personnes et responsabilités.")
+        String descriptionFr,
+
+        @Schema(description = "English organization unit type description.", example = "Station as an organization unit for people and responsibility.")
+        String descriptionEn,
+
+        @Schema(description = "Catalog lifecycle status.", example = "ACTIVE")
+        String status,
+
+        @Schema(description = "Display ordering value.", example = "80")
+        int sortOrder,
+
+        @Schema(description = "Whether this organization unit type is system-defined.", example = "true")
+        boolean systemDefined,
+
+        @Schema(description = "Creation instant.", type = "string", format = "date-time")
+        Instant createdAt,
+
+        @Schema(description = "Last update instant.", type = "string", format = "date-time")
+        Instant updatedAt) {
 }

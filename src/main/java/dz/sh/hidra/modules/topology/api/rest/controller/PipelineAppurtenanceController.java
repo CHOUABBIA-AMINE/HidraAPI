@@ -1,0 +1,139 @@
+/**
+ *
+ * @Project     : HidraAPI
+ * @Product     : Hidra - Hydrocarbon Intelligence for Data, Risk, and Analytics
+ * @Author      : Abir MEDJERAB
+ * @Owner       : Sonatrach / TRC : Digitalization Initiative
+ *
+ * @Name        : PipelineAppurtenanceController
+ * @CreatedOn   : 2025-06-26
+ * @UpdatedOn   : 2026-05-30
+ *
+ * @Type        : Class
+ * @Layer       : API
+ * @Module      : topology
+ * @Package     : dz.sh.hidra.modules.topology.api.rest.controller
+ *
+ * @Description : REST controller for topology pipeline appurtenances.
+ *
+ */
+package dz.sh.hidra.modules.topology.api.rest.controller;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import dz.sh.hidra.kernel.application.pagination.PageResult;
+import dz.sh.hidra.modules.topology.api.rest.mapper.TopologyRestMapper;
+import dz.sh.hidra.modules.topology.api.rest.request.CreatePipelineAppurtenanceRequest;
+import dz.sh.hidra.modules.topology.api.rest.response.PipelineAppurtenanceResponse;
+import dz.sh.hidra.modules.topology.application.port.in.CreatePipelineAppurtenanceUseCase;
+import dz.sh.hidra.modules.topology.application.port.in.GetPipelineAppurtenanceUseCase;
+import dz.sh.hidra.modules.topology.application.port.in.ListPipelineAppurtenancesUseCase;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+
+/**
+ * REST controller exposing topology pipeline appurtenance endpoints.
+ *
+ * <p>Business role:
+ * Exposes point assets installed along pipelines, including valves, injection points, extraction
+ * points, purge points, vents, drains, scraper points, hot taps, bypass points, metering points,
+ * sampling points, and connection points.
+ *
+ * <p>Architecture role:
+ * This controller does not own operations, permits, telemetry, hydraulic calculations, risk,
+ * maintenance, or workflow behavior.
+ *
+ * <p>Validation:
+ * Request bodies use Bean Validation with @Valid. Query pagination parameters are bounded.
+ *
+ * <p>Usage:
+ * Use endpoints under /api/v1/topology/pipeline-appurtenances.
+ */
+@RestController
+@RequestMapping("/api/v1/topology/pipeline-appurtenances")
+@Tag(name = "Topology Pipeline Appurtenances", description = "Topology pipeline appurtenance endpoints.")
+public class PipelineAppurtenanceController {
+
+    private final CreatePipelineAppurtenanceUseCase createPipelineAppurtenanceUseCase;
+    private final GetPipelineAppurtenanceUseCase getPipelineAppurtenanceUseCase;
+    private final ListPipelineAppurtenancesUseCase listPipelineAppurtenancesUseCase;
+    private final TopologyRestMapper mapper;
+
+    public PipelineAppurtenanceController(
+            CreatePipelineAppurtenanceUseCase createPipelineAppurtenanceUseCase,
+            GetPipelineAppurtenanceUseCase getPipelineAppurtenanceUseCase,
+            ListPipelineAppurtenancesUseCase listPipelineAppurtenancesUseCase,
+            TopologyRestMapper mapper) {
+
+        this.createPipelineAppurtenanceUseCase = createPipelineAppurtenanceUseCase;
+        this.getPipelineAppurtenanceUseCase = getPipelineAppurtenanceUseCase;
+        this.listPipelineAppurtenancesUseCase = listPipelineAppurtenancesUseCase;
+        this.mapper = mapper;
+    }
+
+    @PostMapping
+    @Operation(summary = "Create pipeline appurtenance", description = "Creates a point asset installed along a pipeline.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Pipeline appurtenance created."),
+            @ApiResponse(responseCode = "400", description = "Invalid pipeline appurtenance creation request."),
+            @ApiResponse(responseCode = "404", description = "Referenced pipeline or node was not found."),
+            @ApiResponse(responseCode = "409", description = "Pipeline appurtenance code conflicts with an existing appurtenance."),
+            @ApiResponse(responseCode = "500", description = "Unexpected server error.")
+    })
+    public ResponseEntity<PipelineAppurtenanceResponse> createPipelineAppurtenance(
+            @Valid @RequestBody CreatePipelineAppurtenanceRequest request) {
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(mapper.toResponse(createPipelineAppurtenanceUseCase.createPipelineAppurtenance(mapper.toCommand(request))));
+    }
+
+    @GetMapping("/{pipelineAppurtenanceId}")
+    @Operation(summary = "Get pipeline appurtenance", description = "Retrieves one pipeline appurtenance by identifier.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Pipeline appurtenance found."),
+            @ApiResponse(responseCode = "400", description = "Invalid pipeline appurtenance identifier."),
+            @ApiResponse(responseCode = "404", description = "Pipeline appurtenance not found."),
+            @ApiResponse(responseCode = "500", description = "Unexpected server error.")
+    })
+    public ResponseEntity<PipelineAppurtenanceResponse> getPipelineAppurtenance(
+            @Parameter(description = "Pipeline appurtenance identifier.", required = true)
+            @PathVariable String pipelineAppurtenanceId) {
+
+        return ResponseEntity.ok(mapper.toResponse(getPipelineAppurtenanceUseCase.getPipelineAppurtenance(
+                mapper.toGetPipelineAppurtenanceByIdQuery(pipelineAppurtenanceId))));
+    }
+
+    @GetMapping
+    @Operation(summary = "List pipeline appurtenances", description = "Lists pipeline appurtenances with optional search, pipeline, type, valve type, and status filters.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Pipeline appurtenances listed."),
+            @ApiResponse(responseCode = "400", description = "Invalid list pipeline appurtenances query parameters."),
+            @ApiResponse(responseCode = "500", description = "Unexpected server error.")
+    })
+    public PageResult<PipelineAppurtenanceResponse> listPipelineAppurtenances(
+            @RequestParam(required = false) String searchText,
+            @RequestParam(required = false) String pipelineId,
+            @RequestParam(required = false) String appurtenanceType,
+            @RequestParam(required = false) String valveType,
+            @RequestParam(required = false) String status,
+            @RequestParam(defaultValue = "0") @Min(0) int page,
+            @RequestParam(defaultValue = "20") @Min(1) @Max(200) int size) {
+
+        return mapper.toPipelineAppurtenanceResponsePage(listPipelineAppurtenancesUseCase.listPipelineAppurtenances(
+                mapper.toListPipelineAppurtenancesQuery(searchText, pipelineId, appurtenanceType, valveType, status, page, size)));
+    }
+}

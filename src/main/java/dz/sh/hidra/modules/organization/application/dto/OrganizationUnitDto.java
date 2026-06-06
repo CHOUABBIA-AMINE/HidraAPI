@@ -24,26 +24,12 @@ import java.time.Instant;
 /**
  * Represents organization unit data returned by organization use cases.
  *
- * <p>Business role:
- * This DTO describes a company, division, direction, department, region, area, district,
- * station-as-organization-unit, team, or project team in the operational organization.
- *
- * <p>Architecture role:
- * This application DTO is framework-independent. It exposes neutral operational scope fields
- * without importing topology domain classes.
- *
- * <p>Validation:
- * This DTO is an output projection. Organization unit validation is enforced by the aggregate,
- * value objects, hierarchy policy, and domain services.
- *
- * <p>Usage:
- * Use this DTO as an application output and map it to REST responses in the API layer later.
- *
  * @param organizationUnitId organization unit identifier
  * @param code organization unit business code
  * @param name organization unit display name
  * @param status organization unit status
- * @param type organization unit type
+ * @param typeId organization unit type catalog identifier
+ * @param typeCode organization unit type stable catalog code
  * @param parentId optional parent organization unit identifier
  * @param operationalScopeType optional neutral operational scope type
  * @param operationalScopeId optional neutral operational scope identifier
@@ -57,7 +43,8 @@ public record OrganizationUnitDto(
         String code,
         String name,
         String status,
-        String type,
+        String typeId,
+        String typeCode,
         String parentId,
         String operationalScopeType,
         String operationalScopeId,

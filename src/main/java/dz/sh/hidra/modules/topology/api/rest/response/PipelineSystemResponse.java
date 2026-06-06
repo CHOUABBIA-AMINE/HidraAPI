@@ -26,21 +26,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 /**
  * REST response representing a topology pipeline system.
  *
- * <p>Business role:
- * Returns a physical hydrocarbon transportation system that groups pipelines.
- *
- * <p>Architecture role:
- * This is a REST output contract mapped from PipelineSystemDto through TopologyRestMapper.
- *
- * <p>Validation:
- * Pipeline system validity is enforced by topology domain models, value objects, policies, and
- * services before this response is produced.
- *
  * @param pipelineSystemId pipeline system identifier
  * @param code pipeline system business code
  * @param name pipeline system display name
  * @param description optional description
- * @param productType hydrocarbon product type
+ * @param productType localized hydrocarbon product type catalog reference
  * @param status lifecycle status
  * @param operationalOwnerReference optional neutral operational owner reference
  * @param createdAt creation instant
@@ -60,8 +50,8 @@ public record PipelineSystemResponse(
         @Schema(description = "Optional pipeline system description.", example = "Main gas transportation system.")
         String description,
 
-        @Schema(description = "Hydrocarbon product type.", example = "GAS", allowableValues = {"GAS", "CRUDE_OIL", "CONDENSATE", "LPG", "REFINED_PRODUCT", "MULTIPHASE", "UNKNOWN"})
-        String productType,
+        @Schema(description = "Localized hydrocarbon product type catalog reference.")
+        TopologyTypeReferenceResponse productType,
 
         @Schema(description = "Pipeline system lifecycle status.", example = "ACTIVE", allowableValues = {"PLANNED", "ACTIVE", "INACTIVE", "UNDER_MAINTENANCE", "RETIRED", "DECOMMISSIONED"})
         String status,

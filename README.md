@@ -337,26 +337,21 @@ Localized labels belong in catalog entries, DTOs, responses, or read models, not
 
 ## 9. Contributing
 
-Contribution rules are being formalized in `COR2-015`.
+Contribution rules are documented in [CONTRIBUTING.md](CONTRIBUTING.md).
 
-Until `CONTRIBUTING.md` is added, follow these rules:
+Core rules:
 
 ```text
 one roadmap task per branch or PR
-one logical correction scope per commit series
 use the exact roadmap commit message when executing a roadmap task
-do not combine unrelated refactors
+preserve module ownership and hexagonal boundaries
 do not introduce shared/common/helper/misc packages
 do not create compatibility wrappers to replace deleted compatibility wrappers
 run the task-specific validation commands when working locally
+record the exact reason when validation cannot be run
 ```
 
-Roadmap task branches should use descriptive names, for example:
-
-```text
-cor2-014-rewrite-project-readme
-cor2-015-add-contributing-and-execution-rules
-```
+Use the PR checklist in `CONTRIBUTING.md` before opening or merging a change.
 
 ---
 

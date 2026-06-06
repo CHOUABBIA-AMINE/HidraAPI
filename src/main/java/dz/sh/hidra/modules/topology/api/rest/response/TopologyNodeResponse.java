@@ -27,22 +27,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 /**
  * REST response representing a topology node.
  *
- * <p>Business role:
- * Returns a physical graph vertex such as a facility inlet/outlet, junction, valve point, injection
- * point, extraction point, purge point, vent point, drain point, metering point, sampling point,
- * scraper point, receipt point, delivery point, or connection point.
- *
- * <p>Architecture role:
- * This is a REST output contract mapped from TopologyNodeDto through TopologyRestMapper.
- *
- * <p>Validation:
- * Node validity is enforced by topology domain models, value objects, policies, and services before
- * this response is produced.
- *
  * @param topologyNodeId topology node identifier
  * @param code topology node business code
  * @param name topology node display name
- * @param nodeType topology node type
+ * @param nodeType localized topology node type catalog reference
  * @param facilityId optional facility identifier
  * @param pipelineAppurtenanceId optional pipeline appurtenance identifier
  * @param coordinate optional geographical coordinate
@@ -62,8 +50,8 @@ public record TopologyNodeResponse(
         @Schema(description = "Topology node display name.", example = "Compression Station East 01 Inlet")
         String name,
 
-        @Schema(description = "Topology node type.", example = "FACILITY_INLET", allowableValues = {"FACILITY_INLET", "FACILITY_OUTLET", "FACILITY_INTERNAL", "PIPELINE_JUNCTION", "PIPELINE_VALVE_POINT", "INJECTION_POINT", "EXTRACTION_POINT", "PURGE_POINT", "VENT_POINT", "DRAIN_POINT", "METERING_POINT", "SAMPLING_POINT", "SCRAPER_POINT", "RECEIPT_POINT", "DELIVERY_POINT", "CONNECTION_POINT", "OTHER"})
-        String nodeType,
+        @Schema(description = "Localized topology node type catalog reference.")
+        TopologyTypeReferenceResponse nodeType,
 
         @Schema(description = "Optional facility identifier.", example = "fac_550e8400-e29b-41d4-a716-446655440000")
         String facilityId,

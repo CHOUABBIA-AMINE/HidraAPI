@@ -26,21 +26,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 /**
  * REST response representing topology equipment.
  *
- * <p>Business role:
- * Returns optional physical equipment/component references attached to topology assets.
- *
- * <p>Architecture role:
- * This response does not expose maintenance records, inspections, reliability calculations,
- * telemetry, workflow tasks, risk scores, or persistence entities.
- *
- * <p>Validation:
- * Equipment validity is enforced by topology domain models, value objects, policies, and services
- * before this response is produced.
- *
  * @param equipmentId equipment identifier
  * @param code equipment business code
  * @param name equipment display name
- * @param equipmentType equipment type
+ * @param equipmentType localized equipment type catalog reference
  * @param parentAssetType parent topology asset type
  * @param parentAssetId parent topology asset identifier
  * @param status lifecycle status
@@ -58,8 +47,8 @@ public record EquipmentResponse(
         @Schema(description = "Equipment display name.", example = "Compressor A")
         String name,
 
-        @Schema(description = "Equipment type.", example = "COMPRESSOR", allowableValues = {"COMPRESSOR", "PUMP", "VALVE", "METER", "SEPARATOR", "SCRAPER_LAUNCHER", "SCRAPER_RECEIVER", "ACTUATOR", "CONTROL_PANEL", "INSTRUMENTATION", "OTHER"})
-        String equipmentType,
+        @Schema(description = "Localized equipment type catalog reference.")
+        TopologyTypeReferenceResponse equipmentType,
 
         @Schema(description = "Parent topology asset type.", example = "FACILITY", allowableValues = {"PIPELINE_SYSTEM", "PIPELINE", "FACILITY", "NODE", "SEGMENT", "APPURTENANCE", "CONNECTION"})
         String parentAssetType,

@@ -26,34 +26,20 @@ import dz.sh.hidra.kernel.application.query.Query;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitId;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitStatus;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitType;
+import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitTypeReference;
 
 /**
  * Carries input required to list or search organization units.
  *
- * <p>Business role:
- * This query lists organization units such as divisions, departments, regions, station
- * organization units, and teams.
- *
- * <p>Architecture role:
- * This is an application query. It must not depend on REST DTOs, persistence entities, Spring, JPA,
- * identity, topology, platform, or infrastructure code.
- *
- * <p>Validation:
- * Page request is mandatory. Search text is optional and normalized. Type, status, and parent
- * filters are optional.
- *
- * <p>Usage:
- * Use this query from organization unit listing use cases.
- *
  * @param searchText optional search text for unit code or name
- * @param type optional organization unit type filter
+ * @param type optional organization unit type catalog reference filter
  * @param status optional organization unit status filter
  * @param parentId optional parent organization unit filter
  * @param pageRequest pagination request
  */
 public record ListOrganizationUnitsQuery(
         String searchText,
-        OrganizationUnitType type,
+        OrganizationUnitTypeReference type,
         OrganizationUnitStatus status,
         OrganizationUnitId parentId,
         PageRequest pageRequest) implements Query {
@@ -64,13 +50,21 @@ public record ListOrganizationUnitsQuery(
     }
 
     /**
-     * Creates an unfiltered organization unit list query.
-     *
-     * @param pageRequest pagination request
-     * @return list organization units query
+     * @deprecated use the constructor accepting OrganizationUnitTypeReference
      */
+    @Deprecated(forRemoval = false)
+    public ListOrganizationUnitsQuery(
+            String searchText,
+            OrganizationUnitType type,
+            OrganizationUnitStatus status,
+            OrganizationUnitId parentId,
+            PageRequest pageRequest) {
+
+        this(searchText, type == null ? null : OrganizationUnitTypeReference.from(type), status, parentId, pageRequest);
+    }
+
     public static ListOrganizationUnitsQuery all(PageRequest pageRequest) {
-        return new ListOrganizationUnitsQuery(null, null, null, null, pageRequest);
+        return new ListOrganizationUnitsQuery(null, (OrganizationUnitTypeReference) null, null, null, pageRequest);
     }
 
     private static String normalizeOptional(String value, String label, int maxLength) {

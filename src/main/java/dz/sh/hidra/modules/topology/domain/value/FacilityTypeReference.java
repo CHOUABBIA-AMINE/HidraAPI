@@ -57,6 +57,36 @@ public record FacilityTypeReference(String id, TopologyCode code) implements Val
         return new FacilityTypeReference(id, TopologyCode.of(code));
     }
 
+    /**
+     * Creates a transitional reference from the legacy enum value.
+     *
+     * @param facilityType legacy enum value
+     * @return catalog reference using the enum name as stable code and temporary id
+     */
+    public static FacilityTypeReference from(FacilityType facilityType) {
+        Objects.requireNonNull(facilityType, "Facility type must not be null.");
+        return of(facilityType.name(), facilityType.name());
+    }
+
+    /**
+     * Returns the stable code as a legacy-compatible name.
+     *
+     * @return language-neutral code value
+     */
+    public String name() {
+        return code.value();
+    }
+
+    /**
+     * Checks this reference against a language-neutral code.
+     *
+     * @param expectedCode expected code
+     * @return true when the code matches
+     */
+    public boolean is(String expectedCode) {
+        return code.value().equals(TopologyCode.of(expectedCode).value());
+    }
+
     private static String requireText(String value, String fieldName) {
         if (value == null || value.isBlank()) {
             throw new InvalidValueObjectException(fieldName + " must not be null or blank.");

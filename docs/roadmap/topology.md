@@ -9,7 +9,7 @@ Product      : Hidra - Hydrocarbon Intelligence for Data, Risk, and Analytics
 Author       : Abir MEDJERAB
 CreatedOn    : 2025-06-26
 UpdatedOn    : 2026-06-06
-Status       : Realigned after TOP-023 and updated after topology catalog refactor corrections
+Status       : Realigned after TOP-023, catalog refactor corrections, and telemetry next-module correction
 ```
 
 ---
@@ -47,7 +47,7 @@ operational topology status
 Topology is required before:
 
 ```text
-measurement
+telemetry
 operations
 flow calculations
 risk assessments
@@ -93,11 +93,11 @@ The authoritative completed TOP sequence is:
 
 ---
 
-## 3. Catalog correction reality after COR-013
+## 3. Catalog correction reality after COR-021
 
 A repository analysis found that topology business type concepts were initially implemented as Java enums and database `CHECK` constraints.
 
-The topology correction path has now been applied through the catalog refactor tasks:
+The topology correction path has now been applied through catalog and documentation corrections:
 
 | Code | Commit message | Repository status | Notes |
 |---|---|---:|---|
@@ -111,6 +111,8 @@ The topology correction path has now been applied through the catalog refactor t
 | `COR-011` | `refactor(topology): update topology persistence mapping to catalog foreign keys` | Completed | Persistence writes/reads catalog FK references. |
 | `COR-012` | `refactor(topology): update topology REST contracts for catalog types and localization` | Completed | REST requests use `typeCode`; responses expose localized type labels. |
 | `COR-013` | `db(topology): remove topology enum-style type constraints` | Completed | Removes old varchar taxonomy columns and old enum-style checks in V005. |
+| `COR-019` | `refactor(catalog): remove remaining business taxonomy enum declarations` | Completed | Removes remaining forbidden business taxonomy enum declarations. |
+| `COR-021` | `docs(correction): replace measurement next-module references with telemetry` | Completed | Corrects next module from measurement/MES to telemetry/TEL. |
 
 Topology business taxonomy concepts are no longer roadmap-accepted as Java enums.
 
@@ -187,7 +189,7 @@ users
 roles
 permissions
 SCADA values
-measurement time series
+telemetry time series
 flow calculations
 risk scoring
 workflow approvals
@@ -214,7 +216,7 @@ Forbidden lateral module dependencies from topology:
 ```text
 dz.sh.hidra.modules.identity.*
 dz.sh.hidra.modules.organization.*
-dz.sh.hidra.modules.measurement.*
+dz.sh.hidra.modules.telemetry.*
 dz.sh.hidra.modules.operations.*
 dz.sh.hidra.modules.flow.*
 dz.sh.hidra.modules.risk.*
@@ -353,6 +355,7 @@ Linux/macOS/Git Bash:
 test -f docs/roadmap/topology.md
 test -f docs/roadmap/topology_validation_checklist.md
 test -f docs/roadmap/correction_01.md
+test -f docs/roadmap/telemetry.md
 test -f docs/architecture/controlled-vocabulary-policy.md
 test -f src/main/resources/db/migration/V002__create_topology_tables.sql
 test -f src/main/resources/db/migration/V003__add_topology_type_catalogs.sql
@@ -368,6 +371,7 @@ Windows PowerShell:
 Test-Path docs/roadmap/topology.md
 Test-Path docs/roadmap/topology_validation_checklist.md
 Test-Path docs/roadmap/correction_01.md
+Test-Path docs/roadmap/telemetry.md
 Test-Path docs/architecture/controlled-vocabulary-policy.md
 Test-Path src/main/resources/db/migration/V002__create_topology_tables.sql
 Test-Path src/main/resources/db/migration/V003__add_topology_type_catalogs.sql
@@ -377,11 +381,13 @@ Test-Path src/main/java/dz/sh/hidra/modules/topology
 Test-Path src/test/java/dz/sh/hidra/modules/topology
 ```
 
-### 8.2 Roadmap catalog wording
+### 8.2 Roadmap catalog and telemetry wording
 
 ```bash
 grep -n "catalog" docs/roadmap/topology.md
 grep -n "multilingual" docs/roadmap/topology.md
+grep -n "telemetry" docs/roadmap/topology.md
+grep -n "TEL-001" docs/roadmap/topology.md
 ```
 
 ### 8.3 Compile and test
@@ -403,7 +409,7 @@ The boot smoke test requires Docker/Testcontainers.
 Do not start:
 
 ```text
-MES-001 — docs(measurement): add measurement implementation roadmap
+TEL-001 — docs(telemetry): add telemetry implementation roadmap
 ```
 
 until the corrected baseline is validated:

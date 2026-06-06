@@ -27,8 +27,7 @@ import dz.sh.hidra.modules.topology.domain.model.PipelineAppurtenance;
 import dz.sh.hidra.modules.topology.domain.model.PipelineSegment;
 import dz.sh.hidra.modules.topology.domain.model.TopologyConnection;
 import dz.sh.hidra.modules.topology.domain.model.TopologyNode;
-import dz.sh.hidra.modules.topology.domain.value.ConnectionType;
-import dz.sh.hidra.modules.topology.domain.value.NodeType;
+import dz.sh.hidra.modules.topology.domain.value.NodeTypeReference;
 import dz.sh.hidra.modules.topology.domain.value.TopologyAssetType;
 
 /**
@@ -39,24 +38,15 @@ import dz.sh.hidra.modules.topology.domain.value.TopologyAssetType;
  * nodes, and pipeline appurtenances.
  *
  * <p>Architecture role:
- * This is a pure domain policy. It must not be annotated as a Spring bean and must not access
- * repositories, persistence adapters, REST DTOs, identity implementation, organization implementation,
- * measurement, flow, risk, workflow, or infrastructure code.
+ * This policy evaluates configurable node/connection type references by stable language-neutral
+ * codes, not by Java enum identity.
  *
  * <p>Validation:
  * Segment and connection endpoints must be different. Pipeline segments must belong to their
  * pipeline. Appurtenance nodes must be node types suitable for appurtenances.
- *
- * <p>Usage:
- * Domain/application services may call this policy before persisting physical connectivity.
  */
 public final class TopologyConnectivityPolicy {
 
-    /**
-     * Validates a pipeline segment graph edge.
-     *
-     * @param segment segment to validate
-     */
     public void validateSegment(PipelineSegment segment) {
         Objects.requireNonNull(segment, "Pipeline segment must not be null.");
 
@@ -65,12 +55,6 @@ public final class TopologyConnectivityPolicy {
         }
     }
 
-    /**
-     * Validates that a segment belongs to the expected pipeline.
-     *
-     * @param segment segment to validate
-     * @param pipeline expected parent pipeline
-     */
     public void validateSegmentBelongsToPipeline(PipelineSegment segment, Pipeline pipeline) {
         Objects.requireNonNull(segment, "Pipeline segment must not be null.");
         Objects.requireNonNull(pipeline, "Pipeline must not be null.");
@@ -80,11 +64,6 @@ public final class TopologyConnectivityPolicy {
         }
     }
 
-    /**
-     * Validates an explicit topology connection.
-     *
-     * @param connection connection to validate
-     */
     public void validateConnection(TopologyConnection connection) {
         Objects.requireNonNull(connection, "Topology connection must not be null.");
 
@@ -97,12 +76,6 @@ public final class TopologyConnectivityPolicy {
         }
     }
 
-    /**
-     * Validates that an appurtenance is represented by the expected node.
-     *
-     * @param appurtenance appurtenance to validate
-     * @param node topology node to validate
-     */
     public void validateAppurtenanceNode(PipelineAppurtenance appurtenance, TopologyNode node) {
         Objects.requireNonNull(appurtenance, "Pipeline appurtenance must not be null.");
         Objects.requireNonNull(node, "Topology node must not be null.");
@@ -120,35 +93,24 @@ public final class TopologyConnectivityPolicy {
         }
     }
 
-    /**
-     * Validates that a facility node is not used as a pipeline appurtenance node.
-     *
-     * @param node node to validate
-     */
     public void rejectFacilityOnlyNodeForAppurtenance(TopologyNode node) {
         Objects.requireNonNull(node, "Topology node must not be null.");
 
-        if (node.nodeType() == NodeType.FACILITY_INLET
-                || node.nodeType() == NodeType.FACILITY_OUTLET
-                || node.nodeType() == NodeType.FACILITY_INTERNAL) {
-
+        if (node.nodeType().isAny("FACILITY_INLET", "FACILITY_OUTLET", "FACILITY_INTERNAL")) {
             throw new TopologyValidationException("Facility-only node type cannot represent a pipeline appurtenance.");
         }
     }
 
     private boolean linkedAssetMatchesConnectionType(TopologyConnection connection) {
-        if (connection.connectionType() == ConnectionType.PIPELINE_SEGMENT) {
+        if (connection.connectionType().is("PIPELINE_SEGMENT")) {
             return connection.linkedAssetType() == TopologyAssetType.SEGMENT;
         }
 
-        if (connection.connectionType() == ConnectionType.FACILITY_INTERNAL) {
+        if (connection.connectionType().is("FACILITY_INTERNAL")) {
             return connection.linkedAssetType() == TopologyAssetType.FACILITY;
         }
 
-        if (connection.connectionType() == ConnectionType.APPURTENANCE_CONNECTION
-                || connection.connectionType() == ConnectionType.VALVE_CONNECTION
-                || connection.connectionType() == ConnectionType.METERING_CONNECTION) {
-
+        if (connection.connectionType().isAny("APPURTENANCE_CONNECTION", "VALVE_CONNECTION", "METERING_CONNECTION")) {
             return connection.linkedAssetType() == TopologyAssetType.APPURTENANCE
                     || connection.linkedAssetType() == TopologyAssetType.EQUIPMENT;
         }
@@ -156,25 +118,19 @@ public final class TopologyConnectivityPolicy {
         return true;
     }
 
-    private boolean isValidAppurtenanceNodeType(NodeType nodeType) {
-        return switch (nodeType) {
-            case PIPELINE_VALVE_POINT,
-                    INJECTION_POINT,
-                    EXTRACTION_POINT,
-                    PURGE_POINT,
-                    VENT_POINT,
-                    DRAIN_POINT,
-                    METERING_POINT,
-                    SAMPLING_POINT,
-                    SCRAPER_POINT,
-                    CONNECTION_POINT,
-                    PIPELINE_JUNCTION,
-                    OTHER -> true;
-            case FACILITY_INLET,
-                    FACILITY_OUTLET,
-                    FACILITY_INTERNAL,
-                    RECEIPT_POINT,
-                    DELIVERY_POINT -> false;
-        };
+    private boolean isValidAppurtenanceNodeType(NodeTypeReference nodeType) {
+        return nodeType.isAny(
+                "PIPELINE_VALVE_POINT",
+                "INJECTION_POINT",
+                "EXTRACTION_POINT",
+                "PURGE_POINT",
+                "VENT_POINT",
+                "DRAIN_POINT",
+                "METERING_POINT",
+                "SAMPLING_POINT",
+                "SCRAPER_POINT",
+                "CONNECTION_POINT",
+                "PIPELINE_JUNCTION",
+                "OTHER");
     }
 }

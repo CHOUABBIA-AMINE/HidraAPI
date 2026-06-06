@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -45,24 +46,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 
-/**
- * REST controller exposing topology pipeline appurtenance endpoints.
- *
- * <p>Business role:
- * Exposes point assets installed along pipelines, including valves, injection points, extraction
- * points, purge points, vents, drains, scraper points, hot taps, bypass points, metering points,
- * sampling points, and connection points.
- *
- * <p>Architecture role:
- * This controller does not own operations, permits, telemetry, hydraulic calculations, risk,
- * maintenance, or workflow behavior.
- *
- * <p>Validation:
- * Request bodies use Bean Validation with @Valid. Query pagination parameters are bounded.
- *
- * <p>Usage:
- * Use endpoints under /api/v1/topology/pipeline-appurtenances.
- */
 @RestController
 @RequestMapping("/api/v1/topology/pipeline-appurtenances")
 @Tag(name = "Topology Pipeline Appurtenances", description = "Topology pipeline appurtenance endpoints.")
@@ -86,19 +69,20 @@ public class PipelineAppurtenanceController {
     }
 
     @PostMapping
-    @Operation(summary = "Create pipeline appurtenance", description = "Creates a point asset installed along a pipeline.")
+    @Operation(summary = "Create pipeline appurtenance", description = "Creates a point asset installed along a topology pipeline.")
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "Pipeline appurtenance created."),
             @ApiResponse(responseCode = "400", description = "Invalid pipeline appurtenance creation request."),
-            @ApiResponse(responseCode = "404", description = "Referenced pipeline or node was not found."),
-            @ApiResponse(responseCode = "409", description = "Pipeline appurtenance code conflicts with an existing appurtenance."),
             @ApiResponse(responseCode = "500", description = "Unexpected server error.")
     })
     public ResponseEntity<PipelineAppurtenanceResponse> createPipelineAppurtenance(
+            @RequestHeader(name = "Accept-Language", required = false) String acceptLanguage,
             @Valid @RequestBody CreatePipelineAppurtenanceRequest request) {
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(mapper.toResponse(createPipelineAppurtenanceUseCase.createPipelineAppurtenance(mapper.toCommand(request))));
+                .body(mapper.toResponse(
+                        createPipelineAppurtenanceUseCase.createPipelineAppurtenance(mapper.toCommand(request, acceptLanguage)),
+                        acceptLanguage));
     }
 
     @GetMapping("/{pipelineAppurtenanceId}")
@@ -110,30 +94,36 @@ public class PipelineAppurtenanceController {
             @ApiResponse(responseCode = "500", description = "Unexpected server error.")
     })
     public ResponseEntity<PipelineAppurtenanceResponse> getPipelineAppurtenance(
+            @RequestHeader(name = "Accept-Language", required = false) String acceptLanguage,
             @Parameter(description = "Pipeline appurtenance identifier.", required = true)
             @PathVariable String pipelineAppurtenanceId) {
 
-        return ResponseEntity.ok(mapper.toResponse(getPipelineAppurtenanceUseCase.getPipelineAppurtenance(
-                mapper.toGetPipelineAppurtenanceByIdQuery(pipelineAppurtenanceId))));
+        return ResponseEntity.ok(mapper.toResponse(
+                getPipelineAppurtenanceUseCase.getPipelineAppurtenance(
+                        mapper.toGetPipelineAppurtenanceByIdQuery(pipelineAppurtenanceId)),
+                acceptLanguage));
     }
 
     @GetMapping
-    @Operation(summary = "List pipeline appurtenances", description = "Lists pipeline appurtenances with optional search, pipeline, type, valve type, and status filters.")
+    @Operation(summary = "List pipeline appurtenances", description = "Lists pipeline appurtenances with optional search, pipeline, appurtenance type code, valve type code, and status filters.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Pipeline appurtenances listed."),
             @ApiResponse(responseCode = "400", description = "Invalid list pipeline appurtenances query parameters."),
             @ApiResponse(responseCode = "500", description = "Unexpected server error.")
     })
     public PageResult<PipelineAppurtenanceResponse> listPipelineAppurtenances(
+            @RequestHeader(name = "Accept-Language", required = false) String acceptLanguage,
             @RequestParam(required = false) String searchText,
             @RequestParam(required = false) String pipelineId,
-            @RequestParam(required = false) String appurtenanceType,
-            @RequestParam(required = false) String valveType,
+            @RequestParam(required = false) String appurtenanceTypeCode,
+            @RequestParam(required = false) String valveTypeCode,
             @RequestParam(required = false) String status,
             @RequestParam(defaultValue = "0") @Min(0) int page,
             @RequestParam(defaultValue = "20") @Min(1) @Max(200) int size) {
 
-        return mapper.toPipelineAppurtenanceResponsePage(listPipelineAppurtenancesUseCase.listPipelineAppurtenances(
-                mapper.toListPipelineAppurtenancesQuery(searchText, pipelineId, appurtenanceType, valveType, status, page, size)));
+        return mapper.toPipelineAppurtenanceResponsePage(
+                listPipelineAppurtenancesUseCase.listPipelineAppurtenances(
+                        mapper.toListPipelineAppurtenancesQuery(searchText, pipelineId, appurtenanceTypeCode, valveTypeCode, status, page, size, acceptLanguage)),
+                acceptLanguage);
     }
 }

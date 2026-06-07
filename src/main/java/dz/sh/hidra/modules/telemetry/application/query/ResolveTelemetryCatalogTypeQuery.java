@@ -1,0 +1,45 @@
+/**
+ *
+ * @Project     : HidraAPI
+ * @Product     : Hidra - Hydrocarbon Intelligence for Data, Risk, and Analytics
+ * @Author      : Abir MEDJERAB
+ * @Owner       : Sonatrach / TRC : Digitalization Initiative
+ *
+ * @Name        : ResolveTelemetryCatalogTypeQuery
+ * @CreatedOn   : 2025-06-26
+ * @UpdatedOn   : 2026-05-30
+ *
+ * @Type        : Record
+ * @Layer       : Application
+ * @Module      : telemetry
+ * @Package     : dz.sh.hidra.modules.telemetry.application.query
+ *
+ * @Description : Query to resolve a telemetry catalog entry by catalog name and code.
+ *
+ */
+package dz.sh.hidra.modules.telemetry.application.query;
+
+import dz.sh.hidra.kernel.application.pagination.PageRequest;
+import dz.sh.hidra.kernel.application.query.Query;
+import dz.sh.hidra.modules.telemetry.domain.value.TelemetryCode;
+import java.util.Objects;
+
+/**
+ * Query to resolve a telemetry catalog entry by catalog name and code.
+ *
+ * <p>Architecture role:
+ * Application-layer query contract for the telemetry module. It carries validated
+ * domain value objects and catalog references only. It must not depend on persistence, REST, Spring,
+ * JPA, topology implementation classes, flow, risk, analytics, workflow, reporting, or notification.
+ */
+public record ResolveTelemetryCatalogTypeQuery(
+        String catalogName,
+        TelemetryCode code,
+        boolean requireActive,
+        String locale) implements Query {
+
+    public ResolveTelemetryCatalogTypeQuery {
+        catalogName = Objects.requireNonNull(catalogName, "ResolveTelemetryCatalogTypeQuery catalogName must not be null.");
+        code = Objects.requireNonNull(code, "ResolveTelemetryCatalogTypeQuery code must not be null.");
+    }
+}

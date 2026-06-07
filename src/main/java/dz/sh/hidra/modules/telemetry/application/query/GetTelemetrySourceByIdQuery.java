@@ -1,0 +1,41 @@
+/**
+ *
+ * @Project     : HidraAPI
+ * @Product     : Hidra - Hydrocarbon Intelligence for Data, Risk, and Analytics
+ * @Author      : Abir MEDJERAB
+ * @Owner       : Sonatrach / TRC : Digitalization Initiative
+ *
+ * @Name        : GetTelemetrySourceByIdQuery
+ * @CreatedOn   : 2025-06-26
+ * @UpdatedOn   : 2026-05-30
+ *
+ * @Type        : Record
+ * @Layer       : Application
+ * @Module      : telemetry
+ * @Package     : dz.sh.hidra.modules.telemetry.application.query
+ *
+ * @Description : Query to get a telemetry source by identifier.
+ *
+ */
+package dz.sh.hidra.modules.telemetry.application.query;
+
+import dz.sh.hidra.kernel.application.pagination.PageRequest;
+import dz.sh.hidra.kernel.application.query.Query;
+import dz.sh.hidra.modules.telemetry.domain.value.TelemetrySourceId;
+import java.util.Objects;
+
+/**
+ * Query to get a telemetry source by identifier.
+ *
+ * <p>Architecture role:
+ * Application-layer query contract for the telemetry module. It carries validated
+ * domain value objects and catalog references only. It must not depend on persistence, REST, Spring,
+ * JPA, topology implementation classes, flow, risk, analytics, workflow, reporting, or notification.
+ */
+public record GetTelemetrySourceByIdQuery(
+        TelemetrySourceId sourceId) implements Query {
+
+    public GetTelemetrySourceByIdQuery {
+        sourceId = Objects.requireNonNull(sourceId, "GetTelemetrySourceByIdQuery sourceId must not be null.");
+    }
+}

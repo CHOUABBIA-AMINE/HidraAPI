@@ -21,6 +21,7 @@ package dz.sh.hidra.modules.topology.infrastructure.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 
 import dz.sh.hidra.modules.topology.application.port.in.CreateFacilityUseCase;
 import dz.sh.hidra.modules.topology.application.port.in.CreatePipelineAppurtenanceUseCase;
@@ -261,6 +262,7 @@ public class TopologyConfiguration {
     }
 
     @Bean
+    @Primary
     PipelineSystemApplicationService pipelineSystemApplicationService(
             PipelineSystemRepositoryPort pipelineSystemRepository) {
 
@@ -289,6 +291,7 @@ public class TopologyConfiguration {
     }
 
     @Bean
+    @Primary
     PipelineApplicationService pipelineApplicationService(
             PipelineRepositoryPort pipelineRepository,
             PipelineSystemRepositoryPort pipelineSystemRepository,
@@ -316,6 +319,7 @@ public class TopologyConfiguration {
     }
 
     @Bean
+    @Primary
     FacilityApplicationService facilityApplicationService(
             FacilityRepositoryPort facilityRepository,
             TopologyRegistrationDomainService registrationDomainService) {
@@ -339,6 +343,7 @@ public class TopologyConfiguration {
     }
 
     @Bean
+    @Primary
     TopologyNodeApplicationService topologyNodeApplicationService(
             TopologyNodeRepositoryPort topologyNodeRepository,
             FacilityRepositoryPort facilityRepository,
@@ -366,6 +371,7 @@ public class TopologyConfiguration {
     }
 
     @Bean
+    @Primary
     PipelineSegmentApplicationService pipelineSegmentApplicationService(
             PipelineSegmentRepositoryPort pipelineSegmentRepository,
             PipelineRepositoryPort pipelineRepository,
@@ -390,6 +396,7 @@ public class TopologyConfiguration {
     }
 
     @Bean
+    @Primary
     PipelineAppurtenanceApplicationService pipelineAppurtenanceApplicationService(
             PipelineAppurtenanceRepositoryPort appurtenanceRepository,
             PipelineRepositoryPort pipelineRepository,
@@ -425,6 +432,7 @@ public class TopologyConfiguration {
     }
 
     @Bean
+    @Primary
     TopologyConnectionApplicationService topologyConnectionApplicationService(
             TopologyConnectionRepositoryPort topologyConnectionRepository,
             TopologyNodeRepositoryPort topologyNodeRepository,
@@ -451,6 +459,7 @@ public class TopologyConfiguration {
     }
 
     @Bean
+    @Primary
     EquipmentApplicationService equipmentApplicationService(
             EquipmentRepositoryPort equipmentRepository,
             TopologyRegistrationDomainService registrationDomainService) {
@@ -464,6 +473,7 @@ public class TopologyConfiguration {
     }
 
     @Bean
+    @Primary
     TopologyCatalogApplicationService topologyCatalogApplicationService(
             TopologyCatalogRepositoryPort topologyCatalogRepository) {
 
@@ -471,17 +481,23 @@ public class TopologyConfiguration {
     }
 
     @Bean
-    GetTopologyCatalogTypeUseCase getTopologyCatalogTypeUseCase(TopologyCatalogApplicationService service) {
+    GetTopologyCatalogTypeUseCase getTopologyCatalogTypeUseCase(
+            TopologyCatalogApplicationService service) {
+
         return service;
     }
 
     @Bean
-    ListTopologyCatalogTypesUseCase listTopologyCatalogTypesUseCase(TopologyCatalogApplicationService service) {
+    ListTopologyCatalogTypesUseCase listTopologyCatalogTypesUseCase(
+            TopologyCatalogApplicationService service) {
+
         return service;
     }
 
     @Bean
-    ResolveTopologyCatalogTypeUseCase resolveTopologyCatalogTypeUseCase(TopologyCatalogApplicationService service) {
+    ResolveTopologyCatalogTypeUseCase resolveTopologyCatalogTypeUseCase(
+            TopologyCatalogApplicationService service) {
+
         return service;
     }
 }

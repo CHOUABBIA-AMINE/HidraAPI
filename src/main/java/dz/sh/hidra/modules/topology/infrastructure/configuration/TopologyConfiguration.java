@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.topology.infrastructure.configuration;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -271,21 +272,21 @@ public class TopologyConfiguration {
 
     @Bean
     CreatePipelineSystemUseCase createPipelineSystemUseCase(
-            PipelineSystemApplicationService service) {
+            @Qualifier("pipelineSystemApplicationService") PipelineSystemApplicationService service) {
 
         return service;
     }
 
     @Bean
     GetPipelineSystemUseCase getPipelineSystemUseCase(
-            PipelineSystemApplicationService service) {
+            @Qualifier("pipelineSystemApplicationService") PipelineSystemApplicationService service) {
 
         return service;
     }
 
     @Bean
     ListPipelineSystemsUseCase listPipelineSystemsUseCase(
-            PipelineSystemApplicationService service) {
+            @Qualifier("pipelineSystemApplicationService") PipelineSystemApplicationService service) {
 
         return service;
     }
@@ -304,17 +305,23 @@ public class TopologyConfiguration {
     }
 
     @Bean
-    CreatePipelineUseCase createPipelineUseCase(PipelineApplicationService service) {
+    CreatePipelineUseCase createPipelineUseCase(
+            @Qualifier("pipelineApplicationService") PipelineApplicationService service) {
+
         return service;
     }
 
     @Bean
-    GetPipelineUseCase getPipelineUseCase(PipelineApplicationService service) {
+    GetPipelineUseCase getPipelineUseCase(
+            @Qualifier("pipelineApplicationService") PipelineApplicationService service) {
+
         return service;
     }
 
     @Bean
-    ListPipelinesUseCase listPipelinesUseCase(PipelineApplicationService service) {
+    ListPipelinesUseCase listPipelinesUseCase(
+            @Qualifier("pipelineApplicationService") PipelineApplicationService service) {
+
         return service;
     }
 
@@ -328,17 +335,23 @@ public class TopologyConfiguration {
     }
 
     @Bean
-    CreateFacilityUseCase createFacilityUseCase(FacilityApplicationService service) {
+    CreateFacilityUseCase createFacilityUseCase(
+            @Qualifier("facilityApplicationService") FacilityApplicationService service) {
+
         return service;
     }
 
     @Bean
-    GetFacilityUseCase getFacilityUseCase(FacilityApplicationService service) {
+    GetFacilityUseCase getFacilityUseCase(
+            @Qualifier("facilityApplicationService") FacilityApplicationService service) {
+
         return service;
     }
 
     @Bean
-    ListFacilitiesUseCase listFacilitiesUseCase(FacilityApplicationService service) {
+    ListFacilitiesUseCase listFacilitiesUseCase(
+            @Qualifier("facilityApplicationService") FacilityApplicationService service) {
+
         return service;
     }
 
@@ -356,17 +369,23 @@ public class TopologyConfiguration {
     }
 
     @Bean
-    CreateTopologyNodeUseCase createTopologyNodeUseCase(TopologyNodeApplicationService service) {
+    CreateTopologyNodeUseCase createTopologyNodeUseCase(
+            @Qualifier("topologyNodeApplicationService") TopologyNodeApplicationService service) {
+
         return service;
     }
 
     @Bean
-    GetTopologyNodeUseCase getTopologyNodeUseCase(TopologyNodeApplicationService service) {
+    GetTopologyNodeUseCase getTopologyNodeUseCase(
+            @Qualifier("topologyNodeApplicationService") TopologyNodeApplicationService service) {
+
         return service;
     }
 
     @Bean
-    ListTopologyNodesUseCase listTopologyNodesUseCase(TopologyNodeApplicationService service) {
+    ListTopologyNodesUseCase listTopologyNodesUseCase(
+            @Qualifier("topologyNodeApplicationService") TopologyNodeApplicationService service) {
+
         return service;
     }
 
@@ -386,12 +405,16 @@ public class TopologyConfiguration {
     }
 
     @Bean
-    CreatePipelineSegmentUseCase createPipelineSegmentUseCase(PipelineSegmentApplicationService service) {
+    CreatePipelineSegmentUseCase createPipelineSegmentUseCase(
+            @Qualifier("pipelineSegmentApplicationService") PipelineSegmentApplicationService service) {
+
         return service;
     }
 
     @Bean
-    ListPipelineSegmentsUseCase listPipelineSegmentsUseCase(PipelineSegmentApplicationService service) {
+    ListPipelineSegmentsUseCase listPipelineSegmentsUseCase(
+            @Qualifier("pipelineSegmentApplicationService") PipelineSegmentApplicationService service) {
+
         return service;
     }
 
@@ -412,21 +435,21 @@ public class TopologyConfiguration {
 
     @Bean
     CreatePipelineAppurtenanceUseCase createPipelineAppurtenanceUseCase(
-            PipelineAppurtenanceApplicationService service) {
+            @Qualifier("pipelineAppurtenanceApplicationService") PipelineAppurtenanceApplicationService service) {
 
         return service;
     }
 
     @Bean
     GetPipelineAppurtenanceUseCase getPipelineAppurtenanceUseCase(
-            PipelineAppurtenanceApplicationService service) {
+            @Qualifier("pipelineAppurtenanceApplicationService") PipelineAppurtenanceApplicationService service) {
 
         return service;
     }
 
     @Bean
     ListPipelineAppurtenancesUseCase listPipelineAppurtenancesUseCase(
-            PipelineAppurtenanceApplicationService service) {
+            @Qualifier("pipelineAppurtenanceApplicationService") PipelineAppurtenanceApplicationService service) {
 
         return service;
     }
@@ -446,14 +469,14 @@ public class TopologyConfiguration {
 
     @Bean
     CreateTopologyConnectionUseCase createTopologyConnectionUseCase(
-            TopologyConnectionApplicationService service) {
+            @Qualifier("topologyConnectionApplicationService") TopologyConnectionApplicationService service) {
 
         return service;
     }
 
     @Bean
     ListTopologyConnectionsUseCase listTopologyConnectionsUseCase(
-            TopologyConnectionApplicationService service) {
+            @Qualifier("topologyConnectionApplicationService") TopologyConnectionApplicationService service) {
 
         return service;
     }
@@ -468,7 +491,9 @@ public class TopologyConfiguration {
     }
 
     @Bean
-    RegisterEquipmentUseCase registerEquipmentUseCase(EquipmentApplicationService service) {
+    RegisterEquipmentUseCase registerEquipmentUseCase(
+            @Qualifier("equipmentApplicationService") EquipmentApplicationService service) {
+
         return service;
     }
 
@@ -482,21 +507,21 @@ public class TopologyConfiguration {
 
     @Bean
     GetTopologyCatalogTypeUseCase getTopologyCatalogTypeUseCase(
-            TopologyCatalogApplicationService service) {
+            @Qualifier("topologyCatalogApplicationService") TopologyCatalogApplicationService service) {
 
         return service;
     }
 
     @Bean
     ListTopologyCatalogTypesUseCase listTopologyCatalogTypesUseCase(
-            TopologyCatalogApplicationService service) {
+            @Qualifier("topologyCatalogApplicationService") TopologyCatalogApplicationService service) {
 
         return service;
     }
 
     @Bean
     ResolveTopologyCatalogTypeUseCase resolveTopologyCatalogTypeUseCase(
-            TopologyCatalogApplicationService service) {
+            @Qualifier("topologyCatalogApplicationService") TopologyCatalogApplicationService service) {
 
         return service;
     }

@@ -54,7 +54,7 @@ public class OrganizationApiRestConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean
-    public OrganizationRestMapper organizationRestMapper() {
+    OrganizationRestMapper organizationRestMapper() {
         return new OrganizationRestMapper();
     }
 }

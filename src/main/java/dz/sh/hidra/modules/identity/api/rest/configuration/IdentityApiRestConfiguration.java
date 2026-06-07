@@ -54,7 +54,7 @@ public class IdentityApiRestConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean
-    public IdentityRestMapper identityRestMapper() {
+    IdentityRestMapper identityRestMapper() {
         return new IdentityRestMapper();
     }
 }

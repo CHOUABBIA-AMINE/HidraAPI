@@ -31,7 +31,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 public class JpaAuditingConfiguration {
 
     @Bean
-    public AuditorAware<String> platformAuditorAware(CurrentActorResolver currentActorResolver) {
+    AuditorAware<String> platformAuditorAware(CurrentActorResolver currentActorResolver) {
         return () -> Optional.of(currentActorResolver.currentActorId().value());
     }
 }

@@ -81,37 +81,37 @@ public class IdentityConfiguration {
 
     @Bean(name = "identityClock")
     @ConditionalOnMissingBean(name = "identityClock")
-    public Clock identityClock() {
+    Clock identityClock() {
         return Clock.systemUTC();
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public IdentityPersistenceMapper identityPersistenceMapper() {
+    IdentityPersistenceMapper identityPersistenceMapper() {
         return new IdentityPersistenceMapper();
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public RoleAssignmentPolicy roleAssignmentPolicy() {
+    RoleAssignmentPolicy roleAssignmentPolicy() {
         return new RoleAssignmentPolicy();
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public SegregationOfDutiesPolicy segregationOfDutiesPolicy() {
+    SegregationOfDutiesPolicy segregationOfDutiesPolicy() {
         return new SegregationOfDutiesPolicy();
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public PermissionEvaluationPolicy permissionEvaluationPolicy() {
+    PermissionEvaluationPolicy permissionEvaluationPolicy() {
         return new PermissionEvaluationPolicy();
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public RoleAssignmentDomainService roleAssignmentDomainService(
+    RoleAssignmentDomainService roleAssignmentDomainService(
             RoleAssignmentPolicy roleAssignmentPolicy,
             SegregationOfDutiesPolicy segregationOfDutiesPolicy
     ) {
@@ -120,7 +120,7 @@ public class IdentityConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public PermissionEvaluationDomainService permissionEvaluationDomainService(
+    PermissionEvaluationDomainService permissionEvaluationDomainService(
             PermissionEvaluationPolicy permissionEvaluationPolicy
     ) {
         return new PermissionEvaluationDomainService(permissionEvaluationPolicy);
@@ -128,20 +128,20 @@ public class IdentityConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(DomainEventPublisherPort.class)
-    public DomainEventPublisherPort identityDomainEventPublisherPort() {
+    DomainEventPublisherPort identityDomainEventPublisherPort() {
         return new NoOpDomainEventPublisherAdapter();
     }
 
     @Bean
     @ConditionalOnBean(PasswordEncoder.class)
     @ConditionalOnMissingBean(PasswordEncoderPort.class)
-    public PasswordEncoderPort identityPasswordEncoderPort(PasswordEncoder passwordEncoder) {
+    PasswordEncoderPort identityPasswordEncoderPort(PasswordEncoder passwordEncoder) {
         return new SpringPasswordEncoderAdapter(passwordEncoder);
     }
 
     @Bean
     @ConditionalOnMissingBean(RegisterUserUseCase.class)
-    public RegisterUserUseCase registerUserUseCase(
+    RegisterUserUseCase registerUserUseCase(
             UserRepository userRepository,
             DomainEventPublisherPort domainEventPublisherPort,
             @Qualifier("identityClock") Clock clock
@@ -151,7 +151,7 @@ public class IdentityConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(ActivateUserUseCase.class)
-    public ActivateUserUseCase activateUserUseCase(
+    ActivateUserUseCase activateUserUseCase(
             UserRepository userRepository,
             RoleRepository roleRepository,
             DomainEventPublisherPort domainEventPublisherPort,
@@ -162,7 +162,7 @@ public class IdentityConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(SuspendUserUseCase.class)
-    public SuspendUserUseCase suspendUserUseCase(
+    SuspendUserUseCase suspendUserUseCase(
             UserRepository userRepository,
             RoleRepository roleRepository,
             DomainEventPublisherPort domainEventPublisherPort,
@@ -173,7 +173,7 @@ public class IdentityConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(CreateRoleUseCase.class)
-    public CreateRoleUseCase createRoleUseCase(
+    CreateRoleUseCase createRoleUseCase(
             RoleRepository roleRepository,
             DomainEventPublisherPort domainEventPublisherPort,
             @Qualifier("identityClock") Clock clock
@@ -183,7 +183,7 @@ public class IdentityConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(AssignRoleToUserUseCase.class)
-    public AssignRoleToUserUseCase assignRoleToUserUseCase(
+    AssignRoleToUserUseCase assignRoleToUserUseCase(
             UserRepository userRepository,
             RoleRepository roleRepository,
             DomainEventPublisherPort domainEventPublisherPort,
@@ -201,7 +201,7 @@ public class IdentityConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(RevokeRoleFromUserUseCase.class)
-    public RevokeRoleFromUserUseCase revokeRoleFromUserUseCase(
+    RevokeRoleFromUserUseCase revokeRoleFromUserUseCase(
             UserRepository userRepository,
             RoleRepository roleRepository
     ) {
@@ -210,7 +210,7 @@ public class IdentityConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(GrantPermissionToRoleUseCase.class)
-    public GrantPermissionToRoleUseCase grantPermissionToRoleUseCase(
+    GrantPermissionToRoleUseCase grantPermissionToRoleUseCase(
             RoleRepository roleRepository,
             PermissionRepository permissionRepository,
             DomainEventPublisherPort domainEventPublisherPort,
@@ -226,7 +226,7 @@ public class IdentityConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(EvaluatePermissionUseCase.class)
-    public EvaluatePermissionUseCase evaluatePermissionUseCase(
+    EvaluatePermissionUseCase evaluatePermissionUseCase(
             UserRepository userRepository,
             RoleRepository roleRepository,
             PermissionEvaluationDomainService permissionEvaluationDomainService
@@ -236,7 +236,7 @@ public class IdentityConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(GetUserPermissionsUseCase.class)
-    public GetUserPermissionsUseCase getUserPermissionsUseCase(
+    GetUserPermissionsUseCase getUserPermissionsUseCase(
             UserRepository userRepository,
             RoleRepository roleRepository,
             PermissionRepository permissionRepository

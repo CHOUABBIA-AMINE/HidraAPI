@@ -56,7 +56,7 @@ public class SecurityConfiguration {
     };
 
     @Bean
-    public SecurityFilterChain securityFilterChain(
+    SecurityFilterChain securityFilterChain(
             HttpSecurity http,
             HidraPlatformProperties properties,
             RestAuthenticationEntryPoint authenticationEntryPoint,
@@ -89,7 +89,7 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public CorsConfigurationSource corsConfigurationSource(HidraPlatformProperties properties) {
+    CorsConfigurationSource corsConfigurationSource(HidraPlatformProperties properties) {
         CorsConfiguration configuration = new CorsConfiguration();
         HidraPlatformProperties.Cors cors = properties.security().cors();
         configuration.setAllowedOrigins(cors.allowedOrigins());

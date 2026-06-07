@@ -52,7 +52,7 @@ public class TopologyApiRestConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean
-    public TopologyRestMapper topologyRestMapper(
+    TopologyRestMapper topologyRestMapper(
             ResolveTopologyCatalogTypeUseCase resolveTopologyCatalogTypeUseCase) {
 
         return new TopologyRestMapper(resolveTopologyCatalogTypeUseCase);

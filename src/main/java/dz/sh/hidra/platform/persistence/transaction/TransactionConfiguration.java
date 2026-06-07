@@ -30,7 +30,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 public class TransactionConfiguration {
 
     @Bean
-    public TransactionTemplate transactionTemplate(PlatformTransactionManager transactionManager) {
+    TransactionTemplate transactionTemplate(PlatformTransactionManager transactionManager) {
         return new TransactionTemplate(transactionManager);
     }
 }

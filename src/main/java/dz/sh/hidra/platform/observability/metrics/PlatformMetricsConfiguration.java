@@ -27,7 +27,7 @@ import org.springframework.context.annotation.Configuration;
 public class PlatformMetricsConfiguration {
 
     @Bean
-    public MeterFilter platformCommonTagsMeterFilter(PlatformMetricsTags platformMetricsTags) {
+    MeterFilter platformCommonTagsMeterFilter(PlatformMetricsTags platformMetricsTags) {
         return MeterFilter.commonTags(platformMetricsTags.commonTags("platform"));
     }
 }

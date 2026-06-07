@@ -64,7 +64,7 @@ public class PlatformDevSecurityConfiguration {
      * @return development user details service
      */
     @Bean
-    public UserDetailsService devUserDetailsService() {
+    UserDetailsService devUserDetailsService() {
         return new InMemoryUserDetailsManager(User
                 .withUsername(DEV_USERNAME)
                 .password("{noop}" + DEV_PASSWORD)

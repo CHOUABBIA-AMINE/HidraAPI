@@ -32,7 +32,6 @@ import dz.sh.hidra.modules.telemetry.api.rest.response.TelemetryPageResponse;
 import dz.sh.hidra.modules.telemetry.api.rest.response.TelemetryPointBindingResponse;
 import dz.sh.hidra.modules.telemetry.api.rest.response.TelemetryPointResponse;
 import dz.sh.hidra.modules.telemetry.api.rest.response.TelemetryReadingResponse;
-import dz.sh.hidra.modules.telemetry.api.rest.response.TelemetrySourceResponse;
 import dz.sh.hidra.modules.telemetry.api.rest.support.TelemetryRestTestFixtures;
 import dz.sh.hidra.modules.telemetry.application.port.in.AcceptTelemetryReadingUseCase;
 import dz.sh.hidra.modules.telemetry.application.port.in.ActivateTelemetryDeviceUseCase;

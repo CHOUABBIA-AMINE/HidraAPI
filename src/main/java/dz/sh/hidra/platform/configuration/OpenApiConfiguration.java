@@ -27,7 +27,7 @@ import org.springframework.context.annotation.Configuration;
 public class OpenApiConfiguration {
 
     @Bean
-    public OpenApiMetadata openApiMetadata(
+    OpenApiMetadata openApiMetadata(
             @Value("${hidra.application.name:HidraAPI}") String applicationName,
             @Value("${hidra.application.description:Hydrocarbon Intelligence for Data, Risk, and Analytics}") String applicationDescription,
             @Value("${hidra.api.version:v1}") String apiVersion) {

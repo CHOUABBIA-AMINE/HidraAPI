@@ -118,27 +118,27 @@ import jakarta.persistence.EntityManager;
 public class TopologyConfiguration {
 
     @Bean
-    public TopologyPersistenceMapper topologyPersistenceMapper() {
+    TopologyPersistenceMapper topologyPersistenceMapper() {
         return new TopologyPersistenceMapper();
     }
 
     @Bean
-    public TopologyCatalogPersistenceMapper topologyCatalogPersistenceMapper() {
+    TopologyCatalogPersistenceMapper topologyCatalogPersistenceMapper() {
         return new TopologyCatalogPersistenceMapper();
     }
 
     @Bean
-    public TopologyCatalogJpaRepository topologyCatalogJpaRepository(EntityManager entityManager) {
+    TopologyCatalogJpaRepository topologyCatalogJpaRepository(EntityManager entityManager) {
         return new TopologyCatalogJpaRepository(entityManager);
     }
 
     @Bean
-    public TopologyCatalogTranslationJpaRepository topologyCatalogTranslationJpaRepository(EntityManager entityManager) {
+    TopologyCatalogTranslationJpaRepository topologyCatalogTranslationJpaRepository(EntityManager entityManager) {
         return new TopologyCatalogTranslationJpaRepository(entityManager);
     }
 
     @Bean
-    public TopologyCatalogRepositoryPort topologyCatalogRepositoryPort(
+    TopologyCatalogRepositoryPort topologyCatalogRepositoryPort(
             TopologyCatalogJpaRepository catalogRepository,
             TopologyCatalogTranslationJpaRepository translationRepository,
             TopologyCatalogPersistenceMapper mapper) {
@@ -147,7 +147,7 @@ public class TopologyConfiguration {
     }
 
     @Bean
-    public PipelineSystemRepositoryPort pipelineSystemRepositoryPort(
+    PipelineSystemRepositoryPort pipelineSystemRepositoryPort(
             PipelineSystemJpaRepository repository,
             TopologyPersistenceMapper mapper) {
 
@@ -155,7 +155,7 @@ public class TopologyConfiguration {
     }
 
     @Bean
-    public PipelineRepositoryPort pipelineRepositoryPort(
+    PipelineRepositoryPort pipelineRepositoryPort(
             PipelineJpaRepository repository,
             TopologyPersistenceMapper mapper) {
 
@@ -163,7 +163,7 @@ public class TopologyConfiguration {
     }
 
     @Bean
-    public FacilityRepositoryPort facilityRepositoryPort(
+    FacilityRepositoryPort facilityRepositoryPort(
             FacilityJpaRepository repository,
             TopologyPersistenceMapper mapper) {
 
@@ -171,7 +171,7 @@ public class TopologyConfiguration {
     }
 
     @Bean
-    public TopologyNodeRepositoryPort topologyNodeRepositoryPort(
+    TopologyNodeRepositoryPort topologyNodeRepositoryPort(
             TopologyNodeJpaRepository repository,
             TopologyPersistenceMapper mapper) {
 
@@ -179,7 +179,7 @@ public class TopologyConfiguration {
     }
 
     @Bean
-    public PipelineSegmentRepositoryPort pipelineSegmentRepositoryPort(
+    PipelineSegmentRepositoryPort pipelineSegmentRepositoryPort(
             PipelineSegmentJpaRepository repository,
             TopologyPersistenceMapper mapper) {
 
@@ -187,7 +187,7 @@ public class TopologyConfiguration {
     }
 
     @Bean
-    public PipelineAppurtenanceRepositoryPort pipelineAppurtenanceRepositoryPort(
+    PipelineAppurtenanceRepositoryPort pipelineAppurtenanceRepositoryPort(
             PipelineAppurtenanceJpaRepository repository,
             TopologyPersistenceMapper mapper) {
 
@@ -195,7 +195,7 @@ public class TopologyConfiguration {
     }
 
     @Bean
-    public TopologyConnectionRepositoryPort topologyConnectionRepositoryPort(
+    TopologyConnectionRepositoryPort topologyConnectionRepositoryPort(
             TopologyConnectionJpaRepository repository,
             TopologyPersistenceMapper mapper) {
 
@@ -203,7 +203,7 @@ public class TopologyConfiguration {
     }
 
     @Bean
-    public EquipmentRepositoryPort equipmentRepositoryPort(
+    EquipmentRepositoryPort equipmentRepositoryPort(
             EquipmentJpaRepository repository,
             TopologyPersistenceMapper mapper) {
 
@@ -211,27 +211,27 @@ public class TopologyConfiguration {
     }
 
     @Bean
-    public TopologyAssetStatusPolicy topologyAssetStatusPolicy() {
+    TopologyAssetStatusPolicy topologyAssetStatusPolicy() {
         return new TopologyAssetStatusPolicy();
     }
 
     @Bean
-    public TopologyConnectivityPolicy topologyConnectivityPolicy() {
+    TopologyConnectivityPolicy topologyConnectivityPolicy() {
         return new TopologyConnectivityPolicy();
     }
 
     @Bean
-    public FacilityTopologyPolicy facilityTopologyPolicy() {
+    FacilityTopologyPolicy facilityTopologyPolicy() {
         return new FacilityTopologyPolicy();
     }
 
     @Bean
-    public PipelineAppurtenancePolicy pipelineAppurtenancePolicy() {
+    PipelineAppurtenancePolicy pipelineAppurtenancePolicy() {
         return new PipelineAppurtenancePolicy();
     }
 
     @Bean
-    public TopologyRegistrationDomainService topologyRegistrationDomainService(
+    TopologyRegistrationDomainService topologyRegistrationDomainService(
             TopologyAssetStatusPolicy statusPolicy,
             TopologyConnectivityPolicy connectivityPolicy,
             FacilityTopologyPolicy facilityPolicy,
@@ -245,14 +245,14 @@ public class TopologyConfiguration {
     }
 
     @Bean
-    public TopologyConnectivityDomainService topologyConnectivityDomainService(
+    TopologyConnectivityDomainService topologyConnectivityDomainService(
             TopologyConnectivityPolicy connectivityPolicy) {
 
         return new TopologyConnectivityDomainService(connectivityPolicy);
     }
 
     @Bean
-    public PipelineAppurtenanceDomainService pipelineAppurtenanceDomainService(
+    PipelineAppurtenanceDomainService pipelineAppurtenanceDomainService(
             PipelineAppurtenancePolicy appurtenancePolicy,
             TopologyConnectivityPolicy connectivityPolicy,
             TopologyAssetStatusPolicy statusPolicy) {
@@ -261,35 +261,35 @@ public class TopologyConfiguration {
     }
 
     @Bean
-    public PipelineSystemApplicationService pipelineSystemApplicationService(
+    PipelineSystemApplicationService pipelineSystemApplicationService(
             PipelineSystemRepositoryPort pipelineSystemRepository) {
 
         return new PipelineSystemApplicationService(pipelineSystemRepository);
     }
 
     @Bean
-    public CreatePipelineSystemUseCase createPipelineSystemUseCase(
+    CreatePipelineSystemUseCase createPipelineSystemUseCase(
             PipelineSystemApplicationService service) {
 
         return service;
     }
 
     @Bean
-    public GetPipelineSystemUseCase getPipelineSystemUseCase(
+    GetPipelineSystemUseCase getPipelineSystemUseCase(
             PipelineSystemApplicationService service) {
 
         return service;
     }
 
     @Bean
-    public ListPipelineSystemsUseCase listPipelineSystemsUseCase(
+    ListPipelineSystemsUseCase listPipelineSystemsUseCase(
             PipelineSystemApplicationService service) {
 
         return service;
     }
 
     @Bean
-    public PipelineApplicationService pipelineApplicationService(
+    PipelineApplicationService pipelineApplicationService(
             PipelineRepositoryPort pipelineRepository,
             PipelineSystemRepositoryPort pipelineSystemRepository,
             TopologyRegistrationDomainService registrationDomainService) {
@@ -301,22 +301,22 @@ public class TopologyConfiguration {
     }
 
     @Bean
-    public CreatePipelineUseCase createPipelineUseCase(PipelineApplicationService service) {
+    CreatePipelineUseCase createPipelineUseCase(PipelineApplicationService service) {
         return service;
     }
 
     @Bean
-    public GetPipelineUseCase getPipelineUseCase(PipelineApplicationService service) {
+    GetPipelineUseCase getPipelineUseCase(PipelineApplicationService service) {
         return service;
     }
 
     @Bean
-    public ListPipelinesUseCase listPipelinesUseCase(PipelineApplicationService service) {
+    ListPipelinesUseCase listPipelinesUseCase(PipelineApplicationService service) {
         return service;
     }
 
     @Bean
-    public FacilityApplicationService facilityApplicationService(
+    FacilityApplicationService facilityApplicationService(
             FacilityRepositoryPort facilityRepository,
             TopologyRegistrationDomainService registrationDomainService) {
 
@@ -324,22 +324,22 @@ public class TopologyConfiguration {
     }
 
     @Bean
-    public CreateFacilityUseCase createFacilityUseCase(FacilityApplicationService service) {
+    CreateFacilityUseCase createFacilityUseCase(FacilityApplicationService service) {
         return service;
     }
 
     @Bean
-    public GetFacilityUseCase getFacilityUseCase(FacilityApplicationService service) {
+    GetFacilityUseCase getFacilityUseCase(FacilityApplicationService service) {
         return service;
     }
 
     @Bean
-    public ListFacilitiesUseCase listFacilitiesUseCase(FacilityApplicationService service) {
+    ListFacilitiesUseCase listFacilitiesUseCase(FacilityApplicationService service) {
         return service;
     }
 
     @Bean
-    public TopologyNodeApplicationService topologyNodeApplicationService(
+    TopologyNodeApplicationService topologyNodeApplicationService(
             TopologyNodeRepositoryPort topologyNodeRepository,
             FacilityRepositoryPort facilityRepository,
             TopologyRegistrationDomainService registrationDomainService) {
@@ -351,22 +351,22 @@ public class TopologyConfiguration {
     }
 
     @Bean
-    public CreateTopologyNodeUseCase createTopologyNodeUseCase(TopologyNodeApplicationService service) {
+    CreateTopologyNodeUseCase createTopologyNodeUseCase(TopologyNodeApplicationService service) {
         return service;
     }
 
     @Bean
-    public GetTopologyNodeUseCase getTopologyNodeUseCase(TopologyNodeApplicationService service) {
+    GetTopologyNodeUseCase getTopologyNodeUseCase(TopologyNodeApplicationService service) {
         return service;
     }
 
     @Bean
-    public ListTopologyNodesUseCase listTopologyNodesUseCase(TopologyNodeApplicationService service) {
+    ListTopologyNodesUseCase listTopologyNodesUseCase(TopologyNodeApplicationService service) {
         return service;
     }
 
     @Bean
-    public PipelineSegmentApplicationService pipelineSegmentApplicationService(
+    PipelineSegmentApplicationService pipelineSegmentApplicationService(
             PipelineSegmentRepositoryPort pipelineSegmentRepository,
             PipelineRepositoryPort pipelineRepository,
             TopologyNodeRepositoryPort topologyNodeRepository,
@@ -380,17 +380,17 @@ public class TopologyConfiguration {
     }
 
     @Bean
-    public CreatePipelineSegmentUseCase createPipelineSegmentUseCase(PipelineSegmentApplicationService service) {
+    CreatePipelineSegmentUseCase createPipelineSegmentUseCase(PipelineSegmentApplicationService service) {
         return service;
     }
 
     @Bean
-    public ListPipelineSegmentsUseCase listPipelineSegmentsUseCase(PipelineSegmentApplicationService service) {
+    ListPipelineSegmentsUseCase listPipelineSegmentsUseCase(PipelineSegmentApplicationService service) {
         return service;
     }
 
     @Bean
-    public PipelineAppurtenanceApplicationService pipelineAppurtenanceApplicationService(
+    PipelineAppurtenanceApplicationService pipelineAppurtenanceApplicationService(
             PipelineAppurtenanceRepositoryPort appurtenanceRepository,
             PipelineRepositoryPort pipelineRepository,
             TopologyNodeRepositoryPort topologyNodeRepository,
@@ -404,28 +404,28 @@ public class TopologyConfiguration {
     }
 
     @Bean
-    public CreatePipelineAppurtenanceUseCase createPipelineAppurtenanceUseCase(
+    CreatePipelineAppurtenanceUseCase createPipelineAppurtenanceUseCase(
             PipelineAppurtenanceApplicationService service) {
 
         return service;
     }
 
     @Bean
-    public GetPipelineAppurtenanceUseCase getPipelineAppurtenanceUseCase(
+    GetPipelineAppurtenanceUseCase getPipelineAppurtenanceUseCase(
             PipelineAppurtenanceApplicationService service) {
 
         return service;
     }
 
     @Bean
-    public ListPipelineAppurtenancesUseCase listPipelineAppurtenancesUseCase(
+    ListPipelineAppurtenancesUseCase listPipelineAppurtenancesUseCase(
             PipelineAppurtenanceApplicationService service) {
 
         return service;
     }
 
     @Bean
-    public TopologyConnectionApplicationService topologyConnectionApplicationService(
+    TopologyConnectionApplicationService topologyConnectionApplicationService(
             TopologyConnectionRepositoryPort topologyConnectionRepository,
             TopologyNodeRepositoryPort topologyNodeRepository,
             TopologyRegistrationDomainService registrationDomainService) {
@@ -437,21 +437,21 @@ public class TopologyConfiguration {
     }
 
     @Bean
-    public CreateTopologyConnectionUseCase createTopologyConnectionUseCase(
+    CreateTopologyConnectionUseCase createTopologyConnectionUseCase(
             TopologyConnectionApplicationService service) {
 
         return service;
     }
 
     @Bean
-    public ListTopologyConnectionsUseCase listTopologyConnectionsUseCase(
+    ListTopologyConnectionsUseCase listTopologyConnectionsUseCase(
             TopologyConnectionApplicationService service) {
 
         return service;
     }
 
     @Bean
-    public EquipmentApplicationService equipmentApplicationService(
+    EquipmentApplicationService equipmentApplicationService(
             EquipmentRepositoryPort equipmentRepository,
             TopologyRegistrationDomainService registrationDomainService) {
 
@@ -459,29 +459,29 @@ public class TopologyConfiguration {
     }
 
     @Bean
-    public RegisterEquipmentUseCase registerEquipmentUseCase(EquipmentApplicationService service) {
+    RegisterEquipmentUseCase registerEquipmentUseCase(EquipmentApplicationService service) {
         return service;
     }
 
     @Bean
-    public TopologyCatalogApplicationService topologyCatalogApplicationService(
+    TopologyCatalogApplicationService topologyCatalogApplicationService(
             TopologyCatalogRepositoryPort topologyCatalogRepository) {
 
         return new TopologyCatalogApplicationService(topologyCatalogRepository);
     }
 
     @Bean
-    public GetTopologyCatalogTypeUseCase getTopologyCatalogTypeUseCase(TopologyCatalogApplicationService service) {
+    GetTopologyCatalogTypeUseCase getTopologyCatalogTypeUseCase(TopologyCatalogApplicationService service) {
         return service;
     }
 
     @Bean
-    public ListTopologyCatalogTypesUseCase listTopologyCatalogTypesUseCase(TopologyCatalogApplicationService service) {
+    ListTopologyCatalogTypesUseCase listTopologyCatalogTypesUseCase(TopologyCatalogApplicationService service) {
         return service;
     }
 
     @Bean
-    public ResolveTopologyCatalogTypeUseCase resolveTopologyCatalogTypeUseCase(TopologyCatalogApplicationService service) {
+    ResolveTopologyCatalogTypeUseCase resolveTopologyCatalogTypeUseCase(TopologyCatalogApplicationService service) {
         return service;
     }
 }

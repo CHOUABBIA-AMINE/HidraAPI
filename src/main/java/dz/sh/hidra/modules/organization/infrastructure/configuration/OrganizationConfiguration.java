@@ -77,86 +77,86 @@ import dz.sh.hidra.modules.organization.infrastructure.persistence.repository.Po
 public class OrganizationConfiguration {
 
     @Bean
-    public OrganizationApplicationMapper organizationApplicationMapper() {
+    OrganizationApplicationMapper organizationApplicationMapper() {
         return new OrganizationApplicationMapper();
     }
 
     @Bean
-    public OrganizationPersistenceMapper organizationPersistenceMapper() {
+    OrganizationPersistenceMapper organizationPersistenceMapper() {
         return new OrganizationPersistenceMapper();
     }
 
     @Bean
-    public DomainEventPublisherPort organizationDomainEventPublisherPort() {
+    DomainEventPublisherPort organizationDomainEventPublisherPort() {
         return new NoOpDomainEventPublisherAdapter();
     }
 
     @Bean
-    public EmployeeRepository employeeRepository(
+    EmployeeRepository employeeRepository(
             EmployeeJpaRepository employeeJpaRepository,
             OrganizationPersistenceMapper mapper) {
         return new EmployeeRepositoryAdapter(employeeJpaRepository, mapper);
     }
 
     @Bean
-    public OrganizationUnitRepository organizationUnitRepository(
+    OrganizationUnitRepository organizationUnitRepository(
             OrganizationUnitJpaRepository organizationUnitJpaRepository,
             OrganizationPersistenceMapper mapper) {
         return new OrganizationUnitRepositoryAdapter(organizationUnitJpaRepository, mapper);
     }
 
     @Bean
-    public PositionRepository positionRepository(
+    PositionRepository positionRepository(
             PositionJpaRepository positionJpaRepository,
             OrganizationPersistenceMapper mapper) {
         return new PositionRepositoryAdapter(positionJpaRepository, mapper);
     }
 
     @Bean
-    public OrganizationUnitDomainRepository organizationUnitDomainRepository(
+    OrganizationUnitDomainRepository organizationUnitDomainRepository(
             OrganizationUnitRepository organizationUnitRepository) {
         return new OrganizationUnitDomainRepositoryBridge(organizationUnitRepository);
     }
 
     @Bean
-    public OrganizationHierarchyPolicy organizationHierarchyPolicy() {
+    OrganizationHierarchyPolicy organizationHierarchyPolicy() {
         return new OrganizationHierarchyPolicy();
     }
 
     @Bean
-    public EmployeeLifecyclePolicy employeeLifecyclePolicy() {
+    EmployeeLifecyclePolicy employeeLifecyclePolicy() {
         return new EmployeeLifecyclePolicy();
     }
 
     @Bean
-    public EmployeeAssignmentPolicy employeeAssignmentPolicy() {
+    EmployeeAssignmentPolicy employeeAssignmentPolicy() {
         return new EmployeeAssignmentPolicy();
     }
 
     @Bean
-    public ReportingLinePolicy reportingLinePolicy() {
+    ReportingLinePolicy reportingLinePolicy() {
         return new ReportingLinePolicy();
     }
 
     @Bean
-    public OrganizationHierarchyDomainService organizationHierarchyDomainService(
+    OrganizationHierarchyDomainService organizationHierarchyDomainService(
             OrganizationUnitDomainRepository repository,
             OrganizationHierarchyPolicy policy) {
         return new OrganizationHierarchyDomainService(repository, policy);
     }
 
     @Bean
-    public EmployeeAssignmentDomainService employeeAssignmentDomainService(EmployeeAssignmentPolicy policy) {
+    EmployeeAssignmentDomainService employeeAssignmentDomainService(EmployeeAssignmentPolicy policy) {
         return new EmployeeAssignmentDomainService(policy);
     }
 
     @Bean
-    public ReportingLineDomainService reportingLineDomainService(ReportingLinePolicy policy) {
+    ReportingLineDomainService reportingLineDomainService(ReportingLinePolicy policy) {
         return new ReportingLineDomainService(policy);
     }
 
     @Bean
-    public CreateEmployeeUseCase createEmployeeUseCase(
+    CreateEmployeeUseCase createEmployeeUseCase(
             EmployeeRepository employeeRepository,
             DomainEventPublisherPort domainEventPublisher,
             OrganizationApplicationMapper mapper) {
@@ -164,21 +164,21 @@ public class OrganizationConfiguration {
     }
 
     @Bean
-    public GetEmployeeUseCase getEmployeeUseCase(
+    GetEmployeeUseCase getEmployeeUseCase(
             EmployeeRepository employeeRepository,
             OrganizationApplicationMapper mapper) {
         return new GetEmployeeService(employeeRepository, mapper);
     }
 
     @Bean
-    public ListEmployeesUseCase listEmployeesUseCase(
+    ListEmployeesUseCase listEmployeesUseCase(
             EmployeeRepository employeeRepository,
             OrganizationApplicationMapper mapper) {
         return new ListEmployeesService(employeeRepository, mapper);
     }
 
     @Bean
-    public CreateOrganizationUnitUseCase createOrganizationUnitUseCase(
+    CreateOrganizationUnitUseCase createOrganizationUnitUseCase(
             OrganizationUnitRepository organizationUnitRepository,
             DomainEventPublisherPort domainEventPublisher,
             OrganizationApplicationMapper mapper) {
@@ -186,21 +186,21 @@ public class OrganizationConfiguration {
     }
 
     @Bean
-    public GetOrganizationUnitUseCase getOrganizationUnitUseCase(
+    GetOrganizationUnitUseCase getOrganizationUnitUseCase(
             OrganizationUnitRepository organizationUnitRepository,
             OrganizationApplicationMapper mapper) {
         return new GetOrganizationUnitService(organizationUnitRepository, mapper);
     }
 
     @Bean
-    public ListOrganizationUnitsUseCase listOrganizationUnitsUseCase(
+    ListOrganizationUnitsUseCase listOrganizationUnitsUseCase(
             OrganizationUnitRepository organizationUnitRepository,
             OrganizationApplicationMapper mapper) {
         return new ListOrganizationUnitsService(organizationUnitRepository, mapper);
     }
 
     @Bean
-    public CreatePositionUseCase createPositionUseCase(
+    CreatePositionUseCase createPositionUseCase(
             PositionRepository positionRepository,
             DomainEventPublisherPort domainEventPublisher,
             OrganizationApplicationMapper mapper) {
@@ -208,7 +208,7 @@ public class OrganizationConfiguration {
     }
 
     @Bean
-    public AssignEmployeeToUnitUseCase assignEmployeeToUnitUseCase(
+    AssignEmployeeToUnitUseCase assignEmployeeToUnitUseCase(
             EmployeeRepository employeeRepository,
             OrganizationUnitRepository organizationUnitRepository,
             PositionRepository positionRepository,
@@ -225,7 +225,7 @@ public class OrganizationConfiguration {
     }
 
     @Bean
-    public SetEmployeeReportingLineUseCase setEmployeeReportingLineUseCase(
+    SetEmployeeReportingLineUseCase setEmployeeReportingLineUseCase(
             EmployeeRepository employeeRepository,
             ReportingLineDomainService domainService,
             DomainEventPublisherPort domainEventPublisher,

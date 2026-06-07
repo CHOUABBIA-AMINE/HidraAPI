@@ -22,6 +22,8 @@ package dz.sh.hidra.modules.telemetry.infrastructure.configuration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import dz.sh.hidra.modules.telemetry.infrastructure.persistence.mapper.TelemetryPersistenceMapper;
+import dz.sh.hidra.modules.telemetry.api.rest.mapper.TelemetryRestMapper;
 import dz.sh.hidra.modules.telemetry.application.port.out.TelemetryCatalogRepositoryPort;
 import dz.sh.hidra.modules.telemetry.application.port.out.TelemetryDeviceRepositoryPort;
 import dz.sh.hidra.modules.telemetry.application.port.out.TelemetryIngestionBatchRepositoryPort;
@@ -67,7 +69,19 @@ import dz.sh.hidra.modules.telemetry.domain.service.TelemetryRegistrationDomainS
 @Configuration
 public class TelemetryConfiguration {
 
+    
+
     @Bean
+    public TelemetryPersistenceMapper telemetryPersistenceMapper() {
+        return new TelemetryPersistenceMapper();
+    }
+
+    @Bean
+    public TelemetryRestMapper telemetryRestMapper() {
+        return new TelemetryRestMapper();
+    }
+
+@Bean
     public TelemetryCatalogPolicy telemetryCatalogPolicy() {
         return new TelemetryCatalogPolicy();
     }

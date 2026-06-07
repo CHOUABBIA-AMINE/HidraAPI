@@ -24,6 +24,8 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.function.Function;
 
+import org.springframework.stereotype.Component;
+
 import dz.sh.hidra.kernel.application.pagination.PageRequest;
 import dz.sh.hidra.kernel.application.pagination.SortDirection;
 import dz.sh.hidra.modules.telemetry.api.rest.request.BindTelemetryPointRequest;
@@ -147,6 +149,7 @@ import dz.sh.hidra.modules.telemetry.domain.value.TopologyAssetReference;
  * API-layer mapper only. It must not call application services, repositories, persistence mappers,
  * topology implementation classes, flow, risk, analytics, workflow, reporting, or notification code.
  */
+@Component
 public final class TelemetryRestMapper {
 
     private static final int DEFAULT_PAGE = 0;

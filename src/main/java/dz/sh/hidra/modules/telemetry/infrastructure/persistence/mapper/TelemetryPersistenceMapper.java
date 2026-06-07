@@ -22,6 +22,8 @@ package dz.sh.hidra.modules.telemetry.infrastructure.persistence.mapper;
 import java.util.List;
 import java.util.Objects;
 
+import org.springframework.stereotype.Component;
+
 import dz.sh.hidra.modules.telemetry.domain.model.TelemetryDevice;
 import dz.sh.hidra.modules.telemetry.domain.model.TelemetryIngestionBatch;
 import dz.sh.hidra.modules.telemetry.domain.model.TelemetryPoint;
@@ -82,6 +84,7 @@ import dz.sh.hidra.modules.telemetry.infrastructure.persistence.entity.Telemetry
  * catalog id as the stable id and as fallback code. Later API/catalog enrichment can resolve
  * localized labels from the catalog repository.
  */
+@Component
 public final class TelemetryPersistenceMapper {
 
     public TelemetryTypeCatalog toDomain(

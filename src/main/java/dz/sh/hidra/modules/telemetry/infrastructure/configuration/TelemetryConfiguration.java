@@ -68,44 +68,44 @@ import dz.sh.hidra.modules.telemetry.domain.service.TelemetryRegistrationDomainS
 public class TelemetryConfiguration {
 
     @Bean
-    TelemetryCatalogPolicy telemetryCatalogPolicy() {
+    public TelemetryCatalogPolicy telemetryCatalogPolicy() {
         return new TelemetryCatalogPolicy();
     }
 
     @Bean
-    TelemetrySourcePolicy telemetrySourcePolicy() {
+    public TelemetrySourcePolicy telemetrySourcePolicy() {
         return new TelemetrySourcePolicy();
     }
 
     @Bean
-    TelemetryPointPolicy telemetryPointPolicy() {
+    public TelemetryPointPolicy telemetryPointPolicy() {
         return new TelemetryPointPolicy();
     }
 
     @Bean
-    TelemetryBindingPolicy telemetryBindingPolicy() {
+    public TelemetryBindingPolicy telemetryBindingPolicy() {
         return new TelemetryBindingPolicy();
     }
 
     @Bean
-    TelemetryReadingPolicy telemetryReadingPolicy() {
+    public TelemetryReadingPolicy telemetryReadingPolicy() {
         return new TelemetryReadingPolicy();
     }
 
     @Bean
-    TelemetryIngestionPolicy telemetryIngestionPolicy() {
+    public TelemetryIngestionPolicy telemetryIngestionPolicy() {
         return new TelemetryIngestionPolicy();
     }
 
     @Bean
-    TelemetryCatalogDomainService telemetryCatalogDomainService(
+    public TelemetryCatalogDomainService telemetryCatalogDomainService(
             TelemetryCatalogPolicy telemetryCatalogPolicy) {
 
         return new TelemetryCatalogDomainService(telemetryCatalogPolicy);
     }
 
     @Bean
-    TelemetryRegistrationDomainService telemetryRegistrationDomainService(
+    public TelemetryRegistrationDomainService telemetryRegistrationDomainService(
             TelemetrySourcePolicy telemetrySourcePolicy,
             TelemetryPointPolicy telemetryPointPolicy) {
 
@@ -115,14 +115,14 @@ public class TelemetryConfiguration {
     }
 
     @Bean
-    TelemetryBindingDomainService telemetryBindingDomainService(
+    public TelemetryBindingDomainService telemetryBindingDomainService(
             TelemetryBindingPolicy telemetryBindingPolicy) {
 
         return new TelemetryBindingDomainService(telemetryBindingPolicy);
     }
 
     @Bean
-    TelemetryReadingDomainService telemetryReadingDomainService(
+    public TelemetryReadingDomainService telemetryReadingDomainService(
             TelemetryPointPolicy telemetryPointPolicy,
             TelemetryReadingPolicy telemetryReadingPolicy) {
 
@@ -132,14 +132,14 @@ public class TelemetryConfiguration {
     }
 
     @Bean
-    TelemetryIngestionDomainService telemetryIngestionDomainService(
+    public TelemetryIngestionDomainService telemetryIngestionDomainService(
             TelemetryIngestionPolicy telemetryIngestionPolicy) {
 
         return new TelemetryIngestionDomainService(telemetryIngestionPolicy);
     }
 
     @Bean
-    TelemetryCatalogApplicationService telemetryCatalogApplicationService(
+    public TelemetryCatalogApplicationService telemetryCatalogApplicationService(
             TelemetryCatalogRepositoryPort telemetryCatalogRepositoryPort,
             TelemetryCatalogDomainService telemetryCatalogDomainService) {
 
@@ -149,7 +149,7 @@ public class TelemetryConfiguration {
     }
 
     @Bean
-    TelemetrySourceApplicationService telemetrySourceApplicationService(
+    public TelemetrySourceApplicationService telemetrySourceApplicationService(
             TelemetrySourceRepositoryPort telemetrySourceRepositoryPort,
             TelemetryRegistrationDomainService telemetryRegistrationDomainService) {
 
@@ -159,7 +159,7 @@ public class TelemetryConfiguration {
     }
 
     @Bean
-    TelemetryDeviceApplicationService telemetryDeviceApplicationService(
+    public TelemetryDeviceApplicationService telemetryDeviceApplicationService(
             TelemetrySourceRepositoryPort telemetrySourceRepositoryPort,
             TelemetryDeviceRepositoryPort telemetryDeviceRepositoryPort,
             TelemetryRegistrationDomainService telemetryRegistrationDomainService) {
@@ -171,7 +171,7 @@ public class TelemetryConfiguration {
     }
 
     @Bean
-    TelemetryPointApplicationService telemetryPointApplicationService(
+    public TelemetryPointApplicationService telemetryPointApplicationService(
             TelemetryDeviceRepositoryPort telemetryDeviceRepositoryPort,
             TelemetryPointRepositoryPort telemetryPointRepositoryPort,
             TelemetryRegistrationDomainService telemetryRegistrationDomainService) {
@@ -183,7 +183,7 @@ public class TelemetryConfiguration {
     }
 
     @Bean
-    TelemetryBindingApplicationService telemetryBindingApplicationService(
+    public TelemetryBindingApplicationService telemetryBindingApplicationService(
             TelemetryPointRepositoryPort telemetryPointRepositoryPort,
             TelemetryPointBindingRepositoryPort telemetryPointBindingRepositoryPort,
             TelemetryTopologyAssetLookupPort telemetryTopologyAssetLookupPort,
@@ -197,7 +197,7 @@ public class TelemetryConfiguration {
     }
 
     @Bean
-    TelemetryReadingApplicationService telemetryReadingApplicationService(
+    public TelemetryReadingApplicationService telemetryReadingApplicationService(
             TelemetryPointRepositoryPort telemetryPointRepositoryPort,
             TelemetryReadingRepositoryPort telemetryReadingRepositoryPort,
             TelemetryReadingDomainService telemetryReadingDomainService) {
@@ -209,7 +209,7 @@ public class TelemetryConfiguration {
     }
 
     @Bean
-    TelemetryIngestionApplicationService telemetryIngestionApplicationService(
+    public TelemetryIngestionApplicationService telemetryIngestionApplicationService(
             TelemetrySourceRepositoryPort telemetrySourceRepositoryPort,
             TelemetryIngestionBatchRepositoryPort telemetryIngestionBatchRepositoryPort,
             TelemetryIngestionDomainService telemetryIngestionDomainService) {

@@ -22,7 +22,6 @@ package dz.sh.hidra.modules.telemetry.application.command;
 import dz.sh.hidra.kernel.application.command.Command;
 import dz.sh.hidra.modules.telemetry.domain.value.TelemetryDeviceId;
 import dz.sh.hidra.modules.telemetry.domain.value.TelemetrySourceId;
-import java.util.Objects;
 
 /**
  * Command to activate a telemetry device.

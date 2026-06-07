@@ -19,7 +19,6 @@
  */
 package dz.sh.hidra.modules.telemetry.domain.model;
 
-import java.time.Instant;
 import java.util.Objects;
 
 import dz.sh.hidra.kernel.domain.exception.BusinessRuleViolationException;

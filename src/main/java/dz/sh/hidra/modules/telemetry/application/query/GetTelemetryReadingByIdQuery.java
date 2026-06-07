@@ -19,10 +19,10 @@
  */
 package dz.sh.hidra.modules.telemetry.application.query;
 
-import dz.sh.hidra.kernel.application.pagination.PageRequest;
+import java.util.Objects;
+
 import dz.sh.hidra.kernel.application.query.Query;
 import dz.sh.hidra.modules.telemetry.domain.value.TelemetryReadingId;
-import java.util.Objects;
 
 /**
  * Query to get a telemetry reading by identifier.

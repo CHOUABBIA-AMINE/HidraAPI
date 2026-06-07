@@ -13,8 +13,24 @@ Product      : Hidra - Hydrocarbon Intelligence for Data, Risk, and Analytics
 Author       : Abir MEDJERAB
 CreatedOn    : 2025-06-26
 UpdatedOn    : 2026-06-07
-Status       : Documentation-only correction baseline
+Status       : Validated corrected baseline record
 ```
+
+---
+
+## 0. TEL-COR-004 validation marker
+
+```text
+Task code    : TEL-COR-004
+Task title   : docs(telemetry): mark telemetry corrected baseline validated
+Status       : Corrected telemetry/topology boot baseline marked validated
+ValidatedOn  : 2026-06-07
+Validation   : compile, telemetry boot smoke, targeted telemetry tests, and full baseline gate recorded
+```
+
+This marker records that the corrected telemetry/topology boot baseline has passed the validation gate for moving beyond correction work.
+
+Do not remove the correction history below. It remains the audit trail for why the baseline required telemetry mapper bean registration and topology qualifier wiring.
 
 ---
 

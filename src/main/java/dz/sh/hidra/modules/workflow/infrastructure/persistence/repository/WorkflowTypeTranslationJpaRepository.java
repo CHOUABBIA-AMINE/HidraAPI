@@ -19,11 +19,11 @@
  */
 package dz.sh.hidra.modules.workflow.infrastructure.persistence.repository;
 
-import dz.sh.hidra.modules.workflow.infrastructure.persistence.entity.WorkflowTypeTranslationJpaEntity;
 import java.util.List;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import dz.sh.hidra.modules.workflow.infrastructure.persistence.entity.WorkflowTypeTranslationJpaEntity;
 
 /**
  * Spring Data repository for workflow catalog translations.

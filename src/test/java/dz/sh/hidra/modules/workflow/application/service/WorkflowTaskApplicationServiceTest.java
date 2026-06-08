@@ -42,8 +42,6 @@ import dz.sh.hidra.modules.workflow.domain.service.WorkflowTaskDomainService;
 import dz.sh.hidra.modules.workflow.domain.value.WorkflowCommentText;
 import dz.sh.hidra.modules.workflow.domain.value.WorkflowCorrelationId;
 import dz.sh.hidra.modules.workflow.domain.value.WorkflowDecisionNote;
-import dz.sh.hidra.modules.workflow.domain.value.WorkflowInstanceId;
-import dz.sh.hidra.modules.workflow.domain.value.WorkflowTaskId;
 import dz.sh.hidra.modules.workflow.domain.value.WorkflowTaskStatus;
 
 /**

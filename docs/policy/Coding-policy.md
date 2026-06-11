@@ -284,7 +284,7 @@ Template:
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  *
  * @Name        : <ClassName>
- * @CreatedOn   : <YYYY-MM-DD>
+ * @CreatedOn   : 2025-06-26
  * @UpdatedOn   : <YYYY-MM-DD>
  *
  * @Type        : <Class|Interface|Record|Enum|PackageInfo>
@@ -309,6 +309,7 @@ package <full.package.name>;
 - `@Module` MUST match the bounded module, such as `topology`, `identity`, `workflow`, or `analytics`.
 - `@Package` MUST exactly match the declared package.
 - `@Description` MUST describe responsibility, not implementation details.
+- `@CreatedOn` MUST be `2025-06-26`.
 
 ---
 
@@ -335,7 +336,7 @@ Package-info template:
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  *
  * @Name        : package-info
- * @CreatedOn   : <YYYY-MM-DD>
+ * @CreatedOn   : 2025-06-26
  * @UpdatedOn   : <YYYY-MM-DD>
  *
  * @Type        : PackageInfo

@@ -8,87 +8,196 @@ Product       : Hidra - Hydrocarbon Intelligence for Data, Risk, and Analytics
 Owner         : Sonatrach / TRC : Digitalization Initiative
 Author        : Abir MEDJERAB
 CreatedOn     : 2026-06-11
-Status        : Consolidated DDD master reference
-Scope         : Consolidates all Data Definition Documents currently present under docs/data definition
+UpdatedOn     : 2026-06-11
+Status        : Corrected and locked consolidated DDD master reference
+Scope         : Consolidates and governs all Data Definition Documents under docs/data definition
 ```
 
 ---
 
 ## 1. Purpose
 
-This document consolidates the Data Definition Documents currently located under:
+This document is the master Data Definition Document for Hidra / HyFlo.
+
+It consolidates the DDD files under:
 
 ```text
 docs/data definition
 ```
 
-It is intended to be the single navigable master reference for:
+It defines the implementation contract for:
 
 ```text
 module ownership
 bounded-context boundaries
 canonical package roots
-core aggregate models
-entity catalogues
 data ownership rules
 cross-module reference rules
 forbidden dependencies
-implementation sequencing
+table-prefix decisions
+missing-DDD blockers
+safety constraints
+code-generation guardrails
 ```
 
-The original module DDD files remain useful as detailed field-level references. This consolidated document is the architectural contract that aligns them into one consistent Hidra data model.
+The detailed field-level module DDDs remain the reference for entity fields. This master document is the higher-level governing contract. If a source DDD conflicts with this master, this master wins until the source DDD is corrected.
 
 ---
 
 ## 2. Source DDD inventory
 
-The following DDD files were identified under `docs/data definition` and consolidated here:
-
-| # | Source file | Module / context | Canonical package root | Status in source |
+| # | Source file | Module / context | Canonical package root | Master status |
 |---:|---|---|---|---|
-| 1 | `Kernel.md` | kernel | `dz.sh.hidra.kernel` | Architecture baseline candidate |
-| 2 | `Platform.md` | platform | `dz.sh.hidra.platform` / `dz.sh.hidra` platform area | Repository-aligned architecture baseline |
-| 3 | `Topology.md` | topology | `dz.sh.hidra.modules.topology` | Architecture baseline draft |
-| 4 | `Telemetry.md` | telemetry | `dz.sh.hidra.modules.telemetry` | Architecture baseline candidate |
-| 5 | `Planning.md` | planning | `dz.sh.hidra.modules.planning` | Target architecture baseline candidate |
-| 6 | `Monitoring.md` | monitoring | `dz.sh.hidra.modules.monitoring` | Target DDD, not yet repository-implemented |
-| 7 | `Simulation.md` | simulation | `dz.sh.hidra.modules.simulation` | Target DDD, architecture-aligned |
-| 8 | `Assets.md` | assets / asset-management | `dz.sh.hidra.modules.assets` | Target DDD, repository-aligned boundary definition |
-| 9 | `Integrity.md` | integrity | `dz.sh.hidra.modules.integrity` | Target data definition document |
-| 10 | `LeakDetection.md` | leakdetection | `dz.sh.hidra.modules.leakdetection` | Target data definition document |
-| 11 | `Custody.md` | custody | `dz.sh.hidra.modules.custody` | Target data definition |
-| 12 | `Hse.md` | hse | `dz.sh.hidra.modules.hse` | Target DDD / not yet repository-implemented |
-| 13 | `Audit.md` | audit | `dz.sh.hidra.modules.audit` | Target DDD, architecture-aligned |
-| 14 | `Workflow.md` | workflow | `dz.sh.hidra.modules.workflow` | Repository-aligned data definition document |
-| 15 | `Identity.md` | identity | `dz.sh.hidra.modules.identity` | Corrected RBAC + ABAC + External IDM baseline |
-| 16 | `Organization.md` | organization | `dz.sh.hidra.modules.organization` target; repository metadata says `dz.sh.hidra` | Corrected organization baseline |
-| 17 | `Integration.md` | integration | `dz.sh.hidra.modules.integration` | Target DDD, repository-aligned to macro-architecture |
-| 18 | `Configuration.md` | configuration | `dz.sh.hidra.modules.configuration` | Target data definition |
-| 19 | `Notification.md` | notification | `dz.sh.hidra.modules.notification` | Target DDD, repository-aligned to macro-architecture |
-| 20 | `Documents.md` | documents | `dz.sh.hidra.modules.documents` | Target data definition |
+| 1 | `Kernel.md` | kernel | `dz.sh.hidra.kernel` | Active foundation DDD |
+| 2 | `Platform.md` | platform | `dz.sh.hidra.platform` | Active technical DDD |
+| 3 | `Topology.md` | topology | `dz.sh.hidra.modules.topology` | Active operational-network DDD |
+| 4 | `Telemetry.md` | telemetry | `dz.sh.hidra.modules.telemetry` | Active measurement DDD |
+| 5 | `Planning.md` | planning | `dz.sh.hidra.modules.planning` | Active expected-state DDD |
+| 6 | `Monitoring.md` | monitoring | `dz.sh.hidra.modules.monitoring` | Active deviation/evaluation DDD; alarm/incident remain blocked |
+| 7 | `Simulation.md` | simulation | `dz.sh.hidra.modules.simulation` | Active decision-support DDD |
+| 8 | `Assets.md` | assets / asset-management | `dz.sh.hidra.modules.assets` | Active maintainability DDD; table prefix locked below |
+| 9 | `Integrity.md` | integrity | `dz.sh.hidra.modules.integrity` | Active integrity-condition DDD |
+| 10 | `LeakDetection.md` | leakdetection | `dz.sh.hidra.modules.leakdetection` | Active leak-decision-support DDD; table prefix locked below |
+| 11 | `Custody.md` | custody | `dz.sh.hidra.modules.custody` | Active official-transfer DDD |
+| 12 | `Hse.md` | hse | `dz.sh.hidra.modules.hse` | Active HSE consequence/compliance DDD |
+| 13 | `Audit.md` | audit | `dz.sh.hidra.modules.audit` | Active evidence-ledger DDD |
+| 14 | `Workflow.md` | workflow | `dz.sh.hidra.modules.workflow` | Active process-execution DDD |
+| 15 | `Identity.md` | identity | `dz.sh.hidra.modules.identity` | Active RBAC/ABAC/external-IDM DDD |
+| 16 | `Organization.md` | organization | `dz.sh.hidra.modules.organization` | Active organization DDD; package root corrected below |
+| 17 | `Integration.md` | integration | `dz.sh.hidra.modules.integration` | Active external-system-boundary DDD |
+| 18 | `Configuration.md` | configuration | `dz.sh.hidra.modules.configuration` | Active governed-runtime-configuration DDD |
+| 19 | `Notification.md` | notification | `dz.sh.hidra.modules.notification` | Active communication-delivery DDD |
+| 20 | `Documents.md` | documents | `dz.sh.hidra.modules.documents` | Active document-metadata DDD |
 
-Referenced but not currently represented by a dedicated DDD file in this folder:
+---
+
+## 3. Corrections applied in this locked version
+
+This version applies the corrections requested after review of the first consolidated DDD.
+
+### 3.1 Locked table-prefix decisions
+
+The following decisions are now final for implementation:
+
+| Module | Locked table prefix | Forbidden alternatives |
+|---|---|---|
+| `leakdetection` | `hidra_leak_detection_*` | `hidra_leakdetection_*` |
+| `assets` | `hidra_asset_*` | `hidra_assets_*` |
+| `organization` | `hidra_org_*` | `hidra_organization_*` unless a future migration ADR explicitly changes it |
+| `topology` | `hidra_topology_*` | `hidra_asset_*`, `hidra_integrity_*` |
+| `integrity` | `hidra_integrity_*` | `hidra_topology_*`, `hidra_asset_*` |
+| `hse` | `hidra_hse_*` | `hidra_incident_*`, `hidra_integrity_*` |
+| `custody` | `hidra_custody_*` | `hidra_telemetry_*`, `hidra_planning_*` |
+| `configuration` | `hidra_configuration_*` | module-owned catalog prefixes |
+
+Rule:
+
+```text
+A module MUST NOT create tables using another module's prefix.
+Open prefix choices are no longer allowed in implementation tasks.
+```
+
+### 3.2 Corrected organization package root
+
+`Organization.md` previously contained repository baseline wording that could be misread as `dz.sh.hidra` being the canonical package root.
+
+The canonical package root is now locked as:
+
+```text
+dz.sh.hidra.modules.organization
+```
+
+Any older `dz.sh.hidra` organization wording is legacy/repository-baseline metadata only, not an implementation target.
+
+### 3.3 Missing-DDD blockers
+
+The following referenced contexts are blocked until each has its own explicit DDD file under `docs/data definition`:
 
 ```text
 alarm management
 incident management
+party / external legal-entity master data
 risk
 analytics
 reporting
-party / external legal-entity master data
-contracts / commercial module
+contracts / commercial
 finance / ERP accounting
 ```
 
-These modules must not be implemented from implicit references alone. They require explicit DDD files before code generation.
+Blocked means:
+
+```text
+Do not create Java packages.
+Do not create migrations.
+Do not create JPA entities.
+Do not create repositories.
+Do not create controllers.
+Do not create DTOs.
+Do not create package-info.java skeletons.
+Do not infer entities from references in other DDDs.
+```
+
+Allowed until a DDD exists:
+
+```text
+neutral reference fields
+snapshot fields
+external target type codes
+future-module notes in documentation
+```
+
+### 3.4 Boundary guardrails strengthened
+
+The following boundary pairs are now implementation-critical:
+
+```text
+Topology vs Assets
+Topology vs Integrity
+Topology vs HSE
+Topology vs Custody
+Monitoring vs Alarm Management
+Monitoring vs Incident Management
+Monitoring vs Leak Detection
+Leak Detection vs Incident Management
+Incident Management vs HSE
+Custody vs Telemetry
+Custody vs Planning
+Configuration vs module-owned catalogs
+```
+
+A generator or developer MUST stop if a task crosses these boundaries without an explicit application port, DTO, event, or neutral reference model.
+
+### 3.5 Documentation and annotation rule locked
+
+Domain, application, and infrastructure models must not use OpenAPI annotations.
+
+Forbidden outside API request/response models:
+
+```text
+@Schema
+@Tag
+@Operation
+@ApiResponse
+@ApiResponses
+@Parameter
+```
+
+`@Schema` is allowed only in:
+
+```text
+dz.sh.hidra.modules.<module>.api.rest.request
+dz.sh.hidra.modules.<module>.api.rest.response
+```
+
+`@Tag`, `@Operation`, `@ApiResponse`, `@ApiResponses`, and `@Parameter` are allowed only in REST controller or API-layer types.
+
+Domain models must use Javadoc for domain documentation, not Swagger/OpenAPI annotations.
 
 ---
 
-## 3. Global architecture rule
+## 4. Global architecture rule
 
-Hidra uses a modular monolith with strict bounded-context ownership.
-
-The global rule is:
+Hidra uses a modular monolith with strict internal boundaries.
 
 ```text
 Each module owns its own business facts.
@@ -109,7 +218,7 @@ helpers
 misc
 ```
 
-Allowed standard package skeleton:
+Allowed standard module package skeleton:
 
 ```text
 dz.sh.hidra.modules.<module>
@@ -147,7 +256,7 @@ dz.sh.hidra.modules.<module>
     projection
 ```
 
-Module-specific infrastructure subpackages are allowed when they represent concrete technology concerns, for example:
+Module-specific infrastructure subpackages are allowed only when they represent concrete technology concerns, for example:
 
 ```text
 storage
@@ -158,9 +267,9 @@ observability
 
 ---
 
-## 4. System dependency chain
+## 5. System sequencing rule
 
-The DDD files imply the following functional dependency order:
+The DDD files imply the following implementation order:
 
 ```text
 kernel
@@ -171,33 +280,33 @@ kernel
           -> telemetry
               -> planning
                   -> monitoring
-                      -> alarm management       [referenced, DDD missing]
+                      -> alarm management       [blocked: DDD missing]
                           -> leak detection
-                              -> incident management [referenced, DDD missing]
+                              -> incident management [blocked: DDD missing]
                                   -> hse
                                   -> integrity
                                   -> assets
                                   -> custody
-                                      -> documents
                                       -> workflow
                                       -> audit
+                                      -> documents
                                       -> notification
                                       -> integration
                                       -> configuration
                                       -> simulation
 ```
 
-This chain is not a Java import chain. It expresses business data dependency and implementation sequencing.
+This is not a Java import chain. It is a business data dependency and implementation sequencing chain.
 
 Java imports must remain layer-safe and module-safe.
 
 ---
 
-## 5. Cross-module reference policy
+## 6. Cross-module reference policy
 
-### 5.1 Neutral reference pattern
+### 6.1 Allowed neutral reference pattern
 
-When one module needs to reference another module's object, use neutral references and snapshots:
+When one module needs to reference another module's business object, use neutral references and snapshots:
 
 ```text
 targetModule
@@ -207,7 +316,7 @@ targetCodeSnapshot
 targetLabelSnapshot
 ```
 
-For topology assets, use:
+For topology assets:
 
 ```text
 topologyAssetTypeCode
@@ -216,7 +325,7 @@ topologyAssetCodeSnapshot
 topologyAssetNameSnapshot
 ```
 
-For actors, use:
+For actors:
 
 ```text
 actorId
@@ -225,7 +334,7 @@ organizationUnitId
 organizationUnitNameSnapshot
 ```
 
-For workflow, use:
+For workflow:
 
 ```text
 workflowInstanceId
@@ -233,7 +342,7 @@ workflowTaskId
 workflowStatusSnapshot
 ```
 
-For audit, use:
+For audit:
 
 ```text
 auditEventId
@@ -241,32 +350,65 @@ correlationId
 requestId
 ```
 
-### 5.2 Forbidden cross-module references
+### 6.2 Forbidden direct references
 
-Forbidden in all domain and infrastructure models unless explicitly owned by the module:
+Forbidden in domain, application, and infrastructure models unless the referenced type belongs to the same module:
 
 ```text
 Facility facility;
 Pipeline pipeline;
+Equipment equipment;
 TelemetryReading reading;
+TrustedTelemetryReading trustedReading;
 WorkflowTask task;
+WorkflowInstance workflowInstance;
 AuditEvent auditEvent;
 User user;
 Employee employee;
 Document document;
+MaintenanceWorkOrder workOrder;
+IntegrityCase integrityCase;
+HseCase hseCase;
+CustodyTransferTicket ticket;
 ```
 
-Use IDs and snapshots instead.
+Use IDs, snapshots, public ports, DTOs, or events instead.
+
+### 6.3 Forbidden imports
+
+A business module must not import another business module's:
+
+```text
+domain.model.*
+domain.value.*
+domain.service.*
+infrastructure.persistence.entity.*
+infrastructure.persistence.repository.*
+infrastructure.persistence.mapper.*
+api.rest.controller.*
+api.rest.request.*
+api.rest.response.*
+```
+
+Allowed cross-module mechanisms:
+
+```text
+application input ports
+application output ports
+stable DTOs
+published domain/application events
+platform outbox
+read-only projections explicitly designed for integration
+neutral reference IDs and snapshots
+```
 
 ---
 
-## 6. Kernel consolidated definition
+## 7. Module ownership summary
 
-### 6.1 Purpose
+### 7.1 Kernel
 
-Kernel is not a business module. It owns only minimal reusable primitives and contracts that are safe to share across bounded contexts.
-
-Kernel owns:
+Kernel owns generic contracts and primitives only:
 
 ```text
 Entity
@@ -293,55 +435,11 @@ BusinessRuleViolationException
 InvalidValueObjectException
 ```
 
-Kernel must not own:
+Kernel must not own business entities such as `User`, `Employee`, `Facility`, `Pipeline`, `TelemetryReading`, `WorkflowTask`, `Alarm`, `Incident`, `SimulationRun`, or `KpiValue`.
 
-```text
-User
-Role
-Permission
-Employee
-OrganizationUnit
-Pipeline
-Facility
-Equipment
-TelemetryReading
-WorkflowTask
-WorkflowInstance
-AuditRecord
-Alarm
-Incident
-SimulationRun
-KpiValue
-```
+### 7.2 Platform
 
-### 6.2 Boundary rule
-
-```text
-Kernel objects must be small, immutable where possible, domain-neutral, framework-independent, business-agnostic, and safe to import by every module.
-```
-
-Kernel must not depend on:
-
-```text
-Spring
-JPA / Hibernate
-Jackson annotations
-database schemas
-REST controllers
-module-specific domain packages
-module-specific repositories
-external system clients
-```
-
----
-
-## 7. Platform consolidated definition
-
-### 7.1 Purpose
-
-Platform is a technical-support module. It provides reusable infrastructure required by all modules but does not own hydrocarbon transportation business facts.
-
-Platform owns:
+Platform owns technical infrastructure mechanisms only:
 
 ```text
 technical outbox persistence
@@ -354,37 +452,17 @@ exception mapping support
 persistence and transaction infrastructure conventions
 ```
 
-Platform does not own:
+Primary persistent entity:
 
 ```text
-users, roles, permissions, ABAC/RBAC policies
-employees or organization units
-business audit records
-workflow instances or tasks
-topology assets
-telemetry readings
-business notifications
-integration connector business mapping
-analytics, reports, AI decisions
+OutboxEvent -> hidra_platform_outbox_event
 ```
-
-### 7.2 Main persistent entity
-
-| Entity | Table | Purpose |
-|---|---|---|
-| `OutboxEvent` | `hidra_platform_outbox_event` | Stores serialized domain events pending publication. |
 
 Platform outbox is not an audit ledger.
 
----
+### 7.3 Identity
 
-## 8. Identity consolidated definition
-
-### 8.1 Purpose
-
-Identity owns application security identity, RBAC authorization, ABAC policy evaluation, and controlled external identity-provider mappings.
-
-Identity owns:
+Identity owns security identity and authorization:
 
 ```text
 User
@@ -414,39 +492,11 @@ LoginSession
 AuthenticationEvent
 ```
 
-Identity does not own:
+Identity does not own employees, organization units, topology assets, workflow tasks, audit records, HTTP filters, JWT parsing internals, Spring Security context plumbing, or secret storage.
 
-```text
-employees
-organization units
-topology assets
-workflow tasks
-audit records
-HTTP filters
-JWT parsing internals
-Spring Security context plumbing
-secret storage
-raw LDAP/OIDC/SAML protocol clients
-```
+### 7.4 Organization
 
-### 8.2 Critical rules
-
-```text
-Use User as the canonical identity aggregate name.
-LDAP/AD/Keycloak/Azure identifiers belong to ExternalIdentity, not User.
-Passwords, client secrets, certificates, private keys, and tokens must not be stored in identity tables.
-Security groups are identity groups, not organization units.
-```
-
----
-
-## 9. Organization consolidated definition
-
-### 9.1 Purpose
-
-Organization owns Sonatrach/TRC internal structure, employees, positions, assignments, reporting lines, responsibility scopes, and internal delegation of responsibility.
-
-Organization owns:
+Organization owns Sonatrach/TRC internal people and structure:
 
 ```text
 OrganizationUnit
@@ -468,29 +518,7 @@ OrganizationContactPoint
 OrganizationHierarchySnapshot
 ```
 
-Organization must not own:
-
-```text
-User
-Group
-Role
-Permission
-Facility
-Pipeline
-Equipment
-WorkflowTask
-WorkflowInstance
-AuditRecord
-Party
-Vendor
-Contractor
-Manufacturer
-JointVenturePartner
-TelemetryPoint
-TelemetryReading
-```
-
-### 9.2 Critical distinction
+Critical distinction:
 
 ```text
 OrganizationUnit(type = STATION)
@@ -498,15 +526,9 @@ OrganizationUnit(type = STATION)
 
 means a people/responsibility unit for a station. It is not the physical station facility. The physical station is owned by `topology.Facility`.
 
----
+### 7.5 Topology
 
-## 10. Topology consolidated definition
-
-### 10.1 Purpose
-
-Topology owns the physical and logical representation of the hydrocarbon transportation network.
-
-Topology owns:
+Topology owns the physical and logical hydrocarbon transportation network:
 
 ```text
 PipelineSystem
@@ -532,81 +554,11 @@ Topology-versioned read models
 Topology-owned party role assignments by reference
 ```
 
-Topology does not own:
+Topology owns where assets are and how the network connects. It does not own maintainability, work orders, integrity assessments, HSE consequences, custody tickets, telemetry values, or workflow decisions.
 
-```text
-employees
-organization hierarchy
-legal parties/vendors/manufacturers
-users, roles, permissions
-workflow decisions
-audit records
-raw telemetry readings
-custody/fiscal records
-contracts and procurement
-```
+### 7.6 Telemetry
 
-### 10.2 Core design rules
-
-```text
-Hard-code the topology backbone.
-Configure asset details.
-```
-
-Explicit structural entities:
-
-```text
-PipelineSystem
-Pipeline
-PipelineSegment
-TopologyNode
-TopologyConnection
-Facility
-Equipment
-MeasurementLocation
-```
-
-Configurable details:
-
-```text
-FacilityType attributes
-EquipmentType attributes
-Facility-specific operational fields
-Equipment-specific technical fields
-```
-
-Do not create one hard-coded table per facility profile such as `StationProfile`, `TerminalProfile`, or `ExportTerminalProfile`.
-
-Use:
-
-```text
-FacilityType
-FacilityTypeVersion
-FacilityAttributeDefinition
-FacilityAttributeValue
-```
-
-### 10.3 Table prefix
-
-```text
-hidra_topology_*
-```
-
----
-
-## 11. Telemetry consolidated definition
-
-### 11.1 Purpose
-
-Telemetry is the industrial acquisition bounded context.
-
-It owns the chain:
-
-```text
-source -> device -> telemetry point -> topology binding -> reading -> quality -> trusted reading
-```
-
-Telemetry owns:
+Telemetry owns measured operational facts:
 
 ```text
 TelemetrySource
@@ -627,62 +579,18 @@ TelemetryValidationRule
 TelemetryPointStateSnapshot
 ```
 
-Telemetry does not own:
+Rule:
 
 ```text
-physical topology
-pipeline systems
-facilities
-pipeline segments
-stations
-equipment as topology assets
-monitoring deviations
-alarms
-incidents
-workflow approvals
-audit records
-flow calculation
-hydraulic simulation
-risk scoring
-analytics models
-reporting artifacts
-custody-transfer fiscal records
-maintenance work orders
-```
-
-### 11.2 Core rules
-
-```text
-Telemetry owns measured facts.
-Monitoring interprets trusted readings.
+Telemetry owns actual measured facts.
 Planning owns expected values.
+Monitoring compares expected vs actual.
 Custody owns official accepted quantities.
 ```
 
-Topology binding must use neutral topology references only.
+### 7.7 Planning
 
----
-
-## 12. Planning consolidated definition
-
-### 12.1 Purpose
-
-Planning owns the expected operational state for hydrocarbon transportation.
-
-Planning answers:
-
-```text
-What should be transported?
-When should it be transported?
-From where to where?
-On which pipeline system, facility, or delivery point?
-At what planned volume, flow rate, pressure, and operating window?
-Which plan version is active and approved?
-Which constraints or nominations justify the plan?
-What expected state should monitoring compare actual telemetry against?
-```
-
-Planning owns:
+Planning owns expected operational state:
 
 ```text
 PlanningPeriod
@@ -703,46 +611,11 @@ ForecastPoint
 PlanActualReviewSnapshot
 ```
 
-Planning must not own:
+Planning does not own telemetry readings, topology assets, monitoring deviations, alarms, incidents, workflow tasks, audit records, custody actuals, invoices, maintenance work orders, or simulation runs.
 
-```text
-telemetry_reading
-telemetry_point
-trusted_telemetry_reading
-pipeline
-pipeline_segment
-facility
-equipment
-monitoring_deviation
-alarm
-incident
-workflow_task
-workflow_instance_details
-audit_record
-custody_transfer_actual
-invoice
-contract_master
-maintenance_work_order
-simulation_run
-```
+### 7.8 Monitoring
 
-### 12.2 Core rule
-
-```text
-Planning owns expected values.
-Telemetry owns actual measured facts.
-Monitoring compares expected vs actual.
-```
-
----
-
-## 13. Monitoring consolidated definition
-
-### 13.1 Purpose
-
-Monitoring evaluates operational state using validated telemetry, approved planning targets, configured thresholds, monitoring rules, and operational asset references.
-
-Monitoring owns:
+Monitoring owns operational evaluation and deviation intelligence:
 
 ```text
 MonitoringRule
@@ -758,41 +631,11 @@ MonitoringCatalogEntry
 MonitoringCatalogTranslation
 ```
 
-Monitoring must not own:
+Monitoring may detect and explain deviations. It does not own formal alarm lifecycle or incident lifecycle.
 
-```text
-telemetry readings
-telemetry ingestion
-flow plans
-plan approval workflow
-topology assets
-formal alarm lifecycle
-incident lifecycle
-notification delivery
-risk scoring engine
-analytics models
-SCADA/PLC/RTU control commands
-```
+### 7.9 Leak Detection
 
-### 13.2 Core rule
-
-```text
-Monitoring detects and explains operational deviations.
-Alarm Management owns formal alarm lifecycle.
-Incident Management owns operational incident lifecycle.
-Telemetry owns measured facts.
-Planning owns expected values.
-```
-
----
-
-## 14. Leak Detection consolidated definition
-
-### 14.1 Purpose
-
-Leak Detection detects, evaluates, localizes, and explains suspected hydrocarbon leaks using trusted operational evidence.
-
-Leak Detection owns:
+Leak Detection owns leak suspicion decision support:
 
 ```text
 LeakDetectionProfile
@@ -811,61 +654,17 @@ LeakEscalationReference
 LeakDismissalReason
 ```
 
-Leak Detection does not own:
+Locked prefix:
 
 ```text
-pipeline, facility, segment, node, equipment, or topology graph
-telemetry readings
-trusted telemetry readings
-monitoring thresholds
-monitoring evaluations
-alarm lifecycle
-incident lifecycle
-notification delivery
-maintenance work orders
-SCADA commands
-valve/pump/compressor actuation
-hydraulic simulation engine
-full digital twin engine
+hidra_leak_detection_*
 ```
 
-### 14.2 Non-negotiable safety rule
+Leak Detection is decision support only. It must not actuate valves, pumps, compressors, PLCs, RTUs, SIS, ESD, or SCADA commands.
 
-Leak Detection is decision support only.
+### 7.10 HSE
 
-Forbidden behavior:
-
-```text
-automatic valve closure
-automatic pump shutdown
-automatic compressor shutdown
-automatic PLC/RTU/SCADA command
-automatic ESD/SIS interaction
-direct write to OT control systems
-```
-
-Allowed behavior:
-
-```text
-create leak candidate
-raise leak suspicion
-calculate confidence
-estimate location
-link evidence
-request operator verification
-escalate to Alarm Management or Incident Management
-emit audit-ready events
-```
-
----
-
-## 15. HSE consolidated definition
-
-### 15.1 Purpose
-
-HSE manages health, safety, environment consequences, controls, compliance cases, permits, inspections, observations, corrective actions, and evidence.
-
-HSE owns:
+HSE owns health, safety, environment, and compliance consequences:
 
 ```text
 HseCase
@@ -887,53 +686,18 @@ HseCatalogEntry
 HseCatalogTranslation
 ```
 
-Recommended aggregate roots:
+Rule:
 
 ```text
-HseCase
-PermitToWork
-HseInspection
-ComplianceObligation
-EmergencyDrill
+Incident Management says what operational problem happened and how it was handled.
+HSE says what health, safety, environmental, and compliance consequences exist.
 ```
 
-HSE does not own:
+Do not merge incidents, leaks, alarms, HSE cases, and integrity cases into one table.
 
-```text
-telemetry readings
-monitoring rules
-alarm lifecycle
-leak localization algorithms
-incident operational response lifecycle
-physical topology
-maintainable asset lifecycle
-maintenance work orders
-identity users, roles, permissions, or credentials
-organization units or employee master records
-risk scoring engine
-audit storage
-notification delivery
-SCADA/OT actuation
-```
+### 7.11 Integrity
 
-### 15.2 Bounded-context rule
-
-```text
-Incident Management says: what operational problem happened and how was it handled?
-HSE Management says: what health, safety, environmental, and compliance consequences exist?
-```
-
-Do not merge incident, leak, alarm, and HSE records into one table.
-
----
-
-## 16. Network Integrity consolidated definition
-
-### 16.1 Purpose
-
-Integrity manages the technical condition of hydrocarbon pipeline network assets.
-
-Integrity owns:
+Integrity owns the technical condition and integrity decision record for network assets:
 
 ```text
 IntegrityProgram
@@ -960,48 +724,11 @@ IntegrityCatalogEntry
 IntegrityCatalogTranslation
 ```
 
-Integrity does not own:
+Integrity references topology assets by neutral reference only. It may recommend maintenance, but Asset Management owns maintenance work orders.
 
-```text
-topology assets
-telemetry readings
-monitoring rules or operational state
-alarm lifecycle
-incident response lifecycle
-maintenance work orders
-spare parts or asset inventory
-HSE compliance cases
-enterprise risk scoring
-workflow routing
-audit event storage
-document binaries
-SCADA or OT actuation
-```
+### 7.12 Assets / Asset Management
 
-### 16.2 Critical rules
-
-```text
-Integrity references topology assets by neutral reference only.
-Integrity may recommend maintenance action but must not execute work orders.
-Integrity may open a case from an incident, alarm, leak case, inspection result, or manual concern, but incident lifecycle remains outside integrity.
-High-severity integrity decisions require evidence links.
-```
-
-### 16.3 Table prefix
-
-```text
-hidra_integrity_*
-```
-
----
-
-## 17. Asset Management consolidated definition
-
-### 17.1 Purpose
-
-Asset Management manages lifecycle, maintainability, configuration, ownership, warranty, spare-parts relation, and maintenance readiness of operational assets.
-
-Asset Management owns:
+Assets owns maintainability, asset lifecycle, and maintenance readiness:
 
 ```text
 MaintainableAsset
@@ -1031,50 +758,17 @@ AssetCatalogEntry
 AssetCatalogTranslation
 ```
 
-Asset Management does not own:
+Locked prefix:
 
 ```text
-topology assets and equipment
-organization units and employees
-identity users, groups, roles, permissions
-workflow instances and tasks
-incident records
-integrity cases and defects
-telemetry readings
-documents
-external parties/vendors/manufacturers when Party exists
-audit records
+hidra_asset_*
 ```
 
-### 17.2 Boundary rules
+Assets must not import topology domain classes. Use `AssetTopologyReference(topologyAssetTypeCode, topologyAssetId, topologyAssetCodeSnapshot, topologyAssetNameSnapshot)`.
 
-Asset Management must not import topology domain classes.
+### 7.13 Custody
 
-Bad:
-
-```text
-Asset.facility: Facility
-Asset.pipeline: Pipeline
-Asset.equipment: EquipmentJpaEntity
-```
-
-Good:
-
-```text
-AssetTopologyReference(topologyAssetTypeCode, topologyAssetId, topologyAssetCode, topologyAssetNameSnapshot)
-```
-
-Asset Management may record maintenance observations and repair completion records, but Network Integrity owns engineering integrity decisions.
-
----
-
-## 18. Custody Transfer consolidated definition
-
-### 18.1 Purpose
-
-Custody owns the official operational/fiscal record of hydrocarbon custody transfer.
-
-Custody owns:
+Custody owns official accepted transfer records:
 
 ```text
 CustodyTransferPoint
@@ -1099,24 +793,7 @@ CustodyCatalogEntry
 CustodyCatalogTranslation
 ```
 
-Custody must not own:
-
-```text
-raw telemetry readings
-telemetry devices/tags/sources
-pipeline topology
-facilities/equipment physical placement
-planning targets
-monitoring deviations
-alarm lifecycle
-incident lifecycle
-maintenance work orders
-financial invoicing
-ERP accounting postings
-SCADA/PLC/RTU actuation
-```
-
-### 18.2 Core rule
+Rule:
 
 ```text
 Telemetry says what was measured.
@@ -1125,17 +802,9 @@ Custody says what was officially transferred and accepted.
 Finance/ERP says what was invoiced or posted.
 ```
 
-Custody must store immutable snapshots of official evidence used for transfer decisions.
+### 7.14 Workflow
 
----
-
-## 19. Workflow consolidated definition
-
-### 19.1 Purpose
-
-Workflow owns human and organizational process execution around validation, approval, rejection, correction requests, delegation, escalation, task assignment, comments, timeline, and audit-ready decision evidence.
-
-Workflow owns:
+Workflow owns the process, not the business fact:
 
 ```text
 workflow definitions
@@ -1158,67 +827,9 @@ workflow priorities
 workflow audit-ready event payloads
 ```
 
-Workflow does not own:
+### 7.15 Audit
 
-```text
-telemetry readings
-telemetry values
-telemetry correction values
-topology assets
-organization units
-employees
-identity users, roles, groups, credentials
-planning targets
-monitoring thresholds
-alarm lifecycle
-incident lifecycle
-maintenance execution facts
-risk scores
-audit storage
-notification delivery
-analytics models
-reporting artifacts
-SCADA / PLC / RTU / OT control actions
-```
-
-### 19.2 Implemented baseline tables
-
-```text
-hidra_workflow_type_catalog
-hidra_workflow_type_translation
-hidra_workflow_definition
-hidra_workflow_step
-hidra_workflow_transition
-hidra_workflow_instance
-hidra_workflow_task
-hidra_workflow_assignment
-hidra_workflow_action
-hidra_workflow_delegation
-hidra_workflow_escalation_rule
-hidra_workflow_comment
-hidra_workflow_state_history
-```
-
-### 19.3 Core rule
-
-```text
-Workflow owns the process.
-The target module owns the business fact.
-Audit owns durable evidence storage.
-Notification owns message delivery.
-Identity owns security identity.
-Organization owns real people and structure.
-```
-
----
-
-## 20. Audit consolidated definition
-
-### 20.1 Purpose
-
-Audit provides durable, append-only, searchable evidence for important actions and state changes in Hidra.
-
-Audit owns:
+Audit owns immutable evidence:
 
 ```text
 AuditEvent
@@ -1238,51 +849,11 @@ AuditCatalogEntry
 AuditCatalogTranslation
 ```
 
-Audit does not own:
+Audit records evidence. It does not decide, approve, reject, validate, repair, reconcile, calculate, notify, or integrate.
 
-```text
-identity users, roles, permissions, credentials
-organization employees, positions, units
-workflow routing, task lifecycle, or decision rules
-telemetry readings or reading state
-planning targets or plans
-monitoring rules, thresholds, or deviations
-alarm lifecycle
-incident lifecycle
-asset maintenance execution
-risk scoring
-analytics models
-notification delivery
-external integration execution
-```
+### 7.16 Documents
 
-### 20.2 Core rule
-
-```text
-Audit records evidence.
-Audit does not decide, approve, reject, validate, repair, reconcile, calculate, notify, or integrate.
-```
-
-Forbidden:
-
-```text
-Business module imports audit.domain model directly.
-Audit table is updated to modify business state.
-Audit event is used as the source of operational truth.
-Audit record is edited after creation.
-Sensitive values are stored unmasked.
-Controller writes audit rows directly instead of using application ports/events.
-```
-
----
-
-## 21. Documents consolidated definition
-
-### 21.1 Purpose
-
-Documents manages controlled operational document metadata, versions, storage references, links to business objects, classification, retention, access grants, and lifecycle state.
-
-Documents owns:
+Documents owns controlled file metadata and business attachment:
 
 ```text
 Document
@@ -1298,48 +869,11 @@ DocumentCatalogEntry
 DocumentCatalogTranslation
 ```
 
-Documents does not own:
+Documents owns metadata, not binary storage internals and not the business object being documented.
 
-```text
-audit event ledger
-workflow task routing
-incident lifecycle
-HSE case lifecycle
-asset maintenance lifecycle
-custody transfer calculation
-report generation logic
-notification delivery
-external storage engine internals
-identity users, roles, or permissions
-business objects to which documents are attached
-```
+### 7.17 Integration
 
-### 21.2 Core rule
-
-```text
-Documents owns file metadata and business attachment.
-Audit owns evidence of who did what and when.
-Workflow owns approval/routing.
-Business modules own the business object being documented.
-Storage infrastructure owns the binary object.
-```
-
-### 21.3 Aggregate roots
-
-```text
-Document
-DocumentCatalogEntry
-```
-
----
-
-## 22. Integration consolidated definition
-
-### 22.1 Purpose
-
-Integration is the controlled boundary between Hidra and external systems.
-
-Integration owns:
+Integration owns external-system boundary and exchange traceability:
 
 ```text
 ExternalSystem
@@ -1372,51 +906,11 @@ IntegrationCatalogEntry
 IntegrationCatalogTranslation
 ```
 
-Integration does not own:
-
-```text
-telemetry readings
-telemetry devices or points
-topology assets
-pipeline systems, pipelines, facilities, equipment
-planning periods, plans, nominations, targets
-monitoring rules, deviations, operational states
-alarm lifecycle
-leak detection cases
-incident lifecycle
-asset maintenance work orders
-custody transfer tickets
-HSE cases
-users, roles, groups, permissions
-organization units, employees, positions
-audit ledger storage
-notification templates and delivery lifecycle
-analytics models and KPIs
-SCADA/PLC/RTU command execution
-```
-
-### 22.2 Core rule
-
-```text
-External system
-  -> integration connector
-      -> integration mapping / staging / validation envelope
-          -> target module public import/export port
-              -> target module domain validation
-                  -> target module owns the accepted business fact
-```
-
 Integration must never write directly to another module table.
 
----
+### 7.18 Configuration
 
-## 23. Configuration consolidated definition
-
-### 23.1 Purpose
-
-Configuration governs runtime-controlled settings, operational parameters, scoped overrides, feature flags, parameter profiles, validation rules, activation windows, and configuration change history.
-
-Configuration owns:
+Configuration owns governed runtime settings:
 
 ```text
 configuration namespaces
@@ -1436,58 +930,11 @@ configuration external references
 configuration catalogs and translations
 ```
 
-Configuration does not own:
+Configuration must not become a generic dumping ground for module-owned business taxonomy.
 
-```text
-platform technical property binding
-secrets or secret values
-business taxonomies owned by modules
-workflow definitions or workflow routing
-monitoring thresholds owned by monitoring
-alarm rules owned by alarm management
-telemetry point definitions
-topology asset types
-identity roles and permissions
-organization units or employees
-integration connector execution
-report generation logic
-audit event ledger
-```
+### 7.19 Notification
 
-### 23.2 Platform vs configuration module
-
-```text
-Platform configuration = technical boot/runtime infrastructure properties.
-Configuration module  = governed business/runtime settings managed as Hidra data.
-```
-
-### 23.3 Forbidden misuse
-
-Do not use configuration as a dumping ground for:
-
-```text
-facility types owned by topology
-telemetry quality codes owned by telemetry
-workflow definitions owned by workflow
-monitoring thresholds owned by monitoring
-alarm severity model owned by alarm management
-incident classification owned by incidents
-HSE compliance obligations owned by HSE
-custody calculation formulas owned by custody transfer
-asset maintenance strategies owned by asset management
-identity permissions owned by identity
-organization hierarchy owned by organization
-```
-
----
-
-## 24. Notification consolidated definition
-
-### 24.1 Purpose
-
-Notification is the controlled communication and delivery-tracking bounded context.
-
-Notification owns:
+Notification owns communication preparation, delivery, retry, and tracking:
 
 ```text
 NotificationTemplate
@@ -1515,45 +962,11 @@ NotificationCatalogEntry
 NotificationCatalogTranslation
 ```
 
-Notification does not own:
+Notification delivers communication. It does not decide operational truth, severity, approval, assignment, closure, or compliance.
 
-```text
-telemetry readings
-telemetry quality/state validation
-monitoring thresholds
-monitoring deviations
-alarm lifecycle and severity decision
-incident lifecycle and response actions
-leak detection cases
-planning approvals
-workflow routing and decisions
-audit ledger storage
-HSE cases
-asset maintenance work orders
-custody transfer tickets
-topology assets
-users, roles, groups, permissions
-organization units, employees, positions
-external email/SMS/push provider implementation
-business KPI/reporting content
-```
+### 7.20 Simulation
 
-### 24.2 Core rule
-
-```text
-Notification delivers communication.
-It does not decide operational truth, severity, approval, assignment, closure, or compliance.
-```
-
----
-
-## 25. Simulation consolidated definition
-
-### 25.1 Purpose
-
-Simulation is the decision-support bounded context for running hydraulic, operational, optimization, and what-if scenarios over trusted topology and operational data.
-
-Simulation owns:
+Simulation owns decision-support scenarios and recommendations:
 
 ```text
 SimulationModel
@@ -1583,152 +996,31 @@ SimulationCatalogEntry
 SimulationCatalogTranslation
 ```
 
-Simulation does not own:
-
-```text
-physical topology
-official topology snapshots
-pipeline systems, pipelines, segments, stations, facilities, or equipment
-telemetry readings
-trusted telemetry readings
-operational plans and nominations
-monitoring rules and thresholds
-alarm lifecycle
-incident lifecycle
-asset maintenance execution
-network integrity assessments
-custody transfer records
-workflow approval state
-audit ledger
-notification delivery
-SCADA commands or field actuation
-```
-
-### 25.2 Core rule
-
-```text
-Simulation recommends.
-Topology owns the approved network state.
-Workflow approves.
-Audit proves.
-```
-
-A simulation result is not operational truth. A result becomes official only when the owning module accepts it.
+Simulation recommends. Topology owns approved network state. Workflow approves. Audit proves.
 
 ---
 
-## 26. Consolidated implementation sequencing
+## 8. Boundary decision matrix
 
-### 26.1 Foundation modules
-
-Implement or harden in this order:
-
-```text
-1. kernel
-2. platform
-3. identity
-4. organization
-```
-
-Reason:
-
-```text
-All later modules need stable contracts, actor identity, organization references, platform outbox, error handling, pagination, and API response contracts.
-```
-
-### 26.2 Operational foundation modules
-
-```text
-5. topology
-6. telemetry
-7. planning
-8. monitoring
-```
-
-Reason:
-
-```text
-Topology defines the network.
-Telemetry defines actual measured facts.
-Planning defines expected operational state.
-Monitoring compares actual vs expected and creates deviations/candidates.
-```
-
-### 26.3 Operational intelligence and response modules
-
-```text
-9. alarm management       [requires explicit DDD first]
-10. leakdetection
-11. incident management   [requires explicit DDD first]
-12. hse
-13. integrity
-14. assets
-```
-
-Reason:
-
-```text
-Leak detection depends on trusted monitoring and alarm context.
-HSE, integrity, and assets must reference incidents/alarms without owning their lifecycles.
-```
-
-### 26.4 Governance and support modules
-
-```text
-15. workflow
-16. audit
-17. documents
-18. notification
-19. integration
-20. configuration
-21. custody
-22. simulation
-```
-
-Reason:
-
-```text
-Workflow, audit, documents, notification, integration, and configuration are cross-cutting support contexts.
-Custody and simulation depend on mature topology, telemetry, planning, workflow, audit, and document references.
-```
+| Ambiguous concept | Correct owner | Allowed reference elsewhere | Forbidden interpretation |
+|---|---|---|---|
+| Physical pipeline / station / facility | `topology` | `topologyAssetId`, snapshots | Assets or HSE owns physical topology |
+| Maintainable asset lifecycle | `assets` | topology neutral reference | Topology owns maintenance work orders |
+| Pipeline defect / corrosion / remaining life | `integrity` | topology neutral reference | Assets or topology owns integrity decisions |
+| Safety/environment consequence | `hse` | incident/leak/alarm neutral reference | Incident record doubles as HSE case |
+| Official transferred quantity | `custody` | telemetry/planning snapshots | Telemetry reading is fiscal truth |
+| Deviation detection | `monitoring` | telemetry/planning references | Monitoring owns alarms or incidents |
+| Formal alarm lifecycle | `alarm management` | blocked until DDD exists | Monitoring creates alarm tables |
+| Operational incident lifecycle | `incident management` | blocked until DDD exists | Leak/HSE/Integrity creates incident tables |
+| External legal party | `party` | neutral party reference only | Organization owns vendors or external legal parties |
+| Runtime feature/config parameter | `configuration` | scoped config reference | Configuration owns module business taxonomy |
+| Module business catalog | owning module | catalog ID/code snapshot | Central shared catalog table |
 
 ---
 
-## 27. Consolidated table-prefix rules
+## 9. Catalog and duplication policy
 
-| Module | Table prefix |
-|---|---|
-| platform | `hidra_platform_*` |
-| identity | `hidra_identity_*` |
-| organization | `hidra_org_*` |
-| topology | `hidra_topology_*` |
-| telemetry | `hidra_telemetry_*` |
-| planning | `hidra_planning_*` |
-| monitoring | `hidra_monitoring_*` |
-| leakdetection | `hidra_leak_detection_*` or `hidra_leakdetection_*`; choose one before implementation |
-| hse | `hidra_hse_*` |
-| integrity | `hidra_integrity_*` |
-| assets | `hidra_asset_*` or `hidra_assets_*`; choose one before implementation |
-| custody | `hidra_custody_*` |
-| workflow | `hidra_workflow_*` |
-| audit | `hidra_audit_*` |
-| documents | `hidra_documents_*` |
-| integration | `hidra_integration_*` |
-| configuration | `hidra_configuration_*` |
-| notification | `hidra_notification_*` |
-| simulation | `hidra_simulation_*` |
-
-Rule:
-
-```text
-A module may not create tables using another module's prefix.
-```
-
----
-
-## 28. Consolidated catalog policy
-
-User-facing business taxonomies should be catalog-backed, not hard-coded Java enums.
+User-facing business taxonomies are module-owned and catalog-backed.
 
 Catalog-backed examples:
 
@@ -1750,20 +1042,28 @@ Notification template category
 Workflow reason and priority
 ```
 
-Java enums are acceptable only for technical states that are not operator-managed and not business-taxonomy driven.
-
-Examples:
+The following repeated shapes are intentional and must not be collapsed into generic shared tables:
 
 ```text
-OutboxEventStatus
-Internal processing result
-Retry execution state
-Low-level command type
+CatalogEntry
+CatalogTranslation
+EvidenceLink
+Case
+StatusHistory
+TargetReference
+ApprovalReference
+DocumentReference
+```
+
+Reason:
+
+```text
+The shape is similar, but the business meaning belongs to the owning bounded context.
 ```
 
 ---
 
-## 29. Consolidated safety policy
+## 10. Safety policy
 
 No Hidra business module may directly actuate OT systems.
 
@@ -1794,9 +1094,7 @@ export approved information through integration
 
 ---
 
-## 30. Consolidated validation policy
-
-Validation responsibilities are split as follows:
+## 11. Validation policy
 
 | Layer / module type | Responsibility |
 |---|---|
@@ -1813,7 +1111,7 @@ Use stable references and snapshots instead.
 
 ---
 
-## 31. Consolidated code-generation rules
+## 12. Code-generation rules
 
 Any generated code for these DDDs must satisfy the following conditions:
 
@@ -1833,11 +1131,12 @@ Any generated code for these DDDs must satisfy the following conditions:
 13. Use Bean Validation on API request models, not as a substitute for domain invariants.
 14. Do not generate missing modules that do not have a DDD file unless explicitly requested.
 15. Do not implement alarm management, incident management, risk, analytics, reporting, party, finance, or contracts from references alone.
+16. Stop when a task requires a blocked module and report the missing DDD precondition.
 ```
 
 ---
 
-## 32. Acceptance checklist
+## 13. Acceptance checklist
 
 Before accepting new code or migrations for any DDD module, verify:
 
@@ -1850,7 +1149,7 @@ Before accepting new code or migrations for any DDD module, verify:
 [ ] API request/response model is API-only.
 [ ] Cross-module references are neutral IDs/snapshots.
 [ ] No direct import from another module's domain/infrastructure package.
-[ ] Table prefix belongs to the module.
+[ ] Table prefix belongs to the module and matches the locked prefix table.
 [ ] User-facing taxonomy is catalog-backed.
 [ ] Business invariant is enforced in domain/application, not only database.
 [ ] Audit is append-only and not used as business state.
@@ -1858,11 +1157,12 @@ Before accepting new code or migrations for any DDD module, verify:
 [ ] Integration does not directly write another module's table.
 [ ] No OT/SCADA actuation behavior is introduced.
 [ ] Missing referenced modules are not implemented without their own DDD.
+[ ] @Schema is absent from domain, application, infrastructure, JPA, and persistence models.
 ```
 
 ---
 
-## 33. Master bounded-context summary
+## 14. Master bounded-context summary
 
 ```text
 Kernel        -> generic contracts and primitives only.
@@ -1889,7 +1189,7 @@ Simulation    -> decision-support scenarios, runs, recommendations.
 
 ---
 
-## 34. Final rule
+## 15. Final rule
 
 ```text
 A module owns meaning, not just tables.

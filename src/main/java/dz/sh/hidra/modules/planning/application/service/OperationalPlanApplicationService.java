@@ -6,7 +6,7 @@
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  *
  * @Name        : OperationalPlanApplicationService
- * @CreatedOn   : 2026-06-11
+ * @CreatedOn   : 2025-06-26
  * @UpdatedOn   : 2026-06-11
  *
  * @Type        : Class
@@ -34,7 +34,7 @@ import java.util.Objects;
 /**
  * Application service for operational plans.
  */
-public class OperationalPlanApplicationService implements CreateOperationalPlanUseCase {
+public final class OperationalPlanApplicationService implements CreateOperationalPlanUseCase {
 
     private final OperationalPlanRepositoryPort repositoryPort;
 

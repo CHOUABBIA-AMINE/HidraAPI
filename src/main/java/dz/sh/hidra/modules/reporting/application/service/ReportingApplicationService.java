@@ -6,7 +6,7 @@
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  *
  * @Name        : ReportingApplicationService
- * @CreatedOn   : 2026-06-11
+ * @CreatedOn   : 2025-06-26
  * @UpdatedOn   : 2026-06-11
  *
  * @Type        : Class
@@ -51,7 +51,7 @@ import java.util.Objects;
 /**
  * Application service for report definitions, requests, runs, and artifacts.
  */
-public class ReportingApplicationService implements CreateReportDefinitionUseCase, RequestReportUseCase, QueueReportRunUseCase, GenerateReportArtifactUseCase {
+public final class ReportingApplicationService implements CreateReportDefinitionUseCase, RequestReportUseCase, QueueReportRunUseCase, GenerateReportArtifactUseCase {
 
     private final ReportDefinitionRepositoryPort definitionRepositoryPort;
     private final ReportRequestRepositoryPort requestRepositoryPort;

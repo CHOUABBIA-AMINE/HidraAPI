@@ -9,7 +9,7 @@
  * @CreatedOn   : 2025-06-26
  * @UpdatedOn   : 2026-06-11
  *
- * @Type        : Utility
+ * @Type        : Class
  * @Layer       : Platform
  * @Module      : platform
  * @Package     : dz.sh.hidra.platform.exception

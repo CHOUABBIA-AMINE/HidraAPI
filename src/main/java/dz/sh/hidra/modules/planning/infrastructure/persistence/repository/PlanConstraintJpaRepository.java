@@ -6,10 +6,10 @@
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  *
  * @Name        : PlanConstraintJpaRepository
- * @CreatedOn   : 2026-06-11
+ * @CreatedOn   : 2025-06-26
  * @UpdatedOn   : 2026-06-11
  *
- * @Type        : Repository
+ * @Type        : Interface
  * @Layer       : Infrastructure
  * @Module      : planning
  * @Package     : dz.sh.hidra.modules.planning.infrastructure.persistence.repository

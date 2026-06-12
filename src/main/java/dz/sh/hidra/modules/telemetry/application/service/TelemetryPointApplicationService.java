@@ -6,7 +6,7 @@
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  *
  * @Name        : TelemetryPointApplicationService
- * @CreatedOn   : 2026-06-11
+ * @CreatedOn   : 2025-06-26
  * @UpdatedOn   : 2026-06-11
  *
  * @Type        : Class
@@ -34,7 +34,7 @@ import java.util.Objects;
 /**
  * Application service for telemetry points.
  */
-public class TelemetryPointApplicationService implements RegisterTelemetryPointUseCase {
+public final class TelemetryPointApplicationService implements RegisterTelemetryPointUseCase {
 
     private final TelemetryPointRepositoryPort repositoryPort;
 

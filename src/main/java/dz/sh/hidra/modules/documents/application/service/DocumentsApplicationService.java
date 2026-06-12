@@ -6,7 +6,7 @@
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  *
  * @Name        : DocumentsApplicationService
- * @CreatedOn   : 2026-06-11
+ * @CreatedOn   : 2025-06-26
  * @UpdatedOn   : 2026-06-11
  *
  * @Type        : Class
@@ -45,7 +45,7 @@ import java.util.Objects;
 /**
  * Application service for document registration, versioning, and linking.
  */
-public class DocumentsApplicationService implements RegisterDocumentUseCase, UploadDocumentVersionUseCase, LinkDocumentToTargetUseCase {
+public final class DocumentsApplicationService implements RegisterDocumentUseCase, UploadDocumentVersionUseCase, LinkDocumentToTargetUseCase {
 
     private final DocumentRepositoryPort documentRepositoryPort;
     private final DocumentVersionRepositoryPort versionRepositoryPort;

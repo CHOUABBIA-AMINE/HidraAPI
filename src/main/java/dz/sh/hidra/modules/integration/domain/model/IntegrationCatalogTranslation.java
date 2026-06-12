@@ -6,7 +6,7 @@
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  *
  * @Name        : IntegrationCatalogTranslation
- * @CreatedOn   : 2026-06-11
+ * @CreatedOn   : 2025-06-26
  * @UpdatedOn   : 2026-06-11
  *
  * @Type        : Record

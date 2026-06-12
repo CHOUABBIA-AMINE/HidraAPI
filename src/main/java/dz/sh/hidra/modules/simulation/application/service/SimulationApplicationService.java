@@ -6,7 +6,7 @@
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  *
  * @Name        : SimulationApplicationService
- * @CreatedOn   : 2026-06-11
+ * @CreatedOn   : 2025-06-26
  * @UpdatedOn   : 2026-06-11
  *
  * @Type        : Class
@@ -52,7 +52,7 @@ import java.util.Objects;
 /**
  * Application service for simulation models, scenarios, runs, and recommendations.
  */
-public class SimulationApplicationService implements CreateSimulationModelUseCase, CreateSimulationScenarioUseCase, QueueSimulationRunUseCase, PublishSimulationRecommendationUseCase {
+public final class SimulationApplicationService implements CreateSimulationModelUseCase, CreateSimulationScenarioUseCase, QueueSimulationRunUseCase, PublishSimulationRecommendationUseCase {
 
     private final SimulationModelRepositoryPort modelRepositoryPort;
     private final SimulationScenarioRepositoryPort scenarioRepositoryPort;

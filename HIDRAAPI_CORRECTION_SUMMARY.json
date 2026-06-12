@@ -1,0 +1,89 @@
+{
+  "root": "/mnt/data/HidraAPI_corrected",
+  "fixes": {
+    "header_createdOn_2026_to_2025": 4586,
+    "header_type_normalized_files": 1548,
+    "header_type_normalized_by_old_value": {
+      "Utility": 175,
+      "Adapter": 445,
+      "JpaEntity": 464,
+      "Repository": 464
+    },
+    "application_services_made_final": 32,
+    "maven_wrapper_properties": "created_or_updated",
+    "readme_architecture_link": "updated",
+    "micro_architecture_package_root": "updated",
+    "identity_repository_ports_created": 19,
+    "identity_repository_adapters_created": 19,
+    "identity_mapper_methods_added": 19,
+    "flyway_migrations_generated": 24,
+    "flyway_migration_files": [
+      "V20260611_001__create_identity_tables.sql",
+      "V20260611_002__create_organization_tables.sql",
+      "V20260611_003__create_party_tables.sql",
+      "V20260611_004__create_topology_tables.sql",
+      "V20260611_005__create_telemetry_tables.sql",
+      "V20260611_006__create_planning_tables.sql",
+      "V20260611_007__create_monitoring_tables.sql",
+      "V20260611_008__create_alarm_tables.sql",
+      "V20260611_009__create_leakdetection_tables.sql",
+      "V20260611_010__create_incident_tables.sql",
+      "V20260611_011__create_risk_tables.sql",
+      "V20260611_012__create_hse_tables.sql",
+      "V20260611_013__create_integrity_tables.sql",
+      "V20260611_014__create_assets_tables.sql",
+      "V20260611_015__create_custody_tables.sql",
+      "V20260611_016__create_workflow_tables.sql",
+      "V20260611_017__create_audit_tables.sql",
+      "V20260611_018__create_documents_tables.sql",
+      "V20260611_019__create_integration_tables.sql",
+      "V20260611_020__create_configuration_tables.sql",
+      "V20260611_021__create_notification_tables.sql",
+      "V20260611_022__create_simulation_tables.sql",
+      "V20260611_023__create_analytics_tables.sql",
+      "V20260611_024__create_reporting_tables.sql"
+    ]
+  },
+  "warnings": [
+    "Domain model records were not mass-refactored into rich aggregate classes because that is semantic DDD work and unsafe to automate across 465 files without module-specific invariants.",
+    "Maven multi-module restructuring was not performed because it requires build-layout decisions beyond safe source correction."
+  ],
+  "post_correction_counts": {
+    "total_files": 4770,
+    "production_java_files": 4658,
+    "package_info_java_files": 811,
+    "jpa_entities": 464,
+    "jpa_repositories": 464,
+    "repository_ports": 465,
+    "repository_adapters": 464,
+    "flyway_sql_migrations": 24,
+    "header_created_on_counts": {
+      "2025-06-26": 4658
+    },
+    "header_type_counts": {
+      "Class": 1288,
+      "PackageInfo": 811,
+      "Record": 957,
+      "Interface": 1267,
+      "Enum": 335
+    },
+    "header_created_on_violations": 0,
+    "header_type_violations": 0,
+    "application_services_nonfinal": 0,
+    "missing_repository_ports": 0,
+    "missing_repository_adapters": 0
+  },
+  "post_correction_details_sample": {
+    "created_bad": [],
+    "type_bad": [],
+    "nonfinal_services": [],
+    "missing_ports": [],
+    "missing_adapters": []
+  },
+  "partial_javac_compile": {
+    "files": 2795,
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  }
+}

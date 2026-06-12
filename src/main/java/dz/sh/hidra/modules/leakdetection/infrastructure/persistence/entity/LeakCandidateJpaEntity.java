@@ -6,10 +6,10 @@
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  *
  * @Name        : LeakCandidateJpaEntity
- * @CreatedOn   : 2026-06-11
+ * @CreatedOn   : 2025-06-26
  * @UpdatedOn   : 2026-06-11
  *
- * @Type        : JpaEntity
+ * @Type        : Class
  * @Layer       : Infrastructure
  * @Module      : leakdetection
  * @Package     : dz.sh.hidra.modules.leakdetection.infrastructure.persistence.entity

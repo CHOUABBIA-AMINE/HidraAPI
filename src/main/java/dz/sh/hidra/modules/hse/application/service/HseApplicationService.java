@@ -6,7 +6,7 @@
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  *
  * @Name        : HseApplicationService
- * @CreatedOn   : 2026-06-11
+ * @CreatedOn   : 2025-06-26
  * @UpdatedOn   : 2026-06-11
  *
  * @Type        : Class
@@ -45,7 +45,7 @@ import java.util.Objects;
 /**
  * Application service for HSE case and CAPA workflows.
  */
-public class HseApplicationService implements OpenHseCaseUseCase, CreateHseCapaUseCase, CloseHseCaseUseCase {
+public final class HseApplicationService implements OpenHseCaseUseCase, CreateHseCapaUseCase, CloseHseCaseUseCase {
 
     private final HseCaseRepositoryPort hseCaseRepositoryPort;
     private final HseCorrectivePreventiveActionRepositoryPort capaRepositoryPort;

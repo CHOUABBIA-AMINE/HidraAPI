@@ -6,10 +6,10 @@
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  *
  * @Name        : JpaHseCatalogTranslationRepositoryAdapter
- * @CreatedOn   : 2026-06-11
+ * @CreatedOn   : 2025-06-26
  * @UpdatedOn   : 2026-06-11
  *
- * @Type        : Adapter
+ * @Type        : Class
  * @Layer       : Infrastructure
  * @Module      : hse
  * @Package     : dz.sh.hidra.modules.hse.infrastructure.persistence.adapter

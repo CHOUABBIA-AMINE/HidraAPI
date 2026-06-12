@@ -295,7 +295,7 @@ Business modules MUST NOT become generic libraries for each other.
 Each module follows this package shape unless an ADR-approved exception exists.
 
 ```text
-dz.sh.hidra.<module>
+dz.sh.hidra.modules.<module>
   api
     rest
     request
@@ -476,9 +476,9 @@ Each module has a private interior and a narrow public surface.
 The following may be imported by another module only when necessary and explicitly allowed by dependency rules:
 
 ```text
-dz.sh.hidra.<module>.application.port.in
-dz.sh.hidra.<module>.application.dto
-dz.sh.hidra.<module>.domain.event
+dz.sh.hidra.modules.<module>.application.port.in
+dz.sh.hidra.modules.<module>.application.dto
+dz.sh.hidra.modules.<module>.domain.event
 ```
 
 ### 9.2 Private Packages
@@ -486,12 +486,12 @@ dz.sh.hidra.<module>.domain.event
 The following are private to the owning module and MUST NOT be imported by other modules:
 
 ```text
-dz.sh.hidra.<module>.domain.model
-dz.sh.hidra.<module>.domain.policy
-dz.sh.hidra.<module>.domain.service
-dz.sh.hidra.<module>.infrastructure..
-dz.sh.hidra.<module>.api..
-dz.sh.hidra.<module>.application.service
+dz.sh.hidra.modules.<module>.domain.model
+dz.sh.hidra.modules.<module>.domain.policy
+dz.sh.hidra.modules.<module>.domain.service
+dz.sh.hidra.modules.<module>.infrastructure..
+dz.sh.hidra.modules.<module>.api..
+dz.sh.hidra.modules.<module>.application.service
 ```
 
 ### 9.3 Cross-Module Communication

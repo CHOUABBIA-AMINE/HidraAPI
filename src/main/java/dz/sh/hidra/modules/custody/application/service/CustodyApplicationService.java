@@ -6,7 +6,7 @@
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  *
  * @Name        : CustodyApplicationService
- * @CreatedOn   : 2026-06-11
+ * @CreatedOn   : 2025-06-26
  * @UpdatedOn   : 2026-06-11
  *
  * @Type        : Class
@@ -46,7 +46,7 @@ import java.util.Objects;
 /**
  * Application service for custody periods, tickets, and discrepancies.
  */
-public class CustodyApplicationService implements OpenCustodyMeasurementPeriodUseCase, CreateCustodyTransferTicketUseCase, OpenCustodyDiscrepancyUseCase {
+public final class CustodyApplicationService implements OpenCustodyMeasurementPeriodUseCase, CreateCustodyTransferTicketUseCase, OpenCustodyDiscrepancyUseCase {
 
     private final CustodyMeasurementPeriodRepositoryPort periodRepositoryPort;
     private final CustodyTransferTicketRepositoryPort ticketRepositoryPort;

@@ -6,7 +6,7 @@
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  *
  * @Name        : AlarmApplicationService
- * @CreatedOn   : 2026-06-11
+ * @CreatedOn   : 2025-06-26
  * @UpdatedOn   : 2026-06-11
  *
  * @Type        : Class
@@ -43,7 +43,7 @@ import java.util.Objects;
 /**
  * Application service for alarm lifecycle commands.
  */
-public class AlarmApplicationService implements RaiseAlarmUseCase, AcknowledgeAlarmUseCase, CloseAlarmUseCase {
+public final class AlarmApplicationService implements RaiseAlarmUseCase, AcknowledgeAlarmUseCase, CloseAlarmUseCase {
 
     private final AlarmRepositoryPort alarmRepositoryPort;
     private final AlarmAcknowledgementRepositoryPort acknowledgementRepositoryPort;

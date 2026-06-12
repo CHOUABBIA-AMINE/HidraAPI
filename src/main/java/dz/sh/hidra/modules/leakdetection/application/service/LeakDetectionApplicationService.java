@@ -6,7 +6,7 @@
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  *
  * @Name        : LeakDetectionApplicationService
- * @CreatedOn   : 2026-06-11
+ * @CreatedOn   : 2025-06-26
  * @UpdatedOn   : 2026-06-11
  *
  * @Type        : Class
@@ -47,7 +47,7 @@ import java.util.Objects;
 /**
  * Application service for leak detection candidate/case workflows.
  */
-public class LeakDetectionApplicationService implements CreateLeakCandidateUseCase, OpenLeakCaseUseCase, EscalateLeakCaseUseCase {
+public final class LeakDetectionApplicationService implements CreateLeakCandidateUseCase, OpenLeakCaseUseCase, EscalateLeakCaseUseCase {
 
     private final LeakCandidateRepositoryPort candidateRepositoryPort;
     private final LeakDetectionCaseRepositoryPort caseRepositoryPort;

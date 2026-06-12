@@ -6,10 +6,10 @@
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  *
  * @Name        : JpaAnalyticsModelVersionRepositoryAdapter
- * @CreatedOn   : 2026-06-11
+ * @CreatedOn   : 2025-06-26
  * @UpdatedOn   : 2026-06-11
  *
- * @Type        : Adapter
+ * @Type        : Class
  * @Layer       : Infrastructure
  * @Module      : analytics
  * @Package     : dz.sh.hidra.modules.analytics.infrastructure.persistence.adapter

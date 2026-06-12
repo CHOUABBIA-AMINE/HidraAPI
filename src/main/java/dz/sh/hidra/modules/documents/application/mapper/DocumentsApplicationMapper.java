@@ -6,10 +6,10 @@
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  *
  * @Name        : DocumentsApplicationMapper
- * @CreatedOn   : 2026-06-11
+ * @CreatedOn   : 2025-06-26
  * @UpdatedOn   : 2026-06-11
  *
- * @Type        : Utility
+ * @Type        : Class
  * @Layer       : Application
  * @Module      : documents
  * @Package     : dz.sh.hidra.modules.documents.application.mapper

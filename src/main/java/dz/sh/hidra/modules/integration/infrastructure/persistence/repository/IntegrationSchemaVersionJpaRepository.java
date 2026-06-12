@@ -6,10 +6,10 @@
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  *
  * @Name        : IntegrationSchemaVersionJpaRepository
- * @CreatedOn   : 2026-06-11
+ * @CreatedOn   : 2025-06-26
  * @UpdatedOn   : 2026-06-11
  *
- * @Type        : Repository
+ * @Type        : Interface
  * @Layer       : Infrastructure
  * @Module      : integration
  * @Package     : dz.sh.hidra.modules.integration.infrastructure.persistence.repository

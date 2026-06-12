@@ -6,7 +6,7 @@
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  *
  * @Name        : FacilityApplicationService
- * @CreatedOn   : 2026-06-11
+ * @CreatedOn   : 2025-06-26
  * @UpdatedOn   : 2026-06-11
  *
  * @Type        : Class
@@ -28,7 +28,7 @@ import dz.sh.hidra.modules.topology.domain.model.Facility;
 import dz.sh.hidra.modules.topology.domain.value.*;
 import java.time.Instant;
 import java.util.Objects;
-public class FacilityApplicationService implements RegisterFacilityUseCase {
+public final class FacilityApplicationService implements RegisterFacilityUseCase {
     private final FacilityRepositoryPort repositoryPort;
     public FacilityApplicationService(FacilityRepositoryPort repositoryPort) { this.repositoryPort = Objects.requireNonNull(repositoryPort, "Facility repository port must not be null."); }
     public FacilitySummaryDto registerFacility(RegisterFacilityCommand command) {

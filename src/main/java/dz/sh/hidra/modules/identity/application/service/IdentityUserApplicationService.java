@@ -6,7 +6,7 @@
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  *
  * @Name        : IdentityUserApplicationService
- * @CreatedOn   : 2026-06-11
+ * @CreatedOn   : 2025-06-26
  * @UpdatedOn   : 2026-06-11
  *
  * @Type        : Class
@@ -35,7 +35,7 @@ import java.util.Objects;
 /**
  * Application service for identity user creation.
  */
-public class IdentityUserApplicationService implements CreateUserUseCase {
+public final class IdentityUserApplicationService implements CreateUserUseCase {
 
     private final UserRepositoryPort userRepositoryPort;
 

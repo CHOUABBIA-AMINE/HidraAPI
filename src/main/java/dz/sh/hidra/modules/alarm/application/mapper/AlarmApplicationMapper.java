@@ -6,10 +6,10 @@
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  *
  * @Name        : AlarmApplicationMapper
- * @CreatedOn   : 2026-06-11
+ * @CreatedOn   : 2025-06-26
  * @UpdatedOn   : 2026-06-11
  *
- * @Type        : Utility
+ * @Type        : Class
  * @Layer       : Application
  * @Module      : alarm
  * @Package     : dz.sh.hidra.modules.alarm.application.mapper

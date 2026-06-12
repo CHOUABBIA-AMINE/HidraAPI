@@ -6,7 +6,7 @@
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  *
  * @Name        : IdentityAuthorizationApplicationService
- * @CreatedOn   : 2026-06-11
+ * @CreatedOn   : 2025-06-26
  * @UpdatedOn   : 2026-06-11
  *
  * @Type        : Class
@@ -33,7 +33,7 @@ import java.util.Objects;
 /**
  * Application service for identity authorization evaluation.
  */
-public class IdentityAuthorizationApplicationService implements EvaluatePermissionUseCase {
+public final class IdentityAuthorizationApplicationService implements EvaluatePermissionUseCase {
 
     private final AuthorizationDecisionRepositoryPort authorizationDecisionRepositoryPort;
     private final AuthorizationPolicyEvaluator authorizationPolicyEvaluator;

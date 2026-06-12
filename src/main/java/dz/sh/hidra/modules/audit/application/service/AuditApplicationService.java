@@ -6,7 +6,7 @@
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  *
  * @Name        : AuditApplicationService
- * @CreatedOn   : 2026-06-11
+ * @CreatedOn   : 2025-06-26
  * @UpdatedOn   : 2026-06-11
  *
  * @Type        : Class
@@ -45,7 +45,7 @@ import java.util.Objects;
 /**
  * Application service for audit events, export requests, and access records.
  */
-public class AuditApplicationService implements RecordAuditEventUseCase, RequestAuditExportUseCase, RecordAuditAccessUseCase {
+public final class AuditApplicationService implements RecordAuditEventUseCase, RequestAuditExportUseCase, RecordAuditAccessUseCase {
 
     private final AuditEventRepositoryPort auditEventRepositoryPort;
     private final AuditExportRequestRepositoryPort exportRequestRepositoryPort;

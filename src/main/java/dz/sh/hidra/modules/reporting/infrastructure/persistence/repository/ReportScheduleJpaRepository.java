@@ -6,10 +6,10 @@
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  *
  * @Name        : ReportScheduleJpaRepository
- * @CreatedOn   : 2026-06-11
+ * @CreatedOn   : 2025-06-26
  * @UpdatedOn   : 2026-06-11
  *
- * @Type        : Repository
+ * @Type        : Interface
  * @Layer       : Infrastructure
  * @Module      : reporting
  * @Package     : dz.sh.hidra.modules.reporting.infrastructure.persistence.repository

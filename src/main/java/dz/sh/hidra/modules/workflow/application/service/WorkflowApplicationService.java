@@ -6,7 +6,7 @@
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  *
  * @Name        : WorkflowApplicationService
- * @CreatedOn   : 2026-06-11
+ * @CreatedOn   : 2025-06-26
  * @UpdatedOn   : 2026-06-11
  *
  * @Type        : Class
@@ -46,7 +46,7 @@ import java.util.Objects;
 /**
  * Application service for workflow instances, tasks, and actions.
  */
-public class WorkflowApplicationService implements StartWorkflowInstanceUseCase, CreateWorkflowTaskUseCase, RecordWorkflowActionUseCase {
+public final class WorkflowApplicationService implements StartWorkflowInstanceUseCase, CreateWorkflowTaskUseCase, RecordWorkflowActionUseCase {
 
     private final WorkflowInstanceRepositoryPort instanceRepositoryPort;
     private final WorkflowTaskRepositoryPort taskRepositoryPort;

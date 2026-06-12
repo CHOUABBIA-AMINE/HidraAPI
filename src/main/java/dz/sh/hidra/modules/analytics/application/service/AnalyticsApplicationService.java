@@ -6,7 +6,7 @@
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  *
  * @Name        : AnalyticsApplicationService
- * @CreatedOn   : 2026-06-11
+ * @CreatedOn   : 2025-06-26
  * @UpdatedOn   : 2026-06-11
  *
  * @Type        : Class
@@ -52,7 +52,7 @@ import java.util.Objects;
 /**
  * Application service for analytics datasets, projections, metrics, and insights.
  */
-public class AnalyticsApplicationService implements AnalyticsDatasetUseCase, AnalyticsProjectionUseCase, MetricEvaluationUseCase, AnalyticsInsightUseCase {
+public final class AnalyticsApplicationService implements AnalyticsDatasetUseCase, AnalyticsProjectionUseCase, MetricEvaluationUseCase, AnalyticsInsightUseCase {
 
     private final AnalyticsDatasetRepositoryPort datasetRepositoryPort;
     private final AnalyticsProjectionRunRepositoryPort projectionRunRepositoryPort;

@@ -6,7 +6,7 @@
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  *
  * @Name        : MonitoringRuleApplicationService
- * @CreatedOn   : 2026-06-11
+ * @CreatedOn   : 2025-06-26
  * @UpdatedOn   : 2026-06-11
  *
  * @Type        : Class
@@ -35,7 +35,7 @@ import java.util.Objects;
 /**
  * Application service for monitoring rules.
  */
-public class MonitoringRuleApplicationService implements CreateMonitoringRuleUseCase {
+public final class MonitoringRuleApplicationService implements CreateMonitoringRuleUseCase {
 
     private final MonitoringRuleRepositoryPort repositoryPort;
 

@@ -6,7 +6,7 @@
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  *
  * @Name        : OrganizationUnitApplicationService
- * @CreatedOn   : 2026-06-11
+ * @CreatedOn   : 2025-06-26
  * @UpdatedOn   : 2026-06-11
  *
  * @Type        : Class
@@ -34,7 +34,7 @@ import java.util.Objects;
 /**
  * Application service for organization units.
  */
-public class OrganizationUnitApplicationService implements CreateOrganizationUnitUseCase {
+public final class OrganizationUnitApplicationService implements CreateOrganizationUnitUseCase {
 
     private final OrganizationUnitRepositoryPort organizationUnitRepositoryPort;
 

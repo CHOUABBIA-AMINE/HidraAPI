@@ -6,7 +6,7 @@
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  *
  * @Name        : IntegrationApplicationService
- * @CreatedOn   : 2026-06-11
+ * @CreatedOn   : 2025-06-26
  * @UpdatedOn   : 2026-06-11
  *
  * @Type        : Class
@@ -46,7 +46,7 @@ import java.util.Objects;
 /**
  * Application service for integration registry, job runs, and exchange messages.
  */
-public class IntegrationApplicationService implements RegisterExternalSystemUseCase, StartIntegrationJobRunUseCase, RecordExchangeMessageUseCase {
+public final class IntegrationApplicationService implements RegisterExternalSystemUseCase, StartIntegrationJobRunUseCase, RecordExchangeMessageUseCase {
 
     private final ExternalSystemRepositoryPort externalSystemRepositoryPort;
     private final IntegrationJobRunRepositoryPort jobRunRepositoryPort;

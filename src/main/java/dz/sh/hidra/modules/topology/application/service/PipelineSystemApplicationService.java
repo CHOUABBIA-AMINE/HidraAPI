@@ -6,7 +6,7 @@
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  *
  * @Name        : PipelineSystemApplicationService
- * @CreatedOn   : 2026-06-11
+ * @CreatedOn   : 2025-06-26
  * @UpdatedOn   : 2026-06-11
  *
  * @Type        : Class
@@ -28,7 +28,7 @@ import dz.sh.hidra.modules.topology.domain.model.PipelineSystem;
 import dz.sh.hidra.modules.topology.domain.value.*;
 import java.time.Instant;
 import java.util.Objects;
-public class PipelineSystemApplicationService implements CreatePipelineSystemUseCase {
+public final class PipelineSystemApplicationService implements CreatePipelineSystemUseCase {
     private final PipelineSystemRepositoryPort repositoryPort;
     public PipelineSystemApplicationService(PipelineSystemRepositoryPort repositoryPort) { this.repositoryPort = Objects.requireNonNull(repositoryPort, "Pipeline system repository port must not be null."); }
     public PipelineSystemSummaryDto createPipelineSystem(CreatePipelineSystemCommand command) {

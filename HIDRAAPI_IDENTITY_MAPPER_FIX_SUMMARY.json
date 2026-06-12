@@ -1,0 +1,15 @@
+{
+  "mapper": "src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/mapper/IdentityPersistenceMapper.java",
+  "fixed_entities": [
+    "AuthorizationDelegationGrant",
+    "ExternalRoleMapping",
+    "GroupRoleGrant",
+    "UserPermissionGrant",
+    "UserRoleGrant"
+  ],
+  "entity_scope_method_occurrences": 0,
+  "direct_authorization_scope_constructor_argument_occurrences": 0,
+  "scope_flatten_helpers_present": true,
+  "scope_rebuild_helper_present": true,
+  "validation": "Identity domain + JPA entities + IdentityPersistenceMapper compiled successfully with Jakarta annotation stubs."
+}

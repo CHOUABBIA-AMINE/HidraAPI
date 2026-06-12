@@ -6,7 +6,7 @@
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  *
  * @Name        : IncidentApplicationService
- * @CreatedOn   : 2026-06-11
+ * @CreatedOn   : 2025-06-26
  * @UpdatedOn   : 2026-06-11
  *
  * @Type        : Class
@@ -44,7 +44,7 @@ import java.util.Objects;
 /**
  * Application service for incident lifecycle commands.
  */
-public class IncidentApplicationService implements OpenIncidentUseCase, RecordIncidentResponseActionUseCase, CloseIncidentUseCase {
+public final class IncidentApplicationService implements OpenIncidentUseCase, RecordIncidentResponseActionUseCase, CloseIncidentUseCase {
 
     private final IncidentRepositoryPort incidentRepositoryPort;
     private final IncidentResponseActionRepositoryPort responseActionRepositoryPort;

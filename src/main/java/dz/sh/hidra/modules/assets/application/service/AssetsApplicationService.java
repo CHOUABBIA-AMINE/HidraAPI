@@ -6,7 +6,7 @@
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  *
  * @Name        : AssetsApplicationService
- * @CreatedOn   : 2026-06-11
+ * @CreatedOn   : 2025-06-26
  * @UpdatedOn   : 2026-06-11
  *
  * @Type        : Class
@@ -46,7 +46,7 @@ import java.util.Objects;
 /**
  * Application service for assets and maintenance workflows.
  */
-public class AssetsApplicationService implements RegisterMaintainableAssetUseCase, CreateMaintenanceWorkOrderUseCase, RecordAssetConditionUseCase {
+public final class AssetsApplicationService implements RegisterMaintainableAssetUseCase, CreateMaintenanceWorkOrderUseCase, RecordAssetConditionUseCase {
 
     private final MaintainableAssetRepositoryPort maintainableAssetRepositoryPort;
     private final MaintenanceWorkOrderRepositoryPort workOrderRepositoryPort;

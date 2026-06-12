@@ -6,10 +6,10 @@
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  *
  * @Name        : AuditAccessRecordJpaEntity
- * @CreatedOn   : 2026-06-11
+ * @CreatedOn   : 2025-06-26
  * @UpdatedOn   : 2026-06-11
  *
- * @Type        : JpaEntity
+ * @Type        : Class
  * @Layer       : Infrastructure
  * @Module      : audit
  * @Package     : dz.sh.hidra.modules.audit.infrastructure.persistence.entity

@@ -6,7 +6,7 @@
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  *
  * @Name        : NotificationApplicationService
- * @CreatedOn   : 2026-06-11
+ * @CreatedOn   : 2025-06-26
  * @UpdatedOn   : 2026-06-11
  *
  * @Type        : Class
@@ -46,7 +46,7 @@ import java.util.Objects;
 /**
  * Application service for notification requests, messages, and delivery attempts.
  */
-public class NotificationApplicationService implements ReceiveNotificationRequestUseCase, CreateNotificationMessageUseCase, RecordDeliveryAttemptUseCase {
+public final class NotificationApplicationService implements ReceiveNotificationRequestUseCase, CreateNotificationMessageUseCase, RecordDeliveryAttemptUseCase {
 
     private final NotificationRequestRepositoryPort requestRepositoryPort;
     private final NotificationMessageRepositoryPort messageRepositoryPort;

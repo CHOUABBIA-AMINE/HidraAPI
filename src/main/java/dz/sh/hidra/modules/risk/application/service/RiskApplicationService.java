@@ -6,7 +6,7 @@
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  *
  * @Name        : RiskApplicationService
- * @CreatedOn   : 2026-06-11
+ * @CreatedOn   : 2025-06-26
  * @UpdatedOn   : 2026-06-11
  *
  * @Type        : Class
@@ -44,7 +44,7 @@ import java.util.Objects;
 /**
  * Application service for risk register and assessment workflows.
  */
-public class RiskApplicationService implements CreateRiskRegisterUseCase, CreateRiskAssessmentUseCase, AddRiskEvidenceUseCase {
+public final class RiskApplicationService implements CreateRiskRegisterUseCase, CreateRiskAssessmentUseCase, AddRiskEvidenceUseCase {
 
     private final RiskRegisterRepositoryPort registerRepositoryPort;
     private final RiskAssessmentRepositoryPort assessmentRepositoryPort;

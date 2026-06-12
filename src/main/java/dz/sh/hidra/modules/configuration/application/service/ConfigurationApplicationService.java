@@ -6,7 +6,7 @@
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  *
  * @Name        : ConfigurationApplicationService
- * @CreatedOn   : 2026-06-11
+ * @CreatedOn   : 2025-06-26
  * @UpdatedOn   : 2026-06-11
  *
  * @Type        : Class
@@ -47,7 +47,7 @@ import java.util.Objects;
 /**
  * Application service for configuration definitions, values, and feature flags.
  */
-public class ConfigurationApplicationService implements CreateConfigurationDefinitionUseCase, SetConfigurationValueUseCase, CreateFeatureFlagUseCase {
+public final class ConfigurationApplicationService implements CreateConfigurationDefinitionUseCase, SetConfigurationValueUseCase, CreateFeatureFlagUseCase {
 
     private final ConfigurationDefinitionRepositoryPort definitionRepositoryPort;
     private final ConfigurationValueRepositoryPort valueRepositoryPort;

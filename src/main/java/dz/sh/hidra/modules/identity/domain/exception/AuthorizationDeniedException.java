@@ -24,7 +24,9 @@ package dz.sh.hidra.modules.identity.domain.exception;
  */
 public class AuthorizationDeniedException extends IdentityDomainException {
 
-    public AuthorizationDeniedException(String message) {
+    private static final long serialVersionUID = 2613396750446699522L;
+
+	public AuthorizationDeniedException(String message) {
         super(message);
     }
 }

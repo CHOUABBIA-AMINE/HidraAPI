@@ -9,27 +9,151 @@
  * @CreatedOn   : 2026-06-11
  * @UpdatedOn   : 2026-06-11
  *
- * @Type        : Record
+ * @Type        : JpaEntity
  * @Layer       : Infrastructure
  * @Module      : identity
  * @Package     : dz.sh.hidra.modules.identity.infrastructure.persistence.entity
  *
- * @Description : Framework-neutral persistence shape for Group.
+ * @Description : Database-backed JPA entity for Group.
  *
  */
 package dz.sh.hidra.modules.identity.infrastructure.persistence.entity;
 
-/**
- * Persistence shape for Group.
- *
- * <p>This class intentionally carries no JPA annotations in generated source.
- * Add annotations in the repository implementation if needed.</p>
- *
- * @param id stable technical row identifier
- * @param payload serialized or mapped field payload
- */
-public record GroupJpaEntity(
-        String id,
-        String payload
-) {
-}
+import dz.sh.hidra.modules.identity.domain.value.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import java.time.Instant;
+
+    /**
+     * Database-backed JPA entity for Group.
+     */
+    @Entity
+    @Table(name = "hidra_identity_group")
+    public class GroupJpaEntity {
+
+        @Id
+    @Column(name = "id", nullable = false, length = 80)
+    private String id;
+
+    @Column(name = "code", nullable = false, length = 120)
+    private String code;
+
+    @Column(name = "name_ar", nullable = true, length = 255)
+    private String nameAr;
+
+    @Column(name = "name_fr", nullable = true, length = 255)
+    private String nameFr;
+
+    @Column(name = "name_en", nullable = true, length = 255)
+    private String nameEn;
+
+    @Column(name = "description", nullable = true, columnDefinition = "text")
+    private String description;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "group_type", nullable = false, length = 40)
+    private GroupType groupType;
+
+    @Column(name = "source_provider_id", nullable = true, length = 120)
+    private String sourceProviderId;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false, length = 40)
+    private GroupStatus status;
+
+    @Column(name = "created_at", nullable = false)
+    private Instant createdAt;
+
+    @Column(name = "updated_at", nullable = false)
+    private Instant updatedAt;
+
+        protected GroupJpaEntity() {
+            // Required by JPA.
+        }
+
+        public GroupJpaEntity(
+                String id,
+            String code,
+            String nameAr,
+            String nameFr,
+            String nameEn,
+            String description,
+            GroupType groupType,
+            String sourceProviderId,
+            GroupStatus status,
+            Instant createdAt,
+            Instant updatedAt
+        ) {
+            this.id = id;
+        this.code = code;
+        this.nameAr = nameAr;
+        this.nameFr = nameFr;
+        this.nameEn = nameEn;
+        this.description = description;
+        this.groupType = groupType;
+        this.sourceProviderId = sourceProviderId;
+        this.status = status;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        }
+
+
+    public String id() {
+        return id;
+    }
+
+
+    public String code() {
+        return code;
+    }
+
+
+    public String nameAr() {
+        return nameAr;
+    }
+
+
+    public String nameFr() {
+        return nameFr;
+    }
+
+
+    public String nameEn() {
+        return nameEn;
+    }
+
+
+    public String description() {
+        return description;
+    }
+
+
+    public GroupType groupType() {
+        return groupType;
+    }
+
+
+    public String sourceProviderId() {
+        return sourceProviderId;
+    }
+
+
+    public GroupStatus status() {
+        return status;
+    }
+
+
+    public Instant createdAt() {
+        return createdAt;
+    }
+
+
+    public Instant updatedAt() {
+        return updatedAt;
+    }
+
+    }

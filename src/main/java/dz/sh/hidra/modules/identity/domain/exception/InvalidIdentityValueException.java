@@ -24,9 +24,7 @@ package dz.sh.hidra.modules.identity.domain.exception;
  */
 public class InvalidIdentityValueException extends IdentityDomainException {
 
-    private static final long serialVersionUID = 7490311875911156996L;
-
-	public InvalidIdentityValueException(String message) {
+    public InvalidIdentityValueException(String message) {
         super(message);
     }
 }

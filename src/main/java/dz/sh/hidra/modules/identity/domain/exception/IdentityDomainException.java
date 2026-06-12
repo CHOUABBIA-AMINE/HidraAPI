@@ -24,9 +24,7 @@ package dz.sh.hidra.modules.identity.domain.exception;
  */
 public class IdentityDomainException extends RuntimeException {
 
-    private static final long serialVersionUID = -6851805623775345032L;
-
-	public IdentityDomainException(String message) {
+    public IdentityDomainException(String message) {
         super(requireMessage(message));
     }
 

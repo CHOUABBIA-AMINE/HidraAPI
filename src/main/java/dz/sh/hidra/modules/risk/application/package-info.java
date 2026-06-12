@@ -14,7 +14,7 @@
  * @Module      : risk
  * @Package     : dz.sh.hidra.modules.risk.application
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.risk.application package.
+ * @Description : Declares risk application layer package.
  *
  */
 package dz.sh.hidra.modules.risk.application;

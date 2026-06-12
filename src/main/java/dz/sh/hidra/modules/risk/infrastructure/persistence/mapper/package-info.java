@@ -14,7 +14,7 @@
  * @Module      : risk
  * @Package     : dz.sh.hidra.modules.risk.infrastructure.persistence.mapper
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.risk.infrastructure.persistence.mapper package.
+ * @Description : Declares risk persistence mappers.
  *
  */
 package dz.sh.hidra.modules.risk.infrastructure.persistence.mapper;

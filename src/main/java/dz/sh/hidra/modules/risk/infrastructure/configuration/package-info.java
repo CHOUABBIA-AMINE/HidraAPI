@@ -14,7 +14,7 @@
  * @Module      : risk
  * @Package     : dz.sh.hidra.modules.risk.infrastructure.configuration
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.risk.infrastructure.configuration package.
+ * @Description : Declares risk infrastructure configuration.
  *
  */
 package dz.sh.hidra.modules.risk.infrastructure.configuration;

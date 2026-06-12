@@ -14,7 +14,7 @@
  * @Module      : risk
  * @Package     : dz.sh.hidra.modules.risk.domain.value
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.risk.domain.value package.
+ * @Description : Declares risk domain value objects and enums.
  *
  */
 package dz.sh.hidra.modules.risk.domain.value;

@@ -14,7 +14,7 @@
  * @Module      : risk
  * @Package     : dz.sh.hidra.modules.risk.api.rest
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.risk.api.rest package.
+ * @Description : Declares risk REST boundary package.
  *
  */
 package dz.sh.hidra.modules.risk.api.rest;

@@ -14,7 +14,7 @@
  * @Module      : risk
  * @Package     : dz.sh.hidra.modules.risk
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.risk package.
+ * @Description : Declares risk module root package.
  *
  */
 package dz.sh.hidra.modules.risk;

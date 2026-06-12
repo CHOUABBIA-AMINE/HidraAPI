@@ -14,7 +14,7 @@
  * @Module      : risk
  * @Package     : dz.sh.hidra.modules.risk.infrastructure.persistence.repository
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.risk.infrastructure.persistence.repository package.
+ * @Description : Declares risk Spring Data JPA repositories.
  *
  */
 package dz.sh.hidra.modules.risk.infrastructure.persistence.repository;

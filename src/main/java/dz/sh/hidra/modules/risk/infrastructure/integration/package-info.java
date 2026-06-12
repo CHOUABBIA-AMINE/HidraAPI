@@ -14,7 +14,7 @@
  * @Module      : risk
  * @Package     : dz.sh.hidra.modules.risk.infrastructure.integration
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.risk.infrastructure.integration package.
+ * @Description : Declares risk integration adapters.
  *
  */
 package dz.sh.hidra.modules.risk.infrastructure.integration;

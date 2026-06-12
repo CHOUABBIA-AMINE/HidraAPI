@@ -14,7 +14,7 @@
  * @Module      : risk
  * @Package     : dz.sh.hidra.modules.risk.infrastructure.persistence
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.risk.infrastructure.persistence package.
+ * @Description : Declares risk persistence package.
  *
  */
 package dz.sh.hidra.modules.risk.infrastructure.persistence;

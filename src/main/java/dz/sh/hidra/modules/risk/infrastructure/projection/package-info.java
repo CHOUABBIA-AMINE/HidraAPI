@@ -14,7 +14,7 @@
  * @Module      : risk
  * @Package     : dz.sh.hidra.modules.risk.infrastructure.projection
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.risk.infrastructure.projection package.
+ * @Description : Declares risk read projections.
  *
  */
 package dz.sh.hidra.modules.risk.infrastructure.projection;

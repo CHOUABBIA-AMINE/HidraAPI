@@ -14,7 +14,7 @@
  * @Module      : risk
  * @Package     : dz.sh.hidra.modules.risk.application.dto
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.risk.application.dto package.
+ * @Description : Declares risk application DTOs.
  *
  */
 package dz.sh.hidra.modules.risk.application.dto;

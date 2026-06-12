@@ -14,7 +14,7 @@
  * @Module      : risk
  * @Package     : dz.sh.hidra.modules.risk.api.rest.mapper
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.risk.api.rest.mapper package.
+ * @Description : Declares risk REST mappers.
  *
  */
 package dz.sh.hidra.modules.risk.api.rest.mapper;

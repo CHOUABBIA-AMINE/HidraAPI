@@ -14,7 +14,7 @@
  * @Module      : risk
  * @Package     : dz.sh.hidra.modules.risk.api.rest.controller
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.risk.api.rest.controller package.
+ * @Description : Declares risk REST controller contracts.
  *
  */
 package dz.sh.hidra.modules.risk.api.rest.controller;

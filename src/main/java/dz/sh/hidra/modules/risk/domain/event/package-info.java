@@ -14,7 +14,7 @@
  * @Module      : risk
  * @Package     : dz.sh.hidra.modules.risk.domain.event
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.risk.domain.event package.
+ * @Description : Declares risk domain events.
  *
  */
 package dz.sh.hidra.modules.risk.domain.event;

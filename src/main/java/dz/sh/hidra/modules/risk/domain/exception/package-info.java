@@ -14,7 +14,7 @@
  * @Module      : risk
  * @Package     : dz.sh.hidra.modules.risk.domain.exception
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.risk.domain.exception package.
+ * @Description : Declares risk domain exceptions.
  *
  */
 package dz.sh.hidra.modules.risk.domain.exception;

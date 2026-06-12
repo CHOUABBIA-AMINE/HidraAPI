@@ -1,0 +1,34 @@
+/**
+ *
+ * @Project     : HidraAPI
+ * @Product     : Hidra - Hydrocarbon Intelligence for Data, Risk, and Analytics
+ * @Author      : Abir MEDJERAB
+ * @Owner       : Sonatrach / TRC : Digitalization Initiative
+ *
+ * @Name        : RiskSourceRepositoryPort
+ * @CreatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-06-11
+ *
+ * @Type        : Interface
+ * @Layer       : Application
+ * @Module      : risk
+ * @Package     : dz.sh.hidra.modules.risk.application.port.out
+ *
+ * @Description : Repository port for RiskSource.
+ *
+ */
+package dz.sh.hidra.modules.risk.application.port.out;
+
+import dz.sh.hidra.modules.risk.domain.model.RiskSource;
+
+import java.util.Optional;
+
+/**
+ * Repository port for RiskSource.
+ */
+public interface RiskSourceRepositoryPort {
+
+    RiskSource save(RiskSource model);
+
+    Optional<RiskSource> findById(String id);
+}

@@ -14,7 +14,7 @@
  * @Module      : reporting
  * @Package     : dz.sh.hidra.modules.reporting.domain.exception
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.reporting.domain.exception package.
+ * @Description : Declares reporting domain exceptions.
  *
  */
 package dz.sh.hidra.modules.reporting.domain.exception;

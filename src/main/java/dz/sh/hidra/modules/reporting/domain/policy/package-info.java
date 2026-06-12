@@ -14,7 +14,7 @@
  * @Module      : reporting
  * @Package     : dz.sh.hidra.modules.reporting.domain.policy
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.reporting.domain.policy package.
+ * @Description : Declares reporting domain policy helpers.
  *
  */
 package dz.sh.hidra.modules.reporting.domain.policy;

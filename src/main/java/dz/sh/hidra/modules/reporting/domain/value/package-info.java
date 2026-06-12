@@ -14,7 +14,7 @@
  * @Module      : reporting
  * @Package     : dz.sh.hidra.modules.reporting.domain.value
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.reporting.domain.value package.
+ * @Description : Declares reporting domain value objects and enums.
  *
  */
 package dz.sh.hidra.modules.reporting.domain.value;

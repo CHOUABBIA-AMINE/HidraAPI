@@ -14,7 +14,7 @@
  * @Module      : reporting
  * @Package     : dz.sh.hidra.modules.reporting.infrastructure.integration
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.reporting.infrastructure.integration package.
+ * @Description : Declares reporting integration adapters.
  *
  */
 package dz.sh.hidra.modules.reporting.infrastructure.integration;

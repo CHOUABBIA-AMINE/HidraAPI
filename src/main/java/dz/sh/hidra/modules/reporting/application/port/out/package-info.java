@@ -14,7 +14,7 @@
  * @Module      : reporting
  * @Package     : dz.sh.hidra.modules.reporting.application.port.out
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.reporting.application.port.out package.
+ * @Description : Declares reporting outbound ports.
  *
  */
 package dz.sh.hidra.modules.reporting.application.port.out;

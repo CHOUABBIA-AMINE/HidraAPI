@@ -14,7 +14,7 @@
  * @Module      : reporting
  * @Package     : dz.sh.hidra.modules.reporting.api.rest
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.reporting.api.rest package.
+ * @Description : Declares reporting REST boundary package.
  *
  */
 package dz.sh.hidra.modules.reporting.api.rest;

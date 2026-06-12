@@ -14,7 +14,7 @@
  * @Module      : reporting
  * @Package     : dz.sh.hidra.modules.reporting.infrastructure.persistence.adapter
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.reporting.infrastructure.persistence.adapter package.
+ * @Description : Declares reporting persistence adapters.
  *
  */
 package dz.sh.hidra.modules.reporting.infrastructure.persistence.adapter;

@@ -14,7 +14,7 @@
  * @Module      : reporting
  * @Package     : dz.sh.hidra.modules.reporting.domain.model
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.reporting.domain.model package.
+ * @Description : Declares reporting domain entities and aggregates.
  *
  */
 package dz.sh.hidra.modules.reporting.domain.model;

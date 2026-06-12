@@ -14,7 +14,7 @@
  * @Module      : reporting
  * @Package     : dz.sh.hidra.modules.reporting.infrastructure.configuration
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.reporting.infrastructure.configuration package.
+ * @Description : Declares reporting infrastructure configuration.
  *
  */
 package dz.sh.hidra.modules.reporting.infrastructure.configuration;

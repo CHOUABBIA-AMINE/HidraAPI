@@ -14,7 +14,7 @@
  * @Module      : reporting
  * @Package     : dz.sh.hidra.modules.reporting.application.service
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.reporting.application.service package.
+ * @Description : Declares reporting application services.
  *
  */
 package dz.sh.hidra.modules.reporting.application.service;

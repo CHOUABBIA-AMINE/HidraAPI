@@ -14,7 +14,7 @@
  * @Module      : reporting
  * @Package     : dz.sh.hidra.modules.reporting.application.query
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.reporting.application.query package.
+ * @Description : Declares reporting application queries.
  *
  */
 package dz.sh.hidra.modules.reporting.application.query;

@@ -14,7 +14,7 @@
  * @Module      : reporting
  * @Package     : dz.sh.hidra.modules.reporting.application.mapper
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.reporting.application.mapper package.
+ * @Description : Declares reporting application mappers.
  *
  */
 package dz.sh.hidra.modules.reporting.application.mapper;

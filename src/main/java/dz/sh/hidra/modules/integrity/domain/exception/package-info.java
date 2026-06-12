@@ -14,7 +14,7 @@
  * @Module      : integrity
  * @Package     : dz.sh.hidra.modules.integrity.domain.exception
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.integrity.domain.exception package.
+ * @Description : Declares integrity domain exceptions.
  *
  */
 package dz.sh.hidra.modules.integrity.domain.exception;

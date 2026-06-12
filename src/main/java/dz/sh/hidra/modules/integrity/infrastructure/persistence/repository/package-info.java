@@ -14,7 +14,7 @@
  * @Module      : integrity
  * @Package     : dz.sh.hidra.modules.integrity.infrastructure.persistence.repository
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.integrity.infrastructure.persistence.repository package.
+ * @Description : Declares integrity Spring Data JPA repositories.
  *
  */
 package dz.sh.hidra.modules.integrity.infrastructure.persistence.repository;

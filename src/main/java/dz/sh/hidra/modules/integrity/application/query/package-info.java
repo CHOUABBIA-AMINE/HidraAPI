@@ -14,7 +14,7 @@
  * @Module      : integrity
  * @Package     : dz.sh.hidra.modules.integrity.application.query
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.integrity.application.query package.
+ * @Description : Declares integrity application queries.
  *
  */
 package dz.sh.hidra.modules.integrity.application.query;

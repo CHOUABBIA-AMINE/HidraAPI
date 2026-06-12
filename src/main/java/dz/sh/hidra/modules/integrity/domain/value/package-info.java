@@ -14,7 +14,7 @@
  * @Module      : integrity
  * @Package     : dz.sh.hidra.modules.integrity.domain.value
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.integrity.domain.value package.
+ * @Description : Declares integrity domain value objects and enums.
  *
  */
 package dz.sh.hidra.modules.integrity.domain.value;

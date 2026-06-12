@@ -14,7 +14,7 @@
  * @Module      : integrity
  * @Package     : dz.sh.hidra.modules.integrity.application.service
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.integrity.application.service package.
+ * @Description : Declares integrity application services.
  *
  */
 package dz.sh.hidra.modules.integrity.application.service;

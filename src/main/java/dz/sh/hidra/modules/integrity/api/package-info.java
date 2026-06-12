@@ -14,7 +14,7 @@
  * @Module      : integrity
  * @Package     : dz.sh.hidra.modules.integrity.api
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.integrity.api package.
+ * @Description : Declares integrity API boundary package.
  *
  */
 package dz.sh.hidra.modules.integrity.api;

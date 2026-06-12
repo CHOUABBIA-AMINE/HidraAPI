@@ -14,7 +14,7 @@
  * @Module      : integrity
  * @Package     : dz.sh.hidra.modules.integrity.domain.policy
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.integrity.domain.policy package.
+ * @Description : Declares integrity domain policy helpers.
  *
  */
 package dz.sh.hidra.modules.integrity.domain.policy;

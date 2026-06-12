@@ -14,7 +14,7 @@
  * @Module      : integrity
  * @Package     : dz.sh.hidra.modules.integrity.infrastructure
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.integrity.infrastructure package.
+ * @Description : Declares integrity infrastructure package.
  *
  */
 package dz.sh.hidra.modules.integrity.infrastructure;

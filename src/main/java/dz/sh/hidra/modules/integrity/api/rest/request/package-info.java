@@ -14,7 +14,7 @@
  * @Module      : integrity
  * @Package     : dz.sh.hidra.modules.integrity.api.rest.request
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.integrity.api.rest.request package.
+ * @Description : Declares integrity REST request models.
  *
  */
 package dz.sh.hidra.modules.integrity.api.rest.request;

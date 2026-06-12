@@ -14,7 +14,7 @@
  * @Module      : integrity
  * @Package     : dz.sh.hidra.modules.integrity.application.mapper
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.integrity.application.mapper package.
+ * @Description : Declares integrity application mappers.
  *
  */
 package dz.sh.hidra.modules.integrity.application.mapper;

@@ -14,7 +14,7 @@
  * @Module      : integrity
  * @Package     : dz.sh.hidra.modules.integrity.api.rest
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.integrity.api.rest package.
+ * @Description : Declares integrity REST boundary package.
  *
  */
 package dz.sh.hidra.modules.integrity.api.rest;

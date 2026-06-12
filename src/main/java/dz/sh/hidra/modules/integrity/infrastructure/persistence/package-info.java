@@ -14,7 +14,7 @@
  * @Module      : integrity
  * @Package     : dz.sh.hidra.modules.integrity.infrastructure.persistence
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.integrity.infrastructure.persistence package.
+ * @Description : Declares integrity persistence package.
  *
  */
 package dz.sh.hidra.modules.integrity.infrastructure.persistence;

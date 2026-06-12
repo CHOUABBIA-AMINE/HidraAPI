@@ -6,41 +6,15 @@
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  *
  * @Name        : package-info
- * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-05-30
+ * @CreatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-06-11
  *
  * @Type        : PackageInfo
  * @Layer       : Application
  * @Module      : organization
  * @Package     : dz.sh.hidra.modules.organization.application.command
  *
- * @Description : Organization command package boundary.
+ * @Description : Declares the architectural role of the dz.sh.hidra.modules.organization.application.command package.
  *
- */
-
-/**
- * Command package for organization state-changing use-case input.
- *
- * <p>What belongs here:
- * Immutable command records for creating/updating employees, units, positions, assignments, and reporting lines.
- *
- * <p>What is forbidden here:
- * REST request DTOs, JPA annotations, controller logic, and domain aggregate implementation.
- *
- * <p>Boundary rules:
- * {@literal modules.identity} owns users, identity roles, permissions, and access policies.
- * {@literal modules.organization} owns employees, organization units, positions, assignments,
- * and reporting lines. Future {@literal modules.topology} owns physical stations and topology
- * assets. Organization may reference topology later only through {@literal OperationalScopeReference}.
- * Platform owns technical infrastructure and Spring Security plumbing.
- *
- * <p>Station rule:
- * Station-as-organization-unit belongs to organization when it represents people,
- * responsibility, and operational reporting. The physical station asset belongs to topology.
- *
- * <p>Reporting rule:
- * Matrix reporting is represented later through {@literal ReportingLine}, not through
- * {@literal SupervisorAssignment}.
  */
 package dz.sh.hidra.modules.organization.application.command;
-

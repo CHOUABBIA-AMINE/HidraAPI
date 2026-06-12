@@ -5,20 +5,16 @@
  * @Author      : Abir MEDJERAB
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  *
- * @Name        : IdentityApplicationPortPackage
- * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-05-30
+ * @Name        : package-info
+ * @CreatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-06-11
  *
  * @Type        : PackageInfo
  * @Layer       : Application
  * @Module      : identity
  * @Package     : dz.sh.hidra.modules.identity.application.port
  *
- * @Description : Identity application port package boundary.
- *
- * This package documents the boundary for identity use-case and dependency ports.
- * Belongs here: Inbound and outbound port subpackages for identity application contracts belong here.
- * Forbidden here: Port implementations, REST controllers, JPA adapters, domain aggregates, Spring Security plumbing, and employee structures are forbidden here.
+ * @Description : Declares the architectural role of the dz.sh.hidra.modules.identity.application.port package.
  *
  */
 package dz.sh.hidra.modules.identity.application.port;

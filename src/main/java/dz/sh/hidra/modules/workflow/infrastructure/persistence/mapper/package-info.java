@@ -6,15 +6,15 @@
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  *
  * @Name        : package-info
- * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-05-30
+ * @CreatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-06-11
  *
  * @Type        : PackageInfo
  * @Layer       : Infrastructure
  * @Module      : workflow
  * @Package     : dz.sh.hidra.modules.workflow.infrastructure.persistence.mapper
  *
- * @Description : Persistence mapper package for workflow domain and JPA conversions.
+ * @Description : Declares the architectural role of the dz.sh.hidra.modules.workflow.infrastructure.persistence.mapper package.
  *
  */
 package dz.sh.hidra.modules.workflow.infrastructure.persistence.mapper;

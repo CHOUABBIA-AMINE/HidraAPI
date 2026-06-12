@@ -5,20 +5,16 @@
  * @Author      : Abir MEDJERAB
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  *
- * @Name        : IdentityPersistenceEntityPackage
- * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-05-30
+ * @Name        : package-info
+ * @CreatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-06-11
  *
  * @Type        : PackageInfo
  * @Layer       : Infrastructure
  * @Module      : identity
  * @Package     : dz.sh.hidra.modules.identity.infrastructure.persistence.entity
  *
- * @Description : Identity JPA entity package boundary.
- *
- * This package documents where future JPA entities for identity tables will live.
- * Belongs here: Persistence entities for users, roles, permissions, user-role assignments, and role-permission assignments belong here.
- * Forbidden here: Domain aggregate behavior, REST DTOs, application commands, Spring Security configuration, organization employee entities, and non-identity tables are forbidden here.
+ * @Description : Declares the architectural role of the dz.sh.hidra.modules.identity.infrastructure.persistence.entity package.
  *
  */
 package dz.sh.hidra.modules.identity.infrastructure.persistence.entity;

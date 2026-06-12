@@ -5,19 +5,16 @@
  * @Author      : Abir MEDJERAB
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  *
- * @Name        : PackageInfo
- * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-05-30
+ * @Name        : package-info
+ * @CreatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-06-11
  *
  * @Type        : PackageInfo
  * @Layer       : Platform
  * @Module      : platform
  * @Package     : dz.sh.hidra.platform.persistence
  *
- * @Description : Persistence infrastructure package boundary.
- *
- * Belongs here: technical persistence, migration, auditing, and transaction support.
- * Forbidden here: module repositories, business entities, or domain-specific database schemas.
+ * @Description : Declares the architectural role of the dz.sh.hidra.platform.persistence package.
  *
  */
 package dz.sh.hidra.platform.persistence;

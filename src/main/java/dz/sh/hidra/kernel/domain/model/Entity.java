@@ -6,20 +6,30 @@
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  *
  * @Name        : Entity
- * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-05-30
+ * @CreatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-06-11
  *
  * @Type        : Interface
  * @Layer       : Kernel
  * @Module      : kernel
  * @Package     : dz.sh.hidra.kernel.domain.model
  *
- * @Description : Minimal domain entity contract exposing a stable identifier.
+ * @Description : Defines the minimal generic domain entity contract.
  *
  */
 package dz.sh.hidra.kernel.domain.model;
 
+/**
+ * Minimal domain entity contract exposing a stable identifier.
+ *
+ * @param <ID> stable identifier type
+ */
 public interface Entity<ID> {
 
+    /**
+     * Returns the stable identifier of the entity.
+     *
+     * @return stable identifier
+     */
     ID id();
 }

@@ -5,20 +5,16 @@
  * @Author      : Abir MEDJERAB
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  *
- * @Name        : RootKernelPackage
- * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-05-30
+ * @Name        : package-info
+ * @CreatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-06-11
  *
  * @Type        : PackageInfo
  * @Layer       : Kernel
  * @Module      : kernel
  * @Package     : dz.sh.hidra.kernel
  *
- * @Description : Root kernel package boundary.
- *
- * This package documents the Root kernel package boundary.
- * Belongs here: Generic kernel primitives and package boundaries belong here.
- * Forbidden here: Business concepts, framework integrations, and implementation shortcuts are forbidden here.
+ * @Description : Declares the kernel module root package.
  *
  */
 package dz.sh.hidra.kernel;

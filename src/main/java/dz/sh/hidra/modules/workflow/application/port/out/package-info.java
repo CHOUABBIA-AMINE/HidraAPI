@@ -6,15 +6,15 @@
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  *
  * @Name        : package-info
- * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-05-30
+ * @CreatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-06-11
  *
  * @Type        : PackageInfo
  * @Layer       : Application
  * @Module      : workflow
  * @Package     : dz.sh.hidra.modules.workflow.application.port.out
  *
- * @Description : Outbound application port package for workflow repositories, lookups, and audit event publication.
+ * @Description : Declares the architectural role of the dz.sh.hidra.modules.workflow.application.port.out package.
  *
  */
 package dz.sh.hidra.modules.workflow.application.port.out;

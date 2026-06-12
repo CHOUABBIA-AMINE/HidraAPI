@@ -6,15 +6,15 @@
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  *
  * @Name        : package-info
- * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-05-30
+ * @CreatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-06-11
  *
  * @Type        : PackageInfo
- * @Layer       : Application
+ * @Layer       : Domain
  * @Module      : workflow
  * @Package     : dz.sh.hidra.modules.workflow
  *
- * @Description : Root package for the workflow module.
+ * @Description : Declares the architectural role of the dz.sh.hidra.modules.workflow package.
  *
  */
 package dz.sh.hidra.modules.workflow;

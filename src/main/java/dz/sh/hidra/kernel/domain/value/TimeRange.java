@@ -6,63 +6,75 @@
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  *
  * @Name        : TimeRange
- * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-05-30
+ * @CreatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-06-11
  *
- * @Type        : Class
+ * @Type        : Record
  * @Layer       : Kernel
  * @Module      : kernel
  * @Package     : dz.sh.hidra.kernel.domain.value
  *
- * @Description : Immutable timestamp range using Instant boundaries.
+ * @Description : Represents an immutable instant range.
  *
  */
 package dz.sh.hidra.kernel.domain.value;
 
-import dz.sh.hidra.kernel.domain.exception.InvalidValueObjectException;
 import dz.sh.hidra.kernel.domain.model.ValueObject;
+import dz.sh.hidra.kernel.exception.InvalidValueObjectException;
 
 import java.time.Instant;
 
-public final class TimeRange implements ValueObject {
+/**
+ * Immutable timestamp range using inclusive boundaries.
+ *
+ * @param start start instant, inclusive
+ * @param end end instant, inclusive; null means open-ended
+ */
+public record TimeRange(Instant start, Instant end) implements ValueObject {
 
-    private final Instant start;
-    private final Instant end;
-
-    private TimeRange(Instant start, Instant end) {
+    public TimeRange {
         if (start == null) {
-            throw new InvalidValueObjectException("TimeRange start must not be null.");
+            throw new InvalidValueObjectException("Time range start must not be null.");
         }
         if (end != null && end.isBefore(start)) {
-            throw new InvalidValueObjectException("TimeRange end must not be before start.");
+            throw new InvalidValueObjectException("Time range end must not be before start.");
         }
-        this.start = start;
-        this.end = end;
     }
 
+    /**
+     * Creates a finite instant range.
+     *
+     * @param start start instant, inclusive
+     * @param end end instant, inclusive
+     * @return closed time range
+     */
     public static TimeRange closed(Instant start, Instant end) {
         if (end == null) {
-            throw new InvalidValueObjectException("TimeRange closed end must not be null.");
+            throw new InvalidValueObjectException("Closed time range end must not be null.");
         }
         return new TimeRange(start, end);
     }
 
+    /**
+     * Creates an open-ended instant range.
+     *
+     * @param start start instant, inclusive
+     * @return open-ended time range
+     */
     public static TimeRange openEnded(Instant start) {
         return new TimeRange(start, null);
     }
 
+    /**
+     * Checks whether the provided instant is inside the range.
+     *
+     * @param instant instant to check
+     * @return true when the instant is inside the range
+     */
     public boolean contains(Instant instant) {
-        if (instant == null) {
+        if (instant == null || instant.isBefore(start)) {
             return false;
         }
-        return !instant.isBefore(start) && (end == null || !instant.isAfter(end));
-    }
-
-    public Instant start() {
-        return start;
-    }
-
-    public Instant end() {
-        return end;
+        return end == null || !instant.isAfter(end);
     }
 }

@@ -6,15 +6,15 @@
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  *
  * @Name        : package-info
- * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-05-30
+ * @CreatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-06-11
  *
  * @Type        : PackageInfo
  * @Layer       : API
  * @Module      : workflow
  * @Package     : dz.sh.hidra.modules.workflow.api.rest
  *
- * @Description : REST API package for workflow HTTP endpoints.
+ * @Description : Declares the architectural role of the dz.sh.hidra.modules.workflow.api.rest package.
  *
  */
 package dz.sh.hidra.modules.workflow.api.rest;

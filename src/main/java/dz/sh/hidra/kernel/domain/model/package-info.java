@@ -5,20 +5,16 @@
  * @Author      : Abir MEDJERAB
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  *
- * @Name        : KernelDomainModelPackage
- * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-05-30
+ * @Name        : package-info
+ * @CreatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-06-11
  *
  * @Type        : PackageInfo
  * @Layer       : Kernel
  * @Module      : kernel
  * @Package     : dz.sh.hidra.kernel.domain.model
  *
- * @Description : Domain model contract package boundary.
- *
- * This package documents the Domain model contract package boundary.
- * Belongs here: Minimal generic aggregate, entity, and value-object contracts belong here.
- * Forbidden here: Persistence annotations, lifecycle hooks, base equality implementations, and business models are forbidden here.
+ * @Description : Declares generic domain model contracts.
  *
  */
 package dz.sh.hidra.kernel.domain.model;

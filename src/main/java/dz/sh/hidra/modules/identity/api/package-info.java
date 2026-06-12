@@ -5,20 +5,16 @@
  * @Author      : Abir MEDJERAB
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  *
- * @Name        : IdentityApiPackage
- * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-05-30
+ * @Name        : package-info
+ * @CreatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-06-11
  *
  * @Type        : PackageInfo
  * @Layer       : API
  * @Module      : identity
  * @Package     : dz.sh.hidra.modules.identity.api
  *
- * @Description : Identity API layer package boundary.
- *
- * This package documents the API layer boundary for identity-facing HTTP contracts and adapters.
- * Belongs here: REST API subpackages, request and response contract packages, REST mappers, and controller package boundaries belong here.
- * Forbidden here: Domain rules, persistence entities, JPA repositories, Spring Security filter-chain plumbing, password hashing implementation, and organization employee structures are forbidden here.
+ * @Description : Declares the architectural role of the dz.sh.hidra.modules.identity.api package.
  *
  */
 package dz.sh.hidra.modules.identity.api;

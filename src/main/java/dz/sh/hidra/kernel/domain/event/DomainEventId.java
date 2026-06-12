@@ -6,38 +6,58 @@
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  *
  * @Name        : DomainEventId
- * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-05-30
+ * @CreatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-06-11
  *
  * @Type        : Record
  * @Layer       : Kernel
  * @Module      : kernel
  * @Package     : dz.sh.hidra.kernel.domain.event
  *
- * @Description : Immutable identifier for generic domain events.
+ * @Description : Represents an immutable domain-event identifier.
  *
  */
 package dz.sh.hidra.kernel.domain.event;
 
-import dz.sh.hidra.kernel.domain.exception.InvalidValueObjectException;
 import dz.sh.hidra.kernel.domain.model.ValueObject;
+import dz.sh.hidra.kernel.exception.InvalidValueObjectException;
 
 import java.util.UUID;
 
+/**
+ * Immutable identifier for domain events.
+ *
+ * @param value non-blank event identifier value
+ */
 public record DomainEventId(String value) implements ValueObject {
 
     public DomainEventId {
-        if (value == null || value.isBlank()) {
-            throw new InvalidValueObjectException("DomainEventId must not be blank.");
-        }
-        value = value.trim();
+        value = requireText(value, "Domain event ID must not be null or blank.");
     }
 
+    /**
+     * Restores an event ID from text.
+     *
+     * @param value event identifier text
+     * @return domain event identifier
+     */
     public static DomainEventId of(String value) {
         return new DomainEventId(value);
     }
 
+    /**
+     * Generates a UUID-based event ID.
+     *
+     * @return new domain event identifier
+     */
     public static DomainEventId newId() {
         return new DomainEventId(UUID.randomUUID().toString());
+    }
+
+    private static String requireText(String value, String message) {
+        if (value == null || value.isBlank()) {
+            throw new InvalidValueObjectException(message);
+        }
+        return value.trim();
     }
 }

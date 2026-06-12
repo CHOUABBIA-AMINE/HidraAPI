@@ -5,20 +5,16 @@
  * @Author      : Abir MEDJERAB
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  *
- * @Name        : IdentityDomainPolicyPackage
- * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-05-30
+ * @Name        : package-info
+ * @CreatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-06-11
  *
  * @Type        : PackageInfo
  * @Layer       : Domain
  * @Module      : identity
  * @Package     : dz.sh.hidra.modules.identity.domain.policy
  *
- * @Description : Identity domain policy package boundary.
- *
- * This package documents where future identity policies will encode permission-code, permission-evaluation, role-assignment, and segregation-of-duties rules.
- * Belongs here: Domain policies that express identity business access rules belong here.
- * Forbidden here: Spring Security authorization configuration, HTTP access rules, persistence queries, application orchestration, organization-scoped workflow, and platform security filters are forbidden here.
+ * @Description : Declares the architectural role of the dz.sh.hidra.modules.identity.domain.policy package.
  *
  */
 package dz.sh.hidra.modules.identity.domain.policy;

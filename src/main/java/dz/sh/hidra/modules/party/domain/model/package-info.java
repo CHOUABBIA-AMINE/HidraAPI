@@ -14,7 +14,7 @@
  * @Module      : party
  * @Package     : dz.sh.hidra.modules.party.domain.model
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.party.domain.model package.
+ * @Description : Declares party domain entities and aggregates.
  *
  */
 package dz.sh.hidra.modules.party.domain.model;

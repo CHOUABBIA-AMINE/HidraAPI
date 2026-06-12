@@ -14,7 +14,7 @@
  * @Module      : party
  * @Package     : dz.sh.hidra.modules.party.api.rest
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.party.api.rest package.
+ * @Description : Declares party REST boundary package.
  *
  */
 package dz.sh.hidra.modules.party.api.rest;

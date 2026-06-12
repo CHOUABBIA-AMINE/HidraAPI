@@ -14,7 +14,7 @@
  * @Module      : party
  * @Package     : dz.sh.hidra.modules.party.infrastructure.integration
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.party.infrastructure.integration package.
+ * @Description : Declares party external master-data integration adapters.
  *
  */
 package dz.sh.hidra.modules.party.infrastructure.integration;

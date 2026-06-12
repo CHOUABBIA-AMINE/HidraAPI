@@ -14,7 +14,7 @@
  * @Module      : party
  * @Package     : dz.sh.hidra.modules.party.application.port
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.party.application.port package.
+ * @Description : Declares party application port package.
  *
  */
 package dz.sh.hidra.modules.party.application.port;

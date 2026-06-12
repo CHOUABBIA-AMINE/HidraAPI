@@ -1,0 +1,54 @@
+/**
+ *
+ * @Project     : HidraAPI
+ * @Product     : Hidra - Hydrocarbon Intelligence for Data, Risk, and Analytics
+ * @Author      : Abir MEDJERAB
+ * @Owner       : Sonatrach / TRC : Digitalization Initiative
+ *
+ * @Name        : JpaPartyBankReferenceRepositoryAdapter
+ * @CreatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-06-11
+ *
+ * @Type        : Adapter
+ * @Layer       : Infrastructure
+ * @Module      : party
+ * @Package     : dz.sh.hidra.modules.party.infrastructure.persistence.adapter
+ *
+ * @Description : Database-backed adapter for PartyBankReference.
+ *
+ */
+package dz.sh.hidra.modules.party.infrastructure.persistence.adapter;
+
+import dz.sh.hidra.modules.party.application.port.out.PartyBankReferenceRepositoryPort;
+import dz.sh.hidra.modules.party.domain.model.PartyBankReference;
+import dz.sh.hidra.modules.party.infrastructure.persistence.mapper.PartyPersistenceMapper;
+import dz.sh.hidra.modules.party.infrastructure.persistence.repository.PartyBankReferenceJpaRepository;
+import org.springframework.stereotype.Component;
+
+import java.util.Objects;
+import java.util.Optional;
+
+/**
+ * Database-backed repository adapter for PartyBankReference.
+ */
+@Component
+public class JpaPartyBankReferenceRepositoryAdapter implements PartyBankReferenceRepositoryPort {
+
+    private final PartyBankReferenceJpaRepository repository;
+
+    public JpaPartyBankReferenceRepositoryAdapter(PartyBankReferenceJpaRepository repository) {
+        this.repository = Objects.requireNonNull(repository, "PartyBankReferenceJpaRepository must not be null.");
+    }
+
+    @Override
+    public PartyBankReference save(PartyBankReference model) {
+        return PartyPersistenceMapper.toDomain(
+                repository.save(PartyPersistenceMapper.toEntity(model))
+        );
+    }
+
+    @Override
+    public Optional<PartyBankReference> findById(String id) {
+        return repository.findById(id).map(PartyPersistenceMapper::toDomain);
+    }
+}

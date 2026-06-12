@@ -14,7 +14,7 @@
  * @Module      : party
  * @Package     : dz.sh.hidra.modules.party.infrastructure
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.party.infrastructure package.
+ * @Description : Declares party infrastructure package.
  *
  */
 package dz.sh.hidra.modules.party.infrastructure;

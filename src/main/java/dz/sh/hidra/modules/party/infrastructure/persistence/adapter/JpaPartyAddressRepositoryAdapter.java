@@ -1,0 +1,54 @@
+/**
+ *
+ * @Project     : HidraAPI
+ * @Product     : Hidra - Hydrocarbon Intelligence for Data, Risk, and Analytics
+ * @Author      : Abir MEDJERAB
+ * @Owner       : Sonatrach / TRC : Digitalization Initiative
+ *
+ * @Name        : JpaPartyAddressRepositoryAdapter
+ * @CreatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-06-11
+ *
+ * @Type        : Adapter
+ * @Layer       : Infrastructure
+ * @Module      : party
+ * @Package     : dz.sh.hidra.modules.party.infrastructure.persistence.adapter
+ *
+ * @Description : Database-backed adapter for PartyAddress.
+ *
+ */
+package dz.sh.hidra.modules.party.infrastructure.persistence.adapter;
+
+import dz.sh.hidra.modules.party.application.port.out.PartyAddressRepositoryPort;
+import dz.sh.hidra.modules.party.domain.model.PartyAddress;
+import dz.sh.hidra.modules.party.infrastructure.persistence.mapper.PartyPersistenceMapper;
+import dz.sh.hidra.modules.party.infrastructure.persistence.repository.PartyAddressJpaRepository;
+import org.springframework.stereotype.Component;
+
+import java.util.Objects;
+import java.util.Optional;
+
+/**
+ * Database-backed repository adapter for PartyAddress.
+ */
+@Component
+public class JpaPartyAddressRepositoryAdapter implements PartyAddressRepositoryPort {
+
+    private final PartyAddressJpaRepository repository;
+
+    public JpaPartyAddressRepositoryAdapter(PartyAddressJpaRepository repository) {
+        this.repository = Objects.requireNonNull(repository, "PartyAddressJpaRepository must not be null.");
+    }
+
+    @Override
+    public PartyAddress save(PartyAddress model) {
+        return PartyPersistenceMapper.toDomain(
+                repository.save(PartyPersistenceMapper.toEntity(model))
+        );
+    }
+
+    @Override
+    public Optional<PartyAddress> findById(String id) {
+        return repository.findById(id).map(PartyPersistenceMapper::toDomain);
+    }
+}

@@ -14,7 +14,7 @@
  * @Module      : party
  * @Package     : dz.sh.hidra.modules.party.application.dto
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.party.application.dto package.
+ * @Description : Declares party application DTOs.
  *
  */
 package dz.sh.hidra.modules.party.application.dto;

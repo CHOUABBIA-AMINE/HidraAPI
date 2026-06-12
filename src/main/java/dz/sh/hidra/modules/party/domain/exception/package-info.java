@@ -14,7 +14,7 @@
  * @Module      : party
  * @Package     : dz.sh.hidra.modules.party.domain.exception
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.party.domain.exception package.
+ * @Description : Declares party domain exceptions.
  *
  */
 package dz.sh.hidra.modules.party.domain.exception;

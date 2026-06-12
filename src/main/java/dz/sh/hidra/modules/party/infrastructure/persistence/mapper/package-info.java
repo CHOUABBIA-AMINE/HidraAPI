@@ -14,7 +14,7 @@
  * @Module      : party
  * @Package     : dz.sh.hidra.modules.party.infrastructure.persistence.mapper
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.party.infrastructure.persistence.mapper package.
+ * @Description : Declares party persistence mappers.
  *
  */
 package dz.sh.hidra.modules.party.infrastructure.persistence.mapper;

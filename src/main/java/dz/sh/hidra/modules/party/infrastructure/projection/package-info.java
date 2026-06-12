@@ -14,7 +14,7 @@
  * @Module      : party
  * @Package     : dz.sh.hidra.modules.party.infrastructure.projection
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.party.infrastructure.projection package.
+ * @Description : Declares party read projections.
  *
  */
 package dz.sh.hidra.modules.party.infrastructure.projection;

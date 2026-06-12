@@ -14,7 +14,7 @@
  * @Module      : party
  * @Package     : dz.sh.hidra.modules.party.api.rest.controller
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.party.api.rest.controller package.
+ * @Description : Declares party REST controller contracts.
  *
  */
 package dz.sh.hidra.modules.party.api.rest.controller;

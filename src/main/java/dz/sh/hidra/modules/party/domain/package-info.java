@@ -14,7 +14,7 @@
  * @Module      : party
  * @Package     : dz.sh.hidra.modules.party.domain
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.party.domain package.
+ * @Description : Declares party domain package.
  *
  */
 package dz.sh.hidra.modules.party.domain;

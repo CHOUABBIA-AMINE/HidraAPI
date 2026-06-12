@@ -14,7 +14,7 @@
  * @Module      : party
  * @Package     : dz.sh.hidra.modules.party.infrastructure.persistence
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.party.infrastructure.persistence package.
+ * @Description : Declares party persistence package.
  *
  */
 package dz.sh.hidra.modules.party.infrastructure.persistence;

@@ -14,7 +14,7 @@
  * @Module      : party
  * @Package     : dz.sh.hidra.modules.party.infrastructure.messaging
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.party.infrastructure.messaging package.
+ * @Description : Declares party messaging adapters.
  *
  */
 package dz.sh.hidra.modules.party.infrastructure.messaging;

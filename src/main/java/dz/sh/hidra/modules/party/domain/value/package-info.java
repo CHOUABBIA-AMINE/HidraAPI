@@ -14,7 +14,7 @@
  * @Module      : party
  * @Package     : dz.sh.hidra.modules.party.domain.value
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.party.domain.value package.
+ * @Description : Declares party domain value objects and enums.
  *
  */
 package dz.sh.hidra.modules.party.domain.value;

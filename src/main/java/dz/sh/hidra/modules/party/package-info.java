@@ -14,7 +14,7 @@
  * @Module      : party
  * @Package     : dz.sh.hidra.modules.party
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.party package.
+ * @Description : Declares party module root package.
  *
  */
 package dz.sh.hidra.modules.party;

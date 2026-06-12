@@ -14,7 +14,7 @@
  * @Module      : party
  * @Package     : dz.sh.hidra.modules.party.application.service
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.party.application.service package.
+ * @Description : Declares party application services.
  *
  */
 package dz.sh.hidra.modules.party.application.service;

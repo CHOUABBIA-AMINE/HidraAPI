@@ -14,7 +14,7 @@
  * @Module      : party
  * @Package     : dz.sh.hidra.modules.party.application.query
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.party.application.query package.
+ * @Description : Declares party application queries.
  *
  */
 package dz.sh.hidra.modules.party.application.query;

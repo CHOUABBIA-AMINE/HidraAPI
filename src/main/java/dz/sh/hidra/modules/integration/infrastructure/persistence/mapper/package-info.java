@@ -14,7 +14,7 @@
  * @Module      : integration
  * @Package     : dz.sh.hidra.modules.integration.infrastructure.persistence.mapper
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.integration.infrastructure.persistence.mapper package.
+ * @Description : Declares integration persistence mappers.
  *
  */
 package dz.sh.hidra.modules.integration.infrastructure.persistence.mapper;

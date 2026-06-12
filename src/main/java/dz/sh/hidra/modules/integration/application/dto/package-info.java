@@ -14,7 +14,7 @@
  * @Module      : integration
  * @Package     : dz.sh.hidra.modules.integration.application.dto
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.integration.application.dto package.
+ * @Description : Declares integration application DTOs.
  *
  */
 package dz.sh.hidra.modules.integration.application.dto;

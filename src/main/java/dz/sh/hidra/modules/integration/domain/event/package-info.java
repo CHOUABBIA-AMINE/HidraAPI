@@ -14,7 +14,7 @@
  * @Module      : integration
  * @Package     : dz.sh.hidra.modules.integration.domain.event
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.integration.domain.event package.
+ * @Description : Declares integration domain events.
  *
  */
 package dz.sh.hidra.modules.integration.domain.event;

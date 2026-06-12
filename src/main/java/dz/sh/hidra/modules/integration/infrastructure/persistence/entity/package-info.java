@@ -14,7 +14,7 @@
  * @Module      : integration
  * @Package     : dz.sh.hidra.modules.integration.infrastructure.persistence.entity
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.integration.infrastructure.persistence.entity package.
+ * @Description : Declares integration JPA entities.
  *
  */
 package dz.sh.hidra.modules.integration.infrastructure.persistence.entity;

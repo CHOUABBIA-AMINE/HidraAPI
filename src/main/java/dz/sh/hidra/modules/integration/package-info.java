@@ -14,7 +14,7 @@
  * @Module      : integration
  * @Package     : dz.sh.hidra.modules.integration
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.integration package.
+ * @Description : Declares integration module root package.
  *
  */
 package dz.sh.hidra.modules.integration;

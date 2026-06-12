@@ -14,7 +14,7 @@
  * @Module      : integration
  * @Package     : dz.sh.hidra.modules.integration.domain.model
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.integration.domain.model package.
+ * @Description : Declares integration domain entities and aggregates.
  *
  */
 package dz.sh.hidra.modules.integration.domain.model;

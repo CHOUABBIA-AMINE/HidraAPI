@@ -14,7 +14,7 @@
  * @Module      : integration
  * @Package     : dz.sh.hidra.modules.integration.application.port.out
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.integration.application.port.out package.
+ * @Description : Declares integration outbound ports.
  *
  */
 package dz.sh.hidra.modules.integration.application.port.out;

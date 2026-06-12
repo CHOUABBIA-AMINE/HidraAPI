@@ -14,7 +14,7 @@
  * @Module      : integration
  * @Package     : dz.sh.hidra.modules.integration.infrastructure.configuration
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.integration.infrastructure.configuration package.
+ * @Description : Declares integration infrastructure configuration.
  *
  */
 package dz.sh.hidra.modules.integration.infrastructure.configuration;

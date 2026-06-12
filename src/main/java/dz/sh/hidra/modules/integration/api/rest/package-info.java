@@ -14,7 +14,7 @@
  * @Module      : integration
  * @Package     : dz.sh.hidra.modules.integration.api.rest
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.integration.api.rest package.
+ * @Description : Declares integration REST boundary package.
  *
  */
 package dz.sh.hidra.modules.integration.api.rest;

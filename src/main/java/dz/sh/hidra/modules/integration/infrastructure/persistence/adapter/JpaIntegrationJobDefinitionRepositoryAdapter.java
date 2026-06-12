@@ -1,0 +1,52 @@
+/**
+ *
+ * @Project     : HidraAPI
+ * @Product     : Hidra - Hydrocarbon Intelligence for Data, Risk, and Analytics
+ * @Author      : Abir MEDJERAB
+ * @Owner       : Sonatrach / TRC : Digitalization Initiative
+ *
+ * @Name        : JpaIntegrationJobDefinitionRepositoryAdapter
+ * @CreatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-06-11
+ *
+ * @Type        : Adapter
+ * @Layer       : Infrastructure
+ * @Module      : integration
+ * @Package     : dz.sh.hidra.modules.integration.infrastructure.persistence.adapter
+ *
+ * @Description : Database-backed adapter for IntegrationJobDefinition.
+ *
+ */
+package dz.sh.hidra.modules.integration.infrastructure.persistence.adapter;
+
+import dz.sh.hidra.modules.integration.application.port.out.IntegrationJobDefinitionRepositoryPort;
+import dz.sh.hidra.modules.integration.domain.model.IntegrationJobDefinition;
+import dz.sh.hidra.modules.integration.infrastructure.persistence.mapper.IntegrationPersistenceMapper;
+import dz.sh.hidra.modules.integration.infrastructure.persistence.repository.IntegrationJobDefinitionJpaRepository;
+import org.springframework.stereotype.Component;
+
+import java.util.Objects;
+import java.util.Optional;
+
+/**
+ * Database-backed repository adapter for IntegrationJobDefinition.
+ */
+@Component
+public class JpaIntegrationJobDefinitionRepositoryAdapter implements IntegrationJobDefinitionRepositoryPort {
+
+    private final IntegrationJobDefinitionJpaRepository repository;
+
+    public JpaIntegrationJobDefinitionRepositoryAdapter(IntegrationJobDefinitionJpaRepository repository) {
+        this.repository = Objects.requireNonNull(repository, "IntegrationJobDefinitionJpaRepository must not be null.");
+    }
+
+    @Override
+    public IntegrationJobDefinition save(IntegrationJobDefinition model) {
+        return IntegrationPersistenceMapper.toDomain(repository.save(IntegrationPersistenceMapper.toEntity(model)));
+    }
+
+    @Override
+    public Optional<IntegrationJobDefinition> findById(String id) {
+        return repository.findById(id).map(IntegrationPersistenceMapper::toDomain);
+    }
+}

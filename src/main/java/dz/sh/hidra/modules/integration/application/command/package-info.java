@@ -14,7 +14,7 @@
  * @Module      : integration
  * @Package     : dz.sh.hidra.modules.integration.application.command
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.integration.application.command package.
+ * @Description : Declares integration application commands.
  *
  */
 package dz.sh.hidra.modules.integration.application.command;

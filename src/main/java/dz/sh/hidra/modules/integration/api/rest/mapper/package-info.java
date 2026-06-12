@@ -14,7 +14,7 @@
  * @Module      : integration
  * @Package     : dz.sh.hidra.modules.integration.api.rest.mapper
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.integration.api.rest.mapper package.
+ * @Description : Declares integration REST mappers.
  *
  */
 package dz.sh.hidra.modules.integration.api.rest.mapper;

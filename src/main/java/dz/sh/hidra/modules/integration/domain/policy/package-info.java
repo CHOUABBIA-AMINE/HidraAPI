@@ -14,7 +14,7 @@
  * @Module      : integration
  * @Package     : dz.sh.hidra.modules.integration.domain.policy
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.integration.domain.policy package.
+ * @Description : Declares integration domain policy helpers.
  *
  */
 package dz.sh.hidra.modules.integration.domain.policy;

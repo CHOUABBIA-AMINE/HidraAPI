@@ -14,7 +14,7 @@
  * @Module      : integration
  * @Package     : dz.sh.hidra.modules.integration.api.rest.response
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.integration.api.rest.response package.
+ * @Description : Declares integration REST response models.
  *
  */
 package dz.sh.hidra.modules.integration.api.rest.response;

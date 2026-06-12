@@ -14,7 +14,7 @@
  * @Module      : integration
  * @Package     : dz.sh.hidra.modules.integration.infrastructure.persistence
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.integration.infrastructure.persistence package.
+ * @Description : Declares integration persistence package.
  *
  */
 package dz.sh.hidra.modules.integration.infrastructure.persistence;

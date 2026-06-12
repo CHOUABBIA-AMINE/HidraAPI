@@ -14,7 +14,7 @@
  * @Module      : integration
  * @Package     : dz.sh.hidra.modules.integration.application.port
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.integration.application.port package.
+ * @Description : Declares integration application port package.
  *
  */
 package dz.sh.hidra.modules.integration.application.port;

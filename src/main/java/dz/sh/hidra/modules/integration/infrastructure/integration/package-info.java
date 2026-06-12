@@ -14,7 +14,7 @@
  * @Module      : integration
  * @Package     : dz.sh.hidra.modules.integration.infrastructure.integration
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.integration.infrastructure.integration package.
+ * @Description : Declares integration connector adapters.
  *
  */
 package dz.sh.hidra.modules.integration.infrastructure.integration;

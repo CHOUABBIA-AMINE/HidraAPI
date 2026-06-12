@@ -14,7 +14,7 @@
  * @Module      : audit
  * @Package     : dz.sh.hidra.modules.audit.domain.exception
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.audit.domain.exception package.
+ * @Description : Declares audit domain exceptions.
  *
  */
 package dz.sh.hidra.modules.audit.domain.exception;

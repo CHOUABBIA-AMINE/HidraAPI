@@ -14,7 +14,7 @@
  * @Module      : audit
  * @Package     : dz.sh.hidra.modules.audit.application.mapper
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.audit.application.mapper package.
+ * @Description : Declares audit application mappers.
  *
  */
 package dz.sh.hidra.modules.audit.application.mapper;

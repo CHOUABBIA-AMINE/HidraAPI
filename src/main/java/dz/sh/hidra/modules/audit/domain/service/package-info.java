@@ -14,7 +14,7 @@
  * @Module      : audit
  * @Package     : dz.sh.hidra.modules.audit.domain.service
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.audit.domain.service package.
+ * @Description : Declares audit domain services.
  *
  */
 package dz.sh.hidra.modules.audit.domain.service;

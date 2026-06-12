@@ -14,7 +14,7 @@
  * @Module      : audit
  * @Package     : dz.sh.hidra.modules.audit.domain.model
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.audit.domain.model package.
+ * @Description : Declares audit domain entities and aggregates.
  *
  */
 package dz.sh.hidra.modules.audit.domain.model;

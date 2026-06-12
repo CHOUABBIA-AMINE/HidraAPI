@@ -14,7 +14,7 @@
  * @Module      : audit
  * @Package     : dz.sh.hidra.modules.audit.api
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.audit.api package.
+ * @Description : Declares audit API boundary package.
  *
  */
 package dz.sh.hidra.modules.audit.api;

@@ -14,7 +14,7 @@
  * @Module      : audit
  * @Package     : dz.sh.hidra.modules.audit.application.port
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.audit.application.port package.
+ * @Description : Declares audit application port package.
  *
  */
 package dz.sh.hidra.modules.audit.application.port;

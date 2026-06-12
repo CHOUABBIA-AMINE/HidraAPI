@@ -14,7 +14,7 @@
  * @Module      : audit
  * @Package     : dz.sh.hidra.modules.audit.api.rest.response
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.audit.api.rest.response package.
+ * @Description : Declares audit REST response models.
  *
  */
 package dz.sh.hidra.modules.audit.api.rest.response;

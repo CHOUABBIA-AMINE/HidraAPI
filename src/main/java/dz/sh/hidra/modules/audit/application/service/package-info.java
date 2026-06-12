@@ -14,7 +14,7 @@
  * @Module      : audit
  * @Package     : dz.sh.hidra.modules.audit.application.service
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.audit.application.service package.
+ * @Description : Declares audit application services.
  *
  */
 package dz.sh.hidra.modules.audit.application.service;

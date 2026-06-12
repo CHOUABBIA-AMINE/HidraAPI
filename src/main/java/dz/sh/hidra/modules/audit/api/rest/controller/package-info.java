@@ -14,7 +14,7 @@
  * @Module      : audit
  * @Package     : dz.sh.hidra.modules.audit.api.rest.controller
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.audit.api.rest.controller package.
+ * @Description : Declares audit REST controller contracts.
  *
  */
 package dz.sh.hidra.modules.audit.api.rest.controller;

@@ -14,7 +14,7 @@
  * @Module      : audit
  * @Package     : dz.sh.hidra.modules.audit.infrastructure.messaging
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.audit.infrastructure.messaging package.
+ * @Description : Declares audit messaging adapters.
  *
  */
 package dz.sh.hidra.modules.audit.infrastructure.messaging;

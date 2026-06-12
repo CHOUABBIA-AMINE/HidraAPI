@@ -14,7 +14,7 @@
  * @Module      : audit
  * @Package     : dz.sh.hidra.modules.audit.application.query
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.audit.application.query package.
+ * @Description : Declares audit application queries.
  *
  */
 package dz.sh.hidra.modules.audit.application.query;

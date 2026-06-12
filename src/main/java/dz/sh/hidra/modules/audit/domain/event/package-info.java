@@ -14,7 +14,7 @@
  * @Module      : audit
  * @Package     : dz.sh.hidra.modules.audit.domain.event
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.audit.domain.event package.
+ * @Description : Declares audit domain events.
  *
  */
 package dz.sh.hidra.modules.audit.domain.event;

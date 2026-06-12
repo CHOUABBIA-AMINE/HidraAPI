@@ -14,7 +14,7 @@
  * @Module      : audit
  * @Package     : dz.sh.hidra.modules.audit.infrastructure.integration
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.audit.infrastructure.integration package.
+ * @Description : Declares audit integration adapters.
  *
  */
 package dz.sh.hidra.modules.audit.infrastructure.integration;

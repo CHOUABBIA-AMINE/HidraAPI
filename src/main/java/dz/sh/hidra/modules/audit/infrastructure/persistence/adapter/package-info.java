@@ -14,7 +14,7 @@
  * @Module      : audit
  * @Package     : dz.sh.hidra.modules.audit.infrastructure.persistence.adapter
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.audit.infrastructure.persistence.adapter package.
+ * @Description : Declares audit persistence adapters.
  *
  */
 package dz.sh.hidra.modules.audit.infrastructure.persistence.adapter;

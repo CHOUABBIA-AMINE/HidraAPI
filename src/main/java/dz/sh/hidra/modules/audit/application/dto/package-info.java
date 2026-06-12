@@ -14,7 +14,7 @@
  * @Module      : audit
  * @Package     : dz.sh.hidra.modules.audit.application.dto
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.audit.application.dto package.
+ * @Description : Declares audit application DTOs.
  *
  */
 package dz.sh.hidra.modules.audit.application.dto;

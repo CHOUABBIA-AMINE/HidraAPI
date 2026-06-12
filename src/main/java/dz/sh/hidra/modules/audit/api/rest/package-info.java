@@ -14,7 +14,7 @@
  * @Module      : audit
  * @Package     : dz.sh.hidra.modules.audit.api.rest
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.audit.api.rest package.
+ * @Description : Declares audit REST boundary package.
  *
  */
 package dz.sh.hidra.modules.audit.api.rest;

@@ -14,7 +14,7 @@
  * @Module      : audit
  * @Package     : dz.sh.hidra.modules.audit.application.port.out
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.audit.application.port.out package.
+ * @Description : Declares audit outbound persistence ports.
  *
  */
 package dz.sh.hidra.modules.audit.application.port.out;

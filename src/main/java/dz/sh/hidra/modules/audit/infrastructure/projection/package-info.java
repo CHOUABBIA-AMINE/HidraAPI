@@ -14,7 +14,7 @@
  * @Module      : audit
  * @Package     : dz.sh.hidra.modules.audit.infrastructure.projection
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.audit.infrastructure.projection package.
+ * @Description : Declares audit read projections.
  *
  */
 package dz.sh.hidra.modules.audit.infrastructure.projection;

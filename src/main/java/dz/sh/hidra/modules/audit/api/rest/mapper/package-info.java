@@ -14,7 +14,7 @@
  * @Module      : audit
  * @Package     : dz.sh.hidra.modules.audit.api.rest.mapper
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.audit.api.rest.mapper package.
+ * @Description : Declares audit REST mappers.
  *
  */
 package dz.sh.hidra.modules.audit.api.rest.mapper;

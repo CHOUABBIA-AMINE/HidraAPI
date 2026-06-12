@@ -14,7 +14,7 @@
  * @Module      : audit
  * @Package     : dz.sh.hidra.modules.audit.infrastructure.persistence.mapper
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.audit.infrastructure.persistence.mapper package.
+ * @Description : Declares audit persistence mappers.
  *
  */
 package dz.sh.hidra.modules.audit.infrastructure.persistence.mapper;

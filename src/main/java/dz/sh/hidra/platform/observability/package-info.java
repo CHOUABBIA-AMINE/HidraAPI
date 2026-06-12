@@ -6,7 +6,7 @@
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  *
  * @Name        : package-info
- * @CreatedOn   : 2026-06-11
+ * @CreatedOn   : 2025-06-26
  * @UpdatedOn   : 2026-06-11
  *
  * @Type        : PackageInfo
@@ -14,7 +14,7 @@
  * @Module      : platform
  * @Package     : dz.sh.hidra.platform.observability
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.platform.observability package.
+ * @Description : Declares observability, logging, correlation, and masking helpers.
  *
  */
 package dz.sh.hidra.platform.observability;

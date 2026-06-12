@@ -5,16 +5,28 @@
  * @Author      : Abir MEDJERAB
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  *
- * @Name        : package-info
+ * @Name        : PlatformModule
  * @CreatedOn   : 2025-06-26
  * @UpdatedOn   : 2026-06-11
  *
- * @Type        : PackageInfo
+ * @Type        : Utility
  * @Layer       : Platform
  * @Module      : platform
  * @Package     : dz.sh.hidra.platform
  *
- * @Description : Declares the technical platform module root package.
+ * @Description : Defines platform module constants.
  *
  */
 package dz.sh.hidra.platform;
+
+/**
+ * Technical platform module constants.
+ */
+public final class PlatformModule {
+
+    public static final String MODULE_NAME = "platform";
+
+    private PlatformModule() {
+        throw new UnsupportedOperationException("Utility class must not be instantiated.");
+    }
+}

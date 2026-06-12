@@ -5,16 +5,28 @@
  * @Author      : Abir MEDJERAB
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  *
- * @Name        : package-info
+ * @Name        : TransactionExecutor
  * @CreatedOn   : 2025-06-26
  * @UpdatedOn   : 2026-06-11
  *
- * @Type        : PackageInfo
+ * @Type        : Interface
  * @Layer       : Platform
  * @Module      : platform
  * @Package     : dz.sh.hidra.platform.persistence
  *
- * @Description : Declares technical persistence conventions and metadata.
+ * @Description : Defines a framework-neutral transaction execution contract.
  *
  */
 package dz.sh.hidra.platform.persistence;
+
+import java.util.function.Supplier;
+
+/**
+ * Framework-neutral transaction execution contract.
+ */
+public interface TransactionExecutor {
+
+    <T> T execute(Supplier<T> action);
+
+    void execute(Runnable action);
+}

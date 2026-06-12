@@ -14,7 +14,7 @@
  * @Module      : telemetry
  * @Package     : dz.sh.hidra.modules.telemetry.application.port
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.telemetry.application.port package.
+ * @Description : Declares telemetry application port package.
  *
  */
 package dz.sh.hidra.modules.telemetry.application.port;

@@ -14,7 +14,7 @@
  * @Module      : telemetry
  * @Package     : dz.sh.hidra.modules.telemetry.domain.service
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.telemetry.domain.service package.
+ * @Description : Declares telemetry domain services.
  *
  */
 package dz.sh.hidra.modules.telemetry.domain.service;

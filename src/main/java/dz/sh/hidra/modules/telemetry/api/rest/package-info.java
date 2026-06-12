@@ -14,7 +14,7 @@
  * @Module      : telemetry
  * @Package     : dz.sh.hidra.modules.telemetry.api.rest
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.telemetry.api.rest package.
+ * @Description : Declares telemetry REST boundary package.
  *
  */
 package dz.sh.hidra.modules.telemetry.api.rest;

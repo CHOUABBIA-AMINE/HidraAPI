@@ -14,7 +14,7 @@
  * @Module      : telemetry
  * @Package     : dz.sh.hidra.modules.telemetry.infrastructure.persistence
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.telemetry.infrastructure.persistence package.
+ * @Description : Declares telemetry persistence package.
  *
  */
 package dz.sh.hidra.modules.telemetry.infrastructure.persistence;

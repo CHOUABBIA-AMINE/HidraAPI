@@ -14,7 +14,7 @@
  * @Module      : telemetry
  * @Package     : dz.sh.hidra.modules.telemetry.infrastructure.projection
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.telemetry.infrastructure.projection package.
+ * @Description : Declares telemetry read projections.
  *
  */
 package dz.sh.hidra.modules.telemetry.infrastructure.projection;

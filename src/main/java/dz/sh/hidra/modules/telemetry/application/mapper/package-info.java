@@ -14,7 +14,7 @@
  * @Module      : telemetry
  * @Package     : dz.sh.hidra.modules.telemetry.application.mapper
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.telemetry.application.mapper package.
+ * @Description : Declares telemetry application mappers.
  *
  */
 package dz.sh.hidra.modules.telemetry.application.mapper;

@@ -14,7 +14,7 @@
  * @Module      : telemetry
  * @Package     : dz.sh.hidra.modules.telemetry.application.port.out
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.telemetry.application.port.out package.
+ * @Description : Declares telemetry outbound persistence ports.
  *
  */
 package dz.sh.hidra.modules.telemetry.application.port.out;

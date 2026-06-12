@@ -14,7 +14,7 @@
  * @Module      : telemetry
  * @Package     : dz.sh.hidra.modules.telemetry.infrastructure.persistence.entity
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.telemetry.infrastructure.persistence.entity package.
+ * @Description : Declares telemetry JPA entities.
  *
  */
 package dz.sh.hidra.modules.telemetry.infrastructure.persistence.entity;

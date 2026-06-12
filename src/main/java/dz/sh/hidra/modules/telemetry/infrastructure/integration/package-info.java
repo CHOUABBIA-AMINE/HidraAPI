@@ -14,7 +14,7 @@
  * @Module      : telemetry
  * @Package     : dz.sh.hidra.modules.telemetry.infrastructure.integration
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.telemetry.infrastructure.integration package.
+ * @Description : Declares telemetry acquisition/integration adapters.
  *
  */
 package dz.sh.hidra.modules.telemetry.infrastructure.integration;

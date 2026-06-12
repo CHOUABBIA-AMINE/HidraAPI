@@ -14,7 +14,7 @@
  * @Module      : telemetry
  * @Package     : dz.sh.hidra.modules.telemetry.domain.model
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.telemetry.domain.model package.
+ * @Description : Declares telemetry domain entities and aggregates.
  *
  */
 package dz.sh.hidra.modules.telemetry.domain.model;

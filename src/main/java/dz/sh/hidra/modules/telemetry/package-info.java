@@ -14,7 +14,7 @@
  * @Module      : telemetry
  * @Package     : dz.sh.hidra.modules.telemetry
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.telemetry package.
+ * @Description : Declares telemetry module root package.
  *
  */
 package dz.sh.hidra.modules.telemetry;

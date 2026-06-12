@@ -14,7 +14,7 @@
  * @Module      : telemetry
  * @Package     : dz.sh.hidra.modules.telemetry.api
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.telemetry.api package.
+ * @Description : Declares telemetry API boundary package.
  *
  */
 package dz.sh.hidra.modules.telemetry.api;

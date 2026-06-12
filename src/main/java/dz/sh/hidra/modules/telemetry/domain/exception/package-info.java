@@ -14,7 +14,7 @@
  * @Module      : telemetry
  * @Package     : dz.sh.hidra.modules.telemetry.domain.exception
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.telemetry.domain.exception package.
+ * @Description : Declares telemetry domain exceptions.
  *
  */
 package dz.sh.hidra.modules.telemetry.domain.exception;

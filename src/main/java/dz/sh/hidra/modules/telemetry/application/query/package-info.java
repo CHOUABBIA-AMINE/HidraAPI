@@ -14,7 +14,7 @@
  * @Module      : telemetry
  * @Package     : dz.sh.hidra.modules.telemetry.application.query
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.telemetry.application.query package.
+ * @Description : Declares telemetry application queries.
  *
  */
 package dz.sh.hidra.modules.telemetry.application.query;

@@ -14,7 +14,7 @@
  * @Module      : telemetry
  * @Package     : dz.sh.hidra.modules.telemetry.domain.value
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.telemetry.domain.value package.
+ * @Description : Declares telemetry domain value objects and enums.
  *
  */
 package dz.sh.hidra.modules.telemetry.domain.value;

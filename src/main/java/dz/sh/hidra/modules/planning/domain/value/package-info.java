@@ -14,7 +14,7 @@
  * @Module      : planning
  * @Package     : dz.sh.hidra.modules.planning.domain.value
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.planning.domain.value package.
+ * @Description : Declares planning domain value objects and enums.
  *
  */
 package dz.sh.hidra.modules.planning.domain.value;

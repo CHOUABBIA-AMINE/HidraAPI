@@ -14,7 +14,7 @@
  * @Module      : planning
  * @Package     : dz.sh.hidra.modules.planning.api
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.planning.api package.
+ * @Description : Declares planning API boundary package.
  *
  */
 package dz.sh.hidra.modules.planning.api;

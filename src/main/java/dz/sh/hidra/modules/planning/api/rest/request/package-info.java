@@ -14,7 +14,7 @@
  * @Module      : planning
  * @Package     : dz.sh.hidra.modules.planning.api.rest.request
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.planning.api.rest.request package.
+ * @Description : Declares planning REST request models.
  *
  */
 package dz.sh.hidra.modules.planning.api.rest.request;

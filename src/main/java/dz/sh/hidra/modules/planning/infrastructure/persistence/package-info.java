@@ -14,7 +14,7 @@
  * @Module      : planning
  * @Package     : dz.sh.hidra.modules.planning.infrastructure.persistence
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.planning.infrastructure.persistence package.
+ * @Description : Declares planning persistence package.
  *
  */
 package dz.sh.hidra.modules.planning.infrastructure.persistence;

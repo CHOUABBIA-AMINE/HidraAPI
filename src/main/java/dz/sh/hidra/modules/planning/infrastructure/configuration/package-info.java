@@ -14,7 +14,7 @@
  * @Module      : planning
  * @Package     : dz.sh.hidra.modules.planning.infrastructure.configuration
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.planning.infrastructure.configuration package.
+ * @Description : Declares planning infrastructure configuration.
  *
  */
 package dz.sh.hidra.modules.planning.infrastructure.configuration;

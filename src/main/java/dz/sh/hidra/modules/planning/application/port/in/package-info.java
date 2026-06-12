@@ -14,7 +14,7 @@
  * @Module      : planning
  * @Package     : dz.sh.hidra.modules.planning.application.port.in
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.planning.application.port.in package.
+ * @Description : Declares planning inbound use-case ports.
  *
  */
 package dz.sh.hidra.modules.planning.application.port.in;

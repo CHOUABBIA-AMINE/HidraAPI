@@ -14,7 +14,7 @@
  * @Module      : planning
  * @Package     : dz.sh.hidra.modules.planning.infrastructure.integration
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.planning.infrastructure.integration package.
+ * @Description : Declares planning integration adapters.
  *
  */
 package dz.sh.hidra.modules.planning.infrastructure.integration;

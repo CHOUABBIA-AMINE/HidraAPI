@@ -1,0 +1,27 @@
+/**
+ *
+ * @Project     : HidraAPI
+ * @Product     : Hidra - Hydrocarbon Intelligence for Data, Risk, and Analytics
+ * @Author      : Abir MEDJERAB
+ * @Owner       : Sonatrach / TRC : Digitalization Initiative
+ *
+ * @Name        : ConstraintStatus
+ * @CreatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-06-11
+ *
+ * @Type        : Enum
+ * @Layer       : Domain
+ * @Module      : planning
+ * @Package     : dz.sh.hidra.modules.planning.domain.value
+ *
+ * @Description : Defines ConstraintStatus values.
+ *
+ */
+package dz.sh.hidra.modules.planning.domain.value;
+
+/**
+ * Defines ConstraintStatus values.
+ */
+public enum ConstraintStatus {
+    ACTIVE, WAIVED, RESOLVED, CANCELLED
+}

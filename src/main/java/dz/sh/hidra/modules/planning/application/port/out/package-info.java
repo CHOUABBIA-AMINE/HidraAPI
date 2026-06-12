@@ -14,7 +14,7 @@
  * @Module      : planning
  * @Package     : dz.sh.hidra.modules.planning.application.port.out
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.planning.application.port.out package.
+ * @Description : Declares planning outbound persistence ports.
  *
  */
 package dz.sh.hidra.modules.planning.application.port.out;

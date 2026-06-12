@@ -14,7 +14,7 @@
  * @Module      : planning
  * @Package     : dz.sh.hidra.modules.planning.application.query
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.planning.application.query package.
+ * @Description : Declares planning application queries.
  *
  */
 package dz.sh.hidra.modules.planning.application.query;

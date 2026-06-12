@@ -14,7 +14,7 @@
  * @Module      : planning
  * @Package     : dz.sh.hidra.modules.planning.application.mapper
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.planning.application.mapper package.
+ * @Description : Declares planning application mappers.
  *
  */
 package dz.sh.hidra.modules.planning.application.mapper;

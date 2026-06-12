@@ -14,7 +14,7 @@
  * @Module      : planning
  * @Package     : dz.sh.hidra.modules.planning.application.port
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.planning.application.port package.
+ * @Description : Declares planning application port package.
  *
  */
 package dz.sh.hidra.modules.planning.application.port;

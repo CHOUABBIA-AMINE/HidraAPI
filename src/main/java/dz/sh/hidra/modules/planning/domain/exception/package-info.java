@@ -14,7 +14,7 @@
  * @Module      : planning
  * @Package     : dz.sh.hidra.modules.planning.domain.exception
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.planning.domain.exception package.
+ * @Description : Declares planning domain exceptions.
  *
  */
 package dz.sh.hidra.modules.planning.domain.exception;

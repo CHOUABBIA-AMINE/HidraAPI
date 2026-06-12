@@ -14,7 +14,7 @@
  * @Module      : planning
  * @Package     : dz.sh.hidra.modules.planning.api.rest.mapper
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.planning.api.rest.mapper package.
+ * @Description : Declares planning REST mappers.
  *
  */
 package dz.sh.hidra.modules.planning.api.rest.mapper;

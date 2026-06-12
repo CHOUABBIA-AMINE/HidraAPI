@@ -14,7 +14,7 @@
  * @Module      : planning
  * @Package     : dz.sh.hidra.modules.planning.domain.event
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.planning.domain.event package.
+ * @Description : Declares planning domain events.
  *
  */
 package dz.sh.hidra.modules.planning.domain.event;

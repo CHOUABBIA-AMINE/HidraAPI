@@ -14,7 +14,7 @@
  * @Module      : planning
  * @Package     : dz.sh.hidra.modules.planning.domain.model
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.planning.domain.model package.
+ * @Description : Declares planning domain entities and aggregates.
  *
  */
 package dz.sh.hidra.modules.planning.domain.model;

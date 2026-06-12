@@ -14,7 +14,7 @@
  * @Module      : planning
  * @Package     : dz.sh.hidra.modules.planning.application
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.planning.application package.
+ * @Description : Declares planning application layer package.
  *
  */
 package dz.sh.hidra.modules.planning.application;

@@ -14,7 +14,7 @@
  * @Module      : planning
  * @Package     : dz.sh.hidra.modules.planning.infrastructure.persistence.mapper
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.planning.infrastructure.persistence.mapper package.
+ * @Description : Declares planning persistence mappers.
  *
  */
 package dz.sh.hidra.modules.planning.infrastructure.persistence.mapper;

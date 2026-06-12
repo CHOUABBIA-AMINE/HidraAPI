@@ -14,7 +14,7 @@
  * @Module      : planning
  * @Package     : dz.sh.hidra.modules.planning.infrastructure.projection
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.planning.infrastructure.projection package.
+ * @Description : Declares planning read projections.
  *
  */
 package dz.sh.hidra.modules.planning.infrastructure.projection;

@@ -14,7 +14,7 @@
  * @Module      : planning
  * @Package     : dz.sh.hidra.modules.planning.infrastructure.messaging
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.planning.infrastructure.messaging package.
+ * @Description : Declares planning messaging adapters.
  *
  */
 package dz.sh.hidra.modules.planning.infrastructure.messaging;

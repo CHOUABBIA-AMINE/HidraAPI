@@ -14,7 +14,7 @@
  * @Module      : documents
  * @Package     : dz.sh.hidra.modules.documents.api.rest.controller
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.documents.api.rest.controller package.
+ * @Description : Declares documents REST controller contracts.
  *
  */
 package dz.sh.hidra.modules.documents.api.rest.controller;

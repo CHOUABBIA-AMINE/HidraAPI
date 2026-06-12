@@ -14,7 +14,7 @@
  * @Module      : documents
  * @Package     : dz.sh.hidra.modules.documents.infrastructure.projection
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.documents.infrastructure.projection package.
+ * @Description : Declares documents read projections.
  *
  */
 package dz.sh.hidra.modules.documents.infrastructure.projection;

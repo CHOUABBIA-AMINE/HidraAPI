@@ -14,7 +14,7 @@
  * @Module      : documents
  * @Package     : dz.sh.hidra.modules.documents.api.rest.mapper
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.documents.api.rest.mapper package.
+ * @Description : Declares documents REST mappers.
  *
  */
 package dz.sh.hidra.modules.documents.api.rest.mapper;

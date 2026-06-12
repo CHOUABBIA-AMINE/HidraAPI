@@ -14,7 +14,7 @@
  * @Module      : documents
  * @Package     : dz.sh.hidra.modules.documents.application.port
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.documents.application.port package.
+ * @Description : Declares documents application port package.
  *
  */
 package dz.sh.hidra.modules.documents.application.port;

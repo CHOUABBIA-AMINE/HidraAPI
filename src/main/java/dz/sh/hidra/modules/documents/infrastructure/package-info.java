@@ -14,7 +14,7 @@
  * @Module      : documents
  * @Package     : dz.sh.hidra.modules.documents.infrastructure
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.documents.infrastructure package.
+ * @Description : Declares documents infrastructure package.
  *
  */
 package dz.sh.hidra.modules.documents.infrastructure;

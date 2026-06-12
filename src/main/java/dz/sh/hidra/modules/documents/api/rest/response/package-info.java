@@ -14,7 +14,7 @@
  * @Module      : documents
  * @Package     : dz.sh.hidra.modules.documents.api.rest.response
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.documents.api.rest.response package.
+ * @Description : Declares documents REST response models.
  *
  */
 package dz.sh.hidra.modules.documents.api.rest.response;

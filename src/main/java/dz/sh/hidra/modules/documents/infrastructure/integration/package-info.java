@@ -14,7 +14,7 @@
  * @Module      : documents
  * @Package     : dz.sh.hidra.modules.documents.infrastructure.integration
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.documents.infrastructure.integration package.
+ * @Description : Declares documents integration adapters.
  *
  */
 package dz.sh.hidra.modules.documents.infrastructure.integration;

@@ -14,7 +14,7 @@
  * @Module      : documents
  * @Package     : dz.sh.hidra.modules.documents.infrastructure.messaging
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.documents.infrastructure.messaging package.
+ * @Description : Declares documents messaging adapters.
  *
  */
 package dz.sh.hidra.modules.documents.infrastructure.messaging;

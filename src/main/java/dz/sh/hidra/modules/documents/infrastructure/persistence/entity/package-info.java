@@ -14,7 +14,7 @@
  * @Module      : documents
  * @Package     : dz.sh.hidra.modules.documents.infrastructure.persistence.entity
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.documents.infrastructure.persistence.entity package.
+ * @Description : Declares documents JPA entities.
  *
  */
 package dz.sh.hidra.modules.documents.infrastructure.persistence.entity;

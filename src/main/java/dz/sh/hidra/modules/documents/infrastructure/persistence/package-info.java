@@ -14,7 +14,7 @@
  * @Module      : documents
  * @Package     : dz.sh.hidra.modules.documents.infrastructure.persistence
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.documents.infrastructure.persistence package.
+ * @Description : Declares documents persistence package.
  *
  */
 package dz.sh.hidra.modules.documents.infrastructure.persistence;

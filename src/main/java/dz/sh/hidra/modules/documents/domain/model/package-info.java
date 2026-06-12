@@ -14,7 +14,7 @@
  * @Module      : documents
  * @Package     : dz.sh.hidra.modules.documents.domain.model
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.documents.domain.model package.
+ * @Description : Declares documents domain entities and aggregates.
  *
  */
 package dz.sh.hidra.modules.documents.domain.model;

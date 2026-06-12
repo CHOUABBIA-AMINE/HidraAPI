@@ -14,7 +14,7 @@
  * @Module      : documents
  * @Package     : dz.sh.hidra.modules.documents.domain.exception
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.documents.domain.exception package.
+ * @Description : Declares documents domain exceptions.
  *
  */
 package dz.sh.hidra.modules.documents.domain.exception;

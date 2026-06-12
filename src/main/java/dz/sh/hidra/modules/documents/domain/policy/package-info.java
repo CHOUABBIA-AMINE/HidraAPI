@@ -14,7 +14,7 @@
  * @Module      : documents
  * @Package     : dz.sh.hidra.modules.documents.domain.policy
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.documents.domain.policy package.
+ * @Description : Declares documents domain policy helpers.
  *
  */
 package dz.sh.hidra.modules.documents.domain.policy;

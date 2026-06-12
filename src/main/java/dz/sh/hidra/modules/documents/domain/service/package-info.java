@@ -14,7 +14,7 @@
  * @Module      : documents
  * @Package     : dz.sh.hidra.modules.documents.domain.service
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.documents.domain.service package.
+ * @Description : Declares documents domain services.
  *
  */
 package dz.sh.hidra.modules.documents.domain.service;

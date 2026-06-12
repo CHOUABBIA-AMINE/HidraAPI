@@ -14,7 +14,7 @@
  * @Module      : documents
  * @Package     : dz.sh.hidra.modules.documents.application.port.in
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.documents.application.port.in package.
+ * @Description : Declares documents inbound use-case ports.
  *
  */
 package dz.sh.hidra.modules.documents.application.port.in;

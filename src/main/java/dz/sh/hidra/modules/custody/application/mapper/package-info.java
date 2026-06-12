@@ -14,7 +14,7 @@
  * @Module      : custody
  * @Package     : dz.sh.hidra.modules.custody.application.mapper
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.custody.application.mapper package.
+ * @Description : Declares custody application mappers.
  *
  */
 package dz.sh.hidra.modules.custody.application.mapper;

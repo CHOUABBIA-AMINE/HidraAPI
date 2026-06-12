@@ -14,7 +14,7 @@
  * @Module      : custody
  * @Package     : dz.sh.hidra.modules.custody.application.port.out
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.custody.application.port.out package.
+ * @Description : Declares custody outbound persistence ports.
  *
  */
 package dz.sh.hidra.modules.custody.application.port.out;

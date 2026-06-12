@@ -14,7 +14,7 @@
  * @Module      : assets
  * @Package     : dz.sh.hidra.modules.assets.infrastructure.configuration
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.assets.infrastructure.configuration package.
+ * @Description : Declares assets infrastructure configuration.
  *
  */
 package dz.sh.hidra.modules.assets.infrastructure.configuration;

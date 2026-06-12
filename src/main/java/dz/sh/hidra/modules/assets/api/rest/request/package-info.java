@@ -14,7 +14,7 @@
  * @Module      : assets
  * @Package     : dz.sh.hidra.modules.assets.api.rest.request
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.assets.api.rest.request package.
+ * @Description : Declares assets REST request models.
  *
  */
 package dz.sh.hidra.modules.assets.api.rest.request;

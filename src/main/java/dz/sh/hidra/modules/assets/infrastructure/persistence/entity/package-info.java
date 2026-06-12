@@ -14,7 +14,7 @@
  * @Module      : assets
  * @Package     : dz.sh.hidra.modules.assets.infrastructure.persistence.entity
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.assets.infrastructure.persistence.entity package.
+ * @Description : Declares assets JPA entities.
  *
  */
 package dz.sh.hidra.modules.assets.infrastructure.persistence.entity;

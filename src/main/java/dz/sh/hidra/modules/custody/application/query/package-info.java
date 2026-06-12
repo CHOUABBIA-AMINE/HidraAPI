@@ -14,7 +14,7 @@
  * @Module      : custody
  * @Package     : dz.sh.hidra.modules.custody.application.query
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.custody.application.query package.
+ * @Description : Declares custody application queries.
  *
  */
 package dz.sh.hidra.modules.custody.application.query;

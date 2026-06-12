@@ -14,7 +14,7 @@
  * @Module      : assets
  * @Package     : dz.sh.hidra.modules.assets.domain.policy
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.assets.domain.policy package.
+ * @Description : Declares assets domain policy helpers.
  *
  */
 package dz.sh.hidra.modules.assets.domain.policy;

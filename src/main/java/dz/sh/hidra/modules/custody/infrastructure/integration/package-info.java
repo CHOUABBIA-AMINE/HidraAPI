@@ -14,7 +14,7 @@
  * @Module      : custody
  * @Package     : dz.sh.hidra.modules.custody.infrastructure.integration
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.custody.infrastructure.integration package.
+ * @Description : Declares custody integration adapters.
  *
  */
 package dz.sh.hidra.modules.custody.infrastructure.integration;

@@ -14,7 +14,7 @@
  * @Module      : custody
  * @Package     : dz.sh.hidra.modules.custody.api
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.custody.api package.
+ * @Description : Declares custody API boundary package.
  *
  */
 package dz.sh.hidra.modules.custody.api;

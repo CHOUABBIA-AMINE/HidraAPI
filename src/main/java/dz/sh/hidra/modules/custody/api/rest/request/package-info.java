@@ -14,7 +14,7 @@
  * @Module      : custody
  * @Package     : dz.sh.hidra.modules.custody.api.rest.request
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.custody.api.rest.request package.
+ * @Description : Declares custody REST request models.
  *
  */
 package dz.sh.hidra.modules.custody.api.rest.request;

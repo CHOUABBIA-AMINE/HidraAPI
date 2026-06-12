@@ -14,7 +14,7 @@
  * @Module      : assets
  * @Package     : dz.sh.hidra.modules.assets.infrastructure.persistence.repository
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.assets.infrastructure.persistence.repository package.
+ * @Description : Declares assets Spring Data JPA repositories.
  *
  */
 package dz.sh.hidra.modules.assets.infrastructure.persistence.repository;

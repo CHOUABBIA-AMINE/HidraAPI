@@ -1,0 +1,52 @@
+/**
+ *
+ * @Project     : HidraAPI
+ * @Product     : Hidra - Hydrocarbon Intelligence for Data, Risk, and Analytics
+ * @Author      : Abir MEDJERAB
+ * @Owner       : Sonatrach / TRC : Digitalization Initiative
+ *
+ * @Name        : JpaAssetTechnicalAttributeDefinitionRepositoryAdapter
+ * @CreatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-06-11
+ *
+ * @Type        : Adapter
+ * @Layer       : Infrastructure
+ * @Module      : assets
+ * @Package     : dz.sh.hidra.modules.assets.infrastructure.persistence.adapter
+ *
+ * @Description : Database-backed adapter for AssetTechnicalAttributeDefinition.
+ *
+ */
+package dz.sh.hidra.modules.assets.infrastructure.persistence.adapter;
+
+import dz.sh.hidra.modules.assets.application.port.out.AssetTechnicalAttributeDefinitionRepositoryPort;
+import dz.sh.hidra.modules.assets.domain.model.AssetTechnicalAttributeDefinition;
+import dz.sh.hidra.modules.assets.infrastructure.persistence.mapper.AssetsPersistenceMapper;
+import dz.sh.hidra.modules.assets.infrastructure.persistence.repository.AssetTechnicalAttributeDefinitionJpaRepository;
+import org.springframework.stereotype.Component;
+
+import java.util.Objects;
+import java.util.Optional;
+
+/**
+ * Database-backed repository adapter for AssetTechnicalAttributeDefinition.
+ */
+@Component
+public class JpaAssetTechnicalAttributeDefinitionRepositoryAdapter implements AssetTechnicalAttributeDefinitionRepositoryPort {
+
+    private final AssetTechnicalAttributeDefinitionJpaRepository repository;
+
+    public JpaAssetTechnicalAttributeDefinitionRepositoryAdapter(AssetTechnicalAttributeDefinitionJpaRepository repository) {
+        this.repository = Objects.requireNonNull(repository, "AssetTechnicalAttributeDefinitionJpaRepository must not be null.");
+    }
+
+    @Override
+    public AssetTechnicalAttributeDefinition save(AssetTechnicalAttributeDefinition model) {
+        return AssetsPersistenceMapper.toDomain(repository.save(AssetsPersistenceMapper.toEntity(model)));
+    }
+
+    @Override
+    public Optional<AssetTechnicalAttributeDefinition> findById(String id) {
+        return repository.findById(id).map(AssetsPersistenceMapper::toDomain);
+    }
+}

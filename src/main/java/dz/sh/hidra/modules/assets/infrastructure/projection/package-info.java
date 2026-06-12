@@ -14,7 +14,7 @@
  * @Module      : assets
  * @Package     : dz.sh.hidra.modules.assets.infrastructure.projection
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.assets.infrastructure.projection package.
+ * @Description : Declares assets read projections.
  *
  */
 package dz.sh.hidra.modules.assets.infrastructure.projection;

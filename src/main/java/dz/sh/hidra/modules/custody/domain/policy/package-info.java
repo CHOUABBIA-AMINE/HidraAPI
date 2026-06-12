@@ -14,7 +14,7 @@
  * @Module      : custody
  * @Package     : dz.sh.hidra.modules.custody.domain.policy
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.custody.domain.policy package.
+ * @Description : Declares custody domain policy helpers.
  *
  */
 package dz.sh.hidra.modules.custody.domain.policy;

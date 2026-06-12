@@ -14,7 +14,7 @@
  * @Module      : custody
  * @Package     : dz.sh.hidra.modules.custody
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.custody package.
+ * @Description : Declares custody module root package.
  *
  */
 package dz.sh.hidra.modules.custody;

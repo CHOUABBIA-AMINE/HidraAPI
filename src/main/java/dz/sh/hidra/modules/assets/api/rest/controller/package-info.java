@@ -14,7 +14,7 @@
  * @Module      : assets
  * @Package     : dz.sh.hidra.modules.assets.api.rest.controller
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.assets.api.rest.controller package.
+ * @Description : Declares assets REST controller contracts.
  *
  */
 package dz.sh.hidra.modules.assets.api.rest.controller;

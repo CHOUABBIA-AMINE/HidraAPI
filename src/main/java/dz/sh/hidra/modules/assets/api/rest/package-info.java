@@ -14,7 +14,7 @@
  * @Module      : assets
  * @Package     : dz.sh.hidra.modules.assets.api.rest
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.assets.api.rest package.
+ * @Description : Declares assets REST boundary package.
  *
  */
 package dz.sh.hidra.modules.assets.api.rest;

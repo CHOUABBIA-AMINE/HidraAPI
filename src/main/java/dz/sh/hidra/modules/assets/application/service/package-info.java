@@ -14,7 +14,7 @@
  * @Module      : assets
  * @Package     : dz.sh.hidra.modules.assets.application.service
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.assets.application.service package.
+ * @Description : Declares assets application services.
  *
  */
 package dz.sh.hidra.modules.assets.application.service;

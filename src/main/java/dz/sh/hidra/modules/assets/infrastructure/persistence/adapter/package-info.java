@@ -14,7 +14,7 @@
  * @Module      : assets
  * @Package     : dz.sh.hidra.modules.assets.infrastructure.persistence.adapter
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.assets.infrastructure.persistence.adapter package.
+ * @Description : Declares assets persistence adapters.
  *
  */
 package dz.sh.hidra.modules.assets.infrastructure.persistence.adapter;

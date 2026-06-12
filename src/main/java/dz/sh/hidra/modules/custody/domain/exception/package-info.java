@@ -14,7 +14,7 @@
  * @Module      : custody
  * @Package     : dz.sh.hidra.modules.custody.domain.exception
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.custody.domain.exception package.
+ * @Description : Declares custody domain exceptions.
  *
  */
 package dz.sh.hidra.modules.custody.domain.exception;

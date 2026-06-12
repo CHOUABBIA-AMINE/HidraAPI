@@ -14,7 +14,7 @@
  * @Module      : custody
  * @Package     : dz.sh.hidra.modules.custody.application.command
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.custody.application.command package.
+ * @Description : Declares custody application commands.
  *
  */
 package dz.sh.hidra.modules.custody.application.command;

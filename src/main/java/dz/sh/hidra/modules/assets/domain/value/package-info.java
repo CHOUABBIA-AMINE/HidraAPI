@@ -14,7 +14,7 @@
  * @Module      : assets
  * @Package     : dz.sh.hidra.modules.assets.domain.value
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.assets.domain.value package.
+ * @Description : Declares assets domain value objects and enums.
  *
  */
 package dz.sh.hidra.modules.assets.domain.value;

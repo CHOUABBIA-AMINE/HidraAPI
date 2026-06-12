@@ -14,7 +14,7 @@
  * @Module      : custody
  * @Package     : dz.sh.hidra.modules.custody.domain.value
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.custody.domain.value package.
+ * @Description : Declares custody domain value objects and enums.
  *
  */
 package dz.sh.hidra.modules.custody.domain.value;

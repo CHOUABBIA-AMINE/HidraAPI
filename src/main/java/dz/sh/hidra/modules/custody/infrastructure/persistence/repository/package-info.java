@@ -14,7 +14,7 @@
  * @Module      : custody
  * @Package     : dz.sh.hidra.modules.custody.infrastructure.persistence.repository
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.custody.infrastructure.persistence.repository package.
+ * @Description : Declares custody Spring Data JPA repositories.
  *
  */
 package dz.sh.hidra.modules.custody.infrastructure.persistence.repository;

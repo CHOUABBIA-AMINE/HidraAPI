@@ -14,7 +14,7 @@
  * @Module      : assets
  * @Package     : dz.sh.hidra.modules.assets.api.rest.mapper
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.assets.api.rest.mapper package.
+ * @Description : Declares assets REST mappers.
  *
  */
 package dz.sh.hidra.modules.assets.api.rest.mapper;

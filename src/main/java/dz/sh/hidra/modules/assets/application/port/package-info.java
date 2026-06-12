@@ -14,7 +14,7 @@
  * @Module      : assets
  * @Package     : dz.sh.hidra.modules.assets.application.port
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.assets.application.port package.
+ * @Description : Declares assets application port package.
  *
  */
 package dz.sh.hidra.modules.assets.application.port;

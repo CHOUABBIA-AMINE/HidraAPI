@@ -14,7 +14,7 @@
  * @Module      : custody
  * @Package     : dz.sh.hidra.modules.custody.infrastructure.configuration
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.custody.infrastructure.configuration package.
+ * @Description : Declares custody infrastructure configuration.
  *
  */
 package dz.sh.hidra.modules.custody.infrastructure.configuration;

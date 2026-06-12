@@ -14,7 +14,7 @@
  * @Module      : assets
  * @Package     : dz.sh.hidra.modules.assets.infrastructure.integration
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.assets.infrastructure.integration package.
+ * @Description : Declares assets integration adapters.
  *
  */
 package dz.sh.hidra.modules.assets.infrastructure.integration;

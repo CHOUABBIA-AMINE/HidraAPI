@@ -14,7 +14,7 @@
  * @Module      : custody
  * @Package     : dz.sh.hidra.modules.custody.infrastructure.messaging
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.custody.infrastructure.messaging package.
+ * @Description : Declares custody messaging adapters.
  *
  */
 package dz.sh.hidra.modules.custody.infrastructure.messaging;

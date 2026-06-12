@@ -14,7 +14,7 @@
  * @Module      : assets
  * @Package     : dz.sh.hidra.modules.assets.domain.exception
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.assets.domain.exception package.
+ * @Description : Declares assets domain exceptions.
  *
  */
 package dz.sh.hidra.modules.assets.domain.exception;

@@ -14,7 +14,7 @@
  * @Module      : custody
  * @Package     : dz.sh.hidra.modules.custody.domain.event
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.custody.domain.event package.
+ * @Description : Declares custody domain events.
  *
  */
 package dz.sh.hidra.modules.custody.domain.event;

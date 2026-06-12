@@ -14,7 +14,7 @@
  * @Module      : workflow
  * @Package     : dz.sh.hidra.modules.workflow.application.dto
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.workflow.application.dto package.
+ * @Description : Declares workflow application DTOs.
  *
  */
 package dz.sh.hidra.modules.workflow.application.dto;

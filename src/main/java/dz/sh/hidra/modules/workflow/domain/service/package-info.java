@@ -14,7 +14,7 @@
  * @Module      : workflow
  * @Package     : dz.sh.hidra.modules.workflow.domain.service
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.workflow.domain.service package.
+ * @Description : Declares workflow domain services.
  *
  */
 package dz.sh.hidra.modules.workflow.domain.service;

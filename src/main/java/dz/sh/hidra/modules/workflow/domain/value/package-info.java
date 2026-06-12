@@ -14,7 +14,7 @@
  * @Module      : workflow
  * @Package     : dz.sh.hidra.modules.workflow.domain.value
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.workflow.domain.value package.
+ * @Description : Declares workflow domain value objects and enums.
  *
  */
 package dz.sh.hidra.modules.workflow.domain.value;

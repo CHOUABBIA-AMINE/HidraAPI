@@ -14,7 +14,7 @@
  * @Module      : workflow
  * @Package     : dz.sh.hidra.modules.workflow.domain.event
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.workflow.domain.event package.
+ * @Description : Declares workflow domain events.
  *
  */
 package dz.sh.hidra.modules.workflow.domain.event;

@@ -14,7 +14,7 @@
  * @Module      : workflow
  * @Package     : dz.sh.hidra.modules.workflow
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.workflow package.
+ * @Description : Declares workflow module root package.
  *
  */
 package dz.sh.hidra.modules.workflow;

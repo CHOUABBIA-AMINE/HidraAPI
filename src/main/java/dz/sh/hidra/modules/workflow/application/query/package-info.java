@@ -14,7 +14,7 @@
  * @Module      : workflow
  * @Package     : dz.sh.hidra.modules.workflow.application.query
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.workflow.application.query package.
+ * @Description : Declares workflow application queries.
  *
  */
 package dz.sh.hidra.modules.workflow.application.query;

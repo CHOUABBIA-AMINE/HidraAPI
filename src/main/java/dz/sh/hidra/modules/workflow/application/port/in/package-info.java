@@ -14,7 +14,7 @@
  * @Module      : workflow
  * @Package     : dz.sh.hidra.modules.workflow.application.port.in
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.workflow.application.port.in package.
+ * @Description : Declares workflow inbound use-case ports.
  *
  */
 package dz.sh.hidra.modules.workflow.application.port.in;

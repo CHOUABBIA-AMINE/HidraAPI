@@ -14,7 +14,7 @@
  * @Module      : workflow
  * @Package     : dz.sh.hidra.modules.workflow.api.rest
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.workflow.api.rest package.
+ * @Description : Declares workflow REST boundary package.
  *
  */
 package dz.sh.hidra.modules.workflow.api.rest;

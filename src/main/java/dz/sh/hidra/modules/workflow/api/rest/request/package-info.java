@@ -14,7 +14,7 @@
  * @Module      : workflow
  * @Package     : dz.sh.hidra.modules.workflow.api.rest.request
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.workflow.api.rest.request package.
+ * @Description : Declares workflow REST request models.
  *
  */
 package dz.sh.hidra.modules.workflow.api.rest.request;

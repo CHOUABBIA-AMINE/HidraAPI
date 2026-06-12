@@ -14,7 +14,7 @@
  * @Module      : workflow
  * @Package     : dz.sh.hidra.modules.workflow.infrastructure.projection
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.workflow.infrastructure.projection package.
+ * @Description : Declares workflow read projections.
  *
  */
 package dz.sh.hidra.modules.workflow.infrastructure.projection;

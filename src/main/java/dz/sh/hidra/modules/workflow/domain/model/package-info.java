@@ -14,7 +14,7 @@
  * @Module      : workflow
  * @Package     : dz.sh.hidra.modules.workflow.domain.model
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.workflow.domain.model package.
+ * @Description : Declares workflow domain entities and aggregates.
  *
  */
 package dz.sh.hidra.modules.workflow.domain.model;

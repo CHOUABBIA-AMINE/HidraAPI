@@ -14,7 +14,7 @@
  * @Module      : workflow
  * @Package     : dz.sh.hidra.modules.workflow.infrastructure.messaging
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.workflow.infrastructure.messaging package.
+ * @Description : Declares workflow messaging adapters.
  *
  */
 package dz.sh.hidra.modules.workflow.infrastructure.messaging;

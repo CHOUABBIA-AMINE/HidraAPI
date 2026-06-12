@@ -14,7 +14,7 @@
  * @Module      : workflow
  * @Package     : dz.sh.hidra.modules.workflow.api
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.workflow.api package.
+ * @Description : Declares workflow API boundary package.
  *
  */
 package dz.sh.hidra.modules.workflow.api;

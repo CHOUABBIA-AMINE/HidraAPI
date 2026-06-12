@@ -14,7 +14,7 @@
  * @Module      : workflow
  * @Package     : dz.sh.hidra.modules.workflow.infrastructure.persistence.adapter
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.workflow.infrastructure.persistence.adapter package.
+ * @Description : Declares workflow persistence adapters.
  *
  */
 package dz.sh.hidra.modules.workflow.infrastructure.persistence.adapter;

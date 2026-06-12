@@ -14,7 +14,7 @@
  * @Module      : workflow
  * @Package     : dz.sh.hidra.modules.workflow.api.rest.mapper
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.workflow.api.rest.mapper package.
+ * @Description : Declares workflow REST mappers.
  *
  */
 package dz.sh.hidra.modules.workflow.api.rest.mapper;

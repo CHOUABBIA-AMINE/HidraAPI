@@ -14,7 +14,7 @@
  * @Module      : workflow
  * @Package     : dz.sh.hidra.modules.workflow.application.mapper
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.workflow.application.mapper package.
+ * @Description : Declares workflow application mappers.
  *
  */
 package dz.sh.hidra.modules.workflow.application.mapper;

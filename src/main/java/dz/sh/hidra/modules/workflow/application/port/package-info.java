@@ -14,7 +14,7 @@
  * @Module      : workflow
  * @Package     : dz.sh.hidra.modules.workflow.application.port
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.workflow.application.port package.
+ * @Description : Declares workflow application port package.
  *
  */
 package dz.sh.hidra.modules.workflow.application.port;

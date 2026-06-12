@@ -14,7 +14,7 @@
  * @Module      : leakdetection
  * @Package     : dz.sh.hidra.modules.leakdetection.domain.policy
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.leakdetection.domain.policy package.
+ * @Description : Declares leakdetection domain policy helpers.
  *
  */
 package dz.sh.hidra.modules.leakdetection.domain.policy;

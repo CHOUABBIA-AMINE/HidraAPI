@@ -14,7 +14,7 @@
  * @Module      : leakdetection
  * @Package     : dz.sh.hidra.modules.leakdetection.application.dto
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.leakdetection.application.dto package.
+ * @Description : Declares leakdetection application DTOs.
  *
  */
 package dz.sh.hidra.modules.leakdetection.application.dto;

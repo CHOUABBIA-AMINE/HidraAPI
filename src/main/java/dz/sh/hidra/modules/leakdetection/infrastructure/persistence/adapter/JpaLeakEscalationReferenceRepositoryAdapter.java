@@ -1,0 +1,52 @@
+/**
+ *
+ * @Project     : HidraAPI
+ * @Product     : Hidra - Hydrocarbon Intelligence for Data, Risk, and Analytics
+ * @Author      : Abir MEDJERAB
+ * @Owner       : Sonatrach / TRC : Digitalization Initiative
+ *
+ * @Name        : JpaLeakEscalationReferenceRepositoryAdapter
+ * @CreatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-06-11
+ *
+ * @Type        : Adapter
+ * @Layer       : Infrastructure
+ * @Module      : leakdetection
+ * @Package     : dz.sh.hidra.modules.leakdetection.infrastructure.persistence.adapter
+ *
+ * @Description : Database-backed adapter for LeakEscalationReference.
+ *
+ */
+package dz.sh.hidra.modules.leakdetection.infrastructure.persistence.adapter;
+
+import dz.sh.hidra.modules.leakdetection.application.port.out.LeakEscalationReferenceRepositoryPort;
+import dz.sh.hidra.modules.leakdetection.domain.model.LeakEscalationReference;
+import dz.sh.hidra.modules.leakdetection.infrastructure.persistence.mapper.LeakDetectionPersistenceMapper;
+import dz.sh.hidra.modules.leakdetection.infrastructure.persistence.repository.LeakEscalationReferenceJpaRepository;
+import org.springframework.stereotype.Component;
+
+import java.util.Objects;
+import java.util.Optional;
+
+/**
+ * Database-backed repository adapter for LeakEscalationReference.
+ */
+@Component
+public class JpaLeakEscalationReferenceRepositoryAdapter implements LeakEscalationReferenceRepositoryPort {
+
+    private final LeakEscalationReferenceJpaRepository repository;
+
+    public JpaLeakEscalationReferenceRepositoryAdapter(LeakEscalationReferenceJpaRepository repository) {
+        this.repository = Objects.requireNonNull(repository, "LeakEscalationReferenceJpaRepository must not be null.");
+    }
+
+    @Override
+    public LeakEscalationReference save(LeakEscalationReference model) {
+        return LeakDetectionPersistenceMapper.toDomain(repository.save(LeakDetectionPersistenceMapper.toEntity(model)));
+    }
+
+    @Override
+    public Optional<LeakEscalationReference> findById(String id) {
+        return repository.findById(id).map(LeakDetectionPersistenceMapper::toDomain);
+    }
+}

@@ -14,7 +14,7 @@
  * @Module      : leakdetection
  * @Package     : dz.sh.hidra.modules.leakdetection.infrastructure.persistence.repository
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.leakdetection.infrastructure.persistence.repository package.
+ * @Description : Declares leakdetection Spring Data JPA repositories.
  *
  */
 package dz.sh.hidra.modules.leakdetection.infrastructure.persistence.repository;

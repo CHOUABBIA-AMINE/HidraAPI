@@ -14,7 +14,7 @@
  * @Module      : leakdetection
  * @Package     : dz.sh.hidra.modules.leakdetection.infrastructure.persistence.mapper
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.leakdetection.infrastructure.persistence.mapper package.
+ * @Description : Declares leakdetection persistence mappers.
  *
  */
 package dz.sh.hidra.modules.leakdetection.infrastructure.persistence.mapper;

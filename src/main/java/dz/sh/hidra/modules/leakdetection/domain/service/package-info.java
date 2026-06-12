@@ -14,7 +14,7 @@
  * @Module      : leakdetection
  * @Package     : dz.sh.hidra.modules.leakdetection.domain.service
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.leakdetection.domain.service package.
+ * @Description : Declares leakdetection domain services.
  *
  */
 package dz.sh.hidra.modules.leakdetection.domain.service;

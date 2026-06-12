@@ -14,7 +14,7 @@
  * @Module      : leakdetection
  * @Package     : dz.sh.hidra.modules.leakdetection.infrastructure.projection
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.leakdetection.infrastructure.projection package.
+ * @Description : Declares leakdetection read projections.
  *
  */
 package dz.sh.hidra.modules.leakdetection.infrastructure.projection;

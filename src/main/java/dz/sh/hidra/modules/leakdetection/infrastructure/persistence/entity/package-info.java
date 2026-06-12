@@ -14,7 +14,7 @@
  * @Module      : leakdetection
  * @Package     : dz.sh.hidra.modules.leakdetection.infrastructure.persistence.entity
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.leakdetection.infrastructure.persistence.entity package.
+ * @Description : Declares leakdetection JPA entities.
  *
  */
 package dz.sh.hidra.modules.leakdetection.infrastructure.persistence.entity;

@@ -14,7 +14,7 @@
  * @Module      : leakdetection
  * @Package     : dz.sh.hidra.modules.leakdetection.infrastructure.messaging
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.leakdetection.infrastructure.messaging package.
+ * @Description : Declares leakdetection messaging adapters.
  *
  */
 package dz.sh.hidra.modules.leakdetection.infrastructure.messaging;

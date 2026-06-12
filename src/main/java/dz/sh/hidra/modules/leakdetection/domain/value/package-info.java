@@ -14,7 +14,7 @@
  * @Module      : leakdetection
  * @Package     : dz.sh.hidra.modules.leakdetection.domain.value
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.leakdetection.domain.value package.
+ * @Description : Declares leakdetection domain value objects and enums.
  *
  */
 package dz.sh.hidra.modules.leakdetection.domain.value;

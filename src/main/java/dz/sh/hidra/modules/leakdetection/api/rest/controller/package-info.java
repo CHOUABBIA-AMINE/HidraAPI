@@ -14,7 +14,7 @@
  * @Module      : leakdetection
  * @Package     : dz.sh.hidra.modules.leakdetection.api.rest.controller
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.leakdetection.api.rest.controller package.
+ * @Description : Declares leakdetection REST controller contracts.
  *
  */
 package dz.sh.hidra.modules.leakdetection.api.rest.controller;

@@ -14,7 +14,7 @@
  * @Module      : leakdetection
  * @Package     : dz.sh.hidra.modules.leakdetection.infrastructure.persistence
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.leakdetection.infrastructure.persistence package.
+ * @Description : Declares leakdetection persistence package.
  *
  */
 package dz.sh.hidra.modules.leakdetection.infrastructure.persistence;

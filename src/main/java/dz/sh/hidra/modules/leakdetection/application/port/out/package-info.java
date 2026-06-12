@@ -14,7 +14,7 @@
  * @Module      : leakdetection
  * @Package     : dz.sh.hidra.modules.leakdetection.application.port.out
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.leakdetection.application.port.out package.
+ * @Description : Declares leakdetection outbound persistence ports.
  *
  */
 package dz.sh.hidra.modules.leakdetection.application.port.out;

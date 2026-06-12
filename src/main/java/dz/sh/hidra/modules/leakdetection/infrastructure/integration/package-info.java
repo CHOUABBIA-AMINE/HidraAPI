@@ -14,7 +14,7 @@
  * @Module      : leakdetection
  * @Package     : dz.sh.hidra.modules.leakdetection.infrastructure.integration
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.leakdetection.infrastructure.integration package.
+ * @Description : Declares leakdetection integration adapters.
  *
  */
 package dz.sh.hidra.modules.leakdetection.infrastructure.integration;

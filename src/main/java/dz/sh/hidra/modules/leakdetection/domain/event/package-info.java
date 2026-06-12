@@ -14,7 +14,7 @@
  * @Module      : leakdetection
  * @Package     : dz.sh.hidra.modules.leakdetection.domain.event
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.leakdetection.domain.event package.
+ * @Description : Declares leakdetection domain events.
  *
  */
 package dz.sh.hidra.modules.leakdetection.domain.event;

@@ -14,7 +14,7 @@
  * @Module      : monitoring
  * @Package     : dz.sh.hidra.modules.monitoring.domain.model
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.monitoring.domain.model package.
+ * @Description : Declares monitoring domain entities and aggregates.
  *
  */
 package dz.sh.hidra.modules.monitoring.domain.model;

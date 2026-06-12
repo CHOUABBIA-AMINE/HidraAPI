@@ -1,0 +1,34 @@
+/**
+ *
+ * @Project     : HidraAPI
+ * @Product     : Hidra - Hydrocarbon Intelligence for Data, Risk, and Analytics
+ * @Author      : Abir MEDJERAB
+ * @Owner       : Sonatrach / TRC : Digitalization Initiative
+ *
+ * @Name        : PlanActualDeviationRepositoryPort
+ * @CreatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-06-11
+ *
+ * @Type        : Interface
+ * @Layer       : Application
+ * @Module      : monitoring
+ * @Package     : dz.sh.hidra.modules.monitoring.application.port.out
+ *
+ * @Description : Repository port for PlanActualDeviation.
+ *
+ */
+package dz.sh.hidra.modules.monitoring.application.port.out;
+
+import dz.sh.hidra.modules.monitoring.domain.model.PlanActualDeviation;
+
+import java.util.Optional;
+
+/**
+ * Repository port for PlanActualDeviation.
+ */
+public interface PlanActualDeviationRepositoryPort {
+
+    PlanActualDeviation save(PlanActualDeviation model);
+
+    Optional<PlanActualDeviation> findById(String id);
+}

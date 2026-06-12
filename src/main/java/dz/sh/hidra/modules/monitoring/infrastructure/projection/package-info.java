@@ -14,7 +14,7 @@
  * @Module      : monitoring
  * @Package     : dz.sh.hidra.modules.monitoring.infrastructure.projection
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.monitoring.infrastructure.projection package.
+ * @Description : Declares monitoring read projections.
  *
  */
 package dz.sh.hidra.modules.monitoring.infrastructure.projection;

@@ -14,7 +14,7 @@
  * @Module      : monitoring
  * @Package     : dz.sh.hidra.modules.monitoring
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.monitoring package.
+ * @Description : Declares monitoring module root package.
  *
  */
 package dz.sh.hidra.modules.monitoring;

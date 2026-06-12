@@ -14,7 +14,7 @@
  * @Module      : monitoring
  * @Package     : dz.sh.hidra.modules.monitoring.api
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.monitoring.api package.
+ * @Description : Declares monitoring API boundary package.
  *
  */
 package dz.sh.hidra.modules.monitoring.api;

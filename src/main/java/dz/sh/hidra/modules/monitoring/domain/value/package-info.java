@@ -14,7 +14,7 @@
  * @Module      : monitoring
  * @Package     : dz.sh.hidra.modules.monitoring.domain.value
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.monitoring.domain.value package.
+ * @Description : Declares monitoring domain value objects and enums.
  *
  */
 package dz.sh.hidra.modules.monitoring.domain.value;

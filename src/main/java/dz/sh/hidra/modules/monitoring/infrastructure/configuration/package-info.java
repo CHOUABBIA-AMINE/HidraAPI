@@ -14,7 +14,7 @@
  * @Module      : monitoring
  * @Package     : dz.sh.hidra.modules.monitoring.infrastructure.configuration
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.monitoring.infrastructure.configuration package.
+ * @Description : Declares monitoring infrastructure configuration.
  *
  */
 package dz.sh.hidra.modules.monitoring.infrastructure.configuration;

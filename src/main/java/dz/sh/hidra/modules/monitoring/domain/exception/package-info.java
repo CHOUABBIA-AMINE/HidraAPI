@@ -14,7 +14,7 @@
  * @Module      : monitoring
  * @Package     : dz.sh.hidra.modules.monitoring.domain.exception
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.monitoring.domain.exception package.
+ * @Description : Declares monitoring domain exceptions.
  *
  */
 package dz.sh.hidra.modules.monitoring.domain.exception;

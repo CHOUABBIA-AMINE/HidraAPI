@@ -14,7 +14,7 @@
  * @Module      : monitoring
  * @Package     : dz.sh.hidra.modules.monitoring.infrastructure.persistence.repository
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.monitoring.infrastructure.persistence.repository package.
+ * @Description : Declares monitoring Spring Data JPA repositories.
  *
  */
 package dz.sh.hidra.modules.monitoring.infrastructure.persistence.repository;

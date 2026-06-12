@@ -14,7 +14,7 @@
  * @Module      : monitoring
  * @Package     : dz.sh.hidra.modules.monitoring.application.mapper
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.monitoring.application.mapper package.
+ * @Description : Declares monitoring application mappers.
  *
  */
 package dz.sh.hidra.modules.monitoring.application.mapper;

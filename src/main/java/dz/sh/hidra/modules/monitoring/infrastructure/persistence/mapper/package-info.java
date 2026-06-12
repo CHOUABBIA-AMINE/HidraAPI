@@ -14,7 +14,7 @@
  * @Module      : monitoring
  * @Package     : dz.sh.hidra.modules.monitoring.infrastructure.persistence.mapper
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.monitoring.infrastructure.persistence.mapper package.
+ * @Description : Declares monitoring persistence mappers.
  *
  */
 package dz.sh.hidra.modules.monitoring.infrastructure.persistence.mapper;

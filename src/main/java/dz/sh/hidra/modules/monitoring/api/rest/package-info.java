@@ -14,7 +14,7 @@
  * @Module      : monitoring
  * @Package     : dz.sh.hidra.modules.monitoring.api.rest
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.monitoring.api.rest package.
+ * @Description : Declares monitoring REST boundary package.
  *
  */
 package dz.sh.hidra.modules.monitoring.api.rest;

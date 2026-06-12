@@ -14,7 +14,7 @@
  * @Module      : hse
  * @Package     : dz.sh.hidra.modules.hse.infrastructure
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.hse.infrastructure package.
+ * @Description : Declares HSE infrastructure package.
  *
  */
 package dz.sh.hidra.modules.hse.infrastructure;

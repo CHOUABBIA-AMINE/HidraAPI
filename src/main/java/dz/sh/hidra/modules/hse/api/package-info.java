@@ -14,7 +14,7 @@
  * @Module      : hse
  * @Package     : dz.sh.hidra.modules.hse.api
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.hse.api package.
+ * @Description : Declares HSE API boundary package.
  *
  */
 package dz.sh.hidra.modules.hse.api;

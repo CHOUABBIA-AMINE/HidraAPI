@@ -14,7 +14,7 @@
  * @Module      : hse
  * @Package     : dz.sh.hidra.modules.hse.application.query
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.hse.application.query package.
+ * @Description : Declares HSE application queries.
  *
  */
 package dz.sh.hidra.modules.hse.application.query;

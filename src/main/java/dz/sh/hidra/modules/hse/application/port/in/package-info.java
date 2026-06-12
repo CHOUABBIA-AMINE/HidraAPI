@@ -14,7 +14,7 @@
  * @Module      : hse
  * @Package     : dz.sh.hidra.modules.hse.application.port.in
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.hse.application.port.in package.
+ * @Description : Declares HSE inbound use-case ports.
  *
  */
 package dz.sh.hidra.modules.hse.application.port.in;

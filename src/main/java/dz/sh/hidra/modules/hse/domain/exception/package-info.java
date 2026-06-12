@@ -14,7 +14,7 @@
  * @Module      : hse
  * @Package     : dz.sh.hidra.modules.hse.domain.exception
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.hse.domain.exception package.
+ * @Description : Declares HSE domain exceptions.
  *
  */
 package dz.sh.hidra.modules.hse.domain.exception;

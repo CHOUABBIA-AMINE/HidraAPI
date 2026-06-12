@@ -14,7 +14,7 @@
  * @Module      : hse
  * @Package     : dz.sh.hidra.modules.hse.infrastructure.persistence
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.hse.infrastructure.persistence package.
+ * @Description : Declares HSE persistence package.
  *
  */
 package dz.sh.hidra.modules.hse.infrastructure.persistence;

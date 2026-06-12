@@ -14,7 +14,7 @@
  * @Module      : hse
  * @Package     : dz.sh.hidra.modules.hse.infrastructure.persistence.mapper
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.hse.infrastructure.persistence.mapper package.
+ * @Description : Declares HSE persistence mappers.
  *
  */
 package dz.sh.hidra.modules.hse.infrastructure.persistence.mapper;

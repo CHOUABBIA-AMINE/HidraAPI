@@ -14,7 +14,7 @@
  * @Module      : hse
  * @Package     : dz.sh.hidra.modules.hse.domain.service
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.hse.domain.service package.
+ * @Description : Declares HSE domain services.
  *
  */
 package dz.sh.hidra.modules.hse.domain.service;

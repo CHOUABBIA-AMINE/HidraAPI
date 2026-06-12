@@ -14,7 +14,7 @@
  * @Module      : hse
  * @Package     : dz.sh.hidra.modules.hse.application.port.out
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.hse.application.port.out package.
+ * @Description : Declares HSE outbound persistence ports.
  *
  */
 package dz.sh.hidra.modules.hse.application.port.out;

@@ -14,7 +14,7 @@
  * @Module      : hse
  * @Package     : dz.sh.hidra.modules.hse.application.dto
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.hse.application.dto package.
+ * @Description : Declares HSE application DTOs.
  *
  */
 package dz.sh.hidra.modules.hse.application.dto;

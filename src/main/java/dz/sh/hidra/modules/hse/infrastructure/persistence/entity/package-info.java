@@ -14,7 +14,7 @@
  * @Module      : hse
  * @Package     : dz.sh.hidra.modules.hse.infrastructure.persistence.entity
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.hse.infrastructure.persistence.entity package.
+ * @Description : Declares HSE JPA entities.
  *
  */
 package dz.sh.hidra.modules.hse.infrastructure.persistence.entity;

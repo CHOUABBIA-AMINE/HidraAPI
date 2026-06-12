@@ -14,7 +14,7 @@
  * @Module      : hse
  * @Package     : dz.sh.hidra.modules.hse.infrastructure.projection
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.hse.infrastructure.projection package.
+ * @Description : Declares HSE read projections.
  *
  */
 package dz.sh.hidra.modules.hse.infrastructure.projection;

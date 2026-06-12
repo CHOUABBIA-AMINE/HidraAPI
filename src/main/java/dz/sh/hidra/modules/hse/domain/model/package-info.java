@@ -14,7 +14,7 @@
  * @Module      : hse
  * @Package     : dz.sh.hidra.modules.hse.domain.model
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.hse.domain.model package.
+ * @Description : Declares HSE domain entities and aggregates.
  *
  */
 package dz.sh.hidra.modules.hse.domain.model;

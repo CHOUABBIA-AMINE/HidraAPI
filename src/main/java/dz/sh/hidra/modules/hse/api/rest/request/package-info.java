@@ -14,7 +14,7 @@
  * @Module      : hse
  * @Package     : dz.sh.hidra.modules.hse.api.rest.request
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.hse.api.rest.request package.
+ * @Description : Declares HSE REST request models.
  *
  */
 package dz.sh.hidra.modules.hse.api.rest.request;

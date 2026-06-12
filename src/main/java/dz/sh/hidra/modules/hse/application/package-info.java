@@ -14,7 +14,7 @@
  * @Module      : hse
  * @Package     : dz.sh.hidra.modules.hse.application
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.hse.application package.
+ * @Description : Declares HSE application layer package.
  *
  */
 package dz.sh.hidra.modules.hse.application;

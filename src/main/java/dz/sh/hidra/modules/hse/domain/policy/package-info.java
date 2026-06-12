@@ -14,7 +14,7 @@
  * @Module      : hse
  * @Package     : dz.sh.hidra.modules.hse.domain.policy
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.hse.domain.policy package.
+ * @Description : Declares HSE domain policy helpers.
  *
  */
 package dz.sh.hidra.modules.hse.domain.policy;

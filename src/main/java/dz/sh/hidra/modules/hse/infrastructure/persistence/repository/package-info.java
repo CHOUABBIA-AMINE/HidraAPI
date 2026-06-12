@@ -14,7 +14,7 @@
  * @Module      : hse
  * @Package     : dz.sh.hidra.modules.hse.infrastructure.persistence.repository
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.hse.infrastructure.persistence.repository package.
+ * @Description : Declares HSE Spring Data JPA repositories.
  *
  */
 package dz.sh.hidra.modules.hse.infrastructure.persistence.repository;

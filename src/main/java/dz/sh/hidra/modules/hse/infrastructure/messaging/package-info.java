@@ -14,7 +14,7 @@
  * @Module      : hse
  * @Package     : dz.sh.hidra.modules.hse.infrastructure.messaging
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.hse.infrastructure.messaging package.
+ * @Description : Declares HSE messaging adapters.
  *
  */
 package dz.sh.hidra.modules.hse.infrastructure.messaging;

@@ -14,7 +14,7 @@
  * @Module      : hse
  * @Package     : dz.sh.hidra.modules.hse.api.rest.controller
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.hse.api.rest.controller package.
+ * @Description : Declares HSE REST controller contracts.
  *
  */
 package dz.sh.hidra.modules.hse.api.rest.controller;

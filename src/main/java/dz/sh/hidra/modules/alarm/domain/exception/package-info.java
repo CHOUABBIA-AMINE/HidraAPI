@@ -14,7 +14,7 @@
  * @Module      : alarm
  * @Package     : dz.sh.hidra.modules.alarm.domain.exception
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.alarm.domain.exception package.
+ * @Description : Declares alarm domain exceptions.
  *
  */
 package dz.sh.hidra.modules.alarm.domain.exception;

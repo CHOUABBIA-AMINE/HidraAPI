@@ -14,7 +14,7 @@
  * @Module      : alarm
  * @Package     : dz.sh.hidra.modules.alarm.infrastructure.configuration
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.alarm.infrastructure.configuration package.
+ * @Description : Declares alarm infrastructure configuration.
  *
  */
 package dz.sh.hidra.modules.alarm.infrastructure.configuration;

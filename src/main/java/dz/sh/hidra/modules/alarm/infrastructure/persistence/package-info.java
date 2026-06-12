@@ -14,7 +14,7 @@
  * @Module      : alarm
  * @Package     : dz.sh.hidra.modules.alarm.infrastructure.persistence
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.alarm.infrastructure.persistence package.
+ * @Description : Declares alarm persistence package.
  *
  */
 package dz.sh.hidra.modules.alarm.infrastructure.persistence;

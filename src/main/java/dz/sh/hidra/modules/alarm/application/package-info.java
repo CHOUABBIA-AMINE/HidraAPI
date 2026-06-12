@@ -14,7 +14,7 @@
  * @Module      : alarm
  * @Package     : dz.sh.hidra.modules.alarm.application
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.alarm.application package.
+ * @Description : Declares alarm application layer package.
  *
  */
 package dz.sh.hidra.modules.alarm.application;

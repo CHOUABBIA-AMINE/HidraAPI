@@ -14,7 +14,7 @@
  * @Module      : alarm
  * @Package     : dz.sh.hidra.modules.alarm.infrastructure.persistence.repository
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.alarm.infrastructure.persistence.repository package.
+ * @Description : Declares alarm Spring Data JPA repositories.
  *
  */
 package dz.sh.hidra.modules.alarm.infrastructure.persistence.repository;

@@ -14,7 +14,7 @@
  * @Module      : alarm
  * @Package     : dz.sh.hidra.modules.alarm.domain.value
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.alarm.domain.value package.
+ * @Description : Declares alarm domain value objects and enums.
  *
  */
 package dz.sh.hidra.modules.alarm.domain.value;

@@ -14,7 +14,7 @@
  * @Module      : alarm
  * @Package     : dz.sh.hidra.modules.alarm.application.query
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.alarm.application.query package.
+ * @Description : Declares alarm application queries.
  *
  */
 package dz.sh.hidra.modules.alarm.application.query;

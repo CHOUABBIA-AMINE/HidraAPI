@@ -14,7 +14,7 @@
  * @Module      : alarm
  * @Package     : dz.sh.hidra.modules.alarm.infrastructure.projection
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.alarm.infrastructure.projection package.
+ * @Description : Declares alarm read projections.
  *
  */
 package dz.sh.hidra.modules.alarm.infrastructure.projection;

@@ -14,7 +14,7 @@
  * @Module      : alarm
  * @Package     : dz.sh.hidra.modules.alarm.infrastructure.integration
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.alarm.infrastructure.integration package.
+ * @Description : Declares alarm integration adapters.
  *
  */
 package dz.sh.hidra.modules.alarm.infrastructure.integration;

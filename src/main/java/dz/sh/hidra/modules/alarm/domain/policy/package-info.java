@@ -14,7 +14,7 @@
  * @Module      : alarm
  * @Package     : dz.sh.hidra.modules.alarm.domain.policy
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.alarm.domain.policy package.
+ * @Description : Declares alarm domain policy helpers.
  *
  */
 package dz.sh.hidra.modules.alarm.domain.policy;

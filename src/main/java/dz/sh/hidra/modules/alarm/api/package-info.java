@@ -14,7 +14,7 @@
  * @Module      : alarm
  * @Package     : dz.sh.hidra.modules.alarm.api
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.alarm.api package.
+ * @Description : Declares alarm API boundary package.
  *
  */
 package dz.sh.hidra.modules.alarm.api;

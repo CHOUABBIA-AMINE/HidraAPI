@@ -14,7 +14,7 @@
  * @Module      : alarm
  * @Package     : dz.sh.hidra.modules.alarm.infrastructure.messaging
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.alarm.infrastructure.messaging package.
+ * @Description : Declares alarm messaging adapters.
  *
  */
 package dz.sh.hidra.modules.alarm.infrastructure.messaging;

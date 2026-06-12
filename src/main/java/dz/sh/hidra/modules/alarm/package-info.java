@@ -14,7 +14,7 @@
  * @Module      : alarm
  * @Package     : dz.sh.hidra.modules.alarm
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.alarm package.
+ * @Description : Declares alarm module root package.
  *
  */
 package dz.sh.hidra.modules.alarm;

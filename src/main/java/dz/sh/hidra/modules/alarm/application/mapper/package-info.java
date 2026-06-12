@@ -14,7 +14,7 @@
  * @Module      : alarm
  * @Package     : dz.sh.hidra.modules.alarm.application.mapper
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.alarm.application.mapper package.
+ * @Description : Declares alarm application mappers.
  *
  */
 package dz.sh.hidra.modules.alarm.application.mapper;

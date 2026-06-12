@@ -14,7 +14,7 @@
  * @Module      : alarm
  * @Package     : dz.sh.hidra.modules.alarm.infrastructure.persistence.mapper
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.alarm.infrastructure.persistence.mapper package.
+ * @Description : Declares alarm persistence mappers.
  *
  */
 package dz.sh.hidra.modules.alarm.infrastructure.persistence.mapper;

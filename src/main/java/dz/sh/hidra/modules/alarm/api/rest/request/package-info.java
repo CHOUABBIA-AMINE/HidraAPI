@@ -14,7 +14,7 @@
  * @Module      : alarm
  * @Package     : dz.sh.hidra.modules.alarm.api.rest.request
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.alarm.api.rest.request package.
+ * @Description : Declares alarm REST request models.
  *
  */
 package dz.sh.hidra.modules.alarm.api.rest.request;

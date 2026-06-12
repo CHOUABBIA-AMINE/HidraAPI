@@ -14,7 +14,7 @@
  * @Module      : alarm
  * @Package     : dz.sh.hidra.modules.alarm.domain.event
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.alarm.domain.event package.
+ * @Description : Declares alarm domain events.
  *
  */
 package dz.sh.hidra.modules.alarm.domain.event;

@@ -14,7 +14,7 @@
  * @Module      : alarm
  * @Package     : dz.sh.hidra.modules.alarm.api.rest.mapper
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.alarm.api.rest.mapper package.
+ * @Description : Declares alarm REST mappers.
  *
  */
 package dz.sh.hidra.modules.alarm.api.rest.mapper;

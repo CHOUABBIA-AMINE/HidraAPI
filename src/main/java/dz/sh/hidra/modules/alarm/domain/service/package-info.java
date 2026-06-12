@@ -14,7 +14,7 @@
  * @Module      : alarm
  * @Package     : dz.sh.hidra.modules.alarm.domain.service
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.alarm.domain.service package.
+ * @Description : Declares alarm domain services.
  *
  */
 package dz.sh.hidra.modules.alarm.domain.service;

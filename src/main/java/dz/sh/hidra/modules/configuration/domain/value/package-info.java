@@ -14,7 +14,7 @@
  * @Module      : configuration
  * @Package     : dz.sh.hidra.modules.configuration.domain.value
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.configuration.domain.value package.
+ * @Description : Declares configuration domain value objects and enums.
  *
  */
 package dz.sh.hidra.modules.configuration.domain.value;

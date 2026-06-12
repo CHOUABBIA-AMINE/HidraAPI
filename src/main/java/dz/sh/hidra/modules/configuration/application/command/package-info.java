@@ -14,7 +14,7 @@
  * @Module      : configuration
  * @Package     : dz.sh.hidra.modules.configuration.application.command
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.configuration.application.command package.
+ * @Description : Declares configuration application commands.
  *
  */
 package dz.sh.hidra.modules.configuration.application.command;

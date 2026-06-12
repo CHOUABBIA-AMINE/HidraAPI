@@ -14,7 +14,7 @@
  * @Module      : configuration
  * @Package     : dz.sh.hidra.modules.configuration.domain.exception
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.configuration.domain.exception package.
+ * @Description : Declares configuration domain exceptions.
  *
  */
 package dz.sh.hidra.modules.configuration.domain.exception;

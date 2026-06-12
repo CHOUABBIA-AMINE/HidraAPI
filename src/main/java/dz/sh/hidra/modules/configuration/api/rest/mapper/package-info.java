@@ -14,7 +14,7 @@
  * @Module      : configuration
  * @Package     : dz.sh.hidra.modules.configuration.api.rest.mapper
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.configuration.api.rest.mapper package.
+ * @Description : Declares configuration REST mappers.
  *
  */
 package dz.sh.hidra.modules.configuration.api.rest.mapper;

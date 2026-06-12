@@ -14,7 +14,7 @@
  * @Module      : configuration
  * @Package     : dz.sh.hidra.modules.configuration.application.port.out
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.configuration.application.port.out package.
+ * @Description : Declares configuration outbound ports.
  *
  */
 package dz.sh.hidra.modules.configuration.application.port.out;

@@ -14,7 +14,7 @@
  * @Module      : configuration
  * @Package     : dz.sh.hidra.modules.configuration.infrastructure.persistence
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.configuration.infrastructure.persistence package.
+ * @Description : Declares configuration persistence package.
  *
  */
 package dz.sh.hidra.modules.configuration.infrastructure.persistence;

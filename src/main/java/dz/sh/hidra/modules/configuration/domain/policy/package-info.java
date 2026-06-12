@@ -14,7 +14,7 @@
  * @Module      : configuration
  * @Package     : dz.sh.hidra.modules.configuration.domain.policy
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.configuration.domain.policy package.
+ * @Description : Declares configuration domain policy helpers.
  *
  */
 package dz.sh.hidra.modules.configuration.domain.policy;

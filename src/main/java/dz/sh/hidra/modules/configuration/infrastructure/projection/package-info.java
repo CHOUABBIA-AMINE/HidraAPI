@@ -14,7 +14,7 @@
  * @Module      : configuration
  * @Package     : dz.sh.hidra.modules.configuration.infrastructure.projection
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.configuration.infrastructure.projection package.
+ * @Description : Declares configuration read projections.
  *
  */
 package dz.sh.hidra.modules.configuration.infrastructure.projection;

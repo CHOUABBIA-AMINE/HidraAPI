@@ -14,7 +14,7 @@
  * @Module      : configuration
  * @Package     : dz.sh.hidra.modules.configuration.infrastructure.persistence.mapper
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.configuration.infrastructure.persistence.mapper package.
+ * @Description : Declares configuration persistence mappers.
  *
  */
 package dz.sh.hidra.modules.configuration.infrastructure.persistence.mapper;

@@ -14,7 +14,7 @@
  * @Module      : configuration
  * @Package     : dz.sh.hidra.modules.configuration.domain
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.configuration.domain package.
+ * @Description : Declares configuration domain package.
  *
  */
 package dz.sh.hidra.modules.configuration.domain;

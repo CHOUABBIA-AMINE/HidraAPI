@@ -14,7 +14,7 @@
  * @Module      : configuration
  * @Package     : dz.sh.hidra.modules.configuration.domain.event
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.configuration.domain.event package.
+ * @Description : Declares configuration domain events.
  *
  */
 package dz.sh.hidra.modules.configuration.domain.event;

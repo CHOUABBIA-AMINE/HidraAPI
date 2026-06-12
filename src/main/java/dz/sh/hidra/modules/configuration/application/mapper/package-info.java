@@ -14,7 +14,7 @@
  * @Module      : configuration
  * @Package     : dz.sh.hidra.modules.configuration.application.mapper
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.configuration.application.mapper package.
+ * @Description : Declares configuration application mappers.
  *
  */
 package dz.sh.hidra.modules.configuration.application.mapper;

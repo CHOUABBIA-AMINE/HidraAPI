@@ -14,7 +14,7 @@
  * @Module      : configuration
  * @Package     : dz.sh.hidra.modules.configuration.application.query
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.configuration.application.query package.
+ * @Description : Declares configuration application queries.
  *
  */
 package dz.sh.hidra.modules.configuration.application.query;

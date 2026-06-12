@@ -14,7 +14,7 @@
  * @Module      : configuration
  * @Package     : dz.sh.hidra.modules.configuration.api
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.configuration.api package.
+ * @Description : Declares configuration API boundary package.
  *
  */
 package dz.sh.hidra.modules.configuration.api;

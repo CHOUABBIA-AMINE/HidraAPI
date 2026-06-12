@@ -14,7 +14,7 @@
  * @Module      : configuration
  * @Package     : dz.sh.hidra.modules.configuration.infrastructure.messaging
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.configuration.infrastructure.messaging package.
+ * @Description : Declares configuration messaging adapters.
  *
  */
 package dz.sh.hidra.modules.configuration.infrastructure.messaging;

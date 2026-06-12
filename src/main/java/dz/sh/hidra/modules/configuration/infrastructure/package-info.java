@@ -14,7 +14,7 @@
  * @Module      : configuration
  * @Package     : dz.sh.hidra.modules.configuration.infrastructure
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.configuration.infrastructure package.
+ * @Description : Declares configuration infrastructure package.
  *
  */
 package dz.sh.hidra.modules.configuration.infrastructure;

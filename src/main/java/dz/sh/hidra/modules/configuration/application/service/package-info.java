@@ -14,7 +14,7 @@
  * @Module      : configuration
  * @Package     : dz.sh.hidra.modules.configuration.application.service
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.configuration.application.service package.
+ * @Description : Declares configuration application services.
  *
  */
 package dz.sh.hidra.modules.configuration.application.service;

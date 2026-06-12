@@ -14,7 +14,7 @@
  * @Module      : configuration
  * @Package     : dz.sh.hidra.modules.configuration.api.rest.controller
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.configuration.api.rest.controller package.
+ * @Description : Declares configuration REST controller contracts.
  *
  */
 package dz.sh.hidra.modules.configuration.api.rest.controller;

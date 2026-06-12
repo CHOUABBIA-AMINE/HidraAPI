@@ -14,7 +14,7 @@
  * @Module      : configuration
  * @Package     : dz.sh.hidra.modules.configuration.infrastructure.persistence.repository
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.configuration.infrastructure.persistence.repository package.
+ * @Description : Declares configuration Spring Data JPA repositories.
  *
  */
 package dz.sh.hidra.modules.configuration.infrastructure.persistence.repository;

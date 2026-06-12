@@ -14,7 +14,7 @@
  * @Module      : configuration
  * @Package     : dz.sh.hidra.modules.configuration.application.port
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.configuration.application.port package.
+ * @Description : Declares configuration application port package.
  *
  */
 package dz.sh.hidra.modules.configuration.application.port;

@@ -14,7 +14,7 @@
  * @Module      : configuration
  * @Package     : dz.sh.hidra.modules.configuration.api.rest.request
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.configuration.api.rest.request package.
+ * @Description : Declares configuration REST request models.
  *
  */
 package dz.sh.hidra.modules.configuration.api.rest.request;

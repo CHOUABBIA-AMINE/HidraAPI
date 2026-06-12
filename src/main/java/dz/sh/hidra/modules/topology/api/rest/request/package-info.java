@@ -14,7 +14,7 @@
  * @Module      : topology
  * @Package     : dz.sh.hidra.modules.topology.api.rest.request
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.topology.api.rest.request package.
+ * @Description : Declares topology api.rest.request package.
  *
  */
 package dz.sh.hidra.modules.topology.api.rest.request;

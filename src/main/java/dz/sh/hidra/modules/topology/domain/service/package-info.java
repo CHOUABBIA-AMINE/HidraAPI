@@ -14,7 +14,7 @@
  * @Module      : topology
  * @Package     : dz.sh.hidra.modules.topology.domain.service
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.topology.domain.service package.
+ * @Description : Declares topology domain.service package.
  *
  */
 package dz.sh.hidra.modules.topology.domain.service;

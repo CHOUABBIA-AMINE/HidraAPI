@@ -14,7 +14,7 @@
  * @Module      : topology
  * @Package     : dz.sh.hidra.modules.topology.infrastructure.projection
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.topology.infrastructure.projection package.
+ * @Description : Declares topology infrastructure.projection package.
  *
  */
 package dz.sh.hidra.modules.topology.infrastructure.projection;

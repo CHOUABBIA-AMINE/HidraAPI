@@ -14,7 +14,7 @@
  * @Module      : topology
  * @Package     : dz.sh.hidra.modules.topology.application.command
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.topology.application.command package.
+ * @Description : Declares topology application.command package.
  *
  */
 package dz.sh.hidra.modules.topology.application.command;

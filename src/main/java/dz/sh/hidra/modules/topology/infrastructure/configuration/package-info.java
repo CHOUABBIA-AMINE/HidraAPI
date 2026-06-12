@@ -14,7 +14,7 @@
  * @Module      : topology
  * @Package     : dz.sh.hidra.modules.topology.infrastructure.configuration
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.topology.infrastructure.configuration package.
+ * @Description : Declares topology infrastructure.configuration package.
  *
  */
 package dz.sh.hidra.modules.topology.infrastructure.configuration;

@@ -14,7 +14,7 @@
  * @Module      : topology
  * @Package     : dz.sh.hidra.modules.topology.infrastructure.messaging
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.topology.infrastructure.messaging package.
+ * @Description : Declares topology infrastructure.messaging package.
  *
  */
 package dz.sh.hidra.modules.topology.infrastructure.messaging;

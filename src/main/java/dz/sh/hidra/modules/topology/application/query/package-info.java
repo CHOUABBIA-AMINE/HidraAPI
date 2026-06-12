@@ -14,7 +14,7 @@
  * @Module      : topology
  * @Package     : dz.sh.hidra.modules.topology.application.query
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.topology.application.query package.
+ * @Description : Declares topology application.query package.
  *
  */
 package dz.sh.hidra.modules.topology.application.query;

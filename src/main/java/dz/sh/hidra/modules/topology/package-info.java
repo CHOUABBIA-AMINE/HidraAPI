@@ -14,7 +14,7 @@
  * @Module      : topology
  * @Package     : dz.sh.hidra.modules.topology
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.topology package.
+ * @Description : Declares topology root package.
  *
  */
 package dz.sh.hidra.modules.topology;

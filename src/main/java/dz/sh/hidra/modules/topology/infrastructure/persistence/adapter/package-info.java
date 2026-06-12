@@ -14,7 +14,7 @@
  * @Module      : topology
  * @Package     : dz.sh.hidra.modules.topology.infrastructure.persistence.adapter
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.topology.infrastructure.persistence.adapter package.
+ * @Description : Declares topology infrastructure.persistence.adapter package.
  *
  */
 package dz.sh.hidra.modules.topology.infrastructure.persistence.adapter;

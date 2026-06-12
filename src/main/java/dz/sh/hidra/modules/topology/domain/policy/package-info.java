@@ -14,7 +14,7 @@
  * @Module      : topology
  * @Package     : dz.sh.hidra.modules.topology.domain.policy
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.topology.domain.policy package.
+ * @Description : Declares topology domain.policy package.
  *
  */
 package dz.sh.hidra.modules.topology.domain.policy;

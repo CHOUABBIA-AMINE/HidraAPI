@@ -14,7 +14,7 @@
  * @Module      : topology
  * @Package     : dz.sh.hidra.modules.topology.application.port
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.topology.application.port package.
+ * @Description : Declares topology application.port package.
  *
  */
 package dz.sh.hidra.modules.topology.application.port;

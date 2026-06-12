@@ -14,7 +14,7 @@
  * @Module      : identity
  * @Package     : dz.sh.hidra.modules.identity.infrastructure.persistence
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.identity.infrastructure.persistence package.
+ * @Description : Declares identity persistence package.
  *
  */
 package dz.sh.hidra.modules.identity.infrastructure.persistence;

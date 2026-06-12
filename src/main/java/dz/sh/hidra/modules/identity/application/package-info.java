@@ -14,7 +14,7 @@
  * @Module      : identity
  * @Package     : dz.sh.hidra.modules.identity.application
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.identity.application package.
+ * @Description : Declares identity application layer package.
  *
  */
 package dz.sh.hidra.modules.identity.application;

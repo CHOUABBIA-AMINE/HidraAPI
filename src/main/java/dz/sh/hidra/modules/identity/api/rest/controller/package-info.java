@@ -14,7 +14,7 @@
  * @Module      : identity
  * @Package     : dz.sh.hidra.modules.identity.api.rest.controller
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.identity.api.rest.controller package.
+ * @Description : Declares identity REST controller contracts.
  *
  */
 package dz.sh.hidra.modules.identity.api.rest.controller;

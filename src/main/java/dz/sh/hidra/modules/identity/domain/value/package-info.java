@@ -14,7 +14,7 @@
  * @Module      : identity
  * @Package     : dz.sh.hidra.modules.identity.domain.value
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.identity.domain.value package.
+ * @Description : Declares identity domain value objects and enums.
  *
  */
 package dz.sh.hidra.modules.identity.domain.value;

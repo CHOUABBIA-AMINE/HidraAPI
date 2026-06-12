@@ -14,7 +14,7 @@
  * @Module      : identity
  * @Package     : dz.sh.hidra.modules.identity.infrastructure.configuration
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.identity.infrastructure.configuration package.
+ * @Description : Declares identity infrastructure configuration.
  *
  */
 package dz.sh.hidra.modules.identity.infrastructure.configuration;

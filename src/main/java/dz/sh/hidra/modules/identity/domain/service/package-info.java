@@ -14,7 +14,7 @@
  * @Module      : identity
  * @Package     : dz.sh.hidra.modules.identity.domain.service
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.identity.domain.service package.
+ * @Description : Declares identity domain services.
  *
  */
 package dz.sh.hidra.modules.identity.domain.service;

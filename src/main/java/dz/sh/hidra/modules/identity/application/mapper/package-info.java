@@ -14,7 +14,7 @@
  * @Module      : identity
  * @Package     : dz.sh.hidra.modules.identity.application.mapper
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.identity.application.mapper package.
+ * @Description : Declares identity application mappers.
  *
  */
 package dz.sh.hidra.modules.identity.application.mapper;

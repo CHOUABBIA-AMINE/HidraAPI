@@ -14,7 +14,7 @@
  * @Module      : identity
  * @Package     : dz.sh.hidra.modules.identity.domain.event
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.identity.domain.event package.
+ * @Description : Declares identity domain events.
  *
  */
 package dz.sh.hidra.modules.identity.domain.event;

@@ -14,7 +14,7 @@
  * @Module      : identity
  * @Package     : dz.sh.hidra.modules.identity.application.port.out
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.identity.application.port.out package.
+ * @Description : Declares identity outbound persistence/integration ports.
  *
  */
 package dz.sh.hidra.modules.identity.application.port.out;

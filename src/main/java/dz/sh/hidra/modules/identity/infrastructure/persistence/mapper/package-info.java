@@ -14,7 +14,7 @@
  * @Module      : identity
  * @Package     : dz.sh.hidra.modules.identity.infrastructure.persistence.mapper
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.identity.infrastructure.persistence.mapper package.
+ * @Description : Declares identity persistence mappers.
  *
  */
 package dz.sh.hidra.modules.identity.infrastructure.persistence.mapper;

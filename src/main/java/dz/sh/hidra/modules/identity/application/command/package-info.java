@@ -14,7 +14,7 @@
  * @Module      : identity
  * @Package     : dz.sh.hidra.modules.identity.application.command
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.identity.application.command package.
+ * @Description : Declares identity application commands.
  *
  */
 package dz.sh.hidra.modules.identity.application.command;

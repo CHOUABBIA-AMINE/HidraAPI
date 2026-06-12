@@ -14,7 +14,7 @@
  * @Module      : identity
  * @Package     : dz.sh.hidra.modules.identity.api.rest.response
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.identity.api.rest.response package.
+ * @Description : Declares identity REST response models.
  *
  */
 package dz.sh.hidra.modules.identity.api.rest.response;

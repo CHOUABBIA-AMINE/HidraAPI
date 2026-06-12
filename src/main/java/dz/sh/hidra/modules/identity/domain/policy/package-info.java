@@ -14,7 +14,7 @@
  * @Module      : identity
  * @Package     : dz.sh.hidra.modules.identity.domain.policy
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.identity.domain.policy package.
+ * @Description : Declares identity authorization policy helpers.
  *
  */
 package dz.sh.hidra.modules.identity.domain.policy;

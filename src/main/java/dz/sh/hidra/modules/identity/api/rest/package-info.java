@@ -14,7 +14,7 @@
  * @Module      : identity
  * @Package     : dz.sh.hidra.modules.identity.api.rest
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.identity.api.rest package.
+ * @Description : Declares identity REST boundary package.
  *
  */
 package dz.sh.hidra.modules.identity.api.rest;

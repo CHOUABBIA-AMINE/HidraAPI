@@ -14,7 +14,7 @@
  * @Module      : identity
  * @Package     : dz.sh.hidra.modules.identity.application.port
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.identity.application.port package.
+ * @Description : Declares identity application port package.
  *
  */
 package dz.sh.hidra.modules.identity.application.port;

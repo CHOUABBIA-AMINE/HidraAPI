@@ -14,7 +14,7 @@
  * @Module      : identity
  * @Package     : dz.sh.hidra.modules.identity.infrastructure.integration
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.identity.infrastructure.integration package.
+ * @Description : Declares identity external IDM integration adapters.
  *
  */
 package dz.sh.hidra.modules.identity.infrastructure.integration;

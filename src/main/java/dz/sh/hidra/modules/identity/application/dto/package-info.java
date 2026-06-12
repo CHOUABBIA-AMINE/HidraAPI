@@ -14,7 +14,7 @@
  * @Module      : identity
  * @Package     : dz.sh.hidra.modules.identity.application.dto
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.identity.application.dto package.
+ * @Description : Declares identity application DTOs.
  *
  */
 package dz.sh.hidra.modules.identity.application.dto;

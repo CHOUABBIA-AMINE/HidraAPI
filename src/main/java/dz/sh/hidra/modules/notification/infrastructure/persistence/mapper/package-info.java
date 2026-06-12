@@ -14,7 +14,7 @@
  * @Module      : notification
  * @Package     : dz.sh.hidra.modules.notification.infrastructure.persistence.mapper
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.notification.infrastructure.persistence.mapper package.
+ * @Description : Declares notification persistence mappers.
  *
  */
 package dz.sh.hidra.modules.notification.infrastructure.persistence.mapper;

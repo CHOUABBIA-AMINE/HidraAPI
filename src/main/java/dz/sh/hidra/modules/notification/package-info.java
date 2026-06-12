@@ -14,7 +14,7 @@
  * @Module      : notification
  * @Package     : dz.sh.hidra.modules.notification
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.notification package.
+ * @Description : Declares notification module root package.
  *
  */
 package dz.sh.hidra.modules.notification;

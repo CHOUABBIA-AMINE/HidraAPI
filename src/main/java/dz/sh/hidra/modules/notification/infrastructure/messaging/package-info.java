@@ -14,7 +14,7 @@
  * @Module      : notification
  * @Package     : dz.sh.hidra.modules.notification.infrastructure.messaging
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.notification.infrastructure.messaging package.
+ * @Description : Declares notification messaging adapters.
  *
  */
 package dz.sh.hidra.modules.notification.infrastructure.messaging;

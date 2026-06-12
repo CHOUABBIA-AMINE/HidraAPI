@@ -14,7 +14,7 @@
  * @Module      : notification
  * @Package     : dz.sh.hidra.modules.notification.api.rest.mapper
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.notification.api.rest.mapper package.
+ * @Description : Declares notification REST mappers.
  *
  */
 package dz.sh.hidra.modules.notification.api.rest.mapper;

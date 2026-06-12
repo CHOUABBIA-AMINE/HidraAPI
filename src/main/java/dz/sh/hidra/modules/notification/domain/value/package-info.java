@@ -14,7 +14,7 @@
  * @Module      : notification
  * @Package     : dz.sh.hidra.modules.notification.domain.value
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.notification.domain.value package.
+ * @Description : Declares notification domain value objects and enums.
  *
  */
 package dz.sh.hidra.modules.notification.domain.value;

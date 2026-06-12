@@ -14,7 +14,7 @@
  * @Module      : notification
  * @Package     : dz.sh.hidra.modules.notification.domain.exception
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.notification.domain.exception package.
+ * @Description : Declares notification domain exceptions.
  *
  */
 package dz.sh.hidra.modules.notification.domain.exception;

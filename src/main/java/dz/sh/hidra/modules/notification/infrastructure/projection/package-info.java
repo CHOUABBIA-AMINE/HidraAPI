@@ -14,7 +14,7 @@
  * @Module      : notification
  * @Package     : dz.sh.hidra.modules.notification.infrastructure.projection
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.notification.infrastructure.projection package.
+ * @Description : Declares notification read projections.
  *
  */
 package dz.sh.hidra.modules.notification.infrastructure.projection;

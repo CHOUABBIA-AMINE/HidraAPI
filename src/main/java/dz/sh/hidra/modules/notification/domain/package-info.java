@@ -14,7 +14,7 @@
  * @Module      : notification
  * @Package     : dz.sh.hidra.modules.notification.domain
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.notification.domain package.
+ * @Description : Declares notification domain package.
  *
  */
 package dz.sh.hidra.modules.notification.domain;

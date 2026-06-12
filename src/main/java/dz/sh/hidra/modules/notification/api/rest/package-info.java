@@ -14,7 +14,7 @@
  * @Module      : notification
  * @Package     : dz.sh.hidra.modules.notification.api.rest
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.notification.api.rest package.
+ * @Description : Declares notification REST boundary package.
  *
  */
 package dz.sh.hidra.modules.notification.api.rest;

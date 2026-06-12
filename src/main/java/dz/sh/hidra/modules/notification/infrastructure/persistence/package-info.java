@@ -14,7 +14,7 @@
  * @Module      : notification
  * @Package     : dz.sh.hidra.modules.notification.infrastructure.persistence
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.notification.infrastructure.persistence package.
+ * @Description : Declares notification persistence package.
  *
  */
 package dz.sh.hidra.modules.notification.infrastructure.persistence;

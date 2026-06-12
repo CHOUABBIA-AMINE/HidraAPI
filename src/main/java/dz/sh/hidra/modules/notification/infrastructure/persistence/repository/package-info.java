@@ -14,7 +14,7 @@
  * @Module      : notification
  * @Package     : dz.sh.hidra.modules.notification.infrastructure.persistence.repository
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.notification.infrastructure.persistence.repository package.
+ * @Description : Declares notification Spring Data JPA repositories.
  *
  */
 package dz.sh.hidra.modules.notification.infrastructure.persistence.repository;

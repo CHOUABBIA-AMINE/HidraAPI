@@ -14,7 +14,7 @@
  * @Module      : notification
  * @Package     : dz.sh.hidra.modules.notification.application.port
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.notification.application.port package.
+ * @Description : Declares notification application port package.
  *
  */
 package dz.sh.hidra.modules.notification.application.port;

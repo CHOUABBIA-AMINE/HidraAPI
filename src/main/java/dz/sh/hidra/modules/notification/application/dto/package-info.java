@@ -14,7 +14,7 @@
  * @Module      : notification
  * @Package     : dz.sh.hidra.modules.notification.application.dto
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.notification.application.dto package.
+ * @Description : Declares notification application DTOs.
  *
  */
 package dz.sh.hidra.modules.notification.application.dto;

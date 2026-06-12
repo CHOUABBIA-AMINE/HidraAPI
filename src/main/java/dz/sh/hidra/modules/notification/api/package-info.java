@@ -14,7 +14,7 @@
  * @Module      : notification
  * @Package     : dz.sh.hidra.modules.notification.api
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.notification.api package.
+ * @Description : Declares notification API boundary package.
  *
  */
 package dz.sh.hidra.modules.notification.api;

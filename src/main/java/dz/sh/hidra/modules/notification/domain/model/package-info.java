@@ -14,7 +14,7 @@
  * @Module      : notification
  * @Package     : dz.sh.hidra.modules.notification.domain.model
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.notification.domain.model package.
+ * @Description : Declares notification domain entities and aggregates.
  *
  */
 package dz.sh.hidra.modules.notification.domain.model;

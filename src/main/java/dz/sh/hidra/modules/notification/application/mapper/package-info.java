@@ -14,7 +14,7 @@
  * @Module      : notification
  * @Package     : dz.sh.hidra.modules.notification.application.mapper
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.notification.application.mapper package.
+ * @Description : Declares notification application mappers.
  *
  */
 package dz.sh.hidra.modules.notification.application.mapper;

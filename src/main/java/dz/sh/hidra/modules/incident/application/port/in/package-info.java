@@ -14,7 +14,7 @@
  * @Module      : incident
  * @Package     : dz.sh.hidra.modules.incident.application.port.in
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.incident.application.port.in package.
+ * @Description : Declares incident inbound use-case ports.
  *
  */
 package dz.sh.hidra.modules.incident.application.port.in;

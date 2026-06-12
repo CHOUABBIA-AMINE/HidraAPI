@@ -14,7 +14,7 @@
  * @Module      : incident
  * @Package     : dz.sh.hidra.modules.incident.domain.model
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.incident.domain.model package.
+ * @Description : Declares incident domain entities and aggregates.
  *
  */
 package dz.sh.hidra.modules.incident.domain.model;

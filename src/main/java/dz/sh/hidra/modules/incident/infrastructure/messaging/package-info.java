@@ -14,7 +14,7 @@
  * @Module      : incident
  * @Package     : dz.sh.hidra.modules.incident.infrastructure.messaging
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.incident.infrastructure.messaging package.
+ * @Description : Declares incident messaging adapters.
  *
  */
 package dz.sh.hidra.modules.incident.infrastructure.messaging;

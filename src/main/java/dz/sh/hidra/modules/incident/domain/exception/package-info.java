@@ -14,7 +14,7 @@
  * @Module      : incident
  * @Package     : dz.sh.hidra.modules.incident.domain.exception
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.incident.domain.exception package.
+ * @Description : Declares incident domain exceptions.
  *
  */
 package dz.sh.hidra.modules.incident.domain.exception;

@@ -14,7 +14,7 @@
  * @Module      : incident
  * @Package     : dz.sh.hidra.modules.incident.infrastructure.persistence
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.incident.infrastructure.persistence package.
+ * @Description : Declares incident persistence package.
  *
  */
 package dz.sh.hidra.modules.incident.infrastructure.persistence;

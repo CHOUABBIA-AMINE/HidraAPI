@@ -14,7 +14,7 @@
  * @Module      : incident
  * @Package     : dz.sh.hidra.modules.incident.infrastructure.projection
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.incident.infrastructure.projection package.
+ * @Description : Declares incident read projections.
  *
  */
 package dz.sh.hidra.modules.incident.infrastructure.projection;

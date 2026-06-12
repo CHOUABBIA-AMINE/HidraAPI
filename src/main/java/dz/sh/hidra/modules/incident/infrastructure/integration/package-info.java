@@ -14,7 +14,7 @@
  * @Module      : incident
  * @Package     : dz.sh.hidra.modules.incident.infrastructure.integration
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.incident.infrastructure.integration package.
+ * @Description : Declares incident integration adapters.
  *
  */
 package dz.sh.hidra.modules.incident.infrastructure.integration;

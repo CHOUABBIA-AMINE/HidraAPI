@@ -14,7 +14,7 @@
  * @Module      : incident
  * @Package     : dz.sh.hidra.modules.incident.api.rest
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.incident.api.rest package.
+ * @Description : Declares incident REST boundary package.
  *
  */
 package dz.sh.hidra.modules.incident.api.rest;

@@ -14,7 +14,7 @@
  * @Module      : incident
  * @Package     : dz.sh.hidra.modules.incident.api
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.incident.api package.
+ * @Description : Declares incident API boundary package.
  *
  */
 package dz.sh.hidra.modules.incident.api;

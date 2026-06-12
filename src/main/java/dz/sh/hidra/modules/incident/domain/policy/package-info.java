@@ -14,7 +14,7 @@
  * @Module      : incident
  * @Package     : dz.sh.hidra.modules.incident.domain.policy
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.incident.domain.policy package.
+ * @Description : Declares incident domain policy helpers.
  *
  */
 package dz.sh.hidra.modules.incident.domain.policy;

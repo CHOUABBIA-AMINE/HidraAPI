@@ -14,7 +14,7 @@
  * @Module      : incident
  * @Package     : dz.sh.hidra.modules.incident.application.query
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.incident.application.query package.
+ * @Description : Declares incident application queries.
  *
  */
 package dz.sh.hidra.modules.incident.application.query;

@@ -14,7 +14,7 @@
  * @Module      : incident
  * @Package     : dz.sh.hidra.modules.incident.infrastructure.persistence.adapter
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.incident.infrastructure.persistence.adapter package.
+ * @Description : Declares incident persistence adapters.
  *
  */
 package dz.sh.hidra.modules.incident.infrastructure.persistence.adapter;

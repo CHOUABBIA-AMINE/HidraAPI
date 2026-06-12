@@ -14,7 +14,7 @@
  * @Module      : incident
  * @Package     : dz.sh.hidra.modules.incident.infrastructure.persistence.mapper
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.incident.infrastructure.persistence.mapper package.
+ * @Description : Declares incident persistence mappers.
  *
  */
 package dz.sh.hidra.modules.incident.infrastructure.persistence.mapper;

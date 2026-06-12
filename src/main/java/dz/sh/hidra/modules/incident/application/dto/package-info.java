@@ -14,7 +14,7 @@
  * @Module      : incident
  * @Package     : dz.sh.hidra.modules.incident.application.dto
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.incident.application.dto package.
+ * @Description : Declares incident application DTOs.
  *
  */
 package dz.sh.hidra.modules.incident.application.dto;

@@ -14,7 +14,7 @@
  * @Module      : incident
  * @Package     : dz.sh.hidra.modules.incident.infrastructure
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.incident.infrastructure package.
+ * @Description : Declares incident infrastructure package.
  *
  */
 package dz.sh.hidra.modules.incident.infrastructure;

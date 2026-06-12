@@ -14,7 +14,7 @@
  * @Module      : incident
  * @Package     : dz.sh.hidra.modules.incident.api.rest.controller
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.incident.api.rest.controller package.
+ * @Description : Declares incident REST controller contracts.
  *
  */
 package dz.sh.hidra.modules.incident.api.rest.controller;

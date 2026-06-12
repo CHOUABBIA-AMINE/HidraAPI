@@ -14,7 +14,7 @@
  * @Module      : incident
  * @Package     : dz.sh.hidra.modules.incident.api.rest.mapper
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.incident.api.rest.mapper package.
+ * @Description : Declares incident REST mappers.
  *
  */
 package dz.sh.hidra.modules.incident.api.rest.mapper;

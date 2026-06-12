@@ -14,7 +14,7 @@
  * @Module      : incident
  * @Package     : dz.sh.hidra.modules.incident.infrastructure.persistence.entity
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.incident.infrastructure.persistence.entity package.
+ * @Description : Declares incident JPA entities.
  *
  */
 package dz.sh.hidra.modules.incident.infrastructure.persistence.entity;

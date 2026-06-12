@@ -14,7 +14,7 @@
  * @Module      : organization
  * @Package     : dz.sh.hidra.modules.organization.application.port
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.organization.application.port package.
+ * @Description : Declares organization application port package.
  *
  */
 package dz.sh.hidra.modules.organization.application.port;

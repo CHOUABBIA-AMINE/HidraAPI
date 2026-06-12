@@ -14,7 +14,7 @@
  * @Module      : organization
  * @Package     : dz.sh.hidra.modules.organization.api.rest.request
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.organization.api.rest.request package.
+ * @Description : Declares organization REST request models.
  *
  */
 package dz.sh.hidra.modules.organization.api.rest.request;

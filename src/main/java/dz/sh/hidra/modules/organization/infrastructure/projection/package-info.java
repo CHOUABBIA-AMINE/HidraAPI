@@ -14,7 +14,7 @@
  * @Module      : organization
  * @Package     : dz.sh.hidra.modules.organization.infrastructure.projection
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.organization.infrastructure.projection package.
+ * @Description : Declares organization read projections.
  *
  */
 package dz.sh.hidra.modules.organization.infrastructure.projection;

@@ -14,7 +14,7 @@
  * @Module      : organization
  * @Package     : dz.sh.hidra.modules.organization.infrastructure.persistence.entity
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.organization.infrastructure.persistence.entity package.
+ * @Description : Declares organization JPA entities.
  *
  */
 package dz.sh.hidra.modules.organization.infrastructure.persistence.entity;

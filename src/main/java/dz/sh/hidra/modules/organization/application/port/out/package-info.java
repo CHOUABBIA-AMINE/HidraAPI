@@ -14,7 +14,7 @@
  * @Module      : organization
  * @Package     : dz.sh.hidra.modules.organization.application.port.out
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.organization.application.port.out package.
+ * @Description : Declares organization outbound persistence ports.
  *
  */
 package dz.sh.hidra.modules.organization.application.port.out;

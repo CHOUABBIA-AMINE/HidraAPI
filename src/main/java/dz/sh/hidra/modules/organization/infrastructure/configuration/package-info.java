@@ -14,7 +14,7 @@
  * @Module      : organization
  * @Package     : dz.sh.hidra.modules.organization.infrastructure.configuration
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.organization.infrastructure.configuration package.
+ * @Description : Declares organization infrastructure configuration.
  *
  */
 package dz.sh.hidra.modules.organization.infrastructure.configuration;

@@ -14,7 +14,7 @@
  * @Module      : organization
  * @Package     : dz.sh.hidra.modules.organization.domain.service
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.organization.domain.service package.
+ * @Description : Declares organization domain services.
  *
  */
 package dz.sh.hidra.modules.organization.domain.service;

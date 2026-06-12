@@ -14,7 +14,7 @@
  * @Module      : organization
  * @Package     : dz.sh.hidra.modules.organization.application.service
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.organization.application.service package.
+ * @Description : Declares organization application services.
  *
  */
 package dz.sh.hidra.modules.organization.application.service;

@@ -14,7 +14,7 @@
  * @Module      : organization
  * @Package     : dz.sh.hidra.modules.organization.domain.exception
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.organization.domain.exception package.
+ * @Description : Declares organization domain exceptions.
  *
  */
 package dz.sh.hidra.modules.organization.domain.exception;

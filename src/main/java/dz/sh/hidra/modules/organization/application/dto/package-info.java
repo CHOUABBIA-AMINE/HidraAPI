@@ -14,7 +14,7 @@
  * @Module      : organization
  * @Package     : dz.sh.hidra.modules.organization.application.dto
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.organization.application.dto package.
+ * @Description : Declares organization application DTOs.
  *
  */
 package dz.sh.hidra.modules.organization.application.dto;

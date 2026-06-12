@@ -14,7 +14,7 @@
  * @Module      : organization
  * @Package     : dz.sh.hidra.modules.organization.application.query
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.organization.application.query package.
+ * @Description : Declares organization application queries.
  *
  */
 package dz.sh.hidra.modules.organization.application.query;

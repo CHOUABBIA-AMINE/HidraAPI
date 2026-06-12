@@ -14,7 +14,7 @@
  * @Module      : organization
  * @Package     : dz.sh.hidra.modules.organization.application.command
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.organization.application.command package.
+ * @Description : Declares organization application commands.
  *
  */
 package dz.sh.hidra.modules.organization.application.command;

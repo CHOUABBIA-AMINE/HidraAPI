@@ -1,0 +1,34 @@
+/**
+ *
+ * @Project     : HidraAPI
+ * @Product     : Hidra - Hydrocarbon Intelligence for Data, Risk, and Analytics
+ * @Author      : Abir MEDJERAB
+ * @Owner       : Sonatrach / TRC : Digitalization Initiative
+ *
+ * @Name        : ResponsibilityAssignmentRepositoryPort
+ * @CreatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-06-11
+ *
+ * @Type        : Interface
+ * @Layer       : Application
+ * @Module      : organization
+ * @Package     : dz.sh.hidra.modules.organization.application.port.out
+ *
+ * @Description : Repository port for ResponsibilityAssignment.
+ *
+ */
+package dz.sh.hidra.modules.organization.application.port.out;
+
+import dz.sh.hidra.modules.organization.domain.model.ResponsibilityAssignment;
+
+import java.util.Optional;
+
+/**
+ * Repository port for ResponsibilityAssignment.
+ */
+public interface ResponsibilityAssignmentRepositoryPort {
+
+    ResponsibilityAssignment save(ResponsibilityAssignment model);
+
+    Optional<ResponsibilityAssignment> findById(String id);
+}

@@ -14,7 +14,7 @@
  * @Module      : organization
  * @Package     : dz.sh.hidra.modules.organization.api.rest
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.organization.api.rest package.
+ * @Description : Declares organization REST boundary package.
  *
  */
 package dz.sh.hidra.modules.organization.api.rest;

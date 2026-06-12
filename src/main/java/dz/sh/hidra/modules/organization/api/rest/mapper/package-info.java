@@ -14,7 +14,7 @@
  * @Module      : organization
  * @Package     : dz.sh.hidra.modules.organization.api.rest.mapper
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.organization.api.rest.mapper package.
+ * @Description : Declares organization REST mappers.
  *
  */
 package dz.sh.hidra.modules.organization.api.rest.mapper;

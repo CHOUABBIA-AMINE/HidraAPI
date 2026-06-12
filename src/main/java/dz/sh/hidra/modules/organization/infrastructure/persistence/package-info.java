@@ -14,7 +14,7 @@
  * @Module      : organization
  * @Package     : dz.sh.hidra.modules.organization.infrastructure.persistence
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.organization.infrastructure.persistence package.
+ * @Description : Declares organization persistence package.
  *
  */
 package dz.sh.hidra.modules.organization.infrastructure.persistence;

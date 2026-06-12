@@ -14,7 +14,7 @@
  * @Module      : analytics
  * @Package     : dz.sh.hidra.modules.analytics.infrastructure.persistence.repository
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.analytics.infrastructure.persistence.repository package.
+ * @Description : Declares analytics Spring Data JPA repositories.
  *
  */
 package dz.sh.hidra.modules.analytics.infrastructure.persistence.repository;

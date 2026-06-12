@@ -14,7 +14,7 @@
  * @Module      : analytics
  * @Package     : dz.sh.hidra.modules.analytics.application.mapper
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.analytics.application.mapper package.
+ * @Description : Declares analytics application mappers.
  *
  */
 package dz.sh.hidra.modules.analytics.application.mapper;

@@ -14,7 +14,7 @@
  * @Module      : analytics
  * @Package     : dz.sh.hidra.modules.analytics.application.command
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.analytics.application.command package.
+ * @Description : Declares analytics application commands.
  *
  */
 package dz.sh.hidra.modules.analytics.application.command;

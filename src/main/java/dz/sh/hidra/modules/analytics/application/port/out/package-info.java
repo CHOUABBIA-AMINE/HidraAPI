@@ -14,7 +14,7 @@
  * @Module      : analytics
  * @Package     : dz.sh.hidra.modules.analytics.application.port.out
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.analytics.application.port.out package.
+ * @Description : Declares analytics outbound ports.
  *
  */
 package dz.sh.hidra.modules.analytics.application.port.out;

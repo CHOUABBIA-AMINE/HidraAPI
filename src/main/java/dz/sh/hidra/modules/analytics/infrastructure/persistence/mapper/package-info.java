@@ -14,7 +14,7 @@
  * @Module      : analytics
  * @Package     : dz.sh.hidra.modules.analytics.infrastructure.persistence.mapper
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.analytics.infrastructure.persistence.mapper package.
+ * @Description : Declares analytics persistence mappers.
  *
  */
 package dz.sh.hidra.modules.analytics.infrastructure.persistence.mapper;

@@ -14,7 +14,7 @@
  * @Module      : analytics
  * @Package     : dz.sh.hidra.modules.analytics.infrastructure.integration
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.analytics.infrastructure.integration package.
+ * @Description : Declares analytics integration adapters.
  *
  */
 package dz.sh.hidra.modules.analytics.infrastructure.integration;

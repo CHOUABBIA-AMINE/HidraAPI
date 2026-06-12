@@ -1,0 +1,34 @@
+/**
+ *
+ * @Project     : HidraAPI
+ * @Product     : Hidra - Hydrocarbon Intelligence for Data, Risk, and Analytics
+ * @Author      : Abir MEDJERAB
+ * @Owner       : Sonatrach / TRC : Digitalization Initiative
+ *
+ * @Name        : DigitalTwinReadinessAssessmentRepositoryPort
+ * @CreatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-06-11
+ *
+ * @Type        : Interface
+ * @Layer       : Application
+ * @Module      : analytics
+ * @Package     : dz.sh.hidra.modules.analytics.application.port.out
+ *
+ * @Description : Repository port for DigitalTwinReadinessAssessment.
+ *
+ */
+package dz.sh.hidra.modules.analytics.application.port.out;
+
+import dz.sh.hidra.modules.analytics.domain.model.DigitalTwinReadinessAssessment;
+
+import java.util.Optional;
+
+/**
+ * Repository port for DigitalTwinReadinessAssessment.
+ */
+public interface DigitalTwinReadinessAssessmentRepositoryPort {
+
+    DigitalTwinReadinessAssessment save(DigitalTwinReadinessAssessment model);
+
+    Optional<DigitalTwinReadinessAssessment> findById(String id);
+}

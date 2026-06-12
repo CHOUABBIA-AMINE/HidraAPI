@@ -14,7 +14,7 @@
  * @Module      : analytics
  * @Package     : dz.sh.hidra.modules.analytics.domain.service
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.analytics.domain.service package.
+ * @Description : Declares analytics domain services.
  *
  */
 package dz.sh.hidra.modules.analytics.domain.service;

@@ -14,7 +14,7 @@
  * @Module      : analytics
  * @Package     : dz.sh.hidra.modules.analytics.application.query
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.analytics.application.query package.
+ * @Description : Declares analytics application queries.
  *
  */
 package dz.sh.hidra.modules.analytics.application.query;

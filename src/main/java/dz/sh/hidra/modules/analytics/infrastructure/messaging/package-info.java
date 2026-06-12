@@ -14,7 +14,7 @@
  * @Module      : analytics
  * @Package     : dz.sh.hidra.modules.analytics.infrastructure.messaging
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.analytics.infrastructure.messaging package.
+ * @Description : Declares analytics messaging adapters.
  *
  */
 package dz.sh.hidra.modules.analytics.infrastructure.messaging;

@@ -14,7 +14,7 @@
  * @Module      : analytics
  * @Package     : dz.sh.hidra.modules.analytics.domain.event
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.analytics.domain.event package.
+ * @Description : Declares analytics domain events.
  *
  */
 package dz.sh.hidra.modules.analytics.domain.event;

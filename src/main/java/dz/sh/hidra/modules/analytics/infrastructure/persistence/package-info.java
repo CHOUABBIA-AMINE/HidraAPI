@@ -14,7 +14,7 @@
  * @Module      : analytics
  * @Package     : dz.sh.hidra.modules.analytics.infrastructure.persistence
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.analytics.infrastructure.persistence package.
+ * @Description : Declares analytics persistence package.
  *
  */
 package dz.sh.hidra.modules.analytics.infrastructure.persistence;

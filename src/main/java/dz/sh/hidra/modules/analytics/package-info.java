@@ -14,7 +14,7 @@
  * @Module      : analytics
  * @Package     : dz.sh.hidra.modules.analytics
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.analytics package.
+ * @Description : Declares analytics module root package.
  *
  */
 package dz.sh.hidra.modules.analytics;

@@ -14,7 +14,7 @@
  * @Module      : analytics
  * @Package     : dz.sh.hidra.modules.analytics.api.rest.mapper
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.analytics.api.rest.mapper package.
+ * @Description : Declares analytics REST mappers.
  *
  */
 package dz.sh.hidra.modules.analytics.api.rest.mapper;

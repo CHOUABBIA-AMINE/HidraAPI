@@ -14,7 +14,7 @@
  * @Module      : analytics
  * @Package     : dz.sh.hidra.modules.analytics.domain.exception
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.analytics.domain.exception package.
+ * @Description : Declares analytics domain exceptions.
  *
  */
 package dz.sh.hidra.modules.analytics.domain.exception;

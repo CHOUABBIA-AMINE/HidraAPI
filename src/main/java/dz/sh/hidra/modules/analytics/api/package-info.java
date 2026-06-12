@@ -14,7 +14,7 @@
  * @Module      : analytics
  * @Package     : dz.sh.hidra.modules.analytics.api
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.analytics.api package.
+ * @Description : Declares analytics API boundary package.
  *
  */
 package dz.sh.hidra.modules.analytics.api;

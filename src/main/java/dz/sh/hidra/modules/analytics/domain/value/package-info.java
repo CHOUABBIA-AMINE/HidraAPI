@@ -14,7 +14,7 @@
  * @Module      : analytics
  * @Package     : dz.sh.hidra.modules.analytics.domain.value
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.analytics.domain.value package.
+ * @Description : Declares analytics domain value objects and enums.
  *
  */
 package dz.sh.hidra.modules.analytics.domain.value;

@@ -14,7 +14,7 @@
  * @Module      : analytics
  * @Package     : dz.sh.hidra.modules.analytics.application.dto
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.analytics.application.dto package.
+ * @Description : Declares analytics application DTOs.
  *
  */
 package dz.sh.hidra.modules.analytics.application.dto;

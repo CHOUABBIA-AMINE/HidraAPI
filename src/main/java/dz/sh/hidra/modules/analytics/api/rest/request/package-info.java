@@ -14,7 +14,7 @@
  * @Module      : analytics
  * @Package     : dz.sh.hidra.modules.analytics.api.rest.request
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.analytics.api.rest.request package.
+ * @Description : Declares analytics REST request models.
  *
  */
 package dz.sh.hidra.modules.analytics.api.rest.request;

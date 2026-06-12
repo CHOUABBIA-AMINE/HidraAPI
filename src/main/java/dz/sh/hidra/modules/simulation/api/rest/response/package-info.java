@@ -14,7 +14,7 @@
  * @Module      : simulation
  * @Package     : dz.sh.hidra.modules.simulation.api.rest.response
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.simulation.api.rest.response package.
+ * @Description : Declares simulation REST response models.
  *
  */
 package dz.sh.hidra.modules.simulation.api.rest.response;

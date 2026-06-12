@@ -14,7 +14,7 @@
  * @Module      : simulation
  * @Package     : dz.sh.hidra.modules.simulation.application.port.out
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.simulation.application.port.out package.
+ * @Description : Declares simulation outbound ports.
  *
  */
 package dz.sh.hidra.modules.simulation.application.port.out;

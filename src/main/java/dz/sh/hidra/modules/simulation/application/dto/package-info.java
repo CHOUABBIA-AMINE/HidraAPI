@@ -14,7 +14,7 @@
  * @Module      : simulation
  * @Package     : dz.sh.hidra.modules.simulation.application.dto
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.simulation.application.dto package.
+ * @Description : Declares simulation application DTOs.
  *
  */
 package dz.sh.hidra.modules.simulation.application.dto;

@@ -14,7 +14,7 @@
  * @Module      : simulation
  * @Package     : dz.sh.hidra.modules.simulation.domain.event
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.simulation.domain.event package.
+ * @Description : Declares simulation domain events.
  *
  */
 package dz.sh.hidra.modules.simulation.domain.event;

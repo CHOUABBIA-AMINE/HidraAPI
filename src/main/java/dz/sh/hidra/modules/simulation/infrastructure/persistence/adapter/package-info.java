@@ -14,7 +14,7 @@
  * @Module      : simulation
  * @Package     : dz.sh.hidra.modules.simulation.infrastructure.persistence.adapter
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.simulation.infrastructure.persistence.adapter package.
+ * @Description : Declares simulation persistence adapters.
  *
  */
 package dz.sh.hidra.modules.simulation.infrastructure.persistence.adapter;

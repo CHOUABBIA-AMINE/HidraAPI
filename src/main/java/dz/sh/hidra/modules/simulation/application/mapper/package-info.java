@@ -14,7 +14,7 @@
  * @Module      : simulation
  * @Package     : dz.sh.hidra.modules.simulation.application.mapper
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.simulation.application.mapper package.
+ * @Description : Declares simulation application mappers.
  *
  */
 package dz.sh.hidra.modules.simulation.application.mapper;

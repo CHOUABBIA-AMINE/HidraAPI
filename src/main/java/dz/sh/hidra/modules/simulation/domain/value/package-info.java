@@ -14,7 +14,7 @@
  * @Module      : simulation
  * @Package     : dz.sh.hidra.modules.simulation.domain.value
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.simulation.domain.value package.
+ * @Description : Declares simulation domain value objects and enums.
  *
  */
 package dz.sh.hidra.modules.simulation.domain.value;

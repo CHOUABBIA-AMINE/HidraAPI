@@ -14,7 +14,7 @@
  * @Module      : simulation
  * @Package     : dz.sh.hidra.modules.simulation.api.rest.mapper
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.simulation.api.rest.mapper package.
+ * @Description : Declares simulation REST mappers.
  *
  */
 package dz.sh.hidra.modules.simulation.api.rest.mapper;

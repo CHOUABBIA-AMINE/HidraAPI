@@ -14,7 +14,7 @@
  * @Module      : simulation
  * @Package     : dz.sh.hidra.modules.simulation.domain.exception
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.simulation.domain.exception package.
+ * @Description : Declares simulation domain exceptions.
  *
  */
 package dz.sh.hidra.modules.simulation.domain.exception;

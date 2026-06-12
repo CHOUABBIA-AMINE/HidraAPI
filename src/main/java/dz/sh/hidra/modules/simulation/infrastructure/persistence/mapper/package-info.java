@@ -14,7 +14,7 @@
  * @Module      : simulation
  * @Package     : dz.sh.hidra.modules.simulation.infrastructure.persistence.mapper
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.simulation.infrastructure.persistence.mapper package.
+ * @Description : Declares simulation persistence mappers.
  *
  */
 package dz.sh.hidra.modules.simulation.infrastructure.persistence.mapper;

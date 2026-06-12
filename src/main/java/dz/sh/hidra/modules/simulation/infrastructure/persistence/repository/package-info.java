@@ -14,7 +14,7 @@
  * @Module      : simulation
  * @Package     : dz.sh.hidra.modules.simulation.infrastructure.persistence.repository
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.simulation.infrastructure.persistence.repository package.
+ * @Description : Declares simulation Spring Data JPA repositories.
  *
  */
 package dz.sh.hidra.modules.simulation.infrastructure.persistence.repository;

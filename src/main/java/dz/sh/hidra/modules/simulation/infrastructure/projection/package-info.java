@@ -14,7 +14,7 @@
  * @Module      : simulation
  * @Package     : dz.sh.hidra.modules.simulation.infrastructure.projection
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.simulation.infrastructure.projection package.
+ * @Description : Declares simulation read projections.
  *
  */
 package dz.sh.hidra.modules.simulation.infrastructure.projection;

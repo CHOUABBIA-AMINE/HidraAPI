@@ -14,7 +14,7 @@
  * @Module      : simulation
  * @Package     : dz.sh.hidra.modules.simulation.api
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.simulation.api package.
+ * @Description : Declares simulation API boundary package.
  *
  */
 package dz.sh.hidra.modules.simulation.api;

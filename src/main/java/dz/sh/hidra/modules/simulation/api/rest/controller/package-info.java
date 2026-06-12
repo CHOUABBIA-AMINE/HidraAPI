@@ -14,7 +14,7 @@
  * @Module      : simulation
  * @Package     : dz.sh.hidra.modules.simulation.api.rest.controller
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.simulation.api.rest.controller package.
+ * @Description : Declares simulation REST controller contracts.
  *
  */
 package dz.sh.hidra.modules.simulation.api.rest.controller;

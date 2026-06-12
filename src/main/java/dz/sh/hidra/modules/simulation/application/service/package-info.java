@@ -14,7 +14,7 @@
  * @Module      : simulation
  * @Package     : dz.sh.hidra.modules.simulation.application.service
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.simulation.application.service package.
+ * @Description : Declares simulation application services.
  *
  */
 package dz.sh.hidra.modules.simulation.application.service;

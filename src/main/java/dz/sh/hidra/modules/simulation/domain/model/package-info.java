@@ -14,7 +14,7 @@
  * @Module      : simulation
  * @Package     : dz.sh.hidra.modules.simulation.domain.model
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.simulation.domain.model package.
+ * @Description : Declares simulation domain entities and aggregates.
  *
  */
 package dz.sh.hidra.modules.simulation.domain.model;

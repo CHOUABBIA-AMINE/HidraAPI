@@ -14,7 +14,7 @@
  * @Module      : simulation
  * @Package     : dz.sh.hidra.modules.simulation.api.rest
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.simulation.api.rest package.
+ * @Description : Declares simulation REST boundary package.
  *
  */
 package dz.sh.hidra.modules.simulation.api.rest;

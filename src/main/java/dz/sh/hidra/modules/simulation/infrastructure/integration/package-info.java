@@ -14,7 +14,7 @@
  * @Module      : simulation
  * @Package     : dz.sh.hidra.modules.simulation.infrastructure.integration
  *
- * @Description : Declares the architectural role of the dz.sh.hidra.modules.simulation.infrastructure.integration package.
+ * @Description : Declares simulation integration adapters.
  *
  */
 package dz.sh.hidra.modules.simulation.infrastructure.integration;

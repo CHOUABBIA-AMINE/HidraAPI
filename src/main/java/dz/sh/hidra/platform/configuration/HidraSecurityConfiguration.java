@@ -22,6 +22,7 @@ package dz.sh.hidra.platform.configuration;
 
 import dz.sh.hidra.platform.security.HidraJwtGrantedAuthoritiesConverter;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -61,7 +62,7 @@ public class HidraSecurityConfiguration {
     @Bean
     public SecurityFilterChain hidraSecurityFilterChain(
             HttpSecurity http,
-            CorsConfigurationSource corsConfigurationSource,
+            @Qualifier("hidraCorsConfigurationSource") CorsConfigurationSource corsConfigurationSource,
             JwtAuthenticationConverter jwtAuthenticationConverter,
             @Value("${hidra.platform.security.enabled:true}") boolean securityEnabled,
             @Value("${hidra.platform.security.csrf.enabled:false}") boolean csrfEnabled,

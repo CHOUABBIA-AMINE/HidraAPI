@@ -30,7 +30,7 @@ import org.springframework.context.annotation.Configuration;
 public class IdentityDomainServiceConfiguration {
 
     @Bean
-    public AuthorizationPolicyEvaluator authorizationPolicyEvaluator() {
+    AuthorizationPolicyEvaluator authorizationPolicyEvaluator() {
         return new AuthorizationPolicyEvaluator();
     }
 }

@@ -43,7 +43,7 @@ import java.util.List;
 public class HidraJwtDecoderConfiguration {
 
     @Bean
-    public JwtDecoder hidraJwtDecoder(
+    JwtDecoder hidraJwtDecoder(
             @Value("${hidra.platform.security.jwt.issuer-uri:}") String issuerUri,
             @Value("${hidra.platform.security.jwt.jwk-set-uri:}") String jwkSetUri,
             @Value("${hidra.platform.security.jwt.hmac-secret:}") String hmacSecret,

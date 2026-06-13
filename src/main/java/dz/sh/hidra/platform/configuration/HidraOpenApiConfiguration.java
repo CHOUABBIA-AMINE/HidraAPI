@@ -34,7 +34,7 @@ import org.springframework.context.annotation.Configuration;
 public class HidraOpenApiConfiguration {
 
     @Bean
-    public OpenAPI hidraOpenApi(
+    OpenAPI hidraOpenApi(
             @Value("${hidra.application.name:HidraAPI}") String name,
             @Value("${hidra.application.description:Hydrocarbon Intelligence for Data, Risk, and Analytics}") String description,
             @Value("${hidra.api.version:v1}") String version

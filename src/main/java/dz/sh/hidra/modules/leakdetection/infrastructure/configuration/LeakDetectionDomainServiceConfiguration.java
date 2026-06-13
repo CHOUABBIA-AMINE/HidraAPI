@@ -30,7 +30,7 @@ import org.springframework.context.annotation.Configuration;
 public class LeakDetectionDomainServiceConfiguration {
 
     @Bean
-    public LeakConfidenceClassifier leakConfidenceClassifier() {
+    LeakConfidenceClassifier leakConfidenceClassifier() {
         return new LeakConfidenceClassifier();
     }
 }

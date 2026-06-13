@@ -60,7 +60,7 @@ public class HidraSecurityConfiguration {
     private static final String AUTHENTICATION_MODE_JWT = "jwt";
 
     @Bean
-    public SecurityFilterChain hidraSecurityFilterChain(
+    SecurityFilterChain hidraSecurityFilterChain(
             HttpSecurity http,
             @Qualifier("hidraCorsConfigurationSource") CorsConfigurationSource corsConfigurationSource,
             JwtAuthenticationConverter jwtAuthenticationConverter,
@@ -115,7 +115,7 @@ public class HidraSecurityConfiguration {
     }
 
     @Bean
-    public JwtAuthenticationConverter hidraJwtAuthenticationConverter(
+    JwtAuthenticationConverter hidraJwtAuthenticationConverter(
             @Value("${hidra.platform.security.jwt.principal-claim:sub}") String principalClaim,
             @Value("${hidra.platform.security.jwt.roles-claim:roles}") String rolesClaim,
             @Value("${hidra.platform.security.jwt.scope-claim:scope}") String scopeClaim,
@@ -132,7 +132,7 @@ public class HidraSecurityConfiguration {
     }
 
     @Bean
-    public UserDetailsService hidraBootstrapUserDetailsService(
+    UserDetailsService hidraBootstrapUserDetailsService(
             PasswordEncoder passwordEncoder,
             @Value("${hidra.environment:local}") String environment,
             @Value("${hidra.platform.security.authentication-mode:jwt}") String authenticationMode,
@@ -163,12 +163,12 @@ public class HidraSecurityConfiguration {
     }
 
     @Bean
-    public PasswordEncoder hidraPasswordEncoder() {
+    PasswordEncoder hidraPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
-    public CorsConfigurationSource hidraCorsConfigurationSource(
+    CorsConfigurationSource hidraCorsConfigurationSource(
             @Value("${hidra.platform.security.cors.allowed-origins:}") String allowedOrigins,
             @Value("${hidra.platform.security.cors.allowed-methods:GET,POST,PUT,PATCH,DELETE,OPTIONS}") String allowedMethods,
             @Value("${hidra.platform.security.cors.allowed-headers:Authorization,Content-Type,X-Correlation-Id,X-Request-Id}") String allowedHeaders,

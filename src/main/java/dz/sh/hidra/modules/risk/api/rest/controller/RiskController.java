@@ -7,7 +7,7 @@
  *
  * @Name        : RiskController
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-06-13
  *
  * @Type        : Interface
  * @Layer       : API
@@ -18,18 +18,14 @@
  *
  */
 package dz.sh.hidra.modules.risk.api.rest.controller;
-
-import dz.sh.hidra.modules.risk.api.rest.request.CreateRiskAssessmentRequest;
-import dz.sh.hidra.modules.risk.api.rest.request.CreateRiskRegisterRequest;
-import dz.sh.hidra.modules.risk.api.rest.response.RiskAssessmentResponse;
-import dz.sh.hidra.modules.risk.api.rest.response.RiskRegisterResponse;
+import dz.sh.hidra.modules.risk.api.rest.request.*;
+import dz.sh.hidra.modules.risk.api.rest.response.*;
 
 /**
  * Framework-neutral risk controller contract.
  */
 public interface RiskController {
-
-    RiskRegisterResponse createRiskRegister(CreateRiskRegisterRequest request);
-
+    String addRiskEvidence(AddRiskEvidenceRequest request);
     RiskAssessmentResponse createRiskAssessment(CreateRiskAssessmentRequest request);
+    RiskRegisterResponse createRiskRegister(CreateRiskRegisterRequest request);
 }

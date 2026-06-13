@@ -5,31 +5,32 @@
  * @Author      : Abir MEDJERAB
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  *
- * @Name        : LeakDetectionRestMapper
+ * @Name        : LeakdetectionRestMapper
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-06-13
  *
  * @Type        : Class
  * @Layer       : API
  * @Module      : leakdetection
  * @Package     : dz.sh.hidra.modules.leakdetection.api.rest.mapper
  *
- * @Description : Maps leak detection REST models to application models.
+ * @Description : Maps leakdetection REST models to application models.
  *
  */
 package dz.sh.hidra.modules.leakdetection.api.rest.mapper;
-
 import dz.sh.hidra.modules.leakdetection.api.rest.request.CreateLeakCandidateRequest;
+import dz.sh.hidra.modules.leakdetection.api.rest.request.EscalateLeakCaseRequest;
 import dz.sh.hidra.modules.leakdetection.api.rest.request.OpenLeakCaseRequest;
 import dz.sh.hidra.modules.leakdetection.api.rest.response.LeakCandidateResponse;
 import dz.sh.hidra.modules.leakdetection.api.rest.response.LeakCaseResponse;
 import dz.sh.hidra.modules.leakdetection.application.command.CreateLeakCandidateCommand;
+import dz.sh.hidra.modules.leakdetection.application.command.EscalateLeakCaseCommand;
 import dz.sh.hidra.modules.leakdetection.application.command.OpenLeakCaseCommand;
 import dz.sh.hidra.modules.leakdetection.application.dto.LeakCandidateSummaryDto;
 import dz.sh.hidra.modules.leakdetection.application.dto.LeakCaseSummaryDto;
 
 /**
- * Maps leak detection REST models to application models.
+ * Maps leakdetection REST models to application models.
  */
 public final class LeakDetectionRestMapper {
 
@@ -50,6 +51,20 @@ public final class LeakDetectionRestMapper {
                 request.firstEvidenceAt(),
                 request.confidenceScore(),
                 request.summary(),
+                request.correlationId()
+        );
+    }
+
+    public static EscalateLeakCaseCommand toCommand(EscalateLeakCaseRequest request) {
+        return new EscalateLeakCaseCommand(
+                request.caseId(),
+                request.candidateId(),
+                request.targetType(),
+                request.targetReferenceId(),
+                request.targetCodeSnapshot(),
+                request.targetNameSnapshot(),
+                request.escalatedByActorId(),
+                request.reasonText(),
                 request.correlationId()
         );
     }

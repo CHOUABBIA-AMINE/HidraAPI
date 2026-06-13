@@ -7,7 +7,7 @@
  *
  * @Name        : IntegrityRestMapper
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-06-13
  *
  * @Type        : Class
  * @Layer       : API
@@ -18,7 +18,6 @@
  *
  */
 package dz.sh.hidra.modules.integrity.api.rest.mapper;
-
 import dz.sh.hidra.modules.integrity.api.rest.request.CreateIntegrityAssessmentRequest;
 import dz.sh.hidra.modules.integrity.api.rest.request.CreateIntegrityProgramRequest;
 import dz.sh.hidra.modules.integrity.api.rest.request.OpenIntegrityCaseRequest;
@@ -41,27 +40,91 @@ public final class IntegrityRestMapper {
         throw new UnsupportedOperationException("Utility class must not be instantiated.");
     }
 
-    public static CreateIntegrityProgramCommand toCommand(CreateIntegrityProgramRequest request) {
-        return new CreateIntegrityProgramCommand(request.code(), request.nameAr(), request.nameFr(), request.nameEn(), request.description(), request.programTypeId(), request.ownerOrganizationUnitId(), request.ownerOrganizationUnitNameSnapshot(), request.plannedStartAt(), request.plannedEndAt(), request.createdByActorId());
+    public static CreateIntegrityAssessmentCommand toCommand(CreateIntegrityAssessmentRequest request) {
+        return new CreateIntegrityAssessmentCommand(
+                request.programId(),
+                request.assessmentNumber(),
+                request.title(),
+                request.description(),
+                request.assessmentTypeId(),
+                request.methodologyId(),
+                request.assessmentDate(),
+                request.assessedByActorId(),
+                request.workflowInstanceId()
+        );
     }
 
-    public static CreateIntegrityAssessmentCommand toCommand(CreateIntegrityAssessmentRequest request) {
-        return new CreateIntegrityAssessmentCommand(request.programId(), request.assessmentNumber(), request.title(), request.description(), request.assessmentTypeId(), request.methodologyId(), request.assessmentDate(), request.assessedByActorId(), request.workflowInstanceId());
+    public static CreateIntegrityProgramCommand toCommand(CreateIntegrityProgramRequest request) {
+        return new CreateIntegrityProgramCommand(
+                request.code(),
+                request.nameAr(),
+                request.nameFr(),
+                request.nameEn(),
+                request.description(),
+                request.programTypeId(),
+                request.ownerOrganizationUnitId(),
+                request.ownerOrganizationUnitNameSnapshot(),
+                request.plannedStartAt(),
+                request.plannedEndAt(),
+                request.createdByActorId()
+        );
     }
 
     public static OpenIntegrityCaseCommand toCommand(OpenIntegrityCaseRequest request) {
-        return new OpenIntegrityCaseCommand(request.caseNumber(), request.title(), request.description(), request.caseTypeId(), request.severityId(), request.topologyAssetTypeCode(), request.topologyAssetId(), request.topologyAssetCodeSnapshot(), request.primaryDefectId(), request.sourceIncidentId(), request.sourceHseCaseId(), request.responsibleOrganizationUnitId(), request.workflowInstanceId(), request.openedByActorId());
-    }
-
-    public static IntegrityProgramResponse toResponse(IntegrityProgramSummaryDto dto) {
-        return new IntegrityProgramResponse(dto.id(), dto.code(), dto.nameFr(), dto.programTypeId(), dto.status(), dto.plannedStartAt(), dto.plannedEndAt());
+        return new OpenIntegrityCaseCommand(
+                request.caseNumber(),
+                request.title(),
+                request.description(),
+                request.caseTypeId(),
+                request.severityId(),
+                request.topologyAssetTypeCode(),
+                request.topologyAssetId(),
+                request.topologyAssetCodeSnapshot(),
+                request.primaryDefectId(),
+                request.sourceIncidentId(),
+                request.sourceHseCaseId(),
+                request.responsibleOrganizationUnitId(),
+                request.workflowInstanceId(),
+                request.openedByActorId()
+        );
     }
 
     public static IntegrityAssessmentResponse toResponse(IntegrityAssessmentSummaryDto dto) {
-        return new IntegrityAssessmentResponse(dto.id(), dto.programId(), dto.assessmentNumber(), dto.title(), dto.assessmentTypeId(), dto.status(), dto.assessmentDate());
+        return new IntegrityAssessmentResponse(
+                dto.id(),
+                dto.programId(),
+                dto.assessmentNumber(),
+                dto.title(),
+                dto.assessmentTypeId(),
+                dto.status(),
+                dto.assessmentDate()
+        );
+    }
+
+    public static IntegrityProgramResponse toResponse(IntegrityProgramSummaryDto dto) {
+        return new IntegrityProgramResponse(
+                dto.id(),
+                dto.code(),
+                dto.nameFr(),
+                dto.programTypeId(),
+                dto.status(),
+                dto.plannedStartAt(),
+                dto.plannedEndAt()
+        );
     }
 
     public static IntegrityCaseResponse toResponse(IntegrityCaseSummaryDto dto) {
-        return new IntegrityCaseResponse(dto.id(), dto.caseNumber(), dto.title(), dto.caseTypeId(), dto.status(), dto.topologyAssetTypeCode(), dto.topologyAssetId(), dto.primaryDefectId(), dto.openedAt(), dto.closedAt());
+        return new IntegrityCaseResponse(
+                dto.id(),
+                dto.caseNumber(),
+                dto.title(),
+                dto.caseTypeId(),
+                dto.status(),
+                dto.topologyAssetTypeCode(),
+                dto.topologyAssetId(),
+                dto.primaryDefectId(),
+                dto.openedAt(),
+                dto.closedAt()
+        );
     }
 }

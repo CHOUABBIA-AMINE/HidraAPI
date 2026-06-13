@@ -7,7 +7,7 @@
  *
  * @Name        : IntegrationController
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-06-13
  *
  * @Type        : Interface
  * @Layer       : API
@@ -18,18 +18,14 @@
  *
  */
 package dz.sh.hidra.modules.integration.api.rest.controller;
-
-import dz.sh.hidra.modules.integration.api.rest.request.RegisterExternalSystemRequest;
-import dz.sh.hidra.modules.integration.api.rest.request.StartIntegrationJobRunRequest;
-import dz.sh.hidra.modules.integration.api.rest.response.ExternalSystemResponse;
-import dz.sh.hidra.modules.integration.api.rest.response.IntegrationJobRunResponse;
+import dz.sh.hidra.modules.integration.api.rest.request.*;
+import dz.sh.hidra.modules.integration.api.rest.response.*;
 
 /**
  * Framework-neutral integration controller contract.
  */
 public interface IntegrationController {
-
+    IntegrationExchangeMessageResponse recordExchangeMessage(RecordExchangeMessageRequest request);
     ExternalSystemResponse registerExternalSystem(RegisterExternalSystemRequest request);
-
     IntegrationJobRunResponse startIntegrationJobRun(StartIntegrationJobRunRequest request);
 }

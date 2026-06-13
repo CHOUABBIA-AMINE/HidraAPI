@@ -36,7 +36,7 @@ import java.util.Optional;
 public class HidraJpaAuditingConfiguration {
 
     @Bean
-    AuditorAware<String> hidraAuditorAware(CurrentActorResolver currentActorResolver) {
+    public AuditorAware<String> hidraAuditorAware(CurrentActorResolver currentActorResolver) {
         return () -> Optional.of(currentActorResolver.currentActorId().value());
     }
 }

@@ -7,7 +7,7 @@
  *
  * @Name        : WorkflowController
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-06-13
  *
  * @Type        : Interface
  * @Layer       : API
@@ -18,18 +18,14 @@
  *
  */
 package dz.sh.hidra.modules.workflow.api.rest.controller;
-
-import dz.sh.hidra.modules.workflow.api.rest.request.CreateWorkflowTaskRequest;
-import dz.sh.hidra.modules.workflow.api.rest.request.StartWorkflowInstanceRequest;
-import dz.sh.hidra.modules.workflow.api.rest.response.WorkflowInstanceResponse;
-import dz.sh.hidra.modules.workflow.api.rest.response.WorkflowTaskResponse;
+import dz.sh.hidra.modules.workflow.api.rest.request.*;
+import dz.sh.hidra.modules.workflow.api.rest.response.*;
 
 /**
  * Framework-neutral workflow controller contract.
  */
 public interface WorkflowController {
-
-    WorkflowInstanceResponse startWorkflowInstance(StartWorkflowInstanceRequest request);
-
     WorkflowTaskResponse createWorkflowTask(CreateWorkflowTaskRequest request);
+    WorkflowActionResponse recordWorkflowAction(RecordWorkflowActionRequest request);
+    WorkflowInstanceResponse startWorkflowInstance(StartWorkflowInstanceRequest request);
 }

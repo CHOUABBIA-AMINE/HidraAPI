@@ -7,7 +7,7 @@
  *
  * @Name        : IncidentRestMapper
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-06-13
  *
  * @Type        : Class
  * @Layer       : API
@@ -18,10 +18,11 @@
  *
  */
 package dz.sh.hidra.modules.incident.api.rest.mapper;
-
+import dz.sh.hidra.modules.incident.api.rest.request.CloseIncidentRequest;
 import dz.sh.hidra.modules.incident.api.rest.request.OpenIncidentRequest;
 import dz.sh.hidra.modules.incident.api.rest.request.RecordIncidentResponseActionRequest;
 import dz.sh.hidra.modules.incident.api.rest.response.IncidentResponse;
+import dz.sh.hidra.modules.incident.application.command.CloseIncidentCommand;
 import dz.sh.hidra.modules.incident.application.command.OpenIncidentCommand;
 import dz.sh.hidra.modules.incident.application.command.RecordIncidentResponseActionCommand;
 import dz.sh.hidra.modules.incident.application.dto.IncidentSummaryDto;
@@ -33,6 +34,20 @@ public final class IncidentRestMapper {
 
     private IncidentRestMapper() {
         throw new UnsupportedOperationException("Utility class must not be instantiated.");
+    }
+
+    public static CloseIncidentCommand toCommand(CloseIncidentRequest request) {
+        return new CloseIncidentCommand(
+                request.incidentId(),
+                request.closureSummary(),
+                request.resolutionVerified(),
+                request.evidenceReviewed(),
+                request.rootCauseReviewed(),
+                request.followUpActionsCreated(),
+                request.closedByActorId(),
+                request.closedByActorNameSnapshot(),
+                request.workflowInstanceId()
+        );
     }
 
     public static OpenIncidentCommand toCommand(OpenIncidentRequest request) {

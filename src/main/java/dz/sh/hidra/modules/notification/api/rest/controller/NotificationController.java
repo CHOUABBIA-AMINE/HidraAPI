@@ -7,7 +7,7 @@
  *
  * @Name        : NotificationController
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-06-13
  *
  * @Type        : Interface
  * @Layer       : API
@@ -18,18 +18,14 @@
  *
  */
 package dz.sh.hidra.modules.notification.api.rest.controller;
-
-import dz.sh.hidra.modules.notification.api.rest.request.CreateNotificationMessageRequest;
-import dz.sh.hidra.modules.notification.api.rest.request.ReceiveNotificationRequestRequest;
-import dz.sh.hidra.modules.notification.api.rest.response.NotificationMessageResponse;
-import dz.sh.hidra.modules.notification.api.rest.response.NotificationRequestResponse;
+import dz.sh.hidra.modules.notification.api.rest.request.*;
+import dz.sh.hidra.modules.notification.api.rest.response.*;
 
 /**
  * Framework-neutral notification controller contract.
  */
 public interface NotificationController {
-
-    NotificationRequestResponse receiveNotificationRequest(ReceiveNotificationRequestRequest request);
-
     NotificationMessageResponse createNotificationMessage(CreateNotificationMessageRequest request);
+    NotificationRequestResponse receiveNotificationRequest(ReceiveNotificationRequestRequest request);
+    NotificationDeliveryAttemptResponse recordDeliveryAttempt(RecordDeliveryAttemptRequest request);
 }

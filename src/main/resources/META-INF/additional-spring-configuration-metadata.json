@@ -209,6 +209,36 @@
       "name": "hidra.platform.security.jwt.authority-prefix",
       "type": "java.lang.String",
       "description": "Authority prefix applied to JWT role claims."
+    },
+    {
+      "name": "hidra.notification.async-push.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether notification messages are pushed asynchronously after they are created."
+    },
+    {
+      "name": "hidra.notification.async-push.core-pool-size",
+      "type": "java.lang.Integer",
+      "description": "Core thread pool size for asynchronous notification push."
+    },
+    {
+      "name": "hidra.notification.async-push.max-pool-size",
+      "type": "java.lang.Integer",
+      "description": "Maximum thread pool size for asynchronous notification push."
+    },
+    {
+      "name": "hidra.notification.async-push.queue-capacity",
+      "type": "java.lang.Integer",
+      "description": "Queue capacity for asynchronous notification push tasks."
+    },
+    {
+      "name": "hidra.notification.async-push.thread-name-prefix",
+      "type": "java.lang.String",
+      "description": "Thread name prefix for asynchronous notification push workers."
+    },
+    {
+      "name": "hidra.notification.push.provider-reference",
+      "type": "java.lang.String",
+      "description": "Provider reference recorded on notification delivery attempts."
     }
   ]
 }

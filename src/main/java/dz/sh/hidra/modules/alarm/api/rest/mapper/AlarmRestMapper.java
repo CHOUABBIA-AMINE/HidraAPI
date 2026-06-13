@@ -7,7 +7,7 @@
  *
  * @Name        : AlarmRestMapper
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-06-13
  *
  * @Type        : Class
  * @Layer       : API
@@ -18,11 +18,12 @@
  *
  */
 package dz.sh.hidra.modules.alarm.api.rest.mapper;
-
 import dz.sh.hidra.modules.alarm.api.rest.request.AcknowledgeAlarmRequest;
+import dz.sh.hidra.modules.alarm.api.rest.request.CloseAlarmRequest;
 import dz.sh.hidra.modules.alarm.api.rest.request.RaiseAlarmRequest;
 import dz.sh.hidra.modules.alarm.api.rest.response.AlarmResponse;
 import dz.sh.hidra.modules.alarm.application.command.AcknowledgeAlarmCommand;
+import dz.sh.hidra.modules.alarm.application.command.CloseAlarmCommand;
 import dz.sh.hidra.modules.alarm.application.command.RaiseAlarmCommand;
 import dz.sh.hidra.modules.alarm.application.dto.AlarmSummaryDto;
 
@@ -33,6 +34,31 @@ public final class AlarmRestMapper {
 
     private AlarmRestMapper() {
         throw new UnsupportedOperationException("Utility class must not be instantiated.");
+    }
+
+    public static AcknowledgeAlarmCommand toCommand(AcknowledgeAlarmRequest request) {
+        return new AcknowledgeAlarmCommand(
+                request.alarmId(),
+                request.acknowledgedByActorId(),
+                request.acknowledgedByDisplayName(),
+                request.organizationUnitId(),
+                request.organizationUnitCode(),
+                request.comment(),
+                request.correlationId()
+        );
+    }
+
+    public static CloseAlarmCommand toCommand(CloseAlarmRequest request) {
+        return new CloseAlarmCommand(
+                request.alarmId(),
+                request.closureType(),
+                request.closureReasonId(),
+                request.closureComment(),
+                request.closedByActorId(),
+                request.requiresReview(),
+                request.reviewWorkflowInstanceId(),
+                request.correlationId()
+        );
     }
 
     public static RaiseAlarmCommand toCommand(RaiseAlarmRequest request) {
@@ -62,18 +88,6 @@ public final class AlarmRestMapper {
                 request.owningOrganizationUnitCode(),
                 request.owningOrganizationUnitNameSnapshot(),
                 request.workflowInstanceId(),
-                request.correlationId()
-        );
-    }
-
-    public static AcknowledgeAlarmCommand toCommand(AcknowledgeAlarmRequest request) {
-        return new AcknowledgeAlarmCommand(
-                request.alarmId(),
-                request.acknowledgedByActorId(),
-                request.acknowledgedByDisplayName(),
-                request.organizationUnitId(),
-                request.organizationUnitCode(),
-                request.comment(),
                 request.correlationId()
         );
     }

@@ -18,7 +18,6 @@
  *
  */
 package dz.sh.hidra.modules.topology.api.rest.controller;
-
 import dz.sh.hidra.modules.topology.api.rest.mapper.TopologyRestMapper;
 import dz.sh.hidra.modules.topology.api.rest.request.CreatePipelineSystemRequest;
 import dz.sh.hidra.modules.topology.api.rest.request.RegisterFacilityRequest;
@@ -27,12 +26,15 @@ import dz.sh.hidra.modules.topology.api.rest.response.PipelineSystemResponse;
 import dz.sh.hidra.modules.topology.application.port.in.CreatePipelineSystemUseCase;
 import dz.sh.hidra.modules.topology.application.port.in.RegisterFacilityUseCase;
 import jakarta.validation.Valid;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import java.util.Objects;
 
 /**
  * Spring MVC adapter exposing topology REST endpoints.
@@ -53,16 +55,36 @@ public class SpringTopologyController implements TopologyController {
         this.registerFacilityUseCase = Objects.requireNonNull(registerFacilityUseCase, "RegisterFacilityUseCase must not be null.");
     }
 
+    @GetMapping("/capabilities")
+    public Map<String, Object> capabilities() {
+        return Map.of(
+                "module", "topology",
+                "mission", "Maintain the authoritative topology of pipeline systems, facilities, and network assets.",
+                "objectives", List.of(
+                "Create pipeline systems.",
+                "Register facilities.",
+                "Provide topology context for monitoring, leaks, integrity, and simulation."
+        ),
+                "operations", List.of(
+                "createPipelineSystem",
+                "registerFacility"
+        ),
+                "resourceEndpoints", List.of(
+                "POST /api/v1/topology/pipeline-systems",
+                "POST /api/v1/topology/facilities"
+        )
+        );
+    }
 
     @Override
-    @PostMapping("/create-pipeline-system")
+    @PostMapping({"/create-pipeline-system", "/pipeline-systems"})
     public PipelineSystemResponse createPipelineSystem(@Valid @RequestBody CreatePipelineSystemRequest request) {
         Objects.requireNonNull(request, "CreatePipelineSystemRequest must not be null.");
         return TopologyRestMapper.toResponse(createPipelineSystemUseCase.createPipelineSystem(TopologyRestMapper.toCommand(request)));
     }
 
     @Override
-    @PostMapping("/register-facility")
+    @PostMapping({"/register-facility", "/facilities"})
     public FacilityResponse registerFacility(@Valid @RequestBody RegisterFacilityRequest request) {
         Objects.requireNonNull(request, "RegisterFacilityRequest must not be null.");
         return TopologyRestMapper.toResponse(registerFacilityUseCase.registerFacility(TopologyRestMapper.toCommand(request)));

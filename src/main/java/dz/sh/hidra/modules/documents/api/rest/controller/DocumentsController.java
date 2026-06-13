@@ -7,7 +7,7 @@
  *
  * @Name        : DocumentsController
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-06-13
  *
  * @Type        : Interface
  * @Layer       : API
@@ -18,18 +18,14 @@
  *
  */
 package dz.sh.hidra.modules.documents.api.rest.controller;
-
-import dz.sh.hidra.modules.documents.api.rest.request.RegisterDocumentRequest;
-import dz.sh.hidra.modules.documents.api.rest.request.UploadDocumentVersionRequest;
-import dz.sh.hidra.modules.documents.api.rest.response.DocumentResponse;
-import dz.sh.hidra.modules.documents.api.rest.response.DocumentVersionResponse;
+import dz.sh.hidra.modules.documents.api.rest.request.*;
+import dz.sh.hidra.modules.documents.api.rest.response.*;
 
 /**
  * Framework-neutral documents controller contract.
  */
 public interface DocumentsController {
-
+    DocumentTargetLinkResponse linkDocumentToTarget(LinkDocumentToTargetRequest request);
     DocumentResponse registerDocument(RegisterDocumentRequest request);
-
     DocumentVersionResponse uploadDocumentVersion(UploadDocumentVersionRequest request);
 }

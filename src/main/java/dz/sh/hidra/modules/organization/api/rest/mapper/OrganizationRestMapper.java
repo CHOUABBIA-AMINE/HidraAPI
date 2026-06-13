@@ -7,7 +7,7 @@
  *
  * @Name        : OrganizationRestMapper
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-06-13
  *
  * @Type        : Class
  * @Layer       : API
@@ -18,11 +18,12 @@
  *
  */
 package dz.sh.hidra.modules.organization.api.rest.mapper;
-
+import dz.sh.hidra.modules.organization.api.rest.request.AssignEmployeeRequest;
 import dz.sh.hidra.modules.organization.api.rest.request.CreateOrganizationUnitRequest;
 import dz.sh.hidra.modules.organization.api.rest.request.RegisterEmployeeRequest;
 import dz.sh.hidra.modules.organization.api.rest.response.EmployeeResponse;
 import dz.sh.hidra.modules.organization.api.rest.response.OrganizationUnitResponse;
+import dz.sh.hidra.modules.organization.application.command.AssignEmployeeCommand;
 import dz.sh.hidra.modules.organization.application.command.CreateOrganizationUnitCommand;
 import dz.sh.hidra.modules.organization.application.command.RegisterEmployeeCommand;
 import dz.sh.hidra.modules.organization.application.dto.EmployeeSummaryDto;
@@ -35,6 +36,21 @@ public final class OrganizationRestMapper {
 
     private OrganizationRestMapper() {
         throw new UnsupportedOperationException("Utility class must not be instantiated.");
+    }
+
+    public static AssignEmployeeCommand toCommand(AssignEmployeeRequest request) {
+        return new AssignEmployeeCommand(
+                request.employeeId(),
+                request.organizationUnitId(),
+                request.positionId(),
+                request.assignmentType(),
+                request.operationalScopeType(),
+                request.operationalScopeId(),
+                request.operationalScopeCode(),
+                request.operationalScopeName(),
+                request.validFrom(),
+                request.validTo()
+        );
     }
 
     public static CreateOrganizationUnitCommand toCommand(CreateOrganizationUnitRequest request) {
@@ -67,10 +83,28 @@ public final class OrganizationRestMapper {
     }
 
     public static OrganizationUnitResponse toResponse(OrganizationUnitSummaryDto dto) {
-        return new OrganizationUnitResponse(dto.id(), dto.code(), dto.nameAr(), dto.nameFr(), dto.nameEn(), dto.unitTypeId(), dto.parentUnitId(), dto.status());
+        return new OrganizationUnitResponse(
+                dto.id(),
+                dto.code(),
+                dto.nameAr(),
+                dto.nameFr(),
+                dto.nameEn(),
+                dto.unitTypeId(),
+                dto.parentUnitId(),
+                dto.status()
+        );
     }
 
     public static EmployeeResponse toResponse(EmployeeSummaryDto dto) {
-        return new EmployeeResponse(dto.id(), dto.employeeNumber(), dto.displayNameAr(), dto.displayNameLt(), dto.emailAddress(), dto.employeeType(), dto.status(), dto.identityUserReference());
+        return new EmployeeResponse(
+                dto.id(),
+                dto.employeeNumber(),
+                dto.displayNameAr(),
+                dto.displayNameLt(),
+                dto.emailAddress(),
+                dto.employeeType(),
+                dto.status(),
+                dto.identityUserReference()
+        );
     }
 }

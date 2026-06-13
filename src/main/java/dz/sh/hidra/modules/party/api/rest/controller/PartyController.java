@@ -7,7 +7,7 @@
  *
  * @Name        : PartyController
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-06-13
  *
  * @Type        : Interface
  * @Layer       : API
@@ -18,14 +18,13 @@
  *
  */
 package dz.sh.hidra.modules.party.api.rest.controller;
-
-import dz.sh.hidra.modules.party.api.rest.request.RegisterPartyRequest;
-import dz.sh.hidra.modules.party.api.rest.response.PartyResponse;
+import dz.sh.hidra.modules.party.api.rest.request.*;
+import dz.sh.hidra.modules.party.api.rest.response.*;
 
 /**
  * Framework-neutral party controller contract.
  */
 public interface PartyController {
-
+    String assignRole(AssignPartyRoleRequest request);
     PartyResponse registerParty(RegisterPartyRequest request);
 }

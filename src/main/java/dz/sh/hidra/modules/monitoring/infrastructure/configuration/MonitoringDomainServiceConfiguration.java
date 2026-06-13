@@ -30,7 +30,7 @@ import org.springframework.context.annotation.Configuration;
 public class MonitoringDomainServiceConfiguration {
 
     @Bean
-    DeviationSeverityClassifier deviationSeverityClassifier() {
+    public DeviationSeverityClassifier deviationSeverityClassifier() {
         return new DeviationSeverityClassifier();
     }
 }

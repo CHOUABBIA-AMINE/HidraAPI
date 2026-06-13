@@ -7,7 +7,7 @@
  *
  * @Name        : ReportingController
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-06-13
  *
  * @Type        : Interface
  * @Layer       : API
@@ -18,18 +18,15 @@
  *
  */
 package dz.sh.hidra.modules.reporting.api.rest.controller;
-
-import dz.sh.hidra.modules.reporting.api.rest.request.CreateReportDefinitionRequest;
-import dz.sh.hidra.modules.reporting.api.rest.request.RequestReportRequest;
-import dz.sh.hidra.modules.reporting.api.rest.response.ReportDefinitionResponse;
-import dz.sh.hidra.modules.reporting.api.rest.response.ReportRequestResponse;
+import dz.sh.hidra.modules.reporting.api.rest.request.*;
+import dz.sh.hidra.modules.reporting.api.rest.response.*;
 
 /**
  * Framework-neutral reporting controller contract.
  */
 public interface ReportingController {
-
     ReportDefinitionResponse createReportDefinition(CreateReportDefinitionRequest request);
-
+    ReportOutputArtifactResponse generateReportArtifact(GenerateReportArtifactRequest request);
+    ReportRunResponse queueReportRun(QueueReportRunRequest request);
     ReportRequestResponse requestReport(RequestReportRequest request);
 }

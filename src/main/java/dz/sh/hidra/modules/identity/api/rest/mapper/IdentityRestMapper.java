@@ -7,7 +7,7 @@
  *
  * @Name        : IdentityRestMapper
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-06-13
  *
  * @Type        : Class
  * @Layer       : API
@@ -18,7 +18,6 @@
  *
  */
 package dz.sh.hidra.modules.identity.api.rest.mapper;
-
 import dz.sh.hidra.modules.identity.api.rest.request.CreateUserRequest;
 import dz.sh.hidra.modules.identity.api.rest.request.EvaluatePermissionRequest;
 import dz.sh.hidra.modules.identity.api.rest.response.PermissionDecisionResponse;

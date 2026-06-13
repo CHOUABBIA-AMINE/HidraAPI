@@ -7,7 +7,7 @@
  *
  * @Name        : TelemetryController
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-06-13
  *
  * @Type        : Interface
  * @Layer       : API
@@ -18,18 +18,13 @@
  *
  */
 package dz.sh.hidra.modules.telemetry.api.rest.controller;
-
-import dz.sh.hidra.modules.telemetry.api.rest.request.CreateTelemetrySourceRequest;
-import dz.sh.hidra.modules.telemetry.api.rest.request.RegisterTelemetryPointRequest;
-import dz.sh.hidra.modules.telemetry.api.rest.response.TelemetryPointResponse;
-import dz.sh.hidra.modules.telemetry.api.rest.response.TelemetrySourceResponse;
+import dz.sh.hidra.modules.telemetry.api.rest.request.*;
+import dz.sh.hidra.modules.telemetry.api.rest.response.*;
 
 /**
  * Framework-neutral telemetry controller contract.
  */
 public interface TelemetryController {
-
     TelemetrySourceResponse createTelemetrySource(CreateTelemetrySourceRequest request);
-
     TelemetryPointResponse registerTelemetryPoint(RegisterTelemetryPointRequest request);
 }

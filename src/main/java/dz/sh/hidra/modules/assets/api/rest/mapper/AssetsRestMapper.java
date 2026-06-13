@@ -7,7 +7,7 @@
  *
  * @Name        : AssetsRestMapper
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-06-13
  *
  * @Type        : Class
  * @Layer       : API
@@ -18,13 +18,16 @@
  *
  */
 package dz.sh.hidra.modules.assets.api.rest.mapper;
-
 import dz.sh.hidra.modules.assets.api.rest.request.CreateMaintenanceWorkOrderRequest;
+import dz.sh.hidra.modules.assets.api.rest.request.RecordAssetConditionRequest;
 import dz.sh.hidra.modules.assets.api.rest.request.RegisterMaintainableAssetRequest;
+import dz.sh.hidra.modules.assets.api.rest.response.AssetConditionResponse;
 import dz.sh.hidra.modules.assets.api.rest.response.MaintainableAssetResponse;
 import dz.sh.hidra.modules.assets.api.rest.response.MaintenanceWorkOrderResponse;
 import dz.sh.hidra.modules.assets.application.command.CreateMaintenanceWorkOrderCommand;
+import dz.sh.hidra.modules.assets.application.command.RecordAssetConditionCommand;
 import dz.sh.hidra.modules.assets.application.command.RegisterMaintainableAssetCommand;
+import dz.sh.hidra.modules.assets.application.dto.AssetConditionSummaryDto;
 import dz.sh.hidra.modules.assets.application.dto.MaintainableAssetSummaryDto;
 import dz.sh.hidra.modules.assets.application.dto.MaintenanceWorkOrderSummaryDto;
 
@@ -35,6 +38,39 @@ public final class AssetsRestMapper {
 
     private AssetsRestMapper() {
         throw new UnsupportedOperationException("Utility class must not be instantiated.");
+    }
+
+    public static CreateMaintenanceWorkOrderCommand toCommand(CreateMaintenanceWorkOrderRequest request) {
+        return new CreateMaintenanceWorkOrderCommand(
+                request.workOrderNumber(),
+                request.maintainableAssetId(),
+                request.maintenancePlanId(),
+                request.sourceRecommendationId(),
+                request.workOrderTypeId(),
+                request.priorityId(),
+                request.title(),
+                request.description(),
+                request.assignedOrganizationUnitId(),
+                request.assignedActorId(),
+                request.plannedStartAt(),
+                request.plannedEndAt(),
+                request.workflowInstanceId(),
+                request.createdByActorId()
+        );
+    }
+
+    public static RecordAssetConditionCommand toCommand(RecordAssetConditionRequest request) {
+        return new RecordAssetConditionCommand(
+                request.maintainableAssetId(),
+                request.conditionStatus(),
+                request.conditionTypeId(),
+                request.sourceModule(),
+                request.sourceReferenceId(),
+                request.summary(),
+                request.conditionScore(),
+                request.observedAt(),
+                request.observedByActorId()
+        );
     }
 
     public static RegisterMaintainableAssetCommand toCommand(RegisterMaintainableAssetRequest request) {
@@ -60,22 +96,27 @@ public final class AssetsRestMapper {
         );
     }
 
-    public static CreateMaintenanceWorkOrderCommand toCommand(CreateMaintenanceWorkOrderRequest request) {
-        return new CreateMaintenanceWorkOrderCommand(
-                request.workOrderNumber(),
-                request.maintainableAssetId(),
-                request.maintenancePlanId(),
-                request.sourceRecommendationId(),
-                request.workOrderTypeId(),
-                request.priorityId(),
-                request.title(),
-                request.description(),
-                request.assignedOrganizationUnitId(),
-                request.assignedActorId(),
-                request.plannedStartAt(),
-                request.plannedEndAt(),
-                request.workflowInstanceId(),
-                request.createdByActorId()
+    public static MaintenanceWorkOrderResponse toResponse(MaintenanceWorkOrderSummaryDto dto) {
+        return new MaintenanceWorkOrderResponse(
+                dto.id(),
+                dto.workOrderNumber(),
+                dto.maintainableAssetId(),
+                dto.sourceRecommendationId(),
+                dto.workOrderTypeId(),
+                dto.status(),
+                dto.title(),
+                dto.plannedStartAt(),
+                dto.completedAt()
+        );
+    }
+
+    public static AssetConditionResponse toResponse(AssetConditionSummaryDto dto) {
+        return new AssetConditionResponse(
+                dto.id(),
+                dto.maintainableAssetId(),
+                dto.conditionStatus(),
+                dto.conditionScore(),
+                dto.observedAt()
         );
     }
 
@@ -91,20 +132,6 @@ public final class AssetsRestMapper {
                 dto.status(),
                 dto.criticalityId(),
                 dto.registeredAt()
-        );
-    }
-
-    public static MaintenanceWorkOrderResponse toResponse(MaintenanceWorkOrderSummaryDto dto) {
-        return new MaintenanceWorkOrderResponse(
-                dto.id(),
-                dto.workOrderNumber(),
-                dto.maintainableAssetId(),
-                dto.sourceRecommendationId(),
-                dto.workOrderTypeId(),
-                dto.status(),
-                dto.title(),
-                dto.plannedStartAt(),
-                dto.completedAt()
         );
     }
 }

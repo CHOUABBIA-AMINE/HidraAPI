@@ -31,7 +31,7 @@ import org.springframework.context.annotation.Configuration;
 public class HidraSecurityContextConfiguration {
 
     @Bean
-    CurrentActorResolver currentActorResolver(CurrentSecurityContext currentSecurityContext) {
+    public CurrentActorResolver currentActorResolver(CurrentSecurityContext currentSecurityContext) {
         return new CurrentActorResolver(currentSecurityContext);
     }
 }

@@ -7,7 +7,7 @@
  *
  * @Name        : IntegrityController
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-06-13
  *
  * @Type        : Interface
  * @Layer       : API
@@ -18,22 +18,14 @@
  *
  */
 package dz.sh.hidra.modules.integrity.api.rest.controller;
-
-import dz.sh.hidra.modules.integrity.api.rest.request.CreateIntegrityAssessmentRequest;
-import dz.sh.hidra.modules.integrity.api.rest.request.CreateIntegrityProgramRequest;
-import dz.sh.hidra.modules.integrity.api.rest.request.OpenIntegrityCaseRequest;
-import dz.sh.hidra.modules.integrity.api.rest.response.IntegrityAssessmentResponse;
-import dz.sh.hidra.modules.integrity.api.rest.response.IntegrityCaseResponse;
-import dz.sh.hidra.modules.integrity.api.rest.response.IntegrityProgramResponse;
+import dz.sh.hidra.modules.integrity.api.rest.request.*;
+import dz.sh.hidra.modules.integrity.api.rest.response.*;
 
 /**
  * Framework-neutral integrity controller contract.
  */
 public interface IntegrityController {
-
-    IntegrityProgramResponse createIntegrityProgram(CreateIntegrityProgramRequest request);
-
     IntegrityAssessmentResponse createIntegrityAssessment(CreateIntegrityAssessmentRequest request);
-
+    IntegrityProgramResponse createIntegrityProgram(CreateIntegrityProgramRequest request);
     IntegrityCaseResponse openIntegrityCase(OpenIntegrityCaseRequest request);
 }

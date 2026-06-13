@@ -7,7 +7,7 @@
  *
  * @Name        : TelemetryRestMapper
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-06-13
  *
  * @Type        : Class
  * @Layer       : API
@@ -18,7 +18,6 @@
  *
  */
 package dz.sh.hidra.modules.telemetry.api.rest.mapper;
-
 import dz.sh.hidra.modules.telemetry.api.rest.request.CreateTelemetrySourceRequest;
 import dz.sh.hidra.modules.telemetry.api.rest.request.RegisterTelemetryPointRequest;
 import dz.sh.hidra.modules.telemetry.api.rest.response.TelemetryPointResponse;
@@ -38,18 +37,54 @@ public final class TelemetryRestMapper {
     }
 
     public static CreateTelemetrySourceCommand toCommand(CreateTelemetrySourceRequest request) {
-        return new CreateTelemetrySourceCommand(request.code(), request.nameAr(), request.nameFr(), request.nameEn(), request.sourceTypeId(), request.protocolId(), request.endpointUri(), request.externalReference());
+        return new CreateTelemetrySourceCommand(
+                request.code(),
+                request.nameAr(),
+                request.nameFr(),
+                request.nameEn(),
+                request.sourceTypeId(),
+                request.protocolId(),
+                request.endpointUri(),
+                request.externalReference()
+        );
     }
 
     public static RegisterTelemetryPointCommand toCommand(RegisterTelemetryPointRequest request) {
-        return new RegisterTelemetryPointCommand(request.deviceId(), request.code(), request.nameAr(), request.nameFr(), request.nameEn(), request.pointTypeId(), request.signalTypeId(), request.unitId(), request.samplingPeriodSeconds(), request.minOperationalValue(), request.maxOperationalValue());
+        return new RegisterTelemetryPointCommand(
+                request.deviceId(),
+                request.code(),
+                request.nameAr(),
+                request.nameFr(),
+                request.nameEn(),
+                request.pointTypeId(),
+                request.signalTypeId(),
+                request.unitId(),
+                request.samplingPeriodSeconds(),
+                request.minOperationalValue(),
+                request.maxOperationalValue()
+        );
     }
 
     public static TelemetrySourceResponse toResponse(TelemetrySourceSummaryDto dto) {
-        return new TelemetrySourceResponse(dto.id(), dto.code(), dto.nameFr(), dto.sourceTypeId(), dto.protocolId(), dto.status());
+        return new TelemetrySourceResponse(
+                dto.id(),
+                dto.code(),
+                dto.nameFr(),
+                dto.sourceTypeId(),
+                dto.protocolId(),
+                dto.status()
+        );
     }
 
     public static TelemetryPointResponse toResponse(TelemetryPointSummaryDto dto) {
-        return new TelemetryPointResponse(dto.id(), dto.deviceId(), dto.code(), dto.nameFr(), dto.signalTypeId(), dto.unitId(), dto.status());
+        return new TelemetryPointResponse(
+                dto.id(),
+                dto.deviceId(),
+                dto.code(),
+                dto.nameFr(),
+                dto.signalTypeId(),
+                dto.unitId(),
+                dto.status()
+        );
     }
 }

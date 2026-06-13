@@ -7,7 +7,7 @@
  *
  * @Name        : TopologyController
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-06-13
  *
  * @Type        : Interface
  * @Layer       : API
@@ -18,7 +18,13 @@
  *
  */
 package dz.sh.hidra.modules.topology.api.rest.controller;
-
 import dz.sh.hidra.modules.topology.api.rest.request.*;
 import dz.sh.hidra.modules.topology.api.rest.response.*;
-public interface TopologyController { PipelineSystemResponse createPipelineSystem(CreatePipelineSystemRequest request); FacilityResponse registerFacility(RegisterFacilityRequest request); }
+
+/**
+ * Framework-neutral topology controller contract.
+ */
+public interface TopologyController {
+    PipelineSystemResponse createPipelineSystem(CreatePipelineSystemRequest request);
+    FacilityResponse registerFacility(RegisterFacilityRequest request);
+}

@@ -32,6 +32,7 @@ import dz.sh.hidra.modules.notification.application.port.in.CreateNotificationMe
 import dz.sh.hidra.modules.notification.application.port.in.ReceiveNotificationRequestUseCase;
 import dz.sh.hidra.modules.notification.application.port.in.RecordDeliveryAttemptUseCase;
 import dz.sh.hidra.modules.notification.application.port.out.NotificationDeliveryAttemptRepositoryPort;
+import dz.sh.hidra.modules.notification.application.port.out.NotificationAsyncPushPort;
 import dz.sh.hidra.modules.notification.application.port.out.NotificationMessageRepositoryPort;
 import dz.sh.hidra.modules.notification.application.port.out.NotificationRequestRepositoryPort;
 import dz.sh.hidra.modules.notification.domain.model.NotificationDeliveryAttempt;
@@ -54,16 +55,19 @@ public final class NotificationApplicationService implements ReceiveNotification
     private final NotificationRequestRepositoryPort requestRepositoryPort;
     private final NotificationMessageRepositoryPort messageRepositoryPort;
     private final NotificationDeliveryAttemptRepositoryPort deliveryAttemptRepositoryPort;
+    private final NotificationAsyncPushPort asyncPushPort;
     private final NotificationPayloadGuard payloadGuard = new NotificationPayloadGuard();
 
     public NotificationApplicationService(
             NotificationRequestRepositoryPort requestRepositoryPort,
             NotificationMessageRepositoryPort messageRepositoryPort,
-            NotificationDeliveryAttemptRepositoryPort deliveryAttemptRepositoryPort
+            NotificationDeliveryAttemptRepositoryPort deliveryAttemptRepositoryPort,
+            NotificationAsyncPushPort asyncPushPort
     ) {
         this.requestRepositoryPort = Objects.requireNonNull(requestRepositoryPort, "Notification request repository port must not be null.");
         this.messageRepositoryPort = Objects.requireNonNull(messageRepositoryPort, "Notification message repository port must not be null.");
         this.deliveryAttemptRepositoryPort = Objects.requireNonNull(deliveryAttemptRepositoryPort, "Notification delivery attempt repository port must not be null.");
+        this.asyncPushPort = Objects.requireNonNull(asyncPushPort, "Notification async push port must not be null.");
     }
 
     @Override
@@ -115,13 +119,19 @@ public final class NotificationApplicationService implements ReceiveNotification
                 command.shortTextRendered(),
                 command.payloadHash(),
                 command.priorityId(),
-                NotificationMessageStatus.DRAFT,
+                command.scheduledAt() != null && command.scheduledAt().isAfter(now)
+                        ? NotificationMessageStatus.SCHEDULED
+                        : NotificationMessageStatus.READY,
                 command.scheduledAt(),
                 command.expiresAt(),
                 now,
                 now
         );
-        return NotificationApplicationMapper.toSummary(messageRepositoryPort.save(message));
+        NotificationMessage saved = messageRepositoryPort.save(message);
+        if (saved.status() == NotificationMessageStatus.READY) {
+            asyncPushPort.pushAsync(saved);
+        }
+        return NotificationApplicationMapper.toSummary(saved);
     }
 
     @Override

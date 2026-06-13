@@ -7,7 +7,7 @@
  *
  * @Name        : IdentityController
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-06-13
  *
  * @Type        : Interface
  * @Layer       : API
@@ -18,20 +18,13 @@
  *
  */
 package dz.sh.hidra.modules.identity.api.rest.controller;
-
-import dz.sh.hidra.modules.identity.api.rest.request.CreateUserRequest;
-import dz.sh.hidra.modules.identity.api.rest.request.EvaluatePermissionRequest;
-import dz.sh.hidra.modules.identity.api.rest.response.PermissionDecisionResponse;
-import dz.sh.hidra.modules.identity.api.rest.response.UserResponse;
+import dz.sh.hidra.modules.identity.api.rest.request.*;
+import dz.sh.hidra.modules.identity.api.rest.response.*;
 
 /**
  * Framework-neutral identity controller contract.
- *
- * <p>Concrete Spring MVC annotations belong in an adapter if required.</p>
  */
 public interface IdentityController {
-
     UserResponse createUser(CreateUserRequest request);
-
-    PermissionDecisionResponse evaluatePermission(EvaluatePermissionRequest request);
+    PermissionDecisionResponse evaluate(EvaluatePermissionRequest request);
 }

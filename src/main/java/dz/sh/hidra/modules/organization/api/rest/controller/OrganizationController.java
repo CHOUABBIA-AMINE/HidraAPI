@@ -7,7 +7,7 @@
  *
  * @Name        : OrganizationController
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-06-13
  *
  * @Type        : Interface
  * @Layer       : API
@@ -18,18 +18,14 @@
  *
  */
 package dz.sh.hidra.modules.organization.api.rest.controller;
-
-import dz.sh.hidra.modules.organization.api.rest.request.CreateOrganizationUnitRequest;
-import dz.sh.hidra.modules.organization.api.rest.request.RegisterEmployeeRequest;
-import dz.sh.hidra.modules.organization.api.rest.response.EmployeeResponse;
-import dz.sh.hidra.modules.organization.api.rest.response.OrganizationUnitResponse;
+import dz.sh.hidra.modules.organization.api.rest.request.*;
+import dz.sh.hidra.modules.organization.api.rest.response.*;
 
 /**
  * Framework-neutral organization controller contract.
  */
 public interface OrganizationController {
-
+    String assignEmployee(AssignEmployeeRequest request);
     OrganizationUnitResponse createOrganizationUnit(CreateOrganizationUnitRequest request);
-
     EmployeeResponse registerEmployee(RegisterEmployeeRequest request);
 }

@@ -7,7 +7,7 @@
  *
  * @Name        : MonitoringController
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-06-13
  *
  * @Type        : Interface
  * @Layer       : API
@@ -18,18 +18,13 @@
  *
  */
 package dz.sh.hidra.modules.monitoring.api.rest.controller;
-
-import dz.sh.hidra.modules.monitoring.api.rest.request.CreateMonitoringRuleRequest;
-import dz.sh.hidra.modules.monitoring.api.rest.request.RecordDeviationRequest;
-import dz.sh.hidra.modules.monitoring.api.rest.response.DeviationResponse;
-import dz.sh.hidra.modules.monitoring.api.rest.response.MonitoringRuleResponse;
+import dz.sh.hidra.modules.monitoring.api.rest.request.*;
+import dz.sh.hidra.modules.monitoring.api.rest.response.*;
 
 /**
  * Framework-neutral monitoring controller contract.
  */
 public interface MonitoringController {
-
     MonitoringRuleResponse createMonitoringRule(CreateMonitoringRuleRequest request);
-
     DeviationResponse recordDeviation(RecordDeviationRequest request);
 }

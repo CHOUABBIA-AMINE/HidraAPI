@@ -7,7 +7,7 @@
  *
  * @Name        : PlanningRestMapper
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-06-13
  *
  * @Type        : Class
  * @Layer       : API
@@ -18,7 +18,6 @@
  *
  */
 package dz.sh.hidra.modules.planning.api.rest.mapper;
-
 import dz.sh.hidra.modules.planning.api.rest.request.CreateOperationalPlanRequest;
 import dz.sh.hidra.modules.planning.api.rest.request.CreatePlanningPeriodRequest;
 import dz.sh.hidra.modules.planning.api.rest.response.OperationalPlanResponse;
@@ -37,19 +36,60 @@ public final class PlanningRestMapper {
         throw new UnsupportedOperationException("Utility class must not be instantiated.");
     }
 
-    public static CreatePlanningPeriodCommand toCommand(CreatePlanningPeriodRequest request) {
-        return new CreatePlanningPeriodCommand(request.code(), request.nameAr(), request.nameFr(), request.nameEn(), request.periodTypeId(), request.periodStart(), request.periodEnd(), request.timeZone(), request.createdByActorId());
-    }
-
     public static CreateOperationalPlanCommand toCommand(CreateOperationalPlanRequest request) {
-        return new CreateOperationalPlanCommand(request.periodId(), request.code(), request.nameAr(), request.nameFr(), request.nameEn(), request.planTypeId(), request.productTypeId(), request.topologyScopeType(), request.topologyScopeId(), request.topologyScopeCode(), request.topologyScopeNameSnapshot(), request.responsibleOrganizationUnitId(), request.createdByActorId());
+        return new CreateOperationalPlanCommand(
+                request.periodId(),
+                request.code(),
+                request.nameAr(),
+                request.nameFr(),
+                request.nameEn(),
+                request.planTypeId(),
+                request.productTypeId(),
+                request.topologyScopeType(),
+                request.topologyScopeId(),
+                request.topologyScopeCode(),
+                request.topologyScopeNameSnapshot(),
+                request.responsibleOrganizationUnitId(),
+                request.createdByActorId()
+        );
     }
 
-    public static PlanningPeriodResponse toResponse(PlanningPeriodSummaryDto dto) {
-        return new PlanningPeriodResponse(dto.id(), dto.code(), dto.nameFr(), dto.periodStart(), dto.periodEnd(), dto.timeZone(), dto.status());
+    public static CreatePlanningPeriodCommand toCommand(CreatePlanningPeriodRequest request) {
+        return new CreatePlanningPeriodCommand(
+                request.code(),
+                request.nameAr(),
+                request.nameFr(),
+                request.nameEn(),
+                request.periodTypeId(),
+                request.periodStart(),
+                request.periodEnd(),
+                request.timeZone(),
+                request.createdByActorId()
+        );
     }
 
     public static OperationalPlanResponse toResponse(OperationalPlanSummaryDto dto) {
-        return new OperationalPlanResponse(dto.id(), dto.periodId(), dto.code(), dto.nameFr(), dto.topologyScopeType(), dto.topologyScopeId(), dto.status(), dto.approvedRevisionId());
+        return new OperationalPlanResponse(
+                dto.id(),
+                dto.periodId(),
+                dto.code(),
+                dto.nameFr(),
+                dto.topologyScopeType(),
+                dto.topologyScopeId(),
+                dto.status(),
+                dto.approvedRevisionId()
+        );
+    }
+
+    public static PlanningPeriodResponse toResponse(PlanningPeriodSummaryDto dto) {
+        return new PlanningPeriodResponse(
+                dto.id(),
+                dto.code(),
+                dto.nameFr(),
+                dto.periodStart(),
+                dto.periodEnd(),
+                dto.timeZone(),
+                dto.status()
+        );
     }
 }

@@ -22,7 +22,6 @@ package dz.sh.hidra.platform.configuration;
 
 import dz.sh.hidra.platform.security.HidraJwtGrantedAuthoritiesConverter;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -40,7 +39,6 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
@@ -62,17 +60,25 @@ public class HidraSecurityConfiguration {
     @Bean
     SecurityFilterChain hidraSecurityFilterChain(
             HttpSecurity http,
-            @Qualifier("hidraCorsConfigurationSource") CorsConfigurationSource corsConfigurationSource,
             JwtAuthenticationConverter jwtAuthenticationConverter,
             @Value("${hidra.platform.security.enabled:true}") boolean securityEnabled,
             @Value("${hidra.platform.security.csrf.enabled:false}") boolean csrfEnabled,
-            @Value("${hidra.platform.security.authentication-mode:jwt}") String authenticationMode
+            @Value("${hidra.platform.security.authentication-mode:jwt}") String authenticationMode,
+            @Value("${hidra.platform.security.cors.allowed-origins:}") String allowedOrigins,
+            @Value("${hidra.platform.security.cors.allowed-methods:GET,POST,PUT,PATCH,DELETE,OPTIONS}") String allowedMethods,
+            @Value("${hidra.platform.security.cors.allowed-headers:Authorization,Content-Type,X-Correlation-Id,X-Request-Id}") String allowedHeaders,
+            @Value("${hidra.platform.security.cors.exposed-headers:X-Correlation-Id,X-Request-Id}") String exposedHeaders
     ) throws Exception {
         if (!csrfEnabled) {
             http.csrf(AbstractHttpConfigurer::disable);
         }
 
-        http.cors(cors -> cors.configurationSource(corsConfigurationSource));
+        http.cors(cors -> cors.configurationSource(buildCorsConfigurationSource(
+                allowedOrigins,
+                allowedMethods,
+                allowedHeaders,
+                exposedHeaders
+        )));
         http.formLogin(AbstractHttpConfigurer::disable);
         http.logout(AbstractHttpConfigurer::disable);
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
@@ -167,12 +173,11 @@ public class HidraSecurityConfiguration {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
-    CorsConfigurationSource hidraCorsConfigurationSource(
-            @Value("${hidra.platform.security.cors.allowed-origins:}") String allowedOrigins,
-            @Value("${hidra.platform.security.cors.allowed-methods:GET,POST,PUT,PATCH,DELETE,OPTIONS}") String allowedMethods,
-            @Value("${hidra.platform.security.cors.allowed-headers:Authorization,Content-Type,X-Correlation-Id,X-Request-Id}") String allowedHeaders,
-            @Value("${hidra.platform.security.cors.exposed-headers:X-Correlation-Id,X-Request-Id}") String exposedHeaders
+    private static UrlBasedCorsConfigurationSource buildCorsConfigurationSource(
+            String allowedOrigins,
+            String allowedMethods,
+            String allowedHeaders,
+            String exposedHeaders
     ) {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(csv(allowedOrigins));

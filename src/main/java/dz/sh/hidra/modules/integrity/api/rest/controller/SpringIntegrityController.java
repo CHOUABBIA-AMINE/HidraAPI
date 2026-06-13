@@ -18,7 +18,6 @@
  *
  */
 package dz.sh.hidra.modules.integrity.api.rest.controller;
-
 import dz.sh.hidra.modules.integrity.api.rest.mapper.IntegrityRestMapper;
 import dz.sh.hidra.modules.integrity.api.rest.request.CreateIntegrityAssessmentRequest;
 import dz.sh.hidra.modules.integrity.api.rest.request.CreateIntegrityProgramRequest;
@@ -30,12 +29,15 @@ import dz.sh.hidra.modules.integrity.application.port.in.CreateIntegrityAssessme
 import dz.sh.hidra.modules.integrity.application.port.in.CreateIntegrityProgramUseCase;
 import dz.sh.hidra.modules.integrity.application.port.in.OpenIntegrityCaseUseCase;
 import jakarta.validation.Valid;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import java.util.Objects;
 
 /**
  * Spring MVC adapter exposing integrity REST endpoints.
@@ -45,37 +47,59 @@ import java.util.Objects;
 @RequestMapping("/api/v1/integrity")
 public class SpringIntegrityController implements IntegrityController {
 
-    private final CreateIntegrityProgramUseCase createIntegrityProgramUseCase;
     private final CreateIntegrityAssessmentUseCase createIntegrityAssessmentUseCase;
+    private final CreateIntegrityProgramUseCase createIntegrityProgramUseCase;
     private final OpenIntegrityCaseUseCase openIntegrityCaseUseCase;
 
     public SpringIntegrityController(
-            CreateIntegrityProgramUseCase createIntegrityProgramUseCase,
             CreateIntegrityAssessmentUseCase createIntegrityAssessmentUseCase,
+            CreateIntegrityProgramUseCase createIntegrityProgramUseCase,
             OpenIntegrityCaseUseCase openIntegrityCaseUseCase
     ) {
-        this.createIntegrityProgramUseCase = Objects.requireNonNull(createIntegrityProgramUseCase, "CreateIntegrityProgramUseCase must not be null.");
         this.createIntegrityAssessmentUseCase = Objects.requireNonNull(createIntegrityAssessmentUseCase, "CreateIntegrityAssessmentUseCase must not be null.");
+        this.createIntegrityProgramUseCase = Objects.requireNonNull(createIntegrityProgramUseCase, "CreateIntegrityProgramUseCase must not be null.");
         this.openIntegrityCaseUseCase = Objects.requireNonNull(openIntegrityCaseUseCase, "OpenIntegrityCaseUseCase must not be null.");
     }
 
-
-    @Override
-    @PostMapping("/create-integrity-program")
-    public IntegrityProgramResponse createIntegrityProgram(@Valid @RequestBody CreateIntegrityProgramRequest request) {
-        Objects.requireNonNull(request, "CreateIntegrityProgramRequest must not be null.");
-        return IntegrityRestMapper.toResponse(createIntegrityProgramUseCase.createIntegrityProgram(IntegrityRestMapper.toCommand(request)));
+    @GetMapping("/capabilities")
+    public Map<String, Object> capabilities() {
+        return Map.of(
+                "module", "integrity",
+                "mission", "Manage pipeline integrity programs, assessments, and integrity cases.",
+                "objectives", List.of(
+                "Create integrity programs.",
+                "Create integrity assessments.",
+                "Open integrity cases for follow-up."
+        ),
+                "operations", List.of(
+                "createIntegrityAssessment",
+                "createIntegrityProgram",
+                "openIntegrityCase"
+        ),
+                "resourceEndpoints", List.of(
+                "POST /api/v1/integrity/assessments",
+                "POST /api/v1/integrity/programs",
+                "POST /api/v1/integrity/cases"
+        )
+        );
     }
 
     @Override
-    @PostMapping("/create-integrity-assessment")
+    @PostMapping({"/create-integrity-assessment", "/assessments"})
     public IntegrityAssessmentResponse createIntegrityAssessment(@Valid @RequestBody CreateIntegrityAssessmentRequest request) {
         Objects.requireNonNull(request, "CreateIntegrityAssessmentRequest must not be null.");
         return IntegrityRestMapper.toResponse(createIntegrityAssessmentUseCase.createIntegrityAssessment(IntegrityRestMapper.toCommand(request)));
     }
 
     @Override
-    @PostMapping("/open-integrity-case")
+    @PostMapping({"/create-integrity-program", "/programs"})
+    public IntegrityProgramResponse createIntegrityProgram(@Valid @RequestBody CreateIntegrityProgramRequest request) {
+        Objects.requireNonNull(request, "CreateIntegrityProgramRequest must not be null.");
+        return IntegrityRestMapper.toResponse(createIntegrityProgramUseCase.createIntegrityProgram(IntegrityRestMapper.toCommand(request)));
+    }
+
+    @Override
+    @PostMapping({"/open-integrity-case", "/cases"})
     public IntegrityCaseResponse openIntegrityCase(@Valid @RequestBody OpenIntegrityCaseRequest request) {
         Objects.requireNonNull(request, "OpenIntegrityCaseRequest must not be null.");
         return IntegrityRestMapper.toResponse(openIntegrityCaseUseCase.openIntegrityCase(IntegrityRestMapper.toCommand(request)));

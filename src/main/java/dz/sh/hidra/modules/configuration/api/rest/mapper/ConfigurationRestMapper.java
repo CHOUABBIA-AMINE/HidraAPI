@@ -7,7 +7,7 @@
  *
  * @Name        : ConfigurationRestMapper
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-06-13
  *
  * @Type        : Class
  * @Layer       : API
@@ -18,15 +18,18 @@
  *
  */
 package dz.sh.hidra.modules.configuration.api.rest.mapper;
-
 import dz.sh.hidra.modules.configuration.api.rest.request.CreateConfigurationDefinitionRequest;
+import dz.sh.hidra.modules.configuration.api.rest.request.CreateFeatureFlagRequest;
 import dz.sh.hidra.modules.configuration.api.rest.request.SetConfigurationValueRequest;
 import dz.sh.hidra.modules.configuration.api.rest.response.ConfigurationDefinitionResponse;
 import dz.sh.hidra.modules.configuration.api.rest.response.ConfigurationValueResponse;
+import dz.sh.hidra.modules.configuration.api.rest.response.FeatureFlagResponse;
 import dz.sh.hidra.modules.configuration.application.command.CreateConfigurationDefinitionCommand;
+import dz.sh.hidra.modules.configuration.application.command.CreateFeatureFlagCommand;
 import dz.sh.hidra.modules.configuration.application.command.SetConfigurationValueCommand;
 import dz.sh.hidra.modules.configuration.application.dto.ConfigurationDefinitionSummaryDto;
 import dz.sh.hidra.modules.configuration.application.dto.ConfigurationValueSummaryDto;
+import dz.sh.hidra.modules.configuration.application.dto.FeatureFlagSummaryDto;
 
 /**
  * Maps configuration REST models to application models.
@@ -38,18 +41,83 @@ public final class ConfigurationRestMapper {
     }
 
     public static CreateConfigurationDefinitionCommand toCommand(CreateConfigurationDefinitionRequest request) {
-        return new CreateConfigurationDefinitionCommand(request.namespaceId(), request.key(), request.displayNameFr(), request.displayNameAr(), request.displayNameEn(), request.valueType(), request.sensitivity(), request.scoped(), request.requiresApproval(), request.defaultValue(), request.description());
+        return new CreateConfigurationDefinitionCommand(
+                request.namespaceId(),
+                request.key(),
+                request.displayNameFr(),
+                request.displayNameAr(),
+                request.displayNameEn(),
+                request.valueType(),
+                request.sensitivity(),
+                request.scoped(),
+                request.requiresApproval(),
+                request.defaultValue(),
+                request.description()
+        );
+    }
+
+    public static CreateFeatureFlagCommand toCommand(CreateFeatureFlagRequest request) {
+        return new CreateFeatureFlagCommand(
+                request.code(),
+                request.nameFr(),
+                request.nameAr(),
+                request.nameEn(),
+                request.owningModule(),
+                request.evaluationStrategy(),
+                request.defaultEnabled(),
+                request.description()
+        );
     }
 
     public static SetConfigurationValueCommand toCommand(SetConfigurationValueRequest request) {
-        return new SetConfigurationValueCommand(request.definitionId(), request.definitionVersionId(), request.environment(), request.rawValue(), request.jsonValue(), request.secretReference(), request.effectiveFrom(), request.effectiveTo(), request.createdByActorId());
+        return new SetConfigurationValueCommand(
+                request.definitionId(),
+                request.definitionVersionId(),
+                request.environment(),
+                request.rawValue(),
+                request.jsonValue(),
+                request.secretReference(),
+                request.effectiveFrom(),
+                request.effectiveTo(),
+                request.createdByActorId()
+        );
     }
 
     public static ConfigurationDefinitionResponse toResponse(ConfigurationDefinitionSummaryDto dto) {
-        return new ConfigurationDefinitionResponse(dto.id(), dto.namespaceId(), dto.key(), dto.displayNameFr(), dto.valueType(), dto.sensitivity(), dto.status(), dto.scoped(), dto.requiresApproval());
+        return new ConfigurationDefinitionResponse(
+                dto.id(),
+                dto.namespaceId(),
+                dto.key(),
+                dto.displayNameFr(),
+                dto.valueType(),
+                dto.sensitivity(),
+                dto.status(),
+                dto.scoped(),
+                dto.requiresApproval()
+        );
+    }
+
+    public static FeatureFlagResponse toResponse(FeatureFlagSummaryDto dto) {
+        return new FeatureFlagResponse(
+                dto.id(),
+                dto.code(),
+                dto.nameFr(),
+                dto.owningModule(),
+                dto.status(),
+                dto.evaluationStrategy(),
+                dto.defaultEnabled()
+        );
     }
 
     public static ConfigurationValueResponse toResponse(ConfigurationValueSummaryDto dto) {
-        return new ConfigurationValueResponse(dto.id(), dto.definitionId(), dto.definitionVersionId(), dto.environment(), dto.status(), dto.effectiveFrom(), dto.effectiveTo());
+        return new ConfigurationValueResponse(
+                dto.id(),
+                dto.definitionId(),
+                dto.definitionVersionId(),
+                dto.environment(),
+                dto.status(),
+                dto.effectiveFrom(),
+                dto.effectiveTo()
+        );
     }
 }

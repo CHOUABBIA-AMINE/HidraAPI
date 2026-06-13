@@ -7,7 +7,7 @@
  *
  * @Name        : ConfigurationController
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-06-13
  *
  * @Type        : Interface
  * @Layer       : API
@@ -18,18 +18,14 @@
  *
  */
 package dz.sh.hidra.modules.configuration.api.rest.controller;
-
-import dz.sh.hidra.modules.configuration.api.rest.request.CreateConfigurationDefinitionRequest;
-import dz.sh.hidra.modules.configuration.api.rest.request.SetConfigurationValueRequest;
-import dz.sh.hidra.modules.configuration.api.rest.response.ConfigurationDefinitionResponse;
-import dz.sh.hidra.modules.configuration.api.rest.response.ConfigurationValueResponse;
+import dz.sh.hidra.modules.configuration.api.rest.request.*;
+import dz.sh.hidra.modules.configuration.api.rest.response.*;
 
 /**
  * Framework-neutral configuration controller contract.
  */
 public interface ConfigurationController {
-
     ConfigurationDefinitionResponse createConfigurationDefinition(CreateConfigurationDefinitionRequest request);
-
+    FeatureFlagResponse createFeatureFlag(CreateFeatureFlagRequest request);
     ConfigurationValueResponse setConfigurationValue(SetConfigurationValueRequest request);
 }

@@ -7,7 +7,7 @@
  *
  * @Name        : IncidentController
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-06-13
  *
  * @Type        : Interface
  * @Layer       : API
@@ -18,17 +18,14 @@
  *
  */
 package dz.sh.hidra.modules.incident.api.rest.controller;
-
-import dz.sh.hidra.modules.incident.api.rest.request.OpenIncidentRequest;
-import dz.sh.hidra.modules.incident.api.rest.request.RecordIncidentResponseActionRequest;
-import dz.sh.hidra.modules.incident.api.rest.response.IncidentResponse;
+import dz.sh.hidra.modules.incident.api.rest.request.*;
+import dz.sh.hidra.modules.incident.api.rest.response.*;
 
 /**
  * Framework-neutral incident controller contract.
  */
 public interface IncidentController {
-
+    String closeIncident(CloseIncidentRequest request);
     IncidentResponse openIncident(OpenIncidentRequest request);
-
     String recordResponseAction(RecordIncidentResponseActionRequest request);
 }

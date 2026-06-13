@@ -7,7 +7,7 @@
  *
  * @Name        : AnalyticsController
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-06-13
  *
  * @Type        : Interface
  * @Layer       : API
@@ -18,18 +18,15 @@
  *
  */
 package dz.sh.hidra.modules.analytics.api.rest.controller;
-
-import dz.sh.hidra.modules.analytics.api.rest.request.CreateAnalyticsDatasetRequest;
-import dz.sh.hidra.modules.analytics.api.rest.request.CreateAnalyticsInsightRequest;
-import dz.sh.hidra.modules.analytics.api.rest.response.AnalyticsDatasetResponse;
-import dz.sh.hidra.modules.analytics.api.rest.response.AnalyticsInsightResponse;
+import dz.sh.hidra.modules.analytics.api.rest.request.*;
+import dz.sh.hidra.modules.analytics.api.rest.response.*;
 
 /**
  * Framework-neutral analytics controller contract.
  */
 public interface AnalyticsController {
-
     AnalyticsDatasetResponse createAnalyticsDataset(CreateAnalyticsDatasetRequest request);
-
     AnalyticsInsightResponse createAnalyticsInsight(CreateAnalyticsInsightRequest request);
+    AnalyticsProjectionRunResponse runProjection(RunProjectionRequest request);
+    MetricEvaluationRunResponse runMetricEvaluation(RunMetricEvaluationRequest request);
 }

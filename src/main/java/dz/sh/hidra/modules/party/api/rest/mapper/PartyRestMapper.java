@@ -7,7 +7,7 @@
  *
  * @Name        : PartyRestMapper
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-06-13
  *
  * @Type        : Class
  * @Layer       : API
@@ -18,9 +18,10 @@
  *
  */
 package dz.sh.hidra.modules.party.api.rest.mapper;
-
+import dz.sh.hidra.modules.party.api.rest.request.AssignPartyRoleRequest;
 import dz.sh.hidra.modules.party.api.rest.request.RegisterPartyRequest;
 import dz.sh.hidra.modules.party.api.rest.response.PartyResponse;
+import dz.sh.hidra.modules.party.application.command.AssignPartyRoleCommand;
 import dz.sh.hidra.modules.party.application.command.RegisterPartyCommand;
 import dz.sh.hidra.modules.party.application.dto.PartySummaryDto;
 
@@ -31,6 +32,16 @@ public final class PartyRestMapper {
 
     private PartyRestMapper() {
         throw new UnsupportedOperationException("Utility class must not be instantiated.");
+    }
+
+    public static AssignPartyRoleCommand toCommand(AssignPartyRoleRequest request) {
+        return new AssignPartyRoleCommand(
+                request.partyId(),
+                request.roleId(),
+                request.validFrom(),
+                request.validTo(),
+                request.qualificationRequired()
+        );
     }
 
     public static RegisterPartyCommand toCommand(RegisterPartyRequest request) {

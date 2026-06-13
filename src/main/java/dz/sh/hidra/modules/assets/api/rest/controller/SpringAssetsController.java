@@ -40,7 +40,7 @@ import java.util.Objects;
 @RestController
 @Validated
 @RequestMapping("/api/v1/assets")
-public final class SpringAssetsController implements AssetsController {
+public class SpringAssetsController implements AssetsController {
 
     private final RegisterMaintainableAssetUseCase registerMaintainableAssetUseCase;
     private final CreateMaintenanceWorkOrderUseCase createMaintenanceWorkOrderUseCase;

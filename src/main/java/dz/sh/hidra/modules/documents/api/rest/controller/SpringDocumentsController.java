@@ -40,7 +40,7 @@ import java.util.Objects;
 @RestController
 @Validated
 @RequestMapping("/api/v1/documents")
-public final class SpringDocumentsController implements DocumentsController {
+public class SpringDocumentsController implements DocumentsController {
 
     private final RegisterDocumentUseCase registerDocumentUseCase;
     private final UploadDocumentVersionUseCase uploadDocumentVersionUseCase;

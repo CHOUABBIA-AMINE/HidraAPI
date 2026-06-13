@@ -39,7 +39,7 @@ import java.util.Objects;
 @RestController
 @Validated
 @RequestMapping("/api/v1/alarm")
-public final class SpringAlarmController implements AlarmController {
+public class SpringAlarmController implements AlarmController {
 
     private final RaiseAlarmUseCase raiseAlarmUseCase;
     private final AcknowledgeAlarmUseCase acknowledgeAlarmUseCase;

@@ -40,7 +40,7 @@ import java.util.Objects;
 @RestController
 @Validated
 @RequestMapping("/api/v1/simulation")
-public final class SpringSimulationController implements SimulationController {
+public class SpringSimulationController implements SimulationController {
 
     private final CreateSimulationModelUseCase createSimulationModelUseCase;
     private final CreateSimulationScenarioUseCase createSimulationScenarioUseCase;

@@ -40,7 +40,7 @@ import java.util.Objects;
 @RestController
 @Validated
 @RequestMapping("/api/v1/analytics")
-public final class SpringAnalyticsController implements AnalyticsController {
+public class SpringAnalyticsController implements AnalyticsController {
 
     private final AnalyticsDatasetUseCase analyticsDatasetUseCase;
     private final AnalyticsInsightUseCase analyticsInsightUseCase;

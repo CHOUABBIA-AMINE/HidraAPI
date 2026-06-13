@@ -40,7 +40,7 @@ import java.util.Objects;
 @RestController
 @Validated
 @RequestMapping("/api/v1/topology")
-public final class SpringTopologyController implements TopologyController {
+public class SpringTopologyController implements TopologyController {
 
     private final CreatePipelineSystemUseCase createPipelineSystemUseCase;
     private final RegisterFacilityUseCase registerFacilityUseCase;

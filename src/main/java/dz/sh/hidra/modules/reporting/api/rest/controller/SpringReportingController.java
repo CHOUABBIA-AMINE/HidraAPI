@@ -40,7 +40,7 @@ import java.util.Objects;
 @RestController
 @Validated
 @RequestMapping("/api/v1/reporting")
-public final class SpringReportingController implements ReportingController {
+public class SpringReportingController implements ReportingController {
 
     private final CreateReportDefinitionUseCase createReportDefinitionUseCase;
     private final RequestReportUseCase requestReportUseCase;

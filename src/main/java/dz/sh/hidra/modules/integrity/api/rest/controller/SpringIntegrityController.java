@@ -43,7 +43,7 @@ import java.util.Objects;
 @RestController
 @Validated
 @RequestMapping("/api/v1/integrity")
-public final class SpringIntegrityController implements IntegrityController {
+public class SpringIntegrityController implements IntegrityController {
 
     private final CreateIntegrityProgramUseCase createIntegrityProgramUseCase;
     private final CreateIntegrityAssessmentUseCase createIntegrityAssessmentUseCase;

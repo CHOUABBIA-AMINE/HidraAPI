@@ -40,7 +40,7 @@ import java.util.Objects;
 @RestController
 @Validated
 @RequestMapping("/api/v1/custody")
-public final class SpringCustodyController implements CustodyController {
+public class SpringCustodyController implements CustodyController {
 
     private final OpenCustodyMeasurementPeriodUseCase openCustodyMeasurementPeriodUseCase;
     private final CreateCustodyTransferTicketUseCase createCustodyTransferTicketUseCase;

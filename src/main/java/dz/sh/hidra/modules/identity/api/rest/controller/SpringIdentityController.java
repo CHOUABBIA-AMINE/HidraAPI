@@ -41,7 +41,7 @@ import java.util.Objects;
 @RestController
 @Validated
 @RequestMapping("/api/v1/identity")
-public final class SpringIdentityController implements IdentityController {
+public class SpringIdentityController implements IdentityController {
 
     private final CreateUserUseCase createUserUseCase;
     private final EvaluatePermissionUseCase evaluatePermissionUseCase;

@@ -40,7 +40,7 @@ import java.util.Objects;
 @RestController
 @Validated
 @RequestMapping("/api/v1/workflow")
-public final class SpringWorkflowController implements WorkflowController {
+public class SpringWorkflowController implements WorkflowController {
 
     private final StartWorkflowInstanceUseCase startWorkflowInstanceUseCase;
     private final CreateWorkflowTaskUseCase createWorkflowTaskUseCase;

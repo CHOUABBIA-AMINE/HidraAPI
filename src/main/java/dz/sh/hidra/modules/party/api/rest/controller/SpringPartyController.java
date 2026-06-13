@@ -37,7 +37,7 @@ import java.util.Objects;
 @RestController
 @Validated
 @RequestMapping("/api/v1/party")
-public final class SpringPartyController implements PartyController {
+public class SpringPartyController implements PartyController {
 
     private final RegisterPartyUseCase registerPartyUseCase;
 

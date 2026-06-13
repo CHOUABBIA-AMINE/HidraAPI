@@ -40,7 +40,7 @@ import java.util.Objects;
 @RestController
 @Validated
 @RequestMapping("/api/v1/audit")
-public final class SpringAuditController implements AuditController {
+public class SpringAuditController implements AuditController {
 
     private final RecordAuditEventUseCase recordAuditEventUseCase;
     private final RequestAuditExportUseCase requestAuditExportUseCase;

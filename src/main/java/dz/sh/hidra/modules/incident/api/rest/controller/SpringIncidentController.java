@@ -39,7 +39,7 @@ import java.util.Objects;
 @RestController
 @Validated
 @RequestMapping("/api/v1/incident")
-public final class SpringIncidentController implements IncidentController {
+public class SpringIncidentController implements IncidentController {
 
     private final OpenIncidentUseCase openIncidentUseCase;
     private final RecordIncidentResponseActionUseCase recordIncidentResponseActionUseCase;

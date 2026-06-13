@@ -40,7 +40,7 @@ import java.util.Objects;
 @RestController
 @Validated
 @RequestMapping("/api/v1/integration")
-public final class SpringIntegrationController implements IntegrationController {
+public class SpringIntegrationController implements IntegrationController {
 
     private final RegisterExternalSystemUseCase registerExternalSystemUseCase;
     private final StartIntegrationJobRunUseCase startIntegrationJobRunUseCase;

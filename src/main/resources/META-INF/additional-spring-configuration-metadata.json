@@ -164,6 +164,51 @@
       "name": "hidra.platform.tenancy.default-scope",
       "type": "java.lang.String",
       "description": "Default tenant or organization scope."
+    },
+    {
+      "name": "hidra.platform.security.authentication-mode",
+      "type": "java.lang.String",
+      "description": "Authentication mode: jwt, basic, or disabled."
+    },
+    {
+      "name": "hidra.platform.security.jwt.issuer-uri",
+      "type": "java.lang.String",
+      "description": "JWT issuer URI used for issuer discovery and validation."
+    },
+    {
+      "name": "hidra.platform.security.jwt.jwk-set-uri",
+      "type": "java.lang.String",
+      "description": "JWT JWK set URI used when issuer discovery is not available."
+    },
+    {
+      "name": "hidra.platform.security.jwt.hmac-secret",
+      "type": "java.lang.String",
+      "description": "Development-only HMAC secret for HS256 JWT validation."
+    },
+    {
+      "name": "hidra.platform.security.jwt.audience",
+      "type": "java.lang.String",
+      "description": "Expected JWT audience claim."
+    },
+    {
+      "name": "hidra.platform.security.jwt.principal-claim",
+      "type": "java.lang.String",
+      "description": "JWT claim used as the authenticated principal name."
+    },
+    {
+      "name": "hidra.platform.security.jwt.roles-claim",
+      "type": "java.lang.String",
+      "description": "JWT claim containing Hidra role authorities."
+    },
+    {
+      "name": "hidra.platform.security.jwt.scope-claim",
+      "type": "java.lang.String",
+      "description": "JWT claim containing OAuth2 scopes."
+    },
+    {
+      "name": "hidra.platform.security.jwt.authority-prefix",
+      "type": "java.lang.String",
+      "description": "Authority prefix applied to JWT role claims."
     }
   ]
 }

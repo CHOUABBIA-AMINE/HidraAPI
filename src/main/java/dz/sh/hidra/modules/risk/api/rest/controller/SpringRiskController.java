@@ -40,7 +40,7 @@ import java.util.Objects;
 @RestController
 @Validated
 @RequestMapping("/api/v1/risk")
-public final class SpringRiskController implements RiskController {
+public class SpringRiskController implements RiskController {
 
     private final CreateRiskRegisterUseCase createRiskRegisterUseCase;
     private final CreateRiskAssessmentUseCase createRiskAssessmentUseCase;

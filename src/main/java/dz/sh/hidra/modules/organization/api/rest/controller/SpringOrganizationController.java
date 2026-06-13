@@ -40,7 +40,7 @@ import java.util.Objects;
 @RestController
 @Validated
 @RequestMapping("/api/v1/organization")
-public final class SpringOrganizationController implements OrganizationController {
+public class SpringOrganizationController implements OrganizationController {
 
     private final CreateOrganizationUnitUseCase createOrganizationUnitUseCase;
     private final RegisterEmployeeUseCase registerEmployeeUseCase;

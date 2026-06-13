@@ -40,7 +40,7 @@ import java.util.Objects;
 @RestController
 @Validated
 @RequestMapping("/api/v1/planning")
-public final class SpringPlanningController implements PlanningController {
+public class SpringPlanningController implements PlanningController {
 
     private final CreatePlanningPeriodUseCase createPlanningPeriodUseCase;
     private final CreateOperationalPlanUseCase createOperationalPlanUseCase;

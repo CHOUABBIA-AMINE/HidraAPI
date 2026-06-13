@@ -40,7 +40,7 @@ import java.util.Objects;
 @RestController
 @Validated
 @RequestMapping("/api/v1/telemetry")
-public final class SpringTelemetryController implements TelemetryController {
+public class SpringTelemetryController implements TelemetryController {
 
     private final CreateTelemetrySourceUseCase createTelemetrySourceUseCase;
     private final RegisterTelemetryPointUseCase registerTelemetryPointUseCase;

@@ -31,7 +31,7 @@ import java.util.Optional;
  * Spring Security adapter for the framework-neutral current security context port.
  */
 @Component
-public final class SpringSecurityCurrentSecurityContext implements CurrentSecurityContext {
+public class SpringSecurityCurrentSecurityContext implements CurrentSecurityContext {
 
     @Override
     public Optional<AuthenticatedPrincipal> currentPrincipal() {

@@ -40,7 +40,7 @@ import java.util.Objects;
 @RestController
 @Validated
 @RequestMapping("/api/v1/leak-detection")
-public final class SpringLeakDetectionController implements LeakDetectionController {
+public class SpringLeakDetectionController implements LeakDetectionController {
 
     private final CreateLeakCandidateUseCase createLeakCandidateUseCase;
     private final OpenLeakCaseUseCase openLeakCaseUseCase;

@@ -40,7 +40,7 @@ import java.util.Objects;
 @RestController
 @Validated
 @RequestMapping("/api/v1/monitoring")
-public final class SpringMonitoringController implements MonitoringController {
+public class SpringMonitoringController implements MonitoringController {
 
     private final CreateMonitoringRuleUseCase createMonitoringRuleUseCase;
     private final RecordDeviationUseCase recordDeviationUseCase;

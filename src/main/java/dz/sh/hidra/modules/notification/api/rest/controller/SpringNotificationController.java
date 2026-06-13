@@ -40,7 +40,7 @@ import java.util.Objects;
 @RestController
 @Validated
 @RequestMapping("/api/v1/notification")
-public final class SpringNotificationController implements NotificationController {
+public class SpringNotificationController implements NotificationController {
 
     private final ReceiveNotificationRequestUseCase receiveNotificationRequestUseCase;
     private final CreateNotificationMessageUseCase createNotificationMessageUseCase;

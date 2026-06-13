@@ -40,7 +40,7 @@ import java.util.Objects;
 @RestController
 @Validated
 @RequestMapping("/api/v1/configuration")
-public final class SpringConfigurationController implements ConfigurationController {
+public class SpringConfigurationController implements ConfigurationController {
 
     private final CreateConfigurationDefinitionUseCase createConfigurationDefinitionUseCase;
     private final SetConfigurationValueUseCase setConfigurationValueUseCase;

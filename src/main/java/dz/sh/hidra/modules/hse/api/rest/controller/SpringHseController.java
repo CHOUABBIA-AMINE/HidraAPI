@@ -40,7 +40,7 @@ import java.util.Objects;
 @RestController
 @Validated
 @RequestMapping("/api/v1/hse")
-public final class SpringHseController implements HseController {
+public class SpringHseController implements HseController {
 
     private final OpenHseCaseUseCase openHseCaseUseCase;
     private final CreateHseCapaUseCase createHseCapaUseCase;

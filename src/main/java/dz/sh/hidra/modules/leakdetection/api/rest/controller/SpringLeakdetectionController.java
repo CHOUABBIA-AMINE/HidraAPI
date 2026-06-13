@@ -18,7 +18,7 @@
  *
  */
 package dz.sh.hidra.modules.leakdetection.api.rest.controller;
-import dz.sh.hidra.modules.leakdetection.api.rest.mapper.LeakDetectionRestMapper;
+import dz.sh.hidra.modules.leakdetection.api.rest.mapper.LeakdetectionRestMapper;
 import dz.sh.hidra.modules.leakdetection.api.rest.request.CreateLeakCandidateRequest;
 import dz.sh.hidra.modules.leakdetection.api.rest.request.EscalateLeakCaseRequest;
 import dz.sh.hidra.modules.leakdetection.api.rest.request.OpenLeakCaseRequest;
@@ -44,13 +44,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @Validated
 @RequestMapping("/api/v1/leakdetection")
-public class SpringLeakDetectionController implements LeakDetectionController {
+public class SpringLeakdetectionController implements LeakdetectionController {
 
     private final CreateLeakCandidateUseCase createLeakCandidateUseCase;
     private final EscalateLeakCaseUseCase escalateLeakCaseUseCase;
     private final OpenLeakCaseUseCase openLeakCaseUseCase;
 
-    public SpringLeakDetectionController(
+    public SpringLeakdetectionController(
             CreateLeakCandidateUseCase createLeakCandidateUseCase,
             EscalateLeakCaseUseCase escalateLeakCaseUseCase,
             OpenLeakCaseUseCase openLeakCaseUseCase
@@ -87,21 +87,21 @@ public class SpringLeakDetectionController implements LeakDetectionController {
     @PostMapping({"/create-leak-candidate", "/candidates"})
     public LeakCandidateResponse createLeakCandidate(@Valid @RequestBody CreateLeakCandidateRequest request) {
         Objects.requireNonNull(request, "CreateLeakCandidateRequest must not be null.");
-        return LeakDetectionRestMapper.toResponse(createLeakCandidateUseCase.createLeakCandidate(LeakDetectionRestMapper.toCommand(request)));
+        return LeakdetectionRestMapper.toResponse(createLeakCandidateUseCase.createLeakCandidate(LeakdetectionRestMapper.toCommand(request)));
     }
 
     @Override
     @PostMapping({"/escalate-leak-case", "/cases/escalations"})
     public String escalateLeakCase(@Valid @RequestBody EscalateLeakCaseRequest request) {
         Objects.requireNonNull(request, "EscalateLeakCaseRequest must not be null.");
-        return escalateLeakCaseUseCase.escalateLeakCase(LeakDetectionRestMapper.toCommand(request));
+        return escalateLeakCaseUseCase.escalateLeakCase(LeakdetectionRestMapper.toCommand(request));
     }
 
     @Override
     @PostMapping({"/open-leak-case", "/cases"})
     public LeakCaseResponse openLeakCase(@Valid @RequestBody OpenLeakCaseRequest request) {
         Objects.requireNonNull(request, "OpenLeakCaseRequest must not be null.");
-        return LeakDetectionRestMapper.toResponse(openLeakCaseUseCase.openLeakCase(LeakDetectionRestMapper.toCommand(request)));
+        return LeakdetectionRestMapper.toResponse(openLeakCaseUseCase.openLeakCase(LeakdetectionRestMapper.toCommand(request)));
     }
 
 }

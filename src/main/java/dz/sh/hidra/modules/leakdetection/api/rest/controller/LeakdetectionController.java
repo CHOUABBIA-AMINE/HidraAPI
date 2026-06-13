@@ -24,7 +24,7 @@ import dz.sh.hidra.modules.leakdetection.api.rest.response.*;
 /**
  * Framework-neutral leakdetection controller contract.
  */
-public interface LeakDetectionController {
+public interface LeakdetectionController {
     LeakCandidateResponse createLeakCandidate(CreateLeakCandidateRequest request);
     String escalateLeakCase(EscalateLeakCaseRequest request);
     LeakCaseResponse openLeakCase(OpenLeakCaseRequest request);

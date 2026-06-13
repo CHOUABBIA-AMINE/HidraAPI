@@ -14,7 +14,7 @@
 
     <groupId>dz.sh</groupId>
     <artifactId>hidra</artifactId>
-    <version>0.0.1</version>
+    <version>0.2.0</version>
     <name>HidraAPI</name>
     <description>Hydrocarbon Intelligence for Data, Risk, and Analytics</description>
 	<url>https://github.com/CHOUABBIA-AMINE/HidraAPI</url>
@@ -55,6 +55,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webmvc</artifactId>
+        </dependency>
+
+        <!-- Realtime WebSocket / STOMP support -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
         </dependency>
 
         <!-- Bean Validation -->

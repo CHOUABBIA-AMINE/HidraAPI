@@ -32,9 +32,9 @@ import dz.sh.hidra.modules.leakdetection.application.dto.LeakCaseSummaryDto;
 /**
  * Maps leakdetection REST models to application models.
  */
-public final class LeakDetectionRestMapper {
+public final class LeakdetectionRestMapper {
 
-    private LeakDetectionRestMapper() {
+    private LeakdetectionRestMapper() {
         throw new UnsupportedOperationException("Utility class must not be instantiated.");
     }
 

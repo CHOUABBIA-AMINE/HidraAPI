@@ -239,6 +239,26 @@
       "name": "hidra.notification.push.provider-reference",
       "type": "java.lang.String",
       "description": "Provider reference recorded on notification delivery attempts."
+    },
+    {
+      "name": "hidra.platform.realtime.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enables Hidra realtime WebSocket/STOMP/SSE endpoints."
+    },
+    {
+      "name": "hidra.platform.realtime.stomp-endpoint",
+      "type": "java.lang.String",
+      "description": "STOMP WebSocket endpoint for realtime clients."
+    },
+    {
+      "name": "hidra.platform.realtime.sse-endpoint",
+      "type": "java.lang.String",
+      "description": "Server-Sent Event endpoint for realtime clients."
+    },
+    {
+      "name": "hidra.platform.realtime.heartbeat-ms",
+      "type": "java.lang.Long",
+      "description": "Heartbeat interval in milliseconds for realtime clients."
     }
   ]
 }

@@ -19,6 +19,8 @@
  */
 package dz.sh.hidra.modules.audit.application.service;
 
+import org.springframework.stereotype.Service;
+
 import dz.sh.hidra.modules.audit.application.command.RecordAuditAccessCommand;
 import dz.sh.hidra.modules.audit.application.command.RecordAuditEventCommand;
 import dz.sh.hidra.modules.audit.application.command.RequestAuditExportCommand;
@@ -45,6 +47,7 @@ import java.util.Objects;
 /**
  * Application service for audit events, export requests, and access records.
  */
+@Service
 public final class AuditApplicationService implements RecordAuditEventUseCase, RequestAuditExportUseCase, RecordAuditAccessUseCase {
 
     private final AuditEventRepositoryPort auditEventRepositoryPort;

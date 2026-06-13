@@ -19,6 +19,8 @@
  */
 package dz.sh.hidra.modules.monitoring.application.service;
 
+import org.springframework.stereotype.Service;
+
 import dz.sh.hidra.modules.monitoring.application.command.CreateMonitoringRuleCommand;
 import dz.sh.hidra.modules.monitoring.application.dto.MonitoringRuleSummaryDto;
 import dz.sh.hidra.modules.monitoring.application.mapper.MonitoringApplicationMapper;
@@ -35,6 +37,7 @@ import java.util.Objects;
 /**
  * Application service for monitoring rules.
  */
+@Service
 public final class MonitoringRuleApplicationService implements CreateMonitoringRuleUseCase {
 
     private final MonitoringRuleRepositoryPort repositoryPort;

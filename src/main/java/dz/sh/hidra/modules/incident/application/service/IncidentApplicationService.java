@@ -19,6 +19,8 @@
  */
 package dz.sh.hidra.modules.incident.application.service;
 
+import org.springframework.stereotype.Service;
+
 import dz.sh.hidra.modules.incident.application.command.CloseIncidentCommand;
 import dz.sh.hidra.modules.incident.application.command.OpenIncidentCommand;
 import dz.sh.hidra.modules.incident.application.command.RecordIncidentResponseActionCommand;
@@ -44,6 +46,7 @@ import java.util.Objects;
 /**
  * Application service for incident lifecycle commands.
  */
+@Service
 public final class IncidentApplicationService implements OpenIncidentUseCase, RecordIncidentResponseActionUseCase, CloseIncidentUseCase {
 
     private final IncidentRepositoryPort incidentRepositoryPort;

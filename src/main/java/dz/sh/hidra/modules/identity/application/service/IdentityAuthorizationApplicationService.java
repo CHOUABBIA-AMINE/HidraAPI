@@ -19,6 +19,8 @@
  */
 package dz.sh.hidra.modules.identity.application.service;
 
+import org.springframework.stereotype.Service;
+
 import dz.sh.hidra.modules.identity.application.dto.PermissionDecisionDto;
 import dz.sh.hidra.modules.identity.application.port.in.EvaluatePermissionUseCase;
 import dz.sh.hidra.modules.identity.application.port.out.AuthorizationDecisionRepositoryPort;
@@ -33,6 +35,7 @@ import java.util.Objects;
 /**
  * Application service for identity authorization evaluation.
  */
+@Service
 public final class IdentityAuthorizationApplicationService implements EvaluatePermissionUseCase {
 
     private final AuthorizationDecisionRepositoryPort authorizationDecisionRepositoryPort;

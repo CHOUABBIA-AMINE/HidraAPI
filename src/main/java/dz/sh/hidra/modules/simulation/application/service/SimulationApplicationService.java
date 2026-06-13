@@ -19,6 +19,8 @@
  */
 package dz.sh.hidra.modules.simulation.application.service;
 
+import org.springframework.stereotype.Service;
+
 import dz.sh.hidra.modules.simulation.application.command.CreateSimulationModelCommand;
 import dz.sh.hidra.modules.simulation.application.command.CreateSimulationScenarioCommand;
 import dz.sh.hidra.modules.simulation.application.command.PublishSimulationRecommendationCommand;
@@ -52,6 +54,7 @@ import java.util.Objects;
 /**
  * Application service for simulation models, scenarios, runs, and recommendations.
  */
+@Service
 public final class SimulationApplicationService implements CreateSimulationModelUseCase, CreateSimulationScenarioUseCase, QueueSimulationRunUseCase, PublishSimulationRecommendationUseCase {
 
     private final SimulationModelRepositoryPort modelRepositoryPort;

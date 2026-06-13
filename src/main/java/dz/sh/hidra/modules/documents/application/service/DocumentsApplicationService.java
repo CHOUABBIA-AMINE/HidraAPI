@@ -19,6 +19,8 @@
  */
 package dz.sh.hidra.modules.documents.application.service;
 
+import org.springframework.stereotype.Service;
+
 import dz.sh.hidra.modules.documents.application.command.LinkDocumentToTargetCommand;
 import dz.sh.hidra.modules.documents.application.command.RegisterDocumentCommand;
 import dz.sh.hidra.modules.documents.application.command.UploadDocumentVersionCommand;
@@ -45,6 +47,7 @@ import java.util.Objects;
 /**
  * Application service for document registration, versioning, and linking.
  */
+@Service
 public final class DocumentsApplicationService implements RegisterDocumentUseCase, UploadDocumentVersionUseCase, LinkDocumentToTargetUseCase {
 
     private final DocumentRepositoryPort documentRepositoryPort;

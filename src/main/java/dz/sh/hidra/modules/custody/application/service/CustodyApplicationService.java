@@ -19,6 +19,8 @@
  */
 package dz.sh.hidra.modules.custody.application.service;
 
+import org.springframework.stereotype.Service;
+
 import dz.sh.hidra.modules.custody.application.command.CreateCustodyTransferTicketCommand;
 import dz.sh.hidra.modules.custody.application.command.OpenCustodyDiscrepancyCommand;
 import dz.sh.hidra.modules.custody.application.command.OpenCustodyMeasurementPeriodCommand;
@@ -46,6 +48,7 @@ import java.util.Objects;
 /**
  * Application service for custody periods, tickets, and discrepancies.
  */
+@Service
 public final class CustodyApplicationService implements OpenCustodyMeasurementPeriodUseCase, CreateCustodyTransferTicketUseCase, OpenCustodyDiscrepancyUseCase {
 
     private final CustodyMeasurementPeriodRepositoryPort periodRepositoryPort;

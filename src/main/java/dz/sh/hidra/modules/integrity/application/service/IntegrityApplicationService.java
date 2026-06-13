@@ -19,6 +19,8 @@
  */
 package dz.sh.hidra.modules.integrity.application.service;
 
+import org.springframework.stereotype.Service;
+
 import dz.sh.hidra.modules.integrity.application.command.CreateIntegrityAssessmentCommand;
 import dz.sh.hidra.modules.integrity.application.command.CreateIntegrityProgramCommand;
 import dz.sh.hidra.modules.integrity.application.command.OpenIntegrityCaseCommand;
@@ -46,6 +48,7 @@ import java.util.Objects;
 /**
  * Application service for integrity program, assessment, and case workflows.
  */
+@Service
 public final class IntegrityApplicationService implements CreateIntegrityProgramUseCase, CreateIntegrityAssessmentUseCase, OpenIntegrityCaseUseCase {
 
     private final IntegrityProgramRepositoryPort programRepositoryPort;

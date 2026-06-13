@@ -19,6 +19,8 @@
  */
 package dz.sh.hidra.modules.party.application.service;
 
+import org.springframework.stereotype.Service;
+
 import dz.sh.hidra.modules.party.application.command.RegisterPartyCommand;
 import dz.sh.hidra.modules.party.application.dto.PartySummaryDto;
 import dz.sh.hidra.modules.party.application.mapper.PartyApplicationMapper;
@@ -34,6 +36,7 @@ import java.util.Objects;
 /**
  * Application service for party registration.
  */
+@Service
 public final class PartyApplicationService implements RegisterPartyUseCase {
 
     private final PartyRepositoryPort partyRepositoryPort;

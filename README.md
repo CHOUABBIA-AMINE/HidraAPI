@@ -426,3 +426,7 @@ Check for multilingual fields:
 ```bash
 grep -R "nameAr\|nameFr\|nameEn\|descriptionAr\|descriptionFr\|descriptionEn" src/main/java/dz/sh/hidra/modules src/main/resources/db/migration || true
 ```
+
+## Security bootstrap
+
+HidraAPI declares an explicit Spring Security configuration so Spring Boot does not create a random generated development password at startup. Local development uses `hidra-admin` with the password supplied by `HIDRA_SECURITY_BOOTSTRAP_PASSWORD`, falling back only in non-production profiles to `hidra-dev-change-me`. Production-like profiles must provide `HIDRA_SECURITY_BOOTSTRAP_USERNAME` and `HIDRA_SECURITY_BOOTSTRAP_PASSWORD` through environment variables or externalized secrets.

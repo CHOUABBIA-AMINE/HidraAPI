@@ -19,6 +19,8 @@
  */
 package dz.sh.hidra.modules.organization.application.service;
 
+import org.springframework.stereotype.Service;
+
 import dz.sh.hidra.modules.organization.application.command.CreateOrganizationUnitCommand;
 import dz.sh.hidra.modules.organization.application.dto.OrganizationUnitSummaryDto;
 import dz.sh.hidra.modules.organization.application.mapper.OrganizationApplicationMapper;
@@ -34,6 +36,7 @@ import java.util.Objects;
 /**
  * Application service for organization units.
  */
+@Service
 public final class OrganizationUnitApplicationService implements CreateOrganizationUnitUseCase {
 
     private final OrganizationUnitRepositoryPort organizationUnitRepositoryPort;

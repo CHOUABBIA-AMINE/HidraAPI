@@ -19,6 +19,8 @@
  */
 package dz.sh.hidra.modules.party.application.service;
 
+import org.springframework.stereotype.Service;
+
 import dz.sh.hidra.modules.party.application.command.AssignPartyRoleCommand;
 import dz.sh.hidra.modules.party.application.port.in.AssignPartyRoleUseCase;
 import dz.sh.hidra.modules.party.application.port.out.PartyRoleAssignmentRepositoryPort;
@@ -32,6 +34,7 @@ import java.util.Objects;
 /**
  * Application service for party role assignment.
  */
+@Service
 public final class PartyRoleAssignmentApplicationService implements AssignPartyRoleUseCase {
 
     private final PartyRoleAssignmentRepositoryPort repositoryPort;

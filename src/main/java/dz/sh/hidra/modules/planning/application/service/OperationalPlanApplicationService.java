@@ -19,6 +19,8 @@
  */
 package dz.sh.hidra.modules.planning.application.service;
 
+import org.springframework.stereotype.Service;
+
 import dz.sh.hidra.modules.planning.application.command.CreateOperationalPlanCommand;
 import dz.sh.hidra.modules.planning.application.dto.OperationalPlanSummaryDto;
 import dz.sh.hidra.modules.planning.application.mapper.PlanningApplicationMapper;
@@ -34,6 +36,7 @@ import java.util.Objects;
 /**
  * Application service for operational plans.
  */
+@Service
 public final class OperationalPlanApplicationService implements CreateOperationalPlanUseCase {
 
     private final OperationalPlanRepositoryPort repositoryPort;

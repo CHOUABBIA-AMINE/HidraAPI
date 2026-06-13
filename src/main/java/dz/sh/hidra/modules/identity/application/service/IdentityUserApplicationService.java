@@ -19,6 +19,8 @@
  */
 package dz.sh.hidra.modules.identity.application.service;
 
+import org.springframework.stereotype.Service;
+
 import dz.sh.hidra.modules.identity.application.command.CreateUserCommand;
 import dz.sh.hidra.modules.identity.application.dto.UserSummaryDto;
 import dz.sh.hidra.modules.identity.application.mapper.IdentityApplicationMapper;
@@ -35,6 +37,7 @@ import java.util.Objects;
 /**
  * Application service for identity user creation.
  */
+@Service
 public final class IdentityUserApplicationService implements CreateUserUseCase {
 
     private final UserRepositoryPort userRepositoryPort;

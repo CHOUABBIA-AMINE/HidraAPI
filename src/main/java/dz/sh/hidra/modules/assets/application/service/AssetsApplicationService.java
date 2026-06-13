@@ -19,6 +19,8 @@
  */
 package dz.sh.hidra.modules.assets.application.service;
 
+import org.springframework.stereotype.Service;
+
 import dz.sh.hidra.modules.assets.application.command.CreateMaintenanceWorkOrderCommand;
 import dz.sh.hidra.modules.assets.application.command.RecordAssetConditionCommand;
 import dz.sh.hidra.modules.assets.application.command.RegisterMaintainableAssetCommand;
@@ -46,6 +48,7 @@ import java.util.Objects;
 /**
  * Application service for assets and maintenance workflows.
  */
+@Service
 public final class AssetsApplicationService implements RegisterMaintainableAssetUseCase, CreateMaintenanceWorkOrderUseCase, RecordAssetConditionUseCase {
 
     private final MaintainableAssetRepositoryPort maintainableAssetRepositoryPort;

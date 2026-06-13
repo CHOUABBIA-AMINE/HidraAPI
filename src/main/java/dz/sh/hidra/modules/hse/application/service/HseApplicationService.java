@@ -19,6 +19,8 @@
  */
 package dz.sh.hidra.modules.hse.application.service;
 
+import org.springframework.stereotype.Service;
+
 import dz.sh.hidra.modules.hse.application.command.CloseHseCaseCommand;
 import dz.sh.hidra.modules.hse.application.command.CreateHseCapaCommand;
 import dz.sh.hidra.modules.hse.application.command.OpenHseCaseCommand;
@@ -45,6 +47,7 @@ import java.util.Objects;
 /**
  * Application service for HSE case and CAPA workflows.
  */
+@Service
 public final class HseApplicationService implements OpenHseCaseUseCase, CreateHseCapaUseCase, CloseHseCaseUseCase {
 
     private final HseCaseRepositoryPort hseCaseRepositoryPort;

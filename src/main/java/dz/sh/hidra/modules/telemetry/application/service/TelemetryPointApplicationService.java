@@ -19,6 +19,8 @@
  */
 package dz.sh.hidra.modules.telemetry.application.service;
 
+import org.springframework.stereotype.Service;
+
 import dz.sh.hidra.modules.telemetry.application.command.RegisterTelemetryPointCommand;
 import dz.sh.hidra.modules.telemetry.application.dto.TelemetryPointSummaryDto;
 import dz.sh.hidra.modules.telemetry.application.mapper.TelemetryApplicationMapper;
@@ -34,6 +36,7 @@ import java.util.Objects;
 /**
  * Application service for telemetry points.
  */
+@Service
 public final class TelemetryPointApplicationService implements RegisterTelemetryPointUseCase {
 
     private final TelemetryPointRepositoryPort repositoryPort;

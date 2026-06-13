@@ -19,6 +19,8 @@
  */
 package dz.sh.hidra.modules.monitoring.application.service;
 
+import org.springframework.stereotype.Service;
+
 import dz.sh.hidra.modules.monitoring.application.command.RecordDeviationCommand;
 import dz.sh.hidra.modules.monitoring.application.dto.DeviationSummaryDto;
 import dz.sh.hidra.modules.monitoring.application.mapper.MonitoringApplicationMapper;
@@ -35,6 +37,7 @@ import java.util.Objects;
 /**
  * Application service for monitoring deviations.
  */
+@Service
 public final class DeviationApplicationService implements RecordDeviationUseCase {
 
     private final PlanActualDeviationRepositoryPort repositoryPort;

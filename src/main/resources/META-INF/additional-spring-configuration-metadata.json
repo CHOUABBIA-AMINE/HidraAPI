@@ -1,177 +1,169 @@
-{"properties": [
-  {
-    "name": "spring.flyway.enabled",
-    "type": "java.lang.String",
-    "description": "A description for 'spring.flyway.enabled'"
-  },
-  {
-    "name": "spring.flyway.locations",
-    "type": "java.lang.String",
-    "description": "A description for 'spring.flyway.locations'"
-  },
-  {
-    "name": "spring.flyway.baseline-on-migrate",
-    "type": "java.lang.String",
-    "description": "A description for 'spring.flyway.baseline-on-migrate'"
-  },
-  {
-    "name": "spring.flyway.validate-on-migrate",
-    "type": "java.lang.String",
-    "description": "A description for 'spring.flyway.validate-on-migrate'"
-  },
-  {
-    "name": "spring.flyway.clean-disabled",
-    "type": "java.lang.String",
-    "description": "A description for 'spring.flyway.clean-disabled'"
-  },
-  {
-    "name": "hidra.application.name",
-    "type": "java.lang.String",
-    "description": "A description for 'hidra.application.name'"
-  },
-  {
-    "name": "hidra.application.description",
-    "type": "java.lang.String",
-    "description": "A description for 'hidra.application.description'"
-  },
-  {
-    "name": "hidra.application.base-package",
-    "type": "java.lang.String",
-    "description": "A description for 'hidra.application.base-package'"
-  },
-  {
-    "name": "hidra.platform.observability.correlation.header-name",
-    "type": "java.lang.String",
-    "description": "A description for 'hidra.platform.observability.correlation.header-name'"
-  },
-  {
-    "name": "hidra.platform.observability.correlation.response-header-enabled",
-    "type": "java.lang.String",
-    "description": "A description for 'hidra.platform.observability.correlation.response-header-enabled'"
-  },
-  {
-    "name": "hidra.platform.observability.request.header-name",
-    "type": "java.lang.String",
-    "description": "A description for 'hidra.platform.observability.request.header-name'"
-  },
-  {
-    "name": "hidra.platform.observability.request.response-header-enabled",
-    "type": "java.lang.String",
-    "description": "A description for 'hidra.platform.observability.request.response-header-enabled'"
-  },
-  {
-    "name": "hidra.platform.observability.logging.structured",
-    "type": "java.lang.String",
-    "description": "A description for 'hidra.platform.observability.logging.structured'"
-  },
-  {
-    "name": "hidra.platform.observability.logging.mask-sensitive-values",
-    "type": "java.lang.String",
-    "description": "A description for 'hidra.platform.observability.logging.mask-sensitive-values'"
-  },
-  {
-    "name": "hidra.platform.security.enabled",
-    "type": "java.lang.String",
-    "description": "A description for 'hidra.platform.security.enabled'"
-  },
-  {
-    "name": "hidra.platform.security.cors.enabled",
-    "type": "java.lang.String",
-    "description": "A description for 'hidra.platform.security.cors.enabled'"
-  },
-  {
-    "name": "hidra.platform.security.cors.allowed-origins",
-    "type": "java.lang.String",
-    "description": "A description for 'hidra.platform.security.cors.allowed-origins'"
-  },
-  {
-    "name": "hidra.platform.security.cors.allowed-methods",
-    "type": "java.lang.String",
-    "description": "A description for 'hidra.platform.security.cors.allowed-methods'"
-  },
-  {
-    "name": "hidra.platform.security.cors.allowed-headers",
-    "type": "java.lang.String",
-    "description": "A description for 'hidra.platform.security.cors.allowed-headers'"
-  },
-  {
-    "name": "hidra.platform.security.cors.exposed-headers",
-    "type": "java.lang.String",
-    "description": "A description for 'hidra.platform.security.cors.exposed-headers'"
-  },
-  {
-    "name": "hidra.platform.security.csrf.enabled",
-    "type": "java.lang.String",
-    "description": "A description for 'hidra.platform.security.csrf.enabled'"
-  },
-  {
-    "name": "hidra.platform.events.outbox.cleanup-enabled",
-    "type": "java.lang.String",
-    "description": "A description for 'hidra.platform.events.outbox.cleanup-enabled'"
-  },
-  {
-    "name": "hidra.platform.events.outbox.batch-size",
-    "type": "java.lang.String",
-    "description": "A description for 'hidra.platform.events.outbox.batch-size'"
-  },
-  {
-    "name": "hidra.platform.events.outbox.table-name",
-    "type": "java.lang.String",
-    "description": "A description for 'hidra.platform.events.outbox.table-name'"
-  },
-  {
-    "name": "hidra.platform.events.outbox.enabled",
-    "type": "java.lang.String",
-    "description": "A description for 'hidra.platform.events.outbox.enabled'"
-  },
-  {
-    "name": "hidra.platform.tenancy.enabled",
-    "type": "java.lang.String",
-    "description": "A description for 'hidra.platform.tenancy.enabled'"
-  },
-  {
-    "name": "hidra.platform.tenancy.default-scope",
-    "type": "java.lang.String",
-    "description": "A description for 'hidra.platform.tenancy.default-scope'"
-  },
-  {
-    "name": "hidra.api.version",
-    "type": "java.lang.String",
-    "description": "A description for 'hidra.api.version'"
-  },
-  {
-    "name": "hidra.api.base-path",
-    "type": "java.lang.String",
-    "description": "A description for 'hidra.api.base-path'"
-  },
-  {
-    "name": "hidra.api.errors.include-debug-details",
-    "type": "java.lang.String",
-    "description": "A description for 'hidra.api.errors.include-debug-details'"
-  },
-  {
-    "name": "hidra.api.errors.include-correlation-id",
-    "type": "java.lang.String",
-    "description": "A description for 'hidra.api.errors.include-correlation-id'"
-  },
-  {
-    "name": "hidra.platform.events.outbox.max-retry-count",
-    "type": "java.lang.String",
-    "description": "A description for 'hidra.platform.events.outbox.max-retry-count'"
-  },
-  {
-    "name": "hidra.platform.persistence.optimistic-locking.enabled",
-    "type": "java.lang.String",
-    "description": "A description for 'hidra.platform.persistence.optimistic-locking.enabled'"
-  },
-  {
-    "name": "hidra.platform.persistence.auditing.enabled",
-    "type": "java.lang.String",
-    "description": "A description for 'hidra.platform.persistence.auditing.enabled'"
-  },
-  {
-    "name": "hidra.environment",
-    "type": "java.lang.String",
-    "description": "A description for 'hidra.environment'"
-  }
-]}
+{
+  "properties": [
+    {
+      "name": "hidra.environment",
+      "type": "java.lang.String",
+      "description": "Current Hidra runtime environment name."
+    },
+    {
+      "name": "hidra.application.name",
+      "type": "java.lang.String",
+      "description": "Displayed Hidra application name."
+    },
+    {
+      "name": "hidra.application.description",
+      "type": "java.lang.String",
+      "description": "Displayed Hidra application description."
+    },
+    {
+      "name": "hidra.application.base-package",
+      "type": "java.lang.String",
+      "description": "Canonical Java base package for HidraAPI."
+    },
+    {
+      "name": "hidra.api.version",
+      "type": "java.lang.String",
+      "description": "Public API version label."
+    },
+    {
+      "name": "hidra.api.base-path",
+      "type": "java.lang.String",
+      "description": "Public API base path."
+    },
+    {
+      "name": "hidra.api.errors.include-debug-details",
+      "type": "java.lang.Boolean",
+      "description": "Whether ProblemDetail responses include exception class details."
+    },
+    {
+      "name": "hidra.api.errors.include-correlation-id",
+      "type": "java.lang.Boolean",
+      "description": "Whether API errors include correlation identifiers."
+    },
+    {
+      "name": "hidra.platform.observability.correlation.header-name",
+      "type": "java.lang.String",
+      "description": "HTTP header used for correlation identifiers."
+    },
+    {
+      "name": "hidra.platform.observability.correlation.response-header-enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether correlation identifiers are returned on responses."
+    },
+    {
+      "name": "hidra.platform.observability.request.header-name",
+      "type": "java.lang.String",
+      "description": "HTTP header used for request identifiers."
+    },
+    {
+      "name": "hidra.platform.observability.request.response-header-enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether request identifiers are returned on responses."
+    },
+    {
+      "name": "hidra.platform.observability.logging.structured",
+      "type": "java.lang.Boolean",
+      "description": "Whether platform logs should include structured context fields."
+    },
+    {
+      "name": "hidra.platform.observability.logging.mask-sensitive-values",
+      "type": "java.lang.Boolean",
+      "description": "Whether sensitive logging values should be masked."
+    },
+    {
+      "name": "hidra.platform.security.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether HTTP security is enforced."
+    },
+    {
+      "name": "hidra.platform.security.cors.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether CORS support is enabled through Spring Security."
+    },
+    {
+      "name": "hidra.platform.security.cors.allowed-origins",
+      "type": "java.lang.String",
+      "description": "Comma-separated allowed CORS origins."
+    },
+    {
+      "name": "hidra.platform.security.cors.allowed-methods",
+      "type": "java.lang.String",
+      "description": "Comma-separated allowed CORS HTTP methods."
+    },
+    {
+      "name": "hidra.platform.security.cors.allowed-headers",
+      "type": "java.lang.String",
+      "description": "Comma-separated allowed CORS headers."
+    },
+    {
+      "name": "hidra.platform.security.cors.exposed-headers",
+      "type": "java.lang.String",
+      "description": "Comma-separated exposed CORS response headers."
+    },
+    {
+      "name": "hidra.platform.security.csrf.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether CSRF protection is enabled."
+    },
+    {
+      "name": "hidra.security.bootstrap.username",
+      "type": "java.lang.String",
+      "description": "Bootstrap username used until external IAM/JWT integration is added."
+    },
+    {
+      "name": "hidra.security.bootstrap.password",
+      "type": "java.lang.String",
+      "description": "Bootstrap password supplied through environment or secrets manager."
+    },
+    {
+      "name": "hidra.security.bootstrap.roles",
+      "type": "java.lang.String",
+      "description": "Comma-separated bootstrap role names."
+    },
+    {
+      "name": "hidra.platform.persistence.auditing.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether persistence auditing is expected to be active."
+    },
+    {
+      "name": "hidra.platform.persistence.optimistic-locking.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether persistence optimistic locking is expected for mutable entities."
+    },
+    {
+      "name": "hidra.platform.events.outbox.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether the platform outbox runtime processor is enabled."
+    },
+    {
+      "name": "hidra.platform.events.outbox.table-name",
+      "type": "java.lang.String",
+      "description": "Platform outbox table name."
+    },
+    {
+      "name": "hidra.platform.events.outbox.batch-size",
+      "type": "java.lang.Integer",
+      "description": "Maximum outbox events processed per batch."
+    },
+    {
+      "name": "hidra.platform.events.outbox.max-retry-count",
+      "type": "java.lang.Integer",
+      "description": "Maximum outbox publication retries."
+    },
+    {
+      "name": "hidra.platform.events.outbox.cleanup-enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether published outbox cleanup is enabled."
+    },
+    {
+      "name": "hidra.platform.tenancy.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether tenancy scoping is enabled."
+    },
+    {
+      "name": "hidra.platform.tenancy.default-scope",
+      "type": "java.lang.String",
+      "description": "Default tenant or organization scope."
+    }
+  ]
+}

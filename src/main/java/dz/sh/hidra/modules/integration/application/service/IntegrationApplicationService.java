@@ -19,6 +19,8 @@
  */
 package dz.sh.hidra.modules.integration.application.service;
 
+import org.springframework.stereotype.Service;
+
 import dz.sh.hidra.modules.integration.application.command.RecordExchangeMessageCommand;
 import dz.sh.hidra.modules.integration.application.command.RegisterExternalSystemCommand;
 import dz.sh.hidra.modules.integration.application.command.StartIntegrationJobRunCommand;
@@ -46,6 +48,7 @@ import java.util.Objects;
 /**
  * Application service for integration registry, job runs, and exchange messages.
  */
+@Service
 public final class IntegrationApplicationService implements RegisterExternalSystemUseCase, StartIntegrationJobRunUseCase, RecordExchangeMessageUseCase {
 
     private final ExternalSystemRepositoryPort externalSystemRepositoryPort;

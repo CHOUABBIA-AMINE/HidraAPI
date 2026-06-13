@@ -19,6 +19,8 @@
  */
 package dz.sh.hidra.modules.leakdetection.application.service;
 
+import org.springframework.stereotype.Service;
+
 import dz.sh.hidra.modules.leakdetection.application.command.CreateLeakCandidateCommand;
 import dz.sh.hidra.modules.leakdetection.application.command.EscalateLeakCaseCommand;
 import dz.sh.hidra.modules.leakdetection.application.command.OpenLeakCaseCommand;
@@ -47,6 +49,7 @@ import java.util.Objects;
 /**
  * Application service for leak detection candidate/case workflows.
  */
+@Service
 public final class LeakDetectionApplicationService implements CreateLeakCandidateUseCase, OpenLeakCaseUseCase, EscalateLeakCaseUseCase {
 
     private final LeakCandidateRepositoryPort candidateRepositoryPort;

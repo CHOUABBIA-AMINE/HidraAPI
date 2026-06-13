@@ -19,6 +19,8 @@
  */
 package dz.sh.hidra.modules.reporting.application.service;
 
+import org.springframework.stereotype.Service;
+
 import dz.sh.hidra.modules.reporting.application.command.CreateReportDefinitionCommand;
 import dz.sh.hidra.modules.reporting.application.command.GenerateReportArtifactCommand;
 import dz.sh.hidra.modules.reporting.application.command.QueueReportRunCommand;
@@ -51,6 +53,7 @@ import java.util.Objects;
 /**
  * Application service for report definitions, requests, runs, and artifacts.
  */
+@Service
 public final class ReportingApplicationService implements CreateReportDefinitionUseCase, RequestReportUseCase, QueueReportRunUseCase, GenerateReportArtifactUseCase {
 
     private final ReportDefinitionRepositoryPort definitionRepositoryPort;

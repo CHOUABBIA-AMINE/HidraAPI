@@ -19,6 +19,8 @@
  */
 package dz.sh.hidra.modules.analytics.application.service;
 
+import org.springframework.stereotype.Service;
+
 import dz.sh.hidra.modules.analytics.application.command.CreateAnalyticsDatasetCommand;
 import dz.sh.hidra.modules.analytics.application.command.CreateAnalyticsInsightCommand;
 import dz.sh.hidra.modules.analytics.application.command.RunMetricEvaluationCommand;
@@ -52,6 +54,7 @@ import java.util.Objects;
 /**
  * Application service for analytics datasets, projections, metrics, and insights.
  */
+@Service
 public final class AnalyticsApplicationService implements AnalyticsDatasetUseCase, AnalyticsProjectionUseCase, MetricEvaluationUseCase, AnalyticsInsightUseCase {
 
     private final AnalyticsDatasetRepositoryPort datasetRepositoryPort;

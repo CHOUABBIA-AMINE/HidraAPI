@@ -19,6 +19,8 @@
  */
 package dz.sh.hidra.modules.workflow.application.service;
 
+import org.springframework.stereotype.Service;
+
 import dz.sh.hidra.modules.workflow.application.command.CreateWorkflowTaskCommand;
 import dz.sh.hidra.modules.workflow.application.command.RecordWorkflowActionCommand;
 import dz.sh.hidra.modules.workflow.application.command.StartWorkflowInstanceCommand;
@@ -46,6 +48,7 @@ import java.util.Objects;
 /**
  * Application service for workflow instances, tasks, and actions.
  */
+@Service
 public final class WorkflowApplicationService implements StartWorkflowInstanceUseCase, CreateWorkflowTaskUseCase, RecordWorkflowActionUseCase {
 
     private final WorkflowInstanceRepositoryPort instanceRepositoryPort;

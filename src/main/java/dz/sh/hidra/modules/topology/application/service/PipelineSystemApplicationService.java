@@ -19,6 +19,8 @@
  */
 package dz.sh.hidra.modules.topology.application.service;
 
+import org.springframework.stereotype.Service;
+
 import dz.sh.hidra.modules.topology.application.command.CreatePipelineSystemCommand;
 import dz.sh.hidra.modules.topology.application.dto.PipelineSystemSummaryDto;
 import dz.sh.hidra.modules.topology.application.mapper.TopologyApplicationMapper;
@@ -28,6 +30,7 @@ import dz.sh.hidra.modules.topology.domain.model.PipelineSystem;
 import dz.sh.hidra.modules.topology.domain.value.*;
 import java.time.Instant;
 import java.util.Objects;
+@Service
 public final class PipelineSystemApplicationService implements CreatePipelineSystemUseCase {
     private final PipelineSystemRepositoryPort repositoryPort;
     public PipelineSystemApplicationService(PipelineSystemRepositoryPort repositoryPort) { this.repositoryPort = Objects.requireNonNull(repositoryPort, "Pipeline system repository port must not be null."); }

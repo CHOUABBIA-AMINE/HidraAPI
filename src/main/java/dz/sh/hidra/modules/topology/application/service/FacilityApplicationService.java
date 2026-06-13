@@ -19,6 +19,8 @@
  */
 package dz.sh.hidra.modules.topology.application.service;
 
+import org.springframework.stereotype.Service;
+
 import dz.sh.hidra.modules.topology.application.command.RegisterFacilityCommand;
 import dz.sh.hidra.modules.topology.application.dto.FacilitySummaryDto;
 import dz.sh.hidra.modules.topology.application.mapper.TopologyApplicationMapper;
@@ -28,6 +30,7 @@ import dz.sh.hidra.modules.topology.domain.model.Facility;
 import dz.sh.hidra.modules.topology.domain.value.*;
 import java.time.Instant;
 import java.util.Objects;
+@Service
 public final class FacilityApplicationService implements RegisterFacilityUseCase {
     private final FacilityRepositoryPort repositoryPort;
     public FacilityApplicationService(FacilityRepositoryPort repositoryPort) { this.repositoryPort = Objects.requireNonNull(repositoryPort, "Facility repository port must not be null."); }

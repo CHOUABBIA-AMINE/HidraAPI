@@ -19,6 +19,8 @@
  */
 package dz.sh.hidra.modules.organization.application.service;
 
+import org.springframework.stereotype.Service;
+
 import dz.sh.hidra.modules.organization.application.command.AssignEmployeeCommand;
 import dz.sh.hidra.modules.organization.application.port.in.AssignEmployeeUseCase;
 import dz.sh.hidra.modules.organization.application.port.out.EmployeeAssignmentRepositoryPort;
@@ -33,6 +35,7 @@ import java.util.Objects;
 /**
  * Application service for employee assignments.
  */
+@Service
 public final class EmployeeAssignmentApplicationService implements AssignEmployeeUseCase {
 
     private final EmployeeAssignmentRepositoryPort employeeAssignmentRepositoryPort;

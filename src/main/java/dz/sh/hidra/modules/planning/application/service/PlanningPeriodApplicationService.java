@@ -19,6 +19,8 @@
  */
 package dz.sh.hidra.modules.planning.application.service;
 
+import org.springframework.stereotype.Service;
+
 import dz.sh.hidra.modules.planning.application.command.CreatePlanningPeriodCommand;
 import dz.sh.hidra.modules.planning.application.dto.PlanningPeriodSummaryDto;
 import dz.sh.hidra.modules.planning.application.mapper.PlanningApplicationMapper;
@@ -34,6 +36,7 @@ import java.util.Objects;
 /**
  * Application service for planning periods.
  */
+@Service
 public final class PlanningPeriodApplicationService implements CreatePlanningPeriodUseCase {
 
     private final PlanningPeriodRepositoryPort repositoryPort;

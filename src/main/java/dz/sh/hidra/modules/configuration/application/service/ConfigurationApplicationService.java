@@ -19,6 +19,8 @@
  */
 package dz.sh.hidra.modules.configuration.application.service;
 
+import org.springframework.stereotype.Service;
+
 import dz.sh.hidra.modules.configuration.application.command.CreateConfigurationDefinitionCommand;
 import dz.sh.hidra.modules.configuration.application.command.CreateFeatureFlagCommand;
 import dz.sh.hidra.modules.configuration.application.command.SetConfigurationValueCommand;
@@ -47,6 +49,7 @@ import java.util.Objects;
 /**
  * Application service for configuration definitions, values, and feature flags.
  */
+@Service
 public final class ConfigurationApplicationService implements CreateConfigurationDefinitionUseCase, SetConfigurationValueUseCase, CreateFeatureFlagUseCase {
 
     private final ConfigurationDefinitionRepositoryPort definitionRepositoryPort;

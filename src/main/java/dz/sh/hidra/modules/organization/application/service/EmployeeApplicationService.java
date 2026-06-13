@@ -19,6 +19,8 @@
  */
 package dz.sh.hidra.modules.organization.application.service;
 
+import org.springframework.stereotype.Service;
+
 import dz.sh.hidra.modules.organization.application.command.RegisterEmployeeCommand;
 import dz.sh.hidra.modules.organization.application.dto.EmployeeSummaryDto;
 import dz.sh.hidra.modules.organization.application.mapper.OrganizationApplicationMapper;
@@ -35,6 +37,7 @@ import java.util.Objects;
 /**
  * Application service for employees.
  */
+@Service
 public final class EmployeeApplicationService implements RegisterEmployeeUseCase {
 
     private final EmployeeRepositoryPort employeeRepositoryPort;

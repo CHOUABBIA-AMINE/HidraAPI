@@ -19,6 +19,8 @@
  */
 package dz.sh.hidra.modules.notification.application.service;
 
+import org.springframework.stereotype.Service;
+
 import dz.sh.hidra.modules.notification.application.command.CreateNotificationMessageCommand;
 import dz.sh.hidra.modules.notification.application.command.ReceiveNotificationRequestCommand;
 import dz.sh.hidra.modules.notification.application.command.RecordDeliveryAttemptCommand;
@@ -46,6 +48,7 @@ import java.util.Objects;
 /**
  * Application service for notification requests, messages, and delivery attempts.
  */
+@Service
 public final class NotificationApplicationService implements ReceiveNotificationRequestUseCase, CreateNotificationMessageUseCase, RecordDeliveryAttemptUseCase {
 
     private final NotificationRequestRepositoryPort requestRepositoryPort;

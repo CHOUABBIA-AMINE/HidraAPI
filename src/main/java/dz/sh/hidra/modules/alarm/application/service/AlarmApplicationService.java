@@ -19,6 +19,8 @@
  */
 package dz.sh.hidra.modules.alarm.application.service;
 
+import org.springframework.stereotype.Service;
+
 import dz.sh.hidra.modules.alarm.application.command.AcknowledgeAlarmCommand;
 import dz.sh.hidra.modules.alarm.application.command.CloseAlarmCommand;
 import dz.sh.hidra.modules.alarm.application.command.RaiseAlarmCommand;
@@ -43,6 +45,7 @@ import java.util.Objects;
 /**
  * Application service for alarm lifecycle commands.
  */
+@Service
 public final class AlarmApplicationService implements RaiseAlarmUseCase, AcknowledgeAlarmUseCase, CloseAlarmUseCase {
 
     private final AlarmRepositoryPort alarmRepositoryPort;

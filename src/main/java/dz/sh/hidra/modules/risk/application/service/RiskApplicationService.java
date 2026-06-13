@@ -19,6 +19,8 @@
  */
 package dz.sh.hidra.modules.risk.application.service;
 
+import org.springframework.stereotype.Service;
+
 import dz.sh.hidra.modules.risk.application.command.AddRiskEvidenceCommand;
 import dz.sh.hidra.modules.risk.application.command.CreateRiskAssessmentCommand;
 import dz.sh.hidra.modules.risk.application.command.CreateRiskRegisterCommand;
@@ -44,6 +46,7 @@ import java.util.Objects;
 /**
  * Application service for risk register and assessment workflows.
  */
+@Service
 public final class RiskApplicationService implements CreateRiskRegisterUseCase, CreateRiskAssessmentUseCase, AddRiskEvidenceUseCase {
 
     private final RiskRegisterRepositoryPort registerRepositoryPort;

@@ -111,14 +111,14 @@ is required to execute it; it is skipped when Docker is unavailable.
 
 | Code | Status | Validation |
 |---|---|---|
-| STB2-001 | Prepared | Artifact generated |
-| STB2-002 | Planned | Requires `git rm -r bin` in a real clone |
-| STB2-003 | Planned | Documentation review |
-| STB2-004 | Planned | Link/inventory review |
-| STB2-005 | Planned | `mvn -q -DskipTests compile` |
-| STB2-006 | Planned | `mvn -q test` |
-| STB2-007 | Planned | GitHub Actions after push |
-| STB2-008 | Planned | `mvn -q clean verify` result recorded |
+| STB2-001 | Prepared artifact | Roadmap generated from live repository audit |
+| STB2-002 | Prepared artifact | `.gitignore` corrected; tracked `bin/**` deletion still requires Git apply |
+| STB2-003 | Prepared artifact | Identity execution memory recovered into a current-state roadmap |
+| STB2-004 | Prepared artifact | Missing architecture index, module catalog, and persistence inventory added |
+| STB2-005 | Prepared artifact | README aligned to Spring Boot 4.0.7 and live paths; POM comment corrected |
+| STB2-006 | Prepared artifact | Boot/Testcontainers smoke test and ArchUnit layer guardrail added |
+| STB2-007 | Prepared artifact | Java 21 Maven CI workflow added |
+| STB2-008 | Prepared artifact | Final checklist recorded; full Maven validation still pending on a complete clone |
 
 ---
 
@@ -136,3 +136,40 @@ the baseline branch changes materially before the artifacts are applied
 
 Do not weaken a guardrail simply to obtain a green build. Fix the violating production
 code under the appropriate module roadmap.
+
+
+---
+
+## 7. Final application checklist
+
+```text
+[x] Corrective roadmap prepared
+[x] Tracked build-output removal action documented
+[x] .gitignore hardened against bin/ and .class files
+[x] Identity roadmap recovery prepared
+[x] Missing architecture index restored
+[x] Missing persistence inventory restored
+[x] Current module inventory documented
+[x] README aligned to Spring Boot 4.0.7
+[x] README broken roadmap links corrected
+[x] Contradictory OAuth2 POM comment corrected
+[x] Baseline src/test files restored
+[x] Tests avoid removed/unstable Spring Boot test-slice annotations
+[x] ArchUnit guardrail restored
+[x] GitHub Actions Maven workflow prepared
+[ ] `git rm -r bin` executed in the real repository clone
+[ ] `mvn -q -DskipTests compile` passes
+[ ] `mvn -q test` passes
+[ ] `mvn -q clean verify` passes
+[ ] GitHub Actions is green
+```
+
+### Validation limitation
+
+A literal clone could not be created in the artifact runtime because that runtime could
+not resolve `github.com`. The files were prepared from the connected live GitHub
+repository at the baseline SHA shown above. Therefore compile/test/verify results are
+intentionally **not** marked as passed.
+
+If the target `main` branch advances before application, rebase/review these artifacts
+against the new head before committing.

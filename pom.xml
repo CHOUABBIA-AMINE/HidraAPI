@@ -17,34 +17,33 @@
     <version>0.2.0</version>
     <name>HidraAPI</name>
     <description>Hydrocarbon Intelligence for Data, Risk, and Analytics</description>
-	<url>https://github.com/CHOUABBIA-AMINE/HidraAPI</url>
-	
-	<licenses>
-	    <license>
-	        <name>MIT License</name>
-			<url>https://opensource.org/licenses/MIT</url>
-	    </license>
-	</licenses>
+    <url>https://github.com/CHOUABBIA-AMINE/HidraAPI</url>
 
-	<developers>
-	    <developer>
-	        <id>Abir</id>
-	        <name>Abir MEDJERAB</name>
-	        <organization>SONATRACH</organization>
-	    </developer>
-	</developers>
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>https://opensource.org/licenses/MIT</url>
+        </license>
+    </licenses>
 
-	<scm>
-	    <connection>scm:git:git://github.com/CHOUABBIA-AMINE/HidraAPI.git</connection>
-	    <developerConnection>scm:git:ssh://git@github.com/CHOUABBIA-AMINE/HidraAPI.git</developerConnection>
-	    <url>https://github.com/CHOUABBIA-AMINE/HidraAPI</url>
-	    <tag>HEAD</tag>
-	</scm>
-	
+    <developers>
+        <developer>
+            <id>Abir</id>
+            <name>Abir MEDJERAB</name>
+            <organization>SONATRACH</organization>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git://github.com/CHOUABBIA-AMINE/HidraAPI.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/CHOUABBIA-AMINE/HidraAPI.git</developerConnection>
+        <url>https://github.com/CHOUABBIA-AMINE/HidraAPI</url>
+        <tag>HEAD</tag>
+    </scm>
+
     <properties>
         <java.version>21</java.version>
         <maven.compiler.release>21</maven.compiler.release>
-
         <archunit.version>1.4.2</archunit.version>
         <testcontainers.version>1.21.4</testcontainers.version>
         <springdoc.version>3.0.3</springdoc.version>
@@ -94,27 +93,24 @@
             <artifactId>flyway-database-postgresql</artifactId>
         </dependency>
 
-        <!-- Security foundation.
-             OAuth2 Resource Server is intentionally not included yet.
-             Add it later when JWT/IAM integration starts. -->
+        <!-- Security foundation owned technically by platform.security. -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
-        <!-- JWT / OAuth2 Resource Server -->
+        <!-- JWT / OAuth2 Resource Server support for bearer-token integration. -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
         </dependency>
 
-        <!-- Production readiness: health, metrics, info, prometheus endpoint -->
+        <!-- Production readiness -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
 
-        <!-- Prometheus metrics registry -->
         <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-registry-prometheus</artifactId>
@@ -133,8 +129,7 @@
             <version>${springdoc.version}</version>
         </dependency>
 
-        <!-- Lombok: allowed, but use with strict rules.
-             Avoid @Data in domain objects. Prefer @Getter and @RequiredArgsConstructor. -->
+        <!-- Lombok: avoid @Data in domain objects -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -148,47 +143,40 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- Spring Security testing helpers -->
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
         </dependency>
 
-        <!-- Testcontainers JUnit integration -->
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>junit-jupiter</artifactId>
             <scope>test</scope>
         </dependency>
 
-        <!-- Testcontainers PostgreSQL module -->
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>postgresql</artifactId>
             <scope>test</scope>
         </dependency>
 
-        <!-- Architecture tests -->
         <dependency>
             <groupId>com.tngtech.archunit</groupId>
             <artifactId>archunit-junit5</artifactId>
             <version>${archunit.version}</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
-        	<groupId>org.springframework.boot</groupId>
-        	<artifactId>spring-boot-configuration-processor</artifactId>
-        	<optional>true</optional>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
         </dependency>
     </dependencies>
 
     <build>
         <plugins>
-            <!-- Java 21 compilation + Lombok annotation processing.
-                 Maven Central shows maven-compiler-plugin 4.0.0-beta-4, but it is beta
-                 and targets Maven 4. Use the Spring Boot managed stable compiler plugin
-                 unless you explicitly decide to migrate build tooling later. -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -205,7 +193,6 @@
                 </configuration>
             </plugin>
 
-            <!-- Enforce Java and Maven baseline -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
@@ -230,7 +217,6 @@
                 </executions>
             </plugin>
 
-            <!-- Spring Boot executable jar packaging -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -244,7 +230,6 @@
                 </configuration>
             </plugin>
 
-            <!-- Unit test execution -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>

@@ -29,46 +29,56 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
-/**
- * Loads the production Spring Boot application with a real PostgreSQL database.
- *
- * <p>Architecture role:
- * This is a repository-level smoke test. It validates Spring bean wiring, Flyway
- * migration execution, and JPA schema validation without introducing embedded-database
- * behavior that differs from production PostgreSQL.</p>
- *
- * <p>Execution:
- * The test is automatically skipped when no Docker-compatible runtime is available.
- * CI and release validation should run it with Docker enabled.</p>
- */
 @Testcontainers(disabledWithoutDocker = true)
 @SpringBootTest(
         classes = HidraApplication.class,
-        webEnvironment = SpringBootTest.WebEnvironment.NONE
+        webEnvironment = SpringBootTest.WebEnvironment.MOCK
 )
 @ActiveProfiles("test")
 class HidraApplicationTests {
 
     @Container
-    static final PostgreSQLContainer<?> POSTGRESQL = new PostgreSQLContainer<>(
-            DockerImageName.parse("postgres:16-alpine")
-    )
-            .withDatabaseName("hidra_test")
-            .withUsername("hidra")
-            .withPassword("hidra");
+    static final PostgreSQLContainer<?> POSTGRESQL =
+            new PostgreSQLContainer<>(
+                    DockerImageName.parse("postgres:16-alpine")
+            )
+                    .withDatabaseName("hidra_test")
+                    .withUsername("hidra")
+                    .withPassword("hidra");
 
     @DynamicPropertySource
     static void databaseProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", POSTGRESQL::getJdbcUrl);
-        registry.add("spring.datasource.username", POSTGRESQL::getUsername);
-        registry.add("spring.datasource.password", POSTGRESQL::getPassword);
-        registry.add("spring.jpa.hibernate.ddl-auto", () -> "validate");
-        registry.add("spring.flyway.enabled", () -> "true");
-        registry.add("spring.flyway.validate-on-migrate", () -> "true");
+        registry.add(
+                "spring.datasource.url",
+                POSTGRESQL::getJdbcUrl
+        );
+        registry.add(
+                "spring.datasource.username",
+                POSTGRESQL::getUsername
+        );
+        registry.add(
+                "spring.datasource.password",
+                POSTGRESQL::getPassword
+        );
+
+        registry.add(
+                "spring.jpa.hibernate.ddl-auto",
+                () -> "validate"
+        );
+
+        registry.add(
+                "spring.flyway.enabled",
+                () -> "true"
+        );
+
+        registry.add(
+                "spring.flyway.validate-on-migrate",
+                () -> "true"
+        );
     }
 
     @Test
     void contextLoads() {
-        // Successful Spring context creation is the assertion.
+        // Successful complete application context creation is the assertion.
     }
 }

@@ -1,264 +1,282 @@
-{
-  "properties": [
-    {
-      "name": "hidra.environment",
-      "type": "java.lang.String",
-      "description": "Current Hidra runtime environment name."
-    },
-    {
-      "name": "hidra.application.name",
-      "type": "java.lang.String",
-      "description": "Displayed Hidra application name."
-    },
-    {
-      "name": "hidra.application.description",
-      "type": "java.lang.String",
-      "description": "Displayed Hidra application description."
-    },
-    {
-      "name": "hidra.application.base-package",
-      "type": "java.lang.String",
-      "description": "Canonical Java base package for HidraAPI."
-    },
-    {
-      "name": "hidra.api.version",
-      "type": "java.lang.String",
-      "description": "Public API version label."
-    },
-    {
-      "name": "hidra.api.base-path",
-      "type": "java.lang.String",
-      "description": "Public API base path."
-    },
-    {
-      "name": "hidra.api.errors.include-debug-details",
-      "type": "java.lang.Boolean",
-      "description": "Whether ProblemDetail responses include exception class details."
-    },
-    {
-      "name": "hidra.api.errors.include-correlation-id",
-      "type": "java.lang.Boolean",
-      "description": "Whether API errors include correlation identifiers."
-    },
-    {
-      "name": "hidra.platform.observability.correlation.header-name",
-      "type": "java.lang.String",
-      "description": "HTTP header used for correlation identifiers."
-    },
-    {
-      "name": "hidra.platform.observability.correlation.response-header-enabled",
-      "type": "java.lang.Boolean",
-      "description": "Whether correlation identifiers are returned on responses."
-    },
-    {
-      "name": "hidra.platform.observability.request.header-name",
-      "type": "java.lang.String",
-      "description": "HTTP header used for request identifiers."
-    },
-    {
-      "name": "hidra.platform.observability.request.response-header-enabled",
-      "type": "java.lang.Boolean",
-      "description": "Whether request identifiers are returned on responses."
-    },
-    {
-      "name": "hidra.platform.observability.logging.structured",
-      "type": "java.lang.Boolean",
-      "description": "Whether platform logs should include structured context fields."
-    },
-    {
-      "name": "hidra.platform.observability.logging.mask-sensitive-values",
-      "type": "java.lang.Boolean",
-      "description": "Whether sensitive logging values should be masked."
-    },
-    {
-      "name": "hidra.platform.security.enabled",
-      "type": "java.lang.Boolean",
-      "description": "Whether HTTP security is enforced."
-    },
-    {
-      "name": "hidra.platform.security.cors.enabled",
-      "type": "java.lang.Boolean",
-      "description": "Whether CORS support is enabled through Spring Security."
-    },
-    {
-      "name": "hidra.platform.security.cors.allowed-origins",
-      "type": "java.lang.String",
-      "description": "Comma-separated allowed CORS origins."
-    },
-    {
-      "name": "hidra.platform.security.cors.allowed-methods",
-      "type": "java.lang.String",
-      "description": "Comma-separated allowed CORS HTTP methods."
-    },
-    {
-      "name": "hidra.platform.security.cors.allowed-headers",
-      "type": "java.lang.String",
-      "description": "Comma-separated allowed CORS headers."
-    },
-    {
-      "name": "hidra.platform.security.cors.exposed-headers",
-      "type": "java.lang.String",
-      "description": "Comma-separated exposed CORS response headers."
-    },
-    {
-      "name": "hidra.platform.security.csrf.enabled",
-      "type": "java.lang.Boolean",
-      "description": "Whether CSRF protection is enabled."
-    },
-    {
-      "name": "hidra.security.bootstrap.username",
-      "type": "java.lang.String",
-      "description": "Bootstrap username used until external IAM/JWT integration is added."
-    },
-    {
-      "name": "hidra.security.bootstrap.password",
-      "type": "java.lang.String",
-      "description": "Bootstrap password supplied through environment or secrets manager."
-    },
-    {
-      "name": "hidra.security.bootstrap.roles",
-      "type": "java.lang.String",
-      "description": "Comma-separated bootstrap role names."
-    },
-    {
-      "name": "hidra.platform.persistence.auditing.enabled",
-      "type": "java.lang.Boolean",
-      "description": "Whether persistence auditing is expected to be active."
-    },
-    {
-      "name": "hidra.platform.persistence.optimistic-locking.enabled",
-      "type": "java.lang.Boolean",
-      "description": "Whether persistence optimistic locking is expected for mutable entities."
-    },
-    {
-      "name": "hidra.platform.events.outbox.enabled",
-      "type": "java.lang.Boolean",
-      "description": "Whether the platform outbox runtime processor is enabled."
-    },
-    {
-      "name": "hidra.platform.events.outbox.table-name",
-      "type": "java.lang.String",
-      "description": "Platform outbox table name."
-    },
-    {
-      "name": "hidra.platform.events.outbox.batch-size",
-      "type": "java.lang.Integer",
-      "description": "Maximum outbox events processed per batch."
-    },
-    {
-      "name": "hidra.platform.events.outbox.max-retry-count",
-      "type": "java.lang.Integer",
-      "description": "Maximum outbox publication retries."
-    },
-    {
-      "name": "hidra.platform.events.outbox.cleanup-enabled",
-      "type": "java.lang.Boolean",
-      "description": "Whether published outbox cleanup is enabled."
-    },
-    {
-      "name": "hidra.platform.tenancy.enabled",
-      "type": "java.lang.Boolean",
-      "description": "Whether tenancy scoping is enabled."
-    },
-    {
-      "name": "hidra.platform.tenancy.default-scope",
-      "type": "java.lang.String",
-      "description": "Default tenant or organization scope."
-    },
-    {
-      "name": "hidra.platform.security.authentication-mode",
-      "type": "java.lang.String",
-      "description": "Authentication mode: jwt, basic, or disabled."
-    },
-    {
-      "name": "hidra.platform.security.jwt.issuer-uri",
-      "type": "java.lang.String",
-      "description": "JWT issuer URI used for issuer discovery and validation."
-    },
-    {
-      "name": "hidra.platform.security.jwt.jwk-set-uri",
-      "type": "java.lang.String",
-      "description": "JWT JWK set URI used when issuer discovery is not available."
-    },
-    {
-      "name": "hidra.platform.security.jwt.hmac-secret",
-      "type": "java.lang.String",
-      "description": "Development-only HMAC secret for HS256 JWT validation."
-    },
-    {
-      "name": "hidra.platform.security.jwt.audience",
-      "type": "java.lang.String",
-      "description": "Expected JWT audience claim."
-    },
-    {
-      "name": "hidra.platform.security.jwt.principal-claim",
-      "type": "java.lang.String",
-      "description": "JWT claim used as the authenticated principal name."
-    },
-    {
-      "name": "hidra.platform.security.jwt.roles-claim",
-      "type": "java.lang.String",
-      "description": "JWT claim containing Hidra role authorities."
-    },
-    {
-      "name": "hidra.platform.security.jwt.scope-claim",
-      "type": "java.lang.String",
-      "description": "JWT claim containing OAuth2 scopes."
-    },
-    {
-      "name": "hidra.platform.security.jwt.authority-prefix",
-      "type": "java.lang.String",
-      "description": "Authority prefix applied to JWT role claims."
-    },
-    {
-      "name": "hidra.notification.async-push.enabled",
-      "type": "java.lang.Boolean",
-      "description": "Whether notification messages are pushed asynchronously after they are created."
-    },
-    {
-      "name": "hidra.notification.async-push.core-pool-size",
-      "type": "java.lang.Integer",
-      "description": "Core thread pool size for asynchronous notification push."
-    },
-    {
-      "name": "hidra.notification.async-push.max-pool-size",
-      "type": "java.lang.Integer",
-      "description": "Maximum thread pool size for asynchronous notification push."
-    },
-    {
-      "name": "hidra.notification.async-push.queue-capacity",
-      "type": "java.lang.Integer",
-      "description": "Queue capacity for asynchronous notification push tasks."
-    },
-    {
-      "name": "hidra.notification.async-push.thread-name-prefix",
-      "type": "java.lang.String",
-      "description": "Thread name prefix for asynchronous notification push workers."
-    },
-    {
-      "name": "hidra.notification.push.provider-reference",
-      "type": "java.lang.String",
-      "description": "Provider reference recorded on notification delivery attempts."
-    },
-    {
-      "name": "hidra.platform.realtime.enabled",
-      "type": "java.lang.Boolean",
-      "description": "Enables Hidra realtime WebSocket/STOMP/SSE endpoints."
-    },
-    {
-      "name": "hidra.platform.realtime.stomp-endpoint",
-      "type": "java.lang.String",
-      "description": "STOMP WebSocket endpoint for realtime clients."
-    },
-    {
-      "name": "hidra.platform.realtime.sse-endpoint",
-      "type": "java.lang.String",
-      "description": "Server-Sent Event endpoint for realtime clients."
-    },
-    {
-      "name": "hidra.platform.realtime.heartbeat-ms",
-      "type": "java.lang.Long",
-      "description": "Heartbeat interval in milliseconds for realtime clients."
-    }
-  ]
-}
+{"properties": [
+  {
+    "name": "hidra.environment",
+    "type": "java.lang.String",
+    "description": "Current Hidra runtime environment name."
+  },
+  {
+    "name": "hidra.application.name",
+    "type": "java.lang.String",
+    "description": "Displayed Hidra application name."
+  },
+  {
+    "name": "hidra.application.description",
+    "type": "java.lang.String",
+    "description": "Displayed Hidra application description."
+  },
+  {
+    "name": "hidra.application.base-package",
+    "type": "java.lang.String",
+    "description": "Canonical Java base package for HidraAPI."
+  },
+  {
+    "name": "hidra.api.version",
+    "type": "java.lang.String",
+    "description": "Public API version label."
+  },
+  {
+    "name": "hidra.api.base-path",
+    "type": "java.lang.String",
+    "description": "Public API base path."
+  },
+  {
+    "name": "hidra.api.errors.include-debug-details",
+    "type": "java.lang.Boolean",
+    "description": "Whether ProblemDetail responses include exception class details."
+  },
+  {
+    "name": "hidra.api.errors.include-correlation-id",
+    "type": "java.lang.Boolean",
+    "description": "Whether API errors include correlation identifiers."
+  },
+  {
+    "name": "hidra.platform.observability.correlation.header-name",
+    "type": "java.lang.String",
+    "description": "HTTP header used for correlation identifiers."
+  },
+  {
+    "name": "hidra.platform.observability.correlation.response-header-enabled",
+    "type": "java.lang.Boolean",
+    "description": "Whether correlation identifiers are returned on responses."
+  },
+  {
+    "name": "hidra.platform.observability.request.header-name",
+    "type": "java.lang.String",
+    "description": "HTTP header used for request identifiers."
+  },
+  {
+    "name": "hidra.platform.observability.request.response-header-enabled",
+    "type": "java.lang.Boolean",
+    "description": "Whether request identifiers are returned on responses."
+  },
+  {
+    "name": "hidra.platform.observability.logging.structured",
+    "type": "java.lang.Boolean",
+    "description": "Whether platform logs should include structured context fields."
+  },
+  {
+    "name": "hidra.platform.observability.logging.mask-sensitive-values",
+    "type": "java.lang.Boolean",
+    "description": "Whether sensitive logging values should be masked."
+  },
+  {
+    "name": "hidra.platform.security.enabled",
+    "type": "java.lang.Boolean",
+    "description": "Whether HTTP security is enforced."
+  },
+  {
+    "name": "hidra.platform.security.cors.enabled",
+    "type": "java.lang.Boolean",
+    "description": "Whether CORS support is enabled through Spring Security."
+  },
+  {
+    "name": "hidra.platform.security.cors.allowed-origins",
+    "type": "java.lang.String",
+    "description": "Comma-separated allowed CORS origins."
+  },
+  {
+    "name": "hidra.platform.security.cors.allowed-methods",
+    "type": "java.lang.String",
+    "description": "Comma-separated allowed CORS HTTP methods."
+  },
+  {
+    "name": "hidra.platform.security.cors.allowed-headers",
+    "type": "java.lang.String",
+    "description": "Comma-separated allowed CORS headers."
+  },
+  {
+    "name": "hidra.platform.security.cors.exposed-headers",
+    "type": "java.lang.String",
+    "description": "Comma-separated exposed CORS response headers."
+  },
+  {
+    "name": "hidra.platform.security.csrf.enabled",
+    "type": "java.lang.Boolean",
+    "description": "Whether CSRF protection is enabled."
+  },
+  {
+    "name": "hidra.security.bootstrap.username",
+    "type": "java.lang.String",
+    "description": "Bootstrap username used until external IAM/JWT integration is added."
+  },
+  {
+    "name": "hidra.security.bootstrap.password",
+    "type": "java.lang.String",
+    "description": "Bootstrap password supplied through environment or secrets manager."
+  },
+  {
+    "name": "hidra.security.bootstrap.roles",
+    "type": "java.lang.String",
+    "description": "Comma-separated bootstrap role names."
+  },
+  {
+    "name": "hidra.platform.persistence.auditing.enabled",
+    "type": "java.lang.Boolean",
+    "description": "Whether persistence auditing is expected to be active."
+  },
+  {
+    "name": "hidra.platform.persistence.optimistic-locking.enabled",
+    "type": "java.lang.Boolean",
+    "description": "Whether persistence optimistic locking is expected for mutable entities."
+  },
+  {
+    "name": "hidra.platform.events.outbox.enabled",
+    "type": "java.lang.Boolean",
+    "description": "Whether the platform outbox runtime processor is enabled."
+  },
+  {
+    "name": "hidra.platform.events.outbox.table-name",
+    "type": "java.lang.String",
+    "description": "Platform outbox table name."
+  },
+  {
+    "name": "hidra.platform.events.outbox.batch-size",
+    "type": "java.lang.Integer",
+    "description": "Maximum outbox events processed per batch."
+  },
+  {
+    "name": "hidra.platform.events.outbox.max-retry-count",
+    "type": "java.lang.Integer",
+    "description": "Maximum outbox publication retries."
+  },
+  {
+    "name": "hidra.platform.events.outbox.cleanup-enabled",
+    "type": "java.lang.Boolean",
+    "description": "Whether published outbox cleanup is enabled."
+  },
+  {
+    "name": "hidra.platform.tenancy.enabled",
+    "type": "java.lang.Boolean",
+    "description": "Whether tenancy scoping is enabled."
+  },
+  {
+    "name": "hidra.platform.tenancy.default-scope",
+    "type": "java.lang.String",
+    "description": "Default tenant or organization scope."
+  },
+  {
+    "name": "hidra.platform.security.authentication-mode",
+    "type": "java.lang.String",
+    "description": "Authentication mode: jwt, basic, or disabled."
+  },
+  {
+    "name": "hidra.platform.security.jwt.issuer-uri",
+    "type": "java.lang.String",
+    "description": "JWT issuer URI used for issuer discovery and validation."
+  },
+  {
+    "name": "hidra.platform.security.jwt.jwk-set-uri",
+    "type": "java.lang.String",
+    "description": "JWT JWK set URI used when issuer discovery is not available."
+  },
+  {
+    "name": "hidra.platform.security.jwt.hmac-secret",
+    "type": "java.lang.String",
+    "description": "Development-only HMAC secret for HS256 JWT validation."
+  },
+  {
+    "name": "hidra.platform.security.jwt.audience",
+    "type": "java.lang.String",
+    "description": "Expected JWT audience claim."
+  },
+  {
+    "name": "hidra.platform.security.jwt.principal-claim",
+    "type": "java.lang.String",
+    "description": "JWT claim used as the authenticated principal name."
+  },
+  {
+    "name": "hidra.platform.security.jwt.roles-claim",
+    "type": "java.lang.String",
+    "description": "JWT claim containing Hidra role authorities."
+  },
+  {
+    "name": "hidra.platform.security.jwt.scope-claim",
+    "type": "java.lang.String",
+    "description": "JWT claim containing OAuth2 scopes."
+  },
+  {
+    "name": "hidra.platform.security.jwt.authority-prefix",
+    "type": "java.lang.String",
+    "description": "Authority prefix applied to JWT role claims."
+  },
+  {
+    "name": "hidra.notification.async-push.enabled",
+    "type": "java.lang.Boolean",
+    "description": "Whether notification messages are pushed asynchronously after they are created."
+  },
+  {
+    "name": "hidra.notification.async-push.core-pool-size",
+    "type": "java.lang.Integer",
+    "description": "Core thread pool size for asynchronous notification push."
+  },
+  {
+    "name": "hidra.notification.async-push.max-pool-size",
+    "type": "java.lang.Integer",
+    "description": "Maximum thread pool size for asynchronous notification push."
+  },
+  {
+    "name": "hidra.notification.async-push.queue-capacity",
+    "type": "java.lang.Integer",
+    "description": "Queue capacity for asynchronous notification push tasks."
+  },
+  {
+    "name": "hidra.notification.async-push.thread-name-prefix",
+    "type": "java.lang.String",
+    "description": "Thread name prefix for asynchronous notification push workers."
+  },
+  {
+    "name": "hidra.notification.push.provider-reference",
+    "type": "java.lang.String",
+    "description": "Provider reference recorded on notification delivery attempts."
+  },
+  {
+    "name": "hidra.platform.realtime.enabled",
+    "type": "java.lang.Boolean",
+    "description": "Enables Hidra realtime WebSocket/STOMP/SSE endpoints."
+  },
+  {
+    "name": "hidra.platform.realtime.stomp-endpoint",
+    "type": "java.lang.String",
+    "description": "STOMP WebSocket endpoint for realtime clients."
+  },
+  {
+    "name": "hidra.platform.realtime.sse-endpoint",
+    "type": "java.lang.String",
+    "description": "Server-Sent Event endpoint for realtime clients."
+  },
+  {
+    "name": "hidra.platform.realtime.heartbeat-ms",
+    "type": "java.lang.Long",
+    "description": "Heartbeat interval in milliseconds for realtime clients."
+  },
+  {
+    "name": "spring.flyway.enabled",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.flyway.enabled'"
+  },
+  {
+    "name": "spring.flyway.locations",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.flyway.locations'"
+  },
+  {
+    "name": "spring.flyway.baseline-on-migrate",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.flyway.baseline-on-migrate'"
+  },
+  {
+    "name": "spring.flyway.clean-disabled",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.flyway.clean-disabled'"
+  }
+]}

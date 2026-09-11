@@ -47,7 +47,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 @RequestMapping("/api/v1/identity")
 @Tag(name = "Identity Administration", description = "Authenticated principal, user, role, and permission queries.")
-public final class IdentityAdministrationQueryController {
+public class IdentityAdministrationQueryController {
 
     private final IdentityAdministrationQueryUseCase queryUseCase;
     private final HidraEffectivePermissionResolver permissionResolver;

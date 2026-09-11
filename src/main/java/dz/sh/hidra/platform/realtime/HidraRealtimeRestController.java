@@ -38,7 +38,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 @Validated
 @RequestMapping("/api/v1/realtime")
 @Tag(name = "Realtime", description = "Verified realtime transports, event envelope metadata, and recovery semantics.")
-public final class HidraRealtimeRestController {
+public class HidraRealtimeRestController {
 
     private final HidraSseRegistry sseRegistry;
     private final String stompEndpoint;

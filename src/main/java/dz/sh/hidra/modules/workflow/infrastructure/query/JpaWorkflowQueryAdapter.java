@@ -35,7 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @Transactional(readOnly = true)
-public final class JpaWorkflowQueryAdapter implements WorkflowQueryUseCase {
+public class JpaWorkflowQueryAdapter implements WorkflowQueryUseCase {
 
     private static final String ALL_PERMISSIONS = "*";
     private static final Set<String> COMPLETED_TASK_STATES = Set.of(

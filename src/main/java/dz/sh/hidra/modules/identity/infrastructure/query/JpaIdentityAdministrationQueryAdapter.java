@@ -45,7 +45,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Component
 @Transactional(readOnly = true)
-public final class JpaIdentityAdministrationQueryAdapter implements IdentityAdministrationQueryUseCase {
+public class JpaIdentityAdministrationQueryAdapter implements IdentityAdministrationQueryUseCase {
 
     private final EntityManager entityManager;
 

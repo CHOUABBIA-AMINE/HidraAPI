@@ -7,7 +7,7 @@
  *
  * @Name        : WorkflowInstanceRepositoryPort
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-11
  *
  * @Type        : Interface
  * @Layer       : Application
@@ -20,15 +20,13 @@
 package dz.sh.hidra.modules.workflow.application.port.out;
 
 import dz.sh.hidra.modules.workflow.domain.model.WorkflowInstance;
-
 import java.util.Optional;
 
-/**
- * Repository port for WorkflowInstance.
- */
 public interface WorkflowInstanceRepositoryPort {
 
     WorkflowInstance save(WorkflowInstance model);
 
     Optional<WorkflowInstance> findById(String id);
+
+    Optional<WorkflowInstance> findByIdForUpdate(String id);
 }

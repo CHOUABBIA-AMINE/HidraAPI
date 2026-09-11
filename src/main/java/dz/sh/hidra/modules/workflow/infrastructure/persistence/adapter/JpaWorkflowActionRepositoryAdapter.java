@@ -7,7 +7,7 @@
  *
  * @Name        : JpaWorkflowActionRepositoryAdapter
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-11
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -23,14 +23,10 @@ import dz.sh.hidra.modules.workflow.application.port.out.WorkflowActionRepositor
 import dz.sh.hidra.modules.workflow.domain.model.WorkflowAction;
 import dz.sh.hidra.modules.workflow.infrastructure.persistence.mapper.WorkflowPersistenceMapper;
 import dz.sh.hidra.modules.workflow.infrastructure.persistence.repository.WorkflowActionJpaRepository;
-import org.springframework.stereotype.Component;
-
 import java.util.Objects;
 import java.util.Optional;
+import org.springframework.stereotype.Component;
 
-/**
- * Database-backed repository adapter for WorkflowAction.
- */
 @Component
 public class JpaWorkflowActionRepositoryAdapter implements WorkflowActionRepositoryPort {
 
@@ -48,5 +44,10 @@ public class JpaWorkflowActionRepositoryAdapter implements WorkflowActionReposit
     @Override
     public Optional<WorkflowAction> findById(String id) {
         return repository.findById(id).map(WorkflowPersistenceMapper::toDomain);
+    }
+
+    @Override
+    public long nextSequence(String instanceId) {
+        return repository.nextSequence(instanceId);
     }
 }

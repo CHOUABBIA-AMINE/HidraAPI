@@ -7,7 +7,7 @@
  *
  * @Name        : JpaWorkflowTransitionRepositoryAdapter
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-11
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -23,14 +23,10 @@ import dz.sh.hidra.modules.workflow.application.port.out.WorkflowTransitionRepos
 import dz.sh.hidra.modules.workflow.domain.model.WorkflowTransition;
 import dz.sh.hidra.modules.workflow.infrastructure.persistence.mapper.WorkflowPersistenceMapper;
 import dz.sh.hidra.modules.workflow.infrastructure.persistence.repository.WorkflowTransitionJpaRepository;
-import org.springframework.stereotype.Component;
-
 import java.util.Objects;
 import java.util.Optional;
+import org.springframework.stereotype.Component;
 
-/**
- * Database-backed repository adapter for WorkflowTransition.
- */
 @Component
 public class JpaWorkflowTransitionRepositoryAdapter implements WorkflowTransitionRepositoryPort {
 
@@ -48,5 +44,10 @@ public class JpaWorkflowTransitionRepositoryAdapter implements WorkflowTransitio
     @Override
     public Optional<WorkflowTransition> findById(String id) {
         return repository.findById(id).map(WorkflowPersistenceMapper::toDomain);
+    }
+
+    @Override
+    public boolean existsFromStep(String definitionId, String fromStepId) {
+        return repository.existsByDefinitionIdAndFromStepId(definitionId, fromStepId);
     }
 }

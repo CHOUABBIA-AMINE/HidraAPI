@@ -38,8 +38,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class JpaWorkflowQueryAdapter implements WorkflowQueryUseCase {
 
     private static final String ALL_PERMISSIONS = "*";
+    private static final Set<String> ACTIONABLE_TASK_STATES = Set.of("OPEN", "CLAIMED", "IN_REVIEW");
+    private static final Set<String> NON_TERMINAL_INSTANCE_STATES = Set.of("DRAFT", "STARTED", "IN_PROGRESS", "WAITING");
     private static final Set<String> COMPLETED_TASK_STATES = Set.of(
-            "APPROVED", "REJECTED", "RETURNED", "CANCELLED", "EXPIRED"
+            "APPROVED", "REJECTED", "RETURNED", "DELEGATED", "ESCALATED", "CANCELLED", "EXPIRED"
     );
 
     private final EntityManager entityManager;
@@ -109,7 +111,11 @@ public class JpaWorkflowQueryAdapter implements WorkflowQueryUseCase {
         if (instance == null) {
             throw new NoSuchElementException("Unknown workflow instance: " + task.instanceId());
         }
-        boolean assigned = belongsToActor(task, actorReference);
+        boolean assigned = belongsToActiveActor(task, actorReference);
+        boolean actionable = ACTIONABLE_TASK_STATES.contains(String.valueOf(task.status()))
+                && task.completedAt() == null
+                && NON_TERMINAL_INSTANCE_STATES.contains(String.valueOf(instance.status()))
+                && Objects.equals(instance.currentStepId(), task.stepId());
         Set<String> permissions = effectivePermissions == null ? Set.of() : effectivePermissions;
         return entityManager
                 .createQuery(
@@ -119,18 +125,22 @@ public class JpaWorkflowQueryAdapter implements WorkflowQueryUseCase {
                 .setParameter("definition", instance.definitionId())
                 .setParameter("step", task.stepId())
                 .getResultList().stream()
-                .map(transition -> actionView(transition, assigned, permissions))
+                .map(transition -> actionView(transition, assigned && actionable, permissions))
                 .toList();
     }
 
     private boolean belongsToActor(WorkflowTaskJpaEntity entity, String actorReference) {
+        return belongsToActiveActor(entity, actorReference)
+                || (actorReference != null && actorReference.equals(entity.completedByActorId()));
+    }
+
+    private boolean belongsToActiveActor(WorkflowTaskJpaEntity entity, String actorReference) {
         if (actorReference == null || actorReference.isBlank()) {
             return false;
         }
         return actorReference.equals(entity.assignedActorId())
                 || actorReference.equalsIgnoreCase(String.valueOf(entity.assignedActorUsernameSnapshot()))
-                || actorReference.equals(entity.claimedByActorId())
-                || actorReference.equals(entity.completedByActorId());
+                || actorReference.equals(entity.claimedByActorId());
     }
 
     private boolean matchesView(WorkflowTaskJpaEntity entity, String view) {
@@ -147,7 +157,7 @@ public class JpaWorkflowQueryAdapter implements WorkflowQueryUseCase {
 
     private AvailableActionView actionView(
             WorkflowTransitionJpaEntity transition,
-            boolean assigned,
+            boolean executableContext,
             Set<String> effectivePermissions
     ) {
         String requiredPermission = transition.requiredPermissionCode();
@@ -155,7 +165,9 @@ public class JpaWorkflowQueryAdapter implements WorkflowQueryUseCase {
                 || requiredPermission == null
                 || requiredPermission.isBlank()
                 || effectivePermissions.contains(requiredPermission);
-        boolean permitted = assigned && permissionSatisfied;
+        boolean executionMechanismAvailable = (transition.conditionExpression() == null || transition.conditionExpression().isBlank())
+                && (transition.targetModuleCallback() == null || transition.targetModuleCallback().isBlank());
+        boolean permitted = executableContext && permissionSatisfied && executionMechanismAvailable;
         return new AvailableActionView(
                 transition.id(),
                 String.valueOf(transition.decision()),

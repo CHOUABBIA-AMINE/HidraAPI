@@ -45,7 +45,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 @RequestMapping("/api/v1/workflow")
 @Tag(name = "Workflow Queries", description = "Authenticated task inbox, workflow history, and available transition metadata.")
-public final class WorkflowQueryController {
+public class WorkflowQueryController {
 
     private final WorkflowQueryUseCase useCase;
     private final CurrentActorResolver actorResolver;

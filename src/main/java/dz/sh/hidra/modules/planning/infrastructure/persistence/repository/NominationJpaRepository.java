@@ -7,7 +7,7 @@
  *
  * @Name        : NominationJpaRepository
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-12
  *
  * @Type        : Interface
  * @Layer       : Infrastructure
@@ -20,6 +20,8 @@
 package dz.sh.hidra.modules.planning.infrastructure.persistence.repository;
 
 import dz.sh.hidra.modules.planning.infrastructure.persistence.entity.NominationJpaEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -28,4 +30,6 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface NominationJpaRepository extends JpaRepository<NominationJpaEntity, String> {
+
+    Page<NominationJpaEntity> findByRevisionId(String revisionId, Pageable pageable);
 }

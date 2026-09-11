@@ -7,7 +7,7 @@
  *
  * @Name        : AlarmRestMapper
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-13
+ * @UpdatedOn   : 2026-09-11
  *
  * @Type        : Class
  * @Layer       : API
@@ -18,6 +18,7 @@
  *
  */
 package dz.sh.hidra.modules.alarm.api.rest.mapper;
+
 import dz.sh.hidra.modules.alarm.api.rest.request.AcknowledgeAlarmRequest;
 import dz.sh.hidra.modules.alarm.api.rest.request.CloseAlarmRequest;
 import dz.sh.hidra.modules.alarm.api.rest.request.RaiseAlarmRequest;
@@ -36,11 +37,15 @@ public final class AlarmRestMapper {
         throw new UnsupportedOperationException("Utility class must not be instantiated.");
     }
 
-    public static AcknowledgeAlarmCommand toCommand(AcknowledgeAlarmRequest request) {
+    public static AcknowledgeAlarmCommand toCommand(
+            AcknowledgeAlarmRequest request,
+            String authenticatedActorId,
+            String authenticatedPrincipalName
+    ) {
         return new AcknowledgeAlarmCommand(
                 request.alarmId(),
-                request.acknowledgedByActorId(),
-                request.acknowledgedByDisplayName(),
+                authenticatedActorId,
+                authenticatedPrincipalName,
                 request.organizationUnitId(),
                 request.organizationUnitCode(),
                 request.comment(),
@@ -48,13 +53,13 @@ public final class AlarmRestMapper {
         );
     }
 
-    public static CloseAlarmCommand toCommand(CloseAlarmRequest request) {
+    public static CloseAlarmCommand toCommand(CloseAlarmRequest request, String authenticatedActorId) {
         return new CloseAlarmCommand(
                 request.alarmId(),
                 request.closureType(),
                 request.closureReasonId(),
                 request.closureComment(),
-                request.closedByActorId(),
+                authenticatedActorId,
                 request.requiresReview(),
                 request.reviewWorkflowInstanceId(),
                 request.correlationId()

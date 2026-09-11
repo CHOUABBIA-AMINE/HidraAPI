@@ -7,14 +7,14 @@
  *
  * @Name        : CurrentActorResolver
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-11
  *
  * @Type        : Class
  * @Layer       : Platform
  * @Module      : platform
  * @Package     : dz.sh.hidra.platform.security
  *
- * @Description : Resolves the current technical actor identifier.
+ * @Description : Resolves the current technical actor identifier and principal name.
  *
  */
 package dz.sh.hidra.platform.security;
@@ -24,7 +24,7 @@ import dz.sh.hidra.kernel.domain.value.ActorId;
 import java.util.Objects;
 
 /**
- * Resolves the current technical actor identifier from the current security context.
+ * Resolves the current technical actor identity from the current security context.
  */
 public class CurrentActorResolver {
 
@@ -45,6 +45,13 @@ public class CurrentActorResolver {
                 .filter(AuthenticatedPrincipal::authenticated)
                 .map(AuthenticatedPrincipal::actorId)
                 .orElse(ANONYMOUS_ACTOR_ID);
+    }
+
+    public String currentPrincipalName() {
+        return currentSecurityContext.currentPrincipal()
+                .filter(AuthenticatedPrincipal::authenticated)
+                .map(AuthenticatedPrincipal::principalName)
+                .orElse(ANONYMOUS_ACTOR_ID.value());
     }
 
     public ActorId systemActorId() {

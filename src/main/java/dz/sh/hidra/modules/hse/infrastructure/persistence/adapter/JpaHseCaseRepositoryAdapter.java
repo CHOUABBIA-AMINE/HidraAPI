@@ -7,7 +7,7 @@
  *
  * @Name        : JpaHseCaseRepositoryAdapter
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-11
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -23,14 +23,13 @@ import dz.sh.hidra.modules.hse.application.port.out.HseCaseRepositoryPort;
 import dz.sh.hidra.modules.hse.domain.model.HseCase;
 import dz.sh.hidra.modules.hse.infrastructure.persistence.mapper.HsePersistenceMapper;
 import dz.sh.hidra.modules.hse.infrastructure.persistence.repository.HseCaseJpaRepository;
-import org.springframework.stereotype.Component;
-
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Component;
 
-/**
- * Database-backed repository adapter for HseCase.
- */
 @Component
 public class JpaHseCaseRepositoryAdapter implements HseCaseRepositoryPort {
 
@@ -48,5 +47,16 @@ public class JpaHseCaseRepositoryAdapter implements HseCaseRepositoryPort {
     @Override
     public Optional<HseCase> findById(String id) {
         return repository.findById(id).map(HsePersistenceMapper::toDomain);
+    }
+
+    @Override
+    public List<HseCase> findAll(int page, int size) {
+        return repository.findAll(PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "updatedAt")))
+                .stream().map(HsePersistenceMapper::toDomain).toList();
+    }
+
+    @Override
+    public long count() {
+        return repository.count();
     }
 }

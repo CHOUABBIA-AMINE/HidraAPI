@@ -43,7 +43,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 @RequestMapping("/api/v1/identity")
 @Tag(name = "Identity Administration", description = "Role, permission, and authorization-grant administration commands.")
-public final class IdentityAdministrationCommandController {
+public class IdentityAdministrationCommandController {
 
     private final IdentityAdministrationCommandUseCase commandUseCase;
 

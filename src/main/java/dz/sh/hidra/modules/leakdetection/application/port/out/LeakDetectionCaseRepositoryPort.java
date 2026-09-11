@@ -7,7 +7,7 @@
  *
  * @Name        : LeakDetectionCaseRepositoryPort
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-11
  *
  * @Type        : Interface
  * @Layer       : Application
@@ -20,7 +20,7 @@
 package dz.sh.hidra.modules.leakdetection.application.port.out;
 
 import dz.sh.hidra.modules.leakdetection.domain.model.LeakDetectionCase;
-
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -31,4 +31,8 @@ public interface LeakDetectionCaseRepositoryPort {
     LeakDetectionCase save(LeakDetectionCase model);
 
     Optional<LeakDetectionCase> findById(String id);
+
+    List<LeakDetectionCase> findAll(int page, int size);
+
+    long count();
 }

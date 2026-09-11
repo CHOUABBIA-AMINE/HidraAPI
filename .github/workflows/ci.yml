@@ -20,7 +20,22 @@ jobs:
   verify:
     name: Java 21 Maven verification
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 50
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: hidra_test
+          POSTGRES_USER: hidra
+          POSTGRES_PASSWORD: hidra
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U hidra -d hidra_test"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
 
     steps:
       - name: Checkout
@@ -36,11 +51,69 @@ jobs:
       - name: Ensure Maven wrapper is executable
         run: chmod +x mvnw
 
-      - name: Compile production code
+      - name: Repository compile check
         run: ./mvnw -B -q -DskipTests compile
 
-      - name: Run tests
+      - name: Repository test check
         run: ./mvnw -B -q test
 
-      - name: Run full verification
+      - name: Repository full verification
         run: ./mvnw -B -q clean verify
+
+      - name: Acceptance compile check
+        run: mvn -q -DskipTests compile
+
+      - name: Acceptance test check
+        run: mvn -q test
+
+      - name: Acceptance clean verify
+        run: mvn -q clean verify
+
+      - name: Publish deterministic OpenAPI contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p target/openapi
+          APP_JAR="$(find target -maxdepth 1 -type f -name '*.jar' ! -name '*.original' | head -n 1)"
+          if [ -z "${APP_JAR}" ]; then
+            echo "No executable application jar found after verify." >&2
+            exit 1
+          fi
+          SPRING_PROFILES_ACTIVE=test \
+          SPRINGDOC_API_DOCS_ENABLED=true \
+          SPRINGDOC_SWAGGER_UI_ENABLED=false \
+          SERVER_PORT=8080 \
+          MANAGEMENT_SERVER_PORT=8080 \
+          java -jar "${APP_JAR}" > target/openapi/application.log 2>&1 &
+          APP_PID=$!
+          trap 'kill ${APP_PID} 2>/dev/null || true' EXIT
+          for attempt in $(seq 1 60); do
+            if curl --fail --silent http://127.0.0.1:8080/actuator/health >/dev/null; then
+              break
+            fi
+            if ! kill -0 "${APP_PID}" 2>/dev/null; then
+              cat target/openapi/application.log >&2
+              exit 1
+            fi
+            if [ "${attempt}" -eq 60 ]; then
+              cat target/openapi/application.log >&2
+              exit 1
+            fi
+            sleep 2
+          done
+          curl --fail --silent http://127.0.0.1:8080/v3/api-docs > target/openapi/hidra-api.json
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          path = Path('target/openapi/hidra-api.json')
+          payload = json.loads(path.read_text(encoding='utf-8'))
+          path.write_text(json.dumps(payload, indent=2, sort_keys=True) + '\n', encoding='utf-8')
+          PY
+
+      - name: Upload OpenAPI compatibility artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: hidra-api-openapi-${{ github.sha }}
+          path: target/openapi/hidra-api.json
+          if-no-files-found: error
+          retention-days: 30

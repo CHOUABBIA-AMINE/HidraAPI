@@ -27,6 +27,7 @@ import dz.sh.hidra.modules.workflow.infrastructure.persistence.entity.WorkflowTr
 import jakarta.persistence.EntityManager;
 import java.util.List;
 import java.util.Locale;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Set;
 import org.springframework.stereotype.Component;
@@ -34,8 +35,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @Transactional(readOnly = true)
-public class JpaWorkflowQueryAdapter implements WorkflowQueryUseCase {
+public final class JpaWorkflowQueryAdapter implements WorkflowQueryUseCase {
 
+    private static final String ALL_PERMISSIONS = "*";
     private static final Set<String> COMPLETED_TASK_STATES = Set.of(
             "APPROVED", "REJECTED", "RETURNED", "CANCELLED", "EXPIRED"
     );
@@ -63,7 +65,7 @@ public class JpaWorkflowQueryAdapter implements WorkflowQueryUseCase {
     public TaskView task(String id) {
         WorkflowTaskJpaEntity entity = entityManager.find(WorkflowTaskJpaEntity.class, id);
         if (entity == null) {
-            throw new IllegalArgumentException("Unknown workflow task: " + id);
+            throw new NoSuchElementException("Unknown workflow task: " + id);
         }
         return taskView(entity);
     }
@@ -72,15 +74,21 @@ public class JpaWorkflowQueryAdapter implements WorkflowQueryUseCase {
     public InstanceView instance(String id) {
         WorkflowInstanceJpaEntity entity = entityManager.find(WorkflowInstanceJpaEntity.class, id);
         if (entity == null) {
-            throw new IllegalArgumentException("Unknown workflow instance: " + id);
+            throw new NoSuchElementException("Unknown workflow instance: " + id);
         }
         return instanceView(entity);
     }
 
     @Override
     public List<TimelineEntry> timeline(String instanceId) {
+        if (entityManager.find(WorkflowInstanceJpaEntity.class, instanceId) == null) {
+            throw new NoSuchElementException("Unknown workflow instance: " + instanceId);
+        }
         return entityManager
-                .createQuery("select e from WorkflowActionJpaEntity e where e.instanceId = :instance order by e.actionSequence", WorkflowActionJpaEntity.class)
+                .createQuery(
+                        "select e from WorkflowActionJpaEntity e where e.instanceId = :instance order by e.actionSequence",
+                        WorkflowActionJpaEntity.class
+                )
                 .setParameter("instance", instanceId)
                 .getResultList().stream()
                 .map(this::timelineEntry)
@@ -95,16 +103,19 @@ public class JpaWorkflowQueryAdapter implements WorkflowQueryUseCase {
     ) {
         WorkflowTaskJpaEntity task = entityManager.find(WorkflowTaskJpaEntity.class, taskId);
         if (task == null) {
-            throw new IllegalArgumentException("Unknown workflow task: " + taskId);
+            throw new NoSuchElementException("Unknown workflow task: " + taskId);
         }
         WorkflowInstanceJpaEntity instance = entityManager.find(WorkflowInstanceJpaEntity.class, task.instanceId());
         if (instance == null) {
-            throw new IllegalArgumentException("Unknown workflow instance: " + task.instanceId());
+            throw new NoSuchElementException("Unknown workflow instance: " + task.instanceId());
         }
         boolean assigned = belongsToActor(task, actorReference);
         Set<String> permissions = effectivePermissions == null ? Set.of() : effectivePermissions;
         return entityManager
-                .createQuery("select e from WorkflowTransitionJpaEntity e where e.definitionId = :definition and e.fromStepId = :step order by e.id", WorkflowTransitionJpaEntity.class)
+                .createQuery(
+                        "select e from WorkflowTransitionJpaEntity e where e.definitionId = :definition and e.fromStepId = :step order by e.id",
+                        WorkflowTransitionJpaEntity.class
+                )
                 .setParameter("definition", instance.definitionId())
                 .setParameter("step", task.stepId())
                 .getResultList().stream()
@@ -140,13 +151,21 @@ public class JpaWorkflowQueryAdapter implements WorkflowQueryUseCase {
             Set<String> effectivePermissions
     ) {
         String requiredPermission = transition.requiredPermissionCode();
-        boolean permitted = assigned && (requiredPermission == null
+        boolean permissionSatisfied = effectivePermissions.contains(ALL_PERMISSIONS)
+                || requiredPermission == null
                 || requiredPermission.isBlank()
-                || effectivePermissions.contains(requiredPermission));
+                || effectivePermissions.contains(requiredPermission);
+        boolean permitted = assigned && permissionSatisfied;
         return new AvailableActionView(
-                transition.id(), String.valueOf(transition.decision()), transition.fromStepId(), transition.toStepId(),
-                transition.reasonRequired(), transition.commentRequired(), requiredPermission,
-                transition.targetModuleCallback(), permitted
+                transition.id(),
+                String.valueOf(transition.decision()),
+                transition.fromStepId(),
+                transition.toStepId(),
+                transition.reasonRequired(),
+                transition.commentRequired(),
+                requiredPermission,
+                transition.targetModuleCallback(),
+                permitted
         );
     }
 

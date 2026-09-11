@@ -98,7 +98,7 @@ class WorkflowTransitionApplicationServiceTest {
         );
         when(assignmentRuleRepository.findById("rule-2")).thenReturn(Optional.of(rule));
 
-        WorkflowTransitionExecutionDto result = service.execute(command("actor-1", Set.of("workflow:approve:execute")));
+        WorkflowTransitionExecutionDto result = service.execute(command("actor-1", "alice", Set.of("workflow:approve:execute")));
 
         assertEquals("APPROVED", result.taskStatus());
         assertEquals("IN_PROGRESS", result.instanceStatus());
@@ -122,7 +122,7 @@ class WorkflowTransitionApplicationServiceTest {
     void completesInstanceWhenTargetStepIsTerminal() {
         stubCommon(false);
 
-        WorkflowTransitionExecutionDto result = service.execute(command("actor-1", Set.of("workflow:approve:execute")));
+        WorkflowTransitionExecutionDto result = service.execute(command("actor-1", "alice", Set.of("workflow:approve:execute")));
 
         assertEquals("COMPLETED", result.instanceStatus());
         assertNull(result.nextTaskId());
@@ -150,7 +150,7 @@ class WorkflowTransitionApplicationServiceTest {
 
         assertThrows(
                 WorkflowTransitionDeniedException.class,
-                () -> service.execute(command("actor-other", Set.of("workflow:approve:execute")))
+                () -> service.execute(command("actor-other", "mallory", Set.of("workflow:approve:execute")))
         );
         verify(instanceRepository, never()).findByIdForUpdate(any());
     }
@@ -163,7 +163,7 @@ class WorkflowTransitionApplicationServiceTest {
         when(instanceRepository.findByIdForUpdate("instance-1")).thenReturn(Optional.of(instance));
         when(transitionRepository.findById("transition-1")).thenReturn(Optional.of(transition()));
 
-        assertThrows(WorkflowTransitionDeniedException.class, () -> service.execute(command("actor-1", Set.of())));
+        assertThrows(WorkflowTransitionDeniedException.class, () -> service.execute(command("actor-1", "alice", Set.of())));
         verify(actionRepository, never()).save(any());
     }
 
@@ -187,10 +187,10 @@ class WorkflowTransitionApplicationServiceTest {
         when(transitionRepository.existsFromStep("def-1", "step-2")).thenReturn(graphContinues);
     }
 
-    private ExecuteWorkflowTransitionCommand command(String actorId, Set<String> permissions) {
+    private ExecuteWorkflowTransitionCommand command(String actorId, String actorUsername, Set<String> permissions) {
         return new ExecuteWorkflowTransitionCommand(
                 "task-1", "transition-1", TASK_UPDATED_AT, null, null, null, "corr-1",
-                actorId, "alice", "Alice", permissions
+                actorId, actorUsername, "Alice", permissions
         );
     }
 

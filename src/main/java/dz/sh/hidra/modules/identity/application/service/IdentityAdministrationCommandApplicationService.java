@@ -59,7 +59,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Transactional
-public final class IdentityAdministrationCommandApplicationService implements IdentityAdministrationCommandUseCase {
+public class IdentityAdministrationCommandApplicationService implements IdentityAdministrationCommandUseCase {
 
     private static final Pattern PERMISSION_CODE = Pattern.compile("^[a-z0-9-]+:[a-z0-9-]+:[a-z0-9-]+$");
 

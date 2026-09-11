@@ -34,7 +34,7 @@ Frontend-facing contracts must be published through deterministic OpenAPI. Route
 
 | Code | Commit message | Status | Scope |
 |---|---|---:|---|
-| `PLN-001` | `feat(planning): expose HWEB-010 query contracts` | In Progress | Read-only list/detail contracts for periods, operational plans, revisions, nominations and plan targets; stable pagination; deterministic 400/404; route-permission publication; no new lifecycle mutations. |
+| `PLN-001` | `feat(planning): expose HWEB-010 query contracts` | Completed | Read-only list/detail contracts for periods, operational plans, revisions, nominations and plan targets; stable pagination; deterministic 400/404; route-permission publication; no new lifecycle mutations. PR CI `34657410805` passed compile, tests, full verification, acceptance compile/test/verify, deterministic OpenAPI publication and artifact upload on exact head `0735592fca3075754c06a3d1a98d0a8236e8e6ec`. |
 
 ### PLN-001 allowed production changes
 
@@ -68,14 +68,25 @@ No new POST, PUT, PATCH or DELETE endpoints belong to PLN-001.
 
 ## 4. Validation
 
-PLN-001 must pass:
+PLN-001 validation evidence:
 
 ```text
-mvn -q -DskipTests compile
-mvn -q test
-mvn -q clean verify
+mvn -q -DskipTests compile  -> SUCCESS (CI repository compile check)
+mvn -q test                 -> SUCCESS (CI repository test check)
+mvn -q clean verify         -> SUCCESS (CI repository full verification)
+acceptance compile          -> SUCCESS
+acceptance test             -> SUCCESS
+acceptance clean verify     -> SUCCESS
+deterministic OpenAPI       -> SUCCESS
+OpenAPI artifact upload     -> SUCCESS
 ```
 
-The pull-request CI must also generate deterministic OpenAPI successfully and expose route-permission metadata for every published GET route.
+Evidence:
 
-After successful validation, update `PLN-001` to `Completed` with the exact CI evidence before merge.
+```text
+PR CI run : 34657410805
+Exact SHA : 0735592fca3075754c06a3d1a98d0a8236e8e6ec
+Conclusion: SUCCESS
+```
+
+A final exact-head CI run is required after this roadmap evidence commit before merge. The merge SHA must then pass push-triggered `main` CI and publish the deterministic OpenAPI artifact before issue #68 is closed.

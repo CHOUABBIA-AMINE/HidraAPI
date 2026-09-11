@@ -4,8 +4,8 @@
 Roadmap code    : FRONTEND-BACKEND-GAP-002
 Commit message  : FRONTEND-BACKEND-GAP-002
 Source register : CHOUABBIA-AMINE/HidraWEB/docs/roadmap/HidraAPI-Frontend-Backend-Gap-Register.md
-Backend baseline: d21ea9184ce2fede9b2e8f39d5fd9f374b4b2046
-Branch          : frontend-backend-gap-remediation-02
+Backend baseline: af4c3b4723619a25dd9a94f4d27f5a36adab982e
+Branch          : frontend-backend-gap-remediation-02-hardening
 Status          : In Progress
 ```
 
@@ -23,7 +23,7 @@ This is one cross-cutting remediation task because the consumer register is the 
 | GAP-SEC-002 | Publish repository-side browser OIDC/JWT contract and configuration metadata; external IdP registration remains environment-owned. | In Progress |
 | GAP-SEC-003 | Enforce effective Hidra permissions at the backend route boundary and publish effective principal permissions. | In Progress |
 | GAP-CONTRACT-001 | Produce deterministic OpenAPI artifact in CI and retain it as a workflow artifact. | In Progress |
-| GAP-REALTIME-001 | Publish a typed realtime event envelope/catalog with destinations and recovery semantics. | In Progress |
+| GAP-REALTIME-001 | Publish a typed realtime event envelope/catalog with destinations and recovery semantics. | Deferred pending verified domain publishers |
 | GAP-ID-001 | Verify dedicated identity read/query API merged by remediation 01. | In Progress |
 | GAP-ID-002 | Verify and harden role/permission/grant administration contracts merged by remediation 01. | In Progress |
 | GAP-ORG-001 | Add dedicated organization hierarchy/employee/assignment read APIs. | In Progress |
@@ -36,8 +36,11 @@ This is one cross-cutting remediation task because the consumer register is the 
 | GAP-WF-001 | Add authenticated-principal task inbox/query contract. | In Progress |
 | GAP-WF-002 | Add workflow instance/task timeline/history query contract. | In Progress |
 | GAP-WF-003 | Add backend-provided available-action/transition metadata. | In Progress |
+| GAP-WF-004 | Add an authoritative workflow transition execution contract that advances task/instance state and records audit history. | Open — issue #57 |
 | GAP-ALARM-001 | Add active/history/detail alarm query contracts. | In Progress |
 | GAP-ALARM-002 | Add audited alarm shelving/unshelving contract when supported by the existing alarm model; otherwise document the model limitation explicitly. | In Progress |
+| GAP-ALARM-004 | Decide whether suppression is distinct from shelving before publishing any suppression mutation contract. | Open — issue #58 |
+| GAP-ALARM-005 | Derive acknowledgement/closure actor identity from the authenticated principal; remove authoritative browser-selected actor identity from the public request contract. | Implemented — issue #56, CI #34615308694 green |
 
 ## Architecture rules
 
@@ -48,6 +51,7 @@ This is one cross-cutting remediation task because the consumer register is the 
 - Workflow owns process state and transition availability; target modules own business facts.
 - Authentication transport remains platform-owned; identity owns user/role/permission meaning.
 - No frontend-driven authorization is trusted as an enforcement boundary.
+- Audit actor identity is derived from the authenticated platform security context, not selected by a browser request.
 
 ## Validation
 
@@ -70,4 +74,22 @@ Additionally verify:
 
 ## Completion evidence
 
-To be filled after implementation and CI verification.
+### GAP-ALARM-005 — trusted acknowledgement/closure actor attribution
+
+```text
+Issue               : #56
+Implementation SHA  : 53f8e3e32e83d61247a989b7295da7f8ad249042
+CI run              : 34615308694
+Result              : PASS
+Repository compile  : PASS
+Repository tests    : PASS
+Repository verify   : PASS
+Acceptance compile  : PASS
+Acceptance tests    : PASS
+Acceptance verify   : PASS
+OpenAPI publication : PASS
+```
+
+The public `AcknowledgeAlarmRequest` and `CloseAlarmRequest` no longer carry the authoritative actor identifier. `SpringAlarmController` resolves actor identity through `CurrentActorResolver`; acknowledgement display identity is derived from the authenticated principal name. Alarm application/domain persistence remains unchanged and receives server-derived identity through its application command.
+
+The cross-cutting roadmap remains `In Progress` because `GAP-WF-004` and the suppression disposition in `GAP-ALARM-004` remain unresolved.

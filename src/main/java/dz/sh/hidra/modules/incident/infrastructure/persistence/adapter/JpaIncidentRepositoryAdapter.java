@@ -7,7 +7,7 @@
  *
  * @Name        : JpaIncidentRepositoryAdapter
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-11
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -23,10 +23,12 @@ import dz.sh.hidra.modules.incident.application.port.out.IncidentRepositoryPort;
 import dz.sh.hidra.modules.incident.domain.model.Incident;
 import dz.sh.hidra.modules.incident.infrastructure.persistence.mapper.IncidentPersistenceMapper;
 import dz.sh.hidra.modules.incident.infrastructure.persistence.repository.IncidentJpaRepository;
-import org.springframework.stereotype.Component;
-
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Component;
 
 /**
  * Database-backed repository adapter for Incident.
@@ -48,5 +50,18 @@ public class JpaIncidentRepositoryAdapter implements IncidentRepositoryPort {
     @Override
     public Optional<Incident> findById(String id) {
         return repository.findById(id).map(IncidentPersistenceMapper::toDomain);
+    }
+
+    @Override
+    public List<Incident> findAll(int page, int size) {
+        return repository.findAll(PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "updatedAt")))
+                .stream()
+                .map(IncidentPersistenceMapper::toDomain)
+                .toList();
+    }
+
+    @Override
+    public long count() {
+        return repository.count();
     }
 }

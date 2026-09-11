@@ -33,53 +33,21 @@ public interface LeakDetectionQueryUseCase {
 
     LeakCaseView leakCase(String id);
 
-    record Page<T>(
-            List<T> content,
-            int page,
-            int size,
-            long totalElements,
-            int totalPages,
-            boolean hasNext
-    ) { }
+    record Page<T>(List<T> content, int page, int size, long totalElements, int totalPages, boolean hasNext) { }
 
     record LeakCandidateView(
-            String id,
-            String runId,
-            String profileId,
-            String candidateNumber,
-            String topologyAssetType,
-            String topologyAssetId,
-            String topologyAssetCode,
-            String topologyAssetName,
-            Instant suspectedAt,
-            Instant firstEvidenceAt,
-            BigDecimal confidenceScore,
-            String severityLevel,
-            String status,
-            String summary,
-            String correlationId,
-            Instant createdAt,
-            Instant updatedAt
+            String id, String runId, String profileId, String candidateNumber,
+            String topologyAssetType, String topologyAssetId, String topologyAssetCode, String topologyAssetName,
+            Instant suspectedAt, Instant firstEvidenceAt, BigDecimal confidenceScore,
+            String severityLevel, String status, String summary, String correlationId,
+            Instant createdAt, Instant updatedAt
     ) { }
 
     record LeakCaseView(
-            String id,
-            String caseNumber,
-            String primaryCandidateId,
-            String topologyAssetType,
-            String topologyAssetId,
-            String topologyAssetCode,
-            String owningOrganizationUnitId,
-            String status,
-            String severityLevel,
-            BigDecimal confidenceScore,
-            Instant openedAt,
-            Instant closedAt,
-            String openedByActorId,
-            String closedByActorId,
-            String closureReasonId,
-            String correlationId,
-            Instant createdAt,
-            Instant updatedAt
+            String id, String caseNumber, String primaryCandidateId,
+            String topologyAssetType, String topologyAssetId, String topologyAssetCode,
+            String owningOrganizationUnitId, String status, String severityLevel, BigDecimal confidenceScore,
+            Instant openedAt, Instant closedAt, String openedByActorId, String closedByActorId,
+            String closureReasonId, String correlationId, Instant createdAt, Instant updatedAt
     ) { }
 }

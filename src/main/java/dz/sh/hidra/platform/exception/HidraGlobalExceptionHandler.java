@@ -7,7 +7,7 @@
  *
  * @Name        : HidraGlobalExceptionHandler
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-13
+ * @UpdatedOn   : 2026-09-11
  *
  * @Type        : Class
  * @Layer       : Platform
@@ -19,11 +19,14 @@
  */
 package dz.sh.hidra.platform.exception;
 
-
 import dz.sh.hidra.kernel.exception.DomainException;
 import dz.sh.hidra.platform.observability.LoggingContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
+import java.net.URI;
+import java.time.Instant;
+import java.util.List;
+import java.util.NoSuchElementException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
@@ -33,10 +36,6 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import java.net.URI;
-import java.time.Instant;
-import java.util.List;
 
 /**
  * Global REST exception handler for platform and module APIs.
@@ -60,6 +59,11 @@ public final class HidraGlobalExceptionHandler {
     @ExceptionHandler(PlatformException.class)
     public ProblemDetail handlePlatformException(PlatformException exception, HttpServletRequest request) {
         return problem(HttpStatus.INTERNAL_SERVER_ERROR, "PLATFORM_ERROR", exception, request);
+    }
+
+    @ExceptionHandler(NoSuchElementException.class)
+    public ProblemDetail handleNotFoundException(NoSuchElementException exception, HttpServletRequest request) {
+        return problem(HttpStatus.NOT_FOUND, "RESOURCE_NOT_FOUND", exception, request);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)

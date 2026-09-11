@@ -27,9 +27,14 @@ import dz.sh.hidra.modules.workflow.application.port.in.WorkflowQueryUseCase.Tas
 import dz.sh.hidra.modules.workflow.application.port.in.WorkflowQueryUseCase.TimelineEntry;
 import dz.sh.hidra.platform.security.CurrentActorResolver;
 import dz.sh.hidra.platform.security.HidraEffectivePermissionResolver;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import java.util.List;
 import java.util.Objects;
 import org.springframework.security.core.Authentication;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,8 +42,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@Validated
 @RequestMapping("/api/v1/workflow")
-public class WorkflowQueryController {
+@Tag(name = "Workflow Queries", description = "Authenticated task inbox, workflow history, and available transition metadata.")
+public final class WorkflowQueryController {
 
     private final WorkflowQueryUseCase useCase;
     private final CurrentActorResolver actorResolver;
@@ -55,20 +62,23 @@ public class WorkflowQueryController {
     }
 
     @GetMapping("/tasks")
+    @Operation(summary = "Get authenticated actor task inbox")
     public Page<TaskView> tasks(
             @RequestParam(defaultValue = "assigned") String view,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "50") int size
+            @RequestParam(defaultValue = "0") @Min(0) int page,
+            @RequestParam(defaultValue = "20") @Min(1) @Max(200) int size
     ) {
         return useCase.tasks(actorResolver.currentActorId().value(), view, page, size);
     }
 
     @GetMapping("/tasks/{id}")
+    @Operation(summary = "Get workflow task detail")
     public TaskView task(@PathVariable String id) {
         return useCase.task(id);
     }
 
     @GetMapping("/tasks/{id}/available-actions")
+    @Operation(summary = "Get backend-authoritative available task actions")
     public List<AvailableActionView> availableActions(@PathVariable String id, Authentication authentication) {
         return useCase.availableActions(
                 id,
@@ -78,11 +88,13 @@ public class WorkflowQueryController {
     }
 
     @GetMapping("/instances/{id}")
+    @Operation(summary = "Get workflow instance detail")
     public InstanceView instance(@PathVariable String id) {
         return useCase.instance(id);
     }
 
     @GetMapping("/instances/{id}/timeline")
+    @Operation(summary = "Get workflow instance timeline")
     public List<TimelineEntry> timeline(@PathVariable String id) {
         return useCase.timeline(id);
     }

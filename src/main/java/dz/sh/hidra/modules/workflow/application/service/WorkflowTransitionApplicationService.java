@@ -54,7 +54,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public final class WorkflowTransitionApplicationService implements ExecuteWorkflowTransitionUseCase {
+public class WorkflowTransitionApplicationService implements ExecuteWorkflowTransitionUseCase {
 
     private static final String ALL_PERMISSIONS = "*";
     private static final String SOURCE_SYSTEM = "HIDRA_API";

@@ -7,7 +7,7 @@
  *
  * @Name        : JpaWorkflowInstanceRepositoryAdapter
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-11
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -23,14 +23,10 @@ import dz.sh.hidra.modules.workflow.application.port.out.WorkflowInstanceReposit
 import dz.sh.hidra.modules.workflow.domain.model.WorkflowInstance;
 import dz.sh.hidra.modules.workflow.infrastructure.persistence.mapper.WorkflowPersistenceMapper;
 import dz.sh.hidra.modules.workflow.infrastructure.persistence.repository.WorkflowInstanceJpaRepository;
-import org.springframework.stereotype.Component;
-
 import java.util.Objects;
 import java.util.Optional;
+import org.springframework.stereotype.Component;
 
-/**
- * Database-backed repository adapter for WorkflowInstance.
- */
 @Component
 public class JpaWorkflowInstanceRepositoryAdapter implements WorkflowInstanceRepositoryPort {
 
@@ -48,5 +44,10 @@ public class JpaWorkflowInstanceRepositoryAdapter implements WorkflowInstanceRep
     @Override
     public Optional<WorkflowInstance> findById(String id) {
         return repository.findById(id).map(WorkflowPersistenceMapper::toDomain);
+    }
+
+    @Override
+    public Optional<WorkflowInstance> findByIdForUpdate(String id) {
+        return repository.findByIdForUpdate(id).map(WorkflowPersistenceMapper::toDomain);
     }
 }

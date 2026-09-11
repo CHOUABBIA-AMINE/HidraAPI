@@ -7,7 +7,7 @@
  *
  * @Name        : WorkflowTaskRepositoryPort
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-11
  *
  * @Type        : Interface
  * @Layer       : Application
@@ -20,15 +20,13 @@
 package dz.sh.hidra.modules.workflow.application.port.out;
 
 import dz.sh.hidra.modules.workflow.domain.model.WorkflowTask;
-
 import java.util.Optional;
 
-/**
- * Repository port for WorkflowTask.
- */
 public interface WorkflowTaskRepositoryPort {
 
     WorkflowTask save(WorkflowTask model);
 
     Optional<WorkflowTask> findById(String id);
+
+    Optional<WorkflowTask> findByIdForUpdate(String id);
 }

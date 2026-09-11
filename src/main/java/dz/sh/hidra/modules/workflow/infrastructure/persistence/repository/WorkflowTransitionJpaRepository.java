@@ -7,7 +7,7 @@
  *
  * @Name        : WorkflowTransitionJpaRepository
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-11
  *
  * @Type        : Interface
  * @Layer       : Infrastructure
@@ -23,9 +23,8 @@ import dz.sh.hidra.modules.workflow.infrastructure.persistence.entity.WorkflowTr
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-/**
- * Spring Data JPA repository for WorkflowTransition.
- */
 @Repository
 public interface WorkflowTransitionJpaRepository extends JpaRepository<WorkflowTransitionJpaEntity, String> {
+
+    boolean existsByDefinitionIdAndFromStepId(String definitionId, String fromStepId);
 }

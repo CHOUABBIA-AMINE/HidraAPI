@@ -7,7 +7,7 @@
  *
  * @Name        : WorkflowActionJpaRepository
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-11
  *
  * @Type        : Interface
  * @Layer       : Infrastructure
@@ -21,11 +21,13 @@ package dz.sh.hidra.modules.workflow.infrastructure.persistence.repository;
 
 import dz.sh.hidra.modules.workflow.infrastructure.persistence.entity.WorkflowActionJpaEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-/**
- * Spring Data JPA repository for WorkflowAction.
- */
 @Repository
 public interface WorkflowActionJpaRepository extends JpaRepository<WorkflowActionJpaEntity, String> {
+
+    @Query("select coalesce(max(e.actionSequence), 0) + 1 from WorkflowActionJpaEntity e where e.instanceId = :instanceId")
+    long nextSequence(@Param("instanceId") String instanceId);
 }

@@ -7,21 +7,23 @@
  *
  * @Name        : TopologyMapController
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-13
+ * @UpdatedOn   : 2026-09-11
  *
  * @Type        : Class
  * @Layer       : API
  * @Module      : topology
  * @Package     : dz.sh.hidra.modules.topology.api.rest.controller
  *
- * @Description : Exposes topology geometry, layer, and GeoJSON APIs for enterprise map visualization.
+ * @Description : Exposes strongly typed topology geometry, layer, and GeoJSON APIs.
  *
  */
 package dz.sh.hidra.modules.topology.api.rest.controller;
 
 import dz.sh.hidra.modules.topology.application.port.in.TopologyMapVisualizationUseCase;
+import dz.sh.hidra.modules.topology.application.port.in.TopologyMapVisualizationUseCase.FeatureCollection;
+import dz.sh.hidra.modules.topology.application.port.in.TopologyMapVisualizationUseCase.LayerDescriptor;
+import dz.sh.hidra.modules.topology.application.port.in.TopologyMapVisualizationUseCase.SearchResult;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,9 +32,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * Exposes topology geometry, layer, and GeoJSON APIs for enterprise map visualization.
- */
 @RestController
 @Validated
 @RequestMapping("/api/v1/topology/map")
@@ -45,41 +44,31 @@ public class TopologyMapController {
     }
 
     @GetMapping("/layers")
-    public List<Map<String, Object>> layers() {
-        return visualizationUseCase.listLayers();
-    }
+    public List<LayerDescriptor> layers() { return visualizationUseCase.listLayers(); }
 
     @GetMapping("/layers/{layerId}")
-    public Map<String, Object> layer(@PathVariable String layerId) {
-        return visualizationUseCase.layer(layerId);
-    }
+    public LayerDescriptor layer(@PathVariable String layerId) { return visualizationUseCase.layer(layerId); }
 
     @GetMapping("/layers/{layerId}/features")
-    public Map<String, Object> features(
-            @PathVariable String layerId,
+    public FeatureCollection features(@PathVariable String layerId,
             @RequestParam(name = "page", required = false) Integer page,
             @RequestParam(name = "size", required = false) Integer size,
-            @RequestParam(name = "q", required = false) String query
-    ) {
+            @RequestParam(name = "q", required = false) String query) {
         return visualizationUseCase.features(layerId, page, size, query);
     }
 
     @GetMapping("/geojson")
-    public Map<String, Object> geoJson(
-            @RequestParam(name = "layers", required = false) String layerIds,
+    public FeatureCollection geoJson(@RequestParam(name = "layers", required = false) String layerIds,
             @RequestParam(name = "page", required = false) Integer page,
             @RequestParam(name = "size", required = false) Integer size,
-            @RequestParam(name = "q", required = false) String query
-    ) {
+            @RequestParam(name = "q", required = false) String query) {
         return visualizationUseCase.geoJson(layerIds, page, size, query);
     }
 
     @GetMapping("/search")
-    public Map<String, Object> search(
-            @RequestParam(name = "q") String query,
+    public SearchResult search(@RequestParam(name = "q") String query,
             @RequestParam(name = "page", required = false) Integer page,
-            @RequestParam(name = "size", required = false) Integer size
-    ) {
+            @RequestParam(name = "size", required = false) Integer size) {
         return visualizationUseCase.search(query, page, size);
     }
 }

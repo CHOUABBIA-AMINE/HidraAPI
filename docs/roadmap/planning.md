@@ -41,7 +41,7 @@ Frontend-facing contracts must be published through deterministic OpenAPI. Route
 | `PLN-001` | `feat(planning): expose HWEB-010 query contracts` | Completed | Read-only list/detail contracts for periods, operational plans, revisions, nominations and plan targets; stable pagination; deterministic 400/404; route-permission publication; no new lifecycle mutations. PR CI `34657410805` passed compile, tests, full verification, acceptance compile/test/verify, deterministic OpenAPI publication and artifact upload on exact head `0735592fca3075754c06a3d1a98d0a8236e8e6ec`. |
 | `PLN-002` | `feat(planning): publish authoritative workflow approval integration` | Completed | Revision-scoped approval status/actions and backend-owned transition execution using workflow public contracts; planning applies the resulting lifecycle effect; deterministic stale-task conflict is preserved; no client task scanning or transition-name inference. Tracks issue #70. Final merge `6ef581f557e42e8d96b03ccf429562e646f2e321`; merge-SHA OpenAPI artifact `10293549730`. |
 | `PLN-003` | `feat(monitoring): expose plan-target-scoped deviations` | Completed | Extend the existing monitoring deviation collection with an optional exact `planTargetId` filter so HWEB-010-05 can retrieve authoritative comparison rows for one planning target without broad-page scanning or frontend arithmetic. Tracks issue #71. Final merge `df8c012be9034886e53f2ec64c28946f18f67b31`. |
-| `PLN-004` | `feat(planning): publish revision concurrency contract` | In progress | Publish an explicit concurrency-protected update for the current editable plan revision's change-reason metadata. `expectedUpdatedAt` is the authoritative client precondition; stale requests return deterministic `409 PLANNING_REVISION_CONFLICT`; the successful response returns the refreshed revision including its new `updatedAt`. No status or workflow lifecycle mutation is added. Tracks issue #72. |
+| `PLN-004` | `feat(planning): publish revision concurrency contract` | Implemented; initial exact-head CI green; final evidence CI pending | Publish an explicit concurrency-protected update for the current editable plan revision's change-reason metadata. `expectedUpdatedAt` is the authoritative client precondition; stale requests return deterministic `409 PLANNING_REVISION_CONFLICT`; the successful response returns the refreshed revision including its new `updatedAt`. No status or workflow lifecycle mutation is added. Tracks issue #72. |
 
 ### PLN-001 public read contract
 
@@ -121,12 +121,13 @@ The revision read contract's `updatedAt` is explicitly promoted to the write pre
 
 Canonical route permission remains backend-derived from the route descriptor and PATCH action; HidraWEB must consume that descriptor rather than hard-code authorization semantics.
 
-### PLN-004 boundary evidence required
+### PLN-004 boundary evidence
 
 - Planning-only aggregate/repository access; no workflow, monitoring or telemetry persistence imports.
-- Row locking or equivalent atomic protection around token comparison and save.
-- Focused tests for current-token success, stale-token conflict, non-current-revision rejection, returned refreshed token, and deterministic HTTP 409 problem detail.
-- Deterministic OpenAPI includes the PATCH request/response and required `expectedUpdatedAt` field.
+- `PlanRevisionJpaRepository.findByIdForUpdate` uses `PESSIMISTIC_WRITE`; the application compares the token inside a transaction before save.
+- `OperationalPlan.currentRevisionId` determines whether the selected revision is the current editable revision; editability is not inferred from a frontend status string.
+- Focused tests prove current-token success with a refreshed token, stale-token conflict, non-current-revision conflict, and deterministic HTTP 409 problem detail.
+- Deterministic OpenAPI generation passes with the PATCH request/response and required `expectedUpdatedAt` validation field.
 
 ---
 
@@ -154,4 +155,24 @@ Issue             : #71 — CLOSED
 Conclusion        : SUCCESS
 ```
 
-PLN-004 evidence is pending implementation, exact-head CI, merge-SHA CI and deterministic OpenAPI publication.
+PLN-004 initial exact-head evidence:
+
+```text
+PR                 : HidraAPI #76
+Implementation head: ef7aab59564613135357ebadd2f3e9f009463712
+PR CI run          : 34694092967
+Repository compile : SUCCESS
+Repository tests   : SUCCESS
+Repository verify  : SUCCESS
+Acceptance compile : SUCCESS
+Acceptance tests   : SUCCESS
+Acceptance verify  : SUCCESS
+Deterministic OpenAPI: SUCCESS
+Artifact upload    : SUCCESS
+Artifact id        : 10297589010
+Artifact name      : hidra-api-openapi-30836d72287178e80fae6cc150161eed69f863aa
+Artifact digest    : sha256:59c077fbd61cb345b2fb64a6147fc59d8b61ac53dcae2d6a64eafeaa60b92d2c
+Conclusion         : SUCCESS
+```
+
+This roadmap evidence update changes the PR head, so a final exact-head CI run is required before merge. After merge, the exact merge SHA must pass push-triggered `main` CI and publish the deterministic OpenAPI artifact before issue #72 is closed and HWEB-010-06 resumes.

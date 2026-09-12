@@ -7,7 +7,7 @@
  *
  * @Name        : JpaMaintainableAssetRepositoryAdapter
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-12
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -48,5 +48,10 @@ public class JpaMaintainableAssetRepositoryAdapter implements MaintainableAssetR
     @Override
     public Optional<MaintainableAsset> findById(String id) {
         return repository.findById(id).map(AssetsPersistenceMapper::toDomain);
+    }
+
+    @Override
+    public Optional<MaintainableAsset> findByIdForUpdate(String id) {
+        return repository.findByIdForUpdate(id).map(AssetsPersistenceMapper::toDomain);
     }
 }

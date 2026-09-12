@@ -41,6 +41,7 @@ This is one cross-cutting remediation task because the consumer register is the 
 | GAP-ALARM-002 | Add audited alarm shelving/unshelving contract when supported by the existing alarm model; otherwise document the model limitation explicitly. | In Progress |
 | GAP-ALARM-004 | Decide whether suppression is distinct from shelving before publishing any suppression mutation contract. | Open — issue #58 |
 | GAP-ALARM-005 | Derive acknowledgement/closure actor identity from the authenticated principal; remove authoritative browser-selected actor identity from the public request contract. | Implemented — issue #56, CI #34615308694 green |
+| GAP-ENG-001 | Publish one assets-owned concurrency-protected maintainable-asset metadata update with explicit `expectedUpdatedAt`, typed token readback, deterministic stale-write conflict, and route permissions. | In Progress — issue #79 / AST-001 |
 
 ## Architecture rules
 
@@ -92,4 +93,4 @@ OpenAPI publication : PASS
 
 The public `AcknowledgeAlarmRequest` and `CloseAlarmRequest` no longer carry the authoritative actor identifier. `SpringAlarmController` resolves actor identity through `CurrentActorResolver`; acknowledgement display identity is derived from the authenticated principal name. Alarm application/domain persistence remains unchanged and receives server-derived identity through its application command.
 
-The cross-cutting roadmap remains `In Progress` because `GAP-WF-004` and the suppression disposition in `GAP-ALARM-004` remain unresolved.
+The cross-cutting roadmap remains `In Progress` because `GAP-WF-004`, the suppression disposition in `GAP-ALARM-004`, and `GAP-ENG-001` remain unresolved.

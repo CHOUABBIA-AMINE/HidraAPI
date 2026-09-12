@@ -7,7 +7,7 @@
  *
  * @Name        : MaintainableAssetRepositoryPort
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-12
  *
  * @Type        : Interface
  * @Layer       : Application
@@ -31,4 +31,8 @@ public interface MaintainableAssetRepositoryPort {
     MaintainableAsset save(MaintainableAsset model);
 
     Optional<MaintainableAsset> findById(String id);
+
+    default Optional<MaintainableAsset> findByIdForUpdate(String id) {
+        return findById(id);
+    }
 }

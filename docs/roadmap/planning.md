@@ -37,7 +37,7 @@ Frontend-facing contracts must be published through deterministic OpenAPI. Route
 | Code | Commit message | Status | Scope |
 |---|---|---:|---|
 | `PLN-001` | `feat(planning): expose HWEB-010 query contracts` | Completed | Read-only list/detail contracts for periods, operational plans, revisions, nominations and plan targets; stable pagination; deterministic 400/404; route-permission publication; no new lifecycle mutations. PR CI `34657410805` passed compile, tests, full verification, acceptance compile/test/verify, deterministic OpenAPI publication and artifact upload on exact head `0735592fca3075754c06a3d1a98d0a8236e8e6ec`. |
-| `PLN-002` | `feat(planning): publish authoritative workflow approval integration` | In Progress | Publish revision-scoped approval status/actions and backend-owned transition execution using workflow public contracts; planning applies the resulting lifecycle effect; deterministic stale-task conflict; no client task scanning or transition-name inference. Tracks issue #70. |
+| `PLN-002` | `feat(planning): publish authoritative workflow approval integration` | Completed | Revision-scoped approval status/actions and backend-owned transition execution using workflow public contracts; planning applies the resulting lifecycle effect; deterministic stale-task conflict is preserved; no client task scanning or transition-name inference. PR CI `34680620727` passed repository compile/test/full verify, acceptance compile/test/verify, deterministic OpenAPI publication and artifact upload on head `bea61b3727168fe276d3995ce07d749698307ab8`. Tracks issue #70. |
 
 ### PLN-001 public read contract
 
@@ -55,18 +55,6 @@ GET /api/v1/planning/targets/{id}
 ```
 
 Paging is zero-based. Default size is 50. Valid size range is 1..200. Missing/blank relationship identifiers and invalid paging are 400-class request errors. Unknown detail identifiers are 404 through the platform exception handler.
-
-### PLN-002 allowed production changes
-
-- add a planning approval inbound use case and application service;
-- add planning approval REST request/response contracts and controller under `/api/v1/planning/revisions/{revisionId}/approval`;
-- extend the workflow public query input port with deterministic current-task resolution for one workflow instance;
-- extend the workflow query adapter only as required to implement that public query;
-- use the existing workflow transition execution input port for backend-defined actions;
-- update `PlanRevision` through the existing planning repository port after a successful workflow decision;
-- add focused planning/workflow tests proving relation validation, action exposure, lifecycle effect and stale-task conflict propagation.
-
-PLN-002 must not add direct cross-module repository/entity imports, client-side status mappings, generic workflow inbox scanning, or a second workflow state machine.
 
 ### PLN-002 public contract
 
@@ -90,13 +78,22 @@ DELEGATE           -> SUBMITTED
 ESCALATE           -> SUBMITTED
 ```
 
-`COMMENT` is not state advancing and remains unavailable through workflow transition execution. Approval writes must preserve workflow's `expectedTaskUpdatedAt` stale-task conflict behavior. A revision without `workflowInstanceId`, a workflow instance targeting another module/type/id, or a missing current task is rejected deterministically rather than guessed.
+`COMMENT` is not state advancing and remains unavailable through workflow transition execution. Approval writes preserve workflow's `expectedTaskUpdatedAt` stale-task conflict behavior. A revision without `workflowInstanceId`, a workflow instance targeting another module/id, or a missing current task is rejected deterministically rather than guessed.
+
+### PLN-002 boundary evidence
+
+- Planning API calls only `PlanningApprovalUseCase`.
+- Planning application imports workflow public `application.port.in` contracts only.
+- Workflow transition execution remains owned by workflow.
+- Planning lifecycle persistence remains owned by planning through `PlanRevisionRepositoryPort`.
+- No cross-module repository, entity, infrastructure, or domain-model import was introduced.
+- Focused tests cover action resolution, wrong-target rejection, approve lifecycle effect, and stale-task conflict propagation.
 
 ---
 
 ## 4. Validation
 
-PLN-001 validation evidence:
+PLN-002 validation evidence:
 
 ```text
 mvn -q -DskipTests compile  -> SUCCESS (CI repository compile check)
@@ -109,12 +106,14 @@ deterministic OpenAPI       -> SUCCESS
 OpenAPI artifact upload     -> SUCCESS
 ```
 
-PLN-002 required validation before completion:
+Evidence:
 
 ```text
-mvn -q -DskipTests compile
-mvn -q test
-mvn -q clean verify
-acceptance compile/test/verify
-deterministic OpenAPI generation and artifact upload
+PR CI run : 34680620727
+Head SHA  : bea61b3727168fe276d3995ce07d749698307ab8
+Artifact  : 10293294417
+Digest    : sha256:9aa3efe866b57b267ab1e444f9885e336309e0e78ec84af16405c3320856a27c
+Conclusion: SUCCESS
 ```
+
+A final exact-head CI run is required after this roadmap evidence commit before merge. The merge SHA must then pass push-triggered `main` CI and publish the deterministic OpenAPI artifact before issue #70 is closed.

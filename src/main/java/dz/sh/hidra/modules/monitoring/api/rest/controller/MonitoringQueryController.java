@@ -7,7 +7,7 @@
  *
  * @Name        : MonitoringQueryController
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-11
+ * @UpdatedOn   : 2026-09-12
  *
  * @Type        : Class
  * @Layer       : API
@@ -60,6 +60,7 @@ public class MonitoringQueryController {
 
     @GetMapping("/deviations")
     public Page<DeviationView> deviations(
+            @RequestParam(required = false) String planTargetId,
             @RequestParam(required = false) String status,
             @RequestParam(required = false) String severity,
             @RequestParam(required = false) String topologyAssetId,
@@ -69,7 +70,7 @@ public class MonitoringQueryController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "50") int size
     ) {
-        return useCase.deviations(status, severity, topologyAssetId, telemetryPointId, from, to, page, size);
+        return useCase.deviations(planTargetId, status, severity, topologyAssetId, telemetryPointId, from, to, page, size);
     }
 
     @GetMapping("/deviations/{id}")

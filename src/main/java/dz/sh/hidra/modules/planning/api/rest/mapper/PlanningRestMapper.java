@@ -7,7 +7,7 @@
  *
  * @Name        : PlanningRestMapper
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-13
+ * @UpdatedOn   : 2026-09-12
  *
  * @Type        : Class
  * @Layer       : API
@@ -18,14 +18,19 @@
  *
  */
 package dz.sh.hidra.modules.planning.api.rest.mapper;
+
 import dz.sh.hidra.modules.planning.api.rest.request.CreateOperationalPlanRequest;
 import dz.sh.hidra.modules.planning.api.rest.request.CreatePlanningPeriodRequest;
+import dz.sh.hidra.modules.planning.api.rest.request.UpdateOperationalPlanRequest;
 import dz.sh.hidra.modules.planning.api.rest.response.OperationalPlanResponse;
+import dz.sh.hidra.modules.planning.api.rest.response.OperationalPlanUpdateResponse;
 import dz.sh.hidra.modules.planning.api.rest.response.PlanningPeriodResponse;
 import dz.sh.hidra.modules.planning.application.command.CreateOperationalPlanCommand;
 import dz.sh.hidra.modules.planning.application.command.CreatePlanningPeriodCommand;
+import dz.sh.hidra.modules.planning.application.command.UpdateOperationalPlanCommand;
 import dz.sh.hidra.modules.planning.application.dto.OperationalPlanSummaryDto;
 import dz.sh.hidra.modules.planning.application.dto.PlanningPeriodSummaryDto;
+import dz.sh.hidra.modules.planning.application.port.in.UpdateOperationalPlanUseCase.OperationalPlanUpdateResult;
 
 /**
  * Maps planning REST models to application models.
@@ -68,6 +73,17 @@ public final class PlanningRestMapper {
         );
     }
 
+    public static UpdateOperationalPlanCommand toCommand(String id, UpdateOperationalPlanRequest request) {
+        return new UpdateOperationalPlanCommand(
+                id,
+                request.expectedUpdatedAt(),
+                request.nameAr(),
+                request.nameFr(),
+                request.nameEn(),
+                request.responsibleOrganizationUnitId()
+        );
+    }
+
     public static OperationalPlanResponse toResponse(OperationalPlanSummaryDto dto) {
         return new OperationalPlanResponse(
                 dto.id(),
@@ -78,6 +94,17 @@ public final class PlanningRestMapper {
                 dto.topologyScopeId(),
                 dto.status(),
                 dto.approvedRevisionId()
+        );
+    }
+
+    public static OperationalPlanUpdateResponse toResponse(OperationalPlanUpdateResult result) {
+        return new OperationalPlanUpdateResponse(
+                result.id(),
+                result.nameAr(),
+                result.nameFr(),
+                result.nameEn(),
+                result.responsibleOrganizationUnitId(),
+                result.updatedAt()
         );
     }
 

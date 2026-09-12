@@ -7,7 +7,7 @@
  *
  * @Name        : PlanningController
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-13
+ * @UpdatedOn   : 2026-09-12
  *
  * @Type        : Interface
  * @Layer       : API
@@ -18,13 +18,22 @@
  *
  */
 package dz.sh.hidra.modules.planning.api.rest.controller;
-import dz.sh.hidra.modules.planning.api.rest.request.*;
-import dz.sh.hidra.modules.planning.api.rest.response.*;
+
+import dz.sh.hidra.modules.planning.api.rest.request.CreateOperationalPlanRequest;
+import dz.sh.hidra.modules.planning.api.rest.request.CreatePlanningPeriodRequest;
+import dz.sh.hidra.modules.planning.api.rest.request.UpdateOperationalPlanRequest;
+import dz.sh.hidra.modules.planning.api.rest.response.OperationalPlanResponse;
+import dz.sh.hidra.modules.planning.api.rest.response.OperationalPlanUpdateResponse;
+import dz.sh.hidra.modules.planning.api.rest.response.PlanningPeriodResponse;
 
 /**
  * Framework-neutral planning controller contract.
  */
 public interface PlanningController {
+
     OperationalPlanResponse createOperationalPlan(CreateOperationalPlanRequest request);
+
     PlanningPeriodResponse createPlanningPeriod(CreatePlanningPeriodRequest request);
+
+    OperationalPlanUpdateResponse updateOperationalPlan(String id, UpdateOperationalPlanRequest request);
 }

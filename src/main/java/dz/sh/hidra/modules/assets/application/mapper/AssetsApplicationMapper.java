@@ -7,7 +7,7 @@
  *
  * @Name        : AssetsApplicationMapper
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-12
  *
  * @Type        : Class
  * @Layer       : Application
@@ -46,7 +46,8 @@ public final class AssetsApplicationMapper {
                 asset.topologyAssetId(),
                 asset.status(),
                 asset.criticalityId(),
-                asset.registeredAt()
+                asset.registeredAt(),
+                asset.updatedAt()
         );
     }
 

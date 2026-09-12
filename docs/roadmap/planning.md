@@ -40,7 +40,8 @@ Frontend-facing contracts must be published through deterministic OpenAPI. Route
 |---|---|---:|---|
 | `PLN-001` | `feat(planning): expose HWEB-010 query contracts` | Completed | Read-only list/detail contracts for periods, operational plans, revisions, nominations and plan targets; stable pagination; deterministic 400/404; route-permission publication; no new lifecycle mutations. PR CI `34657410805` passed compile, tests, full verification, acceptance compile/test/verify, deterministic OpenAPI publication and artifact upload on exact head `0735592fca3075754c06a3d1a98d0a8236e8e6ec`. |
 | `PLN-002` | `feat(planning): publish authoritative workflow approval integration` | Completed | Revision-scoped approval status/actions and backend-owned transition execution using workflow public contracts; planning applies the resulting lifecycle effect; deterministic stale-task conflict is preserved; no client task scanning or transition-name inference. Tracks issue #70. Final merge `6ef581f557e42e8d96b03ccf429562e646f2e321`; merge-SHA OpenAPI artifact `10293549730`. |
-| `PLN-003` | `feat(monitoring): expose plan-target-scoped deviations` | Implemented; initial exact-head CI green; final evidence CI pending | Extend the existing monitoring deviation collection with an optional exact `planTargetId` filter so HWEB-010-05 can retrieve authoritative comparison rows for one planning target without broad-page scanning or frontend arithmetic. No planning/telemetry persistence coupling and no new comparison semantics. Tracks issue #71. |
+| `PLN-003` | `feat(monitoring): expose plan-target-scoped deviations` | Completed | Extend the existing monitoring deviation collection with an optional exact `planTargetId` filter so HWEB-010-05 can retrieve authoritative comparison rows for one planning target without broad-page scanning or frontend arithmetic. Tracks issue #71. Final merge `df8c012be9034886e53f2ec64c28946f18f67b31`. |
+| `PLN-004` | `feat(planning): publish revision concurrency contract` | In progress | Publish an explicit concurrency-protected update for the current editable plan revision's change-reason metadata. `expectedUpdatedAt` is the authoritative client precondition; stale requests return deterministic `409 PLANNING_REVISION_CONFLICT`; the successful response returns the refreshed revision including its new `updatedAt`. No status or workflow lifecycle mutation is added. Tracks issue #72. |
 
 ### PLN-001 public read contract
 
@@ -94,47 +95,38 @@ ESCALATE           -> SUBMITTED
 
 ### PLN-003 public contract
 
-Existing route, extended with one optional server-side filter:
-
 ```text
 GET /api/v1/monitoring/deviations?planTargetId={planTargetId}&status={status}&severity={severity}&topologyAssetId={topologyAssetId}&telemetryPointId={telemetryPointId}&from={from}&to={to}&page={page}&size={size}
 ```
 
 `planTargetId` is an exact filter over monitoring-owned `PlanActualDeviation.planTargetId`. It composes with the existing monitoring filters and existing paging. When no deviation matches the requested target, the collection returns an empty page rather than forcing HidraWEB to scan other pages or infer a missing-resource lifecycle.
 
-The returned `DeviationView` remains unchanged and monitoring-owned:
+### PLN-004 public contract
 
 ```text
-id
-evaluationId
-planTargetId
-expectedFlowStateId
-trustedTelemetryReadingId
-telemetryPointId
-topologyAssetType
-topologyAssetId
-topologyAssetCode
-actualValue
-expectedValue
-differenceValue
-differencePercent
-unitId
-severity
-status
-detectedAt
-resolvedAt
-reasonCode
-reasonMessage
+PATCH /api/v1/planning/revisions/{revisionId}
 ```
 
-### PLN-003 boundary evidence
+Request:
 
-- The API remains under `/api/v1/monitoring`; route ownership and permission derivation remain monitoring-owned.
-- The filter is applied only to monitoring persistence data already containing the neutral `planTargetId` reference.
-- Planning persistence is not queried or imported by monitoring.
-- Telemetry readings are not queried by the frontend to recreate comparison semantics.
-- No expected/actual arithmetic, tolerance classification, severity mapping, or state machine is added outside monitoring.
-- Focused adapter tests cover exact target scoping, authoritative actual/expected/difference/unit projection values, paging across target-scoped rows, and the empty-page result for an unknown target.
+```json
+{
+  "expectedUpdatedAt": "<PlanRevisionView.updatedAt>",
+  "changeReasonCodeId": "<optional catalog id>",
+  "changeReasonText": "<optional explanation>"
+}
+```
+
+The revision read contract's `updatedAt` is explicitly promoted to the write precondition for this mutation. The application locks and reloads the revision, checks that the parent operational plan still identifies it as `currentRevisionId`, compares `expectedUpdatedAt` exactly with the persisted revision token, and only then saves the change-reason metadata with a refreshed `updatedAt`. A mismatch returns HTTP 409 with problem code `PLANNING_REVISION_CONFLICT` and instructs the client to refetch before retrying. The mutation does not accept or alter revision status, workflow state, revision number/code, lineage, approval fields, or planning targets.
+
+Canonical route permission remains backend-derived from the route descriptor and PATCH action; HidraWEB must consume that descriptor rather than hard-code authorization semantics.
+
+### PLN-004 boundary evidence required
+
+- Planning-only aggregate/repository access; no workflow, monitoring or telemetry persistence imports.
+- Row locking or equivalent atomic protection around token comparison and save.
+- Focused tests for current-token success, stale-token conflict, non-current-revision rejection, returned refreshed token, and deterministic HTTP 409 problem detail.
+- Deterministic OpenAPI includes the PATCH request/response and required `expectedUpdatedAt` field.
 
 ---
 
@@ -151,24 +143,15 @@ Issue             : #70 — CLOSED
 Conclusion        : SUCCESS
 ```
 
-PLN-003 initial exact-head evidence:
+PLN-003 final evidence:
 
 ```text
-PR                 : HidraAPI #75
-Implementation head: b99c459e0257110be3d036029751044537607046
-PR CI run          : 34682927328
-Repository compile : SUCCESS
-Repository tests   : SUCCESS
-Repository verify  : SUCCESS
-Acceptance compile : SUCCESS
-Acceptance tests   : SUCCESS
-Acceptance verify  : SUCCESS
-Deterministic OpenAPI: SUCCESS
-Artifact upload    : SUCCESS
-Artifact id        : 10295220452
-Artifact name      : hidra-api-openapi-6d2e8d09e013e3489ce956a38cf17ffa945ce23b
-Artifact digest    : sha256:c5345cebdbdd4cdfcb7ed7d42ba51909fc2f1f97f91e7dc70080a2e6a79c5f01
-Conclusion         : SUCCESS
+Backend merge SHA : df8c012be9034886e53f2ec64c28946f18f67b31
+Post-merge CI run : 34689500217
+OpenAPI artifact id: 10297106684
+Artifact digest   : sha256:5d01f56b83c829ded2fce4bede553f33cff74590e5df946e8f3251a5ae1bf537
+Issue             : #71 — CLOSED
+Conclusion        : SUCCESS
 ```
 
-This roadmap-evidence update changes the PR head, so a final exact-head CI run is required before merge. After merge, the exact merge SHA must pass push-triggered `main` CI and publish the deterministic OpenAPI artifact before issue #71 is closed and HWEB-010-05 resumes.
+PLN-004 evidence is pending implementation, exact-head CI, merge-SHA CI and deterministic OpenAPI publication.

@@ -20,6 +20,7 @@
 package dz.sh.hidra.modules.planning.application.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -62,7 +63,7 @@ class PlanningApprovalApplicationServiceTest {
     void exposesExactRevisionApprovalContext() {
         when(revisionRepository.findById("rev-1")).thenReturn(Optional.of(submittedRevision()));
         when(workflowPort.context("wf-1", "rev-1", "actor-1", Set.of("workflow:approve:execute")))
-                .thenReturn(context(true));
+                .thenReturn(approvalContext(true));
 
         PlanningApprovalUseCase.ApprovalView view = service.approval(
                 "rev-1", "actor-1", Set.of("workflow:approve:execute")
@@ -77,7 +78,7 @@ class PlanningApprovalApplicationServiceTest {
     @Test
     void approveTransitionPersistsApprovedRevision() {
         when(revisionRepository.findById("rev-1")).thenReturn(Optional.of(submittedRevision()));
-        when(workflowPort.context(any(), any(), any(), any())).thenReturn(context(true));
+        when(workflowPort.context(any(), any(), any(), any())).thenReturn(approvalContext(true));
         when(workflowPort.execute(any())).thenReturn(new PlanningApprovalWorkflowPort.Execution(
                 "action-1", "task-1", "APPROVED", "wf-1", "COMPLETED",
                 "transition-approve", "APPROVE", EXECUTED_AT
@@ -99,9 +100,33 @@ class PlanningApprovalApplicationServiceTest {
     }
 
     @Test
+    void rejectTransitionPersistsRejectedRevisionWithoutApprovalMetadata() {
+        when(revisionRepository.findById("rev-1")).thenReturn(Optional.of(submittedRevision()));
+        when(workflowPort.context(any(), any(), any(), any())).thenReturn(rejectionContext());
+        when(workflowPort.execute(any())).thenReturn(new PlanningApprovalWorkflowPort.Execution(
+                "action-2", "task-1", "REJECTED", "wf-1", "COMPLETED",
+                "transition-reject", "REJECT", EXECUTED_AT
+        ));
+        when(revisionRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        PlanningApprovalUseCase.ExecutionView result = service.execute(
+                "rev-1",
+                "transition-reject",
+                command(TASK_UPDATED_AT)
+        );
+
+        assertEquals("REJECTED", result.revisionStatus());
+        ArgumentCaptor<PlanRevision> saved = ArgumentCaptor.forClass(PlanRevision.class);
+        verify(revisionRepository).save(saved.capture());
+        assertEquals(PlanRevisionStatus.REJECTED, saved.getValue().status());
+        assertNull(saved.getValue().approvedByActorId());
+        assertNull(saved.getValue().approvedAt());
+    }
+
+    @Test
     void staleApprovalContextFailsBeforeWorkflowMutation() {
         when(revisionRepository.findById("rev-1")).thenReturn(Optional.of(submittedRevision()));
-        when(workflowPort.context(any(), any(), any(), any())).thenReturn(context(true));
+        when(workflowPort.context(any(), any(), any(), any())).thenReturn(approvalContext(true));
 
         PlanningApprovalException exception = assertThrows(
                 PlanningApprovalException.class,
@@ -111,7 +136,7 @@ class PlanningApprovalApplicationServiceTest {
         assertEquals(PlanningApprovalException.Kind.CONFLICT, exception.kind());
     }
 
-    private PlanningApprovalWorkflowPort.ApprovalContext context(boolean permitted) {
+    private PlanningApprovalWorkflowPort.ApprovalContext approvalContext(boolean permitted) {
         return new PlanningApprovalWorkflowPort.ApprovalContext(
                 "wf-1", "IN_PROGRESS", "task-1", "OPEN", TASK_UPDATED_AT,
                 List.of(new PlanningApprovalWorkflowPort.Action(
@@ -121,10 +146,20 @@ class PlanningApprovalApplicationServiceTest {
         );
     }
 
+    private PlanningApprovalWorkflowPort.ApprovalContext rejectionContext() {
+        return new PlanningApprovalWorkflowPort.ApprovalContext(
+                "wf-1", "IN_PROGRESS", "task-1", "OPEN", TASK_UPDATED_AT,
+                List.of(new PlanningApprovalWorkflowPort.Action(
+                        "transition-reject", "REJECT", true, false,
+                        "workflow:reject:execute", true
+                ))
+        );
+    }
+
     private PlanningApprovalUseCase.ExecuteCommand command(Instant expectedTaskUpdatedAt) {
         return new PlanningApprovalUseCase.ExecuteCommand(
                 expectedTaskUpdatedAt, null, null, null, "corr-1",
-                "actor-1", "alice", "Alice", Set.of("workflow:approve:execute")
+                "actor-1", "alice", "Alice", Set.of("workflow:approve:execute", "workflow:reject:execute")
         );
     }
 

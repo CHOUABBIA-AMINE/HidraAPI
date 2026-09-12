@@ -19,11 +19,11 @@
  */
 package dz.sh.hidra.modules.assets.api.rest.controller;
 
-import dz.sh.hidra.modules.assets.api.rest.request.AssetConditionResponse;
 import dz.sh.hidra.modules.assets.api.rest.request.CreateMaintenanceWorkOrderRequest;
 import dz.sh.hidra.modules.assets.api.rest.request.RecordAssetConditionRequest;
 import dz.sh.hidra.modules.assets.api.rest.request.RegisterMaintainableAssetRequest;
 import dz.sh.hidra.modules.assets.api.rest.request.UpdateMaintainableAssetRequest;
+import dz.sh.hidra.modules.assets.api.rest.response.AssetConditionResponse;
 import dz.sh.hidra.modules.assets.api.rest.response.MaintainableAssetResponse;
 import dz.sh.hidra.modules.assets.api.rest.response.MaintenanceWorkOrderResponse;
 
@@ -32,7 +32,7 @@ import dz.sh.hidra.modules.assets.api.rest.response.MaintenanceWorkOrderResponse
  */
 public interface AssetsController {
     MaintenanceWorkOrderResponse createMaintenanceWorkOrder(CreateMaintenanceWorkOrderRequest request);
-    dz.sh.hidra.modules.assets.api.rest.response.AssetConditionResponse recordAssetCondition(RecordAssetConditionRequest request);
+    AssetConditionResponse recordAssetCondition(RecordAssetConditionRequest request);
     MaintainableAssetResponse registerMaintainableAsset(RegisterMaintainableAssetRequest request);
     MaintainableAssetResponse updateMaintainableAsset(String assetId, UpdateMaintainableAssetRequest request);
 }

@@ -53,7 +53,7 @@ import java.util.Objects;
  * Application service for assets and maintenance workflows.
  */
 @Service
-public final class AssetsApplicationService implements RegisterMaintainableAssetUseCase, CreateMaintenanceWorkOrderUseCase, RecordAssetConditionUseCase, UpdateMaintainableAssetUseCase {
+public class AssetsApplicationService implements RegisterMaintainableAssetUseCase, CreateMaintenanceWorkOrderUseCase, RecordAssetConditionUseCase, UpdateMaintainableAssetUseCase {
 
     private final MaintainableAssetRepositoryPort maintainableAssetRepositoryPort;
     private final MaintenanceWorkOrderRepositoryPort workOrderRepositoryPort;

@@ -7,14 +7,14 @@
  *
  * @Name        : WorkflowQueryUseCase
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-11
+ * @UpdatedOn   : 2026-09-12
  *
  * @Type        : Interface
  * @Layer       : Application
  * @Module      : workflow
  * @Package     : dz.sh.hidra.modules.workflow.application.port.in
  *
- * @Description : Provides authenticated workflow task inbox, instance history, and backend transition metadata.
+ * @Description : Provides authenticated workflow task inbox, instance history, current-task resolution, and backend transition metadata.
  *
  */
 package dz.sh.hidra.modules.workflow.application.port.in;
@@ -28,6 +28,8 @@ public interface WorkflowQueryUseCase {
     Page<TaskView> tasks(String actorReference, String view, int page, int size);
 
     TaskView task(String id);
+
+    TaskView currentTask(String instanceId);
 
     InstanceView instance(String id);
 

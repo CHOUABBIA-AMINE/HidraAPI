@@ -81,7 +81,10 @@ public final class OperationalPlanApplicationService implements CreateOperationa
     public OperationalPlanUpdateResult updateOperationalPlan(UpdateOperationalPlanCommand command) {
         Objects.requireNonNull(command, "Update operational plan command must not be null.");
         String id = requireText(command.id(), "Operational plan id");
-        Instant expectedUpdatedAt = Objects.requireNonNull(command.expectedUpdatedAt(), "expectedUpdatedAt must not be null.");
+        if (command.expectedUpdatedAt() == null) {
+            throw new IllegalArgumentException("expectedUpdatedAt must not be null.");
+        }
+        Instant expectedUpdatedAt = command.expectedUpdatedAt();
         String nameFr = requireText(command.nameFr(), "nameFr");
         String nameAr = normalize(command.nameAr());
         String nameEn = normalize(command.nameEn());

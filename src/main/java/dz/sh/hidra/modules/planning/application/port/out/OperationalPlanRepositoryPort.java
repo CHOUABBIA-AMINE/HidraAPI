@@ -7,7 +7,7 @@
  *
  * @Name        : OperationalPlanRepositoryPort
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-12
  *
  * @Type        : Interface
  * @Layer       : Application
@@ -20,7 +20,7 @@
 package dz.sh.hidra.modules.planning.application.port.out;
 
 import dz.sh.hidra.modules.planning.domain.model.OperationalPlan;
-
+import java.time.Instant;
 import java.util.Optional;
 
 /**
@@ -31,4 +31,14 @@ public interface OperationalPlanRepositoryPort {
     OperationalPlan save(OperationalPlan model);
 
     Optional<OperationalPlan> findById(String id);
+
+    boolean updateMetadataIfUpdatedAtMatches(
+            String id,
+            Instant expectedUpdatedAt,
+            String nameAr,
+            String nameFr,
+            String nameEn,
+            String responsibleOrganizationUnitId,
+            Instant newUpdatedAt
+    );
 }

@@ -32,7 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @Transactional(readOnly = true)
-public final class JpaWorkflowTargetApprovalQueryAdapter implements WorkflowTargetApprovalQueryPort {
+public class JpaWorkflowTargetApprovalQueryAdapter implements WorkflowTargetApprovalQueryPort {
 
     private static final String ALL_PERMISSIONS = "*";
     private static final Set<String> ACTIONABLE_TASK_STATES = Set.of("OPEN", "CLAIMED", "IN_REVIEW");

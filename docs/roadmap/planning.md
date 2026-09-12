@@ -41,6 +41,7 @@ Frontend-facing contracts must be published through deterministic OpenAPI. Route
 | `PLN-001` | `feat(planning): expose HWEB-010 query contracts` | Completed | Read-only list/detail contracts for periods, operational plans, revisions, nominations and plan targets; stable pagination; deterministic 400/404; route-permission publication; no new lifecycle mutations. PR CI `34657410805` passed compile, tests, full verification, acceptance compile/test/verify, deterministic OpenAPI publication and artifact upload on exact head `0735592fca3075754c06a3d1a98d0a8236e8e6ec`. |
 | `PLN-002` | `feat(planning): publish authoritative workflow approval integration` | Completed | Revision-scoped approval status/actions and backend-owned transition execution using workflow public contracts; planning applies the resulting lifecycle effect; deterministic stale-task conflict is preserved; no client task scanning or transition-name inference. Tracks issue #70. Final merge `6ef581f557e42e8d96b03ccf429562e646f2e321`; merge-SHA OpenAPI artifact `10293549730`. |
 | `PLN-003` | `feat(monitoring): expose plan-target-scoped deviations` | Implemented; initial exact-head CI green; final evidence CI pending | Extend the existing monitoring deviation collection with an optional exact `planTargetId` filter so HWEB-010-05 can retrieve authoritative comparison rows for one planning target without broad-page scanning or frontend arithmetic. No planning/telemetry persistence coupling and no new comparison semantics. Tracks issue #71. |
+| `PLN-004` | `feat(planning): publish operational-plan concurrency contract` | In Progress | Publish one intentionally supported operational-plan metadata update with explicit `expectedUpdatedAt` compare-and-set semantics. Only this mutation defines `updatedAt` as its concurrency token. Stale tokens fail deterministically with HTTP 409; successful responses publish the refreshed token. Tracks issue #72. |
 
 ### PLN-001 public read contract
 
@@ -136,6 +137,43 @@ reasonMessage
 - No expected/actual arithmetic, tolerance classification, severity mapping, or state machine is added outside monitoring.
 - Focused adapter tests cover exact target scoping, authoritative actual/expected/difference/unit projection values, paging across target-scoped rows, and the empty-page result for an unknown target.
 
+### PLN-004 public contract
+
+Publish one intentionally supported general planning mutation:
+
+```text
+PATCH /api/v1/planning/operational-plans/{id}
+```
+
+The request updates operational-plan presentation/ownership metadata only and requires:
+
+```text
+expectedUpdatedAt
+```
+
+For this route only, `OperationalPlan.updatedAt` is the backend-owned optimistic-concurrency token. The application loads the current operational plan, compares its current `updatedAt` to `expectedUpdatedAt`, and rejects a missing or stale precondition rather than applying a last-write-wins update. A successful mutation preserves identity, period, code, type/product, topology scope, lifecycle status, revision references, creator and creation timestamp, while updating only the explicitly supported mutable metadata and issuing a new `updatedAt` token.
+
+Stale behavior is deterministic:
+
+```text
+current token   -> update succeeds and response returns refreshed updatedAt
+stale token     -> HTTP 409; no mutation is persisted
+missing token   -> HTTP 400 validation failure
+unknown id      -> HTTP 404 through the platform not-found path
+```
+
+Client semantics are explicit: after HTTP 409, the client must refetch the operational plan and may retry only with the newly returned/read backend token. HidraWEB must not silently rebase, synthesize a token, or generalize this timestamp semantic to revisions, targets, nominations, planning periods or approval tasks.
+
+### PLN-004 boundary and acceptance criteria
+
+- Planning owns the mutation end to end; no cross-module repository/entity/domain import is introduced.
+- The public request names the precondition `expectedUpdatedAt`; the successful response exposes refreshed `updatedAt`.
+- The route is published through deterministic OpenAPI and receives canonical planning route-permission metadata.
+- Focused tests prove current-token success, refreshed-token response, stale-token conflict with no write, missing-token validation, and unknown-plan behavior.
+- Existing create/query/approval behavior remains unchanged.
+- Repository compile, repository tests, repository clean verify, acceptance compile/test/verify, deterministic OpenAPI publication and artifact upload must all pass on the exact PR head.
+- After merge, the exact merge SHA must pass push-triggered `main` CI and publish the deterministic OpenAPI artifact before issue #72 closes and HWEB-010-06 resumes.
+
 ---
 
 ## 4. Validation
@@ -172,3 +210,14 @@ Conclusion         : SUCCESS
 ```
 
 This roadmap-evidence update changes the PR head, so a final exact-head CI run is required before merge. After merge, the exact merge SHA must pass push-triggered `main` CI and publish the deterministic OpenAPI artifact before issue #71 is closed and HWEB-010-05 resumes.
+
+PLN-004 validation required before completion:
+
+```text
+mvn -q -DskipTests compile
+mvn -q test
+mvn -q clean verify
+acceptance compile/test/clean verify through repository CI
+deterministic OpenAPI publication
+OpenAPI compatibility artifact upload
+```

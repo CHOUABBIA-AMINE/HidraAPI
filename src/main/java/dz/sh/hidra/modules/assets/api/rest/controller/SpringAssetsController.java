@@ -7,7 +7,7 @@
  *
  * @Name        : SpringAssetsController
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-13
+ * @UpdatedOn   : 2026-09-12
  *
  * @Type        : Class
  * @Layer       : API
@@ -18,22 +18,27 @@
  *
  */
 package dz.sh.hidra.modules.assets.api.rest.controller;
+
 import dz.sh.hidra.modules.assets.api.rest.mapper.AssetsRestMapper;
 import dz.sh.hidra.modules.assets.api.rest.request.CreateMaintenanceWorkOrderRequest;
 import dz.sh.hidra.modules.assets.api.rest.request.RecordAssetConditionRequest;
 import dz.sh.hidra.modules.assets.api.rest.request.RegisterMaintainableAssetRequest;
+import dz.sh.hidra.modules.assets.api.rest.request.UpdateMaintainableAssetRequest;
 import dz.sh.hidra.modules.assets.api.rest.response.AssetConditionResponse;
 import dz.sh.hidra.modules.assets.api.rest.response.MaintainableAssetResponse;
 import dz.sh.hidra.modules.assets.api.rest.response.MaintenanceWorkOrderResponse;
 import dz.sh.hidra.modules.assets.application.port.in.CreateMaintenanceWorkOrderUseCase;
 import dz.sh.hidra.modules.assets.application.port.in.RecordAssetConditionUseCase;
 import dz.sh.hidra.modules.assets.application.port.in.RegisterMaintainableAssetUseCase;
+import dz.sh.hidra.modules.assets.application.port.in.UpdateMaintainableAssetUseCase;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -50,15 +55,18 @@ public class SpringAssetsController implements AssetsController {
     private final CreateMaintenanceWorkOrderUseCase createMaintenanceWorkOrderUseCase;
     private final RecordAssetConditionUseCase recordAssetConditionUseCase;
     private final RegisterMaintainableAssetUseCase registerMaintainableAssetUseCase;
+    private final UpdateMaintainableAssetUseCase updateMaintainableAssetUseCase;
 
     public SpringAssetsController(
             CreateMaintenanceWorkOrderUseCase createMaintenanceWorkOrderUseCase,
             RecordAssetConditionUseCase recordAssetConditionUseCase,
-            RegisterMaintainableAssetUseCase registerMaintainableAssetUseCase
+            RegisterMaintainableAssetUseCase registerMaintainableAssetUseCase,
+            UpdateMaintainableAssetUseCase updateMaintainableAssetUseCase
     ) {
         this.createMaintenanceWorkOrderUseCase = Objects.requireNonNull(createMaintenanceWorkOrderUseCase, "CreateMaintenanceWorkOrderUseCase must not be null.");
         this.recordAssetConditionUseCase = Objects.requireNonNull(recordAssetConditionUseCase, "RecordAssetConditionUseCase must not be null.");
         this.registerMaintainableAssetUseCase = Objects.requireNonNull(registerMaintainableAssetUseCase, "RegisterMaintainableAssetUseCase must not be null.");
+        this.updateMaintainableAssetUseCase = Objects.requireNonNull(updateMaintainableAssetUseCase, "UpdateMaintainableAssetUseCase must not be null.");
     }
 
     @GetMapping("/capabilities")
@@ -74,12 +82,14 @@ public class SpringAssetsController implements AssetsController {
                 "operations", List.of(
                 "createMaintenanceWorkOrder",
                 "recordAssetCondition",
-                "registerMaintainableAsset"
+                "registerMaintainableAsset",
+                "updateMaintainableAsset"
         ),
                 "resourceEndpoints", List.of(
                 "POST /api/v1/assets/maintenance-work-orders",
                 "POST /api/v1/assets/asset-conditions",
-                "POST /api/v1/assets/maintainable-assets"
+                "POST /api/v1/assets/maintainable-assets",
+                "PATCH /api/v1/assets/maintainable-assets/{assetId}"
         )
         );
     }
@@ -105,4 +115,13 @@ public class SpringAssetsController implements AssetsController {
         return AssetsRestMapper.toResponse(registerMaintainableAssetUseCase.registerMaintainableAsset(AssetsRestMapper.toCommand(request)));
     }
 
+    @Override
+    @PatchMapping("/maintainable-assets/{assetId}")
+    public MaintainableAssetResponse updateMaintainableAsset(
+            @PathVariable String assetId,
+            @Valid @RequestBody UpdateMaintainableAssetRequest request
+    ) {
+        Objects.requireNonNull(request, "UpdateMaintainableAssetRequest must not be null.");
+        return AssetsRestMapper.toResponse(updateMaintainableAssetUseCase.updateMaintainableAsset(assetId, AssetsRestMapper.toCommand(request)));
+    }
 }

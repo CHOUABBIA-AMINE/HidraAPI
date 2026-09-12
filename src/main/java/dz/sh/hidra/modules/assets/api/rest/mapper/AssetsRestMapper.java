@@ -7,7 +7,7 @@
  *
  * @Name        : AssetsRestMapper
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-13
+ * @UpdatedOn   : 2026-09-12
  *
  * @Type        : Class
  * @Layer       : API
@@ -18,9 +18,11 @@
  *
  */
 package dz.sh.hidra.modules.assets.api.rest.mapper;
+
 import dz.sh.hidra.modules.assets.api.rest.request.CreateMaintenanceWorkOrderRequest;
 import dz.sh.hidra.modules.assets.api.rest.request.RecordAssetConditionRequest;
 import dz.sh.hidra.modules.assets.api.rest.request.RegisterMaintainableAssetRequest;
+import dz.sh.hidra.modules.assets.api.rest.request.UpdateMaintainableAssetRequest;
 import dz.sh.hidra.modules.assets.api.rest.response.AssetConditionResponse;
 import dz.sh.hidra.modules.assets.api.rest.response.MaintainableAssetResponse;
 import dz.sh.hidra.modules.assets.api.rest.response.MaintenanceWorkOrderResponse;
@@ -30,6 +32,7 @@ import dz.sh.hidra.modules.assets.application.command.RegisterMaintainableAssetC
 import dz.sh.hidra.modules.assets.application.dto.AssetConditionSummaryDto;
 import dz.sh.hidra.modules.assets.application.dto.MaintainableAssetSummaryDto;
 import dz.sh.hidra.modules.assets.application.dto.MaintenanceWorkOrderSummaryDto;
+import dz.sh.hidra.modules.assets.application.port.in.UpdateMaintainableAssetUseCase;
 
 /**
  * Maps assets REST models to application models.
@@ -96,6 +99,13 @@ public final class AssetsRestMapper {
         );
     }
 
+    public static UpdateMaintainableAssetUseCase.Command toCommand(UpdateMaintainableAssetRequest request) {
+        return new UpdateMaintainableAssetUseCase.Command(
+                request.expectedUpdatedAt(),
+                request.assetName()
+        );
+    }
+
     public static MaintenanceWorkOrderResponse toResponse(MaintenanceWorkOrderSummaryDto dto) {
         return new MaintenanceWorkOrderResponse(
                 dto.id(),
@@ -131,7 +141,8 @@ public final class AssetsRestMapper {
                 dto.topologyAssetId(),
                 dto.status(),
                 dto.criticalityId(),
-                dto.registeredAt()
+                dto.registeredAt(),
+                dto.updatedAt()
         );
     }
 }

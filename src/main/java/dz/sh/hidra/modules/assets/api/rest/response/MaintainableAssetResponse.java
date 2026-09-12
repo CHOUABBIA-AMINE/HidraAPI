@@ -7,7 +7,7 @@
  *
  * @Name        : MaintainableAssetResponse
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-12
  *
  * @Type        : Record
  * @Layer       : API
@@ -36,6 +36,7 @@ public record MaintainableAssetResponse(
         String topologyAssetId,
         AssetLifecycleStatus status,
         String criticalityId,
-        Instant registeredAt
+        Instant registeredAt,
+        Instant updatedAt
 ) {
 }

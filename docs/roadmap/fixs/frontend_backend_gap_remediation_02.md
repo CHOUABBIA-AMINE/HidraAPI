@@ -41,6 +41,7 @@ This is one cross-cutting remediation task because the consumer register is the 
 | GAP-ALARM-002 | Add audited alarm shelving/unshelving contract when supported by the existing alarm model; otherwise document the model limitation explicitly. | In Progress |
 | GAP-ALARM-004 | Decide whether suppression is distinct from shelving before publishing any suppression mutation contract. | Open — issue #58 |
 | GAP-ALARM-005 | Derive acknowledgement/closure actor identity from the authenticated principal; remove authoritative browser-selected actor identity from the public request contract. | Implemented — issue #56, CI #34615308694 green |
+| GAP-ENG-001 | Publish one concurrency-protected maintainable-asset update mutation with explicit `expectedUpdatedAt`, deterministic stale conflict, and refreshed token response. | In Progress — issue #79 |
 
 ## Architecture rules
 
@@ -72,6 +73,27 @@ Additionally verify:
 - all repository-owned gaps above have implementation evidence;
 - external IdP registration/configuration is clearly separated from repository-owned work.
 
+## GAP-ENG-001 contract — HWEB-011-06 concurrency prerequisite
+
+```text
+Roadmap task          : FRONTEND-BACKEND-GAP-002 (GAP-ENG-001 slice)
+Backend issue         : CHOUABBIA-AMINE/HidraAPI#79
+Owning module         : assets
+Aggregate             : MaintainableAsset
+Mutation              : PATCH /api/v1/assets/maintainable-assets/{assetId}
+Mutable field         : assetName only
+Client precondition   : expectedUpdatedAt
+Token source          : MaintainableAssetResponse.updatedAt
+Repository discipline : pessimistic write lock before token comparison
+Stale response        : HTTP 409 / ASSETS_MAINTAINABLE_ASSET_CONFLICT
+Retry rule            : refetch the maintainable asset before any retry
+Preserved semantics   : lifecycle status, topology references, ownership/manufacturer references,
+                        installation/commissioning/retirement timestamps and all other fields remain unchanged
+Permission source     : backend route descriptor for PATCH; frontend must not infer the permission string
+```
+
+This contract intentionally promotes `MaintainableAsset.updatedAt` to a write precondition only for the route above. It must not be generalized to other assets resources or lifecycle commands without a separately published backend contract.
+
 ## Completion evidence
 
 ### GAP-ALARM-005 — trusted acknowledgement/closure actor attribution
@@ -92,4 +114,8 @@ OpenAPI publication : PASS
 
 The public `AcknowledgeAlarmRequest` and `CloseAlarmRequest` no longer carry the authoritative actor identifier. `SpringAlarmController` resolves actor identity through `CurrentActorResolver`; acknowledgement display identity is derived from the authenticated principal name. Alarm application/domain persistence remains unchanged and receives server-derived identity through its application command.
 
-The cross-cutting roadmap remains `In Progress` because `GAP-WF-004` and the suppression disposition in `GAP-ALARM-004` remain unresolved.
+### GAP-ENG-001 — maintainable asset optimistic precondition
+
+Implementation is in progress on issue #79. Completion requires exact-head CI, deterministic OpenAPI publication, merge-SHA artifact evidence, and a post-merge verification update here.
+
+The cross-cutting roadmap remains `In Progress` because `GAP-WF-004`, `GAP-ALARM-004`, and other remaining repository-owned gaps are not all resolved.

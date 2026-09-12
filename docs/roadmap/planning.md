@@ -40,7 +40,7 @@ Frontend-facing contracts must be published through deterministic OpenAPI. Route
 |---|---|---:|---|
 | `PLN-001` | `feat(planning): expose HWEB-010 query contracts` | Completed | Read-only list/detail contracts for periods, operational plans, revisions, nominations and plan targets; stable pagination; deterministic 400/404; route-permission publication; no new lifecycle mutations. PR CI `34657410805` passed compile, tests, full verification, acceptance compile/test/verify, deterministic OpenAPI publication and artifact upload on exact head `0735592fca3075754c06a3d1a98d0a8236e8e6ec`. |
 | `PLN-002` | `feat(planning): publish authoritative workflow approval integration` | Completed | Revision-scoped approval status/actions and backend-owned transition execution using workflow public contracts; planning applies the resulting lifecycle effect; deterministic stale-task conflict is preserved; no client task scanning or transition-name inference. Tracks issue #70. Final merge `6ef581f557e42e8d96b03ccf429562e646f2e321`; merge-SHA OpenAPI artifact `10293549730`. |
-| `PLN-003` | `feat(monitoring): expose plan-target-scoped deviations` | Implemented; exact-head CI pending | Extend the existing monitoring deviation collection with an optional exact `planTargetId` filter so HWEB-010-05 can retrieve authoritative comparison rows for one planning target without broad-page scanning or frontend arithmetic. No planning/telemetry persistence coupling and no new comparison semantics. Tracks issue #71. |
+| `PLN-003` | `feat(monitoring): expose plan-target-scoped deviations` | Implemented; initial exact-head CI green; final evidence CI pending | Extend the existing monitoring deviation collection with an optional exact `planTargetId` filter so HWEB-010-05 can retrieve authoritative comparison rows for one planning target without broad-page scanning or frontend arithmetic. No planning/telemetry persistence coupling and no new comparison semantics. Tracks issue #71. |
 
 ### PLN-001 public read contract
 
@@ -151,17 +151,24 @@ Issue             : #70 — CLOSED
 Conclusion        : SUCCESS
 ```
 
-PLN-003 validation required before merge:
+PLN-003 initial exact-head evidence:
 
 ```text
-mvn -q -DskipTests compile
-mvn -q test
-mvn -q clean verify
-acceptance compile
-acceptance test
-acceptance clean verify
-deterministic OpenAPI generation
-OpenAPI artifact upload
+PR                 : HidraAPI #75
+Implementation head: b99c459e0257110be3d036029751044537607046
+PR CI run          : 34682927328
+Repository compile : SUCCESS
+Repository tests   : SUCCESS
+Repository verify  : SUCCESS
+Acceptance compile : SUCCESS
+Acceptance tests   : SUCCESS
+Acceptance verify  : SUCCESS
+Deterministic OpenAPI: SUCCESS
+Artifact upload    : SUCCESS
+Artifact id        : 10295220452
+Artifact name      : hidra-api-openapi-6d2e8d09e013e3489ce956a38cf17ffa945ce23b
+Artifact digest    : sha256:c5345cebdbdd4cdfcb7ed7d42ba51909fc2f1f97f91e7dc70080a2e6a79c5f01
+Conclusion         : SUCCESS
 ```
 
-The exact PR head must pass all repository and acceptance gates. After merge, the exact merge SHA must pass push-triggered `main` CI and publish the deterministic OpenAPI artifact before issue #71 is closed and HWEB-010-05 resumes.
+This roadmap-evidence update changes the PR head, so a final exact-head CI run is required before merge. After merge, the exact merge SHA must pass push-triggered `main` CI and publish the deterministic OpenAPI artifact before issue #71 is closed and HWEB-010-05 resumes.

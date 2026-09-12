@@ -7,7 +7,7 @@
  *
  * @Name        : HidraGlobalExceptionHandler
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-11
+ * @UpdatedOn   : 2026-09-12
  *
  * @Type        : Class
  * @Layer       : Platform
@@ -25,6 +25,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import java.net.URI;
 import java.time.Instant;
+import java.util.ConcurrentModificationException;
 import java.util.List;
 import java.util.NoSuchElementException;
 import org.springframework.beans.factory.annotation.Value;
@@ -64,6 +65,14 @@ public final class HidraGlobalExceptionHandler {
     @ExceptionHandler(NoSuchElementException.class)
     public ProblemDetail handleNotFoundException(NoSuchElementException exception, HttpServletRequest request) {
         return problem(HttpStatus.NOT_FOUND, "RESOURCE_NOT_FOUND", exception, request);
+    }
+
+    @ExceptionHandler(ConcurrentModificationException.class)
+    public ProblemDetail handleConcurrentModificationException(
+            ConcurrentModificationException exception,
+            HttpServletRequest request
+    ) {
+        return problem(HttpStatus.CONFLICT, "STALE_WRITE", exception, request);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)

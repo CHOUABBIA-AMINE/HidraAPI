@@ -33,7 +33,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public final class PlanningApprovalApplicationService implements PlanningApprovalUseCase {
+public class PlanningApprovalApplicationService implements PlanningApprovalUseCase {
 
     private static final String DECISION_APPROVE = "APPROVE";
     private static final String DECISION_REJECT = "REJECT";

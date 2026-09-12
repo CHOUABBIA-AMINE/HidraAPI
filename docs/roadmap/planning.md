@@ -35,7 +35,7 @@ Frontend-facing contracts must be published through deterministic OpenAPI. Route
 | Code | Commit message | Status | Scope |
 |---|---|---:|---|
 | `PLN-001` | `feat(planning): expose HWEB-010 query contracts` | Completed | Read-only list/detail contracts for periods, operational plans, revisions, nominations and plan targets; stable pagination; deterministic 400/404; route-permission publication; no new lifecycle mutations. PR CI `34657410805` passed compile, tests, full verification, acceptance compile/test/verify, deterministic OpenAPI publication and artifact upload on exact head `0735592fca3075754c06a3d1a98d0a8236e8e6ec`. |
-| `PLN-002` | `feat(planning): integrate authoritative workflow approval` | In Progress | Publish revision-scoped approval context and execution; exact workflow target/current-task resolution; backend-defined permitted actions; existing workflow stale-task precondition; atomic workflow decision -> planning revision `APPROVED`/`REJECTED` lifecycle effect; deterministic 400/403/404/409; no submit command, no planning-owned workflow state, no frontend state machine. |
+| `PLN-002` | `feat(planning): integrate authoritative workflow approval` | Completed | Revision-scoped approval context and execution; exact workflow target/current-task resolution; backend-defined permitted actions; existing workflow stale-task precondition; atomic workflow decision -> planning revision `APPROVED`/`REJECTED` lifecycle effect; deterministic 400/403/404/409; no submit command, no planning-owned workflow state, no frontend state machine. |
 
 ### PLN-001 allowed production changes
 
@@ -76,7 +76,7 @@ GET  /api/v1/planning/revisions/{revisionId}/approval
 POST /api/v1/planning/revisions/{revisionId}/approval/actions/{transitionId}/execute
 ```
 
-`GET .../approval` must return whether the revision is currently under approval. For a submitted revision with a workflow instance, the backend resolves the exact workflow instance target tuple, exact current task, current task `updatedAt` token, and backend-defined action list. HidraWEB must not scan the generic workflow inbox or infer an action from names/status strings.
+`GET .../approval` returns whether the revision is currently under approval. For a submitted revision with a workflow instance, the backend resolves the exact workflow instance target tuple, exact current task, current task `updatedAt` token, and backend-defined action list. HidraWEB must not scan the generic workflow inbox or infer an action from names/status strings.
 
 `POST .../execute` accepts the workflow task stale-write token (`expectedTaskUpdatedAt`) plus optional reason/note/comment/correlation data. Only backend-defined, actor-permitted `APPROVE` and `REJECT` actions are valid through the planning approval surface. The workflow transition and planning revision update participate in one transaction.
 
@@ -99,24 +99,50 @@ PLN-002 does **not** add:
 - planned-vs-actual behavior;
 - realtime planning events.
 
-### PLN-002 allowed production changes
+### PLN-002 production changes
 
-- add a planning inbound approval use case and application service;
-- add a planning outbound workflow approval port using neutral records only;
-- add a planning infrastructure adapter that consumes workflow **application** contracts only;
-- add revision-scoped planning approval REST request/controller/error translation;
-- add a workflow target-approval inbound contract, outbound query port, application service and JPA query adapter;
-- reuse the existing authoritative workflow transition executor and its `expectedTaskUpdatedAt` conflict guard;
-- do not modify workflow or planning persistence schemas.
+- planning inbound approval use case and application service;
+- planning outbound workflow approval port using neutral records only;
+- planning infrastructure adapter consuming workflow **application** contracts only;
+- revision-scoped planning approval REST request/controller/error translation;
+- workflow target-approval inbound contract, outbound query port, application service and JPA query adapter;
+- reuse of the existing authoritative workflow transition executor and its `expectedTaskUpdatedAt` conflict guard;
+- no workflow or planning persistence schema changes.
 
-### PLN-002 required tests
+### PLN-002 verified tests
 
-- exact workflow target/current-task resolution is enforced server-side;
+- exact workflow target/current-task context is resolved server-side;
 - unavailable or non-permitted transitions do not execute;
 - stale task timestamps fail before workflow mutation;
 - workflow `APPROVE` persists planning revision `APPROVED` with approval actor/time;
 - workflow `REJECT` persists planning revision `REJECTED` without approval metadata;
-- cross-module integration uses public application contracts, not domain/persistence imports.
+- cross-module integration uses workflow application contracts rather than workflow domain/persistence imports.
+
+### PLN-002 implementation and validation evidence
+
+```text
+Behavioral commit       : 4037d61037d362d4adddb6d8156a5766bebbe367
+Behavioral commit msg   : feat(planning): integrate authoritative workflow approval
+Proxy fix (workflow)    : 7194810f8fee424d37e982e8de24b4f14d4224b0
+Proxy fix (planning)    : 69d596c86c93776f9cc7d66ab4e791a24539e8bf
+Reject lifecycle test   : 2fa438f809b8dd6ebe0593856d49d777484c59e6
+Exact validation CI     : 34680746464 — SUCCESS
+Repository compile      : SUCCESS
+Repository tests        : SUCCESS
+Repository clean verify : SUCCESS
+Acceptance compile      : SUCCESS
+Acceptance tests        : SUCCESS
+Acceptance clean verify : SUCCESS
+Deterministic OpenAPI   : SUCCESS
+OpenAPI upload          : SUCCESS
+OpenAPI artifact id     : 10294033434
+OpenAPI artifact name   : hidra-api-openapi-8fc8948fed47cab1a612f56b76a8d24082ae330d
+OpenAPI artifact digest : sha256:b4362f5e1ddede4d43e92c2928f12c77238cc97391b6b088bad804a3daf94e57
+Backend issue           : HidraAPI #70
+Pull request            : HidraAPI #73
+```
+
+The artifact above is PR validation evidence. HidraWEB must pin the final **post-merge** OpenAPI artifact generated from the HidraAPI merge SHA, not this PR validation artifact.
 
 ---
 
@@ -143,4 +169,4 @@ Exact SHA : 0735592fca3075754c06a3d1a98d0a8236e8e6ec
 Conclusion: SUCCESS
 ```
 
-PLN-002 must pass repository compile, tests, full verify, acceptance compile/test/verify, deterministic OpenAPI generation and exact-head artifact publication before it may be marked Completed or issue #70 may close.
+PLN-002 validation is recorded in Section 4. Its final documentation head must also pass the same exact-head CI gates before PR #73 is promoted and merged.

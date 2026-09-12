@@ -7,37 +7,40 @@
  *
  * @Name        : OperationalPlanApplicationService
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-12
  *
  * @Type        : Class
  * @Layer       : Application
  * @Module      : planning
  * @Package     : dz.sh.hidra.modules.planning.application.service
  *
- * @Description : Application service for operational plans.
+ * @Description : Application service for operational-plan creation and concurrency-protected metadata updates.
  *
  */
 package dz.sh.hidra.modules.planning.application.service;
 
-import org.springframework.stereotype.Service;
-
 import dz.sh.hidra.modules.planning.application.command.CreateOperationalPlanCommand;
+import dz.sh.hidra.modules.planning.application.command.UpdateOperationalPlanCommand;
 import dz.sh.hidra.modules.planning.application.dto.OperationalPlanSummaryDto;
 import dz.sh.hidra.modules.planning.application.mapper.PlanningApplicationMapper;
 import dz.sh.hidra.modules.planning.application.port.in.CreateOperationalPlanUseCase;
+import dz.sh.hidra.modules.planning.application.port.in.UpdateOperationalPlanUseCase;
 import dz.sh.hidra.modules.planning.application.port.out.OperationalPlanRepositoryPort;
 import dz.sh.hidra.modules.planning.domain.model.OperationalPlan;
 import dz.sh.hidra.modules.planning.domain.value.OperationalPlanStatus;
 import dz.sh.hidra.modules.planning.domain.value.PlanningId;
-
 import java.time.Instant;
+import java.util.ConcurrentModificationException;
+import java.util.NoSuchElementException;
 import java.util.Objects;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Application service for operational plans.
  */
 @Service
-public final class OperationalPlanApplicationService implements CreateOperationalPlanUseCase {
+public final class OperationalPlanApplicationService implements CreateOperationalPlanUseCase, UpdateOperationalPlanUseCase {
 
     private final OperationalPlanRepositoryPort repositoryPort;
 
@@ -71,5 +74,68 @@ public final class OperationalPlanApplicationService implements CreateOperationa
                 now
         );
         return PlanningApplicationMapper.toSummary(repositoryPort.save(plan));
+    }
+
+    @Override
+    @Transactional
+    public OperationalPlanUpdateResult updateOperationalPlan(UpdateOperationalPlanCommand command) {
+        Objects.requireNonNull(command, "Update operational plan command must not be null.");
+        String id = requireText(command.id(), "Operational plan id");
+        Instant expectedUpdatedAt = Objects.requireNonNull(command.expectedUpdatedAt(), "expectedUpdatedAt must not be null.");
+        String nameFr = requireText(command.nameFr(), "nameFr");
+        String nameAr = normalize(command.nameAr());
+        String nameEn = normalize(command.nameEn());
+        String responsibleOrganizationUnitId = normalize(command.responsibleOrganizationUnitId());
+
+        OperationalPlan current = repositoryPort.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Unknown operational plan: " + id));
+        if (!expectedUpdatedAt.equals(current.updatedAt())) {
+            throw stale(id);
+        }
+
+        Instant refreshedUpdatedAt = Instant.now();
+        if (!refreshedUpdatedAt.isAfter(current.updatedAt())) {
+            refreshedUpdatedAt = current.updatedAt().plusNanos(1);
+        }
+
+        boolean updated = repositoryPort.updateMetadataIfUpdatedAtMatches(
+                id,
+                expectedUpdatedAt,
+                nameAr,
+                nameFr,
+                nameEn,
+                responsibleOrganizationUnitId,
+                refreshedUpdatedAt
+        );
+        if (!updated) {
+            throw stale(id);
+        }
+
+        return new OperationalPlanUpdateResult(
+                id,
+                nameAr,
+                nameFr,
+                nameEn,
+                responsibleOrganizationUnitId,
+                refreshedUpdatedAt
+        );
+    }
+
+    private static ConcurrentModificationException stale(String id) {
+        return new ConcurrentModificationException(
+                "Operational plan " + id + " changed after the supplied expectedUpdatedAt token; refetch before retrying."
+        );
+    }
+
+    private static String requireText(String value, String field) {
+        String normalized = normalize(value);
+        if (normalized == null) {
+            throw new IllegalArgumentException(field + " must not be blank.");
+        }
+        return normalized;
+    }
+
+    private static String normalize(String value) {
+        return value == null || value.isBlank() ? null : value.trim();
     }
 }

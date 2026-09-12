@@ -29,5 +29,7 @@ public interface PlanRevisionRepositoryPort {
 
     Optional<PlanRevision> findById(String id);
 
-    Optional<PlanRevision> findByIdForUpdate(String id);
+    default Optional<PlanRevision> findByIdForUpdate(String id) {
+        return findById(id);
+    }
 }

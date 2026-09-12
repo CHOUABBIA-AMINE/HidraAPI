@@ -41,7 +41,7 @@ This is one cross-cutting remediation task because the consumer register is the 
 | GAP-ALARM-002 | Add audited alarm shelving/unshelving contract when supported by the existing alarm model; otherwise document the model limitation explicitly. | In Progress |
 | GAP-ALARM-004 | Decide whether suppression is distinct from shelving before publishing any suppression mutation contract. | Open — issue #58 |
 | GAP-ALARM-005 | Derive acknowledgement/closure actor identity from the authenticated principal; remove authoritative browser-selected actor identity from the public request contract. | Implemented — issue #56, CI #34615308694 green |
-| GAP-ENG-001 | Publish one concurrency-protected maintainable-asset update mutation with explicit `expectedUpdatedAt`, deterministic stale conflict, and refreshed token response. | In Progress — issue #79 |
+| GAP-ENG-001 | Publish one concurrency-protected maintainable-asset update mutation with explicit `expectedUpdatedAt`, deterministic stale conflict, and refreshed token response. | VERIFIED — PR #81 / issue #79 |
 
 ## Architecture rules
 
@@ -116,6 +116,29 @@ The public `AcknowledgeAlarmRequest` and `CloseAlarmRequest` no longer carry the
 
 ### GAP-ENG-001 — maintainable asset optimistic precondition
 
-Implementation is in progress on issue #79. Completion requires exact-head CI, deterministic OpenAPI publication, merge-SHA artifact evidence, and a post-merge verification update here.
+```text
+Issue                  : #79
+Product PR             : #81
+Final product head     : 5d56ced94a02b56ad8d9f7ecda1da1218a0026a7
+Initial CI run         : 34724307897 — FAILED (Spring proxying only; transactional service was final)
+Corrected exact-head CI: 34724457582 — SUCCESS
+Merge SHA              : 2e6f93c14e330c8cc839a5de75ecc7b893f9872c
+Post-merge CI          : 34724675473 — SUCCESS
+OpenAPI artifact id    : 10307945855
+OpenAPI artifact name  : hidra-api-openapi-2e6f93c14e330c8cc839a5de75ecc7b893f9872c
+OpenAPI artifact digest: sha256:20b15395d1b2feec853167e88b2b6357650f51c03fb7811ffe60fd1362544c7f
+Repository compile     : PASS
+Repository tests       : PASS
+Repository verify      : PASS
+Acceptance compile     : PASS
+Acceptance tests       : PASS
+Acceptance verify      : PASS
+OpenAPI publication    : PASS
+Result                 : VERIFIED
+```
 
-The cross-cutting roadmap remains `In Progress` because `GAP-WF-004`, `GAP-ALARM-004`, and other remaining repository-owned gaps are not all resolved.
+The implementation publishes `PATCH /api/v1/assets/maintainable-assets/{assetId}` with request fields `expectedUpdatedAt` and `assetName`. The service acquires a pessimistic write lock before comparing the exact client token, preserves every field except `assetName`, returns a refreshed `updatedAt`, and maps stale requests to deterministic `409 ASSETS_MAINTAINABLE_ASSET_CONFLICT` with an explicit refetch-before-retry rule.
+
+The initial exact-head CI failure was infrastructure wiring only: `@Transactional` required Spring proxying, but `AssetsApplicationService` was `final`. Removing only that modifier resolved the context-load failure without changing contract or business semantics.
+
+GAP-ENG-001 is verified and the backend prerequisite for HidraWEB HWEB-011-06 concurrency testing is satisfied. The cross-cutting roadmap remains `In Progress` because `GAP-WF-004`, `GAP-ALARM-004`, and other remaining repository-owned gaps are not all resolved.

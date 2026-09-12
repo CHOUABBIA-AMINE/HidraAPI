@@ -40,7 +40,7 @@ import org.springframework.transaction.annotation.Transactional;
  * Application service for operational plans.
  */
 @Service
-public final class OperationalPlanApplicationService implements CreateOperationalPlanUseCase, UpdateOperationalPlanUseCase {
+public class OperationalPlanApplicationService implements CreateOperationalPlanUseCase, UpdateOperationalPlanUseCase {
 
     private final OperationalPlanRepositoryPort repositoryPort;
 

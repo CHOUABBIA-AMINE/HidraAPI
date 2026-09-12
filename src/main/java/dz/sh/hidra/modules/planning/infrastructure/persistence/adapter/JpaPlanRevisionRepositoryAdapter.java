@@ -7,14 +7,14 @@
  *
  * @Name        : JpaPlanRevisionRepositoryAdapter
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-12
  *
  * @Type        : Class
  * @Layer       : Infrastructure
  * @Module      : planning
  * @Package     : dz.sh.hidra.modules.planning.infrastructure.persistence.adapter
  *
- * @Description : Database-backed adapter for PlanRevision.
+ * @Description : Database-backed adapter for PlanRevision including locked mutation reads.
  *
  */
 package dz.sh.hidra.modules.planning.infrastructure.persistence.adapter;
@@ -28,9 +28,6 @@ import org.springframework.stereotype.Component;
 import java.util.Objects;
 import java.util.Optional;
 
-/**
- * Database-backed repository adapter for PlanRevision.
- */
 @Component
 public class JpaPlanRevisionRepositoryAdapter implements PlanRevisionRepositoryPort {
 
@@ -48,5 +45,10 @@ public class JpaPlanRevisionRepositoryAdapter implements PlanRevisionRepositoryP
     @Override
     public Optional<PlanRevision> findById(String id) {
         return repository.findById(id).map(PlanningPersistenceMapper::toDomain);
+    }
+
+    @Override
+    public Optional<PlanRevision> findByIdForUpdate(String id) {
+        return repository.findByIdForUpdate(id).map(PlanningPersistenceMapper::toDomain);
     }
 }

@@ -7,7 +7,7 @@
  *
  * @Name        : AssetsApplicationService
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-12
  *
  * @Type        : Class
  * @Layer       : Application
@@ -20,6 +20,7 @@
 package dz.sh.hidra.modules.assets.application.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import dz.sh.hidra.modules.assets.application.command.CreateMaintenanceWorkOrderCommand;
 import dz.sh.hidra.modules.assets.application.command.RecordAssetConditionCommand;
@@ -31,9 +32,11 @@ import dz.sh.hidra.modules.assets.application.mapper.AssetsApplicationMapper;
 import dz.sh.hidra.modules.assets.application.port.in.CreateMaintenanceWorkOrderUseCase;
 import dz.sh.hidra.modules.assets.application.port.in.RecordAssetConditionUseCase;
 import dz.sh.hidra.modules.assets.application.port.in.RegisterMaintainableAssetUseCase;
+import dz.sh.hidra.modules.assets.application.port.in.UpdateMaintainableAssetUseCase;
 import dz.sh.hidra.modules.assets.application.port.out.AssetConditionRecordRepositoryPort;
 import dz.sh.hidra.modules.assets.application.port.out.MaintainableAssetRepositoryPort;
 import dz.sh.hidra.modules.assets.application.port.out.MaintenanceWorkOrderRepositoryPort;
+import dz.sh.hidra.modules.assets.domain.exception.MaintainableAssetConflictException;
 import dz.sh.hidra.modules.assets.domain.model.AssetConditionRecord;
 import dz.sh.hidra.modules.assets.domain.model.MaintainableAsset;
 import dz.sh.hidra.modules.assets.domain.model.MaintenanceWorkOrder;
@@ -43,13 +46,14 @@ import dz.sh.hidra.modules.assets.domain.value.AssetsId;
 import dz.sh.hidra.modules.assets.domain.value.MaintenanceWorkOrderStatus;
 
 import java.time.Instant;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
 /**
  * Application service for assets and maintenance workflows.
  */
 @Service
-public final class AssetsApplicationService implements RegisterMaintainableAssetUseCase, CreateMaintenanceWorkOrderUseCase, RecordAssetConditionUseCase {
+public final class AssetsApplicationService implements RegisterMaintainableAssetUseCase, CreateMaintenanceWorkOrderUseCase, RecordAssetConditionUseCase, UpdateMaintainableAssetUseCase {
 
     private final MaintainableAssetRepositoryPort maintainableAssetRepositoryPort;
     private final MaintenanceWorkOrderRepositoryPort workOrderRepositoryPort;
@@ -97,6 +101,60 @@ public final class AssetsApplicationService implements RegisterMaintainableAsset
                 now
         );
         return AssetsApplicationMapper.toSummary(maintainableAssetRepositoryPort.save(asset));
+    }
+
+    @Override
+    @Transactional
+    public MaintainableAssetSummaryDto updateMaintainableAsset(String assetId, UpdateMaintainableAssetUseCase.Command command) {
+        if (assetId == null || assetId.isBlank()) {
+            throw new IllegalArgumentException("assetId must not be null or blank.");
+        }
+        Objects.requireNonNull(command, "Maintainable asset update command must not be null.");
+
+        String normalizedAssetId = assetId.trim();
+        MaintainableAsset asset = maintainableAssetRepositoryPort.findByIdForUpdate(normalizedAssetId)
+                .orElseThrow(() -> new NoSuchElementException("Unknown maintainable asset: " + normalizedAssetId));
+
+        if (!command.expectedUpdatedAt().equals(asset.updatedAt())) {
+            throw new MaintainableAssetConflictException(
+                    "Maintainable asset changed after it was loaded. Refetch the asset before retrying."
+            );
+        }
+
+        Instant updatedAt = Instant.now();
+        if (!updatedAt.isAfter(asset.updatedAt())) {
+            updatedAt = asset.updatedAt().plusNanos(1);
+        }
+
+        MaintainableAsset updated = new MaintainableAsset(
+                asset.id(),
+                asset.assetNumber(),
+                asset.assetCode(),
+                command.assetName(),
+                asset.assetTypeId(),
+                asset.topologyAssetTypeCode(),
+                asset.topologyAssetId(),
+                asset.topologyAssetCodeSnapshot(),
+                asset.topologyAssetNameSnapshot(),
+                asset.parentAssetId(),
+                asset.status(),
+                asset.criticalityId(),
+                asset.ownerOrganizationUnitId(),
+                asset.ownerOrganizationUnitNameSnapshot(),
+                asset.manufacturerPartyId(),
+                asset.manufacturerNameSnapshot(),
+                asset.modelId(),
+                asset.serialIdentityId(),
+                asset.registeredAt(),
+                asset.installedAt(),
+                asset.commissionedAt(),
+                asset.retiredAt(),
+                asset.createdByActorId(),
+                asset.createdAt(),
+                updatedAt
+        );
+
+        return AssetsApplicationMapper.toSummary(maintainableAssetRepositoryPort.save(updated));
     }
 
     @Override

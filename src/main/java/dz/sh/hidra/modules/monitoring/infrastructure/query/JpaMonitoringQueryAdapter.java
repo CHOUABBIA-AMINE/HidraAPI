@@ -7,7 +7,7 @@
  *
  * @Name        : JpaMonitoringQueryAdapter
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-11
+ * @UpdatedOn   : 2026-09-12
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -63,6 +63,7 @@ public class JpaMonitoringQueryAdapter implements MonitoringQueryUseCase {
 
     @Override
     public Page<DeviationView> deviations(
+            String planTargetId,
             String status,
             String severity,
             String topologyAssetId,
@@ -75,6 +76,7 @@ public class JpaMonitoringQueryAdapter implements MonitoringQueryUseCase {
         List<DeviationView> all = entityManager
                 .createQuery("select e from PlanActualDeviationJpaEntity e order by e.detectedAt desc", PlanActualDeviationJpaEntity.class)
                 .getResultList().stream()
+                .filter(entity -> blank(planTargetId) || planTargetId.equals(entity.planTargetId()))
                 .filter(entity -> blank(status) || status.equalsIgnoreCase(String.valueOf(entity.status())))
                 .filter(entity -> blank(severity) || severity.equalsIgnoreCase(String.valueOf(entity.severity())))
                 .filter(entity -> blank(topologyAssetId) || topologyAssetId.equals(entity.topologyAssetId()))

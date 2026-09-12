@@ -7,7 +7,7 @@
  *
  * @Name        : MonitoringQueryUseCase
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-11
+ * @UpdatedOn   : 2026-09-12
  *
  * @Type        : Interface
  * @Layer       : Application
@@ -30,6 +30,7 @@ public interface MonitoringQueryUseCase {
     MonitoringRuleView rule(String id);
 
     Page<DeviationView> deviations(
+            String planTargetId,
             String status,
             String severity,
             String topologyAssetId,

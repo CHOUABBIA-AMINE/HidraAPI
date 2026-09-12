@@ -7,7 +7,7 @@
  *
  * @Name        : JpaOperationalPlanRepositoryAdapter
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-12
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -23,10 +23,10 @@ import dz.sh.hidra.modules.planning.application.port.out.OperationalPlanReposito
 import dz.sh.hidra.modules.planning.domain.model.OperationalPlan;
 import dz.sh.hidra.modules.planning.infrastructure.persistence.mapper.PlanningPersistenceMapper;
 import dz.sh.hidra.modules.planning.infrastructure.persistence.repository.OperationalPlanJpaRepository;
-import org.springframework.stereotype.Component;
-
+import java.time.Instant;
 import java.util.Objects;
 import java.util.Optional;
+import org.springframework.stereotype.Component;
 
 /**
  * Database-backed repository adapter for OperationalPlan.
@@ -48,5 +48,26 @@ public class JpaOperationalPlanRepositoryAdapter implements OperationalPlanRepos
     @Override
     public Optional<OperationalPlan> findById(String id) {
         return repository.findById(id).map(PlanningPersistenceMapper::toDomain);
+    }
+
+    @Override
+    public boolean updateMetadataIfUpdatedAtMatches(
+            String id,
+            Instant expectedUpdatedAt,
+            String nameAr,
+            String nameFr,
+            String nameEn,
+            String responsibleOrganizationUnitId,
+            Instant newUpdatedAt
+    ) {
+        return repository.updateMetadataIfUpdatedAtMatches(
+                id,
+                expectedUpdatedAt,
+                nameAr,
+                nameFr,
+                nameEn,
+                responsibleOrganizationUnitId,
+                newUpdatedAt
+        ) == 1;
     }
 }

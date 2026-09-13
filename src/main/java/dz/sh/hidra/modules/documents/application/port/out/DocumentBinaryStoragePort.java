@@ -7,22 +7,42 @@
  *
  * @Name        : DocumentBinaryStoragePort
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-13
  *
  * @Type        : Interface
  * @Layer       : Application
  * @Module      : documents
  * @Package     : dz.sh.hidra.modules.documents.application.port.out
  *
- * @Description : Outbound documents port DocumentBinaryStoragePort.
+ * @Description : Outbound port for storing and retrieving document binary content.
  *
  */
 package dz.sh.hidra.modules.documents.application.port.out;
 
+import java.io.InputStream;
+
 /**
- * Outbound documents port.
+ * Outbound document-binary storage port owned by the documents module.
  */
 public interface DocumentBinaryStoragePort {
 
+    StoredBinary store(String referenceId, InputStream content);
+
+    InputStream open(String referenceId);
+
     boolean available(String referenceId);
+
+    void delete(String referenceId);
+
+    record StoredBinary(
+            String storageProviderId,
+            String bucketOrContainer,
+            String objectKey,
+            boolean encrypted,
+            String encryptionKeyReference,
+            long contentLengthBytes,
+            String checksumAlgorithm,
+            String checksumValue
+    ) {
+    }
 }

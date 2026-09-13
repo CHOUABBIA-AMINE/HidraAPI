@@ -42,7 +42,7 @@ This is one cross-cutting remediation task because the consumer register is the 
 | GAP-ALARM-004 | Decide whether suppression is distinct from shelving before publishing any suppression mutation contract. | Open — issue #58 |
 | GAP-ALARM-005 | Derive acknowledgement/closure actor identity from the authenticated principal; remove authoritative browser-selected actor identity from the public request contract. | Implemented — issue #56, CI #34615308694 green |
 | GAP-ENG-001 | Publish one concurrency-protected maintainable-asset update mutation with explicit `expectedUpdatedAt`, deterministic stale conflict, and refreshed token response. | VERIFIED — PR #81 / issue #79 |
-| GAP-DOC-001 | Publish authoritative multipart document-version upload and version-content retrieval contracts; keep storage-object identity backend-owned. | In Progress — issue #83 |
+| GAP-DOC-001 | Publish authoritative multipart document-version upload and browser-readable version-content retrieval contracts; keep storage-object identity backend-owned. | In Progress — issue #83 |
 
 ## Architecture rules
 
@@ -90,6 +90,7 @@ Default max upload        : 52428800 bytes (configurable with hidra.documents.up
 Storage root              : configurable with hidra.documents.storage.root
 Download disposition      : attachment with UTF-8 filename
 Range behavior            : unsupported; response publishes Accept-Ranges: none
+Browser CORS exposure     : Content-Disposition, Content-Length, Accept-Ranges
 Direct storage URI        : not exposed
 Legacy JSON metadata POST : retained for compatibility; HWEB-014-03 must use multipart contract
 Deterministic errors      : DOCUMENTS_CONTENT_INVALID / DOCUMENTS_CONTENT_NOT_FOUND /
@@ -98,6 +99,8 @@ Permission source         : backend route descriptor; frontend must not infer pe
 ```
 
 HWEB-014-03 may consume only the multipart upload and version-scoped content route above. It must not synthesize object-store URLs, client-generate `storageObjectId`, or infer range/resume behavior. The backend computes byte length and SHA-256 from the received stream and persists that evidence with the storage object/version metadata.
+
+The browser client is cross-origin in the supported HidraWEB runtime model. Therefore the repository-owned default CORS contract must expose `Content-Disposition`, `Content-Length`, and `Accept-Ranges` so authenticated JavaScript can read the server-authored filename and transfer evidence. A frontend filename fallback or direct unauthenticated object navigation is not an acceptable substitute.
 
 ## GAP-ENG-001 contract — HWEB-011-06 concurrency prerequisite
 

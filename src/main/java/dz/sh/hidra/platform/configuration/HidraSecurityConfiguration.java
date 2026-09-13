@@ -7,7 +7,7 @@
  *
  * @Name        : HidraSecurityConfiguration
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-11
+ * @UpdatedOn   : 2026-09-13
  *
  * @Type        : Class
  * @Layer       : Platform
@@ -65,7 +65,7 @@ public class HidraSecurityConfiguration {
             @Value("${hidra.platform.security.cors.allowed-origins:}") String allowedOrigins,
             @Value("${hidra.platform.security.cors.allowed-methods:GET,POST,PUT,PATCH,DELETE,OPTIONS}") String allowedMethods,
             @Value("${hidra.platform.security.cors.allowed-headers:Authorization,Content-Type,X-Correlation-Id,X-Request-Id}") String allowedHeaders,
-            @Value("${hidra.platform.security.cors.exposed-headers:X-Correlation-Id,X-Request-Id}") String exposedHeaders
+            @Value("${hidra.platform.security.cors.exposed-headers:X-Correlation-Id,X-Request-Id,Content-Disposition,Content-Length,Accept-Ranges}") String exposedHeaders
     ) throws Exception {
         if (!csrfEnabled) {
             http.csrf(AbstractHttpConfigurer::disable);
@@ -172,7 +172,7 @@ public class HidraSecurityConfiguration {
         return new BCryptPasswordEncoder();
     }
 
-    private static UrlBasedCorsConfigurationSource buildCorsConfigurationSource(
+    static UrlBasedCorsConfigurationSource buildCorsConfigurationSource(
             String allowedOrigins,
             String allowedMethods,
             String allowedHeaders,

@@ -7,14 +7,14 @@
  *
  * @Name        : package-info
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-13
  *
  * @Type        : PackageInfo
  * @Layer       : Infrastructure
  * @Module      : documents
  * @Package     : dz.sh.hidra.modules.documents.infrastructure.storage
  *
- * @Description : Declares documents storage adapters.
+ * @Description : Documents-owned binary storage adapters.
  *
  */
 package dz.sh.hidra.modules.documents.infrastructure.storage;

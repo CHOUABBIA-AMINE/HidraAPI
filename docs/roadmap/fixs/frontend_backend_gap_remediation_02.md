@@ -42,6 +42,7 @@ This is one cross-cutting remediation task because the consumer register is the 
 | GAP-ALARM-004 | Decide whether suppression is distinct from shelving before publishing any suppression mutation contract. | Open — issue #58 |
 | GAP-ALARM-005 | Derive acknowledgement/closure actor identity from the authenticated principal; remove authoritative browser-selected actor identity from the public request contract. | Implemented — issue #56, CI #34615308694 green |
 | GAP-ENG-001 | Publish one concurrency-protected maintainable-asset update mutation with explicit `expectedUpdatedAt`, deterministic stale conflict, and refreshed token response. | VERIFIED — PR #81 / issue #79 |
+| GAP-DOC-001 | Publish authoritative multipart document-version upload and version-content retrieval contracts; keep storage-object identity backend-owned. | In Progress — issue #83 |
 
 ## Architecture rules
 
@@ -72,6 +73,31 @@ Additionally verify:
 - CI publishes the OpenAPI artifact;
 - all repository-owned gaps above have implementation evidence;
 - external IdP registration/configuration is clearly separated from repository-owned work.
+
+## GAP-DOC-001 contract — HWEB-014-03 document-transfer prerequisite
+
+```text
+Roadmap task              : FRONTEND-BACKEND-GAP-002 (GAP-DOC-001 slice)
+Backend issue             : CHOUABBIA-AMINE/HidraAPI#83
+Owning module             : documents
+Multipart upload          : POST /api/v1/documents/document-versions/upload
+Multipart metadata part   : metadata (UploadDocumentBinaryVersionRequest JSON)
+Multipart binary part     : file
+Content retrieval         : GET /api/v1/documents/document-versions/{versionId}/content
+Storage object ownership  : backend-generated opaque id
+Derived upload evidence   : content length, SHA-256 checksum, MIME type, original filename
+Default max upload        : 52428800 bytes (configurable with hidra.documents.upload.max-bytes)
+Storage root              : configurable with hidra.documents.storage.root
+Download disposition      : attachment with UTF-8 filename
+Range behavior            : unsupported; response publishes Accept-Ranges: none
+Direct storage URI        : not exposed
+Legacy JSON metadata POST : retained for compatibility; HWEB-014-03 must use multipart contract
+Deterministic errors      : DOCUMENTS_CONTENT_INVALID / DOCUMENTS_CONTENT_NOT_FOUND /
+                            DOCUMENTS_CONTENT_STORAGE_FAILURE
+Permission source         : backend route descriptor; frontend must not infer permission strings
+```
+
+HWEB-014-03 may consume only the multipart upload and version-scoped content route above. It must not synthesize object-store URLs, client-generate `storageObjectId`, or infer range/resume behavior. The backend computes byte length and SHA-256 from the received stream and persists that evidence with the storage object/version metadata.
 
 ## GAP-ENG-001 contract — HWEB-011-06 concurrency prerequisite
 
@@ -141,4 +167,4 @@ The implementation publishes `PATCH /api/v1/assets/maintainable-assets/{assetId}
 
 The initial exact-head CI failure was infrastructure wiring only: `@Transactional` required Spring proxying, but `AssetsApplicationService` was `final`. Removing only that modifier resolved the context-load failure without changing contract or business semantics.
 
-GAP-ENG-001 is verified and the backend prerequisite for HidraWEB HWEB-011-06 concurrency testing is satisfied. The cross-cutting roadmap remains `In Progress` because `GAP-WF-004`, `GAP-ALARM-004`, and other remaining repository-owned gaps are not all resolved.
+GAP-ENG-001 is verified and the backend prerequisite for HidraWEB HWEB-011-06 concurrency testing is satisfied. The cross-cutting roadmap remains `In Progress` because `GAP-WF-004`, `GAP-ALARM-004`, `GAP-DOC-001`, and other remaining repository-owned gaps are not all resolved.

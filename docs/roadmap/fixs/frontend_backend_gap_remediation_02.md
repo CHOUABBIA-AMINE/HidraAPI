@@ -158,10 +158,10 @@ OpenAPI artifact name  : hidra-api-openapi-2e6f93c14e330c8cc839a5de75ecc7b893f98
 OpenAPI artifact digest: sha256:20b15395d1b2feec853167e88b2b6357650f51c03fb7811ffe60fd1362544c7f
 Repository compile     : PASS
 Repository tests       : PASS
-Repository verify      : PASS
+Repository verify     : PASS
 Acceptance compile     : PASS
 Acceptance tests       : PASS
-Acceptance verify     : PASS
+Acceptance verify      : PASS
 OpenAPI publication   : PASS
 Result                 : VERIFIED
 ```

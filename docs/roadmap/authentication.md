@@ -1,4 +1,4 @@
-# HidraAPI Authentication Gap-Closure Roadmap — LOCAL + Active Directory
+# HidraAPI Authentication Gap-Closure Roadmap — Dynamic LOCAL + LDAP/AD + OIDC Routing
 
 ## 1. Document control
 
@@ -11,6 +11,7 @@
 | Technical owner | `platform.security` |
 | Identity root package | `dz.sh.hidra.modules.identity` |
 | Security roots | `dz.sh.hidra.platform.security`, `dz.sh.hidra.platform.configuration` |
+| Persistence | Spring Data JPA + PostgreSQL + Flyway |
 | Database prefix | `hidra_identity_*` |
 | Author | Abir MEDJERAB |
 | CreatedOn | 2025-06-26 |
@@ -20,138 +21,75 @@
 
 ---
 
-## 2. Purpose of this roadmap
+## 2. Purpose
 
-This roadmap does **not** redesign or replace the Identity model that already exists in HidraAPI.
+This roadmap is a **gap-closure plan**, not a replacement of the Identity implementation that already exists in HidraAPI.
 
-Its purpose is to close the implementation gap between the current business identity model and the current Spring Security runtime.
+The repository already models authentication providers, users, roles, permissions, external identities, login sessions, authentication events, and authorization decisions. Those concepts must be reused when they are correct.
 
-The repository already models authentication providers, users, roles, permissions, external identities, login sessions, authentication events, and authorization decisions. Those concepts are retained when they are already correct.
+The target is to complete the runtime bridge between the existing Identity model and Spring Security so that the authentication type selected by the client dynamically reaches the correct authentication strategy.
 
-The principal gap is that the runtime security path is not yet wired to those Identity concepts:
-
-```text
-CURRENT BUSINESS MODEL
-
-IdentityProvider
-  ├── LOCAL
-  ├── LDAP
-  ├── ACTIVE_DIRECTORY
-  ├── ...
-
-User
-Role
-Permission
-ExternalIdentity
-LoginSession
-AuthenticationEvent
-
-                X
-                X  missing runtime integration
-                X
-
-CURRENT SPRING SECURITY RUNTIME
-
-basic    -> InMemoryUserDetailsManager bootstrap account
-jwt      -> external/resource-server bearer validation
-disabled -> permit all
-```
-
-The goal is to complete the intended authentication implementation while preserving the existing domain and persistence structures that are suitable.
-
----
-
-## 3. Frozen architecture decision
-
-Hidra will support two human authentication sources for the target deployment:
+Target human authentication types:
 
 ```text
 LOCAL
-ACTIVE_DIRECTORY via LDAP/LDAPS
+LDAP / ACTIVE_DIRECTORY
+OIDC
 ```
 
-The authentication source answers only:
+All successful authentication paths must converge on:
 
 ```text
-Who verified this user's credentials?
+Hidra User
+   -> Hidra account-state validation
+   -> Hidra roles/permissions
+   -> normalized HidraPrincipal
+   -> LoginSession / AuthenticationEvent
+   -> Hidra-issued JWT bearer token
+   -> protected HidraAPI routes
 ```
 
-Authorization remains Hidra-owned in all cases:
-
-```text
-User
-Role
-Permission
-RolePermissionGrant
-UserRoleGrant
-UserPermissionGrant
-AuthorizationPolicy
-organization/resource scopes
-```
-
-Active Directory must not become the authority for Hidra roles or permissions.
-
-### 3.1 LOCAL already exists and must be preserved
-
-`ProviderType.LOCAL` is an existing Identity provider type. It is not a new concept introduced by this roadmap.
-
-LOCAL means:
-
-```text
-username/password credentials are owned and verified by Hidra
-```
-
-The missing part is the runtime credential store and authentication adapter that connects the existing LOCAL provider concept to Spring Security and the Identity application layer.
-
-### 3.2 ACTIVE_DIRECTORY already exists and must be preserved
-
-`ProviderType.ACTIVE_DIRECTORY` is also already present.
-
-The existing `IdentityProvider` model already contains directory-related configuration fields such as:
-
-```text
-directoryBaseDn
-userSearchBase
-groupSearchBase
-usernameAttribute
-emailAttribute
-displayNameAttribute
-externalIdAttribute
-groupMembershipAttribute
-secretReference
-```
-
-The missing part is an actual LDAP/LDAPS authentication adapter and its application-layer wiring.
-
-### 3.3 Existing LDAP provider value is compatibility-sensitive
-
-`ProviderType.LDAP` currently exists alongside `ACTIVE_DIRECTORY`.
-
-Do **not** remove or rename it automatically.
-
-First determine whether live data, APIs, migrations, tests, or administrative configuration use it. If the repository has no real non-AD LDAP requirement, it may later be deprecated in favor of `ACTIVE_DIRECTORY`; that is a compatibility decision, not an initial implementation task.
-
-### 3.4 Existing external-provider model is not deleted by this roadmap by default
-
-The current provider enum also contains OIDC/OAuth/SAML-oriented values. The target deployment does not use them, but this roadmap must not destroy correctly implemented generic Identity capabilities merely because they are unused in the present installation.
-
-Policy:
-
-```text
-unsupported in this deployment != delete from domain
-```
-
-Only remove an existing provider type, field, class, table, API, or migration when a dedicated compatibility task proves it is obsolete and safe to retire.
+The roadmap explicitly preserves working OIDC/JWT capabilities and closes only the missing LOCAL, LDAP, runtime-routing, and token-normalization gaps.
 
 ---
 
-## 4. Current repository capabilities to preserve
+## 3. Current-state baseline to preserve
 
-The following live concepts are considered existing assets and must be reused rather than replaced unless a concrete defect is demonstrated.
+### 3.1 Existing Identity provider model
 
-### 4.1 Identity business model
+The repository already contains provider concepts including:
 
-Preserve:
+```text
+ProviderType.LOCAL
+ProviderType.LDAP
+ProviderType.ACTIVE_DIRECTORY
+ProviderType.OIDC
+ProviderType.OAUTH2
+ProviderType.SAML2
+ProviderType.KEYCLOAK
+ProviderType.AZURE_AD
+ProviderType.OKTA
+```
+
+It also has `AuthenticationProtocol` values including:
+
+```text
+LOCAL
+LDAP
+OIDC
+SAML2
+OAUTH2
+API_TOKEN
+SYSTEM
+```
+
+Do not invent a second provider taxonomy merely to implement runtime routing.
+
+`ProviderType` and/or `AuthenticationProtocol` must be evaluated in AUTH-002 and reused where they already express the required invariant.
+
+### 3.2 Existing Identity business assets
+
+Preserve unless a concrete defect is demonstrated:
 
 ```text
 User
@@ -170,9 +108,9 @@ GroupRoleGrant
 AuthorizationPolicy
 ```
 
-### 4.2 User security state
+### 3.3 Existing user security state
 
-The existing `User` model already carries:
+The existing `User` model already carries security lifecycle information such as:
 
 ```text
 status
@@ -181,13 +119,11 @@ failedLoginCount
 lockedUntil
 ```
 
-Do not create a second account-state model merely for authentication.
+Do not create a second account-state model for LOCAL or LDAP authentication.
 
-Enhance existing behavior only where required to support successful/failed login accounting.
+### 3.4 Existing external identity linkage
 
-### 4.3 Directory identity linkage
-
-The existing `ExternalIdentity` model already represents a link from a Hidra user to an external identity and includes fields appropriate for an AD-backed identity, including:
+The existing `ExternalIdentity` model already contains fields suitable for LDAP/AD and OIDC identity binding, including concepts such as:
 
 ```text
 identityProviderId
@@ -202,271 +138,464 @@ lastSyncedAt
 status
 ```
 
-Use this model for AD linkage unless implementation analysis identifies a specific incompatibility.
+Reuse it rather than introducing duplicate provider-specific user aggregates.
 
-Do not create a duplicate `DirectoryIdentity` aggregate just because the provider is AD.
+### 3.5 Existing OIDC/JWT capability
 
-### 4.4 Login session
+The repository already publishes a browser OIDC/JWT acquisition contract through:
 
-The existing `LoginSession` model already records logical session metadata without storing bearer tokens.
+```text
+GET /api/v1/security/oidc
+```
 
-Reuse it.
+and already contains JWT resource-server validation/authority conversion infrastructure.
 
-Do not create a second platform-owned session table unless a demonstrated requirement cannot be represented by the current model.
+OIDC is therefore a **reuse and normalization path**, not a capability to delete and rebuild.
 
-### 4.5 Authentication audit
+The implementation inventory must distinguish between:
 
-The existing `AuthenticationEvent` concept must be used for successful and failed authentication events.
+```text
+existing OIDC browser/bootstrap behavior
+existing external JWT validation
+missing mapping to normalized HidraPrincipal
+missing/unified Hidra token issuance where applicable
+```
 
-Do not create a parallel login-audit subsystem in `platform.security`.
+before changing working OIDC code.
 
-### 4.6 Existing migration
+### 3.6 Existing temporary LOCAL runtime
 
-`V20260611_001__create_identity_tables.sql` is an existing released Identity migration.
+Current development Basic authentication uses an `InMemoryUserDetailsManager` bootstrap account.
 
-Never rewrite it to fit the authentication work.
+That mechanism is temporary infrastructure and must not be confused with the existing business meaning of:
 
-All database changes must be forward-only Flyway migrations.
+```text
+ProviderType.LOCAL
+```
 
-### 4.7 Existing authorization implementation
+LOCAL already means Hidra-owned username/password authentication. The gap is persistent credential verification and runtime wiring.
 
-Authentication work must not replace or bypass existing Hidra role/permission resolution.
+### 3.7 Persistence baseline
 
-After credentials are validated, authorization must continue through the existing Identity permission model and platform permission enforcement.
+HidraAPI already uses:
+
+```text
+Spring Data JPA
+PostgreSQL
+Flyway
+```
+
+LOCAL credential persistence must extend that stack.
+
+Do not introduce MySQL only for authentication. A PostgreSQL-to-MySQL platform migration, if ever required, is a separate repository-wide roadmap.
+
+### 3.8 Released migration protection
+
+Existing released Identity migrations, including the initial Identity schema migration, must not be edited to retrofit authentication.
+
+All schema changes are forward-only Flyway migrations.
+
+---
+
+## 4. Frozen architectural decisions
+
+### 4.1 Client-selected authentication type is meaningful
+
+The runtime authentication contract must preserve the existing/client-accepted concept that the caller selects an authentication type.
+
+Conceptual request:
+
+```json
+{
+  "authType": "LOCAL",
+  "username": "...",
+  "password": "..."
+}
+```
+
+or:
+
+```json
+{
+  "authType": "LDAP",
+  "username": "...",
+  "password": "..."
+}
+```
+
+OIDC is different: Hidra must **not** collect an external provider password. `authType=OIDC` initiates or completes the existing authorization-code/OIDC flow, and the validated OIDC result is then normalized into the same Hidra principal/token pipeline.
+
+AUTH-002 must locate the exact live DTO/endpoint and reuse its actual field names rather than create a duplicate request contract.
+
+### 4.2 Runtime routing uses Spring Security provider delegation
+
+The target runtime pattern is:
+
+```text
+request authType
+      |
+      v
+AuthenticationRequestFactory / router
+      |
+      +--> LocalAuthenticationToken
+      +--> LdapAuthenticationToken
+      +--> OidcAuthenticationToken / OIDC completion result
+      |
+      v
+AuthenticationManager
+      |
+      v
+ProviderManager
+      |
+      +--> LocalAuthenticationProvider
+      +--> LdapAuthenticationProvider
+      +--> OidcAuthenticationProvider / adapter
+```
+
+Each provider must advertise support for only its own authentication token type.
+
+Do not route LOCAL and LDAP by registering several providers that all support the same generic username/password token and rely only on provider ordering.
+
+### 4.3 No silent provider fallback
+
+These flows are forbidden:
+
+```text
+LDAP fails -> try LOCAL
+LOCAL fails -> try LDAP
+OIDC fails -> try LOCAL
+provider unavailable -> try another provider
+```
+
+`authType` selects the credential authority. Authentication failure in that authority fails the login attempt.
+
+### 4.4 Authentication source does not own authorization
+
+All three providers answer only:
+
+```text
+Who successfully authenticated this identity?
+```
+
+Hidra remains authoritative for:
+
+```text
+User status
+Roles
+Permissions
+Organization/resource scope
+AuthorizationPolicy
+Business authorization decisions
+```
+
+Invalid patterns:
+
+```text
+AD group -> direct Spring ROLE_* -> business access
+OIDC provider role -> direct controller authorization
+LOCAL login -> hard-coded administrator role
+LDAP DN -> permission decision
+```
+
+### 4.5 All providers converge on one Hidra principal
+
+A successful provider authentication must resolve to a stable Hidra user and produce one normalized principal representation.
+
+Conceptual shape:
+
+```java
+public record HidraPrincipal(
+        String userId,
+        String username,
+        String displayName,
+        ProviderType authenticationType,
+        String identityProviderId,
+        Set<String> roles,
+        Set<String> permissions
+) implements Principal { }
+```
+
+The exact class/record name is subject to AUTH-002 inventory. Reuse an equivalent existing principal contract if one already exists.
+
+The stable identity is the Hidra user ID, not a mutable LDAP username, email address, DN, or raw OIDC subject.
+
+### 4.6 All successful logins converge on one API bearer-token format
+
+After LOCAL, LDAP/AD, or OIDC succeeds:
+
+```text
+provider authentication
+      -> Hidra User
+      -> HidraPrincipal
+      -> LoginSession
+      -> Hidra token issuer
+      -> standardized JWT
+```
+
+Protected APIs consume the same Hidra bearer JWT regardless of original authentication source.
+
+The original provider may be included as an informational claim such as:
+
+```text
+auth_source = LOCAL | LDAP | ACTIVE_DIRECTORY | OIDC
+```
+
+but it must not become an authorization shortcut.
 
 ---
 
 ## 5. Actual gaps to close
 
-The roadmap addresses only gaps that prevent the existing model from functioning as intended.
+### GAP-AUTH-01 — selected auth type is not the complete runtime dispatcher
 
-### GAP-AUTH-01 — LOCAL provider is not wired to persistent credentials
+The API/client contract can express an authentication type, but the runtime implementation is not yet fully backed by a deterministic Spring Security provider-routing layer for all supported provider types.
 
-Current runtime Basic authentication uses an in-memory bootstrap user.
-
-Missing:
+Missing/required:
 
 ```text
-LOCAL credential persistence
-password hash lifecycle
-LOCAL credential repository port
-LOCAL password verifier adapter
-Identity user/provider resolution
+provider-specific Authentication token types or equivalent dispatch discriminator
+request -> Authentication conversion
+central AuthenticationManager / ProviderManager composition
+provider-specific supports(...) behavior
+no-fallback rules
+unsupported-provider behavior
 ```
 
-### GAP-AUTH-02 — Active Directory provider has no LDAP runtime adapter
+### GAP-AUTH-02 — LOCAL exists conceptually but uses temporary in-memory runtime authentication
 
-The domain can represent a directory provider, but no production LDAP/LDAPS authenticator is wired into the login path.
-
-Missing:
+Missing/required:
 
 ```text
-Spring LDAP/security LDAP dependency as needed
-LDAPS connection configuration
-AD username lookup/bind strategy
-credential verification
-stable AD identity mapping
+persistent LOCAL credential model if absent
+password hash persistence
+Spring Data JPA adapter
+PasswordEncoder-backed verification
+LOCAL AuthenticationProvider
+User/account-state enforcement
+failed/successful login state updates
+```
+
+### GAP-AUTH-03 — LDAP/Active Directory has no complete runtime provider
+
+Missing/required:
+
+```text
+Spring LDAP/Spring Security LDAP dependency as required
+LDAPS/TLS configuration
+AD bind/search strategy
+LDAP AuthenticationProvider adapter
+ExternalIdentity -> Hidra User resolution
 failure normalization
-connection/time-out handling
+timeout/directory-unavailable behavior
+no AD-group authorization bypass
 ```
 
-### GAP-AUTH-03 — runtime security modes and Identity provider types are disconnected
+### GAP-AUTH-04 — OIDC success must converge on the same Hidra principal
 
-Current platform configuration understands:
+OIDC/JWT infrastructure already exists and must be preserved.
 
-```text
-basic
-jwt
-disabled
-```
-
-Identity understands provider types such as LOCAL and ACTIVE_DIRECTORY.
-
-The system needs one coherent login use case that resolves an existing Hidra user/provider and delegates credential verification to the proper adapter.
-
-### GAP-AUTH-04 — no Hidra-owned login API connects frontend credentials to Identity
-
-The backend needs an explicit authentication boundary for username/password login.
-
-Target initial endpoint:
+The gap-closure work must prove and, only where missing, add:
 
 ```text
-POST /api/v1/security/auth/login
-```
-
-This endpoint should orchestrate existing Identity concepts; it must not create a second user system.
-
-### GAP-AUTH-05 — no completed post-login bearer-token flow owned by Hidra
-
-After either LOCAL or AD authentication succeeds, protected API calls need one consistent credential transport.
-
-The recommended target is a short-lived Hidra-issued bearer JWT validated by HidraAPI.
-
-This does not convert LOCAL or AD into JWT provider types. JWT is the post-authentication API credential.
-
-### GAP-AUTH-06 — bootstrap Basic authentication is temporary infrastructure
-
-`InMemoryUserDetailsManager` is useful for bootstrap/development, but it is not the completed LOCAL authentication mechanism.
-
-It must be phased out only after persistent LOCAL authentication and a safe bootstrap path exist.
-
-### GAP-AUTH-07 — missing end-to-end tests
-
-The repository needs explicit tests proving:
-
-```text
-LOCAL username/password authentication
-AD username/password authentication
+OIDC identity -> ExternalIdentity mapping
+ExternalIdentity -> Hidra User mapping
 Hidra account-state enforcement
-Hidra-owned role/permission behavior
-no role import from AD
-bearer access after successful authentication
-failure behavior and audit
+Hidra role/permission loading
+normalized HidraPrincipal result
+unified Hidra token/session behavior
+```
+
+### GAP-AUTH-05 — provider-specific results are not yet guaranteed to share one token contract
+
+All providers must emit the same protected-API credential contract.
+
+Missing/required where not already implemented:
+
+```text
+Hidra JWT encoder/issuer
+stable Hidra subject
+issuer/audience/expiry/JTI claims
+session linkage
+consistent principal reconstruction
+compatibility with current JwtDecoder/resource-server configuration
+```
+
+### GAP-AUTH-06 — temporary Basic bootstrap must be retired safely
+
+`InMemoryUserDetailsManager` must stop serving as ordinary LOCAL authentication only after database-backed LOCAL login is proven and a safe installation/bootstrap path exists.
+
+### GAP-AUTH-07 — integration and security tests are incomplete
+
+The repository needs explicit tests for provider routing, LOCAL persistence, LDAP, OIDC normalization, JWT unification, no-fallback behavior, and Hidra-owned authorization.
+
+---
+
+## 6. Target runtime flow
+
+```text
+                         Login / auth selection
+                                 |
+                                 v
+                        read/validate authType
+                                 |
+                +----------------+----------------+
+                |                |                |
+                v                v                v
+              LOCAL          LDAP / AD           OIDC
+                |                |                |
+                v                v                v
+      LocalAuthentication  LdapAuthentication   existing OIDC
+            Token               Token           browser/code flow
+                |                |                |
+                +----------------+----------------+
+                                 |
+                                 v
+                       AuthenticationManager
+                         (ProviderManager)
+                                 |
+                +----------------+----------------+
+                |                |                |
+                v                v                v
+             LOCAL            LDAP/AD            OIDC
+            Provider          Provider           Adapter
+                |                |                |
+                v                v                v
+        PostgreSQL hash      AD via LDAPS      external IdP
+                |                |                |
+                +----------------+----------------+
+                                 |
+                                 v
+                        resolve Hidra User
+                                 |
+                                 v
+                       enforce account state
+                                 |
+                                 v
+                      load Hidra authorization
+                                 |
+                                 v
+                         HidraPrincipal
+                                 |
+                    +------------+------------+
+                    |                         |
+                    v                         v
+            AuthenticationEvent          LoginSession
+                    |                         |
+                    +------------+------------+
+                                 |
+                                 v
+                         Hidra JWT issuer
+                                 |
+                                 v
+                    Authorization: Bearer ...
+                                 |
+                                 v
+                             HidraAPI
 ```
 
 ---
 
-## 6. Target login behavior
+## 7. Dynamic routing architecture
 
-The common login flow should be:
+### 7.1 Provider-specific Authentication tokens
+
+Preferred pattern:
+
+```java
+final class LocalAuthenticationToken extends AbstractAuthenticationToken { ... }
+final class LdapAuthenticationToken extends AbstractAuthenticationToken { ... }
+final class OidcAuthenticationToken extends AbstractAuthenticationToken { ... }
+```
+
+Exact class names are implementation details. AUTH-002 must first check for existing equivalent types.
+
+Why use distinct token types:
 
 ```text
-HidraWEB
-   |
-   | username + password over HTTPS
-   v
-POST /api/v1/security/auth/login
-   |
-   v
-resolve Hidra User
-   |
-   v
-resolve configured IdentityProvider / identity binding
-   |
-   +-----------------------------+
-   |                             |
-   v                             v
-LOCAL                         ACTIVE_DIRECTORY
-   |                             |
-verify Hidra hash              verify with AD via LDAP/LDAPS
-   |                             |
-   +--------------+--------------+
-                  |
-                  v
-         enforce Hidra User status
-                  |
-                  v
-       record AuthenticationEvent
-                  |
-                  v
-        create/reuse LoginSession
-                  |
-                  v
-       issue Hidra access token
-                  |
-                  v
-     Authorization: Bearer <token>
-                  |
-                  v
-              HidraAPI
-                  |
-                  v
-      existing Hidra authorization
+LocalAuthenticationProvider.supports(LocalAuthenticationToken)
+LdapAuthenticationProvider.supports(LdapAuthenticationToken)
+Oidc adapter/provider supports OIDC token/result type
 ```
+
+This makes routing deterministic and prevents provider-order fallback.
+
+### 7.2 Request-to-Authentication conversion
+
+Use a single application/platform boundary responsible for translating the selected auth type into the corresponding Spring Security `Authentication` request.
+
+Conceptual example:
+
+```java
+Authentication create(LoginRequest request) {
+    return switch (request.authType()) {
+        case LOCAL -> LocalAuthenticationToken.unauthenticated(
+                request.username(), request.password());
+        case LDAP, ACTIVE_DIRECTORY -> LdapAuthenticationToken.unauthenticated(
+                request.username(), request.password());
+        case OIDC -> oidcRequestFactory.from(request);
+        default -> throw new UnsupportedAuthenticationTypeException(...);
+    };
+}
+```
+
+This factory/router selects the strategy. It does not verify credentials, resolve permissions, issue tokens, or query repositories directly.
+
+### 7.3 Central AuthenticationManager
+
+Compose providers behind one `ProviderManager`/`AuthenticationManager`.
+
+Conceptual example:
+
+```java
+@Bean
+AuthenticationManager hidraAuthenticationManager(
+        LocalAuthenticationProvider localProvider,
+        HidraLdapAuthenticationProvider ldapProvider,
+        HidraOidcAuthenticationAdapter oidcProvider) {
+
+    return new ProviderManager(List.of(
+            localProvider,
+            ldapProvider,
+            oidcProvider
+    ));
+}
+```
+
+Reuse existing Spring configuration style and beans when possible.
+
+### 7.4 Provider contract
+
+Each provider:
+
+```text
+1. Accepts only its own token/result type.
+2. Verifies credentials/identity through the proper authority.
+3. Resolves that identity to a Hidra User.
+4. Enforces Hidra User account state.
+5. Loads Hidra-owned roles/permissions.
+6. Returns an authenticated token containing HidraPrincipal.
+7. Never issues business permissions directly from external groups/claims.
+```
+
+### 7.5 Unsupported provider handling
+
+Unknown/disabled `authType` values fail closed.
+
+Do not reinterpret them as LOCAL or any default provider.
 
 ---
 
-## 7. Provider resolution rules
+## 8. LOCAL authentication migration
 
-### 7.1 Preserve provider-driven identity semantics
+### 8.1 Preserve existing LOCAL semantics
 
-Do not introduce a new `AuthenticationSource` enum if the existing Identity provider relationship already provides the necessary information.
+`ProviderType.LOCAL` already represents Hidra-owned username/password authentication.
 
-First reuse:
+Do not rename it and do not add a second `DATABASE` provider type merely because persistence is being completed.
 
-```text
-IdentityProvider
-ExternalIdentity
-User
-```
+### 8.2 Add only the missing credential persistence
 
-Only add a new value object or field when the current model cannot represent a required invariant.
-
-### 7.2 No silent cross-provider fallback
-
-A failed AD authentication must not automatically retry the same username/password against LOCAL.
-
-A failed LOCAL authentication must not automatically try AD.
-
-Provider selection must be deterministic from existing Hidra identity/provider configuration.
-
-### 7.3 Username collision
-
-If the same username could exist in both LOCAL and AD, provider resolution must remain deterministic and fail closed when the identity binding is ambiguous.
-
-Do not resolve ambiguity by trying both password stores.
-
-### 7.4 AD user must resolve to a Hidra User
-
-A valid AD credential does not itself grant Hidra access.
-
-The directory identity must resolve to an existing/allowed Hidra identity according to the current provider/external-identity model.
-
-Default first implementation:
-
-```text
-pre-provisioned Hidra user + AD external identity link
-```
-
-Automatic just-in-time provisioning is not part of the gap closure unless a separate task is approved.
-
----
-
-## 8. Authorization invariant
-
-Authentication source must never determine business authority directly.
-
-The following are invalid implementations:
-
-```text
-AD group -> Spring ROLE_* -> bypass Hidra permissions
-AD group -> direct controller access
-LOCAL user -> hard-coded admin role
-LDAP DN -> authorization decision
-```
-
-The valid flow is:
-
-```text
-credential verified
-      |
-      v
-Hidra User resolved
-      |
-      v
-existing Hidra role/permission resolution
-      |
-      v
-request allowed/denied
-```
-
-AD groups may be synchronized or displayed if existing features require them, but they do not become authoritative Hidra roles automatically.
-
-Do not delete existing external mapping concepts solely because this deployment does not use them. Disable/unconfigure them for this deployment unless a later compatibility task explicitly retires them.
-
----
-
-## 9. LOCAL authentication gap
-
-### 9.1 Existing concept
-
-LOCAL already exists as a provider type and remains canonical.
-
-### 9.2 Missing persistence
-
-Current repository evidence does not show a dedicated persistent local-password credential model/repository in the live Identity infrastructure.
-
-Add the minimum Identity-owned credential structure needed to support LOCAL without modifying the `User` aggregate into a password container.
+If AUTH-002 confirms no equivalent credential table/model exists, introduce the minimum Identity-owned credential structure.
 
 Conceptual fields:
 
@@ -478,42 +607,96 @@ credentialStatus
 passwordChangedAt
 createdAt
 updatedAt
+version (only if aligned with module persistence conventions)
 ```
 
-Additional fields are allowed only when justified by a concrete requirement such as password reset or password history.
-
-### 9.3 Password rules
-
-LOCAL passwords:
+Relationship intent:
 
 ```text
-must never be stored plaintext
-must never be reversibly encrypted for comparison
-must never be logged
-must never appear in domain events
-must never be exposed in DTOs
+hidra_identity_user
+       1
+       |
+       | 0..1
+       v
+hidra_identity_local_credential
 ```
 
-Use Spring Security's `PasswordEncoder` behind a technical adapter.
+AD/OIDC users do not require a LOCAL credential row unless explicitly configured for LOCAL as an allowed authentication method.
 
-The domain/application layer should depend on an abstraction such as credential verification, not on BCrypt/Argon2 classes directly.
+### 8.3 Spring Data JPA adapter
 
-### 9.4 Existing user lock state
+Use the existing Identity infrastructure style.
 
-Prefer existing `User.failedLoginCount` and `User.lockedUntil` for account lockout behavior.
+Conceptual infrastructure:
 
-Do not create duplicate lock counters in the credential table unless a later concurrency/security analysis proves necessary.
+```java
+interface LocalCredentialJpaRepository
+        extends JpaRepository<LocalCredentialJpaEntity, String> {
+
+    Optional<LocalCredentialJpaEntity> findByUserId(String userId);
+}
+```
+
+The application/domain layer must depend on an outbound port rather than Spring Data directly.
+
+### 8.4 Password storage
+
+Use Spring Security `PasswordEncoder` through a technical adapter.
+
+Requirements:
+
+```text
+one-way adaptive hash only
+no plaintext password persistence
+no reversible password encryption
+no password in DTOs/events/logs
+no production default password
+```
+
+Prefer `DelegatingPasswordEncoder` or the repository's already accepted encoder configuration so algorithm migration remains possible.
+
+### 8.5 LocalAuthenticationProvider
+
+Conceptual responsibilities:
+
+```text
+resolve Hidra user
+verify requested LOCAL provider is allowed
+check status / lock state
+load LOCAL credential
+verify hash
+record failed/successful login state
+resolve Hidra authorization
+return authenticated HidraPrincipal
+```
+
+Do not perform token signing inside the provider.
+
+### 8.6 Remove in-memory LOCAL only after proving replacement
+
+Migration order:
+
+```text
+1. Add persistent LOCAL credential capability.
+2. Add LOCAL provider tests.
+3. Provision a controlled LOCAL administrator through normal Identity persistence.
+4. Switch ordinary LOCAL login to database-backed provider.
+5. Remove ordinary reliance on InMemoryUserDetailsManager.
+6. Keep any emergency/bootstrap behavior separate, explicit, and production-safe.
+```
+
+A failed DB-backed LOCAL login must never fall through to the old in-memory user.
 
 ---
 
-## 10. Active Directory authentication gap
+## 9. LDAP / Active Directory integration
 
-### 10.1 Existing concepts
+### 9.1 Preserve provider model
 
 Reuse:
 
 ```text
-ProviderType.ACTIVE_DIRECTORY
+ProviderType.LDAP and/or ProviderType.ACTIVE_DIRECTORY
 IdentityProvider
 ExternalIdentity
 User
@@ -521,390 +704,595 @@ AuthenticationEvent
 LoginSession
 ```
 
-### 10.2 LDAP is the technical protocol
+AUTH-002 must determine the intended semantic distinction between `LDAP` and `ACTIVE_DIRECTORY` before changing either enum value.
 
-The implementation may use Spring LDAP/Spring Security LDAP, but LDAP code belongs to technical infrastructure/platform integration, not to the Identity domain.
+### 9.2 Technical dependency
 
-### 10.3 Production transport
+Add only the Spring LDAP/Spring Security LDAP dependency actually required by the chosen implementation.
 
-Production-like environments require LDAP over a protected channel.
+LDAP-specific Spring classes belong to infrastructure/platform code, not the Identity domain.
 
-Preferred target:
+### 9.3 Production transport
+
+Production must use a protected directory channel:
 
 ```text
 LDAPS
 ```
 
-or an explicitly validated TLS-secured LDAP configuration.
+or explicitly validated StartTLS/TLS configuration.
 
-Do not disable TLS certificate verification.
+Never disable directory TLS certificate verification to make authentication work.
 
-### 10.4 Bind/search strategy
+### 9.4 AD bind/search strategy
 
-The implementation task must choose the appropriate AD pattern based on company infrastructure:
+Support configuration for the company's real AD layout.
+
+Possible patterns:
 
 ```text
 direct user bind
-or
 service-account search + user bind
 ```
 
-Repository code must support configuration without committing company credentials.
+Repository code must not commit company bind-account passwords.
 
-### 10.5 Stable identity
+### 9.5 LDAP provider flow
 
-When AD exposes a stable immutable identifier, store/use it through existing `ExternalIdentity.externalImmutableId` rather than relying solely on mutable display names.
+Conceptual flow:
 
-DN/UPN/sAMAccountName may be retained according to the existing external-identity model and deployment configuration.
+```text
+LdapAuthenticationToken
+     |
+     v
+HidraLdapAuthenticationProvider
+     |
+     v
+Spring LDAP / AD credential verification
+     |
+     v
+extract stable directory identity
+     |
+     v
+ExternalIdentity lookup
+     |
+     v
+Hidra User
+     |
+     v
+HidraPrincipal
+```
 
-### 10.6 No AD password persistence
+### 9.6 Stable AD identity
 
-Hidra must never persist, hash for later reuse, cache, or log the AD password.
+Prefer immutable directory identifiers when available.
 
-It exists only for the duration of the login authentication operation.
+Store/reuse them through the existing `ExternalIdentity` model instead of relying solely on mutable usernames, email addresses, or display names.
+
+### 9.7 AD does not own Hidra roles
+
+Directory groups may be synchronized or displayed if an existing feature requires them, but they must not become automatic Hidra authorities unless a separately approved policy explicitly maps them.
+
+Default invariant:
+
+```text
+AD authenticates
+Hidra authorizes
+```
+
+### 9.8 LDAP failure categories
+
+Internally distinguish:
+
+```text
+invalid credentials
+unknown directory identity
+missing Hidra mapping
+Hidra account disabled/locked
+LDAP timeout
+LDAP unavailable
+TLS/configuration failure
+```
+
+Directory unavailability is not a bad password and must not trigger LOCAL fallback.
+
+### 9.9 No AD password persistence
+
+AD credentials exist only for the duration of the login operation.
+
+Do not persist, cache, hash-for-reuse, publish in events, or log the AD password.
 
 ---
 
-## 11. Hidra access token gap
+## 10. OIDC preservation and normalization
+
+### 10.1 OIDC is a supported runtime path
+
+Do not classify OIDC as a future/non-goal authentication mechanism.
+
+Existing OIDC/JWT browser integration and resource-server code is an asset to preserve.
+
+### 10.2 OIDC authentication is not username/password authentication
+
+If the user selects OIDC, Hidra must initiate/use the external authorization flow.
+
+Forbidden:
+
+```text
+Hidra collecting Google/IdP passwords
+OIDC request sending external password to HidraAPI
+```
+
+Expected browser flow:
+
+```text
+authType=OIDC
+   -> obtain/use OIDC bootstrap metadata
+   -> authorization code + PKCE flow
+   -> callback / validated provider result
+   -> external identity resolution
+   -> Hidra User
+   -> HidraPrincipal
+```
+
+### 10.3 Preserve existing OIDC contract
+
+Keep `GET /api/v1/security/oidc` unless AUTH-002 proves another canonical contract has replaced it.
+
+Do not remove working issuer/client/audience/scope metadata while integrating LOCAL/LDAP.
+
+### 10.4 Normalize external identity
+
+After OIDC authentication succeeds:
+
+```text
+issuer + subject
+      -> IdentityProvider / ExternalIdentity
+      -> Hidra User
+      -> Hidra account-state validation
+      -> Hidra role/permission resolution
+      -> HidraPrincipal
+```
+
+Email alone must not be treated as the durable external identity key.
+
+### 10.5 OIDC authorization remains Hidra-owned
+
+External provider roles/groups/claims must not bypass Hidra authorization.
+
+Claims may assist identity mapping only under explicit policy.
+
+---
+
+## 11. Unified Hidra principal
 
 ### 11.1 Purpose
 
-A successful credential verification should produce one consistent authenticated API transport.
+Every successful provider must return the same business-facing authenticated identity contract.
 
-Recommended:
+### 11.2 Required identity content
+
+At minimum:
 
 ```text
-short-lived Hidra-issued JWT bearer token
+stable Hidra user ID
+username/display name
+provider/authentication source
+identity provider ID when relevant
+Hidra roles
+Hidra permissions or permission-resolution handle
+account/session context needed by existing authorization
 ```
 
-### 11.2 Preserve current JWT infrastructure where useful
+### 11.3 Do not expose provider-specific principals downstream
 
-The current repository already contains JWT resource-server support and authority conversion.
-
-Do not remove or rewrite it wholesale.
-
-Inventory the existing decoder, claim mapping, route authorization, permission resolution, issuer/audience configuration, and tests first. Reuse compatible components.
-
-### 11.3 Token identity
-
-The bearer token must identify the stable Hidra user, not merely a raw LDAP username.
-
-Minimum token identity intent:
+Business modules must not need to know whether the request originally came from:
 
 ```text
-sub = Hidra user ID
+LDAP DN
+OIDC subject
+LOCAL username
+```
+
+They consume the authenticated Hidra identity/authorization contract.
+
+---
+
+## 12. Token unification
+
+### 12.1 One API credential after authentication
+
+Successful LOCAL, LDAP/AD, and OIDC authentication should all produce the same Hidra bearer-token format.
+
+### 12.2 Reuse current JWT resource-server pieces
+
+Before creating new token classes, inventory and reuse compatible existing:
+
+```text
+JwtDecoder
+JwtAuthenticationConverter
+HidraJwtGrantedAuthoritiesConverter
+issuer/audience validation
+SecurityFilterChain bearer support
+permission resolution
+CORS Authorization header handling
+```
+
+### 12.3 Token issuer
+
+Add a Hidra `JwtEncoder`/issuer only where missing.
+
+Conceptual claims:
+
+```text
 iss = Hidra issuer
+sub = stable Hidra user ID
 aud = hidra-api
 iat
 exp
 jti
-sid = LoginSession ID where adopted
-auth_source = LOCAL | ACTIVE_DIRECTORY (optional informational claim)
+sid = LoginSession ID when adopted
+auth_source = LOCAL | LDAP | ACTIVE_DIRECTORY | OIDC
 ```
 
-### 11.4 Authorization claims
+Roles/scopes may be included only in a way compatible with the existing authorization model and documented stale-authorization policy.
 
-Do not make token role claims a replacement for the existing Hidra permission model.
-
-If current JWT authority mapping requires roles/scopes, preserve compatibility only after documenting how stale role changes are handled.
-
-Preferred security invariant:
-
-```text
-bearer token proves authenticated Hidra principal
-Hidra authorization remains final authority
-```
-
-### 11.5 Signing
+### 12.4 Signing material
 
 Production signing material must be externalized.
 
 Do not commit private keys or production HMAC secrets.
 
-Prefer asymmetric signing for production unless an existing accepted Hidra security standard specifies otherwise.
+Prefer asymmetric signing for production unless an accepted Hidra standard requires otherwise.
+
+### 12.5 Session linkage
+
+Reuse existing `LoginSession` rather than creating a second platform session table.
+
+Do not store raw bearer tokens in the session table.
 
 ---
 
-## 12. API gap
+## 13. API contract
 
-### 12.1 Login
+### 13.1 Preserve the existing authentication-type selection
 
-Add a public credential submission endpoint only after the application authentication use case exists:
+The canonical login boundary must accept/retain the provider selection already expected by the client.
 
-```text
-POST /api/v1/security/auth/login
-```
-
-Request intent:
+Conceptual LOCAL request:
 
 ```json
 {
-  "username": "...",
+  "authType": "LOCAL",
+  "username": "operator1",
   "password": "..."
 }
 ```
 
-The request does not need to expose provider selection when Hidra can resolve the provider deterministically from the existing identity model.
+Conceptual LDAP request:
 
-### 12.2 Current user/session
+```json
+{
+  "authType": "LDAP",
+  "username": "operator1",
+  "password": "..."
+}
+```
 
-If not already adequately provided by existing Identity APIs, expose a minimal authenticated session/principal endpoint:
+AUTH-002 must confirm exact live enum/value names, DTOs, and URL before code is added.
+
+### 13.2 OIDC initiation
+
+OIDC selection should initiate the browser/external provider flow, not request an external password.
+
+The existing OIDC contract endpoint remains part of this flow unless inventory proves otherwise.
+
+### 13.3 Unified login result
+
+LOCAL/LDAP direct credential login should return a common safe result after successful authentication, conceptually:
+
+```json
+{
+  "accessToken": "...",
+  "tokenType": "Bearer",
+  "expiresAt": "...",
+  "principal": {
+    "userId": "...",
+    "username": "...",
+    "authenticationType": "LOCAL"
+  }
+}
+```
+
+OIDC completion should converge on the same access-token/principal result.
+
+### 13.4 Current principal/session
+
+Reuse existing principal/identity APIs where sufficient. Add a dedicated endpoint only when a real gap exists.
+
+Possible target:
 
 ```text
 GET /api/v1/security/auth/me
 ```
 
-Do not duplicate the existing Identity permission endpoint.
+Do not duplicate existing Identity permission endpoints.
 
-### 12.3 Logout
+### 13.5 Logout
 
-Add logout/session-end behavior only to the extent supported by the token/session model:
+Use the existing `LoginSession` lifecycle where appropriate.
 
-```text
-POST /api/v1/security/auth/logout
-```
-
-Do not claim immediate JWT revocation unless session/JTI checks or revocation infrastructure actually enforce it.
-
----
-
-## 13. Compatibility policy for existing OIDC/external code
-
-This deployment does not require external OIDC authentication.
-
-However, existing generic provider/domain code must not be deleted merely to make the current deployment simpler.
-
-Apply these rules:
-
-```text
-1. Preserve existing model/data by default.
-2. Disable unused providers through configuration.
-3. Remove only runtime paths that conflict with the accepted deployment after frontend compatibility is addressed.
-4. Delete domain types/tables only in a separate task with usage and migration evidence.
-```
-
-The existing `GET /api/v1/security/oidc` endpoint is therefore a **compatibility review item**, not an automatic deletion item.
-
-If HidraWEB no longer depends on it after LOCAL/AD login is implemented, a later task may deprecate or remove it. If another supported deployment still requires it, leave the capability intact but inactive in this deployment.
+Do not claim immediate JWT revocation unless the API actually enforces session/JTI revocation.
 
 ---
 
 ## 14. Configuration model
 
-Do not replace the whole current security configuration before inventorying what is reused.
-
-The final configuration should distinguish:
+The final configuration must distinguish:
 
 ```text
-API request authentication transport
-from
-human credential provider configuration
+provider availability
+provider technical configuration
+JWT bearer validation/signing
 ```
 
-Conceptually:
+Conceptual configuration:
 
 ```text
-hidra.platform.security.enabled=true
-hidra.platform.security.bearer.enabled=true
-hidra.platform.security.access-token.*=...
-
 hidra.identity.authentication.local.enabled=true
-hidra.identity.authentication.active-directory.enabled=true
-hidra.identity.authentication.active-directory.url=ldaps://...
-hidra.identity.authentication.active-directory.base-dn=...
-hidra.identity.authentication.active-directory.user-search-base=...
-hidra.identity.authentication.active-directory.user-search-filter=...
+
+hidra.identity.authentication.ldap.enabled=true
+hidra.identity.authentication.ldap.url=ldaps://...
+hidra.identity.authentication.ldap.base-dn=...
+hidra.identity.authentication.ldap.user-search-base=...
+hidra.identity.authentication.ldap.user-search-filter=...
+hidra.identity.authentication.ldap.manager-dn=${...}
+hidra.identity.authentication.ldap.manager-password=${...}
+
+hidra.identity.authentication.oidc.enabled=true
+
+hidra.platform.security.jwt.issuer-uri=...
+hidra.platform.security.jwt.audience=hidra-api
+hidra.platform.security.access-token.*=...
 ```
 
-Exact names must follow existing repository property conventions discovered during implementation.
+Exact property names must preserve compatible existing repository conventions discovered in AUTH-002.
 
-Do not rename existing properties solely for stylistic consistency if compatibility can be preserved.
+Do not replace the whole security configuration just to add provider routing.
 
 ---
 
 ## 15. Database strategy
 
-### 15.1 Preserve current tables
+### 15.1 Database remains PostgreSQL
 
-Do not drop or rename existing Identity tables as part of initial authentication wiring.
+Authentication work uses the same Hidra transactional database and Flyway pipeline as the rest of HidraAPI.
 
-### 15.2 Add only missing LOCAL credential persistence
+### 15.2 Preserve current Identity tables
 
-If live schema confirmation shows no LOCAL credential table, add a forward migration for it.
+Do not drop or rename existing User, provider, external identity, role/permission, authentication-event, or login-session tables.
 
-### 15.3 Preserve provider/external identity tables
+### 15.3 Add only missing LOCAL credential storage
 
-Use the existing provider and external-identity persistence for AD.
+If AUTH-002 confirms no persistent LOCAL credential structure exists, add one forward-only migration.
 
-### 15.4 No destructive migration in gap-closure phase
+### 15.4 No destructive migration during gap closure
 
-No task in the core gap-closure sequence may drop:
-
-```text
-identity providers
-external identities
-external role mappings
-external permission mappings
-login sessions
-existing authorization structures
-```
-
-A separate cleanup roadmap may be created after production compatibility is proven.
+Do not rewrite released migrations or delete unused external-provider schema while completing LOCAL/LDAP routing.
 
 ---
 
-## 16. Error and security behavior
+## 16. Error, audit, and security behavior
 
-### 16.1 Public failure response
+### 16.1 Public failures
 
-Authentication failures should be generic enough to avoid username/provider enumeration.
+Public authentication failures must avoid user/provider enumeration.
 
-Example intent:
-
-```text
-Invalid username or password.
-```
-
-Do not publicly distinguish:
+For invalid direct credentials, use a generic result such as:
 
 ```text
-unknown LOCAL user
-unknown AD user
-wrong AD password
-wrong LOCAL password
-missing external identity
+Invalid credentials.
 ```
 
-### 16.2 Internal audit
+### 16.2 Internal failure classification
 
-Internal `AuthenticationEvent` may record normalized reason codes without recording passwords or secrets.
+`AuthenticationEvent` may record normalized non-secret reasons such as:
 
-### 16.3 Hidra account state
+```text
+INVALID_CREDENTIALS
+ACCOUNT_DISABLED
+ACCOUNT_LOCKED
+PROVIDER_NOT_ALLOWED
+IDENTITY_MAPPING_FAILED
+DIRECTORY_UNAVAILABLE
+DIRECTORY_TIMEOUT
+OIDC_VALIDATION_FAILED
+UNSUPPORTED_AUTH_TYPE
+```
 
-A credential success must still fail authorization/login establishment when the Hidra user is suspended, disabled, or locked according to existing Identity rules.
+### 16.3 Never log secrets
 
-### 16.4 AD outages
+Never log:
 
-Directory unavailability is not the same as invalid credentials.
+```text
+LOCAL password
+AD password
+OIDC authorization code
+OIDC access token
+OIDC ID token
+Hidra bearer token
+LDAP bind secret
+JWT private key
+```
 
-The adapter/application layer should distinguish them internally for operational diagnostics while maintaining safe public error behavior.
+### 16.4 Account state is provider-independent
 
-Do not fall back to LOCAL on AD outage.
+Valid LOCAL, LDAP, or OIDC authentication still fails Hidra login establishment when the mapped Hidra User is disabled, suspended, locked, or otherwise prohibited by existing Identity rules.
 
 ---
 
 ## 17. Testing strategy
 
-Testing must protect both the new wiring and the existing correct implementation.
+### 17.1 Routing tests
 
-Required categories:
+Required scenarios:
 
 ```text
-LOCAL credential unit tests
-LOCAL persistence tests
-AD adapter tests using a controlled LDAP test server/container or suitable test fixture
-provider resolution tests
-account-state tests
-authentication-event tests
-login-session tests
-JWT/token issuer and decoder compatibility tests
-permission isolation tests
-API login tests
-CORS/preflight tests for login and bearer calls
-architecture tests
+authType=LOCAL -> only LocalAuthenticationProvider handles request
+authType=LDAP -> only LDAP provider handles request
+authType=OIDC -> OIDC flow/adapter handles request
+unsupported authType -> fail closed
+LOCAL failure -> no LDAP/OIDC fallback
+LDAP failure -> no LOCAL/OIDC fallback
+OIDC failure -> no LOCAL/LDAP fallback
 ```
 
-Critical scenarios:
+### 17.2 LOCAL tests
 
 ```text
-LOCAL valid password -> authenticated
-LOCAL invalid password -> rejected
-LOCAL disabled user -> rejected
-LOCAL locked user -> rejected
-AD valid password + linked Hidra user -> authenticated
-AD invalid password -> rejected
-AD valid password + no Hidra link -> rejected
-AD valid password + disabled Hidra user -> rejected
-AD unavailable -> rejected without LOCAL fallback
-AD group membership -> does not implicitly grant Hidra permission
-successful login -> AuthenticationEvent persisted
-failed login -> AuthenticationEvent persisted appropriately
-successful login -> bearer token identifies Hidra User
-bearer token -> existing Hidra permissions remain final authority
+valid persisted password -> success
+invalid password -> 401
+unknown user -> safe failure
+LOCAL not allowed for user -> safe failure
+locked/disabled/suspended user -> rejected
+failedLoginCount/lockedUntil policy -> enforced
+password hash -> never exposed
+in-memory user -> not consulted for ordinary LOCAL login after cutover
+```
+
+### 17.3 LDAP tests
+
+```text
+valid AD credential + mapped Hidra user -> success
+invalid AD credential -> 401
+valid AD credential + missing Hidra mapping -> rejected
+Hidra-disabled mapped user -> rejected
+LDAP unavailable -> operational failure, no LOCAL fallback
+timeout -> handled deterministically
+TLS configuration guard -> enforced
+AD group membership -> no direct Hidra permission
+```
+
+Use a controlled LDAP test fixture/server/container appropriate to the repository test strategy.
+
+### 17.4 OIDC tests
+
+```text
+OIDC contract remains compatible
+valid external identity -> maps to Hidra User
+unmapped identity -> rejected unless explicit provisioning policy exists
+Hidra-disabled user -> rejected
+external groups/roles -> do not bypass Hidra authorization
+OIDC completion -> normalized HidraPrincipal
+```
+
+### 17.5 Unified JWT tests
+
+```text
+LOCAL login -> Hidra JWT accepted by SecurityFilterChain
+LDAP login -> same JWT contract
+OIDC completion -> same JWT contract
+sub -> stable Hidra user ID
+issuer/audience/expiry validated
+invalid/expired token -> 401
+valid token without Hidra permission -> 403
+```
+
+### 17.6 Architecture/secret tests
+
+Protect these boundaries:
+
+```text
+Identity domain does not import Spring LDAP implementation classes
+controllers do not query JPA repositories directly
+providers do not assign business roles from external systems
+password hashes do not appear in ordinary DTOs
+no plaintext credentials/private keys in repository
+platform does not own User/Role/Permission business meaning
 ```
 
 ---
 
 ## 18. Execution roadmap
 
-This is a gap-closure sequence. Each task must preserve existing correct behavior unless its acceptance criteria explicitly authorize a change.
+This is a gap-closure sequence. Only one commit code may be executed per task.
 
 | Code | Commit message | Purpose | Status |
 |---|---|---|---|
 | AUTH-001 | `docs(authentication): add ldap and local authentication roadmap` | Establish initial execution memory | Completed |
-| AUTH-001A | `docs(authentication): refocus roadmap on authentication gaps` | Correct roadmap to preserve existing Identity implementation and target only missing runtime pieces | Completed |
-| AUTH-002 | `chore(authentication): inventory existing identity authentication contracts` | Produce code-level inventory of reusable models, ports, persistence, APIs, properties, JWT components, and actual gaps | Planned |
-| AUTH-003 | `feat(identity): add local credential model and port` | Add only the missing LOCAL credential concept/application port if inventory confirms absence | Planned |
-| AUTH-004 | `feat(identity): add local credential persistence` | Add forward migration, JPA entity/repository/adapter for LOCAL credential hashes | Planned |
-| AUTH-005 | `feat(authentication): connect local credential verification` | Wire PasswordEncoder-backed verification to existing LOCAL IdentityProvider/User resolution | Planned |
-| AUTH-006 | `feat(authentication): add active directory ldap adapter` | Implement LDAP/LDAPS credential verification using existing ACTIVE_DIRECTORY provider/external identity model | Planned |
-| AUTH-007 | `feat(identity): add authentication orchestration use case` | Resolve existing user/provider, delegate credential verification, enforce account state, and return authenticated Hidra principal | Planned |
-| AUTH-008 | `feat(identity): record authentication outcomes` | Wire existing AuthenticationEvent/User login state to success/failure paths | Planned |
-| AUTH-009 | `feat(identity): complete login session lifecycle` | Reuse existing LoginSession persistence for authenticated sessions where required | Planned |
-| AUTH-010 | `feat(authentication): add hidra access token issuer` | Add/reuse token signing while preserving compatible existing JWT validation and permission behavior | Planned |
-| AUTH-011 | `feat(authentication): expose unified login endpoint` | Add `POST /api/v1/security/auth/login` backed by Identity authentication use case | Planned |
-| AUTH-012 | `feat(authentication): expose authenticated principal endpoints` | Add only missing `/me` and logout/session-end contracts without duplicating Identity permissions | Planned |
-| AUTH-013 | `refactor(security): replace bootstrap basic login with identity local auth` | Remove runtime dependence on in-memory bootstrap Basic only after persistent LOCAL path is proven | Planned |
-| AUTH-014 | `feat(authentication): add safe local administrator bootstrap` | Provide controlled first LOCAL administrator provisioning without returning to permanent in-memory auth | Planned |
-| AUTH-015 | `test(authentication): cover local authentication` | Unit/integration/API coverage for LOCAL | Planned |
-| AUTH-016 | `test(authentication): cover active directory authentication` | LDAP/LDAPS adapter and end-to-end AD coverage | Planned |
-| AUTH-017 | `test(authentication): protect hidra authorization ownership` | Prove AD attributes/groups do not bypass Hidra roles/permissions | Planned |
-| AUTH-018 | `test(authentication): verify bearer token compatibility` | Verify issued tokens work with current security filters, permission resolution, CORS, and protected routes | Planned |
-| AUTH-019 | `docs(authentication): add active directory deployment runbook` | Document required non-secret AD deployment inputs and TLS requirements | Planned |
-| AUTH-020 | `chore(authentication): review unused external provider runtime` | Determine whether current OIDC/external runtime should remain inactive, be deprecated, or be removed; no automatic domain deletion | Planned |
-| AUTH-021 | `test(authentication): add architecture and secret guardrails` | Protect boundaries, provider ownership, and no-secret-in-repository rules | Planned |
-| AUTH-022 | `docs(authentication): finalize gap closure checklist` | Record final evidence and remaining optional cleanup | Planned |
+| AUTH-001A | `docs(authentication): refocus roadmap on authentication gaps` | Preserve correct Identity implementation and target runtime gaps | Completed |
+| AUTH-001B | `docs(authentication): align roadmap with dynamic provider routing` | Preserve OIDC, make `authType` runtime routing explicit, add central provider routing and unified JWT plan | Completed |
+| AUTH-002 | `chore(authentication): inventory existing authentication runtime contracts` | Classify live provider DTOs, authType contract, OIDC flow, Basic/in-memory path, JWT components, Identity models, persistence, and missing pieces | Planned |
+| AUTH-003 | `feat(authentication): add provider-specific authentication request tokens` | Add/reuse distinct Spring Authentication request types for deterministic LOCAL, LDAP/AD, and OIDC routing | Planned |
+| AUTH-004 | `feat(authentication): add authentication request router` | Convert selected auth type into the correct Authentication request without credential verification | Planned |
+| AUTH-005 | `feat(authentication): compose authentication provider manager` | Register provider-specific strategies behind one AuthenticationManager/ProviderManager with no fallback | Planned |
+| AUTH-006 | `feat(identity): normalize authenticated hidra principal` | Reuse/add one Hidra principal contract shared by LOCAL, LDAP/AD, and OIDC | Planned |
+| AUTH-007 | `refactor(authentication): normalize existing oidc authentication` | Preserve working OIDC flow while mapping successful identities to Hidra User/HidraPrincipal and Hidra authorization | Planned |
+| AUTH-008 | `feat(identity): add local credential model and port` | Add only the missing LOCAL credential domain/application contract if inventory confirms absence | Planned |
+| AUTH-009 | `feat(identity): add local credential persistence` | Add forward Flyway migration plus JPA repository/adapter for LOCAL password hashes | Planned |
+| AUTH-010 | `feat(authentication): add database local authentication provider` | Replace ordinary in-memory LOCAL verification with persistent password verification behind LocalAuthenticationProvider | Planned |
+| AUTH-011 | `feat(identity): record local authentication outcomes` | Apply existing User lock/login state and AuthenticationEvent to LOCAL success/failure | Planned |
+| AUTH-012 | `feat(authentication): add ldap security infrastructure` | Add required LDAP dependency/configuration/TLS/timeouts without domain coupling | Planned |
+| AUTH-013 | `feat(authentication): add ldap credential verification adapter` | Implement AD/LDAP bind/search credential verification | Planned |
+| AUTH-014 | `feat(authentication): add ldap authentication provider` | Route LDAP token through directory verification, ExternalIdentity mapping, Hidra account state, and HidraPrincipal | Planned |
+| AUTH-015 | `feat(authentication): add unified hidra access token issuer` | Add/reuse JwtEncoder and issue one standardized Hidra JWT for all providers | Planned |
+| AUTH-016 | `feat(identity): complete authentication session lifecycle` | Reuse LoginSession and AuthenticationEvent for all provider paths | Planned |
+| AUTH-017 | `feat(authentication): wire dynamic login endpoint` | Wire existing login/authType contract to request router, AuthenticationManager, session, and token issuer | Planned |
+| AUTH-018 | `feat(authentication): converge oidc completion on hidra token` | Ensure OIDC completion produces same Hidra principal/session/JWT result as LOCAL/LDAP | Planned |
+| AUTH-019 | `refactor(security): standardize protected api bearer authentication` | Make protected APIs consume the unified Hidra JWT while preserving authorization behavior | Planned |
+| AUTH-020 | `refactor(security): retire ordinary in-memory local authentication` | Remove InMemoryUserDetailsManager as ordinary LOCAL login only after DB path is proven | Planned |
+| AUTH-021 | `feat(authentication): add safe local administrator bootstrap` | Provide controlled persistent LOCAL administrator provisioning without permanent in-memory fallback | Planned |
+| AUTH-022 | `test(authentication): cover dynamic provider routing` | Verify authType dispatch, supports contracts, unsupported type, and no fallback | Planned |
+| AUTH-023 | `test(authentication): cover local authentication` | Unit/integration/API coverage for persisted LOCAL authentication | Planned |
+| AUTH-024 | `test(authentication): cover ldap authentication` | LDAP/AD adapter, mapping, outage, TLS, and end-to-end coverage | Planned |
+| AUTH-025 | `test(authentication): cover oidc normalization` | Protect existing OIDC behavior and prove Hidra principal/authorization normalization | Planned |
+| AUTH-026 | `test(authentication): verify unified jwt compatibility` | Verify all providers produce tokens accepted by current security filters and permission enforcement | Planned |
+| AUTH-027 | `test(authentication): protect hidra authorization ownership` | Prove external groups/claims do not bypass Hidra role/permission decisions | Planned |
+| AUTH-028 | `docs(authentication): add ldap and provider deployment runbook` | Document non-secret provider/TLS/configuration inputs and diagnostics | Planned |
+| AUTH-029 | `test(authentication): add authentication architecture and secret guardrails` | Enforce module boundaries, credential secrecy, and provider isolation | Planned |
+| AUTH-030 | `docs(authentication): finalize authentication gap closure checklist` | Record executable evidence and remaining optional cleanup | Planned |
 
 ---
 
 ## 19. Detailed task specifications
 
-### AUTH-002 — Inventory existing authentication contracts
+### AUTH-002 — Inventory existing authentication runtime contracts
 
 Commit:
 
 ```text
-chore(authentication): inventory existing identity authentication contracts
+chore(authentication): inventory existing authentication runtime contracts
 ```
 
-Purpose:
+Purpose: establish evidence before production changes.
 
-Create an evidence-based inventory before adding production code.
-
-Must inspect at minimum:
+Inspect at minimum:
 
 ```text
 ProviderType
+AuthenticationProtocol
 IdentityProvider
 ExternalIdentity
 User
 LoginSession
 AuthenticationEvent
-Identity application ports/services
-Identity persistence adapters
-current provider repositories
-current security configuration
-JWT decoder/converter/configuration
+existing authenticated-principal contracts
+current login/auth request DTOs and controllers
+exact authType field/value contract
+HidraSecurityConfiguration
+InMemoryUserDetailsManager bootstrap path
+HidraOidcContractController
+OIDC callback/client behavior where implemented
+JwtDecoder / converters / claim mapping
 permission resolver/interceptor
-current security APIs
 application*.properties
-Flyway identity schema
-HidraWEB login contract only when API compatibility is required
+pom.xml security/LDAP dependencies
+Identity Flyway schema
+Identity JPA repositories/adapters
+HidraWEB authentication contract where API compatibility requires it
 ```
 
-Output:
-
-Update this roadmap with a `Live contract inventory` section identifying:
+Update this roadmap with a live inventory classifying each item as:
 
 ```text
 REUSE
@@ -915,15 +1303,143 @@ DEPRECATION CANDIDATE
 
 Do not add implementation classes in AUTH-002.
 
-Acceptance:
-
-- LOCAL is documented as an existing provider concept, not newly invented.
-- Existing correctly implemented models are marked REUSE.
-- Only proven gaps proceed to later tasks.
+Validation: documentation/source inspection only; record evidence in this roadmap.
 
 ---
 
-### AUTH-003 — Add LOCAL credential model and port
+### AUTH-003 — Provider-specific Authentication request tokens
+
+Commit:
+
+```text
+feat(authentication): add provider-specific authentication request tokens
+```
+
+Precondition: AUTH-002 confirms equivalent token types do not already exist.
+
+Requirements:
+
+```text
+distinct LOCAL request token
+distinct LDAP/AD request token
+OIDC request/result adapter only where required
+credentials erased where Spring contract permits
+no business authorization logic
+no persistence access
+```
+
+Validation:
+
+```bash
+mvn -q test
+```
+
+---
+
+### AUTH-004 — Authentication request router
+
+Commit:
+
+```text
+feat(authentication): add authentication request router
+```
+
+Convert the existing `authType` request contract into the correct Spring `Authentication` request.
+
+Requirements:
+
+```text
+LOCAL -> LOCAL token
+LDAP/ACTIVE_DIRECTORY -> LDAP token
+OIDC -> existing OIDC initiation/completion path
+unsupported/disabled type -> fail closed
+no credential verification in router
+no provider fallback
+```
+
+Validation:
+
+```bash
+mvn -q test
+```
+
+---
+
+### AUTH-005 — ProviderManager composition
+
+Commit:
+
+```text
+feat(authentication): compose authentication provider manager
+```
+
+Register the supported provider strategies behind one `AuthenticationManager`/`ProviderManager`.
+
+Each provider must support only the intended Authentication request type.
+
+Do not use provider ordering as the primary authType discriminator.
+
+Validation:
+
+```bash
+mvn -q test
+```
+
+---
+
+### AUTH-006 — Normalized Hidra principal
+
+Commit:
+
+```text
+feat(identity): normalize authenticated hidra principal
+```
+
+Reuse an existing principal contract if AUTH-002 identifies one.
+
+Otherwise add the minimum shared authenticated principal representation needed to carry stable Hidra identity and existing authorization information.
+
+No provider-specific business model duplication.
+
+Validation:
+
+```bash
+mvn -q test
+```
+
+---
+
+### AUTH-007 — Normalize existing OIDC authentication
+
+Commit:
+
+```text
+refactor(authentication): normalize existing oidc authentication
+```
+
+Preserve current OIDC browser/bootstrap behavior.
+
+Add only missing mapping from validated external OIDC identity to:
+
+```text
+IdentityProvider / ExternalIdentity
+Hidra User
+Hidra account state
+Hidra authorization
+HidraPrincipal
+```
+
+Do not collect external provider passwords and do not replace working OIDC configuration unnecessarily.
+
+Validation:
+
+```bash
+mvn -q test
+```
+
+---
+
+### AUTH-008 — LOCAL credential model and port
 
 Commit:
 
@@ -931,11 +1447,9 @@ Commit:
 feat(identity): add local credential model and port
 ```
 
-Execute only if AUTH-002 proves no equivalent live capability exists.
+Execute only if inventory proves no equivalent persistent credential model exists.
 
-Add the minimum domain/application contracts necessary for a LOCAL password hash.
-
-Must not put password hashes on ordinary User DTOs, expose password hashes through API, import Spring PasswordEncoder into domain, replace `IdentityProvider.LOCAL`, or create a second User aggregate.
+Do not put password hashes on ordinary User DTOs or expose Spring PasswordEncoder in the domain.
 
 Validation:
 
@@ -945,7 +1459,7 @@ mvn -q -DskipTests compile
 
 ---
 
-### AUTH-004 — Add LOCAL credential persistence
+### AUTH-009 — LOCAL credential persistence
 
 Commit:
 
@@ -953,7 +1467,15 @@ Commit:
 feat(identity): add local credential persistence
 ```
 
-Requirements: forward-only Flyway migration; JPA entity/repository/adapter aligned with Identity infrastructure style; password hashes never logged; no change to old released migration.
+Requirements:
+
+```text
+forward-only Flyway migration
+PostgreSQL-compatible schema
+JPA entity/repository/adapter aligned with Identity infrastructure style
+no modification of released migrations
+no hash exposure/logging
+```
 
 Validation:
 
@@ -963,15 +1485,25 @@ mvn -q test
 
 ---
 
-### AUTH-005 — Connect LOCAL credential verification
+### AUTH-010 — Database-backed LOCAL provider
 
 Commit:
 
 ```text
-feat(authentication): connect local credential verification
+feat(authentication): add database local authentication provider
 ```
 
-Requirements: technical password verification adapter; reuse existing `PasswordEncoder` bean when suitable; Identity application depends on abstraction, not Spring implementation; LOCAL provider/user resolved through Identity; no in-memory user used for ordinary LOCAL login.
+Requirements:
+
+```text
+resolve existing Hidra User/provider binding
+verify account state
+load LOCAL credential
+PasswordEncoder.matches(...)
+return normalized HidraPrincipal
+never query in-memory bootstrap on failed ordinary LOCAL credentials
+no token issuance inside provider
+```
 
 Validation:
 
@@ -981,15 +1513,17 @@ mvn -q test
 
 ---
 
-### AUTH-006 — Add Active Directory LDAP adapter
+### AUTH-011 — LOCAL authentication outcomes
 
 Commit:
 
 ```text
-feat(authentication): add active directory ldap adapter
+feat(identity): record local authentication outcomes
 ```
 
-Requirements: add only required Maven LDAP dependency; use existing ACTIVE_DIRECTORY provider configuration/model where possible; environment-based technical connection configuration; support company AD username mapping; no AD password persistence; timeout/unavailable-directory handling; production LDAPS/TLS guard; no authorization from AD groups.
+Reuse existing User login counters/lock state and AuthenticationEvent.
+
+Never record the submitted password.
 
 Validation:
 
@@ -999,27 +1533,74 @@ mvn -q test
 
 ---
 
-### AUTH-007 — Add authentication orchestration use case
+### AUTH-012 — LDAP security infrastructure
 
 Commit:
 
 ```text
-feat(identity): add authentication orchestration use case
+feat(authentication): add ldap security infrastructure
+```
+
+Requirements:
+
+```text
+add only required Maven LDAP dependencies
+externalized URL/base DN/search/filter/bind configuration
+TLS/LDAPS production guard
+connection/read timeout configuration
+no company secrets committed
+```
+
+Validation:
+
+```bash
+mvn -q test
+```
+
+---
+
+### AUTH-013 — LDAP credential verification adapter
+
+Commit:
+
+```text
+feat(authentication): add ldap credential verification adapter
+```
+
+Implement the approved AD bind/search pattern.
+
+Return a provider-neutral verified directory identity result; do not assign Hidra permissions in the LDAP adapter.
+
+Validation:
+
+```bash
+mvn -q test
+```
+
+---
+
+### AUTH-014 — LDAP AuthenticationProvider
+
+Commit:
+
+```text
+feat(authentication): add ldap authentication provider
 ```
 
 Flow:
 
 ```text
-normalize username
-resolve Hidra user/provider binding
-reject ambiguous or disabled account
-select credential verifier deterministically
-verify credentials
-update existing user login state
-produce authenticated Hidra principal/result
+LdapAuthenticationToken
+ -> LDAP credential adapter
+ -> stable external identity
+ -> ExternalIdentity
+ -> Hidra User
+ -> Hidra account state
+ -> existing Hidra authorization
+ -> HidraPrincipal
 ```
 
-No token generation inside the domain. No controller-level provider logic.
+No LOCAL fallback and no AD-group authorization shortcut.
 
 Validation:
 
@@ -1029,15 +1610,26 @@ mvn -q test
 
 ---
 
-### AUTH-008 — Record authentication outcomes
+### AUTH-015 — Unified Hidra access-token issuer
 
 Commit:
 
 ```text
-feat(identity): record authentication outcomes
+feat(authentication): add unified hidra access token issuer
 ```
 
-Reuse existing AuthenticationEvent for success, invalid credentials, account blocked/disabled, identity mapping failure, and directory unavailable where appropriate. Never record credentials.
+Inventory/reuse current JWT components before adding new ones.
+
+Requirements:
+
+```text
+one token schema for LOCAL/LDAP/OIDC
+stable Hidra user subject
+issuer/audience/expiry/JTI
+externalized signing material
+compatibility with existing resource server
+no authorization bypass through provider claims
+```
 
 Validation:
 
@@ -1047,15 +1639,17 @@ mvn -q test
 
 ---
 
-### AUTH-009 — Complete login session lifecycle
+### AUTH-016 — Authentication session lifecycle
 
 Commit:
 
 ```text
-feat(identity): complete login session lifecycle
+feat(identity): complete authentication session lifecycle
 ```
 
-Reuse existing `LoginSession` domain and persistence. Add only missing lifecycle behavior necessary for issued bearer access tokens and logout/session-end metadata. Do not store tokens in the session table.
+Reuse `LoginSession` and `AuthenticationEvent` across all provider paths.
+
+Do not store raw JWTs.
 
 Validation:
 
@@ -1065,17 +1659,36 @@ mvn -q test
 
 ---
 
-### AUTH-010 — Add Hidra access-token issuer
+### AUTH-017 — Dynamic login endpoint
 
 Commit:
 
 ```text
-feat(authentication): add hidra access token issuer
+feat(authentication): wire dynamic login endpoint
 ```
 
-Before implementation, inventory existing JWT configuration and reuse compatible decoder/converter behavior.
+Preserve the existing login/authType API where present.
 
-Requirements: short-lived access token; stable Hidra user subject; audience validation compatible with current API; signing material externalized; production fail-closed when signing configuration is absent; no authorization bypass through token claims.
+The controller/application boundary may:
+
+```text
+validate request
+convert selected authType into Authentication request
+authenticate through AuthenticationManager
+create/update LoginSession
+issue Hidra JWT
+return safe principal/token response
+```
+
+It must not:
+
+```text
+query JPA repositories directly
+perform LDAP binds directly
+compare password hashes directly
+assign roles
+implement provider fallback
+```
 
 Validation:
 
@@ -1085,21 +1698,17 @@ mvn -q test
 
 ---
 
-### AUTH-011 — Expose unified login endpoint
+### AUTH-018 — OIDC completion to Hidra token
 
 Commit:
 
 ```text
-feat(authentication): expose unified login endpoint
+feat(authentication): converge oidc completion on hidra token
 ```
 
-Endpoint:
+After external OIDC validation, route the mapped HidraPrincipal through the same session/token issuance path as LOCAL and LDAP.
 
-```text
-POST /api/v1/security/auth/login
-```
-
-Controller validates request, invokes Identity authentication use case, invokes technical access-token issuance, and returns a safe login response. It must not query JPA repositories directly, perform LDAP operations, compare password hashes, or assign roles.
+Preserve authorization-code + PKCE security semantics.
 
 Validation:
 
@@ -1109,42 +1718,17 @@ mvn -q test
 
 ---
 
-### AUTH-012 — Principal and logout endpoints
+### AUTH-019 — Standard protected-API bearer authentication
 
 Commit:
 
 ```text
-feat(authentication): expose authenticated principal endpoints
+refactor(security): standardize protected api bearer authentication
 ```
 
-Add only if missing:
+Protected APIs should consume the standardized Hidra bearer JWT irrespective of original auth source.
 
-```text
-GET /api/v1/security/auth/me
-POST /api/v1/security/auth/logout
-```
-
-Do not duplicate existing Identity permission APIs.
-
-Validation:
-
-```bash
-mvn -q test
-```
-
----
-
-### AUTH-013 — Replace bootstrap Basic runtime path
-
-Commit:
-
-```text
-refactor(security): replace bootstrap basic login with identity local auth
-```
-
-Precondition: AUTH-003 through AUTH-012 are validated.
-
-Only then remove ordinary runtime dependence on `InMemoryUserDetailsManager` for LOCAL authentication. Preserve a safe installation/bootstrap mechanism through AUTH-014 rather than deleting bootstrap access prematurely.
+Preserve current permission/interceptor semantics.
 
 Validation:
 
@@ -1154,7 +1738,27 @@ mvn -q clean verify
 
 ---
 
-### AUTH-014 — Safe LOCAL administrator bootstrap
+### AUTH-020 — Retire ordinary in-memory LOCAL authentication
+
+Commit:
+
+```text
+refactor(security): retire ordinary in-memory local authentication
+```
+
+Precondition: persistent LOCAL provider, unified login endpoint, and JWT path are proven.
+
+Remove `InMemoryUserDetailsManager` as an ordinary user-login authority. Do not remove emergency/bootstrap capability until AUTH-021 exists.
+
+Validation:
+
+```bash
+mvn -q clean verify
+```
+
+---
+
+### AUTH-021 — Safe LOCAL administrator bootstrap
 
 Commit:
 
@@ -1162,7 +1766,16 @@ Commit:
 feat(authentication): add safe local administrator bootstrap
 ```
 
-Requirements: one-time/idempotent bootstrap semantics; no production default password; secret supplied externally; resulting account stored through normal Identity/LOCAL credential persistence; bootstrap cannot silently overwrite an existing credential.
+Requirements:
+
+```text
+one-time/idempotent provisioning
+persistent normal Identity User + LOCAL credential
+no production default password
+secret provided externally
+cannot silently overwrite existing credential
+fully auditable
+```
 
 Validation:
 
@@ -1172,87 +1785,56 @@ mvn -q test
 
 ---
 
-### AUTH-015 — LOCAL tests
+### AUTH-022 through AUTH-027 — Security proof tasks
 
-Commit:
+These tasks add dedicated routing, LOCAL, LDAP, OIDC normalization, JWT compatibility, and authorization-ownership tests.
+
+Each task must run the appropriate Maven test command and record real results in this roadmap.
+
+Critical final proof:
 
 ```text
-test(authentication): cover local authentication
+same Hidra user authorization semantics regardless of authentication provider
+provider failure never falls through to another provider
+all successful providers yield the same API token/principal contract
 ```
-
-Cover valid password, invalid password, unknown user, wrong provider, locked/disabled/suspended account, failed-login state, successful-login state, and credential hash non-exposure.
 
 ---
 
-### AUTH-016 — AD tests
+### AUTH-028 — Deployment runbook
 
 Commit:
 
 ```text
-test(authentication): cover active directory authentication
+docs(authentication): add ldap and provider deployment runbook
 ```
 
-Cover valid AD credential + mapped Hidra user, invalid credential, unknown directory user, missing Hidra mapping, Hidra-disabled mapped user, directory unavailable, timeout, TLS/configuration guard, and no LOCAL fallback.
+Document only non-secret operational requirements:
+
+```text
+provider enablement
+LDAPS hosts/base DN/search filter/username attribute
+immutable AD identifier
+bind/search strategy
+truststore/certificate requirements
+OIDC issuer/client/audience/scope configuration
+JWT signing/verification configuration
+timeouts and health diagnostics
+```
+
+Do not commit passwords, client secrets, private certificates, or private keys.
 
 ---
 
-### AUTH-017 — Authorization ownership tests
+### AUTH-029 — Architecture and secret guardrails
 
 Commit:
 
 ```text
-test(authentication): protect hidra authorization ownership
+test(authentication): add authentication architecture and secret guardrails
 ```
 
-Must prove AD authentication success does not grant permission by itself, AD group membership does not bypass Hidra permission resolver, LOCAL and AD users with same Hidra grants receive equivalent authorization behavior, and 403 remains a Hidra authorization result.
-
----
-
-### AUTH-018 — Bearer compatibility tests
-
-Commit:
-
-```text
-test(authentication): verify bearer token compatibility
-```
-
-Verify login-issued token accepted by current SecurityFilterChain, principal resolution, permissions route, identity permission API, 401 on invalid/expired token, 403 on missing Hidra permission, and CORS preflight/Authorization header behavior.
-
----
-
-### AUTH-019 — AD deployment runbook
-
-Commit:
-
-```text
-docs(authentication): add active directory deployment runbook
-```
-
-Document non-secret deployment values: LDAPS hosts, base DN, user search base, username attribute/filter, immutable ID attribute, bind/search strategy, truststore/certificate requirements, timeouts, and health diagnostics. Do not commit real passwords, bind-account secrets, private certificates, or production host secrets.
-
----
-
-### AUTH-020 — Review unused external-provider runtime
-
-Commit:
-
-```text
-chore(authentication): review unused external provider runtime
-```
-
-This is a review task, not an automatic deletion task. Classify current OIDC/OAuth/SAML-related code as KEEP, DISABLE, DEPRECATE, or REMOVE. Any destructive removal requires a later explicit roadmap task.
-
----
-
-### AUTH-021 — Architecture and secret guardrails
-
-Commit:
-
-```text
-test(authentication): add architecture and secret guardrails
-```
-
-Guard: Identity domain does not import Spring LDAP/Security implementation; platform does not own User/Role/Permission business model; controllers do not use repositories directly; password hash never appears in ordinary DTOs; no committed passwords/private keys; AD groups do not become direct Spring authorities unless explicitly mediated by Hidra policy.
+Protect boundaries and credentials with automated tests where practical.
 
 Validation:
 
@@ -1262,39 +1844,51 @@ mvn -q clean verify
 
 ---
 
-### AUTH-022 — Finalize checklist
+### AUTH-030 — Finalize authentication gap closure
 
 Commit:
 
 ```text
-docs(authentication): finalize gap closure checklist
+docs(authentication): finalize authentication gap closure checklist
 ```
 
-Record real evidence that LOCAL authentication works against persisted Identity users, AD authentication works through LDAP/LDAPS, existing IdentityProvider/ExternalIdentity/User/AuthenticationEvent/LoginSession are reused where applicable, Hidra roles/permissions remain authoritative, in-memory bootstrap is no longer ordinary LOCAL login, issued bearer token works with protected API, no secret material is committed, and `mvn -q clean verify` passes.
+Record executable evidence that:
 
-Do not mark any item complete without executable evidence.
+```text
+authType dynamically routes to intended provider
+LOCAL authenticates against PostgreSQL-backed credentials
+LDAP/AD authenticates through protected LDAP transport
+OIDC remains functional and maps to Hidra identity
+all providers normalize to HidraPrincipal
+Hidra roles/permissions remain authoritative
+all successful providers issue/produce the same Hidra JWT contract
+ordinary in-memory LOCAL authentication is retired
+no provider fallback exists
+no secrets are committed
+mvn -q clean verify passes
+```
+
+Do not mark items complete without evidence.
 
 ---
 
 ## 20. Explicit non-goals
 
-This gap-closure roadmap does not implement:
+This roadmap does not automatically implement:
 
 ```text
-external Google login
-new OIDC provider integration
-new SAML provider integration
 AD group -> Hidra role automatic mapping
-JIT AD user creation
+JIT account creation without explicit policy
 passwordless authentication
 MFA
 refresh-token rotation
-SCADA/SAP service-account OAuth2 client credentials
-full provider-model cleanup
-historical migration rewrites
+SCADA/SAP machine client-credentials authentication
+repository-wide PostgreSQL -> MySQL migration
+provider-model cleanup unrelated to runtime authentication gaps
+destructive historical migration rewrites
 ```
 
-These may be separate future roadmaps.
+These require separate architecture decisions/roadmaps.
 
 ---
 
@@ -1303,18 +1897,22 @@ These may be separate future roadmaps.
 The authentication gap is closed when all of the following are true:
 
 ```text
-1. ProviderType.LOCAL remains an existing Hidra Identity concept.
-2. LOCAL users authenticate with their persisted Hidra username/password credentials.
-3. ACTIVE_DIRECTORY users authenticate through LDAP/LDAPS using existing provider/external identity concepts.
-4. Neither authentication path bypasses Hidra account status.
-5. Neither authentication path owns business roles/permissions.
-6. Existing Hidra role/permission resolution remains the final authorization authority.
-7. Successful login yields a consistent protected-API credential.
-8. Temporary in-memory Basic authentication is no longer the ordinary LOCAL authentication implementation.
-9. Existing correct Identity models/tables are preserved unless a later evidence-based cleanup explicitly replaces them.
-10. End-to-end tests prove LOCAL, AD, bearer authentication, authorization isolation, and failure behavior.
-11. Production configuration contains no repository-stored passwords, bind secrets, or signing private keys.
-12. `mvn -q clean verify` passes.
+1. Existing ProviderType/AuthenticationProtocol concepts are reused rather than replaced without cause.
+2. Client-selected authType is converted deterministically into the correct runtime authentication request.
+3. One AuthenticationManager/ProviderManager delegates to provider-specific strategies.
+4. LOCAL users authenticate with persisted Hidra credentials in PostgreSQL.
+5. LDAP/ACTIVE_DIRECTORY users authenticate against AD through LDAP/LDAPS and map to Hidra users.
+6. Existing OIDC authentication remains functional and converges on the same Hidra identity contract.
+7. LOCAL, LDAP/AD, and OIDC all produce the same normalized HidraPrincipal.
+8. Hidra account status is enforced after every provider succeeds.
+9. Hidra roles/permissions remain the final authorization authority.
+10. All successful provider paths issue/produce the same protected-API JWT contract.
+11. No failed provider silently falls back to another provider.
+12. InMemoryUserDetailsManager is no longer ordinary LOCAL authentication.
+13. Existing correct IdentityProvider, ExternalIdentity, User, LoginSession, AuthenticationEvent, and authorization structures are preserved.
+14. Production secrets remain externalized.
+15. Routing, LOCAL, LDAP, OIDC, JWT, authorization, and failure tests pass.
+16. `mvn -q clean verify` passes before final closure.
 ```
 
 ---
@@ -1324,7 +1922,7 @@ The authentication gap is closed when all of the following are true:
 Execute only:
 
 ```text
-AUTH-002 — chore(authentication): inventory existing identity authentication contracts
+AUTH-002 — chore(authentication): inventory existing authentication runtime contracts
 ```
 
-Do not implement LOCAL credential persistence, LDAP adapters, token issuance, controller changes, or security-mode refactoring until AUTH-002 has identified exactly which live contracts already exist and which gaps are real.
+Do not implement provider tokens, routing, LOCAL credential persistence, LDAP adapters, principal normalization, or token issuance until AUTH-002 has identified exactly what already exists and which gaps are real.

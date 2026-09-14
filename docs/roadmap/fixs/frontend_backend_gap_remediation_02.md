@@ -161,8 +161,8 @@ Repository tests       : PASS
 Repository verify      : PASS
 Acceptance compile     : PASS
 Acceptance tests       : PASS
-Acceptance verify      : PASS
-OpenAPI publication    : PASS
+Acceptance verify     : PASS
+OpenAPI publication   : PASS
 Result                 : VERIFIED
 ```
 

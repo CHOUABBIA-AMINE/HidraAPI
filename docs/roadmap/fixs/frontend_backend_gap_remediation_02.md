@@ -42,7 +42,7 @@ This is one cross-cutting remediation task because the consumer register is the 
 | GAP-ALARM-004 | Decide whether suppression is distinct from shelving before publishing any suppression mutation contract. | Open — issue #58 |
 | GAP-ALARM-005 | Derive acknowledgement/closure actor identity from the authenticated principal; remove authoritative browser-selected actor identity from the public request contract. | Implemented — issue #56, CI #34615308694 green |
 | GAP-ENG-001 | Publish one concurrency-protected maintainable-asset update mutation with explicit `expectedUpdatedAt`, deterministic stale conflict, and refreshed token response. | VERIFIED — PR #81 / issue #79 |
-| GAP-DOC-001 | Publish authoritative multipart document-version upload and version-content retrieval contracts; keep storage-object identity backend-owned. | In Progress — issue #83 |
+| GAP-DOC-001 | Publish authoritative multipart document-version upload and browser-readable version-content retrieval contracts; keep storage-object identity backend-owned. | In Progress — transfer contract VERIFIED by PR #84; browser CORS exposure pending PR #86 / issue #83 |
 
 ## Architecture rules
 
@@ -90,6 +90,7 @@ Default max upload        : 52428800 bytes (configurable with hidra.documents.up
 Storage root              : configurable with hidra.documents.storage.root
 Download disposition      : attachment with UTF-8 filename
 Range behavior            : unsupported; response publishes Accept-Ranges: none
+Browser CORS exposure     : Content-Disposition, Content-Length, Accept-Ranges
 Direct storage URI        : not exposed
 Legacy JSON metadata POST : retained for compatibility; HWEB-014-03 must use multipart contract
 Deterministic errors      : DOCUMENTS_CONTENT_INVALID / DOCUMENTS_CONTENT_NOT_FOUND /
@@ -98,6 +99,8 @@ Permission source         : backend route descriptor; frontend must not infer pe
 ```
 
 HWEB-014-03 may consume only the multipart upload and version-scoped content route above. It must not synthesize object-store URLs, client-generate `storageObjectId`, or infer range/resume behavior. The backend computes byte length and SHA-256 from the received stream and persists that evidence with the storage object/version metadata.
+
+The browser client is cross-origin in the supported HidraWEB runtime model. Therefore the repository-owned default CORS contract must expose `Content-Disposition`, `Content-Length`, and `Accept-Ranges` so authenticated JavaScript can read the server-authored filename and transfer evidence. A frontend filename fallback or direct unauthenticated object navigation is not an acceptable substitute.
 
 ## GAP-ENG-001 contract — HWEB-011-06 concurrency prerequisite
 
@@ -168,3 +171,26 @@ The implementation publishes `PATCH /api/v1/assets/maintainable-assets/{assetId}
 The initial exact-head CI failure was infrastructure wiring only: `@Transactional` required Spring proxying, but `AssetsApplicationService` was `final`. Removing only that modifier resolved the context-load failure without changing contract or business semantics.
 
 GAP-ENG-001 is verified and the backend prerequisite for HidraWEB HWEB-011-06 concurrency testing is satisfied. The cross-cutting roadmap remains `In Progress` because `GAP-WF-004`, `GAP-ALARM-004`, `GAP-DOC-001`, and other remaining repository-owned gaps are not all resolved.
+
+### GAP-DOC-001 — documents multipart upload and browser-readable version-content retrieval
+
+The transfer contract was implemented and accepted first; browser CORS exposure is the final integration prerequisite tracked by PR #86.
+
+```text
+Issue                  : #83
+Transfer product PR    : #84
+Transfer product head  : fb33c94984dded0499b7075aad3d5354f9b25d99
+Transfer exact-head CI : 34764622193 — SUCCESS
+Transfer merge SHA     : 725a451ae4880ccb4f2ec508709241f88cd4aea7
+Transfer post-merge CI : 34764890847 — SUCCESS
+OpenAPI artifact id    : 10320386070
+OpenAPI artifact name  : hidra-api-openapi-725a451ae4880ccb4f2ec508709241f88cd4aea7
+OpenAPI artifact digest: sha256:4c401ba08e3aeb897be19b5944072f6ada7e08efc85c299683def9175e8d4c38
+Transfer result        : VERIFIED
+Browser CORS PR        : #86
+Browser CORS result    : PENDING exact-head and exact-merge-SHA acceptance
+```
+
+The accepted transfer contract publishes multipart document-version upload with required `metadata` JSON and `file` binary parts plus version-scoped content retrieval. Storage-object identity, content length, and SHA-256 evidence are backend-owned; direct object-store URIs are not exposed. Download responses are attachments with backend filename/media type and explicitly publish `Accept-Ranges: none`.
+
+PR #86 adds the browser integration requirement discovered by HWEB-014-03: repository-owned default CORS exposure for `Content-Disposition`, `Content-Length`, and `Accept-Ranges`. GAP-DOC-001 remains in progress until that PR is merged and its exact merge SHA passes the full HidraAPI CI. Issue #83 must remain open until that acceptance evidence exists.

@@ -16,7 +16,7 @@
 | Author | Abir MEDJERAB |
 | CreatedOn | 2025-06-26 |
 | UpdatedOn | 2026-09-15 |
-| Status | Active — AUTH-013 LDAP credential verification adapter completed |
+| Status | Active — AUTH-014 LDAP authentication provider completed |
 | Execution mode | One roadmap commit code at a time |
 
 ---
@@ -1409,7 +1409,7 @@ This is a gap-closure sequence. Only one commit code may be executed per task.
 | AUTH-011 | `feat(identity): record local authentication outcomes` | Apply existing User lock/login state and AuthenticationEvent to LOCAL success/failure | Completed — LOCAL success resets failed-login count, updates last-authenticated state, and records LOGIN_SUCCESS; failures for resolved users increment failed-login count while preserving existing lock state and record sanitized LOGIN_FAILED events; submitted passwords are never recorded; `mvn -q test` passed in PR CI run 146 |
 | AUTH-012 | `feat(authentication): add ldap security infrastructure` | Add required LDAP dependency/configuration/TLS/timeouts without domain coupling | Completed — Spring LDAP core plus externalized URL/base/search/bind configuration, connection/read timeouts, enabled-only LdapContextSource, and staging/production LDAPS guard added; no secrets, credential verification, or LDAP AuthenticationProvider introduced; `mvn -q test` passed in PR CI run 153 |
 | AUTH-013 | `feat(authentication): add ldap credential verification adapter` | Implement AD/LDAP bind/search credential verification | Completed — Identity application port plus provider-neutral VerifiedDirectoryIdentity contract and Spring LDAP adapter added; principal values are LDAP-filter escaped, search must resolve exactly one identity, credentials are verified by LDAP bind, and no Hidra permissions or AUTH-014 provider behavior is introduced; `mvn -q test` passed in PR CI run 160 |
-| AUTH-014 | `feat(authentication): add ldap authentication provider` | Route LDAP token through directory verification, ExternalIdentity mapping, Hidra account state, and HidraPrincipal | Planned |
+| AUTH-014 | `feat(authentication): add ldap authentication provider` | Route LDAP token through directory verification, ExternalIdentity mapping, Hidra account state, and HidraPrincipal | Completed — LdapAuthenticationProvider handles only LdapAuthenticationToken, delegates credential verification to AUTH-013, resolves one active LDAP/AD IdentityProvider and LINKED ExternalIdentity, enforces Hidra user state and Hidra-owned effective permissions, and returns HidraPrincipal without LOCAL fallback or AD-group authorization shortcuts; `mvn -q test` passed in PR CI run 167 |
 | AUTH-015 | `feat(authentication): add unified hidra access token issuer` | Add JwtEncoder and issue one standardized Hidra JWT for all providers | Planned |
 | AUTH-016 | `feat(identity): complete authentication session lifecycle` | Reuse LoginSession and AuthenticationEvent for all provider paths | Planned |
 | AUTH-017 | `feat(authentication): wire dynamic login endpoint` | Introduce and wire the direct LOCAL/LDAP provider-selection login boundary to router, AuthenticationManager, session, and token issuer | Planned |
@@ -1876,10 +1876,22 @@ LdapAuthenticationToken
 
 No LOCAL fallback and no AD-group authorization shortcut.
 
+Status:
+
+```text
+Completed — LdapAuthenticationProvider is enabled only with LDAP infrastructure, supports only LdapAuthenticationToken, verifies submitted directory credentials through LdapCredentialVerificationPort, requires exactly one active LDAP or ACTIVE_DIRECTORY IdentityProvider, resolves the verified stable subject to a LINKED ExternalIdentity and Hidra User, enforces locked/non-ACTIVE Hidra account state, resolves existing Hidra-owned effective permissions, and returns HidraPrincipal. Directory groups are not promoted to Hidra authorization, no LOCAL fallback exists, and no token/session/login endpoint behavior from later tasks was added.
+```
+
 Validation:
 
 ```bash
 mvn -q test
+```
+
+Result:
+
+```text
+PASS — pull-request CI run 167 completed repository and acceptance `mvn -q test` checks successfully for AUTH-014 implementation commit fcb0a011536ef38b316fa8dd69343db03493f9ba.
 ```
 
 ---
@@ -2194,7 +2206,7 @@ The authentication gap is closed when all of the following are true:
 Execute only:
 
 ```text
-AUTH-014 — feat(authentication): add ldap authentication provider
+AUTH-015 — feat(authentication): add unified hidra access token issuer
 ```
 
-AUTH-013 now provides isolated LDAP credential verification and a provider-neutral verified directory identity result. Do not implement AUTH-015 or later tasks during AUTH-014.
+AUTH-014 now normalizes successful LDAP/Active Directory authentication to HidraPrincipal using linked Hidra identity and authorization. Do not implement AUTH-016 or later tasks during AUTH-015.

@@ -7,7 +7,7 @@
  *
  * @Name        : JpaUserRoleGrantRepositoryAdapter
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-15
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -21,12 +21,12 @@ package dz.sh.hidra.modules.identity.infrastructure.persistence.adapter;
 
 import dz.sh.hidra.modules.identity.application.port.out.UserRoleGrantRepositoryPort;
 import dz.sh.hidra.modules.identity.domain.model.UserRoleGrant;
+import dz.sh.hidra.modules.identity.domain.value.GrantStatus;
 import dz.sh.hidra.modules.identity.infrastructure.persistence.mapper.IdentityPersistenceMapper;
 import dz.sh.hidra.modules.identity.infrastructure.persistence.repository.UserRoleGrantJpaRepository;
-import org.springframework.stereotype.Component;
-
 import java.util.Objects;
 import java.util.Optional;
+import org.springframework.stereotype.Component;
 
 /**
  * Database-backed repository adapter for UserRoleGrant.
@@ -48,5 +48,11 @@ public class JpaUserRoleGrantRepositoryAdapter implements UserRoleGrantRepositor
     @Override
     public Optional<UserRoleGrant> findById(String id) {
         return repository.findById(id).map(IdentityPersistenceMapper::toDomain);
+    }
+
+    @Override
+    public Optional<UserRoleGrant> findActiveByUserIdAndRoleId(String userId, String roleId) {
+        return repository.findFirstByUserIdAndRoleIdAndStatus(userId, roleId, GrantStatus.ACTIVE)
+                .map(IdentityPersistenceMapper::toDomain);
     }
 }

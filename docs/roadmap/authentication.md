@@ -16,7 +16,7 @@
 | Author | Abir MEDJERAB |
 | CreatedOn | 2025-06-26 |
 | UpdatedOn | 2026-09-15 |
-| Status | Active — AUTH-025 OIDC normalization proof completed |
+| Status | Active — AUTH-026 unified JWT compatibility proof completed |
 | Execution mode | One roadmap commit code at a time |
 
 ---
@@ -1421,7 +1421,7 @@ This is a gap-closure sequence. Only one commit code may be executed per task.
 | AUTH-023 | `test(authentication): cover local authentication` | Unit/integration/API coverage for persisted LOCAL authentication | Completed — provider unit tests, PostgreSQL Testcontainers integration, and the LOCAL login API boundary prove persisted BCrypt credential verification, account/credential state enforcement, sanitized outcomes, normalized HidraPrincipal/response contracts, and successful persisted login-state update; `mvn -q test` passed in PR CI run 248 |
 | AUTH-024 | `test(authentication): cover ldap authentication` | LDAP/AD adapter, mapping, outage, TLS, and end-to-end coverage | Completed — provider, credential-adapter, security-configuration, and direct-login API tests prove LDAP/ACTIVE_DIRECTORY normalization, stable external identity linkage, Hidra account-state/permission ownership, invalid/unmapped/inactive/locked failure behavior, directory outage fail-closed behavior, LDAP filter escaping, AD objectGUID normalization, production/staging LDAPS enforcement, timeout validation, and explicit LDAP/AD API provider selection; `mvn -q test` passed in PR CI run 257 |
 | AUTH-025 | `test(authentication): cover oidc normalization` | Protect existing OIDC behavior and prove Hidra principal/authorization normalization | Completed — validated issuer+subject normalization, active provider/linkage/account-state enforcement, Hidra-owned permission resolution, external role/group/scope isolation, and secured OIDC completion API convergence are covered; existing OIDC PKCE/browser contract regression tests remain intact; `mvn -q test` passed in PR CI run 270 |
-| AUTH-026 | `test(authentication): verify unified jwt compatibility` | Verify all providers produce tokens accepted by current security filters and permission enforcement | Planned |
+| AUTH-026 | `test(authentication): verify unified jwt compatibility` | Verify all providers produce tokens accepted by current security filters and permission enforcement | Completed — real production issuer/encoder -> Hidra decoder -> protected-API authentication conversion is proven for LOCAL, LDAP, ACTIVE_DIRECTORY, and OIDC, including stable subject/issuer/audience/JTI, provider metadata, Hidra roles/scopes, ROLE_/SCOPE_ reconstruction, and FACTOR_BEARER; `mvn -q test` passed in PR CI run 279 |
 | AUTH-027 | `test(authentication): protect hidra authorization ownership` | Prove external groups/claims do not bypass Hidra role/permission decisions | Planned |
 | AUTH-028 | `docs(authentication): add ldap and provider deployment runbook` | Document non-secret provider/TLS/configuration inputs and diagnostics | Planned |
 | AUTH-029 | `test(authentication): add authentication architecture and secret guardrails` | Enforce module boundaries, credential secrecy, and provider isolation | Planned |
@@ -2265,11 +2265,37 @@ PASS — PR CI run 270 completed repository `mvn -q test` successfully for AUTH-
 
 ---
 
-### AUTH-026 through AUTH-027 — Remaining security proof tasks
+### AUTH-026 — Unified Hidra JWT compatibility proof
 
-These tasks add dedicated unified JWT compatibility and authorization-ownership tests.
+Commit:
 
-Each task must run the appropriate Maven test command and record real results in this roadmap.
+```text
+test(authentication): verify unified jwt compatibility
+```
+
+Status:
+
+```text
+Completed — HidraUnifiedJwtCompatibilityTest issues real Hidra JWTs from normalized LOCAL, LDAP, ACTIVE_DIRECTORY, and OIDC HidraPrincipal values through the production HidraAccessTokenIssuer/HidraJwtEncoderConfiguration, validates them through the production hidraJwtDecoder used by ordinary protected APIs, and reconstructs authorities through the production Hidra JWT authentication converter. The proof verifies stable Hidra subject, issuer/audience/JTI, authentication-source metadata, optional provider linkage, deterministic Hidra-owned roles/scope claims, ROLE_/SCOPE_ authority reconstruction, and the framework FACTOR_BEARER authentication factor for every provider source. No production behavior or AUTH-027+ authorization-ownership scope was added.
+```
+
+Validation:
+
+```bash
+mvn -q test
+```
+
+Result:
+
+```text
+PASS — PR CI run 279 completed repository `mvn -q test` successfully for AUTH-026 corrected implementation commit 9669ff803b1132127bbc78f320a33f83e2e250fc. The same run also passed repository compile/full verification, acceptance compile/tests/clean verify, deterministic OpenAPI publication, and artifact upload. Earlier runs 277 and 278 exposed only test expectation mismatches around Spring's typed issuer accessor for the configured non-URL issuer string and the framework-added FACTOR_BEARER authority; both were corrected without changing production behavior.
+```
+
+---
+
+### AUTH-027 — Remaining authorization-ownership proof task
+
+AUTH-027 adds dedicated proof that external groups/claims cannot bypass Hidra authorization.
 
 Critical final proof:
 
@@ -2402,7 +2428,7 @@ The authentication gap is closed when all of the following are true:
 Execute only:
 
 ```text
-AUTH-026 — test(authentication): verify unified jwt compatibility
+AUTH-027 — test(authentication): protect hidra authorization ownership
 ```
 
-AUTH-025 now proves OIDC normalization across validated issuer/subject identity mapping, Hidra account-state/authorization ownership, external-claim isolation, and secured completion API coverage. Do not implement AUTH-027 or later tasks during AUTH-026.
+AUTH-026 now proves unified Hidra JWT compatibility across LOCAL, LDAP/Active Directory, and OIDC using the production issuer, decoder, and protected-API authentication converter. Do not implement AUTH-028 or later tasks during AUTH-027.

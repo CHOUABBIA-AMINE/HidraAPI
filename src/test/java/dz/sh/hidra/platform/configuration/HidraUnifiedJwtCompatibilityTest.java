@@ -99,7 +99,8 @@ class HidraUnifiedJwtCompatibilityTest {
                         "ROLE_OPERATOR",
                         "ROLE_DISPATCHER",
                         "SCOPE_pipeline:read",
-                        "SCOPE_alarm:acknowledge"
+                        "SCOPE_alarm:acknowledge",
+                        "FACTOR_BEARER"
                 );
     }
 

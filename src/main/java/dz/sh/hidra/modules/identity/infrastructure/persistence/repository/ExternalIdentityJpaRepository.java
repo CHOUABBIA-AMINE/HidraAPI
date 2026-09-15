@@ -7,7 +7,7 @@
  *
  * @Name        : ExternalIdentityJpaRepository
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-15
  *
  * @Type        : Interface
  * @Layer       : Infrastructure
@@ -20,6 +20,7 @@
 package dz.sh.hidra.modules.identity.infrastructure.persistence.repository;
 
 import dz.sh.hidra.modules.identity.infrastructure.persistence.entity.ExternalIdentityJpaEntity;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -28,4 +29,9 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface ExternalIdentityJpaRepository extends JpaRepository<ExternalIdentityJpaEntity, String> {
+
+    Optional<ExternalIdentityJpaEntity> findByIdentityProviderIdAndExternalSubject(
+            String identityProviderId,
+            String externalSubject
+    );
 }

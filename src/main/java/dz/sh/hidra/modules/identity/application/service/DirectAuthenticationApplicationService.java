@@ -14,19 +14,18 @@
  * @Module      : identity
  * @Package     : dz.sh.hidra.modules.identity.application.service
  *
- * @Description : Orchestrates provider-selected direct authentication, logical session creation, and unified Hidra token issuance.
+ * @Description : Orchestrates provider-selected direct authentication and delegates provider-neutral session/token completion.
  *
  */
 package dz.sh.hidra.modules.identity.application.service;
 
+import dz.sh.hidra.modules.identity.application.model.AuthenticationCompletionResult;
 import dz.sh.hidra.modules.identity.application.model.DirectAuthenticationCommand;
 import dz.sh.hidra.modules.identity.application.model.DirectAuthenticationResult;
-import dz.sh.hidra.modules.identity.application.model.IssuedAccessToken;
 import dz.sh.hidra.modules.identity.application.port.in.AuthenticateDirectUserUseCase;
-import dz.sh.hidra.modules.identity.application.port.out.AccessTokenIssuerPort;
+import dz.sh.hidra.modules.identity.application.port.in.CompleteAuthenticatedPrincipalUseCase;
 import dz.sh.hidra.modules.identity.application.port.out.DirectAuthenticationPort;
 import dz.sh.hidra.modules.identity.domain.model.HidraPrincipal;
-import dz.sh.hidra.modules.identity.domain.model.LoginSession;
 import java.util.Objects;
 import org.springframework.stereotype.Service;
 
@@ -37,17 +36,14 @@ import org.springframework.stereotype.Service;
 public final class DirectAuthenticationApplicationService implements AuthenticateDirectUserUseCase {
 
     private final DirectAuthenticationPort directAuthenticationPort;
-    private final AccessTokenIssuerPort accessTokenIssuer;
-    private final AuthenticationSessionLifecycleApplicationService sessionLifecycle;
+    private final CompleteAuthenticatedPrincipalUseCase completionUseCase;
 
     public DirectAuthenticationApplicationService(
             DirectAuthenticationPort directAuthenticationPort,
-            AccessTokenIssuerPort accessTokenIssuer,
-            AuthenticationSessionLifecycleApplicationService sessionLifecycle
+            CompleteAuthenticatedPrincipalUseCase completionUseCase
     ) {
         this.directAuthenticationPort = Objects.requireNonNull(directAuthenticationPort);
-        this.accessTokenIssuer = Objects.requireNonNull(accessTokenIssuer);
-        this.sessionLifecycle = Objects.requireNonNull(sessionLifecycle);
+        this.completionUseCase = Objects.requireNonNull(completionUseCase);
     }
 
     @Override
@@ -59,15 +55,16 @@ public final class DirectAuthenticationApplicationService implements Authenticat
                 command.principal(),
                 command.credentials()
         );
-        IssuedAccessToken accessToken = accessTokenIssuer.issue(principal);
-        LoginSession session = sessionLifecycle.startSession(
+        AuthenticationCompletionResult completion = completionUseCase.complete(
                 principal,
-                accessToken.expiresAt(),
                 command.clientIp(),
                 command.userAgent(),
                 command.correlationId()
         );
-
-        return new DirectAuthenticationResult(principal, session, accessToken);
+        return new DirectAuthenticationResult(
+                completion.principal(),
+                completion.session(),
+                completion.accessToken()
+        );
     }
 }

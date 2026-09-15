@@ -7,7 +7,7 @@
  *
  * @Name        : UserRoleGrantRepositoryPort
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-15
  *
  * @Type        : Interface
  * @Layer       : Application
@@ -20,7 +20,6 @@
 package dz.sh.hidra.modules.identity.application.port.out;
 
 import dz.sh.hidra.modules.identity.domain.model.UserRoleGrant;
-
 import java.util.Optional;
 
 /**
@@ -31,4 +30,6 @@ public interface UserRoleGrantRepositoryPort {
     UserRoleGrant save(UserRoleGrant model);
 
     Optional<UserRoleGrant> findById(String id);
+
+    Optional<UserRoleGrant> findActiveByUserIdAndRoleId(String userId, String roleId);
 }

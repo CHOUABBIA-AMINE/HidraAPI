@@ -1,0 +1,19 @@
+name: auth-026-roadmap-finalize
+
+on:
+  push:
+    branches:
+      - auth-026-unified-jwt-compatibility
+
+permissions:
+  contents: write
+
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: auth-026-unified-jwt-compatibility
+          fetch-depth: 0
+      - run: bash .github/auth-026-finalize.sh

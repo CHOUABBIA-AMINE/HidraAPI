@@ -55,7 +55,7 @@ class HidraLdapSecurityConfigurationTest {
         LdapContextSource contextSource = configuration.hidraLdapContextSource(properties, "production");
 
         assertThat(contextSource).isNotNull();
-        assertThat(contextSource.getBaseLdapPathAsString()).isEqualTo("dc=example,dc=invalid");
+        assertThat(contextSource.getBaseLdapPathAsString()).isEqualTo("DC=example,DC=invalid");
     }
 
     @Test

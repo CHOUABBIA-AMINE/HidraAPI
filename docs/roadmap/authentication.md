@@ -16,7 +16,7 @@
 | Author | Abir MEDJERAB |
 | CreatedOn | 2025-06-26 |
 | UpdatedOn | 2026-09-15 |
-| Status | Active — AUTH-023 persisted LOCAL authentication proof completed |
+| Status | Active — AUTH-024 LDAP/Active Directory authentication proof completed |
 | Execution mode | One roadmap commit code at a time |
 
 ---
@@ -1419,7 +1419,7 @@ This is a gap-closure sequence. Only one commit code may be executed per task.
 | AUTH-021 | `feat(authentication): add safe local administrator bootstrap` | Provide controlled persistent LOCAL administrator provisioning without permanent in-memory fallback | Completed — explicitly enabled bootstrap now provisions a persistent ACTIVE HUMAN User, BCrypt-backed ACTIVE LocalCredential, active HIDRA_ADMIN role/global grant, and append-only audit event; fully provisioned reruns are idempotent while pre-existing or incomplete identity state fails closed without credential overwrite; bootstrap password has no repository default and the temporary Basic/InMemoryUserDetailsManager authority is removed; `mvn -q test` passed in PR CI run 229 |
 | AUTH-022 | `test(authentication): cover dynamic provider routing` | Verify provider-selection dispatch, supports contracts, unsupported type, and no fallback | Completed — focused router and ProviderManager tests prove LOCAL -> LocalAuthenticationToken, LDAP/ACTIVE_DIRECTORY -> LdapAuthenticationToken, OIDC/unsupported selections fail closed, providers may support only one Hidra request token type, selected-provider failure never invokes another provider, and unsupported request types are rejected; `mvn -q test` passed in PR CI run 239 |
 | AUTH-023 | `test(authentication): cover local authentication` | Unit/integration/API coverage for persisted LOCAL authentication | Completed — provider unit tests, PostgreSQL Testcontainers integration, and the LOCAL login API boundary prove persisted BCrypt credential verification, account/credential state enforcement, sanitized outcomes, normalized HidraPrincipal/response contracts, and successful persisted login-state update; `mvn -q test` passed in PR CI run 248 |
-| AUTH-024 | `test(authentication): cover ldap authentication` | LDAP/AD adapter, mapping, outage, TLS, and end-to-end coverage | Planned |
+| AUTH-024 | `test(authentication): cover ldap authentication` | LDAP/AD adapter, mapping, outage, TLS, and end-to-end coverage | Completed — provider, credential-adapter, security-configuration, and direct-login API tests prove LDAP/ACTIVE_DIRECTORY normalization, stable external identity linkage, Hidra account-state/permission ownership, invalid/unmapped/inactive/locked failure behavior, directory outage fail-closed behavior, LDAP filter escaping, AD objectGUID normalization, production/staging LDAPS enforcement, timeout validation, and explicit LDAP/AD API provider selection; `mvn -q test` passed in PR CI run 257 |
 | AUTH-025 | `test(authentication): cover oidc normalization` | Protect existing OIDC behavior and prove Hidra principal/authorization normalization | Planned |
 | AUTH-026 | `test(authentication): verify unified jwt compatibility` | Verify all providers produce tokens accepted by current security filters and permission enforcement | Planned |
 | AUTH-027 | `test(authentication): protect hidra authorization ownership` | Prove external groups/claims do not bypass Hidra role/permission decisions | Planned |
@@ -2209,9 +2209,37 @@ PASS — PR CI run 248 completed repository mvn -q test successfully for AUTH-02
 
 ---
 
-### AUTH-024 through AUTH-027 — Remaining security proof tasks
+### AUTH-024 — LDAP/Active Directory authentication proof
 
-These tasks add dedicated LDAP, OIDC normalization, JWT compatibility, and authorization-ownership tests.
+Commit:
+
+```text
+test(authentication): cover ldap authentication
+```
+
+Status:
+
+```text
+Completed — LdapAuthenticationProviderTest proves successful LDAP and ACTIVE_DIRECTORY normalization through stable ExternalIdentity linkage to an active Hidra User, Hidra-owned effective permissions with no directory-group authority promotion, invalid credentials, missing mappings, inactive external identity, locked account, unavailable/ambiguous provider configuration, directory outage fail-closed behavior, and provider token support isolation. LdapCredentialVerificationAdapterTest proves submitted principals are LDAP-filter escaped, the configured search filter must contain the principal placeholder, AD objectGUID bytes normalize to a stable Base64 subject, directory identity attributes are normalized, and blank credentials fail before directory access. HidraLdapSecurityConfigurationTest proves production/staging require LDAPS and validates positive connection/read timeouts. IdentityAuthenticationControllerLdapApiTest proves the canonical direct-login API preserves explicit LDAP and ACTIVE_DIRECTORY provider selection, credentials, client metadata, correlation ID, and the normalized Hidra response contract. No production behavior or AUTH-025+ OIDC/JWT proof scope was added.
+```
+
+Validation:
+
+```bash
+mvn -q test
+```
+
+Result:
+
+```text
+PASS — PR CI run 257 completed repository mvn -q test successfully for AUTH-024 corrected implementation commit 60437b8660a7ff59f5fcd9513142fe5d118ef240. The same run also passed repository compile/full verification, acceptance compile/tests/clean verify, and deterministic OpenAPI publication. Earlier run 256 exposed only a test assertion that expected lower-case LDAP base-DN text although LdapContextSource preserves the configured DN casing; the assertion was corrected without changing production behavior.
+```
+
+---
+
+### AUTH-025 through AUTH-027 — Remaining security proof tasks
+
+These tasks add dedicated OIDC normalization, JWT compatibility, and authorization-ownership tests.
 
 Each task must run the appropriate Maven test command and record real results in this roadmap.
 
@@ -2346,7 +2374,7 @@ The authentication gap is closed when all of the following are true:
 Execute only:
 
 ```text
-AUTH-024 — test(authentication): cover ldap authentication
+AUTH-025 — test(authentication): cover oidc normalization
 ```
 
-AUTH-023 now proves persisted LOCAL authentication across provider unit, PostgreSQL integration, and login API boundary coverage. Do not implement AUTH-025 or later tasks during AUTH-024.
+AUTH-024 now proves LDAP/Active Directory authentication across provider, credential-adapter, security-configuration, and direct-login API coverage. Do not implement AUTH-026 or later tasks during AUTH-025.

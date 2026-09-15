@@ -14,7 +14,7 @@
  * @Module      : platform
  * @Package     : dz.sh.hidra.platform.configuration
  *
- * @Description : Configures JWT validation for external resource tokens and Hidra-issued HMAC access tokens.
+ * @Description : Separates Hidra-issued bearer-token validation from the external OIDC completion bridge.
  *
  */
 package dz.sh.hidra.platform.configuration;
@@ -32,7 +32,6 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtClaimValidator;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtDecoders;
-import org.springframework.security.oauth2.jwt.JwtValidators;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 
 /**
@@ -41,40 +40,63 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 @Configuration(proxyBeanMethods = false)
 public class HidraJwtDecoderConfiguration {
 
+    private static final int MINIMUM_HS256_SECRET_BYTES = 32;
+
+    /**
+     * Validates only Hidra-issued HS256 access tokens used by ordinary protected APIs.
+     */
     @Bean
     JwtDecoder hidraJwtDecoder(
-            @Value("${hidra.platform.security.jwt.issuer-uri:}") String issuerUri,
-            @Value("${hidra.platform.security.jwt.jwk-set-uri:}") String jwkSetUri,
             @Value("${hidra.platform.security.jwt.hmac-secret:}") String hmacSecret,
             @Value("${hidra.platform.security.jwt.token-issuer:hidra-api}") String tokenIssuer,
             @Value("${hidra.platform.security.jwt.audience:}") String audience
     ) {
-        String normalizedIssuerUri = normalize(issuerUri, null);
-        String normalizedJwkSetUri = normalize(jwkSetUri, null);
         String normalizedHmacSecret = normalize(hmacSecret, null);
-        String normalizedTokenIssuer = normalize(tokenIssuer, "hidra-api");
-
-        NimbusJwtDecoder decoder;
-        String validationIssuer;
-        if (normalizedJwkSetUri != null) {
-            decoder = NimbusJwtDecoder.withJwkSetUri(normalizedJwkSetUri).build();
-            validationIssuer = normalizedIssuerUri;
-        } else if (normalizedIssuerUri != null) {
-            decoder = (NimbusJwtDecoder) JwtDecoders.fromIssuerLocation(normalizedIssuerUri);
-            validationIssuer = normalizedIssuerUri;
-        } else if (normalizedHmacSecret != null) {
-            decoder = NimbusJwtDecoder.withSecretKey(new SecretKeySpec(
-                    normalizedHmacSecret.getBytes(StandardCharsets.UTF_8),
-                    "HmacSHA256"
-            )).macAlgorithm(MacAlgorithm.HS256).build();
-            validationIssuer = normalizedTokenIssuer;
-        } else {
+        if (normalizedHmacSecret == null) {
             throw new IllegalStateException(
-                    "JWT authentication mode requires HIDRA_JWT_ISSUER_URI, HIDRA_JWT_JWK_SET_URI, or HIDRA_JWT_HMAC_SECRET."
+                    "Hidra bearer authentication requires externalized HIDRA_JWT_HMAC_SECRET validation material."
             );
         }
 
-        decoder.setJwtValidator(jwtValidator(validationIssuer, normalize(audience, null)));
+        byte[] secretBytes = normalizedHmacSecret.getBytes(StandardCharsets.UTF_8);
+        if (secretBytes.length < MINIMUM_HS256_SECRET_BYTES) {
+            throw new IllegalStateException("HIDRA_JWT_HMAC_SECRET must contain at least 32 UTF-8 bytes for HS256.");
+        }
+
+        NimbusJwtDecoder decoder = NimbusJwtDecoder.withSecretKey(new SecretKeySpec(secretBytes, "HmacSHA256"))
+                .macAlgorithm(MacAlgorithm.HS256)
+                .build();
+        decoder.setJwtValidator(jwtValidator(
+                normalize(tokenIssuer, "hidra-api"),
+                normalize(audience, null)
+        ));
+        return decoder;
+    }
+
+    /**
+     * Validates only external OIDC bearer tokens presented to the OIDC completion bridge.
+     */
+    @Bean(name = "externalOidcJwtDecoder")
+    JwtDecoder externalOidcJwtDecoder(
+            @Value("${hidra.platform.security.jwt.issuer-uri:}") String issuerUri,
+            @Value("${hidra.platform.security.jwt.jwk-set-uri:}") String jwkSetUri,
+            @Value("${hidra.platform.security.jwt.audience:}") String audience
+    ) {
+        String normalizedIssuerUri = normalize(issuerUri, null);
+        String normalizedJwkSetUri = normalize(jwkSetUri, null);
+
+        NimbusJwtDecoder decoder;
+        if (normalizedJwkSetUri != null) {
+            decoder = NimbusJwtDecoder.withJwkSetUri(normalizedJwkSetUri).build();
+        } else if (normalizedIssuerUri != null) {
+            decoder = (NimbusJwtDecoder) JwtDecoders.fromIssuerLocation(normalizedIssuerUri);
+        } else {
+            throw new IllegalStateException(
+                    "External OIDC completion requires HIDRA_JWT_ISSUER_URI or HIDRA_JWT_JWK_SET_URI."
+            );
+        }
+
+        decoder.setJwtValidator(jwtValidator(normalizedIssuerUri, normalize(audience, null)));
         return decoder;
     }
 

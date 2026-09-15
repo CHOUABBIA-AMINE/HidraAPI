@@ -16,7 +16,7 @@
 | Author | Abir MEDJERAB |
 | CreatedOn | 2025-06-26 |
 | UpdatedOn | 2026-09-15 |
-| Status | Active — AUTH-015 unified Hidra access-token issuer completed |
+| Status | Active — AUTH-016 authentication session lifecycle completed |
 | Execution mode | One roadmap commit code at a time |
 
 ---
@@ -1411,7 +1411,7 @@ This is a gap-closure sequence. Only one commit code may be executed per task.
 | AUTH-013 | `feat(authentication): add ldap credential verification adapter` | Implement AD/LDAP bind/search credential verification | Completed — Identity application port plus provider-neutral VerifiedDirectoryIdentity contract and Spring LDAP adapter added; principal values are LDAP-filter escaped, search must resolve exactly one identity, credentials are verified by LDAP bind, and no Hidra permissions or AUTH-014 provider behavior is introduced; `mvn -q test` passed in PR CI run 160 |
 | AUTH-014 | `feat(authentication): add ldap authentication provider` | Route LDAP token through directory verification, ExternalIdentity mapping, Hidra account state, and HidraPrincipal | Completed — LdapAuthenticationProvider handles only LdapAuthenticationToken, delegates credential verification to AUTH-013, resolves one active LDAP/AD IdentityProvider and LINKED ExternalIdentity, enforces Hidra user state and Hidra-owned effective permissions, and returns HidraPrincipal without LOCAL fallback or AD-group authorization shortcuts; `mvn -q test` passed in PR CI run 167 |
 | AUTH-015 | `feat(authentication): add unified hidra access token issuer` | Add JwtEncoder and issue one standardized Hidra JWT for all providers | Completed — provider-neutral HidraAccessTokenIssuer now emits one JWT schema from HidraPrincipal with stable Hidra subject, issuer/audience/expiry/JTI, Hidra-owned roles/permissions, externalized HS256 signing material, and HMAC resource-server issuer compatibility; `mvn -q test` passed in PR CI run 174 |
-| AUTH-016 | `feat(identity): complete authentication session lifecycle` | Reuse LoginSession and AuthenticationEvent for all provider paths | Planned |
+| AUTH-016 | `feat(identity): complete authentication session lifecycle` | Reuse LoginSession and AuthenticationEvent for all provider paths | Completed — provider-neutral AuthenticationSessionLifecycleApplicationService now starts, touches, expires, revokes, and logs out LoginSession records without storing raw JWTs; non-LOCAL successful sessions record LOGIN_SUCCESS, LOCAL success remains with AUTH-011 to avoid duplicates, and logout records provider-correct AuthenticationEvent metadata; `mvn -q test` passed in PR CI run 181 |
 | AUTH-017 | `feat(authentication): wire dynamic login endpoint` | Introduce and wire the direct LOCAL/LDAP provider-selection login boundary to router, AuthenticationManager, session, and token issuer | Planned |
 | AUTH-018 | `feat(authentication): converge oidc completion on hidra token` | Ensure OIDC completion produces same Hidra principal/session/JWT result as LOCAL/LDAP while preserving current PKCE behavior | Planned |
 | AUTH-019 | `refactor(security): standardize protected api bearer authentication` | Make protected APIs consume the unified Hidra JWT while preserving authorization behavior | Planned |
@@ -1949,10 +1949,22 @@ Reuse `LoginSession` and `AuthenticationEvent` across all provider paths.
 
 Do not store raw JWTs.
 
+Status:
+
+```text
+Completed — AuthenticationSessionLifecycleApplicationService provides provider-neutral logical session start, touch/automatic expiry, explicit expiry, revocation, and logout using the existing LoginSession repository contract. Session persistence stores only lifecycle/client/correlation/provider metadata and never accepts or stores raw JWT values. LDAP/AD/OIDC normalized session starts record LOGIN_SUCCESS through the existing AuthenticationEvent repository; LOCAL success remains recorded by LocalAuthenticationOutcomeApplicationService from AUTH-011 to avoid duplicate LOGIN_SUCCESS events. Logout records a LOGOUT event with provider-derived AuthenticationProtocol. No dynamic login endpoint, token response orchestration, provider routing, or AUTH-017 behavior was introduced.
+```
+
 Validation:
 
 ```bash
 mvn -q test
+```
+
+Result:
+
+```text
+PASS — pull-request CI run 181 completed repository and acceptance `mvn -q test` checks successfully for AUTH-016 implementation commit fb39522e817ddfd9ea2aa94ba1c525ed7f5f7ecc.
 ```
 
 ---
@@ -2218,7 +2230,7 @@ The authentication gap is closed when all of the following are true:
 Execute only:
 
 ```text
-AUTH-016 — feat(identity): complete authentication session lifecycle
+AUTH-017 — feat(authentication): wire dynamic login endpoint
 ```
 
-AUTH-015 now provides one Hidra-issued access-token schema from normalized HidraPrincipal with externalized signing material and HMAC resource-server compatibility. Do not implement AUTH-017 or later tasks during AUTH-016.
+AUTH-016 now provides provider-neutral LoginSession lifecycle and AuthenticationEvent recording without raw-token persistence. Do not implement AUTH-018 or later tasks during AUTH-017.

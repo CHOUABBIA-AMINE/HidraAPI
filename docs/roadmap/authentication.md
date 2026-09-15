@@ -16,7 +16,7 @@
 | Author | Abir MEDJERAB |
 | CreatedOn | 2025-06-26 |
 | UpdatedOn | 2026-09-15 |
-| Status | Active — AUTH-020 ordinary in-memory LOCAL authentication retired |
+| Status | Active — AUTH-021 safe persistent LOCAL administrator bootstrap completed |
 | Execution mode | One roadmap commit code at a time |
 
 ---
@@ -1416,7 +1416,7 @@ This is a gap-closure sequence. Only one commit code may be executed per task.
 | AUTH-018 | `feat(authentication): converge oidc completion on hidra token` | Ensure OIDC completion produces same Hidra principal/session/JWT result as LOCAL/LDAP while preserving current PKCE behavior | Completed — externally validated OIDC HidraPrincipal now completes through the same provider-neutral session/token application path used by direct authentication; secured POST /api/v1/identity/authentication/oidc/complete issues the AUTH-015 Hidra bearer JWT and AUTH-016 LoginSession while preserving browser authorization-code + PKCE semantics and adding no OAuth callback/token exchange; `mvn -q test` passed in PR CI run 204 |
 | AUTH-019 | `refactor(security): standardize protected api bearer authentication` | Make protected APIs consume the unified Hidra JWT while preserving authorization behavior | Completed — ordinary JWT-protected APIs now accept only standardized Hidra-issued HS256 access tokens through the Hidra JWT decoder/authorities converter, while a higher-priority path-scoped chain isolates external OIDC bearer validation to the secured completion bridge; existing permission/interceptor semantics are preserved and unconfigured OIDC fails closed on use; `mvn -q clean verify` passed in PR CI run 213 |
 | AUTH-020 | `refactor(security): retire ordinary in-memory local authentication` | Remove InMemoryUserDetailsManager as ordinary LOCAL login only after DB path is proven | Completed — development and test now default to the unified Hidra JWT path instead of server-wide Basic authentication; InMemoryUserDetailsManager remains only behind explicit `HIDRA_SECURITY_AUTHENTICATION_MODE=basic` selection as temporary emergency/bootstrap compatibility until AUTH-021; `mvn -q clean verify` passed in PR CI run 220 |
-| AUTH-021 | `feat(authentication): add safe local administrator bootstrap` | Provide controlled persistent LOCAL administrator provisioning without permanent in-memory fallback | Planned |
+| AUTH-021 | `feat(authentication): add safe local administrator bootstrap` | Provide controlled persistent LOCAL administrator provisioning without permanent in-memory fallback | Completed — explicitly enabled bootstrap now provisions a persistent ACTIVE HUMAN User, BCrypt-backed ACTIVE LocalCredential, active HIDRA_ADMIN role/global grant, and append-only audit event; fully provisioned reruns are idempotent while pre-existing or incomplete identity state fails closed without credential overwrite; bootstrap password has no repository default and the temporary Basic/InMemoryUserDetailsManager authority is removed; `mvn -q test` passed in PR CI run 229 |
 | AUTH-022 | `test(authentication): cover dynamic provider routing` | Verify provider-selection dispatch, supports contracts, unsupported type, and no fallback | Planned |
 | AUTH-023 | `test(authentication): cover local authentication` | Unit/integration/API coverage for persisted LOCAL authentication | Planned |
 | AUTH-024 | `test(authentication): cover ldap authentication` | LDAP/AD adapter, mapping, outage, TLS, and end-to-end coverage | Planned |
@@ -2133,10 +2133,22 @@ cannot silently overwrite existing credential
 fully auditable
 ```
 
+Status:
+
+```text
+Completed — LocalAdministratorBootstrapApplicationService provisions a normal ACTIVE HUMAN Identity User, an ACTIVE BCrypt-hashed LocalCredential, and a global ACTIVE HIDRA_ADMIN UserRoleGrant inside a transaction. The HIDRA_ADMIN role is reused when active or created when absent. A rerun is a no-op only when the same username is already an ACTIVE user with an ACTIVE LOCAL credential and active administrator grant; any other pre-existing/incomplete state is rejected and never repaired, reset, or escalated silently. LocalAdministratorBootstrapRunner is disabled by default, requires an externally supplied nonblank password when enabled, and records successful creation through the existing append-only Audit use case in the same startup transaction without recording plaintext credentials. The temporary Basic/InMemoryUserDetailsManager authority retained through AUTH-020 is removed; JWT/direct LOCAL authentication remains the normal runtime path.
+```
+
 Validation:
 
 ```bash
 mvn -q test
+```
+
+Result:
+
+```text
+PASS — PR CI run 229 completed repository and acceptance mvn -q test successfully for AUTH-021 corrected implementation commit 91e49d0ac13227d1075278616b1273c21c2d373e. Earlier run 227 correctly blocked final transactional classes that could not be proxied; both transactional classes were made proxy-compatible before validation passed.
 ```
 
 ---
@@ -2278,7 +2290,7 @@ The authentication gap is closed when all of the following are true:
 Execute only:
 
 ```text
-AUTH-021 — feat(authentication): add safe local administrator bootstrap
+AUTH-022 — test(authentication): cover dynamic provider routing
 ```
 
-AUTH-020 now defaults development and test to the unified Hidra JWT path, leaving in-memory Basic only as explicit temporary emergency/bootstrap compatibility. Do not implement AUTH-022 or later tasks during AUTH-021.
+AUTH-021 now provides explicit, persistent, auditable LOCAL administrator bootstrap with no default password or in-memory fallback. Do not implement AUTH-023 or later tasks during AUTH-022.

@@ -16,7 +16,7 @@
 | Author | Abir MEDJERAB |
 | CreatedOn | 2025-06-26 |
 | UpdatedOn | 2026-09-15 |
-| Status | Active — AUTH-029 authentication architecture and secret guardrails completed |
+| Status | Active — AUTH-030 final authentication gap-closure verification in progress |
 | Execution mode | One roadmap commit code at a time |
 
 ---
@@ -1425,7 +1425,7 @@ This is a gap-closure sequence. Only one commit code may be executed per task.
 | AUTH-027 | `test(authentication): protect hidra authorization ownership` | Prove external groups/claims do not bypass Hidra role/permission decisions | Completed — dedicated OIDC and LDAP authorization-ownership proof shows external roles/groups/scopes/permissions and directory identity context cannot grant business permissions, wildcard access, or admin authority beyond Hidra Identity-owned effective permissions; `mvn -q test` passed in PR CI run 286 |
 | AUTH-028 | `docs(authentication): add ldap and provider deployment runbook` | Document non-secret provider/TLS/configuration inputs and diagnostics | Completed — `docs/AUTHENTICATION_DEPLOYMENT_RUNBOOK.md` documents LOCAL bootstrap inputs, LDAP/AD connection/search/LDAPS/trust requirements, OIDC validation/linkage, Hidra JWT settings, provider prerequisites, deployment checks, diagnostics, and secret-handling rules; repository CI run 293 passed |
 | AUTH-029 | `test(authentication): add authentication architecture and secret guardrails` | Enforce module boundaries, credential secrecy, and provider isolation | Completed — authentication-specific architecture/secret tests protect Identity LDAP-domain isolation, controller persistence isolation, external-provider authorization mapping isolation, platform business-model ownership, API password-hash non-exposure, externalized authentication secret properties, and embedded private-key exclusion; repository CI run 300 passed |
-| AUTH-030 | `docs(authentication): finalize authentication gap closure checklist` | Record executable evidence and remaining optional cleanup | Planned |
+| AUTH-030 | `docs(authentication): finalize authentication gap closure checklist` | Record executable evidence and remaining optional cleanup | In Progress — executable closure evidence recorded; final `mvn -q clean verify` pending |
 
 ---
 
@@ -2404,6 +2404,48 @@ mvn -q clean verify passes
 ```
 
 Do not mark items complete without evidence.
+
+Status:
+
+```text
+In Progress — executable evidence for every required authentication gap-closure criterion is recorded below. Final closure remains pending until this AUTH-030 documentation state itself passes `mvn -q clean verify` in repository CI.
+```
+
+Closure evidence checklist:
+
+| Closure criterion | Evidence | Result |
+|---|---|---|
+| Explicit provider selection dynamically routes to the intended provider | AUTH-022 `IdentityAuthenticationRequestRouterTest` and `HidraAuthenticationManagerConfigurationTest`; CI run 239 | PASS — LOCAL, LDAP, and ACTIVE_DIRECTORY dispatch deterministically; OIDC direct-password routing and unsupported types fail closed |
+| LOCAL authenticates against PostgreSQL-backed credentials | AUTH-023 provider/unit/API proof plus PostgreSQL Testcontainers integration; CI run 248 | PASS — persisted `LocalCredential` BCrypt hash is used by the real LOCAL provider |
+| LDAP/AD authenticates through protected LDAP transport | AUTH-024 LDAP provider/adapter/configuration proof; CI run 257; AUTH-012 infrastructure baseline CI run 153 | PASS — directory verification/linkage is covered and staging/production enforce `ldaps://` with positive connection/read timeouts |
+| OIDC remains functional and maps to Hidra identity | AUTH-025 OIDC normalization/API proof; CI run 270; existing OIDC contract remains protected | PASS — validated issuer+subject resolves through active provider + linked `ExternalIdentity` to Hidra User |
+| All providers normalize to `HidraPrincipal` | AUTH-023, AUTH-024, AUTH-025 provider-specific proofs plus AUTH-026 unified JWT compatibility proof; CI runs 248, 257, 270, 279 | PASS — LOCAL, LDAP, ACTIVE_DIRECTORY, and OIDC converge on stable Hidra identity |
+| Hidra roles/permissions remain authoritative | AUTH-027 authorization-ownership proof; CI run 286 | PASS — external OIDC claims and directory context cannot grant business permissions beyond Identity-owned effective permissions |
+| All successful providers issue/produce the same Hidra JWT contract | AUTH-026 production encoder/decoder/converter compatibility proof; CI run 279 | PASS — common subject, issuer/audience/JTI, provider metadata, roles/scope reconstruction, and bearer factor verified across all provider sources |
+| Ordinary in-memory LOCAL authentication is retired | AUTH-020 retirement; CI run 220; AUTH-021 persistent administrator bootstrap; CI run 229 | PASS — ordinary runtime no longer relies on `InMemoryUserDetailsManager`; bootstrap provisions normal persisted Identity state |
+| No provider fallback exists | AUTH-022 routing/provider-manager proof; CI run 239 | PASS — failed selected LOCAL authentication does not invoke LDAP and unsupported/OIDC direct routes fail closed |
+| No secrets are committed | AUTH-029 architecture/secret guardrails; CI run 300 and clean-tree CI run 305; AUTH-028 deployment runbook | PASS — secret-bearing properties remain externally supplied and production source/resource checks reject embedded private-key material |
+| `mvn -q clean verify` passes for final closure | AUTH-030 CI | PENDING — must pass on the final closure documentation state before AUTH-030 is marked Completed |
+
+Definition-of-done cross-check:
+
+```text
+Items 1-15 are backed by AUTH-002 through AUTH-029 implementation/test evidence recorded in this roadmap.
+Item 16 remains the AUTH-030 final clean verification gate and is intentionally not marked complete yet.
+No mandatory authentication gap remains open based on the recorded executable evidence; section 20 items remain explicit optional/non-goal work.
+```
+
+Validation:
+
+```bash
+mvn -q clean verify
+```
+
+Result:
+
+```text
+PENDING — execute repository CI for the AUTH-030 documentation state before final closure.
+```
 
 ---
 

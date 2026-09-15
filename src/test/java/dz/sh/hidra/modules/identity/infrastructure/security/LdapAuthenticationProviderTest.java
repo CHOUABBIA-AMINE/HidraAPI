@@ -87,7 +87,6 @@ class LdapAuthenticationProviderTest {
     @Test
     void authenticatesLinkedLdapIdentityAndUsesOnlyHidraPermissions() {
         arrangeSuccessfulAuthentication(ProviderType.LDAP, ExternalIdentityStatus.LINKED, UserStatus.ACTIVE);
-
         LdapAuthenticationToken request = LdapAuthenticationToken.unauthenticated(USERNAME, PASSWORD);
         request.setDetails("request-details");
 
@@ -96,8 +95,6 @@ class LdapAuthenticationProviderTest {
         assertThat(result.isAuthenticated()).isTrue();
         assertThat(result.getCredentials()).isNull();
         assertThat(result.getDetails()).isEqualTo("request-details");
-        assertThat(result.getPrincipal()).isInstanceOf(HidraPrincipal.class);
-
         HidraPrincipal principal = (HidraPrincipal) result.getPrincipal();
         assertThat(principal.userId()).isEqualTo(USER_ID);
         assertThat(principal.username()).isEqualTo(USERNAME);
@@ -106,7 +103,6 @@ class LdapAuthenticationProviderTest {
         assertThat(principal.identityProviderId()).isEqualTo(PROVIDER_ID);
         assertThat(principal.roles()).isEmpty();
         assertThat(principal.permissions()).containsExactlyInAnyOrder("pipeline:read", "alarm:acknowledge");
-
         verify(credentialVerificationPort).verify(USERNAME, PASSWORD);
         verify(externalIdentityRepository).findByIdentityProviderIdAndExternalSubject(PROVIDER_ID, SUBJECT);
         verify(queryUseCase).principal(USER_ID, List.of());
@@ -115,10 +111,9 @@ class LdapAuthenticationProviderTest {
     @Test
     void preservesActiveDirectoryProviderTypeAfterSuccessfulDirectoryAuthentication() {
         arrangeSuccessfulAuthentication(ProviderType.ACTIVE_DIRECTORY, ExternalIdentityStatus.LINKED, UserStatus.ACTIVE);
-
-        Authentication result = provider.authenticate(LdapAuthenticationToken.unauthenticated(USERNAME, PASSWORD));
-
-        HidraPrincipal principal = (HidraPrincipal) result.getPrincipal();
+        HidraPrincipal principal = (HidraPrincipal) provider
+                .authenticate(LdapAuthenticationToken.unauthenticated(USERNAME, PASSWORD))
+                .getPrincipal();
         assertThat(principal.authenticationType()).isEqualTo(ProviderType.ACTIVE_DIRECTORY);
         assertThat(principal.identityProviderId()).isEqualTo(PROVIDER_ID);
     }
@@ -131,7 +126,6 @@ class LdapAuthenticationProviderTest {
         assertThatThrownBy(() -> provider.authenticate(LdapAuthenticationToken.unauthenticated(USERNAME, PASSWORD)))
                 .isInstanceOf(BadCredentialsException.class)
                 .hasMessage("Invalid LDAP/Active Directory credentials.");
-
         verify(externalIdentityRepository, never())
                 .findByIdentityProviderIdAndExternalSubject(org.mockito.ArgumentMatchers.anyString(), org.mockito.ArgumentMatchers.anyString());
         verify(queryUseCase, never()).principal(org.mockito.ArgumentMatchers.anyString(), org.mockito.ArgumentMatchers.anyList());
@@ -147,19 +141,17 @@ class LdapAuthenticationProviderTest {
         assertThatThrownBy(() -> provider.authenticate(LdapAuthenticationToken.unauthenticated(USERNAME, PASSWORD)))
                 .isInstanceOf(BadCredentialsException.class)
                 .hasMessage("Verified directory identity is not linked to Hidra.");
-
         verify(userRepository, never()).findById(org.mockito.ArgumentMatchers.anyString());
         verify(queryUseCase, never()).principal(org.mockito.ArgumentMatchers.anyString(), org.mockito.ArgumentMatchers.anyList());
     }
 
     @Test
     void rejectsInactiveExternalIdentity() {
-        arrangeSuccessfulAuthentication(ProviderType.LDAP, ExternalIdentityStatus.DISABLED, UserStatus.ACTIVE);
+        arrangeSuccessfulAuthentication(ProviderType.LDAP, ExternalIdentityStatus.DISABLED_EXTERNAL, UserStatus.ACTIVE);
 
         assertThatThrownBy(() -> provider.authenticate(LdapAuthenticationToken.unauthenticated(USERNAME, PASSWORD)))
                 .isInstanceOf(DisabledException.class)
                 .hasMessage("External directory identity is not linked and active.");
-
         verify(userRepository, never()).findById(USER_ID);
     }
 
@@ -170,14 +162,12 @@ class LdapAuthenticationProviderTest {
         assertThatThrownBy(() -> provider.authenticate(LdapAuthenticationToken.unauthenticated(USERNAME, PASSWORD)))
                 .isInstanceOf(LockedException.class)
                 .hasMessage("Hidra user account is locked.");
-
         verify(queryUseCase, never()).principal(org.mockito.ArgumentMatchers.anyString(), org.mockito.ArgumentMatchers.anyList());
     }
 
     @Test
     void rejectsUnavailableAndAmbiguousDirectoryProviderConfiguration() {
         when(identityProviderRepository.findAll()).thenReturn(List.of());
-
         assertThatThrownBy(() -> provider.authenticate(LdapAuthenticationToken.unauthenticated(USERNAME, PASSWORD)))
                 .isInstanceOf(BadCredentialsException.class)
                 .hasMessage("LDAP/Active Directory authentication provider is not available.");
@@ -186,11 +176,9 @@ class LdapAuthenticationProviderTest {
                 directoryProvider(ProviderType.LDAP),
                 directoryProvider("provider-ad", ProviderType.ACTIVE_DIRECTORY)
         ));
-
         assertThatThrownBy(() -> provider.authenticate(LdapAuthenticationToken.unauthenticated(USERNAME, PASSWORD)))
                 .isInstanceOf(AuthenticationServiceException.class)
                 .hasMessage("Multiple active LDAP/Active Directory identity providers are configured.");
-
         verify(credentialVerificationPort, never()).verify(USERNAME, PASSWORD);
     }
 
@@ -203,7 +191,6 @@ class LdapAuthenticationProviderTest {
         assertThatThrownBy(() -> provider.authenticate(LdapAuthenticationToken.unauthenticated(USERNAME, PASSWORD)))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("directory unavailable");
-
         verify(externalIdentityRepository, never())
                 .findByIdentityProviderIdAndExternalSubject(org.mockito.ArgumentMatchers.anyString(), org.mockito.ArgumentMatchers.anyString());
         verify(queryUseCase, never()).principal(org.mockito.ArgumentMatchers.anyString(), org.mockito.ArgumentMatchers.anyList());
@@ -248,71 +235,31 @@ class LdapAuthenticationProviderTest {
     private static IdentityProviderJpaEntity directoryProvider(String id, ProviderType providerType) {
         Instant now = Instant.parse("2026-09-15T10:00:00Z");
         return new IdentityProviderJpaEntity(
-                id,
-                providerType.name(),
-                providerType.name(),
-                providerType,
-                null,
-                null,
-                null,
-                null,
-                "DC=example,DC=invalid",
-                "OU=Users",
-                null,
-                "userPrincipalName",
-                "mail",
-                "displayName",
-                "objectGUID",
-                null,
-                false,
-                false,
-                IdentityProviderStatus.ACTIVE,
-                null,
-                null,
-                now,
-                now
+                id, providerType.name(), providerType.name(), providerType,
+                null, null, null, null,
+                "DC=example,DC=invalid", "OU=Users", null,
+                "userPrincipalName", "mail", "displayName", "objectGUID", null,
+                false, false, IdentityProviderStatus.ACTIVE, null, null, now, now
         );
     }
 
     private static ExternalIdentityJpaEntity externalIdentity(ExternalIdentityStatus status) {
         Instant now = Instant.parse("2026-09-15T10:00:00Z");
         return new ExternalIdentityJpaEntity(
-                "external-identity-1",
-                USER_ID,
-                PROVIDER_ID,
-                SUBJECT,
-                SUBJECT,
-                USERNAME,
-                "operator.directory@example.invalid",
-                "External Directory Name",
-                "CN=Operator,OU=Users,DC=example,DC=invalid",
-                null,
-                now,
-                now,
-                status,
-                now,
-                now
+                "external-identity-1", USER_ID, PROVIDER_ID, SUBJECT, SUBJECT, USERNAME,
+                "operator.directory@example.invalid", "External Directory Name",
+                "CN=Operator,OU=Users,DC=example,DC=invalid", null,
+                now, now, status, now, now
         );
     }
 
     private static UserJpaEntity user(UserStatus status) {
         Instant now = Instant.parse("2026-09-15T10:00:00Z");
         return new UserJpaEntity(
-                USER_ID,
-                USERNAME,
-                "operator.directory@hidra.invalid",
-                "Directory Operator",
-                UserType.HUMAN,
-                status,
-                null,
-                null,
-                0,
+                USER_ID, USERNAME, "operator.directory@hidra.invalid", "Directory Operator",
+                UserType.HUMAN, status, null, null, 0,
                 status == UserStatus.LOCKED ? now.plusSeconds(300) : null,
-                now,
-                status == UserStatus.ACTIVE ? now : null,
-                null,
-                null,
-                now
+                now, status == UserStatus.ACTIVE ? now : null, null, null, now
         );
     }
 }

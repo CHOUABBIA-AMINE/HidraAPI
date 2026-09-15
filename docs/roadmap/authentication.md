@@ -16,7 +16,7 @@
 | Author | Abir MEDJERAB |
 | CreatedOn | 2025-06-26 |
 | UpdatedOn | 2026-09-15 |
-| Status | Active — AUTH-005 authentication provider manager composed |
+| Status | Active — AUTH-006 normalized Hidra principal completed |
 | Execution mode | One roadmap commit code at a time |
 
 ---
@@ -1401,7 +1401,7 @@ This is a gap-closure sequence. Only one commit code may be executed per task.
 | AUTH-003 | `feat(authentication): add provider-specific authentication request tokens` | Add/reuse distinct Spring Authentication request types for deterministic LOCAL, LDAP/AD, and OIDC routing | Completed — LOCAL and LDAP/AD request tokens added; OIDC existing JWT/OIDC result path preserved; `mvn -q test` passed in CI run 93 |
 | AUTH-004 | `feat(authentication): add authentication request router` | Convert an explicit provider selection into the correct Authentication request without credential verification | Completed — Identity-owned router maps LOCAL and LDAP/AD deterministically, preserves OIDC external flow, rejects unsupported direct providers, and performs no credential verification; `mvn -q test` passed in PR CI run 96 |
 | AUTH-005 | `feat(authentication): compose authentication provider manager` | Register provider-specific strategies behind one AuthenticationManager/ProviderManager with no fallback | Completed — central fail-closed ProviderManager composed for provider-specific LOCAL and LDAP request types; `mvn -q test` passed in PR CI run 104 |
-| AUTH-006 | `feat(identity): normalize authenticated hidra principal` | Reuse/add one Hidra principal contract shared by LOCAL, LDAP/AD, and OIDC | Planned |
+| AUTH-006 | `feat(identity): normalize authenticated hidra principal` | Reuse/add one Hidra principal contract shared by LOCAL, LDAP/AD, and OIDC | Completed — Identity-owned HidraPrincipal added with stable Hidra user identity, provider source, optional provider linkage, and Hidra roles/permissions; `mvn -q test` passed in PR CI run 111 |
 | AUTH-007 | `refactor(authentication): normalize existing oidc authentication` | Preserve working OIDC flow while mapping successful identities to Hidra User/HidraPrincipal and Hidra authorization | Planned |
 | AUTH-008 | `feat(identity): add local credential model and port` | Add the proven-missing LOCAL credential domain/application contract | Planned |
 | AUTH-009 | `feat(identity): add local credential persistence` | Add forward Flyway migration plus JPA repository/adapter for LOCAL password hashes | Planned |
@@ -1579,10 +1579,22 @@ Preserve the existing technical `AuthenticatedPrincipal`/current-security-contex
 
 No provider-specific business model duplication and no transfer of User/Role/Permission ownership into platform.
 
+Status:
+
+```text
+Completed — HidraPrincipal is an Identity-domain record that implements java.security.Principal without Spring dependencies. It carries stable Hidra user ID, Hidra username/display name, ProviderType, optional IdentityProvider linkage, and immutable Hidra-owned role/permission sets. Principal.getName() returns the stable Hidra user ID. The existing platform AuthenticatedPrincipal and current-security-context adapters remain unchanged.
+```
+
 Validation:
 
 ```bash
 mvn -q test
+```
+
+Result:
+
+```text
+PASS — pull-request CI run 111 completed the repository test check and the acceptance `mvn -q test` step successfully for AUTH-006 implementation commit 17da3f61c338621bdd9fd641442877241abd239a.
 ```
 
 ---
@@ -2098,7 +2110,7 @@ The authentication gap is closed when all of the following are true:
 Execute only:
 
 ```text
-AUTH-006 — feat(identity): normalize authenticated hidra principal
+AUTH-007 — refactor(authentication): normalize existing oidc authentication
 ```
 
-AUTH-005 now provides the central fail-closed AuthenticationManager/ProviderManager composition for provider-specific request tokens. Do not implement AUTH-007 or later tasks during AUTH-006.
+AUTH-006 now provides the normalized Identity-owned HidraPrincipal contract shared by authentication providers. Do not implement AUTH-008 or later tasks during AUTH-007.

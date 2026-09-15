@@ -40,7 +40,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Component
 @ConditionalOnProperty(prefix = "hidra.security.bootstrap", name = "enabled", havingValue = "true")
-public final class LocalAdministratorBootstrapRunner implements ApplicationRunner {
+public class LocalAdministratorBootstrapRunner implements ApplicationRunner {
 
     private final BootstrapLocalAdministratorUseCase bootstrapUseCase;
     private final RecordAuditEventUseCase auditEventUseCase;

@@ -16,7 +16,7 @@
 | Author | Abir MEDJERAB |
 | CreatedOn | 2025-06-26 |
 | UpdatedOn | 2026-09-15 |
-| Status | Active — AUTH-002 live contract inventory completed |
+| Status | Active — AUTH-004 authentication request router completed |
 | Execution mode | One roadmap commit code at a time |
 
 ---
@@ -1398,8 +1398,8 @@ This is a gap-closure sequence. Only one commit code may be executed per task.
 | AUTH-001A | `docs(authentication): refocus roadmap on authentication gaps` | Preserve correct Identity implementation and target runtime gaps | Completed |
 | AUTH-001B | `docs(authentication): align roadmap with dynamic provider routing` | Preserve OIDC, make provider-selection runtime routing explicit, add central provider routing and unified JWT plan | Completed |
 | AUTH-002 | `chore(authentication): inventory existing authentication runtime contracts` | Classify live provider DTOs, provider-selection contract, OIDC flow, Basic/in-memory path, JWT components, Identity models, persistence, and missing pieces | Completed — live inventory recorded; no production code added |
-| AUTH-003 | `feat(authentication): add provider-specific authentication request tokens` | Add/reuse distinct Spring Authentication request types for deterministic LOCAL, LDAP/AD, and OIDC routing | Planned |
-| AUTH-004 | `feat(authentication): add authentication request router` | Convert an explicit provider selection into the correct Authentication request without credential verification | Planned |
+| AUTH-003 | `feat(authentication): add provider-specific authentication request tokens` | Add/reuse distinct Spring Authentication request types for deterministic LOCAL, LDAP/AD, and OIDC routing | Completed — LOCAL and LDAP/AD request tokens added; OIDC existing JWT/OIDC result path preserved; `mvn -q test` passed in CI run 93 |
+| AUTH-004 | `feat(authentication): add authentication request router` | Convert an explicit provider selection into the correct Authentication request without credential verification | Completed — Identity-owned router maps LOCAL and LDAP/AD deterministically, preserves OIDC external flow, rejects unsupported direct providers, and performs no credential verification; `mvn -q test` passed in PR CI run 96 |
 | AUTH-005 | `feat(authentication): compose authentication provider manager` | Register provider-specific strategies behind one AuthenticationManager/ProviderManager with no fallback | Planned |
 | AUTH-006 | `feat(identity): normalize authenticated hidra principal` | Reuse/add one Hidra principal contract shared by LOCAL, LDAP/AD, and OIDC | Planned |
 | AUTH-007 | `refactor(authentication): normalize existing oidc authentication` | Preserve working OIDC flow while mapping successful identities to Hidra User/HidraPrincipal and Hidra authorization | Planned |
@@ -1472,10 +1472,22 @@ no business authorization logic
 no persistence access
 ```
 
+Status:
+
+```text
+Completed — LocalAuthenticationToken and LdapAuthenticationToken are distinct unauthenticated Spring request types. Both implement CredentialsContainer and erase the credential reference. No duplicate password-style OIDC request token was added because the existing browser OIDC/JWT resource-server path already provides the distinct external authentication result path.
+```
+
 Validation:
 
 ```bash
 mvn -q test
+```
+
+Result:
+
+```text
+PASS — HidraAPI CI run 93 completed both repository tests and the acceptance `mvn -q test` step successfully for commit 2ef4ea234875205fd145661466a8ad9a607eff2f.
 ```
 
 ---
@@ -1501,10 +1513,22 @@ no credential verification in router
 no provider fallback
 ```
 
+Status:
+
+```text
+Completed — IdentityAuthenticationRequestRouter lives in Identity infrastructure so ProviderType remains Identity-owned. LOCAL maps only to LocalAuthenticationToken; LDAP and ACTIVE_DIRECTORY map only to LdapAuthenticationToken. OIDC is deliberately rejected from the direct-credential route with an explicit instruction to use the existing external OIDC flow. All other provider types fail closed. The router performs no credential verification, persistence access, token issuance, or provider fallback.
+```
+
 Validation:
 
 ```bash
 mvn -q test
+```
+
+Result:
+
+```text
+PASS — pull-request CI run 96 completed the repository test check and the acceptance `mvn -q test` step successfully for AUTH-004 before roadmap finalization.
 ```
 
 ---
@@ -2062,7 +2086,7 @@ The authentication gap is closed when all of the following are true:
 Execute only:
 
 ```text
-AUTH-003 — feat(authentication): add provider-specific authentication request tokens
+AUTH-005 — feat(authentication): compose authentication provider manager
 ```
 
-AUTH-002 proved that equivalent token types do not already exist. Do not implement AUTH-004 or later tasks during AUTH-003.
+AUTH-004 now converts explicit provider selections deterministically into the intended request path. Do not implement AUTH-006 or later tasks during AUTH-005.

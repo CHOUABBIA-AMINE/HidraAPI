@@ -7,7 +7,7 @@
  *
  * @Name        : RoleRepositoryPort
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-15
  *
  * @Type        : Interface
  * @Layer       : Application
@@ -20,7 +20,6 @@
 package dz.sh.hidra.modules.identity.application.port.out;
 
 import dz.sh.hidra.modules.identity.domain.model.Role;
-
 import java.util.Optional;
 
 /**
@@ -31,4 +30,6 @@ public interface RoleRepositoryPort {
     Role save(Role model);
 
     Optional<Role> findById(String id);
+
+    Optional<Role> findByCode(String code);
 }

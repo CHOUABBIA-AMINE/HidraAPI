@@ -16,7 +16,7 @@
 | Author | Abir MEDJERAB |
 | CreatedOn | 2025-06-26 |
 | UpdatedOn | 2026-09-15 |
-| Status | Active — AUTH-022 dynamic provider routing proof completed |
+| Status | Active — AUTH-023 persisted LOCAL authentication proof completed |
 | Execution mode | One roadmap commit code at a time |
 
 ---
@@ -1418,7 +1418,7 @@ This is a gap-closure sequence. Only one commit code may be executed per task.
 | AUTH-020 | `refactor(security): retire ordinary in-memory local authentication` | Remove InMemoryUserDetailsManager as ordinary LOCAL login only after DB path is proven | Completed — development and test now default to the unified Hidra JWT path instead of server-wide Basic authentication; InMemoryUserDetailsManager remains only behind explicit `HIDRA_SECURITY_AUTHENTICATION_MODE=basic` selection as temporary emergency/bootstrap compatibility until AUTH-021; `mvn -q clean verify` passed in PR CI run 220 |
 | AUTH-021 | `feat(authentication): add safe local administrator bootstrap` | Provide controlled persistent LOCAL administrator provisioning without permanent in-memory fallback | Completed — explicitly enabled bootstrap now provisions a persistent ACTIVE HUMAN User, BCrypt-backed ACTIVE LocalCredential, active HIDRA_ADMIN role/global grant, and append-only audit event; fully provisioned reruns are idempotent while pre-existing or incomplete identity state fails closed without credential overwrite; bootstrap password has no repository default and the temporary Basic/InMemoryUserDetailsManager authority is removed; `mvn -q test` passed in PR CI run 229 |
 | AUTH-022 | `test(authentication): cover dynamic provider routing` | Verify provider-selection dispatch, supports contracts, unsupported type, and no fallback | Completed — focused router and ProviderManager tests prove LOCAL -> LocalAuthenticationToken, LDAP/ACTIVE_DIRECTORY -> LdapAuthenticationToken, OIDC/unsupported selections fail closed, providers may support only one Hidra request token type, selected-provider failure never invokes another provider, and unsupported request types are rejected; `mvn -q test` passed in PR CI run 239 |
-| AUTH-023 | `test(authentication): cover local authentication` | Unit/integration/API coverage for persisted LOCAL authentication | Planned |
+| AUTH-023 | `test(authentication): cover local authentication` | Unit/integration/API coverage for persisted LOCAL authentication | Completed — provider unit tests, PostgreSQL Testcontainers integration, and the LOCAL login API boundary prove persisted BCrypt credential verification, account/credential state enforcement, sanitized outcomes, normalized HidraPrincipal/response contracts, and successful persisted login-state update; `mvn -q test` passed in PR CI run 248 |
 | AUTH-024 | `test(authentication): cover ldap authentication` | LDAP/AD adapter, mapping, outage, TLS, and end-to-end coverage | Planned |
 | AUTH-025 | `test(authentication): cover oidc normalization` | Protect existing OIDC behavior and prove Hidra principal/authorization normalization | Planned |
 | AUTH-026 | `test(authentication): verify unified jwt compatibility` | Verify all providers produce tokens accepted by current security filters and permission enforcement | Planned |
@@ -2181,9 +2181,37 @@ PASS — PR CI run 239 completed repository mvn -q test successfully for AUTH-02
 
 ---
 
-### AUTH-023 through AUTH-027 — Remaining security proof tasks
+### AUTH-023 — Persisted LOCAL authentication proof
 
-These tasks add dedicated LOCAL, LDAP, OIDC normalization, JWT compatibility, and authorization-ownership tests.
+Commit:
+
+```text
+test(authentication): cover local authentication
+```
+
+Status:
+
+```text
+Completed — LocalAuthenticationProviderTest exercises successful persisted BCrypt-backed LOCAL authentication plus wrong-password, locked-account, inactive-credential, unavailable-provider, supports-contract, sanitized failure-outcome, permission-resolution, and HidraPrincipal normalization behavior. LocalAuthenticationIntegrationTest uses PostgreSQL Testcontainers and the real Spring Identity infrastructure to persist a normal active user and LocalCredential, seed the active LOCAL provider in the migrated schema, authenticate through the real LocalAuthenticationProvider, and prove the persisted BCrypt hash and successful last-authenticated state update. IdentityAuthenticationControllerLocalApiTest proves the LOCAL API boundary forwards explicit provider selection, credentials, client metadata, and correlation ID into DirectAuthenticationCommand and returns the normalized Hidra session/token/principal response. No production behavior or AUTH-024+ LDAP/OIDC/JWT proof scope was added.
+```
+
+Validation:
+
+```bash
+mvn -q test
+```
+
+Result:
+
+```text
+PASS — PR CI run 248 completed repository mvn -q test successfully for AUTH-023 corrected implementation commit cbf1b00d6942e427c15842b4cab5f70436037dfe. The same run also passed repository full verification, acceptance tests, acceptance clean verify, and deterministic OpenAPI publication. Earlier runs 246 and 247 exposed only integration-fixture issues: the existing IdentityProvider String-to-jsonb JPA insert quirk and JdbcTemplate Instant type inference respectively; the test fixture was narrowed to direct migrated-table provider seeding with JDBC Timestamp values without changing production behavior.
+```
+
+---
+
+### AUTH-024 through AUTH-027 — Remaining security proof tasks
+
+These tasks add dedicated LDAP, OIDC normalization, JWT compatibility, and authorization-ownership tests.
 
 Each task must run the appropriate Maven test command and record real results in this roadmap.
 
@@ -2318,7 +2346,7 @@ The authentication gap is closed when all of the following are true:
 Execute only:
 
 ```text
-AUTH-023 — test(authentication): cover local authentication
+AUTH-024 — test(authentication): cover ldap authentication
 ```
 
-AUTH-022 now proves deterministic provider-selection routing, provider supports isolation, unsupported-type failure, and no provider fallback. Do not implement AUTH-024 or later tasks during AUTH-023.
+AUTH-023 now proves persisted LOCAL authentication across provider unit, PostgreSQL integration, and login API boundary coverage. Do not implement AUTH-025 or later tasks during AUTH-024.

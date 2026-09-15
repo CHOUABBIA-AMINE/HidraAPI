@@ -7,7 +7,7 @@
  *
  * @Name        : IdentityProviderJpaRepository
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-15
  *
  * @Type        : Interface
  * @Layer       : Infrastructure
@@ -19,7 +19,9 @@
  */
 package dz.sh.hidra.modules.identity.infrastructure.persistence.repository;
 
+import dz.sh.hidra.modules.identity.domain.value.ProviderType;
 import dz.sh.hidra.modules.identity.infrastructure.persistence.entity.IdentityProviderJpaEntity;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -28,4 +30,6 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface IdentityProviderJpaRepository extends JpaRepository<IdentityProviderJpaEntity, String> {
+
+    Optional<IdentityProviderJpaEntity> findByProviderTypeAndIssuerUri(ProviderType providerType, String issuerUri);
 }

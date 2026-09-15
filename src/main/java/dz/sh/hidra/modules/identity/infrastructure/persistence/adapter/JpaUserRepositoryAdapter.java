@@ -7,7 +7,7 @@
  *
  * @Name        : JpaUserRepositoryAdapter
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-15
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -23,10 +23,9 @@ import dz.sh.hidra.modules.identity.application.port.out.UserRepositoryPort;
 import dz.sh.hidra.modules.identity.domain.model.User;
 import dz.sh.hidra.modules.identity.infrastructure.persistence.mapper.IdentityPersistenceMapper;
 import dz.sh.hidra.modules.identity.infrastructure.persistence.repository.UserJpaRepository;
-import org.springframework.stereotype.Component;
-
 import java.util.Objects;
 import java.util.Optional;
+import org.springframework.stereotype.Component;
 
 /**
  * Database-backed repository adapter for User.
@@ -50,5 +49,10 @@ public class JpaUserRepositoryAdapter implements UserRepositoryPort {
     @Override
     public Optional<User> findById(String id) {
         return repository.findById(id).map(IdentityPersistenceMapper::toDomain);
+    }
+
+    @Override
+    public Optional<User> findByUsername(String username) {
+        return repository.findByUsername(username).map(IdentityPersistenceMapper::toDomain);
     }
 }

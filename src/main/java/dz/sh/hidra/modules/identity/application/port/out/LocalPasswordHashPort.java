@@ -5,7 +5,7 @@
  * @Author      : Abir MEDJERAB
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  *
- * @Name        : RoleRepositoryPort
+ * @Name        : LocalPasswordHashPort
  * @CreatedOn   : 2025-06-26
  * @UpdatedOn   : 2026-09-15
  *
@@ -14,22 +14,15 @@
  * @Module      : identity
  * @Package     : dz.sh.hidra.modules.identity.application.port.out
  *
- * @Description : Outbound repository port for Role.
+ * @Description : Defines one-way password hashing required by persistent LOCAL credential provisioning.
  *
  */
 package dz.sh.hidra.modules.identity.application.port.out;
 
-import dz.sh.hidra.modules.identity.domain.model.Role;
-import java.util.Optional;
-
 /**
- * Outbound repository port for Role.
+ * Technical hashing boundary used by Identity application services.
  */
-public interface RoleRepositoryPort {
+public interface LocalPasswordHashPort {
 
-    Role save(Role model);
-
-    Optional<Role> findById(String id);
-
-    Optional<Role> findByCode(String code);
+    String hash(String rawPassword);
 }

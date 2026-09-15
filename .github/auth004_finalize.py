@@ -1,0 +1,177 @@
+from pathlib import Path
+
+path = Path("docs/roadmap/authentication.md")
+text = path.read_text(encoding="utf-8")
+
+if "| Status | Active — AUTH-004 authentication request router completed |" in text:
+    raise SystemExit(0)
+
+replacements = {
+    "| Status | Active — AUTH-002 live contract inventory completed |":
+        "| Status | Active — AUTH-004 authentication request router completed |",
+    "| AUTH-003 | `feat(authentication): add provider-specific authentication request tokens` | Add/reuse distinct Spring Authentication request types for deterministic LOCAL, LDAP/AD, and OIDC routing | Planned |":
+        "| AUTH-003 | `feat(authentication): add provider-specific authentication request tokens` | Add/reuse distinct Spring Authentication request types for deterministic LOCAL, LDAP/AD, and OIDC routing | Completed — LOCAL and LDAP/AD request tokens added; OIDC existing JWT/OIDC result path preserved; `mvn -q test` passed in CI run 93 |",
+    "| AUTH-004 | `feat(authentication): add authentication request router` | Convert an explicit provider selection into the correct Authentication request without credential verification | Planned |":
+        "| AUTH-004 | `feat(authentication): add authentication request router` | Convert an explicit provider selection into the correct Authentication request without credential verification | Completed — Identity-owned router maps LOCAL and LDAP/AD deterministically, preserves OIDC external flow, rejects unsupported direct providers, and performs no credential verification; `mvn -q test` passed in PR CI run 96 |",
+    """### AUTH-003 — Provider-specific Authentication request tokens
+
+Commit:
+
+```text
+feat(authentication): add provider-specific authentication request tokens
+```
+
+Precondition: AUTH-002 confirmed equivalent token types do not already exist.
+
+Requirements:
+
+```text
+distinct LOCAL request token
+distinct LDAP/AD request token
+OIDC request/result adapter only where required
+credentials erased where Spring contract permits
+no business authorization logic
+no persistence access
+```
+
+Validation:
+
+```bash
+mvn -q test
+```
+
+---""":
+        """### AUTH-003 — Provider-specific Authentication request tokens
+
+Commit:
+
+```text
+feat(authentication): add provider-specific authentication request tokens
+```
+
+Precondition: AUTH-002 confirmed equivalent token types do not already exist.
+
+Requirements:
+
+```text
+distinct LOCAL request token
+distinct LDAP/AD request token
+OIDC request/result adapter only where required
+credentials erased where Spring contract permits
+no business authorization logic
+no persistence access
+```
+
+Status:
+
+```text
+Completed — LocalAuthenticationToken and LdapAuthenticationToken are distinct unauthenticated Spring request types. Both implement CredentialsContainer and erase the credential reference. No duplicate password-style OIDC request token was added because the existing browser OIDC/JWT resource-server path already provides the distinct external authentication result path.
+```
+
+Validation:
+
+```bash
+mvn -q test
+```
+
+Result:
+
+```text
+PASS — HidraAPI CI run 93 completed both repository tests and the acceptance `mvn -q test` step successfully for commit 2ef4ea234875205fd145661466a8ad9a607eff2f.
+```
+
+---""",
+    """### AUTH-004 — Authentication request router
+
+Commit:
+
+```text
+feat(authentication): add authentication request router
+```
+
+Convert an explicit provider selection into the correct Spring `Authentication` request. AUTH-002 confirmed no existing public `authType` DTO; do not invent a second provider taxonomy merely for routing.
+
+Requirements:
+
+```text
+LOCAL -> LOCAL token
+LDAP/ACTIVE_DIRECTORY -> LDAP token
+OIDC -> existing OIDC initiation/completion path
+unsupported/disabled type -> fail closed
+no credential verification in router
+no provider fallback
+```
+
+Validation:
+
+```bash
+mvn -q test
+```
+
+---""":
+        """### AUTH-004 — Authentication request router
+
+Commit:
+
+```text
+feat(authentication): add authentication request router
+```
+
+Convert an explicit provider selection into the correct Spring `Authentication` request. AUTH-002 confirmed no existing public `authType` DTO; do not invent a second provider taxonomy merely for routing.
+
+Requirements:
+
+```text
+LOCAL -> LOCAL token
+LDAP/ACTIVE_DIRECTORY -> LDAP token
+OIDC -> existing OIDC initiation/completion path
+unsupported/disabled type -> fail closed
+no credential verification in router
+no provider fallback
+```
+
+Status:
+
+```text
+Completed — IdentityAuthenticationRequestRouter lives in Identity infrastructure so ProviderType remains Identity-owned. LOCAL maps only to LocalAuthenticationToken; LDAP and ACTIVE_DIRECTORY map only to LdapAuthenticationToken. OIDC is deliberately rejected from the direct-credential route with an explicit instruction to use the existing external OIDC flow. All other provider types fail closed. The router performs no credential verification, persistence access, token issuance, or provider fallback.
+```
+
+Validation:
+
+```bash
+mvn -q test
+```
+
+Result:
+
+```text
+PASS — pull-request CI run 96 completed the repository test check and the acceptance `mvn -q test` step successfully for AUTH-004 before roadmap finalization.
+```
+
+---""",
+    """## 22. Next task
+
+Execute only:
+
+```text
+AUTH-003 — feat(authentication): add provider-specific authentication request tokens
+```
+
+AUTH-002 proved that equivalent token types do not already exist. Do not implement AUTH-004 or later tasks during AUTH-003.""":
+        """## 22. Next task
+
+Execute only:
+
+```text
+AUTH-005 — feat(authentication): compose authentication provider manager
+```
+
+AUTH-004 now converts explicit provider selections deterministically into the intended request path. Do not implement AUTH-006 or later tasks during AUTH-005."""
+}
+
+for old, new in replacements.items():
+    if old not in text:
+        raise SystemExit(f"Expected roadmap fragment not found: {old[:120]!r}")
+    text = text.replace(old, new, 1)
+
+path.write_text(text, encoding="utf-8")

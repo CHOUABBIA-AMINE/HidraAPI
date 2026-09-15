@@ -46,7 +46,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Transactional
-public final class LocalAdministratorBootstrapApplicationService implements BootstrapLocalAdministratorUseCase {
+public class LocalAdministratorBootstrapApplicationService implements BootstrapLocalAdministratorUseCase {
 
     static final String ADMIN_ROLE_CODE = "HIDRA_ADMIN";
     private static final String ACTIVE_CREDENTIAL_STATUS = "ACTIVE";

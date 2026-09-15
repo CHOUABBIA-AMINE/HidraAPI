@@ -14,13 +14,14 @@
  * @Module      : identity
  * @Package     : dz.sh.hidra.modules.identity.infrastructure.security
  *
- * @Description : Verifies persisted LOCAL credentials and normalizes successful authentication to a Hidra principal.
+ * @Description : Verifies persisted LOCAL credentials, records outcomes, and normalizes successful authentication to a Hidra principal.
  *
  */
 package dz.sh.hidra.modules.identity.infrastructure.security;
 
 import dz.sh.hidra.modules.identity.application.port.in.IdentityAdministrationQueryUseCase;
 import dz.sh.hidra.modules.identity.application.port.out.LocalCredentialRepositoryPort;
+import dz.sh.hidra.modules.identity.application.service.LocalAuthenticationOutcomeApplicationService;
 import dz.sh.hidra.modules.identity.domain.model.HidraPrincipal;
 import dz.sh.hidra.modules.identity.domain.model.LocalCredential;
 import dz.sh.hidra.modules.identity.domain.value.IdentityProviderStatus;
@@ -59,6 +60,7 @@ public final class LocalAuthenticationProvider implements AuthenticationProvider
     private final UserJpaRepository userRepository;
     private final LocalCredentialRepositoryPort localCredentialRepository;
     private final IdentityAdministrationQueryUseCase queryUseCase;
+    private final LocalAuthenticationOutcomeApplicationService outcomeService;
     private final PasswordEncoder passwordEncoder;
 
     public LocalAuthenticationProvider(
@@ -66,12 +68,14 @@ public final class LocalAuthenticationProvider implements AuthenticationProvider
             UserJpaRepository userRepository,
             LocalCredentialRepositoryPort localCredentialRepository,
             IdentityAdministrationQueryUseCase queryUseCase,
+            LocalAuthenticationOutcomeApplicationService outcomeService,
             PasswordEncoder passwordEncoder
     ) {
         this.identityProviderRepository = Objects.requireNonNull(identityProviderRepository);
         this.userRepository = Objects.requireNonNull(userRepository);
         this.localCredentialRepository = Objects.requireNonNull(localCredentialRepository);
         this.queryUseCase = Objects.requireNonNull(queryUseCase);
+        this.outcomeService = Objects.requireNonNull(outcomeService);
         this.passwordEncoder = Objects.requireNonNull(passwordEncoder);
     }
 
@@ -83,45 +87,57 @@ public final class LocalAuthenticationProvider implements AuthenticationProvider
 
         String username = normalize(localRequest.getPrincipal() == null ? null : localRequest.getPrincipal().toString());
         String submittedPassword = localRequest.getCredentials() instanceof String value ? value : null;
-        if (username == null || submittedPassword == null || submittedPassword.isEmpty()) {
-            throw invalidCredentials();
+        String userId = null;
+        String providerId = null;
+
+        try {
+            if (username == null || submittedPassword == null || submittedPassword.isEmpty()) {
+                throw invalidCredentials();
+            }
+
+            IdentityProviderJpaEntity localProvider = resolveActiveLocalProvider();
+            providerId = localProvider.id();
+
+            UserJpaEntity user = userRepository.findByUsername(username)
+                    .orElseThrow(LocalAuthenticationProvider::invalidCredentials);
+            userId = user.id();
+            enforceAccountState(user);
+
+            LocalCredential credential = localCredentialRepository.findByUserId(user.id())
+                    .orElseThrow(LocalAuthenticationProvider::invalidCredentials);
+            if (!ACTIVE_CREDENTIAL_STATUS.equalsIgnoreCase(credential.credentialStatus())) {
+                throw new DisabledException("LOCAL credential is not active.");
+            }
+            if (!passwordEncoder.matches(submittedPassword, credential.passwordHash())) {
+                throw invalidCredentials();
+            }
+
+            IdentityAdministrationQueryUseCase.PrincipalView authorization =
+                    queryUseCase.principal(user.id(), List.of());
+
+            HidraPrincipal principal = new HidraPrincipal(
+                    user.id(),
+                    user.username(),
+                    user.displayName(),
+                    ProviderType.LOCAL,
+                    localProvider.id(),
+                    Set.of(),
+                    Set.copyOf(authorization.effectivePermissions())
+            );
+
+            outcomeService.recordSuccess(user.id(), localProvider.id());
+
+            UsernamePasswordAuthenticationToken result = UsernamePasswordAuthenticationToken.authenticated(
+                    principal,
+                    null,
+                    AuthorityUtils.NO_AUTHORITIES
+            );
+            result.setDetails(localRequest.getDetails());
+            return result;
+        } catch (AuthenticationException failure) {
+            outcomeService.recordFailure(userId, providerId, failureReason(failure));
+            throw failure;
         }
-
-        IdentityProviderJpaEntity localProvider = resolveActiveLocalProvider();
-
-        UserJpaEntity user = userRepository.findByUsername(username)
-                .orElseThrow(LocalAuthenticationProvider::invalidCredentials);
-        enforceAccountState(user);
-
-        LocalCredential credential = localCredentialRepository.findByUserId(user.id())
-                .orElseThrow(LocalAuthenticationProvider::invalidCredentials);
-        if (!ACTIVE_CREDENTIAL_STATUS.equalsIgnoreCase(credential.credentialStatus())) {
-            throw new DisabledException("LOCAL credential is not active.");
-        }
-        if (!passwordEncoder.matches(submittedPassword, credential.passwordHash())) {
-            throw invalidCredentials();
-        }
-
-        IdentityAdministrationQueryUseCase.PrincipalView authorization =
-                queryUseCase.principal(user.id(), List.of());
-
-        HidraPrincipal principal = new HidraPrincipal(
-                user.id(),
-                user.username(),
-                user.displayName(),
-                ProviderType.LOCAL,
-                localProvider.id(),
-                Set.of(),
-                Set.copyOf(authorization.effectivePermissions())
-        );
-
-        UsernamePasswordAuthenticationToken result = UsernamePasswordAuthenticationToken.authenticated(
-                principal,
-                null,
-                AuthorityUtils.NO_AUTHORITIES
-        );
-        result.setDetails(localRequest.getDetails());
-        return result;
     }
 
     @Override
@@ -152,6 +168,19 @@ public final class LocalAuthenticationProvider implements AuthenticationProvider
         if (user.status() != UserStatus.ACTIVE) {
             throw new DisabledException("Hidra user account is not active.");
         }
+    }
+
+    private static String failureReason(AuthenticationException failure) {
+        if (failure instanceof LockedException) {
+            return "ACCOUNT_LOCKED";
+        }
+        if (failure instanceof DisabledException) {
+            return "ACCOUNT_OR_CREDENTIAL_DISABLED";
+        }
+        if (failure instanceof AuthenticationServiceException) {
+            return "AUTHENTICATION_SERVICE_FAILURE";
+        }
+        return "BAD_CREDENTIALS";
     }
 
     private static BadCredentialsException invalidCredentials() {

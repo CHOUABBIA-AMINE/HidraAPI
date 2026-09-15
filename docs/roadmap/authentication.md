@@ -16,7 +16,7 @@
 | Author | Abir MEDJERAB |
 | CreatedOn | 2025-06-26 |
 | UpdatedOn | 2026-09-15 |
-| Status | Active — AUTH-018 OIDC completion to Hidra token completed |
+| Status | Active — AUTH-019 protected API bearer authentication standardized |
 | Execution mode | One roadmap commit code at a time |
 
 ---
@@ -1414,7 +1414,7 @@ This is a gap-closure sequence. Only one commit code may be executed per task.
 | AUTH-016 | `feat(identity): complete authentication session lifecycle` | Reuse LoginSession and AuthenticationEvent for all provider paths | Completed — provider-neutral AuthenticationSessionLifecycleApplicationService now starts, touches, expires, revokes, and logs out LoginSession records without storing raw JWTs; non-LOCAL successful sessions record LOGIN_SUCCESS, LOCAL success remains with AUTH-011 to avoid duplicates, and logout records provider-correct AuthenticationEvent metadata; `mvn -q test` passed in PR CI run 181 |
 | AUTH-017 | `feat(authentication): wire dynamic login endpoint` | Introduce and wire the direct LOCAL/LDAP provider-selection login boundary to router, AuthenticationManager, session, and token issuer | Completed — POST /api/v1/identity/authentication/login now accepts explicit LOCAL/LDAP/ACTIVE_DIRECTORY provider selection, routes through application ports to the existing request router and fail-closed AuthenticationManager, creates the AUTH-016 logical session, issues the AUTH-015 Hidra bearer JWT, and returns safe normalized principal/session/token metadata; API-to-infrastructure coupling found by CI run 188 was corrected with hexagonal ports/adapters; `mvn -q test` passed in PR CI run 197 |
 | AUTH-018 | `feat(authentication): converge oidc completion on hidra token` | Ensure OIDC completion produces same Hidra principal/session/JWT result as LOCAL/LDAP while preserving current PKCE behavior | Completed — externally validated OIDC HidraPrincipal now completes through the same provider-neutral session/token application path used by direct authentication; secured POST /api/v1/identity/authentication/oidc/complete issues the AUTH-015 Hidra bearer JWT and AUTH-016 LoginSession while preserving browser authorization-code + PKCE semantics and adding no OAuth callback/token exchange; `mvn -q test` passed in PR CI run 204 |
-| AUTH-019 | `refactor(security): standardize protected api bearer authentication` | Make protected APIs consume the unified Hidra JWT while preserving authorization behavior | Planned |
+| AUTH-019 | `refactor(security): standardize protected api bearer authentication` | Make protected APIs consume the unified Hidra JWT while preserving authorization behavior | Completed — ordinary JWT-protected APIs now accept only standardized Hidra-issued HS256 access tokens through the Hidra JWT decoder/authorities converter, while a higher-priority path-scoped chain isolates external OIDC bearer validation to the secured completion bridge; existing permission/interceptor semantics are preserved and unconfigured OIDC fails closed on use; `mvn -q clean verify` passed in PR CI run 213 |
 | AUTH-020 | `refactor(security): retire ordinary in-memory local authentication` | Remove InMemoryUserDetailsManager as ordinary LOCAL login only after DB path is proven | Planned |
 | AUTH-021 | `feat(authentication): add safe local administrator bootstrap` | Provide controlled persistent LOCAL administrator provisioning without permanent in-memory fallback | Planned |
 | AUTH-022 | `test(authentication): cover dynamic provider routing` | Verify provider-selection dispatch, supports contracts, unsupported type, and no fallback | Planned |
@@ -2062,10 +2062,22 @@ Protected APIs should consume the standardized Hidra bearer JWT irrespective of 
 
 Preserve current permission/interceptor semantics.
 
+Status:
+
+```text
+Completed — security is now split by bearer trust boundary. The higher-priority OIDC completion SecurityFilterChain matches only /api/v1/identity/authentication/oidc/complete and validates external OIDC JWTs with the existing IdentityOidcJwtAuthenticationConverter. The general protected-API chain validates only Hidra-issued HS256 JWTs through hidraJwtDecoder and reconstructs authorities with the existing HidraJwtGrantedAuthoritiesConverter, preserving current role/scope and permission/interceptor semantics. The decoder configuration now exposes separate Hidra and external-OIDC decoders. Missing external OIDC issuer/JWK configuration no longer blocks unrelated application modes from starting; attempted OIDC completion instead fails closed. In-memory LOCAL/bootstrap behavior was not changed because AUTH-020 owns that work.
+```
+
 Validation:
 
 ```bash
 mvn -q clean verify
+```
+
+Result:
+
+```text
+PASS — PR CI run 213 completed repository and acceptance clean verification successfully for AUTH-019 implementation commit e33cb9ca93b5ce09f4a471c445a80046becf4795. Earlier runs 211 and 212 correctly blocked a missing import and eager unconfigured OIDC decoder startup respectively; both issues were corrected before validation passed.
 ```
 
 ---
@@ -2254,7 +2266,7 @@ The authentication gap is closed when all of the following are true:
 Execute only:
 
 ```text
-AUTH-019 — refactor(security): standardize protected api bearer authentication
+AUTH-020 — refactor(security): retire ordinary in-memory local authentication
 ```
 
-AUTH-018 now converges externally validated OIDC identities onto the same Hidra session/token completion path as direct authentication while preserving browser PKCE semantics. Do not implement AUTH-020 or later tasks during AUTH-019.
+AUTH-019 now isolates external OIDC bearer validation to the completion bridge and requires standardized Hidra-issued JWTs for ordinary protected APIs while preserving existing authorization semantics. Do not implement AUTH-021 or later tasks during AUTH-020.

@@ -14,7 +14,7 @@
  * @Module      : platform
  * @Package     : dz.sh.hidra.platform.configuration
  *
- * @Description : Configures Spring Security with JWT resource-server support and optional bootstrap Basic authentication.
+ * @Description : Configures protected APIs for Hidra bearer JWTs while isolating the external OIDC completion bridge.
  *
  */
 package dz.sh.hidra.platform.configuration;
@@ -24,8 +24,10 @@ import java.util.Arrays;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.config.Customizer;
@@ -40,6 +42,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
@@ -58,12 +61,44 @@ public class HidraSecurityConfiguration {
     private static final String AUTHENTICATION_MODE_DISABLED = "disabled";
     private static final String AUTHENTICATION_MODE_BASIC = "basic";
     private static final String AUTHENTICATION_MODE_JWT = "jwt";
+    private static final String OIDC_COMPLETION_PATH = "/api/v1/identity/authentication/oidc/complete";
+
+    /**
+     * External OIDC bearer tokens are accepted only on the completion bridge that exchanges
+     * an already validated external identity for the standardized Hidra session/token result.
+     */
+    @Bean
+    @Order(1)
+    @ConditionalOnExpression("${hidra.platform.security.enabled:true} && '${hidra.platform.security.authentication-mode:jwt}' == 'jwt'")
+    SecurityFilterChain hidraOidcCompletionSecurityFilterChain(
+            HttpSecurity http,
+            @Qualifier("externalOidcJwtDecoder") JwtDecoder externalOidcJwtDecoder,
+            @Qualifier("identityOidcJwtAuthenticationConverter")
+            Converter<Jwt, ? extends AbstractAuthenticationToken> oidcAuthenticationConverter,
+            @Value("${hidra.platform.security.csrf.enabled:false}") boolean csrfEnabled,
+            @Value("${hidra.platform.security.cors.allowed-origins:}") String allowedOrigins,
+            @Value("${hidra.platform.security.cors.allowed-methods:GET,POST,PUT,PATCH,DELETE,OPTIONS}") String allowedMethods,
+            @Value("${hidra.platform.security.cors.allowed-headers:Authorization,Content-Type,X-Correlation-Id,X-Request-Id}") String allowedHeaders,
+            @Value("${hidra.platform.security.cors.exposed-headers:X-Correlation-Id,X-Request-Id,Content-Disposition,Content-Length,Accept-Ranges}") String exposedHeaders
+    ) throws Exception {
+        http.securityMatcher(OIDC_COMPLETION_PATH);
+        configureStatelessHttp(http, csrfEnabled, allowedOrigins, allowedMethods, allowedHeaders, exposedHeaders);
+        http.authorizeHttpRequests(authorize -> authorize.anyRequest().authenticated());
+        http.httpBasic(AbstractHttpConfigurer::disable);
+        http.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt
+                .decoder(externalOidcJwtDecoder)
+                .jwtAuthenticationConverter(oidcAuthenticationConverter)
+        ));
+        return http.build();
+    }
 
     @Bean
+    @Order(2)
     SecurityFilterChain hidraSecurityFilterChain(
             HttpSecurity http,
-            @Qualifier("identityOidcJwtAuthenticationConverter")
+            @Qualifier("hidraJwtAuthenticationConverter")
             Converter<Jwt, ? extends AbstractAuthenticationToken> jwtAuthenticationConverter,
+            @Qualifier("hidraJwtDecoder") JwtDecoder hidraJwtDecoder,
             @Value("${hidra.platform.security.enabled:true}") boolean securityEnabled,
             @Value("${hidra.platform.security.csrf.enabled:false}") boolean csrfEnabled,
             @Value("${hidra.platform.security.authentication-mode:jwt}") String authenticationMode,
@@ -72,19 +107,7 @@ public class HidraSecurityConfiguration {
             @Value("${hidra.platform.security.cors.allowed-headers:Authorization,Content-Type,X-Correlation-Id,X-Request-Id}") String allowedHeaders,
             @Value("${hidra.platform.security.cors.exposed-headers:X-Correlation-Id,X-Request-Id,Content-Disposition,Content-Length,Accept-Ranges}") String exposedHeaders
     ) throws Exception {
-        if (!csrfEnabled) {
-            http.csrf(AbstractHttpConfigurer::disable);
-        }
-
-        http.cors(cors -> cors.configurationSource(buildCorsConfigurationSource(
-                allowedOrigins,
-                allowedMethods,
-                allowedHeaders,
-                exposedHeaders
-        )));
-        http.formLogin(AbstractHttpConfigurer::disable);
-        http.logout(AbstractHttpConfigurer::disable);
-        http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        configureStatelessHttp(http, csrfEnabled, allowedOrigins, allowedMethods, allowedHeaders, exposedHeaders);
 
         String normalizedMode = normalize(authenticationMode, AUTHENTICATION_MODE_JWT).toLowerCase();
 
@@ -121,7 +144,10 @@ public class HidraSecurityConfiguration {
         }
 
         http.httpBasic(AbstractHttpConfigurer::disable);
-        http.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter)));
+        http.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt
+                .decoder(hidraJwtDecoder)
+                .jwtAuthenticationConverter(jwtAuthenticationConverter)
+        ));
         return http.build();
     }
 
@@ -176,6 +202,28 @@ public class HidraSecurityConfiguration {
     @Bean
     PasswordEncoder hidraPasswordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    private static void configureStatelessHttp(
+            HttpSecurity http,
+            boolean csrfEnabled,
+            String allowedOrigins,
+            String allowedMethods,
+            String allowedHeaders,
+            String exposedHeaders
+    ) throws Exception {
+        if (!csrfEnabled) {
+            http.csrf(AbstractHttpConfigurer::disable);
+        }
+        http.cors(cors -> cors.configurationSource(buildCorsConfigurationSource(
+                allowedOrigins,
+                allowedMethods,
+                allowedHeaders,
+                exposedHeaders
+        )));
+        http.formLogin(AbstractHttpConfigurer::disable);
+        http.logout(AbstractHttpConfigurer::disable);
+        http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
     }
 
     static UrlBasedCorsConfigurationSource buildCorsConfigurationSource(

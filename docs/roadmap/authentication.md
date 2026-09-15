@@ -16,7 +16,7 @@
 | Author | Abir MEDJERAB |
 | CreatedOn | 2025-06-26 |
 | UpdatedOn | 2026-09-15 |
-| Status | Active — AUTH-026 unified JWT compatibility proof completed |
+| Status | Active — AUTH-027 Hidra authorization ownership proof completed |
 | Execution mode | One roadmap commit code at a time |
 
 ---
@@ -1422,7 +1422,7 @@ This is a gap-closure sequence. Only one commit code may be executed per task.
 | AUTH-024 | `test(authentication): cover ldap authentication` | LDAP/AD adapter, mapping, outage, TLS, and end-to-end coverage | Completed — provider, credential-adapter, security-configuration, and direct-login API tests prove LDAP/ACTIVE_DIRECTORY normalization, stable external identity linkage, Hidra account-state/permission ownership, invalid/unmapped/inactive/locked failure behavior, directory outage fail-closed behavior, LDAP filter escaping, AD objectGUID normalization, production/staging LDAPS enforcement, timeout validation, and explicit LDAP/AD API provider selection; `mvn -q test` passed in PR CI run 257 |
 | AUTH-025 | `test(authentication): cover oidc normalization` | Protect existing OIDC behavior and prove Hidra principal/authorization normalization | Completed — validated issuer+subject normalization, active provider/linkage/account-state enforcement, Hidra-owned permission resolution, external role/group/scope isolation, and secured OIDC completion API convergence are covered; existing OIDC PKCE/browser contract regression tests remain intact; `mvn -q test` passed in PR CI run 270 |
 | AUTH-026 | `test(authentication): verify unified jwt compatibility` | Verify all providers produce tokens accepted by current security filters and permission enforcement | Completed — real production issuer/encoder -> Hidra decoder -> protected-API authentication conversion is proven for LOCAL, LDAP, ACTIVE_DIRECTORY, and OIDC, including stable subject/issuer/audience/JTI, provider metadata, Hidra roles/scopes, ROLE_/SCOPE_ reconstruction, and FACTOR_BEARER; `mvn -q test` passed in PR CI run 279 |
-| AUTH-027 | `test(authentication): protect hidra authorization ownership` | Prove external groups/claims do not bypass Hidra role/permission decisions | Planned |
+| AUTH-027 | `test(authentication): protect hidra authorization ownership` | Prove external groups/claims do not bypass Hidra role/permission decisions | Completed — dedicated OIDC and LDAP authorization-ownership proof shows external roles/groups/scopes/permissions and directory identity context cannot grant business permissions, wildcard access, or admin authority beyond Hidra Identity-owned effective permissions; `mvn -q test` passed in PR CI run 286 |
 | AUTH-028 | `docs(authentication): add ldap and provider deployment runbook` | Document non-secret provider/TLS/configuration inputs and diagnostics | Planned |
 | AUTH-029 | `test(authentication): add authentication architecture and secret guardrails` | Enforce module boundaries, credential secrecy, and provider isolation | Planned |
 | AUTH-030 | `docs(authentication): finalize authentication gap closure checklist` | Record executable evidence and remaining optional cleanup | Planned |
@@ -2293,16 +2293,30 @@ PASS — PR CI run 279 completed repository `mvn -q test` successfully for AUTH-
 
 ---
 
-### AUTH-027 — Remaining authorization-ownership proof task
+### AUTH-027 — Hidra authorization ownership proof
 
-AUTH-027 adds dedicated proof that external groups/claims cannot bypass Hidra authorization.
-
-Critical final proof:
+Commit:
 
 ```text
-same Hidra user authorization semantics regardless of authentication provider
-provider failure never falls through to another provider
-all successful providers yield the same API token/principal contract
+test(authentication): protect hidra authorization ownership
+```
+
+Status:
+
+```text
+Completed — HidraAuthorizationOwnershipTest exercises the production OIDC normalization converter, LDAP AuthenticationProvider, and HidraEffectivePermissionResolver. Privileged external OIDC roles, groups, scopes, permissions, wildcard-like values, and administrator claims remain non-authoritative: the normalized authentication carries no external business authorities, HidraPrincipal contains only Identity-owned effective permissions, Hidra-granted permissions are accepted, and externally asserted permissions/wildcard access remain denied. LDAP directory verification and identity/DN context likewise authenticate and link identity only; only Hidra Identity-owned effective permissions can satisfy authorization. No production behavior or AUTH-028+ deployment/runbook scope was added.
+```
+
+Validation:
+
+```bash
+mvn -q test
+```
+
+Result:
+
+```text
+PASS — PR CI run 286 completed repository `mvn -q test` successfully for AUTH-027 implementation commit 2623511d894c2a4a7692f1203d5dc57a3e02f83d. The same run also passed repository compile/full verification, acceptance compile/tests/clean verify, deterministic OpenAPI publication, and artifact upload with no production changes required.
 ```
 
 ---
@@ -2428,7 +2442,7 @@ The authentication gap is closed when all of the following are true:
 Execute only:
 
 ```text
-AUTH-027 — test(authentication): protect hidra authorization ownership
+AUTH-028 — docs(authentication): add ldap and provider deployment runbook
 ```
 
-AUTH-026 now proves unified Hidra JWT compatibility across LOCAL, LDAP/Active Directory, and OIDC using the production issuer, decoder, and protected-API authentication converter. Do not implement AUTH-028 or later tasks during AUTH-027.
+AUTH-027 now proves Hidra authorization ownership across OIDC and LDAP/Active Directory authentication: external claims and directory identity context cannot grant business permissions beyond Hidra Identity-owned effective permissions. Do not implement AUTH-029 or later tasks during AUTH-028.

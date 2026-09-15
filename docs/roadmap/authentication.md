@@ -16,7 +16,7 @@
 | Author | Abir MEDJERAB |
 | CreatedOn | 2025-06-26 |
 | UpdatedOn | 2026-09-15 |
-| Status | Active — AUTH-019 protected API bearer authentication standardized |
+| Status | Active — AUTH-020 ordinary in-memory LOCAL authentication retired |
 | Execution mode | One roadmap commit code at a time |
 
 ---
@@ -1415,7 +1415,7 @@ This is a gap-closure sequence. Only one commit code may be executed per task.
 | AUTH-017 | `feat(authentication): wire dynamic login endpoint` | Introduce and wire the direct LOCAL/LDAP provider-selection login boundary to router, AuthenticationManager, session, and token issuer | Completed — POST /api/v1/identity/authentication/login now accepts explicit LOCAL/LDAP/ACTIVE_DIRECTORY provider selection, routes through application ports to the existing request router and fail-closed AuthenticationManager, creates the AUTH-016 logical session, issues the AUTH-015 Hidra bearer JWT, and returns safe normalized principal/session/token metadata; API-to-infrastructure coupling found by CI run 188 was corrected with hexagonal ports/adapters; `mvn -q test` passed in PR CI run 197 |
 | AUTH-018 | `feat(authentication): converge oidc completion on hidra token` | Ensure OIDC completion produces same Hidra principal/session/JWT result as LOCAL/LDAP while preserving current PKCE behavior | Completed — externally validated OIDC HidraPrincipal now completes through the same provider-neutral session/token application path used by direct authentication; secured POST /api/v1/identity/authentication/oidc/complete issues the AUTH-015 Hidra bearer JWT and AUTH-016 LoginSession while preserving browser authorization-code + PKCE semantics and adding no OAuth callback/token exchange; `mvn -q test` passed in PR CI run 204 |
 | AUTH-019 | `refactor(security): standardize protected api bearer authentication` | Make protected APIs consume the unified Hidra JWT while preserving authorization behavior | Completed — ordinary JWT-protected APIs now accept only standardized Hidra-issued HS256 access tokens through the Hidra JWT decoder/authorities converter, while a higher-priority path-scoped chain isolates external OIDC bearer validation to the secured completion bridge; existing permission/interceptor semantics are preserved and unconfigured OIDC fails closed on use; `mvn -q clean verify` passed in PR CI run 213 |
-| AUTH-020 | `refactor(security): retire ordinary in-memory local authentication` | Remove InMemoryUserDetailsManager as ordinary LOCAL login only after DB path is proven | Planned |
+| AUTH-020 | `refactor(security): retire ordinary in-memory local authentication` | Remove InMemoryUserDetailsManager as ordinary LOCAL login only after DB path is proven | Completed — development and test now default to the unified Hidra JWT path instead of server-wide Basic authentication; InMemoryUserDetailsManager remains only behind explicit `HIDRA_SECURITY_AUTHENTICATION_MODE=basic` selection as temporary emergency/bootstrap compatibility until AUTH-021; `mvn -q clean verify` passed in PR CI run 220 |
 | AUTH-021 | `feat(authentication): add safe local administrator bootstrap` | Provide controlled persistent LOCAL administrator provisioning without permanent in-memory fallback | Planned |
 | AUTH-022 | `test(authentication): cover dynamic provider routing` | Verify provider-selection dispatch, supports contracts, unsupported type, and no fallback | Planned |
 | AUTH-023 | `test(authentication): cover local authentication` | Unit/integration/API coverage for persisted LOCAL authentication | Planned |
@@ -2094,10 +2094,22 @@ Precondition: persistent LOCAL provider, unified login endpoint, and JWT path ar
 
 Remove `InMemoryUserDetailsManager` as an ordinary user-login authority. Do not remove emergency/bootstrap capability until AUTH-021 exists.
 
+Status:
+
+```text
+Completed — ordinary development and test startup no longer selects the Basic/InMemoryUserDetailsManager path. Both profiles now default to the standardized Hidra JWT resource-server flow, matching the proven protected-API contract from AUTH-019. The existing Basic/in-memory bootstrap mechanism was intentionally retained only when HIDRA_SECURITY_AUTHENTICATION_MODE=basic is explicitly selected, preserving emergency/bootstrap compatibility until AUTH-021 replaces it with persistent administrator provisioning. No persistent bootstrap user/credential provisioning or AUTH-021 behavior was introduced.
+```
+
 Validation:
 
 ```bash
 mvn -q clean verify
+```
+
+Result:
+
+```text
+PASS — PR CI run 220 completed repository and acceptance clean verification successfully for AUTH-020 implementation commit cce77bfd8e7dc518258d7606fa6617b68c77be06.
 ```
 
 ---
@@ -2266,7 +2278,7 @@ The authentication gap is closed when all of the following are true:
 Execute only:
 
 ```text
-AUTH-020 — refactor(security): retire ordinary in-memory local authentication
+AUTH-021 — feat(authentication): add safe local administrator bootstrap
 ```
 
-AUTH-019 now isolates external OIDC bearer validation to the completion bridge and requires standardized Hidra-issued JWTs for ordinary protected APIs while preserving existing authorization semantics. Do not implement AUTH-021 or later tasks during AUTH-020.
+AUTH-020 now defaults development and test to the unified Hidra JWT path, leaving in-memory Basic only as explicit temporary emergency/bootstrap compatibility. Do not implement AUTH-022 or later tasks during AUTH-021.

@@ -16,7 +16,7 @@
 | Author | Abir MEDJERAB |
 | CreatedOn | 2025-06-26 |
 | UpdatedOn | 2026-09-15 |
-| Status | Active — AUTH-009 LOCAL credential persistence completed |
+| Status | Active — AUTH-010 database-backed LOCAL provider completed |
 | Execution mode | One roadmap commit code at a time |
 
 ---
@@ -1405,7 +1405,7 @@ This is a gap-closure sequence. Only one commit code may be executed per task.
 | AUTH-007 | `refactor(authentication): normalize existing oidc authentication` | Preserve working OIDC flow while mapping successful identities to Hidra User/HidraPrincipal and Hidra authorization | Completed — validated JWT issuer+subject now resolves through active OIDC provider and linked ExternalIdentity to active Hidra User/HidraPrincipal with Hidra-owned effective permissions; `mvn -q test` passed in PR CI run 118 |
 | AUTH-008 | `feat(identity): add local credential model and port` | Add the proven-missing LOCAL credential domain/application contract | Completed — Identity-owned LocalCredential and LocalCredentialRepositoryPort added without Spring PasswordEncoder/domain leakage or persistence implementation; `mvn -q -DskipTests compile` passed in PR CI run 125 |
 | AUTH-009 | `feat(identity): add local credential persistence` | Add forward Flyway migration plus JPA repository/adapter for LOCAL password hashes | Completed — forward-only PostgreSQL migration plus LocalCredential JPA entity, Spring Data repository, and application-port adapter added; `mvn -q test` passed in PR CI run 131 |
-| AUTH-010 | `feat(authentication): add database local authentication provider` | Replace ordinary in-memory LOCAL verification with persistent password verification behind LocalAuthenticationProvider | Planned |
+| AUTH-010 | `feat(authentication): add database local authentication provider` | Replace ordinary in-memory LOCAL verification with persistent password verification behind LocalAuthenticationProvider | Completed — LOCAL requests now resolve the active LOCAL IdentityProvider and persisted Hidra User/LocalCredential, enforce account/credential state, verify via PasswordEncoder, and return HidraPrincipal without in-memory fallback or token issuance; `mvn -q test` passed in PR CI run 138 |
 | AUTH-011 | `feat(identity): record local authentication outcomes` | Apply existing User lock/login state and AuthenticationEvent to LOCAL success/failure | Planned |
 | AUTH-012 | `feat(authentication): add ldap security infrastructure` | Add required LDAP dependency/configuration/TLS/timeouts without domain coupling | Planned |
 | AUTH-013 | `feat(authentication): add ldap credential verification adapter` | Implement AD/LDAP bind/search credential verification | Planned |
@@ -1731,10 +1731,22 @@ never query in-memory bootstrap on failed ordinary LOCAL credentials
 no token issuance inside provider
 ```
 
+Status:
+
+```text
+Completed — LocalAuthenticationProvider handles only LocalAuthenticationToken, resolves one ACTIVE LOCAL IdentityProvider plus the persisted Hidra User and LOCAL credential, rejects locked/non-active users and non-active credentials, verifies the submitted password using the existing PasswordEncoder, resolves Hidra-owned effective permissions, and returns an authenticated HidraPrincipal. Failed ordinary LOCAL credentials never consult InMemoryUserDetailsManager, and the provider does not issue tokens or record AUTH-011 login outcomes.
+```
+
 Validation:
 
 ```bash
 mvn -q test
+```
+
+Result:
+
+```text
+PASS — pull-request CI run 138 completed repository and acceptance `mvn -q test` checks successfully for AUTH-010 implementation commit b659f11ff30fbb3ddf3971b51ea31b4ba834b73f.
 ```
 
 ---
@@ -2146,7 +2158,7 @@ The authentication gap is closed when all of the following are true:
 Execute only:
 
 ```text
-AUTH-010 — feat(authentication): add database local authentication provider
+AUTH-011 — feat(identity): record local authentication outcomes
 ```
 
-AUTH-009 now provides persistent LOCAL credential storage behind the Identity application port. Do not implement AUTH-011 or later tasks during AUTH-010.
+AUTH-010 now provides database-backed LOCAL credential verification and HidraPrincipal normalization. Do not implement AUTH-012 or later tasks during AUTH-011.

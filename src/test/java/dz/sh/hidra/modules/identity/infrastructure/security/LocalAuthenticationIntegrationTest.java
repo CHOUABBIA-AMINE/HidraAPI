@@ -31,6 +31,7 @@ import dz.sh.hidra.modules.identity.domain.value.UserType;
 import dz.sh.hidra.modules.identity.infrastructure.persistence.entity.UserJpaEntity;
 import dz.sh.hidra.modules.identity.infrastructure.persistence.repository.UserJpaRepository;
 import dz.sh.hidra.platform.security.LocalAuthenticationToken;
+import java.sql.Timestamp;
 import java.time.Instant;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -102,8 +103,8 @@ class LocalAuthenticationIntegrationTest {
                 false,
                 false,
                 "ACTIVE",
-                now,
-                now
+                Timestamp.from(now),
+                Timestamp.from(now)
         );
 
         UserJpaEntity user = new UserJpaEntity(

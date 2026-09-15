@@ -16,7 +16,7 @@
 | Author | Abir MEDJERAB |
 | CreatedOn | 2025-06-26 |
 | UpdatedOn | 2026-09-15 |
-| Status | Active — AUTH-010 database-backed LOCAL provider completed |
+| Status | Active — AUTH-011 LOCAL authentication outcomes completed |
 | Execution mode | One roadmap commit code at a time |
 
 ---
@@ -1406,7 +1406,7 @@ This is a gap-closure sequence. Only one commit code may be executed per task.
 | AUTH-008 | `feat(identity): add local credential model and port` | Add the proven-missing LOCAL credential domain/application contract | Completed — Identity-owned LocalCredential and LocalCredentialRepositoryPort added without Spring PasswordEncoder/domain leakage or persistence implementation; `mvn -q -DskipTests compile` passed in PR CI run 125 |
 | AUTH-009 | `feat(identity): add local credential persistence` | Add forward Flyway migration plus JPA repository/adapter for LOCAL password hashes | Completed — forward-only PostgreSQL migration plus LocalCredential JPA entity, Spring Data repository, and application-port adapter added; `mvn -q test` passed in PR CI run 131 |
 | AUTH-010 | `feat(authentication): add database local authentication provider` | Replace ordinary in-memory LOCAL verification with persistent password verification behind LocalAuthenticationProvider | Completed — LOCAL requests now resolve the active LOCAL IdentityProvider and persisted Hidra User/LocalCredential, enforce account/credential state, verify via PasswordEncoder, and return HidraPrincipal without in-memory fallback or token issuance; `mvn -q test` passed in PR CI run 138 |
-| AUTH-011 | `feat(identity): record local authentication outcomes` | Apply existing User lock/login state and AuthenticationEvent to LOCAL success/failure | Planned |
+| AUTH-011 | `feat(identity): record local authentication outcomes` | Apply existing User lock/login state and AuthenticationEvent to LOCAL success/failure | Completed — LOCAL success resets failed-login count, updates last-authenticated state, and records LOGIN_SUCCESS; failures for resolved users increment failed-login count while preserving existing lock state and record sanitized LOGIN_FAILED events; submitted passwords are never recorded; `mvn -q test` passed in PR CI run 146 |
 | AUTH-012 | `feat(authentication): add ldap security infrastructure` | Add required LDAP dependency/configuration/TLS/timeouts without domain coupling | Planned |
 | AUTH-013 | `feat(authentication): add ldap credential verification adapter` | Implement AD/LDAP bind/search credential verification | Planned |
 | AUTH-014 | `feat(authentication): add ldap authentication provider` | Route LDAP token through directory verification, ExternalIdentity mapping, Hidra account state, and HidraPrincipal | Planned |
@@ -1763,10 +1763,22 @@ Reuse existing User login counters/lock state and AuthenticationEvent.
 
 Never record the submitted password.
 
+Status:
+
+```text
+Completed — LOCAL authentication outcomes are recorded through an Identity application service in independent transactions. Success resets failedLoginCount, updates lastAuthenticatedAt, preserves existing account/lock state, and records LOGIN_SUCCESS with AuthenticationProtocol.LOCAL. Failures against a resolved user increment failedLoginCount without inventing a new lockout threshold or duration, preserve existing lockedUntil/status, and record LOGIN_FAILED with sanitized reason codes. The submitted password is never passed to or persisted by the outcome recorder.
+```
+
 Validation:
 
 ```bash
 mvn -q test
+```
+
+Result:
+
+```text
+PASS — pull-request CI run 146 completed repository and acceptance `mvn -q test` checks successfully for AUTH-011 implementation commit 1918492f9d6ba894571b1c1c403c5dbadf39b924.
 ```
 
 ---
@@ -2158,7 +2170,7 @@ The authentication gap is closed when all of the following are true:
 Execute only:
 
 ```text
-AUTH-011 — feat(identity): record local authentication outcomes
+AUTH-012 — feat(authentication): add ldap security infrastructure
 ```
 
-AUTH-010 now provides database-backed LOCAL credential verification and HidraPrincipal normalization. Do not implement AUTH-012 or later tasks during AUTH-011.
+AUTH-011 now records LOCAL success/failure state and AuthenticationEvent outcomes without storing submitted passwords. Do not implement AUTH-013 or later tasks during AUTH-012.

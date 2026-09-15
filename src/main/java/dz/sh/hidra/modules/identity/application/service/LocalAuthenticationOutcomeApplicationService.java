@@ -36,7 +36,7 @@ import org.springframework.transaction.annotation.Transactional;
  * Persists LOCAL authentication outcome state independently from the authentication provider transaction.
  */
 @Service
-public final class LocalAuthenticationOutcomeApplicationService {
+public class LocalAuthenticationOutcomeApplicationService {
 
     private final UserRepositoryPort userRepository;
     private final AuthenticationEventRepositoryPort authenticationEventRepository;

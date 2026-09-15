@@ -16,7 +16,7 @@
 | Author | Abir MEDJERAB |
 | CreatedOn | 2025-06-26 |
 | UpdatedOn | 2026-09-15 |
-| Status | Active — AUTH-024 LDAP/Active Directory authentication proof completed |
+| Status | Active — AUTH-025 OIDC normalization proof completed |
 | Execution mode | One roadmap commit code at a time |
 
 ---
@@ -1420,7 +1420,7 @@ This is a gap-closure sequence. Only one commit code may be executed per task.
 | AUTH-022 | `test(authentication): cover dynamic provider routing` | Verify provider-selection dispatch, supports contracts, unsupported type, and no fallback | Completed — focused router and ProviderManager tests prove LOCAL -> LocalAuthenticationToken, LDAP/ACTIVE_DIRECTORY -> LdapAuthenticationToken, OIDC/unsupported selections fail closed, providers may support only one Hidra request token type, selected-provider failure never invokes another provider, and unsupported request types are rejected; `mvn -q test` passed in PR CI run 239 |
 | AUTH-023 | `test(authentication): cover local authentication` | Unit/integration/API coverage for persisted LOCAL authentication | Completed — provider unit tests, PostgreSQL Testcontainers integration, and the LOCAL login API boundary prove persisted BCrypt credential verification, account/credential state enforcement, sanitized outcomes, normalized HidraPrincipal/response contracts, and successful persisted login-state update; `mvn -q test` passed in PR CI run 248 |
 | AUTH-024 | `test(authentication): cover ldap authentication` | LDAP/AD adapter, mapping, outage, TLS, and end-to-end coverage | Completed — provider, credential-adapter, security-configuration, and direct-login API tests prove LDAP/ACTIVE_DIRECTORY normalization, stable external identity linkage, Hidra account-state/permission ownership, invalid/unmapped/inactive/locked failure behavior, directory outage fail-closed behavior, LDAP filter escaping, AD objectGUID normalization, production/staging LDAPS enforcement, timeout validation, and explicit LDAP/AD API provider selection; `mvn -q test` passed in PR CI run 257 |
-| AUTH-025 | `test(authentication): cover oidc normalization` | Protect existing OIDC behavior and prove Hidra principal/authorization normalization | Planned |
+| AUTH-025 | `test(authentication): cover oidc normalization` | Protect existing OIDC behavior and prove Hidra principal/authorization normalization | Completed — validated issuer+subject normalization, active provider/linkage/account-state enforcement, Hidra-owned permission resolution, external role/group/scope isolation, and secured OIDC completion API convergence are covered; existing OIDC PKCE/browser contract regression tests remain intact; `mvn -q test` passed in PR CI run 270 |
 | AUTH-026 | `test(authentication): verify unified jwt compatibility` | Verify all providers produce tokens accepted by current security filters and permission enforcement | Planned |
 | AUTH-027 | `test(authentication): protect hidra authorization ownership` | Prove external groups/claims do not bypass Hidra role/permission decisions | Planned |
 | AUTH-028 | `docs(authentication): add ldap and provider deployment runbook` | Document non-secret provider/TLS/configuration inputs and diagnostics | Planned |
@@ -2237,9 +2237,37 @@ PASS — PR CI run 257 completed repository mvn -q test successfully for AUTH-02
 
 ---
 
-### AUTH-025 through AUTH-027 — Remaining security proof tasks
+### AUTH-025 — OIDC normalization proof
 
-These tasks add dedicated OIDC normalization, JWT compatibility, and authorization-ownership tests.
+Commit:
+
+```text
+test(authentication): cover oidc normalization
+```
+
+Status:
+
+```text
+Completed — IdentityOidcJwtAuthenticationConverterTest proves already-validated external OIDC JWTs normalize by issuer + subject through an ACTIVE OIDC IdentityProvider and LINKED ExternalIdentity to an ACTIVE Hidra User/HidraPrincipal, while missing issuer/subject, unavailable/inactive providers, unmapped/inactive external identities, missing users, locked users, and disabled users fail closed before Hidra authorization is loaded. The test also proves external roles, groups, and scope claims are ignored for Hidra business authorization and only Identity-owned effective permissions populate HidraPrincipal. IdentityAuthenticationControllerOidcApiTest proves the secured OIDC completion boundary accepts only an OIDC HidraPrincipal, forwards client metadata to the provider-neutral completion use case, never re-enters direct credential authentication, and returns the same normalized Hidra session/token/principal response shape. Existing HidraOidcContractControllerTest continues to protect the authorization-code + PKCE browser contract and external-IdP dependency signaling. No production behavior or AUTH-026+ unified-JWT/authorization-ownership proof scope was added.
+```
+
+Validation:
+
+```bash
+mvn -q test
+```
+
+Result:
+
+```text
+PASS — PR CI run 270 completed repository `mvn -q test` successfully for AUTH-025 implementation commit 63f5d39084ae8604a53bff1fcb926c33d4a171c1. The same run also passed repository compile/full verification, acceptance compile/tests/clean verify, deterministic OpenAPI publication, and artifact upload with no corrective production changes required.
+```
+
+---
+
+### AUTH-026 through AUTH-027 — Remaining security proof tasks
+
+These tasks add dedicated unified JWT compatibility and authorization-ownership tests.
 
 Each task must run the appropriate Maven test command and record real results in this roadmap.
 
@@ -2374,7 +2402,7 @@ The authentication gap is closed when all of the following are true:
 Execute only:
 
 ```text
-AUTH-025 — test(authentication): cover oidc normalization
+AUTH-026 — test(authentication): verify unified jwt compatibility
 ```
 
-AUTH-024 now proves LDAP/Active Directory authentication across provider, credential-adapter, security-configuration, and direct-login API coverage. Do not implement AUTH-026 or later tasks during AUTH-025.
+AUTH-025 now proves OIDC normalization across validated issuer/subject identity mapping, Hidra account-state/authorization ownership, external-claim isolation, and secured completion API coverage. Do not implement AUTH-027 or later tasks during AUTH-026.

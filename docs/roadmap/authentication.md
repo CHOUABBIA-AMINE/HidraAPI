@@ -16,7 +16,7 @@
 | Author | Abir MEDJERAB |
 | CreatedOn | 2025-06-26 |
 | UpdatedOn | 2026-09-15 |
-| Status | Active — AUTH-006 normalized Hidra principal completed |
+| Status | Active — AUTH-007 OIDC authentication normalized |
 | Execution mode | One roadmap commit code at a time |
 
 ---
@@ -1402,7 +1402,7 @@ This is a gap-closure sequence. Only one commit code may be executed per task.
 | AUTH-004 | `feat(authentication): add authentication request router` | Convert an explicit provider selection into the correct Authentication request without credential verification | Completed — Identity-owned router maps LOCAL and LDAP/AD deterministically, preserves OIDC external flow, rejects unsupported direct providers, and performs no credential verification; `mvn -q test` passed in PR CI run 96 |
 | AUTH-005 | `feat(authentication): compose authentication provider manager` | Register provider-specific strategies behind one AuthenticationManager/ProviderManager with no fallback | Completed — central fail-closed ProviderManager composed for provider-specific LOCAL and LDAP request types; `mvn -q test` passed in PR CI run 104 |
 | AUTH-006 | `feat(identity): normalize authenticated hidra principal` | Reuse/add one Hidra principal contract shared by LOCAL, LDAP/AD, and OIDC | Completed — Identity-owned HidraPrincipal added with stable Hidra user identity, provider source, optional provider linkage, and Hidra roles/permissions; `mvn -q test` passed in PR CI run 111 |
-| AUTH-007 | `refactor(authentication): normalize existing oidc authentication` | Preserve working OIDC flow while mapping successful identities to Hidra User/HidraPrincipal and Hidra authorization | Planned |
+| AUTH-007 | `refactor(authentication): normalize existing oidc authentication` | Preserve working OIDC flow while mapping successful identities to Hidra User/HidraPrincipal and Hidra authorization | Completed — validated JWT issuer+subject now resolves through active OIDC provider and linked ExternalIdentity to active Hidra User/HidraPrincipal with Hidra-owned effective permissions; `mvn -q test` passed in PR CI run 118 |
 | AUTH-008 | `feat(identity): add local credential model and port` | Add the proven-missing LOCAL credential domain/application contract | Planned |
 | AUTH-009 | `feat(identity): add local credential persistence` | Add forward Flyway migration plus JPA repository/adapter for LOCAL password hashes | Planned |
 | AUTH-010 | `feat(authentication): add database local authentication provider` | Replace ordinary in-memory LOCAL verification with persistent password verification behind LocalAuthenticationProvider | Planned |
@@ -1621,10 +1621,22 @@ HidraPrincipal
 
 Do not collect external provider passwords and do not replace working OIDC configuration unnecessarily.
 
+Status:
+
+```text
+Completed — the existing resource-server JWT validation remains intact, but its post-validation converter is now Identity-owned. A validated JWT is normalized by issuer + subject through an ACTIVE OIDC IdentityProvider and LINKED ExternalIdentity to an ACTIVE, unlocked Hidra User. The resulting Spring Authentication carries HidraPrincipal with stable Hidra user ID and Hidra-owned effective permissions. External IdP roles/claims are not promoted into Hidra business authorization. Existing browser authorization-code + PKCE behavior and GET /api/v1/security/oidc are unchanged.
+```
+
 Validation:
 
 ```bash
 mvn -q test
+```
+
+Result:
+
+```text
+PASS — pull-request CI run 118 completed the repository test check and the acceptance `mvn -q test` step successfully for AUTH-007 implementation commit 93cd247d83e9ed519554df69b6835ab8d1dfe622.
 ```
 
 ---
@@ -2110,7 +2122,7 @@ The authentication gap is closed when all of the following are true:
 Execute only:
 
 ```text
-AUTH-007 — refactor(authentication): normalize existing oidc authentication
+AUTH-008 — feat(identity): add local credential model and port
 ```
 
-AUTH-006 now provides the normalized Identity-owned HidraPrincipal contract shared by authentication providers. Do not implement AUTH-008 or later tasks during AUTH-007.
+AUTH-007 now normalizes the existing OIDC resource-server authentication into HidraPrincipal without changing the browser PKCE flow. Do not implement AUTH-009 or later tasks during AUTH-008.

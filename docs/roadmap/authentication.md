@@ -16,7 +16,7 @@
 | Author | Abir MEDJERAB |
 | CreatedOn | 2025-06-26 |
 | UpdatedOn | 2026-09-15 |
-| Status | Active — AUTH-016 authentication session lifecycle completed |
+| Status | Active — AUTH-017 dynamic direct-login endpoint completed |
 | Execution mode | One roadmap commit code at a time |
 
 ---
@@ -1412,7 +1412,7 @@ This is a gap-closure sequence. Only one commit code may be executed per task.
 | AUTH-014 | `feat(authentication): add ldap authentication provider` | Route LDAP token through directory verification, ExternalIdentity mapping, Hidra account state, and HidraPrincipal | Completed — LdapAuthenticationProvider handles only LdapAuthenticationToken, delegates credential verification to AUTH-013, resolves one active LDAP/AD IdentityProvider and LINKED ExternalIdentity, enforces Hidra user state and Hidra-owned effective permissions, and returns HidraPrincipal without LOCAL fallback or AD-group authorization shortcuts; `mvn -q test` passed in PR CI run 167 |
 | AUTH-015 | `feat(authentication): add unified hidra access token issuer` | Add JwtEncoder and issue one standardized Hidra JWT for all providers | Completed — provider-neutral HidraAccessTokenIssuer now emits one JWT schema from HidraPrincipal with stable Hidra subject, issuer/audience/expiry/JTI, Hidra-owned roles/permissions, externalized HS256 signing material, and HMAC resource-server issuer compatibility; `mvn -q test` passed in PR CI run 174 |
 | AUTH-016 | `feat(identity): complete authentication session lifecycle` | Reuse LoginSession and AuthenticationEvent for all provider paths | Completed — provider-neutral AuthenticationSessionLifecycleApplicationService now starts, touches, expires, revokes, and logs out LoginSession records without storing raw JWTs; non-LOCAL successful sessions record LOGIN_SUCCESS, LOCAL success remains with AUTH-011 to avoid duplicates, and logout records provider-correct AuthenticationEvent metadata; `mvn -q test` passed in PR CI run 181 |
-| AUTH-017 | `feat(authentication): wire dynamic login endpoint` | Introduce and wire the direct LOCAL/LDAP provider-selection login boundary to router, AuthenticationManager, session, and token issuer | Planned |
+| AUTH-017 | `feat(authentication): wire dynamic login endpoint` | Introduce and wire the direct LOCAL/LDAP provider-selection login boundary to router, AuthenticationManager, session, and token issuer | Completed — POST /api/v1/identity/authentication/login now accepts explicit LOCAL/LDAP/ACTIVE_DIRECTORY provider selection, routes through application ports to the existing request router and fail-closed AuthenticationManager, creates the AUTH-016 logical session, issues the AUTH-015 Hidra bearer JWT, and returns safe normalized principal/session/token metadata; API-to-infrastructure coupling found by CI run 188 was corrected with hexagonal ports/adapters; `mvn -q test` passed in PR CI run 197 |
 | AUTH-018 | `feat(authentication): converge oidc completion on hidra token` | Ensure OIDC completion produces same Hidra principal/session/JWT result as LOCAL/LDAP while preserving current PKCE behavior | Planned |
 | AUTH-019 | `refactor(security): standardize protected api bearer authentication` | Make protected APIs consume the unified Hidra JWT while preserving authorization behavior | Planned |
 | AUTH-020 | `refactor(security): retire ordinary in-memory local authentication` | Remove InMemoryUserDetailsManager as ordinary LOCAL login only after DB path is proven | Planned |
@@ -2000,10 +2000,22 @@ assign roles
 implement provider fallback
 ```
 
+Status:
+
+```text
+Completed — the canonical direct-login boundary is POST /api/v1/identity/authentication/login. AuthenticationLoginRequest requires explicit ProviderType, principal, and credentials; validation rejects missing values and the existing router rejects OIDC/unsupported direct providers without fallback. The API depends only on AuthenticateDirectUserUseCase. DirectAuthenticationApplicationService orchestrates DirectAuthenticationPort, AccessTokenIssuerPort, and the existing AuthenticationSessionLifecycleApplicationService; SpringDirectAuthenticationAdapter owns the Spring Security router/AuthenticationManager bridge, while HidraAccessTokenIssuer implements the issuance port. Successful LOCAL/LDAP/AD login returns session id, Hidra bearer token lifecycle metadata, and normalized HidraPrincipal identity/roles/permissions. Submitted credentials are never returned or persisted. The endpoint is explicitly permitAll so unauthenticated callers can authenticate. OIDC browser PKCE completion remains untouched for AUTH-018.
+```
+
 Validation:
 
 ```bash
 mvn -q test
+```
+
+Result:
+
+```text
+PASS — initial PR CI run 188 exposed and blocked an API-to-infrastructure architecture violation. The implementation was corrected with application ports/adapters; replacement PR CI run 197 completed repository and acceptance `mvn -q test` checks successfully for AUTH-017 implementation commit 6aab35936511036ffa445954c36d4b661eae107c.
 ```
 
 ---
@@ -2230,7 +2242,7 @@ The authentication gap is closed when all of the following are true:
 Execute only:
 
 ```text
-AUTH-017 — feat(authentication): wire dynamic login endpoint
+AUTH-018 — feat(authentication): converge oidc completion on hidra token
 ```
 
-AUTH-016 now provides provider-neutral LoginSession lifecycle and AuthenticationEvent recording without raw-token persistence. Do not implement AUTH-018 or later tasks during AUTH-017.
+AUTH-017 now provides the canonical direct LOCAL/LDAP/AD login boundary through application ports to the existing provider router/AuthenticationManager, session lifecycle, and unified Hidra token issuer. Do not implement AUTH-019 or later tasks during AUTH-018.

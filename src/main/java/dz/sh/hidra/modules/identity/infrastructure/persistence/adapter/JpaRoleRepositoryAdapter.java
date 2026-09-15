@@ -7,7 +7,7 @@
  *
  * @Name        : JpaRoleRepositoryAdapter
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-15
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -23,10 +23,9 @@ import dz.sh.hidra.modules.identity.application.port.out.RoleRepositoryPort;
 import dz.sh.hidra.modules.identity.domain.model.Role;
 import dz.sh.hidra.modules.identity.infrastructure.persistence.mapper.IdentityPersistenceMapper;
 import dz.sh.hidra.modules.identity.infrastructure.persistence.repository.RoleJpaRepository;
-import org.springframework.stereotype.Component;
-
 import java.util.Objects;
 import java.util.Optional;
+import org.springframework.stereotype.Component;
 
 /**
  * Database-backed repository adapter for Role.
@@ -50,5 +49,10 @@ public class JpaRoleRepositoryAdapter implements RoleRepositoryPort {
     @Override
     public Optional<Role> findById(String id) {
         return repository.findById(id).map(IdentityPersistenceMapper::toDomain);
+    }
+
+    @Override
+    public Optional<Role> findByCode(String code) {
+        return repository.findFirstByCode(code).map(IdentityPersistenceMapper::toDomain);
     }
 }

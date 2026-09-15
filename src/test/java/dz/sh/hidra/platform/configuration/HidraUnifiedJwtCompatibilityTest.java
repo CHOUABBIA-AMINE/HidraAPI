@@ -76,7 +76,7 @@ class HidraUnifiedJwtCompatibilityTest {
         Authentication authentication = authenticationConverter.convert(decoded);
 
         assertThat(issued.tokenType()).isEqualTo("Bearer");
-        assertThat(decoded.getIssuer().toString()).isEqualTo(ISSUER);
+        assertThat(decoded.getClaimAsString("iss")).isEqualTo(ISSUER);
         assertThat(decoded.getAudience()).containsExactly(AUDIENCE);
         assertThat(decoded.getSubject()).isEqualTo(USER_ID);
         assertThat(decoded.getId()).isEqualTo(issued.jti());

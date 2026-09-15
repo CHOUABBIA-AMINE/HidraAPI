@@ -16,7 +16,7 @@
 | Author | Abir MEDJERAB |
 | CreatedOn | 2025-06-26 |
 | UpdatedOn | 2026-09-15 |
-| Status | Active — AUTH-004 authentication request router completed |
+| Status | Active — AUTH-005 authentication provider manager composed |
 | Execution mode | One roadmap commit code at a time |
 
 ---
@@ -1400,7 +1400,7 @@ This is a gap-closure sequence. Only one commit code may be executed per task.
 | AUTH-002 | `chore(authentication): inventory existing authentication runtime contracts` | Classify live provider DTOs, provider-selection contract, OIDC flow, Basic/in-memory path, JWT components, Identity models, persistence, and missing pieces | Completed — live inventory recorded; no production code added |
 | AUTH-003 | `feat(authentication): add provider-specific authentication request tokens` | Add/reuse distinct Spring Authentication request types for deterministic LOCAL, LDAP/AD, and OIDC routing | Completed — LOCAL and LDAP/AD request tokens added; OIDC existing JWT/OIDC result path preserved; `mvn -q test` passed in CI run 93 |
 | AUTH-004 | `feat(authentication): add authentication request router` | Convert an explicit provider selection into the correct Authentication request without credential verification | Completed — Identity-owned router maps LOCAL and LDAP/AD deterministically, preserves OIDC external flow, rejects unsupported direct providers, and performs no credential verification; `mvn -q test` passed in PR CI run 96 |
-| AUTH-005 | `feat(authentication): compose authentication provider manager` | Register provider-specific strategies behind one AuthenticationManager/ProviderManager with no fallback | Planned |
+| AUTH-005 | `feat(authentication): compose authentication provider manager` | Register provider-specific strategies behind one AuthenticationManager/ProviderManager with no fallback | Completed — central fail-closed ProviderManager composed for provider-specific LOCAL and LDAP request types; `mvn -q test` passed in PR CI run 104 |
 | AUTH-006 | `feat(identity): normalize authenticated hidra principal` | Reuse/add one Hidra principal contract shared by LOCAL, LDAP/AD, and OIDC | Planned |
 | AUTH-007 | `refactor(authentication): normalize existing oidc authentication` | Preserve working OIDC flow while mapping successful identities to Hidra User/HidraPrincipal and Hidra authorization | Planned |
 | AUTH-008 | `feat(identity): add local credential model and port` | Add the proven-missing LOCAL credential domain/application contract | Planned |
@@ -1547,10 +1547,22 @@ Each provider must support only the intended Authentication request type.
 
 Do not use provider ordering as the primary provider discriminator.
 
+Status:
+
+```text
+Completed — HidraAuthenticationManagerConfiguration now exposes one ProviderManager-backed AuthenticationManager for direct provider authentication. It registers only AuthenticationProvider beans that support exactly one of LocalAuthenticationToken or LdapAuthenticationToken, rejects a provider that claims both request types, and uses a fail-closed parent AuthenticationManager when no matching provider is installed. Existing bootstrap Basic authentication and the external OIDC/JWT path are preserved; no LOCAL, LDAP, or OIDC provider implementation was introduced early.
+```
+
 Validation:
 
 ```bash
 mvn -q test
+```
+
+Result:
+
+```text
+PASS — pull-request CI run 104 completed the repository test check and the acceptance `mvn -q test` step successfully for AUTH-005 implementation commit 00cc471a916fea8882ed25f5d2c6297155899b2b.
 ```
 
 ---
@@ -2086,7 +2098,7 @@ The authentication gap is closed when all of the following are true:
 Execute only:
 
 ```text
-AUTH-005 — feat(authentication): compose authentication provider manager
+AUTH-006 — feat(identity): normalize authenticated hidra principal
 ```
 
-AUTH-004 now converts explicit provider selections deterministically into the intended request path. Do not implement AUTH-006 or later tasks during AUTH-005.
+AUTH-005 now provides the central fail-closed AuthenticationManager/ProviderManager composition for provider-specific request tokens. Do not implement AUTH-007 or later tasks during AUTH-006.

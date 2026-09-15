@@ -16,7 +16,7 @@
 | Author | Abir MEDJERAB |
 | CreatedOn | 2025-06-26 |
 | UpdatedOn | 2026-09-15 |
-| Status | Active — AUTH-012 LDAP security infrastructure completed |
+| Status | Active — AUTH-013 LDAP credential verification adapter completed |
 | Execution mode | One roadmap commit code at a time |
 
 ---
@@ -1408,7 +1408,7 @@ This is a gap-closure sequence. Only one commit code may be executed per task.
 | AUTH-010 | `feat(authentication): add database local authentication provider` | Replace ordinary in-memory LOCAL verification with persistent password verification behind LocalAuthenticationProvider | Completed — LOCAL requests now resolve the active LOCAL IdentityProvider and persisted Hidra User/LocalCredential, enforce account/credential state, verify via PasswordEncoder, and return HidraPrincipal without in-memory fallback or token issuance; `mvn -q test` passed in PR CI run 138 |
 | AUTH-011 | `feat(identity): record local authentication outcomes` | Apply existing User lock/login state and AuthenticationEvent to LOCAL success/failure | Completed — LOCAL success resets failed-login count, updates last-authenticated state, and records LOGIN_SUCCESS; failures for resolved users increment failed-login count while preserving existing lock state and record sanitized LOGIN_FAILED events; submitted passwords are never recorded; `mvn -q test` passed in PR CI run 146 |
 | AUTH-012 | `feat(authentication): add ldap security infrastructure` | Add required LDAP dependency/configuration/TLS/timeouts without domain coupling | Completed — Spring LDAP core plus externalized URL/base/search/bind configuration, connection/read timeouts, enabled-only LdapContextSource, and staging/production LDAPS guard added; no secrets, credential verification, or LDAP AuthenticationProvider introduced; `mvn -q test` passed in PR CI run 153 |
-| AUTH-013 | `feat(authentication): add ldap credential verification adapter` | Implement AD/LDAP bind/search credential verification | Planned |
+| AUTH-013 | `feat(authentication): add ldap credential verification adapter` | Implement AD/LDAP bind/search credential verification | Completed — Identity application port plus provider-neutral VerifiedDirectoryIdentity contract and Spring LDAP adapter added; principal values are LDAP-filter escaped, search must resolve exactly one identity, credentials are verified by LDAP bind, and no Hidra permissions or AUTH-014 provider behavior is introduced; `mvn -q test` passed in PR CI run 160 |
 | AUTH-014 | `feat(authentication): add ldap authentication provider` | Route LDAP token through directory verification, ExternalIdentity mapping, Hidra account state, and HidraPrincipal | Planned |
 | AUTH-015 | `feat(authentication): add unified hidra access token issuer` | Add JwtEncoder and issue one standardized Hidra JWT for all providers | Planned |
 | AUTH-016 | `feat(identity): complete authentication session lifecycle` | Reuse LoginSession and AuthenticationEvent for all provider paths | Planned |
@@ -1833,10 +1833,22 @@ Implement the approved AD bind/search pattern.
 
 Return a provider-neutral verified directory identity result; do not assign Hidra permissions in the LDAP adapter.
 
+Status:
+
+```text
+Completed — LdapCredentialVerificationPort isolates the application layer from Spring LDAP and returns VerifiedDirectoryIdentity only after the configured LDAP user search resolves exactly one entry and LdapTemplate bind authentication succeeds. The supplied principal is escaped before filter substitution. The verified result carries a stable external subject plus normalized username/display/email/DN attributes, with AD objectGUID preferred and entryUUID/userPrincipalName/DN fallbacks. Submitted credentials are never returned, persisted, or logged. The adapter assigns no Hidra role/permission meaning and does not implement the AUTH-014 AuthenticationProvider.
+```
+
 Validation:
 
 ```bash
 mvn -q test
+```
+
+Result:
+
+```text
+PASS — pull-request CI run 160 completed repository and acceptance `mvn -q test` checks successfully for AUTH-013 implementation commit 744f715fe916f19f9d7d43251c675dadb07db83b.
 ```
 
 ---
@@ -2182,7 +2194,7 @@ The authentication gap is closed when all of the following are true:
 Execute only:
 
 ```text
-AUTH-013 — feat(authentication): add ldap credential verification adapter
+AUTH-014 — feat(authentication): add ldap authentication provider
 ```
 
-AUTH-012 now provides externalized, guarded LDAP connection infrastructure. Do not implement AUTH-014 or later tasks during AUTH-013.
+AUTH-013 now provides isolated LDAP credential verification and a provider-neutral verified directory identity result. Do not implement AUTH-015 or later tasks during AUTH-014.

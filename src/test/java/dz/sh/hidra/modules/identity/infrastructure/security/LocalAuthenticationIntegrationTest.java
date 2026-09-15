@@ -25,19 +25,17 @@ import dz.sh.hidra.HidraApplication;
 import dz.sh.hidra.modules.identity.application.port.out.LocalCredentialRepositoryPort;
 import dz.sh.hidra.modules.identity.domain.model.HidraPrincipal;
 import dz.sh.hidra.modules.identity.domain.model.LocalCredential;
-import dz.sh.hidra.modules.identity.domain.value.IdentityProviderStatus;
 import dz.sh.hidra.modules.identity.domain.value.ProviderType;
 import dz.sh.hidra.modules.identity.domain.value.UserStatus;
 import dz.sh.hidra.modules.identity.domain.value.UserType;
-import dz.sh.hidra.modules.identity.infrastructure.persistence.entity.IdentityProviderJpaEntity;
 import dz.sh.hidra.modules.identity.infrastructure.persistence.entity.UserJpaEntity;
-import dz.sh.hidra.modules.identity.infrastructure.persistence.repository.IdentityProviderJpaRepository;
 import dz.sh.hidra.modules.identity.infrastructure.persistence.repository.UserJpaRepository;
 import dz.sh.hidra.platform.security.LocalAuthenticationToken;
 import java.time.Instant;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
@@ -53,6 +51,8 @@ import org.testcontainers.utility.DockerImageName;
 @ActiveProfiles("test")
 class LocalAuthenticationIntegrationTest {
 
+    private static final String PROVIDER_ID = "provider-local-integration";
+
     @Container
     static final PostgreSQLContainer<?> POSTGRESQL =
             new PostgreSQLContainer<>(DockerImageName.parse("postgres:18-alpine"))
@@ -64,9 +64,6 @@ class LocalAuthenticationIntegrationTest {
     LocalAuthenticationProvider authenticationProvider;
 
     @Autowired
-    IdentityProviderJpaRepository identityProviderRepository;
-
-    @Autowired
     UserJpaRepository userRepository;
 
     @Autowired
@@ -74,6 +71,9 @@ class LocalAuthenticationIntegrationTest {
 
     @Autowired
     PasswordEncoder passwordEncoder;
+
+    @Autowired
+    JdbcTemplate jdbcTemplate;
 
     @DynamicPropertySource
     static void databaseProperties(DynamicPropertyRegistry registry) {
@@ -88,32 +88,23 @@ class LocalAuthenticationIntegrationTest {
     @Test
     void authenticatesCredentialPersistedThroughIdentityRepositories() {
         Instant now = Instant.parse("2026-09-15T09:00:00Z");
-        IdentityProviderJpaEntity localProvider = new IdentityProviderJpaEntity(
-                "provider-local-integration",
+        jdbcTemplate.update(
+                """
+                INSERT INTO hidra_identity_provider (
+                    id, code, name, provider_type, sync_enabled,
+                    just_in_time_provisioning_enabled, status, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                PROVIDER_ID,
                 "LOCAL_INTEGRATION",
                 "Local Integration",
-                ProviderType.LOCAL,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
+                "LOCAL",
                 false,
                 false,
-                IdentityProviderStatus.ACTIVE,
-                null,
-                null,
+                "ACTIVE",
                 now,
                 now
         );
-        identityProviderRepository.save(localProvider);
 
         UserJpaEntity user = new UserJpaEntity(
                 "user-local-integration",
@@ -156,16 +147,11 @@ class LocalAuthenticationIntegrationTest {
         assertThat(principal.userId()).isEqualTo(user.id());
         assertThat(principal.username()).isEqualTo(user.username());
         assertThat(principal.authenticationType()).isEqualTo(ProviderType.LOCAL);
-        assertThat(principal.identityProviderId()).isEqualTo(localProvider.id());
+        assertThat(principal.identityProviderId()).isEqualTo(PROVIDER_ID);
 
-        assertThat(localCredentialRepository.findByUserId(user.id()))
-                .get()
-                .extracting(LocalCredential::passwordHash)
-                .asString()
-                .startsWith("$2");
-        assertThat(userRepository.findByUsername(user.username()))
-                .get()
-                .extracting(UserJpaEntity::lastAuthenticatedAt)
-                .isNotNull();
+        LocalCredential persistedCredential = localCredentialRepository.findByUserId(user.id()).orElseThrow();
+        assertThat(persistedCredential.passwordHash()).startsWith("$2");
+        assertThat(passwordEncoder.matches(password, persistedCredential.passwordHash())).isTrue();
+        assertThat(userRepository.findByUsername(user.username()).orElseThrow().lastAuthenticatedAt()).isNotNull();
     }
 }

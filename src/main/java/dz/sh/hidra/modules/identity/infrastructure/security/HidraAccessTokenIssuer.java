@@ -20,6 +20,7 @@
 package dz.sh.hidra.modules.identity.infrastructure.security;
 
 import dz.sh.hidra.modules.identity.application.model.IssuedAccessToken;
+import dz.sh.hidra.modules.identity.application.port.out.AccessTokenIssuerPort;
 import dz.sh.hidra.modules.identity.domain.model.HidraPrincipal;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -43,7 +44,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Lazy
-public final class HidraAccessTokenIssuer {
+public final class HidraAccessTokenIssuer implements AccessTokenIssuerPort {
 
     private static final String TOKEN_TYPE = "Bearer";
     private static final String SUBJECT_CLAIM = "sub";
@@ -80,6 +81,7 @@ public final class HidraAccessTokenIssuer {
     /**
      * Issues the common Hidra bearer token for an already authenticated Hidra principal.
      */
+    @Override
     public IssuedAccessToken issue(HidraPrincipal principal) {
         Objects.requireNonNull(principal, "Hidra principal must not be null.");
 

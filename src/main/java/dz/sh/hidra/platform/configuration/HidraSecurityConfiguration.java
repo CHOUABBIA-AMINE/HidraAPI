@@ -14,7 +14,7 @@
  * @Module      : platform
  * @Package     : dz.sh.hidra.platform.configuration
  *
- * @Description : Configures protected APIs for Hidra bearer JWTs while isolating the external OIDC completion bridge.
+ * @Description : Configures protected APIs for Hidra bearer JWTs with no ordinary in-memory authentication authority.
  *
  */
 package dz.sh.hidra.platform.configuration;
@@ -30,21 +30,16 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -57,9 +52,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableMethodSecurity
 public class HidraSecurityConfiguration {
 
-    private static final String DEVELOPMENT_PASSWORD = "hidra-dev-change-me";
     private static final String AUTHENTICATION_MODE_DISABLED = "disabled";
-    private static final String AUTHENTICATION_MODE_BASIC = "basic";
     private static final String AUTHENTICATION_MODE_JWT = "jwt";
     private static final String OIDC_COMPLETION_PATH = "/api/v1/identity/authentication/oidc/complete";
 
@@ -133,12 +126,6 @@ public class HidraSecurityConfiguration {
                 .anyRequest().authenticated()
         );
 
-        if (AUTHENTICATION_MODE_BASIC.equals(normalizedMode)) {
-            http.oauth2ResourceServer(AbstractHttpConfigurer::disable);
-            http.httpBasic(Customizer.withDefaults());
-            return http.build();
-        }
-
         if (!AUTHENTICATION_MODE_JWT.equals(normalizedMode)) {
             throw new IllegalStateException("Unsupported Hidra security authentication mode: " + authenticationMode);
         }
@@ -166,37 +153,6 @@ public class HidraSecurityConfiguration {
                 normalize(authorityPrefix, "ROLE_")
         ));
         return converter;
-    }
-
-    @Bean
-    UserDetailsService hidraBootstrapUserDetailsService(
-            PasswordEncoder passwordEncoder,
-            @Value("${hidra.environment:local}") String environment,
-            @Value("${hidra.platform.security.authentication-mode:jwt}") String authenticationMode,
-            @Value("${hidra.security.bootstrap.username:hidra-admin}") String username,
-            @Value("${hidra.security.bootstrap.password:}") String password,
-            @Value("${hidra.security.bootstrap.roles:HIDRA_ADMIN}") String roles
-    ) {
-        String normalizedMode = normalize(authenticationMode, AUTHENTICATION_MODE_JWT).toLowerCase();
-        if (!AUTHENTICATION_MODE_BASIC.equals(normalizedMode)) {
-            return new InMemoryUserDetailsManager();
-        }
-
-        String normalizedEnvironment = normalize(environment, "local");
-        String normalizedUsername = normalize(username, "hidra-admin");
-        String normalizedPassword = normalize(password, null);
-        String effectivePassword = normalizedPassword == null ? DEVELOPMENT_PASSWORD : normalizedPassword;
-
-        if (productionLike(normalizedEnvironment) && DEVELOPMENT_PASSWORD.equals(effectivePassword)) {
-            throw new IllegalStateException("HIDRA_SECURITY_BOOTSTRAP_PASSWORD must be set for production-like environments when basic authentication is enabled.");
-        }
-
-        UserDetails bootstrapUser = User.withUsername(normalizedUsername)
-                .password(passwordEncoder.encode(effectivePassword))
-                .roles(roleArray(roles))
-                .build();
-
-        return new InMemoryUserDetailsManager(bootstrapUser);
     }
 
     @Bean
@@ -261,19 +217,4 @@ public class HidraSecurityConfiguration {
                 .toList();
     }
 
-    private static String[] roleArray(String roles) {
-        List<String> normalizedRoles = csv(roles).stream()
-                .map(role -> role.startsWith("ROLE_") ? role.substring("ROLE_".length()) : role)
-                .filter(role -> !role.isBlank())
-                .toList();
-        if (normalizedRoles.isEmpty()) {
-            return new String[] { "HIDRA_ADMIN" };
-        }
-        return normalizedRoles.toArray(String[]::new);
-    }
-
-    private static boolean productionLike(String environment) {
-        String normalized = normalize(environment, "local").toLowerCase();
-        return "production".equals(normalized) || "prod".equals(normalized) || "staging".equals(normalized);
-    }
 }

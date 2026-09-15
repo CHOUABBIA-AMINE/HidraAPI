@@ -1,0 +1,19 @@
+name: auth-024-roadmap-finalize
+
+on:
+  push:
+    branches:
+      - auth-024-ldap-authentication-tests
+
+permissions:
+  contents: write
+
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: auth-024-ldap-authentication-tests
+          fetch-depth: 0
+      - run: bash .github/auth-024-finalize.sh

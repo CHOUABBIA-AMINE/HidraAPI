@@ -7,7 +7,7 @@
  *
  * @Name        : HidraSecurityConfiguration
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-13
+ * @UpdatedOn   : 2026-09-15
  *
  * @Type        : Class
  * @Layer       : Platform
@@ -22,9 +22,12 @@ package dz.sh.hidra.platform.configuration;
 import dz.sh.hidra.platform.security.HidraJwtGrantedAuthoritiesConverter;
 import java.util.Arrays;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -36,6 +39,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
@@ -58,7 +62,8 @@ public class HidraSecurityConfiguration {
     @Bean
     SecurityFilterChain hidraSecurityFilterChain(
             HttpSecurity http,
-            JwtAuthenticationConverter jwtAuthenticationConverter,
+            @Qualifier("identityOidcJwtAuthenticationConverter")
+            Converter<Jwt, ? extends AbstractAuthenticationToken> jwtAuthenticationConverter,
             @Value("${hidra.platform.security.enabled:true}") boolean securityEnabled,
             @Value("${hidra.platform.security.csrf.enabled:false}") boolean csrfEnabled,
             @Value("${hidra.platform.security.authentication-mode:jwt}") String authenticationMode,

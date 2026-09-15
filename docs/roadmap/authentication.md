@@ -16,7 +16,7 @@
 | Author | Abir MEDJERAB |
 | CreatedOn | 2025-06-26 |
 | UpdatedOn | 2026-09-15 |
-| Status | Active — AUTH-007 OIDC authentication normalized |
+| Status | Active — AUTH-008 LOCAL credential contract completed |
 | Execution mode | One roadmap commit code at a time |
 
 ---
@@ -1403,7 +1403,7 @@ This is a gap-closure sequence. Only one commit code may be executed per task.
 | AUTH-005 | `feat(authentication): compose authentication provider manager` | Register provider-specific strategies behind one AuthenticationManager/ProviderManager with no fallback | Completed — central fail-closed ProviderManager composed for provider-specific LOCAL and LDAP request types; `mvn -q test` passed in PR CI run 104 |
 | AUTH-006 | `feat(identity): normalize authenticated hidra principal` | Reuse/add one Hidra principal contract shared by LOCAL, LDAP/AD, and OIDC | Completed — Identity-owned HidraPrincipal added with stable Hidra user identity, provider source, optional provider linkage, and Hidra roles/permissions; `mvn -q test` passed in PR CI run 111 |
 | AUTH-007 | `refactor(authentication): normalize existing oidc authentication` | Preserve working OIDC flow while mapping successful identities to Hidra User/HidraPrincipal and Hidra authorization | Completed — validated JWT issuer+subject now resolves through active OIDC provider and linked ExternalIdentity to active Hidra User/HidraPrincipal with Hidra-owned effective permissions; `mvn -q test` passed in PR CI run 118 |
-| AUTH-008 | `feat(identity): add local credential model and port` | Add the proven-missing LOCAL credential domain/application contract | Planned |
+| AUTH-008 | `feat(identity): add local credential model and port` | Add the proven-missing LOCAL credential domain/application contract | Completed — Identity-owned LocalCredential and LocalCredentialRepositoryPort added without Spring PasswordEncoder/domain leakage or persistence implementation; `mvn -q -DskipTests compile` passed in PR CI run 125 |
 | AUTH-009 | `feat(identity): add local credential persistence` | Add forward Flyway migration plus JPA repository/adapter for LOCAL password hashes | Planned |
 | AUTH-010 | `feat(authentication): add database local authentication provider` | Replace ordinary in-memory LOCAL verification with persistent password verification behind LocalAuthenticationProvider | Planned |
 | AUTH-011 | `feat(identity): record local authentication outcomes` | Apply existing User lock/login state and AuthenticationEvent to LOCAL success/failure | Planned |
@@ -1653,10 +1653,22 @@ AUTH-002 proved no equivalent persistent credential model exists.
 
 Do not put password hashes on ordinary User DTOs or expose Spring PasswordEncoder in the domain.
 
+Status:
+
+```text
+Completed — LocalCredential is an Identity-domain record for the one-way password hash and credential metadata (id, stable Hidra user ID, credential status, password-change/create/update timestamps). LocalCredentialRepositoryPort is an application outbound port exposing save, findById, and findByUserId without Spring Data or PasswordEncoder dependencies. No plaintext password, persistence adapter, migration, authentication provider, or login API was introduced.
+```
+
 Validation:
 
 ```bash
 mvn -q -DskipTests compile
+```
+
+Result:
+
+```text
+PASS — pull-request CI run 125 completed the acceptance `mvn -q -DskipTests compile` step successfully for AUTH-008 implementation commit 26585e8be08f43acd8dc8504421ae0b0fd1ff898.
 ```
 
 ---
@@ -2122,7 +2134,7 @@ The authentication gap is closed when all of the following are true:
 Execute only:
 
 ```text
-AUTH-008 — feat(identity): add local credential model and port
+AUTH-009 — feat(identity): add local credential persistence
 ```
 
-AUTH-007 now normalizes the existing OIDC resource-server authentication into HidraPrincipal without changing the browser PKCE flow. Do not implement AUTH-009 or later tasks during AUTH-008.
+AUTH-008 now defines the LOCAL credential domain/application contract. Do not implement AUTH-010 or later tasks during AUTH-009.

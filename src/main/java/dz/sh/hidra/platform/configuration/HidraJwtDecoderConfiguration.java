@@ -32,6 +32,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtClaimValidator;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtDecoders;
+import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.security.oauth2.jwt.JwtValidators;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 
@@ -76,6 +77,8 @@ public class HidraJwtDecoderConfiguration {
 
     /**
      * Validates only external OIDC bearer tokens presented to the OIDC completion bridge.
+     * When OIDC validation is not configured, the decoder remains present but rejects every
+     * attempted external bearer instead of preventing unrelated application modes from starting.
      */
     @Bean(name = "externalOidcJwtDecoder")
     JwtDecoder externalOidcJwtDecoder(
@@ -86,16 +89,15 @@ public class HidraJwtDecoderConfiguration {
         String normalizedIssuerUri = normalize(issuerUri, null);
         String normalizedJwkSetUri = normalize(jwkSetUri, null);
 
-        NimbusJwtDecoder decoder;
-        if (normalizedJwkSetUri != null) {
-            decoder = NimbusJwtDecoder.withJwkSetUri(normalizedJwkSetUri).build();
-        } else if (normalizedIssuerUri != null) {
-            decoder = (NimbusJwtDecoder) JwtDecoders.fromIssuerLocation(normalizedIssuerUri);
-        } else {
-            throw new IllegalStateException(
-                    "External OIDC completion requires HIDRA_JWT_ISSUER_URI or HIDRA_JWT_JWK_SET_URI."
-            );
+        if (normalizedJwkSetUri == null && normalizedIssuerUri == null) {
+            return token -> {
+                throw new JwtException("External OIDC completion is not configured.");
+            };
         }
+
+        NimbusJwtDecoder decoder = normalizedJwkSetUri != null
+                ? NimbusJwtDecoder.withJwkSetUri(normalizedJwkSetUri).build()
+                : (NimbusJwtDecoder) JwtDecoders.fromIssuerLocation(normalizedIssuerUri);
 
         decoder.setJwtValidator(jwtValidator(normalizedIssuerUri, normalize(audience, null)));
         return decoder;

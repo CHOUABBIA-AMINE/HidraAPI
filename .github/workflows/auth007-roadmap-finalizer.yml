@@ -1,0 +1,30 @@
+name: AUTH-007 Roadmap Finalizer
+
+on:
+  push:
+    branches:
+      - auth-007-oidc-normalization
+
+permissions:
+  contents: write
+
+jobs:
+  finalize-roadmap:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Update roadmap
+        run: python3 .github/auth007_finalize.py
+      - name: Commit roadmap update
+        shell: bash
+        run: |
+          if git diff --quiet -- docs/roadmap/authentication.md; then
+            exit 0
+          fi
+          git config user.name 'Aminosoft'
+          git config user.email '147345045+CHOUABBIA-AMINE@users.noreply.github.com'
+          git add docs/roadmap/authentication.md
+          git commit -m 'refactor(authentication): normalize existing oidc authentication'
+          git push origin HEAD:auth-007-oidc-normalization

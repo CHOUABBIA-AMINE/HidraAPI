@@ -32,11 +32,11 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.ProviderNotFoundException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.authentication.AuthenticationProvider;
 
 class HidraAuthenticationManagerConfigurationTest {
 
@@ -116,7 +116,7 @@ class HidraAuthenticationManagerConfigurationTest {
 
         assertThatThrownBy(() -> manager.authenticate(unsupportedRequest))
                 .isInstanceOf(ProviderNotFoundException.class)
-                .hasMessageContaining("No Hidra authentication provider supports request type");
+                .hasMessageContaining("No AuthenticationProvider found");
         verify(unrelatedProvider, never()).authenticate(unsupportedRequest);
     }
 

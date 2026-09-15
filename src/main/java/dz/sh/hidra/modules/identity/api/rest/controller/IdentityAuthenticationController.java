@@ -21,18 +21,15 @@ package dz.sh.hidra.modules.identity.api.rest.controller;
 
 import dz.sh.hidra.modules.identity.api.rest.request.AuthenticationLoginRequest;
 import dz.sh.hidra.modules.identity.api.rest.response.AuthenticationLoginResponse;
+import dz.sh.hidra.modules.identity.application.model.DirectAuthenticationCommand;
+import dz.sh.hidra.modules.identity.application.model.DirectAuthenticationResult;
 import dz.sh.hidra.modules.identity.application.model.IssuedAccessToken;
-import dz.sh.hidra.modules.identity.application.service.AuthenticationSessionLifecycleApplicationService;
+import dz.sh.hidra.modules.identity.application.port.in.AuthenticateDirectUserUseCase;
 import dz.sh.hidra.modules.identity.domain.model.HidraPrincipal;
 import dz.sh.hidra.modules.identity.domain.model.LoginSession;
-import dz.sh.hidra.modules.identity.infrastructure.security.HidraAccessTokenIssuer;
-import dz.sh.hidra.modules.identity.infrastructure.security.IdentityAuthenticationRequestRouter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.util.Objects;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,29 +38,17 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * Canonical direct-login endpoint for explicitly selected LOCAL and LDAP/AD providers.
  *
- * <p>Credential verification remains delegated to provider-specific AuthenticationProvider
- * implementations. This API layer performs no persistence access, password comparison,
- * LDAP bind, role assignment, provider fallback, or OIDC callback/token exchange.</p>
+ * <p>The API depends only on the Identity application boundary. Credential verification,
+ * provider routing, session persistence, and JWT implementation details remain behind ports.</p>
  */
 @RestController
 @RequestMapping("/api/v1/identity/authentication")
 public final class IdentityAuthenticationController {
 
-    private final IdentityAuthenticationRequestRouter authenticationRequestRouter;
-    private final AuthenticationManager authenticationManager;
-    private final AuthenticationSessionLifecycleApplicationService sessionLifecycle;
-    private final HidraAccessTokenIssuer accessTokenIssuer;
+    private final AuthenticateDirectUserUseCase authenticateDirectUserUseCase;
 
-    public IdentityAuthenticationController(
-            IdentityAuthenticationRequestRouter authenticationRequestRouter,
-            @Qualifier("hidraAuthenticationManager") AuthenticationManager authenticationManager,
-            AuthenticationSessionLifecycleApplicationService sessionLifecycle,
-            HidraAccessTokenIssuer accessTokenIssuer
-    ) {
-        this.authenticationRequestRouter = Objects.requireNonNull(authenticationRequestRouter);
-        this.authenticationManager = Objects.requireNonNull(authenticationManager);
-        this.sessionLifecycle = Objects.requireNonNull(sessionLifecycle);
-        this.accessTokenIssuer = Objects.requireNonNull(accessTokenIssuer);
+    public IdentityAuthenticationController(AuthenticateDirectUserUseCase authenticateDirectUserUseCase) {
+        this.authenticateDirectUserUseCase = Objects.requireNonNull(authenticateDirectUserUseCase);
     }
 
     /**
@@ -76,23 +61,18 @@ public final class IdentityAuthenticationController {
     ) {
         Objects.requireNonNull(request, "AuthenticationLoginRequest must not be null.");
 
-        Authentication authenticationRequest = authenticationRequestRouter.route(
+        DirectAuthenticationResult result = authenticateDirectUserUseCase.authenticate(new DirectAuthenticationCommand(
                 request.providerType(),
                 request.principal(),
-                request.credentials()
-        );
-        Authentication authenticated = authenticationManager.authenticate(authenticationRequest);
-        HidraPrincipal principal = requireHidraPrincipal(authenticated);
-
-        IssuedAccessToken accessToken = accessTokenIssuer.issue(principal);
-        LoginSession session = sessionLifecycle.startSession(
-                principal,
-                accessToken.expiresAt(),
+                request.credentials(),
                 servletRequest == null ? null : servletRequest.getRemoteAddr(),
                 header(servletRequest, "User-Agent"),
                 header(servletRequest, "X-Correlation-Id")
-        );
+        ));
 
+        HidraPrincipal principal = result.principal();
+        LoginSession session = result.session();
+        IssuedAccessToken accessToken = result.accessToken();
         return new AuthenticationLoginResponse(
                 session.id(),
                 accessToken.tokenValue(),
@@ -108,16 +88,6 @@ public final class IdentityAuthenticationController {
                 principal.roles(),
                 principal.permissions()
         );
-    }
-
-    private static HidraPrincipal requireHidraPrincipal(Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new IllegalStateException("Direct authentication did not produce an authenticated result.");
-        }
-        if (!(authentication.getPrincipal() instanceof HidraPrincipal principal)) {
-            throw new IllegalStateException("Direct authentication did not produce a HidraPrincipal.");
-        }
-        return principal;
     }
 
     private static String header(HttpServletRequest request, String name) {

@@ -16,7 +16,7 @@
 | Author | Abir MEDJERAB |
 | CreatedOn | 2025-06-26 |
 | UpdatedOn | 2026-09-15 |
-| Status | Active — AUTH-014 LDAP authentication provider completed |
+| Status | Active — AUTH-015 unified Hidra access-token issuer completed |
 | Execution mode | One roadmap commit code at a time |
 
 ---
@@ -1410,7 +1410,7 @@ This is a gap-closure sequence. Only one commit code may be executed per task.
 | AUTH-012 | `feat(authentication): add ldap security infrastructure` | Add required LDAP dependency/configuration/TLS/timeouts without domain coupling | Completed — Spring LDAP core plus externalized URL/base/search/bind configuration, connection/read timeouts, enabled-only LdapContextSource, and staging/production LDAPS guard added; no secrets, credential verification, or LDAP AuthenticationProvider introduced; `mvn -q test` passed in PR CI run 153 |
 | AUTH-013 | `feat(authentication): add ldap credential verification adapter` | Implement AD/LDAP bind/search credential verification | Completed — Identity application port plus provider-neutral VerifiedDirectoryIdentity contract and Spring LDAP adapter added; principal values are LDAP-filter escaped, search must resolve exactly one identity, credentials are verified by LDAP bind, and no Hidra permissions or AUTH-014 provider behavior is introduced; `mvn -q test` passed in PR CI run 160 |
 | AUTH-014 | `feat(authentication): add ldap authentication provider` | Route LDAP token through directory verification, ExternalIdentity mapping, Hidra account state, and HidraPrincipal | Completed — LdapAuthenticationProvider handles only LdapAuthenticationToken, delegates credential verification to AUTH-013, resolves one active LDAP/AD IdentityProvider and LINKED ExternalIdentity, enforces Hidra user state and Hidra-owned effective permissions, and returns HidraPrincipal without LOCAL fallback or AD-group authorization shortcuts; `mvn -q test` passed in PR CI run 167 |
-| AUTH-015 | `feat(authentication): add unified hidra access token issuer` | Add JwtEncoder and issue one standardized Hidra JWT for all providers | Planned |
+| AUTH-015 | `feat(authentication): add unified hidra access token issuer` | Add JwtEncoder and issue one standardized Hidra JWT for all providers | Completed — provider-neutral HidraAccessTokenIssuer now emits one JWT schema from HidraPrincipal with stable Hidra subject, issuer/audience/expiry/JTI, Hidra-owned roles/permissions, externalized HS256 signing material, and HMAC resource-server issuer compatibility; `mvn -q test` passed in PR CI run 174 |
 | AUTH-016 | `feat(identity): complete authentication session lifecycle` | Reuse LoginSession and AuthenticationEvent for all provider paths | Planned |
 | AUTH-017 | `feat(authentication): wire dynamic login endpoint` | Introduce and wire the direct LOCAL/LDAP provider-selection login boundary to router, AuthenticationManager, session, and token issuer | Planned |
 | AUTH-018 | `feat(authentication): converge oidc completion on hidra token` | Ensure OIDC completion produces same Hidra principal/session/JWT result as LOCAL/LDAP while preserving current PKCE behavior | Planned |
@@ -1917,10 +1917,22 @@ compatibility with existing resource server
 no authorization bypass through provider claims
 ```
 
+Status:
+
+```text
+Completed — HidraAccessTokenIssuer accepts the normalized HidraPrincipal shared by LOCAL, LDAP/Active Directory, and OIDC and produces one Bearer JWT schema. The standard subject is the stable Hidra user ID; issuer, audience, expiry, issued-at, and JTI are present; configured roles and scope claims are populated only from HidraPrincipal roles/permissions; authentication type and provider linkage are metadata only. HidraJwtEncoderConfiguration signs HS256 tokens with the existing externalized HIDRA_JWT_HMAC_SECRET and enforces a minimum 32-byte secret. The HMAC resource-server decoder validates the dedicated Hidra token issuer while external JWK/issuer OIDC validation remains unchanged. No external IdP roles/groups are promoted, and no session/login endpoint behavior from AUTH-016 or later was implemented.
+```
+
 Validation:
 
 ```bash
 mvn -q test
+```
+
+Result:
+
+```text
+PASS — pull-request CI run 174 completed repository and acceptance `mvn -q test` checks successfully for AUTH-015 implementation commit 5a28df47c5107a5c93d1c35c127429e5427a4cc4.
 ```
 
 ---
@@ -2206,7 +2218,7 @@ The authentication gap is closed when all of the following are true:
 Execute only:
 
 ```text
-AUTH-015 — feat(authentication): add unified hidra access token issuer
+AUTH-016 — feat(identity): complete authentication session lifecycle
 ```
 
-AUTH-014 now normalizes successful LDAP/Active Directory authentication to HidraPrincipal using linked Hidra identity and authorization. Do not implement AUTH-016 or later tasks during AUTH-015.
+AUTH-015 now provides one Hidra-issued access-token schema from normalized HidraPrincipal with externalized signing material and HMAC resource-server compatibility. Do not implement AUTH-017 or later tasks during AUTH-016.

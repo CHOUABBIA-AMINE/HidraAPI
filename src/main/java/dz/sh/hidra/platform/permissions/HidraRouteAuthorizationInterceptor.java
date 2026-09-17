@@ -7,7 +7,7 @@
  *
  * @Name        : HidraRouteAuthorizationInterceptor
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-11
+ * @UpdatedOn   : 2026-09-17
  *
  * @Type        : Class
  * @Layer       : Platform
@@ -39,6 +39,11 @@ import org.springframework.web.servlet.HandlerMapping;
  */
 @Component
 public final class HidraRouteAuthorizationInterceptor implements HandlerInterceptor {
+
+    private static final Set<String> PUBLIC_PATHS = Set.of(
+            "/api/v1/security/oidc",
+            "/api/v1/identity/authentication/login"
+    );
 
     private static final Set<String> AUTHENTICATED_ONLY_PATHS = Set.of(
             "/api/v1/identity/me",
@@ -95,7 +100,7 @@ public final class HidraRouteAuthorizationInterceptor implements HandlerIntercep
         if (path == null) {
             return false;
         }
-        if ("/api/v1/security/oidc".equals(path)) {
+        if (PUBLIC_PATHS.contains(path)) {
             return true;
         }
         if (path.startsWith("/api/v1/realtime/ws")) {

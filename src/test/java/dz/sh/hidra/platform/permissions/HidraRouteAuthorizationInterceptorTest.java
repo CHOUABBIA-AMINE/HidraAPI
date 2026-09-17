@@ -7,7 +7,7 @@
  *
  * @Name        : HidraRouteAuthorizationInterceptorTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-11
+ * @UpdatedOn   : 2026-09-17
  *
  * @Type        : Class
  * @Layer       : Platform Test
@@ -76,6 +76,34 @@ class HidraRouteAuthorizationInterceptorTest {
                 "n/a",
                 List.of(new SimpleGrantedAuthority("ROLE_OPERATOR"))
         ));
+
+        assertThrows(
+                AccessDeniedException.class,
+                () -> interceptor.preHandle(request(), new MockHttpServletResponse(), handlerMethod())
+        );
+    }
+
+    @Test
+    void permitsAnonymousDirectLoginBeforeRoutePermissionResolution() throws Exception {
+        HidraEffectivePermissionResolver resolver = new HidraEffectivePermissionResolver(List.of());
+        HidraRouteAuthorizationInterceptor interceptor = new HidraRouteAuthorizationInterceptor(resolver, naming, true, "jwt");
+
+        MockHttpServletRequest request = new MockHttpServletRequest(
+                "POST",
+                "/api/v1/identity/authentication/login"
+        );
+        request.setAttribute(
+                HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE,
+                "/api/v1/identity/authentication/login"
+        );
+
+        assertTrue(interceptor.preHandle(request, new MockHttpServletResponse(), handlerMethod()));
+    }
+
+    @Test
+    void anonymousProtectedRouteStillRequiresPermission() throws Exception {
+        HidraEffectivePermissionResolver resolver = new HidraEffectivePermissionResolver(List.of());
+        HidraRouteAuthorizationInterceptor interceptor = new HidraRouteAuthorizationInterceptor(resolver, naming, true, "jwt");
 
         assertThrows(
                 AccessDeniedException.class,

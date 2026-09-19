@@ -1,6 +1,6 @@
 # HyFloAPI legacy source inventory — HDP-002
 
-> **Execution status: In Progress / partial inventory.** Source Git-tree manifest, accessible small SQL metadata and CSV cardinality are recorded; full workbook worksheet names/row counts, binary attachment content and the two large SQL dumps require an approved byte-capable extraction method. **Do not mark HDP-002 complete or start HDP-003 until these evidence gaps are resolved or formally accepted in the roadmap.** This file contains metadata only, not credentials, industrial rows, workbook samples or SQL data.
+> **Execution status: Completed — tracked-file/provenance inventory with explicitly deferred content inspection.** All 31 tracked files are manifest-recorded with source paths, byte sizes and Git blob SHAs. Worksheet names/row counts, binary attachment content and two large SQL dumps remain unverified because the available GitHub text connector cannot extract their contents. This file contains metadata only; the HDP-002 inventory completion does NOT approve source data for import, resolve credential exposure, or satisfy G1 data-owner/security approval.
 
 ## 1. Source provenance and extraction
 
@@ -519,8 +519,26 @@ t_03_03_06
 - [ ] Inspect two large SQL files sufficiently to list their SQL table identifiers and obtain verified counts where feasible.
 - [ ] Confirm source ownership, distribution permissions and sensitivity classification with responsible source owner.
 - [ ] Record raw-byte SHA-256 digests if required by downstream import design.
-- [ ] Mark HDP-002 completed only when missing evidence is resolved or explicitly accepted as a documented limitation by an authorized reviewer.
+- [x] Close HDP-002 **as a bounded file-level inventory with the unresolved exceptions below explicitly retained**; repository maintainer requested completion and merge of this documentation work. This is not an authorization from any business data owner to publish, transform, or import restricted records.
 
 **Validation performed:** deterministic manifest cardinality check (31 blobs / one nested directory), verified CSV parser (370 nonempty records / nine fields / zero malformed widths), source Git SHA checks and static SQL inspections; documentation-only change, so **Maven tests and PostgreSQL/Flyway migrations were not run**. No source files or secrets were copied into HidraAPI. GitHub PR/CI evidence belongs to the PR and should be recorded only after runs complete.
 
-**Next:** finish HDP-002 source inspection and security authorization; proceed to HDP-003 only after HDP-002 is completed and merged.
+**Next:** HDP-003 is an independent, read-only *target-model* inventory and may begin after the HDP-002 status PR merges. Before source-dependent HDP-004/005, complete the safe inspection of the 13 workbooks and two inaccessible SQL dumps. G1 remains blocked until actual source-owner, confidentiality, and reuse approvals are documented.
+
+
+## 7. HDP-002 file-level completion and deferred evidence
+
+The source-file manifest is exhaustive **for Git-tracked files** at pinned HyFloAPI commit `f4dc6aa6a9a6f08e78df8146d4b40c336be41c9b`: 31 blobs and one nested directory; every file has its original path, Git blob SHA-1, size, format, preliminary observations, and inspection limitations. Git blob SHA-1 is not a file-level SHA-256 checksum. The CSV has 370 syntactically parsed data records; six readable SQL files have static table-identifier listings. The source-inventory PR #119 merged as `f22342197e4a8ca4d95cfc5187d1dfdeeb52f62f`, with successful CI run #324 on inventory commit `10158effa1f5fd6eff42f1c9003d706ac0d4b559`. This documentation-only follow-up records the *bounded completion* decision; no database or data import is included.
+
+| Outstanding evidence | Confirmed current limitation | Required gate before its data is classified/mapped or imported |
+|---|---|---|
+| 13 XLSX workbooks | Only Git metadata available; actual worksheet/tab names, visibility, row counts, headers and effective dates were not extracted. | Obtain secure, approved byte-capable, read-only workbook inspection before source-dependent HDP-004/HDP-005 decisions. Do not invent worksheet names or treat file naming as source precedence. |
+| `data/hyflo_db.sql` and `data/iaas_db.sql` | File size and blob identity known; full text returned empty through the current GitHub file connector, so table inventory and row counts cannot be verified. | Approved streamed/static SQL parsing (never execute legacy SQL) is required before these dumps can be classified or mapped. |
+| DOCX, PNG and PDF attachments | Git metadata verified; binary contents uninspected. | Restricted handling and approved review; no contents copied to HidraAPI. |
+| Source custody, privacy and reuse | GitHub account custody known; authoritative business owner, rights, classification and distribution permissions are not established. | Responsible owner/security must sign off; **G1 remains blocked**. Inventory completion does not approve import, public distribution or operational use. |
+| Credential-labelled source | `data/LPL/Code.txt` contains plaintext credential-labelled fields; no values copied. | Handle rotation/revocation and history/exposure review through separately authorized source-repository security remediation. |
+| Cryptographic byte digests | Pinned Git blob SHA-1 present; SHA-256 of original source bytes not computed. | Compute SHA-256 during authorized byte-level extraction if required for later reproducibility. |
+
+**Task acceptance boundary:** HDP-002 documents a complete *tracked-file/provenance manifest*, available metadata and honest per-file unreadability. It does not assert complete content-level data inventory, source-version precedence, approved business ownership or safe importability. The technical inability to inspect some source contents is recorded as a downstream **blocking prerequisite**, not silently treated as a passing source validation. HDP-003 can inspect target models independently; HDP-004/HDP-005 must not classify/map inaccessible contents as verified.
+
+**Validation record:** GitHub recursive source tree was untruncated and contains 31 tracked files, including three nested LPL files. CSV parsing reported 370 records, nine fields and zero malformed-width records. Six SQL texts were statically inspected, two were inaccessible. File/roadmap documentation only; Maven and database tests were not executed for this follow-up. No raw datasets, passwords or workbook contents were introduced into HidraAPI.

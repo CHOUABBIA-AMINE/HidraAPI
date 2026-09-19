@@ -11,10 +11,10 @@
 | Roadmap code | `HDP` |
 | Created | 2026-09-19 |
 | Baseline at drafting | `51fb62bd7b33e46c539daeedf80a59591308e7b4` (reconfirm before each task) |
-| Status | Proposed; roadmap PR under review; no data imported by this roadmap |
+| Status | Active — HDP-001 merged in PR #118; HDP-002 in progress; no data imported by this roadmap |
 | Execution mode | Exactly one HDP task/commit at a time; never execute later tasks automatically |
 
-This is a **proposed** execution plan, not evidence that any dataset has been transformed, imported, approved, or tested. HDP-001 is the roadmap authoring task; its repository status stays **In Progress** until the roadmap PR is merged. All other tasks start **Planned**.
+This roadmap is approved for staged execution by merged PR #118 (merge commit `3515d81ac17e3c26ae1c394c78d42a9485c03beb`). HDP-002 is a source-inventory documentation task in progress; no dataset has been transformed, imported, approved, or tested by this workstream. Other tasks remain Planned.
 
 ## 2. Purpose and explicit outcome
 
@@ -114,9 +114,10 @@ Core reconciliation invariant for each canonical source snapshot: `eligible sour
 
 | Code | Status | Evidence / blocker |
 |---|---|---|
-| HDP-001 | In Progress | Roadmap proposed on a review branch; do not mark Completed until PR merged. |
-| HDP-002–HDP-010 | Planned | Read-only inventories and approved mapping/decision gates required. |
+| HDP-001 | Completed | Roadmap merged in PR #118, merge commit `3515d81ac17e3c26ae1c394c78d42a9485c03beb`; GitHub CI run #322 succeeded on source commit `49882036a0622a30d8c2291896ad085bd964f1cc`. |
+| HDP-002 | In Progress | Source Git-tree manifest (31 files), CSV (370 records) and accessible SQL metadata documented in `docs/data-provisioning/source-inventory.md`; workbook tabs/counts, two large SQL inventories, and data-owner/security review remain unresolved. Do not advance to HDP-003 until resolved/accepted. |
+| HDP-003–HDP-010 | Planned | Read-only target inventory and approved mapping/decision gates required. |
 | HDP-011–HDP-018 | Planned | G2 mapping approval and exact file allowlist required before code changes. |
 | HDP-019–HDP-022 | Planned | G3 evidence, disposition/acceptance reviews and release controls required. |
 
-**Immediate next task after roadmap merge: HDP-002 — inventory HyFlo source files and provenance.** Do not begin HDP-003 or implementation work while HDP-002 is active.
+**Current task: HDP-002 — finish the outstanding source inspection, authorization and documentation review.** Do not begin HDP-003 or implementation work while HDP-002 is active.

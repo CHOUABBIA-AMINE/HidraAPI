@@ -95,3 +95,27 @@ mvn -q clean verify
 ```
 
 Tests: active LOCAL administrator claim/authority; ordinary LOCAL user isolation; signed JWT role reconstruction; revoked/expired/scoped/inactive grants; stale bearer administrator authority rejection; ordinary permission enforcement.
+
+---
+
+## AUTH-COR-003 — Make unsupported-provider test locale independent
+
+Commit:
+
+```text
+test(authentication): make provider-not-found assertion locale independent
+```
+
+Problem: Spring Security localizes `ProviderNotFoundException` messages. The unsupported-provider test incorrectly expects English text and fails under French JVM locale despite correct fail-closed behavior.
+
+Required change: Assert `ProviderNotFoundException` by type, retain the verification that the unrelated provider is never invoked, and do not modify production authentication or authorization behavior.
+
+Validation:
+
+```bash
+mvn -q -Dtest=HidraAuthenticationManagerConfigurationTest test
+mvn -q test
+mvn -q clean verify
+```
+
+Status: In Progress — test assertion correction proposed; CI results pending.

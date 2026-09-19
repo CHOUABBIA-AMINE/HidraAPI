@@ -7,7 +7,7 @@
  *
  * @Name        : HidraAuthenticationManagerConfigurationTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-15
+ * @UpdatedOn   : 2026-09-19
  *
  * @Type        : Class
  * @Layer       : Test
@@ -115,8 +115,7 @@ class HidraAuthenticationManagerConfigurationTest {
         Authentication unsupportedRequest = UsernamePasswordAuthenticationToken.unauthenticated("operator", "secret");
 
         assertThatThrownBy(() -> manager.authenticate(unsupportedRequest))
-                .isInstanceOf(ProviderNotFoundException.class)
-                .hasMessageContaining("No AuthenticationProvider found");
+                .isInstanceOf(ProviderNotFoundException.class);
         verify(unrelatedProvider, never()).authenticate(unsupportedRequest);
     }
 

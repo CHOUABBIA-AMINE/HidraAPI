@@ -21,6 +21,7 @@ package dz.sh.hidra.modules.identity.infrastructure.persistence.repository;
 
 import dz.sh.hidra.modules.identity.domain.value.GrantStatus;
 import dz.sh.hidra.modules.identity.infrastructure.persistence.entity.UserRoleGrantJpaEntity;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -30,6 +31,12 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface UserRoleGrantJpaRepository extends JpaRepository<UserRoleGrantJpaEntity, String> {
+
+    List<UserRoleGrantJpaEntity> findByUserIdAndRoleIdAndStatus(
+            String userId,
+            String roleId,
+            GrantStatus status
+    );
 
     Optional<UserRoleGrantJpaEntity> findFirstByUserIdAndRoleIdAndStatus(
             String userId,

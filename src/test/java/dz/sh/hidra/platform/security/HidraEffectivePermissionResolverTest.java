@@ -7,7 +7,7 @@
  *
  * @Name        : HidraEffectivePermissionResolverTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-11
+ * @UpdatedOn   : 2026-09-19
  *
  * @Type        : Class
  * @Layer       : Platform Test
@@ -21,6 +21,7 @@ package dz.sh.hidra.platform.security;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.util.List;
 import java.util.Set;
@@ -48,7 +49,9 @@ class HidraEffectivePermissionResolverTest {
 
     @Test
     void bootstrapAdminReceivesWildcardWithoutInventingBusinessPermissions() {
-        HidraEffectivePermissionResolver resolver = new HidraEffectivePermissionResolver(List.of());
+        HidraEffectivePermissionResolver resolver = new HidraEffectivePermissionResolver(List.of(
+                principal -> "hidra-admin".equals(principal) ? Set.of("*") : Set.of()
+        ));
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                 "hidra-admin",
                 "n/a",
@@ -56,5 +59,31 @@ class HidraEffectivePermissionResolverTest {
         );
 
         assertTrue(resolver.resolve(authentication).contains(HidraEffectivePermissionResolver.ALL_PERMISSIONS));
+    }
+
+    @Test
+    void revokedAdministratorGrantCannotUseStaleJwtAuthority() {
+        HidraEffectivePermissionResolver resolver = new HidraEffectivePermissionResolver(List.of(principal -> Set.of()));
+        UsernamePasswordAuthenticationToken staleToken = new UsernamePasswordAuthenticationToken(
+                "hidra-admin", "n/a", List.of(new SimpleGrantedAuthority("ROLE_HIDRA_ADMIN")));
+        assertFalse(resolver.hasPermission(staleToken, "security:permissions:read"));
+    }
+
+    @Test
+    void wildcardJwtScopeCannotBypassCurrentAdministratorGrantVerification() {
+        HidraEffectivePermissionResolver resolver = new HidraEffectivePermissionResolver(List.of(principal -> Set.of()));
+        UsernamePasswordAuthenticationToken staleAdmin = new UsernamePasswordAuthenticationToken(
+                "hidra-admin", "n/a", List.of(
+                        new SimpleGrantedAuthority("ROLE_HIDRA_ADMIN"),
+                        new SimpleGrantedAuthority("SCOPE_*")));
+        assertFalse(resolver.hasPermission(staleAdmin, "security:permissions:read"));
+    }
+
+    @Test
+    void wildcardPermissionWithoutAdministratorAuthorityCannotBypassChecks() {
+        HidraEffectivePermissionResolver resolver = new HidraEffectivePermissionResolver(List.of(principal -> Set.of("*")));
+        UsernamePasswordAuthenticationToken operator = new UsernamePasswordAuthenticationToken(
+                "operator", "n/a", List.of());
+        assertFalse(resolver.hasPermission(operator, "security:permissions:read"));
     }
 }

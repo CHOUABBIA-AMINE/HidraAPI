@@ -7,7 +7,7 @@
  *
  * @Name        : IdentityEffectivePermissionSourceAdapter
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-11
+ * @UpdatedOn   : 2026-09-19
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -34,14 +34,26 @@ import org.springframework.stereotype.Component;
 public final class IdentityEffectivePermissionSourceAdapter implements HidraEffectivePermissionSource {
 
     private final IdentityAdministrationQueryUseCase queryUseCase;
+    private final IdentityAdministratorGrantService administratorGrantService;
 
-    public IdentityEffectivePermissionSourceAdapter(IdentityAdministrationQueryUseCase queryUseCase) {
+    public IdentityEffectivePermissionSourceAdapter(
+            IdentityAdministrationQueryUseCase queryUseCase,
+            IdentityAdministratorGrantService administratorGrantService
+    ) {
         this.queryUseCase = Objects.requireNonNull(queryUseCase, "Identity administration query use case must not be null.");
+        this.administratorGrantService = Objects.requireNonNull(administratorGrantService);
     }
 
     @Override
     public Set<String> resolve(String principalName) {
         IdentityAdministrationQueryUseCase.PrincipalView principal = queryUseCase.principal(principalName, List.of());
-        return Set.copyOf(new LinkedHashSet<>(principal.effectivePermissions()));
+        Set<String> permissions = new LinkedHashSet<>(principal.effectivePermissions());
+        // A wildcard is never granted by a stored permission code alone.
+        permissions.remove("*");
+        if (principal.userId() != null
+                && administratorGrantService.hasActiveGlobalAdministratorGrant(principal.userId())) {
+            permissions.add("*");
+        }
+        return Set.copyOf(permissions);
     }
 }

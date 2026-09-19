@@ -7,7 +7,7 @@
  *
  * @Name        : HidraEffectivePermissionResolver
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-11
+ * @UpdatedOn   : 2026-09-19
  *
  * @Type        : Class
  * @Layer       : Platform
@@ -51,22 +51,34 @@ public final class HidraEffectivePermissionResolver {
             return Set.of();
         }
 
+        boolean administratorAuthority = authentication.getAuthorities().stream()
+                .anyMatch(authority -> ADMIN_AUTHORITY.equals(normalize(authority.getAuthority())));
         LinkedHashSet<String> permissions = new LinkedHashSet<>();
+        boolean currentAdministratorGrant = false;
         authentication.getAuthorities().forEach(authority -> addAuthority(permissions, authority.getAuthority()));
+        // Never trust a wildcard from a JWT scope or authority claim on its own.
+        permissions.remove(ALL_PERMISSIONS);
 
         String principalName = normalize(authentication.getName());
         if (principalName != null) {
             for (HidraEffectivePermissionSource source : permissionSources) {
                 Set<String> sourcePermissions = source.resolve(principalName);
                 if (sourcePermissions != null) {
+                    currentAdministratorGrant |= sourcePermissions.contains(ALL_PERMISSIONS);
                     sourcePermissions.stream()
                             .map(HidraEffectivePermissionResolver::normalize)
                             .filter(Objects::nonNull)
+                            .filter(permission -> !ALL_PERMISSIONS.equals(permission))
                             .forEach(permissions::add);
                 }
             }
         }
 
+        // A signed but stale ROLE_HIDRA_ADMIN is insufficient: Identity must confirm
+        // a currently active, global administrator grant on every protected request.
+        if (administratorAuthority && currentAdministratorGrant) {
+            permissions.add(ALL_PERMISSIONS);
+        }
         return Set.copyOf(permissions);
     }
 
@@ -85,7 +97,6 @@ public final class HidraEffectivePermissionResolver {
             return;
         }
         if (ADMIN_AUTHORITY.equals(normalized)) {
-            permissions.add(ALL_PERMISSIONS);
             return;
         }
         if (normalized.startsWith(SCOPE_PREFIX) && normalized.length() > SCOPE_PREFIX.length()) {

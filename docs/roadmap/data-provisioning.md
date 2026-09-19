@@ -11,7 +11,7 @@
 | Roadmap code | `HDP` |
 | Created | 2026-09-19 |
 | Baseline at drafting | `51fb62bd7b33e46c539daeedf80a59591308e7b4` (reconfirm before each task) |
-| Status | Active — HDP-002 tracked-file/provenance inventory completed with recorded inaccessible-content exceptions; G1 data-governance gate remains blocked; no data imported |
+| Status | Active — HDP-004 blocked pending source-content extraction and owner/security decisions; no data imported |
 | Execution mode | Exactly one HDP task/commit at a time; never execute later tasks automatically |
 
 This roadmap is approved for staged execution by merged PR #118 (merge commit `3515d81ac17e3c26ae1c394c78d42a9485c03beb`). HDP-002 is complete only as a Git-tracked file/provenance inventory with explicitly documented unreadable content: 13 Excel workbooks, two large SQL files, and other binary artifacts await safe inspection; source-owner/security approval remains unverified. HDP-003 target-only inspection may proceed after the HDP-002 status correction merges, but HDP-004/HDP-005 source-content decisions and G1 approval cannot use missing metadata. No dataset has been transformed, imported, approved for import, or tested by this workstream.
@@ -117,8 +117,9 @@ Core reconciliation invariant for each canonical source snapshot: `eligible sour
 | HDP-001 | Completed | Roadmap merged in PR #118, merge commit `3515d81ac17e3c26ae1c394c78d42a9485c03beb`; GitHub CI run #322 succeeded on source commit `49882036a0622a30d8c2291896ad085bd964f1cc`. |
 | HDP-002 | Completed | Exhaustive Git-tracked file/provenance manifest (31 files), CSV syntactic count (370 records), six accessible SQL static metadata inventories. Inventory merged in PR #119 (`f22342197e4a8ca4d95cfc5187d1dfdeeb52f62f`), CI #324 passed. **Limited scope:** 13 workbook tabs/rows, two large SQL inventories, other binary contents, data-owner permission and credential remediation are still unverified. They block source-dependent classification/mapping, G1 and any import—not independent read-only HDP-003. Final status recorded by the HDP-002 documentation follow-up PR. |
 | HDP-003 | Completed (documentation inventory) | Pinned Git tree, 24 module roots, 25 Flyway filenames, five candidate module domain/JPA/port inventories and five migration table/representative typed-column inventories recorded in `docs/data-provisioning/target-inventory.md`. Full constraints, enum values, public write semantics and live DB validation remain prerequisites for HDP-005/HDP-010; no data imported. PR CI and merge evidence to be checked on the exact commit. |
-| HDP-004–HDP-010 | Planned | Source-content and data-owner exceptions from HDP-002 still block complete source-based classification/mapping and G1; read-only independent target analysis is complete. |
+| HDP-004 | Blocked | Provisional classification of all 31 source files recorded in `docs/data-provisioning/source-classification.md`; 13 workbook contents, two large SQL dumps, source-owner/security approval and canonical-version decisions remain unavailable. No records approved for import. |
+| HDP-005–HDP-010 | Planned | Cannot map or approve source-dependent import from uninspected/unapproved inputs; G1 remains blocked. |
 | HDP-011–HDP-018 | Planned | G2 mapping approval and exact file allowlist required before code changes. |
 | HDP-019–HDP-022 | Planned | G3 evidence, disposition/acceptance reviews and release controls required. |
 
-**Next roadmap task: HDP-004 — classify source datasets and import eligibility.** Its source-dependent conclusions must remain blocked until the HDP-002 unreadable-workbook/large-SQL and source-owner/security exceptions are resolved. This HDP-003 target inventory does not authorize importing data.
+**Current task: HDP-004 — Blocked pending source-owner/security approval and safe byte-level inspection of unreadable workbooks and SQL.** Provisional metadata-level classifications are recorded; do not begin HDP-005 or import uninspected data.

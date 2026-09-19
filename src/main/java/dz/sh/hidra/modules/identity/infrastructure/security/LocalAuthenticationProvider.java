@@ -7,7 +7,7 @@
  *
  * @Name        : LocalAuthenticationProvider
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-15
+ * @UpdatedOn   : 2026-09-19
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -44,7 +44,7 @@ import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -62,6 +62,7 @@ public final class LocalAuthenticationProvider implements AuthenticationProvider
     private final IdentityAdministrationQueryUseCase queryUseCase;
     private final LocalAuthenticationOutcomeApplicationService outcomeService;
     private final PasswordEncoder passwordEncoder;
+    private final IdentityAdministratorGrantService administratorGrantService;
 
     public LocalAuthenticationProvider(
             IdentityProviderJpaRepository identityProviderRepository,
@@ -69,7 +70,8 @@ public final class LocalAuthenticationProvider implements AuthenticationProvider
             LocalCredentialRepositoryPort localCredentialRepository,
             IdentityAdministrationQueryUseCase queryUseCase,
             LocalAuthenticationOutcomeApplicationService outcomeService,
-            PasswordEncoder passwordEncoder
+            PasswordEncoder passwordEncoder,
+            IdentityAdministratorGrantService administratorGrantService
     ) {
         this.identityProviderRepository = Objects.requireNonNull(identityProviderRepository);
         this.userRepository = Objects.requireNonNull(userRepository);
@@ -77,6 +79,7 @@ public final class LocalAuthenticationProvider implements AuthenticationProvider
         this.queryUseCase = Objects.requireNonNull(queryUseCase);
         this.outcomeService = Objects.requireNonNull(outcomeService);
         this.passwordEncoder = Objects.requireNonNull(passwordEncoder);
+        this.administratorGrantService = Objects.requireNonNull(administratorGrantService);
     }
 
     @Override
@@ -115,13 +118,16 @@ public final class LocalAuthenticationProvider implements AuthenticationProvider
             IdentityAdministrationQueryUseCase.PrincipalView authorization =
                     queryUseCase.principal(user.id(), List.of());
 
+            boolean globalAdministrator = administratorGrantService.hasActiveGlobalAdministratorGrant(user.id());
+            Set<String> roles = globalAdministrator ? Set.of("HIDRA_ADMIN") : Set.of();
+
             HidraPrincipal principal = new HidraPrincipal(
                     user.id(),
                     user.username(),
                     user.displayName(),
                     ProviderType.LOCAL,
                     localProvider.id(),
-                    Set.of(),
+                    roles,
                     Set.copyOf(authorization.effectivePermissions())
             );
 
@@ -130,7 +136,9 @@ public final class LocalAuthenticationProvider implements AuthenticationProvider
             UsernamePasswordAuthenticationToken result = UsernamePasswordAuthenticationToken.authenticated(
                     principal,
                     null,
-                    AuthorityUtils.NO_AUTHORITIES
+                    globalAdministrator
+                            ? List.of(new SimpleGrantedAuthority("ROLE_HIDRA_ADMIN"))
+                            : List.of()
             );
             result.setDetails(localRequest.getDetails());
             return result;

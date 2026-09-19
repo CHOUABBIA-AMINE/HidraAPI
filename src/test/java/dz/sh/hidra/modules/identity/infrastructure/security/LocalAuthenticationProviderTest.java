@@ -7,7 +7,7 @@
  *
  * @Name        : LocalAuthenticationProviderTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-15
+ * @UpdatedOn   : 2026-09-19
  *
  * @Type        : Class
  * @Layer       : Test
@@ -50,6 +50,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -67,6 +68,7 @@ class LocalAuthenticationProviderTest {
     private LocalAuthenticationOutcomeApplicationService outcomeService;
     private PasswordEncoder passwordEncoder;
     private LocalAuthenticationProvider provider;
+    private IdentityAdministratorGrantService administratorGrantService;
 
     @BeforeEach
     void setUp() {
@@ -76,13 +78,15 @@ class LocalAuthenticationProviderTest {
         queryUseCase = mock(IdentityAdministrationQueryUseCase.class);
         outcomeService = mock(LocalAuthenticationOutcomeApplicationService.class);
         passwordEncoder = new BCryptPasswordEncoder();
+        administratorGrantService = mock(IdentityAdministratorGrantService.class);
         provider = new LocalAuthenticationProvider(
                 identityProviderRepository,
                 userRepository,
                 localCredentialRepository,
                 queryUseCase,
                 outcomeService,
-                passwordEncoder
+                passwordEncoder,
+                administratorGrantService
         );
     }
 
@@ -120,8 +124,28 @@ class LocalAuthenticationProviderTest {
         assertThat(principal.permissions()).containsExactlyInAnyOrder("pipeline:read", "alarm:acknowledge");
 
         verify(queryUseCase).principal(USER_ID, List.of());
+        assertThat(result.getAuthorities()).isEmpty();
         verify(outcomeService).recordSuccess(USER_ID, PROVIDER_ID);
         verify(outcomeService, never()).recordFailure(org.mockito.ArgumentMatchers.any(), org.mockito.ArgumentMatchers.any(), org.mockito.ArgumentMatchers.any());
+    }
+
+    @Test
+    void activeGlobalAdministratorIsPropagatedToPrincipalAndSpringAuthority() {
+        when(identityProviderRepository.findAll()).thenReturn(List.of(localProvider(IdentityProviderStatus.ACTIVE)));
+        when(userRepository.findByUsername(USERNAME)).thenReturn(Optional.of(user(UserStatus.ACTIVE, null)));
+        when(localCredentialRepository.findByUserId(USER_ID))
+                .thenReturn(Optional.of(credential("ACTIVE", passwordEncoder.encode(PASSWORD))));
+        when(queryUseCase.principal(USER_ID, List.of())).thenReturn(
+                new IdentityAdministrationQueryUseCase.PrincipalView(USER_ID, "IDENTITY_USER",
+                        USER_ID, USERNAME, "Pipeline Operator", null, List.of(), List.of()));
+        when(administratorGrantService.hasActiveGlobalAdministratorGrant(USER_ID)).thenReturn(true);
+
+        Authentication result = provider.authenticate(LocalAuthenticationToken.unauthenticated(USERNAME, PASSWORD));
+        HidraPrincipal principal = (HidraPrincipal) result.getPrincipal();
+        assertThat(principal.roles()).containsExactly("HIDRA_ADMIN");
+        assertThat(result.getAuthorities()).extracting(a -> a.getAuthority())
+                .containsExactly("ROLE_HIDRA_ADMIN");
+        verify(outcomeService).recordSuccess(USER_ID, PROVIDER_ID);
     }
 
     @Test

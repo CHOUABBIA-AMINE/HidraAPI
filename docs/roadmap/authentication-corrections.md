@@ -70,3 +70,28 @@ mvn -q clean verify
 ```text
 Completed — HidraRouteAuthorizationInterceptor now exempts only the direct-login path from pre-authentication route-permission enforcement. Anonymous protected routes remain denied. PR CI run 314 passed repository compile/tests/full verification, acceptance compile/tests/clean verify, deterministic OpenAPI publication, and artifact upload on implementation head 4d73635a2e37c20cbed415bed0a0c8189e6afef2.
 ```
+
+---
+
+## AUTH-COR-002 — Propagate and verify active administrator authority
+
+Commit:
+
+```text
+fix(authentication): validate active administrator authority across local jwt
+```
+
+Status:
+
+```text
+Completed — Active global HIDRA_ADMIN grants are validated from Identity-owned persistent state during LOCAL authentication and on each protected route check. The verified LOCAL role is propagated into HidraPrincipal, Spring authorities, and the signed Hidra JWT; stale, revoked, expired, scoped, or inactive administrator grants do not activate the wildcard bypass. Non-administrator permissions and OIDC/LDAP authentication boundaries remain unchanged. PR #116 CI run 317 passed repository compile/tests/clean verify, acceptance compile/tests/clean verify, deterministic OpenAPI publication and artifact upload on the initial implementation head ba96b40f90911ff55995723a008ee390303454ff. The final head additionally rejects wildcard JWT-scope bypass and adds a regression test; final-head CI must pass before merge.
+```
+
+Validation:
+
+```bash
+mvn -q test
+mvn -q clean verify
+```
+
+Tests: active LOCAL administrator claim/authority; ordinary LOCAL user isolation; signed JWT role reconstruction; revoked/expired/scoped/inactive grants; stale bearer administrator authority rejection; ordinary permission enforcement.

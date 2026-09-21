@@ -68,3 +68,21 @@ The HDP-002 note explicitly records 13 unreadable workbooks, two large SQL dumps
 - Compared every register entry against the **31 tracked file paths and blob SHA-1 values** in HDP-002; no files silently omitted. This document reproduces metadata only, no source rows or secrets.
 - No source files or databases were modified; no SQL or geocoding script executed; no Java/Maven/database tests were run locally for this documentation-only task. GitHub PR CI should be reported only after it finishes.
 - **Roadmap disposition: HDP-004 Blocked.** This provisional classification is an independently useful partial output, but cannot satisfy the roadmap requirement of established import eligibility, accountable owner, source content and approval status. Retain blocked state until the source-owner/security and byte-capable extraction evidence is available. HDP-005 must not start from unverified classifications.
+
+## GitHub Actions structural extraction evidence — 2026-09-21
+
+[HyFloAPI workflow run 35577651574, job 106263029176](https://github.com/CHOUABBIA-AMINE/HyFloAPI/actions/runs/35577651574/job/106263029176) completed successfully. Its log contains a metadata-only JSON report covering **21 scoped structured files: 13 XLSX and eight SQL**; **20 structurally inspected, one unreadable**. This replaces the prior *technical access* blocker for the two large SQL dumps, **not** the business-content, source-ownership, or security gates. The workflow did not inspect spreadsheet cell values or SQL data rows; none are reproduced here.
+
+| Source | Confirmed structural metadata | Remaining limitation |
+|---|---|---|
+| `data/Algerian Infrastructure Database.xlsx` | 4 worksheets | Titles, headers, cell semantics and business ownership uninspected. |
+| `data/Data Network.xlsx` | 27 worksheets | Hidden worksheets exist; data meaning and authority uninspected. |
+| `data/HyFlo_db.xlsx` | 63 worksheets | Structural row elements are not confirmed populated data records. |
+| `data/Segment 2026.xlsx` | 19 worksheets | No approval of pipeline master records or version precedence. |
+| `data/Fiche Passation.xlsx` | `BadZipFile` from XLSX structural parser | May not be a valid XLSX archive; actual file format and contents require restricted review. Do not declare irreparable corruption. |
+| `data/hyflo_db.sql` | 54 distinct CREATE TABLE identifiers; 44 INSERT target identifiers; 98 INSERT-bearing lines | Counts are static identifiers/lines, **not** table record counts, validated SQL schema, or approved data. |
+| `data/iaas_db.sql` | 115 distinct CREATE TABLE identifiers; 74 INSERT target identifiers; 128 INSERT-bearing lines | Same limitations; do not execute the SQL or infer dataset truth from these counts. |
+
+The other eight XLSX files and six SQL files are present in the same successful structured report, with workbook sheet indexes/states/dimensions/row-element counts and SQL aggregate identifier/INSERT-line counts. No workbook sheet **names**, headers, rows, SQL table **names**, individual values or semantic classifications were emitted by this privacy-limited workflow. Existing HDP-004 preliminary per-file dispositions therefore remain DEFER/EXCLUDE; **no file is newly import eligible**.
+
+**Remaining HDP-004 blockers:** safe inspection of source schemas and actual business meaning without publishing sensitive rows; investigation of `Fiche Passation.xlsx`; accountable source-owner and security/redistribution decisions; effective-date/canonical-version decisions. G1 remains blocked. HDP-005 must not begin from aggregate metadata alone.

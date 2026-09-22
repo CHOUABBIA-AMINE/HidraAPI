@@ -16,3 +16,8 @@ jobs:
           persist-credentials: false
       - name: Extract model declarations
         run: python3 tools/export_domain_model_manifest.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: HidraAPI-domain-models-fields
+          path: HidraAPI_domain_models_fields_by_module.xlsx
+          retention-days: 30

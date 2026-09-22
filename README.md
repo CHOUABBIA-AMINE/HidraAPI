@@ -8,6 +8,14 @@ contexts with strict module boundaries.
 
 ---
 
+## Project state and branch of record
+
+**The canonical integration branch is [main](https://github.com/CHOUABBIA-AMINE/HidraAPI/tree/main).** Task branches and draft/closed PRs are not production baselines. Start a new session with [PROJECT_STATE.md](PROJECT_STATE.md) (dated 2026-09-22), then verify the live main/PR status; at its capture, SQL-review PR #126 was open and the temporary model-export PR #127 was closed without merge.
+
+Existing architecture and source-governance decisions are collected in the [ADR index](docs/adr/README.md). The handoff is documentation only: it does not change business code, Flyway migrations, target data or HDP task status.
+
+---
+
 ## 1. Project Overview
 
 HidraAPI provides the backend foundation for the Hidra platform.

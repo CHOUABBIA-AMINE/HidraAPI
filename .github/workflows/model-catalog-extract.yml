@@ -1,0 +1,18 @@
+name: Temporary domain-model catalogue extract
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/model-catalog-extract.yml'
+      - 'tools/export_domain_model_manifest.py'
+permissions:
+  contents: read
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Extract model declarations
+        run: python3 tools/export_domain_model_manifest.py

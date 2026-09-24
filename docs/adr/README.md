@@ -9,4 +9,6 @@ These short records preserve **already established** architecture and scoped leg
 | [0003](0003-api-module-boundaries.md) | REST/OpenAPI and application ports / ownership |
 | [0004](0004-legacy-data-precedence.md) | Scoped workbook precedence, provisional deduplication and gating |
 
+| [0005](0005-organization-operational-scope-integrity.md) | Typed operational-scope identity, owner-resolved descriptions and repeatable responsibilities ([issue #130](https://github.com/CHOUABBIA-AMINE/HidraAPI/issues/130)) |
+
 "Accepted" records an existing architecture practice, not a new runtime deployment claim. "Scoped" applies only to the named data-provisioning context and does not grant generic security/import clearance.

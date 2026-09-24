@@ -2149,3 +2149,56 @@ Maven compile         : not run — isolated ZIP generation, not full repository
 Maven test            : not run — isolated ZIP generation, not full repository workspace
 Maven clean verify    : not run — isolated ZIP generation, not full repository workspace
 ```
+
+
+---
+
+## 18. Issue #130 — Operational-scope integrity correction (ADR-0005)
+
+**Decision:** [ADR-0005](../adr/0005-organization-operational-scope-integrity.md) is the accepted target architecture. **This section is planning only:** no application code, production database changes, scope references or tests have been run by documenting it. The prior ORG-001–ORG-021 history/status remains unchanged; local ZIP checklists are not evidence of a merged or verified deployment. Before any implementation task, read `AGENTS.md`, review the current main and all affected code, and execute **exactly one** code below per commit/PR. Do not infer operational scope from the SONATRACH organization workbook.
+
+### Design and release gates
+
+- OrganizationUnit has zero-to-many effective-dated responsibility assignments; employee membership does not grant blanket scope responsibility.
+- ResponsibilityAssignment is the chosen relationship owner; do not introduce a second competing relationship without another ADR.
+- Entity-backed references use typed, owner-validated IDs; GLOBAL has no target ID; CUSTOM requires a registered owner contract.
+- Resolve **current** code/name through owning module public ports; immutable labeled historical snapshots are optional and non-authoritative.
+- Cross-module IDs require application-level integrity, lifecycle reconciliation, authorization and audit; no direct topology/JPA coupling.
+- Make schema changes additively and only after legacy reconciliation planning. Existing applied migrations are immutable.
+- Defer destructive removals until consumers, accepted backfills and recovery tests are verified.
+
+### Discrete task plan
+
+| Code | Exact commit message | Scope and deliverable | Mandatory validation and exit gate | Prerequisite |
+|---|---|---|---|---|
+| `ORG-022` | `docs(organization): approve scope integrity ADR and correction roadmap` | ADR-0005, ADR index and this planning section only; no domain/schema/API edits. | Check doc links, task uniqueness, existing ID/code/roadmap conflicts; no Maven runtime assertion. | Documentation decision (this change); mark completed only after merge to main. |
+| `ORG-023` | `test(organization): inventory operational scope contracts and legacy tuples` | Read current models, enum, API DTOs, mappers, queries, JPA entities, Flyway and all actual consumers; prepare a privacy-safe baseline, owner-resolver availability matrix and migration/quarantine specification. | Document observed current types, duplicate/wrong-code and orphan patterns without exposing restricted data; add read-only contract/assessment tests where allowed. | ORG-022 |
+| `ORG-024` | `feat(organization): introduce canonical operational scope reference invariants` | Refine OperationalScopeReference/OperationalScopeType validation for typed identity; define GLOBAL no-target and reject unregistered CUSTOM; add value-object and policy tests, without touching persistence contracts. | Domain unit tests for null/partial/type-disallowed references and no invented identifiers. | ORG-023 |
+| `ORG-025` | `feat(organization): add scope owner-resolution application ports` | Design/implement owner registry and read-only public-port resolution for currently implemented scope owners, current code/name and assignability; keep organization domain independent of topology internals. | Resolver adapter/contract tests for wrong type, absent ID, retired owner, unavailable owner and current display projection. | ORG-024 |
+| `ORG-026` | `feat(organization): enforce multi-scope responsibility domain policy` | Reuse ResponsibilityAssignment for unit/employee assignees, effective-dated multi-target roles, overlap/idempotency and revocation policies; clarify ORGANIZATION_UNIT self/cycle semantics and owner lifecycle. | Domain and application tests: two scopes per unit, concurrent distinct roles, duplicate/overlap, temporal boundaries and invalid assignees. | ORG-025 |
+| `ORG-027` | `feat(organization): add validated responsibility application use cases` | Public input ports/commands/queries to assign, revoke, list and reconcile responsibilities; enforce resolver, identity authorization, workflow/audit and concurrency policy. Do not imply UI or live actuation. | Application contract tests for validation and authorization, retirement/recheck, idempotency and no repository leakage. | ORG-026 |
+| `ORG-028` | `chore(organization): add backward-compatible scope schema` | Add a NEW Flyway migration with required constraints/indexes/nullable GLOBAL target ID and needed assignment versioning; keep existing table/data and old columns until verified cutover. | Testcontainers/PostgreSQL migration and constraint tests incl. GLOBAL, temporal and null semantics; document no-downtime assumptions. | ORG-027 |
+| `ORG-029` | `feat(organization): align responsibility persistence and reconciliation` | Adapt JPA adapters to canonical pair, implement quarantined legacy tuple reconciliation/backfill under reviewed data rules and preserve history; no guessed topology IDs. | Representative DB tests for existing/mismatched/orphan/duplicate tuples and safe recovery; record reconciliation totals privately. | ORG-028 |
+| `ORG-030` | `feat(organization): migrate operational scope API contracts` | Add versioned read/write assignment endpoints and owner-resolved display; reject caller-supplied independent current code/name; inventory and migrate organization and employee consumers. | REST/OpenAPI, API backward-compatibility, access control and owner-freshness tests. | ORG-029 |
+| `ORG-031` | `refactor(organization): remove duplicated active scope ownership` | After proven migration and consumer sign-off, remove canonical embedded scope tuple from OrganizationUnit and EmployeeAssignment domain/API mapping; preserve historical snapshots where explicitly governed. | Compile, API and integration regressions; confirm multi-scope remains intact and no duplicated active source of truth. | ORG-030 |
+| `ORG-032` | `chore(organization): retire legacy redundant scope columns` | In a separate later Flyway migration, remove deprecated scope code/name and retired unit/employee tuple columns only once migration/reporting consumers are fully reconciled; retain audit history. | DB migration/recovery tests and reviewed pre-deployment gates. Do not drop data without signed backfill and rollback. | ORG-031 |
+| `ORG-033` | `test(organization): verify scope integrity end to end` | Harden architecture guardrails and integration tests across module owner ports, concurrent edits, target retirement, temporal lookup, audit and authorization; update completion evidence. | mvn -q -DskipTests compile; mvn -q test; mvn -q clean verify, plus real PostgreSQL/Testcontainers when available; report blockers honestly. | ORG-032 |
+
+### Correction status (issue #130)
+
+| Code | Status | Notes |
+|---|---|---|
+| `ORG-022` | Planned | Documentation committed for review; update to Completed only when merged and verified on main. |
+| `ORG-023` | Planned | Not started; execute after previous task has passed its gate. |
+| `ORG-024` | Planned | Not started; execute after previous task has passed its gate. |
+| `ORG-025` | Planned | Not started; execute after previous task has passed its gate. |
+| `ORG-026` | Planned | Not started; execute after previous task has passed its gate. |
+| `ORG-027` | Planned | Not started; execute after previous task has passed its gate. |
+| `ORG-028` | Planned | Not started; execute after previous task has passed its gate. |
+| `ORG-029` | Planned | Not started; execute after previous task has passed its gate. |
+| `ORG-030` | Planned | Not started; execute after previous task has passed its gate. |
+| `ORG-031` | Planned | Not started; execute after previous task has passed its gate. |
+| `ORG-032` | Planned | Not started; execute after previous task has passed its gate. |
+| `ORG-033` | Planned | Not started; execute after previous task has passed its gate. |
+
+**Execution rule:** A roadmap task's first implementation action must specify exact file allowlists and verification commands after inspecting current main; do not silently rewrite old task descriptions or mark future tasks complete. `ORG-028` and `ORG-032` must use separately numbered, never-reused migrations after rechecking the live Flyway sequence. Issue #130 remains open until the acceptance matrix is satisfied.

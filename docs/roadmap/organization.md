@@ -2188,8 +2188,8 @@ Maven clean verify    : not run — isolated ZIP generation, not full repository
 
 | Code | Status | Notes |
 |---|---|---|
-| `ORG-022` | Planned | Documentation committed for review; update to Completed only when merged and verified on main. |
-| `ORG-023` | Planned | Not started; execute after previous task has passed its gate. |
+| `ORG-022` | Completed | ADR-0005 and correction roadmap merged via PR #131; CI passed; main merge commit d94b9d72aac32863d971b6f7409c407faa647152. |
+| `ORG-023` | Blocked | Source-contract assessment: [ORG-023 inventory](../data-provisioning/org-023-operational-scope-inventory.md); legacy DB tuples, owner-resolution validation, full cross-repository consumers and Maven verification not available. No import or implementation performed. |
 | `ORG-024` | Planned | Not started; execute after previous task has passed its gate. |
 | `ORG-025` | Planned | Not started; execute after previous task has passed its gate. |
 | `ORG-026` | Planned | Not started; execute after previous task has passed its gate. |

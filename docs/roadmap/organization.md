@@ -2202,3 +2202,46 @@ Maven clean verify    : not run — isolated ZIP generation, not full repository
 | `ORG-033` | Planned | Not started; execute after previous task has passed its gate. |
 
 **Execution rule:** A roadmap task's first implementation action must specify exact file allowlists and verification commands after inspecting current main; do not silently rewrite old task descriptions or mark future tasks complete. `ORG-028` and `ORG-032` must use separately numbered, never-reused migrations after rechecking the live Flyway sequence. Issue #130 remains open until the acceptance matrix is satisfied.
+
+
+---
+
+## 19. Revised issue #130 design — ADR-0006 (central scope registry)
+
+**Decision:** [ADR-0006](../adr/0006-central-operational-scope-registry.md) supersedes the type+target-ID-per-assignment and GLOBAL representation in ADR-0005. One registry `OperationalScope(id BIGINT, type, targetId)` owns a unique typed scope identity; `ResponsibilityAssignment.scopeId BIGINT` refers to it. OrganizationUnit/EmployeeAssignment no longer embed scope after verified cutover. Current target code/name comes from the target owner's public interface, not the registry or assignment. Organization IDs remain UUID strings until an independently approved numeric conversion. No destructive schema change is permitted while ORG-023's database/consumer evidence is incomplete.
+
+**Status of older plans:** ORG-024–ORG-033 in §18 were planned for the now-superseded direct typed-reference representation. They are not authorized for execution as written; use the revised tasks below. ORG-023 remains Blocked for missing approved live/sanitized DB and full consumer evidence; source-level inventory in its linked report remains useful. Each commit implements **exactly one** numbered task and includes only its explicitly scoped files, roadmap status and associated tests. Do not collapse steps into one large refactor.
+
+### Discrete revised roadmap
+
+| Code | Exact commit message | Scope / allowlist (refine file-level list before execution) | Exit criteria | Gate |
+|---|---|---|---|---|
+| `ORG-034` | `docs(organization): adopt canonical operational scope registry ADR` | Create ADR-0006, mark ADR-0005 identity section superseded, update ADR index and roadmap plan only. | Review design, source baselines and links; verify no Java/SQL changes. | ORG-023 inventory recorded; this documentation decision may proceed while legacy DB audit is blocked. |
+| `ORG-035` | `feat(organization): define operational scope registry domain model` | Add strongly validated OperationalScope domain model/value semantics, BIGINT ID contract and tests; no existing model/DB column changes. | Domain tests for entity IDs, singleton GLOBAL semantics, CUSTOM rejection, valid types and no code/name authority. | ORG-034; domain-only work may proceed before DB audit. |
+| `ORG-036` | `feat(organization): define operational scope owner-resolution ports` | Create public resolver contract and organization application outbound port/registry validation flow. Implement only owners with verified public read contracts; leave unsupported types unavailable. | Contract tests for correct type-ID, unavailable/retired owner, normalization and authorization seam. | ORG-035; verify owner readiness without bypassing its module. |
+| `ORG-037` | `test(organization): complete registry migration evidence and consumer inventory` | Finish blocked ORG-023 live/sanitized SQL profiling, all-module+HidraWEB caller audit, target owner mapping, verified legacy data quarantine and numeric-ID dependency inventory. | Approved read-only aggregate counts, owner sign-off, confidential row-level review and documented backfill/rollback gates; no production writes. | ORG-036 and authorized data evidence; ORG-023 remains Blocked until this evidence is available. |
+| `ORG-038` | `chore(organization): add additive operational scope registry schema` | NEW Flyway migration for registry BIGINT generated PK, type+target uniqueness, GLOBAL singleton, target validation CHECK and nullable transitional scope_id FK on responsibilities; no old migration edits. | Real PostgreSQL migration/constraints tests and reversible deployment note; no deletion or assumed backfill. | ORG-037; require verified database/migration state. |
+| `ORG-039` | `feat(organization): implement canonical operational scope registry persistence` | Implement JPA entity/repository/adapter and registration/get contracts with race-safe dedup, owner validation, no duplicate current code/name fields. | JPA/Testcontainers/contract tests: unique typed targets, single GLOBAL, FK, nonexistent owner, retired owner. | ORG-038. |
+| `ORG-040` | `feat(organization): migrate verified scoped responsibility records` | Backfill registry links only for owner-resolved legacy tuples, record quarantined rows and history; add role-based assignment use cases with multi-scope/time overlap/authorization policies. | Verified legacy counts, idempotent migration and rollback; tests for multiple scopes and preserved history. | ORG-039 and signed source-target reconciliation. |
+| `ORG-041` | `feat(organization): update scope assignment API and read projections` | Move response/command shape to single scopeId with current display resolved via registry; coordinate HidraWEB/other consumers, versioned compatibility, audit, query projections. | REST/serialization/architecture/integration tests and consumer sign-off; no client-supplied current code/name authority. | ORG-040. |
+| `ORG-042` | `refactor(organization): retire redundant organizational scope fields` | Only after verified cutover, remove embedded tuple from OrganizationUnit/EmployeeAssignment and replace four fields on ResponsibilityAssignment with scopeId; update mappers/JPA/DTOs/services. Follow with a separate additive Flyway retirement migration when recovery approved. | Compile, tests, PostgreSQL integration, schema/query audit, no loss of verified links or historical snapshots. | ORG-041 plus backfill, monitoring, rollback and client approval. |
+| `ORG-043` | `docs(organization): decide numeric organization ID migration` | Inventory all String IDs/references including OrganizationId UUID generator, FK tables, legacy crosswalks and external consumers; approve or reject separate Long migration and define deterministic mapping. | Document full dependency graph, signed conversion/rollback and test matrix; do not change topology owner IDs. | ORG-034; independent design-only task. Actual numeric migration requires separately planned code(s). |
+| `ORG-044` | `test(organization): verify canonical scope integrity end to end` | Verify scope registry FK, target existence lifecycle, multiple scopes, temporal overlap, security, current label lookup, data reconciliation and owner-boundary guardrails. | mvn compile/test/clean verify and real Postgres integration; only complete after all applicable staged tasks. | ORG-042 and any approved numeric-ID migration. |
+
+### Revised task status
+
+| Code | Status | Notes |
+|---|---|---|
+| `ORG-034` | Completed | ADR and roadmap decision committed for review; confirm merge/CI before implementation. |
+| `ORG-035` | Planned | Not executed; prerequisites apply. |
+| `ORG-036` | Planned | Not executed; prerequisites apply. |
+| `ORG-037` | Planned | Not executed; prerequisites apply. |
+| `ORG-038` | Planned | Not executed; prerequisites apply. |
+| `ORG-039` | Planned | Not executed; prerequisites apply. |
+| `ORG-040` | Planned | Not executed; prerequisites apply. |
+| `ORG-041` | Planned | Not executed; prerequisites apply. |
+| `ORG-042` | Planned | Not executed; prerequisites apply. |
+| `ORG-043` | Planned | Not executed; prerequisites apply. |
+| `ORG-044` | Planned | Not executed; prerequisites apply. |
+
+**Documentation task ORG-034 file allowlist:** `docs/adr/0006-central-operational-scope-registry.md` (create), `docs/adr/0005-organization-operational-scope-integrity.md` (status cross-reference), `docs/adr/README.md` (index), `docs/roadmap/organization.md` (this section) only. Validation: verify design invariants, files/links, original issue and status; no Java/Maven/DB test claim.

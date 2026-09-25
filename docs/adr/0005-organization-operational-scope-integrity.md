@@ -1,6 +1,6 @@
 # ADR-0005 — Organization operational scope identity and multi-scope responsibility
 
-**Status:** Accepted as the target design for issue [#130](https://github.com/CHOUABBIA-AMINE/HidraAPI/issues/130); implementation is **not** approved by this record alone and remains subject to the organization roadmap's discrete execution and validation gates.  
+**Status:** Superseded in scope-identity/GLOBAL representation by [ADR-0006](0006-central-operational-scope-registry.md); retained for history. Previously accepted as the target design for issue [#130](https://github.com/CHOUABBIA-AMINE/HidraAPI/issues/130); implementation is **not** approved by this record alone and remains subject to the organization roadmap's discrete execution and validation gates.  
 **Decision date:** 2026-09-24.  
 **Owners:** Organization bounded context; target-object identity and current attributes remain with their owning bounded contexts.  
 **Supersedes:** No prior ADR. Refines the operational-scope sketches in `docs/roadmap/organization.md`; approved architecture takes precedence over those outdated examples for future correction tasks.

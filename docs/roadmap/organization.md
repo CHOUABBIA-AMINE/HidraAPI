@@ -15,8 +15,88 @@
 | Author | Abir MEDJERAB |
 | CreatedOn | 2025-06-26 |
 | UpdatedOn | 2026-09-27 |
-| Status | Ready for AI-agent execution after kernel baseline; updated for station-as-organization-unit and matrix reporting |
+| Status | Active — base Organization implementation and correction sequences ORG-034–ORG-048 are complete; issue #130 remains open for the explicitly listed residual scope-integrity gates |
 | Execution mode | One commit code at a time |
+
+### 1.1 Current authoritative state — 2026-09-27
+
+This subsection is the **authoritative execution entry point**. Older planning text in this
+roadmap is retained as implementation history only when it conflicts with the state below.
+
+Repository baseline at reconciliation:
+
+```text
+main: 34e49d6232d84894280a1fa2dae45d0cfefb85fa
+latest Organization change:
+feat(organization): add responsibility reconciliation use case
+open Organization issue: #130
+open Organization pull requests: none
+```
+
+Current architecture implemented on `main`:
+
+```text
+OrganizationUnit
+  owns organizational identity/hierarchy only
+  does not own an active operational-scope tuple
+
+OperationalScopeReference
+  type
+  targetId
+  canonical owner-target registration input
+  no independently writable current code/name
+
+OperationalScope
+  id: positive generated Long registry identity
+  type
+  targetId
+
+ResponsibilityAssignment
+  assigneeType
+  assigneeId
+  scopeId -> OperationalScope.id
+  responsibilityType
+  effective-dated lifecycle
+```
+
+Current owner resolution is fail-closed. Entity-backed scope targets are validated through
+approved owner-resolution ports; current target code/name belong to the owning module.
+`GLOBAL` has no target ID. Ungoverned `CUSTOM` is rejected. Organization must never
+create a database foreign key to topology, identity, or another bounded context.
+
+Current multilingual policy for Organization is same-entity storage only:
+
+```text
+Arabic  -> *Ar
+French  -> *Fr
+English -> *En
+```
+
+The separate unit-type translation code/table and the remaining multilingual compatibility
+columns have been retired through later immutable Flyway migrations.
+
+Current correction status:
+
+- `ORG-034` through `ORG-048`: **Completed**.
+- `ORG-027`: **In Progress**. Assign, revoke, typed list/query and read-only reconciliation
+  exist. Identity authorization and workflow/audit integration remain open.
+- `ORG-023`: **Blocked** on authorized legacy/consumer evidence. Later validated
+  implementation does not retroactively satisfy that evidence gate.
+- `ORG-028`, `ORG-029`, `ORG-031`, and `ORG-033`: still partially open as documented
+  in section 18.
+- `ORG-030` and `ORG-032`: not complete; API cutover and final redundant-scope-column
+  retirement remain gated.
+- Issue #130 must remain open until the residual acceptance matrix in section 18 is met.
+
+Important ADR note: ADR-0005 remains the accepted repository ADR, but parts of its original
+"typed pair directly on each assignment" representation are now stale relative to the
+implemented registry model above. Closed PR #133 proposed ADR-0006 but was never merged and
+must **not** be treated as repository authority. A future ADR correction must be prepared
+from current `main`; do not resurrect or merge the stale PR branch.
+
+CI evidence is recorded only when a run has actually completed. At the time of this roadmap
+reconciliation, CI #383 for the latest reconciliation commit is still in progress, so this
+document does not claim that run passed.
 
 ---
 
@@ -171,62 +251,47 @@ Do not duplicate kernel primitives inside organization.
 
 ### 4.4 Boundary with Topology: station asset versus station organization unit
 
-A station exists in two bounded contexts with two different meanings.
+A station may exist in two bounded contexts with different meanings:
 
 ```text
-topology.Station = physical/technical asset or facility
-organization.OrganizationUnit = operational people/responsibility structure
+topology = physical asset / facility / network object
+organization.OrganizationUnit(type = STATION) = people, hierarchy and responsibility structure
 ```
 
-A compression station, pumping station, delivery station, metering station, valve station, or any other kind of station belongs technically to the future `topology` module as an asset.
+Organization never imports topology domain/JPA/repository types and never owns the physical
+asset. The same real-world station may therefore have both a topology representation and an
+Organization unit representing the operating team.
 
-The same real-world station may also be represented in organization as an `OrganizationUnit` of type `STATION`, because people are assigned to the operational organization attached to that station.
-
-Do not use the same class for both meanings.
-
-Correct model:
+The canonical cross-module responsibility path is **not** an embedded scope tuple on
+`OrganizationUnit`. It is:
 
 ```text
-topology.CompressionStation
-- physical asset
-- equipment
-- location
-- operating limits
-- technical topology
-
-organization.OrganizationUnit(type = STATION)
-- station boss
-- operators
-- team leaders
-- assignments
-- reporting lines
-- operational responsibility
+OrganizationUnit / Employee
+        |
+        | assignee
+        v
+ResponsibilityAssignment
+        |
+        | scopeId
+        v
+OperationalScope registry
+        |
+        | type + owner-native targetId
+        v
+approved owner-resolution port
+        |
+        v
+Topology or other owning bounded context
 ```
 
-The organization module must not import topology domain classes.
+`OperationalScopeReference(type, targetId)` is used when registering a scope target.
+The generated `OperationalScope.id` is the identity persisted by responsibility
+assignments. Current target code/name/status are resolved from the owner and are not copied
+as writable Organization identity fields.
 
-To connect an organization unit to a future topology station, use:
+No cross-module database foreign key is permitted. Same-module Organization references may
+use database FKs after orphan preflight; topology/identity targets remain resolver-backed.
 
-```text
-OperationalScopeReference
-```
-
-Example:
-
-```text
-OrganizationUnit:
-  code: CS_EAST_01
-  name: Compression Station East 01
-  type: STATION
-  parent: OPERATIONAL_EAST_REGION
-  operationalScopeReference:
-    scopeType: TOPOLOGY_COMPRESSION_STATION
-    scopeCode: CS-EAST-01
-```
-
-This means the organization unit represents the people and responsibility structure attached to the physical topology station `CS-EAST-01`.
-
-It does not mean organization owns the physical station asset.
 
 ---
 
@@ -715,42 +780,52 @@ topology.Station = physical asset
 organization.OrganizationUnit(type = STATION) = operational unit/team/responsibility structure
 ```
 
-### 11.2 Operational scope reference
+### 11.2 Operational scope registry and reference
 
-`OperationalScopeReference` is required to connect organization responsibility to future topology assets without importing topology.
+The old recommendation to embed `scopeType/scopeId/scopeCode/scopeName` directly on an
+organization unit is superseded by the implementation on current `main`.
 
-Recommended fields:
-
-```text
-OperationalScopeType scopeType
-String scopeId optional
-String scopeCode
-String scopeName optional
-```
-
-Recommended `OperationalScopeType` values:
+Canonical value/reference:
 
 ```text
-TOPOLOGY_STATION
-TOPOLOGY_COMPRESSION_STATION
-TOPOLOGY_PUMPING_STATION
-TOPOLOGY_DELIVERY_STATION
-TOPOLOGY_METERING_STATION
-TOPOLOGY_PIPELINE
-TOPOLOGY_REGION
-TOPOLOGY_FACILITY
-GENERIC_OPERATIONAL_SCOPE
+OperationalScopeReference
+- OperationalScopeType type
+- String targetId
 ```
+
+Canonical registry model:
+
+```text
+OperationalScope
+- Long id                # generated registry identity
+- OperationalScopeType type
+- String targetId        # owner-native ID; null only for GLOBAL
+```
+
+Canonical responsibility relationship:
+
+```text
+ResponsibilityAssignment.scopeId -> OperationalScope.id
+```
+
+Implemented scope-type semantics include Organization-owned and owner-resolved types such
+as `ORGANIZATION_UNIT`, `PIPELINE_SYSTEM`, `PIPELINE`, `FACILITY`, `EQUIPMENT`,
+plus `GLOBAL`. `CUSTOM` remains fail-closed unless a separately approved owner contract
+is introduced.
 
 Rules:
 
 ```text
-OperationalScopeReference must not import topology classes.
-scopeCode is required.
-scopeType is required.
-scopeName is optional.
-scopeId is optional because topology may not exist yet.
+OperationalScopeReference must not import owner-domain classes.
+GLOBAL requires targetId = null.
+Entity-backed types require a nonblank owner-native targetId.
+CUSTOM without a governed owner contract is rejected.
+Registration validates owner existence, identity and assignability.
+OperationalScope.id is distinct from the owner-native targetId.
+Current owner code/name/status are resolved; they are not writable scope identity.
+Organization must not add database FKs to external bounded-context tables.
 ```
+
 
 ### 11.3 Organization unit type
 
@@ -2153,7 +2228,14 @@ Maven clean verify    : not run — isolated ZIP generation, not full repository
 
 ---
 
-## 18. Issue #130 — Operational-scope integrity correction (ADR-0005)
+## 18. Issue #130 — Operational-scope integrity correction
+
+> **Current-authority note:** ADR-0005 is still the accepted repository ADR, but its
+> direct type+target-per-assignment representation is partially stale relative to the
+> registry implementation now on `main`. Use section 1.1 and the reconciled task status
+> below as the execution authority. Closed, unmerged PR #133/ADR-0006 is historical only.
+
+
 
 **Decision:** [ADR-0005](../adr/0005-organization-operational-scope-integrity.md) is the accepted target architecture. **This section is planning only:** no application code, production database changes, scope references or tests have been run by documenting it. The prior ORG-001–ORG-021 history/status remains unchanged; local ZIP checklists are not evidence of a merged or verified deployment. Before any implementation task, read `AGENTS.md`, review the current main and all affected code, and execute **exactly one** code below per commit/PR. Do not infer operational scope from the SONATRACH organization workbook.
 
@@ -2186,11 +2268,12 @@ Maven clean verify    : not run — isolated ZIP generation, not full repository
 
 ### Correction status (issue #130)
 
-The status below was reconciled on **2026-09-27** against GitHub `main`
-commit `35e989476659331c86dd761a0e507e204465d638` after **HidraAPI CI #357**
-completed successfully. Status reflects repository evidence, not the older ZIP-era
-execution notes. A task is not marked Completed unless its full roadmap exit gate is
-satisfied.
+The status below was re-reconciled on **2026-09-27** against GitHub `main` at
+`34e49d6232d84894280a1fa2dae45d0cfefb85fa`. Earlier CI #357 evidence remains historical;
+CI #378 through #382 validated the later Organization correction sequence, while CI #383
+for the newest reconciliation increment is still in progress at the time of this edit.
+Status reflects repository evidence rather than old ZIP-era execution notes. A task is not
+marked Completed unless its full roadmap exit gate is satisfied.
 
 | Code | Status | Reconciled evidence on current main |
 |---|---|---|
@@ -2269,8 +2352,9 @@ by this reconciliation increment.
   `ResponsibilityAssignment.scopeId`; current target code/name remain owner data.
 - Legacy compatibility code and database columns are transitional and must not be
   treated as the canonical source of operational-scope identity.
-- ORG-027 remains In Progress, but new implementation work is temporarily sequenced behind the
-  organization multilingual correction defined in section 19. Existing validated ORG-027 work remains valid.
+- ORG-027 remains In Progress. The multilingual and dependency-integrity correction sequences
+  in section 19 are complete, so execution may now continue only with ORG-027's remaining
+  authorization/workflow/audit gate or another explicitly open section-18 gate.
 
 **Execution rule:** A roadmap task's first implementation action must specify exact file allowlists and verification commands after inspecting current main; do not silently rewrite old task descriptions or mark future tasks complete. `ORG-028` and `ORG-032` must use separately numbered, never-reused migrations after rechecking the live Flyway sequence. Issue #130 remains open until the acceptance matrix is satisfied.
 
@@ -2335,20 +2419,28 @@ change topology or any other module. Other modules will be reviewed separately l
 
 ### Current organization alignment
 
-Repository review on 2026-09-27 shows:
+Repository reconciliation on 2026-09-27 confirms the multilingual correction is complete:
 
-| Model | Current storage | Target |
+| Model | Current storage on `main` | Status |
 |---|---|---|
-| `OrganizationUnit` | `nameAr`, `nameFr`, `nameEn` on the entity | Keep same-entity multilingual storage. |
-| `Position` | `titleAr`, `titleFr`, `titleEn`; one non-localized `description` | Keep title fields; assess/migrate human-readable description to `descriptionAr/Fr/En`. |
-| `AdministrativeState` | `nameAr`, `nameFr`, `nameEn` | Keep. |
-| `AdministrativeDistrict` | `nameAr`, `nameFr`, `nameEn` | Keep. |
-| `AdministrativeLocality` | `nameAr`, `nameFr`, `nameEn` | Keep. |
-| `OrganizationUnitType` | Separate `OrganizationUnitTypeTranslation` model/table | Correct to same-entity `nameAr/Fr/En` and `descriptionAr/Fr/En`. |
+| `OrganizationUnit` | `nameAr`, `nameFr`, `nameEn` | Canonical same-entity storage. |
+| `Position` | `titleAr/Fr/En`, `descriptionAr/Fr/En` | Canonical same-entity storage; legacy `description` retired. |
+| `AdministrativeState` | `nameAr`, `nameFr`, `nameEn` | Canonical same-entity storage. |
+| `AdministrativeDistrict` | `nameAr`, `nameFr`, `nameEn` | Canonical same-entity storage. |
+| `AdministrativeLocality` | `nameAr`, `nameFr`, `nameEn` | Canonical same-entity storage. |
+| `OrganizationUnitType` | `nameAr/Fr/En`, `descriptionAr/Fr/En` | Canonical same-entity storage; translation code/table retired. |
+| `Shift` | `nameAr`, `nameFr`, `nameEn` | Canonical same-entity storage; legacy `name` retired. |
 
-The existing `OrganizationUnitTypeTranslation` domain model, repository port, JPA
-entity, adapter and `hidra_org_unit_type_translation` table are therefore transitional
-legacy structures for this module and must not be used as the target architecture.
+`OrganizationUnitTypeTranslation` production code has been removed and
+`hidra_org_unit_type_translation` was retired by
+`V20260927_003__retire_organization_unit_type_translation_table.sql` after fail-closed
+parity checks.
+
+The remaining legacy multilingual compatibility columns were retired by
+`V20260927_005__retire_organization_multilingual_compatibility_columns.sql`.
+Historical task-plan text below is retained to explain the migration sequence; it is not a
+description of the current schema.
+
 
 ### Data and migration rules
 
@@ -3057,5 +3149,10 @@ guardrail task.
 | `ORG-039` | Completed | Added `V20260927_003__retire_organization_unit_type_translation_table.sql`. The migration performs a fail-closed, null-safe parity check between every remaining normalized `ar/fr/en` legacy row and embedded names/descriptions before dropping the table. Testcontainers coverage proves successful retirement, embedded-only post-cutover rows, and transactional rollback with the recovery table intact on label/description/language mismatches. |
 | `ORG-040` | Completed | Added final Organization multilingual architecture/integrity guardrails. Explicit domain/JPA `Ar/Fr/En` triplets are verified for the known translatable models, the existing OrganizationUnit application/API chain is checked for all three names, separate Organization translation production types/JPA mappings are forbidden, and migrations after `V20260927_003` may not reintroduce the retired translation table. |
 
-**Execution priority:** typed-dependency correction sequence ORG-034 through ORG-048 is complete. Resume only the remaining explicitly documented ORG-027 reconcile/audit/authorization gaps; do not reopen completed correction tasks without new evidence. Existing validated ORG-027 list/query work remains valid and must not be reverted.
+**Execution priority:** correction sequences ORG-034 through ORG-048 are complete and
+must not be reopened without new repository evidence. The next Organization work is the
+remaining ORG-027 identity-authorization and workflow/audit integration gate. After that,
+reconcile the still-open ORG-028/029/030/031/032/033 gates in dependency-safe order against
+current `main`. Do not execute destructive schema retirement before reconciliation,
+consumer/API cutover and recovery evidence are complete.
 

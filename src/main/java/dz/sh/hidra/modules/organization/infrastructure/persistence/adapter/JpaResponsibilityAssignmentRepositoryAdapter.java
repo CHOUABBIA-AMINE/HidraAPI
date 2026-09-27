@@ -21,10 +21,13 @@ package dz.sh.hidra.modules.organization.infrastructure.persistence.adapter;
 
 import dz.sh.hidra.modules.organization.application.port.out.ResponsibilityAssignmentRepositoryPort;
 import dz.sh.hidra.modules.organization.domain.model.ResponsibilityAssignment;
+import dz.sh.hidra.modules.organization.domain.value.AssignmentStatus;
+import dz.sh.hidra.modules.organization.domain.value.ResponsibilityType;
 import dz.sh.hidra.modules.organization.infrastructure.persistence.mapper.ResponsibilityAssignmentPersistenceMapper;
 import dz.sh.hidra.modules.organization.infrastructure.persistence.repository.ResponsibilityAssignmentJpaRepository;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -53,5 +56,25 @@ public class JpaResponsibilityAssignmentRepositoryAdapter implements Responsibil
     @Override
     public Optional<ResponsibilityAssignment> findById(String id) {
         return repository.findById(id).map(ResponsibilityAssignmentPersistenceMapper::toDomain);
+    }
+
+    @Override
+    public List<ResponsibilityAssignment> findActiveByAssigneeAndResponsibilityAndScope(
+            String assigneeType,
+            String assigneeId,
+            ResponsibilityType responsibilityType,
+            Long scopeId
+    ) {
+        return repository
+                .findByAssigneeTypeAndAssigneeIdAndResponsibilityTypeAndScopeIdAndStatus(
+                        assigneeType,
+                        assigneeId,
+                        responsibilityType,
+                        scopeId,
+                        AssignmentStatus.ACTIVE
+                )
+                .stream()
+                .map(ResponsibilityAssignmentPersistenceMapper::toDomain)
+                .toList();
     }
 }

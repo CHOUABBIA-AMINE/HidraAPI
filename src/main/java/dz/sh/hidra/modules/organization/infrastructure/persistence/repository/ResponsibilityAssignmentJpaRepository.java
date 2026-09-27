@@ -7,7 +7,7 @@
  *
  * @Name        : ResponsibilityAssignmentJpaRepository
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-27
  *
  * @Type        : Interface
  * @Layer       : Infrastructure
@@ -19,13 +19,27 @@
  */
 package dz.sh.hidra.modules.organization.infrastructure.persistence.repository;
 
+import dz.sh.hidra.modules.organization.domain.value.AssignmentStatus;
+import dz.sh.hidra.modules.organization.domain.value.ResponsibilityType;
 import dz.sh.hidra.modules.organization.infrastructure.persistence.entity.ResponsibilityAssignmentJpaEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * Spring Data JPA repository for ResponsibilityAssignment.
  */
 @Repository
-public interface ResponsibilityAssignmentJpaRepository extends JpaRepository<ResponsibilityAssignmentJpaEntity, String> {
+public interface ResponsibilityAssignmentJpaRepository
+        extends JpaRepository<ResponsibilityAssignmentJpaEntity, String> {
+
+    List<ResponsibilityAssignmentJpaEntity>
+    findByAssigneeTypeAndAssigneeIdAndResponsibilityTypeAndScopeIdAndStatus(
+            String assigneeType,
+            String assigneeId,
+            ResponsibilityType responsibilityType,
+            Long scopeId,
+            AssignmentStatus status
+    );
 }

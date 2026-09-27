@@ -29,14 +29,15 @@ import dz.sh.hidra.modules.organization.domain.value.OrganizationId;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Objects;
 
 /**
- * Creates responsibility assignments using only canonical scope registry IDs.
+ * Creates effective-dated responsibility assignments using canonical scope IDs.
  *
- * <p>This service verifies that the scope registry row exists before persistence.
- * Assignee authorization, overlap/idempotency rules, revocation, and owner lifecycle
- * rechecks remain separate responsibilities for subsequent application policies.</p>
+ * <p>For one assignee, responsibility type and scope, ACTIVE periods use half-open
+ * interval semantics: [validFrom, validTo). Exact replay is idempotent and returns
+ * the existing assignment ID; any other overlapping ACTIVE period is rejected.</p>
  */
 @Service
 public final class ResponsibilityAssignmentApplicationService implements AssignResponsibilityUseCase {
@@ -69,9 +70,31 @@ public final class ResponsibilityAssignmentApplicationService implements AssignR
 
         Instant now = Instant.now();
         Instant validFrom = command.validFrom() == null ? now : command.validFrom();
+        Instant validTo = command.validTo();
 
-        if (command.validTo() != null && !command.validTo().isAfter(validFrom)) {
+        if (validTo != null && !validTo.isAfter(validFrom)) {
             throw new IllegalArgumentException("Responsibility validTo must be after validFrom.");
+        }
+
+        List<ResponsibilityAssignment> existingAssignments =
+                responsibilityAssignmentRepositoryPort.findActiveByAssigneeAndResponsibilityAndScope(
+                        command.assigneeType(),
+                        command.assigneeId(),
+                        command.responsibilityType(),
+                        command.scopeId()
+                );
+
+        for (ResponsibilityAssignment existing : existingAssignments) {
+            if (samePeriod(existing.validFrom(), existing.validTo(), validFrom, validTo)) {
+                return existing.id();
+            }
+
+            if (overlaps(existing.validFrom(), existing.validTo(), validFrom, validTo)) {
+                throw new IllegalStateException(
+                        "Responsibility assignment overlaps an existing ACTIVE assignment: "
+                                + existing.id()
+                );
+            }
         }
 
         ResponsibilityAssignment assignment = new ResponsibilityAssignment(
@@ -82,12 +105,41 @@ public final class ResponsibilityAssignmentApplicationService implements AssignR
                 command.scopeId(),
                 command.description(),
                 validFrom,
-                command.validTo(),
+                validTo,
                 AssignmentStatus.ACTIVE,
                 now,
                 now
         );
 
         return responsibilityAssignmentRepositoryPort.save(assignment).id();
+    }
+
+    private static boolean samePeriod(
+            Instant existingFrom,
+            Instant existingTo,
+            Instant requestedFrom,
+            Instant requestedTo
+    ) {
+        return Objects.equals(existingFrom, requestedFrom)
+                && Objects.equals(existingTo, requestedTo);
+    }
+
+    /**
+     * Tests overlap for half-open intervals [start, end).
+     * A null end represents an open-ended interval.
+     */
+    private static boolean overlaps(
+            Instant existingFrom,
+            Instant existingTo,
+            Instant requestedFrom,
+            Instant requestedTo
+    ) {
+        boolean existingStartsBeforeRequestedEnds =
+                requestedTo == null || existingFrom.isBefore(requestedTo);
+
+        boolean requestedStartsBeforeExistingEnds =
+                existingTo == null || requestedFrom.isBefore(existingTo);
+
+        return existingStartsBeforeRequestedEnds && requestedStartsBeforeExistingEnds;
     }
 }

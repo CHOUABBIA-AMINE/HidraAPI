@@ -7,61 +7,77 @@
  *
  * @Name        : Position
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-27
  *
  * @Type        : Record
  * @Layer       : Domain
  * @Module      : organization
  * @Package     : dz.sh.hidra.modules.organization.domain.model
  *
- * @Description : Operational position or function.
+ * @Description : Multilingual operational position or function.
  *
  */
 package dz.sh.hidra.modules.organization.domain.model;
 
-import dz.sh.hidra.modules.organization.domain.value.*;
+import dz.sh.hidra.modules.organization.domain.value.PositionLevel;
+import dz.sh.hidra.modules.organization.domain.value.PositionStatus;
 import java.time.Instant;
 
-    /**
-     * Operational position or function.
-     *
-         * @param id id
-     * @param code code
-     * @param titleAr titleAr
-     * @param titleFr titleFr
-     * @param titleEn titleEn
-     * @param level level
-     * @param description description
-     * @param status status
-     * @param createdAt createdAt
-     * @param updatedAt updatedAt
-     */
-    public record Position(
-            String id,
+/**
+ * Defines an operational position with Arabic, French, and English titles and descriptions.
+ *
+ * <p>Business role: identifies the function held by employees within organization assignments.
+ *
+ * <p>Architecture role: domain model whose user-facing localized content is embedded directly on the owning entity.
+ *
+ * <p>Validation: localized text is normalized by trimming blanks to {@code null}; assignment and lifecycle rules
+ * remain enforced by organization policies and application services.
+ *
+ * <p>Usage: callers must use the explicit language fields instead of a language-ambiguous description.
+ *
+ * @param id position identifier
+ * @param code language-neutral business code
+ * @param titleAr Arabic title
+ * @param titleFr French title
+ * @param titleEn English title
+ * @param level position level
+ * @param descriptionAr Arabic description
+ * @param descriptionFr French description
+ * @param descriptionEn English description
+ * @param status position lifecycle status
+ * @param createdAt creation timestamp
+ * @param updatedAt last update timestamp
+ */
+public record Position(
+        String id,
         String code,
         String titleAr,
         String titleFr,
         String titleEn,
         PositionLevel level,
-        String description,
+        String descriptionAr,
+        String descriptionFr,
+        String descriptionEn,
         PositionStatus status,
         Instant createdAt,
         Instant updatedAt
-    ) {
+) {
 
-        public Position {
+    public Position {
         id = normalize(id);
         code = normalize(code);
         titleAr = normalize(titleAr);
         titleFr = normalize(titleFr);
         titleEn = normalize(titleEn);
-        description = normalize(description);
-        }
-
-        private static String normalize(String value) {
-            if (value == null || value.isBlank()) {
-                return null;
-            }
-            return value.trim();
-        }
+        descriptionAr = normalize(descriptionAr);
+        descriptionFr = normalize(descriptionFr);
+        descriptionEn = normalize(descriptionEn);
     }
+
+    private static String normalize(String value) {
+        if (value == null || value.isBlank()) {
+            return null;
+        }
+        return value.trim();
+    }
+}

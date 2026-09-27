@@ -2464,6 +2464,44 @@ transaction rollback, missing-language rejection, orphan rejection, and unsuppor
 language-code rejection. No domain/JPA/API contract is switched to the new columns in
 ORG-036; that belongs to ORG-037.
 
+### ORG-037 implementation result
+
+ORG-037 cuts existing Organization model/persistence contracts over to the fields
+introduced by ORG-036:
+
+```text
+OrganizationUnitType
+  nameAr / nameFr / nameEn
+  descriptionAr / descriptionFr / descriptionEn
+
+Position
+  titleAr / titleFr / titleEn
+  descriptionAr / descriptionFr / descriptionEn
+
+Shift
+  nameAr / nameFr / nameEn
+```
+
+The language-ambiguous legacy `hidra_org_unit_type.description` and
+`hidra_org_position.description` columns remain JPA-mapped read-only so ordinary
+repository saves cannot erase recovery data. The legacy non-null
+`hidra_org_shift.name` column remains writable only as a compatibility projection:
+new saves derive it from English, then French, then Arabic, then the language-neutral
+shift code. It is not exposed as canonical domain state.
+
+A live repository trace found no current application input/output contract, REST DTO,
+controller endpoint, or administration query that exposes `OrganizationUnitType`,
+`Position`, or `Shift` localized content. ORG-037 therefore does not invent new API
+surface. Existing organization-unit, employee, and assignment APIs remain unchanged.
+
+No `OrganizationUnitTypeTranslation` code is removed in ORG-037. It remains
+transitional until ORG-038.
+
+Focused mapper/domain tests prove trimming/normalization and canonical multilingual
+round trips for all three corrected models. There is currently no applicable search
+query for unit types, positions, or shifts; existing organization-unit search already
+matches `nameAr/nameFr/nameEn` and is unchanged.
+
 ### Multilingual correction status
 
 | Code | Status | Evidence / next gate |
@@ -2471,13 +2509,13 @@ ORG-036; that belongs to ORG-037.
 | `ORG-034` | Completed | Organization-only embedded multilingual decision and safe correction sequence recorded in this roadmap. |
 | `ORG-035` | Completed | Repository/schema inventory completed on `9f88b07d...`: aligned embedded fields identified, `OrganizationUnitTypeTranslation` consumer path isolated, `Shift.name` and `Position.description` gaps recorded, and live-data preflight requirements documented without guessing data. |
 | `ORG-036` | Completed | Added `V20260927_002__add_embedded_organization_multilingual_fields.sql` plus PostgreSQL/Testcontainers migration coverage. Unit-type `ar/fr/en` values backfill only after fail-closed preflight; Position description and Shift name receive nullable embedded language columns without guessed backfill; all legacy columns/table are retained for cutover and recovery. |
-| `ORG-037` | Planned | Code/API/persistence cutover after additive schema exists. |
+| `ORG-037` | Completed | `OrganizationUnitType`, `Position`, and `Shift` now use embedded Arabic/French/English domain and JPA fields; persistence mapping round-trips canonical multilingual content. Legacy ambiguous descriptions remain read-only in JPA and Shift maintains its legacy non-null `name` only as a compatibility projection. Current main exposes no unit-type/position/shift application or REST content contract, so no speculative API was added. |
 | `ORG-038` | Planned | Remove separate translation code only after all organization consumers are migrated. |
 | `ORG-039` | Planned | Drop legacy translation table only after data parity and recovery evidence. |
 | `ORG-040` | Planned | Final organization multilingual integrity verification. |
 
 **Execution priority:** pause new ORG-027 implementation work while the multilingual
-storage correction is unresolved. Execute ORG-035 next. Existing validated ORG-027 work
+storage correction is unresolved. Execute ORG-038 next. Existing validated ORG-027 work
 remains valid and must not be reverted; resume its remaining reconcile/audit/authorization
 gaps after the multilingual correction sequence reaches a safe cutover point.
 

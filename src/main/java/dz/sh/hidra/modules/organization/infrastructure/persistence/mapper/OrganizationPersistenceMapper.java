@@ -7,7 +7,7 @@
  *
  * @Name        : OrganizationPersistenceMapper
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-27
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -37,7 +37,12 @@ public final class OrganizationPersistenceMapper {
                         model.id(),
                         model.code(),
                         model.kind(),
-                        model.description(),
+                        model.nameAr(),
+                        model.nameFr(),
+                        model.nameEn(),
+                        model.descriptionAr(),
+                        model.descriptionFr(),
+                        model.descriptionEn(),
                         model.active(),
                         model.createdAt(),
                         model.updatedAt()
@@ -49,7 +54,12 @@ public final class OrganizationPersistenceMapper {
                         entity.id(),
                         entity.code(),
                         entity.kind(),
-                        entity.description(),
+                        entity.nameAr(),
+                        entity.nameFr(),
+                        entity.nameEn(),
+                        entity.descriptionAr(),
+                        entity.descriptionFr(),
+                        entity.descriptionEn(),
                         entity.active(),
                         entity.createdAt(),
                         entity.updatedAt()
@@ -130,7 +140,9 @@ public final class OrganizationPersistenceMapper {
                         model.titleFr(),
                         model.titleEn(),
                         model.level(),
-                        model.description(),
+                        model.descriptionAr(),
+                        model.descriptionFr(),
+                        model.descriptionEn(),
                         model.status(),
                         model.createdAt(),
                         model.updatedAt()
@@ -145,7 +157,9 @@ public final class OrganizationPersistenceMapper {
                         entity.titleFr(),
                         entity.titleEn(),
                         entity.level(),
-                        entity.description(),
+                        entity.descriptionAr(),
+                        entity.descriptionFr(),
+                        entity.descriptionEn(),
                         entity.status(),
                         entity.createdAt(),
                         entity.updatedAt()
@@ -456,7 +470,9 @@ public final class OrganizationPersistenceMapper {
             return new ShiftJpaEntity(
                         model.id(),
                         model.code(),
-                        model.name(),
+                        model.nameAr(),
+                        model.nameFr(),
+                        model.nameEn(),
                         model.shiftType(),
                         model.startTime(),
                         model.endTime(),
@@ -471,7 +487,9 @@ public final class OrganizationPersistenceMapper {
             return new Shift(
                         entity.id(),
                         entity.code(),
-                        entity.name(),
+                        entity.nameAr(),
+                        entity.nameFr(),
+                        entity.nameEn(),
                         entity.shiftType(),
                         entity.startTime(),
                         entity.endTime(),

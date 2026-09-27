@@ -2324,18 +2324,107 @@ legacy structures for this module and must not be used as the target architectur
 |---|---|---|---|---|
 | `ORG-034` | `docs(organization): define embedded multilingual field policy` | Record the organization-only Arabic/French/English same-entity storage decision, current alignment, migration safety rules and correction sequence. No production code or schema change. | Roadmap consistency review; verify task codes are unique and scope excludes other modules. | User architecture decision. |
 | `ORG-035` | `test(organization): inventory multilingual fields and unit-type translations` | Inventory all organization user-facing multilingual fields and current `OrganizationUnitTypeTranslation` consumers/data assumptions; document recognized language codes, duplicates, missing translations and legacy description ambiguity without modifying data. | Repository-wide organization scan plus privacy-safe read-only assessment/tests where available. No guessed translations. | ORG-034 |
-| `ORG-036` | `chore(organization): add embedded multilingual unit-type schema` | Add a NEW Flyway migration introducing `name_ar`, `name_fr`, `name_en`, `description_ar`, `description_fr`, `description_en` on `hidra_org_unit_type`; backfill only deterministic `ar/fr/en` values from the legacy translation table while retaining that table. | PostgreSQL/Testcontainers migration tests for deterministic backfill, duplicates/missing translations, rollback/recovery assumptions and no data loss. | ORG-035 |
-| `ORG-037` | `feat(organization): embed multilingual unit-type fields` | Refactor `OrganizationUnitType`, JPA persistence, mappers, repositories and applicable application/API DTOs to use same-entity `Ar/Fr/En` fields. Align other clearly localized organization fields discovered by ORG-035, including `Position.description` when confirmed user-facing. Do not touch other modules. | Compile, focused domain/application/persistence/API tests, OpenAPI compatibility review, and full `mvn -q test`. | ORG-036 |
+| `ORG-036` | `chore(organization): add embedded multilingual unit-type schema` | Add a NEW Flyway migration introducing `name_ar`, `name_fr`, `name_en`, `description_ar`, `description_fr`, `description_en` on `hidra_org_unit_type`; add `description_ar/fr/en` on `hidra_org_position` and `name_ar/fr/en` on `hidra_org_shift`. Backfill unit-type fields only from deterministic `ar/fr/en` translation rows after preflight; retain the legacy unit-type translation table plus legacy `hidra_org_unit_type.description`, `hidra_org_position.description`, and `hidra_org_shift.name` columns through cutover. | PostgreSQL/Testcontainers migration tests for language-code normalization, duplicates, missing translations, orphans, deterministic backfill, legacy-column preservation, rollback/recovery assumptions and no data loss. | ORG-035 |
+| `ORG-037` | `feat(organization): embed multilingual unit-type fields` | Refactor `OrganizationUnitType`, `Position`, and `Shift` domain/JPA/persistence/application/API contracts to use the embedded fields introduced by ORG-036. Preserve compatibility where required during cutover. Do not alter employee proper-name/transliteration semantics, transactional free text, or any other module. | Compile, focused domain/application/persistence/API tests, OpenAPI compatibility review, search behavior across embedded language fields where applicable, and full `mvn -q test`. | ORG-036 |
 | `ORG-038` | `refactor(organization): retire unit-type translation code` | After consumer cutover, remove `OrganizationUnitTypeTranslation` domain/JPA/repository/adapter code and any organization application/API dependency on it. Keep the legacy DB table for recovery until the next gate. | Repository scan proves no organization production consumer remains; compile/test/clean verify pass. | ORG-037 |
 | `ORG-039` | `chore(organization): retire unit-type translation table` | Add a separately numbered Flyway migration removing `hidra_org_unit_type_translation` only after data-parity, recovery and consumer sign-off. Never modify the original organization-table migration. | PostgreSQL/Testcontainers forward/recovery tests and reviewed migration evidence showing embedded fields preserve accepted `ar/fr/en` values. | ORG-038 |
 | `ORG-040` | `test(organization): verify embedded multilingual integrity` | Harden organization tests/architecture checks so translatable organization entity fields follow the explicit `Ar/Fr/En` pattern and no separate organization translation model/table remains canonical. | `mvn -q -DskipTests compile`; `mvn -q test`; `mvn -q clean verify`; targeted persistence/API tests and architecture scan. | ORG-039 |
+
+### ORG-035 inventory result
+
+**Baseline reviewed:** GitHub `main` at
+`9f88b07d5c70096733d776ca6e34daac81fd910d` after CI #364 passed.
+
+The repository-wide Organization scan classifies multilingual storage as follows:
+
+| Model / concern | Current evidence | ORG-034 alignment / action |
+|---|---|---|
+| `OrganizationUnit` | `nameAr`, `nameFr`, `nameEn` exist in domain/JPA/schema/application/API paths. | Aligned; retain same-entity fields. |
+| `AdministrativeState` | `nameAr`, `nameFr`, `nameEn` exist in domain/JPA/schema. | Aligned; retain. |
+| `AdministrativeDistrict` | `nameAr`, `nameFr`, `nameEn` exist in domain/JPA/schema. | Aligned; retain. |
+| `AdministrativeLocality` | `nameAr`, `nameFr`, `nameEn` exist in domain/JPA/schema. | Aligned; retain. |
+| `Position` | `titleAr`, `titleFr`, `titleEn` exist, but `description` is one non-localized column. | Title aligned; migrate confirmed user-facing description additively to `descriptionAr/Fr/En` while retaining legacy `description` through cutover. |
+| `Shift` | One user-facing `name` exists in domain/JPA/schema. | Gap discovered by ORG-035; add `nameAr/Fr/En` additively and retain legacy `name` through cutover. |
+| `OrganizationUnitType` | Base entity has no localized name fields and has one ambiguous `description`; labels/descriptions are in `OrganizationUnitTypeTranslation`. | Primary correction target: embed `nameAr/Fr/En` and `descriptionAr/Fr/En`. Do not guess the language of the legacy base `description`. |
+| `Employee` | Proper-name fields are Arabic plus Latin-script/transliteration fields (`*Ar`, `*Lt`). | Not a catalog translation model; do not mechanically convert personal-name/transliteration data to French/English fields. |
+| `OrganizationContactPoint.label` | Single operator/business label. | Record as user-facing free-text candidate; no automatic multilingual migration in ORG-036 without clarified semantics. |
+| `OrganizationDelegation.reason` | Single transactional free-text reason. | Do not auto-translate or triplicate; retain as entered text unless a later requirement explicitly makes it localized content. |
+| `OrganizationHierarchySnapshot.description` | Single historical free-text description. | Do not auto-translate or triplicate in this correction. |
+| `ResponsibilityAssignment.description` | Single transactional free-text description. | Do not auto-translate or triplicate in this correction. |
+| Employee address street lines | Free-form address text anchored to normalized locality. | Not treated as catalog translations by this correction. |
+
+#### Existing unit-type translation implementation inventory
+
+The separate unit-type translation path currently consists of:
+
+```text
+domain/model/OrganizationUnitTypeTranslation.java
+application/port/out/OrganizationUnitTypeTranslationRepositoryPort.java
+infrastructure/persistence/entity/OrganizationUnitTypeTranslationJpaEntity.java
+infrastructure/persistence/repository/OrganizationUnitTypeTranslationJpaRepository.java
+infrastructure/persistence/adapter/JpaOrganizationUnitTypeTranslationRepositoryAdapter.java
+OrganizationPersistenceMapper translation mapping methods
+OrganizationPersistence.ORGANIZATION_UNIT_TYPE_TRANSLATION_TABLE
+hidra_org_unit_type_translation
+```
+
+No Organization application service, inbound use case, REST controller, REST DTO or
+administration query consumer of `OrganizationUnitTypeTranslation` was found on this
+baseline. The repository port only exposes `save` and `findById`; there is no
+parent-plus-language lookup contract.
+
+#### Schema/data assumptions that ORG-036 must not hide
+
+Current `hidra_org_unit_type_translation` schema has:
+
+```text
+id              PRIMARY KEY
+unit_type_id    NOT NULL
+language_code   NOT NULL
+label           NOT NULL
+description     nullable
+```
+
+Repository evidence does **not** show:
+
+```text
+UNIQUE (unit_type_id, language_code)
+CHECK language_code IN ('ar','fr','en')
+FOREIGN KEY unit_type_id -> hidra_org_unit_type(id)
+seed INSERT rows for unit-type translations
+```
+
+Therefore:
+
+- `ar`, `fr`, and `en` are the **target recognized codes from ORG-034**, not a
+  claim about existing persisted rows.
+- Duplicate rows for the same unit type/language cannot be ruled out from schema.
+- Missing `ar/fr/en` rows cannot be measured from Git because no authoritative
+  production/sanitized translation dataset is present in the repository.
+- Unrecognized/variant codes such as uppercase or regional forms cannot be ruled out.
+- The language of `hidra_org_unit_type.description` is ambiguous and must not be
+  copied into one localized description column without evidence.
+- No live database values were modified or inferred during ORG-035.
+
+Before ORG-036 backfill executes against a populated database, its migration/test plan
+must preflight and fail safely on:
+
+1. normalized language-code distribution using `lower(trim(language_code))`;
+2. duplicates by `(unit_type_id, normalized language_code)`;
+3. orphan `unit_type_id` values;
+4. missing `ar`, `fr`, or `en` rows per unit type;
+5. conflicting multiple labels/descriptions for one language;
+6. non-null legacy base descriptions whose language cannot be proven.
+
+ORG-035 is complete as a repository/schema inventory. Live data quality remains an
+explicit ORG-036 deployment precondition and must not be replaced with guessed values.
 
 ### Multilingual correction status
 
 | Code | Status | Evidence / next gate |
 |---|---|---|
 | `ORG-034` | Completed | Organization-only embedded multilingual decision and safe correction sequence recorded in this roadmap. |
-| `ORG-035` | Planned | Inventory current multilingual fields, legacy translation consumers and data assumptions. |
+| `ORG-035` | Completed | Repository/schema inventory completed on `9f88b07d...`: aligned embedded fields identified, `OrganizationUnitTypeTranslation` consumer path isolated, `Shift.name` and `Position.description` gaps recorded, and live-data preflight requirements documented without guessing data. |
 | `ORG-036` | Planned | Additive schema/backfill migration after inventory. |
 | `ORG-037` | Planned | Code/API/persistence cutover after additive schema exists. |
 | `ORG-038` | Planned | Remove separate translation code only after all organization consumers are migrated. |

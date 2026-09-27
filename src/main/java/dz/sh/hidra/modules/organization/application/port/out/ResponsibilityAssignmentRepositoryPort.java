@@ -35,6 +35,16 @@ public interface ResponsibilityAssignmentRepositoryPort {
 
     Optional<ResponsibilityAssignment> findById(String id);
 
+    /**
+     * Returns all responsibility assignments for read-only reconciliation.
+     *
+     * <p>This contract deliberately returns domain models rather than persistence
+     * entities and does not authorize mutation or repair.</p>
+     */
+    default List<ResponsibilityAssignment> findAll() {
+        return List.of();
+    }
+
     default List<ResponsibilityAssignment> findByScopeId(Long scopeId) {
         return List.of();
     }

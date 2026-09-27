@@ -2199,13 +2199,63 @@ satisfied.
 | `ORG-024` | Completed | `OperationalScopeReference` is now a canonical typed owner-target value object containing only `type` and owner-native `targetId`; GLOBAL forbids a target, entity-backed types require one, and ungoverned CUSTOM is rejected. `OperationalScopeType` exposes the corresponding domain semantics and focused domain tests cover null, blank, GLOBAL, CUSTOM and normalization cases. |
 | `ORG-025` | Completed | Organization now resolves `ORGANIZATION_UNIT` locally and `PIPELINE_SYSTEM`, `PIPELINE`, `FACILITY`, and `EQUIPMENT` through a topology-owned public application input port. Current code/name and lifecycle-derived assignability come from the owning module; organization imports no topology domain, repository, JPA, or infrastructure type. Existing validator tests cover wrong type, missing target, unassignable target and owner failure; new owner-query/adapter tests cover current display, retired owners and supported-type routing. |
 | `ORG-026` | Completed | Responsibility assignment now accepts only existing ACTIVE employee or organization-unit assignees, revalidates entity-backed owner existence/assignability before new assignment, rejects direct organization-unit self-target responsibility, preserves historical rows on owner retirement, and retains half-open overlap/idempotency/revocation behavior. Focused tests cover invalid/inactive assignees and retired owners. |
-| `ORG-027` | In Progress | Validated register-scope, assign-responsibility and revoke-responsibility application flows exist. List/reconcile use cases plus the roadmap's authorization/workflow/audit requirements are not yet implemented. |
+| `ORG-027` | In Progress | Validated register-scope, assign-responsibility, revoke-responsibility and typed list/query flows exist. Read-only reconciliation is now implemented with current assignee/scope-owner rechecks and no automatic repair. Authorization plus workflow/audit integration requirements remain open. |
 | `ORG-028` | In Progress | Additive migration `V20260927_001__add_operational_scope_registry.sql` creates the canonical registry and nullable responsibility `scope_id` FK while retaining legacy columns. Required dedicated PostgreSQL/Testcontainers constraint coverage and the full roadmap versioning gate are not yet evidenced. |
 | `ORG-029` | In Progress | Canonical registry and responsibility JPA entity/repository/mapper/adapter code exists and responsibility persistence uses `scopeId`. Verified reconciliation/backfill/quarantine of legacy tuples is still missing, so the task is not complete. |
 | `ORG-030` | Planned | No versioned responsibility/scope REST migration with owner-resolved display and backward-compatibility evidence is present yet. |
 | `ORG-031` | In Progress | Canonical embedded scope components were removed from `OrganizationUnit` and `EmployeeAssignment`, and responsibility uses `scopeId`. Transitional deprecated constructors/accessors and legacy persistence mappings remain; prerequisite migration/consumer sign-off is not complete. |
 | `ORG-032` | Planned | Legacy `operational_scope_*` database columns remain intentionally in place. No destructive retirement migration has been added. |
 | `ORG-033` | In Progress | Current main passes the repository compile/test/full verify and acceptance compile/test/clean verify stages, plus OpenAPI publication, in CI #357. End-to-end scope integrity is still incomplete because authoritative entity-backed owner resolvers, legacy data reconciliation/backfill, API cutover and destructive retirement gates remain open. |
+
+### ORG-027 reconciliation increment
+
+**Commit scope:** responsibility reconciliation only. ORG-027 remains **In Progress**.
+
+Live-main inspection before this increment confirmed that `ListResponsibilitiesUseCase`
+and `ResponsibilityQueryApplicationService` already provide the typed list/query
+capability, despite the older status text saying list was still missing. That validated
+work is retained.
+
+This increment adds a read-only `ReconcileResponsibilitiesUseCase` and
+`ResponsibilityReconciliationApplicationService`. It scans domain assignments through
+`ResponsibilityAssignmentRepositoryPort.findAll()` and reports, without mutation:
+
+```text
+missing assignee
+inactive assignee
+legacy assignment with no canonical scopeId
+unknown registry scope
+unsupported authoritative owner resolver
+missing owner target
+resolver identity mismatch
+owner target no longer assignable
+organization-unit direct self-target responsibility
+```
+
+No identifier, owner type, replacement scope, or repair is inferred. Historical rows are
+not rewritten or deleted. The JPA adapter exposes `findAll()` only through the domain
+repository port; persistence entities do not leak into the inbound contract.
+
+Exact implementation allowlist for this increment:
+
+```text
+application/dto/ResponsibilityReconciliationResult.java
+application/port/in/ReconcileResponsibilitiesUseCase.java
+application/service/ResponsibilityReconciliationApplicationService.java
+application/port/out/ResponsibilityAssignmentRepositoryPort.java
+infrastructure/persistence/adapter/JpaResponsibilityAssignmentRepositoryAdapter.java
+test/.../ResponsibilityReconciliationApplicationServiceTest.java
+docs/roadmap/organization.md
+```
+
+Focused tests prove healthy rows produce no finding, reconciliation never calls save,
+legacy missing-scope rows are reported rather than guessed, missing/inactive assignees
+are detected, owner retirement/unavailability fails closed, resolver identity mismatch is
+reported, and direct organization-unit self-target responsibility is surfaced.
+
+**Remaining ORG-027 gate:** identity authorization and workflow/audit integration around
+responsibility writes/reconciliation. Those concerns are not invented or marked complete
+by this reconciliation increment.
 
 ### Reconciliation notes
 

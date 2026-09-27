@@ -7,7 +7,7 @@
  *
  * @Name        : JpaResponsibilityAssignmentRepositoryAdapter
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-27
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -21,7 +21,7 @@ package dz.sh.hidra.modules.organization.infrastructure.persistence.adapter;
 
 import dz.sh.hidra.modules.organization.application.port.out.ResponsibilityAssignmentRepositoryPort;
 import dz.sh.hidra.modules.organization.domain.model.ResponsibilityAssignment;
-import dz.sh.hidra.modules.organization.infrastructure.persistence.mapper.OrganizationPersistenceMapper;
+import dz.sh.hidra.modules.organization.infrastructure.persistence.mapper.ResponsibilityAssignmentPersistenceMapper;
 import dz.sh.hidra.modules.organization.infrastructure.persistence.repository.ResponsibilityAssignmentJpaRepository;
 import org.springframework.stereotype.Component;
 
@@ -37,18 +37,21 @@ public class JpaResponsibilityAssignmentRepositoryAdapter implements Responsibil
     private final ResponsibilityAssignmentJpaRepository repository;
 
     public JpaResponsibilityAssignmentRepositoryAdapter(ResponsibilityAssignmentJpaRepository repository) {
-        this.repository = Objects.requireNonNull(repository, "ResponsibilityAssignmentJpaRepository must not be null.");
+        this.repository = Objects.requireNonNull(
+                repository,
+                "ResponsibilityAssignmentJpaRepository must not be null."
+        );
     }
 
     @Override
     public ResponsibilityAssignment save(ResponsibilityAssignment model) {
-        return OrganizationPersistenceMapper.toDomain(
-                repository.save(OrganizationPersistenceMapper.toEntity(model))
+        return ResponsibilityAssignmentPersistenceMapper.toDomain(
+                repository.save(ResponsibilityAssignmentPersistenceMapper.toEntity(model))
         );
     }
 
     @Override
     public Optional<ResponsibilityAssignment> findById(String id) {
-        return repository.findById(id).map(OrganizationPersistenceMapper::toDomain);
+        return repository.findById(id).map(ResponsibilityAssignmentPersistenceMapper::toDomain);
     }
 }

@@ -27,6 +27,7 @@ import dz.sh.hidra.modules.organization.domain.value.ResponsibilityType;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -219,6 +220,16 @@ class ResponsibilityRevocationApplicationServiceTest {
             @Override
             public Optional<ResponsibilityAssignment> findById(String id) {
                 return existing;
+            }
+
+            @Override
+            public List<ResponsibilityAssignment> findActiveByAssigneeAndResponsibilityAndScope(
+                    String assigneeType,
+                    String assigneeId,
+                    ResponsibilityType responsibilityType,
+                    Long scopeId
+            ) {
+                return List.of();
             }
         };
     }

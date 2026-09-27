@@ -2219,8 +2219,131 @@ satisfied.
   `ResponsibilityAssignment.scopeId`; current target code/name remain owner data.
 - Legacy compatibility code and database columns are transitional and must not be
   treated as the canonical source of operational-scope identity.
-- The next implementation priority is ORG-027: complete validated responsibility application use cases; explicit
-  assignee validity/self-cycle rules and owner-lifecycle handling for already-active
-  responsibilities, without turning responsibility into authorization or control.
+- ORG-027 remains In Progress, but new implementation work is temporarily sequenced behind the
+  organization multilingual correction defined in section 19. Existing validated ORG-027 work remains valid.
 
 **Execution rule:** A roadmap task's first implementation action must specify exact file allowlists and verification commands after inspecting current main; do not silently rewrite old task descriptions or mark future tasks complete. `ORG-028` and `ORG-032` must use separately numbered, never-reused migrations after rechecking the live Flyway sequence. Issue #130 remains open until the acceptance matrix is satisfied.
+
+---
+
+## 19. Organization multilingual storage correction — embedded Arabic/French/English fields
+
+### Decision
+
+For the **organization module only**, multilingual business attributes are stored on the
+same owning entity. Hidra Organization supports exactly these three application languages:
+
+```text
+Arabic  -> *Ar
+French  -> *Fr
+English -> *En
+```
+
+The organization module must **not** introduce or retain a separate translation
+aggregate/table as the canonical storage model for these three languages.
+
+Canonical examples:
+
+```text
+OrganizationUnit
+- nameAr
+- nameFr
+- nameEn
+
+Position
+- titleAr
+- titleFr
+- titleEn
+- descriptionAr
+- descriptionFr
+- descriptionEn
+
+OrganizationUnitType
+- nameAr
+- nameFr
+- nameEn
+- descriptionAr
+- descriptionFr
+- descriptionEn
+```
+
+Language-neutral attributes remain stored once:
+
+```text
+id
+code
+kind/type
+status
+active
+parent/reference IDs
+effective dates
+timestamps
+```
+
+This decision is intentionally limited to `modules.organization`. It does **not**
+change topology or any other module. Other modules will be reviewed separately later.
+
+### Current organization alignment
+
+Repository review on 2026-09-27 shows:
+
+| Model | Current storage | Target |
+|---|---|---|
+| `OrganizationUnit` | `nameAr`, `nameFr`, `nameEn` on the entity | Keep same-entity multilingual storage. |
+| `Position` | `titleAr`, `titleFr`, `titleEn`; one non-localized `description` | Keep title fields; assess/migrate human-readable description to `descriptionAr/Fr/En`. |
+| `AdministrativeState` | `nameAr`, `nameFr`, `nameEn` | Keep. |
+| `AdministrativeDistrict` | `nameAr`, `nameFr`, `nameEn` | Keep. |
+| `AdministrativeLocality` | `nameAr`, `nameFr`, `nameEn` | Keep. |
+| `OrganizationUnitType` | Separate `OrganizationUnitTypeTranslation` model/table | Correct to same-entity `nameAr/Fr/En` and `descriptionAr/Fr/En`. |
+
+The existing `OrganizationUnitTypeTranslation` domain model, repository port, JPA
+entity, adapter and `hidra_org_unit_type_translation` table are therefore transitional
+legacy structures for this module and must not be used as the target architecture.
+
+### Data and migration rules
+
+- Do not edit or reuse an already-applied Flyway migration.
+- Add new migrations only after rechecking the live migration sequence on `main`.
+- Migration from `hidra_org_unit_type_translation` must map only recognized
+  `language_code` values `ar`, `fr`, and `en`.
+- Do not invent missing translations.
+- Do not silently map an unlabeled legacy base `description` to a language.
+- Detect and report duplicate translation rows for the same unit type/language before
+  applying uniqueness or NOT NULL assumptions.
+- Preserve the old translation table until code/API consumers have cut over and data
+  parity/recovery checks pass.
+- Drop the old translation table only in a later, separately numbered migration.
+- API/admin contracts may expose all three language fields directly. Storage must not
+  depend on request locale.
+- Search/query logic may match all three language fields, but locale preference is a
+  presentation/query concern rather than a separate persistence model.
+
+### Discrete correction task plan
+
+| Code | Exact commit message | Scope and deliverable | Mandatory validation and exit gate | Prerequisite |
+|---|---|---|---|---|
+| `ORG-034` | `docs(organization): define embedded multilingual field policy` | Record the organization-only Arabic/French/English same-entity storage decision, current alignment, migration safety rules and correction sequence. No production code or schema change. | Roadmap consistency review; verify task codes are unique and scope excludes other modules. | User architecture decision. |
+| `ORG-035` | `test(organization): inventory multilingual fields and unit-type translations` | Inventory all organization user-facing multilingual fields and current `OrganizationUnitTypeTranslation` consumers/data assumptions; document recognized language codes, duplicates, missing translations and legacy description ambiguity without modifying data. | Repository-wide organization scan plus privacy-safe read-only assessment/tests where available. No guessed translations. | ORG-034 |
+| `ORG-036` | `chore(organization): add embedded multilingual unit-type schema` | Add a NEW Flyway migration introducing `name_ar`, `name_fr`, `name_en`, `description_ar`, `description_fr`, `description_en` on `hidra_org_unit_type`; backfill only deterministic `ar/fr/en` values from the legacy translation table while retaining that table. | PostgreSQL/Testcontainers migration tests for deterministic backfill, duplicates/missing translations, rollback/recovery assumptions and no data loss. | ORG-035 |
+| `ORG-037` | `feat(organization): embed multilingual unit-type fields` | Refactor `OrganizationUnitType`, JPA persistence, mappers, repositories and applicable application/API DTOs to use same-entity `Ar/Fr/En` fields. Align other clearly localized organization fields discovered by ORG-035, including `Position.description` when confirmed user-facing. Do not touch other modules. | Compile, focused domain/application/persistence/API tests, OpenAPI compatibility review, and full `mvn -q test`. | ORG-036 |
+| `ORG-038` | `refactor(organization): retire unit-type translation code` | After consumer cutover, remove `OrganizationUnitTypeTranslation` domain/JPA/repository/adapter code and any organization application/API dependency on it. Keep the legacy DB table for recovery until the next gate. | Repository scan proves no organization production consumer remains; compile/test/clean verify pass. | ORG-037 |
+| `ORG-039` | `chore(organization): retire unit-type translation table` | Add a separately numbered Flyway migration removing `hidra_org_unit_type_translation` only after data-parity, recovery and consumer sign-off. Never modify the original organization-table migration. | PostgreSQL/Testcontainers forward/recovery tests and reviewed migration evidence showing embedded fields preserve accepted `ar/fr/en` values. | ORG-038 |
+| `ORG-040` | `test(organization): verify embedded multilingual integrity` | Harden organization tests/architecture checks so translatable organization entity fields follow the explicit `Ar/Fr/En` pattern and no separate organization translation model/table remains canonical. | `mvn -q -DskipTests compile`; `mvn -q test`; `mvn -q clean verify`; targeted persistence/API tests and architecture scan. | ORG-039 |
+
+### Multilingual correction status
+
+| Code | Status | Evidence / next gate |
+|---|---|---|
+| `ORG-034` | Completed | Organization-only embedded multilingual decision and safe correction sequence recorded in this roadmap. |
+| `ORG-035` | Planned | Inventory current multilingual fields, legacy translation consumers and data assumptions. |
+| `ORG-036` | Planned | Additive schema/backfill migration after inventory. |
+| `ORG-037` | Planned | Code/API/persistence cutover after additive schema exists. |
+| `ORG-038` | Planned | Remove separate translation code only after all organization consumers are migrated. |
+| `ORG-039` | Planned | Drop legacy translation table only after data parity and recovery evidence. |
+| `ORG-040` | Planned | Final organization multilingual integrity verification. |
+
+**Execution priority:** pause new ORG-027 implementation work while the multilingual
+storage correction is unresolved. Execute ORG-035 next. Existing validated ORG-027 work
+remains valid and must not be reverted; resume its remaining reconcile/audit/authorization
+gaps after the multilingual correction sequence reaches a safe cutover point.
+

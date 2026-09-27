@@ -59,6 +59,16 @@ public class JpaResponsibilityAssignmentRepositoryAdapter implements Responsibil
     }
 
     @Override
+    public List<ResponsibilityAssignment> findByScopeId(Long scopeId) {
+        return repository.findByScopeId(scopeId).stream().map(ResponsibilityAssignmentPersistenceMapper::toDomain).toList();
+    }
+
+    @Override
+    public List<ResponsibilityAssignment> findByAssignee(String assigneeType, String assigneeId) {
+        return repository.findByAssigneeTypeAndAssigneeId(assigneeType, assigneeId).stream().map(ResponsibilityAssignmentPersistenceMapper::toDomain).toList();
+    }
+
+    @Override
     public List<ResponsibilityAssignment> findActiveByAssigneeAndResponsibilityAndScope(
             String assigneeType,
             String assigneeId,

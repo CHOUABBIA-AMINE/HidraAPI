@@ -34,6 +34,10 @@ import java.util.List;
 public interface ResponsibilityAssignmentJpaRepository
         extends JpaRepository<ResponsibilityAssignmentJpaEntity, String> {
 
+    List<ResponsibilityAssignmentJpaEntity> findByScopeId(Long scopeId);
+
+    List<ResponsibilityAssignmentJpaEntity> findByAssigneeTypeAndAssigneeId(String assigneeType, String assigneeId);
+
     List<ResponsibilityAssignmentJpaEntity>
     findByAssigneeTypeAndAssigneeIdAndResponsibilityTypeAndScopeIdAndStatus(
             String assigneeType,

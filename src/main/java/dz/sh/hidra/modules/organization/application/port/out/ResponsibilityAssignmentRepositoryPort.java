@@ -34,6 +34,10 @@ public interface ResponsibilityAssignmentRepositoryPort {
 
     Optional<ResponsibilityAssignment> findById(String id);
 
+    List<ResponsibilityAssignment> findByScopeId(Long scopeId);
+
+    List<ResponsibilityAssignment> findByAssignee(String assigneeType, String assigneeId);
+
     /**
      * Returns ACTIVE assignments for the same responsibility identity.
      *

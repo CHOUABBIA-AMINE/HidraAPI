@@ -22,6 +22,7 @@ package dz.sh.hidra.modules.organization.application.service;
 import dz.sh.hidra.modules.organization.application.port.out.ResponsibilityAssignmentRepositoryPort;
 import dz.sh.hidra.modules.organization.domain.model.ResponsibilityAssignment;
 import dz.sh.hidra.modules.organization.domain.value.ResponsibilityType;
+import dz.sh.hidra.modules.organization.domain.value.ResponsibilityAssigneeType;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -38,7 +39,7 @@ class ResponsibilityQueryApplicationServiceTest {
         service.listByScopeId(42L);
         service.listByAssignee(" EMPLOYEE ", " emp-1 ");
         org.mockito.Mockito.verify(repository).findByScopeId(42L);
-        org.mockito.Mockito.verify(repository).findByAssignee("EMPLOYEE", "emp-1");
+        org.mockito.Mockito.verify(repository).findByAssignee(ResponsibilityAssigneeType.EMPLOYEE, "emp-1");
     }
 
     @Test

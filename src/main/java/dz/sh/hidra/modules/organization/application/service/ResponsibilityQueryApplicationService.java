@@ -22,6 +22,7 @@ package dz.sh.hidra.modules.organization.application.service;
 import dz.sh.hidra.modules.organization.application.port.in.ListResponsibilitiesUseCase;
 import dz.sh.hidra.modules.organization.application.port.out.ResponsibilityAssignmentRepositoryPort;
 import dz.sh.hidra.modules.organization.domain.model.ResponsibilityAssignment;
+import dz.sh.hidra.modules.organization.domain.value.ResponsibilityAssigneeType;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -56,10 +57,13 @@ public final class ResponsibilityQueryApplicationService implements ListResponsi
     }
 
     @Override
-    public List<ResponsibilityAssignment> listByAssignee(String assigneeType, String assigneeId) {
-        if (assigneeType == null || assigneeType.isBlank() || assigneeId == null || assigneeId.isBlank()) {
+    public List<ResponsibilityAssignment> listByAssignee(
+            ResponsibilityAssigneeType assigneeType,
+            String assigneeId
+    ) {
+        if (assigneeType == null || assigneeId == null || assigneeId.isBlank()) {
             throw new IllegalArgumentException("Assignee type and ID must not be blank.");
         }
-        return List.copyOf(repository.findByAssignee(assigneeType.trim(), assigneeId.trim()));
+        return List.copyOf(repository.findByAssignee(assigneeType, assigneeId.trim()));
     }
 }

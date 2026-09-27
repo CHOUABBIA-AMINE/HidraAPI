@@ -20,6 +20,7 @@
 package dz.sh.hidra.modules.organization.application.port.in;
 
 import dz.sh.hidra.modules.organization.domain.model.ResponsibilityAssignment;
+import dz.sh.hidra.modules.organization.domain.value.ResponsibilityAssigneeType;
 
 import java.util.List;
 
@@ -38,5 +39,11 @@ public interface ListResponsibilitiesUseCase {
 
     List<ResponsibilityAssignment> listByScopeId(Long scopeId);
 
-    List<ResponsibilityAssignment> listByAssignee(String assigneeType, String assigneeId);
+    List<ResponsibilityAssignment> listByAssignee(ResponsibilityAssigneeType assigneeType, String assigneeId);
+
+    /** Transitional compatibility boundary for textual callers. */
+    @Deprecated(forRemoval = true)
+    default List<ResponsibilityAssignment> listByAssignee(String assigneeType, String assigneeId) {
+        return listByAssignee(ResponsibilityAssigneeType.from(assigneeType), assigneeId);
+    }
 }

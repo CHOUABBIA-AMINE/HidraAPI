@@ -20,6 +20,7 @@
 package dz.sh.hidra.modules.organization.application.command;
 
 import dz.sh.hidra.modules.organization.domain.value.ResponsibilityType;
+import dz.sh.hidra.modules.organization.domain.value.ResponsibilityAssigneeType;
 
 import java.time.Instant;
 import java.util.Objects;
@@ -40,7 +41,7 @@ import java.util.Objects;
  */
 public record AssignResponsibilityCommand(
         ResponsibilityType responsibilityType,
-        String assigneeType,
+        ResponsibilityAssigneeType assigneeType,
         String assigneeId,
         Long scopeId,
         String description,
@@ -51,7 +52,7 @@ public record AssignResponsibilityCommand(
     public AssignResponsibilityCommand {
         Objects.requireNonNull(responsibilityType, "Responsibility type must not be null.");
 
-        assigneeType = requireText(assigneeType, "Assignee type must not be null or blank.");
+        Objects.requireNonNull(assigneeType, "Assignee type must not be null.");
         assigneeId = requireText(assigneeId, "Assignee ID must not be null or blank.");
         description = normalize(description);
 
@@ -62,6 +63,30 @@ public record AssignResponsibilityCommand(
         if (validFrom != null && validTo != null && !validTo.isAfter(validFrom)) {
             throw new IllegalArgumentException("Responsibility validTo must be after validFrom.");
         }
+    }
+
+    /**
+     * Transitional compatibility constructor for textual callers.
+     */
+    @Deprecated(forRemoval = true)
+    public AssignResponsibilityCommand(
+            ResponsibilityType responsibilityType,
+            String assigneeType,
+            String assigneeId,
+            Long scopeId,
+            String description,
+            Instant validFrom,
+            Instant validTo
+    ) {
+        this(
+                responsibilityType,
+                ResponsibilityAssigneeType.from(assigneeType),
+                assigneeId,
+                scopeId,
+                description,
+                validFrom,
+                validTo
+        );
     }
 
     private static String requireText(String value, String message) {

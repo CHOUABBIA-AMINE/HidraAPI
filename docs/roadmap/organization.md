@@ -2329,6 +2329,14 @@ legacy structures for this module and must not be used as the target architectur
 | `ORG-038` | `refactor(organization): retire unit-type translation code` | After consumer cutover, remove `OrganizationUnitTypeTranslation` domain/JPA/repository/adapter code and any organization application/API dependency on it. Keep the legacy DB table for recovery until the next gate. | Repository scan proves no organization production consumer remains; compile/test/clean verify pass. | ORG-037 |
 | `ORG-039` | `chore(organization): retire unit-type translation table` | Add a separately numbered Flyway migration removing `hidra_org_unit_type_translation` only after data-parity, recovery and consumer sign-off. Never modify the original organization-table migration. | PostgreSQL/Testcontainers forward/recovery tests and reviewed migration evidence showing embedded fields preserve accepted `ar/fr/en` values. | ORG-038 |
 | `ORG-040` | `test(organization): verify embedded multilingual integrity` | Harden organization tests/architecture checks so translatable organization entity fields follow the explicit `Ar/Fr/En` pattern and no separate organization translation model/table remains canonical. | `mvn -q -DskipTests compile`; `mvn -q test`; `mvn -q clean verify`; targeted persistence/API tests and architecture scan. | ORG-039 |
+| `ORG-041` | `refactor(organization): type responsibility assignee discriminator` | Replace raw-string responsibility assignee state with `ResponsibilityAssigneeType { EMPLOYEE, ORGANIZATION_UNIT }` across canonical domain, application and persistence contracts. Keep narrow deprecated textual bridges only for current compatibility; existing VARCHAR values remain unchanged through `EnumType.STRING`. | Focused discriminator/responsibility tests, compile/test/clean verify, exact-SHA CI. | ORG-040 |
+| `ORG-042` | `refactor(organization): govern reporting line subjects` | Replace `ReportingLine.sourceType/targetType` strings with governed Organization subject types/references. Do not add external target types without an approved resolver contract. | Domain/persistence tests, invalid discriminator rejection, compile/test/clean verify. | ORG-041 |
+| `ORG-043` | `refactor(organization): govern contact point targets` | Replace `OrganizationContactPoint.targetType` string with a governed Organization target type/reference and application validation. | Domain/application/persistence tests and architecture scan. | ORG-042 |
+| `ORG-044` | `refactor(organization): use operational scope reference value` | Make `OperationalScopeReference` the canonical scope-registration input while preserving generated `OperationalScope.id` as responsibility identity. | Scope registration/resolver tests and compile/test/clean verify. | ORG-043 |
+| `ORG-045` | `refactor(organization): adopt organization code value` | Adopt `OrganizationCode` consistently for compatible stable Organization business codes, or document/remove it if repository constraints prove adoption unsafe. | Consumer scan, normalization tests, API/OpenAPI compatibility review. | ORG-044 |
+| `ORG-046` | `chore(organization): enforce internal reference integrity` | Add a new fail-closed Flyway migration for same-module FKs and discriminator checks. Preflight orphan rows; never add DB FKs to topology/identity targets. | PostgreSQL/Testcontainers orphan-preflight, FK/check and rollback tests. | ORG-045 |
+| `ORG-047` | `chore(organization): retire multilingual compatibility columns` | After runtime/data parity verification, retire legacy unit-type/position descriptions and shift name with a separately numbered fail-closed migration. | PostgreSQL/Testcontainers parity/recovery tests and Hibernate validation. | ORG-046 |
+| `ORG-048` | `test(organization): enforce typed dependency integrity` | Add final guardrails against raw finite discriminators, unvalidated internal references, retired multilingual structures, and accidental cross-module DB ownership. | Architecture tests and full compile/test/clean verify. | ORG-047 |
 
 ### ORG-035 inventory result
 
@@ -2630,6 +2638,42 @@ After ORG-040 passes its compile/test/clean-verify and CI gates, the Organizatio
 multilingual correction sequence ORG-034 through ORG-040 is complete and normal
 roadmap execution may resume from the previously in-progress ORG-027 work.
 
+### Organization dependency-integrity correction sequence
+
+The post-ORG-040 dependency inventory identified two different concerns that must not
+be conflated: valid reference/root models with no inbound API, and weakly governed
+relationships that still use arbitrary strings or lack same-module referential
+enforcement.
+
+Correction policy:
+
+1. finite Organization-owned discriminators become enums or typed value references;
+2. same-module references receive application validation and, after orphan preflight,
+   database foreign keys/check constraints;
+3. cross-module targets remain resolver-backed typed references and never receive
+   cross-module database foreign keys;
+4. persistence cleanup uses new fail-closed migrations and never edits migration history;
+5. deferred capabilities are not deleted merely because they currently lack an inbound API.
+
+ORG-041 begins with responsibility assignees because current live application logic
+already recognizes exactly `EMPLOYEE` and `ORGANIZATION_UNIT`. Canonical Java/JPA
+state becomes `ResponsibilityAssigneeType`; narrow deprecated textual constructors/
+bridges preserve current callers while they are migrated. Stored database values remain
+the same because JPA persists the enum with `EnumType.STRING`.
+
+### Dependency-integrity correction status
+
+| Code | Status | Evidence / next gate |
+|---|---|---|
+| `ORG-041` | Completed | Canonical responsibility assignee state is typed with `ResponsibilityAssigneeType`; textual compatibility bridges are deprecated; JPA uses `EnumType.STRING` so stored values do not change. |
+| `ORG-042` | Planned | Govern ReportingLine source/target subject types. |
+| `ORG-043` | Planned | Govern OrganizationContactPoint target types. |
+| `ORG-044` | Planned | Integrate OperationalScopeReference into registration. |
+| `ORG-045` | Planned | Adopt or explicitly retire OrganizationCode after consumer review. |
+| `ORG-046` | Planned | Add fail-closed same-module referential-integrity migration. |
+| `ORG-047` | Planned | Retire remaining multilingual compatibility columns after parity. |
+| `ORG-048` | Planned | Final typed-dependency integrity guardrails. |
+
 ### Multilingual correction status
 
 | Code | Status | Evidence / next gate |
@@ -2642,5 +2686,5 @@ roadmap execution may resume from the previously in-progress ORG-027 work.
 | `ORG-039` | Completed | Added `V20260927_003__retire_organization_unit_type_translation_table.sql`. The migration performs a fail-closed, null-safe parity check between every remaining normalized `ar/fr/en` legacy row and embedded names/descriptions before dropping the table. Testcontainers coverage proves successful retirement, embedded-only post-cutover rows, and transactional rollback with the recovery table intact on label/description/language mismatches. |
 | `ORG-040` | Completed | Added final Organization multilingual architecture/integrity guardrails. Explicit domain/JPA `Ar/Fr/En` triplets are verified for the known translatable models, the existing OrganizationUnit application/API chain is checked for all three names, separate Organization translation production types/JPA mappings are forbidden, and migrations after `V20260927_003` may not reintroduce the retired translation table. |
 
-**Execution priority:** the Organization multilingual correction sequence ORG-034 through ORG-040 is complete. Resume the previously validated ORG-027 work at its remaining reconcile/audit/authorization gaps; do not revert its completed list/query slice.
+**Execution priority:** complete ORG-041 through ORG-048 before resuming the remaining ORG-027 reconcile/audit/authorization gaps. Existing validated ORG-027 list/query work remains valid and must not be reverted.
 

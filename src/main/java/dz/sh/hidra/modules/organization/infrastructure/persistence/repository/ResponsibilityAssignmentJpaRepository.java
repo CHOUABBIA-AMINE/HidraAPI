@@ -21,6 +21,7 @@ package dz.sh.hidra.modules.organization.infrastructure.persistence.repository;
 
 import dz.sh.hidra.modules.organization.domain.value.AssignmentStatus;
 import dz.sh.hidra.modules.organization.domain.value.ResponsibilityType;
+import dz.sh.hidra.modules.organization.domain.value.ResponsibilityAssigneeType;
 import dz.sh.hidra.modules.organization.infrastructure.persistence.entity.ResponsibilityAssignmentJpaEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -36,11 +37,14 @@ public interface ResponsibilityAssignmentJpaRepository
 
     List<ResponsibilityAssignmentJpaEntity> findByScopeId(Long scopeId);
 
-    List<ResponsibilityAssignmentJpaEntity> findByAssigneeTypeAndAssigneeId(String assigneeType, String assigneeId);
+    List<ResponsibilityAssignmentJpaEntity> findByAssigneeTypeAndAssigneeId(
+            ResponsibilityAssigneeType assigneeType,
+            String assigneeId
+    );
 
     List<ResponsibilityAssignmentJpaEntity>
     findByAssigneeTypeAndAssigneeIdAndResponsibilityTypeAndScopeIdAndStatus(
-            String assigneeType,
+            ResponsibilityAssigneeType assigneeType,
             String assigneeId,
             ResponsibilityType responsibilityType,
             Long scopeId,

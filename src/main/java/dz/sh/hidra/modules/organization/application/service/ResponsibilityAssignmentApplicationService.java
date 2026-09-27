@@ -87,7 +87,7 @@ public final class ResponsibilityAssignmentApplicationService implements AssignR
         validateAssignee(command.assigneeType(), command.assigneeId());
         validateScopeOwner(scope);
         if (scope.type() == OperationalScopeType.ORGANIZATION_UNIT
-                && "ORGANIZATION_UNIT".equals(command.assigneeType())
+                && command.assigneeType() == ResponsibilityAssigneeType.ORGANIZATION_UNIT
                 && Objects.equals(scope.targetId(), command.assigneeId())) {
             throw new IllegalArgumentException("An organization unit cannot hold a responsibility over itself.");
         }
@@ -138,17 +138,16 @@ public final class ResponsibilityAssignmentApplicationService implements AssignR
         return responsibilityAssignmentRepositoryPort.save(assignment).id();
     }
 
-    private void validateAssignee(String assigneeType, String assigneeId) {
+    private void validateAssignee(ResponsibilityAssigneeType assigneeType, String assigneeId) {
         switch (assigneeType) {
-            case "EMPLOYEE" -> {
+            case EMPLOYEE -> {
                 var employee = employeeRepositoryPort.findById(assigneeId).orElseThrow(() -> new IllegalArgumentException("Unknown employee assignee: " + assigneeId));
                 if (employee.status() != EmployeeStatus.ACTIVE) throw new IllegalArgumentException("Employee assignee must be ACTIVE: " + assigneeId);
             }
-            case "ORGANIZATION_UNIT" -> {
+            case ORGANIZATION_UNIT -> {
                 var unit = organizationUnitRepositoryPort.findById(assigneeId).orElseThrow(() -> new IllegalArgumentException("Unknown organization-unit assignee: " + assigneeId));
                 if (unit.status() != OrganizationUnitStatus.ACTIVE) throw new IllegalArgumentException("Organization-unit assignee must be ACTIVE: " + assigneeId);
             }
-            default -> throw new IllegalArgumentException("Unsupported responsibility assignee type: " + assigneeType);
         }
     }
 

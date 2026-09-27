@@ -23,6 +23,7 @@ import dz.sh.hidra.modules.organization.application.port.out.ResponsibilityAssig
 import dz.sh.hidra.modules.organization.domain.model.ResponsibilityAssignment;
 import dz.sh.hidra.modules.organization.domain.value.AssignmentStatus;
 import dz.sh.hidra.modules.organization.domain.value.ResponsibilityType;
+import dz.sh.hidra.modules.organization.domain.value.ResponsibilityAssigneeType;
 import dz.sh.hidra.modules.organization.infrastructure.persistence.mapper.ResponsibilityAssignmentPersistenceMapper;
 import dz.sh.hidra.modules.organization.infrastructure.persistence.repository.ResponsibilityAssignmentJpaRepository;
 import org.springframework.stereotype.Component;
@@ -64,13 +65,16 @@ public class JpaResponsibilityAssignmentRepositoryAdapter implements Responsibil
     }
 
     @Override
-    public List<ResponsibilityAssignment> findByAssignee(String assigneeType, String assigneeId) {
+    public List<ResponsibilityAssignment> findByAssignee(
+            ResponsibilityAssigneeType assigneeType,
+            String assigneeId
+    ) {
         return repository.findByAssigneeTypeAndAssigneeId(assigneeType, assigneeId).stream().map(ResponsibilityAssignmentPersistenceMapper::toDomain).toList();
     }
 
     @Override
     public List<ResponsibilityAssignment> findActiveByAssigneeAndResponsibilityAndScope(
-            String assigneeType,
+            ResponsibilityAssigneeType assigneeType,
             String assigneeId,
             ResponsibilityType responsibilityType,
             Long scopeId

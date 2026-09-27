@@ -21,6 +21,7 @@ package dz.sh.hidra.modules.organization.infrastructure.persistence.entity;
 
 import dz.sh.hidra.modules.organization.domain.value.AssignmentStatus;
 import dz.sh.hidra.modules.organization.domain.value.ResponsibilityType;
+import dz.sh.hidra.modules.organization.domain.value.ResponsibilityAssigneeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -49,8 +50,9 @@ public class ResponsibilityAssignmentJpaEntity {
     @Column(name = "responsibility_type", nullable = false, length = 80)
     private ResponsibilityType responsibilityType;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "assignee_type", nullable = false, length = 80)
-    private String assigneeType;
+    private ResponsibilityAssigneeType assigneeType;
 
     @Column(name = "assignee_id", nullable = false, length = 80)
     private String assigneeId;
@@ -99,7 +101,7 @@ public class ResponsibilityAssignmentJpaEntity {
     public ResponsibilityAssignmentJpaEntity(
             String id,
             ResponsibilityType responsibilityType,
-            String assigneeType,
+            ResponsibilityAssigneeType assigneeType,
             String assigneeId,
             Long scopeId,
             String description,
@@ -131,7 +133,7 @@ public class ResponsibilityAssignmentJpaEntity {
     public ResponsibilityAssignmentJpaEntity(
             String id,
             ResponsibilityType responsibilityType,
-            String assigneeType,
+            ResponsibilityAssigneeType assigneeType,
             String assigneeId,
             String operationalScopeType,
             String operationalScopeId,
@@ -167,7 +169,7 @@ public class ResponsibilityAssignmentJpaEntity {
         return responsibilityType;
     }
 
-    public String assigneeType() {
+    public ResponsibilityAssigneeType assigneeType() {
         return assigneeType;
     }
 

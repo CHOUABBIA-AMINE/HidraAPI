@@ -21,6 +21,7 @@ package dz.sh.hidra.modules.organization.application.port.out;
 
 import dz.sh.hidra.modules.organization.domain.model.ResponsibilityAssignment;
 import dz.sh.hidra.modules.organization.domain.value.ResponsibilityType;
+import dz.sh.hidra.modules.organization.domain.value.ResponsibilityAssigneeType;
 
 import java.util.List;
 import java.util.Optional;
@@ -38,6 +39,12 @@ public interface ResponsibilityAssignmentRepositoryPort {
         return List.of();
     }
 
+    default List<ResponsibilityAssignment> findByAssignee(ResponsibilityAssigneeType assigneeType, String assigneeId) {
+        return findByAssignee(assigneeType.name(), assigneeId);
+    }
+
+    /** Transitional compatibility boundary for legacy textual implementations. */
+    @Deprecated(forRemoval = true)
     default List<ResponsibilityAssignment> findByAssignee(String assigneeType, String assigneeId) {
         return List.of();
     }
@@ -48,10 +55,25 @@ public interface ResponsibilityAssignmentRepositoryPort {
      * <p>The application layer evaluates effective-date overlap so persistence
      * remains responsible only for data access.</p>
      */
-    List<ResponsibilityAssignment> findActiveByAssigneeAndResponsibilityAndScope(
+    default List<ResponsibilityAssignment> findActiveByAssigneeAndResponsibilityAndScope(
+            ResponsibilityAssigneeType assigneeType,
+            String assigneeId,
+            ResponsibilityType responsibilityType,
+            Long scopeId
+    ) {
+        return findActiveByAssigneeAndResponsibilityAndScope(
+                assigneeType.name(), assigneeId, responsibilityType, scopeId
+        );
+    }
+
+    /** Transitional compatibility boundary for legacy textual implementations. */
+    @Deprecated(forRemoval = true)
+    default List<ResponsibilityAssignment> findActiveByAssigneeAndResponsibilityAndScope(
             String assigneeType,
             String assigneeId,
             ResponsibilityType responsibilityType,
             Long scopeId
-    );
+    ) {
+        return List.of();
+    }
 }

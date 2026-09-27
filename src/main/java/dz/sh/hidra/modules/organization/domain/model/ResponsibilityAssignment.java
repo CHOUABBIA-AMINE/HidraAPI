@@ -21,6 +21,7 @@ package dz.sh.hidra.modules.organization.domain.model;
 
 import dz.sh.hidra.modules.organization.domain.value.AssignmentStatus;
 import dz.sh.hidra.modules.organization.domain.value.ResponsibilityType;
+import dz.sh.hidra.modules.organization.domain.value.ResponsibilityAssigneeType;
 
 import java.time.Instant;
 
@@ -50,7 +51,7 @@ import java.time.Instant;
 public record ResponsibilityAssignment(
         String id,
         ResponsibilityType responsibilityType,
-        String assigneeType,
+        ResponsibilityAssigneeType assigneeType,
         String assigneeId,
         Long scopeId,
         String description,
@@ -63,13 +64,47 @@ public record ResponsibilityAssignment(
 
     public ResponsibilityAssignment {
         id = normalize(id);
-        assigneeType = normalize(assigneeType);
+        if (assigneeType == null) {
+            throw new IllegalArgumentException("Responsibility assignee type must not be null.");
+        }
         assigneeId = normalize(assigneeId);
         description = normalize(description);
 
         if (scopeId != null && scopeId <= 0) {
             throw new IllegalArgumentException("Operational scope registry ID must be positive when present.");
         }
+    }
+
+    /**
+     * Transitional compatibility constructor for callers that still provide a textual assignee type.
+     */
+    @Deprecated(forRemoval = true)
+    public ResponsibilityAssignment(
+            String id,
+            ResponsibilityType responsibilityType,
+            String assigneeType,
+            String assigneeId,
+            Long scopeId,
+            String description,
+            Instant validFrom,
+            Instant validTo,
+            AssignmentStatus status,
+            Instant createdAt,
+            Instant updatedAt
+    ) {
+        this(
+                id,
+                responsibilityType,
+                ResponsibilityAssigneeType.from(assigneeType),
+                assigneeId,
+                scopeId,
+                description,
+                validFrom,
+                validTo,
+                status,
+                createdAt,
+                updatedAt
+        );
     }
 
     /**
@@ -83,7 +118,7 @@ public record ResponsibilityAssignment(
     public ResponsibilityAssignment(
             String id,
             ResponsibilityType responsibilityType,
-            String assigneeType,
+            ResponsibilityAssigneeType assigneeType,
             String assigneeId,
             String operationalScopeType,
             String operationalScopeId,

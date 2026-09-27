@@ -77,7 +77,7 @@ columns have been retired through later immutable Flyway migrations.
 
 Current correction status:
 
-- `ORG-034` through `ORG-048`: **Completed**.
+- `ORG-034` through `ORG-049`: **Completed**.
 - `ORG-027`: **In Progress**. Assign, revoke, typed list/query and read-only reconciliation
   exist. Identity authorization and workflow/audit integration remain open.
 - `ORG-023`: **Blocked** on authorized legacy/consumer evidence. Later validated
@@ -3340,6 +3340,18 @@ aggregate lifecycles.
 | `ORG-054` | `refactor(organization): clarify organization identifier value semantics` | Document/test `OrganizationId` as String/UUID generation and validation policy; inventory raw domain IDs and ensure no conflicting second Organization ID abstraction exists. Do not mass-convert record component types. | Value-object tests plus repository scan show one Organization-owned String-ID policy; generated registry `OperationalScope.id : Long` remains intentionally separate. | ORG-053 |
 | `ORG-055` | `test(organization): verify model and value integrity` | Add final model/value architecture tests for required typed references, Employee/address/contact ownership, birth-field shape, deprecated duplicate-field bridges, effective-date invariants, and absence of retired translation/scope state in canonical records. | Full domain test suite plus compile/test/clean verify; no application/persistence behavior invented. | ORG-054 |
 
+### 20.8 Cleanup status
+
+| Code | Status | Evidence / next gate |
+|---|---|---|
+| `ORG-049` | Completed | Final Employee / EmployeeAddress / OrganizationContactPoint ownership, birthplace shape, duplicate-contact policy, display-name direction, model invariants and value-object decisions are recorded in section 20. No production Java or schema was changed. |
+| `ORG-050` | Planned | Next model/value task: add Employee birth fields and harden Employee invariants only. |
+| `ORG-051` | Planned | Execute after ORG-050 passes its gate. |
+| `ORG-052` | Planned | Execute after ORG-051 passes its gate. |
+| `ORG-053` | Planned | Execute after ORG-052 passes its gate. |
+| `ORG-054` | Planned | Execute after ORG-053 passes its gate. |
+| `ORG-055` | Planned | Final model/value integrity guardrail after ORG-054. |
+
 ### 20.8 Later cutover explicitly outside ORG-049–ORG-055
 
 The following require separate post-domain tasks because they affect consumers or stored
@@ -3362,7 +3374,6 @@ is complete.
 
 ### 20.9 Execution priority
 
-This domain cleanup does not erase the still-open issue #130 gates. For model/value work,
-execute `ORG-049` first and then proceed one code at a time through `ORG-055`.
+This domain cleanup does not erase the still-open issue #130 gates. For model/value work, `ORG-049` is complete. Execute `ORG-050` next and then proceed one code at a time through `ORG-055`.
 Application/persistence/API cutover must be planned only after the canonical domain model is
 validated.

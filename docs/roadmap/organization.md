@@ -2577,6 +2577,59 @@ ORG-039 does not drop the separate language-ambiguous legacy columns
 `hidra_org_unit_type.description`, `hidra_org_position.description`, or
 `hidra_org_shift.name`; their lifecycle is outside this translation-table retirement.
 
+### ORG-040 implementation result
+
+ORG-040 adds a permanent architecture/integrity guardrail rather than another schema
+or production-model change.
+
+The test explicitly protects the known Organization translatable attributes:
+
+```text
+AdministrativeState.name*
+AdministrativeDistrict.name*
+AdministrativeLocality.name*
+OrganizationUnit.name*
+OrganizationUnitType.name*
+OrganizationUnitType.description*
+Position.title*
+Position.description*
+Shift.name*
+```
+
+For each domain model the guardrail requires the complete Java triplet
+`Ar/Fr/En`. For each corresponding JPA entity it additionally requires the matching
+database columns `*_ar`, `*_fr`, and `*_en`.
+
+The existing OrganizationUnit create/query/API chain is also checked end-to-end for
+`nameAr/nameFr/nameEn` on:
+
+```text
+CreateOrganizationUnitRequest
+CreateOrganizationUnitCommand
+OrganizationUnitSummaryDto
+OrganizationUnitResponse
+OrganizationAdministrationQueryUseCase.OrganizationUnitView
+```
+
+The architecture scan rejects any future Organization production class whose name
+contains `Translation` and any Organization production JPA/runtime source mapping
+`hidra_org_unit_type_translation`.
+
+Migration-history compatibility is preserved: historical migrations may still contain
+the retired table because Flyway history is immutable. The guardrail instead requires
+the ORG-039 retirement migration to contain the drop and rejects any migration ordered
+after `V20260927_003__retire_organization_unit_type_translation_table.sql` that
+references the retired table.
+
+Employee `*Ar/*Lt` proper-name/transliteration fields, address lines, delegation
+reasons, responsibility descriptions, hierarchy snapshot descriptions, and other
+transactional/free-form text remain intentionally outside this fixed multilingual
+catalog guardrail.
+
+After ORG-040 passes its compile/test/clean-verify and CI gates, the Organization
+multilingual correction sequence ORG-034 through ORG-040 is complete and normal
+roadmap execution may resume from the previously in-progress ORG-027 work.
+
 ### Multilingual correction status
 
 | Code | Status | Evidence / next gate |
@@ -2587,10 +2640,7 @@ ORG-039 does not drop the separate language-ambiguous legacy columns
 | `ORG-037` | Completed | `OrganizationUnitType`, `Position`, and `Shift` now use embedded Arabic/French/English domain and JPA fields; persistence mapping round-trips canonical multilingual content. Legacy ambiguous descriptions remain read-only in JPA and Shift maintains its legacy non-null `name` only as a compatibility projection. Current main exposes no unit-type/position/shift application or REST content contract, so no speculative API was added. |
 | `ORG-038` | Completed | Retired the separate `OrganizationUnitTypeTranslation` domain model, outbound repository port, JPA entity/repository/adapter, mapper conversions, and unused runtime table constant. Repository scans show no remaining organization production consumer; the physical legacy table and Flyway history remain intact for ORG-039 recovery gating. |
 | `ORG-039` | Completed | Added `V20260927_003__retire_organization_unit_type_translation_table.sql`. The migration performs a fail-closed, null-safe parity check between every remaining normalized `ar/fr/en` legacy row and embedded names/descriptions before dropping the table. Testcontainers coverage proves successful retirement, embedded-only post-cutover rows, and transactional rollback with the recovery table intact on label/description/language mismatches. |
-| `ORG-040` | Planned | Final organization multilingual integrity verification. |
+| `ORG-040` | Completed | Added final Organization multilingual architecture/integrity guardrails. Explicit domain/JPA `Ar/Fr/En` triplets are verified for the known translatable models, the existing OrganizationUnit application/API chain is checked for all three names, separate Organization translation production types/JPA mappings are forbidden, and migrations after `V20260927_003` may not reintroduce the retired translation table. |
 
-**Execution priority:** pause new ORG-027 implementation work while the multilingual
-storage correction is unresolved. Execute ORG-040 next. Existing validated ORG-027 work
-remains valid and must not be reverted; resume its remaining reconcile/audit/authorization
-gaps after the multilingual correction sequence reaches a safe cutover point.
+**Execution priority:** the Organization multilingual correction sequence ORG-034 through ORG-040 is complete. Resume the previously validated ORG-027 work at its remaining reconcile/audit/authorization gaps; do not revert its completed list/query slice.
 

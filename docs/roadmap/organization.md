@@ -2502,6 +2502,36 @@ round trips for all three corrected models. There is currently no applicable sea
 query for unit types, positions, or shifts; existing organization-unit search already
 matches `nameAr/nameFr/nameEn` and is unchanged.
 
+### ORG-038 implementation result
+
+ORG-038 retires the obsolete Java translation path after ORG-037 cut organization
+runtime contracts over to embedded `Ar/Fr/En` fields.
+
+Removed production types:
+
+```text
+domain/model/OrganizationUnitTypeTranslation.java
+application/port/out/OrganizationUnitTypeTranslationRepositoryPort.java
+infrastructure/persistence/entity/OrganizationUnitTypeTranslationJpaEntity.java
+infrastructure/persistence/repository/OrganizationUnitTypeTranslationJpaRepository.java
+infrastructure/persistence/adapter/JpaOrganizationUnitTypeTranslationRepositoryAdapter.java
+```
+
+`OrganizationPersistenceMapper` no longer contains translation entity/domain
+conversion methods, and the unused
+`OrganizationPersistence.ORGANIZATION_UNIT_TYPE_TRANSLATION_TABLE` runtime constant
+is removed.
+
+Repository-wide production scans before the change found no application service,
+inbound use case, REST controller, request/response DTO, administration query, or other
+organization production consumer beyond the isolated persistence path above.
+
+ORG-038 intentionally does **not** modify schema or migration history. The legacy
+`hidra_org_unit_type_translation` table remains created by the original Flyway
+migration and is still referenced by the additive ORG-036 migration and its
+PostgreSQL/Testcontainers recovery/parity tests. Table retirement belongs exclusively
+to ORG-039 after its separate parity and recovery gate.
+
 ### Multilingual correction status
 
 | Code | Status | Evidence / next gate |
@@ -2510,12 +2540,12 @@ matches `nameAr/nameFr/nameEn` and is unchanged.
 | `ORG-035` | Completed | Repository/schema inventory completed on `9f88b07d...`: aligned embedded fields identified, `OrganizationUnitTypeTranslation` consumer path isolated, `Shift.name` and `Position.description` gaps recorded, and live-data preflight requirements documented without guessing data. |
 | `ORG-036` | Completed | Added `V20260927_002__add_embedded_organization_multilingual_fields.sql` plus PostgreSQL/Testcontainers migration coverage. Unit-type `ar/fr/en` values backfill only after fail-closed preflight; Position description and Shift name receive nullable embedded language columns without guessed backfill; all legacy columns/table are retained for cutover and recovery. |
 | `ORG-037` | Completed | `OrganizationUnitType`, `Position`, and `Shift` now use embedded Arabic/French/English domain and JPA fields; persistence mapping round-trips canonical multilingual content. Legacy ambiguous descriptions remain read-only in JPA and Shift maintains its legacy non-null `name` only as a compatibility projection. Current main exposes no unit-type/position/shift application or REST content contract, so no speculative API was added. |
-| `ORG-038` | Planned | Remove separate translation code only after all organization consumers are migrated. |
+| `ORG-038` | Completed | Retired the separate `OrganizationUnitTypeTranslation` domain model, outbound repository port, JPA entity/repository/adapter, mapper conversions, and unused runtime table constant. Repository scans show no remaining organization production consumer; the physical legacy table and Flyway history remain intact for ORG-039 recovery gating. |
 | `ORG-039` | Planned | Drop legacy translation table only after data parity and recovery evidence. |
 | `ORG-040` | Planned | Final organization multilingual integrity verification. |
 
 **Execution priority:** pause new ORG-027 implementation work while the multilingual
-storage correction is unresolved. Execute ORG-038 next. Existing validated ORG-027 work
+storage correction is unresolved. Execute ORG-039 next. Existing validated ORG-027 work
 remains valid and must not be reverted; resume its remaining reconcile/audit/authorization
 gaps after the multilingual correction sequence reaches a safe cutover point.
 

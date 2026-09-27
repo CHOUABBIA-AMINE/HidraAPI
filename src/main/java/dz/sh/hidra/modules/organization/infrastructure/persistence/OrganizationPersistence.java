@@ -7,7 +7,7 @@
  *
  * @Name        : OrganizationPersistence
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-27
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -25,7 +25,6 @@ package dz.sh.hidra.modules.organization.infrastructure.persistence;
 public final class OrganizationPersistence {
 
     public static final String ORGANIZATION_UNIT_TYPE_TABLE = "hidra_org_unit_type";
-    public static final String ORGANIZATION_UNIT_TYPE_TRANSLATION_TABLE = "hidra_org_unit_type_translation";
     public static final String ORGANIZATION_UNIT_TABLE = "hidra_org_unit";
     public static final String POSITION_TABLE = "hidra_org_position";
     public static final String EMPLOYEE_TABLE = "hidra_org_employee";

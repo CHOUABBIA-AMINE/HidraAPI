@@ -66,30 +66,6 @@ public final class OrganizationPersistenceMapper {
             );
         }
 
-        public static OrganizationUnitTypeTranslationJpaEntity toEntity(OrganizationUnitTypeTranslation model) {
-            return new OrganizationUnitTypeTranslationJpaEntity(
-                        model.id(),
-                        model.unitTypeId(),
-                        model.languageCode(),
-                        model.label(),
-                        model.description(),
-                        model.createdAt(),
-                        model.updatedAt()
-            );
-        }
-
-        public static OrganizationUnitTypeTranslation toDomain(OrganizationUnitTypeTranslationJpaEntity entity) {
-            return new OrganizationUnitTypeTranslation(
-                        entity.id(),
-                        entity.unitTypeId(),
-                        entity.languageCode(),
-                        entity.label(),
-                        entity.description(),
-                        entity.createdAt(),
-                        entity.updatedAt()
-            );
-        }
-
         public static OrganizationUnitJpaEntity toEntity(OrganizationUnit model) {
             return new OrganizationUnitJpaEntity(
                         model.id(),

@@ -2670,7 +2670,7 @@ the same because JPA persists the enum with `EnumType.STRING`.
 | `ORG-043` | Completed | `OrganizationContactPoint` now owns a typed `ContactPointTargetReference` backed by `ContactPointTargetType { EMPLOYEE, ORGANIZATION_UNIT }`; JPA persists governed names through `EnumType.STRING`, and `OrganizationContactPointTargetValidator` verifies target existence through existing Organization repository ports. |
 | `ORG-044` | Completed | `OperationalScopeReference` is now the canonical registration input across command, owner validation, application service, and registry persistence. The returned/generated `OperationalScope.id` remains the separate identity persisted by responsibility assignments; deprecated split type/target bridges remain only for compatibility. |
 | `ORG-045` | Completed | `OrganizationCode` is adopted as the canonical normalization/validation policy for stable Organization business codes. Administrative state/district/locality, organization unit type/unit, position, and shift constructors normalize through it; the active `CreateOrganizationUnitCommand` carries `OrganizationCode` directly while REST/persistence/query string contracts remain compatible. |
-| `ORG-046` | Planned | Add fail-closed same-module referential-integrity migration. |
+| `ORG-046` | Completed | Added `V20260927_004__enforce_organization_internal_reference_integrity.sql`: fail-closed orphan/discriminator preflight, 16 same-module `ON DELETE RESTRICT` foreign keys, and closed checks for contact/reporting/responsibility polymorphic types. PostgreSQL/Testcontainers coverage verifies installation and transactional rollback on direct/polymorphic orphan data. |
 | `ORG-047` | Planned | Retire remaining multilingual compatibility columns after parity. |
 | `ORG-048` | Planned | Final typed-dependency integrity guardrails. |
 
@@ -2857,6 +2857,63 @@ migration is approved.
 Focused tests verify OrganizationCode normalization/rejection, all seven supported
 model constructors, and typed adoption at the organization-unit creation command.
 
+### ORG-046 implementation result
+
+**Migration:** `V20260927_004__enforce_organization_internal_reference_integrity.sql`
+
+ORG-046 adds database integrity only for references owned by the Organization module.
+Before installing any constraint, one transactional preflight rejects direct orphan rows,
+unsupported finite discriminators, and orphan polymorphic Organization targets.
+
+Installed direct same-module foreign keys use `ON DELETE RESTRICT` for:
+
+```text
+AdministrativeDistrict.stateId -> AdministrativeState
+AdministrativeLocality.districtId -> AdministrativeDistrict
+EmployeeAddress.employeeId -> Employee
+EmployeeAddress.localityId -> AdministrativeLocality
+OrganizationUnit.unitTypeId -> OrganizationUnitType
+OrganizationUnit.parentUnitId -> OrganizationUnit
+EmployeeAssignment.employeeId -> Employee
+EmployeeAssignment.organizationUnitId -> OrganizationUnit
+EmployeeAssignment.positionId -> Position
+ShiftAssignment.employeeId -> Employee
+ShiftAssignment.shiftId -> Shift
+ShiftAssignment.organizationUnitId -> OrganizationUnit
+OrganizationDelegation.delegatorEmployeeId -> Employee
+OrganizationDelegation.delegateEmployeeId -> Employee
+OrganizationDelegation.responsibilityAssignmentId -> ResponsibilityAssignment
+OrganizationHierarchySnapshot.capturedByEmployeeId -> Employee
+```
+
+Closed discriminator checks govern the polymorphic references already typed by earlier
+Organization corrections:
+
+```text
+OrganizationContactPoint.targetType
+  EMPLOYEE | ORGANIZATION_UNIT
+
+ReportingLine.sourceType / targetType
+  EMPLOYEE | POSITION | ORGANIZATION_UNIT
+
+ResponsibilityAssignment.assigneeType
+  EMPLOYEE | ORGANIZATION_UNIT
+```
+
+The migration also preflights target existence for those polymorphic references before
+constraint installation. Their target IDs are intentionally not modeled with cross-table
+or cross-module database foreign keys because one column can reference multiple
+Organization tables and external ownership remains resolver-backed.
+
+No topology, identity, pipeline, facility, equipment, or other bounded-context foreign
+key is introduced. The existing canonical
+`ResponsibilityAssignment.scopeId -> hidra_org_operational_scope.id` foreign key from
+the operational-scope migration remains unchanged.
+
+Focused PostgreSQL/Testcontainers tests prove direct FK/check installation, rejection of
+invalid discriminator writes, and transaction rollback with source data preserved when
+either a direct orphan or a polymorphic orphan is present.
+
 ### Multilingual correction status
 
 | Code | Status | Evidence / next gate |
@@ -2869,5 +2926,5 @@ model constructors, and typed adoption at the organization-unit creation command
 | `ORG-039` | Completed | Added `V20260927_003__retire_organization_unit_type_translation_table.sql`. The migration performs a fail-closed, null-safe parity check between every remaining normalized `ar/fr/en` legacy row and embedded names/descriptions before dropping the table. Testcontainers coverage proves successful retirement, embedded-only post-cutover rows, and transactional rollback with the recovery table intact on label/description/language mismatches. |
 | `ORG-040` | Completed | Added final Organization multilingual architecture/integrity guardrails. Explicit domain/JPA `Ar/Fr/En` triplets are verified for the known translatable models, the existing OrganizationUnit application/API chain is checked for all three names, separate Organization translation production types/JPA mappings are forbidden, and migrations after `V20260927_003` may not reintroduce the retired translation table. |
 
-**Execution priority:** execute ORG-046 next, then continue through ORG-048 before resuming the remaining ORG-027 reconcile/audit/authorization gaps. Existing validated ORG-027 list/query work remains valid and must not be reverted.
+**Execution priority:** execute ORG-047 next, then ORG-048 before resuming the remaining ORG-027 reconcile/audit/authorization gaps. Existing validated ORG-027 list/query work remains valid and must not be reverted.
 

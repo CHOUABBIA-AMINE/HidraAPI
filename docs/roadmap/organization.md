@@ -2946,6 +2946,11 @@ The repository Boot smoke test already uses PostgreSQL/Testcontainers with
 `spring.jpa.hibernate.ddl-auto=validate`, providing Hibernate validation against the
 post-retirement schema in normal CI.
 
+CI #380 initially failed during test compilation because the pre-existing multilingual
+persistence mapper test still asserted the deliberately removed `ShiftJpaEntity.legacyName()`
+compatibility accessor. The ORG-047 repair removes that obsolete assertion and renames the
+test to describe post-retirement behavior; no production or migration semantics change.
+
 ### Multilingual correction status
 
 | Code | Status | Evidence / next gate |

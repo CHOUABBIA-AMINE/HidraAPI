@@ -98,7 +98,7 @@ class OrganizationEmbeddedMultilingualPersistenceMapperTest {
     }
 
     @Test
-    void mapsShiftEmbeddedNamesAndMaintainsLegacyNameOnlyForDatabaseCompatibility() {
+    void mapsShiftEmbeddedNamesAfterCompatibilityColumnRetirement() {
         Shift model = new Shift(
                 "shift-day",
                 "DAY_SHIFT",
@@ -120,7 +120,6 @@ class OrganizationEmbeddedMultilingualPersistenceMapperTest {
         assertThat(entity.nameAr()).isEqualTo("الوردية النهارية");
         assertThat(entity.nameFr()).isEqualTo("Poste de jour");
         assertThat(entity.nameEn()).isEqualTo("Day Shift");
-        assertThat(entity.legacyName()).isEqualTo("Day Shift");
         assertThat(roundTrip).isEqualTo(model);
     }
 }

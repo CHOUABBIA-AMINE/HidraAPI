@@ -20,6 +20,7 @@
 package dz.sh.hidra.modules.organization.infrastructure.persistence.mapper;
 
 import dz.sh.hidra.modules.organization.domain.model.*;
+import dz.sh.hidra.modules.organization.domain.value.ContactPointTargetReference;
 import dz.sh.hidra.modules.organization.domain.value.ReportingSubjectReference;
 import dz.sh.hidra.modules.organization.infrastructure.persistence.entity.*;
 
@@ -513,8 +514,8 @@ public final class OrganizationPersistenceMapper {
             return new OrganizationContactPointJpaEntity(
                         model.id(),
                         model.contactPointType(),
-                        model.targetType(),
-                        model.targetId(),
+                        model.target().type(),
+                        model.target().targetId(),
                         model.label(),
                         model.value(),
                         model.primaryContact(),
@@ -529,8 +530,10 @@ public final class OrganizationPersistenceMapper {
             return new OrganizationContactPoint(
                         entity.id(),
                         entity.contactPointType(),
-                        entity.targetType(),
-                        entity.targetId(),
+                        new ContactPointTargetReference(
+                                entity.contactTargetType(),
+                                entity.targetId()
+                        ),
                         entity.label(),
                         entity.value(),
                         entity.primaryContact(),

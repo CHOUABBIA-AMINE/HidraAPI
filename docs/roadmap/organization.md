@@ -2667,7 +2667,7 @@ the same because JPA persists the enum with `EnumType.STRING`.
 |---|---|---|
 | `ORG-041` | Completed | Canonical responsibility assignee state is typed with `ResponsibilityAssigneeType`; textual compatibility bridges are deprecated; JPA uses `EnumType.STRING` so stored values do not change. |
 | `ORG-042` | Completed | `ReportingLine` now owns typed `ReportingSubjectReference` source/target values backed by `ReportingSubjectType { EMPLOYEE, POSITION, ORGANIZATION_UNIT }`; JPA persists governed type names through `EnumType.STRING`, with deprecated textual bridges only for compatibility. |
-| `ORG-043` | Planned | Govern OrganizationContactPoint target types. |
+| `ORG-043` | Completed | `OrganizationContactPoint` now owns a typed `ContactPointTargetReference` backed by `ContactPointTargetType { EMPLOYEE, ORGANIZATION_UNIT }`; JPA persists governed names through `EnumType.STRING`, and `OrganizationContactPointTargetValidator` verifies target existence through existing Organization repository ports. |
 | `ORG-044` | Planned | Integrate OperationalScopeReference into registration. |
 | `ORG-045` | Planned | Adopt or explicitly retire OrganizationCode after consumer review. |
 | `ORG-046` | Planned | Add fail-closed same-module referential-integrity migration. |
@@ -2709,6 +2709,47 @@ Focused domain tests reject unsupported/blank textual discriminators and normali
 target IDs. Persistence-mapper tests prove typed domain references round-trip through
 the existing VARCHAR representation without adding cross-module ownership.
 
+### ORG-043 implementation result
+
+ORG-043 replaces the arbitrary `OrganizationContactPoint.targetType/targetId` pair
+with an Organization-owned typed reference:
+
+```text
+ContactPointTargetType
+  EMPLOYEE
+  ORGANIZATION_UNIT
+
+ContactPointTargetReference
+  type
+  targetId
+```
+
+The closed set intentionally excludes Position, Identity, Topology, Party, and other
+bounded-context targets. Contact points remain Organization-owned operational contact
+data rather than a generic cross-module reference mechanism.
+
+`OrganizationContactPoint` now stores a canonical typed `target`. The existing
+database `target_type` and `target_id` columns remain unchanged; JPA maps
+`target_type` with `EnumType.STRING`, preserving the accepted EMPLOYEE and
+ORGANIZATION_UNIT textual representation. Deprecated textual constructor/accessors
+remain only for compatibility.
+
+Because the module currently has no inbound contact-point write use case or REST
+endpoint, ORG-043 does not invent one. Instead it adds
+`OrganizationContactPointTargetValidator`, an application-layer prerequisite that
+verifies target existence through the existing EmployeeRepositoryPort and
+OrganizationUnitRepositoryPort. It validates existence only; no undocumented employee
+or unit lifecycle rule is invented.
+
+No Flyway migration is added in ORG-043. Existing-data target-type preflight and
+database CHECK/FK enforcement belong to ORG-046. Any historical contact-point row with
+an unsupported target_type therefore remains a deployment data-quality risk until that
+migration preflight is executed.
+
+Focused domain tests verify the closed target set and ID normalization; application
+tests verify repository-specific existence checks; persistence tests prove typed
+round-trip through the current VARCHAR representation.
+
 ### Multilingual correction status
 
 | Code | Status | Evidence / next gate |
@@ -2721,5 +2762,5 @@ the existing VARCHAR representation without adding cross-module ownership.
 | `ORG-039` | Completed | Added `V20260927_003__retire_organization_unit_type_translation_table.sql`. The migration performs a fail-closed, null-safe parity check between every remaining normalized `ar/fr/en` legacy row and embedded names/descriptions before dropping the table. Testcontainers coverage proves successful retirement, embedded-only post-cutover rows, and transactional rollback with the recovery table intact on label/description/language mismatches. |
 | `ORG-040` | Completed | Added final Organization multilingual architecture/integrity guardrails. Explicit domain/JPA `Ar/Fr/En` triplets are verified for the known translatable models, the existing OrganizationUnit application/API chain is checked for all three names, separate Organization translation production types/JPA mappings are forbidden, and migrations after `V20260927_003` may not reintroduce the retired translation table. |
 
-**Execution priority:** execute ORG-043 next, then continue through ORG-048 before resuming the remaining ORG-027 reconcile/audit/authorization gaps. Existing validated ORG-027 list/query work remains valid and must not be reverted.
+**Execution priority:** execute ORG-044 next, then continue through ORG-048 before resuming the remaining ORG-027 reconcile/audit/authorization gaps. Existing validated ORG-027 list/query work remains valid and must not be reverted.
 

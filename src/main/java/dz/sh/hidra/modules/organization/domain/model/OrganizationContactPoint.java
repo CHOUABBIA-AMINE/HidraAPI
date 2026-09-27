@@ -7,41 +7,57 @@
  *
  * @Name        : OrganizationContactPoint
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-27
  *
  * @Type        : Record
  * @Layer       : Domain
  * @Module      : organization
  * @Package     : dz.sh.hidra.modules.organization.domain.model
  *
- * @Description : Operational contact information.
+ * @Description : Operational contact information owned by a typed Organization target.
  *
  */
 package dz.sh.hidra.modules.organization.domain.model;
 
-import dz.sh.hidra.modules.organization.domain.value.*;
+import dz.sh.hidra.modules.organization.domain.exception.InvalidOrganizationValueException;
+import dz.sh.hidra.modules.organization.domain.value.ContactPointTargetReference;
+import dz.sh.hidra.modules.organization.domain.value.ContactPointType;
+
 import java.time.Instant;
 
-    /**
-     * Operational contact information.
-     *
-         * @param id id
-     * @param contactPointType contactPointType
-     * @param targetType targetType
-     * @param targetId targetId
-     * @param label label
-     * @param value value
-     * @param primaryContact primaryContact
-     * @param emergencyContact emergencyContact
-     * @param active active
-     * @param createdAt createdAt
-     * @param updatedAt updatedAt
-     */
-    public record OrganizationContactPoint(
-            String id,
+/**
+ * Represents one operational contact channel for an employee or organization unit.
+ *
+ * <p>Business role: records phone, mobile, email, radio, office, or emergency contact
+ * information against an Organization-owned target.</p>
+ *
+ * <p>Architecture role: canonical target state is a typed
+ * {@link ContactPointTargetReference}; the model does not import identity, topology,
+ * party, or other external bounded-context models.</p>
+ *
+ * <p>Validation: ID, contact-point type, target, and contact value are mandatory.
+ * Target existence is validated at the application boundary because it requires
+ * Organization repositories. Lifecycle-specific rules are intentionally not invented
+ * by this correction.</p>
+ *
+ * <p>Usage: persistence stores the target enum name in the existing target_type
+ * VARCHAR column. Deprecated textual bridges remain only for migration compatibility.</p>
+ *
+ * @param id contact-point identifier
+ * @param contactPointType operational contact channel type
+ * @param target typed Organization-owned contact target
+ * @param label optional operator/business label
+ * @param value contact value such as phone number, email address, or radio call sign
+ * @param primaryContact whether this is the target's primary contact
+ * @param emergencyContact whether this channel is intended for emergency contact
+ * @param active whether the contact point is active
+ * @param createdAt creation timestamp
+ * @param updatedAt update timestamp
+ */
+public record OrganizationContactPoint(
+        String id,
         ContactPointType contactPointType,
-        String targetType,
-        String targetId,
+        ContactPointTargetReference target,
         String label,
         String value,
         boolean primaryContact,
@@ -49,20 +65,87 @@ import java.time.Instant;
         boolean active,
         Instant createdAt,
         Instant updatedAt
-    ) {
+) {
 
-        public OrganizationContactPoint {
+    public OrganizationContactPoint {
         id = normalize(id);
-        targetType = normalize(targetType);
-        targetId = normalize(targetId);
         label = normalize(label);
         value = normalize(value);
-        }
 
-        private static String normalize(String value) {
-            if (value == null || value.isBlank()) {
-                return null;
-            }
-            return value.trim();
+        if (id == null) {
+            throw new InvalidOrganizationValueException(
+                    "Organization contact-point ID is required."
+            );
+        }
+        if (contactPointType == null) {
+            throw new InvalidOrganizationValueException(
+                    "Contact-point type is required."
+            );
+        }
+        if (target == null) {
+            throw new InvalidOrganizationValueException(
+                    "Contact-point target is required."
+            );
+        }
+        if (value == null) {
+            throw new InvalidOrganizationValueException(
+                    "Contact-point value is required."
+            );
         }
     }
+
+    /**
+     * Transitional constructor for callers that still provide textual target type/id state.
+     */
+    @Deprecated(forRemoval = true)
+    public OrganizationContactPoint(
+            String id,
+            ContactPointType contactPointType,
+            String targetType,
+            String targetId,
+            String label,
+            String value,
+            boolean primaryContact,
+            boolean emergencyContact,
+            boolean active,
+            Instant createdAt,
+            Instant updatedAt
+    ) {
+        this(
+                id,
+                contactPointType,
+                ContactPointTargetReference.from(targetType, targetId),
+                label,
+                value,
+                primaryContact,
+                emergencyContact,
+                active,
+                createdAt,
+                updatedAt
+        );
+    }
+
+    /**
+     * Transitional textual target-type accessor.
+     *
+     * @return canonical target type name
+     */
+    @Deprecated(forRemoval = true)
+    public String targetType() {
+        return target.type().name();
+    }
+
+    /**
+     * Transitional target identifier accessor.
+     *
+     * @return canonical target ID
+     */
+    @Deprecated(forRemoval = true)
+    public String targetId() {
+        return target.targetId();
+    }
+
+    private static String normalize(String value) {
+        return value == null || value.isBlank() ? null : value.trim();
+    }
+}

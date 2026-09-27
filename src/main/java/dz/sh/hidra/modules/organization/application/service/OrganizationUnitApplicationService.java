@@ -55,7 +55,7 @@ public final class OrganizationUnitApplicationService implements CreateOrganizat
 
         OrganizationUnit unit = new OrganizationUnit(
                 OrganizationId.newId().value(),
-                command.code(),
+                command.code().value(),
                 command.nameAr(),
                 command.nameFr(),
                 command.nameEn(),

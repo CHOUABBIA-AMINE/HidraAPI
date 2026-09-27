@@ -20,6 +20,7 @@
 package dz.sh.hidra.modules.organization.domain.model;
 
 import dz.sh.hidra.modules.organization.domain.value.ShiftType;
+import dz.sh.hidra.modules.organization.domain.value.OrganizationCode;
 import java.time.Instant;
 
 /**
@@ -65,7 +66,7 @@ public record Shift(
 
     public Shift {
         id = normalize(id);
-        code = normalize(code);
+        code = OrganizationCode.of(code).value();
         nameAr = normalize(nameAr);
         nameFr = normalize(nameFr);
         nameEn = normalize(nameEn);

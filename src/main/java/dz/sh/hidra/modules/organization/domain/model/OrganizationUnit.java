@@ -20,6 +20,7 @@
 package dz.sh.hidra.modules.organization.domain.model;
 
 import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitStatus;
+import dz.sh.hidra.modules.organization.domain.value.OrganizationCode;
 
 import java.time.Instant;
 
@@ -60,7 +61,7 @@ public record OrganizationUnit(
 
     public OrganizationUnit {
         id = normalize(id);
-        code = normalize(code);
+        code = OrganizationCode.of(code).value();
         nameAr = normalize(nameAr);
         nameFr = normalize(nameFr);
         nameEn = normalize(nameEn);

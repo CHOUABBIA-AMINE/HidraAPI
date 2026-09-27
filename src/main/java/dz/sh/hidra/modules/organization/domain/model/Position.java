@@ -20,6 +20,7 @@
 package dz.sh.hidra.modules.organization.domain.model;
 
 import dz.sh.hidra.modules.organization.domain.value.PositionLevel;
+import dz.sh.hidra.modules.organization.domain.value.OrganizationCode;
 import dz.sh.hidra.modules.organization.domain.value.PositionStatus;
 import java.time.Instant;
 
@@ -65,7 +66,7 @@ public record Position(
 
     public Position {
         id = normalize(id);
-        code = normalize(code);
+        code = OrganizationCode.of(code).value();
         titleAr = normalize(titleAr);
         titleFr = normalize(titleFr);
         titleEn = normalize(titleEn);

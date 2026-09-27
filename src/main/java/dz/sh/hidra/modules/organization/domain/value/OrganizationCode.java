@@ -7,14 +7,14 @@
  *
  * @Name        : OrganizationCode
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-27
  *
  * @Type        : Record
  * @Layer       : Domain
  * @Module      : organization
  * @Package     : dz.sh.hidra.modules.organization.domain.value
  *
- * @Description : Normalized organization code.
+ * @Description : Canonical normalization and validation policy for stable Organization business codes.
  *
  */
 package dz.sh.hidra.modules.organization.domain.value;
@@ -24,15 +24,34 @@ import dz.sh.hidra.modules.organization.domain.exception.InvalidOrganizationValu
 import java.util.Locale;
 
 /**
- * Normalized organization code.
+ * Canonical stable business-code value for Organization reference and master data.
  *
- * @param value normalized code value
+ * <p>Business role: provides one normalization rule for language-neutral codes used by
+ * administrative geography, organization units and types, positions, and shifts.</p>
+ *
+ * <p>Architecture role: domain value object reused by domain constructors and active
+ * application commands. Persistence/API string contracts remain unchanged where
+ * replacing their public type would create unnecessary compatibility churn.</p>
+ *
+ * <p>Validation: codes must be nonblank; leading/trailing whitespace is removed and
+ * letters are normalized to upper case using {@link Locale#ROOT}. No additional
+ * character-set restriction is invented because existing authoritative code sets may
+ * legitimately use digits, dashes, underscores, dots, colons, or other stable
+ * separators.</p>
+ *
+ * <p>Usage: use for stable language-neutral Organization business codes only. Do not
+ * use it for employee numbers, postal codes, database IDs, topology owner codes, or
+ * free-form textual identifiers.</p>
+ *
+ * @param value normalized nonblank business code
  */
 public record OrganizationCode(String value) {
 
     public OrganizationCode {
         if (value == null || value.isBlank()) {
-            throw new InvalidOrganizationValueException("Organization code must not be null or blank.");
+            throw new InvalidOrganizationValueException(
+                    "Organization code must not be null or blank."
+            );
         }
         value = value.trim().toUpperCase(Locale.ROOT);
     }

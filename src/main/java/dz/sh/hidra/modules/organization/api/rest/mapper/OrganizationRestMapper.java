@@ -29,6 +29,7 @@ import dz.sh.hidra.modules.organization.application.command.CreateOrganizationUn
 import dz.sh.hidra.modules.organization.application.command.RegisterEmployeeCommand;
 import dz.sh.hidra.modules.organization.application.dto.EmployeeSummaryDto;
 import dz.sh.hidra.modules.organization.application.dto.OrganizationUnitSummaryDto;
+import dz.sh.hidra.modules.organization.domain.value.OrganizationCode;
 
 /**
  * Maps organization REST models to application models.
@@ -52,7 +53,7 @@ public final class OrganizationRestMapper {
 
     public static CreateOrganizationUnitCommand toCommand(CreateOrganizationUnitRequest request) {
         return new CreateOrganizationUnitCommand(
-                request.code(),
+                OrganizationCode.of(request.code()),
                 request.nameAr(),
                 request.nameFr(),
                 request.nameEn(),

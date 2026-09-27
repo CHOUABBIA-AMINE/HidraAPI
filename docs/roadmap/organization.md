@@ -2669,7 +2669,7 @@ the same because JPA persists the enum with `EnumType.STRING`.
 | `ORG-042` | Completed | `ReportingLine` now owns typed `ReportingSubjectReference` source/target values backed by `ReportingSubjectType { EMPLOYEE, POSITION, ORGANIZATION_UNIT }`; JPA persists governed type names through `EnumType.STRING`, with deprecated textual bridges only for compatibility. |
 | `ORG-043` | Completed | `OrganizationContactPoint` now owns a typed `ContactPointTargetReference` backed by `ContactPointTargetType { EMPLOYEE, ORGANIZATION_UNIT }`; JPA persists governed names through `EnumType.STRING`, and `OrganizationContactPointTargetValidator` verifies target existence through existing Organization repository ports. |
 | `ORG-044` | Completed | `OperationalScopeReference` is now the canonical registration input across command, owner validation, application service, and registry persistence. The returned/generated `OperationalScope.id` remains the separate identity persisted by responsibility assignments; deprecated split type/target bridges remain only for compatibility. |
-| `ORG-045` | Planned | Adopt or explicitly retire OrganizationCode after consumer review. |
+| `ORG-045` | Completed | `OrganizationCode` is adopted as the canonical normalization/validation policy for stable Organization business codes. Administrative state/district/locality, organization unit type/unit, position, and shift constructors normalize through it; the active `CreateOrganizationUnitCommand` carries `OrganizationCode` directly while REST/persistence/query string contracts remain compatible. |
 | `ORG-046` | Planned | Add fail-closed same-module referential-integrity migration. |
 | `ORG-047` | Planned | Retire remaining multilingual compatibility columns after parity. |
 | `ORG-048` | Planned | Final typed-dependency integrity guardrails. |
@@ -2799,6 +2799,64 @@ repository unchanged, GLOBAL bypasses external owner lookup, rejected owners nev
 reach persistence, and the returned registry ID remains independent of the owner target
 identifier.
 
+### ORG-045 implementation result
+
+Repository review found that `OrganizationCode` was a genuine orphan value object even
+though seven Organization reference/master models already expose stable,
+language-neutral `code` columns that are all `NOT NULL` in the schema:
+
+```text
+AdministrativeState.code
+AdministrativeDistrict.code
+AdministrativeLocality.code
+OrganizationUnitType.code
+OrganizationUnit.code
+Position.code
+Shift.code
+```
+
+ORG-045 adopts `OrganizationCode` as their single normalization/validation policy.
+All seven domain constructors now route code input through
+`OrganizationCode.of(code).value()`, which rejects null/blank values, trims boundary
+whitespace, and normalizes letters with `Locale.ROOT` upper case.
+
+The public domain record components remain `String code` for these existing models.
+Changing all seven accessor types to `OrganizationCode` would create broad persistence,
+query, DTO, and compatibility churn without adding business value at this stage.
+Instead, the active organization-unit write boundary adopts the value type directly:
+
+```text
+CreateOrganizationUnitRequest.code : String
+        |
+        v
+OrganizationRestMapper
+        |
+        v
+OrganizationCode
+        |
+        v
+CreateOrganizationUnitCommand.code : OrganizationCode
+        |
+        v
+OrganizationUnit.code : normalized String
+```
+
+A deprecated textual command constructor remains temporarily for internal compatibility.
+API/OpenAPI request and response shapes remain textual and therefore do not change.
+
+The value object is intentionally not applied to employee numbers, postal codes,
+database IDs, topology resolver display codes, or polymorphic target IDs because those
+belong to different identifier semantics.
+
+No Flyway migration is added in ORG-045. Existing rows are not rewritten here; any
+database-level canonical-code preflight or constraint can be considered together with
+the ORG-046 integrity migration. Reads through the domain will normalize code values,
+but the underlying historical stored value remains untouched until an explicit data
+migration is approved.
+
+Focused tests verify OrganizationCode normalization/rejection, all seven supported
+model constructors, and typed adoption at the organization-unit creation command.
+
 ### Multilingual correction status
 
 | Code | Status | Evidence / next gate |
@@ -2811,5 +2869,5 @@ identifier.
 | `ORG-039` | Completed | Added `V20260927_003__retire_organization_unit_type_translation_table.sql`. The migration performs a fail-closed, null-safe parity check between every remaining normalized `ar/fr/en` legacy row and embedded names/descriptions before dropping the table. Testcontainers coverage proves successful retirement, embedded-only post-cutover rows, and transactional rollback with the recovery table intact on label/description/language mismatches. |
 | `ORG-040` | Completed | Added final Organization multilingual architecture/integrity guardrails. Explicit domain/JPA `Ar/Fr/En` triplets are verified for the known translatable models, the existing OrganizationUnit application/API chain is checked for all three names, separate Organization translation production types/JPA mappings are forbidden, and migrations after `V20260927_003` may not reintroduce the retired translation table. |
 
-**Execution priority:** execute ORG-045 next, then continue through ORG-048 before resuming the remaining ORG-027 reconcile/audit/authorization gaps. Existing validated ORG-027 list/query work remains valid and must not be reverted.
+**Execution priority:** execute ORG-046 next, then continue through ORG-048 before resuming the remaining ORG-027 reconcile/audit/authorization gaps. Existing validated ORG-027 list/query work remains valid and must not be reverted.
 

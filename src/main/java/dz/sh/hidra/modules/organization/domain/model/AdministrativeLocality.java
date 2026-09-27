@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.organization.domain.model;
 
+import dz.sh.hidra.modules.organization.domain.value.OrganizationCode;
 import java.time.Instant;
 
     /**
@@ -51,7 +52,7 @@ import java.time.Instant;
         public AdministrativeLocality {
         id = normalize(id);
         districtId = normalize(districtId);
-        code = normalize(code);
+        code = OrganizationCode.of(code).value();
         nameAr = normalize(nameAr);
         nameFr = normalize(nameFr);
         nameEn = normalize(nameEn);

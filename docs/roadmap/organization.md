@@ -2419,13 +2419,58 @@ must preflight and fail safely on:
 ORG-035 is complete as a repository/schema inventory. Live data quality remains an
 explicit ORG-036 deployment precondition and must not be replaced with guessed values.
 
+
+### ORG-036 implementation result
+
+**Migration:** `V20260927_002__add_embedded_organization_multilingual_fields.sql`
+
+ORG-036 is additive and limited to Organization persistence:
+
+```text
+hidra_org_unit_type
+  + name_ar / name_fr / name_en
+  + description_ar / description_fr / description_en
+
+hidra_org_position
+  + description_ar / description_fr / description_en
+
+hidra_org_shift
+  + name_ar / name_fr / name_en
+```
+
+Before any unit-type backfill, the migration fails transactionally on unsupported
+normalized language codes, duplicate `(unit_type_id, language)` rows, orphan unit-type
+references, or any existing unit type lacking deterministic `ar`, `fr`, and `en`
+translation rows. Recognized language codes are compared using
+`lower(btrim(language_code))`.
+
+Only `OrganizationUnitTypeTranslation.label/description` values are backfilled into
+the new unit-type fields. The migration intentionally does **not** infer a language for
+the legacy base `hidra_org_unit_type.description`, `hidra_org_position.description`,
+or `hidra_org_shift.name`.
+
+The following recovery/cutover structures remain unchanged:
+
+```text
+hidra_org_unit_type_translation
+hidra_org_unit_type.description
+hidra_org_position.description
+hidra_org_shift.name
+```
+
+Focused Testcontainers/Flyway coverage verifies deterministic backfill, case/whitespace
+language normalization, preservation of legacy fields/table, duplicate rejection and
+transaction rollback, missing-language rejection, orphan rejection, and unsupported
+language-code rejection. No domain/JPA/API contract is switched to the new columns in
+ORG-036; that belongs to ORG-037.
+
 ### Multilingual correction status
 
 | Code | Status | Evidence / next gate |
 |---|---|---|
 | `ORG-034` | Completed | Organization-only embedded multilingual decision and safe correction sequence recorded in this roadmap. |
 | `ORG-035` | Completed | Repository/schema inventory completed on `9f88b07d...`: aligned embedded fields identified, `OrganizationUnitTypeTranslation` consumer path isolated, `Shift.name` and `Position.description` gaps recorded, and live-data preflight requirements documented without guessing data. |
-| `ORG-036` | Planned | Additive schema/backfill migration after inventory. |
+| `ORG-036` | Completed | Added `V20260927_002__add_embedded_organization_multilingual_fields.sql` plus PostgreSQL/Testcontainers migration coverage. Unit-type `ar/fr/en` values backfill only after fail-closed preflight; Position description and Shift name receive nullable embedded language columns without guessed backfill; all legacy columns/table are retained for cutover and recovery. |
 | `ORG-037` | Planned | Code/API/persistence cutover after additive schema exists. |
 | `ORG-038` | Planned | Remove separate translation code only after all organization consumers are migrated. |
 | `ORG-039` | Planned | Drop legacy translation table only after data parity and recovery evidence. |

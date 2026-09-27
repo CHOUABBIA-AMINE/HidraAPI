@@ -14,7 +14,7 @@
 | Resource root | `src/main/resources` |
 | Author | Abir MEDJERAB |
 | CreatedOn | 2025-06-26 |
-| UpdatedOn | 2026-05-30 |
+| UpdatedOn | 2026-09-27 |
 | Status | Ready for AI-agent execution after kernel baseline; updated for station-as-organization-unit and matrix reporting |
 | Execution mode | One commit code at a time |
 
@@ -2186,19 +2186,41 @@ Maven clean verify    : not run — isolated ZIP generation, not full repository
 
 ### Correction status (issue #130)
 
-| Code | Status | Notes |
+The status below was reconciled on **2026-09-27** against GitHub `main`
+commit `35e989476659331c86dd761a0e507e204465d638` after **HidraAPI CI #357**
+completed successfully. Status reflects repository evidence, not the older ZIP-era
+execution notes. A task is not marked Completed unless its full roadmap exit gate is
+satisfied.
+
+| Code | Status | Reconciled evidence on current main |
 |---|---|---|
-| `ORG-022` | Completed | ADR-0005 and correction roadmap merged via PR #131; CI passed; main merge commit d94b9d72aac32863d971b6f7409c407faa647152. |
-| `ORG-023` | Blocked | Source-contract assessment: [ORG-023 inventory](../data-provisioning/org-023-operational-scope-inventory.md); legacy DB tuples, owner-resolution validation, full cross-repository consumers and Maven verification not available. No import or implementation performed. |
-| `ORG-024` | Planned | Not started; execute after previous task has passed its gate. |
-| `ORG-025` | Planned | Not started; execute after previous task has passed its gate. |
-| `ORG-026` | Planned | Not started; execute after previous task has passed its gate. |
-| `ORG-027` | Planned | Not started; execute after previous task has passed its gate. |
-| `ORG-028` | Planned | Not started; execute after previous task has passed its gate. |
-| `ORG-029` | Planned | Not started; execute after previous task has passed its gate. |
-| `ORG-030` | Planned | Not started; execute after previous task has passed its gate. |
-| `ORG-031` | Planned | Not started; execute after previous task has passed its gate. |
-| `ORG-032` | Planned | Not started; execute after previous task has passed its gate. |
-| `ORG-033` | Planned | Not started; execute after previous task has passed its gate. |
+| `ORG-022` | Completed | ADR-0005 and the correction roadmap are present on main; prior completion evidence remains valid. |
+| `ORG-023` | Blocked | Source inventory exists, but authorized live/sanitized legacy tuple evidence, full owner-target resolution evidence and external consumer evidence are still incomplete. Implementation work proceeded beyond this evidence gate; that does not make the inventory gate complete. |
+| `ORG-024` | In Progress | `OperationalScope` now enforces positive generated registry IDs, GLOBAL null-target semantics and rejection of ungoverned CUSTOM. However legacy `OperationalScopeReference` still carries the old type/id/code/name tuple and has not been fully retired/refined to the canonical registry model. |
+| `ORG-025` | Blocked | `OperationalScopeTargetResolverPort`, validation logic and resolver contract tests exist. Main currently provides only a conditional fail-closed fallback resolver; no authoritative owner resolver adapter exists yet for entity-backed scope types, so owner-backed registration remains intentionally unavailable. |
+| `ORG-026` | In Progress | `ResponsibilityAssignment` uses `Long scopeId`; assignment, overlap/idempotency and revocation behavior are implemented with effective dating. Remaining roadmap gates include explicit assignee validation, owner lifecycle semantics and broader concurrency/domain-policy coverage. |
+| `ORG-027` | In Progress | Validated register-scope, assign-responsibility and revoke-responsibility application flows exist. List/reconcile use cases plus the roadmap's authorization/workflow/audit requirements are not yet implemented. |
+| `ORG-028` | In Progress | Additive migration `V20260927_001__add_operational_scope_registry.sql` creates the canonical registry and nullable responsibility `scope_id` FK while retaining legacy columns. Required dedicated PostgreSQL/Testcontainers constraint coverage and the full roadmap versioning gate are not yet evidenced. |
+| `ORG-029` | In Progress | Canonical registry and responsibility JPA entity/repository/mapper/adapter code exists and responsibility persistence uses `scopeId`. Verified reconciliation/backfill/quarantine of legacy tuples is still missing, so the task is not complete. |
+| `ORG-030` | Planned | No versioned responsibility/scope REST migration with owner-resolved display and backward-compatibility evidence is present yet. |
+| `ORG-031` | In Progress | Canonical embedded scope components were removed from `OrganizationUnit` and `EmployeeAssignment`, and responsibility uses `scopeId`. Transitional deprecated constructors/accessors and legacy persistence mappings remain; prerequisite migration/consumer sign-off is not complete. |
+| `ORG-032` | Planned | Legacy `operational_scope_*` database columns remain intentionally in place. No destructive retirement migration has been added. |
+| `ORG-033` | In Progress | Current main passes the repository compile/test/full verify and acceptance compile/test/clean verify stages, plus OpenAPI publication, in CI #357. End-to-end scope integrity is still incomplete because authoritative entity-backed owner resolvers, legacy data reconciliation/backfill, API cutover and destructive retirement gates remain open. |
+
+### Reconciliation notes
+
+- The implementation sequence on main diverged from the original ORG-024 through
+  ORG-033 dependency order. This table records that fact rather than rewriting task
+  definitions or pretending earlier gates were satisfied.
+- The fail-closed resolver configuration keeps the Spring context bootable while
+  preserving the rule that entity-backed scope registration must not succeed without
+  an approved authoritative owner resolver.
+- The canonical target state is now a generated `OperationalScope.id` referenced by
+  `ResponsibilityAssignment.scopeId`; current target code/name remain owner data.
+- Legacy compatibility code and database columns are transitional and must not be
+  treated as the canonical source of operational-scope identity.
+- The next implementation priority is the first blocking integrity gap: provide
+  authoritative owner resolvers for the currently supported scope types, starting
+  only from public owner-module read contracts and without cross-module JPA coupling.
 
 **Execution rule:** A roadmap task's first implementation action must specify exact file allowlists and verification commands after inspecting current main; do not silently rewrite old task descriptions or mark future tasks complete. `ORG-028` and `ORG-032` must use separately numbered, never-reused migrations after rechecking the live Flyway sequence. Issue #130 remains open until the acceptance matrix is satisfied.

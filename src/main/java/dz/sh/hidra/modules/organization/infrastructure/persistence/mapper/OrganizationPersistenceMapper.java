@@ -20,6 +20,7 @@
 package dz.sh.hidra.modules.organization.infrastructure.persistence.mapper;
 
 import dz.sh.hidra.modules.organization.domain.model.*;
+import dz.sh.hidra.modules.organization.domain.value.ReportingSubjectReference;
 import dz.sh.hidra.modules.organization.infrastructure.persistence.entity.*;
 
 /**
@@ -346,10 +347,10 @@ public final class OrganizationPersistenceMapper {
             return new ReportingLineJpaEntity(
                         model.id(),
                         model.reportingLineType(),
-                        model.sourceType(),
-                        model.sourceId(),
-                        model.targetType(),
-                        model.targetId(),
+                        model.source().type(),
+                        model.source().targetId(),
+                        model.target().type(),
+                        model.target().targetId(),
                         model.validFrom(),
                         model.validTo(),
                         model.active(),
@@ -362,10 +363,14 @@ public final class OrganizationPersistenceMapper {
             return new ReportingLine(
                         entity.id(),
                         entity.reportingLineType(),
-                        entity.sourceType(),
-                        entity.sourceId(),
-                        entity.targetType(),
-                        entity.targetId(),
+                        new ReportingSubjectReference(
+                                entity.sourceSubjectType(),
+                                entity.sourceId()
+                        ),
+                        new ReportingSubjectReference(
+                                entity.targetSubjectType(),
+                                entity.targetId()
+                        ),
                         entity.validFrom(),
                         entity.validTo(),
                         entity.active(),

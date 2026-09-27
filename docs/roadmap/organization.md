@@ -2666,13 +2666,48 @@ the same because JPA persists the enum with `EnumType.STRING`.
 | Code | Status | Evidence / next gate |
 |---|---|---|
 | `ORG-041` | Completed | Canonical responsibility assignee state is typed with `ResponsibilityAssigneeType`; textual compatibility bridges are deprecated; JPA uses `EnumType.STRING` so stored values do not change. |
-| `ORG-042` | Planned | Govern ReportingLine source/target subject types. |
+| `ORG-042` | Completed | `ReportingLine` now owns typed `ReportingSubjectReference` source/target values backed by `ReportingSubjectType { EMPLOYEE, POSITION, ORGANIZATION_UNIT }`; JPA persists governed type names through `EnumType.STRING`, with deprecated textual bridges only for compatibility. |
 | `ORG-043` | Planned | Govern OrganizationContactPoint target types. |
 | `ORG-044` | Planned | Integrate OperationalScopeReference into registration. |
 | `ORG-045` | Planned | Adopt or explicitly retire OrganizationCode after consumer review. |
 | `ORG-046` | Planned | Add fail-closed same-module referential-integrity migration. |
 | `ORG-047` | Planned | Retire remaining multilingual compatibility columns after parity. |
 | `ORG-048` | Planned | Final typed-dependency integrity guardrails. |
+
+### ORG-042 implementation result
+
+ORG-042 replaces arbitrary ReportingLine source/target discriminator strings with a
+closed Organization-owned subject contract:
+
+```text
+ReportingSubjectType
+  EMPLOYEE
+  POSITION
+  ORGANIZATION_UNIT
+
+ReportingSubjectReference
+  type
+  targetId
+```
+
+`ReportingLine` now stores typed `source` and `target` references. The existing
+database columns `source_type/source_id` and `target_type/target_id` are preserved;
+the JPA entity maps the type columns with `EnumType.STRING`, so accepted persisted
+values remain the same enum names.
+
+No identity or topology subject type is introduced. Repository evidence describes
+ReportingLine as a relation between positions, units, or employees, and ORG-042 keeps
+that boundary exact. Deprecated textual constructors/accessors remain only to avoid a
+hard compatibility break while callers migrate.
+
+No Flyway migration is added in ORG-042. Existing-data discriminator preflight and
+database CHECK/FK enforcement belong to ORG-046. Consequently, any historical row with
+a discriminator outside EMPLOYEE/POSITION/ORGANIZATION_UNIT remains a deployment data
+quality risk until that preflight is executed.
+
+Focused domain tests reject unsupported/blank textual discriminators and normalize
+target IDs. Persistence-mapper tests prove typed domain references round-trip through
+the existing VARCHAR representation without adding cross-module ownership.
 
 ### Multilingual correction status
 
@@ -2686,5 +2721,5 @@ the same because JPA persists the enum with `EnumType.STRING`.
 | `ORG-039` | Completed | Added `V20260927_003__retire_organization_unit_type_translation_table.sql`. The migration performs a fail-closed, null-safe parity check between every remaining normalized `ar/fr/en` legacy row and embedded names/descriptions before dropping the table. Testcontainers coverage proves successful retirement, embedded-only post-cutover rows, and transactional rollback with the recovery table intact on label/description/language mismatches. |
 | `ORG-040` | Completed | Added final Organization multilingual architecture/integrity guardrails. Explicit domain/JPA `Ar/Fr/En` triplets are verified for the known translatable models, the existing OrganizationUnit application/API chain is checked for all three names, separate Organization translation production types/JPA mappings are forbidden, and migrations after `V20260927_003` may not reintroduce the retired translation table. |
 
-**Execution priority:** complete ORG-041 through ORG-048 before resuming the remaining ORG-027 reconcile/audit/authorization gaps. Existing validated ORG-027 list/query work remains valid and must not be reverted.
+**Execution priority:** execute ORG-043 next, then continue through ORG-048 before resuming the remaining ORG-027 reconcile/audit/authorization gaps. Existing validated ORG-027 list/query work remains valid and must not be reverted.
 

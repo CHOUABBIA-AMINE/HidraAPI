@@ -183,6 +183,14 @@ class OrganizationMultilingualMigrationTest {
         assertThat(columnExists("hidra_org_unit_type", "name_ar")).isFalse();
     }
 
+    private static Flyway flyway() {
+        return Flyway.configure()
+                .dataSource(POSTGRESQL.getJdbcUrl(), POSTGRESQL.getUsername(), POSTGRESQL.getPassword())
+                .locations("classpath:db/migration")
+                .cleanDisabled(false)
+                .load();
+    }
+
     private static Flyway flyway(MigrationVersion target) {
         return Flyway.configure()
                 .dataSource(POSTGRESQL.getJdbcUrl(), POSTGRESQL.getUsername(), POSTGRESQL.getPassword())

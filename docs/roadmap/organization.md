@@ -2672,7 +2672,7 @@ the same because JPA persists the enum with `EnumType.STRING`.
 | `ORG-045` | Completed | `OrganizationCode` is adopted as the canonical normalization/validation policy for stable Organization business codes. Administrative state/district/locality, organization unit type/unit, position, and shift constructors normalize through it; the active `CreateOrganizationUnitCommand` carries `OrganizationCode` directly while REST/persistence/query string contracts remain compatible. |
 | `ORG-046` | Completed | Added `V20260927_004__enforce_organization_internal_reference_integrity.sql`: fail-closed orphan/discriminator preflight, 16 same-module `ON DELETE RESTRICT` foreign keys, and closed checks for contact/reporting/responsibility polymorphic types. PostgreSQL/Testcontainers coverage verifies installation and transactional rollback on direct/polymorphic orphan data. |
 | `ORG-047` | Completed | Added `V20260927_005__retire_organization_multilingual_compatibility_columns.sql`. Retirement is fail-closed: ambiguous unit-type/position descriptions must already be preserved exactly in an embedded language, and Shift legacy `name` must match the canonical `en -> fr -> ar -> code` compatibility projection. Legacy JPA mappings were removed so existing Hibernate `ddl-auto=validate` smoke coverage validates the post-drop schema. |
-| `ORG-048` | Planned | Final typed-dependency integrity guardrails. |
+| `ORG-048` | Completed | Added `OrganizationTypedDependencyIntegrityTest`: canonical Organization polymorphic domain/JPA state must remain typed, textual compatibility bridges must remain explicitly deprecated for removal, ORG-046 same-module FK/check protection must remain present, ORG-039/047 multilingual retirements may not be reversed, and Organization migrations may not add foreign keys to non-Organization tables. |
 
 ### ORG-042 implementation result
 
@@ -2951,6 +2951,50 @@ persistence mapper test still asserted the deliberately removed `ShiftJpaEntity.
 compatibility accessor. The ORG-047 repair removes that obsolete assertion and renames the
 test to describe post-retirement behavior; no production or migration semantics change.
 
+### ORG-048 implementation result
+
+**Guardrail:** `OrganizationTypedDependencyIntegrityTest`
+
+ORG-048 closes the typed-dependency correction sequence with repository-level tests only;
+it does not change runtime behavior or schema.
+
+The guardrail fixes the following invariants:
+
+```text
+Domain canonical polymorphic state
+  OrganizationContactPoint.target -> ContactPointTargetReference
+  ReportingLine.source/target -> ReportingSubjectReference
+  ResponsibilityAssignment.assigneeType -> ResponsibilityAssigneeType
+
+JPA canonical finite discriminators
+  OrganizationContactPointJpaEntity.targetType -> ContactPointTargetType
+  ReportingLineJpaEntity.sourceType/targetType -> ReportingSubjectType
+  ResponsibilityAssignmentJpaEntity.assigneeType -> ResponsibilityAssigneeType
+  all persisted with EnumType.STRING
+```
+
+Existing textual migration bridges are not deleted by this task because earlier roadmap
+steps deliberately retained them for compatibility. ORG-048 instead requires every
+wide textual constructor/accessor bridge in the governed models/entities to remain
+explicitly `@Deprecated(forRemoval = true)`, preventing a raw-string compatibility path
+from silently becoming canonical again.
+
+Database guardrails assert that the ORG-046 same-module referential-integrity migration
+continues to contain all 16 Organization-owned foreign keys and the four governed
+polymorphic discriminator checks, together with its fail-closed preflight contract.
+
+Multilingual guardrails assert that the ORG-047 JPA compatibility fields remain absent,
+that the retirement migration still drops the three legacy columns, and that no later
+migration restores those columns or the ORG-039 retired translation table.
+
+Finally, every migration marked `Module: organization` is scanned for foreign keys to
+non-`hidra_org_*` tables. This preserves the architecture rule that topology, identity,
+and other bounded contexts are resolved through public contracts/stable references rather
+than database ownership from Organization.
+
+Normal CI provides the requested full compile/test/clean-verify gate for this final
+guardrail task.
+
 ### Multilingual correction status
 
 | Code | Status | Evidence / next gate |
@@ -2963,5 +3007,5 @@ test to describe post-retirement behavior; no production or migration semantics 
 | `ORG-039` | Completed | Added `V20260927_003__retire_organization_unit_type_translation_table.sql`. The migration performs a fail-closed, null-safe parity check between every remaining normalized `ar/fr/en` legacy row and embedded names/descriptions before dropping the table. Testcontainers coverage proves successful retirement, embedded-only post-cutover rows, and transactional rollback with the recovery table intact on label/description/language mismatches. |
 | `ORG-040` | Completed | Added final Organization multilingual architecture/integrity guardrails. Explicit domain/JPA `Ar/Fr/En` triplets are verified for the known translatable models, the existing OrganizationUnit application/API chain is checked for all three names, separate Organization translation production types/JPA mappings are forbidden, and migrations after `V20260927_003` may not reintroduce the retired translation table. |
 
-**Execution priority:** execute ORG-048 next before resuming the remaining ORG-027 reconcile/audit/authorization gaps. Existing validated ORG-027 list/query work remains valid and must not be reverted.
+**Execution priority:** typed-dependency correction sequence ORG-034 through ORG-048 is complete. Resume only the remaining explicitly documented ORG-027 reconcile/audit/authorization gaps; do not reopen completed correction tasks without new evidence. Existing validated ORG-027 list/query work remains valid and must not be reverted.
 

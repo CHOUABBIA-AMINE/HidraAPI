@@ -79,7 +79,7 @@ class OrganizationEmbeddedMultilingualPersistenceMapperTest {
                 " مشغل ",
                 " Opérateur ",
                 " Operator ",
-                PositionLevel.OPERATIONAL,
+                PositionLevel.OPERATOR,
                 " وصف ",
                 " Exploite les installations ",
                 " Operates facilities ",

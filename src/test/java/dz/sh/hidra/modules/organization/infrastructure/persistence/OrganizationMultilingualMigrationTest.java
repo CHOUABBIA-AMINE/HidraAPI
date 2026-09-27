@@ -60,6 +60,8 @@ class OrganizationMultilingualMigrationTest {
 
     private static final MigrationVersion PRE_ORG_036 =
             MigrationVersion.fromVersion("20260927.001");
+    private static final MigrationVersion ORG_036 =
+            MigrationVersion.fromVersion("20260927.002");
     private static final Instant NOW = Instant.parse("2026-09-27T10:00:00Z");
 
     @Container
@@ -84,7 +86,7 @@ class OrganizationMultilingualMigrationTest {
         insertPosition("position-operator", "OPERATOR", "legacy position description");
         insertShift("shift-day", "DAY_SHIFT", "Legacy Day Shift");
 
-        flyway().migrate();
+        flyway(ORG_036).migrate();
 
         try (Connection connection = connection();
              PreparedStatement statement = connection.prepareStatement(
@@ -136,7 +138,7 @@ class OrganizationMultilingualMigrationTest {
         insertTranslation("translation-fr", "unit-type-duplicate", "fr", "Français", null);
         insertTranslation("translation-en", "unit-type-duplicate", "en", "English", null);
 
-        assertThatThrownBy(() -> flyway().migrate())
+        assertThatThrownBy(() -> flyway(ORG_036).migrate())
                 .isInstanceOf(FlywayException.class)
                 .hasStackTraceContaining("ORG-036 preflight failed: duplicate organization unit type translations");
 
@@ -152,7 +154,7 @@ class OrganizationMultilingualMigrationTest {
         insertTranslation("translation-ar", "unit-type-missing", "ar", "عربي", null);
         insertTranslation("translation-fr", "unit-type-missing", "fr", "Français", null);
 
-        assertThatThrownBy(() -> flyway().migrate())
+        assertThatThrownBy(() -> flyway(ORG_036).migrate())
                 .isInstanceOf(FlywayException.class)
                 .hasStackTraceContaining("must have deterministic ar, fr and en translation rows");
 
@@ -163,7 +165,7 @@ class OrganizationMultilingualMigrationTest {
     void rejectsOrphanUnitTypeTranslations() throws SQLException {
         insertTranslation("translation-orphan", "missing-unit-type", "ar", "يتيم", null);
 
-        assertThatThrownBy(() -> flyway().migrate())
+        assertThatThrownBy(() -> flyway(ORG_036).migrate())
                 .isInstanceOf(FlywayException.class)
                 .hasStackTraceContaining("orphan organization unit type translation");
 
@@ -174,19 +176,11 @@ class OrganizationMultilingualMigrationTest {
     void rejectsUnsupportedLanguageCodes() throws SQLException {
         insertTranslation("translation-de", "missing-unit-type", "de", "Deutsch", null);
 
-        assertThatThrownBy(() -> flyway().migrate())
+        assertThatThrownBy(() -> flyway(ORG_036).migrate())
                 .isInstanceOf(FlywayException.class)
                 .hasStackTraceContaining("unsupported organization unit type language_code");
 
         assertThat(columnExists("hidra_org_unit_type", "name_ar")).isFalse();
-    }
-
-    private static Flyway flyway() {
-        return Flyway.configure()
-                .dataSource(POSTGRESQL.getJdbcUrl(), POSTGRESQL.getUsername(), POSTGRESQL.getPassword())
-                .locations("classpath:db/migration")
-                .cleanDisabled(false)
-                .load();
     }
 
     private static Flyway flyway(MigrationVersion target) {

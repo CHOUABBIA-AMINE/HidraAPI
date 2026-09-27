@@ -2532,6 +2532,51 @@ migration and is still referenced by the additive ORG-036 migration and its
 PostgreSQL/Testcontainers recovery/parity tests. Table retirement belongs exclusively
 to ORG-039 after its separate parity and recovery gate.
 
+### ORG-039 implementation result
+
+**Migration:** `V20260927_003__retire_organization_unit_type_translation_table.sql`
+
+ORG-039 retires only the legacy unit-type translation table. The migration first
+performs an in-transaction parity gate over every remaining legacy row:
+
+```text
+ar.label        == hidra_org_unit_type.name_ar
+fr.label        == hidra_org_unit_type.name_fr
+en.label        == hidra_org_unit_type.name_en
+
+ar.description  IS NOT DISTINCT FROM description_ar
+fr.description  IS NOT DISTINCT FROM description_fr
+en.description  IS NOT DISTINCT FROM description_en
+```
+
+Language codes are normalized with `lower(btrim(language_code))`. Unsupported codes,
+orphan translation rows, label mismatches, or null-safe description mismatches abort
+the migration before the destructive step. When parity holds, the migration executes:
+
+```sql
+DROP TABLE hidra_org_unit_type_translation;
+```
+
+The embedded multilingual columns are never modified by ORG-039. Unit types created
+after the ORG-037 cutover do not need legacy translation rows; an empty legacy table is
+therefore valid and can be retired.
+
+The pre-existing ORG-036 migration tests are pinned explicitly to Flyway version
+`20260927.002`, preserving their recovery-checkpoint semantics instead of silently
+running through the new destructive migration.
+
+Focused PostgreSQL/Testcontainers retirement tests prove:
+
+1. exact `ar/fr/en` parity survives table retirement;
+2. embedded-only post-cutover unit types remain valid;
+3. label mismatch aborts and preserves the legacy table;
+4. description mismatch is checked null-safely and preserves the legacy table;
+5. unsupported language codes abort before the drop.
+
+ORG-039 does not drop the separate language-ambiguous legacy columns
+`hidra_org_unit_type.description`, `hidra_org_position.description`, or
+`hidra_org_shift.name`; their lifecycle is outside this translation-table retirement.
+
 ### Multilingual correction status
 
 | Code | Status | Evidence / next gate |
@@ -2541,11 +2586,11 @@ to ORG-039 after its separate parity and recovery gate.
 | `ORG-036` | Completed | Added `V20260927_002__add_embedded_organization_multilingual_fields.sql` plus PostgreSQL/Testcontainers migration coverage. Unit-type `ar/fr/en` values backfill only after fail-closed preflight; Position description and Shift name receive nullable embedded language columns without guessed backfill; all legacy columns/table are retained for cutover and recovery. |
 | `ORG-037` | Completed | `OrganizationUnitType`, `Position`, and `Shift` now use embedded Arabic/French/English domain and JPA fields; persistence mapping round-trips canonical multilingual content. Legacy ambiguous descriptions remain read-only in JPA and Shift maintains its legacy non-null `name` only as a compatibility projection. Current main exposes no unit-type/position/shift application or REST content contract, so no speculative API was added. |
 | `ORG-038` | Completed | Retired the separate `OrganizationUnitTypeTranslation` domain model, outbound repository port, JPA entity/repository/adapter, mapper conversions, and unused runtime table constant. Repository scans show no remaining organization production consumer; the physical legacy table and Flyway history remain intact for ORG-039 recovery gating. |
-| `ORG-039` | Planned | Drop legacy translation table only after data parity and recovery evidence. |
+| `ORG-039` | Completed | Added `V20260927_003__retire_organization_unit_type_translation_table.sql`. The migration performs a fail-closed, null-safe parity check between every remaining normalized `ar/fr/en` legacy row and embedded names/descriptions before dropping the table. Testcontainers coverage proves successful retirement, embedded-only post-cutover rows, and transactional rollback with the recovery table intact on label/description/language mismatches. |
 | `ORG-040` | Planned | Final organization multilingual integrity verification. |
 
 **Execution priority:** pause new ORG-027 implementation work while the multilingual
-storage correction is unresolved. Execute ORG-039 next. Existing validated ORG-027 work
+storage correction is unresolved. Execute ORG-040 next. Existing validated ORG-027 work
 remains valid and must not be reverted; resume its remaining reconcile/audit/authorization
 gaps after the multilingual correction sequence reaches a safe cutover point.
 

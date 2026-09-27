@@ -20,6 +20,7 @@
 package dz.sh.hidra.modules.organization.application.port.out;
 
 import dz.sh.hidra.modules.organization.domain.model.OperationalScope;
+import dz.sh.hidra.modules.organization.domain.value.OperationalScopeReference;
 import dz.sh.hidra.modules.organization.domain.value.OperationalScopeType;
 
 import java.util.Optional;
@@ -28,23 +29,47 @@ import java.util.Optional;
  * Persists and resolves canonical operational-scope registry identities without
  * exposing JPA or another module's internals.
  *
- * <p>Registration receives an already normalized/owner-validated typed target.
- * Caller authorization and target-owner validation remain application concerns.
- * Database uniqueness is the final guard against duplicate concurrent registration.</p>
+ * <p>Registration receives an already normalized and owner-validated
+ * {@link OperationalScopeReference}. The repository creates or reuses the independent,
+ * database-generated registry identity.</p>
  */
 public interface OperationalScopeRegistryRepositoryPort {
 
     /**
-     * Idempotently registers a canonical typed target and returns its generated registry identity.
+     * Idempotently registers a canonical typed owner reference.
      *
-     * <p>GLOBAL must use a null target ID. CUSTOM remains unsupported until an approved
-     * namespace/owner contract exists.</p>
+     * <p>The returned {@link OperationalScope#id()} is the registry identity used by
+     * responsibilities; {@link OperationalScopeReference#targetId()} remains the
+     * native identifier in the owner's namespace.</p>
+     *
+     * <p>This default bridge preserves legacy repository implementations temporarily.
+     * New implementations should override this method directly.</p>
+     *
+     * @param reference owner-validated canonical reference
+     * @return existing or newly persisted registry record
+     */
+    default OperationalScope register(OperationalScopeReference reference) {
+        if (reference == null) {
+            throw new IllegalArgumentException(
+                    "Operational scope reference must not be null."
+            );
+        }
+        return register(reference.type(), reference.targetId());
+    }
+
+    /**
+     * Transitional registration bridge for legacy implementations.
      *
      * @param type canonical scope type
      * @param targetId canonical target-owner ID, null only for GLOBAL
      * @return existing or newly persisted registry record
      */
-    OperationalScope register(OperationalScopeType type, String targetId);
+    @Deprecated(forRemoval = true)
+    default OperationalScope register(OperationalScopeType type, String targetId) {
+        throw new UnsupportedOperationException(
+                "Repository must implement register(OperationalScopeReference)."
+        );
+    }
 
     /**
      * Find a registered scope by its database-generated identity.
@@ -55,13 +80,16 @@ public interface OperationalScopeRegistryRepositoryPort {
     Optional<OperationalScope> findById(Long scopeId);
 
     /**
-     * Find an existing entity-backed scope by the unique owner-type and target-ID pair.
+     * Find an existing entity-backed scope by owner type and owner-native target ID.
      *
      * @param type supported entity-backed operational scope type
      * @param targetId canonical target ID as defined by the owning module
      * @return existing registry record, or empty if no registration exists
      */
-    Optional<OperationalScope> findByTypeAndTargetId(OperationalScopeType type, String targetId);
+    Optional<OperationalScope> findByTypeAndTargetId(
+            OperationalScopeType type,
+            String targetId
+    );
 
     /**
      * Resolve the singleton GLOBAL registry row, when it has been registered.

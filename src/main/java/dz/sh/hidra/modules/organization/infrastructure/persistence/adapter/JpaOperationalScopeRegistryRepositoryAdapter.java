@@ -21,6 +21,7 @@ package dz.sh.hidra.modules.organization.infrastructure.persistence.adapter;
 
 import dz.sh.hidra.modules.organization.application.port.out.OperationalScopeRegistryRepositoryPort;
 import dz.sh.hidra.modules.organization.domain.model.OperationalScope;
+import dz.sh.hidra.modules.organization.domain.value.OperationalScopeReference;
 import dz.sh.hidra.modules.organization.domain.value.OperationalScopeType;
 import dz.sh.hidra.modules.organization.infrastructure.persistence.entity.OperationalScopeJpaEntity;
 import dz.sh.hidra.modules.organization.infrastructure.persistence.mapper.OperationalScopePersistenceMapper;
@@ -34,16 +35,28 @@ import java.util.Optional;
 /**
  * Database-backed registry adapter.
  *
- * <p>The adapter is idempotent for an already registered canonical key and retries
- * lookup after a uniqueness race. It does not perform target-owner authorization
- * or existence validation; callers must use the application validator first.</p>
+ * <p>Business role: idempotently turns a validated owner reference into the separate
+ * generated registry identity used by responsibility assignments.</p>
+ *
+ * <p>Architecture role: infrastructure implementation of the registry repository port.
+ * It does not perform owner authorization or resolution.</p>
+ *
+ * <p>Validation: {@link OperationalScopeReference} has already enforced local shape;
+ * owner validation happens before this adapter. Database uniqueness is the final
+ * concurrency guard.</p>
+ *
+ * <p>Usage: registration receives one canonical reference. Query methods may still
+ * decompose registry keys for persistence lookup.</p>
  */
 @Component
-public class JpaOperationalScopeRegistryRepositoryAdapter implements OperationalScopeRegistryRepositoryPort {
+public class JpaOperationalScopeRegistryRepositoryAdapter
+        implements OperationalScopeRegistryRepositoryPort {
 
     private final OperationalScopeJpaRepository repository;
 
-    public JpaOperationalScopeRegistryRepositoryAdapter(OperationalScopeJpaRepository repository) {
+    public JpaOperationalScopeRegistryRepositoryAdapter(
+            OperationalScopeJpaRepository repository
+    ) {
         this.repository = Objects.requireNonNull(
                 repository,
                 "OperationalScopeJpaRepository must not be null."
@@ -51,23 +64,28 @@ public class JpaOperationalScopeRegistryRepositoryAdapter implements Operational
     }
 
     @Override
-    public OperationalScope register(OperationalScopeType type, String targetId) {
-        Objects.requireNonNull(type, "Operational scope type must not be null.");
+    public OperationalScope register(OperationalScopeReference reference) {
+        Objects.requireNonNull(
+                reference,
+                "Operational scope reference must not be null."
+        );
 
-        String normalizedTargetId = normalizeTargetId(type, targetId);
-
-        Optional<OperationalScope> existing = findCanonical(type, normalizedTargetId);
+        Optional<OperationalScope> existing =
+                findCanonical(reference.type(), reference.targetId());
         if (existing.isPresent()) {
             return existing.get();
         }
 
         try {
             OperationalScopeJpaEntity saved = repository.saveAndFlush(
-                    OperationalScopePersistenceMapper.newEntity(type, normalizedTargetId)
+                    OperationalScopePersistenceMapper.newEntity(
+                            reference.type(),
+                            reference.targetId()
+                    )
             );
             return OperationalScopePersistenceMapper.toDomain(saved);
         } catch (DataIntegrityViolationException race) {
-            return findCanonical(type, normalizedTargetId)
+            return findCanonical(reference.type(), reference.targetId())
                     .orElseThrow(() -> race);
         }
     }
@@ -77,7 +95,8 @@ public class JpaOperationalScopeRegistryRepositoryAdapter implements Operational
         if (scopeId == null || scopeId <= 0) {
             return Optional.empty();
         }
-        return repository.findById(scopeId).map(OperationalScopePersistenceMapper::toDomain);
+        return repository.findById(scopeId)
+                .map(OperationalScopePersistenceMapper::toDomain);
     }
 
     @Override
@@ -85,7 +104,9 @@ public class JpaOperationalScopeRegistryRepositoryAdapter implements Operational
             OperationalScopeType type,
             String targetId
     ) {
-        if (type == null || type == OperationalScopeType.GLOBAL || type == OperationalScopeType.CUSTOM) {
+        if (type == null
+                || type == OperationalScopeType.GLOBAL
+                || type == OperationalScopeType.CUSTOM) {
             return Optional.empty();
         }
 
@@ -115,33 +136,5 @@ public class JpaOperationalScopeRegistryRepositoryAdapter implements Operational
             return findGlobal();
         }
         return findByTypeAndTargetId(type, targetId);
-    }
-
-    private static String normalizeTargetId(
-            OperationalScopeType type,
-            String targetId
-    ) {
-        String normalized = targetId == null || targetId.isBlank()
-                ? null
-                : targetId.trim();
-
-        if (type == OperationalScopeType.GLOBAL) {
-            if (normalized != null) {
-                throw new IllegalArgumentException("GLOBAL scope must not reference a target ID.");
-            }
-            return null;
-        }
-
-        if (type == OperationalScopeType.CUSTOM) {
-            throw new IllegalArgumentException(
-                    "CUSTOM scope requires an approved namespace and owner contract."
-            );
-        }
-
-        if (normalized == null) {
-            throw new IllegalArgumentException("Entity-backed scope requires a target ID.");
-        }
-
-        return normalized;
     }
 }

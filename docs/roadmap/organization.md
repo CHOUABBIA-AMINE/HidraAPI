@@ -2668,7 +2668,7 @@ the same because JPA persists the enum with `EnumType.STRING`.
 | `ORG-041` | Completed | Canonical responsibility assignee state is typed with `ResponsibilityAssigneeType`; textual compatibility bridges are deprecated; JPA uses `EnumType.STRING` so stored values do not change. |
 | `ORG-042` | Completed | `ReportingLine` now owns typed `ReportingSubjectReference` source/target values backed by `ReportingSubjectType { EMPLOYEE, POSITION, ORGANIZATION_UNIT }`; JPA persists governed type names through `EnumType.STRING`, with deprecated textual bridges only for compatibility. |
 | `ORG-043` | Completed | `OrganizationContactPoint` now owns a typed `ContactPointTargetReference` backed by `ContactPointTargetType { EMPLOYEE, ORGANIZATION_UNIT }`; JPA persists governed names through `EnumType.STRING`, and `OrganizationContactPointTargetValidator` verifies target existence through existing Organization repository ports. |
-| `ORG-044` | Planned | Integrate OperationalScopeReference into registration. |
+| `ORG-044` | Completed | `OperationalScopeReference` is now the canonical registration input across command, owner validation, application service, and registry persistence. The returned/generated `OperationalScope.id` remains the separate identity persisted by responsibility assignments; deprecated split type/target bridges remain only for compatibility. |
 | `ORG-045` | Planned | Adopt or explicitly retire OrganizationCode after consumer review. |
 | `ORG-046` | Planned | Add fail-closed same-module referential-integrity migration. |
 | `ORG-047` | Planned | Retire remaining multilingual compatibility columns after parity. |
@@ -2750,6 +2750,55 @@ Focused domain tests verify the closed target set and ID normalization; applicat
 tests verify repository-specific existence checks; persistence tests prove typed
 round-trip through the current VARCHAR representation.
 
+### ORG-044 implementation result
+
+ORG-044 makes the existing `OperationalScopeReference` value object the canonical
+registration input from application command through owner validation and registry
+persistence:
+
+```text
+RegisterOperationalScopeCommand
+        |
+        v
+OperationalScopeReference
+  type
+  targetId
+        |
+        v
+OperationalScopeRegistrationValidator
+        |
+        v
+OperationalScopeRegistryRepositoryPort.register(reference)
+        |
+        v
+OperationalScope
+  id          <- generated registry identity
+  type
+  targetId
+```
+
+The correction removes duplicate local scope-shape validation from the command,
+validator, and JPA adapter. `OperationalScopeReference` remains responsible for
+GLOBAL/entity-backed/CUSTOM shape rules; the application validator remains responsible
+for owner resolver support, exact identity, existence, and assignability.
+
+The registry adapter now receives the validated reference as one value. It still
+persists the same columns and returns an `OperationalScope` with a positive,
+database-generated `id`. Responsibility assignments remain keyed by that generated
+scope ID; they do not persist an owner-native target ID as responsibility identity.
+
+Deprecated split `type/targetId` command, validator, and repository bridges remain
+only for compatibility with existing callers/anonymous repository implementations.
+New code is expected to use `OperationalScopeReference` directly.
+
+No Flyway migration, schema change, REST endpoint, topology import, or responsibility
+storage change is part of ORG-044.
+
+Focused tests prove that the canonical reference survives command/validation into the
+repository unchanged, GLOBAL bypasses external owner lookup, rejected owners never
+reach persistence, and the returned registry ID remains independent of the owner target
+identifier.
+
 ### Multilingual correction status
 
 | Code | Status | Evidence / next gate |
@@ -2762,5 +2811,5 @@ round-trip through the current VARCHAR representation.
 | `ORG-039` | Completed | Added `V20260927_003__retire_organization_unit_type_translation_table.sql`. The migration performs a fail-closed, null-safe parity check between every remaining normalized `ar/fr/en` legacy row and embedded names/descriptions before dropping the table. Testcontainers coverage proves successful retirement, embedded-only post-cutover rows, and transactional rollback with the recovery table intact on label/description/language mismatches. |
 | `ORG-040` | Completed | Added final Organization multilingual architecture/integrity guardrails. Explicit domain/JPA `Ar/Fr/En` triplets are verified for the known translatable models, the existing OrganizationUnit application/API chain is checked for all three names, separate Organization translation production types/JPA mappings are forbidden, and migrations after `V20260927_003` may not reintroduce the retired translation table. |
 
-**Execution priority:** execute ORG-044 next, then continue through ORG-048 before resuming the remaining ORG-027 reconcile/audit/authorization gaps. Existing validated ORG-027 list/query work remains valid and must not be reverted.
+**Execution priority:** execute ORG-045 next, then continue through ORG-048 before resuming the remaining ORG-027 reconcile/audit/authorization gaps. Existing validated ORG-027 list/query work remains valid and must not be reverted.
 

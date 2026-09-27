@@ -21,10 +21,17 @@ package dz.sh.hidra.modules.organization.application.service;
 
 import dz.sh.hidra.modules.organization.application.command.AssignResponsibilityCommand;
 import dz.sh.hidra.modules.organization.application.port.in.AssignResponsibilityUseCase;
+import dz.sh.hidra.modules.organization.application.port.out.EmployeeRepositoryPort;
 import dz.sh.hidra.modules.organization.application.port.out.OperationalScopeRegistryRepositoryPort;
+import dz.sh.hidra.modules.organization.application.port.out.OperationalScopeTargetResolverPort;
+import dz.sh.hidra.modules.organization.application.port.out.OrganizationUnitRepositoryPort;
 import dz.sh.hidra.modules.organization.application.port.out.ResponsibilityAssignmentRepositoryPort;
+import dz.sh.hidra.modules.organization.domain.model.OperationalScope;
 import dz.sh.hidra.modules.organization.domain.model.ResponsibilityAssignment;
 import dz.sh.hidra.modules.organization.domain.value.AssignmentStatus;
+import dz.sh.hidra.modules.organization.domain.value.EmployeeStatus;
+import dz.sh.hidra.modules.organization.domain.value.OperationalScopeType;
+import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitStatus;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationId;
 import org.springframework.stereotype.Service;
 
@@ -43,16 +50,25 @@ import java.util.Objects;
 public final class ResponsibilityAssignmentApplicationService implements AssignResponsibilityUseCase {
 
     private final OperationalScopeRegistryRepositoryPort operationalScopeRegistryRepositoryPort;
+    private final OperationalScopeTargetResolverPort operationalScopeTargetResolverPort;
+    private final EmployeeRepositoryPort employeeRepositoryPort;
+    private final OrganizationUnitRepositoryPort organizationUnitRepositoryPort;
     private final ResponsibilityAssignmentRepositoryPort responsibilityAssignmentRepositoryPort;
 
     public ResponsibilityAssignmentApplicationService(
             OperationalScopeRegistryRepositoryPort operationalScopeRegistryRepositoryPort,
+            OperationalScopeTargetResolverPort operationalScopeTargetResolverPort,
+            EmployeeRepositoryPort employeeRepositoryPort,
+            OrganizationUnitRepositoryPort organizationUnitRepositoryPort,
             ResponsibilityAssignmentRepositoryPort responsibilityAssignmentRepositoryPort
     ) {
         this.operationalScopeRegistryRepositoryPort = Objects.requireNonNull(
                 operationalScopeRegistryRepositoryPort,
                 "Operational scope registry repository port must not be null."
         );
+        this.operationalScopeTargetResolverPort = Objects.requireNonNull(operationalScopeTargetResolverPort, "Operational scope target resolver port must not be null.");
+        this.employeeRepositoryPort = Objects.requireNonNull(employeeRepositoryPort, "Employee repository port must not be null.");
+        this.organizationUnitRepositoryPort = Objects.requireNonNull(organizationUnitRepositoryPort, "Organization unit repository port must not be null.");
         this.responsibilityAssignmentRepositoryPort = Objects.requireNonNull(
                 responsibilityAssignmentRepositoryPort,
                 "Responsibility assignment repository port must not be null."
@@ -63,10 +79,18 @@ public final class ResponsibilityAssignmentApplicationService implements AssignR
     public String assignResponsibility(AssignResponsibilityCommand command) {
         Objects.requireNonNull(command, "Assign responsibility command must not be null.");
 
-        operationalScopeRegistryRepositoryPort.findById(command.scopeId())
+        OperationalScope scope = operationalScopeRegistryRepositoryPort.findById(command.scopeId())
                 .orElseThrow(() -> new IllegalArgumentException(
                         "Unknown operational scope registry ID: " + command.scopeId()
                 ));
+
+        validateAssignee(command.assigneeType(), command.assigneeId());
+        validateScopeOwner(scope);
+        if (scope.type() == OperationalScopeType.ORGANIZATION_UNIT
+                && "ORGANIZATION_UNIT".equals(command.assigneeType())
+                && Objects.equals(scope.targetId(), command.assigneeId())) {
+            throw new IllegalArgumentException("An organization unit cannot hold a responsibility over itself.");
+        }
 
         Instant now = Instant.now();
         Instant validFrom = command.validFrom() == null ? now : command.validFrom();
@@ -112,6 +136,28 @@ public final class ResponsibilityAssignmentApplicationService implements AssignR
         );
 
         return responsibilityAssignmentRepositoryPort.save(assignment).id();
+    }
+
+    private void validateAssignee(String assigneeType, String assigneeId) {
+        switch (assigneeType) {
+            case "EMPLOYEE" -> {
+                var employee = employeeRepositoryPort.findById(assigneeId).orElseThrow(() -> new IllegalArgumentException("Unknown employee assignee: " + assigneeId));
+                if (employee.status() != EmployeeStatus.ACTIVE) throw new IllegalArgumentException("Employee assignee must be ACTIVE: " + assigneeId);
+            }
+            case "ORGANIZATION_UNIT" -> {
+                var unit = organizationUnitRepositoryPort.findById(assigneeId).orElseThrow(() -> new IllegalArgumentException("Unknown organization-unit assignee: " + assigneeId));
+                if (unit.status() != OrganizationUnitStatus.ACTIVE) throw new IllegalArgumentException("Organization-unit assignee must be ACTIVE: " + assigneeId);
+            }
+            default -> throw new IllegalArgumentException("Unsupported responsibility assignee type: " + assigneeType);
+        }
+    }
+
+    private void validateScopeOwner(OperationalScope scope) {
+        if (scope.type().isGlobal()) return;
+        if (!operationalScopeTargetResolverPort.supports(scope.type())) throw new IllegalStateException("No authoritative owner resolver for scope type: " + scope.type());
+        var target = operationalScopeTargetResolverPort.resolve(scope.type(), scope.targetId()).orElseThrow(() -> new IllegalArgumentException("Operational scope owner target no longer exists: " + scope.targetId()));
+        if (target.type() != scope.type() || !Objects.equals(target.targetId(), scope.targetId())) throw new IllegalStateException("Operational scope owner resolver returned mismatched identity.");
+        if (!target.assignable()) throw new IllegalArgumentException("Operational scope owner target is not assignable: " + scope.targetId());
     }
 
     private static boolean samePeriod(

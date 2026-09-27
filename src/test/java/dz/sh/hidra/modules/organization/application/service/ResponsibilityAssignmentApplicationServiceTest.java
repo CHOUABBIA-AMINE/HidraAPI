@@ -20,11 +20,19 @@
 package dz.sh.hidra.modules.organization.application.service;
 
 import dz.sh.hidra.modules.organization.application.command.AssignResponsibilityCommand;
+import dz.sh.hidra.modules.organization.application.port.out.EmployeeRepositoryPort;
 import dz.sh.hidra.modules.organization.application.port.out.OperationalScopeRegistryRepositoryPort;
+import dz.sh.hidra.modules.organization.application.port.out.OperationalScopeTargetResolverPort;
+import dz.sh.hidra.modules.organization.application.port.out.OrganizationUnitRepositoryPort;
 import dz.sh.hidra.modules.organization.application.port.out.ResponsibilityAssignmentRepositoryPort;
+import dz.sh.hidra.modules.organization.domain.model.Employee;
 import dz.sh.hidra.modules.organization.domain.model.OperationalScope;
+import dz.sh.hidra.modules.organization.domain.model.OrganizationUnit;
 import dz.sh.hidra.modules.organization.domain.model.ResponsibilityAssignment;
 import dz.sh.hidra.modules.organization.domain.value.AssignmentStatus;
+import dz.sh.hidra.modules.organization.domain.value.EmployeeStatus;
+import dz.sh.hidra.modules.organization.domain.value.EmployeeType;
+import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitStatus;
 import dz.sh.hidra.modules.organization.domain.value.OperationalScopeType;
 import dz.sh.hidra.modules.organization.domain.value.ResponsibilityType;
 import org.junit.jupiter.api.Test;
@@ -48,6 +56,9 @@ class ResponsibilityAssignmentApplicationServiceTest {
         ResponsibilityAssignmentApplicationService service =
                 new ResponsibilityAssignmentApplicationService(
                         scopeRepository(Optional.of(scope())),
+                        resolver(true),
+                        employeeRepository(),
+                        organizationUnitRepository(OrganizationUnitStatus.ACTIVE),
                         assignmentRepository(List.of(), saveCalls, saved)
                 );
 
@@ -73,6 +84,9 @@ class ResponsibilityAssignmentApplicationServiceTest {
         ResponsibilityAssignmentApplicationService service =
                 new ResponsibilityAssignmentApplicationService(
                         scopeRepository(Optional.of(scope())),
+                        resolver(true),
+                        employeeRepository(),
+                        organizationUnitRepository(OrganizationUnitStatus.ACTIVE),
                         assignmentRepository(List.of(existing), saveCalls, new AtomicReference<>())
                 );
 
@@ -95,6 +109,9 @@ class ResponsibilityAssignmentApplicationServiceTest {
         ResponsibilityAssignmentApplicationService service =
                 new ResponsibilityAssignmentApplicationService(
                         scopeRepository(Optional.of(scope())),
+                        resolver(true),
+                        employeeRepository(),
+                        organizationUnitRepository(OrganizationUnitStatus.ACTIVE),
                         assignmentRepository(List.of(existing), saveCalls, new AtomicReference<>())
                 );
 
@@ -122,6 +139,9 @@ class ResponsibilityAssignmentApplicationServiceTest {
         ResponsibilityAssignmentApplicationService service =
                 new ResponsibilityAssignmentApplicationService(
                         scopeRepository(Optional.of(scope())),
+                        resolver(true),
+                        employeeRepository(),
+                        organizationUnitRepository(OrganizationUnitStatus.ACTIVE),
                         assignmentRepository(List.of(existing), saveCalls, new AtomicReference<>())
                 );
 
@@ -140,6 +160,9 @@ class ResponsibilityAssignmentApplicationServiceTest {
         ResponsibilityAssignmentApplicationService service =
                 new ResponsibilityAssignmentApplicationService(
                         scopeRepository(Optional.empty()),
+                        resolver(true),
+                        employeeRepository(),
+                        organizationUnitRepository(OrganizationUnitStatus.ACTIVE),
                         assignmentRepository(List.of(), saveCalls, new AtomicReference<>())
                 );
 
@@ -159,6 +182,51 @@ class ResponsibilityAssignmentApplicationServiceTest {
                 IllegalArgumentException.class,
                 () -> command(start, start)
         );
+    }
+
+    @Test
+    void inactiveAssigneeAndRetiredOwnerAreRejected() {
+        var inactiveUnit = new ResponsibilityAssignmentApplicationService(
+                scopeRepository(Optional.of(scope())), resolver(true), employeeRepository(),
+                organizationUnitRepository(OrganizationUnitStatus.INACTIVE),
+                assignmentRepository(List.of(), new AtomicInteger(), new AtomicReference<>()));
+        assertThrows(IllegalArgumentException.class, () -> inactiveUnit.assignResponsibility(command(null, null)));
+
+        var retiredOwner = new ResponsibilityAssignmentApplicationService(
+                scopeRepository(Optional.of(scope())), resolver(false), employeeRepository(),
+                organizationUnitRepository(OrganizationUnitStatus.ACTIVE),
+                assignmentRepository(List.of(), new AtomicInteger(), new AtomicReference<>()));
+        assertThrows(IllegalArgumentException.class, () -> retiredOwner.assignResponsibility(command(null, null)));
+    }
+
+    private static OperationalScopeTargetResolverPort resolver(boolean assignable) {
+        return new OperationalScopeTargetResolverPort() {
+            @Override public boolean supports(OperationalScopeType type) { return type == OperationalScopeType.PIPELINE; }
+            @Override public Optional<ResolvedTarget> resolve(OperationalScopeType type, String targetId) {
+                return Optional.of(new ResolvedTarget(type, targetId, "PL-009", "Pipeline 009", assignable));
+            }
+        };
+    }
+
+    private static EmployeeRepositoryPort employeeRepository() {
+        return new EmployeeRepositoryPort() {
+            @Override public Employee save(Employee model) { return model; }
+            @Override public Optional<Employee> findById(String id) {
+                return Optional.of(new Employee(id, "E-1", null, null, "A", "B", null, "A B", null, null,
+                        EmployeeType.PERMANENT, EmployeeStatus.ACTIVE, null, null, null, null, null));
+            }
+        };
+    }
+
+    private static OrganizationUnitRepositoryPort organizationUnitRepository(OrganizationUnitStatus status) {
+        return new OrganizationUnitRepositoryPort() {
+            @Override public OrganizationUnit save(OrganizationUnit model) { return model; }
+            @Override public Optional<OrganizationUnit> findById(String id) {
+                Instant now = Instant.parse("2026-09-27T08:00:00Z");
+                return Optional.of(new OrganizationUnit(id, "OU-1", null, null, "Unit", "type-1", null,
+                        status, now, null, now, now));
+            }
+        };
     }
 
     private static OperationalScope scope() {

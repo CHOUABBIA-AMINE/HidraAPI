@@ -2198,7 +2198,7 @@ satisfied.
 | `ORG-023` | Blocked | Source inventory exists, but authorized live/sanitized legacy tuple evidence, full owner-target resolution evidence and external consumer evidence are still incomplete. Implementation work proceeded beyond this evidence gate; that does not make the inventory gate complete. |
 | `ORG-024` | Completed | `OperationalScopeReference` is now a canonical typed owner-target value object containing only `type` and owner-native `targetId`; GLOBAL forbids a target, entity-backed types require one, and ungoverned CUSTOM is rejected. `OperationalScopeType` exposes the corresponding domain semantics and focused domain tests cover null, blank, GLOBAL, CUSTOM and normalization cases. |
 | `ORG-025` | Completed | Organization now resolves `ORGANIZATION_UNIT` locally and `PIPELINE_SYSTEM`, `PIPELINE`, `FACILITY`, and `EQUIPMENT` through a topology-owned public application input port. Current code/name and lifecycle-derived assignability come from the owning module; organization imports no topology domain, repository, JPA, or infrastructure type. Existing validator tests cover wrong type, missing target, unassignable target and owner failure; new owner-query/adapter tests cover current display, retired owners and supported-type routing. |
-| `ORG-026` | In Progress | `ResponsibilityAssignment` uses `Long scopeId`; assignment, overlap/idempotency and revocation behavior are implemented with effective dating. Remaining roadmap gates include explicit assignee validation, owner lifecycle semantics and broader concurrency/domain-policy coverage. |
+| `ORG-026` | Completed | Responsibility assignment now accepts only existing ACTIVE employee or organization-unit assignees, revalidates entity-backed owner existence/assignability before new assignment, rejects direct organization-unit self-target responsibility, preserves historical rows on owner retirement, and retains half-open overlap/idempotency/revocation behavior. Focused tests cover invalid/inactive assignees and retired owners. |
 | `ORG-027` | In Progress | Validated register-scope, assign-responsibility and revoke-responsibility application flows exist. List/reconcile use cases plus the roadmap's authorization/workflow/audit requirements are not yet implemented. |
 | `ORG-028` | In Progress | Additive migration `V20260927_001__add_operational_scope_registry.sql` creates the canonical registry and nullable responsibility `scope_id` FK while retaining legacy columns. Required dedicated PostgreSQL/Testcontainers constraint coverage and the full roadmap versioning gate are not yet evidenced. |
 | `ORG-029` | In Progress | Canonical registry and responsibility JPA entity/repository/mapper/adapter code exists and responsibility persistence uses `scopeId`. Verified reconciliation/backfill/quarantine of legacy tuples is still missing, so the task is not complete. |
@@ -2219,7 +2219,7 @@ satisfied.
   `ResponsibilityAssignment.scopeId`; current target code/name remain owner data.
 - Legacy compatibility code and database columns are transitional and must not be
   treated as the canonical source of operational-scope identity.
-- The next implementation priority is ORG-026's remaining domain-policy gap: explicit
+- The next implementation priority is ORG-027: complete validated responsibility application use cases; explicit
   assignee validity/self-cycle rules and owner-lifecycle handling for already-active
   responsibilities, without turning responsibility into authorization or control.
 

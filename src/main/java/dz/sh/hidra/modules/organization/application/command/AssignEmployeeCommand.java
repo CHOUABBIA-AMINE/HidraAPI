@@ -7,14 +7,14 @@
  *
  * @Name        : AssignEmployeeCommand
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-27
  *
  * @Type        : Record
  * @Layer       : Application
  * @Module      : organization
  * @Package     : dz.sh.hidra.modules.organization.application.command
  *
- * @Description : Command to assign an employee to a unit and position.
+ * @Description : Command to assign an employee to an organization unit and position.
  *
  */
 package dz.sh.hidra.modules.organization.application.command;
@@ -25,16 +25,15 @@ import java.time.Instant;
 
 /**
  * Command to assign an employee to a unit and position.
+ *
+ * <p>Operational responsibility is handled independently through responsibility
+ * assignments and must not be inferred from employee membership.</p>
  */
 public record AssignEmployeeCommand(
         String employeeId,
         String organizationUnitId,
         String positionId,
         AssignmentType assignmentType,
-        String operationalScopeType,
-        String operationalScopeId,
-        String operationalScopeCode,
-        String operationalScopeName,
         Instant validFrom,
         Instant validTo
 ) {

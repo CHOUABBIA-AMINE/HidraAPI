@@ -7,7 +7,7 @@
  *
  * @Name        : JpaOrganizationAdministrationQueryAdapter
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-11
+ * @UpdatedOn   : 2026-09-27
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -24,6 +24,7 @@ import dz.sh.hidra.modules.organization.infrastructure.persistence.entity.Employ
 import dz.sh.hidra.modules.organization.infrastructure.persistence.entity.EmployeeJpaEntity;
 import dz.sh.hidra.modules.organization.infrastructure.persistence.entity.OrganizationUnitJpaEntity;
 import jakarta.persistence.EntityManager;
+
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
@@ -31,6 +32,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -67,7 +69,10 @@ public class JpaOrganizationAdministrationQueryAdapter implements OrganizationAd
     @Override
     public List<OrganizationUnitView> children(String parentUnitId) {
         return entityManager
-                .createQuery("select e from OrganizationUnitJpaEntity e where e.parentUnitId = :parent order by e.code", OrganizationUnitJpaEntity.class)
+                .createQuery(
+                        "select e from OrganizationUnitJpaEntity e where e.parentUnitId = :parent order by e.code",
+                        OrganizationUnitJpaEntity.class
+                )
                 .setParameter("parent", parentUnitId)
                 .getResultList().stream()
                 .map(this::unitView)
@@ -81,8 +86,10 @@ public class JpaOrganizationAdministrationQueryAdapter implements OrganizationAd
                 .getResultList().stream()
                 .map(this::unitView)
                 .toList();
+
         Map<String, OrganizationUnitView> byId = units.stream()
                 .collect(Collectors.toMap(OrganizationUnitView::id, Function.identity()));
+
         return units.stream()
                 .filter(unit -> unit.parentUnitId() == null || !byId.containsKey(unit.parentUnitId()))
                 .map(unit -> node(unit, units))
@@ -94,8 +101,13 @@ public class JpaOrganizationAdministrationQueryAdapter implements OrganizationAd
         List<EmployeeView> all = entityManager
                 .createQuery("select e from EmployeeJpaEntity e order by e.employeeNumber", EmployeeJpaEntity.class)
                 .getResultList().stream()
-                .filter(entity -> matches(query,
-                        entity.employeeNumber(), entity.displayNameAr(), entity.displayNameLt(), entity.emailAddress()))
+                .filter(entity -> matches(
+                        query,
+                        entity.employeeNumber(),
+                        entity.displayNameAr(),
+                        entity.displayNameLt(),
+                        entity.emailAddress()
+                ))
                 .map(this::employeeView)
                 .toList();
         return page(all, page, size);
@@ -119,7 +131,10 @@ public class JpaOrganizationAdministrationQueryAdapter implements OrganizationAd
             int size
     ) {
         List<EmployeeAssignmentView> all = entityManager
-                .createQuery("select e from EmployeeAssignmentJpaEntity e order by e.validFrom desc", EmployeeAssignmentJpaEntity.class)
+                .createQuery(
+                        "select e from EmployeeAssignmentJpaEntity e order by e.validFrom desc",
+                        EmployeeAssignmentJpaEntity.class
+                )
                 .getResultList().stream()
                 .filter(entity -> blank(employeeId) || employeeId.equals(entity.employeeId()))
                 .filter(entity -> blank(organizationUnitId) || organizationUnitId.equals(entity.organizationUnitId()))
@@ -132,7 +147,10 @@ public class JpaOrganizationAdministrationQueryAdapter implements OrganizationAd
     @Override
     public List<EmployeeAssignmentView> employeeAssignments(String employeeId) {
         return entityManager
-                .createQuery("select e from EmployeeAssignmentJpaEntity e where e.employeeId = :employee order by e.validFrom desc", EmployeeAssignmentJpaEntity.class)
+                .createQuery(
+                        "select e from EmployeeAssignmentJpaEntity e where e.employeeId = :employee order by e.validFrom desc",
+                        EmployeeAssignmentJpaEntity.class
+                )
                 .setParameter("employee", employeeId)
                 .getResultList().stream()
                 .map(this::assignmentView)
@@ -150,26 +168,44 @@ public class JpaOrganizationAdministrationQueryAdapter implements OrganizationAd
 
     private OrganizationUnitView unitView(OrganizationUnitJpaEntity entity) {
         return new OrganizationUnitView(
-                entity.id(), entity.code(), entity.nameAr(), entity.nameFr(), entity.nameEn(), entity.unitTypeId(),
-                entity.parentUnitId(), String.valueOf(entity.status()), entity.operationalScopeType(),
-                entity.operationalScopeId(), entity.operationalScopeCode(), entity.operationalScopeName(),
-                entity.validFrom(), entity.validTo()
+                entity.id(),
+                entity.code(),
+                entity.nameAr(),
+                entity.nameFr(),
+                entity.nameEn(),
+                entity.unitTypeId(),
+                entity.parentUnitId(),
+                String.valueOf(entity.status()),
+                entity.validFrom(),
+                entity.validTo()
         );
     }
 
     private EmployeeView employeeView(EmployeeJpaEntity entity) {
         return new EmployeeView(
-                entity.id(), entity.employeeNumber(), entity.displayNameAr(), entity.displayNameLt(),
-                entity.emailAddress(), entity.mobileNumber(), String.valueOf(entity.employeeType()),
-                String.valueOf(entity.status()), entity.identityUserReference(), entity.hiredAt(), entity.terminatedAt()
+                entity.id(),
+                entity.employeeNumber(),
+                entity.displayNameAr(),
+                entity.displayNameLt(),
+                entity.emailAddress(),
+                entity.mobileNumber(),
+                String.valueOf(entity.employeeType()),
+                String.valueOf(entity.status()),
+                entity.identityUserReference(),
+                entity.hiredAt(),
+                entity.terminatedAt()
         );
     }
 
     private EmployeeAssignmentView assignmentView(EmployeeAssignmentJpaEntity entity) {
         return new EmployeeAssignmentView(
-                entity.id(), entity.employeeId(), entity.organizationUnitId(), entity.positionId(),
-                String.valueOf(entity.assignmentType()), entity.operationalScopeType(), entity.operationalScopeId(),
-                entity.operationalScopeCode(), entity.operationalScopeName(), entity.validFrom(), entity.validTo(),
+                entity.id(),
+                entity.employeeId(),
+                entity.organizationUnitId(),
+                entity.positionId(),
+                String.valueOf(entity.assignmentType()),
+                entity.validFrom(),
+                entity.validTo(),
                 String.valueOf(entity.status())
         );
     }
@@ -178,6 +214,7 @@ public class JpaOrganizationAdministrationQueryAdapter implements OrganizationAd
         if (blank(query)) {
             return true;
         }
+
         String normalized = query.trim().toLowerCase(Locale.ROOT);
         for (Object value : values) {
             if (value != null && value.toString().toLowerCase(Locale.ROOT).contains(normalized)) {
@@ -197,6 +234,14 @@ public class JpaOrganizationAdministrationQueryAdapter implements OrganizationAd
         int from = Math.min(all.size(), page * size);
         int to = Math.min(all.size(), from + size);
         int totalPages = all.isEmpty() ? 0 : (all.size() + size - 1) / size;
-        return new Page<>(List.copyOf(all.subList(from, to)), page, size, all.size(), totalPages, to < all.size());
+
+        return new Page<>(
+                List.copyOf(all.subList(from, to)),
+                page,
+                size,
+                all.size(),
+                totalPages,
+                to < all.size()
+        );
     }
 }

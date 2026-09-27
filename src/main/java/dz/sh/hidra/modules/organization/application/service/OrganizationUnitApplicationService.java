@@ -7,7 +7,7 @@
  *
  * @Name        : OrganizationUnitApplicationService
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-27
  *
  * @Type        : Class
  * @Layer       : Application
@@ -42,13 +42,17 @@ public final class OrganizationUnitApplicationService implements CreateOrganizat
     private final OrganizationUnitRepositoryPort organizationUnitRepositoryPort;
 
     public OrganizationUnitApplicationService(OrganizationUnitRepositoryPort organizationUnitRepositoryPort) {
-        this.organizationUnitRepositoryPort = Objects.requireNonNull(organizationUnitRepositoryPort, "Organization unit repository port must not be null.");
+        this.organizationUnitRepositoryPort = Objects.requireNonNull(
+                organizationUnitRepositoryPort,
+                "Organization unit repository port must not be null."
+        );
     }
 
     @Override
     public OrganizationUnitSummaryDto createOrganizationUnit(CreateOrganizationUnitCommand command) {
         Objects.requireNonNull(command, "Create organization unit command must not be null.");
         Instant now = Instant.now();
+
         OrganizationUnit unit = new OrganizationUnit(
                 OrganizationId.newId().value(),
                 command.code(),
@@ -58,15 +62,12 @@ public final class OrganizationUnitApplicationService implements CreateOrganizat
                 command.unitTypeId(),
                 command.parentUnitId(),
                 command.status() == null ? OrganizationUnitStatus.ACTIVE : command.status(),
-                null,
-                null,
-                null,
-                null,
                 command.validFrom(),
                 null,
                 now,
                 now
         );
+
         return OrganizationApplicationMapper.toSummary(organizationUnitRepositoryPort.save(unit));
     }
 }

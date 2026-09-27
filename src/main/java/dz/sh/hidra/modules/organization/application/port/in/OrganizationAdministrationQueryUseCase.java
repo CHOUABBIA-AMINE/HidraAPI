@@ -7,7 +7,7 @@
  *
  * @Name        : OrganizationAdministrationQueryUseCase
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-11
+ * @UpdatedOn   : 2026-09-27
  *
  * @Type        : Interface
  * @Layer       : Application
@@ -64,10 +64,6 @@ public interface OrganizationAdministrationQueryUseCase {
             String unitTypeId,
             String parentUnitId,
             String status,
-            String operationalScopeType,
-            String operationalScopeId,
-            String operationalScopeCode,
-            String operationalScopeName,
             Instant validFrom,
             Instant validTo
     ) { }
@@ -97,10 +93,6 @@ public interface OrganizationAdministrationQueryUseCase {
             String organizationUnitId,
             String positionId,
             String assignmentType,
-            String operationalScopeType,
-            String operationalScopeId,
-            String operationalScopeCode,
-            String operationalScopeName,
             Instant validFrom,
             Instant validTo,
             String status

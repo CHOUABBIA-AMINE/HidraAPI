@@ -7,7 +7,7 @@
  *
  * @Name        : EmployeeAssignmentApplicationService
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-27
  *
  * @Type        : Class
  * @Layer       : Application
@@ -41,29 +41,30 @@ public final class EmployeeAssignmentApplicationService implements AssignEmploye
     private final EmployeeAssignmentRepositoryPort employeeAssignmentRepositoryPort;
 
     public EmployeeAssignmentApplicationService(EmployeeAssignmentRepositoryPort employeeAssignmentRepositoryPort) {
-        this.employeeAssignmentRepositoryPort = Objects.requireNonNull(employeeAssignmentRepositoryPort, "Employee assignment repository port must not be null.");
+        this.employeeAssignmentRepositoryPort = Objects.requireNonNull(
+                employeeAssignmentRepositoryPort,
+                "Employee assignment repository port must not be null."
+        );
     }
 
     @Override
     public String assignEmployee(AssignEmployeeCommand command) {
         Objects.requireNonNull(command, "Assign employee command must not be null.");
         Instant now = Instant.now();
+
         EmployeeAssignment assignment = new EmployeeAssignment(
                 OrganizationId.newId().value(),
                 command.employeeId(),
                 command.organizationUnitId(),
                 command.positionId(),
                 command.assignmentType() == null ? AssignmentType.PRIMARY : command.assignmentType(),
-                command.operationalScopeType(),
-                command.operationalScopeId(),
-                command.operationalScopeCode(),
-                command.operationalScopeName(),
                 command.validFrom() == null ? now : command.validFrom(),
                 command.validTo(),
                 AssignmentStatus.ACTIVE,
                 now,
                 now
         );
+
         return employeeAssignmentRepositoryPort.save(assignment).id();
     }
 }

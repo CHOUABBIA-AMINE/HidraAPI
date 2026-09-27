@@ -7,33 +7,33 @@
  *
  * @Name        : AssignEmployeeRequest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-13
+ * @UpdatedOn   : 2026-09-27
  *
  * @Type        : Record
  * @Layer       : API
  * @Module      : organization
  * @Package     : dz.sh.hidra.modules.organization.api.rest.request
  *
- * @Description : REST request for assign employee.
+ * @Description : REST request for assigning an employee to a unit and position.
  *
  */
 package dz.sh.hidra.modules.organization.api.rest.request;
 
 import dz.sh.hidra.modules.organization.domain.value.AssignmentType;
+
 import java.time.Instant;
 
 /**
- * REST request for assign employee.
+ * REST request for assigning an employee to a unit and position.
+ *
+ * <p>Operational scope is intentionally absent. Scope responsibility is managed
+ * through dedicated responsibility-assignment use cases.</p>
  */
 public record AssignEmployeeRequest(
         String employeeId,
         String organizationUnitId,
         String positionId,
         AssignmentType assignmentType,
-        String operationalScopeType,
-        String operationalScopeId,
-        String operationalScopeCode,
-        String operationalScopeName,
         Instant validFrom,
         Instant validTo
 ) {

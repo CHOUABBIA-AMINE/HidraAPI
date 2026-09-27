@@ -7,7 +7,7 @@
  *
  * @Name        : OrganizationRestMapper
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-13
+ * @UpdatedOn   : 2026-09-27
  *
  * @Type        : Class
  * @Layer       : API
@@ -18,6 +18,7 @@
  *
  */
 package dz.sh.hidra.modules.organization.api.rest.mapper;
+
 import dz.sh.hidra.modules.organization.api.rest.request.AssignEmployeeRequest;
 import dz.sh.hidra.modules.organization.api.rest.request.CreateOrganizationUnitRequest;
 import dz.sh.hidra.modules.organization.api.rest.request.RegisterEmployeeRequest;
@@ -44,10 +45,6 @@ public final class OrganizationRestMapper {
                 request.organizationUnitId(),
                 request.positionId(),
                 request.assignmentType(),
-                request.operationalScopeType(),
-                request.operationalScopeId(),
-                request.operationalScopeCode(),
-                request.operationalScopeName(),
                 request.validFrom(),
                 request.validTo()
         );

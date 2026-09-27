@@ -3156,3 +3156,213 @@ reconcile the still-open ORG-028/029/030/031/032/033 gates in dependency-safe or
 current `main`. Do not execute destructive schema retirement before reconciliation,
 consumer/API cutover and recovery evidence are complete.
 
+
+
+---
+
+## 20. Final domain model/value integrity cleanup
+
+### 20.1 Scope
+
+This sequence is deliberately limited to:
+
+```text
+src/main/java/dz/sh/hidra/modules/organization/domain/model/**
+src/main/java/dz/sh/hidra/modules/organization/domain/value/**
+corresponding domain tests
+this roadmap
+```
+
+It does **not** authorize application, API, JPA, Flyway, data migration, workflow, audit,
+identity, topology, or other-module changes. Those follow only in later explicitly
+approved tasks after the domain contract is settled.
+
+### 20.2 Final Employee ownership decision
+
+The Organization domain separates employee personal/employment identity, postal address,
+and operational communication channels.
+
+Canonical target:
+
+```text
+Employee
+  id
+  employeeNumber
+
+  # personal name
+  firstNameAr
+  lastNameAr
+  firstNameLt
+  lastNameLt
+
+  # birth information
+  dateOfBirth
+  birthLocalityId        optional normalized AdministrativeLocality reference
+  birthPlaceAr           optional authoritative/free-text Arabic birthplace
+  birthPlaceFr           optional authoritative/free-text French birthplace
+  birthPlaceEn           optional authoritative/free-text English birthplace
+
+  # employment / identity linkage
+  employeeType
+  status
+  identityUserReference  optional neutral identity-module reference
+  hiredAt
+  terminatedAt
+
+  # audit
+  createdAt
+  updatedAt
+```
+
+`birthLocalityId` is optional because not every birthplace can be represented by the
+current Algerian administrative-locality catalog. The multilingual birthplace text is
+therefore preserved independently when supplied by authoritative personnel data. No fake
+AdministrativeLocality row may be invented merely to satisfy birthplace normalization.
+
+The current `displayNameAr` and `displayNameLt` fields are considered derived/duplicate
+state unless a later data/consumer inventory proves they contain an independently
+authoritative preferred display name. The target direction is to derive display names from
+structured name fields. If an authoritative preferred-name concept exists, it must be
+renamed and documented explicitly rather than retained as an ambiguous duplicate.
+
+### 20.3 Address ownership decision
+
+Employee postal/residential address remains a separate model:
+
+```text
+EmployeeAddress
+  id
+  employeeId
+  addressType
+  localityId
+  streetLine1
+  streetLine2
+  postalCodeSnapshot
+  primaryAddress
+  validFrom
+  validTo
+  createdAt
+  updatedAt
+```
+
+Do not embed a full postal address inside `Employee`.
+
+`EmployeeAddress.localityId` is the normalized geographical anchor. Street lines and
+postal-code snapshot preserve address facts that are not equivalent to administrative
+locality identity.
+
+### 20.4 Contact ownership decision
+
+Operational communication channels belong to `OrganizationContactPoint`, not directly to
+`Employee`.
+
+Canonical target:
+
+```text
+OrganizationContactPoint
+  id
+  contactPointType
+  target                 ContactPointTargetReference
+  label
+  value
+  primaryContact
+  emergencyContact
+  active
+  createdAt
+  updatedAt
+
+ContactPointTargetType
+  EMPLOYEE
+  ORGANIZATION_UNIT
+```
+
+Therefore the current:
+
+```text
+Employee.emailAddress
+Employee.mobileNumber
+```
+
+are transitional duplicate contact fields. They must not remain a second authoritative
+source once contact-point consumer/data migration is approved. Their later persistence/API
+retirement requires a separate migration/cutover task and is **not** performed by this
+domain-only sequence.
+
+### 20.5 Required domain invariants
+
+Every model/value correction below must enforce required state at construction time rather
+than relying solely on JPA/PostgreSQL constraints.
+
+Required baseline:
+
+```text
+IDs that identify persisted domain records -> nonblank
+required enum/status/type values          -> non-null
+required same-module references           -> nonblank
+stable business codes                     -> OrganizationCode normalization
+validFrom                                 -> required where the model is effective-dated
+validTo                                   -> null or strictly after validFrom
+terminatedAt                              -> null or not before hiredAt
+dateOfBirth                               -> must not be after the current business date
+parentUnitId                              -> must not equal OrganizationUnit.id
+delegatorEmployeeId                       -> must not equal delegateEmployeeId
+reporting source                          -> must not equal target when type+ID are identical
+```
+
+The domain must not perform repository lookups. Referential existence, hierarchy-cycle
+detection across multiple records, uniqueness and authorization remain application/database
+concerns.
+
+### 20.6 Value-object decisions
+
+`OrganizationCode`, `OperationalScopeReference`, `ReportingSubjectReference`, and
+`ContactPointTargetReference` remain canonical value objects.
+
+`OrganizationId` is retained as the Organization-owned ID creation/validation policy for
+String/UUID identifiers. Existing domain record components are not converted wholesale from
+`String` to `OrganizationId` in this cleanup because that would create broad compatibility
+churn without first proving a business requirement. New IDs must continue to be generated or
+validated through the existing policy at write boundaries.
+
+`AssignmentStatus` and `ShiftAssignmentStatus` remain separate until business semantics
+prove they are identical. Similar enum literals are not sufficient reason to merge distinct
+aggregate lifecycles.
+
+### 20.7 Discrete cleanup roadmap
+
+| Code | Exact commit message | Domain/model/value scope | Exit criteria | Prerequisite |
+|---|---|---|---|---|
+| `ORG-049` | `docs(organization): define final employee domain ownership` | Record the final Employee / EmployeeAddress / OrganizationContactPoint / birthplace ownership and duplication decisions in this roadmap only. | No Java/schema changes; model ownership is unambiguous and does not conflict with sections 1.1, 18 or 19. | ORG-048 |
+| `ORG-050` | `refactor(organization): complete employee personal domain model` | Add `dateOfBirth`, optional `birthLocalityId`, and `birthPlaceAr/Fr/En` to `Employee`; harden required Employee invariants. Preserve current contact/display fields temporarily as deprecated compatibility components only if Java record compatibility makes immediate removal unsafe. | Domain tests cover birth data, required identity/employment state, hire/termination chronology, trimming and nullable external identity reference. No JPA/API/schema change. | ORG-049 |
+| `ORG-051` | `refactor(organization): separate employee contact ownership` | Make model/value intent explicit that `OrganizationContactPoint` is canonical for EMAIL/MOBILE/PHONE-style employee communication channels. Remove `Employee.emailAddress/mobileNumber` from canonical domain state only if model-only compatibility can be preserved safely; otherwise deprecate/document them for the later persistence/API cutover. | Tests prove contact target typing and no new contact fields are added to Employee. No persistence/data migration. | ORG-050 |
+| `ORG-052` | `refactor(organization): normalize employee display name semantics` | Remove ambiguous duplicate `displayNameAr/displayNameLt` from canonical Employee state, or rename them to an explicitly authoritative preferred-name concept only if current repository/data evidence proves that semantic. Structured `firstName*/lastName*` remain canonical name components. | Domain tests prove the selected rule; no silent loss of independently authoritative name data. | ORG-051 |
+| `ORG-053` | `refactor(organization): harden organization domain invariants` | Apply constructor-level required-field, self-reference and temporal invariants to AdministrativeState/District/Locality, OrganizationUnit/Type, Position, EmployeeAddress, EmployeeAssignment, ReportingLine, ResponsibilityAssignment, Shift, ShiftAssignment, OrganizationDelegation and OrganizationHierarchySnapshot as supported by documented semantics. | Focused model tests reject invalid states before persistence; no repository lookups or cross-module imports in domain. | ORG-052 |
+| `ORG-054` | `refactor(organization): clarify organization identifier value semantics` | Document/test `OrganizationId` as String/UUID generation and validation policy; inventory raw domain IDs and ensure no conflicting second Organization ID abstraction exists. Do not mass-convert record component types. | Value-object tests plus repository scan show one Organization-owned String-ID policy; generated registry `OperationalScope.id : Long` remains intentionally separate. | ORG-053 |
+| `ORG-055` | `test(organization): verify model and value integrity` | Add final model/value architecture tests for required typed references, Employee/address/contact ownership, birth-field shape, deprecated duplicate-field bridges, effective-date invariants, and absence of retired translation/scope state in canonical records. | Full domain test suite plus compile/test/clean verify; no application/persistence behavior invented. | ORG-054 |
+
+### 20.8 Later cutover explicitly outside ORG-049–ORG-055
+
+The following require separate post-domain tasks because they affect consumers or stored
+data:
+
+```text
+JPA columns/mappers for Employee birth fields
+Flyway migration for birth fields
+backfill/migration of Employee.emailAddress/mobileNumber into OrganizationContactPoint
+API request/response changes
+consumer migration
+removal of legacy employee email/mobile columns
+removal of deprecated display-name compatibility fields if still persisted
+address/contact CRUD use cases
+authorization/audit/workflow integration
+```
+
+No destructive column removal is authorized until parity, consumer and rollback evidence
+is complete.
+
+### 20.9 Execution priority
+
+This domain cleanup does not erase the still-open issue #130 gates. For model/value work,
+execute `ORG-049` first and then proceed one code at a time through `ORG-055`.
+Application/persistence/API cutover must be planned only after the canonical domain model is
+validated.

@@ -29,7 +29,7 @@ import jakarta.persistence.Table;
 import java.time.Instant;
 
 /**
- * Persists one multilingual shift while maintaining the legacy non-null {@code name} column during cutover.
+ * Persists one multilingual shift using embedded Arabic/French/English names.
  */
 @Entity
 @Table(name = "hidra_org_shift")
@@ -41,9 +41,6 @@ public class ShiftJpaEntity {
 
     @Column(name = "code", nullable = false, length = 120)
     private String code;
-
-    @Column(name = "name", nullable = false, length = 255)
-    private String legacyName;
 
     @Column(name = "name_ar", length = 255)
     private String nameAr;
@@ -96,7 +93,6 @@ public class ShiftJpaEntity {
     ) {
         this.id = id;
         this.code = code;
-        this.legacyName = compatibilityName(code, nameAr, nameFr, nameEn);
         this.nameAr = nameAr;
         this.nameFr = nameFr;
         this.nameEn = nameEn;
@@ -121,23 +117,4 @@ public class ShiftJpaEntity {
     public boolean active() { return active; }
     public Instant createdAt() { return createdAt; }
     public Instant updatedAt() { return updatedAt; }
-
-    /**
-     * Transitional value maintained only because the legacy database column is still non-null.
-     */
-    @Deprecated(forRemoval = true)
-    public String legacyName() { return legacyName; }
-
-    private static String compatibilityName(String code, String nameAr, String nameFr, String nameEn) {
-        if (nameEn != null && !nameEn.isBlank()) {
-            return nameEn.trim();
-        }
-        if (nameFr != null && !nameFr.isBlank()) {
-            return nameFr.trim();
-        }
-        if (nameAr != null && !nameAr.isBlank()) {
-            return nameAr.trim();
-        }
-        return code;
-    }
 }

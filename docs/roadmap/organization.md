@@ -2671,7 +2671,7 @@ the same because JPA persists the enum with `EnumType.STRING`.
 | `ORG-044` | Completed | `OperationalScopeReference` is now the canonical registration input across command, owner validation, application service, and registry persistence. The returned/generated `OperationalScope.id` remains the separate identity persisted by responsibility assignments; deprecated split type/target bridges remain only for compatibility. |
 | `ORG-045` | Completed | `OrganizationCode` is adopted as the canonical normalization/validation policy for stable Organization business codes. Administrative state/district/locality, organization unit type/unit, position, and shift constructors normalize through it; the active `CreateOrganizationUnitCommand` carries `OrganizationCode` directly while REST/persistence/query string contracts remain compatible. |
 | `ORG-046` | Completed | Added `V20260927_004__enforce_organization_internal_reference_integrity.sql`: fail-closed orphan/discriminator preflight, 16 same-module `ON DELETE RESTRICT` foreign keys, and closed checks for contact/reporting/responsibility polymorphic types. PostgreSQL/Testcontainers coverage verifies installation and transactional rollback on direct/polymorphic orphan data. |
-| `ORG-047` | Planned | Retire remaining multilingual compatibility columns after parity. |
+| `ORG-047` | Completed | Added `V20260927_005__retire_organization_multilingual_compatibility_columns.sql`. Retirement is fail-closed: ambiguous unit-type/position descriptions must already be preserved exactly in an embedded language, and Shift legacy `name` must match the canonical `en -> fr -> ar -> code` compatibility projection. Legacy JPA mappings were removed so existing Hibernate `ddl-auto=validate` smoke coverage validates the post-drop schema. |
 | `ORG-048` | Planned | Final typed-dependency integrity guardrails. |
 
 ### ORG-042 implementation result
@@ -2914,6 +2914,38 @@ Focused PostgreSQL/Testcontainers tests prove direct FK/check installation, reje
 invalid discriminator writes, and transaction rollback with source data preserved when
 either a direct orphan or a polymorphic orphan is present.
 
+### ORG-047 implementation result
+
+**Migration:** `V20260927_005__retire_organization_multilingual_compatibility_columns.sql`
+
+ORG-047 retires exactly the three remaining language-ambiguous compatibility columns:
+
+```text
+hidra_org_unit_type.description
+hidra_org_position.description
+hidra_org_shift.name
+```
+
+The migration does not infer or translate any value. It fails transactionally before
+the first DROP when a non-null legacy unit-type or position description is not already
+preserved exactly in at least one corresponding embedded
+`descriptionAr/descriptionFr/descriptionEn` field.
+
+For Shift, retirement requires the legacy `name` to match the exact cutover projection
+used by runtime compatibility writes: first nonblank English, then French, then Arabic,
+then the stable code. Embedded names are boundary-trimmed for comparison because the
+runtime compatibility projection trimmed the selected value.
+
+The obsolete JPA mappings/accessors are removed from
+`OrganizationUnitTypeJpaEntity`, `PositionJpaEntity`, and `ShiftJpaEntity`.
+No domain, application, or REST multilingual contract changes are introduced.
+
+Focused PostgreSQL/Testcontainers tests cover successful retirement and fail-closed
+rollback for mismatched unit-type descriptions, position descriptions, and shift names.
+The repository Boot smoke test already uses PostgreSQL/Testcontainers with
+`spring.jpa.hibernate.ddl-auto=validate`, providing Hibernate validation against the
+post-retirement schema in normal CI.
+
 ### Multilingual correction status
 
 | Code | Status | Evidence / next gate |
@@ -2926,5 +2958,5 @@ either a direct orphan or a polymorphic orphan is present.
 | `ORG-039` | Completed | Added `V20260927_003__retire_organization_unit_type_translation_table.sql`. The migration performs a fail-closed, null-safe parity check between every remaining normalized `ar/fr/en` legacy row and embedded names/descriptions before dropping the table. Testcontainers coverage proves successful retirement, embedded-only post-cutover rows, and transactional rollback with the recovery table intact on label/description/language mismatches. |
 | `ORG-040` | Completed | Added final Organization multilingual architecture/integrity guardrails. Explicit domain/JPA `Ar/Fr/En` triplets are verified for the known translatable models, the existing OrganizationUnit application/API chain is checked for all three names, separate Organization translation production types/JPA mappings are forbidden, and migrations after `V20260927_003` may not reintroduce the retired translation table. |
 
-**Execution priority:** execute ORG-047 next, then ORG-048 before resuming the remaining ORG-027 reconcile/audit/authorization gaps. Existing validated ORG-027 list/query work remains valid and must not be reverted.
+**Execution priority:** execute ORG-048 next before resuming the remaining ORG-027 reconcile/audit/authorization gaps. Existing validated ORG-027 list/query work remains valid and must not be reverted.
 

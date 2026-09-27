@@ -30,9 +30,7 @@ import jakarta.persistence.Table;
 import java.time.Instant;
 
 /**
- * Persists one multilingual organization position.
- *
- * <p>The legacy {@code description} column remains read-only during cutover so old data is preserved.
+ * Persists one multilingual organization position using embedded Arabic/French/English descriptions.
  */
 @Entity
 @Table(name = "hidra_org_position")
@@ -66,9 +64,6 @@ public class PositionJpaEntity {
 
     @Column(name = "description_en", columnDefinition = "text")
     private String descriptionEn;
-
-    @Column(name = "description", insertable = false, updatable = false, columnDefinition = "text")
-    private String legacyDescription;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 40)
@@ -124,10 +119,4 @@ public class PositionJpaEntity {
     public PositionStatus status() { return status; }
     public Instant createdAt() { return createdAt; }
     public Instant updatedAt() { return updatedAt; }
-
-    /**
-     * Transitional recovery-only value from the pre-ORG-036 language-ambiguous column.
-     */
-    @Deprecated(forRemoval = true)
-    public String legacyDescription() { return legacyDescription; }
 }

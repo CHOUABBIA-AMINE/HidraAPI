@@ -29,9 +29,7 @@ import jakarta.persistence.Table;
 import java.time.Instant;
 
 /**
- * Persists one multilingual organization-unit type.
- *
- * <p>The legacy {@code description} column is mapped read-only so ORG-037 updates cannot erase recovery data.
+ * Persists one multilingual organization-unit type using only embedded Arabic/French/English fields.
  */
 @Entity
 @Table(name = "hidra_org_unit_type")
@@ -65,9 +63,6 @@ public class OrganizationUnitTypeJpaEntity {
 
     @Column(name = "description_en", columnDefinition = "text")
     private String descriptionEn;
-
-    @Column(name = "description", insertable = false, updatable = false, columnDefinition = "text")
-    private String legacyDescription;
 
     @Column(name = "active", nullable = false)
     private boolean active;
@@ -122,10 +117,4 @@ public class OrganizationUnitTypeJpaEntity {
     public boolean active() { return active; }
     public Instant createdAt() { return createdAt; }
     public Instant updatedAt() { return updatedAt; }
-
-    /**
-     * Transitional recovery-only value from the pre-ORG-036 language-ambiguous column.
-     */
-    @Deprecated(forRemoval = true)
-    public String legacyDescription() { return legacyDescription; }
 }

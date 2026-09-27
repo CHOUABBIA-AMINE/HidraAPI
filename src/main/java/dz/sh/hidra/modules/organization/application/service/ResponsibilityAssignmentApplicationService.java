@@ -33,6 +33,7 @@ import dz.sh.hidra.modules.organization.domain.value.EmployeeStatus;
 import dz.sh.hidra.modules.organization.domain.value.OperationalScopeType;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitStatus;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationId;
+import dz.sh.hidra.modules.organization.domain.value.ResponsibilityAssigneeType;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;

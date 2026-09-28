@@ -7,7 +7,7 @@
  *
  * @Name        : OrganizationRestMapper
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-27
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Class
  * @Layer       : API
@@ -73,6 +73,11 @@ public final class OrganizationRestMapper {
                 request.lastNameLt(),
                 request.displayNameAr(),
                 request.displayNameLt(),
+                request.dateOfBirth(),
+                request.birthLocalityId(),
+                request.birthPlaceAr(),
+                request.birthPlaceFr(),
+                request.birthPlaceEn(),
                 request.emailAddress(),
                 request.mobileNumber(),
                 request.employeeType(),
@@ -99,6 +104,11 @@ public final class OrganizationRestMapper {
                 dto.employeeNumber(),
                 dto.displayNameAr(),
                 dto.displayNameLt(),
+                dto.dateOfBirth(),
+                dto.birthLocalityId(),
+                dto.birthPlaceAr(),
+                dto.birthPlaceFr(),
+                dto.birthPlaceEn(),
                 dto.emailAddress(),
                 dto.employeeType(),
                 dto.status(),

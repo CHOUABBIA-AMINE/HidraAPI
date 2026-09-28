@@ -7,7 +7,7 @@
  *
  * @Name        : RegisterEmployeeRequest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : API
@@ -21,6 +21,8 @@ package dz.sh.hidra.modules.organization.api.rest.request;
 
 import dz.sh.hidra.modules.organization.domain.value.EmployeeType;
 
+import java.time.LocalDate;
+
 /**
  * REST request to register employee.
  */
@@ -32,6 +34,11 @@ public record RegisterEmployeeRequest(
         String lastNameLt,
         String displayNameAr,
         String displayNameLt,
+        LocalDate dateOfBirth,
+        String birthLocalityId,
+        String birthPlaceAr,
+        String birthPlaceFr,
+        String birthPlaceEn,
         String emailAddress,
         String mobileNumber,
         EmployeeType employeeType,

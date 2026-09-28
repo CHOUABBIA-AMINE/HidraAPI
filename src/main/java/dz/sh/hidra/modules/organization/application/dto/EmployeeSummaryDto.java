@@ -7,7 +7,7 @@
  *
  * @Name        : EmployeeSummaryDto
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Application
@@ -22,6 +22,8 @@ package dz.sh.hidra.modules.organization.application.dto;
 import dz.sh.hidra.modules.organization.domain.value.EmployeeStatus;
 import dz.sh.hidra.modules.organization.domain.value.EmployeeType;
 
+import java.time.LocalDate;
+
 /**
  * Employee summary DTO.
  */
@@ -30,6 +32,11 @@ public record EmployeeSummaryDto(
         String employeeNumber,
         String displayNameAr,
         String displayNameLt,
+        LocalDate dateOfBirth,
+        String birthLocalityId,
+        String birthPlaceAr,
+        String birthPlaceFr,
+        String birthPlaceEn,
         String emailAddress,
         EmployeeType employeeType,
         EmployeeStatus status,

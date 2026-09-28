@@ -7,7 +7,7 @@
  *
  * @Name        : EmployeeResponse
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : API
@@ -22,6 +22,8 @@ package dz.sh.hidra.modules.organization.api.rest.response;
 import dz.sh.hidra.modules.organization.domain.value.EmployeeStatus;
 import dz.sh.hidra.modules.organization.domain.value.EmployeeType;
 
+import java.time.LocalDate;
+
 /**
  * REST response for employee.
  */
@@ -30,6 +32,11 @@ public record EmployeeResponse(
         String employeeNumber,
         String displayNameAr,
         String displayNameLt,
+        LocalDate dateOfBirth,
+        String birthLocalityId,
+        String birthPlaceAr,
+        String birthPlaceFr,
+        String birthPlaceEn,
         String emailAddress,
         EmployeeType employeeType,
         EmployeeStatus status,

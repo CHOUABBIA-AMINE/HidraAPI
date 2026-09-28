@@ -7,7 +7,7 @@
  *
  * @Name        : OrganizationApplicationMapper
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Class
  * @Layer       : Application
@@ -52,6 +52,11 @@ public final class OrganizationApplicationMapper {
                 model.employeeNumber(),
                 model.displayNameAr(),
                 model.displayNameLt(),
+                model.dateOfBirth(),
+                model.birthLocalityId(),
+                model.birthPlaceAr(),
+                model.birthPlaceFr(),
+                model.birthPlaceEn(),
                 model.emailAddress(),
                 model.employeeType(),
                 model.status(),

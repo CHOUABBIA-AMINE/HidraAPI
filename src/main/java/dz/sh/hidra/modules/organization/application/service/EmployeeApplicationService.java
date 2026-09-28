@@ -7,7 +7,7 @@
  *
  * @Name        : EmployeeApplicationService
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Class
  * @Layer       : Application
@@ -59,6 +59,11 @@ public final class EmployeeApplicationService implements RegisterEmployeeUseCase
                 command.lastNameLt(),
                 command.displayNameAr(),
                 command.displayNameLt(),
+                command.dateOfBirth(),
+                command.birthLocalityId(),
+                command.birthPlaceAr(),
+                command.birthPlaceFr(),
+                command.birthPlaceEn(),
                 command.emailAddress(),
                 command.mobileNumber(),
                 command.employeeType() == null ? EmployeeType.PERMANENT : command.employeeType(),

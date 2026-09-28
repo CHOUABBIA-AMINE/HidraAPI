@@ -7,7 +7,7 @@
  *
  * @Name        : PlanRevisionCommandController
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-12
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Class
  * @Layer       : API
@@ -20,16 +20,14 @@
 package dz.sh.hidra.modules.planning.api.rest.controller;
 
 import dz.sh.hidra.modules.planning.application.port.in.UpdatePlanRevisionUseCase;
-import dz.sh.hidra.modules.planning.domain.model.PlanRevision;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import java.time.Instant;
+import java.util.Objects;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.time.Instant;
-import java.util.Objects;
 
 @RestController
 public class PlanRevisionCommandController {
@@ -45,18 +43,22 @@ public class PlanRevisionCommandController {
             @PathVariable String revisionId,
             @Valid @RequestBody Request request
     ) {
-        PlanRevision revision = useCase.update(revisionId, new UpdatePlanRevisionUseCase.Command(
-                request.expectedUpdatedAt(), request.changeReasonCodeId(), request.changeReasonText()
-        ));
-        return Response.from(revision);
+        UpdatePlanRevisionUseCase.Result result = useCase.update(
+                revisionId,
+                new UpdatePlanRevisionUseCase.Command(
+                        request.expectedUpdatedAt(),
+                        request.changeReasonCodeId(),
+                        request.changeReasonText()
+                )
+        );
+        return Response.from(result);
     }
 
     public record Request(
             @NotNull Instant expectedUpdatedAt,
             String changeReasonCodeId,
             String changeReasonText
-    ) {
-    }
+    ) { }
 
     public record Response(
             String id,
@@ -75,13 +77,23 @@ public class PlanRevisionCommandController {
             Instant createdAt,
             Instant updatedAt
     ) {
-        private static Response from(PlanRevision revision) {
+        private static Response from(UpdatePlanRevisionUseCase.Result result) {
             return new Response(
-                    revision.id(), revision.planId(), revision.revisionNumber(), revision.revisionCode(),
-                    revision.status() == null ? null : revision.status().name(), revision.changeReasonCodeId(),
-                    revision.changeReasonText(), revision.baseRevisionId(), revision.submittedByActorId(),
-                    revision.submittedAt(), revision.approvedByActorId(), revision.approvedAt(),
-                    revision.workflowInstanceId(), revision.createdAt(), revision.updatedAt()
+                    result.id(),
+                    result.planId(),
+                    result.revisionNumber(),
+                    result.revisionCode(),
+                    result.status(),
+                    result.changeReasonCodeId(),
+                    result.changeReasonText(),
+                    result.baseRevisionId(),
+                    result.submittedByActorId(),
+                    result.submittedAt(),
+                    result.approvedByActorId(),
+                    result.approvedAt(),
+                    result.workflowInstanceId(),
+                    result.createdAt(),
+                    result.updatedAt()
             );
         }
     }

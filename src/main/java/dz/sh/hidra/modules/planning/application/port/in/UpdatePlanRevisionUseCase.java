@@ -7,7 +7,7 @@
  *
  * @Name        : UpdatePlanRevisionUseCase
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-12
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Interface
  * @Layer       : Application
@@ -19,13 +19,11 @@
  */
 package dz.sh.hidra.modules.planning.application.port.in;
 
-import dz.sh.hidra.modules.planning.domain.model.PlanRevision;
-
 import java.time.Instant;
 
 public interface UpdatePlanRevisionUseCase {
 
-    PlanRevision update(String revisionId, Command command);
+    Result update(String revisionId, Command command);
 
     record Command(
             Instant expectedUpdatedAt,
@@ -38,4 +36,22 @@ public interface UpdatePlanRevisionUseCase {
             }
         }
     }
+
+    record Result(
+            String id,
+            String planId,
+            int revisionNumber,
+            String revisionCode,
+            String status,
+            String changeReasonCodeId,
+            String changeReasonText,
+            String baseRevisionId,
+            String submittedByActorId,
+            Instant submittedAt,
+            String approvedByActorId,
+            Instant approvedAt,
+            String workflowInstanceId,
+            Instant createdAt,
+            Instant updatedAt
+    ) { }
 }

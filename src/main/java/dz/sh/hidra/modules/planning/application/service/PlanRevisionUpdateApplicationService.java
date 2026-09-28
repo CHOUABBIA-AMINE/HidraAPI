@@ -7,7 +7,7 @@
  *
  * @Name        : PlanRevisionUpdateApplicationService
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-12
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Class
  * @Layer       : Application
@@ -25,12 +25,11 @@ import dz.sh.hidra.modules.planning.application.port.out.PlanRevisionRepositoryP
 import dz.sh.hidra.modules.planning.domain.exception.PlanningRevisionConflictException;
 import dz.sh.hidra.modules.planning.domain.model.OperationalPlan;
 import dz.sh.hidra.modules.planning.domain.model.PlanRevision;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.time.Instant;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PlanRevisionUpdateApplicationService implements UpdatePlanRevisionUseCase {
@@ -48,7 +47,7 @@ public class PlanRevisionUpdateApplicationService implements UpdatePlanRevisionU
 
     @Override
     @Transactional
-    public PlanRevision update(String revisionId, Command command) {
+    public Result update(String revisionId, Command command) {
         if (revisionId == null || revisionId.isBlank()) {
             throw new IllegalArgumentException("revisionId must not be null or blank.");
         }
@@ -75,7 +74,7 @@ public class PlanRevisionUpdateApplicationService implements UpdatePlanRevisionU
             updatedAt = revision.updatedAt().plusNanos(1);
         }
 
-        return revisionRepository.save(new PlanRevision(
+        PlanRevision saved = revisionRepository.save(new PlanRevision(
                 revision.id(),
                 revision.planId(),
                 revision.revisionNumber(),
@@ -92,5 +91,26 @@ public class PlanRevisionUpdateApplicationService implements UpdatePlanRevisionU
                 revision.createdAt(),
                 updatedAt
         ));
+        return toResult(saved);
+    }
+
+    private static Result toResult(PlanRevision revision) {
+        return new Result(
+                revision.id(),
+                revision.planId(),
+                revision.revisionNumber(),
+                revision.revisionCode(),
+                revision.status() == null ? null : revision.status().name(),
+                revision.changeReasonCodeId(),
+                revision.changeReasonText(),
+                revision.baseRevisionId(),
+                revision.submittedByActorId(),
+                revision.submittedAt(),
+                revision.approvedByActorId(),
+                revision.approvedAt(),
+                revision.workflowInstanceId(),
+                revision.createdAt(),
+                revision.updatedAt()
+        );
     }
 }

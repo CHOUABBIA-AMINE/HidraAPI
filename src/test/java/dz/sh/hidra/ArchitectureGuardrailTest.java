@@ -67,7 +67,8 @@ class ArchitectureGuardrailTest {
      * architecture decision/roadmap task that creates that public module contract.
      */
     private static final Set<String> EXPORTED_CROSS_MODULE_PACKAGE_PREFIXES = Set.of(
-            "dz.sh.hidra.modules.workflow.application.contract.planning"
+            "dz.sh.hidra.modules.workflow.application.contract.planning",
+            "dz.sh.hidra.modules.topology.application.contract.organization"
     );
 
     /**
@@ -77,12 +78,7 @@ class ArchitectureGuardrailTest {
      * No wildcard package exception is allowed.</p>
      */
     private static final Map<String, Set<String>> TRANSITIONAL_CROSS_MODULE_DEPENDENCIES =
-            Map.of(
-                    "dz.sh.hidra.modules.organization.infrastructure.adapter.AuthoritativeOperationalScopeTargetResolverAdapter",
-                    Set.of(
-                            "dz.sh.hidra.modules.topology.application.port.in.ResolveTopologyOperationalScopeTargetUseCase"
-                    )
-            );
+            Map.of();
 
     @Test
     void kernelMustRemainFrameworkAndModuleIndependent() {
@@ -252,6 +248,22 @@ class ArchitectureGuardrailTest {
                         "dz.sh.hidra.modules.workflow.application.contract.planning.PlanningWorkflowContract"
                 ),
                 "The deliberate Workflow contract exported to Planning must remain allowed."
+        );
+
+        assertTrue(
+                isForbiddenCrossModuleDependency(
+                        "dz.sh.hidra.modules.organization.infrastructure.adapter.AuthoritativeOperationalScopeTargetResolverAdapter",
+                        "dz.sh.hidra.modules.topology.application.port.in.ResolveTopologyOperationalScopeTargetUseCase"
+                ),
+                "Organization must no longer depend on Topology's private application ports."
+        );
+
+        assertFalse(
+                isForbiddenCrossModuleDependency(
+                        "dz.sh.hidra.modules.organization.infrastructure.adapter.AuthoritativeOperationalScopeTargetResolverAdapter",
+                        "dz.sh.hidra.modules.topology.application.contract.organization.TopologyOperationalScopeTargetContract"
+                ),
+                "The deliberate Topology contract exported to Organization must remain allowed."
         );
     }
 

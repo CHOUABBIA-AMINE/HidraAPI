@@ -7,7 +7,7 @@
  *
  * @Name        : AuthoritativeOperationalScopeTargetResolverAdapterTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-27
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Class
  * @Layer       : Organization Test
@@ -23,7 +23,7 @@ import dz.sh.hidra.modules.organization.application.port.out.OrganizationUnitRep
 import dz.sh.hidra.modules.organization.domain.model.OrganizationUnit;
 import dz.sh.hidra.modules.organization.domain.value.OperationalScopeType;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitStatus;
-import dz.sh.hidra.modules.topology.application.port.in.ResolveTopologyOperationalScopeTargetUseCase;
+import dz.sh.hidra.modules.topology.application.contract.organization.TopologyOperationalScopeTargetContract;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
@@ -69,7 +69,7 @@ class AuthoritativeOperationalScopeTargetResolverAdapterTest {
     }
 
     @Test
-    void resolvesTopologyTargetsThroughPublicInputPortWithoutChangingIdentity() {
+    void resolvesTopologyTargetsThroughExportedContractWithoutChangingIdentity() {
         var result = resolver(unit("unit-1", OrganizationUnitStatus.ACTIVE), topologyPort())
                 .resolve(OperationalScopeType.PIPELINE, " pipeline-1 ")
                 .orElseThrow();
@@ -92,7 +92,7 @@ class AuthoritativeOperationalScopeTargetResolverAdapterTest {
 
     @Test
     void propagatesOwnerFailureInsteadOfMaskingItAsMissing() {
-        ResolveTopologyOperationalScopeTargetUseCase unavailable = new ResolveTopologyOperationalScopeTargetUseCase() {
+        TopologyOperationalScopeTargetContract unavailable = new TopologyOperationalScopeTargetContract() {
             @Override
             public Optional<TargetView> resolvePipelineSystem(String targetId) {
                 throw new IllegalStateException("Topology owner unavailable");
@@ -124,7 +124,7 @@ class AuthoritativeOperationalScopeTargetResolverAdapterTest {
 
     private static AuthoritativeOperationalScopeTargetResolverAdapter resolver(
             OrganizationUnit unit,
-            ResolveTopologyOperationalScopeTargetUseCase topology
+            TopologyOperationalScopeTargetContract topology
     ) {
         return new AuthoritativeOperationalScopeTargetResolverAdapter(
                 organizationUnitRepository(unit),
@@ -163,8 +163,8 @@ class AuthoritativeOperationalScopeTargetResolverAdapterTest {
         };
     }
 
-    private static ResolveTopologyOperationalScopeTargetUseCase topologyPort() {
-        return new ResolveTopologyOperationalScopeTargetUseCase() {
+    private static TopologyOperationalScopeTargetContract topologyPort() {
+        return new TopologyOperationalScopeTargetContract() {
             @Override
             public Optional<TargetView> resolvePipelineSystem(String targetId) {
                 return "system-1".equals(targetId)

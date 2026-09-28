@@ -7,7 +7,7 @@
  *
  * @Name        : AuthoritativeOperationalScopeTargetResolverAdapter
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-27
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -24,8 +24,8 @@ import dz.sh.hidra.modules.organization.application.port.out.OrganizationUnitRep
 import dz.sh.hidra.modules.organization.domain.model.OrganizationUnit;
 import dz.sh.hidra.modules.organization.domain.value.OperationalScopeType;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitStatus;
-import dz.sh.hidra.modules.topology.application.port.in.ResolveTopologyOperationalScopeTargetUseCase;
-import dz.sh.hidra.modules.topology.application.port.in.ResolveTopologyOperationalScopeTargetUseCase.TargetView;
+import dz.sh.hidra.modules.topology.application.contract.organization.TopologyOperationalScopeTargetContract;
+import dz.sh.hidra.modules.topology.application.contract.organization.TopologyOperationalScopeTargetContract.TargetView;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
@@ -35,7 +35,7 @@ import java.util.Optional;
  * Authoritative operational-scope resolver for currently implemented owner types.
  *
  * <p>Organization units are owned locally. Topology-owned targets are resolved only
- * through topology's public application input port. No topology domain model,
+ * through topology's exported Organization application contract. No topology domain model,
  * repository, persistence entity or infrastructure type crosses this boundary.</p>
  */
 @Component
@@ -43,11 +43,11 @@ public final class AuthoritativeOperationalScopeTargetResolverAdapter
         implements OperationalScopeTargetResolverPort {
 
     private final OrganizationUnitRepositoryPort organizationUnitRepositoryPort;
-    private final ResolveTopologyOperationalScopeTargetUseCase topologyTargetUseCase;
+    private final TopologyOperationalScopeTargetContract topologyTargetUseCase;
 
     public AuthoritativeOperationalScopeTargetResolverAdapter(
             OrganizationUnitRepositoryPort organizationUnitRepositoryPort,
-            ResolveTopologyOperationalScopeTargetUseCase topologyTargetUseCase
+            TopologyOperationalScopeTargetContract topologyTargetUseCase
     ) {
         this.organizationUnitRepositoryPort = Objects.requireNonNull(
                 organizationUnitRepositoryPort,

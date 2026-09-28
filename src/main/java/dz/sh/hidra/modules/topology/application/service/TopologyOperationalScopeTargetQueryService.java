@@ -7,7 +7,7 @@
  *
  * @Name        : TopologyOperationalScopeTargetQueryService
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-27
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Class
  * @Layer       : Application
@@ -19,7 +19,7 @@
  */
 package dz.sh.hidra.modules.topology.application.service;
 
-import dz.sh.hidra.modules.topology.application.port.in.ResolveTopologyOperationalScopeTargetUseCase;
+import dz.sh.hidra.modules.topology.application.contract.organization.TopologyOperationalScopeTargetContract;
 import dz.sh.hidra.modules.topology.application.port.out.EquipmentRepositoryPort;
 import dz.sh.hidra.modules.topology.application.port.out.FacilityRepositoryPort;
 import dz.sh.hidra.modules.topology.application.port.out.PipelineRepositoryPort;
@@ -41,7 +41,7 @@ import java.util.Optional;
  */
 @Service
 public final class TopologyOperationalScopeTargetQueryService
-        implements ResolveTopologyOperationalScopeTargetUseCase {
+        implements TopologyOperationalScopeTargetContract {
 
     private final PipelineSystemRepositoryPort pipelineSystemRepositoryPort;
     private final PipelineRepositoryPort pipelineRepositoryPort;

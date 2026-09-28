@@ -5,19 +5,19 @@
  * @Author      : Abir MEDJERAB
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  *
- * @Name        : ResolveTopologyOperationalScopeTargetUseCase
+ * @Name        : TopologyOperationalScopeTargetContract
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-27
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Interface
- * @Layer       : Application
+ * @Layer       : Application Contract
  * @Module      : topology
- * @Package     : dz.sh.hidra.modules.topology.application.port.in
+ * @Package     : dz.sh.hidra.modules.topology.application.contract.organization
  *
- * @Description : Public read contract for resolving topology-owned operational-scope targets.
+ * @Description : Deliberate cross-module Topology contract exported to Organization operational-scope resolution.
  *
  */
-package dz.sh.hidra.modules.topology.application.port.in;
+package dz.sh.hidra.modules.topology.application.contract.organization;
 
 import java.util.Optional;
 
@@ -28,7 +28,7 @@ import java.util.Optional;
  * <p>The returned ID is the topology owner's native stable identifier. Code and
  * name are current display attributes and are never authoritative registry identity.</p>
  */
-public interface ResolveTopologyOperationalScopeTargetUseCase {
+public interface TopologyOperationalScopeTargetContract {
 
     Optional<TargetView> resolvePipelineSystem(String targetId);
 

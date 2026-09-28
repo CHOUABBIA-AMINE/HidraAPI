@@ -125,56 +125,6 @@ import java.time.LocalDate;
             // Required by JPA.
         }
 
-        /**
-         * Transitional constructor for the existing HRA-011 mapper until birth fields are
-         * passed explicitly in both mapping directions.
-         */
-        @Deprecated(forRemoval = true)
-        public EmployeeJpaEntity(
-                String id,
-                String employeeNumber,
-                String firstNameAr,
-                String lastNameAr,
-                String firstNameLt,
-                String lastNameLt,
-                String displayNameAr,
-                String displayNameLt,
-                String emailAddress,
-                String mobileNumber,
-                EmployeeType employeeType,
-                EmployeeStatus status,
-                String identityUserReference,
-                Instant hiredAt,
-                Instant terminatedAt,
-                Instant createdAt,
-                Instant updatedAt
-        ) {
-            this(
-                    id,
-                    employeeNumber,
-                    firstNameAr,
-                    lastNameAr,
-                    firstNameLt,
-                    lastNameLt,
-                    displayNameAr,
-                    displayNameLt,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    emailAddress,
-                    mobileNumber,
-                    employeeType,
-                    status,
-                    identityUserReference,
-                    hiredAt,
-                    terminatedAt,
-                    createdAt,
-                    updatedAt
-            );
-        }
-
         public EmployeeJpaEntity(
                 String id,
             String employeeNumber,

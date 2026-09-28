@@ -7,7 +7,7 @@
  *
  * @Name        : OrganizationPersistenceMapper
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-27
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -154,6 +154,11 @@ public final class OrganizationPersistenceMapper {
                         model.lastNameLt(),
                         model.displayNameAr(),
                         model.displayNameLt(),
+                        model.dateOfBirth(),
+                        model.birthLocalityId(),
+                        model.birthPlaceAr(),
+                        model.birthPlaceFr(),
+                        model.birthPlaceEn(),
                         model.emailAddress(),
                         model.mobileNumber(),
                         model.employeeType(),
@@ -176,6 +181,11 @@ public final class OrganizationPersistenceMapper {
                         entity.lastNameLt(),
                         entity.displayNameAr(),
                         entity.displayNameLt(),
+                        entity.dateOfBirth(),
+                        entity.birthLocalityId(),
+                        entity.birthPlaceAr(),
+                        entity.birthPlaceFr(),
+                        entity.birthPlaceEn(),
                         entity.emailAddress(),
                         entity.mobileNumber(),
                         entity.employeeType(),

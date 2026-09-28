@@ -46,10 +46,10 @@ import org.junit.jupiter.api.Test;
  * still persisted compatibility state until the later HRA-020/HRA-023 cutover. They must not
  * be silently dropped before that migration is explicitly completed.</p>
  *
- * <p>The five birth fields below are the exact mapper drift confirmed by the forensic audit and
- * the user-supplied source reference. HRA-010 makes them explicit transient JPA-model state
- * because the live Flyway schema does not yet contain their columns; HRA-011 must map them and
- * HRA-013 must replace @Transient with real column mappings after the schema migration.</p>
+ * <p>The five birth fields below are now represented and mapped in both Java directions.
+ * They remain an explicit schema bridge only because the live Flyway schema does not yet
+ * contain their columns. HRA-013 must replace {@code @Transient} with real column mappings
+ * after the immutable schema migration.</p>
  */
 class OrganizationPersistenceDriftGuardrailTest {
 
@@ -58,7 +58,7 @@ class OrganizationPersistenceDriftGuardrailTest {
                     + "OrganizationPersistenceMapper.java"
     );
 
-    private static final Set<String> TRANSITIONAL_EMPLOYEE_MAPPER_DRIFT = Set.of(
+    private static final Set<String> TRANSITIONAL_EMPLOYEE_SCHEMA_BRIDGE = Set.of(
             "dateOfBirth",
             "birthLocalityId",
             "birthPlaceAr",
@@ -93,17 +93,17 @@ class OrganizationPersistenceDriftGuardrailTest {
         Set<String> domainComponents = recordComponents(Employee.class);
 
         assertThat(missingAccessorCalls(domainComponents, toEntity, "model"))
-                .as("Employee -> JPA mapper drift must remain limited to the HRA-011 birth gap")
-                .isEqualTo(TRANSITIONAL_EMPLOYEE_MAPPER_DRIFT);
+                .as("Employee -> JPA mapper must cover every Employee record component")
+                .isEmpty();
 
         assertThat(missingAccessorCalls(domainComponents, toDomain, "entity"))
-                .as("JPA -> Employee mapper drift must remain limited to the HRA-011 birth gap")
-                .isEqualTo(TRANSITIONAL_EMPLOYEE_MAPPER_DRIFT);
+                .as("JPA -> Employee mapper must cover every Employee record component")
+                .isEmpty();
     }
 
     @Test
-    void transitionalBirthDriftMustRemainNarrowAndCurrent() throws IOException {
-        assertThat(TRANSITIONAL_EMPLOYEE_MAPPER_DRIFT)
+    void birthFieldsMustRemainMappedAndTransientUntilSchemaMigration() throws IOException {
+        assertThat(TRANSITIONAL_EMPLOYEE_SCHEMA_BRIDGE)
                 .containsExactlyInAnyOrder(
                         "dateOfBirth",
                         "birthLocalityId",
@@ -116,7 +116,7 @@ class OrganizationPersistenceDriftGuardrailTest {
                 .as("HRA-010 removes domain/entity shape drift before mapper repair")
                 .isEmpty();
 
-        for (String fieldName : TRANSITIONAL_EMPLOYEE_MAPPER_DRIFT) {
+        for (String fieldName : TRANSITIONAL_EMPLOYEE_SCHEMA_BRIDGE) {
             try {
                 Field field = EmployeeJpaEntity.class.getDeclaredField(fieldName);
                 assertThat(field.isAnnotationPresent(Transient.class))
@@ -132,7 +132,12 @@ class OrganizationPersistenceDriftGuardrailTest {
                 recordComponents(Employee.class),
                 methodBody(mapperSource, "public static EmployeeJpaEntity toEntity(Employee model)"),
                 "model"
-        )).containsExactlyInAnyOrderElementsOf(TRANSITIONAL_EMPLOYEE_MAPPER_DRIFT);
+        )).isEmpty();
+        assertThat(missingAccessorCalls(
+                recordComponents(Employee.class),
+                methodBody(mapperSource, "public static Employee toDomain(EmployeeJpaEntity entity)"),
+                "entity"
+        )).isEmpty();
     }
 
     @Test

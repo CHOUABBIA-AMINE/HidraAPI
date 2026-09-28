@@ -114,7 +114,7 @@ The authoritative detailed baseline is recorded in
 
 | Code | Exact commit message | Scope | Exit criteria | Prerequisite | Status |
 |---|---|---|---|---|---|
-| `HRA-050` | `docs(domain): classify required invariant gaps` | Review domain/JPA nullability mismatches and classify true business requirements vs migration/persistence-only constraints. | Module-by-module invariant matrix exists. | HRA-003 | Planned |
+| `HRA-050` | `docs(domain): classify required invariant gaps` | Review domain/JPA nullability mismatches and classify true business requirements vs migration/persistence-only constraints. | Module-by-module invariant matrix exists. | HRA-003 | **Completed** — `docs/architecture/domain-invariant-gap-classification.md` classifies all 465 same-named domain/JPA pairs and 3,385 matched JPA `nullable=false` fields. HRA-051 is authorized for 2,038 required-field rules plus 83 local temporal-order rules and 7 direct self-reference rules (2,128 total). 365 required fields are already enforced; 327 generic text constraints and 655 `createdAt`/`updatedAt` constraints remain persistence-only. The classifier and exact expected counts must be regenerated on the HRA-051 execution head before code changes. |
 | `HRA-051` | `refactor(codebase): enforce classified domain invariants` | **Single consolidated repository-wide task / single commit.** Apply every HRA-050-approved invariant gap across all affected modules in one batch: required IDs/codes/types/statuses/references, locally decidable date ordering, and self-reference rules. Do not add repository lookups, cross-module existence checks, or database uniqueness checks to domain constructors. | Every HRA-050 ENFORCE disposition is implemented in the same commit; invalid domain state fails before persistence; focused module tests plus repository validation pass; no unclassified invariant change is included. | HRA-050 | Planned |
 
 Domain constructors must not perform repository lookups, cross-module existence checks, or database uniqueness checks.
@@ -407,6 +407,6 @@ HRA-120
 
 `HRA-001` and `HRA-004` are complete. HRA-004 was explicitly prioritized to remove CI duplication before the high-frequency remediation sequence.
 
-**Next task:** `HRA-050 — docs(domain): classify required invariant gaps`.
+**Next task:** `HRA-051 — refactor(codebase): enforce classified domain invariants`.
 
 Do not begin broad dead-code deletion, event deletion, DTO consolidation, or domain/JPA mirror reduction before the HRA-002/HRA-003 safety rails exist.

@@ -7,7 +7,7 @@
  *
  * @Name        : AuthenticateDirectUserUseCase
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-15
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Interface
  * @Layer       : Application
@@ -19,13 +19,13 @@
  */
 package dz.sh.hidra.modules.identity.application.port.in;
 
+import dz.sh.hidra.modules.identity.application.model.AuthenticationResult;
 import dz.sh.hidra.modules.identity.application.model.DirectAuthenticationCommand;
-import dz.sh.hidra.modules.identity.application.model.DirectAuthenticationResult;
 
 /**
  * Inbound use case for provider-selected direct authentication.
  */
 public interface AuthenticateDirectUserUseCase {
 
-    DirectAuthenticationResult authenticate(DirectAuthenticationCommand command);
+    AuthenticationResult authenticate(DirectAuthenticationCommand command);
 }

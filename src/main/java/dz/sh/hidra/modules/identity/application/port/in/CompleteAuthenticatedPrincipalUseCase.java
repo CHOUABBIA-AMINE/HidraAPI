@@ -7,28 +7,28 @@
  *
  * @Name        : CompleteAuthenticatedPrincipalUseCase
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-15
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Interface
  * @Layer       : Application
  * @Module      : identity
  * @Package     : dz.sh.hidra.modules.identity.application.port.in
  *
- * @Description : Completes an already normalized Hidra authentication by issuing a token and creating its logical session.
+ * @Description : Completes an already normalized Hidra authentication through application-owned input/output contracts.
  *
  */
 package dz.sh.hidra.modules.identity.application.port.in;
 
-import dz.sh.hidra.modules.identity.application.model.AuthenticationCompletionResult;
-import dz.sh.hidra.modules.identity.domain.model.HidraPrincipal;
+import dz.sh.hidra.modules.identity.application.model.AuthenticatedPrincipalInput;
+import dz.sh.hidra.modules.identity.application.model.AuthenticationResult;
 
 /**
  * Provider-neutral post-authentication completion boundary.
  */
 public interface CompleteAuthenticatedPrincipalUseCase {
 
-    AuthenticationCompletionResult complete(
-            HidraPrincipal principal,
+    AuthenticationResult complete(
+            AuthenticatedPrincipalInput principal,
             String clientIp,
             String userAgent,
             String correlationId

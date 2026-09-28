@@ -7,7 +7,7 @@
  *
  * @Name        : DirectAuthenticationApplicationService
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-15
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Class
  * @Layer       : Application
@@ -19,9 +19,9 @@
  */
 package dz.sh.hidra.modules.identity.application.service;
 
-import dz.sh.hidra.modules.identity.application.model.AuthenticationCompletionResult;
+import dz.sh.hidra.modules.identity.application.model.AuthenticatedPrincipalInput;
+import dz.sh.hidra.modules.identity.application.model.AuthenticationResult;
 import dz.sh.hidra.modules.identity.application.model.DirectAuthenticationCommand;
-import dz.sh.hidra.modules.identity.application.model.DirectAuthenticationResult;
 import dz.sh.hidra.modules.identity.application.port.in.AuthenticateDirectUserUseCase;
 import dz.sh.hidra.modules.identity.application.port.in.CompleteAuthenticatedPrincipalUseCase;
 import dz.sh.hidra.modules.identity.application.port.out.DirectAuthenticationPort;
@@ -47,7 +47,7 @@ public final class DirectAuthenticationApplicationService implements Authenticat
     }
 
     @Override
-    public DirectAuthenticationResult authenticate(DirectAuthenticationCommand command) {
+    public AuthenticationResult authenticate(DirectAuthenticationCommand command) {
         Objects.requireNonNull(command, "DirectAuthenticationCommand must not be null.");
 
         HidraPrincipal principal = directAuthenticationPort.authenticate(
@@ -55,16 +55,19 @@ public final class DirectAuthenticationApplicationService implements Authenticat
                 command.principal(),
                 command.credentials()
         );
-        AuthenticationCompletionResult completion = completionUseCase.complete(
-                principal,
+        return completionUseCase.complete(
+                new AuthenticatedPrincipalInput(
+                        principal.userId(),
+                        principal.username(),
+                        principal.displayName(),
+                        principal.authenticationType(),
+                        principal.identityProviderId(),
+                        principal.roles(),
+                        principal.permissions()
+                ),
                 command.clientIp(),
                 command.userAgent(),
                 command.correlationId()
-        );
-        return new DirectAuthenticationResult(
-                completion.principal(),
-                completion.session(),
-                completion.accessToken()
         );
     }
 }

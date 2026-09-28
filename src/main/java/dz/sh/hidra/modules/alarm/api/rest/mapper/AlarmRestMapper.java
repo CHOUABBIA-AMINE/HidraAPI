@@ -7,7 +7,7 @@
  *
  * @Name        : AlarmRestMapper
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Class
  * @Layer       : API
@@ -27,11 +27,14 @@ import dz.sh.hidra.modules.alarm.application.command.AcknowledgeAlarmCommand;
 import dz.sh.hidra.modules.alarm.application.command.CloseAlarmCommand;
 import dz.sh.hidra.modules.alarm.application.command.RaiseAlarmCommand;
 import dz.sh.hidra.modules.alarm.application.dto.AlarmSummaryDto;
+import java.util.Objects;
 
 /**
  * Maps alarm REST models to application models.
  */
 public final class AlarmRestMapper {
+
+    private static final AlarmGeneratedRestMapper GENERATED = AlarmGeneratedRestMapper.INSTANCE;
 
     private AlarmRestMapper() {
         throw new UnsupportedOperationException("Utility class must not be instantiated.");
@@ -67,51 +70,10 @@ public final class AlarmRestMapper {
     }
 
     public static RaiseAlarmCommand toCommand(RaiseAlarmRequest request) {
-        return new RaiseAlarmCommand(
-                request.alarmNumber(),
-                request.alarmTypeId(),
-                request.severityId(),
-                request.priorityId(),
-                request.titleAr(),
-                request.titleFr(),
-                request.titleEn(),
-                request.descriptionAr(),
-                request.descriptionFr(),
-                request.descriptionEn(),
-                request.sourceType(),
-                request.sourceReferenceId(),
-                request.monitoringAlertCandidateId(),
-                request.monitoringEvaluationId(),
-                request.telemetryReadingId(),
-                request.planningTargetId(),
-                request.topologyAssetTypeCode(),
-                request.topologyAssetId(),
-                request.topologyAssetCode(),
-                request.topologyAssetNameSnapshot(),
-                request.firstDetectedAt(),
-                request.owningOrganizationUnitId(),
-                request.owningOrganizationUnitCode(),
-                request.owningOrganizationUnitNameSnapshot(),
-                request.workflowInstanceId(),
-                request.correlationId()
-        );
+        return GENERATED.toCommand(Objects.requireNonNull(request, "RaiseAlarmRequest must not be null."));
     }
 
     public static AlarmResponse toResponse(AlarmSummaryDto dto) {
-        return new AlarmResponse(
-                dto.id(),
-                dto.alarmNumber(),
-                dto.alarmTypeId(),
-                dto.severityId(),
-                dto.titleFr(),
-                dto.sourceType(),
-                dto.topologyAssetTypeCode(),
-                dto.topologyAssetId(),
-                dto.topologyAssetCode(),
-                dto.currentState(),
-                dto.raisedAt(),
-                dto.acknowledgedAt(),
-                dto.closedAt()
-        );
+        return GENERATED.toResponse(Objects.requireNonNull(dto, "AlarmSummaryDto must not be null."));
     }
 }

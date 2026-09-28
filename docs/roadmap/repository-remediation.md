@@ -105,7 +105,7 @@ The authoritative detailed baseline is recorded in
 
 | Code | Exact commit message | Scope | Exit criteria | Prerequisite | Status |
 |---|---|---|---|---|---|
-| `HRA-040` | `docs(architecture): classify static orphan candidates` | Classify all 210 zero-incoming candidates as DELETE or evidence-backed KEEP. | Every candidate has an evidence-backed disposition. | HRA-001 | Planned |
+| `HRA-040` | `docs(architecture): classify static orphan candidates` | Classify all 210 zero-incoming candidates as DELETE or evidence-backed KEEP. | Every candidate has an evidence-backed disposition. | HRA-001 | **Completed** — `docs/architecture/static-orphan-classification.md` reconciles all 210 forensic zero-incoming candidates: 11 evidence-backed KEEP and 199 DELETE. The 199 DELETE count includes the 100 event records already removed by HRA-031B plus 99 live non-event candidates. KEEP requires explicit repository evidence (kernel/module data definitions, workflow roadmap, or HRA-080 semantic-review ownership). HRA-041 is constrained to DELETE candidates that still have zero consumers on its exact execution head. |
 | `HRA-041` | `refactor(codebase): remove confirmed orphan types` | Delete only HRA-040 DELETE candidates and update imports/tests/docs. | Full build passes; no deletion is based on filename or intuition alone. | HRA-040 | Planned |
 
 ---
@@ -235,6 +235,6 @@ HRA-120
 
 `HRA-001` and `HRA-004` are complete. HRA-004 was explicitly prioritized to remove CI duplication before the high-frequency remediation sequence.
 
-**Next task:** `HRA-040 — docs(architecture): classify static orphan candidates`.
+**Next task:** `HRA-041 — refactor(codebase): remove confirmed orphan types`.
 
 Do not begin broad dead-code deletion, event deletion, DTO consolidation, or domain/JPA mirror reduction before the HRA-002/HRA-003 safety rails exist.

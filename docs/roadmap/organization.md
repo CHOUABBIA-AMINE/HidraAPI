@@ -77,7 +77,7 @@ columns have been retired through later immutable Flyway migrations.
 
 Current correction status:
 
-- `ORG-034` through `ORG-054`: **Completed**.
+- `ORG-034` through `ORG-055`: **Completed**.
 - `ORG-027`: **In Progress**. Assign, revoke, typed list/query and read-only reconciliation
   exist. Identity authorization and workflow/audit integration remain open.
 - `ORG-023`: **Blocked** on authorized legacy/consumer evidence. Later validated
@@ -3346,7 +3346,7 @@ aggregate lifecycles.
 | `ORG-052` | Completed | Structured `firstNameAr/lastNameAr` and `firstNameLt/lastNameLt` are now the canonical Employee name components. `Employee.arabicDisplayName()` and `latinDisplayName()` derive display names deterministically from those components. Historical `displayNameAr()` / `displayNameLt()` remain `@Deprecated(forRemoval = true)` compatibility accessors so existing persisted/API values are not silently discarded before consumer/data cutover. No independent preferred-name semantic was found in current repository evidence. |
 | `ORG-053` | Completed | Constructor-level invariants are enforced across the documented Organization models: persisted IDs and required same-module references are nonblank, required type/status enums are non-null, effective-dated records require `validFrom` with `validTo > validFrom`, OrganizationUnit rejects self-parenting, ReportingLine rejects identical typed source/target, and OrganizationDelegation rejects self-delegation plus invalid revocation chronology. `ResponsibilityAssignment.scopeId` remains nullable only for transitional unreconciled legacy rows. Focused `OrganizationDomainInvariantTest` covers the cross-model rules. |
 | `ORG-054` | Completed | `OrganizationId` is documented and tested as the single Organization-owned String/UUID generation-validation policy. Repository inventory found no competing Organization ID abstraction; current Organization creation services already use `OrganizationId.newId()`. Existing record ID components intentionally remain `String`, while `OperationalScope.id : Long` is explicitly separate. Focused `OrganizationIdTest` covers normalization, rejection, UUID generation and registry-ID type separation. |
-| `ORG-055` | Planned | Final model/value integrity guardrail after ORG-054. |
+| `ORG-055` | Completed | Added `OrganizationModelValueIntegrityTest` as the final domain model/value guardrail. It protects Employee birth/address/contact/name ownership, typed contact/reporting/responsibility references, String/UUID versus Long registry-ID separation, deprecated duplicate/scope compatibility bridges, half-open effective-date guards, and continued absence of the retired translation model and canonical embedded operational-scope fields. No application, persistence, API or migration behavior was introduced. |
 
 ### 20.9 Later cutover explicitly outside ORG-049–ORG-055
 
@@ -3370,6 +3370,6 @@ is complete.
 
 ### 20.10 Execution priority
 
-This domain cleanup does not erase the still-open issue #130 gates. For model/value work, `ORG-049` through `ORG-054` are complete. Execute `ORG-055` next as the final model/value integrity guardrail.
+This domain cleanup does not erase the still-open issue #130 gates. For model/value work, `ORG-049` through `ORG-055` are complete. The model/value cleanup sequence is closed; do not reopen it without new repository evidence.
 Application/persistence/API cutover must be planned only after the canonical domain model is
 validated.

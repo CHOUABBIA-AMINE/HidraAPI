@@ -24,6 +24,7 @@ import dz.sh.hidra.modules.organization.application.port.out.OrganizationUnitRep
 import dz.sh.hidra.modules.organization.domain.value.ContactPointTargetReference;
 
 import java.util.Objects;
+import org.springframework.stereotype.Component;
 
 /**
  * Validates existence of Organization-owned contact targets before a write use case persists contact data.
@@ -43,6 +44,7 @@ import java.util.Objects;
  * <p>Usage: future/current contact-point write application services must invoke this
  * validator before repository save. Read paths do not require it.</p>
  */
+@Component
 public final class OrganizationContactPointTargetValidator {
 
     private final EmployeeRepositoryPort employeeRepository;

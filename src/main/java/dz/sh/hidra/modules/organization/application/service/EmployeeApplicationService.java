@@ -20,13 +20,19 @@
 package dz.sh.hidra.modules.organization.application.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import dz.sh.hidra.modules.organization.application.command.CreateOrganizationContactPointCommand;
 import dz.sh.hidra.modules.organization.application.command.RegisterEmployeeCommand;
 import dz.sh.hidra.modules.organization.application.dto.EmployeeSummaryDto;
 import dz.sh.hidra.modules.organization.application.mapper.OrganizationApplicationMapper;
+import dz.sh.hidra.modules.organization.application.port.in.CreateOrganizationContactPointUseCase;
 import dz.sh.hidra.modules.organization.application.port.in.RegisterEmployeeUseCase;
 import dz.sh.hidra.modules.organization.application.port.out.EmployeeRepositoryPort;
 import dz.sh.hidra.modules.organization.domain.model.Employee;
+import dz.sh.hidra.modules.organization.domain.value.ContactPointTargetReference;
+import dz.sh.hidra.modules.organization.domain.value.ContactPointTargetType;
+import dz.sh.hidra.modules.organization.domain.value.ContactPointType;
 import dz.sh.hidra.modules.organization.domain.value.EmployeeStatus;
 import dz.sh.hidra.modules.organization.domain.value.EmployeeType;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationId;
@@ -41,12 +47,24 @@ import java.util.Objects;
 public final class EmployeeApplicationService implements RegisterEmployeeUseCase {
 
     private final EmployeeRepositoryPort employeeRepositoryPort;
+    private final CreateOrganizationContactPointUseCase createContactPointUseCase;
 
-    public EmployeeApplicationService(EmployeeRepositoryPort employeeRepositoryPort) {
-        this.employeeRepositoryPort = Objects.requireNonNull(employeeRepositoryPort, "Employee repository port must not be null.");
+    public EmployeeApplicationService(
+            EmployeeRepositoryPort employeeRepositoryPort,
+            CreateOrganizationContactPointUseCase createContactPointUseCase
+    ) {
+        this.employeeRepositoryPort = Objects.requireNonNull(
+                employeeRepositoryPort,
+                "Employee repository port must not be null."
+        );
+        this.createContactPointUseCase = Objects.requireNonNull(
+                createContactPointUseCase,
+                "CreateOrganizationContactPointUseCase must not be null."
+        );
     }
 
     @Override
+    @Transactional
     public EmployeeSummaryDto registerEmployee(RegisterEmployeeCommand command) {
         Objects.requireNonNull(command, "Register employee command must not be null.");
         Instant now = Instant.now();
@@ -64,8 +82,8 @@ public final class EmployeeApplicationService implements RegisterEmployeeUseCase
                 command.birthPlaceAr(),
                 command.birthPlaceFr(),
                 command.birthPlaceEn(),
-                command.emailAddress(),
-                command.mobileNumber(),
+                null,
+                null,
                 command.employeeType() == null ? EmployeeType.PERMANENT : command.employeeType(),
                 EmployeeStatus.REGISTERED,
                 command.identityUserReference(),
@@ -74,6 +92,47 @@ public final class EmployeeApplicationService implements RegisterEmployeeUseCase
                 now,
                 now
         );
-        return OrganizationApplicationMapper.toSummary(employeeRepositoryPort.save(employee));
+        Employee saved = employeeRepositoryPort.save(employee);
+        writeRegistrationContacts(saved.id(), command.emailAddress(), command.mobileNumber());
+        return OrganizationApplicationMapper.toSummary(saved);
+    }
+
+    private void writeRegistrationContacts(
+            String employeeId,
+            String emailAddress,
+            String mobileNumber
+    ) {
+        ContactPointTargetReference target = new ContactPointTargetReference(
+                ContactPointTargetType.EMPLOYEE,
+                employeeId
+        );
+
+        if (emailAddress != null && !emailAddress.isBlank()) {
+            createContactPointUseCase.createContactPoint(
+                    new CreateOrganizationContactPointCommand(
+                            ContactPointType.EMAIL,
+                            target,
+                            null,
+                            emailAddress,
+                            false,
+                            false,
+                            true
+                    )
+            );
+        }
+
+        if (mobileNumber != null && !mobileNumber.isBlank()) {
+            createContactPointUseCase.createContactPoint(
+                    new CreateOrganizationContactPointCommand(
+                            ContactPointType.MOBILE,
+                            target,
+                            null,
+                            mobileNumber,
+                            false,
+                            false,
+                            true
+                    )
+            );
+        }
     }
 }

@@ -26,7 +26,6 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
 import java.time.Instant;
 import java.time.LocalDate;
 
@@ -62,34 +61,19 @@ import java.time.LocalDate;
     @Column(name = "display_name_lt", nullable = true, length = 255)
     private String displayNameLt;
 
-    /**
-     * Transitional Java-side representation until HRA-013 adds the backing column.
-     */
-    @Transient
+    @Column(name = "date_of_birth", nullable = true)
     private LocalDate dateOfBirth;
 
-    /**
-     * Transitional Java-side representation until HRA-013 adds the backing column.
-     */
-    @Transient
+    @Column(name = "birth_locality_id", nullable = true, length = 80)
     private String birthLocalityId;
 
-    /**
-     * Transitional Java-side representation until HRA-013 adds the backing column.
-     */
-    @Transient
+    @Column(name = "birth_place_ar", nullable = true, length = 255)
     private String birthPlaceAr;
 
-    /**
-     * Transitional Java-side representation until HRA-013 adds the backing column.
-     */
-    @Transient
+    @Column(name = "birth_place_fr", nullable = true, length = 255)
     private String birthPlaceFr;
 
-    /**
-     * Transitional Java-side representation until HRA-013 adds the backing column.
-     */
-    @Transient
+    @Column(name = "birth_place_en", nullable = true, length = 255)
     private String birthPlaceEn;
 
     @Column(name = "email_address", nullable = true, length = 254)

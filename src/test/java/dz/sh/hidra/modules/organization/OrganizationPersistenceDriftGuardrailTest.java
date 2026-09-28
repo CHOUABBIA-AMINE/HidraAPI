@@ -23,7 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import dz.sh.hidra.modules.organization.domain.model.Employee;
 import dz.sh.hidra.modules.organization.infrastructure.persistence.entity.EmployeeJpaEntity;
-import jakarta.persistence.Transient;
+import jakarta.persistence.Column;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -46,10 +46,9 @@ import org.junit.jupiter.api.Test;
  * still persisted compatibility state until the later HRA-020/HRA-023 cutover. They must not
  * be silently dropped before that migration is explicitly completed.</p>
  *
- * <p>The five birth fields below are now represented and mapped in both Java directions.
- * They remain an explicit schema bridge only because the live Flyway schema does not yet
- * contain their columns. HRA-013 must replace {@code @Transient} with real column mappings
- * after the immutable schema migration.</p>
+ * <p>The five birth fields are represented, mapped in both Java directions, and backed by
+ * explicit JPA columns after HRA-013. The guardrail keeps their Java/JPA contract aligned
+ * with the immutable Flyway schema.</p>
  */
 class OrganizationPersistenceDriftGuardrailTest {
 
@@ -58,7 +57,7 @@ class OrganizationPersistenceDriftGuardrailTest {
                     + "OrganizationPersistenceMapper.java"
     );
 
-    private static final Set<String> TRANSITIONAL_EMPLOYEE_SCHEMA_BRIDGE = Set.of(
+    private static final Set<String> EMPLOYEE_BIRTH_FIELDS = Set.of(
             "dateOfBirth",
             "birthLocalityId",
             "birthPlaceAr",
@@ -102,8 +101,8 @@ class OrganizationPersistenceDriftGuardrailTest {
     }
 
     @Test
-    void birthFieldsMustRemainMappedAndTransientUntilSchemaMigration() throws IOException {
-        assertThat(TRANSITIONAL_EMPLOYEE_SCHEMA_BRIDGE)
+    void birthFieldsMustRemainMappedToExpectedColumns() throws IOException {
+        assertThat(EMPLOYEE_BIRTH_FIELDS)
                 .containsExactlyInAnyOrder(
                         "dateOfBirth",
                         "birthLocalityId",
@@ -116,16 +115,11 @@ class OrganizationPersistenceDriftGuardrailTest {
                 .as("HRA-010 removes domain/entity shape drift before mapper repair")
                 .isEmpty();
 
-        for (String fieldName : TRANSITIONAL_EMPLOYEE_SCHEMA_BRIDGE) {
-            try {
-                Field field = EmployeeJpaEntity.class.getDeclaredField(fieldName);
-                assertThat(field.isAnnotationPresent(Transient.class))
-                        .as("%s must remain @Transient until HRA-013 adds its database column", fieldName)
-                        .isTrue();
-            } catch (NoSuchFieldException exception) {
-                throw new AssertionError("EmployeeJpaEntity is missing " + fieldName, exception);
-            }
-        }
+        assertColumn("dateOfBirth", "date_of_birth");
+        assertColumn("birthLocalityId", "birth_locality_id");
+        assertColumn("birthPlaceAr", "birth_place_ar");
+        assertColumn("birthPlaceFr", "birth_place_fr");
+        assertColumn("birthPlaceEn", "birth_place_en");
 
         String mapperSource = Files.readString(ORGANIZATION_MAPPER_SOURCE);
         assertThat(missingAccessorCalls(
@@ -173,6 +167,19 @@ class OrganizationPersistenceDriftGuardrailTest {
 
         assertThat(missingAccessorCalls(compatibilityComponents, toEntity, "model")).isEmpty();
         assertThat(missingAccessorCalls(compatibilityComponents, toDomain, "entity")).isEmpty();
+    }
+
+    private static void assertColumn(String fieldName, String columnName) {
+        try {
+            Field field = EmployeeJpaEntity.class.getDeclaredField(fieldName);
+            Column column = field.getAnnotation(Column.class);
+            assertThat(column)
+                    .as("%s must be backed by a JPA column", fieldName)
+                    .isNotNull();
+            assertThat(column.name()).isEqualTo(columnName);
+        } catch (NoSuchFieldException exception) {
+            throw new AssertionError("EmployeeJpaEntity is missing " + fieldName, exception);
+        }
     }
 
     private static Set<String> recordComponents(Class<?> recordType) {

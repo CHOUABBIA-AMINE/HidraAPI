@@ -29,7 +29,9 @@ import java.time.Instant;
  * Represents one operational contact channel for an employee or organization unit.
  *
  * <p>Business role: records phone, mobile, email, radio, office, or emergency contact
- * information against an Organization-owned target.</p>
+ * information against an Organization-owned target. For employees, this model is the
+ * canonical source for operational EMAIL, MOBILE and PHONE contact data; direct contact
+ * fields on Employee are compatibility-only until consumer/data cutover is complete.</p>
  *
  * <p>Architecture role: canonical target state is a typed
  * {@link ContactPointTargetReference}; the model does not import identity, topology,
@@ -40,8 +42,10 @@ import java.time.Instant;
  * Organization repositories. Lifecycle-specific rules are intentionally not invented
  * by this correction.</p>
  *
- * <p>Usage: persistence stores the target enum name in the existing target_type
- * VARCHAR column. Deprecated textual bridges remain only for migration compatibility.</p>
+ * <p>Usage: use {@link ContactPointTargetReference} with target type EMPLOYEE for
+ * employee communication channels and ORGANIZATION_UNIT for unit channels. Persistence
+ * stores the governed target enum name in the existing target_type VARCHAR column.
+ * Deprecated textual bridges remain only for migration compatibility.</p>
  *
  * @param id contact-point identifier
  * @param contactPointType operational contact channel type

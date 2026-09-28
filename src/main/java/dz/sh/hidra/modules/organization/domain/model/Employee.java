@@ -36,8 +36,9 @@ import java.time.ZoneOffset;
  *
  * <p>Architecture role: this record deliberately does not own postal addresses or
  * operational communication channels. Those belong to {@link EmployeeAddress} and
- * {@link OrganizationContactPoint}. Existing direct email/mobile components remain
- * temporarily for source/binary compatibility and are scheduled for ORG-051.</p>
+ * {@link OrganizationContactPoint}. The direct email/mobile record components are
+ * retained only as deprecated compatibility state until persistence/API consumers are
+ * migrated; they must not be treated as the canonical contact source.</p>
  *
  * <p>Validation: employee ID, employee number, employee type and lifecycle status are
  * required. Birth date cannot be in the future. A termination timestamp requires a
@@ -62,8 +63,8 @@ import java.time.ZoneOffset;
  * @param birthPlaceAr optional authoritative/free-text Arabic birthplace
  * @param birthPlaceFr optional authoritative/free-text French birthplace
  * @param birthPlaceEn optional authoritative/free-text English birthplace
- * @param emailAddress transitional direct email pending ORG-051
- * @param mobileNumber transitional direct mobile number pending ORG-051
+ * @param emailAddress deprecated compatibility email; canonical contact data belongs to OrganizationContactPoint
+ * @param mobileNumber deprecated compatibility mobile; canonical contact data belongs to OrganizationContactPoint
  * @param employeeType employment classification
  * @param status employee lifecycle status
  * @param identityUserReference optional neutral identity-user reference
@@ -195,6 +196,34 @@ public record Employee(
                 createdAt,
                 updatedAt
         );
+    }
+
+    /**
+     * Transitional compatibility accessor.
+     *
+     * <p>Canonical employee email contact is modeled by
+     * {@link OrganizationContactPoint} with target type EMPLOYEE and contact type EMAIL.</p>
+     *
+     * @return legacy direct employee email, if still populated
+     */
+    @Deprecated(forRemoval = true)
+    @Override
+    public String emailAddress() {
+        return emailAddress;
+    }
+
+    /**
+     * Transitional compatibility accessor.
+     *
+     * <p>Canonical employee mobile contact is modeled by
+     * {@link OrganizationContactPoint} with target type EMPLOYEE and contact type MOBILE.</p>
+     *
+     * @return legacy direct employee mobile number, if still populated
+     */
+    @Deprecated(forRemoval = true)
+    @Override
+    public String mobileNumber() {
+        return mobileNumber;
     }
 
     private static String requireText(String value, String message) {

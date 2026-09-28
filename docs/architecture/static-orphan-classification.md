@@ -22,6 +22,7 @@
 | `K-WF-TARGET` | KEEP | `docs/roadmap/workflow.md` lists `WorkflowTargetReference`; Kernel data definition cites it as a module-owned value object. |
 | `K-GEO` | KEEP | `docs/data definition/Kernel.md` §17.4 defines `GeoPoint` and assigns GIS/topology ownership to Topology. |
 | `K-HRA080` | KEEP | HRA-080 explicitly reserves `ReportDefinitionStatus` for semantic duplicate-enum review. |
+| `K-LD-QUERY` | KEEP | Exact-head HRA-041 verification found active consumers in `LeakDetectionQueryUseCase`, `LeakDetectionQueryController`, and `LeakDetectionQueryApplicationService`. |
 | `D-EVT` | DELETE | Every one of the 100 zero-incoming module event records from the forensic orphan table; already removed by HRA-031B. |
 | `D-QRY` | DELETE | Zero-incoming application query carrier; no active port/controller/service consumes the type. |
 | `D-PRJ` | DELETE | Zero-incoming infrastructure projection; no query adapter/repository/API consumer. |
@@ -34,20 +35,20 @@
 
 | Disposition | Count |
 |---|---:|
-| KEEP | 11 |
-| DELETE | 199 |
+| KEEP | 13 |
+| DELETE | 197 |
 | **Total** | **210** |
 
 | Baseline category | KEEP | DELETE | Total |
 |---|---:|---:|---:|
-| `data_record` | 0 | 154 | 154 |
+| `data_record` | 2 | 152 | 154 |
 | `value_object` | 10 | 42 | 52 |
 | `enum` | 1 | 2 | 3 |
 | `domain_model` | 0 | 1 | 1 |
 
-The 199 DELETE candidates consist of the 100 `D-EVT` event records already removed by HRA-031B plus the 99 live non-event candidates listed below.
+The 197 DELETE candidates consist of the 100 `D-EVT` event records already removed by HRA-031B plus the 97 live non-event candidates removed by HRA-041. Exact-head HRA-041 verification reclassified two former DELETE candidates as KEEP because they have active consumers.
 
-## KEEP — 11 evidence-backed candidates
+## KEEP — 13 evidence-backed candidates
 
 - `root.TimeRange` — `K-KERNEL`
 - `root.CorrelationId` — `K-KERNEL`
@@ -60,8 +61,10 @@ The 199 DELETE candidates consist of the 100 `D-EVT` event records already remov
 - `reporting.ReportDefinitionStatus` — `K-HRA080`
 - `workflow.WorkflowTargetReference` — `K-WF-TARGET`
 - `topology.GeoPoint` — `K-GEO`
+- `leakdetection.LeakCaseView` — `K-LD-QUERY`
+- `leakdetection.LeakCandidateView` — `K-LD-QUERY`
 
-## DELETE — 54 non-event data records
+## DELETE — 52 non-event data records
 
 The 24 `*Query` carriers use `D-QRY`; infrastructure `*Projection` records use `D-PRJ`; DTO/View records use `D-BND`.
 
@@ -71,8 +74,6 @@ The 24 `*Query` carriers use `D-QRY`; infrastructure `*Projection` records use `
 - `alarm.AlarmLifecycleEventDto`
 - `alarm.ActiveAlarmDashboardProjection`
 - `leakdetection.FindLeakCaseByIdQuery`
-- `leakdetection.LeakCaseView`
-- `leakdetection.LeakCandidateView`
 - `leakdetection.LeakDetectionDashboardProjection`
 - `documents.FindDocumentByIdQuery`
 - `documents.DocumentSearchProjection`
@@ -178,6 +179,6 @@ The 24 `*Query` carriers use `D-QRY`; infrastructure `*Projection` records use `
 
 ## HRA-041 guardrail
 
-HRA-041 may delete only candidates classified **DELETE** that still have zero live consumers on its exact execution head. If any candidate has gained a real consumer, HRA-041 must retain it and update this classification instead of breaking the consumer.
+HRA-041 revalidated all 99 then-live DELETE candidates against exact head `147e8244e7fd7ec1ca3b27d681b8092002a847ef`. `LeakCaseView` and `LeakCandidateView` had active Java consumers and were reclassified KEEP. The remaining 97 candidates had no live Java consumer and were removed.
 
-The 100 `D-EVT` rows are historical reconciliation entries already removed by HRA-031B and require no second deletion. The 11 KEEP candidates are explicitly out of scope for HRA-041.
+The 100 `D-EVT` rows are historical reconciliation entries already removed by HRA-031B. Combined with the 97 HRA-041 removals, every one of the 197 final DELETE dispositions has now been physically removed. The 13 KEEP candidates remain present.

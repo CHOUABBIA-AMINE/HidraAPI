@@ -127,7 +127,7 @@ Domain constructors must not perform repository lookups, cross-module existence 
 
 | Code | Exact commit message | Scope | Exit criteria | Prerequisite | Status |
 |---|---|---|---|---|---|
-| `HRA-060` | `docs(domain): classify anemic persistence mirrors` | Classify the 393 behaviorless exact domain/JPA mirrors as REAL DOMAIN, READ/PERSISTENCE MODEL, or BOUNDARY MODEL. | Every pair has a deliberate disposition. | HRA-051 complete | Planned |
+| `HRA-060` | `docs(domain): classify anemic persistence mirrors` | Classify the 393 behaviorless exact domain/JPA mirrors as REAL DOMAIN, READ/PERSISTENCE MODEL, or BOUNDARY MODEL. | Every pair has a deliberate disposition. | HRA-051 complete | **Completed** — deterministic replay conservatively classified 394 normalization-only exact mirrors (covering the historical 393 baseline plus one detector-reconciliation candidate): 51 `REAL_DOMAIN` pairs remain deliberately split, 343 `READ_PERSISTENCE_MODEL` pairs are approved HRA-061 simplification candidates subject to exact-head no-consumer/reflection/configuration revalidation, and 0 current pairs remain `BOUNDARY_MODEL` after HRA-100/HRA-101 removed the audited web/domain leaks. Full pair-by-pair disposition is recorded in `docs/architecture/domain-persistence-mirror-classification.md`. |
 | `HRA-061` | `refactor(codebase): simplify classified domain persistence mirrors` | **Single consolidated repository-wide task / single commit.** Apply every HRA-060-approved mirror simplification across all affected modules in one batch. Preserve framework-independent domain models, do not add JPA annotations to domain records, and change only pairs explicitly approved by HRA-060. | Every HRA-060 simplification disposition selected for implementation is completed in the same commit; behaviorless mirror count decreases as classified; mapper round-trip guardrails and repository validation remain green; no unclassified mirror is changed. | HRA-060 | Planned |
 
 **HRA-061 execution policy:** HRA-061 is deliberately consolidated. Once HRA-060 is complete, all approved domain/persistence mirror changes are executed together as one repository-wide task and one commit. Do not split HRA-061 by module unless this roadmap is explicitly amended first.
@@ -407,6 +407,6 @@ HRA-120
 
 `HRA-001` and `HRA-004` are complete. HRA-004 was explicitly prioritized to remove CI duplication before the high-frequency remediation sequence.
 
-**Next task:** `HRA-060 — docs(domain): classify anemic persistence mirrors`.
+**Next task:** `HRA-061 — refactor(codebase): simplify classified domain persistence mirrors`.
 
 Do not begin broad dead-code deletion, event deletion, DTO consolidation, or domain/JPA mirror reduction before the HRA-002/HRA-003 safety rails exist.

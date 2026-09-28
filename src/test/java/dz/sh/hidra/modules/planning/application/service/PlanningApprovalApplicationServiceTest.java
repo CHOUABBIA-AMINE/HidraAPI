@@ -7,14 +7,14 @@
  *
  * @Name        : PlanningApprovalApplicationServiceTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-12
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Class
  * @Layer       : Application Test
  * @Module      : planning
  * @Package     : dz.sh.hidra.modules.planning.application.service
  *
- * @Description : Verifies authoritative planning/workflow approval relation and lifecycle effects.
+ * @Description : Verifies authoritative planning/workflow approval relation and lifecycle effects through the exported Workflow contract.
  *
  */
 package dz.sh.hidra.modules.planning.application.service;
@@ -26,12 +26,12 @@ import dz.sh.hidra.modules.planning.application.port.in.PlanningApprovalUseCase;
 import dz.sh.hidra.modules.planning.application.port.out.PlanRevisionRepositoryPort;
 import dz.sh.hidra.modules.planning.domain.model.PlanRevision;
 import dz.sh.hidra.modules.planning.domain.value.PlanRevisionStatus;
-import dz.sh.hidra.modules.workflow.application.port.in.ExecuteWorkflowTargetTransitionUseCase;
-import dz.sh.hidra.modules.workflow.application.port.in.WorkflowQueryUseCase;
+import dz.sh.hidra.modules.workflow.application.contract.planning.PlanningWorkflowContract;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import org.junit.jupiter.api.Test;
 
 class PlanningApprovalApplicationServiceTest {
@@ -42,8 +42,8 @@ class PlanningApprovalApplicationServiceTest {
     @Test
     void resolvesRevisionScopedCurrentTaskAndActions() {
         InMemoryRevisionRepository revisions = new InMemoryRevisionRepository(revision());
-        FakeWorkflowQuery workflow = new FakeWorkflowQuery("planning", "REV-1");
-        PlanningApprovalApplicationService service = new PlanningApprovalApplicationService(revisions, workflow, command -> null);
+        FakePlanningWorkflow workflow = new FakePlanningWorkflow("planning", "REV-1", command -> null);
+        PlanningApprovalApplicationService service = new PlanningApprovalApplicationService(revisions, workflow);
 
         PlanningApprovalUseCase.ApprovalView view = service.approval("REV-1", "ACTOR-1", Set.of("planning:revisions:approve"));
 
@@ -60,7 +60,8 @@ class PlanningApprovalApplicationServiceTest {
     @Test
     void rejectsWorkflowInstanceThatTargetsAnotherRevision() {
         PlanningApprovalApplicationService service = new PlanningApprovalApplicationService(
-                new InMemoryRevisionRepository(revision()), new FakeWorkflowQuery("planning", "REV-OTHER"), command -> null
+                new InMemoryRevisionRepository(revision()),
+                new FakePlanningWorkflow("planning", "REV-OTHER", command -> null)
         );
 
         assertThatThrownBy(() -> service.approval("REV-1", "ACTOR-1", Set.of()))
@@ -71,13 +72,19 @@ class PlanningApprovalApplicationServiceTest {
     @Test
     void appliesApproveDecisionToPlanningRevisionAfterWorkflowExecution() {
         InMemoryRevisionRepository revisions = new InMemoryRevisionRepository(revision());
-        ExecuteWorkflowTargetTransitionUseCase transition = command -> new ExecuteWorkflowTargetTransitionUseCase.Result(
-                "ACTION-1", command.taskId(), "APPROVED", "WF-1", "COMPLETED", command.transitionId(),
-                "APPROVE", "STEP-END", null, EXECUTED_AT
+        PlanningWorkflowContract workflow = new FakePlanningWorkflow(
+                "planning",
+                "REV-1",
+                command -> new PlanningWorkflowContract.TransitionResult(
+                        "WF-1",
+                        "COMPLETED",
+                        command.transitionId(),
+                        "APPROVE",
+                        null,
+                        EXECUTED_AT
+                )
         );
-        PlanningApprovalApplicationService service = new PlanningApprovalApplicationService(
-                revisions, new FakeWorkflowQuery("planning", "REV-1"), transition
-        );
+        PlanningApprovalApplicationService service = new PlanningApprovalApplicationService(revisions, workflow);
 
         PlanningApprovalUseCase.ExecutionView result = service.execute(
                 "REV-1", "TRANSITION-1", new PlanningApprovalUseCase.ExecutionCommand(
@@ -94,12 +101,14 @@ class PlanningApprovalApplicationServiceTest {
     @Test
     void propagatesWorkflowStaleTaskConflictWithoutChangingPlanningRevision() {
         InMemoryRevisionRepository revisions = new InMemoryRevisionRepository(revision());
-        ExecuteWorkflowTargetTransitionUseCase transition = command -> {
-            throw new IllegalStateException("Workflow task changed after it was loaded.");
-        };
-        PlanningApprovalApplicationService service = new PlanningApprovalApplicationService(
-                revisions, new FakeWorkflowQuery("planning", "REV-1"), transition
+        PlanningWorkflowContract workflow = new FakePlanningWorkflow(
+                "planning",
+                "REV-1",
+                command -> {
+                    throw new IllegalStateException("Workflow task changed after it was loaded.");
+                }
         );
+        PlanningApprovalApplicationService service = new PlanningApprovalApplicationService(revisions, workflow);
 
         assertThatThrownBy(() -> service.execute(
                 "REV-1", "TRANSITION-1", new PlanningApprovalUseCase.ExecutionCommand(
@@ -137,54 +146,50 @@ class PlanningApprovalApplicationServiceTest {
         }
     }
 
-    private static final class FakeWorkflowQuery implements WorkflowQueryUseCase {
+    private static final class FakePlanningWorkflow implements PlanningWorkflowContract {
         private final String targetModule;
         private final String targetId;
+        private final Function<TransitionCommand, TransitionResult> transition;
 
-        private FakeWorkflowQuery(String targetModule, String targetId) {
+        private FakePlanningWorkflow(
+                String targetModule,
+                String targetId,
+                Function<TransitionCommand, TransitionResult> transition
+        ) {
             this.targetModule = targetModule;
             this.targetId = targetId;
-        }
-
-        @Override
-        public Page<TaskView> tasks(String actorReference, String view, int page, int size) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public TaskView task(String id) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public TaskView currentTask(String instanceId) {
-            return new TaskView(
-                    "TASK-1", "WF-1", "STEP-1", "OPEN", "ACTOR-1", "actor", "Actor",
-                    null, null, null, null, null, null, null, null, null, "Review", "NORMAL",
-                    null, null, null, TASK_UPDATED_AT.minusSeconds(60), TASK_UPDATED_AT
-            );
+            this.transition = transition;
         }
 
         @Override
         public InstanceView instance(String id) {
-            return new InstanceView(
-                    "WF-1", "DEF-1", 1, "PURPOSE-1", targetModule, "PLAN_REVISION", targetId,
-                    "R1", "Revision 1", "IN_PROGRESS", "STEP-1", "ACTOR-0", "starter", "Starter",
-                    Instant.parse("2026-09-12T05:00:00Z"), null, null, "CORR-1"
-            );
+            return new InstanceView("WF-1", targetModule, targetId, "IN_PROGRESS");
         }
 
         @Override
-        public List<TimelineEntry> timeline(String instanceId) {
-            return List.of();
+        public TaskView currentTask(String instanceId) {
+            return new TaskView("TASK-1", TASK_UPDATED_AT);
         }
 
         @Override
-        public List<AvailableActionView> availableActions(String taskId, String actorReference, Set<String> effectivePermissions) {
-            return List.of(new AvailableActionView(
-                    "TRANSITION-1", "APPROVE", "STEP-1", "STEP-END", false, false,
-                    "planning:revisions:approve", null, true
+        public List<ActionView> availableActions(
+                String taskId,
+                String actorReference,
+                Set<String> effectivePermissions
+        ) {
+            return List.of(new ActionView(
+                    "TRANSITION-1",
+                    "APPROVE",
+                    false,
+                    false,
+                    "planning:revisions:approve",
+                    true
             ));
+        }
+
+        @Override
+        public TransitionResult execute(TransitionCommand command) {
+            return transition.apply(command);
         }
     }
 }

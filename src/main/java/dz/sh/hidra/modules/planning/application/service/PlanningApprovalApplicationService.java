@@ -7,7 +7,7 @@
  *
  * @Name        : PlanningApprovalApplicationService
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-12
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Class
  * @Layer       : Application
@@ -23,8 +23,7 @@ import dz.sh.hidra.modules.planning.application.port.in.PlanningApprovalUseCase;
 import dz.sh.hidra.modules.planning.application.port.out.PlanRevisionRepositoryPort;
 import dz.sh.hidra.modules.planning.domain.model.PlanRevision;
 import dz.sh.hidra.modules.planning.domain.value.PlanRevisionStatus;
-import dz.sh.hidra.modules.workflow.application.port.in.ExecuteWorkflowTargetTransitionUseCase;
-import dz.sh.hidra.modules.workflow.application.port.in.WorkflowQueryUseCase;
+import dz.sh.hidra.modules.workflow.application.contract.planning.PlanningWorkflowContract;
 import java.time.Instant;
 import java.util.List;
 import java.util.Locale;
@@ -41,31 +40,28 @@ public class PlanningApprovalApplicationService implements PlanningApprovalUseCa
     private static final Set<String> TERMINAL_WORKFLOW_STATES = Set.of("COMPLETED", "CANCELLED");
 
     private final PlanRevisionRepositoryPort revisionRepository;
-    private final WorkflowQueryUseCase workflowQuery;
-    private final ExecuteWorkflowTargetTransitionUseCase workflowTransition;
+    private final PlanningWorkflowContract workflow;
 
     public PlanningApprovalApplicationService(
             PlanRevisionRepositoryPort revisionRepository,
-            WorkflowQueryUseCase workflowQuery,
-            ExecuteWorkflowTargetTransitionUseCase workflowTransition
+            PlanningWorkflowContract workflow
     ) {
         this.revisionRepository = Objects.requireNonNull(revisionRepository, "PlanRevisionRepositoryPort must not be null.");
-        this.workflowQuery = Objects.requireNonNull(workflowQuery, "WorkflowQueryUseCase must not be null.");
-        this.workflowTransition = Objects.requireNonNull(workflowTransition, "ExecuteWorkflowTargetTransitionUseCase must not be null.");
+        this.workflow = Objects.requireNonNull(workflow, "PlanningWorkflowContract must not be null.");
     }
 
     @Override
     @Transactional(readOnly = true)
     public ApprovalView approval(String revisionId, String actorReference, Set<String> effectivePermissions) {
         PlanRevision revision = revision(revisionId);
-        WorkflowQueryUseCase.InstanceView instance = validatedInstance(revision);
+        PlanningWorkflowContract.InstanceView instance = validatedInstance(revision);
         if (TERMINAL_WORKFLOW_STATES.contains(normalizeState(instance.status()))) {
             return new ApprovalView(
                     revision.id(), String.valueOf(revision.status()), instance.id(), instance.status(), null, null, List.of()
             );
         }
-        WorkflowQueryUseCase.TaskView task = workflowQuery.currentTask(instance.id());
-        List<ActionView> actions = workflowQuery.availableActions(task.id(), actorReference, effectivePermissions).stream()
+        PlanningWorkflowContract.TaskView task = workflow.currentTask(instance.id());
+        List<ActionView> actions = workflow.availableActions(task.id(), actorReference, effectivePermissions).stream()
                 .map(action -> new ActionView(
                         action.transitionId(), action.decision(), action.reasonRequired(), action.commentRequired(),
                         action.requiredPermissionCode(), action.permitted()
@@ -82,13 +78,13 @@ public class PlanningApprovalApplicationService implements PlanningApprovalUseCa
     public ExecutionView execute(String revisionId, String transitionId, ExecutionCommand command) {
         Objects.requireNonNull(command, "Planning approval execution command must not be null.");
         PlanRevision revision = revision(revisionId);
-        WorkflowQueryUseCase.InstanceView instance = validatedInstance(revision);
+        PlanningWorkflowContract.InstanceView instance = validatedInstance(revision);
         if (TERMINAL_WORKFLOW_STATES.contains(normalizeState(instance.status()))) {
             throw new IllegalStateException("Planning revision workflow is already terminal: " + instance.id());
         }
-        WorkflowQueryUseCase.TaskView task = workflowQuery.currentTask(instance.id());
-        ExecuteWorkflowTargetTransitionUseCase.Result result = workflowTransition.execute(
-                new ExecuteWorkflowTargetTransitionUseCase.Command(
+        PlanningWorkflowContract.TaskView task = workflow.currentTask(instance.id());
+        PlanningWorkflowContract.TransitionResult result = workflow.execute(
+                new PlanningWorkflowContract.TransitionCommand(
                         task.id(), transitionId, command.expectedTaskUpdatedAt(), command.reasonId(),
                         command.decisionNote(), command.commentText(), command.correlationId(), command.actorId(),
                         command.actorUsername(), command.actorDisplayName(), command.effectivePermissions()
@@ -121,11 +117,11 @@ public class PlanningApprovalApplicationService implements PlanningApprovalUseCa
                 .orElseThrow(() -> new NoSuchElementException("Unknown plan revision: " + revisionId.trim()));
     }
 
-    private WorkflowQueryUseCase.InstanceView validatedInstance(PlanRevision revision) {
+    private PlanningWorkflowContract.InstanceView validatedInstance(PlanRevision revision) {
         if (revision.workflowInstanceId() == null) {
             throw new IllegalStateException("Plan revision is not linked to a workflow approval instance: " + revision.id());
         }
-        WorkflowQueryUseCase.InstanceView instance = workflowQuery.instance(revision.workflowInstanceId());
+        PlanningWorkflowContract.InstanceView instance = workflow.instance(revision.workflowInstanceId());
         if (!PLANNING_MODULE.equalsIgnoreCase(String.valueOf(instance.targetModule()))
                 || !Objects.equals(revision.id(), instance.targetId())) {
             throw new IllegalStateException("Workflow instance does not target this planning revision: " + instance.id());

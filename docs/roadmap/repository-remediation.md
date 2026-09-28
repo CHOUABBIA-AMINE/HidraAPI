@@ -328,7 +328,7 @@ Mandatory review examples include:
 
 | Code | Exact commit message | Scope | Exit criteria | Prerequisite | Status |
 |---|---|---|---|---|---|
-| `HRA-090` | `refactor(workflow): expose planning workflow contract` | Export Workflow contracts consumed by Planning; stop Planning importing Workflow's internal application package. | Planning depends only on deliberate Workflow contract packages; ArchUnit enforces it. | HRA-002 | Planned |
+| `HRA-090` | `refactor(workflow): expose planning workflow contract` | Export Workflow contracts consumed by Planning; stop Planning importing Workflow's internal application package. | Planning depends only on deliberate Workflow contract packages; ArchUnit enforces it. | HRA-002 | **Completed** — introduced the narrow `workflow.application.contract.planning.PlanningWorkflowContract`, adapted existing Workflow internal query/transition use cases behind it, migrated Planning approval orchestration and tests to the exported contract, removed the Planning→Workflow transitional allowlist, and taught ArchUnit to allow only the deliberate contract package. |
 | `HRA-091` | `refactor(topology): expose operational scope resolution contract` | Export the Topology scope-resolution contract consumed by Organization. | Organization no longer imports Topology's internal application package. | HRA-002 | Planned |
 
 ---
@@ -401,6 +401,6 @@ HRA-120
 
 `HRA-001` and `HRA-004` are complete. HRA-004 was explicitly prioritized to remove CI duplication before the high-frequency remediation sequence.
 
-**Next task:** `HRA-090 — refactor(workflow): expose planning workflow contract`.
+**Next task:** `HRA-091 — refactor(topology): expose operational scope resolution contract`.
 
 Do not begin broad dead-code deletion, event deletion, DTO consolidation, or domain/JPA mirror reduction before the HRA-002/HRA-003 safety rails exist.

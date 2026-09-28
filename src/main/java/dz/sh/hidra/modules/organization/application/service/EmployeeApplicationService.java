@@ -44,7 +44,7 @@ import java.util.Objects;
  * Application service for employees.
  */
 @Service
-public final class EmployeeApplicationService implements RegisterEmployeeUseCase {
+public class EmployeeApplicationService implements RegisterEmployeeUseCase {
 
     private final EmployeeRepositoryPort employeeRepositoryPort;
     private final CreateOrganizationContactPointUseCase createContactPointUseCase;

@@ -37,7 +37,7 @@ import org.springframework.transaction.annotation.Transactional;
  * fields on Employee.</p>
  */
 @Service
-public final class OrganizationContactPointApplicationService
+public class OrganizationContactPointApplicationService
         implements CreateOrganizationContactPointUseCase {
 
     private final OrganizationContactPointRepositoryPort contactPointRepository;

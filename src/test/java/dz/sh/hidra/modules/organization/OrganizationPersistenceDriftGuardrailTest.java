@@ -23,6 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import dz.sh.hidra.modules.organization.domain.model.Employee;
 import dz.sh.hidra.modules.organization.infrastructure.persistence.entity.EmployeeJpaEntity;
+import jakarta.persistence.Transient;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -45,10 +46,10 @@ import org.junit.jupiter.api.Test;
  * still persisted compatibility state until the later HRA-020/HRA-023 cutover. They must not
  * be silently dropped before that migration is explicitly completed.</p>
  *
- * <p>The five birth fields below are the exact drift confirmed by the forensic audit and the
- * user-supplied source reference. They are temporarily quarantined so HRA-003 can install the
- * detector before HRA-010/HRA-011 repair the persistence shape and mapper. Any additional
- * unmapped Employee component fails this test immediately.</p>
+ * <p>The five birth fields below are the exact mapper drift confirmed by the forensic audit and
+ * the user-supplied source reference. HRA-010 makes them explicit transient JPA-model state
+ * because the live Flyway schema does not yet contain their columns; HRA-011 must map them and
+ * HRA-013 must replace @Transient with real column mappings after the schema migration.</p>
  */
 class OrganizationPersistenceDriftGuardrailTest {
 
@@ -57,7 +58,7 @@ class OrganizationPersistenceDriftGuardrailTest {
                     + "OrganizationPersistenceMapper.java"
     );
 
-    private static final Set<String> TRANSITIONAL_EMPLOYEE_PERSISTENCE_DRIFT = Set.of(
+    private static final Set<String> TRANSITIONAL_EMPLOYEE_MAPPER_DRIFT = Set.of(
             "dateOfBirth",
             "birthLocalityId",
             "birthPlaceAr",
@@ -73,8 +74,8 @@ class OrganizationPersistenceDriftGuardrailTest {
         Set<String> missingEntityFields = difference(domainComponents, entityFields);
 
         assertThat(missingEntityFields)
-                .as("Only the exact HRA-010 Employee birth-field gap may remain")
-                .isEqualTo(TRANSITIONAL_EMPLOYEE_PERSISTENCE_DRIFT);
+                .as("HRA-010 requires EmployeeJpaEntity to represent every Employee component")
+                .isEmpty();
     }
 
     @Test
@@ -93,16 +94,16 @@ class OrganizationPersistenceDriftGuardrailTest {
 
         assertThat(missingAccessorCalls(domainComponents, toEntity, "model"))
                 .as("Employee -> JPA mapper drift must remain limited to the HRA-011 birth gap")
-                .isEqualTo(TRANSITIONAL_EMPLOYEE_PERSISTENCE_DRIFT);
+                .isEqualTo(TRANSITIONAL_EMPLOYEE_MAPPER_DRIFT);
 
         assertThat(missingAccessorCalls(domainComponents, toDomain, "entity"))
                 .as("JPA -> Employee mapper drift must remain limited to the HRA-011 birth gap")
-                .isEqualTo(TRANSITIONAL_EMPLOYEE_PERSISTENCE_DRIFT);
+                .isEqualTo(TRANSITIONAL_EMPLOYEE_MAPPER_DRIFT);
     }
 
     @Test
     void transitionalBirthDriftMustRemainNarrowAndCurrent() throws IOException {
-        assertThat(TRANSITIONAL_EMPLOYEE_PERSISTENCE_DRIFT)
+        assertThat(TRANSITIONAL_EMPLOYEE_MAPPER_DRIFT)
                 .containsExactlyInAnyOrder(
                         "dateOfBirth",
                         "birthLocalityId",
@@ -112,14 +113,26 @@ class OrganizationPersistenceDriftGuardrailTest {
                 );
 
         assertThat(difference(recordComponents(Employee.class), instanceFields(EmployeeJpaEntity.class)))
-                .containsExactlyInAnyOrderElementsOf(TRANSITIONAL_EMPLOYEE_PERSISTENCE_DRIFT);
+                .as("HRA-010 removes domain/entity shape drift before mapper repair")
+                .isEmpty();
+
+        for (String fieldName : TRANSITIONAL_EMPLOYEE_MAPPER_DRIFT) {
+            try {
+                Field field = EmployeeJpaEntity.class.getDeclaredField(fieldName);
+                assertThat(field.isAnnotationPresent(Transient.class))
+                        .as("%s must remain @Transient until HRA-013 adds its database column", fieldName)
+                        .isTrue();
+            } catch (NoSuchFieldException exception) {
+                throw new AssertionError("EmployeeJpaEntity is missing " + fieldName, exception);
+            }
+        }
 
         String mapperSource = Files.readString(ORGANIZATION_MAPPER_SOURCE);
         assertThat(missingAccessorCalls(
                 recordComponents(Employee.class),
                 methodBody(mapperSource, "public static EmployeeJpaEntity toEntity(Employee model)"),
                 "model"
-        )).containsExactlyInAnyOrderElementsOf(TRANSITIONAL_EMPLOYEE_PERSISTENCE_DRIFT);
+        )).containsExactlyInAnyOrderElementsOf(TRANSITIONAL_EMPLOYEE_MAPPER_DRIFT);
     }
 
     @Test

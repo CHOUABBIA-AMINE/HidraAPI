@@ -71,7 +71,7 @@ The authoritative detailed baseline is recorded in
 
 | Code | Exact commit message | Scope | Exit criteria | Prerequisite | Status |
 |---|---|---|---|---|---|
-| `HRA-010` | `fix(organization): persist employee birth fields` | Add `dateOfBirth`, `birthLocalityId`, `birthPlaceAr`, `birthPlaceFr`, `birthPlaceEn` to `EmployeeJpaEntity`. | JPA entity can represent all canonical birth state; no API/schema change yet. | HRA-003 | Planned |
+| `HRA-010` | `fix(organization): persist employee birth fields` | Add `dateOfBirth`, `birthLocalityId`, `birthPlaceAr`, `birthPlaceFr`, `birthPlaceEn` to `EmployeeJpaEntity`. | JPA entity can represent all canonical birth state; no API/schema change yet. | HRA-003 | **Completed** — `EmployeeJpaEntity` now represents all five canonical birth fields. Live Flyway inspection confirmed the backing columns do not yet exist, so the fields are deliberately `@Transient` until HRA-013 performs the immutable schema migration; HRA-011 must now wire both mapper directions. The HRA-003 guardrail was tightened: domain/entity shape drift is now zero, while the exact five birth fields remain the only mapper drift. |
 | `HRA-011` | `fix(organization): round trip employee birth data` | Update both directions of `OrganizationPersistenceMapper`; stop using a compatibility constructor where it drops canonical state; add round-trip tests. | Employee -> JPA -> Employee preserves all birth fields. | HRA-010 | Planned |
 | `HRA-012` | `refactor(organization): align employee personal data contracts` | Give every Employee birth field an explicit application/REST read/write policy; update registration or add a dedicated personal-data update use case as supported by current design. | No canonical birth field is silently ignored in an intended write/read flow. | HRA-011 | Planned |
 | `HRA-013` | `feat(organization): migrate employee birth data schema` | Inspect live Flyway/schema and add only missing immutable schema changes; preserve optional birthplace locality semantics. | PostgreSQL/Hibernate validation and integration round-trip pass. | HRA-012 + live schema evidence | Planned / Evidence-gated |
@@ -235,6 +235,6 @@ HRA-120
 
 `HRA-001` and `HRA-004` are complete. HRA-004 was explicitly prioritized to remove CI duplication before the high-frequency remediation sequence.
 
-**Next task:** `HRA-010 — fix(organization): persist employee birth fields`.
+**Next task:** `HRA-011 — fix(organization): round trip employee birth data`.
 
 Do not begin broad dead-code deletion, event deletion, DTO consolidation, or domain/JPA mirror reduction before the HRA-002/HRA-003 safety rails exist.

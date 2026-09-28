@@ -7,7 +7,7 @@
  *
  * @Name        : EmployeeJpaEntity
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -26,7 +26,9 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import java.time.Instant;
+import java.time.LocalDate;
 
     /**
      * Database-backed JPA entity for Employee.
@@ -59,6 +61,36 @@ import java.time.Instant;
 
     @Column(name = "display_name_lt", nullable = true, length = 255)
     private String displayNameLt;
+
+    /**
+     * Transitional Java-side representation until HRA-013 adds the backing column.
+     */
+    @Transient
+    private LocalDate dateOfBirth;
+
+    /**
+     * Transitional Java-side representation until HRA-013 adds the backing column.
+     */
+    @Transient
+    private String birthLocalityId;
+
+    /**
+     * Transitional Java-side representation until HRA-013 adds the backing column.
+     */
+    @Transient
+    private String birthPlaceAr;
+
+    /**
+     * Transitional Java-side representation until HRA-013 adds the backing column.
+     */
+    @Transient
+    private String birthPlaceFr;
+
+    /**
+     * Transitional Java-side representation until HRA-013 adds the backing column.
+     */
+    @Transient
+    private String birthPlaceEn;
 
     @Column(name = "email_address", nullable = true, length = 254)
     private String emailAddress;
@@ -102,6 +134,11 @@ import java.time.Instant;
             String lastNameLt,
             String displayNameAr,
             String displayNameLt,
+            LocalDate dateOfBirth,
+            String birthLocalityId,
+            String birthPlaceAr,
+            String birthPlaceFr,
+            String birthPlaceEn,
             String emailAddress,
             String mobileNumber,
             EmployeeType employeeType,
@@ -120,6 +157,11 @@ import java.time.Instant;
         this.lastNameLt = lastNameLt;
         this.displayNameAr = displayNameAr;
         this.displayNameLt = displayNameLt;
+        this.dateOfBirth = dateOfBirth;
+        this.birthLocalityId = birthLocalityId;
+        this.birthPlaceAr = birthPlaceAr;
+        this.birthPlaceFr = birthPlaceFr;
+        this.birthPlaceEn = birthPlaceEn;
         this.emailAddress = emailAddress;
         this.mobileNumber = mobileNumber;
         this.employeeType = employeeType;
@@ -169,6 +211,31 @@ import java.time.Instant;
 
     public String displayNameLt() {
         return displayNameLt;
+    }
+
+
+    public LocalDate dateOfBirth() {
+        return dateOfBirth;
+    }
+
+
+    public String birthLocalityId() {
+        return birthLocalityId;
+    }
+
+
+    public String birthPlaceAr() {
+        return birthPlaceAr;
+    }
+
+
+    public String birthPlaceFr() {
+        return birthPlaceFr;
+    }
+
+
+    public String birthPlaceEn() {
+        return birthPlaceEn;
     }
 
 

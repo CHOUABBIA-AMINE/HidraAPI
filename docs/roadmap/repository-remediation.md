@@ -93,11 +93,11 @@ The authoritative detailed baseline is recorded in
 
 | Code | Exact commit message | Scope | Exit criteria | Prerequisite | Status |
 |---|---|---|---|---|---|
-| `HRA-030` | `docs(architecture): decide domain event and outbox strategy` | Choose one canonical path: implement events/outbox or remove fictional scaffolding. | ADR/roadmap decision exists; no ambiguous dual path. | HRA-002 | Planned |
-| `HRA-031A` | `refactor(events): unify module domain event contract` | If events are retained, reconcile module event interfaces with kernel `DomainEvent`, event IDs, timestamps, and version metadata. | Retained module events are assignable to the canonical event contract. | HRA-030 Path A | Planned |
-| `HRA-032A` | `feat(events): implement transactional outbox pipeline` | Implement serializer, outbox repository adapter, publisher, Spring wiring, and transactional tests. | Durable outbox semantics are proven end-to-end. | HRA-031A | Planned |
-| `HRA-033A` | `feat(events): publish domain events from state transitions` | Emit retained events from real state-changing use cases and remove replaced in-memory publisher stubs. | Every retained event has a real producer or an explicitly documented external producer. | HRA-032A | Planned |
-| `HRA-031B` | `refactor(events): remove unused event scaffolding` | If events are not currently required, remove unreferenced module event records/publishers and unused outbox contracts after consumer verification. | Dead event architecture is gone without breaking external consumers. | HRA-030 Path B | Planned |
+| `HRA-030` | `docs(architecture): decide domain event and outbox strategy` | Choose one canonical path: implement events/outbox or remove fictional scaffolding. | ADR/roadmap decision exists; no ambiguous dual path. | HRA-002 | **Completed — Path B selected by ADR-0006.** Source/live-main evidence shows 100 unreferenced module event records, 24 incompatible module event interfaces, 24 publisher ports, 24 in-memory publisher implementations, and no serializer/outbox repository/publisher implementation or runtime event emission. HidraAPI will remove disconnected event/outbox scaffolding instead of implementing infrastructure without a proven producer/consumer requirement. |
+| `HRA-031A` | `refactor(events): unify module domain event contract` | If events are retained, reconcile module event interfaces with kernel `DomainEvent`, event IDs, timestamps, and version metadata. | Retained module events are assignable to the canonical event contract. | HRA-030 Path A | **Skipped — ADR-0006 selected Path B.** |
+| `HRA-032A` | `feat(events): implement transactional outbox pipeline` | Implement serializer, outbox repository adapter, publisher, Spring wiring, and transactional tests. | Durable outbox semantics are proven end-to-end. | HRA-031A | **Skipped — ADR-0006 selected Path B; no proven runtime consumer justifies outbox implementation.** |
+| `HRA-033A` | `feat(events): publish domain events from state transitions` | Emit retained events from real state-changing use cases and remove replaced in-memory publisher stubs. | Every retained event has a real producer or an explicitly documented external producer. | HRA-032A | **Skipped — ADR-0006 selected Path B.** |
+| `HRA-031B` | `refactor(events): remove unused event scaffolding` | If events are not currently required, remove unreferenced module event records/publishers and unused outbox contracts after consumer verification. | Dead event architecture is gone without breaking external consumers. | HRA-030 Path B | **Planned — selected canonical path by ADR-0006.** Final repository consumer verification is required before deletion; persisted lifecycle/audit business records are explicitly out of scope unless independently proven dead. |
 
 ---
 
@@ -235,6 +235,6 @@ HRA-120
 
 `HRA-001` and `HRA-004` are complete. HRA-004 was explicitly prioritized to remove CI duplication before the high-frequency remediation sequence.
 
-**Next task:** `HRA-030 — docs(architecture): decide domain event and outbox strategy`.
+**Next task:** `HRA-031B — refactor(events): remove unused event scaffolding`.
 
 Do not begin broad dead-code deletion, event deletion, DTO consolidation, or domain/JPA mirror reduction before the HRA-002/HRA-003 safety rails exist.

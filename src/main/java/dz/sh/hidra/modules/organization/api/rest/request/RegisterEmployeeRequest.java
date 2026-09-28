@@ -25,6 +25,9 @@ import java.time.LocalDate;
 
 /**
  * REST request to register employee.
+ *
+ * <p>Display names are not accepted as input. They are derived from the structured
+ * Arabic and Latin first/last name components at read boundaries.</p>
  */
 public record RegisterEmployeeRequest(
         String employeeNumber,
@@ -32,8 +35,6 @@ public record RegisterEmployeeRequest(
         String lastNameAr,
         String firstNameLt,
         String lastNameLt,
-        String displayNameAr,
-        String displayNameLt,
         LocalDate dateOfBirth,
         String birthLocalityId,
         String birthPlaceAr,

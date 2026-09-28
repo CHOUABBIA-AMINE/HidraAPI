@@ -25,6 +25,9 @@ import java.time.LocalDate;
 
 /**
  * Command to register an employee.
+ *
+ * <p>Structured names are authoritative. Display names are derived from them and are
+ * deliberately absent from this write contract.</p>
  */
 public record RegisterEmployeeCommand(
         String employeeNumber,
@@ -32,8 +35,6 @@ public record RegisterEmployeeCommand(
         String lastNameAr,
         String firstNameLt,
         String lastNameLt,
-        String displayNameAr,
-        String displayNameLt,
         LocalDate dateOfBirth,
         String birthLocalityId,
         String birthPlaceAr,

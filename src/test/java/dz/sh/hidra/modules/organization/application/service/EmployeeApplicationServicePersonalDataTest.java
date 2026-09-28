@@ -51,8 +51,6 @@ class EmployeeApplicationServicePersonalDataTest {
                 "مثال",
                 "Amine",
                 "Example",
-                "أمين مثال",
-                "Amine Example",
                 dateOfBirth,
                 "locality-16-001",
                 "الجزائر",
@@ -73,6 +71,14 @@ class EmployeeApplicationServicePersonalDataTest {
         assertThat(saved.birthPlaceAr()).isEqualTo("الجزائر");
         assertThat(saved.birthPlaceFr()).isEqualTo("Alger");
         assertThat(saved.birthPlaceEn()).isEqualTo("Algiers");
+        assertThat(saved.displayNameAr())
+                .as("new writes must not persist caller-controlled Arabic display state")
+                .isNull();
+        assertThat(saved.displayNameLt())
+                .as("new writes must not persist caller-controlled Latin display state")
+                .isNull();
+        assertThat(saved.arabicDisplayName()).isEqualTo("أمين مثال");
+        assertThat(saved.latinDisplayName()).isEqualTo("Amine Example");
         assertThat(saved.emailAddress())
                 .as("new employee writes must not populate legacy direct email state")
                 .isNull();
@@ -93,6 +99,8 @@ class EmployeeApplicationServicePersonalDataTest {
         assertThat(contactPoints.commands.get(0).value()).isEqualTo("amine@example.test");
         assertThat(contactPoints.commands.get(1).value()).isEqualTo("+213555000001");
 
+        assertThat(result.displayNameAr()).isEqualTo("أمين مثال");
+        assertThat(result.displayNameLt()).isEqualTo("Amine Example");
         assertThat(result.dateOfBirth()).isEqualTo(dateOfBirth);
         assertThat(result.birthLocalityId()).isEqualTo("locality-16-001");
         assertThat(result.birthPlaceAr()).isEqualTo("الجزائر");

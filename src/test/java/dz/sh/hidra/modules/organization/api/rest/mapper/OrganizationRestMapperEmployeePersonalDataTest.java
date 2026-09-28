@@ -41,8 +41,6 @@ class OrganizationRestMapperEmployeePersonalDataTest {
                 "مثال",
                 "Amine",
                 "Example",
-                "أمين مثال",
-                "Amine Example",
                 dateOfBirth,
                 "locality-16-001",
                 "الجزائر",
@@ -56,6 +54,10 @@ class OrganizationRestMapperEmployeePersonalDataTest {
 
         RegisterEmployeeCommand command = OrganizationRestMapper.toCommand(request);
 
+        assertThat(command.firstNameAr()).isEqualTo("أمين");
+        assertThat(command.lastNameAr()).isEqualTo("مثال");
+        assertThat(command.firstNameLt()).isEqualTo("Amine");
+        assertThat(command.lastNameLt()).isEqualTo("Example");
         assertThat(command.dateOfBirth()).isEqualTo(dateOfBirth);
         assertThat(command.birthLocalityId()).isEqualTo("locality-16-001");
         assertThat(command.birthPlaceAr()).isEqualTo("الجزائر");

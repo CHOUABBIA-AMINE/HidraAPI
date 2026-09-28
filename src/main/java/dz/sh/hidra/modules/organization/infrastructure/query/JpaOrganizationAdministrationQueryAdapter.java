@@ -7,7 +7,7 @@
  *
  * @Name        : JpaOrganizationAdministrationQueryAdapter
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-27
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -104,8 +104,12 @@ public class JpaOrganizationAdministrationQueryAdapter implements OrganizationAd
                 .filter(entity -> matches(
                         query,
                         entity.employeeNumber(),
-                        entity.displayNameAr(),
-                        entity.displayNameLt(),
+                        entity.firstNameAr(),
+                        entity.lastNameAr(),
+                        entity.firstNameLt(),
+                        entity.lastNameLt(),
+                        displayName(entity.firstNameAr(), entity.lastNameAr()),
+                        displayName(entity.firstNameLt(), entity.lastNameLt()),
                         entity.emailAddress()
                 ))
                 .map(this::employeeView)
@@ -185,8 +189,8 @@ public class JpaOrganizationAdministrationQueryAdapter implements OrganizationAd
         return new EmployeeView(
                 entity.id(),
                 entity.employeeNumber(),
-                entity.displayNameAr(),
-                entity.displayNameLt(),
+                displayName(entity.firstNameAr(), entity.lastNameAr()),
+                displayName(entity.firstNameLt(), entity.lastNameLt()),
                 entity.emailAddress(),
                 entity.mobileNumber(),
                 String.valueOf(entity.employeeType()),
@@ -208,6 +212,22 @@ public class JpaOrganizationAdministrationQueryAdapter implements OrganizationAd
                 entity.validTo(),
                 String.valueOf(entity.status())
         );
+    }
+
+    private static String displayName(String firstName, String lastName) {
+        String first = normalizeName(firstName);
+        String last = normalizeName(lastName);
+        if (first == null) {
+            return last;
+        }
+        if (last == null) {
+            return first;
+        }
+        return first + " " + last;
+    }
+
+    private static String normalizeName(String value) {
+        return value == null || value.isBlank() ? null : value.trim();
     }
 
     private static boolean matches(String query, Object... values) {

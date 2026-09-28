@@ -50,8 +50,8 @@ public final class OrganizationApplicationMapper {
         return new EmployeeSummaryDto(
                 model.id(),
                 model.employeeNumber(),
-                model.displayNameAr(),
-                model.displayNameLt(),
+                model.arabicDisplayName(),
+                model.latinDisplayName(),
                 model.dateOfBirth(),
                 model.birthLocalityId(),
                 model.birthPlaceAr(),

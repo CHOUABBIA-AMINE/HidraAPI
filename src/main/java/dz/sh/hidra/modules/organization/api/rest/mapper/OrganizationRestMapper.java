@@ -71,8 +71,6 @@ public final class OrganizationRestMapper {
                 request.lastNameAr(),
                 request.firstNameLt(),
                 request.lastNameLt(),
-                request.displayNameAr(),
-                request.displayNameLt(),
                 request.dateOfBirth(),
                 request.birthLocalityId(),
                 request.birthPlaceAr(),

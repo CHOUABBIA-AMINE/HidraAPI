@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+    paths-ignore:
+      - "docs/**"
+      - "**/*.md"
   pull_request:
     branches:
       - main
@@ -20,7 +23,7 @@ jobs:
   verify:
     name: Java 21 Maven verification
     runs-on: ubuntu-latest
-    timeout-minutes: 50
+    timeout-minutes: 30
 
     services:
       postgres:
@@ -51,23 +54,8 @@ jobs:
       - name: Ensure Maven wrapper is executable
         run: chmod +x mvnw
 
-      - name: Repository compile check
-        run: ./mvnw -B -q -DskipTests compile
-
-      - name: Repository test check
-        run: ./mvnw -B -q test
-
-      - name: Repository full verification
+      - name: Repository verification
         run: ./mvnw -B -q clean verify
-
-      - name: Acceptance compile check
-        run: mvn -q -DskipTests compile
-
-      - name: Acceptance test check
-        run: mvn -q test
-
-      - name: Acceptance clean verify
-        run: mvn -q clean verify
 
       - name: Publish deterministic OpenAPI contract
         shell: bash

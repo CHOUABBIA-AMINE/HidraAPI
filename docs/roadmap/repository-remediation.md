@@ -63,6 +63,7 @@ The authoritative detailed baseline is recorded in
 | `HRA-001` | `docs(architecture): record forensic remediation baseline` | Version this repository remediation roadmap and the evidence-backed forensic baseline. | Baseline metrics and confirmed defects are versioned; no production behavior changes. | none | **Completed** |
 | `HRA-002` | `test(architecture): enforce repository structural guardrails` | Extend architecture/static-analysis guardrails for cross-module private-package imports, existing layer rules, duplicate JPA tables/columns, and deliberate exported-contract allowlists. | Existing main stays green; representative violations can fail the rules. | HRA-001 | Planned |
 | `HRA-003` | `test(persistence): detect domain mapper field drift` | Add domain-to-JPA mapper completeness/round-trip protection, beginning with Organization Employee and explicit exclusions for derived/compatibility state. | A canonical domain field silently dropped by persistence makes CI fail. | HRA-002 | Planned |
+| `HRA-004` | `ci: optimize repository verification workflow` | Remove redundant Maven executions from GitHub Actions, retain one wrapper-based `clean verify`, keep PostgreSQL/OpenAPI verification for code changes, and skip the heavy workflow for documentation-only pushes to `main`. | Code changes still run full Maven verification plus deterministic OpenAPI generation; documentation-only pushes do not start the heavy workflow; CI no longer recompiles/retests the repository six times. | HRA-001 | **Completed** |
 
 ---
 
@@ -196,6 +197,8 @@ Mandatory review examples include:
 ```text
 HRA-001
   ↓
+HRA-004
+  ↓
 HRA-002
   ↓
 HRA-003
@@ -230,7 +233,7 @@ HRA-120
 
 ## 17. Current execution point
 
-`HRA-001` is complete with this roadmap/baseline documentation.
+`HRA-001` and `HRA-004` are complete. HRA-004 was explicitly prioritized to remove CI duplication before the high-frequency remediation sequence.
 
 **Next task:** `HRA-002 — test(architecture): enforce repository structural guardrails`.
 

@@ -40,6 +40,12 @@ import java.time.ZoneOffset;
  * retained only as deprecated compatibility state until persistence/API consumers are
  * migrated; they must not be treated as the canonical contact source.</p>
  *
+ * <p>Name semantics: structured {@code firstNameAr/lastNameAr} and
+ * {@code firstNameLt/lastNameLt} are canonical. Display names are derived through
+ * {@link #arabicDisplayName()} and {@link #latinDisplayName()}. The historical
+ * {@code displayNameAr/displayNameLt} record components remain compatibility-only until
+ * persistence/API cutover proves they can be removed safely.</p>
+ *
  * <p>Validation: employee ID, employee number, employee type and lifecycle status are
  * required. Birth date cannot be in the future. A termination timestamp requires a
  * hire timestamp and cannot precede it. Optional text is trimmed and blank values
@@ -56,8 +62,8 @@ import java.time.ZoneOffset;
  * @param lastNameAr Arabic last name
  * @param firstNameLt Latin-transliterated first name
  * @param lastNameLt Latin-transliterated last name
- * @param displayNameAr transitional Arabic display name pending ORG-052
- * @param displayNameLt transitional Latin display name pending ORG-052
+ * @param displayNameAr deprecated compatibility Arabic display value; canonical display name is derived
+ * @param displayNameLt deprecated compatibility Latin display value; canonical display name is derived
  * @param dateOfBirth optional date of birth
  * @param birthLocalityId optional normalized AdministrativeLocality identifier
  * @param birthPlaceAr optional authoritative/free-text Arabic birthplace
@@ -199,6 +205,50 @@ public record Employee(
     }
 
     /**
+     * Returns the canonical Arabic display name derived from structured Arabic names.
+     *
+     * @return joined Arabic first/last name, or null when both are absent
+     */
+    public String arabicDisplayName() {
+        return join(firstNameAr, lastNameAr);
+    }
+
+    /**
+     * Returns the canonical Latin display name derived from structured Latin names.
+     *
+     * @return joined Latin first/last name, or null when both are absent
+     */
+    public String latinDisplayName() {
+        return join(firstNameLt, lastNameLt);
+    }
+
+    /**
+     * Compatibility accessor for the historical persisted Arabic display value.
+     *
+     * <p>New domain consumers must use {@link #arabicDisplayName()}.</p>
+     *
+     * @return historical compatibility value, if populated
+     */
+    @Deprecated(forRemoval = true)
+    @Override
+    public String displayNameAr() {
+        return displayNameAr;
+    }
+
+    /**
+     * Compatibility accessor for the historical persisted Latin display value.
+     *
+     * <p>New domain consumers must use {@link #latinDisplayName()}.</p>
+     *
+     * @return historical compatibility value, if populated
+     */
+    @Deprecated(forRemoval = true)
+    @Override
+    public String displayNameLt() {
+        return displayNameLt;
+    }
+
+    /**
      * Transitional compatibility accessor.
      *
      * <p>Canonical employee email contact is modeled by
@@ -224,6 +274,18 @@ public record Employee(
     @Override
     public String mobileNumber() {
         return mobileNumber;
+    }
+
+    private static String join(String firstName, String lastName) {
+        String first = normalize(firstName);
+        String last = normalize(lastName);
+        if (first == null) {
+            return last;
+        }
+        if (last == null) {
+            return first;
+        }
+        return first + " " + last;
     }
 
     private static String requireText(String value, String message) {

@@ -77,7 +77,7 @@ columns have been retired through later immutable Flyway migrations.
 
 Current correction status:
 
-- `ORG-034` through `ORG-051`: **Completed**.
+- `ORG-034` through `ORG-052`: **Completed**.
 - `ORG-027`: **In Progress**. Assign, revoke, typed list/query and read-only reconciliation
   exist. Identity authorization and workflow/audit integration remain open.
 - `ORG-023`: **Blocked** on authorized legacy/consumer evidence. Later validated
@@ -3347,7 +3347,7 @@ aggregate lifecycles.
 | `ORG-049` | Completed | Final Employee / EmployeeAddress / OrganizationContactPoint ownership, birthplace shape, duplicate-contact policy, display-name direction, model invariants and value-object decisions are recorded in section 20. No production Java or schema was changed. |
 | `ORG-050` | Completed | `Employee` now canonically includes `dateOfBirth`, optional `birthLocalityId`, and `birthPlaceAr/Fr/En`; required ID/employee-number/type/status plus birth-date and hire/termination chronology are enforced in the domain. A deprecated legacy constructor preserves existing application/persistence compilation without inventing birth data. Focused `EmployeeTest` covers the new contract. No JPA/API/schema change. |
 | `ORG-051` | Completed | `OrganizationContactPoint` is explicitly the canonical Organization model for employee EMAIL/MOBILE/PHONE-style operational contact channels through typed `ContactPointTargetReference(EMPLOYEE, employeeId)`. `Employee.emailAddress()` and `Employee.mobileNumber()` remain only as `@Deprecated(forRemoval = true)` compatibility accessors until persistence/API/data cutover; no new direct Employee contact components were introduced. Focused ownership tests guard the boundary. No persistence/data migration. |
-| `ORG-052` | Planned | Execute after ORG-051 passes its gate. |
+| `ORG-052` | Completed | Structured `firstNameAr/lastNameAr` and `firstNameLt/lastNameLt` are now the canonical Employee name components. `Employee.arabicDisplayName()` and `latinDisplayName()` derive display names deterministically from those components. Historical `displayNameAr()` / `displayNameLt()` remain `@Deprecated(forRemoval = true)` compatibility accessors so existing persisted/API values are not silently discarded before consumer/data cutover. No independent preferred-name semantic was found in current repository evidence. |
 | `ORG-053` | Planned | Execute after ORG-052 passes its gate. |
 | `ORG-054` | Planned | Execute after ORG-053 passes its gate. |
 | `ORG-055` | Planned | Final model/value integrity guardrail after ORG-054. |
@@ -3374,6 +3374,6 @@ is complete.
 
 ### 20.10 Execution priority
 
-This domain cleanup does not erase the still-open issue #130 gates. For model/value work, `ORG-049` through `ORG-051` are complete. Execute `ORG-052` next and then proceed one code at a time through `ORG-055`.
+This domain cleanup does not erase the still-open issue #130 gates. For model/value work, `ORG-049` through `ORG-052` are complete. Execute `ORG-053` next and then proceed one code at a time through `ORG-055`.
 Application/persistence/API cutover must be planned only after the canonical domain model is
 validated.

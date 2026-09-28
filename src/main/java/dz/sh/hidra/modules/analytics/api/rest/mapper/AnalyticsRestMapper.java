@@ -7,7 +7,7 @@
  *
  * @Name        : AnalyticsRestMapper
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-13
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Class
  * @Layer       : API
@@ -18,6 +18,7 @@
  *
  */
 package dz.sh.hidra.modules.analytics.api.rest.mapper;
+
 import dz.sh.hidra.modules.analytics.api.rest.request.CreateAnalyticsDatasetRequest;
 import dz.sh.hidra.modules.analytics.api.rest.request.CreateAnalyticsInsightRequest;
 import dz.sh.hidra.modules.analytics.api.rest.request.RunMetricEvaluationRequest;
@@ -34,116 +35,48 @@ import dz.sh.hidra.modules.analytics.application.dto.AnalyticsDatasetSummaryDto;
 import dz.sh.hidra.modules.analytics.application.dto.AnalyticsInsightSummaryDto;
 import dz.sh.hidra.modules.analytics.application.dto.AnalyticsProjectionRunSummaryDto;
 import dz.sh.hidra.modules.analytics.application.dto.MetricEvaluationRunSummaryDto;
+import java.util.Objects;
 
 /**
  * Maps analytics REST models to application models.
  */
 public final class AnalyticsRestMapper {
 
+    private static final AnalyticsGeneratedRestMapper GENERATED = AnalyticsGeneratedRestMapper.INSTANCE;
+
     private AnalyticsRestMapper() {
         throw new UnsupportedOperationException("Utility class must not be instantiated.");
     }
 
     public static CreateAnalyticsDatasetCommand toCommand(CreateAnalyticsDatasetRequest request) {
-        return new CreateAnalyticsDatasetCommand(
-                request.code(),
-                request.nameAr(),
-                request.nameFr(),
-                request.nameEn(),
-                request.subjectAreaId(),
-                request.datasetType(),
-                request.refreshMode(),
-                request.schemaVersion(),
-                request.createdFrom()
-        );
+        return GENERATED.toCommand(Objects.requireNonNull(request, "CreateAnalyticsDatasetRequest must not be null."));
     }
 
     public static CreateAnalyticsInsightCommand toCommand(CreateAnalyticsInsightRequest request) {
-        return new CreateAnalyticsInsightCommand(
-                request.insightType(),
-                request.subjectAreaId(),
-                request.scopeType(),
-                request.scopeId(),
-                request.title(),
-                request.summary(),
-                request.severityId(),
-                request.confidenceScore(),
-                request.sourceProjectionSnapshotId(),
-                request.sourceTrendAnalysisId(),
-                request.sourceModelRunId()
-        );
+        return GENERATED.toCommand(Objects.requireNonNull(request, "CreateAnalyticsInsightRequest must not be null."));
     }
 
     public static RunProjectionCommand toCommand(RunProjectionRequest request) {
-        return new RunProjectionCommand(
-                request.projectionDefinitionId(),
-                request.runMode(),
-                request.periodStart(),
-                request.periodEnd(),
-                request.correlationId()
-        );
+        return GENERATED.toCommand(Objects.requireNonNull(request, "RunProjectionRequest must not be null."));
     }
 
     public static RunMetricEvaluationCommand toCommand(RunMetricEvaluationRequest request) {
-        return new RunMetricEvaluationCommand(
-                request.metricDefinitionVersionId(),
-                request.periodStart(),
-                request.periodEnd(),
-                request.scopeType(),
-                request.scopeId(),
-                request.correlationId()
-        );
+        return GENERATED.toCommand(Objects.requireNonNull(request, "RunMetricEvaluationRequest must not be null."));
     }
 
     public static AnalyticsDatasetResponse toResponse(AnalyticsDatasetSummaryDto dto) {
-        return new AnalyticsDatasetResponse(
-                dto.id(),
-                dto.code(),
-                dto.nameFr(),
-                dto.subjectAreaId(),
-                dto.datasetType(),
-                dto.refreshMode(),
-                dto.lineageStatus(),
-                dto.qualityStatus()
-        );
+        return GENERATED.toResponse(Objects.requireNonNull(dto, "AnalyticsDatasetSummaryDto must not be null."));
     }
 
     public static AnalyticsInsightResponse toResponse(AnalyticsInsightSummaryDto dto) {
-        return new AnalyticsInsightResponse(
-                dto.id(),
-                dto.insightType(),
-                dto.subjectAreaId(),
-                dto.scopeType(),
-                dto.scopeId(),
-                dto.title(),
-                dto.severityId(),
-                dto.confidenceScore(),
-                dto.status()
-        );
+        return GENERATED.toResponse(Objects.requireNonNull(dto, "AnalyticsInsightSummaryDto must not be null."));
     }
 
     public static AnalyticsProjectionRunResponse toResponse(AnalyticsProjectionRunSummaryDto dto) {
-        return new AnalyticsProjectionRunResponse(
-                dto.id(),
-                dto.projectionDefinitionId(),
-                dto.runStatus(),
-                dto.runMode(),
-                dto.periodStart(),
-                dto.periodEnd(),
-                dto.correlationId()
-        );
+        return GENERATED.toResponse(Objects.requireNonNull(dto, "AnalyticsProjectionRunSummaryDto must not be null."));
     }
 
     public static MetricEvaluationRunResponse toResponse(MetricEvaluationRunSummaryDto dto) {
-        return new MetricEvaluationRunResponse(
-                dto.id(),
-                dto.metricDefinitionVersionId(),
-                dto.runStatus(),
-                dto.periodStart(),
-                dto.periodEnd(),
-                dto.scopeType(),
-                dto.scopeId(),
-                dto.correlationId()
-        );
+        return GENERATED.toResponse(Objects.requireNonNull(dto, "MetricEvaluationRunSummaryDto must not be null."));
     }
 }

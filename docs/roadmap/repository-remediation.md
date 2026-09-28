@@ -136,7 +136,8 @@ Domain constructors must not perform repository lookups, cross-module existence 
 |---|---|---|---|---|---|
 | `HRA-070` | `docs(api): classify duplicate boundary contracts` | Review the 65 exact Request/Command and 59 exact Response/SummaryDto pairs. | Every pair is KEEP SEPARATE or approved for consolidation/generated mapping. | HRA-002 | **Completed** — live-main classification records all 124 exact pairs. Cross-layer type consolidation is rejected by the current API/application policy; all 65 Request/Command and 59 Response/SummaryDto pairs retain separate types and are approved only for later compile-time generated field mapping. Five same-named but non-exact request/command pairs are explicitly excluded because they perform server/security/path/multipart/value-object enrichment. |
 | `HRA-071` | `refactor(alarm): simplify boundary dto mapping` | Pilot compile-time generated mapping for the HRA-070-approved exact alarm pairs only; retain security-enriched alarm mappings as hand-written code. | `RaiseAlarmRequest`→`RaiseAlarmCommand` and `AlarmSummaryDto`→`AlarmResponse` are generated with strict unmapped-property failures; acknowledgement/closure actor enrichment is unchanged; focused mapper coverage is added. | HRA-070 | **Completed** — introduced MapStruct compile-time mapping support, generated only the two exact alarm boundary mappings, preserved the existing static facade and hand-written authenticated acknowledgement/closure mappings, and added exact record-equality tests. |
-| `HRA-072..N` | `refactor(<module>): simplify boundary dto mapping` | Apply the HRA-070 generated-mapping classification one remaining module at a time; preserve API stability/versioning/security transformations. | Hand-written field-for-field mapping decreases without wire-contract regressions; non-exact mappings remain explicit. | HRA-071 | Planned |
+| `HRA-072` | `refactor(analytics): simplify boundary dto mapping` | Generate the eight HRA-070-approved exact analytics request/command and summary/response mappings. | All analytics exact-pair mappings use strict compile-time generation; existing static mapper API and wire/application types remain unchanged; focused equality tests cover all eight mappings. | HRA-071 | **Completed** — moved all four exact analytics Request→Command and all four SummaryDto→Response mappings behind `AnalyticsGeneratedRestMapper`, preserved the static `AnalyticsRestMapper` facade, and added focused equality tests for every approved pair. |
+| `HRA-073..N` | `refactor(<module>): simplify boundary dto mapping` | Apply the HRA-070 generated-mapping classification one remaining module at a time; preserve API stability/versioning/security transformations. | Hand-written field-for-field mapping decreases without wire-contract regressions; non-exact mappings remain explicit. | HRA-072 | Planned |
 
 ### HRA-070 classification matrix
 
@@ -164,10 +165,10 @@ The exact-pair matrix is:
 | Module | Exact pair | Disposition |
 |---|---|---|
 | alarm | `RaiseAlarmRequest` ↔ `RaiseAlarmCommand` | GENERATED MAPPING IMPLEMENTED (HRA-071); KEEP TYPES SEPARATE |
-| analytics | `CreateAnalyticsDatasetRequest` ↔ `CreateAnalyticsDatasetCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| analytics | `CreateAnalyticsInsightRequest` ↔ `CreateAnalyticsInsightCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| analytics | `RunMetricEvaluationRequest` ↔ `RunMetricEvaluationCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| analytics | `RunProjectionRequest` ↔ `RunProjectionCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
+| analytics | `CreateAnalyticsDatasetRequest` ↔ `CreateAnalyticsDatasetCommand` | GENERATED MAPPING IMPLEMENTED (HRA-072); KEEP TYPES SEPARATE |
+| analytics | `CreateAnalyticsInsightRequest` ↔ `CreateAnalyticsInsightCommand` | GENERATED MAPPING IMPLEMENTED (HRA-072); KEEP TYPES SEPARATE |
+| analytics | `RunMetricEvaluationRequest` ↔ `RunMetricEvaluationCommand` | GENERATED MAPPING IMPLEMENTED (HRA-072); KEEP TYPES SEPARATE |
+| analytics | `RunProjectionRequest` ↔ `RunProjectionCommand` | GENERATED MAPPING IMPLEMENTED (HRA-072); KEEP TYPES SEPARATE |
 | assets | `CreateMaintenanceWorkOrderRequest` ↔ `CreateMaintenanceWorkOrderCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
 | assets | `RecordAssetConditionRequest` ↔ `RecordAssetConditionCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
 | assets | `RegisterMaintainableAssetRequest` ↔ `RegisterMaintainableAssetCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
@@ -229,10 +230,10 @@ The exact-pair matrix is:
 | workflow | `RecordWorkflowActionRequest` ↔ `RecordWorkflowActionCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
 | workflow | `StartWorkflowInstanceRequest` ↔ `StartWorkflowInstanceCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
 | alarm | `AlarmResponse` ↔ `AlarmSummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-071); KEEP TYPES SEPARATE |
-| analytics | `AnalyticsDatasetResponse` ↔ `AnalyticsDatasetSummaryDto` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| analytics | `AnalyticsInsightResponse` ↔ `AnalyticsInsightSummaryDto` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| analytics | `AnalyticsProjectionRunResponse` ↔ `AnalyticsProjectionRunSummaryDto` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| analytics | `MetricEvaluationRunResponse` ↔ `MetricEvaluationRunSummaryDto` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
+| analytics | `AnalyticsDatasetResponse` ↔ `AnalyticsDatasetSummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-072); KEEP TYPES SEPARATE |
+| analytics | `AnalyticsInsightResponse` ↔ `AnalyticsInsightSummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-072); KEEP TYPES SEPARATE |
+| analytics | `AnalyticsProjectionRunResponse` ↔ `AnalyticsProjectionRunSummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-072); KEEP TYPES SEPARATE |
+| analytics | `MetricEvaluationRunResponse` ↔ `MetricEvaluationRunSummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-072); KEEP TYPES SEPARATE |
 | assets | `AssetConditionResponse` ↔ `AssetConditionSummaryDto` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
 | assets | `MaintainableAssetResponse` ↔ `MaintainableAssetSummaryDto` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
 | assets | `MaintenanceWorkOrderResponse` ↔ `MaintenanceWorkOrderSummaryDto` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
@@ -400,6 +401,6 @@ HRA-120
 
 `HRA-001` and `HRA-004` are complete. HRA-004 was explicitly prioritized to remove CI duplication before the high-frequency remediation sequence.
 
-**Next task:** `HRA-072..N — refactor(<module>): simplify boundary dto mapping` (next classified module: `analytics`).
+**Next task:** `HRA-073..N — refactor(<module>): simplify boundary dto mapping` (next classified module: `assets`).
 
 Do not begin broad dead-code deletion, event deletion, DTO consolidation, or domain/JPA mirror reduction before the HRA-002/HRA-003 safety rails exist.

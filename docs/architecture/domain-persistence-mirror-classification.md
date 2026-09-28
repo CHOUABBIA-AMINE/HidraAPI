@@ -210,3 +210,40 @@ If any condition fails, HRA-061 must retain the domain/JPA split for that pair a
 reclassification rather than forcing consolidation.
 
 The 51 `REAL_DOMAIN` pairs are explicitly outside HRA-061 simplification scope.
+
+
+## 10. HRA-061 execution result
+
+HRA-061 replayed the HRA-060 gate on exact execution head
+`e3a9af8f6f2a2c2dd8b55adb95f8ec51ef6784d7`. The only repository change after the live HRA-060 analysis was the HRA-060
+documentation commit itself, so the production/test consumer graph was unchanged.
+
+Additional execution checks confirmed:
+
+- all **343** classified `READ_PERSISTENCE_MODEL` pairs still had the expected domain record,
+  application repository port, JPA adapter, JPA entity, and Spring Data repository before cleanup;
+- all **87** Java test sources were scanned; no test imports or constructs a retired candidate
+  (the only name hits were string constants for `ExternalGroupMapping` and
+  `ExternalPermissionMapping` in an Identity architecture guardrail);
+- no candidate was reclassified to `REAL_DOMAIN` or `BOUNDARY_MODEL`;
+- all **51** `REAL_DOMAIN` pairs remain deliberately split.
+
+The consolidated implementation therefore:
+
+- removes **343** redundant domain mirror records;
+- removes **343** unused application repository ports;
+- removes **343** unused JPA repository adapters;
+- removes **686** domain/JPA conversion methods from **23** persistence mappers;
+- retains all **343** JPA entities and their Spring Data repositories;
+- changes no JPA table/column mapping and no Flyway migration;
+- adds `DomainPersistenceMirrorGuardrailTest` to enforce the 51/343 disposition from this
+  classification.
+
+HRA-051 reconciliation for the retired mirrors is explicit. The removed domain records contained
+**1,442 required-field markers, 52 temporal-order markers, and 3 self-reference markers** added by
+HRA-051 (**1,497** total). The surviving domain source retains exactly **583 required-field,
+24 temporal-order, and 3 self-reference markers** (**610** total) across **114** records, and
+`DomainInvariantGuardrailTest` is updated to lock those surviving counts.
+
+This is a domain/persistence-boundary simplification only. Persistence entities, Spring Data
+repositories, database schema ownership, and external data definitions remain intact.

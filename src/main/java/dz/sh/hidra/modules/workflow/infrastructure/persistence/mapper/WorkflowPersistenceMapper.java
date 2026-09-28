@@ -7,7 +7,7 @@
  *
  * @Name        : WorkflowPersistenceMapper
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -30,58 +30,6 @@ public final class WorkflowPersistenceMapper {
     private WorkflowPersistenceMapper() {
         throw new UnsupportedOperationException("Utility class must not be instantiated.");
     }
-
-
-        public static WorkflowCatalogEntryJpaEntity toEntity(WorkflowCatalogEntry model) {
-            return new WorkflowCatalogEntryJpaEntity(
-                        model.id(),
-                        model.catalogName(),
-                        model.code(),
-                        model.active(),
-                        model.sortOrder(),
-                        model.systemDefined(),
-                        model.createdAt(),
-                        model.updatedAt()
-            );
-        }
-
-        public static WorkflowCatalogEntry toDomain(WorkflowCatalogEntryJpaEntity entity) {
-            return new WorkflowCatalogEntry(
-                        entity.id(),
-                        entity.catalogName(),
-                        entity.code(),
-                        entity.active(),
-                        entity.sortOrder(),
-                        entity.systemDefined(),
-                        entity.createdAt(),
-                        entity.updatedAt()
-            );
-        }
-
-        public static WorkflowCatalogTranslationJpaEntity toEntity(WorkflowCatalogTranslation model) {
-            return new WorkflowCatalogTranslationJpaEntity(
-                        model.id(),
-                        model.typeId(),
-                        model.locale(),
-                        model.name(),
-                        model.description(),
-                        model.createdAt(),
-                        model.updatedAt()
-            );
-        }
-
-        public static WorkflowCatalogTranslation toDomain(WorkflowCatalogTranslationJpaEntity entity) {
-            return new WorkflowCatalogTranslation(
-                        entity.id(),
-                        entity.typeId(),
-                        entity.locale(),
-                        entity.name(),
-                        entity.description(),
-                        entity.createdAt(),
-                        entity.updatedAt()
-            );
-        }
-
         public static WorkflowDefinitionJpaEntity toEntity(WorkflowDefinition model) {
             return new WorkflowDefinitionJpaEntity(
                         model.id(),
@@ -297,39 +245,6 @@ public final class WorkflowPersistenceMapper {
                         entity.updatedAt()
             );
         }
-
-        public static WorkflowAssignmentJpaEntity toEntity(WorkflowAssignment model) {
-            return new WorkflowAssignmentJpaEntity(
-                        model.id(),
-                        model.taskId(),
-                        model.actorId(),
-                        model.actorUsernameSnapshot(),
-                        model.actorDisplayNameSnapshot(),
-                        model.roleCodeSnapshot(),
-                        model.organizationUnitId(),
-                        model.organizationUnitNameSnapshot(),
-                        model.status(),
-                        model.assignedAt(),
-                        model.updatedAt()
-            );
-        }
-
-        public static WorkflowAssignment toDomain(WorkflowAssignmentJpaEntity entity) {
-            return new WorkflowAssignment(
-                        entity.id(),
-                        entity.taskId(),
-                        entity.actorId(),
-                        entity.actorUsernameSnapshot(),
-                        entity.actorDisplayNameSnapshot(),
-                        entity.roleCodeSnapshot(),
-                        entity.organizationUnitId(),
-                        entity.organizationUnitNameSnapshot(),
-                        entity.status(),
-                        entity.assignedAt(),
-                        entity.updatedAt()
-            );
-        }
-
         public static WorkflowActionJpaEntity toEntity(WorkflowAction model) {
             return new WorkflowActionJpaEntity(
                         model.id(),
@@ -381,137 +296,6 @@ public final class WorkflowPersistenceMapper {
                         entity.actedAt()
             );
         }
-
-        public static WorkflowDelegationJpaEntity toEntity(WorkflowDelegation model) {
-            return new WorkflowDelegationJpaEntity(
-                        model.id(),
-                        model.taskId(),
-                        model.fromActorId(),
-                        model.fromActorUsernameSnapshot(),
-                        model.fromActorDisplayNameSnapshot(),
-                        model.fromActorRoleCodeSnapshot(),
-                        model.toActorId(),
-                        model.toActorUsernameSnapshot(),
-                        model.toActorDisplayNameSnapshot(),
-                        model.toActorRoleCodeSnapshot(),
-                        model.toOrganizationUnitId(),
-                        model.toOrganizationUnitNameSnapshot(),
-                        model.toOrganizationRoleCodeSnapshot(),
-                        model.reasonId(),
-                        model.delegationStatus(),
-                        model.delegatedAt(),
-                        model.acceptedAt(),
-                        model.validUntil(),
-                        model.delegationDepth()
-            );
-        }
-
-        public static WorkflowDelegation toDomain(WorkflowDelegationJpaEntity entity) {
-            return new WorkflowDelegation(
-                        entity.id(),
-                        entity.taskId(),
-                        entity.fromActorId(),
-                        entity.fromActorUsernameSnapshot(),
-                        entity.fromActorDisplayNameSnapshot(),
-                        entity.fromActorRoleCodeSnapshot(),
-                        entity.toActorId(),
-                        entity.toActorUsernameSnapshot(),
-                        entity.toActorDisplayNameSnapshot(),
-                        entity.toActorRoleCodeSnapshot(),
-                        entity.toOrganizationUnitId(),
-                        entity.toOrganizationUnitNameSnapshot(),
-                        entity.toOrganizationRoleCodeSnapshot(),
-                        entity.reasonId(),
-                        entity.delegationStatus(),
-                        entity.delegatedAt(),
-                        entity.acceptedAt(),
-                        entity.validUntil(),
-                        entity.delegationDepth()
-            );
-        }
-
-        public static WorkflowEscalationRuleJpaEntity toEntity(WorkflowEscalationRule model) {
-            return new WorkflowEscalationRuleJpaEntity(
-                        model.id(),
-                        model.definitionId(),
-                        model.stepId(),
-                        model.afterDurationSeconds(),
-                        model.escalateToActorId(),
-                        model.escalateToActorUsernameSnapshot(),
-                        model.escalateToActorDisplayNameSnapshot(),
-                        model.escalateToActorRoleCodeSnapshot(),
-                        model.escalateToOrganizationUnitId(),
-                        model.escalateToOrganizationUnitNameSnapshot(),
-                        model.escalateToOrganizationRoleCodeSnapshot(),
-                        model.escalationReasonId(),
-                        model.repeatable(),
-                        model.maxRepeatCount(),
-                        model.escalationLevel(),
-                        model.businessHoursCalendarId(),
-                        model.active(),
-                        model.createdAt(),
-                        model.updatedAt()
-            );
-        }
-
-        public static WorkflowEscalationRule toDomain(WorkflowEscalationRuleJpaEntity entity) {
-            return new WorkflowEscalationRule(
-                        entity.id(),
-                        entity.definitionId(),
-                        entity.stepId(),
-                        entity.afterDurationSeconds(),
-                        entity.escalateToActorId(),
-                        entity.escalateToActorUsernameSnapshot(),
-                        entity.escalateToActorDisplayNameSnapshot(),
-                        entity.escalateToActorRoleCodeSnapshot(),
-                        entity.escalateToOrganizationUnitId(),
-                        entity.escalateToOrganizationUnitNameSnapshot(),
-                        entity.escalateToOrganizationRoleCodeSnapshot(),
-                        entity.escalationReasonId(),
-                        entity.repeatable(),
-                        entity.maxRepeatCount(),
-                        entity.escalationLevel(),
-                        entity.businessHoursCalendarId(),
-                        entity.active(),
-                        entity.createdAt(),
-                        entity.updatedAt()
-            );
-        }
-
-        public static WorkflowCommentJpaEntity toEntity(WorkflowComment model) {
-            return new WorkflowCommentJpaEntity(
-                        model.id(),
-                        model.instanceId(),
-                        model.taskId(),
-                        model.actorId(),
-                        model.actorUsernameSnapshot(),
-                        model.actorDisplayNameSnapshot(),
-                        model.actorRoleCodeSnapshot(),
-                        model.commentText(),
-                        model.visibility(),
-                        model.parentCommentId(),
-                        model.commentedAt(),
-                        model.editedAt()
-            );
-        }
-
-        public static WorkflowComment toDomain(WorkflowCommentJpaEntity entity) {
-            return new WorkflowComment(
-                        entity.id(),
-                        entity.instanceId(),
-                        entity.taskId(),
-                        entity.actorId(),
-                        entity.actorUsernameSnapshot(),
-                        entity.actorDisplayNameSnapshot(),
-                        entity.actorRoleCodeSnapshot(),
-                        entity.commentText(),
-                        entity.visibility(),
-                        entity.parentCommentId(),
-                        entity.commentedAt(),
-                        entity.editedAt()
-            );
-        }
-
         public static WorkflowStateHistoryJpaEntity toEntity(WorkflowStateHistory model) {
             return new WorkflowStateHistoryJpaEntity(
                         model.id(),
@@ -551,33 +335,6 @@ public final class WorkflowPersistenceMapper {
                         entity.changedAt()
             );
         }
-
-        public static WorkflowDefinitionTargetBindingJpaEntity toEntity(WorkflowDefinitionTargetBinding model) {
-            return new WorkflowDefinitionTargetBindingJpaEntity(
-                        model.id(),
-                        model.definitionId(),
-                        model.targetModule(),
-                        model.targetTypeId(),
-                        model.workflowPurposeId(),
-                        model.active(),
-                        model.createdAt(),
-                        model.updatedAt()
-            );
-        }
-
-        public static WorkflowDefinitionTargetBinding toDomain(WorkflowDefinitionTargetBindingJpaEntity entity) {
-            return new WorkflowDefinitionTargetBinding(
-                        entity.id(),
-                        entity.definitionId(),
-                        entity.targetModule(),
-                        entity.targetTypeId(),
-                        entity.workflowPurposeId(),
-                        entity.active(),
-                        entity.createdAt(),
-                        entity.updatedAt()
-            );
-        }
-
         public static WorkflowStepAssignmentRuleJpaEntity toEntity(WorkflowStepAssignmentRule model) {
             return new WorkflowStepAssignmentRuleJpaEntity(
                         model.id(),
@@ -611,65 +368,4 @@ public final class WorkflowPersistenceMapper {
                         entity.updatedAt()
             );
         }
-
-        public static WorkflowSlaPolicyJpaEntity toEntity(WorkflowSlaPolicy model) {
-            return new WorkflowSlaPolicyJpaEntity(
-                        model.id(),
-                        model.code(),
-                        model.nameAr(),
-                        model.nameFr(),
-                        model.nameEn(),
-                        model.durationSeconds(),
-                        model.calendarMode(),
-                        model.warningBeforeSeconds(),
-                        model.active(),
-                        model.createdAt(),
-                        model.updatedAt()
-            );
-        }
-
-        public static WorkflowSlaPolicy toDomain(WorkflowSlaPolicyJpaEntity entity) {
-            return new WorkflowSlaPolicy(
-                        entity.id(),
-                        entity.code(),
-                        entity.nameAr(),
-                        entity.nameFr(),
-                        entity.nameEn(),
-                        entity.durationSeconds(),
-                        entity.calendarMode(),
-                        entity.warningBeforeSeconds(),
-                        entity.active(),
-                        entity.createdAt(),
-                        entity.updatedAt()
-            );
-        }
-
-        public static WorkflowAuditOutboxReferenceJpaEntity toEntity(WorkflowAuditOutboxReference model) {
-            return new WorkflowAuditOutboxReferenceJpaEntity(
-                        model.id(),
-                        model.instanceId(),
-                        model.taskId(),
-                        model.actionId(),
-                        model.eventType(),
-                        model.outboxEventId(),
-                        model.emittedAt(),
-                        model.status(),
-                        model.failureReason()
-            );
-        }
-
-        public static WorkflowAuditOutboxReference toDomain(WorkflowAuditOutboxReferenceJpaEntity entity) {
-            return new WorkflowAuditOutboxReference(
-                        entity.id(),
-                        entity.instanceId(),
-                        entity.taskId(),
-                        entity.actionId(),
-                        entity.eventType(),
-                        entity.outboxEventId(),
-                        entity.emittedAt(),
-                        entity.status(),
-                        entity.failureReason()
-            );
-        }
-
 }

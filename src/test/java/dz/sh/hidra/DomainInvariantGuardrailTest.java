@@ -14,7 +14,7 @@
  * @Module      : repository
  * @Package     : dz.sh.hidra
  *
- * @Description : Locks the exact HRA-051 consolidated domain-invariant implementation scope.
+ * @Description : Locks the surviving HRA-051 domain invariants after HRA-061 retires persistence-only mirrors.
  *
  */
 package dz.sh.hidra;
@@ -60,12 +60,13 @@ class DomainInvariantGuardrailTest {
                     });
         }
 
-        assertEquals(2_025, required.get(), "HRA-051 required-field guard count drifted.");
-        assertEquals(76, ordering.get(), "HRA-051 temporal-order guard count drifted.");
-        assertEquals(6, selfReference.get(), "HRA-051 self-reference guard count drifted.");
-        assertEquals(2_107, required.get() + ordering.get() + selfReference.get(),
-                "HRA-051 total invariant guard count drifted.");
-        assertEquals(457, touchedRecords.get(), "HRA-051 touched-record inventory drifted.");
+        // HRA-061 deliberately retired 1,497 HRA-051 markers with 343 persistence-only domain mirrors.
+        assertEquals(583, required.get(), "Surviving HRA-051 required-field guard count drifted.");
+        assertEquals(24, ordering.get(), "Surviving HRA-051 temporal-order guard count drifted.");
+        assertEquals(3, selfReference.get(), "Surviving HRA-051 self-reference guard count drifted.");
+        assertEquals(610, required.get() + ordering.get() + selfReference.get(),
+                "Surviving HRA-051 total invariant guard count drifted.");
+        assertEquals(114, touchedRecords.get(), "Surviving HRA-051 touched-record inventory drifted.");
     }
 
     private static String read(Path path) {

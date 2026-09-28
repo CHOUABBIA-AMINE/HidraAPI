@@ -77,7 +77,7 @@ columns have been retired through later immutable Flyway migrations.
 
 Current correction status:
 
-- `ORG-034` through `ORG-049`: **Completed**.
+- `ORG-034` through `ORG-050`: **Completed**.
 - `ORG-027`: **In Progress**. Assign, revoke, typed list/query and read-only reconciliation
   exist. Identity authorization and workflow/audit integration remain open.
 - `ORG-023`: **Blocked** on authorized legacy/consumer evidence. Later validated
@@ -3345,14 +3345,14 @@ aggregate lifecycles.
 | Code | Status | Evidence / next gate |
 |---|---|---|
 | `ORG-049` | Completed | Final Employee / EmployeeAddress / OrganizationContactPoint ownership, birthplace shape, duplicate-contact policy, display-name direction, model invariants and value-object decisions are recorded in section 20. No production Java or schema was changed. |
-| `ORG-050` | Planned | Next model/value task: add Employee birth fields and harden Employee invariants only. |
+| `ORG-050` | Completed | `Employee` now canonically includes `dateOfBirth`, optional `birthLocalityId`, and `birthPlaceAr/Fr/En`; required ID/employee-number/type/status plus birth-date and hire/termination chronology are enforced in the domain. A deprecated legacy constructor preserves existing application/persistence compilation without inventing birth data. Focused `EmployeeTest` covers the new contract. No JPA/API/schema change. |
 | `ORG-051` | Planned | Execute after ORG-050 passes its gate. |
 | `ORG-052` | Planned | Execute after ORG-051 passes its gate. |
 | `ORG-053` | Planned | Execute after ORG-052 passes its gate. |
 | `ORG-054` | Planned | Execute after ORG-053 passes its gate. |
 | `ORG-055` | Planned | Final model/value integrity guardrail after ORG-054. |
 
-### 20.8 Later cutover explicitly outside ORG-049–ORG-055
+### 20.9 Later cutover explicitly outside ORG-049–ORG-055
 
 The following require separate post-domain tasks because they affect consumers or stored
 data:
@@ -3372,8 +3372,8 @@ authorization/audit/workflow integration
 No destructive column removal is authorized until parity, consumer and rollback evidence
 is complete.
 
-### 20.9 Execution priority
+### 20.10 Execution priority
 
-This domain cleanup does not erase the still-open issue #130 gates. For model/value work, `ORG-049` is complete. Execute `ORG-050` next and then proceed one code at a time through `ORG-055`.
+This domain cleanup does not erase the still-open issue #130 gates. For model/value work, `ORG-049` and `ORG-050` are complete. Execute `ORG-051` next and then proceed one code at a time through `ORG-055`.
 Application/persistence/API cutover must be planned only after the canonical domain model is
 validated.

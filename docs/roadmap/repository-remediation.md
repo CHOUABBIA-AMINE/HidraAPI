@@ -343,7 +343,7 @@ Mandatory review examples include:
 |---|---|---|---|---|---|
 | `HRA-100` | `refactor(planning): return application revision result` | Return an application result DTO from plan-revision updates rather than a domain `PlanRevision` to REST. | Planning controller no longer depends on the domain model for this flow. | HRA-002 | **Completed** — `UpdatePlanRevisionUseCase` now returns an application-owned `Result` record containing the existing response fields with status represented as a string; `PlanRevisionUpdateApplicationService` maps the persisted domain revision into that result; `PlanRevisionCommandController` no longer imports `PlanRevision` or `PlanRevisionStatus`; focused service/controller tests cover the application-result boundary without changing the REST response shape. |
 | `HRA-101` | `refactor(identity): isolate authentication web contract` | Adapt Spring principal/session details into application-level authentication inputs/results. | Authentication controller no longer exposes unnecessary domain representation. | HRA-002 | **Completed** — introduced application-owned `AuthenticatedPrincipalInput` and flattened `AuthenticationResult`; direct and OIDC completion use cases now exchange those contracts instead of `HidraPrincipal`/`LoginSession`; `IdentityAuthenticationWebMapper` owns Spring-injected principal adaptation and REST-result mapping; the authentication controller no longer imports Identity domain models; LOCAL/LDAP/AD/OIDC API tests preserve the existing response and provider-selection behavior. |
-| `HRA-102` | `docs(api): define domain enum exposure policy` | Decide whether REST exposure of domain enums is an intentional wire contract; define mapping policy. | Architecture guardrail can distinguish permitted values from forbidden domain-model leakage. | HRA-002 | Planned |
+| `HRA-102` | `docs(api): define domain enum exposure policy` | Decide whether REST exposure of domain enums is an intentional wire contract; define mapping policy. | Architecture guardrail can distinguish permitted values from forbidden domain-model leakage. | HRA-002 | **Completed** — documented the evidence-backed enum exception: same-module actual Java enums may be exposed directly only as deliberate stable wire vocabulary; cross-module domain types, aggregates, non-enum value/domain objects, persistence types, and unstable/internal enum vocabularies remain forbidden and must be mapped. The policy defines API compatibility obligations and a structural guardrail classifier that can distinguish permitted enum vocabulary from domain-model leakage. Coding policy §10.8 now carries the normative rule. |
 
 ---
 
@@ -407,6 +407,6 @@ HRA-120
 
 `HRA-001` and `HRA-004` are complete. HRA-004 was explicitly prioritized to remove CI duplication before the high-frequency remediation sequence.
 
-**Next task:** `HRA-102 — docs(api): define domain enum exposure policy`.
+**Next task:** `HRA-050 — docs(domain): classify required invariant gaps`.
 
 Do not begin broad dead-code deletion, event deletion, DTO consolidation, or domain/JPA mirror reduction before the HRA-002/HRA-003 safety rails exist.

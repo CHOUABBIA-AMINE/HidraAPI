@@ -805,6 +805,39 @@ public final class FacilityRestMapper {
 }
 ```
 
+
+### 10.8 Domain enum exposure at the REST boundary
+
+Direct API exposure of a domain enum is an intentional wire-contract exception, not a general
+permission for API-to-domain representation leakage.
+
+A REST request/response MAY use a domain enum directly only when:
+
+- the enum belongs to the same business module as the API;
+- the referenced Java type is actually an `enum`;
+- its constants are deliberately owned as stable external vocabulary;
+- its serialization is independent of persistence ordinals/infrastructure representation;
+- the domain enum remains free of Spring MVC, JPA, Jackson, and OpenAPI annotations;
+- changes to externally visible constants are treated as API compatibility changes.
+
+API code MUST map to an API-owned enum or string when the vocabulary is internal, cross-module,
+version-specific, requires aliases, or may evolve independently from the domain.
+
+API code MUST NOT directly expose domain aggregates, domain records/value objects, another module's
+domain types, or persistence models.
+
+Architecture/static-analysis guardrails SHOULD therefore classify:
+
+```text
+same-module actual domain enum       -> permitted wire-vocabulary category
+same-module non-enum domain type     -> forbidden representation leakage
+cross-module domain type             -> forbidden cross-module leakage
+infrastructure/JPA type              -> forbidden layer leakage
+```
+
+The detailed decision and compatibility rules are recorded in
+`docs/architecture/api-domain-enum-exposure-policy.md`.
+
 ---
 
 ## 11. Infrastructure layer policy

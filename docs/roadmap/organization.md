@@ -77,7 +77,7 @@ columns have been retired through later immutable Flyway migrations.
 
 Current correction status:
 
-- `ORG-034` through `ORG-053`: **Completed**.
+- `ORG-034` through `ORG-054`: **Completed**.
 - `ORG-027`: **In Progress**. Assign, revoke, typed list/query and read-only reconciliation
   exist. Identity authorization and workflow/audit integration remain open.
 - `ORG-023`: **Blocked** on authorized legacy/consumer evidence. Later validated
@@ -3318,11 +3318,7 @@ concerns.
 `OrganizationCode`, `OperationalScopeReference`, `ReportingSubjectReference`, and
 `ContactPointTargetReference` remain canonical value objects.
 
-`OrganizationId` is retained as the Organization-owned ID creation/validation policy for
-String/UUID identifiers. Existing domain record components are not converted wholesale from
-`String` to `OrganizationId` in this cleanup because that would create broad compatibility
-churn without first proving a business requirement. New IDs must continue to be generated or
-validated through the existing policy at write boundaries.
+`OrganizationId` is the single Organization-owned creation/validation policy for String/UUID identifiers. Repository inventory on 2026-09-28 found no competing Organization `*Id` value/class/interface abstraction, and current production creation paths for Employee, EmployeeAssignment, OrganizationUnit, and ResponsibilityAssignment already use `OrganizationId.newId()`. Existing domain record components intentionally remain `String`; ORG-054 does not mass-convert their types. `OperationalScope.id : Long` remains a distinct generated registry identity and is explicitly outside this String-ID policy.
 
 `AssignmentStatus` and `ShiftAssignmentStatus` remain separate until business semantics
 prove they are identical. Similar enum literals are not sufficient reason to merge distinct
@@ -3349,7 +3345,7 @@ aggregate lifecycles.
 | `ORG-051` | Completed | `OrganizationContactPoint` is explicitly the canonical Organization model for employee EMAIL/MOBILE/PHONE-style operational contact channels through typed `ContactPointTargetReference(EMPLOYEE, employeeId)`. `Employee.emailAddress()` and `Employee.mobileNumber()` remain only as `@Deprecated(forRemoval = true)` compatibility accessors until persistence/API/data cutover; no new direct Employee contact components were introduced. Focused ownership tests guard the boundary. No persistence/data migration. |
 | `ORG-052` | Completed | Structured `firstNameAr/lastNameAr` and `firstNameLt/lastNameLt` are now the canonical Employee name components. `Employee.arabicDisplayName()` and `latinDisplayName()` derive display names deterministically from those components. Historical `displayNameAr()` / `displayNameLt()` remain `@Deprecated(forRemoval = true)` compatibility accessors so existing persisted/API values are not silently discarded before consumer/data cutover. No independent preferred-name semantic was found in current repository evidence. |
 | `ORG-053` | Completed | Constructor-level invariants are enforced across the documented Organization models: persisted IDs and required same-module references are nonblank, required type/status enums are non-null, effective-dated records require `validFrom` with `validTo > validFrom`, OrganizationUnit rejects self-parenting, ReportingLine rejects identical typed source/target, and OrganizationDelegation rejects self-delegation plus invalid revocation chronology. `ResponsibilityAssignment.scopeId` remains nullable only for transitional unreconciled legacy rows. Focused `OrganizationDomainInvariantTest` covers the cross-model rules. |
-| `ORG-054` | Planned | Execute after ORG-053 passes its gate. |
+| `ORG-054` | Completed | `OrganizationId` is documented and tested as the single Organization-owned String/UUID generation-validation policy. Repository inventory found no competing Organization ID abstraction; current Organization creation services already use `OrganizationId.newId()`. Existing record ID components intentionally remain `String`, while `OperationalScope.id : Long` is explicitly separate. Focused `OrganizationIdTest` covers normalization, rejection, UUID generation and registry-ID type separation. |
 | `ORG-055` | Planned | Final model/value integrity guardrail after ORG-054. |
 
 ### 20.9 Later cutover explicitly outside ORG-049–ORG-055
@@ -3374,6 +3370,6 @@ is complete.
 
 ### 20.10 Execution priority
 
-This domain cleanup does not erase the still-open issue #130 gates. For model/value work, `ORG-049` through `ORG-053` are complete. Execute `ORG-054` next and then proceed one code at a time through `ORG-055`.
+This domain cleanup does not erase the still-open issue #130 gates. For model/value work, `ORG-049` through `ORG-054` are complete. Execute `ORG-055` next as the final model/value integrity guardrail.
 Application/persistence/API cutover must be planned only after the canonical domain model is
 validated.

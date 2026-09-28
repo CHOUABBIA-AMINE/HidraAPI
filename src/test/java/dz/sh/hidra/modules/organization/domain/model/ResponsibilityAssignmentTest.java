@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.organization.domain.model;
 
+import dz.sh.hidra.modules.organization.domain.exception.InvalidOrganizationValueException;
 import dz.sh.hidra.modules.organization.domain.value.AssignmentStatus;
 import dz.sh.hidra.modules.organization.domain.value.ResponsibilityType;
 import org.junit.jupiter.api.Test;
@@ -57,7 +58,7 @@ class ResponsibilityAssignmentTest {
     void rejectsNonPositiveRegistryId() {
         Instant now = Instant.parse("2026-09-27T07:00:00Z");
 
-        assertThrows(IllegalArgumentException.class, () -> new ResponsibilityAssignment(
+        assertThrows(InvalidOrganizationValueException.class, () -> new ResponsibilityAssignment(
                 "resp-1",
                 ResponsibilityType.RESPONSIBLE,
                 "ORGANIZATION_UNIT",

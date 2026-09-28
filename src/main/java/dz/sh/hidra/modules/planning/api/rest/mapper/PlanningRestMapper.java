@@ -7,7 +7,7 @@
  *
  * @Name        : PlanningRestMapper
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-13
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Class
  * @Layer       : API
@@ -26,70 +26,32 @@ import dz.sh.hidra.modules.planning.application.command.CreateOperationalPlanCom
 import dz.sh.hidra.modules.planning.application.command.CreatePlanningPeriodCommand;
 import dz.sh.hidra.modules.planning.application.dto.OperationalPlanSummaryDto;
 import dz.sh.hidra.modules.planning.application.dto.PlanningPeriodSummaryDto;
+import java.util.Objects;
 
 /**
  * Maps planning REST models to application models.
  */
 public final class PlanningRestMapper {
 
+    private static final PlanningGeneratedRestMapper GENERATED = PlanningGeneratedRestMapper.INSTANCE;
+
     private PlanningRestMapper() {
         throw new UnsupportedOperationException("Utility class must not be instantiated.");
     }
 
     public static CreateOperationalPlanCommand toCommand(CreateOperationalPlanRequest request) {
-        return new CreateOperationalPlanCommand(
-                request.periodId(),
-                request.code(),
-                request.nameAr(),
-                request.nameFr(),
-                request.nameEn(),
-                request.planTypeId(),
-                request.productTypeId(),
-                request.topologyScopeType(),
-                request.topologyScopeId(),
-                request.topologyScopeCode(),
-                request.topologyScopeNameSnapshot(),
-                request.responsibleOrganizationUnitId(),
-                request.createdByActorId()
-        );
+        return GENERATED.toCommand(Objects.requireNonNull(request, "CreateOperationalPlanRequest must not be null."));
     }
 
     public static CreatePlanningPeriodCommand toCommand(CreatePlanningPeriodRequest request) {
-        return new CreatePlanningPeriodCommand(
-                request.code(),
-                request.nameAr(),
-                request.nameFr(),
-                request.nameEn(),
-                request.periodTypeId(),
-                request.periodStart(),
-                request.periodEnd(),
-                request.timeZone(),
-                request.createdByActorId()
-        );
+        return GENERATED.toCommand(Objects.requireNonNull(request, "CreatePlanningPeriodRequest must not be null."));
     }
 
     public static OperationalPlanResponse toResponse(OperationalPlanSummaryDto dto) {
-        return new OperationalPlanResponse(
-                dto.id(),
-                dto.periodId(),
-                dto.code(),
-                dto.nameFr(),
-                dto.topologyScopeType(),
-                dto.topologyScopeId(),
-                dto.status(),
-                dto.approvedRevisionId()
-        );
+        return GENERATED.toResponse(Objects.requireNonNull(dto, "OperationalPlanSummaryDto must not be null."));
     }
 
     public static PlanningPeriodResponse toResponse(PlanningPeriodSummaryDto dto) {
-        return new PlanningPeriodResponse(
-                dto.id(),
-                dto.code(),
-                dto.nameFr(),
-                dto.periodStart(),
-                dto.periodEnd(),
-                dto.timeZone(),
-                dto.status()
-        );
+        return GENERATED.toResponse(Objects.requireNonNull(dto, "PlanningPeriodSummaryDto must not be null."));
     }
 }

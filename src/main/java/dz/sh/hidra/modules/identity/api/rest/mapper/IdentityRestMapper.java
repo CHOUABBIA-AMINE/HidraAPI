@@ -7,7 +7,7 @@
  *
  * @Name        : IdentityRestMapper
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-13
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Class
  * @Layer       : API
@@ -26,24 +26,21 @@ import dz.sh.hidra.modules.identity.application.command.CreateUserCommand;
 import dz.sh.hidra.modules.identity.application.dto.PermissionDecisionDto;
 import dz.sh.hidra.modules.identity.application.dto.UserSummaryDto;
 import dz.sh.hidra.modules.identity.application.query.EvaluatePermissionQuery;
+import java.util.Objects;
 
 /**
  * Maps identity REST models to application models.
  */
 public final class IdentityRestMapper {
 
+    private static final IdentityGeneratedRestMapper GENERATED = IdentityGeneratedRestMapper.INSTANCE;
+
     private IdentityRestMapper() {
         throw new UnsupportedOperationException("Utility class must not be instantiated.");
     }
 
     public static CreateUserCommand toCommand(CreateUserRequest request) {
-        return new CreateUserCommand(
-                request.username(),
-                request.emailAddress(),
-                request.displayName(),
-                request.userType(),
-                request.employeeReferenceId()
-        );
+        return GENERATED.toCommand(Objects.requireNonNull(request, "CreateUserRequest must not be null."));
     }
 
     public static EvaluatePermissionQuery toQuery(EvaluatePermissionRequest request) {
@@ -57,14 +54,7 @@ public final class IdentityRestMapper {
     }
 
     public static UserResponse toResponse(UserSummaryDto dto) {
-        return new UserResponse(
-                dto.id(),
-                dto.username(),
-                dto.emailAddress(),
-                dto.displayName(),
-                dto.userType(),
-                dto.status()
-        );
+        return GENERATED.toResponse(Objects.requireNonNull(dto, "UserSummaryDto must not be null."));
     }
 
     public static PermissionDecisionResponse toResponse(PermissionDecisionDto dto) {

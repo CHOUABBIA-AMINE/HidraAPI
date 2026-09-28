@@ -7,7 +7,7 @@
  *
  * @Name        : HseRestMapper
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-13
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Class
  * @Layer       : API
@@ -28,101 +28,36 @@ import dz.sh.hidra.modules.hse.application.command.CreateHseCapaCommand;
 import dz.sh.hidra.modules.hse.application.command.OpenHseCaseCommand;
 import dz.sh.hidra.modules.hse.application.dto.HseCapaSummaryDto;
 import dz.sh.hidra.modules.hse.application.dto.HseCaseSummaryDto;
+import java.util.Objects;
 
 /**
  * Maps hse REST models to application models.
  */
 public final class HseRestMapper {
 
+    private static final HseGeneratedRestMapper GENERATED = HseGeneratedRestMapper.INSTANCE;
+
     private HseRestMapper() {
         throw new UnsupportedOperationException("Utility class must not be instantiated.");
     }
 
     public static CloseHseCaseCommand toCommand(CloseHseCaseRequest request) {
-        return new CloseHseCaseCommand(
-                request.hseCaseId(),
-                request.closureSummary(),
-                request.impactAssessed(),
-                request.capaCompleted(),
-                request.evidenceReviewed(),
-                request.regulatoryReviewed(),
-                request.closedByActorId(),
-                request.closedByDisplayNameSnapshot(),
-                request.workflowInstanceId()
-        );
+        return GENERATED.toCommand(Objects.requireNonNull(request, "CloseHseCaseRequest must not be null."));
     }
 
     public static CreateHseCapaCommand toCommand(CreateHseCapaRequest request) {
-        return new CreateHseCapaCommand(
-                request.hseCaseId(),
-                request.actionNumber(),
-                request.actionTypeId(),
-                request.title(),
-                request.description(),
-                request.ownerActorId(),
-                request.ownerDisplayNameSnapshot(),
-                request.ownerOrganizationUnitId(),
-                request.ownerOrganizationUnitNameSnapshot(),
-                request.targetDate(),
-                request.verificationRequired(),
-                request.linkedWorkOrderId(),
-                request.workflowTaskId()
-        );
+        return GENERATED.toCommand(Objects.requireNonNull(request, "CreateHseCapaRequest must not be null."));
     }
 
     public static OpenHseCaseCommand toCommand(OpenHseCaseRequest request) {
-        return new OpenHseCaseCommand(
-                request.caseNumber(),
-                request.title(),
-                request.description(),
-                request.caseTypeId(),
-                request.severityId(),
-                request.priorityId(),
-                request.sourceType(),
-                request.incidentReferenceId(),
-                request.incidentCodeSnapshot(),
-                request.incidentTitleSnapshot(),
-                request.targetModule(),
-                request.targetTypeCode(),
-                request.targetId(),
-                request.targetCodeSnapshot(),
-                request.targetLabelSnapshot(),
-                request.occurredAt(),
-                request.reportedByActorId(),
-                request.reportedByDisplayNameSnapshot(),
-                request.responsibleOrganizationUnitId(),
-                request.responsibleOrganizationUnitNameSnapshot(),
-                request.workflowInstanceId()
-        );
+        return GENERATED.toCommand(Objects.requireNonNull(request, "OpenHseCaseRequest must not be null."));
     }
 
     public static HseCapaResponse toResponse(HseCapaSummaryDto dto) {
-        return new HseCapaResponse(
-                dto.id(),
-                dto.hseCaseId(),
-                dto.actionNumber(),
-                dto.title(),
-                dto.status(),
-                dto.targetDate(),
-                dto.completedAt()
-        );
+        return GENERATED.toResponse(Objects.requireNonNull(dto, "HseCapaSummaryDto must not be null."));
     }
 
     public static HseCaseResponse toResponse(HseCaseSummaryDto dto) {
-        return new HseCaseResponse(
-                dto.id(),
-                dto.caseNumber(),
-                dto.title(),
-                dto.caseTypeId(),
-                dto.severityId(),
-                dto.status(),
-                dto.sourceType(),
-                dto.incidentReferenceId(),
-                dto.targetModule(),
-                dto.targetTypeCode(),
-                dto.targetId(),
-                dto.reportedAt(),
-                dto.closedAt()
-        );
+        return GENERATED.toResponse(Objects.requireNonNull(dto, "HseCaseSummaryDto must not be null."));
     }
 }

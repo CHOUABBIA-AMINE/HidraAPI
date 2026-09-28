@@ -7,7 +7,7 @@
  *
  * @Name        : DocumentsRestMapper
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-13
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Class
  * @Layer       : API
@@ -30,119 +30,40 @@ import dz.sh.hidra.modules.documents.application.command.UploadDocumentVersionCo
 import dz.sh.hidra.modules.documents.application.dto.DocumentSummaryDto;
 import dz.sh.hidra.modules.documents.application.dto.DocumentTargetLinkSummaryDto;
 import dz.sh.hidra.modules.documents.application.dto.DocumentVersionSummaryDto;
+import java.util.Objects;
 
 /**
  * Maps documents REST models to application models.
  */
 public final class DocumentsRestMapper {
 
+    private static final DocumentsGeneratedRestMapper GENERATED = DocumentsGeneratedRestMapper.INSTANCE;
+
     private DocumentsRestMapper() {
         throw new UnsupportedOperationException("Utility class must not be instantiated.");
     }
 
     public static LinkDocumentToTargetCommand toCommand(LinkDocumentToTargetRequest request) {
-        return new LinkDocumentToTargetCommand(
-                request.documentId(),
-                request.documentVersionId(),
-                request.targetModule(),
-                request.targetTypeCode(),
-                request.targetId(),
-                request.targetCodeSnapshot(),
-                request.targetLabelSnapshot(),
-                request.linkRoleId(),
-                request.primaryLink(),
-                request.linkedByActorId()
-        );
+        return GENERATED.toCommand(Objects.requireNonNull(request, "LinkDocumentToTargetRequest must not be null."));
     }
 
     public static RegisterDocumentCommand toCommand(RegisterDocumentRequest request) {
-        return new RegisterDocumentCommand(
-                request.code(),
-                request.titleAr(),
-                request.titleFr(),
-                request.titleEn(),
-                request.documentTypeId(),
-                request.documentCategoryId(),
-                request.classificationId(),
-                request.confidentialityLevel(),
-                request.ownerModule(),
-                request.ownerTargetTypeCode(),
-                request.ownerTargetId(),
-                request.ownerTargetCodeSnapshot(),
-                request.ownerTargetLabelSnapshot(),
-                request.createdByActorId(),
-                request.createdByDisplayNameSnapshot()
-        );
+        return GENERATED.toCommand(Objects.requireNonNull(request, "RegisterDocumentRequest must not be null."));
     }
 
     public static UploadDocumentVersionCommand toCommand(UploadDocumentVersionRequest request) {
-        return new UploadDocumentVersionCommand(
-                request.documentId(),
-                request.versionNumber(),
-                request.versionLabel(),
-                request.titleAr(),
-                request.titleFr(),
-                request.titleEn(),
-                request.description(),
-                request.storageObjectId(),
-                request.mimeType(),
-                request.originalFilename(),
-                request.fileExtension(),
-                request.fileSizeBytes(),
-                request.checksumAlgorithm(),
-                request.checksumValue(),
-                request.languageCode(),
-                request.documentDate(),
-                request.effectiveFrom(),
-                request.effectiveTo(),
-                request.uploadedByActorId(),
-                request.uploadedByDisplayNameSnapshot()
-        );
+        return GENERATED.toCommand(Objects.requireNonNull(request, "UploadDocumentVersionRequest must not be null."));
     }
 
     public static DocumentTargetLinkResponse toResponse(DocumentTargetLinkSummaryDto dto) {
-        return new DocumentTargetLinkResponse(
-                dto.id(),
-                dto.documentId(),
-                dto.documentVersionId(),
-                dto.targetModule(),
-                dto.targetTypeCode(),
-                dto.targetId(),
-                dto.linkRoleId(),
-                dto.primaryLink(),
-                dto.linkedAt(),
-                dto.active()
-        );
+        return GENERATED.toResponse(Objects.requireNonNull(dto, "DocumentTargetLinkSummaryDto must not be null."));
     }
 
     public static DocumentResponse toResponse(DocumentSummaryDto dto) {
-        return new DocumentResponse(
-                dto.id(),
-                dto.code(),
-                dto.titleFr(),
-                dto.documentTypeId(),
-                dto.classificationId(),
-                dto.confidentialityLevel(),
-                dto.status(),
-                dto.currentVersionId(),
-                dto.ownerModule(),
-                dto.ownerTargetId(),
-                dto.createdAt()
-        );
+        return GENERATED.toResponse(Objects.requireNonNull(dto, "DocumentSummaryDto must not be null."));
     }
 
     public static DocumentVersionResponse toResponse(DocumentVersionSummaryDto dto) {
-        return new DocumentVersionResponse(
-                dto.id(),
-                dto.documentId(),
-                dto.versionNumber(),
-                dto.versionLabel(),
-                dto.mimeType(),
-                dto.originalFilename(),
-                dto.fileSizeBytes(),
-                dto.checksumValue(),
-                dto.versionStatus(),
-                dto.uploadedAt()
-        );
+        return GENERATED.toResponse(Objects.requireNonNull(dto, "DocumentVersionSummaryDto must not be null."));
     }
 }

@@ -7,7 +7,7 @@
  *
  * @Name        : RiskRestMapper
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-13
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Class
  * @Layer       : API
@@ -28,95 +28,36 @@ import dz.sh.hidra.modules.risk.application.command.CreateRiskAssessmentCommand;
 import dz.sh.hidra.modules.risk.application.command.CreateRiskRegisterCommand;
 import dz.sh.hidra.modules.risk.application.dto.RiskAssessmentSummaryDto;
 import dz.sh.hidra.modules.risk.application.dto.RiskRegisterSummaryDto;
+import java.util.Objects;
 
 /**
  * Maps risk REST models to application models.
  */
 public final class RiskRestMapper {
 
+    private static final RiskGeneratedRestMapper GENERATED = RiskGeneratedRestMapper.INSTANCE;
+
     private RiskRestMapper() {
         throw new UnsupportedOperationException("Utility class must not be instantiated.");
     }
 
     public static AddRiskEvidenceCommand toCommand(AddRiskEvidenceRequest request) {
-        return new AddRiskEvidenceCommand(
-                request.riskAssessmentId(),
-                request.evidenceModule(),
-                request.evidenceType(),
-                request.evidenceId(),
-                request.evidenceCodeSnapshot(),
-                request.evidenceLabelSnapshot(),
-                request.evidenceTimestamp(),
-                request.evidenceHash(),
-                request.evidenceSummary()
-        );
+        return GENERATED.toCommand(Objects.requireNonNull(request, "AddRiskEvidenceRequest must not be null."));
     }
 
     public static CreateRiskAssessmentCommand toCommand(CreateRiskAssessmentRequest request) {
-        return new CreateRiskAssessmentCommand(
-                request.riskRegisterId(),
-                request.assessmentNumber(),
-                request.title(),
-                request.description(),
-                request.assessmentTypeId(),
-                request.methodologyId(),
-                request.scopeId(),
-                request.riskScenarioId(),
-                request.assessmentDate(),
-                request.validFrom(),
-                request.validTo(),
-                request.assessedByActorId(),
-                request.assessedByDisplayNameSnapshot()
-        );
+        return GENERATED.toCommand(Objects.requireNonNull(request, "CreateRiskAssessmentRequest must not be null."));
     }
 
     public static CreateRiskRegisterCommand toCommand(CreateRiskRegisterRequest request) {
-        return new CreateRiskRegisterCommand(
-                request.code(),
-                request.nameAr(),
-                request.nameFr(),
-                request.nameEn(),
-                request.description(),
-                request.registerTypeId(),
-                request.ownerOrganizationUnitId(),
-                request.ownerOrganizationUnitNameSnapshot(),
-                request.scopeType(),
-                request.scopeId(),
-                request.scopeCodeSnapshot(),
-                request.scopeLabelSnapshot(),
-                request.reviewFrequencyId(),
-                request.effectiveFrom(),
-                request.effectiveTo(),
-                request.createdByActorId(),
-                request.createdByDisplayNameSnapshot()
-        );
+        return GENERATED.toCommand(Objects.requireNonNull(request, "CreateRiskRegisterRequest must not be null."));
     }
 
     public static RiskAssessmentResponse toResponse(RiskAssessmentSummaryDto dto) {
-        return new RiskAssessmentResponse(
-                dto.id(),
-                dto.riskRegisterId(),
-                dto.assessmentNumber(),
-                dto.title(),
-                dto.riskScenarioId(),
-                dto.status(),
-                dto.inherentScore(),
-                dto.inherentRatingId(),
-                dto.residualScore(),
-                dto.residualRatingId(),
-                dto.assessmentDate()
-        );
+        return GENERATED.toResponse(Objects.requireNonNull(dto, "RiskAssessmentSummaryDto must not be null."));
     }
 
     public static RiskRegisterResponse toResponse(RiskRegisterSummaryDto dto) {
-        return new RiskRegisterResponse(
-                dto.id(),
-                dto.code(),
-                dto.nameFr(),
-                dto.registerTypeId(),
-                dto.scopeType(),
-                dto.scopeId(),
-                dto.status()
-        );
+        return GENERATED.toResponse(Objects.requireNonNull(dto, "RiskRegisterSummaryDto must not be null."));
     }
 }

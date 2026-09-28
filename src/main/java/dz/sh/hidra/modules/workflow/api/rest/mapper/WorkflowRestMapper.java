@@ -7,7 +7,7 @@
  *
  * @Name        : WorkflowRestMapper
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-13
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Class
  * @Layer       : API
@@ -30,115 +30,40 @@ import dz.sh.hidra.modules.workflow.application.command.StartWorkflowInstanceCom
 import dz.sh.hidra.modules.workflow.application.dto.WorkflowActionSummaryDto;
 import dz.sh.hidra.modules.workflow.application.dto.WorkflowInstanceSummaryDto;
 import dz.sh.hidra.modules.workflow.application.dto.WorkflowTaskSummaryDto;
+import java.util.Objects;
 
 /**
  * Maps workflow REST models to application models.
  */
 public final class WorkflowRestMapper {
 
+    private static final WorkflowGeneratedRestMapper GENERATED = WorkflowGeneratedRestMapper.INSTANCE;
+
     private WorkflowRestMapper() {
         throw new UnsupportedOperationException("Utility class must not be instantiated.");
     }
 
     public static CreateWorkflowTaskCommand toCommand(CreateWorkflowTaskRequest request) {
-        return new CreateWorkflowTaskCommand(
-                request.instanceId(),
-                request.stepId(),
-                request.assignedActorId(),
-                request.assignedActorUsernameSnapshot(),
-                request.assignedActorDisplayNameSnapshot(),
-                request.assignedOrganizationUnitId(),
-                request.assignedOrganizationUnitNameSnapshot(),
-                request.assignedRoleCodeSnapshot(),
-                request.priorityId(),
-                request.dueAt(),
-                request.assignmentModeId(),
-                request.taskLabelSnapshot()
-        );
+        return GENERATED.toCommand(Objects.requireNonNull(request, "CreateWorkflowTaskRequest must not be null."));
     }
 
     public static RecordWorkflowActionCommand toCommand(RecordWorkflowActionRequest request) {
-        return new RecordWorkflowActionCommand(
-                request.instanceId(),
-                request.taskId(),
-                request.actionType(),
-                request.decision(),
-                request.reasonId(),
-                request.decisionNote(),
-                request.commentText(),
-                request.actorId(),
-                request.actorUsernameSnapshot(),
-                request.actorDisplayNameSnapshot(),
-                request.actorRoleCodeSnapshot(),
-                request.organizationUnitId(),
-                request.organizationUnitNameSnapshot(),
-                request.organizationRoleCodeSnapshot(),
-                request.correlationId(),
-                request.actionSequence(),
-                request.sourceSystem(),
-                request.actedAt()
-        );
+        return GENERATED.toCommand(Objects.requireNonNull(request, "RecordWorkflowActionRequest must not be null."));
     }
 
     public static StartWorkflowInstanceCommand toCommand(StartWorkflowInstanceRequest request) {
-        return new StartWorkflowInstanceCommand(
-                request.definitionId(),
-                request.definitionVersion(),
-                request.workflowPurposeId(),
-                request.targetModule(),
-                request.targetTypeId(),
-                request.targetId(),
-                request.targetCodeSnapshot(),
-                request.targetLabelSnapshot(),
-                request.currentStepId(),
-                request.startedByActorId(),
-                request.startedByUsernameSnapshot(),
-                request.startedByDisplayNameSnapshot(),
-                request.startedByRoleCodeSnapshot(),
-                request.correlationId()
-        );
+        return GENERATED.toCommand(Objects.requireNonNull(request, "StartWorkflowInstanceRequest must not be null."));
     }
 
     public static WorkflowTaskResponse toResponse(WorkflowTaskSummaryDto dto) {
-        return new WorkflowTaskResponse(
-                dto.id(),
-                dto.instanceId(),
-                dto.stepId(),
-                dto.status(),
-                dto.assignedActorId(),
-                dto.assignedOrganizationUnitId(),
-                dto.priorityId(),
-                dto.dueAt()
-        );
+        return GENERATED.toResponse(Objects.requireNonNull(dto, "WorkflowTaskSummaryDto must not be null."));
     }
 
     public static WorkflowActionResponse toResponse(WorkflowActionSummaryDto dto) {
-        return new WorkflowActionResponse(
-                dto.id(),
-                dto.instanceId(),
-                dto.taskId(),
-                dto.actionType(),
-                dto.decision(),
-                dto.reasonId(),
-                dto.actorId(),
-                dto.actorDisplayNameSnapshot(),
-                dto.actionSequence(),
-                dto.actedAt()
-        );
+        return GENERATED.toResponse(Objects.requireNonNull(dto, "WorkflowActionSummaryDto must not be null."));
     }
 
     public static WorkflowInstanceResponse toResponse(WorkflowInstanceSummaryDto dto) {
-        return new WorkflowInstanceResponse(
-                dto.id(),
-                dto.definitionId(),
-                dto.definitionVersion(),
-                dto.targetModule(),
-                dto.targetTypeId(),
-                dto.targetId(),
-                dto.status(),
-                dto.currentStepId(),
-                dto.startedAt(),
-                dto.completedAt()
-        );
+        return GENERATED.toResponse(Objects.requireNonNull(dto, "WorkflowInstanceSummaryDto must not be null."));
     }
 }

@@ -7,7 +7,7 @@
  *
  * @Name        : PartyRestMapper
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-13
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Class
  * @Layer       : API
@@ -24,49 +24,28 @@ import dz.sh.hidra.modules.party.api.rest.response.PartyResponse;
 import dz.sh.hidra.modules.party.application.command.AssignPartyRoleCommand;
 import dz.sh.hidra.modules.party.application.command.RegisterPartyCommand;
 import dz.sh.hidra.modules.party.application.dto.PartySummaryDto;
+import java.util.Objects;
 
 /**
  * Maps party REST models to application models.
  */
 public final class PartyRestMapper {
 
+    private static final PartyGeneratedRestMapper GENERATED = PartyGeneratedRestMapper.INSTANCE;
+
     private PartyRestMapper() {
         throw new UnsupportedOperationException("Utility class must not be instantiated.");
     }
 
     public static AssignPartyRoleCommand toCommand(AssignPartyRoleRequest request) {
-        return new AssignPartyRoleCommand(
-                request.partyId(),
-                request.roleId(),
-                request.validFrom(),
-                request.validTo(),
-                request.qualificationRequired()
-        );
+        return GENERATED.toCommand(Objects.requireNonNull(request, "AssignPartyRoleRequest must not be null."));
     }
 
     public static RegisterPartyCommand toCommand(RegisterPartyRequest request) {
-        return new RegisterPartyCommand(
-                request.code(),
-                request.partyTypeId(),
-                request.legalName(),
-                request.tradeName(),
-                request.shortName(),
-                request.countryCode(),
-                request.jurisdictionCode(),
-                request.primaryRoleCodeSnapshot()
-        );
+        return GENERATED.toCommand(Objects.requireNonNull(request, "RegisterPartyRequest must not be null."));
     }
 
     public static PartyResponse toResponse(PartySummaryDto dto) {
-        return new PartyResponse(
-                dto.id(),
-                dto.code(),
-                dto.legalName(),
-                dto.tradeName(),
-                dto.shortName(),
-                dto.countryCode(),
-                dto.status(),
-                dto.primaryRoleCodeSnapshot()
-        );
+        return GENERATED.toResponse(Objects.requireNonNull(dto, "PartySummaryDto must not be null."));
     }
 }

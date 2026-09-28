@@ -7,7 +7,7 @@
  *
  * @Name        : MonitoringRestMapper
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-13
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Class
  * @Layer       : API
@@ -26,80 +26,32 @@ import dz.sh.hidra.modules.monitoring.application.command.CreateMonitoringRuleCo
 import dz.sh.hidra.modules.monitoring.application.command.RecordDeviationCommand;
 import dz.sh.hidra.modules.monitoring.application.dto.DeviationSummaryDto;
 import dz.sh.hidra.modules.monitoring.application.dto.MonitoringRuleSummaryDto;
+import java.util.Objects;
 
 /**
  * Maps monitoring REST models to application models.
  */
 public final class MonitoringRestMapper {
 
+    private static final MonitoringGeneratedRestMapper GENERATED = MonitoringGeneratedRestMapper.INSTANCE;
+
     private MonitoringRestMapper() {
         throw new UnsupportedOperationException("Utility class must not be instantiated.");
     }
 
     public static CreateMonitoringRuleCommand toCommand(CreateMonitoringRuleRequest request) {
-        return new CreateMonitoringRuleCommand(
-                request.code(),
-                request.nameAr(),
-                request.nameFr(),
-                request.nameEn(),
-                request.ruleType(),
-                request.evaluationFrequencyId(),
-                request.topologyAssetType(),
-                request.topologyAssetId(),
-                request.topologyAssetCode(),
-                request.telemetryPointId(),
-                request.planningTargetTypeId(),
-                request.expression(),
-                request.createdByActorId()
-        );
+        return GENERATED.toCommand(Objects.requireNonNull(request, "CreateMonitoringRuleRequest must not be null."));
     }
 
     public static RecordDeviationCommand toCommand(RecordDeviationRequest request) {
-        return new RecordDeviationCommand(
-                request.evaluationId(),
-                request.planTargetId(),
-                request.expectedFlowStateId(),
-                request.trustedTelemetryReadingId(),
-                request.telemetryPointId(),
-                request.topologyAssetType(),
-                request.topologyAssetId(),
-                request.topologyAssetCode(),
-                request.actualValue(),
-                request.expectedValue(),
-                request.differenceValue(),
-                request.differencePercent(),
-                request.unitId(),
-                request.severity(),
-                request.reasonCode(),
-                request.reasonMessage()
-        );
+        return GENERATED.toCommand(Objects.requireNonNull(request, "RecordDeviationRequest must not be null."));
     }
 
     public static MonitoringRuleResponse toResponse(MonitoringRuleSummaryDto dto) {
-        return new MonitoringRuleResponse(
-                dto.id(),
-                dto.code(),
-                dto.nameFr(),
-                dto.ruleType(),
-                dto.status(),
-                dto.topologyAssetType(),
-                dto.topologyAssetId(),
-                dto.telemetryPointId()
-        );
+        return GENERATED.toResponse(Objects.requireNonNull(dto, "MonitoringRuleSummaryDto must not be null."));
     }
 
     public static DeviationResponse toResponse(DeviationSummaryDto dto) {
-        return new DeviationResponse(
-                dto.id(),
-                dto.planTargetId(),
-                dto.topologyAssetType(),
-                dto.topologyAssetId(),
-                dto.actualValue(),
-                dto.expectedValue(),
-                dto.differencePercent(),
-                dto.severity(),
-                dto.status(),
-                dto.detectedAt()
-        );
+        return GENERATED.toResponse(Objects.requireNonNull(dto, "DeviationSummaryDto must not be null."));
     }
 }

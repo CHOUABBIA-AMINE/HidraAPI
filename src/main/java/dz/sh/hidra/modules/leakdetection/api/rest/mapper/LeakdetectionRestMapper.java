@@ -7,7 +7,7 @@
  *
  * @Name        : LeakdetectionRestMapper
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-13
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Class
  * @Layer       : API
@@ -28,87 +28,36 @@ import dz.sh.hidra.modules.leakdetection.application.command.EscalateLeakCaseCom
 import dz.sh.hidra.modules.leakdetection.application.command.OpenLeakCaseCommand;
 import dz.sh.hidra.modules.leakdetection.application.dto.LeakCandidateSummaryDto;
 import dz.sh.hidra.modules.leakdetection.application.dto.LeakCaseSummaryDto;
+import java.util.Objects;
 
 /**
  * Maps leakdetection REST models to application models.
  */
 public final class LeakdetectionRestMapper {
 
+    private static final LeakdetectionGeneratedRestMapper GENERATED = LeakdetectionGeneratedRestMapper.INSTANCE;
+
     private LeakdetectionRestMapper() {
         throw new UnsupportedOperationException("Utility class must not be instantiated.");
     }
 
     public static CreateLeakCandidateCommand toCommand(CreateLeakCandidateRequest request) {
-        return new CreateLeakCandidateCommand(
-                request.runId(),
-                request.profileId(),
-                request.candidateNumber(),
-                request.topologyAssetType(),
-                request.topologyAssetId(),
-                request.topologyAssetCode(),
-                request.topologyAssetNameSnapshot(),
-                request.suspectedAt(),
-                request.firstEvidenceAt(),
-                request.confidenceScore(),
-                request.summary(),
-                request.correlationId()
-        );
+        return GENERATED.toCommand(Objects.requireNonNull(request, "CreateLeakCandidateRequest must not be null."));
     }
 
     public static EscalateLeakCaseCommand toCommand(EscalateLeakCaseRequest request) {
-        return new EscalateLeakCaseCommand(
-                request.caseId(),
-                request.candidateId(),
-                request.targetType(),
-                request.targetReferenceId(),
-                request.targetCodeSnapshot(),
-                request.targetNameSnapshot(),
-                request.escalatedByActorId(),
-                request.reasonText(),
-                request.correlationId()
-        );
+        return GENERATED.toCommand(Objects.requireNonNull(request, "EscalateLeakCaseRequest must not be null."));
     }
 
     public static OpenLeakCaseCommand toCommand(OpenLeakCaseRequest request) {
-        return new OpenLeakCaseCommand(
-                request.caseNumber(),
-                request.primaryCandidateId(),
-                request.topologyAssetType(),
-                request.topologyAssetId(),
-                request.topologyAssetCode(),
-                request.owningOrganizationUnitId(),
-                request.confidenceScore(),
-                request.openedByActorId(),
-                request.correlationId()
-        );
+        return GENERATED.toCommand(Objects.requireNonNull(request, "OpenLeakCaseRequest must not be null."));
     }
 
     public static LeakCandidateResponse toResponse(LeakCandidateSummaryDto dto) {
-        return new LeakCandidateResponse(
-                dto.id(),
-                dto.candidateNumber(),
-                dto.topologyAssetType(),
-                dto.topologyAssetId(),
-                dto.topologyAssetCode(),
-                dto.confidenceScore(),
-                dto.severityLevel(),
-                dto.status(),
-                dto.suspectedAt()
-        );
+        return GENERATED.toResponse(Objects.requireNonNull(dto, "LeakCandidateSummaryDto must not be null."));
     }
 
     public static LeakCaseResponse toResponse(LeakCaseSummaryDto dto) {
-        return new LeakCaseResponse(
-                dto.id(),
-                dto.caseNumber(),
-                dto.primaryCandidateId(),
-                dto.topologyAssetType(),
-                dto.topologyAssetId(),
-                dto.status(),
-                dto.severityLevel(),
-                dto.confidenceScore(),
-                dto.openedAt(),
-                dto.closedAt()
-        );
+        return GENERATED.toResponse(Objects.requireNonNull(dto, "LeakCaseSummaryDto must not be null."));
     }
 }

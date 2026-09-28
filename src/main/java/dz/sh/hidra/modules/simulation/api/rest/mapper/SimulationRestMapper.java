@@ -7,7 +7,7 @@
  *
  * @Name        : SimulationRestMapper
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-13
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Class
  * @Layer       : API
@@ -34,124 +34,48 @@ import dz.sh.hidra.modules.simulation.application.dto.SimulationModelSummaryDto;
 import dz.sh.hidra.modules.simulation.application.dto.SimulationRecommendationSummaryDto;
 import dz.sh.hidra.modules.simulation.application.dto.SimulationRunSummaryDto;
 import dz.sh.hidra.modules.simulation.application.dto.SimulationScenarioSummaryDto;
+import java.util.Objects;
 
 /**
  * Maps simulation REST models to application models.
  */
 public final class SimulationRestMapper {
 
+    private static final SimulationGeneratedRestMapper GENERATED = SimulationGeneratedRestMapper.INSTANCE;
+
     private SimulationRestMapper() {
         throw new UnsupportedOperationException("Utility class must not be instantiated.");
     }
 
     public static CreateSimulationModelCommand toCommand(CreateSimulationModelRequest request) {
-        return new CreateSimulationModelCommand(
-                request.code(),
-                request.nameAr(),
-                request.nameFr(),
-                request.nameEn(),
-                request.modelTypeId(),
-                request.topologyScopeType(),
-                request.topologyScopeId(),
-                request.description()
-        );
+        return GENERATED.toCommand(Objects.requireNonNull(request, "CreateSimulationModelRequest must not be null."));
     }
 
     public static CreateSimulationScenarioCommand toCommand(CreateSimulationScenarioRequest request) {
-        return new CreateSimulationScenarioCommand(
-                request.code(),
-                request.nameAr(),
-                request.nameFr(),
-                request.nameEn(),
-                request.scenarioTypeId(),
-                request.modelId(),
-                request.modelVersionId(),
-                request.topologySnapshotId(),
-                request.planningReferenceId(),
-                request.monitoringContextId(),
-                request.createdByActorId(),
-                request.createdByDisplayNameSnapshot()
-        );
+        return GENERATED.toCommand(Objects.requireNonNull(request, "CreateSimulationScenarioRequest must not be null."));
     }
 
     public static PublishSimulationRecommendationCommand toCommand(PublishSimulationRecommendationRequest request) {
-        return new PublishSimulationRecommendationCommand(
-                request.runId(),
-                request.candidateId(),
-                request.recommendationTypeId(),
-                request.title(),
-                request.description(),
-                request.confidenceLevelId(),
-                request.targetModule(),
-                request.targetProposalReference(),
-                request.publishedByActorId()
-        );
+        return GENERATED.toCommand(Objects.requireNonNull(request, "PublishSimulationRecommendationRequest must not be null."));
     }
 
     public static QueueSimulationRunCommand toCommand(QueueSimulationRunRequest request) {
-        return new QueueSimulationRunCommand(
-                request.scenarioId(),
-                request.modelVersionId(),
-                request.inputSnapshotId(),
-                request.runTypeId(),
-                request.requestedByActorId(),
-                request.requestedByDisplayNameSnapshot(),
-                request.solverProfileId(),
-                request.correlationId()
-        );
+        return GENERATED.toCommand(Objects.requireNonNull(request, "QueueSimulationRunRequest must not be null."));
     }
 
     public static SimulationModelResponse toResponse(SimulationModelSummaryDto dto) {
-        return new SimulationModelResponse(
-                dto.id(),
-                dto.code(),
-                dto.nameFr(),
-                dto.modelTypeId(),
-                dto.topologyScopeType(),
-                dto.status(),
-                dto.createdAt()
-        );
+        return GENERATED.toResponse(Objects.requireNonNull(dto, "SimulationModelSummaryDto must not be null."));
     }
 
     public static SimulationScenarioResponse toResponse(SimulationScenarioSummaryDto dto) {
-        return new SimulationScenarioResponse(
-                dto.id(),
-                dto.code(),
-                dto.nameFr(),
-                dto.scenarioTypeId(),
-                dto.modelId(),
-                dto.modelVersionId(),
-                dto.topologySnapshotId(),
-                dto.status(),
-                dto.createdAt()
-        );
+        return GENERATED.toResponse(Objects.requireNonNull(dto, "SimulationScenarioSummaryDto must not be null."));
     }
 
     public static SimulationRecommendationResponse toResponse(SimulationRecommendationSummaryDto dto) {
-        return new SimulationRecommendationResponse(
-                dto.id(),
-                dto.runId(),
-                dto.candidateId(),
-                dto.recommendationTypeId(),
-                dto.recommendationStatus(),
-                dto.title(),
-                dto.targetModule(),
-                dto.targetProposalReference(),
-                dto.publishedAt()
-        );
+        return GENERATED.toResponse(Objects.requireNonNull(dto, "SimulationRecommendationSummaryDto must not be null."));
     }
 
     public static SimulationRunResponse toResponse(SimulationRunSummaryDto dto) {
-        return new SimulationRunResponse(
-                dto.id(),
-                dto.scenarioId(),
-                dto.modelVersionId(),
-                dto.inputSnapshotId(),
-                dto.runTypeId(),
-                dto.status(),
-                dto.correlationId(),
-                dto.queuedAt(),
-                dto.completedAt()
-        );
+        return GENERATED.toResponse(Objects.requireNonNull(dto, "SimulationRunSummaryDto must not be null."));
     }
 }

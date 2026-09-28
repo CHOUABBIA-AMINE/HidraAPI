@@ -7,7 +7,7 @@
  *
  * @Name        : AssetsRestMapper
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-12
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Class
  * @Layer       : API
@@ -33,70 +33,29 @@ import dz.sh.hidra.modules.assets.application.dto.AssetConditionSummaryDto;
 import dz.sh.hidra.modules.assets.application.dto.MaintainableAssetSummaryDto;
 import dz.sh.hidra.modules.assets.application.dto.MaintenanceWorkOrderSummaryDto;
 import dz.sh.hidra.modules.assets.application.port.in.UpdateMaintainableAssetUseCase;
+import java.util.Objects;
 
 /**
  * Maps assets REST models to application models.
  */
 public final class AssetsRestMapper {
 
+    private static final AssetsGeneratedRestMapper GENERATED = AssetsGeneratedRestMapper.INSTANCE;
+
     private AssetsRestMapper() {
         throw new UnsupportedOperationException("Utility class must not be instantiated.");
     }
 
     public static CreateMaintenanceWorkOrderCommand toCommand(CreateMaintenanceWorkOrderRequest request) {
-        return new CreateMaintenanceWorkOrderCommand(
-                request.workOrderNumber(),
-                request.maintainableAssetId(),
-                request.maintenancePlanId(),
-                request.sourceRecommendationId(),
-                request.workOrderTypeId(),
-                request.priorityId(),
-                request.title(),
-                request.description(),
-                request.assignedOrganizationUnitId(),
-                request.assignedActorId(),
-                request.plannedStartAt(),
-                request.plannedEndAt(),
-                request.workflowInstanceId(),
-                request.createdByActorId()
-        );
+        return GENERATED.toCommand(Objects.requireNonNull(request, "CreateMaintenanceWorkOrderRequest must not be null."));
     }
 
     public static RecordAssetConditionCommand toCommand(RecordAssetConditionRequest request) {
-        return new RecordAssetConditionCommand(
-                request.maintainableAssetId(),
-                request.conditionStatus(),
-                request.conditionTypeId(),
-                request.sourceModule(),
-                request.sourceReferenceId(),
-                request.summary(),
-                request.conditionScore(),
-                request.observedAt(),
-                request.observedByActorId()
-        );
+        return GENERATED.toCommand(Objects.requireNonNull(request, "RecordAssetConditionRequest must not be null."));
     }
 
     public static RegisterMaintainableAssetCommand toCommand(RegisterMaintainableAssetRequest request) {
-        return new RegisterMaintainableAssetCommand(
-                request.assetNumber(),
-                request.assetCode(),
-                request.assetName(),
-                request.assetTypeId(),
-                request.topologyAssetTypeCode(),
-                request.topologyAssetId(),
-                request.topologyAssetCodeSnapshot(),
-                request.topologyAssetNameSnapshot(),
-                request.criticalityId(),
-                request.ownerOrganizationUnitId(),
-                request.ownerOrganizationUnitNameSnapshot(),
-                request.manufacturerPartyId(),
-                request.manufacturerNameSnapshot(),
-                request.modelId(),
-                request.serialIdentityId(),
-                request.installedAt(),
-                request.commissionedAt(),
-                request.createdByActorId()
-        );
+        return GENERATED.toCommand(Objects.requireNonNull(request, "RegisterMaintainableAssetRequest must not be null."));
     }
 
     public static UpdateMaintainableAssetUseCase.Command toCommand(UpdateMaintainableAssetRequest request) {
@@ -107,42 +66,14 @@ public final class AssetsRestMapper {
     }
 
     public static MaintenanceWorkOrderResponse toResponse(MaintenanceWorkOrderSummaryDto dto) {
-        return new MaintenanceWorkOrderResponse(
-                dto.id(),
-                dto.workOrderNumber(),
-                dto.maintainableAssetId(),
-                dto.sourceRecommendationId(),
-                dto.workOrderTypeId(),
-                dto.status(),
-                dto.title(),
-                dto.plannedStartAt(),
-                dto.completedAt()
-        );
+        return GENERATED.toResponse(Objects.requireNonNull(dto, "MaintenanceWorkOrderSummaryDto must not be null."));
     }
 
     public static AssetConditionResponse toResponse(AssetConditionSummaryDto dto) {
-        return new AssetConditionResponse(
-                dto.id(),
-                dto.maintainableAssetId(),
-                dto.conditionStatus(),
-                dto.conditionScore(),
-                dto.observedAt()
-        );
+        return GENERATED.toResponse(Objects.requireNonNull(dto, "AssetConditionSummaryDto must not be null."));
     }
 
     public static MaintainableAssetResponse toResponse(MaintainableAssetSummaryDto dto) {
-        return new MaintainableAssetResponse(
-                dto.id(),
-                dto.assetNumber(),
-                dto.assetCode(),
-                dto.assetName(),
-                dto.assetTypeId(),
-                dto.topologyAssetTypeCode(),
-                dto.topologyAssetId(),
-                dto.status(),
-                dto.criticalityId(),
-                dto.registeredAt(),
-                dto.updatedAt()
-        );
+        return GENERATED.toResponse(Objects.requireNonNull(dto, "MaintainableAssetSummaryDto must not be null."));
     }
 }

@@ -7,7 +7,7 @@
  *
  * @Name        : CustodyRestMapper
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-13
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Class
  * @Layer       : API
@@ -30,87 +30,40 @@ import dz.sh.hidra.modules.custody.application.command.OpenCustodyMeasurementPer
 import dz.sh.hidra.modules.custody.application.dto.CustodyDiscrepancySummaryDto;
 import dz.sh.hidra.modules.custody.application.dto.CustodyMeasurementPeriodSummaryDto;
 import dz.sh.hidra.modules.custody.application.dto.CustodyTransferTicketSummaryDto;
+import java.util.Objects;
 
 /**
  * Maps custody REST models to application models.
  */
 public final class CustodyRestMapper {
 
+    private static final CustodyGeneratedRestMapper GENERATED = CustodyGeneratedRestMapper.INSTANCE;
+
     private CustodyRestMapper() {
         throw new UnsupportedOperationException("Utility class must not be instantiated.");
     }
 
     public static CreateCustodyTransferTicketCommand toCommand(CreateCustodyTransferTicketRequest request) {
-        return new CreateCustodyTransferTicketCommand(
-                request.ticketNumber(),
-                request.measurementPeriodId(),
-                request.agreementId(),
-                request.transferPointId(),
-                request.batchId(),
-                request.quantityCalculationId(),
-                request.ticketDate(),
-                request.issuedByActorId(),
-                request.workflowInstanceId()
-        );
+        return GENERATED.toCommand(Objects.requireNonNull(request, "CreateCustodyTransferTicketRequest must not be null."));
     }
 
     public static OpenCustodyDiscrepancyCommand toCommand(OpenCustodyDiscrepancyRequest request) {
-        return new OpenCustodyDiscrepancyCommand(
-                request.discrepancyNumber(),
-                request.reconciliationId(),
-                request.discrepancyTypeId(),
-                request.differenceQuantity(),
-                request.quantityUnitId(),
-                request.description(),
-                request.assignedActorId(),
-                request.openedAt()
-        );
+        return GENERATED.toCommand(Objects.requireNonNull(request, "OpenCustodyDiscrepancyRequest must not be null."));
     }
 
     public static OpenCustodyMeasurementPeriodCommand toCommand(OpenCustodyMeasurementPeriodRequest request) {
-        return new OpenCustodyMeasurementPeriodCommand(
-                request.periodCode(),
-                request.agreementId(),
-                request.transferPointId(),
-                request.periodStart(),
-                request.periodEnd()
-        );
+        return GENERATED.toCommand(Objects.requireNonNull(request, "OpenCustodyMeasurementPeriodRequest must not be null."));
     }
 
     public static CustodyTransferTicketResponse toResponse(CustodyTransferTicketSummaryDto dto) {
-        return new CustodyTransferTicketResponse(
-                dto.id(),
-                dto.ticketNumber(),
-                dto.measurementPeriodId(),
-                dto.agreementId(),
-                dto.transferPointId(),
-                dto.status(),
-                dto.ticketDate(),
-                dto.approvedAt()
-        );
+        return GENERATED.toResponse(Objects.requireNonNull(dto, "CustodyTransferTicketSummaryDto must not be null."));
     }
 
     public static CustodyDiscrepancyResponse toResponse(CustodyDiscrepancySummaryDto dto) {
-        return new CustodyDiscrepancyResponse(
-                dto.id(),
-                dto.discrepancyNumber(),
-                dto.reconciliationId(),
-                dto.discrepancyTypeId(),
-                dto.status(),
-                dto.differenceQuantity(),
-                dto.openedAt()
-        );
+        return GENERATED.toResponse(Objects.requireNonNull(dto, "CustodyDiscrepancySummaryDto must not be null."));
     }
 
     public static CustodyMeasurementPeriodResponse toResponse(CustodyMeasurementPeriodSummaryDto dto) {
-        return new CustodyMeasurementPeriodResponse(
-                dto.id(),
-                dto.periodCode(),
-                dto.agreementId(),
-                dto.transferPointId(),
-                dto.periodStart(),
-                dto.periodEnd(),
-                dto.status()
-        );
+        return GENERATED.toResponse(Objects.requireNonNull(dto, "CustodyMeasurementPeriodSummaryDto must not be null."));
     }
 }

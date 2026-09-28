@@ -7,7 +7,7 @@
  *
  * @Name        : AuditRestMapper
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-13
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Class
  * @Layer       : API
@@ -30,115 +30,40 @@ import dz.sh.hidra.modules.audit.application.command.RequestAuditExportCommand;
 import dz.sh.hidra.modules.audit.application.dto.AuditAccessRecordSummaryDto;
 import dz.sh.hidra.modules.audit.application.dto.AuditEventSummaryDto;
 import dz.sh.hidra.modules.audit.application.dto.AuditExportRequestSummaryDto;
+import java.util.Objects;
 
 /**
  * Maps audit REST models to application models.
  */
 public final class AuditRestMapper {
 
+    private static final AuditGeneratedRestMapper GENERATED = AuditGeneratedRestMapper.INSTANCE;
+
     private AuditRestMapper() {
         throw new UnsupportedOperationException("Utility class must not be instantiated.");
     }
 
     public static RecordAuditAccessCommand toCommand(RecordAuditAccessRequest request) {
-        return new RecordAuditAccessCommand(
-                request.actorId(),
-                request.actorDisplayNameSnapshot(),
-                request.accessType(),
-                request.auditEventId(),
-                request.searchFilterHash(),
-                request.exportRequestId(),
-                request.resultCount(),
-                request.purposeText(),
-                request.correlationId()
-        );
+        return GENERATED.toCommand(Objects.requireNonNull(request, "RecordAuditAccessRequest must not be null."));
     }
 
     public static RecordAuditEventCommand toCommand(RecordAuditEventRequest request) {
-        return new RecordAuditEventCommand(
-                request.eventTypeId(),
-                request.eventCategoryId(),
-                request.severityId(),
-                request.sourceModule(),
-                request.sourceComponent(),
-                request.sourceEventId(),
-                request.actionCode(),
-                request.actionLabelSnapshot(),
-                request.actorId(),
-                request.actorType(),
-                request.actorDisplayNameSnapshot(),
-                request.actorUsernameSnapshot(),
-                request.targetModule(),
-                request.targetType(),
-                request.targetId(),
-                request.targetCodeSnapshot(),
-                request.targetLabelSnapshot(),
-                request.operation(),
-                request.decisionCode(),
-                request.reasonId(),
-                request.reasonText(),
-                request.workflowInstanceId(),
-                request.workflowTaskId(),
-                request.workflowActionId(),
-                request.requestId(),
-                request.correlationId(),
-                request.causationId(),
-                request.occurredAt(),
-                request.payloadJson()
-        );
+        return GENERATED.toCommand(Objects.requireNonNull(request, "RecordAuditEventRequest must not be null."));
     }
 
     public static RequestAuditExportCommand toCommand(RequestAuditExportRequest request) {
-        return new RequestAuditExportCommand(
-                request.requestedByActorId(),
-                request.requestedByDisplayNameSnapshot(),
-                request.purposeId(),
-                request.filterJson(),
-                request.format(),
-                request.workflowInstanceId()
-        );
+        return GENERATED.toCommand(Objects.requireNonNull(request, "RequestAuditExportRequest must not be null."));
     }
 
     public static AuditAccessRecordResponse toResponse(AuditAccessRecordSummaryDto dto) {
-        return new AuditAccessRecordResponse(
-                dto.id(),
-                dto.actorId(),
-                dto.accessType(),
-                dto.auditEventId(),
-                dto.exportRequestId(),
-                dto.resultCount(),
-                dto.accessedAt()
-        );
+        return GENERATED.toResponse(Objects.requireNonNull(dto, "AuditAccessRecordSummaryDto must not be null."));
     }
 
     public static AuditEventResponse toResponse(AuditEventSummaryDto dto) {
-        return new AuditEventResponse(
-                dto.id(),
-                dto.sourceModule(),
-                dto.actionCode(),
-                dto.eventStatus(),
-                dto.actorId(),
-                dto.actorType(),
-                dto.targetModule(),
-                dto.targetType(),
-                dto.targetId(),
-                dto.operation(),
-                dto.correlationId(),
-                dto.occurredAt(),
-                dto.recordedAt()
-        );
+        return GENERATED.toResponse(Objects.requireNonNull(dto, "AuditEventSummaryDto must not be null."));
     }
 
     public static AuditExportRequestResponse toResponse(AuditExportRequestSummaryDto dto) {
-        return new AuditExportRequestResponse(
-                dto.id(),
-                dto.requestedByActorId(),
-                dto.purposeId(),
-                dto.format(),
-                dto.status(),
-                dto.recordCount(),
-                dto.requestedAt(),
-                dto.completedAt()
-        );
+        return GENERATED.toResponse(Objects.requireNonNull(dto, "AuditExportRequestSummaryDto must not be null."));
     }
 }

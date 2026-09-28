@@ -7,7 +7,7 @@
  *
  * @Name        : IntegrationRestMapper
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-13
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Class
  * @Layer       : API
@@ -30,96 +30,40 @@ import dz.sh.hidra.modules.integration.application.command.StartIntegrationJobRu
 import dz.sh.hidra.modules.integration.application.dto.ExternalSystemSummaryDto;
 import dz.sh.hidra.modules.integration.application.dto.IntegrationExchangeMessageSummaryDto;
 import dz.sh.hidra.modules.integration.application.dto.IntegrationJobRunSummaryDto;
+import java.util.Objects;
 
 /**
  * Maps integration REST models to application models.
  */
 public final class IntegrationRestMapper {
 
+    private static final IntegrationGeneratedRestMapper GENERATED = IntegrationGeneratedRestMapper.INSTANCE;
+
     private IntegrationRestMapper() {
         throw new UnsupportedOperationException("Utility class must not be instantiated.");
     }
 
     public static RecordExchangeMessageCommand toCommand(RecordExchangeMessageRequest request) {
-        return new RecordExchangeMessageCommand(
-                request.jobRunId(),
-                request.externalSystemId(),
-                request.endpointId(),
-                request.direction(),
-                request.messageTypeId(),
-                request.externalMessageId(),
-                request.payloadFormatId(),
-                request.payloadStorageMode(),
-                request.payloadSanitized(),
-                request.payloadReference(),
-                request.payloadHash(),
-                request.contentLengthBytes(),
-                request.receivedOrSentAt(),
-                request.correlationId(),
-                request.status()
-        );
+        return GENERATED.toCommand(Objects.requireNonNull(request, "RecordExchangeMessageRequest must not be null."));
     }
 
     public static RegisterExternalSystemCommand toCommand(RegisterExternalSystemRequest request) {
-        return new RegisterExternalSystemCommand(
-                request.code(),
-                request.nameAr(),
-                request.nameFr(),
-                request.nameEn(),
-                request.systemTypeId(),
-                request.ownerOrganizationUnitId(),
-                request.environment(),
-                request.criticality(),
-                request.description()
-        );
+        return GENERATED.toCommand(Objects.requireNonNull(request, "RegisterExternalSystemRequest must not be null."));
     }
 
     public static StartIntegrationJobRunCommand toCommand(StartIntegrationJobRunRequest request) {
-        return new StartIntegrationJobRunCommand(
-                request.jobDefinitionId(),
-                request.runNumber(),
-                request.triggerType(),
-                request.triggeredByActorId(),
-                request.correlationId()
-        );
+        return GENERATED.toCommand(Objects.requireNonNull(request, "StartIntegrationJobRunRequest must not be null."));
     }
 
     public static IntegrationExchangeMessageResponse toResponse(IntegrationExchangeMessageSummaryDto dto) {
-        return new IntegrationExchangeMessageResponse(
-                dto.id(),
-                dto.jobRunId(),
-                dto.externalSystemId(),
-                dto.direction(),
-                dto.externalMessageId(),
-                dto.payloadHash(),
-                dto.status(),
-                dto.receivedOrSentAt()
-        );
+        return GENERATED.toResponse(Objects.requireNonNull(dto, "IntegrationExchangeMessageSummaryDto must not be null."));
     }
 
     public static ExternalSystemResponse toResponse(ExternalSystemSummaryDto dto) {
-        return new ExternalSystemResponse(
-                dto.id(),
-                dto.code(),
-                dto.nameFr(),
-                dto.systemTypeId(),
-                dto.environment(),
-                dto.criticality(),
-                dto.status(),
-                dto.createdAt()
-        );
+        return GENERATED.toResponse(Objects.requireNonNull(dto, "ExternalSystemSummaryDto must not be null."));
     }
 
     public static IntegrationJobRunResponse toResponse(IntegrationJobRunSummaryDto dto) {
-        return new IntegrationJobRunResponse(
-                dto.id(),
-                dto.jobDefinitionId(),
-                dto.runNumber(),
-                dto.triggerType(),
-                dto.status(),
-                dto.correlationId(),
-                dto.startedAt(),
-                dto.completedAt()
-        );
+        return GENERATED.toResponse(Objects.requireNonNull(dto, "IntegrationJobRunSummaryDto must not be null."));
     }
 }

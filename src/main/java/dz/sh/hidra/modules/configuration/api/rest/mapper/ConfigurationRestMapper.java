@@ -7,7 +7,7 @@
  *
  * @Name        : ConfigurationRestMapper
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-13
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Class
  * @Layer       : API
@@ -30,94 +30,40 @@ import dz.sh.hidra.modules.configuration.application.command.SetConfigurationVal
 import dz.sh.hidra.modules.configuration.application.dto.ConfigurationDefinitionSummaryDto;
 import dz.sh.hidra.modules.configuration.application.dto.ConfigurationValueSummaryDto;
 import dz.sh.hidra.modules.configuration.application.dto.FeatureFlagSummaryDto;
+import java.util.Objects;
 
 /**
  * Maps configuration REST models to application models.
  */
 public final class ConfigurationRestMapper {
 
+    private static final ConfigurationGeneratedRestMapper GENERATED = ConfigurationGeneratedRestMapper.INSTANCE;
+
     private ConfigurationRestMapper() {
         throw new UnsupportedOperationException("Utility class must not be instantiated.");
     }
 
     public static CreateConfigurationDefinitionCommand toCommand(CreateConfigurationDefinitionRequest request) {
-        return new CreateConfigurationDefinitionCommand(
-                request.namespaceId(),
-                request.key(),
-                request.displayNameFr(),
-                request.displayNameAr(),
-                request.displayNameEn(),
-                request.valueType(),
-                request.sensitivity(),
-                request.scoped(),
-                request.requiresApproval(),
-                request.defaultValue(),
-                request.description()
-        );
+        return GENERATED.toCommand(Objects.requireNonNull(request, "CreateConfigurationDefinitionRequest must not be null."));
     }
 
     public static CreateFeatureFlagCommand toCommand(CreateFeatureFlagRequest request) {
-        return new CreateFeatureFlagCommand(
-                request.code(),
-                request.nameFr(),
-                request.nameAr(),
-                request.nameEn(),
-                request.owningModule(),
-                request.evaluationStrategy(),
-                request.defaultEnabled(),
-                request.description()
-        );
+        return GENERATED.toCommand(Objects.requireNonNull(request, "CreateFeatureFlagRequest must not be null."));
     }
 
     public static SetConfigurationValueCommand toCommand(SetConfigurationValueRequest request) {
-        return new SetConfigurationValueCommand(
-                request.definitionId(),
-                request.definitionVersionId(),
-                request.environment(),
-                request.rawValue(),
-                request.jsonValue(),
-                request.secretReference(),
-                request.effectiveFrom(),
-                request.effectiveTo(),
-                request.createdByActorId()
-        );
+        return GENERATED.toCommand(Objects.requireNonNull(request, "SetConfigurationValueRequest must not be null."));
     }
 
     public static ConfigurationDefinitionResponse toResponse(ConfigurationDefinitionSummaryDto dto) {
-        return new ConfigurationDefinitionResponse(
-                dto.id(),
-                dto.namespaceId(),
-                dto.key(),
-                dto.displayNameFr(),
-                dto.valueType(),
-                dto.sensitivity(),
-                dto.status(),
-                dto.scoped(),
-                dto.requiresApproval()
-        );
+        return GENERATED.toResponse(Objects.requireNonNull(dto, "ConfigurationDefinitionSummaryDto must not be null."));
     }
 
     public static FeatureFlagResponse toResponse(FeatureFlagSummaryDto dto) {
-        return new FeatureFlagResponse(
-                dto.id(),
-                dto.code(),
-                dto.nameFr(),
-                dto.owningModule(),
-                dto.status(),
-                dto.evaluationStrategy(),
-                dto.defaultEnabled()
-        );
+        return GENERATED.toResponse(Objects.requireNonNull(dto, "FeatureFlagSummaryDto must not be null."));
     }
 
     public static ConfigurationValueResponse toResponse(ConfigurationValueSummaryDto dto) {
-        return new ConfigurationValueResponse(
-                dto.id(),
-                dto.definitionId(),
-                dto.definitionVersionId(),
-                dto.environment(),
-                dto.status(),
-                dto.effectiveFrom(),
-                dto.effectiveTo()
-        );
+        return GENERATED.toResponse(Objects.requireNonNull(dto, "ConfigurationValueSummaryDto must not be null."));
     }
 }

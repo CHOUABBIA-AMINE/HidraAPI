@@ -7,7 +7,7 @@
  *
  * @Name        : ReportingRestMapper
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-13
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Class
  * @Layer       : API
@@ -34,124 +34,48 @@ import dz.sh.hidra.modules.reporting.application.dto.ReportDefinitionSummaryDto;
 import dz.sh.hidra.modules.reporting.application.dto.ReportOutputArtifactSummaryDto;
 import dz.sh.hidra.modules.reporting.application.dto.ReportRequestSummaryDto;
 import dz.sh.hidra.modules.reporting.application.dto.ReportRunSummaryDto;
+import java.util.Objects;
 
 /**
  * Maps reporting REST models to application models.
  */
 public final class ReportingRestMapper {
 
+    private static final ReportingGeneratedRestMapper GENERATED = ReportingGeneratedRestMapper.INSTANCE;
+
     private ReportingRestMapper() {
         throw new UnsupportedOperationException("Utility class must not be instantiated.");
     }
 
     public static CreateReportDefinitionCommand toCommand(CreateReportDefinitionRequest request) {
-        return new CreateReportDefinitionCommand(
-                request.code(),
-                request.nameAr(),
-                request.nameFr(),
-                request.nameEn(),
-                request.reportCategoryId(),
-                request.ownerModule(),
-                request.description(),
-                request.requiresApproval(),
-                request.restricted()
-        );
+        return GENERATED.toCommand(Objects.requireNonNull(request, "CreateReportDefinitionRequest must not be null."));
     }
 
     public static GenerateReportArtifactCommand toCommand(GenerateReportArtifactRequest request) {
-        return new GenerateReportArtifactCommand(
-                request.reportRunId(),
-                request.artifactType(),
-                request.format(),
-                request.fileName(),
-                request.mimeType(),
-                request.storageObjectReferenceId(),
-                request.documentReferenceId(),
-                request.checksum(),
-                request.sizeBytes(),
-                request.expiresAt()
-        );
+        return GENERATED.toCommand(Objects.requireNonNull(request, "GenerateReportArtifactRequest must not be null."));
     }
 
     public static QueueReportRunCommand toCommand(QueueReportRunRequest request) {
-        return new QueueReportRunCommand(
-                request.reportRequestId(),
-                request.reportDefinitionId(),
-                request.templateVersionId(),
-                request.runMode(),
-                request.correlationId()
-        );
+        return GENERATED.toCommand(Objects.requireNonNull(request, "QueueReportRunRequest must not be null."));
     }
 
     public static RequestReportCommand toCommand(RequestReportRequest request) {
-        return new RequestReportCommand(
-                request.reportDefinitionId(),
-                request.requestedByActorId(),
-                request.requestedByUsernameSnapshot(),
-                request.requestedByDisplayNameSnapshot(),
-                request.requestedByRoleCodeSnapshot(),
-                request.organizationUnitId(),
-                request.organizationUnitNameSnapshot(),
-                request.purpose(),
-                request.correlationId(),
-                request.workflowReferenceId()
-        );
+        return GENERATED.toCommand(Objects.requireNonNull(request, "RequestReportRequest must not be null."));
     }
 
     public static ReportDefinitionResponse toResponse(ReportDefinitionSummaryDto dto) {
-        return new ReportDefinitionResponse(
-                dto.id(),
-                dto.code(),
-                dto.nameFr(),
-                dto.reportCategoryId(),
-                dto.ownerModule(),
-                dto.active(),
-                dto.currentTemplateVersionId(),
-                dto.requiresApproval(),
-                dto.restricted()
-        );
+        return GENERATED.toResponse(Objects.requireNonNull(dto, "ReportDefinitionSummaryDto must not be null."));
     }
 
     public static ReportOutputArtifactResponse toResponse(ReportOutputArtifactSummaryDto dto) {
-        return new ReportOutputArtifactResponse(
-                dto.id(),
-                dto.reportRunId(),
-                dto.artifactType(),
-                dto.format(),
-                dto.fileName(),
-                dto.mimeType(),
-                dto.documentReferenceId(),
-                dto.checksum(),
-                dto.sizeBytes(),
-                dto.generatedAt()
-        );
+        return GENERATED.toResponse(Objects.requireNonNull(dto, "ReportOutputArtifactSummaryDto must not be null."));
     }
 
     public static ReportRunResponse toResponse(ReportRunSummaryDto dto) {
-        return new ReportRunResponse(
-                dto.id(),
-                dto.reportRequestId(),
-                dto.reportDefinitionId(),
-                dto.templateVersionId(),
-                dto.status(),
-                dto.runMode(),
-                dto.queuedAt(),
-                dto.completedAt(),
-                dto.correlationId()
-        );
+        return GENERATED.toResponse(Objects.requireNonNull(dto, "ReportRunSummaryDto must not be null."));
     }
 
     public static ReportRequestResponse toResponse(ReportRequestSummaryDto dto) {
-        return new ReportRequestResponse(
-                dto.id(),
-                dto.reportDefinitionId(),
-                dto.requestedByActorId(),
-                dto.requestedByDisplayNameSnapshot(),
-                dto.organizationUnitId(),
-                dto.requestedAt(),
-                dto.status(),
-                dto.correlationId(),
-                dto.workflowReferenceId()
-        );
+        return GENERATED.toResponse(Objects.requireNonNull(dto, "ReportRequestSummaryDto must not be null."));
     }
 }

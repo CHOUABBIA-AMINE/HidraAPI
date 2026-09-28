@@ -30,25 +30,21 @@ import dz.sh.hidra.modules.organization.application.command.RegisterEmployeeComm
 import dz.sh.hidra.modules.organization.application.dto.EmployeeSummaryDto;
 import dz.sh.hidra.modules.organization.application.dto.OrganizationUnitSummaryDto;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationCode;
+import java.util.Objects;
 
 /**
  * Maps organization REST models to application models.
  */
 public final class OrganizationRestMapper {
 
+    private static final OrganizationGeneratedRestMapper GENERATED = OrganizationGeneratedRestMapper.INSTANCE;
+
     private OrganizationRestMapper() {
         throw new UnsupportedOperationException("Utility class must not be instantiated.");
     }
 
     public static AssignEmployeeCommand toCommand(AssignEmployeeRequest request) {
-        return new AssignEmployeeCommand(
-                request.employeeId(),
-                request.organizationUnitId(),
-                request.positionId(),
-                request.assignmentType(),
-                request.validFrom(),
-                request.validTo()
-        );
+        return GENERATED.toCommand(Objects.requireNonNull(request, "AssignEmployeeRequest must not be null."));
     }
 
     public static CreateOrganizationUnitCommand toCommand(CreateOrganizationUnitRequest request) {
@@ -65,52 +61,14 @@ public final class OrganizationRestMapper {
     }
 
     public static RegisterEmployeeCommand toCommand(RegisterEmployeeRequest request) {
-        return new RegisterEmployeeCommand(
-                request.employeeNumber(),
-                request.firstNameAr(),
-                request.lastNameAr(),
-                request.firstNameLt(),
-                request.lastNameLt(),
-                request.dateOfBirth(),
-                request.birthLocalityId(),
-                request.birthPlaceAr(),
-                request.birthPlaceFr(),
-                request.birthPlaceEn(),
-                request.emailAddress(),
-                request.mobileNumber(),
-                request.employeeType(),
-                request.identityUserReference()
-        );
+        return GENERATED.toCommand(Objects.requireNonNull(request, "RegisterEmployeeRequest must not be null."));
     }
 
     public static OrganizationUnitResponse toResponse(OrganizationUnitSummaryDto dto) {
-        return new OrganizationUnitResponse(
-                dto.id(),
-                dto.code(),
-                dto.nameAr(),
-                dto.nameFr(),
-                dto.nameEn(),
-                dto.unitTypeId(),
-                dto.parentUnitId(),
-                dto.status()
-        );
+        return GENERATED.toResponse(Objects.requireNonNull(dto, "OrganizationUnitSummaryDto must not be null."));
     }
 
     public static EmployeeResponse toResponse(EmployeeSummaryDto dto) {
-        return new EmployeeResponse(
-                dto.id(),
-                dto.employeeNumber(),
-                dto.displayNameAr(),
-                dto.displayNameLt(),
-                dto.dateOfBirth(),
-                dto.birthLocalityId(),
-                dto.birthPlaceAr(),
-                dto.birthPlaceFr(),
-                dto.birthPlaceEn(),
-                dto.emailAddress(),
-                dto.employeeType(),
-                dto.status(),
-                dto.identityUserReference()
-        );
+        return GENERATED.toResponse(Objects.requireNonNull(dto, "EmployeeSummaryDto must not be null."));
     }
 }

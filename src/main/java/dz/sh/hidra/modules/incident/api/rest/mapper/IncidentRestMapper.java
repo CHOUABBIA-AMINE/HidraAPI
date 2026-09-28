@@ -7,7 +7,7 @@
  *
  * @Name        : IncidentRestMapper
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-13
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Class
  * @Layer       : API
@@ -26,95 +26,32 @@ import dz.sh.hidra.modules.incident.application.command.CloseIncidentCommand;
 import dz.sh.hidra.modules.incident.application.command.OpenIncidentCommand;
 import dz.sh.hidra.modules.incident.application.command.RecordIncidentResponseActionCommand;
 import dz.sh.hidra.modules.incident.application.dto.IncidentSummaryDto;
+import java.util.Objects;
 
 /**
  * Maps incident REST models to application models.
  */
 public final class IncidentRestMapper {
 
+    private static final IncidentGeneratedRestMapper GENERATED = IncidentGeneratedRestMapper.INSTANCE;
+
     private IncidentRestMapper() {
         throw new UnsupportedOperationException("Utility class must not be instantiated.");
     }
 
     public static CloseIncidentCommand toCommand(CloseIncidentRequest request) {
-        return new CloseIncidentCommand(
-                request.incidentId(),
-                request.closureSummary(),
-                request.resolutionVerified(),
-                request.evidenceReviewed(),
-                request.rootCauseReviewed(),
-                request.followUpActionsCreated(),
-                request.closedByActorId(),
-                request.closedByActorNameSnapshot(),
-                request.workflowInstanceId()
-        );
+        return GENERATED.toCommand(Objects.requireNonNull(request, "CloseIncidentRequest must not be null."));
     }
 
     public static OpenIncidentCommand toCommand(OpenIncidentRequest request) {
-        return new OpenIncidentCommand(
-                request.incidentNumber(),
-                request.title(),
-                request.description(),
-                request.classificationId(),
-                request.severityId(),
-                request.priorityId(),
-                request.sourceType(),
-                request.sourceReferenceId(),
-                request.sourceReferenceCode(),
-                request.detectedAt(),
-                request.occurredAt(),
-                request.topologyAssetTypeCode(),
-                request.topologyAssetId(),
-                request.topologyAssetCode(),
-                request.topologyAssetNameSnapshot(),
-                request.locationDescriptionAr(),
-                request.locationDescriptionLt(),
-                request.latitude(),
-                request.longitude(),
-                request.responsibleOrganizationUnitId(),
-                request.responsibleOrganizationUnitCode(),
-                request.responsibleOrganizationUnitNameSnapshot(),
-                request.createdByActorId(),
-                request.createdByActorNameSnapshot()
-        );
+        return GENERATED.toCommand(Objects.requireNonNull(request, "OpenIncidentRequest must not be null."));
     }
 
     public static RecordIncidentResponseActionCommand toCommand(RecordIncidentResponseActionRequest request) {
-        return new RecordIncidentResponseActionCommand(
-                request.incidentId(),
-                request.actionTypeId(),
-                request.actionStatus(),
-                request.description(),
-                request.targetType(),
-                request.targetReferenceId(),
-                request.targetReferenceCode(),
-                request.plannedStartAt(),
-                request.plannedEndAt(),
-                request.startedAt(),
-                request.completedAt(),
-                request.performedByActorId(),
-                request.performedByActorNameSnapshot(),
-                request.organizationUnitId(),
-                request.resultSummary(),
-                request.failureReason()
-        );
+        return GENERATED.toCommand(Objects.requireNonNull(request, "RecordIncidentResponseActionRequest must not be null."));
     }
 
     public static IncidentResponse toResponse(IncidentSummaryDto dto) {
-        return new IncidentResponse(
-                dto.id(),
-                dto.incidentNumber(),
-                dto.title(),
-                dto.classificationId(),
-                dto.severityId(),
-                dto.status(),
-                dto.sourceType(),
-                dto.topologyAssetTypeCode(),
-                dto.topologyAssetId(),
-                dto.topologyAssetCode(),
-                dto.detectedAt(),
-                dto.reportedAt(),
-                dto.closedAt()
-        );
+        return GENERATED.toResponse(Objects.requireNonNull(dto, "IncidentSummaryDto must not be null."));
     }
 }

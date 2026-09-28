@@ -7,7 +7,7 @@
  *
  * @Name        : NotificationRestMapper
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-13
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Class
  * @Layer       : API
@@ -30,111 +30,40 @@ import dz.sh.hidra.modules.notification.application.command.RecordDeliveryAttemp
 import dz.sh.hidra.modules.notification.application.dto.NotificationDeliveryAttemptSummaryDto;
 import dz.sh.hidra.modules.notification.application.dto.NotificationMessageSummaryDto;
 import dz.sh.hidra.modules.notification.application.dto.NotificationRequestSummaryDto;
+import java.util.Objects;
 
 /**
  * Maps notification REST models to application models.
  */
 public final class NotificationRestMapper {
 
+    private static final NotificationGeneratedRestMapper GENERATED = NotificationGeneratedRestMapper.INSTANCE;
+
     private NotificationRestMapper() {
         throw new UnsupportedOperationException("Utility class must not be instantiated.");
     }
 
     public static CreateNotificationMessageCommand toCommand(CreateNotificationMessageRequest request) {
-        return new CreateNotificationMessageCommand(
-                request.requestId(),
-                request.recipientId(),
-                request.channelId(),
-                request.templateId(),
-                request.templateVersionId(),
-                request.locale(),
-                request.subjectRendered(),
-                request.bodyRendered(),
-                request.shortTextRendered(),
-                request.payloadHash(),
-                request.priorityId(),
-                request.scheduledAt(),
-                request.expiresAt()
-        );
+        return GENERATED.toCommand(Objects.requireNonNull(request, "CreateNotificationMessageRequest must not be null."));
     }
 
     public static ReceiveNotificationRequestCommand toCommand(ReceiveNotificationRequestRequest request) {
-        return new ReceiveNotificationRequestCommand(
-                request.sourceModule(),
-                request.sourceEventType(),
-                request.sourceEventId(),
-                request.targetType(),
-                request.targetId(),
-                request.targetCodeSnapshot(),
-                request.targetLabelSnapshot(),
-                request.categoryId(),
-                request.priorityId(),
-                request.policyId(),
-                request.templateId(),
-                request.templateVersionId(),
-                request.requestedByActorId(),
-                request.requestedByDisplayNameSnapshot(),
-                request.correlationId(),
-                request.requestId(),
-                request.expiresAt()
-        );
+        return GENERATED.toCommand(Objects.requireNonNull(request, "ReceiveNotificationRequestRequest must not be null."));
     }
 
     public static RecordDeliveryAttemptCommand toCommand(RecordDeliveryAttemptRequest request) {
-        return new RecordDeliveryAttemptCommand(
-                request.messageId(),
-                request.attemptNumber(),
-                request.channelId(),
-                request.providerReference(),
-                request.providerMessageId(),
-                request.attemptStatus(),
-                request.attemptedAt(),
-                request.completedAt(),
-                request.failureCode(),
-                request.failureMessage(),
-                request.nextRetryAt(),
-                request.correlationId()
-        );
+        return GENERATED.toCommand(Objects.requireNonNull(request, "RecordDeliveryAttemptRequest must not be null."));
     }
 
     public static NotificationMessageResponse toResponse(NotificationMessageSummaryDto dto) {
-        return new NotificationMessageResponse(
-                dto.id(),
-                dto.requestId(),
-                dto.recipientId(),
-                dto.channelId(),
-                dto.templateVersionId(),
-                dto.locale(),
-                dto.status(),
-                dto.scheduledAt(),
-                dto.createdAt()
-        );
+        return GENERATED.toResponse(Objects.requireNonNull(dto, "NotificationMessageSummaryDto must not be null."));
     }
 
     public static NotificationRequestResponse toResponse(NotificationRequestSummaryDto dto) {
-        return new NotificationRequestResponse(
-                dto.id(),
-                dto.sourceModule(),
-                dto.sourceEventType(),
-                dto.sourceEventId(),
-                dto.targetType(),
-                dto.targetId(),
-                dto.status(),
-                dto.correlationId(),
-                dto.requestedAt()
-        );
+        return GENERATED.toResponse(Objects.requireNonNull(dto, "NotificationRequestSummaryDto must not be null."));
     }
 
     public static NotificationDeliveryAttemptResponse toResponse(NotificationDeliveryAttemptSummaryDto dto) {
-        return new NotificationDeliveryAttemptResponse(
-                dto.id(),
-                dto.messageId(),
-                dto.attemptNumber(),
-                dto.channelId(),
-                dto.attemptStatus(),
-                dto.attemptedAt(),
-                dto.completedAt(),
-                dto.nextRetryAt()
-        );
+        return GENERATED.toResponse(Objects.requireNonNull(dto, "NotificationDeliveryAttemptSummaryDto must not be null."));
     }
 }

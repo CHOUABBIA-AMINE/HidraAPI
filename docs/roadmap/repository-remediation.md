@@ -137,7 +137,7 @@ Domain constructors must not perform repository lookups, cross-module existence 
 | `HRA-070` | `docs(api): classify duplicate boundary contracts` | Review the 65 exact Request/Command and 59 exact Response/SummaryDto pairs. | Every pair is KEEP SEPARATE or approved for consolidation/generated mapping. | HRA-002 | **Completed** — live-main classification records all 124 exact pairs. Cross-layer type consolidation is rejected by the current API/application policy; all 65 Request/Command and 59 Response/SummaryDto pairs retain separate types and are approved only for later compile-time generated field mapping. Five same-named but non-exact request/command pairs are explicitly excluded because they perform server/security/path/multipart/value-object enrichment. |
 | `HRA-071` | `refactor(alarm): simplify boundary dto mapping` | Pilot compile-time generated mapping for the HRA-070-approved exact alarm pairs only; retain security-enriched alarm mappings as hand-written code. | `RaiseAlarmRequest`→`RaiseAlarmCommand` and `AlarmSummaryDto`→`AlarmResponse` are generated with strict unmapped-property failures; acknowledgement/closure actor enrichment is unchanged; focused mapper coverage is added. | HRA-070 | **Completed** — introduced MapStruct compile-time mapping support, generated only the two exact alarm boundary mappings, preserved the existing static facade and hand-written authenticated acknowledgement/closure mappings, and added exact record-equality tests. |
 | `HRA-072` | `refactor(analytics): simplify boundary dto mapping` | Generate the eight HRA-070-approved exact analytics request/command and summary/response mappings. | All analytics exact-pair mappings use strict compile-time generation; existing static mapper API and wire/application types remain unchanged; focused equality tests cover all eight mappings. | HRA-071 | **Completed** — moved all four exact analytics Request→Command and all four SummaryDto→Response mappings behind `AnalyticsGeneratedRestMapper`, preserved the static `AnalyticsRestMapper` facade, and added focused equality tests for every approved pair. |
-| `HRA-073..N` | `refactor(<module>): simplify boundary dto mapping` | Apply the HRA-070 generated-mapping classification one remaining module at a time; preserve API stability/versioning/security transformations. | Hand-written field-for-field mapping decreases without wire-contract regressions; non-exact mappings remain explicit. | HRA-072 | Planned |
+| `HRA-073` | `refactor(codebase): simplify remaining boundary dto mappings` | Consolidated execution of the remaining HRA-07x module slices, explicitly authorized as one commit: generate only the 114 still-approved exact pairs across 22 modules and retain every non-exact/security/path/multipart/value-object mapping by hand. | All 124 HRA-070 exact pairs are implemented with strict compile-time generation; the remaining 114 are runtime-covered as exact record mappings; API/application types and wire contracts remain separate and unchanged. | HRA-072 | **Completed** — consolidated remainder authorized by the user; added 22 strict generated mappers, routed 114 exact facade mappings through them, preserved manual exceptions, and added one repository-wide reflection contract test covering all 114 generated methods. |
 
 ### HRA-070 classification matrix
 
@@ -169,125 +169,125 @@ The exact-pair matrix is:
 | analytics | `CreateAnalyticsInsightRequest` ↔ `CreateAnalyticsInsightCommand` | GENERATED MAPPING IMPLEMENTED (HRA-072); KEEP TYPES SEPARATE |
 | analytics | `RunMetricEvaluationRequest` ↔ `RunMetricEvaluationCommand` | GENERATED MAPPING IMPLEMENTED (HRA-072); KEEP TYPES SEPARATE |
 | analytics | `RunProjectionRequest` ↔ `RunProjectionCommand` | GENERATED MAPPING IMPLEMENTED (HRA-072); KEEP TYPES SEPARATE |
-| assets | `CreateMaintenanceWorkOrderRequest` ↔ `CreateMaintenanceWorkOrderCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| assets | `RecordAssetConditionRequest` ↔ `RecordAssetConditionCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| assets | `RegisterMaintainableAssetRequest` ↔ `RegisterMaintainableAssetCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| audit | `RecordAuditAccessRequest` ↔ `RecordAuditAccessCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| audit | `RecordAuditEventRequest` ↔ `RecordAuditEventCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| audit | `RequestAuditExportRequest` ↔ `RequestAuditExportCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| configuration | `CreateConfigurationDefinitionRequest` ↔ `CreateConfigurationDefinitionCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| configuration | `CreateFeatureFlagRequest` ↔ `CreateFeatureFlagCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| configuration | `SetConfigurationValueRequest` ↔ `SetConfigurationValueCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| custody | `CreateCustodyTransferTicketRequest` ↔ `CreateCustodyTransferTicketCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| custody | `OpenCustodyDiscrepancyRequest` ↔ `OpenCustodyDiscrepancyCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| custody | `OpenCustodyMeasurementPeriodRequest` ↔ `OpenCustodyMeasurementPeriodCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| documents | `LinkDocumentToTargetRequest` ↔ `LinkDocumentToTargetCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| documents | `RegisterDocumentRequest` ↔ `RegisterDocumentCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| documents | `UploadDocumentVersionRequest` ↔ `UploadDocumentVersionCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| hse | `CloseHseCaseRequest` ↔ `CloseHseCaseCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| hse | `CreateHseCapaRequest` ↔ `CreateHseCapaCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| hse | `OpenHseCaseRequest` ↔ `OpenHseCaseCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| identity | `CreateUserRequest` ↔ `CreateUserCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| incident | `CloseIncidentRequest` ↔ `CloseIncidentCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| incident | `OpenIncidentRequest` ↔ `OpenIncidentCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| incident | `RecordIncidentResponseActionRequest` ↔ `RecordIncidentResponseActionCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| integration | `RecordExchangeMessageRequest` ↔ `RecordExchangeMessageCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| integration | `RegisterExternalSystemRequest` ↔ `RegisterExternalSystemCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| integration | `StartIntegrationJobRunRequest` ↔ `StartIntegrationJobRunCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| integrity | `CreateIntegrityAssessmentRequest` ↔ `CreateIntegrityAssessmentCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| integrity | `CreateIntegrityProgramRequest` ↔ `CreateIntegrityProgramCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| integrity | `OpenIntegrityCaseRequest` ↔ `OpenIntegrityCaseCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| leakdetection | `CreateLeakCandidateRequest` ↔ `CreateLeakCandidateCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| leakdetection | `EscalateLeakCaseRequest` ↔ `EscalateLeakCaseCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| leakdetection | `OpenLeakCaseRequest` ↔ `OpenLeakCaseCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| monitoring | `CreateMonitoringRuleRequest` ↔ `CreateMonitoringRuleCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| monitoring | `RecordDeviationRequest` ↔ `RecordDeviationCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| notification | `CreateNotificationMessageRequest` ↔ `CreateNotificationMessageCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| notification | `ReceiveNotificationRequestRequest` ↔ `ReceiveNotificationRequestCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| notification | `RecordDeliveryAttemptRequest` ↔ `RecordDeliveryAttemptCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| organization | `AssignEmployeeRequest` ↔ `AssignEmployeeCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| organization | `RegisterEmployeeRequest` ↔ `RegisterEmployeeCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| party | `AssignPartyRoleRequest` ↔ `AssignPartyRoleCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| party | `RegisterPartyRequest` ↔ `RegisterPartyCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| planning | `CreateOperationalPlanRequest` ↔ `CreateOperationalPlanCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| planning | `CreatePlanningPeriodRequest` ↔ `CreatePlanningPeriodCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| reporting | `CreateReportDefinitionRequest` ↔ `CreateReportDefinitionCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| reporting | `GenerateReportArtifactRequest` ↔ `GenerateReportArtifactCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| reporting | `QueueReportRunRequest` ↔ `QueueReportRunCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| reporting | `RequestReportRequest` ↔ `RequestReportCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| risk | `AddRiskEvidenceRequest` ↔ `AddRiskEvidenceCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| risk | `CreateRiskAssessmentRequest` ↔ `CreateRiskAssessmentCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| risk | `CreateRiskRegisterRequest` ↔ `CreateRiskRegisterCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| simulation | `CreateSimulationModelRequest` ↔ `CreateSimulationModelCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| simulation | `CreateSimulationScenarioRequest` ↔ `CreateSimulationScenarioCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| simulation | `PublishSimulationRecommendationRequest` ↔ `PublishSimulationRecommendationCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| simulation | `QueueSimulationRunRequest` ↔ `QueueSimulationRunCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| telemetry | `CreateTelemetrySourceRequest` ↔ `CreateTelemetrySourceCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| telemetry | `RegisterTelemetryPointRequest` ↔ `RegisterTelemetryPointCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| topology | `CreatePipelineSystemRequest` ↔ `CreatePipelineSystemCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| topology | `RegisterFacilityRequest` ↔ `RegisterFacilityCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| workflow | `CreateWorkflowTaskRequest` ↔ `CreateWorkflowTaskCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| workflow | `RecordWorkflowActionRequest` ↔ `RecordWorkflowActionCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| workflow | `StartWorkflowInstanceRequest` ↔ `StartWorkflowInstanceCommand` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
+| assets | `CreateMaintenanceWorkOrderRequest` ↔ `CreateMaintenanceWorkOrderCommand` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| assets | `RecordAssetConditionRequest` ↔ `RecordAssetConditionCommand` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| assets | `RegisterMaintainableAssetRequest` ↔ `RegisterMaintainableAssetCommand` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| audit | `RecordAuditAccessRequest` ↔ `RecordAuditAccessCommand` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| audit | `RecordAuditEventRequest` ↔ `RecordAuditEventCommand` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| audit | `RequestAuditExportRequest` ↔ `RequestAuditExportCommand` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| configuration | `CreateConfigurationDefinitionRequest` ↔ `CreateConfigurationDefinitionCommand` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| configuration | `CreateFeatureFlagRequest` ↔ `CreateFeatureFlagCommand` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| configuration | `SetConfigurationValueRequest` ↔ `SetConfigurationValueCommand` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| custody | `CreateCustodyTransferTicketRequest` ↔ `CreateCustodyTransferTicketCommand` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| custody | `OpenCustodyDiscrepancyRequest` ↔ `OpenCustodyDiscrepancyCommand` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| custody | `OpenCustodyMeasurementPeriodRequest` ↔ `OpenCustodyMeasurementPeriodCommand` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| documents | `LinkDocumentToTargetRequest` ↔ `LinkDocumentToTargetCommand` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| documents | `RegisterDocumentRequest` ↔ `RegisterDocumentCommand` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| documents | `UploadDocumentVersionRequest` ↔ `UploadDocumentVersionCommand` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| hse | `CloseHseCaseRequest` ↔ `CloseHseCaseCommand` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| hse | `CreateHseCapaRequest` ↔ `CreateHseCapaCommand` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| hse | `OpenHseCaseRequest` ↔ `OpenHseCaseCommand` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| identity | `CreateUserRequest` ↔ `CreateUserCommand` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| incident | `CloseIncidentRequest` ↔ `CloseIncidentCommand` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| incident | `OpenIncidentRequest` ↔ `OpenIncidentCommand` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| incident | `RecordIncidentResponseActionRequest` ↔ `RecordIncidentResponseActionCommand` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| integration | `RecordExchangeMessageRequest` ↔ `RecordExchangeMessageCommand` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| integration | `RegisterExternalSystemRequest` ↔ `RegisterExternalSystemCommand` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| integration | `StartIntegrationJobRunRequest` ↔ `StartIntegrationJobRunCommand` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| integrity | `CreateIntegrityAssessmentRequest` ↔ `CreateIntegrityAssessmentCommand` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| integrity | `CreateIntegrityProgramRequest` ↔ `CreateIntegrityProgramCommand` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| integrity | `OpenIntegrityCaseRequest` ↔ `OpenIntegrityCaseCommand` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| leakdetection | `CreateLeakCandidateRequest` ↔ `CreateLeakCandidateCommand` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| leakdetection | `EscalateLeakCaseRequest` ↔ `EscalateLeakCaseCommand` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| leakdetection | `OpenLeakCaseRequest` ↔ `OpenLeakCaseCommand` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| monitoring | `CreateMonitoringRuleRequest` ↔ `CreateMonitoringRuleCommand` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| monitoring | `RecordDeviationRequest` ↔ `RecordDeviationCommand` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| notification | `CreateNotificationMessageRequest` ↔ `CreateNotificationMessageCommand` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| notification | `ReceiveNotificationRequestRequest` ↔ `ReceiveNotificationRequestCommand` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| notification | `RecordDeliveryAttemptRequest` ↔ `RecordDeliveryAttemptCommand` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| organization | `AssignEmployeeRequest` ↔ `AssignEmployeeCommand` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| organization | `RegisterEmployeeRequest` ↔ `RegisterEmployeeCommand` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| party | `AssignPartyRoleRequest` ↔ `AssignPartyRoleCommand` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| party | `RegisterPartyRequest` ↔ `RegisterPartyCommand` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| planning | `CreateOperationalPlanRequest` ↔ `CreateOperationalPlanCommand` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| planning | `CreatePlanningPeriodRequest` ↔ `CreatePlanningPeriodCommand` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| reporting | `CreateReportDefinitionRequest` ↔ `CreateReportDefinitionCommand` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| reporting | `GenerateReportArtifactRequest` ↔ `GenerateReportArtifactCommand` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| reporting | `QueueReportRunRequest` ↔ `QueueReportRunCommand` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| reporting | `RequestReportRequest` ↔ `RequestReportCommand` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| risk | `AddRiskEvidenceRequest` ↔ `AddRiskEvidenceCommand` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| risk | `CreateRiskAssessmentRequest` ↔ `CreateRiskAssessmentCommand` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| risk | `CreateRiskRegisterRequest` ↔ `CreateRiskRegisterCommand` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| simulation | `CreateSimulationModelRequest` ↔ `CreateSimulationModelCommand` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| simulation | `CreateSimulationScenarioRequest` ↔ `CreateSimulationScenarioCommand` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| simulation | `PublishSimulationRecommendationRequest` ↔ `PublishSimulationRecommendationCommand` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| simulation | `QueueSimulationRunRequest` ↔ `QueueSimulationRunCommand` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| telemetry | `CreateTelemetrySourceRequest` ↔ `CreateTelemetrySourceCommand` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| telemetry | `RegisterTelemetryPointRequest` ↔ `RegisterTelemetryPointCommand` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| topology | `CreatePipelineSystemRequest` ↔ `CreatePipelineSystemCommand` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| topology | `RegisterFacilityRequest` ↔ `RegisterFacilityCommand` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| workflow | `CreateWorkflowTaskRequest` ↔ `CreateWorkflowTaskCommand` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| workflow | `RecordWorkflowActionRequest` ↔ `RecordWorkflowActionCommand` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| workflow | `StartWorkflowInstanceRequest` ↔ `StartWorkflowInstanceCommand` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
 | alarm | `AlarmResponse` ↔ `AlarmSummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-071); KEEP TYPES SEPARATE |
 | analytics | `AnalyticsDatasetResponse` ↔ `AnalyticsDatasetSummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-072); KEEP TYPES SEPARATE |
 | analytics | `AnalyticsInsightResponse` ↔ `AnalyticsInsightSummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-072); KEEP TYPES SEPARATE |
 | analytics | `AnalyticsProjectionRunResponse` ↔ `AnalyticsProjectionRunSummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-072); KEEP TYPES SEPARATE |
 | analytics | `MetricEvaluationRunResponse` ↔ `MetricEvaluationRunSummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-072); KEEP TYPES SEPARATE |
-| assets | `AssetConditionResponse` ↔ `AssetConditionSummaryDto` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| assets | `MaintainableAssetResponse` ↔ `MaintainableAssetSummaryDto` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| assets | `MaintenanceWorkOrderResponse` ↔ `MaintenanceWorkOrderSummaryDto` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| audit | `AuditAccessRecordResponse` ↔ `AuditAccessRecordSummaryDto` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| audit | `AuditEventResponse` ↔ `AuditEventSummaryDto` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| audit | `AuditExportRequestResponse` ↔ `AuditExportRequestSummaryDto` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| configuration | `ConfigurationDefinitionResponse` ↔ `ConfigurationDefinitionSummaryDto` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| configuration | `ConfigurationValueResponse` ↔ `ConfigurationValueSummaryDto` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| configuration | `FeatureFlagResponse` ↔ `FeatureFlagSummaryDto` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| custody | `CustodyDiscrepancyResponse` ↔ `CustodyDiscrepancySummaryDto` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| custody | `CustodyMeasurementPeriodResponse` ↔ `CustodyMeasurementPeriodSummaryDto` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| custody | `CustodyTransferTicketResponse` ↔ `CustodyTransferTicketSummaryDto` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| documents | `DocumentResponse` ↔ `DocumentSummaryDto` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| documents | `DocumentTargetLinkResponse` ↔ `DocumentTargetLinkSummaryDto` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| documents | `DocumentVersionResponse` ↔ `DocumentVersionSummaryDto` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| hse | `HseCapaResponse` ↔ `HseCapaSummaryDto` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| hse | `HseCaseResponse` ↔ `HseCaseSummaryDto` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| identity | `UserResponse` ↔ `UserSummaryDto` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| incident | `IncidentResponse` ↔ `IncidentSummaryDto` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| integration | `ExternalSystemResponse` ↔ `ExternalSystemSummaryDto` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| integration | `IntegrationExchangeMessageResponse` ↔ `IntegrationExchangeMessageSummaryDto` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| integration | `IntegrationJobRunResponse` ↔ `IntegrationJobRunSummaryDto` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| integrity | `IntegrityAssessmentResponse` ↔ `IntegrityAssessmentSummaryDto` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| integrity | `IntegrityCaseResponse` ↔ `IntegrityCaseSummaryDto` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| integrity | `IntegrityProgramResponse` ↔ `IntegrityProgramSummaryDto` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| leakdetection | `LeakCandidateResponse` ↔ `LeakCandidateSummaryDto` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| leakdetection | `LeakCaseResponse` ↔ `LeakCaseSummaryDto` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| monitoring | `DeviationResponse` ↔ `DeviationSummaryDto` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| monitoring | `MonitoringRuleResponse` ↔ `MonitoringRuleSummaryDto` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| notification | `NotificationDeliveryAttemptResponse` ↔ `NotificationDeliveryAttemptSummaryDto` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| notification | `NotificationMessageResponse` ↔ `NotificationMessageSummaryDto` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| notification | `NotificationRequestResponse` ↔ `NotificationRequestSummaryDto` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| organization | `EmployeeResponse` ↔ `EmployeeSummaryDto` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| organization | `OrganizationUnitResponse` ↔ `OrganizationUnitSummaryDto` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| party | `PartyResponse` ↔ `PartySummaryDto` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| planning | `OperationalPlanResponse` ↔ `OperationalPlanSummaryDto` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| planning | `PlanningPeriodResponse` ↔ `PlanningPeriodSummaryDto` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| reporting | `ReportDefinitionResponse` ↔ `ReportDefinitionSummaryDto` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| reporting | `ReportOutputArtifactResponse` ↔ `ReportOutputArtifactSummaryDto` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| reporting | `ReportRequestResponse` ↔ `ReportRequestSummaryDto` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| reporting | `ReportRunResponse` ↔ `ReportRunSummaryDto` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| risk | `RiskAssessmentResponse` ↔ `RiskAssessmentSummaryDto` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| risk | `RiskRegisterResponse` ↔ `RiskRegisterSummaryDto` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| simulation | `SimulationModelResponse` ↔ `SimulationModelSummaryDto` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| simulation | `SimulationRecommendationResponse` ↔ `SimulationRecommendationSummaryDto` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| simulation | `SimulationRunResponse` ↔ `SimulationRunSummaryDto` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| simulation | `SimulationScenarioResponse` ↔ `SimulationScenarioSummaryDto` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| telemetry | `TelemetryPointResponse` ↔ `TelemetryPointSummaryDto` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| telemetry | `TelemetrySourceResponse` ↔ `TelemetrySourceSummaryDto` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| topology | `FacilityResponse` ↔ `FacilitySummaryDto` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| topology | `PipelineSystemResponse` ↔ `PipelineSystemSummaryDto` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| workflow | `WorkflowActionResponse` ↔ `WorkflowActionSummaryDto` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| workflow | `WorkflowInstanceResponse` ↔ `WorkflowInstanceSummaryDto` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
-| workflow | `WorkflowTaskResponse` ↔ `WorkflowTaskSummaryDto` | GENERATED MAPPING APPROVED; KEEP TYPES SEPARATE |
+| assets | `AssetConditionResponse` ↔ `AssetConditionSummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| assets | `MaintainableAssetResponse` ↔ `MaintainableAssetSummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| assets | `MaintenanceWorkOrderResponse` ↔ `MaintenanceWorkOrderSummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| audit | `AuditAccessRecordResponse` ↔ `AuditAccessRecordSummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| audit | `AuditEventResponse` ↔ `AuditEventSummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| audit | `AuditExportRequestResponse` ↔ `AuditExportRequestSummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| configuration | `ConfigurationDefinitionResponse` ↔ `ConfigurationDefinitionSummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| configuration | `ConfigurationValueResponse` ↔ `ConfigurationValueSummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| configuration | `FeatureFlagResponse` ↔ `FeatureFlagSummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| custody | `CustodyDiscrepancyResponse` ↔ `CustodyDiscrepancySummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| custody | `CustodyMeasurementPeriodResponse` ↔ `CustodyMeasurementPeriodSummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| custody | `CustodyTransferTicketResponse` ↔ `CustodyTransferTicketSummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| documents | `DocumentResponse` ↔ `DocumentSummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| documents | `DocumentTargetLinkResponse` ↔ `DocumentTargetLinkSummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| documents | `DocumentVersionResponse` ↔ `DocumentVersionSummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| hse | `HseCapaResponse` ↔ `HseCapaSummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| hse | `HseCaseResponse` ↔ `HseCaseSummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| identity | `UserResponse` ↔ `UserSummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| incident | `IncidentResponse` ↔ `IncidentSummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| integration | `ExternalSystemResponse` ↔ `ExternalSystemSummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| integration | `IntegrationExchangeMessageResponse` ↔ `IntegrationExchangeMessageSummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| integration | `IntegrationJobRunResponse` ↔ `IntegrationJobRunSummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| integrity | `IntegrityAssessmentResponse` ↔ `IntegrityAssessmentSummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| integrity | `IntegrityCaseResponse` ↔ `IntegrityCaseSummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| integrity | `IntegrityProgramResponse` ↔ `IntegrityProgramSummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| leakdetection | `LeakCandidateResponse` ↔ `LeakCandidateSummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| leakdetection | `LeakCaseResponse` ↔ `LeakCaseSummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| monitoring | `DeviationResponse` ↔ `DeviationSummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| monitoring | `MonitoringRuleResponse` ↔ `MonitoringRuleSummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| notification | `NotificationDeliveryAttemptResponse` ↔ `NotificationDeliveryAttemptSummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| notification | `NotificationMessageResponse` ↔ `NotificationMessageSummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| notification | `NotificationRequestResponse` ↔ `NotificationRequestSummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| organization | `EmployeeResponse` ↔ `EmployeeSummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| organization | `OrganizationUnitResponse` ↔ `OrganizationUnitSummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| party | `PartyResponse` ↔ `PartySummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| planning | `OperationalPlanResponse` ↔ `OperationalPlanSummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| planning | `PlanningPeriodResponse` ↔ `PlanningPeriodSummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| reporting | `ReportDefinitionResponse` ↔ `ReportDefinitionSummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| reporting | `ReportOutputArtifactResponse` ↔ `ReportOutputArtifactSummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| reporting | `ReportRequestResponse` ↔ `ReportRequestSummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| reporting | `ReportRunResponse` ↔ `ReportRunSummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| risk | `RiskAssessmentResponse` ↔ `RiskAssessmentSummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| risk | `RiskRegisterResponse` ↔ `RiskRegisterSummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| simulation | `SimulationModelResponse` ↔ `SimulationModelSummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| simulation | `SimulationRecommendationResponse` ↔ `SimulationRecommendationSummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| simulation | `SimulationRunResponse` ↔ `SimulationRunSummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| simulation | `SimulationScenarioResponse` ↔ `SimulationScenarioSummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| telemetry | `TelemetryPointResponse` ↔ `TelemetryPointSummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| telemetry | `TelemetrySourceResponse` ↔ `TelemetrySourceSummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| topology | `FacilityResponse` ↔ `FacilitySummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| topology | `PipelineSystemResponse` ↔ `PipelineSystemSummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| workflow | `WorkflowActionResponse` ↔ `WorkflowActionSummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| workflow | `WorkflowInstanceResponse` ↔ `WorkflowInstanceSummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
+| workflow | `WorkflowTaskResponse` ↔ `WorkflowTaskSummaryDto` | GENERATED MAPPING IMPLEMENTED (HRA-073); KEEP TYPES SEPARATE |
 
 The live tree also contains five same-named Request/Command pairs that are **not** part of the
 65 exact-pair baseline and are explicitly excluded from generated field-for-field mapping:
@@ -380,7 +380,7 @@ HRA-010 → HRA-011 → HRA-012 → HRA-013
 After HRA-002:
 HRA-030 → Path A or Path B
 HRA-040 → HRA-041
-HRA-070 → HRA-071..N
+HRA-070 → HRA-071 → HRA-072 → HRA-073 (consolidated remainder)
 HRA-090 / HRA-091
 HRA-100 / HRA-101 / HRA-102
 
@@ -401,6 +401,6 @@ HRA-120
 
 `HRA-001` and `HRA-004` are complete. HRA-004 was explicitly prioritized to remove CI duplication before the high-frequency remediation sequence.
 
-**Next task:** `HRA-073..N — refactor(<module>): simplify boundary dto mapping` (next classified module: `assets`).
+**Next task:** `HRA-090 — refactor(workflow): expose planning workflow contract`.
 
 Do not begin broad dead-code deletion, event deletion, DTO consolidation, or domain/JPA mirror reduction before the HRA-002/HRA-003 safety rails exist.

@@ -7,7 +7,7 @@
  *
  * @Name        : TopologyRestMapper
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-13
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Class
  * @Layer       : API
@@ -26,65 +26,32 @@ import dz.sh.hidra.modules.topology.application.command.CreatePipelineSystemComm
 import dz.sh.hidra.modules.topology.application.command.RegisterFacilityCommand;
 import dz.sh.hidra.modules.topology.application.dto.FacilitySummaryDto;
 import dz.sh.hidra.modules.topology.application.dto.PipelineSystemSummaryDto;
+import java.util.Objects;
 
 /**
  * Maps topology REST models to application models.
  */
 public final class TopologyRestMapper {
 
+    private static final TopologyGeneratedRestMapper GENERATED = TopologyGeneratedRestMapper.INSTANCE;
+
     private TopologyRestMapper() {
         throw new UnsupportedOperationException("Utility class must not be instantiated.");
     }
 
     public static CreatePipelineSystemCommand toCommand(CreatePipelineSystemRequest request) {
-        return new CreatePipelineSystemCommand(
-                request.code(),
-                request.nameAr(),
-                request.nameFr(),
-                request.nameEn(),
-                request.systemType(),
-                request.description()
-        );
+        return GENERATED.toCommand(Objects.requireNonNull(request, "CreatePipelineSystemRequest must not be null."));
     }
 
     public static RegisterFacilityCommand toCommand(RegisterFacilityRequest request) {
-        return new RegisterFacilityCommand(
-                request.code(),
-                request.nameAr(),
-                request.nameFr(),
-                request.nameEn(),
-                request.facilityTypeId(),
-                request.facilityKind(),
-                request.ownerPartyId(),
-                request.ownerPartyCodeSnapshot(),
-                request.ownerPartyNameSnapshot(),
-                request.latitude(),
-                request.longitude(),
-                request.elevationMeters()
-        );
+        return GENERATED.toCommand(Objects.requireNonNull(request, "RegisterFacilityRequest must not be null."));
     }
 
     public static PipelineSystemResponse toResponse(PipelineSystemSummaryDto dto) {
-        return new PipelineSystemResponse(
-                dto.id(),
-                dto.code(),
-                dto.nameAr(),
-                dto.nameFr(),
-                dto.nameEn(),
-                dto.systemType(),
-                dto.status()
-        );
+        return GENERATED.toResponse(Objects.requireNonNull(dto, "PipelineSystemSummaryDto must not be null."));
     }
 
     public static FacilityResponse toResponse(FacilitySummaryDto dto) {
-        return new FacilityResponse(
-                dto.id(),
-                dto.code(),
-                dto.nameAr(),
-                dto.nameFr(),
-                dto.nameEn(),
-                dto.facilityKind(),
-                dto.status()
-        );
+        return GENERATED.toResponse(Objects.requireNonNull(dto, "FacilitySummaryDto must not be null."));
     }
 }

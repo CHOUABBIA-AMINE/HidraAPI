@@ -37,6 +37,20 @@ The codebase will no longer imply event-driven guarantees that do not exist at r
 
 Removing the skeleton reduces false architecture surface and avoids prematurely standardizing payload/version/delivery semantics without consumers. If durable integration events become necessary later, they must be introduced from an actual use case with end-to-end transactional tests rather than by reviving disconnected placeholders.
 
+## Implementation
+
+HRA-031B implemented this decision on 2026-09-28 after a final live-main consumer sweep. The removal was limited to the disconnected generic event/publication subgraph:
+
+- 100 module event records;
+- 24 module-specific event interfaces;
+- 24 module event package descriptors;
+- 24 module publisher ports;
+- 24 in-memory module publisher implementations;
+- 23 messaging package descriptors that became empty after publisher removal;
+- 9 unused platform outbox/messaging contracts, models, enums and package descriptors.
+
+The notification module's real `AsyncNotificationPushAdapter` remains. Persisted lifecycle/audit models, workflow audit-outbox-reference records, kernel event primitives, platform outbox configuration properties, and all applied Flyway migrations remain untouched.
+
 ## Evidence
 
 - Attached source snapshot SHA-256: `f91526a4c802cd4ae839afe22adbd5f82f83b7db8808a0d41c3cd7b2c671b338`.

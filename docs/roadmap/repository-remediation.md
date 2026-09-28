@@ -97,7 +97,7 @@ The authoritative detailed baseline is recorded in
 | `HRA-031A` | `refactor(events): unify module domain event contract` | If events are retained, reconcile module event interfaces with kernel `DomainEvent`, event IDs, timestamps, and version metadata. | Retained module events are assignable to the canonical event contract. | HRA-030 Path A | **Skipped — ADR-0006 selected Path B.** |
 | `HRA-032A` | `feat(events): implement transactional outbox pipeline` | Implement serializer, outbox repository adapter, publisher, Spring wiring, and transactional tests. | Durable outbox semantics are proven end-to-end. | HRA-031A | **Skipped — ADR-0006 selected Path B; no proven runtime consumer justifies outbox implementation.** |
 | `HRA-033A` | `feat(events): publish domain events from state transitions` | Emit retained events from real state-changing use cases and remove replaced in-memory publisher stubs. | Every retained event has a real producer or an explicitly documented external producer. | HRA-032A | **Skipped — ADR-0006 selected Path B.** |
-| `HRA-031B` | `refactor(events): remove unused event scaffolding` | If events are not currently required, remove unreferenced module event records/publishers and unused outbox contracts after consumer verification. | Dead event architecture is gone without breaking external consumers. | HRA-030 Path B | **Planned — selected canonical path by ADR-0006.** Final repository consumer verification is required before deletion; persisted lifecycle/audit business records are explicitly out of scope unless independently proven dead. |
+| `HRA-031B` | `refactor(events): remove unused event scaffolding` | If events are not currently required, remove unreferenced module event records/publishers and unused outbox contracts after consumer verification. | Dead event architecture is gone without breaking external consumers. | HRA-030 Path B | **Completed** — final live-main consumer verification found no application/service imports of module event packages and no outbox implementations/runtime consumers. Removed the closed generic-event subgraph: 100 module event records, 24 incompatible module event interfaces, 24 module event package descriptors, 24 publisher ports, 24 in-memory publisher implementations, 23 now-empty module messaging package descriptors, and 9 unused platform outbox/messaging source contracts/models/package descriptors. `notification`'s real `AsyncNotificationPushAdapter`, persisted lifecycle/audit business records, workflow audit-outbox-reference business state, kernel event primitives, and dormant platform configuration were explicitly retained. No database migration was edited or dropped. |
 
 ---
 
@@ -235,6 +235,6 @@ HRA-120
 
 `HRA-001` and `HRA-004` are complete. HRA-004 was explicitly prioritized to remove CI duplication before the high-frequency remediation sequence.
 
-**Next task:** `HRA-031B — refactor(events): remove unused event scaffolding`.
+**Next task:** `HRA-040 — docs(architecture): classify static orphan candidates`.
 
 Do not begin broad dead-code deletion, event deletion, DTO consolidation, or domain/JPA mirror reduction before the HRA-002/HRA-003 safety rails exist.

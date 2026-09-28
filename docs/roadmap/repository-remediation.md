@@ -62,7 +62,7 @@ The authoritative detailed baseline is recorded in
 |---|---|---|---|---|---|
 | `HRA-001` | `docs(architecture): record forensic remediation baseline` | Version this repository remediation roadmap and the evidence-backed forensic baseline. | Baseline metrics and confirmed defects are versioned; no production behavior changes. | none | **Completed** |
 | `HRA-002` | `test(architecture): enforce repository structural guardrails` | Extend architecture/static-analysis guardrails for cross-module private-package imports, existing layer rules, duplicate JPA tables/columns, and deliberate exported-contract allowlists. | Existing main stays green; representative violations can fail the rules. | HRA-001 | **Completed** — added cross-module private-package enforcement, exact transitional exceptions for the audited Planning→Workflow and Organization→Topology dependencies, stale-exception detection, a representative classifier test, and JPA table/column uniqueness guards. HRA-090/HRA-091 must remove the temporary exceptions when exported contracts replace the current imports. |
-| `HRA-003` | `test(persistence): detect domain mapper field drift` | Add domain-to-JPA mapper completeness/round-trip protection, beginning with Organization Employee and explicit exclusions for derived/compatibility state. | A canonical domain field silently dropped by persistence makes CI fail. | HRA-002 | Planned |
+| `HRA-003` | `test(persistence): detect domain mapper field drift` | Add domain-to-JPA mapper completeness/round-trip protection, beginning with Organization Employee and explicit exclusions for derived/compatibility state. | A canonical domain field silently dropped by persistence makes CI fail. | HRA-002 | **Completed** — added `OrganizationPersistenceDriftGuardrailTest`. The detector compares canonical Employee record components with `EmployeeJpaEntity` fields and inspects both mapper directions. The exact five audited birth fields are the only temporary allowed drift; any additional missing component fails CI. Derived display-name methods are excluded by record-component comparison, while persisted compatibility display/contact components remain guarded until their later cutover. HRA-010/HRA-011 must shrink and then remove the birth-field quarantine as persistence and mapping are repaired. |
 | `HRA-004` | `ci: optimize repository verification workflow` | Remove redundant Maven executions from GitHub Actions, retain one wrapper-based `clean verify`, keep PostgreSQL/OpenAPI verification for code changes, and skip the heavy workflow for documentation-only pushes to `main`. | Code changes still run full Maven verification plus deterministic OpenAPI generation; documentation-only pushes do not start the heavy workflow; CI no longer recompiles/retests the repository six times. | HRA-001 | **Completed** |
 
 ---
@@ -235,6 +235,6 @@ HRA-120
 
 `HRA-001` and `HRA-004` are complete. HRA-004 was explicitly prioritized to remove CI duplication before the high-frequency remediation sequence.
 
-**Next task:** `HRA-003 — test(persistence): detect domain mapper field drift`.
+**Next task:** `HRA-010 — fix(organization): persist employee birth fields`.
 
 Do not begin broad dead-code deletion, event deletion, DTO consolidation, or domain/JPA mirror reduction before the HRA-002/HRA-003 safety rails exist.

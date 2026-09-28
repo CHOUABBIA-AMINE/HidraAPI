@@ -7,7 +7,7 @@
  *
  * @Name        : ResponsibilityAssignment
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-27
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.organization.domain.model;
 
+import dz.sh.hidra.modules.organization.domain.exception.InvalidOrganizationValueException;
 import dz.sh.hidra.modules.organization.domain.value.AssignmentStatus;
 import dz.sh.hidra.modules.organization.domain.value.ResponsibilityType;
 import dz.sh.hidra.modules.organization.domain.value.ResponsibilityAssigneeType;
@@ -63,15 +64,27 @@ public record ResponsibilityAssignment(
 ) {
 
     public ResponsibilityAssignment {
-        id = normalize(id);
-        if (assigneeType == null) {
-            throw new IllegalArgumentException("Responsibility assignee type must not be null.");
+        id = requireText(id, "Responsibility assignment ID is required.");
+        if (responsibilityType == null) {
+            throw new InvalidOrganizationValueException("Responsibility type is required.");
         }
-        assigneeId = normalize(assigneeId);
+        if (assigneeType == null) {
+            throw new InvalidOrganizationValueException("Responsibility assignee type must not be null.");
+        }
+        assigneeId = requireText(assigneeId, "Responsibility assignee ID is required.");
         description = normalize(description);
 
         if (scopeId != null && scopeId <= 0) {
-            throw new IllegalArgumentException("Operational scope registry ID must be positive when present.");
+            throw new InvalidOrganizationValueException("Operational scope registry ID must be positive when present.");
+        }
+        if (status == null) {
+            throw new InvalidOrganizationValueException("Responsibility assignment status is required.");
+        }
+        if (validFrom == null) {
+            throw new InvalidOrganizationValueException("Responsibility assignment validFrom is required.");
+        }
+        if (validTo != null && !validTo.isAfter(validFrom)) {
+            throw new InvalidOrganizationValueException("Responsibility assignment validTo must be after validFrom.");
         }
     }
 
@@ -191,6 +204,14 @@ public record ResponsibilityAssignment(
             return null;
         }
     }
+    private static String requireText(String value, String message) {
+        String normalized = normalize(value);
+        if (normalized == null) {
+            throw new InvalidOrganizationValueException(message);
+        }
+        return normalized;
+    }
+
 
     private static String normalize(String value) {
         if (value == null || value.isBlank()) {

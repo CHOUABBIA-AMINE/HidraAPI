@@ -7,7 +7,7 @@
  *
  * @Name        : EmployeeAssignment
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-27
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.organization.domain.model;
 
+import dz.sh.hidra.modules.organization.domain.exception.InvalidOrganizationValueException;
 import dz.sh.hidra.modules.organization.domain.value.AssignmentStatus;
 import dz.sh.hidra.modules.organization.domain.value.AssignmentType;
 
@@ -55,10 +56,17 @@ public record EmployeeAssignment(
 ) {
 
     public EmployeeAssignment {
-        id = normalize(id);
-        employeeId = normalize(employeeId);
-        organizationUnitId = normalize(organizationUnitId);
-        positionId = normalize(positionId);
+        id = requireText(id, "Employee assignment ID is required.");
+        employeeId = requireText(employeeId, "Employee assignment employee ID is required.");
+        organizationUnitId = requireText(organizationUnitId, "Employee assignment organization-unit ID is required.");
+        positionId = requireText(positionId, "Employee assignment position ID is required.");
+        if (assignmentType == null) {
+            throw new InvalidOrganizationValueException("Employee assignment type is required.");
+        }
+        if (status == null) {
+            throw new InvalidOrganizationValueException("Employee assignment status is required.");
+        }
+        requireEffectivePeriod(validFrom, validTo, "Employee assignment");
     }
 
     /**
@@ -129,6 +137,23 @@ public record EmployeeAssignment(
     public String operationalScopeName() {
         return null;
     }
+    private static void requireEffectivePeriod(Instant validFrom, Instant validTo, String subject) {
+        if (validFrom == null) {
+            throw new InvalidOrganizationValueException(subject + " validFrom is required.");
+        }
+        if (validTo != null && !validTo.isAfter(validFrom)) {
+            throw new InvalidOrganizationValueException(subject + " validTo must be after validFrom.");
+        }
+    }
+
+    private static String requireText(String value, String message) {
+        String normalized = normalize(value);
+        if (normalized == null) {
+            throw new InvalidOrganizationValueException(message);
+        }
+        return normalized;
+    }
+
 
     private static String normalize(String value) {
         if (value == null || value.isBlank()) {

@@ -7,7 +7,7 @@
  *
  * @Name        : Shift
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-27
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.organization.domain.model;
 
+import dz.sh.hidra.modules.organization.domain.exception.InvalidOrganizationValueException;
 import dz.sh.hidra.modules.organization.domain.value.ShiftType;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationCode;
 import java.time.Instant;
@@ -65,8 +66,11 @@ public record Shift(
 ) {
 
     public Shift {
-        id = normalize(id);
+        id = requireText(id, "Shift ID is required.");
         code = OrganizationCode.of(code).value();
+        if (shiftType == null) {
+            throw new InvalidOrganizationValueException("Shift type is required.");
+        }
         nameAr = normalize(nameAr);
         nameFr = normalize(nameFr);
         nameEn = normalize(nameEn);
@@ -74,6 +78,14 @@ public record Shift(
         endTime = normalize(endTime);
         timezone = normalize(timezone);
     }
+    private static String requireText(String value, String message) {
+        String normalized = normalize(value);
+        if (normalized == null) {
+            throw new InvalidOrganizationValueException(message);
+        }
+        return normalized;
+    }
+
 
     private static String normalize(String value) {
         if (value == null || value.isBlank()) {

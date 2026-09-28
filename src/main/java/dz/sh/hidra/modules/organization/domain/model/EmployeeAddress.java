@@ -7,7 +7,7 @@
  *
  * @Name        : EmployeeAddress
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.organization.domain.model;
 
+import dz.sh.hidra.modules.organization.domain.exception.InvalidOrganizationValueException;
 import dz.sh.hidra.modules.organization.domain.value.*;
 import java.time.Instant;
 
@@ -54,13 +55,34 @@ import java.time.Instant;
     ) {
 
         public EmployeeAddress {
-        id = normalize(id);
-        employeeId = normalize(employeeId);
-        localityId = normalize(localityId);
+        id = requireText(id, "Employee address ID is required.");
+        employeeId = requireText(employeeId, "Employee address employee ID is required.");
+        localityId = requireText(localityId, "Employee address locality ID is required.");
+        if (addressType == null) {
+            throw new InvalidOrganizationValueException("Employee address type is required.");
+        }
+        requireEffectivePeriod(validFrom, validTo, "Employee address");
         streetLine1 = normalize(streetLine1);
         streetLine2 = normalize(streetLine2);
         postalCodeSnapshot = normalize(postalCodeSnapshot);
         }
+    private static void requireEffectivePeriod(Instant validFrom, Instant validTo, String subject) {
+        if (validFrom == null) {
+            throw new InvalidOrganizationValueException(subject + " validFrom is required.");
+        }
+        if (validTo != null && !validTo.isAfter(validFrom)) {
+            throw new InvalidOrganizationValueException(subject + " validTo must be after validFrom.");
+        }
+    }
+
+    private static String requireText(String value, String message) {
+        String normalized = normalize(value);
+        if (normalized == null) {
+            throw new InvalidOrganizationValueException(message);
+        }
+        return normalized;
+    }
+
 
         private static String normalize(String value) {
             if (value == null || value.isBlank()) {

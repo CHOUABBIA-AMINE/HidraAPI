@@ -7,7 +7,7 @@
  *
  * @Name        : OrganizationHierarchySnapshot
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.organization.domain.model;
 
+import dz.sh.hidra.modules.organization.domain.exception.InvalidOrganizationValueException;
 import dz.sh.hidra.modules.organization.domain.value.*;
 import java.time.Instant;
 
@@ -46,12 +47,29 @@ import java.time.Instant;
     ) {
 
         public OrganizationHierarchySnapshot {
-        id = normalize(id);
-        snapshotCode = normalize(snapshotCode);
-        capturedByEmployeeId = normalize(capturedByEmployeeId);
+        id = requireText(id, "Hierarchy snapshot ID is required.");
+        snapshotCode = requireText(snapshotCode, "Hierarchy snapshot code is required.");
+        capturedByEmployeeId = requireText(
+                capturedByEmployeeId,
+                "Hierarchy snapshot captured-by employee ID is required."
+        );
+        if (capturedAt == null) {
+            throw new InvalidOrganizationValueException("Hierarchy snapshot capturedAt is required.");
+        }
+        if (status == null) {
+            throw new InvalidOrganizationValueException("Hierarchy snapshot status is required.");
+        }
         snapshotPayload = normalize(snapshotPayload);
         description = normalize(description);
         }
+    private static String requireText(String value, String message) {
+        String normalized = normalize(value);
+        if (normalized == null) {
+            throw new InvalidOrganizationValueException(message);
+        }
+        return normalized;
+    }
+
 
         private static String normalize(String value) {
             if (value == null || value.isBlank()) {

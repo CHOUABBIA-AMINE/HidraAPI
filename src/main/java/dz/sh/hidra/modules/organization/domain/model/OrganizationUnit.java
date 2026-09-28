@@ -7,7 +7,7 @@
  *
  * @Name        : OrganizationUnit
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-27
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.organization.domain.model;
 
+import dz.sh.hidra.modules.organization.domain.exception.InvalidOrganizationValueException;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitStatus;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationCode;
 
@@ -60,13 +61,25 @@ public record OrganizationUnit(
 ) {
 
     public OrganizationUnit {
-        id = normalize(id);
+        id = requireText(id, "Organization unit ID is required.");
         code = OrganizationCode.of(code).value();
         nameAr = normalize(nameAr);
         nameFr = normalize(nameFr);
         nameEn = normalize(nameEn);
-        unitTypeId = normalize(unitTypeId);
+        unitTypeId = requireText(unitTypeId, "Organization unit type ID is required.");
         parentUnitId = normalize(parentUnitId);
+        if (status == null) {
+            throw new InvalidOrganizationValueException("Organization unit status is required.");
+        }
+        if (parentUnitId != null && parentUnitId.equals(id)) {
+            throw new InvalidOrganizationValueException("Organization unit cannot be its own parent.");
+        }
+        if (validFrom == null) {
+            throw new InvalidOrganizationValueException("Organization unit validFrom is required.");
+        }
+        if (validTo != null && !validTo.isAfter(validFrom)) {
+            throw new InvalidOrganizationValueException("Organization unit validTo must be after validFrom.");
+        }
     }
 
     /**
@@ -141,6 +154,14 @@ public record OrganizationUnit(
     public String operationalScopeName() {
         return null;
     }
+    private static String requireText(String value, String message) {
+        String normalized = normalize(value);
+        if (normalized == null) {
+            throw new InvalidOrganizationValueException(message);
+        }
+        return normalized;
+    }
+
 
     private static String normalize(String value) {
         if (value == null || value.isBlank()) {

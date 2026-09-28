@@ -7,7 +7,7 @@
  *
  * @Name        : AdministrativeLocality
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.organization.domain.model;
 
+import dz.sh.hidra.modules.organization.domain.exception.InvalidOrganizationValueException;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationCode;
 import java.time.Instant;
 
@@ -50,14 +51,22 @@ import java.time.Instant;
     ) {
 
         public AdministrativeLocality {
-        id = normalize(id);
-        districtId = normalize(districtId);
+        id = requireText(id, "Administrative locality ID is required.");
+        districtId = requireText(districtId, "Administrative locality district ID is required.");
         code = OrganizationCode.of(code).value();
         nameAr = normalize(nameAr);
         nameFr = normalize(nameFr);
         nameEn = normalize(nameEn);
         postalCode = normalize(postalCode);
         }
+    private static String requireText(String value, String message) {
+        String normalized = normalize(value);
+        if (normalized == null) {
+            throw new InvalidOrganizationValueException(message);
+        }
+        return normalized;
+    }
+
 
         private static String normalize(String value) {
             if (value == null || value.isBlank()) {

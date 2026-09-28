@@ -7,7 +7,7 @@
  *
  * @Name        : ReportingLine
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-27
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -71,6 +71,9 @@ public record ReportingLine(
                     "Reporting line ID is required."
             );
         }
+        if (reportingLineType == null) {
+            throw new InvalidOrganizationValueException("Reporting line type is required.");
+        }
         if (source == null) {
             throw new InvalidOrganizationValueException(
                     "Reporting line source is required."
@@ -80,6 +83,15 @@ public record ReportingLine(
             throw new InvalidOrganizationValueException(
                     "Reporting line target is required."
             );
+        }
+        if (source.equals(target)) {
+            throw new InvalidOrganizationValueException("Reporting line source and target must be different.");
+        }
+        if (validFrom == null) {
+            throw new InvalidOrganizationValueException("Reporting line validFrom is required.");
+        }
+        if (validTo != null && !validTo.isAfter(validFrom)) {
+            throw new InvalidOrganizationValueException("Reporting line validTo must be after validFrom.");
         }
     }
 

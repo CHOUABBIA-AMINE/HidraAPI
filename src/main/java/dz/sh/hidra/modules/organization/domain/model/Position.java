@@ -7,7 +7,7 @@
  *
  * @Name        : Position
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-27
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.organization.domain.model;
 
+import dz.sh.hidra.modules.organization.domain.exception.InvalidOrganizationValueException;
 import dz.sh.hidra.modules.organization.domain.value.PositionLevel;
 import dz.sh.hidra.modules.organization.domain.value.OrganizationCode;
 import dz.sh.hidra.modules.organization.domain.value.PositionStatus;
@@ -65,8 +66,14 @@ public record Position(
 ) {
 
     public Position {
-        id = normalize(id);
+        id = requireText(id, "Position ID is required.");
         code = OrganizationCode.of(code).value();
+        if (level == null) {
+            throw new InvalidOrganizationValueException("Position level is required.");
+        }
+        if (status == null) {
+            throw new InvalidOrganizationValueException("Position status is required.");
+        }
         titleAr = normalize(titleAr);
         titleFr = normalize(titleFr);
         titleEn = normalize(titleEn);
@@ -74,6 +81,14 @@ public record Position(
         descriptionFr = normalize(descriptionFr);
         descriptionEn = normalize(descriptionEn);
     }
+    private static String requireText(String value, String message) {
+        String normalized = normalize(value);
+        if (normalized == null) {
+            throw new InvalidOrganizationValueException(message);
+        }
+        return normalized;
+    }
+
 
     private static String normalize(String value) {
         if (value == null || value.isBlank()) {

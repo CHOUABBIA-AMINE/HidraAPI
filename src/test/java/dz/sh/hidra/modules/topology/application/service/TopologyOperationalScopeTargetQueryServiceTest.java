@@ -7,7 +7,7 @@
  *
  * @Name        : TopologyOperationalScopeTargetQueryServiceTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-27
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Class
  * @Layer       : Topology Test
@@ -27,8 +27,12 @@ import dz.sh.hidra.modules.topology.domain.model.Equipment;
 import dz.sh.hidra.modules.topology.domain.model.Facility;
 import dz.sh.hidra.modules.topology.domain.model.Pipeline;
 import dz.sh.hidra.modules.topology.domain.model.PipelineSystem;
+import dz.sh.hidra.modules.topology.domain.value.EquipmentKind;
 import dz.sh.hidra.modules.topology.domain.value.EquipmentStatus;
+import dz.sh.hidra.modules.topology.domain.value.FacilityKind;
 import dz.sh.hidra.modules.topology.domain.value.FacilityStatus;
+import dz.sh.hidra.modules.topology.domain.value.PipelineSystemType;
+import dz.sh.hidra.modules.topology.domain.value.PipelineType;
 import dz.sh.hidra.modules.topology.domain.value.TopologyStatus;
 import org.junit.jupiter.api.Test;
 
@@ -105,7 +109,7 @@ class TopologyOperationalScopeTargetQueryServiceTest {
                 "نظام",
                 "Système FR",
                 "System EN",
-                null,
+                PipelineSystemType.TRANSPORT,
                 status,
                 null,
                 null,
@@ -124,6 +128,7 @@ class TopologyOperationalScopeTargetQueryServiceTest {
                 "Canalisation FR",
                 null,
                 null,
+                PipelineType.NATURAL_GAS,
                 null,
                 null,
                 null,
@@ -143,7 +148,8 @@ class TopologyOperationalScopeTargetQueryServiceTest {
                 "Installation FR",
                 null,
                 null,
-                null,
+                "FACILITY-TYPE-1",
+                FacilityKind.STATION,
                 null,
                 null,
                 null,
@@ -166,8 +172,8 @@ class TopologyOperationalScopeTargetQueryServiceTest {
                 "facility-1",
                 null,
                 null,
-                null,
-                null,
+                "EQUIPMENT-TYPE-1",
+                EquipmentKind.PUMP,
                 null,
                 null,
                 null,

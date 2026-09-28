@@ -115,9 +115,11 @@ The authoritative detailed baseline is recorded in
 | Code | Exact commit message | Scope | Exit criteria | Prerequisite | Status |
 |---|---|---|---|---|---|
 | `HRA-050` | `docs(domain): classify required invariant gaps` | Review domain/JPA nullability mismatches and classify true business requirements vs migration/persistence-only constraints. | Module-by-module invariant matrix exists. | HRA-003 | Planned |
-| `HRA-051..N` | `refactor(<module>): enforce domain invariants` | One module per task: required IDs/codes/types/statuses/references, date ordering, self-reference rules where locally decidable. | Invalid domain state fails before persistence; focused tests pass. | HRA-050 | Planned |
+| `HRA-051` | `refactor(codebase): enforce classified domain invariants` | **Single consolidated repository-wide task / single commit.** Apply every HRA-050-approved invariant gap across all affected modules in one batch: required IDs/codes/types/statuses/references, locally decidable date ordering, and self-reference rules. Do not add repository lookups, cross-module existence checks, or database uniqueness checks to domain constructors. | Every HRA-050 ENFORCE disposition is implemented in the same commit; invalid domain state fails before persistence; focused module tests plus repository validation pass; no unclassified invariant change is included. | HRA-050 | Planned |
 
 Domain constructors must not perform repository lookups, cross-module existence checks, or database uniqueness checks.
+
+**HRA-051 execution policy:** HRA-051 is deliberately consolidated. Once HRA-050 is complete, all approved module-specific invariant repairs are executed together as one repository-wide task and one commit. Do not split HRA-051 by module unless this roadmap is explicitly amended first.
 
 ---
 
@@ -125,8 +127,10 @@ Domain constructors must not perform repository lookups, cross-module existence 
 
 | Code | Exact commit message | Scope | Exit criteria | Prerequisite | Status |
 |---|---|---|---|---|---|
-| `HRA-060` | `docs(domain): classify anemic persistence mirrors` | Classify the 393 behaviorless exact domain/JPA mirrors as REAL DOMAIN, READ/PERSISTENCE MODEL, or BOUNDARY MODEL. | Every pair has a deliberate disposition. | HRA-051..N substantially complete | Planned |
-| `HRA-061..N` | `refactor(<module>): simplify domain persistence model split` | Execute classifications module by module without adding JPA annotations to framework-independent domain records. | Behaviorless mirror count decreases; mapper round-trip guards stay green. | HRA-060 | Planned |
+| `HRA-060` | `docs(domain): classify anemic persistence mirrors` | Classify the 393 behaviorless exact domain/JPA mirrors as REAL DOMAIN, READ/PERSISTENCE MODEL, or BOUNDARY MODEL. | Every pair has a deliberate disposition. | HRA-051 complete | Planned |
+| `HRA-061` | `refactor(codebase): simplify classified domain persistence mirrors` | **Single consolidated repository-wide task / single commit.** Apply every HRA-060-approved mirror simplification across all affected modules in one batch. Preserve framework-independent domain models, do not add JPA annotations to domain records, and change only pairs explicitly approved by HRA-060. | Every HRA-060 simplification disposition selected for implementation is completed in the same commit; behaviorless mirror count decreases as classified; mapper round-trip guardrails and repository validation remain green; no unclassified mirror is changed. | HRA-060 | Planned |
+
+**HRA-061 execution policy:** HRA-061 is deliberately consolidated. Once HRA-060 is complete, all approved domain/persistence mirror changes are executed together as one repository-wide task and one commit. Do not split HRA-061 by module unless this roadmap is explicitly amended first.
 
 ---
 
@@ -348,7 +352,9 @@ Mandatory review examples include:
 | Code | Exact commit message | Scope | Exit criteria | Prerequisite | Status |
 |---|---|---|---|---|---|
 | `HRA-110` | `docs(persistence): inventory scalar reference integrity` | Classify non-primary entity `*Id` fields as same-module references, cross-module stable references, historical snapshots, external IDs, or non-relational identifiers. | Every mandatory scalar reference has a documented integrity owner. | HRA-001 | Planned |
-| `HRA-111..N` | `fix(<module>): enforce internal reference integrity` | Verify/add fail-closed same-module FK/check constraints and Testcontainers coverage; never add cross-module DB FKs. | Mandatory internal references are protected at domain/application and DB layers. | HRA-110 + live schema evidence | Planned |
+| `HRA-111` | `fix(codebase): enforce classified internal reference integrity` | **Single consolidated repository-wide task / single commit.** Apply every HRA-110-approved same-module integrity repair across all affected modules using fail-closed domain/application validation plus DB FK/check constraints where evidence requires them. Add only new Flyway migrations; never modify an applied migration; never add cross-module database FKs. Include Testcontainers coverage for the consolidated schema changes. | Every HRA-110 same-module ENFORCE disposition is implemented in the same commit; mandatory internal references are protected at domain/application and DB layers; all new migrations are additive and validated; cross-module stable references remain free of DB FKs; repository validation passes. | HRA-110 + live schema evidence | Planned |
+
+**HRA-111 execution policy:** HRA-111 is deliberately consolidated. After HRA-110 and live-schema verification, all approved same-module referential-integrity repairs are executed together as one repository-wide task and one commit. The batch may contain multiple new Flyway migrations when ordering or module ownership requires it, but they belong to the same HRA-111 commit. Applied migrations are immutable and cross-module DB foreign keys remain forbidden.
 
 ---
 
@@ -385,13 +391,13 @@ HRA-090 / HRA-091
 HRA-100 / HRA-101 / HRA-102
 
 After mapper/invariant safety rails:
-HRA-050 → HRA-051..N → HRA-060 → HRA-061..N
+HRA-050 → HRA-051 (consolidated invariant batch, one commit) → HRA-060 → HRA-061 (consolidated mirror batch, one commit)
 
 After orphan classification:
 HRA-080 → HRA-081
 
 After live schema inspection:
-HRA-110 → HRA-111..N
+HRA-110 → HRA-111 (consolidated integrity batch, one commit)
 
 Finally:
 HRA-120

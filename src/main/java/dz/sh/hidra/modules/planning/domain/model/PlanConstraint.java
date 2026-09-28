@@ -7,7 +7,7 @@
  *
  * @Name        : PlanConstraint
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.planning.domain.model;
 
+import dz.sh.hidra.modules.planning.domain.exception.InvalidPlanningValueException;
 import dz.sh.hidra.modules.planning.domain.value.*;
 import java.time.Instant;
 import java.math.BigDecimal;
@@ -69,6 +70,31 @@ import java.math.BigDecimal;
     ) {
 
         public PlanConstraint {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidPlanningValueException("PlanConstraint id must not be blank.");
+        }
+        // HRA-051 required: revisionId
+        if (revisionId == null || revisionId.isBlank()) {
+            throw new InvalidPlanningValueException("PlanConstraint revision id must not be blank.");
+        }
+        // HRA-051 required: constraintTypeId
+        if (constraintTypeId == null || constraintTypeId.isBlank()) {
+            throw new InvalidPlanningValueException("PlanConstraint constraint type id must not be blank.");
+        }
+        // HRA-051 required: severity
+        if (severity == null) {
+            throw new InvalidPlanningValueException("PlanConstraint severity must not be null.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidPlanningValueException("PlanConstraint status must not be null.");
+        }
+        // HRA-051 order: validFrom <= validTo
+        if (validFrom != null && validTo != null && validTo.isBefore(validFrom)) {
+            throw new InvalidPlanningValueException("PlanConstraint valid to must not be before valid from.");
+        }
+
         id = normalize(id);
         revisionId = normalize(revisionId);
         scenarioId = normalize(scenarioId);

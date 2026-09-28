@@ -7,7 +7,7 @@
  *
  * @Name        : HazardReport
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.hse.domain.model;
 
+import dz.sh.hidra.modules.hse.domain.exception.InvalidHseValueException;
 import dz.sh.hidra.modules.hse.domain.value.*;
 import java.time.Instant;
 
@@ -62,6 +63,27 @@ import java.time.Instant;
     ) {
 
         public HazardReport {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidHseValueException("HazardReport id must not be blank.");
+        }
+        // HRA-051 required: reportNumber
+        if (reportNumber == null || reportNumber.isBlank()) {
+            throw new InvalidHseValueException("HazardReport report number must not be blank.");
+        }
+        // HRA-051 required: hazardTypeId
+        if (hazardTypeId == null || hazardTypeId.isBlank()) {
+            throw new InvalidHseValueException("HazardReport hazard type id must not be blank.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidHseValueException("HazardReport status must not be null.");
+        }
+        // HRA-051 required: reportedAt
+        if (reportedAt == null) {
+            throw new InvalidHseValueException("HazardReport reported at must not be null.");
+        }
+
         id = normalize(id);
         reportNumber = normalize(reportNumber);
         hazardTypeId = normalize(hazardTypeId);

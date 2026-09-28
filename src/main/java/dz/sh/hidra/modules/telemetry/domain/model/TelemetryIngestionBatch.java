@@ -7,7 +7,7 @@
  *
  * @Name        : TelemetryIngestionBatch
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.telemetry.domain.model;
 
+import dz.sh.hidra.modules.telemetry.domain.exception.InvalidTelemetryValueException;
 import dz.sh.hidra.modules.telemetry.domain.value.*;
 import java.time.Instant;
 
@@ -58,6 +59,23 @@ import java.time.Instant;
     ) {
 
         public TelemetryIngestionBatch {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidTelemetryValueException("TelemetryIngestionBatch id must not be blank.");
+        }
+        // HRA-051 required: sourceId
+        if (sourceId == null || sourceId.isBlank()) {
+            throw new InvalidTelemetryValueException("TelemetryIngestionBatch source id must not be blank.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidTelemetryValueException("TelemetryIngestionBatch status must not be null.");
+        }
+        // HRA-051 required: startedAt
+        if (startedAt == null) {
+            throw new InvalidTelemetryValueException("TelemetryIngestionBatch started at must not be null.");
+        }
+
         id = normalize(id);
         sourceId = normalize(sourceId);
         endpointId = normalize(endpointId);

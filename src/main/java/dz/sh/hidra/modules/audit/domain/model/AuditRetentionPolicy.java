@@ -7,7 +7,7 @@
  *
  * @Name        : AuditRetentionPolicy
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.audit.domain.model;
 
+import dz.sh.hidra.modules.audit.domain.exception.InvalidAuditValueException;
 import java.time.Instant;
 import java.time.LocalDate;
 
@@ -60,6 +61,27 @@ import java.time.LocalDate;
     ) {
 
         public AuditRetentionPolicy {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidAuditValueException("AuditRetentionPolicy id must not be blank.");
+        }
+        // HRA-051 required: code
+        if (code == null || code.isBlank()) {
+            throw new InvalidAuditValueException("AuditRetentionPolicy code must not be blank.");
+        }
+        // HRA-051 required: retentionDays
+        if (retentionDays == null) {
+            throw new InvalidAuditValueException("AuditRetentionPolicy retention days must not be null.");
+        }
+        // HRA-051 required: validFrom
+        if (validFrom == null) {
+            throw new InvalidAuditValueException("AuditRetentionPolicy valid from must not be null.");
+        }
+        // HRA-051 order: validFrom <= validTo
+        if (validFrom != null && validTo != null && validTo.isBefore(validFrom)) {
+            throw new InvalidAuditValueException("AuditRetentionPolicy valid to must not be before valid from.");
+        }
+
         id = normalize(id);
         code = normalize(code);
         nameAr = normalize(nameAr);

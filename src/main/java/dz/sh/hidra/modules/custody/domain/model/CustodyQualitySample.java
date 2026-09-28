@@ -7,7 +7,7 @@
  *
  * @Name        : CustodyQualitySample
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.custody.domain.model;
 
+import dz.sh.hidra.modules.custody.domain.exception.InvalidCustodyValueException;
 import java.time.Instant;
 
     /**
@@ -55,6 +56,31 @@ import java.time.Instant;
     ) {
 
         public CustodyQualitySample {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidCustodyValueException("CustodyQualitySample id must not be blank.");
+        }
+        // HRA-051 required: sampleNumber
+        if (sampleNumber == null || sampleNumber.isBlank()) {
+            throw new InvalidCustodyValueException("CustodyQualitySample sample number must not be blank.");
+        }
+        // HRA-051 required: measurementPeriodId
+        if (measurementPeriodId == null || measurementPeriodId.isBlank()) {
+            throw new InvalidCustodyValueException("CustodyQualitySample measurement period id must not be blank.");
+        }
+        // HRA-051 required: sampleTypeId
+        if (sampleTypeId == null || sampleTypeId.isBlank()) {
+            throw new InvalidCustodyValueException("CustodyQualitySample sample type id must not be blank.");
+        }
+        // HRA-051 required: productTypeId
+        if (productTypeId == null || productTypeId.isBlank()) {
+            throw new InvalidCustodyValueException("CustodyQualitySample product type id must not be blank.");
+        }
+        // HRA-051 required: sampledAt
+        if (sampledAt == null) {
+            throw new InvalidCustodyValueException("CustodyQualitySample sampled at must not be null.");
+        }
+
         id = normalize(id);
         sampleNumber = normalize(sampleNumber);
         measurementPeriodId = normalize(measurementPeriodId);

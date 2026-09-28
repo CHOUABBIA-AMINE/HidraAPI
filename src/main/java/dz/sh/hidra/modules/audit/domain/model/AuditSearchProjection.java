@@ -7,7 +7,7 @@
  *
  * @Name        : AuditSearchProjection
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.audit.domain.model;
 
+import dz.sh.hidra.modules.audit.domain.exception.InvalidAuditValueException;
 import java.time.Instant;
 
     /**
@@ -67,6 +68,43 @@ import java.time.Instant;
     ) {
 
         public AuditSearchProjection {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidAuditValueException("AuditSearchProjection id must not be blank.");
+        }
+        // HRA-051 required: auditEventId
+        if (auditEventId == null || auditEventId.isBlank()) {
+            throw new InvalidAuditValueException("AuditSearchProjection audit event id must not be blank.");
+        }
+        // HRA-051 required: eventCategoryCode
+        if (eventCategoryCode == null || eventCategoryCode.isBlank()) {
+            throw new InvalidAuditValueException("AuditSearchProjection event category code must not be blank.");
+        }
+        // HRA-051 required: eventTypeCode
+        if (eventTypeCode == null || eventTypeCode.isBlank()) {
+            throw new InvalidAuditValueException("AuditSearchProjection event type code must not be blank.");
+        }
+        // HRA-051 required: actionCode
+        if (actionCode == null || actionCode.isBlank()) {
+            throw new InvalidAuditValueException("AuditSearchProjection action code must not be blank.");
+        }
+        // HRA-051 required: targetId
+        if (targetId == null || targetId.isBlank()) {
+            throw new InvalidAuditValueException("AuditSearchProjection target id must not be blank.");
+        }
+        // HRA-051 required: occurredAt
+        if (occurredAt == null) {
+            throw new InvalidAuditValueException("AuditSearchProjection occurred at must not be null.");
+        }
+        // HRA-051 required: recordedAt
+        if (recordedAt == null) {
+            throw new InvalidAuditValueException("AuditSearchProjection recorded at must not be null.");
+        }
+        // HRA-051 required: indexedAt
+        if (indexedAt == null) {
+            throw new InvalidAuditValueException("AuditSearchProjection indexed at must not be null.");
+        }
+
         id = normalize(id);
         auditEventId = normalize(auditEventId);
         sourceModule = normalize(sourceModule);

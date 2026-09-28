@@ -7,7 +7,7 @@
  *
  * @Name        : LeakCandidate
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.leakdetection.domain.model;
 
+import dz.sh.hidra.modules.leakdetection.domain.exception.InvalidLeakDetectionValueException;
 import dz.sh.hidra.modules.leakdetection.domain.value.*;
 import java.time.Instant;
 import java.math.BigDecimal;
@@ -65,6 +66,43 @@ import java.math.BigDecimal;
     ) {
 
         public LeakCandidate {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidLeakDetectionValueException("LeakCandidate id must not be blank.");
+        }
+        // HRA-051 required: profileId
+        if (profileId == null || profileId.isBlank()) {
+            throw new InvalidLeakDetectionValueException("LeakCandidate profile id must not be blank.");
+        }
+        // HRA-051 required: candidateNumber
+        if (candidateNumber == null || candidateNumber.isBlank()) {
+            throw new InvalidLeakDetectionValueException("LeakCandidate candidate number must not be blank.");
+        }
+        // HRA-051 required: topologyAssetId
+        if (topologyAssetId == null || topologyAssetId.isBlank()) {
+            throw new InvalidLeakDetectionValueException("LeakCandidate topology asset id must not be blank.");
+        }
+        // HRA-051 required: topologyAssetCode
+        if (topologyAssetCode == null || topologyAssetCode.isBlank()) {
+            throw new InvalidLeakDetectionValueException("LeakCandidate topology asset code must not be blank.");
+        }
+        // HRA-051 required: suspectedAt
+        if (suspectedAt == null) {
+            throw new InvalidLeakDetectionValueException("LeakCandidate suspected at must not be null.");
+        }
+        // HRA-051 required: confidenceScore
+        if (confidenceScore == null) {
+            throw new InvalidLeakDetectionValueException("LeakCandidate confidence score must not be null.");
+        }
+        // HRA-051 required: severityLevel
+        if (severityLevel == null) {
+            throw new InvalidLeakDetectionValueException("LeakCandidate severity level must not be null.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidLeakDetectionValueException("LeakCandidate status must not be null.");
+        }
+
         id = normalize(id);
         runId = normalize(runId);
         profileId = normalize(profileId);

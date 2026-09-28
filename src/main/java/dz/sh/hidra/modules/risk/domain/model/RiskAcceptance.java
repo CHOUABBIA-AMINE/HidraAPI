@@ -7,7 +7,7 @@
  *
  * @Name        : RiskAcceptance
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.risk.domain.model;
 
+import dz.sh.hidra.modules.risk.domain.exception.InvalidRiskValueException;
 import dz.sh.hidra.modules.risk.domain.value.*;
 import java.time.Instant;
 import java.math.BigDecimal;
@@ -69,6 +70,39 @@ import java.math.BigDecimal;
     ) {
 
         public RiskAcceptance {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidRiskValueException("RiskAcceptance id must not be blank.");
+        }
+        // HRA-051 required: riskAssessmentId
+        if (riskAssessmentId == null || riskAssessmentId.isBlank()) {
+            throw new InvalidRiskValueException("RiskAcceptance risk assessment id must not be blank.");
+        }
+        // HRA-051 required: acceptanceNumber
+        if (acceptanceNumber == null || acceptanceNumber.isBlank()) {
+            throw new InvalidRiskValueException("RiskAcceptance acceptance number must not be blank.");
+        }
+        // HRA-051 required: acceptedRatingId
+        if (acceptedRatingId == null || acceptedRatingId.isBlank()) {
+            throw new InvalidRiskValueException("RiskAcceptance accepted rating id must not be blank.");
+        }
+        // HRA-051 required: acceptanceReasonId
+        if (acceptanceReasonId == null || acceptanceReasonId.isBlank()) {
+            throw new InvalidRiskValueException("RiskAcceptance acceptance reason id must not be blank.");
+        }
+        // HRA-051 required: acceptedByActorId
+        if (acceptedByActorId == null || acceptedByActorId.isBlank()) {
+            throw new InvalidRiskValueException("RiskAcceptance accepted by actor id must not be blank.");
+        }
+        // HRA-051 required: acceptedAt
+        if (acceptedAt == null) {
+            throw new InvalidRiskValueException("RiskAcceptance accepted at must not be null.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidRiskValueException("RiskAcceptance status must not be null.");
+        }
+
         id = normalize(id);
         riskAssessmentId = normalize(riskAssessmentId);
         acceptanceNumber = normalize(acceptanceNumber);

@@ -7,7 +7,7 @@
  *
  * @Name        : MonitoringAcknowledgement
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.monitoring.domain.model;
 
+import dz.sh.hidra.modules.monitoring.domain.exception.InvalidMonitoringValueException;
 import dz.sh.hidra.modules.monitoring.domain.value.*;
 import java.time.Instant;
 
@@ -48,6 +49,27 @@ import java.time.Instant;
     ) {
 
         public MonitoringAcknowledgement {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidMonitoringValueException("MonitoringAcknowledgement id must not be blank.");
+        }
+        // HRA-051 required: targetId
+        if (targetId == null || targetId.isBlank()) {
+            throw new InvalidMonitoringValueException("MonitoringAcknowledgement target id must not be blank.");
+        }
+        // HRA-051 required: acknowledgementStatus
+        if (acknowledgementStatus == null) {
+            throw new InvalidMonitoringValueException("MonitoringAcknowledgement acknowledgement status must not be null.");
+        }
+        // HRA-051 required: acknowledgedByActorId
+        if (acknowledgedByActorId == null || acknowledgedByActorId.isBlank()) {
+            throw new InvalidMonitoringValueException("MonitoringAcknowledgement acknowledged by actor id must not be blank.");
+        }
+        // HRA-051 required: acknowledgedAt
+        if (acknowledgedAt == null) {
+            throw new InvalidMonitoringValueException("MonitoringAcknowledgement acknowledged at must not be null.");
+        }
+
         id = normalize(id);
         targetType = normalize(targetType);
         targetId = normalize(targetId);

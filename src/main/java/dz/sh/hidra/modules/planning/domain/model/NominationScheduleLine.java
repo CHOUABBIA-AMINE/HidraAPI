@@ -7,7 +7,7 @@
  *
  * @Name        : NominationScheduleLine
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.planning.domain.model;
 
+import dz.sh.hidra.modules.planning.domain.exception.InvalidPlanningValueException;
 import java.math.BigDecimal;
 import java.time.Instant;
 
@@ -50,6 +51,23 @@ import java.time.Instant;
     ) {
 
         public NominationScheduleLine {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidPlanningValueException("NominationScheduleLine id must not be blank.");
+        }
+        // HRA-051 required: nominationId
+        if (nominationId == null || nominationId.isBlank()) {
+            throw new InvalidPlanningValueException("NominationScheduleLine nomination id must not be blank.");
+        }
+        // HRA-051 required: lineStart
+        if (lineStart == null) {
+            throw new InvalidPlanningValueException("NominationScheduleLine line start must not be null.");
+        }
+        // HRA-051 required: lineEnd
+        if (lineEnd == null) {
+            throw new InvalidPlanningValueException("NominationScheduleLine line end must not be null.");
+        }
+
         id = normalize(id);
         nominationId = normalize(nominationId);
         quantityUnitId = normalize(quantityUnitId);

@@ -7,7 +7,7 @@
  *
  * @Name        : AuditIntegritySeal
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.audit.domain.model;
 
+import dz.sh.hidra.modules.audit.domain.exception.InvalidAuditValueException;
 import dz.sh.hidra.modules.audit.domain.value.*;
 import java.time.Instant;
 
@@ -56,6 +57,31 @@ import java.time.Instant;
     ) {
 
         public AuditIntegritySeal {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidAuditValueException("AuditIntegritySeal id must not be blank.");
+        }
+        // HRA-051 required: sealTypeId
+        if (sealTypeId == null || sealTypeId.isBlank()) {
+            throw new InvalidAuditValueException("AuditIntegritySeal seal type id must not be blank.");
+        }
+        // HRA-051 required: eventCount
+        if (eventCount == null) {
+            throw new InvalidAuditValueException("AuditIntegritySeal event count must not be null.");
+        }
+        // HRA-051 required: rootHash
+        if (rootHash == null || rootHash.isBlank()) {
+            throw new InvalidAuditValueException("AuditIntegritySeal root hash must not be blank.");
+        }
+        // HRA-051 required: sealedAt
+        if (sealedAt == null) {
+            throw new InvalidAuditValueException("AuditIntegritySeal sealed at must not be null.");
+        }
+        // HRA-051 required: verificationStatus
+        if (verificationStatus == null) {
+            throw new InvalidAuditValueException("AuditIntegritySeal verification status must not be null.");
+        }
+
         id = normalize(id);
         sealTypeId = normalize(sealTypeId);
         auditEventId = normalize(auditEventId);

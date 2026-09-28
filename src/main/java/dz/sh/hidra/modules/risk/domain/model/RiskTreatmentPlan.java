@@ -7,7 +7,7 @@
  *
  * @Name        : RiskTreatmentPlan
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.risk.domain.model;
 
+import dz.sh.hidra.modules.risk.domain.exception.InvalidRiskValueException;
 import dz.sh.hidra.modules.risk.domain.value.*;
 import java.time.Instant;
 
@@ -62,6 +63,23 @@ import java.time.Instant;
     ) {
 
         public RiskTreatmentPlan {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidRiskValueException("RiskTreatmentPlan id must not be blank.");
+        }
+        // HRA-051 required: riskAssessmentId
+        if (riskAssessmentId == null || riskAssessmentId.isBlank()) {
+            throw new InvalidRiskValueException("RiskTreatmentPlan risk assessment id must not be blank.");
+        }
+        // HRA-051 required: treatmentStrategyId
+        if (treatmentStrategyId == null || treatmentStrategyId.isBlank()) {
+            throw new InvalidRiskValueException("RiskTreatmentPlan treatment strategy id must not be blank.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidRiskValueException("RiskTreatmentPlan status must not be null.");
+        }
+
         id = normalize(id);
         riskAssessmentId = normalize(riskAssessmentId);
         treatmentStrategyId = normalize(treatmentStrategyId);

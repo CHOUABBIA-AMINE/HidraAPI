@@ -7,7 +7,7 @@
  *
  * @Name        : NotificationDeliveryAttempt
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.notification.domain.model;
 
+import dz.sh.hidra.modules.notification.domain.exception.InvalidNotificationValueException;
 import dz.sh.hidra.modules.notification.domain.value.*;
 import java.time.Instant;
 
@@ -58,6 +59,27 @@ import java.time.Instant;
     ) {
 
         public NotificationDeliveryAttempt {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidNotificationValueException("NotificationDeliveryAttempt id must not be blank.");
+        }
+        // HRA-051 required: messageId
+        if (messageId == null || messageId.isBlank()) {
+            throw new InvalidNotificationValueException("NotificationDeliveryAttempt message id must not be blank.");
+        }
+        // HRA-051 required: channelId
+        if (channelId == null || channelId.isBlank()) {
+            throw new InvalidNotificationValueException("NotificationDeliveryAttempt channel id must not be blank.");
+        }
+        // HRA-051 required: attemptStatus
+        if (attemptStatus == null) {
+            throw new InvalidNotificationValueException("NotificationDeliveryAttempt attempt status must not be null.");
+        }
+        // HRA-051 required: attemptedAt
+        if (attemptedAt == null) {
+            throw new InvalidNotificationValueException("NotificationDeliveryAttempt attempted at must not be null.");
+        }
+
         id = normalize(id);
         messageId = normalize(messageId);
         channelId = normalize(channelId);

@@ -7,7 +7,7 @@
  *
  * @Name        : DocumentCatalogTranslation
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.documents.domain.model;
 
+import dz.sh.hidra.modules.documents.domain.exception.InvalidDocumentValueException;
 import java.time.Instant;
 
     /**
@@ -43,6 +44,19 @@ import java.time.Instant;
     ) {
 
         public DocumentCatalogTranslation {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidDocumentValueException("DocumentCatalogTranslation id must not be blank.");
+        }
+        // HRA-051 required: catalogEntryId
+        if (catalogEntryId == null || catalogEntryId.isBlank()) {
+            throw new InvalidDocumentValueException("DocumentCatalogTranslation catalog entry id must not be blank.");
+        }
+        // HRA-051 required: locale
+        if (locale == null || locale.isBlank()) {
+            throw new InvalidDocumentValueException("DocumentCatalogTranslation locale must not be blank.");
+        }
+
         id = normalize(id);
         catalogEntryId = normalize(catalogEntryId);
         locale = normalize(locale);

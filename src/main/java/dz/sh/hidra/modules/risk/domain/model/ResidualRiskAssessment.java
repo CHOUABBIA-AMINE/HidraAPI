@@ -7,7 +7,7 @@
  *
  * @Name        : ResidualRiskAssessment
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.risk.domain.model;
 
+import dz.sh.hidra.modules.risk.domain.exception.InvalidRiskValueException;
 import java.math.BigDecimal;
 import java.time.Instant;
 
@@ -60,6 +61,39 @@ import java.time.Instant;
     ) {
 
         public ResidualRiskAssessment {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidRiskValueException("ResidualRiskAssessment id must not be blank.");
+        }
+        // HRA-051 required: riskAssessmentId
+        if (riskAssessmentId == null || riskAssessmentId.isBlank()) {
+            throw new InvalidRiskValueException("ResidualRiskAssessment risk assessment id must not be blank.");
+        }
+        // HRA-051 required: reassessmentDate
+        if (reassessmentDate == null) {
+            throw new InvalidRiskValueException("ResidualRiskAssessment reassessment date must not be null.");
+        }
+        // HRA-051 required: residualLikelihoodId
+        if (residualLikelihoodId == null || residualLikelihoodId.isBlank()) {
+            throw new InvalidRiskValueException("ResidualRiskAssessment residual likelihood id must not be blank.");
+        }
+        // HRA-051 required: residualConsequenceId
+        if (residualConsequenceId == null || residualConsequenceId.isBlank()) {
+            throw new InvalidRiskValueException("ResidualRiskAssessment residual consequence id must not be blank.");
+        }
+        // HRA-051 required: residualScore
+        if (residualScore == null) {
+            throw new InvalidRiskValueException("ResidualRiskAssessment residual score must not be null.");
+        }
+        // HRA-051 required: residualRatingId
+        if (residualRatingId == null || residualRatingId.isBlank()) {
+            throw new InvalidRiskValueException("ResidualRiskAssessment residual rating id must not be blank.");
+        }
+        // HRA-051 required: assessedByActorId
+        if (assessedByActorId == null || assessedByActorId.isBlank()) {
+            throw new InvalidRiskValueException("ResidualRiskAssessment assessed by actor id must not be blank.");
+        }
+
         id = normalize(id);
         riskAssessmentId = normalize(riskAssessmentId);
         treatmentPlanId = normalize(treatmentPlanId);

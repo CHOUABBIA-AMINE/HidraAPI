@@ -7,7 +7,7 @@
  *
  * @Name        : AlarmShelving
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.alarm.domain.model;
 
+import dz.sh.hidra.modules.alarm.domain.exception.InvalidAlarmValueException;
 import dz.sh.hidra.modules.alarm.domain.value.*;
 import java.time.Instant;
 
@@ -52,6 +53,35 @@ import java.time.Instant;
     ) {
 
         public AlarmShelving {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidAlarmValueException("AlarmShelving id must not be blank.");
+        }
+        // HRA-051 required: alarmId
+        if (alarmId == null || alarmId.isBlank()) {
+            throw new InvalidAlarmValueException("AlarmShelving alarm id must not be blank.");
+        }
+        // HRA-051 required: shelvingReasonId
+        if (shelvingReasonId == null || shelvingReasonId.isBlank()) {
+            throw new InvalidAlarmValueException("AlarmShelving shelving reason id must not be blank.");
+        }
+        // HRA-051 required: shelvedByActorId
+        if (shelvedByActorId == null || shelvedByActorId.isBlank()) {
+            throw new InvalidAlarmValueException("AlarmShelving shelved by actor id must not be blank.");
+        }
+        // HRA-051 required: shelvedAt
+        if (shelvedAt == null) {
+            throw new InvalidAlarmValueException("AlarmShelving shelved at must not be null.");
+        }
+        // HRA-051 required: shelvedUntil
+        if (shelvedUntil == null) {
+            throw new InvalidAlarmValueException("AlarmShelving shelved until must not be null.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidAlarmValueException("AlarmShelving status must not be null.");
+        }
+
         id = normalize(id);
         alarmId = normalize(alarmId);
         shelvingReasonId = normalize(shelvingReasonId);

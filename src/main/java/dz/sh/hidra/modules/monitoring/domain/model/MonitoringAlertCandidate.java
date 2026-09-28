@@ -7,7 +7,7 @@
  *
  * @Name        : MonitoringAlertCandidate
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.monitoring.domain.model;
 
+import dz.sh.hidra.modules.monitoring.domain.exception.InvalidMonitoringValueException;
 import dz.sh.hidra.modules.monitoring.domain.value.*;
 import java.time.Instant;
 
@@ -62,6 +63,31 @@ import java.time.Instant;
     ) {
 
         public MonitoringAlertCandidate {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidMonitoringValueException("MonitoringAlertCandidate id must not be blank.");
+        }
+        // HRA-051 required: candidateCode
+        if (candidateCode == null || candidateCode.isBlank()) {
+            throw new InvalidMonitoringValueException("MonitoringAlertCandidate candidate code must not be blank.");
+        }
+        // HRA-051 required: candidateTypeId
+        if (candidateTypeId == null || candidateTypeId.isBlank()) {
+            throw new InvalidMonitoringValueException("MonitoringAlertCandidate candidate type id must not be blank.");
+        }
+        // HRA-051 required: severity
+        if (severity == null) {
+            throw new InvalidMonitoringValueException("MonitoringAlertCandidate severity must not be null.");
+        }
+        // HRA-051 required: lifecycleStatus
+        if (lifecycleStatus == null) {
+            throw new InvalidMonitoringValueException("MonitoringAlertCandidate lifecycle status must not be null.");
+        }
+        // HRA-051 required: candidateStatus
+        if (candidateStatus == null) {
+            throw new InvalidMonitoringValueException("MonitoringAlertCandidate candidate status must not be null.");
+        }
+
         id = normalize(id);
         deviationId = normalize(deviationId);
         evaluationId = normalize(evaluationId);

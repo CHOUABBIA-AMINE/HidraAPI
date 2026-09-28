@@ -7,7 +7,7 @@
  *
  * @Name        : SimulationInputDataset
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.simulation.domain.model;
 
+import dz.sh.hidra.modules.simulation.domain.exception.InvalidSimulationValueException;
 import java.time.Instant;
 
     /**
@@ -45,6 +46,19 @@ import java.time.Instant;
     ) {
 
         public SimulationInputDataset {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidSimulationValueException("SimulationInputDataset id must not be blank.");
+        }
+        // HRA-051 required: inputSnapshotId
+        if (inputSnapshotId == null || inputSnapshotId.isBlank()) {
+            throw new InvalidSimulationValueException("SimulationInputDataset input snapshot id must not be blank.");
+        }
+        // HRA-051 required: datasetTypeId
+        if (datasetTypeId == null || datasetTypeId.isBlank()) {
+            throw new InvalidSimulationValueException("SimulationInputDataset dataset type id must not be blank.");
+        }
+
         id = normalize(id);
         inputSnapshotId = normalize(inputSnapshotId);
         datasetTypeId = normalize(datasetTypeId);

@@ -7,7 +7,7 @@
  *
  * @Name        : NotificationPreference
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.notification.domain.model;
 
+import dz.sh.hidra.modules.notification.domain.exception.InvalidNotificationValueException;
 import java.time.Instant;
 
     /**
@@ -53,6 +54,23 @@ import java.time.Instant;
     ) {
 
         public NotificationPreference {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidNotificationValueException("NotificationPreference id must not be blank.");
+        }
+        // HRA-051 required: recipientProfileId
+        if (recipientProfileId == null || recipientProfileId.isBlank()) {
+            throw new InvalidNotificationValueException("NotificationPreference recipient profile id must not be blank.");
+        }
+        // HRA-051 required: channelId
+        if (channelId == null || channelId.isBlank()) {
+            throw new InvalidNotificationValueException("NotificationPreference channel id must not be blank.");
+        }
+        // HRA-051 required: categoryId
+        if (categoryId == null || categoryId.isBlank()) {
+            throw new InvalidNotificationValueException("NotificationPreference category id must not be blank.");
+        }
+
         id = normalize(id);
         recipientProfileId = normalize(recipientProfileId);
         channelId = normalize(channelId);

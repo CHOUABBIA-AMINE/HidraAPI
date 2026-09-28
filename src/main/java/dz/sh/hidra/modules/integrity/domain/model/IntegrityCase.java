@@ -7,7 +7,7 @@
  *
  * @Name        : IntegrityCase
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.integrity.domain.model;
 
+import dz.sh.hidra.modules.integrity.domain.exception.InvalidIntegrityValueException;
 import dz.sh.hidra.modules.integrity.domain.value.*;
 import java.time.Instant;
 
@@ -70,6 +71,39 @@ import java.time.Instant;
     ) {
 
         public IntegrityCase {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidIntegrityValueException("IntegrityCase id must not be blank.");
+        }
+        // HRA-051 required: caseNumber
+        if (caseNumber == null || caseNumber.isBlank()) {
+            throw new InvalidIntegrityValueException("IntegrityCase case number must not be blank.");
+        }
+        // HRA-051 required: caseTypeId
+        if (caseTypeId == null || caseTypeId.isBlank()) {
+            throw new InvalidIntegrityValueException("IntegrityCase case type id must not be blank.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidIntegrityValueException("IntegrityCase status must not be null.");
+        }
+        // HRA-051 required: topologyAssetTypeCode
+        if (topologyAssetTypeCode == null || topologyAssetTypeCode.isBlank()) {
+            throw new InvalidIntegrityValueException("IntegrityCase topology asset type code must not be blank.");
+        }
+        // HRA-051 required: topologyAssetId
+        if (topologyAssetId == null || topologyAssetId.isBlank()) {
+            throw new InvalidIntegrityValueException("IntegrityCase topology asset id must not be blank.");
+        }
+        // HRA-051 required: openedAt
+        if (openedAt == null) {
+            throw new InvalidIntegrityValueException("IntegrityCase opened at must not be null.");
+        }
+        // HRA-051 order: openedAt <= closedAt
+        if (openedAt != null && closedAt != null && closedAt.isBefore(openedAt)) {
+            throw new InvalidIntegrityValueException("IntegrityCase closed at must not be before opened at.");
+        }
+
         id = normalize(id);
         caseNumber = normalize(caseNumber);
         title = normalize(title);

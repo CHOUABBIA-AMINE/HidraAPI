@@ -7,7 +7,7 @@
  *
  * @Name        : DocumentRetentionRecord
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.documents.domain.model;
 
+import dz.sh.hidra.modules.documents.domain.exception.InvalidDocumentValueException;
 import java.time.Instant;
 import java.time.LocalDate;
 
@@ -54,6 +55,23 @@ import java.time.LocalDate;
     ) {
 
         public DocumentRetentionRecord {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidDocumentValueException("DocumentRetentionRecord id must not be blank.");
+        }
+        // HRA-051 required: documentId
+        if (documentId == null || documentId.isBlank()) {
+            throw new InvalidDocumentValueException("DocumentRetentionRecord document id must not be blank.");
+        }
+        // HRA-051 required: retentionPolicyId
+        if (retentionPolicyId == null || retentionPolicyId.isBlank()) {
+            throw new InvalidDocumentValueException("DocumentRetentionRecord retention policy id must not be blank.");
+        }
+        // HRA-051 required: retentionClassId
+        if (retentionClassId == null || retentionClassId.isBlank()) {
+            throw new InvalidDocumentValueException("DocumentRetentionRecord retention class id must not be blank.");
+        }
+
         id = normalize(id);
         documentId = normalize(documentId);
         retentionPolicyId = normalize(retentionPolicyId);

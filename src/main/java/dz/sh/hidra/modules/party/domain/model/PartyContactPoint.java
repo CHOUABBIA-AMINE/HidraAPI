@@ -7,7 +7,7 @@
  *
  * @Name        : PartyContactPoint
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.party.domain.model;
 
+import dz.sh.hidra.modules.party.domain.exception.InvalidPartyValueException;
 import dz.sh.hidra.modules.party.domain.value.*;
 import java.time.Instant;
 
@@ -48,6 +49,23 @@ import java.time.Instant;
     ) {
 
         public PartyContactPoint {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidPartyValueException("PartyContactPoint id must not be blank.");
+        }
+        // HRA-051 required: partyId
+        if (partyId == null || partyId.isBlank()) {
+            throw new InvalidPartyValueException("PartyContactPoint party id must not be blank.");
+        }
+        // HRA-051 required: contactPointType
+        if (contactPointType == null) {
+            throw new InvalidPartyValueException("PartyContactPoint contact point type must not be null.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidPartyValueException("PartyContactPoint status must not be null.");
+        }
+
         id = normalize(id);
         partyId = normalize(partyId);
         label = normalize(label);

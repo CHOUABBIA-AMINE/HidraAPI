@@ -47,6 +47,11 @@ import java.time.Instant;
     ) {
 
         public AdministrativeState {
+        // HRA-051 required: code
+        if (code == null || code.isBlank()) {
+            throw new InvalidOrganizationValueException("AdministrativeState code must not be blank.");
+        }
+
         id = requireText(id, "Administrative state ID is required.");
         code = OrganizationCode.of(code).value();
         nameAr = normalize(nameAr);

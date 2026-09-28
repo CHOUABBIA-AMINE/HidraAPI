@@ -7,7 +7,7 @@
  *
  * @Name        : AssetWarranty
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.assets.domain.model;
 
+import dz.sh.hidra.modules.assets.domain.exception.InvalidAssetsValueException;
 import dz.sh.hidra.modules.assets.domain.value.*;
 import java.time.Instant;
 
@@ -54,6 +55,35 @@ import java.time.Instant;
     ) {
 
         public AssetWarranty {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidAssetsValueException("AssetWarranty id must not be blank.");
+        }
+        // HRA-051 required: maintainableAssetId
+        if (maintainableAssetId == null || maintainableAssetId.isBlank()) {
+            throw new InvalidAssetsValueException("AssetWarranty maintainable asset id must not be blank.");
+        }
+        // HRA-051 required: warrantyNumber
+        if (warrantyNumber == null || warrantyNumber.isBlank()) {
+            throw new InvalidAssetsValueException("AssetWarranty warranty number must not be blank.");
+        }
+        // HRA-051 required: validFrom
+        if (validFrom == null) {
+            throw new InvalidAssetsValueException("AssetWarranty valid from must not be null.");
+        }
+        // HRA-051 required: validTo
+        if (validTo == null) {
+            throw new InvalidAssetsValueException("AssetWarranty valid to must not be null.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidAssetsValueException("AssetWarranty status must not be null.");
+        }
+        // HRA-051 order: validFrom <= validTo
+        if (validFrom != null && validTo != null && validTo.isBefore(validFrom)) {
+            throw new InvalidAssetsValueException("AssetWarranty valid to must not be before valid from.");
+        }
+
         id = normalize(id);
         maintainableAssetId = normalize(maintainableAssetId);
         warrantyNumber = normalize(warrantyNumber);

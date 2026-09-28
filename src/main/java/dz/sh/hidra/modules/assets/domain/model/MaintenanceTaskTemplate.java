@@ -7,7 +7,7 @@
  *
  * @Name        : MaintenanceTaskTemplate
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.assets.domain.model;
 
+import dz.sh.hidra.modules.assets.domain.exception.InvalidAssetsValueException;
 import java.time.Instant;
 
     /**
@@ -51,6 +52,19 @@ import java.time.Instant;
     ) {
 
         public MaintenanceTaskTemplate {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidAssetsValueException("MaintenanceTaskTemplate id must not be blank.");
+        }
+        // HRA-051 required: templateCode
+        if (templateCode == null || templateCode.isBlank()) {
+            throw new InvalidAssetsValueException("MaintenanceTaskTemplate template code must not be blank.");
+        }
+        // HRA-051 required: taskTypeId
+        if (taskTypeId == null || taskTypeId.isBlank()) {
+            throw new InvalidAssetsValueException("MaintenanceTaskTemplate task type id must not be blank.");
+        }
+
         id = normalize(id);
         templateCode = normalize(templateCode);
         name = normalize(name);

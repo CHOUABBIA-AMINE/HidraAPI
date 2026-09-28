@@ -7,7 +7,7 @@
  *
  * @Name        : SimulationCandidateChange
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.simulation.domain.model;
 
+import dz.sh.hidra.modules.simulation.domain.exception.InvalidSimulationValueException;
 import java.time.Instant;
 
     /**
@@ -55,6 +56,23 @@ import java.time.Instant;
     ) {
 
         public SimulationCandidateChange {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidSimulationValueException("SimulationCandidateChange id must not be blank.");
+        }
+        // HRA-051 required: candidateId
+        if (candidateId == null || candidateId.isBlank()) {
+            throw new InvalidSimulationValueException("SimulationCandidateChange candidate id must not be blank.");
+        }
+        // HRA-051 required: changeTypeId
+        if (changeTypeId == null || changeTypeId.isBlank()) {
+            throw new InvalidSimulationValueException("SimulationCandidateChange change type id must not be blank.");
+        }
+        // HRA-051 required: targetId
+        if (targetId == null || targetId.isBlank()) {
+            throw new InvalidSimulationValueException("SimulationCandidateChange target id must not be blank.");
+        }
+
         id = normalize(id);
         candidateId = normalize(candidateId);
         changeTypeId = normalize(changeTypeId);

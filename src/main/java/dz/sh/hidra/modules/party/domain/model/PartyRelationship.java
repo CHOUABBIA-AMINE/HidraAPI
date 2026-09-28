@@ -7,7 +7,7 @@
  *
  * @Name        : PartyRelationship
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.party.domain.model;
 
+import dz.sh.hidra.modules.party.domain.exception.InvalidPartyValueException;
 import dz.sh.hidra.modules.party.domain.value.*;
 import java.time.Instant;
 
@@ -48,6 +49,31 @@ import java.time.Instant;
     ) {
 
         public PartyRelationship {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidPartyValueException("PartyRelationship id must not be blank.");
+        }
+        // HRA-051 required: sourcePartyId
+        if (sourcePartyId == null || sourcePartyId.isBlank()) {
+            throw new InvalidPartyValueException("PartyRelationship source party id must not be blank.");
+        }
+        // HRA-051 required: targetPartyId
+        if (targetPartyId == null || targetPartyId.isBlank()) {
+            throw new InvalidPartyValueException("PartyRelationship target party id must not be blank.");
+        }
+        // HRA-051 required: relationshipType
+        if (relationshipType == null) {
+            throw new InvalidPartyValueException("PartyRelationship relationship type must not be null.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidPartyValueException("PartyRelationship status must not be null.");
+        }
+        // HRA-051 order: validFrom <= validTo
+        if (validFrom != null && validTo != null && validTo.isBefore(validFrom)) {
+            throw new InvalidPartyValueException("PartyRelationship valid to must not be before valid from.");
+        }
+
         id = normalize(id);
         sourcePartyId = normalize(sourcePartyId);
         targetPartyId = normalize(targetPartyId);

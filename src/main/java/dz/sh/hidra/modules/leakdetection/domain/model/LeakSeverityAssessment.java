@@ -7,7 +7,7 @@
  *
  * @Name        : LeakSeverityAssessment
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.leakdetection.domain.model;
 
+import dz.sh.hidra.modules.leakdetection.domain.exception.InvalidLeakDetectionValueException;
 import dz.sh.hidra.modules.leakdetection.domain.value.*;
 import java.time.Instant;
 import java.math.BigDecimal;
@@ -53,6 +54,27 @@ import java.math.BigDecimal;
     ) {
 
         public LeakSeverityAssessment {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidLeakDetectionValueException("LeakSeverityAssessment id must not be blank.");
+        }
+        // HRA-051 required: candidateId
+        if (candidateId == null || candidateId.isBlank()) {
+            throw new InvalidLeakDetectionValueException("LeakSeverityAssessment candidate id must not be blank.");
+        }
+        // HRA-051 required: severityLevel
+        if (severityLevel == null) {
+            throw new InvalidLeakDetectionValueException("LeakSeverityAssessment severity level must not be null.");
+        }
+        // HRA-051 required: confidenceScore
+        if (confidenceScore == null) {
+            throw new InvalidLeakDetectionValueException("LeakSeverityAssessment confidence score must not be null.");
+        }
+        // HRA-051 required: assessedAt
+        if (assessedAt == null) {
+            throw new InvalidLeakDetectionValueException("LeakSeverityAssessment assessed at must not be null.");
+        }
+
         id = normalize(id);
         candidateId = normalize(candidateId);
         leakRateUnitId = normalize(leakRateUnitId);

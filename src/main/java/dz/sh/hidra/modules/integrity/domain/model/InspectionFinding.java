@@ -7,7 +7,7 @@
  *
  * @Name        : InspectionFinding
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.integrity.domain.model;
 
+import dz.sh.hidra.modules.integrity.domain.exception.InvalidIntegrityValueException;
 import dz.sh.hidra.modules.integrity.domain.value.*;
 import java.time.Instant;
 import java.math.BigDecimal;
@@ -59,6 +60,31 @@ import java.math.BigDecimal;
     ) {
 
         public InspectionFinding {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidIntegrityValueException("InspectionFinding id must not be blank.");
+        }
+        // HRA-051 required: inspectionRunId
+        if (inspectionRunId == null || inspectionRunId.isBlank()) {
+            throw new InvalidIntegrityValueException("InspectionFinding inspection run id must not be blank.");
+        }
+        // HRA-051 required: findingNumber
+        if (findingNumber == null || findingNumber.isBlank()) {
+            throw new InvalidIntegrityValueException("InspectionFinding finding number must not be blank.");
+        }
+        // HRA-051 required: findingTypeId
+        if (findingTypeId == null || findingTypeId.isBlank()) {
+            throw new InvalidIntegrityValueException("InspectionFinding finding type id must not be blank.");
+        }
+        // HRA-051 required: severity
+        if (severity == null) {
+            throw new InvalidIntegrityValueException("InspectionFinding severity must not be null.");
+        }
+        // HRA-051 required: observedAt
+        if (observedAt == null) {
+            throw new InvalidIntegrityValueException("InspectionFinding observed at must not be null.");
+        }
+
         id = normalize(id);
         inspectionRunId = normalize(inspectionRunId);
         findingNumber = normalize(findingNumber);

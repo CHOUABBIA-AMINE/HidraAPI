@@ -56,6 +56,11 @@ public record EmployeeAssignment(
 ) {
 
     public EmployeeAssignment {
+        // HRA-051 required: validFrom
+        if (validFrom == null) {
+            throw new InvalidOrganizationValueException("EmployeeAssignment valid from must not be null.");
+        }
+
         id = requireText(id, "Employee assignment ID is required.");
         employeeId = requireText(employeeId, "Employee assignment employee ID is required.");
         organizationUnitId = requireText(organizationUnitId, "Employee assignment organization-unit ID is required.");

@@ -7,7 +7,7 @@
  *
  * @Name        : NotificationChannel
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.notification.domain.model;
 
+import dz.sh.hidra.modules.notification.domain.exception.InvalidNotificationValueException;
 import dz.sh.hidra.modules.notification.domain.value.*;
 import java.time.Instant;
 
@@ -60,6 +61,19 @@ import java.time.Instant;
     ) {
 
         public NotificationChannel {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidNotificationValueException("NotificationChannel id must not be blank.");
+        }
+        // HRA-051 required: code
+        if (code == null || code.isBlank()) {
+            throw new InvalidNotificationValueException("NotificationChannel code must not be blank.");
+        }
+        // HRA-051 required: channelType
+        if (channelType == null) {
+            throw new InvalidNotificationValueException("NotificationChannel channel type must not be null.");
+        }
+
         id = normalize(id);
         code = normalize(code);
         nameAr = normalize(nameAr);

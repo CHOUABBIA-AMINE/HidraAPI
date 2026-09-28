@@ -7,7 +7,7 @@
  *
  * @Name        : AnalyticsDataSourceReference
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.analytics.domain.model;
 
+import dz.sh.hidra.modules.analytics.domain.exception.InvalidAnalyticsValueException;
 import dz.sh.hidra.modules.analytics.domain.value.*;
 import java.time.Instant;
 
@@ -52,6 +53,19 @@ import java.time.Instant;
     ) {
 
         public AnalyticsDataSourceReference {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidAnalyticsValueException("AnalyticsDataSourceReference id must not be blank.");
+        }
+        // HRA-051 required: accessMode
+        if (accessMode == null) {
+            throw new InvalidAnalyticsValueException("AnalyticsDataSourceReference access mode must not be null.");
+        }
+        // HRA-051 required: refreshMode
+        if (refreshMode == null) {
+            throw new InvalidAnalyticsValueException("AnalyticsDataSourceReference refresh mode must not be null.");
+        }
+
         id = normalize(id);
         sourceModule = normalize(sourceModule);
         sourceType = normalize(sourceType);

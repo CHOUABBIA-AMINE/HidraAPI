@@ -7,7 +7,7 @@
  *
  * @Name        : TelemetrySource
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.telemetry.domain.model;
 
+import dz.sh.hidra.modules.telemetry.domain.exception.InvalidTelemetryValueException;
 import dz.sh.hidra.modules.telemetry.domain.value.*;
 import java.time.Instant;
 
@@ -54,6 +55,27 @@ import java.time.Instant;
     ) {
 
         public TelemetrySource {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidTelemetryValueException("TelemetrySource id must not be blank.");
+        }
+        // HRA-051 required: code
+        if (code == null || code.isBlank()) {
+            throw new InvalidTelemetryValueException("TelemetrySource code must not be blank.");
+        }
+        // HRA-051 required: sourceTypeId
+        if (sourceTypeId == null || sourceTypeId.isBlank()) {
+            throw new InvalidTelemetryValueException("TelemetrySource source type id must not be blank.");
+        }
+        // HRA-051 required: protocolId
+        if (protocolId == null || protocolId.isBlank()) {
+            throw new InvalidTelemetryValueException("TelemetrySource protocol id must not be blank.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidTelemetryValueException("TelemetrySource status must not be null.");
+        }
+
         id = normalize(id);
         code = normalize(code);
         nameAr = normalize(nameAr);

@@ -7,7 +7,7 @@
  *
  * @Name        : LeakDetectionRun
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.leakdetection.domain.model;
 
+import dz.sh.hidra.modules.leakdetection.domain.exception.InvalidLeakDetectionValueException;
 import dz.sh.hidra.modules.leakdetection.domain.value.*;
 import java.time.Instant;
 
@@ -52,6 +53,31 @@ import java.time.Instant;
     ) {
 
         public LeakDetectionRun {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidLeakDetectionValueException("LeakDetectionRun id must not be blank.");
+        }
+        // HRA-051 required: profileId
+        if (profileId == null || profileId.isBlank()) {
+            throw new InvalidLeakDetectionValueException("LeakDetectionRun profile id must not be blank.");
+        }
+        // HRA-051 required: methodId
+        if (methodId == null || methodId.isBlank()) {
+            throw new InvalidLeakDetectionValueException("LeakDetectionRun method id must not be blank.");
+        }
+        // HRA-051 required: runCode
+        if (runCode == null || runCode.isBlank()) {
+            throw new InvalidLeakDetectionValueException("LeakDetectionRun run code must not be blank.");
+        }
+        // HRA-051 required: evaluationStart
+        if (evaluationStart == null) {
+            throw new InvalidLeakDetectionValueException("LeakDetectionRun evaluation start must not be null.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidLeakDetectionValueException("LeakDetectionRun status must not be null.");
+        }
+
         id = normalize(id);
         profileId = normalize(profileId);
         methodId = normalize(methodId);

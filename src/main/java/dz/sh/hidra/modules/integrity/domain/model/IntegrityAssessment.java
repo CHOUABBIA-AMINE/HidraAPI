@@ -7,7 +7,7 @@
  *
  * @Name        : IntegrityAssessment
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.integrity.domain.model;
 
+import dz.sh.hidra.modules.integrity.domain.exception.InvalidIntegrityValueException;
 import dz.sh.hidra.modules.integrity.domain.value.*;
 import java.time.Instant;
 
@@ -64,6 +65,27 @@ import java.time.Instant;
     ) {
 
         public IntegrityAssessment {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidIntegrityValueException("IntegrityAssessment id must not be blank.");
+        }
+        // HRA-051 required: assessmentNumber
+        if (assessmentNumber == null || assessmentNumber.isBlank()) {
+            throw new InvalidIntegrityValueException("IntegrityAssessment assessment number must not be blank.");
+        }
+        // HRA-051 required: assessmentTypeId
+        if (assessmentTypeId == null || assessmentTypeId.isBlank()) {
+            throw new InvalidIntegrityValueException("IntegrityAssessment assessment type id must not be blank.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidIntegrityValueException("IntegrityAssessment status must not be null.");
+        }
+        // HRA-051 required: assessmentDate
+        if (assessmentDate == null) {
+            throw new InvalidIntegrityValueException("IntegrityAssessment assessment date must not be null.");
+        }
+
         id = normalize(id);
         programId = normalize(programId);
         assessmentNumber = normalize(assessmentNumber);

@@ -7,7 +7,7 @@
  *
  * @Name        : NotificationRecipientGroupMember
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.notification.domain.model;
 
+import dz.sh.hidra.modules.notification.domain.exception.InvalidNotificationValueException;
 import dz.sh.hidra.modules.notification.domain.value.*;
 import java.time.Instant;
 
@@ -50,6 +51,27 @@ import java.time.Instant;
     ) {
 
         public NotificationRecipientGroupMember {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidNotificationValueException("NotificationRecipientGroupMember id must not be blank.");
+        }
+        // HRA-051 required: groupId
+        if (groupId == null || groupId.isBlank()) {
+            throw new InvalidNotificationValueException("NotificationRecipientGroupMember group id must not be blank.");
+        }
+        // HRA-051 required: memberType
+        if (memberType == null) {
+            throw new InvalidNotificationValueException("NotificationRecipientGroupMember member type must not be null.");
+        }
+        // HRA-051 required: memberReferenceId
+        if (memberReferenceId == null || memberReferenceId.isBlank()) {
+            throw new InvalidNotificationValueException("NotificationRecipientGroupMember member reference id must not be blank.");
+        }
+        // HRA-051 order: validFrom <= validTo
+        if (validFrom != null && validTo != null && validTo.isBefore(validFrom)) {
+            throw new InvalidNotificationValueException("NotificationRecipientGroupMember valid to must not be before valid from.");
+        }
+
         id = normalize(id);
         groupId = normalize(groupId);
         memberReferenceId = normalize(memberReferenceId);

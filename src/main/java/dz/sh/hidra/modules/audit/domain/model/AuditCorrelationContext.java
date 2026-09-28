@@ -7,7 +7,7 @@
  *
  * @Name        : AuditCorrelationContext
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.audit.domain.model;
 
+import dz.sh.hidra.modules.audit.domain.exception.InvalidAuditValueException;
 import java.time.Instant;
 
     /**
@@ -51,6 +52,19 @@ import java.time.Instant;
     ) {
 
         public AuditCorrelationContext {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidAuditValueException("AuditCorrelationContext id must not be blank.");
+        }
+        // HRA-051 required: auditEventId
+        if (auditEventId == null || auditEventId.isBlank()) {
+            throw new InvalidAuditValueException("AuditCorrelationContext audit event id must not be blank.");
+        }
+        // HRA-051 required: capturedAt
+        if (capturedAt == null) {
+            throw new InvalidAuditValueException("AuditCorrelationContext captured at must not be null.");
+        }
+
         id = normalize(id);
         auditEventId = normalize(auditEventId);
         correlationId = normalize(correlationId);

@@ -7,7 +7,7 @@
  *
  * @Name        : IntegrationFieldMapping
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.integration.domain.model;
 
+import dz.sh.hidra.modules.integration.domain.exception.InvalidIntegrationValueException;
 /**
      * Source-to-target field mapping.
      *
@@ -49,6 +50,15 @@ package dz.sh.hidra.modules.integration.domain.model;
     ) {
 
         public IntegrationFieldMapping {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidIntegrationValueException("IntegrationFieldMapping id must not be blank.");
+        }
+        // HRA-051 required: mappingProfileId
+        if (mappingProfileId == null || mappingProfileId.isBlank()) {
+            throw new InvalidIntegrationValueException("IntegrationFieldMapping mapping profile id must not be blank.");
+        }
+
         id = normalize(id);
         mappingProfileId = normalize(mappingProfileId);
         sourcePath = normalize(sourcePath);

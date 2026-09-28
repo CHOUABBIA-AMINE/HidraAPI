@@ -7,7 +7,7 @@
  *
  * @Name        : NotificationTemplate
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.notification.domain.model;
 
+import dz.sh.hidra.modules.notification.domain.exception.InvalidNotificationValueException;
 import dz.sh.hidra.modules.notification.domain.value.*;
 import java.time.Instant;
 
@@ -56,6 +57,23 @@ import java.time.Instant;
     ) {
 
         public NotificationTemplate {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidNotificationValueException("NotificationTemplate id must not be blank.");
+        }
+        // HRA-051 required: code
+        if (code == null || code.isBlank()) {
+            throw new InvalidNotificationValueException("NotificationTemplate code must not be blank.");
+        }
+        // HRA-051 required: templateTypeId
+        if (templateTypeId == null || templateTypeId.isBlank()) {
+            throw new InvalidNotificationValueException("NotificationTemplate template type id must not be blank.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidNotificationValueException("NotificationTemplate status must not be null.");
+        }
+
         id = normalize(id);
         code = normalize(code);
         nameAr = normalize(nameAr);

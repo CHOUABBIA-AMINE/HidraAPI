@@ -7,7 +7,7 @@
  *
  * @Name        : SimulationCandidateOperatingCondition
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.simulation.domain.model;
 
+import dz.sh.hidra.modules.simulation.domain.exception.InvalidSimulationValueException;
 import java.math.BigDecimal;
 import java.time.Instant;
 
@@ -48,6 +49,27 @@ import java.time.Instant;
     ) {
 
         public SimulationCandidateOperatingCondition {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidSimulationValueException("SimulationCandidateOperatingCondition id must not be blank.");
+        }
+        // HRA-051 required: candidateId
+        if (candidateId == null || candidateId.isBlank()) {
+            throw new InvalidSimulationValueException("SimulationCandidateOperatingCondition candidate id must not be blank.");
+        }
+        // HRA-051 required: targetId
+        if (targetId == null || targetId.isBlank()) {
+            throw new InvalidSimulationValueException("SimulationCandidateOperatingCondition target id must not be blank.");
+        }
+        // HRA-051 required: metricCode
+        if (metricCode == null || metricCode.isBlank()) {
+            throw new InvalidSimulationValueException("SimulationCandidateOperatingCondition metric code must not be blank.");
+        }
+        // HRA-051 required: expectedValue
+        if (expectedValue == null) {
+            throw new InvalidSimulationValueException("SimulationCandidateOperatingCondition expected value must not be null.");
+        }
+
         id = normalize(id);
         candidateId = normalize(candidateId);
         targetType = normalize(targetType);

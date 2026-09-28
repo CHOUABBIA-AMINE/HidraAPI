@@ -51,6 +51,11 @@ import java.time.Instant;
     ) {
 
         public OrganizationDelegation {
+        // HRA-051 required: validTo
+        if (validTo == null) {
+            throw new InvalidOrganizationValueException("OrganizationDelegation valid to must not be null.");
+        }
+
         id = requireText(id, "Organization delegation ID is required.");
         delegatorEmployeeId = requireText(delegatorEmployeeId, "Delegator employee ID is required.");
         delegateEmployeeId = requireText(delegateEmployeeId, "Delegate employee ID is required.");

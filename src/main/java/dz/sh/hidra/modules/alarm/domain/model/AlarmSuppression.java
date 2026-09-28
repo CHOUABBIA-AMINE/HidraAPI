@@ -7,7 +7,7 @@
  *
  * @Name        : AlarmSuppression
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.alarm.domain.model;
 
+import dz.sh.hidra.modules.alarm.domain.exception.InvalidAlarmValueException;
 import dz.sh.hidra.modules.alarm.domain.value.*;
 import java.time.Instant;
 
@@ -64,6 +65,35 @@ import java.time.Instant;
     ) {
 
         public AlarmSuppression {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidAlarmValueException("AlarmSuppression id must not be blank.");
+        }
+        // HRA-051 required: scopeType
+        if (scopeType == null) {
+            throw new InvalidAlarmValueException("AlarmSuppression scope type must not be null.");
+        }
+        // HRA-051 required: scopeReferenceId
+        if (scopeReferenceId == null || scopeReferenceId.isBlank()) {
+            throw new InvalidAlarmValueException("AlarmSuppression scope reference id must not be blank.");
+        }
+        // HRA-051 required: suppressionReasonId
+        if (suppressionReasonId == null || suppressionReasonId.isBlank()) {
+            throw new InvalidAlarmValueException("AlarmSuppression suppression reason id must not be blank.");
+        }
+        // HRA-051 required: suppressedByActorId
+        if (suppressedByActorId == null || suppressedByActorId.isBlank()) {
+            throw new InvalidAlarmValueException("AlarmSuppression suppressed by actor id must not be blank.");
+        }
+        // HRA-051 required: suppressedAt
+        if (suppressedAt == null) {
+            throw new InvalidAlarmValueException("AlarmSuppression suppressed at must not be null.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidAlarmValueException("AlarmSuppression status must not be null.");
+        }
+
         id = normalize(id);
         scopeReferenceId = normalize(scopeReferenceId);
         alarmId = normalize(alarmId);

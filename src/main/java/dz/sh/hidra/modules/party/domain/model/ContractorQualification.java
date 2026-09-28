@@ -7,7 +7,7 @@
  *
  * @Name        : ContractorQualification
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.party.domain.model;
 
+import dz.sh.hidra.modules.party.domain.exception.InvalidPartyValueException;
 import dz.sh.hidra.modules.party.domain.value.*;
 import java.time.Instant;
 
@@ -54,6 +55,23 @@ import java.time.Instant;
     ) {
 
         public ContractorQualification {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidPartyValueException("ContractorQualification id must not be blank.");
+        }
+        // HRA-051 required: partyId
+        if (partyId == null || partyId.isBlank()) {
+            throw new InvalidPartyValueException("ContractorQualification party id must not be blank.");
+        }
+        // HRA-051 required: contractorCategoryCode
+        if (contractorCategoryCode == null || contractorCategoryCode.isBlank()) {
+            throw new InvalidPartyValueException("ContractorQualification contractor category code must not be blank.");
+        }
+        // HRA-051 required: qualificationStatus
+        if (qualificationStatus == null) {
+            throw new InvalidPartyValueException("ContractorQualification qualification status must not be null.");
+        }
+
         id = normalize(id);
         partyId = normalize(partyId);
         contractorCategoryCode = normalize(contractorCategoryCode);

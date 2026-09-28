@@ -7,7 +7,7 @@
  *
  * @Name        : ReportOutputArtifact
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.reporting.domain.model;
 
+import dz.sh.hidra.modules.reporting.domain.exception.InvalidReportingValueException;
 import dz.sh.hidra.modules.reporting.domain.value.*;
 import java.time.Instant;
 
@@ -56,6 +57,31 @@ import java.time.Instant;
     ) {
 
         public ReportOutputArtifact {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidReportingValueException("ReportOutputArtifact id must not be blank.");
+        }
+        // HRA-051 required: reportRunId
+        if (reportRunId == null || reportRunId.isBlank()) {
+            throw new InvalidReportingValueException("ReportOutputArtifact report run id must not be blank.");
+        }
+        // HRA-051 required: artifactType
+        if (artifactType == null) {
+            throw new InvalidReportingValueException("ReportOutputArtifact artifact type must not be null.");
+        }
+        // HRA-051 required: format
+        if (format == null) {
+            throw new InvalidReportingValueException("ReportOutputArtifact format must not be null.");
+        }
+        // HRA-051 required: checksum
+        if (checksum == null || checksum.isBlank()) {
+            throw new InvalidReportingValueException("ReportOutputArtifact checksum must not be blank.");
+        }
+        // HRA-051 required: generatedAt
+        if (generatedAt == null) {
+            throw new InvalidReportingValueException("ReportOutputArtifact generated at must not be null.");
+        }
+
         id = normalize(id);
         reportRunId = normalize(reportRunId);
         fileName = normalize(fileName);

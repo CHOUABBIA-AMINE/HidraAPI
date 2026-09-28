@@ -7,7 +7,7 @@
  *
  * @Name        : CustodyQuantityCalculation
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.custody.domain.model;
 
+import dz.sh.hidra.modules.custody.domain.exception.InvalidCustodyValueException;
 import dz.sh.hidra.modules.custody.domain.value.*;
 import java.time.Instant;
 import java.math.BigDecimal;
@@ -63,6 +64,31 @@ import java.math.BigDecimal;
     ) {
 
         public CustodyQuantityCalculation {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidCustodyValueException("CustodyQuantityCalculation id must not be blank.");
+        }
+        // HRA-051 required: calculationNumber
+        if (calculationNumber == null || calculationNumber.isBlank()) {
+            throw new InvalidCustodyValueException("CustodyQuantityCalculation calculation number must not be blank.");
+        }
+        // HRA-051 required: measurementPeriodId
+        if (measurementPeriodId == null || measurementPeriodId.isBlank()) {
+            throw new InvalidCustodyValueException("CustodyQuantityCalculation measurement period id must not be blank.");
+        }
+        // HRA-051 required: quantityBasis
+        if (quantityBasis == null) {
+            throw new InvalidCustodyValueException("CustodyQuantityCalculation quantity basis must not be null.");
+        }
+        // HRA-051 required: quantityUnitId
+        if (quantityUnitId == null || quantityUnitId.isBlank()) {
+            throw new InvalidCustodyValueException("CustodyQuantityCalculation quantity unit id must not be blank.");
+        }
+        // HRA-051 required: calculatedAt
+        if (calculatedAt == null) {
+            throw new InvalidCustodyValueException("CustodyQuantityCalculation calculated at must not be null.");
+        }
+
         id = normalize(id);
         calculationNumber = normalize(calculationNumber);
         measurementPeriodId = normalize(measurementPeriodId);

@@ -7,7 +7,7 @@
  *
  * @Name        : AlarmEvidenceLink
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.alarm.domain.model;
 
+import dz.sh.hidra.modules.alarm.domain.exception.InvalidAlarmValueException;
 import dz.sh.hidra.modules.alarm.domain.value.*;
 import java.time.Instant;
 
@@ -46,6 +47,23 @@ import java.time.Instant;
     ) {
 
         public AlarmEvidenceLink {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidAlarmValueException("AlarmEvidenceLink id must not be blank.");
+        }
+        // HRA-051 required: alarmId
+        if (alarmId == null || alarmId.isBlank()) {
+            throw new InvalidAlarmValueException("AlarmEvidenceLink alarm id must not be blank.");
+        }
+        // HRA-051 required: evidenceType
+        if (evidenceType == null) {
+            throw new InvalidAlarmValueException("AlarmEvidenceLink evidence type must not be null.");
+        }
+        // HRA-051 required: evidenceReferenceId
+        if (evidenceReferenceId == null || evidenceReferenceId.isBlank()) {
+            throw new InvalidAlarmValueException("AlarmEvidenceLink evidence reference id must not be blank.");
+        }
+
         id = normalize(id);
         alarmId = normalize(alarmId);
         evidenceReferenceId = normalize(evidenceReferenceId);

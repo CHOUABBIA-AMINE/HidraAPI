@@ -7,7 +7,7 @@
  *
  * @Name        : WorkflowStepAssignmentRule
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.workflow.domain.model;
 
+import dz.sh.hidra.modules.workflow.domain.exception.InvalidWorkflowValueException;
 import java.time.Instant;
 
     /**
@@ -53,6 +54,23 @@ import java.time.Instant;
     ) {
 
         public WorkflowStepAssignmentRule {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidWorkflowValueException("WorkflowStepAssignmentRule id must not be blank.");
+        }
+        // HRA-051 required: definitionId
+        if (definitionId == null || definitionId.isBlank()) {
+            throw new InvalidWorkflowValueException("WorkflowStepAssignmentRule definition id must not be blank.");
+        }
+        // HRA-051 required: stepId
+        if (stepId == null || stepId.isBlank()) {
+            throw new InvalidWorkflowValueException("WorkflowStepAssignmentRule step id must not be blank.");
+        }
+        // HRA-051 required: assignmentModeId
+        if (assignmentModeId == null || assignmentModeId.isBlank()) {
+            throw new InvalidWorkflowValueException("WorkflowStepAssignmentRule assignment mode id must not be blank.");
+        }
+
         id = normalize(id);
         definitionId = normalize(definitionId);
         stepId = normalize(stepId);

@@ -7,7 +7,7 @@
  *
  * @Name        : AlarmRuleBinding
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.alarm.domain.model;
 
+import dz.sh.hidra.modules.alarm.domain.exception.InvalidAlarmValueException;
 import java.time.Instant;
 
     /**
@@ -65,6 +66,31 @@ import java.time.Instant;
     ) {
 
         public AlarmRuleBinding {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidAlarmValueException("AlarmRuleBinding id must not be blank.");
+        }
+        // HRA-051 required: code
+        if (code == null || code.isBlank()) {
+            throw new InvalidAlarmValueException("AlarmRuleBinding code must not be blank.");
+        }
+        // HRA-051 required: alarmTypeId
+        if (alarmTypeId == null || alarmTypeId.isBlank()) {
+            throw new InvalidAlarmValueException("AlarmRuleBinding alarm type id must not be blank.");
+        }
+        // HRA-051 required: defaultSeverityId
+        if (defaultSeverityId == null || defaultSeverityId.isBlank()) {
+            throw new InvalidAlarmValueException("AlarmRuleBinding default severity id must not be blank.");
+        }
+        // HRA-051 required: effectiveFrom
+        if (effectiveFrom == null) {
+            throw new InvalidAlarmValueException("AlarmRuleBinding effective from must not be null.");
+        }
+        // HRA-051 order: effectiveFrom <= effectiveTo
+        if (effectiveFrom != null && effectiveTo != null && effectiveTo.isBefore(effectiveFrom)) {
+            throw new InvalidAlarmValueException("AlarmRuleBinding effective to must not be before effective from.");
+        }
+
         id = normalize(id);
         code = normalize(code);
         nameAr = normalize(nameAr);

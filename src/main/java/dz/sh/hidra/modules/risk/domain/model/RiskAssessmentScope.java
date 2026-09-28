@@ -7,7 +7,7 @@
  *
  * @Name        : RiskAssessmentScope
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.risk.domain.model;
 
+import dz.sh.hidra.modules.risk.domain.exception.InvalidRiskValueException;
 import java.time.Instant;
 
     /**
@@ -53,6 +54,19 @@ import java.time.Instant;
     ) {
 
         public RiskAssessmentScope {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidRiskValueException("RiskAssessmentScope id must not be blank.");
+        }
+        // HRA-051 required: riskAssessmentId
+        if (riskAssessmentId == null || riskAssessmentId.isBlank()) {
+            throw new InvalidRiskValueException("RiskAssessmentScope risk assessment id must not be blank.");
+        }
+        // HRA-051 required: scopeId
+        if (scopeId == null || scopeId.isBlank()) {
+            throw new InvalidRiskValueException("RiskAssessmentScope scope id must not be blank.");
+        }
+
         id = normalize(id);
         riskAssessmentId = normalize(riskAssessmentId);
         scopeType = normalize(scopeType);

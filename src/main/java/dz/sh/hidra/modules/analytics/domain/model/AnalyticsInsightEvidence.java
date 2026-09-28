@@ -7,7 +7,7 @@
  *
  * @Name        : AnalyticsInsightEvidence
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.analytics.domain.model;
 
+import dz.sh.hidra.modules.analytics.domain.exception.InvalidAnalyticsValueException;
 import java.math.BigDecimal;
 import java.time.Instant;
 
@@ -48,6 +49,19 @@ import java.time.Instant;
     ) {
 
         public AnalyticsInsightEvidence {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidAnalyticsValueException("AnalyticsInsightEvidence id must not be blank.");
+        }
+        // HRA-051 required: analyticsInsightId
+        if (analyticsInsightId == null || analyticsInsightId.isBlank()) {
+            throw new InvalidAnalyticsValueException("AnalyticsInsightEvidence analytics insight id must not be blank.");
+        }
+        // HRA-051 required: sourceObjectId
+        if (sourceObjectId == null || sourceObjectId.isBlank()) {
+            throw new InvalidAnalyticsValueException("AnalyticsInsightEvidence source object id must not be blank.");
+        }
+
         id = normalize(id);
         analyticsInsightId = normalize(analyticsInsightId);
         evidenceType = normalize(evidenceType);

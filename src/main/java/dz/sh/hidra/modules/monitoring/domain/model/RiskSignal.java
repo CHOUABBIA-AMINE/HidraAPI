@@ -7,7 +7,7 @@
  *
  * @Name        : RiskSignal
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.monitoring.domain.model;
 
+import dz.sh.hidra.modules.monitoring.domain.exception.InvalidMonitoringValueException;
 import dz.sh.hidra.modules.monitoring.domain.value.*;
 import java.time.Instant;
 import java.math.BigDecimal;
@@ -57,6 +58,27 @@ import java.math.BigDecimal;
     ) {
 
         public RiskSignal {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidMonitoringValueException("RiskSignal id must not be blank.");
+        }
+        // HRA-051 required: riskTypeId
+        if (riskTypeId == null || riskTypeId.isBlank()) {
+            throw new InvalidMonitoringValueException("RiskSignal risk type id must not be blank.");
+        }
+        // HRA-051 required: riskLevel
+        if (riskLevel == null) {
+            throw new InvalidMonitoringValueException("RiskSignal risk level must not be null.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidMonitoringValueException("RiskSignal status must not be null.");
+        }
+        // HRA-051 required: raisedAt
+        if (raisedAt == null) {
+            throw new InvalidMonitoringValueException("RiskSignal raised at must not be null.");
+        }
+
         id = normalize(id);
         sourceDeviationId = normalize(sourceDeviationId);
         sourceEvaluationId = normalize(sourceEvaluationId);

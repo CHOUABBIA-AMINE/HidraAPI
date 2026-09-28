@@ -7,7 +7,7 @@
  *
  * @Name        : EmergencyDrill
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.hse.domain.model;
 
+import dz.sh.hidra.modules.hse.domain.exception.InvalidHseValueException;
 import dz.sh.hidra.modules.hse.domain.value.*;
 import java.time.Instant;
 
@@ -60,6 +61,23 @@ import java.time.Instant;
     ) {
 
         public EmergencyDrill {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidHseValueException("EmergencyDrill id must not be blank.");
+        }
+        // HRA-051 required: drillNumber
+        if (drillNumber == null || drillNumber.isBlank()) {
+            throw new InvalidHseValueException("EmergencyDrill drill number must not be blank.");
+        }
+        // HRA-051 required: drillTypeId
+        if (drillTypeId == null || drillTypeId.isBlank()) {
+            throw new InvalidHseValueException("EmergencyDrill drill type id must not be blank.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidHseValueException("EmergencyDrill status must not be null.");
+        }
+
         id = normalize(id);
         drillNumber = normalize(drillNumber);
         drillTypeId = normalize(drillTypeId);

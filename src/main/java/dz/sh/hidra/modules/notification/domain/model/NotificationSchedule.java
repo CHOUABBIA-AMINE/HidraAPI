@@ -7,7 +7,7 @@
  *
  * @Name        : NotificationSchedule
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.notification.domain.model;
 
+import dz.sh.hidra.modules.notification.domain.exception.InvalidNotificationValueException;
 import dz.sh.hidra.modules.notification.domain.value.*;
 import java.time.Instant;
 
@@ -50,6 +51,23 @@ import java.time.Instant;
     ) {
 
         public NotificationSchedule {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidNotificationValueException("NotificationSchedule id must not be blank.");
+        }
+        // HRA-051 required: scheduleType
+        if (scheduleType == null) {
+            throw new InvalidNotificationValueException("NotificationSchedule schedule type must not be null.");
+        }
+        // HRA-051 required: scheduledAt
+        if (scheduledAt == null) {
+            throw new InvalidNotificationValueException("NotificationSchedule scheduled at must not be null.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidNotificationValueException("NotificationSchedule status must not be null.");
+        }
+
         id = normalize(id);
         requestId = normalize(requestId);
         messageId = normalize(messageId);

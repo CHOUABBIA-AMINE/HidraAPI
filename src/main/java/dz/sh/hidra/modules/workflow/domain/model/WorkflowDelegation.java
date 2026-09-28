@@ -7,7 +7,7 @@
  *
  * @Name        : WorkflowDelegation
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.workflow.domain.model;
 
+import dz.sh.hidra.modules.workflow.domain.exception.InvalidWorkflowValueException;
 import dz.sh.hidra.modules.workflow.domain.value.*;
 import java.time.Instant;
 
@@ -68,6 +69,31 @@ import java.time.Instant;
     ) {
 
         public WorkflowDelegation {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidWorkflowValueException("WorkflowDelegation id must not be blank.");
+        }
+        // HRA-051 required: taskId
+        if (taskId == null || taskId.isBlank()) {
+            throw new InvalidWorkflowValueException("WorkflowDelegation task id must not be blank.");
+        }
+        // HRA-051 required: fromActorId
+        if (fromActorId == null || fromActorId.isBlank()) {
+            throw new InvalidWorkflowValueException("WorkflowDelegation from actor id must not be blank.");
+        }
+        // HRA-051 required: reasonId
+        if (reasonId == null || reasonId.isBlank()) {
+            throw new InvalidWorkflowValueException("WorkflowDelegation reason id must not be blank.");
+        }
+        // HRA-051 required: delegationStatus
+        if (delegationStatus == null) {
+            throw new InvalidWorkflowValueException("WorkflowDelegation delegation status must not be null.");
+        }
+        // HRA-051 required: delegatedAt
+        if (delegatedAt == null) {
+            throw new InvalidWorkflowValueException("WorkflowDelegation delegated at must not be null.");
+        }
+
         id = normalize(id);
         taskId = normalize(taskId);
         fromActorId = normalize(fromActorId);

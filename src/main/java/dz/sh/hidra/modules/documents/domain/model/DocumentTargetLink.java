@@ -7,7 +7,7 @@
  *
  * @Name        : DocumentTargetLink
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.documents.domain.model;
 
+import dz.sh.hidra.modules.documents.domain.exception.InvalidDocumentValueException;
 import java.time.Instant;
 
     /**
@@ -57,6 +58,35 @@ import java.time.Instant;
     ) {
 
         public DocumentTargetLink {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidDocumentValueException("DocumentTargetLink id must not be blank.");
+        }
+        // HRA-051 required: documentId
+        if (documentId == null || documentId.isBlank()) {
+            throw new InvalidDocumentValueException("DocumentTargetLink document id must not be blank.");
+        }
+        // HRA-051 required: targetTypeCode
+        if (targetTypeCode == null || targetTypeCode.isBlank()) {
+            throw new InvalidDocumentValueException("DocumentTargetLink target type code must not be blank.");
+        }
+        // HRA-051 required: targetId
+        if (targetId == null || targetId.isBlank()) {
+            throw new InvalidDocumentValueException("DocumentTargetLink target id must not be blank.");
+        }
+        // HRA-051 required: linkRoleId
+        if (linkRoleId == null || linkRoleId.isBlank()) {
+            throw new InvalidDocumentValueException("DocumentTargetLink link role id must not be blank.");
+        }
+        // HRA-051 required: linkedByActorId
+        if (linkedByActorId == null || linkedByActorId.isBlank()) {
+            throw new InvalidDocumentValueException("DocumentTargetLink linked by actor id must not be blank.");
+        }
+        // HRA-051 required: linkedAt
+        if (linkedAt == null) {
+            throw new InvalidDocumentValueException("DocumentTargetLink linked at must not be null.");
+        }
+
         id = normalize(id);
         documentId = normalize(documentId);
         documentVersionId = normalize(documentVersionId);

@@ -7,7 +7,7 @@
  *
  * @Name        : TrendPoint
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.analytics.domain.model;
 
+import dz.sh.hidra.modules.analytics.domain.exception.InvalidAnalyticsValueException;
 import java.math.BigDecimal;
 import java.time.Instant;
 
@@ -46,6 +47,31 @@ import java.time.Instant;
     ) {
 
         public TrendPoint {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidAnalyticsValueException("TrendPoint id must not be blank.");
+        }
+        // HRA-051 required: trendAnalysisId
+        if (trendAnalysisId == null || trendAnalysisId.isBlank()) {
+            throw new InvalidAnalyticsValueException("TrendPoint trend analysis id must not be blank.");
+        }
+        // HRA-051 required: periodStart
+        if (periodStart == null) {
+            throw new InvalidAnalyticsValueException("TrendPoint period start must not be null.");
+        }
+        // HRA-051 required: periodEnd
+        if (periodEnd == null) {
+            throw new InvalidAnalyticsValueException("TrendPoint period end must not be null.");
+        }
+        // HRA-051 required: value
+        if (value == null) {
+            throw new InvalidAnalyticsValueException("TrendPoint value must not be null.");
+        }
+        // HRA-051 order: periodStart <= periodEnd
+        if (periodStart != null && periodEnd != null && periodEnd.isBefore(periodStart)) {
+            throw new InvalidAnalyticsValueException("TrendPoint period end must not be before period start.");
+        }
+
         id = normalize(id);
         trendAnalysisId = normalize(trendAnalysisId);
         unitId = normalize(unitId);

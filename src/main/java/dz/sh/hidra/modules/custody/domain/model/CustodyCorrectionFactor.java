@@ -7,7 +7,7 @@
  *
  * @Name        : CustodyCorrectionFactor
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.custody.domain.model;
 
+import dz.sh.hidra.modules.custody.domain.exception.InvalidCustodyValueException;
 import java.math.BigDecimal;
 import java.time.Instant;
 
@@ -48,6 +49,31 @@ import java.time.Instant;
     ) {
 
         public CustodyCorrectionFactor {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidCustodyValueException("CustodyCorrectionFactor id must not be blank.");
+        }
+        // HRA-051 required: quantityCalculationId
+        if (quantityCalculationId == null || quantityCalculationId.isBlank()) {
+            throw new InvalidCustodyValueException("CustodyCorrectionFactor quantity calculation id must not be blank.");
+        }
+        // HRA-051 required: factorTypeId
+        if (factorTypeId == null || factorTypeId.isBlank()) {
+            throw new InvalidCustodyValueException("CustodyCorrectionFactor factor type id must not be blank.");
+        }
+        // HRA-051 required: factorCode
+        if (factorCode == null || factorCode.isBlank()) {
+            throw new InvalidCustodyValueException("CustodyCorrectionFactor factor code must not be blank.");
+        }
+        // HRA-051 required: factorValue
+        if (factorValue == null) {
+            throw new InvalidCustodyValueException("CustodyCorrectionFactor factor value must not be null.");
+        }
+        // HRA-051 required: appliedAt
+        if (appliedAt == null) {
+            throw new InvalidCustodyValueException("CustodyCorrectionFactor applied at must not be null.");
+        }
+
         id = normalize(id);
         quantityCalculationId = normalize(quantityCalculationId);
         factorTypeId = normalize(factorTypeId);

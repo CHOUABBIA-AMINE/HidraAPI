@@ -7,7 +7,7 @@
  *
  * @Name        : WorkflowDefinition
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.workflow.domain.model;
 
+import dz.sh.hidra.modules.workflow.domain.exception.InvalidWorkflowValueException;
 import dz.sh.hidra.modules.workflow.domain.value.*;
 import java.time.Instant;
 
@@ -50,6 +51,23 @@ import java.time.Instant;
     ) {
 
         public WorkflowDefinition {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidWorkflowValueException("WorkflowDefinition id must not be blank.");
+        }
+        // HRA-051 required: code
+        if (code == null || code.isBlank()) {
+            throw new InvalidWorkflowValueException("WorkflowDefinition code must not be blank.");
+        }
+        // HRA-051 required: typeId
+        if (typeId == null || typeId.isBlank()) {
+            throw new InvalidWorkflowValueException("WorkflowDefinition type id must not be blank.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidWorkflowValueException("WorkflowDefinition status must not be null.");
+        }
+
         id = normalize(id);
         code = normalize(code);
         nameAr = normalize(nameAr);

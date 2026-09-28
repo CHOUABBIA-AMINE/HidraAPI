@@ -7,7 +7,7 @@
  *
  * @Name        : KpiEvaluation
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.analytics.domain.model;
 
+import dz.sh.hidra.modules.analytics.domain.exception.InvalidAnalyticsValueException;
 import dz.sh.hidra.modules.analytics.domain.value.*;
 import java.time.Instant;
 import java.math.BigDecimal;
@@ -55,6 +56,35 @@ import java.math.BigDecimal;
     ) {
 
         public KpiEvaluation {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidAnalyticsValueException("KpiEvaluation id must not be blank.");
+        }
+        // HRA-051 required: kpiDefinitionId
+        if (kpiDefinitionId == null || kpiDefinitionId.isBlank()) {
+            throw new InvalidAnalyticsValueException("KpiEvaluation kpi definition id must not be blank.");
+        }
+        // HRA-051 required: periodStart
+        if (periodStart == null) {
+            throw new InvalidAnalyticsValueException("KpiEvaluation period start must not be null.");
+        }
+        // HRA-051 required: periodEnd
+        if (periodEnd == null) {
+            throw new InvalidAnalyticsValueException("KpiEvaluation period end must not be null.");
+        }
+        // HRA-051 required: value
+        if (value == null) {
+            throw new InvalidAnalyticsValueException("KpiEvaluation value must not be null.");
+        }
+        // HRA-051 required: evaluatedAt
+        if (evaluatedAt == null) {
+            throw new InvalidAnalyticsValueException("KpiEvaluation evaluated at must not be null.");
+        }
+        // HRA-051 order: periodStart <= periodEnd
+        if (periodStart != null && periodEnd != null && periodEnd.isBefore(periodStart)) {
+            throw new InvalidAnalyticsValueException("KpiEvaluation period end must not be before period start.");
+        }
+
         id = normalize(id);
         kpiDefinitionId = normalize(kpiDefinitionId);
         metricValueId = normalize(metricValueId);

@@ -7,7 +7,7 @@
  *
  * @Name        : WorkflowTransition
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.workflow.domain.model;
 
+import dz.sh.hidra.modules.workflow.domain.exception.InvalidWorkflowValueException;
 import dz.sh.hidra.modules.workflow.domain.value.*;
 import java.time.Instant;
 
@@ -54,6 +55,27 @@ import java.time.Instant;
     ) {
 
         public WorkflowTransition {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidWorkflowValueException("WorkflowTransition id must not be blank.");
+        }
+        // HRA-051 required: definitionId
+        if (definitionId == null || definitionId.isBlank()) {
+            throw new InvalidWorkflowValueException("WorkflowTransition definition id must not be blank.");
+        }
+        // HRA-051 required: fromStepId
+        if (fromStepId == null || fromStepId.isBlank()) {
+            throw new InvalidWorkflowValueException("WorkflowTransition from step id must not be blank.");
+        }
+        // HRA-051 required: toStepId
+        if (toStepId == null || toStepId.isBlank()) {
+            throw new InvalidWorkflowValueException("WorkflowTransition to step id must not be blank.");
+        }
+        // HRA-051 required: decision
+        if (decision == null) {
+            throw new InvalidWorkflowValueException("WorkflowTransition decision must not be null.");
+        }
+
         id = normalize(id);
         definitionId = normalize(definitionId);
         fromStepId = normalize(fromStepId);

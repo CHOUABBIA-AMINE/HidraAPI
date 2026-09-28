@@ -66,6 +66,11 @@ public record Position(
 ) {
 
     public Position {
+        // HRA-051 required: code
+        if (code == null || code.isBlank()) {
+            throw new InvalidOrganizationValueException("Position code must not be blank.");
+        }
+
         id = requireText(id, "Position ID is required.");
         code = OrganizationCode.of(code).value();
         if (level == null) {

@@ -7,7 +7,7 @@
  *
  * @Name        : CustodyApprovalReference
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.custody.domain.model;
 
+import dz.sh.hidra.modules.custody.domain.exception.InvalidCustodyValueException;
 import dz.sh.hidra.modules.custody.domain.value.*;
 import java.time.Instant;
 
@@ -50,6 +51,19 @@ import java.time.Instant;
     ) {
 
         public CustodyApprovalReference {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidCustodyValueException("CustodyApprovalReference id must not be blank.");
+        }
+        // HRA-051 required: targetId
+        if (targetId == null || targetId.isBlank()) {
+            throw new InvalidCustodyValueException("CustodyApprovalReference target id must not be blank.");
+        }
+        // HRA-051 required: approvalStatus
+        if (approvalStatus == null) {
+            throw new InvalidCustodyValueException("CustodyApprovalReference approval status must not be null.");
+        }
+
         id = normalize(id);
         targetType = normalize(targetType);
         targetId = normalize(targetId);

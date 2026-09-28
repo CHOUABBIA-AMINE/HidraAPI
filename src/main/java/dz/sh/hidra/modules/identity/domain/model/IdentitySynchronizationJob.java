@@ -7,7 +7,7 @@
  *
  * @Name        : IdentitySynchronizationJob
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.identity.domain.model;
 
+import dz.sh.hidra.modules.identity.domain.exception.InvalidIdentityValueException;
 import dz.sh.hidra.modules.identity.domain.value.*;
 import java.time.Instant;
 
@@ -60,6 +61,31 @@ public record IdentitySynchronizationJob(
 ) {
 
     public IdentitySynchronizationJob {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidIdentityValueException("IdentitySynchronizationJob id must not be blank.");
+        }
+        // HRA-051 required: identityProviderId
+        if (identityProviderId == null || identityProviderId.isBlank()) {
+            throw new InvalidIdentityValueException("IdentitySynchronizationJob identity provider id must not be blank.");
+        }
+        // HRA-051 required: syncType
+        if (syncType == null) {
+            throw new InvalidIdentityValueException("IdentitySynchronizationJob sync type must not be null.");
+        }
+        // HRA-051 required: triggerType
+        if (triggerType == null) {
+            throw new InvalidIdentityValueException("IdentitySynchronizationJob trigger type must not be null.");
+        }
+        // HRA-051 required: startedAt
+        if (startedAt == null) {
+            throw new InvalidIdentityValueException("IdentitySynchronizationJob started at must not be null.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidIdentityValueException("IdentitySynchronizationJob status must not be null.");
+        }
+
     id = normalize(id);
     identityProviderId = normalize(identityProviderId);
     errorMessage = normalize(errorMessage);

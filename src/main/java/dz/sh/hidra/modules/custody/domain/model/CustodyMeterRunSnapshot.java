@@ -7,7 +7,7 @@
  *
  * @Name        : CustodyMeterRunSnapshot
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.custody.domain.model;
 
+import dz.sh.hidra.modules.custody.domain.exception.InvalidCustodyValueException;
 import java.time.Instant;
 
     /**
@@ -49,6 +50,23 @@ import java.time.Instant;
     ) {
 
         public CustodyMeterRunSnapshot {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidCustodyValueException("CustodyMeterRunSnapshot id must not be blank.");
+        }
+        // HRA-051 required: measurementPeriodId
+        if (measurementPeriodId == null || measurementPeriodId.isBlank()) {
+            throw new InvalidCustodyValueException("CustodyMeterRunSnapshot measurement period id must not be blank.");
+        }
+        // HRA-051 required: meteringSystemId
+        if (meteringSystemId == null || meteringSystemId.isBlank()) {
+            throw new InvalidCustodyValueException("CustodyMeterRunSnapshot metering system id must not be blank.");
+        }
+        // HRA-051 required: snapshotAt
+        if (snapshotAt == null) {
+            throw new InvalidCustodyValueException("CustodyMeterRunSnapshot snapshot at must not be null.");
+        }
+
         id = normalize(id);
         measurementPeriodId = normalize(measurementPeriodId);
         meteringSystemId = normalize(meteringSystemId);

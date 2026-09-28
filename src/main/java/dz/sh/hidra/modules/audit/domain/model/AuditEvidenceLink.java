@@ -7,7 +7,7 @@
  *
  * @Name        : AuditEvidenceLink
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.audit.domain.model;
 
+import dz.sh.hidra.modules.audit.domain.exception.InvalidAuditValueException;
 import java.time.Instant;
 
     /**
@@ -51,6 +52,27 @@ import java.time.Instant;
     ) {
 
         public AuditEvidenceLink {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidAuditValueException("AuditEvidenceLink id must not be blank.");
+        }
+        // HRA-051 required: auditEventId
+        if (auditEventId == null || auditEventId.isBlank()) {
+            throw new InvalidAuditValueException("AuditEvidenceLink audit event id must not be blank.");
+        }
+        // HRA-051 required: evidenceTypeId
+        if (evidenceTypeId == null || evidenceTypeId.isBlank()) {
+            throw new InvalidAuditValueException("AuditEvidenceLink evidence type id must not be blank.");
+        }
+        // HRA-051 required: referenceId
+        if (referenceId == null || referenceId.isBlank()) {
+            throw new InvalidAuditValueException("AuditEvidenceLink reference id must not be blank.");
+        }
+        // HRA-051 required: linkedAt
+        if (linkedAt == null) {
+            throw new InvalidAuditValueException("AuditEvidenceLink linked at must not be null.");
+        }
+
         id = normalize(id);
         auditEventId = normalize(auditEventId);
         evidenceTypeId = normalize(evidenceTypeId);

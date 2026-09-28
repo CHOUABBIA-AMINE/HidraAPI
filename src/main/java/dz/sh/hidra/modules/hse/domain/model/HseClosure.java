@@ -7,7 +7,7 @@
  *
  * @Name        : HseClosure
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.hse.domain.model;
 
+import dz.sh.hidra.modules.hse.domain.exception.InvalidHseValueException;
 import java.time.Instant;
 
     /**
@@ -51,6 +52,23 @@ import java.time.Instant;
     ) {
 
         public HseClosure {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidHseValueException("HseClosure id must not be blank.");
+        }
+        // HRA-051 required: hseCaseId
+        if (hseCaseId == null || hseCaseId.isBlank()) {
+            throw new InvalidHseValueException("HseClosure hse case id must not be blank.");
+        }
+        // HRA-051 required: closedByActorId
+        if (closedByActorId == null || closedByActorId.isBlank()) {
+            throw new InvalidHseValueException("HseClosure closed by actor id must not be blank.");
+        }
+        // HRA-051 required: closedAt
+        if (closedAt == null) {
+            throw new InvalidHseValueException("HseClosure closed at must not be null.");
+        }
+
         id = normalize(id);
         hseCaseId = normalize(hseCaseId);
         closureSummary = normalize(closureSummary);

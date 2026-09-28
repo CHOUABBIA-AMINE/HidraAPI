@@ -7,7 +7,7 @@
  *
  * @Name        : AnalyticsDatasetLineage
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.analytics.domain.model;
 
+import dz.sh.hidra.modules.analytics.domain.exception.InvalidAnalyticsValueException;
 import java.time.Instant;
 
     /**
@@ -51,6 +52,19 @@ import java.time.Instant;
     ) {
 
         public AnalyticsDatasetLineage {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidAnalyticsValueException("AnalyticsDatasetLineage id must not be blank.");
+        }
+        // HRA-051 required: datasetVersionId
+        if (datasetVersionId == null || datasetVersionId.isBlank()) {
+            throw new InvalidAnalyticsValueException("AnalyticsDatasetLineage dataset version id must not be blank.");
+        }
+        // HRA-051 required: sourceObjectId
+        if (sourceObjectId == null || sourceObjectId.isBlank()) {
+            throw new InvalidAnalyticsValueException("AnalyticsDatasetLineage source object id must not be blank.");
+        }
+
         id = normalize(id);
         datasetVersionId = normalize(datasetVersionId);
         sourceModule = normalize(sourceModule);

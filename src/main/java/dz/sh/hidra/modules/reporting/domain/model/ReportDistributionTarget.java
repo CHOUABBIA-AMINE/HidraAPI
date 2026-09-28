@@ -7,7 +7,7 @@
  *
  * @Name        : ReportDistributionTarget
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.reporting.domain.model;
 
+import dz.sh.hidra.modules.reporting.domain.exception.InvalidReportingValueException;
 import dz.sh.hidra.modules.reporting.domain.value.*;
 import java.time.Instant;
 
@@ -46,6 +47,19 @@ import java.time.Instant;
     ) {
 
         public ReportDistributionTarget {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidReportingValueException("ReportDistributionTarget id must not be blank.");
+        }
+        // HRA-051 required: reportDefinitionId
+        if (reportDefinitionId == null || reportDefinitionId.isBlank()) {
+            throw new InvalidReportingValueException("ReportDistributionTarget report definition id must not be blank.");
+        }
+        // HRA-051 required: targetType
+        if (targetType == null) {
+            throw new InvalidReportingValueException("ReportDistributionTarget target type must not be null.");
+        }
+
         id = normalize(id);
         reportDefinitionId = normalize(reportDefinitionId);
         targetReference = normalize(targetReference);

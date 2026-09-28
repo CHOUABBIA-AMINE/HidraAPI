@@ -7,7 +7,7 @@
  *
  * @Name        : MetricDefinitionVersion
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.analytics.domain.model;
 
+import dz.sh.hidra.modules.analytics.domain.exception.InvalidAnalyticsValueException;
 import java.time.Instant;
 
     /**
@@ -47,6 +48,19 @@ import java.time.Instant;
     ) {
 
         public MetricDefinitionVersion {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidAnalyticsValueException("MetricDefinitionVersion id must not be blank.");
+        }
+        // HRA-051 required: metricDefinitionId
+        if (metricDefinitionId == null || metricDefinitionId.isBlank()) {
+            throw new InvalidAnalyticsValueException("MetricDefinitionVersion metric definition id must not be blank.");
+        }
+        // HRA-051 order: validFrom <= validTo
+        if (validFrom != null && validTo != null && validTo.isBefore(validFrom)) {
+            throw new InvalidAnalyticsValueException("MetricDefinitionVersion valid to must not be before valid from.");
+        }
+
         id = normalize(id);
         metricDefinitionId = normalize(metricDefinitionId);
         formulaExpression = normalize(formulaExpression);

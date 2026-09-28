@@ -7,7 +7,7 @@
  *
  * @Name        : IntegrationRetryAttempt
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.integration.domain.model;
 
+import dz.sh.hidra.modules.integration.domain.exception.InvalidIntegrationValueException;
 import dz.sh.hidra.modules.integration.domain.value.*;
 import java.time.Instant;
 
@@ -54,6 +55,23 @@ import java.time.Instant;
     ) {
 
         public IntegrationRetryAttempt {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidIntegrationValueException("IntegrationRetryAttempt id must not be blank.");
+        }
+        // HRA-051 required: targetRecordId
+        if (targetRecordId == null || targetRecordId.isBlank()) {
+            throw new InvalidIntegrationValueException("IntegrationRetryAttempt target record id must not be blank.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidIntegrationValueException("IntegrationRetryAttempt status must not be null.");
+        }
+        // HRA-051 required: scheduledAt
+        if (scheduledAt == null) {
+            throw new InvalidIntegrationValueException("IntegrationRetryAttempt scheduled at must not be null.");
+        }
+
         id = normalize(id);
         retryPolicyId = normalize(retryPolicyId);
         targetRecordType = normalize(targetRecordType);

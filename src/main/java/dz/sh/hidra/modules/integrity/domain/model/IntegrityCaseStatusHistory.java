@@ -7,7 +7,7 @@
  *
  * @Name        : IntegrityCaseStatusHistory
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.integrity.domain.model;
 
+import dz.sh.hidra.modules.integrity.domain.exception.InvalidIntegrityValueException;
 import dz.sh.hidra.modules.integrity.domain.value.*;
 import java.time.Instant;
 
@@ -48,6 +49,23 @@ import java.time.Instant;
     ) {
 
         public IntegrityCaseStatusHistory {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidIntegrityValueException("IntegrityCaseStatusHistory id must not be blank.");
+        }
+        // HRA-051 required: integrityCaseId
+        if (integrityCaseId == null || integrityCaseId.isBlank()) {
+            throw new InvalidIntegrityValueException("IntegrityCaseStatusHistory integrity case id must not be blank.");
+        }
+        // HRA-051 required: newStatus
+        if (newStatus == null) {
+            throw new InvalidIntegrityValueException("IntegrityCaseStatusHistory new status must not be null.");
+        }
+        // HRA-051 required: changedAt
+        if (changedAt == null) {
+            throw new InvalidIntegrityValueException("IntegrityCaseStatusHistory changed at must not be null.");
+        }
+
         id = normalize(id);
         integrityCaseId = normalize(integrityCaseId);
         reasonId = normalize(reasonId);

@@ -7,7 +7,7 @@
  *
  * @Name        : FeatureFlag
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.configuration.domain.model;
 
+import dz.sh.hidra.modules.configuration.domain.exception.InvalidConfigurationValueException;
 import dz.sh.hidra.modules.configuration.domain.value.*;
 import java.time.Instant;
 
@@ -54,6 +55,23 @@ import java.time.Instant;
     ) {
 
         public FeatureFlag {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidConfigurationValueException("FeatureFlag id must not be blank.");
+        }
+        // HRA-051 required: code
+        if (code == null || code.isBlank()) {
+            throw new InvalidConfigurationValueException("FeatureFlag code must not be blank.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidConfigurationValueException("FeatureFlag status must not be null.");
+        }
+        // HRA-051 required: evaluationStrategy
+        if (evaluationStrategy == null) {
+            throw new InvalidConfigurationValueException("FeatureFlag evaluation strategy must not be null.");
+        }
+
         id = normalize(id);
         code = normalize(code);
         nameFr = normalize(nameFr);

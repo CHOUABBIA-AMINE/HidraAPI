@@ -7,7 +7,7 @@
  *
  * @Name        : ReportSectionResult
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.reporting.domain.model;
 
+import dz.sh.hidra.modules.reporting.domain.exception.InvalidReportingValueException;
 import dz.sh.hidra.modules.reporting.domain.value.*;
 import java.time.Instant;
 
@@ -48,6 +49,27 @@ import java.time.Instant;
     ) {
 
         public ReportSectionResult {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidReportingValueException("ReportSectionResult id must not be blank.");
+        }
+        // HRA-051 required: reportRunId
+        if (reportRunId == null || reportRunId.isBlank()) {
+            throw new InvalidReportingValueException("ReportSectionResult report run id must not be blank.");
+        }
+        // HRA-051 required: sectionDefinitionId
+        if (sectionDefinitionId == null || sectionDefinitionId.isBlank()) {
+            throw new InvalidReportingValueException("ReportSectionResult section definition id must not be blank.");
+        }
+        // HRA-051 required: sectionCode
+        if (sectionCode == null || sectionCode.isBlank()) {
+            throw new InvalidReportingValueException("ReportSectionResult section code must not be blank.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidReportingValueException("ReportSectionResult status must not be null.");
+        }
+
         id = normalize(id);
         reportRunId = normalize(reportRunId);
         sectionDefinitionId = normalize(sectionDefinitionId);

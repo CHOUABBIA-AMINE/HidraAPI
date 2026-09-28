@@ -7,7 +7,7 @@
  *
  * @Name        : DocumentStorageObject
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.documents.domain.model;
 
+import dz.sh.hidra.modules.documents.domain.exception.InvalidDocumentValueException;
 import dz.sh.hidra.modules.documents.domain.value.*;
 import java.time.Instant;
 
@@ -58,6 +59,23 @@ import java.time.Instant;
     ) {
 
         public DocumentStorageObject {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidDocumentValueException("DocumentStorageObject id must not be blank.");
+        }
+        // HRA-051 required: storageProviderId
+        if (storageProviderId == null || storageProviderId.isBlank()) {
+            throw new InvalidDocumentValueException("DocumentStorageObject storage provider id must not be blank.");
+        }
+        // HRA-051 required: objectKey
+        if (objectKey == null || objectKey.isBlank()) {
+            throw new InvalidDocumentValueException("DocumentStorageObject object key must not be blank.");
+        }
+        // HRA-051 required: storageStatus
+        if (storageStatus == null) {
+            throw new InvalidDocumentValueException("DocumentStorageObject storage status must not be null.");
+        }
+
         id = normalize(id);
         storageProviderId = normalize(storageProviderId);
         bucketOrContainer = normalize(bucketOrContainer);

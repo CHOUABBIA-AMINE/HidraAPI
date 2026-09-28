@@ -7,7 +7,7 @@
  *
  * @Name        : IncidentResponseAction
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.incident.domain.model;
 
+import dz.sh.hidra.modules.incident.domain.exception.InvalidIncidentValueException;
 import dz.sh.hidra.modules.incident.domain.value.*;
 import java.time.Instant;
 
@@ -68,6 +69,23 @@ import java.time.Instant;
     ) {
 
         public IncidentResponseAction {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidIncidentValueException("IncidentResponseAction id must not be blank.");
+        }
+        // HRA-051 required: incidentId
+        if (incidentId == null || incidentId.isBlank()) {
+            throw new InvalidIncidentValueException("IncidentResponseAction incident id must not be blank.");
+        }
+        // HRA-051 required: actionTypeId
+        if (actionTypeId == null || actionTypeId.isBlank()) {
+            throw new InvalidIncidentValueException("IncidentResponseAction action type id must not be blank.");
+        }
+        // HRA-051 required: actionStatus
+        if (actionStatus == null) {
+            throw new InvalidIncidentValueException("IncidentResponseAction action status must not be null.");
+        }
+
         id = normalize(id);
         incidentId = normalize(incidentId);
         actionTypeId = normalize(actionTypeId);

@@ -7,7 +7,7 @@
  *
  * @Name        : AssetTechnicalAttributeDefinition
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.assets.domain.model;
 
+import dz.sh.hidra.modules.assets.domain.exception.InvalidAssetsValueException;
 import dz.sh.hidra.modules.assets.domain.value.*;
 import java.time.Instant;
 
@@ -52,6 +53,23 @@ import java.time.Instant;
     ) {
 
         public AssetTechnicalAttributeDefinition {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidAssetsValueException("AssetTechnicalAttributeDefinition id must not be blank.");
+        }
+        // HRA-051 required: assetTypeId
+        if (assetTypeId == null || assetTypeId.isBlank()) {
+            throw new InvalidAssetsValueException("AssetTechnicalAttributeDefinition asset type id must not be blank.");
+        }
+        // HRA-051 required: code
+        if (code == null || code.isBlank()) {
+            throw new InvalidAssetsValueException("AssetTechnicalAttributeDefinition code must not be blank.");
+        }
+        // HRA-051 required: dataType
+        if (dataType == null) {
+            throw new InvalidAssetsValueException("AssetTechnicalAttributeDefinition data type must not be null.");
+        }
+
         id = normalize(id);
         assetTypeId = normalize(assetTypeId);
         code = normalize(code);

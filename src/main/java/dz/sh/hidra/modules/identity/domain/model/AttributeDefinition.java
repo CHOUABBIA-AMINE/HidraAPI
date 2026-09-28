@@ -7,7 +7,7 @@
  *
  * @Name        : AttributeDefinition
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.identity.domain.model;
 
+import dz.sh.hidra.modules.identity.domain.exception.InvalidIdentityValueException;
 import dz.sh.hidra.modules.identity.domain.value.*;
 import java.time.Instant;
 
@@ -52,6 +53,27 @@ public record AttributeDefinition(
 ) {
 
     public AttributeDefinition {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidIdentityValueException("AttributeDefinition id must not be blank.");
+        }
+        // HRA-051 required: code
+        if (code == null || code.isBlank()) {
+            throw new InvalidIdentityValueException("AttributeDefinition code must not be blank.");
+        }
+        // HRA-051 required: attributeTarget
+        if (attributeTarget == null) {
+            throw new InvalidIdentityValueException("AttributeDefinition attribute target must not be null.");
+        }
+        // HRA-051 required: dataType
+        if (dataType == null) {
+            throw new InvalidIdentityValueException("AttributeDefinition data type must not be null.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidIdentityValueException("AttributeDefinition status must not be null.");
+        }
+
     id = normalize(id);
     code = normalize(code);
     name = normalize(name);

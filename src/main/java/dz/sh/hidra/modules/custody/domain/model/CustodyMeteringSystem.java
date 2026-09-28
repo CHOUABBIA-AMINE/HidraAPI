@@ -7,7 +7,7 @@
  *
  * @Name        : CustodyMeteringSystem
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.custody.domain.model;
 
+import dz.sh.hidra.modules.custody.domain.exception.InvalidCustodyValueException;
 import java.time.Instant;
 
     /**
@@ -55,6 +56,23 @@ import java.time.Instant;
     ) {
 
         public CustodyMeteringSystem {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidCustodyValueException("CustodyMeteringSystem id must not be blank.");
+        }
+        // HRA-051 required: meteringSystemCode
+        if (meteringSystemCode == null || meteringSystemCode.isBlank()) {
+            throw new InvalidCustodyValueException("CustodyMeteringSystem metering system code must not be blank.");
+        }
+        // HRA-051 required: transferPointId
+        if (transferPointId == null || transferPointId.isBlank()) {
+            throw new InvalidCustodyValueException("CustodyMeteringSystem transfer point id must not be blank.");
+        }
+        // HRA-051 order: effectiveFrom <= effectiveTo
+        if (effectiveFrom != null && effectiveTo != null && effectiveTo.isBefore(effectiveFrom)) {
+            throw new InvalidCustodyValueException("CustodyMeteringSystem effective to must not be before effective from.");
+        }
+
         id = normalize(id);
         meteringSystemCode = normalize(meteringSystemCode);
         name = normalize(name);

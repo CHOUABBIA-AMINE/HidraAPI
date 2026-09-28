@@ -7,7 +7,7 @@
  *
  * @Name        : KpiBand
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.analytics.domain.model;
 
+import dz.sh.hidra.modules.analytics.domain.exception.InvalidAnalyticsValueException;
 import java.math.BigDecimal;
 import java.time.Instant;
 
@@ -56,6 +57,23 @@ import java.time.Instant;
     ) {
 
         public KpiBand {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidAnalyticsValueException("KpiBand id must not be blank.");
+        }
+        // HRA-051 required: kpiDefinitionId
+        if (kpiDefinitionId == null || kpiDefinitionId.isBlank()) {
+            throw new InvalidAnalyticsValueException("KpiBand kpi definition id must not be blank.");
+        }
+        // HRA-051 required: bandCode
+        if (bandCode == null || bandCode.isBlank()) {
+            throw new InvalidAnalyticsValueException("KpiBand band code must not be blank.");
+        }
+        // HRA-051 required: severityId
+        if (severityId == null || severityId.isBlank()) {
+            throw new InvalidAnalyticsValueException("KpiBand severity id must not be blank.");
+        }
+
         id = normalize(id);
         kpiDefinitionId = normalize(kpiDefinitionId);
         bandCode = normalize(bandCode);

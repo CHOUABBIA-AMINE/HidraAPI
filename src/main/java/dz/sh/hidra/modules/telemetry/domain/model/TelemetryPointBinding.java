@@ -7,7 +7,7 @@
  *
  * @Name        : TelemetryPointBinding
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.telemetry.domain.model;
 
+import dz.sh.hidra.modules.telemetry.domain.exception.InvalidTelemetryValueException;
 import java.time.Instant;
 
     /**
@@ -55,6 +56,39 @@ import java.time.Instant;
     ) {
 
         public TelemetryPointBinding {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidTelemetryValueException("TelemetryPointBinding id must not be blank.");
+        }
+        // HRA-051 required: pointId
+        if (pointId == null || pointId.isBlank()) {
+            throw new InvalidTelemetryValueException("TelemetryPointBinding point id must not be blank.");
+        }
+        // HRA-051 required: topologyAssetTypeCode
+        if (topologyAssetTypeCode == null || topologyAssetTypeCode.isBlank()) {
+            throw new InvalidTelemetryValueException("TelemetryPointBinding topology asset type code must not be blank.");
+        }
+        // HRA-051 required: topologyAssetId
+        if (topologyAssetId == null || topologyAssetId.isBlank()) {
+            throw new InvalidTelemetryValueException("TelemetryPointBinding topology asset id must not be blank.");
+        }
+        // HRA-051 required: topologyAssetCode
+        if (topologyAssetCode == null || topologyAssetCode.isBlank()) {
+            throw new InvalidTelemetryValueException("TelemetryPointBinding topology asset code must not be blank.");
+        }
+        // HRA-051 required: bindingRoleId
+        if (bindingRoleId == null || bindingRoleId.isBlank()) {
+            throw new InvalidTelemetryValueException("TelemetryPointBinding binding role id must not be blank.");
+        }
+        // HRA-051 required: validFrom
+        if (validFrom == null) {
+            throw new InvalidTelemetryValueException("TelemetryPointBinding valid from must not be null.");
+        }
+        // HRA-051 order: validFrom <= validTo
+        if (validFrom != null && validTo != null && validTo.isBefore(validFrom)) {
+            throw new InvalidTelemetryValueException("TelemetryPointBinding valid to must not be before valid from.");
+        }
+
         id = normalize(id);
         pointId = normalize(pointId);
         topologyAssetTypeCode = normalize(topologyAssetTypeCode);

@@ -7,7 +7,7 @@
  *
  * @Name        : IntegrationDataContract
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.integration.domain.model;
 
+import dz.sh.hidra.modules.integration.domain.exception.InvalidIntegrationValueException;
 import dz.sh.hidra.modules.integration.domain.value.*;
 import java.time.Instant;
 
@@ -54,6 +55,27 @@ import java.time.Instant;
     ) {
 
         public IntegrationDataContract {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidIntegrationValueException("IntegrationDataContract id must not be blank.");
+        }
+        // HRA-051 required: code
+        if (code == null || code.isBlank()) {
+            throw new InvalidIntegrationValueException("IntegrationDataContract code must not be blank.");
+        }
+        // HRA-051 required: contractTypeId
+        if (contractTypeId == null || contractTypeId.isBlank()) {
+            throw new InvalidIntegrationValueException("IntegrationDataContract contract type id must not be blank.");
+        }
+        // HRA-051 required: payloadFormatId
+        if (payloadFormatId == null || payloadFormatId.isBlank()) {
+            throw new InvalidIntegrationValueException("IntegrationDataContract payload format id must not be blank.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidIntegrationValueException("IntegrationDataContract status must not be null.");
+        }
+
         id = normalize(id);
         code = normalize(code);
         nameFr = normalize(nameFr);

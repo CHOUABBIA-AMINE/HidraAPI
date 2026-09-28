@@ -32,6 +32,27 @@ The detector matched each `domain.model.<Type>` record to
 HRA-051 must not perform repository lookups, database uniqueness checks, cross-module existence
 checks, or any validation that cannot be decided from the record's own values.
 
+## 2.1 HRA-051 exact-head reconciliation
+
+HRA-051 re-ran the classifier against exact execution head
+`12994be222df65eaab42be9424809d547750dd62`. No domain/JPA source changed between HRA-050 and
+that head; the only intervening repository change was the HRA-050 documentation commit itself.
+
+The execution rerun tightened compact-constructor recognition before modifying code and corrected
+three HRA-050 aggregate assumptions:
+
+- **14 additional Organization required fields are already fail-fast** in the live constructors.
+  Thirteen belong to the HRA-050 ENFORCE categories and one
+  (`OrganizationContactPoint.value`) is generic text that is nevertheless already guarded.
+- **All 7 Organization temporal-order rules** listed by HRA-050 are already enforced by direct
+  comparisons or the existing effective-period helper.
+- **`OrganizationUnit.parentUnitId != id`** is already enforced.
+
+HRA-051 therefore does not insert duplicate guards. The reconciled implementation scope is
+**2,025 required-field guards + 76 temporal-order guards + 6 self-reference guards = 2,107 new
+constructor checks**. This is a scope reduction based on exact-head evidence, not a broadening of
+HRA-050.
+
 ## 3. Deterministic required-field classifier
 
 For each same-named domain/JPA pair, consider only a domain component that has a matching JPA field
@@ -61,29 +82,29 @@ because the database column is `NOT NULL`.
 
 - Same-named domain/JPA pairs reviewed: **465**.
 - Matched JPA `nullable=false` fields: **3,385**.
-- Required-field rules approved for HRA-051: **2,038**.
-- Required fields already enforced: **365**.
-- Generic required text kept persistence-only: **327**.
+- Required-field rules requiring new HRA-051 guards after exact-head reconciliation: **2,025**.
+- Required fields already enforced on the HRA-051 execution head: **379**.
+- Generic required text kept persistence-only and not already guarded: **326**.
 - `createdAt` / `updatedAt` nullability kept persistence-only: **655**.
-- Additional locally decidable temporal-order rules approved: **83**.
-- Additional direct self-reference prohibitions approved: **7**.
-- Total HRA-051 rules to implement: **2,128** (`2,038 + 83 + 7`).
+- Temporal-order rules reviewed: **83**; **7** Organization rules were already enforced; **76** new guards remain.
+- Direct self-reference rules reviewed: **7**; the OrganizationUnit rule was already enforced; **6** new guards remain.
+- Total new HRA-051 constructor checks: **2,107** (`2,025 + 76 + 6`).
 
-Required-field `ENFORCE` breakdown:
+Required-field `ENFORCE` breakdown after reconciliation:
 
 | Category | Count |
 |---|---:|
 | `IDENTITY` | 446 |
-| `REFERENCE` | 682 |
+| `REFERENCE` | 681 |
 | `CODE_KEY` | 278 |
-| `ENUM_VOCABULARY` | 400 |
-| `TEMPORAL_ANCHOR` | 207 |
+| `ENUM_VOCABULARY` | 391 |
+| `TEMPORAL_ANCHOR` | 204 |
 | `REQUIRED_SCALAR` | 25 |
-| **Total** | **2,038** |
+| **Total** | **2,025** |
 
 ## 5. Module-by-module invariant matrix
 
-| Module | JPA required fields | ENFORCE fields | Already enforced | Persistence-only text | Persistence-only audit timestamps | Ordering rules | Self-reference rules |
+| Module | JPA required fields | New ENFORCE fields | Already enforced | Persistence-only text | Persistence-only audit timestamps | New ordering rules | New self-reference rules |
 |---|---:|---:|---:|---:|---:|---:|---:|
 | alarm | 87 | 65 | 7 | 5 | 10 | 2 | 0 |
 | analytics | 216 | 121 | 16 | 41 | 38 | 12 | 0 |
@@ -100,7 +121,7 @@ Required-field `ENFORCE` breakdown:
 | leakdetection | 104 | 73 | 5 | 10 | 16 | 2 | 0 |
 | monitoring | 71 | 47 | 6 | 7 | 11 | 1 | 0 |
 | notification | 176 | 84 | 33 | 20 | 39 | 3 | 0 |
-| organization | 108 | 23 | 50 | 5 | 30 | 7 | 1 |
+| organization | 108 | 10 | 64 | 4 | 30 | 0 | 0 |
 | party | 193 | 122 | 5 | 9 | 57 | 7 | 1 |
 | planning | 135 | 92 | 7 | 10 | 26 | 6 | 1 |
 | reporting | 165 | 91 | 18 | 20 | 36 | 0 | 0 |
@@ -110,10 +131,12 @@ Required-field `ENFORCE` breakdown:
 | topology | 130 | 84 | 6 | 3 | 37 | 5 | 0 |
 | workflow | 127 | 68 | 20 | 16 | 23 | 0 | 1 |
 
-## 6. Temporal ordering rules approved for HRA-051
+## 6. Temporal ordering rules reviewed for HRA-051
 
-When an end value is optional, enforce ordering only when it is present. Equality is permitted unless
-an existing domain-specific rule proves strict ordering is required.
+HRA-050 listed 83 locally decidable ordering rules. Exact-head HRA-051 revalidation found all seven
+Organization rules already enforced, so HRA-051 inserts 76 new ordering guards. When an end value is
+optional, enforce ordering only when it is present. Equality is permitted unless an existing
+domain-specific rule proves strict ordering is required.
 
 - **alarm (2):** `Alarm.raisedAt <= closedAt`; `AlarmRuleBinding.effectiveFrom <= effectiveTo`
 - **analytics (12):** `AnalyticsModelRun.periodStart <= periodEnd`; `TrendPoint.periodStart <= periodEnd`; `MetricDefinitionVersion.validFrom <= validTo`; `KpiEvaluation.periodStart <= periodEnd`; `AnalyticsDatasetVersion.periodStart <= periodEnd`; `AnalyticsFeatureValue.periodStart <= periodEnd`; `AnalyticsDataset.validFrom <= validTo`; `AnalyticsProjectionSnapshot.periodStart <= periodEnd`; `AnalyticsProjectionRun.periodStart <= periodEnd`; `MetricEvaluationRun.periodStart <= periodEnd`; `MetricValue.periodStart <= periodEnd`; `TrendAnalysis.periodStart <= periodEnd`
@@ -129,7 +152,7 @@ an existing domain-specific rule proves strict ordering is required.
 - **leakdetection (2):** `LeakDetectionCase.openedAt <= closedAt`; `LeakDetectionRule.validFrom <= validTo`
 - **monitoring (1):** `MonitoringThreshold.validFrom <= validTo`
 - **notification (3):** `NotificationContactPoint.validFrom <= validTo`; `NotificationRecipientGroupMember.validFrom <= validTo`; `NotificationSuppressionRule.validFrom <= validTo`
-- **organization (7):** `ReportingLine.validFrom <= validTo`; `ShiftAssignment.validFrom <= validTo`; `OrganizationUnit.validFrom <= validTo`; `OrganizationDelegation.validFrom <= validTo`; `EmployeeAddress.validFrom <= validTo`; `EmployeeAssignment.validFrom <= validTo`; `ResponsibilityAssignment.validFrom <= validTo`
+- **organization (7, already enforced before HRA-051):** `ReportingLine.validFrom <= validTo`; `ShiftAssignment.validFrom <= validTo`; `OrganizationUnit.validFrom <= validTo`; `OrganizationDelegation.validFrom <= validTo`; `EmployeeAddress.validFrom <= validTo`; `EmployeeAssignment.validFrom <= validTo`; `ResponsibilityAssignment.validFrom <= validTo`
 - **party (7):** `PartyRoleAssignment.validFrom <= validTo`; `PartyRegistration.issuedAt <= expiresAt`; `PartyDocumentReference.validFrom <= validTo`; `PartyOwnershipLink.validFrom <= validTo`; `PartyRelationship.validFrom <= validTo`; `PartyLegalProfile.effectiveFrom <= effectiveTo`; `PartyCertification.issuedAt <= expiresAt`
 - **planning (6):** `PlanTarget.validFrom <= validTo`; `PlanConstraint.validFrom <= validTo`; `Nomination.periodStart <= periodEnd`; `PlanningPeriod.periodStart <= periodEnd`; `ForecastPoint.validFrom <= validTo`; `ExpectedFlowState.validFrom <= validTo`
 - **risk (3):** `RiskRegister.effectiveFrom <= effectiveTo`; `RiskMatrix.validFrom <= validTo`; `RiskAssessment.validFrom <= validTo`
@@ -146,7 +169,7 @@ persistence/lifecycle audit metadata in HRA-050.
 - `planning.PlanRevision`: if `baseRevisionId` is present, it must not equal `id`.
 - `assets.MaintainableAsset`: if `parentAssetId` is present, it must not equal `id`.
 - `assets.AssetType`: if `parentTypeId` is present, it must not equal `id`.
-- `organization.OrganizationUnit`: if `parentUnitId` is present, it must not equal `id`.
+- `organization.OrganizationUnit`: if `parentUnitId` is present, it must not equal `id` — already enforced before HRA-051.
 - `party.PartyCatalogEntry`: if `parentEntryId` is present, it must not equal `id`.
 
 `risk.RiskReview.previousRatingId` is not classified as self-reference because the field names a
@@ -168,19 +191,21 @@ HRA-051 must **not** turn every database `NOT NULL` into a domain invariant:
 
 Before changing Java code, HRA-051 must regenerate this classifier against its exact `main` head.
 
-If the live domain/JPA tree is unchanged, the expected counts are:
+The exact-head HRA-051 rerun produced the reconciled counts below and implementation is bound to
+them:
 
 ```text
-same-named pairs                 465
-matched nullable=false fields  3,385
-required-field ENFORCE         2,038
-already enforced                 365
-persistence-only text            327
-persistence-only audit time      655
-temporal-order ENFORCE            83
-self-reference ENFORCE             7
-total HRA-051 ENFORCE rules    2,128
+same-named pairs                    465
+matched nullable=false fields     3,385
+new required-field ENFORCE        2,025
+already enforced                    379
+persistence-only text               326
+persistence-only audit time         655
+new temporal-order ENFORCE           76
+new self-reference ENFORCE            6
+total new HRA-051 checks          2,107
 ```
 
-If the counts or affected models differ, HRA-051 must reconcile the live evidence with this document
-before implementation. It must not silently broaden the classification.
+HRA-051 implements exactly this reconciled scope. The repository guardrail introduced by HRA-051
+counts the source markers for all 2,107 new checks so later changes cannot silently lose or broaden
+the batch.

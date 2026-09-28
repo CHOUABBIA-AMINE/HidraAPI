@@ -7,7 +7,7 @@
  *
  * @Name        : IncidentImpactAssessment
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.incident.domain.model;
 
+import dz.sh.hidra.modules.incident.domain.exception.InvalidIncidentValueException;
 import java.math.BigDecimal;
 import java.time.Instant;
 
@@ -58,6 +59,31 @@ import java.time.Instant;
     ) {
 
         public IncidentImpactAssessment {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidIncidentValueException("IncidentImpactAssessment id must not be blank.");
+        }
+        // HRA-051 required: incidentId
+        if (incidentId == null || incidentId.isBlank()) {
+            throw new InvalidIncidentValueException("IncidentImpactAssessment incident id must not be blank.");
+        }
+        // HRA-051 required: impactTypeId
+        if (impactTypeId == null || impactTypeId.isBlank()) {
+            throw new InvalidIncidentValueException("IncidentImpactAssessment impact type id must not be blank.");
+        }
+        // HRA-051 required: impactLevelId
+        if (impactLevelId == null || impactLevelId.isBlank()) {
+            throw new InvalidIncidentValueException("IncidentImpactAssessment impact level id must not be blank.");
+        }
+        // HRA-051 required: assessedByActorId
+        if (assessedByActorId == null || assessedByActorId.isBlank()) {
+            throw new InvalidIncidentValueException("IncidentImpactAssessment assessed by actor id must not be blank.");
+        }
+        // HRA-051 required: assessedAt
+        if (assessedAt == null) {
+            throw new InvalidIncidentValueException("IncidentImpactAssessment assessed at must not be null.");
+        }
+
         id = normalize(id);
         incidentId = normalize(incidentId);
         impactTypeId = normalize(impactTypeId);

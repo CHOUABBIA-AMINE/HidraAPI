@@ -7,7 +7,7 @@
  *
  * @Name        : PartyRole
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.party.domain.model;
 
+import dz.sh.hidra.modules.party.domain.exception.InvalidPartyValueException;
 import dz.sh.hidra.modules.party.domain.value.*;
 import java.time.Instant;
 
@@ -44,6 +45,19 @@ import java.time.Instant;
     ) {
 
         public PartyRole {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidPartyValueException("PartyRole id must not be blank.");
+        }
+        // HRA-051 required: code
+        if (code == null || code.isBlank()) {
+            throw new InvalidPartyValueException("PartyRole code must not be blank.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidPartyValueException("PartyRole status must not be null.");
+        }
+
         id = normalize(id);
         code = normalize(code);
         description = normalize(description);

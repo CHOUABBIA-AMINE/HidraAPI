@@ -7,7 +7,7 @@
  *
  * @Name        : IntegrationOutboundRecord
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.integration.domain.model;
 
+import dz.sh.hidra.modules.integration.domain.exception.InvalidIntegrationValueException;
 import dz.sh.hidra.modules.integration.domain.value.*;
 import java.time.Instant;
 
@@ -66,6 +67,27 @@ import java.time.Instant;
     ) {
 
         public IntegrationOutboundRecord {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidIntegrationValueException("IntegrationOutboundRecord id must not be blank.");
+        }
+        // HRA-051 required: sourceTypeCode
+        if (sourceTypeCode == null || sourceTypeCode.isBlank()) {
+            throw new InvalidIntegrationValueException("IntegrationOutboundRecord source type code must not be blank.");
+        }
+        // HRA-051 required: sourceId
+        if (sourceId == null || sourceId.isBlank()) {
+            throw new InvalidIntegrationValueException("IntegrationOutboundRecord source id must not be blank.");
+        }
+        // HRA-051 required: externalSystemId
+        if (externalSystemId == null || externalSystemId.isBlank()) {
+            throw new InvalidIntegrationValueException("IntegrationOutboundRecord external system id must not be blank.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidIntegrationValueException("IntegrationOutboundRecord status must not be null.");
+        }
+
         id = normalize(id);
         exchangeMessageId = normalize(exchangeMessageId);
         jobRunId = normalize(jobRunId);

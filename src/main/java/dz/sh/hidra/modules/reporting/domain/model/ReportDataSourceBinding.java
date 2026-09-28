@@ -7,7 +7,7 @@
  *
  * @Name        : ReportDataSourceBinding
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.reporting.domain.model;
 
+import dz.sh.hidra.modules.reporting.domain.exception.InvalidReportingValueException;
 import dz.sh.hidra.modules.reporting.domain.value.*;
 import java.time.Instant;
 
@@ -48,6 +49,19 @@ import java.time.Instant;
     ) {
 
         public ReportDataSourceBinding {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidReportingValueException("ReportDataSourceBinding id must not be blank.");
+        }
+        // HRA-051 required: reportDefinitionId
+        if (reportDefinitionId == null || reportDefinitionId.isBlank()) {
+            throw new InvalidReportingValueException("ReportDataSourceBinding report definition id must not be blank.");
+        }
+        // HRA-051 required: sourceType
+        if (sourceType == null) {
+            throw new InvalidReportingValueException("ReportDataSourceBinding source type must not be null.");
+        }
+
         id = normalize(id);
         reportDefinitionId = normalize(reportDefinitionId);
         sourceModule = normalize(sourceModule);

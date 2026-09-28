@@ -7,7 +7,7 @@
  *
  * @Name        : LeakCaseStatusHistory
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.leakdetection.domain.model;
 
+import dz.sh.hidra.modules.leakdetection.domain.exception.InvalidLeakDetectionValueException;
 import dz.sh.hidra.modules.leakdetection.domain.value.*;
 import java.time.Instant;
 
@@ -48,6 +49,23 @@ import java.time.Instant;
     ) {
 
         public LeakCaseStatusHistory {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidLeakDetectionValueException("LeakCaseStatusHistory id must not be blank.");
+        }
+        // HRA-051 required: caseId
+        if (caseId == null || caseId.isBlank()) {
+            throw new InvalidLeakDetectionValueException("LeakCaseStatusHistory case id must not be blank.");
+        }
+        // HRA-051 required: newStatus
+        if (newStatus == null) {
+            throw new InvalidLeakDetectionValueException("LeakCaseStatusHistory new status must not be null.");
+        }
+        // HRA-051 required: changedAt
+        if (changedAt == null) {
+            throw new InvalidLeakDetectionValueException("LeakCaseStatusHistory changed at must not be null.");
+        }
+
         id = normalize(id);
         caseId = normalize(caseId);
         reasonId = normalize(reasonId);

@@ -7,7 +7,7 @@
  *
  * @Name        : HseCaseStatusHistory
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.hse.domain.model;
 
+import dz.sh.hidra.modules.hse.domain.exception.InvalidHseValueException;
 import dz.sh.hidra.modules.hse.domain.value.*;
 import java.time.Instant;
 
@@ -50,6 +51,23 @@ import java.time.Instant;
     ) {
 
         public HseCaseStatusHistory {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidHseValueException("HseCaseStatusHistory id must not be blank.");
+        }
+        // HRA-051 required: hseCaseId
+        if (hseCaseId == null || hseCaseId.isBlank()) {
+            throw new InvalidHseValueException("HseCaseStatusHistory hse case id must not be blank.");
+        }
+        // HRA-051 required: newStatus
+        if (newStatus == null) {
+            throw new InvalidHseValueException("HseCaseStatusHistory new status must not be null.");
+        }
+        // HRA-051 required: changedAt
+        if (changedAt == null) {
+            throw new InvalidHseValueException("HseCaseStatusHistory changed at must not be null.");
+        }
+
         id = normalize(id);
         hseCaseId = normalize(hseCaseId);
         reasonId = normalize(reasonId);

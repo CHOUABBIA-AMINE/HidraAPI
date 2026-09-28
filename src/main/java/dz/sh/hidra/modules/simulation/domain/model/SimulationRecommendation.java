@@ -7,7 +7,7 @@
  *
  * @Name        : SimulationRecommendation
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.simulation.domain.model;
 
+import dz.sh.hidra.modules.simulation.domain.exception.InvalidSimulationValueException;
 import dz.sh.hidra.modules.simulation.domain.value.*;
 import java.time.Instant;
 
@@ -56,6 +57,23 @@ import java.time.Instant;
     ) {
 
         public SimulationRecommendation {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidSimulationValueException("SimulationRecommendation id must not be blank.");
+        }
+        // HRA-051 required: runId
+        if (runId == null || runId.isBlank()) {
+            throw new InvalidSimulationValueException("SimulationRecommendation run id must not be blank.");
+        }
+        // HRA-051 required: recommendationTypeId
+        if (recommendationTypeId == null || recommendationTypeId.isBlank()) {
+            throw new InvalidSimulationValueException("SimulationRecommendation recommendation type id must not be blank.");
+        }
+        // HRA-051 required: recommendationStatus
+        if (recommendationStatus == null) {
+            throw new InvalidSimulationValueException("SimulationRecommendation recommendation status must not be null.");
+        }
+
         id = normalize(id);
         runId = normalize(runId);
         candidateId = normalize(candidateId);

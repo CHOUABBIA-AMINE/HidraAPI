@@ -7,7 +7,7 @@
  *
  * @Name        : OperationalPlan
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.planning.domain.model;
 
+import dz.sh.hidra.modules.planning.domain.exception.InvalidPlanningValueException;
 import dz.sh.hidra.modules.planning.domain.value.*;
 import java.time.Instant;
 
@@ -68,6 +69,39 @@ import java.time.Instant;
     ) {
 
         public OperationalPlan {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidPlanningValueException("OperationalPlan id must not be blank.");
+        }
+        // HRA-051 required: periodId
+        if (periodId == null || periodId.isBlank()) {
+            throw new InvalidPlanningValueException("OperationalPlan period id must not be blank.");
+        }
+        // HRA-051 required: code
+        if (code == null || code.isBlank()) {
+            throw new InvalidPlanningValueException("OperationalPlan code must not be blank.");
+        }
+        // HRA-051 required: planTypeId
+        if (planTypeId == null || planTypeId.isBlank()) {
+            throw new InvalidPlanningValueException("OperationalPlan plan type id must not be blank.");
+        }
+        // HRA-051 required: topologyScopeId
+        if (topologyScopeId == null || topologyScopeId.isBlank()) {
+            throw new InvalidPlanningValueException("OperationalPlan topology scope id must not be blank.");
+        }
+        // HRA-051 required: topologyScopeCode
+        if (topologyScopeCode == null || topologyScopeCode.isBlank()) {
+            throw new InvalidPlanningValueException("OperationalPlan topology scope code must not be blank.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidPlanningValueException("OperationalPlan status must not be null.");
+        }
+        // HRA-051 required: createdByActorId
+        if (createdByActorId == null || createdByActorId.isBlank()) {
+            throw new InvalidPlanningValueException("OperationalPlan created by actor id must not be blank.");
+        }
+
         id = normalize(id);
         periodId = normalize(periodId);
         code = normalize(code);

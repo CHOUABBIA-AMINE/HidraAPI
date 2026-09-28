@@ -7,7 +7,7 @@
  *
  * @Name        : AnalyticsCatalogTranslation
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.analytics.domain.model;
 
+import dz.sh.hidra.modules.analytics.domain.exception.InvalidAnalyticsValueException;
 import java.time.Instant;
 
     /**
@@ -43,6 +44,19 @@ import java.time.Instant;
     ) {
 
         public AnalyticsCatalogTranslation {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidAnalyticsValueException("AnalyticsCatalogTranslation id must not be blank.");
+        }
+        // HRA-051 required: catalogEntryId
+        if (catalogEntryId == null || catalogEntryId.isBlank()) {
+            throw new InvalidAnalyticsValueException("AnalyticsCatalogTranslation catalog entry id must not be blank.");
+        }
+        // HRA-051 required: locale
+        if (locale == null || locale.isBlank()) {
+            throw new InvalidAnalyticsValueException("AnalyticsCatalogTranslation locale must not be blank.");
+        }
+
         id = normalize(id);
         catalogEntryId = normalize(catalogEntryId);
         locale = normalize(locale);

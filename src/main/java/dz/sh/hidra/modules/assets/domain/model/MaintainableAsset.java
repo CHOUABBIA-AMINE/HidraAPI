@@ -7,7 +7,7 @@
  *
  * @Name        : MaintainableAsset
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.assets.domain.model;
 
+import dz.sh.hidra.modules.assets.domain.exception.InvalidAssetsValueException;
 import dz.sh.hidra.modules.assets.domain.value.*;
 import java.time.Instant;
 
@@ -80,6 +81,43 @@ import java.time.Instant;
     ) {
 
         public MaintainableAsset {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidAssetsValueException("MaintainableAsset id must not be blank.");
+        }
+        // HRA-051 required: assetNumber
+        if (assetNumber == null || assetNumber.isBlank()) {
+            throw new InvalidAssetsValueException("MaintainableAsset asset number must not be blank.");
+        }
+        // HRA-051 required: assetCode
+        if (assetCode == null || assetCode.isBlank()) {
+            throw new InvalidAssetsValueException("MaintainableAsset asset code must not be blank.");
+        }
+        // HRA-051 required: assetTypeId
+        if (assetTypeId == null || assetTypeId.isBlank()) {
+            throw new InvalidAssetsValueException("MaintainableAsset asset type id must not be blank.");
+        }
+        // HRA-051 required: topologyAssetTypeCode
+        if (topologyAssetTypeCode == null || topologyAssetTypeCode.isBlank()) {
+            throw new InvalidAssetsValueException("MaintainableAsset topology asset type code must not be blank.");
+        }
+        // HRA-051 required: topologyAssetId
+        if (topologyAssetId == null || topologyAssetId.isBlank()) {
+            throw new InvalidAssetsValueException("MaintainableAsset topology asset id must not be blank.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidAssetsValueException("MaintainableAsset status must not be null.");
+        }
+        // HRA-051 required: registeredAt
+        if (registeredAt == null) {
+            throw new InvalidAssetsValueException("MaintainableAsset registered at must not be null.");
+        }
+        // HRA-051 self-reference: parentAssetId != id
+        if (id != null && parentAssetId != null && parentAssetId.equals(id)) {
+            throw new InvalidAssetsValueException("MaintainableAsset parent asset id must not reference itself.");
+        }
+
         id = normalize(id);
         assetNumber = normalize(assetNumber);
         assetCode = normalize(assetCode);

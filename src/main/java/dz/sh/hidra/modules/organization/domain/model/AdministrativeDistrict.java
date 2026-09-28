@@ -49,6 +49,11 @@ import java.time.Instant;
     ) {
 
         public AdministrativeDistrict {
+        // HRA-051 required: code
+        if (code == null || code.isBlank()) {
+            throw new InvalidOrganizationValueException("AdministrativeDistrict code must not be blank.");
+        }
+
         id = requireText(id, "Administrative district ID is required.");
         stateId = requireText(stateId, "Administrative district state ID is required.");
         code = OrganizationCode.of(code).value();

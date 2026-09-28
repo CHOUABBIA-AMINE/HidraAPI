@@ -7,7 +7,7 @@
  *
  * @Name        : ReportCatalogEntry
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.reporting.domain.model;
 
+import dz.sh.hidra.modules.reporting.domain.exception.InvalidReportingValueException;
 import java.time.Instant;
 
     /**
@@ -45,6 +46,15 @@ import java.time.Instant;
     ) {
 
         public ReportCatalogEntry {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidReportingValueException("ReportCatalogEntry id must not be blank.");
+        }
+        // HRA-051 required: code
+        if (code == null || code.isBlank()) {
+            throw new InvalidReportingValueException("ReportCatalogEntry code must not be blank.");
+        }
+
         id = normalize(id);
         catalogName = normalize(catalogName);
         code = normalize(code);

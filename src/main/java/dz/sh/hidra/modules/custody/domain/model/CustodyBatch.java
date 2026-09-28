@@ -7,7 +7,7 @@
  *
  * @Name        : CustodyBatch
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.custody.domain.model;
 
+import dz.sh.hidra.modules.custody.domain.exception.InvalidCustodyValueException;
 import dz.sh.hidra.modules.custody.domain.value.*;
 import java.time.Instant;
 import java.math.BigDecimal;
@@ -57,6 +58,31 @@ import java.math.BigDecimal;
     ) {
 
         public CustodyBatch {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidCustodyValueException("CustodyBatch id must not be blank.");
+        }
+        // HRA-051 required: batchNumber
+        if (batchNumber == null || batchNumber.isBlank()) {
+            throw new InvalidCustodyValueException("CustodyBatch batch number must not be blank.");
+        }
+        // HRA-051 required: measurementPeriodId
+        if (measurementPeriodId == null || measurementPeriodId.isBlank()) {
+            throw new InvalidCustodyValueException("CustodyBatch measurement period id must not be blank.");
+        }
+        // HRA-051 required: agreementId
+        if (agreementId == null || agreementId.isBlank()) {
+            throw new InvalidCustodyValueException("CustodyBatch agreement id must not be blank.");
+        }
+        // HRA-051 required: productTypeId
+        if (productTypeId == null || productTypeId.isBlank()) {
+            throw new InvalidCustodyValueException("CustodyBatch product type id must not be blank.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidCustodyValueException("CustodyBatch status must not be null.");
+        }
+
         id = normalize(id);
         batchNumber = normalize(batchNumber);
         measurementPeriodId = normalize(measurementPeriodId);

@@ -7,7 +7,7 @@
  *
  * @Name        : AnalyticsFeatureSet
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.analytics.domain.model;
 
+import dz.sh.hidra.modules.analytics.domain.exception.InvalidAnalyticsValueException;
 import java.time.Instant;
 
     /**
@@ -51,6 +52,27 @@ import java.time.Instant;
     ) {
 
         public AnalyticsFeatureSet {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidAnalyticsValueException("AnalyticsFeatureSet id must not be blank.");
+        }
+        // HRA-051 required: code
+        if (code == null || code.isBlank()) {
+            throw new InvalidAnalyticsValueException("AnalyticsFeatureSet code must not be blank.");
+        }
+        // HRA-051 required: subjectAreaId
+        if (subjectAreaId == null || subjectAreaId.isBlank()) {
+            throw new InvalidAnalyticsValueException("AnalyticsFeatureSet subject area id must not be blank.");
+        }
+        // HRA-051 required: sourceDatasetId
+        if (sourceDatasetId == null || sourceDatasetId.isBlank()) {
+            throw new InvalidAnalyticsValueException("AnalyticsFeatureSet source dataset id must not be blank.");
+        }
+        // HRA-051 required: featureSchemaVersion
+        if (featureSchemaVersion == null || featureSchemaVersion.isBlank()) {
+            throw new InvalidAnalyticsValueException("AnalyticsFeatureSet feature schema version must not be blank.");
+        }
+
         id = normalize(id);
         code = normalize(code);
         nameAr = normalize(nameAr);

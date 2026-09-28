@@ -7,7 +7,7 @@
  *
  * @Name        : AuditBeforeAfterValue
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.audit.domain.model;
 
+import dz.sh.hidra.modules.audit.domain.exception.InvalidAuditValueException;
 import dz.sh.hidra.modules.audit.domain.value.*;
 import java.time.Instant;
 
@@ -56,6 +57,23 @@ import java.time.Instant;
     ) {
 
         public AuditBeforeAfterValue {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidAuditValueException("AuditBeforeAfterValue id must not be blank.");
+        }
+        // HRA-051 required: auditEventId
+        if (auditEventId == null || auditEventId.isBlank()) {
+            throw new InvalidAuditValueException("AuditBeforeAfterValue audit event id must not be blank.");
+        }
+        // HRA-051 required: valueType
+        if (valueType == null) {
+            throw new InvalidAuditValueException("AuditBeforeAfterValue value type must not be null.");
+        }
+        // HRA-051 required: recordedAt
+        if (recordedAt == null) {
+            throw new InvalidAuditValueException("AuditBeforeAfterValue recorded at must not be null.");
+        }
+
         id = normalize(id);
         auditEventId = normalize(auditEventId);
         fieldPath = normalize(fieldPath);

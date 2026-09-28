@@ -7,7 +7,7 @@
  *
  * @Name        : PartyStatusHistory
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.party.domain.model;
 
+import dz.sh.hidra.modules.party.domain.exception.InvalidPartyValueException;
 import dz.sh.hidra.modules.party.domain.value.*;
 import java.time.Instant;
 
@@ -48,6 +49,27 @@ import java.time.Instant;
     ) {
 
         public PartyStatusHistory {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidPartyValueException("PartyStatusHistory id must not be blank.");
+        }
+        // HRA-051 required: partyId
+        if (partyId == null || partyId.isBlank()) {
+            throw new InvalidPartyValueException("PartyStatusHistory party id must not be blank.");
+        }
+        // HRA-051 required: newStatus
+        if (newStatus == null) {
+            throw new InvalidPartyValueException("PartyStatusHistory new status must not be null.");
+        }
+        // HRA-051 required: reason
+        if (reason == null) {
+            throw new InvalidPartyValueException("PartyStatusHistory reason must not be null.");
+        }
+        // HRA-051 required: changedAt
+        if (changedAt == null) {
+            throw new InvalidPartyValueException("PartyStatusHistory changed at must not be null.");
+        }
+
         id = normalize(id);
         partyId = normalize(partyId);
         reasonMessage = normalize(reasonMessage);

@@ -7,7 +7,7 @@
  *
  * @Name        : IntegrityEvidenceLink
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.integrity.domain.model;
 
+import dz.sh.hidra.modules.integrity.domain.exception.InvalidIntegrityValueException;
 import dz.sh.hidra.modules.integrity.domain.value.*;
 import java.time.Instant;
 
@@ -52,6 +53,27 @@ import java.time.Instant;
     ) {
 
         public IntegrityEvidenceLink {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidIntegrityValueException("IntegrityEvidenceLink id must not be blank.");
+        }
+        // HRA-051 required: targetId
+        if (targetId == null || targetId.isBlank()) {
+            throw new InvalidIntegrityValueException("IntegrityEvidenceLink target id must not be blank.");
+        }
+        // HRA-051 required: evidenceType
+        if (evidenceType == null) {
+            throw new InvalidIntegrityValueException("IntegrityEvidenceLink evidence type must not be null.");
+        }
+        // HRA-051 required: evidenceReferenceId
+        if (evidenceReferenceId == null || evidenceReferenceId.isBlank()) {
+            throw new InvalidIntegrityValueException("IntegrityEvidenceLink evidence reference id must not be blank.");
+        }
+        // HRA-051 required: attachedAt
+        if (attachedAt == null) {
+            throw new InvalidIntegrityValueException("IntegrityEvidenceLink attached at must not be null.");
+        }
+
         id = normalize(id);
         targetType = normalize(targetType);
         targetId = normalize(targetId);

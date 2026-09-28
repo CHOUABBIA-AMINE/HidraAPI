@@ -7,7 +7,7 @@
  *
  * @Name        : CustodyMeasurementSnapshot
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.custody.domain.model;
 
+import dz.sh.hidra.modules.custody.domain.exception.InvalidCustodyValueException;
 import java.math.BigDecimal;
 import java.time.Instant;
 
@@ -60,6 +61,31 @@ import java.time.Instant;
     ) {
 
         public CustodyMeasurementSnapshot {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidCustodyValueException("CustodyMeasurementSnapshot id must not be blank.");
+        }
+        // HRA-051 required: measurementPeriodId
+        if (measurementPeriodId == null || measurementPeriodId.isBlank()) {
+            throw new InvalidCustodyValueException("CustodyMeasurementSnapshot measurement period id must not be blank.");
+        }
+        // HRA-051 required: measurementTypeId
+        if (measurementTypeId == null || measurementTypeId.isBlank()) {
+            throw new InvalidCustodyValueException("CustodyMeasurementSnapshot measurement type id must not be blank.");
+        }
+        // HRA-051 required: observedValue
+        if (observedValue == null) {
+            throw new InvalidCustodyValueException("CustodyMeasurementSnapshot observed value must not be null.");
+        }
+        // HRA-051 required: observedUnitId
+        if (observedUnitId == null || observedUnitId.isBlank()) {
+            throw new InvalidCustodyValueException("CustodyMeasurementSnapshot observed unit id must not be blank.");
+        }
+        // HRA-051 required: measuredAt
+        if (measuredAt == null) {
+            throw new InvalidCustodyValueException("CustodyMeasurementSnapshot measured at must not be null.");
+        }
+
         id = normalize(id);
         measurementPeriodId = normalize(measurementPeriodId);
         batchId = normalize(batchId);

@@ -7,7 +7,7 @@
  *
  * @Name        : MaintenanceWorkOrderTask
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.assets.domain.model;
 
+import dz.sh.hidra.modules.assets.domain.exception.InvalidAssetsValueException;
 import dz.sh.hidra.modules.assets.domain.value.*;
 import java.time.Instant;
 
@@ -58,6 +59,31 @@ import java.time.Instant;
     ) {
 
         public MaintenanceWorkOrderTask {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidAssetsValueException("MaintenanceWorkOrderTask id must not be blank.");
+        }
+        // HRA-051 required: workOrderId
+        if (workOrderId == null || workOrderId.isBlank()) {
+            throw new InvalidAssetsValueException("MaintenanceWorkOrderTask work order id must not be blank.");
+        }
+        // HRA-051 required: taskNumber
+        if (taskNumber == null || taskNumber.isBlank()) {
+            throw new InvalidAssetsValueException("MaintenanceWorkOrderTask task number must not be blank.");
+        }
+        // HRA-051 required: taskTypeId
+        if (taskTypeId == null || taskTypeId.isBlank()) {
+            throw new InvalidAssetsValueException("MaintenanceWorkOrderTask task type id must not be blank.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidAssetsValueException("MaintenanceWorkOrderTask status must not be null.");
+        }
+        // HRA-051 required: sequenceNumber
+        if (sequenceNumber == null) {
+            throw new InvalidAssetsValueException("MaintenanceWorkOrderTask sequence number must not be null.");
+        }
+
         id = normalize(id);
         workOrderId = normalize(workOrderId);
         taskTemplateId = normalize(taskTemplateId);

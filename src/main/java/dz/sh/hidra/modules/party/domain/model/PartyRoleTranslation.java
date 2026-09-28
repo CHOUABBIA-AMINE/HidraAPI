@@ -7,7 +7,7 @@
  *
  * @Name        : PartyRoleTranslation
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.party.domain.model;
 
+import dz.sh.hidra.modules.party.domain.exception.InvalidPartyValueException;
 import java.time.Instant;
 
     /**
@@ -43,6 +44,19 @@ import java.time.Instant;
     ) {
 
         public PartyRoleTranslation {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidPartyValueException("PartyRoleTranslation id must not be blank.");
+        }
+        // HRA-051 required: partyRoleId
+        if (partyRoleId == null || partyRoleId.isBlank()) {
+            throw new InvalidPartyValueException("PartyRoleTranslation party role id must not be blank.");
+        }
+        // HRA-051 required: languageCode
+        if (languageCode == null || languageCode.isBlank()) {
+            throw new InvalidPartyValueException("PartyRoleTranslation language code must not be blank.");
+        }
+
         id = normalize(id);
         partyRoleId = normalize(partyRoleId);
         languageCode = normalize(languageCode);

@@ -7,7 +7,7 @@
  *
  * @Name        : EquipmentAttributeValue
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.topology.domain.model;
 
+import dz.sh.hidra.modules.topology.domain.exception.InvalidTopologyValueException;
 import java.math.BigDecimal;
 import java.time.Instant;
 public record EquipmentAttributeValue(
@@ -34,6 +35,23 @@ public record EquipmentAttributeValue(
         Instant updatedAt
 ) {
     public EquipmentAttributeValue {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidTopologyValueException("EquipmentAttributeValue id must not be blank.");
+        }
+        // HRA-051 required: equipmentId
+        if (equipmentId == null || equipmentId.isBlank()) {
+            throw new InvalidTopologyValueException("EquipmentAttributeValue equipment id must not be blank.");
+        }
+        // HRA-051 required: attributeDefinitionId
+        if (attributeDefinitionId == null || attributeDefinitionId.isBlank()) {
+            throw new InvalidTopologyValueException("EquipmentAttributeValue attribute definition id must not be blank.");
+        }
+        // HRA-051 order: validFrom <= validTo
+        if (validFrom != null && validTo != null && validTo.isBefore(validFrom)) {
+            throw new InvalidTopologyValueException("EquipmentAttributeValue valid to must not be before valid from.");
+        }
+
         id = normalize(id);
         equipmentId = normalize(equipmentId);
         attributeDefinitionId = normalize(attributeDefinitionId);

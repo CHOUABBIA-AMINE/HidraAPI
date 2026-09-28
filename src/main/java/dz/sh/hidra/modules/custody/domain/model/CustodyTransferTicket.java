@@ -7,7 +7,7 @@
  *
  * @Name        : CustodyTransferTicket
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.custody.domain.model;
 
+import dz.sh.hidra.modules.custody.domain.exception.InvalidCustodyValueException;
 import dz.sh.hidra.modules.custody.domain.value.*;
 import java.time.Instant;
 
@@ -62,6 +63,35 @@ import java.time.Instant;
     ) {
 
         public CustodyTransferTicket {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidCustodyValueException("CustodyTransferTicket id must not be blank.");
+        }
+        // HRA-051 required: ticketNumber
+        if (ticketNumber == null || ticketNumber.isBlank()) {
+            throw new InvalidCustodyValueException("CustodyTransferTicket ticket number must not be blank.");
+        }
+        // HRA-051 required: measurementPeriodId
+        if (measurementPeriodId == null || measurementPeriodId.isBlank()) {
+            throw new InvalidCustodyValueException("CustodyTransferTicket measurement period id must not be blank.");
+        }
+        // HRA-051 required: agreementId
+        if (agreementId == null || agreementId.isBlank()) {
+            throw new InvalidCustodyValueException("CustodyTransferTicket agreement id must not be blank.");
+        }
+        // HRA-051 required: transferPointId
+        if (transferPointId == null || transferPointId.isBlank()) {
+            throw new InvalidCustodyValueException("CustodyTransferTicket transfer point id must not be blank.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidCustodyValueException("CustodyTransferTicket status must not be null.");
+        }
+        // HRA-051 required: ticketDate
+        if (ticketDate == null) {
+            throw new InvalidCustodyValueException("CustodyTransferTicket ticket date must not be null.");
+        }
+
         id = normalize(id);
         ticketNumber = normalize(ticketNumber);
         measurementPeriodId = normalize(measurementPeriodId);

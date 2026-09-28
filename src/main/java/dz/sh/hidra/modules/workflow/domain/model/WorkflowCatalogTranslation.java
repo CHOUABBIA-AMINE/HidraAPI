@@ -7,7 +7,7 @@
  *
  * @Name        : WorkflowCatalogTranslation
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.workflow.domain.model;
 
+import dz.sh.hidra.modules.workflow.domain.exception.InvalidWorkflowValueException;
 import java.time.Instant;
 
     /**
@@ -43,6 +44,19 @@ import java.time.Instant;
     ) {
 
         public WorkflowCatalogTranslation {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidWorkflowValueException("WorkflowCatalogTranslation id must not be blank.");
+        }
+        // HRA-051 required: typeId
+        if (typeId == null || typeId.isBlank()) {
+            throw new InvalidWorkflowValueException("WorkflowCatalogTranslation type id must not be blank.");
+        }
+        // HRA-051 required: locale
+        if (locale == null || locale.isBlank()) {
+            throw new InvalidWorkflowValueException("WorkflowCatalogTranslation locale must not be blank.");
+        }
+
         id = normalize(id);
         typeId = normalize(typeId);
         locale = normalize(locale);

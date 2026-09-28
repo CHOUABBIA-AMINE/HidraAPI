@@ -7,7 +7,7 @@
  *
  * @Name        : Alarm
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.alarm.domain.model;
 
+import dz.sh.hidra.modules.alarm.domain.exception.InvalidAlarmValueException;
 import dz.sh.hidra.modules.alarm.domain.value.*;
 import java.time.Instant;
 
@@ -104,6 +105,55 @@ import java.time.Instant;
     ) {
 
         public Alarm {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidAlarmValueException("Alarm id must not be blank.");
+        }
+        // HRA-051 required: alarmNumber
+        if (alarmNumber == null || alarmNumber.isBlank()) {
+            throw new InvalidAlarmValueException("Alarm alarm number must not be blank.");
+        }
+        // HRA-051 required: alarmTypeId
+        if (alarmTypeId == null || alarmTypeId.isBlank()) {
+            throw new InvalidAlarmValueException("Alarm alarm type id must not be blank.");
+        }
+        // HRA-051 required: severityId
+        if (severityId == null || severityId.isBlank()) {
+            throw new InvalidAlarmValueException("Alarm severity id must not be blank.");
+        }
+        // HRA-051 required: sourceType
+        if (sourceType == null) {
+            throw new InvalidAlarmValueException("Alarm source type must not be null.");
+        }
+        // HRA-051 required: topologyAssetTypeCode
+        if (topologyAssetTypeCode == null || topologyAssetTypeCode.isBlank()) {
+            throw new InvalidAlarmValueException("Alarm topology asset type code must not be blank.");
+        }
+        // HRA-051 required: topologyAssetId
+        if (topologyAssetId == null || topologyAssetId.isBlank()) {
+            throw new InvalidAlarmValueException("Alarm topology asset id must not be blank.");
+        }
+        // HRA-051 required: topologyAssetCode
+        if (topologyAssetCode == null || topologyAssetCode.isBlank()) {
+            throw new InvalidAlarmValueException("Alarm topology asset code must not be blank.");
+        }
+        // HRA-051 required: currentState
+        if (currentState == null) {
+            throw new InvalidAlarmValueException("Alarm current state must not be null.");
+        }
+        // HRA-051 required: raisedAt
+        if (raisedAt == null) {
+            throw new InvalidAlarmValueException("Alarm raised at must not be null.");
+        }
+        // HRA-051 required: lastUpdatedAt
+        if (lastUpdatedAt == null) {
+            throw new InvalidAlarmValueException("Alarm last updated at must not be null.");
+        }
+        // HRA-051 order: raisedAt <= closedAt
+        if (raisedAt != null && closedAt != null && closedAt.isBefore(raisedAt)) {
+            throw new InvalidAlarmValueException("Alarm closed at must not be before raised at.");
+        }
+
         id = normalize(id);
         alarmNumber = normalize(alarmNumber);
         alarmTypeId = normalize(alarmTypeId);

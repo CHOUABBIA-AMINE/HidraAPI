@@ -7,7 +7,7 @@
  *
  * @Name        : SimulationEvidenceLink
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.simulation.domain.model;
 
+import dz.sh.hidra.modules.simulation.domain.exception.InvalidSimulationValueException;
 import dz.sh.hidra.modules.simulation.domain.value.*;
 import java.time.Instant;
 
@@ -44,6 +45,23 @@ import java.time.Instant;
     ) {
 
         public SimulationEvidenceLink {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidSimulationValueException("SimulationEvidenceLink id must not be blank.");
+        }
+        // HRA-051 required: ownerType
+        if (ownerType == null) {
+            throw new InvalidSimulationValueException("SimulationEvidenceLink owner type must not be null.");
+        }
+        // HRA-051 required: ownerId
+        if (ownerId == null || ownerId.isBlank()) {
+            throw new InvalidSimulationValueException("SimulationEvidenceLink owner id must not be blank.");
+        }
+        // HRA-051 required: evidenceType
+        if (evidenceType == null) {
+            throw new InvalidSimulationValueException("SimulationEvidenceLink evidence type must not be null.");
+        }
+
         id = normalize(id);
         ownerId = normalize(ownerId);
         evidenceReference = normalize(evidenceReference);

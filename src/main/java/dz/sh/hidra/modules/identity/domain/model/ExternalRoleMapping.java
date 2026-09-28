@@ -7,7 +7,7 @@
  *
  * @Name        : ExternalRoleMapping
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.identity.domain.model;
 
+import dz.sh.hidra.modules.identity.domain.exception.InvalidIdentityValueException;
 import dz.sh.hidra.modules.identity.domain.value.*;
 import java.time.Instant;
 
@@ -50,6 +51,31 @@ public record ExternalRoleMapping(
 ) {
 
     public ExternalRoleMapping {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidIdentityValueException("ExternalRoleMapping id must not be blank.");
+        }
+        // HRA-051 required: identityProviderId
+        if (identityProviderId == null || identityProviderId.isBlank()) {
+            throw new InvalidIdentityValueException("ExternalRoleMapping identity provider id must not be blank.");
+        }
+        // HRA-051 required: roleId
+        if (roleId == null || roleId.isBlank()) {
+            throw new InvalidIdentityValueException("ExternalRoleMapping role id must not be blank.");
+        }
+        // HRA-051 required: externalRoleCode
+        if (externalRoleCode == null || externalRoleCode.isBlank()) {
+            throw new InvalidIdentityValueException("ExternalRoleMapping external role code must not be blank.");
+        }
+        // HRA-051 required: mappingMode
+        if (mappingMode == null) {
+            throw new InvalidIdentityValueException("ExternalRoleMapping mapping mode must not be null.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidIdentityValueException("ExternalRoleMapping status must not be null.");
+        }
+
     id = normalize(id);
     identityProviderId = normalize(identityProviderId);
     roleId = normalize(roleId);

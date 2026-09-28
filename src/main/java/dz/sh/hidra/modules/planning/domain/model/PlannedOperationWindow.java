@@ -7,7 +7,7 @@
  *
  * @Name        : PlannedOperationWindow
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.planning.domain.model;
 
+import dz.sh.hidra.modules.planning.domain.exception.InvalidPlanningValueException;
 import dz.sh.hidra.modules.planning.domain.value.*;
 import java.time.Instant;
 import java.math.BigDecimal;
@@ -61,6 +62,43 @@ import java.math.BigDecimal;
     ) {
 
         public PlannedOperationWindow {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidPlanningValueException("PlannedOperationWindow id must not be blank.");
+        }
+        // HRA-051 required: revisionId
+        if (revisionId == null || revisionId.isBlank()) {
+            throw new InvalidPlanningValueException("PlannedOperationWindow revision id must not be blank.");
+        }
+        // HRA-051 required: code
+        if (code == null || code.isBlank()) {
+            throw new InvalidPlanningValueException("PlannedOperationWindow code must not be blank.");
+        }
+        // HRA-051 required: windowTypeId
+        if (windowTypeId == null || windowTypeId.isBlank()) {
+            throw new InvalidPlanningValueException("PlannedOperationWindow window type id must not be blank.");
+        }
+        // HRA-051 required: topologyAssetId
+        if (topologyAssetId == null || topologyAssetId.isBlank()) {
+            throw new InvalidPlanningValueException("PlannedOperationWindow topology asset id must not be blank.");
+        }
+        // HRA-051 required: topologyAssetCode
+        if (topologyAssetCode == null || topologyAssetCode.isBlank()) {
+            throw new InvalidPlanningValueException("PlannedOperationWindow topology asset code must not be blank.");
+        }
+        // HRA-051 required: plannedStart
+        if (plannedStart == null) {
+            throw new InvalidPlanningValueException("PlannedOperationWindow planned start must not be null.");
+        }
+        // HRA-051 required: plannedEnd
+        if (plannedEnd == null) {
+            throw new InvalidPlanningValueException("PlannedOperationWindow planned end must not be null.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidPlanningValueException("PlannedOperationWindow status must not be null.");
+        }
+
         id = normalize(id);
         revisionId = normalize(revisionId);
         scenarioId = normalize(scenarioId);

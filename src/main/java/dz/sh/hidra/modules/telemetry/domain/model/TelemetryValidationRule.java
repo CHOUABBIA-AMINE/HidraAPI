@@ -7,7 +7,7 @@
  *
  * @Name        : TelemetryValidationRule
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.telemetry.domain.model;
 
+import dz.sh.hidra.modules.telemetry.domain.exception.InvalidTelemetryValueException;
 import dz.sh.hidra.modules.telemetry.domain.value.*;
 import java.time.Instant;
 
@@ -60,6 +61,39 @@ import java.time.Instant;
     ) {
 
         public TelemetryValidationRule {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidTelemetryValueException("TelemetryValidationRule id must not be blank.");
+        }
+        // HRA-051 required: code
+        if (code == null || code.isBlank()) {
+            throw new InvalidTelemetryValueException("TelemetryValidationRule code must not be blank.");
+        }
+        // HRA-051 required: scopeType
+        if (scopeType == null) {
+            throw new InvalidTelemetryValueException("TelemetryValidationRule scope type must not be null.");
+        }
+        // HRA-051 required: ruleTypeId
+        if (ruleTypeId == null || ruleTypeId.isBlank()) {
+            throw new InvalidTelemetryValueException("TelemetryValidationRule rule type id must not be blank.");
+        }
+        // HRA-051 required: severity
+        if (severity == null) {
+            throw new InvalidTelemetryValueException("TelemetryValidationRule severity must not be null.");
+        }
+        // HRA-051 required: actionOnFailure
+        if (actionOnFailure == null) {
+            throw new InvalidTelemetryValueException("TelemetryValidationRule action on failure must not be null.");
+        }
+        // HRA-051 required: validFrom
+        if (validFrom == null) {
+            throw new InvalidTelemetryValueException("TelemetryValidationRule valid from must not be null.");
+        }
+        // HRA-051 order: validFrom <= validTo
+        if (validFrom != null && validTo != null && validTo.isBefore(validFrom)) {
+            throw new InvalidTelemetryValueException("TelemetryValidationRule valid to must not be before valid from.");
+        }
+
         id = normalize(id);
         code = normalize(code);
         name = normalize(name);

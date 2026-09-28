@@ -7,7 +7,7 @@
  *
  * @Name        : PartyRoleAssignment
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.party.domain.model;
 
+import dz.sh.hidra.modules.party.domain.exception.InvalidPartyValueException;
 import dz.sh.hidra.modules.party.domain.value.*;
 import java.time.Instant;
 
@@ -48,6 +49,31 @@ import java.time.Instant;
     ) {
 
         public PartyRoleAssignment {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidPartyValueException("PartyRoleAssignment id must not be blank.");
+        }
+        // HRA-051 required: partyId
+        if (partyId == null || partyId.isBlank()) {
+            throw new InvalidPartyValueException("PartyRoleAssignment party id must not be blank.");
+        }
+        // HRA-051 required: roleId
+        if (roleId == null || roleId.isBlank()) {
+            throw new InvalidPartyValueException("PartyRoleAssignment role id must not be blank.");
+        }
+        // HRA-051 required: validFrom
+        if (validFrom == null) {
+            throw new InvalidPartyValueException("PartyRoleAssignment valid from must not be null.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidPartyValueException("PartyRoleAssignment status must not be null.");
+        }
+        // HRA-051 order: validFrom <= validTo
+        if (validFrom != null && validTo != null && validTo.isBefore(validFrom)) {
+            throw new InvalidPartyValueException("PartyRoleAssignment valid to must not be before valid from.");
+        }
+
         id = normalize(id);
         partyId = normalize(partyId);
         roleId = normalize(roleId);

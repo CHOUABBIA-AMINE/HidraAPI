@@ -7,7 +7,7 @@
  *
  * @Name        : ConfigurationExternalReference
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.configuration.domain.model;
 
+import dz.sh.hidra.modules.configuration.domain.exception.InvalidConfigurationValueException;
 import java.time.Instant;
 
     /**
@@ -55,6 +56,19 @@ import java.time.Instant;
     ) {
 
         public ConfigurationExternalReference {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidConfigurationValueException("ConfigurationExternalReference id must not be blank.");
+        }
+        // HRA-051 required: targetId
+        if (targetId == null || targetId.isBlank()) {
+            throw new InvalidConfigurationValueException("ConfigurationExternalReference target id must not be blank.");
+        }
+        // HRA-051 required: referenceId
+        if (referenceId == null || referenceId.isBlank()) {
+            throw new InvalidConfigurationValueException("ConfigurationExternalReference reference id must not be blank.");
+        }
+
         id = normalize(id);
         targetType = normalize(targetType);
         targetId = normalize(targetId);

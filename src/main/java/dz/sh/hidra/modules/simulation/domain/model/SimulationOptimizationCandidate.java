@@ -7,7 +7,7 @@
  *
  * @Name        : SimulationOptimizationCandidate
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.simulation.domain.model;
 
+import dz.sh.hidra.modules.simulation.domain.exception.InvalidSimulationValueException;
 import dz.sh.hidra.modules.simulation.domain.value.*;
 import java.time.Instant;
 import java.math.BigDecimal;
@@ -53,6 +54,19 @@ import java.math.BigDecimal;
     ) {
 
         public SimulationOptimizationCandidate {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidSimulationValueException("SimulationOptimizationCandidate id must not be blank.");
+        }
+        // HRA-051 required: runId
+        if (runId == null || runId.isBlank()) {
+            throw new InvalidSimulationValueException("SimulationOptimizationCandidate run id must not be blank.");
+        }
+        // HRA-051 required: candidateStatus
+        if (candidateStatus == null) {
+            throw new InvalidSimulationValueException("SimulationOptimizationCandidate candidate status must not be null.");
+        }
+
         id = normalize(id);
         runId = normalize(runId);
         summaryText = normalize(summaryText);

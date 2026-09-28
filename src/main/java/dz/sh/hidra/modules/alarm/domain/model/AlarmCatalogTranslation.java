@@ -7,7 +7,7 @@
  *
  * @Name        : AlarmCatalogTranslation
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.alarm.domain.model;
 
+import dz.sh.hidra.modules.alarm.domain.exception.InvalidAlarmValueException;
 import java.time.Instant;
 
     /**
@@ -43,6 +44,19 @@ import java.time.Instant;
     ) {
 
         public AlarmCatalogTranslation {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidAlarmValueException("AlarmCatalogTranslation id must not be blank.");
+        }
+        // HRA-051 required: catalogEntryId
+        if (catalogEntryId == null || catalogEntryId.isBlank()) {
+            throw new InvalidAlarmValueException("AlarmCatalogTranslation catalog entry id must not be blank.");
+        }
+        // HRA-051 required: locale
+        if (locale == null || locale.isBlank()) {
+            throw new InvalidAlarmValueException("AlarmCatalogTranslation locale must not be blank.");
+        }
+
         id = normalize(id);
         catalogEntryId = normalize(catalogEntryId);
         locale = normalize(locale);

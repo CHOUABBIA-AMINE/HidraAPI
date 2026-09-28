@@ -7,7 +7,7 @@
  *
  * @Name        : DocumentVersion
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.documents.domain.model;
 
+import dz.sh.hidra.modules.documents.domain.exception.InvalidDocumentValueException;
 import dz.sh.hidra.modules.documents.domain.value.*;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -83,6 +84,39 @@ import java.time.LocalDate;
     ) {
 
         public DocumentVersion {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidDocumentValueException("DocumentVersion id must not be blank.");
+        }
+        // HRA-051 required: documentId
+        if (documentId == null || documentId.isBlank()) {
+            throw new InvalidDocumentValueException("DocumentVersion document id must not be blank.");
+        }
+        // HRA-051 required: storageObjectId
+        if (storageObjectId == null || storageObjectId.isBlank()) {
+            throw new InvalidDocumentValueException("DocumentVersion storage object id must not be blank.");
+        }
+        // HRA-051 required: versionStatus
+        if (versionStatus == null) {
+            throw new InvalidDocumentValueException("DocumentVersion version status must not be null.");
+        }
+        // HRA-051 required: uploadedByActorId
+        if (uploadedByActorId == null || uploadedByActorId.isBlank()) {
+            throw new InvalidDocumentValueException("DocumentVersion uploaded by actor id must not be blank.");
+        }
+        // HRA-051 required: uploadedAt
+        if (uploadedAt == null) {
+            throw new InvalidDocumentValueException("DocumentVersion uploaded at must not be null.");
+        }
+        // HRA-051 order: effectiveFrom <= effectiveTo
+        if (effectiveFrom != null && effectiveTo != null && effectiveTo.isBefore(effectiveFrom)) {
+            throw new InvalidDocumentValueException("DocumentVersion effective to must not be before effective from.");
+        }
+        // HRA-051 self-reference: supersededByVersionId != id
+        if (id != null && supersededByVersionId != null && supersededByVersionId.equals(id)) {
+            throw new InvalidDocumentValueException("DocumentVersion superseded by version id must not reference itself.");
+        }
+
         id = normalize(id);
         documentId = normalize(documentId);
         versionLabel = normalize(versionLabel);

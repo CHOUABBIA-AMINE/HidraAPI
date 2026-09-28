@@ -7,7 +7,7 @@
  *
  * @Name        : AuditTargetReference
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.audit.domain.model;
 
+import dz.sh.hidra.modules.audit.domain.exception.InvalidAuditValueException;
 import java.time.Instant;
 
     /**
@@ -53,6 +54,23 @@ import java.time.Instant;
     ) {
 
         public AuditTargetReference {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidAuditValueException("AuditTargetReference id must not be blank.");
+        }
+        // HRA-051 required: auditEventId
+        if (auditEventId == null || auditEventId.isBlank()) {
+            throw new InvalidAuditValueException("AuditTargetReference audit event id must not be blank.");
+        }
+        // HRA-051 required: targetId
+        if (targetId == null || targetId.isBlank()) {
+            throw new InvalidAuditValueException("AuditTargetReference target id must not be blank.");
+        }
+        // HRA-051 required: capturedAt
+        if (capturedAt == null) {
+            throw new InvalidAuditValueException("AuditTargetReference captured at must not be null.");
+        }
+
         id = normalize(id);
         auditEventId = normalize(auditEventId);
         targetModule = normalize(targetModule);

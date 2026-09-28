@@ -7,7 +7,7 @@
  *
  * @Name        : EnvironmentalEvent
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.hse.domain.model;
 
+import dz.sh.hidra.modules.hse.domain.exception.InvalidHseValueException;
 import dz.sh.hidra.modules.hse.domain.value.*;
 import java.time.Instant;
 import java.math.BigDecimal;
@@ -67,6 +68,27 @@ import java.math.BigDecimal;
     ) {
 
         public EnvironmentalEvent {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidHseValueException("EnvironmentalEvent id must not be blank.");
+        }
+        // HRA-051 required: eventNumber
+        if (eventNumber == null || eventNumber.isBlank()) {
+            throw new InvalidHseValueException("EnvironmentalEvent event number must not be blank.");
+        }
+        // HRA-051 required: eventType
+        if (eventType == null) {
+            throw new InvalidHseValueException("EnvironmentalEvent event type must not be null.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidHseValueException("EnvironmentalEvent status must not be null.");
+        }
+        // HRA-051 required: occurredAt
+        if (occurredAt == null) {
+            throw new InvalidHseValueException("EnvironmentalEvent occurred at must not be null.");
+        }
+
         id = normalize(id);
         eventNumber = normalize(eventNumber);
         title = normalize(title);

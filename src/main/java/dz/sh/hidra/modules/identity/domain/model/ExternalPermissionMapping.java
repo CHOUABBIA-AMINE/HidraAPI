@@ -7,7 +7,7 @@
  *
  * @Name        : ExternalPermissionMapping
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.identity.domain.model;
 
+import dz.sh.hidra.modules.identity.domain.exception.InvalidIdentityValueException;
 import dz.sh.hidra.modules.identity.domain.value.*;
 import java.time.Instant;
 
@@ -50,6 +51,35 @@ public record ExternalPermissionMapping(
 ) {
 
     public ExternalPermissionMapping {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidIdentityValueException("ExternalPermissionMapping id must not be blank.");
+        }
+        // HRA-051 required: identityProviderId
+        if (identityProviderId == null || identityProviderId.isBlank()) {
+            throw new InvalidIdentityValueException("ExternalPermissionMapping identity provider id must not be blank.");
+        }
+        // HRA-051 required: permissionId
+        if (permissionId == null || permissionId.isBlank()) {
+            throw new InvalidIdentityValueException("ExternalPermissionMapping permission id must not be blank.");
+        }
+        // HRA-051 required: externalPermissionCode
+        if (externalPermissionCode == null || externalPermissionCode.isBlank()) {
+            throw new InvalidIdentityValueException("ExternalPermissionMapping external permission code must not be blank.");
+        }
+        // HRA-051 required: mappingMode
+        if (mappingMode == null) {
+            throw new InvalidIdentityValueException("ExternalPermissionMapping mapping mode must not be null.");
+        }
+        // HRA-051 required: effect
+        if (effect == null) {
+            throw new InvalidIdentityValueException("ExternalPermissionMapping effect must not be null.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidIdentityValueException("ExternalPermissionMapping status must not be null.");
+        }
+
     id = normalize(id);
     identityProviderId = normalize(identityProviderId);
     permissionId = normalize(permissionId);

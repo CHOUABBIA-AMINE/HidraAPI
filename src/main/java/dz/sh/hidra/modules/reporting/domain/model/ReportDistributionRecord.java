@@ -7,7 +7,7 @@
  *
  * @Name        : ReportDistributionRecord
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.reporting.domain.model;
 
+import dz.sh.hidra.modules.reporting.domain.exception.InvalidReportingValueException;
 import dz.sh.hidra.modules.reporting.domain.value.*;
 import java.time.Instant;
 
@@ -56,6 +57,31 @@ import java.time.Instant;
     ) {
 
         public ReportDistributionRecord {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidReportingValueException("ReportDistributionRecord id must not be blank.");
+        }
+        // HRA-051 required: reportPublicationId
+        if (reportPublicationId == null || reportPublicationId.isBlank()) {
+            throw new InvalidReportingValueException("ReportDistributionRecord report publication id must not be blank.");
+        }
+        // HRA-051 required: reportOutputArtifactId
+        if (reportOutputArtifactId == null || reportOutputArtifactId.isBlank()) {
+            throw new InvalidReportingValueException("ReportDistributionRecord report output artifact id must not be blank.");
+        }
+        // HRA-051 required: targetType
+        if (targetType == null) {
+            throw new InvalidReportingValueException("ReportDistributionRecord target type must not be null.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidReportingValueException("ReportDistributionRecord status must not be null.");
+        }
+        // HRA-051 required: requestedAt
+        if (requestedAt == null) {
+            throw new InvalidReportingValueException("ReportDistributionRecord requested at must not be null.");
+        }
+
         id = normalize(id);
         reportPublicationId = normalize(reportPublicationId);
         reportOutputArtifactId = normalize(reportOutputArtifactId);

@@ -7,7 +7,7 @@
  *
  * @Name        : ReportInputSnapshot
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.reporting.domain.model;
 
+import dz.sh.hidra.modules.reporting.domain.exception.InvalidReportingValueException;
 import dz.sh.hidra.modules.reporting.domain.value.*;
 import java.time.Instant;
 
@@ -52,6 +53,31 @@ import java.time.Instant;
     ) {
 
         public ReportInputSnapshot {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidReportingValueException("ReportInputSnapshot id must not be blank.");
+        }
+        // HRA-051 required: reportRunId
+        if (reportRunId == null || reportRunId.isBlank()) {
+            throw new InvalidReportingValueException("ReportInputSnapshot report run id must not be blank.");
+        }
+        // HRA-051 required: snapshotType
+        if (snapshotType == null) {
+            throw new InvalidReportingValueException("ReportInputSnapshot snapshot type must not be null.");
+        }
+        // HRA-051 required: sourceReferenceId
+        if (sourceReferenceId == null || sourceReferenceId.isBlank()) {
+            throw new InvalidReportingValueException("ReportInputSnapshot source reference id must not be blank.");
+        }
+        // HRA-051 required: snapshotHash
+        if (snapshotHash == null || snapshotHash.isBlank()) {
+            throw new InvalidReportingValueException("ReportInputSnapshot snapshot hash must not be blank.");
+        }
+        // HRA-051 required: capturedAt
+        if (capturedAt == null) {
+            throw new InvalidReportingValueException("ReportInputSnapshot captured at must not be null.");
+        }
+
         id = normalize(id);
         reportRunId = normalize(reportRunId);
         sourceModule = normalize(sourceModule);

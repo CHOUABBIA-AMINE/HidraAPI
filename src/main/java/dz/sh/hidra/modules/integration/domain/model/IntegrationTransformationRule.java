@@ -7,7 +7,7 @@
  *
  * @Name        : IntegrationTransformationRule
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.integration.domain.model;
 
+import dz.sh.hidra.modules.integration.domain.exception.InvalidIntegrationValueException;
 import java.time.Instant;
 
     /**
@@ -47,6 +48,23 @@ import java.time.Instant;
     ) {
 
         public IntegrationTransformationRule {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidIntegrationValueException("IntegrationTransformationRule id must not be blank.");
+        }
+        // HRA-051 required: mappingProfileId
+        if (mappingProfileId == null || mappingProfileId.isBlank()) {
+            throw new InvalidIntegrationValueException("IntegrationTransformationRule mapping profile id must not be blank.");
+        }
+        // HRA-051 required: code
+        if (code == null || code.isBlank()) {
+            throw new InvalidIntegrationValueException("IntegrationTransformationRule code must not be blank.");
+        }
+        // HRA-051 required: ruleTypeId
+        if (ruleTypeId == null || ruleTypeId.isBlank()) {
+            throw new InvalidIntegrationValueException("IntegrationTransformationRule rule type id must not be blank.");
+        }
+
         id = normalize(id);
         mappingProfileId = normalize(mappingProfileId);
         code = normalize(code);

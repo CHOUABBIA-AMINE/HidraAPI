@@ -7,7 +7,7 @@
  *
  * @Name        : RemainingLifeEstimate
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.integrity.domain.model;
 
+import dz.sh.hidra.modules.integrity.domain.exception.InvalidIntegrityValueException;
 import java.math.BigDecimal;
 import java.time.Instant;
 
@@ -54,6 +55,27 @@ import java.time.Instant;
     ) {
 
         public RemainingLifeEstimate {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidIntegrityValueException("RemainingLifeEstimate id must not be blank.");
+        }
+        // HRA-051 required: methodId
+        if (methodId == null || methodId.isBlank()) {
+            throw new InvalidIntegrityValueException("RemainingLifeEstimate method id must not be blank.");
+        }
+        // HRA-051 required: remainingLifeValue
+        if (remainingLifeValue == null) {
+            throw new InvalidIntegrityValueException("RemainingLifeEstimate remaining life value must not be null.");
+        }
+        // HRA-051 required: remainingLifeUnitId
+        if (remainingLifeUnitId == null || remainingLifeUnitId.isBlank()) {
+            throw new InvalidIntegrityValueException("RemainingLifeEstimate remaining life unit id must not be blank.");
+        }
+        // HRA-051 required: estimatedAt
+        if (estimatedAt == null) {
+            throw new InvalidIntegrityValueException("RemainingLifeEstimate estimated at must not be null.");
+        }
+
         id = normalize(id);
         defectId = normalize(defectId);
         assessmentId = normalize(assessmentId);

@@ -7,7 +7,7 @@
  *
  * @Name        : AuditExportRequest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.audit.domain.model;
 
+import dz.sh.hidra.modules.audit.domain.exception.InvalidAuditValueException;
 import dz.sh.hidra.modules.audit.domain.value.*;
 import java.time.Instant;
 
@@ -58,6 +59,27 @@ import java.time.Instant;
     ) {
 
         public AuditExportRequest {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidAuditValueException("AuditExportRequest id must not be blank.");
+        }
+        // HRA-051 required: requestedByActorId
+        if (requestedByActorId == null || requestedByActorId.isBlank()) {
+            throw new InvalidAuditValueException("AuditExportRequest requested by actor id must not be blank.");
+        }
+        // HRA-051 required: purposeId
+        if (purposeId == null || purposeId.isBlank()) {
+            throw new InvalidAuditValueException("AuditExportRequest purpose id must not be blank.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidAuditValueException("AuditExportRequest status must not be null.");
+        }
+        // HRA-051 required: requestedAt
+        if (requestedAt == null) {
+            throw new InvalidAuditValueException("AuditExportRequest requested at must not be null.");
+        }
+
         id = normalize(id);
         requestedByActorId = normalize(requestedByActorId);
         requestedByDisplayNameSnapshot = normalize(requestedByDisplayNameSnapshot);

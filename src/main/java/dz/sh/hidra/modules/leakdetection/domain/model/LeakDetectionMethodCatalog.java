@@ -7,7 +7,7 @@
  *
  * @Name        : LeakDetectionMethodCatalog
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.leakdetection.domain.model;
 
+import dz.sh.hidra.modules.leakdetection.domain.exception.InvalidLeakDetectionValueException;
 import dz.sh.hidra.modules.leakdetection.domain.value.*;
 import java.time.Instant;
 
@@ -46,6 +47,19 @@ import java.time.Instant;
     ) {
 
         public LeakDetectionMethodCatalog {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidLeakDetectionValueException("LeakDetectionMethodCatalog id must not be blank.");
+        }
+        // HRA-051 required: code
+        if (code == null || code.isBlank()) {
+            throw new InvalidLeakDetectionValueException("LeakDetectionMethodCatalog code must not be blank.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidLeakDetectionValueException("LeakDetectionMethodCatalog status must not be null.");
+        }
+
         id = normalize(id);
         code = normalize(code);
         methodFamily = normalize(methodFamily);

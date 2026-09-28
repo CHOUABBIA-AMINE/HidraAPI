@@ -7,7 +7,7 @@
  *
  * @Name        : IncidentEvidenceLink
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.incident.domain.model;
 
+import dz.sh.hidra.modules.incident.domain.exception.InvalidIncidentValueException;
 import dz.sh.hidra.modules.incident.domain.value.*;
 import java.time.Instant;
 
@@ -50,6 +51,31 @@ import java.time.Instant;
     ) {
 
         public IncidentEvidenceLink {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidIncidentValueException("IncidentEvidenceLink id must not be blank.");
+        }
+        // HRA-051 required: incidentId
+        if (incidentId == null || incidentId.isBlank()) {
+            throw new InvalidIncidentValueException("IncidentEvidenceLink incident id must not be blank.");
+        }
+        // HRA-051 required: evidenceType
+        if (evidenceType == null) {
+            throw new InvalidIncidentValueException("IncidentEvidenceLink evidence type must not be null.");
+        }
+        // HRA-051 required: evidenceReferenceId
+        if (evidenceReferenceId == null || evidenceReferenceId.isBlank()) {
+            throw new InvalidIncidentValueException("IncidentEvidenceLink evidence reference id must not be blank.");
+        }
+        // HRA-051 required: attachedByActorId
+        if (attachedByActorId == null || attachedByActorId.isBlank()) {
+            throw new InvalidIncidentValueException("IncidentEvidenceLink attached by actor id must not be blank.");
+        }
+        // HRA-051 required: attachedAt
+        if (attachedAt == null) {
+            throw new InvalidIncidentValueException("IncidentEvidenceLink attached at must not be null.");
+        }
+
         id = normalize(id);
         incidentId = normalize(incidentId);
         evidenceReferenceId = normalize(evidenceReferenceId);

@@ -7,7 +7,7 @@
  *
  * @Name        : CustodyQualityCertificate
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.custody.domain.model;
 
+import dz.sh.hidra.modules.custody.domain.exception.InvalidCustodyValueException;
 import java.time.Instant;
 
     /**
@@ -49,6 +50,23 @@ import java.time.Instant;
     ) {
 
         public CustodyQualityCertificate {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidCustodyValueException("CustodyQualityCertificate id must not be blank.");
+        }
+        // HRA-051 required: certificateNumber
+        if (certificateNumber == null || certificateNumber.isBlank()) {
+            throw new InvalidCustodyValueException("CustodyQualityCertificate certificate number must not be blank.");
+        }
+        // HRA-051 required: issuedAt
+        if (issuedAt == null) {
+            throw new InvalidCustodyValueException("CustodyQualityCertificate issued at must not be null.");
+        }
+        // HRA-051 required: status
+        if (status == null || status.isBlank()) {
+            throw new InvalidCustodyValueException("CustodyQualityCertificate status must not be blank.");
+        }
+
         id = normalize(id);
         certificateNumber = normalize(certificateNumber);
         qualitySampleId = normalize(qualitySampleId);

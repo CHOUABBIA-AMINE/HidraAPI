@@ -7,7 +7,7 @@
  *
  * @Name        : RiskMatrixCell
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.risk.domain.model;
 
+import dz.sh.hidra.modules.risk.domain.exception.InvalidRiskValueException;
 import java.math.BigDecimal;
 import java.time.Instant;
 
@@ -54,6 +55,31 @@ import java.time.Instant;
     ) {
 
         public RiskMatrixCell {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidRiskValueException("RiskMatrixCell id must not be blank.");
+        }
+        // HRA-051 required: riskMatrixId
+        if (riskMatrixId == null || riskMatrixId.isBlank()) {
+            throw new InvalidRiskValueException("RiskMatrixCell risk matrix id must not be blank.");
+        }
+        // HRA-051 required: likelihoodLevelId
+        if (likelihoodLevelId == null || likelihoodLevelId.isBlank()) {
+            throw new InvalidRiskValueException("RiskMatrixCell likelihood level id must not be blank.");
+        }
+        // HRA-051 required: consequenceLevelId
+        if (consequenceLevelId == null || consequenceLevelId.isBlank()) {
+            throw new InvalidRiskValueException("RiskMatrixCell consequence level id must not be blank.");
+        }
+        // HRA-051 required: scoreValue
+        if (scoreValue == null) {
+            throw new InvalidRiskValueException("RiskMatrixCell score value must not be null.");
+        }
+        // HRA-051 required: ratingId
+        if (ratingId == null || ratingId.isBlank()) {
+            throw new InvalidRiskValueException("RiskMatrixCell rating id must not be blank.");
+        }
+
         id = normalize(id);
         riskMatrixId = normalize(riskMatrixId);
         likelihoodLevelId = normalize(likelihoodLevelId);

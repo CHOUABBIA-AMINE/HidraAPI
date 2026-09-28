@@ -7,7 +7,7 @@
  *
  * @Name        : DigitalTwinReadinessAssessment
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.analytics.domain.model;
 
+import dz.sh.hidra.modules.analytics.domain.exception.InvalidAnalyticsValueException;
 import dz.sh.hidra.modules.analytics.domain.value.*;
 import java.time.Instant;
 import java.math.BigDecimal;
@@ -61,6 +62,31 @@ import java.math.BigDecimal;
     ) {
 
         public DigitalTwinReadinessAssessment {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidAnalyticsValueException("DigitalTwinReadinessAssessment id must not be blank.");
+        }
+        // HRA-051 required: topologySnapshotId
+        if (topologySnapshotId == null || topologySnapshotId.isBlank()) {
+            throw new InvalidAnalyticsValueException("DigitalTwinReadinessAssessment topology snapshot id must not be blank.");
+        }
+        // HRA-051 required: assessmentPeriodStart
+        if (assessmentPeriodStart == null) {
+            throw new InvalidAnalyticsValueException("DigitalTwinReadinessAssessment assessment period start must not be null.");
+        }
+        // HRA-051 required: assessmentPeriodEnd
+        if (assessmentPeriodEnd == null) {
+            throw new InvalidAnalyticsValueException("DigitalTwinReadinessAssessment assessment period end must not be null.");
+        }
+        // HRA-051 required: readinessStatus
+        if (readinessStatus == null) {
+            throw new InvalidAnalyticsValueException("DigitalTwinReadinessAssessment readiness status must not be null.");
+        }
+        // HRA-051 required: assessedAt
+        if (assessedAt == null) {
+            throw new InvalidAnalyticsValueException("DigitalTwinReadinessAssessment assessed at must not be null.");
+        }
+
         id = normalize(id);
         scopeType = normalize(scopeType);
         scopeId = normalize(scopeId);

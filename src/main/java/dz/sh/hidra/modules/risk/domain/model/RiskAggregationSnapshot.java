@@ -7,7 +7,7 @@
  *
  * @Name        : RiskAggregationSnapshot
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.risk.domain.model;
 
+import dz.sh.hidra.modules.risk.domain.exception.InvalidRiskValueException;
 import java.math.BigDecimal;
 import java.time.Instant;
 
@@ -66,6 +67,19 @@ import java.time.Instant;
     ) {
 
         public RiskAggregationSnapshot {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidRiskValueException("RiskAggregationSnapshot id must not be blank.");
+        }
+        // HRA-051 required: scopeId
+        if (scopeId == null || scopeId.isBlank()) {
+            throw new InvalidRiskValueException("RiskAggregationSnapshot scope id must not be blank.");
+        }
+        // HRA-051 required: snapshotDate
+        if (snapshotDate == null) {
+            throw new InvalidRiskValueException("RiskAggregationSnapshot snapshot date must not be null.");
+        }
+
         id = normalize(id);
         scopeType = normalize(scopeType);
         scopeId = normalize(scopeId);

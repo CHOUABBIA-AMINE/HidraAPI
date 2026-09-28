@@ -7,7 +7,7 @@
  *
  * @Name        : PartyComplianceStatus
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.party.domain.model;
 
+import dz.sh.hidra.modules.party.domain.exception.InvalidPartyValueException;
 import dz.sh.hidra.modules.party.domain.value.*;
 import java.time.Instant;
 
@@ -50,6 +51,23 @@ import java.time.Instant;
     ) {
 
         public PartyComplianceStatus {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidPartyValueException("PartyComplianceStatus id must not be blank.");
+        }
+        // HRA-051 required: partyId
+        if (partyId == null || partyId.isBlank()) {
+            throw new InvalidPartyValueException("PartyComplianceStatus party id must not be blank.");
+        }
+        // HRA-051 required: complianceStatus
+        if (complianceStatus == null) {
+            throw new InvalidPartyValueException("PartyComplianceStatus compliance status must not be null.");
+        }
+        // HRA-051 required: checkedAt
+        if (checkedAt == null) {
+            throw new InvalidPartyValueException("PartyComplianceStatus checked at must not be null.");
+        }
+
         id = normalize(id);
         partyId = normalize(partyId);
         screeningSource = normalize(screeningSource);

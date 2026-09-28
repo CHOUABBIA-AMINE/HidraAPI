@@ -7,7 +7,7 @@
  *
  * @Name        : IncidentRootCauseAnalysis
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.incident.domain.model;
 
+import dz.sh.hidra.modules.incident.domain.exception.InvalidIncidentValueException;
 import java.time.Instant;
 
     /**
@@ -55,6 +56,27 @@ import java.time.Instant;
     ) {
 
         public IncidentRootCauseAnalysis {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidIncidentValueException("IncidentRootCauseAnalysis id must not be blank.");
+        }
+        // HRA-051 required: incidentId
+        if (incidentId == null || incidentId.isBlank()) {
+            throw new InvalidIncidentValueException("IncidentRootCauseAnalysis incident id must not be blank.");
+        }
+        // HRA-051 required: rootCauseCategoryId
+        if (rootCauseCategoryId == null || rootCauseCategoryId.isBlank()) {
+            throw new InvalidIncidentValueException("IncidentRootCauseAnalysis root cause category id must not be blank.");
+        }
+        // HRA-051 required: performedByActorId
+        if (performedByActorId == null || performedByActorId.isBlank()) {
+            throw new InvalidIncidentValueException("IncidentRootCauseAnalysis performed by actor id must not be blank.");
+        }
+        // HRA-051 required: performedAt
+        if (performedAt == null) {
+            throw new InvalidIncidentValueException("IncidentRootCauseAnalysis performed at must not be null.");
+        }
+
         id = normalize(id);
         incidentId = normalize(incidentId);
         rootCauseCategoryId = normalize(rootCauseCategoryId);

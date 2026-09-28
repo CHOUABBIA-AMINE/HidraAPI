@@ -7,7 +7,7 @@
  *
  * @Name        : OperationalStateSnapshot
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.monitoring.domain.model;
 
+import dz.sh.hidra.modules.monitoring.domain.exception.InvalidMonitoringValueException;
 import dz.sh.hidra.modules.monitoring.domain.value.*;
 import java.time.Instant;
 
@@ -50,6 +51,27 @@ import java.time.Instant;
     ) {
 
         public OperationalStateSnapshot {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidMonitoringValueException("OperationalStateSnapshot id must not be blank.");
+        }
+        // HRA-051 required: operationalStateId
+        if (operationalStateId == null || operationalStateId.isBlank()) {
+            throw new InvalidMonitoringValueException("OperationalStateSnapshot operational state id must not be blank.");
+        }
+        // HRA-051 required: topologyAssetId
+        if (topologyAssetId == null || topologyAssetId.isBlank()) {
+            throw new InvalidMonitoringValueException("OperationalStateSnapshot topology asset id must not be blank.");
+        }
+        // HRA-051 required: stateValue
+        if (stateValue == null) {
+            throw new InvalidMonitoringValueException("OperationalStateSnapshot state value must not be null.");
+        }
+        // HRA-051 required: capturedAt
+        if (capturedAt == null) {
+            throw new InvalidMonitoringValueException("OperationalStateSnapshot captured at must not be null.");
+        }
+
         id = normalize(id);
         operationalStateId = normalize(operationalStateId);
         topologyAssetType = normalize(topologyAssetType);

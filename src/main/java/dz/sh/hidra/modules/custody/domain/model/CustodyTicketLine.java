@@ -7,7 +7,7 @@
  *
  * @Name        : CustodyTicketLine
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.custody.domain.model;
 
+import dz.sh.hidra.modules.custody.domain.exception.InvalidCustodyValueException;
 import java.math.BigDecimal;
 import java.time.Instant;
 
@@ -52,6 +53,31 @@ import java.time.Instant;
     ) {
 
         public CustodyTicketLine {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidCustodyValueException("CustodyTicketLine id must not be blank.");
+        }
+        // HRA-051 required: transferTicketId
+        if (transferTicketId == null || transferTicketId.isBlank()) {
+            throw new InvalidCustodyValueException("CustodyTicketLine transfer ticket id must not be blank.");
+        }
+        // HRA-051 required: lineTypeId
+        if (lineTypeId == null || lineTypeId.isBlank()) {
+            throw new InvalidCustodyValueException("CustodyTicketLine line type id must not be blank.");
+        }
+        // HRA-051 required: productTypeId
+        if (productTypeId == null || productTypeId.isBlank()) {
+            throw new InvalidCustodyValueException("CustodyTicketLine product type id must not be blank.");
+        }
+        // HRA-051 required: quantity
+        if (quantity == null) {
+            throw new InvalidCustodyValueException("CustodyTicketLine quantity must not be null.");
+        }
+        // HRA-051 required: quantityUnitId
+        if (quantityUnitId == null || quantityUnitId.isBlank()) {
+            throw new InvalidCustodyValueException("CustodyTicketLine quantity unit id must not be blank.");
+        }
+
         id = normalize(id);
         transferTicketId = normalize(transferTicketId);
         lineTypeId = normalize(lineTypeId);

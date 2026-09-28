@@ -7,7 +7,7 @@
  *
  * @Name        : IncidentTimelineEntry
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.incident.domain.model;
 
+import dz.sh.hidra.modules.incident.domain.exception.InvalidIncidentValueException;
 import dz.sh.hidra.modules.incident.domain.value.*;
 import java.time.Instant;
 
@@ -58,6 +59,27 @@ import java.time.Instant;
     ) {
 
         public IncidentTimelineEntry {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidIncidentValueException("IncidentTimelineEntry id must not be blank.");
+        }
+        // HRA-051 required: incidentId
+        if (incidentId == null || incidentId.isBlank()) {
+            throw new InvalidIncidentValueException("IncidentTimelineEntry incident id must not be blank.");
+        }
+        // HRA-051 required: entryTypeId
+        if (entryTypeId == null || entryTypeId.isBlank()) {
+            throw new InvalidIncidentValueException("IncidentTimelineEntry entry type id must not be blank.");
+        }
+        // HRA-051 required: occurredAt
+        if (occurredAt == null) {
+            throw new InvalidIncidentValueException("IncidentTimelineEntry occurred at must not be null.");
+        }
+        // HRA-051 required: recordedAt
+        if (recordedAt == null) {
+            throw new InvalidIncidentValueException("IncidentTimelineEntry recorded at must not be null.");
+        }
+
         id = normalize(id);
         incidentId = normalize(incidentId);
         entryTypeId = normalize(entryTypeId);

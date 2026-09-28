@@ -7,7 +7,7 @@
  *
  * @Name        : HseCaseEvidenceLink
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.hse.domain.model;
 
+import dz.sh.hidra.modules.hse.domain.exception.InvalidHseValueException;
 import dz.sh.hidra.modules.hse.domain.value.*;
 import java.time.Instant;
 
@@ -50,6 +51,27 @@ import java.time.Instant;
     ) {
 
         public HseCaseEvidenceLink {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidHseValueException("HseCaseEvidenceLink id must not be blank.");
+        }
+        // HRA-051 required: hseCaseId
+        if (hseCaseId == null || hseCaseId.isBlank()) {
+            throw new InvalidHseValueException("HseCaseEvidenceLink hse case id must not be blank.");
+        }
+        // HRA-051 required: evidenceType
+        if (evidenceType == null) {
+            throw new InvalidHseValueException("HseCaseEvidenceLink evidence type must not be null.");
+        }
+        // HRA-051 required: evidenceReferenceId
+        if (evidenceReferenceId == null || evidenceReferenceId.isBlank()) {
+            throw new InvalidHseValueException("HseCaseEvidenceLink evidence reference id must not be blank.");
+        }
+        // HRA-051 required: attachedAt
+        if (attachedAt == null) {
+            throw new InvalidHseValueException("HseCaseEvidenceLink attached at must not be null.");
+        }
+
         id = normalize(id);
         hseCaseId = normalize(hseCaseId);
         evidenceReferenceId = normalize(evidenceReferenceId);

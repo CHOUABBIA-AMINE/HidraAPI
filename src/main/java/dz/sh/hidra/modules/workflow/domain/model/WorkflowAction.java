@@ -7,7 +7,7 @@
  *
  * @Name        : WorkflowAction
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.workflow.domain.model;
 
+import dz.sh.hidra.modules.workflow.domain.exception.InvalidWorkflowValueException;
 import dz.sh.hidra.modules.workflow.domain.value.*;
 import java.time.Instant;
 
@@ -72,6 +73,27 @@ import java.time.Instant;
     ) {
 
         public WorkflowAction {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidWorkflowValueException("WorkflowAction id must not be blank.");
+        }
+        // HRA-051 required: instanceId
+        if (instanceId == null || instanceId.isBlank()) {
+            throw new InvalidWorkflowValueException("WorkflowAction instance id must not be blank.");
+        }
+        // HRA-051 required: actionType
+        if (actionType == null) {
+            throw new InvalidWorkflowValueException("WorkflowAction action type must not be null.");
+        }
+        // HRA-051 required: actorId
+        if (actorId == null || actorId.isBlank()) {
+            throw new InvalidWorkflowValueException("WorkflowAction actor id must not be blank.");
+        }
+        // HRA-051 required: actedAt
+        if (actedAt == null) {
+            throw new InvalidWorkflowValueException("WorkflowAction acted at must not be null.");
+        }
+
         id = normalize(id);
         instanceId = normalize(instanceId);
         taskId = normalize(taskId);

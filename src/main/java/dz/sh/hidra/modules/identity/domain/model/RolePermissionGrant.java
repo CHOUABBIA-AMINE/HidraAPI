@@ -7,7 +7,7 @@
  *
  * @Name        : RolePermissionGrant
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.identity.domain.model;
 
+import dz.sh.hidra.modules.identity.domain.exception.InvalidIdentityValueException;
 import dz.sh.hidra.modules.identity.domain.value.*;
 import java.time.Instant;
 
@@ -48,6 +49,35 @@ public record RolePermissionGrant(
 ) {
 
     public RolePermissionGrant {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidIdentityValueException("RolePermissionGrant id must not be blank.");
+        }
+        // HRA-051 required: roleId
+        if (roleId == null || roleId.isBlank()) {
+            throw new InvalidIdentityValueException("RolePermissionGrant role id must not be blank.");
+        }
+        // HRA-051 required: permissionId
+        if (permissionId == null || permissionId.isBlank()) {
+            throw new InvalidIdentityValueException("RolePermissionGrant permission id must not be blank.");
+        }
+        // HRA-051 required: effect
+        if (effect == null) {
+            throw new InvalidIdentityValueException("RolePermissionGrant effect must not be null.");
+        }
+        // HRA-051 required: validFrom
+        if (validFrom == null) {
+            throw new InvalidIdentityValueException("RolePermissionGrant valid from must not be null.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidIdentityValueException("RolePermissionGrant status must not be null.");
+        }
+        // HRA-051 order: validFrom <= validTo
+        if (validFrom != null && validTo != null && validTo.isBefore(validFrom)) {
+            throw new InvalidIdentityValueException("RolePermissionGrant valid to must not be before valid from.");
+        }
+
     id = normalize(id);
     roleId = normalize(roleId);
     permissionId = normalize(permissionId);

@@ -7,7 +7,7 @@
  *
  * @Name        : PartyRiskSnapshot
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.party.domain.model;
 
+import dz.sh.hidra.modules.party.domain.exception.InvalidPartyValueException;
 import dz.sh.hidra.modules.party.domain.value.*;
 import java.time.Instant;
 
@@ -48,6 +49,23 @@ import java.time.Instant;
     ) {
 
         public PartyRiskSnapshot {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidPartyValueException("PartyRiskSnapshot id must not be blank.");
+        }
+        // HRA-051 required: partyId
+        if (partyId == null || partyId.isBlank()) {
+            throw new InvalidPartyValueException("PartyRiskSnapshot party id must not be blank.");
+        }
+        // HRA-051 required: riskLevel
+        if (riskLevel == null) {
+            throw new InvalidPartyValueException("PartyRiskSnapshot risk level must not be null.");
+        }
+        // HRA-051 required: assessedAt
+        if (assessedAt == null) {
+            throw new InvalidPartyValueException("PartyRiskSnapshot assessed at must not be null.");
+        }
+
         id = normalize(id);
         partyId = normalize(partyId);
         riskSourceModule = normalize(riskSourceModule);

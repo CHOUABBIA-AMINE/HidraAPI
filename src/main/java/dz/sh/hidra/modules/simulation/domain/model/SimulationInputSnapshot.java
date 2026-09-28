@@ -7,7 +7,7 @@
  *
  * @Name        : SimulationInputSnapshot
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.simulation.domain.model;
 
+import dz.sh.hidra.modules.simulation.domain.exception.InvalidSimulationValueException;
 import java.time.Instant;
 
     /**
@@ -49,6 +50,27 @@ import java.time.Instant;
     ) {
 
         public SimulationInputSnapshot {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidSimulationValueException("SimulationInputSnapshot id must not be blank.");
+        }
+        // HRA-051 required: scenarioId
+        if (scenarioId == null || scenarioId.isBlank()) {
+            throw new InvalidSimulationValueException("SimulationInputSnapshot scenario id must not be blank.");
+        }
+        // HRA-051 required: topologySnapshotId
+        if (topologySnapshotId == null || topologySnapshotId.isBlank()) {
+            throw new InvalidSimulationValueException("SimulationInputSnapshot topology snapshot id must not be blank.");
+        }
+        // HRA-051 required: capturedAt
+        if (capturedAt == null) {
+            throw new InvalidSimulationValueException("SimulationInputSnapshot captured at must not be null.");
+        }
+        // HRA-051 required: captureHash
+        if (captureHash == null || captureHash.isBlank()) {
+            throw new InvalidSimulationValueException("SimulationInputSnapshot capture hash must not be blank.");
+        }
+
         id = normalize(id);
         scenarioId = normalize(scenarioId);
         topologySnapshotId = normalize(topologySnapshotId);

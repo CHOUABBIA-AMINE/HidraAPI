@@ -7,7 +7,7 @@
  *
  * @Name        : CathodicProtectionSurvey
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.integrity.domain.model;
 
+import dz.sh.hidra.modules.integrity.domain.exception.InvalidIntegrityValueException;
 import dz.sh.hidra.modules.integrity.domain.value.*;
 import java.time.Instant;
 
@@ -56,6 +57,31 @@ import java.time.Instant;
     ) {
 
         public CathodicProtectionSurvey {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidIntegrityValueException("CathodicProtectionSurvey id must not be blank.");
+        }
+        // HRA-051 required: surveyNumber
+        if (surveyNumber == null || surveyNumber.isBlank()) {
+            throw new InvalidIntegrityValueException("CathodicProtectionSurvey survey number must not be blank.");
+        }
+        // HRA-051 required: surveyTypeId
+        if (surveyTypeId == null || surveyTypeId.isBlank()) {
+            throw new InvalidIntegrityValueException("CathodicProtectionSurvey survey type id must not be blank.");
+        }
+        // HRA-051 required: topologyAssetTypeCode
+        if (topologyAssetTypeCode == null || topologyAssetTypeCode.isBlank()) {
+            throw new InvalidIntegrityValueException("CathodicProtectionSurvey topology asset type code must not be blank.");
+        }
+        // HRA-051 required: topologyAssetId
+        if (topologyAssetId == null || topologyAssetId.isBlank()) {
+            throw new InvalidIntegrityValueException("CathodicProtectionSurvey topology asset id must not be blank.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidIntegrityValueException("CathodicProtectionSurvey status must not be null.");
+        }
+
         id = normalize(id);
         surveyNumber = normalize(surveyNumber);
         surveyTypeId = normalize(surveyTypeId);

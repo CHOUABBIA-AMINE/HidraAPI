@@ -7,7 +7,7 @@
  *
  * @Name        : WorkflowComment
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.workflow.domain.model;
 
+import dz.sh.hidra.modules.workflow.domain.exception.InvalidWorkflowValueException;
 import dz.sh.hidra.modules.workflow.domain.value.*;
 import java.time.Instant;
 
@@ -54,6 +55,27 @@ import java.time.Instant;
     ) {
 
         public WorkflowComment {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidWorkflowValueException("WorkflowComment id must not be blank.");
+        }
+        // HRA-051 required: instanceId
+        if (instanceId == null || instanceId.isBlank()) {
+            throw new InvalidWorkflowValueException("WorkflowComment instance id must not be blank.");
+        }
+        // HRA-051 required: actorId
+        if (actorId == null || actorId.isBlank()) {
+            throw new InvalidWorkflowValueException("WorkflowComment actor id must not be blank.");
+        }
+        // HRA-051 required: commentedAt
+        if (commentedAt == null) {
+            throw new InvalidWorkflowValueException("WorkflowComment commented at must not be null.");
+        }
+        // HRA-051 self-reference: parentCommentId != id
+        if (id != null && parentCommentId != null && parentCommentId.equals(id)) {
+            throw new InvalidWorkflowValueException("WorkflowComment parent comment id must not reference itself.");
+        }
+
         id = normalize(id);
         instanceId = normalize(instanceId);
         taskId = normalize(taskId);

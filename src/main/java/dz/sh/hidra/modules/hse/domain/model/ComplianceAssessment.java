@@ -7,7 +7,7 @@
  *
  * @Name        : ComplianceAssessment
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.hse.domain.model;
 
+import dz.sh.hidra.modules.hse.domain.exception.InvalidHseValueException;
 import dz.sh.hidra.modules.hse.domain.value.*;
 import java.time.Instant;
 
@@ -54,6 +55,27 @@ import java.time.Instant;
     ) {
 
         public ComplianceAssessment {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidHseValueException("ComplianceAssessment id must not be blank.");
+        }
+        // HRA-051 required: obligationId
+        if (obligationId == null || obligationId.isBlank()) {
+            throw new InvalidHseValueException("ComplianceAssessment obligation id must not be blank.");
+        }
+        // HRA-051 required: assessmentNumber
+        if (assessmentNumber == null || assessmentNumber.isBlank()) {
+            throw new InvalidHseValueException("ComplianceAssessment assessment number must not be blank.");
+        }
+        // HRA-051 required: complianceStatus
+        if (complianceStatus == null) {
+            throw new InvalidHseValueException("ComplianceAssessment compliance status must not be null.");
+        }
+        // HRA-051 required: assessedAt
+        if (assessedAt == null) {
+            throw new InvalidHseValueException("ComplianceAssessment assessed at must not be null.");
+        }
+
         id = normalize(id);
         obligationId = normalize(obligationId);
         assessmentNumber = normalize(assessmentNumber);

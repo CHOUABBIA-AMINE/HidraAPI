@@ -7,7 +7,7 @@
  *
  * @Name        : IntegrationHealthSnapshot
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.integration.domain.model;
 
+import dz.sh.hidra.modules.integration.domain.exception.InvalidIntegrationValueException;
 import dz.sh.hidra.modules.integration.domain.value.*;
 import java.time.Instant;
 
@@ -54,6 +55,23 @@ import java.time.Instant;
     ) {
 
         public IntegrationHealthSnapshot {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidIntegrationValueException("IntegrationHealthSnapshot id must not be blank.");
+        }
+        // HRA-051 required: externalSystemId
+        if (externalSystemId == null || externalSystemId.isBlank()) {
+            throw new InvalidIntegrationValueException("IntegrationHealthSnapshot external system id must not be blank.");
+        }
+        // HRA-051 required: healthStatus
+        if (healthStatus == null) {
+            throw new InvalidIntegrationValueException("IntegrationHealthSnapshot health status must not be null.");
+        }
+        // HRA-051 required: capturedAt
+        if (capturedAt == null) {
+            throw new InvalidIntegrationValueException("IntegrationHealthSnapshot captured at must not be null.");
+        }
+
         id = normalize(id);
         externalSystemId = normalize(externalSystemId);
         endpointId = normalize(endpointId);

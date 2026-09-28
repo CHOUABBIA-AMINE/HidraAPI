@@ -7,7 +7,7 @@
  *
  * @Name        : ReportChartResult
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.reporting.domain.model;
 
+import dz.sh.hidra.modules.reporting.domain.exception.InvalidReportingValueException;
 import dz.sh.hidra.modules.reporting.domain.value.*;
 import java.time.Instant;
 
@@ -44,6 +45,19 @@ import java.time.Instant;
     ) {
 
         public ReportChartResult {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidReportingValueException("ReportChartResult id must not be blank.");
+        }
+        // HRA-051 required: reportSectionResultId
+        if (reportSectionResultId == null || reportSectionResultId.isBlank()) {
+            throw new InvalidReportingValueException("ReportChartResult report section result id must not be blank.");
+        }
+        // HRA-051 required: chartType
+        if (chartType == null) {
+            throw new InvalidReportingValueException("ReportChartResult chart type must not be null.");
+        }
+
         id = normalize(id);
         reportSectionResultId = normalize(reportSectionResultId);
         seriesSchemaJson = normalize(seriesSchemaJson);

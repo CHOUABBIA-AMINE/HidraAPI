@@ -7,7 +7,7 @@
  *
  * @Name        : NotificationSuppressionRule
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.notification.domain.model;
 
+import dz.sh.hidra.modules.notification.domain.exception.InvalidNotificationValueException;
 import dz.sh.hidra.modules.notification.domain.value.*;
 import java.time.Instant;
 
@@ -58,6 +59,23 @@ import java.time.Instant;
     ) {
 
         public NotificationSuppressionRule {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidNotificationValueException("NotificationSuppressionRule id must not be blank.");
+        }
+        // HRA-051 required: code
+        if (code == null || code.isBlank()) {
+            throw new InvalidNotificationValueException("NotificationSuppressionRule code must not be blank.");
+        }
+        // HRA-051 required: reasonId
+        if (reasonId == null || reasonId.isBlank()) {
+            throw new InvalidNotificationValueException("NotificationSuppressionRule reason id must not be blank.");
+        }
+        // HRA-051 order: validFrom <= validTo
+        if (validFrom != null && validTo != null && validTo.isBefore(validFrom)) {
+            throw new InvalidNotificationValueException("NotificationSuppressionRule valid to must not be before valid from.");
+        }
+
         id = normalize(id);
         code = normalize(code);
         sourceModule = normalize(sourceModule);

@@ -7,7 +7,7 @@
  *
  * @Name        : IntegrityProgram
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.integrity.domain.model;
 
+import dz.sh.hidra.modules.integrity.domain.exception.InvalidIntegrityValueException;
 import dz.sh.hidra.modules.integrity.domain.value.*;
 import java.time.Instant;
 
@@ -64,6 +65,23 @@ import java.time.Instant;
     ) {
 
         public IntegrityProgram {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidIntegrityValueException("IntegrityProgram id must not be blank.");
+        }
+        // HRA-051 required: code
+        if (code == null || code.isBlank()) {
+            throw new InvalidIntegrityValueException("IntegrityProgram code must not be blank.");
+        }
+        // HRA-051 required: programTypeId
+        if (programTypeId == null || programTypeId.isBlank()) {
+            throw new InvalidIntegrityValueException("IntegrityProgram program type id must not be blank.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidIntegrityValueException("IntegrityProgram status must not be null.");
+        }
+
         id = normalize(id);
         code = normalize(code);
         nameAr = normalize(nameAr);

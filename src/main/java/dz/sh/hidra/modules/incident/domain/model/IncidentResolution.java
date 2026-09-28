@@ -7,7 +7,7 @@
  *
  * @Name        : IncidentResolution
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.incident.domain.model;
 
+import dz.sh.hidra.modules.incident.domain.exception.InvalidIncidentValueException;
 import java.time.Instant;
 
     /**
@@ -49,6 +50,27 @@ import java.time.Instant;
     ) {
 
         public IncidentResolution {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidIncidentValueException("IncidentResolution id must not be blank.");
+        }
+        // HRA-051 required: incidentId
+        if (incidentId == null || incidentId.isBlank()) {
+            throw new InvalidIncidentValueException("IncidentResolution incident id must not be blank.");
+        }
+        // HRA-051 required: resolutionTypeId
+        if (resolutionTypeId == null || resolutionTypeId.isBlank()) {
+            throw new InvalidIncidentValueException("IncidentResolution resolution type id must not be blank.");
+        }
+        // HRA-051 required: resolvedByActorId
+        if (resolvedByActorId == null || resolvedByActorId.isBlank()) {
+            throw new InvalidIncidentValueException("IncidentResolution resolved by actor id must not be blank.");
+        }
+        // HRA-051 required: resolvedAt
+        if (resolvedAt == null) {
+            throw new InvalidIncidentValueException("IncidentResolution resolved at must not be null.");
+        }
+
         id = normalize(id);
         incidentId = normalize(incidentId);
         resolutionTypeId = normalize(resolutionTypeId);

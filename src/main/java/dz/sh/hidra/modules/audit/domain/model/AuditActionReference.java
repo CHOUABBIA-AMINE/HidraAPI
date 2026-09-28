@@ -7,7 +7,7 @@
  *
  * @Name        : AuditActionReference
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.audit.domain.model;
 
+import dz.sh.hidra.modules.audit.domain.exception.InvalidAuditValueException;
 import dz.sh.hidra.modules.audit.domain.value.*;
 import java.time.Instant;
 
@@ -48,6 +49,31 @@ import java.time.Instant;
     ) {
 
         public AuditActionReference {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidAuditValueException("AuditActionReference id must not be blank.");
+        }
+        // HRA-051 required: auditEventId
+        if (auditEventId == null || auditEventId.isBlank()) {
+            throw new InvalidAuditValueException("AuditActionReference audit event id must not be blank.");
+        }
+        // HRA-051 required: actionCode
+        if (actionCode == null || actionCode.isBlank()) {
+            throw new InvalidAuditValueException("AuditActionReference action code must not be blank.");
+        }
+        // HRA-051 required: actionTypeId
+        if (actionTypeId == null || actionTypeId.isBlank()) {
+            throw new InvalidAuditValueException("AuditActionReference action type id must not be blank.");
+        }
+        // HRA-051 required: operation
+        if (operation == null) {
+            throw new InvalidAuditValueException("AuditActionReference operation must not be null.");
+        }
+        // HRA-051 required: capturedAt
+        if (capturedAt == null) {
+            throw new InvalidAuditValueException("AuditActionReference captured at must not be null.");
+        }
+
         id = normalize(id);
         auditEventId = normalize(auditEventId);
         actionCode = normalize(actionCode);

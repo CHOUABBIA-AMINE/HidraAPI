@@ -7,7 +7,7 @@
  *
  * @Name        : PlanTarget
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.planning.domain.model;
 
+import dz.sh.hidra.modules.planning.domain.exception.InvalidPlanningValueException;
 import dz.sh.hidra.modules.planning.domain.value.*;
 import java.time.Instant;
 import java.math.BigDecimal;
@@ -75,6 +76,43 @@ import java.math.BigDecimal;
     ) {
 
         public PlanTarget {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidPlanningValueException("PlanTarget id must not be blank.");
+        }
+        // HRA-051 required: revisionId
+        if (revisionId == null || revisionId.isBlank()) {
+            throw new InvalidPlanningValueException("PlanTarget revision id must not be blank.");
+        }
+        // HRA-051 required: targetTypeId
+        if (targetTypeId == null || targetTypeId.isBlank()) {
+            throw new InvalidPlanningValueException("PlanTarget target type id must not be blank.");
+        }
+        // HRA-051 required: topologyAssetId
+        if (topologyAssetId == null || topologyAssetId.isBlank()) {
+            throw new InvalidPlanningValueException("PlanTarget topology asset id must not be blank.");
+        }
+        // HRA-051 required: topologyAssetCode
+        if (topologyAssetCode == null || topologyAssetCode.isBlank()) {
+            throw new InvalidPlanningValueException("PlanTarget topology asset code must not be blank.");
+        }
+        // HRA-051 required: validFrom
+        if (validFrom == null) {
+            throw new InvalidPlanningValueException("PlanTarget valid from must not be null.");
+        }
+        // HRA-051 required: validTo
+        if (validTo == null) {
+            throw new InvalidPlanningValueException("PlanTarget valid to must not be null.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidPlanningValueException("PlanTarget status must not be null.");
+        }
+        // HRA-051 order: validFrom <= validTo
+        if (validFrom != null && validTo != null && validTo.isBefore(validFrom)) {
+            throw new InvalidPlanningValueException("PlanTarget valid to must not be before valid from.");
+        }
+
         id = normalize(id);
         revisionId = normalize(revisionId);
         scenarioId = normalize(scenarioId);

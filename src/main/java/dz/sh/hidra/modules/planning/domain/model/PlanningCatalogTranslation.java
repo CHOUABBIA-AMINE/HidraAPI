@@ -7,7 +7,7 @@
  *
  * @Name        : PlanningCatalogTranslation
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.planning.domain.model;
 
+import dz.sh.hidra.modules.planning.domain.exception.InvalidPlanningValueException;
 import java.time.Instant;
 
     /**
@@ -43,6 +44,19 @@ import java.time.Instant;
     ) {
 
         public PlanningCatalogTranslation {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidPlanningValueException("PlanningCatalogTranslation id must not be blank.");
+        }
+        // HRA-051 required: catalogEntryId
+        if (catalogEntryId == null || catalogEntryId.isBlank()) {
+            throw new InvalidPlanningValueException("PlanningCatalogTranslation catalog entry id must not be blank.");
+        }
+        // HRA-051 required: locale
+        if (locale == null || locale.isBlank()) {
+            throw new InvalidPlanningValueException("PlanningCatalogTranslation locale must not be blank.");
+        }
+
         id = normalize(id);
         catalogEntryId = normalize(catalogEntryId);
         locale = normalize(locale);

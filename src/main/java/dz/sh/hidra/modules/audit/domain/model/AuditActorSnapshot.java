@@ -7,7 +7,7 @@
  *
  * @Name        : AuditActorSnapshot
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.audit.domain.model;
 
+import dz.sh.hidra.modules.audit.domain.exception.InvalidAuditValueException;
 import dz.sh.hidra.modules.audit.domain.value.*;
 import java.time.Instant;
 
@@ -60,6 +61,23 @@ import java.time.Instant;
     ) {
 
         public AuditActorSnapshot {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidAuditValueException("AuditActorSnapshot id must not be blank.");
+        }
+        // HRA-051 required: auditEventId
+        if (auditEventId == null || auditEventId.isBlank()) {
+            throw new InvalidAuditValueException("AuditActorSnapshot audit event id must not be blank.");
+        }
+        // HRA-051 required: actorType
+        if (actorType == null) {
+            throw new InvalidAuditValueException("AuditActorSnapshot actor type must not be null.");
+        }
+        // HRA-051 required: capturedAt
+        if (capturedAt == null) {
+            throw new InvalidAuditValueException("AuditActorSnapshot captured at must not be null.");
+        }
+
         id = normalize(id);
         auditEventId = normalize(auditEventId);
         actorId = normalize(actorId);

@@ -7,7 +7,7 @@
  *
  * @Name        : HseCorrectivePreventiveAction
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.hse.domain.model;
 
+import dz.sh.hidra.modules.hse.domain.exception.InvalidHseValueException;
 import dz.sh.hidra.modules.hse.domain.value.*;
 import java.time.Instant;
 
@@ -70,6 +71,27 @@ import java.time.Instant;
     ) {
 
         public HseCorrectivePreventiveAction {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidHseValueException("HseCorrectivePreventiveAction id must not be blank.");
+        }
+        // HRA-051 required: hseCaseId
+        if (hseCaseId == null || hseCaseId.isBlank()) {
+            throw new InvalidHseValueException("HseCorrectivePreventiveAction hse case id must not be blank.");
+        }
+        // HRA-051 required: actionNumber
+        if (actionNumber == null || actionNumber.isBlank()) {
+            throw new InvalidHseValueException("HseCorrectivePreventiveAction action number must not be blank.");
+        }
+        // HRA-051 required: actionTypeId
+        if (actionTypeId == null || actionTypeId.isBlank()) {
+            throw new InvalidHseValueException("HseCorrectivePreventiveAction action type id must not be blank.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidHseValueException("HseCorrectivePreventiveAction status must not be null.");
+        }
+
         id = normalize(id);
         hseCaseId = normalize(hseCaseId);
         actionNumber = normalize(actionNumber);

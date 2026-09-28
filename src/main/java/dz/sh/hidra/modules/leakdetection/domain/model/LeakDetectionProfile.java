@@ -7,7 +7,7 @@
  *
  * @Name        : LeakDetectionProfile
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.leakdetection.domain.model;
 
+import dz.sh.hidra.modules.leakdetection.domain.exception.InvalidLeakDetectionValueException;
 import dz.sh.hidra.modules.leakdetection.domain.value.*;
 import java.time.Instant;
 
@@ -60,6 +61,31 @@ import java.time.Instant;
     ) {
 
         public LeakDetectionProfile {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidLeakDetectionValueException("LeakDetectionProfile id must not be blank.");
+        }
+        // HRA-051 required: code
+        if (code == null || code.isBlank()) {
+            throw new InvalidLeakDetectionValueException("LeakDetectionProfile code must not be blank.");
+        }
+        // HRA-051 required: topologyAssetId
+        if (topologyAssetId == null || topologyAssetId.isBlank()) {
+            throw new InvalidLeakDetectionValueException("LeakDetectionProfile topology asset id must not be blank.");
+        }
+        // HRA-051 required: topologyAssetCode
+        if (topologyAssetCode == null || topologyAssetCode.isBlank()) {
+            throw new InvalidLeakDetectionValueException("LeakDetectionProfile topology asset code must not be blank.");
+        }
+        // HRA-051 required: methodId
+        if (methodId == null || methodId.isBlank()) {
+            throw new InvalidLeakDetectionValueException("LeakDetectionProfile method id must not be blank.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidLeakDetectionValueException("LeakDetectionProfile status must not be null.");
+        }
+
         id = normalize(id);
         code = normalize(code);
         nameAr = normalize(nameAr);

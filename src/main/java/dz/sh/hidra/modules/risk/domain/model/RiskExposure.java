@@ -7,7 +7,7 @@
  *
  * @Name        : RiskExposure
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.risk.domain.model;
 
+import dz.sh.hidra.modules.risk.domain.exception.InvalidRiskValueException;
 import java.math.BigDecimal;
 import java.time.Instant;
 
@@ -62,6 +63,23 @@ import java.time.Instant;
     ) {
 
         public RiskExposure {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidRiskValueException("RiskExposure id must not be blank.");
+        }
+        // HRA-051 required: riskAssessmentId
+        if (riskAssessmentId == null || riskAssessmentId.isBlank()) {
+            throw new InvalidRiskValueException("RiskExposure risk assessment id must not be blank.");
+        }
+        // HRA-051 required: exposureTypeId
+        if (exposureTypeId == null || exposureTypeId.isBlank()) {
+            throw new InvalidRiskValueException("RiskExposure exposure type id must not be blank.");
+        }
+        // HRA-051 required: exposedObjectId
+        if (exposedObjectId == null || exposedObjectId.isBlank()) {
+            throw new InvalidRiskValueException("RiskExposure exposed object id must not be blank.");
+        }
+
         id = normalize(id);
         riskAssessmentId = normalize(riskAssessmentId);
         exposureTypeId = normalize(exposureTypeId);

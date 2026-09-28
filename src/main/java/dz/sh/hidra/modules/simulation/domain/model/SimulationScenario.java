@@ -7,7 +7,7 @@
  *
  * @Name        : SimulationScenario
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.simulation.domain.model;
 
+import dz.sh.hidra.modules.simulation.domain.exception.InvalidSimulationValueException;
 import dz.sh.hidra.modules.simulation.domain.value.*;
 import java.time.Instant;
 
@@ -62,6 +63,39 @@ import java.time.Instant;
     ) {
 
         public SimulationScenario {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidSimulationValueException("SimulationScenario id must not be blank.");
+        }
+        // HRA-051 required: code
+        if (code == null || code.isBlank()) {
+            throw new InvalidSimulationValueException("SimulationScenario code must not be blank.");
+        }
+        // HRA-051 required: scenarioTypeId
+        if (scenarioTypeId == null || scenarioTypeId.isBlank()) {
+            throw new InvalidSimulationValueException("SimulationScenario scenario type id must not be blank.");
+        }
+        // HRA-051 required: modelId
+        if (modelId == null || modelId.isBlank()) {
+            throw new InvalidSimulationValueException("SimulationScenario model id must not be blank.");
+        }
+        // HRA-051 required: modelVersionId
+        if (modelVersionId == null || modelVersionId.isBlank()) {
+            throw new InvalidSimulationValueException("SimulationScenario model version id must not be blank.");
+        }
+        // HRA-051 required: topologySnapshotId
+        if (topologySnapshotId == null || topologySnapshotId.isBlank()) {
+            throw new InvalidSimulationValueException("SimulationScenario topology snapshot id must not be blank.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidSimulationValueException("SimulationScenario status must not be null.");
+        }
+        // HRA-051 required: createdByActorId
+        if (createdByActorId == null || createdByActorId.isBlank()) {
+            throw new InvalidSimulationValueException("SimulationScenario created by actor id must not be blank.");
+        }
+
         id = normalize(id);
         code = normalize(code);
         nameAr = normalize(nameAr);

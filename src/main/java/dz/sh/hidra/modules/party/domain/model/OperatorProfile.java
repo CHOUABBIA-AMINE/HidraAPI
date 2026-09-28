@@ -7,7 +7,7 @@
  *
  * @Name        : OperatorProfile
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.party.domain.model;
 
+import dz.sh.hidra.modules.party.domain.exception.InvalidPartyValueException;
 import dz.sh.hidra.modules.party.domain.value.*;
 import java.time.Instant;
 
@@ -46,6 +47,27 @@ import java.time.Instant;
     ) {
 
         public OperatorProfile {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidPartyValueException("OperatorProfile id must not be blank.");
+        }
+        // HRA-051 required: partyId
+        if (partyId == null || partyId.isBlank()) {
+            throw new InvalidPartyValueException("OperatorProfile party id must not be blank.");
+        }
+        // HRA-051 required: capabilityType
+        if (capabilityType == null) {
+            throw new InvalidPartyValueException("OperatorProfile capability type must not be null.");
+        }
+        // HRA-051 required: qualificationStatus
+        if (qualificationStatus == null) {
+            throw new InvalidPartyValueException("OperatorProfile qualification status must not be null.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidPartyValueException("OperatorProfile status must not be null.");
+        }
+
         id = normalize(id);
         partyId = normalize(partyId);
         operatorCode = normalize(operatorCode);

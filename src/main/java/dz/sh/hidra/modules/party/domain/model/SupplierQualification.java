@@ -7,7 +7,7 @@
  *
  * @Name        : SupplierQualification
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.party.domain.model;
 
+import dz.sh.hidra.modules.party.domain.exception.InvalidPartyValueException;
 import dz.sh.hidra.modules.party.domain.value.*;
 import java.time.Instant;
 
@@ -54,6 +55,23 @@ import java.time.Instant;
     ) {
 
         public SupplierQualification {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidPartyValueException("SupplierQualification id must not be blank.");
+        }
+        // HRA-051 required: partyId
+        if (partyId == null || partyId.isBlank()) {
+            throw new InvalidPartyValueException("SupplierQualification party id must not be blank.");
+        }
+        // HRA-051 required: supplierCategoryCode
+        if (supplierCategoryCode == null || supplierCategoryCode.isBlank()) {
+            throw new InvalidPartyValueException("SupplierQualification supplier category code must not be blank.");
+        }
+        // HRA-051 required: qualificationStatus
+        if (qualificationStatus == null) {
+            throw new InvalidPartyValueException("SupplierQualification qualification status must not be null.");
+        }
+
         id = normalize(id);
         partyId = normalize(partyId);
         supplierCategoryCode = normalize(supplierCategoryCode);

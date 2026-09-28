@@ -7,7 +7,7 @@
  *
  * @Name        : TelemetryPoint
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.telemetry.domain.model;
 
+import dz.sh.hidra.modules.telemetry.domain.exception.InvalidTelemetryValueException;
 import dz.sh.hidra.modules.telemetry.domain.value.*;
 import java.time.Instant;
 import java.math.BigDecimal;
@@ -67,6 +68,31 @@ import java.math.BigDecimal;
     ) {
 
         public TelemetryPoint {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidTelemetryValueException("TelemetryPoint id must not be blank.");
+        }
+        // HRA-051 required: deviceId
+        if (deviceId == null || deviceId.isBlank()) {
+            throw new InvalidTelemetryValueException("TelemetryPoint device id must not be blank.");
+        }
+        // HRA-051 required: code
+        if (code == null || code.isBlank()) {
+            throw new InvalidTelemetryValueException("TelemetryPoint code must not be blank.");
+        }
+        // HRA-051 required: pointTypeId
+        if (pointTypeId == null || pointTypeId.isBlank()) {
+            throw new InvalidTelemetryValueException("TelemetryPoint point type id must not be blank.");
+        }
+        // HRA-051 required: signalTypeId
+        if (signalTypeId == null || signalTypeId.isBlank()) {
+            throw new InvalidTelemetryValueException("TelemetryPoint signal type id must not be blank.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidTelemetryValueException("TelemetryPoint status must not be null.");
+        }
+
         id = normalize(id);
         deviceId = normalize(deviceId);
         code = normalize(code);

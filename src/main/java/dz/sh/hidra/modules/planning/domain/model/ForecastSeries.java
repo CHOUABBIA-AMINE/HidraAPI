@@ -7,7 +7,7 @@
  *
  * @Name        : ForecastSeries
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.planning.domain.model;
 
+import dz.sh.hidra.modules.planning.domain.exception.InvalidPlanningValueException;
 import dz.sh.hidra.modules.planning.domain.value.*;
 import java.time.Instant;
 
@@ -54,6 +55,27 @@ import java.time.Instant;
     ) {
 
         public ForecastSeries {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidPlanningValueException("ForecastSeries id must not be blank.");
+        }
+        // HRA-051 required: periodId
+        if (periodId == null || periodId.isBlank()) {
+            throw new InvalidPlanningValueException("ForecastSeries period id must not be blank.");
+        }
+        // HRA-051 required: code
+        if (code == null || code.isBlank()) {
+            throw new InvalidPlanningValueException("ForecastSeries code must not be blank.");
+        }
+        // HRA-051 required: forecastTypeId
+        if (forecastTypeId == null || forecastTypeId.isBlank()) {
+            throw new InvalidPlanningValueException("ForecastSeries forecast type id must not be blank.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidPlanningValueException("ForecastSeries status must not be null.");
+        }
+
         id = normalize(id);
         periodId = normalize(periodId);
         code = normalize(code);

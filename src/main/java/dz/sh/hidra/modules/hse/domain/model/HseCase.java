@@ -7,7 +7,7 @@
  *
  * @Name        : HseCase
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.hse.domain.model;
 
+import dz.sh.hidra.modules.hse.domain.exception.InvalidHseValueException;
 import dz.sh.hidra.modules.hse.domain.value.*;
 import java.time.Instant;
 
@@ -90,6 +91,35 @@ import java.time.Instant;
     ) {
 
         public HseCase {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidHseValueException("HseCase id must not be blank.");
+        }
+        // HRA-051 required: caseNumber
+        if (caseNumber == null || caseNumber.isBlank()) {
+            throw new InvalidHseValueException("HseCase case number must not be blank.");
+        }
+        // HRA-051 required: caseTypeId
+        if (caseTypeId == null || caseTypeId.isBlank()) {
+            throw new InvalidHseValueException("HseCase case type id must not be blank.");
+        }
+        // HRA-051 required: severityId
+        if (severityId == null || severityId.isBlank()) {
+            throw new InvalidHseValueException("HseCase severity id must not be blank.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidHseValueException("HseCase status must not be null.");
+        }
+        // HRA-051 required: sourceType
+        if (sourceType == null) {
+            throw new InvalidHseValueException("HseCase source type must not be null.");
+        }
+        // HRA-051 required: reportedAt
+        if (reportedAt == null) {
+            throw new InvalidHseValueException("HseCase reported at must not be null.");
+        }
+
         id = normalize(id);
         caseNumber = normalize(caseNumber);
         title = normalize(title);

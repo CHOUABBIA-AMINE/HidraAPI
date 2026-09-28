@@ -7,7 +7,7 @@
  *
  * @Name        : AssetManufacturerReference
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.assets.domain.model;
 
+import dz.sh.hidra.modules.assets.domain.exception.InvalidAssetsValueException;
 import java.time.Instant;
 
     /**
@@ -47,6 +48,15 @@ import java.time.Instant;
     ) {
 
         public AssetManufacturerReference {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidAssetsValueException("AssetManufacturerReference id must not be blank.");
+        }
+        // HRA-051 required: manufacturerPartyId
+        if (manufacturerPartyId == null || manufacturerPartyId.isBlank()) {
+            throw new InvalidAssetsValueException("AssetManufacturerReference manufacturer party id must not be blank.");
+        }
+
         id = normalize(id);
         maintainableAssetId = normalize(maintainableAssetId);
         manufacturerPartyId = normalize(manufacturerPartyId);

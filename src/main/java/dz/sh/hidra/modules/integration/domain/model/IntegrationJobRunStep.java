@@ -7,7 +7,7 @@
  *
  * @Name        : IntegrationJobRunStep
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.integration.domain.model;
 
+import dz.sh.hidra.modules.integration.domain.exception.InvalidIntegrationValueException;
 import dz.sh.hidra.modules.integration.domain.value.*;
 import java.time.Instant;
 
@@ -48,6 +49,23 @@ import java.time.Instant;
     ) {
 
         public IntegrationJobRunStep {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidIntegrationValueException("IntegrationJobRunStep id must not be blank.");
+        }
+        // HRA-051 required: jobRunId
+        if (jobRunId == null || jobRunId.isBlank()) {
+            throw new InvalidIntegrationValueException("IntegrationJobRunStep job run id must not be blank.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidIntegrationValueException("IntegrationJobRunStep status must not be null.");
+        }
+        // HRA-051 required: startedAt
+        if (startedAt == null) {
+            throw new InvalidIntegrationValueException("IntegrationJobRunStep started at must not be null.");
+        }
+
         id = normalize(id);
         jobRunId = normalize(jobRunId);
         stepName = normalize(stepName);

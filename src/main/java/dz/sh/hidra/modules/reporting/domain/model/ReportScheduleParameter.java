@@ -7,7 +7,7 @@
  *
  * @Name        : ReportScheduleParameter
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.reporting.domain.model;
 
+import dz.sh.hidra.modules.reporting.domain.exception.InvalidReportingValueException;
 import dz.sh.hidra.modules.reporting.domain.value.*;
 import java.time.Instant;
 
@@ -46,6 +47,27 @@ import java.time.Instant;
     ) {
 
         public ReportScheduleParameter {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidReportingValueException("ReportScheduleParameter id must not be blank.");
+        }
+        // HRA-051 required: reportScheduleId
+        if (reportScheduleId == null || reportScheduleId.isBlank()) {
+            throw new InvalidReportingValueException("ReportScheduleParameter report schedule id must not be blank.");
+        }
+        // HRA-051 required: parameterDefinitionId
+        if (parameterDefinitionId == null || parameterDefinitionId.isBlank()) {
+            throw new InvalidReportingValueException("ReportScheduleParameter parameter definition id must not be blank.");
+        }
+        // HRA-051 required: parameterCode
+        if (parameterCode == null || parameterCode.isBlank()) {
+            throw new InvalidReportingValueException("ReportScheduleParameter parameter code must not be blank.");
+        }
+        // HRA-051 required: valueType
+        if (valueType == null) {
+            throw new InvalidReportingValueException("ReportScheduleParameter value type must not be null.");
+        }
+
         id = normalize(id);
         reportScheduleId = normalize(reportScheduleId);
         parameterDefinitionId = normalize(parameterDefinitionId);

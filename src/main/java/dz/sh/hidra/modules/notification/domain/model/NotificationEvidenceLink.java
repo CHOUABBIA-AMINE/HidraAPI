@@ -7,7 +7,7 @@
  *
  * @Name        : NotificationEvidenceLink
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.notification.domain.model;
 
+import dz.sh.hidra.modules.notification.domain.exception.InvalidNotificationValueException;
 import java.time.Instant;
 
     /**
@@ -47,6 +48,15 @@ import java.time.Instant;
     ) {
 
         public NotificationEvidenceLink {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidNotificationValueException("NotificationEvidenceLink id must not be blank.");
+        }
+        // HRA-051 required: referenceId
+        if (referenceId == null || referenceId.isBlank()) {
+            throw new InvalidNotificationValueException("NotificationEvidenceLink reference id must not be blank.");
+        }
+
         id = normalize(id);
         notificationRequestId = normalize(notificationRequestId);
         messageId = normalize(messageId);

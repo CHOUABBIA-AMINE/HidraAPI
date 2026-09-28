@@ -7,7 +7,7 @@
  *
  * @Name        : AuditEvent
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.audit.domain.model;
 
+import dz.sh.hidra.modules.audit.domain.exception.InvalidAuditValueException;
 import dz.sh.hidra.modules.audit.domain.value.*;
 import java.time.Instant;
 
@@ -120,6 +121,47 @@ import java.time.Instant;
     ) {
 
         public AuditEvent {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidAuditValueException("AuditEvent id must not be blank.");
+        }
+        // HRA-051 required: eventTypeId
+        if (eventTypeId == null || eventTypeId.isBlank()) {
+            throw new InvalidAuditValueException("AuditEvent event type id must not be blank.");
+        }
+        // HRA-051 required: eventCategoryId
+        if (eventCategoryId == null || eventCategoryId.isBlank()) {
+            throw new InvalidAuditValueException("AuditEvent event category id must not be blank.");
+        }
+        // HRA-051 required: actionCode
+        if (actionCode == null || actionCode.isBlank()) {
+            throw new InvalidAuditValueException("AuditEvent action code must not be blank.");
+        }
+        // HRA-051 required: eventStatus
+        if (eventStatus == null) {
+            throw new InvalidAuditValueException("AuditEvent event status must not be null.");
+        }
+        // HRA-051 required: actorType
+        if (actorType == null) {
+            throw new InvalidAuditValueException("AuditEvent actor type must not be null.");
+        }
+        // HRA-051 required: targetId
+        if (targetId == null || targetId.isBlank()) {
+            throw new InvalidAuditValueException("AuditEvent target id must not be blank.");
+        }
+        // HRA-051 required: operation
+        if (operation == null) {
+            throw new InvalidAuditValueException("AuditEvent operation must not be null.");
+        }
+        // HRA-051 required: occurredAt
+        if (occurredAt == null) {
+            throw new InvalidAuditValueException("AuditEvent occurred at must not be null.");
+        }
+        // HRA-051 required: recordedAt
+        if (recordedAt == null) {
+            throw new InvalidAuditValueException("AuditEvent recorded at must not be null.");
+        }
+
         id = normalize(id);
         eventTypeId = normalize(eventTypeId);
         eventCategoryId = normalize(eventCategoryId);

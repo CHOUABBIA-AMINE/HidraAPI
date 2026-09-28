@@ -7,7 +7,7 @@
  *
  * @Name        : CustodyDocumentReference
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.custody.domain.model;
 
+import dz.sh.hidra.modules.custody.domain.exception.InvalidCustodyValueException;
 import dz.sh.hidra.modules.custody.domain.value.*;
 import java.time.Instant;
 
@@ -48,6 +49,27 @@ import java.time.Instant;
     ) {
 
         public CustodyDocumentReference {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidCustodyValueException("CustodyDocumentReference id must not be blank.");
+        }
+        // HRA-051 required: targetId
+        if (targetId == null || targetId.isBlank()) {
+            throw new InvalidCustodyValueException("CustodyDocumentReference target id must not be blank.");
+        }
+        // HRA-051 required: documentType
+        if (documentType == null) {
+            throw new InvalidCustodyValueException("CustodyDocumentReference document type must not be null.");
+        }
+        // HRA-051 required: documentReferenceId
+        if (documentReferenceId == null || documentReferenceId.isBlank()) {
+            throw new InvalidCustodyValueException("CustodyDocumentReference document reference id must not be blank.");
+        }
+        // HRA-051 required: attachedAt
+        if (attachedAt == null) {
+            throw new InvalidCustodyValueException("CustodyDocumentReference attached at must not be null.");
+        }
+
         id = normalize(id);
         targetType = normalize(targetType);
         targetId = normalize(targetId);

@@ -7,7 +7,7 @@
  *
  * @Name        : PartyCatalogTranslation
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.party.domain.model;
 
+import dz.sh.hidra.modules.party.domain.exception.InvalidPartyValueException;
 import java.time.Instant;
 
     /**
@@ -43,6 +44,19 @@ import java.time.Instant;
     ) {
 
         public PartyCatalogTranslation {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidPartyValueException("PartyCatalogTranslation id must not be blank.");
+        }
+        // HRA-051 required: catalogEntryId
+        if (catalogEntryId == null || catalogEntryId.isBlank()) {
+            throw new InvalidPartyValueException("PartyCatalogTranslation catalog entry id must not be blank.");
+        }
+        // HRA-051 required: languageCode
+        if (languageCode == null || languageCode.isBlank()) {
+            throw new InvalidPartyValueException("PartyCatalogTranslation language code must not be blank.");
+        }
+
         id = normalize(id);
         catalogEntryId = normalize(catalogEntryId);
         languageCode = normalize(languageCode);

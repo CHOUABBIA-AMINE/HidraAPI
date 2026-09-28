@@ -7,7 +7,7 @@
  *
  * @Name        : TrendAnalysis
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.analytics.domain.model;
 
+import dz.sh.hidra.modules.analytics.domain.exception.InvalidAnalyticsValueException;
 import dz.sh.hidra.modules.analytics.domain.value.*;
 import java.time.Instant;
 import java.math.BigDecimal;
@@ -57,6 +58,39 @@ import java.math.BigDecimal;
     ) {
 
         public TrendAnalysis {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidAnalyticsValueException("TrendAnalysis id must not be blank.");
+        }
+        // HRA-051 required: subjectAreaId
+        if (subjectAreaId == null || subjectAreaId.isBlank()) {
+            throw new InvalidAnalyticsValueException("TrendAnalysis subject area id must not be blank.");
+        }
+        // HRA-051 required: trendType
+        if (trendType == null) {
+            throw new InvalidAnalyticsValueException("TrendAnalysis trend type must not be null.");
+        }
+        // HRA-051 required: periodStart
+        if (periodStart == null) {
+            throw new InvalidAnalyticsValueException("TrendAnalysis period start must not be null.");
+        }
+        // HRA-051 required: periodEnd
+        if (periodEnd == null) {
+            throw new InvalidAnalyticsValueException("TrendAnalysis period end must not be null.");
+        }
+        // HRA-051 required: trendDirection
+        if (trendDirection == null) {
+            throw new InvalidAnalyticsValueException("TrendAnalysis trend direction must not be null.");
+        }
+        // HRA-051 required: detectedAt
+        if (detectedAt == null) {
+            throw new InvalidAnalyticsValueException("TrendAnalysis detected at must not be null.");
+        }
+        // HRA-051 order: periodStart <= periodEnd
+        if (periodStart != null && periodEnd != null && periodEnd.isBefore(periodStart)) {
+            throw new InvalidAnalyticsValueException("TrendAnalysis period end must not be before period start.");
+        }
+
         id = normalize(id);
         subjectAreaId = normalize(subjectAreaId);
         scopeType = normalize(scopeType);

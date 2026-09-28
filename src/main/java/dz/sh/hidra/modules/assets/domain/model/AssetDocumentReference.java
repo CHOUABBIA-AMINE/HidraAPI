@@ -7,7 +7,7 @@
  *
  * @Name        : AssetDocumentReference
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.assets.domain.model;
 
+import dz.sh.hidra.modules.assets.domain.exception.InvalidAssetsValueException;
 import dz.sh.hidra.modules.assets.domain.value.*;
 import java.time.Instant;
 
@@ -46,6 +47,27 @@ import java.time.Instant;
     ) {
 
         public AssetDocumentReference {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidAssetsValueException("AssetDocumentReference id must not be blank.");
+        }
+        // HRA-051 required: maintainableAssetId
+        if (maintainableAssetId == null || maintainableAssetId.isBlank()) {
+            throw new InvalidAssetsValueException("AssetDocumentReference maintainable asset id must not be blank.");
+        }
+        // HRA-051 required: documentType
+        if (documentType == null) {
+            throw new InvalidAssetsValueException("AssetDocumentReference document type must not be null.");
+        }
+        // HRA-051 required: documentReferenceId
+        if (documentReferenceId == null || documentReferenceId.isBlank()) {
+            throw new InvalidAssetsValueException("AssetDocumentReference document reference id must not be blank.");
+        }
+        // HRA-051 required: attachedAt
+        if (attachedAt == null) {
+            throw new InvalidAssetsValueException("AssetDocumentReference attached at must not be null.");
+        }
+
         id = normalize(id);
         maintainableAssetId = normalize(maintainableAssetId);
         documentReferenceId = normalize(documentReferenceId);

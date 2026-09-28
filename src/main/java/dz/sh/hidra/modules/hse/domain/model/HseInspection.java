@@ -7,7 +7,7 @@
  *
  * @Name        : HseInspection
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.hse.domain.model;
 
+import dz.sh.hidra.modules.hse.domain.exception.InvalidHseValueException;
 import dz.sh.hidra.modules.hse.domain.value.*;
 import java.time.Instant;
 
@@ -62,6 +63,23 @@ import java.time.Instant;
     ) {
 
         public HseInspection {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidHseValueException("HseInspection id must not be blank.");
+        }
+        // HRA-051 required: inspectionNumber
+        if (inspectionNumber == null || inspectionNumber.isBlank()) {
+            throw new InvalidHseValueException("HseInspection inspection number must not be blank.");
+        }
+        // HRA-051 required: inspectionTypeId
+        if (inspectionTypeId == null || inspectionTypeId.isBlank()) {
+            throw new InvalidHseValueException("HseInspection inspection type id must not be blank.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidHseValueException("HseInspection status must not be null.");
+        }
+
         id = normalize(id);
         inspectionNumber = normalize(inspectionNumber);
         inspectionTypeId = normalize(inspectionTypeId);

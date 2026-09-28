@@ -7,7 +7,7 @@
  *
  * @Name        : IncidentEscalation
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.incident.domain.model;
 
+import dz.sh.hidra.modules.incident.domain.exception.InvalidIncidentValueException;
 import java.time.Instant;
 
     /**
@@ -51,6 +52,27 @@ import java.time.Instant;
     ) {
 
         public IncidentEscalation {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidIncidentValueException("IncidentEscalation id must not be blank.");
+        }
+        // HRA-051 required: incidentId
+        if (incidentId == null || incidentId.isBlank()) {
+            throw new InvalidIncidentValueException("IncidentEscalation incident id must not be blank.");
+        }
+        // HRA-051 required: reasonId
+        if (reasonId == null || reasonId.isBlank()) {
+            throw new InvalidIncidentValueException("IncidentEscalation reason id must not be blank.");
+        }
+        // HRA-051 required: escalatedByActorId
+        if (escalatedByActorId == null || escalatedByActorId.isBlank()) {
+            throw new InvalidIncidentValueException("IncidentEscalation escalated by actor id must not be blank.");
+        }
+        // HRA-051 required: escalatedAt
+        if (escalatedAt == null) {
+            throw new InvalidIncidentValueException("IncidentEscalation escalated at must not be null.");
+        }
+
         id = normalize(id);
         incidentId = normalize(incidentId);
         reasonId = normalize(reasonId);

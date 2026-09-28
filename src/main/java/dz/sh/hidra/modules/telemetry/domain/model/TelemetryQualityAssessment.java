@@ -7,7 +7,7 @@
  *
  * @Name        : TelemetryQualityAssessment
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.telemetry.domain.model;
 
+import dz.sh.hidra.modules.telemetry.domain.exception.InvalidTelemetryValueException;
 import dz.sh.hidra.modules.telemetry.domain.value.*;
 import java.time.Instant;
 
@@ -56,6 +57,39 @@ import java.time.Instant;
     ) {
 
         public TelemetryQualityAssessment {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidTelemetryValueException("TelemetryQualityAssessment id must not be blank.");
+        }
+        // HRA-051 required: readingId
+        if (readingId == null || readingId.isBlank()) {
+            throw new InvalidTelemetryValueException("TelemetryQualityAssessment reading id must not be blank.");
+        }
+        // HRA-051 required: pointId
+        if (pointId == null || pointId.isBlank()) {
+            throw new InvalidTelemetryValueException("TelemetryQualityAssessment point id must not be blank.");
+        }
+        // HRA-051 required: assessmentStatus
+        if (assessmentStatus == null) {
+            throw new InvalidTelemetryValueException("TelemetryQualityAssessment assessment status must not be null.");
+        }
+        // HRA-051 required: inputQualityCodeId
+        if (inputQualityCodeId == null || inputQualityCodeId.isBlank()) {
+            throw new InvalidTelemetryValueException("TelemetryQualityAssessment input quality code id must not be blank.");
+        }
+        // HRA-051 required: resolvedQualityCodeId
+        if (resolvedQualityCodeId == null || resolvedQualityCodeId.isBlank()) {
+            throw new InvalidTelemetryValueException("TelemetryQualityAssessment resolved quality code id must not be blank.");
+        }
+        // HRA-051 required: trustLevel
+        if (trustLevel == null) {
+            throw new InvalidTelemetryValueException("TelemetryQualityAssessment trust level must not be null.");
+        }
+        // HRA-051 required: assessedAt
+        if (assessedAt == null) {
+            throw new InvalidTelemetryValueException("TelemetryQualityAssessment assessed at must not be null.");
+        }
+
         id = normalize(id);
         readingId = normalize(readingId);
         pointId = normalize(pointId);

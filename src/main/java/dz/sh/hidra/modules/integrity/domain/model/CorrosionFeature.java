@@ -7,7 +7,7 @@
  *
  * @Name        : CorrosionFeature
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.integrity.domain.model;
 
+import dz.sh.hidra.modules.integrity.domain.exception.InvalidIntegrityValueException;
 import dz.sh.hidra.modules.integrity.domain.value.*;
 import java.time.Instant;
 import java.math.BigDecimal;
@@ -57,6 +58,27 @@ import java.math.BigDecimal;
     ) {
 
         public CorrosionFeature {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidIntegrityValueException("CorrosionFeature id must not be blank.");
+        }
+        // HRA-051 required: corrosionTypeId
+        if (corrosionTypeId == null || corrosionTypeId.isBlank()) {
+            throw new InvalidIntegrityValueException("CorrosionFeature corrosion type id must not be blank.");
+        }
+        // HRA-051 required: topologyAssetTypeCode
+        if (topologyAssetTypeCode == null || topologyAssetTypeCode.isBlank()) {
+            throw new InvalidIntegrityValueException("CorrosionFeature topology asset type code must not be blank.");
+        }
+        // HRA-051 required: topologyAssetId
+        if (topologyAssetId == null || topologyAssetId.isBlank()) {
+            throw new InvalidIntegrityValueException("CorrosionFeature topology asset id must not be blank.");
+        }
+        // HRA-051 required: observedAt
+        if (observedAt == null) {
+            throw new InvalidIntegrityValueException("CorrosionFeature observed at must not be null.");
+        }
+
         id = normalize(id);
         defectId = normalize(defectId);
         corrosionTypeId = normalize(corrosionTypeId);

@@ -7,7 +7,7 @@
  *
  * @Name        : PlanApprovalReference
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.planning.domain.model;
 
+import dz.sh.hidra.modules.planning.domain.exception.InvalidPlanningValueException;
 import dz.sh.hidra.modules.planning.domain.value.*;
 import java.time.Instant;
 
@@ -54,6 +55,23 @@ import java.time.Instant;
     ) {
 
         public PlanApprovalReference {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidPlanningValueException("PlanApprovalReference id must not be blank.");
+        }
+        // HRA-051 required: revisionId
+        if (revisionId == null || revisionId.isBlank()) {
+            throw new InvalidPlanningValueException("PlanApprovalReference revision id must not be blank.");
+        }
+        // HRA-051 required: workflowInstanceId
+        if (workflowInstanceId == null || workflowInstanceId.isBlank()) {
+            throw new InvalidPlanningValueException("PlanApprovalReference workflow instance id must not be blank.");
+        }
+        // HRA-051 required: approvalStatusSnapshot
+        if (approvalStatusSnapshot == null) {
+            throw new InvalidPlanningValueException("PlanApprovalReference approval status snapshot must not be null.");
+        }
+
         id = normalize(id);
         revisionId = normalize(revisionId);
         workflowInstanceId = normalize(workflowInstanceId);

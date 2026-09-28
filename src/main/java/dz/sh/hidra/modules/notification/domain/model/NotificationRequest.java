@@ -7,7 +7,7 @@
  *
  * @Name        : NotificationRequest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.notification.domain.model;
 
+import dz.sh.hidra.modules.notification.domain.exception.InvalidNotificationValueException;
 import dz.sh.hidra.modules.notification.domain.value.*;
 import java.time.Instant;
 
@@ -74,6 +75,27 @@ import java.time.Instant;
     ) {
 
         public NotificationRequest {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidNotificationValueException("NotificationRequest id must not be blank.");
+        }
+        // HRA-051 required: sourceEventId
+        if (sourceEventId == null || sourceEventId.isBlank()) {
+            throw new InvalidNotificationValueException("NotificationRequest source event id must not be blank.");
+        }
+        // HRA-051 required: categoryId
+        if (categoryId == null || categoryId.isBlank()) {
+            throw new InvalidNotificationValueException("NotificationRequest category id must not be blank.");
+        }
+        // HRA-051 required: requestedAt
+        if (requestedAt == null) {
+            throw new InvalidNotificationValueException("NotificationRequest requested at must not be null.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidNotificationValueException("NotificationRequest status must not be null.");
+        }
+
         id = normalize(id);
         sourceModule = normalize(sourceModule);
         sourceEventType = normalize(sourceEventType);

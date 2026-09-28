@@ -7,7 +7,7 @@
  *
  * @Name        : KpiDefinition
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.analytics.domain.model;
 
+import dz.sh.hidra.modules.analytics.domain.exception.InvalidAnalyticsValueException;
 import java.time.Instant;
 
     /**
@@ -55,6 +56,27 @@ import java.time.Instant;
     ) {
 
         public KpiDefinition {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidAnalyticsValueException("KpiDefinition id must not be blank.");
+        }
+        // HRA-051 required: code
+        if (code == null || code.isBlank()) {
+            throw new InvalidAnalyticsValueException("KpiDefinition code must not be blank.");
+        }
+        // HRA-051 required: subjectAreaId
+        if (subjectAreaId == null || subjectAreaId.isBlank()) {
+            throw new InvalidAnalyticsValueException("KpiDefinition subject area id must not be blank.");
+        }
+        // HRA-051 required: primaryMetricDefinitionId
+        if (primaryMetricDefinitionId == null || primaryMetricDefinitionId.isBlank()) {
+            throw new InvalidAnalyticsValueException("KpiDefinition primary metric definition id must not be blank.");
+        }
+        // HRA-051 required: kpiCategoryId
+        if (kpiCategoryId == null || kpiCategoryId.isBlank()) {
+            throw new InvalidAnalyticsValueException("KpiDefinition kpi category id must not be blank.");
+        }
+
         id = normalize(id);
         code = normalize(code);
         nameAr = normalize(nameAr);

@@ -7,7 +7,7 @@
  *
  * @Name        : AlarmComment
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.alarm.domain.model;
 
+import dz.sh.hidra.modules.alarm.domain.exception.InvalidAlarmValueException;
 import dz.sh.hidra.modules.alarm.domain.value.*;
 import java.time.Instant;
 
@@ -46,6 +47,23 @@ import java.time.Instant;
     ) {
 
         public AlarmComment {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidAlarmValueException("AlarmComment id must not be blank.");
+        }
+        // HRA-051 required: alarmId
+        if (alarmId == null || alarmId.isBlank()) {
+            throw new InvalidAlarmValueException("AlarmComment alarm id must not be blank.");
+        }
+        // HRA-051 required: visibility
+        if (visibility == null) {
+            throw new InvalidAlarmValueException("AlarmComment visibility must not be null.");
+        }
+        // HRA-051 required: createdByActorId
+        if (createdByActorId == null || createdByActorId.isBlank()) {
+            throw new InvalidAlarmValueException("AlarmComment created by actor id must not be blank.");
+        }
+
         id = normalize(id);
         alarmId = normalize(alarmId);
         commentText = normalize(commentText);

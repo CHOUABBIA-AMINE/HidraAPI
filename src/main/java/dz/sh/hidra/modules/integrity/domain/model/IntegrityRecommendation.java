@@ -7,7 +7,7 @@
  *
  * @Name        : IntegrityRecommendation
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.integrity.domain.model;
 
+import dz.sh.hidra.modules.integrity.domain.exception.InvalidIntegrityValueException;
 import dz.sh.hidra.modules.integrity.domain.value.*;
 import java.time.Instant;
 
@@ -60,6 +61,23 @@ import java.time.Instant;
     ) {
 
         public IntegrityRecommendation {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidIntegrityValueException("IntegrityRecommendation id must not be blank.");
+        }
+        // HRA-051 required: recommendationNumber
+        if (recommendationNumber == null || recommendationNumber.isBlank()) {
+            throw new InvalidIntegrityValueException("IntegrityRecommendation recommendation number must not be blank.");
+        }
+        // HRA-051 required: recommendationTypeId
+        if (recommendationTypeId == null || recommendationTypeId.isBlank()) {
+            throw new InvalidIntegrityValueException("IntegrityRecommendation recommendation type id must not be blank.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidIntegrityValueException("IntegrityRecommendation status must not be null.");
+        }
+
         id = normalize(id);
         recommendationNumber = normalize(recommendationNumber);
         sourceAssessmentId = normalize(sourceAssessmentId);

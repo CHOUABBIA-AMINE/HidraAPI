@@ -7,7 +7,7 @@
  *
  * @Name        : HseImpactAssessment
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.hse.domain.model;
 
+import dz.sh.hidra.modules.hse.domain.exception.InvalidHseValueException;
 import dz.sh.hidra.modules.hse.domain.value.*;
 import java.time.Instant;
 import java.math.BigDecimal;
@@ -65,6 +66,31 @@ import java.math.BigDecimal;
     ) {
 
         public HseImpactAssessment {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidHseValueException("HseImpactAssessment id must not be blank.");
+        }
+        // HRA-051 required: hseCaseId
+        if (hseCaseId == null || hseCaseId.isBlank()) {
+            throw new InvalidHseValueException("HseImpactAssessment hse case id must not be blank.");
+        }
+        // HRA-051 required: impactDomain
+        if (impactDomain == null) {
+            throw new InvalidHseValueException("HseImpactAssessment impact domain must not be null.");
+        }
+        // HRA-051 required: impactTypeId
+        if (impactTypeId == null || impactTypeId.isBlank()) {
+            throw new InvalidHseValueException("HseImpactAssessment impact type id must not be blank.");
+        }
+        // HRA-051 required: severity
+        if (severity == null) {
+            throw new InvalidHseValueException("HseImpactAssessment severity must not be null.");
+        }
+        // HRA-051 required: assessedAt
+        if (assessedAt == null) {
+            throw new InvalidHseValueException("HseImpactAssessment assessed at must not be null.");
+        }
+
         id = normalize(id);
         hseCaseId = normalize(hseCaseId);
         impactTypeId = normalize(impactTypeId);

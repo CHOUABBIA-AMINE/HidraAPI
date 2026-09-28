@@ -7,7 +7,7 @@
  *
  * @Name        : RiskScore
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.risk.domain.model;
 
+import dz.sh.hidra.modules.risk.domain.exception.InvalidRiskValueException;
 import dz.sh.hidra.modules.risk.domain.value.*;
 import java.time.Instant;
 import java.math.BigDecimal;
@@ -57,6 +58,43 @@ import java.math.BigDecimal;
     ) {
 
         public RiskScore {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidRiskValueException("RiskScore id must not be blank.");
+        }
+        // HRA-051 required: riskAssessmentId
+        if (riskAssessmentId == null || riskAssessmentId.isBlank()) {
+            throw new InvalidRiskValueException("RiskScore risk assessment id must not be blank.");
+        }
+        // HRA-051 required: scoreType
+        if (scoreType == null) {
+            throw new InvalidRiskValueException("RiskScore score type must not be null.");
+        }
+        // HRA-051 required: riskMatrixId
+        if (riskMatrixId == null || riskMatrixId.isBlank()) {
+            throw new InvalidRiskValueException("RiskScore risk matrix id must not be blank.");
+        }
+        // HRA-051 required: likelihoodLevelId
+        if (likelihoodLevelId == null || likelihoodLevelId.isBlank()) {
+            throw new InvalidRiskValueException("RiskScore likelihood level id must not be blank.");
+        }
+        // HRA-051 required: consequenceLevelId
+        if (consequenceLevelId == null || consequenceLevelId.isBlank()) {
+            throw new InvalidRiskValueException("RiskScore consequence level id must not be blank.");
+        }
+        // HRA-051 required: scoreValue
+        if (scoreValue == null) {
+            throw new InvalidRiskValueException("RiskScore score value must not be null.");
+        }
+        // HRA-051 required: ratingId
+        if (ratingId == null || ratingId.isBlank()) {
+            throw new InvalidRiskValueException("RiskScore rating id must not be blank.");
+        }
+        // HRA-051 required: calculatedAt
+        if (calculatedAt == null) {
+            throw new InvalidRiskValueException("RiskScore calculated at must not be null.");
+        }
+
         id = normalize(id);
         riskAssessmentId = normalize(riskAssessmentId);
         riskMatrixId = normalize(riskMatrixId);

@@ -61,6 +61,11 @@ public record OrganizationUnit(
 ) {
 
     public OrganizationUnit {
+        // HRA-051 required: code
+        if (code == null || code.isBlank()) {
+            throw new InvalidOrganizationValueException("OrganizationUnit code must not be blank.");
+        }
+
         id = requireText(id, "Organization unit ID is required.");
         code = OrganizationCode.of(code).value();
         nameAr = normalize(nameAr);

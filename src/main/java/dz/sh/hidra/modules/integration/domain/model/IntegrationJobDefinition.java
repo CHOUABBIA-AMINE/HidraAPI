@@ -7,7 +7,7 @@
  *
  * @Name        : IntegrationJobDefinition
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.integration.domain.model;
 
+import dz.sh.hidra.modules.integration.domain.exception.InvalidIntegrationValueException;
 import dz.sh.hidra.modules.integration.domain.value.*;
 import java.time.Instant;
 
@@ -62,6 +63,27 @@ import java.time.Instant;
     ) {
 
         public IntegrationJobDefinition {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidIntegrationValueException("IntegrationJobDefinition id must not be blank.");
+        }
+        // HRA-051 required: code
+        if (code == null || code.isBlank()) {
+            throw new InvalidIntegrationValueException("IntegrationJobDefinition code must not be blank.");
+        }
+        // HRA-051 required: connectorInstanceId
+        if (connectorInstanceId == null || connectorInstanceId.isBlank()) {
+            throw new InvalidIntegrationValueException("IntegrationJobDefinition connector instance id must not be blank.");
+        }
+        // HRA-051 required: jobTypeId
+        if (jobTypeId == null || jobTypeId.isBlank()) {
+            throw new InvalidIntegrationValueException("IntegrationJobDefinition job type id must not be blank.");
+        }
+        // HRA-051 required: direction
+        if (direction == null) {
+            throw new InvalidIntegrationValueException("IntegrationJobDefinition direction must not be null.");
+        }
+
         id = normalize(id);
         code = normalize(code);
         nameFr = normalize(nameFr);

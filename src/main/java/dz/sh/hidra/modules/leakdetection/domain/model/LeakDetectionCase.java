@@ -7,7 +7,7 @@
  *
  * @Name        : LeakDetectionCase
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.leakdetection.domain.model;
 
+import dz.sh.hidra.modules.leakdetection.domain.exception.InvalidLeakDetectionValueException;
 import dz.sh.hidra.modules.leakdetection.domain.value.*;
 import java.time.Instant;
 import java.math.BigDecimal;
@@ -67,6 +68,39 @@ import java.math.BigDecimal;
     ) {
 
         public LeakDetectionCase {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidLeakDetectionValueException("LeakDetectionCase id must not be blank.");
+        }
+        // HRA-051 required: caseNumber
+        if (caseNumber == null || caseNumber.isBlank()) {
+            throw new InvalidLeakDetectionValueException("LeakDetectionCase case number must not be blank.");
+        }
+        // HRA-051 required: primaryCandidateId
+        if (primaryCandidateId == null || primaryCandidateId.isBlank()) {
+            throw new InvalidLeakDetectionValueException("LeakDetectionCase primary candidate id must not be blank.");
+        }
+        // HRA-051 required: topologyAssetId
+        if (topologyAssetId == null || topologyAssetId.isBlank()) {
+            throw new InvalidLeakDetectionValueException("LeakDetectionCase topology asset id must not be blank.");
+        }
+        // HRA-051 required: topologyAssetCode
+        if (topologyAssetCode == null || topologyAssetCode.isBlank()) {
+            throw new InvalidLeakDetectionValueException("LeakDetectionCase topology asset code must not be blank.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidLeakDetectionValueException("LeakDetectionCase status must not be null.");
+        }
+        // HRA-051 required: openedAt
+        if (openedAt == null) {
+            throw new InvalidLeakDetectionValueException("LeakDetectionCase opened at must not be null.");
+        }
+        // HRA-051 order: openedAt <= closedAt
+        if (openedAt != null && closedAt != null && closedAt.isBefore(openedAt)) {
+            throw new InvalidLeakDetectionValueException("LeakDetectionCase closed at must not be before opened at.");
+        }
+
         id = normalize(id);
         caseNumber = normalize(caseNumber);
         primaryCandidateId = normalize(primaryCandidateId);

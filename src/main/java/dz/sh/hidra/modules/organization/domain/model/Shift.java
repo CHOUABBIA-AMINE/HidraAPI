@@ -66,6 +66,11 @@ public record Shift(
 ) {
 
     public Shift {
+        // HRA-051 required: code
+        if (code == null || code.isBlank()) {
+            throw new InvalidOrganizationValueException("Shift code must not be blank.");
+        }
+
         id = requireText(id, "Shift ID is required.");
         code = OrganizationCode.of(code).value();
         if (shiftType == null) {

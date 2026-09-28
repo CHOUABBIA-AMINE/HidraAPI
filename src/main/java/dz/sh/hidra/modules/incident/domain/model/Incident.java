@@ -7,7 +7,7 @@
  *
  * @Name        : Incident
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.incident.domain.model;
 
+import dz.sh.hidra.modules.incident.domain.exception.InvalidIncidentValueException;
 import dz.sh.hidra.modules.incident.domain.value.*;
 import java.time.Instant;
 import java.math.BigDecimal;
@@ -105,6 +106,43 @@ import java.math.BigDecimal;
     ) {
 
         public Incident {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidIncidentValueException("Incident id must not be blank.");
+        }
+        // HRA-051 required: incidentNumber
+        if (incidentNumber == null || incidentNumber.isBlank()) {
+            throw new InvalidIncidentValueException("Incident incident number must not be blank.");
+        }
+        // HRA-051 required: classificationId
+        if (classificationId == null || classificationId.isBlank()) {
+            throw new InvalidIncidentValueException("Incident classification id must not be blank.");
+        }
+        // HRA-051 required: severityId
+        if (severityId == null || severityId.isBlank()) {
+            throw new InvalidIncidentValueException("Incident severity id must not be blank.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidIncidentValueException("Incident status must not be null.");
+        }
+        // HRA-051 required: sourceType
+        if (sourceType == null) {
+            throw new InvalidIncidentValueException("Incident source type must not be null.");
+        }
+        // HRA-051 required: detectedAt
+        if (detectedAt == null) {
+            throw new InvalidIncidentValueException("Incident detected at must not be null.");
+        }
+        // HRA-051 required: reportedAt
+        if (reportedAt == null) {
+            throw new InvalidIncidentValueException("Incident reported at must not be null.");
+        }
+        // HRA-051 required: createdByActorId
+        if (createdByActorId == null || createdByActorId.isBlank()) {
+            throw new InvalidIncidentValueException("Incident created by actor id must not be blank.");
+        }
+
         id = normalize(id);
         incidentNumber = normalize(incidentNumber);
         title = normalize(title);

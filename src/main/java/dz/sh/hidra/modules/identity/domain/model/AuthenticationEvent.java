@@ -7,7 +7,7 @@
  *
  * @Name        : AuthenticationEvent
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.identity.domain.model;
 
+import dz.sh.hidra.modules.identity.domain.exception.InvalidIdentityValueException;
 import dz.sh.hidra.modules.identity.domain.value.*;
 import java.time.Instant;
 
@@ -56,6 +57,23 @@ public record AuthenticationEvent(
 ) {
 
     public AuthenticationEvent {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidIdentityValueException("AuthenticationEvent id must not be blank.");
+        }
+        // HRA-051 required: eventType
+        if (eventType == null) {
+            throw new InvalidIdentityValueException("AuthenticationEvent event type must not be null.");
+        }
+        // HRA-051 required: protocol
+        if (protocol == null) {
+            throw new InvalidIdentityValueException("AuthenticationEvent protocol must not be null.");
+        }
+        // HRA-051 required: occurredAt
+        if (occurredAt == null) {
+            throw new InvalidIdentityValueException("AuthenticationEvent occurred at must not be null.");
+        }
+
     id = normalize(id);
     userId = normalize(userId);
     identityProviderId = normalize(identityProviderId);

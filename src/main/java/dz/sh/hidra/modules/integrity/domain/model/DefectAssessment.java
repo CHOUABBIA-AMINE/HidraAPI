@@ -7,7 +7,7 @@
  *
  * @Name        : DefectAssessment
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.integrity.domain.model;
 
+import dz.sh.hidra.modules.integrity.domain.exception.InvalidIntegrityValueException;
 import dz.sh.hidra.modules.integrity.domain.value.*;
 import java.time.Instant;
 import java.math.BigDecimal;
@@ -59,6 +60,27 @@ import java.math.BigDecimal;
     ) {
 
         public DefectAssessment {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidIntegrityValueException("DefectAssessment id must not be blank.");
+        }
+        // HRA-051 required: defectId
+        if (defectId == null || defectId.isBlank()) {
+            throw new InvalidIntegrityValueException("DefectAssessment defect id must not be blank.");
+        }
+        // HRA-051 required: assessmentMethodId
+        if (assessmentMethodId == null || assessmentMethodId.isBlank()) {
+            throw new InvalidIntegrityValueException("DefectAssessment assessment method id must not be blank.");
+        }
+        // HRA-051 required: assessmentNumber
+        if (assessmentNumber == null || assessmentNumber.isBlank()) {
+            throw new InvalidIntegrityValueException("DefectAssessment assessment number must not be blank.");
+        }
+        // HRA-051 required: assessedAt
+        if (assessedAt == null) {
+            throw new InvalidIntegrityValueException("DefectAssessment assessed at must not be null.");
+        }
+
         id = normalize(id);
         defectId = normalize(defectId);
         assessmentMethodId = normalize(assessmentMethodId);

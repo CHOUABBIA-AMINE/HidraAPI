@@ -7,7 +7,7 @@
  *
  * @Name        : DefectMeasurement
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.integrity.domain.model;
 
+import dz.sh.hidra.modules.integrity.domain.exception.InvalidIntegrityValueException;
 import java.math.BigDecimal;
 import java.time.Instant;
 
@@ -48,6 +49,31 @@ import java.time.Instant;
     ) {
 
         public DefectMeasurement {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidIntegrityValueException("DefectMeasurement id must not be blank.");
+        }
+        // HRA-051 required: defectId
+        if (defectId == null || defectId.isBlank()) {
+            throw new InvalidIntegrityValueException("DefectMeasurement defect id must not be blank.");
+        }
+        // HRA-051 required: measurementTypeId
+        if (measurementTypeId == null || measurementTypeId.isBlank()) {
+            throw new InvalidIntegrityValueException("DefectMeasurement measurement type id must not be blank.");
+        }
+        // HRA-051 required: measurementValue
+        if (measurementValue == null) {
+            throw new InvalidIntegrityValueException("DefectMeasurement measurement value must not be null.");
+        }
+        // HRA-051 required: unitId
+        if (unitId == null || unitId.isBlank()) {
+            throw new InvalidIntegrityValueException("DefectMeasurement unit id must not be blank.");
+        }
+        // HRA-051 required: measuredAt
+        if (measuredAt == null) {
+            throw new InvalidIntegrityValueException("DefectMeasurement measured at must not be null.");
+        }
+
         id = normalize(id);
         defectId = normalize(defectId);
         measurementTypeId = normalize(measurementTypeId);

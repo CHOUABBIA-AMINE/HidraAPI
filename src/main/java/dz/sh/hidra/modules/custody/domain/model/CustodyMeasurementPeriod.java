@@ -7,7 +7,7 @@
  *
  * @Name        : CustodyMeasurementPeriod
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.custody.domain.model;
 
+import dz.sh.hidra.modules.custody.domain.exception.InvalidCustodyValueException;
 import dz.sh.hidra.modules.custody.domain.value.*;
 import java.time.Instant;
 
@@ -56,6 +57,39 @@ import java.time.Instant;
     ) {
 
         public CustodyMeasurementPeriod {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidCustodyValueException("CustodyMeasurementPeriod id must not be blank.");
+        }
+        // HRA-051 required: periodCode
+        if (periodCode == null || periodCode.isBlank()) {
+            throw new InvalidCustodyValueException("CustodyMeasurementPeriod period code must not be blank.");
+        }
+        // HRA-051 required: agreementId
+        if (agreementId == null || agreementId.isBlank()) {
+            throw new InvalidCustodyValueException("CustodyMeasurementPeriod agreement id must not be blank.");
+        }
+        // HRA-051 required: transferPointId
+        if (transferPointId == null || transferPointId.isBlank()) {
+            throw new InvalidCustodyValueException("CustodyMeasurementPeriod transfer point id must not be blank.");
+        }
+        // HRA-051 required: periodStart
+        if (periodStart == null) {
+            throw new InvalidCustodyValueException("CustodyMeasurementPeriod period start must not be null.");
+        }
+        // HRA-051 required: periodEnd
+        if (periodEnd == null) {
+            throw new InvalidCustodyValueException("CustodyMeasurementPeriod period end must not be null.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidCustodyValueException("CustodyMeasurementPeriod status must not be null.");
+        }
+        // HRA-051 order: periodStart <= periodEnd
+        if (periodStart != null && periodEnd != null && periodEnd.isBefore(periodStart)) {
+            throw new InvalidCustodyValueException("CustodyMeasurementPeriod period end must not be before period start.");
+        }
+
         id = normalize(id);
         periodCode = normalize(periodCode);
         agreementId = normalize(agreementId);

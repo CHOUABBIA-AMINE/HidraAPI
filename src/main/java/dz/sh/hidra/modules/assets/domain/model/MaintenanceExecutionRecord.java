@@ -7,7 +7,7 @@
  *
  * @Name        : MaintenanceExecutionRecord
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.assets.domain.model;
 
+import dz.sh.hidra.modules.assets.domain.exception.InvalidAssetsValueException;
 import dz.sh.hidra.modules.assets.domain.value.*;
 import java.time.Instant;
 
@@ -52,6 +53,23 @@ import java.time.Instant;
     ) {
 
         public MaintenanceExecutionRecord {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidAssetsValueException("MaintenanceExecutionRecord id must not be blank.");
+        }
+        // HRA-051 required: workOrderId
+        if (workOrderId == null || workOrderId.isBlank()) {
+            throw new InvalidAssetsValueException("MaintenanceExecutionRecord work order id must not be blank.");
+        }
+        // HRA-051 required: executionResult
+        if (executionResult == null) {
+            throw new InvalidAssetsValueException("MaintenanceExecutionRecord execution result must not be null.");
+        }
+        // HRA-051 required: executedAt
+        if (executedAt == null) {
+            throw new InvalidAssetsValueException("MaintenanceExecutionRecord executed at must not be null.");
+        }
+
         id = normalize(id);
         workOrderId = normalize(workOrderId);
         taskId = normalize(taskId);

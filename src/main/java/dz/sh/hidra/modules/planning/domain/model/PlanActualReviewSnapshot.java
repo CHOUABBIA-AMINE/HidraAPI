@@ -7,7 +7,7 @@
  *
  * @Name        : PlanActualReviewSnapshot
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.planning.domain.model;
 
+import dz.sh.hidra.modules.planning.domain.exception.InvalidPlanningValueException;
 import dz.sh.hidra.modules.planning.domain.value.*;
 import java.time.Instant;
 import java.math.BigDecimal;
@@ -55,6 +56,23 @@ import java.math.BigDecimal;
     ) {
 
         public PlanActualReviewSnapshot {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidPlanningValueException("PlanActualReviewSnapshot id must not be blank.");
+        }
+        // HRA-051 required: planTargetId
+        if (planTargetId == null || planTargetId.isBlank()) {
+            throw new InvalidPlanningValueException("PlanActualReviewSnapshot plan target id must not be blank.");
+        }
+        // HRA-051 required: reviewedAt
+        if (reviewedAt == null) {
+            throw new InvalidPlanningValueException("PlanActualReviewSnapshot reviewed at must not be null.");
+        }
+        // HRA-051 required: reviewSource
+        if (reviewSource == null) {
+            throw new InvalidPlanningValueException("PlanActualReviewSnapshot review source must not be null.");
+        }
+
         id = normalize(id);
         planTargetId = normalize(planTargetId);
         monitoringDeviationId = normalize(monitoringDeviationId);

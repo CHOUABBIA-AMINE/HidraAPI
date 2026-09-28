@@ -7,7 +7,7 @@
  *
  * @Name        : MaintenanceStrategy
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.assets.domain.model;
 
+import dz.sh.hidra.modules.assets.domain.exception.InvalidAssetsValueException;
 import dz.sh.hidra.modules.assets.domain.value.*;
 import java.time.Instant;
 
@@ -52,6 +53,27 @@ import java.time.Instant;
     ) {
 
         public MaintenanceStrategy {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidAssetsValueException("MaintenanceStrategy id must not be blank.");
+        }
+        // HRA-051 required: strategyCode
+        if (strategyCode == null || strategyCode.isBlank()) {
+            throw new InvalidAssetsValueException("MaintenanceStrategy strategy code must not be blank.");
+        }
+        // HRA-051 required: strategyTypeId
+        if (strategyTypeId == null || strategyTypeId.isBlank()) {
+            throw new InvalidAssetsValueException("MaintenanceStrategy strategy type id must not be blank.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidAssetsValueException("MaintenanceStrategy status must not be null.");
+        }
+        // HRA-051 order: effectiveFrom <= effectiveTo
+        if (effectiveFrom != null && effectiveTo != null && effectiveTo.isBefore(effectiveFrom)) {
+            throw new InvalidAssetsValueException("MaintenanceStrategy effective to must not be before effective from.");
+        }
+
         id = normalize(id);
         strategyCode = normalize(strategyCode);
         name = normalize(name);

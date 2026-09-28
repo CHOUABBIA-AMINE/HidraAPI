@@ -7,7 +7,7 @@
  *
  * @Name        : IntegrityAssessmentScope
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.integrity.domain.model;
 
+import dz.sh.hidra.modules.integrity.domain.exception.InvalidIntegrityValueException;
 import java.time.Instant;
 
     /**
@@ -51,6 +52,27 @@ import java.time.Instant;
     ) {
 
         public IntegrityAssessmentScope {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidIntegrityValueException("IntegrityAssessmentScope id must not be blank.");
+        }
+        // HRA-051 required: assessmentId
+        if (assessmentId == null || assessmentId.isBlank()) {
+            throw new InvalidIntegrityValueException("IntegrityAssessmentScope assessment id must not be blank.");
+        }
+        // HRA-051 required: topologyAssetTypeCode
+        if (topologyAssetTypeCode == null || topologyAssetTypeCode.isBlank()) {
+            throw new InvalidIntegrityValueException("IntegrityAssessmentScope topology asset type code must not be blank.");
+        }
+        // HRA-051 required: topologyAssetId
+        if (topologyAssetId == null || topologyAssetId.isBlank()) {
+            throw new InvalidIntegrityValueException("IntegrityAssessmentScope topology asset id must not be blank.");
+        }
+        // HRA-051 order: validFrom <= validTo
+        if (validFrom != null && validTo != null && validTo.isBefore(validFrom)) {
+            throw new InvalidIntegrityValueException("IntegrityAssessmentScope valid to must not be before valid from.");
+        }
+
         id = normalize(id);
         assessmentId = normalize(assessmentId);
         topologyAssetTypeCode = normalize(topologyAssetTypeCode);

@@ -7,7 +7,7 @@
  *
  * @Name        : InspectionRun
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.integrity.domain.model;
 
+import dz.sh.hidra.modules.integrity.domain.exception.InvalidIntegrityValueException;
 import dz.sh.hidra.modules.integrity.domain.value.*;
 import java.time.Instant;
 
@@ -58,6 +59,31 @@ import java.time.Instant;
     ) {
 
         public InspectionRun {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidIntegrityValueException("InspectionRun id must not be blank.");
+        }
+        // HRA-051 required: campaignId
+        if (campaignId == null || campaignId.isBlank()) {
+            throw new InvalidIntegrityValueException("InspectionRun campaign id must not be blank.");
+        }
+        // HRA-051 required: runNumber
+        if (runNumber == null || runNumber.isBlank()) {
+            throw new InvalidIntegrityValueException("InspectionRun run number must not be blank.");
+        }
+        // HRA-051 required: topologyAssetTypeCode
+        if (topologyAssetTypeCode == null || topologyAssetTypeCode.isBlank()) {
+            throw new InvalidIntegrityValueException("InspectionRun topology asset type code must not be blank.");
+        }
+        // HRA-051 required: topologyAssetId
+        if (topologyAssetId == null || topologyAssetId.isBlank()) {
+            throw new InvalidIntegrityValueException("InspectionRun topology asset id must not be blank.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidIntegrityValueException("InspectionRun status must not be null.");
+        }
+
         id = normalize(id);
         campaignId = normalize(campaignId);
         runNumber = normalize(runNumber);

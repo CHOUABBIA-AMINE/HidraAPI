@@ -7,7 +7,7 @@
  *
  * @Name        : RiskMatrix
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.risk.domain.model;
 
+import dz.sh.hidra.modules.risk.domain.exception.InvalidRiskValueException;
 import dz.sh.hidra.modules.risk.domain.value.*;
 import java.time.Instant;
 
@@ -62,6 +63,31 @@ import java.time.Instant;
     ) {
 
         public RiskMatrix {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidRiskValueException("RiskMatrix id must not be blank.");
+        }
+        // HRA-051 required: code
+        if (code == null || code.isBlank()) {
+            throw new InvalidRiskValueException("RiskMatrix code must not be blank.");
+        }
+        // HRA-051 required: matrixTypeId
+        if (matrixTypeId == null || matrixTypeId.isBlank()) {
+            throw new InvalidRiskValueException("RiskMatrix matrix type id must not be blank.");
+        }
+        // HRA-051 required: version
+        if (version == null || version.isBlank()) {
+            throw new InvalidRiskValueException("RiskMatrix version must not be blank.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidRiskValueException("RiskMatrix status must not be null.");
+        }
+        // HRA-051 order: validFrom <= validTo
+        if (validFrom != null && validTo != null && validTo.isBefore(validFrom)) {
+            throw new InvalidRiskValueException("RiskMatrix valid to must not be before valid from.");
+        }
+
         id = normalize(id);
         code = normalize(code);
         nameAr = normalize(nameAr);

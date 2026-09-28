@@ -7,7 +7,7 @@
  *
  * @Name        : LeakLocalizationEstimate
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.leakdetection.domain.model;
 
+import dz.sh.hidra.modules.leakdetection.domain.exception.InvalidLeakDetectionValueException;
 import java.math.BigDecimal;
 import java.time.Instant;
 
@@ -56,6 +57,35 @@ import java.time.Instant;
     ) {
 
         public LeakLocalizationEstimate {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidLeakDetectionValueException("LeakLocalizationEstimate id must not be blank.");
+        }
+        // HRA-051 required: candidateId
+        if (candidateId == null || candidateId.isBlank()) {
+            throw new InvalidLeakDetectionValueException("LeakLocalizationEstimate candidate id must not be blank.");
+        }
+        // HRA-051 required: topologyAssetId
+        if (topologyAssetId == null || topologyAssetId.isBlank()) {
+            throw new InvalidLeakDetectionValueException("LeakLocalizationEstimate topology asset id must not be blank.");
+        }
+        // HRA-051 required: topologyAssetCode
+        if (topologyAssetCode == null || topologyAssetCode.isBlank()) {
+            throw new InvalidLeakDetectionValueException("LeakLocalizationEstimate topology asset code must not be blank.");
+        }
+        // HRA-051 required: confidenceScore
+        if (confidenceScore == null) {
+            throw new InvalidLeakDetectionValueException("LeakLocalizationEstimate confidence score must not be null.");
+        }
+        // HRA-051 required: methodId
+        if (methodId == null || methodId.isBlank()) {
+            throw new InvalidLeakDetectionValueException("LeakLocalizationEstimate method id must not be blank.");
+        }
+        // HRA-051 required: estimatedAt
+        if (estimatedAt == null) {
+            throw new InvalidLeakDetectionValueException("LeakLocalizationEstimate estimated at must not be null.");
+        }
+
         id = normalize(id);
         candidateId = normalize(candidateId);
         topologyAssetType = normalize(topologyAssetType);

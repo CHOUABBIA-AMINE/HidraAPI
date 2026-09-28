@@ -7,7 +7,7 @@
  *
  * @Name        : CathodicProtectionMeasurement
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.integrity.domain.model;
 
+import dz.sh.hidra.modules.integrity.domain.exception.InvalidIntegrityValueException;
 import java.math.BigDecimal;
 import java.time.Instant;
 
@@ -50,6 +51,19 @@ import java.time.Instant;
     ) {
 
         public CathodicProtectionMeasurement {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidIntegrityValueException("CathodicProtectionMeasurement id must not be blank.");
+        }
+        // HRA-051 required: surveyId
+        if (surveyId == null || surveyId.isBlank()) {
+            throw new InvalidIntegrityValueException("CathodicProtectionMeasurement survey id must not be blank.");
+        }
+        // HRA-051 required: measuredAt
+        if (measuredAt == null) {
+            throw new InvalidIntegrityValueException("CathodicProtectionMeasurement measured at must not be null.");
+        }
+
         id = normalize(id);
         surveyId = normalize(surveyId);
         potentialUnitId = normalize(potentialUnitId);

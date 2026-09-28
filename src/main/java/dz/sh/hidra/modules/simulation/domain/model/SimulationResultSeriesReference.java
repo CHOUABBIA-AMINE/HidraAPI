@@ -7,7 +7,7 @@
  *
  * @Name        : SimulationResultSeriesReference
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.simulation.domain.model;
 
+import dz.sh.hidra.modules.simulation.domain.exception.InvalidSimulationValueException;
 import java.time.Instant;
 
     /**
@@ -45,6 +46,19 @@ import java.time.Instant;
     ) {
 
         public SimulationResultSeriesReference {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidSimulationValueException("SimulationResultSeriesReference id must not be blank.");
+        }
+        // HRA-051 required: runId
+        if (runId == null || runId.isBlank()) {
+            throw new InvalidSimulationValueException("SimulationResultSeriesReference run id must not be blank.");
+        }
+        // HRA-051 required: seriesTypeId
+        if (seriesTypeId == null || seriesTypeId.isBlank()) {
+            throw new InvalidSimulationValueException("SimulationResultSeriesReference series type id must not be blank.");
+        }
+
         id = normalize(id);
         runId = normalize(runId);
         seriesTypeId = normalize(seriesTypeId);

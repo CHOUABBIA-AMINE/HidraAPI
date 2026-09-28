@@ -7,7 +7,7 @@
  *
  * @Name        : PlanActualDeviation
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.monitoring.domain.model;
 
+import dz.sh.hidra.modules.monitoring.domain.exception.InvalidMonitoringValueException;
 import dz.sh.hidra.modules.monitoring.domain.value.*;
 import java.time.Instant;
 import java.math.BigDecimal;
@@ -71,6 +72,31 @@ import java.math.BigDecimal;
     ) {
 
         public PlanActualDeviation {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidMonitoringValueException("PlanActualDeviation id must not be blank.");
+        }
+        // HRA-051 required: planTargetId
+        if (planTargetId == null || planTargetId.isBlank()) {
+            throw new InvalidMonitoringValueException("PlanActualDeviation plan target id must not be blank.");
+        }
+        // HRA-051 required: topologyAssetId
+        if (topologyAssetId == null || topologyAssetId.isBlank()) {
+            throw new InvalidMonitoringValueException("PlanActualDeviation topology asset id must not be blank.");
+        }
+        // HRA-051 required: severity
+        if (severity == null) {
+            throw new InvalidMonitoringValueException("PlanActualDeviation severity must not be null.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidMonitoringValueException("PlanActualDeviation status must not be null.");
+        }
+        // HRA-051 required: detectedAt
+        if (detectedAt == null) {
+            throw new InvalidMonitoringValueException("PlanActualDeviation detected at must not be null.");
+        }
+
         id = normalize(id);
         evaluationId = normalize(evaluationId);
         planTargetId = normalize(planTargetId);

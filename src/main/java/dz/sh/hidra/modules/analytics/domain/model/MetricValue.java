@@ -7,7 +7,7 @@
  *
  * @Name        : MetricValue
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.analytics.domain.model;
 
+import dz.sh.hidra.modules.analytics.domain.exception.InvalidAnalyticsValueException;
 import dz.sh.hidra.modules.analytics.domain.value.*;
 import java.time.Instant;
 import java.math.BigDecimal;
@@ -57,6 +58,43 @@ import java.math.BigDecimal;
     ) {
 
         public MetricValue {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidAnalyticsValueException("MetricValue id must not be blank.");
+        }
+        // HRA-051 required: metricEvaluationRunId
+        if (metricEvaluationRunId == null || metricEvaluationRunId.isBlank()) {
+            throw new InvalidAnalyticsValueException("MetricValue metric evaluation run id must not be blank.");
+        }
+        // HRA-051 required: metricDefinitionId
+        if (metricDefinitionId == null || metricDefinitionId.isBlank()) {
+            throw new InvalidAnalyticsValueException("MetricValue metric definition id must not be blank.");
+        }
+        // HRA-051 required: metricDefinitionVersionId
+        if (metricDefinitionVersionId == null || metricDefinitionVersionId.isBlank()) {
+            throw new InvalidAnalyticsValueException("MetricValue metric definition version id must not be blank.");
+        }
+        // HRA-051 required: periodStart
+        if (periodStart == null) {
+            throw new InvalidAnalyticsValueException("MetricValue period start must not be null.");
+        }
+        // HRA-051 required: periodEnd
+        if (periodEnd == null) {
+            throw new InvalidAnalyticsValueException("MetricValue period end must not be null.");
+        }
+        // HRA-051 required: qualityStatus
+        if (qualityStatus == null) {
+            throw new InvalidAnalyticsValueException("MetricValue quality status must not be null.");
+        }
+        // HRA-051 required: calculatedAt
+        if (calculatedAt == null) {
+            throw new InvalidAnalyticsValueException("MetricValue calculated at must not be null.");
+        }
+        // HRA-051 order: periodStart <= periodEnd
+        if (periodStart != null && periodEnd != null && periodEnd.isBefore(periodStart)) {
+            throw new InvalidAnalyticsValueException("MetricValue period end must not be before period start.");
+        }
+
         id = normalize(id);
         metricEvaluationRunId = normalize(metricEvaluationRunId);
         metricDefinitionId = normalize(metricDefinitionId);

@@ -7,7 +7,7 @@
  *
  * @Name        : RiskAssessment
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.risk.domain.model;
 
+import dz.sh.hidra.modules.risk.domain.exception.InvalidRiskValueException;
 import dz.sh.hidra.modules.risk.domain.value.*;
 import java.time.Instant;
 import java.math.BigDecimal;
@@ -99,6 +100,43 @@ import java.math.BigDecimal;
     ) {
 
         public RiskAssessment {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidRiskValueException("RiskAssessment id must not be blank.");
+        }
+        // HRA-051 required: riskRegisterId
+        if (riskRegisterId == null || riskRegisterId.isBlank()) {
+            throw new InvalidRiskValueException("RiskAssessment risk register id must not be blank.");
+        }
+        // HRA-051 required: assessmentNumber
+        if (assessmentNumber == null || assessmentNumber.isBlank()) {
+            throw new InvalidRiskValueException("RiskAssessment assessment number must not be blank.");
+        }
+        // HRA-051 required: assessmentTypeId
+        if (assessmentTypeId == null || assessmentTypeId.isBlank()) {
+            throw new InvalidRiskValueException("RiskAssessment assessment type id must not be blank.");
+        }
+        // HRA-051 required: methodologyId
+        if (methodologyId == null || methodologyId.isBlank()) {
+            throw new InvalidRiskValueException("RiskAssessment methodology id must not be blank.");
+        }
+        // HRA-051 required: riskScenarioId
+        if (riskScenarioId == null || riskScenarioId.isBlank()) {
+            throw new InvalidRiskValueException("RiskAssessment risk scenario id must not be blank.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidRiskValueException("RiskAssessment status must not be null.");
+        }
+        // HRA-051 required: assessmentDate
+        if (assessmentDate == null) {
+            throw new InvalidRiskValueException("RiskAssessment assessment date must not be null.");
+        }
+        // HRA-051 order: validFrom <= validTo
+        if (validFrom != null && validTo != null && validTo.isBefore(validFrom)) {
+            throw new InvalidRiskValueException("RiskAssessment valid to must not be before valid from.");
+        }
+
         id = normalize(id);
         riskRegisterId = normalize(riskRegisterId);
         assessmentNumber = normalize(assessmentNumber);

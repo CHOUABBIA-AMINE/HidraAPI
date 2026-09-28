@@ -7,7 +7,7 @@
  *
  * @Name        : ReportTemplateVersion
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.reporting.domain.model;
 
+import dz.sh.hidra.modules.reporting.domain.exception.InvalidReportingValueException;
 import dz.sh.hidra.modules.reporting.domain.value.*;
 import java.time.Instant;
 
@@ -54,6 +55,23 @@ import java.time.Instant;
     ) {
 
         public ReportTemplateVersion {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidReportingValueException("ReportTemplateVersion id must not be blank.");
+        }
+        // HRA-051 required: reportTemplateId
+        if (reportTemplateId == null || reportTemplateId.isBlank()) {
+            throw new InvalidReportingValueException("ReportTemplateVersion report template id must not be blank.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidReportingValueException("ReportTemplateVersion status must not be null.");
+        }
+        // HRA-051 required: checksum
+        if (checksum == null || checksum.isBlank()) {
+            throw new InvalidReportingValueException("ReportTemplateVersion checksum must not be blank.");
+        }
+
         id = normalize(id);
         reportTemplateId = normalize(reportTemplateId);
         layoutContentReference = normalize(layoutContentReference);

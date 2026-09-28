@@ -7,7 +7,7 @@
  *
  * @Name        : PlanScenario
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.planning.domain.model;
 
+import dz.sh.hidra.modules.planning.domain.exception.InvalidPlanningValueException;
 import dz.sh.hidra.modules.planning.domain.value.*;
 import java.time.Instant;
 
@@ -54,6 +55,27 @@ import java.time.Instant;
     ) {
 
         public PlanScenario {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidPlanningValueException("PlanScenario id must not be blank.");
+        }
+        // HRA-051 required: revisionId
+        if (revisionId == null || revisionId.isBlank()) {
+            throw new InvalidPlanningValueException("PlanScenario revision id must not be blank.");
+        }
+        // HRA-051 required: code
+        if (code == null || code.isBlank()) {
+            throw new InvalidPlanningValueException("PlanScenario code must not be blank.");
+        }
+        // HRA-051 required: scenarioTypeId
+        if (scenarioTypeId == null || scenarioTypeId.isBlank()) {
+            throw new InvalidPlanningValueException("PlanScenario scenario type id must not be blank.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidPlanningValueException("PlanScenario status must not be null.");
+        }
+
         id = normalize(id);
         revisionId = normalize(revisionId);
         code = normalize(code);

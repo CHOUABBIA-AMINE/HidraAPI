@@ -7,7 +7,7 @@
  *
  * @Name        : ForecastPoint
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.planning.domain.model;
 
+import dz.sh.hidra.modules.planning.domain.exception.InvalidPlanningValueException;
 import java.math.BigDecimal;
 import java.time.Instant;
 
@@ -48,6 +49,39 @@ import java.time.Instant;
     ) {
 
         public ForecastPoint {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidPlanningValueException("ForecastPoint id must not be blank.");
+        }
+        // HRA-051 required: forecastSeriesId
+        if (forecastSeriesId == null || forecastSeriesId.isBlank()) {
+            throw new InvalidPlanningValueException("ForecastPoint forecast series id must not be blank.");
+        }
+        // HRA-051 required: forecastAt
+        if (forecastAt == null) {
+            throw new InvalidPlanningValueException("ForecastPoint forecast at must not be null.");
+        }
+        // HRA-051 required: validFrom
+        if (validFrom == null) {
+            throw new InvalidPlanningValueException("ForecastPoint valid from must not be null.");
+        }
+        // HRA-051 required: validTo
+        if (validTo == null) {
+            throw new InvalidPlanningValueException("ForecastPoint valid to must not be null.");
+        }
+        // HRA-051 required: value
+        if (value == null) {
+            throw new InvalidPlanningValueException("ForecastPoint value must not be null.");
+        }
+        // HRA-051 required: unitId
+        if (unitId == null || unitId.isBlank()) {
+            throw new InvalidPlanningValueException("ForecastPoint unit id must not be blank.");
+        }
+        // HRA-051 order: validFrom <= validTo
+        if (validFrom != null && validTo != null && validTo.isBefore(validFrom)) {
+            throw new InvalidPlanningValueException("ForecastPoint valid to must not be before valid from.");
+        }
+
         id = normalize(id);
         forecastSeriesId = normalize(forecastSeriesId);
         unitId = normalize(unitId);

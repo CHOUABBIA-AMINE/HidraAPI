@@ -7,7 +7,7 @@
  *
  * @Name        : IncidentClosure
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.incident.domain.model;
 
+import dz.sh.hidra.modules.incident.domain.exception.InvalidIncidentValueException;
 import java.time.Instant;
 
     /**
@@ -51,6 +52,23 @@ import java.time.Instant;
     ) {
 
         public IncidentClosure {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidIncidentValueException("IncidentClosure id must not be blank.");
+        }
+        // HRA-051 required: incidentId
+        if (incidentId == null || incidentId.isBlank()) {
+            throw new InvalidIncidentValueException("IncidentClosure incident id must not be blank.");
+        }
+        // HRA-051 required: closedByActorId
+        if (closedByActorId == null || closedByActorId.isBlank()) {
+            throw new InvalidIncidentValueException("IncidentClosure closed by actor id must not be blank.");
+        }
+        // HRA-051 required: closedAt
+        if (closedAt == null) {
+            throw new InvalidIncidentValueException("IncidentClosure closed at must not be null.");
+        }
+
         id = normalize(id);
         incidentId = normalize(incidentId);
         closureSummary = normalize(closureSummary);

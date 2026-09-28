@@ -7,7 +7,7 @@
  *
  * @Name        : InspectionCampaign
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.integrity.domain.model;
 
+import dz.sh.hidra.modules.integrity.domain.exception.InvalidIntegrityValueException;
 import dz.sh.hidra.modules.integrity.domain.value.*;
 import java.time.Instant;
 
@@ -60,6 +61,23 @@ import java.time.Instant;
     ) {
 
         public InspectionCampaign {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidIntegrityValueException("InspectionCampaign id must not be blank.");
+        }
+        // HRA-051 required: campaignNumber
+        if (campaignNumber == null || campaignNumber.isBlank()) {
+            throw new InvalidIntegrityValueException("InspectionCampaign campaign number must not be blank.");
+        }
+        // HRA-051 required: inspectionTypeId
+        if (inspectionTypeId == null || inspectionTypeId.isBlank()) {
+            throw new InvalidIntegrityValueException("InspectionCampaign inspection type id must not be blank.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidIntegrityValueException("InspectionCampaign status must not be null.");
+        }
+
         id = normalize(id);
         programId = normalize(programId);
         campaignNumber = normalize(campaignNumber);

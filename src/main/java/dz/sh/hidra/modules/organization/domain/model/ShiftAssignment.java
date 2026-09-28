@@ -49,6 +49,11 @@ import java.time.Instant;
     ) {
 
         public ShiftAssignment {
+        // HRA-051 required: validFrom
+        if (validFrom == null) {
+            throw new InvalidOrganizationValueException("ShiftAssignment valid from must not be null.");
+        }
+
         id = requireText(id, "Shift assignment ID is required.");
         employeeId = requireText(employeeId, "Shift assignment employee ID is required.");
         shiftId = requireText(shiftId, "Shift assignment shift ID is required.");

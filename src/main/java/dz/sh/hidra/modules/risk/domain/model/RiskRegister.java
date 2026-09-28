@@ -7,7 +7,7 @@
  *
  * @Name        : RiskRegister
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.risk.domain.model;
 
+import dz.sh.hidra.modules.risk.domain.exception.InvalidRiskValueException;
 import dz.sh.hidra.modules.risk.domain.value.*;
 import java.time.Instant;
 
@@ -72,6 +73,31 @@ import java.time.Instant;
     ) {
 
         public RiskRegister {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidRiskValueException("RiskRegister id must not be blank.");
+        }
+        // HRA-051 required: code
+        if (code == null || code.isBlank()) {
+            throw new InvalidRiskValueException("RiskRegister code must not be blank.");
+        }
+        // HRA-051 required: registerTypeId
+        if (registerTypeId == null || registerTypeId.isBlank()) {
+            throw new InvalidRiskValueException("RiskRegister register type id must not be blank.");
+        }
+        // HRA-051 required: scopeId
+        if (scopeId == null || scopeId.isBlank()) {
+            throw new InvalidRiskValueException("RiskRegister scope id must not be blank.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidRiskValueException("RiskRegister status must not be null.");
+        }
+        // HRA-051 order: effectiveFrom <= effectiveTo
+        if (effectiveFrom != null && effectiveTo != null && effectiveTo.isBefore(effectiveFrom)) {
+            throw new InvalidRiskValueException("RiskRegister effective to must not be before effective from.");
+        }
+
         id = normalize(id);
         code = normalize(code);
         nameAr = normalize(nameAr);

@@ -7,7 +7,7 @@
  *
  * @Name        : ExternalObjectReference
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.integration.domain.model;
 
+import dz.sh.hidra.modules.integration.domain.exception.InvalidIntegrationValueException;
 import dz.sh.hidra.modules.integration.domain.value.*;
 import java.time.Instant;
 
@@ -62,6 +63,39 @@ import java.time.Instant;
     ) {
 
         public ExternalObjectReference {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidIntegrationValueException("ExternalObjectReference id must not be blank.");
+        }
+        // HRA-051 required: externalSystemId
+        if (externalSystemId == null || externalSystemId.isBlank()) {
+            throw new InvalidIntegrationValueException("ExternalObjectReference external system id must not be blank.");
+        }
+        // HRA-051 required: externalObjectId
+        if (externalObjectId == null || externalObjectId.isBlank()) {
+            throw new InvalidIntegrationValueException("ExternalObjectReference external object id must not be blank.");
+        }
+        // HRA-051 required: targetTypeCode
+        if (targetTypeCode == null || targetTypeCode.isBlank()) {
+            throw new InvalidIntegrationValueException("ExternalObjectReference target type code must not be blank.");
+        }
+        // HRA-051 required: targetId
+        if (targetId == null || targetId.isBlank()) {
+            throw new InvalidIntegrationValueException("ExternalObjectReference target id must not be blank.");
+        }
+        // HRA-051 required: confidenceLevel
+        if (confidenceLevel == null) {
+            throw new InvalidIntegrationValueException("ExternalObjectReference confidence level must not be null.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidIntegrationValueException("ExternalObjectReference status must not be null.");
+        }
+        // HRA-051 order: validFrom <= validTo
+        if (validFrom != null && validTo != null && validTo.isBefore(validFrom)) {
+            throw new InvalidIntegrationValueException("ExternalObjectReference valid to must not be before valid from.");
+        }
+
         id = normalize(id);
         externalSystemId = normalize(externalSystemId);
         externalObjectType = normalize(externalObjectType);

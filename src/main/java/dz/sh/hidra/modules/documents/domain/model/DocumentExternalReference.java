@@ -7,7 +7,7 @@
  *
  * @Name        : DocumentExternalReference
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.documents.domain.model;
 
+import dz.sh.hidra.modules.documents.domain.exception.InvalidDocumentValueException;
 import dz.sh.hidra.modules.documents.domain.value.*;
 import java.time.Instant;
 
@@ -50,6 +51,27 @@ import java.time.Instant;
     ) {
 
         public DocumentExternalReference {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidDocumentValueException("DocumentExternalReference id must not be blank.");
+        }
+        // HRA-051 required: documentId
+        if (documentId == null || documentId.isBlank()) {
+            throw new InvalidDocumentValueException("DocumentExternalReference document id must not be blank.");
+        }
+        // HRA-051 required: externalSystemId
+        if (externalSystemId == null || externalSystemId.isBlank()) {
+            throw new InvalidDocumentValueException("DocumentExternalReference external system id must not be blank.");
+        }
+        // HRA-051 required: externalObjectId
+        if (externalObjectId == null || externalObjectId.isBlank()) {
+            throw new InvalidDocumentValueException("DocumentExternalReference external object id must not be blank.");
+        }
+        // HRA-051 required: syncStatus
+        if (syncStatus == null) {
+            throw new InvalidDocumentValueException("DocumentExternalReference sync status must not be null.");
+        }
+
         id = normalize(id);
         documentId = normalize(documentId);
         documentVersionId = normalize(documentVersionId);

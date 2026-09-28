@@ -7,7 +7,7 @@
  *
  * @Name        : AuditDecisionContext
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.audit.domain.model;
 
+import dz.sh.hidra.modules.audit.domain.exception.InvalidAuditValueException;
 import java.time.Instant;
 
     /**
@@ -57,6 +58,23 @@ import java.time.Instant;
     ) {
 
         public AuditDecisionContext {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidAuditValueException("AuditDecisionContext id must not be blank.");
+        }
+        // HRA-051 required: auditEventId
+        if (auditEventId == null || auditEventId.isBlank()) {
+            throw new InvalidAuditValueException("AuditDecisionContext audit event id must not be blank.");
+        }
+        // HRA-051 required: decisionCode
+        if (decisionCode == null || decisionCode.isBlank()) {
+            throw new InvalidAuditValueException("AuditDecisionContext decision code must not be blank.");
+        }
+        // HRA-051 required: decidedAt
+        if (decidedAt == null) {
+            throw new InvalidAuditValueException("AuditDecisionContext decided at must not be null.");
+        }
+
         id = normalize(id);
         auditEventId = normalize(auditEventId);
         decisionCode = normalize(decisionCode);

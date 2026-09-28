@@ -7,7 +7,7 @@
  *
  * @Name        : IncidentAssignment
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.incident.domain.model;
 
+import dz.sh.hidra.modules.incident.domain.exception.InvalidIncidentValueException;
 import java.time.Instant;
 
     /**
@@ -55,6 +56,27 @@ import java.time.Instant;
     ) {
 
         public IncidentAssignment {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidIncidentValueException("IncidentAssignment id must not be blank.");
+        }
+        // HRA-051 required: incidentId
+        if (incidentId == null || incidentId.isBlank()) {
+            throw new InvalidIncidentValueException("IncidentAssignment incident id must not be blank.");
+        }
+        // HRA-051 required: assignmentTypeId
+        if (assignmentTypeId == null || assignmentTypeId.isBlank()) {
+            throw new InvalidIncidentValueException("IncidentAssignment assignment type id must not be blank.");
+        }
+        // HRA-051 required: assignedByActorId
+        if (assignedByActorId == null || assignedByActorId.isBlank()) {
+            throw new InvalidIncidentValueException("IncidentAssignment assigned by actor id must not be blank.");
+        }
+        // HRA-051 required: assignedAt
+        if (assignedAt == null) {
+            throw new InvalidIncidentValueException("IncidentAssignment assigned at must not be null.");
+        }
+
         id = normalize(id);
         incidentId = normalize(incidentId);
         assignmentTypeId = normalize(assignmentTypeId);

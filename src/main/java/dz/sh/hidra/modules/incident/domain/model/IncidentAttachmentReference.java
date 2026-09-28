@@ -7,7 +7,7 @@
  *
  * @Name        : IncidentAttachmentReference
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.incident.domain.model;
 
+import dz.sh.hidra.modules.incident.domain.exception.InvalidIncidentValueException;
 import java.time.Instant;
 
     /**
@@ -47,6 +48,27 @@ import java.time.Instant;
     ) {
 
         public IncidentAttachmentReference {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidIncidentValueException("IncidentAttachmentReference id must not be blank.");
+        }
+        // HRA-051 required: incidentId
+        if (incidentId == null || incidentId.isBlank()) {
+            throw new InvalidIncidentValueException("IncidentAttachmentReference incident id must not be blank.");
+        }
+        // HRA-051 required: documentReferenceId
+        if (documentReferenceId == null || documentReferenceId.isBlank()) {
+            throw new InvalidIncidentValueException("IncidentAttachmentReference document reference id must not be blank.");
+        }
+        // HRA-051 required: uploadedByActorId
+        if (uploadedByActorId == null || uploadedByActorId.isBlank()) {
+            throw new InvalidIncidentValueException("IncidentAttachmentReference uploaded by actor id must not be blank.");
+        }
+        // HRA-051 required: uploadedAt
+        if (uploadedAt == null) {
+            throw new InvalidIncidentValueException("IncidentAttachmentReference uploaded at must not be null.");
+        }
+
         id = normalize(id);
         incidentId = normalize(incidentId);
         documentReferenceId = normalize(documentReferenceId);

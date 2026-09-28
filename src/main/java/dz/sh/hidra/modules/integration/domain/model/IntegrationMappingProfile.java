@@ -7,7 +7,7 @@
  *
  * @Name        : IntegrationMappingProfile
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.integration.domain.model;
 
+import dz.sh.hidra.modules.integration.domain.exception.InvalidIntegrationValueException;
 import dz.sh.hidra.modules.integration.domain.value.*;
 import java.time.Instant;
 
@@ -54,6 +55,39 @@ import java.time.Instant;
     ) {
 
         public IntegrationMappingProfile {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidIntegrationValueException("IntegrationMappingProfile id must not be blank.");
+        }
+        // HRA-051 required: code
+        if (code == null || code.isBlank()) {
+            throw new InvalidIntegrationValueException("IntegrationMappingProfile code must not be blank.");
+        }
+        // HRA-051 required: externalSystemId
+        if (externalSystemId == null || externalSystemId.isBlank()) {
+            throw new InvalidIntegrationValueException("IntegrationMappingProfile external system id must not be blank.");
+        }
+        // HRA-051 required: dataContractId
+        if (dataContractId == null || dataContractId.isBlank()) {
+            throw new InvalidIntegrationValueException("IntegrationMappingProfile data contract id must not be blank.");
+        }
+        // HRA-051 required: targetTypeCode
+        if (targetTypeCode == null || targetTypeCode.isBlank()) {
+            throw new InvalidIntegrationValueException("IntegrationMappingProfile target type code must not be blank.");
+        }
+        // HRA-051 required: direction
+        if (direction == null) {
+            throw new InvalidIntegrationValueException("IntegrationMappingProfile direction must not be null.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidIntegrationValueException("IntegrationMappingProfile status must not be null.");
+        }
+        // HRA-051 required: validationMode
+        if (validationMode == null) {
+            throw new InvalidIntegrationValueException("IntegrationMappingProfile validation mode must not be null.");
+        }
+
         id = normalize(id);
         code = normalize(code);
         externalSystemId = normalize(externalSystemId);

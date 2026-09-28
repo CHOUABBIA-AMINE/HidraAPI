@@ -7,7 +7,7 @@
  *
  * @Name        : MaintenanceWorkOrder
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-28
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.assets.domain.model;
 
+import dz.sh.hidra.modules.assets.domain.exception.InvalidAssetsValueException;
 import dz.sh.hidra.modules.assets.domain.value.*;
 import java.time.Instant;
 
@@ -70,6 +71,27 @@ import java.time.Instant;
     ) {
 
         public MaintenanceWorkOrder {
+        // HRA-051 required: id
+        if (id == null || id.isBlank()) {
+            throw new InvalidAssetsValueException("MaintenanceWorkOrder id must not be blank.");
+        }
+        // HRA-051 required: workOrderNumber
+        if (workOrderNumber == null || workOrderNumber.isBlank()) {
+            throw new InvalidAssetsValueException("MaintenanceWorkOrder work order number must not be blank.");
+        }
+        // HRA-051 required: maintainableAssetId
+        if (maintainableAssetId == null || maintainableAssetId.isBlank()) {
+            throw new InvalidAssetsValueException("MaintenanceWorkOrder maintainable asset id must not be blank.");
+        }
+        // HRA-051 required: workOrderTypeId
+        if (workOrderTypeId == null || workOrderTypeId.isBlank()) {
+            throw new InvalidAssetsValueException("MaintenanceWorkOrder work order type id must not be blank.");
+        }
+        // HRA-051 required: status
+        if (status == null) {
+            throw new InvalidAssetsValueException("MaintenanceWorkOrder status must not be null.");
+        }
+
         id = normalize(id);
         workOrderNumber = normalize(workOrderNumber);
         maintainableAssetId = normalize(maintainableAssetId);

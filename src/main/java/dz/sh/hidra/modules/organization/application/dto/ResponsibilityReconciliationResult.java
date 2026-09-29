@@ -7,7 +7,7 @@
  *
  * @Name        : ResponsibilityReconciliationResult
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-27
+ * @UpdatedOn   : 2026-09-29
  *
  * @Type        : Record
  * @Layer       : Application
@@ -73,7 +73,6 @@ public record ResponsibilityReconciliationResult(
     public enum IssueCode {
         MISSING_ASSIGNEE,
         ASSIGNEE_NOT_ACTIVE,
-        MISSING_SCOPE_REFERENCE,
         UNKNOWN_SCOPE,
         UNSUPPORTED_SCOPE_RESOLVER,
         MISSING_SCOPE_OWNER,

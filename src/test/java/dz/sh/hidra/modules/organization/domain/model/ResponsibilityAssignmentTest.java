@@ -7,7 +7,7 @@
  *
  * @Name        : ResponsibilityAssignmentTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-27
+ * @UpdatedOn   : 2026-09-29
  *
  * @Type        : Class
  * @Layer       : Organization Test
@@ -27,7 +27,6 @@ import org.junit.jupiter.api.Test;
 import java.time.Instant;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ResponsibilityAssignmentTest {
@@ -74,11 +73,11 @@ class ResponsibilityAssignmentTest {
     }
 
     @Test
-    void allowsNullRegistryIdOnlyForTransitionalLegacyRows() {
+    void rejectsNullRegistryIdInFinalCanonicalModel() {
         Instant now = Instant.parse("2026-09-27T07:00:00Z");
 
-        ResponsibilityAssignment assignment = new ResponsibilityAssignment(
-                "resp-legacy",
+        assertThrows(InvalidOrganizationValueException.class, () -> new ResponsibilityAssignment(
+                "resp-1",
                 ResponsibilityType.RESPONSIBLE,
                 "ORGANIZATION_UNIT",
                 "unit-1",
@@ -89,8 +88,6 @@ class ResponsibilityAssignmentTest {
                 AssignmentStatus.ACTIVE,
                 now,
                 now
-        );
-
-        assertNull(assignment.scopeId());
+        ));
     }
 }

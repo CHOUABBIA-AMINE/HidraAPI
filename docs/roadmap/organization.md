@@ -87,8 +87,9 @@ Current correction status:
 - `ORG-028`: **Completed** with green exact-SHA CI #427.
 - `ORG-029`: **Completed** with green exact-SHA CI #430.
 - `ORG-030`: **Completed** with green exact-SHA CI #431.
-- `ORG-031`: **In Progress — exact-SHA CI pending** for greenfield Java/JPA compatibility cleanup.
-- `ORG-032` and `ORG-033`: remain open as documented in section 18.
+- `ORG-031`: **Completed** with green exact-SHA CI #432.
+- `ORG-032`: **In Progress — exact-SHA CI pending** for final greenfield schema retirement.
+- `ORG-033`: remains open as documented in section 18.
 - Issue #130 must remain open until the residual acceptance matrix in section 18 is met.
 
 Important ADR note: ADR-0005 remains the accepted repository ADR, but parts of its original
@@ -2291,8 +2292,8 @@ its full current exit gate is satisfied.
 | `ORG-029` | Completed | Greenfield persistence alignment is implemented: unit/employee legacy `operational_scope_*` JPA columns are read-only, the generic Organization mapper no longer reads/writes legacy scope tuple state and maps responsibility through canonical `scopeId`, and focused mapping plus full-empty-PostgreSQL tests prove canonical registry/assignment persistence with legacy columns remaining null. CI #430 / run `36560044675` passed on exact implementation commit `6471ee6b217eba3c51402d453421a9225f6c3f38`. |
 | `ORG-030` | Completed | Canonical `/api/v1/organization/operational-scopes` and `/responsibilities` endpoints are added. Request DTOs contain business data plus required Workflow references only; actor, effective permissions, request/correlation IDs and current owner display are server-derived. Scope registration and responsibility operations are permission-gated; responsibility assign/revoke retain application-level Workflow approval and Audit append. New Flyway migrations provision four active Identity permission definitions and the required Audit BUSINESS/event taxonomy without granting any role/user. Current owner code/name/assignability are resolved at read time through the approved owner port. CI #431 / run `36561971277` passed on exact implementation commit `1505b0fe2c481811ff452db8d956d4738c018c4e`. |
 | `ORG-031` | Completed | Deprecated scope-tuple constructors/accessors are removed from OrganizationUnit, EmployeeAssignment and ResponsibilityAssignment; the three Organization JPA entities no longer map legacy `operational_scope_*` columns; the generic mapper no longer passes compatibility placeholders; guardrails require zero production Java camel-case legacy scope consumers. Database columns remain unchanged for ORG-032. CI #432 / run `36564170935` passed on exact implementation commit `e511a1b72350a4da7ad5aefc933127a11a3bed13`. |
-| `ORG-032` | Planned | Legacy `operational_scope_*` columns remain only because historical migrations are immutable. In the greenfield path, ORG-032 will remove those obsolete compatibility columns in a new migration and enforce the final canonical `scope_id` constraints, validated by full migration replay from an empty PostgreSQL database. |
-| `ORG-033` | In Progress | CI is green through ORG-031 (CI #432). ORG-032 schema retirement remains open. Final verification must include full empty-database migration replay, registry resolution, authorization, Workflow approval/rejection, Audit evidence, concurrency, target retirement, API cutover and final compatibility cleanup. |
+| `ORG-032` | In Progress — exact-SHA CI pending | New migration `V20260929_006__retire_legacy_operational_scope_columns.sql` preflights null `scope_id` rows, removes obsolete `operational_scope_*` columns and their legacy indexes from units, employee assignments and responsibility assignments, makes responsibility `scope_id` NOT NULL, and retains/redefines the canonical temporal rule. Domain/JPA nullability is aligned and legacy missing-scope reconciliation state is retired. Completion awaits green exact-SHA CI with fresh replay plus failure/recovery coverage. |
+| `ORG-033` | In Progress | CI is green through ORG-031 (CI #432). ORG-032 final schema retirement is implemented and awaiting exact-SHA CI. Final verification must include full empty-database migration replay, registry resolution, authorization, Workflow approval/rejection, Audit evidence, concurrency, target retirement, API cutover and final compatibility cleanup. |
 
 
 ### 2026-09-29 greenfield database decision
@@ -2502,6 +2503,55 @@ Verification:
 
 **Status:** **Completed.** Commit `1505b0fe2c481811ff452db8d956d4738c018c4e`
 passed CI #431 / run `36561971277` on the exact implementation SHA.
+
+### ORG-032 final greenfield schema retirement increment
+
+**Commit scope:** remove obsolete database compatibility state after ORG-031 source retirement and
+align the final responsibility model with mandatory canonical registry identity.
+
+Exact implementation allowlist:
+
+```text
+V20260929_006__retire_legacy_operational_scope_columns.sql
+organization/domain/model/ResponsibilityAssignment.java
+organization/infrastructure/persistence/entity/ResponsibilityAssignmentJpaEntity.java
+organization/application/dto/ResponsibilityReconciliationResult.java
+organization/application/service/ResponsibilityReconciliationApplicationService.java
+ResponsibilityAssignmentTest.java
+ResponsibilityReconciliationApplicationServiceTest.java
+OrganizationOperationalScopeSchemaMigrationTest.java
+OrganizationGreenfieldScopePersistenceTest.java
+docs/data-provisioning/org-023-operational-scope-inventory.md
+docs/roadmap/organization.md
+```
+
+Behavioral changes:
+
+- migration preflight fails before destructive DDL if any responsibility row still has null
+  `scope_id`;
+- retire all four historical `operational_scope_*` columns from organization units, employee
+  assignments and responsibility assignments;
+- retire the three legacy operational-scope-ID indexes;
+- make `hidra_org_responsibility_assignment.scope_id` NOT NULL while preserving its same-module
+  FK to `hidra_org_operational_scope(id)`;
+- redefine the canonical temporal constraint without the obsolete null-scope exception;
+- require positive non-null `scopeId` in the ResponsibilityAssignment domain model and JPA mapping;
+- retire the legacy `MISSING_SCOPE_REFERENCE` reconciliation state because the final model cannot
+  represent such an assignment.
+
+Verification added/updated:
+
+- ORG-028 migration tests target version `20260929.003` explicitly so historical-stage behavior
+  remains independently reproducible;
+- ORG-032 final-schema tests verify all 12 obsolete columns and three legacy indexes are absent,
+  `scope_id` is NOT NULL, FK/temporal constraints remain, and null canonical writes fail;
+- failure/recovery coverage seeds a pre-ORG-032 null-scope row, proves the migration fails closed
+  before destructive DDL, removes the blocker, and proves rerun success;
+- the greenfield persistence test replays the complete migration chain from an empty PostgreSQL
+  database and verifies final canonical persistence without querying retired columns.
+
+**Status:** implementation complete; ORG-032 remains **In Progress — exact-SHA CI pending** until
+the implementation commit passes HidraAPI CI.
 
 ### ORG-031 greenfield compatibility cleanup increment
 

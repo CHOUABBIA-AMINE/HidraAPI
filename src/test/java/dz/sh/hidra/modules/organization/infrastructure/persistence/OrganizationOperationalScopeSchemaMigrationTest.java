@@ -14,7 +14,7 @@
  * @Module      : organization
  * @Package     : dz.sh.hidra.modules.organization.infrastructure.persistence
  *
- * @Description : Verifies the additive operational-scope registry and canonical responsibility schema hardening.
+ * @Description : Verifies staged operational-scope hardening and ORG-032 final greenfield schema retirement.
  *
  */
 package dz.sh.hidra.modules.organization.infrastructure.persistence;
@@ -37,12 +37,11 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
 /**
- * Exercises ORG-028 against real PostgreSQL.
+ * Exercises the staged Organization operational-scope migrations against real PostgreSQL.
  *
- * <p>The original registry migration remains immutable and backward-compatible:
- * canonical assignments use {@code scope_id}, while unreconciled legacy rows may keep
- * {@code scope_id = null}. ORG-028 adds canonical-only temporal validation plus an
- * ACTIVE-identity index used by the serialized overlap/idempotency query path.</p>
+ * <p>ORG-028 remains independently testable at its exact migration version. ORG-032
+ * then performs the greenfield final cutover: legacy columns are retired and
+ * {@code scope_id} becomes mandatory.</p>
  */
 @Testcontainers(disabledWithoutDocker = true)
 class OrganizationOperationalScopeSchemaMigrationTest {
@@ -52,6 +51,12 @@ class OrganizationOperationalScopeSchemaMigrationTest {
 
     private static final MigrationVersion BEFORE_ORG_028 =
             MigrationVersion.fromVersion("20260929.002");
+
+    private static final MigrationVersion ORG_028 =
+            MigrationVersion.fromVersion("20260929.003");
+
+    private static final MigrationVersion BEFORE_ORG_032 =
+            MigrationVersion.fromVersion("20260929.005");
 
     @Container
     static final PostgreSQLContainer<?> POSTGRESQL =
@@ -148,7 +153,7 @@ class OrganizationOperationalScopeSchemaMigrationTest {
 
         executeLegacyResponsibilityWithInvalidHistoricalPeriod("legacy-unreconciled");
 
-        flyway().migrate();
+        flyway(ORG_028).migrate();
 
         assertThat(constraintExists("ck_org_responsibility_canonical_temporal")).isTrue();
         assertThat(indexExists("ix_org_responsibility_active_identity")).isTrue();
@@ -189,7 +194,7 @@ class OrganizationOperationalScopeSchemaMigrationTest {
                 "2026-09-29T11:00:00Z"
         );
 
-        assertThatThrownBy(() -> flyway().migrate())
+        assertThatThrownBy(() -> flyway(ORG_028).migrate())
                 .isInstanceOf(FlywayException.class)
                 .hasStackTraceContaining("ck_org_responsibility_canonical_temporal");
 
@@ -199,6 +204,69 @@ class OrganizationOperationalScopeSchemaMigrationTest {
                 FROM hidra_org_responsibility_assignment
                 WHERE id = 'preexisting-invalid'
                 """)).isEqualTo(1L);
+    }
+
+    @Test
+    void finalCleanupRemovesLegacyColumnsAndRequiresCanonicalScope() throws SQLException {
+        clean();
+        flyway().migrate();
+
+        assertLegacyColumnsAbsent("hidra_org_unit");
+        assertLegacyColumnsAbsent("hidra_org_employee_assignment");
+        assertLegacyColumnsAbsent("hidra_org_responsibility_assignment");
+
+        assertThat(columnNullable("hidra_org_responsibility_assignment", "scope_id")).isFalse();
+        assertThat(indexExists("ix_hidra_org_unit_operational_scope_id")).isFalse();
+        assertThat(indexExists("ix_hidra_org_employee_assignment_operational_scope_id")).isFalse();
+        assertThat(indexExists("ix_hidra_org_responsibility_assignment_operational_scope_id")).isFalse();
+        assertThat(constraintExists("fk_hidra_org_responsibility_assignment_scope")).isTrue();
+        assertThat(constraintExists("ck_org_responsibility_canonical_temporal")).isTrue();
+
+        seedCanonicalScope();
+        executeResponsibility(
+                "final-canonical",
+                201L,
+                "2026-09-29T09:00:00Z",
+                null
+        );
+
+        assertThatThrownBy(() -> executeResponsibility(
+                "final-missing-scope",
+                null,
+                "2026-09-29T09:00:00Z",
+                null
+        )).isInstanceOf(SQLException.class)
+                .hasMessageContaining("scope_id");
+    }
+
+    @Test
+    void finalCleanupFailsClosedAndRecoversWhenNullScopeRowsExist() throws SQLException {
+        clean();
+        flyway(BEFORE_ORG_032).migrate();
+
+        executeLegacyResponsibilityWithoutScope("legacy-null-scope");
+
+        assertThatThrownBy(() -> flyway().migrate())
+                .isInstanceOf(FlywayException.class)
+                .hasStackTraceContaining("ORG-032 preflight failed");
+
+        assertThat(columnExists(
+                "hidra_org_responsibility_assignment",
+                "operational_scope_type"
+        )).isTrue();
+        assertThat(columnNullable(
+                "hidra_org_responsibility_assignment",
+                "scope_id"
+        )).isTrue();
+
+        execute("DELETE FROM hidra_org_responsibility_assignment WHERE id = 'legacy-null-scope'");
+        flyway().migrate();
+
+        assertLegacyColumnsAbsent("hidra_org_responsibility_assignment");
+        assertThat(columnNullable(
+                "hidra_org_responsibility_assignment",
+                "scope_id"
+        )).isFalse();
     }
 
     private static void seedCanonicalScope() throws SQLException {
@@ -238,6 +306,36 @@ class OrganizationOperationalScopeSchemaMigrationTest {
             statement.setObject(2, scopeId);
             statement.setString(3, validFrom);
             statement.setString(4, validTo);
+            statement.executeUpdate();
+        }
+    }
+
+    private static void executeLegacyResponsibilityWithoutScope(String id)
+            throws SQLException {
+        try (Connection connection = connection();
+             PreparedStatement statement = connection.prepareStatement(
+                     """
+                     INSERT INTO hidra_org_responsibility_assignment (
+                         id,
+                         responsibility_type,
+                         assignee_type,
+                         assignee_id,
+                         operational_scope_type,
+                         operational_scope_id,
+                         valid_from,
+                         valid_to,
+                         status,
+                         created_at,
+                         updated_at
+                     )
+                     VALUES (?, 'RESPONSIBLE', 'ORGANIZATION_UNIT', 'unit-legacy',
+                             'PIPELINE', 'legacy-pipeline-id',
+                             '2026-09-29T09:00:00Z'::timestamptz,
+                             NULL,
+                             'ACTIVE', now(), now())
+                     """
+             )) {
+            statement.setString(1, id);
             statement.executeUpdate();
         }
     }
@@ -322,6 +420,19 @@ class OrganizationOperationalScopeSchemaMigrationTest {
              ResultSet resultSet = statement.executeQuery()) {
             assertThat(resultSet.next()).isTrue();
             return resultSet.getLong(1);
+        }
+    }
+
+    private static void assertLegacyColumnsAbsent(String table) throws SQLException {
+        for (String column : new String[] {
+                "operational_scope_type",
+                "operational_scope_id",
+                "operational_scope_code",
+                "operational_scope_name"
+        }) {
+            assertThat(columnExists(table, column))
+                    .as(table + "." + column + " must be retired by ORG-032")
+                    .isFalse();
         }
     }
 

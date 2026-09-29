@@ -33,9 +33,8 @@ import java.time.Instant;
  * current display attributes are resolved through the OperationalScope registry
  * and the target owner's public read contract.</p>
  *
- * <p>{@code scopeId} remains nullable only until ORG-032 finalizes the greenfield
- * schema constraint. Canonical assignment use cases already require a positive
- * registered scope ID before persistence.</p>
+ * <p>{@code scopeId} is mandatory and must identify a positive canonical
+ * OperationalScope registry row before persistence.</p>
  *
  * @param id assignment identifier
  * @param responsibilityType responsibility role
@@ -74,8 +73,8 @@ public record ResponsibilityAssignment(
         assigneeId = requireText(assigneeId, "Responsibility assignee ID is required.");
         description = normalize(description);
 
-        if (scopeId != null && scopeId <= 0) {
-            throw new InvalidOrganizationValueException("Operational scope registry ID must be positive when present.");
+        if (scopeId == null || scopeId <= 0) {
+            throw new InvalidOrganizationValueException("Operational scope registry ID must be positive.");
         }
         if (status == null) {
             throw new InvalidOrganizationValueException("Responsibility assignment status is required.");

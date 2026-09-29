@@ -57,7 +57,7 @@ public class ResponsibilityAssignmentJpaEntity {
     @Column(name = "assignee_id", nullable = false, length = 80)
     private String assigneeId;
 
-    @Column(name = "scope_id")
+    @Column(name = "scope_id", nullable = false)
     private Long scopeId;
 
     @Column(name = "description", columnDefinition = "text")

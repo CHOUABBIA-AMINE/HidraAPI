@@ -51,6 +51,11 @@ class OrganizationGreenfieldScopePersistenceTest {
 
         assertThat(queryLong("SELECT count(*) FROM hidra_org_operational_scope")).isZero();
         assertThat(queryLong("SELECT count(*) FROM hidra_org_responsibility_assignment")).isZero();
+        assertLegacyScopeColumnsRetired();
+        assertThat(columnNullable(
+                "hidra_org_responsibility_assignment",
+                "scope_id"
+        )).isFalse();
 
         execute("""
                 INSERT INTO hidra_org_operational_scope (id, scope_type, target_id)
@@ -94,10 +99,6 @@ class OrganizationGreenfieldScopePersistenceTest {
                   AND assignment.scope_id = 501
                   AND scope.scope_type = 'PIPELINE'
                   AND scope.target_id = 'pipeline-greenfield-1'
-                  AND assignment.operational_scope_type IS NULL
-                  AND assignment.operational_scope_id IS NULL
-                  AND assignment.operational_scope_code IS NULL
-                  AND assignment.operational_scope_name IS NULL
                 """)).isEqualTo(1L);
 
         assertThatThrownBy(() -> execute("""
@@ -145,6 +146,71 @@ class OrganizationGreenfieldScopePersistenceTest {
                 """))
                 .isInstanceOf(SQLException.class)
                 .hasMessageContaining("fk_hidra_org_responsibility_assignment_scope");
+    }
+
+    private static void assertLegacyScopeColumnsRetired() throws SQLException {
+        for (String table : new String[] {
+                "hidra_org_unit",
+                "hidra_org_employee_assignment",
+                "hidra_org_responsibility_assignment"
+        }) {
+            for (String column : new String[] {
+                    "operational_scope_type",
+                    "operational_scope_id",
+                    "operational_scope_code",
+                    "operational_scope_name"
+            }) {
+                assertThat(columnExists(table, column))
+                        .as(table + "." + column + " must be retired")
+                        .isFalse();
+            }
+        }
+    }
+
+    private static boolean columnExists(String table, String column) throws SQLException {
+        return queryBoolean(
+                """
+                SELECT EXISTS (
+                    SELECT 1
+                    FROM information_schema.columns
+                    WHERE table_schema = current_schema()
+                      AND table_name = ?
+                      AND column_name = ?
+                )
+                """,
+                table,
+                column
+        );
+    }
+
+    private static boolean columnNullable(String table, String column) throws SQLException {
+        return queryBoolean(
+                """
+                SELECT EXISTS (
+                    SELECT 1
+                    FROM information_schema.columns
+                    WHERE table_schema = current_schema()
+                      AND table_name = ?
+                      AND column_name = ?
+                      AND is_nullable = 'YES'
+                )
+                """,
+                table,
+                column
+        );
+    }
+
+    private static boolean queryBoolean(String sql, Object... parameters) throws SQLException {
+        try (Connection connection = connection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            for (int index = 0; index < parameters.length; index++) {
+                statement.setObject(index + 1, parameters[index]);
+            }
+            try (ResultSet resultSet = statement.executeQuery()) {
+                assertThat(resultSet.next()).isTrue();
+                return resultSet.getBoolean(1);
+            }
+        }
     }
 
     private static void cleanAndMigrate() {

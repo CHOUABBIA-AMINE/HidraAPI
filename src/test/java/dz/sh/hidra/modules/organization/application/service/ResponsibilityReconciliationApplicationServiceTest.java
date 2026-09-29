@@ -7,7 +7,7 @@
  *
  * @Name        : ResponsibilityReconciliationApplicationServiceTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-27
+ * @UpdatedOn   : 2026-09-29
  *
  * @Type        : Class
  * @Layer       : Organization Test
@@ -72,13 +72,13 @@ class ResponsibilityReconciliationApplicationServiceTest {
     }
 
     @Test
-    void reportsMissingAssigneeAndLegacyMissingScopeWithoutRepairingAnything() {
-        var assignment = assignment("a-2", ResponsibilityAssigneeType.EMPLOYEE, "missing", null);
+    void reportsMissingAssigneeWithoutRepairingAnything() {
+        var assignment = assignment("a-2", ResponsibilityAssigneeType.EMPLOYEE, "missing", 10L);
         var assignmentRepo = new AssignmentRepository(List.of(assignment));
 
         var service = new ResponsibilityReconciliationApplicationService(
                 assignmentRepo,
-                scopeRepository(null),
+                scopeRepository(new OperationalScope(10L, OperationalScopeType.PIPELINE, "pipe-1")),
                 resolver(true, true, false),
                 missingEmployeeRepository(),
                 unitRepository(OrganizationUnitStatus.ACTIVE)
@@ -88,7 +88,7 @@ class ResponsibilityReconciliationApplicationServiceTest {
         var result = service.reconcileResponsibilities(context());
 
         assertThat(result.issues()).extracting(issue -> issue.code())
-                .containsExactly(IssueCode.MISSING_ASSIGNEE, IssueCode.MISSING_SCOPE_REFERENCE);
+                .containsExactly(IssueCode.MISSING_ASSIGNEE);
         assertThat(assignmentRepo.saveCalls).isZero();
     }
 

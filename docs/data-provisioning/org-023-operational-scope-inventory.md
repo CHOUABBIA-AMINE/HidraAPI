@@ -186,9 +186,10 @@ The deprecated scope-tuple constructors/accessors are removed from `Organization
 entities no longer map the historical `operational_scope_*` columns, and
 `OrganizationPersistenceMapper` no longer passes compatibility placeholders.
 
-The snake-case database columns still exist in the immutable migration history and in the current
-fresh-database schema. Their physical removal belongs exclusively to ORG-032. ORG-031 performs no
-Flyway change.
+The snake-case database columns remain visible only in immutable historical migrations and the
+read-only historical audit artifact. ORG-032 migration
+`V20260929_006__retire_legacy_operational_scope_columns.sql` removes them from the final
+fresh-database schema and makes canonical responsibility `scope_id` mandatory.
 
 `OperationalScopeEvidenceInventoryTest` pins the absence of production Java camel-case legacy
 scope consumers so the bridge cannot silently return.
@@ -252,9 +253,9 @@ Consequences for the remaining Organization scope roadmap:
   write paths; it performs no legacy backfill or quarantine.
 - ORG-030 exposes only canonical REST contracts and server-derived security context.
 - ORG-031 removes obsolete Java/JPA compatibility bridges after API cutover tests.
-- ORG-032 adds a new Flyway cleanup migration that removes obsolete compatibility columns and
-  enforces final canonical constraints on a fresh migration chain; previously numbered migrations
-  remain immutable.
+- ORG-032 adds `V20260929_006__retire_legacy_operational_scope_columns.sql`, removes obsolete
+  compatibility columns, and enforces mandatory canonical `scope_id`; previously numbered
+  migrations remain immutable.
 - ORG-033 verifies a database created from an empty PostgreSQL instance through the complete Flyway
   chain plus end-to-end Organization behavior.
 

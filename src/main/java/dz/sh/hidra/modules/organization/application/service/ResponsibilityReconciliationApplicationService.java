@@ -7,7 +7,7 @@
  *
  * @Name        : ResponsibilityReconciliationApplicationService
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-27
+ * @UpdatedOn   : 2026-09-29
  *
  * @Type        : Class
  * @Layer       : Application
@@ -48,7 +48,7 @@ import org.springframework.transaction.annotation.Transactional;
  * Reconciles current responsibility references without changing persisted state.
  *
  * <p>Historical assignments remain historical facts. This service only reports
- * inconsistencies such as absent/inactive assignees, missing registry references,
+ * inconsistencies such as absent/inactive assignees, unknown registered scopes,
  * retired/unresolvable owners, mismatched resolver identity, or direct unit self-targets.</p>
  *
  * <p>Resolver failures remain fail-closed: an unsupported owner type is reported and
@@ -161,11 +161,6 @@ public class ResponsibilityReconciliationApplicationService
 
     private void reconcileScope(ResponsibilityAssignment assignment, List<Issue> issues) {
         Long scopeId = assignment.scopeId();
-        if (scopeId == null) {
-            issues.add(issue(assignment, IssueCode.MISSING_SCOPE_REFERENCE, null));
-            return;
-        }
-
         OperationalScope scope = scopes.findById(scopeId).orElse(null);
         if (scope == null) {
             issues.add(issue(assignment, IssueCode.UNKNOWN_SCOPE, scopeId.toString()));

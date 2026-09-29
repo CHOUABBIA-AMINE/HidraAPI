@@ -78,8 +78,9 @@ columns have been retired through later immutable Flyway migrations.
 Current correction status:
 
 - `ORG-034` through `ORG-055`: **Completed**.
-- `ORG-027`: **In Progress**. Assign, revoke, typed list/query and read-only reconciliation
-  exist. Identity authorization and workflow/audit integration remain open.
+- `ORG-027`: **Completed**. Assign, revoke, typed list/query and read-only reconciliation
+  now enforce Identity-backed effective permissions; state-changing writes require completed
+  Workflow approval evidence; all three governed paths append catalog-backed Audit evidence.
 - `ORG-023`: **Blocked** on authorized legacy/consumer evidence. Later validated
   implementation does not retroactively satisfy that evidence gate.
 - `ORG-028`, `ORG-029`, `ORG-031`, and `ORG-033`: still partially open as documented
@@ -2282,7 +2283,7 @@ marked Completed unless its full roadmap exit gate is satisfied.
 | `ORG-024` | Completed | `OperationalScopeReference` is now a canonical typed owner-target value object containing only `type` and owner-native `targetId`; GLOBAL forbids a target, entity-backed types require one, and ungoverned CUSTOM is rejected. `OperationalScopeType` exposes the corresponding domain semantics and focused domain tests cover null, blank, GLOBAL, CUSTOM and normalization cases. |
 | `ORG-025` | Completed | Organization now resolves `ORGANIZATION_UNIT` locally and `PIPELINE_SYSTEM`, `PIPELINE`, `FACILITY`, and `EQUIPMENT` through a topology-owned public application input port. Current code/name and lifecycle-derived assignability come from the owning module; organization imports no topology domain, repository, JPA, or infrastructure type. Existing validator tests cover wrong type, missing target, unassignable target and owner failure; new owner-query/adapter tests cover current display, retired owners and supported-type routing. |
 | `ORG-026` | Completed | Responsibility assignment now accepts only existing ACTIVE employee or organization-unit assignees, revalidates entity-backed owner existence/assignability before new assignment, rejects direct organization-unit self-target responsibility, preserves historical rows on owner retirement, and retains half-open overlap/idempotency/revocation behavior. Focused tests cover invalid/inactive assignees and retired owners. |
-| `ORG-027` | In Progress | Validated register-scope, assign-responsibility, revoke-responsibility and typed list/query flows exist. Read-only reconciliation is now implemented with current assignee/scope-owner rechecks and no automatic repair. Authorization plus workflow/audit integration requirements remain open. |
+| `ORG-027` | Completed | Register-scope, assign, revoke, typed list/query and read-only reconciliation flows exist. Responsibility assign/revoke now require Identity-backed effective permission codes and completed Workflow approval targeted to a stable operation reference; reconciliation requires its dedicated permission. Assign/revoke/reconcile append catalog-backed Audit evidence through a narrow exported contract that resolves active Audit taxonomy codes instead of inventing IDs. Architecture guardrails explicitly allow only the new Workflow/Audit Organization contract packages. |
 | `ORG-028` | In Progress | Additive migration `V20260927_001__add_operational_scope_registry.sql` creates the canonical registry and nullable responsibility `scope_id` FK while retaining legacy columns. Required dedicated PostgreSQL/Testcontainers constraint coverage and the full roadmap versioning gate are not yet evidenced. |
 | `ORG-029` | In Progress | Canonical registry and responsibility JPA entity/repository/mapper/adapter code exists and responsibility persistence uses `scopeId`. Verified reconciliation/backfill/quarantine of legacy tuples is still missing, so the task is not complete. |
 | `ORG-030` | Planned | No versioned responsibility/scope REST migration with owner-resolved display and backward-compatibility evidence is present yet. |
@@ -2336,9 +2337,68 @@ legacy missing-scope rows are reported rather than guessed, missing/inactive ass
 are detected, owner retirement/unavailability fails closed, resolver identity mismatch is
 reported, and direct organization-unit self-target responsibility is surfaced.
 
-**Remaining ORG-027 gate:** identity authorization and workflow/audit integration around
-responsibility writes/reconciliation. Those concerns are not invented or marked complete
-by this reconciliation increment.
+**ORG-027 governance completion:** the remaining authorization/workflow/audit gate is now
+implemented. Identity-backed effective permissions are supplied in
+`ResponsibilityOperationContext`; assign/revoke require
+`organization:responsibility:assign` / `organization:responsibility:revoke` plus completed
+Workflow evidence for target type `RESPONSIBILITY_CHANGE`; reconciliation requires
+`organization:responsibility:reconcile`. Audit evidence is appended through Audit-owned taxonomy
+resolution using `EVENT_TYPE` and `EVENT_CATEGORY` catalogs and fails closed if the required
+active entries are not provisioned. No responsibility assignment is treated as an Identity grant.
+
+### ORG-027 governance completion increment
+
+**Commit scope:** complete the remaining ORG-027 authorization/workflow/audit gate.
+
+Exact implementation allowlist:
+
+```text
+organization/application/command/ResponsibilityOperationContext.java
+organization/application/command/AssignResponsibilityCommand.java
+organization/application/command/RevokeResponsibilityCommand.java
+organization/application/port/in/ReconcileResponsibilitiesUseCase.java
+organization/application/service/ResponsibilityAssignmentApplicationService.java
+organization/application/service/ResponsibilityRevocationApplicationService.java
+organization/application/service/ResponsibilityReconciliationApplicationService.java
+workflow/application/contract/organization/**
+workflow/application/service/OrganizationResponsibilityWorkflowContractAdapter.java
+audit/application/contract/organization/**
+audit/infrastructure/integration/OrganizationResponsibilityAuditContractAdapter.java
+audit/infrastructure/persistence/repository/AuditCatalogEntryJpaRepository.java
+focused Organization/Workflow/Audit tests
+repository architecture/forensic guardrails
+docs/roadmap/organization.md
+```
+
+Governance behavior:
+
+- caller supplies the current authenticated actor plus the effective permission set already
+  resolved by the platform from Identity-owned grants;
+- assign requires `organization:responsibility:assign`;
+- revoke requires `organization:responsibility:revoke`;
+- reconciliation requires `organization:responsibility:reconcile`;
+- wildcard `*` remains administrator-only because the platform resolver only emits it after
+  Identity confirms an active global administrator grant;
+- assign/revoke additionally require a completed Workflow instance targeting
+  `organization / RESPONSIBILITY_CHANGE / <operationReference>`;
+- Workflow evidence is read-only and remains Workflow-owned;
+- successful assign/revoke/reconcile operations append Audit evidence through the exported Audit
+  contract;
+- the Audit adapter resolves active catalog rows by
+  `EVENT_TYPE/<event-code>` and `EVENT_CATEGORY/BUSINESS`; missing taxonomy fails closed rather
+  than fabricating catalog IDs;
+- business mutation and audit append participate in the same Spring transaction inside the modular
+  monolith; an audit failure rolls back the Organization write;
+- no new Flyway migration, REST endpoint, Identity permission grant, or direct cross-module
+  infrastructure dependency is introduced.
+
+Focused tests cover permission denial, completed/mismatched Workflow evidence, governed
+assignment/revocation/reconciliation paths, catalog-code-to-ID audit mapping, missing Audit taxonomy,
+and exported-contract architecture classification.
+
+**Next section-18 task after ORG-027:** continue ORG-028's remaining PostgreSQL/Testcontainers
+constraint/versioning evidence. Do not start ORG-030 or ORG-032 while their prerequisites remain
+unsatisfied.
 
 ### Reconciliation notes
 
@@ -2352,9 +2412,9 @@ by this reconciliation increment.
   `ResponsibilityAssignment.scopeId`; current target code/name remain owner data.
 - Legacy compatibility code and database columns are transitional and must not be
   treated as the canonical source of operational-scope identity.
-- ORG-027 remains In Progress. The multilingual and dependency-integrity correction sequences
-  in section 19 are complete, so execution may now continue only with ORG-027's remaining
-  authorization/workflow/audit gate or another explicitly open section-18 gate.
+- ORG-027 is complete. The multilingual and dependency-integrity correction sequences in
+  section 19 remain complete. Execution may now continue with the explicitly open ORG-028/029/031/033
+  gates while respecting the still-blocked ORG-023 evidence gate and the planned ORG-030/032 sequence.
 
 **Execution rule:** A roadmap task's first implementation action must specify exact file allowlists and verification commands after inspecting current main; do not silently rewrite old task descriptions or mark future tasks complete. `ORG-028` and `ORG-032` must use separately numbered, never-reused migrations after rechecking the live Flyway sequence. Issue #130 remains open until the acceptance matrix is satisfied.
 

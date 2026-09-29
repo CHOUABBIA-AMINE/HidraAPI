@@ -19,7 +19,10 @@
  */
 package dz.sh.hidra.modules.organization.application.service;
 
+import dz.sh.hidra.modules.audit.application.contract.organization.OrganizationResponsibilityAuditContract;
+import dz.sh.hidra.modules.organization.application.command.ResponsibilityOperationContext;
 import dz.sh.hidra.modules.organization.application.command.RevokeResponsibilityCommand;
+import dz.sh.hidra.modules.workflow.application.contract.organization.OrganizationResponsibilityWorkflowContract;
 import dz.sh.hidra.modules.organization.application.port.out.ResponsibilityAssignmentRepositoryPort;
 import dz.sh.hidra.modules.organization.domain.model.ResponsibilityAssignment;
 import dz.sh.hidra.modules.organization.domain.value.AssignmentStatus;
@@ -29,6 +32,7 @@ import org.junit.jupiter.api.Test;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -49,10 +53,13 @@ class ResponsibilityRevocationApplicationServiceTest {
         ResponsibilityRevocationApplicationService service =
                 new ResponsibilityRevocationApplicationService(
                         repository(Optional.of(assignment(AssignmentStatus.ACTIVE, null)), saveCalls, saved)
-                );
+                ,
+                        workflow(),
+                        audit());
 
         String id = service.revokeResponsibility(
-                new RevokeResponsibilityCommand("resp-1", END)
+                new RevokeResponsibilityCommand("resp-1", END,
+                        context(ResponsibilityRevocationApplicationService.REVOKE_PERMISSION))
         );
 
         assertEquals("resp-1", id);
@@ -74,10 +81,13 @@ class ResponsibilityRevocationApplicationServiceTest {
                                 saveCalls,
                                 new AtomicReference<>()
                         )
-                );
+                ,
+                        workflow(),
+                        audit());
 
         String id = service.revokeResponsibility(
-                new RevokeResponsibilityCommand("resp-1", END)
+                new RevokeResponsibilityCommand("resp-1", END,
+                        context(ResponsibilityRevocationApplicationService.REVOKE_PERMISSION))
         );
 
         assertEquals("resp-1", id);
@@ -92,10 +102,13 @@ class ResponsibilityRevocationApplicationServiceTest {
         ResponsibilityRevocationApplicationService service =
                 new ResponsibilityRevocationApplicationService(
                         repository(Optional.of(assignment(AssignmentStatus.SUSPENDED, null)), saveCalls, saved)
-                );
+                ,
+                        workflow(),
+                        audit());
 
         service.revokeResponsibility(
-                new RevokeResponsibilityCommand("resp-1", END)
+                new RevokeResponsibilityCommand("resp-1", END,
+                        context(ResponsibilityRevocationApplicationService.REVOKE_PERMISSION))
         );
 
         assertEquals(1, saveCalls.get());
@@ -113,12 +126,15 @@ class ResponsibilityRevocationApplicationServiceTest {
                                 saveCalls,
                                 new AtomicReference<>()
                         )
-                );
+                ,
+                        workflow(),
+                        audit());
 
         assertThrows(
                 IllegalStateException.class,
                 () -> service.revokeResponsibility(
-                        new RevokeResponsibilityCommand("resp-1", END)
+                        new RevokeResponsibilityCommand("resp-1", END,
+                        context(ResponsibilityRevocationApplicationService.REVOKE_PERMISSION))
                 )
         );
 
@@ -132,12 +148,15 @@ class ResponsibilityRevocationApplicationServiceTest {
         ResponsibilityRevocationApplicationService service =
                 new ResponsibilityRevocationApplicationService(
                         repository(Optional.empty(), saveCalls, new AtomicReference<>())
-                );
+                ,
+                        workflow(),
+                        audit());
 
         assertThrows(
                 IllegalArgumentException.class,
                 () -> service.revokeResponsibility(
-                        new RevokeResponsibilityCommand("missing", END)
+                        new RevokeResponsibilityCommand("missing", END,
+                        context(ResponsibilityRevocationApplicationService.REVOKE_PERMISSION))
                 )
         );
 
@@ -153,12 +172,15 @@ class ResponsibilityRevocationApplicationServiceTest {
                                 new AtomicInteger(),
                                 new AtomicReference<>()
                         )
-                );
+                ,
+                        workflow(),
+                        audit());
 
         assertThrows(
                 IllegalArgumentException.class,
                 () -> service.revokeResponsibility(
-                        new RevokeResponsibilityCommand("resp-1", START)
+                        new RevokeResponsibilityCommand("resp-1", START,
+                        context(ResponsibilityRevocationApplicationService.REVOKE_PERMISSION))
                 )
         );
     }
@@ -172,7 +194,9 @@ class ResponsibilityRevocationApplicationServiceTest {
                                 new AtomicInteger(),
                                 new AtomicReference<>()
                         )
-                );
+                ,
+                        workflow(),
+                        audit());
 
         assertThrows(
                 IllegalArgumentException.class,
@@ -180,7 +204,8 @@ class ResponsibilityRevocationApplicationServiceTest {
                         new RevokeResponsibilityCommand(
                                 "resp-1",
                                 Instant.parse("2026-09-27T13:00:00Z")
-                        )
+                        ,
+                        context(ResponsibilityRevocationApplicationService.REVOKE_PERMISSION))
                 )
         );
     }
@@ -233,4 +258,33 @@ class ResponsibilityRevocationApplicationServiceTest {
             }
         };
     }
+
+    private static ResponsibilityOperationContext context(String permission) {
+        return new ResponsibilityOperationContext(
+                "actor-1",
+                "operator",
+                "Operator",
+                Set.of(permission),
+                "wf-1",
+                "operation-1",
+                "request-1",
+                "correlation-1"
+        );
+    }
+
+    private static OrganizationResponsibilityWorkflowContract workflow() {
+        return (workflowInstanceId, operationReference) ->
+                new OrganizationResponsibilityWorkflowContract.ApprovalEvidence(
+                        workflowInstanceId,
+                        "task-1",
+                        "action-1",
+                        "APPROVE",
+                        Instant.parse("2026-09-27T07:30:00Z")
+                );
+    }
+
+    private static OrganizationResponsibilityAuditContract audit() {
+        return event -> "audit-1";
+    }
+
 }

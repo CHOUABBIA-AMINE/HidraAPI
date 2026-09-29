@@ -19,6 +19,10 @@
  */
 package dz.sh.hidra.modules.organization.application.service;
 
+import dz.sh.hidra.modules.audit.application.contract.organization.OrganizationResponsibilityAuditContract;
+import dz.sh.hidra.modules.audit.application.contract.organization.OrganizationResponsibilityAuditContract.Event;
+import dz.sh.hidra.modules.audit.application.contract.organization.OrganizationResponsibilityAuditContract.Operation;
+import dz.sh.hidra.modules.organization.application.command.ResponsibilityOperationContext;
 import dz.sh.hidra.modules.organization.application.dto.ResponsibilityReconciliationResult;
 import dz.sh.hidra.modules.organization.application.dto.ResponsibilityReconciliationResult.Issue;
 import dz.sh.hidra.modules.organization.application.dto.ResponsibilityReconciliationResult.IssueCode;
@@ -38,6 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Reconciles current responsibility references without changing persisted state.
@@ -57,24 +62,39 @@ public final class ResponsibilityReconciliationApplicationService
     private final OperationalScopeRegistryRepositoryPort scopes;
     private final OperationalScopeTargetResolverPort targets;
     private final EmployeeRepositoryPort employees;
+    public static final String RECONCILE_PERMISSION = "organization:responsibility:reconcile";
+    private static final String EVENT_TYPE = "ORGANIZATION_RESPONSIBILITY_RECONCILED";
+    private static final String EVENT_CATEGORY = "BUSINESS";
+
     private final OrganizationUnitRepositoryPort units;
+    private final OrganizationResponsibilityAuditContract audit;
 
     public ResponsibilityReconciliationApplicationService(
             ResponsibilityAssignmentRepositoryPort assignments,
             OperationalScopeRegistryRepositoryPort scopes,
             OperationalScopeTargetResolverPort targets,
             EmployeeRepositoryPort employees,
-            OrganizationUnitRepositoryPort units
+            OrganizationUnitRepositoryPort units,
+            OrganizationResponsibilityAuditContract audit
     ) {
         this.assignments = Objects.requireNonNull(assignments, "Responsibility repository must not be null.");
         this.scopes = Objects.requireNonNull(scopes, "Operational scope registry must not be null.");
         this.targets = Objects.requireNonNull(targets, "Operational scope target resolver must not be null.");
         this.employees = Objects.requireNonNull(employees, "Employee repository must not be null.");
         this.units = Objects.requireNonNull(units, "Organization unit repository must not be null.");
+        this.audit = Objects.requireNonNull(audit, "Organization audit contract must not be null.");
     }
 
     @Override
-    public ResponsibilityReconciliationResult reconcileResponsibilities() {
+    @Transactional
+    public ResponsibilityReconciliationResult reconcileResponsibilities(
+            ResponsibilityOperationContext context
+    ) {
+        Objects.requireNonNull(context, "Responsibility operation context must not be null.");
+        if (!context.hasPermission(RECONCILE_PERMISSION)) {
+            throw new SecurityException("Missing required permission: " + RECONCILE_PERMISSION);
+        }
+
         List<ResponsibilityAssignment> all = List.copyOf(assignments.findAll());
         List<Issue> issues = new ArrayList<>();
 
@@ -83,7 +103,29 @@ public final class ResponsibilityReconciliationApplicationService
             reconcileScope(assignment, issues);
         }
 
-        return new ResponsibilityReconciliationResult(all.size(), issues);
+        ResponsibilityReconciliationResult result =
+                new ResponsibilityReconciliationResult(all.size(), issues);
+        audit.append(new Event(
+                EVENT_TYPE,
+                EVENT_CATEGORY,
+                getClass().getSimpleName(),
+                "RECONCILE_RESPONSIBILITIES",
+                context.actorId(),
+                context.actorUsername(),
+                context.actorDisplayName(),
+                "RESPONSIBILITY_RECONCILIATION",
+                context.operationReference(),
+                Operation.READ,
+                "COMPLETED",
+                "scanned=" + result.scannedAssignments() + ",issues=" + result.issues().size(),
+                null,
+                null,
+                null,
+                context.requestId(),
+                context.correlationId(),
+                java.time.Instant.now()
+        ));
+        return result;
     }
 
     private void reconcileAssignee(ResponsibilityAssignment assignment, List<Issue> issues) {

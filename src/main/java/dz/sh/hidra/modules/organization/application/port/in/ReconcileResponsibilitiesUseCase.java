@@ -7,18 +7,19 @@
  *
  * @Name        : ReconcileResponsibilitiesUseCase
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-27
+ * @UpdatedOn   : 2026-09-29
  *
  * @Type        : Interface
  * @Layer       : Application
  * @Module      : organization
  * @Package     : dz.sh.hidra.modules.organization.application.port.in
  *
- * @Description : Read-only use case for responsibility integrity reconciliation.
+ * @Description : Authorized read-only use case for responsibility integrity reconciliation.
  *
  */
 package dz.sh.hidra.modules.organization.application.port.in;
 
+import dz.sh.hidra.modules.organization.application.command.ResponsibilityOperationContext;
 import dz.sh.hidra.modules.organization.application.dto.ResponsibilityReconciliationResult;
 
 /**
@@ -27,5 +28,7 @@ import dz.sh.hidra.modules.organization.application.dto.ResponsibilityReconcilia
  */
 public interface ReconcileResponsibilitiesUseCase {
 
-    ResponsibilityReconciliationResult reconcileResponsibilities();
+    ResponsibilityReconciliationResult reconcileResponsibilities(
+            ResponsibilityOperationContext context
+    );
 }

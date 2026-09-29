@@ -21,6 +21,8 @@ package dz.sh.hidra.modules.organization.application.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import dz.sh.hidra.modules.audit.application.contract.organization.OrganizationResponsibilityAuditContract;
+import dz.sh.hidra.modules.organization.application.command.ResponsibilityOperationContext;
 import dz.sh.hidra.modules.organization.application.dto.ResponsibilityReconciliationResult.IssueCode;
 import dz.sh.hidra.modules.organization.application.port.out.EmployeeRepositoryPort;
 import dz.sh.hidra.modules.organization.application.port.out.OperationalScopeRegistryRepositoryPort;
@@ -41,6 +43,7 @@ import dz.sh.hidra.modules.organization.domain.value.ResponsibilityType;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import org.junit.jupiter.api.Test;
 
 class ResponsibilityReconciliationApplicationServiceTest {
@@ -58,9 +61,10 @@ class ResponsibilityReconciliationApplicationServiceTest {
                 resolver(true, true, false),
                 employeeRepository(EmployeeStatus.ACTIVE),
                 unitRepository(OrganizationUnitStatus.ACTIVE)
-        );
+        ,
+                audit());
 
-        var result = service.reconcileResponsibilities();
+        var result = service.reconcileResponsibilities(context());
 
         assertThat(result.scannedAssignments()).isEqualTo(1);
         assertThat(result.issues()).isEmpty();
@@ -78,9 +82,10 @@ class ResponsibilityReconciliationApplicationServiceTest {
                 resolver(true, true, false),
                 missingEmployeeRepository(),
                 unitRepository(OrganizationUnitStatus.ACTIVE)
-        );
+        ,
+                audit());
 
-        var result = service.reconcileResponsibilities();
+        var result = service.reconcileResponsibilities(context());
 
         assertThat(result.issues()).extracting(issue -> issue.code())
                 .containsExactly(IssueCode.MISSING_ASSIGNEE, IssueCode.MISSING_SCOPE_REFERENCE);
@@ -97,9 +102,10 @@ class ResponsibilityReconciliationApplicationServiceTest {
                 resolver(true, true, false),
                 employeeRepository(EmployeeStatus.ACTIVE),
                 unitRepository(OrganizationUnitStatus.ACTIVE)
-        );
+        ,
+                audit());
 
-        var result = service.reconcileResponsibilities();
+        var result = service.reconcileResponsibilities(context());
 
         assertThat(result.issues()).extracting(issue -> issue.code())
                 .containsExactly(IssueCode.UNKNOWN_SCOPE);
@@ -120,9 +126,10 @@ class ResponsibilityReconciliationApplicationServiceTest {
                 resolver(true, false, false),
                 employeeRepository(EmployeeStatus.ACTIVE),
                 unitRepository(OrganizationUnitStatus.INACTIVE)
-        );
+        ,
+                audit());
 
-        var result = service.reconcileResponsibilities();
+        var result = service.reconcileResponsibilities(context());
 
         assertThat(result.issues()).extracting(issue -> issue.code())
                 .containsExactly(
@@ -141,9 +148,10 @@ class ResponsibilityReconciliationApplicationServiceTest {
                 resolver(false, true, false),
                 employeeRepository(EmployeeStatus.ACTIVE),
                 unitRepository(OrganizationUnitStatus.ACTIVE)
-        );
+        ,
+                audit());
 
-        var result = service.reconcileResponsibilities();
+        var result = service.reconcileResponsibilities(context());
 
         assertThat(result.issues()).extracting(issue -> issue.code())
                 .containsExactly(IssueCode.UNSUPPORTED_SCOPE_RESOLVER);
@@ -209,9 +217,10 @@ class ResponsibilityReconciliationApplicationServiceTest {
                 resolver,
                 employeeRepository(EmployeeStatus.ACTIVE),
                 unitRepository(OrganizationUnitStatus.ACTIVE)
-        );
+        ,
+                audit());
 
-        var result = service.reconcileResponsibilities();
+        var result = service.reconcileResponsibilities(context());
 
         assertThat(result.issues()).extracting(issue -> issue.code())
                 .containsExactly(
@@ -369,4 +378,22 @@ class ResponsibilityReconciliationApplicationServiceTest {
             return assignments;
         }
     }
+
+    private static ResponsibilityOperationContext context() {
+        return new ResponsibilityOperationContext(
+                "actor-1",
+                "auditor",
+                "Auditor",
+                Set.of(ResponsibilityReconciliationApplicationService.RECONCILE_PERMISSION),
+                null,
+                "reconcile-run-1",
+                "request-1",
+                "correlation-1"
+        );
+    }
+
+    private static OrganizationResponsibilityAuditContract audit() {
+        return event -> "audit-1";
+    }
+
 }

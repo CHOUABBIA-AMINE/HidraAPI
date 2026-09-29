@@ -19,7 +19,10 @@
  */
 package dz.sh.hidra.modules.organization.application.service;
 
+import dz.sh.hidra.modules.audit.application.contract.organization.OrganizationResponsibilityAuditContract;
 import dz.sh.hidra.modules.organization.application.command.AssignResponsibilityCommand;
+import dz.sh.hidra.modules.organization.application.command.ResponsibilityOperationContext;
+import dz.sh.hidra.modules.workflow.application.contract.organization.OrganizationResponsibilityWorkflowContract;
 import dz.sh.hidra.modules.organization.application.port.out.EmployeeRepositoryPort;
 import dz.sh.hidra.modules.organization.application.port.out.OperationalScopeRegistryRepositoryPort;
 import dz.sh.hidra.modules.organization.application.port.out.OperationalScopeTargetResolverPort;
@@ -40,6 +43,7 @@ import org.junit.jupiter.api.Test;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -60,7 +64,9 @@ class ResponsibilityAssignmentApplicationServiceTest {
                         employeeRepository(),
                         organizationUnitRepository(OrganizationUnitStatus.ACTIVE),
                         assignmentRepository(List.of(), saveCalls, saved)
-                );
+                ,
+                        workflow(),
+                        audit());
 
         String id = service.assignResponsibility(command(
                 Instant.parse("2026-09-27T09:00:00Z"),
@@ -88,7 +94,9 @@ class ResponsibilityAssignmentApplicationServiceTest {
                         employeeRepository(),
                         organizationUnitRepository(OrganizationUnitStatus.ACTIVE),
                         assignmentRepository(List.of(existing), saveCalls, new AtomicReference<>())
-                );
+                ,
+                        workflow(),
+                        audit());
 
         String id = service.assignResponsibility(command(start, end));
 
@@ -113,7 +121,9 @@ class ResponsibilityAssignmentApplicationServiceTest {
                         employeeRepository(),
                         organizationUnitRepository(OrganizationUnitStatus.ACTIVE),
                         assignmentRepository(List.of(existing), saveCalls, new AtomicReference<>())
-                );
+                ,
+                        workflow(),
+                        audit());
 
         assertThrows(
                 IllegalStateException.class,
@@ -143,7 +153,9 @@ class ResponsibilityAssignmentApplicationServiceTest {
                         employeeRepository(),
                         organizationUnitRepository(OrganizationUnitStatus.ACTIVE),
                         assignmentRepository(List.of(existing), saveCalls, new AtomicReference<>())
-                );
+                ,
+                        workflow(),
+                        audit());
 
         service.assignResponsibility(command(
                 Instant.parse("2026-09-27T12:00:00Z"),
@@ -164,7 +176,9 @@ class ResponsibilityAssignmentApplicationServiceTest {
                         employeeRepository(),
                         organizationUnitRepository(OrganizationUnitStatus.ACTIVE),
                         assignmentRepository(List.of(), saveCalls, new AtomicReference<>())
-                );
+                ,
+                        workflow(),
+                        audit());
 
         assertThrows(
                 IllegalArgumentException.class,
@@ -189,13 +203,17 @@ class ResponsibilityAssignmentApplicationServiceTest {
         var inactiveUnit = new ResponsibilityAssignmentApplicationService(
                 scopeRepository(Optional.of(scope())), resolver(true), employeeRepository(),
                 organizationUnitRepository(OrganizationUnitStatus.INACTIVE),
-                assignmentRepository(List.of(), new AtomicInteger(), new AtomicReference<>()));
+                assignmentRepository(List.of(), new AtomicInteger(), new AtomicReference<>()),
+                        workflow(),
+                        audit());
         assertThrows(IllegalArgumentException.class, () -> inactiveUnit.assignResponsibility(command(null, null)));
 
         var retiredOwner = new ResponsibilityAssignmentApplicationService(
                 scopeRepository(Optional.of(scope())), resolver(false), employeeRepository(),
                 organizationUnitRepository(OrganizationUnitStatus.ACTIVE),
-                assignmentRepository(List.of(), new AtomicInteger(), new AtomicReference<>()));
+                assignmentRepository(List.of(), new AtomicInteger(), new AtomicReference<>()),
+                        workflow(),
+                        audit());
         assertThrows(IllegalArgumentException.class, () -> retiredOwner.assignResponsibility(command(null, null)));
     }
 
@@ -241,7 +259,8 @@ class ResponsibilityAssignmentApplicationServiceTest {
                 42L,
                 "Primary operational responsibility",
                 validFrom,
-                validTo
+                validTo,
+                context(ResponsibilityAssignmentApplicationService.ASSIGN_PERMISSION)
         );
     }
 
@@ -336,4 +355,62 @@ class ResponsibilityAssignmentApplicationServiceTest {
             }
         };
     }
+
+    @Test
+    void missingPermissionIsRejectedBeforeWorkflowAndPersistence() {
+        AtomicInteger saveCalls = new AtomicInteger();
+        ResponsibilityAssignmentApplicationService service =
+                new ResponsibilityAssignmentApplicationService(
+                        scopeRepository(Optional.of(scope())),
+                        resolver(true),
+                        employeeRepository(),
+                        organizationUnitRepository(OrganizationUnitStatus.ACTIVE),
+                        assignmentRepository(List.of(), saveCalls, new AtomicReference<>()),
+                        workflow(),
+                        audit()
+                );
+
+        AssignResponsibilityCommand denied = new AssignResponsibilityCommand(
+                ResponsibilityType.RESPONSIBLE,
+                "ORGANIZATION_UNIT",
+                "unit-001",
+                42L,
+                "denied",
+                null,
+                null,
+                context("organization:other")
+        );
+
+        assertThrows(SecurityException.class, () -> service.assignResponsibility(denied));
+        assertEquals(0, saveCalls.get());
+    }
+
+    private static ResponsibilityOperationContext context(String permission) {
+        return new ResponsibilityOperationContext(
+                "actor-1",
+                "operator",
+                "Operator",
+                Set.of(permission),
+                "wf-1",
+                "operation-1",
+                "request-1",
+                "correlation-1"
+        );
+    }
+
+    private static OrganizationResponsibilityWorkflowContract workflow() {
+        return (workflowInstanceId, operationReference) ->
+                new OrganizationResponsibilityWorkflowContract.ApprovalEvidence(
+                        workflowInstanceId,
+                        "task-1",
+                        "action-1",
+                        "APPROVE",
+                        Instant.parse("2026-09-27T08:30:00Z")
+                );
+    }
+
+    private static OrganizationResponsibilityAuditContract audit() {
+        return event -> "audit-1";
+    }
+
 }

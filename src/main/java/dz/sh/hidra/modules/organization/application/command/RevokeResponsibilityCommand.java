@@ -7,7 +7,7 @@
  *
  * @Name        : RevokeResponsibilityCommand
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-27
+ * @UpdatedOn   : 2026-09-29
  *
  * @Type        : Record
  * @Layer       : Application
@@ -20,16 +20,15 @@
 package dz.sh.hidra.modules.organization.application.command;
 
 import java.time.Instant;
+import java.util.Objects;
 
 /**
  * Ends an existing responsibility assignment.
- *
- * @param assignmentId responsibility assignment identifier
- * @param effectiveAt effective end instant; null means application time
  */
 public record RevokeResponsibilityCommand(
         String assignmentId,
-        Instant effectiveAt
+        Instant effectiveAt,
+        ResponsibilityOperationContext context
 ) {
 
     public RevokeResponsibilityCommand {
@@ -37,5 +36,6 @@ public record RevokeResponsibilityCommand(
             throw new IllegalArgumentException("Responsibility assignment ID must not be null or blank.");
         }
         assignmentId = assignmentId.trim();
+        context = Objects.requireNonNull(context, "Responsibility operation context must not be null.");
     }
 }

@@ -68,7 +68,9 @@ class ArchitectureGuardrailTest {
      */
     private static final Set<String> EXPORTED_CROSS_MODULE_PACKAGE_PREFIXES = Set.of(
             "dz.sh.hidra.modules.workflow.application.contract.planning",
-            "dz.sh.hidra.modules.topology.application.contract.organization"
+            "dz.sh.hidra.modules.workflow.application.contract.organization",
+            "dz.sh.hidra.modules.topology.application.contract.organization",
+            "dz.sh.hidra.modules.audit.application.contract.organization"
     );
 
     /**
@@ -264,6 +266,22 @@ class ArchitectureGuardrailTest {
                         "dz.sh.hidra.modules.topology.application.contract.organization.TopologyOperationalScopeTargetContract"
                 ),
                 "The deliberate Topology contract exported to Organization must remain allowed."
+        );
+
+        assertFalse(
+                isForbiddenCrossModuleDependency(
+                        "dz.sh.hidra.modules.organization.application.service.ResponsibilityAssignmentApplicationService",
+                        "dz.sh.hidra.modules.workflow.application.contract.organization.OrganizationResponsibilityWorkflowContract"
+                ),
+                "The deliberate Workflow responsibility contract exported to Organization must remain allowed."
+        );
+
+        assertFalse(
+                isForbiddenCrossModuleDependency(
+                        "dz.sh.hidra.modules.organization.application.service.ResponsibilityAssignmentApplicationService",
+                        "dz.sh.hidra.modules.audit.application.contract.organization.OrganizationResponsibilityAuditContract"
+                ),
+                "The deliberate Audit responsibility contract exported to Organization must remain allowed."
         );
     }
 

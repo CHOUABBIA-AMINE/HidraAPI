@@ -20,6 +20,7 @@
 package dz.sh.hidra.modules.audit.infrastructure.persistence.repository;
 
 import dz.sh.hidra.modules.audit.infrastructure.persistence.entity.AuditCatalogEntryJpaEntity;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -28,4 +29,9 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface AuditCatalogEntryJpaRepository extends JpaRepository<AuditCatalogEntryJpaEntity, String> {
+
+    Optional<AuditCatalogEntryJpaEntity> findFirstByCatalogNameAndCodeAndActiveTrue(
+            String catalogName,
+            String code
+    );
 }

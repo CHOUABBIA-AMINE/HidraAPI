@@ -2293,7 +2293,7 @@ its full current exit gate is satisfied.
 | `ORG-030` | Completed | Canonical `/api/v1/organization/operational-scopes` and `/responsibilities` endpoints are added. Request DTOs contain business data plus required Workflow references only; actor, effective permissions, request/correlation IDs and current owner display are server-derived. Scope registration and responsibility operations are permission-gated; responsibility assign/revoke retain application-level Workflow approval and Audit append. New Flyway migrations provision four active Identity permission definitions and the required Audit BUSINESS/event taxonomy without granting any role/user. Current owner code/name/assignability are resolved at read time through the approved owner port. CI #431 / run `36561971277` passed on exact implementation commit `1505b0fe2c481811ff452db8d956d4738c018c4e`. |
 | `ORG-031` | Completed | Deprecated scope-tuple constructors/accessors are removed from OrganizationUnit, EmployeeAssignment and ResponsibilityAssignment; the three Organization JPA entities no longer map legacy `operational_scope_*` columns; the generic mapper no longer passes compatibility placeholders; guardrails require zero production Java camel-case legacy scope consumers. Database columns remain unchanged for ORG-032. CI #432 / run `36564170935` passed on exact implementation commit `e511a1b72350a4da7ad5aefc933127a11a3bed13`. |
 | `ORG-032` | Completed | New migration `V20260929_006__retire_legacy_operational_scope_columns.sql` preflights null `scope_id` rows, removes obsolete `operational_scope_*` columns and their legacy indexes from units, employee assignments and responsibility assignments, makes responsibility `scope_id` NOT NULL, and retains/redefines the canonical temporal rule. Domain/JPA nullability is aligned and legacy missing-scope reconciliation state is retired. Initial CI #433 exposed only a historical ORG-046 test-boundary defect; corrective commit `2fabd653801c7c2301ce9d2f1e8014a1480fd801` targeted that test to `20260927.004`, and CI #434 / run `36566598631` passed on the exact corrective SHA. |
-| `ORG-033` | In Progress | CI is green through ORG-032 (CI #434). Final verification must include full empty-database migration replay, registry resolution, authorization, Workflow approval/rejection, Audit evidence, concurrency, target retirement, API cutover and final compatibility cleanup. |
+| `ORG-033` | In Progress — exact-SHA CI pending | Final closure verification adds explicit proof that one organization unit can hold and retrieve simultaneous responsibilities over distinct registered scopes without overwrite, and that later owner retirement is reported without deleting historical assignments. The acceptance matrix reuses already-green dedicated evidence for invalid references, GLOBAL/CUSTOM, authorization, Workflow APPROVE/REJECT, Audit, pessimistic concurrency, final schema replay, canonical REST/OpenAPI and architecture boundaries. Completion awaits green exact-SHA CI and final issue #130 closure. |
 
 
 ### 2026-09-29 greenfield database decision
@@ -2503,6 +2503,52 @@ Verification:
 
 **Status:** **Completed.** Commit `1505b0fe2c481811ff452db8d956d4738c018c4e`
 passed CI #431 / run `36561971277` on the exact implementation SHA.
+
+### ORG-033 final scope-integrity closure verification
+
+**Commit scope:** verification only. No production Java, migration, API, Identity, Workflow, Audit,
+Topology, or platform behavior changes are introduced.
+
+Exact implementation allowlist:
+
+```text
+organization/application/service/OrganizationOperationalScopeEndToEndTest.java
+docs/roadmap/organization.md
+```
+
+Final issue-#130 acceptance matrix:
+
+| Acceptance area | Final evidence |
+|---|---|
+| ADR/cardinality/identity/GLOBAL/CUSTOM/lifecycle policy | ADR-0005 plus ORG-024/025/026 verified implementation; greenfield decision supersedes legacy-data assumptions. |
+| Multiple simultaneous scopes and distinct roles without overwrite | `OrganizationOperationalScopeEndToEndTest.unitCanHoldAndRetrieveMultipleConcurrentScopedResponsibilitiesWithoutOverwrite`. |
+| Invalid/missing/mismatched/retired targets and unregistered CUSTOM | `OperationalScopeReferenceTest`, `OperationalScopeApplicationServiceTest`, `ResponsibilityAssignmentApplicationServiceTest`, resolver tests, and ORG-033 retirement test. |
+| Current owner code/name truth; no caller-owned duplicate labels | `OperationalScopeQueryApplicationServiceTest` and `OrganizationResponsibilityControllerTest`. |
+| GLOBAL no-target and Organization-unit self-target policy | `OperationalScopeReferenceTest`, `OperationalScopeTest`, and responsibility application tests. |
+| Duplicate/overlap, half-open periods, revoke/reassign and history | `ResponsibilityAssignmentApplicationServiceTest`, `ResponsibilityRevocationApplicationServiceTest`, and ORG-033 historical-retention assertion. |
+| Authorization, Workflow APPROVE/REJECT and Audit evidence | responsibility application/controller tests, `OrganizationResponsibilityWorkflowContractAdapterTest`, and `OrganizationResponsibilityAuditContractAdapterTest`. |
+| Concurrent mutation safety | ORG-028 scope/assignment pessimistic-lock tests plus PostgreSQL ACTIVE-identity/temporal migration verification. |
+| Final PostgreSQL schema and recovery | `OrganizationOperationalScopeSchemaMigrationTest` plus `OrganizationGreenfieldScopePersistenceTest`; ORG-032 removes all legacy scope columns and requires canonical `scope_id`. |
+| Legacy backfill/quarantine | **Not Applicable** for the approved greenfield state: no database has been deployed and no legacy rows exist. The read-only ORG-037 audit remains defensive documentation. |
+| REST/API cutover and server-derived security context | `OrganizationResponsibilityControllerTest`; CI publishes deterministic OpenAPI artifact after `clean verify`. |
+| Cross-module architecture / no topology internals / no SCADA actuation | `ArchitectureGuardrailTest`, ADR-0005, and Organization dependency rules. |
+
+CI closure gate:
+
+```text
+./mvnw -B -q clean verify
+deterministic OpenAPI publication
+PostgreSQL/Testcontainers full empty-database Flyway replay
+green exact-SHA HidraAPI CI
+issue #130 acceptance matrix has no unresolved applicable item
+```
+
+CI #434 on ORG-032 already proved the final pre-ORG-033 schema and uploaded deterministic OpenAPI
+artifact `hidra-api-openapi-2fabd653801c7c2301ce9d2f1e8014a1480fd801`. ORG-033 requires the
+same pipeline to pass again on its own exact verification SHA, including the new multi-scope and
+retirement/history test.
+
+**Status:** implementation complete; ORG-033 remains **In Progress — exact-SHA CI pending**.
 
 ### ORG-032 final greenfield schema retirement increment
 

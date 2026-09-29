@@ -2288,7 +2288,7 @@ its full current exit gate is satisfied.
 | `ORG-027` | Completed | Identity-backed permission checks, Workflow approval for assign/revoke and Audit evidence for assign/revoke/reconcile are implemented. Corrective commit `279b5ece1588ec756d00e70db366bce0ccf4fc19` removed the Spring CGLIB proxy defect and CI #426 / run `36553395572` passed on that exact SHA. Database concurrency hardening is owned by ORG-028. |
 | `ORG-028` | Completed | Immutable migration `V20260927_001__add_operational_scope_registry.sql` remains unchanged. Commit `1e4d585ef397ebaedb2a910c232f813838d561fe` adds dedicated PostgreSQL/Testcontainers coverage plus `V20260929_003__harden_operational_scope_responsibility_concurrency.sql` with canonical temporal validation and an ACTIVE canonical-identity index. Assignment creation serializes on a pessimistic write lock of the canonical OperationalScope row before overlap/idempotency checks; revocation serializes on a pessimistic write lock of the assignment row. Legacy rows with null `scope_id` remain outside the canonical temporal rule. CI #427 / run `36555071513` passed on the exact implementation SHA. |
 | `ORG-029` | In Progress — exact-SHA CI pending | Greenfield persistence alignment is implemented: unit/employee legacy `operational_scope_*` JPA columns are read-only, the generic Organization mapper no longer reads/writes legacy scope tuple state and maps responsibility through canonical `scopeId`, and focused mapping plus full-empty-PostgreSQL tests prove canonical registry/assignment persistence with legacy columns remaining null. Existing reconciliation coverage already verifies a healthy canonical assignment produces no finding. Completion awaits green exact-SHA CI. |
-| `ORG-030` | Planned | No versioned responsibility/scope REST migration exists yet. Future endpoints must derive actor/effective permissions server-side from authenticated security context, carry Workflow approval references rather than client-supplied security context, resolve current owner display data, and require provisioned Identity permissions plus Audit taxonomy. |
+| `ORG-030` | In Progress — exact-SHA CI pending | Canonical `/api/v1/organization/operational-scopes` and `/responsibilities` endpoints are added. Request DTOs contain business data plus required Workflow references only; actor, effective permissions, request/correlation IDs and current owner display are server-derived. Scope registration and responsibility operations are permission-gated; responsibility assign/revoke retain application-level Workflow approval and Audit append. New Flyway migrations provision four active Identity permission definitions and the required Audit BUSINESS/event taxonomy without granting any role/user. Current owner code/name/assignability are resolved at read time through the approved owner port. Completion awaits green exact-SHA CI. |
 | `ORG-031` | In Progress | Canonical embedded scope components are already removed from `OrganizationUnit` and `EmployeeAssignment`. Under the greenfield assumption, ORG-031's residual scope is removal of transitional constructors/accessors, mapper calls and JPA compatibility bridges after canonical API cutover; no deployed legacy evidence needs runtime preservation. |
 | `ORG-032` | Planned | Legacy `operational_scope_*` columns remain only because historical migrations are immutable. In the greenfield path, ORG-032 will remove those obsolete compatibility columns in a new migration and enforce the final canonical `scope_id` constraints, validated by full migration replay from an empty PostgreSQL database. |
 | `ORG-033` | In Progress | CI is green through the greenfield-roadmap reconciliation (CI #429). Final closure is still incomplete because ORG-029 verification, API cutover and compatibility retirement remain open. Final verification must include full empty-database migration replay, registry resolution, authorization, Workflow approval/rejection, Audit evidence, concurrency, target retirement, API cutover and final compatibility cleanup. |
@@ -2431,6 +2431,76 @@ requires a controlled migration window after canonical temporal preflight.
 passed CI #427 / run `36555071513` on the exact implementation SHA. With ORG-023 now completed
 under the documented greenfield/no-database assumption, ORG-029 is executable.
 
+### ORG-030 canonical API migration increment
+
+**Commit scope:** expose canonical operational-scope/responsibility REST contracts while keeping
+authentication, authorization and current owner display server-controlled.
+
+Exact implementation allowlist:
+
+```text
+organization/api/rest/controller/OrganizationResponsibilityController.java
+organization/api/rest/request/RegisterOperationalScopeRequest.java
+organization/api/rest/request/AssignResponsibilityRequest.java
+organization/api/rest/request/RevokeResponsibilityRequest.java
+organization/api/rest/response/OperationalScopeResponse.java
+organization/api/rest/response/ResponsibilityResponse.java
+organization/api/rest/response/ResponsibilityMutationResponse.java
+organization/api/rest/response/ResponsibilityReconciliationResponse.java
+organization/application/port/in/OperationalScopeQueryUseCase.java
+organization/application/service/OperationalScopeQueryApplicationService.java
+V20260929_004__provision_organization_scope_permissions.sql
+V20260929_005__provision_organization_responsibility_audit_taxonomy.sql
+focused Organization controller/query/provisioning tests
+docs/roadmap/organization.md
+```
+
+Boundary rules:
+
+- endpoints remain under versioned base `/api/v1/organization`;
+- scope registration accepts only `type + targetId`;
+- responsibility assignment accepts business assignment fields plus
+  `workflowInstanceId + operationReference`;
+- revocation accepts only `effectiveAt + workflowInstanceId + operationReference`;
+- request DTOs cannot carry actor ID/name, effective permissions, request ID, correlation ID,
+  current owner code or current owner name;
+- actor identity comes from `CurrentSecurityContext`;
+- effective permissions come from `HidraEffectivePermissionResolver`, including Identity-backed
+  permission sources;
+- request/correlation IDs come from platform logging context, with a server-generated request ID
+  fallback;
+- scope registration requires `organization:operational-scope:register`;
+- responsibility assign/revoke/reconcile require their ORG-027 permission codes at the API boundary
+  and again inside the application service;
+- assign/revoke continue to require completed matching Workflow approval and Audit append inside the
+  transactional application path;
+- scope/responsibility reads resolve current owner code/name/assignability through
+  `OperationalScopeTargetResolverPort`; registry identity never stores those mutable display values.
+
+Provisioning rules:
+
+- `V20260929_004` defines active Identity permission catalog rows for scope registration,
+  responsibility assign, revoke and reconcile;
+- it does **not** create role/user grants;
+- `V20260929_005` defines active Audit category `BUSINESS` and the three responsibility event
+  types consumed by the existing Audit adapter;
+- both migrations are additive and follow the live Flyway sequence after `20260929.003`.
+
+Verification:
+
+- controller tests prove server-derived actor/permission/request context and absence of security
+  fields from request DTOs;
+- permission denial blocks scope registration before application execution;
+- responsibility responses use fresh owner-resolved code/name;
+- application query tests prove entity-backed owner freshness and no invented GLOBAL display;
+- existing ORG-027 Workflow adapter tests cover completed APPROVE versus completed REJECT/mismatch;
+- existing ORG-027 Audit adapter tests cover catalog resolution and fail-closed missing taxonomy;
+- new PostgreSQL/Testcontainers provisioning test verifies all required active permission/taxonomy
+  rows after full empty-database Flyway replay;
+- historical Organization endpoints remain untouched, making this API change additive until ORG-031.
+
+**Status:** implementation under ORG-030; exact-SHA CI must be green before ORG-031.
+
 ### ORG-029 greenfield persistence-alignment increment
 
 **Commit scope:** align current persistence with the canonical registry model on a fresh database.
@@ -2476,8 +2546,8 @@ Verification added:
 - `OperationalScopeEvidenceInventoryTest` now pins the reduced legacy-consumer set, proving the
   generic mapper is no longer a legacy consumer.
 
-**Status:** implementation complete; ORG-029 remains **In Progress — exact-SHA CI pending** until
-the implementation commit passes HidraAPI CI.
+**Status:** **Completed.** Commit `6471ee6b217eba3c51402d453421a9225f6c3f38`
+passed CI #430 / run `36560044675` on the exact implementation SHA.
 
 ### ORG-027 reconciliation increment
 
@@ -2584,9 +2654,9 @@ Focused tests cover permission denial, completed/mismatched Workflow evidence, g
 assignment/revocation/reconciliation paths, catalog-code-to-ID audit mapping, missing Audit taxonomy,
 and exported-contract architecture classification.
 
-**Next section-18 action:** verify ORG-029 on its exact implementation SHA. Do not begin ORG-030
-until ORG-029 is green. ORG-029 remains greenfield-only: no legacy backfill/quarantine workflow is
-present or required.
+**Next section-18 action:** ORG-029 is green. Verify ORG-030 on its exact implementation SHA
+before starting ORG-031. ORG-030 keeps actor/effective-permission derivation server-side and
+provisions permission/Audit catalog definitions without fabricating Identity grants.
 
 ### Reconciliation notes
 
@@ -2605,8 +2675,8 @@ present or required.
   `1e4d585ef397ebaedb2a910c232f813838d561fe`.
 - ORG-023 is complete under the documented greenfield/no-database assumption; CI #428 verified
   the source evidence refresh.
-- ORG-029 greenfield persistence alignment is implemented and awaits exact-SHA CI verification;
-  no backfill/quarantine data path exists or is authorized.
+- ORG-029 greenfield persistence alignment is complete after CI #430 / run `36560044675`
+  passed on `6471ee6b217eba3c51402d453421a9225f6c3f38`; no backfill/quarantine data path exists.
 - The multilingual and dependency-integrity correction sequences in section 19 remain complete.
 
 **Execution rule:** A roadmap task's first implementation action must specify exact file allowlists and verification commands after inspecting current main; do not silently rewrite old task descriptions or mark future tasks complete. `ORG-028` and `ORG-032` must use separately numbered, never-reused migrations after rechecking the live Flyway sequence. Issue #130 remains open until the acceptance matrix is satisfied.

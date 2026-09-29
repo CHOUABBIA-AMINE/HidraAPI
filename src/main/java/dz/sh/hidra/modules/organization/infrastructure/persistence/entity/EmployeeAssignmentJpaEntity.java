@@ -14,7 +14,7 @@
  * @Module      : organization
  * @Package     : dz.sh.hidra.modules.organization.infrastructure.persistence.entity
  *
- * @Description : Database-backed JPA entity for EmployeeAssignment with read-only legacy scope compatibility columns.
+ * @Description : Database-backed JPA entity for canonical EmployeeAssignment state.
  *
  */
 package dz.sh.hidra.modules.organization.infrastructure.persistence.entity;
@@ -52,18 +52,6 @@ import java.time.Instant;
     @Column(name = "assignment_type", nullable = false, length = 80)
     private AssignmentType assignmentType;
 
-    @Column(name = "operational_scope_type", nullable = true, insertable = false, updatable = false, length = 80)
-    private String operationalScopeType;
-
-    @Column(name = "operational_scope_id", nullable = true, insertable = false, updatable = false, length = 120)
-    private String operationalScopeId;
-
-    @Column(name = "operational_scope_code", nullable = true, insertable = false, updatable = false, length = 120)
-    private String operationalScopeCode;
-
-    @Column(name = "operational_scope_name", nullable = true, insertable = false, updatable = false, length = 255)
-    private String operationalScopeName;
-
     @Column(name = "valid_from", nullable = false)
     private Instant validFrom;
 
@@ -90,10 +78,6 @@ import java.time.Instant;
             String organizationUnitId,
             String positionId,
             AssignmentType assignmentType,
-            String operationalScopeType,
-            String operationalScopeId,
-            String operationalScopeCode,
-            String operationalScopeName,
             Instant validFrom,
             Instant validTo,
             AssignmentStatus status,
@@ -105,10 +89,6 @@ import java.time.Instant;
         this.organizationUnitId = organizationUnitId;
         this.positionId = positionId;
         this.assignmentType = assignmentType;
-        this.operationalScopeType = operationalScopeType;
-        this.operationalScopeId = operationalScopeId;
-        this.operationalScopeCode = operationalScopeCode;
-        this.operationalScopeName = operationalScopeName;
         this.validFrom = validFrom;
         this.validTo = validTo;
         this.status = status;
@@ -139,26 +119,6 @@ import java.time.Instant;
 
     public AssignmentType assignmentType() {
         return assignmentType;
-    }
-
-
-    public String operationalScopeType() {
-        return operationalScopeType;
-    }
-
-
-    public String operationalScopeId() {
-        return operationalScopeId;
-    }
-
-
-    public String operationalScopeCode() {
-        return operationalScopeCode;
-    }
-
-
-    public String operationalScopeName() {
-        return operationalScopeName;
     }
 
 

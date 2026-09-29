@@ -14,7 +14,7 @@
  * @Module      : organization
  * @Package     : dz.sh.hidra.modules.organization.infrastructure.persistence.entity
  *
- * @Description : Database-backed JPA entity for OrganizationUnit with read-only legacy scope compatibility columns.
+ * @Description : Database-backed JPA entity for canonical OrganizationUnit state.
  *
  */
 package dz.sh.hidra.modules.organization.infrastructure.persistence.entity;
@@ -61,18 +61,6 @@ import java.time.Instant;
     @Column(name = "status", nullable = false, length = 40)
     private OrganizationUnitStatus status;
 
-    @Column(name = "operational_scope_type", nullable = true, insertable = false, updatable = false, length = 80)
-    private String operationalScopeType;
-
-    @Column(name = "operational_scope_id", nullable = true, insertable = false, updatable = false, length = 120)
-    private String operationalScopeId;
-
-    @Column(name = "operational_scope_code", nullable = true, insertable = false, updatable = false, length = 120)
-    private String operationalScopeCode;
-
-    @Column(name = "operational_scope_name", nullable = true, insertable = false, updatable = false, length = 255)
-    private String operationalScopeName;
-
     @Column(name = "valid_from", nullable = true)
     private Instant validFrom;
 
@@ -98,10 +86,6 @@ import java.time.Instant;
             String unitTypeId,
             String parentUnitId,
             OrganizationUnitStatus status,
-            String operationalScopeType,
-            String operationalScopeId,
-            String operationalScopeCode,
-            String operationalScopeName,
             Instant validFrom,
             Instant validTo,
             Instant createdAt,
@@ -115,10 +99,6 @@ import java.time.Instant;
         this.unitTypeId = unitTypeId;
         this.parentUnitId = parentUnitId;
         this.status = status;
-        this.operationalScopeType = operationalScopeType;
-        this.operationalScopeId = operationalScopeId;
-        this.operationalScopeCode = operationalScopeCode;
-        this.operationalScopeName = operationalScopeName;
         this.validFrom = validFrom;
         this.validTo = validTo;
         this.createdAt = createdAt;
@@ -163,26 +143,6 @@ import java.time.Instant;
 
     public OrganizationUnitStatus status() {
         return status;
-    }
-
-
-    public String operationalScopeType() {
-        return operationalScopeType;
-    }
-
-
-    public String operationalScopeId() {
-        return operationalScopeId;
-    }
-
-
-    public String operationalScopeCode() {
-        return operationalScopeCode;
-    }
-
-
-    public String operationalScopeName() {
-        return operationalScopeName;
     }
 
 

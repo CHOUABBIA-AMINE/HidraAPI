@@ -14,7 +14,7 @@
  * @Module      : organization
  * @Package     : dz.sh.hidra.modules.organization.infrastructure.persistence
  *
- * @Description : Verifies greenfield persistence mapping uses canonical scopeId and cannot write legacy scope columns.
+ * @Description : Verifies greenfield persistence maps only canonical scope state after ORG-031 bridge retirement.
  *
  */
 package dz.sh.hidra.modules.organization.infrastructure.persistence;
@@ -33,8 +33,8 @@ import dz.sh.hidra.modules.organization.infrastructure.persistence.entity.Employ
 import dz.sh.hidra.modules.organization.infrastructure.persistence.entity.OrganizationUnitJpaEntity;
 import dz.sh.hidra.modules.organization.infrastructure.persistence.entity.ResponsibilityAssignmentJpaEntity;
 import dz.sh.hidra.modules.organization.infrastructure.persistence.mapper.OrganizationPersistenceMapper;
-import jakarta.persistence.Column;
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.time.Instant;
 import org.junit.jupiter.api.Test;
 
@@ -43,10 +43,10 @@ class OrganizationCanonicalScopePersistenceMappingTest {
     private static final Instant NOW = Instant.parse("2026-09-29T11:00:00Z");
 
     @Test
-    void allLegacyScopeColumnsAreReadOnlyJpaCompatibilityState() throws Exception {
-        assertLegacyColumnsReadOnly(OrganizationUnitJpaEntity.class);
-        assertLegacyColumnsReadOnly(EmployeeAssignmentJpaEntity.class);
-        assertLegacyColumnsReadOnly(ResponsibilityAssignmentJpaEntity.class);
+    void legacyScopeJpaCompatibilityFieldsAreRetired() {
+        assertLegacyScopeFieldsAbsent(OrganizationUnitJpaEntity.class);
+        assertLegacyScopeFieldsAbsent(EmployeeAssignmentJpaEntity.class);
+        assertLegacyScopeFieldsAbsent(ResponsibilityAssignmentJpaEntity.class);
     }
 
     @Test
@@ -67,10 +67,6 @@ class OrganizationCanonicalScopePersistenceMappingTest {
         );
         OrganizationUnitJpaEntity unitEntity = OrganizationPersistenceMapper.toEntity(unit);
 
-        assertThat(unitEntity.operationalScopeType()).isNull();
-        assertThat(unitEntity.operationalScopeId()).isNull();
-        assertThat(unitEntity.operationalScopeCode()).isNull();
-        assertThat(unitEntity.operationalScopeName()).isNull();
         assertThat(OrganizationPersistenceMapper.toDomain(unitEntity)).isEqualTo(unit);
 
         EmployeeAssignment employeeAssignment = new EmployeeAssignment(
@@ -88,10 +84,6 @@ class OrganizationCanonicalScopePersistenceMappingTest {
         EmployeeAssignmentJpaEntity employeeEntity =
                 OrganizationPersistenceMapper.toEntity(employeeAssignment);
 
-        assertThat(employeeEntity.operationalScopeType()).isNull();
-        assertThat(employeeEntity.operationalScopeId()).isNull();
-        assertThat(employeeEntity.operationalScopeCode()).isNull();
-        assertThat(employeeEntity.operationalScopeName()).isNull();
         assertThat(OrganizationPersistenceMapper.toDomain(employeeEntity))
                 .isEqualTo(employeeAssignment);
     }
@@ -119,25 +111,17 @@ class OrganizationCanonicalScopePersistenceMappingTest {
         assertThat(OrganizationPersistenceMapper.toDomain(entity)).isEqualTo(assignment);
     }
 
-    private static void assertLegacyColumnsReadOnly(Class<?> entityType) throws Exception {
-        for (String fieldName : new String[] {
-                "operationalScopeType",
-                "operationalScopeId",
-                "operationalScopeCode",
-                "operationalScopeName"
-        }) {
-            Field field = entityType.getDeclaredField(fieldName);
-            Column column = field.getAnnotation(Column.class);
-
-            assertThat(column)
-                    .as(entityType.getSimpleName() + "." + fieldName + " must remain a JPA column")
-                    .isNotNull();
-            assertThat(column.insertable())
-                    .as(entityType.getSimpleName() + "." + fieldName + " must not be inserted")
-                    .isFalse();
-            assertThat(column.updatable())
-                    .as(entityType.getSimpleName() + "." + fieldName + " must not be updated")
-                    .isFalse();
-        }
+    private static void assertLegacyScopeFieldsAbsent(Class<?> entityType) {
+        assertThat(Arrays.stream(entityType.getDeclaredFields())
+                .map(Field::getName)
+                .toList())
+                .as(entityType.getSimpleName() + " must not map retired legacy scope columns")
+                .doesNotContain(
+                        "operationalScopeType",
+                        "operationalScopeId",
+                        "operationalScopeCode",
+                        "operationalScopeName"
+                );
     }
+
 }

@@ -14,7 +14,7 @@
  * @Module      : organization
  * @Package     : dz.sh.hidra.modules.organization
  *
- * @Description : Pins the ORG-023 greenfield decision, read-only historical audit, and bounded compatibility consumers.
+ * @Description : Pins the greenfield decision, read-only historical audit, and ORG-031 retirement of legacy scope consumers.
  *
  */
 package dz.sh.hidra.modules.organization;
@@ -35,20 +35,12 @@ class OperationalScopeEvidenceInventoryTest {
     private static final Path ORGANIZATION_SOURCE =
             Path.of("src/main/java/dz/sh/hidra/modules/organization");
 
-    private static final Set<String> EXPECTED_LEGACY_SCOPE_CONSUMERS = Set.of(
-            "domain/model/EmployeeAssignment.java",
-            "domain/model/OrganizationUnit.java",
-            "domain/model/ResponsibilityAssignment.java",
-            "infrastructure/persistence/entity/EmployeeAssignmentJpaEntity.java",
-            "infrastructure/persistence/entity/OrganizationUnitJpaEntity.java",
-            "infrastructure/persistence/entity/ResponsibilityAssignmentJpaEntity.java"
-    );
 
     private static final Pattern FORBIDDEN_SQL =
             Pattern.compile("(?i)\\b(insert|update|delete|merge|alter|create|drop|truncate|grant|revoke|call|do)\\b");
 
     @Test
-    void legacyOperationalScopeCompatibilityConsumersRemainExplicitAndBounded() throws IOException {
+    void legacyOperationalScopeCompatibilityConsumersAreRetired() throws IOException {
         Set<String> consumers = new TreeSet<>();
 
         try (Stream<Path> paths = Files.walk(ORGANIZATION_SOURCE)) {
@@ -70,8 +62,8 @@ class OperationalScopeEvidenceInventoryTest {
         }
 
         assertThat(consumers)
-                .as("Any new legacy operational-scope consumer must be reviewed under ORG-031.")
-                .containsExactlyInAnyOrderElementsOf(EXPECTED_LEGACY_SCOPE_CONSUMERS);
+                .as("ORG-031 must retire all production Java operational-scope tuple bridges.")
+                .isEmpty();
     }
 
     @Test
@@ -111,7 +103,7 @@ class OperationalScopeEvidenceInventoryTest {
                 .contains("no deployed database")
                 .contains("Legacy tuple profile: **Not Applicable")
                 .contains("ORG-023 overall status: Completed — greenfield/no legacy migration")
-                .contains("ORG-029 is now authorized as a **greenfield persistence-alignment task**");
+                .contains("ORG-031 removes obsolete Java/JPA compatibility bridges");
     }
 
     private static String stripLineComments(String sql) {

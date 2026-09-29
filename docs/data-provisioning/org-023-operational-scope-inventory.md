@@ -168,37 +168,30 @@ match the intended owner records; that remains a data-evidence gate.
 
 ### 6.3 Current in-repository legacy compatibility consumers
 
-A repository-wide source scan for the historical camel-case identifiers
-`operationalScopeType/Id/Code/Name` finds production compatibility code only in the following
-Organization files:
+After the ORG-031 source cleanup, a repository-wide production-source scan for the historical
+camel-case identifiers `operationalScopeType/Id/Code/Name` finds **no Organization production
+Java consumers**.
+
+Canonical runtime ownership is now only:
 
 ```text
-domain/model/OrganizationUnit.java
-domain/model/EmployeeAssignment.java
-domain/model/ResponsibilityAssignment.java
-infrastructure/persistence/entity/OrganizationUnitJpaEntity.java
-infrastructure/persistence/entity/EmployeeAssignmentJpaEntity.java
-infrastructure/persistence/entity/ResponsibilityAssignmentJpaEntity.java
-infrastructure/persistence/mapper/OrganizationPersistenceMapper.java
+ResponsibilityAssignment.scopeId
+        |
+        v
+OperationalScope(id, type, targetId)
 ```
 
-Interpretation:
+The deprecated scope-tuple constructors/accessors are removed from `OrganizationUnit`,
+`EmployeeAssignment`, and `ResponsibilityAssignment`. The three Organization persistence
+entities no longer map the historical `operational_scope_*` columns, and
+`OrganizationPersistenceMapper` no longer passes compatibility placeholders.
 
-- `OrganizationUnit` and `EmployeeAssignment` no longer own canonical operational scope; their
-  deprecated constructors/accessors exist only for compatibility and return no canonical scope state.
-- `ResponsibilityAssignment` owns canonical `scopeId`; its deprecated textual bridge treats a
-  numeric legacy argument only as an already-known registry ID and deliberately does not guess
-  non-numeric owner IDs.
-- the three JPA entities still map historical `operational_scope_*` columns so evidence can survive
-  until controlled reconciliation/retirement;
-- `OrganizationPersistenceMapper` is the remaining Java compatibility bridge for unit/employee
-  legacy columns.
+The snake-case database columns still exist in the immutable migration history and in the current
+fresh-database schema. Their physical removal belongs exclusively to ORG-032. ORG-031 performs no
+Flyway change.
 
-No current Organization REST request/response contract exposes the historical four-field tuple.
-No direct Topology repository/JPA/infrastructure dependency is used for owner resolution.
-
-The assessment test added with this refresh pins the above source-consumer set so any new legacy
-consumer must be reviewed explicitly.
+`OperationalScopeEvidenceInventoryTest` pins the absence of production Java camel-case legacy
+scope consumers so the bridge cannot silently return.
 
 ### 6.4 Read-only legacy assessment artifact
 
@@ -242,8 +235,8 @@ artifact. It is not required before continuing the greenfield roadmap.
 - External legacy database-consumer sign-off: **Not Applicable — no deployed legacy database**.
 - **ORG-023 overall status: Completed — greenfield/no legacy migration.**
 
-ORG-029 is now authorized as a **greenfield persistence-alignment task**. It must not implement a
-fictional backfill/quarantine pipeline for data that does not exist.
+ORG-029 and ORG-030 are complete on the greenfield path. ORG-031 retires the obsolete Java/JPA
+scope compatibility bridges without changing the physical schema; ORG-032 owns column retirement.
 
 
 ## 8. Greenfield execution decision

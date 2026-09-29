@@ -7,7 +7,7 @@
  *
  * @Name        : ResponsibilityAssignment
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-09-29
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -33,9 +33,9 @@ import java.time.Instant;
  * current display attributes are resolved through the OperationalScope registry
  * and the target owner's public read contract.</p>
  *
- * <p>During the migration window, {@code scopeId} may be null only for legacy rows
- * that have not yet been reconciled and backfilled. New assignment use cases must
- * require a positive registered scope ID before persistence.</p>
+ * <p>{@code scopeId} remains nullable only until ORG-032 finalizes the greenfield
+ * schema constraint. Canonical assignment use cases already require a positive
+ * registered scope ID before persistence.</p>
  *
  * @param id assignment identifier
  * @param responsibilityType responsibility role
@@ -120,90 +120,6 @@ public record ResponsibilityAssignment(
         );
     }
 
-    /**
-     * Transitional compatibility constructor for legacy generated mapping code.
-     *
-     * <p>The old {@code operationalScopeId} argument is interpreted only when it
-     * already contains the numeric registry ID. Non-numeric legacy target IDs are
-     * deliberately not guessed or converted and therefore produce a null scopeId.</p>
-     */
-    @Deprecated(forRemoval = true)
-    public ResponsibilityAssignment(
-            String id,
-            ResponsibilityType responsibilityType,
-            ResponsibilityAssigneeType assigneeType,
-            String assigneeId,
-            String operationalScopeType,
-            String operationalScopeId,
-            String operationalScopeCode,
-            String operationalScopeName,
-            String description,
-            Instant validFrom,
-            Instant validTo,
-            AssignmentStatus status,
-            Instant createdAt,
-            Instant updatedAt
-    ) {
-        this(
-                id,
-                responsibilityType,
-                assigneeType,
-                assigneeId,
-                parseRegistryId(operationalScopeId),
-                description,
-                validFrom,
-                validTo,
-                status,
-                createdAt,
-                updatedAt
-        );
-    }
-
-    /**
-     * Transitional compatibility only; scope type is no longer assignment state.
-     */
-    @Deprecated(forRemoval = true)
-    public String operationalScopeType() {
-        return null;
-    }
-
-    /**
-     * Transitional compatibility only. This returns the registry ID as text and
-     * must never be interpreted as the legacy owner target ID.
-     */
-    @Deprecated(forRemoval = true)
-    public String operationalScopeId() {
-        return scopeId == null ? null : scopeId.toString();
-    }
-
-    /**
-     * Transitional compatibility only; current code belongs to the target owner.
-     */
-    @Deprecated(forRemoval = true)
-    public String operationalScopeCode() {
-        return null;
-    }
-
-    /**
-     * Transitional compatibility only; current name belongs to the target owner.
-     */
-    @Deprecated(forRemoval = true)
-    public String operationalScopeName() {
-        return null;
-    }
-
-    private static Long parseRegistryId(String value) {
-        String normalized = normalize(value);
-        if (normalized == null) {
-            return null;
-        }
-        try {
-            long parsed = Long.parseLong(normalized);
-            return parsed > 0 ? parsed : null;
-        } catch (NumberFormatException ignored) {
-            return null;
-        }
-    }
     private static String requireText(String value, String message) {
         String normalized = normalize(value);
         if (normalized == null) {

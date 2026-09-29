@@ -18,17 +18,17 @@
 | Status | Active — base Organization implementation and correction sequences ORG-034–ORG-048 are complete; issue #130 remains open for the explicitly listed residual scope-integrity gates |
 | Execution mode | One commit code at a time |
 
-### 1.1 Current authoritative state — 2026-09-27
+### 1.1 Current authoritative state — 2026-09-29
 
 This subsection is the **authoritative execution entry point**. Older planning text in this
 roadmap is retained as implementation history only when it conflicts with the state below.
 
-Repository baseline at reconciliation:
+Repository baseline before ORG-031 execution:
 
 ```text
-main: 34e49d6232d84894280a1fa2dae45d0cfefb85fa
+main: fbce456b1d5c6c877eddc00b0bb4166abb1c8ecd
 latest Organization change:
-feat(organization): add responsibility reconciliation use case
+docs(organization): record ORG-030 verification
 open Organization issue: #130
 open Organization pull requests: none
 ```
@@ -85,9 +85,10 @@ Current correction status:
 - `ORG-023`: **Completed — greenfield/N/A legacy migration**. The project owner clarified that
   no database has been deployed and no legacy rows exist; CI #428 verified the source inventory.
 - `ORG-028`: **Completed** with green exact-SHA CI #427.
-- `ORG-029`: **Ready / partially implemented** and is the next executable task under the
-  greenfield persistence-alignment scope.
-- `ORG-030`, `ORG-031`, `ORG-032`, and `ORG-033`: remain open as documented in section 18.
+- `ORG-029`: **Completed** with green exact-SHA CI #430.
+- `ORG-030`: **Completed** with green exact-SHA CI #431.
+- `ORG-031`: **In Progress — exact-SHA CI pending** for greenfield Java/JPA compatibility cleanup.
+- `ORG-032` and `ORG-033`: remain open as documented in section 18.
 - Issue #130 must remain open until the residual acceptance matrix in section 18 is met.
 
 Important ADR note: ADR-0005 remains the accepted repository ADR, but parts of its original
@@ -2289,9 +2290,9 @@ its full current exit gate is satisfied.
 | `ORG-028` | Completed | Immutable migration `V20260927_001__add_operational_scope_registry.sql` remains unchanged. Commit `1e4d585ef397ebaedb2a910c232f813838d561fe` adds dedicated PostgreSQL/Testcontainers coverage plus `V20260929_003__harden_operational_scope_responsibility_concurrency.sql` with canonical temporal validation and an ACTIVE canonical-identity index. Assignment creation serializes on a pessimistic write lock of the canonical OperationalScope row before overlap/idempotency checks; revocation serializes on a pessimistic write lock of the assignment row. Legacy rows with null `scope_id` remain outside the canonical temporal rule. CI #427 / run `36555071513` passed on the exact implementation SHA. |
 | `ORG-029` | Completed | Greenfield persistence alignment is implemented: unit/employee legacy `operational_scope_*` JPA columns are read-only, the generic Organization mapper no longer reads/writes legacy scope tuple state and maps responsibility through canonical `scopeId`, and focused mapping plus full-empty-PostgreSQL tests prove canonical registry/assignment persistence with legacy columns remaining null. CI #430 / run `36560044675` passed on exact implementation commit `6471ee6b217eba3c51402d453421a9225f6c3f38`. |
 | `ORG-030` | Completed | Canonical `/api/v1/organization/operational-scopes` and `/responsibilities` endpoints are added. Request DTOs contain business data plus required Workflow references only; actor, effective permissions, request/correlation IDs and current owner display are server-derived. Scope registration and responsibility operations are permission-gated; responsibility assign/revoke retain application-level Workflow approval and Audit append. New Flyway migrations provision four active Identity permission definitions and the required Audit BUSINESS/event taxonomy without granting any role/user. Current owner code/name/assignability are resolved at read time through the approved owner port. CI #431 / run `36561971277` passed on exact implementation commit `1505b0fe2c481811ff452db8d956d4738c018c4e`. |
-| `ORG-031` | In Progress | Canonical embedded scope components are already removed from `OrganizationUnit` and `EmployeeAssignment`. Under the greenfield assumption, ORG-031's residual scope is removal of transitional constructors/accessors, mapper calls and JPA compatibility bridges after canonical API cutover; no deployed legacy evidence needs runtime preservation. |
+| `ORG-031` | In Progress — exact-SHA CI pending | Deprecated scope-tuple constructors/accessors are removed from OrganizationUnit, EmployeeAssignment and ResponsibilityAssignment; the three Organization JPA entities no longer map legacy `operational_scope_*` columns; the generic mapper no longer passes compatibility placeholders; guardrails require zero production Java camel-case legacy scope consumers. Database columns remain unchanged for ORG-032. Completion awaits green exact-SHA CI. |
 | `ORG-032` | Planned | Legacy `operational_scope_*` columns remain only because historical migrations are immutable. In the greenfield path, ORG-032 will remove those obsolete compatibility columns in a new migration and enforce the final canonical `scope_id` constraints, validated by full migration replay from an empty PostgreSQL database. |
-| `ORG-033` | In Progress | CI is green through ORG-030 (CI #431). Compatibility retirement remains open. Final verification must include full empty-database migration replay, registry resolution, authorization, Workflow approval/rejection, Audit evidence, concurrency, target retirement, API cutover and final compatibility cleanup. |
+| `ORG-033` | In Progress | CI is green through ORG-030 (CI #431). ORG-031 compatibility-source retirement is implemented and awaiting exact-SHA CI; ORG-032 schema retirement remains open. Final verification must include full empty-database migration replay, registry resolution, authorization, Workflow approval/rejection, Audit evidence, concurrency, target retirement, API cutover and final compatibility cleanup. |
 
 
 ### 2026-09-29 greenfield database decision
@@ -2499,7 +2500,57 @@ Verification:
   rows after full empty-database Flyway replay;
 - historical Organization endpoints remain untouched, making this API change additive until ORG-031.
 
-**Status:** implementation under ORG-030; exact-SHA CI must be green before ORG-031.
+**Status:** **Completed.** Commit `1505b0fe2c481811ff452db8d956d4738c018c4e`
+passed CI #431 / run `36561971277` on the exact implementation SHA.
+
+### ORG-031 greenfield compatibility cleanup increment
+
+**Commit scope:** retire obsolete Java/JPA operational-scope tuple bridges after the canonical
+ORG-030 API cutover. This task does not alter the database schema.
+
+Exact implementation allowlist:
+
+```text
+organization/domain/model/OrganizationUnit.java
+organization/domain/model/EmployeeAssignment.java
+organization/domain/model/ResponsibilityAssignment.java
+organization/infrastructure/persistence/entity/OrganizationUnitJpaEntity.java
+organization/infrastructure/persistence/entity/EmployeeAssignmentJpaEntity.java
+organization/infrastructure/persistence/entity/ResponsibilityAssignmentJpaEntity.java
+organization/infrastructure/persistence/mapper/OrganizationPersistenceMapper.java
+OperationalScopeEvidenceInventoryTest.java
+OrganizationCanonicalScopePersistenceMappingTest.java
+OrganizationModelValueIntegrityTest.java
+OrganizationTypedDependencyIntegrityTest.java
+docs/data-provisioning/org-023-operational-scope-inventory.md
+docs/roadmap/organization.md
+```
+
+Behavioral changes:
+
+- remove deprecated four-field scope-tuple constructors/accessors from OrganizationUnit and
+  EmployeeAssignment;
+- remove the legacy scope-tuple constructor/accessors and numeric-string parsing bridge from
+  ResponsibilityAssignment while retaining canonical `scopeId`;
+- stop mapping the historical `operational_scope_*` columns in all three Organization JPA
+  entities;
+- remove the four null compatibility placeholders from the generic persistence mapper;
+- retain unrelated typed/textual compatibility bridges owned by other completed Organization
+  correction tracks;
+- leave all Flyway files and physical compatibility columns unchanged for ORG-032.
+
+Verification added/updated:
+
+- production-source inventory must contain zero historical camel-case scope tuple consumers;
+- domain model guardrails require the retired tuple methods to stay absent;
+- persistence guardrails require all three JPA entities to stay free of legacy scope fields;
+- canonical OrganizationUnit/EmployeeAssignment round trips and ResponsibilityAssignment
+  `scopeId` round trips remain covered;
+- ORG-048 typed-dependency guardrails no longer require the retired ResponsibilityAssignment JPA
+  compatibility constructor.
+
+**Status:** implementation complete; ORG-031 remains **In Progress — exact-SHA CI pending** until
+the implementation commit passes HidraAPI CI.
 
 ### ORG-029 greenfield persistence-alignment increment
 

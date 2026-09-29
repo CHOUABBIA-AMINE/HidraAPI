@@ -7,14 +7,14 @@
  *
  * @Name        : ResponsibilityAssignmentJpaEntity
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-27
+ * @UpdatedOn   : 2026-09-29
  *
  * @Type        : Class
  * @Layer       : Infrastructure
  * @Module      : organization
  * @Package     : dz.sh.hidra.modules.organization.infrastructure.persistence.entity
  *
- * @Description : Database-backed entity for a scoped responsibility assignment.
+ * @Description : Database-backed entity for a canonical scoped responsibility assignment.
  *
  */
 package dz.sh.hidra.modules.organization.infrastructure.persistence.entity;
@@ -34,9 +34,9 @@ import java.time.Instant;
 /**
  * Database-backed entity for ResponsibilityAssignment.
  *
- * <p>{@code scopeId} is the new canonical registry FK. The four legacy columns
- * remain mapped temporarily so existing rows can be inspected/reconciled without
- * deleting data. Canonical application mapping ignores those legacy values.</p>
+ * <p>{@code scopeId} is the sole mapped operational-scope identity. Historical
+ * {@code operational_scope_*} database columns remain a schema concern for ORG-032
+ * and are intentionally not mapped by this entity.</p>
  */
 @Entity
 @Table(name = "hidra_org_responsibility_assignment")
@@ -59,21 +59,6 @@ public class ResponsibilityAssignmentJpaEntity {
 
     @Column(name = "scope_id")
     private Long scopeId;
-
-    /**
-     * Legacy migration-only columns. Do not use these as canonical identity.
-     */
-    @Column(name = "operational_scope_type", insertable = false, updatable = false, length = 80)
-    private String operationalScopeType;
-
-    @Column(name = "operational_scope_id", insertable = false, updatable = false, length = 120)
-    private String operationalScopeId;
-
-    @Column(name = "operational_scope_code", insertable = false, updatable = false, length = 120)
-    private String operationalScopeCode;
-
-    @Column(name = "operational_scope_name", insertable = false, updatable = false, length = 255)
-    private String operationalScopeName;
 
     @Column(name = "description", columnDefinition = "text")
     private String description;
@@ -124,43 +109,6 @@ public class ResponsibilityAssignmentJpaEntity {
         this.updatedAt = updatedAt;
     }
 
-    /**
-     * Transitional constructor retained only so the older generated organization
-     * mapper still compiles until it is removed. It never treats a non-numeric
-     * legacy owner target ID as a registry ID.
-     */
-    @Deprecated(forRemoval = true)
-    public ResponsibilityAssignmentJpaEntity(
-            String id,
-            ResponsibilityType responsibilityType,
-            ResponsibilityAssigneeType assigneeType,
-            String assigneeId,
-            String operationalScopeType,
-            String operationalScopeId,
-            String operationalScopeCode,
-            String operationalScopeName,
-            String description,
-            Instant validFrom,
-            Instant validTo,
-            AssignmentStatus status,
-            Instant createdAt,
-            Instant updatedAt
-    ) {
-        this(
-                id,
-                responsibilityType,
-                assigneeType,
-                assigneeId,
-                parseRegistryId(operationalScopeId),
-                description,
-                validFrom,
-                validTo,
-                status,
-                createdAt,
-                updatedAt
-        );
-    }
-
     public String id() {
         return id;
     }
@@ -179,26 +127,6 @@ public class ResponsibilityAssignmentJpaEntity {
 
     public Long scopeId() {
         return scopeId;
-    }
-
-    @Deprecated(forRemoval = true)
-    public String operationalScopeType() {
-        return operationalScopeType;
-    }
-
-    @Deprecated(forRemoval = true)
-    public String operationalScopeId() {
-        return scopeId == null ? operationalScopeId : scopeId.toString();
-    }
-
-    @Deprecated(forRemoval = true)
-    public String operationalScopeCode() {
-        return operationalScopeCode;
-    }
-
-    @Deprecated(forRemoval = true)
-    public String operationalScopeName() {
-        return operationalScopeName;
     }
 
     public String description() {
@@ -225,15 +153,4 @@ public class ResponsibilityAssignmentJpaEntity {
         return updatedAt;
     }
 
-    private static Long parseRegistryId(String value) {
-        if (value == null || value.isBlank()) {
-            return null;
-        }
-        try {
-            long parsed = Long.parseLong(value.trim());
-            return parsed > 0 ? parsed : null;
-        } catch (NumberFormatException ignored) {
-            return null;
-        }
-    }
 }

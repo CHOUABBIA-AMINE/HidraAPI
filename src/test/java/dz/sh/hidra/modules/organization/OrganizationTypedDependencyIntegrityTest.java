@@ -7,7 +7,7 @@
  *
  * @Name        : OrganizationTypedDependencyIntegrityTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-27
+ * @UpdatedOn   : 2026-09-29
  *
  * @Type        : Class
  * @Layer       : Organization Test
@@ -129,34 +129,13 @@ class OrganizationTypedDependencyIntegrityTest {
         assertWideStringConstructorsDeprecated(ResponsibilityAssignment.class, 4);
         assertWideStringConstructorsDeprecated(OrganizationContactPointJpaEntity.class, 5);
         assertWideStringConstructorsDeprecated(ReportingLineJpaEntity.class, 5);
-        assertWideStringConstructorsDeprecated(ResponsibilityAssignmentJpaEntity.class, 4);
 
         assertDeprecatedForRemovalIfPresent(OrganizationContactPoint.class, "targetType");
         assertDeprecatedForRemovalIfPresent(ReportingLine.class, "sourceType");
         assertDeprecatedForRemovalIfPresent(ReportingLine.class, "targetType");
-        assertDeprecatedForRemovalIfPresent(ResponsibilityAssignment.class, "operationalScopeType");
-        assertDeprecatedForRemovalIfPresent(ResponsibilityAssignment.class, "operationalScopeId");
-        assertDeprecatedForRemovalIfPresent(ResponsibilityAssignment.class, "operationalScopeCode");
-        assertDeprecatedForRemovalIfPresent(ResponsibilityAssignment.class, "operationalScopeName");
         assertDeprecatedForRemovalIfPresent(OrganizationContactPointJpaEntity.class, "targetType");
         assertDeprecatedForRemovalIfPresent(ReportingLineJpaEntity.class, "sourceType");
         assertDeprecatedForRemovalIfPresent(ReportingLineJpaEntity.class, "targetType");
-        assertDeprecatedForRemovalIfPresent(
-                ResponsibilityAssignmentJpaEntity.class,
-                "operationalScopeType"
-        );
-        assertDeprecatedForRemovalIfPresent(
-                ResponsibilityAssignmentJpaEntity.class,
-                "operationalScopeId"
-        );
-        assertDeprecatedForRemovalIfPresent(
-                ResponsibilityAssignmentJpaEntity.class,
-                "operationalScopeCode"
-        );
-        assertDeprecatedForRemovalIfPresent(
-                ResponsibilityAssignmentJpaEntity.class,
-                "operationalScopeName"
-        );
     }
 
     @Test

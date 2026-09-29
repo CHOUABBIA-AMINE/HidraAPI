@@ -7,7 +7,7 @@
  *
  * @Name        : OrganizationModelValueIntegrityTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-09-29
  *
  * @Type        : Class
  * @Layer       : Organization Test
@@ -155,21 +155,24 @@ class OrganizationModelValueIntegrityTest {
     }
 
     @Test
-    void deprecatedOperationalScopeCompatibilityMethodsMustRemainMarkedForRemoval()
-            throws Exception {
+    void retiredOperationalScopeCompatibilityMethodsMustNotReturn() {
         for (Class<?> type : List.of(
                 OrganizationUnit.class,
                 EmployeeAssignment.class,
                 ResponsibilityAssignment.class
         )) {
-            for (String methodName : List.of(
-                    "operationalScopeType",
-                    "operationalScopeId",
-                    "operationalScopeCode",
-                    "operationalScopeName"
-            )) {
-                assertDeprecatedForRemoval(type.getMethod(methodName));
-            }
+            Set<String> methodNames = Arrays.stream(type.getDeclaredMethods())
+                    .map(Method::getName)
+                    .collect(Collectors.toSet());
+
+            assertThat(methodNames)
+                    .as("%s must not expose retired operational-scope tuple accessors", type.getSimpleName())
+                    .doesNotContain(
+                            "operationalScopeType",
+                            "operationalScopeId",
+                            "operationalScopeCode",
+                            "operationalScopeName"
+                    );
         }
     }
 

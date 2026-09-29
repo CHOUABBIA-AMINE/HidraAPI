@@ -7,14 +7,14 @@
  *
  * @Name        : OrganizationPersistenceMapper
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-09-29
  *
  * @Type        : Class
  * @Layer       : Infrastructure
  * @Module      : organization
  * @Package     : dz.sh.hidra.modules.organization.infrastructure.persistence.mapper
  *
- * @Description : Maps organization domain models to JPA entities without writing legacy scope tuples.
+ * @Description : Maps canonical organization domain models to persistence entities.
  *
  */
 package dz.sh.hidra.modules.organization.infrastructure.persistence.mapper;
@@ -78,10 +78,6 @@ public final class OrganizationPersistenceMapper {
                         model.unitTypeId(),
                         model.parentUnitId(),
                         model.status(),
-                        null,
-                        null,
-                        null,
-                        null,
                         model.validFrom(),
                         model.validTo(),
                         model.createdAt(),
@@ -319,10 +315,6 @@ public final class OrganizationPersistenceMapper {
                         model.organizationUnitId(),
                         model.positionId(),
                         model.assignmentType(),
-                        null,
-                        null,
-                        null,
-                        null,
                         model.validFrom(),
                         model.validTo(),
                         model.status(),

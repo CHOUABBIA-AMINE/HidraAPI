@@ -7,7 +7,7 @@
  *
  * @Name        : OrganizationInternalReferenceIntegrityMigrationTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-27
+ * @UpdatedOn   : 2026-09-29
  *
  * @Type        : Class
  * @Layer       : Organization Test
@@ -54,6 +54,9 @@ class OrganizationInternalReferenceIntegrityMigrationTest {
     private static final MigrationVersion ORG_039 =
             MigrationVersion.fromVersion("20260927.003");
 
+    private static final MigrationVersion ORG_046 =
+            MigrationVersion.fromVersion("20260927.004");
+
     @Container
     static final PostgreSQLContainer<?> POSTGRESQL =
             new PostgreSQLContainer<>(DockerImageName.parse("postgres:18-alpine"))
@@ -71,7 +74,7 @@ class OrganizationInternalReferenceIntegrityMigrationTest {
     void addsInternalForeignKeysAndClosedDiscriminatorChecks() throws SQLException {
         seedReferenceParents();
 
-        flyway().migrate();
+        flyway(ORG_046).migrate();
 
         assertThat(constraintExists("fk_org_district_state")).isTrue();
         assertThat(constraintExists("fk_org_locality_district")).isTrue();
@@ -148,7 +151,7 @@ class OrganizationInternalReferenceIntegrityMigrationTest {
                 """
         );
 
-        assertThatThrownBy(() -> flyway().migrate())
+        assertThatThrownBy(() -> flyway(ORG_046).migrate())
                 .isInstanceOf(FlywayException.class)
                 .hasStackTraceContaining(
                         "ORG-046 preflight failed: orphan administrative district state_id"
@@ -172,7 +175,7 @@ class OrganizationInternalReferenceIntegrityMigrationTest {
                 """
         );
 
-        assertThatThrownBy(() -> flyway().migrate())
+        assertThatThrownBy(() -> flyway(ORG_046).migrate())
                 .isInstanceOf(FlywayException.class)
                 .hasStackTraceContaining("ORG-046 preflight failed: orphan contact-point target");
 

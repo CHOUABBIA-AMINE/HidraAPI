@@ -4,7 +4,7 @@
 **Design:** [ADR-0005](../adr/0005-organization-operational-scope-integrity.md)  
 **Historical evidence baseline:** HidraAPI `main` at `d94b9d72aac32863d971b6f7409c407faa647152` (2026-09-24).  
 **Current source refresh head:** `c1fb9fbfefaecc69b59af28a74d1509294d212c8` (2026-09-29).  
-**Status:** Repository/source contracts, current owner-resolution contracts and in-repository legacy consumers are now inventoried on current `main`. **ORG-023 remains Blocked** only on evidence that GitHub cannot supply: an authorized live/sanitized legacy tuple profile, owner-certified validation of the actual legacy typed IDs found in that data, and complete external-consumer sign-off. This document is assessment only; no production data or security state was modified.
+**Status:** Repository/source contracts, current owner-resolution contracts and in-repository compatibility consumers are inventoried on current `main`. On 2026-09-29 the project owner clarified that HidraAPI is greenfield: **no deployed database exists and there are no legacy rows to migrate**. Therefore the former legacy-data evidence gate is not applicable. **ORG-023 is Completed under the greenfield assumption.** Historical audit material is retained only as a defensive reference and must not be treated as a prerequisite for a database that does not exist.
 
 ## 1. Current owner and data-contract inventory
 
@@ -209,31 +209,61 @@ is read-only (`SELECT` or `WITH ... SELECT`) and rejects DML/DDL additions.
 The SQL reports aggregate source-shape evidence only. It cannot establish external target existence,
 current labels, lifecycle eligibility, or business approval.
 
-### 6.5 Evidence still required to complete ORG-023
+### 6.5 Greenfield clarification supersedes the legacy-data gate
 
-Repository inspection cannot provide these final acceptance artifacts:
+On 2026-09-29 the project owner clarified the deployment state:
 
-1. **Authorized tuple profile** — execute the read-only assessment against an approved live/staging
-   copy or approved sanitized export and retain only aggregate results in Git.
-2. **Owner-certified typed-ID validation** — for each actual typed target key observed in that
-   profile, validate the owner-native ID with the responsible owner source/contract and classify
-   missing, retired, mismatched and stale-label cases. Row-level crosswalk stays in approved private
-   storage.
-3. **External-consumer sign-off** — inventory and approve consumers outside HidraAPI, including
-   HidraWEB, reporting extracts, integration clients, operational scripts or downstream feeds.
+- HidraAPI has **no deployed database**;
+- no legacy Organization rows exist;
+- there is no production/staging operational-scope tuple population to backfill or quarantine;
+- no external consumer can depend on legacy database columns from a database that has never existed.
 
-Until all three exist, actual backfill/quarantine mutation under ORG-029 is not authorized.
+Therefore the three evidence classes previously listed as blockers are **Not Applicable** for this
+project state:
+
+1. legacy tuple profile — N/A, because there are no legacy tuples;
+2. owner-certified crosswalk of observed legacy IDs — N/A, because no observed legacy IDs exist;
+3. external sign-off for legacy database-column consumers — N/A for deployed DB consumers, because
+   no deployed legacy database exists.
+
+Repository/API compatibility consumers remain a source-code concern and are already inventoried.
+They are removed by the later greenfield cleanup tasks rather than migrated from deployed data.
+
+The read-only ORG-037 audit SQL remains in the repository as a defensive/historical assessment
+artifact. It is not required before continuing the greenfield roadmap.
 
 ## 7. Refreshed exit status
 
 - Current repository contract/consumer inventory: **Completed**.
 - Current source owner-resolution availability matrix: **Completed**.
-- Privacy-safe aggregate assessment SQL: **Prepared and regression-tested as read-only**.
-- Authorized legacy tuple profile: **Blocked / not supplied**.
-- Actual typed-ID owner validation/crosswalk: **Blocked / not supplied**.
-- External-consumer inventory/sign-off: **Blocked / not supplied**.
-- **ORG-023 overall status: Blocked.**
+- Privacy-safe aggregate assessment SQL: **Retained and regression-tested as read-only**.
+- Legacy tuple profile: **Not Applicable — no database / no legacy rows**.
+- Legacy typed-ID crosswalk: **Not Applicable — no legacy rows**.
+- External legacy database-consumer sign-off: **Not Applicable — no deployed legacy database**.
+- **ORG-023 overall status: Completed — greenfield/no legacy migration.**
 
-The next admissible ORG-023 action is evidence ingestion/review after the authorized aggregate DB
-assessment and external-consumer sign-off are provided. ORG-029 must not infer or fabricate that
-evidence.
+ORG-029 is now authorized as a **greenfield persistence-alignment task**. It must not implement a
+fictional backfill/quarantine pipeline for data that does not exist.
+
+
+## 8. Greenfield execution decision
+
+This section is authoritative over the historical blocked conclusions above.
+
+**Decision date:** 2026-09-29  
+**Project state:** greenfield / no database has been deployed.
+
+Consequences for the remaining Organization scope roadmap:
+
+- ORG-029 validates fresh-database canonical persistence and eliminates unsafe compatibility
+  write paths; it performs no legacy backfill or quarantine.
+- ORG-030 exposes only canonical REST contracts and server-derived security context.
+- ORG-031 removes obsolete Java/JPA compatibility bridges after API cutover tests.
+- ORG-032 adds a new Flyway cleanup migration that removes obsolete compatibility columns and
+  enforces final canonical constraints on a fresh migration chain; previously numbered migrations
+  remain immutable.
+- ORG-033 verifies a database created from an empty PostgreSQL instance through the complete Flyway
+  chain plus end-to-end Organization behavior.
+
+If a real legacy database is introduced later, this greenfield decision must be reopened before any
+attempt to import or reconcile it.

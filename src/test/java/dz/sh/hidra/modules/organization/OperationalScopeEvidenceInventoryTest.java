@@ -14,7 +14,7 @@
  * @Module      : organization
  * @Package     : dz.sh.hidra.modules.organization
  *
- * @Description : Pins the read-only ORG-023 evidence inventory and remaining legacy compatibility consumers.
+ * @Description : Pins the ORG-023 greenfield decision, read-only historical audit, and bounded compatibility consumers.
  *
  */
 package dz.sh.hidra.modules.organization;
@@ -101,17 +101,18 @@ class OperationalScopeEvidenceInventoryTest {
     }
 
     @Test
-    void currentInventoryKeepsExternalEvidenceGateExplicit() throws IOException {
+    void currentInventoryRecordsGreenfieldClosure() throws IOException {
         String inventory = Files.readString(
                 Path.of("docs/data-provisioning/org-023-operational-scope-inventory.md")
         );
 
         assertThat(inventory)
                 .contains("Current source refresh head")
-                .contains("Authorized tuple profile")
-                .contains("Owner-certified typed-ID validation")
-                .contains("External-consumer sign-off")
-                .contains("ORG-023 overall status: Blocked");
+                .contains("greenfield")
+                .contains("no deployed database")
+                .contains("Legacy tuple profile: **Not Applicable")
+                .contains("ORG-023 overall status: Completed — greenfield/no legacy migration")
+                .contains("ORG-029 is now authorized as a **greenfield persistence-alignment task**");
     }
 
     private static String stripLineComments(String sql) {

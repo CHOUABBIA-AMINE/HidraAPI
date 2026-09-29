@@ -519,3 +519,111 @@ KER-003 — feat(kernel): add domain exception contracts
 ```
 
 Do not implement `KER-003` or later tasks during `KER-002`.
+
+---
+
+## 19. Release and Versioning Rules
+
+HidraAPI uses **Semantic Versioning 2.0.0** for the project release line.
+
+Release/versioning sources of truth:
+
+```text
+VERSIONS.md       -> authoritative release history and milestone traceability
+pom.xml           -> actual Maven project version
+PROJECT_STATE.md  -> current release/development state
+roadmaps          -> capability/milestone completion evidence
+```
+
+Mandatory rules:
+
+1. **Never change the project version arbitrarily.**
+   A version change must be justified by a logical roadmap/product milestone, compatibility impact,
+   or a release-management transition.
+
+2. **Do not create one release version per commit, PR, issue, or roadmap task.**
+   Release boundaries represent coherent capability or stabilization milestones.
+
+3. **Use pre-1.0 SemVer deliberately.**
+   - increment the **minor** version for a substantial capability/architecture milestone or
+     compatibility-changing pre-1.0 release;
+   - increment the **patch** version only for a backward-compatible correction to an already
+     released line when no new capability boundary is introduced;
+   - use prerelease identifiers such as `-alpha.N`, `-beta.N`, or `-rc.N` only when the
+     milestone is intentionally a prerelease.
+
+4. **Before choosing a release version, inspect:**
+   - current `pom.xml`;
+   - `VERSIONS.md`;
+   - `PROJECT_STATE.md`;
+   - the applicable completed roadmaps and exact completion commits;
+   - current `main`, CI, tags, and GitHub Releases.
+
+5. **Keep milestone anchors distinct from release commits.**
+   A roadmap completion commit may be the semantic milestone anchor even when its historical
+   `pom.xml` contains an older version. The formal release tag must point to a release-alignment
+   commit whose `pom.xml` contains the matching release version.
+
+6. **A release-alignment commit must contain, at minimum:**
+   - the intended release version in `pom.xml`;
+   - the corresponding release/milestone record in `VERSIONS.md`;
+   - no unrelated feature work.
+
+7. **A release candidate is not release-ready until exact-SHA verification is green.**
+   Run the repository-required verification, normally including:
+
+   ```bash
+   ./mvnw -B -q clean verify
+   ```
+
+   and require the repository CI/OpenAPI publication gates applicable to that release.
+
+8. **Git release tag format is:**
+
+   ```text
+   v<SemVer>
+   ```
+
+   Example:
+
+   ```text
+   v0.6.0
+   ```
+
+9. **Never tag an older milestone commit whose POM contains a different project version.**
+   The tag must resolve to the exact verified release-alignment commit.
+
+10. **Prefer signed annotated tags when the release environment supports verified signing.**
+    If GitHub Web is explicitly used to create a lightweight/unsigned tag, record that fact and
+    never claim the tag is GPG/SSH signed.
+
+11. **Never rewrite, move, delete, or recreate a published release tag without explicit
+    release-manager/user authorization.**
+
+12. **Do not publish a GitHub Release automatically.**
+    Release publication, tag creation, or tag replacement requires explicit user authorization.
+
+13. **After a formal release, advance `main` to the next development line.**
+    For the normal pre-1.0 minor-development flow:
+
+    ```text
+    released: 0.5.0
+    next main: 0.6.0-SNAPSHOT
+    ```
+
+    Do not advance to the next `-SNAPSHOT` until the release tag/release exists or the user
+    explicitly directs otherwise.
+
+14. **A release is considered operationally complete only when:**
+    - the release-alignment commit exists;
+    - exact-SHA CI is green;
+    - the release tag exists on that exact commit;
+    - the GitHub Release exists when required;
+    - `VERSIONS.md` records the milestone and release traceability;
+    - `PROJECT_STATE.md` records the last release and current development line;
+    - `main` has advanced to the intended next `-SNAPSHOT` version.
+
+15. **Do not infer release history from POM numbers alone.**
+    Reconstruct or validate release history from real Git commits, roadmaps, tags/releases, and
+    `VERSIONS.md`. Never invent commit hashes, tags, CI results, or release dates.
+

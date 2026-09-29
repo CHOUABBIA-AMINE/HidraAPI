@@ -1,8 +1,32 @@
 # HidraAPI / HyFlo — Project State Handoff
 
-**Captured:** 2026-09-22. **Canonical integration branch:** [main](https://github.com/CHOUABBIA-AMINE/HidraAPI/tree/main). **Verified baseline before this documentation change:** [f49cdd9c508f7f936abc91e7a59d84cb37e8aeb3](https://github.com/CHOUABBIA-AMINE/HidraAPI/commit/f49cdd9c508f7f936abc91e7a59d84cb37e8aeb3). This file is a dated, non-secret handoff, not an assertion about future PR/branch status, live deployments or an authorization to migrate data.
+**Captured:** 2026-09-22. **Release state refreshed:** 2026-09-29. **Canonical integration branch:** [main](https://github.com/CHOUABBIA-AMINE/HidraAPI/tree/main). **Current release-state baseline before this documentation change:** [63f3f60974ce57eb8cd5e42910397615195624fb](https://github.com/CHOUABBIA-AMINE/HidraAPI/commit/63f3f60974ce57eb8cd5e42910397615195624fb). Older workstream sections remain dated handoff evidence unless explicitly refreshed below. This file is a non-secret handoff, not an assertion about future PR/branch status, live deployments or an authorization to migrate data.
 
 Before resuming, read [AGENTS.md](AGENTS.md), the relevant module/workstream roadmap, [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), [coding policy](docs/policy/Coding-policy.md), and [ADR index](docs/adr/README.md). Recheck current main, PR and CI state rather than assuming this snapshot remains current.
+
+
+## 0. Current release state — refreshed 2026-09-29
+
+- **Last formal release:** `0.5.0`.
+- **Git tag / GitHub Release:** `v0.5.0` / `HidraAPI v0.5.0`.
+- **Release commit:** `492d9916369a58e60c1a437647411e7c5a523990`
+  (`chore(release): establish semantic version baseline`).
+- **Release verification:** HidraAPI CI #436 / run `36571148141` completed successfully on the
+  exact release commit; the deterministic OpenAPI artifact
+  `hidra-api-openapi-492d9916369a58e60c1a437647411e7c5a523990` was published.
+- **Milestone traceability anchor for 0.5.0:** `4cadc132ce4cbb9d2aa075eaaf4f3dfeb69cf2dc`
+  (`docs(organization): record ORG-033 closure`). This is a semantic milestone anchor, **not** the
+  release tag target, because its historical POM still contained `0.2.0`.
+- **Tag form:** the GitHub-Web-created `v0.5.0` ref resolves directly to the release commit and is
+  therefore a lightweight/unsigned tag; do not describe it as GPG/SSH signed.
+- **Current development line:** `0.6.0-SNAPSHOT`.
+- **Current development commit:** `63f3f60974ce57eb8cd5e42910397615195624fb`
+  (`Start version 0.6.0-SNAPSHOT`).
+- **Current development verification:** HidraAPI CI #437 / run `36573899231` completed
+  successfully.
+- **Authoritative release history:** [VERSIONS.md](VERSIONS.md).
+- **Future release procedure:** governed by `AGENTS.md` section **Release and Versioning Rules**;
+  never derive a new release solely from the current POM version or from a single task commit.
 
 ## 1. Core architecture, stack and repository layout
 

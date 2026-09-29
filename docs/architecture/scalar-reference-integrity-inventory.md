@@ -218,3 +218,87 @@ HRA-111 must **not**:
 
 The 74 cross-module, 5 historical, 2 external, and 45 non-relational mandatory IDs remain outside
 DB-FK consolidation by design.
+
+
+## 8. HRA-111 execution reconciliation
+
+HRA-111 revalidated the HRA-110 candidates against live entity shape and schema ownership on
+execution head `f73110dc48c523705a43e7c6700855f90f705272`.
+
+Eight HRA-110 `SAME_MODULE_REFERENCE` dispositions were too broad when replayed against the
+typed/snapshot evidence carried by the actual persistence models. HRA-111 uses the roadmap-authorized
+`RECLASSIFY_WITH_EVIDENCE` path rather than manufacturing foreign keys:
+
+| Reference | HRA-111 disposition | Evidence |
+|---|---|---|
+| `assets.AssetMeterReadingReference.readingReferenceId` | `NON_RELATIONAL_IDENTIFIER` | The identifier is governed by `readingType` and persisted reading snapshots; Assets owns no relational reading target table. |
+| `assets.AssetServiceContractReference.contractReferenceId` | `NON_RELATIONAL_IDENTIFIER` | The record stores contract/provider snapshots and Assets owns no service-contract aggregate/table to target. |
+| `custody.CustodyAgreementParty.partyId` | `CROSS_MODULE_STABLE_REFERENCE` | The value identifies Party-owned identity and is accompanied by party code/name snapshots; Custody must not create a cross-module DB FK. |
+| `configuration.ConfigurationExternalReference.referenceId` | `NON_RELATIONAL_IDENTIFIER` | `referenceModule + referenceType + referenceId` form a typed reference namespace with snapshots rather than a Configuration-owned relational target. |
+| `risk.RiskAssessmentScope.scopeId` | `NON_RELATIONAL_IDENTIFIER` | `scopeType + scopeId` and scope snapshots identify a typed business scope; the row is not self-referential. |
+| `risk.RiskRegister.scopeId` | `NON_RELATIONAL_IDENTIFIER` | `scopeType + scopeId` plus code/label snapshots identify a typed scope outside a single Risk table. |
+| `risk.RiskAggregationSnapshot.scopeId` | `NON_RELATIONAL_IDENTIFIER` | Snapshot scope identity is typed by `scopeType`; forcing it to `RiskAssessmentScope` would corrupt the model. |
+| `risk.RiskSource.sourceId` | `NON_RELATIONAL_IDENTIFIER` | `sourceModule + sourceType + sourceId` plus source snapshots form a typed source namespace; it is not a `RiskSource` self-reference. |
+
+The reconciled mandatory population therefore remains **698** but becomes:
+
+| Classification | Reconciled mandatory count |
+|---|---:|
+| `SAME_MODULE_REFERENCE` | **564** |
+| `CROSS_MODULE_STABLE_REFERENCE` | **75** |
+| `HISTORICAL_SNAPSHOT` | **5** |
+| `EXTERNAL_IDENTIFIER` | **2** |
+| `NON_RELATIONAL_IDENTIFIER` | **52** |
+| **Total** | **698** |
+
+### 8.1 Database enforcement
+
+Of the 564 confirmed same-module mandatory references:
+
+- **12 Organization references** are already protected by
+  `V20260927_004__enforce_organization_internal_reference_integrity.sql`;
+- **1 Identity LOCAL-credential reference** is already protected by
+  `V20260915_001__create_identity_local_credential.sql`;
+- the remaining **551 references** receive additive HRA-111 foreign keys.
+
+HRA-111 intentionally splits those 551 constraints into two ordered migrations in the same
+roadmap commit:
+
+- batch A: **248** constraints across Identity, Party, Topology, Telemetry, Planning, Monitoring,
+  Alarm, Leak Detection, Incident, Risk, and HSE;
+- batch B: **303** constraints across Integrity, Assets, Custody, Workflow, Audit, Documents,
+  Integration, Configuration, Notification, Simulation, Analytics, and Reporting.
+
+Every new FK is created `NOT VALID` and then explicitly validated in the same Flyway migration.
+PostgreSQL therefore rejects new orphan writes as soon as the constraint exists, while
+`VALIDATE CONSTRAINT` fails the migration if legacy rows are orphaned. Applied migrations are
+unchanged. No HRA-111 FK crosses a module boundary.
+
+### 8.2 Domain/application validation ownership
+
+HRA-111 does not recreate the 343 domain mirrors, repository ports, or application adapters
+deliberately retired by HRA-061 merely to duplicate database existence checks.
+
+For surviving real-domain paths, the HRA-051 required-field guards remain the fail-fast
+domain/application boundary for mandatory identifiers, and existing application services retain
+their aggregate-loading/orchestration checks. For persistence/read-only models simplified by
+HRA-061, PostgreSQL is the authoritative same-module existence boundary and the new FKs fail closed.
+
+This preserves the intended architecture:
+
+- domain/application rejects structurally missing mandatory references where a live domain/use-case
+  boundary exists;
+- persistence rejects nonexistent same-module targets for all 564 confirmed mandatory relational
+  references;
+- cross-module, historical, external, and typed reference namespaces are not converted into
+  database coupling.
+
+### 8.3 Verification guardrail
+
+`InternalReferenceIntegrityMigrationTest` uses PostgreSQL Testcontainers to verify that:
+
+1. exactly **551** HRA-111 foreign keys are installed and validated;
+2. every HRA-111 child and parent table share the constraint's bounded-module prefix;
+3. representative pre-HRA-111 Organization and Identity protections remain present; and
+4. a pre-existing orphan causes HRA-111 migration failure and transactional rollback rather than
+   silently installing a partial constraint set.

@@ -100,6 +100,15 @@ public class JpaOperationalScopeRegistryRepositoryAdapter
     }
 
     @Override
+    public Optional<OperationalScope> findByIdForUpdate(Long scopeId) {
+        if (scopeId == null || scopeId <= 0) {
+            return Optional.empty();
+        }
+        return repository.findByIdForUpdate(scopeId)
+                .map(OperationalScopePersistenceMapper::toDomain);
+    }
+
+    @Override
     public Optional<OperationalScope> findByTypeAndTargetId(
             OperationalScopeType type,
             String targetId

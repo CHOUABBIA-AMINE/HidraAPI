@@ -80,6 +80,16 @@ public interface OperationalScopeRegistryRepositoryPort {
     Optional<OperationalScope> findById(Long scopeId);
 
     /**
+     * Resolves a registry row while holding a database write lock for the surrounding transaction.
+     *
+     * <p>The production JPA adapter overrides this boundary with a pessimistic write lock so
+     * concurrent assignments for the same scope serialize before overlap/idempotency checks.</p>
+     */
+    default Optional<OperationalScope> findByIdForUpdate(Long scopeId) {
+        return findById(scopeId);
+    }
+
+    /**
      * Find an existing entity-backed scope by owner type and owner-native target ID.
      *
      * @param type supported entity-backed operational scope type

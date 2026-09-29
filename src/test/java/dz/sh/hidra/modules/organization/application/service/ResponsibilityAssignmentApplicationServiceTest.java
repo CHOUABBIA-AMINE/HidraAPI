@@ -217,6 +217,70 @@ class ResponsibilityAssignmentApplicationServiceTest {
         assertThrows(IllegalArgumentException.class, () -> retiredOwner.assignResponsibility(command(null, null)));
     }
 
+    @Test
+    void assignmentUsesScopeWriteLockBeforeOverlapCheck() {
+        AtomicInteger lockCalls = new AtomicInteger();
+
+        OperationalScopeRegistryRepositoryPort lockingScopeRepository =
+                new OperationalScopeRegistryRepositoryPort() {
+                    @Override
+                    public OperationalScope register(
+                            OperationalScopeType type,
+                            String targetId
+                    ) {
+                        throw new UnsupportedOperationException();
+                    }
+
+                    @Override
+                    public Optional<OperationalScope> findById(Long scopeId) {
+                        throw new AssertionError(
+                                "Assignment must not use the unlocked scope lookup."
+                        );
+                    }
+
+                    @Override
+                    public Optional<OperationalScope> findByIdForUpdate(Long scopeId) {
+                        lockCalls.incrementAndGet();
+                        return Optional.of(scope());
+                    }
+
+                    @Override
+                    public Optional<OperationalScope> findByTypeAndTargetId(
+                            OperationalScopeType type,
+                            String targetId
+                    ) {
+                        return Optional.empty();
+                    }
+
+                    @Override
+                    public Optional<OperationalScope> findGlobal() {
+                        return Optional.empty();
+                    }
+                };
+
+        ResponsibilityAssignmentApplicationService service =
+                new ResponsibilityAssignmentApplicationService(
+                        lockingScopeRepository,
+                        resolver(true),
+                        employeeRepository(),
+                        organizationUnitRepository(OrganizationUnitStatus.ACTIVE),
+                        assignmentRepository(
+                                List.of(),
+                                new AtomicInteger(),
+                                new AtomicReference<>()
+                        ),
+                        workflow(),
+                        audit()
+                );
+
+        service.assignResponsibility(command(
+                Instant.parse("2026-09-29T09:00:00Z"),
+                null
+        ));
+
+        assertEquals(1, lockCalls.get());
+    }
+
     private static OperationalScopeTargetResolverPort resolver(boolean assignable) {
         return new OperationalScopeTargetResolverPort() {
             @Override public boolean supports(OperationalScopeType type) { return type == OperationalScopeType.PIPELINE; }

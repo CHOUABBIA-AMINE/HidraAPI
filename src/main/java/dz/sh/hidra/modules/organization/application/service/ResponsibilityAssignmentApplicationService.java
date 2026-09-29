@@ -112,7 +112,7 @@ public class ResponsibilityAssignmentApplicationService implements AssignRespons
                         context.operationReference()
                 );
 
-        OperationalScope scope = operationalScopeRegistryRepositoryPort.findById(command.scopeId())
+        OperationalScope scope = operationalScopeRegistryRepositoryPort.findByIdForUpdate(command.scopeId())
                 .orElseThrow(() -> new IllegalArgumentException(
                         "Unknown operational scope registry ID: " + command.scopeId()
                 ));

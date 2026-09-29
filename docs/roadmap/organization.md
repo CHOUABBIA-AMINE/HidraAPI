@@ -78,11 +78,10 @@ columns have been retired through later immutable Flyway migrations.
 Current correction status:
 
 - `ORG-034` through `ORG-055`: **Completed**.
-- `ORG-027`: **In Progress — verification rerun pending**. The authorization/workflow/audit
-  implementation is present, but CI #425 failed because the three `@Transactional`
-  responsibility services were `final` and therefore not proxyable by Spring CGLIB. This
-  reconciliation removes that proxying defect; ORG-027 returns to Completed only after green
-  exact-SHA CI.
+- `ORG-027`: **Completed**. Corrective commit
+  `279b5ece1588ec756d00e70db366bce0ccf4fc19` made all three transactional responsibility
+  services proxyable and CI #426 / run `36553395572` completed successfully. Authorization,
+  Workflow approval and Audit governance are verified on exact SHA.
 - `ORG-023`: **Blocked** on authorized legacy/consumer evidence. Later validated
   implementation does not retroactively satisfy that evidence gate.
 - `ORG-028`, `ORG-029`, `ORG-031`, and `ORG-033`: still partially open as documented
@@ -2287,8 +2286,8 @@ Completed unless its full current exit gate is satisfied.
 | `ORG-024` | Completed | `OperationalScopeReference` is now a canonical typed owner-target value object containing only `type` and owner-native `targetId`; GLOBAL forbids a target, entity-backed types require one, and ungoverned CUSTOM is rejected. `OperationalScopeType` exposes the corresponding domain semantics and focused domain tests cover null, blank, GLOBAL, CUSTOM and normalization cases. |
 | `ORG-025` | Completed | Organization now resolves `ORGANIZATION_UNIT` locally and `PIPELINE_SYSTEM`, `PIPELINE`, `FACILITY`, and `EQUIPMENT` through a topology-owned public application input port. Current code/name and lifecycle-derived assignability come from the owning module; organization imports no topology domain, repository, JPA, or infrastructure type. Existing validator tests cover wrong type, missing target, unassignable target and owner failure; new owner-query/adapter tests cover current display, retired owners and supported-type routing. |
 | `ORG-026` | Completed | Responsibility assignment now accepts only existing ACTIVE employee or organization-unit assignees, revalidates entity-backed owner existence/assignability before new assignment, rejects direct organization-unit self-target responsibility, preserves historical rows on owner retirement, and retains half-open overlap/idempotency/revocation behavior. Focused tests cover invalid/inactive assignees and retired owners. |
-| `ORG-027` | In Progress — verification rerun pending | The governance implementation exists: Identity-backed permission checks, Workflow approval for assign/revoke and Audit evidence for assign/revoke/reconcile. CI #425 failed because the transactional responsibility services were final and not proxyable by Spring CGLIB. The corrective commit removes `final` from all three transactional services and adds a guardrail; ORG-027 becomes Completed only after green exact-SHA CI. Database-level concurrency/versioning is explicitly deferred to ORG-028. |
-| `ORG-028` | In Progress | Immutable migration `V20260927_001__add_operational_scope_registry.sql` already establishes the registry plus nullable responsibility `scope_id` FK. Remaining work is dedicated PostgreSQL/Testcontainers coverage and any needed assignment concurrency/versioning hardening in a NEW later migration; the existing migration must not be edited or recreated. |
+| `ORG-027` | Completed | Identity-backed permission checks, Workflow approval for assign/revoke and Audit evidence for assign/revoke/reconcile are implemented. Corrective commit `279b5ece1588ec756d00e70db366bce0ccf4fc19` removed the Spring CGLIB proxy defect and CI #426 / run `36553395572` passed on that exact SHA. Database concurrency hardening is owned by ORG-028. |
+| `ORG-028` | In Progress — exact-SHA CI pending | Immutable migration `V20260927_001__add_operational_scope_registry.sql` remains unchanged. ORG-028 adds dedicated PostgreSQL/Testcontainers coverage plus new migration `V20260929_003__harden_operational_scope_responsibility_concurrency.sql` with canonical temporal validation and an ACTIVE canonical-identity index. Assignment creation serializes on a pessimistic write lock of the canonical OperationalScope row before overlap/idempotency checks; revocation serializes on a pessimistic write lock of the assignment row. Legacy rows with null `scope_id` remain outside the new canonical temporal rule. Completion awaits green exact-SHA CI. |
 | `ORG-029` | Blocked / partially implemented | Canonical registry persistence already uses `ResponsibilityAssignment.scopeId`; the old roadmap phrase “canonical pair” is retired. Backfill/quarantine is blocked until both ORG-028 residual schema hardening and ORG-023 authorized legacy/consumer evidence are satisfied. Legacy unit/employee scope columns must also be protected from accidental write-back before reconciliation runs. |
 | `ORG-030` | Planned | No versioned responsibility/scope REST migration exists yet. Future endpoints must derive actor/effective permissions server-side from authenticated security context, carry Workflow approval references rather than client-supplied security context, resolve current owner display data, and require provisioned Identity permissions plus Audit taxonomy. |
 | `ORG-031` | In Progress | Canonical embedded scope components are already removed from `OrganizationUnit` and `EmployeeAssignment`; therefore ORG-031 must not remove them again. Its residual scope is the transitional constructors/accessors, mapper calls and JPA compatibility bridges after API/consumer cutover, while preserving legacy evidence until ORG-032. |
@@ -2320,7 +2319,7 @@ future task may reintroduce writable `scopeType/targetId/code/name` identity on
 
 Sequencing rules:
 
-1. ORG-027 must first regain green exact-SHA CI after the Spring transaction-proxy repair.
+1. ORG-027 regained green exact-SHA verification in CI #426 and is complete.
 2. ORG-028 validates/hardens the already-existing additive registry schema and owns
    database/optimistic concurrency/versioning. Existing Flyway migration
    `V20260927_001__add_operational_scope_registry.sql` is immutable.
@@ -2349,6 +2348,54 @@ Sequencing rules:
    applicable legacy responsibility/unit/employee-assignment columns and can enforce non-null
    canonical `scope_id` only after signed parity/quarantine/recovery evidence.
 9. ORG-033 closes issue #130 only after exact-head end-to-end verification is green.
+
+### ORG-028 backward-compatible schema hardening increment
+
+**Commit scope:** validate and harden the existing registry schema without changing its canonical
+identity model.
+
+The immutable baseline remains:
+
+```text
+V20260927_001__add_operational_scope_registry.sql
+ResponsibilityAssignment.scopeId -> OperationalScope(id,type,targetId)
+```
+
+ORG-028 adds:
+
+- new migration `V20260929_003__harden_operational_scope_responsibility_concurrency.sql`;
+- canonical temporal validation: rows with non-null `scope_id` require
+  `valid_to IS NULL OR valid_to > valid_from`;
+- a partial ACTIVE-identity index on
+  `(scope_id, assignee_type, assignee_id, responsibility_type, valid_from, valid_to)`;
+- pessimistic locking of the canonical `OperationalScope` row before assignment
+  overlap/idempotency checks, which serializes competing assignments for the same scope;
+- pessimistic locking of the `ResponsibilityAssignment` row before revocation, which serializes
+  competing updates;
+- no PostgreSQL extension dependency and no new domain/API field.
+
+No JPA `@Version` column is added. The current domain aggregate does not carry a version token, so
+a persistence-only optimistic version would not reliably express stale domain state. The explicit
+database row locks protect the two current mutation paths while keeping the domain contract stable.
+
+Dedicated Testcontainers/PostgreSQL tests verify:
+
+- the original registry migration remains additive and its legacy compatibility columns remain;
+- GLOBAL/entity-backed registry shape and uniqueness;
+- responsibility `scope_id` FK behavior and nullable legacy compatibility;
+- canonical temporal rejection and migration-time fail-closed behavior for an already-invalid
+  canonical row;
+- legacy rows with `scope_id IS NULL` remain migratable;
+- the new ACTIVE-identity index exists.
+
+Focused application tests pin the assignment scope-lock and revocation row-lock boundaries.
+
+Deployment assumption: validation and non-concurrent index creation still acquire PostgreSQL DDL
+locks. ORG-028 therefore does **not** claim zero-lock/no-downtime deployment; production rollout
+requires a controlled migration window after canonical temporal preflight.
+
+**Status:** implementation committed under ORG-028; exact-SHA CI must be green before the task is
+marked Completed or ORG-029 is considered.
 
 ### ORG-027 reconciliation increment
 
@@ -2455,9 +2502,9 @@ Focused tests cover permission denial, completed/mismatched Workflow evidence, g
 assignment/revocation/reconciliation paths, catalog-code-to-ID audit mapping, missing Audit taxonomy,
 and exported-contract architecture classification.
 
-**Next section-18 action:** rerun ORG-027 verification on the corrective exact SHA. Do not begin
-ORG-028 until that run is green. After ORG-028, ORG-029 additionally requires the blocked ORG-023
-legacy/consumer evidence gate; ORG-030/031/032/033 retain their corrected prerequisites below.
+**Next section-18 action:** verify ORG-028 on its exact implementation SHA. Do not begin ORG-029
+until ORG-028 is green; even then, ORG-029 additionally requires the blocked ORG-023
+legacy/consumer evidence gate. ORG-030/031/032/033 retain their corrected prerequisites below.
 
 ### Reconciliation notes
 
@@ -2471,9 +2518,10 @@ legacy/consumer evidence gate; ORG-030/031/032/033 retain their corrected prereq
   `ResponsibilityAssignment.scopeId`; current target code/name remain owner data.
 - Legacy compatibility code and database columns are transitional and must not be
   treated as the canonical source of operational-scope identity.
-- ORG-027 governance code is implemented but exact-SHA verification is pending after CI #425
-  exposed the transaction-proxy defect. Do not start ORG-028 until the corrective commit is green.
-  The multilingual and dependency-integrity correction sequences in section 19 remain complete.
+- ORG-027 is complete after corrective exact-SHA CI #426 passed.
+- ORG-028 implementation now owns the remaining canonical schema/concurrency proof and must receive
+  green exact-SHA CI before any ORG-029 work.
+- The multilingual and dependency-integrity correction sequences in section 19 remain complete.
 
 **Execution rule:** A roadmap task's first implementation action must specify exact file allowlists and verification commands after inspecting current main; do not silently rewrite old task descriptions or mark future tasks complete. `ORG-028` and `ORG-032` must use separately numbered, never-reused migrations after rechecking the live Flyway sequence. Issue #130 remains open until the acceptance matrix is satisfied.
 

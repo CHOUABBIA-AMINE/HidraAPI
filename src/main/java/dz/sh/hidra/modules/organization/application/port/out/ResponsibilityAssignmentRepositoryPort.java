@@ -36,6 +36,16 @@ public interface ResponsibilityAssignmentRepositoryPort {
     Optional<ResponsibilityAssignment> findById(String id);
 
     /**
+     * Loads one assignment while holding a database write lock for the surrounding transaction.
+     *
+     * <p>The default keeps non-JPA test adapters source-compatible. The production JPA adapter
+     * overrides this method with a pessimistic write lock so concurrent revocations serialize.</p>
+     */
+    default Optional<ResponsibilityAssignment> findByIdForUpdate(String id) {
+        return findById(id);
+    }
+
+    /**
      * Returns all responsibility assignments for read-only reconciliation.
      *
      * <p>This contract deliberately returns domain models rather than persistence

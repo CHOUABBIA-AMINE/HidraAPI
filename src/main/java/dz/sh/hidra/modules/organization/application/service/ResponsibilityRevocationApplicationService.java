@@ -14,7 +14,7 @@
  * @Module      : organization
  * @Package     : dz.sh.hidra.modules.organization.application.service
  *
- * @Description : Ends authorized, workflow-approved responsibility assignments without deleting history.
+ * @Description : Ends authorized, workflow-approved responsibility assignments with serialized updates.
  *
  */
 package dz.sh.hidra.modules.organization.application.service;
@@ -71,7 +71,7 @@ public class ResponsibilityRevocationApplicationService implements RevokeRespons
                 );
 
         ResponsibilityAssignment existing = responsibilityAssignmentRepositoryPort
-                .findById(command.assignmentId())
+                .findByIdForUpdate(command.assignmentId())
                 .orElseThrow(() -> new IllegalArgumentException(
                         "Unknown responsibility assignment: " + command.assignmentId()
                 ));

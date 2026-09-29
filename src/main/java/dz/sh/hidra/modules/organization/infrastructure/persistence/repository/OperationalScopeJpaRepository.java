@@ -21,16 +21,23 @@ package dz.sh.hidra.modules.organization.infrastructure.persistence.repository;
 
 import dz.sh.hidra.modules.organization.domain.value.OperationalScopeType;
 import dz.sh.hidra.modules.organization.infrastructure.persistence.entity.OperationalScopeJpaEntity;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-
+import jakarta.persistence.LockModeType;
 import java.util.Optional;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 /**
  * Spring Data repository for canonical operational-scope registry rows.
  */
 @Repository
 public interface OperationalScopeJpaRepository extends JpaRepository<OperationalScopeJpaEntity, Long> {
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("select scope from OperationalScopeJpaEntity scope where scope.id = :id")
+    Optional<OperationalScopeJpaEntity> findByIdForUpdate(@Param("id") Long id);
 
     Optional<OperationalScopeJpaEntity> findByScopeTypeAndTargetId(
             OperationalScopeType scopeType,

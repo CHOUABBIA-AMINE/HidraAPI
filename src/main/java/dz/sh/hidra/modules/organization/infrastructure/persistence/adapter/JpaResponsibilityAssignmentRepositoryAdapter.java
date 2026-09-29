@@ -60,6 +60,12 @@ public class JpaResponsibilityAssignmentRepositoryAdapter implements Responsibil
     }
 
     @Override
+    public Optional<ResponsibilityAssignment> findByIdForUpdate(String id) {
+        return repository.findByIdForUpdate(id)
+                .map(ResponsibilityAssignmentPersistenceMapper::toDomain);
+    }
+
+    @Override
     public List<ResponsibilityAssignment> findAll() {
         return repository.findAll().stream()
                 .map(ResponsibilityAssignmentPersistenceMapper::toDomain)

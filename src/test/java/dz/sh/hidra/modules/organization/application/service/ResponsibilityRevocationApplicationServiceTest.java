@@ -210,6 +210,45 @@ class ResponsibilityRevocationApplicationServiceTest {
         );
     }
 
+    @Test
+    void revocationUsesWriteLockRepositoryBoundary() {
+        AtomicInteger lockCalls = new AtomicInteger();
+        AtomicInteger saveCalls = new AtomicInteger();
+
+        ResponsibilityAssignmentRepositoryPort repository = new ResponsibilityAssignmentRepositoryPort() {
+            @Override
+            public ResponsibilityAssignment save(ResponsibilityAssignment model) {
+                saveCalls.incrementAndGet();
+                return model;
+            }
+
+            @Override
+            public Optional<ResponsibilityAssignment> findById(String id) {
+                throw new AssertionError("Revocation must not use the unlocked findById path.");
+            }
+
+            @Override
+            public Optional<ResponsibilityAssignment> findByIdForUpdate(String id) {
+                lockCalls.incrementAndGet();
+                return Optional.of(assignment(AssignmentStatus.ACTIVE, null));
+            }
+        };
+
+        ResponsibilityRevocationApplicationService service =
+                new ResponsibilityRevocationApplicationService(repository, workflow(), audit());
+
+        service.revokeResponsibility(
+                new RevokeResponsibilityCommand(
+                        "resp-1",
+                        END,
+                        context(ResponsibilityRevocationApplicationService.REVOKE_PERMISSION)
+                )
+        );
+
+        assertEquals(1, lockCalls.get());
+        assertEquals(1, saveCalls.get());
+    }
+
     private static ResponsibilityAssignment assignment(
             AssignmentStatus status,
             Instant validTo

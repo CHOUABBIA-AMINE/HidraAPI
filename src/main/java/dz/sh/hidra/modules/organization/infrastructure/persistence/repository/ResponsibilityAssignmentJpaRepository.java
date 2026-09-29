@@ -23,10 +23,14 @@ import dz.sh.hidra.modules.organization.domain.value.AssignmentStatus;
 import dz.sh.hidra.modules.organization.domain.value.ResponsibilityType;
 import dz.sh.hidra.modules.organization.domain.value.ResponsibilityAssigneeType;
 import dz.sh.hidra.modules.organization.infrastructure.persistence.entity.ResponsibilityAssignmentJpaEntity;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-
+import jakarta.persistence.LockModeType;
 import java.util.List;
+import java.util.Optional;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 /**
  * Spring Data JPA repository for ResponsibilityAssignment.
@@ -34,6 +38,10 @@ import java.util.List;
 @Repository
 public interface ResponsibilityAssignmentJpaRepository
         extends JpaRepository<ResponsibilityAssignmentJpaEntity, String> {
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("select assignment from ResponsibilityAssignmentJpaEntity assignment where assignment.id = :id")
+    Optional<ResponsibilityAssignmentJpaEntity> findByIdForUpdate(@Param("id") String id);
 
     List<ResponsibilityAssignmentJpaEntity> findByScopeId(Long scopeId);
 

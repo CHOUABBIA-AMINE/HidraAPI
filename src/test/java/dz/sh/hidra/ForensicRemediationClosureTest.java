@@ -137,20 +137,28 @@ class ForensicRemediationClosureTest {
     }
 
     @Test
-    void residualProjectionVocabularyRemainsClassified() throws IOException {
+    void residualProjectionVocabularyRemainsRemovedAndDocumented() throws IOException {
+        Path projectionType = Path.of(
+                "src/main/java/dz/sh/hidra/modules/topology/domain/value/ProjectionType.java"
+        );
         String classification =
                 Files.readString(Path.of("docs/architecture/static-orphan-classification.md"));
         String closure =
                 Files.readString(Path.of("docs/architecture/forensic-remediation-closure.md"));
 
         assertTrue(
-                classification.contains("topology.ProjectionType")
-                        && classification.contains("DELETE_RESIDUAL"),
-                "ProjectionType must remain classified until an explicit cleanup task removes it."
+                Files.notExists(projectionType),
+                "HRA-122 removed the zero-incoming Topology ProjectionType residual."
         );
         assertTrue(
-                closure.contains("**HRA-120 status: BLOCKED.**"),
-                "Do not mark HRA-120 complete while the pinned HRA-102 blocker exists."
+                classification.contains("topology.ProjectionType")
+                        && classification.contains("DELETE_RESIDUAL")
+                        && classification.contains("REMOVED_HRA_122"),
+                "ProjectionType removal must retain its evidence-backed orphan disposition."
+        );
+        assertTrue(
+                closure.contains("## HRA-122 corrective follow-up"),
+                "Forensic closure evidence must record the HRA-122 corrective removal."
         );
     }
 

@@ -362,14 +362,14 @@ Mandatory review examples include:
 
 | Code | Exact commit message | Scope | Exit criteria | Prerequisite | Status |
 |---|---|---|---|---|---|
-| `HRA-120` | `test(architecture): close forensic remediation baseline` | Re-run the same forensic methodology and compare against the baseline. After HRA-121 and HRA-122, rerun this same closure task against the new live head; do not weaken its guardrails. | No confirmed data loss; no unapproved cross-module private coupling; no unclassified orphan; no retained fictional event architecture; all remaining duplication is deliberate/documented; no forbidden non-enum domain representation crosses a REST wire boundary. | accepted remediation tracks; rerun after HRA-121 + HRA-122 | **Blocked** — HRA-121 has removed the direct HRA-102 REST/domain-record exposure and tightened the closure guardrail to zero permitted non-enum wire/domain leakage. HRA-120 remains blocked until HRA-122 removes the separately classified zero-incoming `topology.ProjectionType` residual and the same forensic closure task is rerun against the resulting live head. |
+| `HRA-120` | `test(architecture): close forensic remediation baseline` | Re-run the same forensic methodology and compare against the baseline. After HRA-121 and HRA-122, rerun this same closure task against the new live head; do not weaken its guardrails. | No confirmed data loss; no unapproved cross-module private coupling; no unclassified orphan; no retained fictional event architecture; all remaining duplication is deliberate/documented; no forbidden non-enum domain representation crosses a REST wire boundary. | accepted remediation tracks; rerun after HRA-121 + HRA-122 | **Blocked pending rerun** — HRA-121 removed the direct HRA-102 REST/domain-record exposure and HRA-122 removed the classified `topology.ProjectionType` residual. Both concrete blockers from the 2026-09-29 replay are now corrected, but HRA-120 is not complete until the same forensic methodology is rerun against the new live head and every closure gate passes. |
 
 ### 15.1 Authorized HRA-120 blocker remediation
 
 | Code | Exact commit message | Scope | Exit criteria | Prerequisite | Status |
 |---|---|---|---|---|---|
 | `HRA-121` | `fix(api): remove permission scope domain-record exposure` | Replace `identity.api.rest.request.EvaluatePermissionRequest.scope : AuthorizationScope` with an API-owned boundary representation for authorization scope. Preserve the existing external scope fields/semantics (`scopeType`, `scopeReferenceId`, `scopeCodeSnapshot`) and keep `ScopeType` direct enum reuse only if it still satisfies HRA-102. Map the API-owned scope representation in the Identity REST mapper to the existing application/domain `AuthorizationScope`; application/domain authorization semantics remain unchanged. Update focused controller/mapper/request tests and the forensic closure guardrail so the forbidden non-enum REST/domain exposure set becomes empty. Do not move REST annotations/serialization concerns into the domain record and do not change persistence schema. | `EvaluatePermissionRequest` no longer imports or exposes `AuthorizationScope`; REST request JSON retains the intended scope structure; `IdentityRestMapper` performs the explicit boundary conversion; application query/domain policy still receives the domain `AuthorizationScope`; focused tests cover GLOBAL normalization and non-global scope mapping; HRA-102 policy remains intact; `ForensicRemediationClosureTest` observes zero direct REST request/response imports of non-enum domain representation. | HRA-120 blocker evidence + HRA-102 policy | **Completed** — introduced API-owned `AuthorizationScopeRequest` with the existing scope wire fields; `EvaluatePermissionRequest` no longer imports/exposes domain `AuthorizationScope`; `IdentityRestMapper` explicitly converts the API scope to the existing domain value before creating `EvaluatePermissionQuery`; focused request/mapper/controller tests cover record shape, GLOBAL normalization, non-global normalization, null scope, and application forwarding; the forensic closure guardrail now requires zero direct REST request/response non-enum domain representation. Authentication provider routing, JWT issuance, authorization semantics, and persistence are unchanged. |
-| `HRA-122` | `refactor(topology): remove residual projection vocabulary` | Delete only the HRA-120-classified zero-incoming `topology.domain.value.ProjectionType` enum. Re-run static incoming-reference search immediately before deletion; if a live Java/configuration/serialization/reflection consumer appears, stop and reclassify instead of deleting. Update the orphan-classification and forensic closure evidence/guardrail to record the removal. Do not change the unrelated Analytics `projectionType` string field or any analytics persistence/API contract merely because it shares the word “projection”. | `ProjectionType.java` is absent; no production/test source imports or references the deleted Topology enum; Analytics projection fields/contracts are unchanged; static-orphan evidence records the classified residual as removed; repository validation passes. | HRA-120 `DELETE_RESIDUAL` evidence | Planned |
+| `HRA-122` | `refactor(topology): remove residual projection vocabulary` | Delete only the HRA-120-classified zero-incoming `topology.domain.value.ProjectionType` enum. Re-run static incoming-reference search immediately before deletion; if a live Java/configuration/serialization/reflection consumer appears, stop and reclassify instead of deleting. Update the orphan-classification and forensic closure evidence/guardrail to record the removal. Do not change the unrelated Analytics `projectionType` string field or any analytics persistence/API contract merely because it shares the word “projection”. | `ProjectionType.java` is absent; no production/test source imports or references the deleted Topology enum; Analytics projection fields/contracts are unchanged; static-orphan evidence records the classified residual as removed; repository validation passes. | HRA-120 `DELETE_RESIDUAL` evidence | **Completed** — exact-head revalidation on `9d62c46e1a14b1f866f6d48f565322411fb3d960` found no Java/configuration/serialization/reflection consumer of the Topology enum and no reuse of its complete vocabulary outside its own declaration. `ProjectionType.java` was deleted; orphan and forensic evidence record `DELETE_RESIDUAL → REMOVED_HRA_122`; the closure guardrail now asserts the file remains absent. Unrelated Analytics `projectionType` string state/contracts were not changed. |
 
 ## 16. Recommended execution order
 
@@ -418,15 +418,17 @@ HRA-120 (rerun same forensic closure task; complete only if all exit gates pass)
 
 ## 17. Current execution point
 
-HRA-121 is complete: the Identity permission-evaluation REST contract now uses an API-owned
-authorization-scope representation and the HRA-102 forensic guardrail requires zero direct
-REST request/response exposure of non-enum domain representation.
+HRA-121 and HRA-122 are complete. The direct Identity REST/domain-record exposure is removed and
+the evidence-backed zero-incoming Topology `ProjectionType` residual is deleted. The unrelated
+Analytics projection contract was not changed.
 
-HRA-120 remains **Blocked** until the separately classified Topology residual is removed and the
-forensic closure is replayed. HRA-023 remains separately blocked by its Organization
-reconciliation/cutover gate.
+HRA-120 is now **Blocked pending rerun**, not completed. Its previous CI was green, but closure must
+be established by replaying the same forensic methodology against the new live head after both
+corrective tasks.
 
-**Next task:** `HRA-122 — refactor(topology): remove residual projection vocabulary`.
+HRA-023 remains separately blocked by its Organization reconciliation/cutover gate.
 
-After HRA-122 completes, rerun HRA-120 using the same forensic methodology and guardrails. Do not
-weaken HRA-102 or broaden HRA-122 into unrelated Analytics projection work.
+**Next task:** `HRA-120 — test(architecture): close forensic remediation baseline` (rerun).
+
+The rerun must use the existing HRA-120 guardrails and methodology, not weaken them or introduce a
+new exception merely to produce a green closure result.

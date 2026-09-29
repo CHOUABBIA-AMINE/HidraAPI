@@ -200,3 +200,26 @@ incoming Java reference and no exact retained-type decision, and its values alig
 Topology projection path. HRA-120 does not delete production types; removal requires an explicitly
 authorized code task. This classification ensures the closure replay leaves no zero-incoming candidate
 unclassified while preserving evidence-before-deletion discipline.
+
+
+## HRA-122 residual removal
+
+HRA-122 revalidated the HRA-120 `DELETE_RESIDUAL` disposition against exact execution head
+`9d62c46e1a14b1f866f6d48f565322411fb3d960` before deletion.
+
+Repository-wide search found:
+
+- no Java import or fully-qualified reference to
+  `dz.sh.hidra.modules.topology.domain.value.ProjectionType`;
+- no second Java use of the enum simple name beyond its own declaration;
+- no configuration/serialization/reflection string reference to the fully-qualified type; and
+- no reuse of the complete `GRAPH, MAP, ROUTING, SIMULATION_INPUT, VISUALIZATION` vocabulary
+  outside the enum itself.
+
+The unrelated Analytics `projectionType` state remains a string-owned Analytics contract and is
+not a consumer of the Topology enum.
+
+**Disposition:** `topology.ProjectionType` — `DELETE_RESIDUAL → REMOVED_HRA_122`.
+
+`ProjectionType.java` is therefore removed. The historical HRA-120 classification above is
+retained as evidence of why deletion was authorized rather than rewritten retroactively.

@@ -157,3 +157,23 @@ HRA-120 remains **BLOCKED** pending the separately authorized HRA-122 removal of
 `topology.ProjectionType` residual and a subsequent full HRA-120 replay. HRA-121 does not alter
 LOCAL, LDAP/AD, OIDC authentication, HidraPrincipal normalization, JWT issuance, authorization
 policy semantics, or database schema.
+
+
+## HRA-122 corrective follow-up
+
+HRA-122 removes the separately classified Topology residual without broadening into Analytics or
+other projection-related concepts.
+
+Exact-head revalidation before deletion confirmed that
+`dz.sh.hidra.modules.topology.domain.value.ProjectionType` had no Java, configuration,
+serialization, or reflection consumer. The complete enum vocabulary also appeared nowhere else.
+The unrelated Analytics `projectionType` field remains unchanged and continues to be owned by the
+Analytics module as string state.
+
+`ProjectionType.java` is now removed, and `ForensicRemediationClosureTest` verifies that the
+source file stays absent while the orphan-classification evidence records
+`DELETE_RESIDUAL → REMOVED_HRA_122`.
+
+After HRA-121 and HRA-122, both concrete blockers found by the 2026-09-29 HRA-120 replay have been
+corrected. **HRA-120 remains BLOCKED only pending a fresh replay of the same forensic methodology
+against the new live head.** This HRA-122 task does not itself claim forensic closure.

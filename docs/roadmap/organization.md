@@ -78,9 +78,11 @@ columns have been retired through later immutable Flyway migrations.
 Current correction status:
 
 - `ORG-034` through `ORG-055`: **Completed**.
-- `ORG-027`: **Completed**. Assign, revoke, typed list/query and read-only reconciliation
-  now enforce Identity-backed effective permissions; state-changing writes require completed
-  Workflow approval evidence; all three governed paths append catalog-backed Audit evidence.
+- `ORG-027`: **In Progress — verification rerun pending**. The authorization/workflow/audit
+  implementation is present, but CI #425 failed because the three `@Transactional`
+  responsibility services were `final` and therefore not proxyable by Spring CGLIB. This
+  reconciliation removes that proxying defect; ORG-027 returns to Completed only after green
+  exact-SHA CI.
 - `ORG-023`: **Blocked** on authorized legacy/consumer evidence. Later validated
   implementation does not retroactively satisfy that evidence gate.
 - `ORG-028`, `ORG-029`, `ORG-031`, and `ORG-033`: still partially open as documented
@@ -95,9 +97,12 @@ implemented registry model above. Closed PR #133 proposed ADR-0006 but was never
 must **not** be treated as repository authority. A future ADR correction must be prepared
 from current `main`; do not resurrect or merge the stale PR branch.
 
-CI evidence is recorded only when a run has actually completed. At the time of this roadmap
-reconciliation, CI #383 for the latest reconciliation commit is still in progress, so this
-document does not claim that run passed.
+CI evidence is recorded only when a run has actually completed. CI #425 / run
+`36552048193` for commit `eefcc25541666ed3138e1efa4dd2386480cbbc7b` completed with
+failure: Spring could not create a CGLIB proxy for the final transactional
+`ResponsibilityAssignmentApplicationService`. The same proxyability rule applies to the
+revocation and reconciliation services. The corrective commit makes all three proxyable and
+must receive a green exact-SHA CI result before ORG-027 is considered closed.
 
 ---
 
@@ -2259,22 +2264,21 @@ Maven clean verify    : not run — isolated ZIP generation, not full repository
 | `ORG-024` | `feat(organization): introduce canonical operational scope reference invariants` | Refine OperationalScopeReference/OperationalScopeType validation for typed identity; define GLOBAL no-target and reject unregistered CUSTOM; add value-object and policy tests, without touching persistence contracts. | Domain unit tests for null/partial/type-disallowed references and no invented identifiers. | ORG-023 |
 | `ORG-025` | `feat(organization): add scope owner-resolution application ports` | Design/implement owner registry and read-only public-port resolution for currently implemented scope owners, current code/name and assignability; keep organization domain independent of topology internals. | Resolver adapter/contract tests for wrong type, absent ID, retired owner, unavailable owner and current display projection. | ORG-024 |
 | `ORG-026` | `feat(organization): enforce multi-scope responsibility domain policy` | Reuse ResponsibilityAssignment for unit/employee assignees, effective-dated multi-target roles, overlap/idempotency and revocation policies; clarify ORGANIZATION_UNIT self/cycle semantics and owner lifecycle. | Domain and application tests: two scopes per unit, concurrent distinct roles, duplicate/overlap, temporal boundaries and invalid assignees. | ORG-025 |
-| `ORG-027` | `feat(organization): add validated responsibility application use cases` | Public input ports/commands/queries to assign, revoke, list and reconcile responsibilities; enforce resolver, identity authorization, workflow/audit and concurrency policy. Do not imply UI or live actuation. | Application contract tests for validation and authorization, retirement/recheck, idempotency and no repository leakage. | ORG-026 |
-| `ORG-028` | `chore(organization): add backward-compatible scope schema` | Add a NEW Flyway migration with required constraints/indexes/nullable GLOBAL target ID and needed assignment versioning; keep existing table/data and old columns until verified cutover. | Testcontainers/PostgreSQL migration and constraint tests incl. GLOBAL, temporal and null semantics; document no-downtime assumptions. | ORG-027 |
-| `ORG-029` | `feat(organization): align responsibility persistence and reconciliation` | Adapt JPA adapters to canonical pair, implement quarantined legacy tuple reconciliation/backfill under reviewed data rules and preserve history; no guessed topology IDs. | Representative DB tests for existing/mismatched/orphan/duplicate tuples and safe recovery; record reconciliation totals privately. | ORG-028 |
-| `ORG-030` | `feat(organization): migrate operational scope API contracts` | Add versioned read/write assignment endpoints and owner-resolved display; reject caller-supplied independent current code/name; inventory and migrate organization and employee consumers. | REST/OpenAPI, API backward-compatibility, access control and owner-freshness tests. | ORG-029 |
-| `ORG-031` | `refactor(organization): remove duplicated active scope ownership` | After proven migration and consumer sign-off, remove canonical embedded scope tuple from OrganizationUnit and EmployeeAssignment domain/API mapping; preserve historical snapshots where explicitly governed. | Compile, API and integration regressions; confirm multi-scope remains intact and no duplicated active source of truth. | ORG-030 |
-| `ORG-032` | `chore(organization): retire legacy redundant scope columns` | In a separate later Flyway migration, remove deprecated scope code/name and retired unit/employee tuple columns only once migration/reporting consumers are fully reconciled; retain audit history. | DB migration/recovery tests and reviewed pre-deployment gates. Do not drop data without signed backfill and rollback. | ORG-031 |
-| `ORG-033` | `test(organization): verify scope integrity end to end` | Harden architecture guardrails and integration tests across module owner ports, concurrent edits, target retirement, temporal lookup, audit and authorization; update completion evidence. | mvn -q -DskipTests compile; mvn -q test; mvn -q clean verify, plus real PostgreSQL/Testcontainers when available; report blockers honestly. | ORG-032 |
+| `ORG-027` | `feat(organization): add validated responsibility application use cases` | Public input ports/commands/queries to assign, revoke, list and reconcile responsibilities; enforce resolver, Identity-backed authorization and Workflow/Audit governance. Application-level overlap/idempotency remains here; database/optimistic concurrency hardening belongs to ORG-028. Do not imply UI or live actuation. | Focused application/contract tests plus green exact-SHA CI proving Spring proxyability, validation/authorization, approval/recheck, idempotency and no repository leakage. | ORG-026 |
+| `ORG-028` | `chore(organization): add backward-compatible scope schema` | Treat immutable `V20260927_001__add_operational_scope_registry.sql` as the existing additive baseline: `ResponsibilityAssignment.scopeId -> OperationalScope(id,type,targetId)`. Do not recreate or edit that migration. Add dedicated PostgreSQL/Testcontainers coverage for its constraints/null semantics and introduce any required assignment version/concurrency hardening only through a NEW migration newer than the current Flyway maximum. Keep `scope_id` nullable and all legacy columns until verified backfill/cutover. | PostgreSQL/Testcontainers tests for GLOBAL/entity-backed registry shape, FK/index behavior, temporal/null semantics, rollback and concurrency/versioning assumptions; green exact-SHA CI. | ORG-027 green exact-SHA verification |
+| `ORG-029` | `feat(organization): align responsibility persistence and reconciliation` | Preserve the registry architecture. Reconcile each authorized legacy tuple to an exact owner target, find/create the corresponding `OperationalScope(type,targetId)` registry row, then backfill `ResponsibilityAssignment.scope_id`; quarantine unresolved/mismatched/orphan/duplicate tuples and never guess topology IDs. Before any save-path can touch legacy unit/employee scope evidence, make those compatibility columns read-only or otherwise prove they cannot be overwritten. | Representative PostgreSQL tests for existing/mismatched/orphan/duplicate tuples, idempotent registry reuse, quarantine, safe recovery and preservation of legacy evidence; record totals privately. | ORG-028 **and ORG-023 accepted legacy/consumer evidence** |
+| `ORG-030` | `feat(organization): migrate operational scope API contracts` | Add versioned responsibility/scope read/write endpoints and owner-resolved display. The server derives actor identity and effective permissions from authenticated platform security/Identity grants; clients must never submit actor IDs or effective-permission sets. Write requests may carry only business input plus required Workflow approval references. Reject independent current code/name. Provision the required Identity permission codes and Audit taxonomy before exposing writes. | REST/OpenAPI/backward-compatibility tests, authenticated-principal mapping, permission denial, approved/rejected Workflow evidence, Audit append/taxonomy provisioning and owner-freshness tests. | ORG-029 |
+| `ORG-031` | `refactor(organization): remove duplicated active scope ownership` | Canonical embedded scope state is already absent from `OrganizationUnit` and `EmployeeAssignment` domain/API models. After ORG-030 cutover and consumer sign-off, remove only the remaining deprecated constructors/accessors, legacy mapper calls and writable/read compatibility bridges; do not remove the canonical registry/`scopeId` model. Preserve historical evidence until ORG-032. | Compile/API/integration regressions plus repository scan proving no runtime consumer relies on deprecated scope tuple bridges and multi-scope responsibility remains intact. | ORG-030 |
+| `ORG-032` | `chore(organization): retire legacy redundant scope columns` | In a separately numbered later Flyway migration, after signed backfill/consumer/recovery evidence, retire legacy `operational_scope_*` columns from organization units, employee assignments and responsibility assignments as applicable. Make canonical responsibility `scope_id` mandatory only after every accepted row is reconciled/quarantined. Retain governed audit/history outside the dropped compatibility columns. | PostgreSQL forward/failure/recovery tests, parity counts, rollback plan and reviewed pre-deployment gate. Never modify prior migrations and never drop data without signed evidence. | ORG-031 plus completed ORG-029 reconciliation evidence |
+| `ORG-033` | `test(organization): verify scope integrity end to end` | Final closure across registry identity, owner ports, authenticated Identity-backed permissions, Workflow approval/rejection, Audit evidence, concurrent edits/versioning, target retirement, temporal lookup, reconciliation/quarantine, API cutover and retired compatibility state. | `mvn -q -DskipTests compile`; `mvn -q test`; `mvn -q clean verify`; deterministic OpenAPI publication; real PostgreSQL/Testcontainers; green exact-SHA CI and no unresolved issue-#130 acceptance gate. | ORG-032 |
 
 ### Correction status (issue #130)
 
-The status below was re-reconciled on **2026-09-27** against GitHub `main` at
-`34e49d6232d84894280a1fa2dae45d0cfefb85fa`. Earlier CI #357 evidence remains historical;
-CI #378 through #382 validated the later Organization correction sequence, while CI #383
-for the newest reconciliation increment is still in progress at the time of this edit.
-Status reflects repository evidence rather than old ZIP-era execution notes. A task is not
-marked Completed unless its full roadmap exit gate is satisfied.
+The status below was re-reconciled on **2026-09-29** against GitHub `main` after
+`eefcc25541666ed3138e1efa4dd2386480cbbc7b`. Earlier green CI remains historical evidence
+only. CI #425 exposed a Spring transaction-proxy defect in the ORG-027 increment, so status
+reflects the latest exact-head evidence rather than older green runs. A task is not marked
+Completed unless its full current exit gate is satisfied.
 
 | Code | Status | Reconciled evidence on current main |
 |---|---|---|
@@ -2283,13 +2287,68 @@ marked Completed unless its full roadmap exit gate is satisfied.
 | `ORG-024` | Completed | `OperationalScopeReference` is now a canonical typed owner-target value object containing only `type` and owner-native `targetId`; GLOBAL forbids a target, entity-backed types require one, and ungoverned CUSTOM is rejected. `OperationalScopeType` exposes the corresponding domain semantics and focused domain tests cover null, blank, GLOBAL, CUSTOM and normalization cases. |
 | `ORG-025` | Completed | Organization now resolves `ORGANIZATION_UNIT` locally and `PIPELINE_SYSTEM`, `PIPELINE`, `FACILITY`, and `EQUIPMENT` through a topology-owned public application input port. Current code/name and lifecycle-derived assignability come from the owning module; organization imports no topology domain, repository, JPA, or infrastructure type. Existing validator tests cover wrong type, missing target, unassignable target and owner failure; new owner-query/adapter tests cover current display, retired owners and supported-type routing. |
 | `ORG-026` | Completed | Responsibility assignment now accepts only existing ACTIVE employee or organization-unit assignees, revalidates entity-backed owner existence/assignability before new assignment, rejects direct organization-unit self-target responsibility, preserves historical rows on owner retirement, and retains half-open overlap/idempotency/revocation behavior. Focused tests cover invalid/inactive assignees and retired owners. |
-| `ORG-027` | Completed | Register-scope, assign, revoke, typed list/query and read-only reconciliation flows exist. Responsibility assign/revoke now require Identity-backed effective permission codes and completed Workflow approval targeted to a stable operation reference; reconciliation requires its dedicated permission. Assign/revoke/reconcile append catalog-backed Audit evidence through a narrow exported contract that resolves active Audit taxonomy codes instead of inventing IDs. Architecture guardrails explicitly allow only the new Workflow/Audit Organization contract packages. |
-| `ORG-028` | In Progress | Additive migration `V20260927_001__add_operational_scope_registry.sql` creates the canonical registry and nullable responsibility `scope_id` FK while retaining legacy columns. Required dedicated PostgreSQL/Testcontainers constraint coverage and the full roadmap versioning gate are not yet evidenced. |
-| `ORG-029` | In Progress | Canonical registry and responsibility JPA entity/repository/mapper/adapter code exists and responsibility persistence uses `scopeId`. Verified reconciliation/backfill/quarantine of legacy tuples is still missing, so the task is not complete. |
-| `ORG-030` | Planned | No versioned responsibility/scope REST migration with owner-resolved display and backward-compatibility evidence is present yet. |
-| `ORG-031` | In Progress | Canonical embedded scope components were removed from `OrganizationUnit` and `EmployeeAssignment`, and responsibility uses `scopeId`. Transitional deprecated constructors/accessors and legacy persistence mappings remain; prerequisite migration/consumer sign-off is not complete. |
-| `ORG-032` | Planned | Legacy `operational_scope_*` database columns remain intentionally in place. No destructive retirement migration has been added. |
-| `ORG-033` | In Progress | Current main passes the repository compile/test/full verify and acceptance compile/test/clean verify stages, plus OpenAPI publication, in CI #357. End-to-end scope integrity is still incomplete because authoritative entity-backed owner resolvers, legacy data reconciliation/backfill, API cutover and destructive retirement gates remain open. |
+| `ORG-027` | In Progress — verification rerun pending | The governance implementation exists: Identity-backed permission checks, Workflow approval for assign/revoke and Audit evidence for assign/revoke/reconcile. CI #425 failed because the transactional responsibility services were final and not proxyable by Spring CGLIB. The corrective commit removes `final` from all three transactional services and adds a guardrail; ORG-027 becomes Completed only after green exact-SHA CI. Database-level concurrency/versioning is explicitly deferred to ORG-028. |
+| `ORG-028` | In Progress | Immutable migration `V20260927_001__add_operational_scope_registry.sql` already establishes the registry plus nullable responsibility `scope_id` FK. Remaining work is dedicated PostgreSQL/Testcontainers coverage and any needed assignment concurrency/versioning hardening in a NEW later migration; the existing migration must not be edited or recreated. |
+| `ORG-029` | Blocked / partially implemented | Canonical registry persistence already uses `ResponsibilityAssignment.scopeId`; the old roadmap phrase “canonical pair” is retired. Backfill/quarantine is blocked until both ORG-028 residual schema hardening and ORG-023 authorized legacy/consumer evidence are satisfied. Legacy unit/employee scope columns must also be protected from accidental write-back before reconciliation runs. |
+| `ORG-030` | Planned | No versioned responsibility/scope REST migration exists yet. Future endpoints must derive actor/effective permissions server-side from authenticated security context, carry Workflow approval references rather than client-supplied security context, resolve current owner display data, and require provisioned Identity permissions plus Audit taxonomy. |
+| `ORG-031` | In Progress | Canonical embedded scope components are already removed from `OrganizationUnit` and `EmployeeAssignment`; therefore ORG-031 must not remove them again. Its residual scope is the transitional constructors/accessors, mapper calls and JPA compatibility bridges after API/consumer cutover, while preserving legacy evidence until ORG-032. |
+| `ORG-032` | Planned | Legacy `operational_scope_*` columns remain intentionally across responsibility/unit/employee-assignment persistence. Final retirement must cover all applicable compatibility columns and may make canonical responsibility `scope_id` non-null only after signed reconciliation/quarantine and recovery evidence. |
+| `ORG-033` | In Progress | Historical verification exists, but current exact-head verification is not green because CI #425 failed during ORG-027 Spring context creation. Final closure must cover PostgreSQL migration/recovery, registry resolution, authorization, Workflow approval/rejection, Audit evidence, concurrency/versioning, target retirement, reconciliation/quarantine, API cutover and compatibility retirement. |
+
+
+### 2026-09-29 forward-roadmap reconciliation
+
+The ORG-028 through ORG-033 plan is reconciled to current `main` before further execution.
+
+Canonical architecture that every remaining task must preserve:
+
+```text
+ResponsibilityAssignment.scopeId
+        |
+        v
+OperationalScope.id : Long
+OperationalScope.type : OperationalScopeType
+OperationalScope.targetId : owner-native target ID
+        |
+        v
+approved authoritative owner-resolution contract
+```
+
+The former “typed pair directly on each responsibility assignment” wording is obsolete. No
+future task may reintroduce writable `scopeType/targetId/code/name` identity on
+`ResponsibilityAssignment`.
+
+Sequencing rules:
+
+1. ORG-027 must first regain green exact-SHA CI after the Spring transaction-proxy repair.
+2. ORG-028 validates/hardens the already-existing additive registry schema and owns
+   database/optimistic concurrency/versioning. Existing Flyway migration
+   `V20260927_001__add_operational_scope_registry.sql` is immutable.
+3. ORG-029 may backfill only after **both** ORG-028 and the ORG-023 authorized legacy/consumer
+   evidence gate. Backfill means exact legacy tuple -> authoritative owner resolution ->
+   registry row -> `scope_id`; unresolved rows are quarantined, never guessed.
+4. Before ORG-029 mutates any row, legacy scope columns on OrganizationUnit and
+   EmployeeAssignment must be protected from ordinary JPA write-back. Their canonical domain
+   accessors already return no scope state, so writable compatibility mappings could otherwise
+   erase unreconciled evidence during a read/modify/save cycle.
+5. ORG-030 derives actor identity/effective permissions from the authenticated server security
+   context. A client must never submit `actorId` or `effectivePermissions`. The write boundary
+   may accept Workflow approval references and business input only.
+6. Before ORG-030 enables responsibility writes for normal users, provision and verify these
+   Identity permissions:
+   `organization:responsibility:assign`,
+   `organization:responsibility:revoke`,
+   `organization:responsibility:reconcile`.
+   Also provision active Audit taxonomy for
+   `ORGANIZATION_RESPONSIBILITY_ASSIGNED`,
+   `ORGANIZATION_RESPONSIBILITY_REVOKED`,
+   `ORGANIZATION_RESPONSIBILITY_RECONCILED`, and category `BUSINESS`.
+7. ORG-031 removes only transitional Java/JPA compatibility bridges; canonical scope state was
+   already removed from OrganizationUnit and EmployeeAssignment.
+8. ORG-032 is the only destructive operational-scope-column retirement gate. It must cover all
+   applicable legacy responsibility/unit/employee-assignment columns and can enforce non-null
+   canonical `scope_id` only after signed parity/quarantine/recovery evidence.
+9. ORG-033 closes issue #130 only after exact-head end-to-end verification is green.
 
 ### ORG-027 reconciliation increment
 
@@ -2396,9 +2455,9 @@ Focused tests cover permission denial, completed/mismatched Workflow evidence, g
 assignment/revocation/reconciliation paths, catalog-code-to-ID audit mapping, missing Audit taxonomy,
 and exported-contract architecture classification.
 
-**Next section-18 task after ORG-027:** continue ORG-028's remaining PostgreSQL/Testcontainers
-constraint/versioning evidence. Do not start ORG-030 or ORG-032 while their prerequisites remain
-unsatisfied.
+**Next section-18 action:** rerun ORG-027 verification on the corrective exact SHA. Do not begin
+ORG-028 until that run is green. After ORG-028, ORG-029 additionally requires the blocked ORG-023
+legacy/consumer evidence gate; ORG-030/031/032/033 retain their corrected prerequisites below.
 
 ### Reconciliation notes
 
@@ -2412,9 +2471,9 @@ unsatisfied.
   `ResponsibilityAssignment.scopeId`; current target code/name remain owner data.
 - Legacy compatibility code and database columns are transitional and must not be
   treated as the canonical source of operational-scope identity.
-- ORG-027 is complete. The multilingual and dependency-integrity correction sequences in
-  section 19 remain complete. Execution may now continue with the explicitly open ORG-028/029/031/033
-  gates while respecting the still-blocked ORG-023 evidence gate and the planned ORG-030/032 sequence.
+- ORG-027 governance code is implemented but exact-SHA verification is pending after CI #425
+  exposed the transaction-proxy defect. Do not start ORG-028 until the corrective commit is green.
+  The multilingual and dependency-integrity correction sequences in section 19 remain complete.
 
 **Execution rule:** A roadmap task's first implementation action must specify exact file allowlists and verification commands after inspecting current main; do not silently rewrite old task descriptions or mark future tasks complete. `ORG-028` and `ORG-032` must use separately numbered, never-reused migrations after rechecking the live Flyway sequence. Issue #130 remains open until the acceptance matrix is satisfied.
 

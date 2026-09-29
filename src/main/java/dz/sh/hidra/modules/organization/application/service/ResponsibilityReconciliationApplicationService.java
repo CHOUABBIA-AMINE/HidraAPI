@@ -55,7 +55,7 @@ import org.springframework.transaction.annotation.Transactional;
  * no target ID is guessed or coerced. GLOBAL scopes require no owner resolution.</p>
  */
 @Service
-public final class ResponsibilityReconciliationApplicationService
+public class ResponsibilityReconciliationApplicationService
         implements ReconcileResponsibilitiesUseCase {
 
     private final ResponsibilityAssignmentRepositoryPort assignments;

@@ -28,8 +28,12 @@ import com.tngtech.archunit.core.importer.ImportOption;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import dz.sh.hidra.modules.organization.application.service.ResponsibilityRevocationApplicationService;
+import dz.sh.hidra.modules.organization.application.service.ResponsibilityReconciliationApplicationService;
+import dz.sh.hidra.modules.organization.application.service.ResponsibilityAssignmentApplicationService;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -81,6 +85,23 @@ class ArchitectureGuardrailTest {
      */
     private static final Map<String, Set<String>> TRANSITIONAL_CROSS_MODULE_DEPENDENCIES =
             Map.of();
+
+
+    @Test
+    void transactionalOrganizationResponsibilityServicesMustRemainProxyable() {
+        assertFalse(
+                Modifier.isFinal(ResponsibilityAssignmentApplicationService.class.getModifiers()),
+                "Transactional responsibility assignment service must remain proxyable."
+        );
+        assertFalse(
+                Modifier.isFinal(ResponsibilityRevocationApplicationService.class.getModifiers()),
+                "Transactional responsibility revocation service must remain proxyable."
+        );
+        assertFalse(
+                Modifier.isFinal(ResponsibilityReconciliationApplicationService.class.getModifiers()),
+                "Transactional responsibility reconciliation service must remain proxyable."
+        );
+    }
 
     @Test
     void kernelMustRemainFrameworkAndModuleIndependent() {

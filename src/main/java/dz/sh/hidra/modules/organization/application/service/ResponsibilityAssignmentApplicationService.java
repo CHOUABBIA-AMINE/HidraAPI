@@ -53,7 +53,7 @@ import org.springframework.transaction.annotation.Transactional;
  * the operation reference. Audit evidence is appended in the same transaction.</p>
  */
 @Service
-public final class ResponsibilityAssignmentApplicationService implements AssignResponsibilityUseCase {
+public class ResponsibilityAssignmentApplicationService implements AssignResponsibilityUseCase {
 
     public static final String ASSIGN_PERMISSION = "organization:responsibility:assign";
     private static final String EVENT_TYPE = "ORGANIZATION_RESPONSIBILITY_ASSIGNED";

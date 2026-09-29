@@ -35,7 +35,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public final class ResponsibilityRevocationApplicationService implements RevokeResponsibilityUseCase {
+public class ResponsibilityRevocationApplicationService implements RevokeResponsibilityUseCase {
 
     public static final String REVOKE_PERMISSION = "organization:responsibility:revoke";
     private static final String EVENT_TYPE = "ORGANIZATION_RESPONSIBILITY_REVOKED";

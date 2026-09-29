@@ -351,7 +351,7 @@ Mandatory review examples include:
 
 | Code | Exact commit message | Scope | Exit criteria | Prerequisite | Status |
 |---|---|---|---|---|---|
-| `HRA-110` | `docs(persistence): inventory scalar reference integrity` | Classify non-primary entity `*Id` fields as same-module references, cross-module stable references, historical snapshots, external IDs, or non-relational identifiers. | Every mandatory scalar reference has a documented integrity owner. | HRA-001 | Planned |
+| `HRA-110` | `docs(persistence): inventory scalar reference integrity` | Classify non-primary entity `*Id` fields as same-module references, cross-module stable references, historical snapshots, external IDs, or non-relational identifiers. | Every mandatory scalar reference has a documented integrity owner. | HRA-001 | **Completed** — inventoried 1,447 non-primary scalar `*Id` fields across 465 JPA entities, including 698 mandatory (`nullable=false`) references. All 698 mandatory references now have an integrity owner: 572 same-module HRA-111 enforcement candidates, 74 cross-module stable references, 5 historical snapshot references, 2 external identifiers, and 45 typed/non-relational identifiers. The deterministic ownership rules, explicit alias/exception mappings, module matrix, and HRA-111 authorization boundary are recorded in `docs/architecture/scalar-reference-integrity-inventory.md`. |
 | `HRA-111` | `fix(codebase): enforce classified internal reference integrity` | **Single consolidated repository-wide task / single commit.** Apply every HRA-110-approved same-module integrity repair across all affected modules using fail-closed domain/application validation plus DB FK/check constraints where evidence requires them. Add only new Flyway migrations; never modify an applied migration; never add cross-module database FKs. Include Testcontainers coverage for the consolidated schema changes. | Every HRA-110 same-module ENFORCE disposition is implemented in the same commit; mandatory internal references are protected at domain/application and DB layers; all new migrations are additive and validated; cross-module stable references remain free of DB FKs; repository validation passes. | HRA-110 + live schema evidence | Planned |
 
 **HRA-111 execution policy:** HRA-111 is deliberately consolidated. After HRA-110 and live-schema verification, all approved same-module referential-integrity repairs are executed together as one repository-wide task and one commit. The batch may contain multiple new Flyway migrations when ordering or module ownership requires it, but they belong to the same HRA-111 commit. Applied migrations are immutable and cross-module DB foreign keys remain forbidden.
@@ -407,6 +407,6 @@ HRA-120
 
 `HRA-001` and `HRA-004` are complete. HRA-004 was explicitly prioritized to remove CI duplication before the high-frequency remediation sequence.
 
-**Next task:** `HRA-110 — docs(persistence): inventory scalar reference integrity`.
+**Next task:** `HRA-111 — fix(codebase): enforce classified internal reference integrity`.
 
 Do not begin broad dead-code deletion, event deletion, DTO consolidation, or domain/JPA mirror reduction before the HRA-002/HRA-003 safety rails exist.

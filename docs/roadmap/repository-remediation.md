@@ -362,7 +362,7 @@ Mandatory review examples include:
 
 | Code | Exact commit message | Scope | Exit criteria | Prerequisite | Status |
 |---|---|---|---|---|---|
-| `HRA-120` | `test(architecture): close forensic remediation baseline` | Re-run the same forensic methodology and compare against the baseline. After HRA-121 and HRA-122, rerun this same closure task against the new live head; do not weaken its guardrails. | No confirmed data loss; no unapproved cross-module private coupling; no unclassified orphan; no retained fictional event architecture; all remaining duplication is deliberate/documented; no forbidden non-enum domain representation crosses a REST wire boundary. | accepted remediation tracks; rerun after HRA-121 + HRA-122 | **Blocked pending rerun** — HRA-121 removed the direct HRA-102 REST/domain-record exposure and HRA-122 removed the classified `topology.ProjectionType` residual. Both concrete blockers from the 2026-09-29 replay are now corrected, but HRA-120 is not complete until the same forensic methodology is rerun against the new live head and every closure gate passes. |
+| `HRA-120` | `test(architecture): close forensic remediation baseline` | Re-run the same forensic methodology and compare against the baseline. After HRA-121 and HRA-122, rerun this same closure task against the new live head; do not weaken its guardrails. | No confirmed data loss; no unapproved cross-module private coupling; no unclassified orphan; no retained fictional event architecture; all remaining duplication is deliberate/documented; no forbidden non-enum domain representation crosses a REST wire boundary. | accepted remediation tracks; rerun after HRA-121 + HRA-122 | **Completed** — final rerun on exact head `d6d1454b816b819bc90c2c4ef3e382a59cd6d4c0` passes every forensic closure gate. CI #423 / run `36547801339` succeeded with the existing HRA-120 guardrails: no confirmed Employee birth-data loss, no unapproved cross-module private coupling, no unclassified orphan after HRA-122 removal of `topology.ProjectionType`, no module fictional event/publisher scaffolding, zero forbidden REST request/response non-enum domain representation after HRA-121, and all remaining duplication remains covered by the accepted HRA-060/HRA-070/HRA-080 decisions. Final evidence is recorded in `docs/architecture/forensic-remediation-closure.md`. HRA-023 remains separately blocked and is not bypassed by this closure. |
 
 ### 15.1 Authorized HRA-120 blocker remediation
 
@@ -418,17 +418,17 @@ HRA-120 (rerun same forensic closure task; complete only if all exit gates pass)
 
 ## 17. Current execution point
 
-HRA-121 and HRA-122 are complete. The direct Identity REST/domain-record exposure is removed and
-the evidence-backed zero-incoming Topology `ProjectionType` residual is deleted. The unrelated
-Analytics projection contract was not changed.
+HRA-120 is **Completed** after a final forensic replay on exact head
+`d6d1454b816b819bc90c2c4ef3e382a59cd6d4c0`. HRA-121 removed the forbidden Identity
+REST/domain-record exposure, HRA-122 removed the evidence-backed Topology residual, and CI #423
+passed the unchanged closure guardrails.
 
-HRA-120 is now **Blocked pending rerun**, not completed. Its previous CI was green, but closure must
-be established by replaying the same forensic methodology against the new live head after both
-corrective tasks.
+The repository-remediation forensic program is therefore closed. HRA-023 remains separately
+**Blocked** by its Organization reconciliation/cutover evidence gate; repository-remediation closure
+does not authorize that destructive compatibility-field cutover.
 
-HRA-023 remains separately blocked by its Organization reconciliation/cutover gate.
+**Next task:** no further HRA repository-remediation task is currently authorized.
 
-**Next task:** `HRA-120 — test(architecture): close forensic remediation baseline` (rerun).
-
-The rerun must use the existing HRA-120 guardrails and methodology, not weaken them or introduce a
-new exception merely to produce a green closure result.
+Resume HRA-023 only when its explicit parity, consumer-signoff, and rollback/recovery evidence
+requirements are satisfied. Otherwise begin work from the roadmap of the next product/module
+initiative rather than inventing another HRA task.

@@ -162,6 +162,25 @@ class ForensicRemediationClosureTest {
         );
     }
 
+    @Test
+    void finalClosureEvidenceRecordsCompletedRerun() throws IOException {
+        String closure =
+                Files.readString(Path.of("docs/architecture/forensic-remediation-closure.md"));
+        String roadmap =
+                Files.readString(Path.of("docs/roadmap/repository-remediation.md"));
+
+        assertTrue(
+                closure.contains("**HRA-120 status: COMPLETED.**")
+                        && closure.contains("d6d1454b816b819bc90c2c4ef3e382a59cd6d4c0"),
+                "Final HRA-120 evidence must record the successful exact-head rerun."
+        );
+        assertTrue(
+                roadmap.contains("| `HRA-120`")
+                        && roadmap.contains("**Completed** — final rerun on exact head"),
+                "Repository remediation roadmap must keep HRA-120 closed after the successful rerun."
+        );
+    }
+
     private static Map<Path, SourceType> sources() throws IOException {
         Map<Path, SourceType> result = new HashMap<>();
         try (Stream<Path> paths = Files.walk(ROOT)) {

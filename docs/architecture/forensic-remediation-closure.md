@@ -1,9 +1,11 @@
 # HRA-120 — Forensic Remediation Closure Replay
 
-**Replayed:** 2026-09-29  
+**Initial replay:** 2026-09-29  
 **Roadmap:** `HRA-120 — test(architecture): close forensic remediation baseline`  
-**Execution head:** `43ecfacb54e2b4667d0a0a5b26201c22ad10b30b`  
-**Result:** **BLOCKED — one forbidden direct API wire/domain representation remains.**
+**Initial execution head:** `43ecfacb54e2b4667d0a0a5b26201c22ad10b30b`  
+**Final rerun:** 2026-09-29  
+**Final execution head:** `d6d1454b816b819bc90c2c4ef3e382a59cd6d4c0`  
+**Current result:** **COMPLETED — all forensic closure gates pass.**
 
 ## Method
 
@@ -91,7 +93,7 @@ the 343 persistence/read mirrors. HRA-070 through HRA-073 deliberately retain la
 Request/Command and Response/SummaryDto types under generated mapping policy. HRA-080/HRA-081 retain
 all seven reviewed duplicate enum vocabularies; zero merge/delete action was authorized.
 
-## Closure blocker
+## Initial closure blocker — resolved by HRA-121
 
 HRA-102 forbids direct API exposure of a non-enum domain record/value object. The replay finds exactly
 one direct REST wire representation:
@@ -118,7 +120,7 @@ test/closure task. Therefore the forensic baseline is not closed on this head.
 - The HRA-120 source guardrail was syntax-checked and its source-level assertions were replayed
   locally against the supplied snapshot.
 
-## Closure decision
+## Initial closure decision — superseded by final rerun
 
 **HRA-120 status: BLOCKED.**
 
@@ -177,3 +179,64 @@ source file stays absent while the orphan-classification evidence records
 After HRA-121 and HRA-122, both concrete blockers found by the 2026-09-29 HRA-120 replay have been
 corrected. **HRA-120 remains BLOCKED only pending a fresh replay of the same forensic methodology
 against the new live head.** This HRA-122 task does not itself claim forensic closure.
+
+
+## HRA-120 final rerun
+
+HRA-120 was rerun on 2026-09-29 against exact live head
+`d6d1454b816b819bc90c2c4ef3e382a59cd6d4c0`, after completion of HRA-121 and HRA-122.
+
+### Exact-head validation
+
+GitHub Actions run `36547801339` (HidraAPI CI #423) completed successfully on the exact rerun
+head. That run executed the repository verification suite including
+`ForensicRemediationClosureTest`, so the existing closure guardrails passed without adding an
+exception.
+
+Current tree facts at the rerun head:
+
+| Metric | Final rerun |
+|---|---:|
+| Java files | 3,684 |
+| Production Java files | 3,592 |
+| Test Java files | 92 |
+| Domain model source types | 123 |
+| JPA entities | 465 |
+| Flyway migrations | 34 |
+| Module domain-event Java files | 0 |
+| Module event-publisher Java files | 0 |
+| Topology `ProjectionType.java` | absent |
+| API-owned `AuthorizationScopeRequest` | present and consumed |
+
+### Final exit-gate replay
+
+- **Confirmed data-loss path:** CLOSED. The Employee birth fields remain represented in the domain,
+  JPA entity, persistence mapper, and immutable Flyway migration; HRA-121/HRA-122 did not modify
+  that path.
+- **Unapproved cross-module private coupling:** CLOSED. The exact-head forensic/architecture
+  guardrails passed with no private cross-module dependency exception reintroduced.
+- **Unclassified orphan:** CLOSED. The initial replay's only newly discovered orphan,
+  `topology.ProjectionType`, was evidence-classified and removed by HRA-122. The only production
+  type added by HRA-121 is `AuthorizationScopeRequest`, which has live incoming references from
+  `EvaluatePermissionRequest` and `IdentityRestMapper` plus focused tests. No new unclassified
+  production orphan is introduced by the corrective delta.
+- **Fictional event architecture:** CLOSED. There are zero module `domain/event` Java files and
+  zero module event-publisher Java files.
+- **Forbidden REST/domain representation:** CLOSED. HRA-121 replaced the direct domain-record wire
+  exposure with the API-owned scope record. The exact-head closure guardrail requires the set of
+  REST request/response imports of non-enum domain representation to be empty and passed in CI #423.
+- **Remaining duplication:** DELIBERATE / DOCUMENTED. HRA-121/HRA-122 did not alter the accepted
+  HRA-060/HRA-061 mirror dispositions, HRA-070 through HRA-073 boundary-type policy, or HRA-080
+  duplicate-enum decisions.
+
+### Final closure decision
+
+**HRA-120 status: COMPLETED.**
+
+All HRA-120 forensic exit gates pass on exact head
+`d6d1454b816b819bc90c2c4ef3e382a59cd6d4c0`. No production change is included in this final
+rerun commit; it records and pins the successful closure result.
+
+HRA-023 remains separately blocked by its Organization reconciliation/cutover evidence gate. That
+blocked destructive cutover is not bypassed or implicitly approved by repository-remediation
+closure.

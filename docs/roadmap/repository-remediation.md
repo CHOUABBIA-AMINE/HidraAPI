@@ -362,7 +362,14 @@ Mandatory review examples include:
 
 | Code | Exact commit message | Scope | Exit criteria | Prerequisite | Status |
 |---|---|---|---|---|---|
-| `HRA-120` | `test(architecture): close forensic remediation baseline` | Re-run the same forensic methodology and compare against the baseline. | No confirmed data loss; no unapproved cross-module private coupling; no unclassified orphan; no retained fictional event architecture; all remaining duplication is deliberate/documented. | accepted remediation tracks | **Blocked** — 2026-09-29 replay against exact HRA-111 head `43ecfacb54e2b4667d0a0a5b26201c22ad10b30b` closes the data-loss, private cross-module coupling, fictional-event, orphan-classification, and documented-duplication gates, but finds one direct HRA-102 wire/domain representation: `identity.api.rest.request.EvaluatePermissionRequest.scope` exposes domain record `AuthorizationScope`. The replay also classifies newly zero-incoming `topology.ProjectionType` as `DELETE_RESIDUAL` without deleting it under this audit-only task. Evidence is versioned in `docs/architecture/forensic-remediation-closure.md`, and `ForensicRemediationClosureTest` pins the exact remaining blocker. No production fix is authorized by HRA-120. |
+| `HRA-120` | `test(architecture): close forensic remediation baseline` | Re-run the same forensic methodology and compare against the baseline. After HRA-121 and HRA-122, rerun this same closure task against the new live head; do not weaken its guardrails. | No confirmed data loss; no unapproved cross-module private coupling; no unclassified orphan; no retained fictional event architecture; all remaining duplication is deliberate/documented; no forbidden non-enum domain representation crosses a REST wire boundary. | accepted remediation tracks; rerun after HRA-121 + HRA-122 | **Blocked** — 2026-09-29 replay against exact HRA-111 head `43ecfacb54e2b4667d0a0a5b26201c22ad10b30b` closes the data-loss, private cross-module coupling, fictional-event, orphan-classification, and documented-duplication gates, but finds one direct HRA-102 wire/domain representation: `identity.api.rest.request.EvaluatePermissionRequest.scope` exposes domain record `AuthorizationScope`. The replay also classifies newly zero-incoming `topology.ProjectionType` as `DELETE_RESIDUAL`. Corrective production work is now explicitly authorized only by HRA-121 and HRA-122 below. |
+
+### 15.1 Authorized HRA-120 blocker remediation
+
+| Code | Exact commit message | Scope | Exit criteria | Prerequisite | Status |
+|---|---|---|---|---|---|
+| `HRA-121` | `fix(api): remove permission scope domain-record exposure` | Replace `identity.api.rest.request.EvaluatePermissionRequest.scope : AuthorizationScope` with an API-owned boundary representation for authorization scope. Preserve the existing external scope fields/semantics (`scopeType`, `scopeReferenceId`, `scopeCodeSnapshot`) and keep `ScopeType` direct enum reuse only if it still satisfies HRA-102. Map the API-owned scope representation in the Identity REST mapper to the existing application/domain `AuthorizationScope`; application/domain authorization semantics remain unchanged. Update focused controller/mapper/request tests and the forensic closure guardrail so the forbidden non-enum REST/domain exposure set becomes empty. Do not move REST annotations/serialization concerns into the domain record and do not change persistence schema. | `EvaluatePermissionRequest` no longer imports or exposes `AuthorizationScope`; REST request JSON retains the intended scope structure; `IdentityRestMapper` performs the explicit boundary conversion; application query/domain policy still receives the domain `AuthorizationScope`; focused tests cover GLOBAL normalization and non-global scope mapping; HRA-102 policy remains intact; `ForensicRemediationClosureTest` observes zero direct REST request/response imports of non-enum domain representation. | HRA-120 blocker evidence + HRA-102 policy | Planned |
+| `HRA-122` | `refactor(topology): remove residual projection vocabulary` | Delete only the HRA-120-classified zero-incoming `topology.domain.value.ProjectionType` enum. Re-run static incoming-reference search immediately before deletion; if a live Java/configuration/serialization/reflection consumer appears, stop and reclassify instead of deleting. Update the orphan-classification and forensic closure evidence/guardrail to record the removal. Do not change the unrelated Analytics `projectionType` string field or any analytics persistence/API contract merely because it shares the word “projection”. | `ProjectionType.java` is absent; no production/test source imports or references the deleted Topology enum; Analytics projection fields/contracts are unchanged; static-orphan evidence records the classified residual as removed; repository validation passes. | HRA-120 `DELETE_RESIDUAL` evidence | Planned |
 
 ## 16. Recommended execution order
 
@@ -399,25 +406,34 @@ HRA-080 → HRA-081
 After live schema inspection:
 HRA-110 → HRA-111 (consolidated integrity batch, one commit)
 
-Finally:
-HRA-120
+Final closure and blocker remediation:
+HRA-120 (blocked replay)
+  ↓
+HRA-121
+  ↓
+HRA-122
+  ↓
+HRA-120 (rerun same forensic closure task; complete only if all exit gates pass)
 ```
 
 ## 17. Current execution point
 
 HRA-120 replayed the forensic baseline against exact HRA-111 head
-`43ecfacb54e2b4667d0a0a5b26201c22ad10b30b` and is **Blocked**, not closed.
+`43ecfacb54e2b4667d0a0a5b26201c22ad10b30b` and is **Blocked**, not closed. Its CI run
+`36543369075` completed successfully; the blocker is architectural, not a failing build.
 
-The remaining closure blocker is the direct HRA-102 REST/domain-record representation
-`identity.api.rest.request.EvaluatePermissionRequest.scope -> AuthorizationScope`.
-The replay also classifies zero-incoming `topology.ProjectionType` as `DELETE_RESIDUAL`;
-HRA-120 does not delete production code.
+Two explicit corrective tasks are now authorized:
+
+1. `HRA-121 — fix(api): remove permission scope domain-record exposure`
+2. `HRA-122 — refactor(topology): remove residual projection vocabulary`
+
+HRA-121 owns the actual HRA-102 closure blocker. HRA-122 owns only the separately classified
+zero-incoming Topology residual. Neither task may broaden into unrelated Identity or Analytics
+refactoring.
 
 HRA-023 remains separately blocked by its Organization reconciliation/cutover gate.
 
-**Next task:** no corrective HRA code is currently authorized. The roadmap must be explicitly
-extended/approved before changing the Identity REST/application contract or deleting
-`ProjectionType`.
+**Next task:** `HRA-121 — fix(api): remove permission scope domain-record exposure`.
 
-Do not mark HRA-120 complete and do not weaken HRA-102 or the HRA-120 closure guardrail merely to
-make the audit green.
+After HRA-121 and HRA-122 are complete, rerun HRA-120 using the same forensic methodology and
+guardrails. Do not mark HRA-120 complete and do not weaken HRA-102 merely to make the audit green.

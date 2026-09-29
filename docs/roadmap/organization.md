@@ -2281,7 +2281,7 @@ its full current exit gate is satisfied.
 | Code | Status | Reconciled evidence on current main |
 |---|---|---|
 | `ORG-022` | Completed | ADR-0005 and the correction roadmap are present on main; prior completion evidence remains valid. |
-| `ORG-023` | Blocked | Source inventory exists, but authorized live/sanitized legacy tuple evidence, full owner-target resolution evidence and external consumer evidence are still incomplete. Implementation work proceeded beyond this evidence gate; that does not make the inventory gate complete. |
+| `ORG-023` | Blocked | Current-main repository inventory is refreshed and regression-tested: canonical registry/reference shape, in-repository legacy compatibility consumers and all implemented owner-resolution contracts are now explicitly inventoried. The privacy-safe aggregate audit SQL is pinned read-only. The remaining blockers are external evidence only: an authorized live/sanitized legacy tuple profile, owner-certified validation of the actual typed IDs found in that data, and complete external-consumer sign-off. Later implementation work does not manufacture those artifacts. |
 | `ORG-024` | Completed | `OperationalScopeReference` is now a canonical typed owner-target value object containing only `type` and owner-native `targetId`; GLOBAL forbids a target, entity-backed types require one, and ungoverned CUSTOM is rejected. `OperationalScopeType` exposes the corresponding domain semantics and focused domain tests cover null, blank, GLOBAL, CUSTOM and normalization cases. |
 | `ORG-025` | Completed | Organization now resolves `ORGANIZATION_UNIT` locally and `PIPELINE_SYSTEM`, `PIPELINE`, `FACILITY`, and `EQUIPMENT` through a topology-owned public application input port. Current code/name and lifecycle-derived assignability come from the owning module; organization imports no topology domain, repository, JPA, or infrastructure type. Existing validator tests cover wrong type, missing target, unassignable target and owner failure; new owner-query/adapter tests cover current display, retired owners and supported-type routing. |
 | `ORG-026` | Completed | Responsibility assignment now accepts only existing ACTIVE employee or organization-unit assignees, revalidates entity-backed owner existence/assignability before new assignment, rejects direct organization-unit self-target responsibility, preserves historical rows on owner retirement, and retains half-open overlap/idempotency/revocation behavior. Focused tests cover invalid/inactive assignees and retired owners. |
@@ -2293,6 +2293,22 @@ its full current exit gate is satisfied.
 | `ORG-032` | Planned | Legacy `operational_scope_*` columns remain intentionally across responsibility/unit/employee-assignment persistence. Final retirement must cover all applicable compatibility columns and may make canonical responsibility `scope_id` non-null only after signed reconciliation/quarantine and recovery evidence. |
 | `ORG-033` | In Progress | Current exact-head CI is green through ORG-028 (CI #427), but final closure is still incomplete because ORG-023/029 reconciliation evidence, API cutover and compatibility retirement remain open. Final closure must cover PostgreSQL migration/recovery, registry resolution, authorization, Workflow approval/rejection, Audit evidence, concurrency/versioning, target retirement, reconciliation/quarantine, API cutover and compatibility retirement. |
 
+
+### ORG-023 current-main evidence refresh
+
+ORG-023 has been re-executed as an evidence task against current `main` after ORG-028.
+
+Repository-side evidence now completed:
+
+- current canonical scope/reference and registry shape;
+- current Organization and Topology owner-resolution contracts;
+- exact in-repository legacy compatibility consumer set;
+- privacy-safe read-only aggregate audit SQL, protected by
+  `OperationalScopeEvidenceInventoryTest`.
+
+ORG-023 remains **Blocked**, because repository inspection cannot supply the authorized legacy-data
+profile, owner-certified validation of the actual IDs present in that data, or external-consumer
+sign-off. Those three artifacts are mandatory before ORG-029 backfill/quarantine execution.
 
 ### 2026-09-29 forward-roadmap reconciliation
 

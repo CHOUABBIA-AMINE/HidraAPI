@@ -2,8 +2,9 @@
 
 **Issue:** [#130](https://github.com/CHOUABBIA-AMINE/HidraAPI/issues/130)  
 **Design:** [ADR-0005](../adr/0005-organization-operational-scope-integrity.md)  
-**Evidence baseline:** HidraAPI `main` at `d94b9d72aac32863d971b6f7409c407faa647152` (2026-09-24).  
-**Status:** Source-contract inventory completed; **legacy database tuple inventory and owner-resolver review incomplete; ORG-023 Blocked** pending authorized read-only database/source access and full consumer verification. This document is assessment only; no production code, SQL, data or security state was modified.
+**Historical evidence baseline:** HidraAPI `main` at `d94b9d72aac32863d971b6f7409c407faa647152` (2026-09-24).  
+**Current source refresh head:** `c1fb9fbfefaecc69b59af28a74d1509294d212c8` (2026-09-29).  
+**Status:** Repository/source contracts, current owner-resolution contracts and in-repository legacy consumers are now inventoried on current `main`. **ORG-023 remains Blocked** only on evidence that GitHub cannot supply: an authorized live/sanitized legacy tuple profile, owner-certified validation of the actual legacy typed IDs found in that data, and complete external-consumer sign-off. This document is assessment only; no production data or security state was modified.
 
 ## 1. Current owner and data-contract inventory
 
@@ -114,3 +115,125 @@ Additional authorized private checks: group by `(operational_scope_type, operati
 - Legacy tuple profile, proof of owner-resolvable IDs and complete current consumer scan: **blocked / not verified**.
 - Maven/test/DB execution: **not performed** (read-only repository inspection; no local full-repository workspace and no approved DB access supplied).
 - ORG-023 must stay **Blocked** until complete evidence allows the task's original acceptance gate; do not start ORG-024 as though validation were complete. Once read-only DB access and complete consumer inventory are available, amend **the same ORG-023 task** with exact results and move it to Completed in a separate roadmap-controlled change. No migrations or other ORG implementation were authorized or performed here.
+
+
+## 6. Current-main source and consumer refresh
+
+**Assessment execution head:** `c1fb9fbfefaecc69b59af28a74d1509294d212c8`  
+**Refresh date:** 2026-09-29
+
+Later Organization work materially changed the source model after the original ORG-023 baseline.
+This section is the current source-of-truth for repository-side ORG-023 evidence; historical sections
+above are retained to preserve the original findings.
+
+### 6.1 Canonical model now present
+
+The current responsibility identity is:
+
+```text
+ResponsibilityAssignment.scopeId : Long
+        |
+        v
+OperationalScope.id : Long
+OperationalScope.type : OperationalScopeType
+OperationalScope.targetId : owner-native ID
+        |
+        v
+OperationalScopeTargetResolverPort
+```
+
+`OperationalScopeReference` now contains only `type` plus owner-native `targetId`; mutable
+code/name display attributes are not part of canonical reference identity. `GLOBAL` has no target,
+entity-backed types require one, and unregistered `CUSTOM` fails closed.
+
+The additive registry migration is already present as
+`V20260927_001__add_operational_scope_registry.sql`. ORG-028 later added
+`V20260929_003__harden_operational_scope_responsibility_concurrency.sql` without changing the
+original registry migration.
+
+### 6.2 Owner-resolution readiness on current main
+
+| Scope type | Current owner-resolution evidence | Repository-side status |
+|---|---|---|
+| `GLOBAL` | Registry-owned targetless scope; no external owner lookup | Ready in source |
+| `ORGANIZATION_UNIT` | `AuthoritativeOperationalScopeTargetResolverAdapter` resolves through Organization-owned `OrganizationUnitRepositoryPort` and derives assignability from unit lifecycle | Ready in source |
+| `PIPELINE_SYSTEM` | Topology-owned `TopologyOperationalScopeTargetContract.resolvePipelineSystem` | Ready in source |
+| `PIPELINE` | Topology-owned `TopologyOperationalScopeTargetContract.resolvePipeline` | Ready in source |
+| `FACILITY` | Topology-owned `TopologyOperationalScopeTargetContract.resolveFacility` | Ready in source |
+| `EQUIPMENT` | Topology-owned `TopologyOperationalScopeTargetContract.resolveEquipment` | Ready in source |
+| `CUSTOM` | Deliberately rejected until a separately approved owner namespace exists | Not allowed |
+
+This proves the application contracts exist. It does **not** prove that legacy IDs in a real database
+match the intended owner records; that remains a data-evidence gate.
+
+### 6.3 Current in-repository legacy compatibility consumers
+
+A repository-wide source scan for the historical camel-case identifiers
+`operationalScopeType/Id/Code/Name` finds production compatibility code only in the following
+Organization files:
+
+```text
+domain/model/OrganizationUnit.java
+domain/model/EmployeeAssignment.java
+domain/model/ResponsibilityAssignment.java
+infrastructure/persistence/entity/OrganizationUnitJpaEntity.java
+infrastructure/persistence/entity/EmployeeAssignmentJpaEntity.java
+infrastructure/persistence/entity/ResponsibilityAssignmentJpaEntity.java
+infrastructure/persistence/mapper/OrganizationPersistenceMapper.java
+```
+
+Interpretation:
+
+- `OrganizationUnit` and `EmployeeAssignment` no longer own canonical operational scope; their
+  deprecated constructors/accessors exist only for compatibility and return no canonical scope state.
+- `ResponsibilityAssignment` owns canonical `scopeId`; its deprecated textual bridge treats a
+  numeric legacy argument only as an already-known registry ID and deliberately does not guess
+  non-numeric owner IDs.
+- the three JPA entities still map historical `operational_scope_*` columns so evidence can survive
+  until controlled reconciliation/retirement;
+- `OrganizationPersistenceMapper` is the remaining Java compatibility bridge for unit/employee
+  legacy columns.
+
+No current Organization REST request/response contract exposes the historical four-field tuple.
+No direct Topology repository/JPA/infrastructure dependency is used for owner resolution.
+
+The assessment test added with this refresh pins the above source-consumer set so any new legacy
+consumer must be reviewed explicitly.
+
+### 6.4 Read-only legacy assessment artifact
+
+`docs/data-provisioning/operational-scope/ORG-037-legacy-scope-audit.sql` remains the approved
+privacy-safe assessment template. The ORG-023 assessment test verifies every executable statement
+is read-only (`SELECT` or `WITH ... SELECT`) and rejects DML/DDL additions.
+
+The SQL reports aggregate source-shape evidence only. It cannot establish external target existence,
+current labels, lifecycle eligibility, or business approval.
+
+### 6.5 Evidence still required to complete ORG-023
+
+Repository inspection cannot provide these final acceptance artifacts:
+
+1. **Authorized tuple profile** — execute the read-only assessment against an approved live/staging
+   copy or approved sanitized export and retain only aggregate results in Git.
+2. **Owner-certified typed-ID validation** — for each actual typed target key observed in that
+   profile, validate the owner-native ID with the responsible owner source/contract and classify
+   missing, retired, mismatched and stale-label cases. Row-level crosswalk stays in approved private
+   storage.
+3. **External-consumer sign-off** — inventory and approve consumers outside HidraAPI, including
+   HidraWEB, reporting extracts, integration clients, operational scripts or downstream feeds.
+
+Until all three exist, actual backfill/quarantine mutation under ORG-029 is not authorized.
+
+## 7. Refreshed exit status
+
+- Current repository contract/consumer inventory: **Completed**.
+- Current source owner-resolution availability matrix: **Completed**.
+- Privacy-safe aggregate assessment SQL: **Prepared and regression-tested as read-only**.
+- Authorized legacy tuple profile: **Blocked / not supplied**.
+- Actual typed-ID owner validation/crosswalk: **Blocked / not supplied**.
+- External-consumer inventory/sign-off: **Blocked / not supplied**.
+- **ORG-023 overall status: Blocked.**
+
+The next admissible ORG-023 action is evidence ingestion/review after the authorized aggregate DB
+assessment and external-consumer sign-off are provided. ORG-029 must not infer or fabricate that
+evidence.

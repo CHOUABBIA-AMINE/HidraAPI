@@ -2273,11 +2273,10 @@ Maven clean verify    : not run — isolated ZIP generation, not full repository
 
 ### Correction status (issue #130)
 
-The status below was re-reconciled on **2026-09-29** against GitHub `main` after
-`eefcc25541666ed3138e1efa4dd2386480cbbc7b`. Earlier green CI remains historical evidence
-only. CI #425 exposed a Spring transaction-proxy defect in the ORG-027 increment, so status
-reflects the latest exact-head evidence rather than older green runs. A task is not marked
-Completed unless its full current exit gate is satisfied.
+The status below was re-reconciled on **2026-09-29** through exact implementation commit
+`1e4d585ef397ebaedb2a910c232f813838d561fe`. CI #426 verified the ORG-027 proxy correction
+and CI #427 verified ORG-028 schema/concurrency hardening. A task is not marked Completed unless
+its full current exit gate is satisfied.
 
 | Code | Status | Reconciled evidence on current main |
 |---|---|---|
@@ -2287,12 +2286,12 @@ Completed unless its full current exit gate is satisfied.
 | `ORG-025` | Completed | Organization now resolves `ORGANIZATION_UNIT` locally and `PIPELINE_SYSTEM`, `PIPELINE`, `FACILITY`, and `EQUIPMENT` through a topology-owned public application input port. Current code/name and lifecycle-derived assignability come from the owning module; organization imports no topology domain, repository, JPA, or infrastructure type. Existing validator tests cover wrong type, missing target, unassignable target and owner failure; new owner-query/adapter tests cover current display, retired owners and supported-type routing. |
 | `ORG-026` | Completed | Responsibility assignment now accepts only existing ACTIVE employee or organization-unit assignees, revalidates entity-backed owner existence/assignability before new assignment, rejects direct organization-unit self-target responsibility, preserves historical rows on owner retirement, and retains half-open overlap/idempotency/revocation behavior. Focused tests cover invalid/inactive assignees and retired owners. |
 | `ORG-027` | Completed | Identity-backed permission checks, Workflow approval for assign/revoke and Audit evidence for assign/revoke/reconcile are implemented. Corrective commit `279b5ece1588ec756d00e70db366bce0ccf4fc19` removed the Spring CGLIB proxy defect and CI #426 / run `36553395572` passed on that exact SHA. Database concurrency hardening is owned by ORG-028. |
-| `ORG-028` | In Progress — exact-SHA CI pending | Immutable migration `V20260927_001__add_operational_scope_registry.sql` remains unchanged. ORG-028 adds dedicated PostgreSQL/Testcontainers coverage plus new migration `V20260929_003__harden_operational_scope_responsibility_concurrency.sql` with canonical temporal validation and an ACTIVE canonical-identity index. Assignment creation serializes on a pessimistic write lock of the canonical OperationalScope row before overlap/idempotency checks; revocation serializes on a pessimistic write lock of the assignment row. Legacy rows with null `scope_id` remain outside the new canonical temporal rule. Completion awaits green exact-SHA CI. |
+| `ORG-028` | Completed | Immutable migration `V20260927_001__add_operational_scope_registry.sql` remains unchanged. Commit `1e4d585ef397ebaedb2a910c232f813838d561fe` adds dedicated PostgreSQL/Testcontainers coverage plus `V20260929_003__harden_operational_scope_responsibility_concurrency.sql` with canonical temporal validation and an ACTIVE canonical-identity index. Assignment creation serializes on a pessimistic write lock of the canonical OperationalScope row before overlap/idempotency checks; revocation serializes on a pessimistic write lock of the assignment row. Legacy rows with null `scope_id` remain outside the canonical temporal rule. CI #427 / run `36555071513` passed on the exact implementation SHA. |
 | `ORG-029` | Blocked / partially implemented | Canonical registry persistence already uses `ResponsibilityAssignment.scopeId`; the old roadmap phrase “canonical pair” is retired. Backfill/quarantine is blocked until both ORG-028 residual schema hardening and ORG-023 authorized legacy/consumer evidence are satisfied. Legacy unit/employee scope columns must also be protected from accidental write-back before reconciliation runs. |
 | `ORG-030` | Planned | No versioned responsibility/scope REST migration exists yet. Future endpoints must derive actor/effective permissions server-side from authenticated security context, carry Workflow approval references rather than client-supplied security context, resolve current owner display data, and require provisioned Identity permissions plus Audit taxonomy. |
 | `ORG-031` | In Progress | Canonical embedded scope components are already removed from `OrganizationUnit` and `EmployeeAssignment`; therefore ORG-031 must not remove them again. Its residual scope is the transitional constructors/accessors, mapper calls and JPA compatibility bridges after API/consumer cutover, while preserving legacy evidence until ORG-032. |
 | `ORG-032` | Planned | Legacy `operational_scope_*` columns remain intentionally across responsibility/unit/employee-assignment persistence. Final retirement must cover all applicable compatibility columns and may make canonical responsibility `scope_id` non-null only after signed reconciliation/quarantine and recovery evidence. |
-| `ORG-033` | In Progress | Historical verification exists, but current exact-head verification is not green because CI #425 failed during ORG-027 Spring context creation. Final closure must cover PostgreSQL migration/recovery, registry resolution, authorization, Workflow approval/rejection, Audit evidence, concurrency/versioning, target retirement, reconciliation/quarantine, API cutover and compatibility retirement. |
+| `ORG-033` | In Progress | Current exact-head CI is green through ORG-028 (CI #427), but final closure is still incomplete because ORG-023/029 reconciliation evidence, API cutover and compatibility retirement remain open. Final closure must cover PostgreSQL migration/recovery, registry resolution, authorization, Workflow approval/rejection, Audit evidence, concurrency/versioning, target retirement, reconciliation/quarantine, API cutover and compatibility retirement. |
 
 
 ### 2026-09-29 forward-roadmap reconciliation
@@ -2394,8 +2393,9 @@ Deployment assumption: validation and non-concurrent index creation still acquir
 locks. ORG-028 therefore does **not** claim zero-lock/no-downtime deployment; production rollout
 requires a controlled migration window after canonical temporal preflight.
 
-**Status:** implementation committed under ORG-028; exact-SHA CI must be green before the task is
-marked Completed or ORG-029 is considered.
+**Status:** **Completed.** Commit `1e4d585ef397ebaedb2a910c232f813838d561fe`
+passed CI #427 / run `36555071513` on the exact implementation SHA. ORG-029 remains blocked
+independently by the ORG-023 authorized legacy/consumer evidence gate.
 
 ### ORG-027 reconciliation increment
 
@@ -2502,9 +2502,9 @@ Focused tests cover permission denial, completed/mismatched Workflow evidence, g
 assignment/revocation/reconciliation paths, catalog-code-to-ID audit mapping, missing Audit taxonomy,
 and exported-contract architecture classification.
 
-**Next section-18 action:** verify ORG-028 on its exact implementation SHA. Do not begin ORG-029
-until ORG-028 is green; even then, ORG-029 additionally requires the blocked ORG-023
-legacy/consumer evidence gate. ORG-030/031/032/033 retain their corrected prerequisites below.
+**Next section-18 action:** ORG-028 is verified green. Do not begin ORG-029 until the blocked
+ORG-023 authorized legacy/consumer evidence gate is satisfied. ORG-030/031/032/033 retain their
+corrected prerequisites below.
 
 ### Reconciliation notes
 
@@ -2519,8 +2519,9 @@ legacy/consumer evidence gate. ORG-030/031/032/033 retain their corrected prereq
 - Legacy compatibility code and database columns are transitional and must not be
   treated as the canonical source of operational-scope identity.
 - ORG-027 is complete after corrective exact-SHA CI #426 passed.
-- ORG-028 implementation now owns the remaining canonical schema/concurrency proof and must receive
-  green exact-SHA CI before any ORG-029 work.
+- ORG-028 is complete after CI #427 / run `36555071513` passed on
+  `1e4d585ef397ebaedb2a910c232f813838d561fe`.
+- ORG-029 remains blocked on accepted ORG-023 legacy/consumer evidence.
 - The multilingual and dependency-integrity correction sequences in section 19 remain complete.
 
 **Execution rule:** A roadmap task's first implementation action must specify exact file allowlists and verification commands after inspecting current main; do not silently rewrite old task descriptions or mark future tasks complete. `ORG-028` and `ORG-032` must use separately numbered, never-reused migrations after rechecking the live Flyway sequence. Issue #130 remains open until the acceptance matrix is satisfied.

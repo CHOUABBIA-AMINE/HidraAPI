@@ -323,8 +323,8 @@ Mandatory review examples include:
 
 | Code | Exact commit message | Scope | Exit criteria | Prerequisite | Status |
 |---|---|---|---|---|---|
-| `HRA-080` | `docs(domain): review duplicate enum vocabularies` | Make semantic KEEP/MERGE/DELETE decisions; identical constants alone do not justify merging. | Every reviewed pair has an explicit semantic decision. | HRA-040 | Planned |
-| `HRA-081` | `refactor(domain): remove redundant enum vocabularies` | Apply only approved merges/deletions with persistence/API compatibility handling. | No persisted literal or API contract changes silently. | HRA-080 | Planned |
+| `HRA-080` | `docs(domain): review duplicate enum vocabularies` | Make semantic KEEP/MERGE/DELETE decisions; identical constants alone do not justify merging. | Every reviewed pair has an explicit semantic decision. | HRA-040 | **Completed** — reviewed all seven mandatory duplicate-vocabulary pairs against live domain, persistence, application, and architecture usage. All seven are `KEEP`: identical constant sets govern distinct aggregate lifecycles or typed association roles and may evolve independently. No pair is approved for merge/delete; details are recorded in `docs/architecture/duplicate-enum-vocabulary-review.md`. |
+| `HRA-081` | `refactor(domain): remove redundant enum vocabularies` | Apply only approved merges/deletions with persistence/API compatibility handling. | No persisted literal or API contract changes silently. | HRA-080 | **Not required** — HRA-080 approved 0 merges and 0 deletions; all seven reviewed enum pairs are deliberate semantic boundaries. No production refactor is authorized. |
 
 ---
 
@@ -407,6 +407,6 @@ HRA-120
 
 `HRA-001` and `HRA-004` are complete. HRA-004 was explicitly prioritized to remove CI duplication before the high-frequency remediation sequence.
 
-**Next task:** `HRA-080 — docs(domain): review duplicate enum vocabularies`.
+**Next task:** `HRA-110 — docs(persistence): inventory scalar reference integrity`.
 
 Do not begin broad dead-code deletion, event deletion, DTO consolidation, or domain/JPA mirror reduction before the HRA-002/HRA-003 safety rails exist.

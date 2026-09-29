@@ -362,7 +362,7 @@ Mandatory review examples include:
 
 | Code | Exact commit message | Scope | Exit criteria | Prerequisite | Status |
 |---|---|---|---|---|---|
-| `HRA-120` | `test(architecture): close forensic remediation baseline` | Re-run the same forensic methodology and compare against the baseline. | No confirmed data loss; no unapproved cross-module private coupling; no unclassified orphan; no retained fictional event architecture; all remaining duplication is deliberate/documented. | accepted remediation tracks | Planned |
+| `HRA-120` | `test(architecture): close forensic remediation baseline` | Re-run the same forensic methodology and compare against the baseline. | No confirmed data loss; no unapproved cross-module private coupling; no unclassified orphan; no retained fictional event architecture; all remaining duplication is deliberate/documented. | accepted remediation tracks | **Blocked** — 2026-09-29 replay against exact HRA-111 head `43ecfacb54e2b4667d0a0a5b26201c22ad10b30b` closes the data-loss, private cross-module coupling, fictional-event, orphan-classification, and documented-duplication gates, but finds one direct HRA-102 wire/domain representation: `identity.api.rest.request.EvaluatePermissionRequest.scope` exposes domain record `AuthorizationScope`. The replay also classifies newly zero-incoming `topology.ProjectionType` as `DELETE_RESIDUAL` without deleting it under this audit-only task. Evidence is versioned in `docs/architecture/forensic-remediation-closure.md`, and `ForensicRemediationClosureTest` pins the exact remaining blocker. No production fix is authorized by HRA-120. |
 
 ## 16. Recommended execution order
 
@@ -405,8 +405,19 @@ HRA-120
 
 ## 17. Current execution point
 
-Repository remediation has reached final closure after completion of the accepted implementation tracks through HRA-111. HRA-023 remains separately blocked by its explicit Organization cutover gate and is not bypassed by repository-remediation closure.
+HRA-120 replayed the forensic baseline against exact HRA-111 head
+`43ecfacb54e2b4667d0a0a5b26201c22ad10b30b` and is **Blocked**, not closed.
 
-**Next task:** `HRA-120 — test(architecture): close forensic remediation baseline`.
+The remaining closure blocker is the direct HRA-102 REST/domain-record representation
+`identity.api.rest.request.EvaluatePermissionRequest.scope -> AuthorizationScope`.
+The replay also classifies zero-incoming `topology.ProjectionType` as `DELETE_RESIDUAL`;
+HRA-120 does not delete production code.
 
-HRA-120 must re-run the forensic methodology against the live post-remediation repository and compare results with the recorded baseline; it must not invent implementation work outside the accepted remediation tracks.
+HRA-023 remains separately blocked by its Organization reconciliation/cutover gate.
+
+**Next task:** no corrective HRA code is currently authorized. The roadmap must be explicitly
+extended/approved before changing the Identity REST/application contract or deleting
+`ProjectionType`.
+
+Do not mark HRA-120 complete and do not weaken HRA-102 or the HRA-120 closure guardrail merely to
+make the audit green.

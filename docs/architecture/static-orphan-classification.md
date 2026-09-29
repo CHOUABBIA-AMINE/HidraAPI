@@ -182,3 +182,21 @@ The 24 `*Query` carriers use `D-QRY`; infrastructure `*Projection` records use `
 HRA-041 revalidated all 99 then-live DELETE candidates against exact head `147e8244e7fd7ec1ca3b27d681b8092002a847ef`. `LeakCaseView` and `LeakCandidateView` had active Java consumers and were reclassified KEEP. The remaining 97 candidates had no live Java consumer and were removed.
 
 The 100 `D-EVT` rows are historical reconciliation entries already removed by HRA-031B. Combined with the 97 HRA-041 removals, every one of the 197 final DELETE dispositions has now been physically removed. The 13 KEEP candidates remain present.
+
+
+## HRA-120 closure replay
+
+The 2026-09-29 HRA-120 source replay rechecked the HRA-040 candidate families after all accepted
+cleanup tracks through HRA-111.
+
+- 11 of the 13 KEEP candidates remain zero-incoming and retain the evidence above.
+- `LeakCaseView` and `LeakCandidateView` now have active query/controller/service consumers and are
+  no longer zero-incoming.
+- all 197 DELETE dispositions remain absent.
+- one new zero-incoming domain-value candidate is present: `topology.ProjectionType`.
+
+`topology.ProjectionType` is classified **DELETE_RESIDUAL** for closure accounting: the enum has no
+incoming Java reference and no exact retained-type decision, and its values align with the retired
+Topology projection path. HRA-120 does not delete production types; removal requires an explicitly
+authorized code task. This classification ensures the closure replay leaves no zero-incoming candidate
+unclassified while preserving evidence-before-deletion discipline.

@@ -14,8 +14,8 @@
 | Resource root | `src/main/resources` |
 | Author | Abir MEDJERAB |
 | CreatedOn | 2025-06-26 |
-| UpdatedOn | 2026-09-27 |
-| Status | Active — base Organization implementation and correction sequences ORG-034–ORG-048 are complete; issue #130 remains open for the explicitly listed residual scope-integrity gates |
+| UpdatedOn | 2026-09-29 |
+| Status | Active — Organization implementation and correction sequences through ORG-055 are complete; operational-scope correction issue #130 is closed after ORG-033 exact-SHA verification |
 | Execution mode | One commit code at a time |
 
 ### 1.1 Current authoritative state — 2026-09-29
@@ -23,13 +23,16 @@
 This subsection is the **authoritative execution entry point**. Older planning text in this
 roadmap is retained as implementation history only when it conflicts with the state below.
 
-Repository baseline before ORG-031 execution:
+Repository closure baseline after ORG-033 verification:
 
 ```text
-main: fbce456b1d5c6c877eddc00b0bb4166abb1c8ecd
-latest Organization change:
-docs(organization): record ORG-030 verification
-open Organization issue: #130
+verified implementation SHA: 70b3a147f12c710ab07a7bafb1f3ee2bfd348bab
+verification task:
+test(organization): verify scope integrity end to end
+HidraAPI CI: #435 / run 36567788946 — success
+deterministic OpenAPI artifact:
+hidra-api-openapi-70b3a147f12c710ab07a7bafb1f3ee2bfd348bab
+Organization issue #130: closure authorized after this verification record
 open Organization pull requests: none
 ```
 
@@ -88,9 +91,10 @@ Current correction status:
 - `ORG-029`: **Completed** with green exact-SHA CI #430.
 - `ORG-030`: **Completed** with green exact-SHA CI #431.
 - `ORG-031`: **Completed** with green exact-SHA CI #432.
-- `ORG-032`: **In Progress — exact-SHA CI pending** for final greenfield schema retirement.
-- `ORG-033`: remains open as documented in section 18.
-- Issue #130 must remain open until the residual acceptance matrix in section 18 is met.
+- `ORG-032`: **Completed** with green corrective exact-SHA CI #434.
+- `ORG-033`: **Completed** with green exact-SHA CI #435.
+- Issue #130 acceptance matrix has no unresolved applicable item; closure is authorized and recorded
+  by the final verification commit/issue update.
 
 Important ADR note: ADR-0005 remains the accepted repository ADR, but parts of its original
 "typed pair directly on each assignment" representation are now stale relative to the
@@ -2293,7 +2297,7 @@ its full current exit gate is satisfied.
 | `ORG-030` | Completed | Canonical `/api/v1/organization/operational-scopes` and `/responsibilities` endpoints are added. Request DTOs contain business data plus required Workflow references only; actor, effective permissions, request/correlation IDs and current owner display are server-derived. Scope registration and responsibility operations are permission-gated; responsibility assign/revoke retain application-level Workflow approval and Audit append. New Flyway migrations provision four active Identity permission definitions and the required Audit BUSINESS/event taxonomy without granting any role/user. Current owner code/name/assignability are resolved at read time through the approved owner port. CI #431 / run `36561971277` passed on exact implementation commit `1505b0fe2c481811ff452db8d956d4738c018c4e`. |
 | `ORG-031` | Completed | Deprecated scope-tuple constructors/accessors are removed from OrganizationUnit, EmployeeAssignment and ResponsibilityAssignment; the three Organization JPA entities no longer map legacy `operational_scope_*` columns; the generic mapper no longer passes compatibility placeholders; guardrails require zero production Java camel-case legacy scope consumers. Database columns remain unchanged for ORG-032. CI #432 / run `36564170935` passed on exact implementation commit `e511a1b72350a4da7ad5aefc933127a11a3bed13`. |
 | `ORG-032` | Completed | New migration `V20260929_006__retire_legacy_operational_scope_columns.sql` preflights null `scope_id` rows, removes obsolete `operational_scope_*` columns and their legacy indexes from units, employee assignments and responsibility assignments, makes responsibility `scope_id` NOT NULL, and retains/redefines the canonical temporal rule. Domain/JPA nullability is aligned and legacy missing-scope reconciliation state is retired. Initial CI #433 exposed only a historical ORG-046 test-boundary defect; corrective commit `2fabd653801c7c2301ce9d2f1e8014a1480fd801` targeted that test to `20260927.004`, and CI #434 / run `36566598631` passed on the exact corrective SHA. |
-| `ORG-033` | In Progress — exact-SHA CI pending | Final closure verification adds explicit proof that one organization unit can hold and retrieve simultaneous responsibilities over distinct registered scopes without overwrite, and that later owner retirement is reported without deleting historical assignments. The acceptance matrix reuses already-green dedicated evidence for invalid references, GLOBAL/CUSTOM, authorization, Workflow APPROVE/REJECT, Audit, pessimistic concurrency, final schema replay, canonical REST/OpenAPI and architecture boundaries. Completion awaits green exact-SHA CI and final issue #130 closure. |
+| `ORG-033` | Completed | Final closure verification proves one organization unit can hold and retrieve simultaneous responsibilities over distinct registered scopes without overwrite, and that later owner retirement is reported without deleting historical assignments. The acceptance matrix reuses already-green dedicated evidence for invalid references, GLOBAL/CUSTOM, authorization, Workflow APPROVE/REJECT, Audit, pessimistic concurrency, final schema replay, canonical REST/OpenAPI and architecture boundaries. CI #435 / run `36567788946` passed on exact verification commit `70b3a147f12c710ab07a7bafb1f3ee2bfd348bab`; deterministic OpenAPI artifact `hidra-api-openapi-70b3a147f12c710ab07a7bafb1f3ee2bfd348bab` was published. Issue #130 has no unresolved applicable acceptance item. |
 
 
 ### 2026-09-29 greenfield database decision
@@ -2548,7 +2552,7 @@ artifact `hidra-api-openapi-2fabd653801c7c2301ce9d2f1e8014a1480fd801`. ORG-033 r
 same pipeline to pass again on its own exact verification SHA, including the new multi-scope and
 retirement/history test.
 
-**Status:** implementation complete; ORG-033 remains **In Progress — exact-SHA CI pending**.
+**Status:** **Completed.** Commit `70b3a147f12c710ab07a7bafb1f3ee2bfd348bab` passed CI #435 / run `36567788946` on the exact verification SHA, and the deterministic OpenAPI artifact was published. The issue #130 acceptance matrix has no unresolved applicable item.
 
 ### ORG-032 final greenfield schema retirement increment
 

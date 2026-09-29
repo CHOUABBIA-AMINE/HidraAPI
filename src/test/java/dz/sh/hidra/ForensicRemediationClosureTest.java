@@ -14,7 +14,7 @@
  * @Module      : repository
  * @Package     : dz.sh.hidra
  *
- * @Description : Replays HRA-120 closure-critical checks and pins the exact remaining blocker.
+ * @Description : Replays HRA-120 closure-critical checks and rejects REST/domain representation leakage.
  *
  */
 package dz.sh.hidra;
@@ -54,10 +54,7 @@ class ForensicRemediationClosureTest {
             "dz.sh.hidra.modules.topology.application.contract.organization"
     );
 
-    private static final Set<String> EXPECTED_WIRE_BLOCKER = Set.of(
-            "dz.sh.hidra.modules.identity.api.rest.request.EvaluatePermissionRequest"
-                    + " -> dz.sh.hidra.modules.identity.domain.value.AuthorizationScope"
-    );
+    private static final Set<String> EXPECTED_WIRE_BLOCKER = Set.of();
 
     @Test
     void fictionalModuleEventScaffoldingRemainsAbsent() throws IOException {
@@ -109,7 +106,7 @@ class ForensicRemediationClosureTest {
     }
 
     @Test
-    void directWireDomainBlockerRemainsExplicitAndBounded() throws IOException {
+    void directWireDomainRepresentationLeakageRemainsAbsent() throws IOException {
         Map<Path, SourceType> sources = sources();
         Map<String, String> kinds = new HashMap<>();
         for (SourceType source : sources.values()) {
@@ -135,8 +132,7 @@ class ForensicRemediationClosureTest {
         assertEquals(
                 EXPECTED_WIRE_BLOCKER,
                 blockers,
-                "HRA-120 remains blocked until the exact HRA-102 wire/domain-record exposure is removed; "
-                        + "new blockers are forbidden."
+                "HRA-102 forbids REST request/response exposure of non-enum domain representation."
         );
     }
 

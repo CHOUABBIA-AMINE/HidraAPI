@@ -130,3 +130,30 @@ API/application-owned boundary representation. The separately classified
 
 HRA-023 remains separately blocked by its Organization reconciliation/cutover gate and is not
 bypassed by this audit.
+
+
+## HRA-121 corrective follow-up
+
+HRA-121 removes the direct HRA-102 REST/domain-record representation identified by this replay
+without changing Identity authorization semantics.
+
+The REST boundary now owns `AuthorizationScopeRequest(scopeType, scopeReferenceId,
+scopeCodeSnapshot)`. The same-module `ScopeType` enum remains deliberately reusable under the
+HRA-102 enum-wire-vocabulary policy, while `IdentityRestMapper` alone constructs the existing
+domain `AuthorizationScope` before creating `EvaluatePermissionQuery`.
+
+Focused mapper/controller tests lock:
+
+- the established nested scope component names;
+- GLOBAL normalization through the domain constructor;
+- non-global scope reference/code normalization;
+- optional null-scope behavior; and
+- controller forwarding of the mapped application query.
+
+`ForensicRemediationClosureTest` now requires the direct REST request/response non-enum domain
+representation set to be empty rather than pinning the former exception.
+
+HRA-120 remains **BLOCKED** pending the separately authorized HRA-122 removal of the classified
+`topology.ProjectionType` residual and a subsequent full HRA-120 replay. HRA-121 does not alter
+LOCAL, LDAP/AD, OIDC authentication, HidraPrincipal normalization, JWT issuance, authorization
+policy semantics, or database schema.

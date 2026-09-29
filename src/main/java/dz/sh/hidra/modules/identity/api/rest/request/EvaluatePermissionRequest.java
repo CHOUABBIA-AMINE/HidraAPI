@@ -7,7 +7,7 @@
  *
  * @Name        : EvaluatePermissionRequest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-29
  *
  * @Type        : Record
  * @Layer       : API
@@ -19,8 +19,6 @@
  */
 package dz.sh.hidra.modules.identity.api.rest.request;
 
-import dz.sh.hidra.modules.identity.domain.value.AuthorizationScope;
-
 /**
  * REST request for evaluating permission.
  *
@@ -28,13 +26,13 @@ import dz.sh.hidra.modules.identity.domain.value.AuthorizationScope;
  * @param permissionCode permission code
  * @param resourceType optional resource type
  * @param resourceReferenceId optional resource reference
- * @param scope authorization scope
+ * @param scope API-owned authorization scope representation
  */
 public record EvaluatePermissionRequest(
         String userId,
         String permissionCode,
         String resourceType,
         String resourceReferenceId,
-        AuthorizationScope scope
+        AuthorizationScopeRequest scope
 ) {
 }

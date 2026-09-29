@@ -7,7 +7,7 @@
  *
  * @Name        : IdentityRestMapper
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-09-29
  *
  * @Type        : Class
  * @Layer       : API
@@ -18,6 +18,8 @@
  *
  */
 package dz.sh.hidra.modules.identity.api.rest.mapper;
+
+import dz.sh.hidra.modules.identity.api.rest.request.AuthorizationScopeRequest;
 import dz.sh.hidra.modules.identity.api.rest.request.CreateUserRequest;
 import dz.sh.hidra.modules.identity.api.rest.request.EvaluatePermissionRequest;
 import dz.sh.hidra.modules.identity.api.rest.response.PermissionDecisionResponse;
@@ -26,6 +28,7 @@ import dz.sh.hidra.modules.identity.application.command.CreateUserCommand;
 import dz.sh.hidra.modules.identity.application.dto.PermissionDecisionDto;
 import dz.sh.hidra.modules.identity.application.dto.UserSummaryDto;
 import dz.sh.hidra.modules.identity.application.query.EvaluatePermissionQuery;
+import dz.sh.hidra.modules.identity.domain.value.AuthorizationScope;
 import java.util.Objects;
 
 /**
@@ -44,12 +47,13 @@ public final class IdentityRestMapper {
     }
 
     public static EvaluatePermissionQuery toQuery(EvaluatePermissionRequest request) {
+        Objects.requireNonNull(request, "EvaluatePermissionRequest must not be null.");
         return new EvaluatePermissionQuery(
                 request.userId(),
                 request.permissionCode(),
                 request.resourceType(),
                 request.resourceReferenceId(),
-                request.scope()
+                toDomainScope(request.scope())
         );
     }
 
@@ -64,6 +68,17 @@ public final class IdentityRestMapper {
                 dto.reasonCode(),
                 dto.reasonMessage(),
                 dto.evaluatedAt()
+        );
+    }
+
+    private static AuthorizationScope toDomainScope(AuthorizationScopeRequest scope) {
+        if (scope == null) {
+            return null;
+        }
+        return new AuthorizationScope(
+                scope.scopeType(),
+                scope.scopeReferenceId(),
+                scope.scopeCodeSnapshot()
         );
     }
 }

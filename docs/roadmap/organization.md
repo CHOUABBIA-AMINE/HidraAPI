@@ -2287,11 +2287,11 @@ its full current exit gate is satisfied.
 | `ORG-026` | Completed | Responsibility assignment now accepts only existing ACTIVE employee or organization-unit assignees, revalidates entity-backed owner existence/assignability before new assignment, rejects direct organization-unit self-target responsibility, preserves historical rows on owner retirement, and retains half-open overlap/idempotency/revocation behavior. Focused tests cover invalid/inactive assignees and retired owners. |
 | `ORG-027` | Completed | Identity-backed permission checks, Workflow approval for assign/revoke and Audit evidence for assign/revoke/reconcile are implemented. Corrective commit `279b5ece1588ec756d00e70db366bce0ccf4fc19` removed the Spring CGLIB proxy defect and CI #426 / run `36553395572` passed on that exact SHA. Database concurrency hardening is owned by ORG-028. |
 | `ORG-028` | Completed | Immutable migration `V20260927_001__add_operational_scope_registry.sql` remains unchanged. Commit `1e4d585ef397ebaedb2a910c232f813838d561fe` adds dedicated PostgreSQL/Testcontainers coverage plus `V20260929_003__harden_operational_scope_responsibility_concurrency.sql` with canonical temporal validation and an ACTIVE canonical-identity index. Assignment creation serializes on a pessimistic write lock of the canonical OperationalScope row before overlap/idempotency checks; revocation serializes on a pessimistic write lock of the assignment row. Legacy rows with null `scope_id` remain outside the canonical temporal rule. CI #427 / run `36555071513` passed on the exact implementation SHA. |
-| `ORG-029` | Ready / partially implemented | Canonical registry persistence already uses `ResponsibilityAssignment.scopeId`. With ORG-023 completed under the greenfield assumption and ORG-028 green, ORG-029 is now executable as fresh-database persistence alignment: eliminate unsafe legacy write-back paths, prove canonical registry/assignment persistence from an empty PostgreSQL instance, and do not create a nonexistent legacy backfill/quarantine subsystem. |
+| `ORG-029` | In Progress — exact-SHA CI pending | Greenfield persistence alignment is implemented: unit/employee legacy `operational_scope_*` JPA columns are read-only, the generic Organization mapper no longer reads/writes legacy scope tuple state and maps responsibility through canonical `scopeId`, and focused mapping plus full-empty-PostgreSQL tests prove canonical registry/assignment persistence with legacy columns remaining null. Existing reconciliation coverage already verifies a healthy canonical assignment produces no finding. Completion awaits green exact-SHA CI. |
 | `ORG-030` | Planned | No versioned responsibility/scope REST migration exists yet. Future endpoints must derive actor/effective permissions server-side from authenticated security context, carry Workflow approval references rather than client-supplied security context, resolve current owner display data, and require provisioned Identity permissions plus Audit taxonomy. |
 | `ORG-031` | In Progress | Canonical embedded scope components are already removed from `OrganizationUnit` and `EmployeeAssignment`. Under the greenfield assumption, ORG-031's residual scope is removal of transitional constructors/accessors, mapper calls and JPA compatibility bridges after canonical API cutover; no deployed legacy evidence needs runtime preservation. |
 | `ORG-032` | Planned | Legacy `operational_scope_*` columns remain only because historical migrations are immutable. In the greenfield path, ORG-032 will remove those obsolete compatibility columns in a new migration and enforce the final canonical `scope_id` constraints, validated by full migration replay from an empty PostgreSQL database. |
-| `ORG-033` | In Progress | CI is green through the ORG-023 refresh (CI #428). Final closure is still incomplete because ORG-029 greenfield persistence alignment, API cutover and compatibility retirement remain open. Final verification must include full empty-database migration replay, registry resolution, authorization, Workflow approval/rejection, Audit evidence, concurrency, target retirement, API cutover and final compatibility cleanup. |
+| `ORG-033` | In Progress | CI is green through the greenfield-roadmap reconciliation (CI #429). Final closure is still incomplete because ORG-029 verification, API cutover and compatibility retirement remain open. Final verification must include full empty-database migration replay, registry resolution, authorization, Workflow approval/rejection, Audit evidence, concurrency, target retirement, API cutover and final compatibility cleanup. |
 
 
 ### 2026-09-29 greenfield database decision
@@ -2431,6 +2431,54 @@ requires a controlled migration window after canonical temporal preflight.
 passed CI #427 / run `36555071513` on the exact implementation SHA. With ORG-023 now completed
 under the documented greenfield/no-database assumption, ORG-029 is executable.
 
+### ORG-029 greenfield persistence-alignment increment
+
+**Commit scope:** align current persistence with the canonical registry model on a fresh database.
+No legacy data migration is implemented.
+
+Exact implementation allowlist:
+
+```text
+organization/infrastructure/persistence/entity/OrganizationUnitJpaEntity.java
+organization/infrastructure/persistence/entity/EmployeeAssignmentJpaEntity.java
+organization/infrastructure/persistence/mapper/OrganizationPersistenceMapper.java
+organization tests for canonical mapping / fresh PostgreSQL persistence
+OperationalScopeEvidenceInventoryTest.java
+docs/roadmap/organization.md
+```
+
+Behavioral changes:
+
+- `OrganizationUnitJpaEntity.operational_scope_*` compatibility columns are now
+  `insertable=false, updatable=false`;
+- `EmployeeAssignmentJpaEntity.operational_scope_*` compatibility columns are now
+  `insertable=false, updatable=false`;
+- `ResponsibilityAssignmentJpaEntity` was already read-only for the same legacy columns and is
+  intentionally unchanged;
+- `OrganizationPersistenceMapper` no longer calls deprecated operational-scope getters or
+  constructors for OrganizationUnit, EmployeeAssignment, or ResponsibilityAssignment;
+- responsibility generic mapping uses only canonical `scopeId`;
+- deprecated domain/JPA compatibility members remain temporarily for ORG-031 source cleanup, but
+  they are no longer required by the generic persistence mapper.
+
+Verification added:
+
+- reflection-based mapping test proves all three JPA entities expose legacy scope columns as
+  non-insertable/non-updatable compatibility state;
+- canonical mapper round trips unit/employee state without scope tuples and responsibility state
+  through `scopeId`;
+- Testcontainers/PostgreSQL starts from an empty database, replays the full Flyway chain, persists a
+  canonical registry scope and responsibility assignment, verifies all four legacy assignment
+  columns remain null, verifies owner identity is obtained through the registry join, and verifies
+  registry uniqueness/FK enforcement;
+- existing `ResponsibilityReconciliationApplicationServiceTest` already covers a healthy
+  canonical assignment with a registered/resolvable scope and expects zero findings;
+- `OperationalScopeEvidenceInventoryTest` now pins the reduced legacy-consumer set, proving the
+  generic mapper is no longer a legacy consumer.
+
+**Status:** implementation complete; ORG-029 remains **In Progress — exact-SHA CI pending** until
+the implementation commit passes HidraAPI CI.
+
 ### ORG-027 reconciliation increment
 
 **Commit scope:** responsibility reconciliation only. ORG-027 remains **In Progress**.
@@ -2536,9 +2584,9 @@ Focused tests cover permission denial, completed/mismatched Workflow evidence, g
 assignment/revocation/reconciliation paths, catalog-code-to-ID audit mapping, missing Audit taxonomy,
 and exported-contract architecture classification.
 
-**Next section-18 action:** ORG-023 is completed under the greenfield/no-database assumption and
-ORG-028 is green. **ORG-029 is now the next executable task.** It must align fresh-database
-persistence only; do not add a fictional backfill/quarantine workflow for nonexistent legacy data.
+**Next section-18 action:** verify ORG-029 on its exact implementation SHA. Do not begin ORG-030
+until ORG-029 is green. ORG-029 remains greenfield-only: no legacy backfill/quarantine workflow is
+present or required.
 
 ### Reconciliation notes
 
@@ -2557,8 +2605,8 @@ persistence only; do not add a fictional backfill/quarantine workflow for nonexi
   `1e4d585ef397ebaedb2a910c232f813838d561fe`.
 - ORG-023 is complete under the documented greenfield/no-database assumption; CI #428 verified
   the source evidence refresh.
-- ORG-029 is now executable as greenfield persistence alignment; no backfill/quarantine data path
-  is required or authorized.
+- ORG-029 greenfield persistence alignment is implemented and awaits exact-SHA CI verification;
+  no backfill/quarantine data path exists or is authorized.
 - The multilingual and dependency-integrity correction sequences in section 19 remain complete.
 
 **Execution rule:** A roadmap task's first implementation action must specify exact file allowlists and verification commands after inspecting current main; do not silently rewrite old task descriptions or mark future tasks complete. `ORG-028` and `ORG-032` must use separately numbered, never-reused migrations after rechecking the live Flyway sequence. Issue #130 remains open until the acceptance matrix is satisfied.

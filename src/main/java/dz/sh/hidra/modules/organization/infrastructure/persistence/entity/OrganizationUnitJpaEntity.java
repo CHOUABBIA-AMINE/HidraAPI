@@ -7,14 +7,14 @@
  *
  * @Name        : OrganizationUnitJpaEntity
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-09-29
  *
  * @Type        : Class
  * @Layer       : Infrastructure
  * @Module      : organization
  * @Package     : dz.sh.hidra.modules.organization.infrastructure.persistence.entity
  *
- * @Description : Database-backed JPA entity for OrganizationUnit.
+ * @Description : Database-backed JPA entity for OrganizationUnit with read-only legacy scope compatibility columns.
  *
  */
 package dz.sh.hidra.modules.organization.infrastructure.persistence.entity;
@@ -61,16 +61,16 @@ import java.time.Instant;
     @Column(name = "status", nullable = false, length = 40)
     private OrganizationUnitStatus status;
 
-    @Column(name = "operational_scope_type", nullable = true, length = 80)
+    @Column(name = "operational_scope_type", nullable = true, insertable = false, updatable = false, length = 80)
     private String operationalScopeType;
 
-    @Column(name = "operational_scope_id", nullable = true, length = 120)
+    @Column(name = "operational_scope_id", nullable = true, insertable = false, updatable = false, length = 120)
     private String operationalScopeId;
 
-    @Column(name = "operational_scope_code", nullable = true, length = 120)
+    @Column(name = "operational_scope_code", nullable = true, insertable = false, updatable = false, length = 120)
     private String operationalScopeCode;
 
-    @Column(name = "operational_scope_name", nullable = true, length = 255)
+    @Column(name = "operational_scope_name", nullable = true, insertable = false, updatable = false, length = 255)
     private String operationalScopeName;
 
     @Column(name = "valid_from", nullable = true)

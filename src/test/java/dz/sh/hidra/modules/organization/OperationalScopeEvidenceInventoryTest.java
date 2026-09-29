@@ -41,8 +41,7 @@ class OperationalScopeEvidenceInventoryTest {
             "domain/model/ResponsibilityAssignment.java",
             "infrastructure/persistence/entity/EmployeeAssignmentJpaEntity.java",
             "infrastructure/persistence/entity/OrganizationUnitJpaEntity.java",
-            "infrastructure/persistence/entity/ResponsibilityAssignmentJpaEntity.java",
-            "infrastructure/persistence/mapper/OrganizationPersistenceMapper.java"
+            "infrastructure/persistence/entity/ResponsibilityAssignmentJpaEntity.java"
     );
 
     private static final Pattern FORBIDDEN_SQL =
@@ -71,7 +70,7 @@ class OperationalScopeEvidenceInventoryTest {
         }
 
         assertThat(consumers)
-                .as("Any new legacy operational-scope consumer must be reviewed under ORG-023/031.")
+                .as("Any new legacy operational-scope consumer must be reviewed under ORG-031.")
                 .containsExactlyInAnyOrderElementsOf(EXPECTED_LEGACY_SCOPE_CONSUMERS);
     }
 

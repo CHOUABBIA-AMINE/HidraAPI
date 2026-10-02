@@ -145,7 +145,7 @@ baseline model files
 | HMC-017 | `docs(catalogue): scan organization domain models` | Scan all 17 organization model files. | **Completed** — 17/17 models, 179 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-018 | `docs(catalogue): scan party domain models` | Scan all 2 party model files. | **Completed** — 2/2 models, 21 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-019 | `docs(catalogue): scan planning domain models` | Scan all 5 planning model files. | **Completed** — 5/5 models, 95 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
-| HMC-020 | `docs(catalogue): scan reporting domain models` | Scan all 4 reporting model files. | Planned |
+| HMC-020 | `docs(catalogue): scan reporting domain models` | Scan all 4 reporting model files. | **Completed** — 4/4 models, 59 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-021 | `docs(catalogue): scan risk domain models` | Scan all 4 risk model files. | Planned |
 | HMC-022 | `docs(catalogue): scan simulation domain models` | Scan all 6 simulation model files. | Planned |
 | HMC-023 | `docs(catalogue): scan telemetry domain models` | Scan all 4 telemetry model files. | Planned |
@@ -2359,11 +2359,108 @@ The scan records only declarations under `planning/domain/model`. Planning domai
 
 No JPA entity, API DTO, migration, application contract, infrastructure model, monitoring implementation, party implementation, topology implementation, or database column metadata was mixed into this module scan.
 
-## 29. Current next task
+## 29. HMC-020 — Reporting module scan evidence
+
+**Source commit:** `5e301857882b59e9e35ecc474e9c6537d89cc96a`  
+**Module:** `reporting`  
+**Baseline model files:** 4  
+**Scanned models:** 4  
+**Declared fields/components:** 59  
+**Zero-field models:** 0  
+**Extraction exceptions:** 0
+
+### Reporting model index
+
+| Model | Kind | Declared field count | Source path | Status |
+|---|---|---:|---|---|
+| ReportDefinition | record | 14 | `src/main/java/dz/sh/hidra/modules/reporting/domain/model/ReportDefinition.java` | Extracted |
+| ReportOutputArtifact | record | 13 | `src/main/java/dz/sh/hidra/modules/reporting/domain/model/ReportOutputArtifact.java` | Extracted |
+| ReportRequest | record | 15 | `src/main/java/dz/sh/hidra/modules/reporting/domain/model/ReportRequest.java` | Extracted |
+| ReportRun | record | 17 | `src/main/java/dz/sh/hidra/modules/reporting/domain/model/ReportRun.java` | Extracted |
+
+### Reporting fields and declared Java types
+
+| Model | Ordinal | Field | Declared Java Type |
+|---|---:|---|---|
+| ReportDefinition | 1 | id | String |
+| ReportDefinition | 2 | code | String |
+| ReportDefinition | 3 | nameAr | String |
+| ReportDefinition | 4 | nameFr | String |
+| ReportDefinition | 5 | nameEn | String |
+| ReportDefinition | 6 | reportCategoryId | String |
+| ReportDefinition | 7 | ownerModule | String |
+| ReportDefinition | 8 | description | String |
+| ReportDefinition | 9 | active | boolean |
+| ReportDefinition | 10 | currentTemplateVersionId | String |
+| ReportDefinition | 11 | requiresApproval | boolean |
+| ReportDefinition | 12 | restricted | boolean |
+| ReportDefinition | 13 | createdAt | Instant |
+| ReportDefinition | 14 | updatedAt | Instant |
+| ReportOutputArtifact | 1 | id | String |
+| ReportOutputArtifact | 2 | reportRunId | String |
+| ReportOutputArtifact | 3 | artifactType | ReportArtifactType |
+| ReportOutputArtifact | 4 | format | ReportFormat |
+| ReportOutputArtifact | 5 | fileName | String |
+| ReportOutputArtifact | 6 | mimeType | String |
+| ReportOutputArtifact | 7 | storageObjectReferenceId | String |
+| ReportOutputArtifact | 8 | documentReferenceId | String |
+| ReportOutputArtifact | 9 | checksum | String |
+| ReportOutputArtifact | 10 | sizeBytes | Long |
+| ReportOutputArtifact | 11 | generatedAt | Instant |
+| ReportOutputArtifact | 12 | expiresAt | Instant |
+| ReportOutputArtifact | 13 | createdAt | Instant |
+| ReportRequest | 1 | id | String |
+| ReportRequest | 2 | reportDefinitionId | String |
+| ReportRequest | 3 | requestedByActorId | String |
+| ReportRequest | 4 | requestedByUsernameSnapshot | String |
+| ReportRequest | 5 | requestedByDisplayNameSnapshot | String |
+| ReportRequest | 6 | requestedByRoleCodeSnapshot | String |
+| ReportRequest | 7 | organizationUnitId | String |
+| ReportRequest | 8 | organizationUnitNameSnapshot | String |
+| ReportRequest | 9 | requestedAt | Instant |
+| ReportRequest | 10 | purpose | String |
+| ReportRequest | 11 | status | ReportRequestStatus |
+| ReportRequest | 12 | correlationId | String |
+| ReportRequest | 13 | workflowReferenceId | String |
+| ReportRequest | 14 | createdAt | Instant |
+| ReportRequest | 15 | updatedAt | Instant |
+| ReportRun | 1 | id | String |
+| ReportRun | 2 | reportRequestId | String |
+| ReportRun | 3 | reportDefinitionId | String |
+| ReportRun | 4 | templateVersionId | String |
+| ReportRun | 5 | status | ReportRunStatus |
+| ReportRun | 6 | runMode | ReportRunMode |
+| ReportRun | 7 | queuedAt | Instant |
+| ReportRun | 8 | startedAt | Instant |
+| ReportRun | 9 | completedAt | Instant |
+| ReportRun | 10 | failedAt | Instant |
+| ReportRun | 11 | failureReason | String |
+| ReportRun | 12 | recordCount | Long |
+| ReportRun | 13 | outputCount | Long |
+| ReportRun | 14 | executionDurationMs | Long |
+| ReportRun | 15 | correlationId | String |
+| ReportRun | 16 | createdAt | Instant |
+| ReportRun | 17 | updatedAt | Instant |
+
+### HMC-020 reconciliation
 
 ```text
-HMC-020 — docs(catalogue): scan reporting domain models
+baseline model files = 4
+extracted models     = 4
+exceptions           = 0
+declared fields      = 59
+zero-field models    = 0
 ```
 
-Do not start HMC-021 until HMC-020 is completed and its module counts are reported.
+The scan records only declarations under `reporting/domain/model`. Reporting domain value types referenced by record components remain declared field types and are not expanded into independent model rows.
+
+No JPA entity, API DTO, migration, application contract, infrastructure model, document implementation, workflow implementation, or database column metadata was mixed into this module scan.
+
+## 30. Current next task
+
+```text
+HMC-021 — docs(catalogue): scan risk domain models
+```
+
+Do not start HMC-022 until HMC-021 is completed and its module counts are reported.
 

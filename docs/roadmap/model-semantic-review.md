@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-002 completed; candidate dependency evidence inventoried, classification not yet started.
+**Status:** Active — HMS-003 completed; candidate dependencies classified, graph/cycle validation not yet started.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -153,7 +153,7 @@ A review task records the decision and evidence. It must not silently change pro
 |---|---|---|---|
 | HMS-001 | `docs(model-review): establish target model semantic review roadmap` | Create this roadmap and amend HDP so HDP-004 is explicitly paused behind the semantic-review prerequisite. No dependency analysis or production code changes. | **Completed** |
 | HMS-002 | `docs(model-review): inventory target model dependency evidence` | Inventory candidate relationship evidence for all 123 models from domain source, JPA, Flyway, contracts and enums. Every candidate edge retains evidence/provenance; no review order yet. | **Completed** — 123/123 subjects reconciled; 627 candidate relationship fields inventoried; JPA/ports/Flyway/custom-type evidence registered; no classification/order performed. |
-| HMS-003 | `docs(model-review): classify target model dependencies` | Resolve candidate edges into the dependency classifications in section 4; separate true dependencies from snapshots/codes and record unresolved edges. | Planned |
+| HMS-003 | `docs(model-review): classify target model dependencies` | Resolve candidate edges into the dependency classifications in section 4; separate true dependencies from snapshots/codes and record unresolved edges. | **Completed** — 627/627 candidates classified; 165 unambiguous subject-model edges admitted provisionally; 134 unresolved candidates retained for HMS-004. |
 | HMS-004 | `docs(model-review): validate dependency graph and cycles` | Reconcile graph against persistence/contracts, identify strongly connected components, missing targets, contradictory edges and cross-module boundary concerns. | Planned |
 | HMS-005 | `docs(model-review): generate dependency ordered model review register` | Compute deterministic review levels/order and generate the 123-model review register with `HMSR-001…HMSR-123` codes and exact per-model commit messages. | Planned |
 | HMS-006 | `docs(model-review): reconcile interactive model decisions` | After all HMSR tasks are resolved, reconcile APPROVED/REVISE/DEFER/REMOVE decisions, outstanding corrections, unresolved cycles and dependency impacts. | Planned |
@@ -1367,10 +1367,1296 @@ These migration search counts are evidence signals only. HMS-003 must inspect re
 - No topological order, dependency depth, downstream dependent count, strongly connected component, or interactive review code has been computed.
 - No production Java, JPA, Flyway, application contract, enum/value type, or database data was modified.
 
-## 11. Current next task
+## 11. HMS-003 — Dependency classification register
+
+**Task:** HMS-003 — classify target model dependencies  
+**Classification basis:** HMS-002 evidence register plus deterministic subject-model resolution rules.  
+**Candidates classified:** 627 / 627  
+**Subject-model graph edges admitted:** 165  
+**Unresolved candidates retained:** 134  
+**Ordering/cycle analysis:** not performed in this task.
+
+### 11.1 Classification rules
+
+- `Self identifier` is not a graph edge.
+- `Domain reference` is a same-module reference to one of the 123 subject models.
+- `Cross-module reference` becomes a graph edge only when it resolves to one specific subject model. Actor references and polymorphic targets remain non-edge cross-module references.
+- `Snapshot/reference-only` is explicitly excluded from graph ownership/dependency ordering.
+- `Value/catalog dependency` is a controlled taxonomy/value reference, not one of the 123 subject-model edges.
+- `Unresolved` means the target is absent from the subject set, ambiguous, or evidence is insufficient. HMS-004 must inspect these cases before graph validation.
+- HMS-003 does not claim persistence-FK status unless HMS-004 confirms it from current schema evidence.
+
+### 11.2 Classification summary
+
+| Classification | Candidate fields |
+|---|---:|
+| Self identifier | 122 |
+| Domain reference | 112 |
+| Cross-module reference | 149 |
+| Snapshot/reference-only | 36 |
+| Value/catalog dependency | 74 |
+| Unresolved | 134 |
+| **Total** | **627** |
+
+Confirmed subject-model graph edges at this stage: **165**. These are semantic candidate edges for HMS-004 validation, not yet the final dependency graph.
+
+### 11.3 Per-model classification
+
+#### alarm.Alarm
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| alarmTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| severityId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| priorityId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| sourceReferenceId | String | Snapshot/reference-only | TECHNICAL_REFERENCE | No | Technical correlation/request/reference identity. |
+| monitoringAlertCandidateId | String | Unresolved | — | No | Reference target is outside or absent from the 123 subject-model set; preserve for HMS-004 review. |
+| monitoringEvaluationId | String | Unresolved | — | No | Reference target is outside or absent from the 123 subject-model set; preserve for HMS-004 review. |
+| telemetryReadingId | String | Cross-module reference | telemetry.TelemetryReading | Yes | Unambiguous reference to a subject model in another bounded context. |
+| planningTargetId | String | Cross-module reference | planning.PlanTarget | Yes | Unambiguous reference to a subject model in another bounded context. |
+| topologyAssetId | String | Cross-module reference | POLYMORPHIC | No | Target is selected by companion type/module metadata; no single subject-model edge. |
+| acknowledgedByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+| owningOrganizationUnitId | String | Cross-module reference | organization.OrganizationUnit | Yes | Unambiguous reference to a subject model in another bounded context. |
+| workflowInstanceId | String | Cross-module reference | workflow.WorkflowInstance | Yes | Unambiguous reference to a subject model in another bounded context. |
+| incidentId | String | Cross-module reference | incident.Incident | Yes | Unambiguous reference to a subject model in another bounded context. |
+| correlationId | String | Snapshot/reference-only | TECHNICAL_REFERENCE | No | Technical correlation/request/reference identity. |
+
+#### alarm.AlarmAcknowledgement
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| alarmId | String | Domain reference | alarm.Alarm | Yes | Unambiguous same-module subject-model reference. |
+| acknowledgedByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+| organizationUnitId | String | Cross-module reference | organization.OrganizationUnit | Yes | Unambiguous reference to a subject model in another bounded context. |
+| correlationId | String | Snapshot/reference-only | TECHNICAL_REFERENCE | No | Technical correlation/request/reference identity. |
+
+#### alarm.AlarmClosure
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| alarmId | String | Domain reference | alarm.Alarm | Yes | Unambiguous same-module subject-model reference. |
+| closureReasonId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| closedByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+| reviewWorkflowInstanceId | String | Cross-module reference | workflow.WorkflowInstance | Yes | Unambiguous reference to a subject model in another bounded context. |
+| correlationId | String | Snapshot/reference-only | TECHNICAL_REFERENCE | No | Technical correlation/request/reference identity. |
+
+#### alarm.AlarmShelving
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| alarmId | String | Domain reference | alarm.Alarm | Yes | Unambiguous same-module subject-model reference. |
+| shelvingReasonId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| shelvedByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+| unshelvedByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+| correlationId | String | Snapshot/reference-only | TECHNICAL_REFERENCE | No | Technical correlation/request/reference identity. |
+
+#### analytics.AnalyticsDataset
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| subjectAreaId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+
+#### analytics.AnalyticsDatasetVersion
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| datasetId | String | Domain reference | analytics.AnalyticsDataset | Yes | Unambiguous same-module subject-model reference. |
+| publishedByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+
+#### analytics.AnalyticsInsight
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| subjectAreaId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| scopeId | String | Cross-module reference | POLYMORPHIC | No | Target is selected by companion type/module metadata; no single subject-model edge. |
+| severityId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| sourceProjectionSnapshotId | String | Snapshot/reference-only | — | No | Snapshot/reference identity; not treated as ownership dependency in HMS-003. |
+| sourceTrendAnalysisId | String | Unresolved | — | No | Reference target is outside or absent from the 123 subject-model set; preserve for HMS-004 review. |
+| sourceModelRunId | String | Unresolved | — | No | Reference target is outside or absent from the 123 subject-model set; preserve for HMS-004 review. |
+
+#### analytics.AnalyticsProjectionRun
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| projectionDefinitionId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| correlationId | String | Snapshot/reference-only | TECHNICAL_REFERENCE | No | Technical correlation/request/reference identity. |
+
+#### analytics.DigitalTwinReadinessAssessment
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| scopeId | String | Cross-module reference | POLYMORPHIC | No | Target is selected by companion type/module metadata; no single subject-model edge. |
+| topologySnapshotId | String | Snapshot/reference-only | — | No | Snapshot/reference identity; not treated as ownership dependency in HMS-003. |
+
+#### analytics.MetricEvaluationRun
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| metricDefinitionVersionId | String | Unresolved | — | No | Reference target is outside or absent from the 123 subject-model set; preserve for HMS-004 review. |
+| scopeId | String | Cross-module reference | POLYMORPHIC | No | Target is selected by companion type/module metadata; no single subject-model edge. |
+| correlationId | String | Snapshot/reference-only | TECHNICAL_REFERENCE | No | Technical correlation/request/reference identity. |
+
+#### analytics.MetricValue
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| metricEvaluationRunId | String | Domain reference | analytics.MetricEvaluationRun | Yes | Unambiguous same-module subject-model reference. |
+| metricDefinitionId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| metricDefinitionVersionId | String | Unresolved | — | No | Reference target is outside or absent from the 123 subject-model set; preserve for HMS-004 review. |
+| scopeId | String | Cross-module reference | POLYMORPHIC | No | Target is selected by companion type/module metadata; no single subject-model edge. |
+| unitId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+
+#### assets.AssetConditionRecord
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| maintainableAssetId | String | Domain reference | assets.MaintainableAsset | Yes | Unambiguous same-module subject-model reference. |
+| conditionTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| sourceReferenceId | String | Snapshot/reference-only | TECHNICAL_REFERENCE | No | Technical correlation/request/reference identity. |
+| observedByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+
+#### assets.MaintainableAsset
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| assetTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| topologyAssetId | String | Cross-module reference | POLYMORPHIC | No | Target is selected by companion type/module metadata; no single subject-model edge. |
+| parentAssetId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| criticalityId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| ownerOrganizationUnitId | String | Cross-module reference | organization.OrganizationUnit | Yes | Unambiguous reference to a subject model in another bounded context. |
+| manufacturerPartyId | String | Cross-module reference | party.Party | Yes | Unambiguous reference to a subject model in another bounded context. |
+| modelId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| serialIdentityId | String | Unresolved | — | No | Reference target is outside or absent from the 123 subject-model set; preserve for HMS-004 review. |
+| createdByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+
+#### assets.MaintenanceWorkOrder
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| maintainableAssetId | String | Domain reference | assets.MaintainableAsset | Yes | Unambiguous same-module subject-model reference. |
+| maintenancePlanId | String | Unresolved | — | No | Reference target is outside or absent from the 123 subject-model set; preserve for HMS-004 review. |
+| sourceRecommendationId | String | Unresolved | — | No | Reference target is outside or absent from the 123 subject-model set; preserve for HMS-004 review. |
+| workOrderTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| priorityId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| assignedOrganizationUnitId | String | Cross-module reference | organization.OrganizationUnit | Yes | Unambiguous reference to a subject model in another bounded context. |
+| assignedActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+| workflowInstanceId | String | Cross-module reference | workflow.WorkflowInstance | Yes | Unambiguous reference to a subject model in another bounded context. |
+| createdByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+
+#### audit.AuditAccessRecord
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| actorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+| auditEventId | String | Domain reference | audit.AuditEvent | Yes | Unambiguous same-module subject-model reference. |
+| exportRequestId | String | Domain reference | audit.AuditExportRequest | Yes | Unambiguous same-module subject-model reference. |
+| correlationId | String | Snapshot/reference-only | TECHNICAL_REFERENCE | No | Technical correlation/request/reference identity. |
+
+#### audit.AuditBeforeAfterValue
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| auditEventId | String | Domain reference | audit.AuditEvent | Yes | Unambiguous same-module subject-model reference. |
+| maskReasonId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+
+#### audit.AuditEvent
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| eventTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| eventCategoryId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| severityId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| sourceEventId | String | Unresolved | — | No | Reference target is outside or absent from the 123 subject-model set; preserve for HMS-004 review. |
+| actorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+| organizationUnitId | String | Cross-module reference | organization.OrganizationUnit | Yes | Unambiguous reference to a subject model in another bounded context. |
+| targetId | String | Cross-module reference | POLYMORPHIC | No | Target is selected by companion type/module metadata; no single subject-model edge. |
+| reasonId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| workflowInstanceId | String | Cross-module reference | workflow.WorkflowInstance | Yes | Unambiguous reference to a subject model in another bounded context. |
+| workflowTaskId | String | Cross-module reference | workflow.WorkflowTask | Yes | Unambiguous reference to a subject model in another bounded context. |
+| workflowActionId | String | Cross-module reference | workflow.WorkflowAction | Yes | Unambiguous reference to a subject model in another bounded context. |
+| requestId | String | Snapshot/reference-only | TECHNICAL_REFERENCE | No | Technical correlation/request/reference identity. |
+| correlationId | String | Snapshot/reference-only | TECHNICAL_REFERENCE | No | Technical correlation/request/reference identity. |
+| causationId | String | Snapshot/reference-only | TECHNICAL_REFERENCE | No | Technical correlation/request/reference identity. |
+| retentionPolicyId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+
+#### audit.AuditExportRequest
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| requestedByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+| purposeId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| workflowInstanceId | String | Cross-module reference | workflow.WorkflowInstance | Yes | Unambiguous reference to a subject model in another bounded context. |
+| resultDocumentReferenceId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+
+#### configuration.ConfigurationDefinition
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| namespaceId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+
+#### configuration.ConfigurationValue
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| definitionId | String | Domain reference | configuration.ConfigurationDefinition | Yes | Unambiguous same-module subject-model reference. |
+| definitionVersionId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| createdByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+
+#### configuration.FeatureFlag
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+
+#### custody.CustodyDiscrepancy
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| reconciliationId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| discrepancyTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| quantityUnitId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| assignedActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+
+#### custody.CustodyMeasurementPeriod
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| agreementId | String | Unresolved | — | No | Reference target is outside or absent from the 123 subject-model set; preserve for HMS-004 review. |
+| transferPointId | String | Unresolved | — | No | Reference target is outside or absent from the 123 subject-model set; preserve for HMS-004 review. |
+| lockedByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+| approvedByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+
+#### custody.CustodyTransferTicket
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| measurementPeriodId | String | Domain reference | custody.CustodyMeasurementPeriod | Yes | Unambiguous same-module subject-model reference. |
+| agreementId | String | Unresolved | — | No | Reference target is outside or absent from the 123 subject-model set; preserve for HMS-004 review. |
+| transferPointId | String | Unresolved | — | No | Reference target is outside or absent from the 123 subject-model set; preserve for HMS-004 review. |
+| batchId | String | Unresolved | — | No | Reference target is outside or absent from the 123 subject-model set; preserve for HMS-004 review. |
+| quantityCalculationId | String | Unresolved | — | No | Reference target is outside or absent from the 123 subject-model set; preserve for HMS-004 review. |
+| issuedByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+| approvedByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+| workflowInstanceId | String | Cross-module reference | workflow.WorkflowInstance | Yes | Unambiguous reference to a subject model in another bounded context. |
+| auditReferenceId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+
+#### documents.Document
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| documentTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| documentCategoryId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| classificationId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| currentVersionId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| ownerTargetId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| createdByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+
+#### documents.DocumentStorageObject
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| storageProviderId | String | Unresolved | — | No | Reference target is outside or absent from the 123 subject-model set; preserve for HMS-004 review. |
+
+#### documents.DocumentTargetLink
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| documentId | String | Domain reference | documents.Document | Yes | Unambiguous same-module subject-model reference. |
+| documentVersionId | String | Domain reference | documents.DocumentVersion | Yes | Unambiguous same-module subject-model reference. |
+| targetId | String | Cross-module reference | POLYMORPHIC | No | Target is selected by companion type/module metadata; no single subject-model edge. |
+| linkRoleId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| linkedByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+
+#### documents.DocumentVersion
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| documentId | String | Domain reference | documents.Document | Yes | Unambiguous same-module subject-model reference. |
+| storageObjectId | String | Domain reference | documents.DocumentStorageObject | Yes | Unambiguous same-module subject-model reference. |
+| uploadedByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+| approvedByWorkflowInstanceId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| supersededByVersionId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+
+#### hse.HseCase
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| caseTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| severityId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| priorityId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| incidentReferenceId | String | Cross-module reference | incident.Incident | Yes | Unambiguous reference to a subject model in another bounded context. |
+| targetId | String | Cross-module reference | POLYMORPHIC | No | Target is selected by companion type/module metadata; no single subject-model edge. |
+| reportedByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+| responsibleOrganizationUnitId | String | Cross-module reference | organization.OrganizationUnit | Yes | Unambiguous reference to a subject model in another bounded context. |
+| workflowInstanceId | String | Cross-module reference | workflow.WorkflowInstance | Yes | Unambiguous reference to a subject model in another bounded context. |
+| auditReferenceId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+
+#### hse.HseClosure
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| hseCaseId | String | Domain reference | hse.HseCase | Yes | Unambiguous same-module subject-model reference. |
+| closedByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+| workflowInstanceId | String | Cross-module reference | workflow.WorkflowInstance | Yes | Unambiguous reference to a subject model in another bounded context. |
+
+#### hse.HseCorrectivePreventiveAction
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| hseCaseId | String | Domain reference | hse.HseCase | Yes | Unambiguous same-module subject-model reference. |
+| actionTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| ownerActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+| ownerOrganizationUnitId | String | Cross-module reference | organization.OrganizationUnit | Yes | Unambiguous reference to a subject model in another bounded context. |
+| verifiedByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+| linkedWorkOrderId | String | Cross-module reference | assets.MaintenanceWorkOrder | Yes | Unambiguous reference to a subject model in another bounded context. |
+| workflowTaskId | String | Cross-module reference | workflow.WorkflowTask | Yes | Unambiguous reference to a subject model in another bounded context. |
+
+#### hse.PermitToWork
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| permitTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| targetId | String | Cross-module reference | POLYMORPHIC | No | Target is selected by companion type/module metadata; no single subject-model edge. |
+| requestedByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+| approvedByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+| workflowInstanceId | String | Cross-module reference | workflow.WorkflowInstance | Yes | Unambiguous reference to a subject model in another bounded context. |
+
+#### identity.AuthenticationEvent
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| userId | String | Domain reference | identity.User | Yes | Unambiguous same-module subject-model reference. |
+| identityProviderId | String | Domain reference | identity.IdentityProvider | Yes | Unambiguous same-module subject-model reference. |
+| externalIdentityId | String | Unresolved | — | No | Reference target is outside or absent from the 123 subject-model set; preserve for HMS-004 review. |
+| correlationId | String | Snapshot/reference-only | TECHNICAL_REFERENCE | No | Technical correlation/request/reference identity. |
+
+#### identity.AuthorizationDecision
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| userId | String | Domain reference | identity.User | Yes | Unambiguous same-module subject-model reference. |
+| resourceReferenceId | String | Cross-module reference | POLYMORPHIC | No | Target is selected by companion type/module metadata; no single subject-model edge. |
+| matchedGrantIds | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| matchedPolicyRuleIds | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| correlationId | String | Snapshot/reference-only | TECHNICAL_REFERENCE | No | Technical correlation/request/reference identity. |
+| requestId | String | Snapshot/reference-only | TECHNICAL_REFERENCE | No | Technical correlation/request/reference identity. |
+
+#### identity.AuthorizationDelegationGrant
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| delegatorUserId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| delegateUserId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| permissionId | String | Domain reference | identity.Permission | Yes | Unambiguous same-module subject-model reference. |
+| roleId | String | Domain reference | identity.Role | Yes | Unambiguous same-module subject-model reference. |
+| approvedByWorkflowId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+
+#### identity.ExternalRoleMapping
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| identityProviderId | String | Domain reference | identity.IdentityProvider | Yes | Unambiguous same-module subject-model reference. |
+| roleId | String | Domain reference | identity.Role | Yes | Unambiguous same-module subject-model reference. |
+
+#### identity.GroupRoleGrant
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| groupId | String | Unresolved | — | No | Reference target is outside or absent from the 123 subject-model set; preserve for HMS-004 review. |
+| roleId | String | Domain reference | identity.Role | Yes | Unambiguous same-module subject-model reference. |
+| approvedByWorkflowId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+
+#### identity.HidraPrincipal
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| userId | String | Domain reference | identity.User | Yes | Unambiguous same-module subject-model reference. |
+| identityProviderId | String | Domain reference | identity.IdentityProvider | Yes | Unambiguous same-module subject-model reference. |
+
+#### identity.IdentityProvider
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+
+#### identity.LocalCredential
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| userId | String | Domain reference | identity.User | Yes | Unambiguous same-module subject-model reference. |
+
+#### identity.LoginSession
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| userId | String | Domain reference | identity.User | Yes | Unambiguous same-module subject-model reference. |
+| identityProviderId | String | Domain reference | identity.IdentityProvider | Yes | Unambiguous same-module subject-model reference. |
+| externalIdentityId | String | Unresolved | — | No | Reference target is outside or absent from the 123 subject-model set; preserve for HMS-004 review. |
+| correlationId | String | Snapshot/reference-only | TECHNICAL_REFERENCE | No | Technical correlation/request/reference identity. |
+
+#### identity.Permission
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+
+#### identity.Role
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+
+#### identity.RolePermissionGrant
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| roleId | String | Domain reference | identity.Role | Yes | Unambiguous same-module subject-model reference. |
+| permissionId | String | Domain reference | identity.Permission | Yes | Unambiguous same-module subject-model reference. |
+
+#### identity.User
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| employeeReferenceId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+
+#### identity.UserPermissionGrant
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| userId | String | Domain reference | identity.User | Yes | Unambiguous same-module subject-model reference. |
+| permissionId | String | Domain reference | identity.Permission | Yes | Unambiguous same-module subject-model reference. |
+| approvedByWorkflowId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+
+#### identity.UserRoleGrant
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| userId | String | Domain reference | identity.User | Yes | Unambiguous same-module subject-model reference. |
+| roleId | String | Domain reference | identity.Role | Yes | Unambiguous same-module subject-model reference. |
+| approvedByWorkflowId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+
+#### incident.Incident
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| classificationId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| severityId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| priorityId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| sourceReferenceId | String | Snapshot/reference-only | TECHNICAL_REFERENCE | No | Technical correlation/request/reference identity. |
+| topologyAssetId | String | Cross-module reference | POLYMORPHIC | No | Target is selected by companion type/module metadata; no single subject-model edge. |
+| responsibleOrganizationUnitId | String | Cross-module reference | organization.OrganizationUnit | Yes | Unambiguous reference to a subject model in another bounded context. |
+| responsibleActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+| workflowInstanceId | String | Cross-module reference | workflow.WorkflowInstance | Yes | Unambiguous reference to a subject model in another bounded context. |
+| createdByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+
+#### incident.IncidentClosure
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| incidentId | String | Domain reference | incident.Incident | Yes | Unambiguous same-module subject-model reference. |
+| closedByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+| workflowInstanceId | String | Cross-module reference | workflow.WorkflowInstance | Yes | Unambiguous reference to a subject model in another bounded context. |
+
+#### incident.IncidentRelatedIncident
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| incidentId | String | Domain reference | incident.Incident | Yes | Unambiguous same-module subject-model reference. |
+| relatedIncidentId | String | Domain reference | incident.Incident | Yes | Unambiguous same-module subject-model reference. |
+| relationshipTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| createdByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+
+#### incident.IncidentResponseAction
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| incidentId | String | Domain reference | incident.Incident | Yes | Unambiguous same-module subject-model reference. |
+| actionTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| targetReferenceId | String | Cross-module reference | POLYMORPHIC | No | Target is selected by companion type/module metadata; no single subject-model edge. |
+| performedByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+| organizationUnitId | String | Cross-module reference | organization.OrganizationUnit | Yes | Unambiguous reference to a subject model in another bounded context. |
+
+#### integration.ExternalSystem
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| systemTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| ownerOrganizationUnitId | String | Cross-module reference | organization.OrganizationUnit | Yes | Unambiguous reference to a subject model in another bounded context. |
+
+#### integration.IntegrationDeadLetterRecord
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| externalSystemId | String | Domain reference | integration.ExternalSystem | Yes | Unambiguous same-module subject-model reference. |
+| jobRunId | String | Domain reference | integration.IntegrationJobRun | Yes | Unambiguous same-module subject-model reference. |
+| exchangeMessageId | String | Domain reference | integration.IntegrationExchangeMessage | Yes | Unambiguous same-module subject-model reference. |
+| inboundRecordId | String | Unresolved | — | No | Reference target is outside or absent from the 123 subject-model set; preserve for HMS-004 review. |
+| outboundRecordId | String | Unresolved | — | No | Reference target is outside or absent from the 123 subject-model set; preserve for HMS-004 review. |
+| resolvedByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+
+#### integration.IntegrationExchangeMessage
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| jobRunId | String | Domain reference | integration.IntegrationJobRun | Yes | Unambiguous same-module subject-model reference. |
+| externalSystemId | String | Domain reference | integration.ExternalSystem | Yes | Unambiguous same-module subject-model reference. |
+| endpointId | String | Unresolved | — | No | Reference target is outside or absent from the 123 subject-model set; preserve for HMS-004 review. |
+| messageTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| externalMessageId | String | Unresolved | — | No | Reference target is outside or absent from the 123 subject-model set; preserve for HMS-004 review. |
+| payloadFormatId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| correlationId | String | Snapshot/reference-only | TECHNICAL_REFERENCE | No | Technical correlation/request/reference identity. |
+
+#### integration.IntegrationJobRun
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| jobDefinitionId | String | Unresolved | — | No | Reference target is outside or absent from the 123 subject-model set; preserve for HMS-004 review. |
+| triggeredByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+| correlationId | String | Snapshot/reference-only | TECHNICAL_REFERENCE | No | Technical correlation/request/reference identity. |
+
+#### integrity.IntegrityAssessment
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| programId | String | Domain reference | integrity.IntegrityProgram | Yes | Unambiguous same-module subject-model reference. |
+| assessmentTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| methodologyId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| assessedByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+| reviewedByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+| approvedByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+| workflowInstanceId | String | Cross-module reference | workflow.WorkflowInstance | Yes | Unambiguous reference to a subject model in another bounded context. |
+| auditReferenceId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+
+#### integrity.IntegrityCase
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| caseTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| severityId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| topologyAssetId | String | Cross-module reference | POLYMORPHIC | No | Target is selected by companion type/module metadata; no single subject-model edge. |
+| primaryDefectId | String | Domain reference | integrity.PipelineDefect | Yes | Unambiguous same-module subject-model reference. |
+| sourceIncidentId | String | Cross-module reference | incident.Incident | Yes | Unambiguous reference to a subject model in another bounded context. |
+| sourceHseCaseId | String | Cross-module reference | hse.HseCase | Yes | Unambiguous reference to a subject model in another bounded context. |
+| responsibleOrganizationUnitId | String | Cross-module reference | organization.OrganizationUnit | Yes | Unambiguous reference to a subject model in another bounded context. |
+| workflowInstanceId | String | Cross-module reference | workflow.WorkflowInstance | Yes | Unambiguous reference to a subject model in another bounded context. |
+| openedByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+
+#### integrity.IntegrityProgram
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| programTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| ownerOrganizationUnitId | String | Cross-module reference | organization.OrganizationUnit | Yes | Unambiguous reference to a subject model in another bounded context. |
+| createdByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+
+#### integrity.PipelineDefect
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| defectTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| topologyAssetId | String | Cross-module reference | POLYMORPHIC | No | Target is selected by companion type/module metadata; no single subject-model edge. |
+| sourceFindingId | String | Unresolved | — | No | Finding target is not one of the 123 subject models. |
+
+#### leakdetection.LeakCandidate
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| runId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| profileId | String | Unresolved | — | No | Reference target is outside or absent from the 123 subject-model set; preserve for HMS-004 review. |
+| topologyAssetId | String | Cross-module reference | POLYMORPHIC | No | Target is selected by companion type/module metadata; no single subject-model edge. |
+| correlationId | String | Snapshot/reference-only | TECHNICAL_REFERENCE | No | Technical correlation/request/reference identity. |
+
+#### leakdetection.LeakDetectionCase
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| primaryCandidateId | String | Domain reference | leakdetection.LeakCandidate | Yes | Primary leak candidate reference. |
+| topologyAssetId | String | Cross-module reference | POLYMORPHIC | No | Target is selected by companion type/module metadata; no single subject-model edge. |
+| owningOrganizationUnitId | String | Cross-module reference | organization.OrganizationUnit | Yes | Unambiguous reference to a subject model in another bounded context. |
+| openedByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+| closedByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+| closureReasonId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| correlationId | String | Snapshot/reference-only | TECHNICAL_REFERENCE | No | Technical correlation/request/reference identity. |
+
+#### leakdetection.LeakEscalationReference
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| caseId | String | Domain reference | leakdetection.LeakDetectionCase | Yes | Unambiguous same-module subject-model reference. |
+| candidateId | String | Domain reference | leakdetection.LeakCandidate | Yes | Unambiguous same-module subject-model reference. |
+| targetReferenceId | String | Cross-module reference | POLYMORPHIC | No | Target is selected by companion type/module metadata; no single subject-model edge. |
+| escalatedByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+| correlationId | String | Snapshot/reference-only | TECHNICAL_REFERENCE | No | Technical correlation/request/reference identity. |
+
+#### monitoring.MonitoringRule
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| evaluationFrequencyId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| topologyAssetId | String | Cross-module reference | POLYMORPHIC | No | Target is selected by companion type/module metadata; no single subject-model edge. |
+| telemetryPointId | String | Cross-module reference | telemetry.TelemetryPoint | Yes | Unambiguous reference to a subject model in another bounded context. |
+| planningTargetTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| createdByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+
+#### monitoring.PlanActualDeviation
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| evaluationId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| planTargetId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| expectedFlowStateId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| trustedTelemetryReadingId | String | Cross-module reference | telemetry.TrustedTelemetryReading | Yes | Unambiguous reference to a subject model in another bounded context. |
+| telemetryPointId | String | Cross-module reference | telemetry.TelemetryPoint | Yes | Unambiguous reference to a subject model in another bounded context. |
+| topologyAssetId | String | Cross-module reference | POLYMORPHIC | No | Target is selected by companion type/module metadata; no single subject-model edge. |
+| unitId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+
+#### notification.NotificationDeliveryAttempt
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| messageId | String | Domain reference | notification.NotificationMessage | Yes | Unambiguous same-module subject-model reference. |
+| channelId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| providerMessageId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| correlationId | String | Snapshot/reference-only | TECHNICAL_REFERENCE | No | Technical correlation/request/reference identity. |
+
+#### notification.NotificationMessage
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| requestId | String | Domain reference | notification.NotificationRequest | Yes | Unambiguous same-module subject-model reference. |
+| recipientId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| channelId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| templateId | String | Domain reference | notification.NotificationTemplate | Yes | Unambiguous same-module subject-model reference. |
+| templateVersionId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| priorityId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+
+#### notification.NotificationRequest
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| sourceEventId | String | Unresolved | — | No | Reference target is outside or absent from the 123 subject-model set; preserve for HMS-004 review. |
+| targetId | String | Cross-module reference | POLYMORPHIC | No | Target is selected by companion type/module metadata; no single subject-model edge. |
+| categoryId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| priorityId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| policyId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| templateId | String | Domain reference | notification.NotificationTemplate | Yes | Unambiguous same-module subject-model reference. |
+| templateVersionId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| requestedByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+| correlationId | String | Snapshot/reference-only | TECHNICAL_REFERENCE | No | Technical correlation/request/reference identity. |
+| requestId | String | Domain reference | notification.NotificationRequest | Yes | Unambiguous same-module subject-model reference. |
+
+#### notification.NotificationTemplate
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| templateTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| categoryId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| defaultChannelId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+
+#### organization.AdministrativeDistrict
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| stateId | String | Domain reference | organization.AdministrativeState | Yes | Unambiguous same-module subject-model reference. |
+
+#### organization.AdministrativeLocality
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| districtId | String | Domain reference | organization.AdministrativeDistrict | Yes | Unambiguous same-module subject-model reference. |
+
+#### organization.AdministrativeState
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+
+#### organization.Employee
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| birthLocalityId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+
+#### organization.EmployeeAddress
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| employeeId | String | Domain reference | organization.Employee | Yes | Unambiguous same-module subject-model reference. |
+| localityId | String | Domain reference | organization.AdministrativeLocality | Yes | Unambiguous same-module subject-model reference. |
+
+#### organization.EmployeeAssignment
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| employeeId | String | Domain reference | organization.Employee | Yes | Unambiguous same-module subject-model reference. |
+| organizationUnitId | String | Domain reference | organization.OrganizationUnit | Yes | Unambiguous same-module subject-model reference. |
+| positionId | String | Domain reference | organization.Position | Yes | Unambiguous same-module subject-model reference. |
+
+#### organization.OperationalScope
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | Long | Self identifier | — | No | Primary identity of the current model. |
+| targetId | String | Cross-module reference | POLYMORPHIC | No | Target is selected by companion type/module metadata; no single subject-model edge. |
+
+#### organization.OrganizationContactPoint
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+
+#### organization.OrganizationDelegation
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| delegatorEmployeeId | String | Domain reference | organization.Employee | Yes | Unambiguous same-module subject-model reference. |
+| delegateEmployeeId | String | Domain reference | organization.Employee | Yes | Unambiguous same-module subject-model reference. |
+| responsibilityAssignmentId | String | Domain reference | organization.ResponsibilityAssignment | Yes | Unambiguous same-module subject-model reference. |
+
+#### organization.OrganizationHierarchySnapshot
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| capturedByEmployeeId | String | Domain reference | organization.Employee | Yes | Unambiguous same-module subject-model reference. |
+
+#### organization.OrganizationUnit
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| unitTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| parentUnitId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+
+#### organization.OrganizationUnitType
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+
+#### organization.Position
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+
+#### organization.ReportingLine
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+
+#### organization.ResponsibilityAssignment
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| assigneeId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| scopeId | Long | Cross-module reference | POLYMORPHIC | No | Target is selected by companion type/module metadata; no single subject-model edge. |
+
+#### organization.Shift
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+
+#### organization.ShiftAssignment
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| employeeId | String | Domain reference | organization.Employee | Yes | Unambiguous same-module subject-model reference. |
+| shiftId | String | Domain reference | organization.Shift | Yes | Unambiguous same-module subject-model reference. |
+| organizationUnitId | String | Domain reference | organization.OrganizationUnit | Yes | Unambiguous same-module subject-model reference. |
+
+#### party.Party
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| partyTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+
+#### party.PartyRoleAssignment
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| partyId | String | Domain reference | party.Party | Yes | Unambiguous same-module subject-model reference. |
+| roleId | String | Cross-module reference | identity.Role | Yes | Unambiguous reference to a subject model in another bounded context. |
+
+#### planning.Nomination
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| revisionId | String | Domain reference | planning.PlanRevision | Yes | Unambiguous same-module subject-model reference. |
+| scenarioId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| nominationTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| productTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| quantityUnitId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| rateUnitId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| sourceAssetId | String | Cross-module reference | POLYMORPHIC | No | Target is selected by companion type/module metadata; no single subject-model edge. |
+| destinationAssetId | String | Cross-module reference | POLYMORPHIC | No | Target is selected by companion type/module metadata; no single subject-model edge. |
+| shipperPartyId | String | Cross-module reference | party.Party | Yes | Unambiguous reference to a subject model in another bounded context. |
+| counterpartyId | String | Cross-module reference | party.Party | Yes | Unambiguous reference to a subject model in another bounded context. |
+| contractReferenceId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+
+#### planning.OperationalPlan
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| periodId | String | Domain reference | planning.PlanningPeriod | Yes | Unambiguous same-module subject-model reference. |
+| planTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| productTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| topologyScopeId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| responsibleOrganizationUnitId | String | Cross-module reference | organization.OrganizationUnit | Yes | Unambiguous reference to a subject model in another bounded context. |
+| currentRevisionId | String | Domain reference | planning.PlanRevision | Yes | Planning revision reference. |
+| approvedRevisionId | String | Domain reference | planning.PlanRevision | Yes | Planning revision reference. |
+| createdByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+
+#### planning.PlanRevision
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| planId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| changeReasonCodeId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| baseRevisionId | String | Domain reference | planning.PlanRevision | Yes | Planning revision reference. |
+| submittedByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+| approvedByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+| workflowInstanceId | String | Cross-module reference | workflow.WorkflowInstance | Yes | Unambiguous reference to a subject model in another bounded context. |
+
+#### planning.PlanTarget
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| revisionId | String | Domain reference | planning.PlanRevision | Yes | Unambiguous same-module subject-model reference. |
+| scenarioId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| nominationId | String | Domain reference | planning.Nomination | Yes | Unambiguous same-module subject-model reference. |
+| targetTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| topologyAssetId | String | Cross-module reference | POLYMORPHIC | No | Target is selected by companion type/module metadata; no single subject-model edge. |
+| telemetryPointId | String | Cross-module reference | telemetry.TelemetryPoint | Yes | Unambiguous reference to a subject model in another bounded context. |
+| unitId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+
+#### planning.PlanningPeriod
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| periodTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| createdByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+
+#### reporting.ReportDefinition
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| reportCategoryId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| currentTemplateVersionId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+
+#### reporting.ReportOutputArtifact
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| reportRunId | String | Domain reference | reporting.ReportRun | Yes | Unambiguous same-module subject-model reference. |
+| storageObjectReferenceId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| documentReferenceId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+
+#### reporting.ReportRequest
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| reportDefinitionId | String | Domain reference | reporting.ReportDefinition | Yes | Unambiguous same-module subject-model reference. |
+| requestedByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+| organizationUnitId | String | Cross-module reference | organization.OrganizationUnit | Yes | Unambiguous reference to a subject model in another bounded context. |
+| correlationId | String | Snapshot/reference-only | TECHNICAL_REFERENCE | No | Technical correlation/request/reference identity. |
+| workflowReferenceId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+
+#### reporting.ReportRun
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| reportRequestId | String | Domain reference | reporting.ReportRequest | Yes | Unambiguous same-module subject-model reference. |
+| reportDefinitionId | String | Domain reference | reporting.ReportDefinition | Yes | Unambiguous same-module subject-model reference. |
+| templateVersionId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| correlationId | String | Snapshot/reference-only | TECHNICAL_REFERENCE | No | Technical correlation/request/reference identity. |
+
+#### risk.RiskAssessment
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| riskRegisterId | String | Domain reference | risk.RiskRegister | Yes | Unambiguous same-module subject-model reference. |
+| assessmentTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| methodologyId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| scopeId | String | Cross-module reference | POLYMORPHIC | No | Target is selected by companion type/module metadata; no single subject-model edge. |
+| riskScenarioId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| assessedByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+| reviewedByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+| approvedByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+| inherentLikelihoodId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| inherentConsequenceId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| inherentRatingId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| residualLikelihoodId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| residualConsequenceId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| residualRatingId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| confidenceLevelId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| workflowReferenceId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| auditReferenceId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+
+#### risk.RiskEvidenceLink
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| riskAssessmentId | String | Domain reference | risk.RiskAssessment | Yes | Unambiguous same-module subject-model reference. |
+| evidenceId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+
+#### risk.RiskMatrixCell
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| riskMatrixId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| likelihoodLevelId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| consequenceLevelId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| ratingId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+
+#### risk.RiskRegister
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| registerTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| ownerOrganizationUnitId | String | Cross-module reference | organization.OrganizationUnit | Yes | Unambiguous reference to a subject model in another bounded context. |
+| scopeId | String | Cross-module reference | POLYMORPHIC | No | Target is selected by companion type/module metadata; no single subject-model edge. |
+| reviewFrequencyId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| createdByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+
+#### simulation.SimulationCandidateChange
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| candidateId | String | Domain reference | simulation.SimulationOptimizationCandidate | Yes | Unambiguous same-module subject-model reference. |
+| changeTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| targetId | String | Cross-module reference | POLYMORPHIC | No | Target is selected by companion type/module metadata; no single subject-model edge. |
+
+#### simulation.SimulationModel
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| modelTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| topologyScopeId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+
+#### simulation.SimulationOptimizationCandidate
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| runId | String | Domain reference | simulation.SimulationRun | Yes | Unambiguous same-module subject-model reference. |
+| selectedByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+
+#### simulation.SimulationRecommendation
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| runId | String | Domain reference | simulation.SimulationRun | Yes | Unambiguous same-module subject-model reference. |
+| candidateId | String | Domain reference | simulation.SimulationOptimizationCandidate | Yes | Unambiguous same-module subject-model reference. |
+| recommendationTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| confidenceLevelId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| publishedByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+
+#### simulation.SimulationRun
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| scenarioId | String | Domain reference | simulation.SimulationScenario | Yes | Unambiguous same-module subject-model reference. |
+| modelVersionId | String | Unresolved | — | No | Reference target is outside or absent from the 123 subject-model set; preserve for HMS-004 review. |
+| inputSnapshotId | String | Snapshot/reference-only | — | No | Snapshot/reference identity; not treated as ownership dependency in HMS-003. |
+| runTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| requestedByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+| solverProfileId | String | Unresolved | — | No | Reference target is outside or absent from the 123 subject-model set; preserve for HMS-004 review. |
+| correlationId | String | Snapshot/reference-only | TECHNICAL_REFERENCE | No | Technical correlation/request/reference identity. |
+
+#### simulation.SimulationScenario
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| scenarioTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| modelId | String | Domain reference | simulation.SimulationModel | Yes | Unambiguous same-module subject-model reference. |
+| modelVersionId | String | Unresolved | — | No | Reference target is outside or absent from the 123 subject-model set; preserve for HMS-004 review. |
+| topologySnapshotId | String | Snapshot/reference-only | — | No | Snapshot/reference identity; not treated as ownership dependency in HMS-003. |
+| planningReferenceId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| monitoringContextId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| createdByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+
+#### telemetry.TelemetryPoint
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| deviceId | String | Unresolved | — | No | Reference target is outside or absent from the 123 subject-model set; preserve for HMS-004 review. |
+| pointTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| signalTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| unitId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| defaultAggregationMethodId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+
+#### telemetry.TelemetryReading
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| pointId | String | Domain reference | telemetry.TelemetryPoint | Yes | Unambiguous same-module subject-model reference. |
+| qualityCodeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| ingestionBatchId | String | Unresolved | — | No | Reference target is outside or absent from the 123 subject-model set; preserve for HMS-004 review. |
+| correlationId | String | Snapshot/reference-only | TECHNICAL_REFERENCE | No | Technical correlation/request/reference identity. |
+| externalTagMappingId | String | Unresolved | — | No | Reference target is outside or absent from the 123 subject-model set; preserve for HMS-004 review. |
+
+#### telemetry.TelemetrySource
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| sourceTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| protocolId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+
+#### telemetry.TrustedTelemetryReading
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| readingId | String | Domain reference | telemetry.TelemetryReading | Yes | Unambiguous same-module subject-model reference. |
+| pointId | String | Domain reference | telemetry.TelemetryPoint | Yes | Unambiguous same-module subject-model reference. |
+| unitId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| qualityCodeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| qualityAssessmentId | String | Unresolved | — | No | Reference target is outside or absent from the 123 subject-model set; preserve for HMS-004 review. |
+| topologyAssetId | String | Cross-module reference | POLYMORPHIC | No | Target is selected by companion type/module metadata; no single subject-model edge. |
+| topologySnapshotId | String | Snapshot/reference-only | — | No | Snapshot/reference identity; not treated as ownership dependency in HMS-003. |
+| ingestionBatchId | String | Unresolved | — | No | Reference target is outside or absent from the 123 subject-model set; preserve for HMS-004 review. |
+
+#### topology.Equipment
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| facilityId | String | Domain reference | topology.Facility | Yes | Unambiguous same-module subject-model reference. |
+| nodeId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| pipelineSegmentId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| equipmentTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| manufacturerPartyId | String | Cross-module reference | party.Party | Yes | Unambiguous reference to a subject model in another bounded context. |
+
+#### topology.Facility
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| facilityTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| ownerPartyId | String | Cross-module reference | party.Party | Yes | Unambiguous reference to a subject model in another bounded context. |
+
+#### topology.Pipeline
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| pipelineSystemId | String | Domain reference | topology.PipelineSystem | Yes | Unambiguous same-module subject-model reference. |
+
+#### topology.PipelineSystem
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+
+#### topology.TopologyConnection
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| fromNodeId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| toNodeId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| pipelineSegmentId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+
+#### workflow.WorkflowAction
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| instanceId | String | Domain reference | workflow.WorkflowInstance | Yes | Unambiguous same-module subject-model reference. |
+| taskId | String | Domain reference | workflow.WorkflowTask | Yes | Unambiguous same-module subject-model reference. |
+| reasonId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| actorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+| organizationUnitId | String | Cross-module reference | organization.OrganizationUnit | Yes | Unambiguous reference to a subject model in another bounded context. |
+| correlationId | String | Snapshot/reference-only | TECHNICAL_REFERENCE | No | Technical correlation/request/reference identity. |
+
+#### workflow.WorkflowDefinition
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| typeId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+
+#### workflow.WorkflowInstance
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| definitionId | String | Domain reference | workflow.WorkflowDefinition | Yes | Unambiguous same-module subject-model reference. |
+| workflowPurposeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| targetTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| targetId | String | Cross-module reference | POLYMORPHIC | No | Target is selected by companion type/module metadata; no single subject-model edge. |
+| currentStepId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| startedByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+| correlationId | String | Snapshot/reference-only | TECHNICAL_REFERENCE | No | Technical correlation/request/reference identity. |
+
+#### workflow.WorkflowStateHistory
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| instanceId | String | Domain reference | workflow.WorkflowInstance | Yes | Unambiguous same-module subject-model reference. |
+| taskId | String | Domain reference | workflow.WorkflowTask | Yes | Unambiguous same-module subject-model reference. |
+| fromStepId | String | Domain reference | workflow.WorkflowStep | Yes | Unambiguous same-module subject-model reference. |
+| toStepId | String | Domain reference | workflow.WorkflowStep | Yes | Unambiguous same-module subject-model reference. |
+| actorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+| actionId | String | Domain reference | workflow.WorkflowAction | Yes | Unambiguous same-module subject-model reference. |
+| reasonId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| correlationId | String | Snapshot/reference-only | TECHNICAL_REFERENCE | No | Technical correlation/request/reference identity. |
+
+#### workflow.WorkflowStep
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| definitionId | String | Domain reference | workflow.WorkflowDefinition | Yes | Unambiguous same-module subject-model reference. |
+| stepTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| defaultAssignmentRuleId | String | Domain reference | workflow.WorkflowStepAssignmentRule | Yes | Unambiguous same-module subject-model reference. |
+| slaPolicyId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+
+#### workflow.WorkflowStepAssignmentRule
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| definitionId | String | Domain reference | workflow.WorkflowDefinition | Yes | Unambiguous same-module subject-model reference. |
+| stepId | String | Domain reference | workflow.WorkflowStep | Yes | Unambiguous same-module subject-model reference. |
+| assignmentModeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| actorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+| organizationUnitId | String | Cross-module reference | organization.OrganizationUnit | Yes | Unambiguous reference to a subject model in another bounded context. |
+
+#### workflow.WorkflowTask
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| instanceId | String | Domain reference | workflow.WorkflowInstance | Yes | Unambiguous same-module subject-model reference. |
+| stepId | String | Domain reference | workflow.WorkflowStep | Yes | Unambiguous same-module subject-model reference. |
+| assignedActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+| assignedOrganizationUnitId | String | Cross-module reference | organization.OrganizationUnit | Yes | Unambiguous reference to a subject model in another bounded context. |
+| priorityId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| claimedByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+| completedByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+| assignmentModeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+
+#### workflow.WorkflowTransition
+
+| Field | Declared type | Classification | Resolved target | Graph edge | Notes |
+|---|---|---|---|:---:|---|
+| id | String | Self identifier | — | No | Primary identity of the current model. |
+| definitionId | String | Domain reference | workflow.WorkflowDefinition | Yes | Unambiguous same-module subject-model reference. |
+| fromStepId | String | Domain reference | workflow.WorkflowStep | Yes | Unambiguous same-module subject-model reference. |
+| toStepId | String | Domain reference | workflow.WorkflowStep | Yes | Unambiguous same-module subject-model reference. |
+
+### 11.4 HMS-003 outcome
+
+- Every HMS-002 candidate field has one explicit classification.
+- Only unambiguous references to one of the 123 subject models are admitted as provisional graph edges.
+- Catalog/value references, actor identities, technical references, snapshots, and polymorphic targets are kept out of dependency ordering.
+- Ambiguous/absent-target references remain `Unresolved`; none are silently guessed.
+- No dependency depth, topological level, strongly connected component, downstream dependent count, or HMSR review code has been calculated.
+- No production code, JPA mapping, Flyway migration, application contract, enum/value type, or database data was modified.
+
+## 12. Current next task
 
 ```text
-HMS-003 — docs(model-review): classify target model dependencies
+HMS-004 — docs(model-review): validate dependency graph and cycles
 ```
 
-Do not start HMS-004 or any interactive HMSR review until HMS-003 is completed and reported.
+Do not start HMS-005 or any interactive HMSR review until HMS-004 is completed and reported.

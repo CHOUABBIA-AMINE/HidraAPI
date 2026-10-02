@@ -179,8 +179,8 @@ Each code below is one independent roadmap task/commit. Execute exactly one code
 | `ALM-SUP-002` | `feat(alarm): add suppression application contracts` | Add minimal Alarm application commands/queries/use-case ports and DTOs for create, release, expiry evaluation, and query behavior. Reuse existing domain/persistence concepts. | Application contracts encode the approved policy without REST/JPA leakage or duplicate models. | **Completed** |
 | `ALM-SUP-003` | `feat(alarm): implement suppression lifecycle policy` | Implement domain/application policy for ALARM overlay/restoration, broad-scope matching, acknowledgement/clear/close/escalation interaction, conflicts, and server-derived actor handling. | Approved lifecycle rules are deterministic and unit-tested. | **Completed** |
 | `ALM-SUP-004` | `feat(alarm): expose suppression persistence queries` | Extend existing suppression repository adapter only as required by approved use cases: exact-scope active lookup, expiry candidates, history/query support. | No duplicate persistence model; overlap and expiry queries are deterministic. | **Completed** |
-| `ALM-SUP-005` | `feat(alarm): integrate suppression workflow approval` | Verify open-ended suppression through Workflow public contracts/ports and fail closed when approval is absent. | No transition-name inference or direct foreign aggregate dependency. | **Next** |
-| `ALM-SUP-006` | `feat(alarm): add suppression expiry orchestration` | Add idempotent backend-owned expiry orchestration using the approved platform scheduling mechanism already present in the repository. | ACTIVE suppressions expire once; events/actor attribution/restoration are deterministic. | Planned |
+| `ALM-SUP-005` | `feat(alarm): integrate suppression workflow approval` | Verify open-ended suppression through Workflow public contracts/ports and fail closed when approval is absent. | No transition-name inference or direct foreign aggregate dependency. | **Completed** |
+| `ALM-SUP-006` | `feat(alarm): add suppression expiry orchestration` | Add idempotent backend-owned expiry orchestration using the approved platform scheduling mechanism already present in the repository. | ACTIVE suppressions expire once; events/actor attribution/restoration are deterministic. | **Next** |
 | `ALM-SUP-007` | `feat(alarm): publish suppression REST contracts` | Publish canonical create/release/query endpoints, generated OpenAPI schemas, route-permission metadata, deterministic 400/403/404/409 behavior. | No CRUD-style leakage; only approved lifecycle operations exposed. | Planned |
 | `ALM-SUP-008` | `test(alarm): verify suppression lifecycle end to end` | Domain/application/persistence/REST/Testcontainers coverage including ALARM and broad scopes, acknowledgement, clear/close, escalation preservation, workflow approval, expiry, conflicts, audit evidence, OpenAPI determinism. | Full repository verification green and suppression behavior traceable. | Planned |
 | `ALM-SUP-009` | `docs(alarm): finalize suppression capability` | Record exact endpoints, permissions, events, validation evidence, remaining limits, and frontend-consumption boundary. | GAP-ALARM-004 closed with no undocumented semantics. | Planned |
@@ -257,3 +257,30 @@ ALM-SUP-005 — feat(alarm): integrate suppression workflow approval
 ```
 
 ALM-SUP-005 must use Workflow's public application contract/port rather than direct Workflow persistence or transition-name inference. Open-ended suppression must fail closed when approval cannot be verified.
+
+
+## 10. ALM-SUP-005 completion evidence
+
+ALM-SUP-005 was executed against HidraAPI baseline `c7ebe34e27e56506e70ad6d9de54988bdd3642e1`.
+
+The implementation follows the repository's existing deliberate cross-module Workflow contract pattern:
+
+- Workflow exports `AlarmSuppressionWorkflowContract` rather than exposing Workflow persistence or aggregates to Alarm;
+- `AlarmSuppressionWorkflowContractAdapter` validates the instance targets module `alarm`, target type `ALARM_SUPPRESSION`, and the exact backend operation reference;
+- the Workflow instance must be `COMPLETED`;
+- the final timeline decision must be `APPROVE`;
+- Alarm consumes the narrow contract through `AlarmSuppressionApprovalService`;
+- time-bounded suppression does not invoke Workflow;
+- open-ended suppression fails closed if approval evidence is absent, mismatched, pending, or rejected.
+
+The stable approval operation reference is backend-derived as `<SCOPE_TYPE>:<scopeReferenceId>`, preventing approval evidence from being reused for a different suppression scope/reference. No Workflow transition-name inference and no direct Workflow domain/persistence dependency is introduced.
+
+No scheduler, suppression mutation service, REST endpoint, permission publication, migration, or OpenAPI change is included.
+
+## 11. Next authorized task
+
+```text
+ALM-SUP-006 — feat(alarm): add suppression expiry orchestration
+```
+
+ALM-SUP-006 must use the repository's existing scheduling mechanism, process only ACTIVE due suppressions, remain idempotent, and preserve server/system actor attribution plus ALARM restoration semantics.

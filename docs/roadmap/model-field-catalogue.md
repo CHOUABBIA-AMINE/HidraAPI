@@ -127,7 +127,7 @@ baseline model files
 | Code | Exact commit message | Scope | Status |
 |---|---|---|---|
 | HMC-001 | `docs(catalogue): add module model scan roadmap` | Create this roadmap only. No model extraction. | **Completed** — roadmap created at `11118373ea112031342813abe8e4264c7bcd6018`; no model extraction performed. |
-| HMC-002 | `docs(catalogue): scan alarm domain models` | Scan all 4 `alarm/domain/model` files; record models, fields and Java types. | Planned |
+| HMC-002 | `docs(catalogue): scan alarm domain models` | Scan all 4 `alarm/domain/model` files; record models, fields and Java types. | **Completed** — 4/4 models, 67 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-003 | `docs(catalogue): scan analytics domain models` | Scan all 7 analytics model files. | Planned |
 | HMC-004 | `docs(catalogue): scan assets domain models` | Scan all 3 assets model files. | Planned |
 | HMC-005 | `docs(catalogue): scan audit domain models` | Scan all 4 audit model files. | Planned |
@@ -268,10 +268,118 @@ After HMC-028:
 3. do not treat Java field type alone as target database type;
 4. do not import any source data until the HDP gates are satisfied.
 
-## 11. Current next task
+## 11. HMC-002 — Alarm module scan evidence
+
+**Source commit:** `5e301857882b59e9e35ecc474e9c6537d89cc96a`  
+**Module:** `alarm`  
+**Baseline model files:** 4  
+**Scanned models:** 4  
+**Declared fields/components:** 67  
+**Zero-field models:** 0  
+**Extraction exceptions:** 0
+
+### Alarm model index
+
+| Model | Kind | Declared field count | Source path | Status |
+|---|---|---:|---|---|
+| Alarm | record | 37 | `src/main/java/dz/sh/hidra/modules/alarm/domain/model/Alarm.java` | Extracted |
+| AlarmAcknowledgement | record | 9 | `src/main/java/dz/sh/hidra/modules/alarm/domain/model/AlarmAcknowledgement.java` | Extracted |
+| AlarmClosure | record | 10 | `src/main/java/dz/sh/hidra/modules/alarm/domain/model/AlarmClosure.java` | Extracted |
+| AlarmShelving | record | 11 | `src/main/java/dz/sh/hidra/modules/alarm/domain/model/AlarmShelving.java` | Extracted |
+
+### Alarm fields and declared Java types
+
+| Model | Ordinal | Field | Declared Java Type |
+|---|---:|---|---|
+| Alarm | 1 | id | String |
+| Alarm | 2 | alarmNumber | String |
+| Alarm | 3 | alarmTypeId | String |
+| Alarm | 4 | severityId | String |
+| Alarm | 5 | priorityId | String |
+| Alarm | 6 | titleAr | String |
+| Alarm | 7 | titleFr | String |
+| Alarm | 8 | titleEn | String |
+| Alarm | 9 | descriptionAr | String |
+| Alarm | 10 | descriptionFr | String |
+| Alarm | 11 | descriptionEn | String |
+| Alarm | 12 | sourceType | AlarmSourceType |
+| Alarm | 13 | sourceReferenceId | String |
+| Alarm | 14 | monitoringAlertCandidateId | String |
+| Alarm | 15 | monitoringEvaluationId | String |
+| Alarm | 16 | telemetryReadingId | String |
+| Alarm | 17 | planningTargetId | String |
+| Alarm | 18 | topologyAssetTypeCode | String |
+| Alarm | 19 | topologyAssetId | String |
+| Alarm | 20 | topologyAssetCode | String |
+| Alarm | 21 | topologyAssetNameSnapshot | String |
+| Alarm | 22 | currentState | AlarmState |
+| Alarm | 23 | raisedAt | Instant |
+| Alarm | 24 | firstDetectedAt | Instant |
+| Alarm | 25 | lastUpdatedAt | Instant |
+| Alarm | 26 | clearedAt | Instant |
+| Alarm | 27 | closedAt | Instant |
+| Alarm | 28 | acknowledgedAt | Instant |
+| Alarm | 29 | acknowledgedByActorId | String |
+| Alarm | 30 | owningOrganizationUnitId | String |
+| Alarm | 31 | owningOrganizationUnitCode | String |
+| Alarm | 32 | owningOrganizationUnitNameSnapshot | String |
+| Alarm | 33 | workflowInstanceId | String |
+| Alarm | 34 | incidentId | String |
+| Alarm | 35 | correlationId | String |
+| Alarm | 36 | createdAt | Instant |
+| Alarm | 37 | updatedAt | Instant |
+| AlarmAcknowledgement | 1 | id | String |
+| AlarmAcknowledgement | 2 | alarmId | String |
+| AlarmAcknowledgement | 3 | acknowledgedByActorId | String |
+| AlarmAcknowledgement | 4 | acknowledgedByDisplayName | String |
+| AlarmAcknowledgement | 5 | organizationUnitId | String |
+| AlarmAcknowledgement | 6 | organizationUnitCode | String |
+| AlarmAcknowledgement | 7 | acknowledgedAt | Instant |
+| AlarmAcknowledgement | 8 | comment | String |
+| AlarmAcknowledgement | 9 | correlationId | String |
+| AlarmClosure | 1 | id | String |
+| AlarmClosure | 2 | alarmId | String |
+| AlarmClosure | 3 | closureType | AlarmClosureType |
+| AlarmClosure | 4 | closureReasonId | String |
+| AlarmClosure | 5 | closureComment | String |
+| AlarmClosure | 6 | closedByActorId | String |
+| AlarmClosure | 7 | closedAt | Instant |
+| AlarmClosure | 8 | requiresReview | boolean |
+| AlarmClosure | 9 | reviewWorkflowInstanceId | String |
+| AlarmClosure | 10 | correlationId | String |
+| AlarmShelving | 1 | id | String |
+| AlarmShelving | 2 | alarmId | String |
+| AlarmShelving | 3 | shelvingReasonId | String |
+| AlarmShelving | 4 | reasonText | String |
+| AlarmShelving | 5 | shelvedByActorId | String |
+| AlarmShelving | 6 | shelvedAt | Instant |
+| AlarmShelving | 7 | shelvedUntil | Instant |
+| AlarmShelving | 8 | unshelvedAt | Instant |
+| AlarmShelving | 9 | unshelvedByActorId | String |
+| AlarmShelving | 10 | status | AlarmShelvingStatus |
+| AlarmShelving | 11 | correlationId | String |
+
+### HMC-002 reconciliation
 
 ```text
-HMC-002 — docs(catalogue): scan alarm domain models
+baseline model files = 4
+extracted models     = 4
+exceptions           = 0
+declared fields      = 67
+zero-field models    = 0
 ```
 
-Do not start HMC-003 until HMC-002 is completed and its module counts are reported.
+The scan records only declarations under `alarm/domain/model`. Alarm domain values such as
+`AlarmState`, `AlarmSourceType`, `AlarmClosureType`, and `AlarmShelvingStatus` are field types,
+not independent model rows for this catalogue scope.
+
+No JPA entity, API DTO, migration, application contract, suppression infrastructure model, or database
+column metadata was mixed into this module scan.
+
+## 12. Current next task
+
+```text
+HMC-003 — docs(catalogue): scan analytics domain models
+```
+
+Do not start HMC-004 until HMC-003 is completed and its module counts are reported.

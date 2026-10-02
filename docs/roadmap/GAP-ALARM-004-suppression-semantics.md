@@ -21,9 +21,9 @@ The production model already contains:
 - `AlarmState.SUPPRESSED`;
 - lifecycle event types `SUPPRESSED` and `UNSUPPRESSED`;
 - JPA persistence for `hidra_alarm_suppression`;
-- `AlarmSuppressionRepositoryPort` and its JPA adapter.
+- JPA persistence for suppression exists, but no dedicated application repository port is present at the ALM-SUP-002 baseline.
 
-The suppression record already models:
+The suppression persistence record already models:
 
 - suppression scope and reference;
 - optional alarm/type/topology references;
@@ -176,8 +176,8 @@ Each code below is one independent roadmap task/commit. Execute exactly one code
 | Code | Exact commit message | Scope | Exit criteria | Status |
 |---|---|---|---|---|
 | `ALM-SUP-001` | `docs(alarm): approve suppression lifecycle semantics` | This document only. Record the approved suppression policy and implementation sequence. | Domain decision blocker removed without production-code change. | **Completed** |
-| `ALM-SUP-002` | `feat(alarm): add suppression application contracts` | Add minimal Alarm application commands/queries/use-case ports and DTOs for create, release, expiry evaluation, and query behavior. Reuse existing domain/persistence concepts. | Application contracts encode the approved policy without REST/JPA leakage or duplicate models. | **Next** |
-| `ALM-SUP-003` | `feat(alarm): implement suppression lifecycle policy` | Implement domain/application policy for ALARM overlay/restoration, broad-scope matching, acknowledgement/clear/close/escalation interaction, conflicts, and server-derived actor handling. | Approved lifecycle rules are deterministic and unit-tested. | Planned |
+| `ALM-SUP-002` | `feat(alarm): add suppression application contracts` | Add minimal Alarm application commands/queries/use-case ports and DTOs for create, release, expiry evaluation, and query behavior. Reuse existing domain/persistence concepts. | Application contracts encode the approved policy without REST/JPA leakage or duplicate models. | **Completed** |
+| `ALM-SUP-003` | `feat(alarm): implement suppression lifecycle policy` | Implement domain/application policy for ALARM overlay/restoration, broad-scope matching, acknowledgement/clear/close/escalation interaction, conflicts, and server-derived actor handling. | Approved lifecycle rules are deterministic and unit-tested. | **Next** |
 | `ALM-SUP-004` | `feat(alarm): expose suppression persistence queries` | Extend existing suppression repository adapter only as required by approved use cases: exact-scope active lookup, expiry candidates, history/query support. | No duplicate persistence model; overlap and expiry queries are deterministic. | Planned |
 | `ALM-SUP-005` | `feat(alarm): integrate suppression workflow approval` | Verify open-ended suppression through Workflow public contracts/ports and fail closed when approval is absent. | No transition-name inference or direct foreign aggregate dependency. | Planned |
 | `ALM-SUP-006` | `feat(alarm): add suppression expiry orchestration` | Add idempotent backend-owned expiry orchestration using the approved platform scheduling mechanism already present in the repository. | ACTIVE suppressions expire once; events/actor attribution/restoration are deterministic. | Planned |
@@ -197,10 +197,28 @@ Required evidence:
 
 No Maven command is claimed for this documentation-only decision task.
 
-## 6. Next authorized task
+## 6. ALM-SUP-002 completion evidence
+
+ALM-SUP-002 was executed against HidraAPI baseline `e10f1ba9c738337b1dea9f57c1184cb5fe49d0b4`.
+
+Live-source reconciliation found that suppression already had persistence/JPA representation and domain enums, but no current `AlarmSuppression` domain aggregate and no dedicated suppression application repository port. The application contracts therefore remain infrastructure-neutral and use only existing suppression enums plus neutral identifiers.
+
+Added contracts:
+
+- `CreateAlarmSuppressionCommand` for exact scope/reference, optional persisted scope evidence, reason, authenticated actor reference, optional end time, optional workflow evidence, and correlation;
+- `ReleaseAlarmSuppressionCommand`;
+- `EvaluateAlarmSuppressionExpiryCommand` for backend-owned idempotent expiry evaluation;
+- `AlarmSuppressionQuery`;
+- `AlarmSuppressionDto` and `AlarmSuppressionPageDto`;
+- `ManageAlarmSuppressionUseCase`;
+- `AlarmSuppressionQueryUseCase`.
+
+No domain lifecycle implementation, repository adapter, scheduler, Workflow integration, REST endpoint, permission seed, migration, or OpenAPI contract is included in ALM-SUP-002.
+
+## 7. Next authorized task
 
 ```text
-ALM-SUP-002 — feat(alarm): add suppression application contracts
+ALM-SUP-003 — feat(alarm): implement suppression lifecycle policy
 ```
 
-Before ALM-SUP-002, re-read the live Alarm domain/application/persistence contracts and Workflow public approval contracts. Add only the minimum contracts required by this approved policy.
+ALM-SUP-003 must first reconcile the existing Alarm aggregate/lifecycle event behavior with the persistence-only suppression shape. It must not create a duplicate suppression model merely to mirror the JPA entity.

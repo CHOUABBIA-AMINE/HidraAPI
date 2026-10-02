@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -198,7 +198,7 @@ Ordering rules applied:
 | HMSR-003 | 0 | organization | AdministrativeState | — | — | 1 | 17 | 0 | APPROVED | Completed | `docs(model-review): review organization AdministrativeState` |
 | HMSR-004 | 0 | party | Party | — | — | 5 | 14 | 0 | REVISE | Completed | `docs(model-review): review party Party` |
 | HMSR-005 | 0 | telemetry | TelemetryPoint | — | — | 5 | 9 | 3 | REVISE | Completed | `docs(model-review): review telemetry TelemetryPoint` |
-| HMSR-006 | 0 | planning | PlanningPeriod | — | — | 1 | 9 | 0 | — | Planned | `docs(model-review): review planning PlanningPeriod` |
+| HMSR-006 | 0 | planning | PlanningPeriod | — | — | 1 | 9 | 0 | REVISE | Completed | `docs(model-review): review planning PlanningPeriod` |
 | HMSR-007 | 0 | identity | Role | — | — | 6 | 6 | 0 | — | Planned | `docs(model-review): review identity Role` |
 | HMSR-008 | 0 | documents | DocumentStorageObject | — | — | 2 | 6 | 1 | — | Planned | `docs(model-review): review documents DocumentStorageObject` |
 | HMSR-009 | 0 | simulation | SimulationModel | — | — | 1 | 5 | 1 | — | Planned | `docs(model-review): review simulation SimulationModel` |
@@ -3652,16 +3652,145 @@ For SONATRACH/TRC operations, a TelemetryPoint represents the canonical digital 
 
 HMS reconciliation must retain these correction obligations until an explicitly authorized Telemetry implementation task resolves them or the target Telemetry semantics are explicitly changed.
 
-## 19. Current next task
+## 19. HMSR-006 — planning.PlanningPeriod review
+
+**Decision:** REVISE  
+**Review code:** HMSR-006  
+**Dependency level:** 0  
+**Bounded context:** planning  
+**Confirmed upstream subject dependencies:** none  
+**Confirmed direct dependents:** 1 — `planning.OperationalPlan` through `periodId`  
+**Transitive dependents:** 9  
+**Unresolved/non-subject references:** 0
+
+### 19.1 Semantic role and ordering rationale
+
+`PlanningPeriod` is the Planning-owned planning-horizon reference for daily, weekly, monthly, campaign and operational-window planning. It establishes the temporal container in which operational plans are created and reviewed.
+
+It is Level 0 because it has no upstream dependency on another HMS subject model. `OperationalPlan.periodId` depends directly on it, so period semantics must be settled before plan/revision/nomination/target review proceeds.
+
+Planning owns expected operational state only. Telemetry owns actual readings, Monitoring owns deviation semantics, Workflow owns approval process state, Topology owns physical assets, Organization owns internal responsibility structures, and Identity/platform owns actor identity.
+
+### 19.2 Field semantics
+
+| Field | Type | Mandatory / optional | Reviewed meaning |
+|---|---|---|---|
+| `id` | `String` | Mandatory | Stable PlanningPeriod identity and persistence primary key. |
+| `code` | `String` | Mandatory | Stable business code for the planning horizon; current Planning DDD requires uniqueness. |
+| `nameAr` | `String` | Optional | Arabic period display label. |
+| `nameFr` | `String` | Mandatory in target/persistence semantics | French period display label. The Planning DDD and JPA/schema mark it required. |
+| `nameEn` | `String` | Optional | English period display label. |
+| `periodTypeId` | `String` | Mandatory | Planning-owned catalog reference for the planning-horizon type; semantically belongs to `PERIOD_TYPE`. |
+| `periodStart` | `Instant` | Mandatory | Inclusive start instant of the horizon. |
+| `periodEnd` | `Instant` | Mandatory | Exclusive end instant of the horizon. |
+| `timeZone` | `String` | Mandatory | IANA planning time-zone identifier. Current default is `Africa/Algiers`. |
+| `status` | `PlanningPeriodStatus` | Mandatory | Technical lifecycle: `OPEN`, `LOCKED`, `CLOSED`, or `CANCELLED`. |
+| `createdByActorId` | `String` | Mandatory reference | Creator actor identity. This is an Identity/platform actor reference, not an HMS subject-model edge. |
+| `createdAt` | `Instant` | Mandatory in persistence | Creation audit timestamp. |
+| `updatedAt` | `Instant` | Mandatory in persistence | Last-update audit timestamp. |
+
+The current domain constructor already rejects blank `id`, `code`, `periodTypeId`, and `createdByActorId`, rejects null start/end/status values, trims strings, and defaults the creation service to `PlanningPeriodStatus.OPEN`.
+
+### 19.3 Dependency and catalog evidence
+
+HMS-003 correctly classified:
+
+- `periodTypeId` as a value/catalog dependency rather than a subject-model graph edge;
+- `createdByActorId` as an Identity actor reference, with no fake `identity.User` subject edge.
+
+Stronger persistence evidence confirms `periodTypeId` is Planning-owned:
+
+- `PlanningPeriodJpaEntity.periodTypeId` maps to `hidra_planning_period.period_type_id`;
+- HRA-111 installs `fk_hra111_planning_017`;
+- that FK targets `hidra_planning_catalog_entry(id)` with `ON DELETE RESTRICT`;
+- `PlanningCatalogEntry` is retained as a Planning read/persistence model outside the 123 HMS subject set.
+
+Therefore `PlanningPeriod` has no upstream HMS subject dependency.
+
+### 19.4 Period-type vocabulary conflict
+
+The live Planning DDD contains a semantic inconsistency that must not be guessed away during provisioning:
+
+- the `PlanningPeriod.periodTypeId` field description lists `DAILY`, `WEEKLY`, `MONTHLY`, `CAMPAIGN`, `OPERATION_WINDOW`;
+- the same document's canonical `PERIOD_TYPE` catalog table lists `DAY`, `WEEK`, `MONTH`, `CAMPAIGN`, `OPERATION_WINDOW`.
+
+No current migration/seed evidence found during HMSR-006 resolves which code family is authoritative. The eventual correction must select one canonical code vocabulary and align DDD, catalog provisioning, API behavior and existing data consistently. HMSR-006 does not invent the answer.
+
+### 19.5 Temporal semantics
+
+The target Planning DDD is explicit:
 
 ```text
-HMSR-006 — planning.PlanningPeriod
+periodStart < periodEnd
+```
+
+and describes `periodEnd` as exclusive.
+
+The current domain/HRA-051 invariant is weaker:
+
+```text
+periodStart <= periodEnd
+```
+
+because it rejects only `periodEnd.isBefore(periodStart)`. A zero-length period with equal start/end is therefore currently accepted by the domain even though it violates the target PlanningPeriod contract.
+
+This is a real target-model semantic contradiction, not merely a persistence detail.
+
+### 19.6 Persistence and application consistency
+
+The live domain and JPA models expose the same 13 components.
+
+The base Planning migration makes `id`, `code`, `name_fr`, `period_type_id`, `period_start`, `period_end`, `time_zone`, `status`, `created_by_actor_id`, `created_at`, and `updated_at` non-null.
+
+The application service:
+
+- creates periods as `OPEN`;
+- defaults `timeZone` to `Africa/Algiers` only when the command value is null;
+- persists directly through `PlanningPeriodRepositoryPort.save`;
+- performs no demonstrated code-uniqueness check;
+- performs no demonstrated `PERIOD_TYPE` catalog-family/active-entry validation;
+- performs no demonstrated IANA time-zone validation.
+
+The repository port/Spring Data repository expose ID-based save/find operations only; no `findByCode`/`existsByCode` capability is currently present.
+
+### 19.7 Required revisions
+
+The model's role and dependency direction are correct, but the target baseline cannot be APPROVED until these evidence-backed inconsistencies are resolved:
+
+1. **Strict non-zero interval:** align the live invariant with the Planning DDD's `periodStart < periodEnd`; equality must not silently represent a valid planning horizon unless the target semantics are explicitly changed.
+2. **Unique period code:** the Planning DDD and required-constraints section explicitly require `unique(hidra_planning_period.code)`, while the live schema currently has only a normal index and the application/repository contract shows no uniqueness guard.
+3. **Canonical PERIOD_TYPE vocabulary:** resolve `DAILY/WEEKLY/MONTHLY` versus `DAY/WEEK/MONTH` before catalog/data provisioning. Do not map or seed by guesswork.
+4. **Catalog-family and active-entry validation:** the HRA-111 FK proves only that `periodTypeId` points to some planning catalog row. Creation must ensure it belongs to the intended `PERIOD_TYPE` family and satisfies the applicable active/reference policy.
+5. **Time-zone validity:** `timeZone` is a required IANA zone. The current service defaults only null values; blank input is normalized by the domain to null and arbitrary invalid zone strings can reach persistence because the column is plain varchar. Validation/defaulting semantics must be made deterministic.
+6. **Required French label boundary:** the Planning DDD and persistence contract require `nameFr`, while current domain creation can normalize blank/null to `null`. The eventual correction must ensure the required French label is enforced at an appropriate input/application/persistence boundary, without contradicting HRA's prohibition on blindly promoting all generic text to domain-constructor invariants.
+7. **Closed-period plan governance:** the Planning DDD states that closed periods cannot receive new plan revisions unless reopened by a workflow-approved action. This lifecycle rule must remain visible to the later `OperationalPlan`/`PlanRevision` reviews and be enforced at the owning application/workflow boundary rather than inferred by clients.
+
+HMSR-006 does not change production Java, JPA, Flyway, API/application contracts, tests, or database data.
+
+### 19.8 Operational interpretation
+
+For SONATRACH/TRC operations, a PlanningPeriod is the governed temporal frame for a transport program — for example a daily dispatch horizon, weekly program, monthly transport program, campaign, or special operational window.
+
+The stored time zone is operationally significant because schedule interpretation, cut-off times, nominations, planned targets and approvals must resolve the same local planning horizon while timestamps remain stored as instants. The default `Africa/Algiers` is consistent with the current application intent, but the field still requires valid and explicit semantics for non-default cases.
+
+A PlanningPeriod does not itself own telemetry measurements, topology state, workflow tasks or monitoring deviations.
+
+### 19.9 Review conclusion
+
+**REVISE.** `PlanningPeriod` is the correct foundational Planning model and its subject dependency direction is sound, but the target semantic baseline has unresolved enforcement and definition conflicts around interval strictness, code uniqueness, period-type vocabulary, catalog validation, time-zone validity, required French labeling and closed-period governance.
+
+HMS reconciliation must retain these obligations until an explicitly authorized Planning implementation/documentation task resolves them or the target semantics are explicitly changed.
+
+## 20. Current next task
+
+```text
+HMSR-007 — identity.Role
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review planning PlanningPeriod
+docs(model-review): review identity Role
 ```
 
-Start HMSR-006 only after HMSR-005 is committed and reported. Do not start HMSR-007 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-007 only after HMSR-006 is committed and reported. Do not start HMSR-008 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

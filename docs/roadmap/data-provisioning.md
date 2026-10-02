@@ -11,7 +11,7 @@
 | Roadmap code | `HDP` |
 | Created | 2026-09-19 |
 | Baseline at drafting | `51fb62bd7b33e46c539daeedf80a59591308e7b4` (reconfirm before each task) |
-| Status | Active — HDP-004 blocked pending source-content extraction and owner/security decisions; no data imported |
+| Status | Paused — HDP-004 remains blocked and is now additionally gated by the target Model Semantic Review roadmap (`docs/roadmap/model-semantic-review.md`); no data imported |
 | Execution mode | Exactly one HDP task/commit at a time; never execute later tasks automatically |
 
 This roadmap is approved for staged execution by merged PR #118 (merge commit `3515d81ac17e3c26ae1c394c78d42a9485c03beb`). HDP-002 is complete only as a Git-tracked file/provenance inventory with explicitly documented unreadable content: 13 Excel workbooks, two large SQL files, and other binary artifacts await safe inspection; source-owner/security approval remains unverified. HDP-003 target-only inspection may proceed after the HDP-002 status correction merges, but HDP-004/HDP-005 source-content decisions and G1 approval cannot use missing metadata. No dataset has been transformed, imported, approved for import, or tested by this workstream.
@@ -60,6 +60,36 @@ Gate G2 (after HDP-010): field-level mappings, authority decisions, technical ru
 Gate G3 (after HDP-018): deterministic staged transformations and reference/master loads succeed on disposable PostgreSQL with no foreign-key/uniqueness violations, silent rejects, or unauthorized writes.
 Gate G4 (after HDP-022): final reconciliation, regression, security, review, and deployment/rollback requirements evidenced before any production use.
 
+## 5.1 Target-model semantic-review prerequisite — added 2026-10-02
+
+HMC-001 through HMC-028 completed the verified 24-module / 123-model / 1,867-field declaration catalogue. Before HDP continues semantic source classification or source-to-target mapping, the target model graph and model meanings must be reviewed under:
+
+```text
+docs/roadmap/model-semantic-review.md
+```
+
+The HMS roadmap is now a prerequisite workstream:
+
+```text
+verified HMC catalogue
+    -> HMS dependency evidence
+    -> validated dependency graph and review order
+    -> interactive 123-model semantic review
+    -> approved target-model semantic baseline
+    -> HMS-008 HDP alignment decision
+    -> HDP-004 may resume only if explicitly unblocked
+```
+
+Rules:
+
+- existing HDP-004 provisional source classification evidence is retained and not discarded;
+- HDP-004 remains Blocked/Paused and must not be marked Completed during HMS work;
+- HDP-005 must not start while HMS is incomplete;
+- no source dataset becomes import-eligible because of HMS;
+- no production model is silently changed by an interactive review decision;
+- model corrections identified by HMS require the owning module's approved roadmap/task;
+- HMS-008 is the only task that may amend this prerequisite and determine whether HDP-004 can resume.
+
 ## 6. Phase A — Discovery, inventory, and governance
 
 | Code | Exact commit message | Deliverable, acceptance, and scope |
@@ -67,7 +97,7 @@ Gate G4 (after HDP-022): final reconciliation, regression, security, review, and
 | HDP-001 | `docs(data-provisioning): add legacy data migration roadmap` | This roadmap only: `docs/roadmap/data-provisioning.md`. PR review/merge gate; does **not** import data. |
 | HDP-002 | `docs(data-provisioning): inventory hyflo source files and provenance` | `docs/data-provisioning/source-inventory.md`: complete recursive manifest of both source directories (including `LPL/`), repo/ref/blob SHA, format, size, workbook tabs or SQL table names, row counts where obtainable, candidate date, owner, sensitivity, provenance, checksum. Flag missing/unreadable/binary/untrusted files; record real extraction methods. Never publish sensitive row values. |
 | HDP-003 | `docs(data-provisioning): inventory hidra target models and schema` | `docs/data-provisioning/target-inventory.md`: actual domain model names, writable application contracts, JPA entity/table/column types and constraints, FK graph, enums, Flyway versions, existing catalog/seed/import implementations. Verify current `main`; distinguish absent functionality from uninspected functionality. |
-| HDP-004 | `docs(data-provisioning): classify source datasets and import eligibility` | `docs/data-provisioning/source-classification.md`: every input classified reference/master/operational/history/derived/unknown, proposed bounded-context owner, confidentiality, legal sharing limits, canonical/superseded versions, approval status and disposition (import/defer/reject). No unauthorized data copied to target repo. |
+| HDP-004 | `docs(data-provisioning): classify source datasets and import eligibility` | **Paused behind HMS prerequisite.** Existing `docs/data-provisioning/source-classification.md` remains provisional evidence. Resume only after HMS-008 explicitly aligns the approved target-model semantic baseline. Then complete every input's reference/master/operational/history/derived/unknown classification, bounded-context owner, confidentiality, legal sharing limits, canonical/superseded versions, approval status and disposition (import/defer/reject). No unauthorized data copied to target repo. |
 | HDP-005 | `docs(data-provisioning): map legacy fields to hidra contracts` | `docs/data-provisioning/source-target-mapping.md`: **per source column/table** target model/property/DB field, type, nullable/enum/range, transform, units, source precedence, target owner, FK, identifier strategy, permitted loading contract, and explicit `UNMAPPED` disposition. Mapping is reviewed against code/SQL; do not invent missing fields. |
 | HDP-006 | `docs(data-provisioning): approve canonical sources and migration scope` | `docs/data-provisioning/migration-decisions.md`: resolved canonical snapshot/effective dates, duplicate/conflict policy, authoritative geographical reference version, sensitive-data disposition, excluded operational datasets, accountable reviewers, staged coverage, and G1 signoff or explicit blockers. |
 

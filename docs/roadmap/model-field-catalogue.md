@@ -130,7 +130,7 @@ baseline model files
 | HMC-002 | `docs(catalogue): scan alarm domain models` | Scan all 4 `alarm/domain/model` files; record models, fields and Java types. | **Completed** — 4/4 models, 67 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-003 | `docs(catalogue): scan analytics domain models` | Scan all 7 analytics model files. | **Completed** — 7/7 models, 102 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-004 | `docs(catalogue): scan assets domain models` | Scan all 3 assets model files. | **Completed** — 3/3 models, 56 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
-| HMC-005 | `docs(catalogue): scan audit domain models` | Scan all 4 audit model files. | Planned |
+| HMC-005 | `docs(catalogue): scan audit domain models` | Scan all 4 audit model files. | **Completed** — 4/4 models, 83 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-006 | `docs(catalogue): scan configuration domain models` | Scan all 3 configuration model files. | Planned |
 | HMC-007 | `docs(catalogue): scan custody domain models` | Scan all 3 custody model files. | Planned |
 | HMC-008 | `docs(catalogue): scan documents domain models` | Scan all 4 documents model files. | Planned |
@@ -612,11 +612,132 @@ The scan records only declarations under `assets/domain/model`. Assets domain va
 
 No JPA entity, API DTO, migration, application contract, infrastructure model, or database column metadata was mixed into this module scan.
 
-## 14. Current next task
+## 14. HMC-005 — Audit module scan evidence
+
+**Source commit:** `5e301857882b59e9e35ecc474e9c6537d89cc96a`  
+**Module:** `audit`  
+**Baseline model files:** 4  
+**Scanned models:** 4  
+**Declared fields/components:** 83  
+**Zero-field models:** 0  
+**Extraction exceptions:** 0
+
+### Audit model index
+
+| Model | Kind | Declared field count | Source path | Status |
+|---|---|---:|---|---|
+| AuditAccessRecord | record | 11 | `src/main/java/dz/sh/hidra/modules/audit/domain/model/AuditAccessRecord.java` | Extracted |
+| AuditBeforeAfterValue | record | 13 | `src/main/java/dz/sh/hidra/modules/audit/domain/model/AuditBeforeAfterValue.java` | Extracted |
+| AuditEvent | record | 45 | `src/main/java/dz/sh/hidra/modules/audit/domain/model/AuditEvent.java` | Extracted |
+| AuditExportRequest | record | 14 | `src/main/java/dz/sh/hidra/modules/audit/domain/model/AuditExportRequest.java` | Extracted |
+
+### Audit fields and declared Java types
+
+| Model | Ordinal | Field | Declared Java Type |
+|---|---:|---|---|
+| AuditAccessRecord | 1 | id | String |
+| AuditAccessRecord | 2 | actorId | String |
+| AuditAccessRecord | 3 | actorDisplayNameSnapshot | String |
+| AuditAccessRecord | 4 | accessType | AuditAccessType |
+| AuditAccessRecord | 5 | auditEventId | String |
+| AuditAccessRecord | 6 | searchFilterHash | String |
+| AuditAccessRecord | 7 | exportRequestId | String |
+| AuditAccessRecord | 8 | resultCount | Integer |
+| AuditAccessRecord | 9 | purposeText | String |
+| AuditAccessRecord | 10 | accessedAt | Instant |
+| AuditAccessRecord | 11 | correlationId | String |
+| AuditBeforeAfterValue | 1 | id | String |
+| AuditBeforeAfterValue | 2 | auditEventId | String |
+| AuditBeforeAfterValue | 3 | fieldPath | String |
+| AuditBeforeAfterValue | 4 | fieldLabelSnapshot | String |
+| AuditBeforeAfterValue | 5 | valueType | AuditValueType |
+| AuditBeforeAfterValue | 6 | beforeValueText | String |
+| AuditBeforeAfterValue | 7 | afterValueText | String |
+| AuditBeforeAfterValue | 8 | beforeValueHash | String |
+| AuditBeforeAfterValue | 9 | afterValueHash | String |
+| AuditBeforeAfterValue | 10 | masked | boolean |
+| AuditBeforeAfterValue | 11 | maskReasonId | String |
+| AuditBeforeAfterValue | 12 | changed | boolean |
+| AuditBeforeAfterValue | 13 | recordedAt | Instant |
+| AuditEvent | 1 | id | String |
+| AuditEvent | 2 | eventTypeId | String |
+| AuditEvent | 3 | eventCategoryId | String |
+| AuditEvent | 4 | severityId | String |
+| AuditEvent | 5 | sourceModule | String |
+| AuditEvent | 6 | sourceComponent | String |
+| AuditEvent | 7 | sourceEventId | String |
+| AuditEvent | 8 | actionCode | String |
+| AuditEvent | 9 | actionLabelSnapshot | String |
+| AuditEvent | 10 | eventStatus | AuditEventStatus |
+| AuditEvent | 11 | actorId | String |
+| AuditEvent | 12 | actorType | AuditActorType |
+| AuditEvent | 13 | actorDisplayNameSnapshot | String |
+| AuditEvent | 14 | actorUsernameSnapshot | String |
+| AuditEvent | 15 | actorRoleCodeSnapshot | String |
+| AuditEvent | 16 | organizationUnitId | String |
+| AuditEvent | 17 | organizationUnitCodeSnapshot | String |
+| AuditEvent | 18 | organizationUnitNameSnapshot | String |
+| AuditEvent | 19 | targetModule | String |
+| AuditEvent | 20 | targetType | String |
+| AuditEvent | 21 | targetId | String |
+| AuditEvent | 22 | targetCodeSnapshot | String |
+| AuditEvent | 23 | targetLabelSnapshot | String |
+| AuditEvent | 24 | operation | AuditOperation |
+| AuditEvent | 25 | decisionCode | String |
+| AuditEvent | 26 | reasonId | String |
+| AuditEvent | 27 | reasonText | String |
+| AuditEvent | 28 | commentText | String |
+| AuditEvent | 29 | workflowInstanceId | String |
+| AuditEvent | 30 | workflowTaskId | String |
+| AuditEvent | 31 | workflowActionId | String |
+| AuditEvent | 32 | workflowFromState | String |
+| AuditEvent | 33 | workflowToState | String |
+| AuditEvent | 34 | requestId | String |
+| AuditEvent | 35 | correlationId | String |
+| AuditEvent | 36 | causationId | String |
+| AuditEvent | 37 | ipAddressMasked | String |
+| AuditEvent | 38 | userAgentSnapshot | String |
+| AuditEvent | 39 | sourceSystemCode | String |
+| AuditEvent | 40 | occurredAt | Instant |
+| AuditEvent | 41 | recordedAt | Instant |
+| AuditEvent | 42 | retentionPolicyId | String |
+| AuditEvent | 43 | hashValue | String |
+| AuditEvent | 44 | previousHashValue | String |
+| AuditEvent | 45 | payloadJson | String |
+| AuditExportRequest | 1 | id | String |
+| AuditExportRequest | 2 | requestedByActorId | String |
+| AuditExportRequest | 3 | requestedByDisplayNameSnapshot | String |
+| AuditExportRequest | 4 | purposeId | String |
+| AuditExportRequest | 5 | filterJson | String |
+| AuditExportRequest | 6 | format | String |
+| AuditExportRequest | 7 | status | AuditExportStatus |
+| AuditExportRequest | 8 | workflowInstanceId | String |
+| AuditExportRequest | 9 | resultDocumentReferenceId | String |
+| AuditExportRequest | 10 | recordCount | Integer |
+| AuditExportRequest | 11 | checksum | String |
+| AuditExportRequest | 12 | requestedAt | Instant |
+| AuditExportRequest | 13 | completedAt | Instant |
+| AuditExportRequest | 14 | expiresAt | Instant |
+
+### HMC-005 reconciliation
 
 ```text
-HMC-005 — docs(catalogue): scan audit domain models
+baseline model files = 4
+extracted models     = 4
+exceptions           = 0
+declared fields      = 83
+zero-field models    = 0
 ```
 
-Do not start HMC-006 until HMC-005 is completed and its module counts are reported.
+The scan records only declarations under `audit/domain/model`. Audit domain value types referenced by record components are field types, not independent model rows for this catalogue scope.
+
+No JPA entity, API DTO, migration, application contract, infrastructure model, or database column metadata was mixed into this module scan.
+
+## 15. Current next task
+
+```text
+HMC-006 — docs(catalogue): scan configuration domain models
+```
+
+Do not start HMC-007 until HMC-006 is completed and its module counts are reported.
 

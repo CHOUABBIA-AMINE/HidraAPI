@@ -23,9 +23,11 @@ import dz.sh.hidra.modules.alarm.domain.value.AlarmSuppressionScopeType;
 import dz.sh.hidra.modules.alarm.domain.value.AlarmSuppressionStatus;
 import dz.sh.hidra.modules.alarm.infrastructure.persistence.entity.AlarmSuppressionJpaEntity;
 
+import jakarta.persistence.LockModeType;
 import java.time.Instant;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
@@ -43,6 +45,7 @@ public interface AlarmSuppressionJpaRepository
             AlarmSuppressionStatus status
     );
 
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
     List<AlarmSuppressionJpaEntity> findByStatusAndSuppressedUntilLessThanEqualOrderBySuppressedUntilAsc(
             AlarmSuppressionStatus status,
             Instant asOf

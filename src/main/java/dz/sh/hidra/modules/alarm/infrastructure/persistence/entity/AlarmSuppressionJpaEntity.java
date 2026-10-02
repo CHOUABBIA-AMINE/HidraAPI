@@ -216,4 +216,17 @@ import java.time.Instant;
         return correlationId;
     }
 
+    public boolean markExpired(Instant asOf) {
+        if (asOf == null) {
+            throw new IllegalArgumentException("Suppression expiry instant must not be null.");
+        }
+        if (status != AlarmSuppressionStatus.ACTIVE
+                || suppressedUntil == null
+                || suppressedUntil.isAfter(asOf)) {
+            return false;
+        }
+        status = AlarmSuppressionStatus.EXPIRED;
+        return true;
+    }
+
     }

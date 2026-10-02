@@ -190,6 +190,29 @@ import java.time.Instant;
         public boolean closed() {
             return currentState == AlarmState.CLOSED || currentState == AlarmState.CANCELLED;
         }
+
+        public Alarm withState(AlarmState nextState, Instant changedAt) {
+            if (nextState == null) {
+                throw new InvalidAlarmValueException("Alarm next state must not be null.");
+            }
+            if (changedAt == null) {
+                throw new InvalidAlarmValueException("Alarm state change instant must not be null.");
+            }
+            return new Alarm(
+                    id, alarmNumber, alarmTypeId, severityId, priorityId,
+                    titleAr, titleFr, titleEn,
+                    descriptionAr, descriptionFr, descriptionEn,
+                    sourceType, sourceReferenceId, monitoringAlertCandidateId,
+                    monitoringEvaluationId, telemetryReadingId, planningTargetId,
+                    topologyAssetTypeCode, topologyAssetId, topologyAssetCode,
+                    topologyAssetNameSnapshot, nextState, raisedAt, firstDetectedAt,
+                    changedAt, clearedAt, closedAt, acknowledgedAt,
+                    acknowledgedByActorId, owningOrganizationUnitId,
+                    owningOrganizationUnitCode, owningOrganizationUnitNameSnapshot,
+                    workflowInstanceId, incidentId, correlationId, createdAt, changedAt
+            );
+        }
+
         private static String normalize(String value) {
             if (value == null || value.isBlank()) {
                 return null;

@@ -181,7 +181,7 @@ Each code below is one independent roadmap task/commit. Execute exactly one code
 | `ALM-SUP-004` | `feat(alarm): expose suppression persistence queries` | Extend existing suppression repository adapter only as required by approved use cases: exact-scope active lookup, expiry candidates, history/query support. | No duplicate persistence model; overlap and expiry queries are deterministic. | **Completed** |
 | `ALM-SUP-005` | `feat(alarm): integrate suppression workflow approval` | Verify open-ended suppression through Workflow public contracts/ports and fail closed when approval is absent. | No transition-name inference or direct foreign aggregate dependency. | **Completed** |
 | `ALM-SUP-006A` | `feat(alarm): add suppression expiry audit contract` | Export a narrow Audit contract and provision canonical `ALARM_SUPPRESSION_EXPIRED` taxonomy for all suppression scopes. | Broad-scope expiry can be attributed to a scheduled/system actor without overloading release fields. | **Completed** |
-| `ALM-SUP-006` | `feat(alarm): add suppression expiry orchestration` | Add idempotent backend-owned expiry orchestration using the existing Spring scheduling mechanism. | ACTIVE suppressions expire once; Audit evidence, actor attribution, and ALARM restoration are deterministic. | **Next** |
+| `ALM-SUP-006` | `feat(alarm): add suppression expiry orchestration` | Add idempotent backend-owned expiry orchestration using the existing Spring scheduling mechanism. | ACTIVE suppressions expire once; Audit evidence, actor attribution, and ALARM restoration are deterministic. | **Completed** |
 | `ALM-SUP-007` | `feat(alarm): publish suppression REST contracts` | Publish canonical create/release/query endpoints, generated OpenAPI schemas, route-permission metadata, deterministic 400/403/404/409 behavior. | No CRUD-style leakage; only approved lifecycle operations exposed. | Planned |
 | `ALM-SUP-008` | `test(alarm): verify suppression lifecycle end to end` | Domain/application/persistence/REST/Testcontainers coverage including ALARM and broad scopes, acknowledgement, clear/close, escalation preservation, workflow approval, expiry, conflicts, audit evidence, OpenAPI determinism. | Full repository verification green and suppression behavior traceable. | Planned |
 | `ALM-SUP-009` | `docs(alarm): finalize suppression capability` | Record exact endpoints, permissions, events, validation evidence, remaining limits, and frontend-consumption boundary. | GAP-ALARM-004 closed with no undocumented semantics. | Planned |
@@ -314,3 +314,35 @@ ALM-SUP-006 — feat(alarm): add suppression expiry orchestration
 ```
 
 ALM-SUP-006 may now reuse the existing Spring scheduling mechanism. It must process only ACTIVE due suppressions, append Audit evidence before considering expiry complete, restore ALARM-scoped state from authoritative alarm evidence, and remain idempotent.
+
+
+## 13. ALM-SUP-006 completion evidence
+
+ALM-SUP-006 was executed against HidraAPI baseline `dbea0996384c9b09d14cc1d52745d76620226441`.
+
+Implementation:
+
+- reuses the repository's existing Spring scheduling mechanism through `@Scheduled`;
+- uses a dedicated infrastructure scheduler and a transactional expiry orchestrator;
+- acquires pessimistic write locks on ACTIVE due suppression rows;
+- defensively re-checks due/ACTIVE semantics through `AlarmSuppressionPolicy`;
+- appends canonical `ALARM_SUPPRESSION_EXPIRED` Audit evidence with scheduled-job actor attribution before marking expiry complete;
+- keeps broad-scope suppression as an evaluation overlay and does not mass-mutate matching alarms;
+- for ALARM scope only, restores state only when the alarm is still visibly `SUPPRESSED`;
+- restoration is derived from authoritative Alarm evidence through `AlarmSuppressionPolicy.restorationState`;
+- appends `UNSUPPRESSED` Alarm lifecycle evidence with server actor attribution;
+- marks persistence status `ACTIVE -> EXPIRED` without overloading manual release fields;
+- all mutation occurs in one transaction so Audit or restoration failure prevents expiry completion;
+- repeated execution is idempotent because only ACTIVE due rows are selected and each row is locked.
+
+The Alarm domain record now provides a narrow `withState` operation so state restoration remains domain-owned rather than being reconstructed in infrastructure.
+
+Focused tests cover broad-scope expiry, ALARM restoration, defensive non-due handling, and scheduled system actor delegation.
+
+## 14. Next authorized task
+
+```text
+ALM-SUP-007 — feat(alarm): publish suppression REST contracts
+```
+
+ALM-SUP-007 must expose only backend-owned create/release/query behavior, derive actor identity server-side, use canonical route permissions, and publish deterministic conflict/approval/not-found errors without exposing JPA types.

@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -208,7 +208,7 @@ Ordering rules applied:
 | HMSR-013 | 0 | reporting | ReportDefinition | — | — | 2 | 3 | 1 | REVISE | Completed | `docs(model-review): review reporting ReportDefinition` |
 | HMSR-014 | 0 | integration | IntegrationJobRun | — | — | 2 | 2 | 1 | REVISE | Completed | `docs(model-review): review integration IntegrationJobRun` |
 | HMSR-015 | 0 | leakdetection | LeakCandidate | — | — | 2 | 2 | 2 | REVISE | Completed | `docs(model-review): review leakdetection LeakCandidate` |
-| HMSR-016 | 0 | organization | OperationalScope | — | — | 1 | 2 | 0 | — | Planned | `docs(model-review): review organization OperationalScope` |
+| HMSR-016 | 0 | organization | OperationalScope | — | — | 1 | 2 | 0 | APPROVED | Completed | `docs(model-review): review organization OperationalScope` |
 | HMSR-017 | 0 | analytics | AnalyticsDataset | — | — | 1 | 1 | 0 | — | Planned | `docs(model-review): review analytics AnalyticsDataset` |
 | HMSR-018 | 0 | analytics | MetricEvaluationRun | — | — | 1 | 1 | 1 | — | Planned | `docs(model-review): review analytics MetricEvaluationRun` |
 | HMSR-019 | 0 | configuration | ConfigurationDefinition | — | — | 1 | 1 | 1 | — | Planned | `docs(model-review): review configuration ConfigurationDefinition` |
@@ -2313,7 +2313,7 @@ Confirmed subject-model graph edges at this stage: **165**. These are semantic c
 | Field | Declared type | Classification | Resolved target | Graph edge | Notes |
 |---|---|---|---|:---:|---|
 | id | Long | Self identifier | — | No | Primary identity of the current model. |
-| targetId | String | Cross-module reference | POLYMORPHIC | No | Target is selected by companion type/module metadata; no single subject-model edge. |
+| targetId | String | Typed/polymorphic domain reference | GOVERNED_OPERATIONAL_SCOPE_TARGET | No | HMSR-016 confirms the target namespace is selected by `OperationalScopeType`; GLOBAL has no target, ORGANIZATION_UNIT resolves locally, Topology-owned types resolve through the exported Topology contract, and CUSTOM is rejected. No single HMS subject edge or cross-module DB FK. |
 
 #### organization.OrganizationContactPoint
 
@@ -4962,16 +4962,152 @@ Any alarm, incident, workflow or notification consequence must be created throug
 
 The target baseline cannot mark it APPROVED while typed-Topology validation, run/profile provenance integrity, external-compute idempotency identity, and required field enforcement remain unresolved. HMS reconciliation must retain these obligations until an explicitly authorized Leak Detection correction task resolves them or the target semantics are explicitly changed.
 
-## 29. Current next task
+## 29. HMSR-016 — organization.OperationalScope review
+
+**Decision:** APPROVED  
+**Review code:** HMSR-016  
+**Dependency level:** 0  
+**Bounded context:** organization  
+**Confirmed upstream subject dependencies:** none  
+**Confirmed direct dependents:** 1 — `organization.ResponsibilityAssignment` through `scopeId`  
+**Transitive dependents:** 2  
+**Unresolved/non-subject references:** 0
+
+### 29.1 Semantic role and authoritative current design
+
+`OperationalScope` is the Organization-owned canonical registry identity for one validated operational-responsibility target. It is deliberately distinct from the target object itself.
+
+The authoritative current Organization roadmap, verified after ORG-033, defines:
 
 ```text
-HMSR-016 — organization.OperationalScope
+OperationalScopeReference
+  type
+  targetId
+  canonical owner-target registration input
+
+OperationalScope
+  id: positive generated Long registry identity
+  type
+  targetId
+
+ResponsibilityAssignment
+  scopeId -> OperationalScope.id
+```
+
+This current roadmap/live implementation supersedes older planning examples when they conflict. ADR-0005 remains the accepted architectural decision for ownership/integrity principles, but the Organization roadmap explicitly records that its original wording about storing the typed pair directly on each assignment is stale relative to the implemented registry model.
+
+### 29.2 Field semantics
+
+| Field | Type | Mandatory / optional | Reviewed meaning |
+|---|---|---|---|
+| `id` | `Long` | Mandatory for persisted domain identity | Positive database-generated registry identifier. It is intentionally not the owner target's native ID and is explicitly separate from Organization's String/UUID identifier policy. |
+| `type` | `OperationalScopeType` | Mandatory | Governed target namespace discriminator: `GLOBAL`, `ORGANIZATION_UNIT`, `PIPELINE_SYSTEM`, `PIPELINE`, `FACILITY`, `EQUIPMENT`, or `CUSTOM`. `CUSTOM` is currently ungoverned and rejected. |
+| `targetId` | `String` | Null only for GLOBAL | Stable owner-native target identifier. Entity-backed scope types require a nonblank normalized value. |
+
+The `OperationalScope` compact constructor correctly requires a positive registry ID and non-null type, enforces target-less `GLOBAL`, rejects `CUSTOM`, and requires a target ID for governed entity-backed types.
+
+Pre-persistence registration does not misuse a fake or temporary registry ID. `OperationalScopeReference(type, targetId)` is the separate canonical value object for validated owner references before persistence; `OperationalScope` is used only after the database-generated ID exists.
+
+### 29.3 Type and owner-resolution semantics
+
+`OperationalScopeType` correctly separates target namespaces:
+
+- `GLOBAL` — unique target-less Organization-wide applicability marker;
+- `ORGANIZATION_UNIT` — resolved inside Organization;
+- `PIPELINE_SYSTEM`, `PIPELINE`, `FACILITY`, `EQUIPMENT` — resolved through Topology's exported `TopologyOperationalScopeTargetContract`; 
+- `CUSTOM` — intentionally rejected until a separately approved owner namespace/contract exists.
+
+`AuthoritativeOperationalScopeTargetResolverAdapter` supports exactly the governed entity-backed types. It resolves Organization units through `OrganizationUnitRepositoryPort` and Topology-owned targets only through the deliberate public Topology application contract. No Topology domain model, JPA repository or infrastructure implementation crosses into Organization.
+
+`OperationalScopeRegistrationValidator` fails closed when a resolver is unsupported, the target is missing, the resolver returns a mismatched type/ID, or the target is not currently assignable. GLOBAL bypasses owner lookup because it has no target by design.
+
+### 29.4 Persistence identity and uniqueness
+
+`V20260927_001__add_operational_scope_registry.sql` establishes the canonical registry:
+
+```text
+id bigint GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY
+scope_type varchar(80) NOT NULL
+target_id varchar(120)
+```
+
+Database checks match domain shape:
+
+- `id > 0`; 
+- GLOBAL requires `target_id IS NULL`; 
+- governed entity-backed types require nonblank `target_id`; 
+- CUSTOM is not admitted by the table check.
+
+Uniqueness is correct and concurrency-safe at the persistence boundary:
+
+- one registry row per `(scope_type, target_id)` for entity-backed scopes;
+- one singleton GLOBAL row;
+- `JpaOperationalScopeRegistryRepositoryAdapter.register()` first reuses an existing canonical row, then relies on the unique index as the race guard and reloads the canonical row after a uniqueness race.
+
+That is the appropriate place for global registry uniqueness; no repository lookup is pushed into the domain record.
+
+### 29.5 Responsibility dependency and final greenfield schema
+
+The validated HMS graph correctly contains:
+
+```text
+ResponsibilityAssignment.scopeId -> OperationalScope
+```
+
+`ResponsibilityAssignment` is the sole direct HMS subject dependent. `OrganizationDelegation` is downstream through `ResponsibilityAssignment`, which accounts for the registered transitive dependency count without creating another direct edge to OperationalScope.
+
+The registry FK uses `ON DELETE RESTRICT`, preserving responsibility history. ORG-032 final greenfield migration `V20260929_006__retire_legacy_operational_scope_columns.sql` removes the obsolete embedded scope columns and makes canonical `ResponsibilityAssignment.scope_id` mandatory after a fail-closed preflight.
+
+The final Organization model therefore has one authoritative responsibility-scope identity path rather than parallel embedded tuples.
+
+### 29.6 Current display, multilingual data and owner lifetime
+
+OperationalScope intentionally stores **no** writable current code/name fields and therefore has no embedded Arabic/French/English label fields to review.
+
+Current code, multilingual name, status and assignability belong to the target-owning bounded context and are resolved on read through the owner resolver. This avoids stale duplicated Topology/Organization display state inside the registry.
+
+When an owner later becomes retired/unassignable, historical scope/assignment rows are preserved. New assignment is blocked and reconciliation reports the owner-lifecycle issue rather than deleting history. ORG-033 end-to-end evidence covers multi-scope responsibility and owner-retirement preservation.
+
+### 29.7 Authorization, Workflow and Audit boundary
+
+The registry itself represents target identity; it does not confer authority.
+
+The completed Organization correction sequence places permission checks, Workflow approval, Audit append, overlap/idempotency and effective-date rules in the responsibility application layer. This keeps `OperationalScope` focused on canonical target identity while preserving the required governance around assigning responsibility.
+
+### 29.8 Schema and architecture verification status
+
+The authoritative Organization roadmap records the operational-scope correction sequence as complete:
+
+- ORG-023 completed under the greenfield/no-deployed-legacy-data decision;
+- ORG-027 authorization, Workflow and Audit governance completed with green exact-SHA CI;
+- ORG-028 through ORG-033 completed with green exact-SHA CI evidence;
+- issue #130 acceptance matrix has no unresolved applicable item and closure is authorized;
+- HRA-091 exposes the deliberate Topology operational-scope resolution contract and architecture guardrails allow only that public contract.
+
+Those recorded historical CI results are evidence for the completed Organization correction sequence. HMSR-016 itself does not rerun those old builds and does not claim new CI success from them.
+
+### 29.9 Non-blocking documentation note
+
+ADR-0005 remains authoritative for separation of ownership, typed references, GLOBAL semantics, rejection of ungoverned CUSTOM, owner resolution, history preservation and cross-module integrity principles.
+
+Its older representation of the typed owner pair directly on each responsibility assignment is explicitly marked stale by the current Organization roadmap. A future ADR documentation correction would improve architectural consistency, but this is **not** a semantic defect in the live OperationalScope model because the current roadmap and implementation consistently use the generated registry-ID design.
+
+### 29.10 Review conclusion
+
+**APPROVED.** `OperationalScope` has a coherent three-field identity model, correct separation between pre-persistence owner reference and persisted registry identity, fail-closed owner resolution, correct GLOBAL/CUSTOM semantics, database-enforced shape and uniqueness, idempotent/race-safe registration, deliberate cross-module boundaries, and a single canonical downstream responsibility reference.
+
+No production correction obligation is created by HMSR-016. The current live Organization implementation is suitable as the target semantic baseline for later responsibility/delegation model reviews and data provisioning.
+
+## 30. Current next task
+
+```text
+HMSR-017 — analytics.AnalyticsDataset
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review organization OperationalScope
+docs(model-review): review analytics AnalyticsDataset
 ```
 
-Start HMSR-016 only after HMSR-015 is committed and reported. Do not start HMSR-017 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-017 only after HMSR-016 is committed and reported. Do not start HMSR-018 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

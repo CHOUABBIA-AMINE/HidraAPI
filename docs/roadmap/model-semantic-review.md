@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -202,7 +202,7 @@ Ordering rules applied:
 | HMSR-007 | 0 | identity | Role | — | — | 5 | 5 | 0 | REVISE | Completed | `docs(model-review): review identity Role` |
 | HMSR-008 | 0 | documents | DocumentStorageObject | — | — | 2 | 6 | 1 | REVISE | Completed | `docs(model-review): review documents DocumentStorageObject` |
 | HMSR-009 | 0 | simulation | SimulationModel | — | — | 1 | 5 | 1 | REVISE | Completed | `docs(model-review): review simulation SimulationModel` |
-| HMSR-010 | 0 | identity | IdentityProvider | — | — | 4 | 4 | 0 | — | Planned | `docs(model-review): review identity IdentityProvider` |
+| HMSR-010 | 0 | identity | IdentityProvider | — | — | 4 | 4 | 0 | REVISE | Completed | `docs(model-review): review identity IdentityProvider` |
 | HMSR-011 | 0 | identity | Permission | — | — | 3 | 3 | 0 | — | Planned | `docs(model-review): review identity Permission` |
 | HMSR-012 | 0 | notification | NotificationTemplate | — | — | 2 | 3 | 2 | — | Planned | `docs(model-review): review notification NotificationTemplate` |
 | HMSR-013 | 0 | reporting | ReportDefinition | — | — | 2 | 3 | 1 | — | Planned | `docs(model-review): review reporting ReportDefinition` |
@@ -4144,16 +4144,145 @@ An optimized configuration remains a Simulation recommendation/candidate until e
 
 The target baseline cannot mark it APPROVED while model-code uniqueness, required French name, topology-scope discriminator/pair validation and model-type catalog-family validation remain unenforced. HMS reconciliation must retain these obligations until an explicitly authorized Simulation correction task resolves them or the target semantics are explicitly changed.
 
-## 23. Current next task
+## 23. HMSR-010 — identity.IdentityProvider review
+
+**Decision:** REVISE  
+**Review code:** HMSR-010  
+**Dependency level:** 0  
+**Bounded context:** identity  
+**Confirmed upstream subject dependencies:** none  
+**Confirmed direct dependents:** 4 — `identity.ExternalRoleMapping`, `identity.AuthenticationEvent`, `identity.HidraPrincipal`, `identity.LoginSession`  
+**Transitive dependents:** 4  
+**Unresolved/non-subject references:** 0
+
+### 23.1 Semantic role and ordering rationale
+
+`IdentityProvider` is the Identity-owned configuration/master record for one authentication or external identity source. It represents providers such as LOCAL, LDAP, Active Directory, OIDC, OAuth2, SAML2, Keycloak, Azure AD / Entra ID and Okta while preserving Hidra-owned authorization as the final authority.
+
+It is Level 0 because it has no upstream dependency on another HMS subject model. Its subject dependents use the provider identity for external-role mapping, normalized principals, login-session provenance and authentication-event traceability.
+
+Several Identity read/persistence models outside the 123 HMS subjects also depend on it, including `ExternalIdentity`, `ExternalGroupMapping`, `ExternalPermissionMapping` and `IdentitySynchronizationJob`. Those dependencies do not change the HMS subject graph.
+
+### 23.2 Field semantics
+
+| Field | Type | Mandatory / optional | Reviewed meaning |
+|---|---|---|---|
+| `id` | `String` | Mandatory | Stable provider identity and persistence primary key. |
+| `code` | `String` | Mandatory | Stable provider business/configuration code; current Identity DDD requires uniqueness. |
+| `name` | `String` | Mandatory | Human-readable provider display name. |
+| `providerType` | `ProviderType` | Mandatory | Provider technology/source classification: `LOCAL`, `LDAP`, `ACTIVE_DIRECTORY`, `OIDC`, `OAUTH2`, `SAML2`, `KEYCLOAK`, `AZURE_AD`, or `OKTA`. |
+| `issuerUri` | `String` | Provider-specific optional | Issuer URI for OIDC/SAML-style providers; current OIDC normalization resolves providers by issuer. |
+| `authorizationEndpoint` | `String` | Provider-specific optional | OIDC/OAuth authorization endpoint metadata. |
+| `tokenEndpoint` | `String` | Provider-specific optional | OIDC/OAuth token endpoint metadata. |
+| `jwksUri` | `String` | Provider-specific optional | JWK-set endpoint metadata. |
+| `directoryBaseDn` | `String` | Provider-specific optional | LDAP/AD directory base DN metadata. |
+| `userSearchBase` | `String` | Provider-specific optional | LDAP/AD user-search base metadata. |
+| `groupSearchBase` | `String` | Provider-specific optional | LDAP/AD group-search base metadata. |
+| `usernameAttribute` | `String` | Provider-specific optional | Provider attribute used for username mapping. |
+| `emailAttribute` | `String` | Provider-specific optional | Provider attribute used for email mapping. |
+| `displayNameAttribute` | `String` | Provider-specific optional | Provider attribute used for display-name mapping. |
+| `externalIdAttribute` | `String` | Provider-specific optional | Stable external identity attribute such as objectGUID/objectId/sub/NameID. |
+| `groupMembershipAttribute` | `String` | Provider-specific optional | External group/role membership attribute such as `memberOf`, `groups`, or `roles`. |
+| `syncEnabled` | `boolean` | Mandatory persisted state | Whether synchronization is enabled for the provider. |
+| `justInTimeProvisioningEnabled` | `boolean` | Mandatory persisted state | Whether login-time creation/update may be performed under provider/mapping policy. |
+| `status` | `IdentityProviderStatus` | Mandatory | Provider lifecycle: `ACTIVE`, `INACTIVE`, `FAILED`, or `DEPRECATED`. |
+| `metadata` | JSON text / `jsonb` persistence | Optional | Non-secret provider metadata and mapping hints only. |
+| `secretReference` | `String` | Optional | Reference to a vault/platform secret; never the secret value itself. |
+| `createdAt` | `Instant` | Mandatory in persistence | Creation timestamp. |
+| `updatedAt` | `Instant` | Mandatory in persistence | Last-update timestamp. |
+
+The domain constructor already rejects blank `id` and `code`, rejects null `providerType` and `status`, trims textual values, and converts blank optional text to `null`.
+
+### 23.3 Provider taxonomy versus authentication protocol
+
+The existing provider taxonomy is intentional and must not be duplicated.
+
+`ProviderType` identifies the configured source technology and distinguishes, for example, LDAP from Active Directory and OIDC from vendor-specific providers. `AuthenticationProtocol` is a separate authentication-event/session classification.
+
+The current session lifecycle maps:
+
+- `LOCAL -> LOCAL`;
+- `LDAP` and `ACTIVE_DIRECTORY -> LDAP`;
+- `OIDC`, `KEYCLOAK`, `AZURE_AD`, and `OKTA -> OIDC`;
+- `OAUTH2 -> OAUTH2`;
+- `SAML2 -> SAML2`.
+
+This is semantically coherent and is not a duplicate-enum defect.
+
+### 23.4 Active-provider runtime semantics
+
+The Identity DDD requires external login/synchronization to use only ACTIVE providers. Current authentication paths enforce that rule fail-closed:
+
+- LOCAL authentication requires exactly one ACTIVE `ProviderType.LOCAL` provider and rejects none/multiple candidates;
+- LDAP/AD authentication requires exactly one ACTIVE provider among `LDAP` / `ACTIVE_DIRECTORY` and rejects none/multiple candidates;
+- OIDC normalization resolves `ProviderType.OIDC + issuerUri`, then requires the provider to be ACTIVE;
+- the OIDC path also requires a LINKED `ExternalIdentity` and ACTIVE Hidra `User`;
+- external roles/groups/scopes do not directly become Hidra authorization; effective permissions remain Identity-owned.
+
+The exactly-one active LOCAL/directory behavior is a runtime/deployment governance rule, not evidence for making provider type globally unique in the table. Inactive/deprecated historical provider records may coexist.
+
+### 23.5 Persistence and dependency consistency
+
+The live domain and JPA models agree on all 23 declared components.
+
+The base Identity migration makes `id`, `code`, `name`, `provider_type`, `sync_enabled`, `just_in_time_provisioning_enabled`, `status`, `created_at`, and `updated_at` non-null. Provider-specific metadata fields remain nullable.
+
+The schema currently creates ordinary indexes for provider `code`, `status`, and timestamps; no unique constraint for provider code was found.
+
+`IdentityProviderRepositoryPort` exposes only `save` and `findById`. The infrastructure repository additionally exposes `findByProviderTypeAndIssuerUri` for OIDC resolution.
+
+HRA-111 protects provider references for same-module persistence models, including external mappings and synchronization records, with FKs to `hidra_identity_provider(id)`. The four HMS subject dependents remain the graph-facing dependencies recorded by the review register.
+
+### 23.6 Secret-safety boundary
+
+The Identity DDD is explicit:
 
 ```text
-HMSR-010 — identity.IdentityProvider
+Provider configuration must not contain secret values.
+```
+
+`secretReference` is therefore pointer metadata only. LDAP bind passwords, OAuth/OIDC client secrets, tokens, private keys, certificate private material and similar credentials belong in vault/platform secret management.
+
+The current authentication deployment runbook follows that policy by keeping sensitive runtime inputs outside the repository/database. HMSR-010 does not redefine `secretReference` as credential storage and does not authorize secret material inside `metadata`.
+
+Secret safety is primarily a provisioning/platform governance concern; arbitrary secret detection must not be guessed from string contents inside the domain record.
+
+### 23.7 Required revisions
+
+The model ownership and provider taxonomy are sound, but the target baseline cannot be APPROVED until these evidence-backed gaps are resolved:
+
+1. **Unique provider code:** the Identity DDD explicitly requires `IdentityProvider.code` to be unique and recommends `uk_identity_provider_code`. The live schema has only non-unique `ix_hidra_identity_provider_code`; the application repository port has no code lookup/uniqueness contract.
+2. **Required provider name:** `name` is required by the Identity DDD and is `NOT NULL` in JPA/schema, but the domain constructor accepts null/blank values and normalizes blank input to `null`.
+3. **Unambiguous OIDC issuer resolution:** the live OIDC converter calls an `Optional` repository method keyed by `(ProviderType.OIDC, issuerUri)`, which assumes at most one matching provider. The schema has no demonstrated uniqueness constraint for that lookup. The current runtime therefore needs either explicit provisioning/application validation for an unambiguous active OIDC issuer mapping or a deliberately different provider-selection contract.
+4. **Provider-specific activation validation:** provider-specific fields are intentionally optional at the generic record level, but an ACTIVE provider must have the metadata required by its runtime path. At minimum, an OIDC provider used by the current converter requires a usable issuer URI; LOCAL and LDAP/AD active-provider cardinality must remain governed so ambiguous configuration fails closed. These checks belong in provider administration/provisioning/runtime validation rather than as unconditional constructor rules across all provider types.
+5. **Required timestamps:** `createdAt` and `updatedAt` are persistence-required but not guarded by the domain constructor. The final baseline must retain one deliberate enforcement boundary for provider creation/update metadata.
+
+HMSR-010 does not change production Java, JPA, Flyway, authentication runtime, API/application contracts, tests, provider records or secret configuration.
+
+### 23.8 Operational and security interpretation
+
+For SONATRACH/TRC, `IdentityProvider` identifies the trusted authentication source used to establish who the user is. It does **not** transfer authorization authority to the external provider.
+
+LDAP/AD groups, OIDC roles, Keycloak realm roles, Azure/Entra claims or Okta claims must be mapped explicitly into Hidra Identity structures. Hidra roles, permissions, scope validity and authorization decisions remain locally governed and auditable.
+
+Provider failure or ambiguity must fail closed; it must never fall back silently from an external provider to LOCAL authentication.
+
+### 23.9 Review conclusion
+
+**REVISE.** `IdentityProvider` has the correct Identity ownership, 23-field shape, provider/status vocabulary, secret-reference semantics and runtime authorization boundary. Its four HMS subject dependencies are coherent.
+
+The target baseline cannot mark it APPROVED while provider-code uniqueness, mandatory provider name and unambiguous/provider-specific activation rules are not consistently enforced across persistence/provisioning/runtime boundaries. HMS reconciliation must retain these obligations until an explicitly authorized Identity correction task resolves them or the target semantics are explicitly changed.
+
+## 24. Current next task
+
+```text
+HMSR-011 — identity.Permission
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review identity IdentityProvider
+docs(model-review): review identity Permission
 ```
 
-Start HMSR-010 only after HMSR-009 is committed and reported. Do not start HMSR-011 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-011 only after HMSR-010 is committed and reported. Do not start HMSR-012 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

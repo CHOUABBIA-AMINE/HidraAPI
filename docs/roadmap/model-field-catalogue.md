@@ -142,7 +142,7 @@ baseline model files
 | HMC-014 | `docs(catalogue): scan leak detection domain models` | Scan all 3 leakdetection model files. | **Completed** — 3/3 models, 47 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-015 | `docs(catalogue): scan monitoring domain models` | Scan all 2 monitoring model files. | **Completed** — 2/2 models, 37 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-016 | `docs(catalogue): scan notification domain models` | Scan all 4 notification model files. | **Completed** — 4/4 models, 66 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
-| HMC-017 | `docs(catalogue): scan organization domain models` | Scan all 17 organization model files. | Planned |
+| HMC-017 | `docs(catalogue): scan organization domain models` | Scan all 17 organization model files. | **Completed** — 17/17 models, 179 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-018 | `docs(catalogue): scan party domain models` | Scan all 2 party model files. | Planned |
 | HMC-019 | `docs(catalogue): scan planning domain models` | Scan all 5 planning model files. | Planned |
 | HMC-020 | `docs(catalogue): scan reporting domain models` | Scan all 4 reporting model files. | Planned |
@@ -1936,11 +1936,243 @@ The scan records only declarations under `notification/domain/model`. Notificati
 
 No JPA entity, API DTO, migration, application contract, infrastructure provider adapter, channel implementation, or database column metadata was mixed into this module scan.
 
-## 26. Current next task
+## 26. HMC-017 — Organization module scan evidence
+
+**Source commit:** `5e301857882b59e9e35ecc474e9c6537d89cc96a`  
+**Module:** `organization`  
+**Baseline model files:** 17  
+**Scanned models:** 17  
+**Declared fields/components:** 179  
+**Zero-field models:** 0  
+**Extraction exceptions:** 0
+
+### Organization model index
+
+| Model | Kind | Declared field count | Source path | Status |
+|---|---|---:|---|---|
+| AdministrativeDistrict | record | 9 | `src/main/java/dz/sh/hidra/modules/organization/domain/model/AdministrativeDistrict.java` | Extracted |
+| AdministrativeLocality | record | 10 | `src/main/java/dz/sh/hidra/modules/organization/domain/model/AdministrativeLocality.java` | Extracted |
+| AdministrativeState | record | 8 | `src/main/java/dz/sh/hidra/modules/organization/domain/model/AdministrativeState.java` | Extracted |
+| Employee | record | 22 | `src/main/java/dz/sh/hidra/modules/organization/domain/model/Employee.java` | Extracted |
+| EmployeeAddress | record | 12 | `src/main/java/dz/sh/hidra/modules/organization/domain/model/EmployeeAddress.java` | Extracted |
+| EmployeeAssignment | record | 10 | `src/main/java/dz/sh/hidra/modules/organization/domain/model/EmployeeAssignment.java` | Extracted |
+| OperationalScope | record | 3 | `src/main/java/dz/sh/hidra/modules/organization/domain/model/OperationalScope.java` | Extracted |
+| OrganizationContactPoint | record | 10 | `src/main/java/dz/sh/hidra/modules/organization/domain/model/OrganizationContactPoint.java` | Extracted |
+| OrganizationDelegation | record | 10 | `src/main/java/dz/sh/hidra/modules/organization/domain/model/OrganizationDelegation.java` | Extracted |
+| OrganizationHierarchySnapshot | record | 8 | `src/main/java/dz/sh/hidra/modules/organization/domain/model/OrganizationHierarchySnapshot.java` | Extracted |
+| OrganizationUnit | record | 12 | `src/main/java/dz/sh/hidra/modules/organization/domain/model/OrganizationUnit.java` | Extracted |
+| OrganizationUnitType | record | 12 | `src/main/java/dz/sh/hidra/modules/organization/domain/model/OrganizationUnitType.java` | Extracted |
+| Position | record | 12 | `src/main/java/dz/sh/hidra/modules/organization/domain/model/Position.java` | Extracted |
+| ReportingLine | record | 9 | `src/main/java/dz/sh/hidra/modules/organization/domain/model/ReportingLine.java` | Extracted |
+| ResponsibilityAssignment | record | 11 | `src/main/java/dz/sh/hidra/modules/organization/domain/model/ResponsibilityAssignment.java` | Extracted |
+| Shift | record | 12 | `src/main/java/dz/sh/hidra/modules/organization/domain/model/Shift.java` | Extracted |
+| ShiftAssignment | record | 9 | `src/main/java/dz/sh/hidra/modules/organization/domain/model/ShiftAssignment.java` | Extracted |
+
+### Organization fields and declared Java types
+
+| Model | Ordinal | Field | Declared Java Type |
+|---|---:|---|---|
+| AdministrativeDistrict | 1 | id | String |
+| AdministrativeDistrict | 2 | stateId | String |
+| AdministrativeDistrict | 3 | code | String |
+| AdministrativeDistrict | 4 | nameAr | String |
+| AdministrativeDistrict | 5 | nameFr | String |
+| AdministrativeDistrict | 6 | nameEn | String |
+| AdministrativeDistrict | 7 | active | boolean |
+| AdministrativeDistrict | 8 | createdAt | Instant |
+| AdministrativeDistrict | 9 | updatedAt | Instant |
+| AdministrativeLocality | 1 | id | String |
+| AdministrativeLocality | 2 | districtId | String |
+| AdministrativeLocality | 3 | code | String |
+| AdministrativeLocality | 4 | nameAr | String |
+| AdministrativeLocality | 5 | nameFr | String |
+| AdministrativeLocality | 6 | nameEn | String |
+| AdministrativeLocality | 7 | postalCode | String |
+| AdministrativeLocality | 8 | active | boolean |
+| AdministrativeLocality | 9 | createdAt | Instant |
+| AdministrativeLocality | 10 | updatedAt | Instant |
+| AdministrativeState | 1 | id | String |
+| AdministrativeState | 2 | code | String |
+| AdministrativeState | 3 | nameAr | String |
+| AdministrativeState | 4 | nameFr | String |
+| AdministrativeState | 5 | nameEn | String |
+| AdministrativeState | 6 | active | boolean |
+| AdministrativeState | 7 | createdAt | Instant |
+| AdministrativeState | 8 | updatedAt | Instant |
+| Employee | 1 | id | String |
+| Employee | 2 | employeeNumber | String |
+| Employee | 3 | firstNameAr | String |
+| Employee | 4 | lastNameAr | String |
+| Employee | 5 | firstNameLt | String |
+| Employee | 6 | lastNameLt | String |
+| Employee | 7 | displayNameAr | String |
+| Employee | 8 | displayNameLt | String |
+| Employee | 9 | dateOfBirth | LocalDate |
+| Employee | 10 | birthLocalityId | String |
+| Employee | 11 | birthPlaceAr | String |
+| Employee | 12 | birthPlaceFr | String |
+| Employee | 13 | birthPlaceEn | String |
+| Employee | 14 | emailAddress | String |
+| Employee | 15 | mobileNumber | String |
+| Employee | 16 | employeeType | EmployeeType |
+| Employee | 17 | status | EmployeeStatus |
+| Employee | 18 | identityUserReference | String |
+| Employee | 19 | hiredAt | Instant |
+| Employee | 20 | terminatedAt | Instant |
+| Employee | 21 | createdAt | Instant |
+| Employee | 22 | updatedAt | Instant |
+| EmployeeAddress | 1 | id | String |
+| EmployeeAddress | 2 | employeeId | String |
+| EmployeeAddress | 3 | addressType | AddressType |
+| EmployeeAddress | 4 | localityId | String |
+| EmployeeAddress | 5 | streetLine1 | String |
+| EmployeeAddress | 6 | streetLine2 | String |
+| EmployeeAddress | 7 | postalCodeSnapshot | String |
+| EmployeeAddress | 8 | primaryAddress | boolean |
+| EmployeeAddress | 9 | validFrom | Instant |
+| EmployeeAddress | 10 | validTo | Instant |
+| EmployeeAddress | 11 | createdAt | Instant |
+| EmployeeAddress | 12 | updatedAt | Instant |
+| EmployeeAssignment | 1 | id | String |
+| EmployeeAssignment | 2 | employeeId | String |
+| EmployeeAssignment | 3 | organizationUnitId | String |
+| EmployeeAssignment | 4 | positionId | String |
+| EmployeeAssignment | 5 | assignmentType | AssignmentType |
+| EmployeeAssignment | 6 | validFrom | Instant |
+| EmployeeAssignment | 7 | validTo | Instant |
+| EmployeeAssignment | 8 | status | AssignmentStatus |
+| EmployeeAssignment | 9 | createdAt | Instant |
+| EmployeeAssignment | 10 | updatedAt | Instant |
+| OperationalScope | 1 | id | Long |
+| OperationalScope | 2 | type | OperationalScopeType |
+| OperationalScope | 3 | targetId | String |
+| OrganizationContactPoint | 1 | id | String |
+| OrganizationContactPoint | 2 | contactPointType | ContactPointType |
+| OrganizationContactPoint | 3 | target | ContactPointTargetReference |
+| OrganizationContactPoint | 4 | label | String |
+| OrganizationContactPoint | 5 | value | String |
+| OrganizationContactPoint | 6 | primaryContact | boolean |
+| OrganizationContactPoint | 7 | emergencyContact | boolean |
+| OrganizationContactPoint | 8 | active | boolean |
+| OrganizationContactPoint | 9 | createdAt | Instant |
+| OrganizationContactPoint | 10 | updatedAt | Instant |
+| OrganizationDelegation | 1 | id | String |
+| OrganizationDelegation | 2 | delegatorEmployeeId | String |
+| OrganizationDelegation | 3 | delegateEmployeeId | String |
+| OrganizationDelegation | 4 | responsibilityAssignmentId | String |
+| OrganizationDelegation | 5 | reason | String |
+| OrganizationDelegation | 6 | validFrom | Instant |
+| OrganizationDelegation | 7 | validTo | Instant |
+| OrganizationDelegation | 8 | status | DelegationStatus |
+| OrganizationDelegation | 9 | createdAt | Instant |
+| OrganizationDelegation | 10 | revokedAt | Instant |
+| OrganizationHierarchySnapshot | 1 | id | String |
+| OrganizationHierarchySnapshot | 2 | snapshotCode | String |
+| OrganizationHierarchySnapshot | 3 | capturedAt | Instant |
+| OrganizationHierarchySnapshot | 4 | capturedByEmployeeId | String |
+| OrganizationHierarchySnapshot | 5 | status | HierarchySnapshotStatus |
+| OrganizationHierarchySnapshot | 6 | snapshotPayload | String |
+| OrganizationHierarchySnapshot | 7 | description | String |
+| OrganizationHierarchySnapshot | 8 | createdAt | Instant |
+| OrganizationUnit | 1 | id | String |
+| OrganizationUnit | 2 | code | String |
+| OrganizationUnit | 3 | nameAr | String |
+| OrganizationUnit | 4 | nameFr | String |
+| OrganizationUnit | 5 | nameEn | String |
+| OrganizationUnit | 6 | unitTypeId | String |
+| OrganizationUnit | 7 | parentUnitId | String |
+| OrganizationUnit | 8 | status | OrganizationUnitStatus |
+| OrganizationUnit | 9 | validFrom | Instant |
+| OrganizationUnit | 10 | validTo | Instant |
+| OrganizationUnit | 11 | createdAt | Instant |
+| OrganizationUnit | 12 | updatedAt | Instant |
+| OrganizationUnitType | 1 | id | String |
+| OrganizationUnitType | 2 | code | String |
+| OrganizationUnitType | 3 | kind | OrganizationUnitKind |
+| OrganizationUnitType | 4 | nameAr | String |
+| OrganizationUnitType | 5 | nameFr | String |
+| OrganizationUnitType | 6 | nameEn | String |
+| OrganizationUnitType | 7 | descriptionAr | String |
+| OrganizationUnitType | 8 | descriptionFr | String |
+| OrganizationUnitType | 9 | descriptionEn | String |
+| OrganizationUnitType | 10 | active | boolean |
+| OrganizationUnitType | 11 | createdAt | Instant |
+| OrganizationUnitType | 12 | updatedAt | Instant |
+| Position | 1 | id | String |
+| Position | 2 | code | String |
+| Position | 3 | titleAr | String |
+| Position | 4 | titleFr | String |
+| Position | 5 | titleEn | String |
+| Position | 6 | level | PositionLevel |
+| Position | 7 | descriptionAr | String |
+| Position | 8 | descriptionFr | String |
+| Position | 9 | descriptionEn | String |
+| Position | 10 | status | PositionStatus |
+| Position | 11 | createdAt | Instant |
+| Position | 12 | updatedAt | Instant |
+| ReportingLine | 1 | id | String |
+| ReportingLine | 2 | reportingLineType | ReportingLineType |
+| ReportingLine | 3 | source | ReportingSubjectReference |
+| ReportingLine | 4 | target | ReportingSubjectReference |
+| ReportingLine | 5 | validFrom | Instant |
+| ReportingLine | 6 | validTo | Instant |
+| ReportingLine | 7 | active | boolean |
+| ReportingLine | 8 | createdAt | Instant |
+| ReportingLine | 9 | updatedAt | Instant |
+| ResponsibilityAssignment | 1 | id | String |
+| ResponsibilityAssignment | 2 | responsibilityType | ResponsibilityType |
+| ResponsibilityAssignment | 3 | assigneeType | ResponsibilityAssigneeType |
+| ResponsibilityAssignment | 4 | assigneeId | String |
+| ResponsibilityAssignment | 5 | scopeId | Long |
+| ResponsibilityAssignment | 6 | description | String |
+| ResponsibilityAssignment | 7 | validFrom | Instant |
+| ResponsibilityAssignment | 8 | validTo | Instant |
+| ResponsibilityAssignment | 9 | status | AssignmentStatus |
+| ResponsibilityAssignment | 10 | createdAt | Instant |
+| ResponsibilityAssignment | 11 | updatedAt | Instant |
+| Shift | 1 | id | String |
+| Shift | 2 | code | String |
+| Shift | 3 | nameAr | String |
+| Shift | 4 | nameFr | String |
+| Shift | 5 | nameEn | String |
+| Shift | 6 | shiftType | ShiftType |
+| Shift | 7 | startTime | String |
+| Shift | 8 | endTime | String |
+| Shift | 9 | timezone | String |
+| Shift | 10 | active | boolean |
+| Shift | 11 | createdAt | Instant |
+| Shift | 12 | updatedAt | Instant |
+| ShiftAssignment | 1 | id | String |
+| ShiftAssignment | 2 | employeeId | String |
+| ShiftAssignment | 3 | shiftId | String |
+| ShiftAssignment | 4 | organizationUnitId | String |
+| ShiftAssignment | 5 | validFrom | Instant |
+| ShiftAssignment | 6 | validTo | Instant |
+| ShiftAssignment | 7 | status | ShiftAssignmentStatus |
+| ShiftAssignment | 8 | createdAt | Instant |
+| ShiftAssignment | 9 | updatedAt | Instant |
+
+### HMC-017 reconciliation
 
 ```text
-HMC-017 — docs(catalogue): scan organization domain models
+baseline model files = 17
+extracted models     = 17
+exceptions           = 0
+declared fields      = 179
+zero-field models    = 0
 ```
 
-Do not start HMC-018 until HMC-017 is completed and its module counts are reported.
+The scan records only declarations under `organization/domain/model`. Organization domain value types and reference types used by record components remain declared field types and are not expanded into independent model rows.
+
+This catalogue preserves the pinned source exactly. In particular, `OrganizationUnitType` is catalogued because it is a direct model file at the pinned baseline; HMC-017 does not redesign or correct organization modeling.
+
+No JPA entity, API DTO, migration, application contract, infrastructure model, identity model, or database column metadata was mixed into this module scan.
+
+## 27. Current next task
+
+```text
+HMC-018 — docs(catalogue): scan party domain models
+```
+
+Do not start HMC-019 until HMC-018 is completed and its module counts are reported.
 

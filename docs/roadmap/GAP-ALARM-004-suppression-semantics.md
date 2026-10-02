@@ -180,7 +180,7 @@ Each code below is one independent roadmap task/commit. Execute exactly one code
 | `ALM-SUP-003` | `feat(alarm): implement suppression lifecycle policy` | Implement domain/application policy for ALARM overlay/restoration, broad-scope matching, acknowledgement/clear/close/escalation interaction, conflicts, and server-derived actor handling. | Approved lifecycle rules are deterministic and unit-tested. | **Completed** |
 | `ALM-SUP-004` | `feat(alarm): expose suppression persistence queries` | Extend existing suppression repository adapter only as required by approved use cases: exact-scope active lookup, expiry candidates, history/query support. | No duplicate persistence model; overlap and expiry queries are deterministic. | **Completed** |
 | `ALM-SUP-005` | `feat(alarm): integrate suppression workflow approval` | Verify open-ended suppression through Workflow public contracts/ports and fail closed when approval is absent. | No transition-name inference or direct foreign aggregate dependency. | **Completed** |
-| `ALM-SUP-006` | `feat(alarm): add suppression expiry orchestration` | Add idempotent backend-owned expiry orchestration using the approved platform scheduling mechanism already present in the repository. | ACTIVE suppressions expire once; events/actor attribution/restoration are deterministic. | **Next** |
+| `ALM-SUP-006` | `feat(alarm): add suppression expiry orchestration` | Add idempotent backend-owned expiry orchestration after the required platform trigger and suppression-expiry audit evidence prerequisites exist. | ACTIVE suppressions expire once; events/actor attribution/restoration are deterministic. | **Blocked — platform prerequisites missing** |
 | `ALM-SUP-007` | `feat(alarm): publish suppression REST contracts` | Publish canonical create/release/query endpoints, generated OpenAPI schemas, route-permission metadata, deterministic 400/403/404/409 behavior. | No CRUD-style leakage; only approved lifecycle operations exposed. | Planned |
 | `ALM-SUP-008` | `test(alarm): verify suppression lifecycle end to end` | Domain/application/persistence/REST/Testcontainers coverage including ALARM and broad scopes, acknowledgement, clear/close, escalation preservation, workflow approval, expiry, conflicts, audit evidence, OpenAPI determinism. | Full repository verification green and suppression behavior traceable. | Planned |
 | `ALM-SUP-009` | `docs(alarm): finalize suppression capability` | Record exact endpoints, permissions, events, validation evidence, remaining limits, and frontend-consumption boundary. | GAP-ALARM-004 closed with no undocumented semantics. | Planned |
@@ -277,10 +277,44 @@ The stable approval operation reference is backend-derived as `<SCOPE_TYPE>:<sco
 
 No scheduler, suppression mutation service, REST endpoint, permission publication, migration, or OpenAPI change is included.
 
-## 11. Next authorized task
+## 11. ALM-SUP-006 precondition audit
+
+ALM-SUP-006 was re-audited against HidraAPI baseline `5a11a1bf0030355a05b8c10ab81a4c3c421cb52d` before any production-code change.
+
+Two prerequisites assumed by the original task wording do not exist in the live repository:
+
+1. **No platform scheduling mechanism is currently configured.**
+   - no `@Scheduled` usage;
+   - no `@EnableScheduling`;
+   - no `TaskScheduler` integration;
+   - reporting/notification schedule entities are persistence models, not a generic execution scheduler.
+
+2. **Suppression expiry cannot yet be fully attributed/audited for every scope.**
+   - `AlarmSuppressionJpaEntity` records creation actor and manual release actor, but has no expiry actor/time fields;
+   - `AlarmLifecycleEvent` can represent ALARM-scoped `UNSUPPRESSED` evidence because an alarm id exists;
+   - broad scopes (`ALARM_TYPE`, `TOPOLOGY_ASSET`, `MONITORING_RULE`, `SOURCE`) have no alarm instance on which to attach that lifecycle event;
+   - no exported Alarm-specific Audit contract or suppression lifecycle event persistence currently exists.
+
+Implementing ALM-SUP-006 now would therefore either invent an unapproved scheduler, mis-use release fields for expiry attribution, or leave broad-scope expiry without the audit evidence explicitly approved in this roadmap. None of those outcomes are acceptable.
+
+### Required prerequisite decisions
+
+Before ALM-SUP-006 can be implemented, the repository needs explicit approval for both:
+
+- the backend trigger mechanism for periodic suppression-expiry evaluation;
+- the canonical persistence/audit representation of suppression expiry, including system actor attribution for broad scopes.
+
+Recommended direction:
+
+- add a dedicated suppression lifecycle/audit evidence model or exported Audit contract rather than overloading `releasedAt/releasedByActorId`;
+- introduce scheduling only through an explicit platform-level scheduling decision reusable by future timed backend jobs, rather than a one-off Alarm-local scheduler.
+
+No production code was changed for ALM-SUP-006 during this audit.
+
+## 12. Current next action
 
 ```text
-ALM-SUP-006 — feat(alarm): add suppression expiry orchestration
+ALM-SUP-006 remains BLOCKED until the scheduling and expiry-audit prerequisites are approved and implemented.
 ```
 
-ALM-SUP-006 must use the repository's existing scheduling mechanism, process only ACTIVE due suppressions, remain idempotent, and preserve server/system actor attribution plus ALARM restoration semantics.
+Do not start ALM-SUP-007 while ALM-SUP-006 is blocked.

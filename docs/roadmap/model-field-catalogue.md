@@ -140,7 +140,7 @@ baseline model files
 | HMC-012 | `docs(catalogue): scan integration domain models` | Scan all 4 integration model files. | **Completed** — 4/4 models, 66 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-013 | `docs(catalogue): scan integrity domain models` | Scan all 4 integrity model files. | **Completed** — 4/4 models, 72 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-014 | `docs(catalogue): scan leak detection domain models` | Scan all 3 leakdetection model files. | **Completed** — 3/3 models, 47 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
-| HMC-015 | `docs(catalogue): scan monitoring domain models` | Scan all 2 monitoring model files. | Planned |
+| HMC-015 | `docs(catalogue): scan monitoring domain models` | Scan all 2 monitoring model files. | **Completed** — 2/2 models, 37 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-016 | `docs(catalogue): scan notification domain models` | Scan all 4 notification model files. | Planned |
 | HMC-017 | `docs(catalogue): scan organization domain models` | Scan all 17 organization model files. | Planned |
 | HMC-018 | `docs(catalogue): scan party domain models` | Scan all 2 party model files. | Planned |
@@ -1759,11 +1759,84 @@ The scan records only declarations under `leakdetection/domain/model`. Leak Dete
 
 No JPA entity, API DTO, migration, application contract, infrastructure model, LeakDetectionAPI compute model, or database column metadata was mixed into this module scan.
 
-## 24. Current next task
+## 24. HMC-015 — Monitoring module scan evidence
+
+**Source commit:** `5e301857882b59e9e35ecc474e9c6537d89cc96a`  
+**Module:** `monitoring`  
+**Baseline model files:** 2  
+**Scanned models:** 2  
+**Declared fields/components:** 37  
+**Zero-field models:** 0  
+**Extraction exceptions:** 0
+
+### Monitoring model index
+
+| Model | Kind | Declared field count | Source path | Status |
+|---|---|---:|---|---|
+| MonitoringRule | record | 17 | `src/main/java/dz/sh/hidra/modules/monitoring/domain/model/MonitoringRule.java` | Extracted |
+| PlanActualDeviation | record | 20 | `src/main/java/dz/sh/hidra/modules/monitoring/domain/model/PlanActualDeviation.java` | Extracted |
+
+### Monitoring fields and declared Java types
+
+| Model | Ordinal | Field | Declared Java Type |
+|---|---:|---|---|
+| MonitoringRule | 1 | id | String |
+| MonitoringRule | 2 | code | String |
+| MonitoringRule | 3 | nameAr | String |
+| MonitoringRule | 4 | nameFr | String |
+| MonitoringRule | 5 | nameEn | String |
+| MonitoringRule | 6 | ruleType | MonitoringRuleType |
+| MonitoringRule | 7 | evaluationFrequencyId | String |
+| MonitoringRule | 8 | topologyAssetType | String |
+| MonitoringRule | 9 | topologyAssetId | String |
+| MonitoringRule | 10 | topologyAssetCode | String |
+| MonitoringRule | 11 | telemetryPointId | String |
+| MonitoringRule | 12 | planningTargetTypeId | String |
+| MonitoringRule | 13 | expression | String |
+| MonitoringRule | 14 | status | MonitoringLifecycleStatus |
+| MonitoringRule | 15 | createdByActorId | String |
+| MonitoringRule | 16 | createdAt | Instant |
+| MonitoringRule | 17 | updatedAt | Instant |
+| PlanActualDeviation | 1 | id | String |
+| PlanActualDeviation | 2 | evaluationId | String |
+| PlanActualDeviation | 3 | planTargetId | String |
+| PlanActualDeviation | 4 | expectedFlowStateId | String |
+| PlanActualDeviation | 5 | trustedTelemetryReadingId | String |
+| PlanActualDeviation | 6 | telemetryPointId | String |
+| PlanActualDeviation | 7 | topologyAssetType | String |
+| PlanActualDeviation | 8 | topologyAssetId | String |
+| PlanActualDeviation | 9 | topologyAssetCode | String |
+| PlanActualDeviation | 10 | actualValue | BigDecimal |
+| PlanActualDeviation | 11 | expectedValue | BigDecimal |
+| PlanActualDeviation | 12 | differenceValue | BigDecimal |
+| PlanActualDeviation | 13 | differencePercent | BigDecimal |
+| PlanActualDeviation | 14 | unitId | String |
+| PlanActualDeviation | 15 | severity | DeviationSeverity |
+| PlanActualDeviation | 16 | status | DeviationStatus |
+| PlanActualDeviation | 17 | detectedAt | Instant |
+| PlanActualDeviation | 18 | resolvedAt | Instant |
+| PlanActualDeviation | 19 | reasonCode | String |
+| PlanActualDeviation | 20 | reasonMessage | String |
+
+### HMC-015 reconciliation
 
 ```text
-HMC-015 — docs(catalogue): scan monitoring domain models
+baseline model files = 2
+extracted models     = 2
+exceptions           = 0
+declared fields      = 37
+zero-field models    = 0
 ```
 
-Do not start HMC-016 until HMC-015 is completed and its module counts are reported.
+The scan records only declarations under `monitoring/domain/model`. Monitoring domain value types referenced by record components are field types, not independent model rows for this catalogue scope.
+
+No JPA entity, API DTO, migration, application contract, infrastructure model, telemetry implementation, planning implementation, or database column metadata was mixed into this module scan.
+
+## 25. Current next task
+
+```text
+HMC-016 — docs(catalogue): scan notification domain models
+```
+
+Do not start HMC-017 until HMC-016 is completed and its module counts are reported.
 

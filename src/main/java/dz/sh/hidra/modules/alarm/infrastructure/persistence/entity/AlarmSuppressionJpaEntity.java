@@ -216,6 +216,22 @@ import java.time.Instant;
         return correlationId;
     }
 
+    public boolean markReleased(Instant releasedAt, String actorId) {
+        if (releasedAt == null) {
+            throw new IllegalArgumentException("Suppression release instant must not be null.");
+        }
+        if (actorId == null || actorId.isBlank()) {
+            throw new IllegalArgumentException("Suppression release actor must not be blank.");
+        }
+        if (status != AlarmSuppressionStatus.ACTIVE) {
+            return false;
+        }
+        this.releasedAt = releasedAt;
+        this.releasedByActorId = actorId.trim();
+        this.status = AlarmSuppressionStatus.RELEASED;
+        return true;
+    }
+
     public boolean markExpired(Instant asOf) {
         if (asOf == null) {
             throw new IllegalArgumentException("Suppression expiry instant must not be null.");

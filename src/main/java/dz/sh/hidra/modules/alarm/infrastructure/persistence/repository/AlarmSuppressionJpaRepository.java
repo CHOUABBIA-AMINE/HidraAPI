@@ -26,8 +26,11 @@ import dz.sh.hidra.modules.alarm.infrastructure.persistence.entity.AlarmSuppress
 import jakarta.persistence.LockModeType;
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
@@ -44,6 +47,10 @@ public interface AlarmSuppressionJpaRepository
             String scopeReferenceId,
             AlarmSuppressionStatus status
     );
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("select suppression from AlarmSuppressionJpaEntity suppression where suppression.id = :id")
+    Optional<AlarmSuppressionJpaEntity> findByIdForUpdate(@Param("id") String id);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     List<AlarmSuppressionJpaEntity> findByStatusAndSuppressedUntilLessThanEqualOrderBySuppressedUntilAsc(

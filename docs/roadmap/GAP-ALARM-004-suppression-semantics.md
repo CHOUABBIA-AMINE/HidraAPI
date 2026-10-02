@@ -346,3 +346,48 @@ ALM-SUP-007 — feat(alarm): publish suppression REST contracts
 ```
 
 ALM-SUP-007 must expose only backend-owned create/release/query behavior, derive actor identity server-side, use canonical route permissions, and publish deterministic conflict/approval/not-found errors without exposing JPA types.
+
+
+## 15. ALM-SUP-007 completion evidence
+
+ALM-SUP-007 was executed against HidraAPI baseline `6d18f11baf12075ec1ac12cdaeab2d8edd256163`.
+
+REST contract:
+
+- `POST /api/v1/alarm/suppressions` creates a governed suppression;
+- `POST /api/v1/alarm/suppressions/{suppressionId}/release` releases an ACTIVE suppression;
+- `GET /api/v1/alarm/suppressions/{suppressionId}` returns suppression evidence;
+- `GET /api/v1/alarm/suppressions` supports paged filtering by id, scope type/reference, alarm id, and status.
+
+The API derives actor identity exclusively through `CurrentActorResolver`; actor ids are not accepted from request bodies.
+
+HRA-061 is preserved by `AlarmSuppressionApplicationAdapter`: it implements the existing application input ports from infrastructure and owns access to the retained suppression JPA model. Controllers depend only on application input ports and never access JPA repositories.
+
+Lifecycle behavior:
+
+- exact ACTIVE overlap is pre-checked and additionally enforced by partial unique index `ux_alarm_suppression_active_scope`;
+- both overlap paths map to stable HTTP `409 ALARM_SUPPRESSION_CONFLICT`;
+- ALARM-scoped create sets the existing nonterminal Alarm state to `SUPPRESSED` and appends a `SUPPRESSED` lifecycle event;
+- ALARM-scoped release restores authoritative state through `AlarmSuppressionPolicy.restorationState` when the Alarm is still visibly `SUPPRESSED`, then appends `UNSUPPRESSED`;
+- broad scopes do not mass-mutate Alarm rows;
+- open-ended creation continues to fail closed through `AlarmSuppressionApprovalService`;
+- release uses a pessimistic row lock and rejects already-terminal suppression state.
+
+Permission reconciliation:
+
+The platform derives route permissions from URL + HTTP method. The published canonical route permissions are therefore:
+
+- `alarm:suppressions:read` for GET routes;
+- `alarm:suppressions:execute` for POST create/release routes.
+
+These platform-derived names supersede the earlier conceptual `alarm:suppression:read/create/release` intent; no conflicting manual permission seed is introduced.
+
+OpenAPI publication remains automatic through Spring MVC/springdoc registration of these routes.
+
+## 16. Next authorized task
+
+```text
+ALM-SUP-008 — test(alarm): verify suppression lifecycle end to end
+```
+
+ALM-SUP-008 must harden the full approved lifecycle with database-backed/Testcontainers evidence, including exact-scope concurrency conflict, Workflow-approved open-ended creation, ALARM restoration, broad-scope expiry, route permissions, and HTTP error contracts.

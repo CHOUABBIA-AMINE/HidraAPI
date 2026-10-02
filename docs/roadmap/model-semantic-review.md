@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -206,7 +206,7 @@ Ordering rules applied:
 | HMSR-011 | 0 | identity | Permission | — | — | 3 | 3 | 0 | REVISE | Completed | `docs(model-review): review identity Permission` |
 | HMSR-012 | 0 | notification | NotificationTemplate | — | — | 2 | 3 | 2 | REVISE | Completed | `docs(model-review): review notification NotificationTemplate` |
 | HMSR-013 | 0 | reporting | ReportDefinition | — | — | 2 | 3 | 1 | REVISE | Completed | `docs(model-review): review reporting ReportDefinition` |
-| HMSR-014 | 0 | integration | IntegrationJobRun | — | — | 2 | 2 | 1 | — | Planned | `docs(model-review): review integration IntegrationJobRun` |
+| HMSR-014 | 0 | integration | IntegrationJobRun | — | — | 2 | 2 | 1 | REVISE | Completed | `docs(model-review): review integration IntegrationJobRun` |
 | HMSR-015 | 0 | leakdetection | LeakCandidate | — | — | 2 | 2 | 2 | — | Planned | `docs(model-review): review leakdetection LeakCandidate` |
 | HMSR-016 | 0 | organization | OperationalScope | — | — | 1 | 2 | 0 | — | Planned | `docs(model-review): review organization OperationalScope` |
 | HMSR-017 | 0 | analytics | AnalyticsDataset | — | — | 1 | 1 | 0 | — | Planned | `docs(model-review): review analytics AnalyticsDataset` |
@@ -2108,7 +2108,7 @@ Confirmed subject-model graph edges at this stage: **165**. These are semantic c
 | Field | Declared type | Classification | Resolved target | Graph edge | Notes |
 |---|---|---|---|:---:|---|
 | id | String | Self identifier | — | No | Primary identity of the current model. |
-| jobDefinitionId | String | Unresolved | — | No | Reference target is outside or absent from the 123 subject-model set; preserve for HMS-004 review. |
+| jobDefinitionId | String | Domain reference | integration.IntegrationJobDefinition (read/persistence model) | No | HMSR-014 stronger Integration DDD + HRA-111 evidence resolves this to `hidra_integration_job_definition`; target is outside the 123 HMS subject set. |
 | triggeredByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
 | correlationId | String | Snapshot/reference-only | TECHNICAL_REFERENCE | No | Technical correlation/request/reference identity. |
 
@@ -4686,16 +4686,163 @@ The definition controls formal Reporting behavior and governance. It does not ow
 
 The target baseline cannot mark it APPROVED while the definition lifecycle is internally contradictory, unique code and required-field semantics are unenforced, and request/access/approval/template-version governance is absent from the current orchestration paths. HMS reconciliation must retain these obligations until an explicitly authorized Reporting correction task resolves them or the target semantics are explicitly changed.
 
-## 27. Current next task
+## 27. HMSR-014 — integration.IntegrationJobRun review
+
+**Decision:** REVISE  
+**Review code:** HMSR-014  
+**Dependency level:** 0  
+**Bounded context:** integration  
+**Confirmed upstream subject dependencies:** none  
+**Confirmed direct dependents:** 2 — `integration.IntegrationExchangeMessage` and `integration.IntegrationDeadLetterRecord`  
+**Transitive dependents:** 2  
+**Unresolved/non-subject references:** 1 — `jobDefinitionId`, now semantically resolved to Integration-owned `IntegrationJobDefinition` outside the 123 HMS subject set
+
+### 27.1 Semantic role and ordering rationale
+
+`IntegrationJobRun` is the Integration-owned execution record for one run of a repeatable import, export, synchronization, replay, reconciliation or health-oriented integration job. It preserves execution provenance, trigger type, correlation identity, lifecycle state, processing counters and failure evidence.
+
+It is Level 0 because its upstream business prerequisite, `IntegrationJobDefinition`, is a retained Integration read/persistence model outside the 123 HMS subject population. The two direct HMS dependents are `IntegrationExchangeMessage` and `IntegrationDeadLetterRecord`.
+
+Other Integration persistence/read models outside the subject population also reference a job run, including `IntegrationJobRunStep`, retry evidence, inbound/outbound processing records and synchronization cursor/history structures. Those relationships do not change the HMS subject graph.
+
+Integration owns transport/exchange execution evidence. The target business module remains the source of truth for accepted Hidra business facts.
+
+### 27.2 Field semantics
+
+| Field | Type | Mandatory / optional | Reviewed meaning |
+|---|---|---|---|
+| `id` | `String` | Mandatory | Stable job-run identity and persistence primary key. |
+| `jobDefinitionId` | `String` | Mandatory | Parent Integration job-definition reference; resolved to `IntegrationJobDefinition`. |
+| `runNumber` | `long` | Mandatory | Monotonic execution sequence number within the parent job definition. |
+| `triggerType` | `JobTriggerType` | Mandatory | Trigger source: `SCHEDULED`, `MANUAL`, `EVENT`, `RETRY`, or `REPLAY`. |
+| `triggeredByActorId` | `String` | Conditional/optional | Actor reference for manual-trigger provenance; not an HMS `identity.User` edge. |
+| `status` | `JobRunStatus` | Mandatory | Run lifecycle: `PENDING`, `RUNNING`, `COMPLETED`, `COMPLETED_WITH_ERRORS`, `FAILED`, or `CANCELLED`. |
+| `correlationId` | `String` | Optional technical reference | End-to-end technical/business correlation identity. |
+| `startedAt` | `Instant` | Mandatory | Execution start timestamp. |
+| `completedAt` | `Instant` | Optional until completion | Completion timestamp; when present it must not precede `startedAt`. |
+| `receivedCount` | `long` | Mandatory | Number of records/messages received for processing. |
+| `mappedCount` | `long` | Mandatory | Number successfully mapped/transformed to the target contract stage. |
+| `acceptedCount` | `long` | Mandatory | Number accepted by the target module/external destination. |
+| `rejectedCount` | `long` | Mandatory | Number rejected. |
+| `deadLetterCount` | `long` | Mandatory | Number routed to dead-letter handling. |
+| `retryCount` | `long` | Mandatory | Number of retry attempts. |
+| `failureReason` | `String` | Optional | Failure diagnostic/evidence text when applicable. |
+| `createdAt` | `Instant` | Mandatory in persistence | Creation timestamp. |
+| `updatedAt` | `Instant` | Mandatory in persistence | Last-update timestamp. |
+
+The current domain constructor rejects blank `id` and `jobDefinitionId`, rejects null `triggerType` and `status`, requires `startedAt`, trims scalar text/reference fields and exposes `terminalStatus()` for completed/failed/cancelled states.
+
+### 27.3 Job-definition dependency resolution
+
+HMS-003 left `jobDefinitionId` unresolved because `IntegrationJobDefinition` is outside the 123 HMS subject set. Stronger repository evidence resolves the target without adding an HMS edge:
+
+- Integration DDD defines `IntegrationJobDefinition ||--o{ IntegrationJobRun`; 
+- `IntegrationJobDefinitionJpaEntity` persists the parent in `hidra_integration_job_definition`;
+- HRA-111 installs `fk_hra111_integration_022`; 
+- that FK points `hidra_integration_job_run.job_definition_id` to `hidra_integration_job_definition(id)` with `ON DELETE RESTRICT`;
+- repository mirror classification retains `IntegrationJobDefinition` as an Integration read/persistence model outside the HMS subject population.
+
+Therefore `jobDefinitionId` is a same-module domain reference to a non-subject prerequisite, not an unresolved or cross-module reference.
+
+### 27.4 Job-definition eligibility and trigger governance
+
+The Integration DDD gives `IntegrationJobDefinition` the configuration needed to decide whether a run may start, including connector, mapping profile, job type, direction, schedule, `manualRunAllowed`, retry policy and `active` state. It also states that automated jobs require an active connector instance and import/sync jobs require an appropriate mapping/target path.
+
+The current `IntegrationApplicationService.startIntegrationJobRun()` does not load `IntegrationJobDefinition` at all. It receives `jobDefinitionId`, `runNumber`, trigger type and actor/correlation metadata from the command, constructs a `RUNNING` job run and saves it directly.
+
+Consequently, the current start path does not demonstrate validation that:
+
+- the referenced job definition is active/eligible to run;
+- a `MANUAL` trigger is allowed by `manualRunAllowed`;
+- automated execution has the required connector readiness;
+- job-type-specific mapping/public-target prerequisites are satisfied;
+- manual-trigger provenance has the actor identity required by the intended operational policy.
+
+The database FK proves only that a job-definition row exists. It does not prove current run eligibility.
+
+### 27.5 Run-number authority
+
+The Integration DDD defines `runNumber` as a **monotonic run number per job**.
+
+The current API request and application command both accept `runNumber` from the caller, and the start service persists that value unchanged. `IntegrationJobRunRepositoryPort` exposes only `save` and `findById`; the Spring Data repository exposes no next-run/max-run or job/run-number lookup. The live migration provides an ordinary index on `job_definition_id` but no uniqueness/ordering constraint for `(job_definition_id, run_number)`.
+
+Therefore the sequence is currently client-controlled and race-prone rather than authoritative. The final correction must establish a concurrency-safe owner for run-number allocation and prevent duplicate/out-of-order sequence identities for the same job.
+
+### 27.6 Counter and temporal invariants
+
+The active Integration DDD explicitly requires:
 
 ```text
-HMSR-014 — integration.IntegrationJobRun
+Counts must be non-negative.
+completedAt must be greater than or equal to startedAt.
+acceptedCount + rejectedCount + deadLetterCount must not exceed receivedCount
+unless explicitly modeled as multi-record expansion.
+```
+
+The current constructor validates none of the six counters and does not compare `completedAt` with `startedAt`. The live table stores all counters as `bigint NOT NULL` but contains no demonstrated CHECK constraints for non-negativity, temporal ordering or aggregate count consistency.
+
+`startIntegrationJobRun()` initializes all counters to zero and `completedAt` to null, which is valid for a new run, but persisted data reconstructed or updated through another path can still violate the target invariants.
+
+### 27.7 Lifecycle monotonicity
+
+The Integration DDD states:
+
+```text
+JobRun status is monotonic.
+A terminal JobRun cannot return to RUNNING.
+```
+
+`JobRunStatus` correctly represents `PENDING`, `RUNNING`, `COMPLETED`, `COMPLETED_WITH_ERRORS`, `FAILED`, and `CANCELLED`, and `IntegrationJobRun.terminalStatus()` correctly identifies terminal states.
+
+However, `terminalStatus()` is observational only. The record has no transition operation that compares previous and next status, and the current public application service contains only the start path; no repository evidence found during HMSR-014 demonstrates controlled completion/failure/cancellation transitions with counter/timestamp updates.
+
+The final lifecycle implementation must enforce transition monotonicity at an application/domain boundary that has both prior and requested state. Constructor validation alone cannot prove a transition is legal.
+
+### 27.8 Persistence consistency
+
+The live domain and JPA models agree on all 18 declared components. The base Integration migration makes `id`, `job_definition_id`, `run_number`, `trigger_type`, `status`, `started_at`, all six counters, `created_at`, and `updated_at` non-null.
+
+HRA-111 protects the parent job-definition reference. The schema also indexes status, actor, correlation ID and audit timestamps for operational querying.
+
+No current database constraint found during HMSR-014 enforces run-number monotonicity, non-negative counters, completion-time ordering or terminal-state transition policy.
+
+### 27.9 Required revisions
+
+The target baseline cannot be APPROVED until these evidence-backed execution invariants are enforced:
+
+1. **Authoritative monotonic run number:** stop treating `runNumber` as an unchecked caller-owned value; allocate/validate it per job in a concurrency-safe application/database design.
+2. **Job-definition eligibility:** before starting a run, load/validate the parent job definition and enforce its `active` state plus applicable connector/mapping/target prerequisites.
+3. **Manual-run governance:** enforce `manualRunAllowed` for `MANUAL` triggers and define/enforce actor provenance for manual execution.
+4. **Non-negative counters:** enforce non-negative `received`, `mapped`, `accepted`, `rejected`, `deadLetter`, and `retry` counts.
+5. **Counter consistency:** enforce the DDD aggregate-count rule, while preserving an explicit exception only where multi-record expansion is intentionally modeled.
+6. **Completion-time ordering:** reject `completedAt < startedAt`.
+7. **Monotonic lifecycle transitions:** terminal runs must not return to `RUNNING`; completion/failure/cancellation orchestration must update state through a transition-aware boundary.
+8. **Required audit timestamps:** retain a deliberate enforcement boundary for `createdAt` and `updatedAt`, which are persistence-required.
+
+HMSR-014 does not change production Java, JPA, Flyway, API/application contracts, tests, job definitions, run records, counters or integration data.
+
+### 27.10 Operational and OT-safety interpretation
+
+For SONATRACH/TRC, an IntegrationJobRun may represent a historian/SCADA data import, CMMS/ERP synchronization, laboratory/custody file exchange, reporting export, replay or reconciliation execution. Its counters and timestamps are operational evidence of data movement, not the underlying pipeline business facts.
+
+The Integration DDD explicitly prohibits direct control actuation: Integration jobs must not execute commands that change PLC/RTU/SCADA state or issue valve, pump or compressor control payloads. A successful IntegrationJobRun therefore means the governed data-exchange execution completed under its integration contract; it does not authorize or prove a physical control action.
+
+### 27.11 Review conclusion
+
+**REVISE.** `IntegrationJobRun` is the correct Integration execution model, its 18-field shape and status/trigger vocabularies are semantically appropriate, and `jobDefinitionId` is now resolved to the Integration-owned `IntegrationJobDefinition` read/persistence model outside the HMS graph.
+
+The target baseline cannot mark it APPROVED while run-number authority, parent-job eligibility, counter invariants, completion-time ordering and lifecycle monotonicity remain unenforced. HMS reconciliation must retain these obligations until an explicitly authorized Integration correction task resolves them or the target semantics are explicitly changed.
+
+## 28. Current next task
+
+```text
+HMSR-015 — leakdetection.LeakCandidate
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review integration IntegrationJobRun
+docs(model-review): review leakdetection LeakCandidate
 ```
 
-Start HMSR-014 only after HMSR-013 is committed and reported. Do not start HMSR-015 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-015 only after HMSR-014 is committed and reported. Do not start HMSR-016 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

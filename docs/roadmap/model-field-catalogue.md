@@ -146,7 +146,7 @@ baseline model files
 | HMC-018 | `docs(catalogue): scan party domain models` | Scan all 2 party model files. | **Completed** — 2/2 models, 21 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-019 | `docs(catalogue): scan planning domain models` | Scan all 5 planning model files. | **Completed** — 5/5 models, 95 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-020 | `docs(catalogue): scan reporting domain models` | Scan all 4 reporting model files. | **Completed** — 4/4 models, 59 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
-| HMC-021 | `docs(catalogue): scan risk domain models` | Scan all 4 risk model files. | Planned |
+| HMC-021 | `docs(catalogue): scan risk domain models` | Scan all 4 risk model files. | **Completed** — 4/4 models, 78 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-022 | `docs(catalogue): scan simulation domain models` | Scan all 6 simulation model files. | Planned |
 | HMC-023 | `docs(catalogue): scan telemetry domain models` | Scan all 4 telemetry model files. | Planned |
 | HMC-024 | `docs(catalogue): scan topology domain models` | Scan all 5 topology model files. | Planned |
@@ -2456,11 +2456,127 @@ The scan records only declarations under `reporting/domain/model`. Reporting dom
 
 No JPA entity, API DTO, migration, application contract, infrastructure model, document implementation, workflow implementation, or database column metadata was mixed into this module scan.
 
-## 30. Current next task
+## 30. HMC-021 — Risk module scan evidence
+
+**Source commit:** `5e301857882b59e9e35ecc474e9c6537d89cc96a`  
+**Module:** `risk`  
+**Baseline model files:** 4  
+**Scanned models:** 4  
+**Declared fields/components:** 78  
+**Zero-field models:** 0  
+**Extraction exceptions:** 0
+
+### Risk model index
+
+| Model | Kind | Declared field count | Source path | Status |
+|---|---|---:|---|---|
+| RiskAssessment | record | 34 | `src/main/java/dz/sh/hidra/modules/risk/domain/model/RiskAssessment.java` | Extracted |
+| RiskEvidenceLink | record | 11 | `src/main/java/dz/sh/hidra/modules/risk/domain/model/RiskEvidenceLink.java` | Extracted |
+| RiskMatrixCell | record | 12 | `src/main/java/dz/sh/hidra/modules/risk/domain/model/RiskMatrixCell.java` | Extracted |
+| RiskRegister | record | 21 | `src/main/java/dz/sh/hidra/modules/risk/domain/model/RiskRegister.java` | Extracted |
+
+### Risk fields and declared Java types
+
+| Model | Ordinal | Field | Declared Java Type |
+|---|---:|---|---|
+| RiskAssessment | 1 | id | String |
+| RiskAssessment | 2 | riskRegisterId | String |
+| RiskAssessment | 3 | assessmentNumber | String |
+| RiskAssessment | 4 | title | String |
+| RiskAssessment | 5 | description | String |
+| RiskAssessment | 6 | assessmentTypeId | String |
+| RiskAssessment | 7 | methodologyId | String |
+| RiskAssessment | 8 | scopeId | String |
+| RiskAssessment | 9 | riskScenarioId | String |
+| RiskAssessment | 10 | status | RiskAssessmentStatus |
+| RiskAssessment | 11 | assessmentDate | Instant |
+| RiskAssessment | 12 | validFrom | Instant |
+| RiskAssessment | 13 | validTo | Instant |
+| RiskAssessment | 14 | assessedByActorId | String |
+| RiskAssessment | 15 | assessedByDisplayNameSnapshot | String |
+| RiskAssessment | 16 | reviewedByActorId | String |
+| RiskAssessment | 17 | reviewedByDisplayNameSnapshot | String |
+| RiskAssessment | 18 | approvedByActorId | String |
+| RiskAssessment | 19 | approvedByDisplayNameSnapshot | String |
+| RiskAssessment | 20 | approvedAt | Instant |
+| RiskAssessment | 21 | inherentLikelihoodId | String |
+| RiskAssessment | 22 | inherentConsequenceId | String |
+| RiskAssessment | 23 | inherentScore | BigDecimal |
+| RiskAssessment | 24 | inherentRatingId | String |
+| RiskAssessment | 25 | residualLikelihoodId | String |
+| RiskAssessment | 26 | residualConsequenceId | String |
+| RiskAssessment | 27 | residualScore | BigDecimal |
+| RiskAssessment | 28 | residualRatingId | String |
+| RiskAssessment | 29 | confidenceLevelId | String |
+| RiskAssessment | 30 | uncertaintyNote | String |
+| RiskAssessment | 31 | workflowReferenceId | String |
+| RiskAssessment | 32 | auditReferenceId | String |
+| RiskAssessment | 33 | createdAt | Instant |
+| RiskAssessment | 34 | updatedAt | Instant |
+| RiskEvidenceLink | 1 | id | String |
+| RiskEvidenceLink | 2 | riskAssessmentId | String |
+| RiskEvidenceLink | 3 | evidenceModule | String |
+| RiskEvidenceLink | 4 | evidenceType | String |
+| RiskEvidenceLink | 5 | evidenceId | String |
+| RiskEvidenceLink | 6 | evidenceCodeSnapshot | String |
+| RiskEvidenceLink | 7 | evidenceLabelSnapshot | String |
+| RiskEvidenceLink | 8 | evidenceTimestamp | Instant |
+| RiskEvidenceLink | 9 | evidenceHash | String |
+| RiskEvidenceLink | 10 | evidenceSummary | String |
+| RiskEvidenceLink | 11 | createdAt | Instant |
+| RiskMatrixCell | 1 | id | String |
+| RiskMatrixCell | 2 | riskMatrixId | String |
+| RiskMatrixCell | 3 | likelihoodLevelId | String |
+| RiskMatrixCell | 4 | consequenceLevelId | String |
+| RiskMatrixCell | 5 | scoreValue | BigDecimal |
+| RiskMatrixCell | 6 | ratingId | String |
+| RiskMatrixCell | 7 | colorCode | String |
+| RiskMatrixCell | 8 | requiresTreatment | boolean |
+| RiskMatrixCell | 9 | requiresApproval | boolean |
+| RiskMatrixCell | 10 | requiresExecutiveAcceptance | boolean |
+| RiskMatrixCell | 11 | createdAt | Instant |
+| RiskMatrixCell | 12 | updatedAt | Instant |
+| RiskRegister | 1 | id | String |
+| RiskRegister | 2 | code | String |
+| RiskRegister | 3 | nameAr | String |
+| RiskRegister | 4 | nameFr | String |
+| RiskRegister | 5 | nameEn | String |
+| RiskRegister | 6 | description | String |
+| RiskRegister | 7 | registerTypeId | String |
+| RiskRegister | 8 | ownerOrganizationUnitId | String |
+| RiskRegister | 9 | ownerOrganizationUnitNameSnapshot | String |
+| RiskRegister | 10 | scopeType | String |
+| RiskRegister | 11 | scopeId | String |
+| RiskRegister | 12 | scopeCodeSnapshot | String |
+| RiskRegister | 13 | scopeLabelSnapshot | String |
+| RiskRegister | 14 | status | RiskRegisterStatus |
+| RiskRegister | 15 | reviewFrequencyId | String |
+| RiskRegister | 16 | effectiveFrom | Instant |
+| RiskRegister | 17 | effectiveTo | Instant |
+| RiskRegister | 18 | createdByActorId | String |
+| RiskRegister | 19 | createdByDisplayNameSnapshot | String |
+| RiskRegister | 20 | createdAt | Instant |
+| RiskRegister | 21 | updatedAt | Instant |
+
+### HMC-021 reconciliation
 
 ```text
-HMC-021 — docs(catalogue): scan risk domain models
+baseline model files = 4
+extracted models     = 4
+exceptions           = 0
+declared fields      = 78
+zero-field models    = 0
 ```
 
-Do not start HMC-022 until HMC-021 is completed and its module counts are reported.
+The scan records only declarations under `risk/domain/model`. Risk domain value types referenced by record components remain declared field types and are not expanded into independent model rows.
+
+No JPA entity, API DTO, migration, application contract, infrastructure model, integrity implementation, workflow implementation, audit implementation, or database column metadata was mixed into this module scan.
+
+## 31. Current next task
+
+```text
+HMC-022 — docs(catalogue): scan simulation domain models
+```
+
+Do not start HMC-023 until HMC-022 is completed and its module counts are reported.
 

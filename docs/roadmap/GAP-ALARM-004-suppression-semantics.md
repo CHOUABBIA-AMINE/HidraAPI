@@ -240,14 +240,15 @@ ALM-SUP-004 was executed against HidraAPI baseline `b88af5dc5f7eb8d622cc343041f2
 
 The existing `AlarmSuppressionJpaEntity` and `hidra_alarm_suppression` table remain authoritative persistence. The task adds:
 
-- application-owned `AlarmSuppressionRepositoryPort` over the existing suppression DTO/query contracts;
-- a JPA adapter mapping the existing entity directly to/from the application suppression DTO, without creating a duplicate domain aggregate;
-- exact active-scope/status existence lookup for overlap enforcement;
-- deterministic due-expiry lookup for ACTIVE suppressions whose end time is at or before the authoritative evaluation instant;
-- paged query support for suppression id, scope type, scope reference, alarm id, and status;
-- focused lossless persistence-mapping coverage.
+- HRA-061 explicitly classifies `AlarmSuppression` as a retained infrastructure read/persistence model whose dedicated domain mirror, application repository port, and JPA adapter must remain retired;
+- the existing `AlarmSuppressionJpaRepository` is therefore extended in place, without reintroducing those retired mirrors;
+- exact active-scope/status existence lookup is available for overlap enforcement;
+- deterministic due-expiry lookup is available for ACTIVE suppressions whose end time is at or before the authoritative evaluation instant;
+- `JpaSpecificationExecutor` support remains infrastructure-owned for later filtered history/query composition without leaking JPA types into application contracts.
 
-No database migration, new table, scheduler, Workflow approval adapter, REST endpoint, permission publication, or OpenAPI change is included.
+The initial ALM-SUP-004 commit temporarily reintroduced a retired repository port and adapter; CI guardrail `DomainPersistenceMirrorGuardrailTest` correctly rejected that architecture drift. The corrective commit removes them and preserves HRA-061.
+
+No database migration, new table, application repository mirror, JPA adapter mirror, scheduler, Workflow approval adapter, REST endpoint, permission publication, or OpenAPI change is included.
 
 ## 9. Next authorized task
 

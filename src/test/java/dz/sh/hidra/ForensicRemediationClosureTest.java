@@ -52,6 +52,7 @@ class ForensicRemediationClosureTest {
     private static final Set<String> EXPORTED_PACKAGES = Set.of(
             "dz.sh.hidra.modules.workflow.application.contract.planning",
             "dz.sh.hidra.modules.workflow.application.contract.organization",
+            "dz.sh.hidra.modules.workflow.application.contract.alarm",
             "dz.sh.hidra.modules.topology.application.contract.organization",
             "dz.sh.hidra.modules.audit.application.contract.organization"
     );

@@ -41,7 +41,11 @@ public class AlarmLifecycleGuard {
         if (alarm == null) {
             throw new AlarmLifecycleViolationException("Alarm must not be null.");
         }
-        if (!cancelled && alarm.currentState() != AlarmState.CLEARED && alarm.currentState() != AlarmState.ESCALATED) {
+        boolean suppressionWithUnderlyingClear = alarm.currentState() == AlarmState.SUPPRESSED && alarm.clearedAt() != null;
+        if (!cancelled
+                && alarm.currentState() != AlarmState.CLEARED
+                && alarm.currentState() != AlarmState.ESCALATED
+                && !suppressionWithUnderlyingClear) {
             throw new AlarmLifecycleViolationException("Alarm cannot be closed before clear unless explicitly cancelled.");
         }
     }

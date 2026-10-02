@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -203,7 +203,7 @@ Ordering rules applied:
 | HMSR-008 | 0 | documents | DocumentStorageObject | — | — | 2 | 6 | 1 | REVISE | Completed | `docs(model-review): review documents DocumentStorageObject` |
 | HMSR-009 | 0 | simulation | SimulationModel | — | — | 1 | 5 | 1 | REVISE | Completed | `docs(model-review): review simulation SimulationModel` |
 | HMSR-010 | 0 | identity | IdentityProvider | — | — | 4 | 4 | 0 | REVISE | Completed | `docs(model-review): review identity IdentityProvider` |
-| HMSR-011 | 0 | identity | Permission | — | — | 3 | 3 | 0 | — | Planned | `docs(model-review): review identity Permission` |
+| HMSR-011 | 0 | identity | Permission | — | — | 3 | 3 | 0 | REVISE | Completed | `docs(model-review): review identity Permission` |
 | HMSR-012 | 0 | notification | NotificationTemplate | — | — | 2 | 3 | 2 | — | Planned | `docs(model-review): review notification NotificationTemplate` |
 | HMSR-013 | 0 | reporting | ReportDefinition | — | — | 2 | 3 | 1 | — | Planned | `docs(model-review): review reporting ReportDefinition` |
 | HMSR-014 | 0 | integration | IntegrationJobRun | — | — | 2 | 2 | 1 | — | Planned | `docs(model-review): review integration IntegrationJobRun` |
@@ -4273,16 +4273,139 @@ Provider failure or ambiguity must fail closed; it must never fall back silently
 
 The target baseline cannot mark it APPROVED while provider-code uniqueness, mandatory provider name and unambiguous/provider-specific activation rules are not consistently enforced across persistence/provisioning/runtime boundaries. HMS reconciliation must retain these obligations until an explicitly authorized Identity correction task resolves them or the target semantics are explicitly changed.
 
-## 24. Current next task
+## 24. HMSR-011 — identity.Permission review
+
+**Decision:** REVISE  
+**Review code:** HMSR-011  
+**Dependency level:** 0  
+**Bounded context:** identity  
+**Confirmed upstream subject dependencies:** none  
+**Confirmed direct dependents:** 3 — `identity.RolePermissionGrant`, `identity.AuthorizationDelegationGrant`, `identity.UserPermissionGrant`  
+**Transitive dependents:** 3  
+**Unresolved/non-subject references:** 0
+
+### 24.1 Semantic role and ordering rationale
+
+`Permission` is the Identity-owned atomic business authorization capability. Roles, direct user grants, delegation and policy evaluation may reference a Permission, but no other bounded context owns or redefines the permission truth.
+
+It is Level 0 because it has no upstream HMS subject-model dependency. Its three direct HMS dependents consume the permission identity through Identity-owned grant/delegation models.
+
+The platform route-security layer derives required permission codes, but that technical layer does not own Permission business meaning. Identity remains the authority for persisted permission lifecycle and effective grants.
+
+### 24.2 Field semantics
+
+| Field | Type | Mandatory / optional | Reviewed meaning |
+|---|---|---|---|
+| `id` | `String` | Mandatory | Stable Permission identifier and persistence primary key. |
+| `code` | `String` | Mandatory | Stable unique authorization code. Current live Identity architecture standard is lower-case `<context>:<resource>:<action>`. |
+| `nameAr` | `String` | Optional | Arabic display label. |
+| `nameFr` | `String` | Optional | French display label. |
+| `nameEn` | `String` | Optional | English display label. |
+| `description` | `String` | Optional | Human-readable explanation of the capability. |
+| `permissionDomain` | `String` | Mandatory | Identity permission context/module token, aligned with the first code component. |
+| `resourceType` | `String` | Current live create-path mandatory | Resource/business capability token aligned with the second code component. |
+| `action` | `String` | Mandatory | Action token aligned with the third code component. |
+| `sensitive` | `boolean` | Mandatory persisted state | Marks capabilities requiring stronger grant/approval governance. |
+| `status` | `PermissionStatus` | Mandatory | Permission lifecycle: `ACTIVE`, `DISABLED`, or `DEPRECATED`. |
+| `createdAt` | `Instant` | Mandatory in persistence | Creation timestamp. |
+| `updatedAt` | `Instant` | Mandatory in persistence | Last-update timestamp. |
+
+The current domain constructor rejects blank `id` and `code` and null `status`, trims textual values and normalizes blank optional text to `null`.
+
+### 24.3 Canonical permission-code standard
+
+The live Identity roadmap defines the current permission code contract as:
 
 ```text
-HMSR-011 — identity.Permission
+<context>:<resource>:<action>
+```
+
+with exactly three non-empty lower-case parts and hyphens allowed inside multi-word parts.
+
+This convention is independently confirmed by:
+
+- `IdentityAdministrationCommandApplicationService`, which validates exactly three lower-case colon-separated parts;
+- `HidraRoutePermissionNaming`, which derives `<module>:<resource>:<action>` for backend route enforcement;
+- `HidraRoutePermissionCatalogService`, which publishes `permissionFormat = <module>:<resource>:<action>`;
+- `V20260929_004__provision_organization_scope_permissions.sql`, which provisions codes such as `organization:operational-scope:register`.
+
+The older Identity data-definition examples using uppercase dot notation such as `TOPOLOGY.FACILITY.CREATE`, plus two-part examples such as `ALARM.ACKNOWLEDGE` and `INCIDENT.OPEN`, are inconsistent with the current live Identity roadmap/runtime standard. Data provisioning must not use those examples as the canonical format without reconciliation.
+
+### 24.4 `resourceType` semantic conflict
+
+The current live create path requires `permissionDomain`, `resourceType`, and `action`, consistent with the mandatory three-part permission-code policy.
+
+However, `docs/data definition/Identity.md` still marks `resourceType` optional and illustrates permissions with only two semantic parts. JPA/schema also currently allow `resource_type` to be null.
+
+This is a target-model documentation/persistence contradiction. HMSR-011 does not guess whether future permissions may intentionally be resource-less. The final baseline must explicitly choose one rule and align the Identity DDD, application command validation, route naming, schema nullability and provisioning data.
+
+### 24.5 Persistence and uniqueness consistency
+
+The live domain and JPA models agree on all 13 declared components.
+
+The base Identity migration makes `id`, `code`, `permission_domain`, `action`, `sensitive`, `status`, `created_at`, and `updated_at` non-null; labels, description and `resource_type` remain nullable.
+
+The Identity DDD explicitly requires `Permission.code` uniqueness and recommends `uk_identity_permission_code`. The live schema currently has only non-unique `ix_hidra_identity_permission_code`.
+
+`PermissionRepositoryPort` exposes only `save` and `findById`, and the Spring Data repository exposes no code lookup/uniqueness method. The current create path therefore has no demonstrated application-level duplicate-code guard.
+
+### 24.6 Permission lifecycle and effective authorization
+
+`PermissionStatus` is intentionally distinct from `RoleStatus` even though both currently expose `ACTIVE`, `DISABLED`, and `DEPRECATED`. The repository's duplicate-enum review explicitly keeps them separate because permission and role lifecycle semantics may evolve independently.
+
+The live effective-permission query currently does **not** apply `Permission.status`:
+
+- it loads every `PermissionJpaEntity` row into an ID-to-code map;
+- it filters grant rows by grant status/time only;
+- active `UserPermissionGrant` and `RolePermissionGrant` rows can therefore contribute the code of a `DISABLED` or `DEPRECATED` Permission;
+- grant creation's `requirePermission` verifies only that the permission ID exists, not that the Permission is ACTIVE.
+
+This makes the stored Permission lifecycle ineffective at the current authorization-resolution boundary. Because Hidra-issued JWTs also carry the resolved permission codes as scope claims, the final correction must define how permission disable/deprecation interacts with already-issued access tokens and token TTL/revalidation policy; HMSR-011 does not invent an immediate-revocation design.
+
+### 24.7 Domain/application required-field consistency
+
+`permissionDomain` and `action` are required by the active Identity DDD and are non-null in persistence. The current administration create path enforces both before constructing the model, but the domain constructor itself accepts blank/null values and normalizes them to `null`.
+
+That is not necessarily a requirement to move repository/application validation into the record constructor. The final correction must simply establish one deliberate authoritative enforcement boundary so invalid Permission state cannot be created through alternate domain callers.
+
+`createdAt` and `updatedAt` are likewise persistence-required and are supplied by the current administration service but not guarded by the record constructor.
+
+### 24.8 Sensitive-permission interpretation
+
+`sensitive = true` classifies a capability as requiring stronger governance when it is granted or exercised. It does not itself grant access and must not be treated as a replacement for Workflow approval, scoped grants, expiry, explicit deny, or Audit evidence.
+
+For SONATRACH/TRC operations, examples may include high-impact capabilities such as approving trusted telemetry, changing operational plans, acknowledging critical alarms, authorizing integrity actions, or administering security. Permission identity remains an authorization capability, not an Organization responsibility, Workflow task, or operational asset.
+
+### 24.9 Required revisions
+
+The target baseline cannot be APPROVED until these evidence-backed issues are reconciled:
+
+1. **Unique permission code:** enforce the DDD-defined global uniqueness of `Permission.code` at the application/database boundary.
+2. **Permission lifecycle enforcement:** effective authorization must not continue treating `DISABLED` or `DEPRECATED` permissions as active merely because their grants remain active.
+3. **Grant-time lifecycle validation:** define whether new grants/delegations may target non-ACTIVE permissions and enforce that rule consistently.
+4. **Permission-code documentation reconciliation:** update stale uppercase/dot and two-part Identity DDD examples to the live three-part lower-case colon standard, or explicitly change the live standard through an authorized decision.
+5. **`resourceType` contract reconciliation:** resolve the current DDD/schema optionality versus the live administration/route naming requirement for a non-empty resource component.
+6. **Required domain fields:** retain an explicit enforcement boundary for `permissionDomain`, `action`, `createdAt`, and `updatedAt` so alternate callers cannot persist semantically invalid Permission state.
+7. **Issued-token lifecycle policy:** define the expected effect of disabling/deprecating a permission on already-issued Hidra JWT scope claims; any immediate-revocation requirement must be implemented deliberately rather than assumed.
+
+HMSR-011 does not change production Java, JPA, Flyway, security runtime, API/application contracts, tests, permission rows, grants or token configuration.
+
+### 24.10 Review conclusion
+
+**REVISE.** `identity.Permission` is the correct foundational Identity authorization capability and its three subject dependency directions are sound. The current three-part lower-case permission naming standard is well supported by live roadmap/runtime/provisioning evidence.
+
+The target baseline cannot mark Permission APPROVED while code uniqueness is unenforced, Permission lifecycle status is ignored by effective authorization, and the DDD/schema remain inconsistent with the current three-part/resource-required permission standard. HMS reconciliation must retain these obligations until an explicitly authorized Identity correction task resolves them or the target semantics are explicitly changed.
+
+## 25. Current next task
+
+```text
+HMSR-012 — notification.NotificationTemplate
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review identity Permission
+docs(model-review): review notification NotificationTemplate
 ```
 
-Start HMSR-011 only after HMSR-010 is committed and reported. Do not start HMSR-012 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-012 only after HMSR-011 is committed and reported. Do not start HMSR-013 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

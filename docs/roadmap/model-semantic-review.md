@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -204,7 +204,7 @@ Ordering rules applied:
 | HMSR-009 | 0 | simulation | SimulationModel | — | — | 1 | 5 | 1 | REVISE | Completed | `docs(model-review): review simulation SimulationModel` |
 | HMSR-010 | 0 | identity | IdentityProvider | — | — | 4 | 4 | 0 | REVISE | Completed | `docs(model-review): review identity IdentityProvider` |
 | HMSR-011 | 0 | identity | Permission | — | — | 3 | 3 | 0 | REVISE | Completed | `docs(model-review): review identity Permission` |
-| HMSR-012 | 0 | notification | NotificationTemplate | — | — | 2 | 3 | 2 | — | Planned | `docs(model-review): review notification NotificationTemplate` |
+| HMSR-012 | 0 | notification | NotificationTemplate | — | — | 2 | 3 | 2 | REVISE | Completed | `docs(model-review): review notification NotificationTemplate` |
 | HMSR-013 | 0 | reporting | ReportDefinition | — | — | 2 | 3 | 1 | — | Planned | `docs(model-review): review reporting ReportDefinition` |
 | HMSR-014 | 0 | integration | IntegrationJobRun | — | — | 2 | 2 | 1 | — | Planned | `docs(model-review): review integration IntegrationJobRun` |
 | HMSR-015 | 0 | leakdetection | LeakCandidate | — | — | 2 | 2 | 2 | — | Planned | `docs(model-review): review leakdetection LeakCandidate` |
@@ -2260,9 +2260,9 @@ Confirmed subject-model graph edges at this stage: **165**. These are semantic c
 | Field | Declared type | Classification | Resolved target | Graph edge | Notes |
 |---|---|---|---|:---:|---|
 | id | String | Self identifier | — | No | Primary identity of the current model. |
-| templateTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
-| categoryId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
-| defaultChannelId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| templateTypeId | String | Value/catalog dependency | TEMPLATE_TYPE | No | HMSR-012 stronger Notification DDD + HRA-111 evidence resolves this to Notification-owned `NotificationCatalogEntry` / `hidra_notification_catalog_entry`, outside the 123 HMS subject set. |
+| categoryId | String | Value/catalog dependency | NOTIFICATION_CATEGORY | No | HMSR-012 stronger Notification DDD resolves this to the Notification-owned `NOTIFICATION_CATEGORY` catalog family; no HMS subject edge. |
+| defaultChannelId | String | Domain reference | notification.NotificationChannel (read/persistence model) | No | HMSR-012 stronger Notification DDD/persistence evidence resolves the optional default channel to Notification-owned `hidra_notification_channel`; target is outside the 123 HMS subject set. |
 
 #### organization.AdministrativeDistrict
 
@@ -4396,16 +4396,146 @@ HMSR-011 does not change production Java, JPA, Flyway, security runtime, API/app
 
 The target baseline cannot mark Permission APPROVED while code uniqueness is unenforced, Permission lifecycle status is ignored by effective authorization, and the DDD/schema remain inconsistent with the current three-part/resource-required permission standard. HMS reconciliation must retain these obligations until an explicitly authorized Identity correction task resolves them or the target semantics are explicitly changed.
 
-## 25. Current next task
+## 25. HMSR-012 — notification.NotificationTemplate review
+
+**Decision:** REVISE  
+**Review code:** HMSR-012  
+**Dependency level:** 0  
+**Bounded context:** notification  
+**Confirmed upstream subject dependencies:** none  
+**Confirmed direct dependents:** 2 — `notification.NotificationRequest` and `notification.NotificationMessage`  
+**Transitive dependents:** 3  
+**Unresolved/non-subject references:** 2 — `categoryId` and `defaultChannelId`, both now semantically resolved to Notification-owned non-subject targets
+
+### 25.1 Semantic role and ordering rationale
+
+`NotificationTemplate` is the Notification-owned aggregate root for reusable message-template identity and governance. It carries stable template identity, business classification, optional default channel, lifecycle state and a current-version marker; immutable message content belongs to `NotificationTemplateVersion` and localized version content belongs to `NotificationTemplateTranslation`.
+
+It is Level 0 because none of its prerequisites are another HMS subject model. `NotificationRequest` and `NotificationMessage` are the two direct HMS subject dependents. `NotificationTemplateVersion`, `NotificationCatalogEntry` and `NotificationChannel` are Notification read/persistence models outside the 123 HMS subject population.
+
+The source business module owns why a notification exists. Notification owns template selection, rendering, channel semantics and delivery evidence; it must not mutate the source business object's state.
+
+### 25.2 Field semantics
+
+| Field | Type | Mandatory / optional | Reviewed meaning |
+|---|---|---|---|
+| `id` | `String` | Mandatory | Stable NotificationTemplate identity and persistence primary key. |
+| `code` | `String` | Mandatory | Stable unique business code for the reusable template. |
+| `nameAr` | `String` | Optional | Arabic template display label. |
+| `nameFr` | `String` | Persistence-required | French template display label; JPA/schema require it although the aggregate DDD does not separately state field nullability. |
+| `nameEn` | `String` | Optional | English template display label. |
+| `templateTypeId` | `String` | Mandatory | Notification catalog reference in family `TEMPLATE_TYPE`. |
+| `categoryId` | `String` | Optional | Notification catalog reference in family `NOTIFICATION_CATEGORY`. |
+| `defaultChannelId` | `String` | Optional | Default Notification-owned channel reference; concrete request/policy logic may override it. |
+| `status` | `NotificationTemplateStatus` | Mandatory | Template lifecycle: `DRAFT`, `ACTIVE`, `INACTIVE`, or `RETIRED`. |
+| `currentVersion` | `Integer` | Optional | Denormalized/current template version number marker; it is not a model ID or HMS dependency edge. |
+| `systemDefined` | `boolean` | Mandatory persisted state | Marks templates delivered/owned as system-defined reference configuration. |
+| `createdAt` | `Instant` | Mandatory in persistence | Creation timestamp. |
+| `updatedAt` | `Instant` | Mandatory in persistence | Last-update timestamp. |
+
+The current constructor rejects blank `id`, `code`, and `templateTypeId`, rejects null `status`, trims textual values and converts blank optional text to `null`. `usableForNewMessages()` correctly returns true only for `ACTIVE` templates.
+
+### 25.3 Resolution of the two previously unresolved references
+
+Current repository evidence resolves both HMSR non-subject references without adding subject-graph edges.
+
+1. **`categoryId -> NOTIFICATION_CATEGORY`**
+   - the Notification DDD defines `NotificationCatalogEntry` as the controlled-vocabulary persistence model;
+   - `NOTIFICATION_CATEGORY` is an explicit Notification catalog family;
+   - template business type/category must be catalog-backed rather than hard-coded enum taxonomy;
+   - `NotificationCatalogEntry` is outside the 123 HMS subject set.
+
+2. **`defaultChannelId -> NotificationChannel`**
+   - the Notification DDD defines `NotificationChannel` as the owner of channel semantics such as EMAIL, SMS, WEB, MOBILE_PUSH, MESSAGING_APP, WEBHOOK and VOICE;
+   - the live persistence model stores channels in `hidra_notification_channel`;
+   - the same DDD explicitly uses `defaultChannelId -> NotificationChannel` for NotificationPolicy, supporting the same identifier semantics for template defaults;
+   - `NotificationChannel` is outside the 123 HMS subject set.
+
+`templateTypeId` is also sharpened from generic catalog/value semantics to the `TEMPLATE_TYPE` catalog family. HRA-111 installs `fk_hra111_notification_023` from `hidra_notification_template.template_type_id` to `hidra_notification_catalog_entry(id)`.
+
+### 25.4 Template/version boundary
+
+The active Notification DDD requires:
 
 ```text
-HMSR-012 — notification.NotificationTemplate
+Template code must be unique.
+Only ACTIVE templates can be used for new messages.
+A template version is immutable after activation.
+A sent message must reference the exact template version used.
+New wording requires a new version.
+```
+
+`NotificationTemplateVersion` is a separate Notification persistence/read model with `templateId`, `versionNumber`, lifecycle status and immutable rendered-source content. HRA-111 protects `NotificationTemplateVersion.templateId -> NotificationTemplate.id` with `ON DELETE RESTRICT`.
+
+`currentVersion` on the aggregate is an integer version marker, not a foreign-key identifier. The repository currently contains no demonstrated application service that governs creation/activation of template versions or synchronizes `currentVersion` with an ACTIVE version. Before provisioning/editing template data, the target contract must explicitly define whether this field means latest version, currently active version, or another governed version marker and which status combinations are legal.
+
+### 25.5 Persistence and reference integrity
+
+The live domain and JPA models agree on all 13 declared components.
+
+The base Notification migration makes `id`, `code`, `name_fr`, `template_type_id`, `status`, `system_defined`, `created_at`, and `updated_at` non-null. `category_id`, `default_channel_id`, and `current_version` are nullable.
+
+The schema has ordinary indexes on template code, type, category, default channel, status and audit timestamps. No unique constraint on template `code` was found.
+
+HRA-111 enforces only the mandatory `template_type_id` reference for this row. No current database FK was found for optional `category_id` or `default_channel_id`, and the live application layer does not expose a template-management service that demonstrates catalog-family/channel validation for those optional references.
+
+### 25.6 Runtime use of templates and versions
+
+The current `NotificationApplicationService` creates `NotificationRequest` and `NotificationMessage` directly from incoming command IDs. It does not inject `NotificationTemplateRepositoryPort` or a template-version repository and therefore does not demonstrate these DDD rules at the request/message creation boundary:
+
+- selected template exists;
+- selected template is `ACTIVE`; 
+- `templateTypeId` belongs to `TEMPLATE_TYPE`; 
+- optional `categoryId` belongs to `NOTIFICATION_CATEGORY`; 
+- optional `defaultChannelId` resolves to a usable NotificationChannel when a default is relied upon;
+- supplied `templateVersionId` exists and belongs to the supplied `templateId`; 
+- the selected version is eligible for reproducible message generation.
+
+`NotificationTemplate.usableForNewMessages()` expresses the ACTIVE-only rule correctly, but no current message/request orchestration path found during HMSR-012 calls that helper.
+
+### 25.7 Multilingual interpretation
+
+The aggregate stores multilingual **template labels** (`nameAr/nameFr/nameEn`), while actual localized message content belongs to `NotificationTemplateTranslation` for a specific template version.
+
+The DDD explicitly states that French template-version content is mandatory for operational Hidra screens, with Arabic and English optional/recommended. This should not be confused with the aggregate label fields. The live JPA/schema independently require `NotificationTemplate.nameFr`; the domain constructor does not enforce that persistence requirement, so the final baseline should deliberately reconcile the label nullability boundary rather than infer content-localization rules from it.
+
+### 25.8 Required revisions
+
+The model's ownership and graph placement are correct, but the target baseline cannot be APPROVED until these evidence-backed gaps are reconciled:
+
+1. **Unique template code:** enforce the DDD-defined uniqueness of `NotificationTemplate.code` at the application/database boundary.
+2. **ACTIVE-only template selection:** request/message creation must validate that a template used for new message generation is ACTIVE; the current helper is not wired into orchestration.
+3. **Exact template-version integrity:** validate that `templateVersionId` exists, belongs to the selected `templateId`, and is eligible under the version lifecycle before rendering/sending.
+4. **`currentVersion` governance:** define and enforce the exact meaning of `currentVersion` and its consistency with template-version rows and template lifecycle.
+5. **Catalog-family validation:** `templateTypeId` must resolve to `TEMPLATE_TYPE`; when present, `categoryId` must resolve to `NOTIFICATION_CATEGORY`, not merely to any catalog row.
+6. **Optional channel-reference integrity:** when `defaultChannelId` is present and used, it must resolve to the intended NotificationChannel and satisfy the applicable active/availability policy.
+7. **French label persistence boundary:** reconcile the persistence-required `nameFr` with the domain constructor's nullable behavior without confusing label semantics with version-content localization.
+8. **Required timestamps:** retain a deliberate enforcement boundary for `createdAt` and `updatedAt`, which are persistence-required but not guarded by the record constructor.
+
+HMSR-012 does not change production Java, JPA, Flyway, application/API contracts, tests, catalogs, channels, templates or template-version data.
+
+### 25.9 Operational interpretation
+
+For SONATRACH/TRC operations, NotificationTemplate may govern reusable communications for alarms, incidents, workflow tasks, planning events, integrity events or operational reminders. The template controls communication wording and default delivery semantics only.
+
+Using a template must never imply approval, alarm acknowledgement, incident closure, SCADA actuation or any other source-domain state transition. Notification acknowledgement remains communication evidence, not business approval.
+
+### 25.10 Review conclusion
+
+**REVISE.** `NotificationTemplate` is the correct foundational Notification aggregate and its two subject dependency directions are sound. `templateTypeId`, `categoryId` and `defaultChannelId` are now semantically resolved to Notification-owned non-subject prerequisites.
+
+The target baseline cannot mark it APPROVED while template-code uniqueness, ACTIVE-only selection, exact template/version integrity, `currentVersion` governance, catalog-family validation and optional channel-reference integrity remain unenforced or ambiguous. HMS reconciliation must retain these obligations until an explicitly authorized Notification correction task resolves them or the target semantics are explicitly changed.
+
+## 26. Current next task
+
+```text
+HMSR-013 — reporting.ReportDefinition
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review notification NotificationTemplate
+docs(model-review): review reporting ReportDefinition
 ```
 
-Start HMSR-012 only after HMSR-011 is committed and reported. Do not start HMSR-013 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-013 only after HMSR-012 is committed and reported. Do not start HMSR-014 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

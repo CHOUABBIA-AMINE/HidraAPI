@@ -1,6 +1,6 @@
 # HidraAPI Model / Field / Type Catalogue Roadmap
 
-**Status:** Planned — module-by-module scan authorized; extraction has not started under this roadmap.
+**Status:** Active — roadmap prepared; module-by-module scan may begin with HMC-002.
 
 **Baseline repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Baseline branch:** `main`  
@@ -126,7 +126,7 @@ baseline model files
 
 | Code | Exact commit message | Scope | Status |
 |---|---|---|---|
-| HMC-001 | `docs(catalogue): add module model scan roadmap` | Create this roadmap only. No model extraction. | **In Progress** |
+| HMC-001 | `docs(catalogue): add module model scan roadmap` | Create this roadmap only. No model extraction. | **Completed** — roadmap created at `11118373ea112031342813abe8e4264c7bcd6018`; no model extraction performed. |
 | HMC-002 | `docs(catalogue): scan alarm domain models` | Scan all 4 `alarm/domain/model` files; record models, fields and Java types. | Planned |
 | HMC-003 | `docs(catalogue): scan analytics domain models` | Scan all 7 analytics model files. | Planned |
 | HMC-004 | `docs(catalogue): scan assets domain models` | Scan all 3 assets model files. | Planned |

@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -197,7 +197,7 @@ Ordering rules applied:
 | HMSR-002 | 0 | workflow | WorkflowDefinition | — | — | 4 | 36 | 1 | REVISE | Completed | `docs(model-review): review workflow WorkflowDefinition` |
 | HMSR-003 | 0 | organization | AdministrativeState | — | — | 1 | 17 | 0 | APPROVED | Completed | `docs(model-review): review organization AdministrativeState` |
 | HMSR-004 | 0 | party | Party | — | — | 5 | 14 | 0 | REVISE | Completed | `docs(model-review): review party Party` |
-| HMSR-005 | 0 | telemetry | TelemetryPoint | — | — | 5 | 9 | 3 | — | Planned | `docs(model-review): review telemetry TelemetryPoint` |
+| HMSR-005 | 0 | telemetry | TelemetryPoint | — | — | 5 | 9 | 3 | REVISE | Completed | `docs(model-review): review telemetry TelemetryPoint` |
 | HMSR-006 | 0 | planning | PlanningPeriod | — | — | 1 | 9 | 0 | — | Planned | `docs(model-review): review planning PlanningPeriod` |
 | HMSR-007 | 0 | identity | Role | — | — | 6 | 6 | 0 | — | Planned | `docs(model-review): review identity Role` |
 | HMSR-008 | 0 | documents | DocumentStorageObject | — | — | 2 | 6 | 1 | — | Planned | `docs(model-review): review documents DocumentStorageObject` |
@@ -3533,16 +3533,135 @@ Party role does not imply contractual entitlement, Identity authorization, Workf
 
 HMS reconciliation must retain these two correction obligations until an explicitly authorized Party implementation task resolves them or the target Party semantics are explicitly changed.
 
-## 18. Current next task
+## 18. HMSR-005 — telemetry.TelemetryPoint review
+
+**Decision:** REVISE  
+**Review code:** HMSR-005  
+**Dependency level:** 0  
+**Bounded context:** telemetry  
+**Confirmed upstream subject dependencies:** none  
+**Confirmed direct dependents:** 5 — `telemetry.TelemetryReading`, `monitoring.MonitoringRule`, `telemetry.TrustedTelemetryReading`, `planning.PlanTarget`, `monitoring.PlanActualDeviation`  
+**Transitive dependents:** 9  
+**Unresolved/non-subject references:** 3 — all three now semantically resolved to Telemetry-owned non-subject persistence/read models
+
+### 18.1 Semantic role and ordering rationale
+
+`TelemetryPoint` is the canonical Hidra telemetry tag/signal identity. It is the stable point referenced by raw readings, trusted readings, monitoring rules, planning targets, planned-versus-actual deviation logic, external tag mappings, topology bindings, quality assessment and latest-state projections.
+
+It is Level 0 because none of its prerequisites are another one of the 123 HMS subject models. Its configuration prerequisites — device, unit and telemetry catalogs — are Telemetry-owned persistence/read models outside the HMS subject population.
+
+Telemetry owns acquisition/source/device/point/reading/quality/trust semantics. It does not own physical topology, monitoring interpretation, alarms, incidents, workflow approval, audit storage, hydraulic simulation, risk scoring or custody fiscal records.
+
+### 18.2 Field semantics
+
+| Field | Type | Mandatory / optional | Reviewed meaning |
+|---|---|---|---|
+| `id` | `String` | Mandatory | Stable TelemetryPoint identity and persistence primary key. |
+| `deviceId` | `String` | Mandatory | Parent Telemetry-owned device reference. |
+| `code` | `String` | Mandatory | Canonical point/tag code; target semantics require uniqueness within the parent device. |
+| `nameAr` | `String` | Optional | Arabic point display label. |
+| `nameFr` | `String` | Mandatory | French point display label in the current Telemetry DDD and persistence schema. |
+| `nameEn` | `String` | Optional | English point display label. |
+| `pointTypeId` | `String` | Mandatory | Telemetry catalog reference in catalog family `POINT_TYPE`. |
+| `signalTypeId` | `String` | Mandatory | Telemetry catalog reference in catalog family `SIGNAL_TYPE`; governs compatible reading value shape. |
+| `unitId` | `String` | Conditionally required | Telemetry unit reference. Optional structurally, but required for numeric engineering measurements unless the point type explicitly exempts it. |
+| `defaultAggregationMethodId` | `String` | Optional | Telemetry catalog reference in catalog family `AGGREGATION_METHOD`. |
+| `samplingPeriodSeconds` | `Integer` | Optional | Expected source sampling period in seconds. |
+| `externalReference` | `String` | Optional / legacy-simple reference | External source/tag reference; rich/historical aliases belong in `TelemetryExternalTagMapping`. |
+| `deadbandValue` | `BigDecimal` | Optional | Point-level deadband/noise-filter threshold. |
+| `minOperationalValue` | `BigDecimal` | Optional | Engineering/physical minimum used by telemetry validation when applicable. |
+| `maxOperationalValue` | `BigDecimal` | Optional | Engineering/physical maximum used by telemetry validation when applicable. |
+| `status` | `TelemetryLifecycleStatus` | Mandatory | Technical lifecycle state. Only ACTIVE points are eligible to produce trusted readings. |
+| `createdAt` | `Instant` | Mandatory in persistence | Creation audit timestamp. |
+| `updatedAt` | `Instant` | Mandatory in persistence | Last-update audit timestamp. |
+
+The current domain constructor already rejects blank `id`, `deviceId`, `code`, `pointTypeId`, and `signalTypeId`, rejects null `status`, trims String values, and converts blank optional text/references to `null`.
+
+### 18.3 Resolution of the three non-subject references
+
+The HMSR register carried three unresolved/non-subject references for this model. Current repository evidence resolves all three without creating subject-graph edges:
+
+1. `deviceId -> TelemetryDevice`
+   - `TelemetryDevice` is Telemetry-owned;
+   - HRA mirror classification retains it as a `READ_PERSISTENCE_MODEL`, outside the 123 HMS subjects;
+   - HRA-111 installs `fk_hra111_telemetry_009` from `hidra_telemetry_point.device_id` to `hidra_telemetry_device(id)`.
+
+2. `unitId -> TelemetryUnit`
+   - the live repository contains `TelemetryUnitJpaEntity` backed by `hidra_telemetry_unit`;
+   - the Telemetry DDD defines the cardinality `TelemetryUnit -> TelemetryPoint`;
+   - `TelemetryUnit` is retained as a Telemetry `READ_PERSISTENCE_MODEL`, outside the 123 HMS subjects.
+
+3. `defaultAggregationMethodId -> TelemetryCatalogEntry`
+   - the Telemetry DDD explicitly identifies catalog family `AGGREGATION_METHOD`;
+   - the live catalog persistence model is `TelemetryCatalogEntryJpaEntity` backed by `hidra_telemetry_type_catalog`;
+   - `TelemetryCatalogEntry` is a Telemetry `READ_PERSISTENCE_MODEL`, outside the 123 HMS subjects.
+
+The existing `pointTypeId` and `signalTypeId` classifications remain value/catalog dependencies to `TelemetryCatalogEntry`, not subject-model dependencies.
+
+### 18.4 Downstream dependency evidence
+
+The validated HMS graph has five direct dependent subject models:
+
+- `TelemetryReading.pointId -> TelemetryPoint`;
+- `TrustedTelemetryReading.pointId -> TelemetryPoint`;
+- `MonitoringRule.telemetryPointId -> TelemetryPoint`;
+- `PlanTarget.telemetryPointId -> TelemetryPoint`;
+- `PlanActualDeviation.telemetryPointId -> TelemetryPoint`.
+
+Other Telemetry persistence/read models such as external tag mappings, bindings, quality assessments and point-state snapshots also reference the point, but they are outside the 123 HMS subject set and therefore do not change the subject graph level.
+
+### 18.5 Persistence and reference integrity
+
+The live domain and JPA shapes agree on all 18 declared components.
+
+The base Telemetry migration makes `device_id`, `code`, `name_fr`, `point_type_id`, `signal_type_id`, `status`, `created_at`, and `updated_at` non-null.
+
+HRA-111 adds same-module FKs for:
+
+- `device_id -> hidra_telemetry_device(id)`;
+- `point_type_id -> hidra_telemetry_type_catalog(id)`;
+- `signal_type_id -> hidra_telemetry_type_catalog(id)`.
+
+These FKs establish row existence, but they do not by themselves prove the catalog family or active-state semantics required by the DDD.
+
+The current schema has normal indexes on `device_id`, `code`, `point_type_id`, `signal_type_id`, `unit_id`, and `default_aggregation_method_id`. It does not currently enforce the documented unique `(device_id, code)` key, and no current FK was found from optional `unit_id` or `default_aggregation_method_id` to their resolved Telemetry-owned targets.
+
+### 18.6 Required revisions
+
+The current field set and ownership are appropriate, but the implementation does not yet enforce all repository-defined TelemetryPoint semantics strongly enough for an APPROVED target baseline.
+
+1. **Mandatory French point name:** `nameFr` is required by the Telemetry DDD and is `NOT NULL` in JPA/schema, but the domain constructor accepts null/blank and normalizes blank text to `null`.
+2. **Point-code uniqueness:** the Telemetry DDD requires point code uniqueness per device and explicitly recommends unique `(device_id, code)`. The live migration currently has separate non-unique indexes only, and the point repository/application service provides no demonstrated uniqueness check.
+3. **Catalog-family validation:** `pointTypeId`, `signalTypeId`, and `defaultAggregationMethodId` have specific catalog-family meanings (`POINT_TYPE`, `SIGNAL_TYPE`, `AGGREGATION_METHOD`). Existing generic catalog FKs, where present, prove only that a catalog row exists; the current point registration service does not demonstrate family/active-entry validation.
+4. **Unit reference integrity:** when `unitId` is present it semantically targets `TelemetryUnit`, but current point persistence does not demonstrate FK/application validation of that optional reference.
+5. **Signal/unit compatibility:** the DDD requires `signalTypeId` to determine compatible numeric/text/boolean reading shape and requires `unitId` for numeric engineering measurements unless explicitly exempted by point type. The current point registration service simply persists the supplied IDs and does not demonstrate this conditional validation.
+
+These rules should be enforced at the appropriate domain/application/database boundary. Repository lookups and catalog-family checks must not be pushed into the domain record constructor.
+
+HMSR-005 does not change production Java, JPA, Flyway, application/API contracts, tests, or database data.
+
+### 18.7 Lifecycle and operational interpretation
+
+The current registration service creates new points in `PLANNED` state. Historical/inactive points remain valid identities for retained telemetry history, while only ACTIVE points should participate in trusted-reading production.
+
+For SONATRACH/TRC operations, a TelemetryPoint represents the canonical digital identity of an acquired signal/tag — for example pressure, flow, temperature, valve state or equipment status — not the physical instrument/equipment asset itself. Physical asset association belongs through TelemetryPointBinding/topology references, preserving the Telemetry/Topology boundary.
+
+### 18.8 Review conclusion
+
+**REVISE.** `TelemetryPoint` has the correct bounded-context ownership, field shape, dependency direction and downstream role, and the three previously unresolved non-subject references are now semantically resolved. However, the target baseline cannot mark it APPROVED while the documented French-name, per-device code uniqueness, catalog-family, optional-reference integrity and signal/unit compatibility rules are not consistently enforced.
+
+HMS reconciliation must retain these correction obligations until an explicitly authorized Telemetry implementation task resolves them or the target Telemetry semantics are explicitly changed.
+
+## 19. Current next task
 
 ```text
-HMSR-005 — telemetry.TelemetryPoint
+HMSR-006 — planning.PlanningPeriod
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review telemetry TelemetryPoint
+docs(model-review): review planning PlanningPeriod
 ```
 
-Start HMSR-005 only after HMSR-004 is committed and reported. Do not start HMSR-006 automatically. HMS-006 remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-006 only after HMSR-005 is committed and reported. Do not start HMSR-007 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

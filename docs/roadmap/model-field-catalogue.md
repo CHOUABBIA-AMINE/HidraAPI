@@ -143,7 +143,7 @@ baseline model files
 | HMC-015 | `docs(catalogue): scan monitoring domain models` | Scan all 2 monitoring model files. | **Completed** — 2/2 models, 37 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-016 | `docs(catalogue): scan notification domain models` | Scan all 4 notification model files. | **Completed** — 4/4 models, 66 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-017 | `docs(catalogue): scan organization domain models` | Scan all 17 organization model files. | **Completed** — 17/17 models, 179 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
-| HMC-018 | `docs(catalogue): scan party domain models` | Scan all 2 party model files. | Planned |
+| HMC-018 | `docs(catalogue): scan party domain models` | Scan all 2 party model files. | **Completed** — 2/2 models, 21 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-019 | `docs(catalogue): scan planning domain models` | Scan all 5 planning model files. | Planned |
 | HMC-020 | `docs(catalogue): scan reporting domain models` | Scan all 4 reporting model files. | Planned |
 | HMC-021 | `docs(catalogue): scan risk domain models` | Scan all 4 risk model files. | Planned |
@@ -2168,11 +2168,68 @@ This catalogue preserves the pinned source exactly. In particular, `Organization
 
 No JPA entity, API DTO, migration, application contract, infrastructure model, identity model, or database column metadata was mixed into this module scan.
 
-## 27. Current next task
+## 27. HMC-018 — Party module scan evidence
+
+**Source commit:** `5e301857882b59e9e35ecc474e9c6537d89cc96a`  
+**Module:** `party`  
+**Baseline model files:** 2  
+**Scanned models:** 2  
+**Declared fields/components:** 21  
+**Zero-field models:** 0  
+**Extraction exceptions:** 0
+
+### Party model index
+
+| Model | Kind | Declared field count | Source path | Status |
+|---|---|---:|---|---|
+| Party | record | 12 | `src/main/java/dz/sh/hidra/modules/party/domain/model/Party.java` | Extracted |
+| PartyRoleAssignment | record | 9 | `src/main/java/dz/sh/hidra/modules/party/domain/model/PartyRoleAssignment.java` | Extracted |
+
+### Party fields and declared Java types
+
+| Model | Ordinal | Field | Declared Java Type |
+|---|---:|---|---|
+| Party | 1 | id | String |
+| Party | 2 | code | String |
+| Party | 3 | partyTypeId | String |
+| Party | 4 | legalName | String |
+| Party | 5 | tradeName | String |
+| Party | 6 | shortName | String |
+| Party | 7 | countryCode | String |
+| Party | 8 | jurisdictionCode | String |
+| Party | 9 | status | PartyStatus |
+| Party | 10 | primaryRoleCodeSnapshot | String |
+| Party | 11 | createdAt | Instant |
+| Party | 12 | updatedAt | Instant |
+| PartyRoleAssignment | 1 | id | String |
+| PartyRoleAssignment | 2 | partyId | String |
+| PartyRoleAssignment | 3 | roleId | String |
+| PartyRoleAssignment | 4 | validFrom | Instant |
+| PartyRoleAssignment | 5 | validTo | Instant |
+| PartyRoleAssignment | 6 | status | PartyRoleAssignmentStatus |
+| PartyRoleAssignment | 7 | qualificationRequired | boolean |
+| PartyRoleAssignment | 8 | createdAt | Instant |
+| PartyRoleAssignment | 9 | updatedAt | Instant |
+
+### HMC-018 reconciliation
 
 ```text
-HMC-018 — docs(catalogue): scan party domain models
+baseline model files = 2
+extracted models     = 2
+exceptions           = 0
+declared fields      = 21
+zero-field models    = 0
 ```
 
-Do not start HMC-019 until HMC-018 is completed and its module counts are reported.
+The scan records only declarations under `party/domain/model`. Party domain value types referenced by record components remain declared field types and are not expanded into independent model rows.
+
+No JPA entity, API DTO, migration, application contract, infrastructure model, organization model, or database column metadata was mixed into this module scan.
+
+## 28. Current next task
+
+```text
+HMC-019 — docs(catalogue): scan planning domain models
+```
+
+Do not start HMC-020 until HMC-019 is completed and its module counts are reported.
 

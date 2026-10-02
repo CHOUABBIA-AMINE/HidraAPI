@@ -147,7 +147,7 @@ baseline model files
 | HMC-019 | `docs(catalogue): scan planning domain models` | Scan all 5 planning model files. | **Completed** — 5/5 models, 95 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-020 | `docs(catalogue): scan reporting domain models` | Scan all 4 reporting model files. | **Completed** — 4/4 models, 59 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-021 | `docs(catalogue): scan risk domain models` | Scan all 4 risk model files. | **Completed** — 4/4 models, 78 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
-| HMC-022 | `docs(catalogue): scan simulation domain models` | Scan all 6 simulation model files. | Planned |
+| HMC-022 | `docs(catalogue): scan simulation domain models` | Scan all 6 simulation model files. | **Completed** — 6/6 models, 81 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-023 | `docs(catalogue): scan telemetry domain models` | Scan all 4 telemetry model files. | Planned |
 | HMC-024 | `docs(catalogue): scan topology domain models` | Scan all 5 topology model files. | Planned |
 | HMC-025 | `docs(catalogue): scan workflow domain models` | Scan all 8 workflow model files. | Planned |
@@ -2572,11 +2572,132 @@ The scan records only declarations under `risk/domain/model`. Risk domain value 
 
 No JPA entity, API DTO, migration, application contract, infrastructure model, integrity implementation, workflow implementation, audit implementation, or database column metadata was mixed into this module scan.
 
-## 31. Current next task
+## 31. HMC-022 — Simulation module scan evidence
+
+**Source commit:** `5e301857882b59e9e35ecc474e9c6537d89cc96a`  
+**Module:** `simulation`  
+**Baseline model files:** 6  
+**Scanned models:** 6  
+**Declared fields/components:** 81  
+**Zero-field models:** 0  
+**Extraction exceptions:** 0
+
+### Simulation model index
+
+| Model | Kind | Declared field count | Source path | Status |
+|---|---|---:|---|---|
+| SimulationCandidateChange | record | 13 | `src/main/java/dz/sh/hidra/modules/simulation/domain/model/SimulationCandidateChange.java` | Extracted |
+| SimulationModel | record | 12 | `src/main/java/dz/sh/hidra/modules/simulation/domain/model/SimulationModel.java` | Extracted |
+| SimulationOptimizationCandidate | record | 11 | `src/main/java/dz/sh/hidra/modules/simulation/domain/model/SimulationOptimizationCandidate.java` | Extracted |
+| SimulationRecommendation | record | 13 | `src/main/java/dz/sh/hidra/modules/simulation/domain/model/SimulationRecommendation.java` | Extracted |
+| SimulationRun | record | 16 | `src/main/java/dz/sh/hidra/modules/simulation/domain/model/SimulationRun.java` | Extracted |
+| SimulationScenario | record | 16 | `src/main/java/dz/sh/hidra/modules/simulation/domain/model/SimulationScenario.java` | Extracted |
+
+### Simulation fields and declared Java types
+
+| Model | Ordinal | Field | Declared Java Type |
+|---|---:|---|---|
+| SimulationCandidateChange | 1 | id | String |
+| SimulationCandidateChange | 2 | candidateId | String |
+| SimulationCandidateChange | 3 | changeTypeId | String |
+| SimulationCandidateChange | 4 | targetType | String |
+| SimulationCandidateChange | 5 | targetId | String |
+| SimulationCandidateChange | 6 | beforeValue | String |
+| SimulationCandidateChange | 7 | afterValue | String |
+| SimulationCandidateChange | 8 | unitCode | String |
+| SimulationCandidateChange | 9 | requiresTopologyChange | boolean |
+| SimulationCandidateChange | 10 | requiresOperationalProcedure | boolean |
+| SimulationCandidateChange | 11 | safetyCritical | boolean |
+| SimulationCandidateChange | 12 | explanation | String |
+| SimulationCandidateChange | 13 | createdAt | Instant |
+| SimulationModel | 1 | id | String |
+| SimulationModel | 2 | code | String |
+| SimulationModel | 3 | nameAr | String |
+| SimulationModel | 4 | nameFr | String |
+| SimulationModel | 5 | nameEn | String |
+| SimulationModel | 6 | modelTypeId | String |
+| SimulationModel | 7 | topologyScopeType | String |
+| SimulationModel | 8 | topologyScopeId | String |
+| SimulationModel | 9 | status | SimulationModelStatus |
+| SimulationModel | 10 | description | String |
+| SimulationModel | 11 | createdAt | Instant |
+| SimulationModel | 12 | updatedAt | Instant |
+| SimulationOptimizationCandidate | 1 | id | String |
+| SimulationOptimizationCandidate | 2 | runId | String |
+| SimulationOptimizationCandidate | 3 | candidateNumber | int |
+| SimulationOptimizationCandidate | 4 | candidateStatus | SimulationCandidateStatus |
+| SimulationOptimizationCandidate | 5 | feasible | boolean |
+| SimulationOptimizationCandidate | 6 | objectiveScore | BigDecimal |
+| SimulationOptimizationCandidate | 7 | rank | Integer |
+| SimulationOptimizationCandidate | 8 | summaryText | String |
+| SimulationOptimizationCandidate | 9 | selectedByActorId | String |
+| SimulationOptimizationCandidate | 10 | selectedAt | Instant |
+| SimulationOptimizationCandidate | 11 | createdAt | Instant |
+| SimulationRecommendation | 1 | id | String |
+| SimulationRecommendation | 2 | runId | String |
+| SimulationRecommendation | 3 | candidateId | String |
+| SimulationRecommendation | 4 | recommendationTypeId | String |
+| SimulationRecommendation | 5 | recommendationStatus | SimulationRecommendationStatus |
+| SimulationRecommendation | 6 | title | String |
+| SimulationRecommendation | 7 | description | String |
+| SimulationRecommendation | 8 | confidenceLevelId | String |
+| SimulationRecommendation | 9 | targetModule | String |
+| SimulationRecommendation | 10 | targetProposalReference | String |
+| SimulationRecommendation | 11 | publishedByActorId | String |
+| SimulationRecommendation | 12 | publishedAt | Instant |
+| SimulationRecommendation | 13 | createdAt | Instant |
+| SimulationRun | 1 | id | String |
+| SimulationRun | 2 | scenarioId | String |
+| SimulationRun | 3 | modelVersionId | String |
+| SimulationRun | 4 | inputSnapshotId | String |
+| SimulationRun | 5 | runTypeId | String |
+| SimulationRun | 6 | status | SimulationRunStatus |
+| SimulationRun | 7 | requestedByActorId | String |
+| SimulationRun | 8 | requestedByDisplayNameSnapshot | String |
+| SimulationRun | 9 | queuedAt | Instant |
+| SimulationRun | 10 | startedAt | Instant |
+| SimulationRun | 11 | completedAt | Instant |
+| SimulationRun | 12 | durationMillis | Long |
+| SimulationRun | 13 | solverProfileId | String |
+| SimulationRun | 14 | correlationId | String |
+| SimulationRun | 15 | failureReason | String |
+| SimulationRun | 16 | createdAt | Instant |
+| SimulationScenario | 1 | id | String |
+| SimulationScenario | 2 | code | String |
+| SimulationScenario | 3 | nameAr | String |
+| SimulationScenario | 4 | nameFr | String |
+| SimulationScenario | 5 | nameEn | String |
+| SimulationScenario | 6 | scenarioTypeId | String |
+| SimulationScenario | 7 | modelId | String |
+| SimulationScenario | 8 | modelVersionId | String |
+| SimulationScenario | 9 | topologySnapshotId | String |
+| SimulationScenario | 10 | planningReferenceId | String |
+| SimulationScenario | 11 | monitoringContextId | String |
+| SimulationScenario | 12 | status | SimulationScenarioStatus |
+| SimulationScenario | 13 | createdByActorId | String |
+| SimulationScenario | 14 | createdByDisplayNameSnapshot | String |
+| SimulationScenario | 15 | createdAt | Instant |
+| SimulationScenario | 16 | updatedAt | Instant |
+
+### HMC-022 reconciliation
 
 ```text
-HMC-022 — docs(catalogue): scan simulation domain models
+baseline model files = 6
+extracted models     = 6
+exceptions           = 0
+declared fields      = 81
+zero-field models    = 0
 ```
 
-Do not start HMC-023 until HMC-022 is completed and its module counts are reported.
+The scan records only declarations under `simulation/domain/model`. Simulation domain value types referenced by record components remain declared field types and are not expanded into independent model rows.
+
+No JPA entity, API DTO, migration, application contract, infrastructure model, solver implementation, topology implementation, planning implementation, monitoring implementation, or database column metadata was mixed into this module scan.
+
+## 32. Current next task
+
+```text
+HMC-023 — docs(catalogue): scan telemetry domain models
+```
+
+Do not start HMC-024 until HMC-023 is completed and its module counts are reported.
 

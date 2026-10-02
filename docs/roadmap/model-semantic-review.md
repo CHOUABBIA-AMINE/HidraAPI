@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-003 completed; candidate dependencies classified, graph/cycle validation not yet started.
+**Status:** Active — HMS-004 completed; dependency graph and cycles validated, review order not yet generated.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -154,7 +154,7 @@ A review task records the decision and evidence. It must not silently change pro
 | HMS-001 | `docs(model-review): establish target model semantic review roadmap` | Create this roadmap and amend HDP so HDP-004 is explicitly paused behind the semantic-review prerequisite. No dependency analysis or production code changes. | **Completed** |
 | HMS-002 | `docs(model-review): inventory target model dependency evidence` | Inventory candidate relationship evidence for all 123 models from domain source, JPA, Flyway, contracts and enums. Every candidate edge retains evidence/provenance; no review order yet. | **Completed** — 123/123 subjects reconciled; 627 candidate relationship fields inventoried; JPA/ports/Flyway/custom-type evidence registered; no classification/order performed. |
 | HMS-003 | `docs(model-review): classify target model dependencies` | Resolve candidate edges into the dependency classifications in section 4; separate true dependencies from snapshots/codes and record unresolved edges. | **Completed** — 627/627 candidates classified; 165 unambiguous subject-model edges admitted provisionally; 134 unresolved candidates retained for HMS-004. |
-| HMS-004 | `docs(model-review): validate dependency graph and cycles` | Reconcile graph against persistence/contracts, identify strongly connected components, missing targets, contradictory edges and cross-module boundary concerns. | Planned |
+| HMS-004 | `docs(model-review): validate dependency graph and cycles` | Reconcile graph against persistence/contracts, identify strongly connected components, missing targets, contradictory edges and cross-module boundary concerns. | **Completed** — 123 nodes, 181 validated subject edges, 5 cyclic SCCs, 0 invalid subject targets; external read-persistence prerequisites retained outside the 123-node graph. |
 | HMS-005 | `docs(model-review): generate dependency ordered model review register` | Compute deterministic review levels/order and generate the 123-model review register with `HMSR-001…HMSR-123` codes and exact per-model commit messages. | Planned |
 | HMS-006 | `docs(model-review): reconcile interactive model decisions` | After all HMSR tasks are resolved, reconcile APPROVED/REVISE/DEFER/REMOVE decisions, outstanding corrections, unresolved cycles and dependency impacts. | Planned |
 | HMS-007 | `docs(model-review): finalize approved target model semantic baseline` | Publish the final target-model semantic baseline only when every model has a resolved disposition and any required model corrections are implemented or explicitly deferred. | Planned |
@@ -2653,10 +2653,376 @@ Confirmed subject-model graph edges at this stage: **165**. These are semantic c
 - No dependency depth, topological level, strongly connected component, downstream dependent count, or HMSR review code has been calculated.
 - No production code, JPA mapping, Flyway migration, application contract, enum/value type, or database data was modified.
 
-## 12. Current next task
+## 12. HMS-004 — Validated dependency graph and cycle evidence
+
+**Task:** HMS-004 — validate dependency graph and cycles  
+**Validation baseline:** HMS-003 classification register on `e10963a599e4fd0da8fbe6b17beaa53213ef07f9`  
+**Subject nodes:** 123  
+**HMS-003 provisional subject edges:** 165  
+**HMS-004 corrections:** 1 removed, 17 added  
+**Validated subject edges:** 181  
+**Same-module edges:** 122  
+**Cross-module stable/domain edges:** 59  
+**Strongly connected components:** 120 total; 5 cyclic components  
+**Remaining HMS-003 unresolved candidates not admitted to the 123-node graph:** 120
+
+### 12.1 Validation sources and boundary rules
+
+HMS-004 reconciles the provisional graph against live repository evidence including:
+
+- `docs/architecture/scalar-reference-integrity-inventory.md`;
+- `docs/architecture/domain-persistence-mirror-classification.md`;
+- current module data definitions and roadmaps;
+- current JPA entity mappings;
+- current application/integration contracts;
+- current invariant/migration evidence.
+
+The repository architecture explicitly distinguishes 123 retained domain-review subjects from **343 READ_PERSISTENCE_MODEL mirrors**. Those 343 persistence/read models remain outside the HMS interactive review population. References to them are recorded as external prerequisites/evidence; they are not silently promoted to HMS subject nodes.
+
+Cross-module stable references remain scalar across bounded contexts and must not be interpreted as cross-module database foreign keys. Historical snapshots, actor identifiers, technical correlation/request identifiers and polymorphic targets remain non-relational graph exclusions unless a concrete subject-model relationship is explicitly proven.
+
+### 12.2 HMS-003 corrections
+
+| Action | Source | Field | Validated target | Evidence/result |
+|---|---|---|---|---|
+| REMOVE | notification.NotificationRequest | requestId | — | Technical request/correlation identifier, not a NotificationRequest self-reference. |
+| ADD | assets.MaintainableAsset | parentAssetId | assets.MaintainableAsset | Repository invariant explicitly defines direct self-reference. |
+| ADD | audit.AuditExportRequest | resultDocumentReferenceId | documents.Document | Audit definition identifies Documents-owned export artifact. |
+| ADD | documents.Document | currentVersionId | documents.DocumentVersion | Documents definition identifies current active/approved version. |
+| ADD | documents.DocumentVersion | approvedByWorkflowInstanceId | workflow.WorkflowInstance | Documents definition identifies workflow approval instance. |
+| ADD | documents.DocumentVersion | supersededByVersionId | documents.DocumentVersion | Documents definition/invariant identifies version self-reference. |
+| ADD | identity.AuthorizationDelegationGrant | delegatorUserId | identity.User | Scalar-reference integrity inventory explicitly maps to identity.User. |
+| ADD | identity.AuthorizationDelegationGrant | delegateUserId | identity.User | Scalar-reference integrity inventory explicitly maps to identity.User. |
+| ADD | identity.User | employeeReferenceId | organization.Employee | Identity definition identifies organization-owned Employee reference. |
+| ADD | monitoring.PlanActualDeviation | planTargetId | planning.PlanTarget | Scalar-reference integrity inventory explicitly maps to planning.PlanTarget. |
+| ADD | organization.Employee | birthLocalityId | organization.AdministrativeLocality | Organization roadmap and migration define optional locality reference. |
+| ADD | organization.OrganizationUnit | unitTypeId | organization.OrganizationUnitType | Organization roadmap explicitly defines this reference. |
+| ADD | organization.OrganizationUnit | parentUnitId | organization.OrganizationUnit | Organization roadmap/invariant explicitly defines hierarchy self-reference. |
+| ADD | organization.ResponsibilityAssignment | scopeId | organization.OperationalScope | Organization roadmap/provisioning evidence defines scope identity. |
+| ADD | planning.PlanRevision | planId | planning.OperationalPlan | Planning definition explicitly defines parent operational plan. |
+| ADD | reporting.ReportOutputArtifact | storageObjectReferenceId | documents.DocumentStorageObject | Reporting integration contract validates Documents storage object availability. |
+| ADD | reporting.ReportOutputArtifact | documentReferenceId | documents.Document | Scalar-reference integrity policy identifies Documents-owned document reference. |
+| ADD | workflow.WorkflowInstance | currentStepId | workflow.WorkflowStep | Workflow definition explicitly defines current step reference. |
+
+### 12.3 Validated subject-edge register
+
+| Source model | Field | Target model | Scope |
+|---|---|---|---|
+| alarm.AlarmAcknowledgement | alarmId | alarm.Alarm | Same module |
+| alarm.AlarmAcknowledgement | organizationUnitId | organization.OrganizationUnit | Cross module |
+| alarm.AlarmClosure | alarmId | alarm.Alarm | Same module |
+| alarm.AlarmClosure | reviewWorkflowInstanceId | workflow.WorkflowInstance | Cross module |
+| alarm.Alarm | incidentId | incident.Incident | Cross module |
+| alarm.Alarm | owningOrganizationUnitId | organization.OrganizationUnit | Cross module |
+| alarm.Alarm | planningTargetId | planning.PlanTarget | Cross module |
+| alarm.AlarmShelving | alarmId | alarm.Alarm | Same module |
+| alarm.Alarm | telemetryReadingId | telemetry.TelemetryReading | Cross module |
+| alarm.Alarm | workflowInstanceId | workflow.WorkflowInstance | Cross module |
+| analytics.AnalyticsDatasetVersion | datasetId | analytics.AnalyticsDataset | Same module |
+| analytics.MetricValue | metricEvaluationRunId | analytics.MetricEvaluationRun | Same module |
+| assets.AssetConditionRecord | maintainableAssetId | assets.MaintainableAsset | Same module |
+| assets.MaintainableAsset | manufacturerPartyId | party.Party | Cross module |
+| assets.MaintainableAsset | ownerOrganizationUnitId | organization.OrganizationUnit | Cross module |
+| assets.MaintainableAsset | parentAssetId | assets.MaintainableAsset | Same module |
+| assets.MaintenanceWorkOrder | assignedOrganizationUnitId | organization.OrganizationUnit | Cross module |
+| assets.MaintenanceWorkOrder | maintainableAssetId | assets.MaintainableAsset | Same module |
+| assets.MaintenanceWorkOrder | workflowInstanceId | workflow.WorkflowInstance | Cross module |
+| audit.AuditAccessRecord | auditEventId | audit.AuditEvent | Same module |
+| audit.AuditAccessRecord | exportRequestId | audit.AuditExportRequest | Same module |
+| audit.AuditBeforeAfterValue | auditEventId | audit.AuditEvent | Same module |
+| audit.AuditEvent | organizationUnitId | organization.OrganizationUnit | Cross module |
+| audit.AuditEvent | workflowActionId | workflow.WorkflowAction | Cross module |
+| audit.AuditEvent | workflowInstanceId | workflow.WorkflowInstance | Cross module |
+| audit.AuditEvent | workflowTaskId | workflow.WorkflowTask | Cross module |
+| audit.AuditExportRequest | resultDocumentReferenceId | documents.Document | Cross module |
+| audit.AuditExportRequest | workflowInstanceId | workflow.WorkflowInstance | Cross module |
+| configuration.ConfigurationValue | definitionId | configuration.ConfigurationDefinition | Same module |
+| custody.CustodyTransferTicket | measurementPeriodId | custody.CustodyMeasurementPeriod | Same module |
+| custody.CustodyTransferTicket | workflowInstanceId | workflow.WorkflowInstance | Cross module |
+| documents.Document | currentVersionId | documents.DocumentVersion | Same module |
+| documents.DocumentTargetLink | documentId | documents.Document | Same module |
+| documents.DocumentTargetLink | documentVersionId | documents.DocumentVersion | Same module |
+| documents.DocumentVersion | approvedByWorkflowInstanceId | workflow.WorkflowInstance | Cross module |
+| documents.DocumentVersion | documentId | documents.Document | Same module |
+| documents.DocumentVersion | storageObjectId | documents.DocumentStorageObject | Same module |
+| documents.DocumentVersion | supersededByVersionId | documents.DocumentVersion | Same module |
+| hse.HseCase | incidentReferenceId | incident.Incident | Cross module |
+| hse.HseCase | responsibleOrganizationUnitId | organization.OrganizationUnit | Cross module |
+| hse.HseCase | workflowInstanceId | workflow.WorkflowInstance | Cross module |
+| hse.HseClosure | hseCaseId | hse.HseCase | Same module |
+| hse.HseClosure | workflowInstanceId | workflow.WorkflowInstance | Cross module |
+| hse.HseCorrectivePreventiveAction | hseCaseId | hse.HseCase | Same module |
+| hse.HseCorrectivePreventiveAction | linkedWorkOrderId | assets.MaintenanceWorkOrder | Cross module |
+| hse.HseCorrectivePreventiveAction | ownerOrganizationUnitId | organization.OrganizationUnit | Cross module |
+| hse.HseCorrectivePreventiveAction | workflowTaskId | workflow.WorkflowTask | Cross module |
+| hse.PermitToWork | workflowInstanceId | workflow.WorkflowInstance | Cross module |
+| identity.AuthenticationEvent | identityProviderId | identity.IdentityProvider | Same module |
+| identity.AuthenticationEvent | userId | identity.User | Same module |
+| identity.AuthorizationDecision | userId | identity.User | Same module |
+| identity.AuthorizationDelegationGrant | delegateUserId | identity.User | Same module |
+| identity.AuthorizationDelegationGrant | delegatorUserId | identity.User | Same module |
+| identity.AuthorizationDelegationGrant | permissionId | identity.Permission | Same module |
+| identity.AuthorizationDelegationGrant | roleId | identity.Role | Same module |
+| identity.ExternalRoleMapping | identityProviderId | identity.IdentityProvider | Same module |
+| identity.ExternalRoleMapping | roleId | identity.Role | Same module |
+| identity.GroupRoleGrant | roleId | identity.Role | Same module |
+| identity.HidraPrincipal | identityProviderId | identity.IdentityProvider | Same module |
+| identity.HidraPrincipal | userId | identity.User | Same module |
+| identity.LocalCredential | userId | identity.User | Same module |
+| identity.LoginSession | identityProviderId | identity.IdentityProvider | Same module |
+| identity.LoginSession | userId | identity.User | Same module |
+| identity.RolePermissionGrant | permissionId | identity.Permission | Same module |
+| identity.RolePermissionGrant | roleId | identity.Role | Same module |
+| identity.User | employeeReferenceId | organization.Employee | Cross module |
+| identity.UserPermissionGrant | permissionId | identity.Permission | Same module |
+| identity.UserPermissionGrant | userId | identity.User | Same module |
+| identity.UserRoleGrant | roleId | identity.Role | Same module |
+| identity.UserRoleGrant | userId | identity.User | Same module |
+| incident.IncidentClosure | incidentId | incident.Incident | Same module |
+| incident.IncidentClosure | workflowInstanceId | workflow.WorkflowInstance | Cross module |
+| incident.IncidentRelatedIncident | incidentId | incident.Incident | Same module |
+| incident.IncidentRelatedIncident | relatedIncidentId | incident.Incident | Same module |
+| incident.IncidentResponseAction | incidentId | incident.Incident | Same module |
+| incident.IncidentResponseAction | organizationUnitId | organization.OrganizationUnit | Cross module |
+| incident.Incident | responsibleOrganizationUnitId | organization.OrganizationUnit | Cross module |
+| incident.Incident | workflowInstanceId | workflow.WorkflowInstance | Cross module |
+| integration.ExternalSystem | ownerOrganizationUnitId | organization.OrganizationUnit | Cross module |
+| integration.IntegrationDeadLetterRecord | exchangeMessageId | integration.IntegrationExchangeMessage | Same module |
+| integration.IntegrationDeadLetterRecord | externalSystemId | integration.ExternalSystem | Same module |
+| integration.IntegrationDeadLetterRecord | jobRunId | integration.IntegrationJobRun | Same module |
+| integration.IntegrationExchangeMessage | externalSystemId | integration.ExternalSystem | Same module |
+| integration.IntegrationExchangeMessage | jobRunId | integration.IntegrationJobRun | Same module |
+| integrity.IntegrityAssessment | programId | integrity.IntegrityProgram | Same module |
+| integrity.IntegrityAssessment | workflowInstanceId | workflow.WorkflowInstance | Cross module |
+| integrity.IntegrityCase | primaryDefectId | integrity.PipelineDefect | Same module |
+| integrity.IntegrityCase | responsibleOrganizationUnitId | organization.OrganizationUnit | Cross module |
+| integrity.IntegrityCase | sourceHseCaseId | hse.HseCase | Cross module |
+| integrity.IntegrityCase | sourceIncidentId | incident.Incident | Cross module |
+| integrity.IntegrityCase | workflowInstanceId | workflow.WorkflowInstance | Cross module |
+| integrity.IntegrityProgram | ownerOrganizationUnitId | organization.OrganizationUnit | Cross module |
+| leakdetection.LeakDetectionCase | owningOrganizationUnitId | organization.OrganizationUnit | Cross module |
+| leakdetection.LeakDetectionCase | primaryCandidateId | leakdetection.LeakCandidate | Same module |
+| leakdetection.LeakEscalationReference | candidateId | leakdetection.LeakCandidate | Same module |
+| leakdetection.LeakEscalationReference | caseId | leakdetection.LeakDetectionCase | Same module |
+| monitoring.MonitoringRule | telemetryPointId | telemetry.TelemetryPoint | Cross module |
+| monitoring.PlanActualDeviation | planTargetId | planning.PlanTarget | Cross module |
+| monitoring.PlanActualDeviation | telemetryPointId | telemetry.TelemetryPoint | Cross module |
+| monitoring.PlanActualDeviation | trustedTelemetryReadingId | telemetry.TrustedTelemetryReading | Cross module |
+| notification.NotificationDeliveryAttempt | messageId | notification.NotificationMessage | Same module |
+| notification.NotificationMessage | requestId | notification.NotificationRequest | Same module |
+| notification.NotificationMessage | templateId | notification.NotificationTemplate | Same module |
+| notification.NotificationRequest | templateId | notification.NotificationTemplate | Same module |
+| organization.AdministrativeDistrict | stateId | organization.AdministrativeState | Same module |
+| organization.AdministrativeLocality | districtId | organization.AdministrativeDistrict | Same module |
+| organization.EmployeeAddress | employeeId | organization.Employee | Same module |
+| organization.EmployeeAddress | localityId | organization.AdministrativeLocality | Same module |
+| organization.EmployeeAssignment | employeeId | organization.Employee | Same module |
+| organization.EmployeeAssignment | organizationUnitId | organization.OrganizationUnit | Same module |
+| organization.EmployeeAssignment | positionId | organization.Position | Same module |
+| organization.Employee | birthLocalityId | organization.AdministrativeLocality | Same module |
+| organization.OrganizationDelegation | delegateEmployeeId | organization.Employee | Same module |
+| organization.OrganizationDelegation | delegatorEmployeeId | organization.Employee | Same module |
+| organization.OrganizationDelegation | responsibilityAssignmentId | organization.ResponsibilityAssignment | Same module |
+| organization.OrganizationHierarchySnapshot | capturedByEmployeeId | organization.Employee | Same module |
+| organization.OrganizationUnit | parentUnitId | organization.OrganizationUnit | Same module |
+| organization.OrganizationUnit | unitTypeId | organization.OrganizationUnitType | Same module |
+| organization.ResponsibilityAssignment | scopeId | organization.OperationalScope | Same module |
+| organization.ShiftAssignment | employeeId | organization.Employee | Same module |
+| organization.ShiftAssignment | organizationUnitId | organization.OrganizationUnit | Same module |
+| organization.ShiftAssignment | shiftId | organization.Shift | Same module |
+| party.PartyRoleAssignment | partyId | party.Party | Same module |
+| party.PartyRoleAssignment | roleId | identity.Role | Cross module |
+| planning.Nomination | counterpartyId | party.Party | Cross module |
+| planning.Nomination | revisionId | planning.PlanRevision | Same module |
+| planning.Nomination | shipperPartyId | party.Party | Cross module |
+| planning.OperationalPlan | approvedRevisionId | planning.PlanRevision | Same module |
+| planning.OperationalPlan | currentRevisionId | planning.PlanRevision | Same module |
+| planning.OperationalPlan | periodId | planning.PlanningPeriod | Same module |
+| planning.OperationalPlan | responsibleOrganizationUnitId | organization.OrganizationUnit | Cross module |
+| planning.PlanRevision | baseRevisionId | planning.PlanRevision | Same module |
+| planning.PlanRevision | planId | planning.OperationalPlan | Same module |
+| planning.PlanRevision | workflowInstanceId | workflow.WorkflowInstance | Cross module |
+| planning.PlanTarget | nominationId | planning.Nomination | Same module |
+| planning.PlanTarget | revisionId | planning.PlanRevision | Same module |
+| planning.PlanTarget | telemetryPointId | telemetry.TelemetryPoint | Cross module |
+| reporting.ReportOutputArtifact | documentReferenceId | documents.Document | Cross module |
+| reporting.ReportOutputArtifact | reportRunId | reporting.ReportRun | Same module |
+| reporting.ReportOutputArtifact | storageObjectReferenceId | documents.DocumentStorageObject | Cross module |
+| reporting.ReportRequest | organizationUnitId | organization.OrganizationUnit | Cross module |
+| reporting.ReportRequest | reportDefinitionId | reporting.ReportDefinition | Same module |
+| reporting.ReportRun | reportDefinitionId | reporting.ReportDefinition | Same module |
+| reporting.ReportRun | reportRequestId | reporting.ReportRequest | Same module |
+| risk.RiskAssessment | riskRegisterId | risk.RiskRegister | Same module |
+| risk.RiskEvidenceLink | riskAssessmentId | risk.RiskAssessment | Same module |
+| risk.RiskRegister | ownerOrganizationUnitId | organization.OrganizationUnit | Cross module |
+| simulation.SimulationCandidateChange | candidateId | simulation.SimulationOptimizationCandidate | Same module |
+| simulation.SimulationOptimizationCandidate | runId | simulation.SimulationRun | Same module |
+| simulation.SimulationRecommendation | candidateId | simulation.SimulationOptimizationCandidate | Same module |
+| simulation.SimulationRecommendation | runId | simulation.SimulationRun | Same module |
+| simulation.SimulationRun | scenarioId | simulation.SimulationScenario | Same module |
+| simulation.SimulationScenario | modelId | simulation.SimulationModel | Same module |
+| telemetry.TelemetryReading | pointId | telemetry.TelemetryPoint | Same module |
+| telemetry.TrustedTelemetryReading | pointId | telemetry.TelemetryPoint | Same module |
+| telemetry.TrustedTelemetryReading | readingId | telemetry.TelemetryReading | Same module |
+| topology.Equipment | facilityId | topology.Facility | Same module |
+| topology.Equipment | manufacturerPartyId | party.Party | Cross module |
+| topology.Facility | ownerPartyId | party.Party | Cross module |
+| topology.Pipeline | pipelineSystemId | topology.PipelineSystem | Same module |
+| workflow.WorkflowAction | instanceId | workflow.WorkflowInstance | Same module |
+| workflow.WorkflowAction | organizationUnitId | organization.OrganizationUnit | Cross module |
+| workflow.WorkflowAction | taskId | workflow.WorkflowTask | Same module |
+| workflow.WorkflowInstance | currentStepId | workflow.WorkflowStep | Same module |
+| workflow.WorkflowInstance | definitionId | workflow.WorkflowDefinition | Same module |
+| workflow.WorkflowStateHistory | actionId | workflow.WorkflowAction | Same module |
+| workflow.WorkflowStateHistory | fromStepId | workflow.WorkflowStep | Same module |
+| workflow.WorkflowStateHistory | instanceId | workflow.WorkflowInstance | Same module |
+| workflow.WorkflowStateHistory | taskId | workflow.WorkflowTask | Same module |
+| workflow.WorkflowStateHistory | toStepId | workflow.WorkflowStep | Same module |
+| workflow.WorkflowStepAssignmentRule | definitionId | workflow.WorkflowDefinition | Same module |
+| workflow.WorkflowStepAssignmentRule | organizationUnitId | organization.OrganizationUnit | Cross module |
+| workflow.WorkflowStepAssignmentRule | stepId | workflow.WorkflowStep | Same module |
+| workflow.WorkflowStep | defaultAssignmentRuleId | workflow.WorkflowStepAssignmentRule | Same module |
+| workflow.WorkflowStep | definitionId | workflow.WorkflowDefinition | Same module |
+| workflow.WorkflowTask | assignedOrganizationUnitId | organization.OrganizationUnit | Cross module |
+| workflow.WorkflowTask | instanceId | workflow.WorkflowInstance | Same module |
+| workflow.WorkflowTask | stepId | workflow.WorkflowStep | Same module |
+| workflow.WorkflowTransition | definitionId | workflow.WorkflowDefinition | Same module |
+| workflow.WorkflowTransition | fromStepId | workflow.WorkflowStep | Same module |
+| workflow.WorkflowTransition | toStepId | workflow.WorkflowStep | Same module |
+
+### 12.4 Cycle / strongly connected component register
+
+| SCC | Members | Interpretation for HMS-005 |
+|---|---|---|
+| SCC-01 | organization.OrganizationUnit | Hierarchy self-reference through parentUnitId; collapse as one review unit. |
+| SCC-02 | workflow.WorkflowStep, workflow.WorkflowStepAssignmentRule | Bidirectional workflow configuration: step default rule and rule step owner; review as one SCC. |
+| SCC-03 | planning.OperationalPlan, planning.PlanRevision | Plan owns current/approved revision while revision points to parent plan; review as one SCC. |
+| SCC-04 | assets.MaintainableAsset | Hierarchy self-reference through parentAssetId; collapse as one review unit. |
+| SCC-05 | documents.Document, documents.DocumentVersion | Document points to current version while version points to document; version also has supersession self-reference; review as one SCC. |
+
+### 12.5 Cross-module boundary concerns
+
+The validated graph contains **59 cross-module subject edges**. These represent semantic/stable references only. They do not authorize cross-module database foreign keys or aggregate ownership transfer.
+
+| Module boundary | Edge count |
+|---|---:|
+| audit → workflow | 4 |
+| hse → workflow | 4 |
+| monitoring → telemetry | 3 |
+| workflow → organization | 3 |
+| alarm → organization | 2 |
+| alarm → workflow | 2 |
+| assets → organization | 2 |
+| hse → organization | 2 |
+| incident → organization | 2 |
+| incident → workflow | 2 |
+| integrity → organization | 2 |
+| integrity → workflow | 2 |
+| planning → party | 2 |
+| reporting → documents | 2 |
+| topology → party | 2 |
+| alarm → incident | 1 |
+| alarm → planning | 1 |
+| alarm → telemetry | 1 |
+| assets → party | 1 |
+| assets → workflow | 1 |
+| audit → documents | 1 |
+| audit → organization | 1 |
+| custody → workflow | 1 |
+| documents → workflow | 1 |
+| hse → assets | 1 |
+| hse → incident | 1 |
+| identity → organization | 1 |
+| integration → organization | 1 |
+| integrity → hse | 1 |
+| integrity → incident | 1 |
+| leakdetection → organization | 1 |
+| monitoring → planning | 1 |
+| party → identity | 1 |
+| planning → organization | 1 |
+| planning → telemetry | 1 |
+| planning → workflow | 1 |
+| reporting → organization | 1 |
+| risk → organization | 1 |
+
+### 12.6 Out-of-subject prerequisites and unresolved references
+
+The 123-node HMS graph is intentionally a **domain-review graph**, not a complete persistence-schema graph. Repository remediation previously classified **343** additional mirrors as `READ_PERSISTENCE_MODEL`. Current subject models legitimately reference some of those persistence/read concepts, for example `TopologyNode`, `PipelineSegment`, `RiskMatrix`, `CustodyAgreement`, `ExpectedFlowState`, `MetricDefinition`, and `SimulationInputSnapshot`.
+
+Those references do not become HMS review nodes. HMS-005 must carry an **external prerequisite flag** on affected subject models so a model is not described as semantically dependency-free merely because its prerequisite is outside the 123-node review set.
+
+After the 17 graph additions above, **120 HMS-003 unresolved candidates** remain outside the subject graph. They are not silently guessed. Their distribution is:
+
+| Module | Remaining unresolved candidate fields |
+|---|---:|
+| alarm | 4 |
+| analytics | 8 |
+| assets | 6 |
+| audit | 4 |
+| configuration | 2 |
+| custody | 8 |
+| documents | 3 |
+| hse | 3 |
+| identity | 9 |
+| incident | 3 |
+| integration | 5 |
+| integrity | 4 |
+| leakdetection | 2 |
+| monitoring | 3 |
+| notification | 11 |
+| organization | 1 |
+| planning | 6 |
+| reporting | 2 |
+| risk | 13 |
+| simulation | 6 |
+| telemetry | 8 |
+| topology | 5 |
+| workflow | 4 |
+
+Representative non-subject prerequisites confirmed by repository evidence include:
+
+- `topology.TopologyConnection.fromNodeId/toNodeId` → persistence/read `TopologyNode`;
+- `topology.Equipment.pipelineSegmentId` and `topology.TopologyConnection.pipelineSegmentId` → persistence/read `PipelineSegment`;
+- `risk.RiskMatrixCell.riskMatrixId` → persistence/read `RiskMatrix`;
+- `custody.CustodyMeasurementPeriod.agreementId` / `CustodyTransferTicket.agreementId` → persistence/read `CustodyAgreement`;
+- `monitoring.PlanActualDeviation.expectedFlowStateId` → persistence/read `ExpectedFlowState`;
+- analytics metric-definition IDs → persistence/read `MetricDefinition` / `MetricDefinitionVersion`;
+- `simulation.SimulationRun.inputSnapshotId` → historical persistence/read `SimulationInputSnapshot`.
+
+### 12.7 Graph validation reconciliation
 
 ```text
-HMS-004 — docs(model-review): validate dependency graph and cycles
+subject nodes                              = 123
+HMS-003 provisional subject edges         = 165
+false subject edges removed               = 1
+repository-supported subject edges added  = 17
+validated subject edges                   = 181
+same-module subject edges                 = 122
+cross-module subject edges                = 59
+invalid/missing subject targets           = 0
+cyclic SCCs                               = 5
+remaining unresolved non-graph candidates = 120
+models with zero subject-graph dependencies = 34
+models with zero subject-graph dependents   = 59
 ```
 
-Do not start HMS-005 or any interactive HMSR review until HMS-004 is completed and reported.
+The two zero-degree counts above are structural diagnostics only. They are **not** the HMS review order because HMS-005 must first collapse SCCs and account for external prerequisite flags.
+
+### 12.8 HMS-004 outcome
+
+- The 123-node subject graph is internally target-valid: every admitted edge resolves to one HMS subject model.
+- One false technical self-edge was removed and seventeen repository-supported edges were added.
+- Five cyclic SCCs are explicitly identified and must be collapsed before ordering.
+- Cross-module stable references are retained semantically without creating persistence coupling.
+- The 343 READ_PERSISTENCE_MODEL mirrors remain outside the HMS interactive population; affected subject models must carry external-prerequisite flags.
+- Remaining ambiguous/non-subject candidates remain visible and are not guessed.
+- No review level, topological rank, downstream-dependent priority, or HMSR code has been generated.
+- No production Java, JPA, Flyway, application contract, enum/value type, or database content was modified.
+
+## 13. Current next task
+
+```text
+HMS-005 — docs(model-review): generate dependency ordered model review register
+```
+
+Do not start HMS-006 or any interactive HMSR review until HMS-005 is completed and the 123-model review register is generated.

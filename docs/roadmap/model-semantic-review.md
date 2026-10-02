@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -209,7 +209,7 @@ Ordering rules applied:
 | HMSR-014 | 0 | integration | IntegrationJobRun | — | — | 2 | 2 | 1 | REVISE | Completed | `docs(model-review): review integration IntegrationJobRun` |
 | HMSR-015 | 0 | leakdetection | LeakCandidate | — | — | 2 | 2 | 2 | REVISE | Completed | `docs(model-review): review leakdetection LeakCandidate` |
 | HMSR-016 | 0 | organization | OperationalScope | — | — | 1 | 2 | 0 | APPROVED | Completed | `docs(model-review): review organization OperationalScope` |
-| HMSR-017 | 0 | analytics | AnalyticsDataset | — | — | 1 | 1 | 0 | — | Planned | `docs(model-review): review analytics AnalyticsDataset` |
+| HMSR-017 | 0 | analytics | AnalyticsDataset | — | — | 1 | 1 | 0 | APPROVED | Completed | `docs(model-review): review analytics AnalyticsDataset` |
 | HMSR-018 | 0 | analytics | MetricEvaluationRun | — | — | 1 | 1 | 1 | — | Planned | `docs(model-review): review analytics MetricEvaluationRun` |
 | HMSR-019 | 0 | configuration | ConfigurationDefinition | — | — | 1 | 1 | 1 | — | Planned | `docs(model-review): review configuration ConfigurationDefinition` |
 | HMSR-020 | 0 | custody | CustodyMeasurementPeriod | — | — | 1 | 1 | 2 | — | Planned | `docs(model-review): review custody CustodyMeasurementPeriod` |
@@ -1607,7 +1607,7 @@ Confirmed subject-model graph edges at this stage: **165**. These are semantic c
 | Field | Declared type | Classification | Resolved target | Graph edge | Notes |
 |---|---|---|---|:---:|---|
 | id | String | Self identifier | — | No | Primary identity of the current model. |
-| subjectAreaId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| subjectAreaId | String | Domain reference | analytics.AnalyticsSubjectArea (read/persistence model) | No | HMSR-017 stronger Analytics DDD + HRA-111 evidence resolves this required same-module reference to `hidra_analytics_subject_area`; target is outside the 123 HMS subject set. |
 
 #### analytics.AnalyticsDatasetVersion
 
@@ -5098,16 +5098,137 @@ Its older representation of the typed owner pair directly on each responsibility
 
 No production correction obligation is created by HMSR-016. The current live Organization implementation is suitable as the target semantic baseline for later responsibility/delegation model reviews and data provisioning.
 
-## 30. Current next task
+## 30. HMSR-017 — analytics.AnalyticsDataset review
+
+**Decision:** APPROVED  
+**Review code:** HMSR-017  
+**Dependency level:** 0  
+**Bounded context:** analytics  
+**Confirmed upstream subject dependencies:** none  
+**Confirmed direct dependents:** 1 — `analytics.AnalyticsDatasetVersion` through `datasetId`  
+**Transitive dependents:** 1  
+**Unresolved/non-subject references:** 0
+
+### 30.1 Semantic role and ordering rationale
+
+`AnalyticsDataset` is the Analytics-owned metadata aggregate for one curated analytical dataset family. It defines stable identity, localized labels, analytical subject area, dataset/refresh classifications, lineage and quality state, schema/provenance metadata and an optional validity interval.
+
+It is Level 0 because its only domain prerequisite, `AnalyticsSubjectArea`, is retained as an Analytics read/persistence model outside the 123 HMS subject population. `AnalyticsDatasetVersion` is the sole direct HMS subject dependent through `datasetId`.
+
+Analytics remains a derived/read-oriented bounded context. The dataset metadata does not own or mutate Telemetry, Topology, Planning, Monitoring, Alarm, Incident, Integrity, Custody, HSE, Risk, Audit or other source-domain truth.
+
+### 30.2 Field semantics
+
+| Field | Type | Mandatory / optional | Reviewed meaning |
+|---|---|---|---|
+| `id` | `String` | Mandatory | Stable dataset identity and persistence primary key. |
+| `code` | `String` | Mandatory | Stable dataset business code. The current Analytics DDD does not state a uniqueness invariant for dataset code, so HMSR-017 does not invent one. |
+| `nameAr` | `String` | Optional | Arabic dataset display label. |
+| `nameFr` | `String` | Persistence-required text | French dataset display label. JPA/schema require it, while HRA explicitly classifies generic names/labels as persistence-only text rather than automatic constructor invariants. |
+| `nameEn` | `String` | Optional | English dataset display label. |
+| `subjectAreaId` | `String` | Mandatory | Same-module reference to Analytics-owned `AnalyticsSubjectArea`. |
+| `datasetType` | `AnalyticsDatasetType` | Mandatory | Stable dataset kind: `SNAPSHOT`, `TIME_SERIES`, `AGGREGATE`, `FEATURE_SET`, `TRAINING_DATASET`, `VALIDATION_DATASET`, `DASHBOARD_VIEW`, or `DIGITAL_TWIN_READINESS_VIEW`. |
+| `refreshMode` | `AnalyticsRefreshMode` | Mandatory | Refresh policy classification: `MANUAL`, `SCHEDULED`, `EVENT_DRIVEN`, `INCREMENTAL`, or `FULL_REBUILD`. |
+| `lineageStatus` | `AnalyticsLineageStatus` | Mandatory | Current lineage completeness state: `DRAFT`, `COMPLETE`, `PARTIAL`, `BROKEN`, or `UNKNOWN`. |
+| `qualityStatus` | `AnalyticsQualityStatus` | Mandatory | Current analytical data-quality state: `UNKNOWN`, `READY`, `WARNING`, `FAILED`, or `REJECTED`. |
+| `schemaVersion` | `String` | Optional | Dataset schema-version descriptor. |
+| `createdFrom` | `String` | Optional provenance text | High-level creation/provenance descriptor; it does not replace version-level source lineage. |
+| `validFrom` | `Instant` | Optional | Dataset metadata validity start. |
+| `validTo` | `Instant` | Optional | Dataset metadata validity end; when both endpoints exist, must not precede `validFrom`. |
+| `createdAt` | `Instant` | Persistence-required audit timestamp | Creation timestamp. HRA intentionally keeps generic audit-timestamp nullability at persistence/application boundaries. |
+| `updatedAt` | `Instant` | Persistence-required audit timestamp | Last-update timestamp. |
+
+The compact constructor correctly enforces `id`, `code`, `subjectAreaId`, all four enum/state fields, and `validFrom <= validTo` when both endpoints are present. It normalizes textual values consistently.
+
+### 30.3 Subject-area dependency resolution
+
+HMS-003 classified `subjectAreaId` generically as `CATALOG_OR_VALUE`. Stronger current repository evidence resolves the target precisely without adding an HMS subject edge:
+
+- Analytics DDD defines `AnalyticsSubjectArea` as a main Analytics aggregate/reference concept;
+- `AnalyticsSubjectAreaJpaEntity` persists it in `hidra_analytics_subject_area`;
+- repository mirror classification retains `AnalyticsSubjectArea` as a `READ_PERSISTENCE_MODEL` outside the 123 HMS subjects;
+- HRA-111 installs `fk_hra111_analytics_004`; 
+- that FK points `hidra_analytics_dataset.subject_area_id` to `hidra_analytics_subject_area(id)` with `ON DELETE RESTRICT`.
+
+Therefore `subjectAreaId` is a **same-module domain reference to a non-subject Analytics model**, not a generic catalog dependency and not a subject-graph edge.
+
+The Analytics DDD requires unique subject-area codes and states that a subject area's `ownerModule` identifies analytical stewardship rather than transactional ownership. Those rules belong to `AnalyticsSubjectArea`, not to `AnalyticsDataset`.
+
+### 30.4 Dataset/version/lineage ownership
+
+The DDD deliberately separates dataset-family metadata from immutable released data:
 
 ```text
-HMSR-017 — analytics.AnalyticsDataset
+AnalyticsDataset
+  -> AnalyticsDatasetVersion
+       -> AnalyticsDatasetLineage
+```
+
+`AnalyticsDatasetVersion` owns `versionNumber`, schema/data hashes, row count, period, quality score and publication state. HRA-111 protects `AnalyticsDatasetVersion.datasetId -> AnalyticsDataset.id` with `ON DELETE RESTRICT`.
+
+`AnalyticsDatasetLineage` owns source-module/object/version/snapshot provenance for a specific dataset version, and HRA-111 protects `datasetVersionId -> AnalyticsDatasetVersion.id`.
+
+This separation correctly satisfies the Analytics DDD rule that published dataset versions preserve reproducibility and lineage. `AnalyticsDataset.createdFrom` is not treated as a replacement for version-level lineage.
+
+The DDD rule that training datasets are immutable after publication is therefore governed through the dataset-version publication boundary. HMSR-017 does not invent an aggregate-level publication flag that the current model does not define.
+
+### 30.5 Creation defaults and lifecycle interpretation
+
+`AnalyticsApplicationService.createAnalyticsDataset()` creates new datasets with:
+
+```text
+lineageStatus = DRAFT
+qualityStatus = UNKNOWN
+validFrom = null
+validTo = null
+```
+
+These defaults are conservative and semantically compatible with a newly registered derived dataset whose materialized/versioned content and lineage have not yet been published.
+
+The current Analytics DDD does not define a separate `AnalyticsDatasetStatus` lifecycle for this aggregate. Publication/immutability state is represented on `AnalyticsDatasetVersion`, while lineage and quality are represented explicitly on the dataset metadata. HMSR-017 therefore does not introduce a missing-status defect.
+
+### 30.6 Persistence consistency
+
+The live domain and JPA models agree on all 16 declared components.
+
+The base Analytics migration makes `id`, `code`, `name_fr`, `subject_area_id`, `dataset_type`, `refresh_mode`, `lineage_status`, `quality_status`, `created_at`, and `updated_at` non-null. Optional schema/provenance/validity fields remain nullable.
+
+The database has ordinary indexes on dataset code, subject area and audit timestamps. The Analytics DDD does **not** state that dataset code is unique, so the absence of a unique code constraint is not treated as a semantic defect.
+
+HRA's exact-head invariant classification intentionally keeps generic names/labels such as `nameFr` and audit timestamps as persistence-only concerns unless a later domain-specific rule says otherwise. HMSR-017 therefore does not repeat the earlier pattern of incorrectly promoting every `NOT NULL` display field into a domain-constructor invariant.
+
+### 30.7 Enum versus Analytics catalog note
+
+The Analytics DDD lists `DATASET_TYPE` and `REFRESH_MODE` among example `AnalyticsCatalogEntry` families, while the live `AnalyticsDataset` model and schema use the strongly typed enums `AnalyticsDatasetType` and `AnalyticsRefreshMode` directly.
+
+No current dataset FK, application lookup, or seed evidence found during HMSR-017 makes `hidra_analytics_catalog_entry` authoritative for these two fields. The executable model and explicit dataset value lists are internally consistent.
+
+For later data provisioning, this means `DATASET_TYPE` / `REFRESH_MODE` catalog rows must **not** be assumed to be required relational parents of `AnalyticsDataset` unless an explicit Analytics design change establishes that contract. This is a documentation/provisioning caution, not a production-model correction obligation.
+
+### 30.8 Multilingual and operational interpretation
+
+Dataset labels are display metadata only. Current authoritative analytical facts remain in source modules and versioned dataset content/lineage.
+
+For SONATRACH/TRC, an AnalyticsDataset may represent curated trusted telemetry windows, plan-versus-actual aggregates, pipeline performance views, integrity trends, custody reconciliation sets, HSE/risk analytical views, or future digital-twin-readiness inputs. The dataset is always derived evidence; it does not become the operational source of truth.
+
+Analytics may use the dataset to compute metrics, projections, KPI values, trends and advisory insights, but any operational decision/action remains owned by the relevant business module.
+
+### 30.9 Review conclusion
+
+**APPROVED.** `AnalyticsDataset` has a coherent 16-field model, correct Level-0 placement, correct `AnalyticsSubjectArea` same-module non-subject dependency, correct validity ordering, conservative creation defaults, and a clean separation between dataset metadata and version-level publication/lineage.
+
+No production correction obligation is created by HMSR-017. The only retained note is for future provisioning/documentation: do not treat the example `DATASET_TYPE` / `REFRESH_MODE` catalog families as relational parents of the enum-backed dataset fields without a separately authorized design decision.
+
+## 31. Current next task
+
+```text
+HMSR-018 — analytics.MetricEvaluationRun
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review analytics AnalyticsDataset
+docs(model-review): review analytics MetricEvaluationRun
 ```
 
-Start HMSR-017 only after HMSR-016 is committed and reported. Do not start HMSR-018 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-018 only after HMSR-017 is committed and reported. Do not start HMSR-019 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

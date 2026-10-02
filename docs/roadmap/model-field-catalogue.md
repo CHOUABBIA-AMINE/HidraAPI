@@ -136,7 +136,7 @@ baseline model files
 | HMC-008 | `docs(catalogue): scan documents domain models` | Scan all 4 documents model files. | **Completed** — 4/4 models, 75 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-009 | `docs(catalogue): scan hse domain models` | Scan all 4 hse model files. | **Completed** — 4/4 models, 77 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-010 | `docs(catalogue): scan identity domain models` | Scan all 15 identity model files. | **Completed** — 15/15 models, 180 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
-| HMC-011 | `docs(catalogue): scan incident domain models` | Scan all 4 incident model files. | Planned |
+| HMC-011 | `docs(catalogue): scan incident domain models` | Scan all 4 incident model files. | **Completed** — 4/4 models, 74 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-012 | `docs(catalogue): scan integration domain models` | Scan all 4 integration model files. | Planned |
 | HMC-013 | `docs(catalogue): scan integrity domain models` | Scan all 4 integrity model files. | Planned |
 | HMC-014 | `docs(catalogue): scan leak detection domain models` | Scan all 3 leakdetection model files. | Planned |
@@ -1349,11 +1349,123 @@ The scan records only declarations under `identity/domain/model`. Identity domai
 
 No application, infrastructure, API, JPA, Flyway, DTO, authentication-provider implementation, credential persistence mapping, or database column metadata was mixed into this module scan.
 
-## 20. Current next task
+## 20. HMC-011 — Incident module scan evidence
+
+**Source commit:** `5e301857882b59e9e35ecc474e9c6537d89cc96a`  
+**Module:** `incident`  
+**Baseline model files:** 4  
+**Scanned models:** 4  
+**Declared fields/components:** 74  
+**Zero-field models:** 0  
+**Extraction exceptions:** 0
+
+### Incident model index
+
+| Model | Kind | Declared field count | Source path | Status |
+|---|---|---:|---|---|
+| Incident | record | 37 | `src/main/java/dz/sh/hidra/modules/incident/domain/model/Incident.java` | Extracted |
+| IncidentClosure | record | 11 | `src/main/java/dz/sh/hidra/modules/incident/domain/model/IncidentClosure.java` | Extracted |
+| IncidentRelatedIncident | record | 7 | `src/main/java/dz/sh/hidra/modules/incident/domain/model/IncidentRelatedIncident.java` | Extracted |
+| IncidentResponseAction | record | 19 | `src/main/java/dz/sh/hidra/modules/incident/domain/model/IncidentResponseAction.java` | Extracted |
+
+### Incident fields and declared Java types
+
+| Model | Ordinal | Field | Declared Java Type |
+|---|---:|---|---|
+| Incident | 1 | id | String |
+| Incident | 2 | incidentNumber | String |
+| Incident | 3 | title | String |
+| Incident | 4 | description | String |
+| Incident | 5 | classificationId | String |
+| Incident | 6 | severityId | String |
+| Incident | 7 | priorityId | String |
+| Incident | 8 | status | IncidentStatus |
+| Incident | 9 | sourceType | IncidentSourceType |
+| Incident | 10 | sourceReferenceId | String |
+| Incident | 11 | sourceReferenceCode | String |
+| Incident | 12 | detectedAt | Instant |
+| Incident | 13 | reportedAt | Instant |
+| Incident | 14 | occurredAt | Instant |
+| Incident | 15 | topologyAssetTypeCode | String |
+| Incident | 16 | topologyAssetId | String |
+| Incident | 17 | topologyAssetCode | String |
+| Incident | 18 | topologyAssetNameSnapshot | String |
+| Incident | 19 | locationDescriptionAr | String |
+| Incident | 20 | locationDescriptionLt | String |
+| Incident | 21 | latitude | BigDecimal |
+| Incident | 22 | longitude | BigDecimal |
+| Incident | 23 | responsibleOrganizationUnitId | String |
+| Incident | 24 | responsibleOrganizationUnitCode | String |
+| Incident | 25 | responsibleOrganizationUnitNameSnapshot | String |
+| Incident | 26 | responsibleActorId | String |
+| Incident | 27 | responsibleActorNameSnapshot | String |
+| Incident | 28 | workflowInstanceId | String |
+| Incident | 29 | currentEscalationLevel | int |
+| Incident | 30 | containedAt | Instant |
+| Incident | 31 | resolvedAt | Instant |
+| Incident | 32 | closedAt | Instant |
+| Incident | 33 | cancelledAt | Instant |
+| Incident | 34 | createdByActorId | String |
+| Incident | 35 | createdByActorNameSnapshot | String |
+| Incident | 36 | createdAt | Instant |
+| Incident | 37 | updatedAt | Instant |
+| IncidentClosure | 1 | id | String |
+| IncidentClosure | 2 | incidentId | String |
+| IncidentClosure | 3 | closureSummary | String |
+| IncidentClosure | 4 | resolutionVerified | boolean |
+| IncidentClosure | 5 | evidenceReviewed | boolean |
+| IncidentClosure | 6 | rootCauseReviewed | boolean |
+| IncidentClosure | 7 | followUpActionsCreated | boolean |
+| IncidentClosure | 8 | closedByActorId | String |
+| IncidentClosure | 9 | closedByActorNameSnapshot | String |
+| IncidentClosure | 10 | closedAt | Instant |
+| IncidentClosure | 11 | workflowInstanceId | String |
+| IncidentRelatedIncident | 1 | id | String |
+| IncidentRelatedIncident | 2 | incidentId | String |
+| IncidentRelatedIncident | 3 | relatedIncidentId | String |
+| IncidentRelatedIncident | 4 | relationshipTypeId | String |
+| IncidentRelatedIncident | 5 | comment | String |
+| IncidentRelatedIncident | 6 | createdByActorId | String |
+| IncidentRelatedIncident | 7 | createdAt | Instant |
+| IncidentResponseAction | 1 | id | String |
+| IncidentResponseAction | 2 | incidentId | String |
+| IncidentResponseAction | 3 | actionTypeId | String |
+| IncidentResponseAction | 4 | actionStatus | ResponseActionStatus |
+| IncidentResponseAction | 5 | description | String |
+| IncidentResponseAction | 6 | targetType | ResponseTargetType |
+| IncidentResponseAction | 7 | targetReferenceId | String |
+| IncidentResponseAction | 8 | targetReferenceCode | String |
+| IncidentResponseAction | 9 | plannedStartAt | Instant |
+| IncidentResponseAction | 10 | plannedEndAt | Instant |
+| IncidentResponseAction | 11 | startedAt | Instant |
+| IncidentResponseAction | 12 | completedAt | Instant |
+| IncidentResponseAction | 13 | performedByActorId | String |
+| IncidentResponseAction | 14 | performedByActorNameSnapshot | String |
+| IncidentResponseAction | 15 | organizationUnitId | String |
+| IncidentResponseAction | 16 | resultSummary | String |
+| IncidentResponseAction | 17 | failureReason | String |
+| IncidentResponseAction | 18 | createdAt | Instant |
+| IncidentResponseAction | 19 | updatedAt | Instant |
+
+### HMC-011 reconciliation
 
 ```text
-HMC-011 — docs(catalogue): scan incident domain models
+baseline model files = 4
+extracted models     = 4
+exceptions           = 0
+declared fields      = 74
+zero-field models    = 0
 ```
 
-Do not start HMC-012 until HMC-011 is completed and its module counts are reported.
+The scan records only declarations under `incident/domain/model`. Incident domain value types referenced by record components are field types, not independent model rows for this catalogue scope.
+
+No JPA entity, API DTO, migration, application contract, infrastructure model, or database column metadata was mixed into this module scan.
+
+## 21. Current next task
+
+```text
+HMC-012 — docs(catalogue): scan integration domain models
+```
+
+Do not start HMC-013 until HMC-012 is completed and its module counts are reported.
 

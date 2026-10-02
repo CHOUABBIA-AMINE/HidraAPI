@@ -148,7 +148,7 @@ baseline model files
 | HMC-020 | `docs(catalogue): scan reporting domain models` | Scan all 4 reporting model files. | **Completed** — 4/4 models, 59 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-021 | `docs(catalogue): scan risk domain models` | Scan all 4 risk model files. | **Completed** — 4/4 models, 78 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-022 | `docs(catalogue): scan simulation domain models` | Scan all 6 simulation model files. | **Completed** — 6/6 models, 81 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
-| HMC-023 | `docs(catalogue): scan telemetry domain models` | Scan all 4 telemetry model files. | Planned |
+| HMC-023 | `docs(catalogue): scan telemetry domain models` | Scan all 4 telemetry model files. | **Completed** — 4/4 models, 63 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-024 | `docs(catalogue): scan topology domain models` | Scan all 5 topology model files. | Planned |
 | HMC-025 | `docs(catalogue): scan workflow domain models` | Scan all 8 workflow model files. | Planned |
 | HMC-026 | `docs(catalogue): reconcile module model catalogue` | Reconcile all 24 module outputs against the pinned 123-file baseline; resolve extraction exceptions and duplicate/missing rows. | Planned |
@@ -2693,11 +2693,112 @@ The scan records only declarations under `simulation/domain/model`. Simulation d
 
 No JPA entity, API DTO, migration, application contract, infrastructure model, solver implementation, topology implementation, planning implementation, monitoring implementation, or database column metadata was mixed into this module scan.
 
-## 32. Current next task
+## 32. HMC-023 — Telemetry module scan evidence
+
+**Source commit:** `5e301857882b59e9e35ecc474e9c6537d89cc96a`  
+**Module:** `telemetry`  
+**Baseline model files:** 4  
+**Scanned models:** 4  
+**Declared fields/components:** 63  
+**Zero-field models:** 0  
+**Extraction exceptions:** 0
+
+### Telemetry model index
+
+| Model | Kind | Declared field count | Source path | Status |
+|---|---|---:|---|---|
+| TelemetryPoint | record | 18 | `src/main/java/dz/sh/hidra/modules/telemetry/domain/model/TelemetryPoint.java` | Extracted |
+| TelemetryReading | record | 16 | `src/main/java/dz/sh/hidra/modules/telemetry/domain/model/TelemetryReading.java` | Extracted |
+| TelemetrySource | record | 12 | `src/main/java/dz/sh/hidra/modules/telemetry/domain/model/TelemetrySource.java` | Extracted |
+| TrustedTelemetryReading | record | 17 | `src/main/java/dz/sh/hidra/modules/telemetry/domain/model/TrustedTelemetryReading.java` | Extracted |
+
+### Telemetry fields and declared Java types
+
+| Model | Ordinal | Field | Declared Java Type |
+|---|---:|---|---|
+| TelemetryPoint | 1 | id | String |
+| TelemetryPoint | 2 | deviceId | String |
+| TelemetryPoint | 3 | code | String |
+| TelemetryPoint | 4 | nameAr | String |
+| TelemetryPoint | 5 | nameFr | String |
+| TelemetryPoint | 6 | nameEn | String |
+| TelemetryPoint | 7 | pointTypeId | String |
+| TelemetryPoint | 8 | signalTypeId | String |
+| TelemetryPoint | 9 | unitId | String |
+| TelemetryPoint | 10 | defaultAggregationMethodId | String |
+| TelemetryPoint | 11 | samplingPeriodSeconds | Integer |
+| TelemetryPoint | 12 | externalReference | String |
+| TelemetryPoint | 13 | deadbandValue | BigDecimal |
+| TelemetryPoint | 14 | minOperationalValue | BigDecimal |
+| TelemetryPoint | 15 | maxOperationalValue | BigDecimal |
+| TelemetryPoint | 16 | status | TelemetryLifecycleStatus |
+| TelemetryPoint | 17 | createdAt | Instant |
+| TelemetryPoint | 18 | updatedAt | Instant |
+| TelemetryReading | 1 | id | String |
+| TelemetryReading | 2 | pointId | String |
+| TelemetryReading | 3 | numericValue | BigDecimal |
+| TelemetryReading | 4 | textValue | String |
+| TelemetryReading | 5 | booleanValue | Boolean |
+| TelemetryReading | 6 | qualityCodeId | String |
+| TelemetryReading | 7 | sourceTimestamp | Instant |
+| TelemetryReading | 8 | receivedAt | Instant |
+| TelemetryReading | 9 | state | ReadingState |
+| TelemetryReading | 10 | ingestionBatchId | String |
+| TelemetryReading | 11 | correlationId | String |
+| TelemetryReading | 12 | rejectionReason | String |
+| TelemetryReading | 13 | sourceSequenceNumber | String |
+| TelemetryReading | 14 | externalTagMappingId | String |
+| TelemetryReading | 15 | rawPayloadHash | String |
+| TelemetryReading | 16 | createdAt | Instant |
+| TelemetrySource | 1 | id | String |
+| TelemetrySource | 2 | code | String |
+| TelemetrySource | 3 | nameAr | String |
+| TelemetrySource | 4 | nameFr | String |
+| TelemetrySource | 5 | nameEn | String |
+| TelemetrySource | 6 | sourceTypeId | String |
+| TelemetrySource | 7 | protocolId | String |
+| TelemetrySource | 8 | endpointUri | String |
+| TelemetrySource | 9 | externalReference | String |
+| TelemetrySource | 10 | status | TelemetryLifecycleStatus |
+| TelemetrySource | 11 | createdAt | Instant |
+| TelemetrySource | 12 | updatedAt | Instant |
+| TrustedTelemetryReading | 1 | id | String |
+| TrustedTelemetryReading | 2 | readingId | String |
+| TrustedTelemetryReading | 3 | pointId | String |
+| TrustedTelemetryReading | 4 | numericValue | BigDecimal |
+| TrustedTelemetryReading | 5 | textValue | String |
+| TrustedTelemetryReading | 6 | booleanValue | Boolean |
+| TrustedTelemetryReading | 7 | unitId | String |
+| TrustedTelemetryReading | 8 | qualityCodeId | String |
+| TrustedTelemetryReading | 9 | trustLevel | TrustLevel |
+| TrustedTelemetryReading | 10 | sourceTimestamp | Instant |
+| TrustedTelemetryReading | 11 | trustedAt | Instant |
+| TrustedTelemetryReading | 12 | qualityAssessmentId | String |
+| TrustedTelemetryReading | 13 | topologyAssetTypeCode | String |
+| TrustedTelemetryReading | 14 | topologyAssetId | String |
+| TrustedTelemetryReading | 15 | topologyAssetCode | String |
+| TrustedTelemetryReading | 16 | topologySnapshotId | String |
+| TrustedTelemetryReading | 17 | ingestionBatchId | String |
+
+### HMC-023 reconciliation
 
 ```text
-HMC-023 — docs(catalogue): scan telemetry domain models
+baseline model files = 4
+extracted models     = 4
+exceptions           = 0
+declared fields      = 63
+zero-field models    = 0
 ```
 
-Do not start HMC-024 until HMC-023 is completed and its module counts are reported.
+The scan records only declarations under `telemetry/domain/model`. Telemetry domain value types referenced by record components remain declared field types and are not expanded into independent model rows.
+
+No JPA entity, API DTO, migration, application contract, infrastructure acquisition adapter, SCADA/historian connector implementation, topology implementation, or database column metadata was mixed into this module scan.
+
+## 33. Current next task
+
+```text
+HMC-024 — docs(catalogue): scan topology domain models
+```
+
+Do not start HMC-025 until HMC-024 is completed and its module counts are reported.
 

@@ -132,7 +132,7 @@ baseline model files
 | HMC-004 | `docs(catalogue): scan assets domain models` | Scan all 3 assets model files. | **Completed** — 3/3 models, 56 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-005 | `docs(catalogue): scan audit domain models` | Scan all 4 audit model files. | **Completed** — 4/4 models, 83 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-006 | `docs(catalogue): scan configuration domain models` | Scan all 3 configuration model files. | **Completed** — 3/3 models, 40 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
-| HMC-007 | `docs(catalogue): scan custody domain models` | Scan all 3 custody model files. | Planned |
+| HMC-007 | `docs(catalogue): scan custody domain models` | Scan all 3 custody model files. | **Completed** — 3/3 models, 45 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-008 | `docs(catalogue): scan documents domain models` | Scan all 4 documents model files. | Planned |
 | HMC-009 | `docs(catalogue): scan hse domain models` | Scan all 4 hse model files. | Planned |
 | HMC-010 | `docs(catalogue): scan identity domain models` | Scan all 15 identity model files. | Planned |
@@ -810,11 +810,93 @@ The scan records only declarations under `configuration/domain/model`. Configura
 
 No JPA entity, API DTO, migration, application contract, infrastructure model, or database column metadata was mixed into this module scan.
 
-## 16. Current next task
+## 16. HMC-007 — Custody module scan evidence
+
+**Source commit:** `5e301857882b59e9e35ecc474e9c6537d89cc96a`  
+**Module:** `custody`  
+**Baseline model files:** 3  
+**Scanned models:** 3  
+**Declared fields/components:** 45  
+**Zero-field models:** 0  
+**Extraction exceptions:** 0
+
+### Custody model index
+
+| Model | Kind | Declared field count | Source path | Status |
+|---|---|---:|---|---|
+| CustodyDiscrepancy | record | 16 | `src/main/java/dz/sh/hidra/modules/custody/domain/model/CustodyDiscrepancy.java` | Extracted |
+| CustodyMeasurementPeriod | record | 13 | `src/main/java/dz/sh/hidra/modules/custody/domain/model/CustodyMeasurementPeriod.java` | Extracted |
+| CustodyTransferTicket | record | 16 | `src/main/java/dz/sh/hidra/modules/custody/domain/model/CustodyTransferTicket.java` | Extracted |
+
+### Custody fields and declared Java types
+
+| Model | Ordinal | Field | Declared Java Type |
+|---|---:|---|---|
+| CustodyDiscrepancy | 1 | id | String |
+| CustodyDiscrepancy | 2 | discrepancyNumber | String |
+| CustodyDiscrepancy | 3 | reconciliationId | String |
+| CustodyDiscrepancy | 4 | discrepancyTypeId | String |
+| CustodyDiscrepancy | 5 | status | CustodyDiscrepancyStatus |
+| CustodyDiscrepancy | 6 | differenceQuantity | BigDecimal |
+| CustodyDiscrepancy | 7 | quantityUnitId | String |
+| CustodyDiscrepancy | 8 | description | String |
+| CustodyDiscrepancy | 9 | rootCauseText | String |
+| CustodyDiscrepancy | 10 | resolutionText | String |
+| CustodyDiscrepancy | 11 | assignedActorId | String |
+| CustodyDiscrepancy | 12 | openedAt | Instant |
+| CustodyDiscrepancy | 13 | resolvedAt | Instant |
+| CustodyDiscrepancy | 14 | closedAt | Instant |
+| CustodyDiscrepancy | 15 | createdAt | Instant |
+| CustodyDiscrepancy | 16 | updatedAt | Instant |
+| CustodyMeasurementPeriod | 1 | id | String |
+| CustodyMeasurementPeriod | 2 | periodCode | String |
+| CustodyMeasurementPeriod | 3 | agreementId | String |
+| CustodyMeasurementPeriod | 4 | transferPointId | String |
+| CustodyMeasurementPeriod | 5 | periodStart | Instant |
+| CustodyMeasurementPeriod | 6 | periodEnd | Instant |
+| CustodyMeasurementPeriod | 7 | status | CustodyPeriodStatus |
+| CustodyMeasurementPeriod | 8 | lockedByActorId | String |
+| CustodyMeasurementPeriod | 9 | lockedAt | Instant |
+| CustodyMeasurementPeriod | 10 | approvedByActorId | String |
+| CustodyMeasurementPeriod | 11 | approvedAt | Instant |
+| CustodyMeasurementPeriod | 12 | createdAt | Instant |
+| CustodyMeasurementPeriod | 13 | updatedAt | Instant |
+| CustodyTransferTicket | 1 | id | String |
+| CustodyTransferTicket | 2 | ticketNumber | String |
+| CustodyTransferTicket | 3 | measurementPeriodId | String |
+| CustodyTransferTicket | 4 | agreementId | String |
+| CustodyTransferTicket | 5 | transferPointId | String |
+| CustodyTransferTicket | 6 | batchId | String |
+| CustodyTransferTicket | 7 | quantityCalculationId | String |
+| CustodyTransferTicket | 8 | status | CustodyTicketStatus |
+| CustodyTransferTicket | 9 | ticketDate | Instant |
+| CustodyTransferTicket | 10 | issuedByActorId | String |
+| CustodyTransferTicket | 11 | approvedByActorId | String |
+| CustodyTransferTicket | 12 | approvedAt | Instant |
+| CustodyTransferTicket | 13 | workflowInstanceId | String |
+| CustodyTransferTicket | 14 | auditReferenceId | String |
+| CustodyTransferTicket | 15 | createdAt | Instant |
+| CustodyTransferTicket | 16 | updatedAt | Instant |
+
+### HMC-007 reconciliation
 
 ```text
-HMC-007 — docs(catalogue): scan custody domain models
+baseline model files = 3
+extracted models     = 3
+exceptions           = 0
+declared fields      = 45
+zero-field models    = 0
 ```
 
-Do not start HMC-008 until HMC-007 is completed and its module counts are reported.
+The scan records only declarations under `custody/domain/model`. Custody domain value types referenced by record components are field types, not independent model rows for this catalogue scope.
+
+No JPA entity, API DTO, migration, application contract, infrastructure model, or database column metadata was mixed into this module scan.
+
+## 17. Current next task
+
+```text
+HMC-008 — docs(catalogue): scan documents domain models
+```
+
+Do not start HMC-009 until HMC-008 is completed and its module counts are reported.
 

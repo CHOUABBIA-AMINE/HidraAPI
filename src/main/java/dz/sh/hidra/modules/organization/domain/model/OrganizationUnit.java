@@ -1,0 +1,105 @@
+/**
+ *
+ * @Project     : HidraAPI
+ * @Product     : Hidra - Hydrocarbon Intelligence for Data, Risk, and Analytics
+ * @Author      : Abir MEDJERAB
+ * @Owner       : Sonatrach / TRC : Digitalization Initiative
+ *
+ * @Name        : OrganizationUnit
+ * @CreatedOn   : 2025-06-26
+ * @UpdatedOn   : 2026-09-29
+ *
+ * @Type        : Record
+ * @Layer       : Domain
+ * @Module      : organization
+ * @Package     : dz.sh.hidra.modules.organization.domain.model
+ *
+ * @Description : Internal organization unit independent from operational-scope responsibility.
+ *
+ */
+package dz.sh.hidra.modules.organization.domain.model;
+
+import dz.sh.hidra.modules.organization.domain.exception.InvalidOrganizationValueException;
+import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitStatus;
+import dz.sh.hidra.modules.organization.domain.value.OrganizationCode;
+
+import java.time.Instant;
+
+/**
+ * Internal organization unit such as company, division, region, area,
+ * station-as-organization-unit, or team.
+ *
+ * <p>Operational responsibility is deliberately not part of the unit identity.
+ * It is modeled separately through responsibility assignments.</p>
+ *
+ * @param id id
+ * @param code code
+ * @param nameAr nameAr
+ * @param nameFr nameFr
+ * @param nameEn nameEn
+ * @param unitTypeId unitTypeId
+ * @param parentUnitId parentUnitId
+ * @param status status
+ * @param validFrom validFrom
+ * @param validTo validTo
+ * @param createdAt createdAt
+ * @param updatedAt updatedAt
+ */
+public record OrganizationUnit(
+        String id,
+        String code,
+        String nameAr,
+        String nameFr,
+        String nameEn,
+        String unitTypeId,
+        String parentUnitId,
+        OrganizationUnitStatus status,
+        Instant validFrom,
+        Instant validTo,
+        Instant createdAt,
+        Instant updatedAt
+) {
+
+    public OrganizationUnit {
+        // HRA-051 required: code
+        if (code == null || code.isBlank()) {
+            throw new InvalidOrganizationValueException("OrganizationUnit code must not be blank.");
+        }
+
+        id = requireText(id, "Organization unit ID is required.");
+        code = OrganizationCode.of(code).value();
+        nameAr = normalize(nameAr);
+        nameFr = normalize(nameFr);
+        nameEn = normalize(nameEn);
+        unitTypeId = requireText(unitTypeId, "Organization unit type ID is required.");
+        parentUnitId = normalize(parentUnitId);
+        if (status == null) {
+            throw new InvalidOrganizationValueException("Organization unit status is required.");
+        }
+        if (parentUnitId != null && parentUnitId.equals(id)) {
+            throw new InvalidOrganizationValueException("Organization unit cannot be its own parent.");
+        }
+        if (validFrom == null) {
+            throw new InvalidOrganizationValueException("Organization unit validFrom is required.");
+        }
+        if (validTo != null && !validTo.isAfter(validFrom)) {
+            throw new InvalidOrganizationValueException("Organization unit validTo must be after validFrom.");
+        }
+    }
+
+    private static String requireText(String value, String message) {
+        String normalized = normalize(value);
+        if (normalized == null) {
+            throw new InvalidOrganizationValueException(message);
+        }
+        return normalized;
+    }
+
+
+    private static String normalize(String value) {
+        if (value == null || value.isBlank()) {
+            return null;
+        }
+        return value.trim();
+    }
+}

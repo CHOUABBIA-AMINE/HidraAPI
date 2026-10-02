@@ -1,0 +1,149 @@
+/**
+ *
+ * @Project     : HidraAPI
+ * @Product     : Hidra - Hydrocarbon Intelligence for Data, Risk, and Analytics
+ * @Author      : Abir MEDJERAB
+ * @Owner       : Sonatrach / TRC : Digitalization Initiative
+ *
+ * @Name        : EmployeeAssignmentJpaEntity
+ * @CreatedOn   : 2025-06-26
+ * @UpdatedOn   : 2026-09-29
+ *
+ * @Type        : Class
+ * @Layer       : Infrastructure
+ * @Module      : organization
+ * @Package     : dz.sh.hidra.modules.organization.infrastructure.persistence.entity
+ *
+ * @Description : Database-backed JPA entity for canonical EmployeeAssignment state.
+ *
+ */
+package dz.sh.hidra.modules.organization.infrastructure.persistence.entity;
+
+import dz.sh.hidra.modules.organization.domain.value.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import java.time.Instant;
+
+    /**
+     * Database-backed JPA entity for EmployeeAssignment.
+     */
+    @Entity
+    @Table(name = "hidra_org_employee_assignment")
+    public class EmployeeAssignmentJpaEntity {
+
+        @Id
+    @Column(name = "id", nullable = false, length = 80)
+    private String id;
+
+    @Column(name = "employee_id", nullable = false, length = 80)
+    private String employeeId;
+
+    @Column(name = "organization_unit_id", nullable = false, length = 80)
+    private String organizationUnitId;
+
+    @Column(name = "position_id", nullable = false, length = 80)
+    private String positionId;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "assignment_type", nullable = false, length = 80)
+    private AssignmentType assignmentType;
+
+    @Column(name = "valid_from", nullable = false)
+    private Instant validFrom;
+
+    @Column(name = "valid_to", nullable = true)
+    private Instant validTo;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false, length = 40)
+    private AssignmentStatus status;
+
+    @Column(name = "created_at", nullable = false)
+    private Instant createdAt;
+
+    @Column(name = "updated_at", nullable = false)
+    private Instant updatedAt;
+
+        protected EmployeeAssignmentJpaEntity() {
+            // Required by JPA.
+        }
+
+        public EmployeeAssignmentJpaEntity(
+                String id,
+            String employeeId,
+            String organizationUnitId,
+            String positionId,
+            AssignmentType assignmentType,
+            Instant validFrom,
+            Instant validTo,
+            AssignmentStatus status,
+            Instant createdAt,
+            Instant updatedAt
+        ) {
+            this.id = id;
+        this.employeeId = employeeId;
+        this.organizationUnitId = organizationUnitId;
+        this.positionId = positionId;
+        this.assignmentType = assignmentType;
+        this.validFrom = validFrom;
+        this.validTo = validTo;
+        this.status = status;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        }
+
+
+    public String id() {
+        return id;
+    }
+
+
+    public String employeeId() {
+        return employeeId;
+    }
+
+
+    public String organizationUnitId() {
+        return organizationUnitId;
+    }
+
+
+    public String positionId() {
+        return positionId;
+    }
+
+
+    public AssignmentType assignmentType() {
+        return assignmentType;
+    }
+
+
+    public Instant validFrom() {
+        return validFrom;
+    }
+
+
+    public Instant validTo() {
+        return validTo;
+    }
+
+
+    public AssignmentStatus status() {
+        return status;
+    }
+
+
+    public Instant createdAt() {
+        return createdAt;
+    }
+
+
+    public Instant updatedAt() {
+        return updatedAt;
+    }
+
+    }

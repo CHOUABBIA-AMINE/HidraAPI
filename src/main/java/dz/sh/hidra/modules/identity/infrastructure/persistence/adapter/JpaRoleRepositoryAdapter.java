@@ -1,0 +1,58 @@
+/**
+ *
+ * @Project     : HidraAPI
+ * @Product     : Hidra - Hydrocarbon Intelligence for Data, Risk, and Analytics
+ * @Author      : Abir MEDJERAB
+ * @Owner       : Sonatrach / TRC : Digitalization Initiative
+ *
+ * @Name        : JpaRoleRepositoryAdapter
+ * @CreatedOn   : 2025-06-26
+ * @UpdatedOn   : 2026-09-15
+ *
+ * @Type        : Class
+ * @Layer       : Infrastructure
+ * @Module      : identity
+ * @Package     : dz.sh.hidra.modules.identity.infrastructure.persistence.adapter
+ *
+ * @Description : Database-backed adapter for Role.
+ *
+ */
+package dz.sh.hidra.modules.identity.infrastructure.persistence.adapter;
+
+import dz.sh.hidra.modules.identity.application.port.out.RoleRepositoryPort;
+import dz.sh.hidra.modules.identity.domain.model.Role;
+import dz.sh.hidra.modules.identity.infrastructure.persistence.mapper.IdentityPersistenceMapper;
+import dz.sh.hidra.modules.identity.infrastructure.persistence.repository.RoleJpaRepository;
+import java.util.Objects;
+import java.util.Optional;
+import org.springframework.stereotype.Component;
+
+/**
+ * Database-backed repository adapter for Role.
+ */
+@Component
+public class JpaRoleRepositoryAdapter implements RoleRepositoryPort {
+
+    private final RoleJpaRepository repository;
+
+    public JpaRoleRepositoryAdapter(RoleJpaRepository repository) {
+        this.repository = Objects.requireNonNull(repository, "RoleJpaRepository must not be null.");
+    }
+
+    @Override
+    public Role save(Role model) {
+        return IdentityPersistenceMapper.toDomain(
+                repository.save(IdentityPersistenceMapper.toEntity(model))
+        );
+    }
+
+    @Override
+    public Optional<Role> findById(String id) {
+        return repository.findById(id).map(IdentityPersistenceMapper::toDomain);
+    }
+
+    @Override
+    public Optional<Role> findByCode(String code) {
+        return repository.findFirstByCode(code).map(IdentityPersistenceMapper::toDomain);
+    }
+}

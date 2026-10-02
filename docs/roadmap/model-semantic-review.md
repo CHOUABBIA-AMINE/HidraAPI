@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -196,7 +196,7 @@ Ordering rules applied:
 | HMSR-001 | 0 | organization | OrganizationUnitType | — | — | 1 | 52 | 0 | APPROVED | Completed | `docs(model-review): review organization OrganizationUnitType` |
 | HMSR-002 | 0 | workflow | WorkflowDefinition | — | — | 4 | 36 | 1 | REVISE | Completed | `docs(model-review): review workflow WorkflowDefinition` |
 | HMSR-003 | 0 | organization | AdministrativeState | — | — | 1 | 17 | 0 | APPROVED | Completed | `docs(model-review): review organization AdministrativeState` |
-| HMSR-004 | 0 | party | Party | — | — | 5 | 14 | 0 | — | Planned | `docs(model-review): review party Party` |
+| HMSR-004 | 0 | party | Party | — | — | 5 | 14 | 0 | REVISE | Completed | `docs(model-review): review party Party` |
 | HMSR-005 | 0 | telemetry | TelemetryPoint | — | — | 5 | 9 | 3 | — | Planned | `docs(model-review): review telemetry TelemetryPoint` |
 | HMSR-006 | 0 | planning | PlanningPeriod | — | — | 1 | 9 | 0 | — | Planned | `docs(model-review): review planning PlanningPeriod` |
 | HMSR-007 | 0 | identity | Role | — | — | 6 | 6 | 0 | — | Planned | `docs(model-review): review identity Role` |
@@ -3417,16 +3417,132 @@ For SONATRACH/TRC operations, this administrative geography is personnel/organiz
 
 No unresolved semantic question requires a model change for HMSR-003. No production Java, JPA, Flyway, application contract, test, enum/value type, or database data is changed by this review.
 
-## 17. Current next task
+## 17. HMSR-004 — party.Party review
+
+**Decision:** REVISE  
+**Review code:** HMSR-004  
+**Dependency level:** 0  
+**Bounded context:** party  
+**Confirmed upstream subject dependencies:** none  
+**Confirmed direct dependents:** 5 — `party.PartyRoleAssignment`, `planning.Nomination`, `topology.Facility`, `topology.Equipment`, `assets.MaintainableAsset`  
+**Transitive dependents:** 14  
+**Unresolved subject references:** 0
+
+### 17.1 Semantic role and ordering rationale
+
+`Party` is the Party-owned master record for an external legal entity or recognized business actor referenced across Hidra. It is the identity anchor for suppliers, vendors, contractors, manufacturers, customers, shippers, owners, operators, joint-venture partners, inspection/certification bodies and other counterparties.
+
+It is Level 0 because none of its prerequisites are another HMS subject model. Its `partyTypeId` prerequisite is a Party-owned catalog/read-persistence model outside the 123 HMS subject set, while five reviewed subject models depend directly on `Party`.
+
+The boundary remains explicit:
+
+- Party owns external/counterparty master identity and business-role eligibility;
+- Organization owns internal employees, units, positions and reporting structures;
+- Identity owns users, credentials, roles and permissions;
+- Assets, Topology, Planning, Custody and other bounded contexts store only Party references/snapshots and do not own Party master data.
+
+### 17.2 Field semantics
+
+| Field | Type | Mandatory / optional | Reviewed meaning |
+|---|---|---|---|
+| `id` | `String` | Mandatory | Stable Party identity and persistence primary key. |
+| `code` | `String` | Mandatory | Stable Party business code. The active Party DDD requires this code to be globally unique. |
+| `partyTypeId` | `String` | Mandatory | Party-owned controlled-vocabulary reference to Party type/nature, such as legal entity, natural person, public authority, affiliate, JV, consortium, laboratory, certification body or regulator. |
+| `legalName` | `String` | Mandatory | Official legal name of the Party. This is required by the active Party DDD and live persistence schema. |
+| `tradeName` | `String` | Optional | Commercial/common trading name when different from the legal name. |
+| `shortName` | `String` | Optional | Short display name. |
+| `countryCode` | `String` | Mandatory | Country of legal establishment. |
+| `jurisdictionCode` | `String` | Optional | Legal jurisdiction or registry-area identifier. |
+| `status` | `PartyStatus` | Mandatory | Party lifecycle state: `DRAFT`, `ACTIVE`, `SUSPENDED`, `BLOCKED`, or `RETIRED`. |
+| `primaryRoleCodeSnapshot` | `String` | Optional snapshot | Display/convenience snapshot of a main role; authoritative role membership remains `PartyRoleAssignment`. |
+| `createdAt` | `Instant` | Mandatory in persistence | Creation audit timestamp. |
+| `updatedAt` | `Instant` | Mandatory in persistence | Last-update audit timestamp. |
+
+The current domain constructor already rejects blank `id`, `code`, `partyTypeId`, and `countryCode`, rejects null `status`, trims String values, and converts blank optional text to `null`.
+
+### 17.3 Party-type dependency resolution
+
+HMS-003 correctly classified `partyTypeId` as a value/catalog dependency rather than a 123-subject graph edge.
+
+Stronger repository evidence confirms:
+
+- `PartyJpaEntity.partyTypeId` maps to `hidra_party_party.party_type_id`;
+- HRA-111 installs and validates `fk_hra111_party_016`;
+- the FK targets `hidra_party_type(id)` with `ON DELETE RESTRICT`;
+- `PartyType` is retained as a Party READ_PERSISTENCE_MODEL outside the 123 HMS subject population.
+
+Therefore the Party subject has no upstream HMS-model dependency, while still having a concrete same-module catalog prerequisite.
+
+### 17.4 Downstream dependency and boundary evidence
+
+The validated HMS graph records five direct subject dependents:
+
+- `party.PartyRoleAssignment.partyId -> party.Party`;
+- `planning.Nomination.shipperPartyId -> party.Party`;
+- `planning.Nomination.counterpartyId -> party.Party`;
+- `topology.Facility.ownerPartyId -> party.Party`;
+- `topology.Equipment.manufacturerPartyId -> party.Party`;
+- `assets.MaintainableAsset.manufacturerPartyId -> party.Party`.
+
+The two Nomination fields are two graph edges from one dependent model, which is why the register reports five direct dependent models rather than six.
+
+Cross-module Party references remain scalar stable references/snapshots. They do not authorize cross-module database foreign keys or ownership transfer. The Party DDD explicitly forbids other bounded contexts from embedding Party domain objects.
+
+### 17.5 Lifecycle and role semantics
+
+`PartyStatus` is a Party lifecycle vocabulary, distinct from role-assignment status. The current helper `selectableForNewReference()` returns true only for `ACTIVE` parties, which provides a safe default for new references.
+
+The Party DDD further establishes that:
+
+- a Party has exactly one party type;
+- a Party may hold multiple active roles;
+- authoritative roles live in `PartyRoleAssignment`, not in `primaryRoleCodeSnapshot`;
+- blocked Parties must not be selected for new operational references unless an explicitly authorized Workflow override applies;
+- Party must not duplicate internal Employee or Identity User ownership.
+
+Any authorized exception to the default selection rule belongs at an application/Workflow authorization boundary; it must not make the display snapshot authoritative.
+
+### 17.6 Persistence consistency
+
+The live domain and JPA models expose the same 12 components. The base migration persists the same shape and makes `id`, `code`, `party_type_id`, `legal_name`, `country_code`, `status`, `created_at`, and `updated_at` non-null.
+
+The database currently has ordinary indexes for Party `code`, `party_type_id`, `status`, and audit timestamps. No current migration or repository contract found during HMSR-004 establishes Party-code uniqueness.
+
+The outbound Party repository port exposes only `save` and `findById`; the Spring Data repository likewise exposes the inherited ID-based operations and no Party-code existence/lookup contract.
+
+### 17.7 Required revisions
+
+The aggregate role and field set are correct, but two active Party DDD requirements are not enforced consistently enough for an APPROVED target baseline.
+
+1. **Required legal name:** the active Party DDD declares `legalName` required and the JPA/schema column is non-null, but the current domain constructor does not reject null/blank `legalName`. It normalizes blank input to `null`, allowing invalid Party state to exist until persistence failure.
+2. **Unique Party code:** the active Party DDD explicitly states `Party code must be unique`. The live schema has only a non-unique index on `code`, `PartyRepositoryPort` has no `findByCode`/`existsByCode` capability, and `PartyApplicationService.registerParty` performs no uniqueness check. The invariant therefore has no demonstrated application/database enforcement.
+
+These corrections belong to a later explicitly authorized Party implementation task. Domain construction should enforce locally decidable required state such as `legalName`; global code uniqueness should be enforced at the application/database boundary rather than through a repository lookup inside the domain record.
+
+HMSR-004 does not change production Java, JPA, Flyway, application/API contracts, tests, or database data.
+
+### 17.8 Operational interpretation
+
+For SONATRACH/TRC operations, `Party` is the shared counterparty/master-data identity for external organizations or recognized business actors. A manufacturer referenced by equipment, an owner referenced by a facility, or a shipper/counterparty referenced by a nomination must resolve to the same Party master identity while the consuming module retains only its stable reference and relevant snapshots.
+
+Party role does not imply contractual entitlement, Identity authorization, Workflow approval, financial account state, procurement eligibility, or OT-control authority. Those remain owned by their respective bounded contexts and governance mechanisms.
+
+### 17.9 Review conclusion
+
+**REVISE.** The current `Party` aggregate, field meanings, catalog prerequisite and cross-module reference direction are semantically appropriate, but the target baseline cannot mark the model APPROVED while mandatory `legalName` and globally unique `code` are not consistently enforced.
+
+HMS reconciliation must retain these two correction obligations until an explicitly authorized Party implementation task resolves them or the target Party semantics are explicitly changed.
+
+## 18. Current next task
 
 ```text
-HMSR-004 — party.Party
+HMSR-005 — telemetry.TelemetryPoint
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review party Party
+docs(model-review): review telemetry TelemetryPoint
 ```
 
-Start HMSR-004 only after HMSR-003 is committed and reported. Do not start HMSR-005 automatically. HMS-006 remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-005 only after HMSR-004 is committed and reported. Do not start HMSR-006 automatically. HMS-006 remains blocked until all 123 HMSR tasks are resolved.

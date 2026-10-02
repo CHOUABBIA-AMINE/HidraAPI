@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -154,7 +154,7 @@ A review task records the decision and evidence. It must not silently change pro
 | HMS-001 | `docs(model-review): establish target model semantic review roadmap` | Create this roadmap and amend HDP so HDP-004 is explicitly paused behind the semantic-review prerequisite. No dependency analysis or production code changes. | **Completed** |
 | HMS-002 | `docs(model-review): inventory target model dependency evidence` | Inventory candidate relationship evidence for all 123 models from domain source, JPA, Flyway, contracts and enums. Every candidate edge retains evidence/provenance; no review order yet. | **Completed** — 123/123 subjects reconciled; 627 candidate relationship fields inventoried; JPA/ports/Flyway/custom-type evidence registered; no classification/order performed. |
 | HMS-003 | `docs(model-review): classify target model dependencies` | Resolve candidate edges into the dependency classifications in section 4; separate true dependencies from snapshots/codes and record unresolved edges. | **Completed** — 627/627 candidates classified; 165 unambiguous subject-model edges admitted provisionally; 134 unresolved candidates retained for HMS-004. |
-| HMS-004 | `docs(model-review): validate dependency graph and cycles` | Reconcile graph against persistence/contracts, identify strongly connected components, missing targets, contradictory edges and cross-module boundary concerns. | **Completed** — 123 nodes, 181 validated subject edges, 5 cyclic SCCs, 0 invalid subject targets; external read-persistence prerequisites retained outside the 123-node graph. |
+| HMS-004 | `docs(model-review): validate dependency graph and cycles` | Reconcile graph against persistence/contracts, identify strongly connected components, missing targets, contradictory edges and cross-module boundary concerns. | **Completed** — originally 123 nodes / 181 validated subject edges / 5 cyclic SCCs / 0 invalid subject targets. HMSR-007 later proved `party.PartyRoleAssignment.roleId -> identity.Role` false using stronger Party DDD and HRA-111 FK evidence; current reconciled graph is 180 subject edges pending HMS-006 final reconciliation. |
 | HMS-005 | `docs(model-review): generate dependency ordered model review register` | Compute deterministic review levels/order and generate the 123-model review register with `HMSR-001…HMSR-123` codes and exact per-model commit messages. | **Completed** — 123/123 models ordered across Levels 0–8; 5 SCCs collapsed for ordering; exact HMSR codes/commit messages generated. |
 | HMS-006 | `docs(model-review): reconcile interactive model decisions` | After all HMSR tasks are resolved, reconcile APPROVED/REVISE/DEFER/REMOVE decisions, outstanding corrections, unresolved cycles and dependency impacts. | Planned |
 | HMS-007 | `docs(model-review): finalize approved target model semantic baseline` | Publish the final target-model semantic baseline only when every model has a resolved disposition and any required model corrections are implemented or explicitly deferred. | Planned |
@@ -199,7 +199,7 @@ Ordering rules applied:
 | HMSR-004 | 0 | party | Party | — | — | 5 | 14 | 0 | REVISE | Completed | `docs(model-review): review party Party` |
 | HMSR-005 | 0 | telemetry | TelemetryPoint | — | — | 5 | 9 | 3 | REVISE | Completed | `docs(model-review): review telemetry TelemetryPoint` |
 | HMSR-006 | 0 | planning | PlanningPeriod | — | — | 1 | 9 | 0 | REVISE | Completed | `docs(model-review): review planning PlanningPeriod` |
-| HMSR-007 | 0 | identity | Role | — | — | 6 | 6 | 0 | — | Planned | `docs(model-review): review identity Role` |
+| HMSR-007 | 0 | identity | Role | — | — | 5 | 5 | 0 | REVISE | Completed | `docs(model-review): review identity Role` |
 | HMSR-008 | 0 | documents | DocumentStorageObject | — | — | 2 | 6 | 1 | — | Planned | `docs(model-review): review documents DocumentStorageObject` |
 | HMSR-009 | 0 | simulation | SimulationModel | — | — | 1 | 5 | 1 | — | Planned | `docs(model-review): review simulation SimulationModel` |
 | HMSR-010 | 0 | identity | IdentityProvider | — | — | 4 | 4 | 0 | — | Planned | `docs(model-review): review identity IdentityProvider` |
@@ -241,7 +241,7 @@ Ordering rules applied:
 | HMSR-046 | 1 | identity | GroupRoleGrant | — | identity.Role | 0 | 0 | 2 | — | Planned | `docs(model-review): review identity GroupRoleGrant` |
 | HMSR-047 | 1 | identity | RolePermissionGrant | — | identity.Permission, identity.Role | 0 | 0 | 0 | — | Planned | `docs(model-review): review identity RolePermissionGrant` |
 | HMSR-048 | 1 | monitoring | MonitoringRule | — | telemetry.TelemetryPoint | 0 | 0 | 0 | — | Planned | `docs(model-review): review monitoring MonitoringRule` |
-| HMSR-049 | 1 | party | PartyRoleAssignment | — | identity.Role, party.Party | 0 | 0 | 0 | — | Planned | `docs(model-review): review party PartyRoleAssignment` |
+| HMSR-049 | 1 | party | PartyRoleAssignment | — | party.Party | 0 | 0 | 0 | — | Planned | `docs(model-review): review party PartyRoleAssignment` |
 | HMSR-050 | 1 | topology | Pipeline | — | topology.PipelineSystem | 0 | 0 | 0 | — | Planned | `docs(model-review): review topology Pipeline` |
 | HMSR-051 | 2 | workflow | WorkflowStep | SCC-02 | workflow.WorkflowDefinition, workflow.WorkflowStepAssignmentRule | 5 | 35 | 0 | — | Planned | `docs(model-review): review workflow WorkflowStep` |
 | HMSR-052 | 2 | workflow | WorkflowStepAssignmentRule | SCC-02 | organization.OrganizationUnit, workflow.WorkflowDefinition, workflow.WorkflowStep | 1 | 35 | 0 | — | Planned | `docs(model-review): review workflow WorkflowStepAssignmentRule` |
@@ -2399,7 +2399,7 @@ Confirmed subject-model graph edges at this stage: **165**. These are semantic c
 |---|---|---|---|:---:|---|
 | id | String | Self identifier | — | No | Primary identity of the current model. |
 | partyId | String | Domain reference | party.Party | Yes | Unambiguous same-module subject-model reference. |
-| roleId | String | Cross-module reference | identity.Role | Yes | Unambiguous reference to a subject model in another bounded context. |
+| roleId | String | Value/catalog dependency | PARTY_ROLE_CATALOG | No | HMSR-007 stronger Party DDD + HRA-111 evidence resolves this to Party-owned `PartyRole` (`hidra_party_role`), not `identity.Role`; no HMS subject edge. |
 
 #### planning.Nomination
 
@@ -2807,10 +2807,11 @@ Confirmed subject-model graph edges at this stage: **165**. These are semantic c
 **Validation baseline:** HMS-003 classification register on `e10963a599e4fd0da8fbe6b17beaa53213ef07f9`  
 **Subject nodes:** 123  
 **HMS-003 provisional subject edges:** 165  
-**HMS-004 corrections:** 1 removed, 17 added  
-**Validated subject edges:** 181  
+**HMS-004 corrections at completion:** 1 removed, 17 added  
+**HMSR-007 late correction:** 1 additional false cross-module edge removed (`party.PartyRoleAssignment.roleId -> identity.Role`)  
+**Current reconciled subject edges:** 180  
 **Same-module edges:** 122  
-**Cross-module stable/domain edges:** 59  
+**Cross-module stable/domain edges:** 58  
 **Strongly connected components:** 120 total; 5 cyclic components  
 **Remaining HMS-003 unresolved candidates not admitted to the 123-node graph:** 120
 
@@ -2979,7 +2980,6 @@ Cross-module stable references remain scalar across bounded contexts and must no
 | organization.ShiftAssignment | organizationUnitId | organization.OrganizationUnit | Same module |
 | organization.ShiftAssignment | shiftId | organization.Shift | Same module |
 | party.PartyRoleAssignment | partyId | party.Party | Same module |
-| party.PartyRoleAssignment | roleId | identity.Role | Cross module |
 | planning.Nomination | counterpartyId | party.Party | Cross module |
 | planning.Nomination | revisionId | planning.PlanRevision | Same module |
 | planning.Nomination | shipperPartyId | party.Party | Cross module |
@@ -3142,11 +3142,12 @@ Representative non-subject prerequisites confirmed by repository evidence includ
 ```text
 subject nodes                              = 123
 HMS-003 provisional subject edges         = 165
-false subject edges removed               = 1
+false subject edges removed in HMS-004    = 1
 repository-supported subject edges added  = 17
-validated subject edges                   = 181
+late false edge removed in HMSR-007       = 1
+current reconciled subject edges          = 180
 same-module subject edges                 = 122
-cross-module subject edges                = 59
+cross-module subject edges                = 58
 invalid/missing subject targets           = 0
 cyclic SCCs                               = 5
 remaining unresolved non-graph candidates = 120
@@ -3159,7 +3160,7 @@ The two zero-degree counts above are structural diagnostics only. They are **not
 ### 12.8 HMS-004 outcome
 
 - The 123-node subject graph is internally target-valid: every admitted edge resolves to one HMS subject model.
-- One false technical self-edge was removed and seventeen repository-supported edges were added.
+- HMS-004 removed one false technical self-edge and added seventeen repository-supported edges; HMSR-007 later removed the false cross-module `party.PartyRoleAssignment.roleId -> identity.Role` edge after stronger Party DDD and HRA-111 FK evidence proved `roleId` targets Party-owned `PartyRole`.
 - Five cyclic SCCs are explicitly identified and must be collapsed before ordering.
 - Cross-module stable references are retained semantically without creating persistence coupling.
 - The 343 READ_PERSISTENCE_MODEL mirrors remain outside the HMS interactive population; affected subject models must carry external-prerequisite flags.
@@ -3781,16 +3782,155 @@ A PlanningPeriod does not itself own telemetry measurements, topology state, wor
 
 HMS reconciliation must retain these obligations until an explicitly authorized Planning implementation/documentation task resolves them or the target semantics are explicitly changed.
 
-## 20. Current next task
+## 20. HMSR-007 — identity.Role review
+
+**Decision:** REVISE  
+**Review code:** HMSR-007  
+**Dependency level:** 0  
+**Bounded context:** identity  
+**Confirmed upstream subject dependencies:** none  
+**Confirmed direct dependents:** 5 — `identity.ExternalRoleMapping`, `identity.GroupRoleGrant`, `identity.RolePermissionGrant`, `identity.AuthorizationDelegationGrant`, `identity.UserRoleGrant`  
+**Transitive dependents:** 5  
+**Unresolved/non-subject references:** 0
+
+### 20.1 Semantic role and ordering rationale
+
+`Role` is the Identity-owned reusable authorization package that groups permissions for assignment to users, groups, external mappings and delegation paths. It is a security/authorization concept, not an Organization position/responsibility and not a Party business role.
+
+It remains Level 0 because it has no upstream HMS subject-model dependency. Its five confirmed subject dependents all consume the role identity through explicit Identity-owned grant/mapping relationships.
+
+The Identity boundary remains:
+
+- Identity owns users, security groups, roles, permissions, grants, provider mappings and authorization decisions;
+- Organization owns employees, positions, units and reporting structures;
+- Party owns external counterparties and **PartyRole** business classifications;
+- Workflow may approve sensitive grants but does not own Role;
+- Audit records evidence but does not own Role truth.
+
+### 20.2 Field semantics
+
+| Field | Type | Mandatory / optional | Reviewed meaning |
+|---|---|---|---|
+| `id` | `String` | Mandatory | Stable Identity Role identifier and persistence primary key. |
+| `code` | `String` | Mandatory | Stable unique role business/security code. |
+| `nameAr` | `String` | Optional | Arabic display label. |
+| `nameFr` | `String` | Optional | French display label. |
+| `nameEn` | `String` | Optional | English display label. |
+| `description` | `String` | Optional | Human-readable role purpose. |
+| `roleType` | `RoleType` | Mandatory | Identity role classification: `BUSINESS`, `SYSTEM`, `ADMIN`, `EXTERNAL_MAPPED`, or `BREAK_GLASS`. |
+| `status` | `RoleStatus` | Mandatory | Role lifecycle: `ACTIVE`, `DISABLED`, or `DEPRECATED`. |
+| `createdAt` | `Instant` | Mandatory in persistence | Creation audit timestamp. |
+| `updatedAt` | `Instant` | Mandatory in persistence | Last-update audit timestamp. |
+
+The domain constructor already rejects blank `id` and `code`, rejects null `roleType` and `status`, trims labels/description, and converts blank optional text to `null`.
+
+The current Identity DDD explicitly marks all three localized names optional. HMSR-007 therefore does not invent a mandatory French-name rule for Role.
+
+### 20.3 Role type and lifecycle semantics
+
+`RoleType` is a stable Identity authorization classification and is correctly modeled as an enum in the current target:
+
+- `BUSINESS` — reusable business authorization role;
+- `SYSTEM` — platform/system role;
+- `ADMIN` — administrative authority package;
+- `EXTERNAL_MAPPED` — internally governed role intended for explicit external-claim mapping;
+- `BREAK_GLASS` — emergency/high-governance role classification.
+
+`RoleStatus` separates lifecycle availability from role type. Current administrator security evidence explicitly requires the persisted `HIDRA_ADMIN` role to be `ACTIVE` and of type `ADMIN` before it can enable an administrator grant.
+
+HMSR-007 found no repository evidence requiring a different enum/catalog representation for these role/status values.
+
+### 20.4 Confirmed downstream dependency evidence
+
+The corrected subject graph retains five direct Role dependents:
+
+- `ExternalRoleMapping.roleId -> identity.Role`;
+- `GroupRoleGrant.roleId -> identity.Role`;
+- `RolePermissionGrant.roleId -> identity.Role`;
+- `AuthorizationDelegationGrant.roleId -> identity.Role` when role-based delegation is used;
+- `UserRoleGrant.roleId -> identity.Role`.
+
+These are Identity-owned authorization relationships and remain valid subject edges.
+
+### 20.5 Late graph correction — Party business role is not Identity Role
+
+HMSR-007 found a false cross-module edge that survived HMS-004:
 
 ```text
-HMSR-007 — identity.Role
+party.PartyRoleAssignment.roleId -> identity.Role
+```
+
+Stronger repository evidence disproves it:
+
+- the Party DDD explicitly owns `PartyRole` and `PartyRoleAssignment`;
+- the Party DDD explicitly says Identity `Role` remains in Identity and Party is not Identity;
+- `PartyRoleJpaEntity` persists the Party-owned role catalog in `hidra_party_role`;
+- HRA-111 installs `fk_hra111_party_023` from `hidra_party_role_assignment.role_id` to `hidra_party_role(id)`;
+- the Party assignment application service accepts the Party role ID without any Identity contract/repository dependency.
+
+Therefore `PartyRoleAssignment.roleId` is a **Party-owned value/catalog dependency**, not a cross-module dependency on `identity.Role`.
+
+This HMSR task corrects the roadmap classification, removes that validated-edge row, updates `HMSR-049` to depend only on `party.Party`, and updates Role's direct/transitive dependent counts from 6 to 5.
+
+The fixed edge does not change the frozen HMSR task codes or dependency levels: `identity.Role` remains Level 0 and `PartyRoleAssignment` remains Level 1 because it still depends on `party.Party`. HMS-006 must nevertheless recompute/reconcile final graph totals; the current reconciled count is 180 subject edges, with 122 same-module and 58 cross-module edges.
+
+### 20.6 Persistence and application consistency
+
+The live Role domain and JPA models agree on all 10 declared components.
+
+The base Identity migration makes `id`, `code`, `role_type`, `status`, `created_at`, and `updated_at` non-null; localized names and description are nullable.
+
+`RoleRepositoryPort` exposes:
+
+```text
+save
+findById
+findByCode
+```
+
+and the Spring Data repository implements code lookup through `findFirstByCode`.
+
+The controlled local-administrator bootstrap uses `findByCode("HIDRA_ADMIN")` before creating the bootstrap administrator role and refuses an existing non-ACTIVE administrator role.
+
+However, the general `IdentityAdministrationCommandApplicationService.createRole` path constructs and saves a new Role without checking `findByCode`.
+
+### 20.7 Required revision
+
+The Role model is otherwise semantically coherent, but one active Identity DDD invariant is not consistently enforced:
+
+1. **Unique Role code:** the Identity DDD explicitly defines `Role.code` as unique and recommends `uk_identity_role_code`. The live Flyway schema has only a non-unique index `ix_hidra_identity_role_code`; no later unique constraint was found. The general create-role application path does not call `RoleRepositoryPort.findByCode` before save. `RoleJpaRepository.findFirstByCode` also tolerates duplicate rows rather than making duplicates impossible.
+
+Global uniqueness belongs at the application/database boundary; it must not be implemented as a repository lookup inside the domain record constructor.
+
+HMSR-007 does not change production Java, JPA, Flyway, application/API contracts, tests, or database data.
+
+### 20.8 Authorization and operational interpretation
+
+For Hidra/SONATRACH TRC, Identity Role represents a governed authorization package such as an operational reviewer, administrator, telemetry approver or emergency-access role. It must remain distinct from:
+
+- an Organization position such as department head or dispatcher;
+- a Party business role such as supplier, manufacturer, owner or shipper;
+- a Workflow assignment rule;
+- an operational responsibility/scope record.
+
+Authorization must be based on role/permission/grant semantics and current scope/status validity rather than hard-coded role-name checks. External provider claims must map explicitly into internal Identity roles; they do not become authoritative roles by themselves.
+
+### 20.9 Review conclusion
+
+**REVISE.** `identity.Role` has the correct bounded-context ownership, fields, type/status vocabulary and five true subject dependents. HMSR-007 also removes one false Party-to-Identity role edge. The remaining blocker to APPROVED is the repository-defined unique Role-code invariant, which is not enforced consistently by the live create path and database schema.
+
+HMS reconciliation must retain the Role-code uniqueness correction and the late graph correction until an explicitly authorized Identity implementation task resolves the uniqueness invariant and HMS-006 recomputes the final dependency totals.
+
+## 21. Current next task
+
+```text
+HMSR-008 — documents.DocumentStorageObject
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review identity Role
+docs(model-review): review documents DocumentStorageObject
 ```
 
-Start HMSR-007 only after HMSR-006 is committed and reported. Do not start HMSR-008 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-008 only after HMSR-007 is committed and reported. Do not start HMSR-009 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

@@ -129,7 +129,7 @@ baseline model files
 | HMC-001 | `docs(catalogue): add module model scan roadmap` | Create this roadmap only. No model extraction. | **Completed** — roadmap created at `11118373ea112031342813abe8e4264c7bcd6018`; no model extraction performed. |
 | HMC-002 | `docs(catalogue): scan alarm domain models` | Scan all 4 `alarm/domain/model` files; record models, fields and Java types. | **Completed** — 4/4 models, 67 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-003 | `docs(catalogue): scan analytics domain models` | Scan all 7 analytics model files. | **Completed** — 7/7 models, 102 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
-| HMC-004 | `docs(catalogue): scan assets domain models` | Scan all 3 assets model files. | Planned |
+| HMC-004 | `docs(catalogue): scan assets domain models` | Scan all 3 assets model files. | **Completed** — 3/3 models, 56 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-005 | `docs(catalogue): scan audit domain models` | Scan all 4 audit model files. | Planned |
 | HMC-006 | `docs(catalogue): scan configuration domain models` | Scan all 3 configuration model files. | Planned |
 | HMC-007 | `docs(catalogue): scan custody domain models` | Scan all 3 custody model files. | Planned |
@@ -519,11 +519,104 @@ The scan records only declarations under `analytics/domain/model`. Analytics dom
 
 No JPA entity, API DTO, migration, application contract, infrastructure model, or database column metadata was mixed into this module scan.
 
-## 13. Current next task
+## 13. HMC-004 — Assets module scan evidence
+
+**Source commit:** `5e301857882b59e9e35ecc474e9c6537d89cc96a`  
+**Module:** `assets`  
+**Baseline model files:** 3  
+**Scanned models:** 3  
+**Declared fields/components:** 56  
+**Zero-field models:** 0  
+**Extraction exceptions:** 0
+
+### Assets model index
+
+| Model | Kind | Declared field count | Source path | Status |
+|---|---|---:|---|---|
+| AssetConditionRecord | record | 11 | `src/main/java/dz/sh/hidra/modules/assets/domain/model/AssetConditionRecord.java` | Extracted |
+| MaintainableAsset | record | 25 | `src/main/java/dz/sh/hidra/modules/assets/domain/model/MaintainableAsset.java` | Extracted |
+| MaintenanceWorkOrder | record | 20 | `src/main/java/dz/sh/hidra/modules/assets/domain/model/MaintenanceWorkOrder.java` | Extracted |
+
+### Assets fields and declared Java types
+
+| Model | Ordinal | Field | Declared Java Type |
+|---|---:|---|---|
+| AssetConditionRecord | 1 | id | String |
+| AssetConditionRecord | 2 | maintainableAssetId | String |
+| AssetConditionRecord | 3 | conditionStatus | AssetConditionStatus |
+| AssetConditionRecord | 4 | conditionTypeId | String |
+| AssetConditionRecord | 5 | sourceModule | String |
+| AssetConditionRecord | 6 | sourceReferenceId | String |
+| AssetConditionRecord | 7 | summary | String |
+| AssetConditionRecord | 8 | conditionScore | BigDecimal |
+| AssetConditionRecord | 9 | observedAt | Instant |
+| AssetConditionRecord | 10 | observedByActorId | String |
+| AssetConditionRecord | 11 | createdAt | Instant |
+| MaintainableAsset | 1 | id | String |
+| MaintainableAsset | 2 | assetNumber | String |
+| MaintainableAsset | 3 | assetCode | String |
+| MaintainableAsset | 4 | assetName | String |
+| MaintainableAsset | 5 | assetTypeId | String |
+| MaintainableAsset | 6 | topologyAssetTypeCode | String |
+| MaintainableAsset | 7 | topologyAssetId | String |
+| MaintainableAsset | 8 | topologyAssetCodeSnapshot | String |
+| MaintainableAsset | 9 | topologyAssetNameSnapshot | String |
+| MaintainableAsset | 10 | parentAssetId | String |
+| MaintainableAsset | 11 | status | AssetLifecycleStatus |
+| MaintainableAsset | 12 | criticalityId | String |
+| MaintainableAsset | 13 | ownerOrganizationUnitId | String |
+| MaintainableAsset | 14 | ownerOrganizationUnitNameSnapshot | String |
+| MaintainableAsset | 15 | manufacturerPartyId | String |
+| MaintainableAsset | 16 | manufacturerNameSnapshot | String |
+| MaintainableAsset | 17 | modelId | String |
+| MaintainableAsset | 18 | serialIdentityId | String |
+| MaintainableAsset | 19 | registeredAt | Instant |
+| MaintainableAsset | 20 | installedAt | Instant |
+| MaintainableAsset | 21 | commissionedAt | Instant |
+| MaintainableAsset | 22 | retiredAt | Instant |
+| MaintainableAsset | 23 | createdByActorId | String |
+| MaintainableAsset | 24 | createdAt | Instant |
+| MaintainableAsset | 25 | updatedAt | Instant |
+| MaintenanceWorkOrder | 1 | id | String |
+| MaintenanceWorkOrder | 2 | workOrderNumber | String |
+| MaintenanceWorkOrder | 3 | maintainableAssetId | String |
+| MaintenanceWorkOrder | 4 | maintenancePlanId | String |
+| MaintenanceWorkOrder | 5 | sourceRecommendationId | String |
+| MaintenanceWorkOrder | 6 | workOrderTypeId | String |
+| MaintenanceWorkOrder | 7 | priorityId | String |
+| MaintenanceWorkOrder | 8 | status | MaintenanceWorkOrderStatus |
+| MaintenanceWorkOrder | 9 | title | String |
+| MaintenanceWorkOrder | 10 | description | String |
+| MaintenanceWorkOrder | 11 | assignedOrganizationUnitId | String |
+| MaintenanceWorkOrder | 12 | assignedActorId | String |
+| MaintenanceWorkOrder | 13 | plannedStartAt | Instant |
+| MaintenanceWorkOrder | 14 | plannedEndAt | Instant |
+| MaintenanceWorkOrder | 15 | startedAt | Instant |
+| MaintenanceWorkOrder | 16 | completedAt | Instant |
+| MaintenanceWorkOrder | 17 | workflowInstanceId | String |
+| MaintenanceWorkOrder | 18 | createdByActorId | String |
+| MaintenanceWorkOrder | 19 | createdAt | Instant |
+| MaintenanceWorkOrder | 20 | updatedAt | Instant |
+
+### HMC-004 reconciliation
 
 ```text
-HMC-004 — docs(catalogue): scan assets domain models
+baseline model files = 3
+extracted models     = 3
+exceptions           = 0
+declared fields      = 56
+zero-field models    = 0
 ```
 
-Do not start HMC-005 until HMC-004 is completed and its module counts are reported.
+The scan records only declarations under `assets/domain/model`. Assets domain value types referenced by record components are field types, not independent model rows for this catalogue scope.
+
+No JPA entity, API DTO, migration, application contract, infrastructure model, or database column metadata was mixed into this module scan.
+
+## 14. Current next task
+
+```text
+HMC-005 — docs(catalogue): scan audit domain models
+```
+
+Do not start HMC-006 until HMC-005 is completed and its module counts are reported.
 

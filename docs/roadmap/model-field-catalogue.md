@@ -144,7 +144,7 @@ baseline model files
 | HMC-016 | `docs(catalogue): scan notification domain models` | Scan all 4 notification model files. | **Completed** — 4/4 models, 66 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-017 | `docs(catalogue): scan organization domain models` | Scan all 17 organization model files. | **Completed** — 17/17 models, 179 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-018 | `docs(catalogue): scan party domain models` | Scan all 2 party model files. | **Completed** — 2/2 models, 21 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
-| HMC-019 | `docs(catalogue): scan planning domain models` | Scan all 5 planning model files. | Planned |
+| HMC-019 | `docs(catalogue): scan planning domain models` | Scan all 5 planning model files. | **Completed** — 5/5 models, 95 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-020 | `docs(catalogue): scan reporting domain models` | Scan all 4 reporting model files. | Planned |
 | HMC-021 | `docs(catalogue): scan risk domain models` | Scan all 4 risk model files. | Planned |
 | HMC-022 | `docs(catalogue): scan simulation domain models` | Scan all 6 simulation model files. | Planned |
@@ -2225,11 +2225,145 @@ The scan records only declarations under `party/domain/model`. Party domain valu
 
 No JPA entity, API DTO, migration, application contract, infrastructure model, organization model, or database column metadata was mixed into this module scan.
 
-## 28. Current next task
+## 28. HMC-019 — Planning module scan evidence
+
+**Source commit:** `5e301857882b59e9e35ecc474e9c6537d89cc96a`  
+**Module:** `planning`  
+**Baseline model files:** 5  
+**Scanned models:** 5  
+**Declared fields/components:** 95  
+**Zero-field models:** 0  
+**Extraction exceptions:** 0
+
+### Planning model index
+
+| Model | Kind | Declared field count | Source path | Status |
+|---|---|---:|---|---|
+| Nomination | record | 26 | `src/main/java/dz/sh/hidra/modules/planning/domain/model/Nomination.java` | Extracted |
+| OperationalPlan | record | 19 | `src/main/java/dz/sh/hidra/modules/planning/domain/model/OperationalPlan.java` | Extracted |
+| PlanRevision | record | 15 | `src/main/java/dz/sh/hidra/modules/planning/domain/model/PlanRevision.java` | Extracted |
+| PlanTarget | record | 22 | `src/main/java/dz/sh/hidra/modules/planning/domain/model/PlanTarget.java` | Extracted |
+| PlanningPeriod | record | 13 | `src/main/java/dz/sh/hidra/modules/planning/domain/model/PlanningPeriod.java` | Extracted |
+
+### Planning fields and declared Java types
+
+| Model | Ordinal | Field | Declared Java Type |
+|---|---:|---|---|
+| Nomination | 1 | id | String |
+| Nomination | 2 | revisionId | String |
+| Nomination | 3 | scenarioId | String |
+| Nomination | 4 | code | String |
+| Nomination | 5 | nominationTypeId | String |
+| Nomination | 6 | productTypeId | String |
+| Nomination | 7 | quantity | BigDecimal |
+| Nomination | 8 | quantityUnitId | String |
+| Nomination | 9 | rate | BigDecimal |
+| Nomination | 10 | rateUnitId | String |
+| Nomination | 11 | sourceAssetType | String |
+| Nomination | 12 | sourceAssetId | String |
+| Nomination | 13 | sourceAssetCode | String |
+| Nomination | 14 | destinationAssetType | String |
+| Nomination | 15 | destinationAssetId | String |
+| Nomination | 16 | destinationAssetCode | String |
+| Nomination | 17 | shipperPartyId | String |
+| Nomination | 18 | shipperPartyCodeSnapshot | String |
+| Nomination | 19 | counterpartyId | String |
+| Nomination | 20 | contractReferenceId | String |
+| Nomination | 21 | priority | Integer |
+| Nomination | 22 | status | NominationStatus |
+| Nomination | 23 | periodStart | Instant |
+| Nomination | 24 | periodEnd | Instant |
+| Nomination | 25 | createdAt | Instant |
+| Nomination | 26 | updatedAt | Instant |
+| OperationalPlan | 1 | id | String |
+| OperationalPlan | 2 | periodId | String |
+| OperationalPlan | 3 | code | String |
+| OperationalPlan | 4 | nameAr | String |
+| OperationalPlan | 5 | nameFr | String |
+| OperationalPlan | 6 | nameEn | String |
+| OperationalPlan | 7 | planTypeId | String |
+| OperationalPlan | 8 | productTypeId | String |
+| OperationalPlan | 9 | topologyScopeType | String |
+| OperationalPlan | 10 | topologyScopeId | String |
+| OperationalPlan | 11 | topologyScopeCode | String |
+| OperationalPlan | 12 | topologyScopeNameSnapshot | String |
+| OperationalPlan | 13 | responsibleOrganizationUnitId | String |
+| OperationalPlan | 14 | status | OperationalPlanStatus |
+| OperationalPlan | 15 | currentRevisionId | String |
+| OperationalPlan | 16 | approvedRevisionId | String |
+| OperationalPlan | 17 | createdByActorId | String |
+| OperationalPlan | 18 | createdAt | Instant |
+| OperationalPlan | 19 | updatedAt | Instant |
+| PlanRevision | 1 | id | String |
+| PlanRevision | 2 | planId | String |
+| PlanRevision | 3 | revisionNumber | int |
+| PlanRevision | 4 | revisionCode | String |
+| PlanRevision | 5 | status | PlanRevisionStatus |
+| PlanRevision | 6 | changeReasonCodeId | String |
+| PlanRevision | 7 | changeReasonText | String |
+| PlanRevision | 8 | baseRevisionId | String |
+| PlanRevision | 9 | submittedByActorId | String |
+| PlanRevision | 10 | submittedAt | Instant |
+| PlanRevision | 11 | approvedByActorId | String |
+| PlanRevision | 12 | approvedAt | Instant |
+| PlanRevision | 13 | workflowInstanceId | String |
+| PlanRevision | 14 | createdAt | Instant |
+| PlanRevision | 15 | updatedAt | Instant |
+| PlanTarget | 1 | id | String |
+| PlanTarget | 2 | revisionId | String |
+| PlanTarget | 3 | scenarioId | String |
+| PlanTarget | 4 | nominationId | String |
+| PlanTarget | 5 | targetTypeId | String |
+| PlanTarget | 6 | topologyAssetType | String |
+| PlanTarget | 7 | topologyAssetId | String |
+| PlanTarget | 8 | topologyAssetCode | String |
+| PlanTarget | 9 | topologyAssetNameSnapshot | String |
+| PlanTarget | 10 | telemetryPointId | String |
+| PlanTarget | 11 | telemetryPointCodeSnapshot | String |
+| PlanTarget | 12 | targetValue | BigDecimal |
+| PlanTarget | 13 | targetTextValue | String |
+| PlanTarget | 14 | unitId | String |
+| PlanTarget | 15 | toleranceLow | BigDecimal |
+| PlanTarget | 16 | toleranceHigh | BigDecimal |
+| PlanTarget | 17 | validFrom | Instant |
+| PlanTarget | 18 | validTo | Instant |
+| PlanTarget | 19 | priority | Integer |
+| PlanTarget | 20 | status | PlanTargetStatus |
+| PlanTarget | 21 | createdAt | Instant |
+| PlanTarget | 22 | updatedAt | Instant |
+| PlanningPeriod | 1 | id | String |
+| PlanningPeriod | 2 | code | String |
+| PlanningPeriod | 3 | nameAr | String |
+| PlanningPeriod | 4 | nameFr | String |
+| PlanningPeriod | 5 | nameEn | String |
+| PlanningPeriod | 6 | periodTypeId | String |
+| PlanningPeriod | 7 | periodStart | Instant |
+| PlanningPeriod | 8 | periodEnd | Instant |
+| PlanningPeriod | 9 | timeZone | String |
+| PlanningPeriod | 10 | status | PlanningPeriodStatus |
+| PlanningPeriod | 11 | createdByActorId | String |
+| PlanningPeriod | 12 | createdAt | Instant |
+| PlanningPeriod | 13 | updatedAt | Instant |
+
+### HMC-019 reconciliation
 
 ```text
-HMC-019 — docs(catalogue): scan planning domain models
+baseline model files = 5
+extracted models     = 5
+exceptions           = 0
+declared fields      = 95
+zero-field models    = 0
 ```
 
-Do not start HMC-020 until HMC-019 is completed and its module counts are reported.
+The scan records only declarations under `planning/domain/model`. Planning domain value types referenced by record components remain declared field types and are not expanded into independent model rows.
+
+No JPA entity, API DTO, migration, application contract, infrastructure model, monitoring implementation, party implementation, topology implementation, or database column metadata was mixed into this module scan.
+
+## 29. Current next task
+
+```text
+HMC-020 — docs(catalogue): scan reporting domain models
+```
+
+Do not start HMC-021 until HMC-020 is completed and its module counts are reported.
 

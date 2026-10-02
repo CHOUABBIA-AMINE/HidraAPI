@@ -149,7 +149,7 @@ baseline model files
 | HMC-021 | `docs(catalogue): scan risk domain models` | Scan all 4 risk model files. | **Completed** — 4/4 models, 78 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-022 | `docs(catalogue): scan simulation domain models` | Scan all 6 simulation model files. | **Completed** — 6/6 models, 81 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-023 | `docs(catalogue): scan telemetry domain models` | Scan all 4 telemetry model files. | **Completed** — 4/4 models, 63 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
-| HMC-024 | `docs(catalogue): scan topology domain models` | Scan all 5 topology model files. | Planned |
+| HMC-024 | `docs(catalogue): scan topology domain models` | Scan all 5 topology model files. | **Completed** — 5/5 models, 73 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-025 | `docs(catalogue): scan workflow domain models` | Scan all 8 workflow model files. | Planned |
 | HMC-026 | `docs(catalogue): reconcile module model catalogue` | Reconcile all 24 module outputs against the pinned 123-file baseline; resolve extraction exceptions and duplicate/missing rows. | Planned |
 | HMC-027 | `docs(catalogue): generate final model field workbook` | Generate the consolidated Excel document from the reconciled catalogue. | Planned |
@@ -2794,11 +2794,123 @@ The scan records only declarations under `telemetry/domain/model`. Telemetry dom
 
 No JPA entity, API DTO, migration, application contract, infrastructure acquisition adapter, SCADA/historian connector implementation, topology implementation, or database column metadata was mixed into this module scan.
 
-## 33. Current next task
+## 33. HMC-024 — Topology module scan evidence
+
+**Source commit:** `5e301857882b59e9e35ecc474e9c6537d89cc96a`  
+**Module:** `topology`  
+**Baseline model files:** 5  
+**Scanned models:** 5  
+**Declared fields/components:** 73  
+**Zero-field models:** 0  
+**Extraction exceptions:** 0
+
+### Topology model index
+
+| Model | Kind | Declared field count | Source path | Status |
+|---|---|---:|---|---|
+| Equipment | record | 16 | `src/main/java/dz/sh/hidra/modules/topology/domain/model/Equipment.java` | Extracted |
+| Facility | record | 18 | `src/main/java/dz/sh/hidra/modules/topology/domain/model/Facility.java` | Extracted |
+| Pipeline | record | 15 | `src/main/java/dz/sh/hidra/modules/topology/domain/model/Pipeline.java` | Extracted |
+| PipelineSystem | record | 12 | `src/main/java/dz/sh/hidra/modules/topology/domain/model/PipelineSystem.java` | Extracted |
+| TopologyConnection | record | 12 | `src/main/java/dz/sh/hidra/modules/topology/domain/model/TopologyConnection.java` | Extracted |
+
+### Topology fields and declared Java types
+
+| Model | Ordinal | Field | Declared Java Type |
+|---|---:|---|---|
+| Equipment | 1 | id | String |
+| Equipment | 2 | code | String |
+| Equipment | 3 | name | String |
+| Equipment | 4 | facilityId | String |
+| Equipment | 5 | nodeId | String |
+| Equipment | 6 | pipelineSegmentId | String |
+| Equipment | 7 | equipmentTypeId | String |
+| Equipment | 8 | equipmentKind | EquipmentKind |
+| Equipment | 9 | manufacturerPartyId | String |
+| Equipment | 10 | manufacturerPartyCodeSnapshot | String |
+| Equipment | 11 | manufacturerPartyNameSnapshot | String |
+| Equipment | 12 | status | EquipmentStatus |
+| Equipment | 13 | installedAt | Instant |
+| Equipment | 14 | retiredAt | Instant |
+| Equipment | 15 | createdAt | Instant |
+| Equipment | 16 | updatedAt | Instant |
+| Facility | 1 | id | String |
+| Facility | 2 | code | String |
+| Facility | 3 | nameAr | String |
+| Facility | 4 | nameFr | String |
+| Facility | 5 | nameEn | String |
+| Facility | 6 | facilityTypeId | String |
+| Facility | 7 | facilityKind | FacilityKind |
+| Facility | 8 | ownerPartyId | String |
+| Facility | 9 | ownerPartyCodeSnapshot | String |
+| Facility | 10 | ownerPartyNameSnapshot | String |
+| Facility | 11 | latitude | BigDecimal |
+| Facility | 12 | longitude | BigDecimal |
+| Facility | 13 | elevationMeters | BigDecimal |
+| Facility | 14 | status | FacilityStatus |
+| Facility | 15 | commissionedAt | Instant |
+| Facility | 16 | retiredAt | Instant |
+| Facility | 17 | createdAt | Instant |
+| Facility | 18 | updatedAt | Instant |
+| Pipeline | 1 | id | String |
+| Pipeline | 2 | pipelineSystemId | String |
+| Pipeline | 3 | code | String |
+| Pipeline | 4 | nameAr | String |
+| Pipeline | 5 | nameFr | String |
+| Pipeline | 6 | nameEn | String |
+| Pipeline | 7 | pipelineType | PipelineType |
+| Pipeline | 8 | nominalDiameter | BigDecimal |
+| Pipeline | 9 | diameterUnitCode | String |
+| Pipeline | 10 | designPressure | BigDecimal |
+| Pipeline | 11 | pressureUnitCode | String |
+| Pipeline | 12 | totalLengthKm | BigDecimal |
+| Pipeline | 13 | status | TopologyStatus |
+| Pipeline | 14 | createdAt | Instant |
+| Pipeline | 15 | updatedAt | Instant |
+| PipelineSystem | 1 | id | String |
+| PipelineSystem | 2 | code | String |
+| PipelineSystem | 3 | nameAr | String |
+| PipelineSystem | 4 | nameFr | String |
+| PipelineSystem | 5 | nameEn | String |
+| PipelineSystem | 6 | systemType | PipelineSystemType |
+| PipelineSystem | 7 | status | TopologyStatus |
+| PipelineSystem | 8 | description | String |
+| PipelineSystem | 9 | commissionedAt | Instant |
+| PipelineSystem | 10 | retiredAt | Instant |
+| PipelineSystem | 11 | createdAt | Instant |
+| PipelineSystem | 12 | updatedAt | Instant |
+| TopologyConnection | 1 | id | String |
+| TopologyConnection | 2 | code | String |
+| TopologyConnection | 3 | fromNodeId | String |
+| TopologyConnection | 4 | toNodeId | String |
+| TopologyConnection | 5 | connectionType | ConnectionType |
+| TopologyConnection | 6 | flowDirection | FlowDirection |
+| TopologyConnection | 7 | pipelineSegmentId | String |
+| TopologyConnection | 8 | nominalCapacity | BigDecimal |
+| TopologyConnection | 9 | capacityUnitCode | String |
+| TopologyConnection | 10 | status | TopologyStatus |
+| TopologyConnection | 11 | createdAt | Instant |
+| TopologyConnection | 12 | updatedAt | Instant |
+
+### HMC-024 reconciliation
 
 ```text
-HMC-024 — docs(catalogue): scan topology domain models
+baseline model files = 5
+extracted models     = 5
+exceptions           = 0
+declared fields      = 73
+zero-field models    = 0
 ```
 
-Do not start HMC-025 until HMC-024 is completed and its module counts are reported.
+The scan records only declarations under `topology/domain/model`. Topology domain value types referenced by record components remain declared field types and are not expanded into independent model rows.
+
+No JPA entity, API DTO, migration, application contract, infrastructure model, GIS implementation, party implementation, telemetry implementation, simulation implementation, or database column metadata was mixed into this module scan.
+
+## 34. Current next task
+
+```text
+HMC-025 — docs(catalogue): scan workflow domain models
+```
+
+Do not start HMC-026 until HMC-025 is completed and its module counts are reported.
 

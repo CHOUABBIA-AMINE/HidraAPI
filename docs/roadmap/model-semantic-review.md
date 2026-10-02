@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -195,7 +195,7 @@ Ordering rules applied:
 |---|---:|---|---|---|---|---:|---:|---:|---|---|---|
 | HMSR-001 | 0 | organization | OrganizationUnitType | — | — | 1 | 52 | 0 | APPROVED | Completed | `docs(model-review): review organization OrganizationUnitType` |
 | HMSR-002 | 0 | workflow | WorkflowDefinition | — | — | 4 | 36 | 1 | REVISE | Completed | `docs(model-review): review workflow WorkflowDefinition` |
-| HMSR-003 | 0 | organization | AdministrativeState | — | — | 1 | 17 | 0 | — | Planned | `docs(model-review): review organization AdministrativeState` |
+| HMSR-003 | 0 | organization | AdministrativeState | — | — | 1 | 17 | 0 | APPROVED | Completed | `docs(model-review): review organization AdministrativeState` |
 | HMSR-004 | 0 | party | Party | — | — | 5 | 14 | 0 | — | Planned | `docs(model-review): review party Party` |
 | HMSR-005 | 0 | telemetry | TelemetryPoint | — | — | 5 | 9 | 3 | — | Planned | `docs(model-review): review telemetry TelemetryPoint` |
 | HMSR-006 | 0 | planning | PlanningPeriod | — | — | 1 | 9 | 0 | — | Planned | `docs(model-review): review planning PlanningPeriod` |
@@ -3336,16 +3336,97 @@ For SONATRACH/TRC operations, a workflow definition represents a governed reusab
 
 The later HMS reconciliation must retain these four correction obligations until an explicitly authorized Workflow implementation task resolves them or the product owner explicitly changes the target semantics.
 
-## 16. Current next task
+## 16. HMSR-003 — organization.AdministrativeState review
+
+**Decision:** APPROVED  
+**Review code:** HMSR-003  
+**Dependency level:** 0  
+**Bounded context:** organization  
+**Confirmed upstream subject dependencies:** none  
+**Confirmed direct dependents:** 1 — `organization.AdministrativeDistrict` through `stateId`  
+**Transitive dependents:** 17  
+**Unresolved/non-subject references:** 0
+
+### 16.1 Semantic role and ordering rationale
+
+`AdministrativeState` is the Organization-owned reference model for an Algerian administrative state/wilaya. It is the root of the Organization administrative-geography chain:
 
 ```text
-HMSR-003 — organization.AdministrativeState
+AdministrativeState
+  -> AdministrativeDistrict
+      -> AdministrativeLocality
+          -> EmployeeAddress
+```
+
+It is Level 0 because it has no upstream dependency on another HMS subject model. `AdministrativeDistrict.stateId` depends directly on it, so the state reference must be established before district, locality, and address semantics are reviewed.
+
+The current repository places this administrative geography inside the Organization bounded context and uses it to normalize employee/address geography. HMSR-003 does not redefine that ownership boundary.
+
+### 16.2 Field semantics
+
+| Field | Type | Mandatory / optional | Approved meaning |
+|---|---|---|---|
+| `id` | `String` | Mandatory | Stable persistence/reference identifier; primary identity of the state/wilaya record. |
+| `code` | `String` | Mandatory | Stable language-neutral administrative business/reference code. Domain construction routes it through `OrganizationCode`, which trims and upper-cases with `Locale.ROOT`. |
+| `nameAr` | `String` | Optional | Arabic state/wilaya display name stored on the owning entity. |
+| `nameFr` | `String` | Optional | French state/wilaya display name stored on the owning entity. |
+| `nameEn` | `String` | Optional | English state/wilaya display name stored on the owning entity. |
+| `active` | `boolean` | Mandatory persisted state | Reference-data availability/lifecycle flag; preserves stable identity when a row is not currently selectable. |
+| `createdAt` | `Instant` | Mandatory in persistence | Creation audit timestamp; JPA and schema map it as non-null. |
+| `updatedAt` | `Instant` | Mandatory in persistence | Last-update audit timestamp; JPA and schema map it as non-null. |
+
+The domain constructor rejects blank IDs and codes, normalizes the code through the canonical Organization code value policy, trims multilingual names, and converts blank names to `null`.
+
+### 16.3 Multilingual decision
+
+The live Organization roadmap explicitly records `AdministrativeState.nameAr/nameFr/nameEn` as the canonical same-entity multilingual representation. No separate translation aggregate/table is part of the target Organization model for this reference.
+
+All three name fields are nullable in the current domain, JPA mapping, and schema. Current Organization evidence does not establish a model-level requirement that any specific language label must be non-null, so HMSR-003 does not invent one.
+
+### 16.4 Persistence and dependency consistency
+
+The domain record and JPA entity agree on all eight declared components.
+
+Persistence evidence confirms:
+
+- `hidra_org_administrative_state.id` is the primary key;
+- `code`, `active`, `created_at`, and `updated_at` are non-null;
+- `name_ar`, `name_fr`, and `name_en` are nullable;
+- the base migration indexes state `code`, lifecycle state, and audit timestamps;
+- `organization.AdministrativeDistrict.stateId` is protected by `fk_org_district_state` to `hidra_org_administrative_state(id)` with `ON DELETE RESTRICT`.
+
+This is a same-module ownership/reference relationship. No cross-module dependency or cross-module database foreign key is introduced by `AdministrativeState`.
+
+### 16.5 Code and identity policy
+
+`AdministrativeState.code` is one of the Organization reference/master-data codes explicitly adopted by the canonical `OrganizationCode` policy. Focused tests verify normalization for values such as an Algerian wilaya code and verify rejection of blank code input.
+
+Repository evidence does not establish a separate `AdministrativeState` code-uniqueness invariant in the current domain/application/schema contract. The schema currently provides a normal code index, not a unique constraint. Because HMS reviews must remain evidence-based, this review does not infer or invent uniqueness solely from the field name or reference-data role. A later data-provisioning or Organization governance task may impose a stronger uniqueness rule only with explicit repository/business evidence.
+
+### 16.6 Application and data-provisioning interpretation
+
+The current outbound repository port exposes `save` and `findById`; there is no current dedicated AdministrativeState REST administration contract that changes the model semantics.
+
+For provisioning, `AdministrativeState` is a target reference dataset and the root parent for Algerian district/locality normalization. Data provisioning must use approved authoritative state/wilaya identifiers, codes, and multilingual names; HMSR-003 does not invent reference rows or geographical values.
+
+For SONATRACH/TRC operations, this administrative geography is personnel/organization address-reference data. It must not be confused with physical pipeline topology, facilities, operational regions, or organization units merely because similar geographic names may occur.
+
+### 16.7 Review conclusion
+
+**APPROVED.** The current `AdministrativeState` model is semantically coherent with the Organization bounded context, canonical code normalization, same-entity multilingual policy, persistence shape, and the validated administrative-geography dependency chain.
+
+No unresolved semantic question requires a model change for HMSR-003. No production Java, JPA, Flyway, application contract, test, enum/value type, or database data is changed by this review.
+
+## 17. Current next task
+
+```text
+HMSR-004 — party.Party
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review organization AdministrativeState
+docs(model-review): review party Party
 ```
 
-Start HMSR-003 only after HMSR-002 is committed and reported. Do not start HMSR-004 automatically. HMS-006 remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-004 only after HMSR-003 is committed and reported. Do not start HMSR-005 automatically. HMS-006 remains blocked until all 123 HMSR tasks are resolved.

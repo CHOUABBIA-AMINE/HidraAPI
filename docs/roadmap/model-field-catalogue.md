@@ -138,7 +138,7 @@ baseline model files
 | HMC-010 | `docs(catalogue): scan identity domain models` | Scan all 15 identity model files. | **Completed** — 15/15 models, 180 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-011 | `docs(catalogue): scan incident domain models` | Scan all 4 incident model files. | **Completed** — 4/4 models, 74 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-012 | `docs(catalogue): scan integration domain models` | Scan all 4 integration model files. | **Completed** — 4/4 models, 66 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
-| HMC-013 | `docs(catalogue): scan integrity domain models` | Scan all 4 integrity model files. | Planned |
+| HMC-013 | `docs(catalogue): scan integrity domain models` | Scan all 4 integrity model files. | **Completed** — 4/4 models, 72 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-014 | `docs(catalogue): scan leak detection domain models` | Scan all 3 leakdetection model files. | Planned |
 | HMC-015 | `docs(catalogue): scan monitoring domain models` | Scan all 2 monitoring model files. | Planned |
 | HMC-016 | `docs(catalogue): scan notification domain models` | Scan all 4 notification model files. | Planned |
@@ -1565,11 +1565,121 @@ The scan records only declarations under `integration/domain/model`. Integration
 
 No JPA entity, API DTO, migration, application contract, infrastructure adapter, external-system connector configuration, or database column metadata was mixed into this module scan.
 
-## 22. Current next task
+## 22. HMC-013 — Integrity module scan evidence
+
+**Source commit:** `5e301857882b59e9e35ecc474e9c6537d89cc96a`  
+**Module:** `integrity`  
+**Baseline model files:** 4  
+**Scanned models:** 4  
+**Declared fields/components:** 72  
+**Zero-field models:** 0  
+**Extraction exceptions:** 0
+
+### Integrity model index
+
+| Model | Kind | Declared field count | Source path | Status |
+|---|---|---:|---|---|
+| IntegrityAssessment | record | 17 | `src/main/java/dz/sh/hidra/modules/integrity/domain/model/IntegrityAssessment.java` | Extracted |
+| IntegrityCase | record | 20 | `src/main/java/dz/sh/hidra/modules/integrity/domain/model/IntegrityCase.java` | Extracted |
+| IntegrityProgram | record | 17 | `src/main/java/dz/sh/hidra/modules/integrity/domain/model/IntegrityProgram.java` | Extracted |
+| PipelineDefect | record | 18 | `src/main/java/dz/sh/hidra/modules/integrity/domain/model/PipelineDefect.java` | Extracted |
+
+### Integrity fields and declared Java types
+
+| Model | Ordinal | Field | Declared Java Type |
+|---|---:|---|---|
+| IntegrityAssessment | 1 | id | String |
+| IntegrityAssessment | 2 | programId | String |
+| IntegrityAssessment | 3 | assessmentNumber | String |
+| IntegrityAssessment | 4 | title | String |
+| IntegrityAssessment | 5 | description | String |
+| IntegrityAssessment | 6 | assessmentTypeId | String |
+| IntegrityAssessment | 7 | methodologyId | String |
+| IntegrityAssessment | 8 | status | IntegrityAssessmentStatus |
+| IntegrityAssessment | 9 | assessmentDate | Instant |
+| IntegrityAssessment | 10 | assessedByActorId | String |
+| IntegrityAssessment | 11 | reviewedByActorId | String |
+| IntegrityAssessment | 12 | approvedByActorId | String |
+| IntegrityAssessment | 13 | approvedAt | Instant |
+| IntegrityAssessment | 14 | workflowInstanceId | String |
+| IntegrityAssessment | 15 | auditReferenceId | String |
+| IntegrityAssessment | 16 | createdAt | Instant |
+| IntegrityAssessment | 17 | updatedAt | Instant |
+| IntegrityCase | 1 | id | String |
+| IntegrityCase | 2 | caseNumber | String |
+| IntegrityCase | 3 | title | String |
+| IntegrityCase | 4 | description | String |
+| IntegrityCase | 5 | caseTypeId | String |
+| IntegrityCase | 6 | status | IntegrityCaseStatus |
+| IntegrityCase | 7 | severityId | String |
+| IntegrityCase | 8 | topologyAssetTypeCode | String |
+| IntegrityCase | 9 | topologyAssetId | String |
+| IntegrityCase | 10 | topologyAssetCodeSnapshot | String |
+| IntegrityCase | 11 | primaryDefectId | String |
+| IntegrityCase | 12 | sourceIncidentId | String |
+| IntegrityCase | 13 | sourceHseCaseId | String |
+| IntegrityCase | 14 | responsibleOrganizationUnitId | String |
+| IntegrityCase | 15 | workflowInstanceId | String |
+| IntegrityCase | 16 | openedAt | Instant |
+| IntegrityCase | 17 | closedAt | Instant |
+| IntegrityCase | 18 | openedByActorId | String |
+| IntegrityCase | 19 | createdAt | Instant |
+| IntegrityCase | 20 | updatedAt | Instant |
+| IntegrityProgram | 1 | id | String |
+| IntegrityProgram | 2 | code | String |
+| IntegrityProgram | 3 | nameAr | String |
+| IntegrityProgram | 4 | nameFr | String |
+| IntegrityProgram | 5 | nameEn | String |
+| IntegrityProgram | 6 | description | String |
+| IntegrityProgram | 7 | programTypeId | String |
+| IntegrityProgram | 8 | ownerOrganizationUnitId | String |
+| IntegrityProgram | 9 | ownerOrganizationUnitNameSnapshot | String |
+| IntegrityProgram | 10 | status | IntegrityProgramStatus |
+| IntegrityProgram | 11 | plannedStartAt | Instant |
+| IntegrityProgram | 12 | plannedEndAt | Instant |
+| IntegrityProgram | 13 | actualStartAt | Instant |
+| IntegrityProgram | 14 | actualEndAt | Instant |
+| IntegrityProgram | 15 | createdByActorId | String |
+| IntegrityProgram | 16 | createdAt | Instant |
+| IntegrityProgram | 17 | updatedAt | Instant |
+| PipelineDefect | 1 | id | String |
+| PipelineDefect | 2 | defectNumber | String |
+| PipelineDefect | 3 | defectTypeId | String |
+| PipelineDefect | 4 | threatType | ThreatType |
+| PipelineDefect | 5 | status | DefectStatus |
+| PipelineDefect | 6 | severity | FindingSeverity |
+| PipelineDefect | 7 | topologyAssetTypeCode | String |
+| PipelineDefect | 8 | topologyAssetId | String |
+| PipelineDefect | 9 | topologyAssetCodeSnapshot | String |
+| PipelineDefect | 10 | kilometerPoint | BigDecimal |
+| PipelineDefect | 11 | latitude | BigDecimal |
+| PipelineDefect | 12 | longitude | BigDecimal |
+| PipelineDefect | 13 | description | String |
+| PipelineDefect | 14 | detectedAt | Instant |
+| PipelineDefect | 15 | closedAt | Instant |
+| PipelineDefect | 16 | sourceFindingId | String |
+| PipelineDefect | 17 | createdAt | Instant |
+| PipelineDefect | 18 | updatedAt | Instant |
+
+### HMC-013 reconciliation
 
 ```text
-HMC-013 — docs(catalogue): scan integrity domain models
+baseline model files = 4
+extracted models     = 4
+exceptions           = 0
+declared fields      = 72
+zero-field models    = 0
 ```
 
-Do not start HMC-014 until HMC-013 is completed and its module counts are reported.
+The scan records only declarations under `integrity/domain/model`. Integrity domain value types referenced by record components are field types, not independent model rows for this catalogue scope.
+
+No JPA entity, API DTO, migration, application contract, infrastructure model, inspection-data adapter, or database column metadata was mixed into this module scan.
+
+## 23. Current next task
+
+```text
+HMC-014 — docs(catalogue): scan leak detection domain models
+```
+
+Do not start HMC-015 until HMC-014 is completed and its module counts are reported.
 

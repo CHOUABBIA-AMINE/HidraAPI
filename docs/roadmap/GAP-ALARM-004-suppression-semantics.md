@@ -391,3 +391,33 @@ ALM-SUP-008 — test(alarm): verify suppression lifecycle end to end
 ```
 
 ALM-SUP-008 must harden the full approved lifecycle with database-backed/Testcontainers evidence, including exact-scope concurrency conflict, Workflow-approved open-ended creation, ALARM restoration, broad-scope expiry, route permissions, and HTTP error contracts.
+
+
+## 17. ALM-SUP-008 completion evidence
+
+ALM-SUP-008 was executed against HidraAPI baseline `a5de4d1b1024b854bf8917141438f7cfb527baf2`.
+
+The end-to-end verification layer now combines the focused tests added throughout ALM-SUP-003 through ALM-SUP-007 with new database-backed and route-permission evidence:
+
+- `AlarmSuppressionPolicyTest` covers creation rules, exact-scope matching, expiry eligibility, overlap/release guards, restoration precedence, acknowledgement/escalation, and suppressed-close semantics;
+- `AlarmSuppressionApprovalServiceTest` and `AlarmSuppressionWorkflowContractAdapterTest` cover approved open-ended Workflow evidence and fail-closed rejection paths;
+- `AlarmSuppressionExpiryOrchestratorTest` covers broad-scope expiry and ALARM-scoped restoration/lifecycle evidence;
+- `AlarmSuppressionControllerTest` proves REST commands derive actor identity from `CurrentActorResolver`;
+- `AlarmSuppressionApiExceptionHandlerTest` proves stable HTTP 409 conflict mapping;
+- `AlarmSuppressionPersistenceMigrationTest` migrates an empty PostgreSQL Testcontainer and proves:
+  - the canonical `ALARM_SUPPRESSION_EXPIRED` Audit taxonomy is provisioned;
+  - the partial unique index prevents a second exact-scope ACTIVE suppression;
+  - historical terminal suppression rows for the same scope/reference remain allowed;
+- `AlarmSuppressionRoutePermissionTest` proves canonical route-derived permissions:
+  - `alarm:suppressions:read`;
+  - `alarm:suppressions:execute`.
+
+This task adds verification only. No suppression production semantics are changed.
+
+## 18. Next authorized task
+
+```text
+ALM-SUP-009 — docs(alarm): finalize suppression capability
+```
+
+ALM-SUP-009 must finalize the suppression roadmap/documentation only after ALM-SUP-008 CI is green. It must capture final commits, CI evidence, REST routes, canonical permissions, Workflow/Audit integration, expiry scheduling, and any known residual limitations without introducing production code.

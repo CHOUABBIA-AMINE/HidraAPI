@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-004 completed; dependency graph and cycles validated, review order not yet generated.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -193,7 +193,7 @@ Ordering rules applied:
 
 | Review Code | Level | Module | Model | SCC | Confirmed upstream dependencies | Direct dependents | Transitive dependents | Unresolved/non-subject refs | Decision | Status | Exact commit message |
 |---|---:|---|---|---|---|---:|---:|---:|---|---|---|
-| HMSR-001 | 0 | organization | OrganizationUnitType | — | — | 1 | 52 | 0 | — | Planned | `docs(model-review): review organization OrganizationUnitType` |
+| HMSR-001 | 0 | organization | OrganizationUnitType | — | — | 1 | 52 | 0 | APPROVED | Completed | `docs(model-review): review organization OrganizationUnitType` |
 | HMSR-002 | 0 | workflow | WorkflowDefinition | — | — | 4 | 36 | 1 | — | Planned | `docs(model-review): review workflow WorkflowDefinition` |
 | HMSR-003 | 0 | organization | AdministrativeState | — | — | 1 | 17 | 0 | — | Planned | `docs(model-review): review organization AdministrativeState` |
 | HMSR-004 | 0 | party | Party | — | — | 5 | 14 | 0 | — | Planned | `docs(model-review): review party Party` |
@@ -3181,16 +3181,79 @@ last review                       = HMSR-123 — alarm.AlarmShelving
 
 No model decision was made by HMS-005. No production Java, JPA mapping, Flyway migration, application contract, enum/value type, or database data was modified.
 
-## 14. Current next task
+## 14. HMSR-001 — organization.OrganizationUnitType review
+
+**Decision:** APPROVED  
+**Review code:** HMSR-001  
+**Dependency level:** 0  
+**Bounded context:** organization  
+**Confirmed upstream subject dependencies:** none  
+**Confirmed direct dependents:** 1 — `organization.OrganizationUnit` through `unitTypeId`  
+**Transitive dependents:** 52  
+**Unresolved/non-subject references:** 0
+
+### 14.1 Semantic role and ordering rationale
+
+`OrganizationUnitType` is the Organization-owned catalog for classifying internal organizational units. It is foundational because it has no upstream subject-model dependency, while `OrganizationUnit` requires a valid `unitTypeId`; the validated same-module FK therefore makes this model a prerequisite for the organization hierarchy and its downstream consumers.
+
+The model classifies people/responsibility structures such as company, division, region, area, station-as-organization-unit, team and department. `STATION_UNIT` is an organizational/responsibility concept and must not be confused with a physical station/facility owned by Topology.
+
+### 14.2 Field semantics
+
+| Field | Type | Mandatory / optional | Approved meaning |
+|---|---|---|---|
+| `id` | `String` | Mandatory | Stable persistence/catalog identifier; primary identity of this model. |
+| `code` | `String` | Mandatory | Language-neutral stable Organization business code. Domain construction normalizes through `OrganizationCode` by trimming and upper-casing with `Locale.ROOT`. |
+| `kind` | `OrganizationUnitKind` | Mandatory | Governed broad organizational classification: `COMPANY`, `DIVISION`, `REGION`, `AREA`, `STATION_UNIT`, `TEAM`, `DEPARTMENT`, or `OTHER`. |
+| `nameAr` | `String` | Optional | Arabic display name stored on the owning entity. |
+| `nameFr` | `String` | Optional | French display name stored on the owning entity. |
+| `nameEn` | `String` | Optional | English display name stored on the owning entity. |
+| `descriptionAr` | `String` | Optional | Arabic descriptive text stored on the owning entity. |
+| `descriptionFr` | `String` | Optional | French descriptive text stored on the owning entity. |
+| `descriptionEn` | `String` | Optional | English descriptive text stored on the owning entity. |
+| `active` | `boolean` | Mandatory persisted state | Catalog availability/lifecycle flag; deactivation preserves the catalog identity instead of implying deletion. |
+| `createdAt` | `Instant` | Mandatory in persistence | Creation audit timestamp; JPA maps it `nullable = false`. |
+| `updatedAt` | `Instant` | Mandatory in persistence | Last-update audit timestamp; JPA maps it `nullable = false`. |
+
+Blank multilingual text is normalized to `null`. The repository migration policy explicitly forbids inventing missing translations, so nullable language fields are consistent with the approved migration semantics.
+
+### 14.3 Multilingual decision
+
+The live Organization roadmap is authoritative over older planning/data-definition text: Organization uses same-entity Arabic/French/English storage only. For `OrganizationUnitType`, the canonical fields are `nameAr/nameFr/nameEn` and `descriptionAr/descriptionFr/descriptionEn`.
+
+The former `OrganizationUnitTypeTranslation` production model was retired by ORG-038, the translation table was retired by `V20260927_003__retire_organization_unit_type_translation_table.sql`, and ORG-040 guardrails prohibit reintroducing a separate Organization translation model/table. Historical documentation that still lists the old translation entity is therefore not current target architecture.
+
+### 14.4 Persistence and dependency consistency
+
+- Domain and JPA shapes agree on all 12 declared components.
+- `hidra_org_unit_type.id` is the persistence identity.
+- `code`, `kind`, `active`, `created_at`, and `updated_at` are non-null in JPA/persistence.
+- Embedded Arabic/French/English names and descriptions are nullable and mapped directly on `hidra_org_unit_type`.
+- `organization.OrganizationUnit.unitTypeId` is a confirmed same-module dependency and is protected by `fk_org_unit_type` to `hidra_org_unit_type(id)` with `ON DELETE RESTRICT`.
+- No cross-module dependency or database ownership is introduced by this model.
+
+### 14.5 Application and lifecycle interpretation
+
+The outbound repository port supports `save` and `findById`. No current unit-type REST administration contract is required to establish the target semantic baseline. `active` represents whether a catalog type is currently selectable/usable while preserving historical references to the same stable type identity.
+
+For SONATRACH/TRC operations, this catalog describes the organizational classification of responsibility structures. A station organization unit may represent the team/organizational responsibility associated with a station, while the physical station remains a Topology asset.
+
+### 14.6 Review conclusion
+
+The current `OrganizationUnitType` model is semantically coherent with the Organization bounded context, current Flyway/JPA state, same-module reference integrity, and the explicit three-language same-entity policy.
+
+No unresolved semantic question requires a model change for HMSR-001. No production Java, JPA, Flyway, application contract, enum/value type, or database data is changed by this review.
+
+## 15. Current next task
 
 ```text
-HMSR-001 — organization.OrganizationUnitType
+HMSR-002 — workflow.WorkflowDefinition
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review organization OrganizationUnitType
+docs(model-review): review workflow WorkflowDefinition
 ```
 
-Start the interactive review with organization.OrganizationUnitType. Do not start HMSR-002 until HMSR-001 is resolved and reported. HMS-006 remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-002 only after HMSR-001 is committed and reported. Do not start HMSR-003 automatically. HMS-006 remains blocked until all 123 HMSR tasks are resolved.

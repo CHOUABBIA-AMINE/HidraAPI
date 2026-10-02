@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -194,7 +194,7 @@ Ordering rules applied:
 | Review Code | Level | Module | Model | SCC | Confirmed upstream dependencies | Direct dependents | Transitive dependents | Unresolved/non-subject refs | Decision | Status | Exact commit message |
 |---|---:|---|---|---|---|---:|---:|---:|---|---|---|
 | HMSR-001 | 0 | organization | OrganizationUnitType | — | — | 1 | 52 | 0 | APPROVED | Completed | `docs(model-review): review organization OrganizationUnitType` |
-| HMSR-002 | 0 | workflow | WorkflowDefinition | — | — | 4 | 36 | 1 | — | Planned | `docs(model-review): review workflow WorkflowDefinition` |
+| HMSR-002 | 0 | workflow | WorkflowDefinition | — | — | 4 | 36 | 1 | REVISE | Completed | `docs(model-review): review workflow WorkflowDefinition` |
 | HMSR-003 | 0 | organization | AdministrativeState | — | — | 1 | 17 | 0 | — | Planned | `docs(model-review): review organization AdministrativeState` |
 | HMSR-004 | 0 | party | Party | — | — | 5 | 14 | 0 | — | Planned | `docs(model-review): review party Party` |
 | HMSR-005 | 0 | telemetry | TelemetryPoint | — | — | 5 | 9 | 3 | — | Planned | `docs(model-review): review telemetry TelemetryPoint` |
@@ -3244,16 +3244,108 @@ The current `OrganizationUnitType` model is semantically coherent with the Organ
 
 No unresolved semantic question requires a model change for HMSR-001. No production Java, JPA, Flyway, application contract, enum/value type, or database data is changed by this review.
 
-## 15. Current next task
+## 15. HMSR-002 — workflow.WorkflowDefinition review
+
+**Decision:** REVISE  
+**Review code:** HMSR-002  
+**Dependency level:** 0  
+**Bounded context:** workflow  
+**Confirmed upstream subject dependencies:** none  
+**Confirmed direct dependents:** 4 — `workflow.WorkflowInstance`, `workflow.WorkflowStep`, `workflow.WorkflowStepAssignmentRule`, `workflow.WorkflowTransition`  
+**Transitive dependents:** 36  
+**Unresolved/non-subject references:** 1 — `typeId`, resolved by current persistence evidence to the Workflow-owned catalog/read model rather than an HMS subject model
+
+### 15.1 Semantic role and ordering rationale
+
+`WorkflowDefinition` is the Workflow-owned reusable process-template aggregate. It defines stable workflow identity, business code, localized names, workflow type, lifecycle status, and an integer definition version. It is Level 0 because none of its prerequisites are another one of the 123 HMS subject models. The four direct subject dependents all reference it by `definitionId`, so its semantics must be settled before those models are reviewed.
+
+Workflow remains the process owner only. The target business fact remains owned by the relevant operational bounded context, while Identity owns security identity, Organization owns organizational structure, Audit owns durable evidence, and Notification owns delivery.
+
+### 15.2 Field semantics
+
+| Field | Type | Mandatory / optional | Reviewed meaning |
+|---|---|---|---|
+| `id` | `String` | Mandatory | Stable workflow-definition identifier and persistence primary key. |
+| `code` | `String` | Mandatory | Stable language-neutral business code for the definition family. Together with `version`, current Workflow semantics require uniqueness. |
+| `nameAr` | `String` | Optional in current persistence | Arabic display name. Current Workflow data definition identifies Arabic as a target production requirement, but live JPA remains nullable. |
+| `nameFr` | `String` | Mandatory | French display name. Workflow policy explicitly makes French mandatory for direct localized names; JPA is `nullable = false`. |
+| `nameEn` | `String` | Optional in current persistence | English display name. Current Workflow data definition recommends/targets multilingual production coverage while live JPA remains nullable. |
+| `typeId` | `String` | Mandatory | Workflow-owned controlled-vocabulary reference for workflow type. Current HRA-111 persistence evidence resolves it to `hidra_workflow_type_catalog(id)`; `WorkflowCatalogEntry` is a retained read/persistence model, not one of the 123 HMS subjects. |
+| `status` | `WorkflowDefinitionStatus` | Mandatory | Lifecycle state: `DRAFT`, `ACTIVE`, `INACTIVE`, or `RETIRED`. Only `ACTIVE` definitions may start new instances. |
+| `version` | `int` | Mandatory | Definition version. Current Workflow data definition requires a minimum value of 1. |
+| `createdAt` | `Instant` | Mandatory in persistence | Creation audit timestamp; JPA and schema are non-null. |
+| `updatedAt` | `Instant` | Mandatory in persistence | Last-update audit timestamp; JPA and schema are non-null. |
+
+The current record normalizes blank text to `null` after required-field guards. `id`, `code`, `typeId`, and `status` already fail fast in the domain constructor.
+
+### 15.3 Catalog dependency resolution
+
+HMS-003 left `typeId` unresolved because the 123-subject graph did not contain an unambiguous subject target. Stronger repository evidence now resolves its semantics without adding an HMS graph edge:
+
+- `WorkflowDefinitionJpaEntity.typeId` maps to `hidra_workflow_definition.type_id`;
+- HRA-111 adds and validates `fk_hra111_workflow_008`;
+- that FK points to `hidra_workflow_type_catalog(id)`;
+- repository mirror classification retains `WorkflowCatalogEntry` as a Workflow READ_PERSISTENCE_MODEL outside the 123 HMS subject set.
+
+Therefore `typeId` is a **Workflow-owned value/catalog dependency**, not an unresolved subject-model dependency. The register's combined unresolved/non-subject count remains 1 because the dependency is deliberately outside the HMS subject population.
+
+### 15.4 Lifecycle and versioning semantics
+
+The current baseline semantics are:
+
+- only `ACTIVE` definitions can start instances; the domain helper `canStartInstance()` already expresses this;
+- `DRAFT` definitions may be edited;
+- `ACTIVE` definitions are intended to be immutable except for controlled retirement/deactivation;
+- changing an active definition requires a new version;
+- `RETIRED` definitions cannot start new instances;
+- the current direct `version` field is acceptable for the first baseline; the data definition's possible future `WorkflowDefinitionVersion` aggregate is an enhancement, not a prerequisite for this HMS decision.
+
+### 15.5 Persistence and dependency consistency
+
+The live domain and JPA models have the same 10 declared components. The initial Workflow migration persists all 10 fields and makes `id`, `code`, `name_fr`, `type_id`, `status`, `version`, `created_at`, and `updated_at` non-null.
+
+Validated subject dependencies point **into** this model from:
+
+- `WorkflowInstance.definitionId`;
+- `WorkflowStep.definitionId`;
+- `WorkflowStepAssignmentRule.definitionId`;
+- `WorkflowTransition.definitionId`.
+
+The catalog reference `typeId` is protected by a same-module FK to `hidra_workflow_type_catalog`. No cross-module database ownership is introduced.
+
+### 15.6 Required revisions
+
+The semantic shape is sound, but the live implementation does not yet enforce all repository-defined WorkflowDefinition invariants strongly enough for an APPROVED target baseline.
+
+1. **Definition version minimum:** the Workflow data definition requires `version >= 1`, but the current domain constructor accepts zero or negative values and the live schema only declares `version integer NOT NULL` without a minimum-value check.
+2. **French name requirement at the domain boundary:** Workflow policy and JPA require `nameFr`, but the current domain constructor can normalize a blank French name to `null`, allowing invalid state to exist until persistence rejects it.
+3. **Definition identity/version uniqueness:** the Workflow data definition requires `(code, version)` to be unique. The live migration provides an index on `code` only; no repository evidence was found for a database unique constraint or an application uniqueness guard on `(code, version)`. The data-definition example named `idx_workflow_definition_code_version` is an ordinary index, not a uniqueness constraint, so it does not satisfy the stated rule.
+4. **Activation/version governance:** the approved semantic baseline must preserve the rule that an ACTIVE definition is not edited in place and a business change creates a new version. Any later Workflow correction task must enforce this at the appropriate application/domain boundary rather than relying on record immutability alone.
+
+These are correction requirements for a later explicitly authorized Workflow roadmap task. HMSR-002 does not modify production Java, JPA, Flyway, application contracts, tests, or database data.
+
+### 15.7 Multilingual and operational interpretation
+
+Workflow direct names use `nameAr/nameFr/nameEn`. Current persistence makes French mandatory while Arabic and English remain nullable; the Workflow data definition explicitly flags stronger production multilingual coverage as a target direction. This review does not invent a new storage model or translation structure.
+
+For SONATRACH/TRC operations, a workflow definition represents a governed reusable approval/validation route for operational decisions such as telemetry validation, planning approval, alarm/incident review, integrity actions, maintenance, HSE, custody, and other Hidra processes. It does not own or mutate the underlying operational fact merely by defining the process.
+
+### 15.8 Review conclusion
+
+**REVISE.** `WorkflowDefinition` remains the correct Workflow aggregate and its fields/dependency direction are appropriate, but the target semantic baseline cannot mark it APPROVED while the documented version, French-name, uniqueness, and active-definition versioning rules are not consistently enforced.
+
+The later HMS reconciliation must retain these four correction obligations until an explicitly authorized Workflow implementation task resolves them or the product owner explicitly changes the target semantics.
+
+## 16. Current next task
 
 ```text
-HMSR-002 — workflow.WorkflowDefinition
+HMSR-003 — organization.AdministrativeState
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review workflow WorkflowDefinition
+docs(model-review): review organization AdministrativeState
 ```
 
-Start HMSR-002 only after HMSR-001 is committed and reported. Do not start HMSR-003 automatically. HMS-006 remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-003 only after HMSR-002 is committed and reported. Do not start HMSR-004 automatically. HMS-006 remains blocked until all 123 HMSR tasks are resolved.

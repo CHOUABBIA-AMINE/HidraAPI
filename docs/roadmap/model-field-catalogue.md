@@ -137,7 +137,7 @@ baseline model files
 | HMC-009 | `docs(catalogue): scan hse domain models` | Scan all 4 hse model files. | **Completed** — 4/4 models, 77 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-010 | `docs(catalogue): scan identity domain models` | Scan all 15 identity model files. | **Completed** — 15/15 models, 180 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-011 | `docs(catalogue): scan incident domain models` | Scan all 4 incident model files. | **Completed** — 4/4 models, 74 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
-| HMC-012 | `docs(catalogue): scan integration domain models` | Scan all 4 integration model files. | Planned |
+| HMC-012 | `docs(catalogue): scan integration domain models` | Scan all 4 integration model files. | **Completed** — 4/4 models, 66 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-013 | `docs(catalogue): scan integrity domain models` | Scan all 4 integrity model files. | Planned |
 | HMC-014 | `docs(catalogue): scan leak detection domain models` | Scan all 3 leakdetection model files. | Planned |
 | HMC-015 | `docs(catalogue): scan monitoring domain models` | Scan all 2 monitoring model files. | Planned |
@@ -1461,11 +1461,115 @@ The scan records only declarations under `incident/domain/model`. Incident domai
 
 No JPA entity, API DTO, migration, application contract, infrastructure model, or database column metadata was mixed into this module scan.
 
-## 21. Current next task
+## 21. HMC-012 — Integration module scan evidence
+
+**Source commit:** `5e301857882b59e9e35ecc474e9c6537d89cc96a`  
+**Module:** `integration`  
+**Baseline model files:** 4  
+**Scanned models:** 4  
+**Declared fields/components:** 66  
+**Zero-field models:** 0  
+**Extraction exceptions:** 0
+
+### Integration model index
+
+| Model | Kind | Declared field count | Source path | Status |
+|---|---|---:|---|---|
+| ExternalSystem | record | 13 | `src/main/java/dz/sh/hidra/modules/integration/domain/model/ExternalSystem.java` | Extracted |
+| IntegrationDeadLetterRecord | record | 18 | `src/main/java/dz/sh/hidra/modules/integration/domain/model/IntegrationDeadLetterRecord.java` | Extracted |
+| IntegrationExchangeMessage | record | 17 | `src/main/java/dz/sh/hidra/modules/integration/domain/model/IntegrationExchangeMessage.java` | Extracted |
+| IntegrationJobRun | record | 18 | `src/main/java/dz/sh/hidra/modules/integration/domain/model/IntegrationJobRun.java` | Extracted |
+
+### Integration fields and declared Java types
+
+| Model | Ordinal | Field | Declared Java Type |
+|---|---:|---|---|
+| ExternalSystem | 1 | id | String |
+| ExternalSystem | 2 | code | String |
+| ExternalSystem | 3 | nameAr | String |
+| ExternalSystem | 4 | nameFr | String |
+| ExternalSystem | 5 | nameEn | String |
+| ExternalSystem | 6 | systemTypeId | String |
+| ExternalSystem | 7 | ownerOrganizationUnitId | String |
+| ExternalSystem | 8 | environment | IntegrationEnvironment |
+| ExternalSystem | 9 | criticality | IntegrationCriticality |
+| ExternalSystem | 10 | status | ExternalSystemStatus |
+| ExternalSystem | 11 | description | String |
+| ExternalSystem | 12 | createdAt | Instant |
+| ExternalSystem | 13 | updatedAt | Instant |
+| IntegrationDeadLetterRecord | 1 | id | String |
+| IntegrationDeadLetterRecord | 2 | externalSystemId | String |
+| IntegrationDeadLetterRecord | 3 | jobRunId | String |
+| IntegrationDeadLetterRecord | 4 | exchangeMessageId | String |
+| IntegrationDeadLetterRecord | 5 | inboundRecordId | String |
+| IntegrationDeadLetterRecord | 6 | outboundRecordId | String |
+| IntegrationDeadLetterRecord | 7 | targetModule | String |
+| IntegrationDeadLetterRecord | 8 | failureStage | String |
+| IntegrationDeadLetterRecord | 9 | reasonCode | String |
+| IntegrationDeadLetterRecord | 10 | reasonMessage | String |
+| IntegrationDeadLetterRecord | 11 | payloadHash | String |
+| IntegrationDeadLetterRecord | 12 | sanitizedPayload | String |
+| IntegrationDeadLetterRecord | 13 | status | DeadLetterStatus |
+| IntegrationDeadLetterRecord | 14 | resolvedByActorId | String |
+| IntegrationDeadLetterRecord | 15 | resolvedAt | Instant |
+| IntegrationDeadLetterRecord | 16 | resolutionComment | String |
+| IntegrationDeadLetterRecord | 17 | createdAt | Instant |
+| IntegrationDeadLetterRecord | 18 | updatedAt | Instant |
+| IntegrationExchangeMessage | 1 | id | String |
+| IntegrationExchangeMessage | 2 | jobRunId | String |
+| IntegrationExchangeMessage | 3 | externalSystemId | String |
+| IntegrationExchangeMessage | 4 | endpointId | String |
+| IntegrationExchangeMessage | 5 | direction | IntegrationDirection |
+| IntegrationExchangeMessage | 6 | messageTypeId | String |
+| IntegrationExchangeMessage | 7 | externalMessageId | String |
+| IntegrationExchangeMessage | 8 | payloadFormatId | String |
+| IntegrationExchangeMessage | 9 | payloadStorageMode | PayloadStorageMode |
+| IntegrationExchangeMessage | 10 | payloadSanitized | String |
+| IntegrationExchangeMessage | 11 | payloadReference | String |
+| IntegrationExchangeMessage | 12 | payloadHash | String |
+| IntegrationExchangeMessage | 13 | contentLengthBytes | Long |
+| IntegrationExchangeMessage | 14 | receivedOrSentAt | Instant |
+| IntegrationExchangeMessage | 15 | correlationId | String |
+| IntegrationExchangeMessage | 16 | status | ExchangeMessageStatus |
+| IntegrationExchangeMessage | 17 | createdAt | Instant |
+| IntegrationJobRun | 1 | id | String |
+| IntegrationJobRun | 2 | jobDefinitionId | String |
+| IntegrationJobRun | 3 | runNumber | long |
+| IntegrationJobRun | 4 | triggerType | JobTriggerType |
+| IntegrationJobRun | 5 | triggeredByActorId | String |
+| IntegrationJobRun | 6 | status | JobRunStatus |
+| IntegrationJobRun | 7 | correlationId | String |
+| IntegrationJobRun | 8 | startedAt | Instant |
+| IntegrationJobRun | 9 | completedAt | Instant |
+| IntegrationJobRun | 10 | receivedCount | long |
+| IntegrationJobRun | 11 | mappedCount | long |
+| IntegrationJobRun | 12 | acceptedCount | long |
+| IntegrationJobRun | 13 | rejectedCount | long |
+| IntegrationJobRun | 14 | deadLetterCount | long |
+| IntegrationJobRun | 15 | retryCount | long |
+| IntegrationJobRun | 16 | failureReason | String |
+| IntegrationJobRun | 17 | createdAt | Instant |
+| IntegrationJobRun | 18 | updatedAt | Instant |
+
+### HMC-012 reconciliation
 
 ```text
-HMC-012 — docs(catalogue): scan integration domain models
+baseline model files = 4
+extracted models     = 4
+exceptions           = 0
+declared fields      = 66
+zero-field models    = 0
 ```
 
-Do not start HMC-013 until HMC-012 is completed and its module counts are reported.
+The scan records only declarations under `integration/domain/model`. Integration domain value types referenced by record components are field types, not independent model rows for this catalogue scope.
+
+No JPA entity, API DTO, migration, application contract, infrastructure adapter, external-system connector configuration, or database column metadata was mixed into this module scan.
+
+## 22. Current next task
+
+```text
+HMC-013 — docs(catalogue): scan integrity domain models
+```
+
+Do not start HMC-014 until HMC-013 is completed and its module counts are reported.
 

@@ -141,7 +141,7 @@ baseline model files
 | HMC-013 | `docs(catalogue): scan integrity domain models` | Scan all 4 integrity model files. | **Completed** — 4/4 models, 72 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-014 | `docs(catalogue): scan leak detection domain models` | Scan all 3 leakdetection model files. | **Completed** — 3/3 models, 47 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-015 | `docs(catalogue): scan monitoring domain models` | Scan all 2 monitoring model files. | **Completed** — 2/2 models, 37 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
-| HMC-016 | `docs(catalogue): scan notification domain models` | Scan all 4 notification model files. | Planned |
+| HMC-016 | `docs(catalogue): scan notification domain models` | Scan all 4 notification model files. | **Completed** — 4/4 models, 66 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-017 | `docs(catalogue): scan organization domain models` | Scan all 17 organization model files. | Planned |
 | HMC-018 | `docs(catalogue): scan party domain models` | Scan all 2 party model files. | Planned |
 | HMC-019 | `docs(catalogue): scan planning domain models` | Scan all 5 planning model files. | Planned |
@@ -1832,11 +1832,115 @@ The scan records only declarations under `monitoring/domain/model`. Monitoring d
 
 No JPA entity, API DTO, migration, application contract, infrastructure model, telemetry implementation, planning implementation, or database column metadata was mixed into this module scan.
 
-## 25. Current next task
+## 25. HMC-016 — Notification module scan evidence
+
+**Source commit:** `5e301857882b59e9e35ecc474e9c6537d89cc96a`  
+**Module:** `notification`  
+**Baseline model files:** 4  
+**Scanned models:** 4  
+**Declared fields/components:** 66  
+**Zero-field models:** 0  
+**Extraction exceptions:** 0
+
+### Notification model index
+
+| Model | Kind | Declared field count | Source path | Status |
+|---|---|---:|---|---|
+| NotificationDeliveryAttempt | record | 14 | `src/main/java/dz/sh/hidra/modules/notification/domain/model/NotificationDeliveryAttempt.java` | Extracted |
+| NotificationMessage | record | 17 | `src/main/java/dz/sh/hidra/modules/notification/domain/model/NotificationMessage.java` | Extracted |
+| NotificationRequest | record | 22 | `src/main/java/dz/sh/hidra/modules/notification/domain/model/NotificationRequest.java` | Extracted |
+| NotificationTemplate | record | 13 | `src/main/java/dz/sh/hidra/modules/notification/domain/model/NotificationTemplate.java` | Extracted |
+
+### Notification fields and declared Java types
+
+| Model | Ordinal | Field | Declared Java Type |
+|---|---:|---|---|
+| NotificationDeliveryAttempt | 1 | id | String |
+| NotificationDeliveryAttempt | 2 | messageId | String |
+| NotificationDeliveryAttempt | 3 | attemptNumber | int |
+| NotificationDeliveryAttempt | 4 | channelId | String |
+| NotificationDeliveryAttempt | 5 | providerReference | String |
+| NotificationDeliveryAttempt | 6 | providerMessageId | String |
+| NotificationDeliveryAttempt | 7 | attemptStatus | DeliveryAttemptStatus |
+| NotificationDeliveryAttempt | 8 | attemptedAt | Instant |
+| NotificationDeliveryAttempt | 9 | completedAt | Instant |
+| NotificationDeliveryAttempt | 10 | failureCode | String |
+| NotificationDeliveryAttempt | 11 | failureMessage | String |
+| NotificationDeliveryAttempt | 12 | nextRetryAt | Instant |
+| NotificationDeliveryAttempt | 13 | correlationId | String |
+| NotificationDeliveryAttempt | 14 | createdAt | Instant |
+| NotificationMessage | 1 | id | String |
+| NotificationMessage | 2 | requestId | String |
+| NotificationMessage | 3 | recipientId | String |
+| NotificationMessage | 4 | channelId | String |
+| NotificationMessage | 5 | templateId | String |
+| NotificationMessage | 6 | templateVersionId | String |
+| NotificationMessage | 7 | locale | String |
+| NotificationMessage | 8 | subjectRendered | String |
+| NotificationMessage | 9 | bodyRendered | String |
+| NotificationMessage | 10 | shortTextRendered | String |
+| NotificationMessage | 11 | payloadHash | String |
+| NotificationMessage | 12 | priorityId | String |
+| NotificationMessage | 13 | status | NotificationMessageStatus |
+| NotificationMessage | 14 | scheduledAt | Instant |
+| NotificationMessage | 15 | expiresAt | Instant |
+| NotificationMessage | 16 | createdAt | Instant |
+| NotificationMessage | 17 | updatedAt | Instant |
+| NotificationRequest | 1 | id | String |
+| NotificationRequest | 2 | sourceModule | String |
+| NotificationRequest | 3 | sourceEventType | String |
+| NotificationRequest | 4 | sourceEventId | String |
+| NotificationRequest | 5 | targetType | String |
+| NotificationRequest | 6 | targetId | String |
+| NotificationRequest | 7 | targetCodeSnapshot | String |
+| NotificationRequest | 8 | targetLabelSnapshot | String |
+| NotificationRequest | 9 | categoryId | String |
+| NotificationRequest | 10 | priorityId | String |
+| NotificationRequest | 11 | policyId | String |
+| NotificationRequest | 12 | templateId | String |
+| NotificationRequest | 13 | templateVersionId | String |
+| NotificationRequest | 14 | requestedByActorId | String |
+| NotificationRequest | 15 | requestedByDisplayNameSnapshot | String |
+| NotificationRequest | 16 | requestedAt | Instant |
+| NotificationRequest | 17 | correlationId | String |
+| NotificationRequest | 18 | requestId | String |
+| NotificationRequest | 19 | status | NotificationRequestStatus |
+| NotificationRequest | 20 | expiresAt | Instant |
+| NotificationRequest | 21 | createdAt | Instant |
+| NotificationRequest | 22 | updatedAt | Instant |
+| NotificationTemplate | 1 | id | String |
+| NotificationTemplate | 2 | code | String |
+| NotificationTemplate | 3 | nameAr | String |
+| NotificationTemplate | 4 | nameFr | String |
+| NotificationTemplate | 5 | nameEn | String |
+| NotificationTemplate | 6 | templateTypeId | String |
+| NotificationTemplate | 7 | categoryId | String |
+| NotificationTemplate | 8 | defaultChannelId | String |
+| NotificationTemplate | 9 | status | NotificationTemplateStatus |
+| NotificationTemplate | 10 | currentVersion | Integer |
+| NotificationTemplate | 11 | systemDefined | boolean |
+| NotificationTemplate | 12 | createdAt | Instant |
+| NotificationTemplate | 13 | updatedAt | Instant |
+
+### HMC-016 reconciliation
 
 ```text
-HMC-016 — docs(catalogue): scan notification domain models
+baseline model files = 4
+extracted models     = 4
+exceptions           = 0
+declared fields      = 66
+zero-field models    = 0
 ```
 
-Do not start HMC-017 until HMC-016 is completed and its module counts are reported.
+The scan records only declarations under `notification/domain/model`. Notification domain value types referenced by record components are field types, not independent model rows for this catalogue scope.
+
+No JPA entity, API DTO, migration, application contract, infrastructure provider adapter, channel implementation, or database column metadata was mixed into this module scan.
+
+## 26. Current next task
+
+```text
+HMC-017 — docs(catalogue): scan organization domain models
+```
+
+Do not start HMC-018 until HMC-017 is completed and its module counts are reported.
 

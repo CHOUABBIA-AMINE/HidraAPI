@@ -75,7 +75,8 @@ class ArchitectureGuardrailTest {
             "dz.sh.hidra.modules.workflow.application.contract.organization",
             "dz.sh.hidra.modules.workflow.application.contract.alarm",
             "dz.sh.hidra.modules.topology.application.contract.organization",
-            "dz.sh.hidra.modules.audit.application.contract.organization"
+            "dz.sh.hidra.modules.audit.application.contract.organization",
+            "dz.sh.hidra.modules.audit.application.contract.alarm"
     );
 
     /**
@@ -304,6 +305,14 @@ class ArchitectureGuardrailTest {
                         "dz.sh.hidra.modules.audit.application.contract.organization.OrganizationResponsibilityAuditContract"
                 ),
                 "The deliberate Audit responsibility contract exported to Organization must remain allowed."
+        );
+
+        assertFalse(
+                isForbiddenCrossModuleDependency(
+                        "dz.sh.hidra.modules.alarm.application.service.AlarmSuppressionExpiryOrchestrator",
+                        "dz.sh.hidra.modules.audit.application.contract.alarm.AlarmSuppressionAuditContract"
+                ),
+                "The deliberate Audit suppression contract exported to Alarm must remain allowed."
         );
     }
 

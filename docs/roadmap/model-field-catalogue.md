@@ -139,7 +139,7 @@ baseline model files
 | HMC-011 | `docs(catalogue): scan incident domain models` | Scan all 4 incident model files. | **Completed** — 4/4 models, 74 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-012 | `docs(catalogue): scan integration domain models` | Scan all 4 integration model files. | **Completed** — 4/4 models, 66 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-013 | `docs(catalogue): scan integrity domain models` | Scan all 4 integrity model files. | **Completed** — 4/4 models, 72 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
-| HMC-014 | `docs(catalogue): scan leak detection domain models` | Scan all 3 leakdetection model files. | Planned |
+| HMC-014 | `docs(catalogue): scan leak detection domain models` | Scan all 3 leakdetection model files. | **Completed** — 3/3 models, 47 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-015 | `docs(catalogue): scan monitoring domain models` | Scan all 2 monitoring model files. | Planned |
 | HMC-016 | `docs(catalogue): scan notification domain models` | Scan all 4 notification model files. | Planned |
 | HMC-017 | `docs(catalogue): scan organization domain models` | Scan all 17 organization model files. | Planned |
@@ -1675,11 +1675,95 @@ The scan records only declarations under `integrity/domain/model`. Integrity dom
 
 No JPA entity, API DTO, migration, application contract, infrastructure model, inspection-data adapter, or database column metadata was mixed into this module scan.
 
-## 23. Current next task
+## 23. HMC-014 — Leak Detection module scan evidence
+
+**Source commit:** `5e301857882b59e9e35ecc474e9c6537d89cc96a`  
+**Module:** `leakdetection`  
+**Baseline model files:** 3  
+**Scanned models:** 3  
+**Declared fields/components:** 47  
+**Zero-field models:** 0  
+**Extraction exceptions:** 0
+
+### Leak Detection model index
+
+| Model | Kind | Declared field count | Source path | Status |
+|---|---|---:|---|---|
+| LeakCandidate | record | 17 | `src/main/java/dz/sh/hidra/modules/leakdetection/domain/model/LeakCandidate.java` | Extracted |
+| LeakDetectionCase | record | 18 | `src/main/java/dz/sh/hidra/modules/leakdetection/domain/model/LeakDetectionCase.java` | Extracted |
+| LeakEscalationReference | record | 12 | `src/main/java/dz/sh/hidra/modules/leakdetection/domain/model/LeakEscalationReference.java` | Extracted |
+
+### Leak Detection fields and declared Java types
+
+| Model | Ordinal | Field | Declared Java Type |
+|---|---:|---|---|
+| LeakCandidate | 1 | id | String |
+| LeakCandidate | 2 | runId | String |
+| LeakCandidate | 3 | profileId | String |
+| LeakCandidate | 4 | candidateNumber | String |
+| LeakCandidate | 5 | topologyAssetType | String |
+| LeakCandidate | 6 | topologyAssetId | String |
+| LeakCandidate | 7 | topologyAssetCode | String |
+| LeakCandidate | 8 | topologyAssetNameSnapshot | String |
+| LeakCandidate | 9 | suspectedAt | Instant |
+| LeakCandidate | 10 | firstEvidenceAt | Instant |
+| LeakCandidate | 11 | confidenceScore | BigDecimal |
+| LeakCandidate | 12 | severityLevel | LeakSeverityLevel |
+| LeakCandidate | 13 | status | LeakCandidateStatus |
+| LeakCandidate | 14 | summary | String |
+| LeakCandidate | 15 | correlationId | String |
+| LeakCandidate | 16 | createdAt | Instant |
+| LeakCandidate | 17 | updatedAt | Instant |
+| LeakDetectionCase | 1 | id | String |
+| LeakDetectionCase | 2 | caseNumber | String |
+| LeakDetectionCase | 3 | primaryCandidateId | String |
+| LeakDetectionCase | 4 | topologyAssetType | String |
+| LeakDetectionCase | 5 | topologyAssetId | String |
+| LeakDetectionCase | 6 | topologyAssetCode | String |
+| LeakDetectionCase | 7 | owningOrganizationUnitId | String |
+| LeakDetectionCase | 8 | status | LeakDetectionCaseStatus |
+| LeakDetectionCase | 9 | severityLevel | LeakSeverityLevel |
+| LeakDetectionCase | 10 | confidenceScore | BigDecimal |
+| LeakDetectionCase | 11 | openedAt | Instant |
+| LeakDetectionCase | 12 | closedAt | Instant |
+| LeakDetectionCase | 13 | openedByActorId | String |
+| LeakDetectionCase | 14 | closedByActorId | String |
+| LeakDetectionCase | 15 | closureReasonId | String |
+| LeakDetectionCase | 16 | correlationId | String |
+| LeakDetectionCase | 17 | createdAt | Instant |
+| LeakDetectionCase | 18 | updatedAt | Instant |
+| LeakEscalationReference | 1 | id | String |
+| LeakEscalationReference | 2 | caseId | String |
+| LeakEscalationReference | 3 | candidateId | String |
+| LeakEscalationReference | 4 | targetType | LeakEscalationTargetType |
+| LeakEscalationReference | 5 | targetReferenceId | String |
+| LeakEscalationReference | 6 | targetCodeSnapshot | String |
+| LeakEscalationReference | 7 | targetNameSnapshot | String |
+| LeakEscalationReference | 8 | status | LeakEscalationStatus |
+| LeakEscalationReference | 9 | escalatedByActorId | String |
+| LeakEscalationReference | 10 | escalatedAt | Instant |
+| LeakEscalationReference | 11 | reasonText | String |
+| LeakEscalationReference | 12 | correlationId | String |
+
+### HMC-014 reconciliation
 
 ```text
-HMC-014 — docs(catalogue): scan leak detection domain models
+baseline model files = 3
+extracted models     = 3
+exceptions           = 0
+declared fields      = 47
+zero-field models    = 0
 ```
 
-Do not start HMC-015 until HMC-014 is completed and its module counts are reported.
+The scan records only declarations under `leakdetection/domain/model`. Leak Detection domain value types referenced by record components are field types, not independent model rows for this catalogue scope.
+
+No JPA entity, API DTO, migration, application contract, infrastructure model, LeakDetectionAPI compute model, or database column metadata was mixed into this module scan.
+
+## 24. Current next task
+
+```text
+HMC-015 — docs(catalogue): scan monitoring domain models
+```
+
+Do not start HMC-016 until HMC-015 is completed and its module counts are reported.
 

@@ -2426,7 +2426,7 @@ Confirmed subject-model graph edges at this stage: **165**. These are semantic c
 | periodId | String | Domain reference | planning.PlanningPeriod | Yes | Unambiguous same-module subject-model reference. |
 | planTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
 | productTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
-| topologyScopeId | String | Cross-module reference | POLYMORPHIC_TOPOLOGY_SCOPE | No | HMSR-009 stronger Simulation DDD resolves the target namespace through companion `topologyScopeType`; no single HMS subject target and no cross-module FK. |
+| topologyScopeId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
 | responsibleOrganizationUnitId | String | Cross-module reference | organization.OrganizationUnit | Yes | Unambiguous reference to a subject model in another bounded context. |
 | currentRevisionId | String | Domain reference | planning.PlanRevision | Yes | Planning revision reference. |
 | approvedRevisionId | String | Domain reference | planning.PlanRevision | Yes | Planning revision reference. |
@@ -2570,7 +2570,7 @@ Confirmed subject-model graph edges at this stage: **165**. These are semantic c
 |---|---|---|---|:---:|---|
 | id | String | Self identifier | — | No | Primary identity of the current model. |
 | modelTypeId | String | Value/catalog dependency | SIMULATION_MODEL_TYPE | No | HMSR-009 stronger Simulation DDD + HRA-111 evidence resolves this to Simulation-owned `SimulationCatalogEntry` / `hidra_simulation_catalog_entry`, outside the 123 HMS subject set. |
-| topologyScopeId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| topologyScopeId | String | Cross-module reference | POLYMORPHIC_TOPOLOGY_SCOPE | No | HMSR-009 stronger Simulation DDD resolves the target namespace through companion `topologyScopeType`; no single HMS subject target and no cross-module FK. |
 
 #### simulation.SimulationOptimizationCandidate
 

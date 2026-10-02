@@ -178,8 +178,8 @@ Each code below is one independent roadmap task/commit. Execute exactly one code
 | `ALM-SUP-001` | `docs(alarm): approve suppression lifecycle semantics` | This document only. Record the approved suppression policy and implementation sequence. | Domain decision blocker removed without production-code change. | **Completed** |
 | `ALM-SUP-002` | `feat(alarm): add suppression application contracts` | Add minimal Alarm application commands/queries/use-case ports and DTOs for create, release, expiry evaluation, and query behavior. Reuse existing domain/persistence concepts. | Application contracts encode the approved policy without REST/JPA leakage or duplicate models. | **Completed** |
 | `ALM-SUP-003` | `feat(alarm): implement suppression lifecycle policy` | Implement domain/application policy for ALARM overlay/restoration, broad-scope matching, acknowledgement/clear/close/escalation interaction, conflicts, and server-derived actor handling. | Approved lifecycle rules are deterministic and unit-tested. | **Completed** |
-| `ALM-SUP-004` | `feat(alarm): expose suppression persistence queries` | Extend existing suppression repository adapter only as required by approved use cases: exact-scope active lookup, expiry candidates, history/query support. | No duplicate persistence model; overlap and expiry queries are deterministic. | **Next** |
-| `ALM-SUP-005` | `feat(alarm): integrate suppression workflow approval` | Verify open-ended suppression through Workflow public contracts/ports and fail closed when approval is absent. | No transition-name inference or direct foreign aggregate dependency. | Planned |
+| `ALM-SUP-004` | `feat(alarm): expose suppression persistence queries` | Extend existing suppression repository adapter only as required by approved use cases: exact-scope active lookup, expiry candidates, history/query support. | No duplicate persistence model; overlap and expiry queries are deterministic. | **Completed** |
+| `ALM-SUP-005` | `feat(alarm): integrate suppression workflow approval` | Verify open-ended suppression through Workflow public contracts/ports and fail closed when approval is absent. | No transition-name inference or direct foreign aggregate dependency. | **Next** |
 | `ALM-SUP-006` | `feat(alarm): add suppression expiry orchestration` | Add idempotent backend-owned expiry orchestration using the approved platform scheduling mechanism already present in the repository. | ACTIVE suppressions expire once; events/actor attribution/restoration are deterministic. | Planned |
 | `ALM-SUP-007` | `feat(alarm): publish suppression REST contracts` | Publish canonical create/release/query endpoints, generated OpenAPI schemas, route-permission metadata, deterministic 400/403/404/409 behavior. | No CRUD-style leakage; only approved lifecycle operations exposed. | Planned |
 | `ALM-SUP-008` | `test(alarm): verify suppression lifecycle end to end` | Domain/application/persistence/REST/Testcontainers coverage including ALARM and broad scopes, acknowledgement, clear/close, escalation preservation, workflow approval, expiry, conflicts, audit evidence, OpenAPI determinism. | Full repository verification green and suppression behavior traceable. | Planned |
@@ -234,10 +234,25 @@ Focused unit coverage locks the approved semantics. No repository adapter, sched
 
 Actor identity remains a required application contract value and must be server-derived at the trusted API/application boundary in later integration work; ALM-SUP-003 does not introduce frontend actor trust.
 
-## 8. Next authorized task
+## 8. ALM-SUP-004 completion evidence
+
+ALM-SUP-004 was executed against HidraAPI baseline `b88af5dc5f7eb8d622cc343041f2ae788ad38fcd`.
+
+The existing `AlarmSuppressionJpaEntity` and `hidra_alarm_suppression` table remain authoritative persistence. The task adds:
+
+- application-owned `AlarmSuppressionRepositoryPort` over the existing suppression DTO/query contracts;
+- a JPA adapter mapping the existing entity directly to/from the application suppression DTO, without creating a duplicate domain aggregate;
+- exact active-scope/status existence lookup for overlap enforcement;
+- deterministic due-expiry lookup for ACTIVE suppressions whose end time is at or before the authoritative evaluation instant;
+- paged query support for suppression id, scope type, scope reference, alarm id, and status;
+- focused lossless persistence-mapping coverage.
+
+No database migration, new table, scheduler, Workflow approval adapter, REST endpoint, permission publication, or OpenAPI change is included.
+
+## 9. Next authorized task
 
 ```text
-ALM-SUP-004 — feat(alarm): expose suppression persistence queries
+ALM-SUP-005 — feat(alarm): integrate suppression workflow approval
 ```
 
-ALM-SUP-004 must extend the existing suppression JPA persistence only for the query/save behavior required by the approved application contracts and domain policy. It must not add a duplicate table or duplicate business aggregate.
+ALM-SUP-005 must use Workflow's public application contract/port rather than direct Workflow persistence or transition-name inference. Open-ended suppression must fail closed when approval cannot be verified.

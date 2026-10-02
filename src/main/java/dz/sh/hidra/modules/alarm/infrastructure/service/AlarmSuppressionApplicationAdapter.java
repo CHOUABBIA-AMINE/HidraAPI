@@ -60,7 +60,7 @@ import org.springframework.transaction.annotation.Transactional;
  * input ports, while the retained suppression JPA model stays infrastructure-owned.</p>
  */
 @Service
-public final class AlarmSuppressionApplicationAdapter
+public class AlarmSuppressionApplicationAdapter
         implements ManageAlarmSuppressionUseCase, AlarmSuppressionQueryUseCase {
 
     private final AlarmSuppressionJpaRepository suppressionRepository;

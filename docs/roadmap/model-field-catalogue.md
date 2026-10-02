@@ -135,7 +135,7 @@ baseline model files
 | HMC-007 | `docs(catalogue): scan custody domain models` | Scan all 3 custody model files. | **Completed** — 3/3 models, 45 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-008 | `docs(catalogue): scan documents domain models` | Scan all 4 documents model files. | **Completed** — 4/4 models, 75 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-009 | `docs(catalogue): scan hse domain models` | Scan all 4 hse model files. | **Completed** — 4/4 models, 77 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
-| HMC-010 | `docs(catalogue): scan identity domain models` | Scan all 15 identity model files. | Planned |
+| HMC-010 | `docs(catalogue): scan identity domain models` | Scan all 15 identity model files. | **Completed** — 15/15 models, 180 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-011 | `docs(catalogue): scan incident domain models` | Scan all 4 incident model files. | Planned |
 | HMC-012 | `docs(catalogue): scan integration domain models` | Scan all 4 integration model files. | Planned |
 | HMC-013 | `docs(catalogue): scan integrity domain models` | Scan all 4 integrity model files. | Planned |
@@ -1120,11 +1120,240 @@ The scan records only declarations under `hse/domain/model`. HSE domain value ty
 
 No JPA entity, API DTO, migration, application contract, infrastructure model, or database column metadata was mixed into this module scan.
 
-## 19. Current next task
+## 19. HMC-010 — Identity module scan evidence
+
+**Source commit:** `5e301857882b59e9e35ecc474e9c6537d89cc96a`  
+**Module:** `identity`  
+**Baseline model files:** 15  
+**Scanned models:** 15  
+**Declared fields/components:** 180  
+**Zero-field models:** 0  
+**Extraction exceptions:** 0
+
+### Identity model index
+
+| Model | Kind | Declared field count | Source path | Status |
+|---|---|---:|---|---|
+| AuthenticationEvent | record | 13 | `src/main/java/dz/sh/hidra/modules/identity/domain/model/AuthenticationEvent.java` | Extracted |
+| AuthorizationDecision | record | 15 | `src/main/java/dz/sh/hidra/modules/identity/domain/model/AuthorizationDecision.java` | Extracted |
+| AuthorizationDelegationGrant | record | 12 | `src/main/java/dz/sh/hidra/modules/identity/domain/model/AuthorizationDelegationGrant.java` | Extracted |
+| ExternalRoleMapping | record | 10 | `src/main/java/dz/sh/hidra/modules/identity/domain/model/ExternalRoleMapping.java` | Extracted |
+| GroupRoleGrant | record | 10 | `src/main/java/dz/sh/hidra/modules/identity/domain/model/GroupRoleGrant.java` | Extracted |
+| HidraPrincipal | record | 7 | `src/main/java/dz/sh/hidra/modules/identity/domain/model/HidraPrincipal.java` | Extracted |
+| IdentityProvider | record | 23 | `src/main/java/dz/sh/hidra/modules/identity/domain/model/IdentityProvider.java` | Extracted |
+| LocalCredential | record | 7 | `src/main/java/dz/sh/hidra/modules/identity/domain/model/LocalCredential.java` | Extracted |
+| LoginSession | record | 11 | `src/main/java/dz/sh/hidra/modules/identity/domain/model/LoginSession.java` | Extracted |
+| Permission | record | 13 | `src/main/java/dz/sh/hidra/modules/identity/domain/model/Permission.java` | Extracted |
+| Role | record | 10 | `src/main/java/dz/sh/hidra/modules/identity/domain/model/Role.java` | Extracted |
+| RolePermissionGrant | record | 9 | `src/main/java/dz/sh/hidra/modules/identity/domain/model/RolePermissionGrant.java` | Extracted |
+| User | record | 15 | `src/main/java/dz/sh/hidra/modules/identity/domain/model/User.java` | Extracted |
+| UserPermissionGrant | record | 13 | `src/main/java/dz/sh/hidra/modules/identity/domain/model/UserPermissionGrant.java` | Extracted |
+| UserRoleGrant | record | 12 | `src/main/java/dz/sh/hidra/modules/identity/domain/model/UserRoleGrant.java` | Extracted |
+
+### Identity fields and declared Java types
+
+| Model | Ordinal | Field | Declared Java Type |
+|---|---:|---|---|
+| AuthenticationEvent | 1 | id | String |
+| AuthenticationEvent | 2 | userId | String |
+| AuthenticationEvent | 3 | identityProviderId | String |
+| AuthenticationEvent | 4 | externalIdentityId | String |
+| AuthenticationEvent | 5 | externalSubject | String |
+| AuthenticationEvent | 6 | eventType | AuthenticationEventType |
+| AuthenticationEvent | 7 | protocol | AuthenticationProtocol |
+| AuthenticationEvent | 8 | clientIp | String |
+| AuthenticationEvent | 9 | userAgent | String |
+| AuthenticationEvent | 10 | failureReason | String |
+| AuthenticationEvent | 11 | riskScore | java.math.BigDecimal |
+| AuthenticationEvent | 12 | occurredAt | Instant |
+| AuthenticationEvent | 13 | correlationId | String |
+| AuthorizationDecision | 1 | id | String |
+| AuthorizationDecision | 2 | userId | String |
+| AuthorizationDecision | 3 | permissionCode | String |
+| AuthorizationDecision | 4 | resourceType | String |
+| AuthorizationDecision | 5 | resourceReferenceId | String |
+| AuthorizationDecision | 6 | scope | AuthorizationScope |
+| AuthorizationDecision | 7 | decision | AuthorizationDecisionValue |
+| AuthorizationDecision | 8 | reasonCode | String |
+| AuthorizationDecision | 9 | reasonMessage | String |
+| AuthorizationDecision | 10 | matchedGrantIds | String |
+| AuthorizationDecision | 11 | matchedPolicyRuleIds | String |
+| AuthorizationDecision | 12 | externalClaimsUsed | String |
+| AuthorizationDecision | 13 | evaluatedAt | Instant |
+| AuthorizationDecision | 14 | correlationId | String |
+| AuthorizationDecision | 15 | requestId | String |
+| AuthorizationDelegationGrant | 1 | id | String |
+| AuthorizationDelegationGrant | 2 | delegatorUserId | String |
+| AuthorizationDelegationGrant | 3 | delegateUserId | String |
+| AuthorizationDelegationGrant | 4 | permissionId | String |
+| AuthorizationDelegationGrant | 5 | roleId | String |
+| AuthorizationDelegationGrant | 6 | scope | AuthorizationScope |
+| AuthorizationDelegationGrant | 7 | approvedByWorkflowId | String |
+| AuthorizationDelegationGrant | 8 | validFrom | Instant |
+| AuthorizationDelegationGrant | 9 | validTo | Instant |
+| AuthorizationDelegationGrant | 10 | status | DelegationStatus |
+| AuthorizationDelegationGrant | 11 | createdAt | Instant |
+| AuthorizationDelegationGrant | 12 | revokedAt | Instant |
+| ExternalRoleMapping | 1 | id | String |
+| ExternalRoleMapping | 2 | identityProviderId | String |
+| ExternalRoleMapping | 3 | roleId | String |
+| ExternalRoleMapping | 4 | externalRoleCode | String |
+| ExternalRoleMapping | 5 | claimName | String |
+| ExternalRoleMapping | 6 | mappingMode | ExternalMappingMode |
+| ExternalRoleMapping | 7 | scope | AuthorizationScope |
+| ExternalRoleMapping | 8 | status | ExternalMappingStatus |
+| ExternalRoleMapping | 9 | createdAt | Instant |
+| ExternalRoleMapping | 10 | updatedAt | Instant |
+| GroupRoleGrant | 1 | id | String |
+| GroupRoleGrant | 2 | groupId | String |
+| GroupRoleGrant | 3 | roleId | String |
+| GroupRoleGrant | 4 | scope | AuthorizationScope |
+| GroupRoleGrant | 5 | grantReason | String |
+| GroupRoleGrant | 6 | approvedByWorkflowId | String |
+| GroupRoleGrant | 7 | validFrom | Instant |
+| GroupRoleGrant | 8 | validTo | Instant |
+| GroupRoleGrant | 9 | status | GrantStatus |
+| GroupRoleGrant | 10 | createdAt | Instant |
+| HidraPrincipal | 1 | userId | String |
+| HidraPrincipal | 2 | username | String |
+| HidraPrincipal | 3 | displayName | String |
+| HidraPrincipal | 4 | authenticationType | ProviderType |
+| HidraPrincipal | 5 | identityProviderId | String |
+| HidraPrincipal | 6 | roles | Set<String> |
+| HidraPrincipal | 7 | permissions | Set<String> |
+| IdentityProvider | 1 | id | String |
+| IdentityProvider | 2 | code | String |
+| IdentityProvider | 3 | name | String |
+| IdentityProvider | 4 | providerType | ProviderType |
+| IdentityProvider | 5 | issuerUri | String |
+| IdentityProvider | 6 | authorizationEndpoint | String |
+| IdentityProvider | 7 | tokenEndpoint | String |
+| IdentityProvider | 8 | jwksUri | String |
+| IdentityProvider | 9 | directoryBaseDn | String |
+| IdentityProvider | 10 | userSearchBase | String |
+| IdentityProvider | 11 | groupSearchBase | String |
+| IdentityProvider | 12 | usernameAttribute | String |
+| IdentityProvider | 13 | emailAttribute | String |
+| IdentityProvider | 14 | displayNameAttribute | String |
+| IdentityProvider | 15 | externalIdAttribute | String |
+| IdentityProvider | 16 | groupMembershipAttribute | String |
+| IdentityProvider | 17 | syncEnabled | boolean |
+| IdentityProvider | 18 | justInTimeProvisioningEnabled | boolean |
+| IdentityProvider | 19 | status | IdentityProviderStatus |
+| IdentityProvider | 20 | metadata | String |
+| IdentityProvider | 21 | secretReference | String |
+| IdentityProvider | 22 | createdAt | Instant |
+| IdentityProvider | 23 | updatedAt | Instant |
+| LocalCredential | 1 | id | String |
+| LocalCredential | 2 | userId | String |
+| LocalCredential | 3 | passwordHash | String |
+| LocalCredential | 4 | credentialStatus | String |
+| LocalCredential | 5 | passwordChangedAt | Instant |
+| LocalCredential | 6 | createdAt | Instant |
+| LocalCredential | 7 | updatedAt | Instant |
+| LoginSession | 1 | id | String |
+| LoginSession | 2 | userId | String |
+| LoginSession | 3 | identityProviderId | String |
+| LoginSession | 4 | externalIdentityId | String |
+| LoginSession | 5 | startedAt | Instant |
+| LoginSession | 6 | lastSeenAt | Instant |
+| LoginSession | 7 | expiresAt | Instant |
+| LoginSession | 8 | clientIp | String |
+| LoginSession | 9 | userAgent | String |
+| LoginSession | 10 | status | LoginSessionStatus |
+| LoginSession | 11 | correlationId | String |
+| Permission | 1 | id | String |
+| Permission | 2 | code | String |
+| Permission | 3 | nameAr | String |
+| Permission | 4 | nameFr | String |
+| Permission | 5 | nameEn | String |
+| Permission | 6 | description | String |
+| Permission | 7 | permissionDomain | String |
+| Permission | 8 | resourceType | String |
+| Permission | 9 | action | String |
+| Permission | 10 | sensitive | boolean |
+| Permission | 11 | status | PermissionStatus |
+| Permission | 12 | createdAt | Instant |
+| Permission | 13 | updatedAt | Instant |
+| Role | 1 | id | String |
+| Role | 2 | code | String |
+| Role | 3 | nameAr | String |
+| Role | 4 | nameFr | String |
+| Role | 5 | nameEn | String |
+| Role | 6 | description | String |
+| Role | 7 | roleType | RoleType |
+| Role | 8 | status | RoleStatus |
+| Role | 9 | createdAt | Instant |
+| Role | 10 | updatedAt | Instant |
+| RolePermissionGrant | 1 | id | String |
+| RolePermissionGrant | 2 | roleId | String |
+| RolePermissionGrant | 3 | permissionId | String |
+| RolePermissionGrant | 4 | effect | GrantEffect |
+| RolePermissionGrant | 5 | conditionExpression | String |
+| RolePermissionGrant | 6 | validFrom | Instant |
+| RolePermissionGrant | 7 | validTo | Instant |
+| RolePermissionGrant | 8 | status | GrantStatus |
+| RolePermissionGrant | 9 | createdAt | Instant |
+| User | 1 | id | String |
+| User | 2 | username | String |
+| User | 3 | emailAddress | String |
+| User | 4 | displayName | String |
+| User | 5 | userType | UserType |
+| User | 6 | status | UserStatus |
+| User | 7 | employeeReferenceId | String |
+| User | 8 | lastAuthenticatedAt | Instant |
+| User | 9 | failedLoginCount | int |
+| User | 10 | lockedUntil | Instant |
+| User | 11 | createdAt | Instant |
+| User | 12 | activatedAt | Instant |
+| User | 13 | suspendedAt | Instant |
+| User | 14 | disabledAt | Instant |
+| User | 15 | updatedAt | Instant |
+| UserPermissionGrant | 1 | id | String |
+| UserPermissionGrant | 2 | userId | String |
+| UserPermissionGrant | 3 | permissionId | String |
+| UserPermissionGrant | 4 | effect | GrantEffect |
+| UserPermissionGrant | 5 | scope | AuthorizationScope |
+| UserPermissionGrant | 6 | grantReason | String |
+| UserPermissionGrant | 7 | approvedByWorkflowId | String |
+| UserPermissionGrant | 8 | emergencyAccess | boolean |
+| UserPermissionGrant | 9 | validFrom | Instant |
+| UserPermissionGrant | 10 | validTo | Instant |
+| UserPermissionGrant | 11 | status | GrantStatus |
+| UserPermissionGrant | 12 | createdAt | Instant |
+| UserPermissionGrant | 13 | revokedAt | Instant |
+| UserRoleGrant | 1 | id | String |
+| UserRoleGrant | 2 | userId | String |
+| UserRoleGrant | 3 | roleId | String |
+| UserRoleGrant | 4 | scope | AuthorizationScope |
+| UserRoleGrant | 5 | grantReason | String |
+| UserRoleGrant | 6 | approvedByWorkflowId | String |
+| UserRoleGrant | 7 | validFrom | Instant |
+| UserRoleGrant | 8 | validTo | Instant |
+| UserRoleGrant | 9 | status | GrantStatus |
+| UserRoleGrant | 10 | createdAt | Instant |
+| UserRoleGrant | 11 | revokedAt | Instant |
+| UserRoleGrant | 12 | revokedReason | String |
+
+### HMC-010 reconciliation
 
 ```text
-HMC-010 — docs(catalogue): scan identity domain models
+baseline model files = 15
+extracted models     = 15
+exceptions           = 0
+declared fields      = 180
+zero-field models    = 0
 ```
 
-Do not start HMC-011 until HMC-010 is completed and its module counts are reported.
+The scan records only declarations under `identity/domain/model`. Identity domain value types and Java collection element types referenced by record components remain declared field types; they are not independent model rows for this catalogue scope.
+
+No application, infrastructure, API, JPA, Flyway, DTO, authentication-provider implementation, credential persistence mapping, or database column metadata was mixed into this module scan.
+
+## 20. Current next task
+
+```text
+HMC-011 — docs(catalogue): scan incident domain models
+```
+
+Do not start HMC-012 until HMC-011 is completed and its module counts are reported.
 

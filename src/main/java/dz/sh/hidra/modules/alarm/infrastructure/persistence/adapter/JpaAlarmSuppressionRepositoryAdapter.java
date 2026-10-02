@@ -86,7 +86,7 @@ public final class JpaAlarmSuppressionRepositoryAdapter implements AlarmSuppress
             throw new IllegalArgumentException("Suppression query page must be >= 0 and size must be > 0.");
         }
 
-        Specification<AlarmSuppressionJpaEntity> specification = Specification.where(null);
+        Specification<AlarmSuppressionJpaEntity> specification = Specification.where((Specification<AlarmSuppressionJpaEntity>) null);
         if (hasText(query.suppressionId())) {
             specification = specification.and((root, ignoredQuery, cb) -> cb.equal(root.get("id"), query.suppressionId().trim()));
         }

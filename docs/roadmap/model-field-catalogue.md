@@ -151,7 +151,7 @@ baseline model files
 | HMC-023 | `docs(catalogue): scan telemetry domain models` | Scan all 4 telemetry model files. | **Completed** — 4/4 models, 63 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-024 | `docs(catalogue): scan topology domain models` | Scan all 5 topology model files. | **Completed** — 5/5 models, 73 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-025 | `docs(catalogue): scan workflow domain models` | Scan all 8 workflow model files. | **Completed** — 8/8 models, 131 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
-| HMC-026 | `docs(catalogue): reconcile module model catalogue` | Reconcile all 24 module outputs against the pinned 123-file baseline; resolve extraction exceptions and duplicate/missing rows. | Planned |
+| HMC-026 | `docs(catalogue): reconcile module model catalogue` | Reconcile all 24 module outputs against the pinned 123-file baseline; resolve extraction exceptions and duplicate/missing rows. | **Completed** — 24/24 modules, 123/123 models, 1,867 field/component rows, 0 zero-field models, 0 exceptions, 0 duplicate model keys, 0 duplicate field ordinal keys; source SHA consistent. |
 | HMC-027 | `docs(catalogue): generate final model field workbook` | Generate the consolidated Excel document from the reconciled catalogue. | Planned |
 | HMC-028 | `docs(catalogue): validate and finalize model field catalogue` | Validate workbook readability, row/model/module counts, provenance, and final delivery evidence. | Planned |
 
@@ -3079,11 +3079,82 @@ The scan records only declarations under `workflow/domain/model`. Workflow domai
 
 No JPA entity, API DTO, migration, application contract, infrastructure orchestration adapter, identity implementation, organization implementation, target-module implementation, or database column metadata was mixed into this module scan.
 
-## 35. Current next task
+## 35. HMC-026 — Full catalogue reconciliation evidence
+
+**Pinned source commit:** `5e301857882b59e9e35ecc474e9c6537d89cc96a`  
+**Modules reconciled:** 24 / 24  
+**Pinned model files:** 123  
+**Catalogue model rows:** 123  
+**Declared field/component rows:** 1,867  
+**Zero-field models:** 0  
+**Extraction exceptions:** 0  
+**Duplicate model keys:** 0  
+**Duplicate field ordinal keys:** 0  
+**Source SHA consistency:** Pass
+
+### Module reconciliation
+
+| Module | Models | Fields/components | Zero-field models | Exceptions | Result |
+|---|---:|---:|---:|---:|---|
+| alarm | 4 | 67 | 0 | 0 | Reconciled |
+| analytics | 7 | 102 | 0 | 0 | Reconciled |
+| assets | 3 | 56 | 0 | 0 | Reconciled |
+| audit | 4 | 83 | 0 | 0 | Reconciled |
+| configuration | 3 | 40 | 0 | 0 | Reconciled |
+| custody | 3 | 45 | 0 | 0 | Reconciled |
+| documents | 4 | 75 | 0 | 0 | Reconciled |
+| hse | 4 | 77 | 0 | 0 | Reconciled |
+| identity | 15 | 180 | 0 | 0 | Reconciled |
+| incident | 4 | 74 | 0 | 0 | Reconciled |
+| integration | 4 | 66 | 0 | 0 | Reconciled |
+| integrity | 4 | 72 | 0 | 0 | Reconciled |
+| leakdetection | 3 | 47 | 0 | 0 | Reconciled |
+| monitoring | 2 | 37 | 0 | 0 | Reconciled |
+| notification | 4 | 66 | 0 | 0 | Reconciled |
+| organization | 17 | 179 | 0 | 0 | Reconciled |
+| party | 2 | 21 | 0 | 0 | Reconciled |
+| planning | 5 | 95 | 0 | 0 | Reconciled |
+| reporting | 4 | 59 | 0 | 0 | Reconciled |
+| risk | 4 | 78 | 0 | 0 | Reconciled |
+| simulation | 6 | 81 | 0 | 0 | Reconciled |
+| telemetry | 4 | 63 | 0 | 0 | Reconciled |
+| topology | 5 | 73 | 0 | 0 | Reconciled |
+| workflow | 8 | 131 | 0 | 0 | Reconciled |
+| **Total** | **123** | **1,867** | **0** | **0** | **Reconciled** |
+
+### HMC-026 validation results
 
 ```text
-HMC-026 — docs(catalogue): reconcile module model catalogue
+baseline modules                         = 24
+catalogue module sections               = 24
+
+pinned direct domain/model Java files   = 123
+catalogue model-index rows              = 123
+missing baseline model paths            = 0
+unexpected model paths                  = 0
+
+declared field/component rows           = 1,867
+duplicate (module, model) keys          = 0
+duplicate (module, model, ordinal) keys = 0
+model field-count mismatches            = 0
+field ordinal gaps/duplicates           = 0
+
+zero-field models                       = 0
+extraction exceptions                   = 0
+source SHA mismatches                   = 0
 ```
 
-Do not start HMC-027 until HMC-026 is completed and the full 24-module/123-model reconciliation is reported.
+Every module scan from HMC-002 through HMC-025 reconciles to the pinned source tree. Model source paths, per-model declared field counts, field ordinals, and the pinned source SHA are internally consistent across the catalogue evidence.
+
+The catalogue remains a Java domain-model declaration inventory only. This reconciliation does not infer PostgreSQL/JPA types, nullability, foreign keys, indexes, persistence constraints, DTO contracts, or import mappings.
+
+No production Java, API, application, infrastructure, JPA, Flyway, or data-provisioning implementation was modified by HMC-026.
+
+## 36. Current next task
+
+```text
+HMC-027 — docs(catalogue): generate final model field workbook
+```
+
+Do not start HMC-028 until HMC-027 generates the consolidated Excel workbook and reports workbook construction evidence.
 

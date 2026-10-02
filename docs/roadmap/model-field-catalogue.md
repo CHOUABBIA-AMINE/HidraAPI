@@ -134,7 +134,7 @@ baseline model files
 | HMC-006 | `docs(catalogue): scan configuration domain models` | Scan all 3 configuration model files. | **Completed** — 3/3 models, 40 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-007 | `docs(catalogue): scan custody domain models` | Scan all 3 custody model files. | **Completed** — 3/3 models, 45 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-008 | `docs(catalogue): scan documents domain models` | Scan all 4 documents model files. | **Completed** — 4/4 models, 75 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
-| HMC-009 | `docs(catalogue): scan hse domain models` | Scan all 4 hse model files. | Planned |
+| HMC-009 | `docs(catalogue): scan hse domain models` | Scan all 4 hse model files. | **Completed** — 4/4 models, 77 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-010 | `docs(catalogue): scan identity domain models` | Scan all 15 identity model files. | Planned |
 | HMC-011 | `docs(catalogue): scan incident domain models` | Scan all 4 incident model files. | Planned |
 | HMC-012 | `docs(catalogue): scan integration domain models` | Scan all 4 integration model files. | Planned |
@@ -1005,11 +1005,126 @@ The scan records only declarations under `documents/domain/model`. Documents dom
 
 No JPA entity, API DTO, migration, application contract, infrastructure model, storage mapping, or database column metadata was mixed into this module scan.
 
-## 18. Current next task
+## 18. HMC-009 — HSE module scan evidence
+
+**Source commit:** `5e301857882b59e9e35ecc474e9c6537d89cc96a`  
+**Module:** `hse`  
+**Baseline model files:** 4  
+**Scanned models:** 4  
+**Declared fields/components:** 77  
+**Zero-field models:** 0  
+**Extraction exceptions:** 0
+
+### HSE model index
+
+| Model | Kind | Declared field count | Source path | Status |
+|---|---|---:|---|---|
+| HseCase | record | 30 | `src/main/java/dz/sh/hidra/modules/hse/domain/model/HseCase.java` | Extracted |
+| HseClosure | record | 11 | `src/main/java/dz/sh/hidra/modules/hse/domain/model/HseClosure.java` | Extracted |
+| HseCorrectivePreventiveAction | record | 20 | `src/main/java/dz/sh/hidra/modules/hse/domain/model/HseCorrectivePreventiveAction.java` | Extracted |
+| PermitToWork | record | 16 | `src/main/java/dz/sh/hidra/modules/hse/domain/model/PermitToWork.java` | Extracted |
+
+### HSE fields and declared Java types
+
+| Model | Ordinal | Field | Declared Java Type |
+|---|---:|---|---|
+| HseCase | 1 | id | String |
+| HseCase | 2 | caseNumber | String |
+| HseCase | 3 | title | String |
+| HseCase | 4 | description | String |
+| HseCase | 5 | caseTypeId | String |
+| HseCase | 6 | severityId | String |
+| HseCase | 7 | priorityId | String |
+| HseCase | 8 | status | HseCaseStatus |
+| HseCase | 9 | sourceType | HseCaseSourceType |
+| HseCase | 10 | incidentReferenceId | String |
+| HseCase | 11 | incidentCodeSnapshot | String |
+| HseCase | 12 | incidentTitleSnapshot | String |
+| HseCase | 13 | targetModule | String |
+| HseCase | 14 | targetTypeCode | String |
+| HseCase | 15 | targetId | String |
+| HseCase | 16 | targetCodeSnapshot | String |
+| HseCase | 17 | targetLabelSnapshot | String |
+| HseCase | 18 | occurredAt | Instant |
+| HseCase | 19 | reportedAt | Instant |
+| HseCase | 20 | reportedByActorId | String |
+| HseCase | 21 | reportedByDisplayNameSnapshot | String |
+| HseCase | 22 | responsibleOrganizationUnitId | String |
+| HseCase | 23 | responsibleOrganizationUnitNameSnapshot | String |
+| HseCase | 24 | workflowInstanceId | String |
+| HseCase | 25 | auditReferenceId | String |
+| HseCase | 26 | controlledAt | Instant |
+| HseCase | 27 | resolvedAt | Instant |
+| HseCase | 28 | closedAt | Instant |
+| HseCase | 29 | createdAt | Instant |
+| HseCase | 30 | updatedAt | Instant |
+| HseClosure | 1 | id | String |
+| HseClosure | 2 | hseCaseId | String |
+| HseClosure | 3 | closureSummary | String |
+| HseClosure | 4 | impactAssessed | boolean |
+| HseClosure | 5 | capaCompleted | boolean |
+| HseClosure | 6 | evidenceReviewed | boolean |
+| HseClosure | 7 | regulatoryReviewed | boolean |
+| HseClosure | 8 | closedByActorId | String |
+| HseClosure | 9 | closedByDisplayNameSnapshot | String |
+| HseClosure | 10 | closedAt | Instant |
+| HseClosure | 11 | workflowInstanceId | String |
+| HseCorrectivePreventiveAction | 1 | id | String |
+| HseCorrectivePreventiveAction | 2 | hseCaseId | String |
+| HseCorrectivePreventiveAction | 3 | actionNumber | String |
+| HseCorrectivePreventiveAction | 4 | actionTypeId | String |
+| HseCorrectivePreventiveAction | 5 | title | String |
+| HseCorrectivePreventiveAction | 6 | description | String |
+| HseCorrectivePreventiveAction | 7 | ownerActorId | String |
+| HseCorrectivePreventiveAction | 8 | ownerDisplayNameSnapshot | String |
+| HseCorrectivePreventiveAction | 9 | ownerOrganizationUnitId | String |
+| HseCorrectivePreventiveAction | 10 | ownerOrganizationUnitNameSnapshot | String |
+| HseCorrectivePreventiveAction | 11 | targetDate | Instant |
+| HseCorrectivePreventiveAction | 12 | completedAt | Instant |
+| HseCorrectivePreventiveAction | 13 | verificationRequired | boolean |
+| HseCorrectivePreventiveAction | 14 | verifiedByActorId | String |
+| HseCorrectivePreventiveAction | 15 | verifiedAt | Instant |
+| HseCorrectivePreventiveAction | 16 | status | CapaStatus |
+| HseCorrectivePreventiveAction | 17 | linkedWorkOrderId | String |
+| HseCorrectivePreventiveAction | 18 | workflowTaskId | String |
+| HseCorrectivePreventiveAction | 19 | createdAt | Instant |
+| HseCorrectivePreventiveAction | 20 | updatedAt | Instant |
+| PermitToWork | 1 | id | String |
+| PermitToWork | 2 | permitNumber | String |
+| PermitToWork | 3 | permitTypeId | String |
+| PermitToWork | 4 | title | String |
+| PermitToWork | 5 | description | String |
+| PermitToWork | 6 | targetModule | String |
+| PermitToWork | 7 | targetTypeCode | String |
+| PermitToWork | 8 | targetId | String |
+| PermitToWork | 9 | requestedByActorId | String |
+| PermitToWork | 10 | approvedByActorId | String |
+| PermitToWork | 11 | validFrom | Instant |
+| PermitToWork | 12 | validTo | Instant |
+| PermitToWork | 13 | status | PermitStatus |
+| PermitToWork | 14 | workflowInstanceId | String |
+| PermitToWork | 15 | createdAt | Instant |
+| PermitToWork | 16 | updatedAt | Instant |
+
+### HMC-009 reconciliation
 
 ```text
-HMC-009 — docs(catalogue): scan hse domain models
+baseline model files = 4
+extracted models     = 4
+exceptions           = 0
+declared fields      = 77
+zero-field models    = 0
 ```
 
-Do not start HMC-010 until HMC-009 is completed and its module counts are reported.
+The scan records only declarations under `hse/domain/model`. HSE domain value types referenced by record components are field types, not independent model rows for this catalogue scope.
+
+No JPA entity, API DTO, migration, application contract, infrastructure model, or database column metadata was mixed into this module scan.
+
+## 19. Current next task
+
+```text
+HMC-010 — docs(catalogue): scan identity domain models
+```
+
+Do not start HMC-011 until HMC-010 is completed and its module counts are reported.
 

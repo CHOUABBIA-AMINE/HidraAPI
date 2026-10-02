@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -210,7 +210,7 @@ Ordering rules applied:
 | HMSR-015 | 0 | leakdetection | LeakCandidate | — | — | 2 | 2 | 2 | REVISE | Completed | `docs(model-review): review leakdetection LeakCandidate` |
 | HMSR-016 | 0 | organization | OperationalScope | — | — | 1 | 2 | 0 | APPROVED | Completed | `docs(model-review): review organization OperationalScope` |
 | HMSR-017 | 0 | analytics | AnalyticsDataset | — | — | 1 | 1 | 0 | APPROVED | Completed | `docs(model-review): review analytics AnalyticsDataset` |
-| HMSR-018 | 0 | analytics | MetricEvaluationRun | — | — | 1 | 1 | 1 | — | Planned | `docs(model-review): review analytics MetricEvaluationRun` |
+| HMSR-018 | 0 | analytics | MetricEvaluationRun | — | — | 1 | 1 | 1 | REVISE | Completed | `docs(model-review): review analytics MetricEvaluationRun` |
 | HMSR-019 | 0 | configuration | ConfigurationDefinition | — | — | 1 | 1 | 1 | — | Planned | `docs(model-review): review configuration ConfigurationDefinition` |
 | HMSR-020 | 0 | custody | CustodyMeasurementPeriod | — | — | 1 | 1 | 2 | — | Planned | `docs(model-review): review custody CustodyMeasurementPeriod` |
 | HMSR-021 | 0 | integrity | PipelineDefect | — | — | 1 | 1 | 1 | — | Planned | `docs(model-review): review integrity PipelineDefect` |
@@ -1650,8 +1650,8 @@ Confirmed subject-model graph edges at this stage: **165**. These are semantic c
 | Field | Declared type | Classification | Resolved target | Graph edge | Notes |
 |---|---|---|---|:---:|---|
 | id | String | Self identifier | — | No | Primary identity of the current model. |
-| metricDefinitionVersionId | String | Unresolved | — | No | Reference target is outside or absent from the 123 subject-model set; preserve for HMS-004 review. |
-| scopeId | String | Cross-module reference | POLYMORPHIC | No | Target is selected by companion type/module metadata; no single subject-model edge. |
+| metricDefinitionVersionId | String | Domain reference | analytics.MetricDefinitionVersion (read/persistence model) | No | HMSR-018 stronger Analytics DDD + HRA-111 evidence resolves this required same-module reference to `hidra_analytics_metric_definition_version`; target is outside the 123 HMS subject set. |
+| scopeId | String | Cross-module reference | POLYMORPHIC_ANALYTICAL_SCOPE | No | HMSR-018 Analytics DDD confirms `scopeType + scopeId` may target Topology, Organization, Product, or a module-defined analytical scope; no single HMS subject edge or cross-module FK is appropriate. |
 | correlationId | String | Snapshot/reference-only | TECHNICAL_REFERENCE | No | Technical correlation/request/reference identity. |
 
 #### analytics.MetricValue
@@ -5219,16 +5219,156 @@ Analytics may use the dataset to compute metrics, projections, KPI values, trend
 
 No production correction obligation is created by HMSR-017. The only retained note is for future provisioning/documentation: do not treat the example `DATASET_TYPE` / `REFRESH_MODE` catalog families as relational parents of the enum-backed dataset fields without a separately authorized design decision.
 
-## 31. Current next task
+## 31. HMSR-018 — analytics.MetricEvaluationRun review
+
+**Decision:** REVISE  
+**Review code:** HMSR-018  
+**Dependency level:** 0  
+**Bounded context:** analytics  
+**Confirmed upstream subject dependencies:** none  
+**Confirmed direct dependents:** 1 — `analytics.MetricValue` through `metricEvaluationRunId`  
+**Transitive dependents:** 1  
+**Unresolved/non-subject references:** 1 — `metricDefinitionVersionId`, now semantically resolved to Analytics-owned `MetricDefinitionVersion` outside the 123 HMS subject set
+
+### 31.1 Semantic role and ordering rationale
+
+`MetricEvaluationRun` is the Analytics-owned execution record for calculating one versioned metric over a defined time period and analytical scope. It carries the exact metric-definition version, execution lifecycle, scope discriminator/reference, run timing, processing counters, diagnostic context and correlation identity.
+
+It is Level 0 because its required upstream metric-definition version is a retained Analytics read/persistence model outside the HMS subject population. `MetricValue` is the one direct HMS subject dependent through `metricEvaluationRunId`.
+
+Analytics remains a derived/read-oriented bounded context. A metric evaluation may calculate operational indicators from trusted source history, but it must not mutate the source modules or convert derived values into operational truth.
+
+### 31.2 Field semantics
+
+| Field | Type | Mandatory / optional | Reviewed meaning |
+|---|---|---|---|
+| `id` | `String` | Mandatory | Stable run identity and persistence primary key. |
+| `metricDefinitionVersionId` | `String` | Mandatory | Exact Analytics-owned metric-definition version used for calculation. |
+| `runStatus` | `AnalyticsRunStatus` | Mandatory | Run lifecycle: `PENDING`, `RUNNING`, `COMPLETED`, `COMPLETED_WITH_WARNINGS`, `FAILED`, or `CANCELLED`. |
+| `periodStart` | `Instant` | Mandatory | Evaluation-period start. |
+| `periodEnd` | `Instant` | Mandatory | Evaluation-period end; current domain rule allows equality and rejects `periodEnd < periodStart`. |
+| `scopeType` | `String` | Mandatory in persistence and DDD semantics | Discriminator identifying the governed analytical scope namespace. |
+| `scopeId` | `String` | Scope-dependent optional | Stable target reference selected by `scopeType`; some module-defined/global scopes may legitimately be identifier-less. |
+| `startedAt` | `Instant` | Mandatory | Execution start timestamp. |
+| `completedAt` | `Instant` | Optional | Completion timestamp once the run reaches an applicable terminal state. |
+| `recordsRead` | `Long` | Optional | Number of source records read when the calculation engine records this metric. |
+| `recordsProduced` | `Long` | Optional | Number of derived result records produced. |
+| `errorCode` | `String` | Optional | Machine-readable diagnostic code for failed/warning execution. |
+| `errorMessage` | `String` | Optional | Human-readable diagnostic context. |
+| `correlationId` | `String` | Optional technical reference | End-to-end trace/correlation identity. |
+| `createdAt` | `Instant` | Persistence-required audit timestamp | Run creation timestamp. |
+
+The current constructor correctly enforces `id`, `metricDefinitionVersionId`, `runStatus`, `periodStart`, `periodEnd`, `startedAt`, and `periodStart <= periodEnd`, and normalizes textual values.
+
+### 31.3 Metric-definition-version dependency resolution
+
+HMS-003 left `metricDefinitionVersionId` unresolved because `MetricDefinitionVersion` is outside the 123 HMS subject set. Stronger current evidence resolves the target without adding a graph edge:
+
+- Analytics DDD defines `MetricDefinitionVersion` as the versioned metric formula/calculation policy;
+- `MetricDefinitionVersionJpaEntity` persists it in `hidra_analytics_metric_definition_version`;
+- repository mirror classification retains `MetricDefinitionVersion` as an Analytics `READ_PERSISTENCE_MODEL` outside the HMS subjects;
+- HRA-111 installs `fk_hra111_analytics_020`; 
+- that FK points `hidra_analytics_metric_evaluation_run.metric_definition_version_id` to `hidra_analytics_metric_definition_version(id)` with `ON DELETE RESTRICT`.
+
+Therefore the run correctly references an immutable/versioned calculation definition rather than only a mutable metric identity.
+
+The DDD also gives metric-definition versions `validFrom/validTo` and states that validity periods must not overlap for active calculation use. The current run service does not load the version before starting a run, so the database FK proves existence only; it does not prove the version is eligible for the requested evaluation period.
+
+### 31.4 Analytical scope semantics
+
+The Analytics DDD explicitly states:
 
 ```text
-HMSR-018 — analytics.MetricEvaluationRun
+scope must reference a topology asset, organization unit, product, or module-defined analytical scope
+```
+
+and the general Analytics scope section lists examples including `NETWORK`, `PIPELINE_SYSTEM`, `PIPELINE`, `PIPELINE_SEGMENT`, `STATION`, `FACILITY`, `EQUIPMENT`, `MEASUREMENT_POINT`, `ORGANIZATION_UNIT`, `PRODUCT`, `CUSTODY_TRANSFER_POINT`, `HSE_SITE`, and `RISK_AREA`.
+
+`scopeType + scopeId` is therefore a typed/polymorphic reference pair. It must not be collapsed into one HMS subject edge or cross-module database FK.
+
+However, the live implementation currently has two consistency gaps:
+
+- `scope_type` is `NOT NULL` in JPA/schema and is semantically required to interpret the scope, but `MetricEvaluationRun` does not reject null/blank `scopeType`; 
+- `AnalyticsApplicationService.runMetricEvaluation()` accepts `scopeType/scopeId` directly and performs no demonstrated scope-type vocabulary or target-resolution validation.
+
+The final design needs a neutral lookup/validation contract appropriate to the selected scope namespace while preserving foreign-module ownership.
+
+### 31.5 Run creation and lifecycle coverage
+
+`AnalyticsApplicationService.runMetricEvaluation()` currently creates a run with:
+
+```text
+runStatus = RUNNING
+startedAt = now
+completedAt = null
+recordsRead = 0
+recordsProduced = 0
+errorCode = null
+errorMessage = null
+createdAt = now
+```
+
+Those are coherent start-state defaults.
+
+Repository search during HMSR-018 found no current application completion/failure/cancellation path for `MetricEvaluationRun`. The DDD requires failed runs to be auditable, but the current public orchestration only demonstrates run creation and therefore does not yet demonstrate how `FAILED`, `COMPLETED_WITH_WARNINGS`, `COMPLETED`, or `CANCELLED` are reached while preserving diagnostics and completion metadata.
+
+HMSR-018 does **not** invent a transition matrix that the Analytics DDD does not define. It records only the missing lifecycle orchestration needed to make the existing status/diagnostic fields operationally meaningful.
+
+### 31.6 Persistence consistency and deliberately unasserted invariants
+
+The live domain and JPA models agree on all 15 declared components. The base Analytics migration makes `id`, `metric_definition_version_id`, `run_status`, `period_start`, `period_end`, `scope_type`, `started_at`, and `created_at` non-null. `scope_id`, completion fields, counters and diagnostics are nullable.
+
+HRA-051 already enforces the only explicitly approved local temporal rule for this model: `periodStart <= periodEnd`.
+
+No current Analytics source reviewed by HMSR-018 defines either of the following as target invariants:
+
+- `completedAt >= startedAt`; 
+- non-negative `recordsRead` / `recordsProduced`.
+
+Those constraints may be reasonable future decisions, but they are **not** added to the semantic baseline by this review because the repository evidence does not currently establish them.
+
+Likewise, HRA intentionally keeps generic audit-timestamp nullability at the persistence/application boundary, so `createdAt` is not promoted into an additional constructor correction obligation merely because the column is `NOT NULL`.
+
+### 31.7 Failed-run auditability
+
+The DDD's explicit rule is that a failed run must be auditable. The model already contains the necessary evidence carriers: run status, start/completion timestamps, error code/message, correlation ID and stable run identity.
+
+The gap is orchestration rather than field shape: no current service path found during HMSR-018 demonstrates transition to `FAILED` while preserving diagnostic context. The correction should therefore live at the application/execution boundary, not as a speculative constructor rule requiring particular error strings for every failed instance.
+
+### 31.8 Required revisions
+
+The target baseline cannot be APPROVED until these evidence-backed execution rules are made explicit and enforceable:
+
+1. **Required scope discriminator:** enforce nonblank `scopeType` at a deliberate domain/application boundary so invalid runs do not survive until database persistence.
+2. **Typed scope validation:** validate the `scopeType + scopeId` pair through a neutral Analytics/owning-module lookup contract while preserving foreign-module ownership and allowing explicitly identifier-less scope types where defined.
+3. **Metric-version eligibility:** before starting calculation, resolve `metricDefinitionVersionId` and enforce whatever version-validity/active-calculation rule is authoritative for the requested period; FK existence alone is insufficient.
+4. **Lifecycle completion/failure orchestration:** provide a governed path for terminal run outcomes so `COMPLETED`, `COMPLETED_WITH_WARNINGS`, `FAILED`, and `CANCELLED` can preserve `completedAt`, diagnostics, counters and correlation/audit evidence.
+5. **Failed-run auditability:** ensure failure execution records retain enough diagnostic/correlation evidence to satisfy the DDD rule without inventing unsupported constructor-level text requirements.
+
+HMSR-018 does not change production Java, JPA, Flyway, scope contracts, metric-definition versions, API/application contracts, tests, evaluation runs or metric values.
+
+### 31.9 Operational interpretation
+
+For SONATRACH/TRC, a `MetricEvaluationRun` may calculate pipeline utilization, telemetry availability, pressure deviation, incident closure duration, alarm acknowledgement time, energy-per-volume, custody variance, HSE case rates or similar derived indicators over a governed operational scope and period.
+
+The run is analytical evidence only. It cannot acknowledge alarms, modify plans, close incidents, alter risk ratings, change Topology, validate Telemetry, or trigger SCADA/PLC/RTU/SIS/ESD action.
+
+### 31.10 Review conclusion
+
+**REVISE.** `MetricEvaluationRun` has the correct 15-field execution shape, correct Level-0 placement, correct direct dependency on `MetricValue`, and a now-resolved same-module dependency on non-subject `MetricDefinitionVersion`. Its period-order invariant and start-state defaults are coherent.
+
+The target baseline cannot mark it APPROVED while the required scope discriminator/pair is unchecked, metric-version eligibility is not validated before calculation, and the public application contract does not demonstrate terminal/failure orchestration needed for auditability. HMS reconciliation must retain these obligations until an explicitly authorized Analytics correction task resolves them or the target semantics are explicitly changed.
+
+## 32. Current next task
+
+```text
+HMSR-019 — configuration.ConfigurationDefinition
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review analytics MetricEvaluationRun
+docs(model-review): review configuration ConfigurationDefinition
 ```
 
-Start HMSR-018 only after HMSR-017 is committed and reported. Do not start HMSR-019 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-019 only after HMSR-018 is committed and reported. Do not start HMSR-020 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

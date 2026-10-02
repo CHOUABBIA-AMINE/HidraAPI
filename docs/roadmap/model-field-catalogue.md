@@ -150,7 +150,7 @@ baseline model files
 | HMC-022 | `docs(catalogue): scan simulation domain models` | Scan all 6 simulation model files. | **Completed** — 6/6 models, 81 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-023 | `docs(catalogue): scan telemetry domain models` | Scan all 4 telemetry model files. | **Completed** — 4/4 models, 63 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-024 | `docs(catalogue): scan topology domain models` | Scan all 5 topology model files. | **Completed** — 5/5 models, 73 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
-| HMC-025 | `docs(catalogue): scan workflow domain models` | Scan all 8 workflow model files. | Planned |
+| HMC-025 | `docs(catalogue): scan workflow domain models` | Scan all 8 workflow model files. | **Completed** — 8/8 models, 131 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-026 | `docs(catalogue): reconcile module model catalogue` | Reconcile all 24 module outputs against the pinned 123-file baseline; resolve extraction exceptions and duplicate/missing rows. | Planned |
 | HMC-027 | `docs(catalogue): generate final model field workbook` | Generate the consolidated Excel document from the reconciled catalogue. | Planned |
 | HMC-028 | `docs(catalogue): validate and finalize model field catalogue` | Validate workbook readability, row/model/module counts, provenance, and final delivery evidence. | Planned |
@@ -2906,11 +2906,184 @@ The scan records only declarations under `topology/domain/model`. Topology domai
 
 No JPA entity, API DTO, migration, application contract, infrastructure model, GIS implementation, party implementation, telemetry implementation, simulation implementation, or database column metadata was mixed into this module scan.
 
-## 34. Current next task
+## 34. HMC-025 — Workflow module scan evidence
+
+**Source commit:** `5e301857882b59e9e35ecc474e9c6537d89cc96a`  
+**Module:** `workflow`  
+**Baseline model files:** 8  
+**Scanned models:** 8  
+**Declared fields/components:** 131  
+**Zero-field models:** 0  
+**Extraction exceptions:** 0
+
+### Workflow model index
+
+| Model | Kind | Declared field count | Source path | Status |
+|---|---|---:|---|---|
+| WorkflowAction | record | 21 | `src/main/java/dz/sh/hidra/modules/workflow/domain/model/WorkflowAction.java` | Extracted |
+| WorkflowDefinition | record | 10 | `src/main/java/dz/sh/hidra/modules/workflow/domain/model/WorkflowDefinition.java` | Extracted |
+| WorkflowInstance | record | 21 | `src/main/java/dz/sh/hidra/modules/workflow/domain/model/WorkflowInstance.java` | Extracted |
+| WorkflowStateHistory | record | 15 | `src/main/java/dz/sh/hidra/modules/workflow/domain/model/WorkflowStateHistory.java` | Extracted |
+| WorkflowStep | record | 16 | `src/main/java/dz/sh/hidra/modules/workflow/domain/model/WorkflowStep.java` | Extracted |
+| WorkflowStepAssignmentRule | record | 12 | `src/main/java/dz/sh/hidra/modules/workflow/domain/model/WorkflowStepAssignmentRule.java` | Extracted |
+| WorkflowTask | record | 24 | `src/main/java/dz/sh/hidra/modules/workflow/domain/model/WorkflowTask.java` | Extracted |
+| WorkflowTransition | record | 12 | `src/main/java/dz/sh/hidra/modules/workflow/domain/model/WorkflowTransition.java` | Extracted |
+
+### Workflow fields and declared Java types
+
+| Model | Ordinal | Field | Declared Java Type |
+|---|---:|---|---|
+| WorkflowAction | 1 | id | String |
+| WorkflowAction | 2 | instanceId | String |
+| WorkflowAction | 3 | taskId | String |
+| WorkflowAction | 4 | actionType | WorkflowActionType |
+| WorkflowAction | 5 | decision | WorkflowDecision |
+| WorkflowAction | 6 | reasonId | String |
+| WorkflowAction | 7 | decisionNote | String |
+| WorkflowAction | 8 | commentText | String |
+| WorkflowAction | 9 | actorId | String |
+| WorkflowAction | 10 | actorUsernameSnapshot | String |
+| WorkflowAction | 11 | actorDisplayNameSnapshot | String |
+| WorkflowAction | 12 | actorRoleCodeSnapshot | String |
+| WorkflowAction | 13 | organizationUnitId | String |
+| WorkflowAction | 14 | organizationUnitNameSnapshot | String |
+| WorkflowAction | 15 | organizationRoleCodeSnapshot | String |
+| WorkflowAction | 16 | correlationId | String |
+| WorkflowAction | 17 | actionSequence | long |
+| WorkflowAction | 18 | sourceSystem | String |
+| WorkflowAction | 19 | ipAddressHash | String |
+| WorkflowAction | 20 | userAgentHash | String |
+| WorkflowAction | 21 | actedAt | Instant |
+| WorkflowDefinition | 1 | id | String |
+| WorkflowDefinition | 2 | code | String |
+| WorkflowDefinition | 3 | nameAr | String |
+| WorkflowDefinition | 4 | nameFr | String |
+| WorkflowDefinition | 5 | nameEn | String |
+| WorkflowDefinition | 6 | typeId | String |
+| WorkflowDefinition | 7 | status | WorkflowDefinitionStatus |
+| WorkflowDefinition | 8 | version | int |
+| WorkflowDefinition | 9 | createdAt | Instant |
+| WorkflowDefinition | 10 | updatedAt | Instant |
+| WorkflowInstance | 1 | id | String |
+| WorkflowInstance | 2 | definitionId | String |
+| WorkflowInstance | 3 | definitionVersion | int |
+| WorkflowInstance | 4 | workflowPurposeId | String |
+| WorkflowInstance | 5 | targetModule | String |
+| WorkflowInstance | 6 | targetTypeId | String |
+| WorkflowInstance | 7 | targetId | String |
+| WorkflowInstance | 8 | targetCodeSnapshot | String |
+| WorkflowInstance | 9 | targetLabelSnapshot | String |
+| WorkflowInstance | 10 | status | WorkflowInstanceStatus |
+| WorkflowInstance | 11 | currentStepId | String |
+| WorkflowInstance | 12 | startedByActorId | String |
+| WorkflowInstance | 13 | startedByUsernameSnapshot | String |
+| WorkflowInstance | 14 | startedByDisplayNameSnapshot | String |
+| WorkflowInstance | 15 | startedByRoleCodeSnapshot | String |
+| WorkflowInstance | 16 | startedAt | Instant |
+| WorkflowInstance | 17 | completedAt | Instant |
+| WorkflowInstance | 18 | cancelledAt | Instant |
+| WorkflowInstance | 19 | correlationId | String |
+| WorkflowInstance | 20 | createdAt | Instant |
+| WorkflowInstance | 21 | updatedAt | Instant |
+| WorkflowStateHistory | 1 | id | String |
+| WorkflowStateHistory | 2 | instanceId | String |
+| WorkflowStateHistory | 3 | taskId | String |
+| WorkflowStateHistory | 4 | fromStepId | String |
+| WorkflowStateHistory | 5 | toStepId | String |
+| WorkflowStateHistory | 6 | fromStatus | String |
+| WorkflowStateHistory | 7 | toStatus | String |
+| WorkflowStateHistory | 8 | actorId | String |
+| WorkflowStateHistory | 9 | actorUsernameSnapshot | String |
+| WorkflowStateHistory | 10 | actorDisplayNameSnapshot | String |
+| WorkflowStateHistory | 11 | actorRoleCodeSnapshot | String |
+| WorkflowStateHistory | 12 | actionId | String |
+| WorkflowStateHistory | 13 | reasonId | String |
+| WorkflowStateHistory | 14 | correlationId | String |
+| WorkflowStateHistory | 15 | changedAt | Instant |
+| WorkflowStep | 1 | id | String |
+| WorkflowStep | 2 | definitionId | String |
+| WorkflowStep | 3 | code | String |
+| WorkflowStep | 4 | nameAr | String |
+| WorkflowStep | 5 | nameFr | String |
+| WorkflowStep | 6 | nameEn | String |
+| WorkflowStep | 7 | stepOrder | int |
+| WorkflowStep | 8 | mandatory | boolean |
+| WorkflowStep | 9 | stepTypeId | String |
+| WorkflowStep | 10 | defaultAssignmentRuleId | String |
+| WorkflowStep | 11 | slaPolicyId | String |
+| WorkflowStep | 12 | allowClaim | boolean |
+| WorkflowStep | 13 | allowDelegation | boolean |
+| WorkflowStep | 14 | allowEscalation | boolean |
+| WorkflowStep | 15 | createdAt | Instant |
+| WorkflowStep | 16 | updatedAt | Instant |
+| WorkflowStepAssignmentRule | 1 | id | String |
+| WorkflowStepAssignmentRule | 2 | definitionId | String |
+| WorkflowStepAssignmentRule | 3 | stepId | String |
+| WorkflowStepAssignmentRule | 4 | assignmentModeId | String |
+| WorkflowStepAssignmentRule | 5 | actorId | String |
+| WorkflowStepAssignmentRule | 6 | roleCode | String |
+| WorkflowStepAssignmentRule | 7 | organizationUnitId | String |
+| WorkflowStepAssignmentRule | 8 | organizationRoleCode | String |
+| WorkflowStepAssignmentRule | 9 | targetOwnerMode | String |
+| WorkflowStepAssignmentRule | 10 | active | boolean |
+| WorkflowStepAssignmentRule | 11 | createdAt | Instant |
+| WorkflowStepAssignmentRule | 12 | updatedAt | Instant |
+| WorkflowTask | 1 | id | String |
+| WorkflowTask | 2 | instanceId | String |
+| WorkflowTask | 3 | stepId | String |
+| WorkflowTask | 4 | status | WorkflowTaskStatus |
+| WorkflowTask | 5 | assignedActorId | String |
+| WorkflowTask | 6 | assignedActorUsernameSnapshot | String |
+| WorkflowTask | 7 | assignedActorDisplayNameSnapshot | String |
+| WorkflowTask | 8 | assignedOrganizationUnitId | String |
+| WorkflowTask | 9 | assignedOrganizationUnitNameSnapshot | String |
+| WorkflowTask | 10 | assignedRoleCodeSnapshot | String |
+| WorkflowTask | 11 | priorityId | String |
+| WorkflowTask | 12 | dueAt | Instant |
+| WorkflowTask | 13 | claimedByActorId | String |
+| WorkflowTask | 14 | claimedAt | Instant |
+| WorkflowTask | 15 | completedByActorId | String |
+| WorkflowTask | 16 | completedAt | Instant |
+| WorkflowTask | 17 | assignmentModeId | String |
+| WorkflowTask | 18 | taskLabelSnapshot | String |
+| WorkflowTask | 19 | slaStatus | WorkflowSlaStatus |
+| WorkflowTask | 20 | escalatedAt | Instant |
+| WorkflowTask | 21 | delegatedAt | Instant |
+| WorkflowTask | 22 | expiresAt | Instant |
+| WorkflowTask | 23 | createdAt | Instant |
+| WorkflowTask | 24 | updatedAt | Instant |
+| WorkflowTransition | 1 | id | String |
+| WorkflowTransition | 2 | definitionId | String |
+| WorkflowTransition | 3 | fromStepId | String |
+| WorkflowTransition | 4 | toStepId | String |
+| WorkflowTransition | 5 | decision | WorkflowDecision |
+| WorkflowTransition | 6 | reasonRequired | boolean |
+| WorkflowTransition | 7 | commentRequired | boolean |
+| WorkflowTransition | 8 | conditionExpression | String |
+| WorkflowTransition | 9 | requiredPermissionCode | String |
+| WorkflowTransition | 10 | targetModuleCallback | String |
+| WorkflowTransition | 11 | createdAt | Instant |
+| WorkflowTransition | 12 | updatedAt | Instant |
+
+### HMC-025 reconciliation
 
 ```text
-HMC-025 — docs(catalogue): scan workflow domain models
+baseline model files = 8
+extracted models     = 8
+exceptions           = 0
+declared fields      = 131
+zero-field models    = 0
 ```
 
-Do not start HMC-026 until HMC-025 is completed and its module counts are reported.
+The scan records only declarations under `workflow/domain/model`. Workflow domain value types referenced by record components remain declared field types and are not expanded into independent model rows.
+
+No JPA entity, API DTO, migration, application contract, infrastructure orchestration adapter, identity implementation, organization implementation, target-module implementation, or database column metadata was mixed into this module scan.
+
+## 35. Current next task
+
+```text
+HMC-026 — docs(catalogue): reconcile module model catalogue
+```
+
+Do not start HMC-027 until HMC-026 is completed and the full 24-module/123-model reconciliation is reported.
 

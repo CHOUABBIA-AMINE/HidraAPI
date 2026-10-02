@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -205,7 +205,7 @@ Ordering rules applied:
 | HMSR-010 | 0 | identity | IdentityProvider | — | — | 4 | 4 | 0 | REVISE | Completed | `docs(model-review): review identity IdentityProvider` |
 | HMSR-011 | 0 | identity | Permission | — | — | 3 | 3 | 0 | REVISE | Completed | `docs(model-review): review identity Permission` |
 | HMSR-012 | 0 | notification | NotificationTemplate | — | — | 2 | 3 | 2 | REVISE | Completed | `docs(model-review): review notification NotificationTemplate` |
-| HMSR-013 | 0 | reporting | ReportDefinition | — | — | 2 | 3 | 1 | — | Planned | `docs(model-review): review reporting ReportDefinition` |
+| HMSR-013 | 0 | reporting | ReportDefinition | — | — | 2 | 3 | 1 | REVISE | Completed | `docs(model-review): review reporting ReportDefinition` |
 | HMSR-014 | 0 | integration | IntegrationJobRun | — | — | 2 | 2 | 1 | — | Planned | `docs(model-review): review integration IntegrationJobRun` |
 | HMSR-015 | 0 | leakdetection | LeakCandidate | — | — | 2 | 2 | 2 | — | Planned | `docs(model-review): review leakdetection LeakCandidate` |
 | HMSR-016 | 0 | organization | OperationalScope | — | — | 1 | 2 | 0 | — | Planned | `docs(model-review): review organization OperationalScope` |
@@ -2470,8 +2470,8 @@ Confirmed subject-model graph edges at this stage: **165**. These are semantic c
 | Field | Declared type | Classification | Resolved target | Graph edge | Notes |
 |---|---|---|---|:---:|---|
 | id | String | Self identifier | — | No | Primary identity of the current model. |
-| reportCategoryId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
-| currentTemplateVersionId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| reportCategoryId | String | Value/catalog dependency | REPORT_CATEGORY | No | HMSR-013 stronger Reporting DDD + HRA-111 evidence resolves this to Reporting-owned `ReportCatalogEntry` / `hidra_reporting_catalog_entry`, outside the 123 HMS subject set. |
+| currentTemplateVersionId | String | Domain reference | reporting.ReportTemplateVersion (read/persistence model) | No | HMSR-013 stronger Reporting DDD/persistence evidence resolves this to the current Reporting template-version record; target is outside the 123 HMS subject set and no cross-module edge is introduced. |
 
 #### reporting.ReportOutputArtifact
 
@@ -4526,16 +4526,176 @@ Using a template must never imply approval, alarm acknowledgement, incident clos
 
 The target baseline cannot mark it APPROVED while template-code uniqueness, ACTIVE-only selection, exact template/version integrity, `currentVersion` governance, catalog-family validation and optional channel-reference integrity remain unenforced or ambiguous. HMS reconciliation must retain these obligations until an explicitly authorized Notification correction task resolves them or the target semantics are explicitly changed.
 
-## 26. Current next task
+## 26. HMSR-013 — reporting.ReportDefinition review
+
+**Decision:** REVISE  
+**Review code:** HMSR-013  
+**Dependency level:** 0  
+**Bounded context:** reporting  
+**Confirmed upstream subject dependencies:** none  
+**Confirmed direct dependents:** 2 — `reporting.ReportRequest` and `reporting.ReportRun`  
+**Transitive dependents:** 3  
+**Unresolved/non-subject references:** 1 — `currentTemplateVersionId`, now semantically resolved to Reporting-owned `ReportTemplateVersion` outside the 123 HMS subject set
+
+### 26.1 Semantic role and ordering rationale
+
+`ReportDefinition` is the Reporting-owned reusable formal report type. It defines stable report identity, multilingual display labels, report category, source/owner module, access/approval characteristics and the currently selected template-version reference used to support reproducible formal output.
+
+It is Level 0 because none of its prerequisites are another HMS subject model. `ReportRequest` and `ReportRun` are its two direct HMS subject dependents. `ReportCatalogEntry`, `ReportTemplate`, `ReportTemplateVersion` and `ReportAccessPolicy` are Reporting read/persistence models outside the 123 HMS subject population.
+
+Reporting owns formal output definition, execution, reproducibility, publication and distribution metadata. It must not become the owner of source operational truth from Telemetry, Planning, Risk, Custody, HSE, Integrity or other modules.
+
+### 26.2 Field semantics
+
+| Field | Type | Mandatory / optional | Reviewed meaning |
+|---|---|---|---|
+| `id` | `String` | Mandatory | Stable ReportDefinition identity and persistence primary key. |
+| `code` | `String` | Mandatory | Stable unique business code for the formal report type. |
+| `nameAr` | `String` | Optional | Arabic report-definition display name. |
+| `nameFr` | `String` | Mandatory | French report-definition display name; explicitly required by Reporting DDD and persistence. |
+| `nameEn` | `String` | Optional | English report-definition display name. |
+| `reportCategoryId` | `String` | Mandatory | Reporting-owned catalog reference in family `REPORT_CATEGORY`. |
+| `ownerModule` | `String` | Mandatory | Stable Hidra module code identifying the business/source owner of the report definition; must resolve to a known Hidra module. |
+| `description` | `String` | Optional | Human-readable definition purpose; current creation service applies the reporting secret-material guard. |
+| `active` | `boolean` | Current persisted lifecycle proxy | Current implementation uses this boolean to determine `usableForNewRequests()`, but it cannot represent the target DDD's full definition lifecycle. |
+| `currentTemplateVersionId` | `String` | Optional | Current Reporting-owned template-version reference used by the definition; target is `ReportTemplateVersion`, not an HMS subject. |
+| `requiresApproval` | `boolean` | Mandatory persisted state | Whether requests/runs require Workflow-backed approval before queueing. |
+| `restricted` | `boolean` | Mandatory persisted state | Whether explicit Reporting access policy/authorization is required. |
+| `createdAt` | `Instant` | Mandatory in persistence | Creation timestamp. |
+| `updatedAt` | `Instant` | Mandatory in persistence | Last-update timestamp. |
+
+The current domain constructor rejects blank `id`, `code`, and `reportCategoryId`, trims string values, and converts blank optional text to `null`. It does not guard `nameFr`, `ownerModule`, timestamps or template-version consistency.
+
+### 26.3 Reporting category dependency resolution
+
+Current repository evidence sharpens `reportCategoryId` from a generic catalog dependency to the Reporting-owned `REPORT_CATEGORY` family:
+
+- Reporting DDD defines `ReportCatalogEntry` as the controlled Reporting vocabulary;
+- `REPORT_CATEGORY` is an explicit Reporting catalog name;
+- HRA-111 installs `fk_hra111_reporting_014`; 
+- that FK points `hidra_reporting_report_definition.report_category_id` to `hidra_reporting_catalog_entry(id)` with `ON DELETE RESTRICT`;
+- `ReportCatalogEntry` is outside the 123 HMS subject set.
+
+The FK proves only that a catalog row exists. It does not prove that the row belongs to `REPORT_CATEGORY` or is active/usable.
+
+### 26.4 `currentTemplateVersionId` resolution
+
+The previously unresolved `currentTemplateVersionId` is semantically resolved to Reporting-owned `ReportTemplateVersion`.
+
+Repository evidence establishes the chain:
 
 ```text
-HMSR-013 — reporting.ReportDefinition
+ReportDefinition
+  -> currentTemplateVersionId -> ReportTemplateVersion
+ReportTemplateVersion
+  -> reportTemplateId -> ReportTemplate
+ReportTemplate
+  -> reportDefinitionId -> ReportDefinition
+```
+
+`ReportTemplate` and `ReportTemplateVersion` are Reporting read/persistence models outside the 123 HMS subject population, so no HMS graph edge is added.
+
+The base schema indexes `current_template_version_id` but no current FK was found from `hidra_reporting_report_definition.current_template_version_id` to `hidra_reporting_report_template_version(id)`. HRA-111 does protect `ReportTemplateVersion.reportTemplateId -> ReportTemplate.id` and `ReportTemplate.reportDefinitionId -> ReportDefinition.id`.
+
+Therefore the final application/database contract must validate not only that the referenced template version exists, but that its parent template belongs to the same ReportDefinition.
+
+### 26.5 Lifecycle contradiction — boolean `active` versus retained definition status
+
+The active Reporting DDD defines the ReportDefinition lifecycle as:
+
+```text
+DRAFT -> ACTIVE -> RETIRED
+```
+
+with DRAFT editable, ACTIVE usable for requests, and RETIRED unavailable for new requests.
+
+The repository also retains `ReportDefinitionStatus { DRAFT, ACTIVE, RETIRED }`. HRA-080 explicitly decided to KEEP `ReportDefinitionStatus` separate from `ReportTemplateVersionStatus`, stating that definition and template-version lifecycles are distinct.
+
+However, the live `ReportDefinition` record, JPA entity and `hidra_reporting_report_definition` table contain only `boolean active`; no `ReportDefinitionStatus` component/column is present. Repository search found no active Java use of `ReportDefinitionStatus` beyond the enum declaration and architecture documentation.
+
+`ReportingApplicationService.createReportDefinition()` also creates every new definition with `active = true`, so the current creation path skips the documented DRAFT phase entirely and cannot distinguish RETIRED from a generic inactive definition.
+
+This is a direct target-model semantic contradiction. The final correction must explicitly choose and migrate to one authoritative lifecycle representation; it must not leave the retained enum and persisted boolean as conflicting sources of intent.
+
+### 26.6 Request, approval and restricted-access governance
+
+The Reporting DDD requires:
+
+```text
+inactive definitions cannot be used for new report requests
+restricted reports require explicit access policy
+reports requiring approval cannot be queued before workflow approval
+```
+
+The current `ReportingApplicationService` does not demonstrate those rules:
+
+- `requestReport()` creates a request directly from `command.reportDefinitionId()` without loading the ReportDefinition or calling `usableForNewRequests()`;
+- it does not validate `restricted` definitions through a Reporting authorization/access-policy port;
+- `queueReportRun()` accepts `reportDefinitionId` and `templateVersionId` directly and does not load the definition/request to enforce `requiresApproval` or Workflow approval state;
+- the current service has no injected `ReportAccessPolicy` or `ReportWorkflowPort` collaboration in these paths.
+
+These are application/workflow/authorization responsibilities, not constructor-only invariants.
+
+### 26.7 Persistence and creation consistency
+
+The live domain and JPA models agree on all 14 declared components.
+
+The base Reporting migration makes `id`, `code`, `name_fr`, `report_category_id`, `owner_module`, `active`, `requires_approval`, `restricted`, `created_at`, and `updated_at` non-null. The current template-version reference is nullable.
+
+The schema has ordinary indexes on definition `code`, category, active state, current template version and timestamps. No unique constraint on `ReportDefinition.code` was found.
+
+`ReportDefinitionRepositoryPort` and `ReportDefinitionJpaRepository` expose no code lookup/uniqueness method. The creation service saves directly without a duplicate-code check.
+
+`nameFr` and `ownerModule` are persistence-required, but the domain constructor accepts blank/null values and normalizes them to `null`. The creation service performs no demonstrated known-module validation for `ownerModule` and no Reporting catalog-family validation for `reportCategoryId`.
+
+### 26.8 Reproducibility and template-version governance
+
+The Reporting DDD requires report runs to preserve the exact template version used and states that active template versions cannot be edited directly. Reproducibility requires definition/version identity, template-version identity, parameters, input snapshots, source contract versions, actor/correlation context, artifact checksum and generation timestamp.
+
+`ReportDefinition.currentTemplateVersionId` may provide a default/current choice, but a completed `ReportRun.templateVersionId` is the historical execution reference. A later template change must never rewrite the version associated with an already executed run.
+
+The current queue path accepts `templateVersionId` directly and does not demonstrate that the version is ACTIVE/eligible or belongs to the requested definition. That relationship must be validated through the Reporting-owned template/version chain before execution.
+
+### 26.9 Required revisions
+
+The target baseline cannot be APPROVED until these evidence-backed issues are reconciled:
+
+1. **Definition lifecycle representation:** reconcile the DDD/HRA-retained `ReportDefinitionStatus {DRAFT, ACTIVE, RETIRED}` with the live boolean `active` model/schema. The creation path must not silently skip DRAFT unless the target lifecycle is explicitly changed.
+2. **Unique definition code:** enforce global uniqueness of `ReportDefinition.code` at the application/database boundary.
+3. **ACTIVE-only request use:** `requestReport()` must verify that the selected definition is eligible for new requests under the chosen lifecycle representation.
+4. **Restricted-report access policy:** restricted definitions must be validated through explicit Reporting authorization/access-policy rules before request/access/generation paths proceed.
+5. **Approval governance:** definitions with `requiresApproval = true` must not be queued before the relevant request has Workflow-backed approval.
+6. **Template-version integrity:** `currentTemplateVersionId` and queued `templateVersionId` must resolve to valid Reporting template versions whose parent templates belong to the selected definition and satisfy the applicable lifecycle rule.
+7. **Category-family validation:** `reportCategoryId` must resolve specifically to an active/usable `REPORT_CATEGORY` entry, not merely to any Reporting catalog row.
+8. **Known owner module:** `ownerModule` must be validated against the authoritative Hidra module catalog/contract.
+9. **Required French name:** reconcile DDD/JPA/schema-required `nameFr` with the domain constructor's nullable behavior at a deliberate validation boundary.
+10. **Required timestamps:** retain a deliberate enforcement boundary for `createdAt` and `updatedAt`.
+11. **HRA-080 documentation consistency:** final reconciliation must correct the architecture statement that ReportDefinition status values are persisted independently if the final model does not actually persist `ReportDefinitionStatus`.
+
+HMSR-013 does not change production Java, JPA, Flyway, Workflow/authorization integration, API/application contracts, tests, catalogs, report definitions or template-version data.
+
+### 26.10 Operational interpretation
+
+For SONATRACH/TRC operations, a ReportDefinition represents a governed formal output such as a Daily Operations Report, Monthly Throughput Report, Plan-vs-Actual Report, Incident Register, Custody Transfer Statement, HSE Compliance Report or Risk Register Report.
+
+The definition controls formal Reporting behavior and governance. It does not own or recalculate the source operational facts. Analytics calculates analytical results, source modules own business state, Documents manages file/document metadata, Notification delivers report-ready messages, Workflow governs approvals where required, and Audit records critical evidence.
+
+### 26.11 Review conclusion
+
+**REVISE.** `ReportDefinition` is the correct foundational Reporting aggregate and its two HMS dependency directions are sound. `reportCategoryId` is resolved to `REPORT_CATEGORY`, and `currentTemplateVersionId` is resolved to Reporting-owned `ReportTemplateVersion` outside the HMS graph.
+
+The target baseline cannot mark it APPROVED while the definition lifecycle is internally contradictory, unique code and required-field semantics are unenforced, and request/access/approval/template-version governance is absent from the current orchestration paths. HMS reconciliation must retain these obligations until an explicitly authorized Reporting correction task resolves them or the target semantics are explicitly changed.
+
+## 27. Current next task
+
+```text
+HMSR-014 — integration.IntegrationJobRun
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review reporting ReportDefinition
+docs(model-review): review integration IntegrationJobRun
 ```
 
-Start HMSR-013 only after HMSR-012 is committed and reported. Do not start HMSR-014 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-014 only after HMSR-013 is committed and reported. Do not start HMSR-015 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

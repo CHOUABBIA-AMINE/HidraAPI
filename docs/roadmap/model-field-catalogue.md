@@ -131,7 +131,7 @@ baseline model files
 | HMC-003 | `docs(catalogue): scan analytics domain models` | Scan all 7 analytics model files. | **Completed** — 7/7 models, 102 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-004 | `docs(catalogue): scan assets domain models` | Scan all 3 assets model files. | **Completed** — 3/3 models, 56 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-005 | `docs(catalogue): scan audit domain models` | Scan all 4 audit model files. | **Completed** — 4/4 models, 83 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
-| HMC-006 | `docs(catalogue): scan configuration domain models` | Scan all 3 configuration model files. | Planned |
+| HMC-006 | `docs(catalogue): scan configuration domain models` | Scan all 3 configuration model files. | **Completed** — 3/3 models, 40 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-007 | `docs(catalogue): scan custody domain models` | Scan all 3 custody model files. | Planned |
 | HMC-008 | `docs(catalogue): scan documents domain models` | Scan all 4 documents model files. | Planned |
 | HMC-009 | `docs(catalogue): scan hse domain models` | Scan all 4 hse model files. | Planned |
@@ -733,11 +733,88 @@ The scan records only declarations under `audit/domain/model`. Audit domain valu
 
 No JPA entity, API DTO, migration, application contract, infrastructure model, or database column metadata was mixed into this module scan.
 
-## 15. Current next task
+## 15. HMC-006 — Configuration module scan evidence
+
+**Source commit:** `5e301857882b59e9e35ecc474e9c6537d89cc96a`  
+**Module:** `configuration`  
+**Baseline model files:** 3  
+**Scanned models:** 3  
+**Declared fields/components:** 40  
+**Zero-field models:** 0  
+**Extraction exceptions:** 0
+
+### Configuration model index
+
+| Model | Kind | Declared field count | Source path | Status |
+|---|---|---:|---|---|
+| ConfigurationDefinition | record | 15 | `src/main/java/dz/sh/hidra/modules/configuration/domain/model/ConfigurationDefinition.java` | Extracted |
+| ConfigurationValue | record | 13 | `src/main/java/dz/sh/hidra/modules/configuration/domain/model/ConfigurationValue.java` | Extracted |
+| FeatureFlag | record | 12 | `src/main/java/dz/sh/hidra/modules/configuration/domain/model/FeatureFlag.java` | Extracted |
+
+### Configuration fields and declared Java types
+
+| Model | Ordinal | Field | Declared Java Type |
+|---|---:|---|---|
+| ConfigurationDefinition | 1 | id | String |
+| ConfigurationDefinition | 2 | namespaceId | String |
+| ConfigurationDefinition | 3 | key | String |
+| ConfigurationDefinition | 4 | displayNameFr | String |
+| ConfigurationDefinition | 5 | displayNameAr | String |
+| ConfigurationDefinition | 6 | displayNameEn | String |
+| ConfigurationDefinition | 7 | valueType | ConfigurationValueType |
+| ConfigurationDefinition | 8 | sensitivity | ConfigurationSensitivity |
+| ConfigurationDefinition | 9 | status | ConfigurationDefinitionStatus |
+| ConfigurationDefinition | 10 | scoped | boolean |
+| ConfigurationDefinition | 11 | requiresApproval | boolean |
+| ConfigurationDefinition | 12 | defaultValue | String |
+| ConfigurationDefinition | 13 | description | String |
+| ConfigurationDefinition | 14 | createdAt | Instant |
+| ConfigurationDefinition | 15 | updatedAt | Instant |
+| ConfigurationValue | 1 | id | String |
+| ConfigurationValue | 2 | definitionId | String |
+| ConfigurationValue | 3 | definitionVersionId | String |
+| ConfigurationValue | 4 | environment | String |
+| ConfigurationValue | 5 | rawValue | String |
+| ConfigurationValue | 6 | jsonValue | String |
+| ConfigurationValue | 7 | secretReference | String |
+| ConfigurationValue | 8 | status | ConfigurationValueStatus |
+| ConfigurationValue | 9 | effectiveFrom | Instant |
+| ConfigurationValue | 10 | effectiveTo | Instant |
+| ConfigurationValue | 11 | createdByActorId | String |
+| ConfigurationValue | 12 | createdAt | Instant |
+| ConfigurationValue | 13 | updatedAt | Instant |
+| FeatureFlag | 1 | id | String |
+| FeatureFlag | 2 | code | String |
+| FeatureFlag | 3 | nameFr | String |
+| FeatureFlag | 4 | nameAr | String |
+| FeatureFlag | 5 | nameEn | String |
+| FeatureFlag | 6 | owningModule | String |
+| FeatureFlag | 7 | status | FeatureFlagStatus |
+| FeatureFlag | 8 | evaluationStrategy | FeatureFlagEvaluationStrategy |
+| FeatureFlag | 9 | defaultEnabled | boolean |
+| FeatureFlag | 10 | description | String |
+| FeatureFlag | 11 | createdAt | Instant |
+| FeatureFlag | 12 | updatedAt | Instant |
+
+### HMC-006 reconciliation
 
 ```text
-HMC-006 — docs(catalogue): scan configuration domain models
+baseline model files = 3
+extracted models     = 3
+exceptions           = 0
+declared fields      = 40
+zero-field models    = 0
 ```
 
-Do not start HMC-007 until HMC-006 is completed and its module counts are reported.
+The scan records only declarations under `configuration/domain/model`. Configuration domain value types referenced by record components are field types, not independent model rows for this catalogue scope.
+
+No JPA entity, API DTO, migration, application contract, infrastructure model, or database column metadata was mixed into this module scan.
+
+## 16. Current next task
+
+```text
+HMC-007 — docs(catalogue): scan custody domain models
+```
+
+Do not start HMC-008 until HMC-007 is completed and its module counts are reported.
 

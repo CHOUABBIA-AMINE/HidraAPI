@@ -133,7 +133,7 @@ baseline model files
 | HMC-005 | `docs(catalogue): scan audit domain models` | Scan all 4 audit model files. | **Completed** — 4/4 models, 83 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-006 | `docs(catalogue): scan configuration domain models` | Scan all 3 configuration model files. | **Completed** — 3/3 models, 40 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-007 | `docs(catalogue): scan custody domain models` | Scan all 3 custody model files. | **Completed** — 3/3 models, 45 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
-| HMC-008 | `docs(catalogue): scan documents domain models` | Scan all 4 documents model files. | Planned |
+| HMC-008 | `docs(catalogue): scan documents domain models` | Scan all 4 documents model files. | **Completed** — 4/4 models, 75 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-009 | `docs(catalogue): scan hse domain models` | Scan all 4 hse model files. | Planned |
 | HMC-010 | `docs(catalogue): scan identity domain models` | Scan all 15 identity model files. | Planned |
 | HMC-011 | `docs(catalogue): scan incident domain models` | Scan all 4 incident model files. | Planned |
@@ -892,11 +892,124 @@ The scan records only declarations under `custody/domain/model`. Custody domain 
 
 No JPA entity, API DTO, migration, application contract, infrastructure model, or database column metadata was mixed into this module scan.
 
-## 17. Current next task
+## 17. HMC-008 — Documents module scan evidence
+
+**Source commit:** `5e301857882b59e9e35ecc474e9c6537d89cc96a`  
+**Module:** `documents`  
+**Baseline model files:** 4  
+**Scanned models:** 4  
+**Declared fields/components:** 75  
+**Zero-field models:** 0  
+**Extraction exceptions:** 0
+
+### Documents model index
+
+| Model | Kind | Declared field count | Source path | Status |
+|---|---|---:|---|---|
+| Document | record | 21 | `src/main/java/dz/sh/hidra/modules/documents/domain/model/Document.java` | Extracted |
+| DocumentStorageObject | record | 14 | `src/main/java/dz/sh/hidra/modules/documents/domain/model/DocumentStorageObject.java` | Extracted |
+| DocumentTargetLink | record | 14 | `src/main/java/dz/sh/hidra/modules/documents/domain/model/DocumentTargetLink.java` | Extracted |
+| DocumentVersion | record | 26 | `src/main/java/dz/sh/hidra/modules/documents/domain/model/DocumentVersion.java` | Extracted |
+
+### Documents fields and declared Java types
+
+| Model | Ordinal | Field | Declared Java Type |
+|---|---:|---|---|
+| Document | 1 | id | String |
+| Document | 2 | code | String |
+| Document | 3 | titleAr | String |
+| Document | 4 | titleFr | String |
+| Document | 5 | titleEn | String |
+| Document | 6 | documentTypeId | String |
+| Document | 7 | documentCategoryId | String |
+| Document | 8 | classificationId | String |
+| Document | 9 | confidentialityLevel | int |
+| Document | 10 | status | DocumentStatus |
+| Document | 11 | currentVersionId | String |
+| Document | 12 | ownerModule | String |
+| Document | 13 | ownerTargetTypeCode | String |
+| Document | 14 | ownerTargetId | String |
+| Document | 15 | ownerTargetCodeSnapshot | String |
+| Document | 16 | ownerTargetLabelSnapshot | String |
+| Document | 17 | createdByActorId | String |
+| Document | 18 | createdByDisplayNameSnapshot | String |
+| Document | 19 | createdAt | Instant |
+| Document | 20 | updatedAt | Instant |
+| Document | 21 | archivedAt | Instant |
+| DocumentStorageObject | 1 | id | String |
+| DocumentStorageObject | 2 | storageProviderId | String |
+| DocumentStorageObject | 3 | bucketOrContainer | String |
+| DocumentStorageObject | 4 | objectKey | String |
+| DocumentStorageObject | 5 | objectUri | String |
+| DocumentStorageObject | 6 | encrypted | boolean |
+| DocumentStorageObject | 7 | encryptionKeyReference | String |
+| DocumentStorageObject | 8 | contentLengthBytes | long |
+| DocumentStorageObject | 9 | contentType | String |
+| DocumentStorageObject | 10 | checksumAlgorithm | String |
+| DocumentStorageObject | 11 | checksumValue | String |
+| DocumentStorageObject | 12 | storageStatus | DocumentStorageStatus |
+| DocumentStorageObject | 13 | createdAt | Instant |
+| DocumentStorageObject | 14 | verifiedAt | Instant |
+| DocumentTargetLink | 1 | id | String |
+| DocumentTargetLink | 2 | documentId | String |
+| DocumentTargetLink | 3 | documentVersionId | String |
+| DocumentTargetLink | 4 | targetModule | String |
+| DocumentTargetLink | 5 | targetTypeCode | String |
+| DocumentTargetLink | 6 | targetId | String |
+| DocumentTargetLink | 7 | targetCodeSnapshot | String |
+| DocumentTargetLink | 8 | targetLabelSnapshot | String |
+| DocumentTargetLink | 9 | linkRoleId | String |
+| DocumentTargetLink | 10 | primaryLink | boolean |
+| DocumentTargetLink | 11 | linkedByActorId | String |
+| DocumentTargetLink | 12 | linkedAt | Instant |
+| DocumentTargetLink | 13 | unlinkedAt | Instant |
+| DocumentTargetLink | 14 | active | boolean |
+| DocumentVersion | 1 | id | String |
+| DocumentVersion | 2 | documentId | String |
+| DocumentVersion | 3 | versionNumber | int |
+| DocumentVersion | 4 | versionLabel | String |
+| DocumentVersion | 5 | titleAr | String |
+| DocumentVersion | 6 | titleFr | String |
+| DocumentVersion | 7 | titleEn | String |
+| DocumentVersion | 8 | description | String |
+| DocumentVersion | 9 | storageObjectId | String |
+| DocumentVersion | 10 | mimeType | String |
+| DocumentVersion | 11 | originalFilename | String |
+| DocumentVersion | 12 | fileExtension | String |
+| DocumentVersion | 13 | fileSizeBytes | long |
+| DocumentVersion | 14 | checksumAlgorithm | String |
+| DocumentVersion | 15 | checksumValue | String |
+| DocumentVersion | 16 | languageCode | String |
+| DocumentVersion | 17 | documentDate | LocalDate |
+| DocumentVersion | 18 | effectiveFrom | LocalDate |
+| DocumentVersion | 19 | effectiveTo | LocalDate |
+| DocumentVersion | 20 | versionStatus | DocumentVersionStatus |
+| DocumentVersion | 21 | uploadedByActorId | String |
+| DocumentVersion | 22 | uploadedByDisplayNameSnapshot | String |
+| DocumentVersion | 23 | uploadedAt | Instant |
+| DocumentVersion | 24 | approvedByWorkflowInstanceId | String |
+| DocumentVersion | 25 | approvedAt | Instant |
+| DocumentVersion | 26 | supersededByVersionId | String |
+
+### HMC-008 reconciliation
 
 ```text
-HMC-008 — docs(catalogue): scan documents domain models
+baseline model files = 4
+extracted models     = 4
+exceptions           = 0
+declared fields      = 75
+zero-field models    = 0
 ```
 
-Do not start HMC-009 until HMC-008 is completed and its module counts are reported.
+The scan records only declarations under `documents/domain/model`. Documents domain value types referenced by record components are field types, not independent model rows for this catalogue scope.
+
+No JPA entity, API DTO, migration, application contract, infrastructure model, storage mapping, or database column metadata was mixed into this module scan.
+
+## 18. Current next task
+
+```text
+HMC-009 — docs(catalogue): scan hse domain models
+```
+
+Do not start HMC-010 until HMC-009 is completed and its module counts are reported.
 

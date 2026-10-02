@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -207,7 +207,7 @@ Ordering rules applied:
 | HMSR-012 | 0 | notification | NotificationTemplate | — | — | 2 | 3 | 2 | REVISE | Completed | `docs(model-review): review notification NotificationTemplate` |
 | HMSR-013 | 0 | reporting | ReportDefinition | — | — | 2 | 3 | 1 | REVISE | Completed | `docs(model-review): review reporting ReportDefinition` |
 | HMSR-014 | 0 | integration | IntegrationJobRun | — | — | 2 | 2 | 1 | REVISE | Completed | `docs(model-review): review integration IntegrationJobRun` |
-| HMSR-015 | 0 | leakdetection | LeakCandidate | — | — | 2 | 2 | 2 | — | Planned | `docs(model-review): review leakdetection LeakCandidate` |
+| HMSR-015 | 0 | leakdetection | LeakCandidate | — | — | 2 | 2 | 2 | REVISE | Completed | `docs(model-review): review leakdetection LeakCandidate` |
 | HMSR-016 | 0 | organization | OperationalScope | — | — | 1 | 2 | 0 | — | Planned | `docs(model-review): review organization OperationalScope` |
 | HMSR-017 | 0 | analytics | AnalyticsDataset | — | — | 1 | 1 | 0 | — | Planned | `docs(model-review): review analytics AnalyticsDataset` |
 | HMSR-018 | 0 | analytics | MetricEvaluationRun | — | — | 1 | 1 | 1 | — | Planned | `docs(model-review): review analytics MetricEvaluationRun` |
@@ -2164,8 +2164,8 @@ Confirmed subject-model graph edges at this stage: **165**. These are semantic c
 | Field | Declared type | Classification | Resolved target | Graph edge | Notes |
 |---|---|---|---|:---:|---|
 | id | String | Self identifier | — | No | Primary identity of the current model. |
-| runId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
-| profileId | String | Unresolved | — | No | Reference target is outside or absent from the 123 subject-model set; preserve for HMS-004 review. |
+| runId | String | Domain reference | leakdetection.LeakDetectionRun (read/persistence model) | No | HMSR-015 stronger Leak Detection DDD/persistence evidence resolves this optional reference to `hidra_leak_detection_run`; target is outside the 123 HMS subject set and currently has no candidate-side FK. |
+| profileId | String | Domain reference | leakdetection.LeakDetectionProfile (read/persistence model) | No | HMSR-015 stronger Leak Detection DDD + HRA-111 evidence resolves this required reference to `hidra_leak_detection_profile`; target is outside the 123 HMS subject set. |
 | topologyAssetId | String | Cross-module reference | POLYMORPHIC | No | Target is selected by companion type/module metadata; no single subject-model edge. |
 | correlationId | String | Snapshot/reference-only | TECHNICAL_REFERENCE | No | Technical correlation/request/reference identity. |
 
@@ -4833,16 +4833,145 @@ The Integration DDD explicitly prohibits direct control actuation: Integration j
 
 The target baseline cannot mark it APPROVED while run-number authority, parent-job eligibility, counter invariants, completion-time ordering and lifecycle monotonicity remain unenforced. HMS reconciliation must retain these obligations until an explicitly authorized Integration correction task resolves them or the target semantics are explicitly changed.
 
-## 28. Current next task
+## 28. HMSR-015 — leakdetection.LeakCandidate review
+
+**Decision:** REVISE  
+**Review code:** HMSR-015  
+**Dependency level:** 0  
+**Bounded context:** leakdetection  
+**Confirmed upstream subject dependencies:** none  
+**Confirmed direct dependents:** 2 — `leakdetection.LeakDetectionCase` and `leakdetection.LeakEscalationReference`  
+**Transitive dependents:** 2  
+**Unresolved/non-subject references:** 2 — `runId` and `profileId`, both now semantically resolved to Leak Detection-owned read/persistence models outside the 123 HMS subject set
+
+### 28.1 Semantic role and boundary
+
+`LeakCandidate` is the Leak Detection-owned record of a suspected hydrocarbon leak. It captures the detection/profile provenance, typed Topology target, occurrence/evidence timing, confidence/severity classification, lifecycle state, human-readable summary and correlation identity used to drive controlled verification and case escalation.
+
+It is Level 0 because its upstream configuration/execution prerequisites — `LeakDetectionProfile` and optional `LeakDetectionRun` — are retained Leak Detection read/persistence models outside the HMS subject population. `LeakDetectionCase` and `LeakEscalationReference` are its two direct HMS subject dependents.
+
+Leak Detection is decision support only. It may create candidates, estimate location, link evidence, request verification and escalate by neutral references; it must not directly actuate valves, pumps, compressors, PLCs, RTUs, SCADA, ESD or SIS.
+
+### 28.2 Field semantics
+
+| Field | Type | Mandatory / optional | Reviewed meaning |
+|---|---|---|---|
+| `id` | `String` | Mandatory | Stable candidate identity and persistence primary key. |
+| `runId` | `String` | Optional | Leak Detection run that produced/aggregated the candidate; resolved to `LeakDetectionRun`. |
+| `profileId` | `String` | Mandatory | Detection profile used for the candidate; resolved to `LeakDetectionProfile`. |
+| `candidateNumber` | `String` | Mandatory | External/business candidate number or anomaly identity used to identify the suspected event. Exact uniqueness/idempotency scope is not yet defined. |
+| `topologyAssetType` | `String` | Mandatory in persistence | Discriminator identifying the Topology target namespace. |
+| `topologyAssetId` | `String` | Mandatory | Stable cross-module Topology reference selected together with `topologyAssetType`; no single HMS subject target. |
+| `topologyAssetCode` | `String` | Mandatory | Snapshot of the referenced Topology asset business code. |
+| `topologyAssetNameSnapshot` | `String` | Optional | Human-readable Topology name snapshot. |
+| `suspectedAt` | `Instant` | Mandatory | Time at which the leak suspicion applies. |
+| `firstEvidenceAt` | `Instant` | Optional | Time of first retained supporting evidence when known. |
+| `confidenceScore` | `BigDecimal` | Mandatory | Detection confidence consumed by `LeakConfidenceClassifier`; current repository does not define a numeric min/max contract. |
+| `severityLevel` | `LeakSeverityLevel` | Mandatory | `LOW`, `MEDIUM`, `HIGH`, `CRITICAL`, or `UNKNOWN`. Current create path derives it from confidence. |
+| `status` | `LeakCandidateStatus` | Mandatory | Candidate lifecycle: `NEW`, `UNDER_REVIEW`, `VERIFIED`, `DISMISSED`, `ESCALATED`, `CLOSED`. |
+| `summary` | `String` | Optional | Human-readable candidate summary. |
+| `correlationId` | `String` | Optional technical reference | Correlation identity for traceability across detection/evidence/escalation flows. |
+| `createdAt` | `Instant` | Mandatory in persistence | Creation timestamp. |
+| `updatedAt` | `Instant` | Mandatory in persistence | Last-update timestamp. |
+
+The current constructor rejects blank `id`, `profileId`, `candidateNumber`, `topologyAssetId`, and `topologyAssetCode`; requires `suspectedAt`, `confidenceScore`, `severityLevel`, and `status`; trims scalar references/text; and exposes `stillOpen()` for `NEW`, `UNDER_REVIEW`, and `VERIFIED` states.
+
+### 28.3 Resolution of `profileId` and `runId`
+
+`profileId` is now definitively resolved:
+
+- `LeakDetectionProfileJpaEntity` persists the configuration in `hidra_leak_detection_profile`;
+- HRA-111 installs `fk_hra111_leakdetection_001`; 
+- the FK points `hidra_leak_detection_candidate.profile_id` to `hidra_leak_detection_profile(id)` with `ON DELETE RESTRICT`;
+- repository mirror classification retains `LeakDetectionProfile` outside the 123 HMS subjects.
+
+`runId` is also semantically resolvable to `LeakDetectionRun`: the Leak Detection entity catalogue owns `LeakDetectionRun`, the candidate column is explicitly `run_id`, and `LeakDetectionRunJpaEntity` persists run identity/profile/method/evaluation provenance in `hidra_leak_detection_run`. `LeakDetectionRun` is likewise outside the subject population.
+
+However, unlike `profileId`, the current candidate table has no demonstrated HRA-111 FK from `run_id` to `hidra_leak_detection_run(id)`. Because `runId` is nullable, the final design must explicitly decide whether runless/manual/external candidates are valid and, when a run is supplied, enforce reference integrity deliberately.
+
+### 28.4 Typed Topology reference
+
+`topologyAssetType + topologyAssetId` is a polymorphic cross-module Topology reference. The Leak Detection DDD intentionally forbids owning Pipeline, Facility, PipelineSegment, TopologyNode, Equipment or other Topology business objects.
+
+The candidate therefore must keep only the stable reference plus code/name snapshots. No single subject-model graph edge or cross-module database FK should be invented.
+
+Current persistence requires `topology_asset_type`, `topology_asset_id`, and `topology_asset_code` to be non-null. The domain constructor guards asset ID and code but does **not** guard `topologyAssetType`; blank input is normalized to null and can survive domain construction until persistence failure.
+
+The create service also performs no demonstrated Topology contract lookup validating that the type/id pair resolves to the intended asset or that the supplied code snapshot corresponds to that asset.
+
+### 28.5 Profile/run consistency
+
+`LeakDetectionRunJpaEntity` itself carries `profileId`. When both `runId` and candidate `profileId` are supplied, they describe one detection provenance chain.
+
+The current `LeakDetectionApplicationService.createLeakCandidate()` does not inject profile/run repositories or another validation port. It therefore does not demonstrate that:
+
+- the required `profileId` exists beyond the database FK at save time;
+- a supplied `runId` exists;
+- the run belongs to the same profile as the candidate;
+- the profile/run is in a lifecycle state eligible to generate new candidates.
+
+The target baseline needs an explicit application/persistence rule for these provenance relationships rather than relying on scalar IDs.
+
+### 28.6 External compute identity and idempotency
+
+The extended-capability audit explicitly says leak-detection configuration/run persistence must reconcile **external compute identity and idempotency**. The deferred CPM/gRPC roadmap further requires stable anomaly identity/correlation and states that duplicate streamed anomalies must not create uncontrolled duplicate candidates.
+
+The current `CreateLeakCandidateRequest` and command accept `candidateNumber`, `runId`, `profileId`, and correlation data, but `LeakCandidateRepositoryPort` exposes no candidate-number/external-identity lookup and the base migration has no demonstrated unique candidate-number/idempotency constraint.
+
+The repository evidence does not define whether `candidateNumber` is globally unique, unique per run/profile, or merely a display/business number. HMSR-015 therefore does **not** invent a uniqueness key. It records the idempotency identity as unresolved semantics that must be settled before an external compute adapter is allowed to create candidates reliably.
+
+### 28.7 Confidence and severity
+
+`LeakDetectionApplicationService` derives `severityLevel` with `LeakConfidenceClassifier`: confidence at or above 0.90 maps to CRITICAL, 0.75 to HIGH, 0.50 to MEDIUM, otherwise LOW; null maps to UNKNOWN at classifier level, while `LeakCandidate` itself requires a non-null confidence score.
+
+No current Leak Detection DDD or schema evidence found during HMSR-015 defines a mandatory numeric confidence range such as `[0,1]`. The semantic review therefore does not invent one. If the future CPM/API contract defines normalized probability/confidence bounds, that contract must be made explicit and then enforced consistently.
+
+Because both confidence and severity are persisted, alternate creation/update paths must not silently allow contradictory pairs if severity remains defined as classifier-derived rather than independently assessed. The final design must state which field is authoritative.
+
+### 28.8 Lifecycle and downstream use
+
+`LeakCandidateStatus` provides `NEW`, `UNDER_REVIEW`, `VERIFIED`, `DISMISSED`, `ESCALATED`, and `CLOSED`. The aggregate helper treats NEW/UNDER_REVIEW/VERIFIED as still open.
+
+`LeakDetectionCase.primaryCandidateId` is FK-backed to the candidate and `LeakEscalationReference` may also retain a candidate reference. A candidate is suspicion/evidence, not an Alarm or Incident. Escalation must remain through the neutral Leak Detection escalation model so downstream modules retain ownership of their own lifecycle.
+
+The current public application service demonstrates candidate creation, case opening and case escalation, but no candidate-status transition orchestration was found during HMSR-015. The final lifecycle implementation should prevent arbitrary state rewrites once transition semantics are formalized.
+
+### 28.9 Required revisions
+
+The target baseline cannot be APPROVED until these evidence-backed gaps are resolved:
+
+1. **Required topology type:** enforce persistence-required `topologyAssetType` at a deliberate domain/application boundary.
+2. **Typed Topology validation:** validate `topologyAssetType + topologyAssetId` through a Topology-owned contract and govern the code/name snapshots without creating cross-module ownership.
+3. **Run reference integrity:** define whether runless candidates are valid; when `runId` is present, validate it against `LeakDetectionRun` and add/retain an appropriate integrity mechanism.
+4. **Profile/run provenance consistency:** when a run is supplied, enforce that its profile matches candidate `profileId` and that the relevant profile/run lifecycle permits candidate generation.
+5. **External-compute idempotency:** define the stable candidate/anomaly identity and uniqueness scope before CPM/gRPC ingestion so reconnect/replay cannot create uncontrolled duplicates.
+6. **Confidence/severity authority:** explicitly define whether severity is always derived from confidence or can be independently assessed, then prevent contradictory persisted pairs under the chosen rule.
+7. **Required audit timestamps:** retain a deliberate enforcement boundary for `createdAt` and `updatedAt`, which are persistence-required.
+
+HMSR-015 does not change production Java, JPA, Flyway, Topology contracts, CPM/gRPC integration, API/application contracts, tests, profile/run records or candidate data.
+
+### 28.10 Operational interpretation
+
+For SONATRACH/TRC operations, a LeakCandidate is an operational-intelligence suspicion requiring verification, not proof of a physical leak and not authority to actuate the pipeline. Confidence, severity, location/scope snapshots and evidence help operators prioritize investigation and escalation.
+
+Any alarm, incident, workflow or notification consequence must be created through the owning module's governed interface/reference path. Leak Detection itself remains non-actuating decision support.
+
+### 28.11 Review conclusion
+
+**REVISE.** `LeakCandidate` is the correct Leak Detection suspicion aggregate and its two HMS downstream dependencies are sound. `profileId` and `runId` are now semantically resolved to Leak Detection-owned non-subject prerequisites, while the Topology reference remains correctly polymorphic.
+
+The target baseline cannot mark it APPROVED while typed-Topology validation, run/profile provenance integrity, external-compute idempotency identity, and required field enforcement remain unresolved. HMS reconciliation must retain these obligations until an explicitly authorized Leak Detection correction task resolves them or the target semantics are explicitly changed.
+
+## 29. Current next task
 
 ```text
-HMSR-015 — leakdetection.LeakCandidate
+HMSR-016 — organization.OperationalScope
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review leakdetection LeakCandidate
+docs(model-review): review organization OperationalScope
 ```
 
-Start HMSR-015 only after HMSR-014 is committed and reported. Do not start HMSR-016 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-016 only after HMSR-015 is committed and reported. Do not start HMSR-017 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

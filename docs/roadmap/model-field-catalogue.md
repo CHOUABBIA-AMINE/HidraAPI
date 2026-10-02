@@ -1,6 +1,6 @@
 # HidraAPI Model / Field / Type Catalogue Roadmap
 
-**Status:** Active — roadmap prepared; module-by-module scan may begin with HMC-002.
+**Status:** Completed — all HMC-001 through HMC-028 tasks finished; final catalogue validated.
 
 **Baseline repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Baseline branch:** `main`  
@@ -153,7 +153,7 @@ baseline model files
 | HMC-025 | `docs(catalogue): scan workflow domain models` | Scan all 8 workflow model files. | **Completed** — 8/8 models, 131 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-026 | `docs(catalogue): reconcile module model catalogue` | Reconcile all 24 module outputs against the pinned 123-file baseline; resolve extraction exceptions and duplicate/missing rows. | **Completed** — 24/24 modules, 123/123 models, 1,867 field/component rows, 0 zero-field models, 0 exceptions, 0 duplicate model keys, 0 duplicate field ordinal keys; source SHA consistent. |
 | HMC-027 | `docs(catalogue): generate final model field workbook` | Generate the consolidated Excel document from the reconciled catalogue. | **Completed** — `HidraAPI_Model_Field_Type_Catalogue_5e301857.xlsx` generated from the reconciled HMC-026 catalogue; 29 sheets, 24 module sheets, 123 model rows, 1,867 field/component rows; workbook reopened successfully. |
-| HMC-028 | `docs(catalogue): validate and finalize model field catalogue` | Validate workbook readability, row/model/module counts, provenance, and final delivery evidence. | Planned |
+| HMC-028 | `docs(catalogue): validate and finalize model field catalogue` | Validate workbook readability, row/model/module counts, provenance, and final delivery evidence. | **Completed** — 29 required sheets, 24/24 module sheets, 123/123 model rows, 1,867 field/component rows, 0 missing required field values, 0 exceptions, 0 duplicate model keys, 0 duplicate field ordinal keys, source SHA consistent, workbook readable, 0 formula errors. |
 
 Only **one HMC task** may be executed per commit. Do not scan the next module automatically.
 
@@ -3219,11 +3219,69 @@ The workbook remains a user-deliverable artifact and is not merged into `main`; 
 
 HMC-027 verifies workbook construction and basic readability only. Final acceptance checks remain assigned to HMC-028.
 
-## 37. Current next task
+## 37. HMC-028 — Final catalogue validation and acceptance evidence
+
+**Final workbook:** `HidraAPI_Model_Field_Type_Catalogue_5e301857.xlsx`  
+**Pinned source commit:** `5e301857882b59e9e35ecc474e9c6537d89cc96a`  
+**Final workbook sheets:** 29  
+**Module worksheets:** 24 / 24  
+**Module Index rows:** 24  
+**Model Index rows:** 123  
+**All Fields rows:** 1,867  
+**Zero-field models:** 0  
+**Extraction exceptions:** 0  
+**Duplicate model keys:** 0  
+**Duplicate field ordinal keys:** 0  
+**Formula error matches:** 0  
+**Workbook reopen/readability:** Pass  
+**Final workbook SHA-256:** `361432224e2acb421d29eb195e1629a229e25da74ab2d3406355511c770b6612`  
+**Final workbook size:** 234,137 bytes
+
+### Final acceptance checks
 
 ```text
-HMC-028 — docs(catalogue): validate and finalize model field catalogue
+required workbook sheets                  = 29 / 29
+required core sheets                      = README, Module Index, Model Index, All Fields, Validation
+module worksheets                         = 24 / 24
+
+pinned model files reconciled             = 123 / 123
+model-index rows                          = 123
+all-fields rows                           = 1,867
+module-sheet field total                  = 1,867
+module sheets matching All Fields subsets = 24 / 24
+
+missing required field-row values         = 0
+model field-count mismatches              = 0
+field ordinal gaps/duplicates             = 0
+duplicate (module, model) keys            = 0
+duplicate (module, model, ordinal) keys   = 0
+
+zero-field models                         = 0
+extraction exceptions                     = 0
+source SHA mismatches                     = 0
+invalid scoped model source paths         = 0
+
+formula error matches                     = 0
+workbook reopen/readability               = pass
 ```
 
-Do not perform HDP-004/HDP-005 work until HMC-028 completes the final catalogue validation and reports acceptance evidence.
+All required field rows contain module, model, model kind, field, declared Java type, field ordinal, field count, source path, source commit, and extraction status. Every source commit value is the pinned SHA `5e301857882b59e9e35ecc474e9c6537d89cc96a`.
+
+The 24 module worksheets exactly reconcile with their corresponding `All Fields` subsets and sum to the same 1,867 declared field/component rows. Model-level field counts and declaration ordinals reconcile without gaps or duplicates.
+
+The workbook was reopened successfully after HMC-028 finalization and scanned for formula errors. The `Validation` worksheet now records the final HMC-028 acceptance results, and the `README` marks final validation as passed.
+
+The final HMC-028 workbook hash supersedes the HMC-027 construction-time hash because HMC-028 updates the workbook's final validation evidence. The workbook remains a user-deliverable artifact and is not merged into `main`.
+
+This catalogue remains a Java domain-model declaration inventory. It does not by itself define PostgreSQL/JPA column types, nullability, indexes, foreign keys, persistence constraints, DTO mappings, or data-import authorization.
+
+No production Java, API, application, infrastructure, JPA, Flyway, or data-provisioning implementation was modified by HMC-028.
+
+## 38. Catalogue roadmap complete
+
+HMC-001 through HMC-028 are complete.
+
+The verified catalogue may now be used as one target-model reference for the controlled HDP-004 semantic source-to-target review, together with JPA mappings, Flyway schema, application contracts, enums, and semantic review. HMC completion does not itself authorize HDP-005 imports or satisfy the remaining data-provisioning gates.
+
+Do not begin HDP-004 or HDP-005 automatically; proceed only on explicit instruction.
 

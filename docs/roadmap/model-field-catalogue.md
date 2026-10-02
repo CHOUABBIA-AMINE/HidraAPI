@@ -128,7 +128,7 @@ baseline model files
 |---|---|---|---|
 | HMC-001 | `docs(catalogue): add module model scan roadmap` | Create this roadmap only. No model extraction. | **Completed** — roadmap created at `11118373ea112031342813abe8e4264c7bcd6018`; no model extraction performed. |
 | HMC-002 | `docs(catalogue): scan alarm domain models` | Scan all 4 `alarm/domain/model` files; record models, fields and Java types. | **Completed** — 4/4 models, 67 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
-| HMC-003 | `docs(catalogue): scan analytics domain models` | Scan all 7 analytics model files. | Planned |
+| HMC-003 | `docs(catalogue): scan analytics domain models` | Scan all 7 analytics model files. | **Completed** — 7/7 models, 102 fields/components, 0 zero-field models, 0 exceptions; pinned source `5e301857882b59e9e35ecc474e9c6537d89cc96a`. |
 | HMC-004 | `docs(catalogue): scan assets domain models` | Scan all 3 assets model files. | Planned |
 | HMC-005 | `docs(catalogue): scan audit domain models` | Scan all 4 audit model files. | Planned |
 | HMC-006 | `docs(catalogue): scan configuration domain models` | Scan all 3 configuration model files. | Planned |
@@ -376,10 +376,154 @@ not independent model rows for this catalogue scope.
 No JPA entity, API DTO, migration, application contract, suppression infrastructure model, or database
 column metadata was mixed into this module scan.
 
-## 12. Current next task
+## 12. HMC-003 — Analytics module scan evidence
+
+**Source commit:** `5e301857882b59e9e35ecc474e9c6537d89cc96a`  
+**Module:** `analytics`  
+**Baseline model files:** 7  
+**Scanned models:** 7  
+**Declared fields/components:** 102  
+**Zero-field models:** 0  
+**Extraction exceptions:** 0
+
+### Analytics model index
+
+| Model | Kind | Declared field count | Source path | Status |
+|---|---|---:|---|---|
+| AnalyticsDataset | record | 16 | `src/main/java/dz/sh/hidra/modules/analytics/domain/model/AnalyticsDataset.java` | Extracted |
+| AnalyticsDatasetVersion | record | 13 | `src/main/java/dz/sh/hidra/modules/analytics/domain/model/AnalyticsDatasetVersion.java` | Extracted |
+| AnalyticsInsight | record | 15 | `src/main/java/dz/sh/hidra/modules/analytics/domain/model/AnalyticsInsight.java` | Extracted |
+| AnalyticsProjectionRun | record | 15 | `src/main/java/dz/sh/hidra/modules/analytics/domain/model/AnalyticsProjectionRun.java` | Extracted |
+| DigitalTwinReadinessAssessment | record | 15 | `src/main/java/dz/sh/hidra/modules/analytics/domain/model/DigitalTwinReadinessAssessment.java` | Extracted |
+| MetricEvaluationRun | record | 15 | `src/main/java/dz/sh/hidra/modules/analytics/domain/model/MetricEvaluationRun.java` | Extracted |
+| MetricValue | record | 13 | `src/main/java/dz/sh/hidra/modules/analytics/domain/model/MetricValue.java` | Extracted |
+
+### Analytics fields and declared Java types
+
+| Model | Ordinal | Field | Declared Java Type |
+|---|---:|---|---|
+| AnalyticsDataset | 1 | id | String |
+| AnalyticsDataset | 2 | code | String |
+| AnalyticsDataset | 3 | nameAr | String |
+| AnalyticsDataset | 4 | nameFr | String |
+| AnalyticsDataset | 5 | nameEn | String |
+| AnalyticsDataset | 6 | subjectAreaId | String |
+| AnalyticsDataset | 7 | datasetType | AnalyticsDatasetType |
+| AnalyticsDataset | 8 | refreshMode | AnalyticsRefreshMode |
+| AnalyticsDataset | 9 | lineageStatus | AnalyticsLineageStatus |
+| AnalyticsDataset | 10 | qualityStatus | AnalyticsQualityStatus |
+| AnalyticsDataset | 11 | schemaVersion | String |
+| AnalyticsDataset | 12 | createdFrom | String |
+| AnalyticsDataset | 13 | validFrom | Instant |
+| AnalyticsDataset | 14 | validTo | Instant |
+| AnalyticsDataset | 15 | createdAt | Instant |
+| AnalyticsDataset | 16 | updatedAt | Instant |
+| AnalyticsDatasetVersion | 1 | id | String |
+| AnalyticsDatasetVersion | 2 | datasetId | String |
+| AnalyticsDatasetVersion | 3 | versionNumber | int |
+| AnalyticsDatasetVersion | 4 | schemaHash | String |
+| AnalyticsDatasetVersion | 5 | dataHash | String |
+| AnalyticsDatasetVersion | 6 | rowCount | Long |
+| AnalyticsDatasetVersion | 7 | periodStart | Instant |
+| AnalyticsDatasetVersion | 8 | periodEnd | Instant |
+| AnalyticsDatasetVersion | 9 | qualityScore | BigDecimal |
+| AnalyticsDatasetVersion | 10 | published | boolean |
+| AnalyticsDatasetVersion | 11 | publishedAt | Instant |
+| AnalyticsDatasetVersion | 12 | publishedByActorId | String |
+| AnalyticsDatasetVersion | 13 | createdAt | Instant |
+| AnalyticsInsight | 1 | id | String |
+| AnalyticsInsight | 2 | insightType | String |
+| AnalyticsInsight | 3 | subjectAreaId | String |
+| AnalyticsInsight | 4 | scopeType | String |
+| AnalyticsInsight | 5 | scopeId | String |
+| AnalyticsInsight | 6 | title | String |
+| AnalyticsInsight | 7 | summary | String |
+| AnalyticsInsight | 8 | severityId | String |
+| AnalyticsInsight | 9 | confidenceScore | BigDecimal |
+| AnalyticsInsight | 10 | sourceProjectionSnapshotId | String |
+| AnalyticsInsight | 11 | sourceTrendAnalysisId | String |
+| AnalyticsInsight | 12 | sourceModelRunId | String |
+| AnalyticsInsight | 13 | status | AnalyticsInsightStatus |
+| AnalyticsInsight | 14 | createdAt | Instant |
+| AnalyticsInsight | 15 | updatedAt | Instant |
+| AnalyticsProjectionRun | 1 | id | String |
+| AnalyticsProjectionRun | 2 | projectionDefinitionId | String |
+| AnalyticsProjectionRun | 3 | runStatus | AnalyticsRunStatus |
+| AnalyticsProjectionRun | 4 | runMode | AnalyticsRunMode |
+| AnalyticsProjectionRun | 5 | periodStart | Instant |
+| AnalyticsProjectionRun | 6 | periodEnd | Instant |
+| AnalyticsProjectionRun | 7 | startedAt | Instant |
+| AnalyticsProjectionRun | 8 | completedAt | Instant |
+| AnalyticsProjectionRun | 9 | sourceWatermark | String |
+| AnalyticsProjectionRun | 10 | recordsRead | Long |
+| AnalyticsProjectionRun | 11 | recordsWritten | Long |
+| AnalyticsProjectionRun | 12 | errorCode | String |
+| AnalyticsProjectionRun | 13 | errorMessage | String |
+| AnalyticsProjectionRun | 14 | correlationId | String |
+| AnalyticsProjectionRun | 15 | createdAt | Instant |
+| DigitalTwinReadinessAssessment | 1 | id | String |
+| DigitalTwinReadinessAssessment | 2 | scopeType | String |
+| DigitalTwinReadinessAssessment | 3 | scopeId | String |
+| DigitalTwinReadinessAssessment | 4 | topologySnapshotId | String |
+| DigitalTwinReadinessAssessment | 5 | assessmentPeriodStart | Instant |
+| DigitalTwinReadinessAssessment | 6 | assessmentPeriodEnd | Instant |
+| DigitalTwinReadinessAssessment | 7 | telemetryCompletenessScore | BigDecimal |
+| DigitalTwinReadinessAssessment | 8 | telemetryQualityScore | BigDecimal |
+| DigitalTwinReadinessAssessment | 9 | topologyCompletenessScore | BigDecimal |
+| DigitalTwinReadinessAssessment | 10 | modelAvailabilityScore | BigDecimal |
+| DigitalTwinReadinessAssessment | 11 | lineageCompletenessScore | BigDecimal |
+| DigitalTwinReadinessAssessment | 12 | overallReadinessScore | BigDecimal |
+| DigitalTwinReadinessAssessment | 13 | readinessStatus | DigitalTwinReadinessStatus |
+| DigitalTwinReadinessAssessment | 14 | assessedAt | Instant |
+| DigitalTwinReadinessAssessment | 15 | createdAt | Instant |
+| MetricEvaluationRun | 1 | id | String |
+| MetricEvaluationRun | 2 | metricDefinitionVersionId | String |
+| MetricEvaluationRun | 3 | runStatus | AnalyticsRunStatus |
+| MetricEvaluationRun | 4 | periodStart | Instant |
+| MetricEvaluationRun | 5 | periodEnd | Instant |
+| MetricEvaluationRun | 6 | scopeType | String |
+| MetricEvaluationRun | 7 | scopeId | String |
+| MetricEvaluationRun | 8 | startedAt | Instant |
+| MetricEvaluationRun | 9 | completedAt | Instant |
+| MetricEvaluationRun | 10 | recordsRead | Long |
+| MetricEvaluationRun | 11 | recordsProduced | Long |
+| MetricEvaluationRun | 12 | errorCode | String |
+| MetricEvaluationRun | 13 | errorMessage | String |
+| MetricEvaluationRun | 14 | correlationId | String |
+| MetricEvaluationRun | 15 | createdAt | Instant |
+| MetricValue | 1 | id | String |
+| MetricValue | 2 | metricEvaluationRunId | String |
+| MetricValue | 3 | metricDefinitionId | String |
+| MetricValue | 4 | metricDefinitionVersionId | String |
+| MetricValue | 5 | scopeType | String |
+| MetricValue | 6 | scopeId | String |
+| MetricValue | 7 | periodStart | Instant |
+| MetricValue | 8 | periodEnd | Instant |
+| MetricValue | 9 | valueNumeric | BigDecimal |
+| MetricValue | 10 | valueText | String |
+| MetricValue | 11 | unitId | String |
+| MetricValue | 12 | qualityStatus | AnalyticsQualityStatus |
+| MetricValue | 13 | calculatedAt | Instant |
+
+### HMC-003 reconciliation
 
 ```text
-HMC-003 — docs(catalogue): scan analytics domain models
+baseline model files = 7
+extracted models     = 7
+exceptions           = 0
+declared fields      = 102
+zero-field models    = 0
 ```
 
-Do not start HMC-004 until HMC-003 is completed and its module counts are reported.
+The scan records only declarations under `analytics/domain/model`. Analytics domain value types referenced by record components are field types, not independent model rows for this catalogue scope.
+
+No JPA entity, API DTO, migration, application contract, infrastructure model, or database column metadata was mixed into this module scan.
+
+## 13. Current next task
+
+```text
+HMC-004 — docs(catalogue): scan assets domain models
+```
+
+Do not start HMC-005 until HMC-004 is completed and its module counts are reported.
+

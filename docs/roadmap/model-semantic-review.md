@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -200,7 +200,7 @@ Ordering rules applied:
 | HMSR-005 | 0 | telemetry | TelemetryPoint | — | — | 5 | 9 | 3 | REVISE | Completed | `docs(model-review): review telemetry TelemetryPoint` |
 | HMSR-006 | 0 | planning | PlanningPeriod | — | — | 1 | 9 | 0 | REVISE | Completed | `docs(model-review): review planning PlanningPeriod` |
 | HMSR-007 | 0 | identity | Role | — | — | 5 | 5 | 0 | REVISE | Completed | `docs(model-review): review identity Role` |
-| HMSR-008 | 0 | documents | DocumentStorageObject | — | — | 2 | 6 | 1 | — | Planned | `docs(model-review): review documents DocumentStorageObject` |
+| HMSR-008 | 0 | documents | DocumentStorageObject | — | — | 2 | 6 | 1 | REVISE | Completed | `docs(model-review): review documents DocumentStorageObject` |
 | HMSR-009 | 0 | simulation | SimulationModel | — | — | 1 | 5 | 1 | — | Planned | `docs(model-review): review simulation SimulationModel` |
 | HMSR-010 | 0 | identity | IdentityProvider | — | — | 4 | 4 | 0 | — | Planned | `docs(model-review): review identity IdentityProvider` |
 | HMSR-011 | 0 | identity | Permission | — | — | 3 | 3 | 0 | — | Planned | `docs(model-review): review identity Permission` |
@@ -1828,7 +1828,7 @@ Confirmed subject-model graph edges at this stage: **165**. These are semantic c
 | Field | Declared type | Classification | Resolved target | Graph edge | Notes |
 |---|---|---|---|:---:|---|
 | id | String | Self identifier | — | No | Primary identity of the current model. |
-| storageProviderId | String | Unresolved | — | No | Reference target is outside or absent from the 123 subject-model set; preserve for HMS-004 review. |
+| storageProviderId | String | Value/catalog dependency | DOCUMENT_STORAGE_PROVIDER | No | HMSR-008 stronger Documents DDD + HRA-111 evidence resolves this to Documents-owned `DocumentCatalogEntry` / `hidra_documents_catalog_entry`, outside the 123 HMS subject set. |
 
 #### documents.DocumentTargetLink
 
@@ -3921,16 +3921,141 @@ Authorization must be based on role/permission/grant semantics and current scope
 
 HMS reconciliation must retain the Role-code uniqueness correction and the late graph correction until an explicitly authorized Identity implementation task resolves the uniqueness invariant and HMS-006 recomputes the final dependency totals.
 
-## 21. Current next task
+## 21. HMSR-008 — documents.DocumentStorageObject review
+
+**Decision:** REVISE  
+**Review code:** HMSR-008  
+**Dependency level:** 0  
+**Bounded context:** documents  
+**Confirmed upstream subject dependencies:** none  
+**Confirmed direct dependents:** 2 — `documents.DocumentVersion` and `reporting.ReportOutputArtifact`  
+**Transitive dependents:** 6  
+**Unresolved/non-subject references:** 1 — `storageProviderId`, now semantically resolved to a Documents-owned catalog prerequisite outside the 123 HMS subjects
+
+### 21.1 Semantic role and ordering rationale
+
+`DocumentStorageObject` is the Documents-owned metadata pointer to one physical binary object in a storage backend. It carries storage-provider identity, opaque object location metadata, size/content metadata, checksum/integrity metadata, encryption-reference metadata and storage lifecycle state.
+
+It is Level 0 because none of its prerequisites are another HMS subject model. Its only upstream semantic prerequisite is the Documents-owned storage-provider catalog, which is outside the 123 HMS subject population. `DocumentVersion` depends on the storage object through `storageObjectId`, and Reporting may reference a storage object for generated output artifacts.
+
+The bounded-context rule remains explicit: Documents owns document/storage metadata, while the binary bytes live in object storage, DMS, archive or controlled file storage. Storage credentials, secret key material and signed URLs must not become relational business metadata.
+
+### 21.2 Field semantics
+
+| Field | Type | Mandatory / optional | Reviewed meaning |
+|---|---|---|---|
+| `id` | `String` | Mandatory | Stable storage-object identifier and persistence primary key. |
+| `storageProviderId` | `String` | Mandatory | Documents-owned storage-provider catalog reference; semantically belongs to `DOCUMENT_STORAGE_PROVIDER`. |
+| `bucketOrContainer` | `String` | Optional | Backend bucket, container, share, archive container or equivalent logical location. |
+| `objectKey` | `String` | Mandatory | Provider-specific opaque object key/path. The Documents DDD explicitly forbids credentials or signed URLs in this field. |
+| `objectUri` | `String` | Optional | Optional non-secret URI/reference to the stored object. |
+| `encrypted` | `boolean` | Mandatory persisted state | Whether the object is stored encrypted. |
+| `encryptionKeyReference` | `String` | Optional | External key reference only; never encryption key material or secret credentials. |
+| `contentLengthBytes` | `long` | Mandatory | Stored binary length in bytes. |
+| `contentType` | `String` | Mandatory | Media/content type persisted with the storage object. |
+| `checksumAlgorithm` | `String` | Mandatory | Algorithm used for integrity checksum, currently supplied as `SHA-256` by the local adapter. |
+| `checksumValue` | `String` | Mandatory | Integrity checksum value for the stored object. |
+| `storageStatus` | `DocumentStorageStatus` | Mandatory | Storage lifecycle: `AVAILABLE`, `QUARANTINED`, `ARCHIVED`, `MISSING`, or `DELETED_LOGICAL`. |
+| `createdAt` | `Instant` | Mandatory in persistence | Storage-object metadata creation timestamp. |
+| `verifiedAt` | `Instant` | Optional | Last integrity-verification timestamp. |
+
+The current domain constructor already rejects blank `id`, `storageProviderId`, and `objectKey`, rejects null `storageStatus`, trims string values and converts blank optional strings to `null`.
+
+### 21.3 Storage-provider dependency resolution
+
+HMS-003 left `storageProviderId` unresolved because no one of the 123 subject models was a defensible target. Stronger repository evidence now resolves the semantic target without adding a subject-graph edge:
+
+- the Documents DDD identifies `storageProviderId` as a catalog/provider reference;
+- `DOCUMENT_STORAGE_PROVIDER` is a recommended Documents catalog family;
+- `DocumentCatalogEntry` is retained as a Documents read/persistence model outside the HMS subject set;
+- HRA-111 installs `fk_hra111_documents_014`;
+- that FK points `hidra_documents_storage_object.storage_provider_id` to `hidra_documents_catalog_entry(id)` with `ON DELETE RESTRICT`.
+
+Therefore `storageProviderId` is a **Documents-owned value/catalog dependency**, not an unresolved subject-model relationship.
+
+### 21.4 Persistence and binary-storage boundary
+
+The live domain and JPA models agree on all 14 declared components.
+
+The base Documents migration makes these columns non-null:
 
 ```text
-HMSR-008 — documents.DocumentStorageObject
+id
+storage_provider_id
+object_key
+encrypted
+content_length_bytes
+content_type
+checksum_algorithm
+checksum_value
+storage_status
+created_at
+```
+
+while bucket/container, object URI, encryption key reference and verification timestamp remain nullable.
+
+The current `DocumentContentTransferService` obtains physical-storage metadata from `DocumentBinaryStoragePort.StoredBinary`, creates `DocumentStorageObject` with status `AVAILABLE`, defaults a missing upload content type to `application/octet-stream`, and persists the storage object before creating the corresponding DocumentVersion.
+
+The local filesystem adapter currently:
+
+- uses provider value `local-filesystem`;
+- stores objects under a controlled Documents root;
+- uses the generated storage-object/reference ID as the object key;
+- calculates byte length while copying;
+- calculates a SHA-256 checksum;
+- emits no encryption key reference because local storage is currently unencrypted.
+
+Those implementation details are valid local-adapter behavior, but they do not by themselves establish the catalog identity contract required by the database FK.
+
+### 21.5 Required revisions
+
+The model role and dependency direction are correct, but the live implementation does not consistently enforce all repository-defined storage semantics strongly enough for APPROVED status.
+
+1. **Storage-provider catalog identity mismatch / missing validation:** HRA-111 requires `storageProviderId` to resolve to `hidra_documents_catalog_entry(id)`, and the DDD assigns it to `DOCUMENT_STORAGE_PROVIDER`. The current local adapter returns the hard-coded value `local-filesystem`. No current seed/catalog evidence found during HMSR-008 proves that `local-filesystem` is an existing catalog-entry **ID** or that it belongs to the `DOCUMENT_STORAGE_PROVIDER` family. The upload path performs no catalog-family/active-entry validation before persistence.
+2. **Required storage-integrity metadata contract:** the DDD and schema require `contentType`, `checksumAlgorithm` and `checksumValue`. The current local adapter/service produce them, but `DocumentBinaryStoragePort.StoredBinary` has no constructor validation and the domain record itself does not reject null/blank checksum/content-type values. A future storage adapter can therefore satisfy the Java interface while producing semantically invalid metadata that fails only at persistence or propagates invalid state.
+3. **Required creation metadata boundary:** `createdAt` is required by the DDD/JPA/schema but is not guarded by the domain constructor. The current service supplies it, so this is not a current local-upload failure, but the target baseline needs one deliberate enforcement boundary rather than relying on every caller to remember the persistence constraint.
+4. **Secret/opaque-object-key policy:** the DDD explicitly says object keys must not contain credentials or signed URLs and encryption-key metadata must be reference-only. The current local adapter is safe because it derives `objectKey` from an opaque generated ID, but the outbound storage contract does not state or validate the same guarantee for other providers. Any S3/MinIO/SharePoint/DMS adapter must return stable non-secret metadata rather than pre-signed/credential-bearing values.
+
+These corrections belong at the appropriate application/storage-adapter/database boundary. HMSR-008 does not require secret-detection heuristics inside the domain record, and it does not invent storage-provider catalog rows.
+
+No production Java, JPA, Flyway, application/API contract, tests, catalog data or binary-storage data is changed by this review.
+
+### 21.6 Lifecycle and integrity interpretation
+
+`DocumentStorageStatus` is correctly represented as a stable technical enum:
+
+- `AVAILABLE` — binary is expected to be retrievable;
+- `QUARANTINED` — binary is retained but unavailable to normal consumers pending security/integrity handling;
+- `ARCHIVED` — moved/retained in archival storage semantics;
+- `MISSING` — metadata exists but physical content cannot currently be resolved;
+- `DELETED_LOGICAL` — logically deleted according to Documents retention/governance rules.
+
+Current download orchestration correctly requires both metadata status `AVAILABLE` and physical-adapter availability before returning content.
+
+Checksum metadata is evidence for storage integrity; it does not by itself replace document-version approval, audit evidence, digital signatures, retention policy or workflow governance.
+
+### 21.7 Operational interpretation
+
+For SONATRACH/TRC operations, `DocumentStorageObject` may point to the physical bytes of pipeline drawings, inspection reports, certificates, operating procedures, maintenance manuals, HSE evidence, custody documentation or generated reports.
+
+The storage object is deliberately infrastructure-facing metadata. Business modules should reference Document/DocumentVersion identities rather than learn bucket names, filesystem paths or provider credentials. Reporting may retain a stable storage-object reference for generated artifacts, but Documents remains owner of storage metadata.
+
+### 21.8 Review conclusion
+
+**REVISE.** `DocumentStorageObject` is the correct Documents-owned physical-storage metadata model and its two subject dependents are appropriate. The previously unresolved `storageProviderId` is now resolved as a Documents-owned catalog prerequisite outside the subject graph.
+
+The target baseline cannot mark it APPROVED until storage-provider catalog identity/family semantics and required integrity-metadata enforcement are made consistent across the DDD, database FK, storage port and adapters. HMS reconciliation must retain these obligations for an explicitly authorized Documents correction task.
+
+## 22. Current next task
+
+```text
+HMSR-009 — simulation.SimulationModel
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review documents DocumentStorageObject
+docs(model-review): review simulation SimulationModel
 ```
 
-Start HMSR-008 only after HMSR-007 is committed and reported. Do not start HMSR-009 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-009 only after HMSR-008 is committed and reported. Do not start HMSR-010 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

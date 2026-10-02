@@ -66,18 +66,12 @@ class AlarmSuppressionRoutePermissionTest {
             throws Exception {
         Method method = AlarmSuppressionController.class.getDeclaredMethod(name, parameterTypes);
         return new HandlerMethod(
-                new Fixture(),
-                Fixture.class.getDeclaredMethod("handle")
-        ) {
-            @Override
-            public Method getMethod() {
-                return method;
-            }
-        };
-    }
-
-    static final class Fixture {
-        void handle() {
-        }
+                new AlarmSuppressionController(
+                        org.mockito.Mockito.mock(dz.sh.hidra.modules.alarm.application.port.in.ManageAlarmSuppressionUseCase.class),
+                        org.mockito.Mockito.mock(dz.sh.hidra.modules.alarm.application.port.in.AlarmSuppressionQueryUseCase.class),
+                        org.mockito.Mockito.mock(dz.sh.hidra.platform.security.CurrentActorResolver.class)
+                ),
+                method
+        );
     }
 }

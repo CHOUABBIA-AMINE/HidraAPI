@@ -1,6 +1,6 @@
 # GAP-ALARM-004 — Alarm suppression semantics
 
-Status: **DOMAIN DECISION APPROVED — implementation authorized through the controlled task sequence below**
+Status: **CLOSED — suppression capability implemented and repository verification green**
 
 Decision baseline: `260295c6eebc4b01922d2d488810a671305860a6`
 
@@ -182,9 +182,9 @@ Each code below is one independent roadmap task/commit. Execute exactly one code
 | `ALM-SUP-005` | `feat(alarm): integrate suppression workflow approval` | Verify open-ended suppression through Workflow public contracts/ports and fail closed when approval is absent. | No transition-name inference or direct foreign aggregate dependency. | **Completed** |
 | `ALM-SUP-006A` | `feat(alarm): add suppression expiry audit contract` | Export a narrow Audit contract and provision canonical `ALARM_SUPPRESSION_EXPIRED` taxonomy for all suppression scopes. | Broad-scope expiry can be attributed to a scheduled/system actor without overloading release fields. | **Completed** |
 | `ALM-SUP-006` | `feat(alarm): add suppression expiry orchestration` | Add idempotent backend-owned expiry orchestration using the existing Spring scheduling mechanism. | ACTIVE suppressions expire once; Audit evidence, actor attribution, and ALARM restoration are deterministic. | **Completed** |
-| `ALM-SUP-007` | `feat(alarm): publish suppression REST contracts` | Publish canonical create/release/query endpoints, generated OpenAPI schemas, route-permission metadata, deterministic 400/403/404/409 behavior. | No CRUD-style leakage; only approved lifecycle operations exposed. | Planned |
-| `ALM-SUP-008` | `test(alarm): verify suppression lifecycle end to end` | Domain/application/persistence/REST/Testcontainers coverage including ALARM and broad scopes, acknowledgement, clear/close, escalation preservation, workflow approval, expiry, conflicts, audit evidence, OpenAPI determinism. | Full repository verification green and suppression behavior traceable. | Planned |
-| `ALM-SUP-009` | `docs(alarm): finalize suppression capability` | Record exact endpoints, permissions, events, validation evidence, remaining limits, and frontend-consumption boundary. | GAP-ALARM-004 closed with no undocumented semantics. | Planned |
+| `ALM-SUP-007` | `feat(alarm): publish suppression REST contracts` | Publish canonical create/release/query endpoints, generated OpenAPI schemas, route-permission metadata, deterministic 400/403/404/409 behavior. | No CRUD-style leakage; only approved lifecycle operations exposed. | **Completed** |
+| `ALM-SUP-008` | `test(alarm): verify suppression lifecycle end to end` | Domain/application/persistence/REST/Testcontainers coverage including ALARM and broad scopes, acknowledgement, clear/close, escalation preservation, workflow approval, expiry, conflicts, audit evidence, OpenAPI determinism. | Full repository verification green and suppression behavior traceable. | **Completed** |
+| `ALM-SUP-009` | `docs(alarm): finalize suppression capability` | Record exact endpoints, permissions, events, validation evidence, remaining limits, and frontend-consumption boundary. | GAP-ALARM-004 closed with no undocumented semantics. | **Completed** |
 
 ## 5. Validation for ALM-SUP-001
 
@@ -421,3 +421,117 @@ ALM-SUP-009 — docs(alarm): finalize suppression capability
 ```
 
 ALM-SUP-009 must finalize the suppression roadmap/documentation only after ALM-SUP-008 CI is green. It must capture final commits, CI evidence, REST routes, canonical permissions, Workflow/Audit integration, expiry scheduling, and any known residual limitations without introducing production code.
+
+
+## 19. ALM-SUP-009 final capability record
+
+ALM-SUP-009 finalizes GAP-ALARM-004 against verified repository baseline `5028a90248ddf3a04d344308f6cfc2510f1d0ca2`.
+
+### 19.1 Verified implementation chain
+
+The implemented suppression capability is traceable through the following primary commits:
+
+- `e10f1ba9c738337b1dea9f57c1184cb5fe49d0b4` — `docs(alarm): approve suppression lifecycle semantics`;
+- `283307fe9f08c6405060699d2cd6e1462d61f637` — `feat(alarm): add suppression application contracts`;
+- `b88af5dc5f7eb8d622cc343041f2ae788ad38fcd` — `feat(alarm): implement suppression lifecycle policy`;
+- `6f4bdacae0000fdf7f25698d863695fb8a5454c0` plus HRA-061 corrective commits — suppression persistence query support;
+- `37580030f84acb66953b03b5a2e29f543ecb1d56` plus architecture-export correctives — Workflow approval integration;
+- `dbea0996384c9b09d14cc1d52745d76620226441` — suppression expiry Audit contract and taxonomy;
+- `6d18f11baf12075ec1ac12cdaeab2d8edd256163` — backend-owned suppression expiry orchestration;
+- `c8bc04e8e9659ac211c3e41238606b2d757e5083` plus `a5de4d1b1024b854bf8917141438f7cfb527baf2` — REST publication and Spring proxy corrective;
+- `4c2a4d47abf6f624c2e47ba631ed48aa7e24521f` plus `5028a90248ddf3a04d344308f6cfc2510f1d0ca2` — end-to-end verification and route-handler test corrective.
+
+Repository CI run **#451** (`36996917162`) completed successfully on
+`5028a90248ddf3a04d344308f6cfc2510f1d0ca2`, establishing the green verification gate used to close this roadmap.
+
+### 19.2 Published backend contract
+
+Canonical REST routes:
+
+```text
+POST /api/v1/alarm/suppressions
+POST /api/v1/alarm/suppressions/{suppressionId}/release
+GET  /api/v1/alarm/suppressions/{suppressionId}
+GET  /api/v1/alarm/suppressions
+```
+
+Canonical route-derived permissions:
+
+```text
+alarm:suppressions:read
+alarm:suppressions:execute
+```
+
+The earlier conceptual permission names `alarm:suppression:read/create/release` are superseded by the platform's canonical route-permission derivation and must not be independently seeded.
+
+Authenticated actor identity is server-derived through `CurrentActorResolver`. Browser-supplied actor attribution is not part of the contract.
+
+### 19.3 Workflow and Audit integration
+
+Open-ended suppression remains fail-closed and requires Workflow evidence through the exported
+`AlarmSuppressionWorkflowContract`. Approval is based on backend-owned instance status, decision evidence, target module/type, and exact operation reference; transition-name inference is prohibited.
+
+Automatic expiry uses the exported `AlarmSuppressionAuditContract` and canonical
+`ALARM_SUPPRESSION_EXPIRED` Audit taxonomy. Expiry actor type is `SCHEDULED_JOB`; manual release actor fields are not overloaded for automatic expiry.
+
+### 19.4 Scheduling and lifecycle evidence
+
+The capability reuses the repository's existing Spring scheduling infrastructure.
+
+Automatic expiry:
+
+- selects only ACTIVE due suppressions;
+- pessimistically locks selected rows;
+- re-checks expiry eligibility;
+- restores ALARM-scoped state from authoritative Alarm evidence when the alarm is still visibly `SUPPRESSED`;
+- appends `UNSUPPRESSED` lifecycle evidence for ALARM restoration;
+- appends canonical Audit expiry evidence;
+- transitions suppression status to `EXPIRED`;
+- leaves manual release fields untouched;
+- remains retry/idempotency oriented because terminal rows are not selected again.
+
+Manual ALARM-scoped release similarly restores authoritative state when appropriate and records `UNSUPPRESSED` evidence.
+
+### 19.5 Persistence and conflict guarantees
+
+Suppression persistence remains an HRA-061 retained infrastructure model. No retired domain/application persistence mirror is reintroduced.
+
+Exact-scope ACTIVE overlap is protected by both application pre-check and PostgreSQL partial unique index
+`ux_alarm_suppression_active_scope`. Conflict is exposed as stable HTTP
+`409 ALARM_SUPPRESSION_CONFLICT`.
+
+Historical RELEASED/EXPIRED/CANCELLED rows remain available and do not prevent later suppression for the same exact scope/reference.
+
+### 19.6 Frontend consumption boundary
+
+HidraWEB and other clients must consume the REST/OpenAPI contract and must not:
+
+- calculate suppression matching independently;
+- derive restoration state;
+- fabricate actor ids;
+- infer Workflow approval from labels or transition names;
+- mutate suppression persistence directly;
+- treat shelving as suppression;
+- assume broad-scope suppression means mass state mutation of existing alarms.
+
+The backend remains authoritative for lifecycle policy, approval, expiry, conflict detection, state restoration, actor attribution, and Audit evidence.
+
+### 19.7 Known residual boundaries
+
+GAP-ALARM-004 closes the suppression lifecycle/API capability. The following are not claimed as newly implemented by this roadmap:
+
+- wiring broad-scope suppression matching into every alarm-generation producer/evaluation path; the deterministic matching policy exists, but each producer boundary must explicitly consume it before claiming generation-time suppression coverage;
+- a universal include/exclude-suppressed flag on all existing active-alarm query endpoints; suppression evidence has dedicated query endpoints, while any additional active-alarm filtering must be introduced through the owning query contract rather than client-side filtering;
+- SCADA/PLC actuation or parked industrial-extension work.
+
+These boundaries are not permission to implement them implicitly under this closed roadmap. Any required expansion must be separately authorized and traced.
+
+## 20. Closure
+
+```text
+GAP-ALARM-004 — CLOSED
+Verified gate: HidraAPI CI #451 / run 36996917162 — SUCCESS
+Verified SHA: 5028a90248ddf3a04d344308f6cfc2510f1d0ca2
+```
+
+No production code, migration, runtime configuration, REST behavior, or permission behavior is changed by ALM-SUP-009.

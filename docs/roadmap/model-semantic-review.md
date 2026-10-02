@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -201,7 +201,7 @@ Ordering rules applied:
 | HMSR-006 | 0 | planning | PlanningPeriod | — | — | 1 | 9 | 0 | REVISE | Completed | `docs(model-review): review planning PlanningPeriod` |
 | HMSR-007 | 0 | identity | Role | — | — | 5 | 5 | 0 | REVISE | Completed | `docs(model-review): review identity Role` |
 | HMSR-008 | 0 | documents | DocumentStorageObject | — | — | 2 | 6 | 1 | REVISE | Completed | `docs(model-review): review documents DocumentStorageObject` |
-| HMSR-009 | 0 | simulation | SimulationModel | — | — | 1 | 5 | 1 | — | Planned | `docs(model-review): review simulation SimulationModel` |
+| HMSR-009 | 0 | simulation | SimulationModel | — | — | 1 | 5 | 1 | REVISE | Completed | `docs(model-review): review simulation SimulationModel` |
 | HMSR-010 | 0 | identity | IdentityProvider | — | — | 4 | 4 | 0 | — | Planned | `docs(model-review): review identity IdentityProvider` |
 | HMSR-011 | 0 | identity | Permission | — | — | 3 | 3 | 0 | — | Planned | `docs(model-review): review identity Permission` |
 | HMSR-012 | 0 | notification | NotificationTemplate | — | — | 2 | 3 | 2 | — | Planned | `docs(model-review): review notification NotificationTemplate` |
@@ -2426,7 +2426,7 @@ Confirmed subject-model graph edges at this stage: **165**. These are semantic c
 | periodId | String | Domain reference | planning.PlanningPeriod | Yes | Unambiguous same-module subject-model reference. |
 | planTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
 | productTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
-| topologyScopeId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| topologyScopeId | String | Cross-module reference | POLYMORPHIC_TOPOLOGY_SCOPE | No | HMSR-009 stronger Simulation DDD resolves the target namespace through companion `topologyScopeType`; no single HMS subject target and no cross-module FK. |
 | responsibleOrganizationUnitId | String | Cross-module reference | organization.OrganizationUnit | Yes | Unambiguous reference to a subject model in another bounded context. |
 | currentRevisionId | String | Domain reference | planning.PlanRevision | Yes | Planning revision reference. |
 | approvedRevisionId | String | Domain reference | planning.PlanRevision | Yes | Planning revision reference. |
@@ -2569,7 +2569,7 @@ Confirmed subject-model graph edges at this stage: **165**. These are semantic c
 | Field | Declared type | Classification | Resolved target | Graph edge | Notes |
 |---|---|---|---|:---:|---|
 | id | String | Self identifier | — | No | Primary identity of the current model. |
-| modelTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| modelTypeId | String | Value/catalog dependency | SIMULATION_MODEL_TYPE | No | HMSR-009 stronger Simulation DDD + HRA-111 evidence resolves this to Simulation-owned `SimulationCatalogEntry` / `hidra_simulation_catalog_entry`, outside the 123 HMS subject set. |
 | topologyScopeId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
 
 #### simulation.SimulationOptimizationCandidate
@@ -4046,16 +4046,114 @@ The storage object is deliberately infrastructure-facing metadata. Business modu
 
 The target baseline cannot mark it APPROVED until storage-provider catalog identity/family semantics and required integrity-metadata enforcement are made consistent across the DDD, database FK, storage port and adapters. HMS reconciliation must retain these obligations for an explicitly authorized Documents correction task.
 
-## 22. Current next task
+## 22. HMSR-009 — simulation.SimulationModel review
+
+**Decision:** REVISE  
+**Review code:** HMSR-009  
+**Dependency level:** 0  
+**Bounded context:** simulation  
+**Confirmed upstream subject dependencies:** none  
+**Confirmed direct dependents:** 1 — `simulation.SimulationScenario` through `modelId`  
+**Transitive dependents:** 5  
+**Unresolved/non-subject references:** 1 — `topologyScopeId`, now resolved as a typed/polymorphic Topology reference with no single HMS subject target
+
+### 22.1 Semantic role and ordering rationale
+
+`SimulationModel` is the Simulation-owned reusable model-family definition. It identifies a simulation model by business code, localized names, model type, default Topology scope and technical lifecycle state. Executable immutable configuration belongs to `SimulationModelVersion`; scenarios reference the stable model identity and, when frozen for execution, a specific model version.
+
+It is Level 0 because none of its prerequisites are another HMS subject model. `modelTypeId` is a Simulation-owned catalog prerequisite outside the 123 HMS subjects, while `topologyScopeId` is a typed cross-module reference selected by `topologyScopeType`.
+
+Simulation remains decision-support only. It does not own physical Topology, measured Telemetry facts, approved Planning state, Monitoring deviation truth, Workflow approval state or Audit evidence.
+
+### 22.2 Field semantics
+
+| Field | Type | Mandatory / optional | Reviewed meaning |
+|---|---|---|---|
+| `id` | `String` | Mandatory | Stable SimulationModel identity and persistence primary key. |
+| `code` | `String` | Mandatory | Stable unique business code for the reusable model definition. |
+| `nameAr` | `String` | Optional | Arabic model display name. |
+| `nameFr` | `String` | Mandatory | French model display name in the target Simulation contract and persistence schema. |
+| `nameEn` | `String` | Optional | English model display name. |
+| `modelTypeId` | `String` | Mandatory | Simulation-owned catalog reference in family `SIMULATION_MODEL_TYPE`. |
+| `topologyScopeType` | `String` | Mandatory | Discriminator for the default Topology target namespace; target vocabulary includes `PIPELINE_SYSTEM`, `PIPELINE`, `SEGMENT_GROUP`, `FACILITY_NETWORK`. |
+| `topologyScopeId` | `String` | Optional | Optional Topology scope reference whose target meaning is selected by `topologyScopeType`. |
+| `status` | `SimulationModelStatus` | Mandatory | Technical lifecycle: `DRAFT`, `ACTIVE`, or `RETIRED`. |
+| `description` | `String` | Optional | Human-readable model purpose. |
+| `createdAt` | `Instant` | Mandatory in persistence | Creation audit timestamp. |
+| `updatedAt` | `Instant` | Mandatory in persistence | Last-update audit timestamp. |
+
+The current constructor already rejects blank `id`, `code`, and `modelTypeId`, rejects null `status`, trims textual values and converts blank optional strings to `null`.
+
+### 22.3 Model-type dependency resolution
+
+Current repository evidence resolves `modelTypeId` to the Simulation-owned `SIMULATION_MODEL_TYPE` catalog:
+
+- the Simulation data definition identifies `SIMULATION_MODEL_TYPE` as the model classification family;
+- `SimulationCatalogEntry` is a Simulation read/persistence model outside the 123 HMS subjects;
+- HRA-111 installs `fk_hra111_simulation_016`;
+- that FK points `hidra_simulation_model.model_type_id` to `hidra_simulation_catalog_entry(id)` with `ON DELETE RESTRICT`.
+
+Thus `modelTypeId` is a value/catalog dependency, not a subject edge. The FK proves row existence only; it does not prove that the row belongs to `SIMULATION_MODEL_TYPE` or is usable.
+
+### 22.4 Topology-scope reference resolution
+
+The Simulation target definition gives `topologyScopeId` the missing discriminator semantics through the pair `topologyScopeType + topologyScopeId`. Because the discriminator can identify different Topology namespaces, this is a typed/polymorphic cross-module reference, not one direct edge to `PipelineSystem`, `Pipeline`, `Facility`, or another single HMS subject.
+
+It therefore remains outside the 123-node graph. Simulation must not introduce a cross-module database FK for this typed reference; validation belongs through a Topology-owned lookup/contract that interprets both fields together.
+
+### 22.5 Model/version boundary
+
+The target design distinguishes stable model identity from immutable executable configuration. `SimulationModelVersion` owns solver profile, model-definition hash, compatibility marker and version lifecycle. Completed runs must reference an immutable model version rather than only the mutable model definition.
+
+`SimulationModelVersion` is outside the 123 HMS subjects, so it does not add a graph edge. `SimulationScenario` remains the one direct HMS dependent through `modelId`.
+
+### 22.6 Persistence and application consistency
+
+The live domain and JPA models agree on all 12 declared components. The base migration makes `id`, `code`, `name_fr`, `model_type_id`, `topology_scope_type`, `status`, `created_at`, and `updated_at` non-null.
+
+The current `SimulationApplicationService.createSimulationModel` creates a generated ID, copies command values, initializes status to `DRAFT`, supplies timestamps and saves directly through `SimulationModelRepositoryPort`.
+
+The repository port exposes only `save` and `findById`. No code uniqueness lookup, Simulation catalog validation or Topology-scope validation contract is used by the current create path.
+
+### 22.7 Required revisions
+
+The aggregate role and dependency direction are correct, but the target semantics are not enforced consistently enough for APPROVED status.
+
+1. **Unique model code:** the Simulation target definition explicitly marks `code` unique. The live schema has only non-unique `ix_hidra_simulation_model_code`, and the repository/application create path has no demonstrated uniqueness guard.
+2. **Mandatory French name:** `nameFr` is required by target semantics and `NOT NULL` in JPA/schema, but the domain constructor accepts null/blank and normalizes blank input to `null`.
+3. **Mandatory and governed topology scope type:** `topologyScopeType` is required by target semantics and JPA/schema but is not guarded by the domain/application path; no demonstrated validation restricts it to the documented scope vocabulary.
+4. **Topology scope pair validation:** when `topologyScopeId` is supplied, the application must validate `topologyScopeType + topologyScopeId` through a Topology-owned contract. No single subject target may be guessed and no current validation is demonstrated.
+5. **Model-type catalog-family validation:** HRA-111 proves only that `modelTypeId` points to some Simulation catalog row. Creation does not demonstrate that it belongs to `SIMULATION_MODEL_TYPE` or satisfies the applicable active/reference policy.
+6. **Required timestamps:** `createdAt` and `updatedAt` are required by persistence semantics but not guarded by the domain constructor. The current service supplies both; a deliberate enforcement boundary must remain part of the final baseline.
+
+These corrections belong at the appropriate domain/application/database boundary. Repository lookups for catalog or Topology references must remain outside the domain record constructor.
+
+HMSR-009 does not modify production Java, JPA, Flyway, API/application contracts, tests, catalog data or Topology data.
+
+### 22.8 Lifecycle and operational interpretation
+
+`SimulationModelStatus` is correctly represented as a technical lifecycle enum: `DRAFT`, `ACTIVE`, `RETIRED`. Historical model identities remain valid after retirement, while new scenarios should use governed active model/version combinations.
+
+For SONATRACH/TRC pipeline operations, a SimulationModel may represent hydraulic, optimization, capacity/what-if or incident-response analytical behavior over a pipeline system, pipeline, segment group or facility network. It never becomes the authority for the physical network.
+
+An optimized configuration remains a Simulation recommendation/candidate until exported to the owning module, approved through Workflow where required, recorded by Audit and executed through authorized operational procedures outside direct Simulation control.
+
+### 22.9 Review conclusion
+
+**REVISE.** `SimulationModel` is the correct foundational Simulation model and its dependency direction is sound. `modelTypeId` is now resolved to `SIMULATION_MODEL_TYPE`, while `topologyScopeId` is resolved as a typed/polymorphic Topology reference with no single HMS target.
+
+The target baseline cannot mark it APPROVED while model-code uniqueness, required French name, topology-scope discriminator/pair validation and model-type catalog-family validation remain unenforced. HMS reconciliation must retain these obligations until an explicitly authorized Simulation correction task resolves them or the target semantics are explicitly changed.
+
+## 23. Current next task
 
 ```text
-HMSR-009 — simulation.SimulationModel
+HMSR-010 — identity.IdentityProvider
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review simulation SimulationModel
+docs(model-review): review identity IdentityProvider
 ```
 
-Start HMSR-009 only after HMSR-008 is committed and reported. Do not start HMSR-010 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-010 only after HMSR-009 is committed and reported. Do not start HMSR-011 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -247,7 +247,7 @@ Ordering rules applied:
 | HMSR-052 | 2 | workflow | WorkflowStepAssignmentRule | SCC-02 | organization.OrganizationUnit, workflow.WorkflowDefinition, workflow.WorkflowStep | 1 | 35 | 0 | REVISE | Completed | `docs(model-review): review workflow WorkflowStepAssignmentRule` |
 | HMSR-053 | 2 | organization | AdministrativeLocality | — | organization.AdministrativeDistrict | 2 | 15 | 0 | APPROVED | Completed | `docs(model-review): review organization AdministrativeLocality` |
 | HMSR-054 | 2 | assets | MaintainableAsset | SCC-03 | assets.MaintainableAsset, organization.OrganizationUnit, party.Party | 3 | 3 | 4 | REVISE | Completed | `docs(model-review): review assets MaintainableAsset` |
-| HMSR-055 | 2 | simulation | SimulationRun | — | simulation.SimulationScenario | 2 | 3 | 2 | — | Planned | `docs(model-review): review simulation SimulationRun` |
+| HMSR-055 | 2 | simulation | SimulationRun | — | simulation.SimulationScenario | 2 | 3 | 2 | REVISE | Completed | `docs(model-review): review simulation SimulationRun` |
 | HMSR-056 | 2 | integration | ExternalSystem | — | organization.OrganizationUnit | 2 | 2 | 0 | — | Planned | `docs(model-review): review integration ExternalSystem` |
 | HMSR-057 | 2 | reporting | ReportRequest | — | organization.OrganizationUnit, reporting.ReportDefinition | 1 | 2 | 1 | — | Planned | `docs(model-review): review reporting ReportRequest` |
 | HMSR-058 | 2 | risk | RiskRegister | — | organization.OrganizationUnit | 1 | 2 | 0 | — | Planned | `docs(model-review): review risk RiskRegister` |
@@ -2598,13 +2598,13 @@ Confirmed subject-model graph edges at this stage: **165**. These are semantic c
 | Field | Declared type | Classification | Resolved target | Graph edge | Notes |
 |---|---|---|---|:---:|---|
 | id | String | Self identifier | — | No | Primary identity of the current model. |
-| scenarioId | String | Domain reference | simulation.SimulationScenario | Yes | Unambiguous same-module subject-model reference. |
-| modelVersionId | String | Unresolved | — | No | Reference target is outside or absent from the 123 subject-model set; preserve for HMS-004 review. |
-| inputSnapshotId | String | Snapshot/reference-only | — | No | Snapshot/reference identity; not treated as ownership dependency in HMS-003. |
-| runTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
-| requestedByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
-| solverProfileId | String | Unresolved | — | No | Reference target is outside or absent from the 123 subject-model set; preserve for HMS-004 review. |
-| correlationId | String | Snapshot/reference-only | TECHNICAL_REFERENCE | No | Technical correlation/request/reference identity. |
+| scenarioId | String | Domain reference | simulation.SimulationScenario | Yes | Mandatory same-module HMS subject reference; HRA-111 protects `scenario_id -> hidra_simulation_scenario.id`. |
+| modelVersionId | String | Domain reference | simulation.SimulationModelVersion (read/persistence model) | No | Mandatory same-module version reference outside the 123 HMS subject set; HRA-111 protects `model_version_id -> hidra_simulation_model_version.id`. |
+| inputSnapshotId | String | Historical snapshot reference | simulation.SimulationInputSnapshot (read/persistence model) | No | Mandatory frozen-input snapshot identity explicitly classified by HRA-110/HRA-111 as historical/snapshot ownership rather than FK-consolidation ownership. |
+| runTypeId | String | Value/catalog dependency | simulation.SimulationCatalogEntry (SIMULATION_RUN_TYPE) | No | Mandatory business-catalog reference; HRA-111 proves catalog-row existence but not `SIMULATION_RUN_TYPE` family membership. |
+| requestedByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Mandatory Identity actor reference; no cross-module DB FK is appropriate. |
+| solverProfileId | String | Value/catalog dependency | simulation.SimulationCatalogEntry (SIMULATION_SOLVER_PROFILE) | No | Mandatory business-catalog reference; HRA-111 proves catalog-row existence but not `SIMULATION_SOLVER_PROFILE` family membership. |
+| correlationId | String | Snapshot/reference-only | TECHNICAL_REFERENCE | No | Optional technical correlation identity. |
 
 #### simulation.SimulationScenario
 
@@ -11451,16 +11451,181 @@ The target baseline cannot mark it APPROVED while mandatory Topology linkage and
 
 HMS reconciliation must retain these reference-integrity obligations until explicitly authorized Assets production corrections resolve them or stronger repository evidence changes the reference semantics.
 
-## 68. Current next task
+## 68. HMSR-055 — simulation.SimulationRun review
+
+**Decision:** REVISE  
+**Review code:** HMSR-055  
+**Dependency level:** 2  
+**Bounded context:** simulation  
+**Confirmed upstream subject dependencies:** `simulation.SimulationScenario` through mandatory `scenarioId`  
+**Confirmed same-module non-HMS dependencies:** `SimulationModelVersion`, `SimulationInputSnapshot`, Simulation business catalogs  
+**Confirmed direct HMS subject dependents:** 2  
+**Transitive HMS subject dependents:** 3
+
+### 68.1 Semantic role and ordering rationale
+
+`SimulationRun` is the Simulation-owned execution record for a locked scenario, fixed model version, frozen input snapshot and selected solver profile.
+
+The DDD positions Simulation as decision support rather than operational truth. Runs must remain reproducible and traceable to the exact scenario/model/input configuration that produced their results.
+
+It is Level 2 because mandatory `scenarioId` references the already-reviewed HMS subject `SimulationScenario`.
+
+### 68.2 Field semantics
+
+The 16-field model contains run identity; Scenario, ModelVersion and frozen input references; run-type and solver-profile classifications; lifecycle status; requesting actor/snapshot; queue/start/completion timing; duration; correlation/failure metadata; and creation time.
+
+The canonical constructor already requires nonblank ID, scenario ID, model-version ID, input-snapshot ID, run-type ID, requesting actor ID and solver-profile ID; non-null status; and non-null queue time.
+
+### 68.3 Scenario and model-version integrity
+
+HRA-111 installs and validates:
 
 ```text
-HMSR-055 — simulation.SimulationRun
+scenario_id      -> hidra_simulation_scenario.id
+model_version_id -> hidra_simulation_model_version.id
+```
+
+Therefore both mandatory same-module identities are fail-closed for row existence.
+
+The DDD also states that completed runs must reference a model version rather than a mutable model definition, which the current field model satisfies structurally.
+
+### 68.4 Scenario must be locked before execution
+
+The Simulation DDD explicitly states:
+
+```text
+A scenario must be locked before execution to freeze inputs and assumptions.
+```
+
+`SimulationApplicationService.queueSimulationRun()` currently accepts `scenarioId` from the command, constructs a `QUEUED` SimulationRun, and saves it directly.
+
+The service does not load the SimulationScenario or verify `SimulationScenarioStatus.LOCKED` before queueing.
+
+The database FK guarantees only scenario existence, not scenario lifecycle eligibility.
+
+Therefore an unlocked DRAFT/READY/ARCHIVED scenario can be queued for execution despite the explicit DDD rule.
+
+### 68.5 Frozen input snapshot semantics
+
+`inputSnapshotId` is mandatory and the DDD defines SimulationInputSnapshot as an immutable snapshot reference set used for a run:
+
+```text
+Simulation must run on snapshots, not live mutable records.
+```
+
+The repository's scalar-reference integrity classification explicitly places `SimulationRun.inputSnapshotId -> SimulationInputSnapshot` in the historical/snapshot category, even though the target is same-module.
+
+HMSR-055 preserves that architectural classification and does not manufacture a relational FK merely because the target table exists.
+
+Current evidence reviewed here does not explicitly define a separate `run.scenarioId == inputSnapshot.scenarioId` persisted invariant, so HMSR-055 does not invent one.
+
+### 68.6 Run-type catalog family
+
+The DDD defines `runTypeId` as a mandatory business catalog reference with examples:
+
+```text
+WHAT_IF
+OPTIMIZATION
+VALIDATION
+BACKTEST
+```
+
+and lists the canonical catalog family:
+
+```text
+SIMULATION_RUN_TYPE
+```
+
+HRA-111 protects `run_type_id` only with a generic FK to `hidra_simulation_catalog_entry(id)`.
+
+That proves row existence but not family membership. No authoritative application validation was found that checks `catalogName == SIMULATION_RUN_TYPE` before queueing.
+
+### 68.7 Solver-profile catalog family
+
+The DDD defines `solverProfileId` as the mandatory solver profile used by the run and lists:
+
+```text
+SIMULATION_SOLVER_PROFILE
+```
+
+as the canonical business catalog family.
+
+HRA-111 likewise protects only generic catalog-row existence for `solver_profile_id`.
+
+No application guard was found proving that the selected catalog entry belongs to `SIMULATION_SOLVER_PROFILE`.
+
+### 68.8 Completed-run immutability
+
+The Simulation DDD explicitly states:
+
+```text
+A run is immutable after completion except for publication/archival metadata.
+```
+
+`SimulationRunRepositoryPort` exposes unrestricted `save(SimulationRun)` and the domain record itself has no mutation guard tied to prior persisted state.
+
+The current application service only creates QUEUED runs, but no authoritative repository/application boundary demonstrates protection against saving changed business fields for an already COMPLETED run.
+
+Because immutability depends on comparing proposed state with persisted state, it belongs in an application/repository/persistence policy rather than a record-local constructor check.
+
+### 68.9 Lifecycle timestamps and duration deliberately not over-specified
+
+The model stores `queuedAt`, optional `startedAt`, optional `completedAt` and optional `durationMillis`.
+
+The repository-wide HRA-050 temporal-order classification did not approve SimulationRun timestamp-order rules, and the current Simulation DDD does not state exact scalar constraints such as `queuedAt <= startedAt <= completedAt`, nonnegative duration, or duration equality.
+
+HMSR-055 therefore does not invent those rules.
+
+Likewise, current evidence does not define a complete status/timestamp matrix requiring `completedAt` for every terminal status or `failureReason` only for FAILED.
+
+### 68.10 Requested actor and display snapshot
+
+`requestedByActorId` is mandatory and cross-module Identity-owned; `requestedByDisplayNameSnapshot` is persistence-required human-readable snapshot text.
+
+No cross-module database FK should be introduced for the actor identity.
+
+The invariant-classification policy treats generic display snapshots as persistence-only text absent stronger independent DDD evidence, so HMSR-055 does not add a separate constructor obligation for the display snapshot.
+
+### 68.11 Required revisions
+
+Four evidence-backed production correction obligations remain:
+
+1. **Require the referenced SimulationScenario to be `LOCKED` before a SimulationRun is queued/executed.** Scenario existence alone is insufficient; enforce lifecycle eligibility at the authoritative Simulation application boundary.
+
+2. **Enforce `SIMULATION_RUN_TYPE` catalog-family semantics for `runTypeId`.** The referenced catalog row must belong to the documented run-type family.
+
+3. **Enforce `SIMULATION_SOLVER_PROFILE` catalog-family semantics for `solverProfileId`.** The referenced catalog row must belong to the documented solver-profile family.
+
+4. **Enforce immutability of COMPLETED SimulationRun business state.** Once completed, ordinary run fields must not be changed through repository/application writes, except separately modeled publication/archival metadata authorized by the DDD.
+
+HMSR-055 does not modify production Java, JPA, Flyway, application/API contracts, tests, simulation runs, scenarios, model versions, snapshots, catalogs, or provisioned data.
+
+### 68.12 SONATRACH/TRC operational interpretation
+
+For SONATRACH/TRC, a SimulationRun must be reproducible evidence of exactly what was simulated, using a frozen scenario/input/model/solver configuration.
+
+Executing an unlocked scenario can produce results from mutable assumptions, while wrong catalog-family references can select semantically invalid run or solver classifications. Post-completion mutation would weaken traceability of recommendations and digital-twin evidence.
+
+These protections are therefore important for engineering decision support even though simulation results remain advisory until accepted by the owning operational module.
+
+### 68.13 Review conclusion
+
+**REVISE.** `SimulationRun` has a coherent 16-field execution model, protected Scenario and ModelVersion row identities, mandatory frozen input reference, explicit lifecycle status, and appropriately separated actor/correlation state.
+
+The target baseline cannot mark it APPROVED while unlocked scenarios can be queued, run/solver catalog families are not fail-closed, and completed-run immutability is not demonstrated at an authoritative write boundary.
+
+HMS reconciliation must retain these four obligations until explicitly authorized Simulation production corrections resolve them or stronger repository evidence changes the governing Simulation DDD.
+
+## 69. Current next task
+
+```text
+HMSR-056 — integration.ExternalSystem
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review simulation SimulationRun
+docs(model-review): review integration ExternalSystem
 ```
 
-Start HMSR-055 only after HMSR-054 is committed and reported. Do not start HMSR-056 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-056 only after HMSR-055 is committed and reported. Do not start HMSR-057 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

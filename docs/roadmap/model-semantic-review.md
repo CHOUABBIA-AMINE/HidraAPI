@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 reviewed as REVISE, HMSR-080 reviewed as REVISE, HMSR-081 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 reviewed as REVISE, HMSR-080 reviewed as REVISE, HMSR-081 reviewed as REVISE, HMSR-082 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -273,7 +273,7 @@ Ordering rules applied:
 | HMSR-078 | 4 | workflow | WorkflowTask | — | organization.OrganizationUnit, workflow.WorkflowInstance, workflow.WorkflowStep | 4 | 6 | 1 | REVISE | Completed | `docs(model-review): review workflow WorkflowTask` |
 | HMSR-079 | 4 | documents | Document | SCC-05 | documents.DocumentVersion | 4 | 5 | 3 | REVISE | Completed | `docs(model-review): review documents Document` |
 | HMSR-080 | 4 | documents | DocumentVersion | SCC-05 | documents.Document, documents.DocumentStorageObject, documents.DocumentVersion, workflow.WorkflowInstance | 3 | 5 | 2 | REVISE | Completed | `docs(model-review): review documents DocumentVersion` |
-| HMSR-081 | 4 | assets | MaintenanceWorkOrder | — | assets.MaintainableAsset, organization.OrganizationUnit, workflow.WorkflowInstance | 1 | 1 | 3 | — | Planned | `docs(model-review): review assets MaintenanceWorkOrder` |
+| HMSR-081 | 4 | assets | MaintenanceWorkOrder | — | assets.MaintainableAsset, organization.OrganizationUnit, workflow.WorkflowInstance | 1 | 1 | 3 | REVISE | Completed | `docs(model-review): review assets MaintenanceWorkOrder` |
 | HMSR-082 | 4 | custody | CustodyTransferTicket | — | custody.CustodyMeasurementPeriod, workflow.WorkflowInstance | 0 | 0 | 5 | — | Planned | `docs(model-review): review custody CustodyTransferTicket` |
 | HMSR-083 | 4 | hse | PermitToWork | — | workflow.WorkflowInstance | 0 | 0 | 0 | — | Planned | `docs(model-review): review hse PermitToWork` |
 | HMSR-084 | 4 | integration | IntegrationDeadLetterRecord | — | integration.ExternalSystem, integration.IntegrationExchangeMessage, integration.IntegrationJobRun | 0 | 0 | 2 | — | Planned | `docs(model-review): review integration IntegrationDeadLetterRecord` |
@@ -15155,16 +15155,159 @@ The target baseline cannot mark it APPROVED while required textual upload metada
 
 HMS reconciliation must retain these obligations until explicitly authorized Documents production corrections resolve them or stronger repository evidence changes the governing Documents DDD.
 
-## 94. Current next task
+## 94. HMSR-081 — assets.MaintenanceWorkOrder review
+
+**Decision:** REVISE  
+**Review code:** HMSR-081  
+**Dependency level:** 4  
+**Bounded context:** assets  
+**Confirmed upstream subject dependencies:** mandatory `assets.MaintainableAsset`, optional `organization.OrganizationUnit`, optional `workflow.WorkflowInstance`  
+**Confirmed direct HMS subject dependents:** 1  
+**Transitive HMS subject dependents:** 1
+
+### 94.1 Semantic role
+
+`MaintenanceWorkOrder` is the Assets-owned maintenance-execution instruction for a maintainable asset. It owns work-order identity/number, maintenance classification, lifecycle state, assignment, schedule/execution timestamps, optional maintenance-plan linkage, optional Integrity recommendation provenance, optional Workflow reference, creator identity, and audit timestamps.
+
+Assets owns maintenance execution. Integrity may recommend maintenance but does not own the work order. Organization owns organization units. Identity owns actors. Workflow owns process state.
+
+### 94.2 Maintainable-asset integrity
+
+`maintainableAssetId` is mandatory and same-module.
+
+HRA-111 already adds a fail-closed Assets-local foreign key:
 
 ```text
-HMSR-081 — assets.MaintenanceWorkOrder
+hidra_asset_maintenance_work_order.maintainable_asset_id
+  -> hidra_asset_maintainable_asset.id
+```
+
+No further basic existence correction is required for the mandatory maintained asset.
+
+### 94.3 Work-order type
+
+`workOrderTypeId` is mandatory and HRA-111 already protects generic same-module existence through:
+
+```text
+hidra_asset_maintenance_work_order.work_order_type_id
+  -> hidra_asset_catalog_entry.id
+```
+
+The current Assets DDD does not define an exact catalog-family name for this field. HMSR-081 therefore does not invent one.
+
+The generic catalog FK is preserved. HMS-006 may add a family-level eligibility obligation only if a live Assets roadmap/DDD/catalog definition explicitly establishes the governing family.
+
+### 94.4 Required title
+
+The live JPA/Flyway schema persists `title` as `NOT NULL`.
+
+The domain constructor does not reject null/blank title and normalizes blank values to null. `AssetsApplicationService.createMaintenanceWorkOrder()` copies `command.title()` directly.
+
+The authoritative creation boundary must fail fast for the required work-order title rather than relying on persistence failure.
+
+This obligation follows the live target persistence contract; HMSR-081 does not promote optional `description` into a domain invariant.
+
+### 94.5 Optional maintenance-plan reference
+
+`maintenancePlanId` is an optional same-module reference to Assets-owned maintenance planning data. The base schema creates an index, but HRA-111 does not add a foreign key for this optional edge and the reviewed creation service performs no lookup.
+
+When populated, `maintenancePlanId` should fail closed to an existing Assets-owned maintenance plan. A same-module FK is architecturally appropriate, or an explicitly justified Assets application check may supplement it.
+
+HMSR-081 does not invent additional rules such as requiring the plan to belong to the same maintainable asset because the current Assets DDD evidence reviewed here does not explicitly establish that correlation.
+
+### 94.6 Integrity recommendation provenance
+
+The Assets DDD explicitly establishes the boundary:
+
+```text
+IntegrityRecommendation
+  -> application port/event
+      -> Asset Management creates MaintenanceWorkOrder
+```
+
+`sourceRecommendationId` is therefore provenance to an Integrity-owned recommendation, not Assets-owned relational data.
+
+When populated by an Integrity-driven creation path, the reference should be validated/resolved through an owner-controlled Integrity application/event contract. No cross-module Integrity database FK should be introduced.
+
+### 94.7 Assignment and creator boundaries
+
+`assignedOrganizationUnitId` is optional and Organization-owned. `assignedActorId` and `createdByActorId` are Identity-owned actor references.
+
+The current create service copies all three values directly from the command, and repository evidence reviewed for this use case does not show owner-controlled Organization/Identity validation.
+
+The authoritative creation/assignment boundary should validate populated organization and actor references through their owning contracts while keeping scalar IDs. No cross-module Organization or Identity database FKs should be introduced.
+
+The current Assets evidence does not state that at least one assignee is mandatory, so HMSR-081 does not invent an assignment-target invariant.
+
+### 94.8 Workflow boundary
+
+`workflowInstanceId` is optional and Workflow-owned.
+
+The live model correctly stores only the scalar Workflow reference; repository evidence does not show a cross-module DB FK, which is appropriate.
+
+When populated, the authoritative Assets boundary should validate the referenced Workflow instance through a Workflow-owned application contract and ensure it targets the intended maintenance-work-order process/context. No cross-module Workflow FK should be introduced.
+
+### 94.9 Lifecycle enum and timestamps
+
+`MaintenanceWorkOrderStatus` contains:
+
+```text
+DRAFT
+PLANNED
+APPROVED
+SCHEDULED
+IN_PROGRESS
+COMPLETED
+VERIFIED
+CLOSED
+CANCELLED
+REJECTED
+```
+
+These values represent the Assets-owned maintenance work-order lifecycle and are appropriate as a technical/domain enum.
+
+The current Assets DDD and repository-wide invariant classification reviewed for this task do not establish explicit ordering rules among `plannedStartAt`, `plannedEndAt`, `startedAt`, and `completedAt` for this model. HMSR-081 therefore does not invent timestamp-order invariants.
+
+Likewise, current evidence does not explicitly establish global uniqueness for `workOrderNumber`; no such database obligation is invented by this review.
+
+### 94.10 Priority and unresolved taxonomy semantics
+
+`priorityId` is optional. The base schema indexes it, but the reviewed Assets DDD does not define a precise catalog family or owner semantics for this field.
+
+HMSR-081 therefore preserves it as unresolved Assets taxonomy/reference evidence and does not invent a catalog-family rule. HMS-006 may reconcile it if stronger module evidence becomes available.
+
+### 94.11 Required revisions
+
+Four evidence-backed obligations remain:
+
+1. **Enforce required work-order title before persistence.**
+
+2. **Protect populated `maintenancePlanId` as a same-module Assets reference** through a same-module FK or explicitly justified fail-closed Assets application boundary.
+
+3. **Validate cross-context provenance/assignment identities through owner-controlled contracts:** populated Integrity recommendation, Organization unit, assigned actor, and creator actor references; do not introduce cross-module database FKs.
+
+4. **Validate populated `workflowInstanceId` through a Workflow-owned application contract** and preserve it as a scalar cross-module reference.
+
+HMSR-081 does not modify production Java, JPA, Flyway, API/application contracts, tests, Assets/Integrity/Organization/Identity/Workflow data, or provisioned data.
+
+### 94.12 Review conclusion
+
+**REVISE.** `MaintenanceWorkOrder` is a coherent Assets-owned maintenance execution model with correct maintainable-asset ownership, generic same-module work-order-type integrity, appropriate lifecycle enum semantics, and clean cross-context scalar references.
+
+The target baseline cannot mark it APPROVED while required title validation is deferred to persistence, populated same-module maintenance-plan references are not fail-closed, and cross-context recommendation/assignment/creator/workflow references are accepted without owner-controlled validation.
+
+HMS reconciliation must retain these obligations until explicitly authorized Assets production corrections resolve them or stronger repository evidence changes the governing Assets DDD.
+
+## 95. Current next task
+
+```text
+HMSR-082 — custody.CustodyTransferTicket
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review assets MaintenanceWorkOrder
+docs(model-review): review custody CustodyTransferTicket
 ```
 
-Start HMSR-081 only after HMSR-080 is committed and reported. Do not start HMSR-082 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-082 only after HMSR-081 is committed and reported. Do not start HMSR-083 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

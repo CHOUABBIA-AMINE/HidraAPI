@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -263,7 +263,7 @@ Ordering rules applied:
 | HMSR-068 | 3 | reporting | ReportRun | — | reporting.ReportDefinition, reporting.ReportRequest | 1 | 1 | 0 | REVISE | Completed | `docs(model-review): review reporting ReportRun` |
 | HMSR-069 | 3 | risk | RiskAssessment | — | risk.RiskRegister | 1 | 1 | 10 | REVISE | Completed | `docs(model-review): review risk RiskAssessment` |
 | HMSR-070 | 3 | assets | AssetConditionRecord | — | assets.MaintainableAsset | 0 | 0 | 0 | APPROVED | Completed | `docs(model-review): review assets AssetConditionRecord` |
-| HMSR-071 | 3 | leakdetection | LeakEscalationReference | — | leakdetection.LeakCandidate, leakdetection.LeakDetectionCase | 0 | 0 | 0 | — | Planned | `docs(model-review): review leakdetection LeakEscalationReference` |
+| HMSR-071 | 3 | leakdetection | LeakEscalationReference | — | leakdetection.LeakCandidate, leakdetection.LeakDetectionCase | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review leakdetection LeakEscalationReference` |
 | HMSR-072 | 3 | notification | NotificationDeliveryAttempt | — | notification.NotificationMessage | 0 | 0 | 2 | — | Planned | `docs(model-review): review notification NotificationDeliveryAttempt` |
 | HMSR-073 | 3 | workflow | WorkflowTransition | — | workflow.WorkflowDefinition, workflow.WorkflowStep | 0 | 0 | 0 | — | Planned | `docs(model-review): review workflow WorkflowTransition` |
 | HMSR-074 | 4 | incident | Incident | — | organization.OrganizationUnit, workflow.WorkflowInstance | 6 | 11 | 3 | — | Planned | `docs(model-review): review incident Incident` |
@@ -2187,11 +2187,11 @@ Confirmed subject-model graph edges at this stage: **165**. These are semantic c
 | Field | Declared type | Classification | Resolved target | Graph edge | Notes |
 |---|---|---|---|:---:|---|
 | id | String | Self identifier | — | No | Primary identity of the current model. |
-| caseId | String | Domain reference | leakdetection.LeakDetectionCase | Yes | Unambiguous same-module subject-model reference. |
-| candidateId | String | Domain reference | leakdetection.LeakCandidate | Yes | Unambiguous same-module subject-model reference. |
-| targetReferenceId | String | Cross-module reference | POLYMORPHIC | No | Target is selected by companion type/module metadata; no single subject-model edge. |
-| escalatedByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
-| correlationId | String | Snapshot/reference-only | TECHNICAL_REFERENCE | No | Technical correlation/request/reference identity. |
+| caseId | String | Domain reference | leakdetection.LeakDetectionCase | Yes | Mandatory same-module case reference; HRA-111 protects `case_id -> hidra_leak_detection_case.id`. |
+| candidateId | String | Optional domain reference | leakdetection.LeakCandidate | Yes | Optional same-module candidate provenance reference. Current escalation persistence has no FK protecting a populated value. |
+| targetReferenceId | String | Cross-module neutral reference | POLYMORPHIC_ESCALATION_TARGET | No | Mandatory target identity interpreted by `targetType`; preserve as neutral alarm/incident/workflow/notification/audit/manual reference with snapshots rather than introducing cross-module FKs. |
+| escalatedByActorId | String | Optional cross-module reference | IDENTITY_ACTOR | No | Optional actor identity; no Actor subject model or cross-module DB FK is appropriate. |
+| correlationId | String | Snapshot/reference-only | TECHNICAL_REFERENCE | No | Optional technical correlation identity. |
 
 #### monitoring.MonitoringRule
 
@@ -13692,16 +13692,136 @@ No production correction is required by HMSR-070.
 
 HMSR-070 does not modify production Java, JPA, Flyway, API/application contracts, tests, Assets data, Identity data, foreign source-module data, or provisioned data.
 
-## 84. Current next task
+## 84. HMSR-071 — leakdetection.LeakEscalationReference review
+
+**Decision:** REVISE  
+**Review code:** HMSR-071  
+**Dependency level:** 3  
+**Bounded context:** leakdetection  
+**Confirmed upstream subject dependencies:** `leakdetection.LeakDetectionCase`, optional `leakdetection.LeakCandidate`  
+**Confirmed direct HMS subject dependents:** 0  
+**Transitive HMS subject dependents:** 0
+
+### 84.1 Semantic role
+
+`LeakEscalationReference` is the Leak Detection-owned evidence that a leak case was escalated toward another business capability while preserving that target as a neutral reference.
+
+It can point to alarm, incident, workflow, notification, audit, or a manual external reference without importing or owning those target modules.
+
+### 84.2 Leak-case integrity
+
+`caseId` is mandatory and unambiguously references `leakdetection.LeakDetectionCase`.
+
+HRA-111 already protects:
 
 ```text
-HMSR-071 — leakdetection.LeakEscalationReference
+hidra_leak_detection_escalation_reference.case_id
+    -> hidra_leak_detection_case.id
+```
+
+This is the correct same-module ownership relationship.
+
+The active `escalateLeakCase()` application path persists the supplied case ID and relies on that database guard.
+
+### 84.3 Optional candidate provenance
+
+`candidateId` is optional and unambiguously references `leakdetection.LeakCandidate`.
+
+Unlike `caseId`, current HRA-111 evidence does not provide:
+
+```text
+hidra_leak_detection_escalation_reference.candidate_id
+    -> hidra_leak_detection_candidate.id
+```
+
+Because this is a same-module reference rather than an external snapshot/neutral identifier, a populated candidate ID should fail closed against the Leak Detection-owned candidate table.
+
+Current DDD evidence does not define an additional rule requiring the candidate to equal the case's `primaryCandidateId`, nor does it define a separate case-candidate membership table. HMSR-071 therefore does not invent that stronger association rule.
+
+### 84.4 Neutral escalation target
+
+`targetType` is mandatory and defines:
+
+```text
+ALARM
+INCIDENT
+WORKFLOW
+NOTIFICATION
+AUDIT
+MANUAL_REFERENCE
+```
+
+`targetReferenceId` is mandatory and is accompanied by optional code/name snapshots.
+
+The Leak Detection DDD explicitly defines escalation through a neutral reference and forbids Leak Detection from owning alarm/incident tables or importing their domain models.
+
+Therefore the target must remain non-relational across bounded contexts. No cross-module database FK should be introduced.
+
+HMSR-071 also does not require every target type to have a currently implemented owner lookup, because `MANUAL_REFERENCE` is explicitly supported and the DDD permits escalation references even where richer target-module DDDs/contracts are not yet available.
+
+### 84.5 Escalation status
+
+`LeakEscalationStatus` defines:
+
+```text
+REQUESTED
+SENT
+ACCEPTED
+REJECTED
+CANCELLED
+```
+
+This is a genuine lifecycle/status enum for the escalation reference itself.
+
+The live application path creates new escalation references as `REQUESTED`.
+
+Current Leak Detection DDD evidence does not provide a complete transition matrix, so HMSR-071 does not invent allowed status transitions.
+
+### 84.6 Actor and correlation semantics
+
+`escalatedByActorId` is optional and remains an external Identity actor reference.
+
+`correlationId` remains a neutral technical correlation identity.
+
+No cross-module database FK is appropriate for either field, and current DDD evidence does not make the actor mandatory for system-driven escalation requests.
+
+### 84.7 Safety boundary
+
+The model directly supports the Leak Detection safety rule:
+
+```text
+Leak Detection may escalate by neutral reference.
+Leak Detection must not actuate OT equipment or own Alarm/Incident lifecycle state.
+```
+
+Nothing in the reviewed model transfers operational control authority to Leak Detection.
+
+### 84.8 Required revision
+
+One evidence-backed production obligation remains:
+
+1. **Protect populated `candidateId` as a same-module LeakCandidate reference.** Preserve optionality, but prevent dangling candidate identities using the appropriate same-module FK and/or authoritative application validation. Do not invent a case-primary-candidate equality rule without stronger DDD evidence.
+
+HMSR-071 does not modify production Java, JPA, Flyway, API/application contracts, tests, Leak Detection case/candidate data, target-module data, Identity data, or provisioned data.
+
+### 84.9 Review conclusion
+
+**REVISE.** `LeakEscalationReference` is a coherent 12-field Leak Detection-owned neutral escalation record. Its mandatory case reference is correctly protected, target/reference semantics preserve bounded-context neutrality, lifecycle status is appropriate, and the model respects the decision-support/OT-safety boundary.
+
+The target baseline cannot mark it APPROVED while a populated same-module `candidateId` can reference a nonexistent LeakCandidate.
+
+HMS reconciliation must retain this obligation until explicitly authorized Leak Detection production correction resolves it or stronger repository evidence changes the governing DDD.
+
+## 85. Current next task
+
+```text
+HMSR-072 — notification.NotificationDeliveryAttempt
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review leakdetection LeakEscalationReference
+docs(model-review): review notification NotificationDeliveryAttempt
 ```
 
-Start HMSR-071 only after HMSR-070 is committed and reported. Do not start HMSR-072 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-072 only after HMSR-071 is committed and reported. Do not start HMSR-073 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

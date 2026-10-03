@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 reviewed as REVISE, HMSR-080 reviewed as REVISE, HMSR-081 reviewed as REVISE, HMSR-082 reviewed as REVISE, HMSR-083 approved, HMSR-084 reviewed as REVISE, HMSR-085 reviewed as REVISE, HMSR-086 approved, HMSR-087 reviewed as REVISE, HMSR-088 reviewed as REVISE, HMSR-089 reviewed as REVISE, HMSR-090 reviewed as REVISE, HMSR-091 reviewed as REVISE, HMSR-092 reviewed as REVISE, HMSR-093 reviewed as REVISE, HMSR-094 reviewed as REVISE, HMSR-095 reviewed as REVISE, HMSR-096 reviewed as REVISE, HMSR-097 reviewed as REVISE, HMSR-098 reviewed as REVISE, HMSR-099 approved, HMSR-100 reviewed as REVISE, HMSR-101 reviewed as REVISE, HMSR-102 approved, HMSR-103 approved, HMSR-104 reviewed as REVISE, HMSR-105 reviewed as REVISE, HMSR-106 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 reviewed as REVISE, HMSR-080 reviewed as REVISE, HMSR-081 reviewed as REVISE, HMSR-082 reviewed as REVISE, HMSR-083 approved, HMSR-084 reviewed as REVISE, HMSR-085 reviewed as REVISE, HMSR-086 approved, HMSR-087 reviewed as REVISE, HMSR-088 reviewed as REVISE, HMSR-089 reviewed as REVISE, HMSR-090 reviewed as REVISE, HMSR-091 reviewed as REVISE, HMSR-092 reviewed as REVISE, HMSR-093 reviewed as REVISE, HMSR-094 reviewed as REVISE, HMSR-095 reviewed as REVISE, HMSR-096 reviewed as REVISE, HMSR-097 reviewed as REVISE, HMSR-098 reviewed as REVISE, HMSR-099 approved, HMSR-100 reviewed as REVISE, HMSR-101 reviewed as REVISE, HMSR-102 approved, HMSR-103 approved, HMSR-104 reviewed as REVISE, HMSR-105 reviewed as REVISE, HMSR-106 reviewed as REVISE, HMSR-107 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -298,7 +298,7 @@ Ordering rules applied:
 | HMSR-103 | 5 | identity | LocalCredential | — | identity.User | 0 | 0 | 0 | APPROVED | Completed | `docs(model-review): review identity LocalCredential` |
 | HMSR-104 | 5 | identity | LoginSession | — | identity.IdentityProvider, identity.User | 0 | 0 | 1 | REVISE | Completed | `docs(model-review): review identity LoginSession` |
 | HMSR-105 | 5 | identity | UserPermissionGrant | — | identity.Permission, identity.User | 0 | 0 | 1 | REVISE | Completed | `docs(model-review): review identity UserPermissionGrant` |
-| HMSR-106 | 5 | identity | UserRoleGrant | — | identity.Role, identity.User | 0 | 0 | 1 | — | Planned | `docs(model-review): review identity UserRoleGrant` |
+| HMSR-106 | 5 | identity | UserRoleGrant | — | identity.Role, identity.User | 0 | 0 | 1 | REVISE | Completed | `docs(model-review): review identity UserRoleGrant` |
 | HMSR-107 | 5 | incident | IncidentClosure | — | incident.Incident, workflow.WorkflowInstance | 0 | 0 | 0 | — | Planned | `docs(model-review): review incident IncidentClosure` |
 | HMSR-108 | 5 | incident | IncidentRelatedIncident | — | incident.Incident | 0 | 0 | 0 | — | Planned | `docs(model-review): review incident IncidentRelatedIncident` |
 | HMSR-109 | 5 | incident | IncidentResponseAction | — | incident.Incident, organization.OrganizationUnit | 0 | 0 | 0 | — | Planned | `docs(model-review): review incident IncidentResponseAction` |
@@ -18423,16 +18423,134 @@ The target baseline cannot mark it APPROVED while a DDD-required grant reason is
 
 HMS reconciliation must retain these obligations until explicitly authorized Identity production corrections resolve them or stronger repository evidence changes the governing Identity contract.
 
-## 119. Current next task
+## 119. HMSR-106 — identity.UserRoleGrant review
+
+**Decision:** REVISE  
+**Review code:** HMSR-106  
+**Dependency level:** 5  
+**Bounded context:** identity  
+**Confirmed upstream subject dependencies:** mandatory `identity.User`; mandatory `identity.Role`; optional Workflow-owned approval reference; neutral external scope reference  
+**Confirmed direct HMS subject dependents:** 0  
+**Transitive HMS subject dependents:** 0  
+**Unresolved/non-subject reference count:** 1
+
+### 119.1 Semantic role
+
+`UserRoleGrant` is the Identity-owned direct assignment of an Identity Role to an Identity User, optionally constrained by a neutral authorization scope, workflow approval reference, and validity interval.
+
+It is an authorization relationship. It is not an Organization position/assignment, Party role, Workflow task, or Topology ownership record.
+
+### 119.2 Mandatory same-module references
+
+`userId` and `roleId` are mandatory same-module references.
+
+The live domain rejects blanks, the general administration application service resolves both before save, and HRA-111 protects both persistence references:
 
 ```text
-HMSR-106 — identity.UserRoleGrant
+hidra_identity_user_role_grant.user_id
+  -> hidra_identity_user.id
+
+hidra_identity_user_role_grant.role_id
+  -> hidra_identity_role.id
+```
+
+No further basic existence/FK correction is required.
+
+### 119.3 Scope and workflow boundaries
+
+The DDD defines the scope as optional and neutral:
+
+```text
+scopeType
+scopeReferenceId
+scopeCodeSnapshot
+```
+
+The live `AuthorizationScope` mapping preserves that boundary. Organization/Topology scope targets remain external references and must not acquire cross-module database foreign keys.
+
+`approvedByWorkflowId` is optional and Workflow-owned. The DDD does not require workflow approval for every direct role grant, so HMSR-106 does not invent a blanket approval rule. Where policy requires approval, validation belongs through a Workflow-owned application/reference contract rather than a cross-module FK.
+
+### 119.4 Grant reason and validity
+
+For `UserRoleGrant`, the DDD explicitly makes `grantReason` and `validTo` optional.
+
+The live domain therefore correctly permits a missing reason and an open-ended grant. It already enforces mandatory `validFrom` and the established temporal invariant:
+
+```text
+validFrom <= validTo
+```
+
+when `validTo` is present.
+
+No UserPermissionGrant-style mandatory-reason or mandatory-end rule should be copied into this model.
+
+### 119.5 Grant lifecycle
+
+The DDD defines the UserRoleGrant lifecycle as:
+
+```text
+ACTIVE
+SUSPENDED
+REVOKED
+EXPIRED
+```
+
+and the shared `GrantStatus` enum matches it exactly.
+
+The duplicate-enum review also retains `GrantStatus` as an Identity grant lifecycle vocabulary. No catalog conversion or status narrowing is required for UserRoleGrant.
+
+`revokedAt` and `revokedReason` remain optional because the governing DDD does not define an additional constructor-level conditional invariant for them.
+
+### 119.6 Active-user grant eligibility gap
+
+The governing Identity DDD explicitly states:
+
+```text
+Only active users should receive new grants, except controlled emergency/break-glass flows.
+```
+
+HMSR-075 correctly deferred this rule to downstream grant write paths rather than placing it inside the User constructor.
+
+The live general `grantRoleToUser(...)` path currently calls `requireUser(userId)`, but `requireUser` checks only that the User exists. It does not require `UserStatus.ACTIVE` and does not identify a controlled emergency/break-glass exception.
+
+Therefore the authoritative UserRoleGrant creation path can create a new ACTIVE role grant for REGISTERED, SUSPENDED, DISABLED, or LOCKED users, contrary to the DDD assignment rule.
+
+The local-administrator bootstrap is not evidence that the general path is safe: that bootstrap creates/uses an ACTIVE user through its own controlled flow.
+
+### 119.7 Role status
+
+The DDD defines Role lifecycle values `ACTIVE`, `DISABLED`, and `DEPRECATED`, but the reviewed UserRoleGrant section does not explicitly state that grant creation must reject non-ACTIVE roles.
+
+HMSR-106 therefore does not invent a new role-status assignment invariant. Existing authorization/runtime code may still ignore inactive roles where already defined.
+
+### 119.8 Required revision
+
+One evidence-backed production obligation remains:
+
+1. **Enforce the DDD active-user grant eligibility rule in the authoritative UserRoleGrant creation flow.** Ordinary role grants must require an ACTIVE User; any emergency/break-glass exception must be an explicitly controlled flow supported by repository policy rather than an implicit bypass.
+
+This belongs at the application/domain authorization boundary, not as a cross-table database constraint and not as a repository lookup inside the immutable record constructor.
+
+HMSR-106 does not modify production Java, JPA, Flyway, API/application contracts, tests, Identity/Workflow/Organization/Topology data, or provisioned data.
+
+### 119.9 Review conclusion
+
+**REVISE.** `UserRoleGrant` has correct Identity ownership, protected User/Role references, neutral cross-context scope semantics, optional workflow approval, DDD-consistent optional reason/end fields, correct grant-status vocabulary, and the established validity ordering invariant.
+
+The target baseline cannot mark it APPROVED while the general creation flow permits new grants to non-ACTIVE users despite the governing DDD's explicit assignment rule.
+
+HMS reconciliation must retain this obligation until explicitly authorized Identity production work enforces active-user grant eligibility or stronger repository evidence changes the governing contract.
+
+## 120. Current next task
+
+```text
+HMSR-107 — incident.IncidentClosure
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review identity UserRoleGrant
+docs(model-review): review incident IncidentClosure
 ```
 
-Start HMSR-106 only after HMSR-105 is committed and reported. Do not start HMSR-107 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-107 only after HMSR-106 is committed and reported. Do not start HMSR-108 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

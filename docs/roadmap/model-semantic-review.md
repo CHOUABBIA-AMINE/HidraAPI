@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 reviewed as REVISE, HMSR-080 reviewed as REVISE, HMSR-081 reviewed as REVISE, HMSR-082 reviewed as REVISE, HMSR-083 approved, HMSR-084 reviewed as REVISE, HMSR-085 reviewed as REVISE, HMSR-086 approved, HMSR-087 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 reviewed as REVISE, HMSR-080 reviewed as REVISE, HMSR-081 reviewed as REVISE, HMSR-082 reviewed as REVISE, HMSR-083 approved, HMSR-084 reviewed as REVISE, HMSR-085 reviewed as REVISE, HMSR-086 approved, HMSR-087 reviewed as REVISE, HMSR-088 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -279,7 +279,7 @@ Ordering rules applied:
 | HMSR-084 | 4 | integration | IntegrationDeadLetterRecord | — | integration.ExternalSystem, integration.IntegrationExchangeMessage, integration.IntegrationJobRun | 0 | 0 | 2 | REVISE | Completed | `docs(model-review): review integration IntegrationDeadLetterRecord` |
 | HMSR-085 | 4 | integrity | IntegrityAssessment | — | integrity.IntegrityProgram, workflow.WorkflowInstance | 0 | 0 | 2 | REVISE | Completed | `docs(model-review): review integrity IntegrityAssessment` |
 | HMSR-086 | 4 | organization | EmployeeAddress | — | organization.AdministrativeLocality, organization.Employee | 0 | 0 | 0 | APPROVED | Completed | `docs(model-review): review organization EmployeeAddress` |
-| HMSR-087 | 4 | organization | EmployeeAssignment | — | organization.Employee, organization.OrganizationUnit, organization.Position | 0 | 0 | 0 | — | Planned | `docs(model-review): review organization EmployeeAssignment` |
+| HMSR-087 | 4 | organization | EmployeeAssignment | — | organization.Employee, organization.OrganizationUnit, organization.Position | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review organization EmployeeAssignment` |
 | HMSR-088 | 4 | organization | OrganizationDelegation | — | organization.Employee, organization.ResponsibilityAssignment | 0 | 0 | 0 | — | Planned | `docs(model-review): review organization OrganizationDelegation` |
 | HMSR-089 | 4 | organization | OrganizationHierarchySnapshot | — | organization.Employee | 0 | 0 | 0 | — | Planned | `docs(model-review): review organization OrganizationHierarchySnapshot` |
 | HMSR-090 | 4 | organization | ShiftAssignment | — | organization.Employee, organization.OrganizationUnit, organization.Shift | 0 | 0 | 0 | — | Planned | `docs(model-review): review organization ShiftAssignment` |
@@ -15960,16 +15960,147 @@ No HMSR-086 production correction obligation is recorded.
 
 HMSR-086 does not modify production Java, JPA, Flyway, API/application contracts, tests, Organization data, or provisioned data.
 
-## 100. Current next task
+## 100. HMSR-087 — organization.EmployeeAssignment review
+
+**Decision:** REVISE  
+**Review code:** HMSR-087  
+**Dependency level:** 4  
+**Bounded context:** organization  
+**Confirmed upstream subject dependencies:** mandatory `organization.Employee`, mandatory `organization.OrganizationUnit`, mandatory `organization.Position`  
+**Confirmed direct HMS subject dependents:** 0  
+**Transitive HMS subject dependents:** 0
+
+### 100.1 Semantic role
+
+`EmployeeAssignment` is the Organization-owned effective-dated membership/position assignment of an employee to an organization unit and position.
+
+The current Organization roadmap explicitly separates membership from operational responsibility: employee-specific operational responsibility belongs to `ResponsibilityAssignment`, not to `EmployeeAssignment`.
+
+### 100.2 Mandatory same-module reference integrity
+
+The three mandatory references:
 
 ```text
-HMSR-087 — organization.EmployeeAssignment
+employeeId
+organizationUnitId
+positionId
+```
+
+are all same-module Organization references.
+
+The pre-existing Organization internal-reference migration already protects them with foreign keys to:
+
+```text
+hidra_org_employee
+hidra_org_unit
+hidra_org_position
+```
+
+The domain constructor also rejects blank values for all three IDs.
+
+No further basic referential-integrity correction is required.
+
+### 100.3 Domain invariants
+
+The live domain constructor enforces the Organization roadmap's established assignment invariants:
+
+```text
+id nonblank
+employeeId nonblank
+organizationUnitId nonblank
+positionId nonblank
+assignmentType non-null
+status non-null
+validFrom required
+validTo null or strictly after validFrom
+```
+
+These are already covered by the Organization domain/model integrity work completed under ORG-053/ORG-055.
+
+No additional constructor-level correction is required.
+
+### 100.4 Assignment type and status enums
+
+`AssignmentType` contains:
+
+```text
+PRIMARY
+SECONDARY
+TEMPORARY
+ACTING
+```
+
+`AssignmentStatus` contains:
+
+```text
+ACTIVE
+SUSPENDED
+ENDED
+CANCELLED
+```
+
+These are stable Organization-owned assignment classifications/lifecycle states and are appropriate as domain enums.
+
+Current live Organization evidence does not require converting them to catalog-backed taxonomies.
+
+### 100.5 Disabled-unit assignment rule
+
+The current Organization roadmap explicitly states:
+
+```text
+A disabled organization unit cannot receive new employee assignments.
+```
+
+The live `EmployeeAssignmentApplicationService` creates and saves an ACTIVE assignment directly from the command. Its only dependency is `EmployeeAssignmentRepositoryPort`; it does not load the target `OrganizationUnit` or otherwise verify that the unit is active/assignable.
+
+Database foreign-key existence protection is not sufficient for this rule because a disabled unit is still a valid existing row.
+
+The authoritative assignment application boundary must therefore fail closed when the target organization unit is disabled.
+
+This validation belongs in the application/domain-policy layer, not in the `EmployeeAssignment` constructor, because unit lifecycle state is external to the record's own values.
+
+### 100.6 Primary-assignment policy
+
+Historical architecture material mentions one active primary assignment per employee, but the current authoritative Organization roadmap does not carry that rule as an active EmployeeAssignment invariant. Its current explicit “one active primary” rule concerns LINE reporting relationships.
+
+HMSR-087 therefore does not invent a uniqueness/overlap constraint for PRIMARY employee assignments from archived architecture text alone.
+
+If a current Organization roadmap/DDD later re-establishes that rule explicitly, HMS-006 may reconcile it then.
+
+### 100.7 Operational-scope separation
+
+Earlier Organization history referenced operational-scope fields on employee assignments, but the live canonical `EmployeeAssignment` model no longer contains them.
+
+Current roadmap architecture assigns operational responsibility through `ResponsibilityAssignment` and the governed `OperationalScope` registry.
+
+HMSR-087 preserves that separation and does not reintroduce scope fields into `EmployeeAssignment`.
+
+### 100.8 Required revisions
+
+One evidence-backed production obligation remains:
+
+1. **Enforce the disabled-unit assignment rule in the authoritative application boundary.** Before creating a new EmployeeAssignment, resolve the target `OrganizationUnit` and reject assignment when the unit is disabled/inactive. Preserve same-module ownership and do not move this cross-record lifecycle lookup into the domain record constructor.
+
+HMSR-087 does not modify production Java, JPA, Flyway, API/application contracts, tests, Organization data, or provisioned data.
+
+### 100.9 Review conclusion
+
+**REVISE.** `EmployeeAssignment` is structurally coherent and already has complete mandatory same-module FK protection, required record-level invariants, appropriate enums, and correct separation from operational responsibility.
+
+The target baseline cannot mark it APPROVED while the live assignment service permits creation against a disabled organization unit contrary to the current authoritative Organization roadmap.
+
+HMS reconciliation must retain this obligation until explicitly authorized Organization production work enforces the lifecycle check or stronger repository evidence changes the governing rule.
+
+## 101. Current next task
+
+```text
+HMSR-088 — organization.OrganizationDelegation
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review organization EmployeeAssignment
+docs(model-review): review organization OrganizationDelegation
 ```
 
-Start HMSR-087 only after HMSR-086 is committed and reported. Do not start HMSR-088 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-088 only after HMSR-087 is committed and reported. Do not start HMSR-089 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 reviewed as REVISE, HMSR-080 reviewed as REVISE, HMSR-081 reviewed as REVISE, HMSR-082 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 reviewed as REVISE, HMSR-080 reviewed as REVISE, HMSR-081 reviewed as REVISE, HMSR-082 reviewed as REVISE, HMSR-083 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -274,7 +274,7 @@ Ordering rules applied:
 | HMSR-079 | 4 | documents | Document | SCC-05 | documents.DocumentVersion | 4 | 5 | 3 | REVISE | Completed | `docs(model-review): review documents Document` |
 | HMSR-080 | 4 | documents | DocumentVersion | SCC-05 | documents.Document, documents.DocumentStorageObject, documents.DocumentVersion, workflow.WorkflowInstance | 3 | 5 | 2 | REVISE | Completed | `docs(model-review): review documents DocumentVersion` |
 | HMSR-081 | 4 | assets | MaintenanceWorkOrder | — | assets.MaintainableAsset, organization.OrganizationUnit, workflow.WorkflowInstance | 1 | 1 | 3 | REVISE | Completed | `docs(model-review): review assets MaintenanceWorkOrder` |
-| HMSR-082 | 4 | custody | CustodyTransferTicket | — | custody.CustodyMeasurementPeriod, workflow.WorkflowInstance | 0 | 0 | 5 | — | Planned | `docs(model-review): review custody CustodyTransferTicket` |
+| HMSR-082 | 4 | custody | CustodyTransferTicket | — | custody.CustodyMeasurementPeriod, workflow.WorkflowInstance | 0 | 0 | 5 | REVISE | Completed | `docs(model-review): review custody CustodyTransferTicket` |
 | HMSR-083 | 4 | hse | PermitToWork | — | workflow.WorkflowInstance | 0 | 0 | 0 | — | Planned | `docs(model-review): review hse PermitToWork` |
 | HMSR-084 | 4 | integration | IntegrationDeadLetterRecord | — | integration.ExternalSystem, integration.IntegrationExchangeMessage, integration.IntegrationJobRun | 0 | 0 | 2 | — | Planned | `docs(model-review): review integration IntegrationDeadLetterRecord` |
 | HMSR-085 | 4 | integrity | IntegrityAssessment | — | integrity.IntegrityProgram, workflow.WorkflowInstance | 0 | 0 | 2 | — | Planned | `docs(model-review): review integrity IntegrityAssessment` |
@@ -15298,16 +15298,149 @@ The target baseline cannot mark it APPROVED while required title validation is d
 
 HMS reconciliation must retain these obligations until explicitly authorized Assets production corrections resolve them or stronger repository evidence changes the governing Assets DDD.
 
-## 95. Current next task
+## 95. HMSR-082 — custody.CustodyTransferTicket review
+
+**Decision:** REVISE  
+**Review code:** HMSR-082  
+**Dependency level:** 4  
+**Bounded context:** custody  
+**Confirmed upstream subject dependencies:** mandatory `custody.CustodyMeasurementPeriod`, optional `workflow.WorkflowInstance`  
+**Confirmed direct HMS subject dependents:** 0  
+**Transitive HMS subject dependents:** 0
+
+### 95.1 Semantic role
+
+`CustodyTransferTicket` is the Custody-owned official transfer-ticket record. It identifies the ticket, anchors it to the governing Custody measurement period/agreement/transfer point, optionally records batch and quantity-calculation evidence, owns the ticket lifecycle and ticket date, and carries actor/workflow/audit references for issuance and approval.
+
+Custody owns the official accepted transfer record. Workflow owns process state, Identity owns actor identity, and Audit owns audit records. Cross-module references must remain scalar/application-contract references rather than database foreign keys.
+
+### 95.2 Mandatory Custody ownership references
+
+The mandatory fields:
 
 ```text
-HMSR-082 — custody.CustodyTransferTicket
+measurementPeriodId
+agreementId
+transferPointId
+```
+
+are all same-module Custody references.
+
+HRA-111 already protects them with Custody-local foreign keys to:
+
+```text
+CustodyMeasurementPeriod
+CustodyAgreement
+CustodyTransferPoint
+```
+
+The domain constructor also rejects blank IDs. No further basic existence correction is required for these mandatory ownership edges.
+
+### 95.3 Optional batch and quantity-calculation references
+
+`batchId` and `quantityCalculationId` are optional same-module references to Custody-owned evidence.
+
+The base schema stores/indexes them, but repository evidence shows no HRA-111 foreign keys for these optional references and the reviewed creation service performs no existence lookup.
+
+When populated, both references should fail closed to existing Custody-owned records. Same-module foreign keys are architecturally appropriate, or an explicitly justified Custody application check may supplement them.
+
+The current Custody DDD does not state stronger correlation rules tying the selected batch/calculation to the same measurement period/agreement, so HMSR-082 does not invent those rules.
+
+### 95.4 Ticket lifecycle enum
+
+`CustodyTicketStatus` contains:
+
+```text
+DRAFT
+SUBMITTED
+UNDER_REVIEW
+APPROVED
+REJECTED
+CANCELLED
+CLOSED
+```
+
+These values represent the Custody-owned ticket lifecycle and are appropriate as a technical/domain enum.
+
+The current Custody DDD reviewed for this task does not define a complete transition matrix or terminal-state immutability policy for `CustodyTransferTicket`; HMSR-082 therefore preserves the enum without inventing unsupported transition rules.
+
+### 95.5 Approval actor/time coupling
+
+The model carries optional:
+
+```text
+approvedByActorId
+approvedAt
+```
+
+but the live domain constructor does not enforce coupling between them.
+
+The Custody DDD establishes approval as part of the Custody-owned official transfer record, but it does not explicitly state that these two fields must always co-exist for every non-null occurrence or every APPROVED/CLOSED state.
+
+HMSR-082 therefore does not invent a hard aggregate invariant beyond requiring owner-controlled validation when approval metadata is populated. HMS-006 may strengthen this only if live Custody approval workflow evidence explicitly establishes the coupling.
+
+### 95.6 Workflow boundary
+
+`workflowInstanceId` is optional and Workflow-owned.
+
+The current model correctly stores it as a scalar reference and no cross-module database FK is present.
+
+When populated, the authoritative Custody boundary should validate the Workflow instance through a Workflow-owned application contract and ensure it targets the intended Custody ticket/approval context. No cross-module Workflow database FK should be introduced.
+
+### 95.7 Identity actor boundaries
+
+`issuedByActorId` and `approvedByActorId` are Identity-owned actor references.
+
+The create service copies `issuedByActorId` directly from the command; later approval paths may populate `approvedByActorId`. Repository evidence reviewed for this use case does not show owner-controlled Identity validation.
+
+The authoritative Custody boundary should validate populated actor IDs through an Identity-owned contract while preserving scalar references. No cross-module Identity database FK should be introduced.
+
+### 95.8 Audit reference boundary
+
+`auditReferenceId` is an optional reference to Audit-owned evidence.
+
+Custody does not own the audit ledger. The field must therefore remain a scalar/reference boundary and must not receive a cross-module database FK.
+
+When populated by a Custody write flow, validation/resolution should use an Audit-owned application contract or an evidence-backed audit publication mechanism rather than importing Audit persistence models.
+
+### 95.9 Ticket number and date semantics
+
+The domain already enforces non-blank `ticketNumber` and non-null `ticketDate`.
+
+Current Custody DDD evidence does not explicitly state global uniqueness for `ticketNumber`, nor does it define additional temporal ordering constraints between `ticketDate`, `approvedAt`, `createdAt`, and `updatedAt`.
+
+HMSR-082 therefore does not invent uniqueness or time-order rules beyond the current explicit required-field contract.
+
+### 95.10 Required revisions
+
+Three evidence-backed obligations remain:
+
+1. **Protect populated same-module evidence references.** `batchId` and `quantityCalculationId` must fail closed to existing Custody-owned records.
+
+2. **Validate populated Identity/Workflow references through owner-controlled contracts.** This covers issuer/approver actor IDs and `workflowInstanceId`; do not introduce cross-module database FKs.
+
+3. **Preserve Audit ownership for `auditReferenceId` and validate/populate it through an Audit-owned application/publication boundary** rather than direct persistence coupling.
+
+HMSR-082 does not modify production Java, JPA, Flyway, API/application contracts, tests, Custody/Identity/Workflow/Audit data, or provisioned data.
+
+### 95.11 Review conclusion
+
+**REVISE.** `CustodyTransferTicket` is a coherent Custody-owned official transfer record with correct mandatory Custody ownership, appropriate lifecycle enum semantics, and clean scalar boundaries toward Workflow, Identity and Audit.
+
+The target baseline cannot mark it APPROVED while populated optional same-module batch/calculation references are not fail-closed and cross-context actor/workflow/audit references are accepted without owner-controlled validation.
+
+HMS reconciliation must retain these obligations until explicitly authorized Custody production corrections resolve them or stronger repository evidence changes the governing Custody DDD.
+
+## 96. Current next task
+
+```text
+HMSR-083 — hse.PermitToWork
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review custody CustodyTransferTicket
+docs(model-review): review hse PermitToWork
 ```
 
-Start HMSR-082 only after HMSR-081 is committed and reported. Do not start HMSR-083 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-083 only after HMSR-082 is committed and reported. Do not start HMSR-084 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

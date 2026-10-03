@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -227,7 +227,7 @@ Ordering rules applied:
 | HMSR-032 | 0 | risk | RiskMatrixCell | — | — | 0 | 0 | 2 | REVISE | Completed | `docs(model-review): review risk RiskMatrixCell` |
 | HMSR-033 | 0 | telemetry | TelemetrySource | — | — | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review telemetry TelemetrySource` |
 | HMSR-034 | 0 | topology | TopologyConnection | — | — | 0 | 0 | 3 | REVISE | Completed | `docs(model-review): review topology TopologyConnection` |
-| HMSR-035 | 1 | organization | OrganizationUnit | SCC-01 | organization.OrganizationUnit, organization.OrganizationUnitType | 22 | 51 | 0 | — | Planned | `docs(model-review): review organization OrganizationUnit` |
+| HMSR-035 | 1 | organization | OrganizationUnit | SCC-01 | organization.OrganizationUnit, organization.OrganizationUnitType | 22 | 51 | 0 | REVISE | Completed | `docs(model-review): review organization OrganizationUnit` |
 | HMSR-036 | 1 | organization | AdministrativeDistrict | — | organization.AdministrativeState | 1 | 16 | 0 | — | Planned | `docs(model-review): review organization AdministrativeDistrict` |
 | HMSR-037 | 1 | telemetry | TelemetryReading | — | telemetry.TelemetryPoint | 2 | 6 | 2 | — | Planned | `docs(model-review): review telemetry TelemetryReading` |
 | HMSR-038 | 1 | simulation | SimulationScenario | — | simulation.SimulationModel | 1 | 4 | 3 | — | Planned | `docs(model-review): review simulation SimulationScenario` |
@@ -2342,8 +2342,8 @@ Confirmed subject-model graph edges at this stage: **165**. These are semantic c
 | Field | Declared type | Classification | Resolved target | Graph edge | Notes |
 |---|---|---|---|:---:|---|
 | id | String | Self identifier | — | No | Primary identity of the current model. |
-| unitTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
-| parentUnitId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| unitTypeId | String | Domain reference | organization.OrganizationUnitType | Yes | HMSR-035 aligns HMS-003 with stronger HMSR-001 + ORG-046 evidence: required same-module subject reference protected by `fk_org_unit_type`. |
+| parentUnitId | String | Optional self domain reference | organization.OrganizationUnit | Yes | HMSR-035 aligns HMS-003 with the validated SCC/self-reference graph: optional parent hierarchy reference protected by `fk_org_unit_parent`; whole-hierarchy cycle prevention remains a semantic obligation. |
 
 #### organization.OrganizationUnitType
 
@@ -8015,16 +8015,177 @@ The target baseline cannot mark it APPROVED while the live fixed `ConnectionType
 
 HMS reconciliation must retain these obligations until an explicitly authorized Topology correction task resolves them or the governing Topology architecture is explicitly revised with stronger evidence.
 
-## 48. Current next task
+## 48. HMSR-035 — organization.OrganizationUnit review
+
+**Decision:** REVISE  
+**Review code:** HMSR-035  
+**Dependency level:** 1  
+**Bounded context:** organization  
+**Strongly connected component:** SCC-01 — hierarchy self-reference through `parentUnitId`  
+**Confirmed upstream subject dependencies:** `organization.OrganizationUnitType` plus the OrganizationUnit self-reference used for hierarchy ordering  
+**Confirmed direct HMS subject dependents:** 22  
+**Transitive HMS subject dependents:** 51  
+**Unresolved/non-subject references:** 0
+
+### 48.1 Semantic role and ordering rationale
+
+`OrganizationUnit` is the Organization-owned internal structure node for company/division/region/area/station-as-organization-unit/team/department hierarchy. It owns organizational identity and hierarchy only; operational responsibility is modeled separately through `OperationalScope` / `ResponsibilityAssignment`, and physical stations/facilities remain Topology-owned.
+
+Its high downstream fan-out makes this model foundational for workflow, assets, integration, reporting, risk, integrity, leak-detection and other bounded contexts that carry stable OrganizationUnit references.
+
+It appears at Level 1 because `OrganizationUnitType` was reviewed and approved first, while `parentUnitId` creates the validated OrganizationUnit hierarchy self-reference collapsed as SCC-01 for ordering.
+
+### 48.2 Field semantics
+
+| Field | Type | Mandatory / optional | Reviewed meaning |
+|---|---|---|---|
+| `id` | `String` | Mandatory | Stable OrganizationUnit identity and persistence primary key. |
+| `code` | `String` | Mandatory | Stable language-neutral Organization business code normalized through `OrganizationCode`. |
+| `nameAr` | `String` | Optional localized text | Arabic unit display name. |
+| `nameFr` | `String` | Optional localized text | French unit display name. |
+| `nameEn` | `String` | Optional localized text | English unit display name. |
+| `unitTypeId` | `String` | Mandatory | Same-module subject reference to `OrganizationUnitType`. |
+| `parentUnitId` | `String` | Optional | Same-model hierarchy reference to the parent OrganizationUnit. |
+| `status` | `OrganizationUnitStatus` | Mandatory | Lifecycle state: `ACTIVE`, `INACTIVE`, `MERGED`, or `CLOSED`. |
+| `validFrom` | `Instant` | Mandatory in the canonical domain | Effective-period start. |
+| `validTo` | `Instant` | Optional | Exclusive effective-period end; when present it must be strictly after `validFrom`. |
+| `createdAt` | `Instant` | Persistence-required audit timestamp | Creation timestamp. |
+| `updatedAt` | `Instant` | Persistence-required audit timestamp | Last-update timestamp. |
+
+The constructor already requires nonblank ID/code/unit type, non-null status and `validFrom`, normalizes multilingual values and IDs, rejects direct self-parenting, and enforces the half-open effective interval with `validTo > validFrom` when an end is present.
+
+### 48.3 Unit-type dependency and the HMS-003 correction
+
+HMS-003 previously classified `unitTypeId` as a generic catalog/value reference with no graph edge. Stronger evidence now makes that classification obsolete:
+
+- HMSR-001 approved `OrganizationUnitType` as the Organization-owned subject model that classifies OrganizationUnit;
+- the validated HMS graph already records `OrganizationUnit.unitTypeId -> OrganizationUnitType` as a subject dependency;
+- ORG-046 installs `fk_org_unit_type`, linking `hidra_org_unit.unit_type_id -> hidra_org_unit_type(id)` with `ON DELETE RESTRICT`.
+
+HMSR-035 therefore records `unitTypeId` as a required same-module domain reference and subject-model graph edge.
+
+The database FK correctly protects existence. It does not, however, prove that the selected unit type is currently selectable.
+
+### 48.4 Inactive unit-type selection gap
+
+HMSR-001 already approved the meaning of `OrganizationUnitType.active`: deactivation preserves historical identity while indicating whether the type is currently selectable/usable.
+
+`OrganizationUnitApplicationService` currently depends only on `OrganizationUnitRepositoryPort`; it does not resolve `unitTypeId` through `OrganizationUnitTypeRepositoryPort` before creating a new unit. The FK therefore accepts an existing but inactive type.
+
+This permits a new authoritative OrganizationUnit to be created using a type that the approved catalog semantics mark as unavailable for new selection.
+
+HMSR-035 does not require historical units to stop referencing a deactivated type. The correction applies to authoritative new/changed unit classification, while historical references remain valid.
+
+### 48.5 Parent hierarchy reference and cycle integrity
+
+HMS-004 validated the OrganizationUnit hierarchy self-reference and collapsed it into SCC-01. ORG-046 installs:
 
 ```text
-HMSR-035 — organization.OrganizationUnit
+fk_org_unit_parent
+  parent_unit_id -> hidra_org_unit(id)
+  ON DELETE RESTRICT
+```
+
+so a non-null parent must exist.
+
+The canonical record also rejects the simplest cycle:
+
+```text
+parentUnitId == id
+```
+
+but the Organization roadmap explicitly requires:
+
+```text
+Organization hierarchy cannot contain cycles.
+```
+
+and separately states that hierarchy-cycle detection across multiple records belongs to the application/database boundary rather than the domain constructor.
+
+No current OrganizationUnit application policy/service traverses parent ancestry, and the self-FK cannot reject a longer cycle such as A -> B -> C -> A. A provisioning/reparenting path can therefore create a cyclic hierarchy while satisfying row-existence constraints.
+
+The correction must fail closed for hierarchy mutations/provisioning without moving repository traversal into the domain record.
+
+### 48.6 Effective-period persistence mismatch
+
+The current Organization roadmap's required domain baseline states that effective-dated models require `validFrom`, and the OrganizationUnit constructor enforces that rule.
+
+JPA nevertheless maps:
+
+```text
+@Column(name = "valid_from", nullable = true)
+```
+
+and the base schema defines nullable `valid_from timestamp with time zone`. No later Organization migration makes the column non-null.
+
+This allows persisted rows that the canonical domain cannot reconstruct through the persistence mapper. The create request/command documentation also describes `validFrom` as optional even though canonical domain construction rejects its absence.
+
+The final OrganizationUnit contract must therefore converge on the already-established mandatory effective-start semantics across domain, application/API requiredness, JPA and the final schema.
+
+### 48.7 Multilingual semantics
+
+`nameAr/nameFr/nameEn` follow the current Organization same-entity multilingual policy. The three fields are nullable in domain and JPA, and current Organization migration policy does not authorize inventing missing translations.
+
+No evidence requires all three names, or French specifically, to be constructor-level mandatory for OrganizationUnit. HMSR-035 therefore records no multilingual correction.
+
+### 48.8 Operational-scope ownership
+
+Current Organization architecture deliberately separates organizational identity from operational responsibility. Historical `operational_scope_*` columns on `hidra_org_unit` were retired by `V20260929_006__retire_legacy_operational_scope_columns.sql`, and the canonical Java/JPA model no longer carries them.
+
+This is the correct target shape. A `STATION_UNIT` represents the people/responsibility structure associated with an operational station; it must not be treated as the physical Topology Facility itself. Operational authority belongs to the governed scope/responsibility models rather than OrganizationUnit identity.
+
+### 48.9 Code and lifecycle rules deliberately not invented
+
+`OrganizationCode` already supplies the common Organization normalization rule for unit code. The final schema has an ordinary code index, not a unique constraint, and current authoritative evidence reviewed here does not establish a specific OrganizationUnit code uniqueness scope. HMSR-035 therefore does not invent one.
+
+`OrganizationUnitStatus` is explicitly retained as a lifecycle enum by the controlled-vocabulary audit. Current evidence does not define a complete transition matrix among ACTIVE, INACTIVE, MERGED and CLOSED, nor does it prove that newly created units must start in a state other than the caller/default ACTIVE behavior. No transition rule is invented.
+
+The separate roadmap rule that disabled units cannot receive new employee assignments belongs to EmployeeAssignment/application policy and does not require removing INACTIVE/MERGED/CLOSED units from historical hierarchy references.
+
+### 48.10 Persistence/application consistency otherwise
+
+The live domain and JPA representations agree on the same 12 canonical components. The final schema has removed the obsolete operational-scope compatibility columns. `unitTypeId` and `parentUnitId` receive same-module FK protection, code/status/audit fields are persisted directly, and multilingual names remain nullable.
+
+`OrganizationUnitApplicationService` generates an Organization-owned ID, uses canonical `OrganizationCode`, creates no legacy operational-scope state, and saves transactionally. The remaining gaps are the cross-row/catalog eligibility and persistence-requiredness issues documented above.
+
+### 48.11 Required revisions
+
+Three evidence-backed correction obligations remain:
+
+1. **Prevent multi-record OrganizationUnit hierarchy cycles.** Authoritative hierarchy mutations and provisioning must reject any parent assignment that would create a cycle, not only direct self-parenting. Repository traversal/application policy or an equivalent fail-closed database/provisioning mechanism is required.
+
+2. **Reject inactive OrganizationUnitType selection for new/changed units.** `unitTypeId` existence is already protected by FK, but authoritative writes must also enforce the approved `OrganizationUnitType.active` selectable/usable semantics while preserving historical references to deactivated types.
+
+3. **Align mandatory `validFrom` semantics across persistence and boundaries.** JPA/final schema and create/update contracts must not admit an OrganizationUnit without the effective start required by the canonical domain; use an additive migration and compatible boundary validation in a separately authorized Organization correction task.
+
+HMSR-035 does not modify production Java, JPA, Flyway, API/application contracts, tests, organization hierarchy data, or provisioned data.
+
+### 48.12 SONATRACH/TRC operational interpretation
+
+For SONATRACH/TRC, OrganizationUnit represents the internal responsibility/people hierarchy: company, divisions, regions, areas, station organizational units, departments and teams.
+
+Acyclic hierarchy is critical because workflow routing, reporting, responsibility assignment, risk ownership and operational escalation depend on stable organizational ancestry. Type availability must govern new master-data selection without erasing historical classifications, and effective dates must remain reconstructable.
+
+A station OrganizationUnit remains distinct from the physical station/facility in Topology.
+
+### 48.13 Review conclusion
+
+**REVISE.** `OrganizationUnit` has a coherent 12-field Organization-owned hierarchy role, correct same-entity multilingual shape, correct separation from operational-scope responsibility, normalized stable code, a database-protected type reference, a database-protected parent reference, direct self-parent protection, and an already-enforced half-open domain interval.
+
+The target baseline cannot mark it APPROVED while longer hierarchy cycles remain possible, inactive unit types can be selected for new units despite the approved catalog semantics, and persistence can store `validFrom = NULL` even though the canonical domain requires an effective start.
+
+HMS reconciliation must retain these obligations until an explicitly authorized Organization correction task resolves them or stronger repository evidence explicitly changes the governing Organization semantics.
+
+## 49. Current next task
+
+```text
+HMSR-036 — organization.AdministrativeDistrict
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review organization OrganizationUnit
+docs(model-review): review organization AdministrativeDistrict
 ```
 
-Start HMSR-035 only after HMSR-034 is committed and reported. Do not start HMSR-036 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-036 only after HMSR-035 is committed and reported. Do not start HMSR-037 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

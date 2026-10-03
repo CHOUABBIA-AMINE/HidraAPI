@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -236,7 +236,7 @@ Ordering rules applied:
 | HMSR-041 | 1 | topology | Facility | — | party.Party | 1 | 1 | 0 | REVISE | Completed | `docs(model-review): review topology Facility` |
 | HMSR-042 | 1 | analytics | AnalyticsDatasetVersion | — | analytics.AnalyticsDataset | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review analytics AnalyticsDatasetVersion` |
 | HMSR-043 | 1 | analytics | MetricValue | — | analytics.MetricEvaluationRun | 0 | 0 | 3 | REVISE | Completed | `docs(model-review): review analytics MetricValue` |
-| HMSR-044 | 1 | configuration | ConfigurationValue | — | configuration.ConfigurationDefinition | 0 | 0 | 1 | — | Planned | `docs(model-review): review configuration ConfigurationValue` |
+| HMSR-044 | 1 | configuration | ConfigurationValue | — | configuration.ConfigurationDefinition | 0 | 0 | 1 | REVISE | Completed | `docs(model-review): review configuration ConfigurationValue` |
 | HMSR-045 | 1 | identity | ExternalRoleMapping | — | identity.IdentityProvider, identity.Role | 0 | 0 | 0 | — | Planned | `docs(model-review): review identity ExternalRoleMapping` |
 | HMSR-046 | 1 | identity | GroupRoleGrant | — | identity.Role | 0 | 0 | 2 | — | Planned | `docs(model-review): review identity GroupRoleGrant` |
 | HMSR-047 | 1 | identity | RolePermissionGrant | — | identity.Permission, identity.Role | 0 | 0 | 0 | — | Planned | `docs(model-review): review identity RolePermissionGrant` |
@@ -1766,9 +1766,9 @@ Confirmed subject-model graph edges at this stage: **165**. These are semantic c
 | Field | Declared type | Classification | Resolved target | Graph edge | Notes |
 |---|---|---|---|:---:|---|
 | id | String | Self identifier | — | No | Primary identity of the current model. |
-| definitionId | String | Domain reference | configuration.ConfigurationDefinition | Yes | Unambiguous same-module subject-model reference. |
-| definitionVersionId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
-| createdByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+| definitionId | String | Domain reference | configuration.ConfigurationDefinition | Yes | Mandatory same-module HMS subject reference; HRA-111 protects `definition_id -> hidra_configuration_definition.id`. |
+| definitionVersionId | String | Optional domain reference | configuration.ConfigurationDefinitionVersion (read/persistence model) | No | HMSR-044 stronger Configuration DDD/persistence evidence resolves the optional version reference outside the 123 HMS subject set; populated-reference integrity is not currently protected. |
+| createdByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Optional actor reference; no Actor subject model in the HMS set and no cross-module DB FK is appropriate. |
 
 #### configuration.FeatureFlag
 
@@ -9628,17 +9628,201 @@ The target baseline cannot mark it APPROVED while the canonical domain permits a
 
 HMS reconciliation must retain this scope-type requiredness obligation until an explicitly authorized Analytics production correction resolves it or stronger repository evidence explicitly revises the final Analytics scope contract.
 
-## 57. Current next task
+## 57. HMSR-044 — configuration.ConfigurationValue review
+
+**Decision:** REVISE  
+**Review code:** HMSR-044  
+**Dependency level:** 1  
+**Bounded context:** configuration  
+**Confirmed upstream subject dependencies:** `configuration.ConfigurationDefinition` through mandatory `definitionId`  
+**Confirmed direct HMS subject dependents:** 0  
+**Transitive HMS subject dependents:** 0  
+**Unresolved/non-subject references:** 1 in the register is now resolved as optional `ConfigurationDefinitionVersion` outside the HMS subject set
+
+### 57.1 Semantic role and ordering rationale
+
+`ConfigurationValue` is the Configuration-owned effective runtime value for one governed ConfigurationDefinition, optionally tied to a specific definition version and environment/effective interval.
+
+Configuration owns runtime settings and governance metadata; it must not absorb bounded-context business taxonomies. The model therefore stores configuration payload/reference forms and activation state, while module-owned taxonomies remain in their source contexts.
+
+It is Level 1 because `definitionId` references the already-reviewed HMS subject `ConfigurationDefinition`.
+
+### 57.2 Field semantics
+
+| Field | Type | Reviewed meaning |
+|---|---|---|
+| `id` | `String` | Mandatory stable configuration-value identity. |
+| `definitionId` | `String` | Mandatory same-module reference to ConfigurationDefinition. |
+| `definitionVersionId` | `String` | Optional same-module reference to ConfigurationDefinitionVersion. |
+| `environment` | `String` | Mandatory environment discriminator in final persistence. |
+| `rawValue` | `String` | Optional scalar/text configuration payload. |
+| `jsonValue` | `String` | Optional JSON configuration payload. |
+| `secretReference` | `String` | Optional reference to externally managed secret material; not the secret itself. |
+| `status` | `ConfigurationValueStatus` | Mandatory lifecycle/status state. |
+| `effectiveFrom` | `Instant` | Optional effective start. |
+| `effectiveTo` | `Instant` | Optional effective end. |
+| `createdByActorId` | `String` | Optional actor reference for creation provenance. |
+| `createdAt` | `Instant` | Persistence-required creation timestamp. |
+| `updatedAt` | `Instant` | Persistence-required update timestamp. |
+
+The canonical constructor rejects blank ID and definition ID, requires non-null status, and enforces `effectiveFrom <= effectiveTo` when both bounds exist.
+
+### 57.3 ConfigurationDefinition dependency
+
+The final schema requires:
 
 ```text
-HMSR-044 — configuration.ConfigurationValue
+definition_id varchar(80) NOT NULL
+```
+
+and HRA-111 installs/validates:
+
+```text
+hidra_configuration_value.definition_id
+    -> hidra_configuration_definition.id
+```
+
+Therefore the mandatory parent-definition reference is already fail-closed at persistence.
+
+This dependency remains the single HMS graph edge for ConfigurationValue.
+
+### 57.4 Optional definition-version semantics
+
+The Configuration DDD owns `ConfigurationDefinitionVersion` as the versioned setting definition.
+
+`ConfigurationValue.definitionVersionId` is nullable in both domain and persistence, so HMSR-044 does not make version binding mandatory.
+
+However, when populated, current repository evidence shows no same-module nullable FK and no application-service lookup validating that the referenced ConfigurationDefinitionVersion exists.
+
+`ConfigurationApplicationService.setConfigurationValue()` passes `command.definitionVersionId()` directly into the domain object and persists it.
+
+Therefore a supplied definition-version ID can dangle.
+
+HMSR-044 does not invent a parent-consistency rule between `definitionId` and `definitionVersionId` because the current DDD does not explicitly state how an unversioned definition value and a version-bound value must be reconciled.
+
+### 57.5 Environment requiredness mismatch
+
+The final JPA mapping and Flyway schema require:
+
+```text
+environment NOT NULL
+```
+
+The application command passes the environment directly into ConfigurationValue.
+
+The canonical constructor does not require it to be nonblank and subsequently normalizes null/blank environment to `null`.
+
+Therefore the domain can represent a state that the final persistence contract rejects and that lacks the environment discriminator used to identify where the configuration value applies.
+
+This is a direct domain/persistence semantic mismatch.
+
+Current evidence does not define a fixed environment enumeration such as DEV/TEST/PROD, so HMSR-044 does not invent one.
+
+### 57.6 Value representation and secret semantics
+
+The model provides three optional payload/reference forms:
+
+```text
+rawValue
+jsonValue
+secretReference
+```
+
+The current Configuration DDD does not state that exactly one must be populated, that at least one must be populated, or that specific ConfigurationDefinition value types mandate one exact storage field at this model boundary.
+
+The application service does call `ConfigurationValueGuard.ensureNoSecretMaterial(command.rawValue())`, which supports the architectural distinction between ordinary raw configuration data and externally managed secret material.
+
+HMSR-044 therefore does not invent XOR rules or require secret values to be persisted directly. `secretReference` remains a technical/governed external reference rather than secret content.
+
+### 57.7 Effective interval and lifecycle semantics
+
+The repository invariant classification and domain constructor agree on:
+
+```text
+effectiveFrom <= effectiveTo
+```
+
+when both bounds are present.
+
+The application creates new values with `ConfigurationValueStatus.ACTIVE`.
+
+Current Configuration DDD evidence reviewed here does not define:
+
+- mandatory `effectiveFrom`;
+- automatic expiry/status transitions;
+- overlap rules among values for the same definition/environment;
+- a complete status-transition matrix.
+
+None are invented by HMSR-044.
+
+### 57.8 Actor and audit semantics
+
+`createdByActorId` is an optional Identity actor reference.
+
+Configuration does not own Identity users/actors, so no cross-module database FK is appropriate.
+
+Current evidence does not define actor-status eligibility or a mandatory creator for every configuration value. HMSR-044 does not manufacture those rules.
+
+`createdAt` and `updatedAt` remain persistence/application audit metadata; the current application service sets both to the current instant on creation.
+
+### 57.9 Domain/JPA/Flyway/application alignment
+
+Domain and JPA agree on all 13 components.
+
+Persistence requires:
+
+```text
+id
+definition_id
+environment
+status
+created_at
+updated_at
+```
+
+The domain currently enforces ID, definition ID and status, but not environment.
+
+The mandatory definition reference has validated FK protection. The optional definition-version reference does not currently have fail-closed existence protection when populated.
+
+The active write path performs secret-material guarding for `rawValue` but does not validate environment requiredness independently and does not resolve definitionVersionId before save.
+
+### 57.10 Required revisions
+
+Two evidence-backed production correction obligations remain:
+
+1. **Require nonblank ConfigurationValue environment at the authoritative domain/application boundary.** The canonical model must not normalize environment to null while final persistence requires it.
+
+2. **Protect populated ConfigurationDefinitionVersion references.** When `definitionVersionId` is supplied, it must resolve to the Configuration-owned version target through an additive nullable same-module FK, application validation, or equivalent fail-closed boundary.
+
+HMSR-044 does not modify production Java, JPA, Flyway, application/API contracts, tests, configuration values, definitions, secret stores, or provisioned data.
+
+### 57.11 SONATRACH/TRC operational interpretation
+
+For SONATRACH/TRC, ConfigurationValue can govern runtime behavior across industrial services without taking ownership of operational or business-taxonomy data.
+
+An environment-less value is operationally ambiguous because the same configuration definition may need different governed settings across environments. A dangling definition-version reference weakens traceability of which governed definition semantics were used when the value became effective.
+
+Secret material must remain externally managed and referenced rather than casually copied into ordinary configuration payload fields.
+
+### 57.12 Review conclusion
+
+**REVISE.** `ConfigurationValue` has a coherent 13-field configuration-value model, correct Level-1 dependency on ConfigurationDefinition, validated parent-definition FK protection, aligned effective-period ordering, explicit secret-material guarding, and proper separation from Identity and module-owned business taxonomies.
+
+The target baseline cannot mark it APPROVED while the canonical domain permits a null/blank environment that final persistence rejects and populated optional definition-version references can dangle.
+
+HMS reconciliation must retain these two obligations until an explicitly authorized Configuration production correction resolves them or stronger repository evidence explicitly revises the governing Configuration semantics.
+
+## 58. Current next task
+
+```text
+HMSR-045 — identity.ExternalRoleMapping
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review configuration ConfigurationValue
+docs(model-review): review identity ExternalRoleMapping
 ```
 
-Start HMSR-044 only after HMSR-043 is committed and reported. Do not start HMSR-045 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-045 only after HMSR-044 is committed and reported. Do not start HMSR-046 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
 

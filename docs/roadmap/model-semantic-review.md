@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 reviewed as REVISE, HMSR-080 reviewed as REVISE, HMSR-081 reviewed as REVISE, HMSR-082 reviewed as REVISE, HMSR-083 approved, HMSR-084 reviewed as REVISE, HMSR-085 reviewed as REVISE, HMSR-086 approved, HMSR-087 reviewed as REVISE, HMSR-088 reviewed as REVISE, HMSR-089 reviewed as REVISE, HMSR-090 reviewed as REVISE, HMSR-091 reviewed as REVISE, HMSR-092 reviewed as REVISE, HMSR-093 reviewed as REVISE, HMSR-094 reviewed as REVISE, HMSR-095 reviewed as REVISE, HMSR-096 reviewed as REVISE, HMSR-097 reviewed as REVISE, HMSR-098 reviewed as REVISE, HMSR-099 approved, HMSR-100 reviewed as REVISE, HMSR-101 reviewed as REVISE, HMSR-102 approved, HMSR-103 approved, HMSR-104 reviewed as REVISE, HMSR-105 reviewed as REVISE, HMSR-106 reviewed as REVISE, HMSR-107 reviewed as REVISE, HMSR-108 reviewed as REVISE, HMSR-109 reviewed as REVISE, HMSR-110 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 reviewed as REVISE, HMSR-080 reviewed as REVISE, HMSR-081 reviewed as REVISE, HMSR-082 reviewed as REVISE, HMSR-083 approved, HMSR-084 reviewed as REVISE, HMSR-085 reviewed as REVISE, HMSR-086 approved, HMSR-087 reviewed as REVISE, HMSR-088 reviewed as REVISE, HMSR-089 reviewed as REVISE, HMSR-090 reviewed as REVISE, HMSR-091 reviewed as REVISE, HMSR-092 reviewed as REVISE, HMSR-093 reviewed as REVISE, HMSR-094 reviewed as REVISE, HMSR-095 reviewed as REVISE, HMSR-096 reviewed as REVISE, HMSR-097 reviewed as REVISE, HMSR-098 reviewed as REVISE, HMSR-099 approved, HMSR-100 reviewed as REVISE, HMSR-101 reviewed as REVISE, HMSR-102 approved, HMSR-103 approved, HMSR-104 reviewed as REVISE, HMSR-105 reviewed as REVISE, HMSR-106 reviewed as REVISE, HMSR-107 reviewed as REVISE, HMSR-108 reviewed as REVISE, HMSR-109 reviewed as REVISE, HMSR-110 reviewed as REVISE, HMSR-111 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -302,7 +302,7 @@ Ordering rules applied:
 | HMSR-107 | 5 | incident | IncidentClosure | — | incident.Incident, workflow.WorkflowInstance | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review incident IncidentClosure` |
 | HMSR-108 | 5 | incident | IncidentRelatedIncident | — | incident.Incident | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review incident IncidentRelatedIncident` |
 | HMSR-109 | 5 | incident | IncidentResponseAction | — | incident.Incident, organization.OrganizationUnit | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review incident IncidentResponseAction` |
-| HMSR-110 | 5 | reporting | ReportOutputArtifact | — | documents.Document, documents.DocumentStorageObject, reporting.ReportRun | 0 | 0 | 2 | — | Planned | `docs(model-review): review reporting ReportOutputArtifact` |
+| HMSR-110 | 5 | reporting | ReportOutputArtifact | — | documents.Document, documents.DocumentStorageObject, reporting.ReportRun | 0 | 0 | 2 | REVISE | Completed | `docs(model-review): review reporting ReportOutputArtifact` |
 | HMSR-111 | 6 | planning | PlanTarget | — | planning.Nomination, planning.PlanRevision, telemetry.TelemetryPoint | 2 | 5 | 2 | — | Planned | `docs(model-review): review planning PlanTarget` |
 | HMSR-112 | 6 | audit | AuditEvent | — | organization.OrganizationUnit, workflow.WorkflowAction, workflow.WorkflowInstance, workflow.WorkflowTask | 2 | 2 | 3 | — | Planned | `docs(model-review): review audit AuditEvent` |
 | HMSR-113 | 6 | hse | HseClosure | — | hse.HseCase, workflow.WorkflowInstance | 0 | 0 | 0 | — | Planned | `docs(model-review): review hse HseClosure` |
@@ -18892,16 +18892,121 @@ The target baseline cannot mark it APPROVED while the authoritative record-actio
 
 HMS reconciliation must retain these obligations until explicitly authorized Incident production work resolves them or stronger repository evidence changes the governing Incident contract.
 
-## 123. Current next task
+## 123. HMSR-110 — reporting.ReportOutputArtifact review
+
+**Decision:** REVISE  
+**Review code:** HMSR-110  
+**Dependency level:** 5  
+**Bounded context:** reporting  
+**Confirmed upstream subject dependencies:** mandatory `reporting.ReportRun`; optional Documents-owned `documents.Document` and `documents.DocumentStorageObject` references  
+**Confirmed direct HMS subject dependents:** 0  
+**Transitive HMS subject dependents:** 0  
+**Unresolved/non-subject reference count:** 2
+
+### 123.1 Semantic role
+
+`ReportOutputArtifact` is the Reporting-owned generated file/export record for a report execution. Reporting owns generation metadata and traceability; Documents owns reusable document metadata and storage-object lifecycle.
+
+The reviewed target contains 13 fields: report-run identity, artifact/format classification, file metadata, optional Documents references, checksum/size, generation/expiry time, and creation time.
+
+### 123.2 Field and enum alignment
+
+The live domain record, JPA entity, persistence mapper, command, DTO path, and Flyway table agree on the 13-field shape.
+
+`ReportFormat` contains `PDF`, `XLSX`, `CSV`, `JSON`, `HTML`, `DOCX`, and `ZIP`, exactly matching the Reporting DDD format vocabulary.
+
+`ReportArtifactType` remains a Reporting lifecycle/output discriminator (`PRIMARY_REPORT`, `ATTACHMENT`, `DATA_EXPORT`, `ARCHIVE`, `PREVIEW`). Current repository evidence does not require replacing it with a catalog.
+
+### 123.3 Same-module ReportRun reference defect
+
+`reportRunId` semantically references `reporting.ReportRun` and the DDD defines every artifact as the output of a report run.
+
+However, the live HRA-111 migration currently installs:
 
 ```text
-HMSR-110 — reporting.ReportOutputArtifact
+hidra_reporting_output_artifact.report_run_id
+  -> hidra_reporting_catalog_entry.id
+```
+
+instead of:
+
+```text
+hidra_reporting_output_artifact.report_run_id
+  -> hidra_reporting_run.id
+```
+
+This is a material reference-integrity defect: a valid ReportRun ID can fail while an unrelated Reporting catalog-entry ID can satisfy the FK.
+
+Future production reconciliation must replace/correct this constraint with the proper same-module FK to `hidra_reporting_run(id)`.
+
+### 123.4 Application fail-closed ReportRun validation
+
+The authoritative `generateReportArtifact(...)` path constructs and saves the artifact directly. It does not load the referenced ReportRun through `ReportRunRepositoryPort` before persistence.
+
+Given `reportRunId` is a mandatory same-module business reference, future production reconciliation must fail closed on an unknown ReportRun at the application boundary in addition to correcting the database FK.
+
+The current DDD does not state that artifacts may only be registered after the run reaches `COMPLETED`; it instead says completed runs should have at least one artifact unless configured as data-only. HMSR-110 therefore does not invent a completed-only artifact creation rule.
+
+### 123.5 Storage/document reference invariant
+
+The Reporting DDD explicitly states:
+
+```text
+artifact must reference storage or document metadata
+```
+
+The live domain model exposes `reproducibleArtifact()`, which returns true only when a checksum exists and at least one of `storageObjectReferenceId` or `documentReferenceId` is present.
+
+However, neither the record constructor nor `ReportingApplicationService.generateReportArtifact(...)` enforces that predicate. Both Documents references can therefore be null and the artifact can still be persisted.
+
+Future production reconciliation must require at least one normalized Documents reference before persistence.
+
+### 123.6 Documents bounded-context boundary
+
+`storageObjectReferenceId` and `documentReferenceId` are optional cross-module references owned by Documents. They must not become Reporting-to-Documents database foreign keys.
+
+When a supplied reference must be proven live/usable, Reporting should validate it through Documents-owned exported lookup/application contracts. Reporting must not reach directly into Documents tables or repositories.
+
+The two references are semantically distinct: `storageObjectReferenceId` targets Documents storage-object metadata, while `documentReferenceId` targets reusable Document metadata.
+
+### 123.7 Checksum semantics
+
+The DDD requires checksum for formal reports. The live domain model is stricter and requires a nonblank checksum for every `ReportOutputArtifact`.
+
+Current repository evidence does not establish that this stronger rule is invalid, and every persisted artifact column is also non-null. HMSR-110 therefore records no checksum relaxation obligation.
+
+### 123.8 File metadata and audit timestamps
+
+`fileName` and `mimeType` are database-required, while `generatedAt` is explicitly fail-fast validated by the domain model and the application path supplies both `generatedAt` and `createdAt` at generation time.
+
+Under the repository invariant-classification rules, HMSR-110 does not invent additional domain validation merely from database `NOT NULL` declarations where the Reporting DDD does not state a stronger invariant.
+
+### 123.9 Required revisions
+
+Three evidence-backed production obligations remain:
+
+1. **Correct HRA-111 so `report_run_id` references `hidra_reporting_run(id)`, not `hidra_reporting_catalog_entry(id)`.**
+2. **Make artifact generation fail closed when the referenced ReportRun does not exist.**
+3. **Enforce the DDD invariant that every artifact references at least one Documents storage object or Document metadata record; validate supplied cross-module references through Documents-owned contracts without adding cross-module DB FKs.**
+
+HMSR-110 does not modify production Java, JPA, Flyway, API/application contracts, tests, Reporting data, Documents data, or provisioned data.
+
+### 123.10 Review conclusion
+
+**REVISE.** The ownership, 13-field model shape, format vocabulary, checksum behavior, and Documents boundary are broadly aligned, but the live ReportRun FK is materially incorrect and the mandatory storage/document-reference invariant is not enforced.
+
+HMS reconciliation must retain these obligations until explicitly authorized Reporting production work resolves them or stronger repository evidence changes the governing contract.
+
+## 124. Current next task
+
+```text
+HMSR-111 — planning.PlanTarget
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review reporting ReportOutputArtifact
+docs(model-review): review planning PlanTarget
 ```
 
-Start HMSR-110 only after HMSR-109 is committed and reported. Do not start HMSR-111 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-111 only after HMSR-110 is committed and reported. Do not start HMSR-112 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

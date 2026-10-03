@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 reviewed as REVISE, HMSR-080 reviewed as REVISE, HMSR-081 reviewed as REVISE, HMSR-082 reviewed as REVISE, HMSR-083 approved, HMSR-084 reviewed as REVISE, HMSR-085 reviewed as REVISE, HMSR-086 approved, HMSR-087 reviewed as REVISE, HMSR-088 reviewed as REVISE, HMSR-089 reviewed as REVISE, HMSR-090 reviewed as REVISE, HMSR-091 reviewed as REVISE, HMSR-092 reviewed as REVISE, HMSR-093 reviewed as REVISE, HMSR-094 reviewed as REVISE, HMSR-095 reviewed as REVISE, HMSR-096 reviewed as REVISE, HMSR-097 reviewed as REVISE, HMSR-098 reviewed as REVISE, HMSR-099 approved, HMSR-100 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 reviewed as REVISE, HMSR-080 reviewed as REVISE, HMSR-081 reviewed as REVISE, HMSR-082 reviewed as REVISE, HMSR-083 approved, HMSR-084 reviewed as REVISE, HMSR-085 reviewed as REVISE, HMSR-086 approved, HMSR-087 reviewed as REVISE, HMSR-088 reviewed as REVISE, HMSR-089 reviewed as REVISE, HMSR-090 reviewed as REVISE, HMSR-091 reviewed as REVISE, HMSR-092 reviewed as REVISE, HMSR-093 reviewed as REVISE, HMSR-094 reviewed as REVISE, HMSR-095 reviewed as REVISE, HMSR-096 reviewed as REVISE, HMSR-097 reviewed as REVISE, HMSR-098 reviewed as REVISE, HMSR-099 approved, HMSR-100 reviewed as REVISE, HMSR-101 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -292,7 +292,7 @@ Ordering rules applied:
 | HMSR-097 | 5 | audit | AuditExportRequest | — | documents.Document, workflow.WorkflowInstance | 1 | 1 | 2 | REVISE | Completed | `docs(model-review): review audit AuditExportRequest` |
 | HMSR-098 | 5 | documents | DocumentTargetLink | — | documents.Document, documents.DocumentVersion | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review documents DocumentTargetLink` |
 | HMSR-099 | 5 | identity | AuthenticationEvent | — | identity.IdentityProvider, identity.User | 0 | 0 | 1 | APPROVED | Completed | `docs(model-review): review identity AuthenticationEvent` |
-| HMSR-100 | 5 | identity | AuthorizationDecision | — | identity.User | 0 | 0 | 2 | — | Planned | `docs(model-review): review identity AuthorizationDecision` |
+| HMSR-100 | 5 | identity | AuthorizationDecision | — | identity.User | 0 | 0 | 2 | REVISE | Completed | `docs(model-review): review identity AuthorizationDecision` |
 | HMSR-101 | 5 | identity | AuthorizationDelegationGrant | — | identity.Permission, identity.Role, identity.User | 0 | 0 | 3 | — | Planned | `docs(model-review): review identity AuthorizationDelegationGrant` |
 | HMSR-102 | 5 | identity | HidraPrincipal | — | identity.IdentityProvider, identity.User | 0 | 0 | 0 | — | Planned | `docs(model-review): review identity HidraPrincipal` |
 | HMSR-103 | 5 | identity | LocalCredential | — | identity.User | 0 | 0 | 0 | — | Planned | `docs(model-review): review identity LocalCredential` |
@@ -17631,16 +17631,163 @@ No production correction obligation is recorded for HMSR-099.
 
 HMSR-099 does not modify production Java, JPA, Flyway, API/application contracts, tests, Identity/Audit data, or provisioned data.
 
-## 113. Current next task
+## 113. HMSR-100 — identity.AuthorizationDecision review
+
+**Decision:** REVISE  
+**Review code:** HMSR-100  
+**Dependency level:** 5  
+**Bounded context:** identity  
+**Confirmed upstream subject dependencies:** mandatory `identity.User`; neutral resource/scope references  
+**Confirmed direct HMS subject dependents:** 0  
+**Transitive HMS subject dependents:** 0  
+**Unresolved/non-subject reference count:** 2
+
+### 113.1 Semantic role
+
+`AuthorizationDecision` is Identity-owned evidence of an authorization evaluation result.
+
+The governing Identity DDD explicitly makes persistence optional, with persisted decisions intended for high-risk operations or forwarding to Audit. The model therefore represents explainable decision evidence, not merely an API response wrapper.
+
+### 113.2 Required decision core
+
+The DDD requires:
 
 ```text
-HMSR-100 — identity.AuthorizationDecision
+id
+userId
+permissionCode
+decision
+evaluatedAt
+```
+
+The live domain constructor rejects missing values for all five.
+
+JPA/Flyway persist the corresponding core columns as non-null.
+
+The model's required structural core is therefore aligned with the DDD.
+
+### 113.3 Decision vocabulary
+
+`AuthorizationDecisionValue` contains:
+
+```text
+PERMIT
+DENY
+NOT_APPLICABLE
+INDETERMINATE
+```
+
+This exactly matches the DDD and represents stable technical authorization semantics. No catalog conversion is required.
+
+### 113.4 Neutral resource and scope references
+
+`resourceType`, `resourceReferenceId`, and `AuthorizationScope` are neutral references.
+
+The DDD explicitly states that Identity stores scope type/reference/snapshot only and must not import Organization or Topology entities.
+
+The current `AuthorizationScope` preserves this architecture, including `GLOBAL` as a neutral scope with no external reference.
+
+HMSR-100 does not authorize cross-module database FKs for scope/resource targets.
+
+### 113.5 Explainability fields
+
+The DDD includes:
+
+```text
+reasonCode
+reasonMessage
+matchedGrantIds
+matchedPolicyRuleIds
+externalClaimsUsed
+```
+
+as optional evidence fields.
+
+Their optionality is appropriate at the record level because not every decision path necessarily has all evidence classes.
+
+However, the governing Identity business rules also require authorization decisions to be explainable and external mappings used in authorization to be included in the authorization explanation.
+
+Therefore application evaluation must populate the applicable evidence rather than persist structurally valid but semantically empty explanations when grants/policies/mappings actually participated.
+
+### 113.6 Canonical application-evaluation defect
+
+The Identity DDD requires authorization evaluation across the supported paths:
+
+```text
+direct user role
+direct user permission
+group-role inheritance
+external group/role/permission mappings
+scope validity
+time validity
+ABAC policy
+decision explanation
+```
+
+The live `IdentityAuthorizationApplicationService.evaluate(...)` does not evaluate those paths.
+
+It constructs an `AuthorizationEvaluationRequest` and immediately invokes:
+
+```text
+authorizationPolicyEvaluator.deny(
+    request,
+    "NO_GRANT_MATCHED",
+    "No active grant matched the requested permission."
+)
+```
+
+The result is then persisted.
+
+Thus the application currently records `NO_GRANT_MATCHED` without first proving that no direct grant, inherited grant, external mapping, scope, validity window, or policy permits the requested operation.
+
+This is semantically incompatible with the DDD evaluation model and makes persisted `AuthorizationDecision` evidence misleading.
+
+### 113.7 Persistence configurability
+
+`IdentityModuleConfiguration` exposes `authorizationDecisionPersistenceEnabled`, and the DDD states that persisted authorization decisions are optional.
+
+The reviewed `IdentityAuthorizationApplicationService` unconditionally calls `authorizationDecisionRepositoryPort.save(decision)` and does not consult the configuration flag.
+
+The future production correction must align persistence behavior with the established optional-persistence contract where that configuration remains authoritative.
+
+HMSR-100 does not invent which operations are high-risk; that remains policy/configuration driven.
+
+### 113.8 User ownership
+
+`userId` is mandatory because this model records a resolved authorization evaluation for an internal Hidra user.
+
+Identity owns the User aggregate, so application evaluation must fail closed if an authorization request references an invalid/non-resolvable user when the use case requires repository-backed evaluation.
+
+HMSR-100 does not require historical decision rows to be deleted or relationally cascaded if a user is later retired.
+
+### 113.9 Required revisions
+
+Three evidence-backed production obligations remain:
+
+1. **Replace the unconditional `NO_GRANT_MATCHED` decision path with the governing Identity authorization evaluation order**, including direct/inherited grants, mapped external authority where allowed, scope/time validity, ABAC policy, and explicit deny precedence.
+2. **Populate applicable decision-explanation evidence** (`reasonCode`/`reasonMessage`, matched grants/policy rules/external claims as appropriate) so persisted high-risk decisions are truthful and explainable.
+3. **Honor the established optional authorization-decision persistence policy/configuration** rather than unconditionally persisting every evaluated request if `authorizationDecisionPersistenceEnabled` remains the authoritative switch.
+
+HMSR-100 does not modify production Java, JPA, Flyway, API/application contracts, tests, Identity/Audit data, or provisioned data.
+
+### 113.10 Review conclusion
+
+**REVISE.** The `AuthorizationDecision` record itself has a sound structural model and correct neutral-reference architecture, but the canonical live application path does not perform the authorization evaluation that the DDD says the decision represents.
+
+Persisting an unconditional `DENY / NO_GRANT_MATCHED` result without evaluating supported grants, mappings, scopes, validity, and policy cannot be considered semantically approved decision evidence.
+
+HMS reconciliation must retain these obligations until explicitly authorized Identity production corrections resolve them or stronger repository evidence changes the governing Identity authorization contract.
+
+## 114. Current next task
+
+```text
+HMSR-101 — identity.AuthorizationDelegationGrant
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review identity AuthorizationDecision
+docs(model-review): review identity AuthorizationDelegationGrant
 ```
 
-Start HMSR-100 only after HMSR-099 is committed and reported. Do not start HMSR-101 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-101 only after HMSR-100 is committed and reported. Do not start HMSR-102 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

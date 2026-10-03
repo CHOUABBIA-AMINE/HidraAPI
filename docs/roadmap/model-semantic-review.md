@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -235,7 +235,7 @@ Ordering rules applied:
 | HMSR-040 | 1 | organization | ResponsibilityAssignment | — | organization.OperationalScope | 1 | 1 | 1 | APPROVED | Completed | `docs(model-review): review organization ResponsibilityAssignment` |
 | HMSR-041 | 1 | topology | Facility | — | party.Party | 1 | 1 | 0 | REVISE | Completed | `docs(model-review): review topology Facility` |
 | HMSR-042 | 1 | analytics | AnalyticsDatasetVersion | — | analytics.AnalyticsDataset | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review analytics AnalyticsDatasetVersion` |
-| HMSR-043 | 1 | analytics | MetricValue | — | analytics.MetricEvaluationRun | 0 | 0 | 3 | — | Planned | `docs(model-review): review analytics MetricValue` |
+| HMSR-043 | 1 | analytics | MetricValue | — | analytics.MetricEvaluationRun | 0 | 0 | 3 | REVISE | Completed | `docs(model-review): review analytics MetricValue` |
 | HMSR-044 | 1 | configuration | ConfigurationValue | — | configuration.ConfigurationDefinition | 0 | 0 | 1 | — | Planned | `docs(model-review): review configuration ConfigurationValue` |
 | HMSR-045 | 1 | identity | ExternalRoleMapping | — | identity.IdentityProvider, identity.Role | 0 | 0 | 0 | — | Planned | `docs(model-review): review identity ExternalRoleMapping` |
 | HMSR-046 | 1 | identity | GroupRoleGrant | — | identity.Role | 0 | 0 | 2 | — | Planned | `docs(model-review): review identity GroupRoleGrant` |
@@ -1659,11 +1659,11 @@ Confirmed subject-model graph edges at this stage: **165**. These are semantic c
 | Field | Declared type | Classification | Resolved target | Graph edge | Notes |
 |---|---|---|---|:---:|---|
 | id | String | Self identifier | — | No | Primary identity of the current model. |
-| metricEvaluationRunId | String | Domain reference | analytics.MetricEvaluationRun | Yes | Unambiguous same-module subject-model reference. |
-| metricDefinitionId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
-| metricDefinitionVersionId | String | Unresolved | — | No | Reference target is outside or absent from the 123 subject-model set; preserve for HMS-004 review. |
-| scopeId | String | Cross-module reference | POLYMORPHIC | No | Target is selected by companion type/module metadata; no single subject-model edge. |
-| unitId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| metricEvaluationRunId | String | Domain reference | analytics.MetricEvaluationRun | Yes | Mandatory same-module HMS subject reference; HRA-111 protects `metric_evaluation_run_id -> hidra_analytics_metric_evaluation_run.id`. |
+| metricDefinitionId | String | Domain reference | analytics.MetricDefinition (read/persistence model) | No | HMSR-043 stronger Analytics DDD + HRA-111 evidence resolves the mandatory definition reference; target is outside the 123 HMS subject set and protected by `fk_hra111_analytics_021`. |
+| metricDefinitionVersionId | String | Domain reference | analytics.MetricDefinitionVersion (read/persistence model) | No | HMSR-043 stronger Analytics DDD + HRA-111 evidence resolves the mandatory version reference; target is outside the 123 HMS subject set and protected by `fk_hra111_analytics_022`. |
+| scopeId | String | Cross-module reference | POLYMORPHIC_ANALYTICAL_SCOPE | No | `scopeType + scopeId` form a neutral analytical-scope reference; no single HMS target or cross-module FK is appropriate. |
+| unitId | String | Value/catalog dependency | ANALYTICS_UNIT_OR_VALUE | No | Optional unit reference/value dependency. Current evidence does not establish a single HMS subject target or a mandatory catalog-family rule for MetricValue. |
 
 #### assets.AssetConditionRecord
 
@@ -9441,17 +9441,204 @@ The target baseline cannot mark it APPROVED while the explicit DDD rule that a p
 
 HMS reconciliation must retain this immutability obligation until an explicitly authorized Analytics production correction resolves it or stronger repository evidence explicitly revises the governing Analytics DDD semantics.
 
-## 56. Current next task
+## 56. HMSR-043 — analytics.MetricValue review
+
+**Decision:** REVISE  
+**Review code:** HMSR-043  
+**Dependency level:** 1  
+**Bounded context:** analytics  
+**Confirmed upstream subject dependencies:** `analytics.MetricEvaluationRun` through mandatory `metricEvaluationRunId`  
+**Confirmed direct HMS subject dependents:** 0  
+**Transitive HMS subject dependents:** 0  
+**Unresolved/non-subject references:** 3 in the register are now semantically resolved as retained MetricDefinition, retained MetricDefinitionVersion, and neutral analytical scope/unit dependencies without manufacturing new HMS graph edges
+
+### 56.1 Semantic role and ordering rationale
+
+`MetricValue` stores one calculated Analytics metric result for a defined period and analytical scope.
+
+The Analytics DDD is explicit that MetricValue is derived and rebuildable and must not become a source of operational truth. It therefore records calculation context and analytical output while the authoritative operational facts remain in their owning modules.
+
+It is Level 1 because `metricEvaluationRunId` references the already-reviewed HMS subject `MetricEvaluationRun`.
+
+### 56.2 Field semantics
+
+| Field | Type | Reviewed meaning |
+|---|---|---|
+| `id` | `String` | Mandatory stable metric-value identity. |
+| `metricEvaluationRunId` | `String` | Mandatory same-module reference to the evaluation run that produced the value. |
+| `metricDefinitionId` | `String` | Mandatory same-module reference to retained MetricDefinition state. |
+| `metricDefinitionVersionId` | `String` | Mandatory same-module reference to retained MetricDefinitionVersion state. |
+| `scopeType` | `String` | Mandatory analytical-scope discriminator in final persistence. |
+| `scopeId` | `String` | Optional neutral scope identity selected/interpreted by `scopeType`. |
+| `periodStart` | `Instant` | Mandatory inclusive analytical period start. |
+| `periodEnd` | `Instant` | Mandatory analytical period end. |
+| `valueNumeric` | `BigDecimal` | Optional numeric result representation. |
+| `valueText` | `String` | Optional text result representation. |
+| `unitId` | `String` | Optional unit/value dependency. |
+| `qualityStatus` | `AnalyticsQualityStatus` | Mandatory analytical quality state. |
+| `calculatedAt` | `Instant` | Mandatory calculation timestamp. |
+
+The canonical constructor already rejects blank ID, evaluation-run ID, metric-definition ID and metric-definition-version ID; requires both period endpoints, quality status and calculation time; and enforces `periodStart <= periodEnd`.
+
+### 56.3 Evaluation-run and metric-definition integrity
+
+The final persistence model requires all three Analytics references:
 
 ```text
-HMSR-043 — analytics.MetricValue
+metric_evaluation_run_id
+metric_definition_id
+metric_definition_version_id
+```
+
+HRA-111 installs validated same-module FKs for all three:
+
+```text
+metric_evaluation_run_id
+    -> hidra_analytics_metric_evaluation_run.id
+
+metric_definition_id
+    -> hidra_analytics_metric_definition.id
+
+metric_definition_version_id
+    -> hidra_analytics_metric_definition_version.id
+```
+
+Therefore dangling references to those three Analytics identities are already prevented at persistence.
+
+`MetricDefinition` and `MetricDefinitionVersion` are retained Analytics read/persistence models outside the 123 HMS subject set, so HMSR-043 strengthens the dependency classification without adding graph edges.
+
+Current Analytics DDD evidence does not explicitly require HMSR-043 to prove parent consistency between `metricDefinitionId` and `metricDefinitionVersionId` on every MetricValue row. No composite-parent rule is invented.
+
+### 56.4 Analytical scope semantics
+
+The Analytics DDD establishes neutral scope references as the correct pattern for derived analytics.
+
+For MetricValue, `scopeType + scopeId` carry that neutral analytical scope. The scope may identify topology, organization, product, or another module-defined analytical target without transferring ownership to Analytics.
+
+No single concrete HMS target is therefore manufactured for `scopeId`, and no cross-module database FK is appropriate.
+
+The final JPA/schema contract requires `scope_type NOT NULL` while `scope_id` remains nullable, which is consistent with the possibility of a scope type that does not require a concrete target ID.
+
+### 56.5 Scope-type requiredness mismatch
+
+The canonical MetricValue constructor currently validates the major Analytics references and period state but does **not** require nonblank `scopeType`.
+
+It then normalizes blank/null `scopeType` to `null`.
+
+The final JPA mapping and Flyway schema both require:
+
+```text
+scope_type NOT NULL
+```
+
+and the Analytics DDD consistently models neutral analytical scope through the `scopeType + scopeId` pattern.
+
+Therefore the canonical domain can admit a MetricValue state that cannot satisfy the final persistence contract and has no discriminator with which to interpret its analytical scope.
+
+This is an evidence-backed domain/persistence semantic mismatch.
+
+### 56.6 Period semantics
+
+The DDD field model and repository invariant classification support the implemented chronology:
+
+```text
+periodStart <= periodEnd
+```
+
+The domain enforces this directly, and both endpoints are mandatory in domain and persistence.
+
+No duration, granularity, non-overlap, contiguous-period, or relation to `calculatedAt` is defined by current evidence, so HMSR-043 does not invent one.
+
+### 56.7 Result representation deliberately not over-specified
+
+MetricValue provides both:
+
+```text
+valueNumeric
+valueText
+```
+
+Current Analytics DDD lists both fields but does not state that exactly one must be populated, that at least one must be populated, or that a metric definition's data type determines a mandatory representation rule at this model boundary.
+
+HMSR-043 therefore does not invent XOR/non-null semantics.
+
+Similarly, current evidence does not define a required numeric range, precision beyond persistence representation, or text normalization rule beyond the existing blank-to-null normalization.
+
+### 56.8 Unit semantics
+
+`unitId` is optional in both domain and persistence.
+
+Analytics DDD uses unit references across metric/KPI structures, but the reviewed evidence does not establish a MetricValue-specific mandatory unit, one exact Analytics catalog family, or a direct HMS subject target.
+
+HMSR-043 therefore classifies it conservatively as a value/catalog dependency and records no production correction merely because no FK exists.
+
+### 56.9 Quality and rebuildability
+
+`qualityStatus` is mandatory in domain and persistence and uses the Analytics-owned `AnalyticsQualityStatus` vocabulary.
+
+`derivedAndRebuildable()` returns true, matching the DDD statement that MetricValue is derived/rebuildable and must not be treated as operational truth.
+
+No current evidence defines additional quality-status-dependent value requirements or a mandatory source-watermark field on MetricValue itself.
+
+### 56.10 Domain/JPA/Flyway alignment
+
+Domain and JPA agree on all 13 components.
+
+The required persistence fields are:
+
+```text
+id
+metric_evaluation_run_id
+metric_definition_id
+metric_definition_version_id
+scope_type
+period_start
+period_end
+quality_status
+calculated_at
+```
+
+The domain already enforces all of these except `scopeType`.
+
+The three Analytics reference FKs are protected; period chronology is enforced; optional `scopeId`, value representations and `unitId` remain nullable consistently.
+
+The sole evidence-backed correction obligation for this review is therefore the missing authoritative nonblank scope-type invariant.
+
+### 56.11 Required revision
+
+One evidence-backed production correction obligation remains:
+
+1. **Require nonblank MetricValue scopeType at the authoritative domain/application boundary.** The canonical model must not normalize `scopeType` to null when final persistence requires it and the Analytics scope-reference pattern depends on it to interpret `scopeId`.
+
+HMSR-043 does not modify production Java, JPA, Flyway, application/API contracts, tests, metric values, metric definitions, evaluation runs, or provisioned data.
+
+### 56.12 SONATRACH/TRC operational interpretation
+
+For SONATRACH/TRC, MetricValue can represent derived performance, quality, planning-vs-actual, reliability, integrity, custody, HSE or risk-related analytical results across pipeline systems, facilities, organizational scopes or other governed subjects.
+
+The scope discriminator is operationally important because the same scalar identifier format can exist in multiple bounded contexts. A calculated value without a usable `scopeType` cannot be interpreted reliably even when its metric definition and evaluation run are valid.
+
+The model remains analytical evidence only; it must not replace telemetry, planning, monitoring, risk or other source-of-truth records.
+
+### 56.13 Review conclusion
+
+**REVISE.** `MetricValue` has a coherent 13-field derived-result model, correct Level-1 dependency on MetricEvaluationRun, protected same-module references to evaluation run/definition/version, correctly enforced period ordering, mandatory quality/calculation metadata, and proper neutral-scope architecture.
+
+The target baseline cannot mark it APPROVED while the canonical domain permits a null/blank `scopeType` that final persistence rejects and that the neutral analytical-scope pattern needs for interpretation.
+
+HMS reconciliation must retain this scope-type requiredness obligation until an explicitly authorized Analytics production correction resolves it or stronger repository evidence explicitly revises the final Analytics scope contract.
+
+## 57. Current next task
+
+```text
+HMSR-044 — configuration.ConfigurationValue
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review analytics MetricValue
+docs(model-review): review configuration ConfigurationValue
 ```
 
-Start HMSR-043 only after HMSR-042 is committed and reported. Do not start HMSR-044 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-044 only after HMSR-043 is committed and reported. Do not start HMSR-045 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
 

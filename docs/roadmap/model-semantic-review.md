@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -270,7 +270,7 @@ Ordering rules applied:
 | HMSR-075 | 4 | identity | User | — | organization.Employee | 8 | 8 | 1 | REVISE | Completed | `docs(model-review): review identity User` |
 | HMSR-076 | 4 | planning | PlanRevision | SCC-04 | planning.OperationalPlan, planning.PlanRevision, workflow.WorkflowInstance | 4 | 8 | 2 | REVISE | Completed | `docs(model-review): review planning PlanRevision` |
 | HMSR-077 | 4 | planning | OperationalPlan | SCC-04 | organization.OrganizationUnit, planning.PlanRevision, planning.PlanningPeriod | 1 | 8 | 1 | REVISE | Completed | `docs(model-review): review planning OperationalPlan` |
-| HMSR-078 | 4 | workflow | WorkflowTask | — | organization.OrganizationUnit, workflow.WorkflowInstance, workflow.WorkflowStep | 4 | 6 | 1 | — | Planned | `docs(model-review): review workflow WorkflowTask` |
+| HMSR-078 | 4 | workflow | WorkflowTask | — | organization.OrganizationUnit, workflow.WorkflowInstance, workflow.WorkflowStep | 4 | 6 | 1 | REVISE | Completed | `docs(model-review): review workflow WorkflowTask` |
 | HMSR-079 | 4 | documents | Document | SCC-05 | documents.DocumentVersion | 4 | 5 | 3 | — | Planned | `docs(model-review): review documents Document` |
 | HMSR-080 | 4 | documents | DocumentVersion | SCC-05 | documents.Document, documents.DocumentStorageObject, documents.DocumentVersion, workflow.WorkflowInstance | 3 | 5 | 2 | — | Planned | `docs(model-review): review documents DocumentVersion` |
 | HMSR-081 | 4 | assets | MaintenanceWorkOrder | — | assets.MaintainableAsset, organization.OrganizationUnit, workflow.WorkflowInstance | 1 | 1 | 3 | — | Planned | `docs(model-review): review assets MaintenanceWorkOrder` |
@@ -14703,16 +14703,165 @@ The target baseline cannot mark it APPROVED while DDD-required fields can reach 
 
 HMS reconciliation must retain these obligations until explicitly authorized Planning production corrections resolve them or stronger repository evidence changes the governing Planning DDD.
 
-## 91. Current next task
+## 91. HMSR-078 — workflow.WorkflowTask review
+
+**Decision:** REVISE  
+**Review code:** HMSR-078  
+**Dependency level:** 4  
+**Bounded context:** workflow  
+**Confirmed upstream subject dependencies:** optional `organization.OrganizationUnit`, mandatory `workflow.WorkflowInstance`, mandatory `workflow.WorkflowStep`  
+**Confirmed direct HMS subject dependents:** 4  
+**Transitive HMS subject dependents:** 6
+
+### 91.1 Semantic role
+
+`WorkflowTask` is the Workflow-owned actionable work item for one workflow instance and one workflow step. It owns task lifecycle state, assignment snapshots, optional priority/SLA data, claim/completion evidence, delegation/escalation timestamps and audit/lifecycle timestamps.
+
+Workflow owns task routing and lifecycle. Identity owns actors and authority, Organization owns organization units, while Workflow stores stable actor/organization references plus snapshots. Cross-module assignee references must not become database foreign keys.
+
+### 91.2 Instance and step integrity
+
+`instanceId` and `stepId` are mandatory same-module references. HRA-111 already protects both with Workflow-local foreign keys to `WorkflowInstance` and `WorkflowStep`.
+
+The transition service additionally verifies that the task belongs to the workflow instance's current step before executing a transition.
+
+No further basic existence correction is required for these two mandatory references.
+
+### 91.3 Assignment-target invariant
+
+The Workflow DDD explicitly states:
 
 ```text
-HMSR-078 — workflow.WorkflowTask
+A task must have at least one assignment target: actor or organization unit.
+```
+
+The live `WorkflowTask` constructor does not enforce this invariant. `WorkflowApplicationService.createWorkflowTask()` accepts both assignment IDs directly and can construct an OPEN task with neither actor nor organization unit populated.
+
+The transition service's `createNextTask()` can likewise create an OPEN task with no actor or organization unit when no active assignment rule resolves.
+
+The authoritative task-creation boundary must therefore reject creation of an actionable task that has no assignment target.
+
+### 91.4 Assignee ownership and eligibility
+
+`assignedActorId`, `claimedByActorId`, and `completedByActorId` are Identity-owned actor references. `assignedOrganizationUnitId` is Organization-owned. Username/display/unit/role fields are snapshots rather than owned master data.
+
+The Workflow DDD requires:
+
+```text
+Only eligible actors may claim or complete a task.
+```
+
+The current transition path uses a local `belongsToActor(...)` comparison against assigned actor ID, claimed actor ID, or assigned username snapshot. Repository evidence does not show owner-controlled Identity/Organization eligibility resolution in the reviewed path, and organization/role pool assignments are not authoritatively resolved before transition execution.
+
+The authoritative boundary must resolve assignment/eligibility through Workflow-owned outbound contracts backed by Identity/Organization owners, while retaining scalar references and snapshots. No cross-module database FK should be introduced.
+
+### 91.5 Claim and completion invariants
+
+The Workflow DDD explicitly states:
+
+```text
+If claimedByActorId exists, claimedAt must exist.
+If completedByActorId exists, completedAt must exist.
+completedAt must be >= createdAt.
+Completed tasks are immutable except for audit-safe annotations.
+```
+
+The live `WorkflowTask` constructor enforces none of these couplings. It permits claimed/completed actor IDs without timestamps and does not validate completion time against creation time.
+
+The transition service does populate `completedByActorId` and `completedAt` together when it completes a task, and it rejects transitions on non-open tasks. That protects the reviewed transition path but does not make the aggregate itself semantically fail-closed across all construction/persistence paths.
+
+The authoritative domain/application boundary must enforce the explicit claim/completion timestamp couplings and `completedAt >= createdAt`. Completed-task immutability must remain guaranteed for all mutation paths, not only transition execution.
+
+### 91.6 Priority catalog family
+
+`priorityId` is an optional Workflow catalog reference. The Workflow DDD defines the dedicated family:
+
+```text
+WORKFLOW_PRIORITY
+```
+
+The base schema indexes `priority_id`, but repository evidence shows no same-module FK from `hidra_workflow_task.priority_id` to the Workflow catalog and no family-level validation in task creation.
+
+When populated, `priorityId` must resolve to an eligible/active Workflow catalog entry from exactly `WORKFLOW_PRIORITY`. Generic catalog existence alone would not be sufficient.
+
+### 91.7 Assignment-mode catalog family
+
+`assignmentModeId` is an optional catalog-backed task routing classification. The Workflow DDD defines:
+
+```text
+WORKFLOW_ASSIGNMENT_MODE
+```
+
+with semantics such as DIRECT_ACTOR, ROLE_POOL, ORG_UNIT_POOL and MIXED.
+
+Although HRA-111 protects `WorkflowStepAssignmentRule.assignment_mode_id`, repository evidence shows no equivalent fail-closed protection for `WorkflowTask.assignmentModeId`, and direct task creation copies the value without catalog-family validation.
+
+When populated, task assignment mode must resolve to an eligible/active entry in the exact `WORKFLOW_ASSIGNMENT_MODE` family.
+
+### 91.8 Lifecycle and SLA enums
+
+`WorkflowTaskStatus` is the documented Workflow task lifecycle:
+
+```text
+OPEN
+CLAIMED
+IN_REVIEW
+APPROVED
+REJECTED
+RETURNED
+DELEGATED
+ESCALATED
+CANCELLED
+EXPIRED
+```
+
+`WorkflowSlaStatus` contains:
+
+```text
+NORMAL
+DUE_SOON
+OVERDUE
+BREACHED
+```
+
+Both are stable technical/lifecycle classifications owned by Workflow. Current evidence does not require replacing them with catalog-backed business taxonomies.
+
+HMSR-078 does not invent additional temporal rules among dueAt, escalatedAt, delegatedAt and expiresAt beyond the explicit DDD rules cited above.
+
+### 91.9 Required revisions
+
+Five evidence-backed obligations remain:
+
+1. **Enforce assignment-target presence.** An actionable WorkflowTask must have at least one assignment target: actor or organization unit.
+
+2. **Validate actor/organization assignment and execution eligibility through owner-controlled contracts.** Preserve scalar IDs/snapshots and do not add cross-module database FKs.
+
+3. **Enforce explicit claim/completion invariants and terminal immutability.** Couple claimed actor/time, completed actor/time, require `completedAt >= createdAt`, and prevent mutation of completed tasks outside explicitly audit-safe annotations.
+
+4. **Enforce the `WORKFLOW_PRIORITY` catalog family** for populated `priorityId`, including active/eligible semantics.
+
+5. **Enforce the `WORKFLOW_ASSIGNMENT_MODE` catalog family** for populated `assignmentModeId`, including active/eligible semantics.
+
+HMSR-078 does not modify production Java, JPA, Flyway, API/application contracts, tests, Workflow catalogs/data, Identity, Organization, or provisioned data.
+
+### 91.10 Review conclusion
+
+**REVISE.** `WorkflowTask` is a coherent Workflow-owned task aggregate with correct same-module instance/step ownership, appropriate task/SLA lifecycle enums, and snapshot-based cross-context actor/organization semantics.
+
+The target baseline cannot mark it APPROVED while actionable tasks may be created without an assignment target, assignee eligibility is not resolved through owner-controlled boundaries, explicit claim/completion invariants are not aggregate-safe, and task priority/assignment-mode catalog families are not fail-closed.
+
+HMS reconciliation must retain these obligations until explicitly authorized Workflow production corrections resolve them or stronger repository evidence changes the governing Workflow DDD.
+
+## 92. Current next task
+
+```text
+HMSR-079 — documents.Document
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review workflow WorkflowTask
+docs(model-review): review documents Document
 ```
 
-Start HMSR-078 only after HMSR-077 is committed and reported. Do not start HMSR-079 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-079 only after HMSR-078 is committed and reported. Do not start HMSR-080 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

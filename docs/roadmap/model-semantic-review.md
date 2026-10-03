@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 reviewed as REVISE, HMSR-080 reviewed as REVISE, HMSR-081 reviewed as REVISE, HMSR-082 reviewed as REVISE, HMSR-083 approved, HMSR-084 reviewed as REVISE, HMSR-085 reviewed as REVISE, HMSR-086 approved, HMSR-087 reviewed as REVISE, HMSR-088 reviewed as REVISE, HMSR-089 reviewed as REVISE, HMSR-090 reviewed as REVISE, HMSR-091 reviewed as REVISE, HMSR-092 reviewed as REVISE, HMSR-093 reviewed as REVISE, HMSR-094 reviewed as REVISE, HMSR-095 reviewed as REVISE, HMSR-096 reviewed as REVISE, HMSR-097 reviewed as REVISE, HMSR-098 reviewed as REVISE, HMSR-099 approved, HMSR-100 reviewed as REVISE, HMSR-101 reviewed as REVISE, HMSR-102 approved, HMSR-103 approved, HMSR-104 reviewed as REVISE, HMSR-105 reviewed as REVISE, HMSR-106 reviewed as REVISE, HMSR-107 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 reviewed as REVISE, HMSR-080 reviewed as REVISE, HMSR-081 reviewed as REVISE, HMSR-082 reviewed as REVISE, HMSR-083 approved, HMSR-084 reviewed as REVISE, HMSR-085 reviewed as REVISE, HMSR-086 approved, HMSR-087 reviewed as REVISE, HMSR-088 reviewed as REVISE, HMSR-089 reviewed as REVISE, HMSR-090 reviewed as REVISE, HMSR-091 reviewed as REVISE, HMSR-092 reviewed as REVISE, HMSR-093 reviewed as REVISE, HMSR-094 reviewed as REVISE, HMSR-095 reviewed as REVISE, HMSR-096 reviewed as REVISE, HMSR-097 reviewed as REVISE, HMSR-098 reviewed as REVISE, HMSR-099 approved, HMSR-100 reviewed as REVISE, HMSR-101 reviewed as REVISE, HMSR-102 approved, HMSR-103 approved, HMSR-104 reviewed as REVISE, HMSR-105 reviewed as REVISE, HMSR-106 reviewed as REVISE, HMSR-107 reviewed as REVISE, HMSR-108 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -299,7 +299,7 @@ Ordering rules applied:
 | HMSR-104 | 5 | identity | LoginSession | — | identity.IdentityProvider, identity.User | 0 | 0 | 1 | REVISE | Completed | `docs(model-review): review identity LoginSession` |
 | HMSR-105 | 5 | identity | UserPermissionGrant | — | identity.Permission, identity.User | 0 | 0 | 1 | REVISE | Completed | `docs(model-review): review identity UserPermissionGrant` |
 | HMSR-106 | 5 | identity | UserRoleGrant | — | identity.Role, identity.User | 0 | 0 | 1 | REVISE | Completed | `docs(model-review): review identity UserRoleGrant` |
-| HMSR-107 | 5 | incident | IncidentClosure | — | incident.Incident, workflow.WorkflowInstance | 0 | 0 | 0 | — | Planned | `docs(model-review): review incident IncidentClosure` |
+| HMSR-107 | 5 | incident | IncidentClosure | — | incident.Incident, workflow.WorkflowInstance | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review incident IncidentClosure` |
 | HMSR-108 | 5 | incident | IncidentRelatedIncident | — | incident.Incident | 0 | 0 | 0 | — | Planned | `docs(model-review): review incident IncidentRelatedIncident` |
 | HMSR-109 | 5 | incident | IncidentResponseAction | — | incident.Incident, organization.OrganizationUnit | 0 | 0 | 0 | — | Planned | `docs(model-review): review incident IncidentResponseAction` |
 | HMSR-110 | 5 | reporting | ReportOutputArtifact | — | documents.Document, documents.DocumentStorageObject, reporting.ReportRun | 0 | 0 | 2 | — | Planned | `docs(model-review): review reporting ReportOutputArtifact` |
@@ -18541,16 +18541,151 @@ The target baseline cannot mark it APPROVED while the general creation flow perm
 
 HMS reconciliation must retain this obligation until explicitly authorized Identity production work enforces active-user grant eligibility or stronger repository evidence changes the governing contract.
 
-## 120. Current next task
+## 120. HMSR-107 — incident.IncidentClosure review
+
+**Decision:** REVISE  
+**Review code:** HMSR-107  
+**Dependency level:** 5  
+**Bounded context:** incident  
+**Confirmed upstream subject dependencies:** mandatory `incident.Incident`; optional Workflow-owned `workflowInstanceId` reference  
+**Confirmed direct HMS subject dependents:** 0  
+**Transitive HMS subject dependents:** 0  
+**Unresolved/non-subject reference count:** 0
+
+### 120.1 Semantic role
+
+`IncidentClosure` is the Incident-owned formal closure record that captures the close rationale, verification flags, closing actor snapshot, close time and optional Workflow approval reference.
+
+It is not itself the Incident aggregate lifecycle owner. The governing Incident DDD explicitly assigns lifecycle ownership to `Incident`, while `IncidentClosure` records the formal closure decision/evidence confirmation.
+
+### 120.2 Field and persistence alignment
+
+The live domain record and JPA entity agree on the 11 canonical fields:
 
 ```text
-HMSR-107 — incident.IncidentClosure
+id
+incidentId
+closureSummary
+resolutionVerified
+evidenceReviewed
+rootCauseReviewed
+followUpActionsCreated
+closedByActorId
+closedByActorNameSnapshot
+closedAt
+workflowInstanceId
+```
+
+The base Incident migration makes `incident_id`, `closure_summary`, all four boolean confirmation fields, `closed_by_actor_id`, and `closed_at` non-null.
+
+HRA-111 already protects the mandatory same-module reference:
+
+```text
+hidra_incident_closure.incident_id
+  -> hidra_incident.id
+```
+
+No additional same-module FK is required for the Incident reference.
+
+### 120.3 Workflow boundary
+
+`workflowInstanceId` is optional and Workflow-owned.
+
+The Incident DDD explicitly allows Workflow to approve incident closure while Incident stores only the workflow reference. That remains a cross-module stable reference and must not be converted into an Incident-to-Workflow database FK.
+
+If policy requires Workflow approval for a given classification/severity, validation belongs through a Workflow-owned application/reference contract rather than database coupling.
+
+### 120.4 Required closure summary
+
+The DDD marks `closureSummary` as required and describes it as the closure rationale.
+
+The database column is `NOT NULL`, but the live domain constructor only normalizes the field and does not reject blank/null values. The close application service also passes `command.closureSummary()` directly.
+
+Therefore an invalid closure can cross the domain/application boundary and fail only later at persistence.
+
+The authoritative close boundary must enforce a nonblank closure summary before persistence.
+
+### 120.5 Incident lifecycle ownership gap
+
+The Incident DDD states that only RESOLVED incidents may be CLOSED and that `Incident` is the lifecycle owner.
+
+However, the live `closeIncident(...)` path does not load the Incident at all. It creates and saves an `IncidentClosure` record only.
+
+Repository search found no close path that:
+
+- verifies the target Incident exists through `IncidentRepositoryPort.findById(...)`;
+- verifies its current status is `RESOLVED`;
+- changes the Incident status to `CLOSED`; or
+- records the Incident aggregate's `closedAt`.
+
+This creates a semantic split where a closure row can exist while the owning Incident remains in another lifecycle state.
+
+Future production reconciliation must make closure and Incident lifecycle transition one coherent application transaction.
+
+### 120.6 Resolution and evidence preconditions
+
+The governing DDD states:
+
+```text
+Incident must have a resolution before closure.
+Closure requires resolution verification and evidence review.
+```
+
+It also defines persisted IncidentResolution and IncidentEvidenceLink structures, although those are not among the four catalogued direct Incident domain models currently under HMSR.
+
+The live close service does not query or validate either persistence concept and accepts `resolutionVerified == false` and `evidenceReviewed == false`.
+
+Therefore the current close path does not enforce the DDD's minimum closure preconditions.
+
+Future production reconciliation must verify the Incident has the required resolution/evidence state and require the DDD-mandated resolution verification and evidence review confirmations.
+
+The DDD's stronger rule requiring at least one evidence link for non-minor incidents is classification/severity-policy dependent. HMSR-107 records that obligation as policy-dependent and does not invent a concrete severity threshold.
+
+### 120.7 Root cause and follow-up flags
+
+`rootCauseReviewed` and `followUpActionsCreated` are mandatory booleans in the target record.
+
+The DDD describes `rootCauseReviewed` as RCA reviewed or explicitly not required, and `followUpActionsCreated` as whether required follow-up actions were created.
+
+The current source does not encode a richer policy discriminator explaining when either must be true. HMSR-107 therefore does not invent universal `true` invariants for these fields.
+
+### 120.8 Closing actor and timestamp
+
+`closedByActorId` and `closedAt` are mandatory and already fail fast in the domain constructor.
+
+`closedByActorNameSnapshot` is optional snapshot data and should remain non-authoritative.
+
+The actor reference is Identity-owned and should remain a cross-module scalar reference rather than a database FK.
+
+### 120.9 Required revisions
+
+Four evidence-backed production obligations remain:
+
+1. **Enforce nonblank `closureSummary` before persistence.**
+2. **Make the close use case load and validate the owning Incident, permitting closure only from `RESOLVED`.**
+3. **Persist the Incident lifecycle transition to `CLOSED` with its `closedAt` in the same coherent transaction as the IncidentClosure record.**
+4. **Enforce the DDD closure preconditions for resolution and evidence:** require the necessary IncidentResolution/evidence state and the required verification/review confirmations; keep severity-specific evidence policy evidence-backed rather than inventing thresholds.
+
+HMSR-107 does not modify production Java, JPA, Flyway, API/application contracts, tests, Incident/Workflow/Identity data, or provisioned data.
+
+### 120.10 Review conclusion
+
+**REVISE.** `IncidentClosure` has the correct bounded-context ownership, field shape, same-module Incident FK, optional Workflow reference, and closing-actor/time semantics.
+
+The target baseline cannot mark it APPROVED while closure rationale is not fail-fast enforced, the close use case does not verify the Incident lifecycle, the owning Incident is not moved to `CLOSED`, and DDD-required resolution/evidence closure preconditions are not enforced.
+
+HMS reconciliation must retain these obligations until explicitly authorized Incident production work resolves them or stronger repository evidence changes the governing Incident contract.
+
+## 121. Current next task
+
+```text
+HMSR-108 — incident.IncidentRelatedIncident
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review incident IncidentClosure
+docs(model-review): review incident IncidentRelatedIncident
 ```
 
-Start HMSR-107 only after HMSR-106 is committed and reported. Do not start HMSR-108 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-108 only after HMSR-107 is committed and reported. Do not start HMSR-109 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

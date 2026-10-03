@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 reviewed as REVISE, HMSR-080 reviewed as REVISE, HMSR-081 reviewed as REVISE, HMSR-082 reviewed as REVISE, HMSR-083 approved, HMSR-084 reviewed as REVISE, HMSR-085 reviewed as REVISE, HMSR-086 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 reviewed as REVISE, HMSR-080 reviewed as REVISE, HMSR-081 reviewed as REVISE, HMSR-082 reviewed as REVISE, HMSR-083 approved, HMSR-084 reviewed as REVISE, HMSR-085 reviewed as REVISE, HMSR-086 approved, HMSR-087 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -278,7 +278,7 @@ Ordering rules applied:
 | HMSR-083 | 4 | hse | PermitToWork | — | workflow.WorkflowInstance | 0 | 0 | 0 | APPROVED | Completed | `docs(model-review): review hse PermitToWork` |
 | HMSR-084 | 4 | integration | IntegrationDeadLetterRecord | — | integration.ExternalSystem, integration.IntegrationExchangeMessage, integration.IntegrationJobRun | 0 | 0 | 2 | REVISE | Completed | `docs(model-review): review integration IntegrationDeadLetterRecord` |
 | HMSR-085 | 4 | integrity | IntegrityAssessment | — | integrity.IntegrityProgram, workflow.WorkflowInstance | 0 | 0 | 2 | REVISE | Completed | `docs(model-review): review integrity IntegrityAssessment` |
-| HMSR-086 | 4 | organization | EmployeeAddress | — | organization.AdministrativeLocality, organization.Employee | 0 | 0 | 0 | — | Planned | `docs(model-review): review organization EmployeeAddress` |
+| HMSR-086 | 4 | organization | EmployeeAddress | — | organization.AdministrativeLocality, organization.Employee | 0 | 0 | 0 | APPROVED | Completed | `docs(model-review): review organization EmployeeAddress` |
 | HMSR-087 | 4 | organization | EmployeeAssignment | — | organization.Employee, organization.OrganizationUnit, organization.Position | 0 | 0 | 0 | — | Planned | `docs(model-review): review organization EmployeeAssignment` |
 | HMSR-088 | 4 | organization | OrganizationDelegation | — | organization.Employee, organization.ResponsibilityAssignment | 0 | 0 | 0 | — | Planned | `docs(model-review): review organization OrganizationDelegation` |
 | HMSR-089 | 4 | organization | OrganizationHierarchySnapshot | — | organization.Employee | 0 | 0 | 0 | — | Planned | `docs(model-review): review organization OrganizationHierarchySnapshot` |
@@ -15854,16 +15854,122 @@ The target baseline cannot mark it APPROVED while optional same-module programme
 
 HMS reconciliation must retain these obligations until explicitly authorized Integrity production corrections resolve them or stronger repository evidence changes the governing Integrity DDD.
 
-## 99. Current next task
+## 99. HMSR-086 — organization.EmployeeAddress review
+
+**Decision:** APPROVED  
+**Review code:** HMSR-086  
+**Dependency level:** 4  
+**Bounded context:** organization  
+**Confirmed upstream subject dependencies:** mandatory `organization.Employee`, mandatory `organization.AdministrativeLocality`  
+**Confirmed direct HMS subject dependents:** 0  
+**Transitive HMS subject dependents:** 0
+
+### 99.1 Semantic role
+
+`EmployeeAddress` is the Organization-owned postal/residential address record for an employee. It keeps the employee reference, typed address classification, normalized locality anchor, optional street/postal snapshots, primary-address marker, and effective-dated lifecycle.
+
+The Organization DDD explicitly keeps postal address separate from `Employee`, and explicitly defines `localityId` as the normalized administrative-geography anchor. State and district are derived through `AdministrativeLocality` and must not be duplicated as canonical address fields.
+
+### 99.2 Mandatory same-module reference integrity
+
+Both mandatory references are already protected by Organization-local database foreign keys from the pre-existing Organization integrity migration:
 
 ```text
-HMSR-086 — organization.EmployeeAddress
+hidra_org_employee_address.employee_id
+  -> hidra_org_employee.id
+
+hidra_org_employee_address.locality_id
+  -> hidra_org_administrative_locality.id
+```
+
+The domain constructor also rejects blank `employeeId` and `localityId`.
+
+No further same-module reference correction is required.
+
+### 99.3 Domain invariants
+
+The Organization roadmap's ORG-053/ORG-055 closure already establishes and tests the effective-dated model policy.
+
+The live constructor enforces:
+
+```text
+id       nonblank
+employeeId nonblank
+localityId nonblank
+addressType non-null
+validFrom required
+validTo null or strictly after validFrom
+```
+
+This matches the Organization roadmap's documented half-open effective-date semantics and the repository-wide invariant classification.
+
+No additional constructor-level correction is required.
+
+### 99.4 Address-type enum
+
+`AddressType` contains:
+
+```text
+HOME
+WORK
+EMERGENCY
+OTHER
+```
+
+These values represent a small stable Organization-owned address classification and are appropriate as a domain enum.
+
+Current Organization DDD/roadmap evidence does not require replacing this enum with catalog-backed taxonomy.
+
+### 99.5 Primary-address marker
+
+`primaryAddress` is persisted as a required boolean and forms part of the canonical EmployeeAddress shape documented by the Organization roadmap.
+
+Repository evidence reviewed for HMSR-086 does not establish a rule such as “exactly one active primary address per employee” or “one primary per address type”.
+
+HMSR-086 therefore preserves the marker without inventing a uniqueness constraint or cross-record policy.
+
+### 99.6 Address snapshots
+
+`streetLine1`, `streetLine2`, and `postalCodeSnapshot` are optional address facts/snapshots.
+
+The Organization roadmap explicitly distinguishes them from administrative-locality identity. Their presence does not weaken `localityId` as the normalized geographic anchor.
+
+No additional relational target or derivation rule is required.
+
+### 99.7 Application-path evidence
+
+Repository search found the repository port and persistence adapter but no current EmployeeAddress-specific creation/update use case or application service.
+
+Accordingly, HMSR-086 does not invent an application-layer validation defect where no live write path exists.
+
+Any future address write use case must continue to preserve the already-established Organization invariants and same-module reference integrity.
+
+### 99.8 Review conclusion
+
+**APPROVED.** `EmployeeAddress` is semantically aligned with the live Organization DDD and current implemented roadmap:
+
+- employee and locality ownership are explicit;
+- both mandatory same-module references already have DB FK protection;
+- required IDs/type and effective-date invariants are enforced in the domain;
+- locality remains the normalized administrative anchor;
+- street/postal values remain appropriate optional address facts/snapshots;
+- `AddressType` is an appropriate stable domain enum;
+- no unsupported “single primary address” rule is invented.
+
+No HMSR-086 production correction obligation is recorded.
+
+HMSR-086 does not modify production Java, JPA, Flyway, API/application contracts, tests, Organization data, or provisioned data.
+
+## 100. Current next task
+
+```text
+HMSR-087 — organization.EmployeeAssignment
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review organization EmployeeAddress
+docs(model-review): review organization EmployeeAssignment
 ```
 
-Start HMSR-086 only after HMSR-085 is committed and reported. Do not start HMSR-087 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-087 only after HMSR-086 is committed and reported. Do not start HMSR-088 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

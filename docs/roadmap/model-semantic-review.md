@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -253,7 +253,7 @@ Ordering rules applied:
 | HMSR-058 | 2 | risk | RiskRegister | — | organization.OrganizationUnit | 1 | 2 | 0 | REVISE | Completed | `docs(model-review): review risk RiskRegister` |
 | HMSR-059 | 2 | integrity | IntegrityProgram | — | organization.OrganizationUnit | 1 | 1 | 0 | REVISE | Completed | `docs(model-review): review integrity IntegrityProgram` |
 | HMSR-060 | 2 | leakdetection | LeakDetectionCase | — | leakdetection.LeakCandidate, organization.OrganizationUnit | 1 | 1 | 0 | REVISE | Completed | `docs(model-review): review leakdetection LeakDetectionCase` |
-| HMSR-061 | 2 | notification | NotificationMessage | — | notification.NotificationRequest, notification.NotificationTemplate | 1 | 1 | 3 | — | Planned | `docs(model-review): review notification NotificationMessage` |
+| HMSR-061 | 2 | notification | NotificationMessage | — | notification.NotificationRequest, notification.NotificationTemplate | 1 | 1 | 3 | REVISE | Completed | `docs(model-review): review notification NotificationMessage` |
 | HMSR-062 | 2 | telemetry | TrustedTelemetryReading | — | telemetry.TelemetryPoint, telemetry.TelemetryReading | 1 | 1 | 3 | — | Planned | `docs(model-review): review telemetry TrustedTelemetryReading` |
 | HMSR-063 | 2 | topology | Equipment | — | party.Party, topology.Facility | 0 | 0 | 2 | — | Planned | `docs(model-review): review topology Equipment` |
 | HMSR-064 | 3 | workflow | WorkflowInstance | — | workflow.WorkflowDefinition, workflow.WorkflowStep | 18 | 32 | 1 | — | Planned | `docs(model-review): review workflow WorkflowInstance` |
@@ -2232,12 +2232,12 @@ Confirmed subject-model graph edges at this stage: **165**. These are semantic c
 | Field | Declared type | Classification | Resolved target | Graph edge | Notes |
 |---|---|---|---|:---:|---|
 | id | String | Self identifier | — | No | Primary identity of the current model. |
-| requestId | String | Domain reference | notification.NotificationRequest | Yes | Unambiguous same-module subject-model reference. |
-| recipientId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
-| channelId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
-| templateId | String | Domain reference | notification.NotificationTemplate | Yes | Unambiguous same-module subject-model reference. |
-| templateVersionId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
-| priorityId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| requestId | String | Domain reference | notification.NotificationRequest | Yes | Mandatory same-module request reference; HRA-111 protects `request_id -> hidra_notification_request.id`. |
+| recipientId | String | Domain reference | notification.NotificationRequestRecipient (read/persistence model) | No | Mandatory same-module resolved-recipient reference; HRA-111 protects row existence, but the message/request pairing is not constrained to the recipient's owning request. |
+| channelId | String | Domain reference | notification.NotificationChannel (read/persistence model) | No | Mandatory same-module channel reference protected by HRA-111; target is outside the 123 HMS subject set. |
+| templateId | String | Optional domain reference | notification.NotificationTemplate | Yes | Optional same-module template identity. Current persistence does not FK-protect this field. |
+| templateVersionId | String | Optional domain reference | notification.NotificationTemplateVersion (read/persistence model) | No | Exact immutable rendering-version reference required by Notification DDD for sent/rendered traceability; current persistence does not FK-protect it and the create path permits READY/SCHEDULED without it. |
+| priorityId | String | Value/catalog dependency | NOTIFICATION_PRIORITY | No | Optional Notification-owned priority catalog value. Current evidence defines the `NOTIFICATION_PRIORITY` family, but message creation performs no family/eligibility validation. |
 
 #### notification.NotificationRequest
 
@@ -12214,16 +12214,155 @@ The target baseline cannot mark it APPROVED while mandatory Topology identity an
 
 HMS reconciliation must retain these obligations until explicitly authorized Leak Detection production corrections resolve them or stronger repository evidence changes the governing DDD.
 
-## 74. Current next task
+## 74. HMSR-061 — notification.NotificationMessage review
+
+**Decision:** REVISE  
+**Review code:** HMSR-061  
+**Dependency level:** 2  
+**Bounded context:** notification  
+**Confirmed upstream subject dependencies:** `notification.NotificationRequest`, optional `notification.NotificationTemplate`  
+**Confirmed direct HMS subject dependents:** 1  
+**Transitive HMS subject dependents:** 1
+
+### 74.1 Semantic role
+
+`NotificationMessage` is the Notification-owned concrete delivery payload for one resolved recipient and one channel. It is generated from a NotificationRequest, optionally from a NotificationTemplate, and carries the exact rendered content, delivery priority, lifecycle status, scheduling/expiry timestamps and immutable-rendering trace metadata.
+
+Notification owns message delivery state and rendering/delivery mechanics. The source business module retains ownership of the business state that caused the notification.
+
+### 74.2 Request, recipient and channel integrity
+
+The model requires `requestId`, `recipientId` and `channelId`.
+
+HRA-111 protects same-module row existence with:
 
 ```text
-HMSR-061 — notification.NotificationMessage
+hidra_notification_message.request_id -> hidra_notification_request.id
+hidra_notification_message.recipient_id -> hidra_notification_request_recipient.id
+hidra_notification_message.channel_id -> hidra_notification_channel.id
+```
+
+These are correct same-module ownership relationships.
+
+However, `NotificationRequestRecipient` itself belongs to a request through its own `requestId`. The current message schema protects request existence and recipient existence independently but does not prove that the chosen recipient belongs to the same request recorded by the message.
+
+The active `createNotificationMessage()` path also accepts both IDs independently and performs no consistency lookup.
+
+The authoritative write path must therefore fail closed when `message.requestId` and the selected recipient's owning request differ.
+
+### 74.3 Template and exact-version traceability
+
+The Notification DDD states:
+
+```text
+Rendered payload must be traceable to template version and variables.
+A sent message must reference the exact template version used.
+```
+
+It also defines NotificationTemplateVersion as an immutable version used for reproducible message generation.
+
+The current model makes both `templateId` and `templateVersionId` optional. Neither field is protected by a message-side HRA-111 FK. More importantly, `createNotificationMessage()` can immediately create a message in `READY` or `SCHEDULED` state with `templateVersionId == null`, and READY messages are immediately handed to the asynchronous push port.
+
+That permits delivery-state progression without the exact immutable rendering version required by the DDD.
+
+Where a message is template-rendered, the authoritative creation path must resolve the referenced NotificationTemplateVersion, ensure it belongs to the supplied template when `templateId` is present, and retain exact-version traceability before the message becomes READY/SCHEDULED or is dispatched.
+
+HMSR-061 does not require a template for message forms that the future authorized Notification design may explicitly define as non-template/manual content; current evidence does not authorize inventing that broader restriction.
+
+### 74.4 Required variables before READY
+
+The DDD explicitly requires:
+
+```text
+Required template variables must be present before message is READY.
+```
+
+`NotificationMessageVariable` is persisted as a separate message-owned child model, but the current `createNotificationMessage()` path does not resolve the selected template version's variable schema or verify required message variables before assigning `READY`.
+
+This is a distinct semantic gap from template-version existence: an exact version alone does not prove its required rendering inputs were present.
+
+The authoritative state transition to READY must therefore enforce the template-version variable contract using Notification-owned application/persistence contracts.
+
+### 74.5 Priority semantics
+
+`priorityId` is optional. Notification DDD defines the `NOTIFICATION_PRIORITY` catalog family.
+
+The current create path accepts an arbitrary priority ID, and repository evidence does not show message-side family validation. If populated, the value must resolve to an eligible Notification-owned `NOTIFICATION_PRIORITY` entry rather than merely being treated as an opaque scalar.
+
+HMSR-061 does not require priority to be present on every message.
+
+### 74.6 Message lifecycle and timing
+
+`NotificationMessageStatus` is Notification-owned:
+
+```text
+DRAFT
+READY
+SCHEDULED
+DISPATCHING
+SENT
+DELIVERED
+READ
+ACKNOWLEDGED
+FAILED
+RETRY_PENDING
+SUPPRESSED
+CANCELLED
+EXPIRED
+```
+
+The active creation service chooses `SCHEDULED` when `scheduledAt` is in the future and otherwise chooses `READY`.
+
+Current invariant-classification evidence does not establish a general `scheduledAt <= expiresAt` domain rule for NotificationMessage, so HMSR-061 does not invent one.
+
+The model's `terminalStatus()` helper is consistent with current lifecycle semantics and does not itself authorize additional transition rules.
+
+### 74.7 Rendered content, locale and payload hash
+
+`locale`, rendered subject/body/short-text and `payloadHash` are rendering/result state owned by Notification.
+
+The DDD requires localized/versioned templates and exact traceability but does not require every channel to populate every rendered field. HMSR-061 therefore does not turn optional persistence columns into universal content invariants.
+
+`payloadHash` remains optional trace metadata; current evidence does not establish a mandatory hashing rule for every message.
+
+### 74.8 Delivery and safety boundary
+
+READY messages are passed through `NotificationAsyncPushPort`, with delivery performed by Notification infrastructure. The Notification DDD explicitly states that Notification may inform people but must not actuate equipment, override SCADA, or execute operational control actions.
+
+The current message/delivery architecture remains aligned with that boundary. HMSR-061 records no OT-control changes.
+
+### 74.9 Required revisions
+
+Four evidence-backed obligations remain:
+
+1. **Enforce request/recipient consistency.** A `recipientId` must identify a NotificationRequestRecipient owned by the same `requestId` carried by the message; independent FK existence is insufficient.
+
+2. **Enforce exact template-version traceability before READY/SCHEDULED/dispatch for template-rendered messages.** Resolve `templateVersionId`, preserve its relationship to `templateId`, and prevent a rendered/template-backed message from progressing without the exact immutable version used.
+
+3. **Enforce required template variables before READY.** Validate the selected template version's required variable contract against the message-owned variable set before the message can enter a sendable state.
+
+4. **Validate populated `priorityId` against the `NOTIFICATION_PRIORITY` family and eligibility semantics.**
+
+HMSR-061 does not modify production Java, JPA, Flyway, API/application contracts, tests, Notification templates/variables/catalog data, delivery infrastructure, or provisioned data.
+
+### 74.10 Review conclusion
+
+**REVISE.** `NotificationMessage` is a coherent 17-field Notification-owned delivery model. Mandatory request, recipient and channel row existence is already protected by same-module FKs, its status enum is a genuine Notification lifecycle, and delivery remains separated from source-business ownership and OT actuation.
+
+The target baseline cannot mark it APPROVED while request/recipient consistency is not enforced, template-rendered messages can become READY/SCHEDULED without exact immutable template-version traceability, required template variables are not proven before READY, and populated message priority is not family-validated.
+
+HMS reconciliation must retain these obligations until explicitly authorized Notification production corrections resolve them or stronger repository evidence changes the governing DDD.
+
+## 75. Current next task
+
+```text
+HMSR-062 — telemetry.TrustedTelemetryReading
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review notification NotificationMessage
+docs(model-review): review telemetry TrustedTelemetryReading
 ```
 
-Start HMSR-061 only after HMSR-060 is committed and reported. Do not start HMSR-062 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-062 only after HMSR-061 is committed and reported. Do not start HMSR-063 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

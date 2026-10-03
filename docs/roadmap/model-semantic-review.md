@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 reviewed as REVISE, HMSR-080 reviewed as REVISE, HMSR-081 reviewed as REVISE, HMSR-082 reviewed as REVISE, HMSR-083 approved, HMSR-084 reviewed as REVISE, HMSR-085 reviewed as REVISE, HMSR-086 approved, HMSR-087 reviewed as REVISE, HMSR-088 reviewed as REVISE, HMSR-089 reviewed as REVISE, HMSR-090 reviewed as REVISE, HMSR-091 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 reviewed as REVISE, HMSR-080 reviewed as REVISE, HMSR-081 reviewed as REVISE, HMSR-082 reviewed as REVISE, HMSR-083 approved, HMSR-084 reviewed as REVISE, HMSR-085 reviewed as REVISE, HMSR-086 approved, HMSR-087 reviewed as REVISE, HMSR-088 reviewed as REVISE, HMSR-089 reviewed as REVISE, HMSR-090 reviewed as REVISE, HMSR-091 reviewed as REVISE, HMSR-092 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -283,7 +283,7 @@ Ordering rules applied:
 | HMSR-088 | 4 | organization | OrganizationDelegation | — | organization.Employee, organization.ResponsibilityAssignment | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review organization OrganizationDelegation` |
 | HMSR-089 | 4 | organization | OrganizationHierarchySnapshot | — | organization.Employee | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review organization OrganizationHierarchySnapshot` |
 | HMSR-090 | 4 | organization | ShiftAssignment | — | organization.Employee, organization.OrganizationUnit, organization.Shift | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review organization ShiftAssignment` |
-| HMSR-091 | 4 | risk | RiskEvidenceLink | — | risk.RiskAssessment | 0 | 0 | 1 | — | Planned | `docs(model-review): review risk RiskEvidenceLink` |
+| HMSR-091 | 4 | risk | RiskEvidenceLink | — | risk.RiskAssessment | 0 | 0 | 1 | REVISE | Completed | `docs(model-review): review risk RiskEvidenceLink` |
 | HMSR-092 | 4 | simulation | SimulationCandidateChange | — | simulation.SimulationOptimizationCandidate | 0 | 0 | 0 | — | Planned | `docs(model-review): review simulation SimulationCandidateChange` |
 | HMSR-093 | 4 | simulation | SimulationRecommendation | — | simulation.SimulationOptimizationCandidate, simulation.SimulationRun | 0 | 0 | 0 | — | Planned | `docs(model-review): review simulation SimulationRecommendation` |
 | HMSR-094 | 5 | planning | Nomination | — | party.Party, planning.PlanRevision | 1 | 6 | 2 | — | Planned | `docs(model-review): review planning Nomination` |
@@ -16444,16 +16444,123 @@ The target baseline cannot mark it APPROVED while persistence still permits a nu
 
 HMS reconciliation must retain this obligation until explicitly authorized Organization production work aligns JPA/Flyway nullability with the canonical model or stronger repository evidence changes the governing contract.
 
-## 104. Current next task
+## 104. HMSR-091 — risk.RiskEvidenceLink review
+
+**Decision:** REVISE  
+**Review code:** HMSR-091  
+**Dependency level:** 4  
+**Bounded context:** risk  
+**Confirmed upstream subject dependencies:** mandatory `risk.RiskAssessment`; neutral external evidence tuple owned by source modules  
+**Confirmed direct HMS subject dependents:** 0  
+**Transitive HMS subject dependents:** 0
+
+### 104.1 Semantic role
+
+`RiskEvidenceLink` is the Risk-owned association between a governed `RiskAssessment` and evidence owned by another bounded context.
+
+Risk owns the fact that a piece of evidence supports an assessment. It does not own the underlying Monitoring, Alarm, Incident, HSE, Integrity, Assets, Simulation, Telemetry, Custody, Documents, or Audit record.
+
+### 104.2 Risk-assessment integrity
+
+`riskAssessmentId` is mandatory and same-module.
+
+HRA-111 already protects it with:
 
 ```text
-HMSR-091 — risk.RiskEvidenceLink
+hidra_risk_evidence_link.risk_assessment_id
+  -> hidra_risk_assessment.id
+```
+
+The domain constructor also rejects blank `riskAssessmentId`.
+
+No further basic existence correction is required for the parent Risk assessment.
+
+### 104.3 External evidence identity tuple
+
+The Risk DDD defines the external evidence identity through:
+
+```text
+evidenceModule
+evidenceType
+evidenceId
+```
+
+and lists concrete external evidence examples such as MonitoringEvaluation, RiskSignal, Alarm, Incident, Integrity evidence, MaintenanceWorkOrder, SimulationRun, TelemetryReading, CustodyTransferTicket, Document and AuditEvent.
+
+The live domain currently rejects blank `evidenceId` but only normalizes `evidenceModule` and `evidenceType`; both can therefore become null.
+
+JPA/Flyway persist `evidenceModule` and `evidenceType` as `NOT NULL`.
+
+For this model, module/type are not incidental labels: together with `evidenceId` they identify which owner boundary can resolve the evidence. The authoritative domain/application boundary must reject blank module/type values rather than relying on persistence failure.
+
+### 104.4 Owner-controlled evidence validation
+
+The Risk DDD explicitly defines owner-specific outbound lookup ports, including:
+
+```text
+RiskTelemetryEvidenceLookupPort
+RiskMonitoringEvidenceLookupPort
+RiskAlarmEvidenceLookupPort
+RiskIncidentEvidenceLookupPort
+RiskIntegrityEvidenceLookupPort
+RiskHseEvidenceLookupPort
+RiskAssetEvidenceLookupPort
+RiskSimulationEvidenceLookupPort
+RiskDocumentReferencePort
+```
+
+and states that Risk must consume evidence from other contexts without taking over their state.
+
+The live `RiskApplicationService.addRiskEvidence()` copies the evidence tuple directly from the command and saves it; it does not resolve or validate the referenced external evidence through an owner-controlled port.
+
+The authoritative add-evidence boundary should therefore dispatch validation according to the supported evidence module/type and fail closed when the referenced evidence cannot be resolved or is not eligible for Risk linkage.
+
+No cross-module database foreign key should be introduced.
+
+### 104.5 Evidence snapshots
+
+`evidenceCodeSnapshot`, `evidenceLabelSnapshot`, `evidenceTimestamp`, `evidenceHash`, and `evidenceSummary` are appropriate historical/context snapshots attached to the link.
+
+They should remain snapshots rather than becoming alternate ownership of source-module business data.
+
+Current Risk evidence does not require every snapshot field to be populated, so HMSR-091 does not invent such a requirement.
+
+### 104.6 Duplicate-link semantics
+
+Current Risk DDD evidence reviewed for HMSR-091 does not define a uniqueness rule such as one link per `(riskAssessmentId, evidenceModule, evidenceType, evidenceId)`.
+
+HMSR-091 therefore does not invent a database uniqueness constraint or idempotency policy for duplicate evidence links.
+
+If a current Risk roadmap/application contract later establishes idempotent evidence linking, HMS-006 may reconcile it then.
+
+### 104.7 Required revisions
+
+Two evidence-backed production obligations remain:
+
+1. **Enforce the complete external evidence identity tuple before persistence.** `evidenceModule`, `evidenceType`, and `evidenceId` must be nonblank.
+
+2. **Validate external evidence through owner-controlled Risk lookup/reference ports before saving the link.** Supported module/type combinations must resolve to existing/eligible source evidence; preserve scalar IDs and snapshots and do not introduce cross-module database FKs.
+
+HMSR-091 does not modify production Java, JPA, Flyway, API/application contracts, tests, Risk data, source-module data, or provisioned data.
+
+### 104.8 Review conclusion
+
+**REVISE.** `RiskEvidenceLink` correctly keeps Risk ownership limited to the association and already protects the parent `RiskAssessment` with a same-module FK.
+
+The target baseline cannot mark it APPROVED while the live domain permits incomplete module/type evidence identity and the live add-evidence use case accepts external evidence without owner-controlled resolution despite the DDD's explicit lookup-port architecture.
+
+HMS reconciliation must retain these obligations until explicitly authorized Risk production corrections resolve them or stronger repository evidence changes the governing Risk contract.
+
+## 105. Current next task
+
+```text
+HMSR-092 — simulation.SimulationCandidateChange
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review risk RiskEvidenceLink
+docs(model-review): review simulation SimulationCandidateChange
 ```
 
-Start HMSR-091 only after HMSR-090 is committed and reported. Do not start HMSR-092 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-092 only after HMSR-091 is committed and reported. Do not start HMSR-093 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -246,7 +246,7 @@ Ordering rules applied:
 | HMSR-051 | 2 | workflow | WorkflowStep | SCC-02 | workflow.WorkflowDefinition, workflow.WorkflowStepAssignmentRule | 5 | 35 | 0 | REVISE | Completed | `docs(model-review): review workflow WorkflowStep` |
 | HMSR-052 | 2 | workflow | WorkflowStepAssignmentRule | SCC-02 | organization.OrganizationUnit, workflow.WorkflowDefinition, workflow.WorkflowStep | 1 | 35 | 0 | REVISE | Completed | `docs(model-review): review workflow WorkflowStepAssignmentRule` |
 | HMSR-053 | 2 | organization | AdministrativeLocality | — | organization.AdministrativeDistrict | 2 | 15 | 0 | APPROVED | Completed | `docs(model-review): review organization AdministrativeLocality` |
-| HMSR-054 | 2 | assets | MaintainableAsset | SCC-03 | assets.MaintainableAsset, organization.OrganizationUnit, party.Party | 3 | 3 | 4 | — | Planned | `docs(model-review): review assets MaintainableAsset` |
+| HMSR-054 | 2 | assets | MaintainableAsset | SCC-03 | assets.MaintainableAsset, organization.OrganizationUnit, party.Party | 3 | 3 | 4 | REVISE | Completed | `docs(model-review): review assets MaintainableAsset` |
 | HMSR-055 | 2 | simulation | SimulationRun | — | simulation.SimulationScenario | 2 | 3 | 2 | — | Planned | `docs(model-review): review simulation SimulationRun` |
 | HMSR-056 | 2 | integration | ExternalSystem | — | organization.OrganizationUnit | 2 | 2 | 0 | — | Planned | `docs(model-review): review integration ExternalSystem` |
 | HMSR-057 | 2 | reporting | ReportRequest | — | organization.OrganizationUnit, reporting.ReportDefinition | 1 | 2 | 1 | — | Planned | `docs(model-review): review reporting ReportRequest` |
@@ -1680,15 +1680,15 @@ Confirmed subject-model graph edges at this stage: **165**. These are semantic c
 | Field | Declared type | Classification | Resolved target | Graph edge | Notes |
 |---|---|---|---|:---:|---|
 | id | String | Self identifier | — | No | Primary identity of the current model. |
-| assetTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
-| topologyAssetId | String | Cross-module reference | POLYMORPHIC | No | Target is selected by companion type/module metadata; no single subject-model edge. |
-| parentAssetId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
-| criticalityId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
-| ownerOrganizationUnitId | String | Cross-module reference | organization.OrganizationUnit | Yes | Unambiguous reference to a subject model in another bounded context. |
-| manufacturerPartyId | String | Cross-module reference | party.Party | Yes | Unambiguous reference to a subject model in another bounded context. |
-| modelId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
-| serialIdentityId | String | Unresolved | — | No | Reference target is outside or absent from the 123 subject-model set; preserve for HMS-004 review. |
-| createdByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+| assetTypeId | String | Domain reference | assets.AssetType (read/persistence model) | No | Mandatory same-module Assets type reference outside the 123 HMS subject set; HRA-111 protects `asset_type_id -> hidra_asset_type.id`. |
+| topologyAssetId | String | Cross-module typed reference | POLYMORPHIC_TOPOLOGY_ASSET | No | Mandatory target selected by `topologyAssetTypeCode`; Assets must validate the typed target through Topology owner contracts rather than a cross-module FK. |
+| parentAssetId | String | Domain self-reference | assets.MaintainableAsset | Yes | Optional self-reference forming SCC-03; constructor prevents direct self-reference but populated parent existence is not currently protected. |
+| criticalityId | String | Value/catalog dependency | ASSET_CRITICALITY_OR_VALUE | No | Optional classification/value dependency; current evidence does not prove one exact catalog family. |
+| ownerOrganizationUnitId | String | Cross-module reference | organization.OrganizationUnit | Yes | Optional Organization-owned owner reference; no cross-module DB FK is appropriate and active registration currently does not validate populated IDs. |
+| manufacturerPartyId | String | Cross-module reference | party.Party | Yes | Optional Party-owned manufacturer identity; no cross-module DB FK is appropriate and active registration currently does not validate populated IDs. |
+| modelId | String | Domain reference | assets.AssetModel (read/persistence model) | No | Optional same-module AssetModel reference outside the 123 HMS subject set; populated-reference integrity is not currently protected. |
+| serialIdentityId | String | Domain reference | assets.AssetSerialIdentity (read/persistence model) | No | Optional same-module AssetSerialIdentity reference outside the 123 HMS subject set; populated-reference integrity is not currently protected. |
+| createdByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Optional actor provenance reference; no Actor HMS subject target and no cross-module DB FK is appropriate. |
 
 #### assets.MaintenanceWorkOrder
 
@@ -11291,16 +11291,176 @@ No evidence-backed production correction obligation remains for HMSR-053.
 
 HMSR-053 does not modify production Java, JPA, Flyway, application/API contracts, tests, locality master data, district/state data, employee addresses, or provisioned data.
 
-## 67. Current next task
+## 67. HMSR-054 — assets.MaintainableAsset review
+
+**Decision:** REVISE  
+**Review code:** HMSR-054  
+**Dependency level:** 2  
+**Bounded context:** assets  
+**SCC:** SCC-03 through optional `parentAssetId` self-reference  
+**Confirmed upstream subject dependencies:** optional `organization.OrganizationUnit`, optional `party.Party`, plus typed Topology ownership outside a single HMS edge  
+**Confirmed direct HMS subject dependents:** 3  
+**Transitive HMS subject dependents:** 3
+
+### 67.1 Semantic role and ownership boundary
+
+`MaintainableAsset` is the Assets-owned maintainability/lifecycle representation of a physical or logical asset whose topology identity remains owned by Topology.
+
+The Assets DDD is explicit:
 
 ```text
-HMSR-054 — assets.MaintainableAsset
+Assets owns maintainability and maintenance lifecycle.
+Topology owns the physical/logical topology object.
+Assets references topology through a neutral reference.
+```
+
+This separation is correct and must be preserved during correction work.
+
+### 67.2 Field semantics
+
+The 25-field model contains stable asset identity (`id`, `assetNumber`, `assetCode`), display name, Assets-owned type/lifecycle state, typed Topology reference plus snapshots, optional parent hierarchy, criticality, Organization owner, Party manufacturer, AssetModel/AssetSerialIdentity references, lifecycle timestamps, actor provenance, and audit timestamps.
+
+The canonical constructor already requires nonblank ID, asset number, asset code, asset type ID, topology asset type code, topology asset ID, status and `registeredAt`. It also rejects direct self-reference where `parentAssetId == id`.
+
+### 67.3 AssetType integrity is already protected
+
+`assetTypeId` is mandatory and resolves to the Assets-owned retained `AssetType` model.
+
+HRA-111 installs and validates:
+
+```text
+asset_type_id -> hidra_asset_type.id
+```
+
+Therefore the mandatory same-module type identity is fail-closed at persistence.
+
+Current evidence does not establish an additional catalog-family rule beyond the concrete AssetType target.
+
+### 67.4 Typed Topology reference is mandatory but unvalidated
+
+The domain requires both:
+
+```text
+topologyAssetTypeCode
+topologyAssetId
+```
+
+and the Assets DDD defines them as the neutral Topology reference used to link maintainability state to a physical/logical topology object.
+
+`AssetsApplicationService.registerMaintainableAsset()` accepts both values and persists the MaintainableAsset directly. No Topology-owned lookup/validation contract is invoked.
+
+A cross-module database FK is intentionally inappropriate because `topologyAssetTypeCode + topologyAssetId` is polymorphic and Topology remains the owner.
+
+Therefore the mandatory typed Topology reference can currently identify a nonexistent asset.
+
+### 67.5 Self-parent reference integrity
+
+`parentAssetId` is an optional self-reference to another MaintainableAsset and forms SCC-03.
+
+The canonical constructor correctly rejects the trivial direct cycle:
+
+```text
+parentAssetId == id
+```
+
+but no nullable same-table FK or application existence lookup currently protects a populated parent ID.
+
+HMSR-054 does not invent deep-cycle detection or tree-depth rules; current evidence supports only existence protection plus the already-implemented direct self-reference prohibition.
+
+### 67.6 Organization owner boundary
+
+`ownerOrganizationUnitId` is an optional unambiguous reference to `organization.OrganizationUnit`, accompanied by a name snapshot.
+
+The registration service accepts and persists the supplied ID/snapshot without resolving the Organization-owned target.
+
+Assets must not create a database FK to Organization. When populated, owner identity should be validated through an Organization-owned application/lookup contract or equivalent fail-closed boundary.
+
+Current evidence does not require every MaintainableAsset to have an Organization owner, so HMSR-054 does not make the field mandatory.
+
+### 67.7 Party manufacturer boundary
+
+`manufacturerPartyId` is an optional unambiguous reference to `party.Party`, accompanied by a manufacturer-name snapshot.
+
+The registration service persists the supplied value without Party-owner validation.
+
+No cross-module database FK should be added. When populated, the Party identity must resolve through the Party owner boundary.
+
+HMSR-054 does not invent manufacturer-role eligibility or require every maintainable asset to identify a manufacturer.
+
+### 67.8 AssetModel and AssetSerialIdentity references
+
+`modelId` and `serialIdentityId` resolve to retained Assets-owned models `AssetModel` and `AssetSerialIdentity`, respectively.
+
+Both are optional, but current persistence has no demonstrated nullable FK and the registration service performs no lookup.
+
+Therefore populated values can dangle even though their targets are within the Assets bounded context.
+
+These references should be protected by nullable same-module FKs, application validation, or equivalent fail-closed integrity.
+
+### 67.9 Criticality semantics remain conservative
+
+`criticalityId` is optional. Current Assets DDD evidence does not define one exact catalog namespace/family for this field.
+
+HMSR-054 therefore retains it as a value/catalog dependency and does not invent `ASSET_CRITICALITY` family enforcement without stronger repository evidence.
+
+### 67.10 Lifecycle timestamps deliberately not over-specified
+
+The model stores `registeredAt`, optional `installedAt`, optional `commissionedAt`, and optional `retiredAt`.
+
+Current Assets DDD and invariant-classification evidence reviewed for HMSR-054 do not define ordering relationships among those four timestamps.
+
+HMSR-054 therefore does not invent `registered <= installed <= commissioned <= retired`, status/timestamp coupling, or mandatory retirement timestamps.
+
+### 67.11 Asset identity and display rules deliberately not invented
+
+`assetNumber` and `assetCode` are mandatory, but the base schema does not establish uniqueness and the current Assets DDD does not explicitly state global or scoped uniqueness.
+
+`assetName` is required by persistence but classified consistently with repository policy as generic human-readable text rather than an intrinsic constructor invariant absent stronger DDD evidence.
+
+No new uniqueness or name-requiredness obligation is recorded.
+
+### 67.12 Required revisions
+
+Five evidence-backed production correction obligations remain:
+
+1. **Validate the mandatory typed Topology reference.** `topologyAssetTypeCode + topologyAssetId` must resolve through a Topology-owned contract before registration/update paths persist a new linkage; do not add a cross-module FK.
+
+2. **Protect populated `parentAssetId`.** Preserve SCC-03 and the existing direct-self guard, while failing closed when a supplied parent MaintainableAsset does not exist.
+
+3. **Validate populated `ownerOrganizationUnitId` through the Organization owner boundary.** Do not introduce a cross-module database FK.
+
+4. **Validate populated `manufacturerPartyId` through the Party owner boundary.** Do not introduce a cross-module database FK or invent manufacturer-role eligibility.
+
+5. **Protect populated `modelId` and `serialIdentityId` same-module references.** Use nullable same-module FKs, application validation, or equivalent fail-closed integrity.
+
+HMSR-054 does not modify production Java, JPA, Flyway, application/API contracts, tests, asset data, topology data, Organization data, Party data, or provisioned data.
+
+### 67.13 SONATRACH/TRC operational interpretation
+
+For SONATRACH/TRC, MaintainableAsset is the maintenance/lifecycle view used to plan and execute work on equipment and other maintainable physical assets while Topology remains the authoritative physical network owner.
+
+Broken links to Topology, organizational ownership, manufacturer identity, model/serial master data, or parent assets weaken maintenance traceability and can propagate incorrect work-order context.
+
+The correct architecture is therefore strong reference validation without collapsing bounded contexts or introducing cross-module database coupling.
+
+### 67.14 Review conclusion
+
+**REVISE.** `MaintainableAsset` has a coherent Assets/Topology ownership split, mandatory AssetType FK protection, correct direct self-reference guard, lifecycle status semantics, and appropriately neutral cross-module snapshots/references.
+
+The target baseline cannot mark it APPROVED while mandatory Topology linkage and several optional but unambiguous owner/same-module references can be persisted without fail-closed target validation.
+
+HMS reconciliation must retain these reference-integrity obligations until explicitly authorized Assets production corrections resolve them or stronger repository evidence changes the reference semantics.
+
+## 68. Current next task
+
+```text
+HMSR-055 — simulation.SimulationRun
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review assets MaintainableAsset
+docs(model-review): review simulation SimulationRun
 ```
 
-Start HMSR-054 only after HMSR-053 is committed and reported. Do not start HMSR-055 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-055 only after HMSR-054 is committed and reported. Do not start HMSR-056 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

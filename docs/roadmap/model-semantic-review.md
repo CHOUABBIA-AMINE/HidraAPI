@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -214,7 +214,7 @@ Ordering rules applied:
 | HMSR-019 | 0 | configuration | ConfigurationDefinition | — | — | 1 | 1 | 1 | REVISE | Completed | `docs(model-review): review configuration ConfigurationDefinition` |
 | HMSR-020 | 0 | custody | CustodyMeasurementPeriod | — | — | 1 | 1 | 2 | REVISE | Completed | `docs(model-review): review custody CustodyMeasurementPeriod` |
 | HMSR-021 | 0 | integrity | PipelineDefect | — | — | 1 | 1 | 1 | REVISE | Completed | `docs(model-review): review integrity PipelineDefect` |
-| HMSR-022 | 0 | organization | Position | — | — | 1 | 1 | 0 | — | Planned | `docs(model-review): review organization Position` |
+| HMSR-022 | 0 | organization | Position | — | — | 1 | 1 | 0 | REVISE | Completed | `docs(model-review): review organization Position` |
 | HMSR-023 | 0 | organization | Shift | — | — | 1 | 1 | 0 | — | Planned | `docs(model-review): review organization Shift` |
 | HMSR-024 | 0 | topology | PipelineSystem | — | — | 1 | 1 | 0 | — | Planned | `docs(model-review): review topology PipelineSystem` |
 | HMSR-025 | 0 | analytics | AnalyticsInsight | — | — | 0 | 0 | 3 | — | Planned | `docs(model-review): review analytics AnalyticsInsight` |
@@ -5785,16 +5785,197 @@ A recorded source finding must remain traceable to real Integrity evidence if po
 
 The target baseline cannot mark it APPROVED while a non-null `sourceFindingId` can persist without demonstrated referential protection to `InspectionFinding`. HMS reconciliation must retain this provenance-integrity obligation until an explicitly authorized Integrity correction task resolves it or the target semantics are explicitly changed.
 
-## 35. Current next task
+## 35. HMSR-022 — organization.Position review
+
+**Decision:** REVISE  
+**Review code:** HMSR-022  
+**Dependency level:** 0  
+**Bounded context:** organization  
+**Confirmed upstream subject dependencies:** none  
+**Confirmed direct dependents:** 1 — `organization.EmployeeAssignment` through `positionId`  
+**Transitive dependents:** 1  
+**Unresolved/non-subject references:** 0
+
+### 35.1 Semantic role and ordering rationale
+
+`Position` is the Organization-owned operational function/catalog identity used when assigning an employee to an organization unit. It is not an Identity `Role`, does not grant permissions by itself, and does not own operational-scope responsibility.
+
+It is Level 0 because it has no upstream HMS subject-model dependency. `EmployeeAssignment` is its sole direct HMS subject dependent through mandatory `positionId`.
+
+The current Organization architecture is explicit that:
+
+- Identity owns users, roles, permissions and access policy;
+- Organization owns employees, units, positions, assignments and reporting lines;
+- `EmployeeAssignment` is the employee-unit-position/tenure association;
+- operational authority belongs separately to `ResponsibilityAssignment`, so holding a Position must not be treated as automatic authorization.
+
+### 35.2 Field semantics
+
+| Field | Type | Mandatory / optional | Reviewed meaning |
+|---|---|---|---|
+| `id` | `String` | Mandatory | Stable Position identity and persistence primary key. |
+| `code` | `String` | Mandatory | Stable language-neutral Organization business code. It is normalized through `OrganizationCode`. |
+| `titleAr` | `String` | Optional localized text | Arabic position title. |
+| `titleFr` | `String` | Optional localized text | French position title. |
+| `titleEn` | `String` | Optional localized text | English position title. |
+| `level` | `PositionLevel` | Mandatory in the domain model | Organizational/function level: `EXECUTIVE`, `MANAGER`, `SUPERVISOR`, `OPERATOR`, `ENGINEER`, `TECHNICIAN`, or `ADMINISTRATIVE`. |
+| `descriptionAr` | `String` | Optional localized text | Arabic position description. |
+| `descriptionFr` | `String` | Optional localized text | French position description. |
+| `descriptionEn` | `String` | Optional localized text | English position description. |
+| `status` | `PositionStatus` | Mandatory | Position lifecycle state: `ACTIVE`, `INACTIVE`, or `DEPRECATED`. |
+| `createdAt` | `Instant` | Persistence-required audit timestamp | Creation timestamp. |
+| `updatedAt` | `Instant` | Persistence-required audit timestamp | Last-update timestamp. |
+
+The compact constructor already:
+
+- requires nonblank `id`;
+- requires and canonicalizes `code` through `OrganizationCode`;
+- requires non-null `level`;
+- requires non-null `status`;
+- normalizes all localized title/description fields by trimming and converting blanks to `null`.
+
+### 35.3 Multilingual ownership and storage model
+
+The current authoritative Organization roadmap defines same-entity multilingual storage:
 
 ```text
-HMSR-022 — organization.Position
+Arabic  -> *Ar
+French  -> *Fr
+English -> *En
+```
+
+`Position` complies with that policy through complete title and description triplets:
+
+```text
+titleAr / titleFr / titleEn
+descriptionAr / descriptionFr / descriptionEn
+```
+
+Repository guardrails explicitly verify these triplets in both the domain record and `PositionJpaEntity`. The embedded-multilingual migration added `description_ar`, `description_fr`, and `description_en`, and the later compatibility-retirement migration removed the legacy ambiguous `description` column only after fail-closed parity checks.
+
+Current Organization tests also prevent the retired compatibility column from reappearing. Therefore HMSR-022 finds no multilingual-model revision obligation.
+
+The repository does not state that all three localized titles/descriptions must be non-null for every row. HMSR-022 therefore does not invent a three-language completeness constraint at construction time.
+
+### 35.4 Position code semantics
+
+`Position.code` is a stable Organization business code and is validated by `OrganizationCode`, which:
+
+- rejects null/blank input;
+- trims whitespace;
+- normalizes letters to upper case with `Locale.ROOT`;
+- deliberately does not invent a restrictive character set because existing authoritative Organization codes may use stable separators.
+
+The Organization roadmap explicitly requires a valid position code, and the current domain satisfies that requirement.
+
+No current Position-specific DDD, schema or application contract reviewed here establishes a uniqueness scope for `Position.code`. The base schema contains a normal index on `hidra_org_position(code)`, not a unique constraint. HMSR-022 therefore does not invent global or scoped code uniqueness.
+
+### 35.5 EmployeeAssignment dependency and authorization boundary
+
+The validated HMS graph contains:
+
+```text
+EmployeeAssignment.positionId
+    -> Position.id
+```
+
+`EmployeeAssignment.positionId` is mandatory in both domain and JPA state.
+
+ORG-046/HRA internal-reference hardening installs and preserves:
+
+```text
+fk_org_employee_assignment_position
+  FOREIGN KEY (position_id)
+  REFERENCES hidra_org_position(id)
+  ON DELETE RESTRICT
+```
+
+so an assignment cannot point to a missing Position at the database boundary.
+
+This relationship means Position supplies assignment/function identity only. The accepted Organization architecture explicitly separates operational responsibility into `ResponsibilityAssignment`; position membership must not be interpreted as an implicit asset authorization or Identity role.
+
+No current repository rule reviewed by HMSR-022 states that only `ACTIVE` positions may be assigned, nor defines exact Position lifecycle transitions. Those rules are therefore not invented here.
+
+### 35.6 Domain/persistence inconsistency — mandatory level versus nullable storage
+
+The strongest confirmed defect is a direct domain/persistence mismatch.
+
+The authoritative domain constructor states:
+
+```text
+if (level == null) {
+    throw new InvalidOrganizationValueException("Position level is required.");
+}
+```
+
+but the persistence mapping is:
+
+```text
+@Column(name = "level", length = 80)
+private PositionLevel level;
+```
+
+with no `nullable = false`, and the base schema defines:
+
+```text
+level varchar(80)
+```
+
+without `NOT NULL`.
+
+No later Organization migration reviewed by HMSR-022 makes `hidra_org_position.level` non-null.
+
+This permits database state that the canonical domain model cannot reconstruct: `OrganizationPersistenceMapper.toDomain()` must call the Position constructor, which rejects a null level.
+
+The current authoritative Organization roadmap also records the project as greenfield with no deployed legacy database/legacy rows for the Organization migration workstream. HMSR-022 therefore found no repository-backed legacy-null compatibility requirement that would justify retaining nullable persistence while the domain declares the field mandatory.
+
+### 35.7 Persistence/application consistency otherwise
+
+The live Position domain and JPA models agree on all 12 declared components.
+
+The final multilingual persistence shape is consistent with the current domain:
+
+- `id`, `code`, `status`, `created_at`, and `updated_at` are non-null in the base table;
+- title and description language fields remain nullable;
+- the legacy unqualified `description` column is retired;
+- `level` is the sole reviewed field where the canonical domain's mandatory semantics are weaker at the persistence boundary.
+
+`PositionRepositoryPort` exposes save/find-by-ID operations, but current Organization public inbound-use-case inventory does not expose Position creation as an active standalone REST/application operation. That absence does not make the model invalid because Position remains a referenced Organization master/catalog model used by EmployeeAssignment.
+
+Generic `createdAt`/`updatedAt` nullability remains a persistence/application-boundary concern under the HRA invariant classification and is not promoted into a new constructor rule.
+
+### 35.8 Required revision
+
+One evidence-backed correction is required:
+
+1. **Align Position level nullability across domain and persistence.** Because the canonical Position domain model requires `PositionLevel`, the JPA mapping and final schema must not admit `NULL` `level` values unless a separately approved semantic change makes Position level optional. The correction must use an additive migration and appropriate persistence/JPA alignment in a separately authorized Organization task; HMSR-022 does not modify applied migrations or production code.
+
+No additional revision is recorded for title completeness, description completeness, code uniqueness, status transitions, assignment eligibility, authorization or audit timestamps because current repository evidence does not prove those stronger rules.
+
+### 35.9 SONATRACH/TRC operational interpretation
+
+For SONATRACH/TRC operations, Position represents the organizational function an employee holds — for example operator, engineer, supervisor or manager — within an Organization assignment. It is distinct from a security role and from an operational responsibility mandate.
+
+A Position's level is part of its canonical organizational classification. Persisting a Position without that level while the domain declares it mandatory creates an unusable master-data row and weakens assignment semantics.
+
+Multilingual titles/descriptions support Arabic, French and English user-facing organization data directly on the Position entity, consistent with the current Organization storage policy.
+
+### 35.10 Review conclusion
+
+**REVISE.** `Position` has a coherent 12-field model, correct Level-0 placement, correct same-entity multilingual design, valid code normalization, correct separation from Identity authorization, and a database-protected downstream `EmployeeAssignment.positionId` relationship.
+
+The target baseline cannot mark it APPROVED while `Position.level` is mandatory in the canonical domain but nullable in JPA/schema. HMS reconciliation must retain this nullability-alignment obligation until an explicitly authorized Organization correction task resolves it or the Position semantics are explicitly changed.
+
+## 36. Current next task
+
+```text
+HMSR-023 — organization.Shift
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review organization Position
+docs(model-review): review organization Shift
 ```
 
-Start HMSR-022 only after HMSR-021 is committed and reported. Do not start HMSR-023 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-023 only after HMSR-022 is committed and reported. Do not start HMSR-024 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

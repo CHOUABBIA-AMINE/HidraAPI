@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -221,7 +221,7 @@ Ordering rules applied:
 | HMSR-026 | 0 | analytics | AnalyticsProjectionRun | — | — | 0 | 0 | 1 | REVISE | Completed | `docs(model-review): review analytics AnalyticsProjectionRun` |
 | HMSR-027 | 0 | analytics | DigitalTwinReadinessAssessment | — | — | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review analytics DigitalTwinReadinessAssessment` |
 | HMSR-028 | 0 | configuration | FeatureFlag | — | — | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review configuration FeatureFlag` |
-| HMSR-029 | 0 | custody | CustodyDiscrepancy | — | — | 0 | 0 | 1 | — | Planned | `docs(model-review): review custody CustodyDiscrepancy` |
+| HMSR-029 | 0 | custody | CustodyDiscrepancy | — | — | 0 | 0 | 1 | REVISE | Completed | `docs(model-review): review custody CustodyDiscrepancy` |
 | HMSR-030 | 0 | organization | OrganizationContactPoint | — | — | 0 | 0 | 0 | — | Planned | `docs(model-review): review organization OrganizationContactPoint` |
 | HMSR-031 | 0 | organization | ReportingLine | — | — | 0 | 0 | 0 | — | Planned | `docs(model-review): review organization ReportingLine` |
 | HMSR-032 | 0 | risk | RiskMatrixCell | — | — | 0 | 0 | 2 | — | Planned | `docs(model-review): review risk RiskMatrixCell` |
@@ -1781,9 +1781,9 @@ Confirmed subject-model graph edges at this stage: **165**. These are semantic c
 | Field | Declared type | Classification | Resolved target | Graph edge | Notes |
 |---|---|---|---|:---:|---|
 | id | String | Self identifier | — | No | Primary identity of the current model. |
-| reconciliationId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
-| discrepancyTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
-| quantityUnitId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| reconciliationId | String | Domain reference | custody.CustodyReconciliation (read/persistence model) | No | HMSR-029 stronger Custody DDD + HRA-111 evidence resolves this required same-module reference to `hidra_custody_reconciliation`; target is outside the 123 HMS subject set. |
+| discrepancyTypeId | String | Value/catalog dependency | custody.CustodyCatalogEntry (read/persistence model) | No | HMSR-029 HRA-111 evidence resolves this required same-module controlled-value reference to `hidra_custody_catalog_entry`; target is outside the HMS subject set. |
+| quantityUnitId | String | Optional value/catalog dependency | custody.CustodyCatalogEntry (read/persistence model) | No | HMSR-029 stronger same-module quantity-unit persistence pattern resolves this optional controlled-value reference to the Custody catalog; no HMS graph edge. |
 | assignedActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
 
 #### custody.CustodyMeasurementPeriod
@@ -7100,16 +7100,191 @@ The target baseline cannot mark it APPROVED while `owningModule` is required by 
 
 HMS reconciliation must retain this ownership-requiredness obligation until an explicitly authorized Configuration correction task resolves it or stronger repository evidence explicitly changes the final FeatureFlag ownership semantics.
 
-## 42. Current next task
+## 42. HMSR-029 — custody.CustodyDiscrepancy review
+
+**Decision:** REVISE  
+**Review code:** HMSR-029  
+**Dependency level:** 0  
+**Bounded context:** custody  
+**Confirmed upstream subject dependencies:** none  
+**Confirmed direct HMS subject dependents:** 0  
+**Transitive HMS subject dependents:** 0  
+**Unresolved/non-subject references:** 1 — the former unresolved `reconciliationId` is now resolved; optional `quantityUnitId` remains a non-subject catalog dependency
+
+### 42.1 Semantic role and ordering rationale
+
+`CustodyDiscrepancy` is the Custody-owned exception/deviation record attached to an official custody reconciliation. It records the discrepancy identity/type, optional quantity difference and unit, investigation/resolution narrative, optional assigned actor, lifecycle status and timestamps.
+
+It is Level 0 because its required same-module prerequisites — `CustodyReconciliation` and `CustodyCatalogEntry` — are retained Custody read/persistence models outside the 123 HMS subject set. It has no direct HMS subject dependent.
+
+The active Custody DDD keeps this model inside official accepted-transfer governance: Custody owns reconciliation and discrepancies while Telemetry owns measurement truth, Planning owns expected state, and Finance/ERP remains outside Custody.
+
+### 42.2 Field semantics
+
+| Field | Type | Mandatory / optional | Reviewed meaning |
+|---|---|---|---|
+| `id` | `String` | Mandatory | Stable discrepancy identity and persistence primary key. |
+| `discrepancyNumber` | `String` | Mandatory | Business identifier for the discrepancy record. No repository evidence establishes a uniqueness scope. |
+| `reconciliationId` | `String` | Mandatory | Same-module reference to the CustodyReconciliation that produced/owns the discrepancy context. |
+| `discrepancyTypeId` | `String` | Mandatory | Custody-owned controlled classification reference backed by CustodyCatalogEntry. |
+| `status` | `CustodyDiscrepancyStatus` | Mandatory | Lifecycle state: `OPEN`, `UNDER_REVIEW`, `ACCEPTED`, `REJECTED`, `RESOLVED`, `CLOSED`, or `CANCELLED`. |
+| `differenceQuantity` | `BigDecimal` | Optional | Quantity difference associated with the discrepancy when applicable. |
+| `quantityUnitId` | `String` | Optional | Custody-owned controlled unit reference associated with `differenceQuantity` when supplied. |
+| `description` | `String` | Optional | Human-readable discrepancy description. |
+| `rootCauseText` | `String` | Optional | Recorded root-cause analysis text. |
+| `resolutionText` | `String` | Optional | Recorded resolution narrative. |
+| `assignedActorId` | `String` | Optional cross-module actor reference | Identity/platform actor assigned to discrepancy handling when applicable. |
+| `openedAt` | `Instant` | Mandatory | Discrepancy opening timestamp. |
+| `resolvedAt` | `Instant` | Optional | Resolution timestamp when recorded. |
+| `closedAt` | `Instant` | Optional | Closure timestamp when recorded. |
+| `createdAt` | `Instant` | Persistence-required audit timestamp | Creation timestamp. |
+| `updatedAt` | `Instant` | Persistence-required audit timestamp | Last-update timestamp. |
+
+The compact constructor already rejects blank `id`, `discrepancyNumber`, `reconciliationId`, and `discrepancyTypeId`; requires non-null `status` and `openedAt`; enforces `openedAt <= closedAt` when a closure timestamp exists; and normalizes textual identifiers/narrative fields.
+
+### 42.3 Reconciliation dependency resolution
+
+HMS-003 left `reconciliationId` unresolved. Stronger current evidence resolves it unambiguously:
+
+- Custody DDD owns both CustodyReconciliation and CustodyDiscrepancy;
+- `CustodyReconciliation` is retained as a Custody read/persistence model outside the HMS subject set;
+- `CustodyDiscrepancyJpaEntity.reconciliationId` maps to mandatory `hidra_custody_discrepancy.reconciliation_id`;
+- HRA-111 installs `fk_hra111_custody_011`;
+- that FK links `reconciliation_id -> hidra_custody_reconciliation(id)` with `ON DELETE RESTRICT`.
+
+Therefore `reconciliationId` is a required same-module domain reference to a non-HMS Custody model. No subject-model graph edge is added.
+
+The active open-discrepancy service does not explicitly query the reconciliation before save, but the database FK already provides fail-closed row-existence protection. HMSR-029 does not require duplicate application existence validation solely because the service does not perform a lookup.
+
+### 42.4 Discrepancy-type controlled-value semantics
+
+HMS-003 classified `discrepancyTypeId` generically as a catalog/value dependency. HRA-111 now proves its concrete same-module persistence target:
 
 ```text
-HMSR-029 — custody.CustodyDiscrepancy
+hidra_custody_discrepancy.discrepancy_type_id
+    -> hidra_custody_catalog_entry.id
+```
+
+through `fk_hra111_custody_010` with `ON DELETE RESTRICT`.
+
+That is sufficient to resolve the field to CustodyCatalogEntry without adding an HMS graph edge.
+
+Current Custody DDD does not name a specific catalog family/code such as `DISCREPANCY_TYPE`, nor define active-entry eligibility. HMSR-029 therefore does not invent a catalog-name rule beyond the proven Custody-owned catalog target.
+
+### 42.5 Optional quantity-unit integrity gap
+
+`quantityUnitId` is nullable in domain/JPA/schema, so HMSR-029 does not make it mandatory.
+
+However, stronger same-module persistence evidence identifies the intended controlled-value owner:
+
+- HMS-003 already classified `quantityUnitId` as a catalog/value dependency;
+- Custody owns `CustodyCatalogEntry`;
+- other canonical Custody quantity fields such as `CustodyQuantityCalculation.quantityUnitId` and `CustodyTicketLine.quantityUnitId` are HRA-111-protected against `hidra_custody_catalog_entry(id)`;
+- `CustodyDiscrepancy.quantity_unit_id` is indexed as a reference-like field;
+- the active `OpenCustodyDiscrepancyCommand` accepts `quantityUnitId` and `CustodyApplicationService.openDiscrepancy()` persists it directly.
+
+Unlike the required quantity-unit references protected by HRA-111, the optional discrepancy `quantity_unit_id` has no FK and no demonstrated application lookup/validation.
+
+Therefore a populated discrepancy can carry a dangling quantity-unit catalog ID even though the repository's Custody quantity-unit pattern identifies the controlled-value owner.
+
+HMSR-029 does not invent a required pairing rule between `differenceQuantity` and `quantityUnitId` because the current DDD does not state whether one may legitimately appear without the other.
+
+### 42.6 Actor-reference boundary
+
+`assignedActorId` remains an optional cross-module actor reference.
+
+There is no Actor subject model in the 123-model HMS population, and Custody must not own Identity state. No cross-module database FK should be introduced.
+
+Current repository evidence also does not define an actor-status/eligibility contract for discrepancy assignment, so HMSR-029 does not invent one.
+
+### 42.7 Lifecycle and temporal rules deliberately not invented
+
+The current status vocabulary contains seven lifecycle labels and the domain already enforces:
+
+```text
+openedAt <= closedAt
+```
+
+when `closedAt` is present.
+
+The repository-wide invariant classification explicitly retains that invariant but does not define:
+
+- `openedAt <= resolvedAt`;
+- `resolvedAt <= closedAt`;
+- RESOLVED requiring `resolvedAt`;
+- CLOSED requiring both `resolvedAt` and `closedAt`;
+- root-cause/resolution text requirements by status;
+- allowed status transition sequences.
+
+HMSR-029 therefore does not invent those rules.
+
+The create service conservatively opens a discrepancy as `OPEN`, with root cause, resolution, resolved timestamp and closed timestamp unset.
+
+### 42.8 Quantity and numbering semantics deliberately not invented
+
+Current Custody DDD does not state whether `differenceQuantity` may be signed, must be nonnegative absolute variance, or must match the parent reconciliation's quantity unit.
+
+Likewise, no current schema/DDD evidence establishes global or reconciliation-scoped uniqueness for `discrepancyNumber`.
+
+HMSR-029 records no such obligations.
+
+### 42.9 Persistence/application consistency otherwise
+
+The live domain and JPA representations agree on all 16 declared components.
+
+The base schema requires:
+
+```text
+id
+discrepancy_number
+reconciliation_id
+discrepancy_type_id
+status
+opened_at
+created_at
+updated_at
+```
+
+and keeps quantity, unit, narrative, actor, resolution and closure fields nullable.
+
+The active application path creates `status = OPEN` and defaults `openedAt` to the current instant when the caller omits it. That behavior is conservative and consistent with the mandatory opening timestamp.
+
+Generic audit timestamps remain persistence/application-boundary concerns rather than additional domain constructor invariants.
+
+### 42.10 Required revision
+
+One evidence-backed correction obligation remains:
+
+1. **Protect populated quantity-unit references.** When `CustodyDiscrepancy.quantityUnitId` is non-null, it must resolve to the Custody-owned controlled-value/catalog target rather than allowing a dangling ID. A separately authorized Custody correction may enforce this through application validation, an additive nullable same-module FK, or another fail-closed Custody-owned boundary. HMSR-029 does not prescribe a catalog-family name that current DDD evidence does not define.
+
+HMSR-029 does not modify production Java, JPA, Flyway, API/application contracts, tests, discrepancies, reconciliations, catalogs or provisioned data.
+
+### 42.11 SONATRACH/TRC operational interpretation
+
+For SONATRACH/TRC custody-transfer operations, a discrepancy records a governed mismatch or exception discovered during official reconciliation. Its parent reconciliation and discrepancy classification must remain traceable, while any recorded quantity variance must use a valid governed unit when a unit reference is supplied.
+
+The discrepancy lifecycle supports investigation and resolution without making Custody the owner of Identity actor state, telemetry source truth, planning expectations or financial posting.
+
+A dangling quantity-unit reference would weaken the auditability and interpretability of an official custody variance.
+
+### 42.12 Review conclusion
+
+**REVISE.** `CustodyDiscrepancy` has a coherent 16-field Custody-owned model, correct Level-0 placement, a resolved and database-protected parent reconciliation, a database-protected required discrepancy-type catalog reference, conservative OPEN creation semantics, and the approved `openedAt <= closedAt` invariant.
+
+The target baseline cannot mark it APPROVED while a populated optional `quantityUnitId` can persist without demonstrated referential protection to the Custody-controlled quantity-unit catalog target.
+
+HMS reconciliation must retain this optional quantity-unit integrity obligation until an explicitly authorized Custody correction task resolves it or stronger repository evidence explicitly changes the quantity-unit semantics.
+
+## 43. Current next task
+
+```text
+HMSR-030 — organization.OrganizationContactPoint
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review custody CustodyDiscrepancy
+docs(model-review): review organization OrganizationContactPoint
 ```
 
-Start HMSR-029 only after HMSR-028 is committed and reported. Do not start HMSR-030 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-030 only after HMSR-029 is committed and reported. Do not start HMSR-031 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

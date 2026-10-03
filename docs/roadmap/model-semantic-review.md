@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 reviewed as REVISE, HMSR-080 reviewed as REVISE, HMSR-081 reviewed as REVISE, HMSR-082 reviewed as REVISE, HMSR-083 approved, HMSR-084 reviewed as REVISE, HMSR-085 reviewed as REVISE, HMSR-086 approved, HMSR-087 reviewed as REVISE, HMSR-088 reviewed as REVISE, HMSR-089 reviewed as REVISE, HMSR-090 reviewed as REVISE, HMSR-091 reviewed as REVISE, HMSR-092 reviewed as REVISE, HMSR-093 reviewed as REVISE, HMSR-094 reviewed as REVISE, HMSR-095 reviewed as REVISE, HMSR-096 reviewed as REVISE, HMSR-097 reviewed as REVISE, HMSR-098 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 reviewed as REVISE, HMSR-080 reviewed as REVISE, HMSR-081 reviewed as REVISE, HMSR-082 reviewed as REVISE, HMSR-083 approved, HMSR-084 reviewed as REVISE, HMSR-085 reviewed as REVISE, HMSR-086 approved, HMSR-087 reviewed as REVISE, HMSR-088 reviewed as REVISE, HMSR-089 reviewed as REVISE, HMSR-090 reviewed as REVISE, HMSR-091 reviewed as REVISE, HMSR-092 reviewed as REVISE, HMSR-093 reviewed as REVISE, HMSR-094 reviewed as REVISE, HMSR-095 reviewed as REVISE, HMSR-096 reviewed as REVISE, HMSR-097 reviewed as REVISE, HMSR-098 reviewed as REVISE, HMSR-099 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -290,7 +290,7 @@ Ordering rules applied:
 | HMSR-095 | 5 | workflow | WorkflowAction | — | organization.OrganizationUnit, workflow.WorkflowInstance, workflow.WorkflowTask | 2 | 4 | 1 | REVISE | Completed | `docs(model-review): review workflow WorkflowAction` |
 | HMSR-096 | 5 | hse | HseCase | — | incident.Incident, organization.OrganizationUnit, workflow.WorkflowInstance | 3 | 3 | 3 | REVISE | Completed | `docs(model-review): review hse HseCase` |
 | HMSR-097 | 5 | audit | AuditExportRequest | — | documents.Document, workflow.WorkflowInstance | 1 | 1 | 2 | REVISE | Completed | `docs(model-review): review audit AuditExportRequest` |
-| HMSR-098 | 5 | documents | DocumentTargetLink | — | documents.Document, documents.DocumentVersion | 0 | 0 | 0 | — | Planned | `docs(model-review): review documents DocumentTargetLink` |
+| HMSR-098 | 5 | documents | DocumentTargetLink | — | documents.Document, documents.DocumentVersion | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review documents DocumentTargetLink` |
 | HMSR-099 | 5 | identity | AuthenticationEvent | — | identity.IdentityProvider, identity.User | 0 | 0 | 1 | — | Planned | `docs(model-review): review identity AuthenticationEvent` |
 | HMSR-100 | 5 | identity | AuthorizationDecision | — | identity.User | 0 | 0 | 2 | — | Planned | `docs(model-review): review identity AuthorizationDecision` |
 | HMSR-101 | 5 | identity | AuthorizationDelegationGrant | — | identity.Permission, identity.Role, identity.User | 0 | 0 | 3 | — | Planned | `docs(model-review): review identity AuthorizationDelegationGrant` |
@@ -17388,16 +17388,144 @@ The target baseline cannot mark it APPROVED while two DDD-required fields are on
 
 HMS reconciliation must retain these obligations until explicitly authorized Audit production corrections resolve them or stronger repository evidence changes the governing Audit contract.
 
-## 111. Current next task
+## 111. HMSR-098 — documents.DocumentTargetLink review
+
+**Decision:** REVISE  
+**Review code:** HMSR-098  
+**Dependency level:** 5  
+**Bounded context:** documents  
+**Confirmed upstream subject dependencies:** mandatory `documents.Document`; optional `documents.DocumentVersion`  
+**Confirmed direct HMS subject dependents:** 0  
+**Transitive HMS subject dependents:** 0  
+**Unresolved/non-subject reference count:** 0
+
+### 111.1 Semantic role
+
+`DocumentTargetLink` is the Documents-owned neutral association between a document (or optional specific document version) and a business object owned by another bounded context.
+
+The governing Documents DDD explicitly requires neutral target references and forbids Documents from importing target-module domain or JPA classes.
+
+### 111.2 Required neutral target coordinates
+
+The DDD marks all three target coordinates required:
 
 ```text
-HMSR-098 — documents.DocumentTargetLink
+targetModule
+targetTypeCode
+targetId
+```
+
+The live domain constructor already rejects blank `targetTypeCode` and `targetId`, but only normalizes `targetModule`.
+
+JPA/Flyway persist `target_module` as `NOT NULL`.
+
+The authoritative domain/application boundary must therefore fail fast for blank/null `targetModule` rather than relying on persistence failure.
+
+### 111.3 Document ownership
+
+`documentId` is mandatory and same-module.
+
+HRA-111 already protects it with:
+
+```text
+hidra_documents_target_link.document_id
+  -> hidra_documents_document.id
+```
+
+The domain constructor also rejects blank `documentId`.
+
+No further basic document-existence correction is required for this mandatory parent reference.
+
+### 111.4 Optional document-version integrity
+
+`documentVersionId` is optional because a link may apply to the document in general.
+
+When supplied, it denotes a real same-module `DocumentVersion` and must belong to the supplied `documentId`.
+
+The live HRA-111 migration protects `document_id` and `link_role_id`, but does not show a foreign key from `hidra_documents_target_link.document_version_id` to `hidra_documents_document_version.id`.
+
+The current `linkDocumentToTarget(...)` path also does not resolve the optional version or verify that it belongs to the supplied document.
+
+The future production correction must therefore make a supplied version fail closed and verify same-document ownership. Same-module persistence protection may be added consistently with repository architecture.
+
+### 111.5 Link-role catalog semantics
+
+`linkRoleId` is mandatory and Documents-owned catalog data.
+
+HRA-111 already protects generic Documents catalog-row existence:
+
+```text
+hidra_documents_target_link.link_role_id
+  -> hidra_documents_catalog_entry.id
+```
+
+The Documents DDD defines the exact catalog family:
+
+```text
+DOCUMENT_LINK_ROLE
+```
+
+with roles such as `EVIDENCE`, `ATTACHMENT`, `PROCEDURE`, `CERTIFICATE`, `PHOTO`, `CONTRACT`, `DRAWING`, `MANUAL`, and `APPROVAL_SUPPORT`.
+
+Generic row existence is therefore insufficient. The authoritative write boundary must validate `linkRoleId` against an active/eligible entry in the exact `DOCUMENT_LINK_ROLE` family.
+
+### 111.6 External target validation
+
+The DDD explicitly defines a `DocumentTargetLookupPort` as an outbound application port.
+
+The live `DocumentsApplicationService.linkDocumentToTarget(...)` currently constructs and saves the link without invoking a target lookup/resolver.
+
+Therefore the neutral target coordinates are persisted without any owner-controlled existence validation.
+
+The production correction should introduce/use the Documents outbound target-lookup contract to validate `targetModule + targetTypeCode + targetId` where target existence is required. The implementation must remain polymorphic and owner-controlled and must not introduce cross-module database foreign keys.
+
+### 111.7 Snapshot semantics
+
+`targetCodeSnapshot` and `targetLabelSnapshot` are optional snapshots for readability/history.
+
+They are not ownership references and must not be treated as relational keys.
+
+### 111.8 Actor ownership
+
+`linkedByActorId` is mandatory in the current domain/DDD and represents the actor who created the link.
+
+Identity remains the owner of actor identity. Documents should retain the scalar actor identifier and must not add a cross-module Identity FK.
+
+### 111.9 Link lifecycle
+
+`primaryLink`, `linkedAt`, `unlinkedAt`, and `active` describe the link lifecycle.
+
+The reviewed DDD does not establish additional invariant combinations such as mandatory `unlinkedAt` when inactive or uniqueness of primary links. HMSR-098 therefore does not invent those rules.
+
+### 111.10 Required revisions
+
+Four evidence-backed production obligations remain:
+
+1. **Enforce required `targetModule` before persistence**, matching the DDD and database contract.
+2. **When `documentVersionId` is supplied, validate it fail-closed and verify that the version belongs to `documentId`; add appropriate same-module persistence protection consistent with repository architecture.**
+3. **Validate `linkRoleId` against the active/eligible exact `DOCUMENT_LINK_ROLE` catalog family**, not merely generic Documents catalog-row existence.
+4. **Use the Documents-owned `DocumentTargetLookupPort` (or equivalent owner-controlled application contract) to validate polymorphic targets where live existence validation is required**, while preserving neutral scalar references and avoiding cross-module database FKs.
+
+HMSR-098 does not modify production Java, JPA, Flyway, API/application contracts, tests, Documents/target-module data, or provisioned data.
+
+### 111.11 Review conclusion
+
+**REVISE.** `DocumentTargetLink` has the correct Documents ownership, neutral polymorphic target design, mandatory same-module document protection, and generic link-role catalog-row protection.
+
+The target baseline cannot mark it APPROVED while required `targetModule` is only DB-enforced, optional document-version integrity is not fail-closed, link-role membership is not family-qualified, and the live linking path does not use the target-lookup contract prescribed by the Documents DDD.
+
+HMS reconciliation must retain these obligations until explicitly authorized Documents production corrections resolve them or stronger repository evidence changes the governing Documents contract.
+
+## 112. Current next task
+
+```text
+HMSR-099 — identity.AuthenticationEvent
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review documents DocumentTargetLink
+docs(model-review): review identity AuthenticationEvent
 ```
 
-Start HMSR-098 only after HMSR-097 is committed and reported. Do not start HMSR-099 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-099 only after HMSR-098 is committed and reported. Do not start HMSR-100 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -240,7 +240,7 @@ Ordering rules applied:
 | HMSR-045 | 1 | identity | ExternalRoleMapping | — | identity.IdentityProvider, identity.Role | 0 | 0 | 0 | APPROVED | Completed | `docs(model-review): review identity ExternalRoleMapping` |
 | HMSR-046 | 1 | identity | GroupRoleGrant | — | identity.Role | 0 | 0 | 2 | APPROVED | Completed | `docs(model-review): review identity GroupRoleGrant` |
 | HMSR-047 | 1 | identity | RolePermissionGrant | — | identity.Permission, identity.Role | 0 | 0 | 0 | APPROVED | Completed | `docs(model-review): review identity RolePermissionGrant` |
-| HMSR-048 | 1 | monitoring | MonitoringRule | — | telemetry.TelemetryPoint | 0 | 0 | 0 | — | Planned | `docs(model-review): review monitoring MonitoringRule` |
+| HMSR-048 | 1 | monitoring | MonitoringRule | — | telemetry.TelemetryPoint | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review monitoring MonitoringRule` |
 | HMSR-049 | 1 | party | PartyRoleAssignment | — | party.Party | 0 | 0 | 0 | — | Planned | `docs(model-review): review party PartyRoleAssignment` |
 | HMSR-050 | 1 | topology | Pipeline | — | topology.PipelineSystem | 0 | 0 | 0 | — | Planned | `docs(model-review): review topology Pipeline` |
 | HMSR-051 | 2 | workflow | WorkflowStep | SCC-02 | workflow.WorkflowDefinition, workflow.WorkflowStepAssignmentRule | 5 | 35 | 0 | — | Planned | `docs(model-review): review workflow WorkflowStep` |
@@ -2198,11 +2198,11 @@ Confirmed subject-model graph edges at this stage: **165**. These are semantic c
 | Field | Declared type | Classification | Resolved target | Graph edge | Notes |
 |---|---|---|---|:---:|---|
 | id | String | Self identifier | — | No | Primary identity of the current model. |
-| evaluationFrequencyId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
-| topologyAssetId | String | Cross-module reference | POLYMORPHIC | No | Target is selected by companion type/module metadata; no single subject-model edge. |
-| telemetryPointId | String | Cross-module reference | telemetry.TelemetryPoint | Yes | Unambiguous reference to a subject model in another bounded context. |
-| planningTargetTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
-| createdByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+| evaluationFrequencyId | String | Value/catalog dependency | MONITORING_FREQUENCY_OR_VALUE | No | Optional Monitoring-owned classification/value reference; current evidence does not establish an HMS subject target or mandatory catalog-family rule. |
+| topologyAssetId | String | Cross-module reference | POLYMORPHIC_TOPOLOGY_ASSET | No | Optional typed Topology asset identity governed by `topologyAssetType + topologyAssetId`; no single HMS target or cross-module FK is appropriate. |
+| telemetryPointId | String | Cross-module reference | telemetry.TelemetryPoint | Yes | Optional unambiguous TelemetryPoint reference. Monitoring does not own Telemetry and must validate populated IDs through a Telemetry-owned contract; the active create path currently does not. |
+| planningTargetTypeId | String | Value/catalog dependency | PLANNING_TARGET_TYPE_OR_VALUE | No | Optional planning target classification/value; current evidence does not establish one concrete HMS subject target. |
+| createdByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Optional actor identity; no Actor subject model exists in the HMS set and no cross-module DB FK is appropriate. |
 
 #### monitoring.PlanActualDeviation
 
@@ -10219,17 +10219,184 @@ No evidence-backed production correction obligation remains for HMSR-047.
 
 HMSR-047 does not modify production Java, JPA, Flyway, application/API contracts, tests, roles, permissions, grants, or provisioned data.
 
-## 61. Current next task
+## 61. HMSR-048 — monitoring.MonitoringRule review
+
+**Decision:** REVISE  
+**Review code:** HMSR-048  
+**Dependency level:** 1  
+**Bounded context:** monitoring  
+**Confirmed upstream subject dependencies:** `telemetry.TelemetryPoint` through optional `telemetryPointId`  
+**Confirmed direct HMS subject dependents:** 0  
+**Transitive HMS subject dependents:** 0  
+**Unresolved/non-subject references:** none requiring new HMS graph edges; Topology asset targeting remains typed/polymorphic and frequency/planning-target fields remain value/classification dependencies
+
+### 61.1 Semantic role and ordering rationale
+
+`MonitoringRule` is the Monitoring-owned rule definition for operational evaluation.
+
+Monitoring owns deviation/evaluation logic. Telemetry owns measured facts, Planning owns expected values, and Topology owns physical assets. Monitoring therefore stores references/snapshots to those contexts rather than owning their source records.
+
+It is Level 1 because optional `telemetryPointId` is an unambiguous cross-module reference to the already-reviewed HMS subject `TelemetryPoint`.
+
+### 61.2 Field semantics
+
+| Field | Type | Reviewed meaning |
+|---|---|---|
+| `id` | `String` | Mandatory stable Monitoring rule identity. |
+| `code` | `String` | Mandatory language-neutral rule code. |
+| `nameAr` | `String` | Optional Arabic display name. |
+| `nameFr` | `String` | French display name; required by persistence, but current DDD does not independently make multilingual completeness a domain invariant. |
+| `nameEn` | `String` | Optional English display name. |
+| `ruleType` | `MonitoringRuleType` | Mandatory Monitoring rule classification. |
+| `evaluationFrequencyId` | `String` | Optional Monitoring frequency/classification reference. |
+| `topologyAssetType` | `String` | Optional discriminator for a polymorphic Topology asset reference. |
+| `topologyAssetId` | `String` | Optional typed Topology asset identity. |
+| `topologyAssetCode` | `String` | Optional Topology asset code snapshot/readability value. |
+| `telemetryPointId` | `String` | Optional cross-module stable reference to TelemetryPoint. |
+| `planningTargetTypeId` | `String` | Optional planning-target classification/value reference. |
+| `expression` | `String` | Optional Monitoring evaluation expression. |
+| `status` | `MonitoringLifecycleStatus` | Mandatory Monitoring rule lifecycle state. |
+| `createdByActorId` | `String` | Optional Identity actor reference. |
+| `createdAt` | `Instant` | Persistence-required creation timestamp. |
+| `updatedAt` | `Instant` | Persistence-required update timestamp. |
+
+The canonical constructor requires nonblank ID and code and non-null rule type/status, while normalizing optional strings.
+
+### 61.3 Telemetry boundary and reference-integrity gap
+
+The Monitoring DDD states:
 
 ```text
-HMSR-048 — monitoring.MonitoringRule
+Telemetry owns measured facts.
+Monitoring stores references and snapshots, not telemetry source records.
+```
+
+The semantic graph resolves:
+
+```text
+MonitoringRule.telemetryPointId
+    -> telemetry.TelemetryPoint
+```
+
+The field is optional, so HMSR-048 does not make telemetry binding mandatory for every rule.
+
+However, `MonitoringRuleApplicationService.createMonitoringRule()` accepts `command.telemetryPointId()` and passes it directly into the canonical model and repository without resolving the Telemetry-owned target.
+
+The Monitoring schema intentionally has no cross-module FK on `telemetry_point_id`.
+
+Therefore, when a telemetry point is supplied, the authoritative create path can persist a dangling TelemetryPoint identity.
+
+A cross-module database FK would violate bounded-context ownership. The correction belongs at a Telemetry-owned exported application/lookup contract or equivalent fail-closed boundary.
+
+### 61.4 Topology asset semantics
+
+`topologyAssetType + topologyAssetId` form an optional typed/polymorphic reference to a Topology-owned asset, with `topologyAssetCode` as a snapshot/readability value.
+
+No single concrete HMS model can be inferred from `topologyAssetId` alone, so HMSR-048 does not manufacture a graph edge or database FK.
+
+Current Monitoring DDD does not explicitly require every populated Topology asset reference to be resolved during MonitoringRule creation, nor does it define supported asset types for this model. HMSR-048 therefore does not create a separate production obligation without stronger owner-contract evidence.
+
+### 61.5 Evaluation frequency and planning-target semantics
+
+`evaluationFrequencyId` and `planningTargetTypeId` are optional.
+
+The reviewed Monitoring DDD does not define exact catalog families, mandatory row targets, or cross-module subject identities for these fields.
+
+They remain value/classification dependencies rather than invented HMS graph edges.
+
+No production correction is recorded merely because the base schema indexes them without FKs.
+
+### 61.6 Rule type, expression and lifecycle
+
+The application defaults a missing command rule type to `MonitoringRuleType.PLAN_COMPARISON` and initializes new rules as `MonitoringLifecycleStatus.DRAFT`.
+
+The domain itself requires non-null rule type/status.
+
+Current Monitoring DDD does not define:
+
+- that every rule type requires an expression;
+- expression grammar or validation language;
+- rule-type-specific mandatory telemetry/planning/topology bindings;
+- a complete lifecycle transition matrix;
+- activation preconditions.
+
+HMSR-048 does not invent those rules.
+
+### 61.7 Multilingual and code semantics
+
+The canonical domain permits Arabic/French/English names to be optional, while final persistence requires `name_fr`.
+
+The repository invariant-classification architecture explicitly keeps generic human-readable text as persistence-only unless independent domain evidence proves requiredness. The Monitoring DDD does not state that French or all three translations are mandatory for every rule.
+
+HMSR-048 therefore does not turn `nameFr` into a new domain correction obligation solely because JPA marks it non-null.
+
+Likewise, current Monitoring evidence does not establish global rule-code uniqueness; the schema provides an ordinary code index rather than a unique constraint. No uniqueness rule is invented.
+
+### 61.8 Actor and audit semantics
+
+`createdByActorId` is an optional Identity actor reference.
+
+Monitoring does not own Identity, so no cross-module FK is appropriate. Current evidence does not require a creator actor for every rule or define actor lifecycle eligibility.
+
+`createdAt` and `updatedAt` remain application/persistence audit metadata and are populated by the active create service.
+
+### 61.9 Domain/JPA/Flyway/application alignment
+
+Domain and JPA agree on all 17 components.
+
+The final schema requires:
+
+```text
+id
+code
+name_fr
+rule_type
+status
+created_at
+updated_at
+```
+
+while keeping all operational-reference fields optional.
+
+The domain correctly enforces intrinsic required ID/code/enum state. The persistence-only French-name requiredness remains deliberately outside intrinsic domain enforcement under the repository's invariant classification.
+
+The only evidence-backed semantic-integrity defect found in the authoritative write path is the unvalidated populated TelemetryPoint reference.
+
+### 61.10 Required revision
+
+One evidence-backed production correction obligation remains:
+
+1. **Validate populated MonitoringRule telemetryPointId through the Telemetry owner boundary.** When `telemetryPointId` is supplied, Monitoring must fail closed unless the referenced TelemetryPoint exists under the Telemetry bounded context. Do not add a cross-module database FK.
+
+HMSR-048 does not modify production Java, JPA, Flyway, application/API contracts, tests, monitoring rules, telemetry points, or provisioned data.
+
+### 61.11 SONATRACH/TRC operational interpretation
+
+For SONATRACH/TRC, MonitoringRule can define how operational pipeline conditions are evaluated against telemetry, planning expectations and asset context.
+
+A rule that claims to monitor a TelemetryPoint must reference a real point; otherwise evaluation, traceability and operator confidence can be compromised even if the rule record itself is structurally valid.
+
+At the same time, Monitoring must not become owner of Telemetry or Topology master data. The appropriate architecture is owner-controlled validation with stable references/snapshots.
+
+### 61.12 Review conclusion
+
+**REVISE.** `MonitoringRule` has a coherent 17-field Monitoring-owned rule model, correct separation from Telemetry/Planning/Topology ownership, valid lifecycle initialization, conservative polymorphic Topology handling, and correct Level-1 dependency on TelemetryPoint.
+
+The target baseline cannot mark it APPROVED while a populated `telemetryPointId` can be persisted without demonstrated validation against the Telemetry-owned authoritative target.
+
+HMS reconciliation must retain this TelemetryPoint reference-integrity obligation until an explicitly authorized Monitoring/Telemetry production correction resolves it or stronger repository evidence changes the reference semantics.
+
+## 62. Current next task
+
+```text
+HMSR-049 — party.PartyRoleAssignment
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review monitoring MonitoringRule
+docs(model-review): review party PartyRoleAssignment
 ```
 
-Start HMSR-048 only after HMSR-047 is committed and reported. Do not start HMSR-049 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-049 only after HMSR-048 is committed and reported. Do not start HMSR-050 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
 

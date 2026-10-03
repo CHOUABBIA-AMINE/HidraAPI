@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -234,7 +234,7 @@ Ordering rules applied:
 | HMSR-039 | 1 | notification | NotificationRequest | — | notification.NotificationTemplate | 1 | 2 | 4 | REVISE | Completed | `docs(model-review): review notification NotificationRequest` |
 | HMSR-040 | 1 | organization | ResponsibilityAssignment | — | organization.OperationalScope | 1 | 1 | 1 | APPROVED | Completed | `docs(model-review): review organization ResponsibilityAssignment` |
 | HMSR-041 | 1 | topology | Facility | — | party.Party | 1 | 1 | 0 | REVISE | Completed | `docs(model-review): review topology Facility` |
-| HMSR-042 | 1 | analytics | AnalyticsDatasetVersion | — | analytics.AnalyticsDataset | 0 | 0 | 0 | — | Planned | `docs(model-review): review analytics AnalyticsDatasetVersion` |
+| HMSR-042 | 1 | analytics | AnalyticsDatasetVersion | — | analytics.AnalyticsDataset | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review analytics AnalyticsDatasetVersion` |
 | HMSR-043 | 1 | analytics | MetricValue | — | analytics.MetricEvaluationRun | 0 | 0 | 3 | — | Planned | `docs(model-review): review analytics MetricValue` |
 | HMSR-044 | 1 | configuration | ConfigurationValue | — | configuration.ConfigurationDefinition | 0 | 0 | 1 | — | Planned | `docs(model-review): review configuration ConfigurationValue` |
 | HMSR-045 | 1 | identity | ExternalRoleMapping | — | identity.IdentityProvider, identity.Role | 0 | 0 | 0 | — | Planned | `docs(model-review): review identity ExternalRoleMapping` |
@@ -1614,8 +1614,8 @@ Confirmed subject-model graph edges at this stage: **165**. These are semantic c
 | Field | Declared type | Classification | Resolved target | Graph edge | Notes |
 |---|---|---|---|:---:|---|
 | id | String | Self identifier | — | No | Primary identity of the current model. |
-| datasetId | String | Domain reference | analytics.AnalyticsDataset | Yes | Unambiguous same-module subject-model reference. |
-| publishedByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+| datasetId | String | Domain reference | analytics.AnalyticsDataset | Yes | Mandatory same-module HMS subject reference; HRA-111 protects `dataset_id -> hidra_analytics_dataset.id`. |
+| publishedByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Optional publication actor identity. No Actor subject model exists in the 123-model set and no cross-module DB FK is appropriate. |
 
 #### analytics.AnalyticsInsight
 
@@ -9259,17 +9259,199 @@ The target baseline cannot mark it APPROVED while a populated `ownerPartyId` can
 
 HMS reconciliation must retain this Party-reference integrity obligation until an explicitly authorized Topology/Party correction resolves it or stronger repository evidence explicitly changes Facility ownership semantics.
 
-## 55. Current next task
+## 55. HMSR-042 — analytics.AnalyticsDatasetVersion review
+
+**Decision:** REVISE  
+**Review code:** HMSR-042  
+**Dependency level:** 1  
+**Bounded context:** analytics  
+**Confirmed upstream subject dependencies:** `analytics.AnalyticsDataset` through mandatory `datasetId`  
+**Confirmed direct HMS subject dependents:** 0  
+**Transitive HMS subject dependents:** 0  
+**Unresolved/non-subject references:** 0 — `publishedByActorId` remains an Identity actor reference outside the HMS subject graph
+
+### 55.1 Semantic role and ordering rationale
+
+`AnalyticsDatasetVersion` represents one reproducible versioned release of an Analytics-owned dataset.
+
+The Analytics DDD states that Analytics consumes trusted operational history and produces derived intelligence rather than owning operational truth. Dataset versions therefore preserve reproducibility metadata such as schema/data hashes, period boundaries, quality information and publication state.
+
+It is Level 1 because mandatory `datasetId` references the already-reviewed `AnalyticsDataset` HMS subject.
+
+### 55.2 Field semantics
+
+| Field | Type | Reviewed meaning |
+|---|---|---|
+| `id` | `String` | Mandatory stable dataset-version identity. |
+| `datasetId` | `String` | Mandatory same-module reference to the parent AnalyticsDataset. |
+| `versionNumber` | `int` | Required numeric version value; current evidence does not define positivity or uniqueness rules. |
+| `schemaHash` | `String` | Mandatory schema reproducibility hash. |
+| `dataHash` | `String` | Mandatory dataset-content reproducibility hash. |
+| `rowCount` | `Long` | Optional row-count metadata. |
+| `periodStart` | `Instant` | Optional beginning of the represented analytical period. |
+| `periodEnd` | `Instant` | Optional end of the represented analytical period. |
+| `qualityScore` | `BigDecimal` | Optional dataset-quality score; current evidence does not define a numeric range. |
+| `published` | `boolean` | Publication-state flag. |
+| `publishedAt` | `Instant` | Optional publication timestamp. |
+| `publishedByActorId` | `String` | Optional publication actor reference. |
+| `createdAt` | `Instant` | Persistence-required creation timestamp. |
+
+The constructor requires nonblank ID, dataset ID, schema hash and data hash and rejects `periodEnd < periodStart` when both period values exist.
+
+### 55.3 Parent AnalyticsDataset integrity
+
+`datasetId` is a mandatory same-module reference to the AnalyticsDataset subject.
+
+The base schema requires `dataset_id NOT NULL`, and HRA-111 installs a validated same-module FK from:
 
 ```text
-HMSR-042 — analytics.AnalyticsDatasetVersion
+hidra_analytics_dataset_version.dataset_id
+    -> hidra_analytics_dataset.id
+```
+
+Therefore parent-dataset existence is fail-closed at persistence and no additional correction is recorded for the reference itself.
+
+### 55.4 Reproducibility semantics
+
+The Analytics DDD explicitly identifies `schemaHash` and `dataHash` as reproducibility support.
+
+The domain constructor already rejects blank hashes and persistence requires both fields, so domain and schema align on this requirement.
+
+No repository evidence establishes a specific hash algorithm, fixed length, uniqueness rule, or relationship between the two hashes. HMSR-042 does not invent one.
+
+### 55.5 Period semantics
+
+The DDD rule is explicit:
+
+```text
+periodStart must be before or equal to periodEnd
+```
+
+The constructor enforces exactly that rule when both values are present by rejecting only `periodEnd.isBefore(periodStart)`.
+
+The schema keeps both fields nullable, consistent with the absence of a rule requiring a period for every dataset version.
+
+No additional duration, timezone, or contiguous-version-window policy is invented.
+
+### 55.6 Publication immutability gap
+
+The Analytics DDD explicitly states:
+
+```text
+published dataset version is immutable
+```
+
+The domain model currently exposes:
+
+```java
+public boolean immutableAfterPublication() {
+    return published;
+}
+```
+
+This reports the intended state but does not enforce immutability.
+
+The application repository contract still exposes unrestricted:
+
+```text
+save(AnalyticsDatasetVersion model)
+```
+
+and current repository evidence shows no authoritative application service, repository adapter guard, optimistic/version check, database rule, or other fail-closed mechanism that prevents an already-published dataset version from being overwritten with changed schema hash, data hash, period, quality metadata, publication metadata, or other persisted state.
+
+Therefore the explicit DDD invariant is documented but not enforced by the live write boundary.
+
+HMSR-042 does not prescribe the implementation technique. A later production correction may enforce append-only publication, reject updates to published rows, split draft/publication commands, or use another architecture-consistent mechanism.
+
+### 55.7 Publication metadata deliberately not over-specified
+
+Although `publishedAt` and `publishedByActorId` accompany the `published` flag, the current Analytics DDD does not explicitly state that either field becomes mandatory whenever `published = true`.
+
+HMSR-042 therefore does not invent:
+
+- mandatory `publishedAt` for published versions;
+- mandatory `publishedByActorId`;
+- actor-status/authorization semantics;
+- a database FK from Analytics to Identity.
+
+The actor field remains a neutral cross-module reference.
+
+### 55.8 Version, row-count and quality rules deliberately not invented
+
+Current repository evidence does not explicitly define:
+
+- `versionNumber > 0`;
+- uniqueness of `(datasetId, versionNumber)`;
+- monotonic version sequencing;
+- nonnegative `rowCount`;
+- an allowed `qualityScore` range;
+- mandatory quality score before publication.
+
+The schema contains no unique dataset/version-number constraint. HMSR-042 therefore records none of these as correction obligations merely because they may appear desirable.
+
+### 55.9 Lineage semantics
+
+The Analytics DDD states that every published dataset version must have lineage and that lineage is immutable after publication.
+
+That requirement is owned jointly with `AnalyticsDatasetLineage`, not represented as a scalar field on AnalyticsDatasetVersion.
+
+HMSR-042 records the publication immutability defect proven directly for this model but does not manufacture a direct lineage field or graph edge. Whether publication orchestration must transactionally verify lineage belongs to later reconciliation of the DatasetVersion/Lineage write workflow with explicit implementation authorization.
+
+### 55.10 Domain/JPA/Flyway alignment
+
+Domain and JPA agree on all 13 components and requiredness.
+
+Persistence requires:
+
+```text
+id
+dataset_id
+version_number
+schema_hash
+data_hash
+published
+created_at
+```
+
+with nullable row count, period, quality score and publication metadata.
+
+The parent dataset reference is protected by HRA-111. The current model also correctly keeps `createdAt` as persistence/audit metadata rather than inventing domain ordering against publication time.
+
+The principal semantic mismatch is behavioral rather than structural: publication immutability is declared by DDD and observable from the model but not enforced on writes.
+
+### 55.11 Required revision
+
+One evidence-backed production correction obligation remains:
+
+1. **Enforce immutability of published AnalyticsDatasetVersion state.** Once a dataset version is published, subsequent writes must not mutate its persisted release content/metadata contrary to the Analytics DDD. The production correction must choose an architecture-consistent fail-closed mechanism without rewriting this HMSR documentation task into implementation work.
+
+HMSR-042 does not modify production Java, JPA, Flyway, application/API contracts, tests, analytics datasets, lineage, or provisioned data.
+
+### 55.12 SONATRACH/TRC operational interpretation
+
+For SONATRACH/TRC, an AnalyticsDatasetVersion can underpin KPI calculation, trend analysis, simulation/AI preparation, digital-twin readiness and management decision support.
+
+Once a release is published, reproducibility depends on the same version continuing to mean the same data/schema release. Allowing silent mutation after publication would undermine comparison, traceability, model reproducibility and audit confidence even if the parent dataset identity remains valid.
+
+### 55.13 Review conclusion
+
+**REVISE.** `AnalyticsDatasetVersion` has a coherent 13-field versioned-release model, correct Level-1 dependency on AnalyticsDataset, validated parent FK protection, mandatory reproducibility hashes and correctly enforced period ordering.
+
+The target baseline cannot mark it APPROVED while the explicit DDD rule that a published dataset version is immutable is not enforced by the live write boundary.
+
+HMS reconciliation must retain this immutability obligation until an explicitly authorized Analytics production correction resolves it or stronger repository evidence explicitly revises the governing Analytics DDD semantics.
+
+## 56. Current next task
+
+```text
+HMSR-043 — analytics.MetricValue
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review analytics AnalyticsDatasetVersion
+docs(model-review): review analytics MetricValue
 ```
 
-Start HMSR-042 only after HMSR-041 is committed and reported. Do not start HMSR-043 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-043 only after HMSR-042 is committed and reported. Do not start HMSR-044 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
 

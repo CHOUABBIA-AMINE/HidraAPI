@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -237,7 +237,7 @@ Ordering rules applied:
 | HMSR-042 | 1 | analytics | AnalyticsDatasetVersion | — | analytics.AnalyticsDataset | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review analytics AnalyticsDatasetVersion` |
 | HMSR-043 | 1 | analytics | MetricValue | — | analytics.MetricEvaluationRun | 0 | 0 | 3 | REVISE | Completed | `docs(model-review): review analytics MetricValue` |
 | HMSR-044 | 1 | configuration | ConfigurationValue | — | configuration.ConfigurationDefinition | 0 | 0 | 1 | REVISE | Completed | `docs(model-review): review configuration ConfigurationValue` |
-| HMSR-045 | 1 | identity | ExternalRoleMapping | — | identity.IdentityProvider, identity.Role | 0 | 0 | 0 | — | Planned | `docs(model-review): review identity ExternalRoleMapping` |
+| HMSR-045 | 1 | identity | ExternalRoleMapping | — | identity.IdentityProvider, identity.Role | 0 | 0 | 0 | APPROVED | Completed | `docs(model-review): review identity ExternalRoleMapping` |
 | HMSR-046 | 1 | identity | GroupRoleGrant | — | identity.Role | 0 | 0 | 2 | — | Planned | `docs(model-review): review identity GroupRoleGrant` |
 | HMSR-047 | 1 | identity | RolePermissionGrant | — | identity.Permission, identity.Role | 0 | 0 | 0 | — | Planned | `docs(model-review): review identity RolePermissionGrant` |
 | HMSR-048 | 1 | monitoring | MonitoringRule | — | telemetry.TelemetryPoint | 0 | 0 | 0 | — | Planned | `docs(model-review): review monitoring MonitoringRule` |
@@ -1938,8 +1938,8 @@ Confirmed subject-model graph edges at this stage: **165**. These are semantic c
 | Field | Declared type | Classification | Resolved target | Graph edge | Notes |
 |---|---|---|---|:---:|---|
 | id | String | Self identifier | — | No | Primary identity of the current model. |
-| identityProviderId | String | Domain reference | identity.IdentityProvider | Yes | Unambiguous same-module subject-model reference. |
-| roleId | String | Domain reference | identity.Role | Yes | Unambiguous same-module subject-model reference. |
+| identityProviderId | String | Domain reference | identity.IdentityProvider | Yes | Mandatory same-module HMS subject reference; HRA-111 protects `identity_provider_id -> hidra_identity_provider.id`. |
+| roleId | String | Domain reference | identity.Role | Yes | Mandatory same-module HMS subject reference; HRA-111 protects `role_id -> hidra_identity_role.id`. |
 
 #### identity.GroupRoleGrant
 
@@ -9812,17 +9812,166 @@ The target baseline cannot mark it APPROVED while the canonical domain permits a
 
 HMS reconciliation must retain these two obligations until an explicitly authorized Configuration production correction resolves them or stronger repository evidence explicitly revises the governing Configuration semantics.
 
-## 58. Current next task
+## 58. HMSR-045 — identity.ExternalRoleMapping review
+
+**Decision:** APPROVED  
+**Review code:** HMSR-045  
+**Dependency level:** 1  
+**Bounded context:** identity  
+**Confirmed upstream subject dependencies:** `identity.IdentityProvider`, `identity.Role`  
+**Confirmed direct HMS subject dependents:** 0  
+**Transitive HMS subject dependents:** 0  
+**Unresolved/non-subject references:** 0
+
+### 58.1 Semantic role and ordering rationale
+
+`ExternalRoleMapping` maps one trusted external role/claim from an IdentityProvider to one internal Hidra Role.
+
+The Identity DDD explicitly prefers external group mapping for common enterprise integration and reserves external role mapping for trusted role claims emitted by the external IDM.
+
+It is Level 1 because both `identityProviderId` and `roleId` reference already-reviewed Identity HMS subjects.
+
+### 58.2 Field semantics
+
+| Field | Type | Reviewed meaning |
+|---|---|---|
+| `id` | `String` | Mandatory stable mapping identity. |
+| `identityProviderId` | `String` | Mandatory same-module reference to IdentityProvider. |
+| `roleId` | `String` | Mandatory same-module reference to internal Role. |
+| `externalRoleCode` | `String` | Mandatory external role/claim value. |
+| `claimName` | `String` | Optional claim-name selector. |
+| `mappingMode` | `ExternalMappingMode` | Mandatory mapping policy: direct grant, local approval, or disabled. |
+| `scope` | `AuthorizationScope` | Optional neutral authorization scope in the domain, persisted as type/reference/snapshot components. |
+| `status` | `ExternalMappingStatus` | Mandatory mapping lifecycle state. |
+| `createdAt` | `Instant` | Persistence-required creation timestamp. |
+| `updatedAt` | `Instant` | Persistence-required update timestamp. |
+
+The canonical constructor requires nonblank ID, IdentityProvider ID, Role ID and external role code, and requires non-null mapping mode and status.
+
+### 58.3 IdentityProvider and Role integrity
+
+The final schema requires both:
 
 ```text
-HMSR-045 — identity.ExternalRoleMapping
+identity_provider_id NOT NULL
+role_id NOT NULL
+```
+
+HRA-111 installs and validates:
+
+```text
+identity_provider_id -> hidra_identity_provider.id
+role_id              -> hidra_identity_role.id
+```
+
+Therefore both mandatory HMS dependencies are fail-closed at persistence.
+
+No additional graph edge is needed.
+
+### 58.4 External-claim semantics
+
+The DDD defines `externalRoleCode` as the external role/claim value and optional `claimName` as the claim source such as `roles`, `realm_access.roles`, or `groups`.
+
+The current model does not embed provider protocol details, credentials, tokens, or secret material.
+
+No current DDD rule establishes a uniqueness key for role mappings, so HMSR-045 does not invent uniqueness across provider/claim/role combinations.
+
+### 58.5 Mapping mode and approval semantics
+
+The DDD defines:
+
+```text
+DIRECT_GRANT
+REQUIRES_LOCAL_APPROVAL
+DISABLED
+```
+
+as allowed mapping modes.
+
+Current repository evidence does not state that `REQUIRES_LOCAL_APPROVAL` must store a Workflow approval identifier directly on ExternalRoleMapping. The Identity DDD uses explicit workflow references on other entities where required, but does not define one here.
+
+HMSR-045 therefore preserves the mapping-mode semantics without inventing an approval-reference field or workflow dependency.
+
+### 58.6 AuthorizationScope semantics
+
+The domain represents scope as `AuthorizationScope`, while persistence stores:
+
+```text
+scope_type
+scope_reference_id
+scope_code_snapshot
+```
+
+The mapper deliberately converts between the domain value object and flattened persistence fields.
+
+`AuthorizationScope` uses neutral references and defaults a null type inside a non-null scope object to `GLOBAL`; GLOBAL clears any reference/snapshot. A completely absent scope remains nullable through the persistence mapper.
+
+This is consistent with the Identity boundary rule that Organization/Topology scope targets remain externally owned and must not become cross-module FKs.
+
+No single HMS target is created from scoped references.
+
+### 58.7 Lifecycle and eligibility rules deliberately not invented
+
+`ExternalMappingStatus` is mandatory and persistence-aligned.
+
+Current Identity DDD evidence does not establish:
+
+- that only ACTIVE IdentityProviders may have stored mappings;
+- that only ACTIVE Roles may be referenced;
+- automatic deactivation when a provider or role changes status;
+- mapping uniqueness constraints;
+- mandatory local approval evidence stored on this model;
+- mandatory claimName;
+- mandatory scope for any mapping mode.
+
+HMSR-045 therefore records none of those as production obligations.
+
+### 58.8 Domain/JPA/Flyway alignment
+
+The domain model has 10 components; JPA flattens the single `AuthorizationScope` value object into three columns, producing 12 persistence fields while preserving the same semantic state.
+
+Required business fields align between domain and persistence:
+
+```text
+id
+identityProviderId
+roleId
+externalRoleCode
+mappingMode
+status
+```
+
+Persistence additionally requires audit timestamps, which remain application/persistence metadata.
+
+The mapper correctly reconstructs the domain scope from the flattened scope fields.
+
+### 58.9 SONATRACH/TRC operational interpretation
+
+For SONATRACH/TRC, ExternalRoleMapping supports controlled federation from enterprise IDM platforms such as Active Directory, Entra ID, Keycloak or other trusted providers into Hidra's internal RBAC model.
+
+The mapping allows external role claims to resolve to internal Hidra roles while keeping authorization scope neutral and leaving Organization/Topology ownership outside Identity.
+
+This separation prevents external directory structure from becoming an accidental organizational or asset master-data authority inside Hidra.
+
+### 58.10 Review conclusion
+
+**APPROVED.** `ExternalRoleMapping` has coherent provider/role dependencies, validated same-module FK protection, required external-claim semantics, explicit mapping modes, neutral scoped authorization representation, lifecycle status, and clean separation from external IDM protocol/secrets and foreign bounded-context ownership.
+
+No evidence-backed production correction obligation remains for HMSR-045.
+
+HMSR-045 does not modify production Java, JPA, Flyway, application/API contracts, tests, role mappings, identity providers, roles, or provisioned data.
+
+## 59. Current next task
+
+```text
+HMSR-046 — identity.GroupRoleGrant
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review identity ExternalRoleMapping
+docs(model-review): review identity GroupRoleGrant
 ```
 
-Start HMSR-045 only after HMSR-044 is committed and reported. Do not start HMSR-046 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-046 only after HMSR-045 is committed and reported. Do not start HMSR-047 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
 

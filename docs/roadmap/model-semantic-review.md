@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -269,7 +269,7 @@ Ordering rules applied:
 | HMSR-074 | 4 | incident | Incident | — | organization.OrganizationUnit, workflow.WorkflowInstance | 6 | 11 | 3 | REVISE | Completed | `docs(model-review): review incident Incident` |
 | HMSR-075 | 4 | identity | User | — | organization.Employee | 8 | 8 | 1 | REVISE | Completed | `docs(model-review): review identity User` |
 | HMSR-076 | 4 | planning | PlanRevision | SCC-04 | planning.OperationalPlan, planning.PlanRevision, workflow.WorkflowInstance | 4 | 8 | 2 | REVISE | Completed | `docs(model-review): review planning PlanRevision` |
-| HMSR-077 | 4 | planning | OperationalPlan | SCC-04 | organization.OrganizationUnit, planning.PlanRevision, planning.PlanningPeriod | 1 | 8 | 1 | — | Planned | `docs(model-review): review planning OperationalPlan` |
+| HMSR-077 | 4 | planning | OperationalPlan | SCC-04 | organization.OrganizationUnit, planning.PlanRevision, planning.PlanningPeriod | 1 | 8 | 1 | REVISE | Completed | `docs(model-review): review planning OperationalPlan` |
 | HMSR-078 | 4 | workflow | WorkflowTask | — | organization.OrganizationUnit, workflow.WorkflowInstance, workflow.WorkflowStep | 4 | 6 | 1 | — | Planned | `docs(model-review): review workflow WorkflowTask` |
 | HMSR-079 | 4 | documents | Document | SCC-05 | documents.DocumentVersion | 4 | 5 | 3 | — | Planned | `docs(model-review): review documents Document` |
 | HMSR-080 | 4 | documents | DocumentVersion | SCC-05 | documents.Document, documents.DocumentStorageObject, documents.DocumentVersion, workflow.WorkflowInstance | 3 | 5 | 2 | — | Planned | `docs(model-review): review documents DocumentVersion` |
@@ -14565,16 +14565,154 @@ The target baseline cannot mark it APPROVED while per-plan revision-number uniqu
 
 HMS reconciliation must retain these obligations until explicitly authorized Planning production corrections resolve them or stronger repository evidence changes the governing Planning DDD.
 
-## 90. Current next task
+## 90. HMSR-077 — planning.OperationalPlan review
+
+**Decision:** REVISE  
+**Review code:** HMSR-077  
+**Dependency level:** 4  
+**Bounded context:** planning  
+**SCC:** SCC-04 with `planning.PlanRevision` and `planning.OperationalPlan`  
+**Confirmed upstream subject dependencies:** optional `organization.OrganizationUnit`, optional `planning.PlanRevision` pointers, mandatory `planning.PlanningPeriod`  
+**Confirmed direct HMS subject dependents:** 1  
+**Transitive HMS subject dependents:** 8
+
+### 90.1 Semantic role
+
+`OperationalPlan` is the Planning-owned plan/program header for a planning period and operational scope. It owns plan identity/code, multilingual display names, Planning plan-type and lifecycle state, scope snapshots, optional responsible-unit reference, pointers to current/approved revisions, creator identity, and audit timestamps.
+
+Planning owns the plan header and revision pointers. PlanningPeriod and PlanRevision are same-module owners. Organization owns organization units, Topology owns physical/operational scope identity, and Identity owns actor identity. Cross-module references must remain scalar/application-contract references rather than database foreign keys.
+
+### 90.2 Required field semantics
+
+The Planning DDD declares `nameFr` and `topologyScopeType` required, and JPA/Flyway persist both as `NOT NULL`.
+
+The live domain constructor does not reject either field when null/blank; it normalizes blank values to null. The create service passes command values directly into the aggregate.
+
+The authoritative Planning boundary must therefore fail fast for required French display name and topology scope type instead of relying on a later persistence failure.
+
+HMSR-077 does not promote optional Arabic/English names or optional product/responsible-unit fields into mandatory invariants.
+
+### 90.3 Period ownership
+
+`periodId` is mandatory and same-module. HRA-111 already adds a Planning-local FK from `hidra_planning_operational_plan.period_id` to `hidra_planning_period.id`.
+
+No further database relationship correction is required for the parent planning period. Any additional lifecycle rule such as whether CLOSED periods may accept a new plan belongs to the authoritative creation/application policy and is not invented here beyond explicit Planning DDD evidence.
+
+### 90.4 Plan code uniqueness
+
+The Planning DDD explicitly requires:
 
 ```text
-HMSR-077 — planning.OperationalPlan
+unique(hidra_planning_operational_plan.code)
+```
+
+The live migration defines `code NOT NULL` and an ordinary index, but repository evidence shows no unique constraint/index and `OperationalPlanRepositoryPort` exposes no code lookup.
+
+The plan code must therefore receive concurrency-safe PostgreSQL uniqueness. Application duplicate detection may improve errors but must not replace the database guarantee.
+
+### 90.5 PLAN_TYPE catalog family
+
+`planTypeId` is mandatory and HRA-111 already protects generic same-module existence by FK to `hidra_planning_catalog_entry`.
+
+The Planning DDD, however, defines a specific `PLAN_TYPE` family. Generic catalog-row existence is insufficient because an ID from another Planning catalog family could satisfy the FK.
+
+The authoritative write path must validate that `planTypeId` resolves to an eligible/active Planning catalog entry in the exact `PLAN_TYPE` family.
+
+### 90.6 Topology operational-scope boundary
+
+The model stores:
+
+```text
+topologyScopeType
+topologyScopeId
+topologyScopeCode
+topologyScopeNameSnapshot
+```
+
+The scalar-reference inventory classifies mandatory `topologyScopeId` as a cross-module stable Topology operational-scope reference. The Planning DDD likewise states that Planning stores topology references/snapshots while Topology remains owner.
+
+The live create service accepts the typed scope tuple directly and repository evidence does not show a Planning-facing Topology lookup contract validating it.
+
+The authoritative creation boundary must validate populated mandatory scope identity through a Topology-owned application/lookup contract while preserving the stored code/name snapshots. No cross-module Topology FK should be introduced.
+
+### 90.7 Responsible Organization and creator actor
+
+`responsibleOrganizationUnitId` is optional and Organization-owned. `createdByActorId` is mandatory and Identity-owned.
+
+The current create path copies both values directly from the command. Repository evidence does not show owner-controlled lookup validation in this use case.
+
+The authoritative creation boundary must validate mandatory creator identity and, when populated, responsible organization-unit identity through their owning contracts. No cross-module Organization or Identity database FK should be introduced.
+
+### 90.8 Current/approved revision pointers
+
+`currentRevisionId` and `approvedRevisionId` are optional same-module references to `PlanRevision`. They form the cyclic SCC-04 relationship with `PlanRevision.planId`.
+
+The base Planning migration creates only indexes for these pointers. HRA-111 did not add FKs because its enforcement scope covered mandatory references only.
+
+When populated, both pointers must fail closed to existing Planning-owned revisions. Same-module FKs are architecturally acceptable, provided the cyclic schema is introduced additively and safely; an explicitly justified application existence boundary may supplement this.
+
+The governing relation must also prevent a plan from pointing at a revision owned by a different plan. A plain FK to revision ID alone would not establish that ownership correlation; implementation must preserve the documented `OperationalPlan -> PlanRevision` parent relationship.
+
+### 90.9 Lifecycle state and approved baseline
+
+`OperationalPlanStatus` is explicitly documented as the stable Planning lifecycle:
+
+```text
+DRAFT
+SUBMITTED
+APPROVED
+ACTIVE
+SUPERSEDED
+CANCELLED
+CLOSED
+```
+
+It is appropriate as a domain/technical enum rather than a catalog taxonomy.
+
+The DDD states that only one approved revision should be active at a time and that `approvedRevisionId` is the revision used downstream. HMSR-077 records the pointer-integrity obligation but does not invent a full lifecycle-transition state machine not otherwise specified in current evidence.
+
+### 90.10 Product reference
+
+`productTypeId` is optional. Current repository evidence does not establish a definitive owner/contract or exact catalog family for this HMS subject review.
+
+HMSR-077 therefore preserves it as an unresolved/non-subject reference and does not invent a relational target or validation contract. HMS-006 reconciliation may revisit it if stronger evidence becomes available.
+
+### 90.11 Required revisions
+
+Six evidence-backed obligations remain:
+
+1. **Enforce DDD-required `nameFr` and `topologyScopeType` before persistence.**
+
+2. **Enforce global plan-code uniqueness in PostgreSQL** for `hidra_planning_operational_plan.code`.
+
+3. **Enforce `PLAN_TYPE` catalog-family eligibility** for mandatory `planTypeId`; the existing generic catalog FK is not sufficient.
+
+4. **Validate mandatory Topology operational-scope identity through a Topology-owned contract** while preserving scope snapshots and without a cross-module DB FK.
+
+5. **Validate cross-context ownership references through owner-controlled contracts:** mandatory creator actor and populated responsible Organization unit; do not introduce cross-module FKs.
+
+6. **Protect populated current/approved revision pointers and their parent-plan correlation.** Both IDs must reference existing Planning revisions belonging to the same OperationalPlan; use same-module persistence/application integrity without weakening the SCC boundary.
+
+HMSR-077 does not modify production Java, JPA, Flyway, API/application contracts, tests, Planning/Topology/Organization/Identity data, or provisioned data.
+
+### 90.12 Review conclusion
+
+**REVISE.** `OperationalPlan` is a coherent Planning aggregate header with correct separation of planned state from telemetry/monitoring, an appropriate lifecycle enum, protected mandatory PlanningPeriod ownership, and snapshot-based cross-context scope semantics.
+
+The target baseline cannot mark it APPROVED while DDD-required fields can reach persistence as null, plan-code uniqueness is absent, `PLAN_TYPE` family eligibility is unchecked, cross-context scope/identity references are trusted directly, and current/approved revision pointers are not fail-closed or correlated to the owning plan.
+
+HMS reconciliation must retain these obligations until explicitly authorized Planning production corrections resolve them or stronger repository evidence changes the governing Planning DDD.
+
+## 91. Current next task
+
+```text
+HMSR-078 — workflow.WorkflowTask
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review planning OperationalPlan
+docs(model-review): review workflow WorkflowTask
 ```
 
-Start HMSR-077 only after HMSR-076 is committed and reported. Do not start HMSR-078 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-078 only after HMSR-077 is committed and reported. Do not start HMSR-079 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

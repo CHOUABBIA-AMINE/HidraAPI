@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -260,7 +260,7 @@ Ordering rules applied:
 | HMSR-065 | 3 | organization | Employee | — | organization.AdministrativeLocality | 6 | 14 | 1 | APPROVED | Completed | `docs(model-review): review organization Employee` |
 | HMSR-066 | 3 | simulation | SimulationOptimizationCandidate | — | simulation.SimulationRun | 2 | 2 | 0 | APPROVED | Completed | `docs(model-review): review simulation SimulationOptimizationCandidate` |
 | HMSR-067 | 3 | integration | IntegrationExchangeMessage | — | integration.ExternalSystem, integration.IntegrationJobRun | 1 | 1 | 2 | REVISE | Completed | `docs(model-review): review integration IntegrationExchangeMessage` |
-| HMSR-068 | 3 | reporting | ReportRun | — | reporting.ReportDefinition, reporting.ReportRequest | 1 | 1 | 0 | — | Planned | `docs(model-review): review reporting ReportRun` |
+| HMSR-068 | 3 | reporting | ReportRun | — | reporting.ReportDefinition, reporting.ReportRequest | 1 | 1 | 0 | REVISE | Completed | `docs(model-review): review reporting ReportRun` |
 | HMSR-069 | 3 | risk | RiskAssessment | — | risk.RiskRegister | 1 | 1 | 10 | — | Planned | `docs(model-review): review risk RiskAssessment` |
 | HMSR-070 | 3 | assets | AssetConditionRecord | — | assets.MaintainableAsset | 0 | 0 | 0 | — | Planned | `docs(model-review): review assets AssetConditionRecord` |
 | HMSR-071 | 3 | leakdetection | LeakEscalationReference | — | leakdetection.LeakCandidate, leakdetection.LeakDetectionCase | 0 | 0 | 0 | — | Planned | `docs(model-review): review leakdetection LeakEscalationReference` |
@@ -2500,10 +2500,10 @@ Confirmed subject-model graph edges at this stage: **165**. These are semantic c
 | Field | Declared type | Classification | Resolved target | Graph edge | Notes |
 |---|---|---|---|:---:|---|
 | id | String | Self identifier | — | No | Primary identity of the current model. |
-| reportRequestId | String | Domain reference | reporting.ReportRequest | Yes | Unambiguous same-module subject-model reference. |
-| reportDefinitionId | String | Domain reference | reporting.ReportDefinition | Yes | Unambiguous same-module subject-model reference. |
-| templateVersionId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
-| correlationId | String | Snapshot/reference-only | TECHNICAL_REFERENCE | No | Technical correlation/request/reference identity. |
+| reportRequestId | String | Domain reference | reporting.ReportRequest | Yes | Mandatory same-module request reference. HRA-111 currently mis-targets this FK to `hidra_reporting_catalog_entry.id`; that migration target is semantically incorrect and must be corrected to `hidra_reporting_request.id`. |
+| reportDefinitionId | String | Domain reference | reporting.ReportDefinition | Yes | Mandatory same-module definition reference; HRA-111 correctly protects `report_definition_id -> hidra_reporting_report_definition.id`. Queueing must also prove consistency with the selected request. |
+| templateVersionId | String | Domain reference | reporting.ReportTemplateVersion (read/persistence model) | No | Mandatory exact template-version reference; HRA-111 correctly protects row existence. Reproducibility requires proving the version belongs to a template for the selected report definition. |
+| correlationId | String | Snapshot/reference-only | TECHNICAL_REFERENCE | No | Optional technical correlation/request identity. |
 
 #### risk.RiskAssessment
 
@@ -13196,16 +13196,185 @@ The target baseline cannot mark it APPROVED while populated job-run and endpoint
 
 HMS reconciliation must retain these obligations until explicitly authorized Integration production/DDD corrections resolve them or stronger repository evidence changes the governing model.
 
-## 81. Current next task
+## 81. HMSR-068 — reporting.ReportRun review
+
+**Decision:** REVISE  
+**Review code:** HMSR-068  
+**Dependency level:** 3  
+**Bounded context:** reporting  
+**Confirmed upstream subject dependencies:** `reporting.ReportDefinition`, `reporting.ReportRequest`  
+**Confirmed direct HMS subject dependents:** 1  
+**Transitive HMS subject dependents:** 1
+
+### 81.1 Semantic role
+
+`ReportRun` is the Reporting-owned execution attempt for a report request. It freezes the request/definition/template-version identity used for execution and carries run mode, lifecycle status, queue/start/terminal timestamps, failure information, output metrics and correlation metadata.
+
+Reporting owns the run lifecycle and reproducibility envelope. Source business modules continue to own the underlying operational truth.
+
+### 81.2 Report-request integrity defect
+
+`reportRequestId` is mandatory and semantically references `reporting.ReportRequest`.
+
+The live HRA-111 migration currently contains:
 
 ```text
-HMSR-068 — reporting.ReportRun
+hidra_reporting_run.report_request_id
+    -> hidra_reporting_catalog_entry.id
+```
+
+This is not a catalog reference. It is a direct same-module domain reference to ReportRequest.
+
+The current Flyway target is therefore semantically wrong and must be corrected so new writes and existing data are validated against:
+
+```text
+hidra_reporting_request.id
+```
+
+This is a concrete production-integrity obligation, not a speculative modeling preference.
+
+### 81.3 Request/definition consistency
+
+`reportDefinitionId` is mandatory and HRA-111 correctly protects:
+
+```text
+hidra_reporting_run.report_definition_id
+    -> hidra_reporting_report_definition.id
+```
+
+`ReportRequest` itself also carries a mandatory `reportDefinitionId`, protected against the same definition table.
+
+However, `ReportingApplicationService.queueReportRun()` accepts `reportRequestId` and `reportDefinitionId` independently from `QueueReportRunCommand` and does not load the request before saving the run.
+
+Independent row existence is insufficient. The authoritative queue path must enforce:
+
+```text
+run.reportDefinitionId == request.reportDefinitionId
+```
+
+before creating the run.
+
+### 81.4 Exact template-version lineage
+
+`templateVersionId` is mandatory and HRA-111 correctly protects:
+
+```text
+hidra_reporting_run.template_version_id
+    -> hidra_reporting_report_template_version.id
+```
+
+`ReportTemplateVersion` belongs to `ReportTemplate`, and `ReportTemplate` belongs to `ReportDefinition`; both relationships are same-module and database-protected.
+
+The Reporting DDD requires report runs to preserve the exact template version used and identifies that version as part of the report's reproducibility contract.
+
+The current queue service does not resolve the supplied template version or prove that its template belongs to the selected report definition.
+
+The authoritative queue path must therefore fail closed unless the selected template-version lineage resolves to the same ReportDefinition as the request/run.
+
+HMSR-068 does not require every historical run to reference a currently ACTIVE template version; reproducibility may legitimately preserve a version that later becomes RETIRED.
+
+### 81.5 Request queue eligibility and approval boundary
+
+The Reporting DDD defines request lifecycle/approval semantics and states that reports requiring approval cannot be queued before workflow approval.
+
+HMSR-057 already recorded the production obligation to prevent approval-required requests from reaching queue state before approval.
+
+`queueReportRun()` currently does not load or inspect the request at all; therefore it cannot enforce that previously recorded request eligibility rule before creating a run.
+
+HMSR-068 does not duplicate or broaden HMSR-057's approval semantics. It records the run-side requirement that an authoritative queue operation must consume the request's validated queueable state rather than bypass it.
+
+### 81.6 Required parameters before queueing
+
+The Reporting DDD explicitly states:
+
+```text
+required parameters must be provided before queueing a report run
+```
+
+The live queue service does not resolve ReportParameterDefinition or ReportParameterValue data before creating a QUEUED run, and no application port for this validation is used in the active path.
+
+Therefore the authoritative queue boundary must validate the request's required parameter set before persistence of a QUEUED ReportRun.
+
+HMSR-068 does not invent new parameter types or value-shape rules beyond the existing Reporting DDD.
+
+### 81.7 Run lifecycle invariants
+
+`ReportRunStatus` is a genuine lifecycle enum:
+
+```text
+QUEUED
+RUNNING
+COMPLETED
+FAILED
+CANCELLED
+EXPIRED
+```
+
+The DDD explicitly requires:
+
+```text
+completed runs must have completedAt
+failed runs must have failureReason
+```
+
+The current domain record validates required identity/queue fields but permits construction of `COMPLETED` without `completedAt` and `FAILED` without `failureReason`.
+
+The active application service only creates QUEUED runs, so this is not evidence of a current queue-path violation; it is nevertheless a semantic gap in the authoritative run state model/transition boundary.
+
+Future authorized reconciliation must enforce those explicit DDD terminal-state invariants at the domain and/or lifecycle application boundary.
+
+HMSR-068 does not invent additional timestamp ordering or failure-field rules not stated by the DDD.
+
+### 81.8 Run mode and metrics
+
+`ReportRunMode` is a technical execution enum used to distinguish manual, scheduled, system-triggered and workflow-triggered runs.
+
+`recordCount`, `outputCount` and `executionDurationMs` are optional execution-result metrics. Current Reporting DDD does not specify additional bounds or mandatory presence rules for these fields.
+
+HMSR-068 therefore does not invent numeric constraints.
+
+### 81.9 Reproducibility and source ownership
+
+The Reporting DDD requires reproducibility through exact definition/template version, request parameters, input snapshots, source contract versions and generated-artifact evidence.
+
+The ReportRun model correctly anchors request, definition and exact template-version identity. Other reproducibility components live in supporting Reporting entities and are not collapsed into ReportRun.
+
+Reporting must continue to consume source modules through read/application contracts and must not modify operational source state.
+
+### 81.10 Required revisions
+
+Five evidence-backed obligations remain:
+
+1. **Correct the erroneous HRA-111 foreign key for `reportRequestId`.** `hidra_reporting_run.report_request_id` must reference `hidra_reporting_request.id`, not `hidra_reporting_catalog_entry.id`.
+
+2. **Enforce request/definition consistency before queueing.** The selected ReportRequest must belong to the same ReportDefinition recorded by the run.
+
+3. **Enforce template-version lineage before queueing.** The exact ReportTemplateVersion must resolve through its ReportTemplate to the same ReportDefinition as the request/run.
+
+4. **Queue only an eligible request with all required parameters present.** Reuse the previously recorded HMSR-057 request approval/access semantics; do not bypass them from the run-queue path.
+
+5. **Enforce the explicit terminal-state invariants.** COMPLETED requires `completedAt`; FAILED requires `failureReason` at the authoritative domain/transition boundary.
+
+HMSR-068 does not modify production Java, JPA, Flyway, API/application contracts, tests, Reporting definitions/templates/requests/parameters, workflow data, or provisioned data.
+
+### 81.11 Review conclusion
+
+**REVISE.** `ReportRun` is a coherent 17-field Reporting-owned execution model whose definition and exact template-version references are already protected against dangling rows and whose lifecycle/run-mode enums are appropriate.
+
+The target baseline cannot mark it APPROVED while the live Flyway constraint for `reportRequestId` points to the wrong table, queueing does not prove request/definition/template lineage, required request parameters and queue eligibility are bypassed, and explicit DDD terminal-state invariants are not enforced by the run model/lifecycle boundary.
+
+HMS reconciliation must retain these obligations until explicitly authorized Reporting production corrections resolve them or stronger repository evidence changes the governing Reporting DDD.
+
+## 82. Current next task
+
+```text
+HMSR-069 — risk.RiskAssessment
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review reporting ReportRun
+docs(model-review): review risk RiskAssessment
 ```
 
-Start HMSR-068 only after HMSR-067 is committed and reported. Do not start HMSR-069 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-069 only after HMSR-068 is committed and reported. Do not start HMSR-070 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

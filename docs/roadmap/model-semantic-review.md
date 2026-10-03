@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -265,7 +265,7 @@ Ordering rules applied:
 | HMSR-070 | 3 | assets | AssetConditionRecord | — | assets.MaintainableAsset | 0 | 0 | 0 | APPROVED | Completed | `docs(model-review): review assets AssetConditionRecord` |
 | HMSR-071 | 3 | leakdetection | LeakEscalationReference | — | leakdetection.LeakCandidate, leakdetection.LeakDetectionCase | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review leakdetection LeakEscalationReference` |
 | HMSR-072 | 3 | notification | NotificationDeliveryAttempt | — | notification.NotificationMessage | 0 | 0 | 2 | REVISE | Completed | `docs(model-review): review notification NotificationDeliveryAttempt` |
-| HMSR-073 | 3 | workflow | WorkflowTransition | — | workflow.WorkflowDefinition, workflow.WorkflowStep | 0 | 0 | 0 | — | Planned | `docs(model-review): review workflow WorkflowTransition` |
+| HMSR-073 | 3 | workflow | WorkflowTransition | — | workflow.WorkflowDefinition, workflow.WorkflowStep | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review workflow WorkflowTransition` |
 | HMSR-074 | 4 | incident | Incident | — | organization.OrganizationUnit, workflow.WorkflowInstance | 6 | 11 | 3 | — | Planned | `docs(model-review): review incident Incident` |
 | HMSR-075 | 4 | identity | User | — | organization.Employee | 8 | 8 | 1 | — | Planned | `docs(model-review): review identity User` |
 | HMSR-076 | 4 | planning | PlanRevision | SCC-04 | planning.OperationalPlan, planning.PlanRevision, workflow.WorkflowInstance | 4 | 8 | 2 | — | Planned | `docs(model-review): review planning PlanRevision` |
@@ -2790,9 +2790,9 @@ Confirmed subject-model graph edges at this stage: **165**. These are semantic c
 | Field | Declared type | Classification | Resolved target | Graph edge | Notes |
 |---|---|---|---|:---:|---|
 | id | String | Self identifier | — | No | Primary identity of the current model. |
-| definitionId | String | Domain reference | workflow.WorkflowDefinition | Yes | Unambiguous same-module subject-model reference. |
-| fromStepId | String | Domain reference | workflow.WorkflowStep | Yes | Unambiguous same-module subject-model reference. |
-| toStepId | String | Domain reference | workflow.WorkflowStep | Yes | Unambiguous same-module subject-model reference. |
+| definitionId | String | Domain reference | workflow.WorkflowDefinition | Yes | Mandatory same-module owning definition; HRA-111 protects row existence. Transition configuration still must prove both steps belong to this definition. |
+| fromStepId | String | Domain reference | workflow.WorkflowStep | Yes | Mandatory same-module source step; HRA-111 protects row existence. DDD requires source and destination to belong to the same definition and forbids self-transition. |
+| toStepId | String | Domain reference | workflow.WorkflowStep | Yes | Mandatory same-module destination step; HRA-111 protects row existence. Runtime execution validates target-step definition membership, but persisted configuration can still be inconsistent before execution. |
 
 ### 11.4 HMS-003 outcome
 
@@ -13956,16 +13956,214 @@ The target baseline cannot mark it APPROVED while attempt/message channel consis
 
 HMS reconciliation must retain these obligations until explicitly authorized Notification production corrections resolve them or stronger repository evidence changes the governing DDD.
 
-## 86. Current next task
+## 86. HMSR-073 — workflow.WorkflowTransition review
+
+**Decision:** REVISE  
+**Review code:** HMSR-073  
+**Dependency level:** 3  
+**Bounded context:** workflow  
+**Confirmed upstream subject dependencies:** `workflow.WorkflowDefinition`, `workflow.WorkflowStep`  
+**Confirmed direct HMS subject dependents:** 0  
+**Transitive HMS subject dependents:** 0
+
+### 86.1 Semantic role
+
+`WorkflowTransition` is the Workflow-owned configuration that declares one allowed state-advancing decision from a source step to a destination step inside one workflow definition.
+
+It also carries decision-specific reason/comment requirements, optional authorization policy metadata and optional condition/callback configuration.
+
+Workflow owns this process configuration. It does not own the business object being approved.
+
+### 86.2 Same-module reference integrity
+
+`definitionId`, `fromStepId` and `toStepId` are mandatory same-module references.
+
+HRA-111 protects row existence for all three targets:
 
 ```text
-HMSR-073 — workflow.WorkflowTransition
+definitionId -> WorkflowDefinition
+fromStepId   -> WorkflowStep
+toStepId     -> WorkflowStep
+```
+
+Those foreign keys correctly prevent dangling references.
+
+However, independent FK existence does not prove semantic composition.
+
+### 86.3 Definition/step consistency
+
+The Workflow DDD explicitly requires:
+
+```text
+Transition source and destination steps must belong to the same definition.
+```
+
+The runtime `WorkflowTransitionApplicationService` correctly validates:
+
+```text
+transition.definitionId == running instance.definitionId
+transition.fromStepId == current task.stepId
+targetStep.definitionId == running instance.definitionId
+```
+
+This is strong execution-time protection.
+
+But the `WorkflowTransition` domain record itself accepts arbitrary valid IDs, and repository search found no authoritative transition-configuration write use case that resolves both steps before saving the transition.
+
+Therefore an internally inconsistent transition can still exist in persistence until execution rejects it.
+
+The authoritative transition-configuration boundary must ensure:
+
+```text
+fromStep.definitionId == transition.definitionId
+toStep.definitionId   == transition.definitionId
+```
+
+before a transition can be considered valid configuration.
+
+### 86.4 Self-transition prohibition
+
+The DDD explicitly states:
+
+```text
+fromStepId cannot equal toStepId.
+```
+
+The live execution service already rejects self-transitions before advancing an instance.
+
+The domain model and persistence schema do not enforce that invariant at configuration time.
+
+Because this rule is explicit and model-intrinsic, it should fail closed when transition configuration is created/updated rather than only when a user later attempts to execute it.
+
+### 86.5 Decision uniqueness per source step
+
+The Workflow DDD explicitly states:
+
+```text
+(definitionId, fromStepId, decision) must be unique.
+Only configured decisions are allowed from a given step.
+```
+
+Current repository search found no database unique constraint for this tuple.
+
+Without that protection, multiple transitions for the same definition/source-step/decision can create ambiguous execution configuration.
+
+The target model therefore requires transactional/database-safe uniqueness for:
+
+```text
+definitionId + fromStepId + decision
+```
+
+HMSR-073 does not invent uniqueness on destination step or transition ID beyond the existing primary key.
+
+### 86.6 Reason/comment execution semantics
+
+The transition carries:
+
+```text
+reasonRequired
+commentRequired
+```
+
+The runtime executor already combines:
+- `WorkflowDecisionGuard` decision-level reason/comment semantics,
+- transition-specific `reasonRequired`,
+- transition-specific `commentRequired`.
+
+This aligns with the DDD rule that reason/comment requirements must be enforced during action execution.
+
+No additional semantic revision is required for those fields.
+
+### 86.7 Permission semantics
+
+`requiredPermissionCode` is optional.
+
+The executor already validates the configured permission against the authenticated command's effective permission set, including the explicit wildcard authority behavior.
+
+Workflow does not own Identity permission master data, so this field correctly remains a policy code rather than a cross-module database FK.
+
+HMSR-073 records no new Identity relationship.
+
+### 86.8 Condition and callback configuration
+
+The model permits optional:
+
+```text
+conditionExpression
+targetModuleCallback
+```
+
+The current executor explicitly fails closed when either is configured:
+
+```text
+conditional workflow transition execution is not available until a condition evaluator is configured
+target-module callback execution is not available for this transition
+```
+
+That behavior is safe, because unsupported configuration cannot silently execute.
+
+However, ACTIVE workflow definitions should not be allowed to treat such transitions as executable configuration until the corresponding controlled evaluator/callback architecture exists.
+
+Later reconciliation should either:
+- prevent unsupported condition/callback transitions from activation/use, or
+- implement their governed execution contracts.
+
+HMSR-073 does not invent an expression language, callback protocol, or direct target-module invocation mechanism.
+
+### 86.9 WorkflowDecision enum
+
+`WorkflowDecision` defines:
+
+```text
+APPROVE
+REJECT
+REQUEST_CORRECTION
+CORRECT
+RETURN
+DELEGATE
+ESCALATE
+CANCEL
+COMMENT
+```
+
+This is a stable Workflow process decision vocabulary used directly by the transition engine.
+
+Although Workflow business taxonomies are generally catalog-backed, this enum is part of the executable process state-machine contract rather than a user-managed descriptive taxonomy.
+
+Current evidence does not require replacing it with a catalog.
+
+### 86.10 Required revisions
+
+Four evidence-backed obligations remain:
+
+1. **Enforce definition/step composition at transition configuration time.** Both source and destination steps must belong to the transition's WorkflowDefinition.
+
+2. **Enforce `fromStepId != toStepId` as a configuration/domain invariant**, not only as an execution-time guard.
+
+3. **Enforce uniqueness of `definitionId + fromStepId + decision`.** Prevent ambiguous duplicate configured decisions from one source step.
+
+4. **Prevent unsupported condition/callback configuration from becoming executable ACTIVE workflow configuration until governed evaluators/contracts exist**, or implement those contracts explicitly. Preserve the current fail-closed runtime behavior.
+
+HMSR-073 does not modify production Java, JPA, Flyway, API/application contracts, tests, Workflow definitions/steps/transitions, Identity data, target-module contracts, or provisioned data.
+
+### 86.11 Review conclusion
+
+**REVISE.** `WorkflowTransition` is a coherent 12-field Workflow-owned transition configuration model. All mandatory same-module identities are database-protected, and the runtime executor already performs strong definition/source/destination, permission, reason/comment and unsupported-feature checks.
+
+The target baseline cannot mark it APPROVED while invalid cross-definition/self transitions and duplicate source-step decisions can still be persisted as configuration, and condition/callback transition configuration can exist even though execution intentionally rejects those features.
+
+HMS reconciliation must retain these obligations until explicitly authorized Workflow production corrections resolve them or stronger repository evidence changes the governing Workflow DDD.
+
+## 87. Current next task
+
+```text
+HMSR-074 — incident.Incident
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review workflow WorkflowTransition
+docs(model-review): review incident Incident
 ```
 
-Start HMSR-073 only after HMSR-072 is committed and reported. Do not start HMSR-074 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-074 only after HMSR-073 is committed and reported. Do not start HMSR-075 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -230,7 +230,7 @@ Ordering rules applied:
 | HMSR-035 | 1 | organization | OrganizationUnit | SCC-01 | organization.OrganizationUnit, organization.OrganizationUnitType | 22 | 51 | 0 | REVISE | Completed | `docs(model-review): review organization OrganizationUnit` |
 | HMSR-036 | 1 | organization | AdministrativeDistrict | — | organization.AdministrativeState | 1 | 16 | 0 | APPROVED | Completed | `docs(model-review): review organization AdministrativeDistrict` |
 | HMSR-037 | 1 | telemetry | TelemetryReading | — | telemetry.TelemetryPoint | 2 | 6 | 2 | REVISE | Completed | `docs(model-review): review telemetry TelemetryReading` |
-| HMSR-038 | 1 | simulation | SimulationScenario | — | simulation.SimulationModel | 1 | 4 | 3 | — | Planned | `docs(model-review): review simulation SimulationScenario` |
+| HMSR-038 | 1 | simulation | SimulationScenario | — | simulation.SimulationModel | 1 | 4 | 3 | REVISE | Completed | `docs(model-review): review simulation SimulationScenario` |
 | HMSR-039 | 1 | notification | NotificationRequest | — | notification.NotificationTemplate | 1 | 2 | 4 | — | Planned | `docs(model-review): review notification NotificationRequest` |
 | HMSR-040 | 1 | organization | ResponsibilityAssignment | — | organization.OperationalScope | 1 | 1 | 1 | — | Planned | `docs(model-review): review organization ResponsibilityAssignment` |
 | HMSR-041 | 1 | topology | Facility | — | party.Party | 1 | 1 | 0 | — | Planned | `docs(model-review): review topology Facility` |
@@ -2611,12 +2611,12 @@ Confirmed subject-model graph edges at this stage: **165**. These are semantic c
 | Field | Declared type | Classification | Resolved target | Graph edge | Notes |
 |---|---|---|---|:---:|---|
 | id | String | Self identifier | — | No | Primary identity of the current model. |
-| scenarioTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
-| modelId | String | Domain reference | simulation.SimulationModel | Yes | Unambiguous same-module subject-model reference. |
-| modelVersionId | String | Unresolved | — | No | Reference target is outside or absent from the 123 subject-model set; preserve for HMS-004 review. |
-| topologySnapshotId | String | Snapshot/reference-only | — | No | Snapshot/reference identity; not treated as ownership dependency in HMS-003. |
-| planningReferenceId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
-| monitoringContextId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| scenarioTypeId | String | Value/catalog dependency | simulation.SimulationCatalogEntry (SIMULATION_SCENARIO_TYPE) | No | HMSR-038 stronger Simulation DDD + HRA-111 evidence resolves the required scenario taxonomy reference; catalog-family semantics remain to be enforced. |
+| modelId | String | Domain reference | simulation.SimulationModel | Yes | Required same-module HMS subject reference; HRA-111 protects the persisted model row. |
+| modelVersionId | String | Domain reference | simulation.SimulationModelVersion (read/persistence model) | No | HMSR-038 resolves this required same-module reference; HRA-111 protects row existence but not model/version parent consistency. |
+| topologySnapshotId | String | Historical snapshot reference | topology.TopologySnapshot (read/persistence model) | No | HMSR-038 resolves this required cross-module immutable input reference; Simulation already defines a TopologySnapshotLookupPort. |
+| planningReferenceId | String | Optional cross-module snapshot/reference | planning snapshot/reference | No | HMSR-038 Simulation DDD + PlanningSnapshotLookupPort establish optional Planning-owned input context; no cross-module DB FK. |
+| monitoringContextId | String | Optional cross-module reference | monitoring context/evaluation | No | HMSR-038 Simulation DDD + MonitoringContextLookupPort establish optional Monitoring-owned context; no cross-module DB FK. |
 | createdByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
 
 #### telemetry.TelemetryPoint
@@ -8513,16 +8513,163 @@ The target baseline cannot mark it APPROVED while optional batch and external-ta
 
 HMS reconciliation must retain these obligations until an explicitly authorized Telemetry correction task resolves them or the governing Telemetry DDD/ingestion policy is explicitly revised with stronger evidence.
 
-## 51. Current next task
+## 51. HMSR-038 — simulation.SimulationScenario review
+
+**Decision:** REVISE  
+**Review code:** HMSR-038  
+**Dependency level:** 1  
+**Bounded context:** simulation  
+**Confirmed upstream subject dependencies:** `simulation.SimulationModel` through `modelId`  
+**Confirmed direct HMS subject dependents:** 1  
+**Transitive HMS subject dependents:** 4  
+**Unresolved/non-subject references:** 3 in the original register; all are now semantically classified
+
+### 51.1 Semantic role and ordering rationale
+
+`SimulationScenario` is the Simulation-owned what-if/optimization case that selects a simulation model and immutable model version, fixes an input Topology snapshot, optionally links Planning and Monitoring context, records scenario classification and author snapshot, and moves through DRAFT/READY/LOCKED/ARCHIVED lifecycle before execution.
+
+It is Level 1 because `modelId` references the already-reviewed HMS subject `SimulationModel`. `SimulationModelVersion` is a retained Simulation read/persistence model outside the 123 HMS subject set. Topology, Planning, Monitoring, and actor references remain boundary references and do not create new HMS ownership edges.
+
+### 51.2 Field semantics
+
+| Field | Type | Reviewed meaning |
+|---|---|---|
+| `id` | `String` | Mandatory stable scenario identity. |
+| `code` | `String` | Mandatory business code; Simulation DDD explicitly says it is unique. |
+| `nameAr` | `String` | Optional Arabic label. |
+| `nameFr` | `String` | Mandatory French label in DDD/JPA/schema. |
+| `nameEn` | `String` | Optional English label. |
+| `scenarioTypeId` | `String` | Mandatory `SIMULATION_SCENARIO_TYPE` catalog reference. |
+| `modelId` | `String` | Required SimulationModel reference. |
+| `modelVersionId` | `String` | Required immutable SimulationModelVersion reference. |
+| `topologySnapshotId` | `String` | Required immutable Topology input snapshot reference. |
+| `planningReferenceId` | `String` | Optional Planning plan/revision/snapshot context. |
+| `monitoringContextId` | `String` | Optional Monitoring/evaluation context. |
+| `status` | `SimulationScenarioStatus` | DRAFT, READY, LOCKED, ARCHIVED. |
+| `createdByActorId` | `String` | Required actor identity reference/snapshot source. |
+| `createdByDisplayNameSnapshot` | `String` | Required actor display snapshot. |
+| `createdAt` | `Instant` | Persistence-required creation timestamp. |
+| `updatedAt` | `Instant` | Persistence-required update timestamp. |
+
+The domain already rejects blank ID, code, scenario type, model, model version, topology snapshot and creator actor, and requires a non-null status. `executable()` correctly returns true only for LOCKED scenarios, matching the DDD rule that a scenario must be locked before execution.
+
+### 51.3 Model and model-version integrity
+
+HRA-111 protects:
 
 ```text
-HMSR-038 — simulation.SimulationScenario
+scenario.model_id         -> hidra_simulation_model.id
+scenario.model_version_id -> hidra_simulation_model_version.id
+```
+
+so both rows must exist.
+
+However, `SimulationModelVersion` itself has a mandatory `modelId` parent. Neither the record, application service, nor database constraints prove that the selected `modelVersionId` belongs to the same `modelId` stored on the scenario.
+
+The create service accepts both IDs independently and persists them directly. A scenario can therefore pair model A with a version belonging to model B while satisfying both independent foreign keys.
+
+That parent-consistency relationship must fail closed before the scenario becomes authoritative.
+
+### 51.4 Scenario-type catalog semantics
+
+Simulation DDD lists `SIMULATION_SCENARIO_TYPE` among the governed business catalog families and describes `scenarioTypeId` as the scenario classification.
+
+HRA-111 protects only generic row existence:
+
+```text
+scenario_type_id -> hidra_simulation_catalog_entry.id
+```
+
+No current create-path lookup verifies that the selected row belongs to `SIMULATION_SCENARIO_TYPE` or is otherwise eligible under Simulation catalog policy.
+
+HMSR-038 therefore resolves the target but retains a catalog-family validation obligation.
+
+### 51.5 Unique scenario code
+
+Simulation DDD explicitly defines `code` as a **unique scenario code**.
+
+The base schema creates an ordinary index on `hidra_simulation_scenario(code)`, not a unique constraint/index, and `SimulationScenarioRepositoryPort` exposes no code lookup used by `createSimulationScenario()`.
+
+Duplicate scenario business codes are therefore currently persistable.
+
+### 51.6 Required French label and creator display snapshot
+
+The DDD marks both `nameFr` and `createdByDisplayNameSnapshot` as required. JPA/schema likewise declare both columns `NOT NULL`.
+
+The domain constructor normalizes both fields but does not reject null/blank values, and the create service passes command values directly. Thus the canonical domain can accept a state that cannot satisfy its documented/persistence contract.
+
+Both fields require consistent nonblank validation at the authoritative domain/application boundary.
+
+### 51.7 Topology, Planning and Monitoring input references
+
+Simulation DDD requires `topologySnapshotId` and provides `TopologySnapshotLookupPort`. It also provides `PlanningSnapshotLookupPort` and `MonitoringContextLookupPort` for the optional Planning and Monitoring references.
+
+The current `SimulationApplicationService.createSimulationScenario()` injects none of those lookup ports and performs no availability validation.
+
+A DRAFT scenario need not necessarily prove every execution-time condition immediately, so HMSR-038 does not invent that all external references must be validated specifically at creation. But before READY/LOCKED/execution, required Topology snapshot availability and any populated optional Planning/Monitoring references must be resolved through the owner-module lookup boundaries.
+
+The repository currently lists `LockSimulationScenarioUseCase` and validation use cases as target contracts in the DDD, but they are not present in the active service. HMSR-038 records the boundary obligation without manufacturing those capabilities during semantic review.
+
+### 51.8 Snapshot/execution semantics
+
+The DDD rule:
+
+```text
+A scenario must be locked before execution to freeze inputs and assumptions.
+```
+
+is reflected locally by `SimulationScenario.executable()`.
+
+The broader Simulation contract also requires runs to use immutable model versions and immutable input snapshots. A scenario stores a topology snapshot directly, while a run later references a separate `SimulationInputSnapshot`. HMSR-038 does not collapse these concepts: the scenario's topology snapshot is scenario input context; the run snapshot freezes the complete execution input set.
+
+No status-transition matrix beyond the lock-before-execution rule is explicitly defined, so no DRAFT→READY→LOCKED transition sequence is invented here.
+
+### 51.9 Optional references and actor semantics deliberately bounded
+
+`planningReferenceId` and `monitoringContextId` are optional by DDD and schema; HMSR-038 does not make them mandatory.
+
+`createdByActorId` remains a cross-module actor reference. Simulation does not own Identity state, so no cross-module database FK is introduced. The required display-name snapshot provides historical readability, not actor authorization.
+
+No evidence establishes scenario-code uniqueness per model or per organization; DDD says simply unique, so the correction must honor that stated scope unless Simulation DDD is explicitly revised.
+
+### 51.10 Required revisions
+
+Five evidence-backed correction obligations remain:
+
+1. **Enforce unique scenario code.** Protect the DDD-defined unique `SimulationScenario.code` at the persistence boundary and align application behavior.
+2. **Enforce scenario-type catalog-family semantics.** `scenarioTypeId` must resolve specifically to `SIMULATION_SCENARIO_TYPE`, not merely any Simulation catalog row.
+3. **Enforce model/model-version parent consistency.** The selected `modelVersionId` must belong to the selected `modelId`.
+4. **Require DDD-mandated nonblank `nameFr` and `createdByDisplayNameSnapshot`.** Canonical construction must not admit values that violate the stated scenario contract and final schema.
+5. **Fail closed on scenario input references at the appropriate lifecycle boundary.** Before READY/LOCKED/execution, the required Topology snapshot and any populated Planning/Monitoring references must resolve through their existing owner-module lookup ports or equivalent boundary validation.
+
+HMSR-038 does not modify production Java, JPA, Flyway, API/application contracts, tests, simulation scenarios/models/catalogs, or provisioned data.
+
+### 51.11 SONATRACH/TRC operational interpretation
+
+For SONATRACH/TRC, a SimulationScenario is governed decision-support input. Its model/version pairing must identify the exact hydraulic or operational model configuration being evaluated, and its Topology snapshot must anchor the scenario to a known network state.
+
+Duplicate scenario codes, wrong scenario taxonomy, mismatched model/version identities, or unresolved snapshot/context references weaken reproducibility and auditability and can invalidate later optimization or operational recommendations.
+
+Simulation remains advisory and must not mutate Topology, Planning, Monitoring, telemetry, or control systems directly.
+
+### 51.12 Review conclusion
+
+**REVISE.** `SimulationScenario` has a coherent 16-field Simulation-owned model, correct Level-1 dependency on SimulationModel, explicit immutable model-version and Topology-snapshot references, appropriate lifecycle vocabulary, and a correct lock-before-execution predicate.
+
+The target baseline cannot mark it APPROVED while unique-code enforcement, scenario catalog-family semantics, model/version parent consistency, required French/actor-snapshot fields, and owner-boundary reference validation remain incomplete.
+
+HMS reconciliation must retain these obligations until an explicitly authorized Simulation correction task resolves them or the governing Simulation DDD is explicitly revised with stronger evidence.
+
+## 52. Current next task
+
+```text
+HMSR-039 — notification.NotificationRequest
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review simulation SimulationScenario
+docs(model-review): review notification NotificationRequest
 ```
 
-Start HMSR-038 only after HMSR-037 is committed and reported. Do not start HMSR-039 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-039 only after HMSR-038 is committed and reported. Do not start HMSR-040 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

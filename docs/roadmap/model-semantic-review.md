@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-006 completed after reconciling all 123 interactive reviews: 19 APPROVED, 104 REVISE, 0 DEFER, 0 REMOVE. Production obligations remain intentionally outstanding; HMS-007 is the next roadmap task but its completion gate is not yet satisfied.
+**Status:** Active — HMS-006 completed after reconciling all 123 interactive reviews: 19 APPROVED, 104 REVISE, 0 DEFER, 0 REMOVE. Production obligations remain intentionally outstanding. HMR-001 established `docs/roadmap/model-semantic-remediation.md`; HMS-007 remains planned but is gated behind HMR closure.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -20454,18 +20454,24 @@ No production Java, JPA, Flyway, API/application contract, test, data-provisioni
 
 ## 138. Current next task
 
-The exact next registered roadmap task is:
+HMS-007 remains the next HMS task but its completion gate is not yet satisfied.
+
+Production remediation is now registered under:
 
 ```text
-HMS-007 — finalize approved target model semantic baseline
+docs/roadmap/model-semantic-remediation.md
+```
+
+The operational next task is:
+
+```text
+HMR-002 — prepare executable remediation register
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): finalize approved target model semantic baseline
+docs(model-remediation): prepare executable remediation register
 ```
 
-However, HMS-007's own completion gate is **not yet satisfied** because 104 REVISE decisions retain future production obligations. HMS-007 must not falsely mark the baseline approved until those corrections are implemented or explicitly deferred under authorized owning-module work.
-
-Do not start HMS-007 or HMS-008 automatically.
+Do not execute HMS-007, HMS-008, or HMR-003 automatically.

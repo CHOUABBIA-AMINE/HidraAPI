@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -220,7 +220,7 @@ Ordering rules applied:
 | HMSR-025 | 0 | analytics | AnalyticsInsight | — | — | 0 | 0 | 3 | REVISE | Completed | `docs(model-review): review analytics AnalyticsInsight` |
 | HMSR-026 | 0 | analytics | AnalyticsProjectionRun | — | — | 0 | 0 | 1 | REVISE | Completed | `docs(model-review): review analytics AnalyticsProjectionRun` |
 | HMSR-027 | 0 | analytics | DigitalTwinReadinessAssessment | — | — | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review analytics DigitalTwinReadinessAssessment` |
-| HMSR-028 | 0 | configuration | FeatureFlag | — | — | 0 | 0 | 0 | — | Planned | `docs(model-review): review configuration FeatureFlag` |
+| HMSR-028 | 0 | configuration | FeatureFlag | — | — | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review configuration FeatureFlag` |
 | HMSR-029 | 0 | custody | CustodyDiscrepancy | — | — | 0 | 0 | 1 | — | Planned | `docs(model-review): review custody CustodyDiscrepancy` |
 | HMSR-030 | 0 | organization | OrganizationContactPoint | — | — | 0 | 0 | 0 | — | Planned | `docs(model-review): review organization OrganizationContactPoint` |
 | HMSR-031 | 0 | organization | ReportingLine | — | — | 0 | 0 | 0 | — | Planned | `docs(model-review): review organization ReportingLine` |
@@ -6918,16 +6918,198 @@ The target baseline cannot mark it APPROVED while `scopeType` is mandatory in DD
 
 HMS reconciliation must retain these two obligations until an explicitly authorized Analytics correction task resolves them or the target Analytics DDD is explicitly revised with stronger repository evidence.
 
-## 41. Current next task
+## 41. HMSR-028 — configuration.FeatureFlag review
+
+**Decision:** REVISE  
+**Review code:** HMSR-028  
+**Dependency level:** 0  
+**Bounded context:** configuration  
+**Confirmed upstream subject dependencies:** none  
+**Confirmed direct HMS subject dependents:** 0  
+**Transitive HMS subject dependents:** 0  
+**Unresolved/non-subject references:** 0
+
+### 41.1 Semantic role and ordering rationale
+
+`FeatureFlag` is the Configuration-owned governed runtime toggle definition. It provides stable flag identity/code, multilingual display names, owning-module attribution, lifecycle status, evaluation strategy, default enablement, description and audit timestamps.
+
+It is Level 0 because it has no upstream HMS subject-model dependency. The retained Configuration read/persistence model `FeatureFlagRule` depends on it, but `FeatureFlagRule` is outside the 123 HMS subject set and therefore does not create an HMS graph edge.
+
+The active Configuration DDD explicitly owns feature flags and feature-flag rules while forbidding Configuration from becoming a generic holder for other modules' business taxonomies.
+
+### 41.2 Field semantics
+
+| Field | Type | Mandatory / optional | Reviewed meaning |
+|---|---|---|---|
+| `id` | `String` | Mandatory | Stable FeatureFlag identity and persistence primary key. |
+| `code` | `String` | Mandatory | Stable language-neutral feature-flag code. |
+| `nameFr` | `String` | Persistence-required localized label | French display name. |
+| `nameAr` | `String` | Optional localized label | Arabic display name. |
+| `nameEn` | `String` | Optional localized label | English display name. |
+| `owningModule` | `String` | Persistence-required ownership discriminator | Identifies the Hidra module/business capability whose runtime behavior the flag governs. |
+| `status` | `FeatureFlagStatus` | Mandatory | Lifecycle state: `DRAFT`, `ACTIVE`, `PAUSED`, or `RETIRED`. |
+| `evaluationStrategy` | `FeatureFlagEvaluationStrategy` | Mandatory | Evaluation strategy: `BOOLEAN`, `PERCENTAGE`, `RULE_BASED`, `ALLOW_LIST`, or `DENY_LIST`. |
+| `defaultEnabled` | `boolean` | Mandatory primitive state | Default evaluation result before/without applicable rule refinement. |
+| `description` | `String` | Optional | Human-readable purpose/behavior description. |
+| `createdAt` | `Instant` | Persistence-required audit timestamp | Creation timestamp. |
+| `updatedAt` | `Instant` | Persistence-required audit timestamp | Last-update timestamp. |
+
+The compact constructor already rejects blank `id` and `code`, requires non-null `status` and `evaluationStrategy`, normalizes textual fields, and exposes `canEvaluate()` only when `status == ACTIVE`.
+
+### 41.3 FeatureFlagRule downstream persistence boundary
+
+The Configuration DDD retains `FeatureFlagRule` as the rule model governing scoped/rule-based enablement.
+
+Persistence stores:
 
 ```text
-HMSR-028 — configuration.FeatureFlag
+FeatureFlagRule.featureFlagId
+    -> FeatureFlag.id
+```
+
+and HRA-111 installs:
+
+```text
+fk_hra111_configuration_004
+  FOREIGN KEY (feature_flag_id)
+  REFERENCES hidra_configuration_feature_flag(id)
+  ON DELETE RESTRICT
+```
+
+Therefore rule rows cannot reference a missing FeatureFlag at the database boundary.
+
+Because `FeatureFlagRule` is a retained read/persistence model outside the HMS subject population, this relationship does not change the HMSR-028 Level-0 ordering or direct-subject-dependent count.
+
+### 41.4 Creation lifecycle semantics
+
+`ConfigurationApplicationService.createFeatureFlag()` creates new flags with:
+
+```text
+status = DRAFT
+```
+
+and passes through the requested evaluation strategy and default-enabled value.
+
+That is a conservative creation state: a newly defined runtime toggle is not immediately evaluable because `FeatureFlag.canEvaluate()` returns true only for `ACTIVE`.
+
+Current repository evidence does not define a complete transition matrix among DRAFT, ACTIVE, PAUSED and RETIRED, so HMSR-028 does not invent one.
+
+### 41.5 Confirmed owning-module domain/persistence inconsistency
+
+The strongest evidence-backed defect is `owningModule`.
+
+The final JPA/schema contract requires:
+
+```text
+owning_module varchar(80) NOT NULL
+```
+
+and `FeatureFlagJpaEntity.owningModule` is mapped with `nullable = false`.
+
+The application create command/request carries `owningModule`, and the summary/response surfaces it as core feature-flag identity context.
+
+The canonical domain constructor, however, performs only:
+
+```text
+owningModule = normalize(owningModule);
+```
+
+so null or blank input becomes `null` without rejection.
+
+This field is not merely a display label. It identifies the module whose runtime behavior is governed by the Configuration-owned flag and preserves the bounded-context rule that Configuration provides the toggle mechanism without taking ownership of the target module's business semantics.
+
+The current create path performs no separate nonblank validation before persistence. A flag can therefore be valid at the domain layer but fail at the final persistence boundary because its ownership context is absent.
+
+### 41.6 Multilingual-label semantics deliberately not over-promoted
+
+The base schema/JPA contract requires `nameFr` and keeps `nameAr`/`nameEn` nullable.
+
+The current Configuration DDD confirms Configuration-owned multilingual catalog labels but does not state a FeatureFlag-specific domain invariant requiring all localized names or even explicitly elevate `nameFr` to constructor-level semantic identity.
+
+Under the existing HMS/HRA policy, persistence `NOT NULL` on a generic display label alone is not enough to invent a new domain invariant. HMSR-028 therefore does not record a FeatureFlag `nameFr` constructor correction.
+
+The persistence/application boundary must still supply a value compatible with the final schema.
+
+### 41.7 Code, strategy and rule semantics deliberately not invented
+
+The base schema creates an ordinary index on `FeatureFlag.code`, not a unique constraint. No active Configuration DDD/application contract reviewed here defines global or module-scoped code uniqueness, so HMSR-028 does not invent it.
+
+Likewise, current evidence does not define detailed strategy-specific rules such as:
+
+- `BOOLEAN` forbidding FeatureFlagRule rows;
+- `PERCENTAGE` requiring a particular percentage field or range;
+- `RULE_BASED` requiring at least one active rule;
+- `ALLOW_LIST`/`DENY_LIST` requiring a specific scope/list representation;
+- relationships between `defaultEnabled` and each strategy.
+
+Those semantics may be desirable, but the current Configuration DDD only establishes that feature-flag rules are allowed; it does not define a complete evaluation algorithm. HMSR-028 does not manufacture one.
+
+### 41.8 Status and evaluation strategy vocabulary
+
+`FeatureFlagStatus` and `FeatureFlagEvaluationStrategy` are bounded behavior/lifecycle concepts directly used by the feature-flag aggregate.
+
+No current Configuration DDD evidence classifies either vocabulary as a catalog-owned business taxonomy or requires replacement by `ConfigurationCatalogEntry`.
+
+Therefore HMSR-028 retains both enums and does not infer a catalog refactor solely because Configuration also owns catalog infrastructure.
+
+### 41.9 Persistence/application consistency otherwise
+
+The live domain and JPA representations agree on all 12 declared components.
+
+The final schema requires:
+
+```text
+id
+code
+name_fr
+owning_module
+status
+evaluation_strategy
+default_enabled
+created_at
+updated_at
+```
+
+while Arabic/English names and description remain nullable.
+
+`FeatureFlagRepositoryPort` provides save/find-by-ID operations. The create use case is active and constructs a DRAFT flag before persistence.
+
+Generic audit timestamp requiredness remains a persistence/application-boundary concern and is not promoted into a new constructor invariant.
+
+### 41.10 Required revision
+
+One evidence-backed correction obligation remains:
+
+1. **Require a nonblank owning module consistently at the domain/application boundary.** `FeatureFlag.owningModule` must not normalize to null because the final persistence contract requires it and it provides the bounded-context ownership/routing identity for the governed runtime toggle. The separately authorized Configuration correction task should align domain/application validation with JPA/schema semantics without turning Configuration into the owner of the target module's business taxonomy.
+
+HMSR-028 does not modify production Java, JPA, Flyway, API/application contracts, tests, feature flags/rules or provisioned data.
+
+### 41.11 SONATRACH/TRC operational interpretation
+
+For SONATRACH/TRC, FeatureFlag is a governed mechanism for activating or pausing application capabilities safely without redefining operational business taxonomies.
+
+A flag should remain attributable to the Hidra module whose runtime behavior it controls. An unattributed feature flag is operationally ambiguous: operators and maintainers cannot reliably determine the capability owner or interpret downstream configuration/rule behavior.
+
+Feature flags must remain software/runtime governance controls; they are not a substitute for safety interlocks, operating procedures, workflow approvals or physical pipeline-control authorization.
+
+### 41.12 Review conclusion
+
+**REVISE.** `FeatureFlag` has a coherent 12-field Configuration-owned model, correct Level-0 placement, conservative DRAFT creation state, appropriate lifecycle/evaluation enums, and database-protected downstream FeatureFlagRule references.
+
+The target baseline cannot mark it APPROVED while `owningModule` is required by the final persistence/application shape but may disappear during canonical domain construction.
+
+HMS reconciliation must retain this ownership-requiredness obligation until an explicitly authorized Configuration correction task resolves it or stronger repository evidence explicitly changes the final FeatureFlag ownership semantics.
+
+## 42. Current next task
+
+```text
+HMSR-029 — custody.CustodyDiscrepancy
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review configuration FeatureFlag
+docs(model-review): review custody CustodyDiscrepancy
 ```
 
-Start HMSR-028 only after HMSR-027 is committed and reported. Do not start HMSR-029 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-029 only after HMSR-028 is committed and reported. Do not start HMSR-030 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

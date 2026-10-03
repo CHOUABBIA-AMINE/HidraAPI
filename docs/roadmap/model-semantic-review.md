@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 reviewed as REVISE, HMSR-080 reviewed as REVISE, HMSR-081 reviewed as REVISE, HMSR-082 reviewed as REVISE, HMSR-083 approved, HMSR-084 reviewed as REVISE, HMSR-085 reviewed as REVISE, HMSR-086 approved, HMSR-087 reviewed as REVISE, HMSR-088 reviewed as REVISE, HMSR-089 reviewed as REVISE, HMSR-090 reviewed as REVISE, HMSR-091 reviewed as REVISE, HMSR-092 reviewed as REVISE, HMSR-093 reviewed as REVISE, HMSR-094 reviewed as REVISE, HMSR-095 reviewed as REVISE, HMSR-096 reviewed as REVISE, HMSR-097 reviewed as REVISE, HMSR-098 reviewed as REVISE, HMSR-099 approved, HMSR-100 reviewed as REVISE, HMSR-101 reviewed as REVISE, HMSR-102 approved, HMSR-103 approved, HMSR-104 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 reviewed as REVISE, HMSR-080 reviewed as REVISE, HMSR-081 reviewed as REVISE, HMSR-082 reviewed as REVISE, HMSR-083 approved, HMSR-084 reviewed as REVISE, HMSR-085 reviewed as REVISE, HMSR-086 approved, HMSR-087 reviewed as REVISE, HMSR-088 reviewed as REVISE, HMSR-089 reviewed as REVISE, HMSR-090 reviewed as REVISE, HMSR-091 reviewed as REVISE, HMSR-092 reviewed as REVISE, HMSR-093 reviewed as REVISE, HMSR-094 reviewed as REVISE, HMSR-095 reviewed as REVISE, HMSR-096 reviewed as REVISE, HMSR-097 reviewed as REVISE, HMSR-098 reviewed as REVISE, HMSR-099 approved, HMSR-100 reviewed as REVISE, HMSR-101 reviewed as REVISE, HMSR-102 approved, HMSR-103 approved, HMSR-104 reviewed as REVISE, HMSR-105 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -296,7 +296,7 @@ Ordering rules applied:
 | HMSR-101 | 5 | identity | AuthorizationDelegationGrant | — | identity.Permission, identity.Role, identity.User | 0 | 0 | 3 | REVISE | Completed | `docs(model-review): review identity AuthorizationDelegationGrant` |
 | HMSR-102 | 5 | identity | HidraPrincipal | — | identity.IdentityProvider, identity.User | 0 | 0 | 0 | APPROVED | Completed | `docs(model-review): review identity HidraPrincipal` |
 | HMSR-103 | 5 | identity | LocalCredential | — | identity.User | 0 | 0 | 0 | APPROVED | Completed | `docs(model-review): review identity LocalCredential` |
-| HMSR-104 | 5 | identity | LoginSession | — | identity.IdentityProvider, identity.User | 0 | 0 | 1 | — | Planned | `docs(model-review): review identity LoginSession` |
+| HMSR-104 | 5 | identity | LoginSession | — | identity.IdentityProvider, identity.User | 0 | 0 | 1 | REVISE | Completed | `docs(model-review): review identity LoginSession` |
 | HMSR-105 | 5 | identity | UserPermissionGrant | — | identity.Permission, identity.User | 0 | 0 | 1 | — | Planned | `docs(model-review): review identity UserPermissionGrant` |
 | HMSR-106 | 5 | identity | UserRoleGrant | — | identity.Role, identity.User | 0 | 0 | 1 | — | Planned | `docs(model-review): review identity UserRoleGrant` |
 | HMSR-107 | 5 | incident | IncidentClosure | — | incident.Incident, workflow.WorkflowInstance | 0 | 0 | 0 | — | Planned | `docs(model-review): review incident IncidentClosure` |
@@ -18104,16 +18104,175 @@ No production correction obligation is recorded for HMSR-103.
 
 HMSR-103 does not modify production Java, JPA, Flyway, API/application contracts, tests, Identity data, or provisioned data.
 
-## 117. Current next task
+## 117. HMSR-104 — identity.LoginSession review
+
+**Decision:** REVISE  
+**Review code:** HMSR-104  
+**Dependency level:** 5  
+**Bounded context:** identity  
+**Confirmed upstream subject dependencies:** mandatory `identity.User`; optional `identity.IdentityProvider`; optional external-identity trace reference  
+**Confirmed direct HMS subject dependents:** 0  
+**Transitive HMS subject dependents:** 0  
+**Unresolved/non-subject reference count:** 1
+
+### 117.1 Semantic role
+
+`LoginSession` is the Identity-owned logical authentication-session record.
+
+The governing Identity DDD explicitly states that it stores session metadata only and must not store access tokens or refresh tokens. Token internals remain platform/security infrastructure concerns.
+
+### 117.2 Mandatory session core
+
+The DDD requires:
 
 ```text
-HMSR-104 — identity.LoginSession
+id
+userId
+sessionType
+startedAt
+status
+```
+
+The live domain enforces `id`, `userId`, `startedAt`, and `status`.
+
+However, the canonical `LoginSession` model contains no `sessionType` field at all.
+
+That is a direct target-model mismatch. The future production model must preserve the DDD-required authentication/session protocol classification rather than infer it only indirectly from the provider at selected runtime operations.
+
+### 117.3 Session-type vocabulary
+
+The DDD defines the session-type vocabulary as:
+
+```text
+LOCAL
+LDAP
+OIDC
+SAML2
+OAUTH2
+API_TOKEN
+SYSTEM
+```
+
+This aligns with the existing `AuthenticationProtocol` technical enum.
+
+Future production reconciliation should therefore reuse the established protocol vocabulary unless stronger repository evidence requires a distinct session enum. HMSR-104 does not invent a duplicate taxonomy.
+
+### 117.4 User integrity
+
+`userId` is mandatory and same-module.
+
+HRA-111 already protects it with:
+
+```text
+hidra_identity_login_session.user_id
+  -> hidra_identity_user.id
+```
+
+The domain also rejects blank `userId`.
+
+No further basic User-existence correction is required.
+
+### 117.5 Provider and external-identity linkage
+
+`identityProviderId` and `externalIdentityId` are optional because LOCAL/system sessions may not require both.
+
+The authentication roadmap explicitly describes the reused `LoginSession` as carrying:
+
+```text
+user/provider/external-identity linkage
+```
+
+The live session-start path copies `principal.identityProviderId()` but always passes:
+
+```text
+externalIdentityId = null
+```
+
+Repository search found no later assignment of `externalIdentityId` during authentication completion.
+
+Therefore LDAP/OIDC/other external sessions can lose the exact external-identity linkage even when authentication resolved through an `ExternalIdentity`.
+
+The future production flow should propagate the resolved external-identity identifier when one actually participated, while keeping the field optional for LOCAL/system paths.
+
+### 117.6 End-of-session timestamp mismatch
+
+The DDD defines optional:
+
+```text
+endedAt
+```
+
+as the session end time.
+
+The live domain/JPA/table contain `lastSeenAt` but no `endedAt`.
+
+Logout, revoke, and expiry operations currently call `saveWithStatus(..., Instant.now())`, which writes the supplied timestamp into `lastSeenAt`.
+
+That conflates “last activity observed” with “session ended at” and does not preserve the DDD's explicit end-time semantic.
+
+Future production reconciliation must add/preserve an explicit `endedAt` lifecycle timestamp while retaining `lastSeenAt` only if the repository still needs activity tracking as a separate concern.
+
+### 117.7 Expiry semantics
+
+`expiresAt` is optional in the DDD.
+
+The provider-neutral live session-start service currently requires a non-null expiry strictly after the start time because the current Hidra-issued JWT/session completion path always supplies an expiry.
+
+That stronger application-path requirement does not require changing the DDD field to globally mandatory; other future session types such as SYSTEM/API_TOKEN may have different policies.
+
+HMSR-104 therefore records no model defect for the optional DDD declaration itself.
+
+### 117.8 Lifecycle status
+
+`LoginSessionStatus` contains:
+
+```text
+ACTIVE
+EXPIRED
+REVOKED
+LOGGED_OUT
+```
+
+This exactly matches the Identity DDD and remains an appropriate technical lifecycle enum.
+
+No catalog conversion is required.
+
+### 117.9 Token separation
+
+The live model contains no access token, refresh token, token hash, or raw bearer material.
+
+The application lifecycle service also explicitly operates without storing token values.
+
+This correctly satisfies the Identity DDD boundary.
+
+### 117.10 Required revisions
+
+Three evidence-backed production obligations remain:
+
+1. **Add/preserve the DDD-required `sessionType` on the canonical LoginSession model and persistence contract**, reusing the established authentication-protocol vocabulary rather than inventing an unnecessary taxonomy.
+2. **Propagate `externalIdentityId` for externally authenticated sessions when an ExternalIdentity actually participated**, preserving optionality for LOCAL/system paths.
+3. **Add/preserve an explicit `endedAt` lifecycle timestamp and stop using `lastSeenAt` as a substitute for session termination time**; keep activity tracking separate if still required.
+
+HMSR-104 does not modify production Java, JPA, Flyway, API/application contracts, tests, Identity data, or provisioned data.
+
+### 117.11 Review conclusion
+
+**REVISE.** `LoginSession` has correct Identity ownership, protected mandatory User linkage, correct status vocabulary, and proper token-free session semantics.
+
+The target baseline cannot mark it APPROVED while the DDD-required `sessionType` is absent, externally authenticated sessions do not preserve their resolved external-identity linkage, and the DDD's explicit `endedAt` semantic is missing while lifecycle transitions overwrite `lastSeenAt`.
+
+HMS reconciliation must retain these obligations until explicitly authorized Identity production corrections resolve them or stronger repository evidence changes the governing Identity contract.
+
+## 118. Current next task
+
+```text
+HMSR-105 — identity.UserPermissionGrant
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review identity LoginSession
+docs(model-review): review identity UserPermissionGrant
 ```
 
-Start HMSR-104 only after HMSR-103 is committed and reported. Do not start HMSR-105 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-105 only after HMSR-104 is committed and reported. Do not start HMSR-106 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -244,7 +244,7 @@ Ordering rules applied:
 | HMSR-049 | 1 | party | PartyRoleAssignment | — | party.Party | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review party PartyRoleAssignment` |
 | HMSR-050 | 1 | topology | Pipeline | — | topology.PipelineSystem | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review topology Pipeline` |
 | HMSR-051 | 2 | workflow | WorkflowStep | SCC-02 | workflow.WorkflowDefinition, workflow.WorkflowStepAssignmentRule | 5 | 35 | 0 | REVISE | Completed | `docs(model-review): review workflow WorkflowStep` |
-| HMSR-052 | 2 | workflow | WorkflowStepAssignmentRule | SCC-02 | organization.OrganizationUnit, workflow.WorkflowDefinition, workflow.WorkflowStep | 1 | 35 | 0 | — | Planned | `docs(model-review): review workflow WorkflowStepAssignmentRule` |
+| HMSR-052 | 2 | workflow | WorkflowStepAssignmentRule | SCC-02 | organization.OrganizationUnit, workflow.WorkflowDefinition, workflow.WorkflowStep | 1 | 35 | 0 | REVISE | Completed | `docs(model-review): review workflow WorkflowStepAssignmentRule` |
 | HMSR-053 | 2 | organization | AdministrativeLocality | — | organization.AdministrativeDistrict | 2 | 15 | 0 | — | Planned | `docs(model-review): review organization AdministrativeLocality` |
 | HMSR-054 | 2 | assets | MaintainableAsset | SCC-03 | assets.MaintainableAsset, organization.OrganizationUnit, party.Party | 3 | 3 | 4 | — | Planned | `docs(model-review): review assets MaintainableAsset` |
 | HMSR-055 | 2 | simulation | SimulationRun | — | simulation.SimulationScenario | 2 | 3 | 2 | — | Planned | `docs(model-review): review simulation SimulationRun` |
@@ -2765,11 +2765,11 @@ Confirmed subject-model graph edges at this stage: **165**. These are semantic c
 | Field | Declared type | Classification | Resolved target | Graph edge | Notes |
 |---|---|---|---|:---:|---|
 | id | String | Self identifier | — | No | Primary identity of the current model. |
-| definitionId | String | Domain reference | workflow.WorkflowDefinition | Yes | Unambiguous same-module subject-model reference. |
-| stepId | String | Domain reference | workflow.WorkflowStep | Yes | Unambiguous same-module subject-model reference. |
-| assignmentModeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
-| actorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
-| organizationUnitId | String | Cross-module reference | organization.OrganizationUnit | Yes | Unambiguous reference to a subject model in another bounded context. |
+| definitionId | String | Domain reference | workflow.WorkflowDefinition | Yes | Mandatory same-module HMS subject reference; HRA-111 protects `definition_id -> hidra_workflow_definition.id`. |
+| stepId | String | Domain reference | workflow.WorkflowStep | Yes | Mandatory same-module HMS subject reference; HRA-111 protects `step_id -> hidra_workflow_step.id`; this is the reverse side of SCC-02. |
+| assignmentModeId | String | Value/catalog dependency | WORKFLOW_ASSIGNMENT_MODE | No | Mandatory Workflow-owned catalog reference; HRA-111 proves row existence in `hidra_workflow_type_catalog` but does not prove catalog-family membership. |
+| actorId | String | Cross-module reference | IDENTITY_ACTOR | No | Optional actor selector; no Actor subject model exists in the 123-model HMS set. |
+| organizationUnitId | String | Cross-module reference | organization.OrganizationUnit | Yes | Optional Organization-owned candidate-pool reference; no cross-module DB FK is appropriate. |
 
 #### workflow.WorkflowTask
 
@@ -10915,17 +10915,224 @@ The target baseline cannot mark it APPROVED while the explicit DDD requirements 
 
 HMS reconciliation must retain these obligations until explicitly authorized Workflow production corrections resolve them or stronger repository evidence revises the governing Workflow DDD.
 
-## 65. Current next task
+## 65. HMSR-052 — workflow.WorkflowStepAssignmentRule review
+
+**Decision:** REVISE  
+**Review code:** HMSR-052  
+**Dependency level:** 2  
+**Bounded context:** workflow  
+**SCC:** SCC-02 with `workflow.WorkflowStep`  
+**Confirmed upstream subject dependencies:** `workflow.WorkflowDefinition`, `workflow.WorkflowStep`, optional `organization.OrganizationUnit`  
+**Confirmed direct HMS subject dependents:** 1  
+**Transitive HMS subject dependents:** 35
+
+### 65.1 Semantic role and ordering rationale
+
+`WorkflowStepAssignmentRule` is the Workflow-owned reusable assignment policy attached to a WorkflowStep.
+
+It defines how a step resolves an actor or candidate pool without making Workflow the owner of Identity actors, Organization units, roles, positions, or target-business ownership.
+
+It participates in SCC-02 because every rule points to a WorkflowStep while a WorkflowStep may designate one default assignment rule.
+
+### 65.2 Field semantics
+
+| Field | Type | Reviewed meaning |
+|---|---|---|
+| `id` | `String` | Mandatory stable assignment-rule identity. |
+| `definitionId` | `String` | Mandatory same-module reference to WorkflowDefinition. |
+| `stepId` | `String` | Mandatory same-module reference to WorkflowStep. |
+| `assignmentModeId` | `String` | Mandatory Workflow-owned `WORKFLOW_ASSIGNMENT_MODE` catalog reference. |
+| `actorId` | `String` | Optional Identity actor selector. |
+| `roleCode` | `String` | Optional Identity role/permission code requirement/snapshot. |
+| `organizationUnitId` | `String` | Optional OrganizationUnit candidate-pool reference. |
+| `organizationRoleCode` | `String` | Optional Organization role/position requirement. |
+| `targetOwnerMode` | `String` | Optional instruction to resolve an owner from the workflow target through a lookup boundary. |
+| `active` | `boolean` | Whether the rule may currently be used. |
+| `createdAt` | `Instant` | Persistence-required creation timestamp. |
+| `updatedAt` | `Instant` | Persistence-required update timestamp. |
+
+The canonical constructor requires nonblank ID, definition ID, step ID and assignment-mode ID, while all candidate-selector fields remain individually optional.
+
+### 65.3 WorkflowDefinition and WorkflowStep reference integrity
+
+The final schema requires both `definition_id` and `step_id`.
+
+HRA-111 installs and validates:
 
 ```text
-HMSR-052 — workflow.WorkflowStepAssignmentRule
+definition_id -> hidra_workflow_definition.id
+step_id       -> hidra_workflow_step.id
+```
+
+Therefore both mandatory same-module references are fail-closed at persistence.
+
+`stepId` is the reverse side of SCC-02. HMSR-052 preserves the cycle rather than attempting to flatten it into a false ordering.
+
+Current DDD evidence does not explicitly define a separate persisted invariant that the referenced step's `definitionId` must equal this rule's `definitionId`; the runtime transition service verifies definition/step consistency when using a default rule. HMSR-052 does not invent a broader parent-consistency obligation without a stronger explicit rule.
+
+### 65.4 Assignment-mode catalog semantics
+
+The Workflow DDD identifies `assignmentModeId` as a mandatory catalog reference and explicitly lists:
+
+```text
+WORKFLOW_ASSIGNMENT_MODE
+```
+
+among the recommended Workflow catalog families.
+
+HRA-111 protects `assignment_mode_id` with a same-module FK to `hidra_workflow_type_catalog.id`.
+
+That FK proves that the referenced catalog row exists, but it does not prove that the row belongs to the `WORKFLOW_ASSIGNMENT_MODE` family.
+
+No authoritative application validation was found that checks catalog-family membership before persisting or using a WorkflowStepAssignmentRule.
+
+Therefore the rule can currently point to an unrelated Workflow catalog entry while still satisfying the database FK.
+
+### 65.5 Explicit candidate-resolution invariant is unenforced
+
+The Workflow DDD states:
+
+```text
+Assignment rule must resolve to at least one eligible actor or candidate pool.
+Workflow may look up eligibility through ports, not direct imports.
+```
+
+The rule has five potential candidate/eligibility selectors:
+
+```text
+actorId
+roleCode
+organizationUnitId
+organizationRoleCode
+targetOwnerMode
+```
+
+The canonical constructor permits all five to normalize to `null` simultaneously.
+
+No dedicated WorkflowStepAssignmentRule creation service or application guard was found that rejects a selector-less rule before save. The repository port exposes unrestricted `save()`.
+
+As a result, a structurally valid ACTIVE assignment rule can exist that has no actor and no candidate-pool resolution mechanism, directly contradicting the DDD.
+
+### 65.6 Runtime use does not cure invalid persisted rules
+
+`WorkflowTransitionApplicationService` loads a target step's default assignment rule and, if found and active, maps its actor/organization/role/mode fields into the next WorkflowTask.
+
+It verifies that the loaded rule belongs to the running definition and target step.
+
+However, it does not transform a selector-less rule into a valid candidate pool. Such a rule can still produce a task without a resolvable assignee/candidate source.
+
+Therefore runtime use is not a substitute for the DDD's assignment-rule validity invariant.
+
+### 65.7 OrganizationUnit boundary
+
+`organizationUnitId` is an optional cross-module reference to `organization.OrganizationUnit`.
+
+Workflow does not own Organization hierarchy or unit lifecycle, and no cross-module database FK should be introduced.
+
+The DDD's architectural rule is that Workflow may look up eligibility through ports rather than direct imports.
+
+Current evidence reviewed for HMSR-052 does not define an explicit creation-time OrganizationUnit existence/status rule distinct from the broader “must resolve to at least one eligible actor or candidate pool” invariant. HMSR-052 therefore does not manufacture a second OrganizationUnit-specific correction obligation; the later production correction should use owner-controlled lookup semantics wherever the selected assignment mode requires organizational candidate resolution.
+
+### 65.8 Actor, role and organization-role semantics
+
+`actorId` is an Identity-owned actor reference.
+
+`roleCode` is described by the DDD as an Identity role/permission code snapshot/requirement.
+
+`organizationRoleCode` represents an Organization role/position requirement rather than an Identity role.
+
+These fields intentionally remain neutral references/codes so Workflow does not import Identity or Organization implementation classes.
+
+No DDD evidence requires any one of these fields individually, because assignment mode determines which selector is relevant. HMSR-052 therefore enforces only the documented “at least one resolvable actor/candidate pool” invariant rather than inventing per-mode combinations.
+
+### 65.9 Target-owner semantics
+
+`targetOwnerMode` instructs Workflow to resolve the owner of the target object through a lookup port.
+
+This preserves the core Workflow boundary:
+
+```text
+Workflow owns the process.
+The target module owns the business fact.
+```
+
+HMSR-052 does not convert target ownership into a direct foreign key or bounded-context import.
+
+Current evidence does not define the allowed `targetOwnerMode` vocabulary or exact supported target-owner algorithms, so none are invented.
+
+### 65.10 Active state and uniqueness rules deliberately not invented
+
+The `active` flag is mandatory and used by the transition service when selecting the default rule.
+
+Current Workflow DDD evidence does not state:
+
+- that only one active rule may exist per step;
+- that `(definitionId, stepId, assignmentModeId)` must be unique;
+- that inactive rules must be immutable;
+- a lifecycle transition matrix for the boolean active flag.
+
+HMSR-052 therefore does not record those as production obligations.
+
+### 65.11 Domain/JPA/Flyway alignment
+
+Domain and JPA agree on all 12 components and requiredness.
+
+The schema requires:
+
+```text
+id
+definition_id
+step_id
+assignment_mode_id
+active
+created_at
+updated_at
+```
+
+The domain enforces all mandatory business identifiers. HRA-111 protects the mandatory Definition, Step and assignment-mode catalog row identities.
+
+The remaining defects are semantic:
+
+- assignment-mode family membership is not fail-closed; and
+- the explicit candidate-resolution invariant is not enforced.
+
+### 65.12 Required revisions
+
+Two evidence-backed production correction obligations remain:
+
+1. **Enforce `WORKFLOW_ASSIGNMENT_MODE` catalog-family semantics for `assignmentModeId`.** Generic Workflow catalog-row existence is insufficient; the selected entry must belong to the documented assignment-mode family.
+
+2. **Require every WorkflowStepAssignmentRule to provide at least one resolvable actor or candidate-pool strategy.** The authoritative domain/application boundary must reject rules where `actorId`, `roleCode`, `organizationUnitId`, `organizationRoleCode`, and `targetOwnerMode` are all absent. Mode-specific eligibility may be resolved through owner-controlled ports, but Workflow must not persist a rule that cannot resolve any candidate source.
+
+HMSR-052 does not modify production Java, JPA, Flyway, application/API contracts, tests, workflow rules, definitions, steps, catalogs, Organization units, Identity records, or provisioned data.
+
+### 65.13 SONATRACH/TRC operational interpretation
+
+For SONATRACH/TRC, WorkflowStepAssignmentRule determines who receives or may claim operational decision tasks such as telemetry validation, plan approval, integrity review, incident handling or HSE actions.
+
+A rule with no candidate source can create an operational task that nobody can legitimately receive. A rule using the wrong catalog family can apply an unrelated Workflow taxonomy entry as an assignment mode, weakening deterministic routing and governance.
+
+The correct architecture is to keep Workflow as process owner while resolving people, organizational pools and target owners through bounded-context contracts.
+
+### 65.14 Review conclusion
+
+**REVISE.** `WorkflowStepAssignmentRule` has coherent Definition/Step dependencies with validated same-module FKs, a correct SCC-02 relationship with WorkflowStep, neutral cross-module assignment selectors, and proper process-boundary separation from Identity/Organization/target modules.
+
+The target baseline cannot mark it APPROVED while assignment-mode family semantics are unenforced and a rule may contain no actor/candidate-pool resolution strategy despite the explicit Workflow DDD requirement.
+
+HMS reconciliation must retain these two obligations until explicitly authorized Workflow production corrections resolve them or stronger repository evidence revises the governing Workflow DDD.
+
+## 66. Current next task
+
+```text
+HMSR-053 — organization.AdministrativeLocality
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review workflow WorkflowStepAssignmentRule
+docs(model-review): review organization AdministrativeLocality
 ```
 
-Start HMSR-052 only after HMSR-051 is committed and reported. Do not start HMSR-053 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-053 only after HMSR-052 is committed and reported. Do not start HMSR-054 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
 

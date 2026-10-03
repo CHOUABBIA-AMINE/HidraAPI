@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -255,7 +255,7 @@ Ordering rules applied:
 | HMSR-060 | 2 | leakdetection | LeakDetectionCase | — | leakdetection.LeakCandidate, organization.OrganizationUnit | 1 | 1 | 0 | REVISE | Completed | `docs(model-review): review leakdetection LeakDetectionCase` |
 | HMSR-061 | 2 | notification | NotificationMessage | — | notification.NotificationRequest, notification.NotificationTemplate | 1 | 1 | 3 | REVISE | Completed | `docs(model-review): review notification NotificationMessage` |
 | HMSR-062 | 2 | telemetry | TrustedTelemetryReading | — | telemetry.TelemetryPoint, telemetry.TelemetryReading | 1 | 1 | 3 | REVISE | Completed | `docs(model-review): review telemetry TrustedTelemetryReading` |
-| HMSR-063 | 2 | topology | Equipment | — | party.Party, topology.Facility | 0 | 0 | 2 | — | Planned | `docs(model-review): review topology Equipment` |
+| HMSR-063 | 2 | topology | Equipment | — | party.Party, topology.Facility | 0 | 0 | 2 | REVISE | Completed | `docs(model-review): review topology Equipment` |
 | HMSR-064 | 3 | workflow | WorkflowInstance | — | workflow.WorkflowDefinition, workflow.WorkflowStep | 18 | 32 | 1 | — | Planned | `docs(model-review): review workflow WorkflowInstance` |
 | HMSR-065 | 3 | organization | Employee | — | organization.AdministrativeLocality | 6 | 14 | 1 | — | Planned | `docs(model-review): review organization Employee` |
 | HMSR-066 | 3 | simulation | SimulationOptimizationCandidate | — | simulation.SimulationRun | 2 | 2 | 0 | — | Planned | `docs(model-review): review simulation SimulationOptimizationCandidate` |
@@ -2668,11 +2668,11 @@ Confirmed subject-model graph edges at this stage: **165**. These are semantic c
 | Field | Declared type | Classification | Resolved target | Graph edge | Notes |
 |---|---|---|---|:---:|---|
 | id | String | Self identifier | — | No | Primary identity of the current model. |
-| facilityId | String | Domain reference | topology.Facility | Yes | Unambiguous same-module subject-model reference. |
-| nodeId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
-| pipelineSegmentId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
-| equipmentTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
-| manufacturerPartyId | String | Cross-module reference | party.Party | Yes | Unambiguous reference to a subject model in another bounded context. |
+| facilityId | String | Optional domain reference | topology.Facility | Yes | Optional same-module facility attachment. Current Equipment persistence has no FK protecting a populated value. |
+| nodeId | String | Optional domain reference | topology.TopologyNode (read/persistence model) | No | Optional same-module graph-node attachment outside the 123 HMS subject set. Current Equipment persistence has no FK protecting a populated value. |
+| pipelineSegmentId | String | Optional domain reference | topology.PipelineSegment (read/persistence model) | No | Optional same-module segment attachment outside the 123 HMS subject set. Current Equipment persistence has no FK protecting a populated value. |
+| equipmentTypeId | String | Domain reference | topology.EquipmentType (read/persistence model) | No | Mandatory Topology-owned equipment type; HRA-111 protects `equipment_type_id -> hidra_topology_equipment_type.id`. The parallel `equipmentKind` enum creates duplicated taxonomy semantics. |
+| manufacturerPartyId | String | Optional cross-module reference | party.Party | Yes | Optional Party-owned manufacturer identity with code/name snapshots. No cross-module DB FK is appropriate; authoritative writes currently lack Party existence validation when populated. |
 
 #### topology.Facility
 
@@ -12501,16 +12501,138 @@ The target baseline cannot mark it APPROVED while independent FKs can still comp
 
 HMS reconciliation must retain these obligations until explicitly authorized Telemetry production corrections resolve them or stronger repository evidence changes the governing DDD.
 
-## 76. Current next task
+## 76. HMSR-063 — topology.Equipment review
+
+**Decision:** REVISE  
+**Review code:** HMSR-063  
+**Dependency level:** 2  
+**Bounded context:** topology  
+**Confirmed upstream subject dependencies:** optional `topology.Facility`, optional `party.Party`  
+**Confirmed direct HMS subject dependents:** 0  
+**Transitive HMS subject dependents:** 0
+
+### 76.1 Semantic role
+
+`Equipment` is the Topology-owned physical component model attached to the hydrocarbon network. It carries stable equipment identity, optional attachment references to facility/node/pipeline-segment topology structures, a mandatory EquipmentType reference, lifecycle status, optional manufacturer Party snapshots and installation/retirement timestamps.
+
+Topology owns the physical equipment identity and network placement. Party owns manufacturer identity. Assets owns maintainability and maintenance execution and must not replace the Topology equipment identity.
+
+### 76.2 Equipment-type ownership
+
+`equipmentTypeId` is mandatory and unambiguously references Topology-owned `EquipmentType`.
+
+HRA-111 protects same-module row existence with:
 
 ```text
-HMSR-063 — topology.Equipment
+hidra_topology_equipment.equipment_type_id -> hidra_topology_equipment_type.id
+```
+
+That relationship is correct.
+
+The Topology roadmap explicitly states that Equipment type is a catalog-backed controlled vocabulary and that Topology business taxonomy concepts are not roadmap-accepted as fixed Java enums.
+
+### 76.3 EquipmentKind taxonomy duplication
+
+The live `Equipment` model and `EquipmentType` persistence both also carry mandatory `EquipmentKind` values:
+
+```text
+PUMP
+COMPRESSOR
+VALVE
+METER
+TANK
+FILTER
+HEATER
+SCADA_DEVICE
+OTHER
+```
+
+These are business-facing equipment classifications, not lifecycle/technical states.
+
+This duplicates classification semantics already assigned to the catalog-backed `EquipmentType` model and conflicts with the Topology roadmap rule that business type concepts are catalog-backed rather than fixed Java enums.
+
+HMSR-063 does not decide the exact migration shape, but the target baseline must eliminate the duplicated taxonomy source of truth. Equipment classification should be governed through the Topology-owned EquipmentType/catalog design, while genuine lifecycle state remains enum-backed where appropriate.
+
+### 76.4 Same-module topology attachments
+
+`facilityId`, `nodeId` and `pipelineSegmentId` are nullable in the Equipment model and persistence.
+
+Their intended targets are all Topology-owned:
+
+```text
+facilityId        -> topology.Facility
+nodeId            -> topology.TopologyNode
+pipelineSegmentId -> topology.PipelineSegment
+```
+
+Current HRA-111 evidence protects `equipmentTypeId` but does not add Equipment-side FKs for these three optional attachment references.
+
+Because these are same-module ownership references rather than historical/external/polymorphic identifiers, populated values should fail closed against their Topology-owned targets.
+
+HMSR-063 does not invent a rule requiring exactly one attachment, at least one attachment, or a particular combination; current Topology DDD evidence does not state that cardinality.
+
+### 76.5 Manufacturer Party boundary
+
+`manufacturerPartyId` is optional and accompanied by code/name snapshots.
+
+The field clearly belongs to the Party bounded context. No cross-module database FK should be added.
+
+Current repository evidence does not expose an Equipment registration/application use case that resolves a populated manufacturer through a Party-owned contract before persistence. Therefore the production obligation is owner-boundary validation when a manufacturer ID is supplied, while preserving the stored snapshots as historical/display metadata.
+
+HMSR-063 does not make manufacturer identity mandatory.
+
+### 76.6 Lifecycle semantics
+
+`EquipmentStatus` is a Topology-owned lifecycle enum:
+
+```text
+PLANNED
+ACTIVE
+OUT_OF_SERVICE
+DECOMMISSIONED
+RETIRED
+```
+
+This is consistent with the repository's controlled-vocabulary policy distinction between business taxonomies and technical/lifecycle enums.
+
+Current Topology evidence does not define a complete state-transition matrix, so HMSR-063 does not invent transition rules.
+
+### 76.7 Installation and retirement timestamps
+
+`installedAt` and `retiredAt` are optional.
+
+Current invariant-classification/Topology evidence does not establish a required `installedAt <= retiredAt` invariant for Equipment. HMSR-063 therefore does not promote intuitive chronology into a new domain rule without stronger repository evidence.
+
+### 76.8 Required revisions
+
+Three evidence-backed obligations remain:
+
+1. **Remove the duplicated EquipmentKind business-taxonomy source of truth.** Reconcile `Equipment.equipmentKind` and `EquipmentType.equipmentKind` with the roadmap's catalog-backed EquipmentType architecture rather than preserving fixed enum classification in parallel.
+
+2. **Protect populated same-module attachment references.** `facilityId`, `nodeId` and `pipelineSegmentId` should fail closed against their Topology-owned targets using the appropriate same-module FK and/or application validation strategy.
+
+3. **Validate populated `manufacturerPartyId` through a Party-owned application/lookup boundary.** Preserve manufacturer snapshots and do not introduce a cross-module database FK.
+
+HMSR-063 does not modify production Java, JPA, Flyway, API/application contracts, tests, Topology catalog data, Party data, or provisioned data.
+
+### 76.9 Review conclusion
+
+**REVISE.** `Equipment` is a coherent 16-field Topology-owned physical component model whose mandatory EquipmentType reference is already protected by same-module FK and whose EquipmentStatus is a legitimate lifecycle enum.
+
+The target baseline cannot mark it APPROVED while a fixed `EquipmentKind` enum duplicates the catalog-backed EquipmentType taxonomy, optional same-module placement references can dangle when populated, and manufacturer Party identity is not validated through its owning bounded-context contract.
+
+HMS reconciliation must retain these obligations until explicitly authorized Topology production corrections resolve them or stronger repository evidence changes the governing Topology DDD.
+
+## 77. Current next task
+
+```text
+HMSR-064 — workflow.WorkflowInstance
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review topology Equipment
+docs(model-review): review workflow WorkflowInstance
 ```
 
-Start HMSR-063 only after HMSR-062 is committed and reported. Do not start HMSR-064 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-064 only after HMSR-063 is committed and reported. Do not start HMSR-065 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

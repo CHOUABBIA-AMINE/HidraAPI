@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -266,7 +266,7 @@ Ordering rules applied:
 | HMSR-071 | 3 | leakdetection | LeakEscalationReference | — | leakdetection.LeakCandidate, leakdetection.LeakDetectionCase | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review leakdetection LeakEscalationReference` |
 | HMSR-072 | 3 | notification | NotificationDeliveryAttempt | — | notification.NotificationMessage | 0 | 0 | 2 | REVISE | Completed | `docs(model-review): review notification NotificationDeliveryAttempt` |
 | HMSR-073 | 3 | workflow | WorkflowTransition | — | workflow.WorkflowDefinition, workflow.WorkflowStep | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review workflow WorkflowTransition` |
-| HMSR-074 | 4 | incident | Incident | — | organization.OrganizationUnit, workflow.WorkflowInstance | 6 | 11 | 3 | — | Planned | `docs(model-review): review incident Incident` |
+| HMSR-074 | 4 | incident | Incident | — | organization.OrganizationUnit, workflow.WorkflowInstance | 6 | 11 | 3 | REVISE | Completed | `docs(model-review): review incident Incident` |
 | HMSR-075 | 4 | identity | User | — | organization.Employee | 8 | 8 | 1 | — | Planned | `docs(model-review): review identity User` |
 | HMSR-076 | 4 | planning | PlanRevision | SCC-04 | planning.OperationalPlan, planning.PlanRevision, workflow.WorkflowInstance | 4 | 8 | 2 | — | Planned | `docs(model-review): review planning PlanRevision` |
 | HMSR-077 | 4 | planning | OperationalPlan | SCC-04 | organization.OrganizationUnit, planning.PlanRevision, planning.PlanningPeriod | 1 | 8 | 1 | — | Planned | `docs(model-review): review planning OperationalPlan` |
@@ -2030,15 +2030,15 @@ Confirmed subject-model graph edges at this stage: **165**. These are semantic c
 | Field | Declared type | Classification | Resolved target | Graph edge | Notes |
 |---|---|---|---|:---:|---|
 | id | String | Self identifier | — | No | Primary identity of the current model. |
-| classificationId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
-| severityId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
-| priorityId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
-| sourceReferenceId | String | Snapshot/reference-only | TECHNICAL_REFERENCE | No | Technical correlation/request/reference identity. |
-| topologyAssetId | String | Cross-module reference | POLYMORPHIC | No | Target is selected by companion type/module metadata; no single subject-model edge. |
-| responsibleOrganizationUnitId | String | Cross-module reference | organization.OrganizationUnit | Yes | Unambiguous reference to a subject model in another bounded context. |
-| responsibleActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
-| workflowInstanceId | String | Cross-module reference | workflow.WorkflowInstance | Yes | Unambiguous reference to a subject model in another bounded context. |
-| createdByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+| classificationId | String | Value/catalog dependency | INCIDENT_CLASSIFICATION | No | Mandatory Incident-owned catalog value. Current open path performs no family/eligibility validation. |
+| severityId | String | Value/catalog dependency | INCIDENT_SEVERITY | No | Mandatory Incident-owned catalog value. Current open path performs no family/eligibility validation. |
+| priorityId | String | Optional value/catalog dependency | INCIDENT_PRIORITY | No | Optional Incident-owned catalog value. Current open path performs no family/eligibility validation when populated. |
+| sourceReferenceId | String | Snapshot/reference-only | SOURCE_REFERENCE | No | Optional source provenance interpreted with IncidentSourceType; preserve as neutral reference. |
+| topologyAssetId | String | Cross-module typed reference | POLYMORPHIC_TOPOLOGY_ASSET | No | Optional Topology-owned asset identity interpreted with topologyAssetTypeCode and snapshots; no cross-module DB FK is appropriate. |
+| responsibleOrganizationUnitId | String | Optional cross-module reference | organization.OrganizationUnit | Yes | Optional responsible Organization unit. Must be owner-validated when populated; no cross-module DB FK is appropriate. |
+| responsibleActorId | String | Optional cross-module reference | IDENTITY_ACTOR | No | Optional responsible actor identity with snapshot. |
+| workflowInstanceId | String | Optional cross-module reference | workflow.WorkflowInstance | Yes | Optional workflow/routing reference; no cross-module DB FK is appropriate. |
+| createdByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Mandatory creator actor identity; current open path trusts caller-supplied identity/snapshot without owner validation. |
 
 #### incident.IncidentClosure
 
@@ -14154,16 +14154,149 @@ The target baseline cannot mark it APPROVED while invalid cross-definition/self 
 
 HMS reconciliation must retain these obligations until explicitly authorized Workflow production corrections resolve them or stronger repository evidence changes the governing Workflow DDD.
 
-## 87. Current next task
+## 87. HMSR-074 — incident.Incident review
+
+**Decision:** REVISE  
+**Review code:** HMSR-074  
+**Dependency level:** 4  
+**Bounded context:** incident  
+**Confirmed upstream subject dependencies:** optional `organization.OrganizationUnit`, optional `workflow.WorkflowInstance`  
+**Confirmed direct HMS subject dependents:** 6  
+**Transitive HMS subject dependents:** 11
+
+### 87.1 Semantic role
+
+`Incident` is the Incident-owned aggregate root for operational incident identity, classification/severity/priority, lifecycle state, source provenance, optional topology context, responsible ownership, routing/workflow reference, escalation level and lifecycle timestamps.
+
+Incident owns incident response state. Organization owns organization units, Identity owns actors, Workflow owns process execution, and Topology owns physical assets.
+
+### 87.2 Incident catalog semantics
+
+The Incident DDD defines the controlled families:
 
 ```text
-HMSR-074 — incident.Incident
+INCIDENT_CLASSIFICATION
+INCIDENT_SEVERITY
+INCIDENT_PRIORITY
+```
+
+`classificationId` and `severityId` are mandatory; `priorityId` is optional.
+
+The current `openIncident()` path copies these IDs directly into the aggregate and does not resolve their Incident catalog family or active/eligibility state.
+
+The authoritative write path must therefore fail closed against the correct Incident-owned catalog families rather than treating these IDs as opaque scalars.
+
+### 87.3 Organization, actor and workflow boundaries
+
+`responsibleOrganizationUnitId` is optional and belongs to Organization. `responsibleActorId` and `createdByActorId` belong to Identity; the creator is mandatory. `workflowInstanceId` is an optional Workflow reference.
+
+The current open path accepts creator identity and optional responsible Organization data directly from the command. It does not resolve those identities through their owning boundaries.
+
+No cross-module database FK should be introduced.
+
+When populated/required, these identities should be validated through owner-controlled application/lookup contracts while preserving the stored code/name snapshots.
+
+### 87.4 Topology asset reference
+
+The model stores optional:
+
+```text
+topologyAssetTypeCode
+topologyAssetId
+topologyAssetCode
+topologyAssetNameSnapshot
+```
+
+This is a typed cross-module Topology reference plus snapshots, not Incident ownership of topology state.
+
+The open path currently accepts the tuple directly. When a topology asset is supplied, the authoritative boundary should validate the typed asset through a Topology-owned lookup while preserving the snapshot fields.
+
+No cross-module Topology FK should be added.
+
+### 87.5 Explicit temporal invariants
+
+The Incident DDD explicitly states:
+
+```text
+detectedAt <= reportedAt unless explicitly marked estimated
+closedAt requires status = CLOSED
+resolvedAt requires status in RESOLVED/CLOSED
+```
+
+The current Incident record only enforces non-null required fields and does not enforce these temporal/status couplings.
+
+`openIncident()` defaults `reportedAt` to now and accepts caller-supplied `detectedAt`, so it can create a record where detectedAt is after reportedAt.
+
+These explicit DDD invariants must be enforced at the authoritative domain/application boundary.
+
+HMSR-074 does not invent additional ordering among occurredAt, containedAt, cancelledAt and other timestamps beyond current DDD evidence.
+
+### 87.6 Responsible owner before closure
+
+The Incident DDD explicitly states:
+
+```text
+An incident cannot be CLOSED without a responsible owner snapshot.
+```
+
+The current Incident aggregate does not enforce this state invariant.
+
+The live `closeIncident()` service creates an `IncidentClosure` record but does not load and transition the parent Incident in the reviewed method, so it does not itself prove the parent Incident has responsible ownership before CLOSED state is reached.
+
+Later reconciliation must ensure closure and parent lifecycle transition fail closed unless the required responsible owner snapshot is present.
+
+### 87.7 Closure/workflow semantics
+
+Incident closure is modeled separately through `IncidentClosure`, while `workflowInstanceId` on Incident is optional routing/approval context.
+
+The Incident DDD assigns Workflow the approval/routing process and Incident the business lifecycle state.
+
+Therefore Incident must not use a cross-module Workflow FK. Any workflow reference used for approval/closure must be validated through Workflow's owner-controlled contract and correlated with the closure operation.
+
+HMSR-074 does not duplicate the detailed IncidentClosure review that is registered separately as HMSR-107.
+
+### 87.8 Lifecycle enums and source type
+
+`IncidentStatus` is a genuine Incident lifecycle enum and `IncidentSourceType` is a stable source-origin discriminator used for source provenance.
+
+Current evidence does not require either one to be replaced by a catalog during HMSR-074.
+
+The source reference remains neutral/polymorphic and must not become a cross-module relational target.
+
+### 87.9 Required revisions
+
+Five evidence-backed obligations remain:
+
+1. **Enforce Incident catalog-family eligibility.** Validate `classificationId`, `severityId`, and populated `priorityId` against `INCIDENT_CLASSIFICATION`, `INCIDENT_SEVERITY`, and `INCIDENT_PRIORITY`.
+
+2. **Validate cross-context identities through owner boundaries.** Validate mandatory creator identity and populated responsible Organization/actor/workflow references while preserving snapshots; do not add cross-module DB FKs.
+
+3. **Validate populated typed Topology asset identity through a Topology-owned contract** while preserving asset snapshots.
+
+4. **Enforce the explicit Incident temporal/state invariants:** `detectedAt <= reportedAt` unless an explicit estimated-time model exists, `closedAt => CLOSED`, and `resolvedAt => RESOLVED/CLOSED`.
+
+5. **Require responsible-owner snapshot before CLOSED state** and ensure the closure workflow cannot bypass that Incident-owned invariant.
+
+HMSR-074 does not modify production Java, JPA, Flyway, API/application contracts, tests, Incident catalogs/data, Organization, Identity, Workflow, Topology, or provisioned data.
+
+### 87.10 Review conclusion
+
+**REVISE.** `Incident` is a coherent 37-field Incident-owned aggregate with a legitimate lifecycle enum, neutral source provenance, explicit cross-context snapshots and a clear ownership boundary.
+
+The target baseline cannot mark it APPROVED while controlled catalog families are not validated, cross-context identities are trusted directly, typed Topology references are not owner-validated, and explicit Incident DDD temporal/closure invariants are absent from the aggregate/write boundary.
+
+HMS reconciliation must retain these obligations until explicitly authorized Incident production corrections resolve them or stronger repository evidence changes the governing Incident DDD.
+
+## 88. Current next task
+
+```text
+HMSR-075 — identity.User
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review incident Incident
+docs(model-review): review identity User
 ```
 
-Start HMSR-074 only after HMSR-073 is committed and reported. Do not start HMSR-075 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-075 only after HMSR-074 is committed and reported. Do not start HMSR-076 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

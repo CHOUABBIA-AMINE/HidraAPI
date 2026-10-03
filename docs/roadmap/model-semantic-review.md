@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -211,7 +211,7 @@ Ordering rules applied:
 | HMSR-016 | 0 | organization | OperationalScope | — | — | 1 | 2 | 0 | APPROVED | Completed | `docs(model-review): review organization OperationalScope` |
 | HMSR-017 | 0 | analytics | AnalyticsDataset | — | — | 1 | 1 | 0 | APPROVED | Completed | `docs(model-review): review analytics AnalyticsDataset` |
 | HMSR-018 | 0 | analytics | MetricEvaluationRun | — | — | 1 | 1 | 1 | REVISE | Completed | `docs(model-review): review analytics MetricEvaluationRun` |
-| HMSR-019 | 0 | configuration | ConfigurationDefinition | — | — | 1 | 1 | 1 | — | Planned | `docs(model-review): review configuration ConfigurationDefinition` |
+| HMSR-019 | 0 | configuration | ConfigurationDefinition | — | — | 1 | 1 | 1 | REVISE | Completed | `docs(model-review): review configuration ConfigurationDefinition` |
 | HMSR-020 | 0 | custody | CustodyMeasurementPeriod | — | — | 1 | 1 | 2 | — | Planned | `docs(model-review): review custody CustodyMeasurementPeriod` |
 | HMSR-021 | 0 | integrity | PipelineDefect | — | — | 1 | 1 | 1 | — | Planned | `docs(model-review): review integrity PipelineDefect` |
 | HMSR-022 | 0 | organization | Position | — | — | 1 | 1 | 0 | — | Planned | `docs(model-review): review organization Position` |
@@ -1759,7 +1759,7 @@ Confirmed subject-model graph edges at this stage: **165**. These are semantic c
 | Field | Declared type | Classification | Resolved target | Graph edge | Notes |
 |---|---|---|---|:---:|---|
 | id | String | Self identifier | — | No | Primary identity of the current model. |
-| namespaceId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| namespaceId | String | Domain reference | configuration.ConfigurationNamespace (read/persistence model) | No | HMSR-019 stronger Configuration DDD + HRA-111 evidence resolves this required same-module reference to `hidra_configuration_namespace`; target is outside the 123 HMS subject set. |
 
 #### configuration.ConfigurationValue
 
@@ -5359,16 +5359,141 @@ The run is analytical evidence only. It cannot acknowledge alarms, modify plans,
 
 The target baseline cannot mark it APPROVED while the required scope discriminator/pair is unchecked, metric-version eligibility is not validated before calculation, and the public application contract does not demonstrate terminal/failure orchestration needed for auditability. HMS reconciliation must retain these obligations until an explicitly authorized Analytics correction task resolves them or the target semantics are explicitly changed.
 
-## 32. Current next task
+## 32. HMSR-019 — configuration.ConfigurationDefinition review
+
+**Decision:** REVISE  
+**Review code:** HMSR-019  
+**Dependency level:** 0  
+**Bounded context:** configuration  
+**Confirmed upstream subject dependencies:** none  
+**Confirmed direct dependents:** 1 — `configuration.ConfigurationValue` through `definitionId`  
+**Transitive dependents:** 1  
+**Unresolved/non-subject references:** 1 — `namespaceId`, now semantically resolved to Configuration-owned `ConfigurationNamespace` outside the 123 HMS subject set
+
+### 32.1 Semantic role and ordering rationale
+
+`ConfigurationDefinition` is the Configuration-owned definition of one governed runtime setting. It establishes the namespace/key identity, multilingual display metadata, value type, sensitivity, lifecycle state, scoping/approval flags, optional default value and descriptive/audit metadata.
+
+It is Level 0 because its required namespace prerequisite, `ConfigurationNamespace`, is retained as a Configuration read/persistence model outside the HMS subject population. `ConfigurationValue` is the one direct HMS subject dependent through `definitionId`.
+
+The Configuration DDD explicitly limits this bounded context to governed runtime settings, feature flags, scoped overrides, activation metadata, operator preferences and technical references. Module-owned business taxonomies remain owned by their source modules.
+
+### 32.2 Field semantics
+
+| Field | Type | Mandatory / optional | Reviewed meaning |
+|---|---|---|---|
+| `id` | `String` | Mandatory | Stable definition identity and persistence primary key. |
+| `namespaceId` | `String` | Mandatory | Same-module reference to the owning `ConfigurationNamespace`. |
+| `key` | `String` | Mandatory | Governed setting key within the selected namespace. No current DDD evidence establishes a uniqueness scope, so HMSR-019 does not invent one. |
+| `displayNameFr` | `String` | Persistence-required text | French display label. JPA/schema require it; HRA keeps generic display labels at persistence/application boundaries unless a specific domain rule states otherwise. |
+| `displayNameAr` | `String` | Optional | Arabic display label. |
+| `displayNameEn` | `String` | Optional | English display label. |
+| `valueType` | `ConfigurationValueType` | Mandatory | Setting value kind: `STRING`, `NUMBER`, `BOOLEAN`, `DATE`, `DURATION`, `JSON`, `REFERENCE`, or `LIST`. |
+| `sensitivity` | `ConfigurationSensitivity` | Mandatory | Sensitivity policy: `PUBLIC`, `INTERNAL`, `RESTRICTED`, or `SECRET_REFERENCE_ONLY`. |
+| `status` | `ConfigurationDefinitionStatus` | Mandatory | Definition lifecycle: `DRAFT`, `ACTIVE`, `DEPRECATED`, or `RETIRED`. |
+| `scoped` | `boolean` | Mandatory persisted state | Indicates that governed scoped override behavior may apply. |
+| `requiresApproval` | `boolean` | Mandatory persisted state | Indicates that changes to values governed by this definition require approval workflow/governance. |
+| `defaultValue` | `String` | Optional | Default setting value metadata. It remains subject to the Configuration module's no-secret-material boundary. |
+| `description` | `String` | Optional | Human-readable definition description. |
+| `createdAt` | `Instant` | Persistence-required audit timestamp | Creation timestamp. |
+| `updatedAt` | `Instant` | Persistence-required audit timestamp | Last-update timestamp. |
+
+The current constructor correctly enforces nonblank `id`, `namespaceId`, and `key`, plus non-null `valueType`, `sensitivity`, and `status`. It normalizes all textual values and exposes `secretReferenceOnly()` as a semantic helper.
+
+### 32.3 Namespace dependency resolution
+
+HMS-003 left `namespaceId` unresolved because `ConfigurationNamespace` is outside the 123 HMS subject set. Stronger repository evidence resolves the target without adding a subject edge:
+
+- the active Configuration DDD lists `ConfigurationNamespace` as an owned entity and `ConfigurationDefinition` as a definition of a governed setting;
+- `ConfigurationNamespaceJpaEntity` persists namespace identity in `hidra_configuration_namespace`;
+- repository mirror classification retains `ConfigurationNamespace` as a Configuration `READ_PERSISTENCE_MODEL` outside the HMS subject population;
+- HRA-111 installs `fk_hra111_configuration_003`; 
+- that FK points `hidra_configuration_definition.namespace_id` to `hidra_configuration_namespace(id)` with `ON DELETE RESTRICT`.
+
+Therefore `namespaceId` is a required same-module domain reference to a non-subject Configuration model, not an unresolved scalar and not an HMS graph edge.
+
+The FK proves namespace-row existence. The current Configuration DDD does not state an additional namespace-status eligibility rule for definition creation, so HMSR-019 does not invent one.
+
+### 32.4 Definition/version/value boundary
+
+The Configuration entity catalogue separates:
 
 ```text
-HMSR-019 — configuration.ConfigurationDefinition
+ConfigurationDefinition
+ConfigurationDefinitionVersion
+ConfigurationValue
+```
+
+`ConfigurationDefinitionVersion` is retained as a read/persistence model outside the HMS subjects and owns version number, schema JSON, version-specific default value, validation summary, author/time and active marker. HRA-111 protects `ConfigurationDefinitionVersion.definitionId -> ConfigurationDefinition.id`.
+
+`ConfigurationValue` is the direct HMS dependent and stores the effective environment-specific value, optional definition-version reference, secret-reference field, lifecycle state and effective interval.
+
+This split is semantically coherent: stable definition identity remains separate from versioned schema/default metadata and from effective deployed values. HMSR-019 does not add a subject edge to `ConfigurationDefinitionVersion` because it is outside the 123-model review population.
+
+### 32.5 Configuration ownership boundary
+
+`ConfigurationApplicationService.createConfigurationDefinition()` invokes `ConfigurationValueGuard.ensureAllowedDefinition(command.key())` before saving the definition. That guard delegates to `ConfigurationBoundaryPolicy.isForbiddenBusinessTaxonomy(...)` and rejects known module-owned concepts such as facility/equipment types, telemetry quality codes, workflow definitions, monitoring thresholds, alarm severity, incident classification, HSE obligations, custody calculation formula, asset maintenance strategy, identity permission and organization hierarchy.
+
+This aligns with the DDD's core rule that Configuration must not become a generic shared business-taxonomy module.
+
+The current policy is intentionally a boundary guard, not evidence that the listed strings form a complete business taxonomy catalogue. HMSR-019 therefore does not expand that heuristic list.
+
+### 32.6 Secret-reference boundary and default-value gap
+
+The live Configuration code establishes an explicit secret boundary:
+
+- `ConfigurationSensitivity` contains `SECRET_REFERENCE_ONLY`; 
+- `ConfigurationDefinition.secretReferenceOnly()` identifies definitions with that policy;
+- `ConfigurationValueGuard` is documented as guarding configuration values against secret-value misuse;
+- `ConfigurationValueGuard.ensureNoSecretMaterial(rawValue)` throws when persisted configuration value text appears to contain secret material;
+- `ConfigurationValue` has a dedicated `secretReference` field separate from `rawValue`/`jsonValue`.
+
+However, `createConfigurationDefinition()` validates only the definition key through `ensureAllowedDefinition(...)`. It accepts `command.defaultValue()` and persists it directly into `ConfigurationDefinition.defaultValue` without applying the module's existing no-secret-material guard.
+
+This permits the definition-level default path to bypass the same Configuration secret boundary that the effective-value path tries to enforce. The risk is especially direct for `SECRET_REFERENCE_ONLY` definitions: the model exposes the sensitivity but does not prevent an actual secret-like default from being persisted in the ordinary `default_value` column.
+
+The correction should preserve the distinction between a **secret reference** and secret material. HMSR-019 does not require a specific vault URI format or secret-detection algorithm; it requires the existing secret-reference-only policy to apply consistently to definition defaults.
+
+### 32.7 Persistence consistency and deliberately unasserted rules
+
+The live domain and JPA models agree on all 15 declared components. The base Configuration migration makes `id`, `namespace_id`, `key`, `display_name_fr`, `value_type`, `sensitivity`, `status`, `scoped`, `requires_approval`, `created_at`, and `updated_at` non-null. `default_value` and `description` remain nullable.
+
+The schema has an ordinary index on `namespace_id`, but no current repository evidence reviewed by HMSR-019 states that `key` is globally unique or unique within a namespace. No such uniqueness obligation is invented.
+
+Likewise, the active Configuration DDD does not define a value-type parser/validator for `defaultValue`, a mandatory activation transition matrix, or a namespace-status prerequisite for creation. Those may be future design decisions, but they are not added to the target semantic baseline without source evidence.
+
+Generic display-name and audit-timestamp nullability remain persistence/application concerns under the existing HRA invariant policy and are not promoted into new constructor obligations merely because the columns are `NOT NULL`.
+
+### 32.8 Required revision
+
+The model shape, dependency direction and ownership boundary are otherwise coherent. One evidence-backed correction remains:
+
+1. **Apply the secret-reference boundary to definition defaults:** `ConfigurationDefinition.defaultValue` must not provide a path for persisting secret material that is forbidden for `ConfigurationValue.rawValue`. At minimum, creation/update of `SECRET_REFERENCE_ONLY` definitions and any general definition-default validation must consistently preserve reference-only secret semantics.
+
+HMSR-019 does not change production Java, JPA, Flyway, secret stores, namespace data, API/application contracts, tests, configuration definitions, versions or values.
+
+### 32.9 Operational interpretation
+
+For SONATRACH/TRC, a ConfigurationDefinition may govern runtime limits, polling/refresh behavior, operational UI preferences, integration tuning, feature/runtime parameters or other controlled technical settings. It must not redefine the business taxonomy or become a storage location for credentials.
+
+`requiresApproval` represents governance metadata only. It does not itself constitute Workflow approval, and any actual change-approval/deployment process remains governed by the corresponding Configuration change/deployment and Workflow/Audit mechanisms.
+
+### 32.10 Review conclusion
+
+**REVISE.** `ConfigurationDefinition` has a coherent 15-field model, correct Level-0 placement, correct `ConfigurationNamespace` same-module non-subject dependency, appropriate DRAFT creation, and an explicit boundary against absorbing module-owned business taxonomies.
+
+The target baseline cannot mark it APPROVED while definition-level `defaultValue` can bypass the module's established no-secret-material / secret-reference-only boundary. HMS reconciliation must retain this obligation until an explicitly authorized Configuration correction task resolves it or the target semantics are explicitly changed.
+
+## 33. Current next task
+
+```text
+HMSR-020 — custody.CustodyMeasurementPeriod
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review configuration ConfigurationDefinition
+docs(model-review): review custody CustodyMeasurementPeriod
 ```
 
-Start HMSR-019 only after HMSR-018 is committed and reported. Do not start HMSR-020 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-020 only after HMSR-019 is committed and reported. Do not start HMSR-021 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

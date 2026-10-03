@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 reviewed as REVISE, HMSR-080 reviewed as REVISE, HMSR-081 reviewed as REVISE, HMSR-082 reviewed as REVISE, HMSR-083 approved, HMSR-084 reviewed as REVISE, HMSR-085 reviewed as REVISE, HMSR-086 approved, HMSR-087 reviewed as REVISE, HMSR-088 reviewed as REVISE, HMSR-089 reviewed as REVISE, HMSR-090 reviewed as REVISE, HMSR-091 reviewed as REVISE, HMSR-092 reviewed as REVISE, HMSR-093 reviewed as REVISE, HMSR-094 reviewed as REVISE, HMSR-095 reviewed as REVISE, HMSR-096 reviewed as REVISE, HMSR-097 reviewed as REVISE, HMSR-098 reviewed as REVISE, HMSR-099 approved, HMSR-100 reviewed as REVISE, HMSR-101 reviewed as REVISE, HMSR-102 approved, HMSR-103 approved, HMSR-104 reviewed as REVISE, HMSR-105 reviewed as REVISE, HMSR-106 reviewed as REVISE, HMSR-107 reviewed as REVISE, HMSR-108 reviewed as REVISE, HMSR-109 reviewed as REVISE, HMSR-110 reviewed as REVISE, HMSR-111 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 reviewed as REVISE, HMSR-080 reviewed as REVISE, HMSR-081 reviewed as REVISE, HMSR-082 reviewed as REVISE, HMSR-083 approved, HMSR-084 reviewed as REVISE, HMSR-085 reviewed as REVISE, HMSR-086 approved, HMSR-087 reviewed as REVISE, HMSR-088 reviewed as REVISE, HMSR-089 reviewed as REVISE, HMSR-090 reviewed as REVISE, HMSR-091 reviewed as REVISE, HMSR-092 reviewed as REVISE, HMSR-093 reviewed as REVISE, HMSR-094 reviewed as REVISE, HMSR-095 reviewed as REVISE, HMSR-096 reviewed as REVISE, HMSR-097 reviewed as REVISE, HMSR-098 reviewed as REVISE, HMSR-099 approved, HMSR-100 reviewed as REVISE, HMSR-101 reviewed as REVISE, HMSR-102 approved, HMSR-103 approved, HMSR-104 reviewed as REVISE, HMSR-105 reviewed as REVISE, HMSR-106 reviewed as REVISE, HMSR-107 reviewed as REVISE, HMSR-108 reviewed as REVISE, HMSR-109 reviewed as REVISE, HMSR-110 reviewed as REVISE, HMSR-111 reviewed as REVISE, HMSR-112 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -303,7 +303,7 @@ Ordering rules applied:
 | HMSR-108 | 5 | incident | IncidentRelatedIncident | — | incident.Incident | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review incident IncidentRelatedIncident` |
 | HMSR-109 | 5 | incident | IncidentResponseAction | — | incident.Incident, organization.OrganizationUnit | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review incident IncidentResponseAction` |
 | HMSR-110 | 5 | reporting | ReportOutputArtifact | — | documents.Document, documents.DocumentStorageObject, reporting.ReportRun | 0 | 0 | 2 | REVISE | Completed | `docs(model-review): review reporting ReportOutputArtifact` |
-| HMSR-111 | 6 | planning | PlanTarget | — | planning.Nomination, planning.PlanRevision, telemetry.TelemetryPoint | 2 | 5 | 2 | — | Planned | `docs(model-review): review planning PlanTarget` |
+| HMSR-111 | 6 | planning | PlanTarget | — | planning.Nomination, planning.PlanRevision, telemetry.TelemetryPoint | 2 | 5 | 2 | REVISE | Completed | `docs(model-review): review planning PlanTarget` |
 | HMSR-112 | 6 | audit | AuditEvent | — | organization.OrganizationUnit, workflow.WorkflowAction, workflow.WorkflowInstance, workflow.WorkflowTask | 2 | 2 | 3 | — | Planned | `docs(model-review): review audit AuditEvent` |
 | HMSR-113 | 6 | hse | HseClosure | — | hse.HseCase, workflow.WorkflowInstance | 0 | 0 | 0 | — | Planned | `docs(model-review): review hse HseClosure` |
 | HMSR-114 | 6 | hse | HseCorrectivePreventiveAction | — | assets.MaintenanceWorkOrder, hse.HseCase, organization.OrganizationUnit, workflow.WorkflowTask | 0 | 0 | 0 | — | Planned | `docs(model-review): review hse HseCorrectivePreventiveAction` |
@@ -18997,16 +18997,129 @@ HMSR-110 does not modify production Java, JPA, Flyway, API/application contracts
 
 HMS reconciliation must retain these obligations until explicitly authorized Reporting production work resolves them or stronger repository evidence changes the governing contract.
 
-## 124. Current next task
+## 124. HMSR-111 — planning.PlanTarget review
+
+**Decision:** REVISE  
+**Review code:** HMSR-111  
+**Dependency level:** 6  
+**Bounded context:** planning  
+**Confirmed upstream subject dependencies:** mandatory `planning.PlanRevision`; optional `planning.Nomination`; optional Telemetry-owned `telemetry.TelemetryPoint`; optional same-module `PlanScenario` plus topology/unit references outside the HMS subject set  
+**Confirmed direct HMS subject dependents:** 2  
+**Transitive HMS subject dependents:** 5  
+**Unresolved/non-subject reference count:** 2
+
+### 124.1 Semantic role
+
+`PlanTarget` is Planning's generic expected-value record consumed downstream by Monitoring. It represents planned flow, pressure, volume, temperature, density, linepack, equipment-state, operating-mode, or similar target semantics over a validity interval.
+
+Planning owns the expected state. Telemetry owns actual measurements, Monitoring owns deviation facts, and Topology owns physical assets.
+
+### 124.2 Field and persistence alignment
+
+The live domain record, JPA entity, persistence mapper, and base Planning migration agree on the 22-field target shape.
+
+Required persistence fields include `revisionId`, `targetTypeId`, `topologyAssetType`, `topologyAssetId`, `topologyAssetCode`, `validFrom`, `validTo`, and `status`. The domain already fail-fast validates the mandatory identifiers except `topologyAssetType`, plus the validity timestamps/status, and rejects `validTo < validFrom`.
+
+`PlanTargetStatus` contains `DRAFT`, `ACTIVE`, `SUPERSEDED`, and `CANCELLED`. Current Planning evidence supports retaining it as a lifecycle enum.
+
+### 124.3 Same-module PlanRevision integrity
+
+`revisionId` is the mandatory Planning-owned parent reference.
+
+HRA-111 correctly installs:
 
 ```text
-HMSR-111 — planning.PlanTarget
+hidra_planning_plan_target.revision_id
+  -> hidra_planning_plan_revision.id
+```
+
+and `PlanTarget` already rejects a blank revision ID.
+
+Because the current repository exposes PlanTarget primarily through persistence/query contracts and repository search found no authoritative PlanTarget creation application service, HMSR-111 does not invent a new write workflow. Any future write path must nevertheless fail closed on an unknown PlanRevision before persistence.
+
+### 124.4 Optional Nomination and Scenario references
+
+`nominationId` and `scenarioId` are optional same-module references. The DDD permits a target to exist without either.
+
+The current schema indexes these fields but does not add mandatory FKs through HRA-111 because they are nullable. Future production reconciliation should preserve optionality while ensuring that any supplied same-module ID resolves to the correct Planning aggregate/entity and is semantically compatible with the target's `revisionId`.
+
+Specifically, a supplied Nomination or PlanScenario should not silently belong to another revision. The repository evidence does not currently expose an authoritative creation path that performs this compatibility check.
+
+### 124.5 Target type catalog semantics
+
+`targetTypeId` is a required same-module catalog reference. HRA-111 correctly provides row-existence protection against `hidra_planning_catalog_entry(id)`.
+
+The DDD defines its business family as Planning target types such as `FLOW_RATE`, `PRESSURE`, `VOLUME`, `TEMPERATURE`, `DENSITY`, `LINEPACK`, `EQUIPMENT_STATE`, and `OPERATING_MODE`.
+
+Row existence alone does not prove target-type family membership. Future production reconciliation must validate `targetTypeId` through Planning-owned catalog-family policy instead of accepting any Planning catalog row.
+
+### 124.6 Numeric versus state target value shape
+
+The governing DDD explicitly states:
+
+```text
+numeric target must have targetValue and unitId
+state target may use targetTextValue
+```
+
+The current domain record allows `targetValue`, `targetTextValue`, and `unitId` to all be null and contains no target-type-aware value-shape validation.
+
+This means a numeric FLOW_RATE/PRESSURE/VOLUME/etc. target can be persisted without a numeric value or unit, and a state-style target can be created without text state content.
+
+Future production reconciliation must enforce the value representation appropriate to the resolved target type. HMSR-111 does not hard-code a brittle Java switch over catalog IDs; the rule should be driven by Planning-owned target-type semantics/configuration.
+
+### 124.7 Topology reference boundary
+
+`topologyAssetType`, `topologyAssetId`, `topologyAssetCode`, and optional name snapshot are Planning-side neutral references/snapshots. Topology remains the owner.
+
+The DDD marks `topologyAssetType`, `topologyAssetId`, and `topologyAssetCode` as required. The current domain model validates the ID and code but not a blank/null `topologyAssetType`.
+
+Future production reconciliation must fail closed on missing `topologyAssetType` before persistence. Live asset existence/type compatibility, when required, belongs behind a Topology-owned public reference contract; no cross-module database FK is authorized.
+
+### 124.8 Telemetry reference boundary
+
+`telemetryPointId` and `telemetryPointCodeSnapshot` are optional Telemetry-owned references used to associate an expected target with the point providing actual comparison data.
+
+They must remain cross-module scalar/snapshot references with no Planning-to-Telemetry database FK.
+
+When `telemetryPointId` is supplied and business behavior depends on it, validity should be checked through Telemetry's public reference contract. Planning must not import Telemetry persistence or reading models.
+
+### 124.9 Validity and tolerance semantics
+
+The domain correctly prevents `validTo` from preceding `validFrom`. The DDD source does not establish a stricter non-equality rule, so HMSR-111 does not invent one.
+
+`toleranceLow` and `toleranceHigh` are optional. The current source does not explicitly define ordering or sign invariants for them, so no unsupported tolerance rule is introduced by this review.
+
+### 124.10 Required revisions
+
+Five evidence-backed production obligations remain:
+
+1. **Enforce target-type-dependent value shape:** numeric target types require `targetValue` and `unitId`; state/text target types must carry the representation required by Planning target-type policy.
+2. **Validate `targetTypeId` as a member of the Planning target-type catalog family, not merely any existing Planning catalog row.**
+3. **Fail closed on missing `topologyAssetType` before persistence; validate supplied topology references through Topology-owned public contracts when required.**
+4. **For supplied optional `nominationId` / `scenarioId`, validate same-module existence and revision compatibility instead of allowing cross-revision references.**
+5. **For supplied `telemetryPointId`, preserve the cross-module scalar boundary and validate through Telemetry-owned contracts when the use case requires a live point.**
+
+HMSR-111 does not modify production Java, JPA, Flyway, APIs, application contracts, tests, Planning/Telemetry/Topology data, or provisioned data.
+
+### 124.11 Review conclusion
+
+**REVISE.** The ownership boundary, 22-field shape, mandatory PlanRevision FK, lifecycle enum, validity-window guard, and neutral external-reference strategy are appropriate.
+
+The target baseline cannot be marked APPROVED while target-type-specific value semantics, catalog-family membership, required topology asset type, and optional same-module reference compatibility remain unenforced.
+
+HMS reconciliation must retain these obligations until explicitly authorized Planning production work resolves them or stronger repository evidence changes the governing contract.
+
+## 125. Current next task
+
+```text
+HMSR-112 — audit.AuditEvent
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review planning PlanTarget
+docs(model-review): review audit AuditEvent
 ```
 
-Start HMSR-111 only after HMSR-110 is committed and reported. Do not start HMSR-112 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-112 only after HMSR-111 is committed and reported. Do not start HMSR-113 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -254,7 +254,7 @@ Ordering rules applied:
 | HMSR-059 | 2 | integrity | IntegrityProgram | — | organization.OrganizationUnit | 1 | 1 | 0 | REVISE | Completed | `docs(model-review): review integrity IntegrityProgram` |
 | HMSR-060 | 2 | leakdetection | LeakDetectionCase | — | leakdetection.LeakCandidate, organization.OrganizationUnit | 1 | 1 | 0 | REVISE | Completed | `docs(model-review): review leakdetection LeakDetectionCase` |
 | HMSR-061 | 2 | notification | NotificationMessage | — | notification.NotificationRequest, notification.NotificationTemplate | 1 | 1 | 3 | REVISE | Completed | `docs(model-review): review notification NotificationMessage` |
-| HMSR-062 | 2 | telemetry | TrustedTelemetryReading | — | telemetry.TelemetryPoint, telemetry.TelemetryReading | 1 | 1 | 3 | — | Planned | `docs(model-review): review telemetry TrustedTelemetryReading` |
+| HMSR-062 | 2 | telemetry | TrustedTelemetryReading | — | telemetry.TelemetryPoint, telemetry.TelemetryReading | 1 | 1 | 3 | REVISE | Completed | `docs(model-review): review telemetry TrustedTelemetryReading` |
 | HMSR-063 | 2 | topology | Equipment | — | party.Party, topology.Facility | 0 | 0 | 2 | — | Planned | `docs(model-review): review topology Equipment` |
 | HMSR-064 | 3 | workflow | WorkflowInstance | — | workflow.WorkflowDefinition, workflow.WorkflowStep | 18 | 32 | 1 | — | Planned | `docs(model-review): review workflow WorkflowInstance` |
 | HMSR-065 | 3 | organization | Employee | — | organization.AdministrativeLocality | 6 | 14 | 1 | — | Planned | `docs(model-review): review organization Employee` |
@@ -2654,14 +2654,14 @@ Confirmed subject-model graph edges at this stage: **165**. These are semantic c
 | Field | Declared type | Classification | Resolved target | Graph edge | Notes |
 |---|---|---|---|:---:|---|
 | id | String | Self identifier | — | No | Primary identity of the current model. |
-| readingId | String | Domain reference | telemetry.TelemetryReading | Yes | Unambiguous same-module subject-model reference. |
-| pointId | String | Domain reference | telemetry.TelemetryPoint | Yes | Unambiguous same-module subject-model reference. |
-| unitId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
-| qualityCodeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
-| qualityAssessmentId | String | Unresolved | — | No | Reference target is outside or absent from the 123 subject-model set; preserve for HMS-004 review. |
-| topologyAssetId | String | Cross-module reference | POLYMORPHIC | No | Target is selected by companion type/module metadata; no single subject-model edge. |
-| topologySnapshotId | String | Snapshot/reference-only | — | No | Snapshot/reference identity; not treated as ownership dependency in HMS-003. |
-| ingestionBatchId | String | Unresolved | — | No | Reference target is outside or absent from the 123 subject-model set; preserve for HMS-004 review. |
+| readingId | String | Domain reference | telemetry.TelemetryReading | Yes | Mandatory same-module raw-reading reference; HRA-111 protects `reading_id -> hidra_telemetry_reading.id`. |
+| pointId | String | Domain reference | telemetry.TelemetryPoint | Yes | Mandatory same-module point reference; HRA-111 protects `point_id -> hidra_telemetry_point.id`. Trusted-reading creation must keep it consistent with the source reading/assessment point. |
+| unitId | String | Optional domain reference | telemetry.TelemetryUnit (read/persistence model) | No | Optional effective-unit reference defined by Telemetry DDD; current trusted-reading persistence has no FK protecting a populated value. |
+| qualityCodeId | String | Value/catalog dependency | QUALITY_CODE | No | Mandatory final quality code; HRA-111 protects generic Telemetry catalog-row existence, while DDD defines the `QUALITY_CODE` family. Family/eligibility semantics remain application-owned. |
+| qualityAssessmentId | String | Domain reference | telemetry.TelemetryQualityAssessment (read/persistence model) | No | Mandatory same-module assessment reference protected by HRA-111. DDD requires the justifying assessment to be passing with acceptable trust level. |
+| topologyAssetId | String | Snapshot/reference-only | TOPOLOGY_BINDING_SNAPSHOT | No | Optional topology identity snapshot copied from the active TelemetryPointBinding at trust time; no cross-module FK is appropriate. |
+| topologySnapshotId | String | Snapshot/reference-only | TOPOLOGY_SNAPSHOT | No | Optional historical Topology snapshot identity; preserve as snapshot/reference metadata. |
+| ingestionBatchId | String | Optional domain reference | telemetry.TelemetryIngestionBatch (read/persistence model) | No | Optional same-module batch provenance reference defined by Telemetry DDD; current trusted-reading persistence has no FK protecting a populated value. |
 
 #### topology.Equipment
 
@@ -12353,16 +12353,164 @@ The target baseline cannot mark it APPROVED while request/recipient consistency 
 
 HMS reconciliation must retain these obligations until explicitly authorized Notification production corrections resolve them or stronger repository evidence changes the governing DDD.
 
-## 75. Current next task
+## 75. HMSR-062 — telemetry.TrustedTelemetryReading review
+
+**Decision:** REVISE  
+**Review code:** HMSR-062  
+**Dependency level:** 2  
+**Bounded context:** telemetry  
+**Confirmed upstream subject dependencies:** `telemetry.TelemetryPoint`, `telemetry.TelemetryReading`  
+**Confirmed direct HMS subject dependents:** 1  
+**Transitive HMS subject dependents:** 1
+
+### 75.1 Semantic role
+
+`TrustedTelemetryReading` is Telemetry's downstream-facing trustworthy-reading contract. It is not another raw sample: it represents a TelemetryReading that has passed Telemetry-owned quality/trust processing and is safe for monitoring, planning comparison, flow calculation, leak detection, risk, analytics and reporting.
+
+Telemetry owns the trust decision, final quality code, effective unit and the binding snapshots copied at trust time. Topology remains owner of physical asset state.
+
+### 75.2 Raw reading, point and assessment integrity
+
+The trusted reading requires `readingId`, `pointId` and `qualityAssessmentId`.
+
+HRA-111 protects row existence with:
 
 ```text
-HMSR-062 — telemetry.TrustedTelemetryReading
+hidra_telemetry_trusted_reading.reading_id -> hidra_telemetry_reading.id
+hidra_telemetry_trusted_reading.point_id -> hidra_telemetry_point.id
+hidra_telemetry_trusted_reading.quality_assessment_id -> hidra_telemetry_quality_assessment.id
+```
+
+TelemetryQualityAssessment itself stores both `readingId` and `pointId`, and those relationships are separately HRA-111 protected.
+
+Independent FK existence is not enough to establish semantic consistency. A trusted row must not combine one raw reading, another point, and an unrelated quality assessment.
+
+The authoritative trust operation must therefore prove that:
+
+```text
+trusted.readingId == assessment.readingId
+trusted.pointId == assessment.pointId
+trusted.pointId == sourceReading.pointId
+```
+
+before persistence.
+
+### 75.3 Passing assessment and acceptable trust
+
+The Telemetry DDD explicitly states:
+
+```text
+TrustedTelemetryReading requires a passing assessment with acceptable trust level.
+```
+
+`AssessmentStatus` includes `PASSED`, `FAILED`, `WARNING`, `DUPLICATE`, `QUARANTINED` and `MANUAL_REVIEW`. `TrustLevel` includes `UNTRUSTED`, `LOW`, `MEDIUM`, `HIGH` and `CERTIFIED`.
+
+The current model requires a non-null trustLevel and assessment ID, but the repository exposes only a generic `TrustedTelemetryReadingRepositoryPort.save(...)`; no live application use case was found that resolves the assessment and enforces the DDD trust gate before creating a trusted reading.
+
+The target write path must therefore require a passing assessment and apply an explicit Telemetry-owned acceptable-trust policy. HMSR-062 does not invent which exact TrustLevel values are acceptable beyond the DDD's current examples and wording.
+
+### 75.4 Active point eligibility
+
+Telemetry DDD validation rules state:
+
+```text
+Only ACTIVE points can produce trusted readings.
+```
+
+`TelemetryPoint` carries `TelemetryLifecycleStatus`, whose values include `ACTIVE`, `INACTIVE`, `SUSPENDED`, `MAINTENANCE` and `RETIRED`.
+
+The current repository-only save seam does not enforce point lifecycle eligibility.
+
+The authoritative trust operation must resolve the point and fail closed unless it is eligible under the DDD's ACTIVE rule.
+
+### 75.5 Final quality-code semantics
+
+`qualityCodeId` is mandatory. HRA-111 protects row existence against `hidra_telemetry_type_catalog`.
+
+Telemetry DDD defines `QUALITY_CODE` as the controlled family for reading quality. Therefore arbitrary Telemetry catalog-row existence is insufficient: the trusted reading's final quality code must belong to the `QUALITY_CODE` family and satisfy the applicable active/deprecated/inactive lifecycle policy.
+
+HMSR-062 does not invent a new catalog family or duplicate quality taxonomy.
+
+### 75.6 Effective unit and ingestion-batch provenance
+
+The DDD defines:
+
+```text
+unitId           = optional effective Telemetry unit
+ingestionBatchId = optional ingestion batch reference
+```
+
+Both targets are Telemetry-owned. Current trusted-reading persistence indexes these scalar fields but HRA-111 does not add trusted-reading FKs for either one.
+
+Because these are same-module references rather than cross-module snapshots, populated IDs should fail closed against their Telemetry-owned targets. HMS reconciliation should determine the appropriate same-module FK and/or application-level protection without weakening existing historical semantics.
+
+HMSR-062 does not make either field mandatory.
+
+### 75.7 Topology binding snapshot
+
+The DDD requires:
+
+```text
+Trusted reading must preserve the topology binding snapshot used at trust time.
+Trusted readings should snapshot active binding at trust time.
+```
+
+The trusted model carries `topologyAssetTypeCode`, `topologyAssetId`, `topologyAssetCode` and optional `topologySnapshotId`.
+
+These fields are snapshot/reference state, not ownership of Topology. No cross-module database FK should be introduced.
+
+When an active TelemetryPointBinding applies at trust time, the authoritative trust operation must populate/preserve the binding snapshot coherently from that Telemetry-owned binding rather than accepting an unrelated external tuple.
+
+Current evidence does not prove that every point necessarily has a topology binding, so HMSR-062 does not make the topology snapshot universally mandatory.
+
+### 75.8 Value shape
+
+The model exposes `hasExactlyOneValue()` across numeric, text and boolean representations. Telemetry's general reading-validation rules require exactly one value shape unless a null/state reading is explicitly allowed.
+
+However, the TrustedTelemetryReading-specific DDD section does not independently state that all trusted rows must contain exactly one of those three value fields, and the model currently treats the helper as a query rather than a constructor guard.
+
+HMSR-062 therefore does not promote the helper into a new universal invariant without stronger trusted-reading-specific evidence.
+
+### 75.9 Source timestamps and trust time
+
+`sourceTimestamp` and `trustedAt` are mandatory and already guarded for presence.
+
+Current DDD evidence does not explicitly classify `sourceTimestamp <= trustedAt` as a required invariant. HMSR-062 therefore does not invent that ordering rule.
+
+### 75.10 Required revisions
+
+Five evidence-backed obligations remain:
+
+1. **Enforce reading/point/assessment consistency.** The trusted reading, source TelemetryReading and justifying TelemetryQualityAssessment must refer to the same reading/point identity.
+
+2. **Implement the DDD trust gate at an authoritative Telemetry application boundary.** A trusted reading must be created only from a passing quality assessment with an explicitly defined acceptable TrustLevel; a bare repository save is insufficient as the semantic creation contract.
+
+3. **Enforce ACTIVE TelemetryPoint eligibility before producing a trusted reading.**
+
+4. **Validate `qualityCodeId` against the Telemetry `QUALITY_CODE` family and its lifecycle/eligibility semantics.**
+
+5. **Close same-module provenance/reference integrity for populated `unitId` and `ingestionBatchId`, and preserve the active TelemetryPointBinding snapshot coherently at trust time.** Do not introduce cross-module Topology FKs.
+
+HMSR-062 does not modify production Java, JPA, Flyway, API/application contracts, tests, Telemetry catalogs, readings/assessments, Topology data, or provisioned data.
+
+### 75.11 Review conclusion
+
+**REVISE.** `TrustedTelemetryReading` is a coherent 17-field Telemetry-owned downstream contract. Mandatory raw-reading, point, quality-assessment and final-quality-code rows are already protected against dangling same-module IDs, and the model correctly preserves Topology as snapshot/reference state rather than owned relational state.
+
+The target baseline cannot mark it APPROVED while independent FKs can still compose inconsistent reading/point/assessment tuples, the DDD's passing-assessment/acceptable-trust and ACTIVE-point gates have no authoritative application implementation, final quality-code family membership is not enforced, and optional same-module unit/batch provenance remains unprotected when populated.
+
+HMS reconciliation must retain these obligations until explicitly authorized Telemetry production corrections resolve them or stronger repository evidence changes the governing DDD.
+
+## 76. Current next task
+
+```text
+HMSR-063 — topology.Equipment
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review telemetry TrustedTelemetryReading
+docs(model-review): review topology Equipment
 ```
 
-Start HMSR-062 only after HMSR-061 is committed and reported. Do not start HMSR-063 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-063 only after HMSR-062 is committed and reported. Do not start HMSR-064 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

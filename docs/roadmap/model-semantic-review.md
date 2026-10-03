@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 reviewed as REVISE, HMSR-080 reviewed as REVISE, HMSR-081 reviewed as REVISE, HMSR-082 reviewed as REVISE, HMSR-083 approved, HMSR-084 reviewed as REVISE, HMSR-085 reviewed as REVISE, HMSR-086 approved, HMSR-087 reviewed as REVISE, HMSR-088 reviewed as REVISE, HMSR-089 reviewed as REVISE, HMSR-090 reviewed as REVISE, HMSR-091 reviewed as REVISE, HMSR-092 reviewed as REVISE, HMSR-093 reviewed as REVISE, HMSR-094 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 reviewed as REVISE, HMSR-080 reviewed as REVISE, HMSR-081 reviewed as REVISE, HMSR-082 reviewed as REVISE, HMSR-083 approved, HMSR-084 reviewed as REVISE, HMSR-085 reviewed as REVISE, HMSR-086 approved, HMSR-087 reviewed as REVISE, HMSR-088 reviewed as REVISE, HMSR-089 reviewed as REVISE, HMSR-090 reviewed as REVISE, HMSR-091 reviewed as REVISE, HMSR-092 reviewed as REVISE, HMSR-093 reviewed as REVISE, HMSR-094 reviewed as REVISE, HMSR-095 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -286,7 +286,7 @@ Ordering rules applied:
 | HMSR-091 | 4 | risk | RiskEvidenceLink | — | risk.RiskAssessment | 0 | 0 | 1 | REVISE | Completed | `docs(model-review): review risk RiskEvidenceLink` |
 | HMSR-092 | 4 | simulation | SimulationCandidateChange | — | simulation.SimulationOptimizationCandidate | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review simulation SimulationCandidateChange` |
 | HMSR-093 | 4 | simulation | SimulationRecommendation | — | simulation.SimulationOptimizationCandidate, simulation.SimulationRun | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review simulation SimulationRecommendation` |
-| HMSR-094 | 5 | planning | Nomination | — | party.Party, planning.PlanRevision | 1 | 6 | 2 | — | Planned | `docs(model-review): review planning Nomination` |
+| HMSR-094 | 5 | planning | Nomination | — | party.Party, planning.PlanRevision | 1 | 6 | 2 | REVISE | Completed | `docs(model-review): review planning Nomination` |
 | HMSR-095 | 5 | workflow | WorkflowAction | — | organization.OrganizationUnit, workflow.WorkflowInstance, workflow.WorkflowTask | 2 | 4 | 1 | — | Planned | `docs(model-review): review workflow WorkflowAction` |
 | HMSR-096 | 5 | hse | HseCase | — | incident.Incident, organization.OrganizationUnit, workflow.WorkflowInstance | 3 | 3 | 3 | — | Planned | `docs(model-review): review hse HseCase` |
 | HMSR-097 | 5 | audit | AuditExportRequest | — | documents.Document, workflow.WorkflowInstance | 1 | 1 | 2 | — | Planned | `docs(model-review): review audit AuditExportRequest` |
@@ -16818,16 +16818,177 @@ The target baseline cannot mark it APPROVED while DDD-required recommendation co
 
 HMS reconciliation must retain these obligations until explicitly authorized Simulation production corrections resolve them or stronger repository evidence changes the governing Simulation contract.
 
-## 107. Current next task
+## 107. HMSR-094 — planning.Nomination review
+
+**Decision:** REVISE  
+**Review code:** HMSR-094  
+**Dependency level:** 5  
+**Bounded context:** planning  
+**Confirmed upstream subject dependencies:** mandatory `planning.PlanRevision`; optional Party-owned shipper/counterparty references represented by `party.Party`  
+**Confirmed direct HMS subject dependents:** 1  
+**Transitive HMS subject dependents:** 6  
+**Unresolved/non-subject reference count:** 2
+
+### 107.1 Semantic role
+
+`Nomination` is the Planning-owned request for a hydrocarbon movement quantity over a defined period. It may represent injection, receipt, delivery, transfer, export, import, or an internal operational movement.
+
+Planning owns the nomination and expected operational state. It does not own physical topology assets, Party master data, contract masters, or actual telemetry/custody quantities.
+
+### 107.2 Plan-revision ownership
+
+`revisionId` is mandatory and same-module.
+
+HRA-111 already protects it with:
 
 ```text
-HMSR-094 — planning.Nomination
+hidra_planning_nomination.revision_id
+  -> hidra_planning_plan_revision.id
+```
+
+The domain constructor also rejects blank `revisionId`.
+
+No further basic existence correction is required for the mandatory parent revision.
+
+### 107.3 Quantity and period invariants
+
+The Planning DDD explicitly requires:
+
+```text
+quantity > 0
+periodStart < periodEnd
+```
+
+The live domain constructor only checks `quantity != null`; zero and negative quantities are currently accepted.
+
+The temporal guard rejects only `periodEnd < periodStart`, which permits `periodStart == periodEnd`. That is weaker than the DDD's strict interval rule.
+
+The target baseline therefore requires fail-fast domain/application enforcement of positive quantity and a strictly positive nomination interval.
+
+### 107.4 Required audit timestamps
+
+The DDD marks both `createdAt` and `updatedAt` required. JPA/Flyway persist both as `NOT NULL`.
+
+The current domain constructor does not reject null values for either timestamp.
+
+Because these fields are explicitly required nomination state, the domain/application write boundary must fail fast before persistence.
+
+### 107.5 Nomination code uniqueness
+
+The DDD requires:
+
+```text
+unique(hidra_planning_nomination.revision_id, code)
+```
+
+The live creation migration currently provides ordinary indexes for `revision_id` and `code`, but repository search found no database unique constraint for the pair.
+
+The future production correction must enforce nomination-code uniqueness within a plan revision using the repository's normal application/database integrity pattern rather than relying on convention.
+
+### 107.6 Nomination-type catalog semantics
+
+`nominationTypeId` is mandatory and Planning-owned catalog data.
+
+HRA-111 already protects generic catalog-row existence through:
+
+```text
+hidra_planning_nomination.nomination_type_id
+  -> hidra_planning_catalog_entry.id
+```
+
+The Planning DDD defines the exact business family:
+
+```text
+NOMINATION_TYPE
+```
+
+with values such as `INJECTION`, `RECEIPT`, `DELIVERY`, `TRANSFER`, `EXPORT`, and `IMPORT`.
+
+Generic row existence does not prove exact-family membership or eligibility. The authoritative write boundary must therefore validate `nominationTypeId` against the active/eligible `NOMINATION_TYPE` family.
+
+### 107.7 Product and unit reference ownership
+
+The DDD classifies `productTypeId`, `quantityUnitId`, and optional `rateUnitId` as references rather than declaring Planning-owned `PRODUCT_TYPE` or unit catalog families.
+
+However, HRA-111 currently points the mandatory `product_type_id` and `quantity_unit_id` columns at `hidra_planning_catalog_entry`.
+
+The Planning catalog list does not define a `PRODUCT_TYPE`, `QUANTITY_UNIT`, or `RATE_UNIT` family. HMSR-094 therefore cannot treat those generic Planning-catalog FKs as semantically sufficient ownership evidence.
+
+HMS reconciliation must preserve an explicit obligation to resolve the authoritative product/unit owner or catalog contract. Any production correction must then align application validation and persistence constraints to that proven ownership; it must not invent a new Planning taxonomy merely to satisfy the existing FK shape.
+
+### 107.8 Topology references
+
+`sourceAssetType + sourceAssetId` and `destinationAssetType + destinationAssetId` are optional Topology references. Their code fields are snapshots.
+
+The DDD explicitly requires neutral topology references and forbids embedding/importing Topology aggregates into Planning.
+
+When supplied, these asset references must be validated through a Topology-owned public lookup/reference contract appropriate to the asset type. No cross-module database FK should be introduced.
+
+The snapshot code fields remain descriptive snapshots and are not ownership relationships.
+
+### 107.9 Party references
+
+`shipperPartyId` and `counterpartyId` are optional Party-owned references. `shipperPartyCodeSnapshot` is a historical/readability snapshot.
+
+When supplied, Party identities must be resolved through a Party-owned application/reference contract. Planning must not add a cross-module Party database FK.
+
+The DDD explicitly rejects free-text shipper naming in the final model, so the current scalar Party-reference shape is directionally correct.
+
+### 107.10 Scenario and neutral contract references
+
+The DDD describes optional `scenarioId` as the scenario to which the nomination belongs, but the current HMS review register does not list `PlanScenario` as a confirmed upstream subject dependency.
+
+HMSR-094 therefore does not silently rewrite the dependency graph. HMS-006 must reconcile that DDD evidence against the graph/persistence classification before any production FK or ownership change is authorized.
+
+`contractReferenceId` remains a neutral optional contract reference because the current repository does not establish a canonical contract-master owner for this field. HMSR-094 does not invent one.
+
+### 107.11 Lifecycle status
+
+`NominationStatus` contains:
+
+```text
+DRAFT
+CONFIRMED
+ALLOCATED
+REJECTED
+CANCELLED
+SUPERSEDED
+```
+
+The Planning DDD explicitly classifies technical lifecycle states as suitable for stable enums or constrained strings. No catalog conversion is required for this field on current evidence.
+
+### 107.12 Required revisions
+
+Seven evidence-backed obligations remain:
+
+1. **Enforce `quantity > 0`**, not merely non-null quantity.
+2. **Enforce strict `periodStart < periodEnd`**, rejecting zero-duration nominations.
+3. **Enforce required `createdAt` and `updatedAt` before persistence.**
+4. **Enforce unique `(revisionId, code)` nomination identity** using application/database integrity consistent with the DDD.
+5. **Validate `nominationTypeId` against the active/eligible exact `NOMINATION_TYPE` family**, not merely generic Planning catalog existence.
+6. **Reconcile product/unit reference ownership** for `productTypeId`, `quantityUnitId`, and `rateUnitId`; the DDD does not establish corresponding Planning catalog families, so the existing generic Planning-catalog FK shape is not by itself sufficient semantic proof.
+7. **Validate supplied Topology and Party references through owner-controlled contracts**, preserving scalar/snapshot fields and avoiding cross-module database FKs; separately reconcile the optional `scenarioId` graph edge during HMS-006 before production changes.
+
+HMSR-094 does not modify production Java, JPA, Flyway, API/application contracts, tests, Planning/Party/Topology data, or provisioned data.
+
+### 107.13 Review conclusion
+
+**REVISE.** The core Planning ownership and mandatory PlanRevision relationship are sound, the status enum is appropriate, and the model correctly uses scalar/snapshot references for external bounded contexts.
+
+The target baseline cannot mark `Nomination` APPROVED while positive-quantity and strict-period invariants are weaker than the DDD, required timestamps are not fail-fast, revision-scoped code uniqueness is not enforced in the live schema, nomination-type membership is only generically protected, product/unit ownership remains semantically unresolved, and owner-controlled validation for optional Topology/Party references is not established.
+
+HMS reconciliation must retain these obligations until explicitly authorized Planning production corrections resolve them or stronger repository evidence changes the governing Planning contract.
+
+## 108. Current next task
+
+```text
+HMSR-095 — workflow.WorkflowAction
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review planning Nomination
+docs(model-review): review workflow WorkflowAction
 ```
 
-Start HMSR-094 only after HMSR-093 is committed and reported. Do not start HMSR-095 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-095 only after HMSR-094 is committed and reported. Do not start HMSR-096 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

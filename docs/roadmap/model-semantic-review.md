@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -264,7 +264,7 @@ Ordering rules applied:
 | HMSR-069 | 3 | risk | RiskAssessment | — | risk.RiskRegister | 1 | 1 | 10 | REVISE | Completed | `docs(model-review): review risk RiskAssessment` |
 | HMSR-070 | 3 | assets | AssetConditionRecord | — | assets.MaintainableAsset | 0 | 0 | 0 | APPROVED | Completed | `docs(model-review): review assets AssetConditionRecord` |
 | HMSR-071 | 3 | leakdetection | LeakEscalationReference | — | leakdetection.LeakCandidate, leakdetection.LeakDetectionCase | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review leakdetection LeakEscalationReference` |
-| HMSR-072 | 3 | notification | NotificationDeliveryAttempt | — | notification.NotificationMessage | 0 | 0 | 2 | — | Planned | `docs(model-review): review notification NotificationDeliveryAttempt` |
+| HMSR-072 | 3 | notification | NotificationDeliveryAttempt | — | notification.NotificationMessage | 0 | 0 | 2 | REVISE | Completed | `docs(model-review): review notification NotificationDeliveryAttempt` |
 | HMSR-073 | 3 | workflow | WorkflowTransition | — | workflow.WorkflowDefinition, workflow.WorkflowStep | 0 | 0 | 0 | — | Planned | `docs(model-review): review workflow WorkflowTransition` |
 | HMSR-074 | 4 | incident | Incident | — | organization.OrganizationUnit, workflow.WorkflowInstance | 6 | 11 | 3 | — | Planned | `docs(model-review): review incident Incident` |
 | HMSR-075 | 4 | identity | User | — | organization.Employee | 8 | 8 | 1 | — | Planned | `docs(model-review): review identity User` |
@@ -2222,10 +2222,10 @@ Confirmed subject-model graph edges at this stage: **165**. These are semantic c
 | Field | Declared type | Classification | Resolved target | Graph edge | Notes |
 |---|---|---|---|:---:|---|
 | id | String | Self identifier | — | No | Primary identity of the current model. |
-| messageId | String | Domain reference | notification.NotificationMessage | Yes | Unambiguous same-module subject-model reference. |
-| channelId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
-| providerMessageId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
-| correlationId | String | Snapshot/reference-only | TECHNICAL_REFERENCE | No | Technical correlation/request/reference identity. |
+| messageId | String | Domain reference | notification.NotificationMessage | Yes | Mandatory same-module message reference; HRA-111 protects `message_id -> hidra_notification_message.id`. |
+| channelId | String | Domain reference | notification.NotificationChannel (read/persistence model) | No | Mandatory same-module channel reference; HRA-111 protects row existence, but the record path does not prove it matches the channel selected by the referenced message. |
+| providerMessageId | String | External reference | PROVIDER_MESSAGE_ID | No | Optional provider-assigned message identity; not a Hidra ownership edge. |
+| correlationId | String | Snapshot/reference-only | TECHNICAL_REFERENCE | No | Optional technical correlation identity. |
 
 #### notification.NotificationMessage
 
@@ -13812,16 +13812,160 @@ The target baseline cannot mark it APPROVED while a populated same-module `candi
 
 HMS reconciliation must retain this obligation until explicitly authorized Leak Detection production correction resolves it or stronger repository evidence changes the governing DDD.
 
-## 85. Current next task
+## 85. HMSR-072 — notification.NotificationDeliveryAttempt review
+
+**Decision:** REVISE  
+**Review code:** HMSR-072  
+**Dependency level:** 3  
+**Bounded context:** notification  
+**Confirmed upstream subject dependencies:** `notification.NotificationMessage`  
+**Confirmed direct HMS subject dependents:** 0  
+**Transitive HMS subject dependents:** 0
+
+### 85.1 Semantic role
+
+`NotificationDeliveryAttempt` is the Notification-owned record of one attempt to deliver a NotificationMessage through a selected channel/provider.
+
+It captures the parent message, attempt sequence metadata, channel, provider references, attempt lifecycle, timestamps, failure information, retry scheduling and correlation identity.
+
+Notification owns delivery-attempt state. External providers own provider-specific delivery infrastructure and provider-assigned message identities.
+
+### 85.2 Message and channel integrity
+
+`messageId` and `channelId` are mandatory same-module references.
+
+HRA-111 protects:
 
 ```text
-HMSR-072 — notification.NotificationDeliveryAttempt
+hidra_notification_delivery_attempt.message_id
+    -> hidra_notification_message.id
+
+hidra_notification_delivery_attempt.channel_id
+    -> hidra_notification_channel.id
+```
+
+Those row-existence protections are correct.
+
+However, `NotificationMessage` itself already carries its selected `channelId`. The live `recordDeliveryAttempt()` path accepts `messageId` and `channelId` independently and does not load the message before persistence.
+
+Therefore independent FK existence can still produce an attempt for message A through channel B even when message A was created for channel C.
+
+The authoritative delivery-attempt write boundary must enforce:
+
+```text
+attempt.channelId == message.channelId
+```
+
+unless a future explicit Notification design introduces controlled channel failover semantics. HMSR-072 does not invent such failover behavior.
+
+### 85.3 Append-only delivery evidence
+
+The Notification DDD explicitly states:
+
+```text
+Attempts are append-only.
+A message can have multiple attempts.
+```
+
+The current repository port exposes a generic `save(...)`, and the JPA adapter delegates directly to `repository.save(...)`. That persistence seam can update an existing row when the same ID is reused.
+
+The target architecture must therefore enforce append-only attempt semantics at the authoritative application/persistence boundary so historical delivery evidence cannot be rewritten in place.
+
+HMSR-072 does not prescribe one implementation mechanism; later reconciliation may use create-only repository semantics, persistence guards, database constraints/triggers, or another repository-consistent approach.
+
+### 85.4 Permanent-failure retry semantics
+
+The Notification DDD explicitly requires:
+
+```text
+A permanent failure must stop retry scheduling unless manually requeued.
+```
+
+`DeliveryAttemptStatus` includes:
+
+```text
+STARTED
+SENT
+DELIVERED
+FAILED_TEMPORARY
+FAILED_PERMANENT
+TIMEOUT
+CANCELLED
+```
+
+The domain helper already classifies `FAILED_PERMANENT` and `CANCELLED` as permanent failures.
+
+However, the model and `recordDeliveryAttempt()` path currently allow `nextRetryAt` to be populated independently for any status, including permanent failure/cancellation.
+
+The authoritative write path must therefore reject automatic retry scheduling for permanent-failure states unless the operation is an explicit manual requeue represented by the Notification retry workflow.
+
+### 85.5 Attempt number
+
+`attemptNumber` is mandatory at persistence level and is intended to distinguish repeated attempts for one message.
+
+Current DDD evidence does not explicitly state:
+- a minimum starting value,
+- strict monotonic increment rules,
+- uniqueness of `messageId + attemptNumber`.
+
+The recommended index is non-unique.
+
+HMSR-072 therefore does not invent numbering constraints beyond preserving the field as attempt-sequence metadata.
+
+### 85.6 Provider references and secrets
+
+`providerReference` and `providerMessageId` remain provider-facing metadata rather than Hidra-owned domain references.
+
+The active application service applies `NotificationPayloadGuard.ensureNoProviderSecret(...)` to `providerReference`, consistent with the DDD rule that provider secrets must not be stored in Notification tables.
+
+No relational target or external-provider FK is appropriate.
+
+### 85.7 Lifecycle timestamps and failure metadata
+
+`attemptedAt` is mandatory. `completedAt`, failure fields and `nextRetryAt` are optional.
+
+Current Notification DDD does not define a complete status-to-field matrix beyond the permanent-failure retry rule. It also does not explicitly require `attemptedAt <= completedAt`.
+
+HMSR-072 therefore does not manufacture additional timestamp ordering, mandatory failure-message, or provider-message-ID rules.
+
+### 85.8 Delivery evidence and audit boundary
+
+Notification owns operational delivery evidence. Audit owns immutable evidence of critical actions.
+
+The DDD requires critical delivery events to be audit-ready, but this does not mean NotificationDeliveryAttempt itself should become an Audit-owned entity or gain a cross-module FK.
+
+The reviewed model remains correctly owned by Notification.
+
+### 85.9 Required revisions
+
+Three evidence-backed obligations remain:
+
+1. **Enforce message/channel consistency.** The attempt's `channelId` must match the referenced NotificationMessage's selected channel unless an explicitly modeled future failover rule authorizes otherwise.
+
+2. **Enforce append-only delivery-attempt persistence.** Existing attempt evidence must not be mutable through a generic save/update path.
+
+3. **Prevent automatic retry scheduling after permanent failure/cancellation.** `FAILED_PERMANENT` and `CANCELLED` attempts must not carry an automatic `nextRetryAt`; manual requeue must be represented through the explicit Notification retry workflow.
+
+HMSR-072 does not modify production Java, JPA, Flyway, API/application contracts, tests, Notification message/channel/attempt data, provider integrations, Audit data, or provisioned data.
+
+### 85.10 Review conclusion
+
+**REVISE.** `NotificationDeliveryAttempt` is a coherent 14-field Notification-owned delivery-evidence model. Mandatory message and channel row existence is already database-protected, provider identities remain correctly external, and the lifecycle enum matches the Notification DDD.
+
+The target baseline cannot mark it APPROVED while attempt/message channel consistency is unenforced, the persistence seam does not guarantee the DDD's append-only rule, and permanent failures can still be recorded with automatic retry scheduling.
+
+HMS reconciliation must retain these obligations until explicitly authorized Notification production corrections resolve them or stronger repository evidence changes the governing DDD.
+
+## 86. Current next task
+
+```text
+HMSR-073 — workflow.WorkflowTransition
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review notification NotificationDeliveryAttempt
+docs(model-review): review workflow WorkflowTransition
 ```
 
-Start HMSR-072 only after HMSR-071 is committed and reported. Do not start HMSR-073 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-073 only after HMSR-072 is committed and reported. Do not start HMSR-074 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

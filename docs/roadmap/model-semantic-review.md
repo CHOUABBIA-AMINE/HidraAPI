@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -241,7 +241,7 @@ Ordering rules applied:
 | HMSR-046 | 1 | identity | GroupRoleGrant | — | identity.Role | 0 | 0 | 2 | APPROVED | Completed | `docs(model-review): review identity GroupRoleGrant` |
 | HMSR-047 | 1 | identity | RolePermissionGrant | — | identity.Permission, identity.Role | 0 | 0 | 0 | APPROVED | Completed | `docs(model-review): review identity RolePermissionGrant` |
 | HMSR-048 | 1 | monitoring | MonitoringRule | — | telemetry.TelemetryPoint | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review monitoring MonitoringRule` |
-| HMSR-049 | 1 | party | PartyRoleAssignment | — | party.Party | 0 | 0 | 0 | — | Planned | `docs(model-review): review party PartyRoleAssignment` |
+| HMSR-049 | 1 | party | PartyRoleAssignment | — | party.Party | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review party PartyRoleAssignment` |
 | HMSR-050 | 1 | topology | Pipeline | — | topology.PipelineSystem | 0 | 0 | 0 | — | Planned | `docs(model-review): review topology Pipeline` |
 | HMSR-051 | 2 | workflow | WorkflowStep | SCC-02 | workflow.WorkflowDefinition, workflow.WorkflowStepAssignmentRule | 5 | 35 | 0 | — | Planned | `docs(model-review): review workflow WorkflowStep` |
 | HMSR-052 | 2 | workflow | WorkflowStepAssignmentRule | SCC-02 | organization.OrganizationUnit, workflow.WorkflowDefinition, workflow.WorkflowStep | 1 | 35 | 0 | — | Planned | `docs(model-review): review workflow WorkflowStepAssignmentRule` |
@@ -2400,8 +2400,8 @@ Confirmed subject-model graph edges at this stage: **165**. These are semantic c
 | Field | Declared type | Classification | Resolved target | Graph edge | Notes |
 |---|---|---|---|:---:|---|
 | id | String | Self identifier | — | No | Primary identity of the current model. |
-| partyId | String | Domain reference | party.Party | Yes | Unambiguous same-module subject-model reference. |
-| roleId | String | Value/catalog dependency | PARTY_ROLE_CATALOG | No | HMSR-007 stronger Party DDD + HRA-111 evidence resolves this to Party-owned `PartyRole` (`hidra_party_role`), not `identity.Role`; no HMS subject edge. |
+| partyId | String | Domain reference | party.Party | Yes | Mandatory same-module HMS subject reference; HRA-111 protects `party_id -> hidra_party_party.id`. |
+| roleId | String | Domain reference | party.PartyRole (read/persistence model) | No | HMSR-049 confirms the mandatory Party-owned role reference; target is outside the 123 HMS subject set and HRA-111 protects `role_id -> hidra_party_role.id`. |
 
 #### planning.Nomination
 
@@ -10386,17 +10386,201 @@ The target baseline cannot mark it APPROVED while a populated `telemetryPointId`
 
 HMS reconciliation must retain this TelemetryPoint reference-integrity obligation until an explicitly authorized Monitoring/Telemetry production correction resolves it or stronger repository evidence changes the reference semantics.
 
-## 62. Current next task
+## 62. HMSR-049 — party.PartyRoleAssignment review
+
+**Decision:** REVISE  
+**Review code:** HMSR-049  
+**Dependency level:** 1  
+**Bounded context:** party  
+**Confirmed upstream subject dependencies:** `party.Party` through mandatory `partyId`  
+**Confirmed same-module non-HMS dependency:** retained `party.PartyRole` through mandatory `roleId`  
+**Confirmed direct HMS subject dependents:** 0  
+**Transitive HMS subject dependents:** 0  
+**Unresolved/non-subject references:** 0
+
+### 62.1 Semantic role and ordering rationale
+
+`PartyRoleAssignment` is the Party-owned effective-dated statement that one Party is authorized/classified to play one PartyRole.
+
+Party owns external legal/counterparty identity and business-role master data. The assignment does not turn a Party into an internal OrganizationUnit or Identity Role, and downstream modules remain responsible for using only role assignments that are valid for their business context.
+
+It is Level 1 because mandatory `partyId` references the already-reviewed HMS subject `Party`. `PartyRole` is a retained Party read/persistence model outside the 123 HMS subject set.
+
+### 62.2 Field semantics
+
+| Field | Type | Reviewed meaning |
+|---|---|---|
+| `id` | `String` | Mandatory stable party-role-assignment identity. |
+| `partyId` | `String` | Mandatory same-module reference to the Party receiving the role. |
+| `roleId` | `String` | Mandatory same-module reference to PartyRole, not Identity Role. |
+| `validFrom` | `Instant` | Mandatory role-validity start. |
+| `validTo` | `Instant` | Optional role-validity end. |
+| `status` | `PartyRoleAssignmentStatus` | Mandatory lifecycle state: `ACTIVE`, `SUSPENDED`, `EXPIRED`, or `REVOKED`. |
+| `qualificationRequired` | `boolean` | Mandatory assignment-level flag indicating whether this role requires qualification. |
+| `createdAt` | `Instant` | Persistence-required creation timestamp. |
+| `updatedAt` | `Instant` | Persistence-required update timestamp. |
+
+The canonical constructor requires nonblank ID, Party ID and Role ID, non-null `validFrom` and status, and rejects `validTo < validFrom`.
+
+### 62.3 Party and PartyRole reference integrity
+
+The final schema requires:
 
 ```text
-HMSR-049 — party.PartyRoleAssignment
+party_id NOT NULL
+role_id  NOT NULL
+```
+
+HRA-111 installs and validates:
+
+```text
+party_id -> hidra_party_party.id
+role_id  -> hidra_party_role.id
+```
+
+Therefore both mandatory same-module references are fail-closed at persistence.
+
+`partyId` remains the HMS graph edge to `party.Party`. `roleId` resolves to the Party-owned `PartyRole` model, not `identity.Role`, and therefore creates no Identity dependency or HMS subject edge.
+
+### 62.4 Explicit duplicate-active-role invariant
+
+The Party DDD states:
+
+```text
+A party may not have duplicate active assignments for the same role.
+```
+
+This is an explicit business invariant on PartyRoleAssignment.
+
+The active `PartyRoleAssignmentApplicationService.assignRole()` currently:
+
+- accepts the supplied `partyId` and `roleId`;
+- defaults `validFrom` to the current instant when omitted;
+- creates the assignment directly as `ACTIVE`; and
+- immediately calls `repositoryPort.save(assignment)`.
+
+`PartyRoleAssignmentRepositoryPort` exposes only `save()` and `findById()`; it has no lookup for an existing active assignment by Party/Role identity.
+
+The base schema has ordinary indexes on `party_id`, `role_id`, and `status`, but no unique/partial-unique protection for the active Party/Role identity.
+
+A repository-wide search found no later migration, application guard, or concurrency policy implementing the DDD prohibition.
+
+Therefore two ACTIVE assignments for the same Party and PartyRole can currently be created.
+
+### 62.5 Validity and lifecycle semantics
+
+The DDD requires a validity start, optional end, and assignment lifecycle status.
+
+The canonical domain enforces:
+
+```text
+validFrom <= validTo
+```
+
+when an end exists.
+
+The application defaults an omitted start to the current instant and creates a new assignment as `ACTIVE`.
+
+Current Party DDD evidence does not define:
+
+- prohibition of overlapping historical/non-ACTIVE assignments;
+- automatic status changes when `validTo` passes;
+- a complete transition matrix;
+- revocation timestamps separate from `validTo`;
+- whether a duplicate ACTIVE attempt should be idempotent or rejected.
+
+HMSR-049 therefore records only the explicit “no duplicate active same-role assignment” obligation and leaves the later implementation strategy to the production correction task.
+
+### 62.6 Qualification semantics
+
+`qualificationRequired` is mandatory on PartyRoleAssignment.
+
+The retained PartyRole model also has `qualificationRequiredByDefault`, but the current Party DDD does not state that every new assignment must copy that default, nor that the assignment value may never override it.
+
+HMSR-049 therefore does not invent a synchronization/derivation rule between PartyRole and PartyRoleAssignment.
+
+Likewise, the rule that a role assignment must be valid before another module uses the Party for that role is a consumer-side eligibility rule. It does not by itself prove a new constructor field or creation-time qualification constraint on PartyRoleAssignment.
+
+### 62.7 Party lifecycle semantics deliberately not over-specified
+
+The Party DDD separately states that blocked Parties must not be selected for new operational references unless explicitly overridden by authorized Workflow.
+
+Assigning a Party-owned master-data role is not explicitly defined as the same operation as selecting that Party for an operational reference in another bounded context.
+
+HMSR-049 therefore does not infer that a Party must be ACTIVE, non-BLOCKED, or otherwise lifecycle-eligible merely to store a PartyRoleAssignment unless stronger Party-specific assignment evidence later establishes that rule.
+
+The existing same-module FK already guarantees Party existence.
+
+### 62.8 Historical preservation
+
+The Party DDD explicitly states:
+
+```text
+Historical role assignments must not be physically deleted.
+```
+
+The reviewed repository port exposes no delete operation, and no active application path reviewed for HMSR-049 physically removes PartyRoleAssignment rows.
+
+No correction obligation is therefore recorded for deletion semantics.
+
+Future production work must preserve this history when implementing duplicate-active-role protection; it must not “fix” duplicate-active state by silently deleting historical rows without separately authorized migration/reconciliation evidence.
+
+### 62.9 Domain/JPA/Flyway/application alignment
+
+Domain and JPA agree on all nine components.
+
+Required business fields align:
+
+```text
+id
+partyId
+roleId
+validFrom
+status
+qualificationRequired
+```
+
+with persistence-required audit timestamps.
+
+The two mandatory same-module references have validated FK protection and temporal ordering is enforced in the domain.
+
+The outstanding mismatch is behavioral: the explicit Party DDD uniqueness invariant for ACTIVE Party/Role assignments is not enforced by the authoritative application or schema boundary.
+
+### 62.10 Required revision
+
+One evidence-backed production correction obligation remains:
+
+1. **Prevent duplicate ACTIVE PartyRoleAssignment rows for the same Party and PartyRole.** The production correction must enforce the explicit Party DDD invariant at an authoritative fail-closed boundary and define a concurrency-safe strategy. It may use application lookup/locking, a partial unique database constraint, or another architecture-consistent approach, while preserving historical assignments and without inventing broader overlap rules absent DDD evidence.
+
+HMSR-049 does not modify production Java, JPA, Flyway, application/API contracts, tests, party-role assignments, Party master data, PartyRole catalog data, or provisioned data.
+
+### 62.11 SONATRACH/TRC operational interpretation
+
+For SONATRACH/TRC, PartyRoleAssignment identifies whether an external counterparty is acting as a supplier, vendor, contractor, manufacturer, owner, operator, shipper, customer, regulator contact, or another governed Party role.
+
+Multiple distinct roles for one Party are valid and expected. Duplicate ACTIVE assignments of the **same** role, however, create ambiguous eligibility and can cause downstream modules to treat duplicate records as separate authorizations/qualifications.
+
+The correction should therefore preserve role plurality and assignment history while guaranteeing one active assignment identity per Party/Role pair.
+
+### 62.12 Review conclusion
+
+**REVISE.** `PartyRoleAssignment` has a coherent nine-field Party-owned effective-dated role model, validated same-module FK protection for Party and PartyRole, correct separation from Identity Role semantics, and correct temporal ordering/history-oriented design.
+
+The target baseline cannot mark it APPROVED while the explicit DDD rule prohibiting duplicate active assignments for the same Party and role is not enforced by the live application or database boundary.
+
+HMS reconciliation must retain this duplicate-active-role obligation until an explicitly authorized Party production correction resolves it or stronger repository evidence explicitly revises the Party DDD invariant.
+
+## 63. Current next task
+
+```text
+HMSR-050 — topology.Pipeline
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review party PartyRoleAssignment
+docs(model-review): review topology Pipeline
 ```
 
-Start HMSR-049 only after HMSR-048 is committed and reported. Do not start HMSR-050 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-050 only after HMSR-049 is committed and reported. Do not start HMSR-051 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
 

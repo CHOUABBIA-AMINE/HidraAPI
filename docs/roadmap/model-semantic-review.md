@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -224,7 +224,7 @@ Ordering rules applied:
 | HMSR-029 | 0 | custody | CustodyDiscrepancy | — | — | 0 | 0 | 1 | REVISE | Completed | `docs(model-review): review custody CustodyDiscrepancy` |
 | HMSR-030 | 0 | organization | OrganizationContactPoint | — | — | 0 | 0 | 0 | APPROVED | Completed | `docs(model-review): review organization OrganizationContactPoint` |
 | HMSR-031 | 0 | organization | ReportingLine | — | — | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review organization ReportingLine` |
-| HMSR-032 | 0 | risk | RiskMatrixCell | — | — | 0 | 0 | 2 | — | Planned | `docs(model-review): review risk RiskMatrixCell` |
+| HMSR-032 | 0 | risk | RiskMatrixCell | — | — | 0 | 0 | 2 | REVISE | Completed | `docs(model-review): review risk RiskMatrixCell` |
 | HMSR-033 | 0 | telemetry | TelemetrySource | — | — | 0 | 0 | 0 | — | Planned | `docs(model-review): review telemetry TelemetrySource` |
 | HMSR-034 | 0 | topology | TopologyConnection | — | — | 0 | 0 | 3 | — | Planned | `docs(model-review): review topology TopologyConnection` |
 | HMSR-035 | 1 | organization | OrganizationUnit | SCC-01 | organization.OrganizationUnit, organization.OrganizationUnitType | 22 | 51 | 0 | — | Planned | `docs(model-review): review organization OrganizationUnit` |
@@ -2541,10 +2541,10 @@ Confirmed subject-model graph edges at this stage: **165**. These are semantic c
 | Field | Declared type | Classification | Resolved target | Graph edge | Notes |
 |---|---|---|---|:---:|---|
 | id | String | Self identifier | — | No | Primary identity of the current model. |
-| riskMatrixId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
-| likelihoodLevelId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
-| consequenceLevelId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
-| ratingId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| riskMatrixId | String | Domain reference | risk.RiskMatrix (read/persistence model) | No | HMSR-032 stronger Risk DDD + HRA-111 evidence resolves the required same-module matrix reference; target is outside the 123 HMS subject set. |
+| likelihoodLevelId | String | Value/catalog dependency | risk.RiskCatalogEntry (RISK_LIKELIHOOD_LEVEL) | No | HRA-111 protects row existence in the Risk catalog; HMSR-032 records the DDD-required likelihood-level catalog family. |
+| consequenceLevelId | String | Value/catalog dependency | risk.RiskCatalogEntry (RISK_CONSEQUENCE_LEVEL) | No | HRA-111 protects row existence in the Risk catalog; HMSR-032 records the DDD-required consequence-level catalog family. |
+| ratingId | String | Domain/catalog reference | risk.RiskRating (read/persistence model) | No | HMSR-032 stronger Risk DDD + HRA-111 evidence resolves the required rating reference; target is outside the 123 HMS subject set. |
 
 #### risk.RiskRegister
 
@@ -7519,16 +7519,168 @@ The target baseline cannot mark it APPROVED while the fixed `ReportingLineType` 
 
 HMS reconciliation must retain these obligations until an explicitly authorized Organization correction task resolves them or the governing Organization roadmap/catalog decisions are explicitly revised with stronger evidence.
 
-## 45. Current next task
+## 45. HMSR-032 — risk.RiskMatrixCell review
+
+**Decision:** REVISE  
+**Review code:** HMSR-032  
+**Dependency level:** 0  
+**Bounded context:** risk  
+**Confirmed upstream subject dependencies:** none  
+**Confirmed direct HMS subject dependents:** 0  
+**Transitive HMS subject dependents:** 0  
+**Unresolved/non-subject references:** 2 in the original register; both are now resolved to retained Risk read/persistence models outside the 123 HMS subject set
+
+### 45.1 Semantic role and ordering rationale
+
+`RiskMatrixCell` is the Risk-owned scoring lookup for one likelihood/consequence pair within a specific RiskMatrix version. It supplies the score, rating and governance flags used when Risk assessments are scored.
+
+It remains Level 0 because its required references resolve to Risk-owned `RiskMatrix`, `RiskCatalogEntry`, and `RiskRating` read/persistence models outside the 123-model HMS subject population.
+
+### 45.2 Field semantics
+
+| Field | Type | Mandatory / optional | Reviewed meaning |
+|---|---|---|---|
+| `id` | `String` | Mandatory | Stable matrix-cell identity and persistence primary key. |
+| `riskMatrixId` | `String` | Mandatory | Same-module reference to the RiskMatrix/version that owns the cell. |
+| `likelihoodLevelId` | `String` | Mandatory | Controlled Risk catalog entry representing a likelihood level. |
+| `consequenceLevelId` | `String` | Mandatory | Controlled Risk catalog entry representing a consequence level. |
+| `scoreValue` | `BigDecimal` | Mandatory | Numeric score for the matrix coordinate. Risk DDD explicitly requires it to be non-negative. |
+| `ratingId` | `String` | Mandatory | Reference to RiskRating such as LOW/MEDIUM/HIGH/CRITICAL. |
+| `colorCode` | `String` | Optional | Presentation/display color associated with the matrix cell. |
+| `requiresTreatment` | `boolean` | Mandatory primitive state | Whether this cell/rating requires risk treatment. |
+| `requiresApproval` | `boolean` | Mandatory primitive state | Whether this cell requires governed approval. |
+| `requiresExecutiveAcceptance` | `boolean` | Mandatory primitive state | Whether this cell requires executive acceptance/escalation. |
+| `createdAt` | `Instant` | Persistence-required audit timestamp | Creation timestamp. |
+| `updatedAt` | `Instant` | Persistence-required audit timestamp | Last-update timestamp. |
+
+The canonical constructor already rejects blank IDs/references and a null score, normalizes textual IDs/color, and exposes `treatmentOrApprovalRequired()`.
+
+### 45.3 Parent matrix and rating dependency resolution
+
+HMS-003 left `riskMatrixId` and `ratingId` unresolved. HRA-111 now resolves both concretely:
 
 ```text
-HMSR-032 — risk.RiskMatrixCell
+hidra_risk_matrix_cell.risk_matrix_id
+    -> hidra_risk_matrix.id
+    via fk_hra111_risk_027
+
+hidra_risk_matrix_cell.rating_id
+    -> hidra_risk_rating.id
+    via fk_hra111_risk_026
+```
+
+Both constraints use `ON DELETE RESTRICT` and were validated against existing rows. RiskMatrix and RiskRating are retained Risk read/persistence models outside the HMS subject set, so no HMS graph edge is added.
+
+The DDD requirement that `ratingId` be catalog-backed is therefore satisfied at the row-reference level by the dedicated RiskRating catalog-style model.
+
+### 45.4 Likelihood and consequence catalog semantics
+
+Risk DDD explicitly defines Risk catalog families:
+
+```text
+RISK_LIKELIHOOD_LEVEL
+RISK_CONSEQUENCE_LEVEL
+```
+
+and the matrix-cell fields carry those exact semantics.
+
+HRA-111 installs:
+
+```text
+consequence_level_id -> hidra_risk_catalog_entry.id
+likelihood_level_id  -> hidra_risk_catalog_entry.id
+```
+
+through `fk_hra111_risk_024` and `fk_hra111_risk_025`.
+
+Those FKs correctly prevent dangling catalog IDs, but they do not demonstrate catalog-family validation. A `likelihoodLevelId` could still reference an unrelated RiskCatalogEntry unless the write/provisioning boundary checks `catalogName = RISK_LIKELIHOOD_LEVEL`; the same issue applies to consequence level.
+
+No current RiskMatrixCell application service or dedicated write policy was found that performs this family validation.
+
+### 45.5 Missing matrix-cell uniqueness invariant
+
+Risk DDD explicitly requires:
+
+```text
+unique cell per matrix, likelihood, consequence
+```
+
+The base schema has separate indexes for `risk_matrix_id`, `likelihood_level_id`, and `consequence_level_id`, but no unique constraint or unique index on the three-column matrix coordinate.
+
+Repository search also found no application/domain uniqueness policy for RiskMatrixCell.
+
+Therefore two different rows can currently represent the same matrix coordinate and potentially carry conflicting scores/ratings.
+
+This is a master-data integrity defect because scoring must resolve deterministically to one cell for a given matrix version and likelihood/consequence pair.
+
+### 45.6 Missing nonnegative-score invariant
+
+Risk DDD explicitly states:
+
+```text
+scoreValue must be non-negative
+```
+
+The domain constructor only checks `scoreValue != null`. The JPA mapping and `numeric(18,6) NOT NULL` schema likewise permit negative values, and no later CHECK constraint was found.
+
+Therefore a semantically invalid negative risk score can be constructed and persisted.
+
+This obligation is stronger than a generic numeric-validation preference because the active Risk DDD states the rule directly.
+
+### 45.7 Governance booleans and rating policy deliberately not over-inferred
+
+`requiresTreatment`, `requiresApproval`, and `requiresExecutiveAcceptance` are stored directly on the matrix cell. `RiskRating` separately carries `requiresTreatment` and `requiresApproval` properties.
+
+Current repository evidence does not state that the cell booleans must always equal the referenced RiskRating values. They may represent matrix-specific escalation policy beyond the reusable rating classification.
+
+HMSR-032 therefore does not invent equality constraints between cell and rating flags, nor does it infer executive-acceptance thresholds from rating severity.
+
+`colorCode` is presentation metadata; no authoritative format such as hex RGB is defined, so no format invariant is added.
+
+### 45.8 Matrix completeness and immutability boundary
+
+Risk DDD states that an approved matrix must contain complete cells and an active matrix version must be immutable.
+
+Those are aggregate/matrix-level lifecycle rules rather than locally decidable RiskMatrixCell constructor invariants. HMSR-032 records no cell-level mutation rule beyond the explicit cell invariants above; the future RiskMatrix review/correction must own completeness and active-version immutability.
+
+### 45.9 Required revisions
+
+Three evidence-backed correction obligations remain:
+
+1. **Enforce matrix-coordinate uniqueness.** The combination `(riskMatrixId, likelihoodLevelId, consequenceLevelId)` must identify at most one RiskMatrixCell. A separately authorized Risk correction should implement this with an additive unique database constraint/index and aligned application behavior.
+
+2. **Enforce nonnegative score values.** `scoreValue < 0` must be rejected at an appropriate fail-fast domain/application boundary and/or by an additive database CHECK, consistent with the explicit Risk DDD invariant.
+
+3. **Protect catalog-family semantics for likelihood and consequence levels.** A populated `likelihoodLevelId` must resolve to the `RISK_LIKELIHOOD_LEVEL` Risk catalog family and `consequenceLevelId` to `RISK_CONSEQUENCE_LEVEL`; generic row-existence FKs alone do not establish the required taxonomy.
+
+HMSR-032 does not modify production Java, JPA, Flyway, API/application contracts, tests, risk matrices/cells/catalogs, or provisioned data.
+
+### 45.10 SONATRACH/TRC operational interpretation
+
+For SONATRACH/TRC, RiskMatrixCell is governed risk-methodology master data. A single matrix version must map each likelihood/consequence coordinate deterministically to one nonnegative score and one controlled rating.
+
+Duplicate coordinates, negative scores, or likelihood/consequence IDs drawn from the wrong taxonomy would make inherent/residual risk calculations inconsistent and could alter treatment, approval or executive-acceptance decisions.
+
+The cell defines scoring policy; it does not own the operational event, pipeline condition, HSE case, integrity defect, or other source fact being assessed.
+
+### 45.11 Review conclusion
+
+**REVISE.** `RiskMatrixCell` has a coherent 12-field Risk-owned role, correct Level-0 placement, required reference validation, and database-protected parent matrix/rating/catalog row existence.
+
+The target baseline cannot mark it APPROVED while the explicit DDD uniqueness and nonnegative-score invariants are unenforced and while likelihood/consequence catalog references are not demonstrably restricted to their required Risk catalog families.
+
+HMS reconciliation must retain these obligations until an explicitly authorized Risk correction task resolves them or stronger repository evidence explicitly changes the Risk matrix semantics.
+
+## 46. Current next task
+
+```text
+HMSR-033 — telemetry.TelemetrySource
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review risk RiskMatrixCell
+docs(model-review): review telemetry TelemetrySource
 ```
 
-Start HMSR-032 only after HMSR-031 is committed and reported. Do not start HMSR-033 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-033 only after HMSR-032 is committed and reported. Do not start HMSR-034 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

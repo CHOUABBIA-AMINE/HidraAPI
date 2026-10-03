@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -243,7 +243,7 @@ Ordering rules applied:
 | HMSR-048 | 1 | monitoring | MonitoringRule | — | telemetry.TelemetryPoint | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review monitoring MonitoringRule` |
 | HMSR-049 | 1 | party | PartyRoleAssignment | — | party.Party | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review party PartyRoleAssignment` |
 | HMSR-050 | 1 | topology | Pipeline | — | topology.PipelineSystem | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review topology Pipeline` |
-| HMSR-051 | 2 | workflow | WorkflowStep | SCC-02 | workflow.WorkflowDefinition, workflow.WorkflowStepAssignmentRule | 5 | 35 | 0 | — | Planned | `docs(model-review): review workflow WorkflowStep` |
+| HMSR-051 | 2 | workflow | WorkflowStep | SCC-02 | workflow.WorkflowDefinition, workflow.WorkflowStepAssignmentRule | 5 | 35 | 0 | REVISE | Completed | `docs(model-review): review workflow WorkflowStep` |
 | HMSR-052 | 2 | workflow | WorkflowStepAssignmentRule | SCC-02 | organization.OrganizationUnit, workflow.WorkflowDefinition, workflow.WorkflowStep | 1 | 35 | 0 | — | Planned | `docs(model-review): review workflow WorkflowStepAssignmentRule` |
 | HMSR-053 | 2 | organization | AdministrativeLocality | — | organization.AdministrativeDistrict | 2 | 15 | 0 | — | Planned | `docs(model-review): review organization AdministrativeLocality` |
 | HMSR-054 | 2 | assets | MaintainableAsset | SCC-03 | assets.MaintainableAsset, organization.OrganizationUnit, party.Party | 3 | 3 | 4 | — | Planned | `docs(model-review): review assets MaintainableAsset` |
@@ -2755,10 +2755,10 @@ Confirmed subject-model graph edges at this stage: **165**. These are semantic c
 | Field | Declared type | Classification | Resolved target | Graph edge | Notes |
 |---|---|---|---|:---:|---|
 | id | String | Self identifier | — | No | Primary identity of the current model. |
-| definitionId | String | Domain reference | workflow.WorkflowDefinition | Yes | Unambiguous same-module subject-model reference. |
-| stepTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
-| defaultAssignmentRuleId | String | Domain reference | workflow.WorkflowStepAssignmentRule | Yes | Unambiguous same-module subject-model reference. |
-| slaPolicyId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| definitionId | String | Domain reference | workflow.WorkflowDefinition | Yes | Mandatory same-module HMS subject reference; HRA-111 protects `definition_id -> hidra_workflow_definition.id`. |
+| stepTypeId | String | Value/catalog dependency | WORKFLOW_STEP_TYPE | No | Optional Workflow-owned catalog reference explicitly identified by the Workflow DDD. |
+| defaultAssignmentRuleId | String | Domain reference | workflow.WorkflowStepAssignmentRule | Yes | Optional same-module HMS subject reference forming SCC-02; populated-reference integrity is not currently protected at write time. |
+| slaPolicyId | String | Domain reference | workflow.WorkflowSlaPolicy (read/persistence model) | No | Optional same-module SLA policy reference outside the 123 HMS subject set. |
 
 #### workflow.WorkflowStepAssignmentRule
 
@@ -10740,17 +10740,192 @@ The target baseline cannot mark it APPROVED while the live model still encodes `
 
 HMS reconciliation must retain this catalog-taxonomy correction until an explicitly authorized Topology production correction resolves it or stronger repository evidence explicitly changes the accepted Topology controlled-vocabulary policy.
 
-## 64. Current next task
+## 64. HMSR-051 — workflow.WorkflowStep review
+
+**Decision:** REVISE  
+**Review code:** HMSR-051  
+**Dependency level:** 2  
+**Bounded context:** workflow  
+**SCC:** SCC-02 with `workflow.WorkflowStepAssignmentRule`  
+**Confirmed upstream subject dependencies:** `workflow.WorkflowDefinition`, optional `workflow.WorkflowStepAssignmentRule`  
+**Confirmed direct HMS subject dependents:** 5  
+**Transitive HMS subject dependents:** 35
+
+### 64.1 Semantic role and ordering rationale
+
+`WorkflowStep` is the Workflow-owned ordered step definition inside a reusable WorkflowDefinition.
+
+It carries stable step identity/code, localized display names, deterministic ordering, mandatory/skippable semantics, optional step classification, optional default assignment rule, optional SLA policy, and claim/delegation/escalation capabilities.
+
+It is Level 2 because it depends on the Level-0 WorkflowDefinition and participates in SCC-02 with WorkflowStepAssignmentRule: the rule points to its owning step while the step may optionally designate one default assignment rule.
+
+### 64.2 Field semantics
+
+| Field | Type | Reviewed meaning |
+|---|---|---|
+| `id` | `String` | Mandatory stable workflow-step identity. |
+| `definitionId` | `String` | Mandatory same-module reference to owning WorkflowDefinition. |
+| `code` | `String` | Mandatory stable step code within the definition. |
+| `nameAr` | `String` | Optional Arabic display name. |
+| `nameFr` | `String` | French display name required by persistence; current architecture does not independently promote generic display text into an intrinsic constructor invariant. |
+| `nameEn` | `String` | Optional English display name. |
+| `stepOrder` | `int` | Mandatory deterministic ordering value; DDD requires non-negative values. |
+| `mandatory` | `boolean` | Whether the step is mandatory in workflow execution. |
+| `stepTypeId` | `String` | Optional Workflow-owned `WORKFLOW_STEP_TYPE` catalog reference. |
+| `defaultAssignmentRuleId` | `String` | Optional same-module reference to WorkflowStepAssignmentRule. |
+| `slaPolicyId` | `String` | Optional same-module reference to WorkflowSlaPolicy. |
+| `allowClaim` | `boolean` | Whether eligible actors may claim a generated task. |
+| `allowDelegation` | `boolean` | Whether delegation is allowed for the step. |
+| `allowEscalation` | `boolean` | Whether escalation is allowed for the step. |
+| `createdAt` | `Instant` | Persistence-required creation timestamp. |
+| `updatedAt` | `Instant` | Persistence-required update timestamp. |
+
+The canonical constructor currently validates only nonblank ID, definition ID and code, then normalizes optional string fields.
+
+### 64.3 WorkflowDefinition integrity
+
+The final schema requires `definition_id NOT NULL`.
+
+HRA-111 installs and validates:
 
 ```text
-HMSR-051 — workflow.WorkflowStep
+hidra_workflow_step.definition_id
+    -> hidra_workflow_definition.id
+```
+
+Therefore the mandatory parent definition reference is fail-closed at persistence, and the domain also rejects blank definition IDs.
+
+### 64.4 Explicit step-order invariant is unenforced
+
+The Workflow DDD explicitly states:
+
+```text
+Step order must be >= 0.
+```
+
+The canonical `WorkflowStep` constructor does not validate `stepOrder`.
+
+The base schema stores `step_order integer NOT NULL` but repository evidence reviewed for HMSR-051 shows no CHECK enforcing non-negative values.
+
+No authoritative WorkflowStep creation service was found that independently validates this invariant before persistence.
+
+Therefore negative step order is currently representable and persistable despite the explicit DDD rule.
+
+### 64.5 Explicit per-definition uniqueness invariants are unenforced
+
+The Workflow DDD explicitly requires:
+
+```text
+(definitionId, code) must be unique.
+(definitionId, stepOrder) must be unique.
+```
+
+The base workflow migration creates ordinary indexes but no unique constraint for either pair, and repository-wide search found no later unique/partial-unique migration for these identities.
+
+`WorkflowStepRepositoryPort` exposes only `save()` and `findById()`; no authoritative duplicate check is present at this boundary.
+
+Consequently, a definition can currently persist duplicate step codes or duplicate step-order positions, contradicting the DDD's deterministic workflow-definition semantics.
+
+### 64.6 Default assignment-rule SCC reference
+
+`defaultAssignmentRuleId` is an optional same-module reference to the HMS subject `WorkflowStepAssignmentRule`.
+
+This creates the accepted SCC-02 relationship because WorkflowStepAssignmentRule itself references its owning WorkflowStep.
+
+The active transition application service attempts to resolve a populated default assignment rule when entering a target step and requires the resolved rule to be active. That protects runtime use but does not prevent a dangling ID from being persisted on WorkflowStep.
+
+Current schema evidence shows no nullable FK from `hidra_workflow_step.default_assignment_rule_id` to `hidra_workflow_step_assignment_rule.id`, and no authoritative write-time validation was found.
+
+Therefore populated default-assignment-rule references can dangle until runtime.
+
+The production correction must preserve the SCC rather than removing one side merely to simplify graph ordering.
+
+### 64.7 Step type and SLA policy semantics
+
+The DDD explicitly describes `stepTypeId` as a Workflow catalog reference for step type, with examples such as REVIEW, APPROVAL, VALIDATION, CORRECTION and CLOSURE. HMSR-051 therefore strengthens its classification to the `WORKFLOW_STEP_TYPE` catalog family.
+
+The DDD describes `slaPolicyId` as an optional SLA/due-date policy reference. Current architecture retains WorkflowSlaPolicy as a persistence/read model outside the 123-model HMS subject set.
+
+The reviewed evidence does not establish a mandatory step type or SLA policy for every WorkflowStep.
+
+HMSR-051 also does not invent catalog-family/FK correction obligations for these optional target-addition fields beyond the explicit rules already sufficient to require REVISE; HMS-006 may reconcile them with later Workflow model reviews if stronger evidence emerges.
+
+### 64.8 Mandatory-step semantics
+
+The DDD states:
+
+```text
+A mandatory step cannot be skipped unless transition policy explicitly allows return/cancel/escalation.
+```
+
+This is execution/transition policy involving WorkflowTransition and WorkflowInstance/Task orchestration, not a standalone scalar invariant on WorkflowStep construction.
+
+HMSR-051 therefore records no fabricated constructor constraint for `mandatory`. The rule must be evaluated together with downstream transition/execution models in their own reviews.
+
+### 64.9 Multilingual semantics
+
+The DDD marks French name as required and Arabic/English as optional/target-improved.
+
+The repository's domain-invariant architecture deliberately treats generic human-readable text required only by persistence as `PERSISTENCE_ONLY_TEXT` unless stronger independent domain evidence promotes it.
+
+HMSR-051 therefore does not add a separate domain correction for `nameFr` solely because the JPA/schema column is non-null.
+
+No rule requires Arabic, French and English simultaneously.
+
+### 64.10 Domain/JPA/Flyway alignment
+
+Domain and JPA agree on all 16 components.
+
+Required structural fields align for ID, WorkflowDefinition ID and code. Persistence additionally requires French name, step order, boolean capability flags, and audit timestamps.
+
+The major semantic defects are not field-shape mismatches but explicit DDD behavior/integrity rules that the current domain/schema/write boundary does not enforce:
+
+- non-negative step order;
+- unique code per definition;
+- unique step order per definition; and
+- integrity of populated default assignment-rule references.
+
+### 64.11 Required revisions
+
+Four evidence-backed production correction obligations remain:
+
+1. **Enforce `stepOrder >= 0`.** The authoritative domain/application/database boundary must reject negative workflow-step ordering.
+
+2. **Enforce uniqueness of `(definitionId, code)`.** Two steps in the same WorkflowDefinition must not share the same stable step code.
+
+3. **Enforce uniqueness of `(definitionId, stepOrder)`.** Two steps in the same WorkflowDefinition must not occupy the same deterministic order position.
+
+4. **Protect populated `defaultAssignmentRuleId` references.** When supplied, the reference must resolve to WorkflowStepAssignmentRule through a nullable same-module FK, application validation, or another fail-closed mechanism that preserves SCC-02.
+
+HMSR-051 does not modify production Java, JPA, Flyway, application/API contracts, tests, workflow definitions, steps, assignment rules, SLA policies, catalogs, or provisioned data.
+
+### 64.12 SONATRACH/TRC operational interpretation
+
+For SONATRACH/TRC, WorkflowStep defines ordered validation/approval activities around operational decisions such as telemetry validation, planning approval, incident handling, integrity decisions and other governed processes.
+
+Duplicate order positions or duplicate step codes can make route interpretation ambiguous and can compromise repeatable process execution. Negative order is equally inconsistent with the documented ordered-step model.
+
+A dangling default assignment rule can delay failure until a workflow transition reaches the step, which is undesirable for operational process reliability.
+
+### 64.13 Review conclusion
+
+**REVISE.** `WorkflowStep` has a coherent 16-field Workflow-owned ordered-step model, a protected mandatory WorkflowDefinition dependency, appropriate SCC-02 relationship with WorkflowStepAssignmentRule, neutral optional SLA/catalog extensions, and correct separation from target business ownership.
+
+The target baseline cannot mark it APPROVED while the explicit DDD requirements for non-negative step order and per-definition uniqueness are unenforced and a populated default assignment-rule reference can dangle.
+
+HMS reconciliation must retain these obligations until explicitly authorized Workflow production corrections resolve them or stronger repository evidence revises the governing Workflow DDD.
+
+## 65. Current next task
+
+```text
+HMSR-052 — workflow.WorkflowStepAssignmentRule
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review workflow WorkflowStep
+docs(model-review): review workflow WorkflowStepAssignmentRule
 ```
 
-Start HMSR-051 only after HMSR-050 is committed and reported. Do not start HMSR-052 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-052 only after HMSR-051 is committed and reported. Do not start HMSR-053 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
 

@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -231,7 +231,7 @@ Ordering rules applied:
 | HMSR-036 | 1 | organization | AdministrativeDistrict | — | organization.AdministrativeState | 1 | 16 | 0 | APPROVED | Completed | `docs(model-review): review organization AdministrativeDistrict` |
 | HMSR-037 | 1 | telemetry | TelemetryReading | — | telemetry.TelemetryPoint | 2 | 6 | 2 | REVISE | Completed | `docs(model-review): review telemetry TelemetryReading` |
 | HMSR-038 | 1 | simulation | SimulationScenario | — | simulation.SimulationModel | 1 | 4 | 3 | REVISE | Completed | `docs(model-review): review simulation SimulationScenario` |
-| HMSR-039 | 1 | notification | NotificationRequest | — | notification.NotificationTemplate | 1 | 2 | 4 | — | Planned | `docs(model-review): review notification NotificationRequest` |
+| HMSR-039 | 1 | notification | NotificationRequest | — | notification.NotificationTemplate | 1 | 2 | 4 | REVISE | Completed | `docs(model-review): review notification NotificationRequest` |
 | HMSR-040 | 1 | organization | ResponsibilityAssignment | — | organization.OperationalScope | 1 | 1 | 1 | — | Planned | `docs(model-review): review organization ResponsibilityAssignment` |
 | HMSR-041 | 1 | topology | Facility | — | party.Party | 1 | 1 | 0 | — | Planned | `docs(model-review): review topology Facility` |
 | HMSR-042 | 1 | analytics | AnalyticsDatasetVersion | — | analytics.AnalyticsDataset | 0 | 0 | 0 | — | Planned | `docs(model-review): review analytics AnalyticsDatasetVersion` |
@@ -2244,16 +2244,16 @@ Confirmed subject-model graph edges at this stage: **165**. These are semantic c
 | Field | Declared type | Classification | Resolved target | Graph edge | Notes |
 |---|---|---|---|:---:|---|
 | id | String | Self identifier | — | No | Primary identity of the current model. |
-| sourceEventId | String | Unresolved | — | No | Reference target is outside or absent from the 123 subject-model set; preserve for HMS-004 review. |
-| targetId | String | Cross-module reference | POLYMORPHIC | No | Target is selected by companion type/module metadata; no single subject-model edge. |
-| categoryId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
-| priorityId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
-| policyId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
-| templateId | String | Domain reference | notification.NotificationTemplate | Yes | Unambiguous same-module subject-model reference. |
-| templateVersionId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
-| requestedByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
-| correlationId | String | Snapshot/reference-only | TECHNICAL_REFERENCE | No | Technical correlation/request/reference identity. |
-| requestId | String | Domain reference | notification.NotificationRequest | Yes | Unambiguous same-module subject-model reference. |
+| sourceEventId | String | Cross-module reference | SOURCE_EVENT_NAMESPACE | No | HMSR-039 + scalar-reference integrity evidence resolve this as a typed/non-relational source-event identity governed by `sourceModule + sourceEventType + sourceEventId`; no single HMS subject target or DB FK is appropriate. |
+| targetId | String | Cross-module reference | POLYMORPHIC | No | Optional target identity selected by companion target metadata; no single subject-model edge. |
+| categoryId | String | Value/catalog dependency | NOTIFICATION_CATEGORY | No | HMSR-039 stronger Notification DDD + HRA-111 evidence resolve the mandatory category to Notification-owned `NotificationCatalogEntry` / `hidra_notification_catalog_entry`; family semantics remain `NOTIFICATION_CATEGORY`. |
+| priorityId | String | Value/catalog dependency | NOTIFICATION_PRIORITY | No | HMSR-039 stronger Notification DDD resolves the optional priority to the Notification-owned `NOTIFICATION_PRIORITY` catalog family; target is outside the 123 HMS subject set. |
+| policyId | String | Domain reference | notification.NotificationPolicy (read/persistence model) | No | HMSR-039 stronger Notification DDD/persistence evidence resolves the optional policy reference to Notification-owned policy state outside the HMS subject set. |
+| templateId | String | Domain reference | notification.NotificationTemplate | Yes | Unambiguous optional same-module HMS subject-model reference. |
+| templateVersionId | String | Domain reference | notification.NotificationTemplateVersion (read/persistence model) | No | HMSR-039 stronger Notification DDD/persistence evidence resolves the optional immutable template-version reference outside the 123 HMS subject set. |
+| requestedByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Optional actor reference; Notification does not own Identity state and no cross-module DB FK is appropriate. |
+| correlationId | String | Snapshot/reference-only | TECHNICAL_REFERENCE | No | Technical correlation identity. |
+| requestId | String | Snapshot/reference-only | TECHNICAL_REFERENCE | No | Technical request identifier; HMS-003 correction already removed the false NotificationRequest self-edge. |
 
 #### notification.NotificationTemplate
 
@@ -8660,16 +8660,222 @@ The target baseline cannot mark it APPROVED while unique-code enforcement, scena
 
 HMS reconciliation must retain these obligations until an explicitly authorized Simulation correction task resolves them or the governing Simulation DDD is explicitly revised with stronger evidence.
 
-## 52. Current next task
+## 52. HMSR-039 — notification.NotificationRequest review
+
+**Decision:** REVISE  
+**Review code:** HMSR-039  
+**Dependency level:** 1  
+**Bounded context:** notification  
+**Confirmed upstream subject dependencies:** `notification.NotificationTemplate` through optional `templateId`  
+**Confirmed direct HMS subject dependents:** 1 — `notification.NotificationMessage` through `requestId`  
+**Transitive HMS subject dependents:** 2  
+**Unresolved/non-subject references:** 4 in the original register; stronger current evidence classifies the source-event namespace, polymorphic target, actor boundary, and same-module non-HMS policy/template-version/catalog references without manufacturing extra HMS graph edges
+
+### 52.1 Semantic role and ordering rationale
+
+`NotificationRequest` is the Notification-owned intake record for a communication request emitted by a source business context. It captures the source event identity, optional typed target snapshot, governed category/priority/policy/template choices, requester snapshot, correlation metadata, request lifecycle and expiry/audit timestamps.
+
+It is Level 1 because its optional `templateId` points to the already-reviewed HMS subject `NotificationTemplate`. `NotificationMessage` depends directly on the request and therefore remains downstream. Notification policy, template version and catalog entries are retained Notification persistence/read models outside the 123-model HMS subject set.
+
+The Notification DDD is explicit that Notification delivers communication and tracks delivery; it does not own or mutate the operational truth that triggered the request.
+
+### 52.2 Field semantics
+
+| Field | Type | Reviewed meaning |
+|---|---|---|
+| `id` | `String` | Mandatory stable request identity and persistence primary key. |
+| `sourceModule` | `String` | Mandatory language-neutral bounded-context/source namespace for the triggering business event. |
+| `sourceEventType` | `String` | Mandatory source-event classification/name used to describe why Notification was invoked. |
+| `sourceEventId` | `String` | Mandatory typed/non-relational source-event identity in the source-event namespace; not a relational HMS target. |
+| `targetType` | `String` | Optional discriminator for the business target being communicated about. |
+| `targetId` | `String` | Optional polymorphic target identity; no single concrete HMS graph target is implied. |
+| `targetCodeSnapshot` | `String` | Optional historical/readability snapshot of target code. |
+| `targetLabelSnapshot` | `String` | Optional historical/readability snapshot of target label. |
+| `categoryId` | `String` | Mandatory Notification-owned `NOTIFICATION_CATEGORY` catalog reference. |
+| `priorityId` | `String` | Optional Notification-owned `NOTIFICATION_PRIORITY` catalog reference. |
+| `policyId` | `String` | Optional same-module reference to NotificationPolicy. |
+| `templateId` | `String` | Optional same-module HMS subject reference to NotificationTemplate. |
+| `templateVersionId` | `String` | Optional same-module reference to immutable NotificationTemplateVersion. |
+| `requestedByActorId` | `String` | Optional cross-module actor reference; Notification does not own Identity. |
+| `requestedByDisplayNameSnapshot` | `String` | Optional actor display snapshot for traceability/readability. |
+| `requestedAt` | `Instant` | Mandatory request-receipt timestamp. |
+| `correlationId` | `String` | Optional technical correlation identifier. |
+| `requestId` | `String` | Optional technical request identifier; not a NotificationRequest self-reference. |
+| `status` | `NotificationRequestStatus` | Mandatory Notification request lifecycle state. |
+| `expiresAt` | `Instant` | Optional expiry timestamp. Current evidence does not define an ordering invariant relative to `requestedAt`. |
+| `createdAt` | `Instant` | Persistence-required audit timestamp. |
+| `updatedAt` | `Instant` | Persistence-required audit timestamp. |
+
+The current compact constructor already rejects blank `id`, `sourceEventId`, and `categoryId`, and requires non-null `requestedAt` and `status`. It normalizes the remaining textual identifiers and snapshots.
+
+### 52.3 Source-event namespace and required-source mismatch
+
+The scalar-reference integrity inventory explicitly classifies:
 
 ```text
-HMSR-039 — notification.NotificationRequest
+notification.NotificationRequest.sourceEventId
+    -> source-event/correlation namespace
+```
+
+This is correct: `sourceModule + sourceEventType + sourceEventId` identify the triggering event in its owner context and must not be converted into a single cross-module database FK.
+
+The base Notification migration and live JPA mapping require all three source fields:
+
+```text
+source_module     NOT NULL
+source_event_type NOT NULL
+source_event_id   NOT NULL
+```
+
+The DDD also describes NotificationRequest as a request from a business module triggered by a business event and states that every request must reference a source module.
+
+The canonical domain constructor, however, enforces only `sourceEventId`. It normalizes blank/null `sourceModule` and `sourceEventType` to `null`, and the active receive service performs no separate nonblank validation before persistence.
+
+Therefore the canonical domain can accept a source-less or type-less request that cannot satisfy the final persistence contract and does not carry the source context required by the Notification DDD.
+
+### 52.4 Category and priority catalog semantics
+
+Notification DDD defines Notification-owned controlled vocabularies including:
+
+```text
+NOTIFICATION_CATEGORY
+NOTIFICATION_PRIORITY
+```
+
+and `NotificationCatalogEntry` stores the catalog family in `catalogName`.
+
+HRA-111 protects mandatory `categoryId` only at generic row-existence level:
+
+```text
+hidra_notification_request.category_id
+    -> hidra_notification_catalog_entry.id
+```
+
+That FK cannot prove that the selected row belongs to `NOTIFICATION_CATEGORY`. The active receive path does not query a catalog boundary before saving.
+
+`priorityId` is optional, indexed, and semantically governed by `NOTIFICATION_PRIORITY`, but no nullable FK or application lookup demonstrates fail-closed row/family validation when a priority is supplied.
+
+HMSR-039 therefore resolves both fields as catalog/value dependencies and records the missing family/reference protection without inventing additional priority-requiredness.
+
+### 52.5 Policy, template and template-version reference integrity
+
+The request can optionally carry `policyId`, `templateId`, and `templateVersionId`.
+
+Current evidence resolves them respectively to:
+
+```text
+NotificationPolicy
+NotificationTemplate
+NotificationTemplateVersion
+```
+
+`templateId` is the confirmed HMS subject edge that places NotificationRequest at Level 1. `NotificationPolicy` and `NotificationTemplateVersion` are retained same-module persistence/read models outside the HMS subject set.
+
+The base schema indexes all three fields but declares them nullable. HRA-111 intentionally covers mandatory same-module references only, so it does not install request-level FKs for these optional values. The active receive service also accepts and persists the three identifiers directly without same-module existence validation.
+
+Consequently, populated policy/template/template-version identifiers can currently dangle.
+
+HMSR-039 does not make any of these optional choices mandatory. It also does not invent a template/template-version parent-consistency rule for NotificationRequest because the current DDD does not state how policy resolution and late template selection interact at request intake.
+
+### 52.6 Polymorphic target and actor boundaries
+
+`targetType + targetId` represent an optional polymorphic business target. The Notification DDD gives examples such as alarms and incidents and explicitly keeps their lifecycle/ownership in the source modules.
+
+No single relational target should therefore be manufactured for `targetId`, and no HMS graph edge is added merely because the field ends in `Id`.
+
+`targetCodeSnapshot` and `targetLabelSnapshot` remain snapshot/readability values and do not create ownership.
+
+`requestedByActorId` remains an optional cross-module actor reference. Notification does not own users, roles or permissions, and no cross-module database FK should be introduced. Current evidence does not define actor-status eligibility for request submission, so HMSR-039 does not invent it.
+
+### 52.7 Lifecycle and request-processing semantics
+
+`NotificationRequestStatus` exactly matches the DDD lifecycle vocabulary:
+
+```text
+RECEIVED
+VALIDATED
+RECIPIENTS_RESOLVED
+MESSAGES_CREATED
+SCHEDULED
+COMPLETED
+PARTIALLY_FAILED
+FAILED
+CANCELLED
+EXPIRED
+SUPPRESSED
+```
+
+The active receive service conservatively creates new requests as `RECEIVED`, which is consistent with intake semantics.
+
+Current repository evidence does not define a complete transition matrix, status-specific required fields, cancellation authorization, or an exact `requestedAt <= expiresAt` rule. HMSR-039 does not manufacture those rules.
+
+### 52.8 Application/API and persistence alignment
+
+`ReceiveNotificationRequestRequest` and `ReceiveNotificationRequestCommand` carry the same 17 input fields and are mapped through the generated REST mapping boundary. The application service generates the Notification-owned ID, sets `requestedAt/createdAt/updatedAt` to the current instant, initializes status to `RECEIVED`, and saves through `NotificationRequestRepositoryPort`.
+
+The live domain/JPA representations agree on all 22 components, but requiredness is not fully aligned because the domain omits guards for persistence-required `sourceModule` and `sourceEventType`.
+
+The DDD records no multilingual fields on NotificationRequest itself; only display snapshots appear. No Arabic/French/English translation rule is therefore invented for this model.
+
+Generic audit timestamp requiredness remains a persistence/application-boundary concern and is not promoted into additional constructor invariants solely because the schema is non-null.
+
+### 52.9 Deliberately not invented rules
+
+HMSR-039 does not infer:
+
+- that every request must carry a target object when the source event itself provides the communication reason;
+- a universal pairing rule for optional `targetType` and `targetId` beyond their documented typed-target role;
+- mandatory `priorityId`, `policyId`, `templateId`, or `templateVersionId`;
+- a request-level template/template-version parent-consistency rule absent explicit DDD evidence;
+- actor authorization/eligibility semantics;
+- a status transition matrix;
+- expiry ordering or duration policy;
+- source-module enumerations or a fixed list of allowed producer modules;
+- any cross-module database foreign key for source events, targets, or actors.
+
+### 52.10 Required revisions
+
+Five evidence-backed correction obligations remain:
+
+1. **Require nonblank source-module and source-event-type semantics at the authoritative domain/application boundary.** `sourceModule` and `sourceEventType` must not normalize to null while the DDD and final persistence contract require the source event context.
+
+2. **Enforce Notification category/priority catalog semantics.** Mandatory `categoryId` must resolve specifically to `NOTIFICATION_CATEGORY`; when optional `priorityId` is populated, it must resolve to `NOTIFICATION_PRIORITY`. Generic category row existence and an unprotected priority ID are insufficient.
+
+3. **Protect populated NotificationPolicy references.** When `policyId` is supplied, it must resolve to the Notification-owned policy target through an additive nullable same-module FK, application validation, or equivalent fail-closed boundary.
+
+4. **Protect populated NotificationTemplate references.** When `templateId` is supplied, it must resolve to the reviewed NotificationTemplate subject rather than allowing a dangling HMS dependency.
+
+5. **Protect populated NotificationTemplateVersion references.** When `templateVersionId` is supplied, it must resolve to the retained immutable template-version target; HMSR-039 does not additionally impose parent-pair semantics absent stronger DDD evidence.
+
+HMSR-039 does not modify production Java, JPA, Flyway, API/application contracts, tests, notification templates/policies/catalogs, delivery data, or provisioned data.
+
+### 52.11 SONATRACH/TRC operational interpretation
+
+For SONATRACH/TRC, NotificationRequest is the governed communication handoff from operational contexts such as alarms, incidents, workflows, HSE, planning or other pipeline-management processes into the Notification bounded context.
+
+The source-event identity must remain attributable to the producing context without making Notification the owner of that operational state. Governed category/priority semantics and valid policy/template references are important for routing, escalation, delivery traceability and later audit evidence.
+
+A dangling policy/template/version or misclassified category/priority can produce the wrong communication behavior even when the source operational event itself is valid.
+
+### 52.12 Review conclusion
+
+**REVISE.** `NotificationRequest` has a coherent 22-field Notification-owned intake model, correct Level-1 dependency on NotificationTemplate, correct non-relational source-event and polymorphic-target boundaries, exact request lifecycle vocabulary, conservative `RECEIVED` creation semantics, and correct separation from source business ownership.
+
+The target baseline cannot mark it APPROVED while required source descriptors can disappear during canonical construction, catalog-family semantics are not fail-closed, and populated optional policy/template/template-version references can dangle.
+
+HMS reconciliation must retain these obligations until an explicitly authorized Notification correction task resolves them or stronger repository evidence explicitly revises the governing Notification DDD semantics.
+
+## 53. Current next task
+
+```text
+HMSR-040 — organization.ResponsibilityAssignment
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review notification NotificationRequest
+docs(model-review): review organization ResponsibilityAssignment
 ```
 
-Start HMSR-039 only after HMSR-038 is committed and reported. Do not start HMSR-040 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-040 only after HMSR-039 is committed and reported. Do not start HMSR-041 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+

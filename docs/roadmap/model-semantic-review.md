@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -216,7 +216,7 @@ Ordering rules applied:
 | HMSR-021 | 0 | integrity | PipelineDefect | — | — | 1 | 1 | 1 | REVISE | Completed | `docs(model-review): review integrity PipelineDefect` |
 | HMSR-022 | 0 | organization | Position | — | — | 1 | 1 | 0 | REVISE | Completed | `docs(model-review): review organization Position` |
 | HMSR-023 | 0 | organization | Shift | — | — | 1 | 1 | 0 | REVISE | Completed | `docs(model-review): review organization Shift` |
-| HMSR-024 | 0 | topology | PipelineSystem | — | — | 1 | 1 | 0 | — | Planned | `docs(model-review): review topology PipelineSystem` |
+| HMSR-024 | 0 | topology | PipelineSystem | — | — | 1 | 1 | 0 | REVISE | Completed | `docs(model-review): review topology PipelineSystem` |
 | HMSR-025 | 0 | analytics | AnalyticsInsight | — | — | 0 | 0 | 3 | — | Planned | `docs(model-review): review analytics AnalyticsInsight` |
 | HMSR-026 | 0 | analytics | AnalyticsProjectionRun | — | — | 0 | 0 | 1 | — | Planned | `docs(model-review): review analytics AnalyticsProjectionRun` |
 | HMSR-027 | 0 | analytics | DigitalTwinReadinessAssessment | — | — | 0 | 0 | 0 | — | Planned | `docs(model-review): review analytics DigitalTwinReadinessAssessment` |
@@ -6160,16 +6160,200 @@ Multilingual shift names belong directly on the Shift entity in Arabic, French a
 
 The target baseline cannot mark it APPROVED while the canonical domain permits absent `startTime`, `endTime`, or `timezone` values that the final JPA/schema contract rejects. HMS reconciliation must retain this schedule-nullability alignment obligation until an explicitly authorized Organization correction task resolves it or the Shift persistence semantics are explicitly changed.
 
-## 37. Current next task
+## 37. HMSR-024 — topology.PipelineSystem review
+
+**Decision:** REVISE  
+**Review code:** HMSR-024  
+**Dependency level:** 0  
+**Bounded context:** topology  
+**Confirmed upstream subject dependencies:** none  
+**Confirmed direct dependents:** 1 — `topology.Pipeline` through `pipelineSystemId`  
+**Transitive dependents:** 1  
+**Unresolved/non-subject references:** 0
+
+### 37.1 Semantic role and ordering rationale
+
+`PipelineSystem` is the Topology-owned logical transportation-system aggregate that groups pipelines and participates in broader system/facility associations. It is part of the canonical physical/logical network backbone used by downstream operational, telemetry, simulation, risk, visualization and responsibility-scope use cases.
+
+It is Level 0 because it has no confirmed upstream HMS subject-model dependency. `Pipeline` is the one direct HMS subject dependent through mandatory `pipelineSystemId`.
+
+Topology DDD correctly owns PipelineSystem and explicitly excludes organization, identity, telemetry values, workflow approvals, integrity findings, HSE cases and other foreign bounded-context state.
+
+### 37.2 Field semantics
+
+| Field | Type | Mandatory / optional | Reviewed meaning |
+|---|---|---|---|
+| `id` | `String` | Mandatory | Stable PipelineSystem identity and persistence primary key. |
+| `code` | `String` | Mandatory | Stable language-neutral topology business code. |
+| `nameAr` | `String` | Optional localized text | Arabic system name. |
+| `nameFr` | `String` | Optional localized text | French system name. |
+| `nameEn` | `String` | Optional localized text | English system name. |
+| `systemType` | `PipelineSystemType` | Mandatory in current live model | Current fixed classification enum: `TRANSPORT`, `GATHERING`, `DISTRIBUTION`, `EXPORT`, `IMPORT`, or `MIXED`. This is the principal semantic inconsistency identified by HMSR-024. |
+| `status` | `TopologyStatus` | Mandatory | Lifecycle state: `DRAFT`, `ACTIVE`, `SUSPENDED`, `RETIRED`, or `ARCHIVED`. |
+| `description` | `String` | Optional | Free-form system description. |
+| `commissionedAt` | `Instant` | Optional | Commissioning timestamp when known. |
+| `retiredAt` | `Instant` | Optional | Retirement timestamp when known. |
+| `createdAt` | `Instant` | Persistence-required audit timestamp | Creation timestamp. |
+| `updatedAt` | `Instant` | Persistence-required audit timestamp | Last-update timestamp. |
+
+The current compact constructor already rejects blank `id` and `code`, requires non-null `systemType` and `status`, and normalizes textual values.
+
+### 37.3 Topology ownership and downstream Pipeline boundary
+
+The validated HMS graph contains:
 
 ```text
-HMSR-024 — topology.PipelineSystem
+Pipeline.pipelineSystemId
+    -> PipelineSystem.id
+```
+
+`Pipeline.pipelineSystemId` is mandatory in domain and JPA state. HRA-111 installs `fk_hra111_topology_020`, linking:
+
+```text
+hidra_topology_pipeline.pipeline_system_id
+    -> hidra_topology_pipeline_system.id
+```
+
+with `ON DELETE RESTRICT`.
+
+Topology persistence also contains non-HMS-subject association models such as `PipelineSystemFacility` that point to PipelineSystem. Those persistence dependents reinforce PipelineSystem as stable topology master identity but do not change the HMS direct-subject dependent count.
+
+### 37.4 Accepted catalog policy versus live PipelineSystem classification
+
+The active Topology roadmap states:
+
+```text
+Topology business taxonomy concepts are no longer roadmap-accepted as Java enums.
+```
+
+and records the catalog correction sequence as completed. The same roadmap says business type concepts are modeled through catalog references with stable codes/localized labels and that REST create/list requests use stable `typeCode` fields.
+
+The current architecture domain schema also represents PipelineSystem with a catalog-style reference:
+
+```text
+PipelineSystem
+  ...
+  ProductTypeReference productType
+  TopologyStatus status
+```
+
+and the controlled-vocabulary correction history classifies `TopologyStatus` as an intentional lifecycle enum while requiring business-type enums to be replaced by catalog/reference semantics.
+
+However, live PipelineSystem remains:
+
+```text
+PipelineSystemType systemType
+```
+
+where `PipelineSystemType` is a Java enum containing:
+
+```text
+TRANSPORT
+GATHERING
+DISTRIBUTION
+EXPORT
+IMPORT
+MIXED
+```
+
+The JPA entity persists this as an enumerated string in mandatory `system_type`, and the base Flyway table still defines:
+
+```text
+system_type varchar(80) NOT NULL
+```
+
+No live migration reviewed by HMSR-024 replaces this field with a catalog FK/reference.
+
+### 37.5 Application/API inconsistency with the accepted type-code contract
+
+The unfinished taxonomy shape reaches every active write/read boundary:
+
+- `CreatePipelineSystemCommand` accepts `PipelineSystemType systemType`;
+- `CreatePipelineSystemRequest` exposes the domain enum directly;
+- `PipelineSystemSummaryDto` exposes the same enum;
+- `PipelineSystemResponse` exposes the same enum;
+- `PipelineSystemApplicationService` constructs the aggregate using that enum.
+
+This conflicts with the accepted Topology roadmap's general post-correction contract that create/list inputs use stable catalog `typeCode` values and responses expose catalog/localized type semantics rather than fixed business taxonomy enums.
+
+HMSR-024 does **not** assume that the correct replacement is necessarily the existing `ProductTypeReference` despite the architecture diagram. The live enum values describe transportation-system classification, while "product type" usually represents transported hydrocarbon/product semantics. Current repository evidence is contradictory enough that a dedicated Topology correction must decide whether PipelineSystem needs its own catalog-backed system classification, an existing approved catalog, or an explicitly revised architecture contract.
+
+What is proven is that the current fixed Java enum cannot simultaneously be the final model while the accepted Topology policy says business type concepts are catalog-backed and the catalog correction sequence is complete.
+
+### 37.6 Unsupported silent TRANSPORT default
+
+`PipelineSystemApplicationService.createPipelineSystem()` currently applies:
+
+```text
+command.systemType() == null
+    ? PipelineSystemType.TRANSPORT
+    : command.systemType()
+```
+
+The domain itself says `systemType` is mandatory, but no Topology DDD rule, roadmap rule, migration rule or application contract reviewed by HMSR-024 states that an omitted classification semantically means `TRANSPORT`.
+
+Therefore the service can silently invent a business classification instead of failing closed or resolving an explicitly supplied catalog/reference value.
+
+This default is especially problematic while the type model itself is unresolved: data provisioned or created through this path could encode `TRANSPORT` simply because the caller supplied no type, not because authoritative source data established that classification.
+
+### 37.7 Multilingual and lifecycle semantics
+
+`nameAr/nameFr/nameEn` provide an embedded multilingual system name. Current repository evidence does not require every language to be non-null, so HMSR-024 does not invent a completeness rule.
+
+`TopologyStatus` is explicitly distinguished from business taxonomy in the correction audit and retained as a lifecycle enum. New systems are created as `DRAFT`, which is conservative and consistent with the current status vocabulary.
+
+The repository does not define a complete PipelineSystem status-transition matrix, so HMSR-024 does not invent one.
+
+### 37.8 Commissioning/retirement semantics deliberately not invented
+
+`commissionedAt` and `retiredAt` are optional in both domain and persistence.
+
+Although chronological rules may be intuitively desirable, the repository-wide invariant classification lists five approved Topology temporal invariants and does not include a PipelineSystem `commissionedAt <= retiredAt` rule. HMSR-024 therefore does not promote that assumption into the semantic baseline.
+
+Likewise, no evidence reviewed here requires `retiredAt` whenever status is `RETIRED`, forbids it for other statuses, or requires `commissionedAt` before activation.
+
+### 37.9 Code and persistence semantics deliberately not invented
+
+The base schema indexes `PipelineSystem.code` but does not declare it unique. Current active Topology DDD/roadmap evidence reviewed here does not state the exact uniqueness scope for PipelineSystem code, so HMSR-024 does not invent one.
+
+The live domain and JPA models otherwise agree on all 12 current components, and generic `createdAt`/`updatedAt` requirements remain persistence/application-boundary audit concerns under the HRA invariant policy.
+
+### 37.10 Required revisions
+
+Two evidence-backed obligations remain:
+
+1. **Reconcile PipelineSystem business classification with the accepted Topology catalog policy.** Replace or explicitly redesign the current fixed `PipelineSystemType/system_type` representation so the final PipelineSystem contract is consistent with the repository's catalog-backed business-type architecture. The correction must define the authoritative catalog/reference semantics rather than blindly assuming `ProductTypeReference`; domain, application, REST, JPA and additive Flyway changes must remain aligned in the separately authorized Topology task.
+
+2. **Remove the unsupported silent `TRANSPORT` inference.** Missing PipelineSystem classification must not be converted to `TRANSPORT` unless an explicit Topology business rule establishes that default. The corrected write boundary should fail closed or use the explicitly approved classification/catalog contract.
+
+HMSR-024 does not modify production Java, JPA, Flyway, REST/application contracts, tests, topology master data or provisioned data.
+
+### 37.11 SONATRACH/TRC operational interpretation
+
+For SONATRACH/TRC, PipelineSystem is a high-level network grouping used to organize pipelines and associated facilities. Whether a system is transport, gathering, export, import, distribution or mixed is operational master-data classification, not merely a technical implementation detail.
+
+Such classification should be authoritative and traceable. Silently classifying an unspecified system as `TRANSPORT` can misrepresent network semantics, while hard-coding an evolving business classification into a Java enum conflicts with Hidra's accepted catalog-governance direction.
+
+Topology remains the owner of this network identity and classification; other bounded contexts should consume stable topology references rather than duplicate or redefine the system taxonomy.
+
+### 37.12 Review conclusion
+
+**REVISE.** `PipelineSystem` has a coherent Topology ownership role, correct Level-0 placement, stable 12-field current representation, appropriate multilingual names, intentional lifecycle status and a database-protected downstream Pipeline relationship.
+
+The target baseline cannot mark it APPROVED while live domain/JPA/API/schema still use fixed `PipelineSystemType/system_type` business taxonomy despite the accepted completed catalog policy, and while the create service silently invents `TRANSPORT` when classification is absent.
+
+HMS reconciliation must retain these obligations until a separately authorized Topology correction reconciles the classification model and removes unsupported defaulting, or the accepted Topology catalog architecture is explicitly revised with stronger repository evidence.
+
+## 38. Current next task
+
+```text
+HMSR-025 — analytics.AnalyticsInsight
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review topology PipelineSystem
+docs(model-review): review analytics AnalyticsInsight
 ```
 
-Start HMSR-024 only after HMSR-023 is committed and reported. Do not start HMSR-025 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-025 only after HMSR-024 is committed and reported. Do not start HMSR-026 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

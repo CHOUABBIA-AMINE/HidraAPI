@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 reviewed as REVISE, HMSR-080 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -271,7 +271,7 @@ Ordering rules applied:
 | HMSR-076 | 4 | planning | PlanRevision | SCC-04 | planning.OperationalPlan, planning.PlanRevision, workflow.WorkflowInstance | 4 | 8 | 2 | REVISE | Completed | `docs(model-review): review planning PlanRevision` |
 | HMSR-077 | 4 | planning | OperationalPlan | SCC-04 | organization.OrganizationUnit, planning.PlanRevision, planning.PlanningPeriod | 1 | 8 | 1 | REVISE | Completed | `docs(model-review): review planning OperationalPlan` |
 | HMSR-078 | 4 | workflow | WorkflowTask | — | organization.OrganizationUnit, workflow.WorkflowInstance, workflow.WorkflowStep | 4 | 6 | 1 | REVISE | Completed | `docs(model-review): review workflow WorkflowTask` |
-| HMSR-079 | 4 | documents | Document | SCC-05 | documents.DocumentVersion | 4 | 5 | 3 | — | Planned | `docs(model-review): review documents Document` |
+| HMSR-079 | 4 | documents | Document | SCC-05 | documents.DocumentVersion | 4 | 5 | 3 | REVISE | Completed | `docs(model-review): review documents Document` |
 | HMSR-080 | 4 | documents | DocumentVersion | SCC-05 | documents.Document, documents.DocumentStorageObject, documents.DocumentVersion, workflow.WorkflowInstance | 3 | 5 | 2 | — | Planned | `docs(model-review): review documents DocumentVersion` |
 | HMSR-081 | 4 | assets | MaintenanceWorkOrder | — | assets.MaintainableAsset, organization.OrganizationUnit, workflow.WorkflowInstance | 1 | 1 | 3 | — | Planned | `docs(model-review): review assets MaintenanceWorkOrder` |
 | HMSR-082 | 4 | custody | CustodyTransferTicket | — | custody.CustodyMeasurementPeriod, workflow.WorkflowInstance | 0 | 0 | 5 | — | Planned | `docs(model-review): review custody CustodyTransferTicket` |
@@ -14852,16 +14852,169 @@ The target baseline cannot mark it APPROVED while actionable tasks may be create
 
 HMS reconciliation must retain these obligations until explicitly authorized Workflow production corrections resolve them or stronger repository evidence changes the governing Workflow DDD.
 
-## 92. Current next task
+## 92. HMSR-079 — documents.Document review
+
+**Decision:** REVISE  
+**Review code:** HMSR-079  
+**Dependency level:** 4  
+**Bounded context:** documents  
+**SCC:** SCC-05 with `documents.DocumentVersion`  
+**Confirmed upstream subject dependencies:** optional current `documents.DocumentVersion`  
+**Confirmed direct HMS subject dependents:** 4  
+**Transitive HMS subject dependents:** 5
+
+### 92.1 Semantic role
+
+`Document` is the Documents-owned stable business identity for a controlled document, independent from file/content versions. It owns business code, multilingual title metadata, document type/category/classification, confidentiality ordering, lifecycle state, the current-version pointer, optional neutral business-owner attachment metadata, creator snapshot, and lifecycle timestamps.
+
+Documents owns document metadata/versioning. Identity owns actors. Business modules own owner-target objects. The owner tuple is intentionally neutral/polymorphic and must not be converted into cross-module persistence coupling.
+
+### 92.2 Required field semantics
+
+The Documents DDD marks `titleFr` and `createdByDisplayNameSnapshot` required, and the live JPA/Flyway schema persists both as `NOT NULL`.
+
+The live `Document` constructor does not enforce either field and normalizes blank values to null. `DocumentsApplicationService.registerDocument()` copies both values directly from the command.
+
+The authoritative registration boundary must fail fast for the required French title and creator display-name snapshot rather than relying on persistence failure.
+
+### 92.3 Document code uniqueness
+
+The Documents DDD explicitly requires:
 
 ```text
-HMSR-079 — documents.Document
+Document.code must be unique.
+```
+
+The live schema creates only a non-unique index on `hidra_documents_document.code`, and `DocumentRepositoryPort` exposes no code lookup.
+
+The authoritative baseline therefore requires concurrency-safe PostgreSQL uniqueness for document business code. Application duplicate detection may improve error reporting but cannot replace the database guarantee.
+
+### 92.4 Document catalogs
+
+The Documents DDD defines business taxonomies as catalog-backed and explicitly recommends these families for the reviewed fields:
+
+```text
+DOCUMENT_TYPE
+DOCUMENT_CATEGORY
+DOCUMENT_CLASSIFICATION
+```
+
+The live schema stores `documentTypeId`, optional `documentCategoryId`, and `classificationId` as scalar IDs with ordinary indexes. Repository evidence shows no same-module FKs from these fields to `hidra_documents_catalog_entry` and no exact-family eligibility checks in document registration.
+
+The authoritative write boundary must therefore:
+
+- require `documentTypeId` to resolve to an eligible/active `DOCUMENT_TYPE` entry;
+- require `classificationId` to resolve to an eligible/active `DOCUMENT_CLASSIFICATION` entry;
+- when populated, require `documentCategoryId` to resolve to an eligible/active `DOCUMENT_CATEGORY` entry.
+
+Generic catalog-row existence alone is insufficient because it does not prove family membership.
+
+### 92.5 Current-version pointer and SCC-05
+
+`currentVersionId` is an optional same-module reference to `DocumentVersion`. Together with `DocumentVersion.documentId`, it forms SCC-05.
+
+The Documents DDD explicitly states:
+
+```text
+Document.currentVersionId must refer to a version of the same document.
+```
+
+The base schema creates only an index on `current_version_id`, and repository evidence shows no same-module FK or application guard establishing either referenced-version existence or same-document correlation.
+
+When populated, the current-version pointer must fail closed to an existing `DocumentVersion` whose `documentId` equals the owning `Document.id`. A simple FK to version ID alone would not prove the ownership correlation; implementation must preserve both existence and same-document membership.
+
+The cyclic relationship must be introduced safely and additively without weakening the `DocumentVersion.documentId -> Document.id` ownership direction.
+
+### 92.6 Owner-target tuple
+
+The optional fields:
+
+```text
+ownerModule
+ownerTargetTypeCode
+ownerTargetId
+ownerTargetCodeSnapshot
+ownerTargetLabelSnapshot
+```
+
+represent a neutral business-owner attachment. The Documents DDD explicitly states that Documents must not own the business object being documented.
+
+HMSR-079 therefore preserves this tuple as a polymorphic cross-module reference/snapshot. It must not receive a universal cross-module database FK.
+
+Where registration accepts a populated owner tuple, validation should be delegated through owner-controlled target lookup contracts or equivalent neutral resolution, but this review does not invent a single concrete relational target because the DDD intentionally supports multiple owner modules/types.
+
+### 92.7 Creator actor boundary
+
+`createdByActorId` is mandatory and Identity-owned; `createdByDisplayNameSnapshot` is a historical display snapshot.
+
+The current registration service copies both values directly from the command. Repository evidence does not show owner-controlled Identity validation in this use case.
+
+The authoritative registration boundary should validate creator actor identity through an Identity-owned contract while retaining the snapshot. No cross-module Identity database FK should be introduced.
+
+### 92.8 Lifecycle and physical-protection rule
+
+`DocumentStatus` includes:
+
+```text
+DRAFT
+ACTIVE
+UNDER_REVIEW
+APPROVED
+OBSOLETE
+ARCHIVED
+REJECTED
+QUARANTINED
+DELETED_LOGICAL
+```
+
+The DDD defines document lifecycle state as Documents-owned and the domain helper `physicallyProtected()` marks APPROVED, ARCHIVED and OBSOLETE as protected.
+
+The DDD also states that approved/archived documents must not be physically deleted through business APIs and that logical deletion must preserve auditability/retention policy.
+
+These are lifecycle/technical states and are appropriate as an enum. HMSR-079 does not convert them to a catalog.
+
+Repository evidence reviewed here does not show a physical-delete business API, so no additional deletion-path correction is recorded beyond preserving the DDD rule during future implementation.
+
+### 92.9 Confidentiality level
+
+`confidentialityLevel` is a required numeric ordering used for policy checks. The current source does not establish a closed numeric range or a deterministic mapping from `DOCUMENT_CLASSIFICATION` to confidentiality level.
+
+HMSR-079 therefore preserves the field and does not invent a range or mapping. HMS-006 may reconcile it later if stronger Documents policy evidence appears.
+
+### 92.10 Required revisions
+
+Five evidence-backed obligations remain:
+
+1. **Enforce DDD-required `titleFr` and `createdByDisplayNameSnapshot` before persistence.**
+
+2. **Enforce PostgreSQL uniqueness for `Document.code`.**
+
+3. **Enforce exact catalog-family eligibility** for `documentTypeId`, `classificationId`, and populated `documentCategoryId`, including active/eligible semantics.
+
+4. **Protect `currentVersionId` and same-document membership.** When populated, it must reference an existing DocumentVersion belonging to the same Document.
+
+5. **Validate creator and populated owner-target references through owner-controlled contracts** while preserving scalar IDs/snapshots and avoiding cross-module database FKs.
+
+HMSR-079 does not modify production Java, JPA, Flyway, API/application contracts, tests, Documents catalogs/data, Identity, other business modules, or provisioned data.
+
+### 92.11 Review conclusion
+
+**REVISE.** `Document` is a coherent Documents-owned aggregate root with correct stable-identity/version separation, appropriate lifecycle enum semantics, and intentionally neutral cross-module owner-target references.
+
+The target baseline cannot mark it APPROVED while DDD-required fields can reach persistence as null, document business-code uniqueness is unenforced, catalog families are not fail-closed, the SCC-05 current-version pointer lacks existence/same-document protection, and creator/owner-target references are trusted directly at registration.
+
+HMS reconciliation must retain these obligations until explicitly authorized Documents production corrections resolve them or stronger repository evidence changes the governing Documents DDD.
+
+## 93. Current next task
+
+```text
+HMSR-080 — documents.DocumentVersion
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review documents Document
+docs(model-review): review documents DocumentVersion
 ```
 
-Start HMSR-079 only after HMSR-078 is committed and reported. Do not start HMSR-080 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-080 only after HMSR-079 is committed and reported. Do not start HMSR-081 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -213,7 +213,7 @@ Ordering rules applied:
 | HMSR-018 | 0 | analytics | MetricEvaluationRun | — | — | 1 | 1 | 1 | REVISE | Completed | `docs(model-review): review analytics MetricEvaluationRun` |
 | HMSR-019 | 0 | configuration | ConfigurationDefinition | — | — | 1 | 1 | 1 | REVISE | Completed | `docs(model-review): review configuration ConfigurationDefinition` |
 | HMSR-020 | 0 | custody | CustodyMeasurementPeriod | — | — | 1 | 1 | 2 | REVISE | Completed | `docs(model-review): review custody CustodyMeasurementPeriod` |
-| HMSR-021 | 0 | integrity | PipelineDefect | — | — | 1 | 1 | 1 | — | Planned | `docs(model-review): review integrity PipelineDefect` |
+| HMSR-021 | 0 | integrity | PipelineDefect | — | — | 1 | 1 | 1 | REVISE | Completed | `docs(model-review): review integrity PipelineDefect` |
 | HMSR-022 | 0 | organization | Position | — | — | 1 | 1 | 0 | — | Planned | `docs(model-review): review organization Position` |
 | HMSR-023 | 0 | organization | Shift | — | — | 1 | 1 | 0 | — | Planned | `docs(model-review): review organization Shift` |
 | HMSR-024 | 0 | topology | PipelineSystem | — | — | 1 | 1 | 0 | — | Planned | `docs(model-review): review topology PipelineSystem` |
@@ -2155,9 +2155,9 @@ Confirmed subject-model graph edges at this stage: **165**. These are semantic c
 | Field | Declared type | Classification | Resolved target | Graph edge | Notes |
 |---|---|---|---|:---:|---|
 | id | String | Self identifier | — | No | Primary identity of the current model. |
-| defectTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
-| topologyAssetId | String | Cross-module reference | POLYMORPHIC | No | Target is selected by companion type/module metadata; no single subject-model edge. |
-| sourceFindingId | String | Unresolved | — | No | Finding target is not one of the 123 subject models. |
+| defectTypeId | String | Value/catalog dependency | integrity.IntegrityCatalogEntry (read/persistence model) | No | HMSR-021 stronger HRA-111 evidence resolves this required same-module catalog reference to `hidra_integrity_catalog_entry`; target is outside the 123 HMS subject set. |
+| topologyAssetId | String | Cross-module reference | POLYMORPHIC | No | Target is selected by companion `topologyAssetTypeCode`; Integrity retains a neutral Topology reference and no single subject-model edge. |
+| sourceFindingId | String | Optional domain reference | integrity.InspectionFinding (read/persistence model) | No | HMSR-021 stronger Integrity DDD + persistence evidence resolves this optional same-module provenance reference to `hidra_integrity_inspection_finding`; target is outside the 123 HMS subject set and no FK currently protects the non-null value. |
 
 #### leakdetection.LeakCandidate
 
@@ -5632,16 +5632,169 @@ Locking, calculation, approval, closing, reopening, and cancellation are governa
 
 The target baseline cannot mark it APPROVED while agreement existence and transfer-point existence are checked independently but their required same-module relationship is not checked. HMS reconciliation must retain the agreement/transfer-point coherence obligation until an explicitly authorized Custody correction task resolves it or the target semantics are explicitly changed.
 
-## 34. Current next task
+## 34. HMSR-021 — integrity.PipelineDefect review
+
+**Decision:** REVISE  
+**Review code:** HMSR-021  
+**Dependency level:** 0  
+**Bounded context:** integrity  
+**Confirmed upstream subject dependencies:** none  
+**Confirmed direct dependents:** 1 — `integrity.IntegrityCase` through `primaryDefectId`  
+**Transitive dependents:** 1  
+**Unresolved/non-subject references:** 1 — `sourceFindingId`, now semantically resolved to Integrity-owned `InspectionFinding` outside the 123 HMS subject set
+
+### 34.1 Semantic role and ordering rationale
+
+`PipelineDefect` is the Integrity-owned engineering record for a detected pipeline/topology defect. It carries stable defect identity, Integrity classification and lifecycle state, a neutral Topology asset reference, optional location descriptors, detection/closure timing, optional source-finding provenance and audit metadata.
+
+It is Level 0 because none of its prerequisites are another HMS subject model. Its same-module catalog and source-finding prerequisites are retained read/persistence models outside the 123-model subject population, while its Topology target is deliberately represented by a neutral cross-module typed reference.
+
+`IntegrityCase` is the one direct HMS subject dependent through optional `primaryDefectId`.
+
+The Integrity DDD is explicit that Integrity owns technical condition, engineering assessment and defect records, while Topology owns the physical pipeline/facility/equipment identity and Assets owns maintenance execution.
+
+### 34.2 Field semantics
+
+| Field | Type | Mandatory / optional | Reviewed meaning |
+|---|---|---|---|
+| `id` | `String` | Mandatory | Stable PipelineDefect identity and persistence primary key. |
+| `defectNumber` | `String` | Mandatory | Integrity business identifier for the defect record. Current DDD/schema do not state a uniqueness scope, so HMSR-021 does not invent one. |
+| `defectTypeId` | `String` | Mandatory | Integrity-owned catalog reference classifying the defect. |
+| `threatType` | `ThreatType` | Optional | Engineering threat family: corrosion, mechanical/third-party damage, ground movement, fatigue, coating/CP failure, manufacturing, construction, or unknown. |
+| `status` | `DefectStatus` | Mandatory | Defect lifecycle state: `OPEN`, `UNDER_ASSESSMENT`, `MONITORED`, `RECOMMENDED_FOR_REPAIR`, `REPAIRED`, `CLOSED`, or `DISMISSED`. |
+| `severity` | `FindingSeverity` | Optional | Current engineering severity classification: `LOW`, `MEDIUM`, `HIGH`, `CRITICAL`, or `UNKNOWN`. |
+| `topologyAssetTypeCode` | `String` | Mandatory | Neutral discriminator identifying the referenced Topology asset namespace/type. |
+| `topologyAssetId` | `String` | Mandatory | Stable neutral identifier of the referenced Topology-owned asset. |
+| `topologyAssetCodeSnapshot` | `String` | Optional snapshot | Non-authoritative historical/display code snapshot for the referenced Topology asset. |
+| `kilometerPoint` | `BigDecimal` | Optional | Linear-reference location descriptor when applicable to the referenced asset. |
+| `latitude` | `BigDecimal` | Optional | Geographic latitude descriptor. |
+| `longitude` | `BigDecimal` | Optional | Geographic longitude descriptor. |
+| `description` | `String` | Optional | Engineering description of the defect. |
+| `detectedAt` | `Instant` | Mandatory | Detection/recognition timestamp for the defect. |
+| `closedAt` | `Instant` | Optional | Closure timestamp when lifecycle processing records one. |
+| `sourceFindingId` | `String` | Optional | Same-module provenance reference to the originating `InspectionFinding`, when a defect is derived from an inspection finding. |
+| `createdAt` | `Instant` | Persistence-required audit timestamp | Creation timestamp. |
+| `updatedAt` | `Instant` | Persistence-required audit timestamp | Last-update timestamp. |
+
+The compact constructor correctly rejects blank `id`, `defectNumber`, `defectTypeId`, `topologyAssetTypeCode`, and `topologyAssetId`; requires non-null `status` and `detectedAt`; normalizes textual values; and exposes `openLifecycle()` as false only for `CLOSED` and `DISMISSED`.
+
+### 34.3 Defect-type dependency resolution
+
+HMS-003 classified `defectTypeId` only as a generic catalog/value dependency. Stronger current persistence evidence resolves its same-module owner without adding an HMS graph edge:
+
+- Integrity DDD owns `IntegrityCatalogEntry`;
+- `PipelineDefectJpaEntity.defectTypeId` maps to `hidra_integrity_pipeline_defect.defect_type_id`;
+- repository mirror classification retains `IntegrityCatalogEntry` as an Integrity read/persistence model outside the 123 HMS subjects;
+- HRA-111 installs `fk_hra111_integrity_019`;
+- that FK points `defect_type_id` to `hidra_integrity_catalog_entry(id)` with `ON DELETE RESTRICT`.
+
+The FK proves catalog-row existence only. The current Integrity DDD reviewed here does not define a defect-type catalog family name or active-entry eligibility rule, so HMSR-021 does not invent one.
+
+### 34.4 Neutral Topology reference boundary
+
+The Integrity DDD explicitly requires Topology references to remain neutral:
 
 ```text
-HMSR-021 — integrity.PipelineDefect
+topologyAssetTypeCode
+topologyAssetId
+topologyAssetCodeSnapshot
+topologyAssetNameSnapshot
+```
+
+and forbids Integrity from importing Topology domain models, JPA entities or repositories.
+
+`PipelineDefect` follows that ownership rule with the typed `topologyAssetTypeCode + topologyAssetId` pair plus an optional code snapshot. No cross-module database FK is appropriate.
+
+The current PipelineDefect constructor ensures the discriminator and ID are nonblank. The repository does not currently expose a PipelineDefect creation/update use case through `IntegrityApplicationService` or the Integrity REST controller, so HMSR-021 does not invent a Topology lookup contract or allowed type-code vocabulary solely from the stored pair.
+
+The snapshot is non-authoritative and must not become an alternative source of Topology truth.
+
+### 34.5 Source-finding provenance resolution and integrity gap
+
+HMS-003 left `sourceFindingId` unresolved because `InspectionFinding` is outside the 123 HMS subject set. Stronger evidence resolves the target:
+
+- the Integrity DDD owns both `InspectionFinding` and `PipelineDefect`;
+- `InspectionFindingJpaEntity` persists in `hidra_integrity_inspection_finding`;
+- repository mirror classification retains `InspectionFinding` as an Integrity read/persistence model outside the HMS subject population;
+- `PipelineDefectJpaEntity.sourceFindingId` persists as nullable `source_finding_id`;
+- the base migration creates an ordinary index on `source_finding_id`.
+
+No live Flyway constraint reviewed by HMSR-021 links:
+
+```text
+hidra_integrity_pipeline_defect.source_finding_id
+    -> hidra_integrity_inspection_finding.id
+```
+
+and no PipelineDefect application write service currently demonstrates a fail-closed existence check before persistence.
+
+Therefore a non-null `sourceFindingId` can currently become dangling provenance even though its semantic target is a same-module Integrity record.
+
+`InspectionFinding` also carries optional `linkedDefectId`, but current DDD evidence does not define whether the two optional links must always be reciprocal, one-to-one or independently usable. HMSR-021 therefore does not invent bidirectional synchronization semantics.
+
+### 34.6 Downstream IntegrityCase boundary
+
+The validated HMS graph contains the direct subject-model edge:
+
+```text
+IntegrityCase.primaryDefectId
+    -> PipelineDefect.id
+```
+
+`primaryDefectId` is optional on IntegrityCase, so the graph records a semantic dependency without making PipelineDefect depend on IntegrityCase.
+
+Persistence-only Integrity models such as defect assessments, measurements, remaining-life estimates and recommendations also use defect references where applicable. These downstream records reinforce PipelineDefect as the stable defect identity; they do not change its Level-0 placement.
+
+### 34.7 Lifecycle, location and temporal rules deliberately not invented
+
+The live enum establishes seven defect lifecycle labels, but the active Integrity DDD does not define a complete allowed transition matrix or exact prerequisites for `REPAIRED`, `CLOSED`, or `DISMISSED`. `openLifecycle()` therefore records the currently implemented open/terminal distinction without HMSR-021 inventing additional transitions.
+
+Likewise, the repository does not state an explicit invariant coupling `closedAt` to a particular status or a documented `detectedAt <= closedAt` rule for PipelineDefect. HMSR-021 does not promote an intuitive timing rule into the semantic baseline without repository evidence.
+
+`kilometerPoint`, `latitude`, and `longitude` are optional location descriptors. Current Integrity DDD evidence does not define their numeric ranges, CRS, linear-reference system, or mandatory pairing. Data-provisioning work must still preserve source coordinate/CRS semantics and reject invalid source geography rather than guessing, but HMSR-021 does not invent model-level coordinate rules.
+
+### 34.8 Persistence and application consistency
+
+The live domain and JPA models agree on all 18 declared components.
+
+The base Integrity migration makes `id`, `defect_number`, `defect_type_id`, `status`, `topology_asset_type_code`, `topology_asset_id`, `detected_at`, `created_at`, and `updated_at` non-null. Threat, severity, location, description, closure and source-finding fields remain nullable.
+
+The schema contains ordinary indexes for defect type, status, topology asset ID, source finding and audit timestamps. No current repository evidence establishes uniqueness for `defectNumber`, so HMSR-021 does not add such an obligation.
+
+`PipelineDefectRepositoryPort` provides save/find-by-ID persistence, but the active `IntegrityApplicationService` and Integrity REST controller expose program, assessment and case operations only. This absence is application-capability evidence, not by itself a reason to remove the model or fabricate creation semantics.
+
+### 34.9 Required revision
+
+The model role, ownership direction, field shape and Topology-neutral reference pattern are coherent. One evidence-backed correction remains:
+
+1. **Protect non-null source-finding provenance:** when `PipelineDefect.sourceFindingId` is supplied, it must resolve to an existing Integrity-owned `InspectionFinding` rather than allowing a dangling same-module provenance ID. The correction may be enforced through an appropriate Integrity application/persistence boundary and/or additive FK in a separately authorized implementation task; HMSR-021 does not prescribe the implementation shape here.
+
+HMSR-021 does not modify production Java, JPA, Flyway, APIs, application contracts, tests, defects, findings or provisioned data.
+
+### 34.10 SONATRACH/TRC operational interpretation
+
+For SONATRACH/TRC pipeline integrity, PipelineDefect represents an engineering defect record tied to an authoritative Topology asset without taking ownership of the physical network object. Kilometer point and geographic coordinates are supporting localization descriptors; inspection-finding provenance helps preserve how the defect entered the Integrity evidence chain.
+
+Threat, severity and lifecycle state support engineering prioritization and follow-up, while actual maintenance execution remains in Assets and operational incident/HSE lifecycle remains in their owning bounded contexts.
+
+A recorded source finding must remain traceable to real Integrity evidence if populated; otherwise the defect's engineering provenance becomes unreliable.
+
+### 34.11 Review conclusion
+
+**REVISE.** `PipelineDefect` has a coherent 18-field model, correct Level-0 placement, correct neutral Topology ownership boundary, valid same-module defect-type catalog ownership, and a resolvable optional source-finding reference.
+
+The target baseline cannot mark it APPROVED while a non-null `sourceFindingId` can persist without demonstrated referential protection to `InspectionFinding`. HMS reconciliation must retain this provenance-integrity obligation until an explicitly authorized Integrity correction task resolves it or the target semantics are explicitly changed.
+
+## 35. Current next task
+
+```text
+HMSR-022 — organization.Position
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review integrity PipelineDefect
+docs(model-review): review organization Position
 ```
 
-Start HMSR-021 only after HMSR-020 is committed and reported. Do not start HMSR-022 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-022 only after HMSR-021 is committed and reported. Do not start HMSR-023 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

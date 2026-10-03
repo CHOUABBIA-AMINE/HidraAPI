@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 reviewed as REVISE, HMSR-080 reviewed as REVISE, HMSR-081 reviewed as REVISE, HMSR-082 reviewed as REVISE, HMSR-083 approved, HMSR-084 reviewed as REVISE, HMSR-085 reviewed as REVISE, HMSR-086 approved, HMSR-087 reviewed as REVISE, HMSR-088 reviewed as REVISE, HMSR-089 reviewed as REVISE, HMSR-090 reviewed as REVISE, HMSR-091 reviewed as REVISE, HMSR-092 reviewed as REVISE, HMSR-093 reviewed as REVISE, HMSR-094 reviewed as REVISE, HMSR-095 reviewed as REVISE, HMSR-096 reviewed as REVISE, HMSR-097 reviewed as REVISE, HMSR-098 reviewed as REVISE, HMSR-099 approved, HMSR-100 reviewed as REVISE, HMSR-101 reviewed as REVISE, HMSR-102 approved, HMSR-103 approved, HMSR-104 reviewed as REVISE, HMSR-105 reviewed as REVISE, HMSR-106 reviewed as REVISE, HMSR-107 reviewed as REVISE, HMSR-108 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 reviewed as REVISE, HMSR-080 reviewed as REVISE, HMSR-081 reviewed as REVISE, HMSR-082 reviewed as REVISE, HMSR-083 approved, HMSR-084 reviewed as REVISE, HMSR-085 reviewed as REVISE, HMSR-086 approved, HMSR-087 reviewed as REVISE, HMSR-088 reviewed as REVISE, HMSR-089 reviewed as REVISE, HMSR-090 reviewed as REVISE, HMSR-091 reviewed as REVISE, HMSR-092 reviewed as REVISE, HMSR-093 reviewed as REVISE, HMSR-094 reviewed as REVISE, HMSR-095 reviewed as REVISE, HMSR-096 reviewed as REVISE, HMSR-097 reviewed as REVISE, HMSR-098 reviewed as REVISE, HMSR-099 approved, HMSR-100 reviewed as REVISE, HMSR-101 reviewed as REVISE, HMSR-102 approved, HMSR-103 approved, HMSR-104 reviewed as REVISE, HMSR-105 reviewed as REVISE, HMSR-106 reviewed as REVISE, HMSR-107 reviewed as REVISE, HMSR-108 reviewed as REVISE, HMSR-109 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -300,7 +300,7 @@ Ordering rules applied:
 | HMSR-105 | 5 | identity | UserPermissionGrant | — | identity.Permission, identity.User | 0 | 0 | 1 | REVISE | Completed | `docs(model-review): review identity UserPermissionGrant` |
 | HMSR-106 | 5 | identity | UserRoleGrant | — | identity.Role, identity.User | 0 | 0 | 1 | REVISE | Completed | `docs(model-review): review identity UserRoleGrant` |
 | HMSR-107 | 5 | incident | IncidentClosure | — | incident.Incident, workflow.WorkflowInstance | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review incident IncidentClosure` |
-| HMSR-108 | 5 | incident | IncidentRelatedIncident | — | incident.Incident | 0 | 0 | 0 | — | Planned | `docs(model-review): review incident IncidentRelatedIncident` |
+| HMSR-108 | 5 | incident | IncidentRelatedIncident | — | incident.Incident | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review incident IncidentRelatedIncident` |
 | HMSR-109 | 5 | incident | IncidentResponseAction | — | incident.Incident, organization.OrganizationUnit | 0 | 0 | 0 | — | Planned | `docs(model-review): review incident IncidentResponseAction` |
 | HMSR-110 | 5 | reporting | ReportOutputArtifact | — | documents.Document, documents.DocumentStorageObject, reporting.ReportRun | 0 | 0 | 2 | — | Planned | `docs(model-review): review reporting ReportOutputArtifact` |
 | HMSR-111 | 6 | planning | PlanTarget | — | planning.Nomination, planning.PlanRevision, telemetry.TelemetryPoint | 2 | 5 | 2 | — | Planned | `docs(model-review): review planning PlanTarget` |
@@ -18676,16 +18676,122 @@ The target baseline cannot mark it APPROVED while closure rationale is not fail-
 
 HMS reconciliation must retain these obligations until explicitly authorized Incident production work resolves them or stronger repository evidence changes the governing Incident contract.
 
-## 121. Current next task
+## 121. HMSR-108 — incident.IncidentRelatedIncident review
+
+**Decision:** REVISE  
+**Review code:** HMSR-108  
+**Dependency level:** 5  
+**Bounded context:** incident  
+**Confirmed upstream subject dependencies:** `incident.Incident` for both source and related incident references  
+**Confirmed direct HMS subject dependents:** 0  
+**Transitive HMS subject dependents:** 0  
+**Unresolved/non-subject reference count:** 0
+
+### 121.1 Semantic role
+
+`IncidentRelatedIncident` is the Incident-owned relationship record linking one incident to another for duplicate, parent/child, recurrence, same-root-cause, or merged-into semantics.
+
+The governing Incident DDD requires both incident identifiers, a relationship type, creator identity, and creation time. It explicitly forbids self-linking and requires duplicate inverse relationships to be avoided unless policy intentionally materializes both directions.
+
+### 121.2 Field and persistence shape
+
+The live domain record and JPA entity agree on seven fields:
 
 ```text
-HMSR-108 — incident.IncidentRelatedIncident
+id
+incidentId
+relatedIncidentId
+relationshipTypeId
+comment
+createdByActorId
+createdAt
+```
+
+The base Flyway table marks every field except `comment` as NOT NULL.
+
+### 121.3 Same-module Incident references
+
+`incidentId` and `relatedIncidentId` both semantically reference `hidra_incident.id`.
+
+HRA-111 correctly protects the source side:
+
+```text
+hidra_incident_related_incident.incident_id
+  -> hidra_incident.id
+```
+
+but the live HRA-111 migration incorrectly protects the related side as:
+
+```text
+hidra_incident_related_incident.related_incident_id
+  -> hidra_incident_catalog_entry.id
+```
+
+This contradicts the DDD, the field name, and the entity semantics. It also means valid related Incident IDs can be rejected while unrelated catalog-entry IDs can satisfy the database constraint.
+
+Future production reconciliation must replace/correct this FK so `related_incident_id` references `hidra_incident(id)`.
+
+### 121.4 Self-relationship invariant
+
+The DDD states that an incident cannot be linked to itself.
+
+The domain record exposes `selfRelationship()` but does not reject a self-link in the constructor, and repository search found no authoritative application creation path that enforces the prohibition.
+
+Future production reconciliation must enforce `incidentId != relatedIncidentId` before persistence, preferably at the domain/application boundary and with compatible database protection where appropriate.
+
+### 121.5 Relationship type semantics
+
+`relationshipTypeId` is a same-module reference to `IncidentCatalogEntry`, and HRA-111 correctly adds row-existence FK protection to `hidra_incident_catalog_entry(id)`.
+
+However, the DDD identifies the intended family as `RELATED_INCIDENT_RELATIONSHIP_TYPE`. Row existence alone does not prove catalog-family membership.
+
+Future production reconciliation must validate that `relationshipTypeId` belongs to the intended relationship-type catalog family through Incident-owned application/domain policy or equivalent owner-controlled lookup. HMSR-108 does not invent hard-coded IDs or replace the catalog with a Java enum.
+
+### 121.6 Required creation timestamp
+
+`createdAt` is mandatory in the DDD and database, but the live domain constructor does not reject null.
+
+Future production reconciliation must fail closed on missing creation time before persistence rather than relying solely on the database NOT NULL constraint.
+
+### 121.7 Duplicate/inverse relationship policy
+
+The DDD says duplicate inverse records should be avoided unless policy explicitly requires bidirectional materialization.
+
+The current repository port only exposes save/findById and has no relation-pair lookup contract or uniqueness guard. There is also no schema uniqueness constraint on the relationship tuple.
+
+This is a real policy obligation, but the DDD deliberately leaves bidirectional materialization conditional. HMSR-108 therefore records the need for an explicit pair/inverse policy during production reconciliation without inventing one universal uniqueness shape.
+
+### 121.8 Actor reference boundary
+
+`createdByActorId` is required and already fail-fast validated for presence. It is Identity-owned and should remain a cross-module stable scalar reference rather than a database FK.
+
+### 121.9 Required revisions
+
+Four production obligations remain:
+
+1. **Correct the erroneous HRA-111 FK so `related_incident_id` references `hidra_incident(id)`, not `hidra_incident_catalog_entry(id)`.**
+2. **Enforce the no-self-link invariant before persistence.**
+3. **Validate `relationshipTypeId` as a member of the `RELATED_INCIDENT_RELATIONSHIP_TYPE` catalog family, not merely as any existing incident catalog row.**
+4. **Fail closed on missing `createdAt`, and establish an explicit duplicate/inverse relationship policy consistent with the DDD before adding any uniqueness constraint.**
+
+HMSR-108 does not modify production Java, JPA, Flyway, API/application contracts, tests, catalog data, Incident data, Identity data, or provisioned data.
+
+### 121.10 Review conclusion
+
+**REVISE.** The model ownership and seven-field shape are appropriate, but the live persistence integrity for `relatedIncidentId` is materially wrong, the self-link prohibition is not enforced, catalog-family membership is not protected, and required creation time is not fail-fast validated.
+
+HMS reconciliation must retain these obligations until explicitly authorized Incident production work resolves them or stronger repository evidence changes the governing Incident contract.
+
+## 122. Current next task
+
+```text
+HMSR-109 — incident.IncidentResponseAction
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review incident IncidentRelatedIncident
+docs(model-review): review incident IncidentResponseAction
 ```
 
-Start HMSR-108 only after HMSR-107 is committed and reported. Do not start HMSR-109 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-109 only after HMSR-108 is committed and reported. Do not start HMSR-110 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -256,7 +256,7 @@ Ordering rules applied:
 | HMSR-061 | 2 | notification | NotificationMessage | — | notification.NotificationRequest, notification.NotificationTemplate | 1 | 1 | 3 | REVISE | Completed | `docs(model-review): review notification NotificationMessage` |
 | HMSR-062 | 2 | telemetry | TrustedTelemetryReading | — | telemetry.TelemetryPoint, telemetry.TelemetryReading | 1 | 1 | 3 | REVISE | Completed | `docs(model-review): review telemetry TrustedTelemetryReading` |
 | HMSR-063 | 2 | topology | Equipment | — | party.Party, topology.Facility | 0 | 0 | 2 | REVISE | Completed | `docs(model-review): review topology Equipment` |
-| HMSR-064 | 3 | workflow | WorkflowInstance | — | workflow.WorkflowDefinition, workflow.WorkflowStep | 18 | 32 | 1 | — | Planned | `docs(model-review): review workflow WorkflowInstance` |
+| HMSR-064 | 3 | workflow | WorkflowInstance | — | workflow.WorkflowDefinition, workflow.WorkflowStep | 18 | 32 | 1 | REVISE | Completed | `docs(model-review): review workflow WorkflowInstance` |
 | HMSR-065 | 3 | organization | Employee | — | organization.AdministrativeLocality | 6 | 14 | 1 | — | Planned | `docs(model-review): review organization Employee` |
 | HMSR-066 | 3 | simulation | SimulationOptimizationCandidate | — | simulation.SimulationRun | 2 | 2 | 0 | — | Planned | `docs(model-review): review simulation SimulationOptimizationCandidate` |
 | HMSR-067 | 3 | integration | IntegrationExchangeMessage | — | integration.ExternalSystem, integration.IntegrationJobRun | 1 | 1 | 2 | — | Planned | `docs(model-review): review integration IntegrationExchangeMessage` |
@@ -2728,13 +2728,13 @@ Confirmed subject-model graph edges at this stage: **165**. These are semantic c
 | Field | Declared type | Classification | Resolved target | Graph edge | Notes |
 |---|---|---|---|:---:|---|
 | id | String | Self identifier | — | No | Primary identity of the current model. |
-| definitionId | String | Domain reference | workflow.WorkflowDefinition | Yes | Unambiguous same-module subject-model reference. |
-| workflowPurposeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
-| targetTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
-| targetId | String | Cross-module reference | POLYMORPHIC | No | Target is selected by companion type/module metadata; no single subject-model edge. |
-| currentStepId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
-| startedByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
-| correlationId | String | Snapshot/reference-only | TECHNICAL_REFERENCE | No | Technical correlation/request/reference identity. |
+| definitionId | String | Domain reference | workflow.WorkflowDefinition | Yes | Mandatory same-module definition reference; HRA-111 protects `definition_id -> hidra_workflow_definition.id`. Start semantics still must verify ACTIVE status and the captured definition version. |
+| workflowPurposeId | String | Value/catalog dependency | WORKFLOW_PURPOSE / binding purpose | No | Purpose participates in definition-target binding and non-terminal uniqueness semantics. Live model/JPA permit null, while the DDD target-binding contract requires a purpose. Exact catalog-family ownership remains to be reconciled. |
+| targetTypeId | String | Value/catalog dependency | WORKFLOW_TARGET_TYPE | No | Mandatory Workflow catalog reference; HRA-111 protects generic catalog-row existence. DDD defines `WORKFLOW_TARGET_TYPE`, so family/eligibility validation is still required. |
+| targetId | String | Cross-module typed reference | POLYMORPHIC_TARGET | No | Target is owned by the module selected by `targetModule + targetTypeId`; preserve neutral reference/snapshots and validate through owner-controlled lookup rather than a cross-module FK. |
+| currentStepId | String | Optional domain reference | workflow.WorkflowStep | Yes | Optional same-module current-step reference. Current persistence has no instance-side FK and start accepts the ID without proving it belongs to the selected definition. |
+| startedByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Mandatory starter actor identity with snapshots. Workflow does not own actors; authoritative start should validate through an Identity-owned lookup/authority contract. |
+| correlationId | String | Snapshot/reference-only | TECHNICAL_REFERENCE | No | Optional technical correlation identity. |
 
 #### workflow.WorkflowStateHistory
 
@@ -12623,16 +12623,192 @@ The target baseline cannot mark it APPROVED while a fixed `EquipmentKind` enum d
 
 HMS reconciliation must retain these obligations until explicitly authorized Topology production corrections resolve them or stronger repository evidence changes the governing Topology DDD.
 
-## 77. Current next task
+## 77. HMSR-064 — workflow.WorkflowInstance review
+
+**Decision:** REVISE  
+**Review code:** HMSR-064  
+**Dependency level:** 3  
+**Bounded context:** workflow  
+**Confirmed upstream subject dependencies:** `workflow.WorkflowDefinition`, optional `workflow.WorkflowStep`  
+**Confirmed direct HMS subject dependents:** 18  
+**Transitive HMS subject dependents:** 32
+
+### 77.1 Semantic role
+
+`WorkflowInstance` is the Workflow-owned running execution of one workflow definition over a neutral target reference. It captures the definition/version used, workflow purpose, typed target identity and snapshots, current lifecycle/current step, starter actor snapshots, timestamps and correlation metadata.
+
+Workflow owns process execution. It does not own the target business object, Identity actor, or target-module state.
+
+### 77.2 Definition identity and version
+
+`definitionId` is mandatory and HRA-111 protects same-module row existence with:
 
 ```text
-HMSR-064 — workflow.WorkflowInstance
+hidra_workflow_instance.definition_id -> hidra_workflow_definition.id
+```
+
+`WorkflowDefinition` carries both a lifecycle status and an integer version, and its domain helper permits instance start only when status is `ACTIVE`. The DDD also states that RETIRED definitions cannot start new instances and that active structural changes create a new version.
+
+The live `WorkflowApplicationService.startWorkflowInstance()` copies `definitionId` and `definitionVersion` directly from the command and saves the instance. It does not resolve the definition, prove that it is ACTIVE, or prove that `command.definitionVersion` equals the selected definition's current immutable version.
+
+Therefore row existence alone is insufficient for authoritative start semantics.
+
+### 77.3 Definition-target-purpose binding
+
+The Workflow DDD defines `WorkflowDefinitionTargetBinding` specifically to prevent arbitrary workflows from starting against arbitrary target types.
+
+Its governing rule is:
+
+```text
+Workflow instance can start only if an active binding exists.
+```
+
+The binding key is:
+
+```text
+definitionId + targetModule + targetTypeId + workflowPurposeId
+```
+
+The target-binding table/entity exists in persistence and HRA-111 protects its same-module definition/catalog references. However, the live start service does not query or validate an active binding before creating a WorkflowInstance.
+
+The authoritative start path must fail closed unless the selected definition, target module/type and purpose match an active binding.
+
+### 77.4 Workflow purpose semantics
+
+`workflowPurposeId` participates in the active-binding contract and in the DDD's corrected non-terminal uniqueness rule.
+
+The live domain/JPA field is optional, while `WorkflowDefinitionTargetBinding.workflowPurposeId` is required. Current repository evidence does not provide a clearly named `WORKFLOW_PURPOSE` catalog family alongside the documented `WORKFLOW_TARGET_TYPE`, `WORKFLOW_REASON` and related families.
+
+HMSR-064 therefore does not invent a purpose family. The target baseline must reconcile whether purpose is mandatory for every start and explicitly define its controlled-value ownership before relying on it as part of binding/uniqueness semantics.
+
+### 77.5 Target type and target-owner validation
+
+`targetTypeId` is mandatory and HRA-111 protects generic Workflow catalog-row existence:
+
+```text
+hidra_workflow_instance.target_type_id -> hidra_workflow_type_catalog.id
+```
+
+The Workflow DDD explicitly defines `WORKFLOW_TARGET_TYPE` as a controlled catalog family. Generic catalog-row existence therefore does not prove correct family membership or active eligibility.
+
+The actual business target remains a neutral typed reference:
+
+```text
+targetModule + targetTypeId + targetId
+```
+
+Workflow must not persist or import the target module's domain state.
+
+The DDD/roadmap explicitly prescribe `WorkflowTargetLookupPort`-style owner-controlled validation, but no live target lookup is used by `startWorkflowInstance()`. The authoritative start path must validate the target through the owning module contract and then preserve code/label snapshots.
+
+No cross-module database FK should be introduced.
+
+### 77.6 Current-step integrity
+
+`currentStepId` is optional and resolves to same-module `WorkflowStep`.
+
+The current instance schema indexes `current_step_id`, but HMSR-064 found no HRA-111 instance-side FK for it. The start service accepts `currentStepId` directly from the command without resolving the step or proving:
+
+```text
+currentStep.definitionId == instance.definitionId
+```
+
+Later transition execution does protect target-step definition membership, but that does not repair an invalid instance at creation.
+
+When a current/initial step is populated, the authoritative start path must resolve it through Workflow and ensure it belongs to the selected definition. HMSR-064 does not invent which step must be the initial step; that ordering policy requires explicit workflow-definition evidence.
+
+### 77.7 One non-terminal instance per target and purpose
+
+The Workflow DDD explicitly identifies the current uniqueness design as insufficient and states the target rule:
+
+```text
+At most one non-terminal workflow instance per target + workflow purpose.
+```
+
+Non-terminal statuses are:
+
+```text
+DRAFT
+STARTED
+IN_PROGRESS
+WAITING
+```
+
+The live `WorkflowInstanceRepositoryPort` exposes save/find operations only; `startWorkflowInstance()` performs no non-terminal duplicate check. Current repository evidence does not show an applied partial unique index enforcing the corrected rule.
+
+This must be enforced fail-closed at the database and/or transactional application boundary appropriate to PostgreSQL concurrency semantics.
+
+### 77.8 Starter actor boundary
+
+`startedByActorId` is mandatory and accompanied by username/display-name/role snapshots.
+
+Workflow does not own Identity. The Workflow roadmap explicitly defines actor/authority lookup ports for this boundary, but the current start service merely copies actor IDs/snapshots from the command.
+
+The authoritative start path should validate the starter through the Identity-owned actor/authority contract while preserving snapshots. No cross-module Identity FK should be added.
+
+HMSR-064 does not invent additional role/permission requirements beyond the owner validation and authorization policy already assigned to Workflow/Identity integration.
+
+### 77.9 Lifecycle and temporal semantics
+
+`WorkflowInstanceStatus` is a genuine Workflow lifecycle enum:
+
+```text
+DRAFT
+STARTED
+IN_PROGRESS
+WAITING
+COMPLETED
+CANCELLED
+FAILED
+```
+
+The transition service already locks the instance, rejects terminal instances, validates transition/step ownership, and writes state history while advancing status.
+
+The DDD explicitly states:
+
+```text
+completedAt >= startedAt
+cancelledAt >= startedAt
+```
+
+The current controlled transition path assigns terminal timestamps using the current time, which is consistent with those rules. HMSR-064 does not add speculative transition states beyond the DDD and existing transition engine.
+
+### 77.10 Required revisions
+
+Six evidence-backed obligations remain:
+
+1. **Resolve the definition before start and enforce ACTIVE/version consistency.** `definitionId` must identify an ACTIVE WorkflowDefinition and `definitionVersion` must match the definition version being instantiated.
+
+2. **Require an active WorkflowDefinitionTargetBinding for the exact definition + target module/type + workflow purpose combination before start.**
+
+3. **Reconcile workflow-purpose controlled-value semantics and nullability.** Purpose participates in binding and non-terminal uniqueness but its exact catalog-family contract is not currently explicit; do not invent one.
+
+4. **Validate target type and target identity correctly.** Enforce `WORKFLOW_TARGET_TYPE` family eligibility and validate `targetModule + targetTypeId + targetId` through an owner-controlled target lookup while preserving snapshots; do not add cross-module DB FKs.
+
+5. **Protect current-step and non-terminal-instance integrity.** A populated `currentStepId` must resolve to a WorkflowStep belonging to the selected definition, and the DDD rule of at most one non-terminal instance per target + purpose must be enforced transactionally/database-safe.
+
+6. **Validate the mandatory starter actor through the Identity-owned actor/authority boundary while preserving actor snapshots.**
+
+HMSR-064 does not modify production Java, JPA, Flyway, API/application contracts, tests, Workflow bindings/catalogs, Identity, target modules, or provisioned data.
+
+### 77.11 Review conclusion
+
+**REVISE.** `WorkflowInstance` is a coherent 21-field Workflow-owned execution model with a correct neutral-target architecture, a true lifecycle enum, same-module definition existence protection and a substantially hardened transition engine.
+
+The target baseline cannot mark it APPROVED because authoritative instance start currently trusts caller-supplied definition/version, binding, target, step and actor information; the DDD's corrected non-terminal uniqueness rule is not enforced; and workflow-purpose semantics remain insufficiently resolved for the binding/uniqueness contract.
+
+HMS reconciliation must retain these obligations until explicitly authorized Workflow production corrections resolve them or stronger repository evidence changes the governing Workflow DDD.
+
+## 78. Current next task
+
+```text
+HMSR-065 — organization.Employee
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review workflow WorkflowInstance
+docs(model-review): review organization Employee
 ```
 
-Start HMSR-064 only after HMSR-063 is committed and reported. Do not start HMSR-065 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-065 only after HMSR-064 is committed and reported. Do not start HMSR-066 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

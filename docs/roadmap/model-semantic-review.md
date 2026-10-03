@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -238,7 +238,7 @@ Ordering rules applied:
 | HMSR-043 | 1 | analytics | MetricValue | — | analytics.MetricEvaluationRun | 0 | 0 | 3 | REVISE | Completed | `docs(model-review): review analytics MetricValue` |
 | HMSR-044 | 1 | configuration | ConfigurationValue | — | configuration.ConfigurationDefinition | 0 | 0 | 1 | REVISE | Completed | `docs(model-review): review configuration ConfigurationValue` |
 | HMSR-045 | 1 | identity | ExternalRoleMapping | — | identity.IdentityProvider, identity.Role | 0 | 0 | 0 | APPROVED | Completed | `docs(model-review): review identity ExternalRoleMapping` |
-| HMSR-046 | 1 | identity | GroupRoleGrant | — | identity.Role | 0 | 0 | 2 | — | Planned | `docs(model-review): review identity GroupRoleGrant` |
+| HMSR-046 | 1 | identity | GroupRoleGrant | — | identity.Role | 0 | 0 | 2 | APPROVED | Completed | `docs(model-review): review identity GroupRoleGrant` |
 | HMSR-047 | 1 | identity | RolePermissionGrant | — | identity.Permission, identity.Role | 0 | 0 | 0 | — | Planned | `docs(model-review): review identity RolePermissionGrant` |
 | HMSR-048 | 1 | monitoring | MonitoringRule | — | telemetry.TelemetryPoint | 0 | 0 | 0 | — | Planned | `docs(model-review): review monitoring MonitoringRule` |
 | HMSR-049 | 1 | party | PartyRoleAssignment | — | party.Party | 0 | 0 | 0 | — | Planned | `docs(model-review): review party PartyRoleAssignment` |
@@ -1946,9 +1946,9 @@ Confirmed subject-model graph edges at this stage: **165**. These are semantic c
 | Field | Declared type | Classification | Resolved target | Graph edge | Notes |
 |---|---|---|---|:---:|---|
 | id | String | Self identifier | — | No | Primary identity of the current model. |
-| groupId | String | Unresolved | — | No | Reference target is outside or absent from the 123 subject-model set; preserve for HMS-004 review. |
-| roleId | String | Domain reference | identity.Role | Yes | Unambiguous same-module subject-model reference. |
-| approvedByWorkflowId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| groupId | String | Domain reference | identity.Group (read/persistence model) | No | HMSR-046 stronger Identity DDD + HRA-111 evidence resolves the mandatory Group reference; target is outside the 123 HMS subject set and protected by `fk_hra111_identity_014`. |
+| roleId | String | Domain reference | identity.Role | Yes | Mandatory same-module HMS subject reference protected by `fk_hra111_identity_015`. |
+| approvedByWorkflowId | String | Cross-module reference | workflow.WorkflowInstance | No | Optional Workflow approval reference. Identity does not own Workflow state and no cross-module DB FK is appropriate. |
 
 #### identity.HidraPrincipal
 
@@ -9961,17 +9961,127 @@ No evidence-backed production correction obligation remains for HMSR-045.
 
 HMSR-045 does not modify production Java, JPA, Flyway, application/API contracts, tests, role mappings, identity providers, roles, or provisioned data.
 
-## 59. Current next task
+## 59. HMSR-046 — identity.GroupRoleGrant review
+
+**Decision:** APPROVED  
+**Review code:** HMSR-046  
+**Dependency level:** 1  
+**Bounded context:** identity  
+**Confirmed upstream subject dependencies:** `identity.Role` through mandatory `roleId`  
+**Confirmed same-module non-HMS dependency:** retained `identity.Group` through mandatory `groupId`  
+**Unresolved/non-subject references:** `approvedByWorkflowId` is resolved as an optional cross-module Workflow approval reference; scoped targets remain neutral/polymorphic
+
+### 59.1 Semantic role and ordering rationale
+
+`GroupRoleGrant` assigns one Identity Role to one Identity security Group, optionally within a neutral authorization scope and effective interval.
+
+Users inherit role permissions through group membership. A security Group is not an OrganizationUnit, and scoped references do not transfer Organization or Topology ownership into Identity.
+
+It is Level 1 because `roleId` references the already-reviewed HMS subject `Role`. `Group` is a retained Identity persistence/read model outside the 123 HMS subject set.
+
+### 59.2 Field semantics
+
+| Field | Type | Reviewed meaning |
+|---|---|---|
+| `id` | `String` | Mandatory stable grant identity. |
+| `groupId` | `String` | Mandatory same-module reference to Identity Group. |
+| `roleId` | `String` | Mandatory same-module reference to Identity Role. |
+| `scope` | `AuthorizationScope` | Optional neutral authorization scope, flattened in persistence. |
+| `grantReason` | `String` | Optional explanatory reason. |
+| `approvedByWorkflowId` | `String` | Optional cross-module Workflow approval reference. |
+| `validFrom` | `Instant` | Mandatory effective start. |
+| `validTo` | `Instant` | Optional effective end. |
+| `status` | `GrantStatus` | Mandatory grant lifecycle state. |
+| `createdAt` | `Instant` | Persistence-required creation timestamp. |
+
+The canonical constructor requires nonblank ID, Group ID and Role ID; requires non-null `validFrom` and status; and rejects `validTo < validFrom`.
+
+### 59.3 Group and Role reference integrity
+
+The final schema requires both `group_id` and `role_id`.
+
+HRA-111 installs and validates:
 
 ```text
-HMSR-046 — identity.GroupRoleGrant
+group_id -> hidra_identity_group.id
+role_id  -> hidra_identity_role.id
+```
+
+Therefore both mandatory same-module references are fail-closed at persistence.
+
+HMSR-046 resolves `groupId` from the former generic/unresolved classification to the retained Identity Group model without adding a false HMS graph edge.
+
+### 59.4 Authorization scope boundary
+
+The domain uses `AuthorizationScope`; persistence flattens it to scope type/reference/snapshot columns through the Identity mapper.
+
+Scope targets remain neutral references. Organization units and Topology assets stay owned by their respective bounded contexts and must not receive cross-module database FKs from Identity.
+
+No concrete HMS graph edge is manufactured from the polymorphic scope.
+
+### 59.5 Workflow approval reference
+
+The Identity DDD explicitly defines `approvedByWorkflowId` as optional.
+
+HMSR-046 resolves it semantically to Workflow approval/WorkflowInstance identity, but no cross-module FK is appropriate.
+
+Current evidence does not state that every GroupRoleGrant requires approval, nor that any particular grant status requires a non-null workflow reference. No such rule is invented.
+
+### 59.6 Validity and lifecycle semantics
+
+The DDD requires `validFrom`, optional `validTo`, and grant status.
+
+The canonical constructor enforces the documented temporal invariant `validFrom <= validTo` when an end exists.
+
+The broader authorization evaluation rules require time-valid grants at decision time, which is compatible with this effective-dated representation.
+
+Current evidence does not define duplicate/overlap uniqueness, automatic expiration mutation, active-Group/active-Role creation eligibility, or a complete transition matrix. HMSR-046 does not invent those rules.
+
+### 59.7 Domain/JPA/Flyway alignment
+
+The domain model has 10 components; persistence flattens `AuthorizationScope` into three columns while preserving the same semantic content.
+
+Required business fields align:
+
+```text
+id
+groupId
+roleId
+validFrom
+status
+```
+
+and persistence requires `createdAt` as audit metadata.
+
+Both mandatory same-module references have validated FK protection and chronology is enforced in the domain.
+
+### 59.8 SONATRACH/TRC operational interpretation
+
+For SONATRACH/TRC, GroupRoleGrant supports enterprise RBAC by assigning internal Hidra roles to Identity security groups, including groups synchronized from enterprise IDM sources.
+
+This keeps authorization grouping separate from organizational hierarchy: membership in an Identity Group can confer role permissions without making that Group an OrganizationUnit or granting ownership of pipeline assets.
+
+Neutral scopes allow authorization to be constrained to operational areas while preserving bounded-context ownership.
+
+### 59.9 Review conclusion
+
+**APPROVED.** `GroupRoleGrant` has coherent Group/Role dependencies, validated same-module FK protection, correct effective-period ordering, optional Workflow approval reference, neutral scoped authorization semantics, and clean separation between Identity security groups and organizational/physical structures.
+
+No evidence-backed production correction obligation remains for HMSR-046.
+
+HMSR-046 does not modify production Java, JPA, Flyway, application/API contracts, tests, grants, Groups, Roles, Workflow records, or provisioned data.
+
+## 60. Current next task
+
+```text
+HMSR-047 — identity.RolePermissionGrant
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review identity GroupRoleGrant
+docs(model-review): review identity RolePermissionGrant
 ```
 
-Start HMSR-046 only after HMSR-045 is committed and reported. Do not start HMSR-047 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-047 only after HMSR-046 is committed and reported. Do not start HMSR-048 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
 

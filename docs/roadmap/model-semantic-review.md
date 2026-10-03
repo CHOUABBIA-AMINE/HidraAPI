@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 reviewed as REVISE, HMSR-080 reviewed as REVISE, HMSR-081 reviewed as REVISE, HMSR-082 reviewed as REVISE, HMSR-083 approved, HMSR-084 reviewed as REVISE, HMSR-085 reviewed as REVISE, HMSR-086 approved, HMSR-087 reviewed as REVISE, HMSR-088 reviewed as REVISE, HMSR-089 reviewed as REVISE, HMSR-090 reviewed as REVISE, HMSR-091 reviewed as REVISE, HMSR-092 reviewed as REVISE, HMSR-093 reviewed as REVISE, HMSR-094 reviewed as REVISE, HMSR-095 reviewed as REVISE, HMSR-096 reviewed as REVISE, HMSR-097 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 reviewed as REVISE, HMSR-080 reviewed as REVISE, HMSR-081 reviewed as REVISE, HMSR-082 reviewed as REVISE, HMSR-083 approved, HMSR-084 reviewed as REVISE, HMSR-085 reviewed as REVISE, HMSR-086 approved, HMSR-087 reviewed as REVISE, HMSR-088 reviewed as REVISE, HMSR-089 reviewed as REVISE, HMSR-090 reviewed as REVISE, HMSR-091 reviewed as REVISE, HMSR-092 reviewed as REVISE, HMSR-093 reviewed as REVISE, HMSR-094 reviewed as REVISE, HMSR-095 reviewed as REVISE, HMSR-096 reviewed as REVISE, HMSR-097 reviewed as REVISE, HMSR-098 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -289,7 +289,7 @@ Ordering rules applied:
 | HMSR-094 | 5 | planning | Nomination | — | party.Party, planning.PlanRevision | 1 | 6 | 2 | REVISE | Completed | `docs(model-review): review planning Nomination` |
 | HMSR-095 | 5 | workflow | WorkflowAction | — | organization.OrganizationUnit, workflow.WorkflowInstance, workflow.WorkflowTask | 2 | 4 | 1 | REVISE | Completed | `docs(model-review): review workflow WorkflowAction` |
 | HMSR-096 | 5 | hse | HseCase | — | incident.Incident, organization.OrganizationUnit, workflow.WorkflowInstance | 3 | 3 | 3 | REVISE | Completed | `docs(model-review): review hse HseCase` |
-| HMSR-097 | 5 | audit | AuditExportRequest | — | documents.Document, workflow.WorkflowInstance | 1 | 1 | 2 | — | Planned | `docs(model-review): review audit AuditExportRequest` |
+| HMSR-097 | 5 | audit | AuditExportRequest | — | documents.Document, workflow.WorkflowInstance | 1 | 1 | 2 | REVISE | Completed | `docs(model-review): review audit AuditExportRequest` |
 | HMSR-098 | 5 | documents | DocumentTargetLink | — | documents.Document, documents.DocumentVersion | 0 | 0 | 0 | — | Planned | `docs(model-review): review documents DocumentTargetLink` |
 | HMSR-099 | 5 | identity | AuthenticationEvent | — | identity.IdentityProvider, identity.User | 0 | 0 | 1 | — | Planned | `docs(model-review): review identity AuthenticationEvent` |
 | HMSR-100 | 5 | identity | AuthorizationDecision | — | identity.User | 0 | 0 | 2 | — | Planned | `docs(model-review): review identity AuthorizationDecision` |
@@ -17246,16 +17246,158 @@ The target baseline cannot mark it APPROVED while the live closure use case bypa
 
 HMS reconciliation must retain these obligations until explicitly authorized HSE production corrections resolve them or stronger repository evidence changes the governing HSE contract.
 
-## 110. Current next task
+## 110. HMSR-097 — audit.AuditExportRequest review
+
+**Decision:** REVISE  
+**Review code:** HMSR-097  
+**Dependency level:** 5  
+**Bounded context:** audit  
+**Confirmed upstream subject dependencies:** optional Documents-owned export artifact reference; optional Workflow-owned approval instance reference  
+**Confirmed direct HMS subject dependents:** 1  
+**Transitive HMS subject dependents:** 1  
+**Unresolved/non-subject reference count:** 2
+
+### 110.1 Semantic role
+
+`AuditExportRequest` is Audit-owned controlled export-request state for auditors/compliance users.
+
+It records who requested an export, why, the sanitized filter, output format, lifecycle status, optional approval-workflow reference, optional resulting Documents artifact reference, result metadata, request/completion timing, and expiry.
+
+Audit remains the evidence owner. Workflow owns approval routing/decision semantics and Documents owns the generated artifact.
+
+### 110.2 Required request content
+
+The Audit DDD explicitly marks these request fields required:
 
 ```text
-HMSR-097 — audit.AuditExportRequest
+requestedByActorId
+purposeId
+filterJson
+format
+status
+requestedAt
+```
+
+The live domain constructor already rejects missing `requestedByActorId`, `purposeId`, `status`, and `requestedAt`.
+
+However, `filterJson` and `format` are only normalized. JPA/Flyway persist both as `NOT NULL`, so null/blank values can currently reach persistence and fail late.
+
+The authoritative request boundary must therefore fail fast for both required values.
+
+### 110.3 Filter sanitation
+
+The DDD states:
+
+```text
+filterJson = export filter criteria. Must be sanitized.
+Sensitive values remain masked in exports unless explicitly authorized by policy.
+```
+
+The current `requestAuditExport(...)` path passes `command.filterJson()` directly into the model and persists it. Repository evidence reviewed for HMSR-097 does not show a sanitizer/policy gate on this path.
+
+HMSR-097 does not invent a specific sanitization algorithm, but the future implementation must make filter sanitation/policy enforcement explicit at the authoritative application boundary before persistence/export execution.
+
+### 110.4 Export-purpose catalog semantics
+
+`purposeId` is mandatory and typed in the DDD as an `AuditCatalogEntryId`.
+
+The Audit catalog definition explicitly includes the exact family:
+
+```text
+EXPORT_PURPOSE
+```
+
+with examples such as `INTERNAL_AUDIT`, `INCIDENT_REVIEW`, and `COMPLIANCE`.
+
+The live export-request table contains only an index on `purpose_id`; the reviewed evidence does not show a same-module FK or application-level family/active validation for this field.
+
+The authoritative request path must therefore validate that `purposeId` resolves to an active/eligible Audit catalog entry in the exact `EXPORT_PURPOSE` family. Same-module persistence protection may be added consistently with repository architecture.
+
+### 110.5 Workflow approval reference
+
+`workflowInstanceId` is optional because not every export necessarily requires approval.
+
+When supplied, it is Workflow-owned. Audit must not import Workflow aggregates or create cross-module database FKs.
+
+If policy requires an approved workflow for a particular export, the application boundary must resolve/verify that through a Workflow-owned contract and bind the request to the proven approval evidence.
+
+HMSR-097 does not invent which export purposes require approval; that remains policy-driven.
+
+### 110.6 Result document ownership
+
+`resultDocumentReferenceId` is explicitly described by the DDD as a Documents-module reference to the export artifact.
+
+It must remain a cross-module scalar reference, with any existence/ownership validation performed through a Documents-owned application/reference contract. No cross-module FK is authorized.
+
+### 110.7 Export request lifecycle
+
+`AuditExportStatus` contains:
+
+```text
+REQUESTED
+APPROVED
+REJECTED
+RUNNING
+COMPLETED
+FAILED
+EXPIRED
+```
+
+These are technical lifecycle states and are appropriate as an enum on current evidence.
+
+HMSR-097 does not convert this lifecycle into a business taxonomy/catalog.
+
+### 110.8 Audit-the-export rule
+
+The DDD explicitly requires:
+
+```text
+Audit export must be audited.
+Access to audit evidence is itself auditable.
+```
+
+The live `AuditApplicationService.requestAuditExport(...)` only constructs and saves an `AuditExportRequest`; it does not record a corresponding `AuditEvent` or `AuditAccessRecord` in the reviewed method.
+
+This means creation of the export request itself is not demonstrably producing the audit evidence required by the governing Audit DDD.
+
+The future production correction must ensure export request/execution access is itself auditable through Audit-owned application semantics without recursive or duplicate evidence loops.
+
+### 110.9 Completion metadata consistency
+
+`resultDocumentReferenceId`, `recordCount`, `checksum`, `completedAt`, and `expiresAt` are optional because they describe later export-processing outcomes.
+
+HMSR-097 does not invent lifecycle-dependent mandatory combinations beyond current DDD evidence. Future export-completion work should nevertheless preserve internal consistency between lifecycle state and completion/result metadata when that behavior is implemented.
+
+### 110.10 Required revisions
+
+Five evidence-backed production obligations remain:
+
+1. **Enforce required `filterJson` and `format` before persistence**, not only through DB `NOT NULL`.
+2. **Sanitize and policy-check `filterJson` before persistence/export execution**, preserving the DDD masking rule for sensitive values.
+3. **Validate `purposeId` against the active/eligible exact Audit `EXPORT_PURPOSE` catalog family** and add appropriate same-module integrity protection consistent with repository architecture.
+4. **Preserve Workflow/Documents ownership:** validate optional workflow approval and result-document references through owner-controlled contracts where required; never introduce cross-module database FKs.
+5. **Make audit export activity itself auditable**, including request/access/export execution evidence through Audit-owned application paths while avoiding recursive evidence creation.
+
+HMSR-097 does not modify production Java, JPA, Flyway, API/application contracts, tests, Audit/Workflow/Documents data, or provisioned data.
+
+### 110.11 Review conclusion
+
+**REVISE.** `AuditExportRequest` has the correct Audit ownership, technical lifecycle enum, and scalar cross-module reference shape.
+
+The target baseline cannot mark it APPROVED while two DDD-required fields are only DB-enforced, export filters are persisted without an explicit sanitation/policy gate, `purposeId` is not proven family-qualified against `EXPORT_PURPOSE`, and the live request path does not itself produce the audit evidence explicitly required for audit exports.
+
+HMS reconciliation must retain these obligations until explicitly authorized Audit production corrections resolve them or stronger repository evidence changes the governing Audit contract.
+
+## 111. Current next task
+
+```text
+HMSR-098 — documents.DocumentTargetLink
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review audit AuditExportRequest
+docs(model-review): review documents DocumentTargetLink
 ```
 
-Start HMSR-097 only after HMSR-096 is committed and reported. Do not start HMSR-098 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-098 only after HMSR-097 is committed and reported. Do not start HMSR-099 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

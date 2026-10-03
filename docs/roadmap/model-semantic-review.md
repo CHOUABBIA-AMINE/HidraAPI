@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -229,7 +229,7 @@ Ordering rules applied:
 | HMSR-034 | 0 | topology | TopologyConnection | — | — | 0 | 0 | 3 | REVISE | Completed | `docs(model-review): review topology TopologyConnection` |
 | HMSR-035 | 1 | organization | OrganizationUnit | SCC-01 | organization.OrganizationUnit, organization.OrganizationUnitType | 22 | 51 | 0 | REVISE | Completed | `docs(model-review): review organization OrganizationUnit` |
 | HMSR-036 | 1 | organization | AdministrativeDistrict | — | organization.AdministrativeState | 1 | 16 | 0 | APPROVED | Completed | `docs(model-review): review organization AdministrativeDistrict` |
-| HMSR-037 | 1 | telemetry | TelemetryReading | — | telemetry.TelemetryPoint | 2 | 6 | 2 | — | Planned | `docs(model-review): review telemetry TelemetryReading` |
+| HMSR-037 | 1 | telemetry | TelemetryReading | — | telemetry.TelemetryPoint | 2 | 6 | 2 | REVISE | Completed | `docs(model-review): review telemetry TelemetryReading` |
 | HMSR-038 | 1 | simulation | SimulationScenario | — | simulation.SimulationModel | 1 | 4 | 3 | — | Planned | `docs(model-review): review simulation SimulationScenario` |
 | HMSR-039 | 1 | notification | NotificationRequest | — | notification.NotificationTemplate | 1 | 2 | 4 | — | Planned | `docs(model-review): review notification NotificationRequest` |
 | HMSR-040 | 1 | organization | ResponsibilityAssignment | — | organization.OperationalScope | 1 | 1 | 1 | — | Planned | `docs(model-review): review organization ResponsibilityAssignment` |
@@ -2635,11 +2635,11 @@ Confirmed subject-model graph edges at this stage: **165**. These are semantic c
 | Field | Declared type | Classification | Resolved target | Graph edge | Notes |
 |---|---|---|---|:---:|---|
 | id | String | Self identifier | — | No | Primary identity of the current model. |
-| pointId | String | Domain reference | telemetry.TelemetryPoint | Yes | Unambiguous same-module subject-model reference. |
-| qualityCodeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
-| ingestionBatchId | String | Unresolved | — | No | Reference target is outside or absent from the 123 subject-model set; preserve for HMS-004 review. |
+| pointId | String | Domain reference | telemetry.TelemetryPoint | Yes | Required same-module subject-model reference; HRA-111 protects `point_id -> hidra_telemetry_point(id)` through `fk_hra111_telemetry_017`. |
+| qualityCodeId | String | Value/catalog dependency | telemetry.TelemetryCatalogEntry (QUALITY_CODE) | No | HMSR-037 stronger Telemetry DDD + HRA-111 evidence resolves the required quality-code row to `hidra_telemetry_type_catalog`; catalog-family semantics remain to be enforced. |
+| ingestionBatchId | String | Optional domain reference | telemetry.TelemetryIngestionBatch (read/persistence model) | No | HMSR-037 resolves this optional batch-traceability reference to a retained Telemetry read/persistence model outside the HMS subject set. |
 | correlationId | String | Snapshot/reference-only | TECHNICAL_REFERENCE | No | Technical correlation/request/reference identity. |
-| externalTagMappingId | String | Unresolved | — | No | Reference target is outside or absent from the 123 subject-model set; preserve for HMS-004 review. |
+| externalTagMappingId | String | Optional domain reference | telemetry.TelemetryExternalTagMapping (read/persistence model) | No | HMSR-037 resolves this optional mapping-evidence reference to a retained Telemetry read/persistence model outside the HMS subject set. |
 
 #### telemetry.TelemetrySource
 
@@ -8311,16 +8311,218 @@ No evidence-backed production-model correction is required by HMSR-036. Code uni
 
 HMSR-036 does not modify production Java, JPA, Flyway, API/application contracts, tests, administrative reference data, or provisioned data.
 
-## 50. Current next task
+## 50. HMSR-037 — telemetry.TelemetryReading review
+
+**Decision:** REVISE  
+**Review code:** HMSR-037  
+**Dependency level:** 1  
+**Bounded context:** telemetry  
+**Confirmed upstream subject dependencies:** `telemetry.TelemetryPoint` through `pointId`  
+**Confirmed direct HMS subject dependents:** 2 — `alarm.Alarm` through `telemetryReadingId` and `telemetry.TrustedTelemetryReading` through `readingId`  
+**Transitive HMS subject dependents:** 6  
+**Unresolved/non-subject references:** 2 in the original register; both are now resolved to retained Telemetry read/persistence models outside the HMS subject set
+
+### 50.1 Semantic role and ordering rationale
+
+`TelemetryReading` is the Telemetry-owned raw received-reading record. It preserves the canonical point identity, raw value shape, source/receive timestamps, source quality, ingestion/mapping provenance, processing state, rejection context, duplicate/idempotency evidence, and optional persistence timestamp before a downstream reading becomes trusted.
+
+It is Level 1 because every reading must reference the already reviewed `TelemetryPoint`. Alarm and TrustedTelemetryReading depend directly on the reading identity, so raw-reading semantics must remain stable before those consumers are treated as final.
+
+The Telemetry DDD explicitly distinguishes raw readings from `TrustedTelemetryReading`: operational downstream modules should prefer trusted readings, while the raw record remains acquisition evidence.
+
+### 50.2 Field semantics
+
+| Field | Type | Mandatory / optional | Reviewed meaning |
+|---|---|---|---|
+| `id` | `String` | Mandatory | Stable raw-reading identity and persistence primary key. |
+| `pointId` | `String` | Mandatory | Same-module reference to the canonical TelemetryPoint. |
+| `numericValue` | `BigDecimal` | Conditional value shape | Numeric reading value when the point/signal is numeric. |
+| `textValue` | `String` | Conditional value shape | Text/state reading value when applicable. |
+| `booleanValue` | `Boolean` | Conditional value shape | Boolean reading value when applicable. |
+| `qualityCodeId` | `String` | Mandatory controlled reference | Telemetry quality-code catalog identity. |
+| `sourceTimestamp` | `Instant` | Mandatory | Timestamp supplied by the telemetry source. |
+| `receivedAt` | `Instant` | Mandatory | Timestamp at which Hidra received the reading. |
+| `state` | `ReadingState` | Mandatory | Internal processing state: `RECEIVED`, `ACCEPTED`, `REJECTED`, `DUPLICATE`, `QUARANTINED`, or `TRUSTED`. |
+| `ingestionBatchId` | `String` | Optional | Traceability reference to the TelemetryIngestionBatch that carried the reading. |
+| `correlationId` | `String` | Optional technical reference | Platform/request correlation identity. |
+| `rejectionReason` | `String` | Optional | Rejection/processing explanation when applicable. |
+| `sourceSequenceNumber` | `String` | Optional | Source-side sequence identifier when available. |
+| `externalTagMappingId` | `String` | Optional | Mapping identity used to resolve the external source tag to the canonical point. |
+| `rawPayloadHash` | `String` | Optional | Payload hash used as duplicate/idempotency evidence. |
+| `createdAt` | `Instant` | Optional by DDD/schema | Persistence timestamp when separated from `receivedAt`. |
+
+The compact constructor already requires nonblank `id`, `pointId`, and `qualityCodeId`; requires non-null `sourceTimestamp`, `receivedAt`, and `state`; and normalizes optional text/reference fields.
+
+### 50.3 TelemetryPoint dependency integrity
+
+The primary HMS dependency is correct:
 
 ```text
-HMSR-037 — telemetry.TelemetryReading
+TelemetryReading.pointId
+    -> telemetry.TelemetryPoint
+```
+
+Domain construction rejects a blank point ID. JPA/schema require `point_id`, and HRA-111 installs:
+
+```text
+fk_hra111_telemetry_017
+  FOREIGN KEY (point_id)
+  REFERENCES hidra_telemetry_point(id)
+  ON DELETE RESTRICT
+```
+
+so an authoritative persisted reading cannot reference a missing TelemetryPoint.
+
+### 50.4 Quality-code catalog semantics
+
+The DDD requires a quality code for every reading and defines `QUALITY_CODE` as the Telemetry catalog family for quality vocabulary.
+
+HRA-111 installs:
+
+```text
+fk_hra111_telemetry_018
+  quality_code_id -> hidra_telemetry_type_catalog(id)
+```
+
+which prevents a dangling catalog row. It does not prove that the referenced entry belongs to the `QUALITY_CODE` catalog family.
+
+The existing telemetry query adapter itself resolves quality labels from `catalogName = QUALITY_CODE`, confirming the intended family semantics. No current raw-reading write boundary was found that validates the family before persistence.
+
+HMSR-037 therefore resolves `qualityCodeId` to `TelemetryCatalogEntry (QUALITY_CODE)` and retains a family-validation obligation. Current DDD says the quality code must exist but does not separately require the catalog row to be active, so HMSR-037 does not invent an active-entry rule.
+
+### 50.5 Ingestion-batch reference integrity gap
+
+The DDD defines `ingestionBatchId` as the optional batch reference for a raw reading. The retained persistence model is `TelemetryIngestionBatchJpaEntity` / `hidra_telemetry_ingestion_batch`.
+
+The base reading schema stores and indexes `ingestion_batch_id`, but HRA-111 does not add a foreign key for:
+
+```text
+hidra_telemetry_reading.ingestion_batch_id
+    -> hidra_telemetry_ingestion_batch.id
+```
+
+and no current raw-reading application write service demonstrates a lookup/validation boundary.
+
+Therefore a populated batch traceability ID can currently be dangling.
+
+### 50.6 External-tag-mapping reference integrity gap
+
+`externalTagMappingId` is documented as the mapping used to resolve the reading from an external SCADA/historian/OPC/MQTT/import tag to the canonical TelemetryPoint.
+
+The retained persistence target is `TelemetryExternalTagMappingJpaEntity` / `hidra_telemetry_external_tag_mapping`. The reading table stores and indexes `external_tag_mapping_id`, but HRA-111 does not protect it with a same-module FK and no current application write validator was found.
+
+A populated mapping ID can therefore be missing or unrelated to an existing mapping record. HMSR-037 does not additionally invent a requirement that the mapping's `pointId` must equal the reading's `pointId`, because the current Telemetry DDD does not state that cross-field equality rule explicitly.
+
+### 50.7 Value-shape invariant is not authoritative end-to-end
+
+Telemetry DDD states:
+
+```text
+Each reading must have exactly one value shape unless null/state reading is explicitly allowed.
+```
+
+and defines the three mutually exclusive value carriers:
+
+```text
+numericValue
+textValue
+booleanValue
+```
+
+The record exposes `hasExactlyOneValue()`, and `TelemetryReadingValueValidator` rejects readings for which that method returns false.
+
+However:
+
+- the canonical record constructor itself does not enforce the rule;
+- repository search found no active raw-reading ingestion/write use case that invokes `TelemetryReadingValueValidator` before persistence;
+- no database CHECK protects the value-shape rule;
+- the validator requires exactly one value unconditionally, while the DDD explicitly reserves the possibility of allowed null/state readings.
+
+Therefore the repository contains a useful validator but does not yet have one authoritative, end-to-end value-shape contract. A future ingestion correction must define any permitted null/state cases and enforce the reconciled rule at the authoritative write boundary.
+
+The related TelemetryPoint rule that point signal type determines compatible value shape should be preserved when that ingestion boundary is implemented; HMSR-037 does not invent a hardcoded signal-type mapping absent a finalized ingestion policy.
+
+### 50.8 Timestamp/clock-skew rule deliberately not guessed
+
+The DDD states that `receivedAt` must not precede `sourceTimestamp` beyond an accepted clock-skew policy.
+
+Both timestamps are already mandatory, but no current Telemetry roadmap or implementation evidence defines the accepted skew duration, per-source override, or handling of known clock faults.
+
+HMSR-037 therefore does not invent a duration such as zero seconds, five minutes, or one hour. The future ingestion policy must define the accepted clock-skew contract before a precise timestamp validation can be implemented.
+
+This unresolved threshold is recorded as a policy dependency rather than a fabricated local invariant.
+
+### 50.9 Reading-state representation
+
+`ReadingState` exactly matches the DDD's six raw-reading states. The Telemetry roadmap explicitly classifies `TelemetryReadingState` as an internal technical state for which a Java enum is allowed.
+
+Therefore HMSR-037 does not replace `ReadingState` with a catalog solely because `READING_STATE` also appears among recommended catalog names. The technical-state enum is an accepted implementation choice under the active Telemetry roadmap.
+
+No current rule requires `REJECTED` to have nonblank `rejectionReason`, forbids a reason on other states, or defines a complete state transition matrix. Those rules are not invented.
+
+### 50.10 Append-oriented and duplicate semantics deliberately not over-promoted
+
+Telemetry DDD says raw readings should be append-oriented and business updates should be avoided except state/rejection metadata if mutable state is chosen.
+
+The current repository has no active raw-reading ingestion/update application service, so there is no concrete business update path to classify as defective during HMSR-037. The generic repository `save` method alone does not establish an authorized update lifecycle.
+
+Similarly, `rawPayloadHash` and `sourceSequenceNumber` provide duplicate/idempotency evidence, but the DDD does not define a universal uniqueness key across sources, points, batches, or time. HMSR-037 does not invent a unique hash/sequence constraint.
+
+### 50.11 Downstream semantics
+
+Two HMS subject models depend directly on TelemetryReading:
+
+```text
+alarm.Alarm.telemetryReadingId
+telemetry.TrustedTelemetryReading.readingId
+```
+
+The Alarm reference is cross-module evidence linkage; it does not transfer reading ownership to Alarm. TrustedTelemetryReading is the Telemetry-owned downstream contract for readings that pass the required trust/quality process.
+
+Retained `TelemetryQualityAssessment` persistence also references raw readings and is HRA-111 protected through `fk_hra111_telemetry_014`, reinforcing TelemetryReading as stable acquisition evidence.
+
+### 50.12 Required revisions
+
+Four evidence-backed correction obligations remain:
+
+1. **Protect populated ingestion-batch references.** When `ingestionBatchId` is supplied, it must resolve to the Telemetry-owned ingestion batch rather than allowing a dangling traceability ID. An additive nullable same-module FK, application validation, or equivalent fail-closed mechanism may be used.
+
+2. **Protect populated external-tag-mapping references.** When `externalTagMappingId` is supplied, it must resolve to the Telemetry-owned external tag mapping rather than allowing a dangling mapping-evidence ID.
+
+3. **Enforce quality-code catalog-family semantics.** `qualityCodeId` must resolve specifically to the `QUALITY_CODE` Telemetry catalog family; the existing generic catalog FK only proves row existence.
+
+4. **Establish one authoritative raw-reading value-shape policy.** Reconcile the DDD's exactly-one rule and its explicit null/state exception, then enforce that contract consistently at the raw-reading creation/ingestion boundary rather than leaving `TelemetryReadingValueValidator` unused and stricter than the documented exception model.
+
+The accepted clock-skew duration remains a separate Telemetry policy prerequisite and must not be guessed by this semantic review.
+
+HMSR-037 does not modify production Java, JPA, Flyway, API/application contracts, tests, telemetry readings/catalogs, or provisioned data.
+
+### 50.13 SONATRACH/TRC operational interpretation
+
+For SONATRACH/TRC, TelemetryReading is acquisition evidence from SCADA, historians, OPC, MQTT, gateways, imports, or other telemetry sources. It must remain traceable to a canonical point, source-quality vocabulary, ingestion context, and any external tag mapping used to interpret the source signal.
+
+Dangling batch/mapping references or ambiguous multi-value rows weaken forensic traceability and can contaminate downstream alarms, trusted-reading qualification, analytics, leak detection, and operational reporting.
+
+Raw readings remain evidence; operational consumers should rely on trusted readings when a trust-qualified contract is required.
+
+### 50.14 Review conclusion
+
+**REVISE.** `TelemetryReading` has a coherent 16-field raw-acquisition role, correct Level-1 dependency on TelemetryPoint, exact technical reading-state vocabulary, mandatory source/receive timestamps, and database-protected point and quality-code row existence.
+
+The target baseline cannot mark it APPROVED while optional batch and external-tag mapping references can dangle, quality-code catalog-family semantics are not fail-closed, and the documented value-shape rule is not authoritative end-to-end.
+
+HMS reconciliation must retain these obligations until an explicitly authorized Telemetry correction task resolves them or the governing Telemetry DDD/ingestion policy is explicitly revised with stronger evidence.
+
+## 51. Current next task
+
+```text
+HMSR-038 — simulation.SimulationScenario
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review telemetry TelemetryReading
+docs(model-review): review simulation SimulationScenario
 ```
 
-Start HMSR-037 only after HMSR-036 is committed and reported. Do not start HMSR-038 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-038 only after HMSR-037 is committed and reported. Do not start HMSR-039 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

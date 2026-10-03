@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -225,7 +225,7 @@ Ordering rules applied:
 | HMSR-030 | 0 | organization | OrganizationContactPoint | — | — | 0 | 0 | 0 | APPROVED | Completed | `docs(model-review): review organization OrganizationContactPoint` |
 | HMSR-031 | 0 | organization | ReportingLine | — | — | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review organization ReportingLine` |
 | HMSR-032 | 0 | risk | RiskMatrixCell | — | — | 0 | 0 | 2 | REVISE | Completed | `docs(model-review): review risk RiskMatrixCell` |
-| HMSR-033 | 0 | telemetry | TelemetrySource | — | — | 0 | 0 | 0 | — | Planned | `docs(model-review): review telemetry TelemetrySource` |
+| HMSR-033 | 0 | telemetry | TelemetrySource | — | — | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review telemetry TelemetrySource` |
 | HMSR-034 | 0 | topology | TopologyConnection | — | — | 0 | 0 | 3 | — | Planned | `docs(model-review): review topology TopologyConnection` |
 | HMSR-035 | 1 | organization | OrganizationUnit | SCC-01 | organization.OrganizationUnit, organization.OrganizationUnitType | 22 | 51 | 0 | — | Planned | `docs(model-review): review organization OrganizationUnit` |
 | HMSR-036 | 1 | organization | AdministrativeDistrict | — | organization.AdministrativeState | 1 | 16 | 0 | — | Planned | `docs(model-review): review organization AdministrativeDistrict` |
@@ -2646,8 +2646,8 @@ Confirmed subject-model graph edges at this stage: **165**. These are semantic c
 | Field | Declared type | Classification | Resolved target | Graph edge | Notes |
 |---|---|---|---|:---:|---|
 | id | String | Self identifier | — | No | Primary identity of the current model. |
-| sourceTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
-| protocolId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
+| sourceTypeId | String | Value/catalog dependency | telemetry.TelemetryCatalogEntry (SOURCE_TYPE) | No | HMSR-033 stronger Telemetry DDD + HRA-111 evidence resolves this required source-type reference to `hidra_telemetry_type_catalog`; family and active-entry semantics remain to be enforced. |
+| protocolId | String | Value/catalog dependency | telemetry.TelemetryCatalogEntry (PROTOCOL) | No | HMSR-033 stronger Telemetry DDD + HRA-111 evidence resolves this required protocol reference to `hidra_telemetry_type_catalog`; family and active-entry semantics remain to be enforced. |
 
 #### telemetry.TrustedTelemetryReading
 
@@ -7671,16 +7671,190 @@ The target baseline cannot mark it APPROVED while the explicit DDD uniqueness an
 
 HMS reconciliation must retain these obligations until an explicitly authorized Risk correction task resolves them or stronger repository evidence explicitly changes the Risk matrix semantics.
 
-## 46. Current next task
+## 46. HMSR-033 — telemetry.TelemetrySource review
+
+**Decision:** REVISE  
+**Review code:** HMSR-033  
+**Dependency level:** 0  
+**Bounded context:** telemetry  
+**Confirmed upstream subject dependencies:** none  
+**Confirmed direct HMS subject dependents:** 0  
+**Transitive HMS subject dependents:** 0  
+**Unresolved/non-subject references:** 0
+
+### 46.1 Semantic role and ordering rationale
+
+`TelemetrySource` is the Telemetry-owned acquisition-source model representing systems such as SCADA, historians, OPC-UA servers, MQTT brokers, API/import feeds, manual sources, and edge gateways.
+
+It is Level 0 because its taxonomy references resolve to Telemetry-owned catalog rows outside the 123 HMS subject set. Downstream persistence models such as TelemetryDevice and TelemetrySourceEndpoint reference it, but they are not direct HMS subject dependents in this roadmap.
+
+Telemetry DDD explicitly owns acquisition-source metadata while keeping secrets outside telemetry persistence and keeping physical-network ownership in Topology.
+
+### 46.2 Field semantics
+
+| Field | Type | Mandatory / optional | Reviewed meaning |
+|---|---|---|---|
+| `id` | `String` | Mandatory | Stable source identity and persistence primary key. |
+| `code` | `String` | Mandatory and DDD-unique | Stable source code such as a SCADA/historian acquisition source identifier. |
+| `nameAr` | `String` | Optional localized label | Arabic source name. |
+| `nameFr` | `String` | DDD/persistence-required localized label | French source name. |
+| `nameEn` | `String` | Optional localized label | English source name. |
+| `sourceTypeId` | `String` | Mandatory controlled reference | Must resolve to an active Telemetry catalog entry in family `SOURCE_TYPE`. |
+| `protocolId` | `String` | Mandatory controlled reference | Must resolve to an active Telemetry catalog entry in family `PROTOCOL`. |
+| `endpointUri` | `String` | Optional legacy/simple endpoint | Endpoint URI for simple source configuration; must not contain secret material. |
+| `externalReference` | `String` | Optional external identifier | SCADA/historian/integration source reference; must not contain secret material. |
+| `status` | `TelemetryLifecycleStatus` | Mandatory | Source lifecycle state. Current source-specific DDD vocabulary and shared enum are not fully reconciled. |
+| `createdAt` | `Instant` | Persistence-required audit timestamp | Creation timestamp. |
+| `updatedAt` | `Instant` | Persistence-required audit timestamp | Last-update timestamp. |
+
+The current constructor already rejects blank `id`, `code`, `sourceTypeId`, and `protocolId`, requires non-null status, and normalizes textual fields.
+
+### 46.3 Source-type and protocol dependency resolution
+
+Telemetry DDD defines:
 
 ```text
-HMSR-033 — telemetry.TelemetrySource
+sourceTypeId -> TelemetryCatalogEntry where catalogName = SOURCE_TYPE
+protocolId   -> TelemetryCatalogEntry where catalogName = PROTOCOL
+```
+
+HRA-111 installs database FKs:
+
+```text
+hidra_telemetry_source.source_type_id
+    -> hidra_telemetry_type_catalog.id
+    via fk_hra111_telemetry_022
+
+hidra_telemetry_source.protocol_id
+    -> hidra_telemetry_type_catalog.id
+    via fk_hra111_telemetry_021
+```
+
+so dangling IDs are prevented. These catalog rows are retained Telemetry read/persistence models outside the HMS subject set; no HMS graph edge is added.
+
+However, generic FK existence does not prove that the referenced row belongs to the required catalog family or is active.
+
+### 46.4 Missing catalog-family and active-entry validation
+
+TelemetrySource DDD states explicitly:
+
+```text
+sourceTypeId must reference an active SOURCE_TYPE catalog entry.
+protocolId must reference an active PROTOCOL catalog entry.
+```
+
+The current create command/request accepts raw IDs, and `TelemetrySourceApplicationService.createTelemetrySource()` passes them directly into the aggregate before persistence.
+
+No current Telemetry catalog lookup/validation boundary was found for source creation. Therefore a valid catalog-row ID from the wrong family, or an inactive row, can satisfy the FK while violating source semantics.
+
+### 46.5 Missing source-code uniqueness enforcement
+
+The Telemetry DDD explicitly says:
+
+```text
+code must be unique.
+```
+
+The Telemetry roadmap's target metadata shape also describes source `code unique`.
+
+The live schema currently has an ordinary index on `hidra_telemetry_source(code)` rather than a unique constraint/index, and the repository port exposes no code-existence lookup used by the create service.
+
+Therefore two TelemetrySource rows can currently carry the same business code.
+
+### 46.6 Required French source label mismatch
+
+The source-specific DDD field table marks `nameFr` as required. JPA and the base migration also declare `name_fr NOT NULL`.
+
+The canonical domain constructor nevertheless treats `nameFr` like the optional labels and normalizes null/blank input to `null`. The active create service does not add a separate guard.
+
+Unlike a generic persistence-only label inference, this obligation is supported directly by the TelemetrySource DDD itself.
+
+### 46.7 Secret-material persistence gap
+
+TelemetrySource DDD explicitly requires:
+
+```text
+Secrets must never be stored in endpointUri or externalReference.
+```
+
+The active source-creation path accepts both strings and persists them directly. No Telemetry secret-material guard, sanitization policy, or external credential-reference enforcement was found for this write path.
+
+HMSR-033 does not invent a password-detection regex, URI syntax, or vault-reference format. The future correction must fail closed against actual secret material while preserving legitimate sanitized endpoint URIs and external identifiers.
+
+### 46.8 Source lifecycle vocabulary reconciliation
+
+The source-specific DDD lists source lifecycle values:
+
+```text
+DRAFT
+ACTIVE
+INACTIVE
+SUSPENDED
+RETIRED
+```
+
+The shared live `TelemetryLifecycleStatus` enum also contains `PLANNED` and `MAINTENANCE`. Those additional values are supported elsewhere in Telemetry, notably device semantics, but the Telemetry roadmap conceptually distinguishes source/device/point lifecycle enums.
+
+As currently modeled, a TelemetrySource can therefore be persisted in `PLANNED` or `MAINTENANCE` even though the source-specific DDD does not define those states.
+
+HMSR-033 does not choose whether those states should be added to the source DDD or excluded from source state. A separate Telemetry correction must establish one authoritative source lifecycle contract.
+
+### 46.9 ACTIVE-source ingestion rule
+
+The DDD states that only ACTIVE sources can ingest telemetry.
+
+The current repository does not expose the future high-velocity ingestion application contract yet; the extended-capability roadmap keeps that work deferred. Therefore HMSR-033 records this as a boundary rule that must be preserved when ingestion is implemented, rather than inventing a missing ingestion service solely to satisfy this review.
+
+The current create path correctly creates new sources in `DRAFT`, so source creation itself does not violate the ACTIVE-only ingestion rule.
+
+### 46.10 Multilingual and endpoint ownership semantics
+
+The explicit `nameAr/nameFr/nameEn` fields are consistent with Telemetry's multilingual roadmap. Source type and protocol remain catalog-backed user-facing taxonomies, which is also consistent with the roadmap's prohibition on fixed Java enums for those business classifications.
+
+`endpointUri` is documented as a legacy/simple endpoint field. Multi-endpoint configuration belongs to retained `TelemetrySourceEndpoint`, which references TelemetrySource and has its own protocol/credential-reference semantics. HMSR-033 does not remove `endpointUri` merely because the richer endpoint model exists.
+
+### 46.11 Required revisions
+
+Five evidence-backed correction obligations remain:
+
+1. **Enforce unique TelemetrySource code.** The DDD-defined unique source code must be protected at the persistence boundary, preferably with an additive unique constraint/index and aligned application behavior.
+
+2. **Validate source type and protocol catalog semantics.** `sourceTypeId` must resolve to an active `SOURCE_TYPE` entry and `protocolId` to an active `PROTOCOL` entry; generic FK row existence is insufficient.
+
+3. **Require the DDD-mandated French source label.** `nameFr` must not normalize to null at the canonical source creation/domain boundary while the target DDD and schema require it.
+
+4. **Prevent secret material in source endpoint/external-reference fields.** The source write boundary must reject or sanitize actual secrets instead of persisting them in `endpointUri` or `externalReference`; credential material belongs outside telemetry persistence.
+
+5. **Reconcile TelemetrySource lifecycle vocabulary.** Establish whether `PLANNED` and `MAINTENANCE` are valid source states or are only valid for other Telemetry entities, and align source domain/application/persistence/API semantics accordingly.
+
+HMSR-033 does not modify production Java, JPA, Flyway, API/application contracts, tests, telemetry source/catalog data, or provisioned data.
+
+### 46.12 SONATRACH/TRC operational interpretation
+
+For SONATRACH/TRC, TelemetrySource identifies an authoritative acquisition origin such as SCADA, historian, OPC gateway, MQTT broker, API feed, or manual/import channel.
+
+A source must be uniquely identifiable, classified with the correct governed source/protocol taxonomies, and free of embedded credentials. Incorrect taxonomy or duplicated source identity can contaminate provenance; embedded secrets create an operational-security exposure.
+
+Source lifecycle also matters operationally because only sources authorized as ACTIVE should later contribute ingestable telemetry.
+
+### 46.13 Review conclusion
+
+**REVISE.** `TelemetrySource` has a coherent 12-field Telemetry-owned acquisition role, correct Level-0 placement, catalog-backed source/protocol references, multilingual naming shape, conservative DRAFT creation, and database-protected catalog row existence.
+
+The target baseline cannot mark it APPROVED while source-code uniqueness, catalog family/active eligibility, required French label semantics, secret-material exclusion, and source-specific lifecycle vocabulary remain inconsistent or unenforced.
+
+HMS reconciliation must retain these obligations until an explicitly authorized Telemetry correction task resolves them or the governing Telemetry DDD/roadmap is explicitly revised with stronger evidence.
+
+## 47. Current next task
+
+```text
+HMSR-034 — topology.TopologyConnection
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review telemetry TelemetrySource
+docs(model-review): review topology TopologyConnection
 ```
 
-Start HMSR-033 only after HMSR-032 is committed and reported. Do not start HMSR-034 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-034 only after HMSR-033 is committed and reported. Do not start HMSR-035 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

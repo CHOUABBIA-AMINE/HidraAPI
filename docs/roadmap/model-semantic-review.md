@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -239,7 +239,7 @@ Ordering rules applied:
 | HMSR-044 | 1 | configuration | ConfigurationValue | — | configuration.ConfigurationDefinition | 0 | 0 | 1 | REVISE | Completed | `docs(model-review): review configuration ConfigurationValue` |
 | HMSR-045 | 1 | identity | ExternalRoleMapping | — | identity.IdentityProvider, identity.Role | 0 | 0 | 0 | APPROVED | Completed | `docs(model-review): review identity ExternalRoleMapping` |
 | HMSR-046 | 1 | identity | GroupRoleGrant | — | identity.Role | 0 | 0 | 2 | APPROVED | Completed | `docs(model-review): review identity GroupRoleGrant` |
-| HMSR-047 | 1 | identity | RolePermissionGrant | — | identity.Permission, identity.Role | 0 | 0 | 0 | — | Planned | `docs(model-review): review identity RolePermissionGrant` |
+| HMSR-047 | 1 | identity | RolePermissionGrant | — | identity.Permission, identity.Role | 0 | 0 | 0 | APPROVED | Completed | `docs(model-review): review identity RolePermissionGrant` |
 | HMSR-048 | 1 | monitoring | MonitoringRule | — | telemetry.TelemetryPoint | 0 | 0 | 0 | — | Planned | `docs(model-review): review monitoring MonitoringRule` |
 | HMSR-049 | 1 | party | PartyRoleAssignment | — | party.Party | 0 | 0 | 0 | — | Planned | `docs(model-review): review party PartyRoleAssignment` |
 | HMSR-050 | 1 | topology | Pipeline | — | topology.PipelineSystem | 0 | 0 | 0 | — | Planned | `docs(model-review): review topology Pipeline` |
@@ -1997,8 +1997,8 @@ Confirmed subject-model graph edges at this stage: **165**. These are semantic c
 | Field | Declared type | Classification | Resolved target | Graph edge | Notes |
 |---|---|---|---|:---:|---|
 | id | String | Self identifier | — | No | Primary identity of the current model. |
-| roleId | String | Domain reference | identity.Role | Yes | Unambiguous same-module subject-model reference. |
-| permissionId | String | Domain reference | identity.Permission | Yes | Unambiguous same-module subject-model reference. |
+| roleId | String | Domain reference | identity.Role | Yes | Mandatory same-module HMS subject reference; authoritative application writes resolve existence and HRA-111 protects `role_id -> hidra_identity_role.id`. |
+| permissionId | String | Domain reference | identity.Permission | Yes | Mandatory same-module HMS subject reference; authoritative application writes resolve existence and HRA-111 protects `permission_id -> hidra_identity_permission.id`. |
 
 #### identity.User
 
@@ -10071,17 +10071,165 @@ No evidence-backed production correction obligation remains for HMSR-046.
 
 HMSR-046 does not modify production Java, JPA, Flyway, application/API contracts, tests, grants, Groups, Roles, Workflow records, or provisioned data.
 
-## 60. Current next task
+## 60. HMSR-047 — identity.RolePermissionGrant review
+
+**Decision:** APPROVED  
+**Review code:** HMSR-047  
+**Dependency level:** 1  
+**Bounded context:** identity  
+**Confirmed upstream subject dependencies:** `identity.Permission`, `identity.Role`  
+**Confirmed direct HMS subject dependents:** 0  
+**Transitive HMS subject dependents:** 0  
+**Unresolved/non-subject references:** 0
+
+### 60.1 Semantic role and ordering rationale
+
+`RolePermissionGrant` assigns one Identity Permission to one Identity Role with an explicit GRANT/DENY effect, optional ABAC condition and effective interval.
+
+It is Level 1 because both parent identities — `Role` and `Permission` — are already-reviewed HMS subjects.
+
+The model is Identity-owned authorization state. It does not represent Organization responsibility or physical-asset ownership.
+
+### 60.2 Field semantics
+
+| Field | Type | Reviewed meaning |
+|---|---|---|
+| `id` | `String` | Mandatory stable grant identity. |
+| `roleId` | `String` | Mandatory same-module reference to Role. |
+| `permissionId` | `String` | Mandatory same-module reference to Permission. |
+| `effect` | `GrantEffect` | Mandatory authorization effect; DDD defines `GRANT` or `DENY`. |
+| `conditionExpression` | `String` persisted as JSONB | Optional ABAC condition attached to the grant. |
+| `validFrom` | `Instant` | Mandatory effective start. |
+| `validTo` | `Instant` | Optional effective end. |
+| `status` | `GrantStatus` | Mandatory grant lifecycle state. |
+| `createdAt` | `Instant` | Persistence-required creation timestamp. |
+
+The canonical constructor requires nonblank ID, Role ID and Permission ID; non-null effect, validFrom and status; and rejects `validTo < validFrom`.
+
+### 60.3 Role and Permission reference integrity
+
+The final schema requires:
 
 ```text
-HMSR-047 — identity.RolePermissionGrant
+role_id NOT NULL
+permission_id NOT NULL
+```
+
+HRA-111 installs and validates:
+
+```text
+role_id       -> hidra_identity_role.id
+permission_id -> hidra_identity_permission.id
+```
+
+The authoritative `IdentityAdministrationCommandApplicationService.grantPermissionToRole()` also resolves both Role and Permission before constructing and saving the grant.
+
+Therefore both HMS dependencies are fail-closed in the active write path and at persistence.
+
+### 60.4 Effect and ABAC condition semantics
+
+The Identity DDD defines RolePermissionGrant effect as:
+
+```text
+GRANT
+DENY
+```
+
+and identifies `conditionExpression` as an optional ABAC condition.
+
+The domain requires a non-null `GrantEffect`; the application parses the command value through the enum boundary before construction.
+
+Current DDD evidence does not require every grant to carry a condition, does not define a condition-expression schema beyond JSON, and does not require one effect to be paired with a condition. HMSR-047 does not invent those rules.
+
+### 60.5 Validity and lifecycle semantics
+
+`validFrom` is mandatory and `validTo` optional.
+
+The canonical domain enforces:
+
+```text
+validFrom <= validTo
+```
+
+when an end exists.
+
+The active administration service validates the same chronology before construction, defaults an omitted start to the current instant, and creates the grant as `GrantStatus.ACTIVE`.
+
+The Identity authorization query path filters grants by status and effective interval before applying allow/deny decisions, which is consistent with the DDD time-validity rule.
+
+Current evidence does not define duplicate/overlap uniqueness, automatic expiration mutation, or a richer status-transition matrix. None are invented.
+
+### 60.6 Target lifecycle eligibility deliberately not invented
+
+The active application service proves Role and Permission existence through their repositories before save.
+
+Current Identity DDD evidence reviewed for HMSR-047 does not explicitly state that only ACTIVE Roles or ACTIVE Permissions may receive a RolePermissionGrant, nor does it define automatic revocation if either target later changes lifecycle state.
+
+HMSR-047 therefore does not elevate lifecycle eligibility into a correction obligation without explicit supporting evidence.
+
+### 60.7 Domain/JPA/Flyway/application alignment
+
+Domain and JPA agree on all nine semantic components.
+
+Persistence requires:
+
+```text
+id
+role_id
+permission_id
+effect
+valid_from
+status
+created_at
+```
+
+with nullable condition expression and valid-to timestamp.
+
+The domain enforces all required business fields other than the audit timestamp, which is intentionally persistence/application metadata.
+
+Both references have application-level existence checks and validated same-module FK protection.
+
+### 60.8 Rules deliberately not invented
+
+HMSR-047 does not infer:
+
+- uniqueness of Role/Permission grants;
+- overlap prohibition for multiple effective grants;
+- mandatory Workflow approval;
+- mandatory grant reason;
+- active Role/Permission eligibility absent an explicit rule;
+- mandatory ABAC condition;
+- a condition-expression grammar beyond the documented JSON payload;
+- automatic status mutation on expiration;
+- precedence rules beyond the existing authorization evaluation implementation.
+
+### 60.9 SONATRACH/TRC operational interpretation
+
+For SONATRACH/TRC, RolePermissionGrant is a core RBAC relationship determining which Hidra capabilities an internal role can permit or deny.
+
+Its Role and Permission identities must be trustworthy, and effective dates/status must be respected during authorization evaluation. The current write and persistence boundaries provide those guarantees without coupling Identity to Organization or Topology master data.
+
+Optional ABAC conditions allow permissions to be constrained when required without making every role-permission relation conditional.
+
+### 60.10 Review conclusion
+
+**APPROVED.** `RolePermissionGrant` has coherent Role/Permission dependencies, authoritative existence validation, validated same-module FK protection, explicit GRANT/DENY semantics, optional ABAC condition support, correctly enforced effective-period ordering, and runtime time/status filtering.
+
+No evidence-backed production correction obligation remains for HMSR-047.
+
+HMSR-047 does not modify production Java, JPA, Flyway, application/API contracts, tests, roles, permissions, grants, or provisioned data.
+
+## 61. Current next task
+
+```text
+HMSR-048 — monitoring.MonitoringRule
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review identity RolePermissionGrant
+docs(model-review): review monitoring MonitoringRule
 ```
 
-Start HMSR-047 only after HMSR-046 is committed and reported. Do not start HMSR-048 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-048 only after HMSR-047 is committed and reported. Do not start HMSR-049 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
 

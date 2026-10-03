@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -257,7 +257,7 @@ Ordering rules applied:
 | HMSR-062 | 2 | telemetry | TrustedTelemetryReading | — | telemetry.TelemetryPoint, telemetry.TelemetryReading | 1 | 1 | 3 | REVISE | Completed | `docs(model-review): review telemetry TrustedTelemetryReading` |
 | HMSR-063 | 2 | topology | Equipment | — | party.Party, topology.Facility | 0 | 0 | 2 | REVISE | Completed | `docs(model-review): review topology Equipment` |
 | HMSR-064 | 3 | workflow | WorkflowInstance | — | workflow.WorkflowDefinition, workflow.WorkflowStep | 18 | 32 | 1 | REVISE | Completed | `docs(model-review): review workflow WorkflowInstance` |
-| HMSR-065 | 3 | organization | Employee | — | organization.AdministrativeLocality | 6 | 14 | 1 | — | Planned | `docs(model-review): review organization Employee` |
+| HMSR-065 | 3 | organization | Employee | — | organization.AdministrativeLocality | 6 | 14 | 1 | APPROVED | Completed | `docs(model-review): review organization Employee` |
 | HMSR-066 | 3 | simulation | SimulationOptimizationCandidate | — | simulation.SimulationRun | 2 | 2 | 0 | — | Planned | `docs(model-review): review simulation SimulationOptimizationCandidate` |
 | HMSR-067 | 3 | integration | IntegrationExchangeMessage | — | integration.ExternalSystem, integration.IntegrationJobRun | 1 | 1 | 2 | — | Planned | `docs(model-review): review integration IntegrationExchangeMessage` |
 | HMSR-068 | 3 | reporting | ReportRun | — | reporting.ReportDefinition, reporting.ReportRequest | 1 | 1 | 0 | — | Planned | `docs(model-review): review reporting ReportRun` |
@@ -2289,7 +2289,7 @@ Confirmed subject-model graph edges at this stage: **165**. These are semantic c
 | Field | Declared type | Classification | Resolved target | Graph edge | Notes |
 |---|---|---|---|:---:|---|
 | id | String | Self identifier | — | No | Primary identity of the current model. |
-| birthLocalityId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| birthLocalityId | String | Optional domain reference | organization.AdministrativeLocality | Yes | Optional normalized birthplace reference. HRA-013 added `fk_org_employee_birth_locality`; multilingual free-text birthplace fields remain valid for foreign/historical places and do not require synthetic locality rows. |
 
 #### organization.EmployeeAddress
 
@@ -12799,16 +12799,164 @@ The target baseline cannot mark it APPROVED because authoritative instance start
 
 HMS reconciliation must retain these obligations until explicitly authorized Workflow production corrections resolve them or stronger repository evidence changes the governing Workflow DDD.
 
-## 78. Current next task
+## 78. HMSR-065 — organization.Employee review
+
+**Decision:** APPROVED  
+**Review code:** HMSR-065  
+**Dependency level:** 3  
+**Bounded context:** organization  
+**Confirmed upstream subject dependencies:** optional `organization.AdministrativeLocality`  
+**Confirmed direct HMS subject dependents:** 6  
+**Transitive HMS subject dependents:** 14
+
+### 78.1 Semantic role
+
+`Employee` is the Organization-owned operational person model. It owns stable employee/business identity, structured Arabic/Latin names, optional birth data, employment classification/lifecycle, optional hire/termination timestamps and an optional neutral Identity user reference.
+
+It is explicitly distinct from `identity.User`. Employee postal addresses belong to `EmployeeAddress`, and canonical communication channels belong to `OrganizationContactPoint`.
+
+### 78.2 Birth locality and birthplace semantics
+
+`birthLocalityId` is optional and resolves to Organization-owned `AdministrativeLocality`.
+
+HRA-013 already added the same-module database constraint:
 
 ```text
-HMSR-065 — organization.Employee
+hidra_org_employee.birth_locality_id
+    -> hidra_org_administrative_locality.id
+```
+
+with `ON DELETE RESTRICT`.
+
+This matches the domain semantics: locality is used only when the birthplace maps to the current Algerian administrative hierarchy.
+
+The separate `birthPlaceAr`, `birthPlaceFr` and `birthPlaceEn` fields intentionally preserve authoritative/free-text foreign, historical or otherwise non-normalized place names. The repository explicitly states that no fake AdministrativeLocality record should be created merely to satisfy the schema.
+
+No further reference-integrity revision is required.
+
+### 78.3 Names and multilingual handling
+
+The canonical employee name structure is:
+
+```text
+firstNameAr
+lastNameAr
+firstNameLt
+lastNameLt
+```
+
+Arabic and Latin display names are derived in the domain through `arabicDisplayName()` and `latinDisplayName()`.
+
+The historical persisted `displayNameAr` and `displayNameLt` components are explicitly marked compatibility-only and deprecated for removal. Their presence is therefore a tracked migration concern, not evidence that the semantic target model is incorrectly owned or normalized.
+
+HMSR-065 does not reopen the already documented compatibility cutover.
+
+### 78.4 Contact-data ownership
+
+Direct `emailAddress` and `mobileNumber` fields are explicitly deprecated compatibility state.
+
+The active `EmployeeApplicationService.registerEmployee()` writes registration email/mobile data through `CreateOrganizationContactPointUseCase` targeting the Employee, while constructing the Employee itself with those legacy direct fields null.
+
+This matches the declared target architecture:
+
+```text
+Employee -> stable person/employment identity
+OrganizationContactPoint -> canonical communication channels
+```
+
+No additional semantic revision is required for contact ownership.
+
+### 78.5 Employment classification and lifecycle
+
+`EmployeeType` currently defines:
+
+```text
+PERMANENT
+TEMPORARY
+CONTRACTUAL
+INTERN
+CONSULTANT
+```
+
+`EmployeeStatus` defines:
+
+```text
+REGISTERED
+ACTIVE
+SUSPENDED
+RETIRED
+TERMINATED
+```
+
+Current Organization evidence treats employee type as an employment classification and EmployeeStatus as lifecycle state. Unlike the Topology Equipment review, the live Organization roadmap does not provide stronger evidence requiring EmployeeType to be replaced by a catalog-backed model.
+
+HMSR-065 therefore does not invent a taxonomy migration.
+
+### 78.6 Identity boundary
+
+`identityUserReference` is optional and explicitly documented as a neutral Identity reference only.
+
+Organization does not own login users, credentials, roles or permissions, and the model does not import Identity domain state.
+
+Current Organization DDD evidence does not require every Employee to map to an Identity user and does not establish a cross-module relational constraint.
+
+Therefore the neutral-reference classification is preserved and no cross-module database FK is appropriate.
+
+### 78.7 Domain invariants
+
+The Employee record already enforces the repository-supported invariants:
+
+```text
+id is required
+employeeNumber is required
+employeeType is required
+status is required
+dateOfBirth must not be in the future
+terminatedAt requires hiredAt
+terminatedAt >= hiredAt
+```
+
+Optional text is normalized consistently.
+
+HMSR-065 found no stronger current evidence for additional lifecycle transitions, mandatory hire dates, mandatory Identity linkage, or mandatory normalized birthplace.
+
+### 78.8 Application creation semantics
+
+`EmployeeApplicationService.registerEmployee()`:
+
+```text
+creates a new Organization employee ID
+defaults employeeType to PERMANENT only when absent
+starts lifecycle as REGISTERED
+passes canonical birth fields into Employee
+persists the Employee
+writes supplied email/mobile through OrganizationContactPoint
+```
+
+These behaviors are consistent with the current Organization model and previously completed remediation work.
+
+HMSR-065 found no evidence-backed semantic defect in the authoritative registration path requiring a new HMS revision obligation.
+
+### 78.9 Review conclusion
+
+**APPROVED.** `Employee` is a coherent 22-field Organization-owned operational-person model. The optional birth-locality reference is correctly protected inside the bounded context; free-text multilingual birthplace semantics avoid fabricated geography; structured names and canonical contact ownership are explicit; direct display/contact fields are already isolated as compatibility state; Identity remains a neutral external reference; and the domain enforces the currently documented birth/employment temporal invariants.
+
+No production correction is required by HMSR-065.
+
+Previously planned compatibility cleanup remains governed by its existing Organization/remediation roadmap and is not duplicated as a new HMSR obligation.
+
+HMSR-065 does not modify production Java, JPA, Flyway, API/application contracts, tests, Organization data, Identity data, or provisioned data.
+
+## 79. Current next task
+
+```text
+HMSR-066 — simulation.SimulationOptimizationCandidate
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review organization Employee
+docs(model-review): review simulation SimulationOptimizationCandidate
 ```
 
-Start HMSR-065 only after HMSR-064 is committed and reported. Do not start HMSR-066 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-066 only after HMSR-065 is committed and reported. Do not start HMSR-067 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

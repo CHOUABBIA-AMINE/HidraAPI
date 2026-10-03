@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 reviewed as REVISE, HMSR-080 reviewed as REVISE, HMSR-081 reviewed as REVISE, HMSR-082 reviewed as REVISE, HMSR-083 approved, HMSR-084 reviewed as REVISE, HMSR-085 reviewed as REVISE, HMSR-086 approved, HMSR-087 reviewed as REVISE, HMSR-088 reviewed as REVISE, HMSR-089 reviewed as REVISE, HMSR-090 reviewed as REVISE, HMSR-091 reviewed as REVISE, HMSR-092 reviewed as REVISE, HMSR-093 reviewed as REVISE, HMSR-094 reviewed as REVISE, HMSR-095 reviewed as REVISE, HMSR-096 reviewed as REVISE, HMSR-097 reviewed as REVISE, HMSR-098 reviewed as REVISE, HMSR-099 approved, HMSR-100 reviewed as REVISE, HMSR-101 reviewed as REVISE, HMSR-102 approved, HMSR-103 approved, HMSR-104 reviewed as REVISE, HMSR-105 reviewed as REVISE, HMSR-106 reviewed as REVISE, HMSR-107 reviewed as REVISE, HMSR-108 reviewed as REVISE, HMSR-109 reviewed as REVISE, HMSR-110 reviewed as REVISE, HMSR-111 reviewed as REVISE, HMSR-112 reviewed as REVISE, HMSR-113 reviewed as REVISE, HMSR-114 reviewed as REVISE, HMSR-115 reviewed as REVISE, HMSR-116 reviewed as REVISE, HMSR-117 reviewed as REVISE, HMSR-118 reviewed as REVISE, HMSR-119 reviewed as REVISE, HMSR-120 reviewed as REVISE, HMSR-121 reviewed as REVISE, HMSR-122 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 reviewed as REVISE, HMSR-080 reviewed as REVISE, HMSR-081 reviewed as REVISE, HMSR-082 reviewed as REVISE, HMSR-083 approved, HMSR-084 reviewed as REVISE, HMSR-085 reviewed as REVISE, HMSR-086 approved, HMSR-087 reviewed as REVISE, HMSR-088 reviewed as REVISE, HMSR-089 reviewed as REVISE, HMSR-090 reviewed as REVISE, HMSR-091 reviewed as REVISE, HMSR-092 reviewed as REVISE, HMSR-093 reviewed as REVISE, HMSR-094 reviewed as REVISE, HMSR-095 reviewed as REVISE, HMSR-096 reviewed as REVISE, HMSR-097 reviewed as REVISE, HMSR-098 reviewed as REVISE, HMSR-099 approved, HMSR-100 reviewed as REVISE, HMSR-101 reviewed as REVISE, HMSR-102 approved, HMSR-103 approved, HMSR-104 reviewed as REVISE, HMSR-105 reviewed as REVISE, HMSR-106 reviewed as REVISE, HMSR-107 reviewed as REVISE, HMSR-108 reviewed as REVISE, HMSR-109 reviewed as REVISE, HMSR-110 reviewed as REVISE, HMSR-111 reviewed as REVISE, HMSR-112 reviewed as REVISE, HMSR-113 reviewed as REVISE, HMSR-114 reviewed as REVISE, HMSR-115 reviewed as REVISE, HMSR-116 reviewed as REVISE, HMSR-117 reviewed as REVISE, HMSR-118 reviewed as REVISE, HMSR-119 reviewed as REVISE, HMSR-120 reviewed as REVISE, HMSR-121 reviewed as REVISE, HMSR-122 reviewed as REVISE, HMSR-123 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -314,7 +314,7 @@ Ordering rules applied:
 | HMSR-119 | 7 | audit | AuditBeforeAfterValue | — | audit.AuditEvent | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review audit AuditBeforeAfterValue` |
 | HMSR-120 | 7 | monitoring | PlanActualDeviation | — | planning.PlanTarget, telemetry.TelemetryPoint, telemetry.TrustedTelemetryReading | 0 | 0 | 4 | REVISE | Completed | `docs(model-review): review monitoring PlanActualDeviation` |
 | HMSR-121 | 8 | alarm | AlarmAcknowledgement | — | alarm.Alarm, organization.OrganizationUnit | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review alarm AlarmAcknowledgement` |
-| HMSR-122 | 8 | alarm | AlarmClosure | — | alarm.Alarm, workflow.WorkflowInstance | 0 | 0 | 0 | — | Planned | `docs(model-review): review alarm AlarmClosure` |
+| HMSR-122 | 8 | alarm | AlarmClosure | — | alarm.Alarm, workflow.WorkflowInstance | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review alarm AlarmClosure` |
 | HMSR-123 | 8 | alarm | AlarmShelving | — | alarm.Alarm | 0 | 0 | 0 | — | Planned | `docs(model-review): review alarm AlarmShelving` |
 
 Each HMSR code is an independent interactive review commit. Execute only the model explicitly authorized by the user. A model in an SCC may be reviewed individually, but its final semantic acceptance must remain consistent with the other members of that SCC.
@@ -20129,16 +20129,108 @@ The baseline cannot be marked APPROVED while the authoritative acknowledgement p
 
 HMS reconciliation must retain these obligations until explicitly authorized Alarm production work resolves them or stronger repository evidence changes the governing Alarm contract.
 
-## 135. Current next task
+## 135. HMSR-122 — alarm.AlarmClosure review
+
+**Decision:** REVISE  
+**Review code:** HMSR-122  
+**Dependency level:** 8  
+**Bounded context:** alarm  
+**Confirmed upstream subject dependencies:** mandatory same-module `alarm.Alarm`; optional Workflow-owned `workflow.WorkflowInstance` review reference  
+**Confirmed direct HMS subject dependents:** 0  
+**Transitive HMS subject dependents:** 0  
+**Unresolved/non-subject reference count:** 0
+
+### 135.1 Semantic role
+
+`AlarmClosure` is the Alarm-owned administrative closure evidence created after normalization, cancellation, maintenance disposition, duplicate/false-alarm disposition, or escalation to Incident.
+
+The DDD is explicit that closure is part of the Alarm lifecycle, must produce an `AlarmLifecycleEvent`, and allows only one closure record per Alarm.
+
+### 135.2 Field and persistence alignment
+
+The live domain record, JPA entity, application close command path, repository port, and base Alarm migration align on the 10-field closure shape.
+
+The domain already fail-fast validates `id`, `alarmId`, `closureType`, `closedByActorId`, and `closedAt`.
+
+`AlarmClosureType` contains `NORMALIZED`, `FALSE_ALARM`, `DUPLICATE`, `MAINTENANCE`, `CANCELLED`, and `ESCALATED_TO_INCIDENT`, matching the DDD vocabulary; current evidence supports retaining it as a constrained technical/business enum.
+
+### 135.3 Same-module Alarm integrity
+
+`alarmId` is mandatory and HRA-111 correctly installs:
 
 ```text
-HMSR-122 — alarm.AlarmClosure
+hidra_alarm_closure.alarm_id
+  -> hidra_alarm.id
+```
+
+so a nonexistent Alarm fails at persistence.
+
+That FK does not enforce lifecycle eligibility or consistency between closure evidence and the owning Alarm row.
+
+### 135.4 Authoritative close-path defect
+
+`AlarmApplicationService.closeAlarm(...)` currently constructs and saves only `AlarmClosure`.
+
+It does not:
+
+1. load the referenced Alarm;
+2. fail closed on an unknown Alarm before constructing closure evidence;
+3. enforce the DDD rule that normal closure occurs after clear unless explicitly cancelled;
+4. update the Alarm `currentState`, `closedAt`, or `lastUpdatedAt`;
+5. record the required `AlarmLifecycleEvent`.
+
+Future production reconciliation must make closure one Alarm-owned transactional lifecycle operation that performs those steps together.
+
+### 135.5 One-closure-per-alarm invariant
+
+The DDD explicitly states: `Only one closure record per alarm.`
+
+The live table has an index on `alarm_id` but no uniqueness constraint, and the repository/application path does not check for an existing closure.
+
+Future production reconciliation must enforce one closure record per Alarm at an appropriate layer, with database reinforcement where consistent with the repository's chosen persistence invariant strategy.
+
+### 135.6 Review-workflow semantics
+
+`requiresReview` is mandatory and `reviewWorkflowInstanceId` is optional. The DDD describes the Workflow reference as applicable when review is required.
+
+The current evidence does not provide a complete owner-controlled review workflow contract or an explicit invariant statement that `requiresReview=true` must always carry a non-null workflow instance at closure creation.
+
+HMSR-122 therefore does not invent that mandatory coupling. If production policy later makes review workflow mandatory, validation must occur through Workflow-owned public contracts and no Alarm-to-Workflow database FK should be introduced.
+
+### 135.7 Closure reason and actor boundaries
+
+`closureReasonId` is optional. Current live evidence does not establish a precise Alarm catalog-family identifier for closure reasons strongly enough to invent one in HMSR-122.
+
+`closedByActorId` is required evidence but remains Identity-owned; no Alarm-to-Identity database FK is authorized.
+
+### 135.8 Required revisions
+
+Three evidence-backed production obligations remain:
+
+1. **Make `closeAlarm(...)` load/fail closed on the owning Alarm, enforce clear-before-close unless cancelled, update the Alarm lifecycle fields, persist `AlarmClosure`, and emit exactly one closure lifecycle event transactionally.**
+2. **Enforce the DDD's one-closure-record-per-Alarm invariant.**
+3. **Preserve Workflow and Identity ownership boundaries:** validate current references through owner-controlled contracts when required and do not add cross-module database FKs.
+
+HMSR-122 does not modify production Java, JPA, Flyway, API/application contracts, tests, Alarm/Workflow/Identity data, or provisioned data.
+
+### 135.9 Review conclusion
+
+**REVISE.** The 10-field closure shape, closure-type enum, mandatory Alarm FK, and cross-module reference strategy are structurally appropriate.
+
+The target baseline cannot be marked APPROVED while the authoritative close path can persist closure evidence without synchronizing Alarm lifecycle state or emitting lifecycle history, and while the explicit one-closure-per-Alarm invariant is unenforced.
+
+HMS reconciliation must retain these obligations until explicitly authorized Alarm production work resolves them or stronger repository evidence changes the governing Alarm contract.
+
+## 136. Current next task
+
+```text
+HMSR-123 — alarm.AlarmShelving
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review alarm AlarmClosure
+docs(model-review): review alarm AlarmShelving
 ```
 
-Start HMSR-122 only after HMSR-121 is committed and reported. Do not start HMSR-123 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-123 only after HMSR-122 is committed and reported. Do not start HMS-006/HMS-007/HMS-008 reconciliation automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

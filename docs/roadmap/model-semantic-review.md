@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -212,7 +212,7 @@ Ordering rules applied:
 | HMSR-017 | 0 | analytics | AnalyticsDataset | — | — | 1 | 1 | 0 | APPROVED | Completed | `docs(model-review): review analytics AnalyticsDataset` |
 | HMSR-018 | 0 | analytics | MetricEvaluationRun | — | — | 1 | 1 | 1 | REVISE | Completed | `docs(model-review): review analytics MetricEvaluationRun` |
 | HMSR-019 | 0 | configuration | ConfigurationDefinition | — | — | 1 | 1 | 1 | REVISE | Completed | `docs(model-review): review configuration ConfigurationDefinition` |
-| HMSR-020 | 0 | custody | CustodyMeasurementPeriod | — | — | 1 | 1 | 2 | — | Planned | `docs(model-review): review custody CustodyMeasurementPeriod` |
+| HMSR-020 | 0 | custody | CustodyMeasurementPeriod | — | — | 1 | 1 | 2 | REVISE | Completed | `docs(model-review): review custody CustodyMeasurementPeriod` |
 | HMSR-021 | 0 | integrity | PipelineDefect | — | — | 1 | 1 | 1 | — | Planned | `docs(model-review): review integrity PipelineDefect` |
 | HMSR-022 | 0 | organization | Position | — | — | 1 | 1 | 0 | — | Planned | `docs(model-review): review organization Position` |
 | HMSR-023 | 0 | organization | Shift | — | — | 1 | 1 | 0 | — | Planned | `docs(model-review): review organization Shift` |
@@ -1791,8 +1791,8 @@ Confirmed subject-model graph edges at this stage: **165**. These are semantic c
 | Field | Declared type | Classification | Resolved target | Graph edge | Notes |
 |---|---|---|---|:---:|---|
 | id | String | Self identifier | — | No | Primary identity of the current model. |
-| agreementId | String | Unresolved | — | No | Reference target is outside or absent from the 123 subject-model set; preserve for HMS-004 review. |
-| transferPointId | String | Unresolved | — | No | Reference target is outside or absent from the 123 subject-model set; preserve for HMS-004 review. |
+| agreementId | String | Domain reference | custody.CustodyAgreement (read/persistence model) | No | HMSR-020 stronger Custody DDD + HRA-111 evidence resolves this required same-module reference to `hidra_custody_agreement`; target is outside the 123 HMS subject set. |
+| transferPointId | String | Domain reference | custody.CustodyTransferPoint (read/persistence model) | No | HMSR-020 stronger Custody DDD + HRA-111 evidence resolves this required same-module reference to `hidra_custody_transfer_point`; target is outside the 123 HMS subject set. |
 | lockedByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
 | approvedByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
 
@@ -5484,16 +5484,164 @@ For SONATRACH/TRC, a ConfigurationDefinition may govern runtime limits, polling/
 
 The target baseline cannot mark it APPROVED while definition-level `defaultValue` can bypass the module's established no-secret-material / secret-reference-only boundary. HMS reconciliation must retain this obligation until an explicitly authorized Configuration correction task resolves it or the target semantics are explicitly changed.
 
-## 33. Current next task
+## 33. HMSR-020 — custody.CustodyMeasurementPeriod review
+
+**Decision:** REVISE  
+**Review code:** HMSR-020  
+**Dependency level:** 0  
+**Bounded context:** custody  
+**Confirmed upstream subject dependencies:** none  
+**Confirmed direct dependents:** 1 — `custody.CustodyTransferTicket` through `measurementPeriodId`  
+**Transitive dependents:** 1  
+**Unresolved/non-subject references:** 2 — `agreementId` and `transferPointId`, now semantically resolved to Custody-owned read/persistence models outside the 123 HMS subject set
+
+### 33.1 Semantic role and ordering rationale
+
+`CustodyMeasurementPeriod` is the Custody-owned fiscal/official time window under which accepted transfer evidence is grouped and governed. It binds a period code and closed time interval to one Custody agreement and one official Custody transfer point, while carrying lifecycle state plus optional lock/approval audit metadata.
+
+It is Level 0 because its required domain prerequisites, `CustodyAgreement` and `CustodyTransferPoint`, are retained Custody read/persistence models outside the HMS subject population. `CustodyTransferTicket` is the one direct HMS subject dependent through `measurementPeriodId`.
+
+The Custody DDD keeps this model on the official-transfer side of the architecture boundary: Telemetry owns observed readings, Planning owns expected state, Custody owns officially transferred/accepted evidence, and Finance/ERP ownership remains outside Custody.
+
+### 33.2 Field semantics
+
+| Field | Type | Mandatory / optional | Reviewed meaning |
+|---|---|---|---|
+| `id` | `String` | Mandatory | Stable measurement-period identity and persistence primary key. |
+| `periodCode` | `String` | Mandatory | Business code identifying the fiscal/official measurement period. Current Custody DDD/schema do not state a uniqueness scope, so HMSR-020 does not invent one. |
+| `agreementId` | `String` | Mandatory | Same-module reference to the governing `CustodyAgreement`. |
+| `transferPointId` | `String` | Mandatory | Same-module reference to the official `CustodyTransferPoint` for the period. |
+| `periodStart` | `Instant` | Mandatory | Start instant of the measurement period. |
+| `periodEnd` | `Instant` | Mandatory | End instant of the measurement period. Current repository evidence enforces only that it is not before `periodStart`. |
+| `status` | `CustodyPeriodStatus` | Mandatory | Period lifecycle state: `OPEN`, `LOCKED`, `CALCULATED`, `APPROVED`, `CLOSED`, `REOPENED`, or `CANCELLED`. |
+| `lockedByActorId` | `String` | Optional cross-module actor reference | Identity/platform actor that performed the lock action when such lifecycle metadata exists. |
+| `lockedAt` | `Instant` | Optional | Lock timestamp. |
+| `approvedByActorId` | `String` | Optional cross-module actor reference | Identity/platform actor associated with approval when such lifecycle metadata exists. |
+| `approvedAt` | `Instant` | Optional | Approval timestamp. |
+| `createdAt` | `Instant` | Persistence-required audit timestamp | Creation timestamp. |
+| `updatedAt` | `Instant` | Persistence-required audit timestamp | Last-update timestamp. |
+
+The current compact constructor correctly rejects blank `id`, `periodCode`, `agreementId`, and `transferPointId`; requires non-null `periodStart`, `periodEnd`, and `status`; enforces `periodStart <= periodEnd`; and normalizes textual IDs. The creation service conservatively opens new periods as `OPEN` with lock/approval metadata unset.
+
+### 33.3 Agreement and transfer-point dependency resolution
+
+HMS-003 left `agreementId` and `transferPointId` unresolved because their targets are outside the 123 HMS subject set. Stronger current repository evidence resolves both without adding subject-model graph edges:
+
+- the Custody DDD explicitly owns `CustodyAgreement`, `CustodyTransferPoint`, and `CustodyMeasurementPeriod`;
+- the DDD describes `CustodyAgreement` as the agreement governing custody transfer and `CustodyTransferPoint` as the official transfer point;
+- repository mirror classification retains both targets as Custody read/persistence models outside the HMS subject population;
+- HRA-111 installs `fk_hra111_custody_012` for `hidra_custody_measurement_period.agreement_id -> hidra_custody_agreement(id)`;
+- HRA-111 installs `fk_hra111_custody_013` for `hidra_custody_measurement_period.transfer_point_id -> hidra_custody_transfer_point(id)`;
+- both constraints use `ON DELETE RESTRICT`.
+
+Therefore both fields are required same-module domain references to non-subject Custody models. They remain outside the HMS graph while their row existence is protected at the database boundary.
+
+`lockedByActorId` and `approvedByActorId` remain cross-module Identity/platform actor references. They are not converted into Custody ownership or cross-module database foreign keys.
+
+### 33.4 Measurement-period downstream boundary
+
+The validated HMS graph contains one direct subject-model edge:
 
 ```text
-HMSR-020 — custody.CustodyMeasurementPeriod
+CustodyTransferTicket.measurementPeriodId
+    -> CustodyMeasurementPeriod.id
+```
+
+HRA-111 also protects several Custody read/persistence-model references to the period, including batch, measurement snapshot, meter-run snapshot, quality sample, quantity calculation, reconciliation, and transfer ticket records.
+
+That broader persistence fan-out is semantically appropriate: a fiscal/official period acts as a stable evidence container. It does not change the HMS register's direct-subject dependent count because those additional models are outside the 123-subject population.
+
+### 33.5 Agreement/transfer-point consistency gap
+
+Current persistence verifies the two required references independently, but stronger same-module evidence establishes a relationship between them:
+
+```text
+CustodyAgreement.transferPointId
+    -> CustodyTransferPoint.id
+
+CustodyMeasurementPeriod.agreementId
+    -> CustodyAgreement.id
+
+CustodyMeasurementPeriod.transferPointId
+    -> CustodyTransferPoint.id
+```
+
+`CustodyAgreement.transferPointId` is mandatory in JPA/schema and HRA-111 protects it with a same-module FK. However, `OpenCustodyMeasurementPeriodCommand` accepts `agreementId` and `transferPointId` independently, and `CustodyApplicationService.openMeasurementPeriod()` constructs/saves the period without demonstrating that the selected agreement governs the selected transfer point.
+
+The database also enforces only independent FK existence. It can therefore accept an internally inconsistent period whose `agreementId` names an agreement for transfer point A while `transferPointId` names transfer point B.
+
+For an official custody period, that breaks the repository's own relationship structure: the period would claim two incompatible same-module ownership facts at once.
+
+### 33.6 Temporal and lifecycle semantics deliberately not invented
+
+The current domain invariant is:
+
+```text
+periodStart <= periodEnd
+```
+
+The Custody DDD does not state a stricter exclusive-end or non-zero-duration rule for this model, so HMSR-020 does not import PlanningPeriod semantics or require `periodStart < periodEnd`.
+
+Likewise, current repository evidence does not define a complete allowed transition matrix among `OPEN`, `LOCKED`, `CALCULATED`, `APPROVED`, `CLOSED`, `REOPENED`, and `CANCELLED`. The model exposes `closedLifecycle()` for `CLOSED`/`CANCELLED`, but no current source proves exact transition prerequisites.
+
+The presence of `lockedByActorId + lockedAt` and `approvedByActorId + approvedAt` strongly identifies lifecycle audit metadata, but no active Custody DDD/application contract reviewed here states the exact pair-presence rules for every status. HMSR-020 therefore does not invent constructor constraints such as “LOCKED must always carry both lock fields” or “APPROVED must always carry both approval fields.”
+
+Similarly, `CustodyAgreement` has status and validity dates and `CustodyTransferPoint` has status/effective dates, but the active Custody DDD does not specify the exact eligibility/temporal-containment policy required when opening a period. HMSR-020 records no unproven ACTIVE-only or date-containment rule.
+
+### 33.7 Persistence and application consistency
+
+The live domain and JPA models agree on all 13 declared components.
+
+The base Custody migration makes `id`, `period_code`, `agreement_id`, `transfer_point_id`, `period_start`, `period_end`, `status`, `created_at`, and `updated_at` non-null. Lock/approval actor and timestamp fields are nullable.
+
+The application boundary accepts exactly the five inputs needed to open a period:
+
+```text
+periodCode
+agreementId
+transferPointId
+periodStart
+periodEnd
+```
+
+and creates `status = OPEN` with null lock/approval metadata. That creation default is conservative.
+
+No current schema evidence establishes global or scoped uniqueness for `periodCode`, and no current Custody DDD rule states one, so no uniqueness obligation is added.
+
+Generic `createdAt`/`updatedAt` requirements remain persistence/application-boundary concerns under the existing HRA invariant policy rather than new constructor obligations.
+
+### 33.8 Required revision
+
+The model shape, time invariant, ownership boundary, and creation default are otherwise coherent. One evidence-backed correction remains:
+
+1. **Enforce agreement/transfer-point coherence when opening or persisting a measurement period.** A `CustodyMeasurementPeriod` must not reference a `CustodyAgreement` whose mandatory `transferPointId` identifies a different transfer point from the period's own `transferPointId`. The correction must fail closed at an appropriate Custody-owned application/domain/persistence boundary; HMSR-020 does not prescribe a repository-port shape or a composite database constraint without a separately authorized implementation task.
+
+HMSR-020 does not change production Java, JPA, Flyway, API/application contracts, tests, Custody agreements/points/periods, or provisioned data.
+
+### 33.9 SONATRACH/TRC operational interpretation
+
+For SONATRACH/TRC pipeline operations, the measurement period is the governed fiscal/official window against which accepted metering, quantity, quality, reconciliation, and transfer-ticket evidence can be associated.
+
+The period is not a telemetry sampling interval and does not own raw SCADA/telemetry truth. Its agreement and official transfer point must identify one coherent custody-transfer context before downstream official evidence is attached.
+
+Locking, calculation, approval, closing, reopening, and cancellation are governance/lifecycle concepts; their detailed transition and authorization rules must come from explicit Custody/Workflow/Audit contracts rather than being guessed during semantic review.
+
+### 33.10 Review conclusion
+
+**REVISE.** `CustodyMeasurementPeriod` has a coherent 13-field model, correct Level-0 placement, correct temporal-order guard, conservative OPEN creation, and correctly resolvable non-subject dependencies on `CustodyAgreement` and `CustodyTransferPoint`.
+
+The target baseline cannot mark it APPROVED while agreement existence and transfer-point existence are checked independently but their required same-module relationship is not checked. HMS reconciliation must retain the agreement/transfer-point coherence obligation until an explicitly authorized Custody correction task resolves it or the target semantics are explicitly changed.
+
+## 34. Current next task
+
+```text
+HMSR-021 — integrity.PipelineDefect
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review custody CustodyMeasurementPeriod
+docs(model-review): review integrity PipelineDefect
 ```
 
-Start HMSR-020 only after HMSR-019 is committed and reported. Do not start HMSR-021 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-021 only after HMSR-020 is committed and reported. Do not start HMSR-022 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 reviewed as REVISE, HMSR-080 reviewed as REVISE, HMSR-081 reviewed as REVISE, HMSR-082 reviewed as REVISE, HMSR-083 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 reviewed as REVISE, HMSR-080 reviewed as REVISE, HMSR-081 reviewed as REVISE, HMSR-082 reviewed as REVISE, HMSR-083 approved, HMSR-084 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -275,7 +275,7 @@ Ordering rules applied:
 | HMSR-080 | 4 | documents | DocumentVersion | SCC-05 | documents.Document, documents.DocumentStorageObject, documents.DocumentVersion, workflow.WorkflowInstance | 3 | 5 | 2 | REVISE | Completed | `docs(model-review): review documents DocumentVersion` |
 | HMSR-081 | 4 | assets | MaintenanceWorkOrder | — | assets.MaintainableAsset, organization.OrganizationUnit, workflow.WorkflowInstance | 1 | 1 | 3 | REVISE | Completed | `docs(model-review): review assets MaintenanceWorkOrder` |
 | HMSR-082 | 4 | custody | CustodyTransferTicket | — | custody.CustodyMeasurementPeriod, workflow.WorkflowInstance | 0 | 0 | 5 | REVISE | Completed | `docs(model-review): review custody CustodyTransferTicket` |
-| HMSR-083 | 4 | hse | PermitToWork | — | workflow.WorkflowInstance | 0 | 0 | 0 | — | Planned | `docs(model-review): review hse PermitToWork` |
+| HMSR-083 | 4 | hse | PermitToWork | — | workflow.WorkflowInstance | 0 | 0 | 0 | APPROVED | Completed | `docs(model-review): review hse PermitToWork` |
 | HMSR-084 | 4 | integration | IntegrationDeadLetterRecord | — | integration.ExternalSystem, integration.IntegrationExchangeMessage, integration.IntegrationJobRun | 0 | 0 | 2 | — | Planned | `docs(model-review): review integration IntegrationDeadLetterRecord` |
 | HMSR-085 | 4 | integrity | IntegrityAssessment | — | integrity.IntegrityProgram, workflow.WorkflowInstance | 0 | 0 | 2 | — | Planned | `docs(model-review): review integrity IntegrityAssessment` |
 | HMSR-086 | 4 | organization | EmployeeAddress | — | organization.AdministrativeLocality, organization.Employee | 0 | 0 | 0 | — | Planned | `docs(model-review): review organization EmployeeAddress` |
@@ -15431,16 +15431,142 @@ The target baseline cannot mark it APPROVED while populated optional same-module
 
 HMS reconciliation must retain these obligations until explicitly authorized Custody production corrections resolve them or stronger repository evidence changes the governing Custody DDD.
 
-## 96. Current next task
+## 96. HMSR-083 — hse.PermitToWork review
+
+**Decision:** APPROVED  
+**Review code:** HMSR-083  
+**Dependency level:** 4  
+**Bounded context:** hse  
+**Confirmed upstream subject dependencies:** optional `workflow.WorkflowInstance`  
+**Confirmed direct HMS subject dependents:** 0  
+**Transitive HMS subject dependents:** 0
+
+### 96.1 Semantic role
+
+`PermitToWork` is the HSE-owned permit record for authorizing time-bounded work against an operational/business target. It owns permit identity/number/type, descriptive metadata, a neutral target reference, requester/approver actor references, validity window, HSE permit lifecycle state, and an optional Workflow process reference.
+
+The HSE DDD explicitly owns permits while excluding Workflow, Identity, Organization, Topology, Assets and other operational domains from HSE ownership.
+
+### 96.2 Permit-type integrity
+
+`permitTypeId` is mandatory and HSE-owned catalog data.
+
+HRA-111 already protects generic same-module existence with:
 
 ```text
-HMSR-083 — hse.PermitToWork
+hidra_hse_permit_to_work.permit_type_id
+  -> hidra_hse_catalog_entry.id
+```
+
+The current HSE DDD does not define a narrower named catalog family for permit types. HMSR-083 therefore preserves the generic HSE catalog reference and does not invent a family-membership rule.
+
+### 96.3 Validity window
+
+The domain constructor requires both:
+
+```text
+validFrom
+validTo
+```
+
+and explicitly enforces:
+
+```text
+validFrom <= validTo
+```
+
+This matches the repository-wide invariant classification, which specifically identifies `PermitToWork.validFrom <= validTo` as a domain invariant.
+
+No further temporal correction is required by this review.
+
+### 96.4 Neutral target boundary
+
+The optional fields:
+
+```text
+targetModule
+targetTypeCode
+targetId
+```
+
+implement the HSE DDD's explicit cross-module reference rule.
+
+The DDD states that HSE may reference external targets by stable IDs/snapshots and must not import external bounded-context domain models. Therefore the current polymorphic scalar target design is intentional.
+
+No universal cross-module database FK should be introduced. HMSR-083 does not invent a concrete target owner or force all three optional fields to become mandatory because the governing HSE DDD does not establish such a rule for PermitToWork.
+
+### 96.5 Actor boundaries
+
+`requestedByActorId` and `approvedByActorId` are optional Identity-owned actor references.
+
+The HSE DDD explicitly forbids HSE from owning Identity domain models. The scalar-ID design is therefore correct.
+
+Repository evidence for HMSR-083 does not identify a live PermitToWork application write service that accepts these references without validation. Accordingly, this review does not invent a production defect or require a new owner-validation implementation merely because the fields exist.
+
+Any future permit-command path should resolve actor eligibility through the appropriate Identity/security boundary while preserving the scalar reference model.
+
+### 96.6 Workflow boundary
+
+`workflowInstanceId` is optional and Workflow-owned.
+
+The model stores only the scalar Workflow reference and does not introduce cross-module persistence coupling, which is consistent with the repository's bounded-context architecture.
+
+No live PermitToWork application workflow path was found in the reviewed evidence, so HMSR-083 records no current owner-validation defect. Any future approval/orchestration use case should use a Workflow-owned application contract rather than a cross-module database FK.
+
+### 96.7 Lifecycle enum
+
+`PermitStatus` contains:
+
+```text
+REQUESTED
+APPROVED
+ACTIVE
+SUSPENDED
+CLOSED
+CANCELLED
+EXPIRED
+```
+
+These values describe the HSE-owned permit lifecycle and are appropriate as a technical/domain enum rather than a business taxonomy catalog.
+
+Current evidence does not establish a more detailed transition matrix, so HMSR-083 does not invent one.
+
+### 96.8 Required text and persistence classification
+
+The persistence schema stores `title` as `NOT NULL`, while the domain constructor does not classify it among the HRA-051 required fields.
+
+Repository architecture explicitly distinguishes persistence-level required columns from domain invariants and warns against converting every database `NOT NULL` into a domain rule.
+
+Because the current HSE DDD and invariant classification do not establish `title` as a PermitToWork domain invariant, HMSR-083 does not create a semantic revision obligation from the database column alone.
+
+Likewise, current evidence does not establish global uniqueness for `permitNumber`; no uniqueness rule is invented.
+
+### 96.9 Review conclusion
+
+**APPROVED.** `PermitToWork` is semantically coherent with the live HSE DDD and architecture:
+
+- HSE owns the permit lifecycle;
+- mandatory `permitTypeId` has same-module catalog integrity;
+- the validity window is explicitly and correctly enforced;
+- neutral target references preserve bounded-context separation;
+- actor and Workflow references remain scalar cross-module references;
+- `PermitStatus` is an appropriate lifecycle enum;
+- no unsupported uniqueness, target-correlation, catalog-family or transition rules are invented.
+
+No HMSR-083 production correction obligation is recorded.
+
+HMSR-083 does not modify production Java, JPA, Flyway, API/application contracts, tests, HSE/Identity/Workflow data, or provisioned data.
+
+## 97. Current next task
+
+```text
+HMSR-084 — integration.IntegrationDeadLetterRecord
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review hse PermitToWork
+docs(model-review): review integration IntegrationDeadLetterRecord
 ```
 
-Start HMSR-083 only after HMSR-082 is committed and reported. Do not start HMSR-084 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-084 only after HMSR-083 is committed and reported. Do not start HMSR-085 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

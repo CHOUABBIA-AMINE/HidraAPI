@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 reviewed as REVISE, HMSR-080 reviewed as REVISE, HMSR-081 reviewed as REVISE, HMSR-082 reviewed as REVISE, HMSR-083 approved, HMSR-084 reviewed as REVISE, HMSR-085 reviewed as REVISE, HMSR-086 approved, HMSR-087 reviewed as REVISE, HMSR-088 reviewed as REVISE, HMSR-089 reviewed as REVISE, HMSR-090 reviewed as REVISE, HMSR-091 reviewed as REVISE, HMSR-092 reviewed as REVISE, HMSR-093 reviewed as REVISE, HMSR-094 reviewed as REVISE, HMSR-095 reviewed as REVISE, HMSR-096 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 reviewed as REVISE, HMSR-080 reviewed as REVISE, HMSR-081 reviewed as REVISE, HMSR-082 reviewed as REVISE, HMSR-083 approved, HMSR-084 reviewed as REVISE, HMSR-085 reviewed as REVISE, HMSR-086 approved, HMSR-087 reviewed as REVISE, HMSR-088 reviewed as REVISE, HMSR-089 reviewed as REVISE, HMSR-090 reviewed as REVISE, HMSR-091 reviewed as REVISE, HMSR-092 reviewed as REVISE, HMSR-093 reviewed as REVISE, HMSR-094 reviewed as REVISE, HMSR-095 reviewed as REVISE, HMSR-096 reviewed as REVISE, HMSR-097 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -288,7 +288,7 @@ Ordering rules applied:
 | HMSR-093 | 4 | simulation | SimulationRecommendation | — | simulation.SimulationOptimizationCandidate, simulation.SimulationRun | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review simulation SimulationRecommendation` |
 | HMSR-094 | 5 | planning | Nomination | — | party.Party, planning.PlanRevision | 1 | 6 | 2 | REVISE | Completed | `docs(model-review): review planning Nomination` |
 | HMSR-095 | 5 | workflow | WorkflowAction | — | organization.OrganizationUnit, workflow.WorkflowInstance, workflow.WorkflowTask | 2 | 4 | 1 | REVISE | Completed | `docs(model-review): review workflow WorkflowAction` |
-| HMSR-096 | 5 | hse | HseCase | — | incident.Incident, organization.OrganizationUnit, workflow.WorkflowInstance | 3 | 3 | 3 | — | Planned | `docs(model-review): review hse HseCase` |
+| HMSR-096 | 5 | hse | HseCase | — | incident.Incident, organization.OrganizationUnit, workflow.WorkflowInstance | 3 | 3 | 3 | REVISE | Completed | `docs(model-review): review hse HseCase` |
 | HMSR-097 | 5 | audit | AuditExportRequest | — | documents.Document, workflow.WorkflowInstance | 1 | 1 | 2 | — | Planned | `docs(model-review): review audit AuditExportRequest` |
 | HMSR-098 | 5 | documents | DocumentTargetLink | — | documents.Document, documents.DocumentVersion | 0 | 0 | 0 | — | Planned | `docs(model-review): review documents DocumentTargetLink` |
 | HMSR-099 | 5 | identity | AuthenticationEvent | — | identity.IdentityProvider, identity.User | 0 | 0 | 1 | — | Planned | `docs(model-review): review identity AuthenticationEvent` |
@@ -17131,16 +17131,131 @@ The target baseline cannot mark it APPROVED while the generic recording path can
 
 HMS reconciliation must retain these obligations until explicitly authorized Workflow production corrections resolve them or stronger repository evidence changes the governing Workflow contract.
 
-## 109. Current next task
+## 109. HMSR-096 — hse.HseCase review
+
+**Decision:** REVISE  
+**Review code:** HMSR-096  
+**Dependency level:** 5  
+**Bounded context:** hse  
+**Confirmed upstream subject dependencies:** neutral Incident reference; optional Organization-owned responsible unit context; optional Workflow-owned instance reference  
+**Confirmed direct HMS subject dependents:** 3  
+**Transitive HMS subject dependents:** 3  
+**Unresolved/non-subject reference count:** 3
+
+### 109.1 Semantic role
+
+`HseCase` is the HSE-owned lifecycle record for health, safety, environmental, and compliance consequences.
+
+The governing HSE DDD explicitly separates HSE from Incident, Alarm, Leak Detection, Integrity, Topology, Assets, Organization, Identity, Workflow, Audit, and Notification ownership. Cross-context associations are represented by stable IDs and snapshots rather than imported aggregates or cross-module database ownership.
+
+### 109.2 HSE-owned catalog references
+
+`caseTypeId` and `severityId` are mandatory HSE-owned references.
+
+HRA-111 already protects their generic HSE catalog-row existence through:
 
 ```text
-HMSR-096 — hse.HseCase
+hidra_hse_case.case_type_id
+  -> hidra_hse_catalog_entry.id
+
+hidra_hse_case.severity_id
+  -> hidra_hse_catalog_entry.id
+```
+
+The reviewed HSE DDD does not establish exact catalog-family names for these two fields. HMSR-096 therefore does not invent family identifiers or claim family-qualified validation already exists.
+
+`priorityId` remains optional and unresolved at semantic-family level on current evidence.
+
+### 109.3 Incident reference classification
+
+The HSE DDD is explicit that HSE does not own Incident and may store only neutral incident references:
+
+```text
+incidentReferenceId
+incidentCodeSnapshot
+incidentTitleSnapshot
+```
+
+Accordingly, HMSR-096 does not authorize a cross-module Incident FK or importing Incident domain models into HSE.
+
+The current scalar/snapshot shape is semantically appropriate. Any future validation should use an Incident-owned public lookup/reference contract where current operational policy requires live existence checks.
+
+### 109.4 Generic target references
+
+`targetModule`, `targetTypeCode`, `targetId`, `targetCodeSnapshot`, and `targetLabelSnapshot` are intentionally neutral cross-module target metadata.
+
+They must remain scalar/snapshot references. HMSR-096 does not assign a single relational target and does not authorize cross-module database FKs for this polymorphic reference.
+
+### 109.5 Organization and Workflow ownership
+
+`responsibleOrganizationUnitId` is optional Organization-owned context and `responsibleOrganizationUnitNameSnapshot` is a snapshot.
+
+`workflowInstanceId` is an optional Workflow-owned reference.
+
+HSE must not import Organization or Workflow aggregates. Where authoritative HSE commands require current validity, references should be checked through owner-controlled application/lookup contracts rather than database FKs.
+
+### 109.6 Lifecycle and closure defect
+
+The repository contains a dedicated `HseCaseClosureGuard` that rejects:
+
+- closing an already closed/cancelled case;
+- closure without impact assessment;
+- closure without CAPA completion;
+- closure without evidence review.
+
+However, the live `HseApplicationService.closeHseCase(...)` does not load the referenced `HseCase` and does not invoke this guard. It directly creates and saves an `HseClosure`.
+
+The same method also does not update the owning `HseCase` lifecycle to `CLOSED`, does not stamp `closedAt` on the case, and repository search found no accompanying HSE case status-history write on this path.
+
+This creates a split state in which closure evidence can exist while the owning HSE case lifecycle remains unchanged.
+
+### 109.7 Closure target existence
+
+`HseClosure.hseCaseId` has same-module FK protection to `hidra_hse_case.id`, so a nonexistent case is rejected at persistence time.
+
+That database protection is not a substitute for loading the case at the application boundary, because closure requires current lifecycle inspection and execution of the HSE closure rules before persistence.
+
+### 109.8 Status and source enums
+
+`HseCaseStatus` and `HseCaseSourceType` represent stable HSE lifecycle/source semantics and are appropriately modeled as enums on current evidence.
+
+HMSR-096 does not convert them to catalogs.
+
+### 109.9 Audit reference
+
+`auditReferenceId` remains an optional external/neutral audit reference. HSE does not own Audit records.
+
+No cross-module Audit FK is authorized by HMSR-096.
+
+### 109.10 Required revisions
+
+Four evidence-backed production obligations remain:
+
+1. **Make HSE closure application-authoritative:** load the referenced `HseCase` and invoke `HseCaseClosureGuard` before creating closure evidence.
+2. **Keep case lifecycle and closure evidence consistent:** successful closure must transition the owning case to `CLOSED`, stamp the appropriate closure timestamp, and persist the corresponding HSE-owned status-history evidence through the established HSE lifecycle pattern.
+3. **Preserve cross-context ownership:** Incident, Organization, Workflow, Audit, and polymorphic target references remain scalar/snapshot references; use owner-controlled lookup/application contracts where live validation is required and never introduce cross-module database FKs.
+4. **Reconcile HSE catalog-family semantics during HMS-006/future authorized work:** generic catalog-row existence already protects mandatory case type/severity references, but exact family membership must not be invented until authoritative HSE catalog-family evidence exists.
+
+HMSR-096 does not modify production Java, JPA, Flyway, API/application contracts, tests, HSE/Incident/Organization/Workflow/Audit data, or provisioned data.
+
+### 109.11 Review conclusion
+
+**REVISE.** `HseCase` has the correct HSE bounded-context ownership, correct neutral-reference architecture for external contexts, and same-module persistence protection for its mandatory HSE catalog rows.
+
+The target baseline cannot mark it APPROVED while the live closure use case bypasses the repository's own HSE closure guard and can persist closure evidence without transitioning the owning case lifecycle or recording corresponding HSE status history.
+
+HMS reconciliation must retain these obligations until explicitly authorized HSE production corrections resolve them or stronger repository evidence changes the governing HSE contract.
+
+## 110. Current next task
+
+```text
+HMSR-097 — audit.AuditExportRequest
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review hse HseCase
+docs(model-review): review audit AuditExportRequest
 ```
 
-Start HMSR-096 only after HMSR-095 is committed and reported. Do not start HMSR-097 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-097 only after HMSR-096 is committed and reported. Do not start HMSR-098 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

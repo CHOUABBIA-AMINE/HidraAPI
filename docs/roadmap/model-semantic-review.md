@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -261,7 +261,7 @@ Ordering rules applied:
 | HMSR-066 | 3 | simulation | SimulationOptimizationCandidate | — | simulation.SimulationRun | 2 | 2 | 0 | APPROVED | Completed | `docs(model-review): review simulation SimulationOptimizationCandidate` |
 | HMSR-067 | 3 | integration | IntegrationExchangeMessage | — | integration.ExternalSystem, integration.IntegrationJobRun | 1 | 1 | 2 | REVISE | Completed | `docs(model-review): review integration IntegrationExchangeMessage` |
 | HMSR-068 | 3 | reporting | ReportRun | — | reporting.ReportDefinition, reporting.ReportRequest | 1 | 1 | 0 | REVISE | Completed | `docs(model-review): review reporting ReportRun` |
-| HMSR-069 | 3 | risk | RiskAssessment | — | risk.RiskRegister | 1 | 1 | 10 | — | Planned | `docs(model-review): review risk RiskAssessment` |
+| HMSR-069 | 3 | risk | RiskAssessment | — | risk.RiskRegister | 1 | 1 | 10 | REVISE | Completed | `docs(model-review): review risk RiskAssessment` |
 | HMSR-070 | 3 | assets | AssetConditionRecord | — | assets.MaintainableAsset | 0 | 0 | 0 | — | Planned | `docs(model-review): review assets AssetConditionRecord` |
 | HMSR-071 | 3 | leakdetection | LeakEscalationReference | — | leakdetection.LeakCandidate, leakdetection.LeakDetectionCase | 0 | 0 | 0 | — | Planned | `docs(model-review): review leakdetection LeakEscalationReference` |
 | HMSR-072 | 3 | notification | NotificationDeliveryAttempt | — | notification.NotificationMessage | 0 | 0 | 2 | — | Planned | `docs(model-review): review notification NotificationDeliveryAttempt` |
@@ -2510,23 +2510,23 @@ Confirmed subject-model graph edges at this stage: **165**. These are semantic c
 | Field | Declared type | Classification | Resolved target | Graph edge | Notes |
 |---|---|---|---|:---:|---|
 | id | String | Self identifier | — | No | Primary identity of the current model. |
-| riskRegisterId | String | Domain reference | risk.RiskRegister | Yes | Unambiguous same-module subject-model reference. |
-| assessmentTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
-| methodologyId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
-| scopeId | String | Cross-module reference | POLYMORPHIC | No | Target is selected by companion type/module metadata; no single subject-model edge. |
-| riskScenarioId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
-| assessedByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
-| reviewedByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
-| approvedByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
-| inherentLikelihoodId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
-| inherentConsequenceId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
-| inherentRatingId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
-| residualLikelihoodId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
-| residualConsequenceId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
-| residualRatingId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
-| confidenceLevelId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
-| workflowReferenceId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
-| auditReferenceId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| riskRegisterId | String | Domain reference | risk.RiskRegister | Yes | Mandatory same-module parent register; HRA-111 protects `risk_register_id -> hidra_risk_register.id`. |
+| assessmentTypeId | String | Value/catalog dependency | RISK_ASSESSMENT_TYPE | No | Mandatory Risk catalog reference. HRA-111 protects generic catalog-row existence; DDD defines the exact family. |
+| methodologyId | String | Value/catalog dependency | RISK_METHODLOGY | No | Mandatory Risk catalog reference. HRA-111 protects generic catalog-row existence; DDD defines the exact family (spelling preserved from repository). |
+| scopeId | String | Legacy/convenience scope reference | TYPED_SCOPE_POINTER | No | Optional scalar scope pointer on the assessment record. The DDD's authoritative multi-scope model is `RiskAssessmentScope`; creation currently does not create/validate that required child scope set. |
+| riskScenarioId | String | Domain reference | risk.RiskScenario (read/persistence model) | No | Mandatory same-module scenario reference; HRA-111 protects `risk_scenario_id -> hidra_risk_scenario.id`. |
+| assessedByActorId | String | Optional cross-module reference | IDENTITY_ACTOR | No | Optional assessor actor identity with snapshot; no cross-module DB FK is appropriate. |
+| reviewedByActorId | String | Optional cross-module reference | IDENTITY_ACTOR | No | Optional reviewer actor identity with snapshot; no cross-module DB FK is appropriate. |
+| approvedByActorId | String | Optional cross-module reference | IDENTITY_ACTOR | No | Optional approver actor identity with snapshot; approval semantics belong to the Risk/Workflow/Identity application boundary. |
+| inherentLikelihoodId | String | Value/catalog dependency | RISK_LIKELIHOOD_LEVEL | No | Optional Risk catalog reference. Current assessment table has no FK for this populated value. |
+| inherentConsequenceId | String | Value/catalog dependency | RISK_CONSEQUENCE_LEVEL | No | Optional Risk catalog reference. Current assessment table has no FK for this populated value. |
+| inherentRatingId | String | Value/catalog dependency | RISK_RATING | No | Optional Risk catalog reference. Current assessment table has no FK for this populated value. |
+| residualLikelihoodId | String | Value/catalog dependency | RISK_LIKELIHOOD_LEVEL | No | Optional Risk catalog reference. Current assessment table has no FK for this populated value. |
+| residualConsequenceId | String | Value/catalog dependency | RISK_CONSEQUENCE_LEVEL | No | Optional Risk catalog reference. Current assessment table has no FK for this populated value. |
+| residualRatingId | String | Value/catalog dependency | RISK_RATING | No | Optional Risk catalog reference. Current assessment table has no FK for this populated value. |
+| confidenceLevelId | String | Value/catalog dependency | RISK_CONFIDENCE_LEVEL | No | Optional Risk catalog reference. Current assessment table has no FK for this populated value. |
+| workflowReferenceId | String | Cross-module neutral reference | WORKFLOW_INSTANCE_REFERENCE | No | Optional Workflow reference; preserve as neutral cross-module identity and validate through Workflow contracts when approval is executed. |
+| auditReferenceId | String | Cross-module neutral reference | AUDIT_REFERENCE | No | Optional Audit reference; no cross-module relational FK is appropriate. |
 
 #### risk.RiskEvidenceLink
 
@@ -13365,16 +13365,232 @@ The target baseline cannot mark it APPROVED while the live Flyway constraint for
 
 HMS reconciliation must retain these obligations until explicitly authorized Reporting production corrections resolve them or stronger repository evidence changes the governing Reporting DDD.
 
-## 82. Current next task
+## 82. HMSR-069 — risk.RiskAssessment review
+
+**Decision:** REVISE  
+**Review code:** HMSR-069  
+**Dependency level:** 3  
+**Bounded context:** risk  
+**Confirmed upstream subject dependencies:** `risk.RiskRegister`  
+**Confirmed direct HMS subject dependents:** 1  
+**Transitive HMS subject dependents:** 1
+
+### 82.1 Semantic role
+
+`RiskAssessment` is the Risk-owned governed evaluation of one risk scenario over one or more scopes. It anchors the parent RiskRegister and scenario, assessment type/methodology, lifecycle state, validity interval, assessor/reviewer/approver snapshots, inherent/residual scoring components, confidence/uncertainty metadata and workflow/audit references.
+
+Risk owns the assessment, scoring semantics and approval state. Identity, Workflow and Audit remain external bounded contexts.
+
+### 82.2 Parent register and scenario integrity
+
+`riskRegisterId` and `riskScenarioId` are mandatory same-module references.
+
+HRA-111 protects:
 
 ```text
-HMSR-069 — risk.RiskAssessment
+hidra_risk_assessment.risk_register_id
+    -> hidra_risk_register.id
+
+hidra_risk_assessment.risk_scenario_id
+    -> hidra_risk_scenario.id
+```
+
+These are the correct same-module ownership relationships.
+
+The active `createRiskAssessment()` path still accepts both IDs from the command and relies on persistence integrity. HMSR-069 finds no need to replace those same-module FKs with cross-module lookup semantics.
+
+### 82.3 Assessment-type and methodology catalog semantics
+
+`assessmentTypeId` and `methodologyId` are mandatory.
+
+HRA-111 protects both against generic `hidra_risk_catalog_entry` row existence.
+
+The Risk DDD defines exact catalog families:
+
+```text
+RISK_ASSESSMENT_TYPE
+RISK_METHODLOGY
+```
+
+The repository spelling `RISK_METHODLOGY` is preserved here exactly.
+
+Generic catalog-row existence is insufficient to prove family membership or active eligibility. The authoritative assessment creation/update path must validate these IDs against their required Risk catalog families.
+
+### 82.4 Required assessment scope
+
+The Risk DDD explicitly requires:
+
+```text
+Risk assessment must reference at least one scope.
+```
+
+The dedicated `RiskAssessmentScope` persistence model carries:
+
+```text
+riskAssessmentId
+scopeType
+scopeId
+scopeCodeSnapshot
+scopeLabelSnapshot
+topologySnapshotId
+operationalPeriodStart
+operationalPeriodEnd
+included
+scopeNote
+```
+
+and HRA-111 protects `riskAssessmentId -> RiskAssessment`.
+
+By contrast, the current `createRiskAssessment()` path only copies the optional scalar `command.scopeId()` into the parent RiskAssessment and does not create or validate any RiskAssessmentScope child row.
+
+Therefore the active creation path can produce an assessment that violates the DDD's explicit at-least-one-scope rule.
+
+The target baseline should treat `RiskAssessmentScope` as the authoritative multi-scope structure. HMSR-069 does not invent a mandatory meaning for the parent scalar `scopeId`; reconciliation should determine whether it remains a convenience/primary-scope pointer or is retired after the child-scope contract is implemented.
+
+### 82.5 Scoring-component catalog semantics
+
+The assessment can carry inherent and residual:
+
+```text
+likelihood
+consequence
+score
+rating
+```
+
+plus `confidenceLevelId`.
+
+The Risk DDD defines:
+
+```text
+RISK_LIKELIHOOD_LEVEL
+RISK_CONSEQUENCE_LEVEL
+RISK_RATING
+RISK_CONFIDENCE_LEVEL
+```
+
+for those controlled values.
+
+Current HRA-111 evidence does not provide assessment-side FKs for the populated likelihood, consequence, rating or confidence IDs.
+
+When populated, these values must fail closed against the correct Risk-owned catalog families and eligibility semantics.
+
+HMSR-069 does not require all scoring fields to be present at DRAFT creation; the current create path intentionally creates a DRAFT assessment before scoring.
+
+### 82.6 Matrix-based score consistency
+
+The Risk DDD explicitly avoids hard-coding one universal scoring formula and instead requires matrix-based scoring support through `RiskMatrix` and `RiskMatrixCell`.
+
+Therefore HMSR-069 does not assert that `score == likelihood × consequence` in every case.
+
+However, once an assessment is scored, its likelihood/consequence/rating tuple must be produced through the selected Risk scoring/matrix policy rather than accepting unrelated catalog IDs and free numeric scores independently.
+
+The current `createRiskAssessment()` path does not populate scoring state, so this is a later scoring/transition obligation rather than a DRAFT-creation defect.
+
+### 82.7 Evidence before approval
+
+The Risk DDD explicitly requires:
+
+```text
+Risk assessment must have evidence before approval.
+```
+
+`RiskEvidenceLink` exists as a separate Risk-owned model, but its repository port currently exposes only save/find-by-id and the live application service implements only evidence addition and DRAFT assessment creation.
+
+Repository search found no live `ApproveRiskAssessmentUseCase` implementation that verifies evidence before moving an assessment to APPROVED/ACTIVE.
+
+The authoritative approval boundary must therefore fail closed unless required evidence exists.
+
+### 82.8 Approval identity, workflow and immutability
+
+The model carries optional:
+
+```text
+approvedByActorId
+approvedByDisplayNameSnapshot
+approvedAt
+workflowReferenceId
+auditReferenceId
+```
+
+The DDD defines approval/rejection inbound ports, Workflow integration, audit-ready approval events, and states:
+
+```text
+Approved risk assessment is immutable except through new review/revision.
+```
+
+The current domain record can represent APPROVED or ACTIVE state without requiring approver/timestamp context, and repository search found no live approval use case implementing the workflow/evidence/immutability contract.
+
+Future authorized reconciliation must centralize approval so it validates the actor/authority through Identity/Workflow contracts, records approval metadata, emits audit-ready evidence, and prevents in-place mutation of approved assessments except through the modeled review/revision path.
+
+HMSR-069 does not invent a new cross-module database FK for Workflow, Identity or Audit.
+
+### 82.9 Temporal semantics
+
+The domain already enforces:
+
+```text
+validFrom <= validTo
+```
+
+This matches the existing invariant-classification architecture.
+
+Current Risk DDD evidence does not state additional mandatory ordering between `assessmentDate`, `approvedAt`, `validFrom` and `validTo`, so HMSR-069 does not invent such rules.
+
+### 82.10 Lifecycle semantics
+
+`RiskAssessmentStatus` is a genuine Risk lifecycle enum:
+
+```text
+DRAFT
+UNDER_REVIEW
+APPROVED
+ACTIVE
+SUPERSEDED
+RETIRED
+REJECTED
+CANCELLED
+EXPIRED
+```
+
+The live create path correctly starts new assessments as `DRAFT`.
+
+The DDD names submit/approve/reject/review use cases but does not provide a complete transition matrix for every status. HMSR-069 therefore does not manufacture unsupported transitions.
+
+### 82.11 Required revisions
+
+Five evidence-backed obligations remain:
+
+1. **Enforce exact catalog-family eligibility for `assessmentTypeId` and `methodologyId`.** Generic RiskCatalogEntry existence is insufficient; use `RISK_ASSESSMENT_TYPE` and `RISK_METHODLOGY`.
+
+2. **Implement the mandatory assessment-scope contract.** A RiskAssessment must have at least one authoritative `RiskAssessmentScope`; reconcile the parent scalar `scopeId` as convenience/primary-scope state rather than treating it as a substitute for the required child scope set.
+
+3. **Protect populated scoring/confidence references.** Likelihood, consequence, rating and confidence IDs must resolve to the correct Risk catalog families, and scored tuples must be produced through the applicable Risk scoring/matrix policy.
+
+4. **Enforce evidence-before-approval and approval workflow/actor semantics.** Approval must verify evidence, resolve the authorized actor/workflow context, record approval metadata and emit audit-ready evidence without cross-module DB FKs.
+
+5. **Enforce approved-assessment immutability.** APPROVED/ACTIVE assessments must not be modified in place except through the DDD's review/revision path.
+
+HMSR-069 does not modify production Java, JPA, Flyway, API/application contracts, tests, Risk catalogs/matrices/scopes/evidence, Workflow/Identity/Audit data, or provisioned data.
+
+### 82.12 Review conclusion
+
+**REVISE.** `RiskAssessment` is a coherent 34-field Risk-owned assessment model with correct parent-register/scenario ownership, a valid lifecycle enum and an implemented validity-window invariant.
+
+The target baseline cannot mark it APPROVED while mandatory assessment scopes are not created/validated, required catalog-family semantics are unenforced, scoring/reference consistency remains weak, evidence-before-approval and approval authority are not implemented, and approved-state immutability is not protected.
+
+HMS reconciliation must retain these obligations until explicitly authorized Risk production corrections resolve them or stronger repository evidence changes the governing Risk DDD.
+
+## 83. Current next task
+
+```text
+HMSR-070 — assets.AssetConditionRecord
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review risk RiskAssessment
+docs(model-review): review assets AssetConditionRecord
 ```
 
-Start HMSR-069 only after HMSR-068 is committed and reported. Do not start HMSR-070 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-070 only after HMSR-069 is committed and reported. Do not start HMSR-071 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

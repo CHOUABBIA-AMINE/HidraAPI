@@ -143,7 +143,7 @@ Each model task implements only the obligations recorded in its source HMSR sect
 
 | HMR code | HMSR source | Module | Model | SCC | Upstream HMS dependencies | Exact commit message | Status |
 |---|---|---|---|---|---|---|---|
-| HMR-003 | HMSR-002 | workflow | WorkflowDefinition | — | — | `fix(workflow): remediate semantic review WorkflowDefinition` | Planned |
+| HMR-003 | HMSR-002 | workflow | WorkflowDefinition | — | — | `fix(workflow): remediate semantic review WorkflowDefinition` | **Completed** |
 | HMR-004 | HMSR-004 | party | Party | — | — | `fix(party): remediate semantic review Party` | Planned |
 | HMR-005 | HMSR-005 | telemetry | TelemetryPoint | — | — | `fix(telemetry): remediate semantic review TelemetryPoint` | Planned |
 | HMR-006 | HMSR-006 | planning | PlanningPeriod | — | — | `fix(planning): remediate semantic review PlanningPeriod` | Planned |
@@ -361,7 +361,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-002`
 - Exact commit: `fix(workflow): remediate semantic review WorkflowDefinition`
-- Status: **Planned**
+- Status: **Completed** — domain now rejects blank `nameFr` and `version < 1`; adapter fails fast on duplicate `(code, version)` and structural mutation of an existing ACTIVE definition; additive Flyway adds the race-safe unique index and database version check; semantic tests cover all four obligations. Maven validation could not be executed in this connector-only environment because the repository cannot be cloned from the execution container (`Could not resolve host: github.com`).
 - SCC: —
 - Recorded upstream HMS dependencies: —
 - HMSR correction count: 4

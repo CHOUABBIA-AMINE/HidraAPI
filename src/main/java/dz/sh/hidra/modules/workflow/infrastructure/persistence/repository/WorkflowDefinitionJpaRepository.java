@@ -28,4 +28,6 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface WorkflowDefinitionJpaRepository extends JpaRepository<WorkflowDefinitionJpaEntity, String> {
+
+    boolean existsByCodeAndVersionAndIdNot(String code, int version, String id);
 }

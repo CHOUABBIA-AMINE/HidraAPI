@@ -59,9 +59,16 @@ import java.time.Instant;
         if (code == null || code.isBlank()) {
             throw new InvalidWorkflowValueException("WorkflowDefinition code must not be blank.");
         }
+        // HRA-051 required: nameFr
+        if (nameFr == null || nameFr.isBlank()) {
+            throw new InvalidWorkflowValueException("WorkflowDefinition French name must not be blank.");
+        }
         // HRA-051 required: typeId
         if (typeId == null || typeId.isBlank()) {
             throw new InvalidWorkflowValueException("WorkflowDefinition type id must not be blank.");
+        }
+        if (version < 1) {
+            throw new InvalidWorkflowValueException("WorkflowDefinition version must be greater than or equal to 1.");
         }
         // HRA-051 required: status
         if (status == null) {

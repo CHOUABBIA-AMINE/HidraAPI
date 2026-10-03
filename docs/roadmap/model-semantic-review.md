@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -233,7 +233,7 @@ Ordering rules applied:
 | HMSR-038 | 1 | simulation | SimulationScenario | — | simulation.SimulationModel | 1 | 4 | 3 | REVISE | Completed | `docs(model-review): review simulation SimulationScenario` |
 | HMSR-039 | 1 | notification | NotificationRequest | — | notification.NotificationTemplate | 1 | 2 | 4 | REVISE | Completed | `docs(model-review): review notification NotificationRequest` |
 | HMSR-040 | 1 | organization | ResponsibilityAssignment | — | organization.OperationalScope | 1 | 1 | 1 | APPROVED | Completed | `docs(model-review): review organization ResponsibilityAssignment` |
-| HMSR-041 | 1 | topology | Facility | — | party.Party | 1 | 1 | 0 | — | Planned | `docs(model-review): review topology Facility` |
+| HMSR-041 | 1 | topology | Facility | — | party.Party | 1 | 1 | 0 | REVISE | Completed | `docs(model-review): review topology Facility` |
 | HMSR-042 | 1 | analytics | AnalyticsDatasetVersion | — | analytics.AnalyticsDataset | 0 | 0 | 0 | — | Planned | `docs(model-review): review analytics AnalyticsDatasetVersion` |
 | HMSR-043 | 1 | analytics | MetricValue | — | analytics.MetricEvaluationRun | 0 | 0 | 3 | — | Planned | `docs(model-review): review analytics MetricValue` |
 | HMSR-044 | 1 | configuration | ConfigurationValue | — | configuration.ConfigurationDefinition | 0 | 0 | 1 | — | Planned | `docs(model-review): review configuration ConfigurationValue` |
@@ -2679,8 +2679,8 @@ Confirmed subject-model graph edges at this stage: **165**. These are semantic c
 | Field | Declared type | Classification | Resolved target | Graph edge | Notes |
 |---|---|---|---|:---:|---|
 | id | String | Self identifier | — | No | Primary identity of the current model. |
-| facilityTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
-| ownerPartyId | String | Cross-module reference | party.Party | Yes | Unambiguous reference to a subject model in another bounded context. |
+| facilityTypeId | String | Domain reference | topology.FacilityType (read/persistence model) | No | HMSR-041 stronger Topology DDD + HRA-111 evidence resolves the mandatory facility type to Topology-owned FacilityType outside the 123 HMS subject set; row existence is protected by `fk_hra111_topology_014`. |
+| ownerPartyId | String | Cross-module reference | party.Party | Yes | Optional stable Party-owned owner reference accompanied by code/name snapshots. No cross-module DB FK is appropriate; authoritative writes currently lack Party existence validation when populated. |
 
 #### topology.Pipeline
 
@@ -9086,17 +9086,190 @@ The previously identified operational-scope and assignee-integrity gaps have alr
 
 HMSR-040 does not modify production Java, JPA, Flyway, API/application contracts, tests, organization responsibilities, operational scopes, or provisioned data.
 
-## 54. Current next task
+## 54. HMSR-041 — topology.Facility review
+
+**Decision:** REVISE  
+**Review code:** HMSR-041  
+**Dependency level:** 1  
+**Bounded context:** topology  
+**Confirmed upstream subject dependencies:** `party.Party` through optional `ownerPartyId`  
+**Confirmed direct HMS subject dependents:** 1 — `topology.Equipment` through its facility relationship  
+**Transitive HMS subject dependents:** 1  
+**Unresolved/non-subject references:** 0 — `facilityTypeId` is now resolved to retained Topology FacilityType persistence/read state outside the HMS subject set
+
+### 54.1 Semantic role and ordering rationale
+
+`Facility` is the Topology-owned physical-facility model for stations, terminals, depots, pump/compressor stations and other physical network facilities.
+
+It owns physical-network identity, facility classification, location coordinates, operational lifecycle and optional external Party ownership reference. It must remain distinct from OrganizationUnit: an organizational station/unit represents people/responsibility structure, while Facility represents the physical site/network asset.
+
+It is Level 1 because the optional `ownerPartyId` is a confirmed cross-module HMS subject reference to `party.Party`. Facility type is Topology-owned retained persistence/read state and therefore does not add an HMS subject edge.
+
+### 54.2 Field semantics
+
+| Field | Type | Reviewed meaning |
+|---|---|---|
+| `id` | `String` | Mandatory stable Topology facility identity. |
+| `code` | `String` | Mandatory language-neutral facility business/reference code. No current authoritative uniqueness scope is established. |
+| `nameAr` | `String` | Optional Arabic display name. |
+| `nameFr` | `String` | Optional French display name. |
+| `nameEn` | `String` | Optional English display name. |
+| `facilityTypeId` | `String` | Mandatory same-module reference to Topology FacilityType. |
+| `facilityKind` | `FacilityKind` | Mandatory Topology facility-kind classification used by the current model. |
+| `ownerPartyId` | `String` | Optional cross-module stable reference to Party-owned owner identity. |
+| `ownerPartyCodeSnapshot` | `String` | Optional historical/readability snapshot of Party code. |
+| `ownerPartyNameSnapshot` | `String` | Optional historical/readability snapshot of Party display name. |
+| `latitude` | `BigDecimal` | Optional latitude value. |
+| `longitude` | `BigDecimal` | Optional longitude value. |
+| `elevationMeters` | `BigDecimal` | Optional elevation in meters. |
+| `status` | `FacilityStatus` | Mandatory facility lifecycle state. |
+| `commissionedAt` | `Instant` | Optional commissioning timestamp. |
+| `retiredAt` | `Instant` | Optional retirement timestamp. |
+| `createdAt` | `Instant` | Persistence-required creation timestamp. |
+| `updatedAt` | `Instant` | Persistence-required update timestamp. |
+
+The canonical constructor rejects blank ID, code and facility type; requires non-null facility kind and status; and normalizes text/reference/snapshot values.
+
+### 54.3 FacilityType reference semantics
+
+The Topology DDD owns both `Facility` and `FacilityType`.
+
+The base facility schema requires:
 
 ```text
-HMSR-041 — topology.Facility
+facility_type_id varchar(80) NOT NULL
+```
+
+and HRA-111 installs:
+
+```text
+fk_hra111_topology_014
+  facility_type_id -> hidra_topology_facility_type(id)
+  ON DELETE RESTRICT
+```
+
+with constraint validation.
+
+Therefore `facilityTypeId` is no longer a generic unresolved catalog/value dependency. It is a mandatory same-module reference to the retained Topology FacilityType persistence/read model outside the 123 HMS subject set.
+
+The database already fails closed on missing FacilityType rows. Current evidence does not separately define an active/selectable FacilityType eligibility rule for facility registration, so HMSR-041 does not invent one.
+
+### 54.4 Party ownership boundary and integrity gap
+
+The Party DDD explicitly establishes Party as the owner of external legal-entity/counterparty master data and states that other modules store only Party references and snapshots.
+
+Facility follows that pattern:
+
+```text
+ownerPartyId
+ownerPartyCodeSnapshot
+ownerPartyNameSnapshot
+```
+
+The HMS graph correctly resolves `ownerPartyId -> party.Party`.
+
+However, `FacilityApplicationService.registerFacility()` accepts `ownerPartyId` and both snapshots directly from the command and persists them without resolving the Party target through a Party-owned lookup/contract.
+
+The field is nullable, so HMSR-041 does not make Party ownership mandatory. But when `ownerPartyId` is populated, current authoritative writes can persist a nonexistent Party identity.
+
+A cross-module database FK would violate the established bounded-context reference policy. The correction therefore belongs at an application/owner-contract boundary, not in Topology schema coupling.
+
+Current evidence also does not define a required Party role such as OWNER for every facility owner reference. HMSR-041 does not invent role eligibility beyond existence unless stronger Party/Topology evidence later establishes it.
+
+### 54.5 Snapshot semantics
+
+`ownerPartyCodeSnapshot` and `ownerPartyNameSnapshot` are historical/readability values and do not replace Party identity.
+
+Because the current registration API accepts snapshots directly from the caller, they are not independently authoritative proof of Party existence.
+
+HMSR-041 does not require snapshots to be mandatory whenever `ownerPartyId` is present because no current Topology DDD rule establishes that pairing. A future correction may choose to resolve snapshots from Party rather than trust caller-supplied values, but that is not elevated into a separate HMSR obligation without stronger explicit evidence.
+
+### 54.6 FacilityKind and lifecycle semantics
+
+`FacilityKind` is mandatory in the canonical model. The current registration service defaults a missing command value to `FacilityKind.OTHER`.
+
+No current Topology DDD/roadmap evidence reviewed here establishes that FacilityKind must be replaced by FacilityType or by a catalog-backed reference, nor that the two fields are redundant. HMSR-041 therefore does not manufacture a controlled-vocabulary refactor.
+
+`FacilityStatus` is mandatory and new registrations are created as `PLANNED`, which is conservative for a newly registered physical facility.
+
+Current evidence does not define a full Facility status-transition matrix, commissioned/retired timestamp requirements by status, or automatic transitions. None are invented.
+
+### 54.7 Location and chronology rules deliberately not invented
+
+The model permits optional latitude, longitude and elevation.
+
+Current Topology DDD/roadmap evidence does not define:
+
+- required coordinates for every facility;
+- latitude/longitude ranges at the Facility model boundary;
+- mandatory coordinate pairing;
+- CRS/datum semantics on this record;
+- elevation sign/range limits.
+
+The broader data-provisioning roadmap requires coordinate/CRS validation during provisioning, but that does not by itself prove a Facility constructor invariant. HMSR-041 therefore records no coordinate correction.
+
+Likewise, current evidence does not explicitly define `commissionedAt <= retiredAt` or status/timestamp coupling for Facility, so no chronology rule is invented.
+
+### 54.8 Code and multilingual semantics
+
+The facility code is mandatory in domain/JPA/schema.
+
+The base schema creates an ordinary code index, not a unique constraint. Current authoritative Topology DDD/roadmap evidence reviewed here does not explicitly establish global or scoped Facility code uniqueness. HMSR-041 therefore does not infer uniqueness from the field name.
+
+`nameAr/nameFr/nameEn` are optional in both domain and persistence. Current Topology evidence does not require all three names or French specifically, and no separate translation model is established for Facility. No multilingual correction is recorded.
+
+### 54.9 Application/JPA/Flyway alignment
+
+The live domain and JPA representations agree on all 18 components.
+
+The registration application service:
+
+- generates a Topology-owned ID;
+- accepts the mandatory code and facility type;
+- defaults a missing facility kind to `OTHER`;
+- initializes status to `PLANNED`;
+- leaves commissioning/retirement timestamps unset; and
+- persists through `FacilityRepositoryPort`.
+
+The final persistence contract requires ID, code, facility type, facility kind, status and audit timestamps while keeping names, Party ownership, coordinates and lifecycle timestamps nullable.
+
+The only evidence-backed alignment defect found for authoritative registration is the unvalidated populated Party owner reference.
+
+### 54.10 Required revision
+
+One evidence-backed correction obligation remains:
+
+1. **Validate populated Facility owner Party references through the Party owner boundary.** When `ownerPartyId` is supplied, Topology must fail closed unless that Party identity exists under the Party bounded context. Do not introduce a cross-module database FK. A separately authorized Topology/Party correction should use a deliberate Party lookup/contract or equivalent owner-controlled validation boundary and preserve snapshots as non-authoritative evidence.
+
+HMSR-041 does not modify production Java, JPA, Flyway, API/application contracts, tests, facility master data, Party data, or provisioned data.
+
+### 54.11 SONATRACH/TRC operational interpretation
+
+For SONATRACH/TRC, Facility represents the physical pipeline-network site: for example a station, terminal, depot, pump station or compressor station.
+
+A Facility must remain distinct from the OrganizationUnit that may staff or administratively represent that site. Physical ownership may reference a Party where appropriate, but the Party identity remains governed by Party master data.
+
+A dangling owner Party would weaken ownership traceability for physical infrastructure, reporting, contractual context and downstream asset/reference use even though the physical Facility record itself remains valid.
+
+### 54.12 Review conclusion
+
+**REVISE.** `Facility` has a coherent 18-field Topology-owned physical-site model, correct separation from Organization, mandatory FacilityType reference protected by HRA-111, aligned domain/JPA/schema requiredness, optional multilingual/location state, and conservative PLANNED creation semantics.
+
+The target baseline cannot mark it APPROVED while a populated `ownerPartyId` can be persisted without demonstrated validation against the Party-owned master identity.
+
+HMS reconciliation must retain this Party-reference integrity obligation until an explicitly authorized Topology/Party correction resolves it or stronger repository evidence explicitly changes Facility ownership semantics.
+
+## 55. Current next task
+
+```text
+HMSR-042 — analytics.AnalyticsDatasetVersion
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review topology Facility
+docs(model-review): review analytics AnalyticsDatasetVersion
 ```
 
-Start HMSR-041 only after HMSR-040 is committed and reported. Do not start HMSR-042 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-042 only after HMSR-041 is committed and reported. Do not start HMSR-043 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
 

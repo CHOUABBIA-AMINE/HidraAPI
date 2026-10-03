@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -215,7 +215,7 @@ Ordering rules applied:
 | HMSR-020 | 0 | custody | CustodyMeasurementPeriod | — | — | 1 | 1 | 2 | REVISE | Completed | `docs(model-review): review custody CustodyMeasurementPeriod` |
 | HMSR-021 | 0 | integrity | PipelineDefect | — | — | 1 | 1 | 1 | REVISE | Completed | `docs(model-review): review integrity PipelineDefect` |
 | HMSR-022 | 0 | organization | Position | — | — | 1 | 1 | 0 | REVISE | Completed | `docs(model-review): review organization Position` |
-| HMSR-023 | 0 | organization | Shift | — | — | 1 | 1 | 0 | — | Planned | `docs(model-review): review organization Shift` |
+| HMSR-023 | 0 | organization | Shift | — | — | 1 | 1 | 0 | REVISE | Completed | `docs(model-review): review organization Shift` |
 | HMSR-024 | 0 | topology | PipelineSystem | — | — | 1 | 1 | 0 | — | Planned | `docs(model-review): review topology PipelineSystem` |
 | HMSR-025 | 0 | analytics | AnalyticsInsight | — | — | 0 | 0 | 3 | — | Planned | `docs(model-review): review analytics AnalyticsInsight` |
 | HMSR-026 | 0 | analytics | AnalyticsProjectionRun | — | — | 0 | 0 | 1 | — | Planned | `docs(model-review): review analytics AnalyticsProjectionRun` |
@@ -5966,16 +5966,210 @@ Multilingual titles/descriptions support Arabic, French and English user-facing 
 
 The target baseline cannot mark it APPROVED while `Position.level` is mandatory in the canonical domain but nullable in JPA/schema. HMS reconciliation must retain this nullability-alignment obligation until an explicitly authorized Organization correction task resolves it or the Position semantics are explicitly changed.
 
-## 36. Current next task
+## 36. HMSR-023 — organization.Shift review
+
+**Decision:** REVISE  
+**Review code:** HMSR-023  
+**Dependency level:** 0  
+**Bounded context:** organization  
+**Confirmed upstream subject dependencies:** none  
+**Confirmed direct dependents:** 1 — `organization.ShiftAssignment` through `shiftId`  
+**Transitive dependents:** 1  
+**Unresolved/non-subject references:** 0
+
+### 36.1 Semantic role and ordering rationale
+
+`Shift` is the Organization-owned reusable work-shift definition referenced by employee shift assignments. It owns language-neutral shift identity/code, multilingual display names, shift classification, configured schedule/timezone fields, lifecycle availability and audit metadata.
+
+It is Level 0 because it has no upstream HMS subject-model dependency. `ShiftAssignment` is its sole direct HMS subject dependent through mandatory `shiftId`.
+
+The Organization DDD explicitly owns internal Sonatrach/TRC shifts and shift assignments. Shift does not belong to Identity, Planning, Workflow or Topology merely because those modules may use time/shift context.
+
+### 36.2 Field semantics
+
+| Field | Type | Mandatory / optional | Reviewed meaning |
+|---|---|---|---|
+| `id` | `String` | Mandatory | Stable Shift identity and persistence primary key. |
+| `code` | `String` | Mandatory | Stable language-neutral Organization business code normalized through `OrganizationCode`. |
+| `nameAr` | `String` | Optional localized text | Arabic shift name. |
+| `nameFr` | `String` | Optional localized text | French shift name. |
+| `nameEn` | `String` | Optional localized text | English shift name. |
+| `shiftType` | `ShiftType` | Mandatory | Shift classification: `DAY`, `NIGHT`, `ROTATION`, `ON_CALL`, or `CUSTOM`. |
+| `startTime` | `String` | Persistence-required schedule text | Configured shift start time. |
+| `endTime` | `String` | Persistence-required schedule text | Configured shift end time. |
+| `timezone` | `String` | Persistence-required schedule text | Timezone used to interpret the configured shift schedule. |
+| `active` | `boolean` | Mandatory primitive state | Whether the Shift definition is currently active. |
+| `createdAt` | `Instant` | Persistence-required audit timestamp | Creation timestamp. |
+| `updatedAt` | `Instant` | Persistence-required audit timestamp | Last-update timestamp. |
+
+The compact constructor currently:
+
+- requires nonblank `id`;
+- requires and canonicalizes `code` through `OrganizationCode`;
+- requires non-null `shiftType`;
+- normalizes `nameAr/nameFr/nameEn`;
+- normalizes `startTime/endTime/timezone`, converting blanks to `null`;
+- carries primitive `active` without a nullable state.
+
+### 36.3 Multilingual ownership and storage
+
+The authoritative Organization multilingual policy is same-entity storage:
 
 ```text
-HMSR-023 — organization.Shift
+Arabic  -> *Ar
+French  -> *Fr
+English -> *En
+```
+
+`Shift` complies through `nameAr/nameFr/nameEn`.
+
+The additive multilingual migration introduced these three columns without guessing the language of the old `name` column. The later compatibility-retirement migration removed legacy `name` only after fail-closed parity against the runtime projection:
+
+```text
+nameEn -> nameFr -> nameAr -> code
+```
+
+Current Organization guardrail tests prevent the retired compatibility column from returning and verify the complete multilingual triplet in domain/JPA state.
+
+No repository evidence reviewed by HMSR-023 states that all three names must be populated simultaneously, so no three-language constructor requirement is invented.
+
+### 36.4 Shift code and type semantics
+
+`Shift.code` follows the common Organization stable-code policy:
+
+- null/blank values are rejected;
+- whitespace is trimmed;
+- letters are upper-cased with `Locale.ROOT`;
+- no unsupported character-set restriction is invented.
+
+The base schema has a normal index on `hidra_org_shift(code)`, not a unique constraint. No current Shift-specific DDD/application rule establishes global or scoped code uniqueness, so HMSR-023 does not invent one.
+
+`ShiftType` is a bounded Organization enum with five current values. No current evidence proves additional type-specific schedule rules such as different mandatory fields for `ON_CALL` or `CUSTOM`, so none are added.
+
+### 36.5 ShiftAssignment dependency
+
+The validated HMS graph contains:
+
+```text
+ShiftAssignment.shiftId
+    -> Shift.id
+```
+
+`ShiftAssignment.shiftId` is mandatory in both domain and JPA state.
+
+ORG-046 installs:
+
+```text
+fk_org_shift_assignment_shift
+  FOREIGN KEY (shift_id)
+  REFERENCES hidra_org_shift(id)
+  ON DELETE RESTRICT
+```
+
+so an assignment cannot reference a missing Shift at the database boundary.
+
+The current repository does not define an evidence-backed rule that only `active = true` shifts may receive assignments, nor a transition model for deactivation versus existing assignments. HMSR-023 therefore does not invent one.
+
+### 36.6 Confirmed domain/persistence schedule-nullability mismatch
+
+The strongest confirmed defect is direct inconsistency between canonical domain construction and final persistence requirements.
+
+`ShiftJpaEntity` declares:
+
+```text
+@Column(name = "start_time", nullable = false)
+@Column(name = "end_time", nullable = false)
+@Column(name = "timezone", nullable = false)
+```
+
+and the base schema defines:
+
+```text
+start_time varchar(20) NOT NULL
+end_time   varchar(20) NOT NULL
+timezone   varchar(80) NOT NULL
+```
+
+No later Organization migration relaxes those constraints.
+
+However, the domain constructor performs only:
+
+```text
+startTime = normalize(startTime);
+endTime = normalize(endTime);
+timezone = normalize(timezone);
+```
+
+where null/blank values normalize to `null`.
+
+Therefore canonical domain state can be constructed successfully with any or all of `startTime`, `endTime`, and `timezone` absent, but saving that state through the current JPA/schema boundary must fail.
+
+This is not merely a localized-label or audit-timestamp difference: these fields define the configured schedule/timezone of the Shift record and are explicitly required by current persistence.
+
+The authoritative Organization roadmap records the current project path as greenfield with no deployed legacy database rows requiring preservation of null schedule values. HMSR-023 found no repository-backed compatibility reason for the mismatch.
+
+### 36.7 Scheduling semantics deliberately not invented
+
+Although the persistence boundary requires the three schedule strings to be present, current repository evidence does not define:
+
+- whether times must use `HH:mm`, `HH:mm:ss`, or another syntax;
+- whether `startTime < endTime`;
+- how overnight shifts crossing midnight are represented;
+- whether `ROTATION`, `ON_CALL`, or `CUSTOM` use different schedule rules;
+- whether timezone must be an IANA `ZoneId`;
+- whether daylight-saving behavior matters for non-Algerian deployments.
+
+The Shift JavaDoc explicitly says scheduling-policy validation remains outside its storage-focused multilingual correction. HMSR-023 therefore records only the proven nullability inconsistency and does not invent schedule parsing or ordering rules.
+
+### 36.8 Persistence/application consistency otherwise
+
+The live domain and JPA models agree on all 12 declared components.
+
+Final persistence is aligned for:
+
+- `id`;
+- normalized `code`;
+- multilingual names;
+- mandatory `shiftType`;
+- primitive `active`;
+- audit timestamps.
+
+`ShiftRepositoryPort` provides save/find-by-ID persistence. Current public Organization inbound-use-case inventory does not expose a standalone Shift creation/update operation. That absence does not invalidate the model because Shift remains Organization-owned master/reference data consumed by `ShiftAssignment`.
+
+Generic `createdAt`/`updatedAt` domain nullability remains classified as persistence-only audit metadata and is not promoted into a new constructor rule.
+
+### 36.9 Required revision
+
+One evidence-backed correction is required:
+
+1. **Align `startTime`, `endTime`, and `timezone` nullability across the Shift domain and persistence contract.** The current final schema/JPA contract requires all three values, while canonical domain construction permits them to normalize to `null`. A separately authorized Organization correction task must either enforce the established non-null persistence semantics before save/domain construction, or explicitly change the target persistence semantics if a documented business decision makes any field optional. HMSR-023 does not prescribe clock parsing, timezone syntax, overnight handling, or type-specific scheduling rules.
+
+HMSR-023 does not modify production Java, JPA, Flyway, APIs, application contracts, tests, shifts, shift assignments or provisioned data.
+
+### 36.10 SONATRACH/TRC operational interpretation
+
+For SONATRACH/TRC operations, Shift is reusable organization master data describing work periods used to assign personnel operationally. A Shift definition whose schedule or timezone is missing cannot satisfy the current persistence contract and risks ambiguous interpretation of employee shift assignments.
+
+The model remains organizational rather than authorization-oriented: being assigned to a shift does not itself grant Identity permissions or operational-scope responsibility.
+
+Multilingual shift names belong directly on the Shift entity in Arabic, French and English under the current Organization policy.
+
+### 36.11 Review conclusion
+
+**REVISE.** `Shift` has a coherent 12-field ownership model, correct Level-0 placement, valid same-entity multilingual design, normalized stable code, bounded type vocabulary and a database-protected downstream `ShiftAssignment.shiftId` reference.
+
+The target baseline cannot mark it APPROVED while the canonical domain permits absent `startTime`, `endTime`, or `timezone` values that the final JPA/schema contract rejects. HMS reconciliation must retain this schedule-nullability alignment obligation until an explicitly authorized Organization correction task resolves it or the Shift persistence semantics are explicitly changed.
+
+## 37. Current next task
+
+```text
+HMSR-024 — topology.PipelineSystem
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review organization Shift
+docs(model-review): review topology PipelineSystem
 ```
 
-Start HMSR-023 only after HMSR-022 is committed and reported. Do not start HMSR-024 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-024 only after HMSR-023 is committed and reported. Do not start HMSR-025 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

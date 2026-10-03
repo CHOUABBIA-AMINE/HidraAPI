@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -218,7 +218,7 @@ Ordering rules applied:
 | HMSR-023 | 0 | organization | Shift | — | — | 1 | 1 | 0 | REVISE | Completed | `docs(model-review): review organization Shift` |
 | HMSR-024 | 0 | topology | PipelineSystem | — | — | 1 | 1 | 0 | REVISE | Completed | `docs(model-review): review topology PipelineSystem` |
 | HMSR-025 | 0 | analytics | AnalyticsInsight | — | — | 0 | 0 | 3 | REVISE | Completed | `docs(model-review): review analytics AnalyticsInsight` |
-| HMSR-026 | 0 | analytics | AnalyticsProjectionRun | — | — | 0 | 0 | 1 | — | Planned | `docs(model-review): review analytics AnalyticsProjectionRun` |
+| HMSR-026 | 0 | analytics | AnalyticsProjectionRun | — | — | 0 | 0 | 1 | REVISE | Completed | `docs(model-review): review analytics AnalyticsProjectionRun` |
 | HMSR-027 | 0 | analytics | DigitalTwinReadinessAssessment | — | — | 0 | 0 | 0 | — | Planned | `docs(model-review): review analytics DigitalTwinReadinessAssessment` |
 | HMSR-028 | 0 | configuration | FeatureFlag | — | — | 0 | 0 | 0 | — | Planned | `docs(model-review): review configuration FeatureFlag` |
 | HMSR-029 | 0 | custody | CustodyDiscrepancy | — | — | 0 | 0 | 1 | — | Planned | `docs(model-review): review custody CustodyDiscrepancy` |
@@ -1634,7 +1634,7 @@ Confirmed subject-model graph edges at this stage: **165**. These are semantic c
 | Field | Declared type | Classification | Resolved target | Graph edge | Notes |
 |---|---|---|---|:---:|---|
 | id | String | Self identifier | — | No | Primary identity of the current model. |
-| projectionDefinitionId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| projectionDefinitionId | String | Domain reference | analytics.AnalyticsProjectionDefinition (read/persistence model) | No | HMSR-026 stronger Analytics DDD + HRA-111 evidence resolves this required same-module reference to `hidra_analytics_projection_definition`; target is outside the 123 HMS subject set. |
 | correlationId | String | Snapshot/reference-only | TECHNICAL_REFERENCE | No | Technical correlation/request/reference identity. |
 
 #### analytics.DigitalTwinReadinessAssessment
@@ -6527,16 +6527,203 @@ The target baseline cannot mark it APPROVED while controlled `insightType` and m
 
 HMS reconciliation must retain these obligations until an explicitly authorized Analytics correction task resolves them or the target semantics are explicitly revised with stronger repository evidence.
 
-## 39. Current next task
+## 39. HMSR-026 — analytics.AnalyticsProjectionRun review
+
+**Decision:** REVISE  
+**Review code:** HMSR-026  
+**Dependency level:** 0  
+**Bounded context:** analytics  
+**Confirmed upstream subject dependencies:** none  
+**Confirmed direct dependents:** 0  
+**Transitive dependents:** 0  
+**Unresolved/non-subject references:** 1 — `projectionDefinitionId`, now semantically resolved to Analytics-owned `AnalyticsProjectionDefinition` outside the 123 HMS subject set
+
+### 39.1 Semantic role and ordering rationale
+
+`AnalyticsProjectionRun` is the Analytics-owned execution record for one materialized analytical projection computation. It captures which projection definition was run, run mode/status, optional analytical period, execution timing, source watermark, record counts, diagnostic error context and technical correlation identity.
+
+It is Level 0 because its required projection-definition prerequisite is a retained Analytics read/persistence model outside the 123-model HMS subject population. It has no direct HMS subject dependent.
+
+The active Analytics DDD states that projection definitions specify analytical computation, projection runs execute those definitions, and projection snapshots publish resulting states. Analytics remains derived/read-oriented and must not mutate source-of-truth operational state.
+
+### 39.2 Field semantics
+
+| Field | Type | Mandatory / optional | Reviewed meaning |
+|---|---|---|---|
+| `id` | `String` | Mandatory | Stable AnalyticsProjectionRun identity and persistence primary key. |
+| `projectionDefinitionId` | `String` | Mandatory | Same-module reference to the AnalyticsProjectionDefinition being executed. |
+| `runStatus` | `AnalyticsRunStatus` | Mandatory | Execution lifecycle state: `PENDING`, `RUNNING`, `COMPLETED`, `COMPLETED_WITH_WARNINGS`, `FAILED`, or `CANCELLED`. |
+| `runMode` | `AnalyticsRunMode` | Mandatory | Execution mode: `FULL_REBUILD`, `INCREMENTAL`, `BACKFILL`, `MANUAL_RECOMPUTE`, or `SCHEDULED`. |
+| `periodStart` | `Instant` | Optional | Start of the analytical period being processed, when the projection uses a bounded period. |
+| `periodEnd` | `Instant` | Optional | End of the analytical period; current domain correctly rejects values before `periodStart` when both are present. |
+| `startedAt` | `Instant` | Mandatory | Run execution start timestamp. |
+| `completedAt` | `Instant` | Optional | Completion timestamp when recorded. Current DDD does not define exact status/timestamp pairing rules. |
+| `sourceWatermark` | `String` | Optional in current model | Source-read watermark used for reproducibility/incremental lineage; the DDD requires successful runs to record it. |
+| `recordsRead` | `Long` | Optional | Number of source records read. The current start path initializes it to zero. |
+| `recordsWritten` | `Long` | Optional | Number of projection records written. The current start path initializes it to zero. |
+| `errorCode` | `String` | Optional | Machine-oriented diagnostic error code. |
+| `errorMessage` | `String` | Optional | Human-readable diagnostic context. |
+| `correlationId` | `String` | Optional technical reference | Cross-request/job correlation identity; not a business-model dependency. |
+| `createdAt` | `Instant` | Persistence-required audit timestamp | Creation timestamp. |
+
+The compact constructor already requires nonblank `id` and `projectionDefinitionId`, non-null `runStatus`, `runMode`, and `startedAt`, and enforces `periodStart <= periodEnd` when both bounds are present.
+
+### 39.3 Projection-definition dependency resolution
+
+HMS-003 left `projectionDefinitionId` unresolved. Stronger live evidence resolves it to Analytics-owned `AnalyticsProjectionDefinition`:
+
+- Analytics DDD owns AnalyticsProjectionDefinition as projection computation specification;
+- repository mirror classification retains AnalyticsProjectionDefinition as an Analytics read/persistence model outside the HMS subject set;
+- `AnalyticsProjectionRunJpaEntity.projectionDefinitionId` maps to mandatory `hidra_analytics_projection_run.projection_definition_id`;
+- HRA-111 installs `fk_hra111_analytics_028`, linking `hidra_analytics_projection_run.projection_definition_id -> hidra_analytics_projection_definition(id)` with `ON DELETE RESTRICT`.
+
+Therefore `projectionDefinitionId` is a required same-module domain reference to a non-HMS model. No HMS graph edge is added.
+
+The current application run path does not explicitly look up the definition before save, but the database FK provides fail-closed row-existence protection. HMSR-026 does not invent a duplicate application existence check solely because the lookup is absent.
+
+### 39.4 Current start-run behavior
+
+`AnalyticsApplicationService.runProjection()` creates a new run with:
 
 ```text
-HMSR-026 — analytics.AnalyticsProjectionRun
+runStatus      = RUNNING
+startedAt      = now
+completedAt    = null
+sourceWatermark = null
+recordsRead    = 0
+recordsWritten = 0
+errorCode      = null
+errorMessage   = null
+createdAt      = now
+```
+
+That initial state is semantically conservative for a run that has just started. The current command supplies `projectionDefinitionId`, `runMode`, optional period bounds and optional `correlationId`.
+
+The live application surface does not currently expose a projection-run completion/failure transition use case. That absence does not remove the semantic obligations of the persisted run model: terminal AnalyticsProjectionRun rows can still exist through persistence/evolution, and the DDD explicitly specifies terminal-state evidence requirements.
+
+### 39.5 Failed-run diagnostic obligation
+
+Analytics DDD states:
+
+```text
+failed run must retain error context
+```
+
+The live record nevertheless permits:
+
+```text
+runStatus = FAILED
+errorCode = null
+errorMessage = null
+```
+
+because neither constructor nor persistence schema couples FAILED status to diagnostic fields.
+
+The DDD does not state whether error context means `errorCode`, `errorMessage`, or both. HMSR-026 therefore does not invent an exact field combination, but the final model/application lifecycle must ensure a failed run cannot be persisted without meaningful retained error context.
+
+### 39.6 Successful-run watermark obligation
+
+Analytics DDD separately states:
+
+```text
+successful run must record source watermark
+```
+
+The current model permits terminal successful state with `sourceWatermark = null`. No database constraint or current transition path demonstrates a fail-closed watermark rule.
+
+The enum includes `COMPLETED` and `COMPLETED_WITH_WARNINGS`; repository evidence does not separately define which statuses the phrase "successful run" covers. The correction must explicitly map successful terminal status semantics and enforce a nonblank source watermark for the statuses treated as successful rather than HMSR-026 guessing the mapping.
+
+This is an analytical-lineage requirement, not generic text nullability: the source watermark is specifically required by the DDD for successful run reproducibility.
+
+### 39.7 Projection-definition version/reproducibility gap
+
+The strongest structural lineage issue is between the projection-definition rule and the run reference.
+
+Analytics DDD states:
+
+```text
+projection definition must be versioned when formula changes
+projection must be rebuildable from source truth and audit history
+```
+
+But the live repository contains no `AnalyticsProjectionDefinitionVersion` model/table/reference and no `projectionDefinitionVersionId` on AnalyticsProjectionRun. The run stores only:
+
+```text
+projectionDefinitionId
+    -> hidra_analytics_projection_definition.id
+```
+
+while the definition row itself carries mutable computation-related fields such as `projectionType`, `calculationPolicy`, `refreshPolicy`, `retentionPolicy`, and `updatedAt`.
+
+Therefore the current run record cannot, by its own persisted reference, identify which immutable projection-definition/formula version produced a historical result after the definition changes.
+
+HMSR-026 does not prescribe that the correction must use a model literally named `AnalyticsProjectionDefinitionVersion`. A separately authorized Analytics task may satisfy the DDD through an immutable version record, immutable execution snapshot, audit-backed version identity, or another explicit reproducibility contract. What is required is durable run-to-computation-version lineage.
+
+### 39.8 ProjectionSnapshot downstream persistence relationship
+
+Although HMSR-026 has zero direct HMS subject dependents, retained Analytics persistence includes `AnalyticsProjectionSnapshot`.
+
+HRA-111 protects:
+
+```text
+hidra_analytics_projection_snapshot.projection_run_id
+    -> hidra_analytics_projection_run.id
+```
+
+through `fk_hra111_analytics_030` with `ON DELETE RESTRICT`.
+
+The snapshot also references the projection definition independently. This reinforces the run as stable execution identity, but does not solve the formula-version lineage gap because both rows currently point only to the unversioned definition identity.
+
+### 39.9 Run-mode, period, counters and timestamps deliberately not invented
+
+The five `AnalyticsRunMode` values match the DDD exactly. No repository evidence reviewed by HMSR-026 defines mode-specific required period bounds, so the review does not require periods for BACKFILL, SCHEDULED, or any other mode.
+
+The existing `periodStart <= periodEnd` invariant is already enforced. Equality is permitted by the repository-wide invariant policy.
+
+No current Analytics rule states that `recordsRead` or `recordsWritten` must be nonnegative, mandatory at terminal state, or related by a particular inequality. HMSR-026 does not invent those constraints.
+
+Likewise, the DDD does not explicitly state that terminal statuses require `completedAt`, that `completedAt >= startedAt`, or that CANCELLED carries diagnostics. Those potentially useful lifecycle rules are not promoted without stronger evidence.
+
+The DDD says projection runs should be idempotent "where possible", but does not define an idempotency key or uniqueness contract. HMSR-026 therefore does not invent correlation-ID uniqueness or a compound run key.
+
+### 39.10 Required revisions
+
+Three evidence-backed correction obligations remain:
+
+1. **Preserve terminal failure diagnostics.** A run persisted as `FAILED` must retain meaningful error context, as required by Analytics DDD. The implementation task must define the accepted error-code/message contract rather than silently allowing both to be absent.
+
+2. **Preserve successful-run source lineage.** Statuses classified by Analytics as successful must require a nonblank `sourceWatermark`, consistent with the DDD. The implementation task must explicitly define the successful-status set rather than relying on implicit interpretation.
+
+3. **Make projection runs reproducible across definition changes.** AnalyticsProjectionRun must durably identify the immutable computation/definition version that produced the run, or an equivalent immutable execution snapshot/audit version, because Analytics DDD requires definition versioning when formula changes and rebuildability from source truth/history.
+
+HMSR-026 does not modify production Java, JPA, Flyway, REST/application contracts, tests, projection definitions/runs/snapshots, or provisioned data.
+
+### 39.11 SONATRACH/TRC operational interpretation
+
+For SONATRACH/TRC, AnalyticsProjectionRun is execution evidence for derived operational-intelligence views such as hourly summaries, pipeline/station performance, custody variance, risk evolution or HSE performance.
+
+A historical projection result must be explainable and reproducible: operators and auditors need to know which computation definition produced it, what source boundary/watermark was processed, and why a failed execution failed.
+
+These controls remain analytical lineage and governance concerns. They do not grant Analytics ownership over the underlying telemetry, topology, planning, custody, HSE, risk or other operational source facts.
+
+### 39.12 Review conclusion
+
+**REVISE.** `AnalyticsProjectionRun` has a coherent 15-field execution model, correct Level-0 placement, correct run-mode vocabulary, an already-enforced period-order invariant, conservative RUNNING creation state, and a database-protected required reference to AnalyticsProjectionDefinition.
+
+The target baseline cannot mark it APPROVED while failed runs may omit the DDD-required error context, successful runs may omit the DDD-required source watermark, and historical runs cannot identify an immutable projection-definition/formula version despite the explicit DDD versioning/rebuildability requirement.
+
+HMS reconciliation must retain these three obligations until an explicitly authorized Analytics correction task resolves them or the target Analytics DDD is explicitly revised with stronger repository evidence.
+
+## 40. Current next task
+
+```text
+HMSR-027 — analytics.DigitalTwinReadinessAssessment
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review analytics AnalyticsProjectionRun
+docs(model-review): review analytics DigitalTwinReadinessAssessment
 ```
 
-Start HMSR-026 only after HMSR-025 is committed and reported. Do not start HMSR-027 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-027 only after HMSR-026 is committed and reported. Do not start HMSR-028 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -250,7 +250,7 @@ Ordering rules applied:
 | HMSR-055 | 2 | simulation | SimulationRun | — | simulation.SimulationScenario | 2 | 3 | 2 | REVISE | Completed | `docs(model-review): review simulation SimulationRun` |
 | HMSR-056 | 2 | integration | ExternalSystem | — | organization.OrganizationUnit | 2 | 2 | 0 | REVISE | Completed | `docs(model-review): review integration ExternalSystem` |
 | HMSR-057 | 2 | reporting | ReportRequest | — | organization.OrganizationUnit, reporting.ReportDefinition | 1 | 2 | 1 | REVISE | Completed | `docs(model-review): review reporting ReportRequest` |
-| HMSR-058 | 2 | risk | RiskRegister | — | organization.OrganizationUnit | 1 | 2 | 0 | — | Planned | `docs(model-review): review risk RiskRegister` |
+| HMSR-058 | 2 | risk | RiskRegister | — | organization.OrganizationUnit | 1 | 2 | 0 | REVISE | Completed | `docs(model-review): review risk RiskRegister` |
 | HMSR-059 | 2 | integrity | IntegrityProgram | — | organization.OrganizationUnit | 1 | 1 | 0 | — | Planned | `docs(model-review): review integrity IntegrityProgram` |
 | HMSR-060 | 2 | leakdetection | LeakDetectionCase | — | leakdetection.LeakCandidate, organization.OrganizationUnit | 1 | 1 | 0 | — | Planned | `docs(model-review): review leakdetection LeakDetectionCase` |
 | HMSR-061 | 2 | notification | NotificationMessage | — | notification.NotificationRequest, notification.NotificationTemplate | 1 | 1 | 3 | — | Planned | `docs(model-review): review notification NotificationMessage` |
@@ -2551,11 +2551,11 @@ Confirmed subject-model graph edges at this stage: **165**. These are semantic c
 | Field | Declared type | Classification | Resolved target | Graph edge | Notes |
 |---|---|---|---|:---:|---|
 | id | String | Self identifier | — | No | Primary identity of the current model. |
-| registerTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
-| ownerOrganizationUnitId | String | Cross-module reference | organization.OrganizationUnit | Yes | Unambiguous reference to a subject model in another bounded context. |
-| scopeId | String | Cross-module reference | POLYMORPHIC | No | Target is selected by companion type/module metadata; no single subject-model edge. |
-| reviewFrequencyId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
-| createdByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+| registerTypeId | String | Value/catalog dependency | risk.RiskCatalogEntry (read/persistence model) | No | Mandatory same-module catalog reference; HRA-111 protects row existence, while Risk DDD assigns register classifications to the `RISK_REGISTER_TYPE` family. Generic FK existence does not enforce family membership or active eligibility. |
+| ownerOrganizationUnitId | String | Optional cross-module reference | organization.OrganizationUnit | Yes | Optional Organization-owned register owner; no cross-module DB FK is appropriate. Current create flow does not resolve a populated value through an Organization-owned boundary. |
+| scopeId | String | Typed/non-relational reference | TYPED_BUSINESS_SCOPE | No | HRA-111 explicitly reclassified `scopeType + scopeId` as a typed business-scope namespace. Preserve this classification; do not force a Risk self-FK or one cross-module relational target. |
+| reviewFrequencyId | String | Value/catalog dependency | UNRESOLVED_REVIEW_POLICY_VALUE | No | Optional review-policy reference. Risk DDD names the field but defines no corresponding review-frequency catalog family; do not invent one during HMSR. |
+| createdByActorId | String | Optional cross-module reference | IDENTITY_ACTOR | No | Optional creator identity with display-name snapshot; no Actor subject model or cross-module DB FK is appropriate. |
 
 #### simulation.SimulationCandidateChange
 
@@ -11891,16 +11891,122 @@ The target baseline cannot mark it APPROVED while inactive/restricted definition
 
 HMS reconciliation must retain these obligations until explicitly authorized Reporting production corrections resolve them or stronger repository evidence changes the governing Reporting DDD.
 
-## 71. Current next task
+## 71. HMSR-058 — risk.RiskRegister review
+
+**Decision:** REVISE  
+**Review code:** HMSR-058  
+**Dependency level:** 2  
+**Bounded context:** risk  
+**Confirmed upstream subject dependencies:** optional `organization.OrganizationUnit`  
+**Confirmed direct HMS subject dependents:** 1  
+**Transitive HMS subject dependents:** 2
+
+### 71.1 Semantic role
+
+`RiskRegister` is the Risk-owned governed container for risks within a typed operational/business scope. The Risk DDD assigns it ownership of register identity, scope, classification, status and review policy. It carries multilingual names, an optional Organization owner snapshot, typed scope snapshots, lifecycle status, effective dates and creator snapshot metadata.
+
+Risk owns the register and its risk-policy semantics. It does not own Organization, Identity or the external business objects selected by the typed scope namespace.
+
+### 71.2 Register-type catalog semantics
+
+`registerTypeId` is mandatory. HRA-111 protects same-module row existence with:
 
 ```text
-HMSR-058 — risk.RiskRegister
+hidra_risk_register.register_type_id -> hidra_risk_catalog_entry.id
+```
+
+The Risk DDD separately defines `RISK_REGISTER_TYPE` as the controlled catalog family for register classification.
+
+The current create path accepts `registerTypeId` and saves the register directly. The generic FK proves only that some RiskCatalogEntry exists; it does not prove that the row belongs to `RISK_REGISTER_TYPE` or is eligible/active for new registers.
+
+### 71.3 Organization ownership boundary
+
+`ownerOrganizationUnitId` is optional and accompanied by `ownerOrganizationUnitNameSnapshot`. It unambiguously references Organization-owned identity.
+
+`RiskApplicationService.createRiskRegister()` persists a populated owner OrganizationUnit ID without resolving it through an Organization-owned lookup/application contract.
+
+No cross-module database FK should be introduced. When the owner is populated, its identity should fail closed through the Organization boundary while preserving the supplied historical/display snapshot semantics.
+
+### 71.4 Typed scope semantics
+
+The register requires `scopeId`, while persistence also requires `scopeType`. HRA-111 explicitly reclassified `risk.RiskRegister.scopeId` as `NON_RELATIONAL_IDENTIFIER` because `scopeType + scopeId` form a typed business-scope namespace with code/label snapshots.
+
+This classification is correct and must be preserved: the scope must not be forced to `RiskAssessmentScope`, a Risk self-reference, or one cross-module database FK.
+
+The current domain constructor guards `scopeId` but not `scopeType`, and the create path performs no owner-specific typed-scope resolution. The authoritative write path therefore needs to reject semantically incomplete scope identity and validate supported typed scopes through the appropriate owning boundary/contract when such validation is available.
+
+HMSR-058 does not invent the allowed `scopeType` vocabulary.
+
+### 71.5 Review policy reference
+
+`reviewFrequencyId` is optional and belongs to the register's review-policy semantics, but current Risk DDD/catalog evidence does not define a corresponding review-frequency catalog family. The catalog list includes `RISK_REVIEW_TYPE`, which is not evidence that it is interchangeable with a review frequency.
+
+Therefore HMSR-058 does not manufacture a catalog-family mapping. The field's controlled-value ownership must be explicitly resolved before the semantic baseline can treat this part of the model as approved.
+
+### 71.6 Lifecycle and temporal semantics
+
+`RiskRegisterStatus` is a Risk-owned lifecycle enum:
+
+```text
+DRAFT
+ACTIVE
+SUSPENDED
+RETIRED
+ARCHIVED
+```
+
+The active create path initializes new registers as `DRAFT`. Repository evidence does not provide a complete register transition matrix, so HMSR-058 does not invent additional transitions.
+
+The domain already enforces the classified `effectiveFrom <= effectiveTo` invariant. No additional createdAt/updatedAt ordering rule is introduced.
+
+### 71.7 Creation audit/event obligation
+
+The Risk DDD explicitly lists `RiskRegisterCreated` as a domain event and requires risk register creation/update to emit audit-ready events. The current `createRiskRegister()` path only constructs and saves the register; its constructor has repository ports for register, assessment and evidence persistence only and demonstrates no audit/outbox publication for register creation.
+
+This is retained as a production obligation. HMSR-058 does not implement event publication or invent an event payload beyond the DDD's existing audit requirements.
+
+### 71.8 Multilingual and snapshot handling
+
+The model stores `nameAr`, `nameFr` and `nameEn` directly and therefore already supports the project's three operating languages without a separate translation entity for the register itself.
+
+Current evidence is insufficient to promote every persistence nullability choice into a domain invariant. In particular, HMSR-058 does not invent new field-level language requirements from JPA `NOT NULL` alone.
+
+Organization/scope/creator snapshot fields remain snapshots and must not be converted into owning dependencies.
+
+### 71.9 Required revisions
+
+Five evidence-backed production/semantic obligations remain:
+
+1. **Enforce Risk register-type family eligibility.** A mandatory `registerTypeId` must resolve to an eligible `RiskCatalogEntry` in the `RISK_REGISTER_TYPE` family; generic FK row existence is insufficient.
+
+2. **Validate populated `ownerOrganizationUnitId` through the Organization owner boundary.** Preserve snapshot semantics and do not add a cross-module database FK.
+
+3. **Make typed scope identity fail closed.** Preserve `scopeType + scopeId` as a non-relational typed namespace, require a semantically complete pair at the authoritative write boundary, and resolve supported types through their owning contracts rather than inventing one relational target.
+
+4. **Resolve `reviewFrequencyId` controlled-value semantics.** Current DDD does not identify a defensible review-frequency catalog family; do not map it to `RISK_REVIEW_TYPE` without stronger evidence.
+
+5. **Honor the explicit register creation/update audit-event contract.** Integrate the authoritative write path with the existing Risk audit/outbox architecture when production reconciliation is authorized.
+
+HMSR-058 does not modify production Java, JPA, Flyway, API/application contracts, tests, catalog data, Organization data, audit infrastructure, or provisioned data.
+
+### 71.10 Review conclusion
+
+**REVISE.** `RiskRegister` is a coherent 21-field Risk-owned register model with explicit multilingual naming, lifecycle state, temporal bounds, Organization ownership metadata and typed scope snapshots. Its same-module register-type row existence and downstream RiskAssessment reference are database-protected where appropriate.
+
+The target baseline cannot mark it APPROVED while register-type family eligibility is unenforced, populated Organization ownership is not owner-validated, typed scope completeness/owner resolution is not fail-closed, `reviewFrequencyId` has unresolved controlled-value semantics, and the DDD's register audit/event contract is absent from the live creation path.
+
+HMS reconciliation must retain these obligations until explicitly authorized Risk production corrections resolve them or stronger repository evidence changes the governing Risk DDD.
+
+## 72. Current next task
+
+```text
+HMSR-059 — integrity.IntegrityProgram
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review risk RiskRegister
+docs(model-review): review integrity IntegrityProgram
 ```
 
-Start HMSR-058 only after HMSR-057 is committed and reported. Do not start HMSR-059 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-059 only after HMSR-058 is committed and reported. Do not start HMSR-060 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

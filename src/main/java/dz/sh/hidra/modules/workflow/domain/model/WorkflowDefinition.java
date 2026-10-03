@@ -59,7 +59,7 @@ import java.time.Instant;
         if (code == null || code.isBlank()) {
             throw new InvalidWorkflowValueException("WorkflowDefinition code must not be blank.");
         }
-        // HRA-051 required: nameFr
+        // HMR-003 required: nameFr
         if (nameFr == null || nameFr.isBlank()) {
             throw new InvalidWorkflowValueException("WorkflowDefinition French name must not be blank.");
         }

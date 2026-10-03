@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 reviewed as REVISE, HMSR-080 reviewed as REVISE, HMSR-081 reviewed as REVISE, HMSR-082 reviewed as REVISE, HMSR-083 approved, HMSR-084 reviewed as REVISE, HMSR-085 reviewed as REVISE, HMSR-086 approved, HMSR-087 reviewed as REVISE, HMSR-088 reviewed as REVISE, HMSR-089 reviewed as REVISE, HMSR-090 reviewed as REVISE, HMSR-091 reviewed as REVISE, HMSR-092 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 reviewed as REVISE, HMSR-080 reviewed as REVISE, HMSR-081 reviewed as REVISE, HMSR-082 reviewed as REVISE, HMSR-083 approved, HMSR-084 reviewed as REVISE, HMSR-085 reviewed as REVISE, HMSR-086 approved, HMSR-087 reviewed as REVISE, HMSR-088 reviewed as REVISE, HMSR-089 reviewed as REVISE, HMSR-090 reviewed as REVISE, HMSR-091 reviewed as REVISE, HMSR-092 reviewed as REVISE, HMSR-093 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -284,7 +284,7 @@ Ordering rules applied:
 | HMSR-089 | 4 | organization | OrganizationHierarchySnapshot | — | organization.Employee | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review organization OrganizationHierarchySnapshot` |
 | HMSR-090 | 4 | organization | ShiftAssignment | — | organization.Employee, organization.OrganizationUnit, organization.Shift | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review organization ShiftAssignment` |
 | HMSR-091 | 4 | risk | RiskEvidenceLink | — | risk.RiskAssessment | 0 | 0 | 1 | REVISE | Completed | `docs(model-review): review risk RiskEvidenceLink` |
-| HMSR-092 | 4 | simulation | SimulationCandidateChange | — | simulation.SimulationOptimizationCandidate | 0 | 0 | 0 | — | Planned | `docs(model-review): review simulation SimulationCandidateChange` |
+| HMSR-092 | 4 | simulation | SimulationCandidateChange | — | simulation.SimulationOptimizationCandidate | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review simulation SimulationCandidateChange` |
 | HMSR-093 | 4 | simulation | SimulationRecommendation | — | simulation.SimulationOptimizationCandidate, simulation.SimulationRun | 0 | 0 | 0 | — | Planned | `docs(model-review): review simulation SimulationRecommendation` |
 | HMSR-094 | 5 | planning | Nomination | — | party.Party, planning.PlanRevision | 1 | 6 | 2 | — | Planned | `docs(model-review): review planning Nomination` |
 | HMSR-095 | 5 | workflow | WorkflowAction | — | organization.OrganizationUnit, workflow.WorkflowInstance, workflow.WorkflowTask | 2 | 4 | 1 | — | Planned | `docs(model-review): review workflow WorkflowAction` |
@@ -16551,16 +16551,169 @@ The target baseline cannot mark it APPROVED while the live domain permits incomp
 
 HMS reconciliation must retain these obligations until explicitly authorized Risk production corrections resolve them or stronger repository evidence changes the governing Risk contract.
 
-## 105. Current next task
+## 105. HMSR-092 — simulation.SimulationCandidateChange review
+
+**Decision:** REVISE  
+**Review code:** HMSR-092  
+**Dependency level:** 4  
+**Bounded context:** simulation  
+**Confirmed upstream subject dependencies:** mandatory `simulation.SimulationOptimizationCandidate`; Topology-owned target reference by scalar type/ID  
+**Confirmed direct HMS subject dependents:** 0  
+**Transitive HMS subject dependents:** 0
+
+### 105.1 Semantic role
+
+`SimulationCandidateChange` is the Simulation-owned descriptive representation of a proposed topology or operating change inside an optimization candidate.
+
+The governing Simulation DDD is explicit:
 
 ```text
-HMSR-092 — simulation.SimulationCandidateChange
+SimulationCandidateChange is descriptive only.
+It must not execute field commands.
+```
+
+Simulation owns the recommendation candidate. Topology owns official network state. Workflow governs adoption where operationally material. This model must therefore remain proposal/evidence data rather than an actuation command.
+
+### 105.2 Parent candidate integrity
+
+`candidateId` is mandatory and same-module.
+
+HRA-111 already protects it with:
+
+```text
+hidra_simulation_candidate_change.candidate_id
+  -> hidra_simulation_optimization_candidate.id
+```
+
+The domain constructor also rejects blank `candidateId`.
+
+No further basic existence correction is required for the parent candidate.
+
+### 105.3 Change-type catalog semantics
+
+`changeTypeId` is mandatory and Simulation-owned catalog data.
+
+HRA-111 already protects generic existence through:
+
+```text
+hidra_simulation_candidate_change.change_type_id
+  -> hidra_simulation_catalog_entry.id
+```
+
+The Simulation DDD explicitly defines the business catalog family:
+
+```text
+SIMULATION_CHANGE_TYPE
+```
+
+with examples such as:
+
+```text
+ROUTE_CHANGE
+EQUIPMENT_STATE
+FLOW_TARGET
+PRESSURE_TARGET
+SEGMENT_STATUS
+FACILITY_MODE
+```
+
+Generic catalog existence alone does not prove family membership or eligibility. The authoritative write boundary must therefore validate that `changeTypeId` belongs to the active/eligible `SIMULATION_CHANGE_TYPE` family.
+
+### 105.4 Required target/change values
+
+The Simulation DDD marks these fields required:
+
+```text
+targetType
+targetId
+afterValue
+```
+
+The live constructor already rejects blank `targetId`, but only normalizes `targetType` and `afterValue`; both may therefore become null.
+
+JPA/Flyway persist both `target_type` and `after_value` as `NOT NULL`.
+
+Because the DDD explicitly classifies them as required candidate-change semantics, the domain/application boundary must fail fast for blank/null `targetType` and `afterValue` rather than relying on persistence failure.
+
+### 105.5 Topology target ownership
+
+The DDD enumerates candidate-change target types such as:
+
+```text
+PIPELINE
+SEGMENT
+FACILITY
+EQUIPMENT
+NODE
+CONNECTION
+```
+
+These represent Topology-owned network objects. Simulation must not import Topology domain/JPA models or write Topology tables.
+
+The correct boundary is therefore a scalar `targetType` + `targetId` reference resolved through a Topology-owned lookup/application contract when a candidate change is created or validated.
+
+No cross-module Topology database FK should be introduced.
+
+Current repository evidence does not justify copying Topology labels/codes into new mandatory fields, so HMSR-092 does not invent additional snapshot requirements.
+
+### 105.6 Safety flags and adoption semantics
+
+The model carries:
+
+```text
+requiresTopologyChange
+requiresOperationalProcedure
+safetyCritical
+```
+
+The Simulation DDD states:
+
+```text
+A candidate change marked safetyCritical must require workflow review before adoption.
+A candidate submitted to topology must create a topology change proposal, not update topology tables.
+Simulation must not actuate field equipment.
+```
+
+These rules govern adoption/export workflows rather than the persistence shape of the descriptive change record itself.
+
+Repository search found no live `SimulationCandidateChange` application creation/adoption service. HMSR-092 therefore does not invent an observed workflow-bypass defect, but the future adoption path must preserve these rules.
+
+### 105.7 Optional before value, unit and explanation
+
+`beforeValue`, `unitCode`, and `explanation` are explicitly optional in the Simulation DDD.
+
+HMSR-092 preserves them as optional metadata and does not promote them into invariants.
+
+### 105.8 Required revisions
+
+Three evidence-backed production obligations remain:
+
+1. **Enforce all DDD-required candidate-change values before persistence.** `targetType` and `afterValue` must be nonblank in addition to the already-enforced `targetId`.
+
+2. **Validate `changeTypeId` against the active/eligible exact `SIMULATION_CHANGE_TYPE` catalog family**, not only generic Simulation catalog existence.
+
+3. **Validate the Topology-owned target through a Topology-owned lookup/application boundary** for supported `targetType`/`targetId` combinations while preserving scalar references and avoiding cross-module database FKs.
+
+HMSR-092 does not modify production Java, JPA, Flyway, API/application contracts, tests, Simulation/Topology/Workflow data, or provisioned data.
+
+### 105.9 Review conclusion
+
+**REVISE.** `SimulationCandidateChange` correctly remains a descriptive Simulation-owned proposal record, already has same-module parent/catalog existence protection, and preserves the no-actuation boundary.
+
+The target baseline cannot mark it APPROVED while DDD-required `targetType`/`afterValue` can reach persistence as null, `changeTypeId` is not proven to belong to `SIMULATION_CHANGE_TYPE`, and Topology-owned targets are not owner-resolved.
+
+HMS reconciliation must retain these obligations until explicitly authorized Simulation production corrections resolve them or stronger repository evidence changes the governing Simulation DDD.
+
+## 106. Current next task
+
+```text
+HMSR-093 — simulation.SimulationRecommendation
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review simulation SimulationCandidateChange
+docs(model-review): review simulation SimulationRecommendation
 ```
 
-Start HMSR-092 only after HMSR-091 is committed and reported. Do not start HMSR-093 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-093 only after HMSR-092 is committed and reported. Do not start HMSR-094 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 reviewed as REVISE, HMSR-080 reviewed as REVISE, HMSR-081 reviewed as REVISE, HMSR-082 reviewed as REVISE, HMSR-083 approved, HMSR-084 reviewed as REVISE, HMSR-085 reviewed as REVISE, HMSR-086 approved, HMSR-087 reviewed as REVISE, HMSR-088 reviewed as REVISE, HMSR-089 reviewed as REVISE, HMSR-090 reviewed as REVISE, HMSR-091 reviewed as REVISE, HMSR-092 reviewed as REVISE, HMSR-093 reviewed as REVISE, HMSR-094 reviewed as REVISE, HMSR-095 reviewed as REVISE, HMSR-096 reviewed as REVISE, HMSR-097 reviewed as REVISE, HMSR-098 reviewed as REVISE, HMSR-099 approved, HMSR-100 reviewed as REVISE, HMSR-101 reviewed as REVISE, HMSR-102 approved, HMSR-103 approved, HMSR-104 reviewed as REVISE, HMSR-105 reviewed as REVISE, HMSR-106 reviewed as REVISE, HMSR-107 reviewed as REVISE, HMSR-108 reviewed as REVISE, HMSR-109 reviewed as REVISE, HMSR-110 reviewed as REVISE, HMSR-111 reviewed as REVISE, HMSR-112 reviewed as REVISE, HMSR-113 reviewed as REVISE, HMSR-114 reviewed as REVISE, HMSR-115 reviewed as REVISE, HMSR-116 reviewed as REVISE, HMSR-117 reviewed as REVISE, HMSR-118 reviewed as REVISE, HMSR-119 reviewed as REVISE, HMSR-120 reviewed as REVISE, HMSR-121 reviewed as REVISE, HMSR-122 reviewed as REVISE, HMSR-123 reviewed as REVISE; all 123 interactive model reviews are resolved and HMS-006 is the next reconciliation task.
+**Status:** Active — HMS-006 completed after reconciling all 123 interactive reviews: 19 APPROVED, 104 REVISE, 0 DEFER, 0 REMOVE. Production obligations remain intentionally outstanding; HMS-007 is the next roadmap task but its completion gate is not yet satisfied.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -156,7 +156,7 @@ A review task records the decision and evidence. It must not silently change pro
 | HMS-003 | `docs(model-review): classify target model dependencies` | Resolve candidate edges into the dependency classifications in section 4; separate true dependencies from snapshots/codes and record unresolved edges. | **Completed** — 627/627 candidates classified; 165 unambiguous subject-model edges admitted provisionally; 134 unresolved candidates retained for HMS-004. |
 | HMS-004 | `docs(model-review): validate dependency graph and cycles` | Reconcile graph against persistence/contracts, identify strongly connected components, missing targets, contradictory edges and cross-module boundary concerns. | **Completed** — originally 123 nodes / 181 validated subject edges / 5 cyclic SCCs / 0 invalid subject targets. HMSR-007 later proved `party.PartyRoleAssignment.roleId -> identity.Role` false using stronger Party DDD and HRA-111 FK evidence; current reconciled graph is 180 subject edges pending HMS-006 final reconciliation. |
 | HMS-005 | `docs(model-review): generate dependency ordered model review register` | Compute deterministic review levels/order and generate the 123-model review register with `HMSR-001…HMSR-123` codes and exact per-model commit messages. | **Completed** — 123/123 models ordered across Levels 0–8; 5 SCCs collapsed for ordering; exact HMSR codes/commit messages generated. |
-| HMS-006 | `docs(model-review): reconcile interactive model decisions` | After all HMSR tasks are resolved, reconcile APPROVED/REVISE/DEFER/REMOVE decisions, outstanding corrections, unresolved cycles and dependency impacts. | Planned |
+| HMS-006 | `docs(model-review): reconcile interactive model decisions` | After all HMSR tasks are resolved, reconcile APPROVED/REVISE/DEFER/REMOVE decisions, outstanding corrections, unresolved cycles and dependency impacts. | **Completed** — 123/123 HMSR decisions reconciled: 19 APPROVED, 104 REVISE, 0 DEFER, 0 REMOVE; five SCCs retained as valid semantic structures; graph reconciled at 180 subject edges after the recorded PartyRoleAssignment false-edge removal; all REVISE obligations remain future owning-module production work. |
 | HMS-007 | `docs(model-review): finalize approved target model semantic baseline` | Publish the final target-model semantic baseline only when every model has a resolved disposition and any required model corrections are implemented or explicitly deferred. | Planned |
 | HMS-008 | `docs(data-provisioning): align provisioning roadmap to semantic model baseline` | Amend HDP target assumptions, record the approved HMS baseline, and determine whether HDP-004 may resume. Does not itself classify source data or start HDP-005. | Planned |
 
@@ -20336,20 +20336,136 @@ The target baseline cannot be marked APPROVED while the authoritative shelving p
 
 HMS reconciliation must retain these obligations until explicitly authorized Alarm production work resolves them or stronger repository evidence changes the governing Alarm contract.
 
-## 137. Current next task
+## 137. HMS-006 — Reconcile interactive model decisions
 
-All 123 HMSR interactive model reviews are resolved. There is no further HMSR task registered.
+**Decision reconciliation status:** Completed  
+**HMSR models reconciled:** 123 / 123  
+**APPROVED:** 19  
+**REVISE:** 104  
+**DEFER:** 0  
+**REMOVE:** 0
 
-The next roadmap task is:
+### 137.1 Reconciliation purpose
+
+HMS-006 consolidates the completed HMSR-001 through HMSR-123 decisions into one programme-level semantic state.
+
+It does not implement any production correction. Every production obligation recorded by a REVISE decision remains owned by its bounded context and requires separately authorized production work before HMS-007 may publish an approved final semantic baseline.
+
+### 137.2 Decision distribution by bounded context
+
+| Module | Models | APPROVED | REVISE |
+|---|---:|---:|---:|
+| alarm | 4 | 0 | 4 |
+| analytics | 7 | 1 | 6 |
+| assets | 3 | 1 | 2 |
+| audit | 4 | 0 | 4 |
+| configuration | 3 | 0 | 3 |
+| custody | 3 | 0 | 3 |
+| documents | 4 | 0 | 4 |
+| hse | 4 | 1 | 3 |
+| identity | 15 | 6 | 9 |
+| incident | 4 | 0 | 4 |
+| integration | 4 | 0 | 4 |
+| integrity | 4 | 0 | 4 |
+| leakdetection | 3 | 0 | 3 |
+| monitoring | 2 | 0 | 2 |
+| notification | 4 | 0 | 4 |
+| organization | 17 | 9 | 8 |
+| party | 2 | 0 | 2 |
+| planning | 5 | 0 | 5 |
+| reporting | 4 | 0 | 4 |
+| risk | 4 | 0 | 4 |
+| simulation | 6 | 1 | 5 |
+| telemetry | 4 | 0 | 4 |
+| topology | 5 | 0 | 5 |
+| workflow | 8 | 0 | 8 |
+| **Total** | **123** | **19** | **104** |
+
+No HMSR model was deferred or removed.
+
+### 137.3 Dependency graph reconciliation
+
+The dependency graph is reconciled at:
 
 ```text
-HMS-006 — reconcile interactive model decisions
+subject models                  = 123
+reconciled subject edges        = 180
+same-module subject edges       = 122
+cross-module subject edges      = 58
+cyclic SCCs                     = 5
+invalid subject targets         = 0
+```
+
+HMSR-007 supplied the late evidence-backed correction already recorded in HMS-004: `party.PartyRoleAssignment.roleId -> identity.Role` is false because the Party DDD/HRA-111 evidence resolves that field to Party-owned role semantics. That false cross-module edge remains removed.
+
+No HMSR decision authorizes a new cross-module database foreign key. Cross-context identities remain owner-controlled application/reference contracts, snapshots, or neutral scalar references according to each model review.
+
+### 137.4 Strongly connected component reconciliation
+
+The five authoritative SCCs are retained. They are semantic structures to preserve, not unresolved graph defects:
+
+| SCC | Models | Reconciliation |
+|---|---|---|
+| SCC-01 | `organization.OrganizationUnit` | Retain optional hierarchy self-reference through `parentUnitId`; existing direct/self integrity and future hierarchy-cycle obligations remain Organization-owned. |
+| SCC-02 | `workflow.WorkflowStep`, `workflow.WorkflowStepAssignmentRule` | Retain mutual Step/default-assignment-rule relationship; do not flatten it into an artificial linear dependency. Workflow-owned consistency/catalog/candidate-resolution obligations remain outstanding. |
+| SCC-03 | `assets.MaintainableAsset` | Retain optional `parentAssetId` self-reference; direct self-reference guard exists, while populated-parent existence/integrity remains future Assets work. |
+| SCC-04 | `planning.OperationalPlan`, `planning.PlanRevision` | Retain plan/revision cycle: revision belongs to plan while plan points to current/approved revisions; same-plan correlation and optional pointer integrity remain future Planning work. |
+| SCC-05 | `documents.Document`, `documents.DocumentVersion` | Retain document/current-version and version/document ownership cycle plus version supersession lineage; current-version same-document correlation and optional lineage integrity remain future Documents work. |
+
+HMS-006 therefore closes cycle *reconciliation* while leaving the explicitly recorded production integrity work pending.
+
+### 137.5 Outstanding production correction classes
+
+The 104 REVISE decisions remain authoritative future obligations. Their detailed requirements are preserved in the individual HMSR sections and are not replaced by this summary.
+
+At programme level, they cluster into these recurring correction classes:
+
+1. **Same-module reference integrity** — missing or incomplete fail-closed validation/FKs, including optional references and parent/correlation rules.
+2. **Catalog-family integrity** — generic catalog-row existence where a specific bounded-context catalog family is required.
+3. **Cross-module owner validation** — validate live references through owner-controlled application/lookup contracts without introducing cross-module database FKs.
+4. **Lifecycle/state-machine integrity** — enforce explicit transition eligibility, terminal-state restrictions, status/timestamp coherence, and transactional state changes.
+5. **Append-only/history integrity** — prevent historical/audit/lifecycle evidence from being rewritten and ensure required history events are emitted.
+6. **Uniqueness/concurrency invariants** — enforce one-active/one-current/one-closure or equivalent invariants safely under concurrent writes where the DDD explicitly requires them.
+7. **Polymorphic/reference coherence** — preserve discriminated neutral references and validate type/reference combinations without forcing false relational targets.
+8. **Snapshot and actor semantics** — preserve historical snapshots while validating current owner identity only where the write use case requires it.
+9. **Temporal/numeric invariants** — enforce explicit date/time ordering and evidence-backed quantitative rules without inventing undocumented formulas or limits.
+10. **Application-path completeness** — authoritative write paths must actually invoke the relevant domain/owner checks rather than relying on persistence shape alone.
+
+These categories are reconciliation aids only. The exact per-model HMSR text remains the authoritative obligation record.
+
+### 137.6 Baseline readiness consequence
+
+HMS-006 does **not** make the target semantic baseline approved.
+
+The completion gate in section 9 still requires REVISE/REMOVE corrections to be implemented through owning-module roadmaps or explicitly deferred before HMS-007 can complete.
+
+Current programme state is therefore:
+
+```text
+HMSR-001..HMSR-123        resolved
+HMS-006 reconciliation    completed
+production REVISE work    outstanding
+HMS-007 final baseline    planned / gate not yet satisfied
+HMS-008 HDP alignment     planned / not authorized
+HDP-004                   remains paused
+```
+
+No production Java, JPA, Flyway, API/application contract, test, data-provisioning content, or database data is modified by HMS-006.
+
+## 138. Current next task
+
+The exact next registered roadmap task is:
+
+```text
+HMS-007 — finalize approved target model semantic baseline
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): reconcile interactive model decisions
+docs(model-review): finalize approved target model semantic baseline
 ```
 
-Do not start HMS-006, HMS-007, or HMS-008 automatically.
+However, HMS-007's own completion gate is **not yet satisfied** because 104 REVISE decisions retain future production obligations. HMS-007 must not falsely mark the baseline approved until those corrections are implemented or explicitly deferred under authorized owning-module work.
+
+Do not start HMS-007 or HMS-008 automatically.

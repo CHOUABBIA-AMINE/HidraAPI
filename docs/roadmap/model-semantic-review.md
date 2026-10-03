@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -222,7 +222,7 @@ Ordering rules applied:
 | HMSR-027 | 0 | analytics | DigitalTwinReadinessAssessment | — | — | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review analytics DigitalTwinReadinessAssessment` |
 | HMSR-028 | 0 | configuration | FeatureFlag | — | — | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review configuration FeatureFlag` |
 | HMSR-029 | 0 | custody | CustodyDiscrepancy | — | — | 0 | 0 | 1 | REVISE | Completed | `docs(model-review): review custody CustodyDiscrepancy` |
-| HMSR-030 | 0 | organization | OrganizationContactPoint | — | — | 0 | 0 | 0 | — | Planned | `docs(model-review): review organization OrganizationContactPoint` |
+| HMSR-030 | 0 | organization | OrganizationContactPoint | — | — | 0 | 0 | 0 | APPROVED | Completed | `docs(model-review): review organization OrganizationContactPoint` |
 | HMSR-031 | 0 | organization | ReportingLine | — | — | 0 | 0 | 0 | — | Planned | `docs(model-review): review organization ReportingLine` |
 | HMSR-032 | 0 | risk | RiskMatrixCell | — | — | 0 | 0 | 2 | — | Planned | `docs(model-review): review risk RiskMatrixCell` |
 | HMSR-033 | 0 | telemetry | TelemetrySource | — | — | 0 | 0 | 0 | — | Planned | `docs(model-review): review telemetry TelemetrySource` |
@@ -7275,16 +7275,115 @@ The target baseline cannot mark it APPROVED while a populated optional `quantity
 
 HMS reconciliation must retain this optional quantity-unit integrity obligation until an explicitly authorized Custody correction task resolves it or stronger repository evidence explicitly changes the quantity-unit semantics.
 
-## 43. Current next task
+## 43. HMSR-030 — organization.OrganizationContactPoint review
+
+**Decision:** APPROVED  
+**Review code:** HMSR-030  
+**Dependency level:** 0  
+**Bounded context:** organization  
+**Confirmed upstream subject dependencies:** none  
+**Confirmed direct HMS subject dependents:** 0  
+**Transitive HMS subject dependents:** 0  
+**Unresolved/non-subject references:** 0
+
+### 43.1 Semantic role and ordering rationale
+
+`OrganizationContactPoint` is the Organization-owned operational contact-channel model for employees and organization units. It is the canonical Organization representation for operational phone, mobile, email, radio, office and emergency contact data.
+
+It is Level 0 because the contact model does not own another HMS subject model through a graph edge. Its target is represented through the typed value object `ContactPointTargetReference`, whose discriminator is restricted to Organization-owned `EMPLOYEE` and `ORGANIZATION_UNIT` targets.
+
+The Organization roadmap explicitly makes OrganizationContactPoint the canonical new-write path for employee EMAIL/MOBILE/PHONE data, while direct Employee contact fields remain compatibility-only until their separate cutover is complete.
+
+### 43.2 Field semantics
+
+| Field | Type | Mandatory / optional | Reviewed meaning |
+|---|---|---|---|
+| `id` | `String` | Mandatory | Stable contact-point identity and persistence primary key. |
+| `contactPointType` | `ContactPointType` | Mandatory | Governed operational channel: `PHONE`, `MOBILE`, `EMAIL`, `RADIO`, `OFFICE`, or `EMERGENCY`. |
+| `target` | `ContactPointTargetReference` | Mandatory | Typed Organization-owned target consisting of `ContactPointTargetType + targetId`. |
+| `label` | `String` | Optional | Operator/business label; current roadmap intentionally treats it as single free text rather than auto-generated multilingual state. |
+| `value` | `String` | Mandatory | Operational contact value such as phone number, email address or radio call sign. |
+| `primaryContact` | `boolean` | Mandatory primitive state | Whether this contact is marked primary for the target. |
+| `emergencyContact` | `boolean` | Mandatory primitive state | Whether this channel is intended for emergency use. |
+| `active` | `boolean` | Mandatory primitive state | Whether the contact point is active. |
+| `createdAt` | `Instant` | Persistence-required audit timestamp | Creation timestamp. |
+| `updatedAt` | `Instant` | Persistence-required audit timestamp | Last-update timestamp. |
+
+The canonical constructor normalizes `id`, `label`, and `value`, rejects a missing ID, missing contact type, missing target, and blank/null contact value.
+
+### 43.3 Governed target and existence validation
+
+The accepted Organization architecture replaced raw textual target state with the canonical value:
 
 ```text
-HMSR-030 — organization.OrganizationContactPoint
+OrganizationContactPoint.target
+    -> ContactPointTargetReference
+       - ContactPointTargetType type
+       - String targetId
+```
+
+`ContactPointTargetType` permits only `EMPLOYEE` and `ORGANIZATION_UNIT`, and `ContactPointTargetReference` requires both the governed type and a nonblank target ID. This prevents contact points from being attached directly to Identity users, Topology assets, external parties or arbitrary string namespaces.
+
+The current create path invokes `OrganizationContactPointTargetValidator` before save. The validator resolves `EMPLOYEE` through `EmployeeRepositoryPort` and `ORGANIZATION_UNIT` through `OrganizationUnitRepositoryPort`, rejecting a missing target before persistence. Focused tests cover both target kinds and missing-target rejection.
+
+The deprecated textual constructor/accessors remain narrow migration/source compatibility bridges. The canonical domain state remains the typed reference, so these bridges are not an HMSR-030 model defect.
+
+### 43.4 Persistence discriminator integrity
+
+JPA persists `targetType` using `EnumType.STRING` into mandatory `target_type`, while `target_id` remains mandatory.
+
+ORG-046 adds:
+
+```text
+CHECK (target_type IN ('EMPLOYEE', 'ORGANIZATION_UNIT'))
+```
+
+and its migration preflight rejects unsupported target types and pre-existing orphan typed targets. The migration intentionally does not create a polymorphic foreign key. Current runtime writes are protected through the application validator, while the database protects the finite discriminator vocabulary.
+
+This is consistent with the Organization typed-reference architecture and the repository scalar-reference policy for typed/non-relational identifiers.
+
+### 43.5 Contact type and multilingual semantics
+
+`ContactPointType` is a bounded Organization contact-channel vocabulary rather than an independently governed multilingual business taxonomy. Current evidence does not require replacing it with a catalog.
+
+The Organization multilingual review explicitly treats `OrganizationContactPoint.label` as a single operator/business free-text label and declined automatic `Ar/Fr/En` triplication without clarified semantics. The contact value itself is operational data rather than translatable content.
+
+No multilingual or catalog revision is required.
+
+### 43.6 Rules deliberately not invented
+
+Current repository evidence does not define email syntax, E.164 telephone formatting, radio call-sign structure, one-primary-contact uniqueness, target/contact-type uniqueness, inactive-primary restrictions, mandatory emergency contacts, or coupling between `ContactPointType.EMERGENCY` and `emergencyContact`.
+
+The base schema and Organization roadmap also do not define a broader contact lifecycle transition model. HMSR-030 therefore does not promote those plausible policies into required invariants.
+
+### 43.7 Persistence/application consistency
+
+The domain has 10 canonical components. JPA flattens the target value object into `target_type + target_id` while preserving the same semantics. The base schema requires identity, contact type, target discriminator/ID, value, three boolean flags and audit timestamps; only `label` is nullable.
+
+The canonical application write path generates an Organization-owned ID, validates target existence, constructs the domain object, and persists it transactionally. Tests and architecture guardrails protect the typed target representation and enum-string persistence.
+
+### 43.8 SONATRACH/TRC operational interpretation
+
+For SONATRACH/TRC, OrganizationContactPoint provides governed operational communication coordinates for employees and organization units: telephone/mobile contacts, email addresses, radio channels or call signs, office contacts and emergency communication channels.
+
+Keeping targets inside the Organization bounded context prevents accidental coupling to Identity accounts, Topology assets or external party masters. This model is contact/master data; it does not grant permissions, assign operational responsibility or define notification-delivery policy.
+
+### 43.9 Review conclusion
+
+**APPROVED.** `OrganizationContactPoint` has a coherent 10-field Organization-owned model, correct Level-0 placement, bounded contact-channel vocabulary, typed Organization-only target semantics, fail-closed application target validation, database discriminator protection, correct single-label multilingual treatment, and aligned domain/JPA/schema/application behavior.
+
+No evidence-backed production-model correction is required by HMSR-030. Format validation, primary-contact uniqueness, emergency-contact coupling and additional lifecycle semantics remain intentionally unspecified until an authoritative Organization requirement establishes them.
+
+## 44. Current next task
+
+```text
+HMSR-031 — organization.ReportingLine
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review organization OrganizationContactPoint
+docs(model-review): review organization ReportingLine
 ```
 
-Start HMSR-030 only after HMSR-029 is committed and reported. Do not start HMSR-031 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-031 only after HMSR-030 is committed and reported. Do not start HMSR-032 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

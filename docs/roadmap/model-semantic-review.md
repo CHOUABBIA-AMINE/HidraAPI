@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -251,7 +251,7 @@ Ordering rules applied:
 | HMSR-056 | 2 | integration | ExternalSystem | — | organization.OrganizationUnit | 2 | 2 | 0 | REVISE | Completed | `docs(model-review): review integration ExternalSystem` |
 | HMSR-057 | 2 | reporting | ReportRequest | — | organization.OrganizationUnit, reporting.ReportDefinition | 1 | 2 | 1 | REVISE | Completed | `docs(model-review): review reporting ReportRequest` |
 | HMSR-058 | 2 | risk | RiskRegister | — | organization.OrganizationUnit | 1 | 2 | 0 | REVISE | Completed | `docs(model-review): review risk RiskRegister` |
-| HMSR-059 | 2 | integrity | IntegrityProgram | — | organization.OrganizationUnit | 1 | 1 | 0 | — | Planned | `docs(model-review): review integrity IntegrityProgram` |
+| HMSR-059 | 2 | integrity | IntegrityProgram | — | organization.OrganizationUnit | 1 | 1 | 0 | REVISE | Completed | `docs(model-review): review integrity IntegrityProgram` |
 | HMSR-060 | 2 | leakdetection | LeakDetectionCase | — | leakdetection.LeakCandidate, organization.OrganizationUnit | 1 | 1 | 0 | — | Planned | `docs(model-review): review leakdetection LeakDetectionCase` |
 | HMSR-061 | 2 | notification | NotificationMessage | — | notification.NotificationRequest, notification.NotificationTemplate | 1 | 1 | 3 | — | Planned | `docs(model-review): review notification NotificationMessage` |
 | HMSR-062 | 2 | telemetry | TrustedTelemetryReading | — | telemetry.TelemetryPoint, telemetry.TelemetryReading | 1 | 1 | 3 | — | Planned | `docs(model-review): review telemetry TrustedTelemetryReading` |
@@ -2146,9 +2146,9 @@ Confirmed subject-model graph edges at this stage: **165**. These are semantic c
 | Field | Declared type | Classification | Resolved target | Graph edge | Notes |
 |---|---|---|---|:---:|---|
 | id | String | Self identifier | — | No | Primary identity of the current model. |
-| programTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
-| ownerOrganizationUnitId | String | Cross-module reference | organization.OrganizationUnit | Yes | Unambiguous reference to a subject model in another bounded context. |
-| createdByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+| programTypeId | String | Value/catalog dependency | integrity.IntegrityCatalogEntry (read/persistence model) | No | Mandatory same-module catalog reference; HRA-111 protects row existence in `hidra_integrity_catalog_entry`, but current Integrity DDD does not define a program-type catalog family or eligibility rule. |
+| ownerOrganizationUnitId | String | Optional cross-module reference | organization.OrganizationUnit | Yes | Optional Organization-owned program owner with a name snapshot; no cross-module DB FK is appropriate. Current create flow does not resolve a populated value through an Organization-owned boundary. |
+| createdByActorId | String | Optional cross-module reference | IDENTITY_ACTOR | No | Optional creator identity; no Actor subject model or cross-module DB FK is appropriate. |
 
 #### integrity.PipelineDefect
 
@@ -11997,16 +11997,116 @@ The target baseline cannot mark it APPROVED while register-type family eligibili
 
 HMS reconciliation must retain these obligations until explicitly authorized Risk production corrections resolve them or stronger repository evidence changes the governing Risk DDD.
 
-## 72. Current next task
+## 72. HMSR-059 — integrity.IntegrityProgram review
+
+**Decision:** REVISE  
+**Review code:** HMSR-059  
+**Dependency level:** 2  
+**Bounded context:** integrity  
+**Confirmed upstream subject dependencies:** optional `organization.OrganizationUnit`  
+**Confirmed direct HMS subject dependents:** 1  
+**Transitive HMS subject dependents:** 1
+
+### 72.1 Semantic role
+
+`IntegrityProgram` is the Integrity-owned long-term program container for pipeline/network integrity work. It carries program identity, multilingual names, an Integrity-owned type reference, optional Organization ownership metadata, lifecycle status, planned/actual scheduling timestamps and creator identity.
+
+Integrity owns the program itself. Organization and Identity remain external bounded-context owners of referenced identities.
+
+### 72.2 Program-type catalog semantics
+
+`programTypeId` is mandatory. HRA-111 protects same-module row existence with:
 
 ```text
-HMSR-059 — integrity.IntegrityProgram
+hidra_integrity_program.program_type_id -> hidra_integrity_catalog_entry.id
+```
+
+That protection establishes only that an IntegrityCatalogEntry exists.
+
+The current Integrity DDD identifies `IntegrityCatalogEntry` as the module-owned catalog model but does not define catalog-family names or a specific family governing `IntegrityProgram.programTypeId`. Repository search found no stronger program-type family definition.
+
+Therefore HMSR-059 does not invent a family name. The semantic ownership/family and any active/eligibility rule for program types must be made explicit before the baseline can treat this field as fully resolved.
+
+### 72.3 Organization ownership boundary
+
+`ownerOrganizationUnitId` is optional in persistence and is accompanied by `ownerOrganizationUnitNameSnapshot`.
+
+`IntegrityApplicationService.createIntegrityProgram()` copies a populated OrganizationUnit ID directly from the command into the program and saves it. No Organization-owned lookup/application contract is invoked.
+
+No cross-module database FK should be introduced. When populated, the owner identity should fail closed through an Organization-owned boundary while the stored name remains snapshot metadata.
+
+Current evidence does not make Organization ownership mandatory for every IntegrityProgram.
+
+### 72.4 Lifecycle semantics
+
+`IntegrityProgramStatus` is an Integrity-owned lifecycle enum:
+
+```text
+DRAFT
+ACTIVE
+SUSPENDED
+COMPLETED
+RETIRED
+CANCELLED
+```
+
+The active creation path initializes new programs as `DRAFT`.
+
+The Integrity DDD does not provide a transition matrix for these values. HMSR-059 therefore preserves the enum as a technical/domain lifecycle enum and does not invent allowed transitions or approval gates.
+
+### 72.5 Schedule timestamps
+
+The model carries:
+
+```text
+plannedStartAt
+plannedEndAt
+actualStartAt
+actualEndAt
+```
+
+All four are nullable in persistence. The repository invariant-classification evidence does not classify `IntegrityProgram` for planned/actual date ordering, and the Integrity DDD does not state ordering rules.
+
+HMSR-059 therefore does not convert intuitive scheduling expectations into new domain invariants. Any future temporal rules require explicit Integrity business evidence.
+
+### 72.6 Multilingual and audit/reference fields
+
+The model stores `nameAr`, `nameFr` and `nameEn` directly, which supports the project's three operating languages without a separate translation model for IntegrityProgram.
+
+Persistence requires `nameFr`, but current invariant-classification evidence does not authorize turning every database `NOT NULL` into a domain invariant. HMSR-059 therefore records no new language-field rule.
+
+`createdByActorId` remains an optional external Identity reference. No cross-module FK or mandatory actor rule is invented.
+
+Repository remediation evidence also shows generic module event/outbox scaffolding was intentionally removed under the selected architecture path; HMSR-059 therefore does not manufacture an IntegrityProgram event-publishing obligation absent a specific current Integrity requirement.
+
+### 72.7 Required revisions
+
+Two evidence-backed obligations remain:
+
+1. **Resolve `programTypeId` controlled-value semantics.** Keep the same-module `IntegrityCatalogEntry` FK, but explicitly define the program-type catalog family/eligibility semantics before treating arbitrary catalog-row existence as sufficient.
+
+2. **Validate populated `ownerOrganizationUnitId` through the Organization owner boundary.** Preserve the organization-name snapshot and do not add a cross-module database FK.
+
+HMSR-059 does not modify production Java, JPA, Flyway, API/application contracts, tests, Integrity catalog data, Organization data, or provisioned data.
+
+### 72.8 Review conclusion
+
+**REVISE.** `IntegrityProgram` is a coherent 17-field long-term Integrity program model with multilingual naming, a domain lifecycle enum, optional Organization ownership, scheduling metadata and creator identity. Its mandatory program-type reference is protected against dangling same-module rows.
+
+The target baseline cannot mark it APPROVED while the semantic catalog family for `programTypeId` is undefined and populated Organization ownership can be persisted without owner-boundary validation.
+
+HMS reconciliation must retain these obligations until explicitly authorized Integrity production/DDD corrections resolve them or stronger repository evidence changes the governing model.
+
+## 73. Current next task
+
+```text
+HMSR-060 — leakdetection.LeakDetectionCase
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review integrity IntegrityProgram
+docs(model-review): review leakdetection LeakDetectionCase
 ```
 
-Start HMSR-059 only after HMSR-058 is committed and reported. Do not start HMSR-060 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-060 only after HMSR-059 is committed and reported. Do not start HMSR-061 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

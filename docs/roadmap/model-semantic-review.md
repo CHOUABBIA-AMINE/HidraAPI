@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -242,7 +242,7 @@ Ordering rules applied:
 | HMSR-047 | 1 | identity | RolePermissionGrant | — | identity.Permission, identity.Role | 0 | 0 | 0 | APPROVED | Completed | `docs(model-review): review identity RolePermissionGrant` |
 | HMSR-048 | 1 | monitoring | MonitoringRule | — | telemetry.TelemetryPoint | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review monitoring MonitoringRule` |
 | HMSR-049 | 1 | party | PartyRoleAssignment | — | party.Party | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review party PartyRoleAssignment` |
-| HMSR-050 | 1 | topology | Pipeline | — | topology.PipelineSystem | 0 | 0 | 0 | — | Planned | `docs(model-review): review topology Pipeline` |
+| HMSR-050 | 1 | topology | Pipeline | — | topology.PipelineSystem | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review topology Pipeline` |
 | HMSR-051 | 2 | workflow | WorkflowStep | SCC-02 | workflow.WorkflowDefinition, workflow.WorkflowStepAssignmentRule | 5 | 35 | 0 | — | Planned | `docs(model-review): review workflow WorkflowStep` |
 | HMSR-052 | 2 | workflow | WorkflowStepAssignmentRule | SCC-02 | organization.OrganizationUnit, workflow.WorkflowDefinition, workflow.WorkflowStep | 1 | 35 | 0 | — | Planned | `docs(model-review): review workflow WorkflowStepAssignmentRule` |
 | HMSR-053 | 2 | organization | AdministrativeLocality | — | organization.AdministrativeDistrict | 2 | 15 | 0 | — | Planned | `docs(model-review): review organization AdministrativeLocality` |
@@ -2687,7 +2687,7 @@ Confirmed subject-model graph edges at this stage: **165**. These are semantic c
 | Field | Declared type | Classification | Resolved target | Graph edge | Notes |
 |---|---|---|---|:---:|---|
 | id | String | Self identifier | — | No | Primary identity of the current model. |
-| pipelineSystemId | String | Domain reference | topology.PipelineSystem | Yes | Unambiguous same-module subject-model reference. |
+| pipelineSystemId | String | Domain reference | topology.PipelineSystem | Yes | Mandatory same-module HMS subject reference; HRA-111 protects `pipeline_system_id -> hidra_topology_pipeline_system.id`. |
 
 #### topology.PipelineSystem
 
@@ -10570,17 +10570,187 @@ The target baseline cannot mark it APPROVED while the explicit DDD rule prohibit
 
 HMS reconciliation must retain this duplicate-active-role obligation until an explicitly authorized Party production correction resolves it or stronger repository evidence explicitly revises the Party DDD invariant.
 
-## 63. Current next task
+## 63. HMSR-050 — topology.Pipeline review
+
+**Decision:** REVISE  
+**Review code:** HMSR-050  
+**Dependency level:** 1  
+**Bounded context:** topology  
+**Confirmed upstream subject dependencies:** `topology.PipelineSystem` through mandatory `pipelineSystemId`  
+**Confirmed direct HMS subject dependents:** 0  
+**Transitive HMS subject dependents:** 0  
+**Unresolved/non-subject references:** 0
+
+### 63.1 Semantic role and ordering rationale
+
+`Pipeline` is the Topology-owned physical/logical pipeline record within one PipelineSystem.
+
+Topology owns network structure, so Pipeline carries stable topology identity, system membership, engineering descriptors, multilingual labels and lifecycle state. It must remain distinct from organizational ownership, telemetry measurements, integrity findings and maintainability state.
+
+It is Level 1 because mandatory `pipelineSystemId` references the already-reviewed HMS subject `PipelineSystem`.
+
+### 63.2 Field semantics
+
+| Field | Type | Reviewed meaning |
+|---|---|---|
+| `id` | `String` | Mandatory stable Pipeline identity. |
+| `pipelineSystemId` | `String` | Mandatory same-module reference to PipelineSystem. |
+| `code` | `String` | Mandatory language-neutral pipeline code. |
+| `nameAr` | `String` | Optional Arabic display name. |
+| `nameFr` | `String` | Optional French display name. |
+| `nameEn` | `String` | Optional English display name. |
+| `pipelineType` | `PipelineType` | Mandatory business classification currently implemented as a fixed Java enum. |
+| `nominalDiameter` | `BigDecimal` | Optional nominal diameter. |
+| `diameterUnitCode` | `String` | Optional unit code accompanying nominal diameter. |
+| `designPressure` | `BigDecimal` | Optional design pressure. |
+| `pressureUnitCode` | `String` | Optional unit code accompanying design pressure. |
+| `totalLengthKm` | `BigDecimal` | Optional total length in kilometres. |
+| `status` | `TopologyStatus` | Mandatory lifecycle/status state. |
+| `createdAt` | `Instant` | Persistence-required creation timestamp. |
+| `updatedAt` | `Instant` | Persistence-required update timestamp. |
+
+The canonical constructor requires nonblank ID, PipelineSystem ID and code, and non-null pipeline type/status.
+
+### 63.3 PipelineSystem reference integrity
+
+The final schema requires `pipeline_system_id NOT NULL`.
+
+HRA-111 installs and validates:
 
 ```text
-HMSR-050 — topology.Pipeline
+hidra_topology_pipeline.pipeline_system_id
+    -> hidra_topology_pipeline_system.id
+```
+
+Therefore the mandatory HMS dependency is fail-closed at persistence.
+
+The domain also rejects blank `pipelineSystemId`, so domain/persistence requiredness is aligned for the system relationship.
+
+### 63.4 Topology catalog architecture conflict
+
+The live Topology roadmap records the completed catalog-refactor baseline:
+
+```text
+COR-009  refactor(topology): replace enum usage in domain assets with type references
+COR-010  db(topology): migrate topology assets to catalog foreign keys
+COR-011  refactor(topology): update topology persistence mapping to catalog foreign keys
+COR-013  db(topology): remove topology enum-style type constraints
+COR-019  refactor(catalog): remove remaining business taxonomy enum declarations
+```
+
+It then states:
+
+```text
+Topology business taxonomy concepts are no longer roadmap-accepted as Java enums.
+Business type concepts are modeled as catalog references with stable codes and localized labels,
+not as fixed Java enum fields.
+```
+
+The live Pipeline model nevertheless declares:
+
+```java
+PipelineType pipelineType
+```
+
+and the current enum fixes the vocabulary to:
+
+```text
+CRUDE_OIL
+CONDENSATE
+NATURAL_GAS
+LPG
+MULTI_PRODUCT
+WATER
+OTHER
+```
+
+JPA persists the enum string directly in `pipeline_type`.
+
+This conflicts with the repository's accepted Topology controlled-vocabulary architecture. The issue is not merely that an enum could be extensible later; the live roadmap explicitly records removal of business-taxonomy enums as completed architectural intent.
+
+### 63.5 Lifecycle enum remains valid
+
+The same Topology roadmap explicitly distinguishes lifecycle/status concepts from business taxonomies and allows technical enums where appropriate.
+
+`TopologyStatus` therefore does not inherit the PipelineType correction obligation merely because it is also a Java enum.
+
+HMSR-050 preserves that distinction.
+
+### 63.6 Engineering measurements
+
+`nominalDiameter`, `designPressure` and `totalLengthKm` are optional in both domain and persistence.
+
+Current Topology DDD/roadmap evidence reviewed here does not state:
+
+- positivity constraints;
+- mandatory diameter/pressure for every pipeline;
+- mandatory pairing between a numeric value and its unit code;
+- one canonical diameter or pressure unit;
+- a tolerance/precision rule beyond persistence precision.
+
+HMSR-050 therefore does not invent those engineering invariants.
+
+The future data-provisioning transformation task must validate units/source values against the final target contract, but that does not by itself prove additional canonical constructor rules.
+
+### 63.7 Code and multilingual semantics
+
+`code` is mandatory in domain and persistence.
+
+The schema has an ordinary code index, not a unique constraint, and the current Topology evidence reviewed for HMSR-050 does not establish a global/scoped Pipeline code uniqueness invariant. None is invented.
+
+Arabic/French/English names are optional in both domain and persistence. Current evidence does not require all three translations simultaneously, so no multilingual correction is recorded.
+
+### 63.8 Application and repository reality
+
+The live target inventory shows no dedicated current Pipeline create inbound use case; PipelineRepositoryPort remains actively used for owner-controlled query resolution, visualization and persistence infrastructure.
+
+That absence does not remove Pipeline from the canonical target model, nor does it cure the domain/JPA taxonomy conflict. Any future authoritative write path must follow the catalog-backed Topology contract rather than cementing the legacy enum.
+
+HMSR-050 does not create a new API/use-case obligation merely because a dedicated create path is not currently exposed.
+
+### 63.9 Domain/JPA/Flyway alignment
+
+Domain and JPA agree on all 15 components and on intrinsic requiredness for ID, PipelineSystem ID, code, pipeline type and status.
+
+The PipelineSystem dependency is protected by a validated FK.
+
+The structural model is otherwise coherent, but `pipelineType` remains semantically misaligned with the accepted Topology catalog architecture because the domain and persistence still encode the business taxonomy as an enum/varchar value instead of the roadmap-approved catalog-reference form.
+
+### 63.10 Required revision
+
+One evidence-backed production correction obligation remains:
+
+1. **Replace Pipeline's fixed `PipelineType` business taxonomy with the repository-approved catalog-reference architecture.** The correction must reconcile domain, persistence, Flyway/data migration, API/read contracts and existing values with the accepted Topology type-catalog design, using stable catalog codes/localized labels rather than a fixed business enum. Preserve `TopologyStatus` as a lifecycle enum unless separate evidence changes that classification.
+
+HMSR-050 does not modify production Java, JPA, Flyway, API/application contracts, tests, pipeline data, type catalogs, or provisioned data.
+
+### 63.11 SONATRACH/TRC operational interpretation
+
+For SONATRACH/TRC, pipeline classifications such as crude-oil, condensate, natural-gas, LPG or multi-product are business reference data used across visualization, planning, monitoring, integrity, reporting and future provisioning.
+
+Treating this vocabulary as governed catalog/reference data allows controlled extension, localization and lifecycle governance without recompiling the platform or hard-coding business vocabulary into downstream modules.
+
+The physical Pipeline remains owned by Topology; changing the taxonomy representation does not transfer ownership to another bounded context.
+
+### 63.12 Review conclusion
+
+**REVISE.** `Pipeline` has a coherent 15-field Topology model, correct mandatory dependency on PipelineSystem with validated FK protection, aligned system/code/status requiredness, and conservative optional engineering/multilingual state.
+
+The target baseline cannot mark it APPROVED while the live model still encodes `PipelineType` as a fixed Java enum contrary to the completed and explicitly documented Topology catalog-refactor architecture.
+
+HMS reconciliation must retain this catalog-taxonomy correction until an explicitly authorized Topology production correction resolves it or stronger repository evidence explicitly changes the accepted Topology controlled-vocabulary policy.
+
+## 64. Current next task
+
+```text
+HMSR-051 — workflow.WorkflowStep
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review topology Pipeline
+docs(model-review): review workflow WorkflowStep
 ```
 
-Start HMSR-050 only after HMSR-049 is committed and reported. Do not start HMSR-051 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-051 only after HMSR-050 is committed and reported. Do not start HMSR-052 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
 

@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 reviewed as REVISE, HMSR-080 reviewed as REVISE, HMSR-081 reviewed as REVISE, HMSR-082 reviewed as REVISE, HMSR-083 approved, HMSR-084 reviewed as REVISE, HMSR-085 reviewed as REVISE, HMSR-086 approved, HMSR-087 reviewed as REVISE, HMSR-088 reviewed as REVISE, HMSR-089 reviewed as REVISE, HMSR-090 reviewed as REVISE, HMSR-091 reviewed as REVISE, HMSR-092 reviewed as REVISE, HMSR-093 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 reviewed as REVISE, HMSR-080 reviewed as REVISE, HMSR-081 reviewed as REVISE, HMSR-082 reviewed as REVISE, HMSR-083 approved, HMSR-084 reviewed as REVISE, HMSR-085 reviewed as REVISE, HMSR-086 approved, HMSR-087 reviewed as REVISE, HMSR-088 reviewed as REVISE, HMSR-089 reviewed as REVISE, HMSR-090 reviewed as REVISE, HMSR-091 reviewed as REVISE, HMSR-092 reviewed as REVISE, HMSR-093 reviewed as REVISE, HMSR-094 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -285,7 +285,7 @@ Ordering rules applied:
 | HMSR-090 | 4 | organization | ShiftAssignment | — | organization.Employee, organization.OrganizationUnit, organization.Shift | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review organization ShiftAssignment` |
 | HMSR-091 | 4 | risk | RiskEvidenceLink | — | risk.RiskAssessment | 0 | 0 | 1 | REVISE | Completed | `docs(model-review): review risk RiskEvidenceLink` |
 | HMSR-092 | 4 | simulation | SimulationCandidateChange | — | simulation.SimulationOptimizationCandidate | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review simulation SimulationCandidateChange` |
-| HMSR-093 | 4 | simulation | SimulationRecommendation | — | simulation.SimulationOptimizationCandidate, simulation.SimulationRun | 0 | 0 | 0 | — | Planned | `docs(model-review): review simulation SimulationRecommendation` |
+| HMSR-093 | 4 | simulation | SimulationRecommendation | — | simulation.SimulationOptimizationCandidate, simulation.SimulationRun | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review simulation SimulationRecommendation` |
 | HMSR-094 | 5 | planning | Nomination | — | party.Party, planning.PlanRevision | 1 | 6 | 2 | — | Planned | `docs(model-review): review planning Nomination` |
 | HMSR-095 | 5 | workflow | WorkflowAction | — | organization.OrganizationUnit, workflow.WorkflowInstance, workflow.WorkflowTask | 2 | 4 | 1 | — | Planned | `docs(model-review): review workflow WorkflowAction` |
 | HMSR-096 | 5 | hse | HseCase | — | incident.Incident, organization.OrganizationUnit, workflow.WorkflowInstance | 3 | 3 | 3 | — | Planned | `docs(model-review): review hse HseCase` |
@@ -16704,16 +16704,130 @@ The target baseline cannot mark it APPROVED while DDD-required `targetType`/`aft
 
 HMS reconciliation must retain these obligations until explicitly authorized Simulation production corrections resolve them or stronger repository evidence changes the governing Simulation DDD.
 
-## 106. Current next task
+## 106. HMSR-093 — simulation.SimulationRecommendation review
+
+**Decision:** REVISE  
+**Review code:** HMSR-093  
+**Dependency level:** 4  
+**Bounded context:** simulation  
+**Confirmed upstream subject dependencies:** mandatory `simulation.SimulationRun`; optional `simulation.SimulationOptimizationCandidate`  
+**Confirmed direct HMS subject dependents:** 0  
+**Transitive HMS subject dependents:** 0
+
+### 106.1 Semantic role
+
+`SimulationRecommendation` is the Simulation-owned human-facing decision-support recommendation derived from a simulation run and, optionally, an optimization candidate.
+
+The governing Simulation DDD keeps Simulation as decision support only. A recommendation may be exported toward an owning module, but Simulation must not directly mutate Topology, Planning, Monitoring, or field-control state.
+
+### 106.2 Run and optional candidate integrity
+
+`runId` is mandatory and same-module. HRA-111 already protects it with:
 
 ```text
-HMSR-093 — simulation.SimulationRecommendation
+hidra_simulation_recommendation.run_id
+  -> hidra_simulation_run.id
+```
+
+The domain constructor also rejects blank `runId`.
+
+`candidateId` is optional in the DDD but, when present, denotes a real same-module `SimulationOptimizationCandidate`. The live schema has no corresponding FK and the publication application path performs no candidate existence validation.
+
+Because the review register already confirms `SimulationOptimizationCandidate` as an upstream model dependency, a supplied candidate reference must fail closed against the Simulation-owned candidate aggregate. Same-module persistence protection may be added consistently with repository architecture; no cross-module database dependency is involved.
+
+### 106.3 Recommendation and confidence catalogs
+
+`recommendationTypeId` is mandatory. HRA-111 already protects generic Simulation catalog-row existence, but the DDD defines the exact business family:
+
+```text
+SIMULATION_RECOMMENDATION_TYPE
+```
+
+with examples including `ADOPT_CONFIGURATION`, `REVIEW_CONSTRAINT`, `REJECT_SCENARIO`, and `RUN_ADDITIONAL_CASE`.
+
+Generic catalog existence therefore does not prove family membership or active/eligible use. The authoritative publication boundary must validate the exact active/eligible recommendation-type family.
+
+`confidenceLevelId` is optional, but the same DDD defines `SIMULATION_CONFIDENCE_LEVEL`. When supplied, it must resolve to an active/eligible entry in that exact family rather than any Simulation catalog row.
+
+### 106.4 Required recommendation content
+
+The DDD explicitly marks these fields required:
+
+```text
+title
+description
+createdAt
+```
+
+JPA/Flyway also persist them as `NOT NULL`.
+
+The live domain constructor normalizes `title` and `description` without rejecting blank/null values and does not guard `createdAt`. The current publication service passes command values directly and relies on persistence for these failures.
+
+Because these are explicit DDD-required recommendation semantics, the domain/application boundary must fail fast before persistence.
+
+### 106.5 Lifecycle and publication semantics
+
+`recommendationStatus` remains a technical lifecycle enum with:
+
+```text
+DRAFT
+PUBLISHED
+SENT_TO_WORKFLOW
+ACCEPTED
+REJECTED
+SUPERSEDED
+```
+
+The live publication use case constructs the model directly in `PUBLISHED` state and stamps `publishedAt` / `createdAt`.
+
+The governing Simulation DDD explicitly requires:
+
+```text
+A published recommendation must emit audit-ready evidence.
+```
+
+and forbids bypassing audit for published recommendations.
+
+Repository search found no Audit port/use in `SimulationApplicationService`; the current `publishSimulationRecommendation(...)` implementation saves the published recommendation directly. The future production correction must therefore make publication emit the required audit-ready evidence through the proper Audit-owned/application boundary rather than by cross-module persistence coupling.
+
+The DDD keeps `publishedByActorId` and `publishedAt` optional at model level, so HMSR-093 does not invent stronger unconditional field requirements beyond the explicit publication behavior above.
+
+### 106.6 Target module/proposal reference ownership
+
+`targetModule` and `targetProposalReference` are optional export metadata. The DDD describes the latter as a proposal identifier once exported to the target module.
+
+These values must remain scalar/reference metadata. HMSR-093 does not introduce cross-module database foreign keys or direct writes into target-module tables.
+
+### 106.7 Required revisions
+
+Five evidence-backed production obligations remain:
+
+1. **Enforce all DDD-required recommendation content before persistence:** `title`, `description`, and `createdAt` must be valid at the domain/application boundary.
+2. **Validate `recommendationTypeId` against the active/eligible exact `SIMULATION_RECOMMENDATION_TYPE` family**, not merely generic Simulation catalog existence.
+3. **When `confidenceLevelId` is supplied, validate it against the active/eligible exact `SIMULATION_CONFIDENCE_LEVEL` family.**
+4. **When `candidateId` is supplied, validate the optional same-module candidate reference fail-closed and add/retain appropriate same-module persistence protection consistent with repository integrity architecture.**
+5. **Make publication emit audit-ready evidence through the Audit-owned/application boundary** as required by the Simulation DDD; do not introduce cross-module database coupling.
+
+HMSR-093 does not modify production Java, JPA, Flyway, API/application contracts, tests, Simulation/Audit/Topology/Planning/Monitoring data, or provisioned data.
+
+### 106.8 Review conclusion
+
+**REVISE.** `SimulationRecommendation` is correctly owned by Simulation and correctly modeled as a decision-support recommendation with scalar export metadata. Mandatory `runId` and recommendation-type row existence already have same-module persistence protection.
+
+The target baseline cannot mark it APPROVED while DDD-required recommendation content can reach persistence invalid, catalog references are not family-qualified, an optional candidate reference can be accepted without fail-closed integrity, and the live publication path does not emit the audit-ready evidence explicitly required by the Simulation DDD.
+
+HMS reconciliation must retain these obligations until explicitly authorized Simulation production corrections resolve them or stronger repository evidence changes the governing Simulation contract.
+
+## 107. Current next task
+
+```text
+HMSR-094 — planning.Nomination
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review simulation SimulationRecommendation
+docs(model-review): review planning Nomination
 ```
 
-Start HMSR-093 only after HMSR-092 is committed and reported. Do not start HMSR-094 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-094 only after HMSR-093 is committed and reported. Do not start HMSR-095 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

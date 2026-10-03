@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 reviewed as REVISE, HMSR-080 reviewed as REVISE, HMSR-081 reviewed as REVISE, HMSR-082 reviewed as REVISE, HMSR-083 approved, HMSR-084 reviewed as REVISE, HMSR-085 reviewed as REVISE, HMSR-086 approved, HMSR-087 reviewed as REVISE, HMSR-088 reviewed as REVISE, HMSR-089 reviewed as REVISE, HMSR-090 reviewed as REVISE, HMSR-091 reviewed as REVISE, HMSR-092 reviewed as REVISE, HMSR-093 reviewed as REVISE, HMSR-094 reviewed as REVISE, HMSR-095 reviewed as REVISE, HMSR-096 reviewed as REVISE, HMSR-097 reviewed as REVISE, HMSR-098 reviewed as REVISE, HMSR-099 approved, HMSR-100 reviewed as REVISE, HMSR-101 reviewed as REVISE, HMSR-102 approved, HMSR-103 approved, HMSR-104 reviewed as REVISE, HMSR-105 reviewed as REVISE, HMSR-106 reviewed as REVISE, HMSR-107 reviewed as REVISE, HMSR-108 reviewed as REVISE, HMSR-109 reviewed as REVISE, HMSR-110 reviewed as REVISE, HMSR-111 reviewed as REVISE, HMSR-112 reviewed as REVISE, HMSR-113 reviewed as REVISE, HMSR-114 reviewed as REVISE, HMSR-115 reviewed as REVISE, HMSR-116 reviewed as REVISE, HMSR-117 reviewed as REVISE, HMSR-118 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 reviewed as REVISE, HMSR-080 reviewed as REVISE, HMSR-081 reviewed as REVISE, HMSR-082 reviewed as REVISE, HMSR-083 approved, HMSR-084 reviewed as REVISE, HMSR-085 reviewed as REVISE, HMSR-086 approved, HMSR-087 reviewed as REVISE, HMSR-088 reviewed as REVISE, HMSR-089 reviewed as REVISE, HMSR-090 reviewed as REVISE, HMSR-091 reviewed as REVISE, HMSR-092 reviewed as REVISE, HMSR-093 reviewed as REVISE, HMSR-094 reviewed as REVISE, HMSR-095 reviewed as REVISE, HMSR-096 reviewed as REVISE, HMSR-097 reviewed as REVISE, HMSR-098 reviewed as REVISE, HMSR-099 approved, HMSR-100 reviewed as REVISE, HMSR-101 reviewed as REVISE, HMSR-102 approved, HMSR-103 approved, HMSR-104 reviewed as REVISE, HMSR-105 reviewed as REVISE, HMSR-106 reviewed as REVISE, HMSR-107 reviewed as REVISE, HMSR-108 reviewed as REVISE, HMSR-109 reviewed as REVISE, HMSR-110 reviewed as REVISE, HMSR-111 reviewed as REVISE, HMSR-112 reviewed as REVISE, HMSR-113 reviewed as REVISE, HMSR-114 reviewed as REVISE, HMSR-115 reviewed as REVISE, HMSR-116 reviewed as REVISE, HMSR-117 reviewed as REVISE, HMSR-118 reviewed as REVISE, HMSR-119 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -310,7 +310,7 @@ Ordering rules applied:
 | HMSR-115 | 6 | integrity | IntegrityCase | — | hse.HseCase, incident.Incident, integrity.PipelineDefect, organization.OrganizationUnit, workflow.WorkflowInstance | 0 | 0 | 1 | REVISE | Completed | `docs(model-review): review integrity IntegrityCase` |
 | HMSR-116 | 6 | workflow | WorkflowStateHistory | — | workflow.WorkflowAction, workflow.WorkflowInstance, workflow.WorkflowStep, workflow.WorkflowTask | 0 | 0 | 1 | REVISE | Completed | `docs(model-review): review workflow WorkflowStateHistory` |
 | HMSR-117 | 7 | alarm | Alarm | — | incident.Incident, organization.OrganizationUnit, planning.PlanTarget, telemetry.TelemetryReading, workflow.WorkflowInstance | 3 | 3 | 4 | REVISE | Completed | `docs(model-review): review alarm Alarm` |
-| HMSR-118 | 7 | audit | AuditAccessRecord | — | audit.AuditEvent, audit.AuditExportRequest | 0 | 0 | 0 | — | Planned | `docs(model-review): review audit AuditAccessRecord` |
+| HMSR-118 | 7 | audit | AuditAccessRecord | — | audit.AuditEvent, audit.AuditExportRequest | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review audit AuditAccessRecord` |
 | HMSR-119 | 7 | audit | AuditBeforeAfterValue | — | audit.AuditEvent | 0 | 0 | 0 | — | Planned | `docs(model-review): review audit AuditBeforeAfterValue` |
 | HMSR-120 | 7 | monitoring | PlanActualDeviation | — | planning.PlanTarget, telemetry.TelemetryPoint, telemetry.TrustedTelemetryReading | 0 | 0 | 4 | — | Planned | `docs(model-review): review monitoring PlanActualDeviation` |
 | HMSR-121 | 8 | alarm | AlarmAcknowledgement | — | alarm.Alarm, organization.OrganizationUnit | 0 | 0 | 0 | — | Planned | `docs(model-review): review alarm AlarmAcknowledgement` |
@@ -19761,16 +19761,99 @@ The baseline cannot be marked APPROVED while required title validation is missin
 
 HMS reconciliation must retain these obligations until explicitly authorized Alarm production work resolves them or stronger repository evidence changes the governing Alarm contract.
 
-## 131. Current next task
+## 131. HMSR-118 — audit.AuditAccessRecord review
+
+**Decision:** REVISE  
+**Review code:** HMSR-118  
+**Dependency level:** 7  
+**Bounded context:** audit  
+**Confirmed upstream subject dependencies:** optional same-module `audit.AuditEvent` and `audit.AuditExportRequest`; Identity actor reference is historical evidence  
+**Confirmed direct HMS subject dependents:** 0  
+**Transitive HMS subject dependents:** 0  
+**Unresolved/non-subject reference count:** 0
+
+### 131.1 Semantic role
+
+`AuditAccessRecord` is Audit's append-only evidence that audit evidence itself was searched, viewed, exported, verified, archived, or subjected to a purge request.
+
+The Audit DDD explicitly states both that access to audit evidence is itself auditable and that `AuditAccessRecord` is append-only.
+
+### 131.2 Field and persistence alignment
+
+The live domain record, JPA entity, mapper, application command/service, repository adapter, and base Audit migration align on the 11-field shape.
+
+The domain already fail-fast validates the DDD-required `id`, `actorId`, `accessType`, and `accessedAt` fields.
+
+`AuditAccessType` contains `SEARCH`, `VIEW`, `EXPORT`, `VERIFY_SEAL`, `ARCHIVE`, and `PURGE_REQUEST`, exactly matching the DDD vocabulary. Current evidence supports retaining this as a stable technical action enum rather than converting it to a user-managed catalog.
+
+### 131.3 Optional AuditEvent reference
+
+`auditEventId` is optional because only event-specific access necessarily targets one AuditEvent.
+
+The current `recordAuditAccess(...)` path accepts a supplied ID and persists it without checking that the referenced same-module AuditEvent exists.
+
+Future production reconciliation must fail closed on an unknown supplied `auditEventId` through the Audit-owned repository/application boundary while preserving null for non-event-specific access.
+
+HMSR-118 does not make `auditEventId` mandatory for every access type because the DDD explicitly defines it as optional.
+
+### 131.4 Optional AuditExportRequest reference
+
+`exportRequestId` is optional and links access evidence to a controlled Audit export request when applicable.
+
+The current application path likewise persists a supplied ID without validating same-module existence.
+
+Future production reconciliation must fail closed on an unknown supplied `exportRequestId` through the Audit-owned boundary while preserving optionality.
+
+HMSR-118 does not invent a universal rule that every `EXPORT` record must carry `exportRequestId`; the DDD relationship supports linkage but does not state that invariant explicitly.
+
+### 131.5 Append-only persistence gap
+
+`AuditAccessRecordRepositoryPort` exposes generic `save(AuditAccessRecord)`, and `JpaAuditAccessRecordRepositoryAdapter` delegates directly to Spring Data `repository.save(...)`.
+
+That behavior permits inserting a new access record but can also overwrite an existing record with the same ID, conflicting with the Audit DDD's append-only policy.
+
+Future production reconciliation must make access-record persistence insert-only/append-only so recorded access evidence cannot be silently rewritten.
+
+### 131.6 Actor semantics
+
+`actorId` is mandatory evidence identifying who accessed audit information. `actorDisplayNameSnapshot` is optional historical display evidence.
+
+Identity remains owner of live actor lifecycle. No Audit-to-Identity database FK is authorized, and historical access evidence must remain readable even after identity changes.
+
+### 131.7 Search/export metadata
+
+`searchFilterHash`, `resultCount`, `purposeText`, and `correlationId` are optional evidence fields.
+
+The reviewed Audit DDD does not define a universal nonnegative `resultCount` invariant, mandatory purpose text, or access-type-specific metadata matrix, so HMSR-118 does not invent such rules.
+
+### 131.8 Required revisions
+
+Three evidence-backed production obligations remain:
+
+1. **Make AuditAccessRecord persistence genuinely append-only so an existing record ID cannot be overwritten through generic save semantics.**
+2. **Fail closed on a supplied unknown `auditEventId` while preserving its documented optionality.**
+3. **Fail closed on a supplied unknown `exportRequestId` while preserving its documented optionality.**
+
+HMSR-118 does not modify production Java, JPA, Flyway, API/application contracts, tests, Audit/Identity data, or provisioned data.
+
+### 131.9 Review conclusion
+
+**REVISE.** The 11-field shape, required actor/access/time invariants, access-type enum, optional evidence-link design, and historical actor boundary are appropriate.
+
+The target baseline cannot be marked APPROVED while append-only persistence is not enforced and supplied same-module AuditEvent/AuditExportRequest references can remain unresolved.
+
+HMS reconciliation must retain these obligations until explicitly authorized Audit production work resolves them or stronger repository evidence changes the governing Audit contract.
+
+## 132. Current next task
 
 ```text
-HMSR-118 — audit.AuditAccessRecord
+HMSR-119 — audit.AuditBeforeAfterValue
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review audit AuditAccessRecord
+docs(model-review): review audit AuditBeforeAfterValue
 ```
 
-Start HMSR-118 only after HMSR-117 is committed and reported. Do not start HMSR-119 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-119 only after HMSR-118 is committed and reported. Do not start HMSR-120 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

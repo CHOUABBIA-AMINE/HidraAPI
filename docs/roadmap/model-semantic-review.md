@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -249,7 +249,7 @@ Ordering rules applied:
 | HMSR-054 | 2 | assets | MaintainableAsset | SCC-03 | assets.MaintainableAsset, organization.OrganizationUnit, party.Party | 3 | 3 | 4 | REVISE | Completed | `docs(model-review): review assets MaintainableAsset` |
 | HMSR-055 | 2 | simulation | SimulationRun | — | simulation.SimulationScenario | 2 | 3 | 2 | REVISE | Completed | `docs(model-review): review simulation SimulationRun` |
 | HMSR-056 | 2 | integration | ExternalSystem | — | organization.OrganizationUnit | 2 | 2 | 0 | REVISE | Completed | `docs(model-review): review integration ExternalSystem` |
-| HMSR-057 | 2 | reporting | ReportRequest | — | organization.OrganizationUnit, reporting.ReportDefinition | 1 | 2 | 1 | — | Planned | `docs(model-review): review reporting ReportRequest` |
+| HMSR-057 | 2 | reporting | ReportRequest | — | organization.OrganizationUnit, reporting.ReportDefinition | 1 | 2 | 1 | REVISE | Completed | `docs(model-review): review reporting ReportRequest` |
 | HMSR-058 | 2 | risk | RiskRegister | — | organization.OrganizationUnit | 1 | 2 | 0 | — | Planned | `docs(model-review): review risk RiskRegister` |
 | HMSR-059 | 2 | integrity | IntegrityProgram | — | organization.OrganizationUnit | 1 | 1 | 0 | — | Planned | `docs(model-review): review integrity IntegrityProgram` |
 | HMSR-060 | 2 | leakdetection | LeakDetectionCase | — | leakdetection.LeakCandidate, organization.OrganizationUnit | 1 | 1 | 0 | — | Planned | `docs(model-review): review leakdetection LeakDetectionCase` |
@@ -2489,11 +2489,11 @@ Confirmed subject-model graph edges at this stage: **165**. These are semantic c
 | Field | Declared type | Classification | Resolved target | Graph edge | Notes |
 |---|---|---|---|:---:|---|
 | id | String | Self identifier | — | No | Primary identity of the current model. |
-| reportDefinitionId | String | Domain reference | reporting.ReportDefinition | Yes | Unambiguous same-module subject-model reference. |
-| requestedByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
-| organizationUnitId | String | Cross-module reference | organization.OrganizationUnit | Yes | Unambiguous reference to a subject model in another bounded context. |
-| correlationId | String | Snapshot/reference-only | TECHNICAL_REFERENCE | No | Technical correlation/request/reference identity. |
-| workflowReferenceId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| reportDefinitionId | String | Domain reference | reporting.ReportDefinition | Yes | Mandatory same-module HMS subject reference; HRA-111 protects `report_definition_id -> hidra_reporting_report_definition.id`. Request eligibility still depends on definition state/policy. |
+| requestedByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Mandatory actor identity; no cross-module DB FK is appropriate. |
+| organizationUnitId | String | Cross-module reference | organization.OrganizationUnit | Yes | Optional Organization-owned scope/responsibility reference; request creation currently performs no owner-boundary validation. |
+| correlationId | String | Snapshot/reference-only | TECHNICAL_REFERENCE | No | Optional technical correlation identity. |
+| workflowReferenceId | String | Cross-module approval reference | WORKFLOW_APPROVAL_REFERENCE | No | Optional workflow/approval reference; current DDD does not prove one concrete Workflow subject target, so no graph edge is invented. |
 
 #### reporting.ReportRun
 
@@ -11785,16 +11785,122 @@ The target baseline cannot mark it APPROVED while explicit code uniqueness is un
 
 HMS reconciliation must retain these three obligations until explicitly authorized Integration production corrections resolve them or stronger repository evidence changes the governing Integration DDD.
 
-## 70. Current next task
+## 70. HMSR-057 — reporting.ReportRequest review
+
+**Decision:** REVISE  
+**Review code:** HMSR-057  
+**Dependency level:** 2  
+**Bounded context:** reporting  
+**Confirmed upstream subject dependencies:** `reporting.ReportDefinition`, optional `organization.OrganizationUnit`  
+**Confirmed direct HMS subject dependents:** 1  
+**Transitive HMS subject dependents:** 2
+
+### 70.1 Semantic role
+
+`ReportRequest` is the Reporting-owned user/system request to generate a formal report. It records the selected ReportDefinition, requester identity/snapshots, optional Organization scope, request time/purpose, lifecycle status, correlation identity and optional workflow/approval reference.
+
+Reporting owns the request lifecycle but not Identity, Organization or Workflow business state.
+
+### 70.2 ReportDefinition integrity and request eligibility
+
+`reportDefinitionId` is mandatory and HRA-111 protects row existence with a validated same-module FK to `hidra_reporting_report_definition(id)`.
+
+The Reporting DDD separately states:
 
 ```text
-HMSR-057 — reporting.ReportRequest
+inactive definitions cannot be used for new report requests
+```
+
+`ReportingApplicationService.requestReport()` currently constructs a SUBMITTED ReportRequest directly from the command and saves it without loading the referenced ReportDefinition.
+
+Therefore the FK proves existence but does not enforce the explicit active-definition eligibility rule.
+
+### 70.3 Restricted-report access rule
+
+The ReportRequest DDD explicitly requires:
+
+```text
+restricted reports require access validation
+```
+
+ReportDefinition carries the `restricted` flag and Reporting has an access-policy model, but `requestReport()` does not load the definition or invoke any access-policy/authorization boundary before persisting the request.
+
+Therefore a restricted report may currently be requested without demonstrated access validation.
+
+### 70.4 Approval-required queueing rule
+
+The ReportRequest DDD explicitly states:
+
+```text
+reports requiring approval cannot be queued before workflow approval
+```
+
+ReportDefinition carries `requiresApproval`; ReportRequest carries status and optional `workflowReferenceId`.
+
+`queueReportRun()` currently constructs and saves a QUEUED ReportRun directly from command IDs. It does not load the ReportRequest, inspect its status, inspect the definition's `requiresApproval`, or verify workflow approval.
+
+Therefore an approval-required request can currently be queued without demonstrated approval.
+
+HMSR-057 does not invent one concrete WorkflowInstance target for `workflowReferenceId`; the field remains a neutral approval/workflow reference until stronger repository evidence resolves its exact contract.
+
+### 70.5 Organization boundary
+
+`organizationUnitId` is optional and unambiguously references `organization.OrganizationUnit`, accompanied by a name snapshot.
+
+`requestReport()` persists a populated OrganizationUnit ID without resolving it through an Organization-owned lookup contract.
+
+No cross-module DB FK should be introduced. When populated, the scope/responsibility identity should fail closed through an Organization-owned application/lookup boundary.
+
+Current evidence does not make Organization scope mandatory for every report request.
+
+### 70.6 Requester snapshots
+
+The DDD states that the request actor snapshot must be preserved. The model stores username, display-name and role-code snapshots alongside mandatory `requestedByActorId`.
+
+Current evidence does not specify which individual snapshot fields are mandatory in every request, and persistence keeps them nullable. HMSR-057 therefore does not invent a field-level non-null rule.
+
+Production corrections for access/approval orchestration must preserve whatever requester snapshots are supplied rather than replacing them with mutable current Identity state.
+
+### 70.7 Status and timestamps
+
+The domain requires non-null `requestedAt` and `ReportRequestStatus`; the active request path initializes new requests as `SUBMITTED`.
+
+Current Reporting DDD does not provide a complete transition matrix for DRAFT/SUBMITTED/APPROVED/REJECTED/QUEUED/CANCELLED, so HMSR-057 does not invent additional status transitions beyond the explicit approval-before-queue rule.
+
+No additional createdAt/updatedAt ordering rule is approved by the repository invariant classification.
+
+### 70.8 Required revisions
+
+Four evidence-backed production correction obligations remain:
+
+1. **Reject new requests against inactive ReportDefinition rows.** The authoritative request path must load/validate definition eligibility before creating ReportRequest.
+
+2. **Enforce access validation for restricted report definitions before request creation.** Use Reporting/Identity access-policy contracts rather than bypassing authorization.
+
+3. **Prevent queueing approval-required requests before workflow approval.** The queue path must validate the ReportRequest/ReportDefinition approval state through the appropriate Workflow contract before creating a queued ReportRun.
+
+4. **Validate populated `organizationUnitId` through the Organization owner boundary.** Do not add a cross-module database FK.
+
+HMSR-057 does not modify production Java, JPA, Flyway, API/application contracts, tests, report requests, definitions, access policies, Workflow data, Organization data, or provisioned data.
+
+### 70.9 Review conclusion
+
+**REVISE.** `ReportRequest` has a coherent 15-field Reporting request model, a protected mandatory ReportDefinition identity, explicit requester/status state, optional Organization scope, and neutral workflow/correlation references.
+
+The target baseline cannot mark it APPROVED while inactive/restricted definition eligibility is not enforced, approval-required requests can be queued without demonstrated workflow approval, and populated Organization scope can dangle.
+
+HMS reconciliation must retain these obligations until explicitly authorized Reporting production corrections resolve them or stronger repository evidence changes the governing Reporting DDD.
+
+## 71. Current next task
+
+```text
+HMSR-058 — risk.RiskRegister
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review reporting ReportRequest
+docs(model-review): review risk RiskRegister
 ```
 
-Start HMSR-057 only after HMSR-056 is committed and reported. Do not start HMSR-058 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-058 only after HMSR-057 is committed and reported. Do not start HMSR-059 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

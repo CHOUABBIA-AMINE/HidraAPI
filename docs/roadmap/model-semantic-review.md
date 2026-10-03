@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 reviewed as REVISE, HMSR-080 reviewed as REVISE, HMSR-081 reviewed as REVISE, HMSR-082 reviewed as REVISE, HMSR-083 approved, HMSR-084 reviewed as REVISE, HMSR-085 reviewed as REVISE, HMSR-086 approved, HMSR-087 reviewed as REVISE, HMSR-088 reviewed as REVISE, HMSR-089 reviewed as REVISE, HMSR-090 reviewed as REVISE, HMSR-091 reviewed as REVISE, HMSR-092 reviewed as REVISE, HMSR-093 reviewed as REVISE, HMSR-094 reviewed as REVISE, HMSR-095 reviewed as REVISE, HMSR-096 reviewed as REVISE, HMSR-097 reviewed as REVISE, HMSR-098 reviewed as REVISE, HMSR-099 approved, HMSR-100 reviewed as REVISE, HMSR-101 reviewed as REVISE, HMSR-102 approved, HMSR-103 approved, HMSR-104 reviewed as REVISE, HMSR-105 reviewed as REVISE, HMSR-106 reviewed as REVISE, HMSR-107 reviewed as REVISE, HMSR-108 reviewed as REVISE, HMSR-109 reviewed as REVISE, HMSR-110 reviewed as REVISE, HMSR-111 reviewed as REVISE, HMSR-112 reviewed as REVISE, HMSR-113 reviewed as REVISE, HMSR-114 reviewed as REVISE, HMSR-115 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 reviewed as REVISE, HMSR-080 reviewed as REVISE, HMSR-081 reviewed as REVISE, HMSR-082 reviewed as REVISE, HMSR-083 approved, HMSR-084 reviewed as REVISE, HMSR-085 reviewed as REVISE, HMSR-086 approved, HMSR-087 reviewed as REVISE, HMSR-088 reviewed as REVISE, HMSR-089 reviewed as REVISE, HMSR-090 reviewed as REVISE, HMSR-091 reviewed as REVISE, HMSR-092 reviewed as REVISE, HMSR-093 reviewed as REVISE, HMSR-094 reviewed as REVISE, HMSR-095 reviewed as REVISE, HMSR-096 reviewed as REVISE, HMSR-097 reviewed as REVISE, HMSR-098 reviewed as REVISE, HMSR-099 approved, HMSR-100 reviewed as REVISE, HMSR-101 reviewed as REVISE, HMSR-102 approved, HMSR-103 approved, HMSR-104 reviewed as REVISE, HMSR-105 reviewed as REVISE, HMSR-106 reviewed as REVISE, HMSR-107 reviewed as REVISE, HMSR-108 reviewed as REVISE, HMSR-109 reviewed as REVISE, HMSR-110 reviewed as REVISE, HMSR-111 reviewed as REVISE, HMSR-112 reviewed as REVISE, HMSR-113 reviewed as REVISE, HMSR-114 reviewed as REVISE, HMSR-115 reviewed as REVISE, HMSR-116 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -307,7 +307,7 @@ Ordering rules applied:
 | HMSR-112 | 6 | audit | AuditEvent | — | organization.OrganizationUnit, workflow.WorkflowAction, workflow.WorkflowInstance, workflow.WorkflowTask | 2 | 2 | 3 | REVISE | Completed | `docs(model-review): review audit AuditEvent` |
 | HMSR-113 | 6 | hse | HseClosure | — | hse.HseCase, workflow.WorkflowInstance | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review hse HseClosure` |
 | HMSR-114 | 6 | hse | HseCorrectivePreventiveAction | — | assets.MaintenanceWorkOrder, hse.HseCase, organization.OrganizationUnit, workflow.WorkflowTask | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review hse HseCorrectivePreventiveAction` |
-| HMSR-115 | 6 | integrity | IntegrityCase | — | hse.HseCase, incident.Incident, integrity.PipelineDefect, organization.OrganizationUnit, workflow.WorkflowInstance | 0 | 0 | 1 | — | Planned | `docs(model-review): review integrity IntegrityCase` |
+| HMSR-115 | 6 | integrity | IntegrityCase | — | hse.HseCase, incident.Incident, integrity.PipelineDefect, organization.OrganizationUnit, workflow.WorkflowInstance | 0 | 0 | 1 | REVISE | Completed | `docs(model-review): review integrity IntegrityCase` |
 | HMSR-116 | 6 | workflow | WorkflowStateHistory | — | workflow.WorkflowAction, workflow.WorkflowInstance, workflow.WorkflowStep, workflow.WorkflowTask | 0 | 0 | 1 | — | Planned | `docs(model-review): review workflow WorkflowStateHistory` |
 | HMSR-117 | 7 | alarm | Alarm | — | incident.Incident, organization.OrganizationUnit, planning.PlanTarget, telemetry.TelemetryReading, workflow.WorkflowInstance | 3 | 3 | 4 | — | Planned | `docs(model-review): review alarm Alarm` |
 | HMSR-118 | 7 | audit | AuditAccessRecord | — | audit.AuditEvent, audit.AuditExportRequest | 0 | 0 | 0 | — | Planned | `docs(model-review): review audit AuditAccessRecord` |
@@ -19442,16 +19442,110 @@ The target baseline cannot be marked APPROVED while the authoritative CAPA creat
 
 HMS reconciliation must retain these obligations until explicitly authorized HSE production work resolves them or stronger repository evidence changes the governing HSE contract.
 
-## 128. Current next task
+## 128. HMSR-115 — integrity.IntegrityCase review
+
+**Decision:** REVISE  
+**Review code:** HMSR-115  
+**Dependency level:** 6  
+**Bounded context:** integrity  
+**Confirmed upstream subject dependencies:** optional same-module `integrity.PipelineDefect`; optional neutral HSE/Incident/Organization/Workflow references; required neutral Topology asset reference  
+**Confirmed direct HMS subject dependents:** 0  
+**Transitive HMS subject dependents:** 0  
+**Unresolved/non-subject reference count:** 1
+
+### 128.1 Semantic role
+
+`IntegrityCase` is the Integrity-owned lifecycle record for engineering integrity concerns affecting a topology asset. Integrity owns the technical case and its lifecycle; Topology owns the referenced asset, while Incident, HSE, Organization, Workflow, and Identity retain ownership of their respective records.
+
+### 128.2 Field and persistence alignment
+
+The live domain record, JPA entity, persistence mapper, application creation path, and Flyway table align on the 20-field `IntegrityCase` shape.
+
+`IntegrityCaseStatus` contains `OPEN`, `UNDER_REVIEW`, `ACTION_REQUIRED`, `MONITORING`, `RESOLVED`, `CLOSED`, and `CANCELLED`, which is consistent with a stable lifecycle enum.
+
+The domain already fail-fast validates `id`, `caseNumber`, `caseTypeId`, `status`, `topologyAssetTypeCode`, `topologyAssetId`, and `openedAt`, and enforces `openedAt <= closedAt` when both timestamps exist.
+
+### 128.3 Case-type catalog semantics
+
+`caseTypeId` is a mandatory Integrity-owned catalog reference. HRA-111 correctly installs row-existence protection:
 
 ```text
-HMSR-115 — integrity.IntegrityCase
+hidra_integrity_case.case_type_id
+  -> hidra_integrity_catalog_entry.id
+```
+
+This proves only that an Integrity catalog row exists. It does not establish semantic membership in the intended Integrity-case-type family.
+
+The current Integrity DDD does not expose an authoritative catalog-family identifier name for `caseTypeId`, so HMSR-115 does not invent one. Future production reconciliation must nevertheless validate the field through Integrity-owned catalog-family semantics once the authoritative family definition is established.
+
+`severityId` is optional and likewise remains an Integrity-owned catalog-style scalar whose exact family semantics must not be invented by this review.
+
+### 128.4 Optional same-module PipelineDefect reference
+
+`primaryDefectId` is an optional reference to Integrity-owned `PipelineDefect`.
+
+The current schema indexes the column but, because it is optional, HRA-111 does not install a mandatory FK. The authoritative `openIntegrityCase(...)` path passes the supplied value directly into the new case and does not fail closed when a non-null ID points to no PipelineDefect.
+
+Future production reconciliation must validate existence of a supplied `primaryDefectId` through the Integrity-owned repository/application boundary, and should ensure it is compatible with the case's topology context where that relationship is defined by live Integrity policy.
+
+HMSR-115 does not invent a requirement that every IntegrityCase must have a primary defect; the field is explicitly optional in the live model/schema.
+
+### 128.5 Topology boundary
+
+`topologyAssetTypeCode`, `topologyAssetId`, and `topologyAssetCodeSnapshot` are neutral Topology references/snapshots. The DDD explicitly forbids Integrity from importing Topology domain models, JPA entities, or repositories.
+
+The type code and asset ID are correctly required by the domain model. No Integrity-to-Topology database FK is authorized.
+
+When an opening use case requires proof that the target asset exists or that the supplied type/id pair is compatible, validation must occur through a Topology-owned public lookup/reference contract.
+
+### 128.6 Incident and HSE boundaries
+
+`sourceIncidentId` and `sourceHseCaseId` are optional neutral cross-module references. The Integrity DDD explicitly allows HSE/Incident context while keeping those lifecycles outside Integrity ownership.
+
+No cross-module database FK is authorized for either field. Historical Integrity records must remain valid even if the source context later changes lifecycle.
+
+Where current operational behavior depends on a live source reference, validation belongs through the source module's owner-controlled public contract.
+
+### 128.7 Organization, Workflow, and actor boundaries
+
+`responsibleOrganizationUnitId` is Organization-owned, `workflowInstanceId` is Workflow-owned, and `openedByActorId` is Identity-owned. All are optional scalar references.
+
+They must remain cross-module scalars with owner-controlled validation where required; no cross-module database FKs should be introduced.
+
+### 128.8 Lifecycle timestamps
+
+The domain already enforces the repository-wide temporal invariant `openedAt <= closedAt` when a closure timestamp is present.
+
+The current Integrity DDD does not define a stronger universal rule tying particular statuses to mandatory `closedAt`, nor does it define an application close/resolve use case in the reviewed path. HMSR-115 therefore does not invent status/timestamp coupling beyond the documented ordering invariant.
+
+### 128.9 Required revisions
+
+Three evidence-backed production obligations remain:
+
+1. **Validate a supplied optional `primaryDefectId` as an existing same-module `PipelineDefect`, preserving optionality and applying topology compatibility only where explicitly defined by Integrity policy.**
+2. **Validate `caseTypeId` through the intended Integrity case-type catalog family once that authoritative family definition is established; generic catalog-row existence alone is insufficient.**
+3. **Preserve Topology/Incident/HSE/Organization/Workflow/Identity ownership boundaries:** use owner-controlled public reference contracts where live validation is required and never introduce cross-module database FKs.
+
+HMSR-115 does not modify production Java, JPA, Flyway, API/application contracts, tests, Integrity/Topology/Incident/HSE/Organization/Workflow/Identity data, or provisioned data.
+
+### 128.10 Review conclusion
+
+**REVISE.** The 20-field shape, Integrity lifecycle enum, mandatory topology reference shape, case-type row-existence FK, and temporal ordering invariant are structurally appropriate.
+
+The target baseline cannot be marked APPROVED while a supplied same-module primary-defect reference is not fail-closed validated and case-type catalog-family membership remains unresolved beyond generic row existence.
+
+HMS reconciliation must retain these obligations until explicitly authorized Integrity production work resolves them or stronger repository evidence changes the governing Integrity contract.
+
+## 129. Current next task
+
+```text
+HMSR-116 — workflow.WorkflowStateHistory
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review integrity IntegrityCase
+docs(model-review): review workflow WorkflowStateHistory
 ```
 
-Start HMSR-115 only after HMSR-114 is committed and reported. Do not start HMSR-116 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-116 only after HMSR-115 is committed and reported. Do not start HMSR-117 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

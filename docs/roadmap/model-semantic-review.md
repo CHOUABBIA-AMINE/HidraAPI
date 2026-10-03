@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 reviewed as REVISE, HMSR-080 reviewed as REVISE, HMSR-081 reviewed as REVISE, HMSR-082 reviewed as REVISE, HMSR-083 approved, HMSR-084 reviewed as REVISE, HMSR-085 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 reviewed as REVISE, HMSR-080 reviewed as REVISE, HMSR-081 reviewed as REVISE, HMSR-082 reviewed as REVISE, HMSR-083 approved, HMSR-084 reviewed as REVISE, HMSR-085 reviewed as REVISE, HMSR-086 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -277,7 +277,7 @@ Ordering rules applied:
 | HMSR-082 | 4 | custody | CustodyTransferTicket | — | custody.CustodyMeasurementPeriod, workflow.WorkflowInstance | 0 | 0 | 5 | REVISE | Completed | `docs(model-review): review custody CustodyTransferTicket` |
 | HMSR-083 | 4 | hse | PermitToWork | — | workflow.WorkflowInstance | 0 | 0 | 0 | APPROVED | Completed | `docs(model-review): review hse PermitToWork` |
 | HMSR-084 | 4 | integration | IntegrationDeadLetterRecord | — | integration.ExternalSystem, integration.IntegrationExchangeMessage, integration.IntegrationJobRun | 0 | 0 | 2 | REVISE | Completed | `docs(model-review): review integration IntegrationDeadLetterRecord` |
-| HMSR-085 | 4 | integrity | IntegrityAssessment | — | integrity.IntegrityProgram, workflow.WorkflowInstance | 0 | 0 | 2 | — | Planned | `docs(model-review): review integrity IntegrityAssessment` |
+| HMSR-085 | 4 | integrity | IntegrityAssessment | — | integrity.IntegrityProgram, workflow.WorkflowInstance | 0 | 0 | 2 | REVISE | Completed | `docs(model-review): review integrity IntegrityAssessment` |
 | HMSR-086 | 4 | organization | EmployeeAddress | — | organization.AdministrativeLocality, organization.Employee | 0 | 0 | 0 | — | Planned | `docs(model-review): review organization EmployeeAddress` |
 | HMSR-087 | 4 | organization | EmployeeAssignment | — | organization.Employee, organization.OrganizationUnit, organization.Position | 0 | 0 | 0 | — | Planned | `docs(model-review): review organization EmployeeAssignment` |
 | HMSR-088 | 4 | organization | OrganizationDelegation | — | organization.Employee, organization.ResponsibilityAssignment | 0 | 0 | 0 | — | Planned | `docs(model-review): review organization OrganizationDelegation` |
@@ -15712,16 +15712,158 @@ The target baseline cannot mark it APPROVED while two DDD-required failure field
 
 HMS reconciliation must retain these obligations until explicitly authorized Integration production corrections resolve them or stronger repository evidence changes the governing Integration DDD.
 
-## 98. Current next task
+## 98. HMSR-085 — integrity.IntegrityAssessment review
+
+**Decision:** REVISE  
+**Review code:** HMSR-085  
+**Dependency level:** 4  
+**Bounded context:** integrity  
+**Confirmed upstream subject dependencies:** optional `integrity.IntegrityProgram`, optional `workflow.WorkflowInstance`  
+**Confirmed direct HMS subject dependents:** 0  
+**Transitive HMS subject dependents:** 0
+
+### 98.1 Semantic role
+
+`IntegrityAssessment` is the Integrity-owned engineering assessment record used to capture a dated assessment, its classification/methodology metadata, responsible engineering actors, approval metadata, optional programme membership, optional Workflow orchestration reference, and optional Audit reference.
+
+Integrity owns the assessment record and its lifecycle. Workflow owns process state, Identity owns actor identity, Audit owns audit evidence, and Topology remains outside this aggregate; assessment scope is represented separately through `IntegrityAssessmentScope`.
+
+### 98.2 Assessment type integrity
+
+`assessmentTypeId` is mandatory and same-module catalog-backed.
+
+HRA-111 already protects generic existence with:
 
 ```text
-HMSR-085 — integrity.IntegrityAssessment
+hidra_integrity_assessment.assessment_type_id
+  -> hidra_integrity_catalog_entry.id
+```
+
+The live Integrity DDD does not establish a narrower named catalog family for this field. HMSR-085 therefore preserves the generic Integrity catalog FK and does not invent family-level taxonomy rules.
+
+### 98.3 Optional programme membership
+
+`programId` is an optional same-module reference to `IntegrityProgram`.
+
+The base schema stores and indexes `program_id`, but repository evidence shows no same-module FK and the live creation service copies `command.programId()` directly without verifying existence.
+
+When populated, `programId` should fail closed to an existing Integrity-owned programme. A same-module FK is architecturally appropriate, or an explicitly justified Integrity application check may supplement it.
+
+HMSR-085 does not invent a rule that every assessment must belong to a programme because both JPA nullability and the current application contract preserve programme membership as optional.
+
+### 98.4 Methodology reference
+
+`methodologyId` is optional and indexed by the base schema.
+
+Current live evidence does not establish a definitive owner or exact catalog family for this field. The scalar-reference inventory also does not classify `IntegrityAssessment.methodologyId` as a resolved same-module catalog reference.
+
+HMSR-085 therefore preserves `methodologyId` as unresolved reference/taxonomy evidence and does not invent a database FK or catalog-family obligation. HMS-006 may revisit it if stronger Integrity DDD/catalog evidence becomes available.
+
+### 98.5 Required fields and persistence classification
+
+The domain constructor already enforces the repository-classified required business fields:
+
+```text
+id
+assessmentNumber
+assessmentTypeId
+status
+assessmentDate
+```
+
+The JPA schema also marks `title` as `NOT NULL`, but the repository's invariant-classification architecture explicitly distinguishes persistence-level required columns from domain invariants.
+
+Current Integrity DDD evidence does not establish `title` as a separate domain invariant for `IntegrityAssessment`; HMSR-085 therefore does not create a semantic revision obligation from database nullability alone.
+
+Likewise, current evidence does not establish global uniqueness for `assessmentNumber`, so no uniqueness rule is invented.
+
+### 98.6 Actor ownership boundary
+
+`assessedByActorId`, `reviewedByActorId`, and `approvedByActorId` are Identity-owned actor references.
+
+The live creation path accepts `assessedByActorId` directly from `CreateIntegrityAssessmentCommand` and persists it without owner-controlled Identity/security validation.
+
+The authoritative creation boundary should validate populated actor identity through the appropriate Identity/security contract while preserving scalar IDs. No cross-module Identity database FK should be introduced.
+
+No live review/approval mutation service for this aggregate was found in the reviewed evidence, so HMSR-085 does not invent defects for currently unimplemented reviewer/approver paths.
+
+### 98.7 Workflow boundary
+
+`workflowInstanceId` is optional and Workflow-owned.
+
+The live creation path accepts it directly from the command and stores it without a Workflow lookup or target-context check.
+
+When populated, the authoritative Integrity boundary should validate the referenced Workflow instance through a Workflow-owned application contract and ensure it targets the intended Integrity assessment process/context. No cross-module Workflow database FK should be introduced.
+
+### 98.8 Audit boundary
+
+`auditReferenceId` is optional and Audit-owned.
+
+The current creation service initializes it as null, and repository evidence reviewed for HMSR-085 does not identify a write path that populates it.
+
+Accordingly, HMSR-085 preserves the field as a scalar Audit boundary but does not invent a current production defect. Any future population path should use an Audit-owned application/publication mechanism rather than direct persistence coupling.
+
+### 98.9 Approval metadata
+
+The model carries optional:
+
+```text
+approvedByActorId
+approvedAt
+```
+
+but the current Integrity DDD does not explicitly state a mandatory coupling rule between them, nor does the reviewed application layer expose an approval write path.
+
+HMSR-085 therefore does not invent an actor/time coupling invariant or a transition matrix beyond the currently evidenced model semantics.
+
+### 98.10 Lifecycle enum
+
+`IntegrityAssessmentStatus` contains:
+
+```text
+DRAFT
+IN_PROGRESS
+UNDER_REVIEW
+APPROVED
+SUPERSEDED
+CANCELLED
+CLOSED
+```
+
+These are stable Integrity-owned assessment lifecycle states and are appropriate as a technical/domain enum.
+
+Current evidence does not define a fuller transition state machine, so HMSR-085 does not invent one.
+
+### 98.11 Required revisions
+
+Three evidence-backed obligations remain:
+
+1. **Protect populated `programId` as a same-module Integrity reference.** When present, it must resolve to an existing `IntegrityProgram`.
+
+2. **Validate populated actor identity through the Identity/security owner boundary.** The live creation path currently accepts `assessedByActorId` directly; future review/approval paths must follow the same ownership rule. Do not add cross-module Identity FKs.
+
+3. **Validate populated `workflowInstanceId` through a Workflow-owned application contract** and verify the intended Integrity-assessment context; do not introduce a cross-module Workflow FK.
+
+HMSR-085 does not modify production Java, JPA, Flyway, API/application contracts, tests, Integrity/Identity/Workflow/Audit data, or provisioned data.
+
+### 98.12 Review conclusion
+
+**REVISE.** `IntegrityAssessment` is a coherent Integrity-owned engineering assessment model with correct mandatory assessment-type integrity, appropriate lifecycle enum semantics, and preserved cross-context scalar boundaries.
+
+The target baseline cannot mark it APPROVED while optional same-module programme membership is not fail-closed and the live creation path accepts Identity/Workflow references without owner-controlled validation.
+
+HMS reconciliation must retain these obligations until explicitly authorized Integrity production corrections resolve them or stronger repository evidence changes the governing Integrity DDD.
+
+## 99. Current next task
+
+```text
+HMSR-086 — organization.EmployeeAddress
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review integrity IntegrityAssessment
+docs(model-review): review organization EmployeeAddress
 ```
 
-Start HMSR-085 only after HMSR-084 is committed and reported. Do not start HMSR-086 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-086 only after HMSR-085 is committed and reported. Do not start HMSR-087 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

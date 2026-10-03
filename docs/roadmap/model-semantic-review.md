@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -226,7 +226,7 @@ Ordering rules applied:
 | HMSR-031 | 0 | organization | ReportingLine | — | — | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review organization ReportingLine` |
 | HMSR-032 | 0 | risk | RiskMatrixCell | — | — | 0 | 0 | 2 | REVISE | Completed | `docs(model-review): review risk RiskMatrixCell` |
 | HMSR-033 | 0 | telemetry | TelemetrySource | — | — | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review telemetry TelemetrySource` |
-| HMSR-034 | 0 | topology | TopologyConnection | — | — | 0 | 0 | 3 | — | Planned | `docs(model-review): review topology TopologyConnection` |
+| HMSR-034 | 0 | topology | TopologyConnection | — | — | 0 | 0 | 3 | REVISE | Completed | `docs(model-review): review topology TopologyConnection` |
 | HMSR-035 | 1 | organization | OrganizationUnit | SCC-01 | organization.OrganizationUnit, organization.OrganizationUnitType | 22 | 51 | 0 | — | Planned | `docs(model-review): review organization OrganizationUnit` |
 | HMSR-036 | 1 | organization | AdministrativeDistrict | — | organization.AdministrativeState | 1 | 16 | 0 | — | Planned | `docs(model-review): review organization AdministrativeDistrict` |
 | HMSR-037 | 1 | telemetry | TelemetryReading | — | telemetry.TelemetryPoint | 2 | 6 | 2 | — | Planned | `docs(model-review): review telemetry TelemetryReading` |
@@ -2700,9 +2700,9 @@ Confirmed subject-model graph edges at this stage: **165**. These are semantic c
 | Field | Declared type | Classification | Resolved target | Graph edge | Notes |
 |---|---|---|---|:---:|---|
 | id | String | Self identifier | — | No | Primary identity of the current model. |
-| fromNodeId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
-| toNodeId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
-| pipelineSegmentId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
+| fromNodeId | String | Domain reference | topology.TopologyNode (read/persistence model) | No | HMSR-034 stronger HMS-005 + scalar-integrity + HRA-111 evidence resolves the required source-node reference; target is outside the 123 HMS subject set. |
+| toNodeId | String | Domain reference | topology.TopologyNode (read/persistence model) | No | HMSR-034 stronger HMS-005 + scalar-integrity + HRA-111 evidence resolves the required target-node reference; target is outside the 123 HMS subject set. |
+| pipelineSegmentId | String | Optional domain reference | topology.PipelineSegment (read/persistence model) | No | HMS-005 explicitly confirms this optional same-module prerequisite; no HMS graph edge. Populated-reference integrity is not currently protected. |
 
 #### workflow.WorkflowAction
 
@@ -7845,16 +7845,186 @@ The target baseline cannot mark it APPROVED while source-code uniqueness, catalo
 
 HMS reconciliation must retain these obligations until an explicitly authorized Telemetry correction task resolves them or the governing Telemetry DDD/roadmap is explicitly revised with stronger evidence.
 
-## 47. Current next task
+## 47. HMSR-034 — topology.TopologyConnection review
+
+**Decision:** REVISE  
+**Review code:** HMSR-034  
+**Dependency level:** 0  
+**Bounded context:** topology  
+**Confirmed upstream HMS subject dependencies:** none  
+**Confirmed direct HMS subject dependents:** 0  
+**Transitive HMS subject dependents:** 0  
+**Non-subject/read-persistence prerequisites:** 3 — two TopologyNode references and one optional PipelineSegment reference
+
+### 47.1 Semantic role and ordering rationale
+
+`TopologyConnection` is the Topology-owned explicit graph edge between two topology nodes. It carries the connection classification, directionality, optional pipeline-segment association, optional nominal-capacity metadata, lifecycle state and audit timestamps.
+
+The active Topology roadmap distinguishes `PipelineSegment` as the linear physical pipe asset between two nodes and `TopologyConnection` as the explicit graph edge between nodes. This distinction is retained.
+
+It remains HMS Level 0 because HMS-005 already classifies `TopologyNode` and `PipelineSegment` as retained Topology read/persistence prerequisites outside the 123-model HMS subject graph. Resolving these references therefore does not add an HMS graph edge.
+
+### 47.2 Field semantics
+
+| Field | Type | Mandatory / optional | Reviewed meaning |
+|---|---|---|---|
+| `id` | `String` | Mandatory | Stable topology-connection identity and persistence primary key. |
+| `code` | `String` | Mandatory | Stable connection code. Current evidence does not establish a uniqueness scope. |
+| `fromNodeId` | `String` | Mandatory | Source/end-A TopologyNode reference. |
+| `toNodeId` | `String` | Mandatory | Target/end-B TopologyNode reference. |
+| `connectionType` | `ConnectionType` in live code | Mandatory, but representation requires revision | Business classification of the graph edge; accepted Topology architecture requires a catalog-backed `ConnectionTypeReference`. |
+| `flowDirection` | `FlowDirection` | Mandatory | Technical graph/flow direction: `DIRECTED`, `BIDIRECTIONAL`, or `UNKNOWN`. |
+| `pipelineSegmentId` | `String` | Optional | Optional association to retained Topology PipelineSegment master data. |
+| `nominalCapacity` | `BigDecimal` | Optional | Optional nominal-capacity metadata. No current authoritative range/sign rule was found. |
+| `capacityUnitCode` | `String` | Optional | Unit code associated with nominal capacity when supplied; current evidence does not define a governed unit-reference model or mandatory pairing rule. |
+| `status` | `TopologyStatus` | Mandatory | Technical lifecycle state: `DRAFT`, `ACTIVE`, `SUSPENDED`, `RETIRED`, or `ARCHIVED`. |
+| `createdAt` | `Instant` | Persistence-required audit timestamp | Creation timestamp. |
+| `updatedAt` | `Instant` | Persistence-required audit timestamp | Last-update timestamp. |
+
+The canonical record already rejects blank `id`, `code`, `fromNodeId`, and `toNodeId`, and requires non-null connection type, flow direction and lifecycle status.
+
+### 47.3 Node dependency resolution and integrity
+
+HMS-005 already records:
 
 ```text
-HMSR-034 — topology.TopologyConnection
+topology.TopologyConnection.fromNodeId/toNodeId
+    -> persistence/read TopologyNode
+```
+
+and the scalar-reference integrity inventory resolves both fields to `topology.TopologyNode`.
+
+HRA-111 installs:
+
+```text
+fk_hra111_topology_001
+  from_node_id -> hidra_topology_node(id)
+
+fk_hra111_topology_002
+  to_node_id -> hidra_topology_node(id)
+```
+
+both with `ON DELETE RESTRICT` and validated against existing rows.
+
+Therefore both required node references are now semantically and relationally resolved. No production correction is required merely for node existence.
+
+### 47.4 Self-connection invariant enforcement gap
+
+The repository contains `TopologyConnectionValidator`, which states the domain rule:
+
+```text
+Topology connection must not connect a node to itself.
+```
+
+However, the canonical `TopologyConnection` constructor does not reject `fromNodeId == toNodeId`, the base schema has no corresponding CHECK constraint, and repository search found no active application write service invoking `TopologyConnectionValidator`.
+
+Consequently, the domain rule exists but is not guaranteed by the model/persistence boundary. A self-loop can be constructed and, through a direct repository/persistence path, stored while satisfying both node foreign keys.
+
+HMSR-034 does not prescribe whether the invariant belongs in the record constructor, an authoritative domain/application policy, an additive database CHECK, or a combination. It requires only that authoritative writes fail closed.
+
+### 47.5 Connection-type catalog regression
+
+The active Topology roadmap states that **Connection type** is a catalog-backed controlled vocabulary and that business type concepts must use catalog references rather than fixed Java enum fields.
+
+The accepted architecture artifacts specifically show:
+
+```text
+TopologyConnection -> ConnectionTypeReference
+```
+
+and the COR2-007 controlled-vocabulary audit classifies `ConnectionType` as `REPLACE_FIRST_THEN_DELETE`, while `ConnectionTypeReference` is the intended retained reference object.
+
+Live `main`, however, has no `ConnectionTypeReference.java`. `TopologyConnection` and `TopologyConnectionJpaEntity` both use the fixed Java enum:
+
+```text
+PIPELINE_SEGMENT
+DIRECT_LINK
+VIRTUAL_LINK
+TRANSFER_LINK
+MEASUREMENT_LINK
+```
+
+and persistence stores it directly in `connection_type varchar(80) NOT NULL` using `EnumType.STRING`. The consolidated current Topology migration contains no connection-type catalog table/reference column for this model.
+
+This is a direct contradiction between accepted Topology controlled-vocabulary architecture and the current production model/persistence shape. The semantic baseline cannot preserve both as authoritative.
+
+### 47.6 Optional PipelineSegment reference integrity gap
+
+HMS-005 explicitly identifies:
+
+```text
+topology.TopologyConnection.pipelineSegmentId
+    -> persistence/read PipelineSegment
+```
+
+so the optional field is no longer semantically unresolved.
+
+The base schema indexes `pipeline_segment_id`, but HRA-111 does not add an FK for this nullable field, and no active TopologyConnection write service or lookup validator was found that checks a populated segment ID before persistence.
+
+Therefore a non-null `pipelineSegmentId` can currently be stored without demonstrated fail-closed proof that the referenced PipelineSegment exists.
+
+HMSR-034 does not make the segment association mandatory and does not infer that every `PIPELINE_SEGMENT` connection type must carry one, because current authoritative evidence does not state that coupling.
+
+### 47.7 FlowDirection and lifecycle semantics
+
+`FlowDirection` behaves as technical graph semantics rather than a user-maintained business taxonomy, and current evidence does not classify it for catalog replacement. HMSR-034 therefore retains the enum.
+
+`TopologyStatus` was explicitly retained as a lifecycle enum by the controlled-vocabulary audit. No status-transition matrix specific to TopologyConnection is defined by current evidence, so none is invented.
+
+### 47.8 Capacity semantics deliberately not invented
+
+Current repository evidence does not establish:
+
+- that `nominalCapacity` must be positive or nonnegative;
+- that `nominalCapacity` and `capacityUnitCode` must always appear together;
+- a canonical capacity-unit catalog/owner for this field;
+- conversion semantics or base units;
+- connection-type-specific capacity rules.
+
+HMSR-034 therefore records no capacity invariant beyond the existing optional representation.
+
+### 47.9 Code and graph uniqueness deliberately not invented
+
+The base schema contains only an ordinary index on `code`, and no current Topology DDD/roadmap evidence reviewed here states a global or scoped connection-code uniqueness invariant.
+
+Likewise, current evidence does not define uniqueness for `(fromNodeId, toNodeId, connectionType)`, nor whether parallel logical edges between the same nodes are allowed. Such rules are not inferred from generic graph modeling.
+
+### 47.10 Required revisions
+
+Three evidence-backed correction obligations remain:
+
+1. **Restore/reconcile catalog-backed connection-type semantics.** Replace the live fixed `ConnectionType` enum/string persistence with the accepted `ConnectionTypeReference`/catalog architecture, or explicitly revise the governing Topology architecture if that earlier decision is no longer intended. Domain, JPA, Flyway, API/application contracts and migration strategy must converge on one representation.
+
+2. **Enforce the no-self-connection domain rule on authoritative writes.** `fromNodeId` and `toNodeId` must not resolve to the same node when a TopologyConnection becomes authoritative. The existing unused validator is insufficient by itself.
+
+3. **Protect populated PipelineSegment references.** When `pipelineSegmentId` is non-null, it must resolve to the retained Topology PipelineSegment target through an additive nullable FK, application validation, guarded provisioning path, or equivalent fail-closed mechanism.
+
+HMSR-034 does not modify production Java, JPA, Flyway, API/application contracts, tests, topology master data, or provisioned data.
+
+### 47.11 SONATRACH/TRC operational interpretation
+
+For SONATRACH/TRC, TopologyConnection is the governed graph edge used to represent network connectivity between physical/logical topology nodes. It is distinct from the pipe-segment asset itself even when a connection is associated with a PipelineSegment.
+
+Node existence, valid edge classification and prevention of unintended self-connections are important for map rendering, routing, simulation snapshots, telemetry anchoring and downstream network reasoning. A dangling segment link or classification drift would weaken network traceability.
+
+### 47.12 Review conclusion
+
+**REVISE.** `TopologyConnection` has a coherent 12-field Topology-owned graph role, required node references protected by HRA-111, correct technical flow/lifecycle enums, and a clear distinction from PipelineSegment.
+
+The target baseline cannot mark it APPROVED while the live fixed `ConnectionType` representation contradicts the accepted catalog-reference architecture, the explicit no-self-loop rule is not enforced on authoritative writes, and populated optional `pipelineSegmentId` values lack demonstrated referential protection.
+
+HMS reconciliation must retain these obligations until an explicitly authorized Topology correction task resolves them or the governing Topology architecture is explicitly revised with stronger evidence.
+
+## 48. Current next task
+
+```text
+HMSR-035 — organization.OrganizationUnit
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review topology TopologyConnection
+docs(model-review): review organization OrganizationUnit
 ```
 
-Start HMSR-034 only after HMSR-033 is committed and reported. Do not start HMSR-035 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-035 only after HMSR-034 is committed and reported. Do not start HMSR-036 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -217,7 +217,7 @@ Ordering rules applied:
 | HMSR-022 | 0 | organization | Position | — | — | 1 | 1 | 0 | REVISE | Completed | `docs(model-review): review organization Position` |
 | HMSR-023 | 0 | organization | Shift | — | — | 1 | 1 | 0 | REVISE | Completed | `docs(model-review): review organization Shift` |
 | HMSR-024 | 0 | topology | PipelineSystem | — | — | 1 | 1 | 0 | REVISE | Completed | `docs(model-review): review topology PipelineSystem` |
-| HMSR-025 | 0 | analytics | AnalyticsInsight | — | — | 0 | 0 | 3 | — | Planned | `docs(model-review): review analytics AnalyticsInsight` |
+| HMSR-025 | 0 | analytics | AnalyticsInsight | — | — | 0 | 0 | 3 | REVISE | Completed | `docs(model-review): review analytics AnalyticsInsight` |
 | HMSR-026 | 0 | analytics | AnalyticsProjectionRun | — | — | 0 | 0 | 1 | — | Planned | `docs(model-review): review analytics AnalyticsProjectionRun` |
 | HMSR-027 | 0 | analytics | DigitalTwinReadinessAssessment | — | — | 0 | 0 | 0 | — | Planned | `docs(model-review): review analytics DigitalTwinReadinessAssessment` |
 | HMSR-028 | 0 | configuration | FeatureFlag | — | — | 0 | 0 | 0 | — | Planned | `docs(model-review): review configuration FeatureFlag` |
@@ -1622,12 +1622,12 @@ Confirmed subject-model graph edges at this stage: **165**. These are semantic c
 | Field | Declared type | Classification | Resolved target | Graph edge | Notes |
 |---|---|---|---|:---:|---|
 | id | String | Self identifier | — | No | Primary identity of the current model. |
-| subjectAreaId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
-| scopeId | String | Cross-module reference | POLYMORPHIC | No | Target is selected by companion type/module metadata; no single subject-model edge. |
-| severityId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
-| sourceProjectionSnapshotId | String | Snapshot/reference-only | — | No | Snapshot/reference identity; not treated as ownership dependency in HMS-003. |
-| sourceTrendAnalysisId | String | Unresolved | — | No | Reference target is outside or absent from the 123 subject-model set; preserve for HMS-004 review. |
-| sourceModelRunId | String | Unresolved | — | No | Reference target is outside or absent from the 123 subject-model set; preserve for HMS-004 review. |
+| subjectAreaId | String | Domain reference | analytics.AnalyticsSubjectArea (read/persistence model) | No | HMSR-025 stronger Analytics DDD + HRA-111 evidence resolves this required same-module reference to `hidra_analytics_subject_area`; target is outside the 123 HMS subject set. |
+| scopeId | String | Cross-module reference | POLYMORPHIC_ANALYTICAL_SCOPE | No | HMSR-025 Analytics DDD confirms `scopeType + scopeId` as a neutral analytical-scope reference; no single HMS subject edge or cross-module FK is appropriate. |
+| severityId | String | Value/catalog dependency | analytics.AnalyticsCatalogEntry (read/persistence model) | No | HMSR-025 Analytics DDD identifies `ANALYTICS_SEVERITY` as Analytics-owned catalog vocabulary; optional catalog reference, no HMS graph edge. |
+| sourceProjectionSnapshotId | String | Optional domain reference | analytics.AnalyticsProjectionSnapshot (read/persistence model) | No | HMSR-025 stronger Analytics DDD + persistence evidence resolves the optional source snapshot reference; target is outside the 123 HMS subject set. |
+| sourceTrendAnalysisId | String | Optional domain reference | analytics.TrendAnalysis (read/persistence model) | No | HMSR-025 stronger Analytics DDD + persistence evidence resolves the optional source-trend reference; target is outside the 123 HMS subject set. |
+| sourceModelRunId | String | Optional domain reference | analytics.AnalyticsModelRun (read/persistence model) | No | HMSR-025 stronger Analytics DDD + persistence evidence resolves the optional source-model-run reference; target is outside the 123 HMS subject set. |
 
 #### analytics.AnalyticsProjectionRun
 
@@ -6344,16 +6344,199 @@ The target baseline cannot mark it APPROVED while live domain/JPA/API/schema sti
 
 HMS reconciliation must retain these obligations until a separately authorized Topology correction reconciles the classification model and removes unsupported defaulting, or the accepted Topology catalog architecture is explicitly revised with stronger repository evidence.
 
-## 38. Current next task
+## 38. HMSR-025 — analytics.AnalyticsInsight review
+
+**Decision:** REVISE  
+**Review code:** HMSR-025  
+**Dependency level:** 0  
+**Bounded context:** analytics  
+**Confirmed upstream subject dependencies:** none  
+**Confirmed direct dependents:** 0  
+**Transitive dependents:** 0  
+**Unresolved/non-subject references:** 3 — all three source references are now semantically resolved to Analytics-owned read/persistence models outside the 123 HMS subject set
+
+### 38.1 Semantic role and ordering rationale
+
+`AnalyticsInsight` is the Analytics-owned derived finding/observation used to surface advisory analytical interpretation without taking ownership of operational action, incidents, risk acceptance, HSE response, integrity disposition, planning decisions or source-of-truth data.
+
+It is Level 0 because none of its prerequisites are another HMS subject model. Its subject area, optional severity taxonomy and optional source objects are retained Analytics read/persistence models outside the 123-model HMS subject population, while `scopeType + scopeId` is a neutral polymorphic analytical-scope reference.
+
+The active Analytics DDD is explicit that insights are advisory, do not open incidents directly, may be consumed by owning business modules after review, and must remain traceable.
+
+### 38.2 Field semantics
+
+| Field | Type | Mandatory / optional | Reviewed meaning |
+|---|---|---|---|
+| `id` | `String` | Mandatory | Stable AnalyticsInsight identity and persistence primary key. |
+| `insightType` | `String` | Persistence-required analytical taxonomy code | Analytics-owned insight classification. The DDD lists examples and identifies `INSIGHT_TYPE` as an Analytics catalog vocabulary. |
+| `subjectAreaId` | `String` | Mandatory | Same-module reference to AnalyticsSubjectArea. |
+| `scopeType` | `String` | Persistence-required discriminator | Neutral analytical-scope discriminator such as pipeline system, pipeline, facility, organization unit, product or other approved scope. |
+| `scopeId` | `String` | Optional | Stable target ID selected by `scopeType`; may be absent for scope kinds whose semantics do not require an object ID. |
+| `title` | `String` | Persistence-required text | Human-readable insight title. |
+| `summary` | `String` | Persistence-required text | Human-readable analytical finding summary. |
+| `severityId` | `String` | Optional catalog reference | Analytics-owned severity reference; DDD catalog vocabulary includes `ANALYTICS_SEVERITY`. |
+| `confidenceScore` | `BigDecimal` | Optional | Analytical confidence score. Current repository evidence does not define a numeric range. |
+| `sourceProjectionSnapshotId` | `String` | Optional same-module source reference | Direct lineage/provenance reference to AnalyticsProjectionSnapshot. |
+| `sourceTrendAnalysisId` | `String` | Optional same-module source reference | Direct lineage/provenance reference to TrendAnalysis. |
+| `sourceModelRunId` | `String` | Optional same-module source reference | Direct lineage/provenance reference to AnalyticsModelRun. |
+| `status` | `AnalyticsInsightStatus` | Mandatory | Insight lifecycle state: `DRAFT`, `OPEN`, `UNDER_REVIEW`, `ACCEPTED`, `DISMISSED`, or `ARCHIVED`. |
+| `createdAt` | `Instant` | Persistence-required audit timestamp | Creation timestamp. |
+| `updatedAt` | `Instant` | Persistence-required audit timestamp | Last-update timestamp. |
+
+The compact constructor currently rejects blank `id` and `subjectAreaId`, requires non-null `status`, normalizes textual fields and exposes `advisoryOnly() == true`.
+
+### 38.3 Subject-area dependency resolution
+
+HMS-003 treated `subjectAreaId` generically as a catalog/value dependency. Stronger evidence resolves it to the Analytics-owned `AnalyticsSubjectArea` read/persistence model:
+
+- Analytics DDD owns AnalyticsSubjectArea;
+- `AnalyticsInsightJpaEntity.subjectAreaId` maps to mandatory `hidra_analytics_insight.subject_area_id`;
+- repository mirror classification retains AnalyticsSubjectArea as an Analytics read/persistence model outside the HMS subject set;
+- HRA-111 installs `fk_hra111_analytics_010`, linking `hidra_analytics_insight.subject_area_id -> hidra_analytics_subject_area(id)` with `ON DELETE RESTRICT`.
+
+No HMS graph edge is added because AnalyticsSubjectArea is outside the 123 subject models.
+
+### 38.4 Analytical scope semantics
+
+The Analytics DDD defines neutral analytical scopes and gives examples including network, pipeline system, pipeline, segment, facility, equipment, measurement point, organization unit, product, custody transfer point, HSE site and risk area.
+
+Therefore:
 
 ```text
-HMSR-025 — analytics.AnalyticsInsight
+scopeType + scopeId
+```
+
+is a polymorphic analytical reference, not an Analytics-owned aggregate FK.
+
+The schema deliberately makes `scope_type` mandatory while `scope_id` is nullable. HMSR-025 does not invent which scope types require IDs or a cross-module database FK. Those type/ID rules require an explicit owner-resolved analytical-scope contract.
+
+### 38.5 Insight-type catalog semantics and current gap
+
+The active Analytics DDD defines `AnalyticsCatalogEntry` as controlled vocabulary for Analytics business taxonomy and explicitly lists:
+
+```text
+INSIGHT_TYPE
+ANALYTICS_SEVERITY
+```
+
+among catalog examples.
+
+It also enumerates example insight classifications such as recurring deviation, performance degradation, data-quality issue, risk-increase pattern, asset-reliability pattern, integrity-degradation pattern, custody-variance pattern, HSE trend and digital-twin-readiness gap.
+
+The live model nevertheless stores `insightType` as an unrestricted String. The create request and command also accept an unrestricted String, and `AnalyticsApplicationService.createAnalyticsInsight()` persists it without demonstrating resolution against an `INSIGHT_TYPE` catalog entry/code.
+
+The schema requires `insight_type NOT NULL`, while the domain constructor merely normalizes it. A null/blank insight type can therefore survive domain construction and fail only at persistence.
+
+This is stronger than a generic text concern: the DDD explicitly defines insight type as controlled Analytics taxonomy.
+
+### 38.6 Severity catalog semantics
+
+`severityId` is nullable, so absence is currently allowed. When present, however, Analytics DDD evidence identifies severity as Analytics-owned controlled vocabulary through `ANALYTICS_SEVERITY`.
+
+The base schema currently provides only an index on `hidra_analytics_insight.severity_id`. HRA-111 does not add an FK because its authorized scope covered mandatory same-module references.
+
+No current create-path validation demonstrates that a supplied `severityId` resolves to an AnalyticsCatalogEntry, much less the intended severity catalog family.
+
+HMSR-025 therefore does not make severity mandatory, but it records that a non-null severity reference must not be allowed to dangle or point to an unrelated Analytics catalog family.
+
+### 38.7 Source lineage resolution and referential gap
+
+HMS-003 left two source fields unresolved and treated the projection-snapshot field as snapshot/reference-only. Stronger repository evidence resolves all three to concrete same-module source records outside the HMS subject set:
+
+```text
+sourceProjectionSnapshotId
+    -> analytics.AnalyticsProjectionSnapshot
+    -> hidra_analytics_projection_snapshot.id
+
+sourceTrendAnalysisId
+    -> analytics.TrendAnalysis
+    -> hidra_analytics_trend_analysis.id
+
+sourceModelRunId
+    -> analytics.AnalyticsModelRun
+    -> hidra_analytics_model_run.id
+```
+
+All three target models are retained as Analytics read/persistence models. The base schema creates indexes for the three source columns but no FK. HRA-111 does not cover them because they are optional.
+
+The current application service forwards caller-provided values directly into AnalyticsInsight without demonstrating existence checks.
+
+The DDD also provides the broader `AnalyticsInsightEvidence` structure for heterogeneous evidence and HRA-111 protects its mandatory `analyticsInsightId -> AnalyticsInsight.id` relationship. That evidence model means HMSR-025 does **not** require one of the three direct source IDs to be non-null for every insight: an insight may have other valid evidence forms.
+
+What is required is that any direct source ID that **is** populated remains traceable to the concrete Analytics source it claims to reference.
+
+### 38.8 Domain/persistence requiredness gap
+
+The final JPA/schema contract requires:
+
+```text
+insight_type NOT NULL
+subject_area_id NOT NULL
+scope_type NOT NULL
+title NOT NULL
+summary NOT NULL
+status NOT NULL
+```
+
+The domain already requires `subjectAreaId` and `status`.
+
+HMSR-025 promotes two additional requiredness obligations because repository semantics independently prove they are structured business identifiers/discriminators:
+
+- `insightType` is controlled Analytics business taxonomy;
+- `scopeType` selects the analytical-scope namespace.
+
+The constructor currently permits both to normalize to `null`.
+
+By contrast, `title` and `summary` remain generic human-readable payload. Under the established HRA invariant policy, database `NOT NULL` alone does not convert generic titles/summaries into constructor-level business invariants. HMSR-025 therefore does not invent domain guards for those fields.
+
+### 38.9 Advisory lifecycle semantics deliberately not invented
+
+The DDD states that an insight is advisory and may be referenced by business modules after review. The status enum provides `DRAFT`, `OPEN`, `UNDER_REVIEW`, `ACCEPTED`, `DISMISSED`, and `ARCHIVED`.
+
+The current create service creates insights as `OPEN`. No active Analytics DDD rule reviewed here states whether creation must instead start at `DRAFT`, nor defines the complete allowed transition matrix. HMSR-025 therefore does not classify `OPEN` creation as defective and does not invent transition rules.
+
+Similarly, no current evidence defines an allowed numeric range for `confidenceScore`; HMSR-025 does not assume 0..1 merely from the field name.
+
+### 38.10 Required revisions
+
+The reviewed model remains semantically useful, but four evidence-backed corrections are required:
+
+1. **Require a nonblank, governed insight classification at the domain/application boundary.** `insightType` must not normalize to null and must resolve according to the Analytics-owned `INSIGHT_TYPE` catalog contract rather than accepting arbitrary free text.
+
+2. **Require nonblank `scopeType` consistently with the analytical-scope contract and final persistence schema.** HMSR-025 does not prescribe which scope types require `scopeId`; that mapping needs its own owner-resolved scope policy.
+
+3. **Protect optional severity semantics.** When `severityId` is supplied, it must resolve to the appropriate Analytics severity catalog entry/family rather than allowing a dangling or unrelated catalog ID.
+
+4. **Protect populated direct source lineage.** Each non-null `sourceProjectionSnapshotId`, `sourceTrendAnalysisId`, and `sourceModelRunId` must resolve to the corresponding Analytics-owned source record. The correction may use application validation, additive same-module FKs where appropriate, or another fail-closed Analytics-owned boundary in a separately authorized implementation task.
+
+HMSR-025 does not modify production Java, JPA, Flyway, API/application contracts, tests, analytics records or provisioned data.
+
+### 38.11 SONATRACH/TRC operational interpretation
+
+For SONATRACH/TRC, an AnalyticsInsight is an advisory derived observation over trusted operational history. It may highlight recurring deviations, declining performance, data-quality concerns, reliability patterns, integrity degradation, custody variance, HSE trends or readiness gaps, but it must not become an automatic incident, risk decision, HSE action or planning instruction.
+
+Its classification, scope and provenance therefore need to be trustworthy. An arbitrary type, missing scope namespace, unrelated severity code or dangling source reference would make the analytical finding difficult to govern, review and audit.
+
+The owning operational module remains responsible for any subsequent business decision.
+
+### 38.12 Review conclusion
+
+**REVISE.** `AnalyticsInsight` has a coherent advisory role, correct Level-0 placement, appropriate subject-area ownership, neutral analytical scope concept, explicit lifecycle status and resolvable same-module source lineage.
+
+The target baseline cannot mark it APPROVED while controlled `insightType` and mandatory `scopeType` can be absent at the domain boundary, while `insightType` is accepted as unrestricted text despite the explicit `INSIGHT_TYPE` catalog vocabulary, and while populated optional severity/source references lack demonstrated fail-closed integrity.
+
+HMS reconciliation must retain these obligations until an explicitly authorized Analytics correction task resolves them or the target semantics are explicitly revised with stronger repository evidence.
+
+## 39. Current next task
+
+```text
+HMSR-026 — analytics.AnalyticsProjectionRun
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review analytics AnalyticsInsight
+docs(model-review): review analytics AnalyticsProjectionRun
 ```
 
-Start HMSR-025 only after HMSR-024 is committed and reported. Do not start HMSR-026 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-026 only after HMSR-025 is committed and reported. Do not start HMSR-027 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -219,7 +219,7 @@ Ordering rules applied:
 | HMSR-024 | 0 | topology | PipelineSystem | — | — | 1 | 1 | 0 | REVISE | Completed | `docs(model-review): review topology PipelineSystem` |
 | HMSR-025 | 0 | analytics | AnalyticsInsight | — | — | 0 | 0 | 3 | REVISE | Completed | `docs(model-review): review analytics AnalyticsInsight` |
 | HMSR-026 | 0 | analytics | AnalyticsProjectionRun | — | — | 0 | 0 | 1 | REVISE | Completed | `docs(model-review): review analytics AnalyticsProjectionRun` |
-| HMSR-027 | 0 | analytics | DigitalTwinReadinessAssessment | — | — | 0 | 0 | 0 | — | Planned | `docs(model-review): review analytics DigitalTwinReadinessAssessment` |
+| HMSR-027 | 0 | analytics | DigitalTwinReadinessAssessment | — | — | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review analytics DigitalTwinReadinessAssessment` |
 | HMSR-028 | 0 | configuration | FeatureFlag | — | — | 0 | 0 | 0 | — | Planned | `docs(model-review): review configuration FeatureFlag` |
 | HMSR-029 | 0 | custody | CustodyDiscrepancy | — | — | 0 | 0 | 1 | — | Planned | `docs(model-review): review custody CustodyDiscrepancy` |
 | HMSR-030 | 0 | organization | OrganizationContactPoint | — | — | 0 | 0 | 0 | — | Planned | `docs(model-review): review organization OrganizationContactPoint` |
@@ -1642,8 +1642,8 @@ Confirmed subject-model graph edges at this stage: **165**. These are semantic c
 | Field | Declared type | Classification | Resolved target | Graph edge | Notes |
 |---|---|---|---|:---:|---|
 | id | String | Self identifier | — | No | Primary identity of the current model. |
-| scopeId | String | Cross-module reference | POLYMORPHIC | No | Target is selected by companion type/module metadata; no single subject-model edge. |
-| topologySnapshotId | String | Snapshot/reference-only | — | No | Snapshot/reference identity; not treated as ownership dependency in HMS-003. |
+| scopeId | String | Cross-module reference | POLYMORPHIC_ANALYTICAL_SCOPE | No | HMSR-027 Analytics DDD confirms `scopeType + scopeId` as a neutral analytical-scope reference; no single HMS subject edge or cross-module FK is appropriate. |
+| topologySnapshotId | String | Historical snapshot reference | topology.TopologySnapshot (read/persistence model) | No | HMSR-027 stronger Analytics DDD + scalar-reference inventory evidence resolves this required historical reference to the Topology-owned snapshot; preserve snapshot identity semantics and do not add a cross-module DB FK. |
 
 #### analytics.MetricEvaluationRun
 
@@ -6714,16 +6714,220 @@ The target baseline cannot mark it APPROVED while failed runs may omit the DDD-r
 
 HMS reconciliation must retain these three obligations until an explicitly authorized Analytics correction task resolves them or the target Analytics DDD is explicitly revised with stronger repository evidence.
 
-## 40. Current next task
+## 40. HMSR-027 — analytics.DigitalTwinReadinessAssessment review
+
+**Decision:** REVISE  
+**Review code:** HMSR-027  
+**Dependency level:** 0  
+**Bounded context:** analytics  
+**Confirmed upstream subject dependencies:** none  
+**Confirmed direct dependents:** 0  
+**Transitive dependents:** 0  
+**Unresolved/non-subject references:** 0
+
+### 40.1 Semantic role and ordering rationale
+
+`DigitalTwinReadinessAssessment` is the Analytics-owned derived assessment of whether a topology area, station, segment or asset has enough trusted data, topology completeness, model availability and lineage quality to support future digital-twin scenarios.
+
+It is explicitly **not** a digital-twin runtime, simulation solver or topology owner. The domain method `runtimeDigitalTwin()` correctly returns `false`, and the Analytics DDD states that readiness assessment must not mutate Topology, Telemetry or Simulation models.
+
+It is Level 0 because its only externally meaningful references are neutral analytical scope identity and a historical Topology snapshot reference, neither of which is another HMS subject-model dependency.
+
+### 40.2 Field semantics
+
+| Field | Type | Mandatory / optional | Reviewed meaning |
+|---|---|---|---|
+| `id` | `String` | Mandatory | Stable readiness-assessment identity and persistence primary key. |
+| `scopeType` | `String` | Persistence-required analytical discriminator | Identifies the neutral analytical scope namespace/type being assessed. |
+| `scopeId` | `String` | Optional polymorphic scope ID | Stable target ID interpreted under `scopeType`; current Analytics scope policy allows neutral cross-module references. |
+| `topologySnapshotId` | `String` | Mandatory historical snapshot reference | Identifies the Topology-owned historical snapshot used as assessment context. |
+| `assessmentPeriodStart` | `Instant` | Mandatory | Start of the trusted historical assessment window. |
+| `assessmentPeriodEnd` | `Instant` | Mandatory | End of the trusted historical assessment window. |
+| `telemetryCompletenessScore` | `BigDecimal` | Optional | Derived telemetry-coverage completeness score. |
+| `telemetryQualityScore` | `BigDecimal` | Optional | Derived trusted-telemetry quality score. |
+| `topologyCompletenessScore` | `BigDecimal` | Optional | Derived topology completeness score. |
+| `modelAvailabilityScore` | `BigDecimal` | Optional | Derived availability/readiness score for analytical/model prerequisites. |
+| `lineageCompletenessScore` | `BigDecimal` | Optional | Derived data-lineage completeness score. |
+| `overallReadinessScore` | `BigDecimal` | Optional | Derived overall readiness score. |
+| `readinessStatus` | `DigitalTwinReadinessStatus` | Mandatory in current model | Current fixed readiness classification: `NOT_READY`, `PARTIAL`, `READY`, `ADVANCED`, or `UNKNOWN`. |
+| `assessedAt` | `Instant` | Mandatory | Timestamp at which readiness was assessed. |
+| `createdAt` | `Instant` | Persistence-required audit timestamp | Creation timestamp. |
+
+The compact constructor already requires nonblank `id` and `topologySnapshotId`, non-null assessment period bounds, non-null `readinessStatus`, and non-null `assessedAt`. It normalizes `scopeType`, `scopeId`, and `topologySnapshotId`.
+
+### 40.3 Analytical-scope semantics
+
+The Analytics DDD defines neutral analytical scopes and lists examples such as network, pipeline system, pipeline, pipeline segment, station, facility, equipment, measurement point, organization unit, product, custody transfer point, HSE site and risk area.
+
+It states that scope fields should use:
 
 ```text
-HMSR-027 — analytics.DigitalTwinReadinessAssessment
+scopeType
+scopeId
+...
+topologySnapshotId when applicable
+```
+
+Therefore `scopeType + scopeId` is a neutral analytical reference rather than an Analytics-owned FK. `scopeId` is not promoted into a subject-model graph edge and no cross-module database FK is appropriate.
+
+The schema deliberately allows `scope_id` to be nullable, so HMSR-027 does not invent which scope kinds require an object ID.
+
+### 40.4 Historical Topology snapshot boundary
+
+The readiness lifecycle in Analytics DDD begins with:
+
+```text
+TopologySnapshot selected
+  -> Trusted telemetry coverage checked
+    -> Model availability checked
+      -> Data lineage checked
+        -> DigitalTwinReadinessAssessment created
+```
+
+The scalar-reference integrity inventory explicitly classifies:
+
+```text
+analytics.DigitalTwinReadinessAssessment.topologySnapshotId
+    -> topology.TopologySnapshot
+```
+
+as historical/snapshot ownership rather than a live relational dependency.
+
+That classification is correct. Analytics must preserve the immutable/historical snapshot identity and must not create a cross-module database FK into Topology.
+
+A concrete Analytics-owned `TopologySnapshotLookupPort.available(referenceId)` also exists. No live `AssessDigitalTwinReadiness` application use case currently consumes that port, so HMSR-027 does not invent or implement a new write workflow during semantic review. When such a write path is implemented, the existing cross-module lookup boundary is the appropriate fail-closed mechanism for required snapshot availability rather than a database FK.
+
+### 40.5 Confirmed scopeType domain/persistence inconsistency
+
+The final persistence contract requires:
+
+```text
+scope_type varchar(80) NOT NULL
+```
+
+and `DigitalTwinReadinessAssessmentJpaEntity.scopeType` is mapped with `nullable = false`.
+
+The domain constructor, however, performs only:
+
+```text
+scopeType = normalize(scopeType);
+```
+
+so null or blank input becomes `null` without rejection.
+
+This is not merely generic display text. `scopeType` is the discriminator that gives semantic meaning to the polymorphic scope and is explicitly part of the Analytics analytical-scope contract. A readiness assessment without a scope namespace is semantically ambiguous and cannot be persisted under the final schema.
+
+### 40.6 Readiness-status vocabulary inconsistency
+
+The same Analytics DDD defines `AnalyticsCatalogEntry` as controlled vocabulary for Analytics business taxonomy and explicitly includes:
+
+```text
+READINESS_STATUS
+```
+
+among the catalog examples.
+
+The live readiness model instead stores:
+
+```text
+DigitalTwinReadinessStatus readinessStatus
+```
+
+using a fixed Java enum persisted directly as `readiness_status`.
+
+The enum values themselves are coherent readiness classifications, but the repository currently contains two competing representations for the same conceptual vocabulary:
+
+- DDD-controlled Analytics catalog semantics for `READINESS_STATUS`;
+- fixed Java enum/JPA string semantics in `DigitalTwinReadinessAssessment`.
+
+HMSR-027 does not assume the correction must blindly replace the enum with a catalog-entry ID. A separately authorized Analytics correction must decide the authoritative representation: either make readiness classification catalog-backed/stable-code governed as the DDD indicates, or explicitly revise the DDD/catalog contract to establish `DigitalTwinReadinessStatus` as an intentional bounded enum exception.
+
+The target semantic baseline cannot keep both interpretations unresolved.
+
+### 40.7 Score semantics deliberately not invented
+
+The model carries five component scores plus one overall readiness score, but current Analytics DDD does not define:
+
+- a numeric range such as 0..1 or 0..100;
+- mandatory presence of every component score;
+- weighting or aggregation formula for `overallReadinessScore`;
+- threshold bands mapping scores to `NOT_READY/PARTIAL/READY/ADVANCED`;
+- whether `UNKNOWN` requires null scores;
+- precision beyond the current persistence `numeric(10,6)` representation.
+
+HMSR-027 therefore does not invent score validation or score/status consistency rules.
+
+Those rules should be added only when an authoritative Analytics scoring policy/formula exists.
+
+### 40.8 Assessment-period semantics deliberately not invented
+
+Both assessment-period bounds are mandatory in the current domain and persistence model.
+
+Unlike the twelve Analytics temporal invariants explicitly approved by the repository-wide invariant classification, that classification does **not** include a `DigitalTwinReadinessAssessment.assessmentPeriodStart <= assessmentPeriodEnd` rule.
+
+The Digital Twin readiness DDD section also does not state period ordering explicitly. HMSR-027 therefore does not infer a new temporal invariant solely from field names.
+
+If an assessment-window ordering rule is intended, it should be established by a dedicated Analytics semantic/business rule rather than silently introduced here.
+
+### 40.9 Persistence/application consistency otherwise
+
+The live domain and JPA representations agree on all 15 declared components.
+
+The base Analytics schema requires:
+
+```text
+id
+scope_type
+topology_snapshot_id
+assessment_period_start
+assessment_period_end
+readiness_status
+assessed_at
+created_at
+```
+
+and keeps the six score fields plus `scope_id` nullable.
+
+No active inbound application command/use case or REST endpoint for readiness assessment exists in the current implementation, despite such contracts being recommended by the DDD. This is a capability gap, not evidence that the domain model should be removed.
+
+Generic `createdAt` requiredness remains a persistence/audit concern and is not promoted into a constructor rule.
+
+### 40.10 Required revisions
+
+Two evidence-backed correction obligations remain:
+
+1. **Require a nonblank analytical scope discriminator.** `scopeType` must be consistently mandatory at the domain/application boundary, matching the Analytics scope contract and final JPA/schema requiredness. HMSR-027 does not prescribe which scope types require `scopeId`.
+
+2. **Reconcile readiness-status representation.** Resolve the contradiction between DDD `READINESS_STATUS` catalog vocabulary and the current fixed `DigitalTwinReadinessStatus` enum/JPA representation. The implementation task must establish one authoritative controlled-vocabulary strategy across domain, persistence and future API/application contracts rather than leaving two competing semantics.
+
+HMSR-027 does not modify production Java, JPA, Flyway, API/application contracts, tests, readiness assessments, Topology snapshots or provisioned data.
+
+### 40.11 SONATRACH/TRC operational interpretation
+
+For SONATRACH/TRC, this assessment is an analytical readiness view answering whether a defined operational scope has sufficiently complete topology, trusted telemetry, model availability and traceable lineage to support later digital-twin scenarios.
+
+It is not authorization to run a digital twin, does not certify a simulation model, and must not mutate the physical-network or operational source-of-truth contexts.
+
+The assessed scope must be unambiguous, and readiness classification must have one governed meaning across analytics, reporting and future digital-twin-readiness consumers.
+
+### 40.12 Review conclusion
+
+**REVISE.** `DigitalTwinReadinessAssessment` has a coherent 15-field analytical role, correct Level-0 placement, correct non-runtime boundary, appropriate historical Topology-snapshot semantics, and deliberately optional component/overall scores.
+
+The target baseline cannot mark it APPROVED while `scopeType` is mandatory in DDD/persistence semantics but optional at domain construction, and while `readinessStatus` simultaneously exists as a fixed Java enum and as an explicitly named Analytics catalog vocabulary without a reconciled authoritative representation.
+
+HMS reconciliation must retain these two obligations until an explicitly authorized Analytics correction task resolves them or the target Analytics DDD is explicitly revised with stronger repository evidence.
+
+## 41. Current next task
+
+```text
+HMSR-028 — configuration.FeatureFlag
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review analytics DigitalTwinReadinessAssessment
+docs(model-review): review configuration FeatureFlag
 ```
 
-Start HMSR-027 only after HMSR-026 is committed and reported. Do not start HMSR-028 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-028 only after HMSR-027 is committed and reported. Do not start HMSR-029 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

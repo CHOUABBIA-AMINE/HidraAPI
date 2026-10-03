@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -248,7 +248,7 @@ Ordering rules applied:
 | HMSR-053 | 2 | organization | AdministrativeLocality | — | organization.AdministrativeDistrict | 2 | 15 | 0 | APPROVED | Completed | `docs(model-review): review organization AdministrativeLocality` |
 | HMSR-054 | 2 | assets | MaintainableAsset | SCC-03 | assets.MaintainableAsset, organization.OrganizationUnit, party.Party | 3 | 3 | 4 | REVISE | Completed | `docs(model-review): review assets MaintainableAsset` |
 | HMSR-055 | 2 | simulation | SimulationRun | — | simulation.SimulationScenario | 2 | 3 | 2 | REVISE | Completed | `docs(model-review): review simulation SimulationRun` |
-| HMSR-056 | 2 | integration | ExternalSystem | — | organization.OrganizationUnit | 2 | 2 | 0 | — | Planned | `docs(model-review): review integration ExternalSystem` |
+| HMSR-056 | 2 | integration | ExternalSystem | — | organization.OrganizationUnit | 2 | 2 | 0 | REVISE | Completed | `docs(model-review): review integration ExternalSystem` |
 | HMSR-057 | 2 | reporting | ReportRequest | — | organization.OrganizationUnit, reporting.ReportDefinition | 1 | 2 | 1 | — | Planned | `docs(model-review): review reporting ReportRequest` |
 | HMSR-058 | 2 | risk | RiskRegister | — | organization.OrganizationUnit | 1 | 2 | 0 | — | Planned | `docs(model-review): review risk RiskRegister` |
 | HMSR-059 | 2 | integrity | IntegrityProgram | — | organization.OrganizationUnit | 1 | 1 | 0 | — | Planned | `docs(model-review): review integrity IntegrityProgram` |
@@ -2075,8 +2075,8 @@ Confirmed subject-model graph edges at this stage: **165**. These are semantic c
 | Field | Declared type | Classification | Resolved target | Graph edge | Notes |
 |---|---|---|---|:---:|---|
 | id | String | Self identifier | — | No | Primary identity of the current model. |
-| systemTypeId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
-| ownerOrganizationUnitId | String | Cross-module reference | organization.OrganizationUnit | Yes | Unambiguous reference to a subject model in another bounded context. |
+| systemTypeId | String | Value/catalog dependency | integration.IntegrationCatalogEntry (EXTERNAL_SYSTEM_TYPE) | No | Mandatory Integration-owned business-catalog reference; HRA-111 protects catalog-row existence but not `EXTERNAL_SYSTEM_TYPE` family membership. |
+| ownerOrganizationUnitId | String | Cross-module reference | organization.OrganizationUnit | Yes | Optional Organization-owned responsibility reference; no cross-module DB FK is appropriate and registration currently performs no owner-boundary validation. |
 
 #### integration.IntegrationDeadLetterRecord
 
@@ -11616,16 +11616,185 @@ The target baseline cannot mark it APPROVED while unlocked scenarios can be queu
 
 HMS reconciliation must retain these four obligations until explicitly authorized Simulation production corrections resolve them or stronger repository evidence changes the governing Simulation DDD.
 
-## 69. Current next task
+## 69. HMSR-056 — integration.ExternalSystem review
+
+**Decision:** REVISE  
+**Review code:** HMSR-056  
+**Dependency level:** 2  
+**Bounded context:** integration  
+**Confirmed upstream subject dependencies:** optional `organization.OrganizationUnit` through `ownerOrganizationUnitId`  
+**Confirmed same-module non-HMS dependency:** `IntegrationCatalogEntry` through mandatory `systemTypeId`  
+**Confirmed direct HMS subject dependents:** 2  
+**Transitive HMS subject dependents:** 2
+
+### 69.1 Semantic role and ordering rationale
+
+`ExternalSystem` is the Integration-owned registry entry for a system outside Hidra such as SCADA, historian/PI, ERP/SAP, CMMS, IAM, BI, laboratory, metering, file exchange, or messaging infrastructure.
+
+Integration owns the connector/system registry but does not own Organization units or business facts imported/exported through those systems.
+
+It is Level 2 because optional `ownerOrganizationUnitId` references the already-reviewed `organization.OrganizationUnit` subject.
+
+### 69.2 Field semantics
+
+The 13-field model contains stable system identity/code, multilingual display names, mandatory system classification, optional responsible OrganizationUnit, technical deployment environment, criticality, lifecycle status, description, and audit timestamps.
+
+The canonical constructor already requires nonblank ID, code and system-type ID and non-null environment, criticality and status.
+
+### 69.3 System-type catalog semantics
+
+The Integration DDD defines `systemTypeId` as a mandatory catalog reference with examples such as:
 
 ```text
-HMSR-056 — integration.ExternalSystem
+SCADA
+HISTORIAN
+ERP
+CMMS
+IAM
+BI
+FILE_EXCHANGE
+LAB
+METERING
+OTHER
+```
+
+and declares the catalog family:
+
+```text
+EXTERNAL_SYSTEM_TYPE
+```
+
+HRA-111 installs a validated same-module FK:
+
+```text
+system_type_id -> hidra_integration_catalog_entry.id
+```
+
+That FK proves catalog-row existence but not catalog-family membership.
+
+`IntegrationApplicationService.registerExternalSystem()` accepts `systemTypeId` and persists the new DRAFT system directly; no family validation was found.
+
+Therefore an unrelated Integration catalog entry can currently satisfy the FK and be used as an external-system type.
+
+### 69.4 Explicit code uniqueness is not enforced
+
+The Integration DDD explicitly states:
+
+```text
+ExternalSystem.code must be unique.
+```
+
+The same DDD's recommended database constraints include:
+
+```sql
+CREATE UNIQUE INDEX uk_hidra_integration_external_system_code
+    ON hidra_integration_external_system (code);
+```
+
+The live base migration instead creates only:
+
+```text
+ix_hidra_integration_external_system_code
+```
+
+as a non-unique index.
+
+`ExternalSystemRepositoryPort` exposes only `save()` and `findById()` and no application-level `findByCode`/duplicate guard was found.
+
+Therefore duplicate ExternalSystem business codes can currently be persisted despite the explicit DDD invariant.
+
+### 69.5 Organization owner boundary
+
+`ownerOrganizationUnitId` is explicitly documented as the optional Organization unit responsible for the integration.
+
+The Integration DDD allows neutral `organizationUnitId` references and requires cross-module interaction through public application ports/stable DTOs/events rather than domain imports or direct table coupling.
+
+`registerExternalSystem()` currently persists a populated `ownerOrganizationUnitId` without resolving it through an Organization-owned lookup contract.
+
+No cross-module database FK should be introduced, but a populated owner identity should fail closed if the OrganizationUnit does not exist.
+
+Current evidence does not make the owner mandatory for every ExternalSystem, so HMSR-056 preserves nullability.
+
+### 69.6 Environment, criticality and lifecycle enums
+
+`IntegrationEnvironment`, `IntegrationCriticality`, and `ExternalSystemStatus` are explicit constrained vocabularies in the current domain and persistence model.
+
+The Integration DDD's business-catalog list does not place environment, criticality or external-system lifecycle status in the IntegrationCatalogEntry families. HMSR-056 therefore does not convert these enums into catalogs merely because other Integration business classifications are catalog-backed.
+
+The domain helper `canRunProductionJobs()` correctly expresses the local predicate `ACTIVE && PRODUCTION`.
+
+The DDD rule that only ACTIVE systems may run production jobs must ultimately be enforced where job execution is authorized. HMSR-056 does not manufacture a new ExternalSystem mutation rule or duplicate downstream job-definition/run review work.
+
+### 69.7 Retired-system dependent-resource rule
+
+The DDD states that a RETIRED ExternalSystem cannot receive new active endpoints or connector instances.
+
+That rule governs creation/activation of dependent `ExternalEndpoint` and `ConnectorInstance` records. It is not a locally decidable invariant of the ExternalSystem record itself.
+
+HMSR-056 records no separate production correction on ExternalSystem for this dependent-resource rule; it remains relevant when those Integration models/write paths are reviewed.
+
+### 69.8 Multilingual semantics
+
+The DDD marks French display name as required and Arabic/English as optional.
+
+Persistence enforces non-null `name_fr`; the canonical constructor normalizes display text but does not promote it to an intrinsic fail-fast invariant.
+
+Repository invariant policy classifies generic human-readable text as persistence-only unless a separate domain hardening task explicitly changes that rule. The current persistence boundary already rejects null French names.
+
+HMSR-056 therefore records no additional constructor correction for display text.
+
+### 69.9 Domain/JPA/Flyway/application alignment
+
+Domain and JPA agree on all 13 components.
+
+Required structural fields align for ID, code, system type, environment, criticality and status; persistence additionally protects French display text and audit timestamps.
+
+`systemTypeId` has same-module row-existence FK protection.
+
+The remaining evidence-backed defects are semantic/integrity gaps rather than shape mismatches:
+
+- external-system business-code uniqueness is absent;
+- system-type catalog-family membership is absent; and
+- populated Organization owner references are not validated through the owning bounded context.
+
+### 69.10 Required revisions
+
+Three evidence-backed production correction obligations remain:
+
+1. **Enforce uniqueness of `ExternalSystem.code`.** Implement the explicit DDD invariant with a concurrency-safe authoritative mechanism, preferably the DDD-specified unique database index/constraint plus appropriate application conflict handling.
+
+2. **Enforce `EXTERNAL_SYSTEM_TYPE` catalog-family semantics for `systemTypeId`.** Generic Integration catalog-row existence is insufficient; the selected row must belong to the documented external-system-type family.
+
+3. **Validate populated `ownerOrganizationUnitId` through the Organization owner boundary.** Do not add a cross-module database FK; fail closed through an Organization-owned lookup/application contract or equivalent boundary.
+
+HMSR-056 does not modify production Java, JPA, Flyway, application/API contracts, tests, external-system data, Integration catalogs, Organization data, or provisioned data.
+
+### 69.11 SONATRACH/TRC operational interpretation
+
+For SONATRACH/TRC, ExternalSystem is the governed registry identity for interfaces to SCADA/historian, SAP/ERP, CMMS, IAM, laboratory, metering and other enterprise/OT-adjacent systems.
+
+Duplicate system codes can make routing, monitoring and audit correlation ambiguous. Wrong catalog-family references can misclassify a connected system, while dangling Organization ownership weakens accountability for integration operations.
+
+These controls strengthen traceability without allowing Integration to own Organization hierarchy or bypass business-module validation.
+
+### 69.12 Review conclusion
+
+**REVISE.** `ExternalSystem` has a coherent 13-field Integration registry model, appropriate technical/lifecycle enums, a protected same-module catalog-row reference, and correct bounded-context separation from Organization.
+
+The target baseline cannot mark it APPROVED while explicit code uniqueness is unenforced, system-type catalog-family membership is not fail-closed, and populated Organization owner references can dangle.
+
+HMS reconciliation must retain these three obligations until explicitly authorized Integration production corrections resolve them or stronger repository evidence changes the governing Integration DDD.
+
+## 70. Current next task
+
+```text
+HMSR-057 — reporting.ReportRequest
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review integration ExternalSystem
+docs(model-review): review reporting ReportRequest
 ```
 
-Start HMSR-056 only after HMSR-055 is committed and reported. Do not start HMSR-057 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-057 only after HMSR-056 is committed and reported. Do not start HMSR-058 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

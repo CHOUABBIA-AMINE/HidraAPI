@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 reviewed as REVISE, HMSR-080 reviewed as REVISE, HMSR-081 reviewed as REVISE, HMSR-082 reviewed as REVISE, HMSR-083 approved, HMSR-084 reviewed as REVISE, HMSR-085 reviewed as REVISE, HMSR-086 approved, HMSR-087 reviewed as REVISE, HMSR-088 reviewed as REVISE, HMSR-089 reviewed as REVISE, HMSR-090 reviewed as REVISE, HMSR-091 reviewed as REVISE, HMSR-092 reviewed as REVISE, HMSR-093 reviewed as REVISE, HMSR-094 reviewed as REVISE, HMSR-095 reviewed as REVISE, HMSR-096 reviewed as REVISE, HMSR-097 reviewed as REVISE, HMSR-098 reviewed as REVISE, HMSR-099 approved, HMSR-100 reviewed as REVISE, HMSR-101 reviewed as REVISE, HMSR-102 approved, HMSR-103 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 reviewed as REVISE, HMSR-080 reviewed as REVISE, HMSR-081 reviewed as REVISE, HMSR-082 reviewed as REVISE, HMSR-083 approved, HMSR-084 reviewed as REVISE, HMSR-085 reviewed as REVISE, HMSR-086 approved, HMSR-087 reviewed as REVISE, HMSR-088 reviewed as REVISE, HMSR-089 reviewed as REVISE, HMSR-090 reviewed as REVISE, HMSR-091 reviewed as REVISE, HMSR-092 reviewed as REVISE, HMSR-093 reviewed as REVISE, HMSR-094 reviewed as REVISE, HMSR-095 reviewed as REVISE, HMSR-096 reviewed as REVISE, HMSR-097 reviewed as REVISE, HMSR-098 reviewed as REVISE, HMSR-099 approved, HMSR-100 reviewed as REVISE, HMSR-101 reviewed as REVISE, HMSR-102 approved, HMSR-103 approved, HMSR-104 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -295,7 +295,7 @@ Ordering rules applied:
 | HMSR-100 | 5 | identity | AuthorizationDecision | — | identity.User | 0 | 0 | 2 | REVISE | Completed | `docs(model-review): review identity AuthorizationDecision` |
 | HMSR-101 | 5 | identity | AuthorizationDelegationGrant | — | identity.Permission, identity.Role, identity.User | 0 | 0 | 3 | REVISE | Completed | `docs(model-review): review identity AuthorizationDelegationGrant` |
 | HMSR-102 | 5 | identity | HidraPrincipal | — | identity.IdentityProvider, identity.User | 0 | 0 | 0 | APPROVED | Completed | `docs(model-review): review identity HidraPrincipal` |
-| HMSR-103 | 5 | identity | LocalCredential | — | identity.User | 0 | 0 | 0 | — | Planned | `docs(model-review): review identity LocalCredential` |
+| HMSR-103 | 5 | identity | LocalCredential | — | identity.User | 0 | 0 | 0 | APPROVED | Completed | `docs(model-review): review identity LocalCredential` |
 | HMSR-104 | 5 | identity | LoginSession | — | identity.IdentityProvider, identity.User | 0 | 0 | 1 | — | Planned | `docs(model-review): review identity LoginSession` |
 | HMSR-105 | 5 | identity | UserPermissionGrant | — | identity.Permission, identity.User | 0 | 0 | 1 | — | Planned | `docs(model-review): review identity UserPermissionGrant` |
 | HMSR-106 | 5 | identity | UserRoleGrant | — | identity.Role, identity.User | 0 | 0 | 1 | — | Planned | `docs(model-review): review identity UserRoleGrant` |
@@ -18022,16 +18022,98 @@ No production correction obligation is recorded for HMSR-102.
 
 HMSR-102 does not modify production Java, JPA, Flyway, API/application contracts, tests, Identity/platform data, or provisioned data.
 
-## 116. Current next task
+## 116. HMSR-103 — identity.LocalCredential review
+
+**Decision:** APPROVED  
+**Review code:** HMSR-103  
+**Dependency level:** 5  
+**Bounded context:** identity  
+**Confirmed upstream subject dependency:** mandatory `identity.User`  
+**Confirmed direct HMS subject dependents:** 0  
+**Transitive HMS subject dependents:** 0  
+**Unresolved/non-subject reference count:** 0
+
+### 116.1 Semantic role
+
+`LocalCredential` is the Identity-owned persisted credential record for LOCAL username/password authentication.
+
+It stores only the one-way password hash and credential lifecycle metadata. Plaintext credentials remain transient authentication input and do not belong in the domain record, DTO persistence, logs, events, or database.
+
+### 116.2 User ownership and cardinality
+
+`userId` is mandatory and identifies the owning Hidra `User`.
+
+The live domain rejects blank `userId`, the JPA mapping makes it non-null and unique, and the forward AUTH-009 migration enforces both:
 
 ```text
-HMSR-103 — identity.LocalCredential
+UNIQUE (user_id)
+FOREIGN KEY (user_id) REFERENCES hidra_identity_user(id)
+```
+
+This correctly models one LOCAL credential row per Hidra user and provides same-module fail-closed persistence integrity.
+
+### 116.3 Credential secret semantics
+
+The authentication roadmap requires:
+
+```text
+one-way adaptive hash only
+no plaintext password persistence
+no reversible password encryption
+no password in DTOs/events/logs
+no production default password
+```
+
+The live `LocalCredential` contains only `passwordHash`; it does not contain a plaintext password field.
+
+The domain has no dependency on Spring `PasswordEncoder`. Hashing remains behind the technical/application seam, which preserves domain isolation.
+
+### 116.4 Runtime verification
+
+The live `LocalAuthenticationProvider` loads the credential by `userId`, requires credential status `ACTIVE`, and verifies the submitted password using the configured `PasswordEncoder.matches(...)`.
+
+It also enforces active/locked User state, resolves Hidra-owned authorization, and never falls back to an in-memory user store on ordinary LOCAL authentication failure.
+
+This behavior matches the completed authentication roadmap.
+
+### 116.5 Credential status
+
+The persisted credential status remains a string and the current LOCAL provider recognizes `ACTIVE` as the usable state.
+
+The authentication roadmap does not define a richer canonical credential-status taxonomy requiring a domain enum. HMSR-103 therefore does not invent additional lifecycle values or force an enum conversion.
+
+### 116.6 Timestamp classification
+
+`passwordChangedAt` is optional credential metadata.
+
+`createdAt` and `updatedAt` are database-required audit timestamps. Repository invariant architecture classifies generic audit timestamps as persistence-only metadata rather than automatically promoting them into domain constructor invariants.
+
+The current shape is therefore consistent with the established invariant-classification policy.
+
+### 116.7 Authentication evidence
+
+Completed AUTH-023 integration evidence uses PostgreSQL-backed `LocalCredential` data and the real LOCAL provider to prove persisted BCrypt-backed authentication and successful account-state update behavior.
+
+Authentication failure/success outcome recording is handled separately through the existing User/AuthenticationEvent flow, keeping credential storage focused on credential state rather than duplicating authentication-event evidence.
+
+### 116.8 Review conclusion
+
+**APPROVED.** `LocalCredential` matches the completed authentication architecture: Identity owns the credential, User ownership is protected and one-to-one, only a one-way password hash is persisted, password verification remains in technical infrastructure, and ordinary LOCAL authentication uses the persisted credential fail-closed.
+
+No production correction obligation is recorded for HMSR-103.
+
+HMSR-103 does not modify production Java, JPA, Flyway, API/application contracts, tests, Identity data, or provisioned data.
+
+## 117. Current next task
+
+```text
+HMSR-104 — identity.LoginSession
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review identity LocalCredential
+docs(model-review): review identity LoginSession
 ```
 
-Start HMSR-103 only after HMSR-102 is committed and reported. Do not start HMSR-104 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-104 only after HMSR-103 is committed and reported. Do not start HMSR-105 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

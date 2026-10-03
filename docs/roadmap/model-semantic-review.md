@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 reviewed as REVISE, HMSR-080 reviewed as REVISE, HMSR-081 reviewed as REVISE, HMSR-082 reviewed as REVISE, HMSR-083 approved, HMSR-084 reviewed as REVISE, HMSR-085 reviewed as REVISE, HMSR-086 approved, HMSR-087 reviewed as REVISE, HMSR-088 reviewed as REVISE, HMSR-089 reviewed as REVISE, HMSR-090 reviewed as REVISE, HMSR-091 reviewed as REVISE, HMSR-092 reviewed as REVISE, HMSR-093 reviewed as REVISE, HMSR-094 reviewed as REVISE, HMSR-095 reviewed as REVISE, HMSR-096 reviewed as REVISE, HMSR-097 reviewed as REVISE, HMSR-098 reviewed as REVISE, HMSR-099 approved, HMSR-100 reviewed as REVISE, HMSR-101 reviewed as REVISE, HMSR-102 approved, HMSR-103 approved, HMSR-104 reviewed as REVISE, HMSR-105 reviewed as REVISE, HMSR-106 reviewed as REVISE, HMSR-107 reviewed as REVISE, HMSR-108 reviewed as REVISE, HMSR-109 reviewed as REVISE, HMSR-110 reviewed as REVISE, HMSR-111 reviewed as REVISE, HMSR-112 reviewed as REVISE, HMSR-113 reviewed as REVISE, HMSR-114 reviewed as REVISE, HMSR-115 reviewed as REVISE, HMSR-116 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 reviewed as REVISE, HMSR-080 reviewed as REVISE, HMSR-081 reviewed as REVISE, HMSR-082 reviewed as REVISE, HMSR-083 approved, HMSR-084 reviewed as REVISE, HMSR-085 reviewed as REVISE, HMSR-086 approved, HMSR-087 reviewed as REVISE, HMSR-088 reviewed as REVISE, HMSR-089 reviewed as REVISE, HMSR-090 reviewed as REVISE, HMSR-091 reviewed as REVISE, HMSR-092 reviewed as REVISE, HMSR-093 reviewed as REVISE, HMSR-094 reviewed as REVISE, HMSR-095 reviewed as REVISE, HMSR-096 reviewed as REVISE, HMSR-097 reviewed as REVISE, HMSR-098 reviewed as REVISE, HMSR-099 approved, HMSR-100 reviewed as REVISE, HMSR-101 reviewed as REVISE, HMSR-102 approved, HMSR-103 approved, HMSR-104 reviewed as REVISE, HMSR-105 reviewed as REVISE, HMSR-106 reviewed as REVISE, HMSR-107 reviewed as REVISE, HMSR-108 reviewed as REVISE, HMSR-109 reviewed as REVISE, HMSR-110 reviewed as REVISE, HMSR-111 reviewed as REVISE, HMSR-112 reviewed as REVISE, HMSR-113 reviewed as REVISE, HMSR-114 reviewed as REVISE, HMSR-115 reviewed as REVISE, HMSR-116 reviewed as REVISE, HMSR-117 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -308,7 +308,7 @@ Ordering rules applied:
 | HMSR-113 | 6 | hse | HseClosure | — | hse.HseCase, workflow.WorkflowInstance | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review hse HseClosure` |
 | HMSR-114 | 6 | hse | HseCorrectivePreventiveAction | — | assets.MaintenanceWorkOrder, hse.HseCase, organization.OrganizationUnit, workflow.WorkflowTask | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review hse HseCorrectivePreventiveAction` |
 | HMSR-115 | 6 | integrity | IntegrityCase | — | hse.HseCase, incident.Incident, integrity.PipelineDefect, organization.OrganizationUnit, workflow.WorkflowInstance | 0 | 0 | 1 | REVISE | Completed | `docs(model-review): review integrity IntegrityCase` |
-| HMSR-116 | 6 | workflow | WorkflowStateHistory | — | workflow.WorkflowAction, workflow.WorkflowInstance, workflow.WorkflowStep, workflow.WorkflowTask | 0 | 0 | 1 | — | Planned | `docs(model-review): review workflow WorkflowStateHistory` |
+| HMSR-116 | 6 | workflow | WorkflowStateHistory | — | workflow.WorkflowAction, workflow.WorkflowInstance, workflow.WorkflowStep, workflow.WorkflowTask | 0 | 0 | 1 | REVISE | Completed | `docs(model-review): review workflow WorkflowStateHistory` |
 | HMSR-117 | 7 | alarm | Alarm | — | incident.Incident, organization.OrganizationUnit, planning.PlanTarget, telemetry.TelemetryReading, workflow.WorkflowInstance | 3 | 3 | 4 | — | Planned | `docs(model-review): review alarm Alarm` |
 | HMSR-118 | 7 | audit | AuditAccessRecord | — | audit.AuditEvent, audit.AuditExportRequest | 0 | 0 | 0 | — | Planned | `docs(model-review): review audit AuditAccessRecord` |
 | HMSR-119 | 7 | audit | AuditBeforeAfterValue | — | audit.AuditEvent | 0 | 0 | 0 | — | Planned | `docs(model-review): review audit AuditBeforeAfterValue` |
@@ -19536,16 +19536,130 @@ The target baseline cannot be marked APPROVED while a supplied same-module prima
 
 HMS reconciliation must retain these obligations until explicitly authorized Integrity production work resolves them or stronger repository evidence changes the governing Integrity contract.
 
-## 129. Current next task
+## 129. HMSR-116 — workflow.WorkflowStateHistory review
+
+**Decision:** REVISE  
+**Review code:** HMSR-116  
+**Dependency level:** 6  
+**Bounded context:** workflow  
+**Confirmed upstream subject dependencies:** mandatory `workflow.WorkflowInstance`; optional same-module `workflow.WorkflowTask`, `workflow.WorkflowStep` (`fromStepId` / `toStepId`), and `workflow.WorkflowAction`; optional Workflow reason catalog reference plus Identity actor snapshot context  
+**Confirmed direct HMS subject dependents:** 0  
+**Transitive HMS subject dependents:** 0  
+**Unresolved/non-subject reference count:** 1
+
+### 129.1 Semantic role
+
+`WorkflowStateHistory` is Workflow's append-only state-transition evidence for workflow instances and, when applicable, tasks and steps.
+
+The Workflow DDD requires every lifecycle transition to produce state history, requires every history row to preserve actor snapshot data, and requires the history to be sufficient to reconstruct the workflow timeline.
+
+### 129.2 Field and persistence alignment
+
+The live domain record, JPA entity, persistence mapper, state-history repository, transition execution path, and base Workflow migration align on the 15-field target shape.
+
+The DDD's original 12 implemented fields are present together with the three documented target additions: `actionId`, `reasonId`, and `correlationId`.
+
+The schema correctly marks `instanceId`, `toStatus`, `actorId`, `actorDisplayNameSnapshot`, and `changedAt` non-null.
+
+### 129.3 Mandatory WorkflowInstance integrity
+
+`instanceId` is the mandatory same-module parent reference.
+
+HRA-111 correctly installs:
 
 ```text
-HMSR-116 — workflow.WorkflowStateHistory
+hidra_workflow_state_history.instance_id
+  -> hidra_workflow_instance.id
+```
+
+The authoritative transition service loads and locks the `WorkflowInstance` before advancing it, then writes state history in the same transactional path.
+
+### 129.4 Required state and actor snapshot gaps
+
+The DDD explicitly marks `toStatus` and `actorDisplayNameSnapshot` as required. The database also marks both columns `NOT NULL`.
+
+The current `WorkflowStateHistory` constructor validates `id`, `instanceId`, `actorId`, and `changedAt`, but it only normalizes `toStatus` and `actorDisplayNameSnapshot`; blank/null values are not rejected before persistence.
+
+Future production reconciliation must fail closed on blank/null `toStatus` and `actorDisplayNameSnapshot` before the history row reaches persistence.
+
+### 129.5 Authoritative transition path
+
+`WorkflowTransitionApplicationService.execute(...)` is a strong state-changing path. It:
+
+- locks and validates the task and instance;
+- validates the configured transition;
+- records the corresponding `WorkflowAction`;
+- updates the task and instance;
+- creates the next task when the workflow remains non-terminal;
+- writes `WorkflowStateHistory` with the old/new instance status, source/target steps, actor snapshot, action ID, reason ID, correlation ID, and a shared transition timestamp;
+- executes under `@Transactional`.
+
+This path therefore satisfies the DDD requirement that state-advancing transitions produce reconstructable history.
+
+HMSR-116 does not classify initial workflow-instance creation as a lifecycle transition requiring a state-history row because the current DDD does not explicitly define creation as such.
+
+### 129.6 Optional same-module references
+
+`taskId`, `fromStepId`, `toStepId`, and `actionId` are optional same-module references. Their optionality is semantically valid because some state-history events may be instance-scoped rather than task-scoped.
+
+The HRA-111 migration only installs the mandatory `instanceId` FK. The authoritative transition path nevertheless obtains the task, source step, target step, and action from validated live Workflow objects before writing history.
+
+Future non-transition producers of `WorkflowStateHistory`, if introduced, must preserve the same fail-closed semantics for any supplied same-module IDs and must not allow a task/action/step from another instance or workflow definition to be attached to the history row.
+
+HMSR-116 does not invent mandatory FKs for nullable references or require every history row to carry task/action/step IDs.
+
+### 129.7 Reason semantics
+
+`reasonId` is an optional Workflow-owned reason catalog reference. The DDD intentionally makes it optional because not every transition requires a reason.
+
+When supplied, it must remain Workflow-owned and be validated according to Workflow reason catalog policy. The current model does not justify making `reasonId` universally mandatory.
+
+### 129.8 Append-only persistence gap
+
+The DDD is explicit that state history is append-only.
+
+`WorkflowStateHistoryRepositoryPort` currently exposes generic `save(WorkflowStateHistory)`, and `JpaWorkflowStateHistoryRepositoryAdapter` delegates directly to Spring Data `repository.save(...)`.
+
+That contract can insert a new row but can also overwrite an existing row with the same identifier. No repository-level insert-only guard was found.
+
+Future production reconciliation must make WorkflowStateHistory persistence genuinely append-only so historical state evidence cannot be silently mutated by saving an existing ID.
+
+### 129.9 Actor boundary
+
+`actorId` is an Identity-owned scalar reference while username/display-name/role fields are historical snapshots captured by Workflow.
+
+No Workflow-to-Identity database FK is authorized. History must remain readable even after identity lifecycle changes.
+
+The DDD specifically requires actor snapshot preservation; therefore the required display-name snapshot must be protected at the Workflow domain/application boundary rather than reconstructed later from Identity.
+
+### 129.10 Required revisions
+
+Three evidence-backed production obligations remain:
+
+1. **Fail closed on blank/null `toStatus` and `actorDisplayNameSnapshot` before persistence.**
+2. **Make WorkflowStateHistory persistence truly append-only so an existing history row cannot be overwritten or mutated through the generic save contract.**
+3. **For any future history producer outside the authoritative transition service, validate supplied optional task/step/action/reason references through Workflow-owned contracts and preserve instance/definition coherence without making optional references universally mandatory.**
+
+HMSR-116 does not modify production Java, JPA, Flyway, API/application contracts, tests, Workflow/Identity data, or provisioned data.
+
+### 129.11 Review conclusion
+
+**REVISE.** The 15-field history shape, mandatory WorkflowInstance FK, transition-transaction integration, action/reason/correlation additions, and actor-snapshot architecture are appropriate.
+
+The target baseline cannot be marked APPROVED while required `toStatus` and actor display-name snapshot values are not fail-fast protected and the persistence contract does not enforce the DDD's append-only history rule.
+
+HMS reconciliation must retain these obligations until explicitly authorized Workflow production work resolves them or stronger repository evidence changes the governing Workflow contract.
+
+## 130. Current next task
+
+```text
+HMSR-117 — alarm.Alarm
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review workflow WorkflowStateHistory
+docs(model-review): review alarm Alarm
 ```
 
-Start HMSR-116 only after HMSR-115 is committed and reported. Do not start HMSR-117 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-117 only after HMSR-116 is committed and reported. Do not start HMSR-118 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

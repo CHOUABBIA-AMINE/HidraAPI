@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 reviewed as REVISE, HMSR-080 reviewed as REVISE, HMSR-081 reviewed as REVISE, HMSR-082 reviewed as REVISE, HMSR-083 approved, HMSR-084 reviewed as REVISE, HMSR-085 reviewed as REVISE, HMSR-086 approved, HMSR-087 reviewed as REVISE, HMSR-088 reviewed as REVISE, HMSR-089 reviewed as REVISE, HMSR-090 reviewed as REVISE, HMSR-091 reviewed as REVISE, HMSR-092 reviewed as REVISE, HMSR-093 reviewed as REVISE, HMSR-094 reviewed as REVISE, HMSR-095 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 reviewed as REVISE, HMSR-080 reviewed as REVISE, HMSR-081 reviewed as REVISE, HMSR-082 reviewed as REVISE, HMSR-083 approved, HMSR-084 reviewed as REVISE, HMSR-085 reviewed as REVISE, HMSR-086 approved, HMSR-087 reviewed as REVISE, HMSR-088 reviewed as REVISE, HMSR-089 reviewed as REVISE, HMSR-090 reviewed as REVISE, HMSR-091 reviewed as REVISE, HMSR-092 reviewed as REVISE, HMSR-093 reviewed as REVISE, HMSR-094 reviewed as REVISE, HMSR-095 reviewed as REVISE, HMSR-096 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -287,7 +287,7 @@ Ordering rules applied:
 | HMSR-092 | 4 | simulation | SimulationCandidateChange | — | simulation.SimulationOptimizationCandidate | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review simulation SimulationCandidateChange` |
 | HMSR-093 | 4 | simulation | SimulationRecommendation | — | simulation.SimulationOptimizationCandidate, simulation.SimulationRun | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review simulation SimulationRecommendation` |
 | HMSR-094 | 5 | planning | Nomination | — | party.Party, planning.PlanRevision | 1 | 6 | 2 | REVISE | Completed | `docs(model-review): review planning Nomination` |
-| HMSR-095 | 5 | workflow | WorkflowAction | — | organization.OrganizationUnit, workflow.WorkflowInstance, workflow.WorkflowTask | 2 | 4 | 1 | — | Planned | `docs(model-review): review workflow WorkflowAction` |
+| HMSR-095 | 5 | workflow | WorkflowAction | — | organization.OrganizationUnit, workflow.WorkflowInstance, workflow.WorkflowTask | 2 | 4 | 1 | REVISE | Completed | `docs(model-review): review workflow WorkflowAction` |
 | HMSR-096 | 5 | hse | HseCase | — | incident.Incident, organization.OrganizationUnit, workflow.WorkflowInstance | 3 | 3 | 3 | — | Planned | `docs(model-review): review hse HseCase` |
 | HMSR-097 | 5 | audit | AuditExportRequest | — | documents.Document, workflow.WorkflowInstance | 1 | 1 | 2 | — | Planned | `docs(model-review): review audit AuditExportRequest` |
 | HMSR-098 | 5 | documents | DocumentTargetLink | — | documents.Document, documents.DocumentVersion | 0 | 0 | 0 | — | Planned | `docs(model-review): review documents DocumentTargetLink` |
@@ -16979,16 +16979,168 @@ The target baseline cannot mark `Nomination` APPROVED while positive-quantity an
 
 HMS reconciliation must retain these obligations until explicitly authorized Planning production corrections resolve them or stronger repository evidence changes the governing Planning contract.
 
-## 108. Current next task
+## 108. HMSR-095 — workflow.WorkflowAction review
+
+**Decision:** REVISE  
+**Review code:** HMSR-095  
+**Dependency level:** 5  
+**Bounded context:** workflow  
+**Confirmed upstream subject dependencies:** mandatory `workflow.WorkflowInstance`; optional task-scoped `workflow.WorkflowTask`; optional Organization-owned `organization.OrganizationUnit` context  
+**Confirmed direct HMS subject dependents:** 2  
+**Transitive HMS subject dependents:** 4  
+**Unresolved/non-subject reference count:** 1
+
+### 108.1 Semantic role
+
+`WorkflowAction` is Workflow-owned append-only action and decision evidence for a workflow instance and, when applicable, a workflow task.
+
+The Workflow DDD treats these records as core decision evidence. They preserve who acted, the decision/action, reason/comment evidence, organization context snapshots, deterministic sequence, and timestamp. Workflow owns the action record; it does not own Identity actors or Organization units and must not directly mutate the target bounded context.
+
+### 108.2 Instance and task integrity
+
+`instanceId` is mandatory and same-module.
+
+HRA-111 already protects it with:
 
 ```text
-HMSR-095 — workflow.WorkflowAction
+hidra_workflow_action.instance_id
+  -> hidra_workflow_instance.id
+```
+
+The domain constructor also rejects blank `instanceId`.
+
+`taskId` is optional because some actions may be instance-scoped, but when supplied it denotes a real same-module `WorkflowTask`. The current generic `recordWorkflowAction(...)` path does not resolve the task, verify existence, or verify that the task belongs to the supplied instance.
+
+A task-scoped action must therefore fail closed against the Workflow-owned task and its parent instance. This is a same-module integrity concern, not a cross-module dependency.
+
+### 108.3 Decision-bearing actions must use configured transitions
+
+The Workflow DDD explicitly requires:
+
+```text
+Decision-bearing action must follow a configured transition.
+Only configured decisions are allowed from a given step.
+Reason/comment requirements must be enforced during action execution.
+```
+
+The live `WorkflowTransitionApplicationService` implements this correctly: it locks and validates task/instance state, checks actor entitlement and permission, resolves a configured transition, applies reason/comment guards, generates the next sequence, records the action, advances task/instance state, and records state history.
+
+However, the separate public `WorkflowApplicationService.recordWorkflowAction(...)` path constructs and saves a `WorkflowAction` directly from caller-supplied `actionType`, `decision`, `taskId`, `reasonId`, `commentText`, and `actionSequence`, without configured-transition validation.
+
+That alternate path can therefore persist decision-bearing actions independently of the authoritative transition execution rules.
+
+The future production correction must close that bypass: decision-bearing actions must be recorded only through the transition-authoritative workflow path, while any retained generic recording capability must be restricted to action categories whose semantics do not advance/decide workflow state.
+
+### 108.4 Required reason and comment evidence
+
+The DDD requires `reasonId` for:
+
+```text
+REJECT
+REQUEST_CORRECTION
+RETURN
+DELEGATE
+ESCALATE
+CANCEL
+```
+
+and requires `commentText` for `REQUEST_CORRECTION`.
+
+The transition service enforces these rules through `decisionGuard` and transition metadata. The generic direct-recording path does not.
+
+These conditional invariants must be enforced at every authoritative action-write boundary so invalid decision evidence cannot be persisted through an alternate endpoint.
+
+### 108.5 Actor snapshot requirements
+
+The DDD marks `actorDisplayNameSnapshot` required and states:
+
+```text
+Action must preserve actor snapshot.
+```
+
+JPA/Flyway also persist `actor_display_name_snapshot` as `NOT NULL`.
+
+The live domain constructor enforces `actorId` but only normalizes `actorDisplayNameSnapshot`; a blank/null display-name snapshot can therefore reach persistence and fail late.
+
+The authoritative action boundary must fail fast for the required display-name snapshot. Username/role snapshots remain optional on current DDD evidence.
+
+`actorId` remains an Identity-owned scalar identity and must not gain a cross-module database FK.
+
+### 108.6 Organization context ownership
+
+`organizationUnitId` is optional Organization-owned context, while `organizationUnitNameSnapshot` and `organizationRoleCodeSnapshot` are action-time snapshots.
+
+Workflow must preserve these as scalar/snapshot evidence and must not own or import Organization aggregates.
+
+Where an action carries `organizationUnitId`, the authoritative action/authorization boundary should validate that reference through an Organization-owned public lookup/reference contract when operational authorization semantics depend on it. No cross-module database FK should be introduced.
+
+### 108.7 Monotonic action sequence
+
+The DDD requires:
+
+```text
+actionSequence = monotonic sequence inside instance for deterministic timeline
+```
+
+The transition path obtains it from `actionRepository.nextSequence(instance.id())`.
+
+The generic `recordWorkflowAction(...)` path instead accepts `actionSequence` directly from the command, and the base schema exposes no unique `(instance_id, action_sequence)` constraint.
+
+Therefore sequence correctness is not protected consistently across all write paths.
+
+The production correction must make sequence allocation Workflow-owned and race-safe for every action creation path and enforce deterministic per-instance sequence integrity at the appropriate application/database layers.
+
+### 108.8 Append-only semantics
+
+The DDD states:
+
+```text
+Actions are append-only and must not be physically deleted.
+```
+
+The current application port exposes `save`, `findById`, and `nextSequence`; no action delete operation is exposed. Current creation paths generate new action identifiers.
+
+HMSR-095 therefore does not claim an observed delete API defect. However, any future mutation capability must preserve append-only semantics; existing action evidence must not be overwritten as a state-update mechanism.
+
+### 108.9 Action and decision enums
+
+`WorkflowActionType` and `WorkflowDecision` represent stable workflow execution semantics explicitly enumerated by the DDD.
+
+Current evidence supports retaining them as technical/domain enums rather than converting them to generic business catalogs.
+
+`reasonId` is described as a catalog reference, but the DDD does not establish an exact Workflow reason catalog family in the reviewed evidence. HMSR-095 therefore does not invent a catalog-family name. HMS-006/future Workflow reconciliation must resolve that reference only when authoritative catalog ownership is established.
+
+### 108.10 Required revisions
+
+Six evidence-backed production obligations remain:
+
+1. **Close the generic decision-action bypass.** Decision-bearing actions must pass through the configured-transition authority; a generic action endpoint must not independently persist workflow decisions.
+2. **Validate supplied `taskId` fail-closed and verify task-to-instance ownership** for task-scoped actions.
+3. **Enforce DDD conditional evidence rules on every authoritative write path:** required reasons for reject/correction/return/delegation/escalation/cancel and required comment for request-correction.
+4. **Enforce required `actorDisplayNameSnapshot` before persistence** so actor evidence fails fast rather than at JPA/database time.
+5. **Make `actionSequence` Workflow-owned, monotonic, race-safe, and protected per instance**, rather than caller-controlled on the generic path.
+6. **Preserve Identity/Organization boundary ownership:** scalar actor/organization references and snapshots only, with owner-controlled validation where required; never introduce cross-module database FKs.
+
+HMSR-095 does not modify production Java, JPA, Flyway, API/application contracts, tests, Workflow/Identity/Organization/Audit data, or provisioned data.
+
+### 108.11 Review conclusion
+
+**REVISE.** `WorkflowAction` has the correct bounded-context ownership, mandatory instance protection, append-only intent, and a strong transition-authoritative execution path.
+
+The target baseline cannot mark it APPROVED while the generic recording path can bypass configured-transition enforcement and conditional decision evidence rules, task-scoped integrity is not fail-closed there, the required actor display-name snapshot is not domain-enforced, and action sequence ownership is inconsistent and caller-controlled outside the transition path.
+
+HMS reconciliation must retain these obligations until explicitly authorized Workflow production corrections resolve them or stronger repository evidence changes the governing Workflow contract.
+
+## 109. Current next task
+
+```text
+HMSR-096 — hse.HseCase
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review workflow WorkflowAction
+docs(model-review): review hse HseCase
 ```
 
-Start HMSR-095 only after HMSR-094 is committed and reported. Do not start HMSR-096 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-096 only after HMSR-095 is committed and reported. Do not start HMSR-097 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

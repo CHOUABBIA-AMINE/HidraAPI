@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 reviewed as REVISE, HMSR-080 reviewed as REVISE, HMSR-081 reviewed as REVISE, HMSR-082 reviewed as REVISE, HMSR-083 approved, HMSR-084 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 reviewed as REVISE, HMSR-080 reviewed as REVISE, HMSR-081 reviewed as REVISE, HMSR-082 reviewed as REVISE, HMSR-083 approved, HMSR-084 reviewed as REVISE, HMSR-085 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -276,7 +276,7 @@ Ordering rules applied:
 | HMSR-081 | 4 | assets | MaintenanceWorkOrder | — | assets.MaintainableAsset, organization.OrganizationUnit, workflow.WorkflowInstance | 1 | 1 | 3 | REVISE | Completed | `docs(model-review): review assets MaintenanceWorkOrder` |
 | HMSR-082 | 4 | custody | CustodyTransferTicket | — | custody.CustodyMeasurementPeriod, workflow.WorkflowInstance | 0 | 0 | 5 | REVISE | Completed | `docs(model-review): review custody CustodyTransferTicket` |
 | HMSR-083 | 4 | hse | PermitToWork | — | workflow.WorkflowInstance | 0 | 0 | 0 | APPROVED | Completed | `docs(model-review): review hse PermitToWork` |
-| HMSR-084 | 4 | integration | IntegrationDeadLetterRecord | — | integration.ExternalSystem, integration.IntegrationExchangeMessage, integration.IntegrationJobRun | 0 | 0 | 2 | — | Planned | `docs(model-review): review integration IntegrationDeadLetterRecord` |
+| HMSR-084 | 4 | integration | IntegrationDeadLetterRecord | — | integration.ExternalSystem, integration.IntegrationExchangeMessage, integration.IntegrationJobRun | 0 | 0 | 2 | REVISE | Completed | `docs(model-review): review integration IntegrationDeadLetterRecord` |
 | HMSR-085 | 4 | integrity | IntegrityAssessment | — | integrity.IntegrityProgram, workflow.WorkflowInstance | 0 | 0 | 2 | — | Planned | `docs(model-review): review integrity IntegrityAssessment` |
 | HMSR-086 | 4 | organization | EmployeeAddress | — | organization.AdministrativeLocality, organization.Employee | 0 | 0 | 0 | — | Planned | `docs(model-review): review organization EmployeeAddress` |
 | HMSR-087 | 4 | organization | EmployeeAssignment | — | organization.Employee, organization.OrganizationUnit, organization.Position | 0 | 0 | 0 | — | Planned | `docs(model-review): review organization EmployeeAssignment` |
@@ -15557,16 +15557,171 @@ No HMSR-083 production correction obligation is recorded.
 
 HMSR-083 does not modify production Java, JPA, Flyway, API/application contracts, tests, HSE/Identity/Workflow data, or provisioned data.
 
-## 97. Current next task
+## 97. HMSR-084 — integration.IntegrationDeadLetterRecord review
+
+**Decision:** REVISE  
+**Review code:** HMSR-084  
+**Dependency level:** 4  
+**Bounded context:** integration  
+**Confirmed upstream subject dependencies:** mandatory `integration.ExternalSystem`, optional `integration.IntegrationExchangeMessage`, optional `integration.IntegrationJobRun`  
+**Confirmed direct HMS subject dependents:** 0  
+**Transitive HMS subject dependents:** 0
+
+### 97.1 Semantic role
+
+`IntegrationDeadLetterRecord` is the Integration-owned failure-evidence record for an import/export/retry item that could not be processed safely. It preserves the external-system origin, optional job/message/inbound/outbound evidence links, target-module hint, failure stage/reason, sanitized payload evidence, dead-letter lifecycle state, and resolution metadata.
+
+Integration owns the dead-letter evidence and replay orchestration. Identity owns actor identity. Target business modules continue to own accepted business facts.
+
+### 97.2 Mandatory external-system integrity
+
+`externalSystemId` is mandatory and same-module.
+
+HRA-111 already protects it with:
 
 ```text
-HMSR-084 — integration.IntegrationDeadLetterRecord
+hidra_integration_dead_letter_record.external_system_id
+  -> hidra_integration_external_system.id
+```
+
+The domain constructor also rejects a blank external-system ID.
+
+No further basic existence correction is required for this mandatory ownership edge.
+
+### 97.3 Required failure evidence
+
+The Integration DDD defines these dead-letter fields as required:
+
+```text
+failureStage
+reasonCode
+reasonMessage
+status
+```
+
+The live domain constructor already rejects blank `reasonCode` and null `status`, but it does not reject blank/null `failureStage` or `reasonMessage`.
+
+JPA/Flyway persist both missing fields as `NOT NULL`.
+
+Unlike a generic persistence-only nullability rule, the Integration DDD explicitly classifies both fields as required dead-letter evidence. The authoritative domain/application boundary must therefore fail fast for blank/null `failureStage` and `reasonMessage`.
+
+### 97.4 Optional same-module evidence references
+
+The optional fields:
+
+```text
+jobRunId
+exchangeMessageId
+inboundRecordId
+outboundRecordId
+```
+
+reference Integration-owned execution/message evidence.
+
+Repository evidence shows no HRA-111 foreign keys for these optional edges and no live application lookup path proving existence before persistence.
+
+When populated, these references should fail closed to existing Integration-owned records. Same-module foreign keys are architecturally appropriate where the referenced record is stable, or an explicitly justified Integration application boundary may supplement them.
+
+HMSR-084 does not invent a requirement that all four references must be present. The DDD intentionally allows dead letters to arise at different processing stages.
+
+### 97.5 Replay and historical evidence
+
+The Integration DDD explicitly states:
+
+```text
+Dead-letter records are not deleted after replay.
+A replay creates a new run and links back to the original evidence.
+Replay must create a new job run or retry attempt, not mutate historical evidence.
+```
+
+The live domain helper correctly treats only OPEN and UNDER_REVIEW records as replayable.
+
+No live replay application service for this model was found in the reviewed evidence, so HMSR-084 does not invent an observed mutation defect. Future replay implementation must preserve the DDD's append/new-run semantics and historical dead-letter evidence.
+
+### 97.6 Manual resolution invariant
+
+The Integration DDD explicitly states:
+
+```text
+Manual resolution requires actor, timestamp, and comment.
+```
+
+The model stores:
+
+```text
+resolvedByActorId
+resolvedAt
+resolutionComment
+```
+
+but the constructor permits any partial combination of those fields.
+
+Therefore manual-resolution metadata is not semantically fail-closed. The authoritative domain/application boundary must enforce the trio when a manual resolution is recorded.
+
+HMSR-084 does not equate every terminal status with manual resolution. In particular, REPLAYED and IGNORED may arise through different flows. The obligation is limited to the DDD's explicit manual-resolution rule.
+
+### 97.7 Resolver actor boundary
+
+`resolvedByActorId` is an Identity-owned actor reference.
+
+The Integration DDD allows neutral `actorId` references and explicitly forbids importing Identity domain models. The scalar-ID design is therefore correct.
+
+When a manual-resolution use case is implemented, the resolver actor should be validated through the appropriate Identity/security boundary while preserving the scalar reference. No cross-module Identity database FK should be introduced.
+
+### 97.8 Target-module and payload evidence
+
+`targetModule` is an optional neutral target hint. It does not represent ownership of the target business object and must not become a cross-module relational dependency.
+
+`payloadHash` and `sanitizedPayload` are failure-evidence fields. The DDD explicitly requires sanitized payload handling and forbids Integration from becoming a shortcut around target-module ownership.
+
+HMSR-084 records no new target-module FK or payload-shape rule beyond those existing boundary/safety requirements.
+
+### 97.9 Lifecycle enum
+
+`DeadLetterStatus` contains:
+
+```text
+OPEN
+UNDER_REVIEW
+REPLAYED
+IGNORED
+RESOLVED
+```
+
+These are stable Integration dead-letter lifecycle states and are appropriate as a technical/domain enum.
+
+Current evidence does not define a complete transition matrix beyond replayability and the manual-resolution requirement, so HMSR-084 does not invent one.
+
+### 97.10 Required revisions
+
+Three evidence-backed obligations remain:
+
+1. **Enforce all DDD-required failure evidence before persistence.** `failureStage` and `reasonMessage` must be non-blank in addition to the already-enforced `reasonCode` and `status`.
+
+2. **Protect populated optional same-module evidence references.** `jobRunId`, `exchangeMessageId`, `inboundRecordId`, and `outboundRecordId` must fail closed to existing Integration-owned records.
+
+3. **Enforce the explicit manual-resolution trio.** When manual resolution is recorded, `resolvedByActorId`, `resolvedAt`, and `resolutionComment` must all be present; resolver identity should be validated through the Identity/security boundary without a cross-module FK.
+
+HMSR-084 does not modify production Java, JPA, Flyway, API/application contracts, tests, Integration/Identity data, or provisioned data.
+
+### 97.11 Review conclusion
+
+**REVISE.** `IntegrationDeadLetterRecord` is a coherent Integration-owned failure-evidence model with correct mandatory external-system integrity, appropriate lifecycle enum semantics, replay-oriented historical evidence, and clean cross-module boundaries.
+
+The target baseline cannot mark it APPROVED while two DDD-required failure fields can be blank, populated optional same-module evidence references are not fail-closed, and manual-resolution metadata can violate the explicit actor/timestamp/comment rule.
+
+HMS reconciliation must retain these obligations until explicitly authorized Integration production corrections resolve them or stronger repository evidence changes the governing Integration DDD.
+
+## 98. Current next task
+
+```text
+HMSR-085 — integrity.IntegrityAssessment
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review integration IntegrationDeadLetterRecord
+docs(model-review): review integrity IntegrityAssessment
 ```
 
-Start HMSR-084 only after HMSR-083 is committed and reported. Do not start HMSR-085 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-085 only after HMSR-084 is committed and reported. Do not start HMSR-086 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

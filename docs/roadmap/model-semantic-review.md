@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 reviewed as REVISE, HMSR-080 reviewed as REVISE, HMSR-081 reviewed as REVISE, HMSR-082 reviewed as REVISE, HMSR-083 approved, HMSR-084 reviewed as REVISE, HMSR-085 reviewed as REVISE, HMSR-086 approved, HMSR-087 reviewed as REVISE, HMSR-088 reviewed as REVISE, HMSR-089 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 reviewed as REVISE, HMSR-080 reviewed as REVISE, HMSR-081 reviewed as REVISE, HMSR-082 reviewed as REVISE, HMSR-083 approved, HMSR-084 reviewed as REVISE, HMSR-085 reviewed as REVISE, HMSR-086 approved, HMSR-087 reviewed as REVISE, HMSR-088 reviewed as REVISE, HMSR-089 reviewed as REVISE, HMSR-090 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -281,7 +281,7 @@ Ordering rules applied:
 | HMSR-086 | 4 | organization | EmployeeAddress | — | organization.AdministrativeLocality, organization.Employee | 0 | 0 | 0 | APPROVED | Completed | `docs(model-review): review organization EmployeeAddress` |
 | HMSR-087 | 4 | organization | EmployeeAssignment | — | organization.Employee, organization.OrganizationUnit, organization.Position | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review organization EmployeeAssignment` |
 | HMSR-088 | 4 | organization | OrganizationDelegation | — | organization.Employee, organization.ResponsibilityAssignment | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review organization OrganizationDelegation` |
-| HMSR-089 | 4 | organization | OrganizationHierarchySnapshot | — | organization.Employee | 0 | 0 | 0 | — | Planned | `docs(model-review): review organization OrganizationHierarchySnapshot` |
+| HMSR-089 | 4 | organization | OrganizationHierarchySnapshot | — | organization.Employee | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review organization OrganizationHierarchySnapshot` |
 | HMSR-090 | 4 | organization | ShiftAssignment | — | organization.Employee, organization.OrganizationUnit, organization.Shift | 0 | 0 | 0 | — | Planned | `docs(model-review): review organization ShiftAssignment` |
 | HMSR-091 | 4 | risk | RiskEvidenceLink | — | risk.RiskAssessment | 0 | 0 | 1 | — | Planned | `docs(model-review): review risk RiskEvidenceLink` |
 | HMSR-092 | 4 | simulation | SimulationCandidateChange | — | simulation.SimulationOptimizationCandidate | 0 | 0 | 0 | — | Planned | `docs(model-review): review simulation SimulationCandidateChange` |
@@ -16207,16 +16207,129 @@ The target baseline cannot mark it APPROVED while persistence still permits a nu
 
 HMS reconciliation must retain this obligation until explicitly authorized Organization production work aligns JPA/Flyway nullability with the canonical model or stronger repository evidence changes the governing contract.
 
-## 102. Current next task
+## 102. HMSR-089 — organization.OrganizationHierarchySnapshot review
+
+**Decision:** REVISE  
+**Review code:** HMSR-089  
+**Dependency level:** 4  
+**Bounded context:** organization  
+**Confirmed upstream subject dependencies:** mandatory `organization.Employee` capture actor  
+**Confirmed direct HMS subject dependents:** 0  
+**Transitive HMS subject dependents:** 0
+
+### 102.1 Semantic role
+
+`OrganizationHierarchySnapshot` is the Organization-owned historical capture of organization hierarchy state for later display/use. It owns snapshot identity/code, capture timestamp, capturing employee reference, typed lifecycle status, JSON snapshot payload, optional description, and creation timestamp.
+
+The snapshot is historical evidence owned by Organization. It does not transfer ownership of the underlying employee/unit hierarchy into another bounded context.
+
+### 102.2 Capture-actor integrity
+
+The canonical domain requires `capturedByEmployeeId`:
 
 ```text
-HMSR-089 — organization.OrganizationHierarchySnapshot
+capturedByEmployeeId = requireText(...)
+```
+
+and the Organization internal-reference migration already adds the same-module FK:
+
+```text
+hidra_org_hierarchy_snapshot.captured_by_employee_id
+  -> hidra_org_employee.id
+```
+
+Therefore referenced-employee existence is already protected.
+
+However, the live JPA mapping still declares:
+
+```text
+@Column(name = "captured_by_employee_id", nullable = true)
+```
+
+and the base schema permits the column to be null. Repository search found no later migration that changes it to `NOT NULL`.
+
+This leaves persistence capable of storing a snapshot that cannot be reconstructed as a valid canonical domain object.
+
+### 102.3 Domain invariants
+
+The live constructor already enforces:
+
+```text
+id nonblank
+snapshotCode nonblank
+capturedByEmployeeId nonblank
+capturedAt non-null
+status non-null
+```
+
+ORG-053/ORG-055 already records the final Organization model/value invariant cleanup and includes `OrganizationHierarchySnapshot` in that governed set.
+
+No additional constructor-level identity/status correction is required.
+
+### 102.4 Snapshot payload classification
+
+JPA/Flyway store `snapshotPayload` as `NOT NULL jsonb`, while the live domain currently normalizes blank/null payload to null instead of rejecting it.
+
+The current Organization DDD/roadmap evidence reviewed for HMSR-089 does not explicitly classify nonblank `snapshotPayload` as a domain invariant.
+
+The repository architecture explicitly distinguishes persistence-required columns from domain invariants. HMSR-089 therefore does not promote this database nullability into a new semantic obligation without stronger Organization evidence.
+
+This preserves the source-of-truth distinction while leaving any later payload-policy reconciliation to HMS-006 if explicit semantics are added.
+
+### 102.5 Snapshot code semantics
+
+`snapshotCode` is mandatory in the domain, but current Organization evidence does not state that it is globally unique.
+
+Repository search found no explicit unique-key requirement for hierarchy snapshot code. HMSR-089 therefore does not invent one.
+
+### 102.6 Lifecycle enum
+
+`HierarchySnapshotStatus` contains:
+
+```text
+DRAFT
+ACTIVE
+ARCHIVED
+```
+
+These values represent the Organization-owned lifecycle of a hierarchy snapshot and are appropriate as a domain/lifecycle enum.
+
+Current live evidence does not define a stricter transition matrix, so HMSR-089 does not invent one.
+
+### 102.7 Application-path evidence
+
+Repository search found the repository port and persistence mapper but no live OrganizationHierarchySnapshot-specific application service/use case that creates or transitions snapshots.
+
+HMSR-089 therefore does not invent application-layer defects that are not present in the current implementation.
+
+Any future write path must preserve the existing capture-actor ownership and domain invariants.
+
+### 102.8 Required revisions
+
+One evidence-backed production obligation remains:
+
+1. **Align persistence nullability for mandatory `capturedByEmployeeId` with the canonical domain contract.** Add an additive Flyway correction that fails closed on any existing null rows before setting `hidra_org_hierarchy_snapshot.captured_by_employee_id` to `NOT NULL`, and update the JPA mapping to `nullable = false`. Preserve the existing same-module FK.
+
+HMSR-089 does not modify production Java, JPA, Flyway, API/application contracts, tests, Organization data, or provisioned data.
+
+### 102.9 Review conclusion
+
+**REVISE.** `OrganizationHierarchySnapshot` is semantically coherent at the domain level: snapshot identity, capture actor, capture timestamp and lifecycle state are explicitly enforced, and the capturing employee reference already has same-module FK protection.
+
+The target baseline cannot mark it APPROVED while persistence still permits a null `capturedByEmployeeId` that the canonical domain explicitly forbids.
+
+HMS reconciliation must retain this obligation until explicitly authorized Organization production work aligns JPA/Flyway nullability with the canonical model or stronger repository evidence changes the governing contract.
+
+## 103. Current next task
+
+```text
+HMSR-090 — organization.ShiftAssignment
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review organization OrganizationHierarchySnapshot
+docs(model-review): review organization ShiftAssignment
 ```
 
-Start HMSR-089 only after HMSR-088 is committed and reported. Do not start HMSR-090 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-090 only after HMSR-089 is committed and reported. Do not start HMSR-091 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

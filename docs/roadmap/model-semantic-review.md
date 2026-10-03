@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -232,7 +232,7 @@ Ordering rules applied:
 | HMSR-037 | 1 | telemetry | TelemetryReading | — | telemetry.TelemetryPoint | 2 | 6 | 2 | REVISE | Completed | `docs(model-review): review telemetry TelemetryReading` |
 | HMSR-038 | 1 | simulation | SimulationScenario | — | simulation.SimulationModel | 1 | 4 | 3 | REVISE | Completed | `docs(model-review): review simulation SimulationScenario` |
 | HMSR-039 | 1 | notification | NotificationRequest | — | notification.NotificationTemplate | 1 | 2 | 4 | REVISE | Completed | `docs(model-review): review notification NotificationRequest` |
-| HMSR-040 | 1 | organization | ResponsibilityAssignment | — | organization.OperationalScope | 1 | 1 | 1 | — | Planned | `docs(model-review): review organization ResponsibilityAssignment` |
+| HMSR-040 | 1 | organization | ResponsibilityAssignment | — | organization.OperationalScope | 1 | 1 | 1 | APPROVED | Completed | `docs(model-review): review organization ResponsibilityAssignment` |
 | HMSR-041 | 1 | topology | Facility | — | party.Party | 1 | 1 | 0 | — | Planned | `docs(model-review): review topology Facility` |
 | HMSR-042 | 1 | analytics | AnalyticsDatasetVersion | — | analytics.AnalyticsDataset | 0 | 0 | 0 | — | Planned | `docs(model-review): review analytics AnalyticsDatasetVersion` |
 | HMSR-043 | 1 | analytics | MetricValue | — | analytics.MetricEvaluationRun | 0 | 0 | 3 | — | Planned | `docs(model-review): review analytics MetricValue` |
@@ -2370,8 +2370,8 @@ Confirmed subject-model graph edges at this stage: **165**. These are semantic c
 | Field | Declared type | Classification | Resolved target | Graph edge | Notes |
 |---|---|---|---|:---:|---|
 | id | String | Self identifier | — | No | Primary identity of the current model. |
-| assigneeId | String | Unresolved | — | No | No defensible single subject-model target from HMS-002 evidence. |
-| scopeId | Long | Cross-module reference | POLYMORPHIC | No | Target is selected by companion type/module metadata; no single subject-model edge. |
+| assigneeId | String | Typed polymorphic domain reference | organization.Employee / organization.OrganizationUnit | No | HMSR-040 stronger Organization domain/application/schema evidence resolves the governed same-module assignee set through `ResponsibilityAssigneeType`; the discriminator chooses the target, so no single HMS graph edge is added. Authoritative writes validate target existence and ACTIVE eligibility. |
+| scopeId | Long | Domain reference | organization.OperationalScope | Yes | HMSR-040 confirms the canonical same-module registry reference; `scope_id` is mandatory in the final JPA/schema and protected by `fk_hidra_org_responsibility_assignment_scope`. |
 
 #### organization.Shift
 
@@ -8865,17 +8865,238 @@ The target baseline cannot mark it APPROVED while required source descriptors ca
 
 HMS reconciliation must retain these obligations until an explicitly authorized Notification correction task resolves them or stronger repository evidence explicitly revises the governing Notification DDD semantics.
 
-## 53. Current next task
+## 53. HMSR-040 — organization.ResponsibilityAssignment review
+
+**Decision:** APPROVED  
+**Review code:** HMSR-040  
+**Dependency level:** 1  
+**Bounded context:** organization  
+**Confirmed upstream subject dependencies:** `organization.OperationalScope` through mandatory `scopeId`  
+**Confirmed direct HMS subject dependents:** 1 — `organization.OrganizationDelegation` through `responsibilityAssignmentId`  
+**Transitive HMS subject dependents:** 1  
+**Unresolved/non-subject references:** 1 in the original register — `assigneeId` is now resolved as a governed typed same-module reference to Employee or OrganizationUnit without manufacturing two unconditional graph edges
+
+### 53.1 Semantic role and ordering rationale
+
+`ResponsibilityAssignment` is the Organization-owned effective-dated statement that an allowed organizational assignee holds one governed responsibility role over one canonical operational-scope registry entry.
+
+It is intentionally separate from simple OrganizationUnit hierarchy, Identity permissions, Workflow approval state, and physical Topology ownership. The assignment expresses business responsibility; authorization remains Identity-owned, approval remains Workflow-owned, and cross-module scope targets remain owned by their source bounded contexts.
+
+It is Level 1 because the mandatory `scopeId` references the already reviewed `OperationalScope`. `OrganizationDelegation` depends downstream on ResponsibilityAssignment when a responsibility is temporarily delegated.
+
+### 53.2 Field semantics
+
+| Field | Type | Reviewed meaning |
+|---|---|---|
+| `id` | `String` | Mandatory Organization-owned assignment identity. |
+| `responsibilityType` | `ResponsibilityType` | Mandatory governed business-responsibility role: `OWNER`, `ACCOUNTABLE`, `RESPONSIBLE`, `SUPPORT`, `ESCALATION`, or `APPROVER`. |
+| `assigneeType` | `ResponsibilityAssigneeType` | Mandatory discriminator restricted to `EMPLOYEE` or `ORGANIZATION_UNIT`. |
+| `assigneeId` | `String` | Mandatory typed same-module assignee identity selected by `assigneeType`. |
+| `scopeId` | `Long` | Mandatory same-module reference to the canonical OperationalScope registry row. |
+| `description` | `String` | Optional explanatory text. |
+| `validFrom` | `Instant` | Mandatory inclusive effective start. |
+| `validTo` | `Instant` | Optional exclusive effective end. |
+| `status` | `AssignmentStatus` | Mandatory assignment lifecycle state. |
+| `createdAt` | `Instant` | Persistence-required audit timestamp. |
+| `updatedAt` | `Instant` | Persistence-required audit timestamp. |
+
+The canonical constructor requires nonblank ID and assignee ID, non-null responsibility/assignee/status enums, a positive scope registry ID and non-null `validFrom`; when `validTo` exists it must be strictly after `validFrom`.
+
+### 53.3 Canonical OperationalScope dependency
+
+The Organization operational-scope architecture has already converged on one canonical registry identity:
 
 ```text
-HMSR-040 — organization.ResponsibilityAssignment
+ResponsibilityAssignment.scopeId
+    -> OperationalScope.id
+```
+
+The final JPA mapping declares `scope_id nullable = false`, and the finalized Organization schema makes the column mandatory while preserving:
+
+```text
+fk_hidra_org_responsibility_assignment_scope
+    scope_id -> hidra_org_operational_scope(id)
+    ON DELETE RESTRICT
+```
+
+The assignment domain itself rejects null/non-positive scope IDs.
+
+The assignment application service additionally locks the scope row with `findByIdForUpdate`, so a responsibility cannot be created against a nonexistent registry entry and competing assignments for the same canonical scope are serialized before overlap checks.
+
+This stronger evidence resolves HMS-003's former generic/polymorphic classification: `scopeId` is a normal same-module HMS subject dependency on `OperationalScope`. The polymorphism belongs inside OperationalScope's governed target identity, not on ResponsibilityAssignment itself.
+
+### 53.4 Scope-owner resolution and bounded-context ownership
+
+Before creation, `ResponsibilityAssignmentApplicationService` validates the OperationalScope owner through `OperationalScopeTargetResolverPort`.
+
+For non-GLOBAL scopes it requires:
+
+- a registered resolver for the scope type;
+- the owner target to exist;
+- the resolved type and ID to match the registry identity; and
+- the target to remain assignable.
+
+This preserves the accepted boundary: Organization owns the responsibility assignment and registry, while Topology or another bounded context remains owner of its referenced operational asset.
+
+No cross-module database FK is introduced for a polymorphic scope owner, and a scope assignment does not transfer asset ownership to Organization.
+
+### 53.5 Typed assignee semantics and integrity
+
+`ResponsibilityAssigneeType` restricts authoritative assignments to:
+
+```text
+EMPLOYEE
+ORGANIZATION_UNIT
+```
+
+The domain/JPA/API path uses the enum rather than an unrestricted assignee-type string. ORG-046 also installs a database CHECK restricting persisted discriminator values to those two cases.
+
+The application service resolves the selected assignee through its owner repository:
+
+- EMPLOYEE must exist and have `EmployeeStatus.ACTIVE`;
+- ORGANIZATION_UNIT must exist and have `OrganizationUnitStatus.ACTIVE`.
+
+For OrganizationUnit scopes, assigning the same OrganizationUnit responsibility over itself is explicitly rejected.
+
+Because `assigneeId` is discriminator-owned, one relational FK cannot safely target both tables. Application validation plus the governed discriminator is the appropriate fail-closed boundary. HMSR-040 therefore resolves the field without adding artificial unconditional Employee and OrganizationUnit graph edges.
+
+### 53.6 Effective period, overlap and idempotency
+
+The approved operational-scope ADR defines half-open intervals:
+
+```text
+[validFrom, validTo)
+```
+
+with `validTo > validFrom` when an end exists.
+
+That rule is enforced by:
+
+- the domain constructor;
+- the assignment application service before construction; and
+- `ck_org_responsibility_canonical_temporal` in the database.
+
+For the exact identity:
+
+```text
+(assigneeType, assigneeId, responsibilityType, scopeId)
+```
+
+the application loads ACTIVE assignments while holding the canonical scope lock.
+
+It then:
+
+- returns the existing assignment ID for an identical effective interval;
+- rejects overlapping ACTIVE intervals; and
+- permits non-overlapping intervals, different responsibility roles, or different scopes.
+
+The supporting partial ACTIVE-identity index aligns persistence access with that policy. This is sufficient repository evidence that the ADR's overlap/idempotency semantics are implemented for the authoritative write path; HMSR-040 does not require a PostgreSQL exclusion constraint merely because another implementation technique is possible.
+
+### 53.7 Authorization, Workflow and audit separation
+
+Responsibility creation is not treated as an Identity permission grant.
+
+The write service separately requires:
+
+- authenticated/effective permission `organization:responsibility:assign`;
+- completed Workflow approval for the operation reference; and
+- append of the Organization responsibility audit event after persistence.
+
+Revocation likewise requires its dedicated permission, completed Workflow approval, a locked assignment row, valid revocation chronology, and audit evidence.
+
+This preserves the architecture rule that organizational responsibility, authorization and workflow decision state remain distinct concepts.
+
+### 53.8 Lifecycle semantics
+
+New assignments are created as `AssignmentStatus.ACTIVE`.
+
+Revocation:
+
+- is idempotent when already ENDED;
+- rejects revocation of CANCELLED assignments;
+- requires revocation time strictly after `validFrom`;
+- cannot extend beyond an already bounded `validTo`; and
+- persists the ended assignment with `AssignmentStatus.ENDED`.
+
+Current evidence does not require HMSR-040 to invent additional transitions, automatic cancellation, supersession semantics, or status changes caused solely by assignee/scope retirement. The operational-scope reconciliation path separately addresses later owner retirement/revalidation.
+
+### 53.9 Domain/JPA/Flyway/application alignment
+
+The canonical domain and JPA entity agree on all 11 components and their business requiredness:
+
+```text
+id
+responsibilityType
+assigneeType
+assigneeId
+scopeId
+validFrom
+status
+```
+
+are mandatory, with optional description/end date and persistence-required audit timestamps.
+
+The legacy embedded operational-scope tuple has been retired from the canonical assignment model. `scopeId` is now the sole operational-scope identity.
+
+The repository adapter supports locked row retrieval for revocation, scope/assignee queries, and ACTIVE identity lookup needed by the application overlap policy.
+
+Focused Organization tests cover domain requiredness, canonical scope mapping, end-to-end assignment behavior, revocation, reconciliation, REST boundary behavior and greenfield schema requiredness.
+
+### 53.10 Multilingual semantics
+
+ResponsibilityAssignment carries no multilingual business label fields.
+
+Its optional `description` is free explanatory text and current Organization evidence does not require parallel Arabic/French/English descriptions. HMSR-040 therefore does not invent multilingual assignment text fields.
+
+Current names/codes for an OperationalScope target are resolved from the owning module rather than copied as writable multilingual state into the assignment.
+
+### 53.11 Rules deliberately not invented
+
+HMSR-040 does not infer:
+
+- that an OrganizationUnit hierarchy relationship itself grants responsibility;
+- that a responsibility assignment grants Identity permissions;
+- that an organizational assignee owns the physical Topology asset covered by a scope;
+- a fixed maximum number of responsibilities per assignee or scope;
+- a requirement that every responsibility have a textual description;
+- a database FK for the discriminator-owned `assigneeId`;
+- cascade deletion of assignments when an assignee or scope owner is retired;
+- a requirement to collapse `ResponsibilityType` into an Identity role or permission taxonomy;
+- additional status transitions beyond the implemented authoritative lifecycle evidence.
+
+### 53.12 SONATRACH/TRC operational interpretation
+
+For SONATRACH/TRC, ResponsibilityAssignment is the governed bridge between organizational accountability and an operational perimeter.
+
+It allows an active employee or organizational unit to be recorded as owner, accountable party, responsible party, support, escalation point or approver for a canonical operational scope while keeping:
+
+- physical asset ownership in Topology;
+- employee/unit master data in Organization;
+- authentication/authorization in Identity;
+- approval orchestration in Workflow; and
+- evidence in Audit.
+
+The effective-dated, overlap-protected model is suitable for operational handover and changing duty structures without rewriting historical responsibility.
+
+### 53.13 Review conclusion
+
+**APPROVED.** `ResponsibilityAssignment` has a coherent 11-field Organization-owned responsibility model, correct Level-1 dependency on OperationalScope, governed Employee/OrganizationUnit assignee semantics, mandatory scope FK protection, owner-resolution validation, active-assignee validation, half-open effective periods, serialized overlap/idempotency enforcement, workflow/permission separation, audit evidence and aligned domain/JPA/schema requiredness.
+
+The previously identified operational-scope and assignee-integrity gaps have already been resolved by the current Organization implementation. No evidence-backed production correction obligation remains for HMSR-040.
+
+HMSR-040 does not modify production Java, JPA, Flyway, API/application contracts, tests, organization responsibilities, operational scopes, or provisioned data.
+
+## 54. Current next task
+
+```text
+HMSR-041 — topology.Facility
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review organization ResponsibilityAssignment
+docs(model-review): review topology Facility
 ```
 
-Start HMSR-040 only after HMSR-039 is committed and reported. Do not start HMSR-041 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-041 only after HMSR-040 is committed and reported. Do not start HMSR-042 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
 

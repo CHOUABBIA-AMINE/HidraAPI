@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -252,7 +252,7 @@ Ordering rules applied:
 | HMSR-057 | 2 | reporting | ReportRequest | — | organization.OrganizationUnit, reporting.ReportDefinition | 1 | 2 | 1 | REVISE | Completed | `docs(model-review): review reporting ReportRequest` |
 | HMSR-058 | 2 | risk | RiskRegister | — | organization.OrganizationUnit | 1 | 2 | 0 | REVISE | Completed | `docs(model-review): review risk RiskRegister` |
 | HMSR-059 | 2 | integrity | IntegrityProgram | — | organization.OrganizationUnit | 1 | 1 | 0 | REVISE | Completed | `docs(model-review): review integrity IntegrityProgram` |
-| HMSR-060 | 2 | leakdetection | LeakDetectionCase | — | leakdetection.LeakCandidate, organization.OrganizationUnit | 1 | 1 | 0 | — | Planned | `docs(model-review): review leakdetection LeakDetectionCase` |
+| HMSR-060 | 2 | leakdetection | LeakDetectionCase | — | leakdetection.LeakCandidate, organization.OrganizationUnit | 1 | 1 | 0 | REVISE | Completed | `docs(model-review): review leakdetection LeakDetectionCase` |
 | HMSR-061 | 2 | notification | NotificationMessage | — | notification.NotificationRequest, notification.NotificationTemplate | 1 | 1 | 3 | — | Planned | `docs(model-review): review notification NotificationMessage` |
 | HMSR-062 | 2 | telemetry | TrustedTelemetryReading | — | telemetry.TelemetryPoint, telemetry.TelemetryReading | 1 | 1 | 3 | — | Planned | `docs(model-review): review telemetry TrustedTelemetryReading` |
 | HMSR-063 | 2 | topology | Equipment | — | party.Party, topology.Facility | 0 | 0 | 2 | — | Planned | `docs(model-review): review topology Equipment` |
@@ -2174,13 +2174,13 @@ Confirmed subject-model graph edges at this stage: **165**. These are semantic c
 | Field | Declared type | Classification | Resolved target | Graph edge | Notes |
 |---|---|---|---|:---:|---|
 | id | String | Self identifier | — | No | Primary identity of the current model. |
-| primaryCandidateId | String | Domain reference | leakdetection.LeakCandidate | Yes | Primary leak candidate reference. |
-| topologyAssetId | String | Cross-module reference | POLYMORPHIC | No | Target is selected by companion type/module metadata; no single subject-model edge. |
-| owningOrganizationUnitId | String | Cross-module reference | organization.OrganizationUnit | Yes | Unambiguous reference to a subject model in another bounded context. |
-| openedByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
-| closedByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
-| closureReasonId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Controlled classification/value reference; not a subject-model edge. |
-| correlationId | String | Snapshot/reference-only | TECHNICAL_REFERENCE | No | Technical correlation/request/reference identity. |
+| primaryCandidateId | String | Domain reference | leakdetection.LeakCandidate | Yes | Mandatory same-module candidate reference; HRA-111 protects `primary_candidate_id -> hidra_leak_detection_candidate.id`. |
+| topologyAssetId | String | Cross-module typed reference | POLYMORPHIC_TOPOLOGY_ASSET | No | Mandatory Topology-owned asset identity interpreted with `topologyAssetType` and accompanied by an asset-code snapshot; no single HMS target or cross-module DB FK is appropriate. |
+| owningOrganizationUnitId | String | Optional cross-module reference | organization.OrganizationUnit | Yes | Optional Organization-owned case owner; current open-case flow does not resolve a populated value through an Organization-owned boundary. |
+| openedByActorId | String | Optional cross-module reference | IDENTITY_ACTOR | No | Optional actor identity; no Actor subject model or cross-module DB FK is appropriate. |
+| closedByActorId | String | Optional cross-module reference | IDENTITY_ACTOR | No | Optional closing actor identity; no Actor subject model or cross-module DB FK is appropriate. |
+| closureReasonId | String | Value/catalog dependency | CATALOG_OR_VALUE | No | Optional closure/dismissal reason reference; current repository evidence does not prove one exact catalog target, so no mapping is invented. |
+| correlationId | String | Snapshot/reference-only | TECHNICAL_REFERENCE | No | Optional technical correlation/request/reference identity. |
 
 #### leakdetection.LeakEscalationReference
 
@@ -12097,16 +12097,133 @@ The target baseline cannot mark it APPROVED while the semantic catalog family fo
 
 HMS reconciliation must retain these obligations until explicitly authorized Integrity production/DDD corrections resolve them or stronger repository evidence changes the governing model.
 
-## 73. Current next task
+## 73. HMSR-060 — leakdetection.LeakDetectionCase review
+
+**Decision:** REVISE  
+**Review code:** HMSR-060  
+**Dependency level:** 2  
+**Bounded context:** leakdetection  
+**Confirmed upstream subject dependencies:** `leakdetection.LeakCandidate`, optional `organization.OrganizationUnit`  
+**Confirmed direct HMS subject dependents:** 1  
+**Transitive HMS subject dependents:** 1
+
+### 73.1 Semantic role
+
+`LeakDetectionCase` is the Leak Detection-owned controlled lifecycle record that groups and governs suspected-leak investigation around a primary LeakCandidate. It carries a typed Topology asset reference, optional Organization ownership, case lifecycle/severity/confidence state, open/close actors and timestamps, optional closure-reason identity and correlation metadata.
+
+Leak Detection owns the case lifecycle. It does not own Topology, Organization or Identity business state.
+
+### 73.2 Primary candidate integrity
+
+`primaryCandidateId` is mandatory and unambiguously references `leakdetection.LeakCandidate`.
+
+HRA-111 protects same-module row existence with:
 
 ```text
-HMSR-060 — leakdetection.LeakDetectionCase
+hidra_leak_detection_case.primary_candidate_id -> hidra_leak_detection_candidate.id
+```
+
+That is the correct ownership model for this required same-module dependency. HMSR-060 finds no evidence requiring an additional cross-module mechanism for candidate existence.
+
+Current repository evidence does not state a separate rule requiring the case's copied topology fields to be byte-for-byte equal to the candidate snapshots, so HMSR-060 does not invent such a rule.
+
+### 73.3 Topology asset boundary
+
+The case requires `topologyAssetId` and `topologyAssetCode`, while persistence also requires `topologyAssetType`.
+
+The Leak Detection DDD states that Topology concepts are referenced only through IDs and snapshots and that Leak Detection must not own or import Topology domain/persistence models.
+
+Therefore `topologyAssetType + topologyAssetId` is a typed cross-module Topology reference with `topologyAssetCode` as snapshot metadata. It must not be converted into a cross-module database FK or a Leak Detection-owned relational target.
+
+`LeakDetectionApplicationService.openLeakCase()` currently copies the topology identity directly from the command and saves the case. No Topology-owned lookup/application contract is invoked.
+
+The authoritative write path should therefore fail closed against unsupported/nonexistent typed Topology identities through a Topology-owned boundary while preserving the stored code snapshot.
+
+### 73.4 Organization ownership boundary
+
+`owningOrganizationUnitId` is optional in persistence and unambiguously belongs to Organization.
+
+The active open-case path accepts and persists a populated OrganizationUnit ID directly without resolving it through an Organization-owned lookup/application contract.
+
+No cross-module database FK should be introduced. When populated, the owning unit must be validated through the Organization owner boundary.
+
+Current evidence does not make an owning OrganizationUnit mandatory for every LeakDetectionCase.
+
+### 73.5 Lifecycle and temporal semantics
+
+`LeakDetectionCaseStatus` is a Leak Detection-owned lifecycle enum:
+
+```text
+OPEN
+UNDER_INVESTIGATION
+VERIFIED_LEAK
+DISMISSED
+ESCALATED
+CLOSED
+```
+
+The active creation path initializes a new case as `OPEN`.
+
+The domain already enforces the repository-classified temporal invariant:
+
+```text
+openedAt <= closedAt
+```
+
+The DDD does not provide a complete status-transition matrix, so HMSR-060 does not invent transitions, mandatory closing actors, or mandatory closure reasons for particular terminal statuses.
+
+### 73.6 Severity, confidence and closure metadata
+
+`severityLevel` is a Leak Detection-owned enum/value derived on the active open path through `LeakConfidenceClassifier`.
+
+`confidenceScore` is persisted as optional case metadata. HMSR-060 does not invent numeric bounds beyond rules already represented by the classifier/domain evidence.
+
+`closureReasonId` remains an optional controlled-value reference. Although Leak Detection owns `LeakDismissalReason`, current repository evidence does not prove that every `closureReasonId` is specifically a LeakDismissalReason row or establish a corresponding FK. HMSR-060 therefore does not manufacture that mapping.
+
+### 73.7 Actor and correlation references
+
+`openedByActorId` and `closedByActorId` remain external Identity references with no Actor subject model in the HMS set. No cross-module database FK is appropriate.
+
+`correlationId` remains a neutral technical reference.
+
+Current evidence does not make either actor field universally mandatory, so HMSR-060 does not introduce new actor-presence invariants.
+
+### 73.8 Safety and escalation boundary
+
+The Leak Detection DDD explicitly classifies the module as decision support only and forbids automatic valve/pump/compressor shutdown, PLC/RTU/SCADA write-back and direct OT actuation.
+
+The case model is consistent with that boundary: escalation is represented separately through `LeakEscalationReference` as a neutral alarm/incident/workflow/notification reference.
+
+HMSR-060 records no production change to this safety architecture.
+
+### 73.9 Required revisions
+
+Two evidence-backed production obligations remain:
+
+1. **Validate the mandatory typed Topology asset reference through a Topology-owned boundary.** Preserve `topologyAssetType + topologyAssetId` as a cross-module typed identity and `topologyAssetCode` as snapshot metadata; do not add a cross-module database FK.
+
+2. **Validate populated `owningOrganizationUnitId` through the Organization owner boundary.** Do not add a cross-module database FK.
+
+HMSR-060 does not modify production Java, JPA, Flyway, API/application contracts, tests, candidate/case data, Topology data, Organization data, or provisioned data.
+
+### 73.10 Review conclusion
+
+**REVISE.** `LeakDetectionCase` is a coherent 18-field Leak Detection-owned lifecycle model. Its primary LeakCandidate dependency is mandatory and database-protected, its lifecycle enum and open/close temporal invariant are explicit, and its escalation design preserves the decision-support/OT-safety boundary.
+
+The target baseline cannot mark it APPROVED while mandatory Topology identity and populated Organization ownership can be persisted without validation through their owning bounded-context contracts.
+
+HMS reconciliation must retain these obligations until explicitly authorized Leak Detection production corrections resolve them or stronger repository evidence changes the governing DDD.
+
+## 74. Current next task
+
+```text
+HMSR-061 — notification.NotificationMessage
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review leakdetection LeakDetectionCase
+docs(model-review): review notification NotificationMessage
 ```
 
-Start HMSR-060 only after HMSR-059 is committed and reported. Do not start HMSR-061 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-061 only after HMSR-060 is committed and reported. Do not start HMSR-062 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

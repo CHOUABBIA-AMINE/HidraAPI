@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -245,7 +245,7 @@ Ordering rules applied:
 | HMSR-050 | 1 | topology | Pipeline | — | topology.PipelineSystem | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review topology Pipeline` |
 | HMSR-051 | 2 | workflow | WorkflowStep | SCC-02 | workflow.WorkflowDefinition, workflow.WorkflowStepAssignmentRule | 5 | 35 | 0 | REVISE | Completed | `docs(model-review): review workflow WorkflowStep` |
 | HMSR-052 | 2 | workflow | WorkflowStepAssignmentRule | SCC-02 | organization.OrganizationUnit, workflow.WorkflowDefinition, workflow.WorkflowStep | 1 | 35 | 0 | REVISE | Completed | `docs(model-review): review workflow WorkflowStepAssignmentRule` |
-| HMSR-053 | 2 | organization | AdministrativeLocality | — | organization.AdministrativeDistrict | 2 | 15 | 0 | — | Planned | `docs(model-review): review organization AdministrativeLocality` |
+| HMSR-053 | 2 | organization | AdministrativeLocality | — | organization.AdministrativeDistrict | 2 | 15 | 0 | APPROVED | Completed | `docs(model-review): review organization AdministrativeLocality` |
 | HMSR-054 | 2 | assets | MaintainableAsset | SCC-03 | assets.MaintainableAsset, organization.OrganizationUnit, party.Party | 3 | 3 | 4 | — | Planned | `docs(model-review): review assets MaintainableAsset` |
 | HMSR-055 | 2 | simulation | SimulationRun | — | simulation.SimulationScenario | 2 | 3 | 2 | — | Planned | `docs(model-review): review simulation SimulationRun` |
 | HMSR-056 | 2 | integration | ExternalSystem | — | organization.OrganizationUnit | 2 | 2 | 0 | — | Planned | `docs(model-review): review integration ExternalSystem` |
@@ -2276,7 +2276,7 @@ Confirmed subject-model graph edges at this stage: **165**. These are semantic c
 | Field | Declared type | Classification | Resolved target | Graph edge | Notes |
 |---|---|---|---|:---:|---|
 | id | String | Self identifier | — | No | Primary identity of the current model. |
-| districtId | String | Domain reference | organization.AdministrativeDistrict | Yes | Unambiguous same-module subject-model reference. |
+| districtId | String | Domain reference | organization.AdministrativeDistrict | Yes | Mandatory same-module HMS subject reference; ORG-046 protects `district_id -> hidra_org_administrative_district(id)` through `fk_org_locality_district` with `ON DELETE RESTRICT`. |
 
 #### organization.AdministrativeState
 
@@ -11122,17 +11122,185 @@ The target baseline cannot mark it APPROVED while assignment-mode family semanti
 
 HMS reconciliation must retain these two obligations until explicitly authorized Workflow production corrections resolve them or stronger repository evidence revises the governing Workflow DDD.
 
-## 66. Current next task
+## 66. HMSR-053 — organization.AdministrativeLocality review
+
+**Decision:** APPROVED  
+**Review code:** HMSR-053  
+**Dependency level:** 2  
+**Bounded context:** organization  
+**Confirmed upstream subject dependencies:** `organization.AdministrativeDistrict` through mandatory `districtId`  
+**Confirmed direct HMS subject dependents:** 2 — normalized employee/address geography consumers  
+**Transitive HMS subject dependents:** 15  
+**Unresolved/non-subject references:** 0
+
+### 66.1 Semantic role and ordering rationale
+
+`AdministrativeLocality` is the Organization-owned Algerian locality/commune reference under one AdministrativeDistrict.
+
+The Organization DDD defines the normalized administrative chain as:
 
 ```text
-HMSR-053 — organization.AdministrativeLocality
+AdministrativeLocality.districtId
+    -> AdministrativeDistrict.stateId
+        -> AdministrativeState
+```
+
+EmployeeAddress stores only `localityId` as the normalized address anchor so district/state can be derived without duplicating geography fields.
+
+It is Level 2 because `districtId` references the already-reviewed `AdministrativeDistrict`, which itself depends on `AdministrativeState`.
+
+### 66.2 Field semantics
+
+| Field | Type | Reviewed meaning |
+|---|---|---|
+| `id` | `String` | Mandatory stable locality identity. |
+| `districtId` | `String` | Mandatory same-module reference to the parent AdministrativeDistrict. |
+| `code` | `String` | Mandatory normalized administrative locality code. |
+| `nameAr` | `String` | Optional Arabic locality name. |
+| `nameFr` | `String` | Optional French locality name. |
+| `nameEn` | `String` | Optional English locality name. |
+| `postalCode` | `String` | Optional postal code/reference value. |
+| `active` | `boolean` | Locality availability/lifecycle flag. |
+| `createdAt` | `Instant` | Persistence-required creation timestamp. |
+| `updatedAt` | `Instant` | Persistence-required update timestamp. |
+
+The canonical constructor requires nonblank ID, district ID and code. Code is normalized through the shared `OrganizationCode` value object.
+
+### 66.3 AdministrativeDistrict reference integrity
+
+The final schema requires:
+
+```text
+district_id varchar(80) NOT NULL
+```
+
+The Organization internal-reference hardening migration installs:
+
+```text
+fk_org_locality_district
+    district_id -> hidra_org_administrative_district(id)
+    ON DELETE RESTRICT
+```
+
+Therefore a locality cannot persist against a nonexistent AdministrativeDistrict.
+
+The domain independently rejects blank district IDs, so domain and persistence requiredness align on the parent hierarchy relationship.
+
+### 66.4 Normalized administrative hierarchy
+
+The Organization DDD deliberately normalizes employee addresses around Locality:
+
+```text
+EmployeeAddress.localityId
+  -> AdministrativeLocality.districtId
+      -> AdministrativeDistrict.stateId
+          -> AdministrativeState
+```
+
+This prevents EmployeeAddress from redundantly storing canonical district/state IDs.
+
+The live Organization hardening migration also protects `EmployeeAddress.localityId -> AdministrativeLocality.id`, so AdministrativeLocality is a stable middle tier in the Organization geography graph.
+
+HMSR-053 does not duplicate `stateId` on AdministrativeLocality because state is already derivable through the mandatory district reference.
+
+### 66.5 Multilingual semantics
+
+The current Organization roadmap explicitly defines same-entity multilingual storage:
+
+```text
+Arabic  -> *Ar
+French  -> *Fr
+English -> *En
+```
+
+and lists AdministrativeLocality as `nameAr`, `nameFr`, `nameEn` on the same entity.
+
+No separate translation entity/table is part of the current locality architecture.
+
+All three locality names remain nullable in domain and JPA. Current Organization evidence does not require Arabic, French and English simultaneously, so HMSR-053 does not invent translation completeness rules.
+
+### 66.6 Code and postal-code semantics
+
+`code` is mandatory in domain and persistence and normalized through `OrganizationCode`.
+
+The base migration creates an ordinary index on locality code rather than a unique constraint. The Organization DDD/roadmap reviewed here does not define global or district-scoped locality-code uniqueness.
+
+HMSR-053 therefore does not manufacture a uniqueness rule.
+
+`postalCode` is optional in both domain and persistence. Current evidence does not define postal-code format, uniqueness, mandatoryness, or one-to-one correspondence with communes, so no additional invariant is invented.
+
+### 66.7 Active-state semantics deliberately not over-specified
+
+`active` is a mandatory boolean in domain/JPA/schema.
+
+Current Organization evidence reviewed for HMSR-053 does not define:
+
+- a status transition matrix;
+- automatic deactivation when a parent district becomes inactive;
+- prohibition on historical references to inactive localities;
+- creation-time requirement that the parent district be ACTIVE.
+
+The existing FK guarantees parent existence, but HMSR-053 does not elevate lifecycle eligibility beyond documented evidence.
+
+### 66.8 Domain/JPA/Flyway alignment
+
+Domain and JPA agree on all 10 components.
+
+Required structural/business fields align:
+
+```text
+id
+districtId
+code
+active
+```
+
+with audit timestamps required by persistence.
+
+The mandatory parent relation has explicit Organization-owned FK protection. Optional multilingual/postal fields remain consistently nullable.
+
+No domain/persistence semantic contradiction was found.
+
+### 66.9 Rules deliberately not invented
+
+HMSR-053 does not infer:
+
+- global or district-scoped code uniqueness;
+- mandatory postal code;
+- postal-code format/range;
+- mandatory Arabic/French/English labels;
+- direct AdministrativeState reference;
+- active-parent eligibility;
+- geographic coordinates;
+- a physical-facility relationship;
+- Organization ownership of physical Topology assets.
+
+### 66.10 SONATRACH/TRC operational interpretation
+
+For SONATRACH/TRC, AdministrativeLocality provides the normalized Algerian commune/locality reference used for employee addresses and other personnel/geographic master-data needs.
+
+It is organizational/reference geography, not physical pipeline topology. A locality such as a commune may contain facilities, stations or offices, but the locality record does not own those physical assets.
+
+The district→state derivation allows consistent administrative reporting without duplicating higher-level geography on every address.
+
+### 66.11 Review conclusion
+
+**APPROVED.** `AdministrativeLocality` has a coherent 10-field Organization geography model, mandatory and FK-protected dependency on AdministrativeDistrict, correct normalized locality→district→state hierarchy, accepted same-entity multilingual representation, and aligned domain/JPA/schema requiredness.
+
+No evidence-backed production correction obligation remains for HMSR-053.
+
+HMSR-053 does not modify production Java, JPA, Flyway, application/API contracts, tests, locality master data, district/state data, employee addresses, or provisioned data.
+
+## 67. Current next task
+
+```text
+HMSR-054 — assets.MaintainableAsset
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review organization AdministrativeLocality
+docs(model-review): review assets MaintainableAsset
 ```
 
-Start HMSR-053 only after HMSR-052 is committed and reported. Do not start HMSR-054 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
-
+Start HMSR-054 only after HMSR-053 is committed and reported. Do not start HMSR-055 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 reviewed as REVISE, HMSR-080 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 reviewed as REVISE, HMSR-080 reviewed as REVISE, HMSR-081 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -272,7 +272,7 @@ Ordering rules applied:
 | HMSR-077 | 4 | planning | OperationalPlan | SCC-04 | organization.OrganizationUnit, planning.PlanRevision, planning.PlanningPeriod | 1 | 8 | 1 | REVISE | Completed | `docs(model-review): review planning OperationalPlan` |
 | HMSR-078 | 4 | workflow | WorkflowTask | — | organization.OrganizationUnit, workflow.WorkflowInstance, workflow.WorkflowStep | 4 | 6 | 1 | REVISE | Completed | `docs(model-review): review workflow WorkflowTask` |
 | HMSR-079 | 4 | documents | Document | SCC-05 | documents.DocumentVersion | 4 | 5 | 3 | REVISE | Completed | `docs(model-review): review documents Document` |
-| HMSR-080 | 4 | documents | DocumentVersion | SCC-05 | documents.Document, documents.DocumentStorageObject, documents.DocumentVersion, workflow.WorkflowInstance | 3 | 5 | 2 | — | Planned | `docs(model-review): review documents DocumentVersion` |
+| HMSR-080 | 4 | documents | DocumentVersion | SCC-05 | documents.Document, documents.DocumentStorageObject, documents.DocumentVersion, workflow.WorkflowInstance | 3 | 5 | 2 | REVISE | Completed | `docs(model-review): review documents DocumentVersion` |
 | HMSR-081 | 4 | assets | MaintenanceWorkOrder | — | assets.MaintainableAsset, organization.OrganizationUnit, workflow.WorkflowInstance | 1 | 1 | 3 | — | Planned | `docs(model-review): review assets MaintenanceWorkOrder` |
 | HMSR-082 | 4 | custody | CustodyTransferTicket | — | custody.CustodyMeasurementPeriod, workflow.WorkflowInstance | 0 | 0 | 5 | — | Planned | `docs(model-review): review custody CustodyTransferTicket` |
 | HMSR-083 | 4 | hse | PermitToWork | — | workflow.WorkflowInstance | 0 | 0 | 0 | — | Planned | `docs(model-review): review hse PermitToWork` |
@@ -15005,16 +15005,166 @@ The target baseline cannot mark it APPROVED while DDD-required fields can reach 
 
 HMS reconciliation must retain these obligations until explicitly authorized Documents production corrections resolve them or stronger repository evidence changes the governing Documents DDD.
 
-## 93. Current next task
+## 93. HMSR-080 — documents.DocumentVersion review
+
+**Decision:** REVISE  
+**Review code:** HMSR-080  
+**Dependency level:** 4  
+**Bounded context:** documents  
+**SCC:** SCC-05 with `documents.Document`  
+**Confirmed upstream subject dependencies:** mandatory `documents.Document`, mandatory `documents.DocumentStorageObject`, optional superseding `documents.DocumentVersion`, optional `workflow.WorkflowInstance`  
+**Confirmed direct HMS subject dependents:** 3  
+**Transitive HMS subject dependents:** 5
+
+### 93.1 Semantic role
+
+`DocumentVersion` is the Documents-owned immutable file/content revision metadata for a `Document`. It owns version numbering/labeling, storage linkage, content metadata, checksum evidence, effective dates, version lifecycle state, uploader snapshots, optional workflow approval reference, and optional supersession lineage.
+
+Documents owns version metadata and storage-object references. Workflow owns approval process state. Identity owns uploader identity. Cross-module Workflow/Identity references must remain scalar/application-contract references rather than database foreign keys.
+
+### 93.2 Parent document and storage-object integrity
+
+`documentId` and `storageObjectId` are mandatory same-module references.
+
+HRA-111 already protects both with Documents-local foreign keys:
 
 ```text
-HMSR-080 — documents.DocumentVersion
+hidra_documents_document_version.document_id -> hidra_documents_document.id
+hidra_documents_document_version.storage_object_id -> hidra_documents_storage_object.id
+```
+
+This correctly protects the two mandatory ownership references at the database boundary. No further basic existence correction is required for them.
+
+### 93.3 Required upload metadata
+
+The Documents DDD marks the following fields required:
+
+```text
+mimeType
+originalFilename
+fileSizeBytes
+checksumAlgorithm
+checksumValue
+uploadedByActorId
+uploadedByDisplayNameSnapshot
+uploadedAt
+```
+
+The live constructor already protects `uploadedByActorId` and `uploadedAt`, but it does not reject blank/null `mimeType`, `originalFilename`, `checksumAlgorithm`, `checksumValue`, or `uploadedByDisplayNameSnapshot`.
+
+JPA/Flyway persist those fields as `NOT NULL`, and the upload service copies values directly into the aggregate. The binary-transfer path often supplies storage-derived values, but the general `UploadDocumentVersionUseCase` remains directly callable.
+
+The authoritative domain/application boundary must fail fast for all DDD-required textual upload metadata rather than relying on persistence failure.
+
+HMSR-080 does not invent a minimum positive file-size rule because the current DDD only states that file size is required, not that zero-length content is forbidden.
+
+### 93.4 Version-number semantics
+
+The Documents DDD explicitly defines:
+
+```text
+versionNumber starting at 1
+Version numbers must be unique per document.
+```
+
+It also recommends a unique PostgreSQL index on:
+
+```text
+(document_id, version_number)
+```
+
+The live domain record accepts zero or negative version numbers, and the base schema exposes only an ordinary index on `document_id`; repository evidence shows no database uniqueness constraint for the pair.
+
+The authoritative baseline therefore requires a positive version number starting at 1 and concurrency-safe PostgreSQL uniqueness per document.
+
+### 93.5 Supersession lineage
+
+`supersededByVersionId` is an optional same-module self-reference. The domain already rejects direct self-reference, which is appropriate.
+
+Repository evidence shows no same-module FK or application lookup proving that a populated superseding version exists. HRA-111 intentionally covered mandatory references, so the absence of this optional edge there is not evidence that it may remain unchecked.
+
+When populated, `supersededByVersionId` should fail closed to an existing Documents-owned version. Current DDD wording identifies it as the version that supersedes the current version and requires previous-version history to be preserved.
+
+This review does not invent a stronger ordering constraint or version-number comparison beyond current evidence.
+
+### 93.6 Workflow approval boundary
+
+`approvedByWorkflowInstanceId` is an optional Workflow-owned reference. The Documents DDD explicitly states that Workflow owns routing/decisions and Documents stores the workflow reference and document-state consequence.
+
+Repository evidence shows the field persisted as a scalar ID and no cross-module database FK, which is architecturally correct.
+
+When a version-approval path populates this field, the authoritative boundary should validate the workflow instance through a Workflow-owned application contract and verify that the process applies to the correct document/version context. No cross-module Workflow FK should be introduced.
+
+### 93.7 Uploader identity boundary
+
+`uploadedByActorId` is mandatory and Identity-owned; `uploadedByDisplayNameSnapshot` is a historical display snapshot.
+
+The live upload service copies both directly from the command. Repository evidence does not show owner-controlled Identity validation in the reviewed path.
+
+The authoritative upload boundary should validate uploader identity through an Identity-owned contract while retaining the snapshot. No cross-module Identity database FK should be introduced.
+
+### 93.8 Effective-date ordering
+
+The domain already enforces:
+
+```text
+effectiveFrom <= effectiveTo
+```
+
+when both values are present.
+
+This matches the temporal semantics of the version metadata and requires no further correction in HMSR-080.
+
+### 93.9 Version lifecycle and immutability
+
+`DocumentVersionStatus` is the Documents-owned lifecycle for version state. The Documents DDD explicitly states:
+
+```text
+Approved/current versions are immutable.
+Changing binary content creates a new DocumentVersion.
+Superseding a current version must preserve previous version history.
+```
+
+The domain helper `immutableVersion()` recognizes APPROVED, CURRENT, SUPERSEDED and ARCHIVED as immutable states.
+
+The reviewed application services currently create DRAFT versions and repository evidence did not identify a direct mutation path for immutable versions. HMSR-080 therefore preserves the explicit immutability rule without inventing an unobserved production defect.
+
+Any future approval/update/supersession use case must enforce this rule at the authoritative write boundary.
+
+### 93.10 Required revisions
+
+Five evidence-backed obligations remain:
+
+1. **Enforce all DDD-required textual upload metadata before persistence:** `mimeType`, `originalFilename`, `checksumAlgorithm`, `checksumValue`, and `uploadedByDisplayNameSnapshot`.
+
+2. **Enforce version-number semantics:** require `versionNumber >= 1` and add concurrency-safe PostgreSQL uniqueness for `(document_id, version_number)`.
+
+3. **Protect populated supersession lineage.** `supersededByVersionId` must resolve to an existing Documents-owned version while retaining the existing self-reference prohibition.
+
+4. **Validate optional Workflow approval references through a Workflow-owned contract** when approval metadata is populated; do not introduce a cross-module Workflow FK.
+
+5. **Validate mandatory uploader identity through an Identity-owned contract** while preserving the uploader display snapshot and avoiding a cross-module Identity FK.
+
+HMSR-080 does not modify production Java, JPA, Flyway, API/application contracts, tests, Documents/Workflow/Identity data, or provisioned data.
+
+### 93.11 Review conclusion
+
+**REVISE.** `DocumentVersion` is a coherent Documents-owned immutable version model with protected mandatory parent/storage references, explicit checksum metadata, correct effective-date ordering, appropriate lifecycle semantics, and an intentionally scalar Workflow approval reference.
+
+The target baseline cannot mark it APPROVED while required textual upload metadata can reach persistence as null, version numbers are neither positive nor unique per document, optional supersession lineage is not fail-closed, and uploader/workflow references are trusted without owner-controlled validation.
+
+HMS reconciliation must retain these obligations until explicitly authorized Documents production corrections resolve them or stronger repository evidence changes the governing Documents DDD.
+
+## 94. Current next task
+
+```text
+HMSR-081 — assets.MaintenanceWorkOrder
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review documents DocumentVersion
+docs(model-review): review assets MaintenanceWorkOrder
 ```
 
-Start HMSR-080 only after HMSR-079 is committed and reported. Do not start HMSR-081 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-081 only after HMSR-080 is committed and reported. Do not start HMSR-082 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

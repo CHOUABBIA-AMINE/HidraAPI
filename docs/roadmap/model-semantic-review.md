@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -258,7 +258,7 @@ Ordering rules applied:
 | HMSR-063 | 2 | topology | Equipment | — | party.Party, topology.Facility | 0 | 0 | 2 | REVISE | Completed | `docs(model-review): review topology Equipment` |
 | HMSR-064 | 3 | workflow | WorkflowInstance | — | workflow.WorkflowDefinition, workflow.WorkflowStep | 18 | 32 | 1 | REVISE | Completed | `docs(model-review): review workflow WorkflowInstance` |
 | HMSR-065 | 3 | organization | Employee | — | organization.AdministrativeLocality | 6 | 14 | 1 | APPROVED | Completed | `docs(model-review): review organization Employee` |
-| HMSR-066 | 3 | simulation | SimulationOptimizationCandidate | — | simulation.SimulationRun | 2 | 2 | 0 | — | Planned | `docs(model-review): review simulation SimulationOptimizationCandidate` |
+| HMSR-066 | 3 | simulation | SimulationOptimizationCandidate | — | simulation.SimulationRun | 2 | 2 | 0 | APPROVED | Completed | `docs(model-review): review simulation SimulationOptimizationCandidate` |
 | HMSR-067 | 3 | integration | IntegrationExchangeMessage | — | integration.ExternalSystem, integration.IntegrationJobRun | 1 | 1 | 2 | — | Planned | `docs(model-review): review integration IntegrationExchangeMessage` |
 | HMSR-068 | 3 | reporting | ReportRun | — | reporting.ReportDefinition, reporting.ReportRequest | 1 | 1 | 0 | — | Planned | `docs(model-review): review reporting ReportRun` |
 | HMSR-069 | 3 | risk | RiskAssessment | — | risk.RiskRegister | 1 | 1 | 10 | — | Planned | `docs(model-review): review risk RiskAssessment` |
@@ -2579,8 +2579,8 @@ Confirmed subject-model graph edges at this stage: **165**. These are semantic c
 | Field | Declared type | Classification | Resolved target | Graph edge | Notes |
 |---|---|---|---|:---:|---|
 | id | String | Self identifier | — | No | Primary identity of the current model. |
-| runId | String | Domain reference | simulation.SimulationRun | Yes | Unambiguous same-module subject-model reference. |
-| selectedByActorId | String | Cross-module reference | IDENTITY_ACTOR | No | Actor reference; no Actor subject model in the 123-model set. |
+| runId | String | Domain reference | simulation.SimulationRun | Yes | Mandatory same-module parent-run reference; HRA-111 protects `run_id -> hidra_simulation_run.id`. |
+| selectedByActorId | String | Optional cross-module reference | IDENTITY_ACTOR | No | Optional actor identity recorded when a candidate is selected; no Actor subject model or cross-module DB FK is appropriate. |
 
 #### simulation.SimulationRecommendation
 
@@ -12947,16 +12947,131 @@ Previously planned compatibility cleanup remains governed by its existing Organi
 
 HMSR-065 does not modify production Java, JPA, Flyway, API/application contracts, tests, Organization data, Identity data, or provisioned data.
 
-## 79. Current next task
+## 79. HMSR-066 — simulation.SimulationOptimizationCandidate review
+
+**Decision:** APPROVED  
+**Review code:** HMSR-066  
+**Dependency level:** 3  
+**Bounded context:** simulation  
+**Confirmed upstream subject dependencies:** `simulation.SimulationRun`  
+**Confirmed direct HMS subject dependents:** 2  
+**Transitive HMS subject dependents:** 2
+
+### 79.1 Semantic role
+
+`SimulationOptimizationCandidate` is the Simulation-owned candidate network or operating configuration produced by an optimization run. It carries parent-run identity, candidate ordering, lifecycle/selection state, feasibility, score/rank, human-readable summary and optional selection audit metadata.
+
+Simulation owns the candidate. It does not own official Topology state.
+
+### 79.2 Parent run integrity
+
+`runId` is mandatory and unambiguously references `simulation.SimulationRun`.
+
+HRA-111 protects same-module row existence with:
 
 ```text
-HMSR-066 — simulation.SimulationOptimizationCandidate
+hidra_simulation_optimization_candidate.run_id
+    -> hidra_simulation_run.id
+```
+
+That is the correct bounded-context ownership model for the candidate's parent run.
+
+HMSR-066 found no evidence requiring a cross-module dependency for candidate ownership.
+
+### 79.3 Candidate lifecycle state
+
+`SimulationCandidateStatus` defines:
+
+```text
+GENERATED
+SELECTED
+DISCARDED
+PROPOSED_TO_TOPOLOGY
+```
+
+These values describe the candidate's own technical/domain lifecycle rather than a general reusable business taxonomy.
+
+The Simulation DDD recommends a `SIMULATION_CANDIDATE_STATUS` catalog family but also explicitly allows technical lifecycle states to use constrained enums/check constraints.
+
+Current evidence therefore does not justify replacing `SimulationCandidateStatus` with a catalog solely because a recommended catalog family is listed.
+
+### 79.4 Feasibility, score and ranking
+
+The model carries:
+
+```text
+feasible
+objectiveScore
+rank
+candidateNumber
+```
+
+The DDD defines `feasible` as whether blocking constraints are satisfied and `objectiveScore` / `rank` as optimization result metadata.
+
+Current repository evidence does not define:
+- a mandatory objective score for every candidate,
+- a mandatory rank for every candidate,
+- a numeric bound for objective score,
+- a uniqueness rule for candidateNumber or rank inside a run.
+
+HMSR-066 therefore does not invent those constraints.
+
+### 79.5 Selection metadata
+
+`selectedByActorId` and `selectedAt` are optional.
+
+The actor identity is an external Identity reference. Simulation does not own users/actors, and no cross-module database FK is appropriate.
+
+Current DDD evidence does not state a universal invariant that every `SELECTED` row must carry both selection fields, nor that non-selected rows must keep them null. HMSR-066 therefore does not invent that state-field coupling.
+
+Any future selection use case may validate the authenticated actor through the Identity boundary, but the present model is not semantically defective merely because selection metadata is optional.
+
+### 79.6 Operational-safety boundary
+
+The model exposes:
+
+```text
+officialTopologyState() == false
+```
+
+This directly reinforces the governing Simulation DDD rule:
+
+```text
+A candidate is a recommendation candidate, not an official topology version.
+```
+
+The module-level adoption path remains:
+
+```text
+SimulationOptimizationCandidate
+  -> SimulationCandidateChange[]
+      -> TopologyChangeProposal
+          -> Workflow approval
+              -> TopologySnapshot / TopologyVersion
+```
+
+Simulation must not directly update Topology or actuate SCADA/PLC/RTU/SIS/ESD equipment.
+
+HMSR-066 finds the candidate model aligned with this safety architecture.
+
+### 79.7 Review conclusion
+
+**APPROVED.** `SimulationOptimizationCandidate` is a coherent 11-field Simulation-owned optimization-result model. Its mandatory parent SimulationRun is correctly protected by same-module FK, its candidate status is a legitimate lifecycle state, optional selection metadata preserves the external Identity boundary, and the domain explicitly prevents the candidate from being treated as official Topology state.
+
+No production correction is required by HMSR-066.
+
+HMSR-066 does not modify production Java, JPA, Flyway, API/application contracts, tests, Simulation data, Topology data, Identity data, or provisioned data.
+
+## 80. Current next task
+
+```text
+HMSR-067 — integration.IntegrationExchangeMessage
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review simulation SimulationOptimizationCandidate
+docs(model-review): review integration IntegrationExchangeMessage
 ```
 
-Start HMSR-066 only after HMSR-065 is committed and reported. Do not start HMSR-067 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-067 only after HMSR-066 is committed and reported. Do not start HMSR-068 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

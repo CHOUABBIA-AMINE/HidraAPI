@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -268,7 +268,7 @@ Ordering rules applied:
 | HMSR-073 | 3 | workflow | WorkflowTransition | — | workflow.WorkflowDefinition, workflow.WorkflowStep | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review workflow WorkflowTransition` |
 | HMSR-074 | 4 | incident | Incident | — | organization.OrganizationUnit, workflow.WorkflowInstance | 6 | 11 | 3 | REVISE | Completed | `docs(model-review): review incident Incident` |
 | HMSR-075 | 4 | identity | User | — | organization.Employee | 8 | 8 | 1 | REVISE | Completed | `docs(model-review): review identity User` |
-| HMSR-076 | 4 | planning | PlanRevision | SCC-04 | planning.OperationalPlan, planning.PlanRevision, workflow.WorkflowInstance | 4 | 8 | 2 | — | Planned | `docs(model-review): review planning PlanRevision` |
+| HMSR-076 | 4 | planning | PlanRevision | SCC-04 | planning.OperationalPlan, planning.PlanRevision, workflow.WorkflowInstance | 4 | 8 | 2 | REVISE | Completed | `docs(model-review): review planning PlanRevision` |
 | HMSR-077 | 4 | planning | OperationalPlan | SCC-04 | organization.OrganizationUnit, planning.PlanRevision, planning.PlanningPeriod | 1 | 8 | 1 | — | Planned | `docs(model-review): review planning OperationalPlan` |
 | HMSR-078 | 4 | workflow | WorkflowTask | — | organization.OrganizationUnit, workflow.WorkflowInstance, workflow.WorkflowStep | 4 | 6 | 1 | — | Planned | `docs(model-review): review workflow WorkflowTask` |
 | HMSR-079 | 4 | documents | Document | SCC-05 | documents.DocumentVersion | 4 | 5 | 3 | — | Planned | `docs(model-review): review documents Document` |
@@ -14452,16 +14452,129 @@ The target baseline cannot mark it APPROVED while required username semantics ar
 
 HMS reconciliation must retain these obligations until explicitly authorized Identity production corrections resolve them or stronger repository evidence changes the governing Identity DDD.
 
-## 89. Current next task
+## 89. HMSR-076 — planning.PlanRevision review
+
+**Decision:** REVISE  
+**Review code:** HMSR-076  
+**Dependency level:** 4  
+**Bounded context:** planning  
+**SCC:** SCC-04 with `planning.OperationalPlan` and `planning.PlanRevision`  
+**Confirmed upstream subject dependencies:** `planning.OperationalPlan`, optional prior `planning.PlanRevision`, optional `workflow.WorkflowInstance`  
+**Confirmed direct HMS subject dependents:** 4  
+**Transitive HMS subject dependents:** 8
+
+### 89.1 Semantic role
+
+`PlanRevision` is the Planning-owned immutable/versioned baseline candidate for an `OperationalPlan`. It carries revision identity/number/code, Planning lifecycle state, an optional catalog-backed revision reason, optional lineage to a base revision, submission/approval actor snapshots, and an optional Workflow-owned approval-process reference.
+
+Planning owns the revision lifecycle state. Workflow owns process/task/transition state. Identity owns actor identities. Cross-module references remain scalar/application-contract references and must not become cross-module database foreign keys.
+
+### 89.2 Parent-plan integrity
+
+`planId` is mandatory and same-module. HRA-111 already protects it with a Planning-local foreign key from `hidra_planning_plan_revision.plan_id` to `hidra_planning_operational_plan.id`.
+
+The application update path also loads the referenced `OperationalPlan` and fails closed if it does not exist. No further parent-plan integrity correction is required by this review.
+
+### 89.3 Revision number semantics
+
+The Planning DDD explicitly defines `revisionNumber` as monotonic per plan, starting at 1, and requires:
 
 ```text
-HMSR-076 — planning.PlanRevision
+unique(hidra_planning_plan_revision.plan_id, revision_number)
+```
+
+The live Flyway table defines only a non-unique index on `plan_id`; no unique constraint/index for `(plan_id, revision_number)` is present. The domain record also accepts zero or negative revision numbers.
+
+The authoritative Planning baseline therefore requires a positive revision number and concurrency-safe database uniqueness per plan. Application/domain checks may improve errors but must not replace the database uniqueness guarantee.
+
+### 89.4 Base-revision lineage
+
+`baseRevisionId` is an optional same-module lineage reference. The domain already rejects direct self-reference, which is appropriate.
+
+However, repository evidence shows no database FK for this optional same-module reference and no application lookup proving that a populated base revision exists. HRA-111 intentionally covered mandatory references only, so its absence there is not evidence that optional lineage may remain unchecked.
+
+When populated, `baseRevisionId` should fail closed as a Planning-owned revision reference. A same-module FK is architecturally acceptable here; alternatively an application existence check must be evidence-backed if a database constraint is deliberately rejected.
+
+This review does not invent a stronger rule such as requiring the base revision to belong to the same plan or to have a lower revision number because current repository evidence does not explicitly establish those constraints.
+
+### 89.5 Revision-reason catalog family
+
+The Planning DDD defines `changeReasonCodeId` as an optional `CATALOG_REF`, and the Planning catalog defines the dedicated family `REVISION_REASON`.
+
+The live update path copies `changeReasonCodeId` directly into the revision and repository search found no Planning catalog-family eligibility validation for this field.
+
+When populated, the value must resolve to an eligible/active `PlanningCatalogEntry` in the `REVISION_REASON` family; generic catalog-row existence alone is insufficient.
+
+### 89.6 Approval workflow and actor boundaries
+
+`workflowInstanceId` is an optional Workflow-owned reference. `submittedByActorId` and `approvedByActorId` are Identity-owned actor references/snapshots.
+
+The live approval service correctly uses the exported `PlanningWorkflowContract`, verifies that the workflow instance targets the Planning revision, and maps workflow decisions into Planning-owned lifecycle state. No cross-module Workflow database FK should be introduced.
+
+The actor IDs remain cross-context references. HMSR-076 does not require a cross-module FK; owner-controlled validation should be used where creation/submission/approval write paths accept actor identity.
+
+### 89.7 Approved-revision immutability
+
+The Planning DDD explicitly states:
+
+```text
+approved revisions are immutable
+superseding an approved revision requires a new revision
+```
+
+The live `PlanRevisionUpdateApplicationService` only checks that the revision is the plan's current revision and that `expectedUpdatedAt` matches. It does not reject `APPROVED` (or other non-editable lifecycle states) before changing reason metadata and persisting a new `updatedAt`.
+
+Therefore an approved revision can still pass the reviewed metadata-update path when it remains current. The authoritative write boundary must enforce the DDD's immutability rule and require a new revision for post-approval changes.
+
+HMSR-076 does not invent the full editable-state matrix beyond the explicit approved-immutability rule.
+
+### 89.8 Lifecycle enum
+
+`PlanRevisionStatus` contains:
+
+```text
+DRAFT
+SUBMITTED
+APPROVED
+REJECTED
+SUPERSEDED
+WITHDRAWN
+```
+
+These are stable Planning lifecycle states explicitly documented by the Planning DDD. They are appropriate as a technical/domain enum and should not be converted into a business taxonomy catalog merely because other Planning classifications are catalog-backed.
+
+### 89.9 Required revisions
+
+Four evidence-backed obligations remain:
+
+1. **Enforce revision-number semantics.** Require a positive revision number and add concurrency-safe PostgreSQL uniqueness for `(plan_id, revision_number)`.
+
+2. **Protect populated base-revision lineage.** Fail closed when `baseRevisionId` is populated, using a same-module FK or another explicitly justified same-module existence boundary; retain the existing no-self-reference rule.
+
+3. **Enforce the `REVISION_REASON` catalog family.** Validate populated `changeReasonCodeId` against an eligible/active Planning catalog entry from that exact family.
+
+4. **Enforce approved-revision immutability.** The metadata-update path must reject changes to an approved revision; supersession/post-approval change must proceed through creation of a new revision as defined by the Planning DDD.
+
+HMSR-076 does not modify production Java, JPA, Flyway, API/application contracts, tests, Planning catalog data, Workflow, Identity, or provisioned data.
+
+### 89.10 Review conclusion
+
+**REVISE.** `PlanRevision` is a coherent Planning-owned version model with correct bounded-context ownership, an appropriate lifecycle enum, a protected mandatory parent-plan reference, and a properly exported Workflow orchestration boundary.
+
+The target baseline cannot mark it APPROVED while per-plan revision-number uniqueness/positivity is unenforced, optional same-module base lineage is not fail-closed, the revision-reason catalog family is unchecked, and the live metadata-update path can mutate an approved revision contrary to the Planning DDD.
+
+HMS reconciliation must retain these obligations until explicitly authorized Planning production corrections resolve them or stronger repository evidence changes the governing Planning DDD.
+
+## 90. Current next task
+
+```text
+HMSR-077 — planning.OperationalPlan
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review planning PlanRevision
+docs(model-review): review planning OperationalPlan
 ```
 
-Start HMSR-076 only after HMSR-075 is committed and reported. Do not start HMSR-077 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-077 only after HMSR-076 is committed and reported. Do not start HMSR-078 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

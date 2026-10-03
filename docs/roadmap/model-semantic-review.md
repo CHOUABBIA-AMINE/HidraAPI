@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 reviewed as REVISE, HMSR-080 reviewed as REVISE, HMSR-081 reviewed as REVISE, HMSR-082 reviewed as REVISE, HMSR-083 approved, HMSR-084 reviewed as REVISE, HMSR-085 reviewed as REVISE, HMSR-086 approved, HMSR-087 reviewed as REVISE, HMSR-088 reviewed as REVISE, HMSR-089 reviewed as REVISE, HMSR-090 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 reviewed as REVISE, HMSR-033 reviewed as REVISE, HMSR-034 reviewed as REVISE, HMSR-035 reviewed as REVISE, HMSR-036 approved, HMSR-037 reviewed as REVISE, HMSR-038 reviewed as REVISE, HMSR-039 reviewed as REVISE, HMSR-040 approved, HMSR-041 reviewed as REVISE, HMSR-042 reviewed as REVISE, HMSR-043 reviewed as REVISE, HMSR-044 reviewed as REVISE, HMSR-045 approved, HMSR-046 approved, HMSR-047 approved, HMSR-048 reviewed as REVISE, HMSR-049 reviewed as REVISE, HMSR-050 reviewed as REVISE, HMSR-051 reviewed as REVISE, HMSR-052 reviewed as REVISE, HMSR-053 approved, HMSR-054 reviewed as REVISE, HMSR-055 reviewed as REVISE, HMSR-056 reviewed as REVISE, HMSR-057 reviewed as REVISE, HMSR-058 reviewed as REVISE, HMSR-059 reviewed as REVISE, HMSR-060 reviewed as REVISE, HMSR-061 reviewed as REVISE, HMSR-062 reviewed as REVISE, HMSR-063 reviewed as REVISE, HMSR-064 reviewed as REVISE, HMSR-065 approved, HMSR-066 approved, HMSR-067 reviewed as REVISE, HMSR-068 reviewed as REVISE, HMSR-069 reviewed as REVISE, HMSR-070 approved, HMSR-071 reviewed as REVISE, HMSR-072 reviewed as REVISE, HMSR-073 reviewed as REVISE, HMSR-074 reviewed as REVISE, HMSR-075 reviewed as REVISE, HMSR-076 reviewed as REVISE, HMSR-077 reviewed as REVISE, HMSR-078 reviewed as REVISE, HMSR-079 reviewed as REVISE, HMSR-080 reviewed as REVISE, HMSR-081 reviewed as REVISE, HMSR-082 reviewed as REVISE, HMSR-083 approved, HMSR-084 reviewed as REVISE, HMSR-085 reviewed as REVISE, HMSR-086 approved, HMSR-087 reviewed as REVISE, HMSR-088 reviewed as REVISE, HMSR-089 reviewed as REVISE, HMSR-090 reviewed as REVISE, HMSR-091 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -282,7 +282,7 @@ Ordering rules applied:
 | HMSR-087 | 4 | organization | EmployeeAssignment | — | organization.Employee, organization.OrganizationUnit, organization.Position | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review organization EmployeeAssignment` |
 | HMSR-088 | 4 | organization | OrganizationDelegation | — | organization.Employee, organization.ResponsibilityAssignment | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review organization OrganizationDelegation` |
 | HMSR-089 | 4 | organization | OrganizationHierarchySnapshot | — | organization.Employee | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review organization OrganizationHierarchySnapshot` |
-| HMSR-090 | 4 | organization | ShiftAssignment | — | organization.Employee, organization.OrganizationUnit, organization.Shift | 0 | 0 | 0 | — | Planned | `docs(model-review): review organization ShiftAssignment` |
+| HMSR-090 | 4 | organization | ShiftAssignment | — | organization.Employee, organization.OrganizationUnit, organization.Shift | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review organization ShiftAssignment` |
 | HMSR-091 | 4 | risk | RiskEvidenceLink | — | risk.RiskAssessment | 0 | 0 | 1 | — | Planned | `docs(model-review): review risk RiskEvidenceLink` |
 | HMSR-092 | 4 | simulation | SimulationCandidateChange | — | simulation.SimulationOptimizationCandidate | 0 | 0 | 0 | — | Planned | `docs(model-review): review simulation SimulationCandidateChange` |
 | HMSR-093 | 4 | simulation | SimulationRecommendation | — | simulation.SimulationOptimizationCandidate, simulation.SimulationRun | 0 | 0 | 0 | — | Planned | `docs(model-review): review simulation SimulationRecommendation` |
@@ -16320,16 +16320,140 @@ The target baseline cannot mark it APPROVED while persistence still permits a nu
 
 HMS reconciliation must retain this obligation until explicitly authorized Organization production work aligns JPA/Flyway nullability with the canonical model or stronger repository evidence changes the governing contract.
 
-## 103. Current next task
+## 103. HMSR-090 — organization.ShiftAssignment review
+
+**Decision:** REVISE  
+**Review code:** HMSR-090  
+**Dependency level:** 4  
+**Bounded context:** organization  
+**Confirmed upstream subject dependencies:** mandatory `organization.Employee`, mandatory `organization.Shift`, mandatory `organization.OrganizationUnit`  
+**Confirmed direct HMS subject dependents:** 0  
+**Transitive HMS subject dependents:** 0
+
+### 103.1 Semantic role
+
+`ShiftAssignment` is the Organization-owned effective-dated assignment of an employee to a defined shift within an organization unit.
+
+It does not own shift definitions, employee identity, or organization-unit lifecycle; those remain with their Organization-owned aggregates.
+
+### 103.2 Mandatory same-module reference integrity
+
+The canonical domain requires:
 
 ```text
-HMSR-090 — organization.ShiftAssignment
+employeeId
+shiftId
+organizationUnitId
+```
+
+All three are same-module Organization references.
+
+The Organization internal-reference migration already adds foreign keys for:
+
+```text
+employee_id -> hidra_org_employee.id
+shift_id -> hidra_org_shift.id
+organization_unit_id -> hidra_org_unit.id
+```
+
+The domain constructor also rejects blank values for all three IDs.
+
+Reference existence is therefore structurally protected.
+
+### 103.3 Effective-date and status invariants
+
+The live domain constructor enforces:
+
+```text
+id nonblank
+employeeId nonblank
+shiftId nonblank
+organizationUnitId nonblank
+validFrom required
+validTo null or strictly after validFrom
+status non-null
+```
+
+ORG-053/ORG-055 already records and tests this effective-dated Organization policy.
+
+No additional constructor-level correction is required.
+
+### 103.4 Organization-unit nullability mismatch
+
+The authoritative domain requires `organizationUnitId` for every `ShiftAssignment`:
+
+```text
+organizationUnitId = requireText(...)
+```
+
+However, the live JPA mapping still declares:
+
+```text
+@Column(name = "organization_unit_id", nullable = true)
+```
+
+and the base Flyway schema permits `hidra_org_shift_assignment.organization_unit_id` to be null.
+
+A later Organization migration added the same-module FK but did not change the column to `NOT NULL`.
+
+This leaves persistence capable of storing rows that cannot be reconstructed as valid canonical domain objects. The target baseline must align persistence nullability with the already-established domain contract.
+
+### 103.5 Shift-assignment lifecycle enum
+
+`ShiftAssignmentStatus` contains:
+
+```text
+ACTIVE
+ENDED
+CANCELLED
+```
+
+These values represent the Organization-owned shift-assignment lifecycle and are appropriate as a domain/lifecycle enum.
+
+Current live Organization evidence does not define a stricter transition matrix, so HMSR-090 does not invent one.
+
+### 103.6 Overlap and exclusivity rules
+
+Repository search found no current authoritative Organization rule stating that an employee may have only one active shift assignment, that assignments must not overlap, or that a shift assignment must correlate to another EmployeeAssignment record.
+
+HMSR-090 therefore does not invent overlap, exclusivity, or cross-record correlation rules from general scheduling assumptions.
+
+If later Organization DDD/application policy explicitly establishes such rules, HMS-006 may reconcile them then.
+
+### 103.7 Application-path evidence
+
+Repository search found the repository port and persistence mapper but no live ShiftAssignment-specific application service/use case that creates or transitions shift assignments.
+
+HMSR-090 therefore does not invent application-layer defects that are not present in the current implementation.
+
+Any future write path must preserve the existing same-module ownership and effective-date rules.
+
+### 103.8 Required revisions
+
+One evidence-backed production obligation remains:
+
+1. **Align persistence nullability for mandatory `organizationUnitId` with the canonical domain contract.** Add an additive Flyway correction that fails closed on any existing null rows before setting `hidra_org_shift_assignment.organization_unit_id` to `NOT NULL`, and update the JPA mapping to `nullable = false`. Preserve the existing same-module FK.
+
+HMSR-090 does not modify production Java, JPA, Flyway, API/application contracts, tests, Organization data, or provisioned data.
+
+### 103.9 Review conclusion
+
+**REVISE.** `ShiftAssignment` is semantically coherent at the domain level: all three mandatory Organization references are explicit and FK-protected, effective dating is enforced, and lifecycle state is typed.
+
+The target baseline cannot mark it APPROVED while persistence still permits a null `organizationUnitId` that the canonical domain explicitly forbids.
+
+HMS reconciliation must retain this obligation until explicitly authorized Organization production work aligns JPA/Flyway nullability with the canonical model or stronger repository evidence changes the governing contract.
+
+## 104. Current next task
+
+```text
+HMSR-091 — risk.RiskEvidenceLink
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review organization ShiftAssignment
+docs(model-review): review risk RiskEvidenceLink
 ```
 
-Start HMSR-090 only after HMSR-089 is committed and reported. Do not start HMSR-091 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-091 only after HMSR-090 is committed and reported. Do not start HMSR-092 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

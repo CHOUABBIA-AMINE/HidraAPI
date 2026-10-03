@@ -1,6 +1,6 @@
 # HidraAPI Target Model Semantic Review Roadmap
 
-**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 is the next interactive model review.
+**Status:** Active — HMS-005 completed; HMSR-001 approved, HMSR-002 reviewed as REVISE, HMSR-003 approved, HMSR-004 reviewed as REVISE, HMSR-005 reviewed as REVISE, HMSR-006 reviewed as REVISE, HMSR-007 reviewed as REVISE, HMSR-008 reviewed as REVISE, HMSR-009 reviewed as REVISE, HMSR-010 reviewed as REVISE, HMSR-011 reviewed as REVISE, HMSR-012 reviewed as REVISE, HMSR-013 reviewed as REVISE, HMSR-014 reviewed as REVISE, HMSR-015 reviewed as REVISE, HMSR-016 approved, HMSR-017 approved, HMSR-018 reviewed as REVISE, HMSR-019 reviewed as REVISE, HMSR-020 reviewed as REVISE, HMSR-021 reviewed as REVISE, HMSR-022 reviewed as REVISE, HMSR-023 reviewed as REVISE, HMSR-024 reviewed as REVISE, HMSR-025 reviewed as REVISE, HMSR-026 reviewed as REVISE, HMSR-027 reviewed as REVISE, HMSR-028 reviewed as REVISE, HMSR-029 reviewed as REVISE, HMSR-030 approved, HMSR-031 reviewed as REVISE, HMSR-032 is the next interactive model review.
 
 **Repository:** `CHOUABBIA-AMINE/HidraAPI`  
 **Roadmap:** `docs/roadmap/model-semantic-review.md`  
@@ -223,7 +223,7 @@ Ordering rules applied:
 | HMSR-028 | 0 | configuration | FeatureFlag | — | — | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review configuration FeatureFlag` |
 | HMSR-029 | 0 | custody | CustodyDiscrepancy | — | — | 0 | 0 | 1 | REVISE | Completed | `docs(model-review): review custody CustodyDiscrepancy` |
 | HMSR-030 | 0 | organization | OrganizationContactPoint | — | — | 0 | 0 | 0 | APPROVED | Completed | `docs(model-review): review organization OrganizationContactPoint` |
-| HMSR-031 | 0 | organization | ReportingLine | — | — | 0 | 0 | 0 | — | Planned | `docs(model-review): review organization ReportingLine` |
+| HMSR-031 | 0 | organization | ReportingLine | — | — | 0 | 0 | 0 | REVISE | Completed | `docs(model-review): review organization ReportingLine` |
 | HMSR-032 | 0 | risk | RiskMatrixCell | — | — | 0 | 0 | 2 | — | Planned | `docs(model-review): review risk RiskMatrixCell` |
 | HMSR-033 | 0 | telemetry | TelemetrySource | — | — | 0 | 0 | 0 | — | Planned | `docs(model-review): review telemetry TelemetrySource` |
 | HMSR-034 | 0 | topology | TopologyConnection | — | — | 0 | 0 | 3 | — | Planned | `docs(model-review): review topology TopologyConnection` |
@@ -2362,6 +2362,8 @@ Confirmed subject-model graph edges at this stage: **165**. These are semantic c
 | Field | Declared type | Classification | Resolved target | Graph edge | Notes |
 |---|---|---|---|:---:|---|
 | id | String | Self identifier | — | No | Primary identity of the current model. |
+| source | ReportingSubjectReference | Typed polymorphic domain reference | organization.Employee / organization.Position / organization.OrganizationUnit | No | HMSR-031 stronger Organization roadmap/domain evidence resolves the governed same-module subject set; target is selected by ReportingSubjectType, so no single HMS graph edge is added. |
+| target | ReportingSubjectReference | Typed polymorphic domain reference | organization.Employee / organization.Position / organization.OrganizationUnit | No | HMSR-031 stronger Organization roadmap/domain evidence resolves the governed same-module subject set; target is selected by ReportingSubjectType, so no single HMS graph edge is added. |
 
 #### organization.ResponsibilityAssignment
 
@@ -7374,16 +7376,159 @@ Keeping targets inside the Organization bounded context prevents accidental coup
 
 No evidence-backed production-model correction is required by HMSR-030. Format validation, primary-contact uniqueness, emergency-contact coupling and additional lifecycle semantics remain intentionally unspecified until an authoritative Organization requirement establishes them.
 
-## 44. Current next task
+## 44. HMSR-031 — organization.ReportingLine review
+
+**Decision:** REVISE  
+**Review code:** HMSR-031  
+**Dependency level:** 0  
+**Bounded context:** organization  
+**Confirmed upstream subject dependencies:** none — source/target are governed same-module polymorphic references, not single graph edges  
+**Confirmed direct HMS subject dependents:** 0  
+**Transitive HMS subject dependents:** 0  
+**Unresolved/non-subject references:** 0
+
+### 44.1 Semantic role and ordering rationale
+
+`ReportingLine` is the Organization-owned effective-dated relationship used for simple and matrix reporting among employees, positions, and organization units. It does not own Identity users, Topology assets, or other bounded-context subjects.
+
+It remains Level 0 in the HMS graph because `source` and `target` are typed polymorphic references whose concrete target is selected at runtime by `ReportingSubjectType`. HMSR-031 resolves the governed target set to `Employee`, `Position`, or `OrganizationUnit` without creating three artificial graph edges.
+
+### 44.2 Field semantics
+
+| Field | Type | Mandatory / optional | Reviewed meaning |
+|---|---|---|---|
+| `id` | `String` | Mandatory | Stable reporting-line identity and persistence primary key. |
+| `reportingLineType` | `ReportingLineType` | Mandatory in the live model | Current reporting classification. The representation is not accepted as final because repository vocabulary-audit evidence requires a catalog/reference replacement. |
+| `source` | `ReportingSubjectReference` | Mandatory | Typed source reporting subject: employee, position, or organization unit. |
+| `target` | `ReportingSubjectReference` | Mandatory | Typed target reporting subject: employee, position, or organization unit. |
+| `validFrom` | `Instant` | Mandatory | Inclusive effective start. |
+| `validTo` | `Instant` | Optional | Exclusive effective end. |
+| `active` | `boolean` | Mandatory primitive state | Whether the relation is active. |
+| `createdAt` | `Instant` | Persistence-required audit timestamp | Creation timestamp. |
+| `updatedAt` | `Instant` | Persistence-required audit timestamp | Last-update timestamp. |
+
+The compact constructor already requires nonblank `id`, non-null line type/source/target, rejects an identical typed source and target, requires `validFrom`, and enforces `validTo > validFrom` when an end exists.
+
+### 44.3 Governed source/target references
+
+The accepted Organization correction replaced raw subject discriminator strings with:
 
 ```text
-HMSR-031 — organization.ReportingLine
+ReportingSubjectReference
+  type: ReportingSubjectType
+  targetId: String
+
+ReportingSubjectType
+  EMPLOYEE
+  POSITION
+  ORGANIZATION_UNIT
+```
+
+JPA persists the governed discriminator values using `EnumType.STRING`. ORG-046 adds database CHECK constraints limiting both `source_type` and `target_type` to the same three values.
+
+This typed-reference direction is semantically correct and should be retained.
+
+### 44.4 Subject-existence integrity gap
+
+The ReportingLine JavaDoc explicitly delegates referenced-object existence to an application/policy boundary because validation requires repositories.
+
+ORG-046 migration preflight verifies that reporting-line rows existing at migration time reference real employees, positions, or organization units. However, the installed database constraints only protect the discriminator values; they do not provide ongoing polymorphic row-existence protection for future inserts.
+
+Unlike `OrganizationContactPoint`, the current live repository has no `ReportingLineApplicationService`, reporting-subject validator, or active inbound reporting-line write use case that performs owner-repository existence checks before save. `ReportingLineRepositoryPort` remains available as persistence plumbing.
+
+Therefore the final reporting-line write/provisioning boundary is not yet fail-closed against a valid discriminator paired with a nonexistent subject ID.
+
+HMSR-031 does not require an impossible single polymorphic foreign key. The correction may use an Organization-owned application validator, guarded persistence path, database trigger/constraint strategy if justified, or equivalent fail-closed mechanism.
+
+### 44.5 ReportingLineType catalog contradiction
+
+Repository controlled-vocabulary audit evidence explicitly classified `ReportingLineType` as:
+
+```text
+TYPE_ENUM_TO_CATALOG
+REPLACE_FIRST_THEN_DELETE
+```
+
+and states that reporting-line business classification should be replaced with a catalog reference plus explicit policy behavior.
+
+No `ReportingLineTypeReference`, reporting-line type catalog model/table, or replacement field exists on live main. Instead the current domain/JPA contract uses the fixed enum:
+
+```text
+FUNCTIONAL
+ADMINISTRATIVE
+OPERATIONAL
+TEMPORARY
+```
+
+persisted directly in `reporting_line_type`.
+
+This also conflicts with the active Organization roadmap's documented target vocabulary, which includes `LINE`, `OPERATIONAL`, `FUNCTIONAL`, `ADMINISTRATIVE`, `TECHNICAL`, and `DOTTED_LINE`.
+
+HMSR-031 therefore cannot treat the live fixed enum as the final semantic baseline. A separate Organization correction must establish the authoritative catalog/reference representation and migrate domain/JPA/application/schema contracts additively.
+
+### 44.6 Matrix-reporting policy reconciliation gap
+
+The active Organization roadmap states that ReportingLine must support simple and matrix reporting and records rules including:
+
+- one active primary LINE reporting line per employee;
+- multiple active FUNCTIONAL reporting lines;
+- multiple ADMINISTRATIVE, TECHNICAL, or DOTTED_LINE lines;
+- LINE reporting cycles are forbidden;
+- disabled employees cannot receive new reporting lines or be assigned as manager;
+- reporting lines require an effective start date.
+
+The newer typed-subject model intentionally generalizes relationships beyond employee-to-manager pairs to employees, positions, and organization units. The live record also has no `primaryLine` component, the live type vocabulary lacks `LINE`, `TECHNICAL`, and `DOTTED_LINE`, and no current ReportingLine policy/application service implements the roadmap cardinality, cycle, or employee-lifecycle rules.
+
+This is a semantic reconciliation problem, not permission to blindly restore an older employee-only shape. The correction must decide how the documented employee reporting rules map onto the generalized typed-subject model and which rules apply to position/unit relations.
+
+### 44.7 Rules already sound and rules not invented
+
+The current half-open effective-period invariant (`validTo > validFrom`) is already aligned with Organization invariant policy. Identical typed source/target self-reporting is also correctly rejected in the record.
+
+HMSR-031 does not invent code/name snapshots, cross-module subjects, direct Identity/Topology references, generic uniqueness constraints, or a rule that all reporting relations must be acyclic regardless of reporting-line type. Cycle/cardinality behavior must follow the reconciled Organization reporting policy rather than generic graph intuition.
+
+### 44.8 Persistence consistency
+
+The domain has nine canonical components. JPA flattens source and target references to `source_type/source_id` and `target_type/target_id`; the base schema requires type/ID pairs, line type, `valid_from`, active state, and audit timestamps.
+
+ORG-046 protects finite source/target type vocabularies and preflights pre-existing orphan rows, but does not convert the polymorphic IDs into ordinary FKs. That persistence shape is acceptable only when ongoing writes/provisioning perform equivalent fail-closed target resolution.
+
+### 44.9 Required revisions
+
+Three evidence-backed obligations remain:
+
+1. **Reconcile ReportingLineType with the accepted catalog architecture.** Replace or explicitly redesign the current fixed `ReportingLineType` enum/string persistence according to the existing `TYPE_ENUM_TO_CATALOG` decision, including an authoritative reporting-line type catalog/reference and any separate policy behavior.
+
+2. **Protect typed reporting-subject existence on future writes/provisioning.** A supplied `EMPLOYEE`, `POSITION`, or `ORGANIZATION_UNIT` reference must resolve to an existing Organization-owned subject before a new reporting line becomes authoritative. ORG-046 migration-time preflight alone is insufficient for later rows.
+
+3. **Reconcile and implement the documented matrix-reporting policy against the generalized typed-subject model.** Resolve primary-LINE representation, line-type vocabulary, employee lifecycle eligibility, allowed multiplicity, and LINE-cycle semantics without regressing to an unjustified employee-only model.
+
+HMSR-031 does not modify production Java, JPA, Flyway, API/application contracts, tests, reporting-line rows, or provisioned data.
+
+### 44.10 SONATRACH/TRC operational interpretation
+
+For SONATRACH/TRC, reporting lines represent administrative, operational, functional, technical, or matrix-reporting authority/coordination relationships across personnel and organization structure. Their type and effective period influence how hierarchy and management context are interpreted.
+
+A reporting line must therefore point to real Organization subjects, use governed/evolvable reporting classifications, and apply explicit matrix-reporting rules. It must not silently become an Identity authorization grant or a Topology ownership relation.
+
+### 44.11 Review conclusion
+
+**REVISE.** `ReportingLine` has a sound typed-source/target foundation, correct Organization ownership, a valid half-open effective period, and direct self-reporting protection.
+
+The target baseline cannot mark it APPROVED while the fixed `ReportingLineType` enum contradicts the repository's catalog-refactor decision, future typed references lack ongoing fail-closed existence protection, and the active roadmap's matrix/primary/cycle/lifecycle semantics remain unreconciled with the generalized typed-subject shape.
+
+HMS reconciliation must retain these obligations until an explicitly authorized Organization correction task resolves them or the governing Organization roadmap/catalog decisions are explicitly revised with stronger evidence.
+
+## 45. Current next task
+
+```text
+HMSR-032 — risk.RiskMatrixCell
 ```
 
 Exact commit message:
 
 ```text
-docs(model-review): review organization ReportingLine
+docs(model-review): review risk RiskMatrixCell
 ```
 
-Start HMSR-031 only after HMSR-030 is committed and reported. Do not start HMSR-032 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.
+Start HMSR-032 only after HMSR-031 is committed and reported. Do not start HMSR-033 automatically. HMS-006 final reconciliation remains blocked until all 123 HMSR tasks are resolved.

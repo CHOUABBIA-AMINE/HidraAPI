@@ -2125,6 +2125,28 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 - HMR-036 remains the next production remediation after this prerequisite commit is observed. Do not start HMR-037 automatically.
 
 
+#### HMR-036B — Facility Party-contract guardrail registration prerequisite
+
+- Source: HMR-036 CI #498 architecture failures plus the completed HMR-036A export decision.
+- Exact commit: `docs(model-remediation): register Facility Party contract guardrail prerequisite`
+- Status: **Completed** — the two architecture guardrail registries are authorized to recognize the already approved Party-owned Topology contract package; HMR-036B itself changes documentation only.
+- Type: documentation/architecture prerequisite.
+- Live CI evidence:
+  1. `ForensicRemediationClosureTest.crossModulePrivateImportsRemainClosed` rejected `topology.application.service.FacilityApplicationService -> party.application.contract.topology.TopologyPartyReferenceContract`.
+  2. `ArchitectureGuardrailTest.businessModulesMustNotReachIntoOtherModuleInternals` rejected the same dependency.
+  3. Both tests maintain explicit allowlists of deliberately exported `application.contract.<consumer>` packages; the new Party-to-Topology contract was absent from those registries.
+  4. The dependency itself matches the repository's established owner-exported contract pattern and was already authorized by HMR-036A.
+- Required decisions:
+  1. Do not weaken either guardrail algorithm or introduce wildcard exceptions.
+  2. Register exactly `dz.sh.hidra.modules.party.application.contract.topology` as an exported cross-module package in both existing guardrail registries.
+  3. No transitional dependency exception is permitted; this is a deliberate exported owner contract.
+  4. Do not alter any other guardrail rule, package, or allowlist entry.
+- Newly authorized HMR-036 repair files:
+  - `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java`
+  - `src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java`
+- HMR-036 remains the current remediation until the guardrail registration repair is committed and green. Do not start HMR-037 automatically.
+
+
 #### HMR-037 — analytics.AnalyticsDatasetVersion
 
 - Source review: `HMSR-042`
@@ -4928,8 +4950,8 @@ or required-field alignment work; keep high-risk semantic redesigns solo.
 
 ### 12.6 Current next execution
 
-HMR-037 — analytics.AnalyticsDatasetVersion
+HMR-036 — topology.Facility repair
 
-`fix(analytics): remediate semantic review AnalyticsDatasetVersion`
+`fix(topology): remediate semantic review Facility`
 
-HMR-036 is completed. Execute HMR-037 only after the HMR-036 head is green; do not start HMR-038 automatically.
+CI #498 exposed a missing architecture-guardrail registry entry for the HMR-036A Party-owned Topology contract. Apply only the HMR-036B-authorized guardrail registration repair after observing this docs-only prerequisite; do not start HMR-037 automatically.

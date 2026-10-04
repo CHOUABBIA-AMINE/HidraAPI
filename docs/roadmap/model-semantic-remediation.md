@@ -1938,7 +1938,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-038`
 - Exact commit: `fix(simulation): remediate semantic review SimulationScenario`
-- Status: **Planned**
+- Status: **Blocked — HMR-034A owner-reference validation prerequisite registered**
 - SCC: —
 - Recorded upstream HMS dependencies: simulation.SimulationModel
 - HMSR correction count: 5
@@ -1974,6 +1974,36 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
   3. **Enforce model/model-version parent consistency.** The selected `modelVersionId` must belong to the selected `modelId`.
   4. **Require DDD-mandated nonblank `nameFr` and `createdByDisplayNameSnapshot`.** Canonical construction must not admit values that violate the stated scenario contract and final schema.
   5. **Fail closed on scenario input references at the appropriate lifecycle boundary.** Before READY/LOCKED/execution, the required Topology snapshot and any populated Planning/Monitoring references must resolve through their existing owner-module lookup ports or equivalent boundary validation.
+
+#### HMR-034A — SimulationScenario owner-reference validation prerequisite
+
+- Source: HMR-034 / HMSR-038 obligation 5 plus live Simulation application/port evidence.
+- Exact commit: `docs(model-remediation): register SimulationScenario reference prerequisite`
+- Status: **Completed** — the missing authoritative owner-reference validation scope is explicitly registered; no production Java/JPA/Flyway mutation is part of HMR-034A.
+- Type: documentation/architecture prerequisite.
+- Live evidence:
+  1. `SimulationApplicationService.createSimulationScenario(...)` is the authoritative scenario creation path and is not present in the original HMR-034 write allowlist.
+  2. Simulation already declares `TopologySnapshotLookupPort`, `PlanningSnapshotLookupPort`, and `MonitoringContextLookupPort`, each exposing `available(String referenceId)`, but no production implementation of those ports is present on live `main`.
+  3. `SimulationExternalReferenceResolver` exposes topology/planning/monitoring availability methods, but the only live implementation is `NoopSimulationExternalReferenceResolver`, which returns `true` unconditionally and therefore cannot satisfy the fail-closed HMSR obligation.
+  4. The repository architecture classifies cross-module stable references as owner-validated through exported application contracts and explicitly forbids cross-module database foreign keys.
+  5. The Simulation DDD defines `topologySnapshotId` as a required Topology snapshot reference, `planningReferenceId` as an optional plan/revision reference, and `monitoringContextId` as an optional monitoring/evaluation context; no narrower target meaning is established and none may be invented by HMR-034.
+- Required decisions:
+  1. HMR-034 must validate scenario input references at the application lifecycle boundary before a scenario can become READY/LOCKED/executable; DRAFT construction alone is not sufficient evidence of readiness.
+  2. The existing Simulation lookup ports remain the consumer-side contracts. HMR-034 may wire them into `SimulationApplicationService`; it must not perform repository lookups in the domain constructor.
+  3. Owner-side validation must remain behind deliberate exported application contracts. HMR-034 must not import Topology/Planning/Monitoring domain models, repositories, JPA entities, or infrastructure adapters and must not add cross-module database foreign keys.
+  4. The unconditional no-op resolver is not acceptable for authoritative validation and must not be used to satisfy obligation 5.
+  5. `planningReferenceId` remains the already documented opaque plan/revision reference and `monitoringContextId` remains the already documented opaque monitoring/evaluation reference; HMR-034 must not invent a narrower ownership subtype without owner-module evidence.
+  6. HMR-034 production scope is expanded only as necessary to include the authoritative application service and the existing Simulation lookup-port/integration wiring required to enforce obligation 5. Any required owner-module exported contract that is absent on live `main` must be introduced as a narrow Simulation-facing availability contract, not as shared/domain leakage.
+  7. The original HMR-034 semantic obligations 1-4, exact commit message, additive migration rule, and original allowlist remain unchanged.
+- Newly authorized HMR-034 production files in addition to the original allowlist:
+  - `src/main/java/dz/sh/hidra/modules/simulation/application/service/SimulationApplicationService.java`
+  - `src/main/java/dz/sh/hidra/modules/simulation/application/port/out/TopologySnapshotLookupPort.java`
+  - `src/main/java/dz/sh/hidra/modules/simulation/application/port/out/PlanningSnapshotLookupPort.java`
+  - `src/main/java/dz/sh/hidra/modules/simulation/application/port/out/MonitoringContextLookupPort.java`
+  - `src/main/java/dz/sh/hidra/modules/simulation/infrastructure/integration/SimulationExternalReferenceResolver.java`
+  - `src/main/java/dz/sh/hidra/modules/simulation/infrastructure/integration/NoopSimulationExternalReferenceResolver.java`
+- HMR-034 remains the next production remediation after this prerequisite commit is observed. Do not start HMR-035 automatically.
+
 
 #### HMR-035 — notification.NotificationRequest
 
@@ -4873,4 +4903,4 @@ HMR-034 — simulation.SimulationScenario
 
 `fix(simulation): remediate semantic review SimulationScenario`
 
-HMR-033 is completed. Execute HMR-034 only after the HMR-033 head is green; do not start HMR-035 automatically.
+HMR-034A has registered the missing owner-reference validation scope. Observe the HMR-034A documentation prerequisite commit once, then execute HMR-034 only; do not start HMR-035 automatically.

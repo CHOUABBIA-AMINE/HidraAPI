@@ -175,3 +175,21 @@ It does not define a vault URI format, invent a new secret detector, or change t
 `ConfigurationDefinitionVersion.defaultValue`. The correction closes the reviewed
 `ConfigurationDefinition.defaultValue` bypass while preserving the existing distinction between
 secret references and secret material.
+
+
+---
+
+## HMR-026 — FeatureFlag ownership baseline
+
+`FeatureFlag.owningModule` is a required, nonblank ownership/routing discriminator.
+
+```text
+CreateFeatureFlagCommand rejects missing or blank owningModule
+FeatureFlag rejects missing or blank owningModule
+hidra_configuration_feature_flag rejects blank owning_module
+owningModule identifies the governed capability owner
+Configuration does not thereby own the target module's business taxonomy
+```
+
+HMR-026 does not add feature-code uniqueness, strategy-specific evaluation algorithms,
+status-transition rules, or additional localized-name invariants.

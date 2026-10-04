@@ -7,7 +7,7 @@
  *
  * @Name        : CreateFeatureFlagCommand
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-04
  *
  * @Type        : Record
  * @Layer       : Application
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.configuration.application.command;
 
+import dz.sh.hidra.modules.configuration.domain.exception.InvalidConfigurationValueException;
 import dz.sh.hidra.modules.configuration.domain.value.FeatureFlagEvaluationStrategy;
 
 /**
@@ -34,4 +35,13 @@ public record CreateFeatureFlagCommand(
         boolean defaultEnabled,
         String description
 ) {
+
+    public CreateFeatureFlagCommand {
+        if (owningModule == null || owningModule.isBlank()) {
+            throw new InvalidConfigurationValueException(
+                    "FeatureFlag owning module must not be blank."
+            );
+        }
+        owningModule = owningModule.trim();
+    }
 }

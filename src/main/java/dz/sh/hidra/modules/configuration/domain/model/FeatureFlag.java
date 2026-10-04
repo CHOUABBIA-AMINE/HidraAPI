@@ -7,7 +7,7 @@
  *
  * @Name        : FeatureFlag
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-10-04
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -62,6 +62,11 @@ import java.time.Instant;
         // HRA-051 required: code
         if (code == null || code.isBlank()) {
             throw new InvalidConfigurationValueException("FeatureFlag code must not be blank.");
+        }
+        if (owningModule == null || owningModule.isBlank()) {
+            throw new InvalidConfigurationValueException(
+                    "FeatureFlag owning module must not be blank."
+            );
         }
         // HRA-051 required: status
         if (status == null) {

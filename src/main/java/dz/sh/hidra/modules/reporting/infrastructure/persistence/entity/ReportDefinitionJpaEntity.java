@@ -7,7 +7,7 @@
  *
  * @Name        : ReportDefinitionJpaEntity
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-04
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -19,21 +19,23 @@
  */
 package dz.sh.hidra.modules.reporting.infrastructure.persistence.entity;
 
-import java.time.Instant;
-
+import dz.sh.hidra.modules.reporting.domain.value.ReportDefinitionStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.time.Instant;
 
-    /**
-     * Database-backed JPA entity for ReportDefinition.
-     */
-    @Entity
-    @Table(name = "hidra_reporting_report_definition")
-    public class ReportDefinitionJpaEntity {
+/**
+ * Database-backed JPA entity for ReportDefinition.
+ */
+@Entity
+@Table(name = "hidra_reporting_report_definition")
+public class ReportDefinitionJpaEntity {
 
-        @Id
+    @Id
     @Column(name = "id", nullable = false, length = 80)
     private String id;
 
@@ -58,8 +60,9 @@ import jakarta.persistence.Table;
     @Column(name = "description", nullable = true, length = 1000)
     private String description;
 
-    @Column(name = "active", nullable = false)
-    private boolean active;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false, length = 40)
+    private ReportDefinitionStatus status;
 
     @Column(name = "current_template_version_id", nullable = true, length = 80)
     private String currentTemplateVersionId;
@@ -76,12 +79,12 @@ import jakarta.persistence.Table;
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
-        protected ReportDefinitionJpaEntity() {
-            // Required by JPA.
-        }
+    protected ReportDefinitionJpaEntity() {
+        // Required by JPA.
+    }
 
-        public ReportDefinitionJpaEntity(
-                String id,
+    public ReportDefinitionJpaEntity(
+            String id,
             String code,
             String nameAr,
             String nameFr,
@@ -89,14 +92,14 @@ import jakarta.persistence.Table;
             String reportCategoryId,
             String ownerModule,
             String description,
-            boolean active,
+            ReportDefinitionStatus status,
             String currentTemplateVersionId,
             boolean requiresApproval,
             boolean restricted,
             Instant createdAt,
             Instant updatedAt
-        ) {
-            this.id = id;
+    ) {
+        this.id = id;
         this.code = code;
         this.nameAr = nameAr;
         this.nameFr = nameFr;
@@ -104,82 +107,27 @@ import jakarta.persistence.Table;
         this.reportCategoryId = reportCategoryId;
         this.ownerModule = ownerModule;
         this.description = description;
-        this.active = active;
+        this.status = status;
         this.currentTemplateVersionId = currentTemplateVersionId;
         this.requiresApproval = requiresApproval;
         this.restricted = restricted;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-        }
-
-
-    public String id() {
-        return id;
     }
 
-
-    public String code() {
-        return code;
-    }
-
-
-    public String nameAr() {
-        return nameAr;
-    }
-
-
-    public String nameFr() {
-        return nameFr;
-    }
-
-
-    public String nameEn() {
-        return nameEn;
-    }
-
-
-    public String reportCategoryId() {
-        return reportCategoryId;
-    }
-
-
-    public String ownerModule() {
-        return ownerModule;
-    }
-
-
-    public String description() {
-        return description;
-    }
-
-
-    public boolean active() {
-        return active;
-    }
-
-
-    public String currentTemplateVersionId() {
-        return currentTemplateVersionId;
-    }
-
-
-    public boolean requiresApproval() {
-        return requiresApproval;
-    }
-
-
-    public boolean restricted() {
-        return restricted;
-    }
-
-
-    public Instant createdAt() {
-        return createdAt;
-    }
-
-
-    public Instant updatedAt() {
-        return updatedAt;
-    }
-
-    }
+    public String id() { return id; }
+    public String code() { return code; }
+    public String nameAr() { return nameAr; }
+    public String nameFr() { return nameFr; }
+    public String nameEn() { return nameEn; }
+    public String reportCategoryId() { return reportCategoryId; }
+    public String ownerModule() { return ownerModule; }
+    public String description() { return description; }
+    public ReportDefinitionStatus status() { return status; }
+    public boolean active() { return status == ReportDefinitionStatus.ACTIVE; }
+    public String currentTemplateVersionId() { return currentTemplateVersionId; }
+    public boolean requiresApproval() { return requiresApproval; }
+    public boolean restricted() { return restricted; }
+    public Instant createdAt() { return createdAt; }
+    public Instant updatedAt() { return updatedAt; }
+}

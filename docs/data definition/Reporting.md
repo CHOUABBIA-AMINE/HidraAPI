@@ -391,7 +391,7 @@ nameEn
 reportCategoryId
 ownerModule
 description
-active
+status
 currentTemplateVersionId
 requiresApproval
 restricted
@@ -399,15 +399,37 @@ createdAt
 updatedAt
 ```
 
+Lifecycle status:
+
+```text
+DRAFT
+ACTIVE
+RETIRED
+```
+
 Invariants:
 
 ```text
 code is unique
 French name is mandatory
-ownerModule must be a known Hidra module
-inactive definitions cannot be used for new report requests
-restricted reports require explicit access policy
+ownerModule must be one of the 24 live Hidra business-module roots in docs/architecture/module-catalog.md
+reportCategoryId must be an active REPORT_CATEGORY entry
+only ACTIVE definitions can be used for new report requests
+restricted reports require an explicit matching Reporting access policy
+currentTemplateVersionId, when present, must resolve through ReportTemplateVersion -> ReportTemplate -> this definition
+an ACTIVE definition's current template version, when present, must itself be ACTIVE on an active template
+createdAt and updatedAt are mandatory
 ```
+
+HMR-013 makes `ReportDefinitionStatus` the sole persisted lifecycle representation. The historical
+boolean `active` is retained only as a derived Java compatibility projection (`status == ACTIVE`);
+it is no longer a database column or independent lifecycle source. New definitions created through the
+current creation service enter `DRAFT`, so creation no longer skips the documented lifecycle.
+
+Request/run persistence is fail-closed: new requests require an ACTIVE definition; restricted requests
+must match an explicit Reporting access-policy scope; and a run for an approval-required definition
+requires an APPROVED request with a non-blank Workflow reference. Queued template versions must be
+ACTIVE and belong, through their ReportTemplate parent, to the selected definition.
 
 ---
 

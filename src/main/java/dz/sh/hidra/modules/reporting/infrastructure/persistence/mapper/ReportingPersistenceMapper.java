@@ -7,7 +7,7 @@
  *
  * @Name        : ReportingPersistenceMapper
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-10-04
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -42,7 +42,7 @@ public final class ReportingPersistenceMapper {
                         model.reportCategoryId(),
                         model.ownerModule(),
                         model.description(),
-                        model.active(),
+                        model.status(),
                         model.currentTemplateVersionId(),
                         model.requiresApproval(),
                         model.restricted(),
@@ -61,7 +61,7 @@ public final class ReportingPersistenceMapper {
                         entity.reportCategoryId(),
                         entity.ownerModule(),
                         entity.description(),
-                        entity.active(),
+                        entity.status(),
                         entity.currentTemplateVersionId(),
                         entity.requiresApproval(),
                         entity.restricted(),

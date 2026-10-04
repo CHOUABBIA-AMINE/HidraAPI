@@ -7,7 +7,7 @@
  *
  * @Name        : ReportDefinitionJpaRepository
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-04
  *
  * @Type        : Interface
  * @Layer       : Infrastructure
@@ -28,4 +28,8 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface ReportDefinitionJpaRepository extends JpaRepository<ReportDefinitionJpaEntity, String> {
+
+    boolean existsByCode(String code);
+
+    boolean existsByCodeAndIdNot(String code, String id);
 }

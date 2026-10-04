@@ -153,7 +153,7 @@ Each model task implements only the obligations recorded in its source HMSR sect
 | HMR-010 | HMSR-010 | identity | IdentityProvider | — | — | `fix(identity): remediate semantic review IdentityProvider` | **Completed** |
 | HMR-011 | HMSR-011 | identity | Permission | — | — | `fix(identity): remediate semantic review Permission` | **Completed** |
 | HMR-012 | HMSR-012 | notification | NotificationTemplate | — | — | `fix(notification): remediate semantic review NotificationTemplate` | **Completed** |
-| HMR-013 | HMSR-013 | reporting | ReportDefinition | — | — | `fix(reporting): remediate semantic review ReportDefinition` | Planned |
+| HMR-013 | HMSR-013 | reporting | ReportDefinition | — | — | `fix(reporting): remediate semantic review ReportDefinition` | **Completed** |
 | HMR-014 | HMSR-014 | integration | IntegrationJobRun | — | — | `fix(integration): remediate semantic review IntegrationJobRun` | Planned |
 | HMR-015 | HMSR-015 | leakdetection | LeakCandidate | — | — | `fix(leakdetection): remediate semantic review LeakCandidate` | Planned |
 | HMR-016 | HMSR-018 | analytics | MetricEvaluationRun | — | — | `fix(analytics): remediate semantic review MetricEvaluationRun` | Planned |
@@ -964,7 +964,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-013`
 - Exact commit: `fix(reporting): remediate semantic review ReportDefinition`
-- Status: **Planned**
+- Status: **Completed** — `ReportDefinitionStatus` is now the sole persisted lifecycle representation; legacy `active()` is a derived compatibility projection and new definitions created through the existing service enter DRAFT. Code uniqueness, REPORT_CATEGORY family/activity, known owner-module values, French name/timestamps, current-template-version ownership/lifecycle, ACTIVE-only requests, restricted-policy scope gates, and approval-required run queueing are fail-closed. HRA-080 remains consistent because ReportDefinitionStatus is now independently persisted.
 - SCC: —
 - Recorded upstream HMS dependencies: —
 - HMSR correction count: 11
@@ -4638,8 +4638,8 @@ A later HMR task may become Skipped only if stronger live evidence appears befor
 
 ### 12.5 Current next task
 
-HMR-013 — reporting.ReportDefinition
+HMR-014 — integration.IntegrationJobRun
 
-fix(reporting): remediate semantic review ReportDefinition
+fix(integration): remediate semantic review IntegrationJobRun
 
-Do not start HMR-014 automatically.
+Do not start HMR-015 automatically.

@@ -512,7 +512,7 @@ COR-018 — test(stabilization): validate corrected baseline
 
 ---
 
-## HMR-031A — TopologyConnection catalog prerequisite
+## HMR-031 — TopologyConnection catalog and integrity baseline
 
 The accepted Topology connection classification contract is catalog-backed:
 
@@ -549,6 +549,17 @@ legacy connection_type is retired after successful validation
 fromNodeId == toNodeId is invalid
 pipelineSegmentId remains optional
 non-null pipelineSegmentId -> hidra_topology_pipeline_segment(id) ON DELETE RESTRICT
+```
+
+Implemented persistence contract:
+
+```text
+canonical domain type: ConnectionTypeReference
+canonical FK: connection_type_id -> hidra_topology_connection_type(id)
+legacy ConnectionType enum: deprecated compatibility only
+legacy connection_type column: removed by V20261004_031
+self-loop: rejected by domain + database CHECK
+pipelineSegmentId: optional; non-null values protected by nullable same-module FK
 ```
 
 No connection-code uniqueness, edge uniqueness, capacity sign/pairing, capacity-unit taxonomy, or

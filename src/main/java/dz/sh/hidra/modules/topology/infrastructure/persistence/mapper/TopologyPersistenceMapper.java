@@ -20,6 +20,7 @@
 package dz.sh.hidra.modules.topology.infrastructure.persistence.mapper;
 
 import dz.sh.hidra.modules.topology.domain.model.*;
+import dz.sh.hidra.modules.topology.domain.value.ConnectionTypeReference;
 import dz.sh.hidra.modules.topology.domain.value.PipelineSystemType;
 import dz.sh.hidra.modules.topology.infrastructure.persistence.entity.*;
 
@@ -105,12 +106,16 @@ public final class TopologyPersistenceMapper {
                 entity.createdAt(),
                 entity.updatedAt()
         ); }
-    public static TopologyConnectionJpaEntity toEntity(TopologyConnection model) { return new TopologyConnectionJpaEntity(
+    public static TopologyConnectionJpaEntity toEntity(
+            TopologyConnection model,
+            ConnectionTypeJpaEntity connectionType
+    ) {
+        return new TopologyConnectionJpaEntity(
                 model.id(),
                 model.code(),
                 model.fromNodeId(),
                 model.toNodeId(),
-                model.connectionType(),
+                connectionType,
                 model.flowDirection(),
                 model.pipelineSegmentId(),
                 model.nominalCapacity(),
@@ -118,13 +123,16 @@ public final class TopologyPersistenceMapper {
                 model.status(),
                 model.createdAt(),
                 model.updatedAt()
-        ); }
-    public static TopologyConnection toDomain(TopologyConnectionJpaEntity entity) { return new TopologyConnection(
+        );
+    }
+
+    public static TopologyConnection toDomain(TopologyConnectionJpaEntity entity) {
+        return new TopologyConnection(
                 entity.id(),
                 entity.code(),
                 entity.fromNodeId(),
                 entity.toNodeId(),
-                entity.connectionType(),
+                toDomain(entity.connectionType()),
                 entity.flowDirection(),
                 entity.pipelineSegmentId(),
                 entity.nominalCapacity(),
@@ -132,7 +140,18 @@ public final class TopologyPersistenceMapper {
                 entity.status(),
                 entity.createdAt(),
                 entity.updatedAt()
-        ); }
+        );
+    }
+
+    public static ConnectionTypeReference toDomain(ConnectionTypeJpaEntity entity) {
+        return new ConnectionTypeReference(
+                entity.id(),
+                entity.code(),
+                entity.nameAr(),
+                entity.nameFr(),
+                entity.nameEn()
+        );
+    }
     public static FacilityJpaEntity toEntity(Facility model) { return new FacilityJpaEntity(
                 model.id(),
                 model.code(),

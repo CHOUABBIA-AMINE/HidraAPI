@@ -7,16 +7,29 @@
  *
  * @Name        : ConnectionType
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-04
  *
  * @Type        : Enum
  * @Layer       : Domain
  * @Module      : topology
  * @Package     : dz.sh.hidra.modules.topology.domain.value
  *
- * @Description : Defines ConnectionType values.
+ * @Description : Deprecated compatibility enum for legacy callers; canonical state uses ConnectionTypeReference.
  *
  */
 package dz.sh.hidra.modules.topology.domain.value;
 
-public enum ConnectionType { PIPELINE_SEGMENT, DIRECT_LINK, VIRTUAL_LINK, TRANSFER_LINK, MEASUREMENT_LINK }
+/**
+ * Legacy compatibility surface for the five historical connection-type codes.
+ *
+ * <p>Canonical TopologyConnection state and persistence use {@link ConnectionTypeReference}.
+ * This enum must not be introduced into new domain or persistence contracts.</p>
+ */
+@Deprecated(forRemoval = false)
+public enum ConnectionType {
+    PIPELINE_SEGMENT,
+    DIRECT_LINK,
+    VIRTUAL_LINK,
+    TRANSFER_LINK,
+    MEASUREMENT_LINK
+}

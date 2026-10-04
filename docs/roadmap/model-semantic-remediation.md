@@ -1784,7 +1784,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-034`
 - Exact commit: `fix(topology): remediate semantic review TopologyConnection`
-- Status: **Planned — HMR-031A completed.** The missing connection-type reference/catalog persistence scope is registered; production remediation remains HMR-031.
+- Status: **Completed** — TopologyConnection now uses catalog-backed ConnectionTypeReference semantics, rejects self-loops at domain/database boundaries, and protects populated PipelineSegment references.
 - SCC: —
 - Recorded upstream HMS dependencies: —
 - HMSR correction count: 3
@@ -4869,8 +4869,8 @@ or required-field alignment work; keep high-risk semantic redesigns solo.
 
 ### 12.6 Current next execution
 
-HMR-031 — topology.TopologyConnection
+HMR-032 — organization.OrganizationUnit
 
-`fix(topology): remediate semantic review TopologyConnection`
+`fix(organization): remediate semantic review OrganizationUnit`
 
-HMR-030 is green and HMR-031A is completed. Execute the HMR-031 production correction only; do not start HMR-032 automatically.
+HMR-031 is completed. Execute HMR-032 only after the HMR-031 head is green; do not start HMR-033 automatically.

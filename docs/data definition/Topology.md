@@ -213,7 +213,7 @@ Domain, application, and infrastructure topology models must not use `@Schema` o
 
 ---
 
-## HMR-031A — TopologyConnection executable baseline
+## HMR-031 — TopologyConnection executable baseline
 
 `TopologyConnection` is a Topology-owned graph edge. Its business classification is a dedicated
 catalog reference, not a fixed Java enum.
@@ -237,6 +237,13 @@ The connection-type catalog follows the same embedded multilingual-label pattern
 HMR-022 for PipelineSystem classification. HMR-031 seeds no Arabic/French/English labels because
 no authoritative translations are available in the reviewed evidence.
 
-`FlowDirection` and `TopologyStatus` remain technical enums. HMR-031 does not establish
-connection-code uniqueness, graph-edge uniqueness, nominal-capacity ranges, capacity/unit pairing,
-or a mandatory PipelineSegment association for any connection type.
+`FlowDirection` and `TopologyStatus` remain technical enums. The former `ConnectionType`
+enum remains only as a deprecated compatibility surface; canonical `TopologyConnection` state
+uses `ConnectionTypeReference`, and JPA persistence uses `connection_type_id`.
+
+Authoritative writes reject `fromNodeId == toNodeId`. A non-null `pipelineSegmentId` must
+resolve to `hidra_topology_pipeline_segment(id)` through both repository validation and the
+additive same-module FK.
+
+HMR-031 does not establish connection-code uniqueness, graph-edge uniqueness, nominal-capacity
+ranges, capacity/unit pairing, or a mandatory PipelineSegment association for any connection type.

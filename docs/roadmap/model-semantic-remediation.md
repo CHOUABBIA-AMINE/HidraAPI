@@ -147,7 +147,7 @@ Each model task implements only the obligations recorded in its source HMSR sect
 | HMR-004 | HMSR-004 | party | Party | — | — | `fix(party): remediate semantic review Party` | **Completed** |
 | HMR-005 | HMSR-005 | telemetry | TelemetryPoint | — | — | `fix(telemetry): remediate semantic review TelemetryPoint` | **Completed** |
 | HMR-006 | HMSR-006 | planning | PlanningPeriod | — | — | `fix(planning): remediate semantic review PlanningPeriod` | **Completed** |
-| HMR-007 | HMSR-007 | identity | Role | — | — | `fix(identity): remediate semantic review Role` | Planned |
+| HMR-007 | HMSR-007 | identity | Role | — | — | `fix(identity): remediate semantic review Role` | Planned — HMR-007A completed; application service and focused application test are now authorized. |
 | HMR-008 | HMSR-008 | documents | DocumentStorageObject | — | — | `fix(documents): remediate semantic review DocumentStorageObject` | Planned |
 | HMR-009 | HMSR-009 | simulation | SimulationModel | — | — | `fix(simulation): remediate semantic review SimulationModel` | Planned |
 | HMR-010 | HMSR-010 | identity | IdentityProvider | — | — | `fix(identity): remediate semantic review IdentityProvider` | Planned |
@@ -624,7 +624,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-007`
 - Exact commit: `fix(identity): remediate semantic review Role`
-- Status: **Planned**
+- Status: **Planned — HMR-007A completed.** The exact allowlist now includes the general create-role application service and its focused unit test so the recorded fail-fast duplicate-code obligation can be implemented together with race-safe database uniqueness.
 - SCC: —
 - Recorded upstream HMS dependencies: —
 - HMSR correction count: 1
@@ -639,6 +639,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
   - `src/main/java/dz/sh/hidra/modules/identity/application/port/out/RolePermissionGrantRepositoryPort.java`
   - `src/main/java/dz/sh/hidra/modules/identity/application/port/out/RoleRepositoryPort.java`
   - `src/main/java/dz/sh/hidra/modules/identity/application/port/out/UserRoleGrantRepositoryPort.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/application/service/IdentityAdministrationCommandApplicationService.java`
   - `src/main/java/dz/sh/hidra/modules/identity/domain/model/ExternalRoleMapping.java`
   - `src/main/java/dz/sh/hidra/modules/identity/domain/model/GroupRoleGrant.java`
   - `src/main/java/dz/sh/hidra/modules/identity/domain/model/Role.java`
@@ -663,6 +664,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
   - `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/repository/RolePermissionGrantJpaRepository.java`
   - `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/repository/UserRoleGrantJpaRepository.java`
   - `src/main/resources/db/migration/V20261004_007__hmr_007_identity_role.sql`
+  - `src/test/java/dz/sh/hidra/modules/identity/application/service/IdentityAdministrationCommandApplicationServiceTest.java`
   - `src/test/java/dz/sh/hidra/modules/identity/semantic/RoleSemanticRemediationTest.java`
 - Exact validation:
   - `./mvnw -q -DskipTests compile`
@@ -671,6 +673,24 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
   - `./mvnw -q clean verify`
 - HMSR obligations:
   1. **Unique Role code:** the Identity DDD explicitly defines `Role.code` as unique and recommends `uk_identity_role_code`. The live Flyway schema has only a non-unique index `ix_hidra_identity_role_code`; no later unique constraint was found. The general create-role application path does not call `RoleRepositoryPort.findByCode` before save. `RoleJpaRepository.findFirstByCode` also tolerates duplicate rows rather than making duplicates impossible.
+
+#### HMR-007A — identity Role uniqueness application scope amendment
+
+- Source: HMR-007 / HMSR-007.
+- Exact commit: `docs(model-remediation): amend Role uniqueness remediation scope`
+- Status: **Completed**
+- Type: documentation-only scope correction; no production mutation.
+- Evidence:
+  - `IdentityAdministrationCommandApplicationService#createRole` is the general create-role path and currently saves without checking `RoleRepositoryPort.findByCode`.
+  - `IdentityAdministrationCommandApplicationServiceTest` is the existing focused unit test for that path.
+- HMR-007 exact write allowlist is amended to additionally authorize:
+  - `src/main/java/dz/sh/hidra/modules/identity/application/service/IdentityAdministrationCommandApplicationService.java`
+  - `src/test/java/dz/sh/hidra/modules/identity/application/service/IdentityAdministrationCommandApplicationServiceTest.java`
+- Acceptance:
+  1. HMR-007 must fail fast in the application path when `Role.code` already exists;
+  2. HMR-007 must still add race-safe database uniqueness on `hidra_identity_role(code)`;
+  3. HMR-007 must not broaden into unrelated Identity role/grant semantics.
+
 
 #### HMR-008 — documents.DocumentStorageObject
 

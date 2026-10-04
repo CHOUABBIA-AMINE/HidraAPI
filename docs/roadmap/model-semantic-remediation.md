@@ -145,7 +145,7 @@ Each model task implements only the obligations recorded in its source HMSR sect
 |---|---|---|---|---|---|---|---|
 | HMR-003 | HMSR-002 | workflow | WorkflowDefinition | — | — | `fix(workflow): remediate semantic review WorkflowDefinition` | **Completed** |
 | HMR-004 | HMSR-004 | party | Party | — | — | `fix(party): remediate semantic review Party` | **Completed** |
-| HMR-005 | HMSR-005 | telemetry | TelemetryPoint | — | — | `fix(telemetry): remediate semantic review TelemetryPoint` | Planned |
+| HMR-005 | HMSR-005 | telemetry | TelemetryPoint | — | — | `fix(telemetry): remediate semantic review TelemetryPoint` | **Blocked — HMR-005A required: live Telemetry catalog schema has no signal value-shape or point-type unit-exemption metadata, so obligation 5 cannot be enforced without inventing catalog-code semantics; current HMR-005 allowlist also excludes the catalog model/entity files needed for a clean solution.** |
 | HMR-006 | HMSR-006 | planning | PlanningPeriod | — | — | `fix(planning): remediate semantic review PlanningPeriod` | Planned |
 | HMR-007 | HMSR-007 | identity | Role | — | — | `fix(identity): remediate semantic review Role` | Planned |
 | HMR-008 | HMSR-008 | documents | DocumentStorageObject | — | — | `fix(documents): remediate semantic review DocumentStorageObject` | Planned |
@@ -513,7 +513,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-005`
 - Exact commit: `fix(telemetry): remediate semantic review TelemetryPoint`
-- Status: **Planned**
+- Status: **Blocked — HMR-005A prerequisite required.** Exact-head evidence shows `TelemetryCatalogEntry`/`TelemetryCatalogEntryJpaEntity` carries only `catalogName`, `code`, `active`, ordering/system flags and audit timestamps; no value-shape metadata exists. `TelemetryUnit` has no link that can classify a signal as numeric/text/boolean, and POINT_TYPE has no unit-exemption metadata. Implementing obligation 5 from codes such as `PRESSURE` would invent business semantics. HMR-005 also cannot cleanly add the missing catalog metadata because its current allowlist excludes the telemetry catalog domain/entity/mapper/repository files. No HMR-005 production file has been changed.
 - SCC: —
 - Recorded upstream HMS dependencies: —
 - HMSR correction count: 5
@@ -552,6 +552,27 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
   3. **Catalog-family validation:** `pointTypeId`, `signalTypeId`, and `defaultAggregationMethodId` have specific catalog-family meanings (`POINT_TYPE`, `SIGNAL_TYPE`, `AGGREGATION_METHOD`). Existing generic catalog FKs, where present, prove only that a catalog row exists; the current point registration service does not demonstrate family/active-entry validation.
   4. **Unit reference integrity:** when `unitId` is present it semantically targets `TelemetryUnit`, but current point persistence does not demonstrate FK/application validation of that optional reference.
   5. **Signal/unit compatibility:** the DDD requires `signalTypeId` to determine compatible numeric/text/boolean reading shape and requires `unitId` for numeric engineering measurements unless explicitly exempted by point type. The current point registration service simply persists the supplied IDs and does not demonstrate this conditional validation.
+
+#### HMR-005A — telemetry point signal/unit compatibility prerequisite
+
+- Source: HMR-005 / HMSR-005 obligation 5.
+- Exact commit: `docs(telemetry): define point signal-unit compatibility metadata`
+- Status: **Planned**
+- Type: documentation/design prerequisite only; no production mutation.
+- Purpose: define the minimum Telemetry-owned metadata required to classify a SIGNAL_TYPE entry as numeric/text/boolean and to state whether a POINT_TYPE explicitly exempts numeric points from requiring a unit.
+- Required evidence: live `docs/data definition/Telemetry.md`, live telemetry catalog/unit domain/JPA schema, existing seeds/provisioning evidence, and HMR-005/HMSR-005.
+- Allowed files:
+  - `docs/data definition/Telemetry.md`
+  - `docs/roadmap/model-semantic-remediation.md`
+  - `docs/roadmap/telemetry.md`
+- Acceptance:
+  1. define metadata structurally without inventing concrete SIGNAL_TYPE or POINT_TYPE business entries;
+  2. specify fail-closed behavior when required metadata is missing;
+  3. register the exact production files/migration/tests that HMR-005 may modify after the design is approved;
+  4. keep catalog-family ownership inside Telemetry;
+  5. do not seed or infer business values in this documentation task.
+- On completion, HMR-005 returns to Planned with its amended exact allowlist and validation commands.
+
 
 #### HMR-006 — planning.PlanningPeriod
 

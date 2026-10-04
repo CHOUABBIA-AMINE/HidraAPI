@@ -161,7 +161,7 @@ Each model task implements only the obligations recorded in its source HMSR sect
 | HMR-018 | HMSR-020 | custody | CustodyMeasurementPeriod | — | — | `fix(custody): remediate semantic review CustodyMeasurementPeriod` | **Completed** |
 | HMR-019 | HMSR-021 | integrity | PipelineDefect | — | — | `fix(integrity): remediate semantic review PipelineDefect` | **Completed** |
 | HMR-020 | HMSR-022 | organization | Position | — | — | `fix(organization): remediate semantic review Position` | **Completed** |
-| HMR-021 | HMSR-023 | organization | Shift | — | — | `fix(organization): remediate semantic review Shift` | Planned |
+| HMR-021 | HMSR-023 | organization | Shift | — | — | `fix(organization): remediate semantic review Shift` | **Completed** |
 | HMR-022 | HMSR-024 | topology | PipelineSystem | — | — | `fix(topology): remediate semantic review PipelineSystem` | Planned |
 | HMR-023 | HMSR-025 | analytics | AnalyticsInsight | — | — | `fix(analytics): remediate semantic review AnalyticsInsight` | Planned |
 | HMR-024 | HMSR-026 | analytics | AnalyticsProjectionRun | — | — | `fix(analytics): remediate semantic review AnalyticsProjectionRun` | Planned |
@@ -1331,7 +1331,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-023`
 - Exact commit: `fix(organization): remediate semantic review Shift`
-- Status: **Planned**
+- Status: **Completed** — canonical `Shift` construction now requires nonblank `startTime`, `endTime`, and `timezone`, matching the existing non-null JPA/schema contract. The additive migration also rejects blank schedule/timezone strings so database state remains reconstructible by the domain model. No clock-format parsing, timezone vocabulary, start/end ordering, overnight-shift rule, type-specific schedule rule, code uniqueness, assignment eligibility, or lifecycle transition was invented.
 - SCC: —
 - Recorded upstream HMS dependencies: —
 - HMSR correction count: 1
@@ -4732,7 +4732,7 @@ The following are execution registrations only; they do not change any HMR's sem
 
 | Envelope | HMR codes | Mode | Rationale |
 |---|---|---|---|
-| HMRB-001 | HMR-021 | Solo | Shift is followed by a PipelineSystem classification redesign; do not couple them. |
+| HMRB-001 | HMR-021 | Solo | **Completed.** Shift requiredness aligned independently before the PipelineSystem classification redesign. |
 | HMRB-002 | HMR-022 | Solo | PipelineSystem changes the accepted business-classification representation. |
 | HMRB-003 | HMR-023 | Solo | AnalyticsInsight has four catalog/scope/lineage obligations. |
 | HMRB-004 | HMR-024 | Solo | AnalyticsProjectionRun requires terminal diagnostics and reproducibility semantics. |
@@ -4745,8 +4745,8 @@ or required-field alignment work; keep high-risk semantic redesigns solo.
 
 ### 12.6 Current next execution
 
-HMRB-001 — HMR-021 organization.Shift
+HMRB-002 — HMR-022 topology.PipelineSystem
 
-`fix(organization): remediate semantic review Shift`
+`fix(topology): remediate semantic review PipelineSystem`
 
-Execute HMR-021 only. HMRB-002 remains the next registered execution after HMRB-001 is green.
+Execute HMR-022 only. HMRB-003 remains the next registered execution after HMRB-002 is green.

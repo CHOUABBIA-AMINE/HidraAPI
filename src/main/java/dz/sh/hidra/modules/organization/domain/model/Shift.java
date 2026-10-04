@@ -7,7 +7,7 @@
  *
  * @Name        : Shift
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-10-04
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -31,8 +31,9 @@ import java.time.Instant;
  *
  * <p>Architecture role: domain model whose localized display names are stored directly on the shift entity.
  *
- * <p>Validation: textual values are normalized by trimming blanks to {@code null}; scheduling policy validation
- * remains outside this storage-focused correction.
+ * <p>Validation: IDs/codes/type plus configured start/end/timezone text are required; localized names are
+ * normalized by trimming blanks to {@code null}. Clock syntax, ordering and timezone vocabulary remain outside
+ * this model-level requiredness correction.
  *
  * <p>Usage: callers use {@code nameAr/nameFr/nameEn}; the persistence adapter maintains the legacy database
  * {@code name} column only as a transitional compatibility field.
@@ -79,9 +80,9 @@ public record Shift(
         nameAr = normalize(nameAr);
         nameFr = normalize(nameFr);
         nameEn = normalize(nameEn);
-        startTime = normalize(startTime);
-        endTime = normalize(endTime);
-        timezone = normalize(timezone);
+        startTime = requireText(startTime, "Shift start time is required.");
+        endTime = requireText(endTime, "Shift end time is required.");
+        timezone = requireText(timezone, "Shift timezone is required.");
     }
     private static String requireText(String value, String message) {
         String normalized = normalize(value);

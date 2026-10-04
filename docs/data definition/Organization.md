@@ -221,3 +221,29 @@ PostgreSQL:
 HMR-020 aligns persistence with the existing domain invariant while preserving historical migration-test compatibility without inventing a level backfill. It does not introduce a Position
 code uniqueness rule, require all Arabic/French/English title or description fields, restrict
 EmployeeAssignment to ACTIVE positions, or define Position lifecycle transitions.
+
+
+---
+
+## 11. Shift schedule requiredness invariant
+
+`Shift.startTime`, `Shift.endTime`, and `Shift.timezone` are mandatory configured
+schedule fields.
+
+```text
+domain:
+  startTime must be nonblank
+  endTime must be nonblank
+  timezone must be nonblank
+
+JPA / PostgreSQL:
+  start_time is NOT NULL
+  end_time is NOT NULL
+  timezone is NOT NULL
+  blank schedule/timezone strings are rejected by HMR-021 checks
+```
+
+HMR-021 aligns the canonical domain constructor with the existing persistence contract.
+It deliberately does not define a clock-text syntax, IANA timezone validation, start/end
+ordering, overnight-shift behavior, or different schedule rules for DAY, NIGHT, ROTATION,
+ON_CALL, or CUSTOM.

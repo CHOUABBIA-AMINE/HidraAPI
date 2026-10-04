@@ -7,7 +7,7 @@
  *
  * @Name        : AnalyticsApplicationMapper
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-04
  *
  * @Type        : Class
  * @Layer       : Application
@@ -42,7 +42,7 @@ public final class AnalyticsApplicationMapper {
     }
 
     public static AnalyticsProjectionRunSummaryDto toSummary(AnalyticsProjectionRun run) {
-        return new AnalyticsProjectionRunSummaryDto(run.id(), run.projectionDefinitionId(), run.runStatus(), run.runMode(), run.periodStart(), run.periodEnd(), run.correlationId());
+        return new AnalyticsProjectionRunSummaryDto(run.id(), run.projectionDefinitionId(), run.projectionDefinitionVersion(), run.runStatus(), run.runMode(), run.periodStart(), run.periodEnd(), run.correlationId());
     }
 
     public static MetricEvaluationRunSummaryDto toSummary(MetricEvaluationRun run) {

@@ -537,7 +537,7 @@ successful run must record source watermark
 projection runs must be idempotent where possible
 ```
 
-HMR-024A executable decision:
+HMR-024 executable baseline:
 
 ```text
 successful statuses = COMPLETED, COMPLETED_WITH_WARNINGS
@@ -551,8 +551,10 @@ correlationId remains technical correlation identity
 
 The captured projection-definition version is derived at first persistence from the referenced
 definition's update timestamp plus a deterministic fingerprint of computation-relevant fields and
-is preserved on later saves. The implementation uses a dedicated additive persistence column; it
-does not create a new projection-definition-version aggregate or overload another run field.
+is preserved on later saves. HMR-024 implements this with the dedicated
+`projection_definition_version` persistence column and additive migration
+`V20261004_024__hmr_024_analytics_projection_run.sql`; it does not create a new
+projection-definition-version aggregate or overload another run field.
 
 ---
 

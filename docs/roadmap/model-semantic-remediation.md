@@ -1479,7 +1479,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-026`
 - Exact commit: `fix(analytics): remediate semantic review AnalyticsProjectionRun`
-- Status: **Planned — HMR-024A completed.** Durable computation-version lineage now has an explicitly registered local persistence strategy and additive migration; production remediation remains HMR-024.
+- Status: **Completed** — FAILED runs retain diagnostics, successful runs retain source watermarks, and every persisted run captures an immutable projection-definition computation version.
 - SCC: —
 - Recorded upstream HMS dependencies: —
 - HMSR correction count: 3
@@ -4793,7 +4793,7 @@ The following are execution registrations only; they do not change any HMR's sem
 | HMRB-001 | HMR-021 | Solo | **Completed.** Shift requiredness aligned independently before the PipelineSystem classification redesign. |
 | HMRB-002 | HMR-022 | Solo | **Completed.** Dedicated PipelineSystem classification catalog/reference implemented and silent `TRANSPORT` default removed. |
 | HMRB-003 | HMR-023 | Solo | **Completed.** AnalyticsInsight catalog, scope requiredness, optional severity-family integrity, and populated direct-source lineage are protected. |
-| HMRB-004 | HMR-024 | Solo | AnalyticsProjectionRun requires terminal diagnostics and reproducibility semantics. |
+| HMRB-004 | HMR-024 | Solo | **Completed.** Terminal diagnostics, successful-run source lineage, and immutable projection-definition computation lineage are enforced. |
 | HMRB-005 | HMR-025 | Solo | DigitalTwinReadinessAssessment reconciles competing readiness-status representations. |
 | HMRB-006 | HMR-026, HMR-027 | Batch | Two adjacent, low-coupling single-correction tasks with no recorded cross-module owner-contract prerequisite. |
 
@@ -4803,8 +4803,8 @@ or required-field alignment work; keep high-risk semantic redesigns solo.
 
 ### 12.6 Current next execution
 
-HMRB-004 — HMR-024 analytics.AnalyticsProjectionRun
+HMRB-005 — HMR-025 analytics.DigitalTwinReadinessAssessment
 
-`fix(analytics): remediate semantic review AnalyticsProjectionRun`
+`fix(analytics): remediate semantic review DigitalTwinReadinessAssessment`
 
-HMR-023 is green and HMR-024A is completed. Execute the HMR-024 production correction only; do not start HMR-025 automatically.
+HMR-024 is completed. Execute HMR-025 only after the HMR-024 head is green; do not start HMR-026 automatically.

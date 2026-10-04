@@ -7,7 +7,7 @@
  *
  * @Name        : AnalyticsPersistenceMapper
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-10-04
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -111,6 +111,7 @@ public final class AnalyticsPersistenceMapper {
             return new AnalyticsProjectionRunJpaEntity(
                         model.id(),
                         model.projectionDefinitionId(),
+                        model.projectionDefinitionVersion(),
                         model.runStatus(),
                         model.runMode(),
                         model.periodStart(),
@@ -131,6 +132,7 @@ public final class AnalyticsPersistenceMapper {
             return new AnalyticsProjectionRun(
                         entity.id(),
                         entity.projectionDefinitionId(),
+                        entity.projectionDefinitionVersion(),
                         entity.runStatus(),
                         entity.runMode(),
                         entity.periodStart(),

@@ -7,29 +7,26 @@
  *
  * @Name        : AnalyticsProjectionRunSummaryDto
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-04
  *
  * @Type        : Record
  * @Layer       : Application
  * @Module      : analytics
  * @Package     : dz.sh.hidra.modules.analytics.application.dto
  *
- * @Description : Analytics projection run summary DTO.
+ * @Description : Analytics projection run summary DTO with immutable computation-version lineage.
  *
  */
 package dz.sh.hidra.modules.analytics.application.dto;
 
 import dz.sh.hidra.modules.analytics.domain.value.AnalyticsRunMode;
 import dz.sh.hidra.modules.analytics.domain.value.AnalyticsRunStatus;
-
 import java.time.Instant;
 
-/**
- * Analytics projection run summary DTO.
- */
 public record AnalyticsProjectionRunSummaryDto(
         String id,
         String projectionDefinitionId,
+        String projectionDefinitionVersion,
         AnalyticsRunStatus runStatus,
         AnalyticsRunMode runMode,
         Instant periodStart,

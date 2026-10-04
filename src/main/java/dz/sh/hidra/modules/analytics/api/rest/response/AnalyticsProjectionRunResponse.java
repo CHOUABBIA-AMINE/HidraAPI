@@ -7,14 +7,14 @@
  *
  * @Name        : AnalyticsProjectionRunResponse
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-13
+ * @UpdatedOn   : 2026-10-04
  *
  * @Type        : Record
  * @Layer       : API
  * @Module      : analytics
  * @Package     : dz.sh.hidra.modules.analytics.api.rest.response
  *
- * @Description : REST response for analytics projection run.
+ * @Description : REST response for an analytics projection run with immutable computation-version lineage.
  *
  */
 package dz.sh.hidra.modules.analytics.api.rest.response;
@@ -23,12 +23,10 @@ import dz.sh.hidra.modules.analytics.domain.value.AnalyticsRunMode;
 import dz.sh.hidra.modules.analytics.domain.value.AnalyticsRunStatus;
 import java.time.Instant;
 
-/**
- * REST response for analytics projection run.
- */
 public record AnalyticsProjectionRunResponse(
         String id,
         String projectionDefinitionId,
+        String projectionDefinitionVersion,
         AnalyticsRunStatus runStatus,
         AnalyticsRunMode runMode,
         Instant periodStart,

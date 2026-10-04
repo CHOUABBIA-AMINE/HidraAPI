@@ -7,7 +7,7 @@
  *
  * @Name        : NoopSimulationExternalReferenceResolver
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-04
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -19,33 +19,48 @@
  */
 package dz.sh.hidra.modules.simulation.infrastructure.integration;
 
+import dz.sh.hidra.modules.simulation.application.port.out.MonitoringContextLookupPort;
+import dz.sh.hidra.modules.simulation.application.port.out.PlanningSnapshotLookupPort;
+import dz.sh.hidra.modules.simulation.application.port.out.TopologySnapshotLookupPort;
+import org.springframework.stereotype.Component;
+
 /**
- * No-op simulation external reference resolver.
+ * Fail-closed placeholder until owner-module reference adapters are wired.
  */
-public class NoopSimulationExternalReferenceResolver implements SimulationExternalReferenceResolver {
+@Component
+public class NoopSimulationExternalReferenceResolver implements
+        SimulationExternalReferenceResolver,
+        TopologySnapshotLookupPort,
+        PlanningSnapshotLookupPort,
+        MonitoringContextLookupPort {
 
     @Override
     public boolean topologySnapshotAvailable(String topologySnapshotId) {
-        return true;
+        return false;
     }
 
     @Override
     public boolean planningSnapshotAvailable(String planningReferenceId) {
-        return true;
+        return false;
     }
 
     @Override
     public boolean monitoringContextAvailable(String monitoringContextId) {
-        return true;
+        return false;
+    }
+
+    @Override
+    public boolean available(String referenceId) {
+        return false;
     }
 
     @Override
     public boolean workflowAvailable(String workflowReferenceId) {
-        return true;
+        return false;
     }
 
     @Override
     public boolean documentReferenceAvailable(String documentReferenceId) {
-        return true;
+        return false;
     }
 }

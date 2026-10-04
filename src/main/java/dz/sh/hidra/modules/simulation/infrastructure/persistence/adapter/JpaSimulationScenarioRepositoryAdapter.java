@@ -7,7 +7,7 @@
  *
  * @Name        : JpaSimulationScenarioRepositoryAdapter
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-04
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -48,5 +48,22 @@ public class JpaSimulationScenarioRepositoryAdapter implements SimulationScenari
     @Override
     public Optional<SimulationScenario> findById(String id) {
         return repository.findById(id).map(SimulationPersistenceMapper::toDomain);
+    }
+
+    @Override
+    public boolean existsByCode(String code) {
+        return code != null && repository.existsByCode(code);
+    }
+
+    @Override
+    public boolean isScenarioType(String scenarioTypeId) {
+        return scenarioTypeId != null && repository.isScenarioType(scenarioTypeId);
+    }
+
+    @Override
+    public boolean modelVersionBelongsToModel(String modelVersionId, String modelId) {
+        return modelVersionId != null
+                && modelId != null
+                && repository.modelVersionBelongsToModel(modelVersionId, modelId);
     }
 }

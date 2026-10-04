@@ -7,7 +7,7 @@
  *
  * @Name        : SimulationScenario
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-10-04
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -71,6 +71,10 @@ import java.time.Instant;
         if (code == null || code.isBlank()) {
             throw new InvalidSimulationValueException("SimulationScenario code must not be blank.");
         }
+        // HRA-051 required: nameFr
+        if (nameFr == null || nameFr.isBlank()) {
+            throw new InvalidSimulationValueException("SimulationScenario French name must not be blank.");
+        }
         // HRA-051 required: scenarioTypeId
         if (scenarioTypeId == null || scenarioTypeId.isBlank()) {
             throw new InvalidSimulationValueException("SimulationScenario scenario type id must not be blank.");
@@ -94,6 +98,12 @@ import java.time.Instant;
         // HRA-051 required: createdByActorId
         if (createdByActorId == null || createdByActorId.isBlank()) {
             throw new InvalidSimulationValueException("SimulationScenario created by actor id must not be blank.");
+        }
+        // HRA-051 required: createdByDisplayNameSnapshot
+        if (createdByDisplayNameSnapshot == null || createdByDisplayNameSnapshot.isBlank()) {
+            throw new InvalidSimulationValueException(
+                    "SimulationScenario created by display name snapshot must not be blank."
+            );
         }
 
         id = normalize(id);

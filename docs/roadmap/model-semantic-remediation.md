@@ -1938,7 +1938,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-038`
 - Exact commit: `fix(simulation): remediate semantic review SimulationScenario`
-- Status: **Blocked — HMR-034A owner-reference validation prerequisite registered**
+- Status: **Completed** — unique code, scenario-type family, model/version parent consistency, mandatory French/creator snapshot fields, and fail-closed execution-time owner-reference validation are enforced.
 - SCC: —
 - Recorded upstream HMS dependencies: simulation.SimulationModel
 - HMSR correction count: 5
@@ -4899,8 +4899,8 @@ or required-field alignment work; keep high-risk semantic redesigns solo.
 
 ### 12.6 Current next execution
 
-HMR-034 — simulation.SimulationScenario
+HMR-035 — notification.NotificationRequest
 
-`fix(simulation): remediate semantic review SimulationScenario`
+`fix(notification): remediate semantic review NotificationRequest`
 
-HMR-034A has registered the missing owner-reference validation scope. Observe the HMR-034A documentation prerequisite commit once, then execute HMR-034 only; do not start HMR-035 automatically.
+HMR-034 is completed. Execute HMR-035 only after the HMR-034 head is green; do not start HMR-036 automatically.

@@ -7,7 +7,7 @@
  *
  * @Name        : SimulationScenarioRepositoryPort
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-04
  *
  * @Type        : Interface
  * @Layer       : Application
@@ -31,4 +31,10 @@ public interface SimulationScenarioRepositoryPort {
     SimulationScenario save(SimulationScenario model);
 
     Optional<SimulationScenario> findById(String id);
+
+    boolean existsByCode(String code);
+
+    boolean isScenarioType(String scenarioTypeId);
+
+    boolean modelVersionBelongsToModel(String modelVersionId, String modelId);
 }

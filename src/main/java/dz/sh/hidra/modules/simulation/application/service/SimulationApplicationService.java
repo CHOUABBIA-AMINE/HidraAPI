@@ -7,7 +7,7 @@
  *
  * @Name        : SimulationApplicationService
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-04
  *
  * @Type        : Class
  * @Layer       : Application
@@ -38,6 +38,9 @@ import dz.sh.hidra.modules.simulation.application.port.out.SimulationModelReposi
 import dz.sh.hidra.modules.simulation.application.port.out.SimulationRecommendationRepositoryPort;
 import dz.sh.hidra.modules.simulation.application.port.out.SimulationRunRepositoryPort;
 import dz.sh.hidra.modules.simulation.application.port.out.SimulationScenarioRepositoryPort;
+import dz.sh.hidra.modules.simulation.application.port.out.TopologySnapshotLookupPort;
+import dz.sh.hidra.modules.simulation.application.port.out.PlanningSnapshotLookupPort;
+import dz.sh.hidra.modules.simulation.application.port.out.MonitoringContextLookupPort;
 import dz.sh.hidra.modules.simulation.domain.model.SimulationModel;
 import dz.sh.hidra.modules.simulation.domain.model.SimulationRecommendation;
 import dz.sh.hidra.modules.simulation.domain.model.SimulationRun;
@@ -64,19 +67,28 @@ public final class SimulationApplicationService implements CreateSimulationModel
     private final SimulationRunRepositoryPort runRepositoryPort;
     private final SimulationRecommendationRepositoryPort recommendationRepositoryPort;
     private final SimulationTopologyScopeContract topologyScopeContract;
+    private final TopologySnapshotLookupPort topologySnapshotLookupPort;
+    private final PlanningSnapshotLookupPort planningSnapshotLookupPort;
+    private final MonitoringContextLookupPort monitoringContextLookupPort;
 
     public SimulationApplicationService(
             SimulationModelRepositoryPort modelRepositoryPort,
             SimulationScenarioRepositoryPort scenarioRepositoryPort,
             SimulationRunRepositoryPort runRepositoryPort,
             SimulationRecommendationRepositoryPort recommendationRepositoryPort,
-            SimulationTopologyScopeContract topologyScopeContract
+            SimulationTopologyScopeContract topologyScopeContract,
+            TopologySnapshotLookupPort topologySnapshotLookupPort,
+            PlanningSnapshotLookupPort planningSnapshotLookupPort,
+            MonitoringContextLookupPort monitoringContextLookupPort
     ) {
         this.modelRepositoryPort = Objects.requireNonNull(modelRepositoryPort, "Simulation model repository port must not be null.");
         this.scenarioRepositoryPort = Objects.requireNonNull(scenarioRepositoryPort, "Simulation scenario repository port must not be null.");
         this.runRepositoryPort = Objects.requireNonNull(runRepositoryPort, "Simulation run repository port must not be null.");
         this.recommendationRepositoryPort = Objects.requireNonNull(recommendationRepositoryPort, "Simulation recommendation repository port must not be null.");
         this.topologyScopeContract = Objects.requireNonNull(topologyScopeContract, "Simulation topology scope contract must not be null.");
+        this.topologySnapshotLookupPort = Objects.requireNonNull(topologySnapshotLookupPort, "Topology snapshot lookup port must not be null.");
+        this.planningSnapshotLookupPort = Objects.requireNonNull(planningSnapshotLookupPort, "Planning snapshot lookup port must not be null.");
+        this.monitoringContextLookupPort = Objects.requireNonNull(monitoringContextLookupPort, "Monitoring context lookup port must not be null.");
     }
 
     @Override
@@ -132,10 +144,24 @@ public final class SimulationApplicationService implements CreateSimulationModel
     @Override
     public SimulationScenarioSummaryDto createSimulationScenario(CreateSimulationScenarioCommand command) {
         Objects.requireNonNull(command, "Create simulation scenario command must not be null.");
+        String code = requireText(command.code(), "Simulation scenario code");
+        if (scenarioRepositoryPort.existsByCode(code)) {
+            throw new InvalidSimulationValueException("SimulationScenario code must be unique.");
+        }
+        if (!scenarioRepositoryPort.isScenarioType(command.scenarioTypeId())) {
+            throw new InvalidSimulationValueException(
+                    "SimulationScenario scenario type must reference SIMULATION_SCENARIO_TYPE."
+            );
+        }
+        if (!scenarioRepositoryPort.modelVersionBelongsToModel(command.modelVersionId(), command.modelId())) {
+            throw new InvalidSimulationValueException(
+                    "SimulationScenario model version must belong to the selected model."
+            );
+        }
         Instant now = Instant.now();
         SimulationScenario scenario = new SimulationScenario(
                 SimulationId.newId().value(),
-                command.code(),
+                code,
                 command.nameAr(),
                 command.nameFr(),
                 command.nameEn(),
@@ -157,6 +183,14 @@ public final class SimulationApplicationService implements CreateSimulationModel
     @Override
     public SimulationRunSummaryDto queueSimulationRun(QueueSimulationRunCommand command) {
         Objects.requireNonNull(command, "Queue simulation run command must not be null.");
+        SimulationScenario scenario = scenarioRepositoryPort.findById(command.scenarioId())
+                .orElseThrow(() -> new InvalidSimulationValueException(
+                        "SimulationRun scenario must reference an existing SimulationScenario."
+                ));
+        if (!scenario.executable()) {
+            throw new InvalidSimulationValueException("SimulationScenario must be LOCKED before execution.");
+        }
+        validateScenarioReferences(scenario);
         Instant now = Instant.now();
         SimulationRun run = new SimulationRun(
                 SimulationId.newId().value(),
@@ -177,6 +211,20 @@ public final class SimulationApplicationService implements CreateSimulationModel
                 now
         );
         return SimulationApplicationMapper.toSummary(runRepositoryPort.save(run));
+    }
+
+    private void validateScenarioReferences(SimulationScenario scenario) {
+        if (!topologySnapshotLookupPort.available(scenario.topologySnapshotId())) {
+            throw new InvalidSimulationValueException("SimulationScenario topology snapshot is unavailable.");
+        }
+        if (scenario.planningReferenceId() != null
+                && !planningSnapshotLookupPort.available(scenario.planningReferenceId())) {
+            throw new InvalidSimulationValueException("SimulationScenario planning reference is unavailable.");
+        }
+        if (scenario.monitoringContextId() != null
+                && !monitoringContextLookupPort.available(scenario.monitoringContextId())) {
+            throw new InvalidSimulationValueException("SimulationScenario monitoring context is unavailable.");
+        }
     }
 
     @Override

@@ -296,6 +296,15 @@ Rule:
 
 ```text
 A scenario must be locked before execution to freeze inputs and assumptions.
+
+HMR-034 executable semantics:
+- scenario code is unique;
+- scenarioTypeId must resolve specifically to SIMULATION_SCENARIO_TYPE;
+- modelVersionId must belong to modelId;
+- nameFr and createdByDisplayNameSnapshot are mandatory nonblank values;
+- DRAFT may exist before owner-reference availability is proven;
+- execution fails closed unless topologySnapshotId and any populated planningReferenceId/monitoringContextId resolve through Simulation outbound lookup ports;
+- cross-module database foreign keys remain forbidden.
 ```
 
 ### 7.4 SimulationScenarioAssumption

@@ -1126,28 +1126,41 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-018`
 - Exact commit: `fix(analytics): remediate semantic review MetricEvaluationRun`
-- Status: **Planned**
+- Status: **Planned — HMR-016A completed.** The exact typed-scope and terminal-orchestration boundary is now registered. HMR-016 must validate supported owner-backed scopes through an Analytics-neutral resolver, fail closed for unimplemented example scopes such as PRODUCT, enforce metric-version period eligibility, and expose a governed application finalization path without inventing a full transition matrix.
 - SCC: —
 - Recorded upstream HMS dependencies: —
 - HMSR correction count: 5
 - Additive Flyway: `src/main/resources/db/migration/V20261004_016__hmr_016_analytics_metric_evaluation_run.sql`
-- Owner-contract prerequisite: No cross-module owner-contract prerequisite recorded by this HMSR correction.
+- Owner-contract prerequisite: **HMR-016A completed.** Use dedicated Analytics-facing owner contracts for Topology and Organization behind an Analytics-owned resolver. Do not import foreign repositories/domain internals and do not create cross-module database FKs.
 - Exact write allowlist:
   - `docs/data definition/Analytics.md`
   - `docs/roadmap/model-semantic-remediation.md`
   - `src/main/java/dz/sh/hidra/modules/analytics/api/rest/response/MetricEvaluationRunResponse.java`
   - `src/main/java/dz/sh/hidra/modules/analytics/application/dto/MetricEvaluationRunSummaryDto.java`
+  - `src/main/java/dz/sh/hidra/modules/analytics/application/command/FinalizeMetricEvaluationRunCommand.java`
+  - `src/main/java/dz/sh/hidra/modules/analytics/application/port/in/MetricEvaluationUseCase.java`
+  - `src/main/java/dz/sh/hidra/modules/analytics/application/port/out/MetricEvaluationScopeResolverPort.java`
+  - `src/main/java/dz/sh/hidra/modules/analytics/application/service/AnalyticsApplicationService.java`
   - `src/main/java/dz/sh/hidra/modules/analytics/application/port/out/MetricEvaluationRunRepositoryPort.java`
   - `src/main/java/dz/sh/hidra/modules/analytics/domain/model/MetricEvaluationRun.java`
   - `src/main/java/dz/sh/hidra/modules/analytics/infrastructure/persistence/adapter/JpaMetricEvaluationRunRepositoryAdapter.java`
+  - `src/main/java/dz/sh/hidra/modules/analytics/infrastructure/reference/AuthoritativeMetricEvaluationScopeResolverAdapter.java`
+  - `src/main/java/dz/sh/hidra/modules/organization/application/contract/analytics/AnalyticsOrganizationScopeContract.java`
+  - `src/main/java/dz/sh/hidra/modules/organization/infrastructure/reference/JpaAnalyticsOrganizationScopeContractAdapter.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/application/contract/analytics/AnalyticsTopologyScopeContract.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/infrastructure/reference/JpaAnalyticsTopologyScopeContractAdapter.java`
+  - `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java`
+  - `src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java`
   - `src/main/java/dz/sh/hidra/modules/analytics/infrastructure/persistence/entity/MetricEvaluationRunJpaEntity.java`
   - `src/main/java/dz/sh/hidra/modules/analytics/infrastructure/persistence/mapper/AnalyticsPersistenceMapper.java`
   - `src/main/java/dz/sh/hidra/modules/analytics/infrastructure/persistence/repository/MetricEvaluationRunJpaRepository.java`
   - `src/main/resources/db/migration/V20261004_016__hmr_016_analytics_metric_evaluation_run.sql`
   - `src/test/java/dz/sh/hidra/modules/analytics/semantic/MetricEvaluationRunSemanticRemediationTest.java`
+  - `src/test/java/dz/sh/hidra/modules/organization/infrastructure/reference/JpaAnalyticsOrganizationScopeContractAdapterTest.java`
+  - `src/test/java/dz/sh/hidra/modules/topology/infrastructure/reference/JpaAnalyticsTopologyScopeContractAdapterTest.java`
 - Exact validation:
   - `./mvnw -q -DskipTests compile`
-  - `./mvnw -q -Dtest=MetricEvaluationRunSemanticRemediationTest test`
+  - `./mvnw -q -Dtest=MetricEvaluationRunSemanticRemediationTest,JpaAnalyticsOrganizationScopeContractAdapterTest,JpaAnalyticsTopologyScopeContractAdapterTest test`
   - `./mvnw -q test`
   - `./mvnw -q clean verify`
 - HMSR obligations:
@@ -1156,6 +1169,30 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
   3. **Metric-version eligibility:** before starting calculation, resolve `metricDefinitionVersionId` and enforce whatever version-validity/active-calculation rule is authoritative for the requested period; FK existence alone is insufficient.
   4. **Lifecycle completion/failure orchestration:** provide a governed path for terminal run outcomes so `COMPLETED`, `COMPLETED_WITH_WARNINGS`, `FAILED`, and `CANCELLED` can preserve `completedAt`, diagnostics, counters and correlation/audit evidence.
   5. **Failed-run auditability:** ensure failure execution records retain enough diagnostic/correlation evidence to satisfy the DDD rule without inventing unsupported constructor-level text requirements.
+
+#### HMR-016A — MetricEvaluationRun scope and lifecycle prerequisite
+
+- Source: HMR-016 / HMSR-018 obligations 2, 4 and 5 plus live Analytics, Topology, Organization and architecture evidence.
+- Exact commit: `docs(model-remediation): register MetricEvaluationRun scope and lifecycle prerequisite`
+- Status: **Completed** — the missing write scope and owner boundaries are now registered; no production mutation is part of HMR-016A.
+- Type: documentation/architecture prerequisite.
+- Purpose: authorize the exact Analytics-owned neutral scope resolver, owner-facing contracts, application finalization path and guardrail exports required to satisfy HMSR-018 without importing foreign internals or inventing unsupported scope semantics.
+- Required decisions:
+  1. `MetricEvaluationScopeResolverPort` is Analytics-owned and receives `scopeType + scopeId`; it reports whether a type is supported, whether an ID is required, and whether the owner target resolves. Unsupported types fail closed.
+  2. Current owner-backed support is limited to evidence-backed types:
+     - Topology: `PIPELINE_SYSTEM`, `PIPELINE`, `PIPELINE_SEGMENT`, `FACILITY`, `EQUIPMENT`;
+     - Organization: `ORGANIZATION_UNIT`.
+     Other DDD examples such as `PRODUCT`, `NETWORK`, `STATION`, `MEASUREMENT_POINT`, `CUSTODY_TRANSFER_POINT`, `HSE_SITE` and `RISK_AREA` remain fail-closed until an authoritative owner contract is separately established.
+  3. No identifier-less Analytics scope type is established by current repository evidence. HMR-016 must therefore require `scopeId` for every currently supported type while keeping the neutral resolver capable of representing a future explicitly targetless type without changing the run model.
+  4. Topology exposes a dedicated `topology.application.contract.analytics.AnalyticsTopologyScopeContract`; Organization exposes a dedicated `organization.application.contract.analytics.AnalyticsOrganizationScopeContract`. Analytics depends only on those public owner contracts through its infrastructure resolver. The architecture guardrails must register both exported packages.
+  5. No cross-module database FK is permitted for `scopeId`.
+  6. Metric-version eligibility is resolved inside Analytics before a new run is persisted: the version must exist and the requested period must lie within its optional `validFrom` / `validTo` interval, using inclusive boundaries. The review establishes no separate version-status field, so HMR-016 must not invent one.
+  7. `MetricEvaluationUseCase` is amended with one governed finalization operation backed by `FinalizeMetricEvaluationRunCommand`. The command may target only `COMPLETED`, `COMPLETED_WITH_WARNINGS`, `FAILED` or `CANCELLED` and carries counters/diagnostics/correlation evidence needed to preserve the existing run fields.
+  8. HMR-016 must not invent a complete transition matrix. It must only prevent changing/reopening an already terminal run and prevent finalization to a non-terminal status.
+  9. Terminal finalization sets/preserves `completedAt`; FAILED finalization must retain at least diagnostic or correlation evidence, while no individual error text/code is made universally mandatory.
+  10. The HMR-016 allowlist and focused validation above are amended to authorize exactly the application service/use-case/command, neutral resolver, owner contracts/adapters, architecture guardrails and owner-contract tests needed for these obligations.
+- HMR-016 remains the current next production task. Do not start HMR-017 automatically.
+
 
 #### HMR-017 — configuration.ConfigurationDefinition
 

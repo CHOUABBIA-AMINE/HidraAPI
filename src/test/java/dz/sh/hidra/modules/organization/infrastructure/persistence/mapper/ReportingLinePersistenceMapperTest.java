@@ -7,14 +7,14 @@
  *
  * @Name        : ReportingLinePersistenceMapperTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-27
+ * @UpdatedOn   : 2026-10-04
  *
  * @Type        : Class
  * @Layer       : Organization Test
  * @Module      : organization
  * @Package     : dz.sh.hidra.modules.organization.infrastructure.persistence.mapper
  *
- * @Description : Verifies typed reporting-subject persistence round trips.
+ * @Description : Verifies reporting-line catalog and typed-subject persistence round trips.
  *
  */
 package dz.sh.hidra.modules.organization.infrastructure.persistence.mapper;
@@ -23,17 +23,17 @@ import dz.sh.hidra.modules.organization.domain.model.ReportingLine;
 import dz.sh.hidra.modules.organization.domain.value.ReportingLineType;
 import dz.sh.hidra.modules.organization.domain.value.ReportingSubjectReference;
 import dz.sh.hidra.modules.organization.domain.value.ReportingSubjectType;
-import org.junit.jupiter.api.Test;
-
+import dz.sh.hidra.modules.organization.infrastructure.persistence.entity.ReportingLineTypeJpaEntity;
 import java.time.Instant;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ReportingLinePersistenceMapperTest {
 
     @Test
-    void roundTripsTypedEmployeeToPositionReportingSubjects() {
-        Instant now = Instant.parse("2026-09-27T14:00:00Z");
+    void roundTripsCatalogTypeAndTypedEmployeeToPositionReportingSubjects() {
+        Instant now = Instant.parse("2026-10-04T14:00:00Z");
         ReportingLine model = new ReportingLine(
                 "rl-1",
                 ReportingLineType.FUNCTIONAL,
@@ -45,9 +45,20 @@ class ReportingLinePersistenceMapperTest {
                 now,
                 now
         );
+        ReportingLineTypeJpaEntity typeEntity = new ReportingLineTypeJpaEntity(
+                "FUNCTIONAL",
+                "FUNCTIONAL",
+                null,
+                null,
+                null,
+                true,
+                now,
+                now
+        );
 
-        var entity = OrganizationPersistenceMapper.toEntity(model);
+        var entity = OrganizationPersistenceMapper.toEntity(model, typeEntity);
 
+        assertEquals("FUNCTIONAL", entity.reportingLineType().code());
         assertEquals(ReportingSubjectType.EMPLOYEE, entity.sourceSubjectType());
         assertEquals(ReportingSubjectType.POSITION, entity.targetSubjectType());
         assertEquals("EMPLOYEE", entity.sourceType());

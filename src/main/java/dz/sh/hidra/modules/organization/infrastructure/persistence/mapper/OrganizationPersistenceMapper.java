@@ -7,7 +7,7 @@
  *
  * @Name        : OrganizationPersistenceMapper
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-29
+ * @UpdatedOn   : 2026-10-04
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -21,6 +21,7 @@ package dz.sh.hidra.modules.organization.infrastructure.persistence.mapper;
 
 import dz.sh.hidra.modules.organization.domain.model.*;
 import dz.sh.hidra.modules.organization.domain.value.ContactPointTargetReference;
+import dz.sh.hidra.modules.organization.domain.value.ReportingLineType;
 import dz.sh.hidra.modules.organization.domain.value.ReportingSubjectReference;
 import dz.sh.hidra.modules.organization.infrastructure.persistence.entity.*;
 
@@ -338,10 +339,13 @@ public final class OrganizationPersistenceMapper {
             );
         }
 
-        public static ReportingLineJpaEntity toEntity(ReportingLine model) {
+        public static ReportingLineJpaEntity toEntity(
+                ReportingLine model,
+                ReportingLineTypeJpaEntity reportingLineType
+        ) {
             return new ReportingLineJpaEntity(
                         model.id(),
-                        model.reportingLineType(),
+                        reportingLineType,
                         model.source().type(),
                         model.source().targetId(),
                         model.target().type(),
@@ -357,7 +361,7 @@ public final class OrganizationPersistenceMapper {
         public static ReportingLine toDomain(ReportingLineJpaEntity entity) {
             return new ReportingLine(
                         entity.id(),
-                        entity.reportingLineType(),
+                        toDomain(entity.reportingLineType()),
                         new ReportingSubjectReference(
                                 entity.sourceSubjectType(),
                                 entity.sourceId()
@@ -371,6 +375,16 @@ public final class OrganizationPersistenceMapper {
                         entity.active(),
                         entity.createdAt(),
                         entity.updatedAt()
+            );
+        }
+
+        public static ReportingLineType toDomain(ReportingLineTypeJpaEntity entity) {
+            return new ReportingLineType(
+                    entity.id(),
+                    entity.code(),
+                    entity.nameAr(),
+                    entity.nameFr(),
+                    entity.nameEn()
             );
         }
 

@@ -1642,7 +1642,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-031`
 - Exact commit: `fix(organization): remediate semantic review ReportingLine`
-- Status: **Planned — HMR-028A completed.** The reporting-line catalog, migration, polymorphic subject-integrity, and generalized matrix-policy strategy are explicitly registered; production remediation remains HMR-028.
+- Status: **Completed** — reporting-line classification is catalog-backed, future typed subjects fail closed, employee ACTIVE eligibility is enforced, employee-source active LINE cardinality is protected, and active LINE cycles are rejected across generalized typed subjects.
 - SCC: —
 - Recorded upstream HMS dependencies: —
 - HMSR correction count: 3
@@ -4837,8 +4837,8 @@ or required-field alignment work; keep high-risk semantic redesigns solo.
 
 ### 12.6 Current next execution
 
-HMR-028 — organization.ReportingLine
+HMR-029 — risk.RiskMatrixCell
 
-`fix(organization): remediate semantic review ReportingLine`
+`fix(risk): remediate semantic review RiskMatrixCell`
 
-HMRB-006 is green and HMR-028A is completed. Execute the HMR-028 production correction only; do not start HMR-029 automatically.
+HMR-028 is completed. Execute HMR-029 only after the HMR-028 head is green; do not start HMR-030 automatically.

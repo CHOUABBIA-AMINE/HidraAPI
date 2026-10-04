@@ -898,7 +898,7 @@ TECHNICAL
 DOTTED_LINE
 ```
 
-HMR-028A reconciliation (2026-10-04):
+HMR-028 reconciliation (implemented 2026-10-04):
 
 ```text
 ReportingLineType is catalog-backed, not a fixed enum.
@@ -925,6 +925,21 @@ positions and organization units remain first-class reporting subjects.
 The dedicated reporting-line-type catalog uses embedded Arabic/French/English label columns,
 but HMR-028 seeds no guessed translations. Legacy `TEMPORARY` is not silently mapped; any
 persisted unmappable legacy value must fail migration preflight.
+
+Implementation notes:
+
+```text
+canonical persistence: hidra_org_reporting_line.reporting_line_type_id
+catalog table: hidra_org_reporting_line_type
+legacy reporting_line_type column: compatibility mirror only, synchronized by HMR-028 trigger
+future saves/provisioning: source/target existence is revalidated
+EMPLOYEE source/target: employee must exist and have status ACTIVE
+EMPLOYEE + active LINE: one row per source employee
+active LINE: generalized typed-subject cycles are rejected
+```
+
+The repository adapter is the Java fail-closed boundary; the additive migration installs equivalent
+database protection for direct provisioning and legacy SQL compatibility.
 
 
 Rules:

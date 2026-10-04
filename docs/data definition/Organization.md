@@ -251,7 +251,7 @@ ON_CALL, or CUSTOM.
 
 ---
 
-## HMR-028A — ReportingLine catalog and matrix-policy baseline
+## HMR-028 — ReportingLine catalog and matrix-policy baseline
 
 `ReportingLine` retains generalized typed Organization subjects:
 
@@ -284,3 +284,9 @@ identity `(type, targetId)`.
 The reporting-line-type catalog stores optional embedded `nameAr/nameFr/nameEn` labels; HMR-028
 does not invent translations. Legacy `TEMPORARY` is not part of the authoritative vocabulary and
 must fail migration preflight if persisted instead of being silently remapped.
+
+Canonical persistence uses `reporting_line_type_id -> hidra_org_reporting_line_type.id`.
+The historical `reporting_line_type` varchar remains only as a trigger-synchronized compatibility
+mirror for established direct-SQL provisioning/tests; domain and JPA state no longer use it as the
+authoritative classification. The HMR-028 trigger also protects typed subject existence, employee
+ACTIVE eligibility, employee-source active-LINE cardinality, and generalized active-LINE cycles.

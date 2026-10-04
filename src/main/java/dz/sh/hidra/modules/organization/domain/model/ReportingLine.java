@@ -7,7 +7,7 @@
  *
  * @Name        : ReportingLine
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-10-04
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -28,8 +28,8 @@ import java.time.Instant;
 /**
  * Represents an effective-dated reporting relation between Organization-owned subjects.
  *
- * <p>Business role: models administrative, operational, functional, or temporary
- * reporting between employees, positions, and organization units.</p>
+ * <p>Business role: models line, operational, functional, administrative, technical,
+ * or dotted-line reporting between employees, positions, and organization units.</p>
  *
  * <p>Architecture role: source and target are canonical typed value references.
  * This aggregate does not import identity, topology, or other bounded-context models.</p>
@@ -38,9 +38,9 @@ import java.time.Instant;
  * target references. Referenced-object existence, lifecycle eligibility, reporting
  * cycles, and matrix-reporting cardinality are policy/application concerns.</p>
  *
- * <p>Usage: persistence maps the reference type to the existing string columns with
- * {@code EnumType.STRING}. Deprecated textual bridges exist only for migration
- * compatibility and are not canonical domain state.</p>
+ * <p>Usage: reporting-line type is a catalog reference. Persistence owns the catalog FK;
+ * source/target remain typed Organization references. Deprecated textual subject bridges
+ * exist only for migration compatibility and are not canonical domain state.</p>
  *
  * @param id reporting-line identifier
  * @param reportingLineType reporting relationship category
@@ -163,6 +163,10 @@ public record ReportingLine(
     @Deprecated(forRemoval = true)
     public String targetId() {
         return target.targetId();
+    }
+
+    public boolean lineHierarchy() {
+        return reportingLineType.lineHierarchy();
     }
 
     private static String normalize(String value) {

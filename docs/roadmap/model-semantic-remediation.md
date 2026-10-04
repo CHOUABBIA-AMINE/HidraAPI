@@ -149,7 +149,7 @@ Each model task implements only the obligations recorded in its source HMSR sect
 | HMR-006 | HMSR-006 | planning | PlanningPeriod | — | — | `fix(planning): remediate semantic review PlanningPeriod` | **Completed** |
 | HMR-007 | HMSR-007 | identity | Role | — | — | `fix(identity): remediate semantic review Role` | **Completed** |
 | HMR-008 | HMSR-008 | documents | DocumentStorageObject | — | — | `fix(documents): remediate semantic review DocumentStorageObject` | **Completed** |
-| HMR-009 | HMSR-009 | simulation | SimulationModel | — | — | `fix(simulation): remediate semantic review SimulationModel` | Planned |
+| HMR-009 | HMSR-009 | simulation | SimulationModel | — | — | `fix(simulation): remediate semantic review SimulationModel` | **Blocked — HMR-009A required: SimulationModel creation needs a Topology-owned `(scopeType, scopeId)` validation contract, but the live Simulation `TopologySnapshotLookupPort` is unimplemented/insufficient and the only exported Topology operational-scope contract is Organization-specific with a mismatched vocabulary (`FACILITY`/`EQUIPMENT` instead of `SEGMENT_GROUP`/`FACILITY_NETWORK`).** |
 | HMR-010 | HMSR-010 | identity | IdentityProvider | — | — | `fix(identity): remediate semantic review IdentityProvider` | Planned |
 | HMR-011 | HMSR-011 | identity | Permission | — | — | `fix(identity): remediate semantic review Permission` | Planned |
 | HMR-012 | HMSR-012 | notification | NotificationTemplate | — | — | `fix(notification): remediate semantic review NotificationTemplate` | Planned |
@@ -757,7 +757,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-009`
 - Exact commit: `fix(simulation): remediate semantic review SimulationModel`
-- Status: **Planned**
+- Status: **Blocked — HMR-009A prerequisite required.** Live `SimulationApplicationService#createSimulationModel` is outside the current HMR-009 allowlist and performs no uniqueness, model-type-family, or topology-scope validation. `TopologySnapshotLookupPort` is also outside the allowlist, has no implementation, and can validate only an untyped single reference. The only live exported Topology operational-scope contract is explicitly Organization-owned and resolves `PIPELINE_SYSTEM`, `PIPELINE`, `FACILITY`, and `EQUIPMENT`, which does not match Simulation's documented `PIPELINE_SYSTEM`, `PIPELINE`, `SEGMENT_GROUP`, and `FACILITY_NETWORK` vocabulary. No HMR-009 production file has been changed.
 - SCC: —
 - Recorded upstream HMS dependencies: —
 - HMSR correction count: 6
@@ -794,6 +794,28 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
   4. **Topology scope pair validation:** when `topologyScopeId` is supplied, the application must validate `topologyScopeType + topologyScopeId` through a Topology-owned contract. No single subject target may be guessed and no current validation is demonstrated.
   5. **Model-type catalog-family validation:** HRA-111 proves only that `modelTypeId` points to some Simulation catalog row. Creation does not demonstrate that it belongs to `SIMULATION_MODEL_TYPE` or satisfies the applicable active/reference policy.
   6. **Required timestamps:** `createdAt` and `updatedAt` are required by persistence semantics but not guarded by the domain constructor. The current service supplies both; a deliberate enforcement boundary must remain part of the final baseline.
+
+#### HMR-009A — simulation topology-scope owner-contract prerequisite
+
+- Source: HMR-009 / HMSR-009 obligations 3 and 4 plus live owner-contract evidence.
+- Exact commit: `docs(model-remediation): register SimulationModel topology owner-contract prerequisite`
+- Status: **Planned**
+- Type: documentation/architecture prerequisite; no production mutation.
+- Purpose: define a Topology-owned public reference contract that can validate the exact Simulation scope vocabulary without importing Topology domain/persistence models into Simulation.
+- Required evidence:
+  - `docs/data definition/Simulation.md`
+  - live `SimulationApplicationService#createSimulationModel`
+  - live `TopologySnapshotLookupPort`
+  - live `TopologyOperationalScopeTargetContract` and its implementation
+  - live Topology domain/repository evidence for candidate scope concepts
+- Required decisions:
+  1. preserve or explicitly revise Simulation's documented scope vocabulary `PIPELINE_SYSTEM`, `PIPELINE`, `SEGMENT_GROUP`, `FACILITY_NETWORK`; do not map these to `FACILITY` or `EQUIPMENT` by guesswork;
+  2. define the exact Topology-owned public input/contract needed to resolve `(scopeType, scopeId)` and return fail-closed existence/eligibility evidence;
+  3. define adapter ownership so Simulation depends only on a public Topology application contract, never Topology repositories/domain/persistence directly;
+  4. amend HMR-009's exact write allowlist to include `SimulationApplicationService.java`, the Simulation topology lookup port/adapter, the Topology public contract/service files if required, and focused tests;
+  5. keep HMR-009 obligations 1, 2, 5, and 6 executable without inventing catalog or topology values.
+- HMR-009 remains blocked until HMR-009A is completed.
+
 
 #### HMR-010 — identity.IdentityProvider
 
@@ -4609,8 +4631,8 @@ A later HMR task may become Skipped only if stronger live evidence appears befor
 
 ### 12.5 Current next task
 
-HMR-009 — simulation.SimulationModel
+HMR-009A — simulation topology-scope owner-contract prerequisite
 
-fix(simulation): remediate semantic review SimulationModel
+docs(model-remediation): register SimulationModel topology owner-contract prerequisite
 
-Do not start HMR-010 automatically.
+HMR-009 remains blocked until HMR-009A resolves the owner-contract/vocabulary mismatch and amends the exact write allowlist. Do not skip to HMR-010.

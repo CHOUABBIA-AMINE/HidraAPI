@@ -155,7 +155,7 @@ Each model task implements only the obligations recorded in its source HMSR sect
 | HMR-012 | HMSR-012 | notification | NotificationTemplate | — | — | `fix(notification): remediate semantic review NotificationTemplate` | **Completed** |
 | HMR-013 | HMSR-013 | reporting | ReportDefinition | — | — | `fix(reporting): remediate semantic review ReportDefinition` | **Completed** |
 | HMR-014 | HMSR-014 | integration | IntegrationJobRun | — | — | `fix(integration): remediate semantic review IntegrationJobRun` | **Completed** |
-| HMR-015 | HMSR-015 | leakdetection | LeakCandidate | — | — | `fix(leakdetection): remediate semantic review LeakCandidate` | Planned |
+| HMR-015 | HMSR-015 | leakdetection | LeakCandidate | — | — | `fix(leakdetection): remediate semantic review LeakCandidate` | **Completed** |
 | HMR-016 | HMSR-018 | analytics | MetricEvaluationRun | — | — | `fix(analytics): remediate semantic review MetricEvaluationRun` | Planned |
 | HMR-017 | HMSR-019 | configuration | ConfigurationDefinition | — | — | `fix(configuration): remediate semantic review ConfigurationDefinition` | Planned |
 | HMR-018 | HMSR-020 | custody | CustodyMeasurementPeriod | — | — | `fix(custody): remediate semantic review CustodyMeasurementPeriod` | Planned |
@@ -1052,7 +1052,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-015`
 - Exact commit: `fix(leakdetection): remediate semantic review LeakCandidate`
-- Status: **Planned — HMR-015A completed.** A dedicated Topology-owned Leak Detection asset-resolution contract is now specified for `PIPELINE`, `PIPELINE_SEGMENT`, `FACILITY`, `TOPOLOGY_NODE`, and `EQUIPMENT`. HMR-015 may implement typed owner validation, owner-governed code/name snapshots, and fail-closed unsupported/missing-target handling without importing Topology domain/persistence types into Leak Detection or creating a cross-module FK.
+- Status: **Completed** — required topology type and typed owner validation are enforced through the dedicated Topology-owned Leak Detection contract; persisted code/name snapshots come from Topology and caller code mismatches fail closed. Runless candidates remain valid, while candidate creation requires an ACTIVE profile and any supplied run must exist, match the profile, and be RUNNING or COMPLETED; additive Flyway adds the nullable same-module run FK and database provenance trigger. Candidate severity is classifier-derived from confidence and contradictory persisted pairs are rejected. Required audit timestamps are intrinsic domain invariants. External CPM/gRPC candidate creation remains gated behind deferred EXT-011/EXT-012 because the live repository does not yet define a stable anomaly identity/uniqueness scope; HMR-015 deliberately does not invent a candidate-number uniqueness rule.
 - SCC: —
 - Recorded upstream HMS dependencies: —
 - HMSR correction count: 7
@@ -4670,8 +4670,8 @@ A later HMR task may become Skipped only if stronger live evidence appears befor
 
 ### 12.5 Current next task
 
-HMR-015 — leakdetection.LeakCandidate
+HMR-016 — analytics.MetricEvaluationRun
 
-fix(leakdetection): remediate semantic review LeakCandidate
+fix(analytics): remediate semantic review MetricEvaluationRun
 
-Do not start HMR-016 automatically.
+Do not start HMR-017 automatically.

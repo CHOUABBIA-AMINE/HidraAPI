@@ -167,6 +167,46 @@ Leak Detection performs OT actuation
 
 Leak Detection references topology, telemetry, monitoring, alarm, incident, workflow, audit, organization, and actor concepts only through IDs and snapshots.
 
+### 7.1 HMR-015 LeakCandidate semantic baseline
+
+A new `LeakCandidate` may be runless. This preserves manual/internal suspicion capture without inventing
+a synthetic `LeakDetectionRun`. Candidate creation nevertheless requires the referenced
+`LeakDetectionProfile` to exist and be `ACTIVE`. When `runId` is supplied, the run must exist,
+must reference the same `profileId`, and must be `RUNNING` or `COMPLETED`. A nullable
+same-module foreign key protects the persisted run reference.
+
+The typed Topology reference is owner-controlled through
+`topology.application.contract.leakdetection.LeakDetectionTopologyAssetContract`.
+
+```text
+Supported Leak Detection Topology target types:
+PIPELINE
+PIPELINE_SEGMENT
+FACILITY
+TOPOLOGY_NODE
+EQUIPMENT
+```
+
+Unsupported or missing targets fail closed. The contract supplies the owner-native ID, current code,
+and current display name when available. A caller-supplied code is treated only as a consistency hint:
+if it conflicts with the current owner code, creation is rejected. Persisted code/name snapshots are
+taken from Topology rather than trusted from caller input. No cross-module database foreign key is added.
+
+For the candidate aggregate, `confidenceScore` is authoritative and `severityLevel` is derived by the
+existing `LeakConfidenceClassifier`: CRITICAL from 0.90, HIGH from 0.75, MEDIUM from 0.50, otherwise
+LOW. The repository does not define a confidence numeric range, so HMR-015 does not invent one.
+Independent later engineering/operator severity assessment remains represented separately by
+`LeakSeverityAssessment`; it does not make the candidate's initial derived pair contradictory.
+
+`createdAt` and `updatedAt` are mandatory aggregate persistence invariants.
+
+External-compute idempotency remains an explicit integration gate. The parked EXT-011/EXT-012 sequence
+requires the future CPM/Protobuf contract to carry stable anomaly identity/correlation, but the live
+repository does not establish whether `candidateNumber` is globally unique, profile-scoped, run-scoped,
+or merely a business/display number. Therefore HMR-015 does not invent a uniqueness constraint.
+No CPM/gRPC adapter may create candidates until that contract defines the stable anomaly identity and
+its exact uniqueness/idempotency scope.
+
 ---
 
 ## 8. Documentation and annotation rule

@@ -76,6 +76,7 @@ class ArchitectureGuardrailTest {
             "dz.sh.hidra.modules.workflow.application.contract.alarm",
             "dz.sh.hidra.modules.topology.application.contract.organization",
             "dz.sh.hidra.modules.topology.application.contract.simulation",
+            "dz.sh.hidra.modules.topology.application.contract.leakdetection",
             "dz.sh.hidra.modules.audit.application.contract.organization",
             "dz.sh.hidra.modules.audit.application.contract.alarm"
     );

@@ -7,46 +7,30 @@
  *
  * @Name        : LeakCandidate
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-10-04
  *
  * @Type        : Record
  * @Layer       : Domain
  * @Module      : leakdetection
  * @Package     : dz.sh.hidra.modules.leakdetection.domain.model
  *
- * @Description : Suspected leak event.
+ * @Description : Suspected leak event with governed topology provenance and derived severity.
  *
  */
 package dz.sh.hidra.modules.leakdetection.domain.model;
 
 import dz.sh.hidra.modules.leakdetection.domain.exception.InvalidLeakDetectionValueException;
-import dz.sh.hidra.modules.leakdetection.domain.value.*;
-import java.time.Instant;
+import dz.sh.hidra.modules.leakdetection.domain.service.LeakConfidenceClassifier;
+import dz.sh.hidra.modules.leakdetection.domain.value.LeakCandidateStatus;
+import dz.sh.hidra.modules.leakdetection.domain.value.LeakSeverityLevel;
 import java.math.BigDecimal;
+import java.time.Instant;
 
-    /**
-     * Suspected leak event.
-     *
-         * @param id id
-     * @param runId runId
-     * @param profileId profileId
-     * @param candidateNumber candidateNumber
-     * @param topologyAssetType topologyAssetType
-     * @param topologyAssetId topologyAssetId
-     * @param topologyAssetCode topologyAssetCode
-     * @param topologyAssetNameSnapshot topologyAssetNameSnapshot
-     * @param suspectedAt suspectedAt
-     * @param firstEvidenceAt firstEvidenceAt
-     * @param confidenceScore confidenceScore
-     * @param severityLevel severityLevel
-     * @param status status
-     * @param summary summary
-     * @param correlationId correlationId
-     * @param createdAt createdAt
-     * @param updatedAt updatedAt
-     */
-    public record LeakCandidate(
-            String id,
+/**
+ * Suspected leak event.
+ */
+public record LeakCandidate(
+        String id,
         String runId,
         String profileId,
         String candidateNumber,
@@ -63,9 +47,11 @@ import java.math.BigDecimal;
         String correlationId,
         Instant createdAt,
         Instant updatedAt
-    ) {
+) {
 
-        public LeakCandidate {
+    private static final LeakConfidenceClassifier CONFIDENCE_CLASSIFIER = new LeakConfidenceClassifier();
+
+    public LeakCandidate {
         // HRA-051 required: id
         if (id == null || id.isBlank()) {
             throw new InvalidLeakDetectionValueException("LeakCandidate id must not be blank.");
@@ -77,6 +63,9 @@ import java.math.BigDecimal;
         // HRA-051 required: candidateNumber
         if (candidateNumber == null || candidateNumber.isBlank()) {
             throw new InvalidLeakDetectionValueException("LeakCandidate candidate number must not be blank.");
+        }
+        if (topologyAssetType == null || topologyAssetType.isBlank()) {
+            throw new InvalidLeakDetectionValueException("LeakCandidate topology asset type must not be blank.");
         }
         // HRA-051 required: topologyAssetId
         if (topologyAssetId == null || topologyAssetId.isBlank()) {
@@ -98,9 +87,20 @@ import java.math.BigDecimal;
         if (severityLevel == null) {
             throw new InvalidLeakDetectionValueException("LeakCandidate severity level must not be null.");
         }
+        LeakSeverityLevel derivedSeverity = CONFIDENCE_CLASSIFIER.classify(confidenceScore);
+        if (severityLevel != derivedSeverity) {
+            throw new InvalidLeakDetectionValueException(
+                    "LeakCandidate severity level must be derived from confidence score."
+            );
+        }
         // HRA-051 required: status
         if (status == null) {
             throw new InvalidLeakDetectionValueException("LeakCandidate status must not be null.");
+        }
+        if (createdAt == null || updatedAt == null) {
+            throw new InvalidLeakDetectionValueException(
+                    "LeakCandidate createdAt and updatedAt must not be null."
+            );
         }
 
         id = normalize(id);
@@ -113,16 +113,18 @@ import java.math.BigDecimal;
         topologyAssetNameSnapshot = normalize(topologyAssetNameSnapshot);
         summary = normalize(summary);
         correlationId = normalize(correlationId);
-        }
-        public boolean stillOpen() {
-            return status == LeakCandidateStatus.NEW
-                    || status == LeakCandidateStatus.UNDER_REVIEW
-                    || status == LeakCandidateStatus.VERIFIED;
-        }
-        private static String normalize(String value) {
-            if (value == null || value.isBlank()) {
-                return null;
-            }
-            return value.trim();
-        }
     }
+
+    public boolean stillOpen() {
+        return status == LeakCandidateStatus.NEW
+                || status == LeakCandidateStatus.UNDER_REVIEW
+                || status == LeakCandidateStatus.VERIFIED;
+    }
+
+    private static String normalize(String value) {
+        if (value == null || value.isBlank()) {
+            return null;
+        }
+        return value.trim();
+    }
+}

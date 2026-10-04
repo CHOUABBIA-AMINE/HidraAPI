@@ -89,10 +89,14 @@ public class IdentityAdministrationCommandApplicationService implements Identity
     @Override
     public RoleView createRole(CreateRole command) {
         Objects.requireNonNull(command, "CreateRole command must not be null.");
+        String code = requireText(command.code(), "Role code");
+        if (roleRepository.findByCode(code).isPresent()) {
+            throw new IllegalArgumentException("Role code must be unique.");
+        }
         Instant now = Instant.now();
         Role role = new Role(
                 UUID.randomUUID().toString(),
-                requireText(command.code(), "Role code"),
+                code,
                 command.nameAr(),
                 command.nameFr(),
                 command.nameEn(),

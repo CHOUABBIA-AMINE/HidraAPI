@@ -147,7 +147,7 @@ Each model task implements only the obligations recorded in its source HMSR sect
 | HMR-004 | HMSR-004 | party | Party | — | — | `fix(party): remediate semantic review Party` | **Completed** |
 | HMR-005 | HMSR-005 | telemetry | TelemetryPoint | — | — | `fix(telemetry): remediate semantic review TelemetryPoint` | **Completed** |
 | HMR-006 | HMSR-006 | planning | PlanningPeriod | — | — | `fix(planning): remediate semantic review PlanningPeriod` | **Completed** |
-| HMR-007 | HMSR-007 | identity | Role | — | — | `fix(identity): remediate semantic review Role` | Planned — HMR-007A completed; application service and focused application test are now authorized. |
+| HMR-007 | HMSR-007 | identity | Role | — | — | `fix(identity): remediate semantic review Role` | **Completed** |
 | HMR-008 | HMSR-008 | documents | DocumentStorageObject | — | — | `fix(documents): remediate semantic review DocumentStorageObject` | Planned |
 | HMR-009 | HMSR-009 | simulation | SimulationModel | — | — | `fix(simulation): remediate semantic review SimulationModel` | Planned |
 | HMR-010 | HMSR-010 | identity | IdentityProvider | — | — | `fix(identity): remediate semantic review IdentityProvider` | Planned |
@@ -624,7 +624,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-007`
 - Exact commit: `fix(identity): remediate semantic review Role`
-- Status: **Planned — HMR-007A completed.** The exact allowlist now includes the general create-role application service and its focused unit test so the recorded fail-fast duplicate-code obligation can be implemented together with race-safe database uniqueness.
+- Status: **Completed** — the general create-role application path normalizes the requested code, fails fast when `RoleRepositoryPort.findByCode` already resolves it, the focused application-service test proves no save occurs on duplicates, and additive Flyway enforces race-safe uniqueness on `hidra_identity_role(code)`.
 - SCC: —
 - Recorded upstream HMS dependencies: —
 - HMSR correction count: 1
@@ -4580,16 +4580,8 @@ A later HMR task may become Skipped only if stronger live evidence appears befor
 
 ### 12.5 Current next task
 
-The first executable task in dependency order is:
+HMR-008 — documents.DocumentStorageObject
 
-```text
-HMR-003 — workflow.WorkflowDefinition
-```
+fix(documents): remediate semantic review DocumentStorageObject
 
-Exact commit message:
-
-```text
-fix(workflow): remediate semantic review WorkflowDefinition
-```
-
-Do not start HMR-004 automatically.
+Do not start HMR-009 automatically.

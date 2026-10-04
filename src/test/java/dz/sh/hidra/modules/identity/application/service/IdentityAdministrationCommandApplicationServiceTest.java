@@ -23,6 +23,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
@@ -86,6 +88,37 @@ class IdentityAdministrationCommandApplicationServiceTest {
         assertEquals("OPERATIONS_REVIEWER", result.code());
         assertEquals("BUSINESS", result.roleType());
         assertEquals("ACTIVE", result.status());
+    }
+
+    @Test
+    void rejectsDuplicateRoleCodeBeforeSave() {
+        Role existing = new Role(
+                "role-existing",
+                "OPERATIONS_REVIEWER",
+                null,
+                "Réviseur opérations",
+                "Operations Reviewer",
+                null,
+                dz.sh.hidra.modules.identity.domain.value.RoleType.BUSINESS,
+                dz.sh.hidra.modules.identity.domain.value.RoleStatus.ACTIVE,
+                java.time.Instant.parse("2026-10-04T00:00:00Z"),
+                java.time.Instant.parse("2026-10-04T00:00:00Z")
+        );
+        when(roleRepository.findByCode("OPERATIONS_REVIEWER")).thenReturn(Optional.of(existing));
+
+        CreateRole command = new CreateRole(
+                "OPERATIONS_REVIEWER",
+                null,
+                "Réviseur opérations",
+                "Operations Reviewer",
+                "Duplicate role.",
+                "BUSINESS",
+                "ACTIVE"
+        );
+
+        var exception = assertThrows(IllegalArgumentException.class, () -> service.createRole(command));
+        assertEquals("Role code must be unique.", exception.getMessage());
+        verify(roleRepository, never()).save(any(Role.class));
     }
 
     @Test

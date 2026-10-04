@@ -164,3 +164,34 @@ Custody creates finance invoice/posting tables
 Domain, application, and infrastructure custody models must not use `@Schema` or OpenAPI annotations.
 
 `@Schema` is allowed only in custody API request/response models.
+
+
+---
+
+## 8. Measurement-period agreement/transfer-point coherence
+
+A `CustodyMeasurementPeriod` identifies both the governing `CustodyAgreement` and the official
+`CustodyTransferPoint`. These two references must describe one coherent Custody-owned context.
+
+```text
+period.agreementId -> CustodyAgreement.id
+period.transferPointId -> CustodyTransferPoint.id
+CustodyAgreement.transferPointId must equal period.transferPointId
+```
+
+HMR-018 enforces this relationship at two same-module boundaries:
+
+```text
+Java persistence:
+  resolve CustodyAgreement by agreementId
+  fail closed when it does not exist
+  fail closed when agreement.transferPointId != period.transferPointId
+
+PostgreSQL:
+  unique owner key on CustodyAgreement(id, transfer_point_id)
+  composite FK from CustodyMeasurementPeriod(agreement_id, transfer_point_id)
+```
+
+The correction does not add an agreement-status eligibility rule, validity-period containment rule,
+period-code uniqueness rule, or custody lifecycle transition matrix because HMSR-020 did not establish
+those semantics.

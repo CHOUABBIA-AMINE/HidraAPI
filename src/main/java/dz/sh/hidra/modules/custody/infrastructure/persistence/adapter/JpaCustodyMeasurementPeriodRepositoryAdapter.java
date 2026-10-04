@@ -7,7 +7,7 @@
  *
  * @Name        : JpaCustodyMeasurementPeriodRepositoryAdapter
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-04
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -20,8 +20,10 @@
 package dz.sh.hidra.modules.custody.infrastructure.persistence.adapter;
 
 import dz.sh.hidra.modules.custody.application.port.out.CustodyMeasurementPeriodRepositoryPort;
+import dz.sh.hidra.modules.custody.domain.exception.InvalidCustodyValueException;
 import dz.sh.hidra.modules.custody.domain.model.CustodyMeasurementPeriod;
 import dz.sh.hidra.modules.custody.infrastructure.persistence.mapper.CustodyPersistenceMapper;
+import dz.sh.hidra.modules.custody.infrastructure.persistence.repository.CustodyAgreementJpaRepository;
 import dz.sh.hidra.modules.custody.infrastructure.persistence.repository.CustodyMeasurementPeriodJpaRepository;
 import org.springframework.stereotype.Component;
 
@@ -35,14 +37,39 @@ import java.util.Optional;
 public class JpaCustodyMeasurementPeriodRepositoryAdapter implements CustodyMeasurementPeriodRepositoryPort {
 
     private final CustodyMeasurementPeriodJpaRepository repository;
+    private final CustodyAgreementJpaRepository agreementRepository;
 
-    public JpaCustodyMeasurementPeriodRepositoryAdapter(CustodyMeasurementPeriodJpaRepository repository) {
-        this.repository = Objects.requireNonNull(repository, "CustodyMeasurementPeriodJpaRepository must not be null.");
+    public JpaCustodyMeasurementPeriodRepositoryAdapter(
+            CustodyMeasurementPeriodJpaRepository repository,
+            CustodyAgreementJpaRepository agreementRepository
+    ) {
+        this.repository = Objects.requireNonNull(
+                repository,
+                "CustodyMeasurementPeriodJpaRepository must not be null."
+        );
+        this.agreementRepository = Objects.requireNonNull(
+                agreementRepository,
+                "CustodyAgreementJpaRepository must not be null."
+        );
     }
 
     @Override
     public CustodyMeasurementPeriod save(CustodyMeasurementPeriod model) {
-        return CustodyPersistenceMapper.toDomain(repository.save(CustodyPersistenceMapper.toEntity(model)));
+        Objects.requireNonNull(model, "CustodyMeasurementPeriod must not be null.");
+
+        var agreement = agreementRepository.findById(model.agreementId())
+                .orElseThrow(() -> new InvalidCustodyValueException(
+                        "CustodyMeasurementPeriod agreement must reference an existing CustodyAgreement."
+                ));
+        if (!model.transferPointId().equals(agreement.transferPointId())) {
+            throw new InvalidCustodyValueException(
+                    "CustodyMeasurementPeriod transfer point must match the governing CustodyAgreement transfer point."
+            );
+        }
+
+        return CustodyPersistenceMapper.toDomain(
+                repository.save(CustodyPersistenceMapper.toEntity(model))
+        );
     }
 
     @Override

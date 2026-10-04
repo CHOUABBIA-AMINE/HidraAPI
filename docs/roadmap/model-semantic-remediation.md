@@ -158,7 +158,7 @@ Each model task implements only the obligations recorded in its source HMSR sect
 | HMR-015 | HMSR-015 | leakdetection | LeakCandidate | — | — | `fix(leakdetection): remediate semantic review LeakCandidate` | **Completed** |
 | HMR-016 | HMSR-018 | analytics | MetricEvaluationRun | — | — | `fix(analytics): remediate semantic review MetricEvaluationRun` | **Completed** |
 | HMR-017 | HMSR-019 | configuration | ConfigurationDefinition | — | — | `fix(configuration): remediate semantic review ConfigurationDefinition` | **Completed** |
-| HMR-018 | HMSR-020 | custody | CustodyMeasurementPeriod | — | — | `fix(custody): remediate semantic review CustodyMeasurementPeriod` | Planned |
+| HMR-018 | HMSR-020 | custody | CustodyMeasurementPeriod | — | — | `fix(custody): remediate semantic review CustodyMeasurementPeriod` | **Completed** |
 | HMR-019 | HMSR-021 | integrity | PipelineDefect | — | — | `fix(integrity): remediate semantic review PipelineDefect` | Planned |
 | HMR-020 | HMSR-022 | organization | Position | — | — | `fix(organization): remediate semantic review Position` | Planned |
 | HMR-021 | HMSR-023 | organization | Shift | — | — | `fix(organization): remediate semantic review Shift` | Planned |
@@ -1234,7 +1234,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-020`
 - Exact commit: `fix(custody): remediate semantic review CustodyMeasurementPeriod`
-- Status: **Planned**
+- Status: **Completed** — every `CustodyMeasurementPeriod` save resolves the selected Custody-owned `CustodyAgreement` and requires its mandatory `transferPointId` to equal the period `transferPointId`. PostgreSQL independently enforces the same relationship through a composite `(agreement_id, transfer_point_id)` foreign key to the agreement row. No agreement-status, agreement-validity, or period-transition rule was invented.
 - SCC: —
 - Recorded upstream HMS dependencies: —
 - HMSR correction count: 1
@@ -4707,8 +4707,8 @@ A later HMR task may become Skipped only if stronger live evidence appears befor
 
 ### 12.5 Current next task
 
-HMR-018 — custody.CustodyMeasurementPeriod
+HMR-019 — integrity.PipelineDefect
 
-fix(custody): remediate semantic review CustodyMeasurementPeriod
+fix(integrity): remediate semantic review PipelineDefect
 
-Do not start HMR-019 automatically.
+Do not start HMR-020 automatically.

@@ -7,7 +7,7 @@
  *
  * @Name        : TelemetryReading
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-10-04
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -20,32 +20,33 @@
 package dz.sh.hidra.modules.telemetry.domain.model;
 
 import dz.sh.hidra.modules.telemetry.domain.exception.InvalidTelemetryValueException;
-import dz.sh.hidra.modules.telemetry.domain.value.*;
-import java.time.Instant;
+import dz.sh.hidra.modules.telemetry.domain.service.TelemetryReadingValueValidator;
+import dz.sh.hidra.modules.telemetry.domain.value.ReadingState;
 import java.math.BigDecimal;
+import java.time.Instant;
 
-    /**
-     * Raw received telemetry reading.
-     *
-         * @param id id
-     * @param pointId pointId
-     * @param numericValue numericValue
-     * @param textValue textValue
-     * @param booleanValue booleanValue
-     * @param qualityCodeId qualityCodeId
-     * @param sourceTimestamp sourceTimestamp
-     * @param receivedAt receivedAt
-     * @param state state
-     * @param ingestionBatchId ingestionBatchId
-     * @param correlationId correlationId
-     * @param rejectionReason rejectionReason
-     * @param sourceSequenceNumber sourceSequenceNumber
-     * @param externalTagMappingId externalTagMappingId
-     * @param rawPayloadHash rawPayloadHash
-     * @param createdAt createdAt
-     */
-    public record TelemetryReading(
-            String id,
+/**
+ * Raw received telemetry reading.
+ *
+ * @param id id
+ * @param pointId pointId
+ * @param numericValue numericValue
+ * @param textValue textValue
+ * @param booleanValue booleanValue
+ * @param qualityCodeId qualityCodeId
+ * @param sourceTimestamp sourceTimestamp
+ * @param receivedAt receivedAt
+ * @param state state
+ * @param ingestionBatchId ingestionBatchId
+ * @param correlationId correlationId
+ * @param rejectionReason rejectionReason
+ * @param sourceSequenceNumber sourceSequenceNumber
+ * @param externalTagMappingId externalTagMappingId
+ * @param rawPayloadHash rawPayloadHash
+ * @param createdAt createdAt
+ */
+public record TelemetryReading(
+        String id,
         String pointId,
         BigDecimal numericValue,
         String textValue,
@@ -61,9 +62,9 @@ import java.math.BigDecimal;
         String externalTagMappingId,
         String rawPayloadHash,
         Instant createdAt
-    ) {
+) {
 
-        public TelemetryReading {
+    public TelemetryReading {
         // HRA-051 required: id
         if (id == null || id.isBlank()) {
             throw new InvalidTelemetryValueException("TelemetryReading id must not be blank.");
@@ -99,24 +100,33 @@ import java.math.BigDecimal;
         sourceSequenceNumber = normalize(sourceSequenceNumber);
         externalTagMappingId = normalize(externalTagMappingId);
         rawPayloadHash = normalize(rawPayloadHash);
-        }
-        public boolean hasExactlyOneValue() {
-            int count = 0;
-            if (numericValue != null) {
-                count++;
-            }
-            if (textValue != null && !textValue.isBlank()) {
-                count++;
-            }
-            if (booleanValue != null) {
-                count++;
-            }
-            return count == 1;
-        }
-        private static String normalize(String value) {
-            if (value == null || value.isBlank()) {
-                return null;
-            }
-            return value.trim();
-        }
+
+        TelemetryReadingValueValidator.validateValueShape(
+                state,
+                numericValue,
+                textValue,
+                booleanValue
+        );
     }
+
+    public boolean hasExactlyOneValue() {
+        int count = 0;
+        if (numericValue != null) {
+            count++;
+        }
+        if (textValue != null && !textValue.isBlank()) {
+            count++;
+        }
+        if (booleanValue != null) {
+            count++;
+        }
+        return count == 1;
+    }
+
+    private static String normalize(String value) {
+        if (value == null || value.isBlank()) {
+            return null;
+        }
+        return value.trim();
+    }
+}

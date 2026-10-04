@@ -912,3 +912,14 @@ secret-bearing externalReference
 
 Only `ACTIVE` sources are ingestion-eligible. HMR-030 does not create an ingestion service or
 new credential store; secret values remain outside telemetry persistence.
+
+
+---
+
+## HMR-033 — TelemetryReading executable semantic baseline
+
+The raw-reading boundary now enforces one authoritative value-shape policy: every reading forbids
+multiple typed values; `REJECTED` and `QUARANTINED` may preserve zero typed values, while
+`RECEIVED`, `ACCEPTED`, `DUPLICATE`, and `TRUSTED` require exactly one. The additive
+HMR-033 migration also protects populated ingestion-batch and external-tag-mapping references and
+requires `qualityCodeId` to belong specifically to the `QUALITY_CODE` telemetry catalog family.

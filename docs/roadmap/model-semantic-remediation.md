@@ -1898,7 +1898,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-037`
 - Exact commit: `fix(telemetry): remediate semantic review TelemetryReading`
-- Status: **Planned**
+- Status: **Completed** — optional batch/mapping references are protected, qualityCodeId is constrained to QUALITY_CODE, and raw-reading value shape is enforced consistently with the rejected/quarantined null-value exception.
 - SCC: —
 - Recorded upstream HMS dependencies: telemetry.TelemetryPoint
 - HMSR correction count: 4
@@ -4869,8 +4869,8 @@ or required-field alignment work; keep high-risk semantic redesigns solo.
 
 ### 12.6 Current next execution
 
-HMR-033 — telemetry.TelemetryReading
+HMR-034 — simulation.SimulationScenario
 
-`fix(telemetry): remediate semantic review TelemetryReading`
+`fix(simulation): remediate semantic review SimulationScenario`
 
-HMR-032 is completed. Execute HMR-033 only after the HMR-032 head is green; do not start HMR-034 automatically.
+HMR-033 is completed. Execute HMR-034 only after the HMR-033 head is green; do not start HMR-035 automatically.

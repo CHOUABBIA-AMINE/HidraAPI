@@ -603,7 +603,7 @@ hidra_telemetry_reading
 
 ### Value shape rule
 
-Exactly one of these should be populated, except for explicitly allowed null/state readings:
+Exactly one of these should be populated:
 
 ```text
 numericValue
@@ -611,12 +611,19 @@ textValue
 booleanValue
 ```
 
+HMR-033 makes the previously implicit null/state exception explicit: `REJECTED` and
+`QUARANTINED` raw readings may preserve zero typed values when validation or resolution fails
+before a typed value can be accepted. No reading may contain more than one typed value.
+`RECEIVED`, `ACCEPTED`, `DUPLICATE`, and `TRUSTED` require exactly one typed value.
+
 ### Rules
 
 ```text
 sourceTimestamp must not be null.
 receivedAt must not be before sourceTimestamp beyond accepted clock-skew policy.
-qualityCodeId must exist.
+qualityCodeId must exist and belong to the QUALITY_CODE telemetry catalog family.
+A populated ingestionBatchId must resolve to hidra_telemetry_ingestion_batch.
+A populated externalTagMappingId must resolve to hidra_telemetry_external_tag_mapping.
 Raw readings should be append-oriented; avoid business updates except state/rejection metadata if implementation chooses mutable state.
 ```
 

@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.simulation.application.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import dz.sh.hidra.modules.simulation.application.command.CreateSimulationModelCommand;
@@ -71,6 +72,7 @@ public final class SimulationApplicationService implements CreateSimulationModel
     private final PlanningSnapshotLookupPort planningSnapshotLookupPort;
     private final MonitoringContextLookupPort monitoringContextLookupPort;
 
+    @Autowired
     public SimulationApplicationService(
             SimulationModelRepositoryPort modelRepositoryPort,
             SimulationScenarioRepositoryPort scenarioRepositoryPort,
@@ -89,6 +91,29 @@ public final class SimulationApplicationService implements CreateSimulationModel
         this.topologySnapshotLookupPort = Objects.requireNonNull(topologySnapshotLookupPort, "Topology snapshot lookup port must not be null.");
         this.planningSnapshotLookupPort = Objects.requireNonNull(planningSnapshotLookupPort, "Planning snapshot lookup port must not be null.");
         this.monitoringContextLookupPort = Objects.requireNonNull(monitoringContextLookupPort, "Monitoring context lookup port must not be null.");
+    }
+
+    /**
+     * Compatibility constructor for pre-HMR-034 callers that do not exercise scenario execution.
+     * Owner-reference validation remains fail-closed.
+     */
+    public SimulationApplicationService(
+            SimulationModelRepositoryPort modelRepositoryPort,
+            SimulationScenarioRepositoryPort scenarioRepositoryPort,
+            SimulationRunRepositoryPort runRepositoryPort,
+            SimulationRecommendationRepositoryPort recommendationRepositoryPort,
+            SimulationTopologyScopeContract topologyScopeContract
+    ) {
+        this(
+                modelRepositoryPort,
+                scenarioRepositoryPort,
+                runRepositoryPort,
+                recommendationRepositoryPort,
+                topologyScopeContract,
+                referenceId -> false,
+                referenceId -> false,
+                referenceId -> false
+        );
     }
 
     @Override

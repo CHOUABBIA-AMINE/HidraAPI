@@ -1052,12 +1052,12 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-015`
 - Exact commit: `fix(leakdetection): remediate semantic review LeakCandidate`
-- Status: **Planned**
+- Status: **Planned — HMR-015A completed.** A dedicated Topology-owned Leak Detection asset-resolution contract is now specified for `PIPELINE`, `PIPELINE_SEGMENT`, `FACILITY`, `TOPOLOGY_NODE`, and `EQUIPMENT`. HMR-015 may implement typed owner validation, owner-governed code/name snapshots, and fail-closed unsupported/missing-target handling without importing Topology domain/persistence types into Leak Detection or creating a cross-module FK.
 - SCC: —
 - Recorded upstream HMS dependencies: —
 - HMSR correction count: 7
 - Additive Flyway: `src/main/resources/db/migration/V20261004_015__hmr_015_leakdetection_leak_candidate.sql`
-- Owner-contract prerequisite: Owner-controlled validation required by HMSR; no concrete upstream HMS owner is registered, so preserve neutral/reference semantics and do not invent a cross-module FK.
+- Owner-contract prerequisite: **HMR-015A completed.** Use the dedicated Topology-owned `LeakDetectionTopologyAssetContract`; do not use `LeakDetectionExternalReferenceResolver`/`NoopLeakDetectionExternalReferenceResolver` as authority and do not introduce a cross-module FK.
 - Exact write allowlist:
   - `docs/data definition/LeakDetection.md`
   - `docs/roadmap/model-semantic-remediation.md`
@@ -1068,17 +1068,23 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
   - `src/main/java/dz/sh/hidra/modules/leakdetection/application/dto/LeakCandidateView.java`
   - `src/main/java/dz/sh/hidra/modules/leakdetection/application/port/in/CreateLeakCandidateUseCase.java`
   - `src/main/java/dz/sh/hidra/modules/leakdetection/application/port/out/LeakCandidateRepositoryPort.java`
+  - `src/main/java/dz/sh/hidra/modules/leakdetection/application/service/LeakDetectionApplicationService.java`
   - `src/main/java/dz/sh/hidra/modules/leakdetection/domain/model/LeakCandidate.java`
   - `src/main/java/dz/sh/hidra/modules/leakdetection/domain/value/LeakCandidateStatus.java`
   - `src/main/java/dz/sh/hidra/modules/leakdetection/infrastructure/persistence/adapter/JpaLeakCandidateRepositoryAdapter.java`
   - `src/main/java/dz/sh/hidra/modules/leakdetection/infrastructure/persistence/entity/LeakCandidateJpaEntity.java`
   - `src/main/java/dz/sh/hidra/modules/leakdetection/infrastructure/persistence/mapper/LeakDetectionPersistenceMapper.java`
   - `src/main/java/dz/sh/hidra/modules/leakdetection/infrastructure/persistence/repository/LeakCandidateJpaRepository.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/application/contract/leakdetection/LeakDetectionTopologyAssetContract.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/infrastructure/reference/JpaLeakDetectionTopologyAssetContractAdapter.java`
+  - `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java`
+  - `src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java`
   - `src/main/resources/db/migration/V20261004_015__hmr_015_leakdetection_leak_candidate.sql`
   - `src/test/java/dz/sh/hidra/modules/leakdetection/semantic/LeakCandidateSemanticRemediationTest.java`
+  - `src/test/java/dz/sh/hidra/modules/topology/infrastructure/reference/JpaLeakDetectionTopologyAssetContractAdapterTest.java`
 - Exact validation:
   - `./mvnw -q -DskipTests compile`
-  - `./mvnw -q -Dtest=LeakCandidateSemanticRemediationTest test`
+  - `./mvnw -q -Dtest=LeakCandidateSemanticRemediationTest,JpaLeakDetectionTopologyAssetContractAdapterTest test`
   - `./mvnw -q test`
   - `./mvnw -q clean verify`
 - HMSR obligations:
@@ -1089,6 +1095,32 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
   5. **External-compute idempotency:** define the stable candidate/anomaly identity and uniqueness scope before CPM/gRPC ingestion so reconnect/replay cannot create uncontrolled duplicates.
   6. **Confidence/severity authority:** explicitly define whether severity is always derived from confidence or can be independently assessed, then prevent contradictory persisted pairs under the chosen rule.
   7. **Required audit timestamps:** retain a deliberate enforcement boundary for `createdAt` and `updatedAt`, which are persistence-required.
+
+#### HMR-015A — LeakCandidate Topology owner-contract prerequisite
+
+- Source: HMR-015 / HMSR-015 obligations 1 and 2 plus live Topology owner evidence.
+- Exact commit: `docs(model-remediation): register LeakCandidate topology owner-contract prerequisite`
+- Status: **Completed** — live Topology evidence confirms Leak Detection may reference five owner concepts named by its DDD: Pipeline, PipelineSegment, Facility, TopologyNode, and Equipment. A dedicated Leak Detection-facing Topology application contract is specified for those exact target types; it returns owner-native ID/code/name evidence and distinguishes unsupported from missing targets. No lifecycle eligibility rule is invented because HMSR-015 does not establish one.
+- Type: documentation/architecture prerequisite; no production mutation.
+- Purpose: define a Topology-owned public reference contract that lets Leak Detection validate `topologyAssetType + topologyAssetId` and govern code/name snapshots without importing Topology domain/persistence models or creating a cross-module database FK.
+- Required evidence:
+  - `docs/data definition/LeakDetection.md`
+  - live `LeakCandidate`, `LeakDetectionApplicationService`, and Leak Detection external-reference resolver evidence
+  - live `TopologyOperationalScopeTargetContract` / `TopologyOperationalScopeTargetQueryService`
+  - live `SimulationTopologyScopeContract` / `TopologySimulationScopeQueryService`
+  - live Topology JPA/entity evidence for Pipeline, PipelineSegment, Facility, TopologyNode, and Equipment
+  - live architecture export guardrails
+- Required decisions:
+  1. the contract supports exactly `PIPELINE`, `PIPELINE_SEGMENT`, `FACILITY`, `TOPOLOGY_NODE`, and `EQUIPMENT`, because those are the Topology objects explicitly named by the Leak Detection DDD; `PIPELINE_SYSTEM`, `MEASUREMENT_LOCATION`, and any other type are unsupported until Leak Detection semantics explicitly adopt them;
+  2. input is `(assetType, assetId)`; resolution returns `supported`, `exists`, owner-native `id`, current `code`, and current display `name` when available;
+  3. HMR-015 must fail closed on unsupported or missing targets; when Topology supplies a code, a caller-supplied code mismatch must be rejected and the persisted code/name snapshots must be owner-governed rather than blindly trusted;
+  4. the contract lives under `topology.application.contract.leakdetection`; its implementation remains Topology-owned and may use Topology persistence internally, while Leak Detection depends only on the public contract;
+  5. HMR-015 must not use `LeakDetectionExternalReferenceResolver` or its current no-op implementation as authoritative topology validation;
+  6. the cross-module package `dz.sh.hidra.modules.topology.application.contract.leakdetection` must be registered in both repository architecture guardrails;
+  7. no cross-module database FK is permitted for the polymorphic Topology reference;
+  8. HMR-015's exact allowlist and focused validation are amended above to authorize the application service, Topology contract/adapter, architecture guardrails, and focused owner-contract test needed to execute obligations 1 and 2.
+- HMR-015 remains the current next production task. Do not start HMR-016 automatically.
+
 
 #### HMR-016 — analytics.MetricEvaluationRun
 

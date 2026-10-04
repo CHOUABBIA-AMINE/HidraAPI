@@ -156,7 +156,7 @@ Each model task implements only the obligations recorded in its source HMSR sect
 | HMR-013 | HMSR-013 | reporting | ReportDefinition | — | — | `fix(reporting): remediate semantic review ReportDefinition` | **Completed** |
 | HMR-014 | HMSR-014 | integration | IntegrationJobRun | — | — | `fix(integration): remediate semantic review IntegrationJobRun` | **Completed** |
 | HMR-015 | HMSR-015 | leakdetection | LeakCandidate | — | — | `fix(leakdetection): remediate semantic review LeakCandidate` | **Completed** |
-| HMR-016 | HMSR-018 | analytics | MetricEvaluationRun | — | — | `fix(analytics): remediate semantic review MetricEvaluationRun` | Planned |
+| HMR-016 | HMSR-018 | analytics | MetricEvaluationRun | — | — | `fix(analytics): remediate semantic review MetricEvaluationRun` | **Completed** |
 | HMR-017 | HMSR-019 | configuration | ConfigurationDefinition | — | — | `fix(configuration): remediate semantic review ConfigurationDefinition` | Planned |
 | HMR-018 | HMSR-020 | custody | CustodyMeasurementPeriod | — | — | `fix(custody): remediate semantic review CustodyMeasurementPeriod` | Planned |
 | HMR-019 | HMSR-021 | integrity | PipelineDefect | — | — | `fix(integrity): remediate semantic review PipelineDefect` | Planned |
@@ -1126,7 +1126,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-018`
 - Exact commit: `fix(analytics): remediate semantic review MetricEvaluationRun`
-- Status: **Planned — HMR-016A completed.** The exact typed-scope and terminal-orchestration boundary is now registered. HMR-016 must validate supported owner-backed scopes through an Analytics-neutral resolver, fail closed for unimplemented example scopes such as PRODUCT, enforce metric-version period eligibility, and expose a governed application finalization path without inventing a full transition matrix.
+- Status: **Completed** — nonblank scope type is a domain invariant; current Analytics starts validate owner-backed Topology/Organization scopes through dedicated public contracts and fail closed for unsupported types; all current supported scopes require IDs. Metric-definition versions must exist and contain the requested evaluation period. The use case exposes governed terminal finalization for COMPLETED, COMPLETED_WITH_WARNINGS, FAILED and CANCELLED, preserves counters/diagnostics/correlation, requires completion timestamps, and prevents already-terminal outcomes from being changed or reopened. FAILED runs retain diagnostic or correlation evidence. No cross-module scope FK or unsupported scope owner was invented.
 - SCC: —
 - Recorded upstream HMS dependencies: —
 - HMSR correction count: 5
@@ -4707,8 +4707,8 @@ A later HMR task may become Skipped only if stronger live evidence appears befor
 
 ### 12.5 Current next task
 
-HMR-016 — analytics.MetricEvaluationRun
+HMR-017 — configuration.ConfigurationDefinition
 
-fix(analytics): remediate semantic review MetricEvaluationRun
+fix(configuration): remediate semantic review ConfigurationDefinition
 
-Do not start HMR-017 automatically.
+Do not start HMR-018 automatically.

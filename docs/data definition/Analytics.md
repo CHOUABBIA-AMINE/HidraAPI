@@ -673,6 +673,43 @@ scope must reference a topology asset, organization unit, product, or module-def
 failed run must be auditable
 ```
 
+HMR-016 executable baseline:
+
+```text
+scopeType is required and non-blank
+current owner-backed scope types:
+  PIPELINE_SYSTEM
+  PIPELINE
+  PIPELINE_SEGMENT
+  FACILITY
+  EQUIPMENT
+  ORGANIZATION_UNIT
+all currently supported scope types require scopeId
+unsupported scope types fail closed until an authoritative owner contract exists
+no cross-module database foreign key is created for scopeId
+
+metricDefinitionVersionId must exist
+periodStart/periodEnd must lie within the version's optional inclusive validFrom/validTo interval
+
+terminal outcomes:
+  COMPLETED
+  COMPLETED_WITH_WARNINGS
+  FAILED
+  CANCELLED
+terminal finalization records completedAt
+already-terminal runs cannot be reopened or changed to another terminal outcome
+FAILED retains at least diagnostic or correlation evidence
+recordsRead and recordsProduced, when present, are non-negative
+```
+
+The examples `PRODUCT`, `NETWORK`, `STATION`, `MEASUREMENT_POINT`,
+`CUSTODY_TRANSFER_POINT`, `HSE_SITE` and `RISK_AREA` remain descriptive
+Analytics vocabulary only until their owning modules expose an approved Analytics-facing
+read contract. HMR-016 therefore fails closed for them rather than fabricating ownership.
+
+No identifier-less MetricEvaluationRun scope is currently established. The neutral resolver
+contract can represent one later, but the current supported owner-backed scopes all require IDs.
+
 ---
 
 ### 9.12 MetricValue

@@ -7,7 +7,7 @@
  *
  * @Name        : MetricEvaluationRun
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-10-04
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -81,6 +81,9 @@ import java.time.Instant;
         if (periodEnd == null) {
             throw new InvalidAnalyticsValueException("MetricEvaluationRun period end must not be null.");
         }
+        if (scopeType == null || scopeType.isBlank()) {
+            throw new InvalidAnalyticsValueException("MetricEvaluationRun scope type must not be blank.");
+        }
         // HRA-051 required: startedAt
         if (startedAt == null) {
             throw new InvalidAnalyticsValueException("MetricEvaluationRun started at must not be null.");
@@ -88,6 +91,29 @@ import java.time.Instant;
         // HRA-051 order: periodStart <= periodEnd
         if (periodStart != null && periodEnd != null && periodEnd.isBefore(periodStart)) {
             throw new InvalidAnalyticsValueException("MetricEvaluationRun period end must not be before period start.");
+        }
+        if (createdAt == null) {
+            throw new InvalidAnalyticsValueException("MetricEvaluationRun created at must not be null.");
+        }
+        if (recordsRead != null && recordsRead < 0) {
+            throw new InvalidAnalyticsValueException("MetricEvaluationRun recordsRead must not be negative.");
+        }
+        if (recordsProduced != null && recordsProduced < 0) {
+            throw new InvalidAnalyticsValueException("MetricEvaluationRun recordsProduced must not be negative.");
+        }
+        if (terminal(runStatus) && completedAt == null) {
+            throw new InvalidAnalyticsValueException("Terminal MetricEvaluationRun must define completedAt.");
+        }
+        if (completedAt != null && completedAt.isBefore(startedAt)) {
+            throw new InvalidAnalyticsValueException("MetricEvaluationRun completedAt must not precede startedAt.");
+        }
+        if (runStatus == AnalyticsRunStatus.FAILED
+                && blank(errorCode)
+                && blank(errorMessage)
+                && blank(correlationId)) {
+            throw new InvalidAnalyticsValueException(
+                    "FAILED MetricEvaluationRun requires diagnostic or correlation evidence."
+            );
         }
 
         id = normalize(id);
@@ -97,6 +123,34 @@ import java.time.Instant;
         errorCode = normalize(errorCode);
         errorMessage = normalize(errorMessage);
         correlationId = normalize(correlationId);
+        }
+
+        public boolean terminalStatus() {
+            return terminal(runStatus);
+        }
+
+        public void validateTransitionFrom(AnalyticsRunStatus previousStatus) {
+            if (previousStatus == null) {
+                throw new InvalidAnalyticsValueException(
+                        "MetricEvaluationRun previous status must not be null."
+                );
+            }
+            if (terminal(previousStatus) && runStatus != previousStatus) {
+                throw new InvalidAnalyticsValueException(
+                        "Terminal MetricEvaluationRun outcome cannot be changed or reopened."
+                );
+            }
+        }
+
+        private static boolean terminal(AnalyticsRunStatus status) {
+            return status == AnalyticsRunStatus.COMPLETED
+                    || status == AnalyticsRunStatus.COMPLETED_WITH_WARNINGS
+                    || status == AnalyticsRunStatus.FAILED
+                    || status == AnalyticsRunStatus.CANCELLED;
+        }
+
+        private static boolean blank(String value) {
+            return value == null || value.isBlank();
         }
 
         private static String normalize(String value) {

@@ -7,7 +7,7 @@
  *
  * @Name        : MetricEvaluationUseCase
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-04
  *
  * @Type        : Interface
  * @Layer       : Application
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.analytics.application.port.in;
 
+import dz.sh.hidra.modules.analytics.application.command.FinalizeMetricEvaluationRunCommand;
 import dz.sh.hidra.modules.analytics.application.command.RunMetricEvaluationCommand;
 import dz.sh.hidra.modules.analytics.application.dto.MetricEvaluationRunSummaryDto;
 
@@ -28,4 +29,6 @@ import dz.sh.hidra.modules.analytics.application.dto.MetricEvaluationRunSummaryD
 public interface MetricEvaluationUseCase {
 
     MetricEvaluationRunSummaryDto runMetricEvaluation(RunMetricEvaluationCommand command);
+
+    MetricEvaluationRunSummaryDto finalizeMetricEvaluationRun(FinalizeMetricEvaluationRunCommand command);
 }

@@ -56,6 +56,8 @@ class ForensicRemediationClosureTest {
             "dz.sh.hidra.modules.topology.application.contract.organization",
             "dz.sh.hidra.modules.topology.application.contract.simulation",
             "dz.sh.hidra.modules.topology.application.contract.leakdetection",
+            "dz.sh.hidra.modules.topology.application.contract.analytics",
+            "dz.sh.hidra.modules.organization.application.contract.analytics",
             "dz.sh.hidra.modules.audit.application.contract.organization",
             "dz.sh.hidra.modules.audit.application.contract.alarm"
     );

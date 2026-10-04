@@ -159,7 +159,7 @@ Each model task implements only the obligations recorded in its source HMSR sect
 | HMR-016 | HMSR-018 | analytics | MetricEvaluationRun | — | — | `fix(analytics): remediate semantic review MetricEvaluationRun` | **Completed** |
 | HMR-017 | HMSR-019 | configuration | ConfigurationDefinition | — | — | `fix(configuration): remediate semantic review ConfigurationDefinition` | **Completed** |
 | HMR-018 | HMSR-020 | custody | CustodyMeasurementPeriod | — | — | `fix(custody): remediate semantic review CustodyMeasurementPeriod` | **Completed** |
-| HMR-019 | HMSR-021 | integrity | PipelineDefect | — | — | `fix(integrity): remediate semantic review PipelineDefect` | Planned |
+| HMR-019 | HMSR-021 | integrity | PipelineDefect | — | — | `fix(integrity): remediate semantic review PipelineDefect` | **Completed** |
 | HMR-020 | HMSR-022 | organization | Position | — | — | `fix(organization): remediate semantic review Position` | Planned |
 | HMR-021 | HMSR-023 | organization | Shift | — | — | `fix(organization): remediate semantic review Shift` | Planned |
 | HMR-022 | HMSR-024 | topology | PipelineSystem | — | — | `fix(topology): remediate semantic review PipelineSystem` | Planned |
@@ -1268,7 +1268,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-021`
 - Exact commit: `fix(integrity): remediate semantic review PipelineDefect`
-- Status: **Planned**
+- Status: **Completed** — when `PipelineDefect.sourceFindingId` is non-null, Integrity persistence now requires the referenced `InspectionFinding` to exist before save, and PostgreSQL independently enforces the same nullable same-module provenance through an additive FK. Null provenance remains valid. No reciprocal `InspectionFinding.linkedDefectId`, finding-status, Topology, defect-number uniqueness, lifecycle, or timing rule was invented.
 - SCC: —
 - Recorded upstream HMS dependencies: —
 - HMSR correction count: 1
@@ -4707,8 +4707,8 @@ A later HMR task may become Skipped only if stronger live evidence appears befor
 
 ### 12.5 Current next task
 
-HMR-019 — integrity.PipelineDefect
+HMR-020 — organization.Position
 
-fix(integrity): remediate semantic review PipelineDefect
+fix(organization): remediate semantic review Position
 
-Do not start HMR-020 automatically.
+Do not start HMR-021 automatically.

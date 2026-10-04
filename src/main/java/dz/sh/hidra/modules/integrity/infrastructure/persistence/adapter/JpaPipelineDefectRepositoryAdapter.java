@@ -7,7 +7,7 @@
  *
  * @Name        : JpaPipelineDefectRepositoryAdapter
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-04
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -20,8 +20,10 @@
 package dz.sh.hidra.modules.integrity.infrastructure.persistence.adapter;
 
 import dz.sh.hidra.modules.integrity.application.port.out.PipelineDefectRepositoryPort;
+import dz.sh.hidra.modules.integrity.domain.exception.InvalidIntegrityValueException;
 import dz.sh.hidra.modules.integrity.domain.model.PipelineDefect;
 import dz.sh.hidra.modules.integrity.infrastructure.persistence.mapper.IntegrityPersistenceMapper;
+import dz.sh.hidra.modules.integrity.infrastructure.persistence.repository.InspectionFindingJpaRepository;
 import dz.sh.hidra.modules.integrity.infrastructure.persistence.repository.PipelineDefectJpaRepository;
 import org.springframework.stereotype.Component;
 
@@ -35,14 +37,35 @@ import java.util.Optional;
 public class JpaPipelineDefectRepositoryAdapter implements PipelineDefectRepositoryPort {
 
     private final PipelineDefectJpaRepository repository;
+    private final InspectionFindingJpaRepository inspectionFindingRepository;
 
-    public JpaPipelineDefectRepositoryAdapter(PipelineDefectJpaRepository repository) {
-        this.repository = Objects.requireNonNull(repository, "PipelineDefectJpaRepository must not be null.");
+    public JpaPipelineDefectRepositoryAdapter(
+            PipelineDefectJpaRepository repository,
+            InspectionFindingJpaRepository inspectionFindingRepository
+    ) {
+        this.repository = Objects.requireNonNull(
+                repository,
+                "PipelineDefectJpaRepository must not be null."
+        );
+        this.inspectionFindingRepository = Objects.requireNonNull(
+                inspectionFindingRepository,
+                "InspectionFindingJpaRepository must not be null."
+        );
     }
 
     @Override
     public PipelineDefect save(PipelineDefect model) {
-        return IntegrityPersistenceMapper.toDomain(repository.save(IntegrityPersistenceMapper.toEntity(model)));
+        Objects.requireNonNull(model, "PipelineDefect must not be null.");
+        if (model.sourceFindingId() != null
+                && !inspectionFindingRepository.existsById(model.sourceFindingId())) {
+            throw new InvalidIntegrityValueException(
+                    "PipelineDefect source finding must reference an existing InspectionFinding."
+            );
+        }
+
+        return IntegrityPersistenceMapper.toDomain(
+                repository.save(IntegrityPersistenceMapper.toEntity(model))
+        );
     }
 
     @Override

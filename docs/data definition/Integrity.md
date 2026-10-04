@@ -166,3 +166,26 @@ Incident management remains blocked until its own DDD exists.
 Domain, application, and infrastructure integrity models must not use `@Schema` or OpenAPI annotations.
 
 `@Schema` is allowed only in integrity API request/response models.
+
+
+---
+
+## 8. PipelineDefect source-finding provenance
+
+`PipelineDefect.sourceFindingId` is an optional same-module provenance reference to the
+Integrity-owned `InspectionFinding`.
+
+```text
+sourceFindingId = null
+  -> valid; the defect is not required to originate from an inspection finding
+
+sourceFindingId != null
+  -> InspectionFinding with that id must exist
+  -> dangling provenance is rejected before persistence
+  -> PostgreSQL independently protects the nullable reference with ON DELETE RESTRICT
+```
+
+HMR-019 does not require `InspectionFinding.linkedDefectId` to be reciprocal, one-to-one, or
+automatically synchronized because the active Integrity semantics do not establish such a rule.
+It also does not invent finding-status eligibility, defect-number uniqueness, Topology validation,
+coordinate constraints, closure timing, or a defect lifecycle transition matrix.

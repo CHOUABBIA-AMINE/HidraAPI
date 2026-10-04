@@ -72,15 +72,18 @@ public record ReportDefinition(
     );
 
     public ReportDefinition {
+        // HRA-051 required: id
         if (id == null || id.isBlank()) {
             throw new InvalidReportingValueException("ReportDefinition id must not be blank.");
         }
+        // HRA-051 required: code
         if (code == null || code.isBlank()) {
             throw new InvalidReportingValueException("ReportDefinition code must not be blank.");
         }
         if (nameFr == null || nameFr.isBlank()) {
             throw new InvalidReportingValueException("ReportDefinition French name must not be blank.");
         }
+        // HRA-051 required: reportCategoryId
         if (reportCategoryId == null || reportCategoryId.isBlank()) {
             throw new InvalidReportingValueException("ReportDefinition report category id must not be blank.");
         }

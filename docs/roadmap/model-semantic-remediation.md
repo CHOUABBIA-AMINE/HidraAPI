@@ -150,7 +150,7 @@ Each model task implements only the obligations recorded in its source HMSR sect
 | HMR-007 | HMSR-007 | identity | Role | — | — | `fix(identity): remediate semantic review Role` | **Completed** |
 | HMR-008 | HMSR-008 | documents | DocumentStorageObject | — | — | `fix(documents): remediate semantic review DocumentStorageObject` | **Completed** |
 | HMR-009 | HMSR-009 | simulation | SimulationModel | — | — | `fix(simulation): remediate semantic review SimulationModel` | **Blocked — HMR-009A required: SimulationModel creation needs a Topology-owned `(scopeType, scopeId)` validation contract, but the live Simulation `TopologySnapshotLookupPort` is unimplemented/insufficient and the only exported Topology operational-scope contract is Organization-specific with a mismatched vocabulary (`FACILITY`/`EQUIPMENT` instead of `SEGMENT_GROUP`/`FACILITY_NETWORK`).** |
-| HMR-010 | HMSR-010 | identity | IdentityProvider | — | — | `fix(identity): remediate semantic review IdentityProvider` | Planned |
+| HMR-010 | HMSR-010 | identity | IdentityProvider | — | — | `fix(identity): remediate semantic review IdentityProvider` | **Completed** |
 | HMR-011 | HMSR-011 | identity | Permission | — | — | `fix(identity): remediate semantic review Permission` | Planned |
 | HMR-012 | HMSR-012 | notification | NotificationTemplate | — | — | `fix(notification): remediate semantic review NotificationTemplate` | Planned |
 | HMR-013 | HMSR-013 | reporting | ReportDefinition | — | — | `fix(reporting): remediate semantic review ReportDefinition` | Planned |
@@ -828,7 +828,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-010`
 - Exact commit: `fix(identity): remediate semantic review IdentityProvider`
-- Status: **Planned**
+- Status: **Completed** — provider code uniqueness is enforced before persistence and by a unique database index; provider name and timestamps are intrinsic domain invariants; active OIDC providers require an issuer and active OIDC issuer resolution is uniqueness-safe; at most one ACTIVE LOCAL provider and one ACTIVE LDAP/ACTIVE_DIRECTORY provider candidate may exist while inactive/deprecated history remains allowed.
 - SCC: —
 - Recorded upstream HMS dependencies: —
 - HMSR correction count: 5
@@ -4638,8 +4638,8 @@ A later HMR task may become Skipped only if stronger live evidence appears befor
 
 ### 12.5 Current next task
 
-HMR-010 — identity.IdentityProvider
+HMR-011 — identity.Permission
 
-fix(identity): remediate semantic review IdentityProvider
+fix(identity): remediate semantic review Permission
 
-Do not start HMR-011 automatically.
+Do not start HMR-012 automatically.

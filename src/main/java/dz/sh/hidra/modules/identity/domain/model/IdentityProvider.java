@@ -7,7 +7,7 @@
  *
  * @Name        : IdentityProvider
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-10-04
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -85,6 +85,10 @@ public record IdentityProvider(
         if (code == null || code.isBlank()) {
             throw new InvalidIdentityValueException("IdentityProvider code must not be blank.");
         }
+        // HMR-010 required: name
+        if (name == null || name.isBlank()) {
+            throw new InvalidIdentityValueException("IdentityProvider name must not be blank.");
+        }
         // HRA-051 required: providerType
         if (providerType == null) {
             throw new InvalidIdentityValueException("IdentityProvider provider type must not be null.");
@@ -92,6 +96,12 @@ public record IdentityProvider(
         // HRA-051 required: status
         if (status == null) {
             throw new InvalidIdentityValueException("IdentityProvider status must not be null.");
+        }
+        // HMR-010 required: persistence timestamps
+        if (createdAt == null || updatedAt == null) {
+            throw new InvalidIdentityValueException(
+                    "IdentityProvider createdAt and updatedAt must not be null."
+            );
         }
 
     id = normalize(id);

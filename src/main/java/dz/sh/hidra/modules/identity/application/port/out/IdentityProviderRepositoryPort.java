@@ -7,7 +7,7 @@
  *
  * @Name        : IdentityProviderRepositoryPort
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-04
  *
  * @Type        : Interface
  * @Layer       : Application
@@ -31,4 +31,6 @@ public interface IdentityProviderRepositoryPort {
     IdentityProvider save(IdentityProvider model);
 
     Optional<IdentityProvider> findById(String id);
+
+    boolean existsByCode(String code);
 }

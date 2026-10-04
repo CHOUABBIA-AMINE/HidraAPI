@@ -689,6 +689,25 @@ It stores non-secret provider metadata only. Connector secrets belong to vault/p
 | Secret safety | No client secret, bind password, token, private key, or certificate content in this table. |
 | Provider status | External login/sync allowed only when provider is `ACTIVE`. |
 
+### HMR-010 semantic remediation baseline
+
+The production baseline additionally enforces the reviewed IdentityProvider obligations:
+
+```text
+code                    unique across provider records
+name                    required and non-blank
+createdAt / updatedAt   required
+ACTIVE OIDC             requires a non-blank issuer URI
+ACTIVE OIDC issuer      unique among active OIDC providers
+ACTIVE LOCAL            at most one provider
+ACTIVE LDAP/AD          at most one provider across LDAP and ACTIVE_DIRECTORY
+```
+
+Inactive, failed, and deprecated provider records may coexist for history and configuration evidence.
+Provider-specific metadata remains optional at the generic model level; the persistence boundary validates
+only the metadata required by the current active runtime path. External authentication still fails closed
+on missing or ambiguous provider configuration and never falls back silently to another provider type.
+
 ---
 
 ## 6.18 ExternalIdentity

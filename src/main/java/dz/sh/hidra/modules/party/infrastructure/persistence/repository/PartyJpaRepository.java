@@ -28,4 +28,6 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface PartyJpaRepository extends JpaRepository<PartyJpaEntity, String> {
+
+    boolean existsByCode(String code);
 }

@@ -26,6 +26,7 @@ import dz.sh.hidra.modules.party.application.dto.PartySummaryDto;
 import dz.sh.hidra.modules.party.application.mapper.PartyApplicationMapper;
 import dz.sh.hidra.modules.party.application.port.in.RegisterPartyUseCase;
 import dz.sh.hidra.modules.party.application.port.out.PartyRepositoryPort;
+import dz.sh.hidra.modules.party.domain.exception.InvalidPartyValueException;
 import dz.sh.hidra.modules.party.domain.model.Party;
 import dz.sh.hidra.modules.party.domain.value.PartyId;
 import dz.sh.hidra.modules.party.domain.value.PartyStatus;
@@ -48,6 +49,9 @@ public final class PartyApplicationService implements RegisterPartyUseCase {
     @Override
     public PartySummaryDto registerParty(RegisterPartyCommand command) {
         Objects.requireNonNull(command, "Register party command must not be null.");
+        if (partyRepositoryPort.existsByCode(command.code())) {
+            throw new InvalidPartyValueException("Party code must be unique.");
+        }
         Instant now = Instant.now();
         Party party = new Party(
                 PartyId.newId().value(),

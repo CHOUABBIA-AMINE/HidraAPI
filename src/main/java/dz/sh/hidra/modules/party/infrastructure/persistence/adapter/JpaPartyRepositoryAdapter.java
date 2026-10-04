@@ -51,4 +51,9 @@ public class JpaPartyRepositoryAdapter implements PartyRepositoryPort {
     public Optional<Party> findById(String id) {
         return repository.findById(id).map(PartyPersistenceMapper::toDomain);
     }
+
+    @Override
+    public boolean existsByCode(String code) {
+        return repository.existsByCode(code);
+    }
 }

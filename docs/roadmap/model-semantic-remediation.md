@@ -144,7 +144,7 @@ Each model task implements only the obligations recorded in its source HMSR sect
 | HMR code | HMSR source | Module | Model | SCC | Upstream HMS dependencies | Exact commit message | Status |
 |---|---|---|---|---|---|---|---|
 | HMR-003 | HMSR-002 | workflow | WorkflowDefinition | — | — | `fix(workflow): remediate semantic review WorkflowDefinition` | **Completed** |
-| HMR-004 | HMSR-004 | party | Party | — | — | `fix(party): remediate semantic review Party` | Planned |
+| HMR-004 | HMSR-004 | party | Party | — | — | `fix(party): remediate semantic review Party` | **Completed** |
 | HMR-005 | HMSR-005 | telemetry | TelemetryPoint | — | — | `fix(telemetry): remediate semantic review TelemetryPoint` | Planned |
 | HMR-006 | HMSR-006 | planning | PlanningPeriod | — | — | `fix(planning): remediate semantic review PlanningPeriod` | Planned |
 | HMR-007 | HMSR-007 | identity | Role | — | — | `fix(identity): remediate semantic review Role` | Planned |
@@ -397,7 +397,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-004`
 - Exact commit: `fix(party): remediate semantic review Party`
-- Status: **Planned**
+- Status: **Completed** — domain now rejects blank `legalName`; registration fails fast when `code` already exists; the repository exposes code existence lookup; additive Flyway enforces race-safe unique Party code; semantic tests cover both obligations.
 - SCC: —
 - Recorded upstream HMS dependencies: —
 - HMSR correction count: 2

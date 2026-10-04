@@ -31,4 +31,6 @@ public interface PartyRepositoryPort {
     Party save(Party model);
 
     Optional<Party> findById(String id);
+
+    boolean existsByCode(String code);
 }

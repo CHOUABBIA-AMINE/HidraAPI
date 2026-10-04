@@ -67,6 +67,10 @@ import java.time.Instant;
         if (partyTypeId == null || partyTypeId.isBlank()) {
             throw new InvalidPartyValueException("Party party type id must not be blank.");
         }
+        // HMR-004 required: legalName
+        if (legalName == null || legalName.isBlank()) {
+            throw new InvalidPartyValueException("Party legal name must not be blank.");
+        }
         // HRA-051 required: countryCode
         if (countryCode == null || countryCode.isBlank()) {
             throw new InvalidPartyValueException("Party country code must not be blank.");

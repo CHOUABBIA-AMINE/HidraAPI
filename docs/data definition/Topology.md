@@ -209,3 +209,34 @@ Workflow may target topology assets only by neutral topology references.
 Domain, application, and infrastructure topology models must not use `@Schema` or OpenAPI annotations.
 
 `@Schema` is allowed only in topology API request/response models.
+
+
+---
+
+## HMR-031A — TopologyConnection executable baseline
+
+`TopologyConnection` is a Topology-owned graph edge. Its business classification is a dedicated
+catalog reference, not a fixed Java enum.
+
+```text
+ConnectionTypeReference(id, code, nameAr, nameFr, nameEn)
+
+seeded stable codes:
+  PIPELINE_SEGMENT
+  DIRECT_LINK
+  VIRTUAL_LINK
+  TRANSFER_LINK
+  MEASUREMENT_LINK
+
+fromNodeId != toNodeId
+pipelineSegmentId is optional
+when pipelineSegmentId is populated, the referenced Topology PipelineSegment must exist
+```
+
+The connection-type catalog follows the same embedded multilingual-label pattern adopted by
+HMR-022 for PipelineSystem classification. HMR-031 seeds no Arabic/French/English labels because
+no authoritative translations are available in the reviewed evidence.
+
+`FlowDirection` and `TopologyStatus` remain technical enums. HMR-031 does not establish
+connection-code uniqueness, graph-edge uniqueness, nominal-capacity ranges, capacity/unit pairing,
+or a mandatory PipelineSegment association for any connection type.

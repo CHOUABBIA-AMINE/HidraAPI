@@ -508,3 +508,48 @@ Topology asset tables use catalog foreign keys
 ```text
 COR-018 — test(stabilization): validate corrected baseline
 ```
+
+
+---
+
+## HMR-031A — TopologyConnection catalog prerequisite
+
+The accepted Topology connection classification contract is catalog-backed:
+
+```text
+TopologyConnection.connectionType -> ConnectionTypeReference
+ConnectionTypeReference:
+  id      required
+  code    required
+  nameAr  optional
+  nameFr  optional
+  nameEn  optional
+
+authoritative seed codes:
+  PIPELINE_SEGMENT
+  DIRECT_LINK
+  VIRTUAL_LINK
+  TRANSFER_LINK
+  MEASUREMENT_LINK
+```
+
+HMR-031 uses the HMR-022 local catalog pattern: embedded optional multilingual labels, stable
+id/code identity, same-module persistence, and no guessed translations.
+
+Migration semantics:
+
+```text
+legacy connection_type values are preflighted
+unmapped values fail closed
+connection_type_id is backfilled by exact code
+connection_type_id becomes required
+connection_type_id -> hidra_topology_connection_type(id) ON DELETE RESTRICT
+legacy connection_type is retired after successful validation
+
+fromNodeId == toNodeId is invalid
+pipelineSegmentId remains optional
+non-null pipelineSegmentId -> hidra_topology_pipeline_segment(id) ON DELETE RESTRICT
+```
+
+No connection-code uniqueness, edge uniqueness, capacity sign/pairing, capacity-unit taxonomy, or
+PIPELINE_SEGMENT/pipelineSegmentId coupling is inferred by HMR-031.

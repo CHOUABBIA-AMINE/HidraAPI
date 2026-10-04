@@ -1784,7 +1784,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-034`
 - Exact commit: `fix(topology): remediate semantic review TopologyConnection`
-- Status: **Planned**
+- Status: **Planned — HMR-031A completed.** The missing connection-type reference/catalog persistence scope is registered; production remediation remains HMR-031.
 - SCC: —
 - Recorded upstream HMS dependencies: —
 - HMSR correction count: 3
@@ -1797,11 +1797,15 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
   - `src/main/java/dz/sh/hidra/modules/topology/application/port/out/TopologyConnectionRepositoryPort.java`
   - `src/main/java/dz/sh/hidra/modules/topology/domain/exception/InvalidTopologyConnectionException.java`
   - `src/main/java/dz/sh/hidra/modules/topology/domain/model/TopologyConnection.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/domain/value/ConnectionTypeReference.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/domain/value/ConnectionType.java`
   - `src/main/java/dz/sh/hidra/modules/topology/domain/service/TopologyConnectionValidator.java`
   - `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JpaTopologyConnectionRepositoryAdapter.java`
   - `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/TopologyConnectionJpaEntity.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/ConnectionTypeJpaEntity.java`
   - `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/mapper/TopologyPersistenceMapper.java`
   - `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/TopologyConnectionJpaRepository.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/ConnectionTypeJpaRepository.java`
   - `src/main/resources/db/migration/V20261004_031__hmr_031_topology_topology_connection.sql`
   - `src/test/java/dz/sh/hidra/modules/topology/semantic/TopologyConnectionSemanticRemediationTest.java`
 - Exact validation:
@@ -1813,6 +1817,34 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
   1. **Restore/reconcile catalog-backed connection-type semantics.** Replace the live fixed `ConnectionType` enum/string persistence with the accepted `ConnectionTypeReference`/catalog architecture, or explicitly revise the governing Topology architecture if that earlier decision is no longer intended. Domain, JPA, Flyway, API/application contracts and migration strategy must converge on one representation.
   2. **Enforce the no-self-connection domain rule on authoritative writes.** `fromNodeId` and `toNodeId` must not resolve to the same node when a TopologyConnection becomes authoritative. The existing unused validator is insufficient by itself.
   3. **Protect populated PipelineSegment references.** When `pipelineSegmentId` is non-null, it must resolve to the retained Topology PipelineSegment target through an additive nullable FK, application validation, guarded provisioning path, or equivalent fail-closed mechanism.
+
+
+#### HMR-031A — TopologyConnection connection-type catalog prerequisite
+
+- Source: HMR-031 / HMSR-034 plus the accepted Topology controlled-vocabulary architecture and live HMR-022 catalog pattern.
+- Exact commit: `docs(model-remediation): register TopologyConnection catalog prerequisite`
+- Status: **Completed** — the missing connection-type reference/catalog persistence scope is explicitly registered; no production Java/JPA/Flyway mutation is part of HMR-031A.
+- Type: documentation/architecture prerequisite.
+- Live evidence:
+  1. `TopologyConnection` and `TopologyConnectionJpaEntity` still use the fixed `ConnectionType` enum and the scalar `connection_type` column;
+  2. the accepted Topology architecture requires `TopologyConnection -> ConnectionTypeReference`;
+  3. the controlled-vocabulary audit classifies `ConnectionType` as `REPLACE_FIRST_THEN_DELETE`;
+  4. live main has no `ConnectionTypeReference`, `ConnectionTypeJpaEntity`, `ConnectionTypeJpaRepository`, or `hidra_topology_connection_type` table;
+  5. HMR-031 already authorizes an additive migration, but its original Java allowlist cannot introduce the catalog-reference types required to complete obligation 1;
+  6. the existing HMR-022 PipelineSystem catalog remediation establishes the accepted local pattern: stable id/code, optional embedded Arabic/French/English labels, same-module FK, fail-closed legacy preflight, and no invented translations.
+- Required decisions:
+  1. Create `ConnectionTypeReference` as the canonical Topology domain catalog-reference value carrying mandatory `id`, mandatory `code`, and optional embedded `nameAr/nameFr/nameEn`.
+  2. Create `hidra_topology_connection_type`, `ConnectionTypeJpaEntity`, and `ConnectionTypeJpaRepository` using the same local catalog pattern as HMR-022. No separate translation table is created by HMR-031.
+  3. Seed only the five codes that are proven by the live legacy enum: `PIPELINE_SEGMENT`, `DIRECT_LINK`, `VIRTUAL_LINK`, `TRANSFER_LINK`, `MEASUREMENT_LINK`. Seed IDs equal codes. Localized labels remain NULL because no authoritative translations are established.
+  4. The additive migration `V20261004_031__hmr_031_topology_topology_connection.sql` preflights every existing `connection_type` value. Any value outside the five proven seed codes fails closed; no code is renamed or inferred.
+  5. The migration adds required `connection_type_id`, backfills it by exact code, adds an `ON DELETE RESTRICT` same-module FK, makes the reference mandatory, and retires the old scalar `connection_type` column after successful validation.
+  6. `TopologyConnection` moves to `ConnectionTypeReference`. The old `ConnectionType` enum may remain only as a deprecated compatibility surface if existing compilation guardrails require it; it must not remain canonical persistence/domain state after HMR-031.
+  7. The no-self-connection invariant is enforced in the canonical `TopologyConnection` constructor and by the additive database CHECK. The existing `TopologyConnectionValidator` remains aligned and must not be the sole enforcement point.
+  8. `pipelineSegmentId` remains optional. When populated, the repository/database boundary must verify `hidra_topology_pipeline_segment(id)`; the migration adds a nullable `ON DELETE RESTRICT` FK.
+  9. HMR-031 does not invent connection-code uniqueness, graph-edge uniqueness, capacity sign/pairing rules, capacity-unit ownership, or a requirement that `PIPELINE_SEGMENT` classification must carry `pipelineSegmentId`.
+  10. HMR-031 may add/modify only the newly registered reference/catalog files plus the original HMR-031 allowlist. No unrelated Topology catalog rollout is authorized.
+- HMR-031 remains the next production remediation. Do not start HMR-032 automatically.
+
 
 #### HMR-032 — organization.OrganizationUnit
 
@@ -4841,4 +4873,4 @@ HMR-031 — topology.TopologyConnection
 
 `fix(topology): remediate semantic review TopologyConnection`
 
-HMR-030 is completed. Execute HMR-031 only after the HMR-030 head is green; do not start HMR-032 automatically.
+HMR-030 is green and HMR-031A is completed. Execute the HMR-031 production correction only; do not start HMR-032 automatically.

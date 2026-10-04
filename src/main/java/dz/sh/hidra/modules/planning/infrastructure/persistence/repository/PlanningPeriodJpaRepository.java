@@ -21,6 +21,8 @@ package dz.sh.hidra.modules.planning.infrastructure.persistence.repository;
 
 import dz.sh.hidra.modules.planning.infrastructure.persistence.entity.PlanningPeriodJpaEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -28,4 +30,15 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface PlanningPeriodJpaRepository extends JpaRepository<PlanningPeriodJpaEntity, String> {
+
+    boolean existsByCode(String code);
+
+    @Query(value = """
+            SELECT CASE WHEN COUNT(*) > 0 THEN TRUE ELSE FALSE END
+            FROM hidra_planning_catalog_entry
+            WHERE id = :periodTypeId
+              AND catalog_name = 'PERIOD_TYPE'
+              AND active = TRUE
+            """, nativeQuery = true)
+    boolean existsActivePeriodTypeById(@Param("periodTypeId") String periodTypeId);
 }

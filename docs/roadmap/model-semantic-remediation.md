@@ -146,7 +146,7 @@ Each model task implements only the obligations recorded in its source HMSR sect
 | HMR-003 | HMSR-002 | workflow | WorkflowDefinition | — | — | `fix(workflow): remediate semantic review WorkflowDefinition` | **Completed** |
 | HMR-004 | HMSR-004 | party | Party | — | — | `fix(party): remediate semantic review Party` | **Completed** |
 | HMR-005 | HMSR-005 | telemetry | TelemetryPoint | — | — | `fix(telemetry): remediate semantic review TelemetryPoint` | **Completed** |
-| HMR-006 | HMSR-006 | planning | PlanningPeriod | — | — | `fix(planning): remediate semantic review PlanningPeriod` | Planned |
+| HMR-006 | HMSR-006 | planning | PlanningPeriod | — | — | `fix(planning): remediate semantic review PlanningPeriod` | **Completed** |
 | HMR-007 | HMSR-007 | identity | Role | — | — | `fix(identity): remediate semantic review Role` | Planned |
 | HMR-008 | HMSR-008 | documents | DocumentStorageObject | — | — | `fix(documents): remediate semantic review DocumentStorageObject` | Planned |
 | HMR-009 | HMSR-009 | simulation | SimulationModel | — | — | `fix(simulation): remediate semantic review SimulationModel` | Planned |
@@ -580,7 +580,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-006`
 - Exact commit: `fix(planning): remediate semantic review PlanningPeriod`
-- Status: **Planned**
+- Status: **Completed** — strict interval, required French label, deterministic valid IANA time zone, unique code, active PERIOD_TYPE validation, and database constraints are enforced. Canonical PERIOD_TYPE vocabulary is reconciled to DAY/WEEK/MONTH/CAMPAIGN/OPERATION_WINDOW. CLOSED-period revision governance is exposed by the domain and explicitly carried into the later OperationalPlan/PlanRevision application remediation where the revision write actually occurs.
 - SCC: —
 - Recorded upstream HMS dependencies: —
 - HMSR correction count: 7

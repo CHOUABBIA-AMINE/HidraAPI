@@ -1269,3 +1269,39 @@ Plan facts must be versioned before they are monitored.
 Actual facts must come from trusted telemetry.
 Deviation facts must be produced by monitoring.
 ```
+
+
+---
+
+## HMR-006 semantic reconciliation
+
+The target PlanningPeriod semantics are fixed as follows:
+
+```text
+periodStart < periodEnd
+code is unique
+nameFr is required
+timeZone is a valid IANA zone identifier
+periodTypeId resolves to an active PERIOD_TYPE catalog entry
+```
+
+Canonical `PERIOD_TYPE` codes are the codes already defined by this DDD:
+
+```text
+DAY
+WEEK
+MONTH
+CAMPAIGN
+OPERATION_WINDOW
+```
+
+`DAILY_TRANSPORT`, `WEEKLY_PROGRAM`, and `MONTHLY_PROGRAM` are `PLAN_TYPE` examples and must not be remapped or seeded as `PERIOD_TYPE` aliases.
+
+Closed-period governance remains:
+
+```text
+PlanningPeriod.status = CLOSED => no new PlanRevision may be created.
+A workflow-approved reopen must first move the period out of CLOSED.
+```
+
+`PlanningPeriod.allowsNewPlanRevisions()` exposes this owning-domain fact. The application/workflow path that creates revisions must enforce it when the `OperationalPlan` / `PlanRevision` remediation tasks execute; clients must not infer or bypass it.

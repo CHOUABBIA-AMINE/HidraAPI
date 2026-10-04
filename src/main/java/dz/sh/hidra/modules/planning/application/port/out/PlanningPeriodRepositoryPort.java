@@ -31,4 +31,8 @@ public interface PlanningPeriodRepositoryPort {
     PlanningPeriod save(PlanningPeriod model);
 
     Optional<PlanningPeriod> findById(String id);
+
+    boolean existsByCode(String code);
+
+    boolean isActivePeriodType(String periodTypeId);
 }

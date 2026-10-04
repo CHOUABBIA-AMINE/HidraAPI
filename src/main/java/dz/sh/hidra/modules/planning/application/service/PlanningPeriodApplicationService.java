@@ -26,6 +26,7 @@ import dz.sh.hidra.modules.planning.application.dto.PlanningPeriodSummaryDto;
 import dz.sh.hidra.modules.planning.application.mapper.PlanningApplicationMapper;
 import dz.sh.hidra.modules.planning.application.port.in.CreatePlanningPeriodUseCase;
 import dz.sh.hidra.modules.planning.application.port.out.PlanningPeriodRepositoryPort;
+import dz.sh.hidra.modules.planning.domain.exception.InvalidPlanningValueException;
 import dz.sh.hidra.modules.planning.domain.model.PlanningPeriod;
 import dz.sh.hidra.modules.planning.domain.value.PlanningId;
 import dz.sh.hidra.modules.planning.domain.value.PlanningPeriodStatus;
@@ -48,6 +49,14 @@ public final class PlanningPeriodApplicationService implements CreatePlanningPer
     @Override
     public PlanningPeriodSummaryDto createPlanningPeriod(CreatePlanningPeriodCommand command) {
         Objects.requireNonNull(command, "Create planning period command must not be null.");
+        if (repositoryPort.existsByCode(command.code())) {
+            throw new InvalidPlanningValueException("PlanningPeriod code must be unique.");
+        }
+        if (!repositoryPort.isActivePeriodType(command.periodTypeId())) {
+            throw new InvalidPlanningValueException(
+                    "PlanningPeriod period type must reference an active PERIOD_TYPE catalog entry."
+            );
+        }
         Instant now = Instant.now();
         PlanningPeriod period = new PlanningPeriod(
                 PlanningId.newId().value(),
@@ -58,7 +67,9 @@ public final class PlanningPeriodApplicationService implements CreatePlanningPer
                 command.periodTypeId(),
                 command.periodStart(),
                 command.periodEnd(),
-                command.timeZone() == null ? "Africa/Algiers" : command.timeZone(),
+                command.timeZone() == null || command.timeZone().isBlank()
+                        ? "Africa/Algiers"
+                        : command.timeZone(),
                 PlanningPeriodStatus.OPEN,
                 command.createdByActorId(),
                 now,

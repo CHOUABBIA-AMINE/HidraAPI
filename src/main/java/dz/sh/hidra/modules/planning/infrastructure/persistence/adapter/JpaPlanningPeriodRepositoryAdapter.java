@@ -49,4 +49,16 @@ public class JpaPlanningPeriodRepositoryAdapter implements PlanningPeriodReposit
     public Optional<PlanningPeriod> findById(String id) {
         return repository.findById(id).map(PlanningPersistenceMapper::toDomain);
     }
+
+    @Override
+    public boolean existsByCode(String code) {
+        return repository.existsByCode(code);
+    }
+
+    @Override
+    public boolean isActivePeriodType(String periodTypeId) {
+        return periodTypeId != null
+                && !periodTypeId.isBlank()
+                && repository.existsActivePeriodTypeById(periodTypeId);
+    }
 }

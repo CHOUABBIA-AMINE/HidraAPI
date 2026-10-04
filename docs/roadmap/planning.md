@@ -191,3 +191,20 @@ Conclusion          : SUCCESS
 ```
 
 HWEB-010-06 may now resume against this exact merge-SHA contract. HidraWEB must use `PlanRevisionView.updatedAt` only as the explicit `expectedUpdatedAt` precondition for `PATCH /api/v1/planning/revisions/{revisionId}`, handle `409 PLANNING_REVISION_CONFLICT` by refetching before any retry, and must not generalize this concurrency semantic to other planning resources or approval tasks.
+
+
+---
+
+## 5. HMR-006 semantic remediation alignment
+
+HMR-006 establishes the PlanningPeriod baseline used by later Planning remediation:
+
+- strict non-zero interval: `periodStart < periodEnd`;
+- unique period code at application and database boundaries;
+- canonical `PERIOD_TYPE`: `DAY`, `WEEK`, `MONTH`, `CAMPAIGN`, `OPERATION_WINDOW`;
+- required active `PERIOD_TYPE` family validation;
+- valid IANA `timeZone`, with null/blank create input deterministically defaulted to `Africa/Algiers`;
+- required French label;
+- `CLOSED` periods expose `allowsNewPlanRevisions() == false`.
+
+The last rule is a cross-aggregate governance prerequisite: the owning OperationalPlan/PlanRevision application path must reject new revisions for a CLOSED period unless a workflow-approved reopen has already changed the period status. HMR-006 does not add a client-side inference or bypass this later enforcement.

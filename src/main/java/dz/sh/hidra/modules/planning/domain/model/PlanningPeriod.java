@@ -21,7 +21,9 @@ package dz.sh.hidra.modules.planning.domain.model;
 
 import dz.sh.hidra.modules.planning.domain.exception.InvalidPlanningValueException;
 import dz.sh.hidra.modules.planning.domain.value.*;
+import java.time.DateTimeException;
 import java.time.Instant;
+import java.time.ZoneId;
 
     /**
      * Planning horizon such as day, week, month, campaign, or operational window.
@@ -65,6 +67,10 @@ import java.time.Instant;
         if (code == null || code.isBlank()) {
             throw new InvalidPlanningValueException("PlanningPeriod code must not be blank.");
         }
+        // HMR-006 required: nameFr
+        if (nameFr == null || nameFr.isBlank()) {
+            throw new InvalidPlanningValueException("PlanningPeriod French name must not be blank.");
+        }
         // HRA-051 required: periodTypeId
         if (periodTypeId == null || periodTypeId.isBlank()) {
             throw new InvalidPlanningValueException("PlanningPeriod period type id must not be blank.");
@@ -77,6 +83,9 @@ import java.time.Instant;
         if (periodEnd == null) {
             throw new InvalidPlanningValueException("PlanningPeriod period end must not be null.");
         }
+        if (timeZone == null || timeZone.isBlank()) {
+            throw new InvalidPlanningValueException("PlanningPeriod time zone must not be blank.");
+        }
         // HRA-051 required: status
         if (status == null) {
             throw new InvalidPlanningValueException("PlanningPeriod status must not be null.");
@@ -85,9 +94,9 @@ import java.time.Instant;
         if (createdByActorId == null || createdByActorId.isBlank()) {
             throw new InvalidPlanningValueException("PlanningPeriod created by actor id must not be blank.");
         }
-        // HRA-051 order: periodStart <= periodEnd
-        if (periodStart != null && periodEnd != null && periodEnd.isBefore(periodStart)) {
-            throw new InvalidPlanningValueException("PlanningPeriod period end must not be before period start.");
+        // HRA-051 order: periodStart < periodEnd
+        if (periodStart != null && periodEnd != null && !periodStart.isBefore(periodEnd)) {
+            throw new InvalidPlanningValueException("PlanningPeriod period start must be before period end.");
         }
 
         id = normalize(id);
@@ -96,8 +105,16 @@ import java.time.Instant;
         nameFr = normalize(nameFr);
         nameEn = normalize(nameEn);
         periodTypeId = normalize(periodTypeId);
-        timeZone = normalize(timeZone);
+        try {
+            timeZone = ZoneId.of(timeZone.trim()).getId();
+        } catch (DateTimeException ex) {
+            throw new InvalidPlanningValueException("PlanningPeriod time zone must be a valid IANA zone id.");
+        }
         createdByActorId = normalize(createdByActorId);
+        }
+
+        public boolean allowsNewPlanRevisions() {
+            return status != PlanningPeriodStatus.CLOSED;
         }
 
         private static String normalize(String value) {

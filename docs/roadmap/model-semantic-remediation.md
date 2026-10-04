@@ -2050,7 +2050,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-041`
 - Exact commit: `fix(topology): remediate semantic review Facility`
-- Status: **Blocked — owner lookup contract prerequisite unresolved**
+- Status: **Blocked — HMR-036A Party owner lookup prerequisite registered**
 - SCC: —
 - Recorded upstream HMS dependencies: party.Party
 - HMSR correction count: 1
@@ -2095,6 +2095,35 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
   - `./mvnw -q clean verify`
 - HMSR obligations:
   1. **Validate populated Facility owner Party references through the Party owner boundary.** When `ownerPartyId` is supplied, Topology must fail closed unless that Party identity exists under the Party bounded context. Do not introduce a cross-module database FK. A separately authorized Topology/Party correction should use a deliberate Party lookup/contract or equivalent owner-controlled validation boundary and preserve snapshots as non-authoritative evidence.
+
+#### HMR-036A — Facility Party-owner lookup prerequisite
+
+- Source: HMR-036 / HMSR-041 plus live Party/Topology architecture evidence.
+- Exact commit: `docs(model-remediation): register Facility owner lookup prerequisite`
+- Status: **Completed** — the missing Party-owned validation contract and minimal HMR-036 scope expansion are explicitly registered; HMR-036A itself changes documentation only.
+- Type: documentation/architecture prerequisite.
+- Live evidence:
+  1. `Facility.ownerPartyId` is an optional neutral Party identity reference and the Facility DDD snapshots remain non-authoritative evidence.
+  2. HMR-036 requires populated `ownerPartyId` to fail closed unless the Party identity exists under the Party bounded context, while explicitly forbidding a cross-module database foreign key.
+  3. No Party-exported contract for Topology exists on live `main`.
+  4. Party already owns `Party` and `PartyRepositoryPort.findById(String id)`, so existence can be resolved by the owner module without exposing Party persistence or domain types.
+  5. The repository already uses deliberate consumer-specific owner contracts under `<owner>.application.contract.<consumer>`; consuming application services import those contracts while remaining independent of the owner module's domain and infrastructure.
+- Required decisions:
+  1. Party must export one narrow Topology-facing application contract whose only required semantic is whether a Party identity exists for a supplied Party ID.
+  2. The contract must expose only neutral values and must not return `Party`, JPA entities, repositories, or persistence DTOs.
+  3. The Party-side implementation must resolve existence through Party application/repository boundaries and fail closed for null/blank/unknown IDs.
+  4. `FacilityApplicationService` is the authoritative Topology creation boundary for HMR-036 and may depend on the Party-owned exported application contract.
+  5. When `ownerPartyId` is null, no Party lookup is required. When populated, registration must fail closed unless Party confirms existence.
+  6. `ownerPartyCodeSnapshot` and `ownerPartyNameSnapshot` remain descriptive snapshots only; HMR-036 must not use them as identity proof or infer Party existence from them.
+  7. No cross-module database FK, Party domain import, Party repository import, or Party infrastructure import is authorized.
+- Newly authorized HMR-036 production files in addition to the original allowlist:
+  - `src/main/java/dz/sh/hidra/modules/party/application/contract/topology/TopologyPartyReferenceContract.java`
+  - `src/main/java/dz/sh/hidra/modules/party/application/contract/topology/package-info.java`
+  - `src/main/java/dz/sh/hidra/modules/party/application/service/TopologyPartyReferenceQueryService.java`
+- Newly authorized HMR-036 test file:
+  - `src/test/java/dz/sh/hidra/modules/party/application/service/TopologyPartyReferenceQueryServiceTest.java`
+- HMR-036 remains the next production remediation after this prerequisite commit is observed. Do not start HMR-037 automatically.
+
 
 #### HMR-037 — analytics.AnalyticsDatasetVersion
 
@@ -4903,4 +4932,4 @@ HMR-036 — topology.Facility
 
 `fix(topology): remediate semantic review Facility`
 
-HMR-035 is completed. HMR-036 remains blocked by its registered owner lookup contract prerequisite; do not start it automatically.
+HMR-036A has registered the missing Party-owner lookup contract and minimal production scope. Observe the HMR-036A docs-only prerequisite once, then execute HMR-036 only; do not start HMR-037 automatically.

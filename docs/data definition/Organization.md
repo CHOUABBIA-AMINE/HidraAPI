@@ -212,9 +212,12 @@ JPA:
   hidra_org_position.level is nullable = false
 
 PostgreSQL:
-  hidra_org_position.level is NOT NULL
+  new/updated rows must satisfy level IS NOT NULL
+  greenfield/no-legacy-null state is promoted to physical NOT NULL
+  a historical compatibility path with pre-existing NULL keeps the non-null CHECK unvalidated
+  no PositionLevel value is guessed for legacy rows
 ```
 
-HMR-020 aligns persistence with the existing domain invariant. It does not introduce a Position
+HMR-020 aligns persistence with the existing domain invariant while preserving historical migration-test compatibility without inventing a level backfill. It does not introduce a Position
 code uniqueness rule, require all Arabic/French/English title or description fields, restrict
 EmployeeAssignment to ACTIVE positions, or define Position lifecycle transitions.

@@ -66,13 +66,17 @@ class PositionSemanticRemediationTest {
     }
 
     @Test
-    void additiveMigrationSetsPositionLevelNotNull() throws Exception {
+    void additiveMigrationBlocksNewNullLevelsAndPromotesCleanSchemaToNotNull() throws Exception {
         String sql = Files.readString(Path.of(
                 "src/main/resources/db/migration/V20261004_020__hmr_020_organization_position.sql"
         ));
 
-        assertThat(sql).contains("ALTER TABLE hidra_org_position");
+        assertThat(sql).contains("ck_hmr020_position_level_not_null");
+        assertThat(sql).contains("CHECK (level IS NOT NULL)");
+        assertThat(sql).contains("NOT VALID");
+        assertThat(sql).contains("WHERE level IS NULL");
         assertThat(sql).contains("ALTER COLUMN level SET NOT NULL");
+        assertThat(sql).doesNotContain("UPDATE hidra_org_position");
         assertThat(sql).doesNotContain("DROP COLUMN");
     }
 }

@@ -1297,7 +1297,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-022`
 - Exact commit: `fix(organization): remediate semantic review Position`
-- Status: **Completed** — canonical `Position.level` remains mandatory; JPA now marks `level` non-null and the additive migration upgrades `hidra_org_position.level` to `NOT NULL`, eliminating database rows that cannot be reconstructed by the domain model. No code uniqueness, multilingual completeness, assignment-status eligibility, authorization, or lifecycle rule was invented.
+- Status: **Completed** — canonical `Position.level` remains mandatory; JPA marks `level` non-null and the additive migration always blocks new NULL levels. On the greenfield baseline (no legacy-null rows) it upgrades the column to physical `NOT NULL`; on historical compatibility-test paths containing pre-existing NULL levels, it retains an unvalidated `CHECK (level IS NOT NULL)` so no semantic level is guessed while all new/updated rows must satisfy the canonical invariant. No code uniqueness, multilingual completeness, assignment-status eligibility, authorization, or lifecycle rule was invented.
 - SCC: —
 - Recorded upstream HMS dependencies: —
 - HMSR correction count: 1

@@ -2009,7 +2009,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-039`
 - Exact commit: `fix(notification): remediate semantic review NotificationRequest`
-- Status: **Planned**
+- Status: **Completed** — source context, category/priority catalog families, and populated policy/template/template-version references are enforced at write and database boundaries.
 - SCC: —
 - Recorded upstream HMS dependencies: notification.NotificationTemplate
 - HMSR correction count: 5
@@ -4899,8 +4899,8 @@ or required-field alignment work; keep high-risk semantic redesigns solo.
 
 ### 12.6 Current next execution
 
-HMR-035 — notification.NotificationRequest
+HMR-036 — topology.Facility
 
-`fix(notification): remediate semantic review NotificationRequest`
+`fix(topology): remediate semantic review Facility`
 
-HMR-034 is completed. Execute HMR-035 only after the HMR-034 head is green; do not start HMR-036 automatically.
+HMR-035 is completed. HMR-036 remains blocked by its registered owner lookup contract prerequisite; do not start it automatically.

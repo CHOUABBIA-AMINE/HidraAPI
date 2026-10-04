@@ -7,7 +7,7 @@
  *
  * @Name        : NotificationRequest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-10-04
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -78,6 +78,14 @@ import java.time.Instant;
         // HRA-051 required: id
         if (id == null || id.isBlank()) {
             throw new InvalidNotificationValueException("NotificationRequest id must not be blank.");
+        }
+        // HMR-035 required: sourceModule
+        if (sourceModule == null || sourceModule.isBlank()) {
+            throw new InvalidNotificationValueException("NotificationRequest source module must not be blank.");
+        }
+        // HMR-035 required: sourceEventType
+        if (sourceEventType == null || sourceEventType.isBlank()) {
+            throw new InvalidNotificationValueException("NotificationRequest source event type must not be blank.");
         }
         // HRA-051 required: sourceEventId
         if (sourceEventId == null || sourceEventId.isBlank()) {

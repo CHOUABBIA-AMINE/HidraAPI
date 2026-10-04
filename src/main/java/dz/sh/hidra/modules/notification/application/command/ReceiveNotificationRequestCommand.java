@@ -7,7 +7,7 @@
  *
  * @Name        : ReceiveNotificationRequestCommand
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-04
  *
  * @Type        : Record
  * @Layer       : Application
@@ -43,4 +43,14 @@ public record ReceiveNotificationRequestCommand(
         String requestId,
         Instant expiresAt
 ) {
+    public ReceiveNotificationRequestCommand {
+        if (sourceModule == null || sourceModule.isBlank()) {
+            throw new IllegalArgumentException("Notification source module must not be blank.");
+        }
+        if (sourceEventType == null || sourceEventType.isBlank()) {
+            throw new IllegalArgumentException("Notification source event type must not be blank.");
+        }
+        sourceModule = sourceModule.trim();
+        sourceEventType = sourceEventType.trim();
+    }
 }

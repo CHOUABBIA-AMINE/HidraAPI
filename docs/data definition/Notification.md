@@ -586,7 +586,11 @@ updatedAt
 Rules:
 
 ```text
-Every request must reference a source module and target object or explicit communication reason.
+Every request must reference a nonblank sourceModule and sourceEventType and a target object or explicit communication reason.
+categoryId must resolve specifically to NOTIFICATION_CATEGORY.
+When populated, priorityId must resolve specifically to NOTIFICATION_PRIORITY.
+When populated, policyId, templateId, and templateVersionId must resolve to their Notification-owned targets.
+HMSR-039 does not impose template/version parent-pair semantics beyond those independent references.
 Notification must not mutate the source business object.
 A request may generate zero, one, or many messages.
 ```

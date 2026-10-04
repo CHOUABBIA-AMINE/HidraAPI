@@ -7,7 +7,7 @@
  *
  * @Name        : NotificationRequestRepositoryPort
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-04
  *
  * @Type        : Interface
  * @Layer       : Application
@@ -31,4 +31,12 @@ public interface NotificationRequestRepositoryPort {
     NotificationRequest save(NotificationRequest model);
 
     Optional<NotificationRequest> findById(String id);
+
+    boolean isCatalogEntryInFamily(String entryId, String catalogName);
+
+    boolean policyExists(String policyId);
+
+    boolean templateExists(String templateId);
+
+    boolean templateVersionExists(String templateVersionId);
 }

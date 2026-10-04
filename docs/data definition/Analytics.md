@@ -1201,6 +1201,26 @@ readiness is analytical, not a digital twin runtime
 readiness assessment must not alter topology, telemetry, or simulation models
 ```
 
+HMR-025 executable baseline:
+
+```text
+scopeType is required and non-blank
+scopeId remains optional; HMR-025 does not invent per-scope identifier rules
+DigitalTwinReadinessStatus is the authoritative readiness controlled vocabulary
+authoritative values:
+  NOT_READY
+  PARTIAL
+  READY
+  ADVANCED
+  UNKNOWN
+readiness_status is persisted as the enum's stable string code
+READINESS_STATUS is not an AnalyticsCatalogEntry family
+```
+
+The readiness status is an intentional bounded-enum exception to the generic Analytics catalog
+pattern. Future application/API contracts must use these stable enum codes unless a separately
+approved semantic change replaces this bounded vocabulary.
+
 ---
 
 ### 9.26 AnalyticsAccessPolicy
@@ -1254,7 +1274,6 @@ KPI_CATEGORY
 MODEL_TYPE
 TREND_TYPE
 INSIGHT_TYPE
-READINESS_STATUS
 ANALYTICS_SEVERITY
 DATASET_TYPE
 PROJECTION_TYPE

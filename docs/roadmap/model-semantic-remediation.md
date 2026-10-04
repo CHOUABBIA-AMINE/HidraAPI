@@ -1539,7 +1539,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-027`
 - Exact commit: `fix(analytics): remediate semantic review DigitalTwinReadinessAssessment`
-- Status: **Planned**
+- Status: **Completed** — scopeType is required/nonblank and DigitalTwinReadinessStatus is the single authoritative bounded readiness vocabulary across domain/JPA/schema; the conflicting READINESS_STATUS catalog claim is retired.
 - SCC: —
 - Recorded upstream HMS dependencies: —
 - HMSR correction count: 2
@@ -4794,7 +4794,7 @@ The following are execution registrations only; they do not change any HMR's sem
 | HMRB-002 | HMR-022 | Solo | **Completed.** Dedicated PipelineSystem classification catalog/reference implemented and silent `TRANSPORT` default removed. |
 | HMRB-003 | HMR-023 | Solo | **Completed.** AnalyticsInsight catalog, scope requiredness, optional severity-family integrity, and populated direct-source lineage are protected. |
 | HMRB-004 | HMR-024 | Solo | **Completed.** Terminal diagnostics, successful-run source lineage, and immutable projection-definition computation lineage are enforced. |
-| HMRB-005 | HMR-025 | Solo | DigitalTwinReadinessAssessment reconciles competing readiness-status representations. |
+| HMRB-005 | HMR-025 | Solo | **Completed.** Required analytical scope and the authoritative bounded readiness-status representation are aligned. |
 | HMRB-006 | HMR-026, HMR-027 | Batch | Two adjacent, low-coupling single-correction tasks with no recorded cross-module owner-contract prerequisite. |
 
 Additional batches may be registered immediately before execution when live repository evidence
@@ -4803,8 +4803,9 @@ or required-field alignment work; keep high-risk semantic redesigns solo.
 
 ### 12.6 Current next execution
 
-HMRB-005 — HMR-025 analytics.DigitalTwinReadinessAssessment
+HMRB-006 — HMR-026 configuration.FeatureFlag + HMR-027 custody.CustodyDiscrepancy
 
-`fix(analytics): remediate semantic review DigitalTwinReadinessAssessment`
+`fix(configuration): remediate semantic review FeatureFlag`
+`fix(custody): remediate semantic review CustodyDiscrepancy`
 
-HMR-024 is completed. Execute HMR-025 only after the HMR-024 head is green; do not start HMR-026 automatically.
+HMR-025 is completed. Execute the registered HMRB-006 batch only after the HMR-025 head is green; do not start HMR-028 automatically.

@@ -7,7 +7,7 @@
  *
  * @Name        : DigitalTwinReadinessAssessment
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-10-04
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -65,6 +65,11 @@ import java.math.BigDecimal;
         // HRA-051 required: id
         if (id == null || id.isBlank()) {
             throw new InvalidAnalyticsValueException("DigitalTwinReadinessAssessment id must not be blank.");
+        }
+        if (scopeType == null || scopeType.isBlank()) {
+            throw new InvalidAnalyticsValueException(
+                    "DigitalTwinReadinessAssessment scope type must not be blank."
+            );
         }
         // HRA-051 required: topologySnapshotId
         if (topologySnapshotId == null || topologySnapshotId.isBlank()) {

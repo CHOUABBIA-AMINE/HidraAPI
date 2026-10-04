@@ -20,7 +20,6 @@
 package dz.sh.hidra.modules.leakdetection.domain.model;
 
 import dz.sh.hidra.modules.leakdetection.domain.exception.InvalidLeakDetectionValueException;
-import dz.sh.hidra.modules.leakdetection.domain.service.LeakConfidenceClassifier;
 import dz.sh.hidra.modules.leakdetection.domain.value.LeakCandidateStatus;
 import dz.sh.hidra.modules.leakdetection.domain.value.LeakSeverityLevel;
 import java.math.BigDecimal;
@@ -48,8 +47,6 @@ public record LeakCandidate(
         Instant createdAt,
         Instant updatedAt
 ) {
-
-    private static final LeakConfidenceClassifier CONFIDENCE_CLASSIFIER = new LeakConfidenceClassifier();
 
     public LeakCandidate {
         // HRA-051 required: id
@@ -86,12 +83,6 @@ public record LeakCandidate(
         // HRA-051 required: severityLevel
         if (severityLevel == null) {
             throw new InvalidLeakDetectionValueException("LeakCandidate severity level must not be null.");
-        }
-        LeakSeverityLevel derivedSeverity = CONFIDENCE_CLASSIFIER.classify(confidenceScore);
-        if (severityLevel != derivedSeverity) {
-            throw new InvalidLeakDetectionValueException(
-                    "LeakCandidate severity level must be derived from confidence score."
-            );
         }
         // HRA-051 required: status
         if (status == null) {

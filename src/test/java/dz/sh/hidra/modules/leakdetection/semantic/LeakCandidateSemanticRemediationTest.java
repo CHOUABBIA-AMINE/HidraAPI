@@ -59,18 +59,39 @@ class LeakCandidateSemanticRemediationTest {
     private static final Instant NOW = Instant.parse("2026-10-04T00:00:00Z");
 
     @Test
-    void domainRequiresTopologyTypeAuditTimestampsAndDerivedSeverity() {
+    void domainRequiresTopologyTypeAndAuditTimestamps() {
         assertThatThrownBy(() -> candidate(null, null, " ", BigDecimal.valueOf(0.80), LeakSeverityLevel.HIGH, NOW, NOW))
                 .isInstanceOf(InvalidLeakDetectionValueException.class)
                 .hasMessageContaining("topology asset type");
 
-        assertThatThrownBy(() -> candidate(null, null, "PIPELINE", BigDecimal.valueOf(0.80), LeakSeverityLevel.LOW, NOW, NOW))
-                .isInstanceOf(InvalidLeakDetectionValueException.class)
-                .hasMessageContaining("derived from confidence");
-
         assertThatThrownBy(() -> candidate(null, null, "PIPELINE", BigDecimal.valueOf(0.80), LeakSeverityLevel.HIGH, null, NOW))
                 .isInstanceOf(InvalidLeakDetectionValueException.class)
                 .hasMessageContaining("createdAt");
+    }
+
+    @Test
+    void repositoryRejectsContradictoryPersistedSeverity() {
+        var candidateRepository = mock(LeakCandidateJpaRepository.class);
+        var profileRepository = mock(LeakDetectionProfileJpaRepository.class);
+        var runRepository = mock(LeakDetectionRunJpaRepository.class);
+        var adapter = new JpaLeakCandidateRepositoryAdapter(
+                candidateRepository,
+                profileRepository,
+                runRepository
+        );
+
+        assertThatThrownBy(() -> adapter.save(candidate(
+                null,
+                null,
+                "PIPELINE",
+                BigDecimal.valueOf(0.91),
+                LeakSeverityLevel.HIGH,
+                NOW,
+                NOW
+        ))).isInstanceOf(InvalidLeakDetectionValueException.class)
+                .hasMessageContaining("persisted severity");
+
+        verify(candidateRepository, never()).save(any());
     }
 
     @Test

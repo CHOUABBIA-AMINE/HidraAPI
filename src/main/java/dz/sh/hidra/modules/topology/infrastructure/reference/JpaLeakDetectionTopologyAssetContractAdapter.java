@@ -34,7 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
  * Topology-owned Leak Detection asset resolver.
  */
 @Component
-public final class JpaLeakDetectionTopologyAssetContractAdapter
+public class JpaLeakDetectionTopologyAssetContractAdapter
         implements LeakDetectionTopologyAssetContract {
 
     private final PipelineJpaRepository pipelineRepository;

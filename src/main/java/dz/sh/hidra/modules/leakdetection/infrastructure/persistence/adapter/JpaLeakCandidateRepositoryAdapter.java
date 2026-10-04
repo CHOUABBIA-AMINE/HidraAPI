@@ -22,6 +22,7 @@ package dz.sh.hidra.modules.leakdetection.infrastructure.persistence.adapter;
 import dz.sh.hidra.modules.leakdetection.application.port.out.LeakCandidateRepositoryPort;
 import dz.sh.hidra.modules.leakdetection.domain.exception.InvalidLeakDetectionValueException;
 import dz.sh.hidra.modules.leakdetection.domain.model.LeakCandidate;
+import dz.sh.hidra.modules.leakdetection.domain.service.LeakConfidenceClassifier;
 import dz.sh.hidra.modules.leakdetection.domain.value.LeakDetectionProfileStatus;
 import dz.sh.hidra.modules.leakdetection.domain.value.LeakDetectionRunStatus;
 import dz.sh.hidra.modules.leakdetection.infrastructure.persistence.mapper.LeakDetectionPersistenceMapper;
@@ -40,6 +41,8 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class JpaLeakCandidateRepositoryAdapter implements LeakCandidateRepositoryPort {
+
+    private static final LeakConfidenceClassifier CONFIDENCE_CLASSIFIER = new LeakConfidenceClassifier();
 
     private final LeakCandidateJpaRepository repository;
     private final LeakDetectionProfileJpaRepository profileRepository;
@@ -64,6 +67,7 @@ public class JpaLeakCandidateRepositoryAdapter implements LeakCandidateRepositor
     @Override
     public LeakCandidate save(LeakCandidate model) {
         Objects.requireNonNull(model, "LeakCandidate must not be null.");
+        validateDerivedSeverity(model);
         if (!repository.existsById(model.id())) {
             validateCreationProvenance(model);
         }
@@ -88,6 +92,14 @@ public class JpaLeakCandidateRepositoryAdapter implements LeakCandidateRepositor
     @Override
     public long count() {
         return repository.count();
+    }
+
+    private static void validateDerivedSeverity(LeakCandidate model) {
+        if (model.severityLevel() != CONFIDENCE_CLASSIFIER.classify(model.confidenceScore())) {
+            throw new InvalidLeakDetectionValueException(
+                    "LeakCandidate persisted severity must be derived from confidence score."
+            );
+        }
     }
 
     private void validateCreationProvenance(LeakCandidate model) {

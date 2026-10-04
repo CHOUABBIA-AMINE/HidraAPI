@@ -154,3 +154,24 @@ Configuration must not become a dumping ground for module-owned business data.
 Domain, application, and infrastructure configuration models must not use `@Schema` or OpenAPI annotations.
 
 `@Schema` is allowed only in configuration API request/response models.
+
+
+---
+
+## 8. Secret-reference boundary for definition defaults
+
+`ConfigurationDefinition.defaultValue` is governed by the same no-secret-material policy as
+`ConfigurationValue.rawValue`.
+
+```text
+definition defaults may contain ordinary configuration values
+SECRET_REFERENCE_ONLY defaults may contain references
+definition defaults must not persist secret material detected by the existing Configuration boundary policy
+the same validation applies on every ConfigurationDefinition repository save, covering create and update
+```
+
+HMR-017 deliberately reuses `ConfigurationValueGuard.ensureNoSecretMaterial(...)`.
+It does not define a vault URI format, invent a new secret detector, or change the meaning of
+`ConfigurationDefinitionVersion.defaultValue`. The correction closes the reviewed
+`ConfigurationDefinition.defaultValue` bypass while preserving the existing distinction between
+secret references and secret material.

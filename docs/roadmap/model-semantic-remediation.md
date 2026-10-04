@@ -157,7 +157,7 @@ Each model task implements only the obligations recorded in its source HMSR sect
 | HMR-014 | HMSR-014 | integration | IntegrationJobRun | — | — | `fix(integration): remediate semantic review IntegrationJobRun` | **Completed** |
 | HMR-015 | HMSR-015 | leakdetection | LeakCandidate | — | — | `fix(leakdetection): remediate semantic review LeakCandidate` | **Completed** |
 | HMR-016 | HMSR-018 | analytics | MetricEvaluationRun | — | — | `fix(analytics): remediate semantic review MetricEvaluationRun` | **Completed** |
-| HMR-017 | HMSR-019 | configuration | ConfigurationDefinition | — | — | `fix(configuration): remediate semantic review ConfigurationDefinition` | Planned |
+| HMR-017 | HMSR-019 | configuration | ConfigurationDefinition | — | — | `fix(configuration): remediate semantic review ConfigurationDefinition` | **Completed** |
 | HMR-018 | HMSR-020 | custody | CustodyMeasurementPeriod | — | — | `fix(custody): remediate semantic review CustodyMeasurementPeriod` | Planned |
 | HMR-019 | HMSR-021 | integrity | PipelineDefect | — | — | `fix(integrity): remediate semantic review PipelineDefect` | Planned |
 | HMR-020 | HMSR-022 | organization | Position | — | — | `fix(organization): remediate semantic review Position` | Planned |
@@ -1198,7 +1198,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-019`
 - Exact commit: `fix(configuration): remediate semantic review ConfigurationDefinition`
-- Status: **Planned**
+- Status: **Completed** — `ConfigurationDefinition.defaultValue` now passes through the same existing `ConfigurationValueGuard.ensureNoSecretMaterial(...)` boundary used for effective raw values at every repository save, covering create and update without inventing a vault URI/reference syntax or new detector. `SECRET_REFERENCE_ONLY` therefore remains reference-only with respect to the established Configuration secret-material policy.
 - SCC: —
 - Recorded upstream HMS dependencies: —
 - HMSR correction count: 1
@@ -4707,8 +4707,8 @@ A later HMR task may become Skipped only if stronger live evidence appears befor
 
 ### 12.5 Current next task
 
-HMR-017 — configuration.ConfigurationDefinition
+HMR-018 — custody.CustodyMeasurementPeriod
 
-fix(configuration): remediate semantic review ConfigurationDefinition
+fix(custody): remediate semantic review CustodyMeasurementPeriod
 
-Do not start HMR-018 automatically.
+Do not start HMR-019 automatically.

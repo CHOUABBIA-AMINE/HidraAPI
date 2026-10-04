@@ -7,7 +7,7 @@
  *
  * @Name        : JpaConfigurationDefinitionRepositoryAdapter
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-04
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -21,6 +21,7 @@ package dz.sh.hidra.modules.configuration.infrastructure.persistence.adapter;
 
 import dz.sh.hidra.modules.configuration.application.port.out.ConfigurationDefinitionRepositoryPort;
 import dz.sh.hidra.modules.configuration.domain.model.ConfigurationDefinition;
+import dz.sh.hidra.modules.configuration.domain.service.ConfigurationValueGuard;
 import dz.sh.hidra.modules.configuration.infrastructure.persistence.mapper.ConfigurationPersistenceMapper;
 import dz.sh.hidra.modules.configuration.infrastructure.persistence.repository.ConfigurationDefinitionJpaRepository;
 import org.springframework.stereotype.Component;
@@ -35,6 +36,7 @@ import java.util.Optional;
 public class JpaConfigurationDefinitionRepositoryAdapter implements ConfigurationDefinitionRepositoryPort {
 
     private final ConfigurationDefinitionJpaRepository repository;
+    private final ConfigurationValueGuard valueGuard = new ConfigurationValueGuard();
 
     public JpaConfigurationDefinitionRepositoryAdapter(ConfigurationDefinitionJpaRepository repository) {
         this.repository = Objects.requireNonNull(repository, "ConfigurationDefinitionJpaRepository must not be null.");
@@ -42,7 +44,11 @@ public class JpaConfigurationDefinitionRepositoryAdapter implements Configuratio
 
     @Override
     public ConfigurationDefinition save(ConfigurationDefinition model) {
-        return ConfigurationPersistenceMapper.toDomain(repository.save(ConfigurationPersistenceMapper.toEntity(model)));
+        Objects.requireNonNull(model, "ConfigurationDefinition must not be null.");
+        valueGuard.ensureNoSecretMaterial(model.defaultValue());
+        return ConfigurationPersistenceMapper.toDomain(
+                repository.save(ConfigurationPersistenceMapper.toEntity(model))
+        );
     }
 
     @Override

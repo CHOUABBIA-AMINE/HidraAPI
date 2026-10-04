@@ -105,6 +105,41 @@ public class ReportingLineJpaEntity {
         this.updatedAt = updatedAt;
     }
 
+    /**
+     * Transitional constructor for legacy persistence callers with textual subject types.
+     *
+     * <p>The reporting-line classification itself remains a managed catalog reference;
+     * only the historical textual subject discriminators are bridged here.</p>
+     */
+    @Deprecated(forRemoval = true)
+    public ReportingLineJpaEntity(
+            String id,
+            ReportingLineTypeJpaEntity reportingLineType,
+            String sourceType,
+            String sourceId,
+            String targetType,
+            String targetId,
+            Instant validFrom,
+            Instant validTo,
+            boolean active,
+            Instant createdAt,
+            Instant updatedAt
+    ) {
+        this(
+                id,
+                reportingLineType,
+                ReportingSubjectType.from(sourceType),
+                sourceId,
+                ReportingSubjectType.from(targetType),
+                targetId,
+                validFrom,
+                validTo,
+                active,
+                createdAt,
+                updatedAt
+        );
+    }
+
     public String id() { return id; }
     public ReportingLineTypeJpaEntity reportingLineType() { return reportingLineType; }
     public ReportingSubjectType sourceSubjectType() { return sourceType; }

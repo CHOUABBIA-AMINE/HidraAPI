@@ -1439,7 +1439,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-025`
 - Exact commit: `fix(analytics): remediate semantic review AnalyticsInsight`
-- Status: **Planned**
+- Status: **Completed** — required classification/scope semantics enforced; INSIGHT_TYPE and ANALYTICS_SEVERITY catalog references fail closed; populated projection-snapshot, trend-analysis and model-run lineage is protected in application persistence and by additive same-module database constraints.
 - SCC: —
 - Recorded upstream HMS dependencies: —
 - HMSR correction count: 4
@@ -4764,7 +4764,7 @@ The following are execution registrations only; they do not change any HMR's sem
 |---|---|---|---|
 | HMRB-001 | HMR-021 | Solo | **Completed.** Shift requiredness aligned independently before the PipelineSystem classification redesign. |
 | HMRB-002 | HMR-022 | Solo | **Completed.** Dedicated PipelineSystem classification catalog/reference implemented and silent `TRANSPORT` default removed. |
-| HMRB-003 | HMR-023 | Solo | AnalyticsInsight has four catalog/scope/lineage obligations. |
+| HMRB-003 | HMR-023 | Solo | **Completed.** AnalyticsInsight catalog, scope requiredness, optional severity-family integrity, and populated direct-source lineage are protected. |
 | HMRB-004 | HMR-024 | Solo | AnalyticsProjectionRun requires terminal diagnostics and reproducibility semantics. |
 | HMRB-005 | HMR-025 | Solo | DigitalTwinReadinessAssessment reconciles competing readiness-status representations. |
 | HMRB-006 | HMR-026, HMR-027 | Batch | Two adjacent, low-coupling single-correction tasks with no recorded cross-module owner-contract prerequisite. |
@@ -4775,8 +4775,8 @@ or required-field alignment work; keep high-risk semantic redesigns solo.
 
 ### 12.6 Current next execution
 
-HMRB-003 — HMR-023 analytics.AnalyticsInsight
+HMRB-004 — HMR-024 analytics.AnalyticsProjectionRun
 
-`fix(analytics): remediate semantic review AnalyticsInsight`
+`fix(analytics): remediate semantic review AnalyticsProjectionRun`
 
-HMR-022 is completed. Execute HMR-023 only after the HMR-022 head is green; do not start HMR-024 automatically.
+HMR-023 is completed. Execute HMR-024 only after the HMR-023 head is green; do not start HMR-025 automatically.

@@ -7,7 +7,7 @@
  *
  * @Name        : AnalyticsInsight
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-10-04
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -20,31 +20,12 @@
 package dz.sh.hidra.modules.analytics.domain.model;
 
 import dz.sh.hidra.modules.analytics.domain.exception.InvalidAnalyticsValueException;
-import dz.sh.hidra.modules.analytics.domain.value.*;
-import java.time.Instant;
+import dz.sh.hidra.modules.analytics.domain.value.AnalyticsInsightStatus;
 import java.math.BigDecimal;
+import java.time.Instant;
 
-    /**
-     * Derived analytical finding or observation.
-     *
-         * @param id id
-     * @param insightType insightType
-     * @param subjectAreaId subjectAreaId
-     * @param scopeType scopeType
-     * @param scopeId scopeId
-     * @param title title
-     * @param summary summary
-     * @param severityId severityId
-     * @param confidenceScore confidenceScore
-     * @param sourceProjectionSnapshotId sourceProjectionSnapshotId
-     * @param sourceTrendAnalysisId sourceTrendAnalysisId
-     * @param sourceModelRunId sourceModelRunId
-     * @param status status
-     * @param createdAt createdAt
-     * @param updatedAt updatedAt
-     */
-    public record AnalyticsInsight(
-            String id,
+public record AnalyticsInsight(
+        String id,
         String insightType,
         String subjectAreaId,
         String scopeType,
@@ -59,18 +40,21 @@ import java.math.BigDecimal;
         AnalyticsInsightStatus status,
         Instant createdAt,
         Instant updatedAt
-    ) {
+) {
 
-        public AnalyticsInsight {
-        // HRA-051 required: id
+    public AnalyticsInsight {
         if (id == null || id.isBlank()) {
             throw new InvalidAnalyticsValueException("AnalyticsInsight id must not be blank.");
         }
-        // HRA-051 required: subjectAreaId
+        if (insightType == null || insightType.isBlank()) {
+            throw new InvalidAnalyticsValueException("AnalyticsInsight insight type must not be blank.");
+        }
         if (subjectAreaId == null || subjectAreaId.isBlank()) {
             throw new InvalidAnalyticsValueException("AnalyticsInsight subject area id must not be blank.");
         }
-        // HRA-051 required: status
+        if (scopeType == null || scopeType.isBlank()) {
+            throw new InvalidAnalyticsValueException("AnalyticsInsight scope type must not be blank.");
+        }
         if (status == null) {
             throw new InvalidAnalyticsValueException("AnalyticsInsight status must not be null.");
         }
@@ -86,14 +70,13 @@ import java.math.BigDecimal;
         sourceProjectionSnapshotId = normalize(sourceProjectionSnapshotId);
         sourceTrendAnalysisId = normalize(sourceTrendAnalysisId);
         sourceModelRunId = normalize(sourceModelRunId);
-        }
-        public boolean advisoryOnly() {
-            return true;
-        }
-        private static String normalize(String value) {
-            if (value == null || value.isBlank()) {
-                return null;
-            }
-            return value.trim();
-        }
     }
+
+    public boolean advisoryOnly() {
+        return true;
+    }
+
+    private static String normalize(String value) {
+        return value == null || value.isBlank() ? null : value.trim();
+    }
+}

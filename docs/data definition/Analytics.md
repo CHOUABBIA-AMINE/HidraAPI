@@ -1722,3 +1722,24 @@ Trusted facts first.
 Analytics second.
 Decisions remain owned by the business modules.
 ```
+
+
+---
+
+## HMR-023 — AnalyticsInsight executable baseline (2026-10-04)
+
+The semantic remediation for `AnalyticsInsight` establishes the following executable contract:
+
+```text
+insightType is required and non-blank
+insightType must resolve to an active INSIGHT_TYPE catalog entry
+scopeType is required and non-blank
+scopeId remains optional; HMR-023 does not invent per-scope identifier rules
+severityId remains optional and, when present, must resolve to active ANALYTICS_SEVERITY
+sourceProjectionSnapshotId, sourceTrendAnalysisId, and sourceModelRunId remain optional
+every populated direct source reference must resolve to the corresponding Analytics-owned record
+creation remains advisory and retains the existing OPEN status
+```
+
+HMR-023 does not define confidence-score ranges, lifecycle transitions, translated labels, or
+additional analytical-scope ownership rules.

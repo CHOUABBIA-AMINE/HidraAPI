@@ -33,4 +33,24 @@ public record AnalyticsProjectionRunResponse(
         Instant periodEnd,
         String correlationId
 ) {
+    public AnalyticsProjectionRunResponse(
+            String id,
+            String projectionDefinitionId,
+            AnalyticsRunStatus runStatus,
+            AnalyticsRunMode runMode,
+            Instant periodStart,
+            Instant periodEnd,
+            String correlationId
+    ) {
+        this(
+                id,
+                projectionDefinitionId,
+                null,
+                runStatus,
+                runMode,
+                periodStart,
+                periodEnd,
+                correlationId
+        );
+    }
 }

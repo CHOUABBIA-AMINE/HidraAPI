@@ -145,7 +145,7 @@ Each model task implements only the obligations recorded in its source HMSR sect
 |---|---|---|---|---|---|---|---|
 | HMR-003 | HMSR-002 | workflow | WorkflowDefinition | — | — | `fix(workflow): remediate semantic review WorkflowDefinition` | **Completed** |
 | HMR-004 | HMSR-004 | party | Party | — | — | `fix(party): remediate semantic review Party` | **Completed** |
-| HMR-005 | HMSR-005 | telemetry | TelemetryPoint | — | — | `fix(telemetry): remediate semantic review TelemetryPoint` | **Blocked — HMR-005A required: live Telemetry catalog schema has no signal value-shape or point-type unit-exemption metadata, so obligation 5 cannot be enforced without inventing catalog-code semantics; current HMR-005 allowlist also excludes the catalog model/entity files needed for a clean solution.** |
+| HMR-005 | HMSR-005 | telemetry | TelemetryPoint | — | — | `fix(telemetry): remediate semantic review TelemetryPoint` | Planned — HMR-005A completed; compatibility metadata and fail-closed semantics are now defined. |
 | HMR-006 | HMSR-006 | planning | PlanningPeriod | — | — | `fix(planning): remediate semantic review PlanningPeriod` | Planned |
 | HMR-007 | HMSR-007 | identity | Role | — | — | `fix(identity): remediate semantic review Role` | Planned |
 | HMR-008 | HMSR-008 | documents | DocumentStorageObject | — | — | `fix(documents): remediate semantic review DocumentStorageObject` | Planned |
@@ -513,7 +513,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-005`
 - Exact commit: `fix(telemetry): remediate semantic review TelemetryPoint`
-- Status: **Blocked — HMR-005A prerequisite required.** Exact-head evidence shows `TelemetryCatalogEntry`/`TelemetryCatalogEntryJpaEntity` carries only `catalogName`, `code`, `active`, ordering/system flags and audit timestamps; no value-shape metadata exists. `TelemetryUnit` has no link that can classify a signal as numeric/text/boolean, and POINT_TYPE has no unit-exemption metadata. Implementing obligation 5 from codes such as `PRESSURE` would invent business semantics. HMR-005 also cannot cleanly add the missing catalog metadata because its current allowlist excludes the telemetry catalog domain/entity/mapper/repository files. No HMR-005 production file has been changed.
+- Status: **Planned — HMR-005A completed.** Telemetry-owned compatibility metadata is now defined without hard-coded business taxonomy values. `SIGNAL_TYPE` catalog entries will carry nullable technical `valueShape` metadata constrained to `NUMERIC`, `TEXT`, or `BOOLEAN`; registration fails closed when a referenced SIGNAL_TYPE lacks that metadata. `POINT_TYPE` catalog entries will carry `numericUnitExempt` (default false); a NUMERIC signal requires an active `TelemetryUnit` unless the referenced POINT_TYPE explicitly sets that flag true. Non-SIGNAL_TYPE rows must keep `valueShape` null, and non-POINT_TYPE rows must keep `numericUnitExempt=false`. HMR-005 may now implement these rules additively.
 - SCC: —
 - Recorded upstream HMS dependencies: —
 - HMSR correction count: 5
@@ -532,10 +532,12 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
   - `src/main/java/dz/sh/hidra/modules/telemetry/application/service/TelemetryPointApplicationService.java`
   - `src/main/java/dz/sh/hidra/modules/telemetry/domain/model/TelemetryPoint.java`
   - `src/main/java/dz/sh/hidra/modules/telemetry/infrastructure/persistence/adapter/JpaTelemetryPointRepositoryAdapter.java`
+  - `src/main/java/dz/sh/hidra/modules/telemetry/infrastructure/persistence/entity/TelemetryCatalogEntryJpaEntity.java`
   - `src/main/java/dz/sh/hidra/modules/telemetry/infrastructure/persistence/entity/TelemetryPointBindingJpaEntity.java`
   - `src/main/java/dz/sh/hidra/modules/telemetry/infrastructure/persistence/entity/TelemetryPointJpaEntity.java`
   - `src/main/java/dz/sh/hidra/modules/telemetry/infrastructure/persistence/entity/TelemetryPointStateSnapshotJpaEntity.java`
   - `src/main/java/dz/sh/hidra/modules/telemetry/infrastructure/persistence/mapper/TelemetryPersistenceMapper.java`
+  - `src/main/java/dz/sh/hidra/modules/telemetry/infrastructure/persistence/repository/TelemetryCatalogEntryJpaRepository.java`
   - `src/main/java/dz/sh/hidra/modules/telemetry/infrastructure/persistence/repository/TelemetryPointBindingJpaRepository.java`
   - `src/main/java/dz/sh/hidra/modules/telemetry/infrastructure/persistence/repository/TelemetryPointJpaRepository.java`
   - `src/main/java/dz/sh/hidra/modules/telemetry/infrastructure/persistence/repository/TelemetryPointStateSnapshotJpaRepository.java`
@@ -557,7 +559,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source: HMR-005 / HMSR-005 obligation 5.
 - Exact commit: `docs(telemetry): define point signal-unit compatibility metadata`
-- Status: **Planned**
+- Status: **Completed** — defined Telemetry-owned compatibility metadata, fail-closed behavior, and the exact HMR-005 allowlist extension; no production mutation or catalog seed was performed.
 - Type: documentation/design prerequisite only; no production mutation.
 - Purpose: define the minimum Telemetry-owned metadata required to classify a SIGNAL_TYPE entry as numeric/text/boolean and to state whether a POINT_TYPE explicitly exempts numeric points from requiring a unit.
 - Required evidence: live `docs/data definition/Telemetry.md`, live telemetry catalog/unit domain/JPA schema, existing seeds/provisioning evidence, and HMR-005/HMSR-005.

@@ -303,6 +303,51 @@ Normal business responses should use:
 
 ---
 
+## 7A. HMR-005A signal/unit compatibility design
+
+The live Telemetry catalog previously had no structural way to distinguish numeric, text, and boolean signal types and no explicit point-type unit exemption. HMR-005A resolves that design gap without hard-coding catalog codes.
+
+### Metadata
+
+```text
+TelemetryCatalogEntry.valueShape
+  nullable globally
+  required when catalogName = SIGNAL_TYPE
+  allowed values: NUMERIC, TEXT, BOOLEAN
+
+TelemetryCatalogEntry.numericUnitExempt
+  boolean
+  default false
+  meaningful only when catalogName = POINT_TYPE
+```
+
+These are technical metadata fields. They do not create Java business-taxonomy enums and do not infer semantics from labels/codes such as PRESSURE, FLOW, STATE, or any future catalog value.
+
+### Fail-closed point registration
+
+```text
+POINT_TYPE reference: must exist, be active, and belong to POINT_TYPE.
+SIGNAL_TYPE reference: must exist, be active, belong to SIGNAL_TYPE, and expose valueShape.
+AGGREGATION_METHOD reference: optional; if present must exist, be active, and belong to AGGREGATION_METHOD.
+TelemetryUnit reference: optional by field shape; if present must exist and be active.
+NUMERIC signal: requires unit unless pointType.numericUnitExempt == true.
+TEXT/BOOLEAN signal: does not require unit.
+Unknown/missing valueShape: reject registration.
+```
+
+### HMR-005 production scope enabled by this design
+
+HMR-005 may additionally modify:
+
+```text
+src/main/java/dz/sh/hidra/modules/telemetry/infrastructure/persistence/entity/TelemetryCatalogEntryJpaEntity.java
+src/main/java/dz/sh/hidra/modules/telemetry/infrastructure/persistence/repository/TelemetryCatalogEntryJpaRepository.java
+```
+
+The already-registered HMR-005 migration may add the two metadata columns and database checks. HMR-005 must not seed concrete SIGNAL_TYPE or POINT_TYPE semantics. Provisioning of real catalog metadata remains data-provisioning work after the semantic baseline permits it.
+
+---
+
 ## 8. Swagger/OpenAPI coverage audit
 
 | API group | Required OpenAPI coverage | Missing until task | Acceptance rule |

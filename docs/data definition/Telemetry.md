@@ -327,6 +327,47 @@ If a telemetry device corresponds to topology Equipment, use TelemetryPointBindi
 
 ---
 
+### 6.3A Telemetry catalog compatibility metadata
+
+HMR-005A defines the minimum Telemetry-owned metadata needed to enforce point signal/unit compatibility without interpreting business catalog codes.
+
+The existing `TelemetryCatalogEntry` / `hidra_telemetry_type_catalog` structure remains the owner of configurable taxonomy entries. Two technical metadata fields are added to that catalog concept:
+
+| Field | Type | Required | Applicability | Meaning |
+|---|---|---:|---|---|
+| `valueShape` | CODE | Conditional | `catalogName = SIGNAL_TYPE` only | Technical reading shape: `NUMERIC`, `TEXT`, or `BOOLEAN`. |
+| `numericUnitExempt` | BOOLEAN | Yes, default `false` | `catalogName = POINT_TYPE` only | Explicitly exempts a numeric point of that point type from requiring an engineering unit. |
+
+Rules:
+
+```text
+SIGNAL_TYPE entries must have valueShape in {NUMERIC, TEXT, BOOLEAN}.
+Non-SIGNAL_TYPE entries must keep valueShape null.
+POINT_TYPE entries may set numericUnitExempt true or false.
+Non-POINT_TYPE entries must keep numericUnitExempt false.
+No concrete SIGNAL_TYPE or POINT_TYPE business entry is inferred from its code.
+No HMR-005A seed values are created.
+```
+
+TelemetryPoint registration must fail closed:
+
+```text
+pointTypeId must reference an active POINT_TYPE catalog entry.
+signalTypeId must reference an active SIGNAL_TYPE catalog entry.
+defaultAggregationMethodId, when present, must reference an active AGGREGATION_METHOD catalog entry.
+unitId, when present, must reference an active TelemetryUnit.
+If SIGNAL_TYPE.valueShape = NUMERIC:
+    unitId is required unless POINT_TYPE.numericUnitExempt = true.
+If SIGNAL_TYPE.valueShape = TEXT or BOOLEAN:
+    unitId is optional, but when present it must still reference an active TelemetryUnit.
+If SIGNAL_TYPE.valueShape is null or unsupported:
+    registration must be rejected.
+```
+
+This metadata is technical compatibility metadata, not a replacement for multilingual business taxonomy labels.
+
+---
+
 ## 6.4 TelemetryPoint
 
 ### Description

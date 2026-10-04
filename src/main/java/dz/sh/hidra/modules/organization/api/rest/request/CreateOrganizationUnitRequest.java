@@ -7,7 +7,7 @@
  *
  * @Name        : CreateOrganizationUnitRequest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-04
  *
  * @Type        : Record
  * @Layer       : API
@@ -20,7 +20,7 @@
 package dz.sh.hidra.modules.organization.api.rest.request;
 
 import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitStatus;
-
+import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
 
 /**
@@ -34,6 +34,6 @@ public record CreateOrganizationUnitRequest(
         String unitTypeId,
         String parentUnitId,
         OrganizationUnitStatus status,
-        Instant validFrom
+        @NotNull Instant validFrom
 ) {
 }

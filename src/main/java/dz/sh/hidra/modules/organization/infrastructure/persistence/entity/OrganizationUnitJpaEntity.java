@@ -7,7 +7,7 @@
  *
  * @Name        : OrganizationUnitJpaEntity
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-29
+ * @UpdatedOn   : 2026-10-04
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -61,7 +61,7 @@ import java.time.Instant;
     @Column(name = "status", nullable = false, length = 40)
     private OrganizationUnitStatus status;
 
-    @Column(name = "valid_from", nullable = true)
+    @Column(name = "valid_from", nullable = false)
     private Instant validFrom;
 
     @Column(name = "valid_to", nullable = true)

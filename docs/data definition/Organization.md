@@ -290,3 +290,33 @@ The historical `reporting_line_type` varchar remains only as a trigger-synchroni
 mirror for established direct-SQL provisioning/tests; domain and JPA state no longer use it as the
 authoritative classification. The HMR-028 trigger also protects typed subject existence, employee
 ACTIVE eligibility, employee-source active-LINE cardinality, and generalized active-LINE cycles.
+
+
+---
+
+## HMR-032 — OrganizationUnit hierarchy/type/effective-date baseline
+
+`OrganizationUnit.validFrom` is mandatory at REST, application-command, domain, JPA, and
+database boundaries.
+
+```text
+new OrganizationUnit:
+  validFrom != null
+  unitTypeId must resolve to an active OrganizationUnitType
+
+existing OrganizationUnit:
+  historical reference to an inactive OrganizationUnitType may remain unchanged
+  changing unitTypeId requires the new type to be active
+
+parent hierarchy:
+  parentUnitId may be null
+  parentUnitId must not equal id
+  parent assignment/reassignment must not create a multi-record cycle
+```
+
+The repository adapter is the Java fail-closed boundary for hierarchy mutation and changed
+classification. The additive HMR-032 migration installs equivalent direct-SQL/provisioning
+protection and makes `hidra_org_unit.valid_from` NOT NULL.
+
+HMR-032 does not invent OrganizationUnit code uniqueness, multilingual-name requiredness, or a
+new lifecycle transition matrix.

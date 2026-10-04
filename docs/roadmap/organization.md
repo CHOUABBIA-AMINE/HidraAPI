@@ -3891,3 +3891,22 @@ is complete.
 This domain cleanup does not erase the still-open issue #130 gates. For model/value work, `ORG-049` through `ORG-055` are complete. The model/value cleanup sequence is closed; do not reopen it without new repository evidence.
 Application/persistence/API cutover must be planned only after the canonical domain model is
 validated.
+
+
+---
+
+## HMR-032 — OrganizationUnit executable hierarchy baseline
+
+The canonical OrganizationUnit write contract is:
+
+```text
+validFrom is required
+new/reclassified unitTypeId must reference an active OrganizationUnitType
+historical inactive type references remain valid when unitTypeId is unchanged
+parentUnitId is optional
+hierarchy mutations must remain acyclic
+```
+
+Cycle detection belongs to repository/database policy rather than recursive logic inside the
+OrganizationUnit record. The HMR-032 database trigger therefore protects direct provisioning and
+reparenting as well as application saves.

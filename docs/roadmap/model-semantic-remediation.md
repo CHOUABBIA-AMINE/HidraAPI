@@ -1850,7 +1850,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-035`
 - Exact commit: `fix(organization): remediate semantic review OrganizationUnit`
-- Status: **Planned**
+- Status: **Completed** — multi-record hierarchy cycles are rejected, new/reclassified units require an active OrganizationUnitType, historical inactive type references remain preservable when unchanged, and validFrom is mandatory across REST/application/JPA/schema boundaries.
 - SCC: SCC-01
 - Recorded upstream HMS dependencies: organization.OrganizationUnit, organization.OrganizationUnitType
 - HMSR correction count: 3
@@ -4869,8 +4869,8 @@ or required-field alignment work; keep high-risk semantic redesigns solo.
 
 ### 12.6 Current next execution
 
-HMR-032 — organization.OrganizationUnit
+HMR-033 — telemetry.TelemetryReading
 
-`fix(organization): remediate semantic review OrganizationUnit`
+`fix(telemetry): remediate semantic review TelemetryReading`
 
-HMR-031 is completed. Execute HMR-032 only after the HMR-031 head is green; do not start HMR-033 automatically.
+HMR-032 is completed. Execute HMR-033 only after the HMR-032 head is green; do not start HMR-034 automatically.

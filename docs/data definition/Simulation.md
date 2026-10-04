@@ -1050,3 +1050,32 @@ The most important implementation rule is:
 An optimal network configuration is born in Simulation,
 but becomes official only in Topology.
 ```
+
+
+---
+
+## HMR-009A topology-scope contract clarification
+
+The governed SimulationModel scope vocabulary remains:
+
+```text
+PIPELINE_SYSTEM
+PIPELINE
+SEGMENT_GROUP
+FACILITY_NETWORK
+```
+
+Live Topology evidence currently provides owned aggregate representations for `PipelineSystem` and `Pipeline`, but no `SegmentGroup` or `FacilityNetwork` aggregate/model exists. Therefore:
+
+```text
+PIPELINE_SYSTEM + scopeId -> resolve through a Topology-owned public Simulation contract.
+PIPELINE + scopeId        -> resolve through the same Topology-owned contract.
+SEGMENT_GROUP + scopeId   -> fail closed as unsupported until Topology owns that concept.
+FACILITY_NETWORK + scopeId-> fail closed as unsupported until Topology owns that concept.
+null scopeId              -> allowed because SimulationModel.topologyScopeId remains optional.
+unknown scopeType         -> reject.
+```
+
+Do not map `SEGMENT_GROUP` to `PipelineSegment`, and do not map `FACILITY_NETWORK` to `Facility`, `Equipment`, or `PipelineSystemFacility` without a separate approved Topology model decision.
+
+The owner contract is Simulation-facing and belongs under Topology application contracts. Simulation must not import Topology domain models, repositories, JPA entities, or infrastructure adapters.

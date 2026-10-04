@@ -757,7 +757,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-009`
 - Exact commit: `fix(simulation): remediate semantic review SimulationModel`
-- Status: **Blocked — HMR-009A prerequisite required.** Live `SimulationApplicationService#createSimulationModel` is outside the current HMR-009 allowlist and performs no uniqueness, model-type-family, or topology-scope validation. `TopologySnapshotLookupPort` is also outside the allowlist, has no implementation, and can validate only an untyped single reference. The only live exported Topology operational-scope contract is explicitly Organization-owned and resolves `PIPELINE_SYSTEM`, `PIPELINE`, `FACILITY`, and `EQUIPMENT`, which does not match Simulation's documented `PIPELINE_SYSTEM`, `PIPELINE`, `SEGMENT_GROUP`, and `FACILITY_NETWORK` vocabulary. No HMR-009 production file has been changed.
+- Status: **Planned — HMR-009A completed.** HMR-009 may now add a dedicated Topology-owned Simulation scope contract instead of reusing the Organization-specific contract. `PIPELINE_SYSTEM` and `PIPELINE` resolve through Topology ownership; `SEGMENT_GROUP` and `FACILITY_NETWORK` remain governed vocabulary but any supplied ID must fail closed as unsupported until Topology owns a concrete representation. The create service and focused tests are now authorized.
 - SCC: —
 - Recorded upstream HMS dependencies: —
 - HMSR correction count: 6
@@ -771,6 +771,9 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
   - `src/main/java/dz/sh/hidra/modules/simulation/application/command/CreateSimulationModelCommand.java`
   - `src/main/java/dz/sh/hidra/modules/simulation/application/dto/SimulationModelSummaryDto.java`
   - `src/main/java/dz/sh/hidra/modules/simulation/application/port/in/CreateSimulationModelUseCase.java`
+  - `src/main/java/dz/sh/hidra/modules/simulation/application/service/SimulationApplicationService.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/application/contract/simulation/SimulationTopologyScopeContract.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/application/service/TopologySimulationScopeQueryService.java`
   - `src/main/java/dz/sh/hidra/modules/simulation/application/port/out/SimulationModelRepositoryPort.java`
   - `src/main/java/dz/sh/hidra/modules/simulation/domain/model/SimulationModel.java`
   - `src/main/java/dz/sh/hidra/modules/simulation/domain/value/SimulationModelStatus.java`
@@ -781,6 +784,8 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
   - `src/main/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/repository/SimulationModelJpaRepository.java`
   - `src/main/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/repository/SimulationModelVersionJpaRepository.java`
   - `src/main/resources/db/migration/V20261004_009__hmr_009_simulation_simulation_model.sql`
+  - `src/test/java/dz/sh/hidra/modules/simulation/application/service/SimulationApplicationServiceTest.java`
+  - `src/test/java/dz/sh/hidra/modules/topology/application/service/TopologySimulationScopeQueryServiceTest.java`
   - `src/test/java/dz/sh/hidra/modules/simulation/semantic/SimulationModelSemanticRemediationTest.java`
 - Exact validation:
   - `./mvnw -q -DskipTests compile`
@@ -799,7 +804,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source: HMR-009 / HMSR-009 obligations 3 and 4 plus live owner-contract evidence.
 - Exact commit: `docs(model-remediation): register SimulationModel topology owner-contract prerequisite`
-- Status: **Planned**
+- Status: **Completed** — live Topology evidence confirms authoritative `PipelineSystem` and `Pipeline` targets exist, while no `SegmentGroup` or `FacilityNetwork` aggregate/model exists. A dedicated Simulation-facing Topology application contract is therefore specified: it resolves `(scopeType, scopeId)` for currently authoritative target types and fails closed with an explicit unsupported result for `SEGMENT_GROUP` / `FACILITY_NETWORK` until Topology gains owned representations. No alias to `FACILITY`, `EQUIPMENT`, or another type is permitted.
 - Type: documentation/architecture prerequisite; no production mutation.
 - Purpose: define a Topology-owned public reference contract that can validate the exact Simulation scope vocabulary without importing Topology domain/persistence models into Simulation.
 - Required evidence:
@@ -4631,8 +4636,8 @@ A later HMR task may become Skipped only if stronger live evidence appears befor
 
 ### 12.5 Current next task
 
-HMR-009A — simulation topology-scope owner-contract prerequisite
+HMR-009 — simulation.SimulationModel
 
-docs(model-remediation): register SimulationModel topology owner-contract prerequisite
+fix(simulation): remediate semantic review SimulationModel
 
-HMR-009 remains blocked until HMR-009A resolves the owner-contract/vocabulary mismatch and amends the exact write allowlist. Do not skip to HMR-010.
+HMR-009A is complete. Execute HMR-009 only; do not start HMR-010 automatically.

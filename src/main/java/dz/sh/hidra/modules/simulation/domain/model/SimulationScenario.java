@@ -71,7 +71,7 @@ import java.time.Instant;
         if (code == null || code.isBlank()) {
             throw new InvalidSimulationValueException("SimulationScenario code must not be blank.");
         }
-        // HRA-051 required: nameFr
+        // HMR-034 required: nameFr
         if (nameFr == null || nameFr.isBlank()) {
             throw new InvalidSimulationValueException("SimulationScenario French name must not be blank.");
         }
@@ -99,7 +99,7 @@ import java.time.Instant;
         if (createdByActorId == null || createdByActorId.isBlank()) {
             throw new InvalidSimulationValueException("SimulationScenario created by actor id must not be blank.");
         }
-        // HRA-051 required: createdByDisplayNameSnapshot
+        // HMR-034 required: createdByDisplayNameSnapshot
         if (createdByDisplayNameSnapshot == null || createdByDisplayNameSnapshot.isBlank()) {
             throw new InvalidSimulationValueException(
                     "SimulationScenario created by display name snapshot must not be blank."

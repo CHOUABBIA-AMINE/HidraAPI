@@ -71,8 +71,11 @@ class PipelineSystemSemanticRemediationTest {
 
         var summary = service.createPipelineSystem(command(" TRANSPORT "));
 
-        assertThat(summary.systemType().id()).isEqualTo("TRANSPORT");
-        assertThat(summary.systemType().code()).isEqualTo("TRANSPORT");
+        assertThat(summary.systemTypeId()).isEqualTo("TRANSPORT");
+        assertThat(summary.systemTypeCode()).isEqualTo("TRANSPORT");
+        assertThat(summary.systemTypeNameAr()).isNull();
+        assertThat(summary.systemTypeNameFr()).isNull();
+        assertThat(summary.systemTypeNameEn()).isNull();
         assertThat(repository.saved.systemType()).isEqualTo(PipelineSystemType.TRANSPORT);
     }
 

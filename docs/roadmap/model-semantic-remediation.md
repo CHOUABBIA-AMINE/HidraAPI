@@ -787,6 +787,8 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
   - `src/test/java/dz/sh/hidra/modules/simulation/application/service/SimulationApplicationServiceTest.java`
   - `src/test/java/dz/sh/hidra/modules/topology/application/service/TopologySimulationScopeQueryServiceTest.java`
   - `src/test/java/dz/sh/hidra/modules/simulation/semantic/SimulationModelSemanticRemediationTest.java`
+  - `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java`
+  - `src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java`
 - Exact validation:
   - `./mvnw -q -DskipTests compile`
   - `./mvnw -q -Dtest=SimulationModelSemanticRemediationTest test`

@@ -7,7 +7,7 @@
  *
  * @Name        : FacilityApplicationService
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-04
  *
  * @Type        : Class
  * @Layer       : Application
@@ -21,11 +21,13 @@ package dz.sh.hidra.modules.topology.application.service;
 
 import org.springframework.stereotype.Service;
 
+import dz.sh.hidra.modules.party.application.contract.topology.TopologyPartyReferenceContract;
 import dz.sh.hidra.modules.topology.application.command.RegisterFacilityCommand;
 import dz.sh.hidra.modules.topology.application.dto.FacilitySummaryDto;
 import dz.sh.hidra.modules.topology.application.mapper.TopologyApplicationMapper;
 import dz.sh.hidra.modules.topology.application.port.in.RegisterFacilityUseCase;
 import dz.sh.hidra.modules.topology.application.port.out.FacilityRepositoryPort;
+import dz.sh.hidra.modules.topology.domain.exception.InvalidTopologyValueException;
 import dz.sh.hidra.modules.topology.domain.model.Facility;
 import dz.sh.hidra.modules.topology.domain.value.*;
 import java.time.Instant;
@@ -33,8 +35,31 @@ import java.util.Objects;
 @Service
 public final class FacilityApplicationService implements RegisterFacilityUseCase {
     private final FacilityRepositoryPort repositoryPort;
-    public FacilityApplicationService(FacilityRepositoryPort repositoryPort) { this.repositoryPort = Objects.requireNonNull(repositoryPort, "Facility repository port must not be null."); }
+    private final TopologyPartyReferenceContract partyReferenceContract;
+
+    public FacilityApplicationService(
+            FacilityRepositoryPort repositoryPort,
+            TopologyPartyReferenceContract partyReferenceContract
+    ) {
+        this.repositoryPort = Objects.requireNonNull(
+                repositoryPort,
+                "Facility repository port must not be null."
+        );
+        this.partyReferenceContract = Objects.requireNonNull(
+                partyReferenceContract,
+                "Topology Party reference contract must not be null."
+        );
+    }
+
     public FacilitySummaryDto registerFacility(RegisterFacilityCommand command) {
+        Objects.requireNonNull(command, "Register facility command must not be null.");
+        if (command.ownerPartyId() != null
+                && !command.ownerPartyId().isBlank()
+                && !partyReferenceContract.exists(command.ownerPartyId())) {
+            throw new InvalidTopologyValueException(
+                    "Facility owner Party must reference an existing Party."
+            );
+        }
         Instant now = Instant.now();
         Facility facility = new Facility(TopologyId.newId().value(), command.code(), command.nameAr(), command.nameFr(), command.nameEn(), command.facilityTypeId(), command.facilityKind() == null ? FacilityKind.OTHER : command.facilityKind(), command.ownerPartyId(), command.ownerPartyCodeSnapshot(), command.ownerPartyNameSnapshot(), command.latitude(), command.longitude(), command.elevationMeters(), FacilityStatus.PLANNED, null, null, now, now);
         return TopologyApplicationMapper.toSummary(repositoryPort.save(facility));

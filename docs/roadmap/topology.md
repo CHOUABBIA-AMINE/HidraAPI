@@ -564,3 +564,12 @@ pipelineSegmentId: optional; non-null values protected by nullable same-module F
 
 No connection-code uniqueness, edge uniqueness, capacity sign/pairing, capacity-unit taxonomy, or
 PIPELINE_SEGMENT/pipelineSegmentId coupling is inferred by HMR-031.
+
+
+---
+
+## HMR-036 — Facility owner Party reference
+
+Topology validates populated Facility owner Party identities through the deliberate Party-owned
+`TopologyPartyReferenceContract`. Topology does not import Party domain, repository, JPA, or
+infrastructure types, and no cross-module database FK is created.

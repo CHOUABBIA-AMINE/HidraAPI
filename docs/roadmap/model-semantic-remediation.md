@@ -2050,7 +2050,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-041`
 - Exact commit: `fix(topology): remediate semantic review Facility`
-- Status: **Blocked — HMR-036A Party owner lookup prerequisite registered**
+- Status: **Completed** — populated Facility ownerPartyId is validated fail-closed through the Party-owned Topology application contract; snapshots remain non-authoritative and no cross-module FK is introduced.
 - SCC: —
 - Recorded upstream HMS dependencies: party.Party
 - HMSR correction count: 1
@@ -4928,8 +4928,8 @@ or required-field alignment work; keep high-risk semantic redesigns solo.
 
 ### 12.6 Current next execution
 
-HMR-036 — topology.Facility
+HMR-037 — analytics.AnalyticsDatasetVersion
 
-`fix(topology): remediate semantic review Facility`
+`fix(analytics): remediate semantic review AnalyticsDatasetVersion`
 
-HMR-036A has registered the missing Party-owner lookup contract and minimal production scope. Observe the HMR-036A docs-only prerequisite once, then execute HMR-036 only; do not start HMR-037 automatically.
+HMR-036 is completed. Execute HMR-037 only after the HMR-036 head is green; do not start HMR-038 automatically.

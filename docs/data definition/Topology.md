@@ -247,3 +247,15 @@ additive same-module FK.
 
 HMR-031 does not establish connection-code uniqueness, graph-edge uniqueness, nominal-capacity
 ranges, capacity/unit pairing, or a mandatory PipelineSegment association for any connection type.
+
+
+---
+
+## HMR-036 — Facility Party-owner validation
+
+`Facility.ownerPartyId` is an optional neutral reference to the Party bounded context.
+When populated, Facility registration must fail closed unless Party confirms that the Party identity
+exists through the Party-owned Topology application contract.
+
+`ownerPartyCodeSnapshot` and `ownerPartyNameSnapshot` remain descriptive snapshots only and
+must never be used as identity proof. No cross-module database foreign key is introduced.

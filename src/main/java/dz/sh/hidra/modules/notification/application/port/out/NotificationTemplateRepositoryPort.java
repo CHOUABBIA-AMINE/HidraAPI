@@ -7,7 +7,7 @@
  *
  * @Name        : NotificationTemplateRepositoryPort
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-04
  *
  * @Type        : Interface
  * @Layer       : Application
@@ -31,4 +31,6 @@ public interface NotificationTemplateRepositoryPort {
     NotificationTemplate save(NotificationTemplate model);
 
     Optional<NotificationTemplate> findById(String id);
+
+    boolean existsByCode(String code);
 }

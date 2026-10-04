@@ -184,6 +184,26 @@ A template version is immutable after activation.
 Template business type/category must be catalog-backed, not hard-coded enum business taxonomy.
 ```
 
+HMR-012 defines `currentVersion` as the version number designated for current message generation.
+An ACTIVE template must have `currentVersion`, and that number must identify an ACTIVE
+`NotificationTemplateVersion` belonging to the same template. Non-ACTIVE templates may retain a
+historical `currentVersion`, but when present it must still identify a version belonging to that template.
+
+Template selection is fail-closed:
+
+```text
+templateTypeId          -> catalog family TEMPLATE_TYPE
+categoryId, when set    -> catalog family NOTIFICATION_CATEGORY
+defaultChannelId        -> existing ACTIVE NotificationChannel
+request templateId      -> existing ACTIVE NotificationTemplate
+message templateId      -> existing ACTIVE NotificationTemplate
+templateVersionId       -> same template + ACTIVE version at creation time
+message using template  -> exact templateVersionId required
+```
+
+The aggregate French display label `nameFr` is required independently of localized version content.
+`createdAt` and `updatedAt` are also required aggregate persistence invariants.
+
 Recommended statuses:
 
 ```text

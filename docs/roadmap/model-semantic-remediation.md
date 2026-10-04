@@ -152,7 +152,7 @@ Each model task implements only the obligations recorded in its source HMSR sect
 | HMR-009 | HMSR-009 | simulation | SimulationModel | — | — | `fix(simulation): remediate semantic review SimulationModel` | **Blocked — HMR-009A required: SimulationModel creation needs a Topology-owned `(scopeType, scopeId)` validation contract, but the live Simulation `TopologySnapshotLookupPort` is unimplemented/insufficient and the only exported Topology operational-scope contract is Organization-specific with a mismatched vocabulary (`FACILITY`/`EQUIPMENT` instead of `SEGMENT_GROUP`/`FACILITY_NETWORK`).** |
 | HMR-010 | HMSR-010 | identity | IdentityProvider | — | — | `fix(identity): remediate semantic review IdentityProvider` | **Completed** |
 | HMR-011 | HMSR-011 | identity | Permission | — | — | `fix(identity): remediate semantic review Permission` | **Completed** |
-| HMR-012 | HMSR-012 | notification | NotificationTemplate | — | — | `fix(notification): remediate semantic review NotificationTemplate` | Planned |
+| HMR-012 | HMSR-012 | notification | NotificationTemplate | — | — | `fix(notification): remediate semantic review NotificationTemplate` | **Completed** |
 | HMR-013 | HMSR-013 | reporting | ReportDefinition | — | — | `fix(reporting): remediate semantic review ReportDefinition` | Planned |
 | HMR-014 | HMSR-014 | integration | IntegrationJobRun | — | — | `fix(integration): remediate semantic review IntegrationJobRun` | Planned |
 | HMR-015 | HMSR-015 | leakdetection | LeakCandidate | — | — | `fix(leakdetection): remediate semantic review LeakCandidate` | Planned |
@@ -922,7 +922,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-012`
 - Exact commit: `fix(notification): remediate semantic review NotificationTemplate`
-- Status: **Planned**
+- Status: **Completed** — template code uniqueness is enforced at persistence and database boundaries; ACTIVE templates require a governed current ACTIVE version; request/message template selections fail closed on inactive templates or mismatched/ineligible versions; template/category catalog family membership and active default-channel integrity are enforced; French label/timestamps are intrinsic domain invariants.
 - SCC: —
 - Recorded upstream HMS dependencies: —
 - HMSR correction count: 8
@@ -4638,8 +4638,8 @@ A later HMR task may become Skipped only if stronger live evidence appears befor
 
 ### 12.5 Current next task
 
-HMR-012 — notification.NotificationTemplate
+HMR-013 — reporting.ReportDefinition
 
-fix(notification): remediate semantic review NotificationTemplate
+fix(reporting): remediate semantic review ReportDefinition
 
-Do not start HMR-013 automatically.
+Do not start HMR-014 automatically.

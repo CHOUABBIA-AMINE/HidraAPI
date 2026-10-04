@@ -7,7 +7,7 @@
  *
  * @Name        : NotificationTemplate
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-10-04
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -65,6 +65,9 @@ import java.time.Instant;
         if (code == null || code.isBlank()) {
             throw new InvalidNotificationValueException("NotificationTemplate code must not be blank.");
         }
+        if (nameFr == null || nameFr.isBlank()) {
+            throw new InvalidNotificationValueException("NotificationTemplate French name must not be blank.");
+        }
         // HRA-051 required: templateTypeId
         if (templateTypeId == null || templateTypeId.isBlank()) {
             throw new InvalidNotificationValueException("NotificationTemplate template type id must not be blank.");
@@ -72,6 +75,19 @@ import java.time.Instant;
         // HRA-051 required: status
         if (status == null) {
             throw new InvalidNotificationValueException("NotificationTemplate status must not be null.");
+        }
+        if (currentVersion != null && currentVersion <= 0) {
+            throw new InvalidNotificationValueException("NotificationTemplate current version must be positive.");
+        }
+        if (status == NotificationTemplateStatus.ACTIVE && currentVersion == null) {
+            throw new InvalidNotificationValueException(
+                    "ACTIVE NotificationTemplate must define a current version."
+            );
+        }
+        if (createdAt == null || updatedAt == null) {
+            throw new InvalidNotificationValueException(
+                    "NotificationTemplate createdAt and updatedAt must not be null."
+            );
         }
 
         id = normalize(id);

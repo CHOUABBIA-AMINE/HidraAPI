@@ -7,7 +7,7 @@
  *
  * @Name        : NotificationTemplateVersionJpaRepository
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-04
  *
  * @Type        : Interface
  * @Layer       : Infrastructure
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.notification.infrastructure.persistence.repository;
 
+import dz.sh.hidra.modules.notification.domain.value.NotificationTemplateVersionStatus;
 import dz.sh.hidra.modules.notification.infrastructure.persistence.entity.NotificationTemplateVersionJpaEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -28,4 +29,18 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface NotificationTemplateVersionJpaRepository extends JpaRepository<NotificationTemplateVersionJpaEntity, String> {
+
+    boolean existsByTemplateIdAndVersionNumber(String templateId, int versionNumber);
+
+    boolean existsByTemplateIdAndVersionNumberAndStatus(
+            String templateId,
+            int versionNumber,
+            NotificationTemplateVersionStatus status
+    );
+
+    boolean existsByIdAndTemplateIdAndStatus(
+            String id,
+            String templateId,
+            NotificationTemplateVersionStatus status
+    );
 }

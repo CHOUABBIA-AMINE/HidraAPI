@@ -757,7 +757,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-009`
 - Exact commit: `fix(simulation): remediate semantic review SimulationModel`
-- Status: **Planned — HMR-009A completed.** HMR-009 may now add a dedicated Topology-owned Simulation scope contract instead of reusing the Organization-specific contract. `PIPELINE_SYSTEM` and `PIPELINE` resolve through Topology ownership; `SEGMENT_GROUP` and `FACILITY_NETWORK` remain governed vocabulary but any supplied ID must fail closed as unsupported until Topology owns a concrete representation. The create service and focused tests are now authorized.
+- Status: **Completed** — unique code is enforced application-side and by database index; French name, governed topology scope type, and timestamps are intrinsic domain invariants; model type resolves to an active `SIMULATION_MODEL_TYPE`; supplied topology scope pairs use the dedicated Topology-owned Simulation contract; `PIPELINE_SYSTEM`/`PIPELINE` must exist and be ACTIVE, while supplied `SEGMENT_GROUP`/`FACILITY_NETWORK` references fail closed until Topology owns those representations.
 - SCC: —
 - Recorded upstream HMS dependencies: —
 - HMSR correction count: 6
@@ -4636,8 +4636,8 @@ A later HMR task may become Skipped only if stronger live evidence appears befor
 
 ### 12.5 Current next task
 
-HMR-009 — simulation.SimulationModel
+HMR-010 — simulation.SimulationModelVersion
 
-fix(simulation): remediate semantic review SimulationModel
+fix(simulation): remediate semantic review SimulationModelVersion
 
-HMR-009A is complete. Execute HMR-009 only; do not start HMR-010 automatically.
+Do not start HMR-011 automatically.

@@ -47,6 +47,8 @@ import dz.sh.hidra.modules.simulation.domain.value.SimulationModelStatus;
 import dz.sh.hidra.modules.simulation.domain.value.SimulationRecommendationStatus;
 import dz.sh.hidra.modules.simulation.domain.value.SimulationRunStatus;
 import dz.sh.hidra.modules.simulation.domain.value.SimulationScenarioStatus;
+import dz.sh.hidra.modules.simulation.domain.exception.InvalidSimulationValueException;
+import dz.sh.hidra.modules.topology.application.contract.simulation.SimulationTopologyScopeContract;
 
 import java.time.Instant;
 import java.util.Objects;
@@ -61,26 +63,51 @@ public final class SimulationApplicationService implements CreateSimulationModel
     private final SimulationScenarioRepositoryPort scenarioRepositoryPort;
     private final SimulationRunRepositoryPort runRepositoryPort;
     private final SimulationRecommendationRepositoryPort recommendationRepositoryPort;
+    private final SimulationTopologyScopeContract topologyScopeContract;
 
     public SimulationApplicationService(
             SimulationModelRepositoryPort modelRepositoryPort,
             SimulationScenarioRepositoryPort scenarioRepositoryPort,
             SimulationRunRepositoryPort runRepositoryPort,
-            SimulationRecommendationRepositoryPort recommendationRepositoryPort
+            SimulationRecommendationRepositoryPort recommendationRepositoryPort,
+            SimulationTopologyScopeContract topologyScopeContract
     ) {
         this.modelRepositoryPort = Objects.requireNonNull(modelRepositoryPort, "Simulation model repository port must not be null.");
         this.scenarioRepositoryPort = Objects.requireNonNull(scenarioRepositoryPort, "Simulation scenario repository port must not be null.");
         this.runRepositoryPort = Objects.requireNonNull(runRepositoryPort, "Simulation run repository port must not be null.");
         this.recommendationRepositoryPort = Objects.requireNonNull(recommendationRepositoryPort, "Simulation recommendation repository port must not be null.");
+        this.topologyScopeContract = Objects.requireNonNull(topologyScopeContract, "Simulation topology scope contract must not be null.");
     }
 
     @Override
     public SimulationModelSummaryDto createSimulationModel(CreateSimulationModelCommand command) {
         Objects.requireNonNull(command, "Create simulation model command must not be null.");
+        String code = requireText(command.code(), "Simulation model code");
+        if (modelRepositoryPort.existsByCode(code)) {
+            throw new InvalidSimulationValueException("SimulationModel code must be unique.");
+        }
+        if (!modelRepositoryPort.isActiveModelType(command.modelTypeId())) {
+            throw new InvalidSimulationValueException(
+                    "SimulationModel model type must reference an active SIMULATION_MODEL_TYPE catalog entry."
+            );
+        }
+        if (command.topologyScopeId() != null && !command.topologyScopeId().isBlank()) {
+            var scope = topologyScopeContract.resolve(command.topologyScopeType(), command.topologyScopeId());
+            if (!scope.supported()) {
+                throw new InvalidSimulationValueException(
+                        "SimulationModel topology scope type is not currently supported by Topology."
+                );
+            }
+            if (!scope.exists() || !scope.eligible()) {
+                throw new InvalidSimulationValueException(
+                        "SimulationModel topology scope must reference an existing ACTIVE Topology target."
+                );
+            }
+        }
         Instant now = Instant.now();
         SimulationModel model = new SimulationModel(
                 SimulationId.newId().value(),
-                command.code(),
+                code,
                 command.nameAr(),
                 command.nameFr(),
                 command.nameEn(),
@@ -93,6 +120,13 @@ public final class SimulationApplicationService implements CreateSimulationModel
                 now
         );
         return SimulationApplicationMapper.toSummary(modelRepositoryPort.save(model));
+    }
+
+    private static String requireText(String value, String label) {
+        if (value == null || value.isBlank()) {
+            throw new InvalidSimulationValueException(label + " must not be blank.");
+        }
+        return value.trim();
     }
 
     @Override

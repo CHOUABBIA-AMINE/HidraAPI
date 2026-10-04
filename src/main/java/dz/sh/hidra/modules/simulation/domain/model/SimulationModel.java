@@ -63,9 +63,30 @@ import java.time.Instant;
         if (code == null || code.isBlank()) {
             throw new InvalidSimulationValueException("SimulationModel code must not be blank.");
         }
+        // HMR-009 required: nameFr
+        if (nameFr == null || nameFr.isBlank()) {
+            throw new InvalidSimulationValueException("SimulationModel French name must not be blank.");
+        }
         // HRA-051 required: modelTypeId
         if (modelTypeId == null || modelTypeId.isBlank()) {
             throw new InvalidSimulationValueException("SimulationModel model type id must not be blank.");
+        }
+        if (topologyScopeType == null || topologyScopeType.isBlank()) {
+            throw new InvalidSimulationValueException("SimulationModel topology scope type must not be blank.");
+        }
+        String normalizedScopeType = topologyScopeType.trim();
+        if (!java.util.Set.of(
+                "PIPELINE_SYSTEM",
+                "PIPELINE",
+                "SEGMENT_GROUP",
+                "FACILITY_NETWORK"
+        ).contains(normalizedScopeType)) {
+            throw new InvalidSimulationValueException(
+                    "Unsupported SimulationModel topology scope type: " + topologyScopeType
+            );
+        }
+        if (createdAt == null || updatedAt == null) {
+            throw new InvalidSimulationValueException("SimulationModel createdAt and updatedAt must not be null.");
         }
         // HRA-051 required: status
         if (status == null) {
@@ -78,7 +99,7 @@ import java.time.Instant;
         nameFr = normalize(nameFr);
         nameEn = normalize(nameEn);
         modelTypeId = normalize(modelTypeId);
-        topologyScopeType = normalize(topologyScopeType);
+        topologyScopeType = normalizedScopeType;
         topologyScopeId = normalize(topologyScopeId);
         description = normalize(description);
         }

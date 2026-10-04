@@ -49,4 +49,16 @@ public class JpaSimulationModelRepositoryAdapter implements SimulationModelRepos
     public Optional<SimulationModel> findById(String id) {
         return repository.findById(id).map(SimulationPersistenceMapper::toDomain);
     }
+
+    @Override
+    public boolean existsByCode(String code) {
+        return repository.existsByCode(code);
+    }
+
+    @Override
+    public boolean isActiveModelType(String modelTypeId) {
+        return modelTypeId != null
+                && !modelTypeId.isBlank()
+                && repository.existsActiveModelTypeById(modelTypeId);
+    }
 }

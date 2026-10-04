@@ -31,4 +31,8 @@ public interface SimulationModelRepositoryPort {
     SimulationModel save(SimulationModel model);
 
     Optional<SimulationModel> findById(String id);
+
+    boolean existsByCode(String code);
+
+    boolean isActiveModelType(String modelTypeId);
 }

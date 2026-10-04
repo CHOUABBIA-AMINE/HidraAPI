@@ -1079,3 +1079,26 @@ unknown scopeType         -> reject.
 Do not map `SEGMENT_GROUP` to `PipelineSegment`, and do not map `FACILITY_NETWORK` to `Facility`, `Equipment`, or `PipelineSystemFacility` without a separate approved Topology model decision.
 
 The owner contract is Simulation-facing and belongs under Topology application contracts. Simulation must not import Topology domain models, repositories, JPA entities, or infrastructure adapters.
+
+
+---
+
+## HMR-009 SimulationModel semantic remediation
+
+The implemented baseline is:
+
+```text
+code                  unique at application + database boundaries
+nameFr                required
+modelTypeId            existing active SIMULATION_MODEL_TYPE entry
+topologyScopeType      one of PIPELINE_SYSTEM, PIPELINE, SEGMENT_GROUP, FACILITY_NETWORK
+topologyScopeId        optional
+createdAt / updatedAt  required
+```
+
+When `topologyScopeId` is supplied, Simulation calls the Topology-owned
+`SimulationTopologyScopeContract`. `PIPELINE_SYSTEM` and `PIPELINE` resolve against
+Topology-owned aggregates and must currently exist and be ACTIVE.
+`SEGMENT_GROUP` and `FACILITY_NETWORK` remain documented scope vocabulary but fail closed
+as unsupported while Topology has no owned aggregate representation for those concepts.
+No cross-module database foreign key or direct Topology domain/repository dependency is introduced.

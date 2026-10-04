@@ -148,7 +148,7 @@ Each model task implements only the obligations recorded in its source HMSR sect
 | HMR-005 | HMSR-005 | telemetry | TelemetryPoint | — | — | `fix(telemetry): remediate semantic review TelemetryPoint` | **Completed** |
 | HMR-006 | HMSR-006 | planning | PlanningPeriod | — | — | `fix(planning): remediate semantic review PlanningPeriod` | **Completed** |
 | HMR-007 | HMSR-007 | identity | Role | — | — | `fix(identity): remediate semantic review Role` | **Completed** |
-| HMR-008 | HMSR-008 | documents | DocumentStorageObject | — | — | `fix(documents): remediate semantic review DocumentStorageObject` | Planned |
+| HMR-008 | HMSR-008 | documents | DocumentStorageObject | — | — | `fix(documents): remediate semantic review DocumentStorageObject` | Planned — HMR-008A completed; binary-storage contract/service/local-adapter scope is now authorized. |
 | HMR-009 | HMSR-009 | simulation | SimulationModel | — | — | `fix(simulation): remediate semantic review SimulationModel` | Planned |
 | HMR-010 | HMSR-010 | identity | IdentityProvider | — | — | `fix(identity): remediate semantic review IdentityProvider` | Planned |
 | HMR-011 | HMSR-011 | identity | Permission | — | — | `fix(identity): remediate semantic review Permission` | Planned |
@@ -696,7 +696,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-008`
 - Exact commit: `fix(documents): remediate semantic review DocumentStorageObject`
-- Status: **Planned**
+- Status: **Planned — HMR-008A completed.** The exact allowlist now includes the binary-storage contract, upload orchestration service, local storage adapter, and focused tests needed to implement metadata invariants, provider identity handling, and opaque non-secret object-key guarantees.
 - SCC: —
 - Recorded upstream HMS dependencies: —
 - HMSR correction count: 4
@@ -705,13 +705,18 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 - Exact write allowlist:
   - `docs/data definition/Documents.md`
   - `docs/roadmap/model-semantic-remediation.md`
+  - `src/main/java/dz/sh/hidra/modules/documents/application/port/out/DocumentBinaryStoragePort.java`
   - `src/main/java/dz/sh/hidra/modules/documents/application/port/out/DocumentStorageObjectRepositoryPort.java`
+  - `src/main/java/dz/sh/hidra/modules/documents/application/service/DocumentContentTransferService.java`
   - `src/main/java/dz/sh/hidra/modules/documents/domain/model/DocumentStorageObject.java`
   - `src/main/java/dz/sh/hidra/modules/documents/infrastructure/persistence/adapter/JpaDocumentStorageObjectRepositoryAdapter.java`
   - `src/main/java/dz/sh/hidra/modules/documents/infrastructure/persistence/entity/DocumentStorageObjectJpaEntity.java`
   - `src/main/java/dz/sh/hidra/modules/documents/infrastructure/persistence/mapper/DocumentsPersistenceMapper.java`
   - `src/main/java/dz/sh/hidra/modules/documents/infrastructure/persistence/repository/DocumentStorageObjectJpaRepository.java`
+  - `src/main/java/dz/sh/hidra/modules/documents/infrastructure/storage/LocalDocumentBinaryStorageAdapter.java`
   - `src/main/resources/db/migration/V20261004_008__hmr_008_documents_document_storage_object.sql`
+  - `src/test/java/dz/sh/hidra/modules/documents/application/service/DocumentContentTransferServiceTest.java`
+  - `src/test/java/dz/sh/hidra/modules/documents/infrastructure/storage/LocalDocumentBinaryStorageAdapterTest.java`
   - `src/test/java/dz/sh/hidra/modules/documents/semantic/DocumentStorageObjectSemanticRemediationTest.java`
 - Exact validation:
   - `./mvnw -q -DskipTests compile`
@@ -723,6 +728,30 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
   2. **Required storage-integrity metadata contract:** the DDD and schema require `contentType`, `checksumAlgorithm` and `checksumValue`. The current local adapter/service produce them, but `DocumentBinaryStoragePort.StoredBinary` has no constructor validation and the domain record itself does not reject null/blank checksum/content-type values. A future storage adapter can therefore satisfy the Java interface while producing semantically invalid metadata that fails only at persistence or propagates invalid state.
   3. **Required creation metadata boundary:** `createdAt` is required by the DDD/JPA/schema but is not guarded by the domain constructor. The current service supplies it, so this is not a current local-upload failure, but the target baseline needs one deliberate enforcement boundary rather than relying on every caller to remember the persistence constraint.
   4. **Secret/opaque-object-key policy:** the DDD explicitly says object keys must not contain credentials or signed URLs and encryption-key metadata must be reference-only. The current local adapter is safe because it derives `objectKey` from an opaque generated ID, but the outbound storage contract does not state or validate the same guarantee for other providers. Any S3/MinIO/SharePoint/DMS adapter must return stable non-secret metadata rather than pre-signed/credential-bearing values.
+
+#### HMR-008A — documents storage-contract scope amendment
+
+- Source: HMR-008 / HMSR-008.
+- Exact commit: `docs(model-remediation): amend DocumentStorageObject remediation scope`
+- Status: **Completed**
+- Type: documentation-only scope correction; no production mutation.
+- Evidence:
+  - `DocumentBinaryStoragePort.StoredBinary` has no constructor validation for provider identity, object key, checksum algorithm/value, or opaque secret-free metadata.
+  - `DocumentContentTransferService` trusts the returned binary metadata before creating `DocumentStorageObject`.
+  - `LocalDocumentBinaryStorageAdapter` emits hard-coded `storageProviderId = "local-filesystem"`; HMSR-008 found no evidence that this literal is an existing Documents catalog-entry ID in the `DOCUMENT_STORAGE_PROVIDER` family.
+- HMR-008 exact write allowlist is amended to additionally authorize:
+  - `src/main/java/dz/sh/hidra/modules/documents/application/port/out/DocumentBinaryStoragePort.java`
+  - `src/main/java/dz/sh/hidra/modules/documents/application/service/DocumentContentTransferService.java`
+  - `src/main/java/dz/sh/hidra/modules/documents/infrastructure/storage/LocalDocumentBinaryStorageAdapter.java`
+  - `src/test/java/dz/sh/hidra/modules/documents/application/service/DocumentContentTransferServiceTest.java`
+  - `src/test/java/dz/sh/hidra/modules/documents/infrastructure/storage/LocalDocumentBinaryStorageAdapterTest.java`
+- Acceptance:
+  1. storage adapters must return nonblank provider identity, opaque non-secret object key, checksum algorithm/value, and valid nonnegative length;
+  2. object keys and encryption-key metadata must reject credential-bearing/signed-URL material rather than merely documenting a convention;
+  3. local storage must no longer rely on an unverified hard-coded catalog identity; its configured provider ID is still validated against active `DOCUMENT_STORAGE_PROVIDER` membership before persistence;
+  4. HMR-008 remains responsible for domain `contentType`/checksum/`createdAt` integrity and additive persistence constraints;
+  5. no storage-provider catalog seed/value may be invented in HMR-008.
+
 
 #### HMR-009 — simulation.SimulationModel
 
@@ -4584,4 +4613,4 @@ HMR-008 — documents.DocumentStorageObject
 
 fix(documents): remediate semantic review DocumentStorageObject
 
-Do not start HMR-009 automatically.
+HMR-008A scope amendment is complete. Execute HMR-008 only; do not start HMR-009 automatically.

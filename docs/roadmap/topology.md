@@ -132,6 +132,61 @@ Lifecycle/status concepts remain technical enums where appropriate.
 
 ---
 
+
+## 3.1 Live-repository reconciliation — HMR-022A (2026-10-04)
+
+The historical catalog-refactor completion statements later in this roadmap are **not an
+accurate description of current `main`**. They remain historical planning evidence, but live
+repository inspection for HMR-022 establishes:
+
+```text
+no production TopologyCatalog* implementation
+no production *TypeReference catalog value classes
+no V003/V004/V005 Topology catalog migrations
+only V20260611_004__create_topology_tables.sql is present for Topology
+PipelineSystem still persists enum-style system_type
+```
+
+Therefore HMR-022 must not pretend the generic catalog layer already exists or map
+PipelineSystem classification to `ProductType` by assumption.
+
+For PipelineSystem specifically, the authoritative correction is a dedicated Topology-owned
+classification catalog:
+
+```text
+hidra_topology_pipeline_system_type
+  id
+  code
+  name_ar   optional
+  name_fr   optional
+  name_en   optional
+  active
+  created_at
+  updated_at
+
+PipelineSystem.systemType -> catalog reference
+```
+
+The only seed codes authorized by current evidence are the existing enum values:
+
+```text
+TRANSPORT
+GATHERING
+DISTRIBUTION
+EXPORT
+IMPORT
+MIXED
+```
+
+Initial IDs equal those codes to avoid inventing a second identity mapping. Localized labels are
+not synthesized. The create boundary must receive an explicit stable `systemTypeCode` and fail
+closed for missing/unknown codes; the old silent `TRANSPORT` inference is forbidden.
+
+This reconciliation is narrowly scoped to PipelineSystem and does not retroactively claim that
+the broader historical Topology catalog program is implemented.
+
+---
+
 ## 4. Final topology data conception
 
 Topology is a physical network graph.

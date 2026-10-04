@@ -1370,12 +1370,12 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-024`
 - Exact commit: `fix(topology): remediate semantic review PipelineSystem`
-- Status: **Planned**
+- Status: **Planned — HMR-022A completed.** Live repository evidence disproves the historical Topology roadmap claim that the generic catalog refactor is already implemented. HMR-022 is now authorized to establish a dedicated Topology-owned PipelineSystem classification catalog/reference using only the six evidence-backed existing classification codes, retire the enum-style `system_type` column through an additive migration, and remove silent `TRANSPORT` defaulting.
 - SCC: —
 - Recorded upstream HMS dependencies: —
 - HMSR correction count: 2
-- Additive Flyway: not pre-authorized by HMR-002
-- Owner-contract prerequisite: No cross-module owner-contract prerequisite recorded by this HMSR correction.
+- Additive Flyway: `src/main/resources/db/migration/V20261004_022__hmr_022_topology_pipeline_system.sql`
+- Owner-contract prerequisite: No cross-module owner contract is required; the classification catalog remains Topology-owned. HMR-022A is the local architecture/persistence prerequisite.
 - Exact write allowlist:
   - `docs/data definition/Topology.md`
   - `docs/roadmap/model-semantic-remediation.md`
@@ -1395,6 +1395,9 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
   - `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/mapper/TopologyPersistenceMapper.java`
   - `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/PipelineSystemFacilityJpaRepository.java`
   - `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/PipelineSystemJpaRepository.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/PipelineSystemTypeJpaEntity.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/PipelineSystemTypeJpaRepository.java`
+  - `src/main/resources/db/migration/V20261004_022__hmr_022_topology_pipeline_system.sql`
   - `src/test/java/dz/sh/hidra/modules/topology/semantic/PipelineSystemSemanticRemediationTest.java`
 - Exact validation:
   - `./mvnw -q -DskipTests compile`
@@ -1404,6 +1407,33 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 - HMSR obligations:
   1. **Reconcile PipelineSystem business classification with the accepted Topology catalog policy.** Replace or explicitly redesign the current fixed `PipelineSystemType/system_type` representation so the final PipelineSystem contract is consistent with the repository's catalog-backed business-type architecture. The correction must define the authoritative catalog/reference semantics rather than blindly assuming `ProductTypeReference`; domain, application, REST, JPA and additive Flyway changes must remain aligned in the separately authorized Topology task.
   2. **Remove the unsupported silent `TRANSPORT` inference.** Missing PipelineSystem classification must not be converted to `TRANSPORT` unless an explicit Topology business rule establishes that default. The corrected write boundary should fail closed or use the explicitly approved classification/catalog contract.
+
+#### HMR-022A — PipelineSystem classification-catalog prerequisite
+
+- Source: HMR-022 / HMSR-024 plus live Topology production and Flyway evidence.
+- Exact commit: `docs(model-remediation): register PipelineSystem classification catalog prerequisite`
+- Status: **Completed** — the missing local catalog/persistence scope is registered; no production mutation is part of HMR-022A.
+- Type: documentation/architecture prerequisite.
+- Purpose: reconcile HMSR-024 with the actual repository rather than the stale historical Topology roadmap claims that generic type-catalog migrations/classes already exist.
+- Live evidence:
+  1. the production Topology tree contains no `TopologyCatalog*` domain/application/repository implementation and no `*TypeReference` production classes;
+  2. the migration directory contains only the base Topology migration `V20260611_004__create_topology_tables.sql`; the historical roadmap references to `V003/V004/V005` catalog migrations are not live repository artifacts;
+  3. concrete FacilityType/EquipmentType persistence exists, but neither concept semantically represents PipelineSystem transportation-system classification;
+  4. `PipelineSystemType` remains a fixed enum persisted in `hidra_topology_pipeline_system.system_type`;
+  5. the current create service silently maps missing classification to `TRANSPORT`.
+- Required decisions:
+  1. PipelineSystem classification is a **dedicated Topology-owned catalog**, not `ProductType`, `FacilityType`, or another existing business concept.
+  2. Reuse the existing `PipelineSystemType.java` path as the domain **catalog reference value** rather than keeping it as an enum. The reference carries stable catalog `id`, `code`, and optional Arabic/French/English labels; `id` and `code` are mandatory, labels are optional.
+  3. The new persistence catalog table is `hidra_topology_pipeline_system_type`, backed by `PipelineSystemTypeJpaEntity` and `PipelineSystemTypeJpaRepository`.
+  4. Initial catalog entries are derived only from the six existing canonical enum codes: `TRANSPORT`, `GATHERING`, `DISTRIBUTION`, `EXPORT`, `IMPORT`, `MIXED`. Their initial catalog IDs equal their canonical codes so migration does not invent a second identity mapping. No localized labels are guessed; label columns remain nullable until authoritative master data is provisioned.
+  5. The additive migration creates the catalog, preflights any existing `system_type` values against those six codes, backfills `system_type_id`, creates the same-module FK, makes the new reference mandatory, and retires the old enum-style `system_type` column. Existing migrations remain immutable.
+  6. REST/application create input becomes a required stable `systemTypeCode` string. Missing/blank or unknown codes fail closed; no default classification is permitted.
+  7. `PipelineSystemApplicationService` resolves the supplied code through `PipelineSystemRepositoryPort`; persistence independently validates the resolved catalog reference before save.
+  8. Summary/response contracts expose the catalog reference semantics rather than a Java enum. Optional labels may be null until authoritative translations exist.
+  9. HMR-022 must not recreate the historical generic Topology catalog architecture, add unrelated catalog tables, or claim those stale roadmap migrations/classes exist.
+  10. HMR-022's allowlist is amended above to authorize exactly the new PipelineSystem classification entity/repository and additive migration required for this correction.
+- HMR-022 remains the next production remediation. Do not start HMR-023 automatically.
+
 
 #### HMR-023 — analytics.AnalyticsInsight
 
@@ -4733,7 +4763,7 @@ The following are execution registrations only; they do not change any HMR's sem
 | Envelope | HMR codes | Mode | Rationale |
 |---|---|---|---|
 | HMRB-001 | HMR-021 | Solo | **Completed.** Shift requiredness aligned independently before the PipelineSystem classification redesign. |
-| HMRB-002 | HMR-022 | Solo | PipelineSystem changes the accepted business-classification representation. |
+| HMRB-002 | HMR-022 | Solo | HMR-022A completed: dedicated PipelineSystem classification catalog scope registered; production correction remains solo. |
 | HMRB-003 | HMR-023 | Solo | AnalyticsInsight has four catalog/scope/lineage obligations. |
 | HMRB-004 | HMR-024 | Solo | AnalyticsProjectionRun requires terminal diagnostics and reproducibility semantics. |
 | HMRB-005 | HMR-025 | Solo | DigitalTwinReadinessAssessment reconciles competing readiness-status representations. |
@@ -4749,4 +4779,4 @@ HMRB-002 — HMR-022 topology.PipelineSystem
 
 `fix(topology): remediate semantic review PipelineSystem`
 
-Execute HMR-022 only. HMRB-003 remains the next registered execution after HMRB-002 is green.
+HMR-022A is completed. Execute the HMR-022 production correction only. HMRB-003 remains the next registered execution after HMRB-002 is green.

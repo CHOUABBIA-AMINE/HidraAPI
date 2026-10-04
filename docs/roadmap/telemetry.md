@@ -215,7 +215,7 @@ assetNameSnapshot optional
 
 | Candidate | Classification | Java enum allowed? | Implementation rule |
 |---|---|---:|---|
-| `TelemetrySourceStatus` | Status | Yes | Technical lifecycle enum. |
+| `TelemetrySourceStatus` | Status | Yes | Technical source lifecycle: DRAFT, ACTIVE, INACTIVE, SUSPENDED, RETIRED. Live code may use the shared `TelemetryLifecycleStatus`, but PLANNED/MAINTENANCE are not valid for TelemetrySource. |
 | `TelemetryDeviceStatus` | Status | Yes | Technical lifecycle enum. |
 | `TelemetryPointStatus` | Status | Yes | Technical lifecycle enum. |
 | `TelemetryReadingState` | Status/state | Yes | Internal reading processing state. |
@@ -878,3 +878,37 @@ COR-018 validation passes locally or in CI.
 COR-021 documentation correction is present.
 docs/roadmap/telemetry.md passes the pass criteria in this file.
 ```
+
+
+---
+
+## HMR-030 — TelemetrySource semantic baseline
+
+The live shared `TelemetryLifecycleStatus` remains an implementation enum used by multiple
+Telemetry entities. HMR-030 does not split or rename that enum. Instead, the source aggregate and
+database enforce the source-specific lifecycle subset:
+
+```text
+DRAFT
+ACTIVE
+INACTIVE
+SUSPENDED
+RETIRED
+```
+
+`PLANNED` and `MAINTENANCE` remain available for other telemetry concepts where their DDD
+permits them, but cannot become authoritative `TelemetrySource.status` values.
+
+Source creation/persistence also fails closed on:
+
+```text
+duplicate code
+blank French name
+inactive or wrong-family SOURCE_TYPE
+inactive or wrong-family PROTOCOL
+secret-bearing endpointUri
+secret-bearing externalReference
+```
+
+Only `ACTIVE` sources are ingestion-eligible. HMR-030 does not create an ingestion service or
+new credential store; secret values remain outside telemetry persistence.

@@ -1742,7 +1742,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-033`
 - Exact commit: `fix(telemetry): remediate semantic review TelemetrySource`
-- Status: **Planned**
+- Status: **Completed** — source code uniqueness, active SOURCE_TYPE/PROTOCOL family validation, mandatory French naming, secret-material exclusion, and the source-specific lifecycle subset are enforced across creation/repository/database boundaries.
 - SCC: —
 - Recorded upstream HMS dependencies: —
 - HMSR correction count: 5
@@ -4837,8 +4837,8 @@ or required-field alignment work; keep high-risk semantic redesigns solo.
 
 ### 12.6 Current next execution
 
-HMR-030 — telemetry.TelemetrySource
+HMR-031 — topology.TopologyConnection
 
-`fix(telemetry): remediate semantic review TelemetrySource`
+`fix(topology): remediate semantic review TopologyConnection`
 
-HMR-029 is completed. Execute HMR-030 only after the HMR-029 head is green; do not start HMR-031 automatically.
+HMR-030 is completed. Execute HMR-031 only after the HMR-030 head is green; do not start HMR-032 automatically.

@@ -237,6 +237,33 @@ Only ACTIVE sources can ingest telemetry.
 Secrets must never be stored in endpointUri or externalReference.
 ```
 
+HMR-030 executable baseline:
+
+```text
+nameFr is required and non-blank
+TelemetrySource lifecycle values are exactly:
+  DRAFT
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+  RETIRED
+
+PLANNED and MAINTENANCE remain available in the shared TelemetryLifecycleStatus implementation
+for other telemetry entities, but are invalid for TelemetrySource.
+
+code uniqueness is enforced at application/repository/database boundaries
+sourceTypeId must resolve to an active SOURCE_TYPE row
+protocolId must resolve to an active PROTOCOL row
+endpointUri and externalReference reject Hidra-established secret material markers
+credential-bearing URI user-info is rejected
+new sources are created in DRAFT
+ingestion eligibility is true only for ACTIVE sources
+```
+
+The secret-material rule reuses the existing Hidra convention for signed/credential query material
+(`x-amz-signature`, `x-amz-credential`, `access_token`, `signature`, `credential`,
+`password`, `secret`) instead of inventing a new secret syntax or vault-reference format.
+
 ---
 
 ## 6.2 TelemetrySourceEndpoint

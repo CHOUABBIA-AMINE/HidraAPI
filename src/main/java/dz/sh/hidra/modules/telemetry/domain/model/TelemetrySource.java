@@ -7,7 +7,7 @@
  *
  * @Name        : TelemetrySource
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-10-04
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -20,27 +20,30 @@
 package dz.sh.hidra.modules.telemetry.domain.model;
 
 import dz.sh.hidra.modules.telemetry.domain.exception.InvalidTelemetryValueException;
-import dz.sh.hidra.modules.telemetry.domain.value.*;
+import dz.sh.hidra.modules.telemetry.domain.value.TelemetryLifecycleStatus;
+import java.net.URI;
 import java.time.Instant;
+import java.util.Locale;
+import java.util.Set;
 
-    /**
-     * Acquisition source such as SCADA, historian, OPC server, API feed, manual import source, or edge gateway.
-     *
-         * @param id id
-     * @param code code
-     * @param nameAr nameAr
-     * @param nameFr nameFr
-     * @param nameEn nameEn
-     * @param sourceTypeId sourceTypeId
-     * @param protocolId protocolId
-     * @param endpointUri endpointUri
-     * @param externalReference externalReference
-     * @param status status
-     * @param createdAt createdAt
-     * @param updatedAt updatedAt
-     */
-    public record TelemetrySource(
-            String id,
+/**
+ * Acquisition source such as SCADA, historian, OPC server, API feed, manual import source, or edge gateway.
+ *
+ * @param id id
+ * @param code code
+ * @param nameAr nameAr
+ * @param nameFr nameFr
+ * @param nameEn nameEn
+ * @param sourceTypeId sourceTypeId
+ * @param protocolId protocolId
+ * @param endpointUri endpointUri
+ * @param externalReference externalReference
+ * @param status status
+ * @param createdAt createdAt
+ * @param updatedAt updatedAt
+ */
+public record TelemetrySource(
+        String id,
         String code,
         String nameAr,
         String nameFr,
@@ -52,9 +55,17 @@ import java.time.Instant;
         TelemetryLifecycleStatus status,
         Instant createdAt,
         Instant updatedAt
-    ) {
+) {
 
-        public TelemetrySource {
+    private static final Set<TelemetryLifecycleStatus> SOURCE_STATUSES = Set.of(
+            TelemetryLifecycleStatus.DRAFT,
+            TelemetryLifecycleStatus.ACTIVE,
+            TelemetryLifecycleStatus.INACTIVE,
+            TelemetryLifecycleStatus.SUSPENDED,
+            TelemetryLifecycleStatus.RETIRED
+    );
+
+    public TelemetrySource {
         // HRA-051 required: id
         if (id == null || id.isBlank()) {
             throw new InvalidTelemetryValueException("TelemetrySource id must not be blank.");
@@ -63,17 +74,33 @@ import java.time.Instant;
         if (code == null || code.isBlank()) {
             throw new InvalidTelemetryValueException("TelemetrySource code must not be blank.");
         }
+        if (nameFr == null || nameFr.isBlank()) {
+            throw new InvalidTelemetryValueException(
+                    "TelemetrySource French name must not be blank."
+            );
+        }
         // HRA-051 required: sourceTypeId
         if (sourceTypeId == null || sourceTypeId.isBlank()) {
-            throw new InvalidTelemetryValueException("TelemetrySource source type id must not be blank.");
+            throw new InvalidTelemetryValueException(
+                    "TelemetrySource source type id must not be blank."
+            );
         }
         // HRA-051 required: protocolId
         if (protocolId == null || protocolId.isBlank()) {
-            throw new InvalidTelemetryValueException("TelemetrySource protocol id must not be blank.");
+            throw new InvalidTelemetryValueException(
+                    "TelemetrySource protocol id must not be blank."
+            );
         }
         // HRA-051 required: status
         if (status == null) {
-            throw new InvalidTelemetryValueException("TelemetrySource status must not be null.");
+            throw new InvalidTelemetryValueException(
+                    "TelemetrySource status must not be null."
+            );
+        }
+        if (!SOURCE_STATUSES.contains(status)) {
+            throw new InvalidTelemetryValueException(
+                    "TelemetrySource status is not valid for acquisition sources: " + status
+            );
         }
 
         id = normalize(id);
@@ -85,12 +112,52 @@ import java.time.Instant;
         protocolId = normalize(protocolId);
         endpointUri = normalize(endpointUri);
         externalReference = normalize(externalReference);
-        }
 
-        private static String normalize(String value) {
-            if (value == null || value.isBlank()) {
-                return null;
-            }
-            return value.trim();
+        if (containsSecretMaterial(endpointUri)) {
+            throw new InvalidTelemetryValueException(
+                    "TelemetrySource endpoint URI must not contain secret material."
+            );
+        }
+        if (containsSecretMaterial(externalReference)) {
+            throw new InvalidTelemetryValueException(
+                    "TelemetrySource external reference must not contain secret material."
+            );
         }
     }
+
+    public boolean ingestionEligible() {
+        return status == TelemetryLifecycleStatus.ACTIVE;
+    }
+
+    private static boolean containsSecretMaterial(String value) {
+        if (value == null) {
+            return false;
+        }
+
+        String normalized = value.toLowerCase(Locale.ROOT);
+        if (normalized.contains("x-amz-signature=")
+                || normalized.contains("x-amz-credential=")
+                || normalized.contains("access_token=")
+                || normalized.contains("signature=")
+                || normalized.contains("credential=")
+                || normalized.contains("password=")
+                || normalized.contains("secret=")) {
+            return true;
+        }
+
+        try {
+            URI uri = URI.create(value);
+            return uri.getUserInfo() != null && !uri.getUserInfo().isBlank();
+        } catch (IllegalArgumentException ignored) {
+            // HMR-030 does not define URI syntax validation; only secret-material exclusion.
+            return false;
+        }
+    }
+
+    private static String normalize(String value) {
+        if (value == null || value.isBlank()) {
+            return null;
+        }
+        return value.trim();
+    }
+}

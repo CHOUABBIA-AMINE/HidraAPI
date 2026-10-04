@@ -42,7 +42,7 @@ class CreateOrganizationUnitCommandTest {
                 "type-station",
                 null,
                 OrganizationUnitStatus.ACTIVE,
-                null
+                VALID_FROM
         );
 
         assertEquals("CS_EAST_01", command.code().value());
@@ -75,7 +75,7 @@ class CreateOrganizationUnitCommandTest {
                 "type-region",
                 null,
                 OrganizationUnitStatus.ACTIVE,
-                null
+                VALID_FROM
         );
 
         assertEquals("REGION_CENTER", command.code().value());

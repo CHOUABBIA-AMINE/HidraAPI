@@ -34,12 +34,12 @@ class LocalDocumentBinaryStorageAdapterTest {
 
     @Test
     void storesReadsAndChecksumsBinaryContent() throws Exception {
-        LocalDocumentBinaryStorageAdapter adapter = new LocalDocumentBinaryStorageAdapter(tempDir.toString());
+        LocalDocumentBinaryStorageAdapter adapter = new LocalDocumentBinaryStorageAdapter(tempDir.toString(), "provider-local");
         byte[] payload = "HyFlo document evidence".getBytes(StandardCharsets.UTF_8);
 
         var stored = adapter.store("version-object-1", new ByteArrayInputStream(payload));
 
-        assertThat(stored.storageProviderId()).isEqualTo("local-filesystem");
+        assertThat(stored.storageProviderId()).isEqualTo("provider-local");
         assertThat(stored.bucketOrContainer()).isEqualTo("documents");
         assertThat(stored.objectKey()).isEqualTo("version-object-1");
         assertThat(stored.contentLengthBytes()).isEqualTo(payload.length);

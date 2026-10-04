@@ -49,4 +49,11 @@ public class JpaDocumentStorageObjectRepositoryAdapter implements DocumentStorag
     public Optional<DocumentStorageObject> findById(String id) {
         return repository.findById(id).map(DocumentsPersistenceMapper::toDomain);
     }
+
+    @Override
+    public boolean isActiveStorageProvider(String storageProviderId) {
+        return storageProviderId != null
+                && !storageProviderId.isBlank()
+                && repository.existsActiveStorageProviderById(storageProviderId);
+    }
 }

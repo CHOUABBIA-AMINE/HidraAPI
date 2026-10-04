@@ -964,3 +964,29 @@ Documents is the controlled registry of operational files and document metadata.
 It gives business modules reliable document references.
 It does not become the owner of the business event, decision, calculation, incident, asset, custody transfer, or audit evidence.
 ```
+
+
+---
+
+## HMR-008 storage-object integrity clarification
+
+Document storage metadata follows these fail-closed rules:
+
+```text
+storageProviderId -> existing active DOCUMENT_STORAGE_PROVIDER catalog entry
+contentType       -> required nonblank media type metadata
+checksumAlgorithm -> required nonblank
+checksumValue     -> required nonblank
+contentLengthBytes >= 0
+createdAt         -> required
+objectKey         -> stable opaque provider key, never a signed URL or credential-bearing value
+encryptionKeyReference -> reference-only metadata, never raw credential/key material
+```
+
+The local filesystem adapter obtains its provider catalog-entry ID from:
+
+```text
+hidra.documents.storage.provider-id
+```
+
+No provider ID or provider catalog row is invented by HMR-008. An unset, unknown, inactive, or wrong-family provider ID causes upload to fail closed before storage-object metadata is persisted.

@@ -148,7 +148,7 @@ Each model task implements only the obligations recorded in its source HMSR sect
 | HMR-005 | HMSR-005 | telemetry | TelemetryPoint | — | — | `fix(telemetry): remediate semantic review TelemetryPoint` | **Completed** |
 | HMR-006 | HMSR-006 | planning | PlanningPeriod | — | — | `fix(planning): remediate semantic review PlanningPeriod` | **Completed** |
 | HMR-007 | HMSR-007 | identity | Role | — | — | `fix(identity): remediate semantic review Role` | **Completed** |
-| HMR-008 | HMSR-008 | documents | DocumentStorageObject | — | — | `fix(documents): remediate semantic review DocumentStorageObject` | Planned — HMR-008A completed; binary-storage contract/service/local-adapter scope is now authorized. |
+| HMR-008 | HMSR-008 | documents | DocumentStorageObject | — | — | `fix(documents): remediate semantic review DocumentStorageObject` | **Completed** |
 | HMR-009 | HMSR-009 | simulation | SimulationModel | — | — | `fix(simulation): remediate semantic review SimulationModel` | Planned |
 | HMR-010 | HMSR-010 | identity | IdentityProvider | — | — | `fix(identity): remediate semantic review IdentityProvider` | Planned |
 | HMR-011 | HMSR-011 | identity | Permission | — | — | `fix(identity): remediate semantic review Permission` | Planned |
@@ -696,7 +696,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-008`
 - Exact commit: `fix(documents): remediate semantic review DocumentStorageObject`
-- Status: **Planned — HMR-008A completed.** The exact allowlist now includes the binary-storage contract, upload orchestration service, local storage adapter, and focused tests needed to implement metadata invariants, provider identity handling, and opaque non-secret object-key guarantees.
+- Status: **Completed** — storage-provider identity is configurable and validated against an active `DOCUMENT_STORAGE_PROVIDER` entry before persistence; binary/storage-object metadata fails closed on missing checksum/integrity/creation data; object keys reject URI/signed-credential material; encryption-key metadata rejects credential-bearing values; additive database checks enforce nonnegative length, required metadata, and opaque object keys; failed provider validation deletes the newly written binary.
 - SCC: —
 - Recorded upstream HMS dependencies: —
 - HMSR correction count: 4
@@ -4609,8 +4609,8 @@ A later HMR task may become Skipped only if stronger live evidence appears befor
 
 ### 12.5 Current next task
 
-HMR-008 — documents.DocumentStorageObject
+HMR-009 — simulation.SimulationModel
 
-fix(documents): remediate semantic review DocumentStorageObject
+fix(simulation): remediate semantic review SimulationModel
 
-HMR-008A scope amendment is complete. Execute HMR-008 only; do not start HMR-009 automatically.
+Do not start HMR-010 automatically.

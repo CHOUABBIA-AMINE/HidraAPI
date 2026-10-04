@@ -71,6 +71,28 @@ import java.time.Instant;
         if (objectKey == null || objectKey.isBlank()) {
             throw new InvalidDocumentValueException("DocumentStorageObject object key must not be blank.");
         }
+        // HMR-008 required storage-integrity metadata.
+        if (contentType == null || contentType.isBlank()) {
+            throw new InvalidDocumentValueException("DocumentStorageObject content type must not be blank.");
+        }
+        if (checksumAlgorithm == null || checksumAlgorithm.isBlank()) {
+            throw new InvalidDocumentValueException("DocumentStorageObject checksum algorithm must not be blank.");
+        }
+        if (checksumValue == null || checksumValue.isBlank()) {
+            throw new InvalidDocumentValueException("DocumentStorageObject checksum value must not be blank.");
+        }
+        if (contentLengthBytes < 0L) {
+            throw new InvalidDocumentValueException("DocumentStorageObject content length must not be negative.");
+        }
+        if (createdAt == null) {
+            throw new InvalidDocumentValueException("DocumentStorageObject createdAt must not be null.");
+        }
+        if (containsSecretMaterial(objectKey, true)) {
+            throw new InvalidDocumentValueException("DocumentStorageObject object key must be opaque and must not contain credentials or signed-URL material.");
+        }
+        if (encryptionKeyReference != null && containsSecretMaterial(encryptionKeyReference, false)) {
+            throw new InvalidDocumentValueException("DocumentStorageObject encryption key metadata must be reference-only and must not contain credentials.");
+        }
         // HRA-051 required: storageStatus
         if (storageStatus == null) {
             throw new InvalidDocumentValueException("DocumentStorageObject storage status must not be null.");
@@ -85,6 +107,23 @@ import java.time.Instant;
         contentType = normalize(contentType);
         checksumAlgorithm = normalize(checksumAlgorithm);
         checksumValue = normalize(checksumValue);
+        }
+
+        private static boolean containsSecretMaterial(String value, boolean rejectUri) {
+            if (value == null) {
+                return false;
+            }
+            String normalized = value.trim().toLowerCase(java.util.Locale.ROOT);
+            if (rejectUri && (normalized.contains("://") || normalized.contains("?"))) {
+                return true;
+            }
+            return normalized.contains("x-amz-signature=")
+                    || normalized.contains("x-amz-credential=")
+                    || normalized.contains("access_token=")
+                    || normalized.contains("signature=")
+                    || normalized.contains("credential=")
+                    || normalized.contains("password=")
+                    || normalized.contains("secret=");
         }
 
         private static String normalize(String value) {

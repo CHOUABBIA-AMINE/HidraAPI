@@ -31,4 +31,6 @@ public interface DocumentStorageObjectRepositoryPort {
     DocumentStorageObject save(DocumentStorageObject model);
 
     Optional<DocumentStorageObject> findById(String id);
+
+    boolean isActiveStorageProvider(String storageProviderId);
 }

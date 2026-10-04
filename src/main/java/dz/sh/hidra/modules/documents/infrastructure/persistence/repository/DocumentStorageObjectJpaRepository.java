@@ -21,6 +21,8 @@ package dz.sh.hidra.modules.documents.infrastructure.persistence.repository;
 
 import dz.sh.hidra.modules.documents.infrastructure.persistence.entity.DocumentStorageObjectJpaEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -28,4 +30,15 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface DocumentStorageObjectJpaRepository extends JpaRepository<DocumentStorageObjectJpaEntity, String> {
+
+    @Query(value = """
+            SELECT EXISTS (
+                SELECT 1
+                FROM hidra_documents_catalog_entry
+                WHERE id = :storageProviderId
+                  AND catalog_name = 'DOCUMENT_STORAGE_PROVIDER'
+                  AND active = TRUE
+            )
+            """, nativeQuery = true)
+    boolean existsActiveStorageProviderById(@Param("storageProviderId") String storageProviderId);
 }

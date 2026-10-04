@@ -73,6 +73,10 @@ public final class DocumentContentTransferService implements UploadDocumentBinar
         String contentType = normalizeContentType(command.contentType());
         String storageObjectId = DocumentId.newId().value();
         DocumentBinaryStoragePort.StoredBinary stored = binaryStoragePort.store(storageObjectId, command.content());
+        if (!storageObjectRepositoryPort.isActiveStorageProvider(stored.storageProviderId())) {
+            binaryStoragePort.delete(storageObjectId);
+            throw invalid("Storage provider must reference an active DOCUMENT_STORAGE_PROVIDER catalog entry.");
+        }
         Instant now = Instant.now();
 
         storageObjectRepositoryPort.save(new DocumentStorageObject(

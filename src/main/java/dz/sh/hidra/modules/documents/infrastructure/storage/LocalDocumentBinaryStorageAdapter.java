@@ -35,14 +35,18 @@ import org.springframework.stereotype.Component;
 @Component
 public final class LocalDocumentBinaryStorageAdapter implements DocumentBinaryStoragePort {
 
-    private static final String PROVIDER_ID = "local-filesystem";
     private static final String CONTAINER = "documents";
     private static final String CHECKSUM_ALGORITHM = "SHA-256";
 
     private final Path root;
+    private final String providerId;
 
-    public LocalDocumentBinaryStorageAdapter(@Value("${hidra.documents.storage.root:./data/documents}") String root) {
+    public LocalDocumentBinaryStorageAdapter(
+            @Value("${hidra.documents.storage.root:./data/documents}") String root,
+            @Value("${hidra.documents.storage.provider-id:}") String providerId
+    ) {
         this.root = Path.of(root).toAbsolutePath().normalize();
+        this.providerId = providerId == null ? null : providerId.trim();
     }
 
     @Override
@@ -65,7 +69,7 @@ public final class LocalDocumentBinaryStorageAdapter implements DocumentBinarySt
                 }
             }
             return new StoredBinary(
-                    PROVIDER_ID,
+                    providerId,
                     CONTAINER,
                     referenceId,
                     false,

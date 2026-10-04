@@ -1711,7 +1711,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-032`
 - Exact commit: `fix(risk): remediate semantic review RiskMatrixCell`
-- Status: **Planned**
+- Status: **Completed** — matrix-coordinate uniqueness, nonnegative score semantics, and exact likelihood/consequence Risk catalog-family validation are enforced at Java and PostgreSQL boundaries.
 - SCC: —
 - Recorded upstream HMS dependencies: —
 - HMSR correction count: 3
@@ -4837,8 +4837,8 @@ or required-field alignment work; keep high-risk semantic redesigns solo.
 
 ### 12.6 Current next execution
 
-HMR-029 — risk.RiskMatrixCell
+HMR-030 — telemetry.TelemetrySource
 
-`fix(risk): remediate semantic review RiskMatrixCell`
+`fix(telemetry): remediate semantic review TelemetrySource`
 
-HMR-028 is completed. Execute HMR-029 only after the HMR-028 head is green; do not start HMR-030 automatically.
+HMR-029 is completed. Execute HMR-030 only after the HMR-029 head is green; do not start HMR-031 automatically.

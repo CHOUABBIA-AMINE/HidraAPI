@@ -7,7 +7,7 @@
  *
  * @Name        : RiskMatrixCell
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-10-04
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -74,6 +74,11 @@ import java.time.Instant;
         // HRA-051 required: scoreValue
         if (scoreValue == null) {
             throw new InvalidRiskValueException("RiskMatrixCell score value must not be null.");
+        }
+        if (scoreValue.signum() < 0) {
+            throw new InvalidRiskValueException(
+                    "RiskMatrixCell score value must be non-negative."
+            );
         }
         // HRA-051 required: ratingId
         if (ratingId == null || ratingId.isBlank()) {

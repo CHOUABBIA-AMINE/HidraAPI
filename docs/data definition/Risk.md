@@ -675,6 +675,21 @@ scoreValue must be non-negative
 ratingId must be catalog-backed
 ```
 
+HMR-029 executable baseline:
+
+```text
+(riskMatrixId, likelihoodLevelId, consequenceLevelId) is unique
+scoreValue must be >= 0
+likelihoodLevelId must resolve to RiskCatalogEntry.catalogName = RISK_LIKELIHOOD_LEVEL
+consequenceLevelId must resolve to RiskCatalogEntry.catalogName = RISK_CONSEQUENCE_LEVEL
+existing same-module FKs continue to protect row existence
+ratingId continues to resolve to RiskRating
+```
+
+HMR-029 does not infer equality between matrix-cell governance booleans and RiskRating flags,
+does not invent color-code formatting, and does not add matrix completeness or active-version
+immutability rules at the cell boundary.
+
 ---
 
 ## 7.12 `RiskScore`

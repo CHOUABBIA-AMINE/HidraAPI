@@ -4638,8 +4638,8 @@ A later HMR task may become Skipped only if stronger live evidence appears befor
 
 ### 12.5 Current next task
 
-HMR-010 — simulation.SimulationModelVersion
+HMR-010 — identity.IdentityProvider
 
-fix(simulation): remediate semantic review SimulationModelVersion
+fix(identity): remediate semantic review IdentityProvider
 
 Do not start HMR-011 automatically.

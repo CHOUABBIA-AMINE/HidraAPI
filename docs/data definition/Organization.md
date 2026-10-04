@@ -196,3 +196,25 @@ Domain, application, and infrastructure organization models must not use `@Schem
 dz.sh.hidra.modules.organization.api.rest.request
 dz.sh.hidra.modules.organization.api.rest.response
 ```
+
+
+---
+
+## 10. Position level persistence invariant
+
+`Position.level` is a mandatory canonical Organization classification.
+
+```text
+domain:
+  PositionLevel must be non-null
+
+JPA:
+  hidra_org_position.level is nullable = false
+
+PostgreSQL:
+  hidra_org_position.level is NOT NULL
+```
+
+HMR-020 aligns persistence with the existing domain invariant. It does not introduce a Position
+code uniqueness rule, require all Arabic/French/English title or description fields, restrict
+EmployeeAssignment to ACTIVE positions, or define Position lifecycle transitions.

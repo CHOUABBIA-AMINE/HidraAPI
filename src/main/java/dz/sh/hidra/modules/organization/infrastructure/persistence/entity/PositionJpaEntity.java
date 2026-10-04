@@ -7,7 +7,7 @@
  *
  * @Name        : PositionJpaEntity
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-27
+ * @UpdatedOn   : 2026-10-04
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -53,7 +53,7 @@ public class PositionJpaEntity {
     private String titleEn;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "level", length = 80)
+    @Column(name = "level", nullable = false, length = 80)
     private PositionLevel level;
 
     @Column(name = "description_ar", columnDefinition = "text")

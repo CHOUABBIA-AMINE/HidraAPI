@@ -160,7 +160,7 @@ Each model task implements only the obligations recorded in its source HMSR sect
 | HMR-017 | HMSR-019 | configuration | ConfigurationDefinition | — | — | `fix(configuration): remediate semantic review ConfigurationDefinition` | **Completed** |
 | HMR-018 | HMSR-020 | custody | CustodyMeasurementPeriod | — | — | `fix(custody): remediate semantic review CustodyMeasurementPeriod` | **Completed** |
 | HMR-019 | HMSR-021 | integrity | PipelineDefect | — | — | `fix(integrity): remediate semantic review PipelineDefect` | **Completed** |
-| HMR-020 | HMSR-022 | organization | Position | — | — | `fix(organization): remediate semantic review Position` | Planned |
+| HMR-020 | HMSR-022 | organization | Position | — | — | `fix(organization): remediate semantic review Position` | **Completed** |
 | HMR-021 | HMSR-023 | organization | Shift | — | — | `fix(organization): remediate semantic review Shift` | Planned |
 | HMR-022 | HMSR-024 | topology | PipelineSystem | — | — | `fix(topology): remediate semantic review PipelineSystem` | Planned |
 | HMR-023 | HMSR-025 | analytics | AnalyticsInsight | — | — | `fix(analytics): remediate semantic review AnalyticsInsight` | Planned |
@@ -1297,7 +1297,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-022`
 - Exact commit: `fix(organization): remediate semantic review Position`
-- Status: **Planned**
+- Status: **Completed** — canonical `Position.level` remains mandatory; JPA now marks `level` non-null and the additive migration upgrades `hidra_org_position.level` to `NOT NULL`, eliminating database rows that cannot be reconstructed by the domain model. No code uniqueness, multilingual completeness, assignment-status eligibility, authorization, or lifecycle rule was invented.
 - SCC: —
 - Recorded upstream HMS dependencies: —
 - HMSR correction count: 1
@@ -4707,8 +4707,8 @@ A later HMR task may become Skipped only if stronger live evidence appears befor
 
 ### 12.5 Current next task
 
-HMR-020 — organization.Position
+HMR-021 — organization.Shift
 
-fix(organization): remediate semantic review Position
+fix(organization): remediate semantic review Shift
 
-Do not start HMR-021 automatically.
+Do not start HMR-022 automatically.

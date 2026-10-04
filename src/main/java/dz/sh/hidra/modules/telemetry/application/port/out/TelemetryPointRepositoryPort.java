@@ -31,4 +31,6 @@ public interface TelemetryPointRepositoryPort {
     TelemetryPoint save(TelemetryPoint model);
 
     Optional<TelemetryPoint> findById(String id);
+
+    boolean existsByDeviceIdAndCode(String deviceId, String code);
 }

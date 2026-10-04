@@ -26,6 +26,7 @@ import dz.sh.hidra.modules.telemetry.application.dto.TelemetryPointSummaryDto;
 import dz.sh.hidra.modules.telemetry.application.mapper.TelemetryApplicationMapper;
 import dz.sh.hidra.modules.telemetry.application.port.in.RegisterTelemetryPointUseCase;
 import dz.sh.hidra.modules.telemetry.application.port.out.TelemetryPointRepositoryPort;
+import dz.sh.hidra.modules.telemetry.domain.exception.InvalidTelemetryValueException;
 import dz.sh.hidra.modules.telemetry.domain.model.TelemetryPoint;
 import dz.sh.hidra.modules.telemetry.domain.value.TelemetryId;
 import dz.sh.hidra.modules.telemetry.domain.value.TelemetryLifecycleStatus;
@@ -48,6 +49,9 @@ public final class TelemetryPointApplicationService implements RegisterTelemetry
     @Override
     public TelemetryPointSummaryDto registerTelemetryPoint(RegisterTelemetryPointCommand command) {
         Objects.requireNonNull(command, "Register telemetry point command must not be null.");
+        if (repositoryPort.existsByDeviceIdAndCode(command.deviceId(), command.code())) {
+            throw new InvalidTelemetryValueException("TelemetryPoint code must be unique per device.");
+        }
         Instant now = Instant.now();
         TelemetryPoint point = new TelemetryPoint(
                 TelemetryId.newId().value(),

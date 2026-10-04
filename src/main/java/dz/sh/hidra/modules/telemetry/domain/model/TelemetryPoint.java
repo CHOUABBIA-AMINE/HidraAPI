@@ -80,6 +80,10 @@ import java.math.BigDecimal;
         if (code == null || code.isBlank()) {
             throw new InvalidTelemetryValueException("TelemetryPoint code must not be blank.");
         }
+        // HMR-005 required: nameFr
+        if (nameFr == null || nameFr.isBlank()) {
+            throw new InvalidTelemetryValueException("TelemetryPoint French name must not be blank.");
+        }
         // HRA-051 required: pointTypeId
         if (pointTypeId == null || pointTypeId.isBlank()) {
             throw new InvalidTelemetryValueException("TelemetryPoint point type id must not be blank.");

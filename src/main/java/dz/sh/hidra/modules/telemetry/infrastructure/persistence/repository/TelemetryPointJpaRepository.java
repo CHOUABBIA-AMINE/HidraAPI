@@ -28,4 +28,6 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface TelemetryPointJpaRepository extends JpaRepository<TelemetryPointJpaEntity, String> {
+
+    boolean existsByDeviceIdAndCode(String deviceId, String code);
 }

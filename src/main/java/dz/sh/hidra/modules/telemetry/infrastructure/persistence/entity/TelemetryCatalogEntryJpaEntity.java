@@ -46,6 +46,12 @@ import jakarta.persistence.Table;
     @Column(name = "active", nullable = false)
     private boolean active;
 
+    @Column(name = "value_shape", nullable = true, length = 20)
+    private String valueShape;
+
+    @Column(name = "numeric_unit_exempt", nullable = false)
+    private boolean numericUnitExempt;
+
     @Column(name = "sort_order", nullable = false)
     private int sortOrder;
 
@@ -67,6 +73,8 @@ import jakarta.persistence.Table;
             String catalogName,
             String code,
             boolean active,
+            String valueShape,
+            boolean numericUnitExempt,
             int sortOrder,
             boolean systemDefined,
             Instant createdAt,
@@ -76,6 +84,8 @@ import jakarta.persistence.Table;
         this.catalogName = catalogName;
         this.code = code;
         this.active = active;
+        this.valueShape = valueShape;
+        this.numericUnitExempt = numericUnitExempt;
         this.sortOrder = sortOrder;
         this.systemDefined = systemDefined;
         this.createdAt = createdAt;
@@ -102,6 +112,14 @@ import jakarta.persistence.Table;
         return active;
     }
 
+
+    public String valueShape() {
+        return valueShape;
+    }
+
+    public boolean numericUnitExempt() {
+        return numericUnitExempt;
+    }
 
     public int sortOrder() {
         return sortOrder;

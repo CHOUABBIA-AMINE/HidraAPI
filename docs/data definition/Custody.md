@@ -195,3 +195,24 @@ PostgreSQL:
 The correction does not add an agreement-status eligibility rule, validity-period containment rule,
 period-code uniqueness rule, or custody lifecycle transition matrix because HMSR-020 did not establish
 those semantics.
+
+
+---
+
+## HMR-027 — CustodyDiscrepancy quantity-unit integrity
+
+`CustodyDiscrepancy.quantityUnitId` remains optional. When populated, it is a same-module
+reference to `CustodyCatalogEntry.id` and must resolve at the database boundary.
+
+```text
+quantityUnitId = null
+  -> allowed
+
+quantityUnitId != null
+  -> hidra_custody_catalog_entry.id must exist
+  -> ON DELETE RESTRICT preserves referenced controlled-value integrity
+```
+
+HMR-027 deliberately does not invent a catalog-family name, active-entry eligibility rule,
+differenceQuantity/quantityUnitId pairing requirement, quantity sign rule, or additional
+discrepancy lifecycle transition.

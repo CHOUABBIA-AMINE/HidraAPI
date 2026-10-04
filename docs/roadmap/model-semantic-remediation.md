@@ -1607,7 +1607,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-029`
 - Exact commit: `fix(custody): remediate semantic review CustodyDiscrepancy`
-- Status: **Planned**
+- Status: **Completed** — optional quantityUnitId now has additive same-module FK protection to CustodyCatalogEntry; null remains allowed and no catalog-family rule is invented.
 - SCC: —
 - Recorded upstream HMS dependencies: —
 - HMSR correction count: 1
@@ -4795,7 +4795,7 @@ The following are execution registrations only; they do not change any HMR's sem
 | HMRB-003 | HMR-023 | Solo | **Completed.** AnalyticsInsight catalog, scope requiredness, optional severity-family integrity, and populated direct-source lineage are protected. |
 | HMRB-004 | HMR-024 | Solo | **Completed.** Terminal diagnostics, successful-run source lineage, and immutable projection-definition computation lineage are enforced. |
 | HMRB-005 | HMR-025 | Solo | **Completed.** Required analytical scope and the authoritative bounded readiness-status representation are aligned. |
-| HMRB-006 | HMR-026, HMR-027 | Batch | **In progress.** HMR-026 completed; HMR-027 remains in this registered batch. |
+| HMRB-006 | HMR-026, HMR-027 | Batch | **Completed.** FeatureFlag ownership requiredness and CustodyDiscrepancy optional quantity-unit integrity are remediated in separate commits. |
 
 Additional batches may be registered immediately before execution when live repository evidence
 shows that the same criteria are satisfied. Prefer batches of 3–4 for narrow same-module integrity
@@ -4803,8 +4803,8 @@ or required-field alignment work; keep high-risk semantic redesigns solo.
 
 ### 12.6 Current next execution
 
-HMRB-006 — HMR-027 custody.CustodyDiscrepancy remaining
+HMR-028 — organization.ReportingLine
 
-`fix(custody): remediate semantic review CustodyDiscrepancy`
+`fix(organization): remediate semantic review ReportingLine`
 
-HMR-026 is completed in the registered HMRB-006 batch. Execute HMR-027 next in the same batch; do not start HMR-028 automatically.
+HMRB-006 is completed. HMR-028 is the next remediation task after the HMRB-006 final head is green; do not start HMR-029 automatically.

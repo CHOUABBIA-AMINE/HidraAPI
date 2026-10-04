@@ -7,7 +7,7 @@
  *
  * @Name        : PermissionJpaRepository
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-04
  *
  * @Type        : Interface
  * @Layer       : Infrastructure
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.identity.infrastructure.persistence.repository;
 
+import dz.sh.hidra.modules.identity.domain.value.PermissionStatus;
 import dz.sh.hidra.modules.identity.infrastructure.persistence.entity.PermissionJpaEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -28,4 +29,10 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface PermissionJpaRepository extends JpaRepository<PermissionJpaEntity, String> {
+
+    boolean existsByCode(String code);
+
+    boolean existsByCodeAndIdNot(String code, String id);
+
+    boolean existsByIdAndStatus(String id, PermissionStatus status);
 }

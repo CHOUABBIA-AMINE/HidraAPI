@@ -309,16 +309,21 @@ A group is **not** an organization unit. It is an authorization grouping concept
 
 `Permission` represents one business access capability.
 
-Permission codes should be stable and explicit.
-
-Example:
+The canonical permission code contract is:
 
 ```text
-TOPOLOGY.FACILITY.CREATE
-TOPOLOGY.FACILITY.UPDATE
-TELEMETRY.READING.QUALIFY
-ALARM.ACKNOWLEDGE
-INCIDENT.OPEN
+<context>:<resource>:<action>
+```
+
+All three components are required, lower-case, and may contain digits or hyphens. Examples:
+
+```text
+topology:facility:create
+topology:facility:update
+telemetry:reading:qualify
+alarm:event:acknowledge
+incident:case:open
+organization:operational-scope:register
 ```
 
 ### Fields
@@ -326,18 +331,35 @@ INCIDENT.OPEN
 | Field | Type | Required | Description |
 |---|---:|---:|---|
 | `id` | `IDENTIFIER` | Yes | Stable permission identifier. |
-| `code` | `CODE` | Yes | Unique permission code. |
+| `code` | `CODE` | Yes | Globally unique three-part permission code. |
 | `nameAr` | `TEXT` | No | Arabic label. |
 | `nameFr` | `TEXT` | No | French label. |
 | `nameEn` | `TEXT` | No | English label. |
 | `description` | `TEXT` | No | Permission explanation. |
-| `permissionDomain` | `CODE` | Yes | Domain/module area, e.g. `TOPOLOGY`, `TELEMETRY`. |
-| `resourceType` | `CODE` | No | Target resource type, e.g. `FACILITY`, `PIPELINE`. |
-| `action` | `CODE` | Yes | `CREATE`, `READ`, `UPDATE`, `DELETE`, `APPROVE`, `ACKNOWLEDGE`, etc. |
+| `permissionDomain` | `CODE` | Yes | Domain/module token aligned with the code context, e.g. `topology`, `telemetry`. |
+| `resourceType` | `CODE` | Yes | Resource/business capability token represented by the middle code component. |
+| `action` | `CODE` | Yes | Action token represented by the final code component. |
 | `sensitive` | `BOOLEAN` | Yes | Whether grant requires stronger governance. |
 | `status` | `STATUS` | Yes | `ACTIVE`, `DISABLED`, `DEPRECATED`. |
 | `createdAt` | `TIMESTAMP` | Yes | Creation timestamp. |
 | `updatedAt` | `TIMESTAMP` | Yes | Last update timestamp. |
+
+### HMR-011 semantic remediation baseline
+
+```text
+code uniqueness             application/persistence guard + unique database index
+permission lifecycle        only ACTIVE permissions contribute to effective authorization
+grant-time rule             new ACTIVE grants/delegations/mappings require an ACTIVE permission
+resourceType                mandatory, matching the three-part permission contract
+required domain fields      permissionDomain, resourceType, action, createdAt, updatedAt
+```
+
+Disabling or deprecating a Permission removes it from subsequent effective-permission resolution and
+therefore from newly issued Hidra access tokens. Hidra access tokens are currently stateless JWTs:
+a permission lifecycle change does not rewrite an already-issued token or create an implicit revocation
+channel. An already-issued token remains governed by its configured expiry/TTL. Any future immediate
+revocation requirement must introduce an explicit token-revocation/introspection mechanism rather than
+being inferred from Permission status.
 
 ---
 

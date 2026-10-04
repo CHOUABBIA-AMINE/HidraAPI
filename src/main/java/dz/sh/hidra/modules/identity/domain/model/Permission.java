@@ -7,7 +7,7 @@
  *
  * @Name        : Permission
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-10-04
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -65,13 +65,31 @@ public record Permission(
         if (code == null || code.isBlank()) {
             throw new InvalidIdentityValueException("Permission code must not be blank.");
         }
+        String normalizedCode = code.trim();
+        if (!normalizedCode.matches("^[a-z0-9-]+:[a-z0-9-]+:[a-z0-9-]+$")) {
+            throw new InvalidIdentityValueException(
+                    "Permission code must use lower-case <context>:<resource>:<action> format."
+            );
+        }
+        if (permissionDomain == null || permissionDomain.isBlank()) {
+            throw new InvalidIdentityValueException("Permission domain must not be blank.");
+        }
+        if (resourceType == null || resourceType.isBlank()) {
+            throw new InvalidIdentityValueException("Permission resource type must not be blank.");
+        }
+        if (action == null || action.isBlank()) {
+            throw new InvalidIdentityValueException("Permission action must not be blank.");
+        }
         // HRA-051 required: status
         if (status == null) {
             throw new InvalidIdentityValueException("Permission status must not be null.");
         }
+        if (createdAt == null || updatedAt == null) {
+            throw new InvalidIdentityValueException("Permission createdAt and updatedAt must not be null.");
+        }
 
     id = normalize(id);
-    code = normalize(code);
+    code = normalizedCode;
     nameAr = normalize(nameAr);
     nameFr = normalize(nameFr);
     nameEn = normalize(nameEn);

@@ -7,7 +7,7 @@
  *
  * @Name        : RolePermissionGrantJpaEntity
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-04
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -24,7 +24,10 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.Instant;
 
@@ -44,6 +47,10 @@ import java.time.Instant;
 
     @Column(name = "permission_id", nullable = false, length = 80)
     private String permissionId;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "permission_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private PermissionJpaEntity permission;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "effect", nullable = false, length = 40)
@@ -103,6 +110,13 @@ import java.time.Instant;
 
 
     public String permissionId() {
+        if (permission != null && permission.status() != PermissionStatus.ACTIVE) {
+            return null;
+        }
+        return permissionId;
+    }
+
+    public String storedPermissionId() {
         return permissionId;
     }
 

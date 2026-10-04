@@ -7,7 +7,7 @@
  *
  * @Name        : JpaPermissionRepositoryAdapter
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-04
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -20,6 +20,7 @@
 package dz.sh.hidra.modules.identity.infrastructure.persistence.adapter;
 
 import dz.sh.hidra.modules.identity.application.port.out.PermissionRepositoryPort;
+import dz.sh.hidra.modules.identity.domain.exception.InvalidIdentityValueException;
 import dz.sh.hidra.modules.identity.domain.model.Permission;
 import dz.sh.hidra.modules.identity.infrastructure.persistence.mapper.IdentityPersistenceMapper;
 import dz.sh.hidra.modules.identity.infrastructure.persistence.repository.PermissionJpaRepository;
@@ -42,6 +43,10 @@ public class JpaPermissionRepositoryAdapter implements PermissionRepositoryPort 
 
     @Override
     public Permission save(Permission model) {
+        Objects.requireNonNull(model, "Permission must not be null.");
+        if (repository.existsByCodeAndIdNot(model.code(), model.id())) {
+            throw new InvalidIdentityValueException("Permission code must be unique.");
+        }
         return IdentityPersistenceMapper.toDomain(
                 repository.save(IdentityPersistenceMapper.toEntity(model))
         );
@@ -50,5 +55,10 @@ public class JpaPermissionRepositoryAdapter implements PermissionRepositoryPort 
     @Override
     public Optional<Permission> findById(String id) {
         return repository.findById(id).map(IdentityPersistenceMapper::toDomain);
+    }
+
+    @Override
+    public boolean existsByCode(String code) {
+        return code != null && !code.isBlank() && repository.existsByCode(code.trim());
     }
 }

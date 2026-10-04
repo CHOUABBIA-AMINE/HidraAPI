@@ -7,7 +7,7 @@
  *
  * @Name        : PermissionJpaEntity
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-04
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -57,7 +57,7 @@ import java.time.Instant;
     @Column(name = "permission_domain", nullable = false, length = 120)
     private String permissionDomain;
 
-    @Column(name = "resource_type", nullable = true, length = 120)
+    @Column(name = "resource_type", nullable = false, length = 120)
     private String resourceType;
 
     @Column(name = "action", nullable = false, length = 80)

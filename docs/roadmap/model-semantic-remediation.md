@@ -151,7 +151,7 @@ Each model task implements only the obligations recorded in its source HMSR sect
 | HMR-008 | HMSR-008 | documents | DocumentStorageObject | — | — | `fix(documents): remediate semantic review DocumentStorageObject` | **Completed** |
 | HMR-009 | HMSR-009 | simulation | SimulationModel | — | — | `fix(simulation): remediate semantic review SimulationModel` | **Blocked — HMR-009A required: SimulationModel creation needs a Topology-owned `(scopeType, scopeId)` validation contract, but the live Simulation `TopologySnapshotLookupPort` is unimplemented/insufficient and the only exported Topology operational-scope contract is Organization-specific with a mismatched vocabulary (`FACILITY`/`EQUIPMENT` instead of `SEGMENT_GROUP`/`FACILITY_NETWORK`).** |
 | HMR-010 | HMSR-010 | identity | IdentityProvider | — | — | `fix(identity): remediate semantic review IdentityProvider` | **Completed** |
-| HMR-011 | HMSR-011 | identity | Permission | — | — | `fix(identity): remediate semantic review Permission` | Planned |
+| HMR-011 | HMSR-011 | identity | Permission | — | — | `fix(identity): remediate semantic review Permission` | **Completed** |
 | HMR-012 | HMSR-012 | notification | NotificationTemplate | — | — | `fix(notification): remediate semantic review NotificationTemplate` | Planned |
 | HMR-013 | HMSR-013 | reporting | ReportDefinition | — | — | `fix(reporting): remediate semantic review ReportDefinition` | Planned |
 | HMR-014 | HMSR-014 | integration | IntegrationJobRun | — | — | `fix(integration): remediate semantic review IntegrationJobRun` | Planned |
@@ -865,7 +865,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-011`
 - Exact commit: `fix(identity): remediate semantic review Permission`
-- Status: **Planned**
+- Status: **Completed** — permission code uniqueness is enforced before persistence and by database index; canonical three-part lower-case codes and required domain/resource/action/timestamps are intrinsic invariants; `resourceType` is required consistently; only ACTIVE permissions contribute to effective grants or receive new active grants/delegations/mappings; disabled/deprecated permissions affect new resolutions and newly issued tokens, while already-issued stateless JWTs expire under the configured token TTL.
 - SCC: —
 - Recorded upstream HMS dependencies: —
 - HMSR correction count: 7
@@ -4638,8 +4638,8 @@ A later HMR task may become Skipped only if stronger live evidence appears befor
 
 ### 12.5 Current next task
 
-HMR-011 — identity.Permission
+HMR-012 — notification.NotificationTemplate
 
-fix(identity): remediate semantic review Permission
+fix(notification): remediate semantic review NotificationTemplate
 
-Do not start HMR-012 automatically.
+Do not start HMR-013 automatically.

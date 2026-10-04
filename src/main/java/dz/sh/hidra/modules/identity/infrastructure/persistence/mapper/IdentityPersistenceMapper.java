@@ -438,7 +438,7 @@ public final class IdentityPersistenceMapper {
         return new RolePermissionGrant(
                     entity.id(),
                     entity.roleId(),
-                    entity.permissionId(),
+                    entity.storedPermissionId(),
                     entity.effect(),
                     entity.conditionExpression(),
                     entity.validFrom(),
@@ -471,7 +471,7 @@ public final class IdentityPersistenceMapper {
         return new UserPermissionGrant(
                     entity.id(),
                     entity.userId(),
-                    entity.permissionId(),
+                    entity.storedPermissionId(),
                     entity.effect(),
                     toAuthorizationScope(entity.scopeType(), entity.scopeReferenceId(), entity.scopeCodeSnapshot()),
                     entity.grantReason(),

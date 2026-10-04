@@ -537,6 +537,23 @@ successful run must record source watermark
 projection runs must be idempotent where possible
 ```
 
+HMR-024A executable decision:
+
+```text
+successful statuses = COMPLETED, COMPLETED_WITH_WARNINGS
+successful statuses require nonblank sourceWatermark
+FAILED requires at least one of errorCode or errorMessage
+each persisted run captures immutable projectionDefinitionVersion
+projectionDefinitionVersion is dedicated reproducibility metadata
+sourceWatermark remains source-read lineage
+correlationId remains technical correlation identity
+```
+
+The captured projection-definition version is derived at first persistence from the referenced
+definition's update timestamp plus a deterministic fingerprint of computation-relevant fields and
+is preserved on later saves. The implementation uses a dedicated additive persistence column; it
+does not create a new projection-definition-version aggregate or overload another run field.
+
 ---
 
 ### 9.8 AnalyticsProjectionSnapshot

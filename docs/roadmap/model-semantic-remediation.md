@@ -1479,23 +1479,25 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-026`
 - Exact commit: `fix(analytics): remediate semantic review AnalyticsProjectionRun`
-- Status: **Planned**
+- Status: **Planned — HMR-024A completed.** Durable computation-version lineage now has an explicitly registered local persistence strategy and additive migration; production remediation remains HMR-024.
 - SCC: —
 - Recorded upstream HMS dependencies: —
 - HMSR correction count: 3
-- Additive Flyway: not pre-authorized by HMR-002
-- Owner-contract prerequisite: No cross-module owner-contract prerequisite recorded by this HMSR correction.
+- Additive Flyway: `src/main/resources/db/migration/V20261004_024__hmr_024_analytics_projection_run.sql` — authorized by HMR-024A.
+- Owner-contract prerequisite: No cross-module owner contract is required; HMR-024A is the local reproducibility/persistence prerequisite.
 - Exact write allowlist:
   - `docs/data definition/Analytics.md`
   - `docs/roadmap/model-semantic-remediation.md`
   - `src/main/java/dz/sh/hidra/modules/analytics/api/rest/response/AnalyticsProjectionRunResponse.java`
   - `src/main/java/dz/sh/hidra/modules/analytics/application/dto/AnalyticsProjectionRunSummaryDto.java`
+  - `src/main/java/dz/sh/hidra/modules/analytics/application/mapper/AnalyticsApplicationMapper.java`
   - `src/main/java/dz/sh/hidra/modules/analytics/application/port/out/AnalyticsProjectionRunRepositoryPort.java`
   - `src/main/java/dz/sh/hidra/modules/analytics/domain/model/AnalyticsProjectionRun.java`
   - `src/main/java/dz/sh/hidra/modules/analytics/infrastructure/persistence/adapter/JpaAnalyticsProjectionRunRepositoryAdapter.java`
   - `src/main/java/dz/sh/hidra/modules/analytics/infrastructure/persistence/entity/AnalyticsProjectionRunJpaEntity.java`
   - `src/main/java/dz/sh/hidra/modules/analytics/infrastructure/persistence/mapper/AnalyticsPersistenceMapper.java`
   - `src/main/java/dz/sh/hidra/modules/analytics/infrastructure/persistence/repository/AnalyticsProjectionRunJpaRepository.java`
+  - `src/main/resources/db/migration/V20261004_024__hmr_024_analytics_projection_run.sql`
   - `src/test/java/dz/sh/hidra/modules/analytics/semantic/AnalyticsProjectionRunSemanticRemediationTest.java`
 - Exact validation:
   - `./mvnw -q -DskipTests compile`
@@ -1506,6 +1508,32 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
   1. **Preserve terminal failure diagnostics.** A run persisted as `FAILED` must retain meaningful error context, as required by Analytics DDD. The implementation task must define the accepted error-code/message contract rather than silently allowing both to be absent.
   2. **Preserve successful-run source lineage.** Statuses classified by Analytics as successful must require a nonblank `sourceWatermark`, consistent with the DDD. The implementation task must explicitly define the successful-status set rather than relying on implicit interpretation.
   3. **Make projection runs reproducible across definition changes.** AnalyticsProjectionRun must durably identify the immutable computation/definition version that produced the run, or an equivalent immutable execution snapshot/audit version, because Analytics DDD requires definition versioning when formula changes and rebuildability from source truth/history.
+
+
+#### HMR-024A — AnalyticsProjectionRun reproducibility prerequisite
+
+- Source: HMR-024 / HMSR-026 plus live Analytics persistence evidence.
+- Exact commit: `docs(model-remediation): register AnalyticsProjectionRun reproducibility prerequisite`
+- Status: **Completed** — the missing durable computation-version persistence scope is registered; no production mutation is part of HMR-024A.
+- Type: documentation/architecture prerequisite.
+- Purpose: resolve HMR-024's durable projection-definition version obligation without overloading `correlationId`, `sourceWatermark`, or another field with unrelated semantics.
+- Live evidence:
+  1. `hidra_analytics_projection_run` persists only `projection_definition_id`; it has no immutable computation/version reference;
+  2. `hidra_analytics_projection_definition` contains mutable computation fields including `projection_type`, `calculation_policy`, `refresh_policy`, `retention_policy`, `active`, and `updated_at`;
+  3. no live `AnalyticsProjectionDefinitionVersion` table/model or equivalent durable run snapshot exists;
+  4. HMR-024 was registered with no additive migration, so obligation 3 cannot be completed honestly under the original allowlist;
+  5. `sourceWatermark` is reserved for source-read lineage and `correlationId` remains a technical correlation identity; neither may be repurposed as the definition version.
+- Required decisions:
+  1. The successful projection-run statuses are exactly `COMPLETED` and `COMPLETED_WITH_WARNINGS`; both require a nonblank `sourceWatermark`.
+  2. A `FAILED` run must retain at least one nonblank diagnostic field: `errorCode` or `errorMessage`. HMR-024 does not require both.
+  3. Each persisted run must carry a dedicated immutable `projectionDefinitionVersion` value. It is a reproducibility fingerprint/reference, not a new business aggregate identity.
+  4. On first persistence, the repository adapter resolves the referenced definition and derives `projectionDefinitionVersion` from the definition's `updated_at` plus a deterministic fingerprint of the computation-relevant definition fields. Subsequent saves preserve the run's original captured value even if the definition changes.
+  5. The additive migration `V20261004_024__hmr_024_analytics_projection_run.sql` adds the dedicated `projection_definition_version` column, backfills greenfield-existing rows from their currently referenced definition, makes the value mandatory, and adds fail-closed checks for FAILED diagnostics and successful source watermarks. Existing migrations remain immutable.
+  6. HMR-024 may amend `AnalyticsProjectionRun`, its JPA entity/repository/adapter/persistence mapper, `AnalyticsApplicationMapper`, summary/response contracts, focused tests, Analytics DDD, and the new additive migration only as registered above.
+  7. The existing application start path may continue constructing a RUNNING domain object without a captured version; the persistence adapter captures the version before durable save and returns the enriched persisted model. No new lifecycle transition use case is invented.
+  8. HMR-024 must not create an `AnalyticsProjectionDefinitionVersion` aggregate/table, repurpose technical fields, invent run-mode rules, or add unrelated timestamp/counter invariants.
+- HMR-024 remains the next production remediation. Do not start HMR-025 automatically.
+
 
 #### HMR-025 — analytics.DigitalTwinReadinessAssessment
 
@@ -4779,4 +4807,4 @@ HMRB-004 — HMR-024 analytics.AnalyticsProjectionRun
 
 `fix(analytics): remediate semantic review AnalyticsProjectionRun`
 
-HMR-023 is completed. Execute HMR-024 only after the HMR-023 head is green; do not start HMR-025 automatically.
+HMR-023 is green and HMR-024A is completed. Execute the HMR-024 production correction only; do not start HMR-025 automatically.

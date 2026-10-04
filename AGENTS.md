@@ -47,33 +47,72 @@ If the chat instruction conflicts with the roadmap, stop and report the conflict
 
 ## 3. Task Execution Protocol
 
-Execute exactly **one roadmap commit code** per task.
+### 3.1 Default execution
 
-Examples:
+Execute exactly **one roadmap commit code** per task unless the applicable roadmap explicitly
+registers a **batch execution envelope**.
+
+Examples of normal single-task execution:
 
 ```text
 KER-002
 KER-003
-KER-004
+HMR-021
 ```
 
-Do not execute multiple commit codes in one task.
+Do not continue automatically to an unregistered next roadmap code.
 
-Do not continue automatically to the next task.
+### 3.2 Batch execution envelopes
 
-After completing a task:
+A roadmap may explicitly register a remediation batch containing **2 to 4 compatible HMR codes**.
+A batch is one user execution task but **not one semantic task and not one squashed commit**.
 
-1. Update the relevant roadmap status table.
-2. Record validation commands and results in the roadmap when requested.
-3. Commit with the exact commit message defined in the roadmap.
-4. Leave the working tree clean.
-5. Report files changed, validation result, commit hash, and next recommended task.
+Every HMR inside a batch must retain independently:
+
+```text
+source HMSR review
+HMSR obligations
+write allowlist
+migration filename/authorization
+focused validation target
+roadmap status
+exact commit message
+individual Git commit
+```
+
+Batch rules:
+
+1. Batch only HMRs that are dependency-safe and explicitly registered by the roadmap.
+2. Preserve roadmap order unless the roadmap records evidence authorizing another order.
+3. Perform one exact-head CI/status check before the batch. The batch may start only from a green
+   production head unless the user explicitly authorizes a documentation-only protocol change.
+4. Recover live evidence for **each HMR** before preparing its commit; do not rely on the batch
+   summary as a substitute for the HMR source review.
+5. Create one commit per HMR, using that HMR's exact commit message and only its authorized files.
+6. Chain the HMR commits in order, then advance the branch once to the final batch commit when the
+   connector supports atomic ref advancement.
+7. Perform one post-batch CI/status observation for the final head.
+8. If post-batch CI fails, stop the batch sequence. Diagnose the responsible HMR(s), repair only
+   those HMRs, and do not start another batch until the repaired head is green.
+9. If an HMR reveals an unregistered prerequisite, SCC complication, owner-contract gap,
+   cross-module lifecycle dependency, migration-order conflict, or materially larger semantic
+   redesign, split it out and stop before mutating that HMR.
+10. High-risk catalog redesign, lifecycle orchestration, unresolved cross-module ownership and SCC
+    work remain solo by default unless the roadmap explicitly authorizes the combined execution.
+
+After completing a single task or batch:
+
+1. Update every executed roadmap status independently.
+2. Record validation commands/results when requested.
+3. Preserve one exact commit per roadmap code.
+4. Leave the branch at the final verified task/batch head.
+5. Report every commit hash, changed-file scope, validation/CI result, and next registered execution.
 
 ---
 
 ## 4. Git Commit Rules
 
-Use the exact commit message from the roadmap.
+Use the exact commit message from the roadmap for every roadmap code.
 
 Example:
 
@@ -83,7 +122,7 @@ chore(kernel): add kernel package skeleton
 
 Do not invent alternative commit messages.
 
-Do not squash multiple roadmap tasks together.
+Do not squash multiple roadmap tasks together, including tasks executed in a batch envelope.
 
 Do not commit unrelated files.
 

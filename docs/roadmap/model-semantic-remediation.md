@@ -4705,10 +4705,48 @@ HMR-002 found no production commit after the HMSR reviews: live `main` advanced 
 
 A later HMR task may become Skipped only if stronger live evidence appears before execution and the roadmap is updated with the exact implementing commit/file/test evidence.
 
-### 12.5 Current next task
+### 12.5 Batch execution protocol
 
-HMR-021 — organization.Shift
+Model semantic remediation may use a **batch execution envelope** to reduce repetitive
+`next -> CI -> next -> CI` cycles without collapsing semantic traceability.
 
-fix(organization): remediate semantic review Shift
+A batch contains **2 to 4 HMR codes** and is valid only when all of the following are true:
 
-Do not start HMR-022 automatically.
+- every HMR remains an independent roadmap record with its own HMSR source and obligations;
+- every HMR keeps its exact write allowlist, migration authorization, focused test and exact commit message;
+- every HMR is committed separately; batching never means squashing;
+- the HMRs are dependency-safe and normally consecutive in the registered execution order;
+- one green exact-head CI/status check gates the batch;
+- the commits are chained in HMR order and the branch is advanced once to the final batch head when supported;
+- one full post-batch CI/status observation verifies the final head;
+- any prerequisite, SCC issue, owner-contract gap, migration-order conflict or larger-than-recorded semantic redesign splits the affected HMR out before mutation;
+- catalog-model redesigns, cross-module lifecycle orchestration, unresolved owner contracts and other high-risk corrections remain solo unless this roadmap explicitly says otherwise.
+
+A failed batch CI does not invalidate the individual HMR commit boundaries. Diagnose the failure
+against the commit chain, repair only the responsible HMR(s), and do not start another batch until
+the repaired final head is green.
+
+#### Registered near-term execution envelopes
+
+The following are execution registrations only; they do not change any HMR's semantic content:
+
+| Envelope | HMR codes | Mode | Rationale |
+|---|---|---|---|
+| HMRB-001 | HMR-021 | Solo | Shift is followed by a PipelineSystem classification redesign; do not couple them. |
+| HMRB-002 | HMR-022 | Solo | PipelineSystem changes the accepted business-classification representation. |
+| HMRB-003 | HMR-023 | Solo | AnalyticsInsight has four catalog/scope/lineage obligations. |
+| HMRB-004 | HMR-024 | Solo | AnalyticsProjectionRun requires terminal diagnostics and reproducibility semantics. |
+| HMRB-005 | HMR-025 | Solo | DigitalTwinReadinessAssessment reconciles competing readiness-status representations. |
+| HMRB-006 | HMR-026, HMR-027 | Batch | Two adjacent, low-coupling single-correction tasks with no recorded cross-module owner-contract prerequisite. |
+
+Additional batches may be registered immediately before execution when live repository evidence
+shows that the same criteria are satisfied. Prefer batches of 3–4 for narrow same-module integrity
+or required-field alignment work; keep high-risk semantic redesigns solo.
+
+### 12.6 Current next execution
+
+HMRB-001 — HMR-021 organization.Shift
+
+`fix(organization): remediate semantic review Shift`
+
+Execute HMR-021 only. HMRB-002 remains the next registered execution after HMRB-001 is green.

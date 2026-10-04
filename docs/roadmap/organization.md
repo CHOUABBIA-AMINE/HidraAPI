@@ -898,6 +898,35 @@ TECHNICAL
 DOTTED_LINE
 ```
 
+HMR-028A reconciliation (2026-10-04):
+
+```text
+ReportingLineType is catalog-backed, not a fixed enum.
+Authoritative catalog codes:
+  LINE
+  OPERATIONAL
+  FUNCTIONAL
+  ADMINISTRATIVE
+  TECHNICAL
+  DOTTED_LINE
+
+LINE itself represents the primary/hierarchical reporting category.
+No separate primaryLine field is added to the generalized typed-subject model.
+For EMPLOYEE sources, at most one active LINE may be authoritative.
+FUNCTIONAL, ADMINISTRATIVE, TECHNICAL and DOTTED_LINE may be multiple.
+No new multiplicity rule is inferred for OPERATIONAL.
+
+Every typed source/target must exist in its Organization-owned subject table.
+EMPLOYEE source/target references must be ACTIVE for a new authoritative relation.
+LINE cycle detection operates on typed subject identity (type + targetId), so
+positions and organization units remain first-class reporting subjects.
+```
+
+The dedicated reporting-line-type catalog uses embedded Arabic/French/English label columns,
+but HMR-028 seeds no guessed translations. Legacy `TEMPORARY` is not silently mapped; any
+persisted unmappable legacy value must fail migration preflight.
+
+
 Rules:
 
 ```text

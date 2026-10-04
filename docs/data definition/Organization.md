@@ -247,3 +247,40 @@ HMR-021 aligns the canonical domain constructor with the existing persistence co
 It deliberately does not define a clock-text syntax, IANA timezone validation, start/end
 ordering, overnight-shift behavior, or different schedule rules for DAY, NIGHT, ROTATION,
 ON_CALL, or CUSTOM.
+
+
+---
+
+## HMR-028A — ReportingLine catalog and matrix-policy baseline
+
+`ReportingLine` retains generalized typed Organization subjects:
+
+```text
+EMPLOYEE
+POSITION
+ORGANIZATION_UNIT
+```
+
+Its business classification is a dedicated Organization-owned catalog reference rather than a
+fixed enum. The authoritative codes are:
+
+```text
+LINE
+OPERATIONAL
+FUNCTIONAL
+ADMINISTRATIVE
+TECHNICAL
+DOTTED_LINE
+```
+
+`LINE` is the primary/hierarchical category. For EMPLOYEE sources, at most one active LINE is
+allowed. Multiple FUNCTIONAL, ADMINISTRATIVE, TECHNICAL and DOTTED_LINE relations are allowed.
+No OPERATIONAL multiplicity rule is invented.
+
+Every source/target must resolve inside Organization. Employee references used by a new
+authoritative line must be ACTIVE. Active LINE edges must remain acyclic across typed subject
+identity `(type, targetId)`.
+
+The reporting-line-type catalog stores optional embedded `nameAr/nameFr/nameEn` labels; HMR-028
+does not invent translations. Legacy `TEMPORARY` is not part of the authoritative vocabulary and
+must fail migration preflight if persisted instead of being silently remapped.

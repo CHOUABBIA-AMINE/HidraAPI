@@ -1642,11 +1642,11 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-031`
 - Exact commit: `fix(organization): remediate semantic review ReportingLine`
-- Status: **Planned**
+- Status: **Planned — HMR-028A completed.** The reporting-line catalog, migration, polymorphic subject-integrity, and generalized matrix-policy strategy are explicitly registered; production remediation remains HMR-028.
 - SCC: —
 - Recorded upstream HMS dependencies: —
 - HMSR correction count: 3
-- Additive Flyway: not pre-authorized by HMR-002
+- Additive Flyway: `src/main/resources/db/migration/V20261004_028__hmr_028_organization_reporting_line.sql` — authorized by HMR-028A.
 - Owner-contract prerequisite: No cross-module owner-contract prerequisite recorded by this HMSR correction.
 - Exact write allowlist:
   - `docs/data definition/Organization.md`
@@ -1657,10 +1657,13 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
   - `src/main/java/dz/sh/hidra/modules/organization/domain/value/ReportingLineType.java`
   - `src/main/java/dz/sh/hidra/modules/organization/infrastructure/persistence/adapter/JpaReportingLineRepositoryAdapter.java`
   - `src/main/java/dz/sh/hidra/modules/organization/infrastructure/persistence/entity/ReportingLineJpaEntity.java`
+  - `src/main/java/dz/sh/hidra/modules/organization/infrastructure/persistence/entity/ReportingLineTypeJpaEntity.java`
   - `src/main/java/dz/sh/hidra/modules/organization/infrastructure/persistence/mapper/OperationalScopePersistenceMapper.java`
   - `src/main/java/dz/sh/hidra/modules/organization/infrastructure/persistence/mapper/OrganizationPersistenceMapper.java`
   - `src/main/java/dz/sh/hidra/modules/organization/infrastructure/persistence/mapper/ResponsibilityAssignmentPersistenceMapper.java`
   - `src/main/java/dz/sh/hidra/modules/organization/infrastructure/persistence/repository/ReportingLineJpaRepository.java`
+  - `src/main/java/dz/sh/hidra/modules/organization/infrastructure/persistence/repository/ReportingLineTypeJpaRepository.java`
+  - `src/main/resources/db/migration/V20261004_028__hmr_028_organization_reporting_line.sql`
   - `src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/mapper/ReportingLinePersistenceMapperTest.java`
   - `src/test/java/dz/sh/hidra/modules/organization/semantic/ReportingLineSemanticRemediationTest.java`
 - Exact validation:
@@ -1672,6 +1675,37 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
   1. **Reconcile ReportingLineType with the accepted catalog architecture.** Replace or explicitly redesign the current fixed `ReportingLineType` enum/string persistence according to the existing `TYPE_ENUM_TO_CATALOG` decision, including an authoritative reporting-line type catalog/reference and any separate policy behavior.
   2. **Protect typed reporting-subject existence on future writes/provisioning.** A supplied `EMPLOYEE`, `POSITION`, or `ORGANIZATION_UNIT` reference must resolve to an existing Organization-owned subject before a new reporting line becomes authoritative. ORG-046 migration-time preflight alone is insufficient for later rows.
   3. **Reconcile and implement the documented matrix-reporting policy against the generalized typed-subject model.** Resolve primary-LINE representation, line-type vocabulary, employee lifecycle eligibility, allowed multiplicity, and LINE-cycle semantics without regressing to an unjustified employee-only model.
+
+
+#### HMR-028A — ReportingLine catalog and generalized matrix-policy prerequisite
+
+- Source: HMR-028 / HMSR-031 plus live Organization roadmap, ORG-042/ORG-046 and controlled-vocabulary audit evidence.
+- Exact commit: `docs(model-remediation): register ReportingLine catalog and matrix-policy prerequisite`
+- Status: **Completed** — the missing catalog/migration and policy persistence scope is registered; no production Java/JPA/Flyway mutation is part of HMR-028A.
+- Type: documentation/architecture prerequisite.
+- Live evidence:
+  1. `ReportingLineType` is still a fixed Java enum persisted directly in `reporting_line_type`;
+  2. the accepted controlled-vocabulary audit classifies it as `TYPE_ENUM_TO_CATALOG / REPLACE_FIRST_THEN_DELETE`;
+  3. Organization has no reporting-line-type catalog table/entity/repository on live main;
+  4. the target Organization roadmap vocabulary is `LINE`, `OPERATIONAL`, `FUNCTIONAL`, `ADMINISTRATIVE`, `TECHNICAL`, and `DOTTED_LINE`, while the live enum also contains legacy `TEMPORARY` and lacks three target codes;
+  5. ORG-046 protects discriminator values and preflights existing subject references but does not provide ongoing polymorphic subject-existence protection;
+  6. no active ReportingLine service/policy implementation currently enforces primary-LINE cardinality, employee eligibility, or LINE-cycle rules;
+  7. the original HMR-028 envelope authorizes no migration and no reporting-line-type catalog persistence types, so the three HMSR-031 obligations cannot be completed honestly under that envelope.
+- Required decisions:
+  1. Create the dedicated Organization-owned `hidra_org_reporting_line_type` catalog with stable `id`/unique `code`, optional embedded `name_ar/name_fr/name_en`, `active`, and audit timestamps. HMR-028 must not create a separate translation table and must not invent translations.
+  2. Seed only the roadmap-authoritative codes: `LINE`, `OPERATIONAL`, `FUNCTIONAL`, `ADMINISTRATIVE`, `TECHNICAL`, `DOTTED_LINE`.
+  3. Legacy persisted `reporting_line_type` values are backfilled by exact code. Any unmappable value — including legacy `TEMPORARY` — fails migration preflight; HMR-028 must not silently map or rename it.
+  4. Replace the enum contract with an extensible `ReportingLineType` catalog-reference value carrying stable identity/code and optional embedded localized labels. Keep reporting behavior in explicit domain methods/policy semantics, not as catalog-label inference.
+  5. `LINE` is the canonical primary/hierarchical reporting-line category. No separate `primaryLine` field is added. The one-active-primary rule applies only when the source subject type is `EMPLOYEE`; HMR-028 does not invent the same cardinality for POSITION or ORGANIZATION_UNIT sources.
+  6. Multiple active `FUNCTIONAL`, `ADMINISTRATIVE`, `TECHNICAL`, and `DOTTED_LINE` relations are allowed. HMR-028 adds no multiplicity rule for `OPERATIONAL` because the governing roadmap does not define one.
+  7. Every source and target reference must resolve to the Organization-owned table selected by its existing `ReportingSubjectType`: EMPLOYEE -> `hidra_org_employee`, POSITION -> `hidra_org_position`, ORGANIZATION_UNIT -> `hidra_org_unit`. Validation must fail closed on future saves/provisioning.
+  8. Employee lifecycle eligibility applies only to EMPLOYEE references. A new authoritative reporting line may use an employee source or employee target only when that employee is `ACTIVE`; `REGISTERED`, `SUSPENDED`, `RETIRED`, and `TERMINATED` are not eligible for new reporting authority. Position/unit references receive no invented employee-lifecycle rule.
+  9. Active `LINE` relations must not introduce a directed cycle across the generalized typed-subject graph. Cycle identity is the pair `(subjectType, targetId)`; the rule is not reduced to employee-only edges.
+  10. The additive migration `V20261004_028__hmr_028_organization_reporting_line.sql` may create/backfill the catalog reference, retire the old enum-style column after successful backfill, and install same-module database trigger/index/check protection needed for subject existence, employee ACTIVE eligibility, employee-source LINE cardinality, and LINE-cycle prevention.
+  11. The repository adapter/repository remain the Java fail-closed write boundary. HMR-028 may use native same-module queries there and does not need to invent a new inbound application use case.
+  12. HMR-028 may add only `ReportingLineTypeJpaEntity`, `ReportingLineTypeJpaRepository`, and the authorized additive migration beyond the original allowlist. No unrelated Organization production type is authorized.
+- HMR-028 remains the next production remediation. Do not start HMR-029 automatically.
+
 
 #### HMR-029 — risk.RiskMatrixCell
 
@@ -4807,4 +4841,4 @@ HMR-028 — organization.ReportingLine
 
 `fix(organization): remediate semantic review ReportingLine`
 
-HMRB-006 is completed. HMR-028 is the next remediation task after the HMRB-006 final head is green; do not start HMR-029 automatically.
+HMRB-006 is green and HMR-028A is completed. Execute the HMR-028 production correction only; do not start HMR-029 automatically.

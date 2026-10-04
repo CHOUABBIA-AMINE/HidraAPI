@@ -7,14 +7,14 @@
  *
  * @Name        : StartIntegrationJobRunRequest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-04
  *
  * @Type        : Record
  * @Layer       : API
  * @Module      : integration
  * @Package     : dz.sh.hidra.modules.integration.api.rest.request
  *
- * @Description : REST request to start integration job run.
+ * @Description : REST request to start an integration job run with server-owned run numbering.
  *
  */
 package dz.sh.hidra.modules.integration.api.rest.request;
@@ -22,11 +22,10 @@ package dz.sh.hidra.modules.integration.api.rest.request;
 import dz.sh.hidra.modules.integration.domain.value.JobTriggerType;
 
 /**
- * REST request to start integration job run.
+ * REST request to start an integration job run.
  */
 public record StartIntegrationJobRunRequest(
         String jobDefinitionId,
-        long runNumber,
         JobTriggerType triggerType,
         String triggeredByActorId,
         String correlationId

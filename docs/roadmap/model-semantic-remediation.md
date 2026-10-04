@@ -154,7 +154,7 @@ Each model task implements only the obligations recorded in its source HMSR sect
 | HMR-011 | HMSR-011 | identity | Permission | — | — | `fix(identity): remediate semantic review Permission` | **Completed** |
 | HMR-012 | HMSR-012 | notification | NotificationTemplate | — | — | `fix(notification): remediate semantic review NotificationTemplate` | **Completed** |
 | HMR-013 | HMSR-013 | reporting | ReportDefinition | — | — | `fix(reporting): remediate semantic review ReportDefinition` | **Completed** |
-| HMR-014 | HMSR-014 | integration | IntegrationJobRun | — | — | `fix(integration): remediate semantic review IntegrationJobRun` | Planned |
+| HMR-014 | HMSR-014 | integration | IntegrationJobRun | — | — | `fix(integration): remediate semantic review IntegrationJobRun` | **Completed** |
 | HMR-015 | HMSR-015 | leakdetection | LeakCandidate | — | — | `fix(leakdetection): remediate semantic review LeakCandidate` | Planned |
 | HMR-016 | HMSR-018 | analytics | MetricEvaluationRun | — | — | `fix(analytics): remediate semantic review MetricEvaluationRun` | Planned |
 | HMR-017 | HMSR-019 | configuration | ConfigurationDefinition | — | — | `fix(configuration): remediate semantic review ConfigurationDefinition` | Planned |
@@ -1009,7 +1009,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-014`
 - Exact commit: `fix(integration): remediate semantic review IntegrationJobRun`
-- Status: **Planned**
+- Status: **Completed** — run numbers are database-allocated per job through a concurrency-safe sequence trigger and unique key; new-run persistence validates active job definitions, current JOB_TYPE metadata, automated connector readiness, IMPORT/SYNC mapping prerequisites, and MANUAL actor/permission governance; counters and completion ordering are guarded in domain/database; terminal lifecycle transitions are monotonic at repository/database boundaries; audit timestamps remain explicitly enforced at persistence.
 - SCC: —
 - Recorded upstream HMS dependencies: —
 - HMSR correction count: 8
@@ -4638,8 +4638,8 @@ A later HMR task may become Skipped only if stronger live evidence appears befor
 
 ### 12.5 Current next task
 
-HMR-014 — integration.IntegrationJobRun
+HMR-015 — leakdetection.LeakCandidate
 
-fix(integration): remediate semantic review IntegrationJobRun
+fix(leakdetection): remediate semantic review LeakCandidate
 
-Do not start HMR-015 automatically.
+Do not start HMR-016 automatically.

@@ -7,46 +7,28 @@
  *
  * @Name        : IntegrationJobRun
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-10-04
  *
  * @Type        : Record
  * @Layer       : Domain
  * @Module      : integration
  * @Package     : dz.sh.hidra.modules.integration.domain.model
  *
- * @Description : Single execution of an integration job.
+ * @Description : Single governed execution of an integration job.
  *
  */
 package dz.sh.hidra.modules.integration.domain.model;
 
 import dz.sh.hidra.modules.integration.domain.exception.InvalidIntegrationValueException;
-import dz.sh.hidra.modules.integration.domain.value.*;
+import dz.sh.hidra.modules.integration.domain.value.JobRunStatus;
+import dz.sh.hidra.modules.integration.domain.value.JobTriggerType;
 import java.time.Instant;
 
-    /**
-     * Single execution of an integration job.
-     *
-         * @param id id
-     * @param jobDefinitionId jobDefinitionId
-     * @param runNumber runNumber
-     * @param triggerType triggerType
-     * @param triggeredByActorId triggeredByActorId
-     * @param status status
-     * @param correlationId correlationId
-     * @param startedAt startedAt
-     * @param completedAt completedAt
-     * @param receivedCount receivedCount
-     * @param mappedCount mappedCount
-     * @param acceptedCount acceptedCount
-     * @param rejectedCount rejectedCount
-     * @param deadLetterCount deadLetterCount
-     * @param retryCount retryCount
-     * @param failureReason failureReason
-     * @param createdAt createdAt
-     * @param updatedAt updatedAt
-     */
-    public record IntegrationJobRun(
-            String id,
+/**
+ * Single execution of an integration job.
+ */
+public record IntegrationJobRun(
+        String id,
         String jobDefinitionId,
         long runNumber,
         JobTriggerType triggerType,
@@ -64,9 +46,9 @@ import java.time.Instant;
         String failureReason,
         Instant createdAt,
         Instant updatedAt
-    ) {
+) {
 
-        public IntegrationJobRun {
+    public IntegrationJobRun {
         // HRA-051 required: id
         if (id == null || id.isBlank()) {
             throw new InvalidIntegrationValueException("IntegrationJobRun id must not be blank.");
@@ -75,9 +57,20 @@ import java.time.Instant;
         if (jobDefinitionId == null || jobDefinitionId.isBlank()) {
             throw new InvalidIntegrationValueException("IntegrationJobRun job definition id must not be blank.");
         }
+        if (runNumber < 0) {
+            throw new InvalidIntegrationValueException(
+                    "IntegrationJobRun run number must be zero (unallocated) or positive."
+            );
+        }
         // HRA-051 required: triggerType
         if (triggerType == null) {
             throw new InvalidIntegrationValueException("IntegrationJobRun trigger type must not be null.");
+        }
+        if (triggerType == JobTriggerType.MANUAL
+                && (triggeredByActorId == null || triggeredByActorId.isBlank())) {
+            throw new InvalidIntegrationValueException(
+                    "MANUAL IntegrationJobRun requires triggeredByActorId."
+            );
         }
         // HRA-051 required: status
         if (status == null) {
@@ -87,23 +80,101 @@ import java.time.Instant;
         if (startedAt == null) {
             throw new InvalidIntegrationValueException("IntegrationJobRun started at must not be null.");
         }
+        if (completedAt != null && completedAt.isBefore(startedAt)) {
+            throw new InvalidIntegrationValueException(
+                    "IntegrationJobRun completedAt must not precede startedAt."
+            );
+        }
+        if (receivedCount < 0
+                || mappedCount < 0
+                || acceptedCount < 0
+                || rejectedCount < 0
+                || deadLetterCount < 0
+                || retryCount < 0) {
+            throw new InvalidIntegrationValueException(
+                    "IntegrationJobRun counters must not be negative."
+            );
+        }
+        long accounted;
+        try {
+            accounted = Math.addExact(
+                    Math.addExact(acceptedCount, rejectedCount),
+                    deadLetterCount
+            );
+        } catch (ArithmeticException overflow) {
+            throw new InvalidIntegrationValueException(
+                    "IntegrationJobRun outcome counters exceed supported range."
+            );
+        }
+        if (accounted > receivedCount) {
+            throw new InvalidIntegrationValueException(
+                    "IntegrationJobRun accepted + rejected + dead-letter counts must not exceed received count."
+            );
+        }
 
         id = normalize(id);
         jobDefinitionId = normalize(jobDefinitionId);
         triggeredByActorId = normalize(triggeredByActorId);
         correlationId = normalize(correlationId);
         failureReason = normalize(failureReason);
+    }
+
+    public boolean terminalStatus() {
+        return terminal(status);
+    }
+
+    public void validateTransitionFrom(JobRunStatus previousStatus) {
+        if (previousStatus == null) {
+            throw new InvalidIntegrationValueException(
+                    "IntegrationJobRun previous status must not be null."
+            );
         }
-        public boolean terminalStatus() {
-            return status == JobRunStatus.COMPLETED
-                    || status == JobRunStatus.COMPLETED_WITH_ERRORS
-                    || status == JobRunStatus.FAILED
-                    || status == JobRunStatus.CANCELLED;
+        if (terminal(previousStatus) && status != previousStatus) {
+            throw new InvalidIntegrationValueException(
+                    "Terminal IntegrationJobRun status is immutable."
+            );
         }
-        private static String normalize(String value) {
-            if (value == null || value.isBlank()) {
-                return null;
-            }
-            return value.trim();
+        if (previousStatus == JobRunStatus.RUNNING && status == JobRunStatus.PENDING) {
+            throw new InvalidIntegrationValueException(
+                    "IntegrationJobRun status must not move from RUNNING back to PENDING."
+            );
         }
     }
+
+    public IntegrationJobRun withRunNumber(long allocatedRunNumber) {
+        return new IntegrationJobRun(
+                id,
+                jobDefinitionId,
+                allocatedRunNumber,
+                triggerType,
+                triggeredByActorId,
+                status,
+                correlationId,
+                startedAt,
+                completedAt,
+                receivedCount,
+                mappedCount,
+                acceptedCount,
+                rejectedCount,
+                deadLetterCount,
+                retryCount,
+                failureReason,
+                createdAt,
+                updatedAt
+        );
+    }
+
+    private static boolean terminal(JobRunStatus value) {
+        return value == JobRunStatus.COMPLETED
+                || value == JobRunStatus.COMPLETED_WITH_ERRORS
+                || value == JobRunStatus.FAILED
+                || value == JobRunStatus.CANCELLED;
+    }
+
+    private static String normalize(String value) {
+        if (value == null || value.isBlank()) {
+            return null;
+        }
+        return value.trim();
+    }
+}

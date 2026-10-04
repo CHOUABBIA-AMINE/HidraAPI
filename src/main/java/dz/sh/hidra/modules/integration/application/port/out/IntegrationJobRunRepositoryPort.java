@@ -7,7 +7,7 @@
  *
  * @Name        : IntegrationJobRunRepositoryPort
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-04
  *
  * @Type        : Interface
  * @Layer       : Application
@@ -28,6 +28,10 @@ import java.util.Optional;
  */
 public interface IntegrationJobRunRepositoryPort {
 
+    /**
+     * Persists a run. New runs receive their authoritative per-job run number at
+     * the persistence/database boundary; updates are transition-validated.
+     */
     IntegrationJobRun save(IntegrationJobRun model);
 
     Optional<IntegrationJobRun> findById(String id);

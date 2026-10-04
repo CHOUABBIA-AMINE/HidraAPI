@@ -732,10 +732,35 @@ hidra_integration_job_run
 ### Rules
 
 ```text
+runNumber is allocated by Integration persistence and is never caller-owned
+runNumber is positive and unique/monotonic within jobDefinitionId
 Counts must be non-negative.
+acceptedCount + rejectedCount + deadLetterCount must not exceed receivedCount.
 completedAt must be greater than or equal to startedAt.
-Terminal runs cannot move back to RUNNING.
+JobRun status is monotonic; a terminal run cannot be reopened.
+createdAt and updatedAt are required at the persistence boundary.
 ```
+
+HMR-014 start governance is fail-closed:
+
+```text
+jobDefinitionId must resolve to an active IntegrationJobDefinition
+MANUAL requires manualRunAllowed = true and triggeredByActorId
+non-MANUAL execution requires an active ConnectorInstance
+JOB_TYPE metadata must resolve to an active JOB_TYPE catalog entry
+IMPORT/SYNC requires a mapping profile in the current repository baseline because no
+connector-specific TargetModuleImportPort implementation is registered
+automated IMPORT/SYNC requires that mapping profile to be ACTIVE
+when the job declares targetModule, the mapping profile must target the same module
+```
+
+The current model contains no explicit multi-record-expansion marker, so the standard aggregate
+count rule is enforced without silently inventing an exception. A future expansion exception must
+be represented explicitly in the model before it can relax that rule.
+
+API/application start requests no longer accept `runNumber`. The database allocates the sequence
+atomically per job definition, and direct inserts are subject to the same allocator and eligibility
+checks.
 
 ---
 

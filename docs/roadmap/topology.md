@@ -187,6 +187,28 @@ the broader historical Topology catalog program is implemented.
 
 ---
 
+## 3.2 HMR-022 completion — PipelineSystem classification catalog (2026-10-04)
+
+HMR-022 implements the HMR-022A decision without recreating the stale generic catalog layer:
+
+```text
+CreatePipelineSystemRequest.systemTypeCode
+    -> CreatePipelineSystemCommand.systemTypeCode
+    -> PipelineSystemRepositoryPort.findTypeByCode(code)
+    -> PipelineSystem.systemType (catalog reference)
+    -> hidra_topology_pipeline_system.system_type_id
+    -> hidra_topology_pipeline_system_type.id
+```
+
+`PipelineSystemType` is now an extensible catalog-reference record rather than a Java enum.
+The additive migration seeds only `TRANSPORT`, `GATHERING`, `DISTRIBUTION`, `EXPORT`, `IMPORT`,
+and `MIXED`, leaves all localized labels null, fails closed on unknown legacy values, backfills
+`system_type_id`, installs the same-module FK, and then retires the old `system_type` column.
+
+The create service no longer infers `TRANSPORT`; missing/blank and unknown codes are rejected.
+
+---
+
 ## 4. Final topology data conception
 
 Topology is a physical network graph.

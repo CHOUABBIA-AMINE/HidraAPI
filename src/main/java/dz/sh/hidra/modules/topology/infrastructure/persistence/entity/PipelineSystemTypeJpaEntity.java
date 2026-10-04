@@ -5,7 +5,7 @@
  * @Author      : Abir MEDJERAB
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  *
- * @Name        : PipelineSystemJpaEntity
+ * @Name        : PipelineSystemTypeJpaEntity
  * @CreatedOn   : 2025-06-26
  * @UpdatedOn   : 2026-10-04
  *
@@ -14,32 +14,26 @@
  * @Module      : topology
  * @Package     : dz.sh.hidra.modules.topology.infrastructure.persistence.entity
  *
- * @Description : Database-backed JPA entity for PipelineSystem.
+ * @Description : Database-backed catalog entry for PipelineSystem classification.
  *
  */
 package dz.sh.hidra.modules.topology.infrastructure.persistence.entity;
 
-import dz.sh.hidra.modules.topology.domain.value.TopologyStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.Instant;
 
 @Entity
-@Table(name = "hidra_topology_pipeline_system")
-public class PipelineSystemJpaEntity {
+@Table(name = "hidra_topology_pipeline_system_type")
+public class PipelineSystemTypeJpaEntity {
 
     @Id
     @Column(name = "id", nullable = false, length = 80)
     private String id;
 
-    @Column(name = "code", nullable = false, length = 120)
+    @Column(name = "code", nullable = false, length = 120, unique = true)
     private String code;
 
     @Column(name = "name_ar", length = 255)
@@ -51,22 +45,8 @@ public class PipelineSystemJpaEntity {
     @Column(name = "name_en", length = 255)
     private String nameEn;
 
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "system_type_id", nullable = false)
-    private PipelineSystemTypeJpaEntity systemType;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false, length = 40)
-    private TopologyStatus status;
-
-    @Column(name = "description", columnDefinition = "text")
-    private String description;
-
-    @Column(name = "commissioned_at")
-    private Instant commissionedAt;
-
-    @Column(name = "retired_at")
-    private Instant retiredAt;
+    @Column(name = "active", nullable = false)
+    private boolean active;
 
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
@@ -74,19 +54,15 @@ public class PipelineSystemJpaEntity {
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
-    protected PipelineSystemJpaEntity() { }
+    protected PipelineSystemTypeJpaEntity() { }
 
-    public PipelineSystemJpaEntity(
+    public PipelineSystemTypeJpaEntity(
             String id,
             String code,
             String nameAr,
             String nameFr,
             String nameEn,
-            PipelineSystemTypeJpaEntity systemType,
-            TopologyStatus status,
-            String description,
-            Instant commissionedAt,
-            Instant retiredAt,
+            boolean active,
             Instant createdAt,
             Instant updatedAt
     ) {
@@ -95,11 +71,7 @@ public class PipelineSystemJpaEntity {
         this.nameAr = nameAr;
         this.nameFr = nameFr;
         this.nameEn = nameEn;
-        this.systemType = systemType;
-        this.status = status;
-        this.description = description;
-        this.commissionedAt = commissionedAt;
-        this.retiredAt = retiredAt;
+        this.active = active;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -109,11 +81,7 @@ public class PipelineSystemJpaEntity {
     public String nameAr() { return nameAr; }
     public String nameFr() { return nameFr; }
     public String nameEn() { return nameEn; }
-    public PipelineSystemTypeJpaEntity systemType() { return systemType; }
-    public TopologyStatus status() { return status; }
-    public String description() { return description; }
-    public Instant commissionedAt() { return commissionedAt; }
-    public Instant retiredAt() { return retiredAt; }
+    public boolean active() { return active; }
     public Instant createdAt() { return createdAt; }
     public Instant updatedAt() { return updatedAt; }
 }

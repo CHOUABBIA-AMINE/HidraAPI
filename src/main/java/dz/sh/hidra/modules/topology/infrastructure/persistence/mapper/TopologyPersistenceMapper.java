@@ -7,7 +7,7 @@
  *
  * @Name        : TopologyPersistenceMapper
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-10-04
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -20,30 +20,39 @@
 package dz.sh.hidra.modules.topology.infrastructure.persistence.mapper;
 
 import dz.sh.hidra.modules.topology.domain.model.*;
+import dz.sh.hidra.modules.topology.domain.value.PipelineSystemType;
 import dz.sh.hidra.modules.topology.infrastructure.persistence.entity.*;
+
 public final class TopologyPersistenceMapper {
     private TopologyPersistenceMapper() { throw new UnsupportedOperationException("Utility class must not be instantiated."); }
-    public static PipelineSystemJpaEntity toEntity(PipelineSystem model) { return new PipelineSystemJpaEntity(
+
+    public static PipelineSystemJpaEntity toEntity(
+            PipelineSystem model,
+            PipelineSystemTypeJpaEntity systemType
+    ) {
+        return new PipelineSystemJpaEntity(
                 model.id(),
                 model.code(),
                 model.nameAr(),
                 model.nameFr(),
                 model.nameEn(),
-                model.systemType(),
+                systemType,
                 model.status(),
                 model.description(),
                 model.commissionedAt(),
                 model.retiredAt(),
                 model.createdAt(),
                 model.updatedAt()
-        ); }
+        );
+    }
+
     public static PipelineSystem toDomain(PipelineSystemJpaEntity entity) { return new PipelineSystem(
                 entity.id(),
                 entity.code(),
                 entity.nameAr(),
                 entity.nameFr(),
                 entity.nameEn(),
-                entity.systemType(),
+                toDomain(entity.systemType()),
                 entity.status(),
                 entity.description(),
                 entity.commissionedAt(),
@@ -51,6 +60,17 @@ public final class TopologyPersistenceMapper {
                 entity.createdAt(),
                 entity.updatedAt()
         ); }
+
+    public static PipelineSystemType toDomain(PipelineSystemTypeJpaEntity entity) {
+        return new PipelineSystemType(
+                entity.id(),
+                entity.code(),
+                entity.nameAr(),
+                entity.nameFr(),
+                entity.nameEn()
+        );
+    }
+
     public static PipelineJpaEntity toEntity(Pipeline model) { return new PipelineJpaEntity(
                 model.id(),
                 model.pipelineSystemId(),

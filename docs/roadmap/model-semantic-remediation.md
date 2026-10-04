@@ -1370,7 +1370,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-024`
 - Exact commit: `fix(topology): remediate semantic review PipelineSystem`
-- Status: **Planned — HMR-022A completed.** Live repository evidence disproves the historical Topology roadmap claim that the generic catalog refactor is already implemented. HMR-022 is now authorized to establish a dedicated Topology-owned PipelineSystem classification catalog/reference using only the six evidence-backed existing classification codes, retire the enum-style `system_type` column through an additive migration, and remove silent `TRANSPORT` defaulting.
+- Status: **Completed** — dedicated Topology-owned PipelineSystem classification catalog/reference implemented; the six evidence-backed legacy codes are migrated, the enum-style `system_type` representation is retired, and missing/unknown create classification now fails closed without silent `TRANSPORT` defaulting.
 - SCC: —
 - Recorded upstream HMS dependencies: —
 - HMSR correction count: 2
@@ -4763,7 +4763,7 @@ The following are execution registrations only; they do not change any HMR's sem
 | Envelope | HMR codes | Mode | Rationale |
 |---|---|---|---|
 | HMRB-001 | HMR-021 | Solo | **Completed.** Shift requiredness aligned independently before the PipelineSystem classification redesign. |
-| HMRB-002 | HMR-022 | Solo | HMR-022A completed: dedicated PipelineSystem classification catalog scope registered; production correction remains solo. |
+| HMRB-002 | HMR-022 | Solo | **Completed.** Dedicated PipelineSystem classification catalog/reference implemented and silent `TRANSPORT` default removed. |
 | HMRB-003 | HMR-023 | Solo | AnalyticsInsight has four catalog/scope/lineage obligations. |
 | HMRB-004 | HMR-024 | Solo | AnalyticsProjectionRun requires terminal diagnostics and reproducibility semantics. |
 | HMRB-005 | HMR-025 | Solo | DigitalTwinReadinessAssessment reconciles competing readiness-status representations. |
@@ -4775,8 +4775,8 @@ or required-field alignment work; keep high-risk semantic redesigns solo.
 
 ### 12.6 Current next execution
 
-HMRB-002 — HMR-022 topology.PipelineSystem
+HMRB-003 — HMR-023 analytics.AnalyticsInsight
 
-`fix(topology): remediate semantic review PipelineSystem`
+`fix(analytics): remediate semantic review AnalyticsInsight`
 
-HMR-022A is completed. Execute the HMR-022 production correction only. HMRB-003 remains the next registered execution after HMRB-002 is green.
+HMR-022 is completed. Execute HMR-023 only after the HMR-022 head is green; do not start HMR-024 automatically.

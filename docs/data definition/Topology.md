@@ -51,6 +51,7 @@ Topology owns:
 
 ```text
 PipelineSystem
+PipelineSystemType
 Pipeline
 PipelineSegment
 TopologyNode
@@ -126,6 +127,7 @@ audit evidence
 | Entity | Table | Purpose |
 |---|---|---|
 | PipelineSystem | `hidra_topology_pipeline_system` | Logical transportation system grouping pipelines and facilities. |
+| PipelineSystemType | `hidra_topology_pipeline_system_type` | Topology-owned catalog for PipelineSystem operational/network classification. |
 | Pipeline | `hidra_topology_pipeline` | Physical/logical pipeline within a system. |
 | PipelineSegment | `hidra_topology_pipeline_segment` | Segment between two topology nodes or points. |
 | TopologyNode | `hidra_topology_node` | Graph node such as source, junction, station, delivery point, tie-in. |
@@ -144,6 +146,27 @@ audit evidence
 | EquipmentAttributeValue | `hidra_topology_equipment_attribute_value` | Equipment attribute value. |
 | MeasurementLocation | `hidra_topology_measurement_location` | Topology anchor where telemetry/custody/monitoring measurements are associated. |
 | TopologySnapshot | `hidra_topology_snapshot` | Versioned network snapshot. |
+
+### 5.1 PipelineSystem classification catalog
+
+`PipelineSystem.systemType` is a required reference to the Topology-owned `PipelineSystemType` catalog.
+Create contracts supply the stable `systemTypeCode`; the application resolves that code before
+constructing the aggregate. Missing, blank, or unknown classification codes fail closed and are
+never defaulted to `TRANSPORT`.
+
+The migration seed is restricted to the six codes already present in the former enum:
+
+```text
+TRANSPORT
+GATHERING
+DISTRIBUTION
+EXPORT
+IMPORT
+MIXED
+```
+
+The catalog may grow without a Java enum change. Arabic/French/English labels are optional until
+authoritative master data is provisioned; HMR-022 does not invent translations.
 
 ---
 

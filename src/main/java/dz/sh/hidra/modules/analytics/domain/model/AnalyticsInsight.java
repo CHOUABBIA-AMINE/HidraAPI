@@ -43,18 +43,21 @@ public record AnalyticsInsight(
 ) {
 
     public AnalyticsInsight {
+        // HRA-051 required: id
         if (id == null || id.isBlank()) {
             throw new InvalidAnalyticsValueException("AnalyticsInsight id must not be blank.");
         }
         if (insightType == null || insightType.isBlank()) {
             throw new InvalidAnalyticsValueException("AnalyticsInsight insight type must not be blank.");
         }
+        // HRA-051 required: subjectAreaId
         if (subjectAreaId == null || subjectAreaId.isBlank()) {
             throw new InvalidAnalyticsValueException("AnalyticsInsight subject area id must not be blank.");
         }
         if (scopeType == null || scopeType.isBlank()) {
             throw new InvalidAnalyticsValueException("AnalyticsInsight scope type must not be blank.");
         }
+        // HRA-051 required: status
         if (status == null) {
             throw new InvalidAnalyticsValueException("AnalyticsInsight status must not be null.");
         }

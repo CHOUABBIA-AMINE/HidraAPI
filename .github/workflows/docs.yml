@@ -1,0 +1,77 @@
+name: HidraAPI Documentation Validation
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "doc/**"
+      - "**/*.md"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "doc/**"
+      - "**/*.md"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: hidraapi-docs-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Canonical documentation validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate canonical documentation
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          test -s doc/README.md
+          test -s doc/roadmap/ULTIMATE_ROADMAP.md
+
+          python3 - <<'PY'
+          from pathlib import Path
+
+          root = Path("doc")
+          files = sorted(root.rglob("*.md"))
+          if not files:
+              raise SystemExit("No canonical Markdown files found under doc/")
+
+          conflict_markers = ("<<<<<<<", "=======", ">>>>>>>")
+          failures = []
+
+          for path in files:
+              raw = path.read_bytes()
+              if not raw:
+                  failures.append(f"{path}: empty file")
+                  continue
+
+              try:
+                  text = raw.decode("utf-8")
+              except UnicodeDecodeError as exc:
+                  failures.append(f"{path}: not valid UTF-8 ({exc})")
+                  continue
+
+              for line_number, line in enumerate(text.splitlines(), start=1):
+                  stripped = line.lstrip()
+                  if any(stripped.startswith(marker) for marker in conflict_markers):
+                      failures.append(
+                          f"{path}:{line_number}: unresolved merge-conflict marker"
+                      )
+
+          if failures:
+              raise SystemExit("\n".join(failures))
+
+          print(f"Validated {len(files)} canonical Markdown files.")
+          PY

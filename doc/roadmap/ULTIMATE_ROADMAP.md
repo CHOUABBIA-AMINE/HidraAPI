@@ -44,6 +44,7 @@
 15. The 2026-10-05 independent P0 verification audit at `dcf69e1a4a4b788cd125ba6289384642efc4caa0` reopens P0 only for the six failed verification/completeness checks recorded below. Checks 1–5, 8, and 10 remain VERIFIED unless later regression evidence disproves them.
 16. A verification-evidence gap must not be mislabeled as a missing implementation. In particular, OpenAPI security-scheme code exists; the remaining Check 9 gap is exact-head generated evidence.
 17. HPR-P0-015 has closed the independent-audit gap set. Phase P1 may proceed from `HPR-P1-001`, but production readiness remains NOT ESTABLISHED until P1 survivability requirements are completed.
+18. Documentation-only changes under canonical `doc/**` or Markdown-only governance files use the lightweight documentation-validation workflow; they do not require the full Maven/PostgreSQL/OpenAPI pipeline solely because documentation changed. Full CI remains required when executable/configuration/migration/test/workflow paths change, when manually dispatched, or when a roadmap closure task explicitly requires full exact-head verification.
 
 ## 3. In-Flight Semantic Remediation Disposition
 
@@ -217,6 +218,18 @@ P0 is CLOSED for security/audit verification. Production readiness remains **NOT
 - application recovery after database role change is connection/retry based; in-flight transaction survival is not claimed;
 - replicas are not backups; backup retention, WAL/PITR and RTO/RPO remain HPR-P1-004 scope;
 - no PostgreSQL HA manager, proxy, virtual IP, DNS, load balancer, cloud database service, or orchestration product is selected by this HPR.
+
+
+### CI documentation-validation protocol adjustment
+
+Owner-approved on 2026-10-05 after HPR-P1-003:
+
+- documentation-only changes no longer consume the full Java/PostgreSQL/OpenAPI verification pipeline solely because canonical `doc/**` changed;
+- full CI ignores `doc/**`, legacy `docs/**`, and Markdown-only paths on push/pull request when no executable/configuration/workflow path changed;
+- a separate lightweight documentation workflow validates canonical Markdown presence, UTF-8 readability, non-empty files, and unresolved merge-conflict markers;
+- changes to workflow files themselves are not documentation-only and therefore continue to trigger full CI;
+- `workflow_dispatch` remains available for explicit full verification;
+- roadmap tasks that explicitly require full exact-head verification, including survivability/closure gates, still require the full pipeline.
 
 ## 7. Original P0 Closure Evidence
 

@@ -5,10 +5,16 @@ on:
     branches:
       - main
     paths-ignore:
+      - "doc/**"
       - "docs/**"
+      - "**/*.md"
   pull_request:
     branches:
       - main
+    paths-ignore:
+      - "doc/**"
+      - "docs/**"
+      - "**/*.md"
   workflow_dispatch:
 
 permissions:

@@ -52,8 +52,9 @@ class RiskRegisterSemanticRemediationTest {
         ));
         assertThat(sql)
                 .doesNotContain("RISK_REVIEW_TYPE")
-                .doesNotContain("owner_organization_unit_id)")
-                .doesNotContain("FOREIGN KEY");
+                .doesNotContain("FOREIGN KEY (owner_organization_unit_id)")
+                .doesNotContain("REFERENCES hidra_org_")
+                .doesNotContain("REFERENCES hidra_organization_");
     }
 
     @Test

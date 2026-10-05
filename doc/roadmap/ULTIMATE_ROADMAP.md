@@ -18,7 +18,7 @@
 | Legacy/reference documentation root | `docs/` |
 | Forensic audit evidence baseline | `3e6de10b6e64bd989626a522d2de21b8ea501b8c` |
 | Bootstrap repository baseline | `e1f33e32519dcd1d07367e96cf399dfad2933053` |
-| Production readiness | NOT ESTABLISHED — original P0 source defects are remediated, but independent P0 verification/completeness gaps are OPEN; P1 survivability has not started |
+| Production readiness | NOT ESTABLISHED — P0 security/audit verification is CLOSED; P1 production infrastructure and survivability are still incomplete |
 | TimescaleDB | NOT IMPLEMENTED — DEFERRED / TARGET |
 | PostGIS | NOT IMPLEMENTED — DEFERRED / TARGET |
 | High availability | NOT DOCUMENTED / NOT VERIFIED |
@@ -91,13 +91,13 @@ The following audited statements govern prioritization:
 | HPR-P0-012 | COMPLETED — owner explicitly accepted the recommended lifecycle baseline on 2026-10-05; `SECRETS_AND_CERTIFICATES.md` now records role-based secret ownership, least privilege, 90-day JWT/database/LDAP rotation, coordinated HS256 emergency invalidation with no claimed dual-key overlap, one-time bootstrap handling, Platform/Infrastructure TLS ownership, enterprise/public CA trust model, protected private-key storage, 45/30/14/7-day expiry thresholds, compromise revocation/replacement, emergency authority, and mandatory recovery evidence; tooling remains pending actual platform implementation | Security / Secrets / Certificates | Doc/Decision | Obtain owner-approved lifecycle decisions required by audit Check 13: secret-store ownership, JWT signing-secret routine/emergency rotation and invalidation sequence, datasource and LDAP credential rotation sequence, TLS termination ownership, certificate authority/trust model, certificate/private-key storage, renewal/expiry monitoring, revocation procedure, emergency authority, and recovery verification. Values/procedures remain TBD until approved. | `docs(security): approve secret and certificate lifecycle` | accountable Security/Operations owner decision |
 | HPR-P0-013 | COMPLETED — owner explicitly accepted the incident-governance baseline on 2026-10-05; `INCIDENT_RESPONSE.md` now records role-based incident command, technical/operations/DB/identity/legal/business ownership, SEV-1..SEV-4 taxonomy, immediate SEV-1 and 30-minute SEV-2 escalation targets, emergency containment authority, provider/database escalation ownership, Legal/Compliance notification authority, evidence ownership/integrity, mandatory SEV-1/2 PIR, and joint closure authority; personal contacts and jurisdiction-specific deadlines remain outside Git | Security / Incident Governance | Doc/Decision | Obtain owner-approved incident-governance decisions required by audit Check 13: incident commander/decision authority, SOC/on-call/security escalation contacts, severity taxonomy, notification/escalation timing, external IdP/LDAP/provider escalation contacts, legal/regulatory notification ownership, and evidence-retention ownership. Do not invent names, timelines, or regulatory obligations. | `docs(security): approve incident governance model` | accountable Security/Operations/Business owner decision |
 | HPR-P0-014 | COMPLETED — approved lifecycle/governance decisions are operationalized as platform-neutral runbooks covering routine/emergency JWT rotation and invalidation, PostgreSQL/LDAP rotation, bootstrap handling, certificate renewal/revocation, rotation evidence, recovery acceptance gates, incident activation/evidence/containment/eradication/recovery/communication/closure/PIR; product-specific runtime/secrets/certificate/SIEM commands remain deferred to actual P1 architecture | Security Operations | Doc | After HPR-P0-012 and HPR-P0-013 approvals, replace the applicable TBD sections in `SECRETS_AND_CERTIFICATES.md` and `INCIDENT_RESPONSE.md` with the approved concrete rotation, invalidation, certificate renewal/revocation, compromise escalation, recovery-verification, and closure procedures. Preserve provenance of the approving authority/decision. | `docs(security): operationalize security lifecycle procedures` | HPR-P0-012..013 |
-| HPR-P0-015 | NEXT | Repository / Independent Audit | Code/Doc | Re-run the complete P0 verification gate on the exact final remediation SHA: full Maven verification, HTTP Workbench leakage tests, architecture/security tests, PostgreSQL/Flyway verification, application health/startup, deterministic OpenAPI artifact generation/inspection, and documentary re-audit of Checks 1–13. Close the audit gap only if all 13 checks pass; otherwise record failures and keep P1 blocked. | `docs(roadmap): close P0 audit verification gaps` | HPR-P0-008..014 |
+| HPR-P0-015 | COMPLETED — P0 AUDIT GAP CLOSED. Exact final remediation SHA `850ee4770adc2aff50e81682223458ee28af1530` passed CI run #528 with Maven verification, architecture/security tests, PostgreSQL/Testcontainers/Flyway validation and migrations, application startup/health, Workbench HTTP regressions, deterministic OpenAPI generation/assertions, and artifact upload/inspection. Re-audit result: 13/13 checks pass. Compare from failed-audit SHA `dcf69e1a4a4b788cd125ba6289384642efc4caa0` shows no production-source changes, only CI/docs plus the focused Workbench HTTP test. | Repository / Independent Audit | Code/Doc | Re-run the complete P0 verification gate on the exact final remediation SHA: full Maven verification, HTTP Workbench leakage tests, architecture/security tests, PostgreSQL/Flyway verification, application health/startup, deterministic OpenAPI artifact generation/inspection, and documentary re-audit of Checks 1–13. Close the audit gap only if all 13 checks pass; otherwise record failures and keep P1 blocked. | `docs(roadmap): close P0 audit verification gaps` | HPR-P0-008..014 |
 
 ### Phase P1 — Production Infrastructure & Survivability
 
 | Code | Status | Domain/Module | Type | Exact execution requirement | Exact commit message | Depends on |
 |---|---|---|---|---|---|---|
-| HPR-P1-001 | PENDING — BLOCKED BY P0 AUDIT GAP | Runtime Architecture | Doc | Create `doc/architecture/RUNTIME_ARCHITECTURE.md` from approved production decisions only; do not invent deployment technology. | `docs(architecture): define production runtime architecture` | HPR-P0-015 completed |
+| HPR-P1-001 | NEXT | Runtime Architecture | Doc | Create `doc/architecture/RUNTIME_ARCHITECTURE.md` from approved production decisions only; do not invent deployment technology. | `docs(architecture): define production runtime architecture` | HPR-P0-015 completed |
 | HPR-P1-002 | BLOCKED-DECISION | Application Runtime | Infra/Doc | Approve stateless multi-node runtime and load-distribution mechanism; document node state, readiness/liveness integration and failure behavior. | `docs(operations): define application high availability model` | HPR-P1-001 + owner decision |
 | HPR-P1-003 | BLOCKED-DECISION | PostgreSQL | Infra/Doc | Approve PostgreSQL replication/failover topology, replication mode, failover authority, connection behavior, maintenance behavior and ownership. | `docs(database): define postgres high availability model` | HPR-P1-001 + owner decision |
 | HPR-P1-004 | BLOCKED-DECISION | DR | Infra/Doc | Obtain owner-approved RTO/RPO, backup frequency/retention and WAL/PITR strategy; keep values TBD until approved. | `docs(operations): define disaster recovery objectives` | owner decision |
@@ -145,17 +145,48 @@ The following audited statements govern prioritization:
 
 The next executable roadmap code is:
 
-`HPR-P0-015 — docs(roadmap): close P0 audit verification gaps`
+`HPR-P1-001 — docs(architecture): define production runtime architecture`
 
-HPR-P0-014 implementation evidence:
+### HPR-P0-015 final verification evidence
 
-- `SECRETS_AND_CERTIFICATES.md` contains routine/emergency JWT rotation, coordinated HS256 invalidation, PostgreSQL/LDAP rotation, one-time bootstrap handling, rotation evidence requirements, certificate renewal, private-key compromise handling, and a mandatory recovery acceptance gate;
-- `INCIDENT_RESPONSE.md` contains activation, severity/escalation, evidence preservation, containment authorization, eradication/correction, recovery verification, communication/notification ownership, closure, and mandatory SEV-1/SEV-2 PIR procedures;
-- approval provenance remains tied to the owner's explicit HPR-P0-012/HPR-P0-013 acceptance on 2026-10-05;
-- product-specific secret-store, deployment, restart, certificate-manager, SIEM/SOC, ingress/load-balancer, and trust-store commands remain dependent on later production architecture rather than fabricated;
-- HPR-P0-013 exact head `6b2d2bbfe1bb28c6fef663f635ad98fd7fc6d5d1` passed CI run #527 before this task began.
+- final remediation SHA: `850ee4770adc2aff50e81682223458ee28af1530`;
+- GitHub Actions run #528 / run id `37324883370`: **SUCCESS**;
+- job `Java 21 Maven verification` / job id `111812960810`: **SUCCESS**;
+- `./mvnw -B -q clean verify`: successful;
+- PostgreSQL service healthy; Testcontainers-backed DB tests executed;
+- Flyway repeatedly validated all 82 migrations and exercised full/partial migration paths;
+- `HidraApplicationTests` started successfully;
+- Workbench HTTP/controller/serialization regression suite executed under the successful Maven gate;
+- deterministic OpenAPI publication completed successfully;
+- artifact id `11351927107`, name `hidra-api-openapi-850ee4770adc2aff50e81682223458ee28af1530`, digest `sha256:04cc0b5ad26f971c0d6d5401192ef4f9e5a0f17995926f5e3a0eb710b9df8ae3`;
+- inspected artifact embeds `x-hidra-ci-source-sha: 850ee4770adc2aff50e81682223458ee28af1530`;
+- artifact contains valid `hidraBearerJwt` and `externalOidcBearerJwt` HTTP bearer JWT schemes;
+- GET `/api/v1/workbench/modules` requires `hidraBearerJwt`;
+- POST `/api/v1/identity/authentication/oidc/complete` requires `externalOidcBearerJwt`;
+- POST `/api/v1/identity/authentication/login` declares empty security;
+- comparison from failed-audit SHA `dcf69e1a4a4b788cd125ba6289384642efc4caa0` to final remediation SHA shows only `.github/workflows/ci.yml`, canonical `doc/**`, and `HidraOperationalWorkbenchHttpExposureTest.java` changed; no production source changed.
 
-HPR-P0-015 is a verification/closure gate only. Do not begin P1 unless all 13 independent-audit checks pass on the final exact remediation head.
+### Independent audit re-check
+
+| Check | Final status | Closure evidence |
+|---|---|---|
+| 1 | PASS | Previously VERIFIED; no production-source regression after audit baseline. |
+| 2 | PASS | Previously VERIFIED; no production-source regression after audit baseline. |
+| 3 | PASS | Previously VERIFIED; no production-source regression after audit baseline. |
+| 4 | PASS | Previously VERIFIED; no production-source regression after audit baseline. |
+| 5 | PASS | Previously VERIFIED; no production-source regression after audit baseline. |
+| 6 | PASS | HTTP Workbench discovery/list/detail/search regression coverage added and green in CI. |
+| 7 | PASS | Serialized responses explicitly assert absence of `passwordHash` and a distinctive hash marker. |
+| 8 | PASS | Previously VERIFIED; no production-source regression after audit baseline. |
+| 9 | PASS | Exact-SHA generated OpenAPI artifact inspected with both bearer schemes and representative security requirements. |
+| 10 | PASS | Previously VERIFIED; no production-source regression after audit baseline. |
+| 11 | PASS | Canonical security architecture/trust boundaries now map application/module/Workbench/telemetry transitions. |
+| 12 | PASS | Threat model now records telemetry/operator abuse scenarios with asset/actor/path/boundary/impact/control/residual-risk fields. |
+| 13 | PASS | Owner-approved secret/certificate and incident-governance decisions are operationalized into concrete platform-neutral procedures. |
+
+**Final P0 re-audit result: PASS — 13/13 checks satisfied.**
+
+P0 closure does not establish production readiness. P1 must now define and verify production runtime architecture, HA, DR, deployment, observability, and database operations.
 ## 7. Original P0 Closure Evidence
 
 HPR-P0-001..007 remain valid evidence that the original source-level P0 defects were remediated and that the executable tree was green under the roadmap gate that existed at the time.
@@ -196,3 +227,14 @@ Audit baseline:
 - P0 is reopened for **verification/completeness closure** only.
 - P1 is blocked until HPR-P0-015 establishes all 13 audit checks as passing.
 - Owner-dependent procedures must remain blocked rather than being fabricated.
+
+## 9. Independent P0 Re-Audit Closure
+
+Final remediation baseline: `850ee4770adc2aff50e81682223458ee28af1530`
+
+Final result: **PASS — 13/13 checks satisfied**.
+
+The failed-audit findings from `dcf69e1a4a4b788cd125ba6289384642efc4caa0` are closed by HPR-P0-008..015. Original verified checks remain preserved, and the six failed checks have direct remediation/evidence recorded above.
+
+P0 is therefore closed for security/audit verification. This does not imply P1 production survivability or full production readiness.
+

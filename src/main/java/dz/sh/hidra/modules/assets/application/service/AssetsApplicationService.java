@@ -7,7 +7,7 @@
  *
  * @Name        : AssetsApplicationService
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-12
+ * @UpdatedOn   : 2026-10-05
  *
  * @Type        : Class
  * @Layer       : Application
@@ -19,12 +19,16 @@
  */
 package dz.sh.hidra.modules.assets.application.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import dz.sh.hidra.modules.assets.application.command.CreateMaintenanceWorkOrderCommand;
 import dz.sh.hidra.modules.assets.application.command.RecordAssetConditionCommand;
 import dz.sh.hidra.modules.assets.application.command.RegisterMaintainableAssetCommand;
+import dz.sh.hidra.modules.organization.application.contract.assets.AssetsOrganizationUnitReferenceContract;
+import dz.sh.hidra.modules.party.application.contract.assets.AssetsPartyReferenceContract;
+import dz.sh.hidra.modules.topology.application.contract.assets.AssetsTopologyReferenceContract;
 import dz.sh.hidra.modules.assets.application.dto.AssetConditionSummaryDto;
 import dz.sh.hidra.modules.assets.application.dto.MaintainableAssetSummaryDto;
 import dz.sh.hidra.modules.assets.application.dto.MaintenanceWorkOrderSummaryDto;
@@ -36,6 +40,7 @@ import dz.sh.hidra.modules.assets.application.port.in.UpdateMaintainableAssetUse
 import dz.sh.hidra.modules.assets.application.port.out.AssetConditionRecordRepositoryPort;
 import dz.sh.hidra.modules.assets.application.port.out.MaintainableAssetRepositoryPort;
 import dz.sh.hidra.modules.assets.application.port.out.MaintenanceWorkOrderRepositoryPort;
+import dz.sh.hidra.modules.assets.domain.exception.InvalidAssetsValueException;
 import dz.sh.hidra.modules.assets.domain.exception.MaintainableAssetConflictException;
 import dz.sh.hidra.modules.assets.domain.model.AssetConditionRecord;
 import dz.sh.hidra.modules.assets.domain.model.MaintainableAsset;
@@ -58,20 +63,67 @@ public class AssetsApplicationService implements RegisterMaintainableAssetUseCas
     private final MaintainableAssetRepositoryPort maintainableAssetRepositoryPort;
     private final MaintenanceWorkOrderRepositoryPort workOrderRepositoryPort;
     private final AssetConditionRecordRepositoryPort conditionRecordRepositoryPort;
+    private final AssetsTopologyReferenceContract topologyReferenceContract;
+    private final AssetsOrganizationUnitReferenceContract organizationUnitReferenceContract;
+    private final AssetsPartyReferenceContract partyReferenceContract;
+
+    @Autowired
+    public AssetsApplicationService(
+            MaintainableAssetRepositoryPort maintainableAssetRepositoryPort,
+            MaintenanceWorkOrderRepositoryPort workOrderRepositoryPort,
+            AssetConditionRecordRepositoryPort conditionRecordRepositoryPort,
+            AssetsTopologyReferenceContract topologyReferenceContract,
+            AssetsOrganizationUnitReferenceContract organizationUnitReferenceContract,
+            AssetsPartyReferenceContract partyReferenceContract
+    ) {
+        this.maintainableAssetRepositoryPort = Objects.requireNonNull(maintainableAssetRepositoryPort, "Maintainable asset repository port must not be null.");
+        this.workOrderRepositoryPort = Objects.requireNonNull(workOrderRepositoryPort, "Maintenance work order repository port must not be null.");
+        this.conditionRecordRepositoryPort = Objects.requireNonNull(conditionRecordRepositoryPort, "Asset condition record repository port must not be null.");
+        this.topologyReferenceContract = Objects.requireNonNull(topologyReferenceContract, "Assets Topology reference contract must not be null.");
+        this.organizationUnitReferenceContract = Objects.requireNonNull(organizationUnitReferenceContract, "Assets OrganizationUnit reference contract must not be null.");
+        this.partyReferenceContract = Objects.requireNonNull(partyReferenceContract, "Assets Party reference contract must not be null.");
+    }
 
     public AssetsApplicationService(
             MaintainableAssetRepositoryPort maintainableAssetRepositoryPort,
             MaintenanceWorkOrderRepositoryPort workOrderRepositoryPort,
             AssetConditionRecordRepositoryPort conditionRecordRepositoryPort
     ) {
-        this.maintainableAssetRepositoryPort = Objects.requireNonNull(maintainableAssetRepositoryPort, "Maintainable asset repository port must not be null.");
-        this.workOrderRepositoryPort = Objects.requireNonNull(workOrderRepositoryPort, "Maintenance work order repository port must not be null.");
-        this.conditionRecordRepositoryPort = Objects.requireNonNull(conditionRecordRepositoryPort, "Asset condition record repository port must not be null.");
+        this(
+                maintainableAssetRepositoryPort,
+                workOrderRepositoryPort,
+                conditionRecordRepositoryPort,
+                (typeCode, id) -> java.util.Optional.empty(),
+                id -> false,
+                id -> false
+        );
     }
 
     @Override
     public MaintainableAssetSummaryDto registerMaintainableAsset(RegisterMaintainableAssetCommand command) {
         Objects.requireNonNull(command, "Register maintainable asset command must not be null.");
+        if (topologyReferenceContract.resolve(
+                command.topologyAssetTypeCode(),
+                command.topologyAssetId()
+        ).isEmpty()) {
+            throw new InvalidAssetsValueException(
+                    "MaintainableAsset topology reference must resolve through the Topology owner boundary."
+            );
+        }
+        if (command.ownerOrganizationUnitId() != null
+                && !command.ownerOrganizationUnitId().isBlank()
+                && !organizationUnitReferenceContract.exists(command.ownerOrganizationUnitId())) {
+            throw new InvalidAssetsValueException(
+                    "MaintainableAsset ownerOrganizationUnitId must reference an existing OrganizationUnit."
+            );
+        }
+        if (command.manufacturerPartyId() != null
+                && !command.manufacturerPartyId().isBlank()
+                && !partyReferenceContract.exists(command.manufacturerPartyId())) {
+            throw new InvalidAssetsValueException(
+                    "MaintainableAsset manufacturerPartyId must reference an existing Party."
+            );
+        }
         Instant now = Instant.now();
         MaintainableAsset asset = new MaintainableAsset(
                 AssetsId.newId().value(),

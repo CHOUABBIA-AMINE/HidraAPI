@@ -167,3 +167,24 @@ Assets must not own engineering defect assessment or remaining-life calculation.
 Domain, application, and infrastructure asset models must not use `@Schema` or OpenAPI annotations.
 
 `@Schema` is allowed only in assets API request/response models.
+
+
+---
+
+## HMR-045 — MaintainableAsset executable integrity
+
+MaintainableAsset keeps neutral external identifiers and snapshots, but new linkages must resolve through
+the owning bounded context before persistence.
+
+```text
+topologyAssetTypeCode + topologyAssetId -> Topology-owned Assets contract; mandatory
+ownerOrganizationUnitId               -> Organization-owned Assets contract when populated
+manufacturerPartyId                   -> Party-owned Assets contract when populated
+parentAssetId                         -> existing MaintainableAsset when populated
+modelId                               -> existing AssetModel when populated
+serialIdentityId                      -> existing AssetSerialIdentity when populated
+```
+
+No cross-module database foreign key is introduced. Same-module parent/model/serial references use
+nullable Assets-owned FKs, while the application and repository boundaries fail closed before writes.
+Manufacturer-role eligibility and Organization lifecycle eligibility are intentionally not invented.

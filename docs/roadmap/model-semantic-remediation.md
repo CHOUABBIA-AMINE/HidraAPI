@@ -2490,7 +2490,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-054`
 - Exact commit: `fix(assets): remediate semantic review MaintainableAsset`
-- Status: **Planned**
+- Status: **Completed** — mandatory typed Topology references and populated OrganizationUnit/Party references now resolve through owner-exported Assets contracts; populated parent/model/serial references fail closed and are protected by nullable same-module FKs.
 - SCC: SCC-03
 - Recorded upstream HMS dependencies: assets.MaintainableAsset, organization.OrganizationUnit, party.Party
 - HMSR correction count: 5
@@ -5062,7 +5062,7 @@ The following are execution registrations only; they do not change any HMR's sem
 | HMRB-009 | HMR-041 | Solo | **Completed.** ACTIVE PartyRoleAssignment uniqueness is protected by application pre-check plus a concurrency-safe partial unique index. |
 | HMRB-010 | HMR-042 | Solo | **Completed.** Pipeline fixed taxonomy is replaced by the Topology-owned PipelineType catalog reference architecture with migrated legacy values. |
 | HMRB-011 | HMR-043, HMR-044 | Coordinated Batch | **Completed.** SCC-02 WorkflowStep ordering/reference integrity and WorkflowStepAssignmentRule family/candidate-source integrity completed in separate commits. |
-| HMRB-012 | HMR-045 | Solo | **Blocked until HMR-045A observation.** Live preflight proved all three Assets-facing owner contracts and the Assets orchestration file were missing from the original execution scope. |
+| HMRB-012 | HMR-045 | Solo | **Completed.** MaintainableAsset external ownership and SCC-03/same-module reference integrity are enforced through deliberate owner contracts and Assets-owned FKs. |
 | HMRB-013 | HMR-046 | Solo | **Planned.** Simulation lifecycle eligibility, catalog-family semantics and completed-run immutability. |
 | HMRB-014 | HMR-047 | Solo | **Planned.** Concurrency-safe code uniqueness plus Organization owner validation. |
 | HMRB-015 | HMR-048 | Solo | **Planned.** Reporting access, approval/workflow and Organization-owner lifecycle orchestration. |
@@ -5125,8 +5125,8 @@ Additional batches may be registered or an existing planned envelope may be spli
 
 ### 12.6 Current next execution
 
-HMR-045A — MaintainableAsset multi-owner contract prerequisite
+HMRB-013 — HMR-046
 
-`docs(model-remediation): register MaintainableAsset owner prerequisites`
+Mode: Solo
 
-HMRB-011 is green. Observe this docs-only prerequisite once, then execute HMRB-012 / HMR-045 only; do not start HMRB-013 automatically.
+HMRB-012 is completed. Execute HMR-046 only after the HMR-045 head is green and exact Simulation lifecycle/catalog preflight passes; stop before HMRB-014.

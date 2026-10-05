@@ -82,7 +82,10 @@ class ArchitectureGuardrailTest {
             "dz.sh.hidra.modules.audit.application.contract.organization",
             "dz.sh.hidra.modules.audit.application.contract.alarm",
             "dz.sh.hidra.modules.party.application.contract.topology",
-            "dz.sh.hidra.modules.telemetry.application.contract.monitoring"
+            "dz.sh.hidra.modules.telemetry.application.contract.monitoring",
+            "dz.sh.hidra.modules.topology.application.contract.assets",
+            "dz.sh.hidra.modules.organization.application.contract.assets",
+            "dz.sh.hidra.modules.party.application.contract.assets"
     );
 
     /**

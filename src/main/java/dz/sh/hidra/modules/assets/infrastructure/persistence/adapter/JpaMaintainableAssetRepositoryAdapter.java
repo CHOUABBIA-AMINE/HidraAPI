@@ -7,7 +7,7 @@
  *
  * @Name        : JpaMaintainableAssetRepositoryAdapter
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-12
+ * @UpdatedOn   : 2026-10-05
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -20,6 +20,7 @@
 package dz.sh.hidra.modules.assets.infrastructure.persistence.adapter;
 
 import dz.sh.hidra.modules.assets.application.port.out.MaintainableAssetRepositoryPort;
+import dz.sh.hidra.modules.assets.domain.exception.InvalidAssetsValueException;
 import dz.sh.hidra.modules.assets.domain.model.MaintainableAsset;
 import dz.sh.hidra.modules.assets.infrastructure.persistence.mapper.AssetsPersistenceMapper;
 import dz.sh.hidra.modules.assets.infrastructure.persistence.repository.MaintainableAssetJpaRepository;
@@ -42,7 +43,28 @@ public class JpaMaintainableAssetRepositoryAdapter implements MaintainableAssetR
 
     @Override
     public MaintainableAsset save(MaintainableAsset model) {
-        return AssetsPersistenceMapper.toDomain(repository.save(AssetsPersistenceMapper.toEntity(model)));
+        Objects.requireNonNull(model, "MaintainableAsset must not be null.");
+
+        if (model.parentAssetId() != null && !repository.existsById(model.parentAssetId())) {
+            throw new InvalidAssetsValueException(
+                    "MaintainableAsset parentAssetId must reference an existing MaintainableAsset."
+            );
+        }
+        if (model.modelId() != null && !repository.existsModelById(model.modelId())) {
+            throw new InvalidAssetsValueException(
+                    "MaintainableAsset modelId must reference an existing AssetModel."
+            );
+        }
+        if (model.serialIdentityId() != null
+                && !repository.existsSerialIdentityById(model.serialIdentityId())) {
+            throw new InvalidAssetsValueException(
+                    "MaintainableAsset serialIdentityId must reference an existing AssetSerialIdentity."
+            );
+        }
+
+        return AssetsPersistenceMapper.toDomain(
+                repository.save(AssetsPersistenceMapper.toEntity(model))
+        );
     }
 
     @Override
@@ -53,5 +75,17 @@ public class JpaMaintainableAssetRepositoryAdapter implements MaintainableAssetR
     @Override
     public Optional<MaintainableAsset> findByIdForUpdate(String id) {
         return repository.findByIdForUpdate(id).map(AssetsPersistenceMapper::toDomain);
+    }
+
+    @Override
+    public boolean existsModelById(String modelId) {
+        return modelId != null && !modelId.isBlank() && repository.existsModelById(modelId.trim());
+    }
+
+    @Override
+    public boolean existsSerialIdentityById(String serialIdentityId) {
+        return serialIdentityId != null
+                && !serialIdentityId.isBlank()
+                && repository.existsSerialIdentityById(serialIdentityId.trim());
     }
 }

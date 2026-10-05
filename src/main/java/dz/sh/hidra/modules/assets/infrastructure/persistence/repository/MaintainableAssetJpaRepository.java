@@ -7,7 +7,7 @@
  *
  * @Name        : MaintainableAssetJpaRepository
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-12
+ * @UpdatedOn   : 2026-10-05
  *
  * @Type        : Interface
  * @Layer       : Infrastructure
@@ -38,4 +38,10 @@ public interface MaintainableAssetJpaRepository extends JpaRepository<Maintainab
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select asset from MaintainableAssetJpaEntity asset where asset.id = :id")
     Optional<MaintainableAssetJpaEntity> findByIdForUpdate(@Param("id") String id);
+
+    @Query(value = "select count(*) > 0 from hidra_asset_model where id = :id", nativeQuery = true)
+    boolean existsModelById(@Param("id") String id);
+
+    @Query(value = "select count(*) > 0 from hidra_asset_serial_identity where id = :id", nativeQuery = true)
+    boolean existsSerialIdentityById(@Param("id") String id);
 }

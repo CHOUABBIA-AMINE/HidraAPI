@@ -7,7 +7,7 @@
  *
  * @Name        : MaintainableAssetRepositoryPort
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-12
+ * @UpdatedOn   : 2026-10-05
  *
  * @Type        : Interface
  * @Layer       : Application
@@ -33,4 +33,8 @@ public interface MaintainableAssetRepositoryPort {
     Optional<MaintainableAsset> findById(String id);
 
     Optional<MaintainableAsset> findByIdForUpdate(String id);
+
+    boolean existsModelById(String modelId);
+
+    boolean existsSerialIdentityById(String serialIdentityId);
 }

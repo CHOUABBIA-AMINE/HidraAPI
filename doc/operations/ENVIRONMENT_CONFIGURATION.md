@@ -30,6 +30,11 @@ Do not rely on `SPRING_PROFILES_DEFAULT` for production. Production hosting must
 | `HIDRA_DATASOURCE_PASSWORD` | REQUIRED SECRET | Externalized |
 | `HIDRA_DATASOURCE_MAX_POOL_SIZE` | OPTIONAL | Repository default 30; not an approved capacity target |
 | `HIDRA_DATASOURCE_MIN_IDLE` | OPTIONAL | Repository default 10; not an approved capacity target |
+| `HIDRA_DATASOURCE_CONNECTION_TIMEOUT` | OPTIONAL | Default 30000 ms |
+| `HIDRA_DATASOURCE_VALIDATION_TIMEOUT` | OPTIONAL | Default 5000 ms |
+| `HIDRA_DATASOURCE_IDLE_TIMEOUT` | OPTIONAL | Explicit P1 baseline 600000 ms |
+| `HIDRA_DATASOURCE_MAX_LIFETIME` | OPTIONAL | Explicit P1 baseline 1800000 ms |
+| `HIDRA_DATASOURCE_KEEPALIVE_TIME` | OPTIONAL | Explicit P1 baseline 120000 ms; must remain below max lifetime |
 
 Production also enforces JPA schema validation and Flyway validate-on-migrate with clean disabled.
 

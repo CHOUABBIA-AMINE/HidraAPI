@@ -7,7 +7,7 @@
  *
  * @Name        : RiskRegisterJpaRepository
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-05
  *
  * @Type        : Interface
  * @Layer       : Infrastructure
@@ -21,6 +21,8 @@ package dz.sh.hidra.modules.risk.infrastructure.persistence.repository;
 
 import dz.sh.hidra.modules.risk.infrastructure.persistence.entity.RiskRegisterJpaEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -28,4 +30,13 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface RiskRegisterJpaRepository extends JpaRepository<RiskRegisterJpaEntity, String> {
+
+    @Query(value = """
+            SELECT CASE WHEN COUNT(*) > 0 THEN TRUE ELSE FALSE END
+            FROM hidra_risk_catalog_entry
+            WHERE id = :registerTypeId
+              AND catalog_name = 'RISK_REGISTER_TYPE'
+              AND active = TRUE
+            """, nativeQuery = true)
+    boolean isRegisterType(@Param("registerTypeId") String registerTypeId);
 }

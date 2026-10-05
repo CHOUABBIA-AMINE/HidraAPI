@@ -2807,7 +2807,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-058`
 - Exact commit: `fix(risk): remediate semantic review RiskRegister`
-- Status: **Planned**
+- Status: **Completed** — registerTypeId is constrained to active RISK_REGISTER_TYPE, populated ownerOrganizationUnitId resolves through Organization, typed scopes fail closed through registered Organization/Topology owner contracts, reviewFrequencyId remains explicitly unresolved/opaque, and RiskRegister creation is transactionally recorded through an Audit-owned RISK_REGISTER_CREATED contract.
 - SCC: —
 - Recorded upstream HMS dependencies: organization.OrganizationUnit
 - HMSR correction count: 5
@@ -5317,8 +5317,8 @@ Additional batches may be registered or an existing planned envelope may be spli
 
 ### 12.6 Current next execution
 
-HMR-049B — RiskRegister Audit taxonomy prerequisite
+HMRB-017 — HMR-050
 
-`docs(model-remediation): register RiskRegister audit taxonomy prerequisite`
+Mode: Solo
 
-HMR-049A is observed. Observe this docs-only Audit taxonomy prerequisite once, then execute HMRB-016 / HMR-049 only; do not start HMRB-017 automatically.
+HMRB-016 is completed. Execute HMR-050 only after the HMR-049 head is green and exact next-task preflight passes; stop before HMRB-018.

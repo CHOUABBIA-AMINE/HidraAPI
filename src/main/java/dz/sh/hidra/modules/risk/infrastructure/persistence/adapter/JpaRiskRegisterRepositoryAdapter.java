@@ -7,7 +7,7 @@
  *
  * @Name        : JpaRiskRegisterRepositoryAdapter
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-05
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -48,5 +48,12 @@ public class JpaRiskRegisterRepositoryAdapter implements RiskRegisterRepositoryP
     @Override
     public Optional<RiskRegister> findById(String id) {
         return repository.findById(id).map(RiskPersistenceMapper::toDomain);
+    }
+
+    @Override
+    public boolean isRegisterType(String registerTypeId) {
+        return registerTypeId != null
+                && !registerTypeId.isBlank()
+                && repository.isRegisterType(registerTypeId.trim());
     }
 }

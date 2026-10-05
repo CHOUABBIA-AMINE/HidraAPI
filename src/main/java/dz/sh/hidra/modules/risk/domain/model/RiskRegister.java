@@ -7,7 +7,7 @@
  *
  * @Name        : RiskRegister
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-10-05
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -84,6 +84,10 @@ import java.time.Instant;
         // HRA-051 required: registerTypeId
         if (registerTypeId == null || registerTypeId.isBlank()) {
             throw new InvalidRiskValueException("RiskRegister register type id must not be blank.");
+        }
+        // HMR-049 required: typed scope pair
+        if (scopeType == null || scopeType.isBlank()) {
+            throw new InvalidRiskValueException("RiskRegister scope type must not be blank.");
         }
         // HRA-051 required: scopeId
         if (scopeId == null || scopeId.isBlank()) {

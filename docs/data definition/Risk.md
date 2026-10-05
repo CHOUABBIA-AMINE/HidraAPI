@@ -287,6 +287,22 @@ code is unique per owner organization scope
 status must follow controlled lifecycle
 effectiveTo must be after effectiveFrom
 active register must have owner organization unit
+
+HMR-049 executable baseline:
+
+```text
+registerTypeId -> active RiskCatalogEntry.catalogName = RISK_REGISTER_TYPE
+ownerOrganizationUnitId -> Organization owner contract when populated
+scopeType + scopeId -> mandatory complete typed pair
+ORGANIZATION_UNIT -> Organization owner
+PIPELINE_SYSTEM / PIPELINE / FACILITY / EQUIPMENT -> Topology owner
+unsupported scope types -> fail closed until an owner contract is registered
+reviewFrequencyId -> nullable opaque controlled value; not RISK_REVIEW_TYPE
+RiskRegister creation -> Audit-owned RISK_REGISTER_CREATED event
+```
+
+No cross-module Organization/Topology/Audit database FK is introduced. The retired generic platform
+outbox/event-publisher design is not restored.
 ```
 
 ---

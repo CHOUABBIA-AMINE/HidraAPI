@@ -7,7 +7,7 @@
  *
  * @Name        : RiskApplicationService
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-05
  *
  * @Type        : Class
  * @Layer       : Application
@@ -20,7 +20,11 @@
 package dz.sh.hidra.modules.risk.application.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import dz.sh.hidra.modules.audit.application.contract.risk.RiskRegisterAuditContract;
+import dz.sh.hidra.modules.organization.application.contract.risk.RiskOrganizationReferenceContract;
+import dz.sh.hidra.modules.topology.application.contract.risk.RiskTopologyScopeReferenceContract;
 import dz.sh.hidra.modules.risk.application.command.AddRiskEvidenceCommand;
 import dz.sh.hidra.modules.risk.application.command.CreateRiskAssessmentCommand;
 import dz.sh.hidra.modules.risk.application.command.CreateRiskRegisterCommand;
@@ -35,6 +39,7 @@ import dz.sh.hidra.modules.risk.application.port.out.RiskEvidenceLinkRepositoryP
 import dz.sh.hidra.modules.risk.application.port.out.RiskRegisterRepositoryPort;
 import dz.sh.hidra.modules.risk.domain.model.RiskAssessment;
 import dz.sh.hidra.modules.risk.domain.model.RiskEvidenceLink;
+import dz.sh.hidra.modules.risk.domain.exception.InvalidRiskValueException;
 import dz.sh.hidra.modules.risk.domain.model.RiskRegister;
 import dz.sh.hidra.modules.risk.domain.value.RiskAssessmentStatus;
 import dz.sh.hidra.modules.risk.domain.value.RiskId;
@@ -47,25 +52,54 @@ import java.util.Objects;
  * Application service for risk register and assessment workflows.
  */
 @Service
-public final class RiskApplicationService implements CreateRiskRegisterUseCase, CreateRiskAssessmentUseCase, AddRiskEvidenceUseCase {
+public class RiskApplicationService implements CreateRiskRegisterUseCase, CreateRiskAssessmentUseCase, AddRiskEvidenceUseCase {
 
     private final RiskRegisterRepositoryPort registerRepositoryPort;
     private final RiskAssessmentRepositoryPort assessmentRepositoryPort;
     private final RiskEvidenceLinkRepositoryPort evidenceRepositoryPort;
+    private final RiskOrganizationReferenceContract organizationReferenceContract;
+    private final RiskTopologyScopeReferenceContract topologyScopeReferenceContract;
+    private final RiskRegisterAuditContract auditContract;
 
     public RiskApplicationService(
             RiskRegisterRepositoryPort registerRepositoryPort,
             RiskAssessmentRepositoryPort assessmentRepositoryPort,
-            RiskEvidenceLinkRepositoryPort evidenceRepositoryPort
+            RiskEvidenceLinkRepositoryPort evidenceRepositoryPort,
+            RiskOrganizationReferenceContract organizationReferenceContract,
+            RiskTopologyScopeReferenceContract topologyScopeReferenceContract,
+            RiskRegisterAuditContract auditContract
     ) {
         this.registerRepositoryPort = Objects.requireNonNull(registerRepositoryPort, "Risk register repository port must not be null.");
         this.assessmentRepositoryPort = Objects.requireNonNull(assessmentRepositoryPort, "Risk assessment repository port must not be null.");
         this.evidenceRepositoryPort = Objects.requireNonNull(evidenceRepositoryPort, "Risk evidence repository port must not be null.");
+        this.organizationReferenceContract = Objects.requireNonNull(organizationReferenceContract, "Risk Organization reference contract must not be null.");
+        this.topologyScopeReferenceContract = Objects.requireNonNull(topologyScopeReferenceContract, "Risk Topology scope contract must not be null.");
+        this.auditContract = Objects.requireNonNull(auditContract, "Risk Audit contract must not be null.");
     }
 
     @Override
+    @Transactional
     public RiskRegisterSummaryDto createRiskRegister(CreateRiskRegisterCommand command) {
         Objects.requireNonNull(command, "Create risk register command must not be null.");
+
+        if (!registerRepositoryPort.isRegisterType(command.registerTypeId())) {
+            throw new InvalidRiskValueException(
+                    "RiskRegister registerTypeId must belong to RISK_REGISTER_TYPE."
+            );
+        }
+
+        if (command.ownerOrganizationUnitId() != null
+                && !command.ownerOrganizationUnitId().isBlank()
+                && organizationReferenceContract.resolveOrganizationUnit(
+                        command.ownerOrganizationUnitId()
+                ).isEmpty()) {
+            throw new InvalidRiskValueException(
+                    "RiskRegister ownerOrganizationUnitId must reference an existing OrganizationUnit."
+            );
+        }
+
+        validateScope(command.scopeType(), command.scopeId());
+
         Instant now = Instant.now();
         RiskRegister register = new RiskRegister(
                 RiskId.newId().value(),
@@ -90,7 +124,50 @@ public final class RiskApplicationService implements CreateRiskRegisterUseCase, 
                 now,
                 now
         );
-        return RiskApplicationMapper.toSummary(registerRepositoryPort.save(register));
+        RiskRegister saved = registerRepositoryPort.save(register);
+        auditContract.appendCreated(new RiskRegisterAuditContract.CreationEvidence(
+                saved.id(),
+                saved.code(),
+                firstText(saved.nameFr(), saved.nameEn(), saved.nameAr()),
+                saved.createdByActorId(),
+                saved.createdByDisplayNameSnapshot(),
+                saved.ownerOrganizationUnitId(),
+                null,
+                now
+        ));
+        return RiskApplicationMapper.toSummary(saved);
+    }
+
+    private void validateScope(String scopeType, String scopeId) {
+        if (scopeType == null || scopeType.isBlank() || scopeId == null || scopeId.isBlank()) {
+            throw new InvalidRiskValueException(
+                    "RiskRegister scopeType and scopeId must form a complete nonblank pair."
+            );
+        }
+
+        String normalizedType = scopeType.trim().toUpperCase(java.util.Locale.ROOT);
+        boolean resolved = switch (normalizedType) {
+            case "ORGANIZATION_UNIT" ->
+                    organizationReferenceContract.resolveOrganizationUnit(scopeId).isPresent();
+            case "PIPELINE_SYSTEM", "PIPELINE", "FACILITY", "EQUIPMENT" ->
+                    topologyScopeReferenceContract.resolve(normalizedType, scopeId).isPresent();
+            default -> false;
+        };
+
+        if (!resolved) {
+            throw new InvalidRiskValueException(
+                    "RiskRegister scope must resolve through its registered owner boundary."
+            );
+        }
+    }
+
+    private static String firstText(String... values) {
+        for (String value : values) {
+            if (value != null && !value.isBlank()) {
+                return value.trim();
+            }
+        }
+        return null;
     }
 
     @Override

@@ -7,7 +7,7 @@
  *
  * @Name        : ArchitectureGuardrailTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-10-05
  *
  * @Type        : Class
  * @Layer       : Test
@@ -61,6 +61,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class ArchitectureGuardrailTest {
 
     private static final String MODULE_PREFIX = "dz.sh.hidra.modules.";
+    private static final String PLATFORM_PREFIX = "dz.sh.hidra.platform.";
+    private static final String REVIEWED_GENERIC_PERSISTENCE_READER =
+            "dz.sh.hidra.platform.workbench.HidraOperationalWorkbenchService";
+    private static final String WORKBENCH_EXPOSURE_POLICY =
+            "dz.sh.hidra.platform.workbench.HidraOperationalWorkbenchExposurePolicy";
 
     private static final JavaClasses PRODUCTION_CLASSES = new ClassFileImporter()
             .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
@@ -198,6 +203,57 @@ class ArchitectureGuardrailTest {
                         "org.springframework.data.."
                 )
                 .check(PRODUCTION_CLASSES);
+    }
+
+    @Test
+    void platformJpaAccessMustRemainRestrictedToReviewedWorkbenchBoundary() {
+        List<String> violations = new ArrayList<>();
+
+        for (JavaClass source : PRODUCTION_CLASSES) {
+            if (!source.getPackageName().startsWith(PLATFORM_PREFIX)) {
+                continue;
+            }
+
+            for (Dependency dependency : source.getDirectDependenciesFromSelf()) {
+                JavaClass target = dependency.getTargetClass();
+                String targetPackage = target.getPackageName();
+
+                boolean dependsOnJpa = targetPackage.equals("jakarta.persistence")
+                        || targetPackage.startsWith("jakarta.persistence.");
+                boolean dependsOnModulePersistence = targetPackage.startsWith(MODULE_PREFIX)
+                        && targetPackage.contains(".infrastructure.persistence");
+
+                if (!dependsOnJpa && !dependsOnModulePersistence) {
+                    continue;
+                }
+
+                boolean reviewedWorkbenchJpaDependency =
+                        REVIEWED_GENERIC_PERSISTENCE_READER.equals(source.getName())
+                                && dependsOnJpa
+                                && !dependsOnModulePersistence;
+
+                if (!reviewedWorkbenchJpaDependency) {
+                    violations.add(source.getName() + " -> " + target.getName());
+                }
+            }
+        }
+
+        assertTrue(
+                violations.isEmpty(),
+                () -> "Platform code must not introduce generic JPA/module-persistence access outside "
+                        + "the reviewed Workbench boundary. Violations: " + violations
+        );
+
+        JavaClass reviewedReader = PRODUCTION_CLASSES.get(REVIEWED_GENERIC_PERSISTENCE_READER);
+        boolean dependsOnExposurePolicy = reviewedReader.getDirectDependenciesFromSelf().stream()
+                .map(Dependency::getTargetClass)
+                .map(JavaClass::getName)
+                .anyMatch(WORKBENCH_EXPOSURE_POLICY::equals);
+
+        assertTrue(
+                dependsOnExposurePolicy,
+                "The reviewed Workbench persistence reader must retain the fail-closed exposure policy dependency."
+        );
     }
 
     @Test

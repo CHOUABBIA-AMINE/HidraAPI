@@ -4943,15 +4943,76 @@ The following are execution registrations only; they do not change any HMR's sem
 | HMRB-004 | HMR-024 | Solo | **Completed.** Terminal diagnostics, successful-run source lineage, and immutable projection-definition computation lineage are enforced. |
 | HMRB-005 | HMR-025 | Solo | **Completed.** Required analytical scope and the authoritative bounded readiness-status representation are aligned. |
 | HMRB-006 | HMR-026, HMR-027 | Batch | **Completed.** FeatureFlag ownership requiredness and CustodyDiscrepancy optional quantity-unit integrity are remediated in separate commits. |
+| HMRB-007 | HMR-038, HMR-039 | Batch | **Planned.** Narrow required-field and same-module reference integrity; no SCC or cross-module owner contract. |
+| HMRB-008 | HMR-040 | Solo | **Planned.** Cross-module Monitoring → Telemetry owner validation; keep solo pending exact owner-contract preflight. |
+| HMRB-009 | HMR-041 | Solo | **Planned.** Concurrency-safe one-ACTIVE PartyRoleAssignment uniqueness. |
+| HMRB-010 | HMR-042 | Solo | **Planned.** High-risk Pipeline fixed-taxonomy → catalog-reference redesign. |
+| HMRB-011 | HMR-043, HMR-044 | Coordinated Batch | **Planned, conditional preflight.** SCC-02 pair; execute together only if the existing Organization owner contracts are sufficient and migration/order evidence remains compatible. Otherwise split before mutation. |
+| HMRB-012 | HMR-045 | Solo | **Planned.** SCC-03 plus Topology/Organization/Party ownership and multiple same-module references. |
+| HMRB-013 | HMR-046 | Solo | **Planned.** Simulation lifecycle eligibility, catalog-family semantics and completed-run immutability. |
+| HMRB-014 | HMR-047 | Solo | **Planned.** Concurrency-safe code uniqueness plus Organization owner validation. |
+| HMRB-015 | HMR-048 | Solo | **Planned.** Reporting access, approval/workflow and Organization-owner lifecycle orchestration. |
+| HMRB-016 | HMR-049 | Solo | **Planned.** Risk typed scope, unresolved review-frequency semantics and audit/outbox behavior. |
+| HMRB-017 | HMR-050 | Solo | **Planned.** Integrity program-type family definition plus Organization owner validation. |
+| HMRB-018 | HMR-051 | Solo | **Planned.** LeakDetection typed Topology plus Organization owner validation. |
+| HMRB-019 | HMR-052 | Solo | **Planned.** Notification recipient/template-version/required-variable readiness invariants. |
+| HMRB-020 | HMR-053 | Solo | **Planned.** Telemetry trust gate, provenance consistency and ACTIVE-point eligibility. |
+| HMRB-021 | HMR-054 | Solo | **Blocked until prerequisite.** Equipment catalog reconciliation plus unresolved Party owner lookup. |
+| HMRB-022 | HMR-055 | Solo | **Planned.** Workflow start eligibility, target ownership, current-step coherence and non-terminal uniqueness. |
+| HMRB-023 | HMR-056 | Solo | **Planned.** Integration message same-module reference/coherence and unresolved controlled-value families. |
+| HMRB-024 | HMR-057 | Solo | **Planned.** Reporting run FK correction, definition/template lineage, queue eligibility and terminal invariants. |
+| HMRB-025 | HMR-058 | Solo | **Planned.** Risk scope set, scoring policy, approval evidence/workflow and immutability. |
+| HMRB-026 | HMR-059, HMR-060 | Batch | **Planned.** Narrow same-module reference protection plus append-only/retry-state integrity; no owner contract prerequisite or SCC. |
+| HMRB-027 | HMR-061 | Solo | **Planned.** Workflow transition composition, uniqueness and executable-condition governance. |
+| HMRB-028 | HMR-062 | Solo | **Planned.** Incident catalog, cross-context identity, Topology scope and lifecycle invariants. |
+| HMRB-029 | HMR-063 | Solo | **Planned.** Identity username/email concurrency-safe uniqueness plus Organization employee validation. |
+| HMRB-030 | HMR-064, HMR-065 | Coordinated Batch | **Planned, conditional preflight.** SCC-04 PlanRevision/OperationalPlan pair; chain in SCC-safe migration/application order and split if owner-contract or migration conflict appears. |
+| HMRB-031 | HMR-066 | Solo | **Planned.** Workflow task assignment/claim/completion lifecycle plus owner-controlled eligibility. |
+| HMRB-032 | HMR-067, HMR-068 | Coordinated Batch | **Planned, conditional preflight.** SCC-05 Document/DocumentVersion pair; preserve current-version/supersession ordering and split if Identity/Workflow owner-contract gaps appear. |
+| HMRB-033 | HMR-069 | Solo | **Planned.** Assets work-order same-module and multiple cross-context provenance references. |
+| HMRB-034 | HMR-070 | Solo | **Planned.** Custody ticket evidence plus Identity/Workflow/Audit ownership. |
+| HMRB-035 | HMR-071 | Solo | **Planned.** Integration dead-letter evidence, same-module references and manual-resolution identity. |
+| HMRB-036 | HMR-072 | Solo | **Planned.** Integrity assessment same-module plus Identity/Workflow owner validation. |
+| HMRB-037 | HMR-073, HMR-074, HMR-075, HMR-076 | Batch | **Planned.** Four consecutive narrow Organization corrections: one disabled-unit lifecycle guard and three mandatory-nullability alignments. |
+| HMRB-038 | HMR-077 | Solo | **Planned.** Risk external evidence tuple plus owner-controlled polymorphic evidence validation. |
+| HMRB-039 | HMR-078 | Solo | **Planned.** Simulation candidate-change catalog plus Topology target validation with no concrete owner contract yet registered. |
+| HMRB-040 | HMR-079 | Solo | **Planned.** Simulation recommendation catalog/reference integrity plus Audit publication evidence. |
+| HMRB-041 | HMR-080 | Solo | **Blocked until prerequisite.** Nomination has unresolved Party lookup and broader product/unit ownership reconciliation. |
+| HMRB-042 | HMR-081 | Solo | **Planned.** Workflow decision-authority, task ownership, actor evidence and race-safe action sequencing. |
+| HMRB-043 | HMR-082 | Solo | **Planned.** HSE case closure lifecycle and multi-owner references. |
+| HMRB-044 | HMR-083 | Solo | **Planned.** Audit export sanitization, purpose family, Workflow/Documents ownership and self-auditing behavior. |
+| HMRB-045 | HMR-084 | Solo | **Planned.** Documents polymorphic target validation with no concrete upstream owner registered. |
+| HMRB-046 | HMR-085 | Solo | **Planned.** High-risk authorization evaluation order, explainability and conditional decision persistence. |
+| HMRB-047 | HMR-086, HMR-087, HMR-088, HMR-089 | Batch | **Planned.** Four consecutive same-module Identity corrections with no cross-module owner prerequisite; preserve one commit/test contract per HMR. |
+| HMRB-048 | HMR-090 | Solo | **Planned.** Incident closure transaction and evidence/verification preconditions. |
+| HMRB-049 | HMR-091 | Solo | **Planned.** Incident relationship FK correction, family semantics and duplicate/inverse policy. |
+| HMRB-050 | HMR-092 | Solo | **Planned.** Incident response-action lifecycle eligibility and catalog family. |
+| HMRB-051 | HMR-093 | Solo | **Planned.** Reporting artifact FK correction plus Documents-owned evidence references. |
+| HMRB-052 | HMR-094 | Solo | **Planned.** Planning target value-shape, revision compatibility, Topology and Telemetry validation. |
+| HMRB-053 | HMR-095 | Solo | **Planned.** AuditEvent append-only ledger, catalog families and sensitive-payload redaction/limits. |
+| HMRB-054 | HMR-096 | Solo | **Planned.** HSE closure transactional lifecycle with Workflow/Identity ownership. |
+| HMRB-055 | HMR-097 | Solo | **Planned.** HSE CAPA lifecycle plus Assets/Organization/Workflow/Identity ownership. |
+| HMRB-056 | HMR-098 | Solo | **Planned.** Integrity case family definition and multi-module owner boundaries. |
+| HMRB-057 | HMR-099 | Solo | **Planned.** Workflow history append-only evidence and reference coherence. |
+| HMRB-058 | HMR-100 | Solo | **Planned.** Alarm aggregate lifecycle establishment; creation/acknowledgement/closure event atomicity. |
+| HMRB-059 | HMR-101, HMR-102 | Batch | **Planned.** Consecutive Audit evidence records; append-only semantics plus bounded same-module/catalog validation. |
+| HMRB-060 | HMR-103 | Solo | **Planned.** Monitoring deviation requires Planning/Telemetry owner validation and same-module evaluation coherence. |
+| HMRB-061 | HMR-104 | Solo | **Planned.** Alarm acknowledgement transactional lifecycle; high-risk lifecycle orchestration remains isolated. |
+| HMRB-062 | HMR-105 | Solo | **Planned.** Alarm closure transactional lifecycle, one-closure invariant and Workflow ownership. |
+| HMRB-063 | HMR-106 | Solo | **Planned.** Alarm shelving lifecycle, concurrency-safe one-ACTIVE invariant and deterministic automatic expiry. |
+| HMRB-064 | HMR-107 | Solo | **Blocked until R2.** Full exact-SHA build/test/Flyway/OpenAPI/architecture verification after every HMR-003…HMR-106 outcome is resolved. |
+| HMRB-065 | HMR-108 | Solo | **Blocked until HMR-107.** Documentation-only programme closure and HMS-007 gate decision. |
 
-Additional batches may be registered immediately before execution when live repository evidence
-shows that the same criteria are satisfied. Prefer batches of 3–4 for narrow same-module integrity
-or required-field alignment work; keep high-risk semantic redesigns solo.
+This table is the full remaining execution plan, not a blanket authorization to mutate future HMRs without preflight. Before each envelope starts, re-read the live HMR records and exact head. A planned multi-HMR envelope is automatically split before mutation if live evidence reveals an unregistered prerequisite, owner-contract gap, SCC/migration conflict, or materially larger semantic redesign.
+
+Carry-over blocker: HMR-009 remains unresolved in the production register and must be resolved (or formally deferred/skipped under Gate R2 rules) before HMR-107 can run. HMR-054 and HMR-080 likewise remain blocked at their planned positions until their owner-contract prerequisites are registered and completed.
+
+Additional batches may be registered or an existing planned envelope may be split immediately before execution when newer live repository evidence requires it. Prefer the plan above unless live evidence invalidates its compatibility assumptions.
 
 ### 12.6 Current next execution
 
-HMR-038 — analytics.MetricValue
+HMRB-007 — HMR-038 + HMR-039
 
-`fix(analytics): remediate semantic review MetricValue`
+Mode: Batch
 
-HMR-037 is completed. Execute HMR-038 only after the HMR-037 head is green; do not start HMR-039 automatically.
+HMR-037 is green. Execute HMR-038 and HMR-039 as two independent commits under HMRB-007 after one exact-head preflight; advance the branch to the final HMR-039 head and observe CI once. Stop before HMRB-008.

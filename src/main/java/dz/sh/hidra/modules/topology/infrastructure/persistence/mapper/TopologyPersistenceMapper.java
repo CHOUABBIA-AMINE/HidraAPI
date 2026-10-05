@@ -7,7 +7,7 @@
  *
  * @Name        : TopologyPersistenceMapper
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-04
+ * @UpdatedOn   : 2026-10-05
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -22,6 +22,7 @@ package dz.sh.hidra.modules.topology.infrastructure.persistence.mapper;
 import dz.sh.hidra.modules.topology.domain.model.*;
 import dz.sh.hidra.modules.topology.domain.value.ConnectionTypeReference;
 import dz.sh.hidra.modules.topology.domain.value.PipelineSystemType;
+import dz.sh.hidra.modules.topology.domain.value.PipelineType;
 import dz.sh.hidra.modules.topology.infrastructure.persistence.entity.*;
 
 public final class TopologyPersistenceMapper {
@@ -72,14 +73,17 @@ public final class TopologyPersistenceMapper {
         );
     }
 
-    public static PipelineJpaEntity toEntity(Pipeline model) { return new PipelineJpaEntity(
+    public static PipelineJpaEntity toEntity(
+            Pipeline model,
+            PipelineTypeJpaEntity pipelineType
+    ) { return new PipelineJpaEntity(
                 model.id(),
                 model.pipelineSystemId(),
                 model.code(),
                 model.nameAr(),
                 model.nameFr(),
                 model.nameEn(),
-                model.pipelineType(),
+                pipelineType,
                 model.nominalDiameter(),
                 model.diameterUnitCode(),
                 model.designPressure(),
@@ -96,7 +100,7 @@ public final class TopologyPersistenceMapper {
                 entity.nameAr(),
                 entity.nameFr(),
                 entity.nameEn(),
-                entity.pipelineType(),
+                toDomain(entity.pipelineType()),
                 entity.nominalDiameter(),
                 entity.diameterUnitCode(),
                 entity.designPressure(),
@@ -106,6 +110,16 @@ public final class TopologyPersistenceMapper {
                 entity.createdAt(),
                 entity.updatedAt()
         ); }
+    public static PipelineType toDomain(PipelineTypeJpaEntity entity) {
+        return new PipelineType(
+                entity.id(),
+                entity.code(),
+                entity.nameAr(),
+                entity.nameFr(),
+                entity.nameEn()
+        );
+    }
+
     public static TopologyConnectionJpaEntity toEntity(
             TopologyConnection model,
             ConnectionTypeJpaEntity connectionType

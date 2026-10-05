@@ -2343,7 +2343,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-050`
 - Exact commit: `fix(topology): remediate semantic review Pipeline`
-- Status: **Planned**
+- Status: **Completed** — Pipeline classification now uses an open Topology-owned catalog reference with seven migrated compatibility codes, FK-backed persistence, validated legacy backfill and stable-code visualization; TopologyStatus remains the lifecycle enum.
 - SCC: —
 - Recorded upstream HMS dependencies: topology.PipelineSystem
 - HMSR correction count: 1
@@ -5008,7 +5008,7 @@ The following are execution registrations only; they do not change any HMR's sem
 | HMRB-007 | HMR-038, HMR-039 | Batch | **Completed.** MetricValue scopeType requiredness and ConfigurationValue environment/version integrity completed in separate commits. |
 | HMRB-008 | HMR-040 | Solo | **Completed.** MonitoringRule populated telemetryPointId now resolves through a deliberate Telemetry-owned Monitoring contract with exact guardrail registration. |
 | HMRB-009 | HMR-041 | Solo | **Completed.** ACTIVE PartyRoleAssignment uniqueness is protected by application pre-check plus a concurrency-safe partial unique index. |
-| HMRB-010 | HMR-042 | Solo | **Blocked until HMR-042A observation.** Live preflight proved the Pipeline catalog table/entity/repository/migration and visualization compatibility scope were missing from the original registration. |
+| HMRB-010 | HMR-042 | Solo | **Completed.** Pipeline fixed taxonomy is replaced by the Topology-owned PipelineType catalog reference architecture with migrated legacy values. |
 | HMRB-011 | HMR-043, HMR-044 | Coordinated Batch | **Planned, conditional preflight.** SCC-02 pair; execute together only if the existing Organization owner contracts are sufficient and migration/order evidence remains compatible. Otherwise split before mutation. |
 | HMRB-012 | HMR-045 | Solo | **Planned.** SCC-03 plus Topology/Organization/Party ownership and multiple same-module references. |
 | HMRB-013 | HMR-046 | Solo | **Planned.** Simulation lifecycle eligibility, catalog-family semantics and completed-run immutability. |
@@ -5073,8 +5073,8 @@ Additional batches may be registered or an existing planned envelope may be spli
 
 ### 12.6 Current next execution
 
-HMR-042A — Pipeline classification catalog prerequisite
+HMRB-011 — HMR-043 + HMR-044
 
-`docs(model-remediation): register Pipeline catalog prerequisite`
+Mode: Coordinated Batch
 
-HMRB-009 is green. Observe this docs-only prerequisite once, then execute HMRB-010 / HMR-042 only; do not start HMRB-011 automatically.
+HMRB-010 is completed. Execute HMR-043 and HMR-044 together only after the HMR-042 head is green and exact SCC-02 preflight confirms their live migration/application ordering and owner-contract assumptions; split before mutation if that preflight fails. Stop before HMRB-012.

@@ -7,7 +7,7 @@
  *
  * @Name        : PipelineJpaEntity
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-05
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -40,9 +40,9 @@ public class PipelineJpaEntity {
     private String nameFr;
     @Column(name = "name_en", nullable = true, length = 255)
     private String nameEn;
-    @Enumerated(EnumType.STRING)
-    @Column(name = "pipeline_type", nullable = false, length = 80)
-    private PipelineType pipelineType;
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "pipeline_type_id", nullable = false)
+    private PipelineTypeJpaEntity pipelineType;
     @Column(name = "nominal_diameter", nullable = true, precision = 12, scale = 4)
     private BigDecimal nominalDiameter;
     @Column(name = "diameter_unit_code", nullable = true, length = 40)
@@ -68,7 +68,7 @@ public class PipelineJpaEntity {
             String nameAr,
             String nameFr,
             String nameEn,
-            PipelineType pipelineType,
+            PipelineTypeJpaEntity pipelineType,
             BigDecimal nominalDiameter,
             String diameterUnitCode,
             BigDecimal designPressure,
@@ -100,7 +100,7 @@ public class PipelineJpaEntity {
     public String nameAr() { return nameAr; }
     public String nameFr() { return nameFr; }
     public String nameEn() { return nameEn; }
-    public PipelineType pipelineType() { return pipelineType; }
+    public PipelineTypeJpaEntity pipelineType() { return pipelineType; }
     public BigDecimal nominalDiameter() { return nominalDiameter; }
     public String diameterUnitCode() { return diameterUnitCode; }
     public BigDecimal designPressure() { return designPressure; }

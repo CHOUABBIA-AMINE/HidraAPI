@@ -7,7 +7,7 @@
  *
  * @Name        : JpaTopologyMapVisualizationAdapter
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-11
+ * @UpdatedOn   : 2026-10-05
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -156,7 +156,7 @@ public class JpaTopologyMapVisualizationAdapter implements TopologyMapVisualizat
     private List<Feature> pipelineFeatures(Map<String, TopologyNodeJpaEntity> nodes, String query) {
         List<PipelineSegmentJpaEntity> segments = entityManager.createQuery("select e from PipelineSegmentJpaEntity e", PipelineSegmentJpaEntity.class).getResultList();
         return entityManager.createQuery("select e from PipelineJpaEntity e", PipelineJpaEntity.class).getResultList().stream()
-                .filter(e -> matches(query, e.code(), e.nameAr(), e.nameFr(), e.nameEn(), e.pipelineType(), e.status()))
+                .filter(e -> matches(query, e.code(), e.nameAr(), e.nameFr(), e.nameEn(), e.pipelineType().code(), e.status()))
                 .map(e -> aggregatePipeline(e, segments, nodes)).flatMap(Optional::stream).toList();
     }
 
@@ -174,7 +174,7 @@ public class JpaTopologyMapVisualizationAdapter implements TopologyMapVisualizat
         if (lines.isEmpty()) return Optional.empty();
         return Optional.of(new Feature("pipelines:" + pipeline.id(), new MultiLineStringGeometry(lines),
                 properties("pipelines", "pipeline", pipeline.id(), pipeline.code(), pipeline.nameAr(), pipeline.nameFr(), pipeline.nameEn(), name(pipeline.status()), null, null,
-                        pipeline.pipelineSystemId(), name(pipeline.pipelineType()), null, null, null, null, null)));
+                        pipeline.pipelineSystemId(), pipeline.pipelineType().code(), null, null, null, null, null)));
     }
 
     private Optional<Feature> aggregateSystem(PipelineSystemJpaEntity system, List<PipelineJpaEntity> pipelines,

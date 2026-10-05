@@ -573,3 +573,16 @@ PIPELINE_SEGMENT/pipelineSegmentId coupling is inferred by HMR-031.
 Topology validates populated Facility owner Party identities through the deliberate Party-owned
 `TopologyPartyReferenceContract`. Topology does not import Party domain, repository, JPA, or
 infrastructure types, and no cross-module database FK is created.
+
+
+---
+
+## HMR-042 — Pipeline classification catalog
+
+Pipeline classification now follows the repository-approved Topology catalog architecture used by
+PipelineSystem and TopologyConnection. `PipelineType` is an open reference object rather than a
+closed business enum; the seven former enum codes are seeded compatibility references only.
+
+Persistence stores `pipeline_type_id` with a same-module FK to
+`hidra_topology_pipeline_type(id)`. Existing legacy values are validated and backfilled before
+the old `pipeline_type` column is removed. Visualization emits stable catalog codes.

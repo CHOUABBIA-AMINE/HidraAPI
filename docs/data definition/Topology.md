@@ -168,6 +168,31 @@ MIXED
 The catalog may grow without a Java enum change. Arabic/French/English labels are optional until
 authoritative master data is provisioned; HMR-022 does not invent translations.
 
+### 5.2 Pipeline classification catalog
+
+`Pipeline.pipelineType` is a required reference to the Topology-owned `PipelineType` catalog.
+The former Java enum is replaced by an open reference object carrying stable `id`, `code`, and
+optional Arabic/French/English labels.
+
+The migration seeds only the seven classifications already present in the former enum:
+
+```text
+CRUDE_OIL
+CONDENSATE
+NATURAL_GAS
+LPG
+MULTI_PRODUCT
+WATER
+OTHER
+```
+
+These compatibility constants are not an exhaustive taxonomy. New catalog entries may be provisioned
+without a Java enum change. HMR-042 invents no labels or additional classifications.
+
+Persistence uses `pipeline_type_id -> hidra_topology_pipeline_type(id)`. The former
+`pipeline_type` string column is removed only after validation and backfill complete. Map/read
+projections expose the stable catalog code. `TopologyStatus` remains the Pipeline lifecycle enum.
+
 ---
 
 ## 6. Cross-module reference pattern

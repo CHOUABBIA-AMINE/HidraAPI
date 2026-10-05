@@ -2465,7 +2465,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 - Recorded upstream HMS dependencies: organization.OrganizationUnit, workflow.WorkflowDefinition, workflow.WorkflowStep
 - HMSR correction count: 2
 - Additive Flyway: not pre-authorized by HMR-002
-- Owner-contract prerequisite: Existing candidate owner contract(s): organization:src/main/java/dz/sh/hidra/modules/organization/application/port/in/OperationalScopeQueryUseCase.java; organization:src/main/java/dz/sh/hidra/modules/organization/application/port/in/OrganizationAdministrationQueryUseCase.java; organization:src/main/java/dz/sh/hidra/modules/organization/application/port/out/OperationalScopeTargetResolverPort.java
+- Owner-contract prerequisite: HMR-045A registered — live preflight proved no Assets-facing Topology, Organization, or Party owner contracts exist and the actual registration/update orchestration file was outside the original allowlist.
 - Exact write allowlist:
   - `docs/data definition/Workflow.md`
   - `docs/roadmap/model-semantic-remediation.md`
@@ -2526,6 +2526,58 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
   3. **Validate populated `ownerOrganizationUnitId` through the Organization owner boundary.** Do not introduce a cross-module database FK.
   4. **Validate populated `manufacturerPartyId` through the Party owner boundary.** Do not introduce a cross-module database FK or invent manufacturer-role eligibility.
   5. **Protect populated `modelId` and `serialIdentityId` same-module references.** Use nullable same-module FKs, application validation, or equivalent fail-closed integrity.
+
+#### HMR-045A — MaintainableAsset multi-owner contract prerequisite
+
+- Source: HMR-045 / HMSR-054 plus live Assets/Topology/Organization/Party boundary evidence.
+- Exact commit: `docs(model-remediation): register MaintainableAsset owner prerequisites`
+- Status: **Completed** — the missing owner-exported contracts, Assets orchestration file, focused owner-contract tests, and exact guardrail registrations are authorized; HMR-045A itself changes documentation only.
+- Type: documentation/architecture prerequisite.
+- Live evidence:
+  1. HMR-045 requires fail-closed validation of the mandatory typed Topology reference, optional OrganizationUnit owner, and optional manufacturer Party before a new linkage is persisted.
+  2. No `topology.application.contract.assets`, `organization.application.contract.assets`, or `party.application.contract.assets` package exists on live `main`.
+  3. The recorded Organization candidates are internal application ports and are not deliberate Assets-facing exports.
+  4. Topology already has owner repositories/services capable of resolving PipelineSystem, Pipeline, Facility, and Equipment identities, but its existing exported contracts are consumer-specific and must not be repurposed by importing another consumer's contract package.
+  5. Party already proves the owner-side existence pattern through `PartyRepositoryPort.findById(...)`, but its current exported contract is Topology-specific.
+  6. Organization can resolve OrganizationUnit existence through `OrganizationUnitRepositoryPort.findById(...)`, but no Assets-facing exported contract exists.
+  7. The authoritative MaintainableAsset registration/update orchestration is `AssetsApplicationService`, which is outside the original HMR-045 write allowlist.
+  8. `modelId` and `serialIdentityId` point to existing same-module tables `hidra_asset_model` and `hidra_asset_serial_identity`; `parentAssetId` points to `hidra_asset_maintainable_asset`.
+- Required decisions:
+  1. Topology must export a narrow Assets-facing contract that validates a typed Topology identity using neutral scalar `topologyAssetTypeCode + topologyAssetId` input and returns only neutral existence/current-display evidence; no Topology domain/JPA/repository type may cross the boundary.
+  2. Topology owner implementation may resolve only Topology entity types already supported by the live owner model; do not invent new asset-type vocabularies. Unsupported type codes fail closed.
+  3. Organization must export a narrow Assets-facing `OrganizationUnit` existence contract implemented through `OrganizationUnitRepositoryPort.findById(...)`. HMR-045 requires existence only; do not invent lifecycle/ACTIVE eligibility.
+  4. Party must export a narrow Assets-facing Party existence contract implemented through `PartyRepositoryPort.findById(...)`. Do not invent manufacturer-role eligibility.
+  5. `AssetsApplicationService` must validate the mandatory Topology reference and populated OrganizationUnit/Party references before registration; update paths must revalidate whenever a path can persist a new linkage. Existing updates that do not change linkage fields must not invent unrelated owner lookups.
+  6. Preserve SCC-03 for `parentAssetId`: direct self-reference remains rejected by the domain, populated parent IDs must exist, and database integrity may use a nullable same-table FK.
+  7. HMR-045 migration may add nullable same-module FKs:
+     - `parent_asset_id -> hidra_asset_maintainable_asset(id)`
+     - `model_id -> hidra_asset_model(id)`
+     - `serial_identity_id -> hidra_asset_serial_identity(id)`
+     No Topology, Organization, or Party cross-module FK is authorized.
+  8. Register exactly these new exported packages in both architecture guardrail registries:
+     - `dz.sh.hidra.modules.topology.application.contract.assets`
+     - `dz.sh.hidra.modules.organization.application.contract.assets`
+     - `dz.sh.hidra.modules.party.application.contract.assets`
+     Do not weaken algorithms or add wildcard/transitional exceptions.
+- Newly authorized HMR-045 production files in addition to the original allowlist:
+  - `src/main/java/dz/sh/hidra/modules/assets/application/service/AssetsApplicationService.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/application/contract/assets/AssetsTopologyReferenceContract.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/application/contract/assets/package-info.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/application/service/AssetsTopologyReferenceQueryService.java`
+  - `src/main/java/dz/sh/hidra/modules/organization/application/contract/assets/AssetsOrganizationUnitReferenceContract.java`
+  - `src/main/java/dz/sh/hidra/modules/organization/application/contract/assets/package-info.java`
+  - `src/main/java/dz/sh/hidra/modules/organization/application/service/AssetsOrganizationUnitReferenceQueryService.java`
+  - `src/main/java/dz/sh/hidra/modules/party/application/contract/assets/AssetsPartyReferenceContract.java`
+  - `src/main/java/dz/sh/hidra/modules/party/application/contract/assets/package-info.java`
+  - `src/main/java/dz/sh/hidra/modules/party/application/service/AssetsPartyReferenceQueryService.java`
+- Newly authorized HMR-045 test/guardrail files:
+  - `src/test/java/dz/sh/hidra/modules/topology/application/service/AssetsTopologyReferenceQueryServiceTest.java`
+  - `src/test/java/dz/sh/hidra/modules/organization/application/service/AssetsOrganizationUnitReferenceQueryServiceTest.java`
+  - `src/test/java/dz/sh/hidra/modules/party/application/service/AssetsPartyReferenceQueryServiceTest.java`
+  - `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java`
+  - `src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java`
+- HMR-045 remains the current production remediation after this prerequisite is observed. Do not start HMR-046 automatically.
+
 
 #### HMR-046 — simulation.SimulationRun
 
@@ -5010,7 +5062,7 @@ The following are execution registrations only; they do not change any HMR's sem
 | HMRB-009 | HMR-041 | Solo | **Completed.** ACTIVE PartyRoleAssignment uniqueness is protected by application pre-check plus a concurrency-safe partial unique index. |
 | HMRB-010 | HMR-042 | Solo | **Completed.** Pipeline fixed taxonomy is replaced by the Topology-owned PipelineType catalog reference architecture with migrated legacy values. |
 | HMRB-011 | HMR-043, HMR-044 | Coordinated Batch | **Completed.** SCC-02 WorkflowStep ordering/reference integrity and WorkflowStepAssignmentRule family/candidate-source integrity completed in separate commits. |
-| HMRB-012 | HMR-045 | Solo | **Planned.** SCC-03 plus Topology/Organization/Party ownership and multiple same-module references. |
+| HMRB-012 | HMR-045 | Solo | **Blocked until HMR-045A observation.** Live preflight proved all three Assets-facing owner contracts and the Assets orchestration file were missing from the original execution scope. |
 | HMRB-013 | HMR-046 | Solo | **Planned.** Simulation lifecycle eligibility, catalog-family semantics and completed-run immutability. |
 | HMRB-014 | HMR-047 | Solo | **Planned.** Concurrency-safe code uniqueness plus Organization owner validation. |
 | HMRB-015 | HMR-048 | Solo | **Planned.** Reporting access, approval/workflow and Organization-owner lifecycle orchestration. |
@@ -5073,8 +5125,8 @@ Additional batches may be registered or an existing planned envelope may be spli
 
 ### 12.6 Current next execution
 
-HMRB-012 — HMR-045
+HMR-045A — MaintainableAsset multi-owner contract prerequisite
 
-Mode: Solo
+`docs(model-remediation): register MaintainableAsset owner prerequisites`
 
-HMRB-011 is completed. Execute HMR-045 only after the HMRB-011 final head is green and after exact SCC-03 / owner-contract preflight; stop before HMRB-013.
+HMRB-011 is green. Observe this docs-only prerequisite once, then execute HMRB-012 / HMR-045 only; do not start HMRB-013 automatically.

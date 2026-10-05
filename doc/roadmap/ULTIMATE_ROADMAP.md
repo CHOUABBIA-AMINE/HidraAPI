@@ -111,7 +111,7 @@ The following audited statements govern prioritization:
 | HPR-P1-010 | BLOCKED-DECISION — operating model is complete, but independent P1 audit confirms executable alerting/SRE policy is not implemented; retained as the design-stage task and operationally completed only through HPR-P1-019 after HPR-P1-013 selects the monitoring/alert-routing platform and owners approve SLIs/SLOs/thresholds | Observability | Infra/Doc | Create `OBSERVABILITY_AND_SRE.md` and implement approved alerting from existing Actuator/Prometheus signals; do not invent SLOs. | `docs(operations): establish observability operating model` | HPR-P1-001 |
 | HPR-P1-011 | COMPLETED — canonical product-neutral database operations runbook created for PostgreSQL/Flyway operations, covering pre-change checks, schema migration authority, migration failure handling, connection-pool exhaustion, primary/standby failover and switchover, backup/WAL/PITR operations, maintenance, credential rotation coordination, data-integrity incidents, observability/evidence requirements, and stop/escalation criteria; no HA/backup/monitoring product or vendor command was invented | Database Operations | Doc | Create `DATABASE_OPERATIONS_RUNBOOK.md` covering Flyway, backup/restore, connection exhaustion, failover, maintenance and migration failures. | `docs(database): add database operations runbook` | HPR-P1-003..005 |
 | HPR-P1-012 | BLOCKED — independent P1 audit at SHA `f46f6c1ed7e324f66a0a26422a6dfa6da8bc3689` verified only 2/12 survivability checks; closure is prohibited until HPR-P1-013..020 are complete, HPR-P1-009 and HPR-P1-010 implementation blockers are resolved, and measured restore/PITR + application/PostgreSQL failover evidence exists on production-equivalent infrastructure | Survivability Verification | Infra/Doc | Execute and record approved restore/PITR and failover exercises; close P1 only from measured evidence. | `docs(roadmap): close P1 survivability verification` | HPR-P1-013..020 + HPR-P1-009 completed + HPR-P1-010 completed |
-| HPR-P1-013 | PENDING | Production Infrastructure Decisions | Decision/Doc | Obtain and record the concrete production infrastructure selections required to implement P1: deployment/runtime target, traffic-distribution mechanism, PostgreSQL HA/promotion/fencing/stable-endpoint mechanism, backup/WAL/PITR tooling and protected storage, secret/configuration injection mechanism, monitoring/alert-routing/logging platform, and the controlling enterprise policy identifier plus exact monthly backup recovery-point retention/hold rule. Preserve approved RTO/RPO and do not invent products or retention values. | `docs(operations): approve production infrastructure stack` | accountable Platform/DB/Security/Operations owner decisions |
+| HPR-P1-013 | BLOCKED-DECISION — owner accepted the recommended production technology stack on 2026-10-05: Linux VMs + systemd for HidraAPI, HAProxy for application traffic distribution, Patroni + etcd for PostgreSQL HA/leader coordination, HAProxy as the stable PostgreSQL endpoint, pgBackRest for backup/WAL/PITR with storage independent of database nodes, HashiCorp Vault for runtime secrets, Prometheus + Alertmanager for metrics/alerting, Grafana for dashboards, Loki for centralized logs, single-active realtime for P1, and local Spring cache retained only for non-authoritative optimization. The only unresolved HPR-P1-013 decision is the controlling enterprise policy identifier and exact monthly backup recovery-point retention/hold rule; no duration was invented. Runtime/HA/backup-tool/secret/observability selections are approved and may be implemented by their dependent HPRs. | Production Infrastructure Decisions | Decision/Doc | Obtain and record the concrete production infrastructure selections required to implement P1: deployment/runtime target, traffic-distribution mechanism, PostgreSQL HA/promotion/fencing/stable-endpoint mechanism, backup/WAL/PITR tooling and protected storage, secret/configuration injection mechanism, monitoring/alert-routing/logging platform, and the controlling enterprise policy identifier plus exact monthly backup recovery-point retention/hold rule. Preserve approved RTO/RPO and do not invent products or retention values. | `docs(operations): approve production infrastructure stack` | accountable Platform/DB/Security/Operations owner decisions |
 | HPR-P1-014 | PENDING | Runtime Safety | Code/Test | Enforce production-context startup safety so an omitted or wrong Spring profile cannot silently fall back to dev/default behavior in an approved production deployment; validate required production configuration and add automated negative tests for missing/wrong profile and mandatory inputs. | `fix(runtime): enforce production startup profile` | HPR-P1-013 deployment/runtime decision |
 | HPR-P1-015 | PENDING | Application HA | Infra/Code/Test/Doc | Implement the approved two-node HidraAPI runtime on the selected deployment/traffic platform, readiness-based admission/removal, graceful drain/replacement, and safe node-local-state behavior. Resolve production treatment for local cache, background executors, and realtime (shared mechanism, explicit single-active mode, or disabled mode) and demonstrate one-node loss without hidden sticky-session correctness. | `feat(runtime): implement application high availability` | HPR-P1-013 + HPR-P1-002 + HPR-P1-006 |
 | HPR-P1-016 | PENDING | PostgreSQL HA / Connections | Infra/Code/Test/Doc | Implement the selected PostgreSQL primary/standby replication, promotion/fencing and stable-endpoint mechanism; define explicit Hikari/JDBC recovery settings including approved max-lifetime/keepalive/idle behavior where applicable; document interrupted-transaction responsibility; execute controlled failover and prove connection replacement, single-writer authority, endpoint redirection and application read/write recovery. | `feat(database): implement postgres failover recovery` | HPR-P1-013 + HPR-P1-003 + HPR-P1-011 |
@@ -196,13 +196,41 @@ HPR-P1-012 closure evidence must include, at minimum:
 
 ## 6. Immediate Next Execution
 
-The independent P1 Infrastructure & Survivability Verification Audit at `f46f6c1ed7e324f66a0a26422a6dfa6da8bc3689` returned **FAIL — 2/12 VERIFIED**. HPR-P1-012 is therefore blocked and must not execute yet.
+HPR-P1-013 technology selections are owner-approved; its enterprise monthly backup-retention policy identifier/duration remains BLOCKED-DECISION and must be resolved before HPR-P1-017 can close.
 
 The next executable roadmap code is:
 
-`HPR-P1-013 — docs(operations): approve production infrastructure stack`
+`HPR-P1-014 — fix(runtime): enforce production startup profile`
 
-Execution order after HPR-P1-013 is HPR-P1-014 through HPR-P1-020 in dependency order. HPR-P1-012 executes last as the measured closure gate. Do not execute HPR-P2 work while P1 remains open.
+After HPR-P1-014, proceed through the implementation HPRs in dependency order. HPR-P1-012 executes last as the measured closure gate. Do not execute HPR-P2 work while P1 remains open.
+
+### HPR-P1-013 production infrastructure decision evidence
+
+Owner acceptance date: 2026-10-05.
+
+Approved stack:
+
+- HidraAPI runtime: Linux virtual machines with systemd-managed Java 21 services;
+- application traffic distribution: HAProxy;
+- PostgreSQL HA: Patroni-managed PostgreSQL with etcd quorum for leader/coordination state;
+- stable application-facing PostgreSQL endpoint: HAProxy;
+- database backup/WAL/PITR: pgBackRest;
+- backup repository/storage: protected storage independent from the live PostgreSQL primary/standby nodes and failure path;
+- runtime secrets/configuration: HashiCorp Vault for secret material, with non-secret configuration externalized through the approved runtime mechanism;
+- metrics collection: Prometheus;
+- alert evaluation/routing: Alertmanager;
+- dashboards: Grafana;
+- centralized application logs: Grafana Loki;
+- realtime for P1: single-active realtime operation while REST remains multi-node; no clustered realtime HA claim until a shared broker/mechanism is separately approved and verified;
+- cache for P1: retain Spring process-local cache only for non-authoritative optimization; do not introduce Redis solely for P1;
+- operational backup retention remains the already-approved 35-day window.
+
+Still unresolved:
+
+- controlling enterprise/SONATRACH records-policy identifier for monthly retained recovery points;
+- exact monthly backup recovery-point retention/hold duration/rule under that policy.
+
+No monthly duration is inferred or fabricated. HPR-P1-017 may implement pgBackRest/WAL/PITR mechanics and 35-day operational retention, but it cannot be marked complete until the monthly policy rule is supplied and enforced.
 
 ### P1 independent audit ingestion evidence
 

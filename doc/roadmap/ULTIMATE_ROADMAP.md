@@ -76,8 +76,8 @@ The following audited statements govern prioritization:
 | HPR-P0-001 | COMPLETED — fail-closed opt-in resource/field policy implemented in the task commit containing this status transition; default exposure is empty; credential/secret resources and password/secret fields are prohibited | Platform / Workbench / Identity | Code | Re-inspect the exact-head Workbench path, replace automatic metamodel exposure with a fail-closed approved-resource policy, replace unrestricted reflective response fields with a fail-closed approved-field/API-safe projection policy, and explicitly prevent exposure of credential/secret persistence including `LocalCredentialJpaEntity.passwordHash`. | `fix(platform): secure operational workbench data exposure` | Bootstrap |
 | HPR-P0-002 | COMPLETED — focused policy/service regressions added for default-deny discovery, explicit fields, identifier requirement, unknown fields, credential/secret rejection, list/detail/search attribute exposure, hidden filter/sort rejection, and `passwordHash` prohibition | Platform / Workbench / Identity | Code | Add focused regression tests covering list, detail, filter/search and generic attribute maps; assert that credential resources and `passwordHash` cannot be returned. | `test(platform): guard workbench sensitive data exposure` | HPR-P0-001 |
 | HPR-P0-003 | COMPLETED — `ArchitectureGuardrailTest` now restricts platform JPA access to the reviewed Workbench reader, forbids platform dependencies on module persistence packages, and requires that reader to retain the fail-closed exposure-policy dependency | Architecture Testing | Code | Extend architecture/security guardrails so a future generic platform reader cannot silently introduce unrestricted module-JPA exposure outside an explicitly reviewed boundary. | `test(architecture): guard generic persistence exposure` | HPR-P0-001 |
-| HPR-P0-004 | NEXT | API / Security | Code | Add machine-readable OpenAPI security scheme and applicable security requirements for secured endpoints without weakening runtime security. | `fix(api): declare openapi security requirements` | HPR-P0-001 |
-| HPR-P0-005 | PENDING | Platform / Logging | Code | Revalidate caller-supplied actor-header handling; ensure it is not represented as authenticated audit identity unless a verified binding exists; correct code/tests/documentation only where evidence requires it. | `fix(platform): clarify audit actor provenance` | HPR-P0-001 |
+| HPR-P0-004 | COMPLETED — generated OpenAPI now declares separate Hidra-issued JWT and external-OIDC bearer schemes; ordinary protected operations use Hidra bearer, OIDC completion uses external OIDC bearer, and verified public endpoints are explicitly unauthenticated | API / Security | Code | Add machine-readable OpenAPI security scheme and applicable security requirements for secured endpoints without weakening runtime security. | `fix(api): declare openapi security requirements` | HPR-P0-001 |
+| HPR-P0-005 | NEXT | Platform / Logging | Code | Revalidate caller-supplied actor-header handling; ensure it is not represented as authenticated audit identity unless a verified binding exists; correct code/tests/documentation only where evidence requires it. | `fix(platform): clarify audit actor provenance` | HPR-P0-001 |
 | HPR-P0-006 | PENDING | Security | Doc | Complete canonical security documents: `SECURITY_ARCHITECTURE.md`, `TRUST_BOUNDARIES.md`, `THREAT_MODEL.md`, `SECRETS_AND_CERTIFICATES.md`, and `INCIDENT_RESPONSE.md`, using only verified current controls and explicit TARGET/TBD markers. | `docs(security): establish canonical security baseline` | HPR-P0-001..005 |
 | HPR-P0-007 | PENDING | Repository | Code/Doc | Run full Maven verification, architecture/security tests, database/Flyway startup verification and deterministic OpenAPI generation; record exact-head evidence and close P0 only if all required checks pass. | `docs(roadmap): close P0 security remediation` | HPR-P0-001..006 |
 
@@ -133,13 +133,15 @@ The following audited statements govern prioritization:
 
 The next executable roadmap code is:
 
-`HPR-P0-004 — fix(api): declare openapi security requirements`
+`HPR-P0-005 — fix(platform): clarify audit actor provenance`
 
-HPR-P0-003 implementation evidence:
+HPR-P0-004 implementation evidence:
 
-- `ArchitectureGuardrailTest` now fails if any platform class other than the explicitly reviewed `HidraOperationalWorkbenchService` introduces a direct `jakarta.persistence` dependency;
-- platform code is forbidden from directly depending on business-module `infrastructure.persistence` packages, including the reviewed Workbench boundary;
-- the reviewed Workbench reader must retain a direct dependency on `HidraOperationalWorkbenchExposurePolicy`, preventing removal of the fail-closed policy without an architecture-test failure;
-- HPR-P0-002 CI run #517 completed successfully on exact head `42e000fa789c3ccfc0f7644e6dcf954fa428a339` before this task began.
+- `HidraOpenApiSecurityConfiguration` centrally declares `hidraBearerJwt` for Hidra-issued API bearer tokens and `externalOidcBearerJwt` for the OIDC completion bridge;
+- generated ordinary protected operations receive the Hidra bearer requirement;
+- `/api/v1/identity/authentication/oidc/complete` receives the external OIDC bearer requirement matching its dedicated Spring Security filter chain;
+- verified public login, OIDC bootstrap metadata, and public health/info paths are explicitly unauthenticated in the generated contract;
+- `HidraOpenApiSecurityConfigurationTest` covers both schemes and representative protected/public operation classification;
+- HPR-P0-003 CI run #518 completed successfully on exact head `fe82015b029d170a9d7239a83d5f71d20e46416a` before this task began.
 
-Do not execute HPR-P0-005 or later work as part of HPR-P0-004.
+Do not execute HPR-P0-006 or later work as part of HPR-P0-005.

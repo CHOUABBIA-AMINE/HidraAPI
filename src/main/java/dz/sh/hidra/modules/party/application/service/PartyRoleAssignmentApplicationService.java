@@ -7,7 +7,7 @@
  *
  * @Name        : PartyRoleAssignmentApplicationService
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-05
  *
  * @Type        : Class
  * @Layer       : Application
@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import dz.sh.hidra.modules.party.application.command.AssignPartyRoleCommand;
 import dz.sh.hidra.modules.party.application.port.in.AssignPartyRoleUseCase;
 import dz.sh.hidra.modules.party.application.port.out.PartyRoleAssignmentRepositoryPort;
+import dz.sh.hidra.modules.party.domain.exception.InvalidPartyValueException;
 import dz.sh.hidra.modules.party.domain.model.PartyRoleAssignment;
 import dz.sh.hidra.modules.party.domain.value.PartyId;
 import dz.sh.hidra.modules.party.domain.value.PartyRoleAssignmentStatus;
@@ -46,6 +47,11 @@ public final class PartyRoleAssignmentApplicationService implements AssignPartyR
     @Override
     public String assignRole(AssignPartyRoleCommand command) {
         Objects.requireNonNull(command, "Assign party role command must not be null.");
+        if (repositoryPort.existsActiveByPartyIdAndRoleId(command.partyId(), command.roleId())) {
+            throw new InvalidPartyValueException(
+                    "Party already has an ACTIVE assignment for the requested role."
+            );
+        }
         Instant now = Instant.now();
         PartyRoleAssignment assignment = new PartyRoleAssignment(
                 PartyId.newId().value(),

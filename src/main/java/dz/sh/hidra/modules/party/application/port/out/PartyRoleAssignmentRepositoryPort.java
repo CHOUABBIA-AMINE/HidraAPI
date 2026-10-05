@@ -7,7 +7,7 @@
  *
  * @Name        : PartyRoleAssignmentRepositoryPort
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-05
  *
  * @Type        : Interface
  * @Layer       : Application
@@ -31,4 +31,6 @@ public interface PartyRoleAssignmentRepositoryPort {
     PartyRoleAssignment save(PartyRoleAssignment model);
 
     Optional<PartyRoleAssignment> findById(String id);
+
+    boolean existsActiveByPartyIdAndRoleId(String partyId, String roleId);
 }

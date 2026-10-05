@@ -7,7 +7,7 @@
  *
  * @Name        : JpaPartyRoleAssignmentRepositoryAdapter
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-05
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -21,6 +21,7 @@ package dz.sh.hidra.modules.party.infrastructure.persistence.adapter;
 
 import dz.sh.hidra.modules.party.application.port.out.PartyRoleAssignmentRepositoryPort;
 import dz.sh.hidra.modules.party.domain.model.PartyRoleAssignment;
+import dz.sh.hidra.modules.party.domain.value.PartyRoleAssignmentStatus;
 import dz.sh.hidra.modules.party.infrastructure.persistence.mapper.PartyPersistenceMapper;
 import dz.sh.hidra.modules.party.infrastructure.persistence.repository.PartyRoleAssignmentJpaRepository;
 import org.springframework.stereotype.Component;
@@ -50,5 +51,17 @@ public class JpaPartyRoleAssignmentRepositoryAdapter implements PartyRoleAssignm
     @Override
     public Optional<PartyRoleAssignment> findById(String id) {
         return repository.findById(id).map(PartyPersistenceMapper::toDomain);
+    }
+
+    @Override
+    public boolean existsActiveByPartyIdAndRoleId(String partyId, String roleId) {
+        if (partyId == null || partyId.isBlank() || roleId == null || roleId.isBlank()) {
+            return false;
+        }
+        return repository.existsByPartyIdAndRoleIdAndStatus(
+                partyId.trim(),
+                roleId.trim(),
+                PartyRoleAssignmentStatus.ACTIVE
+        );
     }
 }

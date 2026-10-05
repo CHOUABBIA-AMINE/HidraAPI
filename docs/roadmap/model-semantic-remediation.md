@@ -2312,7 +2312,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-049`
 - Exact commit: `fix(party): remediate semantic review PartyRoleAssignment`
-- Status: **Planned**
+- Status: **Completed** — duplicate ACTIVE assignments for the same Party/PartyRole fail at application pre-check and are race-safe under a PostgreSQL partial unique index; historical non-ACTIVE rows remain unaffected.
 - SCC: —
 - Recorded upstream HMS dependencies: party.Party
 - HMSR correction count: 1
@@ -4975,7 +4975,7 @@ The following are execution registrations only; they do not change any HMR's sem
 | HMRB-006 | HMR-026, HMR-027 | Batch | **Completed.** FeatureFlag ownership requiredness and CustodyDiscrepancy optional quantity-unit integrity are remediated in separate commits. |
 | HMRB-007 | HMR-038, HMR-039 | Batch | **Completed.** MetricValue scopeType requiredness and ConfigurationValue environment/version integrity completed in separate commits. |
 | HMRB-008 | HMR-040 | Solo | **Completed.** MonitoringRule populated telemetryPointId now resolves through a deliberate Telemetry-owned Monitoring contract with exact guardrail registration. |
-| HMRB-009 | HMR-041 | Solo | **Planned.** Concurrency-safe one-ACTIVE PartyRoleAssignment uniqueness. |
+| HMRB-009 | HMR-041 | Solo | **Completed.** ACTIVE PartyRoleAssignment uniqueness is protected by application pre-check plus a concurrency-safe partial unique index. |
 | HMRB-010 | HMR-042 | Solo | **Planned.** High-risk Pipeline fixed-taxonomy → catalog-reference redesign. |
 | HMRB-011 | HMR-043, HMR-044 | Coordinated Batch | **Planned, conditional preflight.** SCC-02 pair; execute together only if the existing Organization owner contracts are sufficient and migration/order evidence remains compatible. Otherwise split before mutation. |
 | HMRB-012 | HMR-045 | Solo | **Planned.** SCC-03 plus Topology/Organization/Party ownership and multiple same-module references. |
@@ -5041,8 +5041,8 @@ Additional batches may be registered or an existing planned envelope may be spli
 
 ### 12.6 Current next execution
 
-HMRB-009 — HMR-041
+HMRB-010 — HMR-042
 
 Mode: Solo
 
-HMRB-008 is completed. Execute HMR-041 only after the HMR-040 head is green; stop before HMRB-010.
+HMRB-009 is completed. Execute HMR-042 only after the HMR-041 head is green and after exact catalog-redesign preflight; stop before HMRB-011.

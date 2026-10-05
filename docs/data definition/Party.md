@@ -361,6 +361,8 @@ Rules:
 
 ```text
 A party may not have duplicate active assignments for the same role.
+The duplicate-ACTIVE invariant is enforced both by an application pre-check and a PostgreSQL partial unique index on (partyId, roleId) for ACTIVE rows so concurrent writes cannot create duplicates.
+Historical SUSPENDED, EXPIRED, and REVOKED assignments remain preservable and are not included in that uniqueness key.
 A role assignment must be valid before another module may use that party for the matching role.
 Historical role assignments must not be physically deleted.
 ```

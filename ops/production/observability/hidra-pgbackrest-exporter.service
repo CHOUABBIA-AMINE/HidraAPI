@@ -1,0 +1,15 @@
+[Unit]
+Description=Hidra pgBackRest Prometheus metrics exporter
+After=network-online.target
+
+[Service]
+Type=simple
+User=postgres
+Environment=HIDRA_PGBACKREST_CONFIG=/etc/pgbackrest/pgbackrest.conf
+Environment=HIDRA_PGBACKREST_EXPORTER_BIND=127.0.0.1
+Environment=HIDRA_PGBACKREST_EXPORTER_PORT=9188
+ExecStart=/usr/bin/python3 /opt/hidra/ops/production/observability/pgbackrest_exporter.py
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

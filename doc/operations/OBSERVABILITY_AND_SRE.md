@@ -2,7 +2,7 @@
 
 ## Status
 
-**OPERATING MODEL ESTABLISHED / ALERTING IMPLEMENTATION BLOCKED-DECISION — HPR-P1-010**
+**OPERATING MODEL ESTABLISHED / P1 ALERTING IMPLEMENTED-PENDING-LIVE-EXERCISE — HPR-P1-010 + HPR-P1-019**
 
 Execution base: `39da2f1bf9bf4e6305b29a6b5bfd34a287bc6fd2`
 
@@ -25,7 +25,7 @@ It does **not** invent:
 - an on-call/paging product;
 - a trace backend.
 
-Executable production alert rules remain blocked until those decisions are approved.
+Executable P1 production alert rules are now implemented under `ops/production/observability/` after owner approval on 2026-10-05. Live receiver delivery and production-equivalent alert exercises remain pending.
 
 ## 1. Current Repository-Verified Observability Surface
 
@@ -129,9 +129,9 @@ Use available server/Micrometer HTTP signals to observe:
 - abnormal increase in server errors;
 - abnormal latency/change from established baseline.
 
-**DECISION REQUIRED**
+**OWNER-APPROVED 2026-10-05**
 
-No numeric latency, error-rate, percentile, or availability threshold is approved yet.
+Monthly availability SLO is 99.9% excluding formally approved maintenance. HTTP 5xx and latency thresholds are implemented in the P1 Prometheus rules: warning >1% 5xx for 10m, critical >2% for 5m, p95 warning >1s for 10m and critical >2s for 5m.
 
 ### 3.3 JVM / process
 
@@ -143,9 +143,9 @@ Use available runtime metrics to observe:
 - CPU/process utilization where exported;
 - process uptime/restarts.
 
-**DECISION REQUIRED**
+**OWNER-APPROVED 2026-10-05**
 
-No numeric JVM/CPU/memory paging threshold is approved yet.
+Process CPU warning/critical thresholds are >85% for 15m and >95% for 5m. JVM heap warning/critical thresholds are >85% for 10m and >95% for 5m.
 
 ### 3.4 PostgreSQL client / Hikari pool
 
@@ -287,7 +287,7 @@ Alerting must be able to notify the responsible operational role when:
 - database write authority is unavailable or ambiguous;
 - a security containment event intentionally removes service availability.
 
-Exact evaluation windows and paging mechanics are not approved.
+Evaluation windows for P1 service availability are owner-approved: zero active HidraAPI nodes for 1m is critical; fewer than two active nodes for 2m is warning/degraded HA. Receiver endpoints and named on-call destinations remain controlled environment configuration.
 
 ### 6.2 HA degradation conditions
 
@@ -324,7 +324,7 @@ Alerting must support detection of:
 - material request-latency degradation;
 - resource exhaustion trends.
 
-Numeric evaluation thresholds remain owner decisions.
+Numeric P1 thresholds are owner-approved and implemented in `ops/production/observability/prometheus/rules/hidra-alerts.yml`. Live delivery and alert-resolution evidence remains pending.
 
 ### 6.5 Security conditions
 
@@ -355,9 +355,9 @@ Named contacts/on-call rotations remain in the organization's controlled operati
 
 ## 8. SLO / Error-Budget Governance
 
-**DECISION REQUIRED**
+**P1 SLO BASELINE APPROVED 2026-10-05**
 
-No production SLOs or error budgets are currently approved.
+The P1 service availability SLO is 99.9% monthly, excluding formally approved maintenance. A formal error-budget operating policy/burn-rate automation beyond the approved alert thresholds is not introduced by P1.
 
 Therefore HPR-P1-010 does not invent:
 
@@ -402,9 +402,9 @@ Do not encode arbitrary values merely to make an alert rule executable.
 
 ## 10. Monitoring and Alerting Platform Decision
 
-**BLOCKING DECISION**
+**PLATFORM DECISION RESOLVED 2026-10-05**
 
-To implement executable alerting, Platform/Infrastructure must approve the production:
+The owner-approved production stack is:
 
 - metrics collection/storage platform;
 - Prometheus-compatible scrape/ingestion mechanism;
@@ -415,7 +415,7 @@ To implement executable alerting, Platform/Infrastructure must approve the produ
 - SIEM integration if required;
 - retention/access-control model.
 
-This document remains implementation-neutral until that selection is made.
+Selected platforms are Prometheus, Alertmanager, Grafana and Loki. Repository implementation is under `ops/production/observability/`; production-equivalent receiver delivery and integration exercises remain required.
 
 ## 11. Logging Operating Model
 

@@ -63,6 +63,9 @@ jobs:
       - name: Validate controlled release artifacts
         run: bash ops/production/release/validate-release-artifacts.sh
 
+      - name: Validate production observability artifacts
+        run: bash ops/production/observability/validate-observability-artifacts.sh
+
       - name: Set up Java 21
         uses: actions/setup-java@v4
         with:

@@ -1,0 +1,267 @@
+groups:
+  - name: hidra-availability
+    interval: 15s
+    rules:
+      - alert: HidraApiUnavailable
+        expr: haproxy_backend_active_servers{proxy="hidra_rest"} < 1
+        for: 1m
+        labels:
+          severity: critical
+          domain: application
+          owner: platform-operations
+        annotations:
+          summary: No HidraAPI REST node is available
+          description: HAProxy reports zero active servers in the hidra_rest backend for at least 1 minute.
+
+      - alert: HidraApiRedundancyDegraded
+        expr: haproxy_backend_active_servers{proxy="hidra_rest"} < 2
+        for: 2m
+        labels:
+          severity: warning
+          domain: application
+          owner: platform-operations
+        annotations:
+          summary: HidraAPI is below the approved two-node redundancy baseline
+          description: Fewer than two active HidraAPI REST nodes have been available for at least 2 minutes.
+
+      - alert: HidraApiTargetScrapeFailed
+        expr: up{job="hidra-api"} == 0
+        for: 2m
+        labels:
+          severity: warning
+          domain: monitoring
+          owner: platform-operations
+        annotations:
+          summary: Prometheus cannot scrape a HidraAPI node
+
+  - name: hidra-http
+    interval: 30s
+    rules:
+      - record: hidra:http_5xx_ratio:5m
+        expr: |
+          sum(rate(http_server_requests_seconds_count{status=~"5.."}[5m]))
+          /
+          clamp_min(sum(rate(http_server_requests_seconds_count[5m])), 0.000001)
+
+      - record: hidra:http_p95_seconds:5m
+        expr: |
+          histogram_quantile(
+            0.95,
+            sum by (le) (rate(http_server_requests_seconds_bucket[5m]))
+          )
+
+      - alert: HidraHttp5xxWarning
+        expr: hidra:http_5xx_ratio:5m > 0.01
+        for: 10m
+        labels:
+          severity: warning
+          domain: application
+          owner: application-engineering
+        annotations:
+          summary: HidraAPI HTTP 5xx ratio exceeds 1 percent
+
+      - alert: HidraHttp5xxCritical
+        expr: hidra:http_5xx_ratio:5m > 0.02
+        for: 5m
+        labels:
+          severity: critical
+          domain: application
+          owner: application-engineering
+        annotations:
+          summary: HidraAPI HTTP 5xx ratio exceeds 2 percent
+
+      - alert: HidraHttpLatencyWarning
+        expr: hidra:http_p95_seconds:5m > 1
+        for: 10m
+        labels:
+          severity: warning
+          domain: application
+          owner: application-engineering
+        annotations:
+          summary: HidraAPI p95 request latency exceeds 1 second
+
+      - alert: HidraHttpLatencyCritical
+        expr: hidra:http_p95_seconds:5m > 2
+        for: 5m
+        labels:
+          severity: critical
+          domain: application
+          owner: application-engineering
+        annotations:
+          summary: HidraAPI p95 request latency exceeds 2 seconds
+
+  - name: hidra-runtime
+    interval: 30s
+    rules:
+      - alert: HidraProcessCpuWarning
+        expr: process_cpu_usage > 0.85
+        for: 15m
+        labels:
+          severity: warning
+          domain: application
+          owner: application-engineering
+        annotations:
+          summary: HidraAPI process CPU exceeds 85 percent
+
+      - alert: HidraProcessCpuCritical
+        expr: process_cpu_usage > 0.95
+        for: 5m
+        labels:
+          severity: critical
+          domain: application
+          owner: application-engineering
+        annotations:
+          summary: HidraAPI process CPU exceeds 95 percent
+
+      - record: hidra:jvm_heap_ratio
+        expr: |
+          sum by (instance) (jvm_memory_used_bytes{area="heap"})
+          /
+          clamp_min(sum by (instance) (jvm_memory_max_bytes{area="heap"}), 1)
+
+      - alert: HidraJvmHeapWarning
+        expr: hidra:jvm_heap_ratio > 0.85
+        for: 10m
+        labels:
+          severity: warning
+          domain: application
+          owner: application-engineering
+        annotations:
+          summary: HidraAPI JVM heap exceeds 85 percent
+
+      - alert: HidraJvmHeapCritical
+        expr: hidra:jvm_heap_ratio > 0.95
+        for: 5m
+        labels:
+          severity: critical
+          domain: application
+          owner: application-engineering
+        annotations:
+          summary: HidraAPI JVM heap exceeds 95 percent
+
+  - name: hidra-datasource
+    interval: 15s
+    rules:
+      - alert: HidraHikariPendingConnections
+        expr: hikaricp_connections_pending > 0
+        for: 2m
+        labels:
+          severity: warning
+          domain: database
+          owner: database-operations
+        annotations:
+          summary: HidraAPI has pending database connection acquisition
+
+      - alert: HidraHikariPoolSaturation
+        expr: |
+          hikaricp_connections_active
+          /
+          clamp_min(hikaricp_connections_max, 1)
+          > 0.90
+        for: 5m
+        labels:
+          severity: warning
+          domain: database
+          owner: database-operations
+        annotations:
+          summary: HidraAPI Hikari pool utilization exceeds 90 percent
+
+  - name: hidra-postgres-ha
+    interval: 15s
+    rules:
+      - alert: HidraPostgresWriteAuthorityUnavailable
+        expr: haproxy_backend_active_servers{proxy="hidra_postgres_primary"} != 1
+        for: 1m
+        labels:
+          severity: critical
+          domain: database
+          owner: database-operations
+        annotations:
+          summary: PostgreSQL write authority is unavailable or ambiguous
+          description: HAProxy must expose exactly one active server in hidra_postgres_primary.
+
+      - alert: HidraPostgresRedundancyDegraded
+        expr: count(up{job="patroni"} == 1) < 2
+        for: 2m
+        labels:
+          severity: warning
+          domain: database
+          owner: database-operations
+        annotations:
+          summary: PostgreSQL Patroni redundancy is degraded
+
+      - alert: HidraPostgresReplicationLagWarning
+        expr: (time() - patroni_xlog_replayed_timestamp) > 60 and on(instance) patroni_replica == 1
+        for: 5m
+        labels:
+          severity: warning
+          domain: database
+          owner: database-operations
+        annotations:
+          summary: PostgreSQL replica replay lag exceeds 60 seconds
+
+      - alert: HidraPostgresReplicationLagCritical
+        expr: (time() - patroni_xlog_replayed_timestamp) > 180 and on(instance) patroni_replica == 1
+        for: 2m
+        labels:
+          severity: critical
+          domain: database
+          owner: database-operations
+        annotations:
+          summary: PostgreSQL replica replay lag exceeds 180 seconds
+
+  - name: hidra-backup-dr
+    interval: 60s
+    rules:
+      - alert: HidraBackupCoverageCritical
+        expr: hidra_pgbackrest_latest_backup_age_seconds > 86400
+        for: 1m
+        labels:
+          severity: critical
+          domain: backup
+          owner: database-operations
+        annotations:
+          summary: Latest successful pgBackRest backup is older than 24 hours
+
+      - alert: HidraWalArchiveContinuityCritical
+        expr: hidra_pgbackrest_check_success == 0
+        for: 5m
+        labels:
+          severity: critical
+          domain: backup
+          owner: database-operations
+        annotations:
+          summary: pgBackRest check indicates backup/WAL continuity failure
+
+      - alert: HidraPgBackRestExporterUnavailable
+        expr: up{job="pgbackrest"} == 0
+        for: 5m
+        labels:
+          severity: critical
+          domain: monitoring
+          owner: database-operations
+        annotations:
+          summary: pgBackRest monitoring exporter is unavailable
+
+  - name: hidra-monitoring-self
+    interval: 30s
+    rules:
+      - alert: HidraPrometheusTargetWarning
+        expr: up == 0
+        for: 2m
+        labels:
+          severity: warning
+          domain: monitoring
+          owner: platform-operations
+        annotations:
+          summary: A monitored Hidra production target is unavailable
+
+      - alert: HidraPrometheusTargetCritical
+        expr: up == 0
+        for: 5m
+        labels:
+          severity: critical
+          domain: monitoring
+          owner: platform-operations
+        annotations:
+          summary: A monitored Hidra production target remains unavailable

@@ -1,0 +1,11 @@
+[Unit]
+Description=Run Hidra PostgreSQL retained monthly recovery-point backup
+
+[Timer]
+OnCalendar=monthly
+Persistent=true
+RandomizedDelaySec=6h
+Unit=hidra-pgbackrest-monthly.service
+
+[Install]
+WantedBy=timers.target

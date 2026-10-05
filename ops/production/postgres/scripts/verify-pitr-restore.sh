@@ -4,6 +4,11 @@ set -euo pipefail
 : "${HIDRA_PGBACKREST_CONFIG:?Set HIDRA_PGBACKREST_CONFIG to rendered pgbackrest.conf.}"
 : "${HIDRA_PITR_TARGET:?Set HIDRA_PITR_TARGET to an approved timestamp, e.g. 2026-10-05 18:00:00+01.}"
 : "${HIDRA_PITR_PGDATA:?Set HIDRA_PITR_PGDATA to an empty isolated recovery data directory.}"
+repo="${HIDRA_PITR_REPO:-1}"
+if [[ "${repo}" != "1" && "${repo}" != "2" ]]; then
+  echo "HIDRA_PITR_REPO must be 1 (operational) or 2 (monthly retained)." >&2
+  exit 2
+fi
 
 if [[ "${HIDRA_PITR_DESTRUCTIVE_EXERCISE:-}" != "YES" ]]; then
   echo "Refusing restore/PITR without HIDRA_PITR_DESTRUCTIVE_EXERCISE=YES." >&2
@@ -24,6 +29,7 @@ exec > >(tee -a "${evidence}") 2>&1
 start_epoch="$(date +%s)"
 echo "UTC restore start: $(date -u --iso-8601=seconds)"
 echo "Target: ${HIDRA_PITR_TARGET}"
+echo "Repository: repo${repo}"
 
 pgbackrest --config="${HIDRA_PGBACKREST_CONFIG}"   --stanza=hidra   --pg1-path="${HIDRA_PITR_PGDATA}"   --type=time   --target="${HIDRA_PITR_TARGET}"   --target-action=promote   restore
 

@@ -2,7 +2,7 @@
 
 ## Status
 
-**IMPLEMENTED-PENDING-RETENTION-BINDING-AND-EXERCISE — HPR-P1-017**
+**IMPLEMENTED-PENDING-EXERCISE — HPR-P1-017**
 
 Execution base: `9e1503154e59c7de5b06ca00bb045c2328770c1b`.
 
@@ -52,7 +52,9 @@ Owner approval on 2026-10-05 resolves the monthly-retention policy decision:
 - policy identifier `HIDRA-P1-BACKUP-RETENTION-001`;
 - protected-copy independence from the live database failure domain.
 
-The remaining gap is implementation/evidence: the selected repository/storage mechanism must enforce the monthly 12-month hold and a retained monthly point must be demonstrated restorable.
+The repository implementation now binds the policy to pgBackRest repo2 with one scheduled monthly full backup and count-based retention of 12 full backups. repo1 remains the 35-day operational repository.
+
+The remaining gap is measured evidence: production-equivalent storage must be provisioned and a retained repo2 monthly recovery point must be demonstrated restorable with the required WAL.
 
 ## HPR-P1-012 relationship
 

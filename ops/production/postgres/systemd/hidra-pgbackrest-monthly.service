@@ -1,0 +1,9 @@
+[Unit]
+Description=Hidra PostgreSQL pgBackRest monthly retained recovery-point backup
+After=network-online.target
+
+[Service]
+Type=oneshot
+User=postgres
+ExecStart=/opt/hidra/ops/production/postgres/scripts/run-monthly-retained-backup.sh
+ExecStartPost=/opt/hidra/ops/production/postgres/scripts/check-monthly-retention.sh

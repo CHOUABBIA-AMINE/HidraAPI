@@ -1,3 +1,6 @@
+> **WARNING: SUPERSEDED DOCUMENT**
+> This document is no longer authoritative for execution. The single source of truth for platform finalization and target architecture is now `doc/roadmap/ULTIMATE_ROADMAP.md`.
+
 # HIDRA — Agents Data Definition Document
 
 ```text

@@ -1,3 +1,6 @@
+> **WARNING: SUPERSEDED DOCUMENT**
+> This document is no longer authoritative for execution. The single source of truth for platform finalization and target architecture is now `doc/roadmap/ULTIMATE_ROADMAP.md`.
+
 # HidraAPI Model Semantic Remediation Roadmap
 
 **Status:** Active — HMR-001 and HMR-002 completed; 101 model-remediation tasks are executable and 3 remain blocked on explicit owner-contract prerequisites. HMR-003 is the next executable task.  

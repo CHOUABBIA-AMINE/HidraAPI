@@ -10,8 +10,9 @@
 | Build tool | Maven |
 | Language | Java |
 | Java version | 21 |
-| Main roadmap directory | `docs/roadmap` |
-| Kernel roadmap | `docs/roadmap/kernel.md` |
+| Main roadmap directory | `doc/roadmap` |
+| Ultimate roadmap | `doc/roadmap/ULTIMATE_ROADMAP.md` |
+| Legacy roadmap/reference estate | `docs/` |
 
 HidraAPI is the backend foundation for **Hidra**, a hydrocarbon intelligence platform focused on:
 
@@ -29,19 +30,41 @@ Industrial pipeline operations
 
 ## 2. Mandatory Source of Truth
 
-Before every task, read the relevant roadmap file.
-
-For kernel work, always read:
+For platform-finalization work, always read:
 
 ```text
-docs/roadmap/kernel.md
+doc/roadmap/ULTIMATE_ROADMAP.md
 ```
 
-The roadmap file is the execution memory.
+The Ultimate Roadmap is the execution memory and single source of truth for platform-finalization sequencing, task codes, phase gates, and target-architecture disposition.
+
+The existing `docs/` tree is retained as legacy/reference/evidence material. Legacy roadmaps, semantic reviews, ADRs, audits, and data-definition documents may provide task detail and historical evidence, but they do not override the Ultimate Roadmap for platform-finalization execution.
+
+For implementation reality, current production source, runtime configuration, Flyway migrations, architecture tests, and exact-head CI evidence take precedence over stale documentation claims.
+
+For semantic-remediation work, revalidate the legacy HMR/HMSR obligation against current source before mutation. A legacy HMR may execute only when its work is represented by, or explicitly admitted into, the Ultimate Roadmap.
 
 Do not rely only on chat instructions.
 
-If the chat instruction conflicts with the roadmap, stop and report the conflict unless the user explicitly asks to update the roadmap.
+If a chat instruction conflicts with the Ultimate Roadmap, stop and report the conflict unless the user explicitly asks to update the Ultimate Roadmap.
+
+---
+
+## 2.1 Platform Finalization Task Codes
+
+Ultimate Roadmap tasks use stable `HPR-<phase>-<number>` codes, for example:
+
+```text
+HPR-P0-001
+HPR-P1-001
+HPR-P2-001
+```
+
+Use the exact commit message registered for each HPR code.
+
+Do not execute a later HPR code automatically.
+
+Legacy task codes such as `HMR-*` remain evidentiary identifiers after supersession; they do not independently select new platform-finalization execution.
 
 ---
 

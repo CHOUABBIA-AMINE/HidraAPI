@@ -586,6 +586,13 @@ Invariants:
 restricted reports require access validation
 reports requiring approval cannot be queued before workflow approval
 request actor snapshot must be preserved
+
+HMR-048 executable semantics:
+- new requests load the ReportDefinition and require status ACTIVE;
+- restricted definitions require a matching Reporting access-policy scope and an allow decision from Identity;
+- populated organizationUnitId must resolve through the Organization-owned Reporting contract;
+- approval-required queueing loads both request and definition and requires request status APPROVED, a nonblank workflowReferenceId, and Workflow-owned approval confirmation;
+- no cross-module Identity, Workflow, or Organization database foreign key is introduced.
 ```
 
 ---

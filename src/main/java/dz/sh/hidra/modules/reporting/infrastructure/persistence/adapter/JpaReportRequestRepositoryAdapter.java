@@ -7,7 +7,7 @@
  *
  * @Name        : JpaReportRequestRepositoryAdapter
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-05
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -22,9 +22,11 @@ package dz.sh.hidra.modules.reporting.infrastructure.persistence.adapter;
 import dz.sh.hidra.modules.reporting.application.port.out.ReportRequestRepositoryPort;
 import dz.sh.hidra.modules.reporting.domain.model.ReportRequest;
 import dz.sh.hidra.modules.reporting.infrastructure.persistence.mapper.ReportingPersistenceMapper;
+import dz.sh.hidra.modules.reporting.infrastructure.persistence.repository.ReportAccessPolicyJpaRepository;
 import dz.sh.hidra.modules.reporting.infrastructure.persistence.repository.ReportRequestJpaRepository;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -35,9 +37,17 @@ import java.util.Optional;
 public class JpaReportRequestRepositoryAdapter implements ReportRequestRepositoryPort {
 
     private final ReportRequestJpaRepository repository;
+    private final ReportAccessPolicyJpaRepository accessPolicyRepository;
 
-    public JpaReportRequestRepositoryAdapter(ReportRequestJpaRepository repository) {
+    public JpaReportRequestRepositoryAdapter(
+            ReportRequestJpaRepository repository,
+            ReportAccessPolicyJpaRepository accessPolicyRepository
+    ) {
         this.repository = Objects.requireNonNull(repository, "ReportRequestJpaRepository must not be null.");
+        this.accessPolicyRepository = Objects.requireNonNull(
+                accessPolicyRepository,
+                "ReportAccessPolicyJpaRepository must not be null."
+        );
     }
 
     @Override
@@ -48,5 +58,21 @@ public class JpaReportRequestRepositoryAdapter implements ReportRequestRepositor
     @Override
     public Optional<ReportRequest> findById(String id) {
         return repository.findById(id).map(ReportingPersistenceMapper::toDomain);
+    }
+
+    @Override
+    public List<AccessPolicyView> accessPoliciesForDefinition(String reportDefinitionId) {
+        if (reportDefinitionId == null || reportDefinitionId.isBlank()) {
+            return List.of();
+        }
+        String normalized = reportDefinitionId.trim();
+        return accessPolicyRepository.findAll().stream()
+                .filter(policy -> normalized.equals(policy.reportDefinitionId()) && policy.restricted())
+                .map(policy -> new AccessPolicyView(
+                        policy.scopeType().name(),
+                        policy.scopeReferenceId(),
+                        policy.permissionCode()
+                ))
+                .toList();
     }
 }

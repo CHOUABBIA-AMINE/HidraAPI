@@ -2721,7 +2721,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-057`
 - Exact commit: `fix(reporting): remediate semantic review ReportRequest`
-- Status: **Planned**
+- Status: **Completed** — request creation now requires an ACTIVE ReportDefinition, restricted requests require matching Reporting policy plus Identity authorization, populated OrganizationUnit references resolve through Organization, and approval-required queueing requires ReportRequest APPROVED state plus Workflow-owned approval evidence.
 - SCC: —
 - Recorded upstream HMS dependencies: organization.OrganizationUnit, reporting.ReportDefinition
 - HMSR correction count: 4
@@ -5236,8 +5236,8 @@ Additional batches may be registered or an existing planned envelope may be spli
 
 ### 12.6 Current next execution
 
-HMR-048A — ReportRequest access/approval/Organization prerequisite
+HMRB-016 — HMR-049
 
-`docs(model-remediation): register ReportRequest owner prerequisites`
+Mode: Solo
 
-HMRB-014 is green. Observe this docs-only prerequisite once, then execute HMRB-015 / HMR-048 only; do not start HMRB-016 automatically.
+HMRB-015 is completed. Execute HMR-049 only after the HMR-048 head is green and exact Risk owner/catalog/lifecycle preflight passes; stop before HMRB-017.

@@ -48,6 +48,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Java 21
         uses: actions/setup-java@v4
@@ -136,6 +138,84 @@ jobs:
           payload['x-hidra-ci-source-sha'] = '${{ github.sha }}'
           path.write_text(json.dumps(payload, indent=2, sort_keys=True) + '\n', encoding='utf-8')
           PY
+
+      - name: Resolve OpenAPI compatibility base
+        id: openapi-base
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            BASE_SHA="${{ github.event.pull_request.base.sha }}"
+          elif [ "${{ github.event_name }}" = "push" ]; then
+            BASE_SHA="${{ github.event.before }}"
+          else
+            BASE_SHA="$(git rev-parse HEAD^ 2>/dev/null || true)"
+          fi
+
+          if [ -z "${BASE_SHA}" ] || [ "${BASE_SHA}" = "0000000000000000000000000000000000000000" ]; then
+            echo "No compatibility base revision is available for this run." >&2
+            exit 1
+          fi
+
+          git cat-file -e "${BASE_SHA}^{commit}"
+          echo "sha=${BASE_SHA}" >> "${GITHUB_OUTPUT}"
+
+      - name: Generate base-revision OpenAPI contract
+        shell: bash
+        env:
+          BASE_SHA: "${{ steps.openapi-base.outputs.sha }}"
+        run: |
+          set -euo pipefail
+          BASE_WORKTREE="${RUNNER_TEMP}/hidraapi-openapi-base"
+          rm -rf "${BASE_WORKTREE}"
+          git worktree add --detach "${BASE_WORKTREE}" "${BASE_SHA}"
+          cleanup() {
+            if [ -n "${BASE_APP_PID:-}" ]; then
+              kill "${BASE_APP_PID}" 2>/dev/null || true
+            fi
+            git worktree remove --force "${BASE_WORKTREE}" 2>/dev/null || true
+          }
+          trap cleanup EXIT
+
+          cd "${BASE_WORKTREE}"
+          chmod +x mvnw
+          ./mvnw -B -q -DskipTests package
+          BASE_APP_JAR="$(find target -maxdepth 1 -type f -name '*.jar' ! -name '*.original' | head -n 1)"
+          if [ -z "${BASE_APP_JAR}" ]; then
+            echo "No executable application jar found for compatibility base ${BASE_SHA}." >&2
+            exit 1
+          fi
+
+          SPRING_PROFILES_ACTIVE=test \
+          SPRINGDOC_API_DOCS_ENABLED=true \
+          SPRINGDOC_SWAGGER_UI_ENABLED=false \
+          SERVER_PORT=8081 \
+          MANAGEMENT_SERVER_PORT=8081 \
+          java -jar "${BASE_APP_JAR}" > "${GITHUB_WORKSPACE}/target/openapi/base-application.log" 2>&1 &
+          BASE_APP_PID=$!
+
+          for attempt in $(seq 1 60); do
+            if curl --fail --silent http://127.0.0.1:8081/actuator/health >/dev/null; then
+              break
+            fi
+            if ! kill -0 "${BASE_APP_PID}" 2>/dev/null; then
+              cat "${GITHUB_WORKSPACE}/target/openapi/base-application.log" >&2
+              exit 1
+            fi
+            if [ "${attempt}" -eq 60 ]; then
+              cat "${GITHUB_WORKSPACE}/target/openapi/base-application.log" >&2
+              exit 1
+            fi
+            sleep 2
+          done
+
+          curl --fail --silent http://127.0.0.1:8081/v3/api-docs > "${GITHUB_WORKSPACE}/target/openapi/hidra-api-base.json"
+
+      - name: Enforce OpenAPI backward compatibility
+        run: >-
+          python3 .github/scripts/openapi_compatibility.py
+          target/openapi/hidra-api-base.json
+          target/openapi/hidra-api.json
 
       - name: Upload OpenAPI compatibility artifact
         uses: actions/upload-artifact@v4

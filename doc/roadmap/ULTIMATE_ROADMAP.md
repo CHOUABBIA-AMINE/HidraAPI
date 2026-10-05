@@ -106,7 +106,7 @@ The following audited statements govern prioritization:
 | HPR-P1-005 | COMPLETED — platform-neutral DR runbook created from the approved HPR-P1-004 objectives, covering declaration/containment, role activation, recovery-point selection, PostgreSQL restore + WAL/PITR, single-writer verification, stable endpoint restoration, secrets/configuration, HidraAPI startup, Flyway/JPA validation, security/read-write acceptance, traffic restoration, RTO/RPO measurement, abort/escalation conditions, and mandatory evidence; vendor-specific commands remain deferred | DR | Doc | Create `doc/operations/DISASTER_RECOVERY_RUNBOOK.md` with declaration authority, recovery roles, dependency order, restore steps and acceptance checks based on approved objectives. | `docs(operations): add disaster recovery runbook` | HPR-P1-004 |
 | HPR-P1-006 | COMPLETED — canonical product-neutral HA architecture consolidates the approved application and PostgreSQL models: minimum two active HidraAPI nodes, readiness-based traffic admission, stateless REST/no sticky-session correctness, node-local cache constraints, realtime clustering restriction, one writable PostgreSQL primary with local synchronous standby where latency permits, optional remote asynchronous standby, stable database endpoint, controlled/fenced failover, maintenance drain/switchover, and explicit degraded-mode/acceptance evidence; implementation products and measured failover remain pending | HA | Doc | Create `doc/operations/HIGH_AVAILABILITY_ARCHITECTURE.md` covering approved application/database redundancy, failover, connection behavior and maintenance failover. | `docs(operations): add high availability architecture` | HPR-P1-002..003 |
 | HPR-P1-007 | COMPLETED — product-neutral production deployment runbook and environment configuration created from repository evidence and approved runtime/HA/security decisions; they require exact artifact identity, explicit production profile, externalized secrets, stable PostgreSQL endpoint, controlled Flyway/JPA validation, serialized migration authority, readiness-based admission, acceptance checks, evidence capture and rollback/abort criteria; hosting/traffic/secret-manager/TLS/CD products remain unselected | Deployment | Doc | Create `DEPLOYMENT_RUNBOOK.md` and `ENVIRONMENT_CONFIGURATION.md`; require explicit production profile, secrets, PostgreSQL preparation, Flyway, startup, acceptance and rollback. | `docs(operations): add production deployment runbook` | HPR-P1-001..003 |
-| HPR-P1-008 | PENDING | CI / API | Infra | Add real OpenAPI compatibility/breaking-change validation; generation/upload alone is not compatibility validation. | `ci(api): enforce openapi compatibility` | P0 closed |
+| HPR-P1-008 | COMPLETED — CI now generates OpenAPI for the exact current revision and actual Git base revision, then executes a repository-owned backward-compatibility checker that fails on supported breaking changes including removed paths/operations/parameters/responses/content types, newly required request inputs, incompatible request/response schema changes, new response enum values, and public-to-authenticated operation changes; OpenAPI artifact publication remains after the gate | CI / API | Infra | Add real OpenAPI compatibility/breaking-change validation; generation/upload alone is not compatibility validation. | `ci(api): enforce openapi compatibility` | P0 closed |
 | HPR-P1-009 | BLOCKED-DECISION | CD | Infra/Doc | After deployment target approval, implement controlled deployment automation, promotion, approval, post-deployment health verification and rollback; document in `CI_CD_RELEASE_GUIDE.md`. | `ci(release): add controlled deployment pipeline` | HPR-P1-007 + deployment target decision |
 | HPR-P1-010 | PENDING | Observability | Infra/Doc | Create `OBSERVABILITY_AND_SRE.md` and implement approved alerting from existing Actuator/Prometheus signals; do not invent SLOs. | `docs(operations): establish observability operating model` | HPR-P1-001 |
 | HPR-P1-011 | PENDING | Database Operations | Doc | Create `DATABASE_OPERATIONS_RUNBOOK.md` covering Flyway, backup/restore, connection exhaustion, failover, maintenance and migration failures. | `docs(database): add database operations runbook` | HPR-P1-003..005 |
@@ -145,11 +145,13 @@ The following audited statements govern prioritization:
 
 ## 6. Immediate Next Execution
 
-HPR-P1-007 is complete. The next executable roadmap code is:
+HPR-P1-008 is complete. HPR-P1-009 remains BLOCKED-DECISION pending explicit production deployment-target approval.
 
-`HPR-P1-008 — ci(api): enforce openapi compatibility`
+The next currently executable roadmap code is:
 
-Do not execute HPR-P1-009 or any later task automatically.
+`HPR-P1-010 — docs(operations): establish observability operating model`
+
+Do not execute HPR-P1-009, HPR-P1-010, or any later task automatically.
 
 ### Final P0 closure evidence
 
@@ -289,6 +291,19 @@ Owner-approved on 2026-10-05 after HPR-P1-003:
 - runtime secret values must not be committed to Git or deployment evidence;
 - hosting/orchestration, load-distribution, secret-manager, TLS termination, broker/cache, and CD products remain unselected;
 - HPR-P1-009 remains blocked on deployment-target approval.
+
+
+### HPR-P1-008 OpenAPI compatibility evidence
+
+- execution base SHA: `656a42256d3849c78e1b93d3792e7cceceed4123`;
+- pre-task lightweight documentation validation: run #5 / run id `37343927263`: **SUCCESS**;
+- full CI now checks out complete Git history so the actual compatibility base revision is available;
+- for pull requests the comparison base is the PR base SHA; for pushes it is the event `before` SHA; manual runs use the current parent commit;
+- CI generates the current OpenAPI contract from the current application and independently builds/starts the exact base revision to generate the baseline contract;
+- repository-owned `.github/scripts/openapi_compatibility.py` fails CI on supported breaking changes instead of treating artifact generation/upload as compatibility evidence;
+- covered break classes include removed paths/operations/parameters, new required parameters/request body/properties, request enum contraction, schema type changes, removed response codes/content types/properties, required-response guarantee weakening, response enum expansion, and public-to-authenticated operation tightening;
+- compatibility validation runs before OpenAPI artifact upload;
+- no API compatibility result is claimed until the post-commit full CI run completes successfully.
 
 ## 7. Original P0 Closure Evidence
 

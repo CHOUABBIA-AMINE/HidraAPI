@@ -89,8 +89,8 @@ The following audited statements govern prioritization:
 | HPR-P0-010 | COMPLETED — security architecture/trust-boundary docs now map normal API→controller→application→domain/outbound-port flow, explicitly exported cross-module application contracts, the reviewed Workbench→JPA exception, telemetry source/point registration flows, and telemetry query flow; private cross-module internals and OT/deployment/network assumptions remain prohibited or NOT ESTABLISHED | Security Architecture | Doc | Close audit Check 11 by extending `SECURITY_ARCHITECTURE.md` and `TRUST_BOUNDARIES.md` with repository-verified API → controller → application/use-case → module transitions, permitted cross-module application-contract transitions, the reviewed Workbench persistence exception, and the existing telemetry source/point registration/operator API boundary. Keep OT network architecture, deployment perimeter, and unverified infrastructure explicitly NOT ESTABLISHED. | `docs(security): map application trust transitions` | HPR-P0-008 |
 | HPR-P0-011 | COMPLETED — threat model now includes explicit telemetry source registration, telemetry point registration, telemetry query, alarm acknowledgement/closure, alarm shelving/unshelving, and alarm-raise abuse scenarios with asset, actor/source, attack path, boundary, impact, verified controls, and residual risk; no SCADA/PLC ingestion transport or unverified vulnerability is invented | Security / Telemetry | Doc | Close audit Check 12 by extending `THREAT_MODEL.md` with existing telemetry source/point registration and operator-action abuse paths. For each threat record asset, actor/source, attack path, trust boundary, impact, current control, and residual risk. Do not invent SCADA transport, telemetry reading-ingestion endpoints, or an unverified vulnerability. | `docs(security): extend operator threat model` | HPR-P0-010 |
 | HPR-P0-012 | COMPLETED — owner explicitly accepted the recommended lifecycle baseline on 2026-10-05; `SECRETS_AND_CERTIFICATES.md` now records role-based secret ownership, least privilege, 90-day JWT/database/LDAP rotation, coordinated HS256 emergency invalidation with no claimed dual-key overlap, one-time bootstrap handling, Platform/Infrastructure TLS ownership, enterprise/public CA trust model, protected private-key storage, 45/30/14/7-day expiry thresholds, compromise revocation/replacement, emergency authority, and mandatory recovery evidence; tooling remains pending actual platform implementation | Security / Secrets / Certificates | Doc/Decision | Obtain owner-approved lifecycle decisions required by audit Check 13: secret-store ownership, JWT signing-secret routine/emergency rotation and invalidation sequence, datasource and LDAP credential rotation sequence, TLS termination ownership, certificate authority/trust model, certificate/private-key storage, renewal/expiry monitoring, revocation procedure, emergency authority, and recovery verification. Values/procedures remain TBD until approved. | `docs(security): approve secret and certificate lifecycle` | accountable Security/Operations owner decision |
-| HPR-P0-013 | NEXT — owner recommendations were explicitly accepted on 2026-10-05; canonical incident-governance decision capture remains to be executed | Security / Incident Governance | Doc/Decision | Obtain owner-approved incident-governance decisions required by audit Check 13: incident commander/decision authority, SOC/on-call/security escalation contacts, severity taxonomy, notification/escalation timing, external IdP/LDAP/provider escalation contacts, legal/regulatory notification ownership, and evidence-retention ownership. Do not invent names, timelines, or regulatory obligations. | `docs(security): approve incident governance model` | accountable Security/Operations/Business owner decision |
-| HPR-P0-014 | PENDING | Security Operations | Doc | After HPR-P0-012 and HPR-P0-013 approvals, replace the applicable TBD sections in `SECRETS_AND_CERTIFICATES.md` and `INCIDENT_RESPONSE.md` with the approved concrete rotation, invalidation, certificate renewal/revocation, compromise escalation, recovery-verification, and closure procedures. Preserve provenance of the approving authority/decision. | `docs(security): operationalize security lifecycle procedures` | HPR-P0-012..013 |
+| HPR-P0-013 | COMPLETED — owner explicitly accepted the incident-governance baseline on 2026-10-05; `INCIDENT_RESPONSE.md` now records role-based incident command, technical/operations/DB/identity/legal/business ownership, SEV-1..SEV-4 taxonomy, immediate SEV-1 and 30-minute SEV-2 escalation targets, emergency containment authority, provider/database escalation ownership, Legal/Compliance notification authority, evidence ownership/integrity, mandatory SEV-1/2 PIR, and joint closure authority; personal contacts and jurisdiction-specific deadlines remain outside Git | Security / Incident Governance | Doc/Decision | Obtain owner-approved incident-governance decisions required by audit Check 13: incident commander/decision authority, SOC/on-call/security escalation contacts, severity taxonomy, notification/escalation timing, external IdP/LDAP/provider escalation contacts, legal/regulatory notification ownership, and evidence-retention ownership. Do not invent names, timelines, or regulatory obligations. | `docs(security): approve incident governance model` | accountable Security/Operations/Business owner decision |
+| HPR-P0-014 | NEXT | Security Operations | Doc | After HPR-P0-012 and HPR-P0-013 approvals, replace the applicable TBD sections in `SECRETS_AND_CERTIFICATES.md` and `INCIDENT_RESPONSE.md` with the approved concrete rotation, invalidation, certificate renewal/revocation, compromise escalation, recovery-verification, and closure procedures. Preserve provenance of the approving authority/decision. | `docs(security): operationalize security lifecycle procedures` | HPR-P0-012..013 |
 | HPR-P0-015 | PENDING | Repository / Independent Audit | Code/Doc | Re-run the complete P0 verification gate on the exact final remediation SHA: full Maven verification, HTTP Workbench leakage tests, architecture/security tests, PostgreSQL/Flyway verification, application health/startup, deterministic OpenAPI artifact generation/inspection, and documentary re-audit of Checks 1–13. Close the audit gap only if all 13 checks pass; otherwise record failures and keep P1 blocked. | `docs(roadmap): close P0 audit verification gaps` | HPR-P0-008..014 |
 
 ### Phase P1 — Production Infrastructure & Survivability
@@ -145,27 +145,26 @@ The following audited statements govern prioritization:
 
 The next executable roadmap code is:
 
-`HPR-P0-013 — docs(security): approve incident governance model`
+`HPR-P0-014 — docs(security): operationalize security lifecycle procedures`
 
-HPR-P0-012 decision evidence:
+HPR-P0-013 decision evidence:
 
-- the project owner explicitly accepted the recommended secret/certificate lifecycle decisions on 2026-10-05;
-- Security owns policy/risk/emergency authority; Platform/Operations owns production generation/deployment/rotation/verification; Identity/Directory and Database Operations own their respective service credentials;
-- no secret-management product is fabricated before the production platform is selected;
-- JWT HS256, PostgreSQL, and LDAP routine credential rotation baseline is 90 days, with immediate emergency replacement after credible compromise;
-- JWT emergency invalidation uses coordinated replacement/restart under the current single-secret HS256 implementation; no dual-key overlap is claimed;
-- administrator bootstrap credentials are one-time provisioning material and must be removed/disabled after provisioning;
-- Platform/Infrastructure owns TLS termination; enterprise/private CA is preferred for internal trust and approved public CA for publicly trusted endpoints;
-- private keys must remain in the approved certificate/secrets platform or hardware-backed facility and out of Git/images/templates/workstations;
-- certificate expiry thresholds are 45/30/14/7 days;
-- compromise response requires revocation/replacement, new key material, deployment, rejection of retired material where verifiable, and evidence preservation;
-- emergency authority is role-based through Security Incident Commander plus Platform/Operations duty authority, with DB/Identity owner participation as applicable;
-- every rotation requires health, authentication, relevant dependency, retired-material, and evidence checks;
-- HPR-P0-011 exact head `64dacaf85720df75d4b4079ccb8630215f6b3410` passed CI run #525 before this task began.
+- the project owner explicitly accepted the recommended incident-governance model on 2026-10-05;
+- Security Incident Commander owns command, severity confirmation, containment authorization, and security-risk disposition;
+- Platform/Application Technical Lead owns HidraAPI reproduction, correction, and verification;
+- Platform/Operations duty authority owns runtime isolation/deployment/recovery actions;
+- Identity/Directory Operations and Database Operations own their dependency-specific incident response;
+- Legal/Compliance owns legal/regulatory notification decisions and Business/Operations leadership owns operational-impact communication;
+- approved severity model is SEV-1 Critical, SEV-2 High, SEV-3 Moderate, SEV-4 Low;
+- SEV-1 escalation target is immediate on detection; SEV-2 escalation target is within 30 minutes of confirmation/classification;
+- role-based emergency containment authority includes identity/provider disablement, Workbench exposure removal, approved secret/certificate rotation, OIDC trust restriction, infrastructure traffic restriction, and verified rollback/corrective deployment;
+- external IdP/LDAP escalation is owned by Identity/Directory Operations; DB incidents by Database Operations;
+- evidence governance is Security-owned with system-owner preservation responsibilities; exact retention duration follows organization policy and is not fabricated;
+- documented PIR is mandatory for SEV-1/SEV-2;
+- closure requires Security Incident Commander plus affected technical owner, with Legal/Compliance confirmation when applicable;
+- HPR-P0-012 exact head `ad2fee6b064e66dfa50aca2dd89c75a218bc5d36` passed CI run #526 before this task began.
 
-The owner also explicitly accepted the previously proposed HPR-P0-013 incident-governance recommendations; HPR-P0-013 remains a separate execution task per the one-HPR-per-instruction rule.
-
-Do not execute HPR-P0-014 or later work as part of HPR-P0-013.
+Do not execute HPR-P0-015 or later work as part of HPR-P0-014.
 
 ## 7. Original P0 Closure Evidence
 

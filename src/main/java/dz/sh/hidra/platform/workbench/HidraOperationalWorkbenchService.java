@@ -7,7 +7,7 @@
  *
  * @Name        : HidraOperationalWorkbenchService
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-13
+ * @UpdatedOn   : 2026-10-05
  *
  * @Type        : Class
  * @Layer       : Platform
@@ -57,11 +57,16 @@ public class HidraOperationalWorkbenchService {
     private static final int MAX_SIZE = 200;
 
     private final EntityManager entityManager;
+    private final HidraOperationalWorkbenchExposurePolicy exposurePolicy;
     private final Map<String, List<OperationalResource>> resourcesByModule = new ConcurrentHashMap<>();
     private final Map<String, OperationalResource> resourcesByKey = new ConcurrentHashMap<>();
 
-    public HidraOperationalWorkbenchService(EntityManager entityManager) {
+    public HidraOperationalWorkbenchService(
+            EntityManager entityManager,
+            HidraOperationalWorkbenchExposurePolicy exposurePolicy
+    ) {
         this.entityManager = Objects.requireNonNull(entityManager, "EntityManager must not be null.");
+        this.exposurePolicy = Objects.requireNonNull(exposurePolicy, "Exposure policy must not be null.");
     }
 
     @Transactional(readOnly = true)
@@ -150,7 +155,7 @@ public class HidraOperationalWorkbenchService {
     }
 
     private void ensureIndexed() {
-        if (!resourcesByKey.isEmpty()) {
+        if (!resourcesByKey.isEmpty() || exposurePolicy.hasNoApprovedResources()) {
             return;
         }
         synchronized (this) {
@@ -164,7 +169,16 @@ public class HidraOperationalWorkbenchService {
                     continue;
                 }
                 String resource = resourceName(javaType.getSimpleName());
+                Optional<Set<String>> approvedFields = exposurePolicy.approvedFields(module.get(), resource);
+                if (approvedFields.isEmpty()) {
+                    continue;
+                }
+
                 String idField = idField(javaType).map(Field::getName).orElse("id");
+                Map<String, Field> fieldsByName = fieldsByName(javaType);
+                validateApprovedFields(module.get(), resource, idField, approvedFields.get(), fieldsByName);
+
+                List<String> exposedFields = approvedFields.get().stream().sorted().toList();
                 OperationalResource operationalResource = new OperationalResource(
                         module.get(),
                         resource,
@@ -172,7 +186,9 @@ public class HidraOperationalWorkbenchService {
                         javaType,
                         tableName(javaType),
                         idField,
-                        searchableFields(javaType)
+                        exposedFields,
+                        searchableFields(fieldsByName, approvedFields.get()),
+                        fieldsByName
                 );
                 resourcesByKey.put(resourceKey(module.get(), resource), operationalResource);
                 resourcesByModule.computeIfAbsent(module.get(), ignored -> new ArrayList<>()).add(operationalResource);
@@ -198,12 +214,13 @@ public class HidraOperationalWorkbenchService {
 
     private OperationalRecordResponse toRecord(OperationalResource resource, Object entity) {
         Map<String, Object> attributes = new LinkedHashMap<>();
-        for (Field field : allFields(entity.getClass())) {
+        for (String fieldName : resource.exposedFields()) {
+            Field field = resource.fieldsByName().get(fieldName);
             field.setAccessible(true);
             try {
-                attributes.put(field.getName(), normalizeValue(field.get(entity)));
+                attributes.put(fieldName, normalizeValue(field.get(entity)));
             } catch (IllegalAccessException exception) {
-                attributes.put(field.getName(), null);
+                attributes.put(fieldName, null);
             }
         }
         return new OperationalRecordResponse(resource.module(), resource.resource(), attributes.get(resource.idField()), attributes);
@@ -221,7 +238,7 @@ public class HidraOperationalWorkbenchService {
             predicates.add(builder.or(orPredicates.toArray(Predicate[]::new)));
         }
         Map<String, Object> filters = request.filters() == null ? Map.of() : request.filters();
-        Set<String> allowedFields = allFields(resource.javaType()).stream().map(Field::getName).collect(java.util.stream.Collectors.toSet());
+        Set<String> allowedFields = Set.copyOf(resource.exposedFields());
         for (Map.Entry<String, Object> entry : filters.entrySet()) {
             if (entry.getKey() == null || !allowedFields.contains(entry.getKey()) || entry.getValue() == null) {
                 continue;
@@ -235,7 +252,7 @@ public class HidraOperationalWorkbenchService {
         if (request.sortBy() == null || request.sortBy().isBlank()) {
             return Optional.empty();
         }
-        Set<String> allowedFields = allFields(resource.javaType()).stream().map(Field::getName).collect(java.util.stream.Collectors.toSet());
+        Set<String> allowedFields = Set.copyOf(resource.exposedFields());
         if (!allowedFields.contains(request.sortBy())) {
             return Optional.empty();
         }
@@ -293,12 +310,44 @@ public class HidraOperationalWorkbenchService {
         return table.name();
     }
 
-    private static List<String> searchableFields(Class<?> javaType) {
-        return allFields(javaType).stream()
+    private static List<String> searchableFields(Map<String, Field> fieldsByName, Set<String> approvedFields) {
+        return approvedFields.stream()
+                .map(fieldsByName::get)
+                .filter(Objects::nonNull)
                 .filter(field -> String.class.equals(field.getType()))
                 .map(Field::getName)
                 .sorted()
                 .toList();
+    }
+
+    private static Map<String, Field> fieldsByName(Class<?> javaType) {
+        Map<String, Field> fields = new LinkedHashMap<>();
+        for (Field field : allFields(javaType)) {
+            fields.putIfAbsent(field.getName(), field);
+        }
+        return Map.copyOf(fields);
+    }
+
+    private static void validateApprovedFields(
+            String module,
+            String resource,
+            String idField,
+            Set<String> approvedFields,
+            Map<String, Field> fieldsByName
+    ) {
+        if (!approvedFields.contains(idField)) {
+            throw new IllegalStateException(
+                    "Workbench exposure for " + module + "/" + resource + " must explicitly include id field " + idField + "."
+            );
+        }
+        for (String fieldName : approvedFields) {
+            if (!fieldsByName.containsKey(fieldName)) {
+                throw new IllegalStateException(
+                        "Workbench exposure for " + module + "/" + resource
+                                + " references unknown field " + fieldName + "."
+                );
+            }
+        }
     }
 
     private static Optional<Field> idField(Class<?> javaType) {
@@ -369,6 +418,8 @@ public class HidraOperationalWorkbenchService {
             Class<?> javaType,
             String tableName,
             String idField,
-            List<String> searchableFields
+            List<String> exposedFields,
+            List<String> searchableFields,
+            Map<String, Field> fieldsByName
     ) { }
 }

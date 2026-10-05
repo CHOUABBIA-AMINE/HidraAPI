@@ -73,8 +73,8 @@ The following audited statements govern prioritization:
 
 | Code | Status | Domain/Module | Type | Exact execution requirement | Exact commit message | Depends on |
 |---|---|---|---|---|---|---|
-| HPR-P0-001 | NEXT | Platform / Workbench / Identity | Code | Re-inspect the exact-head Workbench path, replace automatic metamodel exposure with a fail-closed approved-resource policy, replace unrestricted reflective response fields with a fail-closed approved-field/API-safe projection policy, and explicitly prevent exposure of credential/secret persistence including `LocalCredentialJpaEntity.passwordHash`. | `fix(platform): secure operational workbench data exposure` | Bootstrap |
-| HPR-P0-002 | PENDING | Platform / Workbench / Identity | Code | Add focused regression tests covering list, detail, filter/search and generic attribute maps; assert that credential resources and `passwordHash` cannot be returned. | `test(platform): guard workbench sensitive data exposure` | HPR-P0-001 |
+| HPR-P0-001 | COMPLETED — fail-closed opt-in resource/field policy implemented in the task commit containing this status transition; default exposure is empty; credential/secret resources and password/secret fields are prohibited | Platform / Workbench / Identity | Code | Re-inspect the exact-head Workbench path, replace automatic metamodel exposure with a fail-closed approved-resource policy, replace unrestricted reflective response fields with a fail-closed approved-field/API-safe projection policy, and explicitly prevent exposure of credential/secret persistence including `LocalCredentialJpaEntity.passwordHash`. | `fix(platform): secure operational workbench data exposure` | Bootstrap |
+| HPR-P0-002 | NEXT | Platform / Workbench / Identity | Code | Add focused regression tests covering list, detail, filter/search and generic attribute maps; assert that credential resources and `passwordHash` cannot be returned. | `test(platform): guard workbench sensitive data exposure` | HPR-P0-001 |
 | HPR-P0-003 | PENDING | Architecture Testing | Code | Extend architecture/security guardrails so a future generic platform reader cannot silently introduce unrestricted module-JPA exposure outside an explicitly reviewed boundary. | `test(architecture): guard generic persistence exposure` | HPR-P0-001 |
 | HPR-P0-004 | PENDING | API / Security | Code | Add machine-readable OpenAPI security scheme and applicable security requirements for secured endpoints without weakening runtime security. | `fix(api): declare openapi security requirements` | HPR-P0-001 |
 | HPR-P0-005 | PENDING | Platform / Logging | Code | Revalidate caller-supplied actor-header handling; ensure it is not represented as authenticated audit identity unless a verified binding exists; correct code/tests/documentation only where evidence requires it. | `fix(platform): clarify audit actor provenance` | HPR-P0-001 |
@@ -133,12 +133,16 @@ The following audited statements govern prioritization:
 
 The next executable roadmap code is:
 
-`HPR-P0-001 — fix(platform): secure operational workbench data exposure`
+`HPR-P0-002 — test(platform): guard workbench sensitive data exposure`
 
-Before mutation:
+HPR-P0-001 implementation result:
 
-1. Read `doc/security/WORKBENCH_DATA_EXPOSURE.md`.
-2. Re-inspect `HidraOperationalWorkbenchService`, the Workbench controller/response model, route authorization, `LocalCredentialJpaEntity`, and relevant tests on the exact current head.
-3. Derive the narrowest fail-closed resource and field exposure contract from current API requirements.
-4. Modify only files required by HPR-P0-001.
-5. Do not execute HPR-P0-002 or later work in the same task unless this roadmap is explicitly amended to register a batch.
+- generic Workbench exposure is now explicit opt-in through `hidra.platform.workbench.exposure`;
+- absent/blank configuration exposes no resources;
+- configured resources must explicitly list exposed fields and include their identifier field;
+- credential/secret resource names are prohibited;
+- password/secret field names are prohibited;
+- filtering and sorting are restricted to explicitly exposed fields;
+- `LocalCredentialJpaEntity/passwordHash` cannot be enabled through the exposure configuration.
+
+Do not execute HPR-P0-003 or later work as part of HPR-P0-002.

@@ -2,7 +2,7 @@
 
 ## Status
 
-CURRENT REMEDIATION CONTRACT — HPR-P0-001 INPUT
+CURRENT — HPR-P0-001 IMPLEMENTED; HPR-P0-002 REGRESSION INPUT
 
 ## Audit Finding
 
@@ -81,3 +81,26 @@ The Workbench P0 exposure is not closed until:
 6. architecture/security guardrails cover the resulting boundary;
 7. full repository verification succeeds;
 8. `doc/roadmap/ULTIMATE_ROADMAP.md` records exact completion evidence.
+
+
+## HPR-P0-001 Implementation Decision
+
+The generic Workbench now uses an explicit opt-in configuration:
+
+```properties
+hidra.platform.workbench.exposure=module/resource=id,fieldA,fieldB;other-module/other-resource=id,name
+```
+
+Security behavior:
+
+- the property is absent/blank by default, so zero resources are exposed;
+- every resource requires an explicit `module/resource` entry;
+- every exposed field requires explicit listing;
+- the configured identifier field must be explicitly listed;
+- unknown configured fields cause fail-closed rejection;
+- resource names containing `credential` or `secret` are prohibited;
+- field names containing `password` or `secret` are prohibited;
+- `identity/local-credentials` is explicitly prohibited;
+- filters and sort keys are limited to approved fields.
+
+No default resource catalogue was added because current repository evidence does not define an approved generic Workbench resource/field inventory, while dedicated Identity and Organization query APIs now exist.

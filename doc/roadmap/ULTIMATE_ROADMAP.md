@@ -204,6 +204,13 @@ There is no further implementation HPR before the closure gate.
 
 remains BLOCKED and must not execute until all required production-equivalent exercises, environment controls, monthly backup-retention policy decision, and measured RTO/RPO evidence exist. Do not execute P2 work while P1 remains open.
 
+### HPR-P1-017 retention-binding repair evidence
+
+- failed exact-head full CI #543 / run id `37387950297` isolated the defect to static pgBackRest/PITR validation;
+- application HA and PostgreSQL HA validations passed; Maven verification did not start;
+- root cause: `verify-pitr-restore.sh` validated `HIDRA_PITR_REPO=1|2` but the actual pgBackRest restore command omitted `--repo="${repo}"`;
+- repair adds the selected repository explicitly to the restore command, making repo2 monthly retained-point PITR validation executable rather than cosmetic.
+
 ### HPR-P1-017 monthly-retention binding evidence
 
 - owner-value baseline SHA: `d134d7b0e9ea98d0ad9b8aa9fc131def81c235f3`;

@@ -31,7 +31,14 @@ echo "UTC restore start: $(date -u --iso-8601=seconds)"
 echo "Target: ${HIDRA_PITR_TARGET}"
 echo "Repository: repo${repo}"
 
-pgbackrest --config="${HIDRA_PGBACKREST_CONFIG}"   --stanza=hidra   --pg1-path="${HIDRA_PITR_PGDATA}"   --type=time   --target="${HIDRA_PITR_TARGET}"   --target-action=promote   restore
+pgbackrest --config="${HIDRA_PGBACKREST_CONFIG}" \
+  --stanza=hidra \
+  --repo="${repo}" \
+  --pg1-path="${HIDRA_PITR_PGDATA}" \
+  --type=time \
+  --target="${HIDRA_PITR_TARGET}" \
+  --target-action=promote \
+  restore
 
 echo "Restore files complete: $(date -u --iso-8601=seconds)"
 

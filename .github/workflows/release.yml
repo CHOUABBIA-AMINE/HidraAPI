@@ -1,0 +1,248 @@
+name: HidraAPI Controlled Production Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_sha:
+        description: Exact 40-character HidraAPI commit SHA to promote
+        required: true
+        type: string
+      change_id:
+        description: Approved production change/release identifier
+        required: true
+        type: string
+      deployment_mode:
+        description: Validate candidate only, or deploy after production approval
+        required: true
+        default: validate-only
+        type: choice
+        options:
+          - validate-only
+          - deploy-production
+      schema_change_mode:
+        description: Database compatibility declaration
+        required: true
+        default: no-schema-change
+        type: choice
+        options:
+          - no-schema-change
+          - forward-compatible-migration
+      artifact_rollback_compatible:
+        description: Prior artifact is schema-compatible if rollback is needed
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: hidraapi-production-release
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    name: Verify and package exact release candidate
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    outputs:
+      source_sha: ${{ steps.identity.outputs.source_sha }}
+      artifact_name: ${{ steps.package.outputs.artifact_name }}
+      artifact_sha256: ${{ steps.package.outputs.artifact_sha256 }}
+    steps:
+      - name: Checkout exact candidate
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.source_sha }}
+          fetch-depth: 0
+
+      - name: Verify candidate identity and main ancestry
+        id: identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          requested="${{ inputs.source_sha }}"
+          if [[ ! "${requested}" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "source_sha must be a full lowercase 40-character commit SHA." >&2
+            exit 1
+          fi
+          actual="$(git rev-parse HEAD)"
+          [[ "${actual}" == "${requested}" ]] || exit 1
+          git fetch origin main --no-tags
+          git merge-base --is-ancestor "${requested}" origin/main
+          echo "source_sha=${requested}" >> "${GITHUB_OUTPUT}"
+
+      - name: Require successful exact-SHA full CI
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_SHA: ${{ steps.identity.outputs.source_sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, os, urllib.request
+          repo=os.environ["GITHUB_REPOSITORY"]
+          api=os.environ["GITHUB_API_URL"]
+          sha=os.environ["SOURCE_SHA"]
+          token=os.environ["GH_TOKEN"]
+          req=urllib.request.Request(
+              f"{api}/repos/{repo}/actions/runs?head_sha={sha}&per_page=100",
+              headers={
+                  "Authorization": f"Bearer {token}",
+                  "Accept": "application/vnd.github+json",
+                  "X-GitHub-Api-Version": "2022-11-28",
+              },
+          )
+          with urllib.request.urlopen(req) as response:
+              payload=json.load(response)
+          matches=[
+              run for run in payload.get("workflow_runs", [])
+              if run.get("name")=="HidraAPI CI"
+              and run.get("head_sha")==sha
+              and run.get("status")=="completed"
+              and run.get("conclusion")=="success"
+          ]
+          if not matches:
+              raise SystemExit(f"No successful exact-SHA HidraAPI CI run found for {sha}.")
+          run=max(matches,key=lambda item:item.get("run_number",0))
+          print(f"Verified CI run #{run['run_number']} / {run['id']} for {sha}.")
+          PY
+
+      - name: Validate release automation artifacts
+        run: bash ops/production/release/validate-release-artifacts.sh
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+
+      - name: Build exact candidate artifact
+        run: |
+          set -euo pipefail
+          chmod +x mvnw
+          ./mvnw -B -q -DskipTests package
+
+      - name: Package immutable release candidate
+        id: package
+        env:
+          SOURCE_SHA: ${{ steps.identity.outputs.source_sha }}
+          CHANGE_ID: ${{ inputs.change_id }}
+          SCHEMA_CHANGE_MODE: ${{ inputs.schema_change_mode }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          jar="$(find target -maxdepth 1 -type f -name '*.jar' ! -name '*.original' | head -n 1)"
+          [[ -n "${jar}" ]] || exit 1
+          artifact_name="hidra-api-${SOURCE_SHA}.jar"
+          cp "${jar}" "dist/${artifact_name}"
+          artifact_sha256="$(sha256sum "dist/${artifact_name}" | awk '{print $1}')"
+          printf '%s  %s\n' "${artifact_sha256}" "${artifact_name}" > "dist/${artifact_name}.sha256"
+          python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          Path("dist/release-manifest.json").write_text(
+              json.dumps({
+                  "source_sha": os.environ["SOURCE_SHA"],
+                  "change_id": os.environ["CHANGE_ID"],
+                  "schema_change_mode": os.environ["SCHEMA_CHANGE_MODE"],
+              }, indent=2, sort_keys=True) + "\n",
+              encoding="utf-8",
+          )
+          PY
+          echo "artifact_name=${artifact_name}" >> "${GITHUB_OUTPUT}"
+          echo "artifact_sha256=${artifact_sha256}" >> "${GITHUB_OUTPUT}"
+
+      - name: Upload immutable release candidate
+        uses: actions/upload-artifact@v4
+        with:
+          name: hidra-api-release-${{ steps.identity.outputs.source_sha }}
+          path: dist/
+          if-no-files-found: error
+          retention-days: 30
+
+  deploy:
+    name: Controlled production rollout
+    if: ${{ inputs.deployment_mode == 'deploy-production' }}
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    environment:
+      name: production
+    env:
+      SOURCE_SHA: ${{ needs.prepare.outputs.source_sha }}
+      ARTIFACT_NAME: ${{ needs.prepare.outputs.artifact_name }}
+      ARTIFACT_SHA256: ${{ needs.prepare.outputs.artifact_sha256 }}
+      CHANGE_ID: ${{ inputs.change_id }}
+      SCHEMA_CHANGE_MODE: ${{ inputs.schema_change_mode }}
+      ARTIFACT_ROLLBACK_COMPATIBLE: ${{ inputs.artifact_rollback_compatible }}
+      HIDRA_APP_NODE_1_SSH: ${{ vars.HIDRA_APP_NODE_1_SSH }}
+      HIDRA_APP_NODE_2_SSH: ${{ vars.HIDRA_APP_NODE_2_SSH }}
+      HIDRA_HA_CONTROL_SSH: ${{ vars.HIDRA_HA_CONTROL_SSH }}
+      HIDRA_HA_BASE_URL: ${{ vars.HIDRA_HA_BASE_URL }}
+      HIDRA_PRODUCTION_ACCEPTANCE_PATH: ${{ vars.HIDRA_PRODUCTION_ACCEPTANCE_PATH }}
+      HIDRA_PRODUCTION_SSH_KNOWN_HOSTS: ${{ secrets.HIDRA_PRODUCTION_SSH_KNOWN_HOSTS }}
+      HIDRA_PRODUCTION_SSH_PRIVATE_KEY: ${{ secrets.HIDRA_PRODUCTION_SSH_PRIVATE_KEY }}
+      HIDRA_PRODUCTION_ACCEPTANCE_BEARER_TOKEN: ${{ secrets.HIDRA_PRODUCTION_ACCEPTANCE_BEARER_TOKEN }}
+    steps:
+      - name: Checkout release automation
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare.outputs.source_sha }}
+          fetch-depth: 1
+
+      - name: Download exact release candidate
+        uses: actions/download-artifact@v4
+        with:
+          name: hidra-api-release-${{ needs.prepare.outputs.source_sha }}
+          path: dist
+
+      - name: Verify release artifact digest
+        run: echo "${ARTIFACT_SHA256}  dist/${ARTIFACT_NAME}" | sha256sum -c -
+
+      - name: Configure production SSH trust
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${HIDRA_PRODUCTION_SSH_KNOWN_HOSTS:?known-hosts secret missing}"
+          : "${HIDRA_PRODUCTION_SSH_PRIVATE_KEY:?SSH private key missing}"
+          install -d -m 0700 "${HOME}/.ssh"
+          printf '%s\n' "${HIDRA_PRODUCTION_SSH_KNOWN_HOSTS}" > "${HOME}/.ssh/known_hosts"
+          printf '%s\n' "${HIDRA_PRODUCTION_SSH_PRIVATE_KEY}" > "${HOME}/.ssh/id_ed25519"
+          chmod 0600 "${HOME}/.ssh/id_ed25519"
+
+      - name: Validate production deployment inputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${CHANGE_ID:?change_id is required}"
+          : "${HIDRA_APP_NODE_1_SSH:?node 1 target missing}"
+          : "${HIDRA_APP_NODE_2_SSH:?node 2 target missing}"
+          : "${HIDRA_HA_CONTROL_SSH:?HAProxy control target missing}"
+          : "${HIDRA_HA_BASE_URL:?HA endpoint missing}"
+          : "${HIDRA_PRODUCTION_ACCEPTANCE_PATH:?acceptance path missing}"
+          : "${HIDRA_PRODUCTION_ACCEPTANCE_BEARER_TOKEN:?acceptance token missing}"
+          [[ "${HIDRA_PRODUCTION_ACCEPTANCE_PATH}" == /* ]]
+
+      - name: Deploy REST secondary node first
+        run: >
+          ops/production/release/deploy-production-node.sh
+          hidra-api-2 "${HIDRA_APP_NODE_2_SSH}"
+          "dist/${ARTIFACT_NAME}" "${SOURCE_SHA}" "${ARTIFACT_SHA256}"
+
+      - name: Deploy realtime-active node second
+        run: >
+          ops/production/release/deploy-production-node.sh
+          hidra-api-1 "${HIDRA_APP_NODE_1_SSH}"
+          "dist/${ARTIFACT_NAME}" "${SOURCE_SHA}" "${ARTIFACT_SHA256}"
+
+      - name: Final production acceptance
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error "${HIDRA_HA_BASE_URL%/}/actuator/health/readiness" >/dev/null
+          curl --fail --silent --show-error             --header "Authorization: Bearer ${HIDRA_PRODUCTION_ACCEPTANCE_BEARER_TOKEN}"             "${HIDRA_HA_BASE_URL%/}${HIDRA_PRODUCTION_ACCEPTANCE_PATH}" >/dev/null
+          echo "Production acceptance passed for ${SOURCE_SHA} / ${CHANGE_ID}."

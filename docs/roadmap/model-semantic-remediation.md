@@ -2495,7 +2495,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 - Recorded upstream HMS dependencies: assets.MaintainableAsset, organization.OrganizationUnit, party.Party
 - HMSR correction count: 5
 - Additive Flyway: `src/main/resources/db/migration/V20261004_045__hmr_045_assets_maintainable_asset.sql`
-- Owner-contract prerequisite: Existing candidate owner contract(s): organization:src/main/java/dz/sh/hidra/modules/organization/application/port/in/OperationalScopeQueryUseCase.java; organization:src/main/java/dz/sh/hidra/modules/organization/application/port/in/OrganizationAdministrationQueryUseCase.java; organization:src/main/java/dz/sh/hidra/modules/organization/application/port/out/OperationalScopeTargetResolverPort.java
+- Owner-contract prerequisite: HMR-047A registered — live preflight proved no Integration-facing Organization owner contract exists and the authoritative Integration registration service was outside the original write scope.
 - Exact write allowlist:
   - `docs/data definition/Assets.md`
   - `docs/roadmap/model-semantic-remediation.md`
@@ -2680,6 +2680,42 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
   1. **Enforce uniqueness of `ExternalSystem.code`.** Implement the explicit DDD invariant with a concurrency-safe authoritative mechanism, preferably the DDD-specified unique database index/constraint plus appropriate application conflict handling.
   2. **Enforce `EXTERNAL_SYSTEM_TYPE` catalog-family semantics for `systemTypeId`.** Generic Integration catalog-row existence is insufficient; the selected row must belong to the documented external-system-type family.
   3. **Validate populated `ownerOrganizationUnitId` through the Organization owner boundary.** Do not add a cross-module database FK; fail closed through an Organization-owned lookup/application contract or equivalent boundary.
+
+#### HMR-047A — ExternalSystem registration/Organization owner prerequisite
+
+- Source: HMR-047 / HMSR-056 plus live Integration/Organization boundary evidence.
+- Exact commit: `docs(model-remediation): register ExternalSystem owner prerequisite`
+- Status: **Completed** — the missing Integration registration service, Organization-owned Integration lookup contract, owner-side implementation/test, and architecture guardrail registrations are authorized; HMR-047A itself changes documentation only.
+- Type: documentation/application-boundary prerequisite.
+- Live evidence:
+  1. HMR-047 requires deterministic application conflict handling for unique `ExternalSystem.code`, family validation for `systemTypeId`, and fail-closed validation of populated `ownerOrganizationUnitId`.
+  2. The authoritative registration path is `IntegrationApplicationService.registerExternalSystem(...)`, but `IntegrationApplicationService.java` is absent from the original HMR-047 allowlist.
+  3. No `organization.application.contract.integration` package or equivalent deliberate Organization-to-Integration export exists on live `main`.
+  4. The previously recorded Organization candidates are internal ports/use cases and must not be imported directly by Integration under the repository cross-module guardrails.
+  5. `OrganizationUnitRepositoryPort.findById(...)` can resolve owner truth inside Organization and is sufficient for the reviewed existence-only obligation; HMR-047 does not authorize inventing Organization lifecycle or role eligibility.
+  6. `hidra_integration_catalog_entry` already exists and can support `EXTERNAL_SYSTEM_TYPE` family checks from the Integration repository boundary.
+  7. The registered HMR-047 Flyway migration remains sufficient for the concurrency-safe unique-code database constraint/index; no cross-module Organization FK is authorized.
+- Required decisions:
+  1. Add `IntegrationApplicationService.java` to the HMR-047 write allowlist.
+  2. Organization must export a narrow Integration-facing OrganizationUnit existence contract returning neutral scalar/existence evidence only.
+  3. The Organization implementation must use `OrganizationUnitRepositoryPort.findById(...)`; null/blank/unknown IDs fail closed when validation is requested.
+  4. `IntegrationApplicationService.registerExternalSystem(...)` must reject an already-used ExternalSystem code before save for deterministic application semantics.
+  5. The concurrency-safe authoritative uniqueness remains the HMR-047 database unique constraint/index; the pre-check is not a substitute for it.
+  6. `IntegrationApplicationService.registerExternalSystem(...)` must reject a `systemTypeId` that does not belong specifically to `EXTERNAL_SYSTEM_TYPE`.
+  7. Populated `ownerOrganizationUnitId` must resolve through the Organization-owned Integration contract before save.
+  8. No Organization cross-module database FK is authorized.
+  9. Register exactly `dz.sh.hidra.modules.organization.application.contract.integration` in both existing architecture exported-package registries without weakening their algorithms.
+- Newly authorized HMR-047 production files in addition to the original allowlist:
+  - `src/main/java/dz/sh/hidra/modules/integration/application/service/IntegrationApplicationService.java`
+  - `src/main/java/dz/sh/hidra/modules/organization/application/contract/integration/IntegrationOrganizationUnitReferenceContract.java`
+  - `src/main/java/dz/sh/hidra/modules/organization/application/contract/integration/package-info.java`
+  - `src/main/java/dz/sh/hidra/modules/organization/application/service/IntegrationOrganizationUnitReferenceQueryService.java`
+- Newly authorized HMR-047 test/guardrail files:
+  - `src/test/java/dz/sh/hidra/modules/organization/application/service/IntegrationOrganizationUnitReferenceQueryServiceTest.java`
+  - `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java`
+  - `src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java`
+- HMR-047 remains the current production remediation after this prerequisite is observed. Do not start HMR-048 automatically.
+
 
 #### HMR-048 — reporting.ReportRequest
 
@@ -5150,8 +5186,8 @@ Additional batches may be registered or an existing planned envelope may be spli
 
 ### 12.6 Current next execution
 
-HMRB-014 — HMR-047
+HMR-047A — ExternalSystem registration/Organization owner prerequisite
 
-Mode: Solo
+`docs(model-remediation): register ExternalSystem owner prerequisite`
 
-HMRB-013 is completed. Execute HMR-047 only after the HMR-046 head is green and exact unique-code/Organization-owner preflight passes; stop before HMRB-015.
+HMRB-013 is green. Observe this docs-only prerequisite once, then execute HMRB-014 / HMR-047 only; do not start HMRB-015 automatically.

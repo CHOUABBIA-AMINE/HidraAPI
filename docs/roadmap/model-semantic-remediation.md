@@ -2246,7 +2246,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-048`
 - Exact commit: `fix(monitoring): remediate semantic review MonitoringRule`
-- Status: **Planned**
+- Status: **Completed** — populated telemetryPointId is validated fail-closed through the Telemetry-owned Monitoring application contract; no cross-module database FK is introduced.
 - SCC: —
 - Recorded upstream HMS dependencies: telemetry.TelemetryPoint
 - HMSR correction count: 1
@@ -4974,7 +4974,7 @@ The following are execution registrations only; they do not change any HMR's sem
 | HMRB-005 | HMR-025 | Solo | **Completed.** Required analytical scope and the authoritative bounded readiness-status representation are aligned. |
 | HMRB-006 | HMR-026, HMR-027 | Batch | **Completed.** FeatureFlag ownership requiredness and CustodyDiscrepancy optional quantity-unit integrity are remediated in separate commits. |
 | HMRB-007 | HMR-038, HMR-039 | Batch | **Completed.** MetricValue scopeType requiredness and ConfigurationValue environment/version integrity completed in separate commits. |
-| HMRB-008 | HMR-040 | Solo | **Blocked until HMR-040A observation.** Preflight proved the recorded TelemetryQueryUseCase candidate is insufficient; a deliberate Telemetry-owned Monitoring contract and guardrail registration are now defined. |
+| HMRB-008 | HMR-040 | Solo | **Completed.** MonitoringRule populated telemetryPointId now resolves through a deliberate Telemetry-owned Monitoring contract with exact guardrail registration. |
 | HMRB-009 | HMR-041 | Solo | **Planned.** Concurrency-safe one-ACTIVE PartyRoleAssignment uniqueness. |
 | HMRB-010 | HMR-042 | Solo | **Planned.** High-risk Pipeline fixed-taxonomy → catalog-reference redesign. |
 | HMRB-011 | HMR-043, HMR-044 | Coordinated Batch | **Planned, conditional preflight.** SCC-02 pair; execute together only if the existing Organization owner contracts are sufficient and migration/order evidence remains compatible. Otherwise split before mutation. |
@@ -5041,8 +5041,8 @@ Additional batches may be registered or an existing planned envelope may be spli
 
 ### 12.6 Current next execution
 
-HMR-040A — MonitoringRule TelemetryPoint owner-contract prerequisite
+HMRB-009 — HMR-041
 
-`docs(model-remediation): register MonitoringRule telemetry owner prerequisite`
+Mode: Solo
 
-HMRB-007 is green. Observe this docs-only prerequisite once, then execute HMRB-008 / HMR-040 only; do not start HMRB-009 automatically.
+HMRB-008 is completed. Execute HMR-041 only after the HMR-040 head is green; stop before HMRB-010.

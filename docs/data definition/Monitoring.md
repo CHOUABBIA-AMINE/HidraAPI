@@ -145,3 +145,16 @@ Monitoring may provide evidence and alert candidates. Leak Detection owns leak s
 Domain, application, and infrastructure monitoring models must not use `@Schema` or OpenAPI annotations.
 
 `@Schema` is allowed only in monitoring API request/response models.
+
+
+---
+
+## HMR-040 — MonitoringRule TelemetryPoint ownership
+
+`MonitoringRule.telemetryPointId` remains an optional cross-module scalar reference.
+
+When populated during rule creation, Monitoring must validate the point through the Telemetry-owned
+`MonitoringTelemetryPointReferenceContract` and fail closed when the TelemetryPoint does not exist.
+
+Monitoring does not import Telemetry domain, repository, JPA, or infrastructure types, and no
+Monitoring-to-Telemetry database foreign key is created.

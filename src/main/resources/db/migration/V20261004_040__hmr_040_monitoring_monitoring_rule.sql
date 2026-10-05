@@ -1,0 +1,7 @@
+-- HMR-040: MonitoringRule TelemetryPoint owner-boundary remediation.
+--
+-- No schema mutation is intentionally performed here.
+-- telemetry_point_id is a cross-module scalar reference owned by Telemetry.
+-- HMR-040 explicitly forbids a Monitoring -> Telemetry database foreign key.
+-- Referential existence is enforced fail-closed through the Telemetry-owned
+-- MonitoringTelemetryPointReferenceContract at the Monitoring application boundary.

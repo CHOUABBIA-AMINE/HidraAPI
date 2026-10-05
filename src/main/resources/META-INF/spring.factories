@@ -1,0 +1,2 @@
+org.springframework.boot.env.EnvironmentPostProcessor=\
+dz.sh.hidra.platform.configuration.HidraProductionStartupGuard

@@ -17,9 +17,9 @@ This document must never contain real production secret values.
 | `SPRING_PROFILES_ACTIVE` | REQUIRED | Must be `production` for production deployment |
 | `SERVER_PORT` | OPTIONAL | Defaults to `8080` |
 | `MANAGEMENT_SERVER_PORT` | OPTIONAL | Defaults to server port |
-| `HIDRA_ENVIRONMENT` | RECOMMENDED | Metrics environment tag; set to `production` for clear telemetry identity |
+| `HIDRA_ENVIRONMENT` | REQUIRED FOR PRODUCTION HOSTING | Must be `production`; acts as the independent production-runtime intent marker used by the fail-fast startup guard, preventing silent dev-profile fallback |
 
-Do not rely on `SPRING_PROFILES_DEFAULT` for production.
+Do not rely on `SPRING_PROFILES_DEFAULT` for production. Production hosting must set both `HIDRA_ENVIRONMENT=production` and `SPRING_PROFILES_ACTIVE=production`; if production intent is declared without the production profile, HidraAPI fails before bean creation.
 
 ## 2. PostgreSQL
 
@@ -183,7 +183,24 @@ A production configuration change must:
 
 Configuration that changes database authority, authentication trust, or security credentials must not be treated as an ordinary cosmetic setting change.
 
-## 15. Production Readiness
+## 15. Production Startup Guard
+
+HidraAPI registers `HidraProductionStartupGuard` as a Spring `EnvironmentPostProcessor`.
+
+For a production runtime it fails fast when:
+
+- production intent is declared but the `production` Spring profile is not active;
+- datasource URL, username, or password is empty;
+- CORS is enabled but no allowed production origin is configured;
+- authentication mode is not `jwt`;
+- the Hidra JWT HMAC secret is empty;
+- administrator bootstrap is enabled without a bootstrap password.
+
+The guard runs before normal bean creation and complements, rather than replaces, existing Spring placeholder validation and security-component validation.
+
+Optional OIDC/LDAP integration inputs remain conditional on those integration paths and are not made universally mandatory by this guard.
+
+## 16. Production Readiness
 
 The application-side production configuration contract is documented.
 

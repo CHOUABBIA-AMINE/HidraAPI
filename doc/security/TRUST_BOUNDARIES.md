@@ -6,7 +6,9 @@ CURRENT — canonical boundary inventory for repository-verified application tru
 
 ## Verification Baseline
 
-Repository head: `359ae6d77bb9bb8f499941634760f4c375abb9ac`
+Repository head: `0e26ce4e604a2c09aae1b03ee8bf58ac7bd9f20a`
+
+CI evidence: HidraAPI CI run #523 completed successfully on this exact head.
 
 Anything outside current source/configuration evidence is explicitly marked **NOT ESTABLISHED**.
 
@@ -152,6 +154,121 @@ Production configuration suppresses verbose Hibernate bind logging.
 - retention period;
 - access controls on log platform;
 - security alert rules and on-call ownership.
+
+## 9. Boundary: API Controller -> Module Application
+
+### Current trust decision
+
+REST controllers are adapters. They may translate validated HTTP input into module application commands/queries, but they are not trusted to bypass the application boundary and reach persistence directly.
+
+### Current controls
+
+- controller dependencies are constrained to API mapping and application inbound contracts;
+- `ArchitectureGuardrailTest` prohibits REST controllers from depending on `application.port.out`, `infrastructure.persistence`, or Spring Data repositories;
+- module API packages may not depend on module infrastructure;
+- application packages may not depend on API or infrastructure packages.
+
+### Trust transition
+
+`HTTP request -> controller/API adapter -> application inbound port/use case`
+
+The application layer owns orchestration and domain-policy invocation after this transition.
+
+## 10. Boundary: Module Application -> Another Business Module
+
+### Current trust decision
+
+Private internals of another business module are not trusted cross-module integration surfaces.
+
+### Permitted transition
+
+A cross-module dependency is allowed only when the target package is an explicitly exported `.application.contract.<consumer>` contract recorded in `ArchitectureGuardrailTest`.
+
+Examples currently enforced include:
+
+- Workflow contracts exported to Planning, Organization, Alarm, and Reporting;
+- Topology contracts exported to Organization, Simulation, Leak Detection, Analytics, Assets, and Risk;
+- Organization contracts exported to Analytics, Assets, Integration, Reporting, and Risk;
+- Audit contracts exported to Organization, Alarm, and Risk;
+- Party contracts exported to Topology and Assets;
+- Telemetry contract exported to Monitoring;
+- Identity contract exported to Reporting.
+
+The exact package-prefix list is maintained in `ArchitectureGuardrailTest.EXPORTED_CROSS_MODULE_PACKAGE_PREFIXES`.
+
+### Forbidden transition
+
+A module may not import another module's private domain, infrastructure, or ordinary application package. The transitional exception map is currently empty.
+
+## 11. Boundary: Generic Workbench -> Persistence Metadata
+
+### Current trust decision
+
+The generic Workbench is the only reviewed platform JPA reader and is treated as a privileged exception to normal module application boundaries.
+
+### Trust transition
+
+`Workbench HTTP route -> HidraOperationalWorkbenchController -> HidraOperationalWorkbenchService -> EntityManager/metamodel`
+
+### Current controls
+
+- `HidraOperationalWorkbenchExposurePolicy` is mandatory;
+- no configured resources means no exposure;
+- resource and field approval is explicit;
+- credential/secret resources and password/secret fields are prohibited;
+- platform dependencies on module persistence packages are forbidden;
+- architecture guardrail permits direct platform JPA access only from the reviewed Workbench service;
+- HTTP-level regressions cover discovery, list, detail, search, direct prohibited credential-resource access, and serialized absence of `passwordHash`.
+
+## 12. Boundary: Operator/API Client -> Telemetry Source Registration
+
+### Current trust decision
+
+Telemetry source registration is an application command boundary, not direct persistence access.
+
+### Verified transition
+
+`POST /api/v1/telemetry/sources -> SpringTelemetryController -> CreateTelemetrySourceUseCase -> TelemetrySourceApplicationService -> TelemetrySourceRepositoryPort`
+
+### Current controls
+
+The application service verifies source-code uniqueness and active `SOURCE_TYPE` and `PROTOCOL` catalog references before creating a DRAFT telemetry source.
+
+No repository evidence establishes that the HTTP caller is a SCADA device or field system; it is an authenticated API-side registration operation.
+
+## 13. Boundary: Operator/API Client -> Telemetry Point Registration
+
+### Verified transition
+
+`POST /api/v1/telemetry/points -> SpringTelemetryController -> RegisterTelemetryPointUseCase -> TelemetryPointApplicationService -> TelemetryPointRepositoryPort`
+
+### Current controls
+
+The application service verifies point-code uniqueness per device and creates the point in the controlled PLANNED lifecycle state before persistence.
+
+The controller does not access persistence directly.
+
+## 14. Boundary: API Client -> Telemetry Query Contract
+
+### Verified transition
+
+`GET /api/v1/telemetry/... -> TelemetryQueryController -> TelemetryQueryUseCase -> telemetry query adapter`
+
+Current HTTP reads include point reading history, latest reading, trend, reading states, and quality codes.
+
+### Not established
+
+This query boundary does not establish:
+
+- a telemetry reading-ingestion HTTP endpoint;
+- SCADA/PLC protocol termination;
+- MQTT/Sparkplug;
+- OPC;
+- historian connectivity;
+- OT/IT network zones;
+- field-device trust.
+
+Those remain unverified/deferred unless separately evidenced.
 
 ## 9. Boundary: Network / TLS / OT Zones
 

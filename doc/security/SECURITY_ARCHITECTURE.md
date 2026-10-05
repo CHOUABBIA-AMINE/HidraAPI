@@ -6,8 +6,8 @@ CURRENT — canonical security baseline for repository-verified controls.
 
 ## Verification Baseline
 
-- Repository head inspected: `359ae6d77bb9bb8f499941634760f4c375abb9ac`
-- CI evidence: HidraAPI CI run #520 completed successfully on this exact head.
+- Repository head inspected for HPR-P0-010: `0e26ce4e604a2c09aae1b03ee8bf58ac7bd9f20a`
+- CI evidence: HidraAPI CI run #523 completed successfully on this exact head.
 - Scope: application/runtime controls evidenced in source and configuration.
 - Production network perimeter, TLS termination, infrastructure firewalling, SIEM/SOC integration, and certificate operations: **NOT ESTABLISHED by repository evidence**.
 
@@ -165,6 +165,113 @@ Token revocation semantics beyond stored lifecycle metadata are not asserted her
 Flyway production configuration disables clean and validates migrations.
 
 Security-sensitive production logging is reduced for Spring Security and Hibernate bind values.
+
+## 8. Application Trust Transitions
+
+### 8.1 Normal module request path
+
+**CURRENT**
+
+For ordinary business-module REST operations, the verified dependency direction is:
+
+`HTTP client -> Spring Security -> module API/controller -> application inbound port/use case -> application service -> domain + outbound port -> infrastructure adapter/persistence`
+
+Repository guardrails enforce the important parts of that transition:
+
+- module application code may not depend on module API or infrastructure packages;
+- module API code may not depend on module infrastructure;
+- REST controllers may not depend directly on outbound ports, persistence repositories, or Spring Data repositories;
+- business domains may not depend on Spring, JPA/Hibernate, Jackson, Swagger annotations, or platform code.
+
+Therefore, controller input crosses into a module through its API adapter and application inbound contract rather than directly entering persistence.
+
+### 8.2 Cross-module application contracts
+
+**CURRENT**
+
+A business module may not import another module's private domain, infrastructure, or ordinary application packages.
+
+Cross-module application collaboration is permitted only through deliberately exported application-contract package prefixes enforced by `ArchitectureGuardrailTest`.
+
+Current exported contract prefixes are:
+
+- `workflow.application.contract.planning`
+- `workflow.application.contract.organization`
+- `workflow.application.contract.alarm`
+- `topology.application.contract.organization`
+- `topology.application.contract.simulation`
+- `topology.application.contract.leakdetection`
+- `topology.application.contract.analytics`
+- `organization.application.contract.analytics`
+- `audit.application.contract.organization`
+- `audit.application.contract.alarm`
+- `party.application.contract.topology`
+- `telemetry.application.contract.monitoring`
+- `topology.application.contract.assets`
+- `organization.application.contract.assets`
+- `party.application.contract.assets`
+- `organization.application.contract.integration`
+- `identity.application.contract.reporting`
+- `workflow.application.contract.reporting`
+- `organization.application.contract.reporting`
+- `organization.application.contract.risk`
+- `topology.application.contract.risk`
+- `audit.application.contract.risk`
+
+The transitional cross-module dependency allowlist is currently empty. Private cross-module application-port imports are therefore not an approved trust transition.
+
+### 8.3 Reviewed Workbench persistence exception
+
+**CURRENT — exceptional platform boundary**
+
+The generic Workbench does not follow the ordinary module API-to-use-case path. It is an explicitly reviewed platform exception:
+
+`HTTP client -> Spring Security -> HidraOperationalWorkbenchController -> HidraOperationalWorkbenchService -> JPA EntityManager/metamodel`
+
+This path is constrained by:
+
+- `HidraOperationalWorkbenchExposurePolicy`;
+- explicit resource and field opt-in;
+- credential/secret resource prohibition;
+- password/secret field prohibition;
+- HTTP-level list/detail/search/discovery regressions;
+- `ArchitectureGuardrailTest`, which permits platform JPA access only from `HidraOperationalWorkbenchService` and requires that class to retain the exposure-policy dependency.
+
+Platform code is forbidden from directly depending on module `infrastructure.persistence` packages, including this Workbench exception.
+
+### 8.4 Telemetry source and point registration boundary
+
+**CURRENT**
+
+The implemented telemetry registration path is:
+
+`POST /api/v1/telemetry/sources -> SpringTelemetryController -> CreateTelemetrySourceUseCase -> TelemetrySourceApplicationService -> TelemetrySourceRepositoryPort -> telemetry persistence adapter`
+
+and:
+
+`POST /api/v1/telemetry/points -> SpringTelemetryController -> RegisterTelemetryPointUseCase -> TelemetryPointApplicationService -> TelemetryPointRepositoryPort -> telemetry persistence adapter`
+
+Verified application-side checks include:
+
+- telemetry source code uniqueness;
+- active `SOURCE_TYPE` catalog resolution;
+- active `PROTOCOL` catalog resolution;
+- telemetry point code uniqueness per device;
+- construction of domain models with controlled lifecycle states before persistence.
+
+The controller does not directly access repositories or JPA.
+
+### 8.5 Telemetry query boundary
+
+**CURRENT**
+
+Telemetry query endpoints use a separate inbound query contract:
+
+`GET /api/v1/telemetry/... -> TelemetryQueryController -> TelemetryQueryUseCase -> query adapter`
+
+Current query endpoints include reading history, latest reading, trend, reading-state reference data, and quality-code reference data.
+
+This establishes an application-level telemetry query boundary. It does **not** establish a SCADA/PLC ingestion transport, field protocol, message broker, OT network zone, or external telemetry collector architecture.
 
 ## 8. Explicitly Not Established
 

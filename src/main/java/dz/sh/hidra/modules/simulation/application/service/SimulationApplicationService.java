@@ -7,7 +7,7 @@
  *
  * @Name        : SimulationApplicationService
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-04
+ * @UpdatedOn   : 2026-10-05
  *
  * @Type        : Class
  * @Layer       : Application
@@ -214,6 +214,16 @@ public final class SimulationApplicationService implements CreateSimulationModel
                 ));
         if (!scenario.executable()) {
             throw new InvalidSimulationValueException("SimulationScenario must be LOCKED before execution.");
+        }
+        if (!runRepositoryPort.isRunType(command.runTypeId())) {
+            throw new InvalidSimulationValueException(
+                    "SimulationRun run type must reference SIMULATION_RUN_TYPE."
+            );
+        }
+        if (!runRepositoryPort.isSolverProfile(command.solverProfileId())) {
+            throw new InvalidSimulationValueException(
+                    "SimulationRun solver profile must reference SIMULATION_SOLVER_PROFILE."
+            );
         }
         validateScenarioReferences(scenario);
         Instant now = Instant.now();

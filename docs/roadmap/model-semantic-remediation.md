@@ -2583,7 +2583,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-055`
 - Exact commit: `fix(simulation): remediate semantic review SimulationRun`
-- Status: **Planned**
+- Status: **Completed** — queueing now requires a LOCKED scenario plus SIMULATION_RUN_TYPE and SIMULATION_SOLVER_PROFILE family membership, and persisted COMPLETED run state is immutable under repository writes.
 - SCC: —
 - Recorded upstream HMS dependencies: simulation.SimulationScenario
 - HMSR correction count: 4
@@ -5088,7 +5088,7 @@ The following are execution registrations only; they do not change any HMR's sem
 | HMRB-010 | HMR-042 | Solo | **Completed.** Pipeline fixed taxonomy is replaced by the Topology-owned PipelineType catalog reference architecture with migrated legacy values. |
 | HMRB-011 | HMR-043, HMR-044 | Coordinated Batch | **Completed.** SCC-02 WorkflowStep ordering/reference integrity and WorkflowStepAssignmentRule family/candidate-source integrity completed in separate commits. |
 | HMRB-012 | HMR-045 | Solo | **Completed.** MaintainableAsset external ownership and SCC-03/same-module reference integrity are enforced through deliberate owner contracts and Assets-owned FKs. |
-| HMRB-013 | HMR-046 | Solo | **Blocked until HMR-046A observation.** Live preflight proved the authoritative Simulation queue service was missing from the original HMR-046 write scope. |
+| HMRB-013 | HMR-046 | Solo | **Completed.** SimulationRun queue eligibility, catalog-family semantics and completed-run immutability are enforced at application/repository boundaries. |
 | HMRB-014 | HMR-047 | Solo | **Planned.** Concurrency-safe code uniqueness plus Organization owner validation. |
 | HMRB-015 | HMR-048 | Solo | **Planned.** Reporting access, approval/workflow and Organization-owner lifecycle orchestration. |
 | HMRB-016 | HMR-049 | Solo | **Planned.** Risk typed scope, unresolved review-frequency semantics and audit/outbox behavior. |
@@ -5150,8 +5150,8 @@ Additional batches may be registered or an existing planned envelope may be spli
 
 ### 12.6 Current next execution
 
-HMR-046A — SimulationRun application-boundary prerequisite
+HMRB-014 — HMR-047
 
-`docs(model-remediation): register SimulationRun application prerequisite`
+Mode: Solo
 
-HMRB-012 is green. Observe this docs-only prerequisite once, then execute HMRB-013 / HMR-046 only; do not start HMRB-014 automatically.
+HMRB-013 is completed. Execute HMR-047 only after the HMR-046 head is green and exact unique-code/Organization-owner preflight passes; stop before HMRB-015.

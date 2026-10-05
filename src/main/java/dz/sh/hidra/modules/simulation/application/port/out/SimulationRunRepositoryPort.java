@@ -7,7 +7,7 @@
  *
  * @Name        : SimulationRunRepositoryPort
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-05
  *
  * @Type        : Interface
  * @Layer       : Application
@@ -31,4 +31,8 @@ public interface SimulationRunRepositoryPort {
     SimulationRun save(SimulationRun model);
 
     Optional<SimulationRun> findById(String id);
+
+    boolean isRunType(String runTypeId);
+
+    boolean isSolverProfile(String solverProfileId);
 }

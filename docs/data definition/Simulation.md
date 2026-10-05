@@ -425,6 +425,13 @@ Rule:
 
 ```text
 A run is immutable after completion except for publication/archival metadata.
+
+HMR-046 executable semantics:
+- a run may be queued only when its SimulationScenario exists and is LOCKED;
+- runTypeId must resolve specifically to SIMULATION_RUN_TYPE;
+- solverProfileId must resolve specifically to SIMULATION_SOLVER_PROFILE;
+- once a persisted SimulationRun is COMPLETED, ordinary business-state mutations fail closed;
+- an identical re-save of an already-completed run is a no-op.
 ```
 
 ### 7.10 SimulationRunStep

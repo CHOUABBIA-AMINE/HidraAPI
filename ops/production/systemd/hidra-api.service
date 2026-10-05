@@ -1,0 +1,22 @@
+[Unit]
+Description=HidraAPI production service
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User=hidra
+Group=hidra
+WorkingDirectory=/opt/hidra/current
+EnvironmentFile=/etc/hidra/hidra.env
+EnvironmentFile=/etc/hidra/node.env
+EnvironmentFile=-/run/hidra/hidra-secrets.env
+ExecStart=/usr/bin/java -jar /opt/hidra/current/hidra.jar
+Restart=on-failure
+KillSignal=SIGTERM
+SuccessExitStatus=143
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

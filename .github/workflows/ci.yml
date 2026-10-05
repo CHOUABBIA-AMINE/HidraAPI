@@ -51,6 +51,9 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Validate production application HA runtime artifacts
+        run: bash ops/production/scripts/validate-runtime-artifacts.sh
+
       - name: Set up Java 21
         uses: actions/setup-java@v4
         with:

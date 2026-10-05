@@ -22,6 +22,7 @@ package dz.sh.hidra.platform.realtime;
 import java.util.Arrays;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -33,6 +34,7 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
  * Configures Hidra realtime WebSocket and STOMP broker endpoints.
  */
 @Configuration(proxyBeanMethods = false)
+@ConditionalOnProperty(prefix = "hidra.platform.realtime", name = "enabled", havingValue = "true", matchIfMissing = true)
 @EnableScheduling
 @EnableWebSocketMessageBroker
 public class HidraRealtimeConfiguration implements WebSocketMessageBrokerConfigurer {

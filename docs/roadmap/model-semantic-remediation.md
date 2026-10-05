@@ -2726,7 +2726,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 - Recorded upstream HMS dependencies: organization.OrganizationUnit, reporting.ReportDefinition
 - HMSR correction count: 4
 - Additive Flyway: `src/main/resources/db/migration/V20261004_048__hmr_048_reporting_report_request.sql`
-- Owner-contract prerequisite: Existing candidate owner contract(s): organization:src/main/java/dz/sh/hidra/modules/organization/application/port/in/OperationalScopeQueryUseCase.java; organization:src/main/java/dz/sh/hidra/modules/organization/application/port/in/OrganizationAdministrationQueryUseCase.java; organization:src/main/java/dz/sh/hidra/modules/organization/application/port/out/OperationalScopeTargetResolverPort.java
+- Owner-contract prerequisite: HMR-049A registered — live preflight proved the Risk create service, Risk-facing Organization/Topology scope contracts, and Risk-specific Audit contract were missing from the original execution scope.
 - Exact write allowlist:
   - `docs/data definition/Reporting.md`
   - `docs/roadmap/model-semantic-remediation.md`
@@ -2841,6 +2841,63 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
   3. **Make typed scope identity fail closed.** Preserve `scopeType + scopeId` as a non-relational typed namespace, require a semantically complete pair at the authoritative write boundary, and resolve supported types through their owning contracts rather than inventing one relational target.
   4. **Resolve `reviewFrequencyId` controlled-value semantics.** Current DDD does not identify a defensible review-frequency catalog family; do not map it to `RISK_REVIEW_TYPE` without stronger evidence.
   5. **Honor the explicit register creation/update audit-event contract.** Integrate the authoritative write path with the existing Risk audit/outbox architecture when production reconciliation is authorized.
+
+#### HMR-049A — RiskRegister owner/scope/audit prerequisite
+
+- Source: HMR-049 / HMSR-058 plus live Risk/Organization/Topology/Audit evidence.
+- Exact commit: `docs(model-remediation): register RiskRegister owner prerequisites`
+- Status: **Completed** — the missing Risk application orchestration file, deliberate owner contracts, Audit contract/adapter, focused tests, and architecture guardrail registrations are authorized; HMR-049A itself changes documentation only.
+- Type: documentation/application-boundary prerequisite.
+- Live evidence:
+  1. The authoritative RiskRegister creation path is `RiskApplicationService.createRiskRegister(...)`, but `RiskApplicationService.java` is absent from the original HMR-049 allowlist.
+  2. No `organization.application.contract.risk`, `topology.application.contract.risk`, or `audit.application.contract.risk` package exists on live `main`.
+  3. `RiskRegister.registerTypeId` is a same-module Risk catalog reference, but generic row existence is insufficient; family membership must be `RISK_REGISTER_TYPE`.
+  4. `ownerOrganizationUnitId` is cross-module and must remain free of a database FK.
+  5. The repository has authoritative owner evidence for these Risk scope types only:
+     - `ORGANIZATION_UNIT` -> OrganizationUnit repository;
+     - `PIPELINE_SYSTEM`, `PIPELINE`, `FACILITY`, `EQUIPMENT` -> Topology repositories/contracts.
+     Broader Risk DDD examples such as `PIPELINE_SEGMENT`, `OPERATIONAL_PLAN`, `INCIDENT`, `INTEGRITY_CASE`, `HSE_CASE`, and `SIMULATION_SCENARIO` do not yet have Risk-facing owner contracts and must not be silently accepted.
+  6. The legacy generic module event/outbox path was explicitly rejected/removed by ADR 0006 / HRA-031B. The current repository pattern for business audit integration is consumer-specific Audit-owned application contracts such as `audit.application.contract.alarm` and `audit.application.contract.organization`, adapted to `RecordAuditEventUseCase`.
+  7. `reviewFrequencyId` has no defensible catalog-family owner in current DDD. `RISK_REVIEW_TYPE` is not evidence for review frequency and must not be substituted.
+- Required decisions:
+  1. Add `src/main/java/dz/sh/hidra/modules/risk/application/service/RiskApplicationService.java` to HMR-049 production scope.
+  2. Organization must export a narrow Risk-facing contract for:
+     - OrganizationUnit existence;
+     - resolution of `ORGANIZATION_UNIT` scope identity.
+     It may use `OrganizationUnitRepositoryPort.findById(...)`; do not invent lifecycle eligibility beyond existence.
+  3. Topology must export a narrow Risk-facing typed scope contract supporting only the owner-backed types currently evidenced: `PIPELINE_SYSTEM`, `PIPELINE`, `FACILITY`, and `EQUIPMENT`. Unsupported type codes fail closed.
+  4. Risk creation must require nonblank `scopeType` and `scopeId` as a complete pair and resolve the pair through the corresponding owner contract before persistence.
+  5. Scope types without a registered owner contract must fail closed; do not infer or create cross-module relational targets.
+  6. `registerTypeId` must belong specifically to Risk catalog family `RISK_REGISTER_TYPE`, enforced through Risk repository/catalog lookup before save.
+  7. Populated `ownerOrganizationUnitId` must resolve through the Organization-owned Risk contract before save.
+  8. Preserve `reviewFrequencyId` as nullable opaque controlled-value state for this HMR. Do not validate it against `RISK_REVIEW_TYPE`, do not create a new catalog family, and document the unresolved semantic owner for later remediation/closure review.
+  9. Audit must export a Risk-specific `RiskRegisterAuditContract` owned by the Audit module, with an Audit infrastructure adapter delegating to the existing `RecordAuditEventUseCase`. HMR-049 must record RiskRegister creation after successful persistence using neutral scalar/snapshot data.
+  10. Do not recreate the removed generic platform outbox/event-publisher architecture.
+  11. HMR-049 migration may harden same-table/domain-enforceable invariants only. No Organization/Topology/Audit cross-module FK is authorized.
+  12. Register exactly these new exported packages in both architecture guardrail registries:
+      - `dz.sh.hidra.modules.organization.application.contract.risk`
+      - `dz.sh.hidra.modules.topology.application.contract.risk`
+      - `dz.sh.hidra.modules.audit.application.contract.risk`
+      Do not add wildcard/transitional exemptions.
+- Newly authorized HMR-049 production files in addition to the original allowlist:
+  - `src/main/java/dz/sh/hidra/modules/risk/application/service/RiskApplicationService.java`
+  - `src/main/java/dz/sh/hidra/modules/organization/application/contract/risk/RiskOrganizationReferenceContract.java`
+  - `src/main/java/dz/sh/hidra/modules/organization/application/contract/risk/package-info.java`
+  - `src/main/java/dz/sh/hidra/modules/organization/application/service/RiskOrganizationReferenceQueryService.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/application/contract/risk/RiskTopologyScopeReferenceContract.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/application/contract/risk/package-info.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/application/service/RiskTopologyScopeReferenceQueryService.java`
+  - `src/main/java/dz/sh/hidra/modules/audit/application/contract/risk/RiskRegisterAuditContract.java`
+  - `src/main/java/dz/sh/hidra/modules/audit/application/contract/risk/package-info.java`
+  - `src/main/java/dz/sh/hidra/modules/audit/infrastructure/integration/RiskRegisterAuditContractAdapter.java`
+- Newly authorized HMR-049 test/guardrail files:
+  - `src/test/java/dz/sh/hidra/modules/organization/application/service/RiskOrganizationReferenceQueryServiceTest.java`
+  - `src/test/java/dz/sh/hidra/modules/topology/application/service/RiskTopologyScopeReferenceQueryServiceTest.java`
+  - `src/test/java/dz/sh/hidra/modules/audit/infrastructure/integration/RiskRegisterAuditContractAdapterTest.java`
+  - `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java`
+  - `src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java`
+- HMR-049 remains the current production remediation after this prerequisite is observed. Do not start HMR-050 automatically.
+
 
 #### HMR-050 — integrity.IntegrityProgram
 
@@ -5236,8 +5293,8 @@ Additional batches may be registered or an existing planned envelope may be spli
 
 ### 12.6 Current next execution
 
-HMRB-016 — HMR-049
+HMR-049A — RiskRegister owner/scope/audit prerequisite
 
-Mode: Solo
+`docs(model-remediation): register RiskRegister owner prerequisites`
 
-HMRB-015 is completed. Execute HMR-049 only after the HMR-048 head is green and exact Risk owner/catalog/lifecycle preflight passes; stop before HMRB-017.
+HMRB-015 is green. Observe this docs-only prerequisite once, then execute HMRB-016 / HMR-049 only; do not start HMRB-017 automatically.

@@ -108,7 +108,7 @@ The following audited statements govern prioritization:
 | HPR-P1-007 | COMPLETED — product-neutral production deployment runbook and environment configuration created from repository evidence and approved runtime/HA/security decisions; they require exact artifact identity, explicit production profile, externalized secrets, stable PostgreSQL endpoint, controlled Flyway/JPA validation, serialized migration authority, readiness-based admission, acceptance checks, evidence capture and rollback/abort criteria; hosting/traffic/secret-manager/TLS/CD products remain unselected | Deployment | Doc | Create `DEPLOYMENT_RUNBOOK.md` and `ENVIRONMENT_CONFIGURATION.md`; require explicit production profile, secrets, PostgreSQL preparation, Flyway, startup, acceptance and rollback. | `docs(operations): add production deployment runbook` | HPR-P1-001..003 |
 | HPR-P1-008 | COMPLETED — CI now generates OpenAPI for the exact current revision and actual Git base revision, then executes a repository-owned backward-compatibility checker that fails on supported breaking changes including removed paths/operations/parameters/responses/content types, newly required request inputs, incompatible request/response schema changes, new response enum values, and public-to-authenticated operation changes; OpenAPI artifact publication remains after the gate | CI / API | Infra | Add real OpenAPI compatibility/breaking-change validation; generation/upload alone is not compatibility validation. | `ci(api): enforce openapi compatibility` | P0 closed |
 | HPR-P1-009 | BLOCKED-DECISION | CD | Infra/Doc | After deployment target approval, implement controlled deployment automation, promotion, approval, post-deployment health verification and rollback; document in `CI_CD_RELEASE_GUIDE.md`. | `ci(release): add controlled deployment pipeline` | HPR-P1-007 + deployment target decision |
-| HPR-P1-010 | PENDING | Observability | Infra/Doc | Create `OBSERVABILITY_AND_SRE.md` and implement approved alerting from existing Actuator/Prometheus signals; do not invent SLOs. | `docs(operations): establish observability operating model` | HPR-P1-001 |
+| HPR-P1-010 | BLOCKED-DECISION — canonical observability/SRE operating model created from existing Actuator/Prometheus, health probes, structured correlation/request/actor logging, HA/DR and incident-governance evidence; actionable alert conditions and ownership are defined, but executable alert rules cannot be implemented without an approved monitoring/alert-routing platform and owner-approved numeric thresholds/SLOs; no product or threshold was invented | Observability | Infra/Doc | Create `OBSERVABILITY_AND_SRE.md` and implement approved alerting from existing Actuator/Prometheus signals; do not invent SLOs. | `docs(operations): establish observability operating model` | HPR-P1-001 |
 | HPR-P1-011 | PENDING | Database Operations | Doc | Create `DATABASE_OPERATIONS_RUNBOOK.md` covering Flyway, backup/restore, connection exhaustion, failover, maintenance and migration failures. | `docs(database): add database operations runbook` | HPR-P1-003..005 |
 | HPR-P1-012 | PENDING | Survivability Verification | Infra/Doc | Execute and record approved restore/PITR and failover exercises; close P1 only from measured evidence. | `docs(roadmap): close P1 survivability verification` | HPR-P1-005..011 |
 
@@ -145,13 +145,13 @@ The following audited statements govern prioritization:
 
 ## 6. Immediate Next Execution
 
-HPR-P1-008 is complete. HPR-P1-009 remains BLOCKED-DECISION pending explicit production deployment-target approval.
+HPR-P1-010 operating-model documentation is complete but executable alerting remains BLOCKED-DECISION pending monitoring/alert-routing platform selection plus owner-approved numeric thresholds/SLOs. HPR-P1-009 also remains BLOCKED-DECISION pending production deployment-target approval.
 
 The next currently executable roadmap code is:
 
-`HPR-P1-010 — docs(operations): establish observability operating model`
+`HPR-P1-011 — docs(database): add database operations runbook`
 
-Do not execute HPR-P1-009, HPR-P1-010, or any later task automatically.
+Do not execute HPR-P1-009, HPR-P1-011, or any later task automatically.
 
 ### Final P0 closure evidence
 
@@ -304,6 +304,18 @@ Owner-approved on 2026-10-05 after HPR-P1-003:
 - covered break classes include removed paths/operations/parameters, new required parameters/request body/properties, request enum contraction, schema type changes, removed response codes/content types/properties, required-response guarantee weakening, response enum expansion, and public-to-authenticated operation tightening;
 - compatibility validation runs before OpenAPI artifact upload;
 - no API compatibility result is claimed until the post-commit full CI run completes successfully.
+
+
+### HPR-P1-010 observability/SRE evidence
+
+- execution base SHA: `39da2f1bf9bf4e6305b29a6b5bfd34a287bc6fd2`;
+- pre-task exact-head full CI / OpenAPI compatibility run #535 / run id `37344473469`: **SUCCESS**;
+- existing application signals are limited to Spring Boot Actuator health/info/metrics/Prometheus surfaces, readiness/liveness probes, JVM/Spring/Hikari-generated metrics, environment/application metric tags, and correlation/request/actor-enriched application logging;
+- repository search found no current custom Micrometer `MeterRegistry`/`Counter`/`Timer`/`Gauge` instrumentation to claim as existing;
+- canonical operating model defines collection domains, dashboards/views, alert condition classes, severity/ownership routing, evidence, incident linkage, HA/DR observability requirements, and production validation expectations;
+- executable alerting is NOT IMPLEMENTED because no production metrics collector, alert manager/router, dashboard platform, log aggregation/SIEM product, on-call integration, numeric alert thresholds, or SLO/error-budget values are owner-approved;
+- no Prometheus-rule syntax, Grafana/SIEM product, paging integration, numeric latency/error-rate threshold, availability target, or retention duration was invented;
+- HPR-P1-010 remains BLOCKED-DECISION until the required platform/threshold decisions are approved, after which a narrow implementation commit must bind the documented conditions to the selected tooling.
 
 ## 7. Original P0 Closure Evidence
 

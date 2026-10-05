@@ -1202,7 +1202,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 - SCC: —
 - Recorded upstream HMS dependencies: —
 - HMSR correction count: 1
-- Additive Flyway: not pre-authorized by HMR-002
+- Additive Flyway: HMR-042A registered — a new immutable migration is required to introduce/backfill the Pipeline classification catalog and replace the legacy enum/string column.
 - Owner-contract prerequisite: No cross-module owner-contract prerequisite recorded by this HMSR correction.
 - Exact write allowlist:
   - `docs/data definition/Configuration.md`
@@ -2385,6 +2385,38 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
   - `./mvnw -q clean verify`
 - HMSR obligations:
   1. **Replace Pipeline's fixed `PipelineType` business taxonomy with the repository-approved catalog-reference architecture.** The correction must reconcile domain, persistence, Flyway/data migration, API/read contracts and existing values with the accepted Topology type-catalog design, using stable catalog codes/localized labels rather than a fixed business enum. Preserve `TopologyStatus` as a lifecycle enum unless separate evidence changes that classification.
+
+#### HMR-042A — Pipeline classification catalog prerequisite
+
+- Source: HMR-042 / HMSR-050 plus live Pipeline/PipelineSystem catalog evidence.
+- Exact commit: `docs(model-remediation): register Pipeline catalog prerequisite`
+- Status: **Completed** — the missing Pipeline classification catalog persistence/migration surface and minimal downstream compatibility scope are authorized; HMR-042A itself changes documentation only.
+- Type: documentation/architecture/schema prerequisite.
+- Live evidence:
+  1. `Pipeline.pipelineType` is still the fixed enum `PipelineType` with values `CRUDE_OIL`, `CONDENSATE`, `NATURAL_GAS`, `LPG`, `MULTI_PRODUCT`, `WATER`, `OTHER`.
+  2. `PipelineJpaEntity` still persists that enum directly in legacy column `pipeline_type`.
+  3. No `PipelineTypeJpaEntity`, `PipelineTypeJpaRepository`, `hidra_topology_pipeline_type`, or `pipeline_type_id` exists on live `main`.
+  4. The repository-approved Topology catalog pattern already exists for `PipelineSystemType` and `ConnectionTypeReference`: dedicated catalog table/entity/repository, domain reference object, code lookup at the application/repository boundary, FK-backed persisted ID, and migration/backfill from former enum/string values.
+  5. HMR-042 explicitly requires Flyway/data migration, but its original registration had no additive migration authorization.
+  6. `PipelineType` is consumed by the topology map visualization adapter and existing topology application tests outside the original HMR-042 allowlist; those callers must migrate to stable catalog-code semantics to keep the repository compiling without reintroducing enum coupling.
+- Required decisions:
+  1. Convert `PipelineType` from a closed business enum into the open Pipeline classification reference object, preserving the seven existing codes only as compatibility constants/seeded references, not as an exhaustive taxonomy.
+  2. Introduce a dedicated Topology-owned `hidra_topology_pipeline_type` catalog following the proven PipelineSystemType/ConnectionType catalog shape: stable `id`, unique stable `code`, optional `name_ar/name_fr/name_en`, `active`, and timestamps.
+  3. Seed exactly the seven codes already present in the former enum. Do not invent localized labels or new classifications.
+  4. Add an immutable HMR-042 Flyway migration that validates legacy values, backfills `pipeline_type_id`, adds/validates the same-module FK, indexes the reference, and removes the legacy `pipeline_type` column only after successful backfill.
+  5. Pipeline persistence must store the catalog FK/reference, not an enum string.
+  6. Repository/application reads expose stable catalog code and optional localized labels. Existing lifecycle `TopologyStatus` remains an enum.
+  7. Visualization must emit the Pipeline type stable code, not enum-name reflection.
+  8. No generic/shared catalog abstraction is authorized; keep the correction Topology/Pipeline-specific.
+- Newly authorized HMR-042 production files in addition to the original allowlist:
+  - `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/PipelineTypeJpaEntity.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/PipelineTypeJpaRepository.java`
+  - `src/main/java/dz/sh/hidra/modules/topology/infrastructure/visualization/JpaTopologyMapVisualizationAdapter.java`
+  - `src/main/resources/db/migration/V20261004_042__hmr_042_topology_pipeline.sql`
+- Newly authorized HMR-042 compatibility test file:
+  - `src/test/java/dz/sh/hidra/modules/topology/application/service/TopologyOperationalScopeTargetQueryServiceTest.java`
+- HMR-042 remains the current production remediation after this prerequisite is observed. Do not start HMR-043 automatically.
+
 
 #### HMR-043 — workflow.WorkflowStep
 
@@ -4976,7 +5008,7 @@ The following are execution registrations only; they do not change any HMR's sem
 | HMRB-007 | HMR-038, HMR-039 | Batch | **Completed.** MetricValue scopeType requiredness and ConfigurationValue environment/version integrity completed in separate commits. |
 | HMRB-008 | HMR-040 | Solo | **Completed.** MonitoringRule populated telemetryPointId now resolves through a deliberate Telemetry-owned Monitoring contract with exact guardrail registration. |
 | HMRB-009 | HMR-041 | Solo | **Completed.** ACTIVE PartyRoleAssignment uniqueness is protected by application pre-check plus a concurrency-safe partial unique index. |
-| HMRB-010 | HMR-042 | Solo | **Planned.** High-risk Pipeline fixed-taxonomy → catalog-reference redesign. |
+| HMRB-010 | HMR-042 | Solo | **Blocked until HMR-042A observation.** Live preflight proved the Pipeline catalog table/entity/repository/migration and visualization compatibility scope were missing from the original registration. |
 | HMRB-011 | HMR-043, HMR-044 | Coordinated Batch | **Planned, conditional preflight.** SCC-02 pair; execute together only if the existing Organization owner contracts are sufficient and migration/order evidence remains compatible. Otherwise split before mutation. |
 | HMRB-012 | HMR-045 | Solo | **Planned.** SCC-03 plus Topology/Organization/Party ownership and multiple same-module references. |
 | HMRB-013 | HMR-046 | Solo | **Planned.** Simulation lifecycle eligibility, catalog-family semantics and completed-run immutability. |
@@ -5041,8 +5073,8 @@ Additional batches may be registered or an existing planned envelope may be spli
 
 ### 12.6 Current next execution
 
-HMRB-010 — HMR-042
+HMR-042A — Pipeline classification catalog prerequisite
 
-Mode: Solo
+`docs(model-remediation): register Pipeline catalog prerequisite`
 
-HMRB-009 is completed. Execute HMR-042 only after the HMR-041 head is green and after exact catalog-redesign preflight; stop before HMRB-011.
+HMRB-009 is green. Observe this docs-only prerequisite once, then execute HMRB-010 / HMR-042 only; do not start HMRB-011 automatically.

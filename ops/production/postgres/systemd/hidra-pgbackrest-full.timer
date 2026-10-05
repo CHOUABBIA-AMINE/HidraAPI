@@ -1,0 +1,11 @@
+[Unit]
+Description=Run Hidra PostgreSQL full backup daily
+
+[Timer]
+OnCalendar=daily
+Persistent=true
+RandomizedDelaySec=15m
+Unit=hidra-pgbackrest-full.service
+
+[Install]
+WantedBy=timers.target

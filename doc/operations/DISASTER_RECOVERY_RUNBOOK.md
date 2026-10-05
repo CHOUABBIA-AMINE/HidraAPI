@@ -418,22 +418,26 @@ At minimum the survivability exercise must demonstrate:
 
 A desk review of this runbook is not sufficient to close production DR readiness.
 
-## 26. Product-Specific Procedure Gap
+## 26. Product-Specific Implementation Binding
 
-The following remain intentionally unresolved until infrastructure selection:
+The P1 stack is now selected and partially bound to executable repository artifacts:
 
-- backup command syntax;
-- backup repository/storage implementation;
-- WAL archive command/mechanism;
-- PostgreSQL recovery command/service details;
-- stable endpoint implementation;
-- fencing technology;
-- secret-manager commands;
-- application hosting/orchestration commands;
-- traffic manager commands;
-- monitoring/alerting product procedures.
+- backup/WAL/PITR: pgBackRest under `ops/production/postgres/pgbackrest/`;
+- backup execution/health/PITR exercise: `ops/production/postgres/scripts/`;
+- PostgreSQL HA/failover: Patroni + etcd under `ops/production/postgres/`;
+- stable PostgreSQL endpoint: HAProxy;
+- runtime secrets: HashiCorp Vault selected, deployment binding remains HPR-P1-018;
+- application hosting: Linux VMs + systemd;
+- application traffic management: HAProxy;
+- monitoring/alerting: Prometheus + Alertmanager + Grafana/Loki selected, executable rules remain HPR-P1-019.
 
-HPR-P1-011 and later infrastructure/deployment tasks must bind this logical runbook to approved production tooling.
+Still unresolved:
+
+- exact independent repository storage product/medium;
+- enterprise monthly recovery-point policy identifier and exact hold duration;
+- production-equivalent restore/PITR execution evidence.
+
+The executable pgBackRest restore/PITR procedure does not replace HPR-P1-012 measured DR acceptance.
 
 ## 27. Production Readiness
 

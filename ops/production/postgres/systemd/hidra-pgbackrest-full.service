@@ -1,0 +1,8 @@
+[Unit]
+Description=Hidra PostgreSQL pgBackRest full backup
+After=network-online.target
+
+[Service]
+Type=oneshot
+User=postgres
+ExecStart=/opt/hidra/ops/production/postgres/scripts/run-full-backup.sh

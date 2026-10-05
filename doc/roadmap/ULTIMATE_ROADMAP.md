@@ -98,7 +98,7 @@ The following audited statements govern prioritization:
 
 | Code | Status | Domain/Module | Type | Exact execution requirement | Exact commit message | Depends on |
 |---|---|---|---|---|---|---|
-| HPR-P1-001 | NEXT | Runtime Architecture | Doc | Create `doc/architecture/RUNTIME_ARCHITECTURE.md` from approved production decisions only; do not invent deployment technology. | `docs(architecture): define production runtime architecture` | HPR-P0-015 completed |
+| HPR-P1-001 | COMPLETED — canonical runtime architecture created from exact-head repository evidence; current Spring Boot/JVM, PostgreSQL/Flyway, stateless HTTP security, production-profile externalization, Actuator/Prometheus, in-process cache and STOMP broker are recorded separately from approved targets and unresolved deployment/HA/DR decisions; no deployment technology was invented | Runtime Architecture | Doc | Create `doc/architecture/RUNTIME_ARCHITECTURE.md` from approved production decisions only; do not invent deployment technology. | `docs(architecture): define production runtime architecture` | HPR-P0-015 completed |
 | HPR-P1-002 | BLOCKED-DECISION | Application Runtime | Infra/Doc | Approve stateless multi-node runtime and load-distribution mechanism; document node state, readiness/liveness integration and failure behavior. | `docs(operations): define application high availability model` | HPR-P1-001 + owner decision |
 | HPR-P1-003 | BLOCKED-DECISION | PostgreSQL | Infra/Doc | Approve PostgreSQL replication/failover topology, replication mode, failover authority, connection behavior, maintenance behavior and ownership. | `docs(database): define postgres high availability model` | HPR-P1-001 + owner decision |
 | HPR-P1-004 | BLOCKED-DECISION | DR | Infra/Doc | Obtain owner-approved RTO/RPO, backup frequency/retention and WAL/PITR strategy; keep values TBD until approved. | `docs(operations): define disaster recovery objectives` | owner decision |
@@ -144,9 +144,13 @@ The following audited statements govern prioritization:
 
 ## 6. Immediate Next Execution
 
-The next executable roadmap code is:
+HPR-P1-001 is complete. The next P1 progression gates are owner decisions for:
 
-`HPR-P1-001 — docs(architecture): define production runtime architecture`
+- `HPR-P1-002` — application multi-node/runtime load distribution;
+- `HPR-P1-003` — PostgreSQL HA/replication/failover;
+- `HPR-P1-004` — RTO/RPO, backup retention/frequency, WAL/PITR.
+
+Do not execute a later HPR merely because HPR-P1-001 completed.
 
 ### Final P0 closure evidence
 
@@ -170,6 +174,19 @@ The next executable roadmap code is:
 - independent P0 re-audit at the exact closure SHA: **PASS — 13/13 checks VERIFIED**.
 
 P0 is CLOSED for security/audit verification. Production readiness remains **NOT ESTABLISHED** because P1 runtime architecture, HA, DR, deployment, observability, and database-operations survivability are still incomplete.
+
+### HPR-P1-001 runtime-architecture evidence
+
+- execution base SHA: `912b76396651c197d4db9ecccb21cd3de6a83e86`;
+- P0 closure CI run #529 / run id `37326280500`: **SUCCESS**;
+- latest pre-task head CI run #530 / run id `37328378048`: **SUCCESS**;
+- repository runtime is Java 21 / Spring Boot 4.1.1 with PostgreSQL and Flyway;
+- HTTP security is stateless; production-sensitive configuration is externalized;
+- Actuator readiness/liveness and Prometheus-format metrics are configured;
+- common cache is process-local Spring `simple` cache and realtime STOMP uses the in-process simple broker;
+- no production Docker/Kubernetes/Helm/IaC deployment definition is established by repository evidence;
+- multi-node/load distribution, PostgreSQL HA, RTO/RPO, backup/WAL/PITR, DR, deployment target, TLS product/placement, secret-manager product, network zones and production monitoring platform remain decision-required or NOT ESTABLISHED.
+
 ## 7. Original P0 Closure Evidence
 
 HPR-P0-001..007 remain valid evidence that the original source-level P0 defects were remediated and that the executable tree was green under the roadmap gate that existed at the time.

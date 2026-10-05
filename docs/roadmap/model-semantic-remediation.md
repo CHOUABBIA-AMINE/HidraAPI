@@ -2151,7 +2151,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-042`
 - Exact commit: `fix(analytics): remediate semantic review AnalyticsDatasetVersion`
-- Status: **Planned**
+- Status: **Completed** — once an AnalyticsDatasetVersion is persisted as published, changed subsequent saves fail closed at the repository adapter boundary while identical re-saves are no-ops and the initial publish transition remains allowed.
 - SCC: —
 - Recorded upstream HMS dependencies: analytics.AnalyticsDataset
 - HMSR correction count: 1
@@ -4950,8 +4950,8 @@ or required-field alignment work; keep high-risk semantic redesigns solo.
 
 ### 12.6 Current next execution
 
-HMR-036 — topology.Facility repair
+HMR-038 — analytics.MetricValue
 
-`fix(topology): remediate semantic review Facility`
+`fix(analytics): remediate semantic review MetricValue`
 
-CI #498 exposed a missing architecture-guardrail registry entry for the HMR-036A Party-owned Topology contract. Apply only the HMR-036B-authorized guardrail registration repair after observing this docs-only prerequisite; do not start HMR-037 automatically.
+HMR-037 is completed. Execute HMR-038 only after the HMR-037 head is green; do not start HMR-039 automatically.

@@ -404,6 +404,9 @@ Rules:
 
 ```text
 published dataset version is immutable
+after a version is persisted as published, repository writes may not change any persisted release content or publication metadata
+an identical re-save of an already-published version is treated as a no-op
+the transition from unpublished to published remains allowed
 schemaHash and dataHash support reproducibility
 periodStart must be before or equal to periodEnd
 ```

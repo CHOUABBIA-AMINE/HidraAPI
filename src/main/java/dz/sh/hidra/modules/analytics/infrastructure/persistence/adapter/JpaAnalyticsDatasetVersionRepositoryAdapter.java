@@ -7,7 +7,7 @@
  *
  * @Name        : JpaAnalyticsDatasetVersionRepositoryAdapter
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-05
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -20,6 +20,7 @@
 package dz.sh.hidra.modules.analytics.infrastructure.persistence.adapter;
 
 import dz.sh.hidra.modules.analytics.application.port.out.AnalyticsDatasetVersionRepositoryPort;
+import dz.sh.hidra.modules.analytics.domain.exception.InvalidAnalyticsValueException;
 import dz.sh.hidra.modules.analytics.domain.model.AnalyticsDatasetVersion;
 import dz.sh.hidra.modules.analytics.infrastructure.persistence.mapper.AnalyticsPersistenceMapper;
 import dz.sh.hidra.modules.analytics.infrastructure.persistence.repository.AnalyticsDatasetVersionJpaRepository;
@@ -42,7 +43,23 @@ public class JpaAnalyticsDatasetVersionRepositoryAdapter implements AnalyticsDat
 
     @Override
     public AnalyticsDatasetVersion save(AnalyticsDatasetVersion model) {
-        return AnalyticsPersistenceMapper.toDomain(repository.save(AnalyticsPersistenceMapper.toEntity(model)));
+        Objects.requireNonNull(model, "AnalyticsDatasetVersion must not be null.");
+
+        Optional<AnalyticsDatasetVersion> existing = repository.findById(model.id())
+                .map(AnalyticsPersistenceMapper::toDomain);
+
+        if (existing.isPresent() && existing.get().published()) {
+            if (!existing.get().equals(model)) {
+                throw new InvalidAnalyticsValueException(
+                        "Published AnalyticsDatasetVersion is immutable."
+                );
+            }
+            return existing.get();
+        }
+
+        return AnalyticsPersistenceMapper.toDomain(
+                repository.save(AnalyticsPersistenceMapper.toEntity(model))
+        );
     }
 
     @Override

@@ -107,10 +107,61 @@ The following audited statements govern prioritization:
 | HPR-P1-006 | COMPLETED — canonical product-neutral HA architecture consolidates the approved application and PostgreSQL models: minimum two active HidraAPI nodes, readiness-based traffic admission, stateless REST/no sticky-session correctness, node-local cache constraints, realtime clustering restriction, one writable PostgreSQL primary with local synchronous standby where latency permits, optional remote asynchronous standby, stable database endpoint, controlled/fenced failover, maintenance drain/switchover, and explicit degraded-mode/acceptance evidence; implementation products and measured failover remain pending | HA | Doc | Create `doc/operations/HIGH_AVAILABILITY_ARCHITECTURE.md` covering approved application/database redundancy, failover, connection behavior and maintenance failover. | `docs(operations): add high availability architecture` | HPR-P1-002..003 |
 | HPR-P1-007 | COMPLETED — product-neutral production deployment runbook and environment configuration created from repository evidence and approved runtime/HA/security decisions; they require exact artifact identity, explicit production profile, externalized secrets, stable PostgreSQL endpoint, controlled Flyway/JPA validation, serialized migration authority, readiness-based admission, acceptance checks, evidence capture and rollback/abort criteria; hosting/traffic/secret-manager/TLS/CD products remain unselected | Deployment | Doc | Create `DEPLOYMENT_RUNBOOK.md` and `ENVIRONMENT_CONFIGURATION.md`; require explicit production profile, secrets, PostgreSQL preparation, Flyway, startup, acceptance and rollback. | `docs(operations): add production deployment runbook` | HPR-P1-001..003 |
 | HPR-P1-008 | COMPLETED — CI now generates OpenAPI for the exact current revision and actual Git base revision, then executes a repository-owned backward-compatibility checker that fails on supported breaking changes including removed paths/operations/parameters/responses/content types, newly required request inputs, incompatible request/response schema changes, new response enum values, and public-to-authenticated operation changes; OpenAPI artifact publication remains after the gate | CI / API | Infra | Add real OpenAPI compatibility/breaking-change validation; generation/upload alone is not compatibility validation. | `ci(api): enforce openapi compatibility` | P0 closed |
-| HPR-P1-009 | BLOCKED-DECISION | CD | Infra/Doc | After deployment target approval, implement controlled deployment automation, promotion, approval, post-deployment health verification and rollback; document in `CI_CD_RELEASE_GUIDE.md`. | `ci(release): add controlled deployment pipeline` | HPR-P1-007 + deployment target decision |
-| HPR-P1-010 | BLOCKED-DECISION — canonical observability/SRE operating model created from existing Actuator/Prometheus, health probes, structured correlation/request/actor logging, HA/DR and incident-governance evidence; actionable alert conditions and ownership are defined, but executable alert rules cannot be implemented without an approved monitoring/alert-routing platform and owner-approved numeric thresholds/SLOs; no product or threshold was invented | Observability | Infra/Doc | Create `OBSERVABILITY_AND_SRE.md` and implement approved alerting from existing Actuator/Prometheus signals; do not invent SLOs. | `docs(operations): establish observability operating model` | HPR-P1-001 |
+| HPR-P1-009 | BLOCKED-DECISION — independent P1 audit confirms deployment automation is not implemented; retained as the original design-stage task and operationally superseded by HPR-P1-018 after HPR-P1-013 selects the production target | CD | Infra/Doc | After deployment target approval, implement controlled deployment automation, promotion, approval, post-deployment health verification and rollback; document in `CI_CD_RELEASE_GUIDE.md`. | `ci(release): add controlled deployment pipeline` | HPR-P1-007 + deployment target decision |
+| HPR-P1-010 | BLOCKED-DECISION — operating model is complete, but independent P1 audit confirms executable alerting/SRE policy is not implemented; retained as the design-stage task and operationally completed only through HPR-P1-019 after HPR-P1-013 selects the monitoring/alert-routing platform and owners approve SLIs/SLOs/thresholds | Observability | Infra/Doc | Create `OBSERVABILITY_AND_SRE.md` and implement approved alerting from existing Actuator/Prometheus signals; do not invent SLOs. | `docs(operations): establish observability operating model` | HPR-P1-001 |
 | HPR-P1-011 | COMPLETED — canonical product-neutral database operations runbook created for PostgreSQL/Flyway operations, covering pre-change checks, schema migration authority, migration failure handling, connection-pool exhaustion, primary/standby failover and switchover, backup/WAL/PITR operations, maintenance, credential rotation coordination, data-integrity incidents, observability/evidence requirements, and stop/escalation criteria; no HA/backup/monitoring product or vendor command was invented | Database Operations | Doc | Create `DATABASE_OPERATIONS_RUNBOOK.md` covering Flyway, backup/restore, connection exhaustion, failover, maintenance and migration failures. | `docs(database): add database operations runbook` | HPR-P1-003..005 |
-| HPR-P1-012 | PENDING | Survivability Verification | Infra/Doc | Execute and record approved restore/PITR and failover exercises; close P1 only from measured evidence. | `docs(roadmap): close P1 survivability verification` | HPR-P1-005..011 |
+| HPR-P1-012 | BLOCKED — independent P1 audit at SHA `f46f6c1ed7e324f66a0a26422a6dfa6da8bc3689` verified only 2/12 survivability checks; closure is prohibited until HPR-P1-013..020 are complete, HPR-P1-009 and HPR-P1-010 implementation blockers are resolved, and measured restore/PITR + application/PostgreSQL failover evidence exists on production-equivalent infrastructure | Survivability Verification | Infra/Doc | Execute and record approved restore/PITR and failover exercises; close P1 only from measured evidence. | `docs(roadmap): close P1 survivability verification` | HPR-P1-013..020 + HPR-P1-009 completed + HPR-P1-010 completed |
+| HPR-P1-013 | PENDING | Production Infrastructure Decisions | Decision/Doc | Obtain and record the concrete production infrastructure selections required to implement P1: deployment/runtime target, traffic-distribution mechanism, PostgreSQL HA/promotion/fencing/stable-endpoint mechanism, backup/WAL/PITR tooling and protected storage, secret/configuration injection mechanism, monitoring/alert-routing/logging platform, and the controlling enterprise policy identifier plus exact monthly backup recovery-point retention/hold rule. Preserve approved RTO/RPO and do not invent products or retention values. | `docs(operations): approve production infrastructure stack` | accountable Platform/DB/Security/Operations owner decisions |
+| HPR-P1-014 | PENDING | Runtime Safety | Code/Test | Enforce production-context startup safety so an omitted or wrong Spring profile cannot silently fall back to dev/default behavior in an approved production deployment; validate required production configuration and add automated negative tests for missing/wrong profile and mandatory inputs. | `fix(runtime): enforce production startup profile` | HPR-P1-013 deployment/runtime decision |
+| HPR-P1-015 | PENDING | Application HA | Infra/Code/Test/Doc | Implement the approved two-node HidraAPI runtime on the selected deployment/traffic platform, readiness-based admission/removal, graceful drain/replacement, and safe node-local-state behavior. Resolve production treatment for local cache, background executors, and realtime (shared mechanism, explicit single-active mode, or disabled mode) and demonstrate one-node loss without hidden sticky-session correctness. | `feat(runtime): implement application high availability` | HPR-P1-013 + HPR-P1-002 + HPR-P1-006 |
+| HPR-P1-016 | PENDING | PostgreSQL HA / Connections | Infra/Code/Test/Doc | Implement the selected PostgreSQL primary/standby replication, promotion/fencing and stable-endpoint mechanism; define explicit Hikari/JDBC recovery settings including approved max-lifetime/keepalive/idle behavior where applicable; document interrupted-transaction responsibility; execute controlled failover and prove connection replacement, single-writer authority, endpoint redirection and application read/write recovery. | `feat(database): implement postgres failover recovery` | HPR-P1-013 + HPR-P1-003 + HPR-P1-011 |
+| HPR-P1-017 | PENDING | Backup / WAL / PITR | Infra/Test/Doc | Bind the approved DR model to the selected backup and storage implementation with executable backup, WAL archive, restore, recovery-target/PITR, service-control and validation procedures; enforce the 35-day operational window and the owner-approved monthly retention/hold rule; verify protected-copy independence and produce a restorable current-schema backup chain. | `feat(database): implement backup and pitr operations` | HPR-P1-013 + HPR-P1-004..005 + HPR-P1-011 |
+| HPR-P1-018 | PENDING | CD / Release | Infra/Test/Doc | Complete former HPR-P1-009 after deployment-target approval: implement controlled release promotion, approval, exact-artifact deployment, explicit production-profile/configuration validation, post-deployment health/security/database acceptance, rollback gates and `doc/operations/CI_CD_RELEASE_GUIDE.md`; retain executable evidence from the selected target. | `ci(release): add controlled deployment pipeline` | HPR-P1-013..014 + HPR-P1-007 |
+| HPR-P1-019 | PENDING | Observability / SRE | Infra/Test/Doc | Complete former HPR-P1-010 after observability decisions: approve concrete SLIs/SLOs/evaluation windows and numeric thresholds, configure collection/dashboards/log routing as applicable, implement executable alert rules and on-call/escalation routing for application/HA/database/backup/security conditions, and verify representative alert firing, delivery and recovery without secret leakage. | `feat(operations): implement production alerting` | HPR-P1-013 + HPR-P1-010 operating model |
+| HPR-P1-020 | PENDING | Database Operations | Infra/Test/Doc | Make the database runbook executable for the selected PostgreSQL/backup/HA stack: add reviewed maintenance and inspection commands for sessions, locks, long-running work, VACUUM/ANALYZE strategy, index/bloat/capacity checks, replication/backup health and Flyway failure diagnosis; validate the commands in production-equivalent infrastructure and cross-link them to HA/backup procedures. | `docs(database): operationalize database procedures` | HPR-P1-013 + HPR-P1-016..017 + HPR-P1-011 |
+
+### P1 Independent Audit Remediation Baseline — 2026-10-05
+
+Independent audit baseline: `f46f6c1ed7e324f66a0a26422a6dfa6da8bc3689`.
+
+Verdict: **FAIL — 2 / 12 checks VERIFIED**.
+
+Verified controls preserved:
+
+- Check 1 — concrete RTO/RPO: **VERIFIED**;
+- Check 8 — OpenAPI breaking-change gate: **VERIFIED**.
+
+The audit does not invalidate completed architecture/runbook HPRs. It proves that design-stage completion is not equivalent to infrastructure implementation or measured survivability. P1 therefore adds HPR-P1-013..020 as implementation remediation before HPR-P1-012 closure.
+
+| Audit check | Audit status | Roadmap disposition |
+|---|---|---|
+| 2 — executable backup/restore/PITR | FAILED — SUPERFICIAL | HPR-P1-013 selects tooling; HPR-P1-017 implements executable backup/WAL/PITR procedures; HPR-P1-012 measures recovery |
+| 3 — DR exercise validation | FAILED — NOT IMPLEMENTED | HPR-P1-017 establishes usable recovery chain; HPR-P1-012 executes measured restore/PITR |
+| 4 — PostgreSQL HA topology | FAILED — SUPERFICIAL | HPR-P1-013 selects mechanism; HPR-P1-016 implements replication/promotion/fencing/stable endpoint and validates failover |
+| 5 — application redundancy/statelessness | FAILED — SUPERFICIAL | HPR-P1-015 implements selected two-node traffic/admission/drain model and resolves local-state/realtime behavior |
+| 6 — connection-pool failover resiliency | FAILED — SUPERFICIAL | HPR-P1-016 owns explicit connection-recovery settings and failover reconnection evidence |
+| 7 — safe production profile enforcement | FAILED — SUPERFICIAL | HPR-P1-014 adds production-context startup guard and negative tests |
+| 9 — deployment automation | FAILED — NOT IMPLEMENTED | HPR-P1-013 selects target; HPR-P1-018 implements controlled CD and release truthfulness |
+| 10 — alerting/SRE | FAILED — SUPERFICIAL | HPR-P1-013 selects platform; HPR-P1-019 approves/implements SLIs/SLOs/thresholds/routing and verifies delivery |
+| 11 — database operations | FAILED — SUPERFICIAL | HPR-P1-020 adds executable maintenance/inspection procedures after HA/backup tooling exists |
+| 12 — P1 backup retention | FAILED — SUPERFICIAL | HPR-P1-013 identifies controlling policy and exact monthly rule; HPR-P1-017 enforces it in selected storage/tooling |
+
+HPR-P1-012 closure evidence must include, at minimum:
+
+- exact deployed/runtime/database/backup/monitoring implementation versions or immutable identifiers;
+- current-schema baseline including all 82 Flyway migrations;
+- at least two simultaneously active HidraAPI nodes and observed readiness-based traffic removal/rejoin;
+- PostgreSQL controlled failover with verified fencing/single-writer authority and stable-endpoint redirection;
+- observed Hikari/JDBC connection replacement and documented interrupted-transaction behavior;
+- a retained backup restore plus PITR to an intentionally selected point;
+- measured RTO and RPO against the approved ≤60 minute / ≤5 minute objectives;
+- post-recovery Flyway/JPA, authentication/authorization, representative read/write and security acceptance;
+- executed production-profile guard failure tests;
+- controlled CD promotion/approval/rollback evidence;
+- representative production alert firing, delivery/escalation and recovery evidence;
+- database maintenance/inspection procedure validation;
+- verified enforcement of 35-day operational backup retention plus the exact approved monthly retention/hold rule;
+- exact-head full verification evidence for the final closure SHA.
 
 ### Phase P2 — Canonical Governance, API Contracts & Semantic Integration
 
@@ -145,13 +196,27 @@ The following audited statements govern prioritization:
 
 ## 6. Immediate Next Execution
 
-HPR-P1-011 is complete. HPR-P1-009 remains BLOCKED-DECISION pending production deployment-target approval, and HPR-P1-010 remains BLOCKED-DECISION pending observability platform/threshold/SLO approval.
+The independent P1 Infrastructure & Survivability Verification Audit at `f46f6c1ed7e324f66a0a26422a6dfa6da8bc3689` returned **FAIL — 2/12 VERIFIED**. HPR-P1-012 is therefore blocked and must not execute yet.
 
 The next executable roadmap code is:
 
-`HPR-P1-012 — docs(roadmap): close P1 survivability verification`
+`HPR-P1-013 — docs(operations): approve production infrastructure stack`
 
-HPR-P1-012 must not be marked complete without measured restore/PITR and failover evidence from approved production-equivalent infrastructure.
+Execution order after HPR-P1-013 is HPR-P1-014 through HPR-P1-020 in dependency order. HPR-P1-012 executes last as the measured closure gate. Do not execute HPR-P2 work while P1 remains open.
+
+### P1 independent audit ingestion evidence
+
+- audit date: 2026-10-05 (Africa/Algiers);
+- audited SHA: `f46f6c1ed7e324f66a0a26422a6dfa6da8bc3689`;
+- audit scope: Phase P1 only;
+- audit verdict: **FAIL — 2/12 VERIFIED**;
+- verified: Check 1 RTO/RPO and Check 8 OpenAPI breaking-change gate;
+- failed as superficial: Checks 2, 4, 5, 6, 7, 10, 11, 12;
+- failed as not implemented: Checks 3 and 9;
+- exact-head documentation validation run #8 / run id `37347444647`: **SUCCESS**;
+- audit correctly did not treat documentation validation as infrastructure survivability evidence;
+- audit reports no exact-head full CI at `f46f6c1ed7e324f66a0a26422a6dfa6da8bc3689`; earlier full-CI evidence remains historical and does not close P1;
+- roadmap response: add HPR-P1-013..020 and block HPR-P1-012 until implementation and measured evidence exist.
 
 ### Final P0 closure evidence
 

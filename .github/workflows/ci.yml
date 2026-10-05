@@ -6,7 +6,6 @@ on:
       - main
     paths-ignore:
       - "docs/**"
-      - "**/*.md"
   pull_request:
     branches:
       - main
@@ -93,8 +92,42 @@ jobs:
           python3 - <<'PY'
           import json
           from pathlib import Path
+
           path = Path('target/openapi/hidra-api.json')
           payload = json.loads(path.read_text(encoding='utf-8'))
+
+          schemes = payload.get('components', {}).get('securitySchemes', {})
+          required_schemes = {'hidraBearerJwt', 'externalOidcBearerJwt'}
+          missing_schemes = sorted(required_schemes - set(schemes))
+          if missing_schemes:
+              raise SystemExit(f"Missing OpenAPI security schemes: {missing_schemes}")
+
+          for name in ('hidraBearerJwt', 'externalOidcBearerJwt'):
+              scheme = schemes[name]
+              if scheme.get('type') != 'http' or scheme.get('scheme') != 'bearer' or scheme.get('bearerFormat') != 'JWT':
+                  raise SystemExit(f"Invalid bearer security scheme {name}: {scheme}")
+
+          paths = payload.get('paths', {})
+
+          workbench_modules = paths.get('/api/v1/workbench/modules', {}).get('get')
+          if not workbench_modules:
+              raise SystemExit('Generated OpenAPI is missing GET /api/v1/workbench/modules')
+          if {'hidraBearerJwt': []} not in workbench_modules.get('security', []):
+              raise SystemExit('Workbench modules operation is missing hidraBearerJwt requirement')
+
+          oidc_complete = paths.get('/api/v1/identity/authentication/oidc/complete', {}).get('post')
+          if not oidc_complete:
+              raise SystemExit('Generated OpenAPI is missing POST /api/v1/identity/authentication/oidc/complete')
+          if {'externalOidcBearerJwt': []} not in oidc_complete.get('security', []):
+              raise SystemExit('OIDC completion operation is missing externalOidcBearerJwt requirement')
+
+          login = paths.get('/api/v1/identity/authentication/login', {}).get('post')
+          if not login:
+              raise SystemExit('Generated OpenAPI is missing POST /api/v1/identity/authentication/login')
+          if login.get('security', None) != []:
+              raise SystemExit('Public login operation must declare an empty security requirement')
+
+          payload['x-hidra-ci-source-sha'] = '${{ github.sha }}'
           path.write_text(json.dumps(payload, indent=2, sort_keys=True) + '\n', encoding='utf-8')
           PY
 

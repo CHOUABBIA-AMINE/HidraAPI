@@ -90,8 +90,8 @@ The following audited statements govern prioritization:
 | HPR-P0-011 | COMPLETED — threat model now includes explicit telemetry source registration, telemetry point registration, telemetry query, alarm acknowledgement/closure, alarm shelving/unshelving, and alarm-raise abuse scenarios with asset, actor/source, attack path, boundary, impact, verified controls, and residual risk; no SCADA/PLC ingestion transport or unverified vulnerability is invented | Security / Telemetry | Doc | Close audit Check 12 by extending `THREAT_MODEL.md` with existing telemetry source/point registration and operator-action abuse paths. For each threat record asset, actor/source, attack path, trust boundary, impact, current control, and residual risk. Do not invent SCADA transport, telemetry reading-ingestion endpoints, or an unverified vulnerability. | `docs(security): extend operator threat model` | HPR-P0-010 |
 | HPR-P0-012 | COMPLETED — owner explicitly accepted the recommended lifecycle baseline on 2026-10-05; `SECRETS_AND_CERTIFICATES.md` now records role-based secret ownership, least privilege, 90-day JWT/database/LDAP rotation, coordinated HS256 emergency invalidation with no claimed dual-key overlap, one-time bootstrap handling, Platform/Infrastructure TLS ownership, enterprise/public CA trust model, protected private-key storage, 45/30/14/7-day expiry thresholds, compromise revocation/replacement, emergency authority, and mandatory recovery evidence; tooling remains pending actual platform implementation | Security / Secrets / Certificates | Doc/Decision | Obtain owner-approved lifecycle decisions required by audit Check 13: secret-store ownership, JWT signing-secret routine/emergency rotation and invalidation sequence, datasource and LDAP credential rotation sequence, TLS termination ownership, certificate authority/trust model, certificate/private-key storage, renewal/expiry monitoring, revocation procedure, emergency authority, and recovery verification. Values/procedures remain TBD until approved. | `docs(security): approve secret and certificate lifecycle` | accountable Security/Operations owner decision |
 | HPR-P0-013 | COMPLETED — owner explicitly accepted the incident-governance baseline on 2026-10-05; `INCIDENT_RESPONSE.md` now records role-based incident command, technical/operations/DB/identity/legal/business ownership, SEV-1..SEV-4 taxonomy, immediate SEV-1 and 30-minute SEV-2 escalation targets, emergency containment authority, provider/database escalation ownership, Legal/Compliance notification authority, evidence ownership/integrity, mandatory SEV-1/2 PIR, and joint closure authority; personal contacts and jurisdiction-specific deadlines remain outside Git | Security / Incident Governance | Doc/Decision | Obtain owner-approved incident-governance decisions required by audit Check 13: incident commander/decision authority, SOC/on-call/security escalation contacts, severity taxonomy, notification/escalation timing, external IdP/LDAP/provider escalation contacts, legal/regulatory notification ownership, and evidence-retention ownership. Do not invent names, timelines, or regulatory obligations. | `docs(security): approve incident governance model` | accountable Security/Operations/Business owner decision |
-| HPR-P0-014 | NEXT | Security Operations | Doc | After HPR-P0-012 and HPR-P0-013 approvals, replace the applicable TBD sections in `SECRETS_AND_CERTIFICATES.md` and `INCIDENT_RESPONSE.md` with the approved concrete rotation, invalidation, certificate renewal/revocation, compromise escalation, recovery-verification, and closure procedures. Preserve provenance of the approving authority/decision. | `docs(security): operationalize security lifecycle procedures` | HPR-P0-012..013 |
-| HPR-P0-015 | PENDING | Repository / Independent Audit | Code/Doc | Re-run the complete P0 verification gate on the exact final remediation SHA: full Maven verification, HTTP Workbench leakage tests, architecture/security tests, PostgreSQL/Flyway verification, application health/startup, deterministic OpenAPI artifact generation/inspection, and documentary re-audit of Checks 1–13. Close the audit gap only if all 13 checks pass; otherwise record failures and keep P1 blocked. | `docs(roadmap): close P0 audit verification gaps` | HPR-P0-008..014 |
+| HPR-P0-014 | COMPLETED — approved lifecycle/governance decisions are operationalized as platform-neutral runbooks covering routine/emergency JWT rotation and invalidation, PostgreSQL/LDAP rotation, bootstrap handling, certificate renewal/revocation, rotation evidence, recovery acceptance gates, incident activation/evidence/containment/eradication/recovery/communication/closure/PIR; product-specific runtime/secrets/certificate/SIEM commands remain deferred to actual P1 architecture | Security Operations | Doc | After HPR-P0-012 and HPR-P0-013 approvals, replace the applicable TBD sections in `SECRETS_AND_CERTIFICATES.md` and `INCIDENT_RESPONSE.md` with the approved concrete rotation, invalidation, certificate renewal/revocation, compromise escalation, recovery-verification, and closure procedures. Preserve provenance of the approving authority/decision. | `docs(security): operationalize security lifecycle procedures` | HPR-P0-012..013 |
+| HPR-P0-015 | NEXT | Repository / Independent Audit | Code/Doc | Re-run the complete P0 verification gate on the exact final remediation SHA: full Maven verification, HTTP Workbench leakage tests, architecture/security tests, PostgreSQL/Flyway verification, application health/startup, deterministic OpenAPI artifact generation/inspection, and documentary re-audit of Checks 1–13. Close the audit gap only if all 13 checks pass; otherwise record failures and keep P1 blocked. | `docs(roadmap): close P0 audit verification gaps` | HPR-P0-008..014 |
 
 ### Phase P1 — Production Infrastructure & Survivability
 
@@ -145,27 +145,17 @@ The following audited statements govern prioritization:
 
 The next executable roadmap code is:
 
-`HPR-P0-014 — docs(security): operationalize security lifecycle procedures`
+`HPR-P0-015 — docs(roadmap): close P0 audit verification gaps`
 
-HPR-P0-013 decision evidence:
+HPR-P0-014 implementation evidence:
 
-- the project owner explicitly accepted the recommended incident-governance model on 2026-10-05;
-- Security Incident Commander owns command, severity confirmation, containment authorization, and security-risk disposition;
-- Platform/Application Technical Lead owns HidraAPI reproduction, correction, and verification;
-- Platform/Operations duty authority owns runtime isolation/deployment/recovery actions;
-- Identity/Directory Operations and Database Operations own their dependency-specific incident response;
-- Legal/Compliance owns legal/regulatory notification decisions and Business/Operations leadership owns operational-impact communication;
-- approved severity model is SEV-1 Critical, SEV-2 High, SEV-3 Moderate, SEV-4 Low;
-- SEV-1 escalation target is immediate on detection; SEV-2 escalation target is within 30 minutes of confirmation/classification;
-- role-based emergency containment authority includes identity/provider disablement, Workbench exposure removal, approved secret/certificate rotation, OIDC trust restriction, infrastructure traffic restriction, and verified rollback/corrective deployment;
-- external IdP/LDAP escalation is owned by Identity/Directory Operations; DB incidents by Database Operations;
-- evidence governance is Security-owned with system-owner preservation responsibilities; exact retention duration follows organization policy and is not fabricated;
-- documented PIR is mandatory for SEV-1/SEV-2;
-- closure requires Security Incident Commander plus affected technical owner, with Legal/Compliance confirmation when applicable;
-- HPR-P0-012 exact head `ad2fee6b064e66dfa50aca2dd89c75a218bc5d36` passed CI run #526 before this task began.
+- `SECRETS_AND_CERTIFICATES.md` contains routine/emergency JWT rotation, coordinated HS256 invalidation, PostgreSQL/LDAP rotation, one-time bootstrap handling, rotation evidence requirements, certificate renewal, private-key compromise handling, and a mandatory recovery acceptance gate;
+- `INCIDENT_RESPONSE.md` contains activation, severity/escalation, evidence preservation, containment authorization, eradication/correction, recovery verification, communication/notification ownership, closure, and mandatory SEV-1/SEV-2 PIR procedures;
+- approval provenance remains tied to the owner's explicit HPR-P0-012/HPR-P0-013 acceptance on 2026-10-05;
+- product-specific secret-store, deployment, restart, certificate-manager, SIEM/SOC, ingress/load-balancer, and trust-store commands remain dependent on later production architecture rather than fabricated;
+- HPR-P0-013 exact head `6b2d2bbfe1bb28c6fef663f635ad98fd7fc6d5d1` passed CI run #527 before this task began.
 
-Do not execute HPR-P0-015 or later work as part of HPR-P0-014.
-
+HPR-P0-015 is a verification/closure gate only. Do not begin P1 unless all 13 independent-audit checks pass on the final exact remediation head.
 ## 7. Original P0 Closure Evidence
 
 HPR-P0-001..007 remain valid evidence that the original source-level P0 defects were remediated and that the executable tree was green under the roadmap gate that existed at the time.

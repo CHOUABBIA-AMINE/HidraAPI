@@ -4,15 +4,17 @@
 
 CURRENT for repository-backed secret handling.
 
-**APPROVED OPERATING DECISIONS — IMPLEMENTATION/OPERATING PROCEDURE PENDING HPR-P0-014** for secret rotation, TLS termination ownership, certificate lifecycle, emergency authority, and recovery verification.
+**CURRENT OPERATING PROCEDURE BASELINE** for secret rotation, emergency invalidation, certificate renewal/revocation, emergency authority, and recovery verification. Platform-specific command syntax remains deferred until the production runtime/secrets/certificate tooling is selected.
 
 Approval provenance: the project owner explicitly accepted the HPR-P0-012 security/operations recommendations on 2026-10-05.
 
 ## Verification Baseline
 
-Repository head inspected before HPR-P0-012 decision capture: `64dacaf85720df75d4b4079ccb8630215f6b3410`
+Repository head inspected before HPR-P0-014 operationalization: `6b2d2bbfe1bb28c6fef663f635ad98fd7fc6d5d1`
 
-CI evidence: HidraAPI CI run #525 completed successfully on this exact head.
+CI evidence: HidraAPI CI run #527 completed successfully on this exact head.
+
+Decision provenance: HPR-P0-012 owner approval on 2026-10-05.
 
 ## 1. Repository Secret Policy
 
@@ -222,16 +224,162 @@ Every production secret/certificate rotation must record and verify, as applicab
 
 Evidence must not contain raw secrets, private keys, passwords, or bearer tokens.
 
-## 9. Implementation Status
+## 9. Operational Rotation and Certificate Procedures
 
-HPR-P0-012 approves the lifecycle decisions above.
+These procedures are the approved repository-level operating baseline. Replace the bracketed platform action with the equivalent workflow in the selected production platform; do not invent product-specific commands here.
 
-The following remain **pending HPR-P0-014 operationalization**:
+### 9.1 Routine JWT signing-secret rotation
 
-- exact operator runbook commands for the selected runtime/secret platform;
-- automation implementation;
-- platform-specific rollback/reload mechanics;
-- concrete certificate-management product integration;
-- environment-specific trust-store configuration.
+Owner: Platform/Operations. Security owns policy and audit.
 
-Those details must be based on the actual approved production architecture rather than invented here.
+Preconditions:
+1. confirm environment and current deployed SHA;
+2. open an authorized change reference;
+3. generate at least 256 bits of random signing material;
+4. keep the raw value out of tickets, chat, Git, CI logs, and shell history;
+5. identify all serving HidraAPI nodes/instances.
+
+Execution:
+1. place the new value in the approved protected secret source;
+2. update the runtime binding for `HIDRA_JWT_HMAC_SECRET`;
+3. restart/redeploy all serving nodes in a coordinated change;
+4. verify every serving node is healthy;
+5. authenticate and obtain a new Hidra JWT;
+6. call a protected API successfully with the new token;
+7. verify a token signed with the retired secret is rejected;
+8. remove/disable the retired secret from active runtime configuration;
+9. record the evidence defined in section 9.6.
+
+Routine cadence: every 90 days.
+
+Rollback rule: if the new secret cannot be made consistent across all serving nodes, remove inconsistent nodes from service and restore one known-good signing secret across the serving set before reopening access. Do not operate with mixed unknown signing material.
+
+### 9.2 Emergency JWT compromise rotation
+
+Authority: Security Incident Commander. Execution: Platform/Operations duty authority.
+
+1. classify the event under `INCIDENT_RESPONSE.md`;
+2. assume forged tokens may exist;
+3. generate replacement signing material immediately;
+4. replace `HIDRA_JWT_HMAC_SECRET` across the affected environment;
+5. restart/redeploy all serving nodes in a coordinated operation;
+6. require reauthentication;
+7. verify newly issued tokens succeed;
+8. verify a token signed with the retired secret fails;
+9. preserve incident/change and verification evidence;
+10. continue investigation for misuse during the exposure window.
+
+There is no approved dual-key overlap in the current implementation.
+
+### 9.3 PostgreSQL credential rotation
+
+Owner: Database Operations with Platform/Operations coordination.
+
+Routine cadence: every 90 days or stricter enterprise policy.
+
+1. create/change the dedicated HidraAPI database credential using the approved database/secret workflow;
+2. update the protected value mapped to `HIDRA_DATASOURCE_PASSWORD`;
+3. restart/reload HidraAPI as required by the selected runtime;
+4. verify application startup and `/actuator/health`;
+5. verify approved database connectivity/read-write behavior;
+6. verify Flyway/JPA startup remains healthy;
+7. disable/retire the previous credential;
+8. verify the retired credential no longer authenticates;
+9. preserve rotation evidence.
+
+Emergency rotation follows the same sequence immediately under incident authority.
+
+### 9.4 LDAP bind credential rotation
+
+Owner: Identity/Directory Operations with Platform/Operations coordination.
+
+Routine cadence: every 90 days unless stricter directory policy applies.
+
+1. rotate the dedicated bind-account password in the directory;
+2. update the protected value mapped to `HIDRA_LDAP_BIND_PASSWORD`;
+3. restart/reload HidraAPI if required by the runtime configuration mechanism;
+4. verify directory connectivity/search;
+5. execute an approved LDAP authentication test;
+6. verify the retired bind credential no longer works;
+7. preserve evidence.
+
+If LDAP is disabled in the environment, record the check as not applicable.
+
+### 9.5 Administrator bootstrap handling
+
+1. keep bootstrap disabled during normal operation;
+2. create an authorized provisioning change;
+3. inject `HIDRA_SECURITY_BOOTSTRAP_PASSWORD` only through the approved secret mechanism;
+4. enable bootstrap only for the provisioning event;
+5. create and verify the intended administrator identity;
+6. disable bootstrap;
+7. remove the bootstrap password from active runtime inputs;
+8. verify normal authentication continues;
+9. preserve evidence without retaining the password.
+
+### 9.6 Rotation evidence record
+
+Every rotation record must include: change/incident identifier; environment; secret/credential type without its value; accountable roles; start/end timestamps; deployed SHA before/after if changed; health result; authentication result; dependency-connectivity result; retired-material rejection result where verifiable; rollback yes/no; residual issues/follow-up.
+
+### 9.7 Certificate renewal procedure
+
+Owner: Platform/Infrastructure.
+
+At the approved 30-day action threshold, or earlier through automation:
+1. identify certificate, subject/SAN scope, endpoint, issuing CA, and environment;
+2. verify replacement identity scope;
+3. generate/request replacement key/certificate through the approved certificate platform;
+4. store private key material only in the approved protected facility;
+5. deploy the replacement to the approved TLS termination point;
+6. reload/restart the termination component according to the selected platform;
+7. verify served chain, hostname/SAN coverage, validity, and trust;
+8. verify HidraAPI health and protected API access through TLS;
+9. remove retired certificate/key from active serving configuration;
+10. preserve issuance/deployment/verification evidence.
+
+Monitoring thresholds remain 45/30/14/7 days.
+
+### 9.8 Certificate/private-key compromise procedure
+
+Authority: Security Incident Commander with Platform/Infrastructure execution.
+
+1. treat the private key as compromised;
+2. identify every endpoint using it;
+3. revoke/invalidate the affected certificate through the controlling CA where supported;
+4. generate a new private key;
+5. obtain a replacement certificate;
+6. deploy it to all affected termination points;
+7. remove compromised key material from active runtime/configuration;
+8. verify clients receive the replacement certificate;
+9. verify retired material is no longer active where technically possible;
+10. preserve CA/revocation/deployment evidence;
+11. continue incident investigation for misuse.
+
+### 9.9 Recovery acceptance gate
+
+A rotation/replacement is not complete until applicable checks pass:
+- HidraAPI starts successfully;
+- `/actuator/health` is healthy;
+- protected API authentication/authorization succeeds;
+- PostgreSQL connectivity succeeds when DB credentials changed;
+- LDAP authentication/search succeeds when LDAP credentials changed;
+- TLS endpoint serves the expected replacement certificate when certificates changed;
+- retired secret/credential/token signature/certificate is rejected or inactive where verifiable;
+- audit/security records remain available;
+- evidence record is complete.
+
+If any mandatory check fails, keep the change/incident open and invoke rollback or containment.
+
+## 10. Platform-Specific Items Still Not Established
+
+HPR-P0-014 establishes the operating sequence, but these still depend on P1 production architecture/tool selection:
+- exact secrets-manager product and CLI/API syntax;
+- deployment/restart command syntax;
+- automatic rotation implementation;
+- certificate-management product;
+- load balancer/ingress product;
+- trust-store location/update command;
+- environment-specific hostnames/certificate subjects;
+- monitoring/notification product.
+
+These do not block the repository runbook baseline, but must be filled from actual production architecture before claiming automated production execution.

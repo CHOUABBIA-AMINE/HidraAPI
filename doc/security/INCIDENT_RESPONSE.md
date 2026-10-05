@@ -4,7 +4,7 @@
 
 CURRENT as the canonical minimum application-response procedure.
 
-**APPROVED INCIDENT-GOVERNANCE DECISIONS — OPERATING PROCEDURE INTEGRATION PENDING HPR-P0-014**.
+**CURRENT INCIDENT OPERATING PROCEDURE BASELINE** integrating the approved HPR-P0-013 governance model with HPR-P0-012 secret/certificate lifecycle decisions.
 
 Approval provenance: the project owner explicitly accepted the HPR-P0-013 incident-governance recommendations on 2026-10-05.
 
@@ -12,9 +12,11 @@ Personal contact details, external-provider contact coordinates, jurisdiction-sp
 
 ## Verification Baseline
 
-Repository head inspected before HPR-P0-013 decision capture: `ad2fee6b064e66dfa50aca2dd89c75a218bc5d36`
+Repository head inspected before HPR-P0-014 operationalization: `6b2d2bbfe1bb28c6fef663f635ad98fd7fc6d5d1`
 
-CI evidence: HidraAPI CI run #526 completed successfully on this exact head.
+CI evidence: HidraAPI CI run #527 completed successfully on this exact head.
+
+Decision provenance: HPR-P0-013 owner approval on 2026-10-05.
 
 ## 1. Purpose
 
@@ -78,7 +80,7 @@ Possible technical containment actions, only when applicable and authorized, inc
 - restrict/remove compromised external OIDC trust configuration;
 - deploy a verified corrective commit.
 
-JWT HMAC rotation/invalidation follows the approved lifecycle decision in `doc/security/SECRETS_AND_CERTIFICATES.md`: coordinated replacement across all serving nodes, controlled restart/redeployment, reauthentication, retired-token rejection verification, and evidence preservation. Exact runtime commands remain pending HPR-P0-014.
+JWT HMAC rotation/invalidation follows the operational procedure in `doc/security/SECRETS_AND_CERTIFICATES.md`: coordinated replacement across all serving nodes, controlled restart/redeployment, reauthentication, retired-token rejection verification, and evidence preservation.
 
 ### 3.4 Eradicate and correct
 
@@ -131,7 +133,7 @@ Record:
 - invoke security/operations authority for secret rotation;
 - plan for existing-token invalidation impact.
 
-Routine/emergency key-rotation policy is approved in `doc/security/SECRETS_AND_CERTIFICATES.md`; platform-specific execution commands remain pending HPR-P0-014.
+Routine/emergency key-rotation policy and the platform-neutral execution sequence are defined in `doc/security/SECRETS_AND_CERTIFICATES.md`.
 
 ### 4.3 Suspected LOCAL credential compromise
 
@@ -324,6 +326,81 @@ Incident closure requires:
 
 Where legal/regulatory notification obligations apply, **Legal/Compliance** must confirm its required actions before final closure.
 
+## 6. Operational Incident Procedure
+
+### 6.1 Activation
+1. create or obtain the incident identifier;
+2. record detection time, reporting source, environment, deployed SHA, and first known affected resource/identity;
+3. notify the Security Incident Commander;
+4. assign the Platform/Application Technical Lead;
+5. classify provisional severity;
+6. for SEV-1, escalate immediately; for SEV-2, complete escalation within 30 minutes of confirmation/classification;
+7. identify required specialist owners.
+
+### 6.2 Evidence preservation
+Before destructive remediation where feasible:
+1. preserve correlation/request IDs;
+2. preserve authentication/session/audit records;
+3. preserve deployed SHA and configuration/profile references;
+4. preserve affected resource identifiers;
+5. preserve CI/deployment evidence;
+6. preserve provider/database evidence where relevant;
+7. record a decision timeline;
+8. never capture raw passwords, bearer tokens, private keys, or signing secrets in incident artifacts.
+
+Security owns evidence governance; system owners preserve evidence from systems they operate.
+
+### 6.3 Containment decision
+The Security Incident Commander selects and authorizes containment appropriate to the boundary.
+
+Approved options include: disable/lock identity or credential; remove Workbench exposure configuration; disable administrator bootstrap; rotate JWT/database/LDAP secrets using `SECRETS_AND_CERTIFICATES.md`; revoke/replace compromised certificate/private key; restrict/remove external OIDC trust; restrict traffic through approved infrastructure controls; roll back or deploy a verified corrective commit.
+
+Record who authorized the action, when, and why.
+
+### 6.4 Eradication / correction
+1. identify root cause or best-supported causal hypothesis;
+2. correct source/configuration using repository architecture rules;
+3. add regression coverage for reproduced defects where feasible;
+4. use additive Flyway migrations only when schema change is required;
+5. run applicable repository verification;
+6. preserve corrective commit SHA and CI evidence.
+
+### 6.5 Recovery verification
+The affected technical owner must verify, as applicable:
+- application startup;
+- `/actuator/health`;
+- authentication and authorization;
+- affected business/API path;
+- PostgreSQL/Flyway startup and connectivity;
+- LDAP/OIDC authentication when affected;
+- Workbench exposure behavior when affected;
+- replacement certificate/TLS behavior when affected;
+- retired credential/token/certificate rejection where verifiable;
+- audit/security record accessibility.
+
+Failed recovery checks keep the incident open.
+
+### 6.6 Communication and notification
+- Security Incident Commander owns technical/security status;
+- Business/Operations leadership owns operational-impact communication;
+- Legal/Compliance decides contractual, privacy, regulatory, or external notification requirements;
+- Identity/Directory Operations owns external IdP/LDAP escalation;
+- Database Operations owns database escalation within its scope.
+
+Do not invent notification deadlines. Follow the authoritative organizational/legal requirement when identified.
+
+### 6.7 Closure checklist
+Before closure, record: final severity; affected scope; first/last known timestamps; containment completion; eradication/corrective action; recovery verification; rotations where applicable; CI/test evidence; residual risk; follow-up roadmap actions; Legal/Compliance disposition where applicable; PIR requirement.
+
+Closure approvals:
+1. Security Incident Commander approves security containment/residual-risk disposition;
+2. affected technical owner approves recovery;
+3. Legal/Compliance confirms required notification actions when applicable.
+
+### 6.8 Post-incident review
+For SEV-1 and SEV-2, complete a PIR containing: timeline; detection source; scope/impact; root cause; containment; eradication/corrective changes; rotation/revocation actions; verification evidence; control/monitoring gaps; residual risk; assigned follow-up roadmap items.
+
+The service may be restored before the PIR is finished, but governance closure must track the PIR as required follow-up.
 ## 6. Decisions Remaining Outside Repository Scope
 
 The governance model above is approved.
@@ -338,4 +415,4 @@ The following remain intentionally outside this repository until separate organi
 - jurisdiction-specific notification deadlines;
 - concrete production communication channels.
 
-HPR-P0-014 will operationalize the approved governance model together with the approved secret/certificate lifecycle into concrete repository procedures where the actual runtime/platform architecture provides enough evidence.
+HPR-P0-014 operationalizes the approved governance and secret/certificate lifecycle at repository level. Product-specific SOC/SIEM, runtime, deployment, secret-store, and certificate-manager commands remain dependent on later approved production architecture.

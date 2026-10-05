@@ -1556,3 +1556,20 @@ Workflow must be powerful enough to prove who decided what, when, why, and under
 
 Workflow must not become the owner of the business object being approved.
 ```
+
+
+---
+
+## HMR-043 — WorkflowStep executable integrity
+
+```text
+stepOrder >= 0
+(definitionId, code) is unique
+(definitionId, stepOrder) is unique
+defaultAssignmentRuleId remains nullable
+when populated, defaultAssignmentRuleId must reference an existing WorkflowStepAssignmentRule
+```
+
+The nullable default-assignment reference intentionally preserves SCC-02. Existing WorkflowStep and
+WorkflowStepAssignmentRule tables are already present, so the additive migration can validate the
+reference without changing ownership or introducing a cross-module dependency.

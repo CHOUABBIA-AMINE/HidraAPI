@@ -7,7 +7,7 @@
  *
  * @Name        : WorkflowStep
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-10-05
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -73,6 +73,10 @@ import java.time.Instant;
         // HRA-051 required: code
         if (code == null || code.isBlank()) {
             throw new InvalidWorkflowValueException("WorkflowStep code must not be blank.");
+        }
+        // HMR-043 required: deterministic non-negative ordering
+        if (stepOrder < 0) {
+            throw new InvalidWorkflowValueException("WorkflowStep step order must be greater than or equal to zero.");
         }
 
         id = normalize(id);

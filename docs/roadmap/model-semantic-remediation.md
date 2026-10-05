@@ -2422,7 +2422,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-051`
 - Exact commit: `fix(workflow): remediate semantic review WorkflowStep`
-- Status: **Planned**
+- Status: **Completed** — non-negative order, per-definition code/order uniqueness, and populated defaultAssignmentRuleId integrity are enforced at domain/repository/database boundaries while preserving the nullable SCC-02 reference.
 - SCC: SCC-02
 - Recorded upstream HMS dependencies: workflow.WorkflowDefinition, workflow.WorkflowStepAssignmentRule
 - HMSR correction count: 4
@@ -5009,7 +5009,7 @@ The following are execution registrations only; they do not change any HMR's sem
 | HMRB-008 | HMR-040 | Solo | **Completed.** MonitoringRule populated telemetryPointId now resolves through a deliberate Telemetry-owned Monitoring contract with exact guardrail registration. |
 | HMRB-009 | HMR-041 | Solo | **Completed.** ACTIVE PartyRoleAssignment uniqueness is protected by application pre-check plus a concurrency-safe partial unique index. |
 | HMRB-010 | HMR-042 | Solo | **Completed.** Pipeline fixed taxonomy is replaced by the Topology-owned PipelineType catalog reference architecture with migrated legacy values. |
-| HMRB-011 | HMR-043, HMR-044 | Coordinated Batch | **Planned, conditional preflight.** SCC-02 pair; execute together only if the existing Organization owner contracts are sufficient and migration/order evidence remains compatible. Otherwise split before mutation. |
+| HMRB-011 | HMR-043, HMR-044 | Coordinated Batch | **In Progress.** SCC-02 preflight passed; HMR-043 completed and HMR-044 remains in the same coordinated batch. |
 | HMRB-012 | HMR-045 | Solo | **Planned.** SCC-03 plus Topology/Organization/Party ownership and multiple same-module references. |
 | HMRB-013 | HMR-046 | Solo | **Planned.** Simulation lifecycle eligibility, catalog-family semantics and completed-run immutability. |
 | HMRB-014 | HMR-047 | Solo | **Planned.** Concurrency-safe code uniqueness plus Organization owner validation. |

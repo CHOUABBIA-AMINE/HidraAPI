@@ -7,7 +7,7 @@
  *
  * @Name        : WorkflowStepJpaRepository
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-05
  *
  * @Type        : Interface
  * @Layer       : Infrastructure
@@ -28,4 +28,8 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface WorkflowStepJpaRepository extends JpaRepository<WorkflowStepJpaEntity, String> {
+
+    boolean existsByDefinitionIdAndCodeAndIdNot(String definitionId, String code, String id);
+
+    boolean existsByDefinitionIdAndStepOrderAndIdNot(String definitionId, int stepOrder, String id);
 }

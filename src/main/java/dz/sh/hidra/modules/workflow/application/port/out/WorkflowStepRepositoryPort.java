@@ -7,7 +7,7 @@
  *
  * @Name        : WorkflowStepRepositoryPort
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-05
  *
  * @Type        : Interface
  * @Layer       : Application
@@ -31,4 +31,8 @@ public interface WorkflowStepRepositoryPort {
     WorkflowStep save(WorkflowStep model);
 
     Optional<WorkflowStep> findById(String id);
+
+    boolean existsByDefinitionIdAndCodeExcludingId(String definitionId, String code, String excludedId);
+
+    boolean existsByDefinitionIdAndStepOrderExcludingId(String definitionId, int stepOrder, String excludedId);
 }

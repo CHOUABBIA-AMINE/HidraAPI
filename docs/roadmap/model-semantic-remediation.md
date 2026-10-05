@@ -2653,7 +2653,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 - Recorded upstream HMS dependencies: organization.OrganizationUnit
 - HMSR correction count: 3
 - Additive Flyway: `src/main/resources/db/migration/V20261004_047__hmr_047_integration_external_system.sql`
-- Owner-contract prerequisite: Existing candidate owner contract(s): organization:src/main/java/dz/sh/hidra/modules/organization/application/port/in/OperationalScopeQueryUseCase.java; organization:src/main/java/dz/sh/hidra/modules/organization/application/port/in/OrganizationAdministrationQueryUseCase.java; organization:src/main/java/dz/sh/hidra/modules/organization/application/port/out/OperationalScopeTargetResolverPort.java
+- Owner-contract prerequisite: HMR-048A registered — live preflight proved the Reporting request/queue service and deliberate Identity/Workflow/Organization contracts needed by the reviewed obligations were missing from the original execution scope.
 - Exact write allowlist:
   - `docs/data definition/Integration.md`
   - `docs/roadmap/model-semantic-remediation.md`
@@ -2752,6 +2752,56 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
   2. **Enforce access validation for restricted report definitions before request creation.** Use Reporting/Identity access-policy contracts rather than bypassing authorization.
   3. **Prevent queueing approval-required requests before workflow approval.** The queue path must validate the ReportRequest/ReportDefinition approval state through the appropriate Workflow contract before creating a queued ReportRun.
   4. **Validate populated `organizationUnitId` through the Organization owner boundary.** Do not add a cross-module database FK.
+
+#### HMR-048A — ReportRequest access/approval/Organization prerequisite
+
+- Source: HMR-048 / HMSR-057 plus live Reporting/Identity/Workflow/Organization boundary evidence.
+- Exact commit: `docs(model-remediation): register ReportRequest owner prerequisites`
+- Status: **Completed** — the missing Reporting application orchestration file, consumer-specific Identity/Workflow/Organization contracts, owner-side implementations/tests, and architecture guardrail registrations are authorized; HMR-048A itself changes documentation only.
+- Type: documentation/application-boundary prerequisite.
+- Live evidence:
+  1. HMR-048 requires inactive ReportDefinition rejection, restricted-report access validation, approval gating before queueing, and OrganizationUnit owner validation.
+  2. The authoritative request and queue paths are `ReportingApplicationService.requestReport(...)` and `queueReportRun(...)`, but `ReportingApplicationService.java` is outside the original HMR-048 allowlist.
+  3. No `identity.application.contract.reporting`, `workflow.application.contract.reporting`, or `organization.application.contract.reporting` package exists on live `main`.
+  4. Reporting already owns `ReportAccessPolicy` persistence metadata, but the DDD states Identity evaluates permissions. Reporting must not replace Identity authorization with ad hoc local policy-only checks.
+  5. Workflow already demonstrates the deliberate consumer-specific export pattern through `workflow.application.contract.planning.PlanningWorkflowContract`; Reporting requires its own narrow approval contract rather than importing Workflow private application packages.
+  6. Organization can resolve OrganizationUnit existence via `OrganizationUnitRepositoryPort.findById(...)`; HMR-048 requires existence only and does not authorize inventing lifecycle/eligibility semantics.
+  7. ReportDefinition and ReportRequest are Reporting-owned and may be loaded through existing Reporting repositories; no cross-module DB FK is required for Identity, Workflow, or Organization.
+- Required decisions:
+  1. Add `src/main/java/dz/sh/hidra/modules/reporting/application/service/ReportingApplicationService.java` to the HMR-048 write allowlist.
+  2. Identity must export a narrow Reporting authorization contract that evaluates whether the requesting actor is allowed to request the specific restricted report under the Reporting access-policy context. The contract must return neutral allow/deny evidence only and must not leak Identity domain/JPA types.
+  3. Reporting remains owner of ReportAccessPolicy metadata. The Reporting request path may assemble neutral policy scope inputs, but the authorization decision must come from Identity for restricted definitions.
+  4. Workflow must export a narrow Reporting approval contract that can answer whether a populated workflow reference represents an approved workflow state suitable for queueing this report request. Do not import Workflow internal repositories/domain types into Reporting.
+  5. Organization must export a narrow Reporting-facing OrganizationUnit existence contract implemented via `OrganizationUnitRepositoryPort.findById(...)`.
+  6. `requestReport(...)` must load the selected ReportDefinition and fail closed unless it is ACTIVE.
+  7. For restricted definitions, `requestReport(...)` must fail closed unless the Identity-owned Reporting access contract allows the request.
+  8. Populated `organizationUnitId` must resolve through the Organization-owned Reporting contract before the ReportRequest is persisted.
+  9. `queueReportRun(...)` must load both ReportRequest and ReportDefinition. If the definition requires approval, the request must be APPROVED, `workflowReferenceId` must be nonblank, and the Workflow-owned Reporting approval contract must confirm approval before a QUEUED ReportRun is created.
+  10. No cross-module Identity/Workflow/Organization database FK is authorized.
+  11. Register exactly these exported packages in both existing architecture guardrail registries:
+      - `dz.sh.hidra.modules.identity.application.contract.reporting`
+      - `dz.sh.hidra.modules.workflow.application.contract.reporting`
+      - `dz.sh.hidra.modules.organization.application.contract.reporting`
+      Do not weaken guardrail algorithms or add wildcard/transitional exceptions.
+- Newly authorized HMR-048 production files in addition to the original allowlist:
+  - `src/main/java/dz/sh/hidra/modules/reporting/application/service/ReportingApplicationService.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/application/contract/reporting/ReportingAccessAuthorizationContract.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/application/contract/reporting/package-info.java`
+  - `src/main/java/dz/sh/hidra/modules/identity/application/service/ReportingAccessAuthorizationQueryService.java`
+  - `src/main/java/dz/sh/hidra/modules/workflow/application/contract/reporting/ReportingWorkflowApprovalContract.java`
+  - `src/main/java/dz/sh/hidra/modules/workflow/application/contract/reporting/package-info.java`
+  - `src/main/java/dz/sh/hidra/modules/workflow/application/service/ReportingWorkflowApprovalQueryService.java`
+  - `src/main/java/dz/sh/hidra/modules/organization/application/contract/reporting/ReportingOrganizationUnitReferenceContract.java`
+  - `src/main/java/dz/sh/hidra/modules/organization/application/contract/reporting/package-info.java`
+  - `src/main/java/dz/sh/hidra/modules/organization/application/service/ReportingOrganizationUnitReferenceQueryService.java`
+- Newly authorized HMR-048 test/guardrail files:
+  - `src/test/java/dz/sh/hidra/modules/identity/application/service/ReportingAccessAuthorizationQueryServiceTest.java`
+  - `src/test/java/dz/sh/hidra/modules/workflow/application/service/ReportingWorkflowApprovalQueryServiceTest.java`
+  - `src/test/java/dz/sh/hidra/modules/organization/application/service/ReportingOrganizationUnitReferenceQueryServiceTest.java`
+  - `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java`
+  - `src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java`
+- HMR-048 remains the current production remediation after this prerequisite is observed. Do not start HMR-049 automatically.
+
 
 #### HMR-049 — risk.RiskRegister
 
@@ -5186,8 +5236,8 @@ Additional batches may be registered or an existing planned envelope may be spli
 
 ### 12.6 Current next execution
 
-HMRB-015 — HMR-048
+HMR-048A — ReportRequest access/approval/Organization prerequisite
 
-Mode: Solo
+`docs(model-remediation): register ReportRequest owner prerequisites`
 
-HMRB-014 is completed. Execute HMR-048 only after the HMR-047 head is green and exact Reporting access/approval/Organization preflight passes; stop before HMRB-016.
+HMRB-014 is green. Observe this docs-only prerequisite once, then execute HMRB-015 / HMR-048 only; do not start HMRB-016 automatically.

@@ -21,7 +21,7 @@
 | Production readiness | NOT ESTABLISHED — P0 security/audit verification is CLOSED; P1 production infrastructure and survivability are still incomplete |
 | TimescaleDB | NOT IMPLEMENTED — DEFERRED / TARGET |
 | PostGIS | NOT IMPLEMENTED — DEFERRED / TARGET |
-| High availability | NOT DOCUMENTED / NOT VERIFIED |
+| High availability | APPROVED TARGET DOCUMENTED FOR APPLICATION + POSTGRESQL / NOT IMPLEMENTED OR VERIFIED |
 | RTO | TBD — BUSINESS / OPERATIONS DECISION REQUIRED |
 | RPO | TBD — BUSINESS / OPERATIONS DECISION REQUIRED |
 
@@ -62,7 +62,7 @@ The following audited statements govern prioritization:
 - DDD modularity and Hexagonal boundaries are materially implemented and enforced by `ArchitectureGuardrailTest`.
 - The forensic baseline identified `HidraOperationalWorkbenchService` as a material P0 exposure boundary; HPR-P0-001..003 replaced automatic exposure with fail-closed resource/field approval, prohibited credential/password exposure, added regressions, and added architecture guardrails.
 - The audited `LocalCredentialJpaEntity.passwordHash` exposure path is remediated and covered by regression/architecture controls; P0 closure evidence is recorded under HPR-P0-007.
-- HA architecture is not documented or verified.
+- Application and PostgreSQL HA target architectures are now documented from owner-approved decisions; implementation and failover verification are not yet established.
 - DR objectives/procedures are not established; RTO/RPO remain owner decisions.
 - CI exists; CD/deployment automation is not established by repository evidence.
 - TimescaleDB is not implemented and remains deferred/target.
@@ -100,7 +100,7 @@ The following audited statements govern prioritization:
 |---|---|---|---|---|---|---|
 | HPR-P1-001 | COMPLETED — canonical runtime architecture created from exact-head repository evidence; current Spring Boot/JVM, PostgreSQL/Flyway, stateless HTTP security, production-profile externalization, Actuator/Prometheus, in-process cache and STOMP broker are recorded separately from approved targets and unresolved deployment/HA/DR decisions; no deployment technology was invented | Runtime Architecture | Doc | Create `doc/architecture/RUNTIME_ARCHITECTURE.md` from approved production decisions only; do not invent deployment technology. | `docs(architecture): define production runtime architecture` | HPR-P0-015 completed |
 | HPR-P1-002 | COMPLETED — owner accepted the application HA baseline on 2026-10-05: minimum two active HidraAPI nodes, product-neutral managed load distribution, no REST session affinity, readiness-driven traffic admission/removal, graceful drain/shutdown, no correctness dependency on node-local cache, and no clustered realtime claim until the current in-process STOMP broker is replaced/externalized; deployment product remains unselected | Application Runtime | Infra/Doc | Approve stateless multi-node runtime and load-distribution mechanism; document node state, readiness/liveness integration and failure behavior. | `docs(operations): define application high availability model` | HPR-P1-001 + owner decision |
-| HPR-P1-003 | PENDING — owner accepted the recommended PostgreSQL HA direction on 2026-10-05; task not yet executed | PostgreSQL | Infra/Doc | Approve PostgreSQL replication/failover topology, replication mode, failover authority, connection behavior, maintenance behavior and ownership. | `docs(database): define postgres high availability model` | HPR-P1-001 + owner decision |
+| HPR-P1-003 | COMPLETED — owner-approved PostgreSQL HA model documented: one writable primary, at least one local synchronous streaming standby where approved latency permits, optional remote asynchronous standby for DR separation, one stable application database endpoint, Database Operations-controlled failover/switchover, explicit fencing/split-brain prevention, reconnect-based application recovery, and no assumption that replicas replace backups; no HA product selected | PostgreSQL | Infra/Doc | Approve PostgreSQL replication/failover topology, replication mode, failover authority, connection behavior, maintenance behavior and ownership. | `docs(database): define postgres high availability model` | HPR-P1-001 + owner decision |
 | HPR-P1-004 | PENDING — owner accepted the recommended DR objectives on 2026-10-05; task not yet executed | DR | Infra/Doc | Obtain owner-approved RTO/RPO, backup frequency/retention and WAL/PITR strategy; keep values TBD until approved. | `docs(operations): define disaster recovery objectives` | owner decision |
 | HPR-P1-005 | PENDING | DR | Doc | Create `doc/operations/DISASTER_RECOVERY_RUNBOOK.md` with declaration authority, recovery roles, dependency order, restore steps and acceptance checks based on approved objectives. | `docs(operations): add disaster recovery runbook` | HPR-P1-004 |
 | HPR-P1-006 | PENDING | HA | Doc | Create `doc/operations/HIGH_AVAILABILITY_ARCHITECTURE.md` covering approved application/database redundancy, failover, connection behavior and maintenance failover. | `docs(operations): add high availability architecture` | HPR-P1-002..003 |
@@ -144,13 +144,13 @@ The following audited statements govern prioritization:
 
 ## 6. Immediate Next Execution
 
-HPR-P1-002 is complete. Owner decisions for HPR-P1-003 and HPR-P1-004 have also been accepted but those tasks have not been executed.
+HPR-P1-003 is complete. The owner-approved DR recommendation for HPR-P1-004 remains accepted but has not yet been executed.
 
 The next executable roadmap code is:
 
-`HPR-P1-003 — docs(database): define postgres high availability model`
+`HPR-P1-004 — docs(operations): define disaster recovery objectives`
 
-Do not execute HPR-P1-004 or any later task automatically.
+Do not execute HPR-P1-005 or any later task automatically.
 
 ### Final P0 closure evidence
 
@@ -202,6 +202,21 @@ P0 is CLOSED for security/audit verification. Production readiness remains **NOT
 - current in-process STOMP simple broker is not approved as clustered realtime transport; clustered realtime requires an external/shared broker or equivalent approved cross-node mechanism before HA is claimed;
 - deployment/load-balancer/broker/cache products remain intentionally unselected;
 - HPR-P1-003 and HPR-P1-004 owner recommendations were accepted in the same decision turn, but those HPRs remain unexecuted.
+
+
+### HPR-P1-003 PostgreSQL-HA decision evidence
+
+- execution base SHA: `4b4fc46d9ff78b8bd77a706ff1e36a7c1fc4ee3a`;
+- pre-task exact-head CI: run #532 / run id `37338086447`: **SUCCESS**;
+- owner acceptance date: 2026-10-05;
+- approved topology: one writable primary plus at least one local synchronous streaming standby where approved latency permits;
+- an additional remote asynchronous standby is permitted as the DR replication tier, but HPR-P1-003 does not define DR objectives or declare that tier sufficient for DR;
+- HidraAPI must connect through a stable database endpoint rather than node-specific topology knowledge;
+- normal failover/switchover authority belongs to Database Operations; emergency action follows the approved incident-command authority with Database Operations/Platform participation;
+- failover must prevent dual-primary/split-brain conditions through the selected infrastructure's fencing/authority mechanism;
+- application recovery after database role change is connection/retry based; in-flight transaction survival is not claimed;
+- replicas are not backups; backup retention, WAL/PITR and RTO/RPO remain HPR-P1-004 scope;
+- no PostgreSQL HA manager, proxy, virtual IP, DNS, load balancer, cloud database service, or orchestration product is selected by this HPR.
 
 ## 7. Original P0 Closure Evidence
 

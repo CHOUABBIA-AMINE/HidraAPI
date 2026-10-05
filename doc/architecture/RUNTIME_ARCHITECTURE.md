@@ -167,9 +167,17 @@ No load-balancer, orchestrator, cache, broker, VM/container, or hosting product 
 
 ### HPR-P1-003 — PostgreSQL HA
 
-**DECISION REQUIRED**
+**APPROVED TARGET — owner accepted 2026-10-05**
 
-Approve PostgreSQL HA topology, replication mode, failover authority, connection endpoint/routing behavior, maintenance behavior, ownership, and acceptance checks.
+Production PostgreSQL uses one writable primary and at least one local streaming standby. The local HA standby uses synchronous replication where the approved production latency budget permits; any exception to synchronous local protection requires an explicit operational decision rather than silent degradation.
+
+An additional geographically or failure-domain separated standby may use asynchronous replication as the DR replication tier. That does not replace backups or establish HPR-P1-004 recovery objectives.
+
+HidraAPI connects through one stable database service endpoint and must not encode primary/standby node identities. Database Operations owns controlled switchover and normal failover. Emergency failover follows the approved incident-governance authority with Database Operations and Platform/Operations participation.
+
+The chosen infrastructure must prevent two writable primaries through explicit failover authority/fencing. Application recovery after a role change is based on reconnecting to the stable endpoint; transparent survival of an in-flight transaction is not claimed.
+
+No HA manager, proxy, virtual IP, DNS mechanism, database appliance, cloud service, or orchestration product is selected by this decision.
 
 ### HPR-P1-004 — Disaster recovery objectives
 

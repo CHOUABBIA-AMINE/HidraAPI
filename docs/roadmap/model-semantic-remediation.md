@@ -2251,7 +2251,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 - Recorded upstream HMS dependencies: telemetry.TelemetryPoint
 - HMSR correction count: 1
 - Additive Flyway: `src/main/resources/db/migration/V20261004_040__hmr_040_monitoring_monitoring_rule.sql`
-- Owner-contract prerequisite: Existing candidate owner contract(s): telemetry:src/main/java/dz/sh/hidra/modules/telemetry/application/port/in/TelemetryQueryUseCase.java
+- Owner-contract prerequisite: HMR-040A registered — live preflight proved TelemetryQueryUseCase does not expose TelemetryPoint existence and no Telemetry-owned Monitoring contract exists.
 - Exact write allowlist:
   - `docs/data definition/Monitoring.md`
   - `docs/roadmap/model-semantic-remediation.md`
@@ -2277,6 +2277,36 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
   - `./mvnw -q clean verify`
 - HMSR obligations:
   1. **Validate populated MonitoringRule telemetryPointId through the Telemetry owner boundary.** When `telemetryPointId` is supplied, Monitoring must fail closed unless the referenced TelemetryPoint exists under the Telemetry bounded context. Do not add a cross-module database FK.
+
+#### HMR-040A — MonitoringRule TelemetryPoint owner-contract prerequisite
+
+- Source: HMR-040 / HMSR-048 plus live Telemetry/Monitoring architecture evidence.
+- Exact commit: `docs(model-remediation): register MonitoringRule telemetry owner prerequisite`
+- Status: **Completed** — the missing Telemetry-owned Monitoring reference contract, owner-side implementation, and exact guardrail registrations are authorized; HMR-040A itself changes documentation only.
+- Type: documentation/architecture prerequisite.
+- Live evidence:
+  1. HMR-040 requires populated `MonitoringRule.telemetryPointId` to fail closed unless the Telemetry-owned point exists.
+  2. The previously recorded candidate `telemetry.application.port.in.TelemetryQueryUseCase` exposes reading/time-series and quality-code queries only; it has no TelemetryPoint existence operation.
+  3. `TelemetryPointRepositoryPort.findById(String id)` exists inside Telemetry and can resolve owner truth, but it is an internal outbound port and must not be imported by Monitoring.
+  4. No `telemetry.application.contract.monitoring` package or equivalent exported Telemetry-to-Monitoring contract exists on live `main`.
+  5. Repository architecture requires cross-module consumers to depend only on deliberate owner-exported `application.contract.<consumer>` packages, and both architecture guardrails maintain explicit exported-package registries.
+- Required decisions:
+  1. Telemetry must export a narrow Monitoring-facing application contract whose only required semantic is whether a TelemetryPoint exists for a supplied point ID.
+  2. The contract must expose neutral scalar values only and must not return `TelemetryPoint`, repository types, JPA entities, or persistence DTOs.
+  3. A Telemetry-owned application query service must implement the contract using `TelemetryPointRepositoryPort.findById(...)` and fail closed for null/blank/unknown IDs.
+  4. `MonitoringRuleApplicationService` may depend on this exported contract and must validate only populated `telemetryPointId`; null remains allowed by the reviewed HMR obligation.
+  5. No cross-module database FK from Monitoring to Telemetry is authorized.
+  6. Register exactly `dz.sh.hidra.modules.telemetry.application.contract.monitoring` in the existing exported-package registries of `ArchitectureGuardrailTest` and `ForensicRemediationClosureTest`; do not weaken algorithms or add wildcard/transitional exceptions.
+- Newly authorized HMR-040 production files in addition to the original allowlist:
+  - `src/main/java/dz/sh/hidra/modules/telemetry/application/contract/monitoring/MonitoringTelemetryPointReferenceContract.java`
+  - `src/main/java/dz/sh/hidra/modules/telemetry/application/contract/monitoring/package-info.java`
+  - `src/main/java/dz/sh/hidra/modules/telemetry/application/service/MonitoringTelemetryPointReferenceQueryService.java`
+- Newly authorized HMR-040 test/guardrail files:
+  - `src/test/java/dz/sh/hidra/modules/telemetry/application/service/MonitoringTelemetryPointReferenceQueryServiceTest.java`
+  - `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java`
+  - `src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java`
+- HMR-040 remains the current production remediation after this prerequisite is observed. Do not start HMR-041 automatically.
+
 
 #### HMR-041 — party.PartyRoleAssignment
 
@@ -4944,7 +4974,7 @@ The following are execution registrations only; they do not change any HMR's sem
 | HMRB-005 | HMR-025 | Solo | **Completed.** Required analytical scope and the authoritative bounded readiness-status representation are aligned. |
 | HMRB-006 | HMR-026, HMR-027 | Batch | **Completed.** FeatureFlag ownership requiredness and CustodyDiscrepancy optional quantity-unit integrity are remediated in separate commits. |
 | HMRB-007 | HMR-038, HMR-039 | Batch | **Completed.** MetricValue scopeType requiredness and ConfigurationValue environment/version integrity completed in separate commits. |
-| HMRB-008 | HMR-040 | Solo | **Planned.** Cross-module Monitoring → Telemetry owner validation; keep solo pending exact owner-contract preflight. |
+| HMRB-008 | HMR-040 | Solo | **Blocked until HMR-040A observation.** Preflight proved the recorded TelemetryQueryUseCase candidate is insufficient; a deliberate Telemetry-owned Monitoring contract and guardrail registration are now defined. |
 | HMRB-009 | HMR-041 | Solo | **Planned.** Concurrency-safe one-ACTIVE PartyRoleAssignment uniqueness. |
 | HMRB-010 | HMR-042 | Solo | **Planned.** High-risk Pipeline fixed-taxonomy → catalog-reference redesign. |
 | HMRB-011 | HMR-043, HMR-044 | Coordinated Batch | **Planned, conditional preflight.** SCC-02 pair; execute together only if the existing Organization owner contracts are sufficient and migration/order evidence remains compatible. Otherwise split before mutation. |
@@ -5011,8 +5041,8 @@ Additional batches may be registered or an existing planned envelope may be spli
 
 ### 12.6 Current next execution
 
-HMRB-008 — HMR-040
+HMR-040A — MonitoringRule TelemetryPoint owner-contract prerequisite
 
-Mode: Solo
+`docs(model-remediation): register MonitoringRule telemetry owner prerequisite`
 
-HMRB-007 is completed. Execute HMR-040 only after the HMRB-007 final head is green and after exact owner-contract preflight; stop before HMRB-009.
+HMRB-007 is green. Observe this docs-only prerequisite once, then execute HMRB-008 / HMR-040 only; do not start HMRB-009 automatically.

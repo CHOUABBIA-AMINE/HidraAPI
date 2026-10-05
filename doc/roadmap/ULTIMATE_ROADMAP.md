@@ -77,8 +77,8 @@ The following audited statements govern prioritization:
 | HPR-P0-002 | COMPLETED — focused policy/service regressions added for default-deny discovery, explicit fields, identifier requirement, unknown fields, credential/secret rejection, list/detail/search attribute exposure, hidden filter/sort rejection, and `passwordHash` prohibition | Platform / Workbench / Identity | Code | Add focused regression tests covering list, detail, filter/search and generic attribute maps; assert that credential resources and `passwordHash` cannot be returned. | `test(platform): guard workbench sensitive data exposure` | HPR-P0-001 |
 | HPR-P0-003 | COMPLETED — `ArchitectureGuardrailTest` now restricts platform JPA access to the reviewed Workbench reader, forbids platform dependencies on module persistence packages, and requires that reader to retain the fail-closed exposure-policy dependency | Architecture Testing | Code | Extend architecture/security guardrails so a future generic platform reader cannot silently introduce unrestricted module-JPA exposure outside an explicitly reviewed boundary. | `test(architecture): guard generic persistence exposure` | HPR-P0-001 |
 | HPR-P0-004 | COMPLETED — generated OpenAPI now declares separate Hidra-issued JWT and external-OIDC bearer schemes; ordinary protected operations use Hidra bearer, OIDC completion uses external OIDC bearer, and verified public endpoints are explicitly unauthenticated | API / Security | Code | Add machine-readable OpenAPI security scheme and applicable security requirements for secured endpoints without weakening runtime security. | `fix(api): declare openapi security requirements` | HPR-P0-001 |
-| HPR-P0-005 | NEXT | Platform / Logging | Code | Revalidate caller-supplied actor-header handling; ensure it is not represented as authenticated audit identity unless a verified binding exists; correct code/tests/documentation only where evidence requires it. | `fix(platform): clarify audit actor provenance` | HPR-P0-001 |
-| HPR-P0-006 | PENDING | Security | Doc | Complete canonical security documents: `SECURITY_ARCHITECTURE.md`, `TRUST_BOUNDARIES.md`, `THREAT_MODEL.md`, `SECRETS_AND_CERTIFICATES.md`, and `INCIDENT_RESPONSE.md`, using only verified current controls and explicit TARGET/TBD markers. | `docs(security): establish canonical security baseline` | HPR-P0-001..005 |
+| HPR-P0-005 | COMPLETED — `X-Actor-Id` is no longer a supported platform header; the early request-context filter no longer reads caller actor identity or populates actor MDC/logging context; authenticated audit/JPA attribution remains sourced from `CurrentSecurityContext`/`CurrentActorResolver`; spoofing regression added | Platform / Logging | Code | Revalidate caller-supplied actor-header handling; ensure it is not represented as authenticated audit identity unless a verified binding exists; correct code/tests/documentation only where evidence requires it. | `fix(platform): clarify audit actor provenance` | HPR-P0-001 |
+| HPR-P0-006 | NEXT | Security | Doc | Complete canonical security documents: `SECURITY_ARCHITECTURE.md`, `TRUST_BOUNDARIES.md`, `THREAT_MODEL.md`, `SECRETS_AND_CERTIFICATES.md`, and `INCIDENT_RESPONSE.md`, using only verified current controls and explicit TARGET/TBD markers. | `docs(security): establish canonical security baseline` | HPR-P0-001..005 |
 | HPR-P0-007 | PENDING | Repository | Code/Doc | Run full Maven verification, architecture/security tests, database/Flyway startup verification and deterministic OpenAPI generation; record exact-head evidence and close P0 only if all required checks pass. | `docs(roadmap): close P0 security remediation` | HPR-P0-001..006 |
 
 ### Phase P1 — Production Infrastructure & Survivability
@@ -133,15 +133,15 @@ The following audited statements govern prioritization:
 
 The next executable roadmap code is:
 
-`HPR-P0-005 — fix(platform): clarify audit actor provenance`
+`HPR-P0-006 — docs(security): establish canonical security baseline`
 
-HPR-P0-004 implementation evidence:
+HPR-P0-005 implementation evidence:
 
-- `HidraOpenApiSecurityConfiguration` centrally declares `hidraBearerJwt` for Hidra-issued API bearer tokens and `externalOidcBearerJwt` for the OIDC completion bridge;
-- generated ordinary protected operations receive the Hidra bearer requirement;
-- `/api/v1/identity/authentication/oidc/complete` receives the external OIDC bearer requirement matching its dedicated Spring Security filter chain;
-- verified public login, OIDC bootstrap metadata, and public health/info paths are explicitly unauthenticated in the generated contract;
-- `HidraOpenApiSecurityConfigurationTest` covers both schemes and representative protected/public operation classification;
-- HPR-P0-003 CI run #518 completed successfully on exact head `fe82015b029d170a9d7239a83d5f71d20e46416a` before this task began.
+- repository-wide search confirmed `PlatformHeaders.ACTOR_ID` was consumed only by `HidraRequestContextFilter`;
+- `X-Actor-Id` has been removed from the supported platform-header contract;
+- the request-context filter no longer reads caller actor identity or writes `LoggingContext.ACTOR_ID` / actor MDC from request headers;
+- authenticated JPA audit attribution remains sourced from `CurrentActorResolver.currentActorId()`, which resolves only authenticated `CurrentSecurityContext` principals;
+- `HidraRequestContextFilterTest` proves a spoofed `X-Actor-Id` header cannot enter authenticated actor logging context while correlation/request propagation remains intact;
+- HPR-P0-004 CI run #519 completed successfully on exact head `28dfeccb5c0193107b51e80e9fc2812ee3b356dd` before this task began.
 
-Do not execute HPR-P0-006 or later work as part of HPR-P0-005.
+Do not execute HPR-P0-007 or later work as part of HPR-P0-006.

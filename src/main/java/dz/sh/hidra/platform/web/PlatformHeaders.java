@@ -7,7 +7,7 @@
  *
  * @Name        : PlatformHeaders
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-05
  *
  * @Type        : Class
  * @Layer       : Platform
@@ -26,7 +26,6 @@ public final class PlatformHeaders {
 
     public static final String CORRELATION_ID = "X-Correlation-Id";
     public static final String REQUEST_ID = "X-Request-Id";
-    public static final String ACTOR_ID = "X-Actor-Id";
     public static final String ORGANIZATION_SCOPE = "X-Organization-Scope";
     public static final String TENANT_ID = "X-Tenant-Id";
 

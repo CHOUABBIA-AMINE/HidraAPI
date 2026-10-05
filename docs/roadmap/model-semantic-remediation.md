@@ -2179,7 +2179,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-043`
 - Exact commit: `fix(analytics): remediate semantic review MetricValue`
-- Status: **Planned**
+- Status: **Completed** — canonical MetricValue construction now rejects null/blank scopeType before persistence, preserving the analytical scope namespace required to interpret scopeId.
 - SCC: —
 - Recorded upstream HMS dependencies: analytics.MetricEvaluationRun
 - HMSR correction count: 1
@@ -4943,7 +4943,7 @@ The following are execution registrations only; they do not change any HMR's sem
 | HMRB-004 | HMR-024 | Solo | **Completed.** Terminal diagnostics, successful-run source lineage, and immutable projection-definition computation lineage are enforced. |
 | HMRB-005 | HMR-025 | Solo | **Completed.** Required analytical scope and the authoritative bounded readiness-status representation are aligned. |
 | HMRB-006 | HMR-026, HMR-027 | Batch | **Completed.** FeatureFlag ownership requiredness and CustodyDiscrepancy optional quantity-unit integrity are remediated in separate commits. |
-| HMRB-007 | HMR-038, HMR-039 | Batch | **Planned.** Narrow required-field and same-module reference integrity; no SCC or cross-module owner contract. |
+| HMRB-007 | HMR-038, HMR-039 | Batch | **In Progress.** HMR-038 completed; HMR-039 remains in the same registered batch. |
 | HMRB-008 | HMR-040 | Solo | **Planned.** Cross-module Monitoring → Telemetry owner validation; keep solo pending exact owner-contract preflight. |
 | HMRB-009 | HMR-041 | Solo | **Planned.** Concurrency-safe one-ACTIVE PartyRoleAssignment uniqueness. |
 | HMRB-010 | HMR-042 | Solo | **Planned.** High-risk Pipeline fixed-taxonomy → catalog-reference redesign. |

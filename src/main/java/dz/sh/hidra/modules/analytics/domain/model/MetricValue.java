@@ -7,7 +7,7 @@
  *
  * @Name        : MetricValue
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-10-05
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -73,6 +73,10 @@ import java.math.BigDecimal;
         // HRA-051 required: metricDefinitionVersionId
         if (metricDefinitionVersionId == null || metricDefinitionVersionId.isBlank()) {
             throw new InvalidAnalyticsValueException("MetricValue metric definition version id must not be blank.");
+        }
+        // HMR-038 required: scopeType
+        if (scopeType == null || scopeType.isBlank()) {
+            throw new InvalidAnalyticsValueException("MetricValue scope type must not be blank.");
         }
         // HRA-051 required: periodStart
         if (periodStart == null) {

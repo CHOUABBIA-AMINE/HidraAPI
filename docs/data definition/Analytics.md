@@ -761,6 +761,7 @@ Rules:
 ```text
 MetricValue is derived and rebuildable
 MetricValue must not be used as source of operational truth
+scopeType is mandatory and nonblank because it defines the namespace used to interpret scopeId
 ```
 
 ---

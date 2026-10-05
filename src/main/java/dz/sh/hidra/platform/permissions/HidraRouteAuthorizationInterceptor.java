@@ -7,7 +7,7 @@
  *
  * @Name        : HidraRouteAuthorizationInterceptor
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-17
+ * @UpdatedOn   : 2026-10-05
  *
  * @Type        : Class
  * @Layer       : Platform
@@ -20,6 +20,7 @@
 package dz.sh.hidra.platform.permissions;
 
 import dz.sh.hidra.platform.security.HidraEffectivePermissionResolver;
+import dz.sh.hidra.platform.workbench.HidraOperationalWorkbenchController;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.Locale;
@@ -28,6 +29,7 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
@@ -88,6 +90,15 @@ public final class HidraRouteAuthorizationInterceptor implements HandlerIntercep
         }
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (HidraOperationalWorkbenchController.class.isAssignableFrom(handlerMethod.getBeanType())) {
+            if (authentication == null || !authentication.isAuthenticated()
+                    || authentication instanceof AnonymousAuthenticationToken) {
+                throw new AccessDeniedException("Workbench authentication required.");
+            }
+            // The service resolves the registered resource and checks its concrete permission
+            // and row scope. Template permissions must never authorize a workbench resource.
+            return true;
+        }
         String requiredPermission = permissionNaming.permissionFor(routePattern, request.getMethod(), handlerMethod);
         if (permissionResolver.hasPermission(authentication, requiredPermission)) {
             return true;

@@ -7,7 +7,7 @@
  *
  * @Name        : HidraRoutePermissionCatalogService
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-11
+ * @UpdatedOn   : 2026-10-05
  *
  * @Type        : Class
  * @Layer       : Platform
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.platform.permissions;
 
+import dz.sh.hidra.platform.workbench.HidraOperationalWorkbenchController;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -56,6 +57,7 @@ public final class HidraRoutePermissionCatalogService {
                 "enforcement", "backend-enforced by HidraRouteAuthorizationInterceptor",
                 "permissionFormat", "<module>:<resource>:<action>",
                 "bootstrapAdminBypass", "ROLE_HIDRA_ADMIN",
+                "workbenchPermissions", "Concrete grants are published in caller-filtered workbench resource descriptors.",
                 "routes", routes
         );
     }
@@ -69,6 +71,11 @@ public final class HidraRoutePermissionCatalogService {
     }
 
     private List<RoutePermissionDescriptor> descriptors(RequestMappingInfo info, HandlerMethod method) {
+        if (HidraOperationalWorkbenchController.class.isAssignableFrom(method.getBeanType())) {
+            // Dynamic templates are not grantable permissions. The workbench service
+            // publishes and enforces only explicitly registered concrete resources.
+            return List.of();
+        }
         Set<String> patterns = new TreeSet<>(info.getPatternValues());
         Set<String> methods = methods(info);
         return patterns.stream()

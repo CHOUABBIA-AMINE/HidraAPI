@@ -7,7 +7,7 @@
  *
  * @Name        : OperationalResourceDescriptor
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-13
+ * @UpdatedOn   : 2026-10-05
  *
  * @Type        : Record
  * @Layer       : Platform
@@ -27,11 +27,13 @@ import java.util.List;
 public record OperationalResourceDescriptor(
         String module,
         String resource,
-        String entityName,
-        String javaType,
-        String tableName,
         String idField,
+        List<String> outputFields,
         List<String> searchableFields,
+        List<String> filterableFields,
+        List<String> sortableFields,
+        String readPermission,
+        String searchPermission,
         String listEndpoint,
         String detailEndpoint,
         String searchEndpoint

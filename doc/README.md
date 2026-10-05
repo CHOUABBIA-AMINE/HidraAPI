@@ -4,10 +4,10 @@ This directory starts the canonical documentation set. It is partial; existing m
 
 ## Security
 
-- [Workbench data exposure](security/WORKBENCH_DATA_EXPOSURE.md): current source evidence, proposed exposure controls, and remediation acceptance criteria. Enforcement remains unimplemented.
+- [Workbench data exposure](security/WORKBENCH_DATA_EXPOSURE.md): historical source evidence, implemented exposure controls, and release verification gates. The default registry is empty.
 
 ## Roadmap
 
-- [Documentation gaps and controlled tasks](roadmap/DOCUMENTATION_GAPS.md): DOC-001 documentation scope and planned WSEC-001 code remediation.
+- [Documentation gaps and controlled tasks](roadmap/DOCUMENTATION_GAPS.md): DOC-001 documentation scope, WSEC-001 code remediation, and WSEC-002 release verification.
 
-Source baseline: `d8beccedbb6373f16605540562bf134aed384edd`. This index documents repository source, not a verified deployment.
+Original assessment baseline: `d8beccedbb6373f16605540562bf134aed384edd`. This index documents repository source, not a verified deployment.

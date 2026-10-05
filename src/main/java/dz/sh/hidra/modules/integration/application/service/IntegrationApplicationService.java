@@ -7,7 +7,7 @@
  *
  * @Name        : IntegrationApplicationService
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-05
  *
  * @Type        : Class
  * @Layer       : Application
@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.integration.application.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import dz.sh.hidra.modules.integration.application.command.RecordExchangeMessageCommand;
@@ -34,6 +35,8 @@ import dz.sh.hidra.modules.integration.application.port.in.StartIntegrationJobRu
 import dz.sh.hidra.modules.integration.application.port.out.ExternalSystemRepositoryPort;
 import dz.sh.hidra.modules.integration.application.port.out.IntegrationExchangeMessageRepositoryPort;
 import dz.sh.hidra.modules.integration.application.port.out.IntegrationJobRunRepositoryPort;
+import dz.sh.hidra.modules.integration.domain.exception.InvalidIntegrationValueException;
+import dz.sh.hidra.modules.organization.application.contract.integration.IntegrationOrganizationUnitReferenceContract;
 import dz.sh.hidra.modules.integration.domain.model.ExternalSystem;
 import dz.sh.hidra.modules.integration.domain.model.IntegrationExchangeMessage;
 import dz.sh.hidra.modules.integration.domain.model.IntegrationJobRun;
@@ -54,20 +57,52 @@ public final class IntegrationApplicationService implements RegisterExternalSyst
     private final ExternalSystemRepositoryPort externalSystemRepositoryPort;
     private final IntegrationJobRunRepositoryPort jobRunRepositoryPort;
     private final IntegrationExchangeMessageRepositoryPort exchangeMessageRepositoryPort;
+    private final IntegrationOrganizationUnitReferenceContract organizationUnitReferenceContract;
+
+    @Autowired
+    public IntegrationApplicationService(
+            ExternalSystemRepositoryPort externalSystemRepositoryPort,
+            IntegrationJobRunRepositoryPort jobRunRepositoryPort,
+            IntegrationExchangeMessageRepositoryPort exchangeMessageRepositoryPort,
+            IntegrationOrganizationUnitReferenceContract organizationUnitReferenceContract
+    ) {
+        this.externalSystemRepositoryPort = Objects.requireNonNull(externalSystemRepositoryPort, "External system repository port must not be null.");
+        this.jobRunRepositoryPort = Objects.requireNonNull(jobRunRepositoryPort, "Integration job run repository port must not be null.");
+        this.exchangeMessageRepositoryPort = Objects.requireNonNull(exchangeMessageRepositoryPort, "Integration exchange message repository port must not be null.");
+        this.organizationUnitReferenceContract = Objects.requireNonNull(organizationUnitReferenceContract, "Integration OrganizationUnit reference contract must not be null.");
+    }
 
     public IntegrationApplicationService(
             ExternalSystemRepositoryPort externalSystemRepositoryPort,
             IntegrationJobRunRepositoryPort jobRunRepositoryPort,
             IntegrationExchangeMessageRepositoryPort exchangeMessageRepositoryPort
     ) {
-        this.externalSystemRepositoryPort = Objects.requireNonNull(externalSystemRepositoryPort, "External system repository port must not be null.");
-        this.jobRunRepositoryPort = Objects.requireNonNull(jobRunRepositoryPort, "Integration job run repository port must not be null.");
-        this.exchangeMessageRepositoryPort = Objects.requireNonNull(exchangeMessageRepositoryPort, "Integration exchange message repository port must not be null.");
+        this(
+                externalSystemRepositoryPort,
+                jobRunRepositoryPort,
+                exchangeMessageRepositoryPort,
+                id -> false
+        );
     }
 
     @Override
     public ExternalSystemSummaryDto registerExternalSystem(RegisterExternalSystemCommand command) {
         Objects.requireNonNull(command, "Register external system command must not be null.");
+        if (externalSystemRepositoryPort.existsByCode(command.code())) {
+            throw new InvalidIntegrationValueException("ExternalSystem code must be unique.");
+        }
+        if (!externalSystemRepositoryPort.isExternalSystemType(command.systemTypeId())) {
+            throw new InvalidIntegrationValueException(
+                    "ExternalSystem system type must reference EXTERNAL_SYSTEM_TYPE."
+            );
+        }
+        if (command.ownerOrganizationUnitId() != null
+                && !command.ownerOrganizationUnitId().isBlank()
+                && !organizationUnitReferenceContract.exists(command.ownerOrganizationUnitId())) {
+            throw new InvalidIntegrationValueException(
+                    "ExternalSystem ownerOrganizationUnitId must reference an existing OrganizationUnit."
+            );
+        }
         Instant now = Instant.now();
         ExternalSystem externalSystem = new ExternalSystem(
                 IntegrationId.newId().value(),

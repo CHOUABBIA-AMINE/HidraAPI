@@ -7,7 +7,7 @@
  *
  * @Name        : JpaExternalSystemRepositoryAdapter
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-05
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -48,5 +48,17 @@ public class JpaExternalSystemRepositoryAdapter implements ExternalSystemReposit
     @Override
     public Optional<ExternalSystem> findById(String id) {
         return repository.findById(id).map(IntegrationPersistenceMapper::toDomain);
+    }
+
+    @Override
+    public boolean existsByCode(String code) {
+        return code != null && !code.isBlank() && repository.existsByCode(code.trim());
+    }
+
+    @Override
+    public boolean isExternalSystemType(String systemTypeId) {
+        return systemTypeId != null
+                && !systemTypeId.isBlank()
+                && repository.isExternalSystemType(systemTypeId.trim());
     }
 }

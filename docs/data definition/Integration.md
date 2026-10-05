@@ -279,6 +279,12 @@ hidra_integration_external_system
 
 ```text
 ExternalSystem.code must be unique.
+HMR-047 executable semantics:
+- registration rejects duplicate code before save for deterministic conflict semantics;
+- PostgreSQL unique code enforcement remains authoritative under concurrency;
+- systemTypeId must resolve specifically to EXTERNAL_SYSTEM_TYPE;
+- populated ownerOrganizationUnitId must resolve through the Organization-owned Integration contract;
+- no cross-module Organization foreign key is introduced.
 Only ACTIVE systems can run production integration jobs.
 A RETIRED system cannot receive new active endpoints or connector instances.
 ```

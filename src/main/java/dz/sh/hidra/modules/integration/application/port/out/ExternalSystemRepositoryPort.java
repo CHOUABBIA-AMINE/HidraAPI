@@ -7,7 +7,7 @@
  *
  * @Name        : ExternalSystemRepositoryPort
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-05
  *
  * @Type        : Interface
  * @Layer       : Application
@@ -31,4 +31,8 @@ public interface ExternalSystemRepositoryPort {
     ExternalSystem save(ExternalSystem model);
 
     Optional<ExternalSystem> findById(String id);
+
+    boolean existsByCode(String code);
+
+    boolean isExternalSystemType(String systemTypeId);
 }

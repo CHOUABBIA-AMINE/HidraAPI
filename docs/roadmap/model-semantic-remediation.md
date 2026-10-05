@@ -2648,7 +2648,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-056`
 - Exact commit: `fix(integration): remediate semantic review ExternalSystem`
-- Status: **Planned**
+- Status: **Completed** — ExternalSystem code uniqueness is deterministic at application level and race-safe in PostgreSQL, systemTypeId is constrained to EXTERNAL_SYSTEM_TYPE, and populated ownerOrganizationUnitId resolves through an Organization-owned Integration contract.
 - SCC: —
 - Recorded upstream HMS dependencies: organization.OrganizationUnit
 - HMSR correction count: 3
@@ -5186,8 +5186,8 @@ Additional batches may be registered or an existing planned envelope may be spli
 
 ### 12.6 Current next execution
 
-HMR-047A — ExternalSystem registration/Organization owner prerequisite
+HMRB-015 — HMR-048
 
-`docs(model-remediation): register ExternalSystem owner prerequisite`
+Mode: Solo
 
-HMRB-013 is green. Observe this docs-only prerequisite once, then execute HMRB-014 / HMR-047 only; do not start HMRB-015 automatically.
+HMRB-014 is completed. Execute HMR-048 only after the HMR-047 head is green and exact Reporting access/approval/Organization preflight passes; stop before HMRB-016.

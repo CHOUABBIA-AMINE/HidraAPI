@@ -153,9 +153,17 @@ These properties do not establish HA or DR.
 
 ### HPR-P1-002 — Application runtime HA
 
-**DECISION REQUIRED**
+**APPROVED TARGET — owner accepted 2026-10-05**
 
-Approve multi-node requirement, load-distribution mechanism/ownership, readiness/liveness integration, failure detection and traffic removal, WebSocket/STOMP multi-node behavior, cache consistency expectations, background-work ownership, and rolling maintenance behavior.
+Production requires at least two simultaneously active HidraAPI nodes behind a product-neutral managed load-distribution mechanism. Ordinary REST traffic must not require sticky sessions.
+
+Only ready nodes may receive new traffic. Loss of readiness requires removal from new traffic; liveness remains the process-recovery signal. Planned maintenance requires traffic drain followed by graceful shutdown.
+
+The current process-local Spring `simple` cache may be used only where divergence cannot affect correctness. Correctness-sensitive shared state requires an approved cross-node strategy.
+
+The current in-process STOMP simple broker is not an approved clustered realtime mechanism. Multi-node realtime HA may be claimed only after an external/shared broker or equivalent approved cross-node mechanism is implemented and verified.
+
+No load-balancer, orchestrator, cache, broker, VM/container, or hosting product is selected by this decision.
 
 ### HPR-P1-003 — PostgreSQL HA
 

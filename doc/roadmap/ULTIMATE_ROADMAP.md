@@ -99,9 +99,9 @@ The following audited statements govern prioritization:
 | Code | Status | Domain/Module | Type | Exact execution requirement | Exact commit message | Depends on |
 |---|---|---|---|---|---|---|
 | HPR-P1-001 | COMPLETED — canonical runtime architecture created from exact-head repository evidence; current Spring Boot/JVM, PostgreSQL/Flyway, stateless HTTP security, production-profile externalization, Actuator/Prometheus, in-process cache and STOMP broker are recorded separately from approved targets and unresolved deployment/HA/DR decisions; no deployment technology was invented | Runtime Architecture | Doc | Create `doc/architecture/RUNTIME_ARCHITECTURE.md` from approved production decisions only; do not invent deployment technology. | `docs(architecture): define production runtime architecture` | HPR-P0-015 completed |
-| HPR-P1-002 | BLOCKED-DECISION | Application Runtime | Infra/Doc | Approve stateless multi-node runtime and load-distribution mechanism; document node state, readiness/liveness integration and failure behavior. | `docs(operations): define application high availability model` | HPR-P1-001 + owner decision |
-| HPR-P1-003 | BLOCKED-DECISION | PostgreSQL | Infra/Doc | Approve PostgreSQL replication/failover topology, replication mode, failover authority, connection behavior, maintenance behavior and ownership. | `docs(database): define postgres high availability model` | HPR-P1-001 + owner decision |
-| HPR-P1-004 | BLOCKED-DECISION | DR | Infra/Doc | Obtain owner-approved RTO/RPO, backup frequency/retention and WAL/PITR strategy; keep values TBD until approved. | `docs(operations): define disaster recovery objectives` | owner decision |
+| HPR-P1-002 | COMPLETED — owner accepted the application HA baseline on 2026-10-05: minimum two active HidraAPI nodes, product-neutral managed load distribution, no REST session affinity, readiness-driven traffic admission/removal, graceful drain/shutdown, no correctness dependency on node-local cache, and no clustered realtime claim until the current in-process STOMP broker is replaced/externalized; deployment product remains unselected | Application Runtime | Infra/Doc | Approve stateless multi-node runtime and load-distribution mechanism; document node state, readiness/liveness integration and failure behavior. | `docs(operations): define application high availability model` | HPR-P1-001 + owner decision |
+| HPR-P1-003 | PENDING — owner accepted the recommended PostgreSQL HA direction on 2026-10-05; task not yet executed | PostgreSQL | Infra/Doc | Approve PostgreSQL replication/failover topology, replication mode, failover authority, connection behavior, maintenance behavior and ownership. | `docs(database): define postgres high availability model` | HPR-P1-001 + owner decision |
+| HPR-P1-004 | PENDING — owner accepted the recommended DR objectives on 2026-10-05; task not yet executed | DR | Infra/Doc | Obtain owner-approved RTO/RPO, backup frequency/retention and WAL/PITR strategy; keep values TBD until approved. | `docs(operations): define disaster recovery objectives` | owner decision |
 | HPR-P1-005 | PENDING | DR | Doc | Create `doc/operations/DISASTER_RECOVERY_RUNBOOK.md` with declaration authority, recovery roles, dependency order, restore steps and acceptance checks based on approved objectives. | `docs(operations): add disaster recovery runbook` | HPR-P1-004 |
 | HPR-P1-006 | PENDING | HA | Doc | Create `doc/operations/HIGH_AVAILABILITY_ARCHITECTURE.md` covering approved application/database redundancy, failover, connection behavior and maintenance failover. | `docs(operations): add high availability architecture` | HPR-P1-002..003 |
 | HPR-P1-007 | PENDING | Deployment | Doc | Create `DEPLOYMENT_RUNBOOK.md` and `ENVIRONMENT_CONFIGURATION.md`; require explicit production profile, secrets, PostgreSQL preparation, Flyway, startup, acceptance and rollback. | `docs(operations): add production deployment runbook` | HPR-P1-001..003 |
@@ -144,13 +144,13 @@ The following audited statements govern prioritization:
 
 ## 6. Immediate Next Execution
 
-HPR-P1-001 is complete. The next P1 progression gates are owner decisions for:
+HPR-P1-002 is complete. Owner decisions for HPR-P1-003 and HPR-P1-004 have also been accepted but those tasks have not been executed.
 
-- `HPR-P1-002` — application multi-node/runtime load distribution;
-- `HPR-P1-003` — PostgreSQL HA/replication/failover;
-- `HPR-P1-004` — RTO/RPO, backup retention/frequency, WAL/PITR.
+The next executable roadmap code is:
 
-Do not execute a later HPR merely because HPR-P1-001 completed.
+`HPR-P1-003 — docs(database): define postgres high availability model`
+
+Do not execute HPR-P1-004 or any later task automatically.
 
 ### Final P0 closure evidence
 
@@ -186,6 +186,22 @@ P0 is CLOSED for security/audit verification. Production readiness remains **NOT
 - common cache is process-local Spring `simple` cache and realtime STOMP uses the in-process simple broker;
 - no production Docker/Kubernetes/Helm/IaC deployment definition is established by repository evidence;
 - multi-node/load distribution, PostgreSQL HA, RTO/RPO, backup/WAL/PITR, DR, deployment target, TLS product/placement, secret-manager product, network zones and production monitoring platform remain decision-required or NOT ESTABLISHED.
+
+
+### HPR-P1-002 application-HA decision evidence
+
+- execution base SHA: `ce662955a9615443be094859a68d10c029e94324`;
+- pre-task exact-head CI: run #531 / run id `37330294217`: **SUCCESS**;
+- owner acceptance date: 2026-10-05;
+- approved application service level: minimum two simultaneously active HidraAPI nodes;
+- approved traffic model: product-neutral managed load distribution with no REST session affinity;
+- only ready nodes may receive new traffic; unready/failed nodes must be removed from new traffic;
+- liveness is the process recovery signal and is distinct from dependency-sensitive readiness;
+- planned maintenance requires traffic drain followed by graceful shutdown;
+- current process-local Spring `simple` cache must not hold correctness-critical shared state across nodes;
+- current in-process STOMP simple broker is not approved as clustered realtime transport; clustered realtime requires an external/shared broker or equivalent approved cross-node mechanism before HA is claimed;
+- deployment/load-balancer/broker/cache products remain intentionally unselected;
+- HPR-P1-003 and HPR-P1-004 owner recommendations were accepted in the same decision turn, but those HPRs remain unexecuted.
 
 ## 7. Original P0 Closure Evidence
 

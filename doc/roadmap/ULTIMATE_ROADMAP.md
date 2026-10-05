@@ -22,8 +22,8 @@
 | TimescaleDB | NOT IMPLEMENTED — DEFERRED / TARGET |
 | PostGIS | NOT IMPLEMENTED — DEFERRED / TARGET |
 | High availability | APPROVED TARGET DOCUMENTED FOR APPLICATION + POSTGRESQL / NOT IMPLEMENTED OR VERIFIED |
-| RTO | TBD — BUSINESS / OPERATIONS DECISION REQUIRED |
-| RPO | TBD — BUSINESS / OPERATIONS DECISION REQUIRED |
+| RTO | APPROVED TARGET — ≤ 60 minutes from DR declaration to service acceptance |
+| RPO | APPROVED TARGET — ≤ 5 minutes of recoverable production data |
 
 ## 2. Governing Rules
 
@@ -64,7 +64,7 @@ The following audited statements govern prioritization:
 - The forensic baseline identified `HidraOperationalWorkbenchService` as a material P0 exposure boundary; HPR-P0-001..003 replaced automatic exposure with fail-closed resource/field approval, prohibited credential/password exposure, added regressions, and added architecture guardrails.
 - The audited `LocalCredentialJpaEntity.passwordHash` exposure path is remediated and covered by regression/architecture controls; P0 closure evidence is recorded under HPR-P0-007.
 - Application and PostgreSQL HA target architectures are now documented from owner-approved decisions; implementation and failover verification are not yet established.
-- DR objectives/procedures are not established; RTO/RPO remain owner decisions.
+- DR objectives are owner-approved and documented (RTO ≤ 60 minutes, RPO ≤ 5 minutes, continuous WAL/PITR, daily backup coverage and 35-day operational retention); executable DR procedures and measured recovery evidence remain pending.
 - CI exists; CD/deployment automation is not established by repository evidence.
 - TimescaleDB is not implemented and remains deferred/target.
 - PostGIS is not implemented and remains deferred/target.
@@ -102,7 +102,7 @@ The following audited statements govern prioritization:
 | HPR-P1-001 | COMPLETED — canonical runtime architecture created from exact-head repository evidence; current Spring Boot/JVM, PostgreSQL/Flyway, stateless HTTP security, production-profile externalization, Actuator/Prometheus, in-process cache and STOMP broker are recorded separately from approved targets and unresolved deployment/HA/DR decisions; no deployment technology was invented | Runtime Architecture | Doc | Create `doc/architecture/RUNTIME_ARCHITECTURE.md` from approved production decisions only; do not invent deployment technology. | `docs(architecture): define production runtime architecture` | HPR-P0-015 completed |
 | HPR-P1-002 | COMPLETED — owner accepted the application HA baseline on 2026-10-05: minimum two active HidraAPI nodes, product-neutral managed load distribution, no REST session affinity, readiness-driven traffic admission/removal, graceful drain/shutdown, no correctness dependency on node-local cache, and no clustered realtime claim until the current in-process STOMP broker is replaced/externalized; deployment product remains unselected | Application Runtime | Infra/Doc | Approve stateless multi-node runtime and load-distribution mechanism; document node state, readiness/liveness integration and failure behavior. | `docs(operations): define application high availability model` | HPR-P1-001 + owner decision |
 | HPR-P1-003 | COMPLETED — owner-approved PostgreSQL HA model documented: one writable primary, at least one local synchronous streaming standby where approved latency permits, optional remote asynchronous standby for DR separation, one stable application database endpoint, Database Operations-controlled failover/switchover, explicit fencing/split-brain prevention, reconnect-based application recovery, and no assumption that replicas replace backups; no HA product selected | PostgreSQL | Infra/Doc | Approve PostgreSQL replication/failover topology, replication mode, failover authority, connection behavior, maintenance behavior and ownership. | `docs(database): define postgres high availability model` | HPR-P1-001 + owner decision |
-| HPR-P1-004 | PENDING — owner accepted the recommended DR objectives on 2026-10-05; task not yet executed | DR | Infra/Doc | Obtain owner-approved RTO/RPO, backup frequency/retention and WAL/PITR strategy; keep values TBD until approved. | `docs(operations): define disaster recovery objectives` | owner decision |
+| HPR-P1-004 | COMPLETED — owner-approved DR objectives documented: RTO ≤ 60 minutes, RPO ≤ 5 minutes, continuous WAL archiving/PITR, successful daily backup coverage, 35-day operational backup retention, retained monthly recovery points subject to enterprise records policy, independent backup storage/failure domain, role-based recovery authority, and mandatory restore/PITR evidence; no backup product selected | DR | Infra/Doc | Obtain owner-approved RTO/RPO, backup frequency/retention and WAL/PITR strategy; keep values TBD until approved. | `docs(operations): define disaster recovery objectives` | owner decision |
 | HPR-P1-005 | PENDING | DR | Doc | Create `doc/operations/DISASTER_RECOVERY_RUNBOOK.md` with declaration authority, recovery roles, dependency order, restore steps and acceptance checks based on approved objectives. | `docs(operations): add disaster recovery runbook` | HPR-P1-004 |
 | HPR-P1-006 | PENDING | HA | Doc | Create `doc/operations/HIGH_AVAILABILITY_ARCHITECTURE.md` covering approved application/database redundancy, failover, connection behavior and maintenance failover. | `docs(operations): add high availability architecture` | HPR-P1-002..003 |
 | HPR-P1-007 | PENDING | Deployment | Doc | Create `DEPLOYMENT_RUNBOOK.md` and `ENVIRONMENT_CONFIGURATION.md`; require explicit production profile, secrets, PostgreSQL preparation, Flyway, startup, acceptance and rollback. | `docs(operations): add production deployment runbook` | HPR-P1-001..003 |
@@ -145,13 +145,11 @@ The following audited statements govern prioritization:
 
 ## 6. Immediate Next Execution
 
-HPR-P1-003 is complete. The owner-approved DR recommendation for HPR-P1-004 remains accepted but has not yet been executed.
+HPR-P1-004 is complete. The next executable roadmap code is:
 
-The next executable roadmap code is:
+`HPR-P1-005 — docs(operations): add disaster recovery runbook`
 
-`HPR-P1-004 — docs(operations): define disaster recovery objectives`
-
-Do not execute HPR-P1-005 or any later task automatically.
+Do not execute HPR-P1-006 or any later task automatically.
 
 ### Final P0 closure evidence
 
@@ -230,6 +228,24 @@ Owner-approved on 2026-10-05 after HPR-P1-003:
 - changes to workflow files themselves are not documentation-only and therefore continue to trigger full CI;
 - `workflow_dispatch` remains available for explicit full verification;
 - roadmap tasks that explicitly require full exact-head verification, including survivability/closure gates, still require the full pipeline.
+
+
+### HPR-P1-004 disaster-recovery objective evidence
+
+- execution base SHA: `1fa7f25e6985287cf6548653b99312afcdb9bce0`;
+- pre-task documentation validation: run #1 / run id `37340736184`: **SUCCESS**;
+- pre-task one-time full CI after workflow split: run #534 / run id `37340736111`: **SUCCESS**;
+- owner acceptance date: 2026-10-05;
+- approved production RTO: **≤ 60 minutes**, measured from formal DR declaration to acceptance of the recovered HidraAPI production service;
+- approved production RPO: **≤ 5 minutes**, measured as the maximum acceptable gap between the selected recovery point and the latest production data that must be recoverable;
+- continuous PostgreSQL WAL archiving is required to support PITR and the approved RPO;
+- backup coverage requires at least one successful recoverable base/full backup per 24-hour period plus the WAL required to reach approved PITR targets;
+- operational backup retention is **35 days**;
+- monthly recovery points are retained according to applicable enterprise/records-governance policy; HPR-P1-004 does not invent a longer monthly-retention duration where policy evidence is absent;
+- backup copies must be operationally independent of the live primary/standby failure domain; a replica is not a backup;
+- DR declaration authority follows the approved incident-governance model; Database Operations owns database restore/PITR execution, Platform/Operations owns runtime recovery, and service acceptance requires the accountable operational/business authority;
+- recovery evidence must include selected recovery point, achieved data-loss interval, elapsed recovery time, database consistency, Flyway/JPA validation, application health, authentication/authorization, representative read/write acceptance, and residual issues;
+- no backup, object-storage, archive, snapshot, orchestration, or DR product is selected by this HPR.
 
 ## 7. Original P0 Closure Evidence
 

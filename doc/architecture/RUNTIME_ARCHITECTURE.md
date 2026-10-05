@@ -181,9 +181,21 @@ No HA manager, proxy, virtual IP, DNS mechanism, database appliance, cloud servi
 
 ### HPR-P1-004 — Disaster recovery objectives
 
-**DECISION REQUIRED**
+**APPROVED TARGET — owner accepted 2026-10-05**
 
-Approve RTO, RPO, backup frequency, backup retention, WAL/PITR strategy, recovery authority, and evidence expectations. No values are inferred here.
+The production recovery objective is **RTO ≤ 60 minutes**, measured from formal DR declaration until the recovered HidraAPI production service passes the required acceptance gate.
+
+The production data objective is **RPO ≤ 5 minutes**, measured as the maximum acceptable gap between the chosen recovery point and the latest production data that must be recoverable.
+
+PostgreSQL requires continuous WAL archiving and PITR capability. Backup coverage requires at least one successful recoverable base/full backup every 24 hours plus the WAL required to reach approved recovery points.
+
+Operational backup retention is **35 days**. Monthly recovery points are retained according to applicable enterprise/records-governance policy; no longer monthly-retention duration is invented where policy evidence is absent.
+
+Backups must be independent of the live primary/standby failure domain. Database replicas do not count as backups.
+
+DR declaration follows the approved incident-governance authority. Database Operations owns restore/PITR execution, Platform/Operations owns application/runtime recovery, and recovered-service acceptance requires the accountable operational/business authority.
+
+No backup, archive, storage, snapshot, orchestration, or DR product is selected by this decision.
 
 ### Later P1 decisions
 
@@ -197,4 +209,4 @@ HPR-P1-001 establishes a governed runtime-architecture baseline only.
 
 **Production readiness remains NOT ESTABLISHED.**
 
-Application HA, PostgreSQL HA, RTO/RPO, backup/restore, WAL/PITR, disaster recovery, production deployment automation, observability operations, and measured failover/restore evidence require subsequent P1 tasks.
+Application HA and PostgreSQL HA target models plus RTO/RPO/backup/PITR objectives are now approved, but their infrastructure, executable recovery procedures, production deployment automation, observability operations, and measured failover/restore evidence still require subsequent P1 tasks.

@@ -2899,6 +2899,30 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 - HMR-049 remains the current production remediation after this prerequisite is observed. Do not start HMR-050 automatically.
 
 
+#### HMR-049B — RiskRegister Audit taxonomy prerequisite
+
+- Source: HMR-049 / HMR-049A plus live Audit catalog provisioning evidence.
+- Exact commit: `docs(model-remediation): register RiskRegister audit taxonomy prerequisite`
+- Status: **Completed** — the missing Audit-owned taxonomy provisioning needed by the RiskRegister creation audit contract is authorized; HMR-049B itself changes documentation only.
+- Type: documentation/audit-taxonomy prerequisite.
+- Live evidence:
+  1. The current Audit integration pattern resolves active `EVENT_TYPE` and `EVENT_CATEGORY` rows before calling `RecordAuditEventUseCase`.
+  2. `EVENT_CATEGORY/BUSINESS` is already provisioned by existing Audit migrations.
+  3. No active `EVENT_TYPE/RISK_REGISTER_CREATED` exists in repository migrations.
+  4. Reusing `ALARM_SUPPRESSION_EXPIRED`, Organization responsibility event types, or another unrelated code would corrupt Audit taxonomy semantics.
+  5. HMR-049A deliberately prohibited using the Risk migration to mutate unrelated Audit-owned taxonomy.
+- Required decisions:
+  1. Add one Audit-owned additive migration:
+     `src/main/resources/db/migration/V20261005_001__provision_risk_register_created_audit_taxonomy.sql`.
+  2. The migration may insert only the missing active `EVENT_TYPE/RISK_REGISTER_CREATED` row, idempotently, using the same repository-approved pattern as the Alarm and Organization audit-taxonomy migrations.
+  3. Do not duplicate `EVENT_CATEGORY/BUSINESS`; the adapter must continue to resolve the existing active category.
+  4. HMR-049's Audit adapter must fail closed when either required active Audit taxonomy row is unavailable.
+  5. No generic platform outbox or new Audit business vocabulary beyond `RISK_REGISTER_CREATED` is authorized.
+- Newly authorized HMR-049 production file:
+  - `src/main/resources/db/migration/V20261005_001__provision_risk_register_created_audit_taxonomy.sql`
+- HMR-049 remains the current production remediation after this prerequisite is observed. Do not start HMR-050 automatically.
+
+
 #### HMR-050 — integrity.IntegrityProgram
 
 - Source review: `HMSR-059`
@@ -5293,8 +5317,8 @@ Additional batches may be registered or an existing planned envelope may be spli
 
 ### 12.6 Current next execution
 
-HMR-049A — RiskRegister owner/scope/audit prerequisite
+HMR-049B — RiskRegister Audit taxonomy prerequisite
 
-`docs(model-remediation): register RiskRegister owner prerequisites`
+`docs(model-remediation): register RiskRegister audit taxonomy prerequisite`
 
-HMRB-015 is green. Observe this docs-only prerequisite once, then execute HMRB-016 / HMR-049 only; do not start HMRB-017 automatically.
+HMR-049A is observed. Observe this docs-only Audit taxonomy prerequisite once, then execute HMRB-016 / HMR-049 only; do not start HMRB-017 automatically.

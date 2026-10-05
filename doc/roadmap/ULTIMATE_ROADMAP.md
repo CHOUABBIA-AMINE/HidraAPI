@@ -18,7 +18,7 @@
 | Legacy/reference documentation root | `docs/` |
 | Forensic audit evidence baseline | `3e6de10b6e64bd989626a522d2de21b8ea501b8c` |
 | Bootstrap repository baseline | `e1f33e32519dcd1d07367e96cf399dfad2933053` |
-| Production readiness | NOT ESTABLISHED — P0 security remediation is closed; P1 survivability is still incomplete |
+| Production readiness | NOT ESTABLISHED — original P0 source defects are remediated, but independent P0 verification/completeness gaps are OPEN; P1 survivability has not started |
 | TimescaleDB | NOT IMPLEMENTED — DEFERRED / TARGET |
 | PostGIS | NOT IMPLEMENTED — DEFERRED / TARGET |
 | High availability | NOT DOCUMENTED / NOT VERIFIED |
@@ -41,6 +41,9 @@
 12. A capability moves from TARGET/DEFERRED to CURRENT only after implementation, tests, configuration/migrations, and operating procedures provide evidence.
 13. If a task requires an owner/business/operations decision not present in repository evidence, mark the task BLOCKED and stop; do not fabricate the decision.
 14. Every task closes with exact-head verification and an update to this roadmap recording evidence and the next executable code.
+15. The 2026-10-05 independent P0 verification audit at `dcf69e1a4a4b788cd125ba6289384642efc4caa0` reopens P0 only for the six failed verification/completeness checks recorded below. Checks 1–5, 8, and 10 remain VERIFIED unless later regression evidence disproves them.
+16. A verification-evidence gap must not be mislabeled as a missing implementation. In particular, OpenAPI security-scheme code exists; the remaining Check 9 gap is exact-head generated evidence.
+17. Phase P1 may not begin until HPR-P0-015 closes the independent-audit gap set.
 
 ## 3. In-Flight Semantic Remediation Disposition
 
@@ -66,6 +69,7 @@ The following audited statements govern prioritization:
 - PostGIS is not implemented and remains deferred/target.
 - GeoJSON/application geometry is not PostGIS persistence.
 - Existing `docs/` contains valuable evidence but also stale and conflicting current-state material.
+- Independent P0 verification audit at `dcf69e1a4a4b788cd125ba6289384642efc4caa0`: 7 checks VERIFIED; 6 checks FAILED. Failures are HTTP/serialization regression depth, exact-SHA OpenAPI evidence, application trust-boundary documentation, telemetry/operator threat coverage, and concrete owner-approved secret/certificate/incident procedures.
 
 ## 5. Execution Registry
 
@@ -80,12 +84,20 @@ The following audited statements govern prioritization:
 | HPR-P0-005 | COMPLETED — `X-Actor-Id` is no longer a supported platform header; the early request-context filter no longer reads caller actor identity or populates actor MDC/logging context; authenticated audit/JPA attribution remains sourced from `CurrentSecurityContext`/`CurrentActorResolver`; spoofing regression added | Platform / Logging | Code | Revalidate caller-supplied actor-header handling; ensure it is not represented as authenticated audit identity unless a verified binding exists; correct code/tests/documentation only where evidence requires it. | `fix(platform): clarify audit actor provenance` | HPR-P0-001 |
 | HPR-P0-006 | COMPLETED — canonical security architecture, trust-boundary, threat-model, secrets/certificates, and incident-response documents created from exact-head repository evidence; TLS/certificate lifecycle, secret rotation, SIEM/SOC, security contacts, severity model, HA/DR and RTO/RPO remain explicitly NOT ESTABLISHED/TBD | Security | Doc | Complete canonical security documents: `SECURITY_ARCHITECTURE.md`, `TRUST_BOUNDARIES.md`, `THREAT_MODEL.md`, `SECRETS_AND_CERTIFICATES.md`, and `INCIDENT_RESPONSE.md`, using only verified current controls and explicit TARGET/TBD markers. | `docs(security): establish canonical security baseline` | HPR-P0-001..005 |
 | HPR-P0-007 | COMPLETED — P0 CLOSED. CI run #520 on executable verification anchor `359ae6d77bb9bb8f499941634760f4c375abb9ac` passed Java 21 `./mvnw -B -q clean verify`, architecture/security tests, PostgreSQL/Testcontainers + Flyway validation/migration, application startup/health, deterministic `/v3/api-docs` generation, and artifact upload. The only intervening commit `ad32650f71900a60c0ed7ee3123191ad26c688ed` changed six Markdown files, so the executable tree remained identical; the closure commit changes only this roadmap. | Repository | Code/Doc | Run full Maven verification, architecture/security tests, database/Flyway startup verification and deterministic OpenAPI generation; record exact-head evidence and close P0 only if all required checks pass. | `docs(roadmap): close P0 security remediation` | HPR-P0-001..006 |
+| HPR-P0-008 | NEXT | Platform / Workbench / API | Code/Test | Close audit Checks 6–7 with HTTP-level Workbench regression tests using the real controller/serialization path. Cover resource discovery, list, detail, and search; directly request prohibited credential resources and assert denial before persistence access; assert serialized responses contain neither the `passwordHash` property nor a distinctive password-hash marker value. Preserve the existing fail-closed resource/field policy. | `test(platform): verify workbench http exposure boundary` | HPR-P0-001..003 |
+| HPR-P0-009 | PENDING | CI / OpenAPI | Infra/Test | Close audit Check 9 as an evidence gap, not a code reimplementation. Adjust CI triggering so canonical `doc/` security/roadmap changes do not silently bypass verification, then obtain a successful CI run on the exact task SHA that executes `./mvnw -B -q clean verify`, starts the application, fetches deterministic `/v3/api-docs`, retains the artifact, and verifies both `hidraBearerJwt` and `externalOidcBearerJwt` plus representative operation security references in the generated artifact. | `ci(security): require exact-head openapi evidence` | HPR-P0-008 |
+| HPR-P0-010 | PENDING | Security Architecture | Doc | Close audit Check 11 by extending `SECURITY_ARCHITECTURE.md` and `TRUST_BOUNDARIES.md` with repository-verified API → controller → application/use-case → module transitions, permitted cross-module application-contract transitions, the reviewed Workbench persistence exception, and the existing telemetry source/point registration/operator API boundary. Keep OT network architecture, deployment perimeter, and unverified infrastructure explicitly NOT ESTABLISHED. | `docs(security): map application trust transitions` | HPR-P0-008 |
+| HPR-P0-011 | PENDING | Security / Telemetry | Doc | Close audit Check 12 by extending `THREAT_MODEL.md` with existing telemetry source/point registration and operator-action abuse paths. For each threat record asset, actor/source, attack path, trust boundary, impact, current control, and residual risk. Do not invent SCADA transport, telemetry reading-ingestion endpoints, or an unverified vulnerability. | `docs(security): extend operator threat model` | HPR-P0-010 |
+| HPR-P0-012 | BLOCKED-DECISION | Security / Secrets / Certificates | Doc/Decision | Obtain owner-approved lifecycle decisions required by audit Check 13: secret-store ownership, JWT signing-secret routine/emergency rotation and invalidation sequence, datasource and LDAP credential rotation sequence, TLS termination ownership, certificate authority/trust model, certificate/private-key storage, renewal/expiry monitoring, revocation procedure, emergency authority, and recovery verification. Values/procedures remain TBD until approved. | `docs(security): approve secret and certificate lifecycle` | accountable Security/Operations owner decision |
+| HPR-P0-013 | BLOCKED-DECISION | Security / Incident Governance | Doc/Decision | Obtain owner-approved incident-governance decisions required by audit Check 13: incident commander/decision authority, SOC/on-call/security escalation contacts, severity taxonomy, notification/escalation timing, external IdP/LDAP/provider escalation contacts, legal/regulatory notification ownership, and evidence-retention ownership. Do not invent names, timelines, or regulatory obligations. | `docs(security): approve incident governance model` | accountable Security/Operations/Business owner decision |
+| HPR-P0-014 | PENDING | Security Operations | Doc | After HPR-P0-012 and HPR-P0-013 approvals, replace the applicable TBD sections in `SECRETS_AND_CERTIFICATES.md` and `INCIDENT_RESPONSE.md` with the approved concrete rotation, invalidation, certificate renewal/revocation, compromise escalation, recovery-verification, and closure procedures. Preserve provenance of the approving authority/decision. | `docs(security): operationalize security lifecycle procedures` | HPR-P0-012..013 |
+| HPR-P0-015 | PENDING | Repository / Independent Audit | Code/Doc | Re-run the complete P0 verification gate on the exact final remediation SHA: full Maven verification, HTTP Workbench leakage tests, architecture/security tests, PostgreSQL/Flyway verification, application health/startup, deterministic OpenAPI artifact generation/inspection, and documentary re-audit of Checks 1–13. Close the audit gap only if all 13 checks pass; otherwise record failures and keep P1 blocked. | `docs(roadmap): close P0 audit verification gaps` | HPR-P0-008..014 |
 
 ### Phase P1 — Production Infrastructure & Survivability
 
 | Code | Status | Domain/Module | Type | Exact execution requirement | Exact commit message | Depends on |
 |---|---|---|---|---|---|---|
-| HPR-P1-001 | NEXT | Runtime Architecture | Doc | Create `doc/architecture/RUNTIME_ARCHITECTURE.md` from approved production decisions only; do not invent deployment technology. | `docs(architecture): define production runtime architecture` | P0 closed |
+| HPR-P1-001 | PENDING — BLOCKED BY P0 AUDIT GAP | Runtime Architecture | Doc | Create `doc/architecture/RUNTIME_ARCHITECTURE.md` from approved production decisions only; do not invent deployment technology. | `docs(architecture): define production runtime architecture` | HPR-P0-015 completed |
 | HPR-P1-002 | BLOCKED-DECISION | Application Runtime | Infra/Doc | Approve stateless multi-node runtime and load-distribution mechanism; document node state, readiness/liveness integration and failure behavior. | `docs(operations): define application high availability model` | HPR-P1-001 + owner decision |
 | HPR-P1-003 | BLOCKED-DECISION | PostgreSQL | Infra/Doc | Approve PostgreSQL replication/failover topology, replication mode, failover authority, connection behavior, maintenance behavior and ownership. | `docs(database): define postgres high availability model` | HPR-P1-001 + owner decision |
 | HPR-P1-004 | BLOCKED-DECISION | DR | Infra/Doc | Obtain owner-approved RTO/RPO, backup frequency/retention and WAL/PITR strategy; keep values TBD until approved. | `docs(operations): define disaster recovery objectives` | owner decision |
@@ -133,49 +145,47 @@ The following audited statements govern prioritization:
 
 The next executable roadmap code is:
 
-`HPR-P1-001 — docs(architecture): define production runtime architecture`
+`HPR-P0-008 — test(platform): verify workbench http exposure boundary`
 
-## 7. P0 Closure Evidence
+Do not execute HPR-P0-009 or later work as part of HPR-P0-008.
 
-P0 security remediation is **CLOSED**.
+## 7. Original P0 Closure Evidence
+
+HPR-P0-001..007 remain valid evidence that the original source-level P0 defects were remediated and that the executable tree was green under the roadmap gate that existed at the time.
 
 Executable verification anchor:
 
 `359ae6d77bb9bb8f499941634760f4c375abb9ac`
 
-GitHub Actions:
+GitHub Actions run #520 established successful Java 21 Maven verification, PostgreSQL/Testcontainers and Flyway execution, application startup/health, deterministic OpenAPI generation, and OpenAPI artifact upload.
 
-- workflow: `HidraAPI CI`
-- run: `#520`
-- run id: `37308707618`
-- job: `Java 21 Maven verification`
-- job id: `111758552934`
-- conclusion: `success`
+That evidence is retained. It is **not** sufficient to satisfy the later independent audit's stronger exact-revision/API/documentation requirements.
 
-Verified gates:
+## 8. Independent P0 Verification Audit — Gap Reconciliation
 
-1. PostgreSQL 16 service became healthy.
-2. Java 21 setup completed.
-3. `./mvnw -B -q clean verify` completed successfully, covering the repository test suite including architecture/security regressions.
-4. Flyway repeatedly validated all 82 migrations in database-backed tests; full-schema migration paths successfully reached version `v20261005.001`.
-5. Application startup verification succeeded.
-6. The CI OpenAPI step launched the built application with the test profile and polled `/actuator/health` successfully.
-7. `/v3/api-docs` was fetched and deterministically normalized.
-8. OpenAPI artifact `hidra-api-openapi-359ae6d77bb9bb8f499941634760f4c375abb9ac` was uploaded successfully as artifact id `11344898070`.
+Audit baseline:
 
-Exact-head equivalence:
+- pinned SHA: `dcf69e1a4a4b788cd125ba6289384642efc4caa0`
+- audit date: 2026-10-05
+- result: **FAIL — 7 checks VERIFIED; 6 checks FAILED**
+- VERIFIED: Checks 1, 2, 3, 4, 5, 8, 10
+- FAILED: Checks 6, 7, 9, 11, 12, 13
 
-- the next commit, HPR-P0-006 head `ad32650f71900a60c0ed7ee3123191ad26c688ed`, changed only:
-  - `doc/roadmap/ULTIMATE_ROADMAP.md`
-  - `doc/security/INCIDENT_RESPONSE.md`
-  - `doc/security/SECRETS_AND_CERTIFICATES.md`
-  - `doc/security/SECURITY_ARCHITECTURE.md`
-  - `doc/security/THREAT_MODEL.md`
-  - `doc/security/TRUST_BOUNDARIES.md`
-- all six files are Markdown; no production source, tests, build files, migrations, runtime configuration, or CI workflow changed after the green verification anchor.
-- this HPR-P0-007 closure changes only this Markdown roadmap.
-- therefore the final P0 closure head has the same executable tree as the successful verification anchor. GitHub Actions did not create a run for HPR-P0-006 because `.github/workflows/ci.yml` ignores `docs/**` and `**/*.md` pushes.
+### 8.1 Disposition by failed check
 
-P0 closure does **not** establish enterprise production readiness. Phase P1 production infrastructure and survivability remains required.
+| Audit check | Audit classification | Roadmap disposition |
+|---|---|---|
+| 6 — Workbench leakage regression tests | FAILED — SUPERFICIAL IMPLEMENTATION | HPR-P0-008 adds HTTP/controller/serialization coverage and direct prohibited-resource denial. |
+| 7 — Exact `passwordHash` assertion | FAILED — SUPERFICIAL IMPLEMENTATION | HPR-P0-008 asserts both property-name and distinctive hash-marker absence in actual serialized responses. |
+| 9 — OpenAPI security schemes | FAILED — NOT IMPLEMENTED in audit verdict, but audit body confirms source implementation exists | HPR-P0-009 treats this as an **exact-SHA generated-evidence gap**: require exact-head CI/artifact evidence and generated-contract inspection; do not reimplement the schemes unless regression evidence shows a code defect. |
+| 11 — Security architecture / trust boundaries | FAILED — SUPERFICIAL IMPLEMENTATION | HPR-P0-010 adds current API/application/module, cross-module contract, telemetry/operator, and Workbench-exception boundaries from code evidence. |
+| 12 — Threat model | FAILED — SUPERFICIAL IMPLEMENTATION | HPR-P0-011 adds telemetry registration/operator abuse scenarios with explicit asset/actor/path/boundary/impact/control/residual-risk fields. |
+| 13 — Secrets / certificates / incident response | FAILED — SUPERFICIAL IMPLEMENTATION | HPR-P0-012 and HPR-P0-013 are owner-decision gates; HPR-P0-014 converts approved decisions into concrete lifecycle/incident procedures. |
 
-Do not execute HPR-P1-002 or later work as part of HPR-P1-001.
+### 8.2 Gate semantics
+
+- The audit does **not** demonstrate a current credential-exposure exploit.
+- Existing field/resource allowlists, credential protection, persistence-boundary constriction, actor provenance correction, architecture guardrails, and Workbench exposure documentation remain accepted unless regression evidence disproves them.
+- P0 is reopened for **verification/completeness closure** only.
+- P1 is blocked until HPR-P0-015 establishes all 13 audit checks as passing.
+- Owner-dependent procedures must remain blocked rather than being fabricated.

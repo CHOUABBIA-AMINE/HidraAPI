@@ -2619,6 +2619,31 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
   3. **Enforce `SIMULATION_SOLVER_PROFILE` catalog-family semantics for `solverProfileId`.** The referenced catalog row must belong to the documented solver-profile family.
   4. **Enforce immutability of COMPLETED SimulationRun business state.** Once completed, ordinary run fields must not be changed through repository/application writes, except separately modeled publication/archival metadata authorized by the DDD.
 
+#### HMR-046A — SimulationRun application-boundary prerequisite
+
+- Source: HMR-046 / HMSR-055 plus live Simulation queue/catalog evidence.
+- Exact commit: `docs(model-remediation): register SimulationRun application prerequisite`
+- Status: **Completed** — the authoritative queue application service is added to the HMR-046 write scope; HMR-046A itself changes documentation only.
+- Type: documentation/application-boundary prerequisite.
+- Live evidence:
+  1. HMR-046 requires a SimulationScenario to be LOCKED before a run is queued/executed.
+  2. The actual authoritative queue path is `SimulationApplicationService.queueSimulationRun(...)`; it already resolves the scenario and invokes `scenario.executable()`, but `SimulationApplicationService.java` is absent from the original HMR-046 allowlist.
+  3. HMR-046 also requires `runTypeId` to belong to `SIMULATION_RUN_TYPE` and `solverProfileId` to belong to `SIMULATION_SOLVER_PROFILE`; these checks belong at the same queue boundary and can be backed by native catalog-family queries in the already-authorized `SimulationRunJpaRepository` / adapter / port.
+  4. No cross-module owner contract is needed: SimulationScenario and Simulation catalog rows are Simulation-owned.
+  5. COMPLETED-run immutability can be enforced at the already-authorized SimulationRun repository adapter by comparing the persisted completed run before save, analogous to the HMR-037 published-version guard.
+- Required decisions:
+  1. Add `src/main/java/dz/sh/hidra/modules/simulation/application/service/SimulationApplicationService.java` to the HMR-046 write allowlist.
+  2. Queue execution must fail closed unless the referenced SimulationScenario exists and has status `LOCKED`.
+  3. Queue execution must fail closed unless `runTypeId` belongs specifically to `SIMULATION_RUN_TYPE`.
+  4. Queue execution must fail closed unless `solverProfileId` belongs specifically to `SIMULATION_SOLVER_PROFILE`.
+  5. Do not invent additional run/scenario lifecycle transitions beyond the reviewed obligations.
+  6. Once an existing persisted SimulationRun is `COMPLETED`, an identical re-save may be treated as a no-op, but any ordinary business-state mutation must fail closed.
+  7. No Flyway migration is required for HMR-046 unless live evidence later proves a database-level correction is necessary; existing same-module FKs/catalog tables already exist.
+- Newly authorized HMR-046 production file:
+  - `src/main/java/dz/sh/hidra/modules/simulation/application/service/SimulationApplicationService.java`
+- HMR-046 remains the current production remediation after this prerequisite is observed. Do not start HMR-047 automatically.
+
+
 #### HMR-047 — integration.ExternalSystem
 
 - Source review: `HMSR-056`
@@ -5063,7 +5088,7 @@ The following are execution registrations only; they do not change any HMR's sem
 | HMRB-010 | HMR-042 | Solo | **Completed.** Pipeline fixed taxonomy is replaced by the Topology-owned PipelineType catalog reference architecture with migrated legacy values. |
 | HMRB-011 | HMR-043, HMR-044 | Coordinated Batch | **Completed.** SCC-02 WorkflowStep ordering/reference integrity and WorkflowStepAssignmentRule family/candidate-source integrity completed in separate commits. |
 | HMRB-012 | HMR-045 | Solo | **Completed.** MaintainableAsset external ownership and SCC-03/same-module reference integrity are enforced through deliberate owner contracts and Assets-owned FKs. |
-| HMRB-013 | HMR-046 | Solo | **Planned.** Simulation lifecycle eligibility, catalog-family semantics and completed-run immutability. |
+| HMRB-013 | HMR-046 | Solo | **Blocked until HMR-046A observation.** Live preflight proved the authoritative Simulation queue service was missing from the original HMR-046 write scope. |
 | HMRB-014 | HMR-047 | Solo | **Planned.** Concurrency-safe code uniqueness plus Organization owner validation. |
 | HMRB-015 | HMR-048 | Solo | **Planned.** Reporting access, approval/workflow and Organization-owner lifecycle orchestration. |
 | HMRB-016 | HMR-049 | Solo | **Planned.** Risk typed scope, unresolved review-frequency semantics and audit/outbox behavior. |
@@ -5125,8 +5150,8 @@ Additional batches may be registered or an existing planned envelope may be spli
 
 ### 12.6 Current next execution
 
-HMRB-013 — HMR-046
+HMR-046A — SimulationRun application-boundary prerequisite
 
-Mode: Solo
+`docs(model-remediation): register SimulationRun application prerequisite`
 
-HMRB-012 is completed. Execute HMR-046 only after the HMR-045 head is green and exact Simulation lifecycle/catalog preflight passes; stop before HMRB-014.
+HMRB-012 is green. Observe this docs-only prerequisite once, then execute HMRB-013 / HMR-046 only; do not start HMRB-014 automatically.

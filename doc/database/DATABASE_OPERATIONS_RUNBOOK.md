@@ -208,7 +208,7 @@ Procedure:
 12. restore normal redundancy;
 13. record elapsed time and deviations.
 
-The exact promotion/fencing commands depend on the selected HA platform and are intentionally absent.
+The selected HA implementation is Patroni + etcd + HAProxy. Controlled switchover/failover commands and verification are documented in `doc/database/POSTGRES_FAILOVER_IMPLEMENTATION.md` and `ops/production/postgres/scripts/verify-postgres-failover.sh`.
 
 ## 10. Standby Failure / Loss of Redundancy
 
@@ -320,6 +320,17 @@ Emergency rotation occurs immediately after credible compromise.
 
 ## 16. Database Maintenance
 
+Executable operator procedures are maintained under `ops/production/postgres/sql/` and `ops/production/postgres/scripts/`.
+
+Routine diagnostic baseline:
+
+- `database-health-report.sh` — sessions, locks, long-running work, VACUUM/ANALYZE state, index usage, capacity, replication, Flyway, Patroni and pgBackRest;
+- `vacuum-analyze-table.sh schema.table` — guarded reviewed VACUUM/ANALYZE;
+- `reindex-concurrently.sh schema.index` — guarded concurrent index rebuild;
+- `terminate-session.sh PID` — guarded targeted backend termination.
+
+Mutating procedures require explicit operator opt-in and must not be used as automatic remediation.
+
 For PostgreSQL maintenance affecting availability:
 
 1. confirm HA posture and backup protection;
@@ -366,7 +377,7 @@ Availability goals do not override containment.
 
 ## 19. Observability Requirements
 
-Database Operations must eventually have visibility into:
+Database Operations has repository-defined inspection procedures and production alert definitions for the following signals; live production-equivalent execution remains required:
 
 - current primary identity;
 - standby availability;

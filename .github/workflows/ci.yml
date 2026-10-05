@@ -66,6 +66,9 @@ jobs:
       - name: Validate production observability artifacts
         run: bash ops/production/observability/validate-observability-artifacts.sh
 
+      - name: Validate database operations procedures
+        run: bash ops/production/postgres/scripts/validate-database-operations.sh
+
       - name: Set up Java 21
         uses: actions/setup-java@v4
         with:

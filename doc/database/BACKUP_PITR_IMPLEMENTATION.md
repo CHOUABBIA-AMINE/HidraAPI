@@ -2,7 +2,7 @@
 
 ## Status
 
-**IMPLEMENTED-PENDING-POLICY-AND-EXERCISE — HPR-P1-017**
+**IMPLEMENTED-PENDING-RETENTION-BINDING-AND-EXERCISE — HPR-P1-017**
 
 Execution base: `9e1503154e59c7de5b06ca00bb045c2328770c1b`.
 
@@ -41,13 +41,18 @@ It cannot prove actual recoverability without a real pgBackRest repository and P
 
 The supplied PITR harness therefore remains deliberately destructive/opt-in and records evidence when executed.
 
-## Retention blocker
+## Retention binding
 
 The 35-day operational window is implemented.
 
-The monthly retained recovery-point obligation remains unresolved because no governing enterprise policy identifier or exact monthly hold duration has been supplied.
+Owner approval on 2026-10-05 resolves the monthly-retention policy decision:
 
-No retention duration is fabricated.
+- one monthly recovery point;
+- 12 monthly points retained for 12 months;
+- policy identifier `HIDRA-P1-BACKUP-RETENTION-001`;
+- protected-copy independence from the live database failure domain.
+
+The remaining gap is implementation/evidence: the selected repository/storage mechanism must enforce the monthly 12-month hold and a retained monthly point must be demonstrated restorable.
 
 ## HPR-P1-012 relationship
 

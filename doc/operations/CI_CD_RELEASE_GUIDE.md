@@ -90,3 +90,15 @@ GitHub Actions records the actor, run ID, source SHA, change ID, candidate diges
 HPR-P1-018 remains IMPLEMENTED-PENDING-ENVIRONMENT-AND-EXERCISE until required-reviewer protection is confirmed, production variables/secrets are configured, Vault rendering is active on both VMs, a validate-only run succeeds, and an approved production-equivalent deployment plus schema-compatible rollback exercise is observed.
 
 That measured evidence remains mandatory for HPR-P1-012.
+
+
+## Owner-Approved Production Environment Baseline
+
+Owner approval on 2026-10-05 requires GitHub Environment `production` to enforce at least two production deployment reviewers:
+
+1. Platform/Operations;
+2. Application/Release owner.
+
+The post-deployment acceptance path must be authenticated, read-only, harmless to business data and database-backed.
+
+Actual reviewer identities, hostnames, URLs and credentials remain controlled environment configuration and are not committed here.

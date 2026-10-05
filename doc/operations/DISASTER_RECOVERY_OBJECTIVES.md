@@ -107,11 +107,13 @@ This means the required base/full backup material and corresponding WAL needed f
 
 **APPROVED TARGET**
 
-A monthly recovery point must be preserved according to applicable enterprise records, legal, compliance, or records-governance policy.
+A monthly recovery point must be preserved.
 
-HPR-P1-004 intentionally does **not** invent a multi-month or multi-year monthly-retention duration because no controlling enterprise-policy duration is established in the repository evidence.
+Owner approval on 2026-10-05 establishes the P1 baseline as **12 monthly recovery points retained for 12 months**, under policy identifier **HIDRA-P1-BACKUP-RETENTION-001**.
 
-If the enterprise policy requires a longer period than 35 days, that policy governs the monthly retained recovery points.
+At least one protected copy must remain independent of the live PostgreSQL primary/standby failure domain.
+
+If a stricter SONATRACH Records/Legal/Compliance policy is later identified, the stricter policy governs.
 
 ## 7. Backup Independence
 

@@ -2,7 +2,7 @@
 
 ## Status
 
-**OWNER-APPROVED TECHNOLOGY BASELINE / MONTHLY RETENTION POLICY STILL OPEN — HPR-P1-013**
+**OWNER-APPROVED PRODUCTION INFRASTRUCTURE BASELINE — HPR-P1-013**
 
 Owner acceptance date: **2026-10-05**
 
@@ -115,22 +115,20 @@ The exact storage product/medium is not selected by this decision. Infrastructur
 
 ## 6. Monthly Recovery-Point Retention
 
-### BLOCKED DECISION
+### OWNER-APPROVED 2026-10-05
 
-Operational recovery retention remains approved at **35 days**.
+Operational recovery retention remains **35 days**.
 
-A monthly retained recovery point remains required.
+The owner-approved P1 monthly retention baseline is:
 
-However, the governing enterprise/SONATRACH records-policy identifier and exact monthly retention/hold duration have not been supplied.
+- one retained recovery point per month;
+- **12 monthly recovery points / 12 months**;
+- at least one protected copy outside the live PostgreSQL primary/standby failure domain;
+- policy identifier **HIDRA-P1-BACKUP-RETENTION-001**.
 
-Therefore:
+A stricter SONATRACH Records/Legal/Compliance policy overrides this P1 baseline if later identified.
 
-- no monthly duration is invented;
-- no implicit 3-month/6-month/12-month/multi-year value is authorized;
-- HPR-P1-017 may implement the pgBackRest mechanism and 35-day operational window;
-- HPR-P1-017 cannot close until the controlling policy identifier/rule is recorded and enforced.
-
-If the controlling policy is stricter than the operational baseline, the stricter policy governs.
+HPR-P1-017 must bind this approved rule to the selected backup/archive storage implementation and prove retained-point restore/PITR behavior.
 
 ## 7. Runtime Secrets and Sensitive Configuration
 
@@ -288,3 +286,12 @@ It is not yet implemented or exercised.
 The monthly backup recovery-point policy identifier/duration also remains unresolved.
 
 Therefore production readiness remains **NOT ESTABLISHED**.
+
+
+## 15. Owner-Approved P1 Operating Values
+
+The consolidated accepted owner values for deployment approval, logical topology/naming, Vault use, monitoring retention, alert routing and production-equivalent exercise strategy are recorded in:
+
+`doc/operations/P1_OWNER_APPROVED_VALUES.md`
+
+Actual hostnames, endpoints, receiver URLs and immutable deployed versions remain environment evidence and must not be fabricated in documentation.

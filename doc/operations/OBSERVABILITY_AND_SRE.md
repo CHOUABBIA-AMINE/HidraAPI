@@ -523,3 +523,16 @@ HPR-P1-010 must not be marked fully implemented until those decisions exist and 
 Current application-side observability surfaces are sufficient to support later integration, but production observability operations and alert delivery are not yet verified.
 
 Therefore production observability readiness and overall production readiness remain **NOT ESTABLISHED**.
+
+
+## 16. Owner-Approved P1 Retention and Routing Baseline
+
+Owner approval on 2026-10-05 establishes:
+
+- Prometheus high-resolution operational metrics retention: **30 days**;
+- Loki operational application log retention: **90 days**;
+- security/audit retention remains governed by the existing enterprise security/audit policy;
+- Alertmanager routing domains: operations-default, operations-critical, database-operations and security-incidents;
+- critical operations and security routes must reach an on-call/paging mechanism.
+
+Actual receiver destinations and credentials remain controlled production configuration and must not be committed to Git.

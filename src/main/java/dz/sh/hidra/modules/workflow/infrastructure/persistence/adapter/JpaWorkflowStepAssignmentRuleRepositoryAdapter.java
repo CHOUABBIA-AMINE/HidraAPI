@@ -7,7 +7,7 @@
  *
  * @Name        : JpaWorkflowStepAssignmentRuleRepositoryAdapter
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-05
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -20,6 +20,7 @@
 package dz.sh.hidra.modules.workflow.infrastructure.persistence.adapter;
 
 import dz.sh.hidra.modules.workflow.application.port.out.WorkflowStepAssignmentRuleRepositoryPort;
+import dz.sh.hidra.modules.workflow.domain.exception.InvalidWorkflowValueException;
 import dz.sh.hidra.modules.workflow.domain.model.WorkflowStepAssignmentRule;
 import dz.sh.hidra.modules.workflow.infrastructure.persistence.mapper.WorkflowPersistenceMapper;
 import dz.sh.hidra.modules.workflow.infrastructure.persistence.repository.WorkflowStepAssignmentRuleJpaRepository;
@@ -42,11 +43,27 @@ public class JpaWorkflowStepAssignmentRuleRepositoryAdapter implements WorkflowS
 
     @Override
     public WorkflowStepAssignmentRule save(WorkflowStepAssignmentRule model) {
-        return WorkflowPersistenceMapper.toDomain(repository.save(WorkflowPersistenceMapper.toEntity(model)));
+        Objects.requireNonNull(model, "WorkflowStepAssignmentRule must not be null.");
+        if (!repository.existsAssignmentModeInRequiredFamily(model.assignmentModeId())) {
+            throw new InvalidWorkflowValueException(
+                    "WorkflowStepAssignmentRule assignment mode must belong to WORKFLOW_ASSIGNMENT_MODE."
+            );
+        }
+        return WorkflowPersistenceMapper.toDomain(
+                repository.save(WorkflowPersistenceMapper.toEntity(model))
+        );
     }
 
     @Override
     public Optional<WorkflowStepAssignmentRule> findById(String id) {
         return repository.findById(id).map(WorkflowPersistenceMapper::toDomain);
+    }
+
+    @Override
+    public boolean assignmentModeBelongsToRequiredFamily(String assignmentModeId) {
+        if (assignmentModeId == null || assignmentModeId.isBlank()) {
+            return false;
+        }
+        return repository.existsAssignmentModeInRequiredFamily(assignmentModeId.trim());
     }
 }

@@ -7,7 +7,7 @@
  *
  * @Name        : WorkflowStepAssignmentRule
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-10-05
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -80,6 +80,16 @@ import java.time.Instant;
         organizationUnitId = normalize(organizationUnitId);
         organizationRoleCode = normalize(organizationRoleCode);
         targetOwnerMode = normalize(targetOwnerMode);
+
+        if (actorId == null
+                && roleCode == null
+                && organizationUnitId == null
+                && organizationRoleCode == null
+                && targetOwnerMode == null) {
+            throw new InvalidWorkflowValueException(
+                    "WorkflowStepAssignmentRule must define at least one actor or candidate-pool strategy."
+            );
+        }
         }
 
         private static String normalize(String value) {

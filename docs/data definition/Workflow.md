@@ -1573,3 +1573,19 @@ when populated, defaultAssignmentRuleId must reference an existing WorkflowStepA
 The nullable default-assignment reference intentionally preserves SCC-02. Existing WorkflowStep and
 WorkflowStepAssignmentRule tables are already present, so the additive migration can validate the
 reference without changing ownership or introducing a cross-module dependency.
+
+
+---
+
+## HMR-044 — WorkflowStepAssignmentRule executable integrity
+
+```text
+assignmentModeId must resolve specifically inside WORKFLOW_ASSIGNMENT_MODE
+generic Workflow catalog-row existence is insufficient
+at least one of actorId, roleCode, organizationUnitId, organizationRoleCode, targetOwnerMode must be populated
+```
+
+The five candidate-source fields represent the reviewed direct-actor or candidate-pool strategies.
+HMR-044 does not invent mode-specific Organization/Identity eligibility semantics beyond the HMSR
+obligation. Workflow fails closed before persistence when no strategy exists or when assignmentModeId
+belongs to a different Workflow catalog family.

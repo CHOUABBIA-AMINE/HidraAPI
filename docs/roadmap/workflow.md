@@ -2387,3 +2387,15 @@ After this roadmap is accepted:
 ```text
 WF-002 — chore(workflow): add workflow package skeleton
 ```
+
+
+---
+
+## HMR-043 / HMR-044 — SCC-02 semantic closure
+
+The WorkflowStep / WorkflowStepAssignmentRule cycle is preserved deliberately through the nullable
+`defaultAssignmentRuleId` link. HMR-043 adds deterministic step ordering/uniqueness plus a
+same-module FK to the already-existing assignment-rule table. HMR-044 makes assignment-mode catalog
+family membership fail closed and prevents assignment rules with no actor/candidate-pool strategy.
+
+No cross-module database FK or invented Organization/Identity eligibility rule is introduced.

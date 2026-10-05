@@ -7,7 +7,7 @@
  *
  * @Name        : WorkflowStepAssignmentRuleRepositoryPort
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-05
  *
  * @Type        : Interface
  * @Layer       : Application
@@ -31,4 +31,6 @@ public interface WorkflowStepAssignmentRuleRepositoryPort {
     WorkflowStepAssignmentRule save(WorkflowStepAssignmentRule model);
 
     Optional<WorkflowStepAssignmentRule> findById(String id);
+
+    boolean assignmentModeBelongsToRequiredFamily(String assignmentModeId);
 }

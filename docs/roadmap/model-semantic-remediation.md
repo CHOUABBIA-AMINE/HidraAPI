@@ -2460,7 +2460,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-052`
 - Exact commit: `fix(workflow): remediate semantic review WorkflowStepAssignmentRule`
-- Status: **Planned**
+- Status: **Completed** — assignmentModeId must belong specifically to WORKFLOW_ASSIGNMENT_MODE and every rule must provide at least one concrete actor/candidate-pool strategy before persistence.
 - SCC: SCC-02
 - Recorded upstream HMS dependencies: organization.OrganizationUnit, workflow.WorkflowDefinition, workflow.WorkflowStep
 - HMSR correction count: 2
@@ -5009,7 +5009,7 @@ The following are execution registrations only; they do not change any HMR's sem
 | HMRB-008 | HMR-040 | Solo | **Completed.** MonitoringRule populated telemetryPointId now resolves through a deliberate Telemetry-owned Monitoring contract with exact guardrail registration. |
 | HMRB-009 | HMR-041 | Solo | **Completed.** ACTIVE PartyRoleAssignment uniqueness is protected by application pre-check plus a concurrency-safe partial unique index. |
 | HMRB-010 | HMR-042 | Solo | **Completed.** Pipeline fixed taxonomy is replaced by the Topology-owned PipelineType catalog reference architecture with migrated legacy values. |
-| HMRB-011 | HMR-043, HMR-044 | Coordinated Batch | **In Progress.** SCC-02 preflight passed; HMR-043 completed and HMR-044 remains in the same coordinated batch. |
+| HMRB-011 | HMR-043, HMR-044 | Coordinated Batch | **Completed.** SCC-02 WorkflowStep ordering/reference integrity and WorkflowStepAssignmentRule family/candidate-source integrity completed in separate commits. |
 | HMRB-012 | HMR-045 | Solo | **Planned.** SCC-03 plus Topology/Organization/Party ownership and multiple same-module references. |
 | HMRB-013 | HMR-046 | Solo | **Planned.** Simulation lifecycle eligibility, catalog-family semantics and completed-run immutability. |
 | HMRB-014 | HMR-047 | Solo | **Planned.** Concurrency-safe code uniqueness plus Organization owner validation. |
@@ -5073,8 +5073,8 @@ Additional batches may be registered or an existing planned envelope may be spli
 
 ### 12.6 Current next execution
 
-HMRB-011 — HMR-043 + HMR-044
+HMRB-012 — HMR-045
 
-Mode: Coordinated Batch
+Mode: Solo
 
-HMRB-010 is completed. Execute HMR-043 and HMR-044 together only after the HMR-042 head is green and exact SCC-02 preflight confirms their live migration/application ordering and owner-contract assumptions; split before mutation if that preflight fails. Stop before HMRB-012.
+HMRB-011 is completed. Execute HMR-045 only after the HMRB-011 final head is green and after exact SCC-03 / owner-contract preflight; stop before HMRB-013.

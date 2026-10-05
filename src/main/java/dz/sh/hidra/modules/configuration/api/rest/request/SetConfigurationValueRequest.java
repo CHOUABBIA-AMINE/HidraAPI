@@ -7,7 +7,7 @@
  *
  * @Name        : SetConfigurationValueRequest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-05
  *
  * @Type        : Record
  * @Layer       : API
@@ -35,4 +35,10 @@ public record SetConfigurationValueRequest(
         Instant effectiveTo,
         String createdByActorId
 ) {
+    public SetConfigurationValueRequest {
+        if (environment == null || environment.isBlank()) {
+            throw new IllegalArgumentException("Configuration value environment must not be blank.");
+        }
+        environment = environment.trim();
+    }
 }

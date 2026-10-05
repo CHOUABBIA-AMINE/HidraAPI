@@ -193,3 +193,15 @@ Configuration does not thereby own the target module's business taxonomy
 
 HMR-026 does not add feature-code uniqueness, strategy-specific evaluation algorithms,
 status-transition rules, or additional localized-name invariants.
+
+
+---
+
+## HMR-039 — ConfigurationValue executable baseline
+
+```text
+environment is mandatory and nonblank at API/application/domain boundaries
+definitionVersionId remains optional
+when definitionVersionId is populated it must reference an existing ConfigurationDefinitionVersion
+the reference is same-module and protected by an additive nullable foreign key
+```

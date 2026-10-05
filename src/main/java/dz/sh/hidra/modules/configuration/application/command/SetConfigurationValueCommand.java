@@ -7,7 +7,7 @@
  *
  * @Name        : SetConfigurationValueCommand
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-05
  *
  * @Type        : Record
  * @Layer       : Application
@@ -35,4 +35,10 @@ public record SetConfigurationValueCommand(
         Instant effectiveTo,
         String createdByActorId
 ) {
+    public SetConfigurationValueCommand {
+        if (environment == null || environment.isBlank()) {
+            throw new IllegalArgumentException("Configuration value environment must not be blank.");
+        }
+        environment = environment.trim();
+    }
 }

@@ -7,7 +7,7 @@
  *
  * @Name        : ConfigurationValue
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-10-05
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -64,6 +64,10 @@ import java.time.Instant;
         // HRA-051 required: definitionId
         if (definitionId == null || definitionId.isBlank()) {
             throw new InvalidConfigurationValueException("ConfigurationValue definition id must not be blank.");
+        }
+        // HMR-039 required: environment
+        if (environment == null || environment.isBlank()) {
+            throw new InvalidConfigurationValueException("ConfigurationValue environment must not be blank.");
         }
         // HRA-051 required: status
         if (status == null) {

@@ -2207,7 +2207,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-044`
 - Exact commit: `fix(configuration): remediate semantic review ConfigurationValue`
-- Status: **Planned**
+- Status: **Completed** — environment is mandatory/nonblank across request, command and domain boundaries; populated definitionVersionId is protected by an additive same-module FK.
 - SCC: —
 - Recorded upstream HMS dependencies: configuration.ConfigurationDefinition
 - HMSR correction count: 2
@@ -4943,7 +4943,7 @@ The following are execution registrations only; they do not change any HMR's sem
 | HMRB-004 | HMR-024 | Solo | **Completed.** Terminal diagnostics, successful-run source lineage, and immutable projection-definition computation lineage are enforced. |
 | HMRB-005 | HMR-025 | Solo | **Completed.** Required analytical scope and the authoritative bounded readiness-status representation are aligned. |
 | HMRB-006 | HMR-026, HMR-027 | Batch | **Completed.** FeatureFlag ownership requiredness and CustodyDiscrepancy optional quantity-unit integrity are remediated in separate commits. |
-| HMRB-007 | HMR-038, HMR-039 | Batch | **In Progress.** HMR-038 completed; HMR-039 remains in the same registered batch. |
+| HMRB-007 | HMR-038, HMR-039 | Batch | **Completed.** MetricValue scopeType requiredness and ConfigurationValue environment/version integrity completed in separate commits. |
 | HMRB-008 | HMR-040 | Solo | **Planned.** Cross-module Monitoring → Telemetry owner validation; keep solo pending exact owner-contract preflight. |
 | HMRB-009 | HMR-041 | Solo | **Planned.** Concurrency-safe one-ACTIVE PartyRoleAssignment uniqueness. |
 | HMRB-010 | HMR-042 | Solo | **Planned.** High-risk Pipeline fixed-taxonomy → catalog-reference redesign. |
@@ -5011,8 +5011,8 @@ Additional batches may be registered or an existing planned envelope may be spli
 
 ### 12.6 Current next execution
 
-HMRB-007 — HMR-038 + HMR-039
+HMRB-008 — HMR-040
 
-Mode: Batch
+Mode: Solo
 
-HMR-037 is green. Execute HMR-038 and HMR-039 as two independent commits under HMRB-007 after one exact-head preflight; advance the branch to the final HMR-039 head and observe CI once. Stop before HMRB-008.
+HMRB-007 is completed. Execute HMR-040 only after the HMRB-007 final head is green and after exact owner-contract preflight; stop before HMRB-009.

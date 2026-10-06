@@ -151,7 +151,7 @@ No `party.application.contract.planning` package exists in the exact current tre
 
 - HMR-050 — **COMPLETED** at the first HPR-P2-008 execution step.
 - Current next dependency-safe item: **HMR-052 — notification.NotificationMessage**.
-- Remaining after current Batch 1 progress: **54 STILL REQUIRED + 1 BLOCKED (HMR-080)**.
+- Remaining after current Batch 1 progress: **49 STILL REQUIRED + 1 BLOCKED (HMR-080)**.
 
 - HMR-051 — **COMPLETED**: Topology and optional Organization references validated on every case save; snapshot preserved; no migration because primary-candidate FK already exists; owner contract and architecture export added.
 
@@ -185,3 +185,14 @@ HMR-080 remains excluded until its owner-contract prerequisite is resolved.
 ## Legacy Preservation
 
 `docs/roadmap/model-semantic-remediation.md` is intentionally not rewritten by HPR-P2-007. Its historical statuses, batches and execution notes remain provenance. Where it conflicts with this exact-source reconciliation, this canonical document and the Ultimate Roadmap govern P2 execution.
+
+## Batch 1 validation disposition
+
+User-authorized Batch 1 implements HMR-051, HMR-059 and HMR-073..076 in six
+independent semantic commits. Baseline full CI #568 passed at `7068b44`.
+The six focused semantic test classes plus PostgreSQL migration regression tests
+are present. Local Maven execution cannot resolve Spring Boot 4.1.1 from Maven
+Central (DNS failure); local Java is 17, not the required 21, and Docker is absent.
+No local Java/PostgreSQL test success is claimed. The final batch full CI on Java 21
+is the integration and migration gate; if red, repair this batch before proceeding.
+Four new migrations follow V20261005_001 and preserve all pre-existing migrations.

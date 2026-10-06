@@ -2970,7 +2970,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 - SCC: —
 - Recorded upstream HMS dependencies: leakdetection.LeakCandidate, organization.OrganizationUnit
 - HMSR correction count: 2
-- Additive Flyway: `src/main/resources/db/migration/V20261004_051__hmr_051_leakdetection_leak_detection_case.sql`
+- Additive Flyway: not required after exact-current preflight; historical V20261004 registration is not executable.
 - Owner-contract prerequisite: Existing candidate owner contract(s): organization:src/main/java/dz/sh/hidra/modules/organization/application/port/in/OperationalScopeQueryUseCase.java; organization:src/main/java/dz/sh/hidra/modules/organization/application/port/in/OrganizationAdministrationQueryUseCase.java; organization:src/main/java/dz/sh/hidra/modules/organization/application/port/out/OperationalScopeTargetResolverPort.java
 - Exact write allowlist:
   - `docs/data definition/LeakDetection.md`
@@ -3275,7 +3275,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 - SCC: —
 - Recorded upstream HMS dependencies: leakdetection.LeakCandidate, leakdetection.LeakDetectionCase
 - HMSR correction count: 1
-- Additive Flyway: `src/main/resources/db/migration/V20261004_059__hmr_059_leakdetection_leak_escalation_reference.sql`
+- Additive Flyway: `src/main/resources/db/migration/V20261006_001__hmr_059_leak_escalation_candidate_integrity.sql` — forward version replaces the historical V20261004 registration.
 - Owner-contract prerequisite: No cross-module owner-contract prerequisite recorded by this HMSR correction.
 - Exact write allowlist:
   - `docs/data definition/LeakDetection.md`
@@ -3972,7 +3972,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 - SCC: —
 - Recorded upstream HMS dependencies: organization.Employee, organization.OrganizationUnit, organization.Position
 - HMSR correction count: 1
-- Additive Flyway: `src/main/resources/db/migration/V20261004_073__hmr_073_organization_employee_assignment.sql`
+- Additive Flyway: not required after exact-current preflight; historical V20261004 registration is not executable.
 - Owner-contract prerequisite: No cross-module owner-contract prerequisite recorded by this HMSR correction.
 - Exact write allowlist:
   - `docs/data definition/Organization.md`
@@ -4007,7 +4007,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 - SCC: —
 - Recorded upstream HMS dependencies: organization.Employee, organization.ResponsibilityAssignment
 - HMSR correction count: 1
-- Additive Flyway: `src/main/resources/db/migration/V20261004_074__hmr_074_organization_organization_delegation.sql`
+- Additive Flyway: `src/main/resources/db/migration/V20261006_002__hmr_074_responsibility_assignment_id_required.sql` — forward version replaces the historical V20261004 registration.
 - Owner-contract prerequisite: No cross-module owner-contract prerequisite recorded by this HMSR correction.
 - Exact write allowlist:
   - `docs/data definition/Organization.md`
@@ -4041,7 +4041,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 - SCC: —
 - Recorded upstream HMS dependencies: organization.Employee
 - HMSR correction count: 1
-- Additive Flyway: `src/main/resources/db/migration/V20261004_075__hmr_075_organization_organization_hierarchy_snapshot.sql`
+- Additive Flyway: `src/main/resources/db/migration/V20261006_003__hmr_075_captured_by_employee_id_required.sql` — forward version replaces the historical V20261004 registration.
 - Owner-contract prerequisite: No cross-module owner-contract prerequisite recorded by this HMSR correction.
 - Exact write allowlist:
   - `docs/data definition/Organization.md`
@@ -4075,7 +4075,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 - SCC: —
 - Recorded upstream HMS dependencies: organization.Employee, organization.OrganizationUnit, organization.Shift
 - HMSR correction count: 1
-- Additive Flyway: `src/main/resources/db/migration/V20261004_076__hmr_076_organization_shift_assignment.sql`
+- Additive Flyway: `src/main/resources/db/migration/V20261006_004__hmr_076_organization_unit_id_required.sql` — forward version replaces the historical V20261004 registration.
 - Owner-contract prerequisite: No cross-module owner-contract prerequisite recorded by this HMSR correction.
 - Exact write allowlist:
   - `docs/data definition/Organization.md`
@@ -5332,8 +5332,8 @@ Additional batches may be registered or an existing planned envelope may be spli
 
 ### 12.6 Current next execution
 
-HMRB-018 — HMR-051
-
-Mode: Solo
-
-HMR-050 is completed under HPR-P2-008 exact-current revalidation. Execute HMR-051 only after the HMR-050 head is green and exact next-task preflight passes; stop before HMRB-019.
+User-authorized Batch 1 — HMR-051, HMR-059, HMR-073..076 — is implemented.
+Mode: six independent semantic commits, shared final full CI gate.
+Baseline CI #568 passed; final batch CI must be green before further semantic work.
+Current proposed next scope: HMR-052 + HMR-060 (Notification), requiring fresh preflight.
+HMR-080 remains blocked. No next batch is executed as part of Batch 1.

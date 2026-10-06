@@ -7,7 +7,7 @@
  *
  * @Name        : HidraOpenApiSecurityConfiguration
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-05
+ * @UpdatedOn   : 2026-10-06
  *
  * @Type        : Class
  * @Layer       : Platform
@@ -42,6 +42,7 @@ public class HidraOpenApiSecurityConfiguration {
     static final String EXTERNAL_OIDC_BEARER_SCHEME = "externalOidcBearerJwt";
 
     private static final String OIDC_COMPLETION_PATH = "/api/v1/identity/authentication/oidc/complete";
+    private static final String OIDC_EVALUATION_PATH = "/api/v1/identity/authentication/oidc/evaluate";
 
     private static final Set<String> PUBLIC_API_PATHS = Set.of(
             "/api/v1/security/oidc",
@@ -69,7 +70,7 @@ public class HidraOpenApiSecurityConfiguration {
                             .scheme("bearer")
                             .bearerFormat("JWT")
                             .description(
-                                    "Externally issued OIDC bearer JWT accepted only by the OIDC completion bridge."
+                                    "Externally issued OIDC bearer JWT accepted by OIDC completion and self-bound authorization evaluation."
                             )
             );
 
@@ -97,7 +98,7 @@ public class HidraOpenApiSecurityConfiguration {
             if (operation == null) {
                 continue;
             }
-            if (OIDC_COMPLETION_PATH.equals(path)) {
+            if (OIDC_COMPLETION_PATH.equals(path) || OIDC_EVALUATION_PATH.equals(path)) {
                 operation.setSecurity(List.of(new SecurityRequirement().addList(EXTERNAL_OIDC_BEARER_SCHEME)));
                 continue;
             }

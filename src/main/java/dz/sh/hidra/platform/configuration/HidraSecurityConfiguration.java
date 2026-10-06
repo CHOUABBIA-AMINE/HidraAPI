@@ -7,7 +7,7 @@
  *
  * @Name        : HidraSecurityConfiguration
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-15
+ * @UpdatedOn   : 2026-10-06
  *
  * @Type        : Class
  * @Layer       : Platform
@@ -55,10 +55,11 @@ public class HidraSecurityConfiguration {
     private static final String AUTHENTICATION_MODE_DISABLED = "disabled";
     private static final String AUTHENTICATION_MODE_JWT = "jwt";
     private static final String OIDC_COMPLETION_PATH = "/api/v1/identity/authentication/oidc/complete";
+    private static final String OIDC_EVALUATION_PATH = "/api/v1/identity/authentication/oidc/evaluate";
 
     /**
-     * External OIDC bearer tokens are accepted only on the completion bridge that exchanges
-     * an already validated external identity for the standardized Hidra session/token result.
+     * External OIDC tokens serve completion and self-bound authorization evaluation.
+     * The same decoder and Identity converter validate both routes.
      */
     @Bean
     @Order(1)
@@ -74,7 +75,7 @@ public class HidraSecurityConfiguration {
             @Value("${hidra.platform.security.cors.allowed-headers:Authorization,Content-Type,X-Correlation-Id,X-Request-Id}") String allowedHeaders,
             @Value("${hidra.platform.security.cors.exposed-headers:X-Correlation-Id,X-Request-Id,Content-Disposition,Content-Length,Accept-Ranges}") String exposedHeaders
     ) throws Exception {
-        http.securityMatcher(OIDC_COMPLETION_PATH);
+        http.securityMatcher(OIDC_COMPLETION_PATH, OIDC_EVALUATION_PATH);
         configureStatelessHttp(http, csrfEnabled, allowedOrigins, allowedMethods, allowedHeaders, exposedHeaders);
         http.authorizeHttpRequests(authorize -> authorize.anyRequest().authenticated());
         http.httpBasic(AbstractHttpConfigurer::disable);

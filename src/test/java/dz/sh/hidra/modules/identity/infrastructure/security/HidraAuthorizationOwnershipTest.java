@@ -7,7 +7,7 @@
  *
  * @Name        : HidraAuthorizationOwnershipTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-15
+ * @UpdatedOn   : 2026-10-06
  *
  * @Type        : Class
  * @Layer       : Test
@@ -79,7 +79,8 @@ class HidraAuthorizationOwnershipTest {
                 providerRepository,
                 externalIdentityRepository,
                 userRepository,
-                queryUseCase
+                queryUseCase,
+                mock(SpringAuthorizationContextAdapter.class)
         );
         Authentication authentication = converter.convert(externalJwtWithPrivilegedClaims());
         HidraPrincipal principal = (HidraPrincipal) authentication.getPrincipal();
@@ -125,7 +126,8 @@ class HidraAuthorizationOwnershipTest {
                 providerRepository,
                 externalIdentityRepository,
                 userRepository,
-                queryUseCase
+                queryUseCase,
+                mock(SpringAuthorizationContextAdapter.class)
         );
         Authentication authentication = provider.authenticate(
                 LdapAuthenticationToken.unauthenticated(USERNAME, "directory-secret")

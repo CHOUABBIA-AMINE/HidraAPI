@@ -7,7 +7,7 @@
  *
  * @Name        : HidraOidcAuthenticationToken
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-15
+ * @UpdatedOn   : 2026-10-06
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -21,6 +21,7 @@ package dz.sh.hidra.modules.identity.infrastructure.security;
 
 import dz.sh.hidra.modules.identity.domain.model.HidraPrincipal;
 import java.util.Objects;
+import dz.sh.hidra.modules.identity.application.model.VerifiedAuthorizationAssertion;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.authority.AuthorityUtils;
 
@@ -31,11 +32,20 @@ public final class HidraOidcAuthenticationToken extends AbstractAuthenticationTo
 
     private final HidraPrincipal principal;
 
-    public HidraOidcAuthenticationToken(HidraPrincipal principal) {
+    private final VerifiedAuthorizationAssertion authorizationAssertion;
+    public HidraOidcAuthenticationToken(HidraPrincipal principal) { this(principal,null); }
+    public HidraOidcAuthenticationToken(HidraPrincipal principal,VerifiedAuthorizationAssertion assertion) {
         super(AuthorityUtils.NO_AUTHORITIES);
         this.principal = Objects.requireNonNull(principal, "Hidra principal must not be null.");
+        if(assertion!=null && (!principal.userId().equals(assertion.userId())
+                || !Objects.equals(principal.identityProviderId(),assertion.providerId())
+                || !Objects.equals(principal.externalIdentityId(),assertion.externalIdentityId())))
+            throw new IllegalArgumentException("Authorization assertion must belong to the authenticated principal.");
+        this.authorizationAssertion=assertion;
         super.setAuthenticated(true);
     }
+
+    public VerifiedAuthorizationAssertion authorizationAssertion() { return authorizationAssertion; }
 
     @Override
     public Object getCredentials() {

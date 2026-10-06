@@ -7,7 +7,7 @@
  *
  * @Name        : HidraOpenApiSecurityConfigurationTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-05
+ * @UpdatedOn   : 2026-10-06
  *
  * @Type        : Class
  * @Layer       : Platform Test
@@ -78,6 +78,8 @@ class HidraOpenApiSecurityConfigurationTest {
 
         customizer().customise(openApi);
 
+        assertThat(openApi.getPaths().get("/api/v1/identity/authentication/oidc/evaluate").getPost().getSecurity())
+                .containsExactly(new SecurityRequirement().addList(HidraOpenApiSecurityConfiguration.EXTERNAL_OIDC_BEARER_SCHEME));
         Operation operation = openApi.getPaths()
                 .get("/api/v1/identity/authentication/oidc/complete")
                 .getPost();
@@ -121,6 +123,10 @@ class HidraOpenApiSecurityConfigurationTest {
                 .addPathItem(
                         "/api/v1/identity/authentication/login",
                         new PathItem().post(new Operation().operationId("login"))
+                )
+                .addPathItem(
+                        "/api/v1/identity/authentication/oidc/evaluate",
+                        new PathItem().post(new Operation())
                 )
                 .addPathItem(
                         "/api/v1/identity/authentication/oidc/complete",

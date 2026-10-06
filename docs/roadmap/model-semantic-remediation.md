@@ -253,7 +253,7 @@ Each model task implements only the obligations recorded in its source HMSR sect
 | HMR-082 | HMSR-096 | hse | HseCase | — | incident.Incident, organization.OrganizationUnit, workflow.WorkflowInstance | `fix(hse): remediate semantic review HseCase` | Planned |
 | HMR-083 | HMSR-097 | audit | AuditExportRequest | — | documents.Document, workflow.WorkflowInstance | `fix(audit): remediate semantic review AuditExportRequest` | Planned |
 | HMR-084 | HMSR-098 | documents | DocumentTargetLink | — | documents.Document, documents.DocumentVersion | `fix(documents): remediate semantic review DocumentTargetLink` | Planned |
-| HMR-085 | HMSR-100 | identity | AuthorizationDecision | — | identity.User | `fix(identity): remediate semantic review AuthorizationDecision` | Planned |
+| HMR-085 | HMSR-100 | identity | AuthorizationDecision | — | identity.User | `fix(identity): remediate semantic review AuthorizationDecision` | Completed |
 | HMR-086 | HMSR-101 | identity | AuthorizationDelegationGrant | — | identity.Permission, identity.Role, identity.User | `fix(identity): remediate semantic review AuthorizationDelegationGrant` | Completed — Batch 5; final CI pending |
 | HMR-087 | HMSR-104 | identity | LoginSession | — | identity.IdentityProvider, identity.User | `fix(identity): remediate semantic review LoginSession` | Completed — Batch 5; final CI pending |
 | HMR-088 | HMSR-105 | identity | UserPermissionGrant | — | identity.Permission, identity.User | `fix(identity): remediate semantic review UserPermissionGrant` | Completed — Batch 5; final CI pending |
@@ -4414,7 +4414,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-100`
 - Exact commit: `fix(identity): remediate semantic review AuthorizationDecision`
-- Status: **Planned**
+- Status: **Completed** — graph/policy evaluation, verified external evidence and optional persistence implemented; exact-head CI pending.
 - SCC: —
 - Recorded upstream HMS dependencies: identity.User
 - HMSR correction count: 3
@@ -5314,7 +5314,7 @@ The following are execution registrations only; they do not change any HMR's sem
 | HMRB-043 | HMR-082 | Solo | **Planned.** HSE case closure lifecycle and multi-owner references. |
 | HMRB-044 | HMR-083 | Solo | **Planned.** Audit export sanitization, purpose family, Workflow/Documents ownership and self-auditing behavior. |
 | HMRB-045 | HMR-084 | Solo | **Planned.** Documents polymorphic target validation with no concrete upstream owner registered. |
-| HMRB-046 | HMR-085 | Solo | **Planned.** High-risk authorization evaluation order, explainability and conditional decision persistence. |
+| HMRB-046 | HMR-085 | Solo | **Completed; CI pending.** High-risk authorization evaluation order, explainability and conditional decision persistence. |
 | HMRB-047 | HMR-086, HMR-087, HMR-088, HMR-089 | Batch | **Completed in owner Batch 5.** Four consecutive same-module Identity corrections with no cross-module owner prerequisite; preserve one commit/test contract per HMR. |
 | HMRB-048 | HMR-090 | Solo | **Planned.** Incident closure transaction and evidence/verification preconditions. |
 | HMRB-049 | HMR-091 | Solo | **Planned.** Incident relationship FK correction, family semantics and duplicate/inverse policy. |

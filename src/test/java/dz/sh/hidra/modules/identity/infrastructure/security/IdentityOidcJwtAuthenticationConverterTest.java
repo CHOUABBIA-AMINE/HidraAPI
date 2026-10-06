@@ -7,7 +7,7 @@
  *
  * @Name        : IdentityOidcJwtAuthenticationConverterTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-15
+ * @UpdatedOn   : 2026-10-06
  *
  * @Type        : Class
  * @Layer       : Test
@@ -73,7 +73,8 @@ class IdentityOidcJwtAuthenticationConverterTest {
                 identityProviderRepository,
                 externalIdentityRepository,
                 userRepository,
-                queryUseCase
+                queryUseCase,
+                mock(SpringAuthorizationContextAdapter.class)
         );
     }
 

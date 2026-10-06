@@ -7,7 +7,7 @@
  *
  * @Name        : IdentityOidcJwtAuthenticationConverter
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-15
+ * @UpdatedOn   : 2026-10-06
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -53,17 +53,20 @@ public final class IdentityOidcJwtAuthenticationConverter implements Converter<J
     private final ExternalIdentityJpaRepository externalIdentityRepository;
     private final UserJpaRepository userRepository;
     private final IdentityAdministrationQueryUseCase queryUseCase;
+    private final SpringAuthorizationContextAdapter authorizationContext;
 
     public IdentityOidcJwtAuthenticationConverter(
             IdentityProviderJpaRepository identityProviderRepository,
             ExternalIdentityJpaRepository externalIdentityRepository,
             UserJpaRepository userRepository,
-            IdentityAdministrationQueryUseCase queryUseCase
+            IdentityAdministrationQueryUseCase queryUseCase,
+            SpringAuthorizationContextAdapter authorizationContext
     ) {
         this.identityProviderRepository = Objects.requireNonNull(identityProviderRepository);
         this.externalIdentityRepository = Objects.requireNonNull(externalIdentityRepository);
         this.userRepository = Objects.requireNonNull(userRepository);
         this.queryUseCase = Objects.requireNonNull(queryUseCase);
+        this.authorizationContext=Objects.requireNonNull(authorizationContext);
     }
 
     @Override
@@ -109,7 +112,7 @@ public final class IdentityOidcJwtAuthenticationConverter implements Converter<J
                 Set.copyOf(authorization.effectivePermissions()),
                 externalIdentity.id()
         );
-        return new HidraOidcAuthenticationToken(principal);
+        return new HidraOidcAuthenticationToken(principal,authorizationContext.capture(principal,jwt));
     }
 
     private static String normalize(String value) {

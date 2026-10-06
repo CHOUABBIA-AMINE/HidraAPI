@@ -7,7 +7,7 @@
  *
  * @Name        : AuthorizationDecisionJpaEntity
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-06
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -20,6 +20,8 @@
 package dz.sh.hidra.modules.identity.infrastructure.persistence.entity;
 
 import dz.sh.hidra.modules.identity.domain.value.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -71,12 +73,15 @@ import java.time.Instant;
     @Column(name = "reason_message", nullable = true, columnDefinition = "text")
     private String reasonMessage;
 
+    @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "matched_grant_ids", nullable = true, columnDefinition = "jsonb")
     private String matchedGrantIds;
 
+    @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "matched_policy_rule_ids", nullable = true, columnDefinition = "jsonb")
     private String matchedPolicyRuleIds;
 
+    @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "external_claims_used", nullable = true, columnDefinition = "jsonb")
     private String externalClaimsUsed;
 

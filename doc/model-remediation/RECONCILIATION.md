@@ -111,7 +111,7 @@ No `party.application.contract.planning` package exists in the exact current tre
 | HMR-082 | HMSR-096 | hse.HseCase | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-083 | HMSR-097 | audit.AuditExportRequest | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-084 | HMSR-098 | documents.DocumentTargetLink | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
-| HMR-085 | HMSR-100 | identity.AuthorizationDecision | BLOCKED — EVALUATION CONTRACT PREREQUISITE | JSON grammar/obligation execution and trusted assertion context absent; registered allowlist omits actual evaluation flow; concrete prerequisite proposal below. |
+| HMR-085 | HMSR-100 | identity.AuthorizationDecision | IMPLEMENTED — CI PENDING | Transactional graph, bounded ABAC, verified mappings, deterministic evidence and configurable persistence; Batch 6 implementation below. |
 | HMR-086 | HMSR-101 | identity.AuthorizationDelegationGrant | COMPLETED — HPR-P2-008 | Required nonblank delegation reason and validTo carried through domain/JPA/mapper; DelegationStatus narrowed to ACTIVE/REVOKED/EXPIRED; optional Role and Permission validated with nullable same-module FKs; no XOR rule; V20261006_011 fails closed on legacy evidence; focused tests added; final CI pending. |
 | HMR-087 | HMSR-104 | identity.LoginSession | COMPLETED — HPR-P2-008 | AuthenticationProtocol sessionType and independent endedAt carried through domain/JPA/mapper; exact ExternalIdentity propagated from LDAP/OIDC through principal/input/completion; terminal lifecycle preserves lastSeenAt and prior termination; V20261006_012 requires explicit legacy protocol evidence; no inferred historical termination; focused tests added; final CI pending. |
 | HMR-088 | HMSR-105 | identity.UserPermissionGrant | COMPLETED — HPR-P2-008 | Domain and PostgreSQL enforce nonblank grantReason, bounded validTo and ACTIVE/REVOKED/EXPIRED for direct permission grants including emergency records; shared GrantStatus and optional role-grant reason/end remain unchanged; V20261006_013 and focused tests added; final CI pending. |
@@ -150,8 +150,8 @@ No `party.application.contract.planning` package exists in the exact current tre
 ## HPR-P2-008 Progress
 
 - HMR-050 — **COMPLETED** at the first HPR-P2-008 execution step.
-- Next proposed scope: **HMR-085 — AuthorizationDecision (Batch 6)**, subject to green Batch 5 CI and fresh authorization-evaluation preflight.
-- Current remaining: **39 STILL REQUIRED + 2 BLOCKED (HMR-080, HMR-085)**; 16 implementations completed.
+- Next proposed scope: **Batch 7 — Workflow execution (055, 061, 066, 081, 099)**, subject to green Batch 6 CI and fresh dependency/scope admission.
+- Current remaining: **39 STILL REQUIRED + 1 BLOCKED (HMR-080)**; 17 implementations completed.
 
 - HMR-051 — **COMPLETED**: Topology and optional Organization references validated on every case save; snapshot preserved; no migration because primary-candidate FK already exists; owner contract and architecture export added.
 
@@ -461,3 +461,53 @@ Validation of this preflight: source/DDD/allowlist inspection and `git diff --ch
 No application tests or production-implementation success claimed. HMR-085 remains
 blocked and selected; do not automatically advance to Batch 7. The prerequisite
 contract must be settled before implementing the complete HMR-085 scope.
+
+## Batch 6 / HMR-085 implementation — 2026-10-06
+
+Owner `Next` accepted the concrete prerequisite contract. Baseline docs-only main
+341a79a passed docs CI #68; unchanged production source passed full CI #576
+at 925feec7. Previous preflight block is resolved, with scope admitted before mutation.
+
+HMSR-100 closure:
+- Replaced unconditional denial with ACTIVE/unlocked user and permission eligibility,
+  direct permissions/roles, group-role inheritance, verified external group/role/permission
+  mapping paths, exact scope identity, half-open validity windows and ABAC rules.
+- Explicit DENY dominates grants and policies. Ineligible approval-dependent mappings
+  do not grant authority. SYNC_MEMBERSHIP requires an actual eligible local membership
+  and active provider/mapping; stored EXTERNAL_ASSERTION memberships never stand in
+  for current claims. LDAP supports synchronized local evidence; its existing verifier
+  supplies no live group claims, so assertion-only LDAP authority is not manufactured.
+- Added a self-bound OIDC evaluation endpoint on the existing decoder/converter chain.
+  Only configured claim paths are captured; the user/provider/external identity/subject
+  and assertion expiry are rechecked against current Identity state. Claims in request
+  details, ordinary tokens or stored snapshots never confer mapped authority.
+- Recorded sorted JSON grant-chain and policy-rule IDs, external mapping provenance
+  and value hashes. No bearer credentials or raw sensitive claim values are persisted.
+  JPA evidence columns use Hibernate JSON binding; no schema change required.
+- Bound `hidra.identity.authorization-decision-persistence-enabled` (default true).
+  Disabling it skips saving while retaining identical evaluation semantics.
+
+JSON grammar and policy behavior are specified in Identity DDD below. Rule priority
+then ID determines evaluation order; deny precedence is independent of that order.
+CONSTRAIN uses subject/resource/action selectors and a required matching context
+condition to restrict existing authority. Unsupported obligations remain INDETERMINATE;
+no obligation executor or high-risk-operation taxonomy is invented. Repository-owned
+subject attributes and neutral requested identifiers are available; absent live resource
+state/context evidence cannot be supplied by callers and remains INDETERMINATE.
+
+Validation:
+- `bash ./mvnw -q -DskipTests compile`: blocked before source compilation, Maven Central
+  DNS failure resolving Spring Boot parent 4.1.1.
+- Focused semantic/PostgreSQL/trust commands, complete `test`, and `clean verify`
+  attempted with `-o`: blocked by the same uncached parent. JDK is 17, Docker absent.
+- All changed Java files parsed with the JDK compiler. Selected actual production
+  classes compiled with temporary framework API stubs; 10 semantic behavior checks
+  executed successfully using temporary annotation/assertion stubs. These are not
+  Maven/JUnit, framework integration or PostgreSQL success claims.
+- Added 10 semantic cases, 9 PostgreSQL graph/JSON cases, 3 assertion-trust cases,
+  2 OIDC API cases and existing constructor/OpenAPI regression updates for CI.
+- `git diff --check`: passed. Final-head GitHub CI pending at commit preparation.
+
+Current totals: **17 implemented, 39 still required, one blocked (HMR-080)**.
+Next owner-selected scope is attached Batch 7 workflow execution; it requires green
+Batch 6 CI and a fresh scope/dependency admission. Do not execute automatically.

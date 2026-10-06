@@ -1435,3 +1435,62 @@ Domain and PostgreSQL enforce nonblank grantReason, bounded validTo and ACTIVE/R
 ## HMR-089 implemented contract — 2026-10-06
 
 Authoritative ordinary role-grant application flow requires ACTIVE User before Role lookup/save; inactive states reject without implicit emergency bypass; optional reason/end and shared SUSPENDED role status preserved; focused tests added; no migration required; final CI pending.
+
+## Authorization evaluation JSON contract v1 — HMR-085
+
+Identity evaluates one repository-backed graph at a single evaluation instant,
+with `[validFrom, validTo)` windows and exact neutral scope type/reference identity.
+Null/GLOBAL grant scope applies broadly; scoped grants never match by code snapshot.
+Requested resource identifiers describe the operation; they are not assertions of
+resource ownership, workflow state or other module-owned facts.
+
+Policy documents accept only these exact object shapes:
+
+```json
+{"op":"eq","attribute":"subject.attributes.clearance","type":"NUMBER","value":2}
+{"op":"in","attribute":"subject.groupIds","type":"STRING","value":["operators-id"]}
+{"op":"exists","attribute":"resource.referenceId"}
+{"op":"all","args":[{"op":"exists","attribute":"subject.id"}]}
+{"op":"any","args":[{"op":"exists","attribute":"subject.id"}]}
+{"op":"not","arg":{"op":"exists","attribute":"resource.owner"}}
+```
+
+`eq` requires typed scalar equality; `in` tests scalar or collection membership in
+a typed literal array. Types are STRING, NUMBER, BOOLEAN, DATE, DATETIME. Subject
+LIST/multi-value attributes resolve to scalar collections; JSON values are usable
+for existence only unless a supported scalar attribute is separately defined.
+Operators and fields are exact; duplicate/unknown fields, scripts, malformed JSON,
+type mismatch, missing required attributes, more than 8192 characters, nesting over
+16 or more than 256 JSON nodes produce INDETERMINATE. Null expressions are absent
+conditions; blank strings are malformed. Compound branches all undergo validation.
+
+Namespaces: `subject.id/type/status/groupIds`, `subject.attributes.<definition-code>`,
+`action.permissionCode/name`, `resource.type/referenceId`, and server-resolved
+`context.evaluatedAt/scopeType/scopeReferenceId`. Active Identity definitions and
+subject attributes supply typed values; conflicting definitions/values or malformed
+values are unresolved evidence. No request-supplied arbitrary attribute map exists.
+Other live resource/context attributes have no trusted resolver and fail closed.
+
+Active policies apply to the permission's exact domain. Each active policy must
+have exactly one eligible active version. Rules run by ascending priority then ID.
+Subject/resource/action expressions select a CONSTRAIN rule; its context expression
+restricts the operation, with NO_MATCH denying existing authority. Other rule effects
+match all four expressions. Explicit grant/policy DENY overrides permits. Applicable
+CONSTRAIN does not create authority. Unsupported obligations on applicable permit or
+constraint rules produce INDETERMINATE. Unresolved relevant evidence never permits.
+
+Live OIDC evaluation is available through self-bound POST
+`/api/v1/identity/authentication/oidc/evaluate`, using the same validated external
+bearer decoder and Identity converter as completion. Configured mapping claim paths
+(including dotted nested paths) are captured immutably and bound to the exact linked
+user/provider/external subject. Mapping status/mode, provider/identity eligibility and
+expiry are rechecked. LDAP has synchronized local evidence only; its verifier does
+not supply assertion claims. Ordinary evaluation never trusts principal permissions
+or stored snapshots as live external mapping claims. Approval-dependent mappings
+require actual approved local grants; they cannot grant directly from an assertion.
+
+Evidence uses deterministic JSON arrays for participated grant/link IDs, policy-rule
+IDs and sanitized external provenance (mapping/provider/identity/claim name and value
+hash, or synchronized-membership provenance). No token/raw claim value is persisted.
+`hidra.identity.authorization-decision-persistence-enabled` defaults to true; false
+changes only persistence. No additional high-risk classification is introduced.

@@ -7,7 +7,7 @@
  *
  * @Name        : IdentityAuthorizationApplicationService
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-06
  *
  * @Type        : Class
  * @Layer       : Application
@@ -31,20 +31,35 @@ import dz.sh.hidra.modules.identity.domain.service.AuthorizationPolicyEvaluator;
 import dz.sh.hidra.modules.identity.domain.value.AuthorizationDecisionValue;
 
 import java.util.Objects;
+import java.time.Instant;
+import org.springframework.transaction.annotation.Transactional;
+import dz.sh.hidra.modules.identity.application.port.out.AuthorizationEvidencePort;
+import dz.sh.hidra.modules.identity.application.port.out.AuthorizationAssertionPort;
+import dz.sh.hidra.modules.identity.application.port.out.AuthorizationDecisionSettingsPort;
 
 /**
  * Application service for identity authorization evaluation.
  */
 @Service
-public final class IdentityAuthorizationApplicationService implements EvaluatePermissionUseCase {
+public class IdentityAuthorizationApplicationService implements EvaluatePermissionUseCase {
 
     private final AuthorizationDecisionRepositoryPort authorizationDecisionRepositoryPort;
     private final AuthorizationPolicyEvaluator authorizationPolicyEvaluator;
 
+    private final AuthorizationEvidencePort evidencePort;
+    private final AuthorizationAssertionPort assertionPort;
+    private final AuthorizationDecisionSettingsPort settingsPort;
+
     public IdentityAuthorizationApplicationService(
             AuthorizationDecisionRepositoryPort authorizationDecisionRepositoryPort,
-            AuthorizationPolicyEvaluator authorizationPolicyEvaluator
+            AuthorizationPolicyEvaluator authorizationPolicyEvaluator,
+            AuthorizationEvidencePort evidencePort,
+            AuthorizationAssertionPort assertionPort,
+            AuthorizationDecisionSettingsPort settingsPort
     ) {
+        this.evidencePort=Objects.requireNonNull(evidencePort);
+        this.assertionPort=Objects.requireNonNull(assertionPort);
+        this.settingsPort=Objects.requireNonNull(settingsPort);
         this.authorizationDecisionRepositoryPort = Objects.requireNonNull(
                 authorizationDecisionRepositoryPort,
                 "Authorization decision repository port must not be null."
@@ -56,6 +71,7 @@ public final class IdentityAuthorizationApplicationService implements EvaluatePe
     }
 
     @Override
+    @Transactional
     public PermissionDecisionDto evaluate(EvaluatePermissionQuery query) {
         Objects.requireNonNull(query, "Evaluate permission query must not be null.");
 
@@ -67,13 +83,11 @@ public final class IdentityAuthorizationApplicationService implements EvaluatePe
                 query.scope()
         );
 
-        AuthorizationDecision decision = authorizationPolicyEvaluator.deny(
-                request,
-                "NO_GRANT_MATCHED",
-                "No active grant matched the requested permission."
-        );
-
-        AuthorizationDecision savedDecision = authorizationDecisionRepositoryPort.save(decision);
+        Instant at=Instant.now();
+        AuthorizationDecision decision = authorizationPolicyEvaluator.evaluate(request,
+                evidencePort.load(request,at,assertionPort.currentFor(query.userId())),at);
+        AuthorizationDecision savedDecision = settingsPort.persistenceEnabled()
+                ? authorizationDecisionRepositoryPort.save(decision) : decision;
 
         return new PermissionDecisionDto(
                 savedDecision.decision() == AuthorizationDecisionValue.PERMIT,

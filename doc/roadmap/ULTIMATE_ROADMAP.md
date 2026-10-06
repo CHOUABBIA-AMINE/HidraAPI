@@ -1138,3 +1138,113 @@ Resolve the prerequisite before admitting HMR-055; do not advance to HMR-061 or
 Batch 8. Totals: 17 implementations, 38 still required, two blocked (080 and 055).
 Documentation validation and diff whitespace checks passed; documentation CI trigger
 pending at commit preparation. Stop after observing the documentation CI trigger.
+
+
+## HPR-P2-008 Batch 7 contract and scope admission — 2026-10-06
+
+Owner `Go ahead` accepts WF-PREREQ-01 from cdd0fb6. Documentation CI #72
+passed on that exact head; unchanged production code has full successful CI #579
+at b6cdb1e. The prerequisite is resolved by the following bounded contract and
+admitted execution envelope, before any HMR production mutation.
+
+Execute HMR-055, 061, 066, 081, 099 in the attached owner-selected order. The owner
+selected this five-task batch, an explicit exception to the normal 2..4 envelope.
+Each retains its exact legacy message, own HMSR obligations, scope, migration,
+focused test and individual semantic commit. Append supporting admission/history
+commits independently. Publish the chained commits once and stop after CI trigger.
+
+WORKFLOW_PURPOSE is now the explicit purpose family; new starts and bindings require
+active purpose/target-type entries. Legacy incompatible/null purposes must be
+corrected by owners before migrations can pass; no automatic retagging or seeded
+business values. Definitions are ACTIVE/version-matched, exact active bindings
+mandatory, and any supplied current step must belong to the definition. No invented
+initial-step algorithm: an omitted step remains omitted until explicitly selected.
+
+Public WorkflowOwnedTargetLookup exports only module, supported catalog codes and
+neutral target snapshots. Planning owns the first implementation: PLAN_REVISION and
+PLANNING_PLAN (both described by Workflow DDD). Revision targets must be DRAFT or
+SUBMITTED; plan targets DRAFT or SUBMITTED. Missing/duplicate resolvers deny starts.
+Alarm suppression and responsibility-change operation references have no persisted
+request object and remain unsupported for new starts; do not manufacture targets.
+Other target owners/types remain denied until exact owner implementations are admitted.
+
+Identity exports active/unlocked actor snapshots and permission evaluation through
+its existing evaluator, including effective employee reference for Organization.
+Writes bind actor IDs to CurrentSecurityContext. Callers cannot grant permissions
+or supply authoritative username/display snapshots. Organization exports live ACTIVE
+units in their half-open effective interval and ACTIVE employee assignment membership;
+only ACTIVE employees qualify. Explicit actor assignment is authoritative; a unit pool
+uses live employee membership, with no authority derived from role labels. A claimed
+pool task requires the same current eligible claimant. No new role/delegation policy
+or permission names. Pooled execution additionally requires step.allowClaim; unsupported
+role-only and target-owner assignment strategies fail closed. Missing/inactive next-step
+rules deny transitions atomically instead of generating unassigned tasks.
+
+Transition conditions/callbacks remain unavailable. Such configuration is denied for
+ACTIVE definitions, including activation checks; draft evidence may remain but cannot
+execute. Steps must be distinct and in the same definition, decisions unique per source.
+Generic actions are restricted to COMMENT, with task ownership required when supplied;
+START/ASSIGN/CLAIM/COMPLETE and all decisions stay with authoritative producers.
+Sequences are allocated under the instance lock and unique. Actions and history are
+insert-only; database updates/deletes/truncation denied. Terminal task evidence is immutable.
+History optional links are checked for coherent Workflow ownership and stay optional.
+
+Legacy HMR allowlists remain valid except superseded migration filenames below.
+Additional exact write scope (repository relative) per HMR:
+
+### HMR-055 additional exact allowlist
+- `src/main/java/dz/sh/hidra/modules/workflow/application/service/WorkflowApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/workflow/application/service/WorkflowExecutionOwnership.java`
+- `src/main/java/dz/sh/hidra/modules/workflow/application/port/out/WorkflowConfigurationPort.java`
+- `src/main/java/dz/sh/hidra/modules/workflow/application/contract/target/WorkflowOwnedTargetLookup.java`
+- `src/main/java/dz/sh/hidra/modules/workflow/infrastructure/persistence/adapter/JpaWorkflowConfigurationAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/workflow/domain/model/WorkflowInstance.java`
+- `src/main/java/dz/sh/hidra/modules/workflow/infrastructure/persistence/adapter/JpaWorkflowInstanceRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/contract/workflow/WorkflowActorContract.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/WorkflowActorQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/organization/application/contract/workflow/WorkflowOrganizationContract.java`
+- `src/main/java/dz/sh/hidra/modules/organization/infrastructure/query/WorkflowOrganizationQueryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/planning/application/service/PlanningWorkflowTargetLookup.java`
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java`
+- `src/main/resources/db/migration/V20261006_014__hmr_055_workflow_instance.sql`
+
+### HMR-061 additional exact allowlist
+- `src/main/java/dz/sh/hidra/modules/workflow/domain/model/WorkflowTransition.java`
+- `src/main/java/dz/sh/hidra/modules/workflow/infrastructure/persistence/adapter/JpaWorkflowTransitionRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/workflow/infrastructure/persistence/adapter/JpaWorkflowDefinitionRepositoryAdapter.java`
+- `src/main/resources/db/migration/V20261006_015__hmr_061_workflow_transition.sql`
+
+### HMR-066 additional exact allowlist
+- `src/main/java/dz/sh/hidra/modules/workflow/domain/model/WorkflowTask.java`
+- `src/main/java/dz/sh/hidra/modules/workflow/application/service/WorkflowApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/workflow/application/service/WorkflowExecutionOwnership.java`
+- `src/main/java/dz/sh/hidra/modules/workflow/application/service/WorkflowTransitionApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/workflow/infrastructure/persistence/adapter/JpaWorkflowTaskRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/workflow/infrastructure/query/JpaWorkflowQueryAdapter.java`
+- `src/main/resources/db/migration/V20261006_016__hmr_066_workflow_task.sql`
+- `src/test/java/dz/sh/hidra/modules/workflow/application/service/WorkflowTransitionApplicationServiceTest.java`
+
+### HMR-081 additional exact allowlist
+- `src/main/java/dz/sh/hidra/modules/workflow/domain/model/WorkflowAction.java`
+- `src/main/java/dz/sh/hidra/modules/workflow/application/service/WorkflowApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/workflow/application/service/WorkflowTransitionApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/workflow/infrastructure/persistence/adapter/JpaWorkflowActionRepositoryAdapter.java`
+- `src/main/resources/db/migration/V20261006_017__hmr_081_workflow_action.sql`
+
+### HMR-099 additional exact allowlist
+- `src/main/java/dz/sh/hidra/modules/workflow/domain/model/WorkflowStateHistory.java`
+- `src/main/java/dz/sh/hidra/modules/workflow/infrastructure/persistence/adapter/JpaWorkflowStateHistoryRepositoryAdapter.java`
+- `src/main/resources/db/migration/V20261006_018__hmr_099_workflow_state_history.sql`
+- `src/test/java/dz/sh/hidra/modules/workflow/semantic/WorkflowExecutionPostgresTest.java`
+
+All five HMRs additionally admit this roadmap, RECONCILIATION.md, legacy remediation
+roadmap and Workflow DDD. Existing registered dedicated semantic tests remain allowed.
+No published migration may change. Forward migrations 014..018 replace the unused
+backdated 055/061/066/081 registrations; 018 explicitly authorizes HMR-099's new
+append-only/coherence database guards. Existing invalid rows cause migration failure
+with constraint/guard identity, requiring owner reconciliation; do not fabricate history.
+
+Validation: compile, each dedicated semantic test, WorkflowTransitionApplicationServiceTest,
+WorkflowExecutionPostgresTest, ArchitectureGuardrailTest, complete test and clean verify.
+Local Maven Central parent availability/JDK/Docker limits must be reported accurately.
+Do not proceed to attached Batch 8. No implementation is claimed by this admission.

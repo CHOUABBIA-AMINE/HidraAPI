@@ -1606,3 +1606,15 @@ without an owner request object are not manufactured. Target and actor snapshots
 resolved from their owners; request snapshots are compatibility inputs and grant no
 authority. Every write binds the supplied actor ID to the authenticated principal and
 requires a current active, unlocked Identity actor with display evidence.
+
+
+Task writes require explicit actor or unit-pool assignment, live actor/unit eligibility,
+active priority/mode catalogs when supplied, paired claim/completion actors and times,
+and chronology from creation. Terminal task evidence cannot be updated, deleted or
+truncated. Generic task creation is restricted to the authenticated instance starter
+and current same-definition step. Organization pools require step.allowClaim and current
+ACTIVE employee membership; role labels alone never authorize a pool. A claimed task
+must be executed by its current eligible claimant. Explicit actor assignments cannot
+be overridden by a different claimant. Missing or unsupported next-step assignment
+rules deny the entire transition atomically. Inbox/action queries resolve usernames
+through Identity rather than matching stored username snapshots.

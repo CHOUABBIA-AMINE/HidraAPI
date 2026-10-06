@@ -7,7 +7,7 @@
  *
  * @Name        : WorkflowTransitionApplicationService
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-11
+ * @UpdatedOn   : 2026-10-06
  *
  * @Type        : Class
  * @Layer       : Application
@@ -60,6 +60,8 @@ public class WorkflowTransitionApplicationService implements ExecuteWorkflowTran
     private static final String SOURCE_SYSTEM = "HIDRA_API";
 
     private final WorkflowTaskRepositoryPort taskRepository;
+    private final WorkflowExecutionOwnership ownership;
+    private final dz.sh.hidra.modules.workflow.application.port.out.WorkflowConfigurationPort configuration;
     private final WorkflowInstanceRepositoryPort instanceRepository;
     private final WorkflowTransitionRepositoryPort transitionRepository;
     private final WorkflowActionRepositoryPort actionRepository;
@@ -75,8 +77,11 @@ public class WorkflowTransitionApplicationService implements ExecuteWorkflowTran
             WorkflowActionRepositoryPort actionRepository,
             WorkflowStateHistoryRepositoryPort stateHistoryRepository,
             WorkflowStepRepositoryPort stepRepository,
-            WorkflowStepAssignmentRuleRepositoryPort assignmentRuleRepository
+            WorkflowStepAssignmentRuleRepositoryPort assignmentRuleRepository,
+            WorkflowExecutionOwnership ownership,
+            dz.sh.hidra.modules.workflow.application.port.out.WorkflowConfigurationPort configuration
     ) {
+        this.ownership=Objects.requireNonNull(ownership);this.configuration=Objects.requireNonNull(configuration);
         this.taskRepository = Objects.requireNonNull(taskRepository, "WorkflowTaskRepositoryPort must not be null.");
         this.instanceRepository = Objects.requireNonNull(instanceRepository, "WorkflowInstanceRepositoryPort must not be null.");
         this.transitionRepository = Objects.requireNonNull(transitionRepository, "WorkflowTransitionRepositoryPort must not be null.");
@@ -99,7 +104,10 @@ public class WorkflowTransitionApplicationService implements ExecuteWorkflowTran
         if (!task.openTask()) {
             throw new WorkflowTransitionConflictException("Workflow task is already completed or is not actionable: " + task.id());
         }
-        if (!belongsToActor(task, command.actorId(), command.actorUsername())) {
+        var actor=ownership.requireCurrentActor(command.actorId());
+        var sourceStep=stepRepository.findById(task.stepId()).orElseThrow(()->new WorkflowBoundaryViolationException("Unknown current Workflow step."));
+        ownership.validateAssignment(task,configuration);
+        if (!ownership.canExecute(task, actor.id(), sourceStep.allowClaim())) {
             throw new WorkflowTransitionDeniedException("Authenticated actor is not assigned or entitled to execute this workflow task.");
         }
 
@@ -108,7 +116,7 @@ public class WorkflowTransitionApplicationService implements ExecuteWorkflowTran
         if (!instance.nonTerminal()) {
             throw new WorkflowTransitionConflictException("Workflow instance is already terminal: " + instance.id());
         }
-        if (!Objects.equals(instance.currentStepId(), task.stepId())) {
+        if (!Objects.equals(instance.currentStepId(), task.stepId()) || !instance.definitionId().equals(sourceStep.definitionId())) {
             throw new WorkflowTransitionConflictException("Workflow task no longer belongs to the instance current step.");
         }
 
@@ -246,16 +254,22 @@ public class WorkflowTransitionApplicationService implements ExecuteWorkflowTran
                 || !Objects.equals(rule.stepId(), targetStep.id()))) {
             throw new WorkflowBoundaryViolationException("Workflow target-step assignment rule does not belong to the running definition.");
         }
-        return new WorkflowTask(
+        if(rule==null || (rule.actorId()==null && rule.organizationUnitId()==null) || rule.targetOwnerMode()!=null
+                || (rule.actorId()==null && (rule.roleCode()!=null || rule.organizationRoleCode()!=null))
+                || (rule.actorId()==null && !targetStep.allowClaim()))
+            throw new WorkflowBoundaryViolationException("Next Workflow task requires a supported active actor/unit assignment rule.");
+        var assigned=rule.actorId()==null?null:ownership.requireActor(rule.actorId());
+        var unit=rule.organizationUnitId()==null?null:ownership.requireUnit(rule.organizationUnitId());
+        WorkflowTask next=new WorkflowTask(
                 WorkflowId.newId().value(),
                 instance.id(),
                 targetStep.id(),
                 WorkflowTaskStatus.OPEN,
-                rule == null ? null : rule.actorId(),
-                null,
-                null,
-                rule == null ? null : rule.organizationUnitId(),
-                null,
+                rule.actorId(),
+                assigned==null?null:assigned.username(),
+                assigned==null?null:assigned.displayName(),
+                rule.organizationUnitId(),
+                unit==null?null:unit.name(),
                 rule == null ? null : firstNonBlank(rule.roleCode(), rule.organizationRoleCode()),
                 null,
                 null,
@@ -272,6 +286,8 @@ public class WorkflowTransitionApplicationService implements ExecuteWorkflowTran
                 now,
                 now
         );
+        ownership.validateAssignment(next,configuration);
+        return next;
     }
 
     private static WorkflowTask completeTask(WorkflowTask task, WorkflowDecision decision, String actorId, Instant now) {
@@ -314,14 +330,6 @@ public class WorkflowTransitionApplicationService implements ExecuteWorkflowTran
             case CANCEL -> WorkflowTaskStatus.CANCELLED;
             case COMMENT -> throw new WorkflowBoundaryViolationException("COMMENT cannot complete a workflow task.");
         };
-    }
-
-    private static boolean belongsToActor(WorkflowTask task, String actorId, String actorUsername) {
-        return Objects.equals(actorId, task.assignedActorId())
-                || Objects.equals(actorId, task.claimedByActorId())
-                || (actorUsername != null
-                    && task.assignedActorUsernameSnapshot() != null
-                    && actorUsername.equalsIgnoreCase(task.assignedActorUsernameSnapshot()));
     }
 
     private static boolean permissionSatisfied(String requiredPermission, Set<String> permissions) {

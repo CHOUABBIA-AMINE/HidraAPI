@@ -124,19 +124,28 @@ public class WorkflowApplicationService implements StartWorkflowInstanceUseCase,
     }
 
     @Override
+    @Transactional
     public WorkflowTaskSummaryDto createWorkflowTask(CreateWorkflowTaskCommand command) {
         Objects.requireNonNull(command, "Create workflow task command must not be null.");
         Instant now = Instant.now();
+        var creator=ownership.requireCurrentActor();
+        var instance=instanceRepositoryPort.findByIdForUpdate(command.instanceId()).orElseThrow(()->new InvalidWorkflowValueException("Unknown Workflow instance."));
+        var step=steps.findById(command.stepId()).orElseThrow(()->new InvalidWorkflowValueException("Unknown Workflow step."));
+        if(!instance.nonTerminal() || !Objects.equals(instance.currentStepId(),step.id()) || !instance.definitionId().equals(step.definitionId())
+                || !instance.startedByActorId().equals(creator.id()))
+            throw new InvalidWorkflowValueException("Generic task creation is limited to the starter and coherent current instance step.");
+        var assigned=command.assignedActorId()==null?null:ownership.requireActor(command.assignedActorId());
+        var unit=command.assignedOrganizationUnitId()==null?null:ownership.requireUnit(command.assignedOrganizationUnitId());
         WorkflowTask task = new WorkflowTask(
                 WorkflowId.newId().value(),
                 command.instanceId(),
                 command.stepId(),
                 WorkflowTaskStatus.OPEN,
                 command.assignedActorId(),
-                command.assignedActorUsernameSnapshot(),
-                command.assignedActorDisplayNameSnapshot(),
+                assigned==null?null:assigned.username(),
+                assigned==null?null:assigned.displayName(),
                 command.assignedOrganizationUnitId(),
-                command.assignedOrganizationUnitNameSnapshot(),
+                unit==null?null:unit.name(),
                 command.assignedRoleCodeSnapshot(),
                 command.priorityId(),
                 command.dueAt(),
@@ -153,6 +162,8 @@ public class WorkflowApplicationService implements StartWorkflowInstanceUseCase,
                 now,
                 now
         );
+        ownership.validateAssignment(task,configuration);
+        if(assigned==null && !step.allowClaim()) throw new InvalidWorkflowValueException("Organization pool tasks require an explicitly claimable step.");
         return WorkflowApplicationMapper.toSummary(taskRepositoryPort.save(task));
     }
 

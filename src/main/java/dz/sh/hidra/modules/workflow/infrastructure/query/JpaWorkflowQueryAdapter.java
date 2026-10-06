@@ -7,7 +7,7 @@
  *
  * @Name        : JpaWorkflowQueryAdapter
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-12
+ * @UpdatedOn   : 2026-10-06
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -25,6 +25,9 @@ import dz.sh.hidra.modules.workflow.infrastructure.persistence.entity.WorkflowIn
 import dz.sh.hidra.modules.workflow.infrastructure.persistence.entity.WorkflowTaskJpaEntity;
 import dz.sh.hidra.modules.workflow.infrastructure.persistence.entity.WorkflowTransitionJpaEntity;
 import jakarta.persistence.EntityManager;
+import dz.sh.hidra.modules.workflow.application.service.WorkflowExecutionOwnership;
+import dz.sh.hidra.modules.workflow.infrastructure.persistence.entity.WorkflowStepJpaEntity;
+import dz.sh.hidra.modules.workflow.infrastructure.persistence.mapper.WorkflowPersistenceMapper;
 import java.util.List;
 import java.util.Locale;
 import java.util.NoSuchElementException;
@@ -45,8 +48,10 @@ public class JpaWorkflowQueryAdapter implements WorkflowQueryUseCase {
     );
 
     private final EntityManager entityManager;
+    private final WorkflowExecutionOwnership ownership;
 
-    public JpaWorkflowQueryAdapter(EntityManager entityManager) {
+    public JpaWorkflowQueryAdapter(EntityManager entityManager,WorkflowExecutionOwnership ownership) {
+        this.ownership=Objects.requireNonNull(ownership);
         this.entityManager = Objects.requireNonNull(entityManager, "EntityManager must not be null.");
     }
 
@@ -148,17 +153,16 @@ public class JpaWorkflowQueryAdapter implements WorkflowQueryUseCase {
     }
 
     private boolean belongsToActor(WorkflowTaskJpaEntity entity, String actorReference) {
-        return belongsToActiveActor(entity, actorReference)
-                || (actorReference != null && actorReference.equals(entity.completedByActorId()));
+        var actor=ownership.resolveActor(actorReference);
+        return actor.isPresent() && (actor.get().id().equals(entity.assignedActorId())
+            || actor.get().id().equals(entity.claimedByActorId()) || actor.get().id().equals(entity.completedByActorId())
+            || (entity.assignedActorId()==null && entity.assignedOrganizationUnitId()!=null && ownership.member(actor.get(),entity.assignedOrganizationUnitId())));
     }
 
     private boolean belongsToActiveActor(WorkflowTaskJpaEntity entity, String actorReference) {
-        if (actorReference == null || actorReference.isBlank()) {
-            return false;
-        }
-        return actorReference.equals(entity.assignedActorId())
-                || actorReference.equalsIgnoreCase(String.valueOf(entity.assignedActorUsernameSnapshot()))
-                || actorReference.equals(entity.claimedByActorId());
+        var actor=ownership.resolveActor(actorReference);
+        var step=entityManager.find(WorkflowStepJpaEntity.class,entity.stepId());
+        return actor.isPresent() && step!=null && ownership.canExecute(WorkflowPersistenceMapper.toDomain(entity),actor.get().id(),step.allowClaim());
     }
 
     private boolean matchesView(WorkflowTaskJpaEntity entity, String view) {

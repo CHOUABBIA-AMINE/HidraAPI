@@ -40,6 +40,32 @@ public class WorkflowExecutionOwnership {
         this.actors=Objects.requireNonNull(actors);this.organizations=Objects.requireNonNull(organizations);
         this.security=Objects.requireNonNull(security);this.targets=List.copyOf(targets);
     }
+    public WorkflowActorContract.Actor requireCurrentActor(){
+        var principal=security.currentPrincipal().filter(p->p.authenticated()).orElseThrow(()->denied("Authenticated Workflow actor required."));
+        return requireActor(principal.actorId().value());
+    }
+    public void validateAssignment(dz.sh.hidra.modules.workflow.domain.model.WorkflowTask task,
+            dz.sh.hidra.modules.workflow.application.port.out.WorkflowConfigurationPort configuration){
+        if(task.priorityId()!=null) configuration.requireActiveCatalog(task.priorityId(),"WORKFLOW_PRIORITY");
+        if(task.assignmentModeId()!=null) configuration.requireActiveCatalog(task.assignmentModeId(),"WORKFLOW_ASSIGNMENT_MODE");
+        var actor=task.assignedActorId()==null?null:requireActor(task.assignedActorId());
+        if(task.assignedOrganizationUnitId()!=null){
+            requireUnit(task.assignedOrganizationUnitId());
+            if(actor!=null && !member(actor,task.assignedOrganizationUnitId())) throw denied("Assigned actor is not an eligible organization member.");
+        }
+        if(task.claimedByActorId()!=null){
+            var claimant=requireActor(task.claimedByActorId());
+            if(task.assignedOrganizationUnitId()!=null && !member(claimant,task.assignedOrganizationUnitId())) throw denied("Claimant is not an eligible organization member.");
+        }
+    }
+    public boolean canExecute(dz.sh.hidra.modules.workflow.domain.model.WorkflowTask task,String actorId,boolean allowClaim){
+        var actor=actors.eligibleActor(actorId,Instant.now());
+        if(actor.isEmpty() || !task.openTask()) return false;
+        if(task.assignedActorId()!=null && !task.assignedActorId().equals(actorId)) return false;
+        if(task.claimedByActorId()!=null && !task.claimedByActorId().equals(actorId)) return false;
+        if(task.assignedOrganizationUnitId()!=null && !member(actor.get(),task.assignedOrganizationUnitId())) return false;
+        return task.assignedActorId()!=null || (task.assignedOrganizationUnitId()!=null && allowClaim);
+    }
     public WorkflowActorContract.Actor requireCurrentActor(String suppliedId){
         var principal=security.currentPrincipal().filter(p->p.authenticated())
             .orElseThrow(()->denied("Authenticated Workflow actor required."));

@@ -92,7 +92,7 @@ No `party.application.contract.planning` package exists in the exact current tre
 | HMR-063 | HMSR-075 | identity.User | COMPLETED — HPR-P2-008 | Nonblank username enforced in domain; PostgreSQL named username/email uniqueness, nullable-email semantics and fail-closed legacy preflight; optional Employee resolved through Organization-owned contract; no cross-module FK. V20261006_010 and focused tests added; final CI pending. |
 | HMR-064 | HMSR-076 | planning.PlanRevision | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-065 | HMSR-077 | planning.OperationalPlan | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
-| HMR-066 | HMSR-078 | workflow.WorkflowTask | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
+| HMR-066 | HMSR-078 | workflow.WorkflowTask | IMPLEMENTED — CI PENDING | Actionable assignment, live actor/unit membership, catalog eligibility, actor/time pairs and chronology are enforced. Terminal task evidence is immutable; generic creation is starter-bound, missing next-step rules fail closed, and execution/query paths no longer authorize by username snapshots. Seven focused behavior checks passed with temporary stubs; existing transition fixtures updated for new owner dependencies. |
 | HMR-067 | HMSR-079 | documents.Document | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-068 | HMSR-080 | documents.DocumentVersion | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-069 | HMSR-081 | assets.MaintenanceWorkOrder | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
@@ -642,4 +642,9 @@ Validation is recorded at the final Batch 7 disposition; CI pending.
 ### Batch 7 HMR-061 implementation
 
 Distinct same-definition steps and unique source decisions are protected in configuration persistence and PostgreSQL. Unsupported conditions/callbacks/COMMENT cannot attach to ACTIVE definitions or survive activation; runtime remains fail closed. Three focused behavior checks passed with temporary stubs; PostgreSQL validation pending CI.
+Validation is recorded at the final Batch 7 disposition; CI pending.
+
+### Batch 7 HMR-066 implementation
+
+Actionable assignment, live actor/unit membership, catalog eligibility, actor/time pairs and chronology are enforced. Terminal task evidence is immutable; generic creation is starter-bound, missing next-step rules fail closed, and execution/query paths no longer authorize by username snapshots. Seven focused behavior checks passed with temporary stubs; existing transition fixtures updated for new owner dependencies.
 Validation is recorded at the final Batch 7 disposition; CI pending.

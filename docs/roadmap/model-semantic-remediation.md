@@ -3630,7 +3630,8 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-078`
 - Exact commit: `fix(workflow): remediate semantic review WorkflowTask`
-- Status: **Planned**
+- Status: **Completed — CI pending**
+- Batch 7 implementation: Actionable assignment, live actor/unit membership, catalog eligibility, actor/time pairs and chronology are enforced. Terminal task evidence is immutable; generic creation is starter-bound, missing next-step rules fail closed, and execution/query paths no longer authorize by username snapshots. Seven focused behavior checks passed with temporary stubs; existing transition fixtures updated for new owner dependencies. Canonical scope/migration admission supersedes legacy filenames.
 - SCC: —
 - Recorded upstream HMS dependencies: organization.OrganizationUnit, workflow.WorkflowInstance, workflow.WorkflowStep
 - HMSR correction count: 5

@@ -7,7 +7,7 @@
  *
  * @Name        : WorkflowTask
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-10-06
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -110,6 +110,19 @@ import java.time.Instant;
         completedByActorId = normalize(completedByActorId);
         assignmentModeId = normalize(assignmentModeId);
         taskLabelSnapshot = normalize(taskLabelSnapshot);
+        if(createdAt==null || updatedAt==null || updatedAt.isBefore(createdAt))
+            throw new InvalidWorkflowValueException("Workflow task requires coherent creation/update timestamps.");
+        if((claimedByActorId==null)!=(claimedAt==null) || (completedByActorId==null)!=(completedAt==null))
+            throw new InvalidWorkflowValueException("Workflow task claim/completion actor and timestamp must be paired.");
+        if((claimedAt!=null && claimedAt.isBefore(createdAt)) || (completedAt!=null && completedAt.isBefore(createdAt)))
+            throw new InvalidWorkflowValueException("Workflow task claim/completion must not predate creation.");
+        if((status==WorkflowTaskStatus.OPEN || status==WorkflowTaskStatus.CLAIMED || status==WorkflowTaskStatus.IN_REVIEW)
+                && (assignedActorId==null && assignedOrganizationUnitId==null))
+            throw new InvalidWorkflowValueException("Actionable Workflow task requires an actor or explicit organization pool.");
+        if(claimedByActorId!=null && assignedActorId!=null && !claimedByActorId.equals(assignedActorId))
+            throw new InvalidWorkflowValueException("Workflow claimant cannot override explicit actor assignment.");
+        if((status==WorkflowTaskStatus.OPEN || status==WorkflowTaskStatus.CLAIMED || status==WorkflowTaskStatus.IN_REVIEW) && completedAt!=null)
+            throw new InvalidWorkflowValueException("Actionable Workflow task cannot already be completed.");
         }
         public boolean openTask() {
             return status == WorkflowTaskStatus.OPEN

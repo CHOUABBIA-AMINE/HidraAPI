@@ -7,7 +7,7 @@
  *
  * @Name        : WorkflowTransitionApplicationServiceTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-11
+ * @UpdatedOn   : 2026-10-06
  *
  * @Type        : Test
  * @Layer       : Application
@@ -74,10 +74,22 @@ class WorkflowTransitionApplicationServiceTest {
     @Mock private WorkflowStepRepositoryPort stepRepository;
     @Mock private WorkflowStepAssignmentRuleRepositoryPort assignmentRuleRepository;
 
+    @Mock private WorkflowExecutionOwnership ownership;
+    @Mock private dz.sh.hidra.modules.workflow.application.port.out.WorkflowConfigurationPort configuration;
     private WorkflowTransitionApplicationService service;
 
     @BeforeEach
     void setUp() {
+        org.mockito.Mockito.lenient().when(ownership.requireCurrentActor(any())).thenAnswer(invocation->{
+            String id=invocation.getArgument(0);
+            if(!"actor-1".equals(id)) throw new WorkflowTransitionDeniedException("Actor mismatch");
+            return new dz.sh.hidra.modules.identity.application.contract.workflow.WorkflowActorContract.Actor(id,"alice","Alice",null);
+        });
+        org.mockito.Mockito.lenient().when(ownership.canExecute(any(),any(),org.mockito.ArgumentMatchers.anyBoolean())).thenReturn(true);
+        org.mockito.Mockito.lenient().when(ownership.requireActor(any())).thenAnswer(invocation->new dz.sh.hidra.modules.identity.application.contract.workflow.WorkflowActorContract.Actor(invocation.getArgument(0),"reviewer","Reviewer",null));
+        org.mockito.Mockito.lenient().when(ownership.requireUnit(any())).thenAnswer(invocation->new dz.sh.hidra.modules.organization.application.contract.workflow.WorkflowOrganizationContract.Unit(invocation.getArgument(0),"Operations"));
+        org.mockito.Mockito.lenient().when(stepRepository.findById("step-1")).thenReturn(Optional.of(new WorkflowStep(
+            "step-1","def-1","REVIEW",null,"Review",null,1,true,null,null,null,true,false,false,TASK_UPDATED_AT,TASK_UPDATED_AT)));
         service = new WorkflowTransitionApplicationService(
                 taskRepository,
                 instanceRepository,
@@ -85,7 +97,7 @@ class WorkflowTransitionApplicationServiceTest {
                 actionRepository,
                 stateHistoryRepository,
                 stepRepository,
-                assignmentRuleRepository
+                assignmentRuleRepository, ownership, configuration
         );
     }
 

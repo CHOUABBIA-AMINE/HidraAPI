@@ -1256,3 +1256,7 @@ Owner-bound starts enforce active definition/version and exact binding, governed
 ### Batch 7 HMR-061 — IMPLEMENTED, CI PENDING
 
 Distinct same-definition steps and unique source decisions are protected in configuration persistence and PostgreSQL. Unsupported conditions/callbacks/COMMENT cannot attach to ACTIVE definitions or survive activation; runtime remains fail closed. Three focused behavior checks passed with temporary stubs; PostgreSQL validation pending CI.
+
+### Batch 7 HMR-066 — IMPLEMENTED, CI PENDING
+
+Actionable assignment, live actor/unit membership, catalog eligibility, actor/time pairs and chronology are enforced. Terminal task evidence is immutable; generic creation is starter-bound, missing next-step rules fail closed, and execution/query paths no longer authorize by username snapshots. Seven focused behavior checks passed with temporary stubs; existing transition fixtures updated for new owner dependencies.

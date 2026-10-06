@@ -7,7 +7,7 @@
  *
  * @Name        : NotificationDeliveryAttempt
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-10-06
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -80,6 +80,11 @@ import java.time.Instant;
             throw new InvalidNotificationValueException("NotificationDeliveryAttempt attempted at must not be null.");
         }
 
+        if ((attemptStatus == DeliveryAttemptStatus.FAILED_PERMANENT
+                || attemptStatus == DeliveryAttemptStatus.CANCELLED) && nextRetryAt != null) {
+            throw new InvalidNotificationValueException(
+                    "Permanent failure or cancellation must not schedule an automatic retry.");
+        }
         id = normalize(id);
         messageId = normalize(messageId);
         channelId = normalize(channelId);

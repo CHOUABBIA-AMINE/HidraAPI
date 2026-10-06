@@ -7,7 +7,7 @@
  *
  * @Name        : OrganizationDelegationJpaEntity
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-06
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -45,7 +45,7 @@ import java.time.Instant;
     @Column(name = "delegate_employee_id", nullable = false, length = 80)
     private String delegateEmployeeId;
 
-    @Column(name = "responsibility_assignment_id", nullable = true, length = 80)
+    @Column(name = "responsibility_assignment_id", nullable = false, length = 80)
     private String responsibilityAssignmentId;
 
     @Column(name = "reason", nullable = true, columnDefinition = "text")

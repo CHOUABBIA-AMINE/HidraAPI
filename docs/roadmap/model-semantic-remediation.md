@@ -237,7 +237,7 @@ Each model task implements only the obligations recorded in its source HMSR sect
 | HMR-071 | HMSR-084 | integration | IntegrationDeadLetterRecord | — | integration.ExternalSystem, integration.IntegrationExchangeMessage, integration.IntegrationJobRun | `fix(integration): remediate semantic review IntegrationDeadLetterRecord` | Planned |
 | HMR-072 | HMSR-085 | integrity | IntegrityAssessment | — | integrity.IntegrityProgram, workflow.WorkflowInstance | `fix(integrity): remediate semantic review IntegrityAssessment` | Planned |
 | HMR-073 | HMSR-087 | organization | EmployeeAssignment | — | organization.Employee, organization.OrganizationUnit, organization.Position | `fix(organization): remediate semantic review EmployeeAssignment` | Completed — Batch 1 |
-| HMR-074 | HMSR-088 | organization | OrganizationDelegation | — | organization.Employee, organization.ResponsibilityAssignment | `fix(organization): remediate semantic review OrganizationDelegation` | Planned |
+| HMR-074 | HMSR-088 | organization | OrganizationDelegation | — | organization.Employee, organization.ResponsibilityAssignment | `fix(organization): remediate semantic review OrganizationDelegation` | Completed — Batch 1 |
 | HMR-075 | HMSR-089 | organization | OrganizationHierarchySnapshot | — | organization.Employee | `fix(organization): remediate semantic review OrganizationHierarchySnapshot` | Planned |
 | HMR-076 | HMSR-090 | organization | ShiftAssignment | — | organization.Employee, organization.OrganizationUnit, organization.Shift | `fix(organization): remediate semantic review ShiftAssignment` | Planned |
 | HMR-077 | HMSR-091 | risk | RiskEvidenceLink | — | risk.RiskAssessment | `fix(risk): remediate semantic review RiskEvidenceLink` | Planned |
@@ -4003,7 +4003,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-088`
 - Exact commit: `fix(organization): remediate semantic review OrganizationDelegation`
-- Status: **Planned**
+- Status: **Completed — implementation and focused tests added; final batch CI is the integration gate.**
 - SCC: —
 - Recorded upstream HMS dependencies: organization.Employee, organization.ResponsibilityAssignment
 - HMSR correction count: 1
@@ -4030,6 +4030,8 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
   - `./mvnw -q clean verify`
 - HMSR obligations:
   1. **Align persistence nullability for `responsibilityAssignmentId` with the canonical domain contract.** Add an additive Flyway correction that fails closed on any existing null rows before setting `hidra_org_delegation.responsibility_assignment_id` to `NOT NULL`, and update the JPA mapping to `nullable = false`. Preserve the existing same-module FK.
+
+- Exact-current execution: JPA responsibility_assignment_id is mandatory; V20261006_002 aborts on legacy null rows before SET NOT NULL; existing same-module FK preserved; real PostgreSQL focused tests added.
 
 #### HMR-075 — organization.OrganizationHierarchySnapshot
 

@@ -327,3 +327,11 @@ New employee assignments resolve the Organization-owned target unit before persi
 and require its status to be ACTIVE. Missing, INACTIVE, MERGED and CLOSED units fail
 closed. Existing assignment history and record-level invariants remain intact.
 The existing employee/unit/position FKs are retained; no new migration is required.
+
+## HMR-074 OrganizationDelegation mandatory reference
+
+`hidra_org_delegation.responsibility_assignment_id` is now NOT NULL in JPA and forward migration
+`V20261006_002`. Existing null rows stop the migration with an explicit preflight
+error; they are not deleted or filled with invented identifiers. The existing
+same-module FK is preserved. PostgreSQL tests cover valid rows, rejected null/orphan
+writes, and rollback with unchanged legacy null evidence.

@@ -3498,7 +3498,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 - SCC: —
 - Recorded upstream HMS dependencies: organization.Employee
 - HMSR correction count: 3
-- Additive Flyway: `src/main/resources/db/migration/V20261004_063__hmr_063_identity_user.sql`
+- Additive Flyway: `src/main/resources/db/migration/V20261006_010__hmr_063_identity_user_uniqueness.sql`
 - Owner-contract prerequisite: Existing candidate owner contract(s): organization:src/main/java/dz/sh/hidra/modules/organization/application/port/in/OperationalScopeQueryUseCase.java; organization:src/main/java/dz/sh/hidra/modules/organization/application/port/in/OrganizationAdministrationQueryUseCase.java; organization:src/main/java/dz/sh/hidra/modules/organization/application/port/out/OperationalScopeTargetResolverPort.java
 - Exact write allowlist:
   - `docs/data definition/Identity.md`
@@ -3531,7 +3531,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
   - `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/repository/UserJpaRepository.java`
   - `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/repository/UserPermissionGrantJpaRepository.java`
   - `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/repository/UserRoleGrantJpaRepository.java`
-  - `src/main/resources/db/migration/V20261004_063__hmr_063_identity_user.sql`
+  - `src/main/resources/db/migration/V20261006_010__hmr_063_identity_user_uniqueness.sql`
   - `src/test/java/dz/sh/hidra/modules/identity/semantic/UserSemanticRemediationTest.java`
 - Exact validation:
   - `./mvnw -q -DskipTests compile`
@@ -4450,7 +4450,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 - SCC: —
 - Recorded upstream HMS dependencies: identity.Permission, identity.Role, identity.User
 - HMSR correction count: 4
-- Additive Flyway: `src/main/resources/db/migration/V20261004_086__hmr_086_identity_authorization_delegation_grant.sql`
+- Additive Flyway: `src/main/resources/db/migration/V20261006_011__hmr_086_delegation_contract.sql`
 - Owner-contract prerequisite: No cross-module owner-contract prerequisite recorded by this HMSR correction.
 - Exact write allowlist:
   - `docs/data definition/Identity.md`
@@ -4462,7 +4462,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
   - `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/AuthorizationDelegationGrantJpaEntity.java`
   - `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/mapper/IdentityPersistenceMapper.java`
   - `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/repository/AuthorizationDelegationGrantJpaRepository.java`
-  - `src/main/resources/db/migration/V20261004_086__hmr_086_identity_authorization_delegation_grant.sql`
+  - `src/main/resources/db/migration/V20261006_011__hmr_086_delegation_contract.sql`
   - `src/test/java/dz/sh/hidra/modules/identity/semantic/AuthorizationDelegationGrantSemanticRemediationTest.java`
 - Exact validation:
   - `./mvnw -q -DskipTests compile`
@@ -5297,7 +5297,7 @@ The following are execution registrations only; they do not change any HMR's sem
 | HMRB-026 | HMR-059, HMR-060 | Batch | **Planned.** Narrow same-module reference protection plus append-only/retry-state integrity; no owner contract prerequisite or SCC. |
 | HMRB-027 | HMR-061 | Solo | **Planned.** Workflow transition composition, uniqueness and executable-condition governance. |
 | HMRB-028 | HMR-062 | Solo | **Planned.** Incident catalog, cross-context identity, Topology scope and lifecycle invariants. |
-| HMRB-029 | HMR-063 | Solo | **Planned.** Identity username/email concurrency-safe uniqueness plus Organization employee validation. |
+| HMRB-029 | HMR-063 | Solo | **Completed in owner Batch 5.** Identity username/email concurrency-safe uniqueness plus Organization employee validation. |
 | HMRB-030 | HMR-064, HMR-065 | Coordinated Batch | **Planned, conditional preflight.** SCC-04 PlanRevision/OperationalPlan pair; chain in SCC-safe migration/application order and split if owner-contract or migration conflict appears. |
 | HMRB-031 | HMR-066 | Solo | **Planned.** Workflow task assignment/claim/completion lifecycle plus owner-controlled eligibility. |
 | HMRB-032 | HMR-067, HMR-068 | Coordinated Batch | **Planned, conditional preflight.** SCC-05 Document/DocumentVersion pair; preserve current-version/supersession ordering and split if Identity/Workflow owner-contract gaps appear. |
@@ -5315,7 +5315,7 @@ The following are execution registrations only; they do not change any HMR's sem
 | HMRB-044 | HMR-083 | Solo | **Planned.** Audit export sanitization, purpose family, Workflow/Documents ownership and self-auditing behavior. |
 | HMRB-045 | HMR-084 | Solo | **Planned.** Documents polymorphic target validation with no concrete upstream owner registered. |
 | HMRB-046 | HMR-085 | Solo | **Planned.** High-risk authorization evaluation order, explainability and conditional decision persistence. |
-| HMRB-047 | HMR-086, HMR-087, HMR-088, HMR-089 | Batch | **Planned.** Four consecutive same-module Identity corrections with no cross-module owner prerequisite; preserve one commit/test contract per HMR. |
+| HMRB-047 | HMR-086, HMR-087, HMR-088, HMR-089 | Batch | **Completed in owner Batch 5.** Four consecutive same-module Identity corrections with no cross-module owner prerequisite; preserve one commit/test contract per HMR. |
 | HMRB-048 | HMR-090 | Solo | **Planned.** Incident closure transaction and evidence/verification preconditions. |
 | HMRB-049 | HMR-091 | Solo | **Planned.** Incident relationship FK correction, family semantics and duplicate/inverse policy. |
 | HMRB-050 | HMR-092 | Solo | **Planned.** Incident response-action lifecycle eligibility and catalog family. |
@@ -5348,3 +5348,9 @@ Mode: six independent semantic commits, shared final full CI gate.
 Baseline CI #568 passed; final batch CI must be green before further semantic work.
 Current proposed next scope: HMR-052 + HMR-060 (Notification), requiring fresh preflight.
 HMR-080 remains blocked. No next batch is executed as part of Batch 1.
+
+### Latest owner batch execution — Batch 5 / 2026-10-06
+
+HMR-063 and HMR-086..089 are implemented. Canonical reconciliation and Ultimate
+Roadmap override older proposed-next notes. Next proposed owner batch is Batch 6,
+HMR-085 alone, after green Batch 5 CI and owner `next`. HMR-080 remains blocked.

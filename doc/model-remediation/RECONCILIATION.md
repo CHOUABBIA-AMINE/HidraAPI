@@ -56,7 +56,7 @@ HMR-009 must not be reopened absent concrete regression evidence.
 
 ### HMR-054 — topology.Equipment
 
-**STILL REQUIRED — historical owner-contract blocker is resolved.**
+**COMPLETED — HMR-054 implementation and repaired CI #575 supersede the historical baseline below.**
 
 The exact current tree contains:
 
@@ -140,18 +140,18 @@ No `party.application.contract.planning` package exists in the exact current tre
 - HMR-005 corrected from stale planned status to **COMPLETED**;
 - HMR-009 confirmed **COMPLETED** and removed as a carry-over blocker;
 - HMR-050..106 evaluated: **57**;
-- HMR-050..106 **STILL REQUIRED**: **45**;
+- HMR-050..106 **STILL REQUIRED**: **40**;
 - HMR-050..106 **BLOCKED**: **1**;
-- HMR-050..106 **COMPLETED during HPR-P2-008**: **11**;
+- HMR-050..106 **COMPLETED during HPR-P2-008**: **16**;
 - HMR-050..106 **SUPERSEDED**: **0**;
-- HMR-054 historical blocker resolved but remediation still required;
+- HMR-054 completed; repaired CI #575 is green;
 - HMR-080 remains blocked.
 
 ## HPR-P2-008 Progress
 
 - HMR-050 — **COMPLETED** at the first HPR-P2-008 execution step.
-- Next proposed compatible scope: **HMR-063 + HMR-086..089**, subject to live dependency/scope revalidation.
-- Remaining after HMR-054 progress: **45 STILL REQUIRED + 1 BLOCKED (HMR-080)**.
+- Next proposed scope: **HMR-085 — AuthorizationDecision (Batch 6)**, subject to green Batch 5 CI and fresh authorization-evaluation preflight.
+- Remaining after Batch 5 implementation: **40 STILL REQUIRED + 1 BLOCKED (HMR-080)**.
 
 - HMR-051 — **COMPLETED**: Topology and optional Organization references validated on every case save; snapshot preserved; no migration because primary-candidate FK already exists; owner contract and architecture export added.
 
@@ -342,3 +342,37 @@ and the mandatory equipmentTypeId guard remain unchanged. No production or migra
 change is required. Standalone execution of the actual inventory test passed;
 focused Maven was blocked by the uncached Spring Boot 4.1.1 parent POM.
 Replacement exact-head CI is pending; confirm it started and await `next` or `fail`.
+
+## Batch 5 implementation and validation disposition — 2026-10-06
+
+HMR-063, HMR-086, HMR-087, HMR-088 and HMR-089 implemented in five independent
+semantic commits, preceded by the explicit Batch 5 admission. Shared final CI pending.
+Current totals: 16 completed, 40 still required, one blocked (HMR-080) in HMR-050..106.
+The attached sequence now has 5/20 batches and 15/55 HMR implementations complete.
+
+Validation actually performed:
+
+- `git diff 89a7c3b --check`: passed.
+- Java compiler syntax parsing: 34 changed Java sources passed.
+- Actual Identity domain plus AuthenticationSessionLifecycleApplicationService compiled
+  with Java 17's compiler module and temporary Spring annotation stubs; actual-domain
+  invalid-value and session external-identity/protocol/logout/expiry/activity/idempotency
+  behavior checks passed. This is not full Java 21/Spring validation.
+- Actual Identity JPA entities and mapper compiled with temporary Jakarta annotation
+  stubs; delegation reason and session protocol/end mapper round trips passed. This does
+  not establish Hibernate or PostgreSQL correctness.
+- `bash ./mvnw -q -DskipTests compile`: blocked before compilation by Maven Central DNS
+  failure resolving the uncached Spring Boot 4.1.1 parent POM.
+- Focused nine-class tests, full test and clean verify attempted with offline Maven:
+  blocked before execution by the same uncached parent. Java 21 and Docker are absent.
+  No JUnit/PostgreSQL/full-build pass is claimed locally.
+
+Nine dedicated semantic/migration test classes are present for the final GitHub gate.
+All four migrations are forward additions after V20261006_009; published migrations
+are unchanged. V20261006_011 and V20261006_012 permit operator-supplied columns for
+explicit legacy reconciliation before replay; they never fabricate delegation reasons,
+end dates, session protocol or historical endedAt. Incompatible existing delegation,
+session and direct-permission rows will intentionally block rollout until reconciled.
+
+Next: HMR-085, matching Batch 6 of the supplied plan, only on owner `next` after the
+Batch 5 gate. Observe final-head CI started, then stop; await `next` or `fail`.

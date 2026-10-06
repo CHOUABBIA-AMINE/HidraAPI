@@ -74,6 +74,9 @@ import java.time.Instant;
             throw new InvalidIdentityValueException("User status must not be null.");
         }
 
+        if (username == null || username.isBlank()) {
+            throw new InvalidIdentityValueException("User username must not be blank.");
+        }
         id = normalize(id);
         username = normalize(username);
         emailAddress = normalize(emailAddress);

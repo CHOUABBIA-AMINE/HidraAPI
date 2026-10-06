@@ -1415,3 +1415,7 @@ External IDM / local login
 Identity owns authorization data, identity-provider mapping, and authentication traceability.
 
 Identity does not own employees, organization hierarchy, topology assets, workflow tasks, audit records, platform filters, or secrets.
+
+## HMR-063 implemented contract — 2026-10-06
+
+Nonblank username enforced in domain; PostgreSQL named username/email uniqueness, nullable-email semantics and fail-closed legacy preflight; optional Employee resolved through Organization-owned contract; no cross-module FK. V20261006_010 and focused tests added; final CI pending.

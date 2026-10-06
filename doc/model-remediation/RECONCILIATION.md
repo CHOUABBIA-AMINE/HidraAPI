@@ -89,7 +89,7 @@ No `party.application.contract.planning` package exists in the exact current tre
 | HMR-060 | HMSR-072 | notification.NotificationDeliveryAttempt | COMPLETED — HPR-P2-008 | Channel/message composite FK; create-only EntityManager.persist plus PK race protection; update/delete/truncate rejected; permanent/cancelled automatic retry rejected; V20261006_006; dedicated unit and PostgreSQL tests added. |
 | HMR-061 | HMSR-073 | workflow.WorkflowTransition | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-062 | HMSR-074 | incident.Incident | STILL REQUIRED | no migration registered; dedicated test: absent; revalidate obligations before mutation |
-| HMR-063 | HMSR-075 | identity.User | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
+| HMR-063 | HMSR-075 | identity.User | COMPLETED — HPR-P2-008 | Nonblank username enforced in domain; PostgreSQL named username/email uniqueness, nullable-email semantics and fail-closed legacy preflight; optional Employee resolved through Organization-owned contract; no cross-module FK. V20261006_010 and focused tests added; final CI pending. |
 | HMR-064 | HMSR-076 | planning.PlanRevision | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-065 | HMSR-077 | planning.OperationalPlan | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-066 | HMSR-078 | workflow.WorkflowTask | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |

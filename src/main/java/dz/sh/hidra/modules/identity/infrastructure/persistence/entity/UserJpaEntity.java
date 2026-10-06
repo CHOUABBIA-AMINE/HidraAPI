@@ -26,13 +26,17 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import java.time.Instant;
 
     /**
      * Database-backed JPA entity for User.
      */
     @Entity
-    @Table(name = "hidra_identity_user")
+    @Table(name = "hidra_identity_user", uniqueConstraints = {
+        @UniqueConstraint(name = "uk_identity_user_username", columnNames = "username"),
+        @UniqueConstraint(name = "uk_identity_user_email", columnNames = "email_address")
+    })
     public class UserJpaEntity {
 
         @Id

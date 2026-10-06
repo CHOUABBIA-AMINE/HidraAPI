@@ -23,6 +23,8 @@ import dz.sh.hidra.modules.identity.application.port.out.UserRepositoryPort;
 import dz.sh.hidra.modules.identity.domain.model.User;
 import dz.sh.hidra.modules.identity.infrastructure.persistence.mapper.IdentityPersistenceMapper;
 import dz.sh.hidra.modules.identity.infrastructure.persistence.repository.UserJpaRepository;
+import dz.sh.hidra.modules.organization.application.contract.identity.IdentityEmployeeReferenceContract;
+import dz.sh.hidra.modules.identity.domain.exception.InvalidIdentityValueException;
 import java.util.Objects;
 import java.util.Optional;
 import org.springframework.stereotype.Component;
@@ -35,12 +37,19 @@ public class JpaUserRepositoryAdapter implements UserRepositoryPort {
 
     private final UserJpaRepository repository;
 
-    public JpaUserRepositoryAdapter(UserJpaRepository repository) {
+    private final IdentityEmployeeReferenceContract employees;
+
+    public JpaUserRepositoryAdapter(UserJpaRepository repository, IdentityEmployeeReferenceContract employees) {
+        this.employees = Objects.requireNonNull(employees);
         this.repository = Objects.requireNonNull(repository, "UserJpaRepository must not be null.");
     }
 
     @Override
     public User save(User model) {
+        Objects.requireNonNull(model, "User must not be null.");
+        if (model.employeeReferenceId() != null && !employees.exists(model.employeeReferenceId())) {
+            throw new InvalidIdentityValueException("User employee reference must resolve through Organization.");
+        }
         return IdentityPersistenceMapper.toDomain(
                 repository.save(IdentityPersistenceMapper.toEntity(model))
         );

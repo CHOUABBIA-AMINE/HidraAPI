@@ -98,6 +98,7 @@ class ArchitectureGuardrailTest {
             "dz.sh.hidra.modules.organization.application.contract.risk",
             "dz.sh.hidra.modules.organization.application.contract.integrity",
             "dz.sh.hidra.modules.organization.application.contract.leakdetection",
+            "dz.sh.hidra.modules.organization.application.contract.identity",
             "dz.sh.hidra.modules.topology.application.contract.risk",
             "dz.sh.hidra.modules.audit.application.contract.risk"
     );

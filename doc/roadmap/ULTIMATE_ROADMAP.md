@@ -1252,3 +1252,7 @@ Do not proceed to attached Batch 8. No implementation is claimed by this admissi
 ### Batch 7 HMR-055 — IMPLEMENTED, CI PENDING
 
 Owner-bound starts enforce active definition/version and exact binding, governed purpose/type, current-step coherence and owner target/actor snapshots; nonterminal uniqueness and same-definition/version database guards. Planning target registry denies unsupported/ambiguous owners. Eight focused behavior checks passed with temporary stubs; local Maven blocked by uncached parent, not a JUnit/PostgreSQL pass.
+
+### Batch 7 HMR-061 — IMPLEMENTED, CI PENDING
+
+Distinct same-definition steps and unique source decisions are protected in configuration persistence and PostgreSQL. Unsupported conditions/callbacks/COMMENT cannot attach to ACTIVE definitions or survive activation; runtime remains fail closed. Three focused behavior checks passed with temporary stubs; PostgreSQL validation pending CI.

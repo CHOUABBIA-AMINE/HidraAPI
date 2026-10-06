@@ -7,7 +7,7 @@
  *
  * @Name        : WorkflowTransition
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-10-06
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -83,6 +83,8 @@ import java.time.Instant;
         conditionExpression = normalize(conditionExpression);
         requiredPermissionCode = normalize(requiredPermissionCode);
         targetModuleCallback = normalize(targetModuleCallback);
+        if(fromStepId.equals(toStepId))
+            throw new InvalidWorkflowValueException("Workflow transition requires distinct source and destination steps.");
         }
 
         private static String normalize(String value) {

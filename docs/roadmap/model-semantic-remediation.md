@@ -3346,7 +3346,8 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-073`
 - Exact commit: `fix(workflow): remediate semantic review WorkflowTransition`
-- Status: **Planned**
+- Status: **Completed — CI pending**
+- Batch 7 implementation: Distinct same-definition steps and unique source decisions are protected in configuration persistence and PostgreSQL. Unsupported conditions/callbacks/COMMENT cannot attach to ACTIVE definitions or survive activation; runtime remains fail closed. Three focused behavior checks passed with temporary stubs; PostgreSQL validation pending CI. Canonical scope/migration admission supersedes legacy filenames.
 - SCC: —
 - Recorded upstream HMS dependencies: workflow.WorkflowDefinition, workflow.WorkflowStep
 - HMSR correction count: 4

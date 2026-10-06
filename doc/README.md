@@ -20,6 +20,7 @@ The legacy `docs/` tree is preserved for historical, audit, semantic-review, ADR
 6. `doc/governance/DOCUMENT_STATUS_MODEL.md` — status vocabulary.
 7. `doc/architecture/README.md` — canonical current/target-separated architecture set.
 8. `doc/domain/README.md` — canonical ubiquitous language and domain-semantic baseline.
+9. `doc/modules/README.md` — canonical current-state index for all 24 implemented business modules.
 
 ## Canonical Domains
 
@@ -32,7 +33,7 @@ The legacy `docs/` tree is preserved for historical, audit, semantic-review, ADR
 | Operations | `doc/operations/**` | Existing canonical P1 operations/survivability baseline |
 | Database | `doc/database/**` | Existing P1 database-operational material; canonical database set is HPR-P2-006 |
 | Domain | `doc/domain/README.md` and linked canonical set | CURRENT — HPR-P2-003 |
-| Modules | not yet established under `doc/modules/` | HPR-P2-004 |
+| Modules | `doc/modules/README.md` plus 24 current-state module documents | CURRENT — HPR-P2-004 |
 | API | not yet established under `doc/api/` | HPR-P2-005 |
 | Data governance | not yet established | HPR-P2-010 |
 | Testing | not yet established | HPR-P2-011 |

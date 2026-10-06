@@ -49,7 +49,7 @@ identity incident integration integrity leakdetection monitoring notification
 organization party planning reporting risk simulation telemetry topology workflow
 ```
 
-HPR-P2-004 will create one current-state module document per root. This document deliberately does not pre-assign detailed aggregate, table, API or lifecycle ownership that belongs to that task.
+HPR-P2-004 establishes one current-state document per root under `doc/modules/`. Those module documents inventory current domain/API/application/persistence/contract surfaces without replacing HPR-P2-005 API-contract authority or HPR-P2-006 database authority.
 
 ## Target / Deferred Boundary
 

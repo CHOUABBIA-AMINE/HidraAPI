@@ -32,7 +32,7 @@ Documentation authority follows the repository governance and the owner/decision
 | `doc/operations/**` | CURRENT where individually stated | P1 operational, HA, DR, deployment, observability and survivability evidence | Preserve; later tasks may cross-link |
 | `doc/database/**` | CURRENT where individually stated | Existing P1 database HA/backup/operations evidence | HPR-P2-006 adds canonical database documentation |
 | `doc/domain/**` | CURRENT where individually stated | Canonical ubiquitous language, ownership and focused semantic baseline from current source | HPR-P2-003 complete |
-| `doc/modules/**` | NOT ESTABLISHED | No canonical per-module P2 set yet | HPR-P2-004 |
+| `doc/modules/**` | CURRENT | Canonical current-state documentation for all 24 implemented module roots; excludes non-implemented agents/environment/otsecurity | HPR-P2-004 complete |
 | `doc/api/**` | NOT ESTABLISHED | No canonical version-controlled P2 API documentation set yet | HPR-P2-005 |
 | Data-governance canonical set | NOT ESTABLISHED | Retention/provenance values must not be invented | HPR-P2-010 |
 | Testing canonical set | NOT ESTABLISHED | Verification documentation must remain tied to executable evidence | HPR-P2-011 |

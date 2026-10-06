@@ -36,7 +36,7 @@ Unless a document explicitly says otherwise, documents in this directory inherit
 
 HPR-P2-003 records semantic meaning already supported by source. It does not:
 
-- create per-module current-state documents assigned to HPR-P2-004;
+- replace the per-module current-state documents under `doc/modules/**`; HPR-P2-004 owns those module inventories;
 - change Java/domain behavior;
 - resolve or restart legacy HMR/HMSR obligations assigned to HPR-P2-007/008;
 - invent SCADA/PLC/RTU/SIS/ESD integration behavior;

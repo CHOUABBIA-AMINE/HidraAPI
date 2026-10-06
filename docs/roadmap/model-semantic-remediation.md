@@ -204,7 +204,7 @@ Each model task implements only the obligations recorded in its source HMSR sect
 | HMR-048 | HMSR-057 | reporting | ReportRequest | — | organization.OrganizationUnit, reporting.ReportDefinition | `fix(reporting): remediate semantic review ReportRequest` | Planned |
 | HMR-049 | HMSR-058 | risk | RiskRegister | — | organization.OrganizationUnit | `fix(risk): remediate semantic review RiskRegister` | Planned |
 | HMR-050 | HMSR-059 | integrity | IntegrityProgram | — | organization.OrganizationUnit | `fix(integrity): remediate semantic review IntegrityProgram` | Planned |
-| HMR-051 | HMSR-060 | leakdetection | LeakDetectionCase | — | leakdetection.LeakCandidate, organization.OrganizationUnit | `fix(leakdetection): remediate semantic review LeakDetectionCase` | Planned |
+| HMR-051 | HMSR-060 | leakdetection | LeakDetectionCase | — | leakdetection.LeakCandidate, organization.OrganizationUnit | `fix(leakdetection): remediate semantic review LeakDetectionCase` | Completed — Batch 1 |
 | HMR-052 | HMSR-061 | notification | NotificationMessage | — | notification.NotificationRequest, notification.NotificationTemplate | `fix(notification): remediate semantic review NotificationMessage` | Planned |
 | HMR-053 | HMSR-062 | telemetry | TrustedTelemetryReading | — | telemetry.TelemetryPoint, telemetry.TelemetryReading | `fix(telemetry): remediate semantic review TrustedTelemetryReading` | Planned |
 | HMR-054 | HMSR-063 | topology | Equipment | — | party.Party, topology.Facility | `fix(topology): remediate semantic review Equipment` | Blocked — owner lookup contract prerequisite unresolved |
@@ -2966,7 +2966,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-060`
 - Exact commit: `fix(leakdetection): remediate semantic review LeakDetectionCase`
-- Status: **Planned**
+- Status: **Completed — implementation and focused tests added; final batch CI is the integration gate.**
 - SCC: —
 - Recorded upstream HMS dependencies: leakdetection.LeakCandidate, organization.OrganizationUnit
 - HMSR correction count: 2
@@ -2992,6 +2992,8 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 - HMSR obligations:
   1. **Validate the mandatory typed Topology asset reference through a Topology-owned boundary.** Preserve `topologyAssetType + topologyAssetId` as a cross-module typed identity and `topologyAssetCode` as snapshot metadata; do not add a cross-module database FK.
   2. **Validate populated `owningOrganizationUnitId` through the Organization owner boundary.** Do not add a cross-module database FK.
+
+- Exact-current execution: Topology and optional Organization references validated on every case save; snapshot preserved; no migration because primary-candidate FK already exists; owner contract and architecture export added.
 
 #### HMR-052 — notification.NotificationMessage
 
@@ -5263,7 +5265,7 @@ The following are execution registrations only; they do not change any HMR's sem
 | HMRB-015 | HMR-048 | Solo | **Planned.** Reporting access, approval/workflow and Organization-owner lifecycle orchestration. |
 | HMRB-016 | HMR-049 | Solo | **Planned.** Risk typed scope, unresolved review-frequency semantics and audit/outbox behavior. |
 | HMRB-017 | HMR-050 | Solo | **Completed.** Active `INTEGRITY_PROGRAM_TYPE` family enforcement and Organization-owned unit validation are implemented without an out-of-order migration; the pre-existing HRA-111 same-module FK is retained. |
-| HMRB-018 | HMR-051 | Solo | **Planned.** LeakDetection typed Topology plus Organization owner validation. |
+| HMRB-018 | HMR-051 | Solo | **Completed in user-authorized Batch 1.** Topology and optional Organization references validated on every case save; snapshot preserved; no migration because primary-candidate FK already exists; owner contract and architecture export added.
 | HMRB-019 | HMR-052 | Solo | **Planned.** Notification recipient/template-version/required-variable readiness invariants. |
 | HMRB-020 | HMR-053 | Solo | **Planned.** Telemetry trust gate, provenance consistency and ACTIVE-point eligibility. |
 | HMRB-021 | HMR-054 | Solo | **Blocked until prerequisite.** Equipment catalog reconciliation plus unresolved Party owner lookup. |

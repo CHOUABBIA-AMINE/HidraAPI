@@ -214,3 +214,12 @@ its exact uniqueness/idempotency scope.
 Domain, application, and infrastructure leak-detection models must not use `@Schema` or OpenAPI annotations.
 
 `@Schema` is allowed only in leakdetection API request/response models.
+
+### 7.2 HMR-051 LeakDetectionCase owner validation
+
+Every case save validates the mandatory typed Topology identity through the existing
+Topology-owned Leak Detection contract. Unsupported or missing targets fail before persistence.
+`topologyAssetCode` remains the supplied historical/display snapshot; it is not overwritten
+or required to equal the current owner code. A populated owning unit resolves through
+`organization.application.contract.leakdetection.LeakDetectionOrganizationUnitReferenceContract`.
+Ownership remains optional. Neither reference receives a cross-module database FK.

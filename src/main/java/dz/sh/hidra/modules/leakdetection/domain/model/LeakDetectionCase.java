@@ -7,7 +7,7 @@
  *
  * @Name        : LeakDetectionCase
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-10-06
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -79,6 +79,9 @@ import java.math.BigDecimal;
         // HRA-051 required: primaryCandidateId
         if (primaryCandidateId == null || primaryCandidateId.isBlank()) {
             throw new InvalidLeakDetectionValueException("LeakDetectionCase primary candidate id must not be blank.");
+        }
+        if (topologyAssetType == null || topologyAssetType.isBlank()) {
+            throw new InvalidLeakDetectionValueException("LeakDetectionCase topology asset type must not be blank.");
         }
         // HRA-051 required: topologyAssetId
         if (topologyAssetId == null || topologyAssetId.isBlank()) {

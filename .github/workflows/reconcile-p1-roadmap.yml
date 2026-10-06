@@ -1,0 +1,82 @@
+name: Reconcile P1 Roadmap Status
+
+on:
+  push:
+    paths:
+      - .github/workflows/reconcile-p1-roadmap.yml
+
+permissions:
+  contents: write
+
+jobs:
+  reconcile:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Reconcile verified P1 statuses
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          path = Path('doc/roadmap/ULTIMATE_ROADMAP.md')
+          text = path.read_text(encoding='utf-8')
+
+          replacements = {
+              "| HPR-P1-027 | PENDING — re-audit Check 11 remediation | Database Operations | Infra/Test/Doc | Complete database health inspection coverage with PostgreSQL index validity/readiness and a reviewed bloat/space-risk method that does not assume unapproved extensions; add host/filesystem capacity evidence outside SQL; retain guarded maintenance semantics and validate diagnostic/maintenance procedures with post-maintenance acceptance in production-equivalent infrastructure. | `fix(database): complete operational health inspections` | HPR-P1-020 |":
+              "| HPR-P1-027 | COMPLETED — implementation SHA `cafdc42270085ddf513a23a514f437ef39f7b842` passed exact-head full CI #555 / run id `37433450282`. Database operations now include PostgreSQL index validity/readiness/liveness inspection, extension-free dead-tuple/object-size/index-ratio space-risk triage without assuming unapproved extensions, host/filesystem byte+inode capacity capture outside SQL, and a guarded maintenance-validation harness requiring authenticated database-backed HidraAPI acceptance before and after the selected action. Actual production-equivalent diagnostic/maintenance execution remains HPR-P1-029 evidence scope. | Database Operations | Infra/Test/Doc | Complete database health inspection coverage with PostgreSQL index validity/readiness and a reviewed bloat/space-risk method that does not assume unapproved extensions; add host/filesystem capacity evidence outside SQL; retain guarded maintenance semantics and validate diagnostic/maintenance procedures with post-maintenance acceptance in production-equivalent infrastructure. | `fix(database): complete operational health inspections` | HPR-P1-020 |",
+              "| HPR-P1-028 | PENDING — re-audit Check 12 remediation | Retention / Archival | Infra/Test/Doc | Enforce the approved P1 retention controls in executable configuration: distinguish bootstrap from mature monthly coverage and verify distinct monthly repo2 recovery points up to the required 12-month horizon; bind Prometheus 30-day and Loki 90-day retention/deletion settings; verify repo2 protected-copy independence and retained recovery-point restorability in the later production-equivalent exercise. | `fix(operations): enforce p1 retention controls` | HPR-P1-021 + HPR-P1-026 |":
+              "| HPR-P1-028 | COMPLETED — implementation SHA `e12a2205f397e68edf1bda96211a99966577d501` passed exact-head full CI #559 / run id `37435329469`. Repo2 validation now distinguishes bootstrap from mature policy coverage, requires one distinct completed full recovery point for each required UTC calendar month from the approved 2026-10 policy start, rejects duplicate/missing required months, and retains the 12-point mature horizon; Prometheus now runs with executable `30d` TSDB retention and Loki with `90d` retention plus compactor deletion. Protected-copy independence and retained repo2 restorability remain HPR-P1-029 measured evidence scope. | Retention / Archival | Infra/Test/Doc | Enforce the approved P1 retention controls in executable configuration: distinguish bootstrap from mature monthly coverage and verify distinct monthly repo2 recovery points up to the required 12-month horizon; bind Prometheus 30-day and Loki 90-day retention/deletion settings; verify repo2 protected-copy independence and retained recovery-point restorability in the later production-equivalent exercise. | `fix(operations): enforce p1 retention controls` | HPR-P1-021 + HPR-P1-026 |",
+              "`HPR-P1-027 — fix(database): complete operational health inspections`\n\nHPR-P1-021..026 repository remediation is complete and exact-head verified. Execution proceeds with HPR-P1-027, then HPR-P1-028, followed by the integrated production-equivalent evidence gate HPR-P1-029.":
+              "`HPR-P1-029 — test(operations): execute p1 survivability exercises`\n\nHPR-P1-021..028 repository remediation is complete and exact-head verified. The remaining P1 remediation step is the integrated production-equivalent evidence campaign HPR-P1-029; HPR-P1-012 remains blocked until that campaign is completed and accepted."
+          }
+
+          for old, new in replacements.items():
+              count = text.count(old)
+              if count != 1:
+                  raise SystemExit(f'Expected exactly one roadmap occurrence, found {count}: {old[:90]}')
+              text = text.replace(old, new, 1)
+
+          marker = "### HPR-P1-026 observability wiring evidence\n"
+          if text.count(marker) != 1:
+              raise SystemExit('Expected one HPR-P1-026 evidence marker')
+
+          evidence = """### HPR-P1-028 retention enforcement evidence
+
+- implementation SHA: `e12a2205f397e68edf1bda96211a99966577d501`;
+- exact-head full CI #559 / run id `37435329469`: **SUCCESS**;
+- repo2 validation distinguishes bootstrap from mature monthly coverage and requires distinct required UTC calendar months under `HIDRA-P1-BACKUP-RETENTION-001`;
+- mature coverage is bounded to the latest 12 required monthly recovery points; missing or duplicate required months fail validation;
+- Prometheus executable service configuration enforces `--storage.tsdb.retention.time=30d`;
+- Loki enforces `retention_period: 2160h` with compactor retention/deletion and a filesystem delete-request store;
+- physical independence of repo2 and successful restore from a retained repo2 point remain measured HPR-P1-029 evidence requirements.
+
+### HPR-P1-027 database operations completion evidence
+
+- implementation SHA: `cafdc42270085ddf513a23a514f437ef39f7b842`;
+- exact-head full CI #555 / run id `37433450282`: **SUCCESS**;
+- index inspection now records `indisvalid`, `indisready` and `indislive` from PostgreSQL catalogs;
+- bloat/space-risk triage remains extension-free and is explicitly not misrepresented as an exact physical-bloat percentage;
+- host/filesystem bytes and inode capacity are captured separately from PostgreSQL object-size SQL;
+- guarded maintenance validation requires a selected approved action plus authenticated database-backed HidraAPI acceptance before and after maintenance;
+- actual production-equivalent diagnostic/maintenance execution remains HPR-P1-029 evidence scope.
+
+"""
+          text = text.replace(marker, evidence + marker, 1)
+
+          path.write_text(text, encoding='utf-8')
+          PY
+
+      - name: Commit roadmap-only reconciliation and remove one-shot workflow
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/reconcile-p1-roadmap.yml
+          git add doc/roadmap/ULTIMATE_ROADMAP.md
+          git diff --cached --check
+          git commit -m "docs(roadmap): reconcile P1 verification status"
+          git push origin HEAD:main

@@ -2,7 +2,7 @@
 
 ## Status
 
-**IMPLEMENTED-PENDING-EXERCISE — HPR-P1-017**
+**IMPLEMENTED-PENDING-EXERCISE — HPR-P1-017 / HPR-P1-021 / HPR-P1-028**
 
 The approved backup implementation uses two pgBackRest repositories with distinct retention purposes.
 
@@ -39,9 +39,16 @@ No aggressive independent WAL expiration is configured. WAL retention follows th
 
 ## Monthly-retention validation
 
-`check-monthly-retention.sh` verifies repo2 has a completed full backup, the latest retained monthly point is no older than 35 days, no observed gap between retained monthly points exceeds 35 days, and the repository does not contain more than 12 full backups after pgBackRest expiration.
+The owner-approved retention policy became effective in UTC calendar month **2026-10**. `check-monthly-retention.sh` derives the required calendar-month membership from that fixed policy start through the current UTC month, capped at the latest 12 months.
 
-During the first year the repository naturally contains fewer than 12 monthly points. Once mature, count-based retention keeps the latest 12.
+The checker reports one of two explicit coverage states:
+
+- **BOOTSTRAP** — fewer than 12 policy months have elapsed; every required month since policy start must already have one completed repo2 full point;
+- **MATURE** — 12 or more policy months have elapsed; repo2 must contain exactly one full point for each of the latest 12 required UTC calendar months.
+
+Duplicate full points in the same retained calendar month fail validation. The checker also preserves the latest-point maximum age of 35 days and the 12-full-backup ceiling.
+
+Detailed retention evidence requirements are in `RETENTION_POLICY.md`.
 
 ## PITR exercise
 
@@ -53,7 +60,7 @@ During the first year the repository naturally contains fewer than 12 monthly po
 
 Before an exercise, `capture-flyway-history.sh` can capture that manifest from an approved source database through `HIDRA_FLYWAY_SOURCE_PSQL_URI`. The output path must be new and is treated as retained exercise evidence. The PITR harness compares the restored database's complete successful versioned Flyway history to that manifest byte-for-byte and records both SHA-256 digests. A migration count alone is no longer accepted as current-schema proof.
 
-HPR-P1-017 cannot be measured/verified until a production-equivalent exercise restores from repo2 and proves the chosen monthly retained point is recoverable with the required WAL.
+HPR-P1-017/HPR-P1-028 cannot be measured/verified solely from configuration. HPR-P1-029 must restore from repo2 and prove the selected retained monthly point is recoverable with the required WAL.
 
 ## Remaining measured evidence
 

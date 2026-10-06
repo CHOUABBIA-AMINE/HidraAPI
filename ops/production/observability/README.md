@@ -2,9 +2,9 @@
 
 ## Status
 
-**IMPLEMENTED-PENDING-LIVE-DELIVERY-EXERCISE — HPR-P1-019 / HPR-P1-026**
+**IMPLEMENTED-PENDING-LIVE-DELIVERY-EXERCISE — HPR-P1-019 / HPR-P1-026 / HPR-P1-028**
 
-The owner-approved P1 observability stack is Prometheus, Alertmanager, Grafana and Loki. Repository configuration now includes the HPR-P1-026 integration fixes required by the 2026-10-06 re-audit. Live production-equivalent firing/delivery/resolve evidence remains pending under HPR-P1-029.
+The owner-approved P1 observability stack is Prometheus, Alertmanager, Grafana and Loki. Repository configuration includes the HPR-P1-026 integration fixes required by the 2026-10-06 re-audit and the HPR-P1-028 retention controls. Live production-equivalent firing/delivery/resolve and retention evidence remain pending under HPR-P1-029.
 
 ## Approved service objectives and thresholds
 
@@ -53,6 +53,17 @@ HAProxy metrics provide the P1 application-node count and PostgreSQL stable-writ
 
 The production Spring profile explicitly enables the `http.server.requests` percentile histogram. This supplies the `http_server_requests_seconds_bucket` series consumed by the approved p95 `histogram_quantile` recording rule.
 
+## Retention enforcement
+
+The owner-approved operational retention baseline is now executable in repository configuration:
+
+- Prometheus high-resolution metrics: **30 days**, enforced by `prometheus/prometheus.service.tpl` with `--storage.tsdb.retention.time=30d`;
+- Loki operational application logs: **90 days**, enforced by `limits_config.retention_period: 2160h` together with compactor retention deletion.
+
+The Prometheus unit remains a renderable template: binary, user/group, configuration path and TSDB path are deployment inputs. The Loki baseline remains a single-process filesystem-backed P1 deployment and does not claim HA.
+
+Repository/static validation proves the configured values, not actual aged-data deletion. HPR-P1-029 must retain production-equivalent evidence that Prometheus and Loki run with these rendered controls and that data aging/deletion behaves as configured.
+
 ## Alert routing
 
 Alertmanager evaluates domain-specific routes before the generic critical route:
@@ -82,7 +93,7 @@ Run:
 ops/production/observability/validate-observability-artifacts.sh
 ```
 
-The validator asserts authenticated application scraping, HTTP histogram enablement, both HAProxy exporter bindings and domain-first Alertmanager route order. When installed, `promtool` validates Prometheus configuration/rules, `amtool` validates Alertmanager configuration, and `haproxy -c` validates a rendered application HAProxy configuration. PostgreSQL HAProxy mutual-TLS material remains deployment-rendered and is separately guarded by the PostgreSQL HA validator.
+The validator asserts authenticated application scraping, HTTP histogram enablement, both HAProxy exporter bindings, domain-first Alertmanager route order, Prometheus 30-day retention, and Loki 90-day retention/deletion configuration. When installed, `promtool` validates Prometheus configuration/rules, `amtool` validates Alertmanager configuration, and `haproxy -c` validates a rendered application HAProxy configuration. PostgreSQL HAProxy mutual-TLS material remains deployment-rendered and is separately guarded by the PostgreSQL HA validator.
 
 ## Live verification
 
@@ -92,8 +103,8 @@ The script injects representative warning, critical, database and security alert
 
 ## Grafana and Loki
 
-Grafana provisioning binds Prometheus and Loki datasources. Loki remains deliberately single-process for the current P1 repository baseline and does not claim HA. Approved retention enforcement is handled separately by HPR-P1-028.
+Grafana provisioning binds Prometheus and Loki datasources. Loki remains deliberately single-process for the current P1 repository baseline and does not claim HA.
 
 ## Remaining closure boundary
 
-Production readiness remains NOT ESTABLISHED. Repository wiring is not a substitute for production-equivalent evidence of scrape success, rule firing, routing/delivery, resolution, Loki ingestion and receiver behavior.
+Production readiness remains NOT ESTABLISHED. Repository wiring is not a substitute for production-equivalent evidence of scrape success, rule firing, routing/delivery, resolution, Loki ingestion, retention aging/deletion, and receiver behavior.

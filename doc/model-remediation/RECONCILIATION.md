@@ -76,7 +76,7 @@ No `party.application.contract.planning` package exists in the exact current tre
 
 | HMR | HMSR | Subject | Canonical disposition | Exact-current evidence |
 |---|---|---|---|---|
-| HMR-050 | HMSR-059 | integrity.IntegrityProgram | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
+| HMR-050 | HMSR-059 | integrity.IntegrityProgram | COMPLETED — HPR-P2-008 | legacy migration not required after current-schema revalidation; dedicated semantic test added; active `INTEGRITY_PROGRAM_TYPE` family enforced; Organization-owned Integrity contract validates populated owner unit; no cross-module FK |
 | HMR-051 | HMSR-060 | leakdetection.LeakDetectionCase | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-052 | HMSR-061 | notification.NotificationMessage | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-053 | HMSR-062 | telemetry.TrustedTelemetryReading | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
@@ -140,11 +140,18 @@ No `party.application.contract.planning` package exists in the exact current tre
 - HMR-005 corrected from stale planned status to **COMPLETED**;
 - HMR-009 confirmed **COMPLETED** and removed as a carry-over blocker;
 - HMR-050..106 evaluated: **57**;
-- HMR-050..106 **STILL REQUIRED**: **56**;
+- HMR-050..106 **STILL REQUIRED**: **55**;
 - HMR-050..106 **BLOCKED**: **1**;
+- HMR-050..106 **COMPLETED during HPR-P2-008**: **1**;
 - HMR-050..106 **SUPERSEDED**: **0**;
 - HMR-054 historical blocker resolved but remediation still required;
 - HMR-080 remains blocked.
+
+## HPR-P2-008 Progress
+
+- HMR-050 — **COMPLETED** at the first HPR-P2-008 execution step.
+- Current next dependency-safe item: **HMR-051 — leakdetection.LeakDetectionCase**.
+- Remaining after HMR-050: **55 STILL REQUIRED + 1 BLOCKED (HMR-080)**.
 
 ## HPR-P2-008 Execution Rule
 

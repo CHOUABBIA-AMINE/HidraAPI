@@ -189,3 +189,22 @@ HMR-019 does not require `InspectionFinding.linkedDefectId` to be reciprocal, on
 automatically synchronized because the active Integrity semantics do not establish such a rule.
 It also does not invent finding-status eligibility, defect-number uniqueness, Topology validation,
 coordinate constraints, closure timing, or a defect lifecycle transition matrix.
+
+
+---
+
+## HMR-050 — IntegrityProgram executable semantics
+
+Current HMR-050 baseline:
+
+```text
+programTypeId -> existing, active IntegrityCatalogEntry.catalogName = INTEGRITY_PROGRAM_TYPE
+ownerOrganizationUnitId -> Organization-owned IntegrityOrganizationUnitReferenceContract when populated
+ownerOrganizationUnitNameSnapshot -> preserved as historical/display snapshot; owner validation does not rewrite it
+cross-module Organization FK -> forbidden / not introduced
+```
+
+The existing HRA-111 same-module foreign key continues to protect
+`hidra_integrity_program.program_type_id -> hidra_integrity_catalog_entry.id`.
+HMR-050 therefore requires no new schema migration after exact-current revalidation.
+

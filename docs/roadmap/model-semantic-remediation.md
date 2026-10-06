@@ -2930,11 +2930,11 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-059`
 - Exact commit: `fix(integrity): remediate semantic review IntegrityProgram`
-- Status: **Planned**
+- Status: **Completed** — exact-current revalidation found the HRA-111 same-module `program_type_id -> IntegrityCatalogEntry` FK already present, so the legacy `V20261004_050` migration is not created out-of-order. `INTEGRITY_PROGRAM_TYPE` is now the explicit active catalog family, and populated ownerOrganizationUnitId values fail closed through the Organization-owned Integrity contract while the supplied organization-name snapshot is preserved.
 - SCC: —
 - Recorded upstream HMS dependencies: organization.OrganizationUnit
 - HMSR correction count: 2
-- Additive Flyway: `src/main/resources/db/migration/V20261004_050__hmr_050_integrity_integrity_program.sql`
+- Additive Flyway: **Not required after HPR-P2-008 exact-current revalidation.** Historical registered filename was `src/main/resources/db/migration/V20261004_050__hmr_050_integrity_integrity_program.sql`; it is intentionally not created because the required same-module FK already exists and that legacy version would sort before the current applied tail.
 - Owner-contract prerequisite: Existing candidate owner contract(s): organization:src/main/java/dz/sh/hidra/modules/organization/application/port/in/OperationalScopeQueryUseCase.java; organization:src/main/java/dz/sh/hidra/modules/organization/application/port/in/OrganizationAdministrationQueryUseCase.java; organization:src/main/java/dz/sh/hidra/modules/organization/application/port/out/OperationalScopeTargetResolverPort.java
 - Exact write allowlist:
   - `docs/data definition/Integrity.md`
@@ -5262,7 +5262,7 @@ The following are execution registrations only; they do not change any HMR's sem
 | HMRB-014 | HMR-047 | Solo | **Planned.** Concurrency-safe code uniqueness plus Organization owner validation. |
 | HMRB-015 | HMR-048 | Solo | **Planned.** Reporting access, approval/workflow and Organization-owner lifecycle orchestration. |
 | HMRB-016 | HMR-049 | Solo | **Planned.** Risk typed scope, unresolved review-frequency semantics and audit/outbox behavior. |
-| HMRB-017 | HMR-050 | Solo | **Planned.** Integrity program-type family definition plus Organization owner validation. |
+| HMRB-017 | HMR-050 | Solo | **Completed.** Active `INTEGRITY_PROGRAM_TYPE` family enforcement and Organization-owned unit validation are implemented without an out-of-order migration; the pre-existing HRA-111 same-module FK is retained. |
 | HMRB-018 | HMR-051 | Solo | **Planned.** LeakDetection typed Topology plus Organization owner validation. |
 | HMRB-019 | HMR-052 | Solo | **Planned.** Notification recipient/template-version/required-variable readiness invariants. |
 | HMRB-020 | HMR-053 | Solo | **Planned.** Telemetry trust gate, provenance consistency and ACTIVE-point eligibility. |
@@ -5320,8 +5320,8 @@ Additional batches may be registered or an existing planned envelope may be spli
 
 ### 12.6 Current next execution
 
-HMRB-017 — HMR-050
+HMRB-018 — HMR-051
 
 Mode: Solo
 
-HMRB-016 is completed. Execute HMR-050 only after the HMR-049 head is green and exact next-task preflight passes; stop before HMRB-018.
+HMR-050 is completed under HPR-P2-008 exact-current revalidation. Execute HMR-051 only after the HMR-050 head is green and exact next-task preflight passes; stop before HMRB-019.

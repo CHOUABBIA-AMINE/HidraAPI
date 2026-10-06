@@ -7,7 +7,7 @@
  *
  * @Name        : IntegrityApplicationService
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-06
  *
  * @Type        : Class
  * @Layer       : Application
@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import dz.sh.hidra.modules.integrity.application.command.CreateIntegrityAssessmentCommand;
 import dz.sh.hidra.modules.integrity.application.command.CreateIntegrityProgramCommand;
 import dz.sh.hidra.modules.integrity.application.command.OpenIntegrityCaseCommand;
+import dz.sh.hidra.modules.organization.application.contract.integrity.IntegrityOrganizationUnitReferenceContract;
 import dz.sh.hidra.modules.integrity.application.dto.IntegrityAssessmentSummaryDto;
 import dz.sh.hidra.modules.integrity.application.dto.IntegrityCaseSummaryDto;
 import dz.sh.hidra.modules.integrity.application.dto.IntegrityProgramSummaryDto;
@@ -54,20 +55,33 @@ public final class IntegrityApplicationService implements CreateIntegrityProgram
     private final IntegrityProgramRepositoryPort programRepositoryPort;
     private final IntegrityAssessmentRepositoryPort assessmentRepositoryPort;
     private final IntegrityCaseRepositoryPort caseRepositoryPort;
+    private final IntegrityOrganizationUnitReferenceContract organizationUnitReferenceContract;
 
     public IntegrityApplicationService(
             IntegrityProgramRepositoryPort programRepositoryPort,
             IntegrityAssessmentRepositoryPort assessmentRepositoryPort,
-            IntegrityCaseRepositoryPort caseRepositoryPort
+            IntegrityCaseRepositoryPort caseRepositoryPort,
+            IntegrityOrganizationUnitReferenceContract organizationUnitReferenceContract
     ) {
         this.programRepositoryPort = Objects.requireNonNull(programRepositoryPort, "Integrity program repository port must not be null.");
         this.assessmentRepositoryPort = Objects.requireNonNull(assessmentRepositoryPort, "Integrity assessment repository port must not be null.");
         this.caseRepositoryPort = Objects.requireNonNull(caseRepositoryPort, "Integrity case repository port must not be null.");
+        this.organizationUnitReferenceContract = Objects.requireNonNull(
+                organizationUnitReferenceContract,
+                "Integrity OrganizationUnit reference contract must not be null."
+        );
     }
 
     @Override
     public IntegrityProgramSummaryDto createIntegrityProgram(CreateIntegrityProgramCommand command) {
         Objects.requireNonNull(command, "Create integrity program command must not be null.");
+        if (command.ownerOrganizationUnitId() != null
+                && !command.ownerOrganizationUnitId().isBlank()
+                && !organizationUnitReferenceContract.exists(command.ownerOrganizationUnitId())) {
+            throw new dz.sh.hidra.modules.integrity.domain.exception.InvalidIntegrityValueException(
+                    "IntegrityProgram ownerOrganizationUnitId must reference an existing OrganizationUnit."
+            );
+        }
         Instant now = Instant.now();
         IntegrityProgram program = new IntegrityProgram(
                 IntegrityId.newId().value(),

@@ -27,7 +27,7 @@
 
 ## 2. Governing Rules
 
-1. Execute P0 before P1. P1 remains the production-readiness gate. P2 governance, documentation, API-contract and semantic-remediation work may proceed under the explicit evidence-block parallel-work exception recorded below when P1 is blocked solely on production-equivalent exercise evidence; this exception does not close P1 or establish production readiness. P3 remains deferred until both P1 and P2 are closed and its own approved requirements exist.
+1. P0 and P1 are CLOSED. Production readiness is ESTABLISHED for P1. P2 governance, documentation, API-contract and semantic-remediation work now proceeds normally in registered roadmap order. P1 must not be reopened unless concrete regression evidence invalidates a verified P1 control. P3 remains deferred until P2 is closed and its own approved requirements exist.
 2. Execute exactly one HPR code per user instruction unless this roadmap explicitly registers a batch.
 3. Use the exact commit message registered for the HPR task.
 4. P0 security closure precedes any production-readiness claim.
@@ -43,10 +43,10 @@
 14. Every task closes with exact-head verification and an update to this roadmap recording evidence and the next executable code.
 15. The 2026-10-05 independent P0 verification audit at `dcf69e1a4a4b788cd125ba6289384642efc4caa0` reopens P0 only for the six failed verification/completeness checks recorded below. Checks 1–5, 8, and 10 remain VERIFIED unless later regression evidence disproves them.
 16. A verification-evidence gap must not be mislabeled as a missing implementation. In particular, OpenAPI security-scheme code exists; the remaining Check 9 gap is exact-head generated evidence.
-17. HPR-P0-015 has closed the independent-audit gap set. Phase P1 may proceed from `HPR-P1-001`, but production readiness remains NOT ESTABLISHED until P1 survivability requirements are completed.
+17. HPR-P0-015 closed the independent P0 audit gap set, and the completed P1 survivability sequence subsequently established P1 production readiness. P1 remains closed unless concrete regression evidence invalidates a verified P1 control.
 18. Documentation-only changes under canonical `doc/**` or Markdown-only governance files use the lightweight documentation-validation workflow; they do not require the full Maven/PostgreSQL/OpenAPI pipeline solely because documentation changed. Full CI remains required when executable/configuration/migration/test/workflow paths change, when manually dispatched, or when a roadmap closure task explicitly requires full exact-head verification.
 19. The 2026-10-06 independent P1 survivability re-audit at `2456aa9849da32254689daa6de4b3dbe0a1ca381` verified 3/12 checks and registers HPR-P1-021..029. These tasks supersede the prior assumption that HPR-P1-015..020 had only exercise blockers; concrete integration defects must be repaired before HPR-P1-012 closure.
-20. Owner authorization on 2026-10-06 permits P2 work to proceed while HPR-P1-029 remains BLOCKED only because the remaining P1 blocker is production-equivalent operational evidence requiring an external environment. HPR-P1-029 and HPR-P1-012 remain BLOCKED/OPEN, production readiness remains NOT ESTABLISHED, no missing P1 evidence may be fabricated or inferred from P2 work, and no P3 task may execute until P1 and P2 are both closed.
+20. HPR-P1-029 is COMPLETED, HPR-P1-012 is COMPLETED, P1 is CLOSED, and production readiness is ESTABLISHED for P1. P2 proceeds normally in registered roadmap order. P1 must not be reopened unless concrete regression evidence invalidates a verified P1 control. P3 remains deferred until P2 is closed and its own approved requirements exist.
 
 ## 3. In-Flight Semantic Remediation Disposition
 
@@ -74,7 +74,7 @@ The following audited statements govern prioritization:
 - Existing `docs/` contains valuable evidence but also stale and conflicting current-state material.
 - Historical independent P0 verification audit at `dcf69e1a4a4b788cd125ba6289384642efc4caa0`: 7 checks VERIFIED; 6 checks FAILED. Those six gaps were remediated by HPR-P0-008..014 and closed by HPR-P0-015.
 - Final independent P0 re-audit at closure SHA `bada4bb882b634762756dd115c7d66c864bd0b3b`: **PASS — 13/13 checks VERIFIED**. Exact-head CI run #529 succeeded and its generated OpenAPI artifact was independently inspected.
-- Owner-authorized parallel progression is active as of 2026-10-06: P2 may proceed while HPR-P1-029 is blocked on external production-equivalent evidence. This is a sequencing exception only; P1 remains OPEN and production readiness remains NOT ESTABLISHED.
+- The former owner-authorized P1 evidence-block parallel progression is historical and superseded. HPR-P1-029 and HPR-P1-012 are completed, P1 is closed, production readiness is established for P1, and P2 proceeds under normal registered sequencing.
 
 ## 5. Execution Registry
 
@@ -209,7 +209,7 @@ The re-audit found both **repository defects** and **missing measured exercises*
 | 11 — database operations | FAILED — SUPERFICIAL | HPR-P1-027 completes index/space inspection and production-equivalent maintenance acceptance |
 | 12 — retention/archival | FAILED — SUPERFICIAL | HPR-P1-028 binds monthly/Prometheus/Loki retention; HPR-P1-029 proves independent retained restore and mature-policy evidence |
 
-P1 remains **OPEN** and production readiness remains **NOT ESTABLISHED**.
+Historical audit-state statement superseded by the final P1 closure below: P1 is **CLOSED** and production readiness is **ESTABLISHED FOR P1**.
 
 ### P1 Final Survivability Closure — 2026-10-06
 
@@ -236,7 +236,7 @@ Canonical production-equivalent evidence: `doc/operations/P1_SURVIVABILITY_EXERC
 
 Evidence provenance remains explicit: repository-bound SHA/migration/configuration facts are independently verified from GitHub; deployed runtime versions, JAR digest, approvals, infrastructure logs, receiver identifiers and measured operational timestamps are retained as operator-supplied evidence from the production-equivalent environment.
 
-P1 is **CLOSED** only when this closure SHA passes the repository's full exact-head CI gate. A failed exact-head gate reopens HPR-P1-012 for repair and prohibits a production-readiness claim.
+P1 is **CLOSED**. The HPR-P1-012 closure SHA `6822f3ce79b305e1c22f48ff20ef0b0bd2c7f135` passed exact-head `HidraAPI CI` run #566 / run id `37444404855`; production readiness is therefore **ESTABLISHED FOR P1**. P1 must not be reopened unless concrete regression evidence invalidates a verified P1 control.
 
 ### Phase P2 — Canonical Governance, API Contracts & Semantic Integration
 
@@ -271,16 +271,17 @@ P1 is **CLOSED** only when this closure SHA passes the repository's full exact-h
 
 ## 6. Immediate Next Execution
 
-P0 security/audit verification is closed. P1 production infrastructure and survivability verification is closed subject to successful exact-head full CI on the HPR-P1-012 closure SHA.
+P0 security/audit verification is closed. P1 production infrastructure and survivability verification is closed, and exact-head full CI on the HPR-P1-012 closure SHA succeeded in run #566 / run id `37444404855`.
 
-Next executable task after that exact-head gate succeeds:
+Immediate next executable task:
 
 `HPR-P2-001 — docs(governance): complete canonical documentation controls`
 
 The historical P1 evidence-block parallel-work exception is no longer needed for sequencing because HPR-P1-029 is complete. P3 remains deferred until P2 closes and its own approved requirements exist.
 
-### P1 evidence-block parallel progression authorization — 2026-10-06
+### P1 evidence-block parallel progression authorization — 2026-10-06 — HISTORICAL / SUPERSEDED
 
+- retained only as execution history; this section is no longer active sequencing authority;
 - owner explicitly authorized continuing roadmap work without fake production-equivalent data while HPR-P1-029 was BLOCKED at that historical point;
 - this authorization changes sequencing only; it is not a survivability waiver and not a production-readiness approval;
 - HPR-P1-029 subsequently completed the governed production-equivalent campaign and retained measured evidence before HPR-P1-012 closure;
@@ -295,7 +296,7 @@ The historical P1 evidence-block parallel-work exception is no longer needed for
 - repository reconciliation confirms 82 Flyway migrations with tail `V20261004_049__hmr_049_risk_risk_register.sql` then `V20261005_001__provision_risk_register_created_audit_taxonomy.sql`;
 - operator-supplied measured evidence records RPO **15 seconds** and RTO **37 minutes**, both within approved P1 objectives;
 - both-node application HA, PostgreSQL single-writer/fencing/Hikari recovery, exact-artifact deployment/rollback, alert delivery/acknowledgement/resolve, database maintenance acceptance and independent repo2 restore/bootstrap retention are retained in the canonical evidence document;
-- HPR-P1-029 is **COMPLETED**; HPR-P1-012 remains responsible for final P1 closure and production-readiness disposition.
+- HPR-P1-029 is **COMPLETED**; HPR-P1-012 is also **COMPLETED**, P1 is **CLOSED**, and production readiness is **ESTABLISHED FOR P1**.
 
 ### HPR-P1-029 initial blocked execution evidence — 2026-10-06 (historical)
 
@@ -309,7 +310,7 @@ The historical P1 evidence-block parallel-work exception is no longer needed for
 - no approved production-equivalent maintenance target plus external authenticated database-backed acceptance credential is available here, so the required database health/low-risk maintenance acceptance cannot be exercised;
 - exact deployed versions/immutable identifiers for Java, HAProxy, PostgreSQL, Patroni, etcd, pgBackRest, Prometheus, Alertmanager, Grafana, Loki, the deployed HidraAPI SHA/JAR digest, backup failure-domain identifiers and retained evidence IDs are environment evidence and are not present in repository source;
 - no destructive command was executed, no secret was requested for inclusion in Git, and no RTO/RPO/HA/deployment/alert/maintenance/retention result is fabricated;
-- HPR-P1-029 remains the next task and must be resumed in the approved production-equivalent environment. HPR-P1-012 and all P2 work remain blocked.
+- Historical disposition only: at that point HPR-P1-029 was the next task and HPR-P1-012/P2 were blocked. This disposition is superseded by completed HPR-P1-029 and HPR-P1-012 closure; P2 now proceeds normally.
 
 ### HPR-P1-028 retention enforcement evidence
 
@@ -605,7 +606,7 @@ No monthly duration is inferred or fabricated. HPR-P1-017 may implement pgBackRe
 - all 259 generated OpenAPI operations have explicit security declarations;
 - independent P0 re-audit at the exact closure SHA: **PASS — 13/13 checks VERIFIED**.
 
-P0 is CLOSED for security/audit verification. Production readiness remains **NOT ESTABLISHED** because P1 runtime architecture, HA, DR, deployment, observability, and database-operations survivability are still incomplete.
+P0 is CLOSED for security/audit verification. At this historical P0-only checkpoint, production readiness was **NOT ESTABLISHED** because P1 runtime architecture, HA, DR, deployment, observability, and database-operations survivability were still incomplete; this statement is superseded by the completed P1 closure recorded above.
 
 ### HPR-P1-001 runtime-architecture evidence
 
@@ -758,7 +759,7 @@ Owner-approved on 2026-10-05 after HPR-P1-003:
 - Flyway remains migration authority with validate-on-migrate and clean disabled; applied migrations are immutable and migration repair/override is not authorized as a shortcut;
 - database operations cover connection exhaustion, failover/switchover, backup/WAL/PITR, maintenance, migration failures, credential rotation coordination, data-integrity incidents and evidence retention;
 - no Patroni/Pgpool/HAProxy/pgBackRest/Barman/cloud database/monitoring platform or vendor-specific command is invented;
-- HPR-P1-012 remains responsible for measured restore/PITR and failover execution and cannot close while HPR-P1-009/HPR-P1-010 blockers or survivability evidence gaps remain.
+- Historical HPR-P1-011 disposition: HPR-P1-012 was responsible for measured restore/PITR and failover execution and could not close while then-current blockers or survivability evidence gaps remained. That condition was later satisfied; HPR-P1-012 is completed.
 
 ## 7. Original P0 Closure Evidence
 

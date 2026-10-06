@@ -3,6 +3,9 @@ set -euo pipefail
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)"
 workflow="${root}/.github/workflows/release.yml"
 unit="${root}/ops/production/systemd/hidra-api.service"
+deploy="${root}/ops/production/release/deploy-production-node.sh"
+drain="${root}/ops/production/scripts/drain-node.sh"
+rejoin="${root}/ops/production/scripts/rejoin-node.sh"
 
 grep -q '^name: HidraAPI Controlled Production Release$' "${workflow}"
 grep -q '^      source_sha:$' "${workflow}"
@@ -13,13 +16,20 @@ grep -q '^      name: production$' "${workflow}"
 grep -q 'Require successful exact-SHA full CI' "${workflow}"
 grep -q 'sha256sum -c' "${workflow}"
 
-for script in "${root}"/ops/production/release/*.sh; do bash -n "${script}"; done
+for script in "${root}"/ops/production/release/*.sh "${drain}" "${rejoin}"; do bash -n "${script}"; done
 
 grep -q 'HIDRA_SECRETS_SOURCE=vault' "${root}/ops/production/release/install-release.sh"
 grep -q 'SPRING_PROFILES_ACTIVE=production' "${root}/ops/production/release/install-release.sh"
 grep -q 'HIDRA_ARTIFACT_ROLLBACK_COMPATIBLE' "${root}/ops/production/release/rollback-release.sh"
-grep -q 'drain-node.sh' "${root}/ops/production/release/deploy-production-node.sh"
-grep -q 'rejoin-node.sh' "${root}/ops/production/release/deploy-production-node.sh"
+grep -q 'Verifying survivor' "${deploy}"
+grep -q 'remote_acceptance' "${deploy}"
+grep -q 'ha_acceptance' "${deploy}"
+grep -q "drain-node.sh.*survivor" "${deploy}"
+grep -q 'active HAProxy sessions' "${drain}"
+grep -q 'survivor_status' "${drain}"
+grep -q 'scur' "${drain}"
+grep -q 'rejoined HAProxy' "${rejoin}"
+grep -q 'rest_status' "${rejoin}"
 grep -q '^EnvironmentFile=/run/hidra/hidra-secrets.env$' "${unit}"
 grep -q '^ExecStartPre=/usr/bin/test -s /run/hidra/hidra-secrets.env$' "${unit}"
 

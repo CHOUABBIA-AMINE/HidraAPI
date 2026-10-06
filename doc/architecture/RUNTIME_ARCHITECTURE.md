@@ -2,9 +2,9 @@
 
 ## Status
 
-**CURRENT + APPROVED TARGET + DECISION REQUIRED**
+**HISTORICAL — HPR-P1-001 runtime-architecture baseline retained for provenance.**
 
-This is the canonical HPR-P1-001 runtime-architecture baseline. It records only repository-verified runtime facts and previously approved operating decisions. It deliberately does not select a production deployment technology.
+This document records the repository state and decisions as they existed at HPR-P1-001. Later P1 tasks implemented and verified production infrastructure and survivability, so statements below such as `NOT ESTABLISHED`, `DECISION REQUIRED`, or production readiness not established must be read at their historical verification point. Current architecture authority is the HPR-P2-002 set indexed by `doc/architecture/README.md`, together with the current Ultimate Roadmap and executable repository evidence.
 
 Verification base: `912b76396651c197d4db9ecccb21cd3de6a83e86`
 

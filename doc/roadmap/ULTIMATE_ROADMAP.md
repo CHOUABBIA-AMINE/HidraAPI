@@ -942,3 +942,39 @@ and the mandatory equipmentTypeId guard remain unchanged. No production or migra
 change is required. Standalone execution of the actual inventory test passed;
 focused Maven was blocked by the uncached Spring Boot 4.1.1 parent POM.
 Replacement exact-head CI is pending; confirm it started and await `next` or `fail`.
+
+## HPR-P2-008 Batch 5 execution admission — 2026-10-06
+
+Owner `next` authorizes HMR-063 + HMR-086..089, matching the supplied 20-batch plan.
+Baseline main `89a7c3bcb57377dd720f47721f4a836b03856ca2` has successful CI #575
+(run 37487331948) and documentation validation #66. HMR-054's pending CI note
+is superseded by this observed green baseline.
+
+One semantic commit per HMR, in order 063, 086, 087, 088, 089; one atomic final
+main advancement and shared final CI gate. Do not continue to Batch 6.
+
+Revalidated HMSR-075/101/104/105/106 obligations remain applicable. No SCC is
+involved. Admit the following precise additions to their legacy write scopes:
+
+- HMR-063: Organization-owned `application/contract/identity/IdentityEmployeeReferenceContract.java`
+  and `application/service/IdentityEmployeeReferenceQueryService.java`; register that
+  exact contract export in ArchitectureGuardrailTest and ForensicRemediationClosureTest;
+  PostgreSQL UserIntegrityMigrationTest; forward V20261006_010 user uniqueness migration.
+- HMR-086: DelegationStatus.java and AuthorizationDelegationGrantIntegrityMigrationTest;
+  forward V20261006_011 delegation reason/validity/reference migration.
+- HMR-087: HidraPrincipal.java, AuthenticatedPrincipalInput.java,
+  AuthenticationCompletionApplicationService.java, AuthenticationSessionLifecycleApplicationService.java,
+  DirectAuthenticationApplicationService.java, IdentityAuthenticationWebMapper.java,
+  LdapAuthenticationProvider.java, IdentityOidcJwtAuthenticationConverter.java;
+  LoginSessionIntegrityMigrationTest and forward V20261006_012 session evidence migration.
+- HMR-088: UserPermissionGrantJpaEntity.java and UserPermissionGrantIntegrityMigrationTest;
+  forward V20261006_013 direct-grant validity/reason/status migration.
+- HMR-089: IdentityAdministrationCommandApplicationService.java and its focused
+  UserRoleGrantSemanticRemediationTest. Preserve optional role-grant reason/end and SUSPENDED state.
+- Each HMR may update these canonical execution/reconciliation documents independently.
+
+Preserve published migrations, neutral scopes and optional cross-module IDs.
+No cross-module FK. Legacy incompatible rows fail closed; never fabricate reasons,
+end dates, historical session classification or termination timestamps.
+Local runtime is Java 17 without Docker; attempt registered Maven validation and
+report actual limitations. Stop once final-head CI is observed started; await `next` or `fail`.

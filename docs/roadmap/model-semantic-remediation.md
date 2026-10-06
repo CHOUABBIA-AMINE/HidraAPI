@@ -217,7 +217,7 @@ Each model task implements only the obligations recorded in its source HMSR sect
 | HMR-056 | HMSR-067 | integration | IntegrationExchangeMessage | — | integration.ExternalSystem, integration.IntegrationJobRun | `fix(integration): remediate semantic review IntegrationExchangeMessage` | Planned |
 | HMR-057 | HMSR-068 | reporting | ReportRun | — | reporting.ReportDefinition, reporting.ReportRequest | `fix(reporting): remediate semantic review ReportRun` | Planned |
 | HMR-058 | HMSR-069 | risk | RiskAssessment | — | risk.RiskRegister | `fix(risk): remediate semantic review RiskAssessment` | Planned |
-| HMR-059 | HMSR-071 | leakdetection | LeakEscalationReference | — | leakdetection.LeakCandidate, leakdetection.LeakDetectionCase | `fix(leakdetection): remediate semantic review LeakEscalationReference` | Planned |
+| HMR-059 | HMSR-071 | leakdetection | LeakEscalationReference | — | leakdetection.LeakCandidate, leakdetection.LeakDetectionCase | `fix(leakdetection): remediate semantic review LeakEscalationReference` | Completed — Batch 1 |
 | HMR-060 | HMSR-072 | notification | NotificationDeliveryAttempt | — | notification.NotificationMessage | `fix(notification): remediate semantic review NotificationDeliveryAttempt` | Planned |
 | HMR-061 | HMSR-073 | workflow | WorkflowTransition | — | workflow.WorkflowDefinition, workflow.WorkflowStep | `fix(workflow): remediate semantic review WorkflowTransition` | Planned |
 
@@ -3271,7 +3271,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-071`
 - Exact commit: `fix(leakdetection): remediate semantic review LeakEscalationReference`
-- Status: **Planned**
+- Status: **Completed — implementation and focused tests added; final batch CI is the integration gate.**
 - SCC: —
 - Recorded upstream HMS dependencies: leakdetection.LeakCandidate, leakdetection.LeakDetectionCase
 - HMSR correction count: 1
@@ -3295,6 +3295,8 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
   - `./mvnw -q clean verify`
 - HMSR obligations:
   1. **Protect populated `candidateId` as a same-module LeakCandidate reference.** Preserve optionality, but prevent dangling candidate identities using the appropriate same-module FK and/or authoritative application validation. Do not invent a case-primary-candidate equality rule without stronger DDD evidence.
+
+- Exact-current execution: Optional candidate validated before save and protected by V20261006_001 nullable same-module FK with fail-closed orphan preflight; no case-primary equality rule.
 
 #### HMR-060 — notification.NotificationDeliveryAttempt
 

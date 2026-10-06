@@ -223,3 +223,11 @@ Topology-owned Leak Detection contract. Unsupported or missing targets fail befo
 or required to equal the current owner code. A populated owning unit resolves through
 `organization.application.contract.leakdetection.LeakDetectionOrganizationUnitReferenceContract`.
 Ownership remains optional. Neither reference receives a cross-module database FK.
+
+### 7.3 HMR-059 escalation candidate provenance
+
+A populated escalation `candidateId` must resolve to an existing LeakCandidate.
+The repository rejects missing candidates, and forward migration `V20261006_001`
+adds a nullable same-module FK after an orphan preflight. Null remains allowed.
+The candidate need not equal the case's primary candidate; no such rule is established.
+Neutral external escalation targets retain scalar identity and snapshots.

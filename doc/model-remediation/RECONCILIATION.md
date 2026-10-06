@@ -85,7 +85,7 @@ No `party.application.contract.planning` package exists in the exact current tre
 | HMR-056 | HMSR-067 | integration.IntegrationExchangeMessage | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-057 | HMSR-068 | reporting.ReportRun | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-058 | HMSR-069 | risk.RiskAssessment | STILL REQUIRED | no migration registered; dedicated test: absent; revalidate obligations before mutation |
-| HMR-059 | HMSR-071 | leakdetection.LeakEscalationReference | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
+| HMR-059 | HMSR-071 | leakdetection.LeakEscalationReference | COMPLETED — HPR-P2-008 | Optional candidate validated before save and protected by V20261006_001 nullable same-module FK with fail-closed orphan preflight; no case-primary equality rule. |
 | HMR-060 | HMSR-072 | notification.NotificationDeliveryAttempt | STILL REQUIRED | no migration registered; dedicated test: absent; revalidate obligations before mutation |
 | HMR-061 | HMSR-073 | workflow.WorkflowTransition | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-062 | HMSR-074 | incident.Incident | STILL REQUIRED | no migration registered; dedicated test: absent; revalidate obligations before mutation |
@@ -140,9 +140,9 @@ No `party.application.contract.planning` package exists in the exact current tre
 - HMR-005 corrected from stale planned status to **COMPLETED**;
 - HMR-009 confirmed **COMPLETED** and removed as a carry-over blocker;
 - HMR-050..106 evaluated: **57**;
-- HMR-050..106 **STILL REQUIRED**: **54**;
+- HMR-050..106 **STILL REQUIRED**: **53**;
 - HMR-050..106 **BLOCKED**: **1**;
-- HMR-050..106 **COMPLETED during HPR-P2-008**: **2**;
+- HMR-050..106 **COMPLETED during HPR-P2-008**: **3**;
 - HMR-050..106 **SUPERSEDED**: **0**;
 - HMR-054 historical blocker resolved but remediation still required;
 - HMR-080 remains blocked.
@@ -150,10 +150,12 @@ No `party.application.contract.planning` package exists in the exact current tre
 ## HPR-P2-008 Progress
 
 - HMR-050 — **COMPLETED** at the first HPR-P2-008 execution step.
-- Current next dependency-safe item: **HMR-059 — leakdetection.LeakEscalationReference**.
+- Current next dependency-safe item: **HMR-073 — organization.EmployeeAssignment**.
 - Remaining after current Batch 1 progress: **54 STILL REQUIRED + 1 BLOCKED (HMR-080)**.
 
 - HMR-051 — **COMPLETED**: Topology and optional Organization references validated on every case save; snapshot preserved; no migration because primary-candidate FK already exists; owner contract and architecture export added.
+
+- HMR-059 — **COMPLETED**: Optional candidate validated before save and protected by V20261006_001 nullable same-module FK with fail-closed orphan preflight; no case-primary equality rule.
 
 ## HPR-P2-008 Execution Rule
 

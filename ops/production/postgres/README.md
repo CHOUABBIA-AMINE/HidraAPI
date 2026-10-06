@@ -2,7 +2,7 @@
 
 ## Status
 
-**IMPLEMENTED CONFIGURATION / PRODUCTION-EQUIVALENT EXERCISE PENDING — HPR-P1-016**
+**IMPLEMENTED CONFIGURATION / PRODUCTION-EQUIVALENT EXERCISE PENDING — HPR-P1-016 / HPR-P1-024**
 
 The approved database HA stack is PostgreSQL + Patroni + a three-member etcd quorum + HAProxy stable write endpoint.
 
@@ -49,6 +49,10 @@ These values are an engineering connection-lifecycle baseline, not an SLO or dat
 
 Hikari does not perform database leader election. After a role change, dead/invalid pooled connections may fail and are replaced with new connections through the unchanged HAProxy endpoint.
 
+The failover exercise now observes this behavior through Spring Boot's authenticated Actuator Hikari metric `hikaricp.connections.creation`. The harness records the pre-switchover connection-creation count, then requires that count to increase after the Patroni role change while an authenticated database-backed HidraAPI request succeeds. This is application-managed pool replacement evidence, not a claim that an in-flight transaction survived.
+
+The application acceptance endpoint is not hard-coded. Operators must supply `HIDRA_APP_DB_ACCEPTANCE_URL` as an approved harmless authenticated database-backed read path. Authentication for both the acceptance request and protected Actuator metric is supplied by an external `HIDRA_APP_CURL_CONFIG`; credentials are not committed or printed into exercise evidence.
+
 ## Interrupted transactions
 
 A PostgreSQL failover can terminate TCP sessions and transactions.
@@ -65,11 +69,16 @@ Run:
 ops/production/postgres/scripts/validate-postgres-ha-artifacts.sh
 ```
 
-CI executes the same validation.
+CI executes the same validation. It verifies the Patroni/etcd/HAProxy mTLS contract, explicit Hikari lifecycle settings, authenticated database-backed acceptance inputs, the Hikari connection-creation metric, recovery timing output, interrupted-transaction responsibility and shell syntax.
 
 ## Controlled role-change exercise
 
-The provided `verify-postgres-failover.sh` uses `patronictl switchover` against an approved healthy production-equivalent cluster. It records Patroni topology plus `patronictl show-config` authority context before and after the role change, verifies exactly one primary, exercises a reversible temporary-table write through the stable HAProxy endpoint, performs a controlled role change, verifies the candidate becomes primary, reopens a write connection through the unchanged endpoint, confirms the former primary is no longer primary, and waits for HidraAPI readiness recovery.
+The provided `verify-postgres-failover.sh` uses `patronictl switchover` against an approved healthy production-equivalent cluster. It records Patroni topology plus `patronictl show-config` authority context before and after the role change, verifies exactly one primary, exercises a reversible temporary-table write through the stable HAProxy endpoint, performs a controlled role change, verifies the candidate becomes primary, reopens a direct database connection through the unchanged endpoint, and proves application-level recovery through two independent signals:
+
+1. an authenticated database-backed HidraAPI acceptance request succeeds after the role change; and
+2. `hikaricp.connections.creation` increases from the pre-switchover baseline, demonstrating that the application pool created replacement connections.
+
+The recovery interval is measured from the start of the controlled switchover to the first observation that both application acceptance and Hikari replacement evidence are satisfied. This interval is exercise evidence only; it is not declared as an SLO.
 
 That control-plane evidence documents the selected Patroni/etcd leader-authority mechanism, but a controlled switchover is not a network-partition/fencing exercise. HPR-P1-029 must still retain production-equivalent partition/fencing evidence before split-brain protection is considered measured.
 
@@ -79,6 +88,6 @@ This repository task does not run the destructive exercise because no authorized
 
 ## Completion state
 
-Repository implementation is complete, but measured database failover evidence remains pending.
+Repository implementation now includes the HPR-P1-024 application-managed recovery assertions, but measured database failover evidence remains pending.
 
-HPR-P1-016 therefore remains **IMPLEMENTED-PENDING-EXERCISE** until the controlled role-change exercise is executed on the approved production-equivalent environment and its evidence is retained for HPR-P1-012.
+HPR-P1-016 remains **IMPLEMENTED-PENDING-EXERCISE** and HPR-P1-024 remains repository-complete but not measured until the controlled role-change exercise is executed on the approved production-equivalent environment and its evidence is retained under HPR-P1-029/HPR-P1-012.

@@ -42,5 +42,14 @@ grep -Fqx 'spring.datasource.hikari.idle-timeout=${HIDRA_DATASOURCE_IDLE_TIMEOUT
 grep -Fqx 'spring.datasource.hikari.max-lifetime=${HIDRA_DATASOURCE_MAX_LIFETIME:1800000}' "${prod}"
 grep -Fqx 'spring.datasource.hikari.keepalive-time=${HIDRA_DATASOURCE_KEEPALIVE_TIME:120000}' "${prod}"
 
+grep -Fq 'HIDRA_APP_DB_ACCEPTANCE_URL' "${exercise}"
+grep -Fq 'HIDRA_APP_CURL_CONFIG' "${exercise}"
+grep -Fq 'hikaricp.connections.creation' "${exercise}"
+grep -Fq 'hikari_creation_count' "${exercise}"
+grep -Fq 'wait_for_application_pool_recovery' "${exercise}"
+grep -Fq 'Application database recovery elapsed seconds' "${exercise}"
+grep -Fq 'Interrupted or in-doubt transactions are NOT treated as successful' "${exercise}"
+grep -Fq 'Retry remains the caller/use-case responsibility' "${exercise}"
+
 bash -n "${exercise}"
 echo "Production PostgreSQL HA/failover artifacts passed static validation."

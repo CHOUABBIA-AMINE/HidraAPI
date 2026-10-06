@@ -27,7 +27,7 @@
 
 ## 2. Governing Rules
 
-1. Execute phases in order: P0 → P1 → P2 → P3.
+1. Execute P0 before P1. P1 remains the production-readiness gate. P2 governance, documentation, API-contract and semantic-remediation work may proceed under the explicit evidence-block parallel-work exception recorded below when P1 is blocked solely on production-equivalent exercise evidence; this exception does not close P1 or establish production readiness. P3 remains deferred until both P1 and P2 are closed and its own approved requirements exist.
 2. Execute exactly one HPR code per user instruction unless this roadmap explicitly registers a batch.
 3. Use the exact commit message registered for the HPR task.
 4. P0 security closure precedes any production-readiness claim.
@@ -46,6 +46,7 @@
 17. HPR-P0-015 has closed the independent-audit gap set. Phase P1 may proceed from `HPR-P1-001`, but production readiness remains NOT ESTABLISHED until P1 survivability requirements are completed.
 18. Documentation-only changes under canonical `doc/**` or Markdown-only governance files use the lightweight documentation-validation workflow; they do not require the full Maven/PostgreSQL/OpenAPI pipeline solely because documentation changed. Full CI remains required when executable/configuration/migration/test/workflow paths change, when manually dispatched, or when a roadmap closure task explicitly requires full exact-head verification.
 19. The 2026-10-06 independent P1 survivability re-audit at `2456aa9849da32254689daa6de4b3dbe0a1ca381` verified 3/12 checks and registers HPR-P1-021..029. These tasks supersede the prior assumption that HPR-P1-015..020 had only exercise blockers; concrete integration defects must be repaired before HPR-P1-012 closure.
+20. Owner authorization on 2026-10-06 permits P2 work to proceed while HPR-P1-029 remains BLOCKED only because the remaining P1 blocker is production-equivalent operational evidence requiring an external environment. HPR-P1-029 and HPR-P1-012 remain BLOCKED/OPEN, production readiness remains NOT ESTABLISHED, no missing P1 evidence may be fabricated or inferred from P2 work, and no P3 task may execute until P1 and P2 are both closed.
 
 ## 3. In-Flight Semantic Remediation Disposition
 
@@ -73,6 +74,7 @@ The following audited statements govern prioritization:
 - Existing `docs/` contains valuable evidence but also stale and conflicting current-state material.
 - Historical independent P0 verification audit at `dcf69e1a4a4b788cd125ba6289384642efc4caa0`: 7 checks VERIFIED; 6 checks FAILED. Those six gaps were remediated by HPR-P0-008..014 and closed by HPR-P0-015.
 - Final independent P0 re-audit at closure SHA `bada4bb882b634762756dd115c7d66c864bd0b3b`: **PASS — 13/13 checks VERIFIED**. Exact-head CI run #529 succeeded and its generated OpenAPI artifact was independently inspected.
+- Owner-authorized parallel progression is active as of 2026-10-06: P2 may proceed while HPR-P1-029 is blocked on external production-equivalent evidence. This is a sequencing exception only; P1 remains OPEN and production readiness remains NOT ESTABLISHED.
 
 ## 5. Execution Registry
 
@@ -244,15 +246,30 @@ P1 remains **OPEN** and production readiness remains **NOT ESTABLISHED**.
 
 The 2026-10-06 independent re-audit disproves the prior statement that only exercise/environment evidence remained. Concrete repository integration defects have now been repaired and exact-head verified, but the integrated production-equivalent campaign requires access to the approved runtime environment.
 
-Next executable task:
+P1 evidence gate:
 
 `HPR-P1-029 — test(operations): execute p1 survivability exercises`
 
-Status: **BLOCKED** until the approved production-equivalent environment and external access/evidence inputs are available. No later HPR is executable while this blocker remains. Resume HPR-P1-029 itself when the environment is connected; do not skip to HPR-P1-012 or P2.
+Status: **BLOCKED** until the approved production-equivalent environment and external access/evidence inputs are available. Resume HPR-P1-029 when that environment is connected; do not fabricate or substitute evidence.
+
+Owner-authorized parallel next executable task:
+
+`HPR-P2-001 — docs(governance): complete canonical documentation controls`
+
+P2 may now proceed in roadmap dependency order while HPR-P1-029 remains blocked. This authorization does not waive HPR-P1-029, does not unblock HPR-P1-012, and does not establish production readiness.
 
 `HPR-P1-012 — docs(roadmap): close P1 survivability verification`
 
-remains BLOCKED until HPR-P1-029 is completed and its retained evidence satisfies the re-audit requirements. Do not execute P2 work while P1 remains open.
+remains BLOCKED until HPR-P1-029 is completed and its retained evidence satisfies the re-audit requirements. P3 remains deferred until both P1 and P2 are closed.
+
+### P1 evidence-block parallel progression authorization — 2026-10-06
+
+- owner explicitly authorized continuing roadmap work without fake production-equivalent data while keeping HPR-P1-029 BLOCKED;
+- this authorization changes sequencing only; it is not a survivability waiver and not a production-readiness approval;
+- HPR-P1-029 still requires the complete governed production-equivalent campaign and retained measured evidence before HPR-P1-012 may close;
+- P2 documentation, governance, API-contract and semantic-remediation work may execute in normal P2 dependency order;
+- no P2 artifact may be cited as substitute evidence for P1 HA, DR, deployment, alert delivery, database-maintenance, retention or RTO/RPO verification;
+- P3 remains deferred until both P1 and P2 are closed.
 
 ### HPR-P1-029 blocked execution evidence — 2026-10-06
 

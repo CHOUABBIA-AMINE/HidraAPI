@@ -343,3 +343,11 @@ writes, and rollback with unchanged legacy null evidence.
 error; they are not deleted or filled with invented identifiers. The existing
 same-module FK is preserved. PostgreSQL tests cover valid rows, rejected null/orphan
 writes, and rollback with unchanged legacy null evidence.
+
+## HMR-076 ShiftAssignment mandatory reference
+
+`hidra_org_shift_assignment.organization_unit_id` is now NOT NULL in JPA and forward migration
+`V20261006_004`. Existing null rows stop the migration with an explicit preflight
+error; they are not deleted or filled with invented identifiers. The existing
+same-module FK is preserved. PostgreSQL tests cover valid rows, rejected null/orphan
+writes, and rollback with unchanged legacy null evidence.

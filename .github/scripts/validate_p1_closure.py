@@ -21,7 +21,7 @@ required_evidence = [
     "**COMPLETED — 2026-10-06**",
     "RPO: **15 seconds**",
     "RTO: **37 minutes**",
-    "both-node application loss/rejoin",
+    "each application node was failed and rejoined sequentially",
     "independent repo2 restore",
 ]
 

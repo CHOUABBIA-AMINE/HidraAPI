@@ -7,7 +7,7 @@
  *
  * @Name        : EmployeeAssignmentApplicationService
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-27
+ * @UpdatedOn   : 2026-10-06
  *
  * @Type        : Class
  * @Layer       : Application
@@ -24,6 +24,9 @@ import org.springframework.stereotype.Service;
 import dz.sh.hidra.modules.organization.application.command.AssignEmployeeCommand;
 import dz.sh.hidra.modules.organization.application.port.in.AssignEmployeeUseCase;
 import dz.sh.hidra.modules.organization.application.port.out.EmployeeAssignmentRepositoryPort;
+import dz.sh.hidra.modules.organization.application.port.out.OrganizationUnitRepositoryPort;
+import dz.sh.hidra.modules.organization.domain.exception.InvalidOrganizationValueException;
+import dz.sh.hidra.modules.organization.domain.value.OrganizationUnitStatus;
 import dz.sh.hidra.modules.organization.domain.model.EmployeeAssignment;
 import dz.sh.hidra.modules.organization.domain.value.AssignmentStatus;
 import dz.sh.hidra.modules.organization.domain.value.AssignmentType;
@@ -40,16 +43,36 @@ public final class EmployeeAssignmentApplicationService implements AssignEmploye
 
     private final EmployeeAssignmentRepositoryPort employeeAssignmentRepositoryPort;
 
-    public EmployeeAssignmentApplicationService(EmployeeAssignmentRepositoryPort employeeAssignmentRepositoryPort) {
+    private final OrganizationUnitRepositoryPort organizationUnitRepositoryPort;
+
+    public EmployeeAssignmentApplicationService(
+            EmployeeAssignmentRepositoryPort employeeAssignmentRepositoryPort,
+            OrganizationUnitRepositoryPort organizationUnitRepositoryPort
+    ) {
         this.employeeAssignmentRepositoryPort = Objects.requireNonNull(
                 employeeAssignmentRepositoryPort,
                 "Employee assignment repository port must not be null."
+        );
+        this.organizationUnitRepositoryPort = Objects.requireNonNull(
+                organizationUnitRepositoryPort, "Organization unit repository port must not be null."
         );
     }
 
     @Override
     public String assignEmployee(AssignEmployeeCommand command) {
         Objects.requireNonNull(command, "Assign employee command must not be null.");
+        if (command.organizationUnitId() == null || command.organizationUnitId().isBlank()) {
+            throw new InvalidOrganizationValueException("Assignment organization unit ID is required.");
+        }
+        var unit = organizationUnitRepositoryPort.findById(command.organizationUnitId().trim())
+                .orElseThrow(() -> new InvalidOrganizationValueException(
+                        "Employee assignment requires an existing OrganizationUnit."
+                ));
+        if (unit.status() != OrganizationUnitStatus.ACTIVE) {
+            throw new InvalidOrganizationValueException(
+                    "Only an ACTIVE organization unit can receive a new employee assignment."
+            );
+        }
         Instant now = Instant.now();
 
         EmployeeAssignment assignment = new EmployeeAssignment(

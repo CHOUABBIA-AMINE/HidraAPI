@@ -99,7 +99,7 @@ No `party.application.contract.planning` package exists in the exact current tre
 | HMR-070 | HMSR-082 | custody.CustodyTransferTicket | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-071 | HMSR-084 | integration.IntegrationDeadLetterRecord | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-072 | HMSR-085 | integrity.IntegrityAssessment | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
-| HMR-073 | HMSR-087 | organization.EmployeeAssignment | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
+| HMR-073 | HMSR-087 | organization.EmployeeAssignment | COMPLETED — HPR-P2-008 | Assignment service resolves same-module OrganizationUnit and rejects missing or non-ACTIVE units before save; existing employee/unit/position FKs retained; no migration. |
 | HMR-074 | HMSR-088 | organization.OrganizationDelegation | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-075 | HMSR-089 | organization.OrganizationHierarchySnapshot | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-076 | HMSR-090 | organization.ShiftAssignment | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
@@ -140,9 +140,9 @@ No `party.application.contract.planning` package exists in the exact current tre
 - HMR-005 corrected from stale planned status to **COMPLETED**;
 - HMR-009 confirmed **COMPLETED** and removed as a carry-over blocker;
 - HMR-050..106 evaluated: **57**;
-- HMR-050..106 **STILL REQUIRED**: **53**;
+- HMR-050..106 **STILL REQUIRED**: **52**;
 - HMR-050..106 **BLOCKED**: **1**;
-- HMR-050..106 **COMPLETED during HPR-P2-008**: **3**;
+- HMR-050..106 **COMPLETED during HPR-P2-008**: **4**;
 - HMR-050..106 **SUPERSEDED**: **0**;
 - HMR-054 historical blocker resolved but remediation still required;
 - HMR-080 remains blocked.
@@ -150,12 +150,14 @@ No `party.application.contract.planning` package exists in the exact current tre
 ## HPR-P2-008 Progress
 
 - HMR-050 — **COMPLETED** at the first HPR-P2-008 execution step.
-- Current next dependency-safe item: **HMR-073 — organization.EmployeeAssignment**.
+- Current next dependency-safe item: **HMR-074 — organization.OrganizationDelegation**.
 - Remaining after current Batch 1 progress: **54 STILL REQUIRED + 1 BLOCKED (HMR-080)**.
 
 - HMR-051 — **COMPLETED**: Topology and optional Organization references validated on every case save; snapshot preserved; no migration because primary-candidate FK already exists; owner contract and architecture export added.
 
 - HMR-059 — **COMPLETED**: Optional candidate validated before save and protected by V20261006_001 nullable same-module FK with fail-closed orphan preflight; no case-primary equality rule.
+
+- HMR-073 — **COMPLETED**: Assignment service resolves same-module OrganizationUnit and rejects missing or non-ACTIVE units before save; existing employee/unit/position FKs retained; no migration.
 
 ## HPR-P2-008 Execution Rule
 

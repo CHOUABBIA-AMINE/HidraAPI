@@ -236,7 +236,7 @@ Each model task implements only the obligations recorded in its source HMSR sect
 | HMR-070 | HMSR-082 | custody | CustodyTransferTicket | — | custody.CustodyMeasurementPeriod, workflow.WorkflowInstance | `fix(custody): remediate semantic review CustodyTransferTicket` | Planned |
 | HMR-071 | HMSR-084 | integration | IntegrationDeadLetterRecord | — | integration.ExternalSystem, integration.IntegrationExchangeMessage, integration.IntegrationJobRun | `fix(integration): remediate semantic review IntegrationDeadLetterRecord` | Planned |
 | HMR-072 | HMSR-085 | integrity | IntegrityAssessment | — | integrity.IntegrityProgram, workflow.WorkflowInstance | `fix(integrity): remediate semantic review IntegrityAssessment` | Planned |
-| HMR-073 | HMSR-087 | organization | EmployeeAssignment | — | organization.Employee, organization.OrganizationUnit, organization.Position | `fix(organization): remediate semantic review EmployeeAssignment` | Planned |
+| HMR-073 | HMSR-087 | organization | EmployeeAssignment | — | organization.Employee, organization.OrganizationUnit, organization.Position | `fix(organization): remediate semantic review EmployeeAssignment` | Completed — Batch 1 |
 | HMR-074 | HMSR-088 | organization | OrganizationDelegation | — | organization.Employee, organization.ResponsibilityAssignment | `fix(organization): remediate semantic review OrganizationDelegation` | Planned |
 | HMR-075 | HMSR-089 | organization | OrganizationHierarchySnapshot | — | organization.Employee | `fix(organization): remediate semantic review OrganizationHierarchySnapshot` | Planned |
 | HMR-076 | HMSR-090 | organization | ShiftAssignment | — | organization.Employee, organization.OrganizationUnit, organization.Shift | `fix(organization): remediate semantic review ShiftAssignment` | Planned |
@@ -3968,7 +3968,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-087`
 - Exact commit: `fix(organization): remediate semantic review EmployeeAssignment`
-- Status: **Planned**
+- Status: **Completed — implementation and focused tests added; final batch CI is the integration gate.**
 - SCC: —
 - Recorded upstream HMS dependencies: organization.Employee, organization.OrganizationUnit, organization.Position
 - HMSR correction count: 1
@@ -3996,6 +3996,8 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
   - `./mvnw -q clean verify`
 - HMSR obligations:
   1. **Enforce the disabled-unit assignment rule in the authoritative application boundary.** Before creating a new EmployeeAssignment, resolve the target `OrganizationUnit` and reject assignment when the unit is disabled/inactive. Preserve same-module ownership and do not move this cross-record lifecycle lookup into the domain record constructor.
+
+- Exact-current execution: Assignment service resolves same-module OrganizationUnit and rejects missing or non-ACTIVE units before save; existing employee/unit/position FKs retained; no migration.
 
 #### HMR-074 — organization.OrganizationDelegation
 

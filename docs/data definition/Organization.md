@@ -320,3 +320,10 @@ protection and makes `hidra_org_unit.valid_from` NOT NULL.
 
 HMR-032 does not invent OrganizationUnit code uniqueness, multilingual-name requiredness, or a
 new lifecycle transition matrix.
+
+## HMR-073 employee assignment eligibility
+
+New employee assignments resolve the Organization-owned target unit before persistence
+and require its status to be ACTIVE. Missing, INACTIVE, MERGED and CLOSED units fail
+closed. Existing assignment history and record-level invariants remain intact.
+The existing employee/unit/position FKs are retained; no new migration is required.

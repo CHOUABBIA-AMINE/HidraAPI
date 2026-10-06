@@ -57,6 +57,7 @@ grep -Fq 'type: loki' "${grafana}"
 grep -Fq 'schema: v13' "${loki}"
 grep -Fq 'retention_period: 2160h' "${loki}"
 grep -Fq 'retention_enabled: true' "${loki}"
+grep -Fq 'retention_delete_delay: 2h' "${loki}"
 grep -Fq 'delete_request_store: filesystem' "${loki}"
 grep -Fq 'working_directory: /var/lib/loki/compactor' "${loki}"
 

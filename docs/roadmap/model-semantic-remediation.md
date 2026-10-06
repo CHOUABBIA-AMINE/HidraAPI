@@ -205,7 +205,7 @@ Each model task implements only the obligations recorded in its source HMSR sect
 | HMR-049 | HMSR-058 | risk | RiskRegister | — | organization.OrganizationUnit | `fix(risk): remediate semantic review RiskRegister` | Planned |
 | HMR-050 | HMSR-059 | integrity | IntegrityProgram | — | organization.OrganizationUnit | `fix(integrity): remediate semantic review IntegrityProgram` | Planned |
 | HMR-051 | HMSR-060 | leakdetection | LeakDetectionCase | — | leakdetection.LeakCandidate, organization.OrganizationUnit | `fix(leakdetection): remediate semantic review LeakDetectionCase` | Completed — Batch 1 |
-| HMR-052 | HMSR-061 | notification | NotificationMessage | — | notification.NotificationRequest, notification.NotificationTemplate | `fix(notification): remediate semantic review NotificationMessage` | Planned |
+| HMR-052 | HMSR-061 | notification | NotificationMessage | — | notification.NotificationRequest, notification.NotificationTemplate | `fix(notification): remediate semantic review NotificationMessage` | Completed — Batch 2; composition/version/required-input/eligible-priority guards; CI pending |
 | HMR-053 | HMSR-062 | telemetry | TrustedTelemetryReading | — | telemetry.TelemetryPoint, telemetry.TelemetryReading | `fix(telemetry): remediate semantic review TrustedTelemetryReading` | Planned |
 | HMR-054 | HMSR-063 | topology | Equipment | — | party.Party, topology.Facility | `fix(topology): remediate semantic review Equipment` | Blocked — owner lookup contract prerequisite unresolved |
 
@@ -218,7 +218,7 @@ Each model task implements only the obligations recorded in its source HMSR sect
 | HMR-057 | HMSR-068 | reporting | ReportRun | — | reporting.ReportDefinition, reporting.ReportRequest | `fix(reporting): remediate semantic review ReportRun` | Planned |
 | HMR-058 | HMSR-069 | risk | RiskAssessment | — | risk.RiskRegister | `fix(risk): remediate semantic review RiskAssessment` | Planned |
 | HMR-059 | HMSR-071 | leakdetection | LeakEscalationReference | — | leakdetection.LeakCandidate, leakdetection.LeakDetectionCase | `fix(leakdetection): remediate semantic review LeakEscalationReference` | Completed — Batch 1 |
-| HMR-060 | HMSR-072 | notification | NotificationDeliveryAttempt | — | notification.NotificationMessage | `fix(notification): remediate semantic review NotificationDeliveryAttempt` | Planned |
+| HMR-060 | HMSR-072 | notification | NotificationDeliveryAttempt | — | notification.NotificationMessage | `fix(notification): remediate semantic review NotificationDeliveryAttempt` | Completed — Batch 2; channel-consistent create-only evidence and permanent-retry guard; CI pending |
 | HMR-061 | HMSR-073 | workflow | WorkflowTransition | — | workflow.WorkflowDefinition, workflow.WorkflowStep | `fix(workflow): remediate semantic review WorkflowTransition` | Planned |
 
 ### 8.5 Dependency level 4
@@ -2999,11 +2999,11 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-061`
 - Exact commit: `fix(notification): remediate semantic review NotificationMessage`
-- Status: **Planned**
+- Status: **Completed — implemented; final Batch 2 CI pending**
 - SCC: —
 - Recorded upstream HMS dependencies: notification.NotificationRequest, notification.NotificationTemplate
 - HMSR correction count: 4
-- Additive Flyway: `src/main/resources/db/migration/V20261004_052__hmr_052_notification_notification_message.sql`
+- Additive Flyway: `src/main/resources/db/migration/V20261006_005__hmr_052_notification_message_composition.sql`
 - Owner-contract prerequisite: No cross-module owner-contract prerequisite recorded by this HMSR correction.
 - Exact write allowlist:
   - `docs/data definition/Notification.md`
@@ -3022,8 +3022,9 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
   - `src/main/java/dz/sh/hidra/modules/notification/infrastructure/persistence/mapper/NotificationPersistenceMapper.java`
   - `src/main/java/dz/sh/hidra/modules/notification/infrastructure/persistence/repository/NotificationMessageJpaRepository.java`
   - `src/main/java/dz/sh/hidra/modules/notification/infrastructure/persistence/repository/NotificationMessageVariableJpaRepository.java`
-  - `src/main/resources/db/migration/V20261004_052__hmr_052_notification_notification_message.sql`
+  - `src/main/resources/db/migration/V20261006_005__hmr_052_notification_message_composition.sql`
   - `src/test/java/dz/sh/hidra/modules/notification/semantic/NotificationMessageSemanticRemediationTest.java`
+  - `src/test/java/dz/sh/hidra/modules/notification/semantic/NotificationMessageIntegrityMigrationTest.java`
 - Exact validation:
   - `./mvnw -q -DskipTests compile`
   - `./mvnw -q -Dtest=NotificationMessageSemanticRemediationTest test`
@@ -3302,11 +3303,11 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-072`
 - Exact commit: `fix(notification): remediate semantic review NotificationDeliveryAttempt`
-- Status: **Planned**
+- Status: **Completed — implemented; final Batch 2 CI pending**
 - SCC: —
 - Recorded upstream HMS dependencies: notification.NotificationMessage
 - HMSR correction count: 3
-- Additive Flyway: not pre-authorized by HMR-002
+- Additive Flyway: `src/main/resources/db/migration/V20261006_006__hmr_060_notification_attempt_evidence.sql` — admitted by the user-authorized P2 Batch 2 envelope after live schema reconciliation.
 - Owner-contract prerequisite: No cross-module owner-contract prerequisite recorded by this HMSR correction.
 - Exact write allowlist:
   - `docs/data definition/Notification.md`
@@ -3320,6 +3321,8 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
   - `src/main/java/dz/sh/hidra/modules/notification/infrastructure/persistence/mapper/NotificationPersistenceMapper.java`
   - `src/main/java/dz/sh/hidra/modules/notification/infrastructure/persistence/repository/NotificationDeliveryAttemptJpaRepository.java`
   - `src/test/java/dz/sh/hidra/modules/notification/semantic/NotificationDeliveryAttemptSemanticRemediationTest.java`
+  - `src/main/resources/db/migration/V20261006_006__hmr_060_notification_attempt_evidence.sql`
+  - `src/test/java/dz/sh/hidra/modules/notification/semantic/NotificationDeliveryAttemptIntegrityMigrationTest.java`
 - Exact validation:
   - `./mvnw -q -DskipTests compile`
   - `./mvnw -q -Dtest=NotificationDeliveryAttemptSemanticRemediationTest test`

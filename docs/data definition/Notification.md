@@ -699,6 +699,16 @@ EXPIRED
 
 ---
 
+HMR-052 implementation (2026-10-06): recipient ownership is enforced jointly with
+request identity. The exact selected version must belong to the selected template;
+version content and promoted message input snapshots cannot be rewritten. Eligible
+populated priority resolves to active NOTIFICATION_PRIORITY. The version's JSON
+`required` array names message-owned nonblank inputs required before sendable state.
+Malformed required contracts fail closed. DRAFT staging permits inputs to be persisted;
+the current create API cannot accept variables and rejects incomplete template-backed
+messages before asynchronous dispatch. Template-free content remains allowed.
+Migration V20261006_005 is forward-only and aborts on inconsistent legacy evidence.
+
 ### 5.14 `NotificationMessageVariable`
 
 Resolved variable used in rendering a message.
@@ -796,6 +806,14 @@ Attempts are append-only.
 A message can have multiple attempts.
 A permanent failure must stop retry scheduling unless manually requeued.
 ```
+
+HMR-060 implementation (2026-10-06): attempt channel must equal the referenced
+message's selected channel. Persistence uses insert-only semantics; primary-key
+uniqueness closes duplicate-ID races. Database guards reject UPDATE, DELETE and
+TRUNCATE. FAILED_PERMANENT/CANCELLED must carry no automatic nextRetryAt.
+Manual requeue remains a separate explicit workflow; attempt-number rules are unchanged.
+V20261006_006 aborts on inconsistent legacy channel/retry evidence without rewriting it.
+
 
 ---
 

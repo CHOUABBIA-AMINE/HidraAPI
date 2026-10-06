@@ -249,7 +249,7 @@ P1 is **CLOSED** only when this closure SHA passes the repository's full exact-h
 | HPR-P2-005 | COMPLETED — deterministic OpenAPI 3.1 contract version-controlled from exact executable P1 closure CI artifact; canonical API overview, conventions, authentication/authorization, error-model limitation, versioning/compatibility and OpenAPI-governance documents established; shared machine-readable error envelope remains explicitly NOT ESTABLISHED | API | Code/Doc | Generate and version-control deterministic `doc/api/openapi.yaml`; create API overview, conventions, auth, error, versioning/compatibility and OpenAPI governance docs. | `docs(api): establish versioned api contract` | HPR-P1-008 |
 | HPR-P2-006 | COMPLETED — canonical current database architecture, schema ownership, Flyway policy and generated persistence dictionary established from 82 current Flyway migrations, 469 current module JPA persistence entities, production configuration and closed P1 PostgreSQL/backup evidence; stale pre-closure DB stage documents retained as historical provenance | Database | Doc | Create database architecture, schema ownership, Flyway policy and current generated data dictionary from current migrations/JPA evidence. | `docs(database): establish canonical database documentation` | HPR-P2-001 |
 | HPR-P2-007 | COMPLETED — exact-source reconciliation established: HMR-005 corrected to completed, HMR-009 confirmed completed/stale carry-over removed, HMR-054 historical blocker resolved by current Party→Topology contract, HMR-050..106 reconciled to 56 still-required + 1 blocked (HMR-080), 0 superseded; legacy roadmap preserved as history | Semantic Remediation | Code/Doc | Inventory unresolved HMR/HMSR obligations against exact current source; mark each as completed, still required, blocked, or superseded with evidence. | `docs(model-remediation): reconcile remaining semantic obligations` | HPR-P2-003 |
-| HPR-P2-008 | IN PROGRESS — HMR-050 and Batch 1 items HMR-051, HMR-059, HMR-073, HMR-074, HMR-075, HMR-076 implemented with dedicated tests; 49 still-required HMRs remain and HMR-080 remains blocked. Final Batch 1 full CI verifies integration; local Maven cannot resolve Maven Central and only Java 17 is installed. | Semantic Remediation | Code | Execute still-required semantic remediation in dependency order using revalidated HMSR obligations; do not restart completed HMRs without regression evidence. | `fix(model): continue reconciled semantic remediation` | HPR-P2-007 |
+| HPR-P2-008 | IN PROGRESS — HMR-050 and Batch 1 items HMR-051, HMR-059, HMR-073, HMR-074, HMR-075, HMR-076 plus Batch 2 HMR-052 and HMR-060 implemented with dedicated tests; 47 still-required HMRs remain and HMR-080 remains blocked. Batch 1 repaired exact-head CI #570 passed; final Batch 2 CI pending; local Maven cannot resolve Maven Central and only Java 17 is installed. | Semantic Remediation | Code | Execute still-required semantic remediation in dependency order using revalidated HMSR obligations; do not restart completed HMRs without regression evidence. | `fix(model): continue reconciled semantic remediation` | HPR-P2-007 |
 | HPR-P2-009 | PENDING | Semantic Remediation | Doc | Transfer permanent semantic decisions from legacy review/roadmaps into `doc/domain/` and `doc/modules/`, then preserve legacy files as execution history. | `docs(model-remediation): canonicalize semantic decisions` | HPR-P2-008 |
 | HPR-P2-010 | PENDING | Data Governance | Doc | Create data governance, retention/archival, provenance and legacy-data migration documents without inventing retention values. | `docs(data): establish data governance baseline` | HPR-P2-001 |
 | HPR-P2-011 | PENDING | Testing | Doc | Create test strategy, architecture testing, database testing, API testing and requirements traceability documents tied to executable evidence. | `docs(testing): establish verification documentation` | HPR-P2-002..006 |
@@ -835,3 +835,34 @@ Adapted write scope includes the Organization-owned Leak Detection contract/serv
 its architecture export, canonical progress records, focused tests and forward migrations.
 Completed historical tasks and HMR-080's blocker remain preserved.
 After this batch, the next proposed scope is HMR-052 + HMR-060; do not execute it here.
+
+## User-authorized P2 Batch 2 — 2026-10-06
+
+The owner resumed the proposed HMR-052 + HMR-060 scope with `next`.
+Baseline main `201e21b16a6bef5c2a346d4107c912c0ed237531` is green in full
+CI #570 / run `37476746534`. This two-task envelope executes under HPR-P2-008
+in the order HMR-052 then dependent HMR-060, retaining the exact registered
+HMR commit messages, independent source reviews HMSR-061/HMSR-072 and tests.
+No SCC or cross-module owner-contract prerequisite is introduced.
+
+Adapted write scope admits:
+
+- HMR-052: JpaNotificationMessageRepositoryAdapter, NotificationMessageJpaRepository,
+  NotificationMessageSemanticRemediationTest, NotificationMessageIntegrityMigrationTest,
+  and forward migration V20261006_005__hmr_052_notification_message_composition.sql.
+  The forward filename replaces the unexecuted historical V20261004_052 registration;
+  existing applied migrations remain untouched. Database rendering/version/input guards
+  are part of the exact-version and required-variable obligations.
+- HMR-060: NotificationDeliveryAttempt, JpaNotificationDeliveryAttemptRepositoryAdapter,
+  NotificationDeliveryAttemptSemanticRemediationTest, NotificationDeliveryAttemptIntegrityMigrationTest,
+  and newly admitted V20261006_006__hmr_060_notification_attempt_evidence.sql.
+  The migration is needed for concurrent-writer channel consistency and immutable
+  delivery evidence; a check-before-merge alone cannot close the append-only obligation.
+- Shared progress records: this roadmap, doc/model-remediation/RECONCILIATION.md,
+  docs/roadmap/model-semantic-remediation.md and docs/data definition/Notification.md.
+
+One final ref advance publishes the two semantic commits followed by progress
+reconciliation. Final Batch 2 CI validates integration and remains pending at
+publication. Follow owner instruction: confirm CI started, then stop until `next`
+or `fail`. Next proposed scope is HMR-053 alone after a green Batch 2 head;
+HMR-080's owner-contract blocker remains preserved.

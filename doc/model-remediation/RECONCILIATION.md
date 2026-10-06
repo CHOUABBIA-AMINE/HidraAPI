@@ -78,7 +78,7 @@ No `party.application.contract.planning` package exists in the exact current tre
 |---|---|---|---|---|
 | HMR-050 | HMSR-059 | integrity.IntegrityProgram | COMPLETED — HPR-P2-008 | legacy migration not required after current-schema revalidation; dedicated semantic test added; active `INTEGRITY_PROGRAM_TYPE` family enforced; Organization-owned Integrity contract validates populated owner unit; no cross-module FK |
 | HMR-051 | HMSR-060 | leakdetection.LeakDetectionCase | COMPLETED — HPR-P2-008 | Topology and optional Organization references validated on every case save; snapshot preserved; no migration because primary-candidate FK already exists; owner contract and architecture export added. |
-| HMR-052 | HMSR-061 | notification.NotificationMessage | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
+| HMR-052 | HMSR-061 | notification.NotificationMessage | COMPLETED — HPR-P2-008 | Recipient/request composite FK; exact-version/template FK and pre-dispatch composition guard; required-input schema checked for sendable states; inputs/version frozen; active NOTIFICATION_PRIORITY eligibility; V20261006_005; dedicated unit and PostgreSQL tests added. |
 | HMR-053 | HMSR-062 | telemetry.TrustedTelemetryReading | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-054 | HMSR-063 | topology.Equipment | STILL REQUIRED — PREVIOUS BLOCKER RESOLVED | registered migration: absent; dedicated test: absent; Party→Topology contract now present |
 | HMR-055 | HMSR-064 | workflow.WorkflowInstance | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
@@ -86,7 +86,7 @@ No `party.application.contract.planning` package exists in the exact current tre
 | HMR-057 | HMSR-068 | reporting.ReportRun | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-058 | HMSR-069 | risk.RiskAssessment | STILL REQUIRED | no migration registered; dedicated test: absent; revalidate obligations before mutation |
 | HMR-059 | HMSR-071 | leakdetection.LeakEscalationReference | COMPLETED — HPR-P2-008 | Optional candidate validated before save and protected by V20261006_001 nullable same-module FK with fail-closed orphan preflight; no case-primary equality rule. |
-| HMR-060 | HMSR-072 | notification.NotificationDeliveryAttempt | STILL REQUIRED | no migration registered; dedicated test: absent; revalidate obligations before mutation |
+| HMR-060 | HMSR-072 | notification.NotificationDeliveryAttempt | COMPLETED — HPR-P2-008 | Channel/message composite FK; create-only EntityManager.persist plus PK race protection; update/delete/truncate rejected; permanent/cancelled automatic retry rejected; V20261006_006; dedicated unit and PostgreSQL tests added. |
 | HMR-061 | HMSR-073 | workflow.WorkflowTransition | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-062 | HMSR-074 | incident.Incident | STILL REQUIRED | no migration registered; dedicated test: absent; revalidate obligations before mutation |
 | HMR-063 | HMSR-075 | identity.User | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
@@ -140,9 +140,9 @@ No `party.application.contract.planning` package exists in the exact current tre
 - HMR-005 corrected from stale planned status to **COMPLETED**;
 - HMR-009 confirmed **COMPLETED** and removed as a carry-over blocker;
 - HMR-050..106 evaluated: **57**;
-- HMR-050..106 **STILL REQUIRED**: **49**;
+- HMR-050..106 **STILL REQUIRED**: **47**;
 - HMR-050..106 **BLOCKED**: **1**;
-- HMR-050..106 **COMPLETED during HPR-P2-008**: **7**;
+- HMR-050..106 **COMPLETED during HPR-P2-008**: **9**;
 - HMR-050..106 **SUPERSEDED**: **0**;
 - HMR-054 historical blocker resolved but remediation still required;
 - HMR-080 remains blocked.
@@ -150,8 +150,8 @@ No `party.application.contract.planning` package exists in the exact current tre
 ## HPR-P2-008 Progress
 
 - HMR-050 — **COMPLETED** at the first HPR-P2-008 execution step.
-- Current next dependency-safe item: **HMR-052 — notification.NotificationMessage**.
-- Remaining after current Batch 1 progress: **49 STILL REQUIRED + 1 BLOCKED (HMR-080)**.
+- Current next dependency-safe item: **HMR-053 — telemetry.TrustedTelemetryReading**.
+- Remaining after current Batch 2 progress: **47 STILL REQUIRED + 1 BLOCKED (HMR-080)**.
 
 - HMR-051 — **COMPLETED**: Topology and optional Organization references validated on every case save; snapshot preserved; no migration because primary-candidate FK already exists; owner contract and architecture export added.
 
@@ -196,3 +196,43 @@ Central (DNS failure); local Java is 17, not the required 21, and Docker is abse
 No local Java/PostgreSQL test success is claimed. The final batch full CI on Java 21
 is the integration and migration gate; if red, repair this batch before proceeding.
 Four new migrations follow V20261005_001 and preserve all pre-existing migrations.
+
+## Batch 1 repaired exact-head gate
+
+Full CI #570 / run `37476746534` succeeded on
+`201e21b16a6bef5c2a346d4107c912c0ed237531`. CI #569 exposed one missing export
+in ForensicRemediationClosureTest; the narrow repair added the same approved
+Organization LeakDetection contract export already present in ArchitectureGuardrailTest.
+This green head is the Batch 2 baseline.
+
+## Batch 2 execution and validation disposition
+
+HMR-052 and HMR-060 implemented in independent semantic commits. The final
+Batch 2 CI is pending; task completion here records implementation, not a passed CI run.
+No existing migration was edited. V20261006_005 and V20261006_006 follow the
+Batch 1 migrations and fail closed on incompatible legacy rows without rewriting evidence.
+
+Validation performed locally:
+
+- `git diff --check`: passed.
+- Java compiler syntax parsing: all eight changed/new Java files passed; no dependency/type-check claim.
+- Standalone compilation/execution of the actual NotificationDeliveryAttempt domain:
+  all seven statuses enforce the permanent-failure automatic-retry rule.
+- Maven compile, focused four-class test run, full test and clean verify attempted
+  using `bash ./mvnw -o -q ...`: all stopped before build/test execution because
+  Spring Boot 4.1.1 parent POM is absent from the local cache. The available Java is 17;
+  required Java 21 and PostgreSQL/Testcontainers verification remain for GitHub CI.
+
+Rendering-variable contract: the selected version's JSON object may contain a
+`required` array of nonblank variable names. Each requires a matching, nonblank
+message-owned value snapshot before READY/SCHEDULED/dispatch progression.
+Malformed required contracts fail closed. This checks required input presence;
+it is not a general JSON Schema type validator or a template renderer.
+The current create API has no variable payload: templates with required inputs
+need DRAFT staging and persisted variables before promotion. The create path
+rejects them rather than sending incomplete messages. Template-free messages
+remain supported. No new rendering endpoint, retry workflow, attempt-number,
+provider, cross-module or OT-control policy is introduced.
+
+Next registered proposed scope: HMR-053 alone, only after the final Batch 2 head is green.
+Per owner instruction, stop once final-head CI has started; resume on `next` or `fail`.

@@ -7,7 +7,7 @@
  *
  * @Name        : NotificationMessageJpaRepository
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-06
  *
  * @Type        : Interface
  * @Layer       : Infrastructure
@@ -22,10 +22,20 @@ package dz.sh.hidra.modules.notification.infrastructure.persistence.repository;
 import dz.sh.hidra.modules.notification.infrastructure.persistence.entity.NotificationMessageJpaEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 /**
  * Spring Data JPA repository for NotificationMessage.
  */
 @Repository
 public interface NotificationMessageJpaRepository extends JpaRepository<NotificationMessageJpaEntity, String> {
+    @Query(value = "SELECT hmr052_message_valid(:id, :requestId, :recipientId, "
+            + ":templateId, :versionId, :priorityId, :status)", nativeQuery = true)
+    boolean hasValidComposition(
+            @Param("id") String id, @Param("requestId") String requestId,
+            @Param("recipientId") String recipientId, @Param("templateId") String templateId,
+            @Param("versionId") String versionId, @Param("priorityId") String priorityId,
+            @Param("status") String status);
+
 }

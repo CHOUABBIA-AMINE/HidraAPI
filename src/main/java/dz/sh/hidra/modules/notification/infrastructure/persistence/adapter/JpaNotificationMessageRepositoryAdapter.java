@@ -7,7 +7,7 @@
  *
  * @Name        : JpaNotificationMessageRepositoryAdapter
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-06
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -24,6 +24,8 @@ import dz.sh.hidra.modules.notification.domain.model.NotificationMessage;
 import dz.sh.hidra.modules.notification.infrastructure.persistence.mapper.NotificationPersistenceMapper;
 import dz.sh.hidra.modules.notification.infrastructure.persistence.repository.NotificationMessageJpaRepository;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+import dz.sh.hidra.modules.notification.domain.exception.InvalidNotificationValueException;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -41,8 +43,16 @@ public class JpaNotificationMessageRepositoryAdapter implements NotificationMess
     }
 
     @Override
+    @Transactional
     public NotificationMessage save(NotificationMessage model) {
-        return NotificationPersistenceMapper.toDomain(repository.save(NotificationPersistenceMapper.toEntity(model)));
+        Objects.requireNonNull(model, "NotificationMessage must not be null.");
+        if (!repository.hasValidComposition(model.id(), model.requestId(), model.recipientId(),
+                model.templateId(), model.templateVersionId(), model.priorityId(), model.status().name())) {
+            throw new InvalidNotificationValueException(
+                    "NotificationMessage recipient, template version, required variables or priority is invalid.");
+        }
+        // Flush before the caller can dispatch: database guards remain authoritative under races.
+        return NotificationPersistenceMapper.toDomain(repository.saveAndFlush(NotificationPersistenceMapper.toEntity(model)));
     }
 
     @Override

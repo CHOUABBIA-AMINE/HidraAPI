@@ -126,8 +126,7 @@ class HidraAuthorizationOwnershipTest {
                 providerRepository,
                 externalIdentityRepository,
                 userRepository,
-                queryUseCase,
-                mock(SpringAuthorizationContextAdapter.class)
+                queryUseCase
         );
         Authentication authentication = provider.authenticate(
                 LdapAuthenticationToken.unauthenticated(USERNAME, "directory-secret")

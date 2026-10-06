@@ -511,3 +511,18 @@ Validation:
 Current totals: **17 implemented, 39 still required, one blocked (HMR-080)**.
 Next owner-selected scope is attached Batch 7 workflow execution; it requires green
 Batch 6 CI and a fresh scope/dependency admission. Do not execute automatically.
+
+### HMR-085 CI #577 repair — 2026-10-06
+
+Run 37518264529 at 03db23c4 failed in Maven testCompile. Production
+compilation succeeded, but tests were not executed. The OIDC fixture constructor
+update also passed SpringAuthorizationContextAdapter into the unchanged LDAP
+provider constructor in HidraAuthorizationOwnershipTest. Removed that extra
+LDAP argument, retaining the required OIDC adapter. Production semantics unchanged.
+
+All test sources parsed with the JDK compiler; four LDAP/OIDC constructor calls
+checked against actual production declaration arities. git diff --check passed.
+Focused ownership/OIDC Maven tests and clean verify attempted with -o; blocked
+by uncached Spring Boot parent 4.1.1 (local Maven Central DNS remains unavailable).
+These syntax/arity checks are not JUnit success claims. Replacement final-head CI
+pending at preparation; Batch 7 remains gated on green Batch 6 verification.

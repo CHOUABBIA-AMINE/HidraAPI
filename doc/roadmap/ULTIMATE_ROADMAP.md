@@ -1080,3 +1080,21 @@ New PostgreSQL/trust/API regressions require final-head CI, pending at preparati
 Current reconciliation: 17 implementations, 39 still required, one blocked (080).
 Next recommended owner scope: Batch 7 Workflow execution (055, 061, 066, 081, 099),
 subject to green Batch 6 CI and fresh admission. Stop after CI trigger observation.
+
+## HPR-P2-008 Batch 6 CI #577 repair — HMR-085 / 2026-10-06
+
+Owner `Fail` authorizes repair of failed run 37518264529 at 03db23c4.
+Production compilation passed; test compilation failed before any tests ran because
+HidraAuthorizationOwnershipTest supplied an OIDC-only context adapter to the
+unchanged five-argument LdapAuthenticationProvider constructor.
+Exact repair commit: `fix(identity): repair LDAP authorization ownership test fixture`.
+Write scope: the already admitted HidraAuthorizationOwnershipTest.java and this
+roadmap plus RECONCILIATION.md. Remove only the extra LDAP constructor argument;
+retain the OIDC context adapter. No production/migration changes or Batch 7 work.
+Validation: check constructor wiring and Java syntax, attempt focused ownership
+test/full verification, then observe replacement final-head CI trigger and stop.
+
+Repair validation: Java test-source parsing and four constructor-arity checks
+passed, as did git diff --check. Focused Maven ownership/OIDC tests and clean
+verify remain blocked locally by uncached Boot parent 4.1.1. Replacement CI
+pending at preparation; no test execution success claimed.

@@ -1009,3 +1009,40 @@ recorded in `doc/model-remediation/RECONCILIATION.md`, under Batch 6 preflight.
 Current HMR-050..106 totals: 16 completed, 39 still required, two blocked (080 and 085).
 Next selected task remains HMR-085 after prerequisite resolution; Batch 7 is not admitted
 by this execution. No production source or migration change made by this preflight.
+
+## HPR-P2-008 Batch 6 scope admission — HMR-085 / 2026-10-06
+
+Owner `Next` accepts the constrained JSON evaluator prerequisite proposed in
+RECONCILIATION.md. Execute HMR-085 alone, exact commit
+`fix(identity): remediate semantic review AuthorizationDecision`. Baseline main
+341a79a has successful documentation CI #68; its unchanged production tree was
+verified by full CI #576 at 925feec7. The previous preflight block is resolved.
+
+The eight numbered prerequisite contracts in the Batch 6 preflight are admitted.
+Additional exact write allowlist (paths relative to Identity production/test root):
+
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/IdentityAuthorizationApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/model/VerifiedAuthorizationAssertion.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/AuthorizationEvidencePort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/AuthorizationAssertionPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/AuthorizationDecisionSettingsPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/policy/AuthorizationEvidence.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/service/AuthorizationPolicyEvaluator.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/service/AuthorizationExpressionEvaluator.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/policy/AuthorizationJson.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaAuthorizationEvidenceAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/AuthorizationDecisionJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/SpringAuthorizationContextAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/HidraOidcAuthenticationToken.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/IdentityOidcJwtAuthenticationConverter.java`
+- `src/test/java/dz/sh/hidra/modules/identity/semantic/AuthorizationDecisionSemanticRemediationTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/semantic/AuthorizationEvidencePostgresTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/AuthorizationAssertionTrustTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/IdentityOidcJwtAuthenticationConverterTest.java`
+
+Documentation allowlist: this roadmap, RECONCILIATION.md, legacy semantic
+remediation roadmap and Identity DDD. No migrations or cross-module contracts.
+Validation: compile, AuthorizationDecisionSemanticRemediationTest,
+AuthorizationEvidencePostgresTest, AuthorizationAssertionTrustTest, complete test
+suite and clean verify. One semantic commit, one final-head CI observation; stop
+after CI is triggered as instructed by the owner. Do not start Batch 7.

@@ -18,10 +18,10 @@
 | Legacy/reference documentation root | `docs/` |
 | Forensic audit evidence baseline | `3e6de10b6e64bd989626a522d2de21b8ea501b8c` |
 | Bootstrap repository baseline | `e1f33e32519dcd1d07367e96cf399dfad2933053` |
-| Production readiness | NOT ESTABLISHED — P0 security/audit verification is CLOSED; P1 production infrastructure and survivability are still incomplete |
+| Production readiness | NOT ESTABLISHED — P0 security/audit verification is CLOSED and HPR-P1-029 production-equivalent evidence is complete; final P1 closure HPR-P1-012 remains pending |
 | TimescaleDB | NOT IMPLEMENTED — DEFERRED / TARGET |
 | PostGIS | NOT IMPLEMENTED — DEFERRED / TARGET |
-| High availability | REPOSITORY IMPLEMENTATION EXISTS / INTEGRATION DEFECTS + PRODUCTION-EQUIVALENT VERIFICATION OUTSTANDING |
+| High availability | PRODUCTION-EQUIVALENT EVIDENCE RECORDED — final P1 closure reconciliation pending HPR-P1-012 |
 | RTO | APPROVED TARGET — ≤ 60 minutes from DR declaration to service acceptance |
 | RPO | APPROVED TARGET — ≤ 5 minutes of recoverable production data |
 
@@ -65,9 +65,9 @@ The following audited statements govern prioritization:
 - DDD modularity and Hexagonal boundaries are materially implemented and enforced by `ArchitectureGuardrailTest`.
 - The forensic baseline identified `HidraOperationalWorkbenchService` as a material P0 exposure boundary; HPR-P0-001..003 replaced automatic exposure with fail-closed resource/field approval, prohibited credential/password exposure, added regressions, and added architecture guardrails.
 - The audited `LocalCredentialJpaEntity.passwordHash` exposure path is remediated and covered by regression/architecture controls; P0 closure evidence is recorded under HPR-P0-007.
-- Application and PostgreSQL HA target architectures and repository implementation artifacts now exist; the 2026-10-06 independent re-audit found concrete integration defects and no production-equivalent failover evidence, so HA remains NOT VERIFIED.
-- DR objectives are owner-approved and documented (RTO ≤ 60 minutes, RPO ≤ 5 minutes, continuous WAL/PITR, daily backup coverage and 35-day operational retention); pgBackRest procedures exist, but scheduled-service binding, exact recovery-chain acceptance and measured restore/PITR evidence remain incomplete.
-- CI and controlled release automation now include repository-verified survivor, drain-to-zero, rejoin and rollback safety gates; production Environment reviewer enforcement and production-equivalent deployment/rollback evidence remain NOT ESTABLISHED.
+- Application and PostgreSQL HA target architectures and repository implementation artifacts exist; the 2026-10-06 HPR-P1-029 production-equivalent campaign now records both-node application HA, PostgreSQL single-writer failover/fencing and Hikari recovery evidence. Final P1 closure remains HPR-P1-012.
+- DR objectives are owner-approved and documented (RTO ≤ 60 minutes, RPO ≤ 5 minutes, continuous WAL/PITR, daily backup coverage and 35-day operational retention); HPR-P1-029 records intentional PITR evidence with achieved RPO 15 seconds and RTO 37 minutes, both within approved objectives. Final closure remains HPR-P1-012.
+- CI and controlled release automation include repository-verified survivor, drain-to-zero, rejoin and rollback safety gates; HPR-P1-029 retains operator-supplied two-approval deployment governance plus production-equivalent exact-artifact deployment/rollback evidence. Final P1 closure remains HPR-P1-012.
 - TimescaleDB is not implemented and remains deferred/target.
 - PostGIS is not implemented and remains deferred/target.
 - GeoJSON/application geometry is not PostGIS persistence.
@@ -130,7 +130,7 @@ The following audited statements govern prioritization:
 | HPR-P1-026 | COMPLETED — implementation SHA `472811292c271241c94647e71deb1ffe59086d0c` passed exact-head full CI #553 / run id `37430996964`. Prometheus now has an authenticated bearer-token-file path for protected HidraAPI metrics, production explicitly enables the `http.server.requests` histogram required by p95 rules, both application and PostgreSQL HAProxy configurations expose dedicated monitoring-only Prometheus exporters, Prometheus scrapes both proxies, Alertmanager evaluates security/database/backup domains before the generic critical route, and static/native validation asserts those bindings. Live rule firing, receiver delivery and resolve evidence remain HPR-P1-029 scope. | Observability / SRE | Infra/Test/Doc | Complete production observability wiring: provide an approved authenticated scrape path for protected HidraAPI metrics without exposing them publicly, enable the HTTP histogram required by latency rules, expose/scrape HAProxy metrics used by availability rules, correct Alertmanager route precedence so critical database/security/backup alerts reach their domain receivers as approved, and extend static/native validation for the resulting Prometheus/Alertmanager/HAProxy configuration. | `fix(operations): wire production observability signals` | HPR-P1-019 |
 | HPR-P1-027 | COMPLETED — implementation SHA `cafdc42270085ddf513a23a514f437ef39f7b842` passed exact-head full CI #555 / run id `37433450282`. Database operations now include PostgreSQL index validity/readiness/liveness inspection, extension-free dead-tuple/object-size/index-ratio space-risk triage without assuming unapproved extensions, host/filesystem byte+inode capacity capture outside SQL, and a guarded maintenance-validation harness requiring authenticated database-backed HidraAPI acceptance before and after the selected action. Actual production-equivalent diagnostic/maintenance execution remains HPR-P1-029 evidence scope. | Database Operations | Infra/Test/Doc | Complete database health inspection coverage with PostgreSQL index validity/readiness and a reviewed bloat/space-risk method that does not assume unapproved extensions; add host/filesystem capacity evidence outside SQL; retain guarded maintenance semantics and validate diagnostic/maintenance procedures with post-maintenance acceptance in production-equivalent infrastructure. | `fix(database): complete operational health inspections` | HPR-P1-020 |
 | HPR-P1-028 | COMPLETED — implementation SHA `e12a2205f397e68edf1bda96211a99966577d501` passed exact-head full CI #559 / run id `37435329469`. Repo2 validation now distinguishes bootstrap from mature policy coverage, requires one distinct completed full recovery point for each required UTC calendar month from the approved 2026-10 policy start, rejects duplicate/missing required months, and retains the 12-point mature horizon; Prometheus now runs with executable `30d` TSDB retention and Loki with `90d` retention plus compactor deletion. Protected-copy independence and retained repo2 restorability remain HPR-P1-029 measured evidence scope. | Retention / Archival | Infra/Test/Doc | Enforce the approved P1 retention controls in executable configuration: distinguish bootstrap from mature monthly coverage and verify distinct monthly repo2 recovery points up to the required 12-month horizon; bind Prometheus 30-day and Loki 90-day retention/deletion settings; verify repo2 protected-copy independence and retained recovery-point restorability in the later production-equivalent exercise. | `fix(operations): enforce p1 retention controls` | HPR-P1-021 + HPR-P1-026 |
-| HPR-P1-029 | BLOCKED — repository remediation HPR-P1-021..028 is complete, but the integrated survivability campaign cannot be truthfully executed from the current repository/GitHub-only context because no authorized production-equivalent runtime, privileged service/SSH access, external credentials, live monitoring receivers, protected backup-storage access, deployment/rollback authority, or retained exercise evidence is available. No destructive exercise was run and no RTO/RPO, HA, deployment, alert-delivery, maintenance, or retention result is fabricated. Resume this HPR only when the approved production-equivalent environment and external inputs are available. | Survivability Exercise | Infra/Test/Doc | Execute and retain one governed production-equivalent P1 evidence campaign after HPR-P1-021..028: scheduled backup/WAL operation; intentional current-schema PITR with pre-target marker present/post-target marker absent, exact Flyway validation, achieved RPO and declaration-to-service-acceptance RTO; two-node application loss/rejoin with continuous representative REST requests; PostgreSQL failover with single-writer/fencing/stable-endpoint and HidraAPI/Hikari recovery; exact-artifact deployment plus approved rollback; representative alert firing/domain delivery/resolve; database diagnostic/maintenance acceptance; and retention/independent-repo restore evidence. Record immutable environment/tool versions and evidence identifiers. | `test(operations): execute p1 survivability exercises` | HPR-P1-021..028 |
+| HPR-P1-029 | COMPLETED — production-equivalent evidence campaign executed 2026-10-06 against deployed HidraAPI SHA `66f6d7f12d1f7d52f8725cd4747cf4c777bfd29a`. Repository reconciliation confirms the authoritative 82-migration tail. Retained operator evidence demonstrates both-node REST continuity/rejoin, Patroni single-writer failover with watchdog fencing and Hikari recovery, intentional PITR with marker assertions, RPO 15s and RTO 37m within approved objectives, exact-artifact deployment/rollback with two approvals, alert delivery/acknowledgement/resolve including security routing, guarded database maintenance with authenticated acceptance, and independent repo2 restore plus October 2026 bootstrap retention. Canonical evidence: `doc/operations/P1_SURVIVABILITY_EXERCISE_EVIDENCE_2026-10-06.md`. | Survivability Exercise | Infra/Test/Doc | Execute and retain one governed production-equivalent P1 evidence campaign after HPR-P1-021..028: scheduled backup/WAL operation; intentional current-schema PITR with pre-target marker present/post-target marker absent, exact Flyway validation, achieved RPO and declaration-to-service-acceptance RTO; two-node application loss/rejoin with continuous representative REST requests; PostgreSQL failover with single-writer/fencing/stable-endpoint and HidraAPI/Hikari recovery; exact-artifact deployment plus approved rollback; representative alert firing/domain delivery/resolve; database diagnostic/maintenance acceptance; and retention/independent-repo restore evidence. Record immutable environment/tool versions and evidence identifiers. | `test(operations): execute p1 survivability exercises` | HPR-P1-021..028 |
 
 ### P1 Independent Audit Remediation Baseline — 2026-10-05
 
@@ -244,23 +244,15 @@ P1 remains **OPEN** and production readiness remains **NOT ESTABLISHED**.
 
 ## 6. Immediate Next Execution
 
-The 2026-10-06 independent re-audit disproves the prior statement that only exercise/environment evidence remained. Concrete repository integration defects have now been repaired and exact-head verified, but the integrated production-equivalent campaign requires access to the approved runtime environment.
+HPR-P1-021..029 remediation and production-equivalent survivability evidence are now complete.
 
-P1 evidence gate:
-
-`HPR-P1-029 — test(operations): execute p1 survivability exercises`
-
-Status: **BLOCKED** until the approved production-equivalent environment and external access/evidence inputs are available. Resume HPR-P1-029 when that environment is connected; do not fabricate or substitute evidence.
-
-Owner-authorized parallel next executable task:
-
-`HPR-P2-001 — docs(governance): complete canonical documentation controls`
-
-P2 may now proceed in roadmap dependency order while HPR-P1-029 remains blocked. This authorization does not waive HPR-P1-029, does not unblock HPR-P1-012, and does not establish production readiness.
+Next executable task:
 
 `HPR-P1-012 — docs(roadmap): close P1 survivability verification`
 
-remains BLOCKED until HPR-P1-029 is completed and its retained evidence satisfies the re-audit requirements. P3 remains deferred until both P1 and P2 are closed.
+HPR-P1-012 must reconcile the retained HPR-P1-029 evidence against the independent P1 re-audit requirements, run the required final exact-head verification gate, and close P1 only if all required checks remain satisfied.
+
+P2 parallel-work authorization remains historical governance context, but the preferred execution order is now to complete HPR-P1-012 before further P2 work so production-readiness status can be resolved cleanly.
 
 ### P1 evidence-block parallel progression authorization — 2026-10-06
 
@@ -271,7 +263,16 @@ remains BLOCKED until HPR-P1-029 is completed and its retained evidence satisfie
 - no P2 artifact may be cited as substitute evidence for P1 HA, DR, deployment, alert delivery, database-maintenance, retention or RTO/RPO verification;
 - P3 remains deferred until both P1 and P2 are closed.
 
-### HPR-P1-029 blocked execution evidence — 2026-10-06
+### HPR-P1-029 completion evidence — 2026-10-06
+
+- canonical retained evidence: `doc/operations/P1_SURVIVABILITY_EXERCISE_EVIDENCE_2026-10-06.md`;
+- deployed authoritative repository SHA: `66f6d7f12d1f7d52f8725cd4747cf4c777bfd29a` on `main`;
+- repository reconciliation confirms 82 Flyway migrations with tail `V20261004_049__hmr_049_risk_risk_register.sql` then `V20261005_001__provision_risk_register_created_audit_taxonomy.sql`;
+- operator-supplied measured evidence records RPO **15 seconds** and RTO **37 minutes**, both within approved P1 objectives;
+- both-node application HA, PostgreSQL single-writer/fencing/Hikari recovery, exact-artifact deployment/rollback, alert delivery/acknowledgement/resolve, database maintenance acceptance and independent repo2 restore/bootstrap retention are retained in the canonical evidence document;
+- HPR-P1-029 is **COMPLETED**; HPR-P1-012 remains responsible for final P1 closure and production-readiness disposition.
+
+### HPR-P1-029 initial blocked execution evidence — 2026-10-06 (historical)
 
 - execution base SHA: `24d1571e43ae5d1a0467c0b050e343df3f1f2481`;
 - HPR-P1-021..028 repository remediation is complete and exact-head verified; the remaining requirement is measured production-equivalent execution, not another static repository implementation pass;

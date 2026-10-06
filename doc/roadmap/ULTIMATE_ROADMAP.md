@@ -249,7 +249,7 @@ P1 is **CLOSED** only when this closure SHA passes the repository's full exact-h
 | HPR-P2-005 | COMPLETED — deterministic OpenAPI 3.1 contract version-controlled from exact executable P1 closure CI artifact; canonical API overview, conventions, authentication/authorization, error-model limitation, versioning/compatibility and OpenAPI-governance documents established; shared machine-readable error envelope remains explicitly NOT ESTABLISHED | API | Code/Doc | Generate and version-control deterministic `doc/api/openapi.yaml`; create API overview, conventions, auth, error, versioning/compatibility and OpenAPI governance docs. | `docs(api): establish versioned api contract` | HPR-P1-008 |
 | HPR-P2-006 | COMPLETED — canonical current database architecture, schema ownership, Flyway policy and generated persistence dictionary established from 82 current Flyway migrations, 469 current module JPA persistence entities, production configuration and closed P1 PostgreSQL/backup evidence; stale pre-closure DB stage documents retained as historical provenance | Database | Doc | Create database architecture, schema ownership, Flyway policy and current generated data dictionary from current migrations/JPA evidence. | `docs(database): establish canonical database documentation` | HPR-P2-001 |
 | HPR-P2-007 | COMPLETED — exact-source reconciliation established: HMR-005 corrected to completed, HMR-009 confirmed completed/stale carry-over removed, HMR-054 historical blocker resolved by current Party→Topology contract, HMR-050..106 reconciled to 56 still-required + 1 blocked (HMR-080), 0 superseded; legacy roadmap preserved as history | Semantic Remediation | Code/Doc | Inventory unresolved HMR/HMSR obligations against exact current source; mark each as completed, still required, blocked, or superseded with evidence. | `docs(model-remediation): reconcile remaining semantic obligations` | HPR-P2-003 |
-| HPR-P2-008 | IN PROGRESS — HMR-050 and attached Batches 1..6 implemented; 17 completed, 39 still-required HMRs and HMR-080 blocked in the HMR-050..106 register. Baseline production CI #576 passed; final Batch 6 CI pending. Local full Maven validation blocked by Maven Central DNS/uncached parent, Java 17 and absent Docker. | Semantic Remediation | Code | Execute still-required semantic remediation in dependency order using revalidated HMSR obligations; do not restart completed HMRs without regression evidence. | `fix(model): continue reconciled semantic remediation` | HPR-P2-007 |
+| HPR-P2-008 | IN PROGRESS — HMR-050 and attached Batches 1..6 implemented; 17 completed, 38 still-required HMRs and HMR-080/HMR-055 blocked. Full Batch 6 CI #579 passed. Batch 7 stops at Workflow owner-contract/purpose-family prerequisite WF-PREREQ-01; no production admission. | Semantic Remediation | Code | Execute still-required semantic remediation in dependency order using revalidated HMSR obligations; do not restart completed HMRs without regression evidence. | `fix(model): continue reconciled semantic remediation` | HPR-P2-007 |
 | HPR-P2-009 | PENDING | Semantic Remediation | Doc | Transfer permanent semantic decisions from legacy review/roadmaps into `doc/domain/` and `doc/modules/`, then preserve legacy files as execution history. | `docs(model-remediation): canonicalize semantic decisions` | HPR-P2-008 | IN PROGRESS — HMR-050 and attached Batches 1..6 implemented; 17 completed, 39 still-required HMRs and HMR-080 blocked in the HMR-050..106 register. Baseline production CI #576 passed; final Batch 6 CI pending. Local full Maven validation blocked by Maven Central DNS/uncached parent, Java 17 and absent Docker. | Semantic Remediation | Code | Execute still-required semantic remediation in dependency order using revalidated HMSR obligations; do not restart completed HMRs without regression evidence. | `fix(model): continue reconciled semantic remediation` | HPR-P2-007 |
 | HPR-P2-010 | PENDING | Data Governance | Doc | Create data governance, retention/archival, provenance and legacy-data migration documents without inventing retention values. | `docs(data): establish data governance baseline` | HPR-P2-001 |
 | HPR-P2-011 | PENDING | Testing | Doc | Create test strategy, architecture testing, database testing, API testing and requirements traceability documents tied to executable evidence. | `docs(testing): establish verification documentation` | HPR-P2-002..006 |
@@ -1118,3 +1118,23 @@ clean verify, exact previous-SHA comparison and compatibility enforcement passed
 Local packaging remains blocked by the uncached Boot parent; git diff --check
 passed. CI #578 provides successful repository clean verify evidence at fb47ae27;
 complete replacement CI remains pending at preparation.
+
+
+## HPR-P2-008 Batch 7 preflight disposition — 2026-10-06
+
+Owner `Next` selects Workflow execution: HMR-055, HMR-061, HMR-066, HMR-081,
+HMR-099. Full baseline CI #579 (37520044638) and documentation CI #71
+(37520044656) passed at b6cdb1e2640be5e1990161f2b4d8e61bf2fd1156.
+
+HMR-055 is BLOCKED by proposed WF-PREREQ-01: the workflow-purpose catalog family
+is undefined and authoritative target, actor and assignment owner contracts are
+missing. The actual start/task/action service is outside the legacy file allowlist.
+AGENTS.md section 3.2 rule 9 requires stopping before mutating the HMR. No production
+scope is admitted and no Batch 7 implementation is claimed.
+
+The concrete eight-part contract proposal and required scope/migration/test admission
+are recorded in `doc/model-remediation/RECONCILIATION.md`, Batch 7 preflight.
+Resolve the prerequisite before admitting HMR-055; do not advance to HMR-061 or
+Batch 8. Totals: 17 implementations, 38 still required, two blocked (080 and 055).
+Documentation validation and diff whitespace checks passed; documentation CI trigger
+pending at commit preparation. Stop after observing the documentation CI trigger.

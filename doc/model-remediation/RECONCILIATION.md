@@ -81,7 +81,7 @@ No `party.application.contract.planning` package exists in the exact current tre
 | HMR-052 | HMSR-061 | notification.NotificationMessage | COMPLETED — HPR-P2-008 | Recipient/request composite FK; exact-version/template FK and pre-dispatch composition guard; required-input schema checked for sendable states; inputs/version frozen; active NOTIFICATION_PRIORITY eligibility; V20261006_005; dedicated unit and PostgreSQL tests added. |
 | HMR-053 | HMSR-062 | telemetry.TrustedTelemetryReading | COMPLETED — HPR-P2-008 | Telemetry trust application use case derives values/provenance/binding from locked source evidence; PASSED plus MEDIUM/HIGH/CERTIFIED, ACTIVE point and active QUALITY_CODE required; composite assessment/reading identity and optional unit/batch FKs; snapshot preservation; V20261006_008; focused unit and PostgreSQL tests added; CI pending. |
 | HMR-054 | HMSR-063 | topology.Equipment | COMPLETED — HPR-P2-008 | EquipmentType identity/code is sole active classification; EquipmentKind deleted from domain/JPA; forward V20261006_009 preserves legacy strings, rejects conflicting classification/orphan attachments and adds nullable same-module FKs; manufacturer checked by existing Party contract; snapshots preserved; focused tests added; CI pending. |
-| HMR-055 | HMSR-064 | workflow.WorkflowInstance | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
+| HMR-055 | HMSR-064 | workflow.WorkflowInstance | BLOCKED — PREREQUISITE CONTRACT | Undefined purpose family and missing target/actor owner contracts; Batch 7 preflight below. No implementation claimed. |
 | HMR-056 | HMSR-067 | integration.IntegrationExchangeMessage | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-057 | HMSR-068 | reporting.ReportRun | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-058 | HMSR-069 | risk.RiskAssessment | STILL REQUIRED | no migration registered; dedicated test: absent; revalidate obligations before mutation |
@@ -111,7 +111,7 @@ No `party.application.contract.planning` package exists in the exact current tre
 | HMR-082 | HMSR-096 | hse.HseCase | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-083 | HMSR-097 | audit.AuditExportRequest | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-084 | HMSR-098 | documents.DocumentTargetLink | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
-| HMR-085 | HMSR-100 | identity.AuthorizationDecision | IMPLEMENTED — CI PENDING | Transactional graph, bounded ABAC, verified mappings, deterministic evidence and configurable persistence; Batch 6 implementation below. |
+| HMR-085 | HMSR-100 | identity.AuthorizationDecision | IMPLEMENTED — CI #579 PASSED | Transactional graph, bounded ABAC, verified mappings, deterministic evidence and configurable persistence; Batch 6 implementation below. |
 | HMR-086 | HMSR-101 | identity.AuthorizationDelegationGrant | COMPLETED — HPR-P2-008 | Required nonblank delegation reason and validTo carried through domain/JPA/mapper; DelegationStatus narrowed to ACTIVE/REVOKED/EXPIRED; optional Role and Permission validated with nullable same-module FKs; no XOR rule; V20261006_011 fails closed on legacy evidence; focused tests added; final CI pending. |
 | HMR-087 | HMSR-104 | identity.LoginSession | COMPLETED — HPR-P2-008 | AuthenticationProtocol sessionType and independent endedAt carried through domain/JPA/mapper; exact ExternalIdentity propagated from LDAP/OIDC through principal/input/completion; terminal lifecycle preserves lastSeenAt and prior termination; V20261006_012 requires explicit legacy protocol evidence; no inferred historical termination; focused tests added; final CI pending. |
 | HMR-088 | HMSR-105 | identity.UserPermissionGrant | COMPLETED — HPR-P2-008 | Domain and PostgreSQL enforce nonblank grantReason, bounded validTo and ACTIVE/REVOKED/EXPIRED for direct permission grants including emergency records; shared GrantStatus and optional role-grant reason/end remain unchanged; V20261006_013 and focused tests added; final CI pending. |
@@ -140,18 +140,18 @@ No `party.application.contract.planning` package exists in the exact current tre
 - HMR-005 corrected from stale planned status to **COMPLETED**;
 - HMR-009 confirmed **COMPLETED** and removed as a carry-over blocker;
 - HMR-050..106 evaluated: **57**;
-- HMR-050..106 **STILL REQUIRED**: **39**;
+- HMR-050..106 **STILL REQUIRED**: **38**;
 - HMR-050..106 **BLOCKED**: **2**;
-- HMR-050..106 **COMPLETED during HPR-P2-008**: **16**;
+- HMR-050..106 **COMPLETED during HPR-P2-008**: **17**;
 - HMR-050..106 **SUPERSEDED**: **0**;
 - HMR-054 completed; repaired CI #575 is green;
-- HMR-080 remains blocked.
+- HMR-080 and HMR-055 remain blocked.
 
 ## HPR-P2-008 Progress
 
 - HMR-050 — **COMPLETED** at the first HPR-P2-008 execution step.
-- Next proposed scope: **Batch 7 — Workflow execution (055, 061, 066, 081, 099)**, subject to green Batch 6 CI and fresh dependency/scope admission.
-- Current remaining: **39 STILL REQUIRED + 1 BLOCKED (HMR-080)**; 17 implementations completed.
+- Selected scope: **Batch 7 — Workflow execution (055, 061, 066, 081, 099)**. Batch 6 CI #579 passed; HMR-055 is blocked by the prerequisite contract below. No Batch 7 production scope admitted.
+- Current remaining: **38 STILL REQUIRED + 2 BLOCKED (HMR-080, HMR-055)**; 17 implementations completed.
 
 - HMR-051 — **COMPLETED**: Topology and optional Organization references validated on every case save; snapshot preserved; no migration because primary-candidate FK already exists; owner contract and architecture export added.
 
@@ -542,3 +542,94 @@ Workflow YAML/bash syntax and preserved-gate checks passed; git diff --check pas
 Local Maven packaging was attempted with -o and remains blocked by uncached
 Boot parent 4.1.1. Replacement exact-head CI pending at preparation. Batch 7
 remains gated until the complete CI workflow succeeds.
+
+
+## Batch 7 preflight — workflow execution / 2026-10-06
+
+Owner `Next` selects attached Batch 7: HMR-055, HMR-061, HMR-066, HMR-081,
+HMR-099, in that order. Baseline main b6cdb1e2640be5e1990161f2b4d8e61bf2fd1156
+is green: full CI #579 / run 37520044638 and documentation CI #71 /
+run 37520044656 succeeded. The five HMSR source reviews and corresponding HMR
+obligations were recovered independently against current code. No task is implemented
+by this preflight; 061, 066, 081 and 099 remain STILL REQUIRED.
+
+### WF-PREREQ-01 — PROPOSED, NOT ADMITTED
+
+HMR-055 / HMSR-064 is blocked before production mutation. The Workflow DDD lists
+nine catalog families, none for workflow purpose, while DefinitionTargetBinding
+requires workflowPurposeId. HMSR-064 explicitly prohibits inventing its family.
+WorkflowApplicationService.startWorkflowInstance currently copies caller-supplied
+configuration, target and actor data without binding/version/owner validation.
+WorkflowEligibilityLookupPort, WorkflowIdentitySnapshotPort and
+WorkflowOrganizationSnapshotPort are availability placeholders, not authoritative
+owner lookups. NoopWorkflowExternalReferenceResolver returns true and is not wired
+into starts. Identity exports no Workflow actor eligibility contract; Organization's
+existing consumer-specific reference contracts do not define Workflow assignment
+or pool membership authority. Cross-module approval mutation contracts do not supply
+a generic owner-controlled target lookup. A username/display/role snapshot cannot
+stand in for live authority.
+
+AGENTS.md section 3.2 rule 9 requires an owner-contract gap to be split out and the
+HMR stopped before mutation. HMR-055's legacy file allowlist also omits the actual
+WorkflowApplicationService and required owner contracts. This is a semantic contract
+and admission prerequisite, not a Maven or CI failure.
+
+Proposed resolution, requiring explicit roadmap admission before implementation:
+
+1. Define WORKFLOW_PURPOSE as the controlled catalog family and require an active
+   purpose for new starts and active bindings. This is a proposal, not an existing
+   taxonomy. Reconcile legacy null/wrong-family purposes with an explicit data plan;
+   do not silently retag generic catalog rows or seed invented business values.
+2. Define a fail-closed target resolver registry keyed by module and governed target
+   type code. Each supported target owner must export an explicit lookup contract
+   returning existence/eligibility and neutral snapshots. Missing or ambiguous
+   resolvers deny starts; no cross-module FK, private entity import or no-op success.
+   Inventory supported owner/type combinations before admitting their exact files.
+3. Define an Identity-owned Workflow actor contract resolving current active,
+   unlocked actors and canonical snapshots, binding execution to the authenticated
+   actor. Use existing governed permission policies; snapshots and caller actor IDs
+   must not grant authority. Define an Organization-owned assignment contract for
+   current unit availability and eligible pool membership. Specify claim/delegation
+   policy explicitly; do not invent permission names or infer authority from labels.
+4. HMR-055 must validate ACTIVE definition/version, exact active target/purpose
+   binding, active WORKFLOW_TARGET_TYPE, and a current step in that definition.
+   Preserve neutral external target IDs. Enforce one nonterminal instance per
+   target/module/type/purpose tuple with a database uniqueness guard, including
+   concurrent starts. Do not invent an initial-step selection rule.
+5. HMR-061 must enforce same-definition distinct steps and unique configured
+   (definition, from-step, decision). Unsupported expressions/callbacks must not
+   become executable configuration; preserve fail-closed runtime behavior without
+   adding an ungoverned interpreter or callback mechanism.
+6. HMR-066 must validate actionable assignment through live owner contracts,
+   active WORKFLOW_PRIORITY/WORKFLOW_ASSIGNMENT_MODE families, paired actor/time
+   fields and chronology, plus terminal immutability. Remove username-snapshot
+   authority from both transition execution and available-action queries. Explicit
+   pooled assignment policy must govern any unassigned task creation.
+7. HMR-081 must route decision actions through configured transitions; generic
+   recording must not bypass decision authority. Validate optional supplied task
+   ownership, required reason/comment evidence and actor display snapshots. Allocate
+   action sequence under the instance lock with database uniqueness, never from a
+   caller. Resolve actors/units through their owners without cross-module FKs.
+8. HMR-099 must reject blank mandatory evidence and insert history without upsert.
+   Enforce append-only persistence and validate supplied optional task/step/action/
+   reason coherence; keep optional references optional. Do not introduce a new
+   mandatory history producer or fabricated lifecycle events.
+
+Scope admission must include actual application/transition/query services, catalog
+and binding repository interfaces/adapters, explicit public owner contracts and
+adapters, architecture exports/guardrails, model/API/mapping changes and focused
+semantic/PostgreSQL concurrency/immutability tests. New migrations must follow the
+current maximum V20261006_013; never edit published migrations or use legacy
+backdated filenames. Any HMR-099 database trigger migration needs explicit added
+scope because its legacy allowlist authorizes no migration. Preserve one exact-message
+semantic commit per HMR and the owner's selected five-task batch exception.
+
+The prerequisite remains PROPOSED. No production scope, taxonomy, resolver support
+or migration is admitted by this documentation commit. Next selected work remains
+WF-PREREQ-01/HMR-055; do not skip to 061 or Batch 8. After contract resolution,
+perform fresh dependency/file admission and exact-head green CI verification.
+
+Validation: documentation workflow's UTF-8/nonempty/conflict checks and
+`git diff --check` passed. No Java, database or workflow behavior changed, so no new
+Maven test result is claimed. Documentation-only CI trigger pending at preparation.
+Current totals: **17 implemented, 38 still required, two blocked (080 and 055)**.

@@ -207,7 +207,7 @@ Each model task implements only the obligations recorded in its source HMSR sect
 | HMR-051 | HMSR-060 | leakdetection | LeakDetectionCase | — | leakdetection.LeakCandidate, organization.OrganizationUnit | `fix(leakdetection): remediate semantic review LeakDetectionCase` | Completed — Batch 1 |
 | HMR-052 | HMSR-061 | notification | NotificationMessage | — | notification.NotificationRequest, notification.NotificationTemplate | `fix(notification): remediate semantic review NotificationMessage` | Completed — Batch 2; composition/version/required-input/eligible-priority guards; CI pending |
 | HMR-053 | HMSR-062 | telemetry | TrustedTelemetryReading | — | telemetry.TelemetryPoint, telemetry.TelemetryReading | `fix(telemetry): remediate semantic review TrustedTelemetryReading` | Completed — HPR-P2-008; trust operation and provenance guards implemented; CI pending |
-| HMR-054 | HMSR-063 | topology | Equipment | — | party.Party, topology.Facility | `fix(topology): remediate semantic review Equipment` | Blocked — owner lookup contract prerequisite unresolved |
+| HMR-054 | HMSR-063 | topology | Equipment | — | party.Party, topology.Facility | `fix(topology): remediate semantic review Equipment` | Completed — HPR-P2-008; catalog-only classification, attachment FKs and owner manufacturer validation; CI pending |
 
 ### 8.4 Dependency level 3
 
@@ -3080,12 +3080,12 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-063`
 - Exact commit: `fix(topology): remediate semantic review Equipment`
-- Status: **Blocked — owner lookup contract prerequisite unresolved**
+- Status: **Completed — implemented; exact-head CI pending**
 - SCC: —
 - Recorded upstream HMS dependencies: party.Party, topology.Facility
 - HMSR correction count: 3
-- Additive Flyway: `src/main/resources/db/migration/V20261004_054__hmr_054_topology_equipment.sql`
-- Owner-contract prerequisite: No suitable exported owner lookup found in live tree for party; task must introduce/authorize an owner contract by roadmap amendment before cross-module validation changes.
+- Additive Flyway: `src/main/resources/db/migration/V20261006_009__hmr_054_equipment_catalog_and_attachments.sql`
+- Owner-contract prerequisite: Resolved by existing Party-owned TopologyPartyReferenceContract and query service; export already admitted by both architecture checks.
 - Exact write allowlist:
   - `docs/data definition/Topology.md`
   - `docs/roadmap/model-semantic-remediation.md`
@@ -3106,8 +3106,10 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
   - `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/EquipmentJpaRepository.java`
   - `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/EquipmentTypeJpaRepository.java`
   - `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/EquipmentTypeVersionJpaRepository.java`
-  - `src/main/resources/db/migration/V20261004_054__hmr_054_topology_equipment.sql`
+  - `src/main/resources/db/migration/V20261006_009__hmr_054_equipment_catalog_and_attachments.sql`
   - `src/test/java/dz/sh/hidra/modules/topology/semantic/EquipmentSemanticRemediationTest.java`
+  - `src/test/java/dz/sh/hidra/modules/topology/semantic/EquipmentIntegrityMigrationTest.java`
+  - `src/test/java/dz/sh/hidra/modules/topology/application/service/TopologyOperationalScopeTargetQueryServiceTest.java` — update constructor fixture after taxonomy removal.
 - Exact validation:
   - `./mvnw -q -DskipTests compile`
   - `./mvnw -q -Dtest=EquipmentSemanticRemediationTest test`

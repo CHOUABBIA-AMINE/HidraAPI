@@ -7,7 +7,7 @@
  *
  * @Name        : Equipment
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-10-06
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -30,7 +30,6 @@ public record Equipment(
         String nodeId,
         String pipelineSegmentId,
         String equipmentTypeId,
-        EquipmentKind equipmentKind,
         String manufacturerPartyId,
         String manufacturerPartyCodeSnapshot,
         String manufacturerPartyNameSnapshot,
@@ -52,10 +51,6 @@ public record Equipment(
         // HRA-051 required: equipmentTypeId
         if (equipmentTypeId == null || equipmentTypeId.isBlank()) {
             throw new InvalidTopologyValueException("Equipment equipment type id must not be blank.");
-        }
-        // HRA-051 required: equipmentKind
-        if (equipmentKind == null) {
-            throw new InvalidTopologyValueException("Equipment equipment kind must not be null.");
         }
         // HRA-051 required: status
         if (status == null) {

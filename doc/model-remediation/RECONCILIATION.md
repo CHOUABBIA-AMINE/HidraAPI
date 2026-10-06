@@ -80,7 +80,7 @@ No `party.application.contract.planning` package exists in the exact current tre
 | HMR-051 | HMSR-060 | leakdetection.LeakDetectionCase | COMPLETED — HPR-P2-008 | Topology and optional Organization references validated on every case save; snapshot preserved; no migration because primary-candidate FK already exists; owner contract and architecture export added. |
 | HMR-052 | HMSR-061 | notification.NotificationMessage | COMPLETED — HPR-P2-008 | Recipient/request composite FK; exact-version/template FK and pre-dispatch composition guard; required-input schema checked for sendable states; inputs/version frozen; active NOTIFICATION_PRIORITY eligibility; V20261006_005; dedicated unit and PostgreSQL tests added. |
 | HMR-053 | HMSR-062 | telemetry.TrustedTelemetryReading | COMPLETED — HPR-P2-008 | Telemetry trust application use case derives values/provenance/binding from locked source evidence; PASSED plus MEDIUM/HIGH/CERTIFIED, ACTIVE point and active QUALITY_CODE required; composite assessment/reading identity and optional unit/batch FKs; snapshot preservation; V20261006_008; focused unit and PostgreSQL tests added; CI pending. |
-| HMR-054 | HMSR-063 | topology.Equipment | STILL REQUIRED — PREVIOUS BLOCKER RESOLVED | registered migration: absent; dedicated test: absent; Party→Topology contract now present |
+| HMR-054 | HMSR-063 | topology.Equipment | COMPLETED — HPR-P2-008 | EquipmentType identity/code is sole active classification; EquipmentKind deleted from domain/JPA; forward V20261006_009 preserves legacy strings, rejects conflicting classification/orphan attachments and adds nullable same-module FKs; manufacturer checked by existing Party contract; snapshots preserved; focused tests added; CI pending. |
 | HMR-055 | HMSR-064 | workflow.WorkflowInstance | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-056 | HMSR-067 | integration.IntegrationExchangeMessage | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-057 | HMSR-068 | reporting.ReportRun | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
@@ -140,9 +140,9 @@ No `party.application.contract.planning` package exists in the exact current tre
 - HMR-005 corrected from stale planned status to **COMPLETED**;
 - HMR-009 confirmed **COMPLETED** and removed as a carry-over blocker;
 - HMR-050..106 evaluated: **57**;
-- HMR-050..106 **STILL REQUIRED**: **46**;
+- HMR-050..106 **STILL REQUIRED**: **45**;
 - HMR-050..106 **BLOCKED**: **1**;
-- HMR-050..106 **COMPLETED during HPR-P2-008**: **10**;
+- HMR-050..106 **COMPLETED during HPR-P2-008**: **11**;
 - HMR-050..106 **SUPERSEDED**: **0**;
 - HMR-054 historical blocker resolved but remediation still required;
 - HMR-080 remains blocked.
@@ -150,8 +150,8 @@ No `party.application.contract.planning` package exists in the exact current tre
 ## HPR-P2-008 Progress
 
 - HMR-050 — **COMPLETED** at the first HPR-P2-008 execution step.
-- Current next dependency-safe item: **HMR-054 — topology.Equipment**, subject to live owner-contract revalidation.
-- Remaining after HMR-053 progress: **46 STILL REQUIRED + 1 BLOCKED (HMR-080)**.
+- Next proposed compatible scope: **HMR-063 + HMR-086..089**, subject to live dependency/scope revalidation.
+- Remaining after HMR-054 progress: **45 STILL REQUIRED + 1 BLOCKED (HMR-080)**.
 
 - HMR-051 — **COMPLETED**: Topology and optional Organization references validated on every case save; snapshot preserved; no migration because primary-candidate FK already exists; owner contract and architecture export added.
 
@@ -295,3 +295,37 @@ Validation:
 Implementation recorded as completed; exact-head CI remains pending. Confirm CI
 started, then stop until the owner sends `next` or `fail`. Next proposed solo task
 is HMR-054 after green CI, with live Party-owner-contract revalidation first.
+
+## HMR-054 execution — 2026-10-06
+
+Baseline main `f676e278357ac7bcf2bc8bf55830b16cb324bd73` passed full CI #573 /
+run `37483724317`. Owner resumed with `next`. Source HMSR-063 was re-read;
+existing TopologyPartyReferenceContract/query service and both architecture export
+allowlists resolve the legacy Party-owner-contract blocker.
+
+Equipment.equipmentTypeId and the Topology-owned EquipmentType identity/code now
+provide the single active classification source. EquipmentKind and both mapped kind
+properties were removed; lifecycle enums remain. V20261006_009 renames the two
+legacy kind columns to legacy_equipment_kind, preserves every stored string, and
+allows null for new catalog-backed rows. These columns are unmapped historical
+metadata. The migration aborts on conflicting equipment/type classification rather
+than choosing a new classification; owner reconciliation is required for such data.
+Existing type references remain protected, and nullable facility/node/pipeline-segment
+attachments gain same-module FKs with DELETE RESTRICT. No attachment cardinality
+rule is introduced. Manufacturer identities are checked through Party's existing
+existence contract on every Equipment save; code/name snapshots are preserved.
+No cross-module FK, Party lifecycle rule or equipment lifecycle matrix is added.
+
+Validation:
+
+- Compiler syntax parsing: eight changed/new Java files passed.
+- Actual Equipment domain compiled/executed in a standalone Java 17 harness:
+  catalog type identity works without EquipmentKind; snapshots remain intact.
+- `git diff --check`, cross-module export scan, migration preservation and version ordering passed.
+- Maven compile, focused three-class tests, full tests and clean verify attempted via
+  `bash ./mvnw -o -q ...`; stopped at uncached Spring Boot 4.1.1 parent POM.
+  Real PostgreSQL regression tests are added; Java 21 integration remains for CI.
+
+Implementation is recorded as completed; final exact-head CI is pending. Confirm CI
+started and stop until `next` or `fail`. Next proposed scope is HMR-063 plus HMR-086..089,
+subject to fresh admission/dependency checks; HMR-080 remains blocked.

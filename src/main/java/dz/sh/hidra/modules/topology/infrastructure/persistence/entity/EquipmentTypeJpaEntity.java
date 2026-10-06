@@ -7,7 +7,7 @@
  *
  * @Name        : EquipmentTypeJpaEntity
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-06
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -33,9 +33,6 @@ public class EquipmentTypeJpaEntity {
     private String code;
     @Column(name = "name", nullable = false, length = 255)
     private String name;
-    @Enumerated(EnumType.STRING)
-    @Column(name = "equipment_kind", nullable = false, length = 80)
-    private EquipmentKind equipmentKind;
     @Column(name = "description", nullable = true, columnDefinition = "text")
     private String description;
     @Enumerated(EnumType.STRING)
@@ -50,7 +47,6 @@ public class EquipmentTypeJpaEntity {
             String id,
             String code,
             String name,
-            EquipmentKind equipmentKind,
             String description,
             TopologyStatus status,
             Instant createdAt,
@@ -59,7 +55,6 @@ public class EquipmentTypeJpaEntity {
         this.id = id;
         this.code = code;
         this.name = name;
-        this.equipmentKind = equipmentKind;
         this.description = description;
         this.status = status;
         this.createdAt = createdAt;
@@ -68,7 +63,6 @@ public class EquipmentTypeJpaEntity {
     public String id() { return id; }
     public String code() { return code; }
     public String name() { return name; }
-    public EquipmentKind equipmentKind() { return equipmentKind; }
     public String description() { return description; }
     public TopologyStatus status() { return status; }
     public Instant createdAt() { return createdAt; }

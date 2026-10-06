@@ -7,7 +7,7 @@
  *
  * @Name        : TopologyOperationalScopeTargetQueryServiceTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-10-06
  *
  * @Type        : Class
  * @Layer       : Topology Test
@@ -27,7 +27,6 @@ import dz.sh.hidra.modules.topology.domain.model.Equipment;
 import dz.sh.hidra.modules.topology.domain.model.Facility;
 import dz.sh.hidra.modules.topology.domain.model.Pipeline;
 import dz.sh.hidra.modules.topology.domain.model.PipelineSystem;
-import dz.sh.hidra.modules.topology.domain.value.EquipmentKind;
 import dz.sh.hidra.modules.topology.domain.value.EquipmentStatus;
 import dz.sh.hidra.modules.topology.domain.value.FacilityKind;
 import dz.sh.hidra.modules.topology.domain.value.FacilityStatus;
@@ -171,7 +170,6 @@ class TopologyOperationalScopeTargetQueryServiceTest {
                 null,
                 null,
                 "EQUIPMENT-TYPE-1",
-                EquipmentKind.PUMP,
                 null,
                 null,
                 null,

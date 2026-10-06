@@ -7,7 +7,7 @@
  *
  * @Name        : TopologyPersistenceMapper
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-05
+ * @UpdatedOn   : 2026-10-06
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -214,7 +214,6 @@ public final class TopologyPersistenceMapper {
                 model.nodeId(),
                 model.pipelineSegmentId(),
                 model.equipmentTypeId(),
-                model.equipmentKind(),
                 model.manufacturerPartyId(),
                 model.manufacturerPartyCodeSnapshot(),
                 model.manufacturerPartyNameSnapshot(),
@@ -232,7 +231,6 @@ public final class TopologyPersistenceMapper {
                 entity.nodeId(),
                 entity.pipelineSegmentId(),
                 entity.equipmentTypeId(),
-                entity.equipmentKind(),
                 entity.manufacturerPartyId(),
                 entity.manufacturerPartyCodeSnapshot(),
                 entity.manufacturerPartyNameSnapshot(),

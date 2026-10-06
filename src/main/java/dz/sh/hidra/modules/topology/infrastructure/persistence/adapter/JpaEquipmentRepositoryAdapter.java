@@ -7,7 +7,7 @@
  *
  * @Name        : JpaEquipmentRepositoryAdapter
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-06
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -20,16 +20,35 @@
 package dz.sh.hidra.modules.topology.infrastructure.persistence.adapter;
 
 import dz.sh.hidra.modules.topology.application.port.out.EquipmentRepositoryPort;
+import dz.sh.hidra.modules.topology.domain.exception.InvalidTopologyValueException;
 import dz.sh.hidra.modules.topology.domain.model.Equipment;
 import dz.sh.hidra.modules.topology.infrastructure.persistence.mapper.TopologyPersistenceMapper;
 import dz.sh.hidra.modules.topology.infrastructure.persistence.repository.EquipmentJpaRepository;
+import dz.sh.hidra.modules.party.application.contract.topology.TopologyPartyReferenceContract;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.Objects;
 import java.util.Optional;
+
 @Component
 public class JpaEquipmentRepositoryAdapter implements EquipmentRepositoryPort {
     private final EquipmentJpaRepository repository;
-    public JpaEquipmentRepositoryAdapter(EquipmentJpaRepository repository) { this.repository = Objects.requireNonNull(repository, "EquipmentJpaRepository must not be null."); }
-    public Equipment save(Equipment model) { return TopologyPersistenceMapper.toDomain(repository.save(TopologyPersistenceMapper.toEntity(model))); }
-    public Optional<Equipment> findById(String id) { return repository.findById(id).map(TopologyPersistenceMapper::toDomain); }
+    private final TopologyPartyReferenceContract parties;
+    public JpaEquipmentRepositoryAdapter(EquipmentJpaRepository repository, TopologyPartyReferenceContract parties) {
+        this.repository = Objects.requireNonNull(repository);
+        this.parties = Objects.requireNonNull(parties);
+    }
+    @Override
+    @Transactional
+    public Equipment save(Equipment model) {
+        Objects.requireNonNull(model, "Equipment must not be null.");
+        if (model.manufacturerPartyId() != null && !parties.exists(model.manufacturerPartyId())) {
+            throw new InvalidTopologyValueException("Equipment manufacturer must reference an existing Party.");
+        }
+        return TopologyPersistenceMapper.toDomain(repository.saveAndFlush(TopologyPersistenceMapper.toEntity(model)));
+    }
+    @Override
+    public Optional<Equipment> findById(String id) {
+        return repository.findById(id).map(TopologyPersistenceMapper::toDomain);
+    }
 }

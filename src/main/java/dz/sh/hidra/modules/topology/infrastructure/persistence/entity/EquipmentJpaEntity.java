@@ -7,7 +7,7 @@
  *
  * @Name        : EquipmentJpaEntity
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-06
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -41,9 +41,6 @@ public class EquipmentJpaEntity {
     private String pipelineSegmentId;
     @Column(name = "equipment_type_id", nullable = false, length = 80)
     private String equipmentTypeId;
-    @Enumerated(EnumType.STRING)
-    @Column(name = "equipment_kind", nullable = false, length = 80)
-    private EquipmentKind equipmentKind;
     @Column(name = "manufacturer_party_id", nullable = true, length = 80)
     private String manufacturerPartyId;
     @Column(name = "manufacturer_party_code_snapshot", nullable = true, length = 120)
@@ -70,7 +67,6 @@ public class EquipmentJpaEntity {
             String nodeId,
             String pipelineSegmentId,
             String equipmentTypeId,
-            EquipmentKind equipmentKind,
             String manufacturerPartyId,
             String manufacturerPartyCodeSnapshot,
             String manufacturerPartyNameSnapshot,
@@ -87,7 +83,6 @@ public class EquipmentJpaEntity {
         this.nodeId = nodeId;
         this.pipelineSegmentId = pipelineSegmentId;
         this.equipmentTypeId = equipmentTypeId;
-        this.equipmentKind = equipmentKind;
         this.manufacturerPartyId = manufacturerPartyId;
         this.manufacturerPartyCodeSnapshot = manufacturerPartyCodeSnapshot;
         this.manufacturerPartyNameSnapshot = manufacturerPartyNameSnapshot;
@@ -104,7 +99,6 @@ public class EquipmentJpaEntity {
     public String nodeId() { return nodeId; }
     public String pipelineSegmentId() { return pipelineSegmentId; }
     public String equipmentTypeId() { return equipmentTypeId; }
-    public EquipmentKind equipmentKind() { return equipmentKind; }
     public String manufacturerPartyId() { return manufacturerPartyId; }
     public String manufacturerPartyCodeSnapshot() { return manufacturerPartyCodeSnapshot; }
     public String manufacturerPartyNameSnapshot() { return manufacturerPartyNameSnapshot; }

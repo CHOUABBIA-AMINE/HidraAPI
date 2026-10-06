@@ -586,3 +586,19 @@ closed business enum; the seven former enum codes are seeded compatibility refer
 Persistence stores `pipeline_type_id` with a same-module FK to
 `hidra_topology_pipeline_type(id)`. Existing legacy values are validated and backfilled before
 the old `pipeline_type` column is removed. Visualization emits stable catalog codes.
+
+## HMR-054 Equipment classification reconciliation — 2026-10-06
+
+Equipment classification is governed solely by its equipmentTypeId and the Topology-owned
+EquipmentType catalog identity/code/name. EquipmentKind and the parallel mapped kind
+fields were removed. Lifecycle state remains enum-backed. V20261006_009 preserves
+previous kind strings in unmapped nullable legacy_equipment_kind columns; new catalog
+rows can use enterprise-defined classification codes without changing Java enums.
+Conflicting legacy type/equipment kind values abort preflight for owner reconciliation.
+
+Nullable facilityId/nodeId/pipelineSegmentId are protected by same-module FKs; no
+mandatory attachment or mutually exclusive placement rule is introduced. Populated
+manufacturerPartyId is checked through the existing Party-owned Topology lookup
+contract, retaining historical manufacturer code/name snapshots with no cross-module FK.
+Focused semantic and PostgreSQL migration tests accompany this implementation.
+Final exact-head CI remains pending at publication.

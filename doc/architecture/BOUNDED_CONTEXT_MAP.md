@@ -2,7 +2,7 @@
 
 ## Status
 
-CURRENT structural bounded-context/module map. Detailed ubiquitous language and semantic ownership are HPR-P2-003/HPR-P2-004 scope.
+CURRENT structural bounded-context/module map. Canonical ubiquitous language and cross-domain semantic ownership are maintained under `doc/domain/**`; per-module detail remains HPR-P2-004 scope.
 
 ## Current Implemented Module Roots
 
@@ -61,4 +61,4 @@ A module may not reach directly into another module's private domain, infrastruc
 
 Legacy architecture material discusses `agents`, `environment` and `otsecurity`, but none is a current source root. They are not part of the 24 implemented module set and HPR-P2-002 does not create them.
 
-Detailed terminology, invariants, aggregates and domain ownership are intentionally left to the next domain/module roadmap tasks.
+Canonical terminology, ownership and focused cross-domain invariants are now defined under `doc/domain/**`. Detailed current-state documentation for each of the 24 modules remains HPR-P2-004 scope.

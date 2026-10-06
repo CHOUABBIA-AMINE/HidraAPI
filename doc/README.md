@@ -19,6 +19,7 @@ The legacy `docs/` tree is preserved for historical, audit, semantic-review, ADR
 5. `doc/governance/DOCUMENT_LIFECYCLE.md` — lifecycle, preservation and supersession rules.
 6. `doc/governance/DOCUMENT_STATUS_MODEL.md` — status vocabulary.
 7. `doc/architecture/README.md` — canonical current/target-separated architecture set.
+8. `doc/domain/README.md` — canonical ubiquitous language and domain-semantic baseline.
 
 ## Canonical Domains
 
@@ -30,7 +31,7 @@ The legacy `docs/` tree is preserved for historical, audit, semantic-review, ADR
 | Security | `doc/security/**` | Existing canonical P0 security baseline |
 | Operations | `doc/operations/**` | Existing canonical P1 operations/survivability baseline |
 | Database | `doc/database/**` | Existing P1 database-operational material; canonical database set is HPR-P2-006 |
-| Domain | not yet established under `doc/domain/` | HPR-P2-003 |
+| Domain | `doc/domain/README.md` and linked canonical set | CURRENT — HPR-P2-003 |
 | Modules | not yet established under `doc/modules/` | HPR-P2-004 |
 | API | not yet established under `doc/api/` | HPR-P2-005 |
 | Data governance | not yet established | HPR-P2-010 |

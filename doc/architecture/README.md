@@ -38,4 +38,4 @@ Target or deferred architecture is not current implementation. In particular:
 - clustered realtime via a shared/external broker is not current P1 architecture.
 - Redis/distributed cache is not selected merely because process-local cache exists.
 - `agents`, `environment` and `otsecurity` are not current module source roots and must not be documented as implemented modules.
-- later domain/module semantics belong to HPR-P2-003 and HPR-P2-004.
+- canonical domain semantics are maintained under `doc/domain/**` by HPR-P2-003; per-module current-state documents remain HPR-P2-004 scope.

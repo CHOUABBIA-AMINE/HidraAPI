@@ -28,10 +28,10 @@ Documentation authority follows the repository governance and the owner/decision
 | `doc/governance/**` | CURRENT | Documentation governance, lifecycle, status and register controls | HPR-P2-001 complete |
 | `doc/roadmap/ULTIMATE_ROADMAP.md` | CURRENT | Sole platform-finalization execution authority | Maintain per executed HPR |
 | `doc/security/**` | CURRENT where individually stated | Canonical P0 security baseline and approved security procedures | No P2 replacement implied by HPR-P2-001 |
-| `doc/architecture/RUNTIME_ARCHITECTURE.md` | CURRENT where individually stated | Existing P1 runtime architecture evidence | HPR-P2-002 adds the canonical architecture set |
+| `doc/architecture/**` | CURRENT where individually stated | Canonical HPR-P2-002 architecture set; `RUNTIME_ARCHITECTURE.md` is historical P1 provenance | HPR-P2-002 complete |
 | `doc/operations/**` | CURRENT where individually stated | P1 operational, HA, DR, deployment, observability and survivability evidence | Preserve; later tasks may cross-link |
 | `doc/database/**` | CURRENT where individually stated | Existing P1 database HA/backup/operations evidence | HPR-P2-006 adds canonical database documentation |
-| `doc/domain/**` | NOT ESTABLISHED | No canonical P2 domain set yet | HPR-P2-003 |
+| `doc/domain/**` | CURRENT where individually stated | Canonical ubiquitous language, ownership and focused semantic baseline from current source | HPR-P2-003 complete |
 | `doc/modules/**` | NOT ESTABLISHED | No canonical per-module P2 set yet | HPR-P2-004 |
 | `doc/api/**` | NOT ESTABLISHED | No canonical version-controlled P2 API documentation set yet | HPR-P2-005 |
 | Data-governance canonical set | NOT ESTABLISHED | Retention/provenance values must not be invented | HPR-P2-010 |

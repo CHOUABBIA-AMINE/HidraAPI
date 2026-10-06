@@ -7,7 +7,7 @@
  *
  * @Name        : JpaTrustedTelemetryReadingRepositoryAdapter
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-06
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -24,6 +24,7 @@ import dz.sh.hidra.modules.telemetry.domain.model.TrustedTelemetryReading;
 import dz.sh.hidra.modules.telemetry.infrastructure.persistence.mapper.TelemetryPersistenceMapper;
 import dz.sh.hidra.modules.telemetry.infrastructure.persistence.repository.TrustedTelemetryReadingJpaRepository;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -41,9 +42,10 @@ public class JpaTrustedTelemetryReadingRepositoryAdapter implements TrustedTelem
     }
 
     @Override
+    @Transactional
     public TrustedTelemetryReading save(TrustedTelemetryReading model) {
         return TelemetryPersistenceMapper.toDomain(
-                repository.save(TelemetryPersistenceMapper.toEntity(model))
+                repository.saveAndFlush(TelemetryPersistenceMapper.toEntity(model))
         );
     }
 

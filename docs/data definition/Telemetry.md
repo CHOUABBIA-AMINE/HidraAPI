@@ -1255,3 +1255,25 @@ TelemetryValidationRule
 ```
 
 The telemetry module is therefore the trusted acquisition and signal-quality layer. It preserves HyFlo operational meaning while making Hidra clean, modular, topology-aware, and safe for downstream intelligence.
+
+## HMR-053 implemented trust creation contract — 2026-10-06
+
+TrustTelemetryReadingUseCase resolves locked Telemetry evidence and creates the
+TrustedTelemetryReading from source values, the assessment's resolved quality and
+unchanged trust level, the point's effective unit and source ingestion-batch provenance.
+A PASSED assessment, matching reading/point identities, MEDIUM/HIGH/CERTIFIED trust,
+ACTIVE point and active QUALITY_CODE are required. Optional unit/batch references
+remain optional and resolve within Telemetry when populated.
+
+The trust operation selects active bindings whose [validFrom, validTo) contains
+trustedAt. One applicable binding is automatic; multiple binding roles require explicit
+binding ID. An unbound point preserves null topology snapshot fields. Snapshot values
+are copied from the selected TelemetryPointBinding, with no cross-module Topology FK.
+Captured trusted evidence cannot be rewritten; later rebinding or point retirement
+preserves historical snapshots. V20261006_008 protects creation, provenance and optional
+references with fail-closed legacy preflight. Current lifecycle/binding state is not
+used to reconstruct or erase historical evidence.
+
+The application boundary is internal; this task adds no REST endpoint or unit-conversion
+engine. Focused application-policy and PostgreSQL migration tests are included; exact-head
+CI must pass before the next semantic task executes.

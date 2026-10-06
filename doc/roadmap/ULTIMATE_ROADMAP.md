@@ -249,7 +249,7 @@ P1 is **CLOSED** only when this closure SHA passes the repository's full exact-h
 | HPR-P2-005 | COMPLETED — deterministic OpenAPI 3.1 contract version-controlled from exact executable P1 closure CI artifact; canonical API overview, conventions, authentication/authorization, error-model limitation, versioning/compatibility and OpenAPI-governance documents established; shared machine-readable error envelope remains explicitly NOT ESTABLISHED | API | Code/Doc | Generate and version-control deterministic `doc/api/openapi.yaml`; create API overview, conventions, auth, error, versioning/compatibility and OpenAPI governance docs. | `docs(api): establish versioned api contract` | HPR-P1-008 |
 | HPR-P2-006 | COMPLETED — canonical current database architecture, schema ownership, Flyway policy and generated persistence dictionary established from 82 current Flyway migrations, 469 current module JPA persistence entities, production configuration and closed P1 PostgreSQL/backup evidence; stale pre-closure DB stage documents retained as historical provenance | Database | Doc | Create database architecture, schema ownership, Flyway policy and current generated data dictionary from current migrations/JPA evidence. | `docs(database): establish canonical database documentation` | HPR-P2-001 |
 | HPR-P2-007 | COMPLETED — exact-source reconciliation established: HMR-005 corrected to completed, HMR-009 confirmed completed/stale carry-over removed, HMR-054 historical blocker resolved by current Party→Topology contract, HMR-050..106 reconciled to 56 still-required + 1 blocked (HMR-080), 0 superseded; legacy roadmap preserved as history | Semantic Remediation | Code/Doc | Inventory unresolved HMR/HMSR obligations against exact current source; mark each as completed, still required, blocked, or superseded with evidence. | `docs(model-remediation): reconcile remaining semantic obligations` | HPR-P2-003 |
-| HPR-P2-008 | IN PROGRESS — HMR-050 and Batch 1 items HMR-051, HMR-059, HMR-073, HMR-074, HMR-075, HMR-076 plus Batch 2 HMR-052 and HMR-060 implemented with dedicated tests; 47 still-required HMRs remain and HMR-080 remains blocked. Batch 1 repaired exact-head CI #570 passed; final Batch 2 CI pending; local Maven cannot resolve Maven Central and only Java 17 is installed. | Semantic Remediation | Code | Execute still-required semantic remediation in dependency order using revalidated HMSR obligations; do not restart completed HMRs without regression evidence. | `fix(model): continue reconciled semantic remediation` | HPR-P2-007 |
+| HPR-P2-008 | IN PROGRESS — HMR-050 and Batch 1 items HMR-051, HMR-059, HMR-073, HMR-074, HMR-075, HMR-076 plus Batch 2 HMR-052 and HMR-060 and HMR-053 implemented with dedicated tests; 46 still-required HMRs remain and HMR-080 remains blocked. Batch 1 repaired CI #570 and Batch 2 repaired CI #572 passed; final HMR-053 CI pending; local Maven cannot resolve Maven Central and only Java 17 is installed. | Semantic Remediation | Code | Execute still-required semantic remediation in dependency order using revalidated HMSR obligations; do not restart completed HMRs without regression evidence. | `fix(model): continue reconciled semantic remediation` | HPR-P2-007 |
 | HPR-P2-009 | PENDING | Semantic Remediation | Doc | Transfer permanent semantic decisions from legacy review/roadmaps into `doc/domain/` and `doc/modules/`, then preserve legacy files as execution history. | `docs(model-remediation): canonicalize semantic decisions` | HPR-P2-008 |
 | HPR-P2-010 | PENDING | Data Governance | Doc | Create data governance, retention/archival, provenance and legacy-data migration documents without inventing retention values. | `docs(data): establish data governance baseline` | HPR-P2-001 |
 | HPR-P2-011 | PENDING | Testing | Doc | Create test strategy, architecture testing, database testing, API testing and requirements traceability documents tied to executable evidence. | `docs(testing): establish verification documentation` | HPR-P2-002..006 |
@@ -876,3 +876,29 @@ records for a narrow HMR-052 repair. Preserve every published migration. The rep
 function retains its signature and qualifies only the ambiguous message identifier.
 Do not advance to HMR-053 until the repaired final head is green. Per owner instruction,
 stop after confirming replacement CI has started; await `next` or `fail`.
+
+## HPR-P2-008 solo execution admission — HMR-053 / 2026-10-06
+
+Owner `next` resumes the registered HMR-053 scope. Exact main baseline
+`d61bec9eeee6b2c3c3a9d5ea887b28b664355753` is green in full CI #572 /
+run `37480926311`. Source HMSR-062 and current production/schema were revalidated.
+No SCC or cross-module ownership dependency exists for this trust operation.
+
+Exact commit: `fix(telemetry): remediate semantic review TrustedTelemetryReading`.
+The original repository-only allowlist is expanded to implement the required application
+trust boundary: TrustTelemetryReadingUseCase, TelemetryTrustEvidencePort,
+TrustedTelemetryReadingApplicationService, TelemetryTrustPolicy and
+JpaTelemetryTrustEvidenceAdapter. Also admit the existing trusted repository adapter,
+TrustedTelemetryReadingSemanticRemediationTest, TrustedTelemetryReadingIntegrityMigrationTest,
+and V20261006_008__hmr_053_trusted_telemetry_gate.sql. The forward filename replaces
+unexecuted historical V20261004_053; all published migration bytes remain unchanged.
+Progress scope includes this roadmap, canonical RECONCILIATION.md, the legacy semantic
+remediation register and Telemetry data definition.
+
+Policy is explicit: PASSED assessment with its MEDIUM/HIGH/CERTIFIED level, ACTIVE
+point and active QUALITY_CODE. Capture applicable [validFrom, validTo) binding;
+multiple applicable roles require explicit binding selection. Preserve optional
+unit/batch provenance and historical snapshots. No Topology relational ownership is added.
+Final task CI is pending at publication. As instructed, confirm CI started and stop;
+await `next` or `fail`. Next proposed solo scope is HMR-054 only after green CI and
+live owner-contract revalidation; HMR-080 remains blocked.

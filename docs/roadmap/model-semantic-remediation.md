@@ -206,7 +206,7 @@ Each model task implements only the obligations recorded in its source HMSR sect
 | HMR-050 | HMSR-059 | integrity | IntegrityProgram | — | organization.OrganizationUnit | `fix(integrity): remediate semantic review IntegrityProgram` | Planned |
 | HMR-051 | HMSR-060 | leakdetection | LeakDetectionCase | — | leakdetection.LeakCandidate, organization.OrganizationUnit | `fix(leakdetection): remediate semantic review LeakDetectionCase` | Completed — Batch 1 |
 | HMR-052 | HMSR-061 | notification | NotificationMessage | — | notification.NotificationRequest, notification.NotificationTemplate | `fix(notification): remediate semantic review NotificationMessage` | Completed — Batch 2; composition/version/required-input/eligible-priority guards; CI pending |
-| HMR-053 | HMSR-062 | telemetry | TrustedTelemetryReading | — | telemetry.TelemetryPoint, telemetry.TelemetryReading | `fix(telemetry): remediate semantic review TrustedTelemetryReading` | Planned |
+| HMR-053 | HMSR-062 | telemetry | TrustedTelemetryReading | — | telemetry.TelemetryPoint, telemetry.TelemetryReading | `fix(telemetry): remediate semantic review TrustedTelemetryReading` | Completed — HPR-P2-008; trust operation and provenance guards implemented; CI pending |
 | HMR-054 | HMSR-063 | topology | Equipment | — | party.Party, topology.Facility | `fix(topology): remediate semantic review Equipment` | Blocked — owner lookup contract prerequisite unresolved |
 
 ### 8.4 Dependency level 3
@@ -3040,12 +3040,12 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-062`
 - Exact commit: `fix(telemetry): remediate semantic review TrustedTelemetryReading`
-- Status: **Planned**
+- Status: **Completed — implemented; exact-head CI pending**
 - SCC: —
 - Recorded upstream HMS dependencies: telemetry.TelemetryPoint, telemetry.TelemetryReading
 - HMSR correction count: 5
-- Additive Flyway: `src/main/resources/db/migration/V20261004_053__hmr_053_telemetry_trusted_telemetry_reading.sql`
-- Owner-contract prerequisite: Owner-controlled validation required by HMSR; no concrete upstream HMS owner is registered, so preserve neutral/reference semantics and do not invent a cross-module FK.
+- Additive Flyway: `src/main/resources/db/migration/V20261006_008__hmr_053_trusted_telemetry_gate.sql`
+- Owner-contract prerequisite: Telemetry-owned trust evidence port and policy admitted under HPR-P2-008; Topology remains snapshot/reference state with no cross-module FK.
 - Exact write allowlist:
   - `docs/data definition/Telemetry.md`
   - `docs/roadmap/model-semantic-remediation.md`
@@ -3056,8 +3056,14 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
   - `src/main/java/dz/sh/hidra/modules/telemetry/infrastructure/persistence/entity/TrustedTelemetryReadingJpaEntity.java`
   - `src/main/java/dz/sh/hidra/modules/telemetry/infrastructure/persistence/mapper/TelemetryPersistenceMapper.java`
   - `src/main/java/dz/sh/hidra/modules/telemetry/infrastructure/persistence/repository/TrustedTelemetryReadingJpaRepository.java`
-  - `src/main/resources/db/migration/V20261004_053__hmr_053_telemetry_trusted_telemetry_reading.sql`
+  - `src/main/resources/db/migration/V20261006_008__hmr_053_trusted_telemetry_gate.sql`
   - `src/test/java/dz/sh/hidra/modules/telemetry/semantic/TrustedTelemetryReadingSemanticRemediationTest.java`
+  - `src/main/java/dz/sh/hidra/modules/telemetry/application/port/in/TrustTelemetryReadingUseCase.java`
+  - `src/main/java/dz/sh/hidra/modules/telemetry/application/port/out/TelemetryTrustEvidencePort.java`
+  - `src/main/java/dz/sh/hidra/modules/telemetry/application/service/TrustedTelemetryReadingApplicationService.java`
+  - `src/main/java/dz/sh/hidra/modules/telemetry/domain/policy/TelemetryTrustPolicy.java`
+  - `src/main/java/dz/sh/hidra/modules/telemetry/infrastructure/persistence/adapter/JpaTelemetryTrustEvidenceAdapter.java`
+  - `src/test/java/dz/sh/hidra/modules/telemetry/semantic/TrustedTelemetryReadingIntegrityMigrationTest.java`
 - Exact validation:
   - `./mvnw -q -DskipTests compile`
   - `./mvnw -q -Dtest=TrustedTelemetryReadingSemanticRemediationTest test`

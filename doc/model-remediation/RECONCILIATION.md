@@ -79,7 +79,7 @@ No `party.application.contract.planning` package exists in the exact current tre
 | HMR-050 | HMSR-059 | integrity.IntegrityProgram | COMPLETED — HPR-P2-008 | legacy migration not required after current-schema revalidation; dedicated semantic test added; active `INTEGRITY_PROGRAM_TYPE` family enforced; Organization-owned Integrity contract validates populated owner unit; no cross-module FK |
 | HMR-051 | HMSR-060 | leakdetection.LeakDetectionCase | COMPLETED — HPR-P2-008 | Topology and optional Organization references validated on every case save; snapshot preserved; no migration because primary-candidate FK already exists; owner contract and architecture export added. |
 | HMR-052 | HMSR-061 | notification.NotificationMessage | COMPLETED — HPR-P2-008 | Recipient/request composite FK; exact-version/template FK and pre-dispatch composition guard; required-input schema checked for sendable states; inputs/version frozen; active NOTIFICATION_PRIORITY eligibility; V20261006_005; dedicated unit and PostgreSQL tests added. |
-| HMR-053 | HMSR-062 | telemetry.TrustedTelemetryReading | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
+| HMR-053 | HMSR-062 | telemetry.TrustedTelemetryReading | COMPLETED — HPR-P2-008 | Telemetry trust application use case derives values/provenance/binding from locked source evidence; PASSED plus MEDIUM/HIGH/CERTIFIED, ACTIVE point and active QUALITY_CODE required; composite assessment/reading identity and optional unit/batch FKs; snapshot preservation; V20261006_008; focused unit and PostgreSQL tests added; CI pending. |
 | HMR-054 | HMSR-063 | topology.Equipment | STILL REQUIRED — PREVIOUS BLOCKER RESOLVED | registered migration: absent; dedicated test: absent; Party→Topology contract now present |
 | HMR-055 | HMSR-064 | workflow.WorkflowInstance | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-056 | HMSR-067 | integration.IntegrationExchangeMessage | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
@@ -140,9 +140,9 @@ No `party.application.contract.planning` package exists in the exact current tre
 - HMR-005 corrected from stale planned status to **COMPLETED**;
 - HMR-009 confirmed **COMPLETED** and removed as a carry-over blocker;
 - HMR-050..106 evaluated: **57**;
-- HMR-050..106 **STILL REQUIRED**: **47**;
+- HMR-050..106 **STILL REQUIRED**: **46**;
 - HMR-050..106 **BLOCKED**: **1**;
-- HMR-050..106 **COMPLETED during HPR-P2-008**: **9**;
+- HMR-050..106 **COMPLETED during HPR-P2-008**: **10**;
 - HMR-050..106 **SUPERSEDED**: **0**;
 - HMR-054 historical blocker resolved but remediation still required;
 - HMR-080 remains blocked.
@@ -150,8 +150,8 @@ No `party.application.contract.planning` package exists in the exact current tre
 ## HPR-P2-008 Progress
 
 - HMR-050 — **COMPLETED** at the first HPR-P2-008 execution step.
-- Current next dependency-safe item: **HMR-053 — telemetry.TrustedTelemetryReading**.
-- Remaining after current Batch 2 progress: **47 STILL REQUIRED + 1 BLOCKED (HMR-080)**.
+- Current next dependency-safe item: **HMR-054 — topology.Equipment**, subject to live owner-contract revalidation.
+- Remaining after HMR-053 progress: **46 STILL REQUIRED + 1 BLOCKED (HMR-080)**.
 
 - HMR-051 — **COMPLETED**: Topology and optional Organization references validated on every case save; snapshot preserved; no migration because primary-candidate FK already exists; owner contract and architecture export added.
 
@@ -254,3 +254,44 @@ Local Java syntax and migration-preservation checks passed. Focused Maven execut
 was attempted but stopped at the uncached Spring Boot 4.1.1 parent POM; no local
 PostgreSQL or full-suite success is claimed. Replacement exact-head CI remains pending.
 Stop once replacement CI starts, as instructed by the owner.
+
+## HMR-053 execution — 2026-10-06
+
+Baseline main `d61bec9eeee6b2c3c3a9d5ea887b28b664355753` passed full CI #572 /
+run `37480926311`, closing the Batch 2 regression gate. The owner resumed with `next`.
+HMSR-062 was re-read against current Java/JPA/schema before this solo execution.
+
+Implemented TrustTelemetryReadingUseCase and TelemetryTrustEvidencePort with a
+Telemetry-owned application service and infrastructure evidence loader. Trust policy
+accepts MEDIUM, HIGH and CERTIFIED (the DDD's trusted-level examples), always retains
+the assessment's level, and requires PASSED, ACTIVE point and active QUALITY_CODE.
+The catalog currently exposes active as its lifecycle eligibility flag.
+The effective unit comes from the point; ingestion batch and raw values/timestamp
+come from the source reading. Optional populated unit/batch references must exist.
+
+Applicable bindings use active=true and [validFrom, validTo) at the operation's trust
+instant. A single applicable binding is selected automatically; multiple roles require
+an explicit applicable binding ID; no binding preserves an empty topology snapshot.
+Source/assessment/point/catalog locks plus point-based binding mutation serialization
+protect capture. The downstream record preserves captured snapshots on later rebind
+or point retirement. New code introduces no Topology FK or arbitrary topology tuple.
+V20261006_008 adds composite provenance and optional same-module FKs, a direct-write
+creation guard, and rejects rewriting captured trusted evidence. Preflight validates
+historical identity/trust/quality family; it does not pretend current point lifecycle or
+current bindings prove a historical capture. Inconsistent provenance aborts migration.
+
+Validation:
+
+- Java syntax: all eight new/changed Java files passed compiler parsing.
+- Actual application/domain trust operation compiled and executed in a standalone
+  Java 17 harness with annotation stubs and in-memory ports: every trust level,
+  assessment status, point lifecycle and explicit binding selection passed.
+  This does not validate Spring transactions or JPA/PostgreSQL behavior.
+- `git diff --check`, published migration preservation and unique version ordering passed.
+- Maven compile, focused two-class tests, full tests and clean verify attempted via
+  `bash ./mvnw -o -q ...`; all stopped at uncached Spring Boot 4.1.1 parent POM.
+  PostgreSQL migration tests are present but await Java 21/Testcontainers CI.
+
+Implementation recorded as completed; exact-head CI remains pending. Confirm CI
+started, then stop until the owner sends `next` or `fail`. Next proposed solo task
+is HMR-054 after green CI, with live Party-owner-contract revalidation first.

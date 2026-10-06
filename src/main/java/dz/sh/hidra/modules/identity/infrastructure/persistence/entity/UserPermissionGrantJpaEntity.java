@@ -78,7 +78,7 @@ import java.time.Instant;
     @Column(name = "valid_from", nullable = false)
     private Instant validFrom;
 
-    @Column(name = "valid_to", nullable = true)
+    @Column(name = "valid_to", nullable = false)
     private Instant validTo;
 
     @Enumerated(EnumType.STRING)

@@ -1427,3 +1427,7 @@ Required nonblank delegation reason and validTo carried through domain/JPA/mappe
 ## HMR-087 implemented contract — 2026-10-06
 
 AuthenticationProtocol sessionType and independent endedAt carried through domain/JPA/mapper; exact ExternalIdentity propagated from LDAP/OIDC through principal/input/completion; terminal lifecycle preserves lastSeenAt and prior termination; V20261006_012 requires explicit legacy protocol evidence; no inferred historical termination; focused tests added; final CI pending.
+
+## HMR-088 implemented contract — 2026-10-06
+
+Domain and PostgreSQL enforce nonblank grantReason, bounded validTo and ACTIVE/REVOKED/EXPIRED for direct permission grants including emergency records; shared GrantStatus and optional role-grant reason/end remain unchanged; V20261006_013 and focused tests added; final CI pending.

@@ -57,6 +57,15 @@ public record UserPermissionGrant(
 ) {
 
     public UserPermissionGrant {
+        if (grantReason == null || grantReason.isBlank()) {
+            throw new InvalidIdentityValueException("Direct permission grant reason must not be blank.");
+        }
+        if (validTo == null) {
+            throw new InvalidIdentityValueException("Direct permission grants require validTo.");
+        }
+        if (status == GrantStatus.SUSPENDED) {
+            throw new InvalidIdentityValueException("SUSPENDED is unsupported for direct permission grants.");
+        }
         // HRA-051 required: id
         if (id == null || id.isBlank()) {
             throw new InvalidIdentityValueException("UserPermissionGrant id must not be blank.");

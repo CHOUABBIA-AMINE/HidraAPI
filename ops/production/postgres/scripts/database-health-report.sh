@@ -8,6 +8,7 @@ set -euo pipefail
 
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../.." && pwd)"
 sql_dir="${root}/ops/production/postgres/sql"
+script_dir="${root}/ops/production/postgres/scripts"
 
 run_sql() {
   local file="$1"
@@ -21,9 +22,18 @@ run_sql "${sql_dir}/inspect-locks.sql"
 run_sql "${sql_dir}/inspect-long-running.sql"
 run_sql "${sql_dir}/inspect-vacuum-analyze.sql"
 run_sql "${sql_dir}/inspect-index-usage.sql"
+run_sql "${sql_dir}/inspect-index-health.sql"
+run_sql "${sql_dir}/inspect-bloat-space-risk.sql"
 run_sql "${sql_dir}/inspect-capacity.sql"
 run_sql "${sql_dir}/inspect-replication.sql"
 run_sql "${sql_dir}/inspect-flyway.sql"
+
+if [[ -n "${HIDRA_POSTGRES_DATA_PATH:-}" ]]; then
+  echo "=== host/filesystem capacity ==="
+  "${script_dir}/inspect-host-capacity.sh"
+else
+  echo "Host/filesystem capacity not executed: set HIDRA_POSTGRES_DATA_PATH on the database host to retain filesystem evidence."
+fi
 
 echo "=== Patroni topology ==="
 patronictl -c "${HIDRA_PATRONI_CONFIG}" list "${HIDRA_PATRONI_CLUSTER}"

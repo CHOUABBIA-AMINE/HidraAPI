@@ -23,5 +23,5 @@ package dz.sh.hidra.modules.identity.domain.value;
  * Identity DelegationStatus values.
  */
 public enum DelegationStatus {
-    ACTIVE, SUSPENDED, REVOKED, EXPIRED
+    ACTIVE, REVOKED, EXPIRED
 }

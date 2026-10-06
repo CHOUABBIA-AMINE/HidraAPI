@@ -67,7 +67,7 @@ import java.time.Instant;
     @Column(name = "valid_from", nullable = false)
     private Instant validFrom;
 
-    @Column(name = "valid_to", nullable = true)
+    @Column(name = "valid_to", nullable = false)
     private Instant validTo;
 
     @Enumerated(EnumType.STRING)
@@ -79,6 +79,9 @@ import java.time.Instant;
 
     @Column(name = "revoked_at", nullable = true)
     private Instant revokedAt;
+
+    @Column(name = "reason", nullable = false, columnDefinition = "text")
+    private String reason;
 
         protected AuthorizationDelegationGrantJpaEntity() {
             // Required by JPA.
@@ -98,7 +101,8 @@ import java.time.Instant;
             Instant validTo,
             DelegationStatus status,
             Instant createdAt,
-            Instant revokedAt
+            Instant revokedAt,
+            String reason
         ) {
             this.id = id;
         this.delegatorUserId = delegatorUserId;
@@ -114,8 +118,11 @@ import java.time.Instant;
         this.status = status;
         this.createdAt = createdAt;
         this.revokedAt = revokedAt;
+        this.reason = reason;
         }
 
+
+    public String reason() { return reason; }
 
     public String id() {
         return id;

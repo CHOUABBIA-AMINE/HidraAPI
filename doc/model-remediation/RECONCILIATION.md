@@ -112,7 +112,7 @@ No `party.application.contract.planning` package exists in the exact current tre
 | HMR-083 | HMSR-097 | audit.AuditExportRequest | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-084 | HMSR-098 | documents.DocumentTargetLink | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-085 | HMSR-100 | identity.AuthorizationDecision | STILL REQUIRED | no migration registered; dedicated test: absent; revalidate obligations before mutation |
-| HMR-086 | HMSR-101 | identity.AuthorizationDelegationGrant | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
+| HMR-086 | HMSR-101 | identity.AuthorizationDelegationGrant | COMPLETED — HPR-P2-008 | Required nonblank delegation reason and validTo carried through domain/JPA/mapper; DelegationStatus narrowed to ACTIVE/REVOKED/EXPIRED; optional Role and Permission validated with nullable same-module FKs; no XOR rule; V20261006_011 fails closed on legacy evidence; focused tests added; final CI pending. |
 | HMR-087 | HMSR-104 | identity.LoginSession | STILL REQUIRED | no migration registered; dedicated test: absent; revalidate obligations before mutation |
 | HMR-088 | HMSR-105 | identity.UserPermissionGrant | STILL REQUIRED | no migration registered; dedicated test: absent; revalidate obligations before mutation |
 | HMR-089 | HMSR-106 | identity.UserRoleGrant | STILL REQUIRED | no migration registered; dedicated test: absent; revalidate obligations before mutation |

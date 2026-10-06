@@ -1419,3 +1419,7 @@ Identity does not own employees, organization hierarchy, topology assets, workfl
 ## HMR-063 implemented contract — 2026-10-06
 
 Nonblank username enforced in domain; PostgreSQL named username/email uniqueness, nullable-email semantics and fail-closed legacy preflight; optional Employee resolved through Organization-owned contract; no cross-module FK. V20261006_010 and focused tests added; final CI pending.
+
+## HMR-086 implemented contract — 2026-10-06
+
+Required nonblank delegation reason and validTo carried through domain/JPA/mapper; DelegationStatus narrowed to ACTIVE/REVOKED/EXPIRED; optional Role and Permission validated with nullable same-module FKs; no XOR rule; V20261006_011 fails closed on legacy evidence; focused tests added; final CI pending.

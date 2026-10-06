@@ -305,7 +305,8 @@ public final class IdentityPersistenceMapper {
                     model.validTo(),
                     model.status(),
                     model.createdAt(),
-                    model.revokedAt()
+                    model.revokedAt(),
+                    model.reason()
         );
     }
 
@@ -322,7 +323,8 @@ public final class IdentityPersistenceMapper {
                     entity.validTo(),
                     entity.status(),
                     entity.createdAt(),
-                    entity.revokedAt()
+                    entity.revokedAt(),
+                    entity.reason()
         );
     }
     public static ExternalRoleMappingJpaEntity toEntity(ExternalRoleMapping model) {

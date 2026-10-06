@@ -24,6 +24,9 @@ import dz.sh.hidra.modules.identity.domain.model.AuthorizationDelegationGrant;
 import dz.sh.hidra.modules.identity.infrastructure.persistence.mapper.IdentityPersistenceMapper;
 import dz.sh.hidra.modules.identity.infrastructure.persistence.repository.AuthorizationDelegationGrantJpaRepository;
 import org.springframework.stereotype.Component;
+import dz.sh.hidra.modules.identity.infrastructure.persistence.repository.RoleJpaRepository;
+import dz.sh.hidra.modules.identity.infrastructure.persistence.repository.PermissionJpaRepository;
+import dz.sh.hidra.modules.identity.domain.exception.InvalidIdentityValueException;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -36,12 +39,24 @@ public class JpaAuthorizationDelegationGrantRepositoryAdapter implements Authori
 
     private final AuthorizationDelegationGrantJpaRepository repository;
 
-    public JpaAuthorizationDelegationGrantRepositoryAdapter(AuthorizationDelegationGrantJpaRepository repository) {
+    private final RoleJpaRepository roles;
+    private final PermissionJpaRepository permissions;
+    public JpaAuthorizationDelegationGrantRepositoryAdapter(AuthorizationDelegationGrantJpaRepository repository,
+            RoleJpaRepository roles, PermissionJpaRepository permissions) {
+        this.roles = Objects.requireNonNull(roles);
+        this.permissions = Objects.requireNonNull(permissions);
         this.repository = Objects.requireNonNull(repository, "AuthorizationDelegationGrantJpaRepository must not be null.");
     }
 
     @Override
     public AuthorizationDelegationGrant save(AuthorizationDelegationGrant model) {
+        Objects.requireNonNull(model);
+        if (model.roleId() != null && !roles.existsById(model.roleId())) {
+            throw new InvalidIdentityValueException("Delegation role must exist.");
+        }
+        if (model.permissionId() != null && !permissions.existsById(model.permissionId())) {
+            throw new InvalidIdentityValueException("Delegation permission must exist.");
+        }
         return IdentityPersistenceMapper.toDomain(repository.save(IdentityPersistenceMapper.toEntity(model)));
     }
 

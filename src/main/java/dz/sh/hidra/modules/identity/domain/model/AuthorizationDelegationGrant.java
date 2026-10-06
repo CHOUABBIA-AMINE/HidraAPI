@@ -51,10 +51,18 @@ public record AuthorizationDelegationGrant(
     Instant validTo,
     DelegationStatus status,
     Instant createdAt,
-    Instant revokedAt
+    Instant revokedAt,
+    String reason
 ) {
 
     public AuthorizationDelegationGrant {
+        if (reason == null || reason.isBlank()) {
+            throw new InvalidIdentityValueException("Delegation reason must not be blank.");
+        }
+        reason = reason.trim();
+        if (validTo == null) {
+            throw new InvalidIdentityValueException("Delegation validTo is required.");
+        }
         // HRA-051 required: id
         if (id == null || id.isBlank()) {
             throw new InvalidIdentityValueException("AuthorizationDelegationGrant id must not be blank.");

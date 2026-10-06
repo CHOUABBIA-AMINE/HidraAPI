@@ -254,7 +254,7 @@ Each model task implements only the obligations recorded in its source HMSR sect
 | HMR-083 | HMSR-097 | audit | AuditExportRequest | — | documents.Document, workflow.WorkflowInstance | `fix(audit): remediate semantic review AuditExportRequest` | Planned |
 | HMR-084 | HMSR-098 | documents | DocumentTargetLink | — | documents.Document, documents.DocumentVersion | `fix(documents): remediate semantic review DocumentTargetLink` | Planned |
 | HMR-085 | HMSR-100 | identity | AuthorizationDecision | — | identity.User | `fix(identity): remediate semantic review AuthorizationDecision` | Planned |
-| HMR-086 | HMSR-101 | identity | AuthorizationDelegationGrant | — | identity.Permission, identity.Role, identity.User | `fix(identity): remediate semantic review AuthorizationDelegationGrant` | Planned |
+| HMR-086 | HMSR-101 | identity | AuthorizationDelegationGrant | — | identity.Permission, identity.Role, identity.User | `fix(identity): remediate semantic review AuthorizationDelegationGrant` | Completed — Batch 5; final CI pending |
 | HMR-087 | HMSR-104 | identity | LoginSession | — | identity.IdentityProvider, identity.User | `fix(identity): remediate semantic review LoginSession` | Planned |
 | HMR-088 | HMSR-105 | identity | UserPermissionGrant | — | identity.Permission, identity.User | `fix(identity): remediate semantic review UserPermissionGrant` | Planned |
 | HMR-089 | HMSR-106 | identity | UserRoleGrant | — | identity.Role, identity.User | `fix(identity): remediate semantic review UserRoleGrant` | Planned |
@@ -4446,7 +4446,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-101`
 - Exact commit: `fix(identity): remediate semantic review AuthorizationDelegationGrant`
-- Status: **Planned**
+- Status: **Completed — Batch 5; final CI pending**
 - SCC: —
 - Recorded upstream HMS dependencies: identity.Permission, identity.Role, identity.User
 - HMSR correction count: 4

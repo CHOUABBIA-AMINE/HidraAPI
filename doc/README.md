@@ -21,6 +21,7 @@ The legacy `docs/` tree is preserved for historical, audit, semantic-review, ADR
 7. `doc/architecture/README.md` — canonical current/target-separated architecture set.
 8. `doc/domain/README.md` — canonical ubiquitous language and domain-semantic baseline.
 9. `doc/modules/README.md` — canonical current-state index for all 24 implemented business modules.
+10. `doc/api/README.md` — canonical versioned API contract and API governance set.
 
 ## Canonical Domains
 
@@ -34,7 +35,7 @@ The legacy `docs/` tree is preserved for historical, audit, semantic-review, ADR
 | Database | `doc/database/**` | Existing P1 database-operational material; canonical database set is HPR-P2-006 |
 | Domain | `doc/domain/README.md` and linked canonical set | CURRENT — HPR-P2-003 |
 | Modules | `doc/modules/README.md` plus 24 current-state module documents | CURRENT — HPR-P2-004 |
-| API | not yet established under `doc/api/` | HPR-P2-005 |
+| API | `doc/api/README.md`, governance set and `doc/api/openapi.yaml` | CURRENT — HPR-P2-005 |
 | Data governance | not yet established | HPR-P2-010 |
 | Testing | not yet established | HPR-P2-011 |
 

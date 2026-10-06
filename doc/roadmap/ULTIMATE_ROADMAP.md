@@ -1098,3 +1098,23 @@ Repair validation: Java test-source parsing and four constructor-arity checks
 passed, as did git diff --check. Focused Maven ownership/OIDC tests and clean
 verify remain blocked locally by uncached Boot parent 4.1.1. Replacement CI
 pending at preparation; no test execution success claimed.
+
+## HPR-P2-008 Batch 6 CI #578 repair — 2026-10-06
+
+Owner `Fail` selects failed run 37518717960 at fb47ae27. Its repository
+`clean verify` gate and current-head OpenAPI publication passed. The failure is
+historical-base OpenAPI packaging at previous commit 03db23c4: `-DskipTests`
+skips test execution but still compiles that revision's broken LDAP fixture.
+Exact repair commit: `fix(ci): skip historical tests when building OpenAPI base`.
+Additional exact write scope: `.github/workflows/ci.yml`, this roadmap and
+`doc/model-remediation/RECONCILIATION.md`. Use `-Dmaven.test.skip=true` only
+for the isolated base-revision application package. Preserve full current-head
+clean verify, exact previous-SHA selection and the OpenAPI compatibility gate.
+Validate workflow YAML/bash and scope, attempt base packaging locally, publish
+and stop after confirming replacement final-head CI has triggered. No Batch 7.
+
+Repair validation: workflow YAML/bash syntax and checks preserving current-head
+clean verify, exact previous-SHA comparison and compatibility enforcement passed.
+Local packaging remains blocked by the uncached Boot parent; git diff --check
+passed. CI #578 provides successful repository clean verify evidence at fb47ae27;
+complete replacement CI remains pending at preparation.

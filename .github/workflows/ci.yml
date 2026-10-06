@@ -201,7 +201,9 @@ jobs:
 
           cd "${BASE_WORKTREE}"
           chmod +x mvnw
-          ./mvnw -B -q -DskipTests package
+          # Build the historical application contract independently of its test sources.
+          # Current-head tests are enforced by Repository verification above.
+          ./mvnw -B -q -Dmaven.test.skip=true package
           BASE_APP_JAR="$(find target -maxdepth 1 -type f -name '*.jar' ! -name '*.original' | head -n 1)"
           if [ -z "${BASE_APP_JAR}" ]; then
             echo "No executable application jar found for compatibility base ${BASE_SHA}." >&2

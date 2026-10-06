@@ -526,3 +526,19 @@ Focused ownership/OIDC Maven tests and clean verify attempted with -o; blocked
 by uncached Spring Boot parent 4.1.1 (local Maven Central DNS remains unavailable).
 These syntax/arity checks are not JUnit success claims. Replacement final-head CI
 pending at preparation; Batch 7 remains gated on green Batch 6 verification.
+
+### HMR-085 CI #578 historical OpenAPI build repair — 2026-10-06
+
+At fb47ae27, CI run 37518717960 passed Repository verification
+(`./mvnw -B -q clean verify`) and published the current-head OpenAPI document.
+It failed generating the comparison base at previous commit 03db23c4 because
+`-DskipTests package` still compiled the known broken historical LDAP test fixture.
+This is a base-build failure, not a failure of the repaired head's tests.
+
+Changed only isolated historical packaging to `-Dmaven.test.skip=true package`.
+Current-head clean verify still runs all tests; exact previous-SHA worktree
+selection and OpenAPI compatibility enforcement remain required. No model changes.
+Workflow YAML/bash syntax and preserved-gate checks passed; git diff --check passed.
+Local Maven packaging was attempted with -o and remains blocked by uncached
+Boot parent 4.1.1. Replacement exact-head CI pending at preparation. Batch 7
+remains gated until the complete CI workflow succeeds.

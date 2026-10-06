@@ -256,6 +256,9 @@ remains BLOCKED until HPR-P1-021..029 are completed and their evidence satisfies
 
 ### HPR-P1-023 application HA exercise hardening evidence
 
+- first exact-head full CI #549 / run id `37395477029`: **FAILED** at `Validate production application HA runtime artifacts`; diagnosis found malformed generated content in `validate-runtime-artifacts.sh`, while `verify-application-ha.sh` retained the intended direct-node, authenticated continuity and rejoin logic; PostgreSQL, Maven and later stages were skipped;
+- repair replaces the corrupted runtime validator with a clean fail-fast validator covering two REST nodes, single-active realtime, readiness routing, no stickiness, service lifecycle, HA exercise inputs/continuity functions and shell syntax; HPR-P1-024 remains blocked until the repaired exact head passes full CI;
+
 - execution base SHA: `9d6130bf6e0c33e5aeaebe3e3c8b7fcde103d220`;
 - pre-task exact-head full CI #548 / run id `37394622465`: **SUCCESS**;
 - the destructive exercise now requires direct node base URLs so both nodes are individually proven ready before the first loss and after each restart;

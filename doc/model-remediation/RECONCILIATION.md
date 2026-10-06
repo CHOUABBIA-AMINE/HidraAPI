@@ -111,7 +111,7 @@ No `party.application.contract.planning` package exists in the exact current tre
 | HMR-082 | HMSR-096 | hse.HseCase | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-083 | HMSR-097 | audit.AuditExportRequest | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-084 | HMSR-098 | documents.DocumentTargetLink | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
-| HMR-085 | HMSR-100 | identity.AuthorizationDecision | STILL REQUIRED | no migration registered; dedicated test: absent; revalidate obligations before mutation |
+| HMR-085 | HMSR-100 | identity.AuthorizationDecision | BLOCKED — EVALUATION CONTRACT PREREQUISITE | JSON grammar/obligation execution and trusted assertion context absent; registered allowlist omits actual evaluation flow; concrete prerequisite proposal below. |
 | HMR-086 | HMSR-101 | identity.AuthorizationDelegationGrant | COMPLETED — HPR-P2-008 | Required nonblank delegation reason and validTo carried through domain/JPA/mapper; DelegationStatus narrowed to ACTIVE/REVOKED/EXPIRED; optional Role and Permission validated with nullable same-module FKs; no XOR rule; V20261006_011 fails closed on legacy evidence; focused tests added; final CI pending. |
 | HMR-087 | HMSR-104 | identity.LoginSession | COMPLETED — HPR-P2-008 | AuthenticationProtocol sessionType and independent endedAt carried through domain/JPA/mapper; exact ExternalIdentity propagated from LDAP/OIDC through principal/input/completion; terminal lifecycle preserves lastSeenAt and prior termination; V20261006_012 requires explicit legacy protocol evidence; no inferred historical termination; focused tests added; final CI pending. |
 | HMR-088 | HMSR-105 | identity.UserPermissionGrant | COMPLETED — HPR-P2-008 | Domain and PostgreSQL enforce nonblank grantReason, bounded validTo and ACTIVE/REVOKED/EXPIRED for direct permission grants including emergency records; shared GrantStatus and optional role-grant reason/end remain unchanged; V20261006_013 and focused tests added; final CI pending. |
@@ -140,8 +140,8 @@ No `party.application.contract.planning` package exists in the exact current tre
 - HMR-005 corrected from stale planned status to **COMPLETED**;
 - HMR-009 confirmed **COMPLETED** and removed as a carry-over blocker;
 - HMR-050..106 evaluated: **57**;
-- HMR-050..106 **STILL REQUIRED**: **40**;
-- HMR-050..106 **BLOCKED**: **1**;
+- HMR-050..106 **STILL REQUIRED**: **39**;
+- HMR-050..106 **BLOCKED**: **2**;
 - HMR-050..106 **COMPLETED during HPR-P2-008**: **16**;
 - HMR-050..106 **SUPERSEDED**: **0**;
 - HMR-054 completed; repaired CI #575 is green;
@@ -151,7 +151,7 @@ No `party.application.contract.planning` package exists in the exact current tre
 
 - HMR-050 — **COMPLETED** at the first HPR-P2-008 execution step.
 - Next proposed scope: **HMR-085 — AuthorizationDecision (Batch 6)**, subject to green Batch 5 CI and fresh authorization-evaluation preflight.
-- Remaining after Batch 5 implementation: **40 STILL REQUIRED + 1 BLOCKED (HMR-080)**.
+- Current remaining: **39 STILL REQUIRED + 2 BLOCKED (HMR-080, HMR-085)**; 16 implementations completed.
 
 - HMR-051 — **COMPLETED**: Topology and optional Organization references validated on every case save; snapshot preserved; no migration because primary-candidate FK already exists; owner contract and architecture export added.
 
@@ -376,3 +376,88 @@ session and direct-permission rows will intentionally block rollout until reconc
 
 Next: HMR-085, matching Batch 6 of the supplied plan, only on owner `next` after the
 Batch 5 gate. Observe final-head CI started, then stop; await `next` or `fail`.
+
+## Batch 6 / HMR-085 preflight — 2026-10-06
+
+Baseline main: `925feec7c022a3603afbb4c2fcff47010a64323e`.
+CI #576 (run 37498438487) and documentation validation #67 both succeeded.
+Owner `next` selected HMR-085 / HMSR-100. No production mutation performed.
+
+### Disposition: BLOCKED — authorization evaluation contract prerequisite
+
+This is a new preflight finding, not a reopened completed task. Current source proves:
+
+- `IdentityAuthorizationApplicationService.evaluate` unconditionally denies with
+  NO_GRANT_MATCHED and unconditionally saves the resulting decision.
+- `AuthorizationPolicyEvaluator` constructs permit/deny records but performs no
+  policy-expression or graph evaluation.
+- `EvaluatePermissionQuery` and `EvaluatePermissionRequest` expose user, permission,
+  resource identity and neutral scope only. They have no verified assertion/context input.
+- The OIDC converter validates issuer/subject and resolves an ExternalIdentity, but
+  creates its principal from internally calculated permissions and does not preserve
+  the verified group/role/permission claims needed for assertion-only mappings.
+- Identity DDD sections 6.12 and 7.3 define JSON policy expressions and evaluation order,
+  but do not define a JSON grammar, attribute resolution, CONSTRAIN/obligation execution
+  contract, or policy conflict handling. Current production source has no expression evaluator.
+- `IdentityModuleConfiguration.authorizationDecisionPersistenceEnabled` exists in a
+  framework-neutral record but is not bound into this evaluation path.
+
+The registered legacy HMR-085 write list omits the actual defective application
+service, evidence-query adapter, trusted-assertion transport, expression evaluator,
+configuration binding and their regression tests. Merely rewriting the decision
+record cannot discharge HMSR-100's three obligations. AGENTS.md section 3.2 rule 9
+requires splitting an unregistered prerequisite before mutating the HMR.
+
+### Proposed concrete prerequisite contract — TARGET, not implemented
+
+Recommended implementation is an Identity-owned, constrained JSON evaluator, with no
+SpEL, scripts, SQL expressions or dynamic class access. This is a proposal and grants
+no runtime authority until admitted/implemented.
+
+1. Resolve an ACTIVE, unlocked User and ACTIVE requested Permission from Identity.
+   Unknown/disabled subjects or permissions fail closed with truthful reason codes.
+2. Introduce an application-owned authorization evidence port. A transactional JPA
+   adapter resolves direct permission grants, direct roles, group memberships/roles,
+   role-permission grants, active policy versions/rules and required subject attributes.
+   Capture one evaluation instant; use `[validFrom, validTo)` and exact neutral scope
+   identity. Null/GLOBAL grant scope covers operations; a scoped grant cannot authorize
+   a different scope/reference. Snapshot labels never establish identity.
+3. Direct explicit DENY overrides every permit path. Evaluate direct permissions,
+   direct roles and inherited group roles in DDD order, preserving every participating
+   grant/link ID. Require ACTIVE role/group/membership/grant state and valid intervals.
+4. External assertions may participate only when authenticated/validated infrastructure
+   supplies their provider, exact ExternalIdentity, subject and allowlisted claim values,
+   bound to the evaluated user. Never accept claim authority from EvaluatePermissionRequest
+   or treat stored external attribute snapshots as current login assertions.
+   Require ACTIVE provider, LINKED external identity and eligible mapping mode.
+   SYNC_MEMBERSHIP uses actual synchronized local membership; ASSERTION_ONLY and
+   DIRECT_GRANT use verified assertions. MANUAL_APPROVAL and REQUIRES_LOCAL_APPROVAL
+   do not confer authority without explicit approval evidence; DISABLED never confers it.
+5. JSON expression version 1 uses bounded operators: `eq`, `in`, `exists`, `all`, `any`,
+   `not`. Each predicate identifies a permitted namespace/attribute and a typed literal;
+   compound expressions contain child predicates. Reject unknown fields/operators,
+   excessive depth/size, missing required attributes and type mismatch. Do not execute
+   arbitrary expressions. Only repository-owned subject attributes and explicitly
+   trusted resource/context evidence are eligible; absent evidence is INDETERMINATE.
+6. Evaluate eligible policy rules in deterministic priority/ID order. Explicit policy
+   DENY overrides permits; unknown/unsupported conditions or unresolved obligations
+   produce INDETERMINATE rather than silently permitting. CONSTRAIN can restrict an
+   existing grant; its obligation cannot be declared satisfied without executor evidence.
+   Policy-only PERMIT requires all relevant constraints/obligations to be resolved.
+7. Construct a decision with reasonCode/reasonMessage and deterministic JSON evidence
+   for matched grant IDs, policy-rule IDs and external mapping/claim provenance.
+   Preserve neutral resource references and omit bearer tokens/secrets/raw sensitive claims.
+8. Expose the existing persistence flag through an infrastructure configuration adapter,
+   retaining its current default `true`. Evaluation is identical with persistence off;
+   only the save is skipped. No new high-risk-operation taxonomy is invented.
+
+Required scope admission: IdentityAuthorizationApplicationService, application evidence
+and settings ports, JPA evidence adapter, constrained expression evaluator, trusted
+assertion model and authentication adapters, runtime configuration binding, focused
+AuthorizationDecisionSemanticRemediationTest plus graph/mapping/policy PostgreSQL and
+assertion-spoofing regression tests. No cross-module FK or destructive migration.
+
+Validation of this preflight: source/DDD/allowlist inspection and `git diff --check`.
+No application tests or production-implementation success claimed. HMR-085 remains
+blocked and selected; do not automatically advance to Batch 7. The prerequisite
+contract must be settled before implementing the complete HMR-085 scope.

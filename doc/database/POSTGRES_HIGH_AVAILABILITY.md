@@ -2,7 +2,9 @@
 
 ## Status
 
-**APPROVED TARGET — HPR-P1-003**
+**HISTORICAL — HPR-P1-003 target-model baseline; retained for P1 stage provenance.**
+
+Current database authority is the HPR-P2-006 set indexed by `doc/database/README.md`, together with executable configuration/migrations and the closed P1 evidence. Later P1 closure supersedes any pre-closure “pending”, “target”, “not selected” or “not established” statements below when they conflict with current evidence.
 
 Owner approval date: **2026-10-05**
 

@@ -2,7 +2,9 @@
 
 ## Status
 
-**IMPLEMENTED-PENDING-EXERCISE — HPR-P1-016**
+**HISTORICAL — HPR-P1-016 implementation-stage baseline; retained for P1 stage provenance.**
+
+Current database authority is the HPR-P2-006 set indexed by `doc/database/README.md`, together with executable configuration/migrations and the closed P1 evidence. Later P1 closure supersedes any pre-closure “pending”, “target”, “not selected” or “not established” statements below when they conflict with current evidence.
 
 Execution base: `9053572efc804bcba44b14cd3aec4fa8d4900746`.
 

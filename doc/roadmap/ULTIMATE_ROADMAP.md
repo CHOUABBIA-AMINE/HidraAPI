@@ -929,3 +929,16 @@ manufacturer Party identity through its owner while retaining snapshots.
 Final task CI is pending at publication. Confirm CI started, then stop as instructed.
 Next proposed compatible scope: HMR-063 + HMR-086..089 after green CI and fresh
 batch admission/dependency review; HMR-080 remains blocked.
+
+### HMR-054 CI #574 guardrail inventory correction
+
+CI #574 / run `37485895694` on `674914cccf97aa4903df2f6f0e69562e9ce074da`
+ran 656 tests with one failure and no errors. DomainInvariantGuardrailTest retained
+its pre-HMR-054 required-marker count despite deliberate removal of the duplicated
+Equipment.equipmentKind field/guard. Admit a narrow correction to that existing
+architecture test plus these canonical records: 583 -> 582 required markers and
+610 -> 609 total markers. Ordering (24), self-reference (3), touched records (114)
+and the mandatory equipmentTypeId guard remain unchanged. No production or migration
+change is required. Standalone execution of the actual inventory test passed;
+focused Maven was blocked by the uncached Spring Boot 4.1.1 parent POM.
+Replacement exact-head CI is pending; confirm it started and await `next` or `fail`.

@@ -7,7 +7,7 @@
  *
  * @Name        : DomainInvariantGuardrailTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-10-06
  *
  * @Type        : Test
  * @Layer       : Architecture Test
@@ -61,10 +61,11 @@ class DomainInvariantGuardrailTest {
         }
 
         // HRA-061 deliberately retired 1,497 HRA-051 markers with 343 persistence-only domain mirrors.
-        assertEquals(583, required.get(), "Surviving HRA-051 required-field guard count drifted.");
+        // HMR-054 retired the obsolete Equipment.equipmentKind required guard; equipmentTypeId remains mandatory.
+        assertEquals(582, required.get(), "Surviving HRA-051 required-field guard count drifted.");
         assertEquals(24, ordering.get(), "Surviving HRA-051 temporal-order guard count drifted.");
         assertEquals(3, selfReference.get(), "Surviving HRA-051 self-reference guard count drifted.");
-        assertEquals(610, required.get() + ordering.get() + selfReference.get(),
+        assertEquals(609, required.get() + ordering.get() + selfReference.get(),
                 "Surviving HRA-051 total invariant guard count drifted.");
         assertEquals(114, touchedRecords.get(), "Surviving HRA-051 touched-record inventory drifted.");
     }

@@ -62,7 +62,8 @@ public final class AuthenticationCompletionApplicationService implements Complet
                 input.authenticationType(),
                 input.identityProviderId(),
                 input.roles(),
-                input.permissions()
+                input.permissions(),
+                input.externalIdentityId()
         );
         IssuedAccessToken accessToken = accessTokenIssuer.issue(principal);
         LoginSession session = sessionLifecycle.startSession(

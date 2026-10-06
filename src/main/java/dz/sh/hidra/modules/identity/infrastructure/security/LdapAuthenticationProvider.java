@@ -114,7 +114,8 @@ public final class LdapAuthenticationProvider implements AuthenticationProvider 
                 directoryProvider.providerType(),
                 directoryProvider.id(),
                 Set.of(),
-                Set.copyOf(authorization.effectivePermissions())
+                Set.copyOf(authorization.effectivePermissions()),
+                externalIdentity.id()
         );
 
         UsernamePasswordAuthenticationToken result = UsernamePasswordAuthenticationToken.authenticated(

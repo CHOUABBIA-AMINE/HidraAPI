@@ -82,14 +82,16 @@ public class AuthenticationSessionLifecycleApplicationService {
                 UUID.randomUUID().toString(),
                 principal.userId(),
                 principal.identityProviderId(),
-                null,
+                principal.externalIdentityId(),
                 now,
                 now,
                 expiresAt,
                 clientIp,
                 userAgent,
                 LoginSessionStatus.ACTIVE,
-                correlationId
+                correlationId,
+                protocol(principal.authenticationType()),
+                null
         ));
 
         if (principal.authenticationType() != ProviderType.LOCAL) {
@@ -120,7 +122,7 @@ public class AuthenticationSessionLifecycleApplicationService {
         if (status != LoginSessionStatus.ACTIVE) {
             return status == session.status() ? session : saveWithStatus(session, status, effectiveSeenAt);
         }
-        return loginSessionRepository.save(copy(session, effectiveSeenAt, LoginSessionStatus.ACTIVE));
+        return loginSessionRepository.save(copy(session, effectiveSeenAt, LoginSessionStatus.ACTIVE, null));
     }
 
     /**
@@ -129,7 +131,7 @@ public class AuthenticationSessionLifecycleApplicationService {
     @Transactional
     public LoginSession logoutSession(String sessionId) {
         LoginSession session = requireSession(sessionId);
-        if (session.status() == LoginSessionStatus.LOGGED_OUT) {
+        if (session.status() != LoginSessionStatus.ACTIVE) {
             return session;
         }
         Instant now = Instant.now();
@@ -150,7 +152,7 @@ public class AuthenticationSessionLifecycleApplicationService {
     @Transactional
     public LoginSession revokeSession(String sessionId) {
         LoginSession session = requireSession(sessionId);
-        if (session.status() == LoginSessionStatus.REVOKED) {
+        if (session.status() != LoginSessionStatus.ACTIVE) {
             return session;
         }
         return saveWithStatus(session, LoginSessionStatus.REVOKED, Instant.now());
@@ -162,7 +164,7 @@ public class AuthenticationSessionLifecycleApplicationService {
     @Transactional
     public LoginSession expireSession(String sessionId) {
         LoginSession session = requireSession(sessionId);
-        if (session.status() == LoginSessionStatus.EXPIRED) {
+        if (session.status() != LoginSessionStatus.ACTIVE) {
             return session;
         }
         return saveWithStatus(session, LoginSessionStatus.EXPIRED, Instant.now());
@@ -177,10 +179,10 @@ public class AuthenticationSessionLifecycleApplicationService {
     }
 
     private LoginSession saveWithStatus(LoginSession session, LoginSessionStatus status, Instant seenAt) {
-        return loginSessionRepository.save(copy(session, seenAt, status));
+        return loginSessionRepository.save(copy(session, session.lastSeenAt(), status, seenAt));
     }
 
-    private static LoginSession copy(LoginSession session, Instant lastSeenAt, LoginSessionStatus status) {
+    private static LoginSession copy(LoginSession session, Instant lastSeenAt, LoginSessionStatus status, Instant endedAt) {
         return new LoginSession(
                 session.id(),
                 session.userId(),
@@ -192,17 +194,14 @@ public class AuthenticationSessionLifecycleApplicationService {
                 session.clientIp(),
                 session.userAgent(),
                 status,
-                session.correlationId()
+                session.correlationId(),
+                session.sessionType(),
+                endedAt
         );
     }
 
     private AuthenticationProtocol protocolForSession(LoginSession session) {
-        if (session.identityProviderId() == null) {
-            return AuthenticationProtocol.LOCAL;
-        }
-        IdentityProvider provider = identityProviderRepository.findById(session.identityProviderId())
-                .orElseThrow(() -> new IllegalStateException("Authentication session identity provider no longer exists."));
-        return protocol(provider.providerType());
+        return session.sessionType();
     }
 
     private static AuthenticationProtocol protocol(ProviderType providerType) {

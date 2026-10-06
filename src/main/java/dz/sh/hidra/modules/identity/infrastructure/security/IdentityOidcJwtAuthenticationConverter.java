@@ -106,7 +106,8 @@ public final class IdentityOidcJwtAuthenticationConverter implements Converter<J
                 ProviderType.OIDC,
                 provider.id(),
                 Set.of(),
-                Set.copyOf(authorization.effectivePermissions())
+                Set.copyOf(authorization.effectivePermissions()),
+                externalIdentity.id()
         );
         return new HidraOidcAuthenticationToken(principal);
     }

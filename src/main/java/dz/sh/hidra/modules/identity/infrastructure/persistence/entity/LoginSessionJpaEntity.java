@@ -70,6 +70,13 @@ import java.time.Instant;
     @Column(name = "correlation_id", nullable = true, length = 120)
     private String correlationId;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "session_type", nullable = false, length = 80)
+    private AuthenticationProtocol sessionType;
+
+    @Column(name = "ended_at")
+    private Instant endedAt;
+
         protected LoginSessionJpaEntity() {
             // Required by JPA.
         }
@@ -85,7 +92,9 @@ import java.time.Instant;
             String clientIp,
             String userAgent,
             LoginSessionStatus status,
-            String correlationId
+            String correlationId,
+            AuthenticationProtocol sessionType,
+            Instant endedAt
         ) {
             this.id = id;
         this.userId = userId;
@@ -98,8 +107,14 @@ import java.time.Instant;
         this.userAgent = userAgent;
         this.status = status;
         this.correlationId = correlationId;
+        this.sessionType = sessionType;
+        this.endedAt = endedAt;
         }
 
+
+    public AuthenticationProtocol sessionType() { return sessionType; }
+
+    public Instant endedAt() { return endedAt; }
 
     public String id() {
         return id;

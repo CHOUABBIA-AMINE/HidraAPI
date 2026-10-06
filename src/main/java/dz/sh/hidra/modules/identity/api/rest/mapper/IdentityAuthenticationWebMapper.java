@@ -49,7 +49,8 @@ public final class IdentityAuthenticationWebMapper {
                 hidraPrincipal.authenticationType(),
                 hidraPrincipal.identityProviderId(),
                 hidraPrincipal.roles(),
-                hidraPrincipal.permissions()
+                hidraPrincipal.permissions(),
+                hidraPrincipal.externalIdentityId()
         );
     }
 

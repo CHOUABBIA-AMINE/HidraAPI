@@ -63,7 +63,8 @@ public final class DirectAuthenticationApplicationService implements Authenticat
                         principal.authenticationType(),
                         principal.identityProviderId(),
                         principal.roles(),
-                        principal.permissions()
+                        principal.permissions(),
+                principal.externalIdentityId()
                 ),
                 command.clientIp(),
                 command.userAgent(),

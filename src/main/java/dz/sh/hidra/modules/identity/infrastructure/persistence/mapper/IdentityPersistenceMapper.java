@@ -402,7 +402,9 @@ public final class IdentityPersistenceMapper {
                     model.clientIp(),
                     model.userAgent(),
                     model.status(),
-                    model.correlationId()
+                    model.correlationId(),
+                    model.sessionType(),
+                    model.endedAt()
         );
     }
 
@@ -418,7 +420,9 @@ public final class IdentityPersistenceMapper {
                     entity.clientIp(),
                     entity.userAgent(),
                     entity.status(),
-                    entity.correlationId()
+                    entity.correlationId(),
+                    entity.sessionType(),
+                    entity.endedAt()
         );
     }
 

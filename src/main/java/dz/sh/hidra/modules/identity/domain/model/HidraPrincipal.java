@@ -42,8 +42,14 @@ public record HidraPrincipal(
         ProviderType authenticationType,
         String identityProviderId,
         Set<String> roles,
-        Set<String> permissions
+        Set<String> permissions,
+        String externalIdentityId
 ) implements Principal {
+
+    public HidraPrincipal(String userId, String username, String displayName, ProviderType authenticationType,
+            String identityProviderId, Set<String> roles, Set<String> permissions) {
+        this(userId, username, displayName, authenticationType, identityProviderId, roles, permissions, null);
+    }
 
     public HidraPrincipal {
         userId = requireText(userId, "userId");
@@ -51,6 +57,7 @@ public record HidraPrincipal(
         displayName = normalize(displayName);
         authenticationType = Objects.requireNonNull(authenticationType, "authenticationType must not be null");
         identityProviderId = normalize(identityProviderId);
+        externalIdentityId = normalize(externalIdentityId);
         roles = immutableSet(roles);
         permissions = immutableSet(permissions);
     }

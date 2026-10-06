@@ -49,10 +49,15 @@ public record LoginSession(
     String clientIp,
     String userAgent,
     LoginSessionStatus status,
-    String correlationId
+    String correlationId,
+    AuthenticationProtocol sessionType,
+    Instant endedAt
 ) {
 
     public LoginSession {
+        if (sessionType == null) {
+            throw new InvalidIdentityValueException("LoginSession sessionType is required.");
+        }
         // HRA-051 required: id
         if (id == null || id.isBlank()) {
             throw new InvalidIdentityValueException("LoginSession id must not be blank.");

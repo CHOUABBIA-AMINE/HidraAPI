@@ -866,3 +866,13 @@ reconciliation. Final Batch 2 CI validates integration and remains pending at
 publication. Follow owner instruction: confirm CI started, then stop until `next`
 or `fail`. Next proposed scope is HMR-053 alone after a green Batch 2 head;
 HMR-080's owner-contract blocker remains preserved.
+
+### Batch 2 regression repair — HMR-052 / CI #571
+
+CI #571 ran 639 tests with one PostgreSQL parameter/column ambiguity error and no
+assertion failures. Admit V20261006_007__hmr_052_qualify_message_validator_parameter.sql,
+the existing NotificationMessageIntegrityMigrationTest and these two canonical progress
+records for a narrow HMR-052 repair. Preserve every published migration. The replacement
+function retains its signature and qualifies only the ambiguous message identifier.
+Do not advance to HMR-053 until the repaired final head is green. Per owner instruction,
+stop after confirming replacement CI has started; await `next` or `fail`.

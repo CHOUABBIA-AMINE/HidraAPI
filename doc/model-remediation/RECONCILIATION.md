@@ -236,3 +236,21 @@ provider, cross-module or OT-control policy is introduced.
 
 Next registered proposed scope: HMR-053 alone, only after the final Batch 2 head is green.
 Per owner instruction, stop once final-head CI has started; resume on `next` or `fail`.
+
+## Batch 2 CI #571 corrective follow-up
+
+CI #571 / run `37479293974` on `657d5d7cf7803e62f820ea9dfde5cf308ecb7640`
+ran 639 tests: 0 assertion failures, 1 error, 0 skipped. PostgreSQL reported
+SQLSTATE `42702` in NotificationMessageIntegrityMigrationTest: the required-variable
+lookup used ambiguous `message_id` instead of the function-qualified parameter.
+
+V20261006_007 replaces only hmr052_message_valid with the qualified parameter;
+all previously published migrations and signatures remain unchanged. The PostgreSQL
+regression reproduces the original error, installs the forward repair, proves promotion
+with the matching input succeeds, and proves another message's inputs cannot satisfy it.
+Existing message integrity tests now apply both the original and corrective migrations.
+
+Local Java syntax and migration-preservation checks passed. Focused Maven execution
+was attempted but stopped at the uncached Spring Boot 4.1.1 parent POM; no local
+PostgreSQL or full-suite success is claimed. Replacement exact-head CI remains pending.
+Stop once replacement CI starts, as instructed by the owner.

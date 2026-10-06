@@ -109,8 +109,35 @@ class NotificationMessageIntegrityMigrationTest {
         assertThatThrownBy(this::migrate).isInstanceOf(SQLException.class).hasMessageContaining("HMR-052 preflight failed");
         assertThat(scalar("SELECT request_id FROM hidra_notification_message WHERE id='legacy'")).isEqualTo("other");
     }
+    @Test
+    void forwardRepairResolvesParameterCollisionAndRetainsMessageOwnership() throws Exception {
+        applyMigration("V20261006_005__hmr_052_notification_message_composition.sql");
+        execute("INSERT INTO hidra_notification_message VALUES('target','request','recipient','template','version',null,'DRAFT'); "
+            + "INSERT INTO hidra_notification_message_variable VALUES('target-input','target','asset','pipeline-1')");
+        try {
+            execute("UPDATE hidra_notification_message SET status='READY' WHERE id='target'");
+            fail("The original function must reproduce the CI #571 parameter collision.");
+        } catch (SQLException failure) {
+            assertThat(failure.getSQLState()).isEqualTo("42702");
+        }
+        applyMigration("V20261006_007__hmr_052_qualify_message_validator_parameter.sql");
+        execute("UPDATE hidra_notification_message SET status='READY' WHERE id='target'; "
+            + "INSERT INTO hidra_notification_message VALUES('other','request','recipient','template','version',null,'DRAFT')");
+        assertThat(scalar("SELECT status FROM hidra_notification_message WHERE id='target'")).isEqualTo("READY");
+        // Another message's input must not satisfy this message's required contract.
+        assertThatThrownBy(() -> execute("UPDATE hidra_notification_message SET status='READY' WHERE id='other'"))
+            .isInstanceOf(SQLException.class).hasMessageContaining("HMR-052 invalid message composition");
+        execute("INSERT INTO hidra_notification_message_variable VALUES('other-input','other','asset','pipeline-2'); "
+            + "UPDATE hidra_notification_message SET status='READY' WHERE id='other'");
+        assertThat(scalar("SELECT status FROM hidra_notification_message WHERE id='other'")).isEqualTo("READY");
+    }
+
     private void migrate() throws Exception {
-        String sql = Files.readString(Path.of("src/main/resources/db/migration/V20261006_005__hmr_052_notification_message_composition.sql"));
+        applyMigration("V20261006_005__hmr_052_notification_message_composition.sql");
+        applyMigration("V20261006_007__hmr_052_qualify_message_validator_parameter.sql");
+    }
+    private void applyMigration(String filename) throws Exception {
+        String sql = Files.readString(Path.of("src/main/resources/db/migration", filename));
         try (var c = connection(); var s = c.createStatement()) {
             c.setAutoCommit(false);
             try { s.execute(sql); c.commit(); }

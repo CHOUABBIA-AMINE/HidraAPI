@@ -86,7 +86,7 @@ Interrupted or in-doubt transaction semantics remain governed by the existing ap
 
 ## Backup, PITR and recovery objectives
 
-**Result: DISPUTED — RE-RUN REQUIRED (HPR-P1-030)**
+**Result: DISPUTED — SUBMITTED RE-RUN PACKAGE REJECTED; RESUBMISSION REQUIRED (HPR-P1-030)**
 
 Operator-supplied timestamps:
 
@@ -119,6 +119,29 @@ Recovered Flyway tail reported from the isolated recovery target:
 The migration names/versions and 82-migration count reconcile to the authoritative repository, but the retained runtime checksums do not. Repository-side revalidation on 2026-10-06 confirms that both tail migration blobs are identical at the claimed deployed SHA `66f6d7f12d1f7d52f8725cd4747cf4c777bfd29a` and the reopened-roadmap baseline. Standard Flyway line-based CRC32 calculation over those immutable SQL resources yields `2117299335` for `20261004.049` and `-200626796` for `20261005.001`, not the retained recovered values `-493028112` and `1845920394`.
 
 The prior exercise record does not retain or link the complete 82-entry expected manifest, complete 82-entry restored manifest, SHA-256 values for both manifests, or the exact successful `cmp`/diff output required by `verify-pitr-restore.sh`. Therefore exact current-schema PITR acceptance is **NOT ESTABLISHED**. HPR-P1-030 requires a fresh governed production-equivalent reconciliation/rerun from a verified candidate and forbids waiving the discrepancy or rewriting Flyway history.
+
+### HPR-P1-030 submitted rerun package review — 2026-10-06
+
+A later operator-supplied PITR package reported:
+
+- repo1 recovery;
+- pre-target marker `2026-10-06 10:17:45+01` present after recovery;
+- selected PITR target `2026-10-06 10:18:00+01`;
+- post-target marker `2026-10-06 10:18:22+01` absent after recovery;
+- DR declaration `2026-10-06 10:15:00+01`;
+- service acceptance `2026-10-06 10:55:00+01`;
+- stated achieved RPO **15 seconds** and RTO **40 minutes**;
+- tail checksums `2117299335` for `20261004.049` and `-200626796` for `20261005.001`;
+- authenticated recovered-endpoint read/write acceptance by the Lead Operations Engineer.
+
+Those marker/timing values and tail checksums are compatible with the intended HPR-P1-030 result. However, the same package is not acceptable as closure evidence because:
+
+1. it reports SHA-256 `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855` for both the expected and restored manifests; this is the digest of empty content and therefore contradicts the claim that each file contains 82 rows;
+2. the pasted manifest head begins with versions `1.0.0` and `1.0.1`, whereas the authoritative HidraAPI migration sequence begins with `20260611.001` and `20260611.002`;
+3. the complete 82-entry expected manifest and complete 82-entry restored manifest were not supplied/retained here;
+4. the full `verify-pitr-restore.sh` output, including its own expected/restored SHA-256 lines and final PASS lines, was not supplied.
+
+Disposition: **HPR-P1-030 remains BLOCKED.** A corrected evidence package must contain the actual non-empty manifests, their real SHA-256 values, explicit 82-line counts, exact successful comparison output, complete PITR verification log, marker results, recovery timestamps and acceptance/sign-off. No Flyway history repair, migration edit, checksum waiver or fabricated manifest is permitted.
 
 ## Controlled deployment and rollback
 

@@ -7,7 +7,7 @@
  *
  * @Name        : WorkflowStateHistory
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-10-06
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -91,6 +91,8 @@ import java.time.Instant;
         actionId = normalize(actionId);
         reasonId = normalize(reasonId);
         correlationId = normalize(correlationId);
+        if(toStatus==null || actorDisplayNameSnapshot==null)
+            throw new InvalidWorkflowValueException("Workflow history requires destination status and actor display evidence.");
         }
 
         private static String normalize(String value) {

@@ -1629,3 +1629,10 @@ ordering. Action persistence inserts without merge and rejects overwrite/delete/
 Reasons use active WORKFLOW_REASON. Decision reason/comment rules and mandatory actor
 display evidence fail before persistence; configured transitions evaluate live Identity
 permissions and ignore caller-supplied permission sets.
+
+
+History requires nonblank destination status and actor display evidence. Persistence
+uses insert/flush, never merge, and the database rejects updates, deletes and truncation.
+Optional task, source/destination step, action and reason links are checked when present
+for Workflow instance/definition coherence; action actor/task/reason evidence must agree.
+Optional links remain optional. These guards add no fabricated producer or lifecycle event.

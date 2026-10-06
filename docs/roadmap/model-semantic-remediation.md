@@ -4876,7 +4876,8 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-116`
 - Exact commit: `fix(workflow): remediate semantic review WorkflowStateHistory`
-- Status: **Planned**
+- Status: **Completed — CI pending**
+- Batch 7 implementation: Mandatory status/actor display evidence fails fast. History persistence inserts and flushes without upsert; optional task/step/action/reason references are checked for instance/definition and action evidence coherence. Database guards prohibit update/delete/truncate. Four focused behavior checks passed with temporary stubs; ten PostgreSQL/Hibernate cases added for CI, not locally executed. Canonical scope/migration admission supersedes legacy filenames.
 - SCC: —
 - Recorded upstream HMS dependencies: workflow.WorkflowAction, workflow.WorkflowInstance, workflow.WorkflowStep, workflow.WorkflowTask
 - HMSR correction count: 3

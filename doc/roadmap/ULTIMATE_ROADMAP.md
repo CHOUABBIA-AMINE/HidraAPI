@@ -1271,3 +1271,7 @@ task; owner-authorized live permission evaluation supersedes caller permission s
 ### Batch 7 HMR-081 — IMPLEMENTED, CI PENDING
 
 Generic recording permits comments only; configured transitions exclusively produce decisions using live Identity authority. Optional task ownership and conditional evidence are enforced; canonical actor snapshots and server-owned locked sequences replace caller evidence. Action persistence is insert-only with unique monotonic sequence and immutable database guards. Five focused behavior checks passed with temporary stubs; existing permission regression fixture updated.
+
+### Batch 7 HMR-099 — IMPLEMENTED, CI PENDING
+
+Mandatory status/actor display evidence fails fast. History persistence inserts and flushes without upsert; optional task/step/action/reason references are checked for instance/definition and action evidence coherence. Database guards prohibit update/delete/truncate. Four focused behavior checks passed with temporary stubs; ten PostgreSQL/Hibernate cases added for CI, not locally executed.

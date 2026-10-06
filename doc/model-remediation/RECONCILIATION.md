@@ -125,7 +125,7 @@ No `party.application.contract.planning` package exists in the exact current tre
 | HMR-096 | HMSR-113 | hse.HseClosure | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-097 | HMSR-114 | hse.HseCorrectivePreventiveAction | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-098 | HMSR-115 | integrity.IntegrityCase | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
-| HMR-099 | HMSR-116 | workflow.WorkflowStateHistory | STILL REQUIRED | no migration registered; dedicated test: absent; revalidate obligations before mutation |
+| HMR-099 | HMSR-116 | workflow.WorkflowStateHistory | IMPLEMENTED — CI PENDING | Mandatory status/actor display evidence fails fast. History persistence inserts and flushes without upsert; optional task/step/action/reason references are checked for instance/definition and action evidence coherence. Database guards prohibit update/delete/truncate. Four focused behavior checks passed with temporary stubs; ten PostgreSQL/Hibernate cases added for CI, not locally executed. |
 | HMR-100 | HMSR-117 | alarm.Alarm | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-101 | HMSR-118 | audit.AuditAccessRecord | STILL REQUIRED | no migration registered; dedicated test: absent; revalidate obligations before mutation |
 | HMR-102 | HMSR-119 | audit.AuditBeforeAfterValue | STILL REQUIRED | no migration registered; dedicated test: absent; revalidate obligations before mutation |
@@ -652,4 +652,9 @@ Validation is recorded at the final Batch 7 disposition; CI pending.
 ### Batch 7 HMR-081 implementation
 
 Generic recording permits comments only; configured transitions exclusively produce decisions using live Identity authority. Optional task ownership and conditional evidence are enforced; canonical actor snapshots and server-owned locked sequences replace caller evidence. Action persistence is insert-only with unique monotonic sequence and immutable database guards. Five focused behavior checks passed with temporary stubs; existing permission regression fixture updated.
+Validation is recorded at the final Batch 7 disposition; CI pending.
+
+### Batch 7 HMR-099 implementation
+
+Mandatory status/actor display evidence fails fast. History persistence inserts and flushes without upsert; optional task/step/action/reason references are checked for instance/definition and action evidence coherence. Database guards prohibit update/delete/truncate. Four focused behavior checks passed with temporary stubs; ten PostgreSQL/Hibernate cases added for CI, not locally executed.
 Validation is recorded at the final Batch 7 disposition; CI pending.

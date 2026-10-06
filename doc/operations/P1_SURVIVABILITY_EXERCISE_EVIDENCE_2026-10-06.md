@@ -86,7 +86,7 @@ Interrupted or in-doubt transaction semantics remain governed by the existing ap
 
 ## Backup, PITR and recovery objectives
 
-**Result: PASS**
+**Result: DISPUTED — RE-RUN REQUIRED (HPR-P1-030)**
 
 Operator-supplied timestamps:
 
@@ -107,7 +107,7 @@ Recovered state:
 - achieved RTO: **37 minutes**;
 - approved RTO objective: **≤ 60 minutes**.
 
-Both measured values satisfy the approved P1 objectives.
+The arithmetic of the reported values is within the approved P1 objectives, but those measurements are not sufficient to close DR validation while current-schema reconciliation is unresolved.
 
 Recovered Flyway tail reported from the isolated recovery target:
 
@@ -116,7 +116,9 @@ Recovered Flyway tail reported from the isolated recovery target:
 | 82 | 20261005.001 | `V20261005_001__provision_risk_register_created_audit_taxonomy.sql` | 1845920394 | true |
 | 81 | 20261004.049 | `V20261004_049__hmr_049_risk_risk_register.sql` | -493028112 | true |
 
-The migration names/versions and 82-migration count were independently reconciled to the authoritative repository. The runtime Flyway checksums are retained as operator-supplied recovery evidence.
+The migration names/versions and 82-migration count reconcile to the authoritative repository, but the retained runtime checksums do not. Repository-side revalidation on 2026-10-06 confirms that both tail migration blobs are identical at the claimed deployed SHA `66f6d7f12d1f7d52f8725cd4747cf4c777bfd29a` and the reopened-roadmap baseline. Standard Flyway line-based CRC32 calculation over those immutable SQL resources yields `2117299335` for `20261004.049` and `-200626796` for `20261005.001`, not the retained recovered values `-493028112` and `1845920394`.
+
+The prior exercise record does not retain or link the complete 82-entry expected manifest, complete 82-entry restored manifest, SHA-256 values for both manifests, or the exact successful `cmp`/diff output required by `verify-pitr-restore.sh`. Therefore exact current-schema PITR acceptance is **NOT ESTABLISHED**. HPR-P1-030 requires a fresh governed production-equivalent reconciliation/rerun from a verified candidate and forbids waiving the discrepancy or rewriting Flyway history.
 
 ## Controlled deployment and rollback
 
@@ -185,13 +187,13 @@ The supplied production-equivalent campaign, together with repository reconcilia
 - immutable runtime/tool and artifact identifiers recorded;
 - two-node application loss/rejoin;
 - PostgreSQL failover, single-writer authority, fencing and Hikari recovery;
-- backup/PITR with marker assertions and exact current-schema reconciliation;
+- backup/PITR marker and timing observations are retained historically, but exact current-schema reconciliation is disputed and must be re-established by HPR-P1-030;
 - measured RPO/RTO within approved objectives;
 - controlled deployment and rollback with approval evidence;
 - representative alert firing, delivery, acknowledgement and resolution;
 - database maintenance with authenticated application acceptance;
 - independent repo2 restore and bootstrap retention-policy evidence.
 
-HPR-P1-029 is therefore **COMPLETED**.
+HPR-P1-029 remains **COMPLETED as a historical campaign execution record**, but the post-closure re-audit invalidates its use as sufficient evidence for seven P1 checks. In particular, the PITR/current-schema claim is reopened under HPR-P1-030.
 
-This does **not** itself close P1. HPR-P1-012 remains the explicit final P1 survivability-verification closure task and must perform its own roadmap/evidence reconciliation and exact-head verification before production readiness may be declared established.
+This document must not be used to claim current P1 closure or production readiness while HPR-P1-030..037 and reopened HPR-P1-012 remain unresolved.

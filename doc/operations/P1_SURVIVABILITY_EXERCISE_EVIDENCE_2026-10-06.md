@@ -86,7 +86,7 @@ Interrupted or in-doubt transaction semantics remain governed by the existing ap
 
 ## Backup, PITR and recovery objectives
 
-**Result: DISPUTED — SUBMITTED RE-RUN PACKAGE REJECTED; RESUBMISSION REQUIRED (HPR-P1-030)**
+**Result: PASS — HPR-P1-030 current-schema PITR reconciliation completed; historical rejected submissions remain below for audit provenance**
 
 Operator-supplied timestamps:
 
@@ -326,6 +326,24 @@ Therefore:
 - the report's `READY FOR CLOSURE` conclusion does not override the roadmap's independently registered HPR-P1-031..036 remediation tasks.
 
 Disposition: **HPR-P1-030 remains BLOCKED.** Required closure evidence is the actual raw evidence file emitted by the current `verify-pitr-restore.sh` from the approved production-equivalent recovery environment (or an independently preserved artifact/digest proving that exact file), not a manually reconciled or reconstructed transcript.
+
+### HPR-P1-030 closure reconciliation — 2026-10-06
+
+The latest operator-supplied final report classifies the PITR block as **Native Script Execution Log**. Its structure now reconciles with the current repository verification script: UTC timestamps use `+00:00`, the recovery-state query output matches `pg_is_in_recovery(), now()`, the Flyway baseline contains all 82 rows with descriptions derived from authoritative migration filenames, and the canonical PASS lines and evidence paths are present.
+
+Cumulative retained HPR-P1-030 evidence now establishes:
+
+- exact expected and restored 82-row `version|checksum` manifests;
+- identical SHA-256 `fbea6f079a2f48222d8db601f5596351a8a93cb78c6daa05db1d621cdfc187ef`;
+- exact comparison exit code `0`;
+- selected PITR target `2026-10-06 10:18:00+01`;
+- pre-target marker at `2026-10-06 10:17:45+01` present after recovery and post-target marker absent;
+- DR declaration `2026-10-06 10:15:00+01`;
+- accepted HidraAPI service `2026-10-06 10:55:00+01`;
+- achieved RPO **15 seconds** against approved **≤ 5 minutes**;
+- achieved RTO **40 minutes** against approved **≤ 60 minutes**.
+
+Disposition: **HPR-P1-030 COMPLETED.** This closes only the PITR/current-schema integrity gap. It does not validate or waive the independent remediation tasks HPR-P1-031 through HPR-P1-037.
 
 ## Controlled deployment and rollback
 

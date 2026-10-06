@@ -1589,3 +1589,20 @@ The five candidate-source fields represent the reviewed direct-actor or candidat
 HMR-044 does not invent mode-specific Organization/Identity eligibility semantics beyond the HMSR
 obligation. Workflow fails closed before persistence when no strategy exists or when assignmentModeId
 belongs to a different Workflow catalog family.
+
+
+## Batch 7 admitted execution contracts — 2026-10-06
+
+WORKFLOW_PURPOSE is the owner-approved catalog family for mandatory instance/binding
+purpose. No business purpose rows are seeded. New starts require ACTIVE definition,
+matching version, exact active binding and active purpose/target type. Any populated
+current step belongs to the definition. A database partial unique index protects the
+nonterminal target/module/type/purpose tuple. Legacy incompatible rows require owner
+reconciliation before migration; no automatic catalog retagging.
+
+Planning supports PLAN_REVISION and PLANNING_PLAN owner lookups for DRAFT/SUBMITTED
+targets. Unsupported or ambiguous owner/type lookups deny starts. Operation references
+without an owner request object are not manufactured. Target and actor snapshots are
+resolved from their owners; request snapshots are compatibility inputs and grant no
+authority. Every write binds the supplied actor ID to the authenticated principal and
+requires a current active, unlocked Identity actor with display evidence.

@@ -7,7 +7,7 @@
  *
  * @Name        : WorkflowApplicationService
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-06
  *
  * @Type        : Class
  * @Layer       : Application
@@ -43,14 +43,24 @@ import dz.sh.hidra.modules.workflow.domain.value.WorkflowSlaStatus;
 import dz.sh.hidra.modules.workflow.domain.value.WorkflowTaskStatus;
 
 import java.time.Instant;
+import org.springframework.transaction.annotation.Transactional;
+import dz.sh.hidra.modules.workflow.application.port.out.WorkflowDefinitionRepositoryPort;
+import dz.sh.hidra.modules.workflow.application.port.out.WorkflowStepRepositoryPort;
+import dz.sh.hidra.modules.workflow.application.port.out.WorkflowConfigurationPort;
+import dz.sh.hidra.modules.workflow.domain.value.WorkflowDefinitionStatus;
+import dz.sh.hidra.modules.workflow.domain.exception.InvalidWorkflowValueException;
 import java.util.Objects;
 
 /**
  * Application service for workflow instances, tasks, and actions.
  */
 @Service
-public final class WorkflowApplicationService implements StartWorkflowInstanceUseCase, CreateWorkflowTaskUseCase, RecordWorkflowActionUseCase {
+public class WorkflowApplicationService implements StartWorkflowInstanceUseCase, CreateWorkflowTaskUseCase, RecordWorkflowActionUseCase {
 
+    private final WorkflowDefinitionRepositoryPort definitions;
+    private final WorkflowStepRepositoryPort steps;
+    private final WorkflowConfigurationPort configuration;
+    private final WorkflowExecutionOwnership ownership;
     private final WorkflowInstanceRepositoryPort instanceRepositoryPort;
     private final WorkflowTaskRepositoryPort taskRepositoryPort;
     private final WorkflowActionRepositoryPort actionRepositoryPort;
@@ -58,17 +68,35 @@ public final class WorkflowApplicationService implements StartWorkflowInstanceUs
     public WorkflowApplicationService(
             WorkflowInstanceRepositoryPort instanceRepositoryPort,
             WorkflowTaskRepositoryPort taskRepositoryPort,
-            WorkflowActionRepositoryPort actionRepositoryPort
+            WorkflowActionRepositoryPort actionRepositoryPort,
+            WorkflowDefinitionRepositoryPort definitions, WorkflowStepRepositoryPort steps,
+            WorkflowConfigurationPort configuration, WorkflowExecutionOwnership ownership
     ) {
+        this.definitions=Objects.requireNonNull(definitions);this.steps=Objects.requireNonNull(steps);
+        this.configuration=Objects.requireNonNull(configuration);this.ownership=Objects.requireNonNull(ownership);
         this.instanceRepositoryPort = Objects.requireNonNull(instanceRepositoryPort, "Workflow instance repository port must not be null.");
         this.taskRepositoryPort = Objects.requireNonNull(taskRepositoryPort, "Workflow task repository port must not be null.");
         this.actionRepositoryPort = Objects.requireNonNull(actionRepositoryPort, "Workflow action repository port must not be null.");
     }
 
     @Override
+    @Transactional
     public WorkflowInstanceSummaryDto startWorkflowInstance(StartWorkflowInstanceCommand command) {
         Objects.requireNonNull(command, "Start workflow instance command must not be null.");
         Instant now = Instant.now();
+        var actor=ownership.requireCurrentActor(command.startedByActorId());
+        var definition=definitions.findById(command.definitionId()).orElseThrow(()->new InvalidWorkflowValueException("Unknown Workflow definition."));
+        if(definition.status()!=WorkflowDefinitionStatus.ACTIVE || definition.version()!=command.definitionVersion())
+            throw new InvalidWorkflowValueException("Workflow start requires ACTIVE matching definition version.");
+        configuration.requireActiveCatalog(command.workflowPurposeId(),"WORKFLOW_PURPOSE");
+        var type=configuration.requireActiveCatalog(command.targetTypeId(),"WORKFLOW_TARGET_TYPE");
+        if(!configuration.activeBinding(command.definitionId(),command.targetModule(),command.targetTypeId(),command.workflowPurposeId()))
+            throw new InvalidWorkflowValueException("Exact active Workflow target/purpose binding required.");
+        if(command.currentStepId()!=null && !command.currentStepId().isBlank()) {
+            var step=steps.findById(command.currentStepId()).orElseThrow(()->new InvalidWorkflowValueException("Unknown Workflow current step."));
+            if(!definition.id().equals(step.definitionId())) throw new InvalidWorkflowValueException("Workflow current step belongs to another definition.");
+        }
+        var target=ownership.requireTarget(command.targetModule(),type.code(),command.targetId());
         WorkflowInstance instance = new WorkflowInstance(
                 WorkflowId.newId().value(),
                 command.definitionId(),
@@ -77,14 +105,14 @@ public final class WorkflowApplicationService implements StartWorkflowInstanceUs
                 command.targetModule(),
                 command.targetTypeId(),
                 command.targetId(),
-                command.targetCodeSnapshot(),
-                command.targetLabelSnapshot(),
+                target.code(),
+                target.label(),
                 WorkflowInstanceStatus.STARTED,
                 command.currentStepId(),
                 command.startedByActorId(),
-                command.startedByUsernameSnapshot(),
-                command.startedByDisplayNameSnapshot(),
-                command.startedByRoleCodeSnapshot(),
+                actor.username(),
+                actor.displayName(),
+                null,
                 now,
                 null,
                 null,

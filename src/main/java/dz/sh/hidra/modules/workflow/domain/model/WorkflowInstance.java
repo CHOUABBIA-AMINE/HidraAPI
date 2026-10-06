@@ -7,7 +7,7 @@
  *
  * @Name        : WorkflowInstance
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-10-06
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -116,6 +116,9 @@ import java.time.Instant;
         startedByDisplayNameSnapshot = normalize(startedByDisplayNameSnapshot);
         startedByRoleCodeSnapshot = normalize(startedByRoleCodeSnapshot);
         correlationId = normalize(correlationId);
+        if(workflowPurposeId==null || targetModule==null || definitionVersion<1
+                || startedByDisplayNameSnapshot==null)
+            throw new InvalidWorkflowValueException("Workflow instance requires purpose, target module, positive version and actor display evidence.");
         }
         public boolean nonTerminal() {
             return status == WorkflowInstanceStatus.DRAFT

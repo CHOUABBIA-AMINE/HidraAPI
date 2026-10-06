@@ -81,7 +81,7 @@ No `party.application.contract.planning` package exists in the exact current tre
 | HMR-052 | HMSR-061 | notification.NotificationMessage | COMPLETED — HPR-P2-008 | Recipient/request composite FK; exact-version/template FK and pre-dispatch composition guard; required-input schema checked for sendable states; inputs/version frozen; active NOTIFICATION_PRIORITY eligibility; V20261006_005; dedicated unit and PostgreSQL tests added. |
 | HMR-053 | HMSR-062 | telemetry.TrustedTelemetryReading | COMPLETED — HPR-P2-008 | Telemetry trust application use case derives values/provenance/binding from locked source evidence; PASSED plus MEDIUM/HIGH/CERTIFIED, ACTIVE point and active QUALITY_CODE required; composite assessment/reading identity and optional unit/batch FKs; snapshot preservation; V20261006_008; focused unit and PostgreSQL tests added; CI pending. |
 | HMR-054 | HMSR-063 | topology.Equipment | COMPLETED — HPR-P2-008 | EquipmentType identity/code is sole active classification; EquipmentKind deleted from domain/JPA; forward V20261006_009 preserves legacy strings, rejects conflicting classification/orphan attachments and adds nullable same-module FKs; manufacturer checked by existing Party contract; snapshots preserved; focused tests added; CI pending. |
-| HMR-055 | HMSR-064 | workflow.WorkflowInstance | BLOCKED — PREREQUISITE CONTRACT | Undefined purpose family and missing target/actor owner contracts; Batch 7 preflight below. No implementation claimed. |
+| HMR-055 | HMSR-064 | workflow.WorkflowInstance | IMPLEMENTED — CI PENDING | Owner-bound starts enforce active definition/version and exact binding, governed purpose/type, current-step coherence and owner target/actor snapshots; nonterminal uniqueness and same-definition/version database guards. Planning target registry denies unsupported/ambiguous owners. Eight focused behavior checks passed with temporary stubs; local Maven blocked by uncached parent, not a JUnit/PostgreSQL pass. |
 | HMR-056 | HMSR-067 | integration.IntegrationExchangeMessage | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-057 | HMSR-068 | reporting.ReportRun | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-058 | HMSR-069 | risk.RiskAssessment | STILL REQUIRED | no migration registered; dedicated test: absent; revalidate obligations before mutation |
@@ -633,3 +633,8 @@ Validation: documentation workflow's UTF-8/nonempty/conflict checks and
 `git diff --check` passed. No Java, database or workflow behavior changed, so no new
 Maven test result is claimed. Documentation-only CI trigger pending at preparation.
 Current totals: **17 implemented, 38 still required, two blocked (080 and 055)**.
+
+### Batch 7 HMR-055 implementation
+
+Owner-bound starts enforce active definition/version and exact binding, governed purpose/type, current-step coherence and owner target/actor snapshots; nonterminal uniqueness and same-definition/version database guards. Planning target registry denies unsupported/ambiguous owners. Eight focused behavior checks passed with temporary stubs; local Maven blocked by uncached parent, not a JUnit/PostgreSQL pass.
+Validation is recorded at the final Batch 7 disposition; CI pending.

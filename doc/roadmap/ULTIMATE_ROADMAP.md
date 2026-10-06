@@ -1248,3 +1248,7 @@ Validation: compile, each dedicated semantic test, WorkflowTransitionApplication
 WorkflowExecutionPostgresTest, ArchitectureGuardrailTest, complete test and clean verify.
 Local Maven Central parent availability/JDK/Docker limits must be reported accurately.
 Do not proceed to attached Batch 8. No implementation is claimed by this admission.
+
+### Batch 7 HMR-055 — IMPLEMENTED, CI PENDING
+
+Owner-bound starts enforce active definition/version and exact binding, governed purpose/type, current-step coherence and owner target/actor snapshots; nonterminal uniqueness and same-definition/version database guards. Planning target registry denies unsupported/ambiguous owners. Eight focused behavior checks passed with temporary stubs; local Maven blocked by uncached parent, not a JUnit/PostgreSQL pass.

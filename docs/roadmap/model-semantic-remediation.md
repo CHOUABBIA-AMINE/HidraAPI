@@ -3124,7 +3124,8 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-064`
 - Exact commit: `fix(workflow): remediate semantic review WorkflowInstance`
-- Status: **Planned**
+- Status: **Completed — CI pending**
+- Batch 7 implementation: Owner-bound starts enforce active definition/version and exact binding, governed purpose/type, current-step coherence and owner target/actor snapshots; nonterminal uniqueness and same-definition/version database guards. Planning target registry denies unsupported/ambiguous owners. Eight focused behavior checks passed with temporary stubs; local Maven blocked by uncached parent, not a JUnit/PostgreSQL pass. Canonical scope/migration admission supersedes legacy filenames.
 - SCC: —
 - Recorded upstream HMS dependencies: workflow.WorkflowDefinition, workflow.WorkflowStep
 - HMSR correction count: 6

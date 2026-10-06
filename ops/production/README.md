@@ -119,8 +119,12 @@ Set:
 
 ```bash
 export HIDRA_HA_BASE_URL=https://approved-hidra-endpoint.example
+export HIDRA_APP_NODE_1_BASE_URL=https://approved-hidra-api-1.example
+export HIDRA_APP_NODE_2_BASE_URL=https://approved-hidra-api-2.example
 export HIDRA_APP_NODE_1_SSH=operator@hidra-api-1
 export HIDRA_APP_NODE_2_SSH=operator@hidra-api-2
+export HIDRA_HA_ACCEPTANCE_URL=https://approved-hidra-endpoint.example/api/v1/<approved-representative-read>
+export HIDRA_HA_ACCEPTANCE_CURL_CONFIG=/run/hidra/ha-acceptance.curlrc
 export HIDRA_HA_DESTRUCTIVE_EXERCISE=YES
 ```
 
@@ -130,7 +134,9 @@ Then run:
 ops/production/scripts/verify-application-ha.sh
 ```
 
-The script stops one systemd service at a time over SSH, verifies readiness remains reachable through HAProxy, restores the node, repeats with the second node, and writes timestamped evidence.
+The script first proves both nodes are directly ready. It then runs a continuous authenticated representative REST request through HAProxy while each node is stopped and restored in turn. The exercise fails on any acceptance-request error, verifies the restarted node directly becomes ready again before the other node may be stopped, and retains both the main evidence log and a per-probe continuity log.
+
+Authentication is supplied through the external `HIDRA_HA_ACCEPTANCE_CURL_CONFIG` file so bearer/session material is not embedded in the script or printed into evidence. The selected acceptance URL must be a safe approved authenticated read operation representative of normal database-backed REST service; the repository intentionally does not invent a business endpoint or credential.
 
 The exercise must run only in an approved production-equivalent environment with authorized sudo/service access.
 
@@ -140,8 +146,8 @@ HPR-P1-015 implementation exists in Git, but the roadmap must retain a pending-e
 
 - both nodes simultaneously active;
 - HAProxy routes only to ready nodes;
-- loss of either one node preserves REST readiness;
-- restored nodes rejoin safely;
+- loss of either one node preserves continuous authenticated representative REST service, not readiness alone;
+- each restored node is directly ready again before the next node-loss step begins;
 - no sticky-session correctness requirement;
 - realtime remains explicitly single-active;
 - node-local cache remains non-authoritative.

@@ -6,6 +6,7 @@ cfg="${root}/ops/production/haproxy/hidra-api.cfg"
 unit="${root}/ops/production/systemd/hidra-api.service"
 node_a="${root}/ops/production/env/node-a.env"
 node_b="${root}/ops/production/env/node-b.env"
+exercise="${root}/ops/production/scripts/verify-application-ha.sh"
 
 rest_count="$(awk '
   /^backend hidra_rest$/ { in_backend=1; next }
@@ -42,7 +43,22 @@ fi
 grep -q '^HIDRA_REALTIME_ENABLED=true$' "${node_a}"
 grep -q '^HIDRA_REALTIME_ENABLED=false$' "${node_b}"
 grep -q '^Restart=on-failure$' "${unit}"
-grep -q '^KillSignal=SIGTERM$' "${unit}"
+grep -q '^KillSignal=SIGTERM
+for script in "${root}"/ops/production/scripts/*.sh; do
+  bash -n "${script}"
+done
+
+echo "Production application HA runtime artifacts passed static validation."
+ "${unit}"
+
+grep -q 'HIDRA_APP_NODE_1_BASE_URL' "${exercise}"
+grep -q 'HIDRA_APP_NODE_2_BASE_URL' "${exercise}"
+grep -q 'HIDRA_HA_ACCEPTANCE_URL' "${exercise}"
+grep -q 'HIDRA_HA_ACCEPTANCE_CURL_CONFIG' "${exercise}"
+grep -q 'start_continuity_probe' "${exercise}"
+grep -q 'stop_continuity_probe' "${exercise}"
+grep -q 'verify_both_nodes_ready' "${exercise}"
+grep -q 'Authentication material is supplied only through the external curl config and is not printed' "${exercise}"
 
 for script in "${root}"/ops/production/scripts/*.sh; do
   bash -n "${script}"

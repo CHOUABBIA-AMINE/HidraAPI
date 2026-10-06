@@ -17,6 +17,9 @@ alerting:
 scrape_configs:
   - job_name: hidra-api
     metrics_path: /actuator/prometheus
+    authorization:
+      type: Bearer
+      credentials_file: __HIDRA_METRICS_BEARER_TOKEN_FILE__
     static_configs:
       - targets:
           - __HIDRA_APP_NODE_1_METRICS__
@@ -26,7 +29,8 @@ scrape_configs:
     metrics_path: /metrics
     static_configs:
       - targets:
-          - __HIDRA_HAPROXY_METRICS__
+          - __HIDRA_APP_HAPROXY_METRICS__
+          - __HIDRA_POSTGRES_HAPROXY_METRICS__
 
   - job_name: patroni
     metrics_path: /metrics

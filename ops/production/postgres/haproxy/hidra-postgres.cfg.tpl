@@ -12,6 +12,15 @@ frontend hidra_postgres_write
     bind __HIDRA_POSTGRES_BIND__
     default_backend hidra_postgres_primary
 
+# Built-in HAProxy Prometheus exporter for PostgreSQL stable-endpoint state.
+# Bind only on the approved monitoring network.
+frontend hidra_postgres_haproxy_metrics
+    mode http
+    bind __HIDRA_POSTGRES_HAPROXY_METRICS_BIND__
+    no log
+    http-request use-service prometheus-exporter if { path /metrics }
+    http-request deny
+
 backend hidra_postgres_primary
     mode tcp
     option httpchk GET /primary

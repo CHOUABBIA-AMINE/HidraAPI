@@ -9,10 +9,6 @@ route:
   repeat_interval: 4h
   routes:
     - matchers:
-        - severity="critical"
-      receiver: operations-critical
-      repeat_interval: 30m
-    - matchers:
         - domain="security"
       receiver: security-incidents
       repeat_interval: 30m
@@ -22,6 +18,10 @@ route:
     - matchers:
         - domain="backup"
       receiver: database-operations
+    - matchers:
+        - severity="critical"
+      receiver: operations-critical
+      repeat_interval: 30m
 
 receivers:
   - name: operations-default

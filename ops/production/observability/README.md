@@ -2,16 +2,9 @@
 
 ## Status
 
-**IMPLEMENTED-PENDING-LIVE-DELIVERY-EXERCISE — HPR-P1-019**
+**IMPLEMENTED-PENDING-LIVE-DELIVERY-EXERCISE — HPR-P1-019 / HPR-P1-026**
 
-The owner-approved P1 observability stack is:
-
-- Prometheus for metrics collection/evaluation;
-- Alertmanager for routing;
-- Grafana for dashboards;
-- Loki for centralized logs.
-
-The repository now contains executable configuration templates and alert rules for the approved P1 thresholds.
+The owner-approved P1 observability stack is Prometheus, Alertmanager, Grafana and Loki. Repository configuration now includes the HPR-P1-026 integration fixes required by the 2026-10-06 re-audit. Live production-equivalent firing/delivery/resolve evidence remains pending under HPR-P1-029.
 
 ## Approved service objectives and thresholds
 
@@ -44,59 +37,63 @@ Security escalation retains the existing incident policy: SEV-1 immediate escala
 
 Prometheus scrapes:
 
-- HidraAPI /actuator/prometheus on both application nodes;
-- HAProxy Prometheus metrics;
-- Patroni /metrics on both PostgreSQL members;
+- protected HidraAPI `/actuator/prometheus` on both application nodes using bearer authentication from the externally rendered `__HIDRA_METRICS_BEARER_TOKEN_FILE__` path;
+- the application HAProxy built-in Prometheus exporter;
+- the PostgreSQL stable-endpoint HAProxy built-in Prometheus exporter;
+- Patroni `/metrics` on both PostgreSQL members using the existing TLS client configuration;
 - the Hidra-owned pgBackRest metrics exporter.
 
-HAProxy metrics provide the authoritative P1 application-node count and stable-write-backend cardinality used by the HA alerts.
+The metrics bearer token is production secret material. Its real path/value is rendered by the approved production secret/configuration mechanism and is not committed to Git. The metrics endpoint remains protected; this HPR does not make Actuator metrics public.
+
+Both HAProxy configurations expose `/metrics` only on dedicated monitoring listeners. Those listeners must be bound to the approved monitoring network; they are not application/public ingress endpoints.
+
+HAProxy metrics provide the P1 application-node count and PostgreSQL stable-write-backend cardinality used by the HA rules.
+
+## HTTP histogram binding
+
+The production Spring profile explicitly enables the `http.server.requests` percentile histogram. This supplies the `http_server_requests_seconds_bucket` series consumed by the approved p95 `histogram_quantile` recording rule.
+
+## Alert routing
+
+Alertmanager evaluates domain-specific routes before the generic critical route:
+
+- `domain=security` -> security incident receiver;
+- `domain=database` -> Database Operations;
+- `domain=backup` -> Database Operations;
+- remaining `severity=critical` alerts -> critical Operations receiver;
+- all other alerts -> default Operations receiver.
+
+This prevents generic critical routing from shadowing database, backup or security ownership. Receiver URLs remain externally rendered placeholders and no real routing secret is committed.
 
 ## pgBackRest metrics exporter
 
 The repository-owned exporter exposes:
 
-- hidra_pgbackrest_latest_backup_age_seconds;
-- hidra_pgbackrest_check_success.
+- `hidra_pgbackrest_latest_backup_age_seconds`;
+- `hidra_pgbackrest_check_success`.
 
 It executes pgBackRest info/check against the approved stanza and exposes no credentials or backup content as metric labels.
 
-## Alert routing
-
-Alertmanager routes:
-
-- critical operational alerts to the critical receiver;
-- database/backup alerts to Database Operations;
-- security-labeled alerts to the security incident receiver;
-- other warnings to the default operations receiver.
-
-Receiver URLs are placeholders and must be injected from the controlled production configuration. They must not be committed with real routing secrets.
-
-## Grafana and Loki
-
-Grafana provisioning binds Prometheus and Loki datasources.
-
-The Loki baseline is deliberately single-process for P1 repository configuration and does not claim HA. Production retention/access-control values remain deployment governance and are not invented here.
-
-## Live verification
+## Static/native validation
 
 Run:
 
-ops/production/observability/verify-alert-routing.sh
+```text
+ops/production/observability/validate-observability-artifacts.sh
+```
 
-with HIDRA_ALERTMANAGER_URL set to the production-equivalent Alertmanager endpoint.
+The validator asserts authenticated application scraping, HTTP histogram enablement, both HAProxy exporter bindings and domain-first Alertmanager route order. When installed, `promtool` validates Prometheus configuration/rules, `amtool` validates Alertmanager configuration, and `haproxy -c` validates a rendered application HAProxy configuration. PostgreSQL HAProxy mutual-TLS material remains deployment-rendered and is separately guarded by the PostgreSQL HA validator.
 
-The script injects representative warning, critical, database and security alerts. It verifies that Alertmanager accepts them. Actual receiver delivery/escalation still must be confirmed from the configured destination/on-call system and retained as HPR-P1-012 evidence.
+## Live verification
+
+Run `ops/production/observability/verify-alert-routing.sh` with `HIDRA_ALERTMANAGER_URL` set to the production-equivalent Alertmanager endpoint.
+
+The script injects representative warning, critical, database and security alerts. Alertmanager acceptance alone does not prove receiver delivery. HPR-P1-029 must retain live evidence of representative rule firing, correct domain recipient delivery, resolve/recovery notification, scrape success and no-secret behavior.
+
+## Grafana and Loki
+
+Grafana provisioning binds Prometheus and Loki datasources. Loki remains deliberately single-process for the current P1 repository baseline and does not claim HA. Approved retention enforcement is handled separately by HPR-P1-028.
 
 ## Remaining closure boundary
 
-HPR-P1-019 repository implementation is complete, but production-equivalent evidence is still required for:
-
-- Prometheus scrape/evaluation success;
-- representative rule firing and resolution;
-- Alertmanager receiver delivery;
-- security/database route delivery;
-- no-secret validation of labels/log content;
-- Grafana/Loki ingestion visibility;
-- alert recovery/resolve notification.
-
-Production readiness remains NOT ESTABLISHED until those exercises are complete.
+Production readiness remains NOT ESTABLISHED. Repository wiring is not a substitute for production-equivalent evidence of scrape success, rule firing, routing/delivery, resolution, Loki ingestion and receiver behavior.

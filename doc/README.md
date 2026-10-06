@@ -23,6 +23,7 @@ The legacy `docs/` tree is preserved for historical, audit, semantic-review, ADR
 9. `doc/modules/README.md` — canonical current-state index for all 24 implemented business modules.
 10. `doc/api/README.md` — canonical versioned API contract and API governance set.
 11. `doc/database/README.md` — canonical current database architecture, ownership, Flyway policy and generated persistence dictionary.
+12. `doc/model-remediation/RECONCILIATION.md` — exact-current-source reconciliation of remaining legacy HMR/HMSR obligations.
 
 ## Canonical Domains
 
@@ -37,6 +38,7 @@ The legacy `docs/` tree is preserved for historical, audit, semantic-review, ADR
 | Domain | `doc/domain/README.md` and linked canonical set | CURRENT — HPR-P2-003 |
 | Modules | `doc/modules/README.md` plus 24 current-state module documents | CURRENT — HPR-P2-004 |
 | API | `doc/api/README.md`, governance set and `doc/api/openapi.yaml` | CURRENT — HPR-P2-005 |
+| Semantic remediation | `doc/model-remediation/RECONCILIATION.md` | CURRENT reconciliation — HPR-P2-007; execution continues under HPR-P2-008 |
 | Data governance | not yet established | HPR-P2-010 |
 | Testing | not yet established | HPR-P2-011 |
 

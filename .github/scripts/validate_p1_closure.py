@@ -9,7 +9,6 @@ required_roadmap = [
     "| HPR-P1-029 | COMPLETED — production-equivalent evidence campaign executed 2026-10-06",
     "Final disposition: **PASS — 12 / 12 P1 checks VERIFIED**.",
     "| Production readiness | ESTABLISHED FOR P1",
-    "HPR-P2-001 — docs(governance): complete canonical documentation controls",
     "| HPR-P1-015 | COMPLETED —",
     "| HPR-P1-016 | COMPLETED —",
     "| HPR-P1-017 | COMPLETED —",

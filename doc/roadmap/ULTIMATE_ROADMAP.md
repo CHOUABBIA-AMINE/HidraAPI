@@ -1260,3 +1260,10 @@ Distinct same-definition steps and unique source decisions are protected in conf
 ### Batch 7 HMR-066 — IMPLEMENTED, CI PENDING
 
 Actionable assignment, live actor/unit membership, catalog eligibility, actor/time pairs and chronology are enforced. Terminal task evidence is immutable; generic creation is starter-bound, missing next-step rules fail closed, and execution/query paths no longer authorize by username snapshots. Seven focused behavior checks passed with temporary stubs; existing transition fixtures updated for new owner dependencies.
+
+### Batch 7 HMR-081 fixture scope extension
+
+Before updating the existing transition fixture for live Identity permission evaluation,
+admit `src/test/java/dz/sh/hidra/modules/workflow/application/service/WorkflowTransitionApplicationServiceTest.java`
+to HMR-081 as well as HMR-066. This is a dependency fixture repair, not a new semantic
+task; owner-authorized live permission evaluation supersedes caller permission sets.

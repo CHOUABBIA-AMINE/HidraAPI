@@ -140,18 +140,18 @@ No `party.application.contract.planning` package exists in the exact current tre
 - HMR-005 corrected from stale planned status to **COMPLETED**;
 - HMR-009 confirmed **COMPLETED** and removed as a carry-over blocker;
 - HMR-050..106 evaluated: **57**;
-- HMR-050..106 **STILL REQUIRED**: **38**;
-- HMR-050..106 **BLOCKED**: **2**;
-- HMR-050..106 **COMPLETED during HPR-P2-008**: **17**;
+- HMR-050..106 **STILL REQUIRED**: **34**;
+- HMR-050..106 **BLOCKED**: **1**;
+- HMR-050..106 **COMPLETED during HPR-P2-008**: **22**;
 - HMR-050..106 **SUPERSEDED**: **0**;
 - HMR-054 completed; repaired CI #575 is green;
-- HMR-080 and HMR-055 remain blocked.
+- HMR-080 remains blocked; HMR-055 prerequisite resolved and implemented in Batch 7.
 
 ## HPR-P2-008 Progress
 
 - HMR-050 — **COMPLETED** at the first HPR-P2-008 execution step.
-- Selected scope: **Batch 7 — Workflow execution (055, 061, 066, 081, 099)**. Batch 6 CI #579 passed; HMR-055 is blocked by the prerequisite contract below. No Batch 7 production scope admitted.
-- Current remaining: **38 STILL REQUIRED + 2 BLOCKED (HMR-080, HMR-055)**; 17 implementations completed.
+- Batch 7 **IMPLEMENTED — CI PENDING**: HMR-055, 061, 066, 081, 099. Owner `Go ahead` accepted the prerequisite; all five retain independent commits. Next proposed owner scope is Batch 8 (Planning HMR-064, 065), gated on green Batch 7 CI and fresh admission.
+- Current remaining: **34 STILL REQUIRED + 1 BLOCKED (HMR-080)**; 22 implementations completed.
 
 - HMR-051 — **COMPLETED**: Topology and optional Organization references validated on every case save; snapshot preserved; no migration because primary-candidate FK already exists; owner contract and architecture export added.
 
@@ -658,3 +658,44 @@ Validation is recorded at the final Batch 7 disposition; CI pending.
 
 Mandatory status/actor display evidence fails fast. History persistence inserts and flushes without upsert; optional task/step/action/reason references are checked for instance/definition and action evidence coherence. Database guards prohibit update/delete/truncate. Four focused behavior checks passed with temporary stubs; ten PostgreSQL/Hibernate cases added for CI, not locally executed.
 Validation is recorded at the final Batch 7 disposition; CI pending.
+
+
+## Batch 7 final implementation and validation — 2026-10-06
+
+Owner `Go ahead` accepts the preflight proposal. Canonical admission resolves
+WF-PREREQ-01 with explicit WORKFLOW_PURPOSE, live Identity/Organization contracts,
+a fail-closed owner target registry and exact added file/migration scopes. Unsupported
+operation-reference targets remain denied; no owners, taxonomies or legacy evidence
+are fabricated. Five semantic commits independently complete 055, 061, 066, 081, 099
+in owner-selected order. Their implementation notes above are current disposition;
+prior preflight BLOCKED/PROPOSED statements remain historical evidence.
+
+Forward migrations 014..018 are additive and ordered after the previous maximum.
+Legacy invalid purposes, duplicate nonterminal instances/decisions/sequences, missing
+assignments, incoherent references or evidence cause migration failure for owner
+reconciliation. No published migration was changed. No external FK was introduced.
+
+Validation performed:
+- `bash ./mvnw -q -DskipTests compile`: failed resolving Spring Boot parent 4.1.1;
+  Maven Central DNS `Temporary failure in name resolution`, before source compilation.
+- Offline focused tests (five semantic classes, WorkflowExecutionPostgresTest,
+  WorkflowTransitionApplicationServiceTest, ArchitectureGuardrailTest), complete `test`
+  and `clean verify`: attempted, blocked by the same uncached parent.
+- Host Java 17, no javac executable, no Docker or PostgreSQL server. JDK source-launch
+  compiler compiled 273 actual source/temporary API units, including owner implementations,
+  persistence adapters, changed transition fixture and new PostgreSQL test sources.
+  Java 21 List.getFirst was substituted only in scratch copies for host compilation.
+- 27 dedicated behavior checks executed successfully with temporary annotation/assertion
+  APIs. These are not Maven/JUnit, framework integration or PostgreSQL success claims.
+- Ten PostgreSQL/Hibernate cases registered for CI: competing nonterminal starts,
+  contiguous concurrent action sequences, action immutability, transition composition/
+  decision uniqueness, unsupported activation, task pairs/catalogs/terminal immutability,
+  optional immutable history, incoherent history, JPA history overwrite denial, and
+  legacy purpose reconciliation failure without retagging.
+- Canonical documentation UTF-8/nonempty/conflict checks, Java source syntax parsing,
+  exact admitted file-scope checks and `git diff --check`: passed.
+
+Final-head GitHub production/documentation CI trigger pending at preparation. Publish
+all chained commits atomically and stop after observing trigger; do not wait for CI
+completion or execute Batch 8 automatically. Current totals: **22 implemented,
+34 still required, one blocked (HMR-080)**.

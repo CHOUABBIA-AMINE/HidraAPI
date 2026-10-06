@@ -229,6 +229,7 @@ Technical lifecycle states may remain constrained enums/check values.
 ```text
 WORKFLOW_TYPE
 WORKFLOW_TARGET_TYPE
+WORKFLOW_PURPOSE
 WORKFLOW_REASON
 WORKFLOW_PRIORITY
 WORKFLOW_ESCALATION_REASON

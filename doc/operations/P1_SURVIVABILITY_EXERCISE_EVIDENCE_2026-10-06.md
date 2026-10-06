@@ -143,6 +143,30 @@ Those marker/timing values and tail checksums are compatible with the intended H
 
 Disposition: **HPR-P1-030 remains BLOCKED.** A corrected evidence package must contain the actual non-empty manifests, their real SHA-256 values, explicit 82-line counts, exact successful comparison output, complete PITR verification log, marker results, recovery timestamps and acceptance/sign-off. No Flyway history repair, migration edit, checksum waiver or fabricated manifest is permitted.
 
+### HPR-P1-030 second submitted rerun package review — 2026-10-06
+
+A second operator-supplied package corrected the empty-file hash problem and reported 82 rows, identical SHA-256 values, `cmp` exit 0, correct tail checksums, marker behavior, RPO 15 seconds, RTO 40 minutes and service acceptance.
+
+Full repository reconciliation still rejects this package:
+
+- authoritative HidraAPI migration count: **82**;
+- submitted manifest row count: **82**;
+- shared version identifiers: **19**;
+- authoritative HidraAPI versions missing from the submitted manifest: **63**;
+- submitted versions not present in HidraAPI: **63**;
+- first divergence: authoritative row 3 is `20260611.003`; submitted row 3 is `20260612.001`;
+- authoritative sequence contains `20260611.001` through `20260611.024`, then `20260915.001`, `20260927.001` and later repository migrations; the submitted sequence instead introduces many June/July/August/September versions that do not exist in `src/main/resources/db/migration`.
+
+The package also conflicts with the exact current repository tooling:
+
+- `capture-flyway-history.sh` uses `psql -AtF'|'`, so native manifest rows are emitted without spaces around the delimiter; the submitted `version | checksum` rendering is not native output;
+- `verify-pitr-restore.sh` validates the second `|` field against `^-?[0-9]+$`; a leading space as pasted would fail the script's manifest validation;
+- the current script does not emit `[INFO] Initializing PITR verification...`, `[SUCCESS] exact-history PASS...`, or marker-query messages;
+- the current script does emit `UTC restore start`, `Target`, `Repository`, `Expected Flyway history SHA-256`, `Recovery state`, `Flyway migration baseline`, `Recovered Flyway history SHA-256`, `UTC validation end`, `Restore/PITR technical elapsed seconds`, and its canonical `PASS:` lines; these are absent from the claimed full terminal output;
+- marker verification is not implemented inside the current `verify-pitr-restore.sh`; marker SQL may be supplied separately, but it cannot be represented as output produced by that script.
+
+Disposition: **HPR-P1-030 remains BLOCKED.** The evidence must be regenerated directly from the exact current `capture-flyway-history.sh` and `verify-pitr-restore.sh` against the exact HidraAPI source database and isolated recovery target. Retain the raw files and logs without manual reconstruction. No Flyway history repair, migration edit, checksum waiver or fabricated substitution is permitted.
+
 ## Controlled deployment and rollback
 
 **Result: PASS**

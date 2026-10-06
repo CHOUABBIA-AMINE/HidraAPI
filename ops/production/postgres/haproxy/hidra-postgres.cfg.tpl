@@ -17,5 +17,8 @@ backend hidra_postgres_primary
     option httpchk GET /primary
     http-check expect status 200
     default-server inter 2s fall 3 rise 2 on-marked-down shutdown-sessions
-    server hidra-pg-1 __HIDRA_PG_NODE_1__:5432 check port 8008
-    server hidra-pg-2 __HIDRA_PG_NODE_2__:5432 check port 8008
+    # Patroni REST requires mutual TLS. check-ssl applies TLS only to the
+    # health-check connection on port 8008; PostgreSQL data traffic remains
+    # governed independently by the application/PostgreSQL connection policy.
+    server hidra-pg-1 __HIDRA_PG_NODE_1__:5432 check port 8008 check-ssl verify required ca-file __PATRONI_REST_TLS_CA__ crt __PATRONI_REST_TLS_CLIENT_PEM__ verifyhost __HIDRA_PG_NODE_1_PATRONI_TLS_NAME__
+    server hidra-pg-2 __HIDRA_PG_NODE_2__:5432 check port 8008 check-ssl verify required ca-file __PATRONI_REST_TLS_CA__ crt __PATRONI_REST_TLS_CLIENT_PEM__ verifyhost __HIDRA_PG_NODE_2_PATRONI_TLS_NAME__

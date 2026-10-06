@@ -18,13 +18,17 @@ Selected stack:
 
 Patroni/etcd owns database role authority. HAProxy does not elect a primary; it routes writable application connections only to the PostgreSQL node whose Patroni REST `/primary` health check returns success.
 
+The Patroni REST API requires mutual TLS. HAProxy therefore performs `/primary` checks over TLS on port 8008, validates the Patroni server certificate against the rendered CA and expected per-node certificate hostname, and presents an externally rendered client certificate/private-key PEM. `check-ssl` applies this TLS contract to the health check without changing ordinary PostgreSQL backend transport semantics.
+
 The application must never connect directly to a node-specific PostgreSQL address.
 
 ## Promotion and fencing model
 
 Patroni/etcd consensus owns promotion. A former primary must no longer hold leader/primary authority before HAProxy routes write traffic to a promoted node.
 
-The production-equivalent exercise must verify exactly one primary both before and after the role change and must confirm the former primary is not still reported as leader/primary.
+The production-equivalent exercise must verify exactly one primary both before and after the role change and must confirm the former primary is not still reported as leader/primary. The repository harness now also records Patroni dynamic configuration and cluster-member authority context before and after the switchover.
+
+That evidence demonstrates the selected Patroni/etcd control-plane authority used to prevent concurrent promotion. It does **not** by itself prove behavior under network partition or DCS-loss conditions. HPR-P1-029 retains the requirement for production-equivalent fencing/partition evidence before split-brain protection is considered measured.
 
 ## Connection recovery
 

@@ -30,6 +30,13 @@ primary_name() {
   cluster_json | python3 -c 'import json,sys; rows=json.load(sys.stdin); p=[r for r in rows if str(r.get("Role","")).lower() in {"leader","primary"}]; assert len(p)==1, f"expected exactly one primary, got {len(p)}"; print(p[0]["Member"])'
 }
 
+record_fencing_context() {
+  local label="$1"
+  echo "=== ${label}: Patroni/etcd authority context ==="
+  patronictl -c "${HIDRA_PATRONI_CONFIG}" show-config "${HIDRA_PATRONI_CLUSTER}"
+  cluster_json | python3 -c 'import json,sys; rows=json.load(sys.stdin); primaries=[r for r in rows if str(r.get("Role","")).lower() in {"leader","primary"}]; assert len(primaries)==1, f"expected exactly one Patroni leader/primary, got {len(primaries)}"; print(json.dumps({"primary": primaries[0].get("Member"), "members": rows}, sort_keys=True))'
+}
+
 verify_writable_endpoint() {
   psql "host=${HIDRA_DB_STABLE_HOST} port=${port} dbname=${PGDATABASE} user=${PGUSER}" -v ON_ERROR_STOP=1 <<'SQL'
 SELECT pg_is_in_recovery() AS must_be_false;
@@ -61,6 +68,7 @@ wait_for_candidate() {
 echo "UTC start: $(date -u --iso-8601=seconds)"
 echo "Initial Patroni topology:"
 cluster_json
+record_fencing_context "pre-switchover"
 old_primary="$(primary_name)"
 export OLD_PRIMARY="${old_primary}"
 echo "Initial primary: ${old_primary}"
@@ -81,6 +89,7 @@ wait_for_candidate
 
 echo "Post-switchover Patroni topology:"
 cluster_json
+record_fencing_context "post-switchover"
 new_primary="$(primary_name)"
 [[ "${new_primary}" == "${HIDRA_PATRONI_CANDIDATE}" ]]
 
@@ -103,6 +112,8 @@ echo
 
 echo "Former primary status must no longer be primary:"
 cluster_json | python3 -c 'import json,sys,os; rows=json.load(sys.stdin); old=os.environ["OLD_PRIMARY"]; row=next(r for r in rows if r["Member"]==old); role=str(row.get("Role","")).lower(); assert role not in {"leader","primary"}, f"former primary still reports role {role}"; print(row)'
+echo "Control-plane fencing evidence above records the Patroni/etcd authority view before and after switchover."
+echo "A partition/fencing exercise remains required by HPR-P1-029; this controlled switchover does not claim partition validation."
 echo "UTC end: $(date -u --iso-8601=seconds)"
 echo "PASS: controlled role change preserved single-primary topology, stable-endpoint writability, and HidraAPI readiness."
 echo "Evidence: ${evidence}"

@@ -12,6 +12,8 @@ This repository provides renderable templates and an exercise harness. It does n
 
 HAProxy exposes one application-facing PostgreSQL endpoint. Backend health uses Patroni's `/primary` endpoint, so only the Patroni member currently holding primary/leader authority is eligible for write traffic.
 
+Patroni REST health checks use mutual TLS. The HAProxy template applies TLS only to the health-check connection on port 8008 via `check-ssl`, validates the Patroni server certificate against the rendered CA, verifies the expected per-node certificate hostname, and presents the externally rendered HAProxy client certificate/private-key PEM required by Patroni `verify_client: required`. The certificate paths/identities are deployment inputs and no private key is committed to Git.
+
 `HIDRA_DATASOURCE_URL` must point to this HAProxy endpoint, never directly to a PostgreSQL node.
 
 ## Patroni / etcd
@@ -67,7 +69,9 @@ CI executes the same validation.
 
 ## Controlled role-change exercise
 
-The provided `verify-postgres-failover.sh` uses `patronictl switchover` against an approved healthy production-equivalent cluster. It records Patroni topology, verifies exactly one primary, exercises a reversible temporary-table write through the stable HAProxy endpoint, performs a controlled role change, verifies the candidate becomes primary, reopens a write connection through the unchanged endpoint, confirms the former primary is no longer primary, and waits for HidraAPI readiness recovery.
+The provided `verify-postgres-failover.sh` uses `patronictl switchover` against an approved healthy production-equivalent cluster. It records Patroni topology plus `patronictl show-config` authority context before and after the role change, verifies exactly one primary, exercises a reversible temporary-table write through the stable HAProxy endpoint, performs a controlled role change, verifies the candidate becomes primary, reopens a write connection through the unchanged endpoint, confirms the former primary is no longer primary, and waits for HidraAPI readiness recovery.
+
+That control-plane evidence documents the selected Patroni/etcd leader-authority mechanism, but a controlled switchover is not a network-partition/fencing exercise. HPR-P1-029 must still retain production-equivalent partition/fencing evidence before split-brain protection is considered measured.
 
 The script deliberately refuses to execute unless `HIDRA_DB_DESTRUCTIVE_EXERCISE=YES`.
 

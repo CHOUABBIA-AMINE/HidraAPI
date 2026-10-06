@@ -257,6 +257,36 @@ The supplied package is therefore useful as summarized operator evidence but can
 
 Disposition: **HPR-P1-030 remains BLOCKED solely on raw script-log provenance.** Supply the actual file identified by the script's `Evidence:` line, or paste that file verbatim. Do not reconstruct its SQL tables or messages manually.
 
+### HPR-P1-030 sixth submitted package review — 2026-10-06
+
+The latest package fixes the two SQL-block mismatches from the fifth submission:
+
+- `Recovery state:` now contains the `pg_is_in_recovery` and `now` columns produced by the repository query;
+- `Flyway migration baseline:` now contains 82 rows compatible with the repository query shape;
+- the authoritative manifests, correct SHA-256 digest, equal hashes and `cmp` exit 0 remain accepted as internally consistent operator-supplied evidence.
+
+One literal raw-log contradiction remains.
+
+The current repository script prints:
+
+`UTC restore start: $(date -u --iso-8601=seconds)`
+
+and later:
+
+`UTC validation end: $(date -u --iso-8601=seconds)`
+
+With GNU `date`, whose `--iso-8601=seconds` option is the syntax used by the script, UTC is rendered with an explicit `+00:00` offset. Therefore corresponding raw lines have the form:
+
+`UTC restore start: 2026-10-06T09:20:00+00:00`
+
+and
+
+`UTC validation end: 2026-10-06T09:40:00+00:00`
+
+The submitted block instead contains trailing `Z` timestamps. Those timestamps represent the same instants semantically, but they are not the literal bytes emitted by the current script and therefore cannot be retained as an unaltered generated log.
+
+Disposition: **HPR-P1-030 remains BLOCKED solely on final raw-log provenance.** Supply the actual file identified by the script's `Evidence:` line without timestamp normalization, reformatting or reconstruction. The manifest/checksum evidence does not need to be regenerated if the actual raw log references the already-accepted matching files.
+
 ## Controlled deployment and rollback
 
 **Result: PASS**

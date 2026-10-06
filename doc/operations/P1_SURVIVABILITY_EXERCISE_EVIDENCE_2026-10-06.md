@@ -167,6 +167,25 @@ The package also conflicts with the exact current repository tooling:
 
 Disposition: **HPR-P1-030 remains BLOCKED.** The evidence must be regenerated directly from the exact current `capture-flyway-history.sh` and `verify-pitr-restore.sh` against the exact HidraAPI source database and isolated recovery target. Retain the raw files and logs without manual reconstruction. No Flyway history repair, migration edit, checksum waiver or fabricated substitution is permitted.
 
+### HPR-P1-030 third submitted report review — 2026-10-06
+
+The latest operator-supplied report corrects the migration-sequence problem: the 82 `version|checksum` rows now exactly match the repository-derived authoritative manifest at `main` SHA `7dc57a35a159575d0baefc2722dfc32def1fb299`.
+
+However, the package still cannot close HPR-P1-030 because its cryptographic and raw-execution claims contradict the supplied content and current repository script:
+
+- exact supplied manifest rows: **82**;
+- exact supplied expected/restored contents: identical;
+- SHA-256 of those exact 82 rows with a trailing newline: `fbea6f079a2f48222d8db601f5596351a8a93cb78c6daa05db1d621cdfc187ef`;
+- SHA-256 of those exact 82 rows without a final newline: `8f9656606105fad64bad0e03659868d1518df1834811e7d1786574ac18cab650`;
+- report-claimed manifest SHA-256: `9d8f6b4e2a1c3d5f7e9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e`;
+- therefore the claimed digest is not the digest of the manifest printed in the report under either normal terminal-file representation.
+
+The alleged raw `verify-pitr-restore.sh` output also does not match the current repository script. The report substitutes summary strings such as `Recovery state: reached target timestamp`, `Flyway migration baseline: 82 migrations found`, `PASS: Flyway history matches expected digest`, and `PASS: PITR recovery sequence completed successfully`. The current script instead prints the actual SQL `Recovery state` and `Flyway migration baseline` results, then `PASS: exact successful Flyway version/checksum history matches approved current-schema evidence.` and `PASS: pgBackRest restore/PITR produced a queryable recovery target with exact Flyway history acceptance.`
+
+Marker timing, the stated 15-second RPO, 40-minute RTO and application acceptance are retained as operator-supplied observations, but they do not cure the cryptographic/log provenance defect.
+
+Disposition: **HPR-P1-030 remains BLOCKED.** Acceptable closure evidence must be the actual raw `flyway-expected.txt`, actual raw restored-history file emitted by the repository script, real `sha256sum` output for those files, exact `cmp` result and the unmodified log produced by the current `verify-pitr-restore.sh`. No manual digest substitution or log rewriting is permitted.
+
 ## Controlled deployment and rollback
 
 **Result: PASS**

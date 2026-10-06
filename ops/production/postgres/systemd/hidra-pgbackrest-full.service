@@ -5,4 +5,5 @@ After=network-online.target
 [Service]
 Type=oneshot
 User=postgres
+Environment=HIDRA_PGBACKREST_CONFIG=/etc/pgbackrest/pgbackrest.conf
 ExecStart=/opt/hidra/ops/production/postgres/scripts/run-full-backup.sh

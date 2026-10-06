@@ -345,6 +345,32 @@ Cumulative retained HPR-P1-030 evidence now establishes:
 
 Disposition: **HPR-P1-030 COMPLETED.** This closes only the PITR/current-schema integrity gap. It does not validate or waive the independent remediation tasks HPR-P1-031 through HPR-P1-037.
 
+### HPR-P1-031 authority-loss fencing verification — 2026-10-06
+
+Repository and retained runtime evidence were revalidated after HPR-P1-030 closure.
+
+Current findings:
+
+- `ops/production/postgres/patroni/patroni.yml.tpl` defines Patroni/etcd/PostgreSQL topology but contains no retained `watchdog:` configuration block or equivalent fencing-device settings;
+- `ops/production/postgres/scripts/verify-postgres-failover.sh` performs a controlled Patroni switchover, verifies a single primary before/after, former-primary demotion, stable-endpoint writability, application recovery and Hikari replacement, then explicitly states that partition/fencing validation remains outside that exercise;
+- historical campaign evidence records watchdog fencing, but the simulated network partition was introduced only **after** the former-primary database had been stopped;
+- the latest operator report summarizes manual Patroni switchover and watchdog fencing but does not provide a raw active-writer loss-of-authority sequence beginning while the old primary PostgreSQL process is still active.
+
+The independent re-audit requirement is stricter than controlled switchover. Closure requires a governed production-equivalent fault in which the current primary is still an active process when it loses DCS/write authority, with retained evidence for:
+
+1. sanitized rendered Patroni watchdog/fencing configuration, including selected device/mode/safety behavior;
+2. pre-fault topology and exactly one writable primary;
+3. fault/partition timestamp while the old primary process remains active;
+4. Patroni/DCS/watchdog event showing old-writer exclusion, demotion, termination or fencing;
+5. attempted/observed write-authority result on the former primary after authority loss;
+6. promotion/authority state of the surviving primary;
+7. exactly one writable primary during and after the event;
+8. former-primary post-fence state;
+9. stable HAProxy write-endpoint recovery;
+10. explicit no-split-brain conclusion backed by the retained raw outputs.
+
+Disposition: **HPR-P1-031 BLOCKED on production-equivalent measured evidence.** No split-brain/fencing PASS is claimed from the existing switchover or post-stop partition record.
+
 ## Controlled deployment and rollback
 
 **Result: PASS**

@@ -52,6 +52,7 @@ jobs:
           fetch-depth: 0
 
       - name: Validate P1 survivability closure evidence
+        shell: bash
         run: python3 .github/scripts/validate_p1_closure.py
 
       - name: Validate production application HA runtime artifacts

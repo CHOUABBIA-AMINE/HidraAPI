@@ -7,7 +7,7 @@
  *
  * @Name        : OrganizationHierarchySnapshotJpaEntity
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-06
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -45,7 +45,7 @@ import java.time.Instant;
     @Column(name = "captured_at", nullable = false)
     private Instant capturedAt;
 
-    @Column(name = "captured_by_employee_id", nullable = true, length = 80)
+    @Column(name = "captured_by_employee_id", nullable = false, length = 80)
     private String capturedByEmployeeId;
 
     @Enumerated(EnumType.STRING)

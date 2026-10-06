@@ -335,3 +335,11 @@ The existing employee/unit/position FKs are retained; no new migration is requir
 error; they are not deleted or filled with invented identifiers. The existing
 same-module FK is preserved. PostgreSQL tests cover valid rows, rejected null/orphan
 writes, and rollback with unchanged legacy null evidence.
+
+## HMR-075 OrganizationHierarchySnapshot mandatory reference
+
+`hidra_org_hierarchy_snapshot.captured_by_employee_id` is now NOT NULL in JPA and forward migration
+`V20261006_003`. Existing null rows stop the migration with an explicit preflight
+error; they are not deleted or filled with invented identifiers. The existing
+same-module FK is preserved. PostgreSQL tests cover valid rows, rejected null/orphan
+writes, and rollback with unchanged legacy null evidence.

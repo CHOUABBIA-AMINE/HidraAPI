@@ -138,13 +138,18 @@ public class IdentityAdministrationCommandApplicationService implements Identity
     @Override
     public String grantRoleToUser(GrantRoleToUser command) {
         Objects.requireNonNull(command, "GrantRoleToUser command must not be null.");
-        requireUser(command.userId());
+        String userId = requireText(command.userId(), "User id");
+        var user = userRepository.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException("Unknown identity user: " + userId));
+        if (!user.active()) {
+            throw new IllegalArgumentException("Only ACTIVE users may receive ordinary role grants.");
+        }
         requireRole(command.roleId());
         validateValidity(command.validFrom(), command.validTo());
         Instant now = Instant.now();
         UserRoleGrant grant = new UserRoleGrant(
                 UUID.randomUUID().toString(),
-                command.userId(),
+                userId,
                 command.roleId(),
                 scope(command.scopeType(), command.scopeReferenceId(), command.scopeCodeSnapshot()),
                 command.reason(),

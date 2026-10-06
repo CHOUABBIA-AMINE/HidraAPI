@@ -257,7 +257,7 @@ Each model task implements only the obligations recorded in its source HMSR sect
 | HMR-086 | HMSR-101 | identity | AuthorizationDelegationGrant | — | identity.Permission, identity.Role, identity.User | `fix(identity): remediate semantic review AuthorizationDelegationGrant` | Completed — Batch 5; final CI pending |
 | HMR-087 | HMSR-104 | identity | LoginSession | — | identity.IdentityProvider, identity.User | `fix(identity): remediate semantic review LoginSession` | Completed — Batch 5; final CI pending |
 | HMR-088 | HMSR-105 | identity | UserPermissionGrant | — | identity.Permission, identity.User | `fix(identity): remediate semantic review UserPermissionGrant` | Completed — Batch 5; final CI pending |
-| HMR-089 | HMSR-106 | identity | UserRoleGrant | — | identity.Role, identity.User | `fix(identity): remediate semantic review UserRoleGrant` | Planned |
+| HMR-089 | HMSR-106 | identity | UserRoleGrant | — | identity.Role, identity.User | `fix(identity): remediate semantic review UserRoleGrant` | Completed — Batch 5; final CI pending |
 | HMR-090 | HMSR-107 | incident | IncidentClosure | — | incident.Incident, workflow.WorkflowInstance | `fix(incident): remediate semantic review IncidentClosure` | Planned |
 | HMR-091 | HMSR-108 | incident | IncidentRelatedIncident | — | incident.Incident | `fix(incident): remediate semantic review IncidentRelatedIncident` | Planned |
 | HMR-092 | HMSR-109 | incident | IncidentResponseAction | — | incident.Incident, organization.OrganizationUnit | `fix(incident): remediate semantic review IncidentResponseAction` | Planned |
@@ -4542,7 +4542,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-106`
 - Exact commit: `fix(identity): remediate semantic review UserRoleGrant`
-- Status: **Planned**
+- Status: **Completed — Batch 5; final CI pending**
 - SCC: —
 - Recorded upstream HMS dependencies: identity.Role, identity.User
 - HMSR correction count: 1

@@ -1431,3 +1431,7 @@ AuthenticationProtocol sessionType and independent endedAt carried through domai
 ## HMR-088 implemented contract — 2026-10-06
 
 Domain and PostgreSQL enforce nonblank grantReason, bounded validTo and ACTIVE/REVOKED/EXPIRED for direct permission grants including emergency records; shared GrantStatus and optional role-grant reason/end remain unchanged; V20261006_013 and focused tests added; final CI pending.
+
+## HMR-089 implemented contract — 2026-10-06
+
+Authoritative ordinary role-grant application flow requires ACTIVE User before Role lookup/save; inactive states reject without implicit emergency bypass; optional reason/end and shared SUSPENDED role status preserved; focused tests added; no migration required; final CI pending.

@@ -242,7 +242,7 @@ P1 is **CLOSED** only when this closure SHA passes the repository's full exact-h
 
 | Code | Status | Domain/Module | Type | Exact execution requirement | Exact commit message | Depends on |
 |---|---|---|---|---|---|---|
-| HPR-P2-001 | PENDING | Governance | Doc | Complete canonical `doc/` governance/index structure and status metadata; preserve `docs/` as evidence. | `docs(governance): complete canonical documentation controls` | P0 closed |
+| HPR-P2-001 | COMPLETED — canonical `doc/` entry/index governance and documentation register established; current/target/historical authority is explicit and legacy `docs/` remains preserved as evidence | Governance | Doc | Complete canonical `doc/` governance/index structure and status metadata; preserve `docs/` as evidence. | `docs(governance): complete canonical documentation controls` | P0 closed |
 | HPR-P2-002 | PENDING | Architecture | Doc | Create current/target-separated system context, architecture overview, bounded-context map, Hexagonal boundaries, module boundaries, cross-module contracts and technology stack. | `docs(architecture): establish canonical architecture set` | HPR-P2-001 |
 | HPR-P2-003 | PENDING | Domain | Doc | Create `UBIQUITOUS_LANGUAGE.md`, domain ownership and focused topology/telemetry/alarm-incident-leak/assets-integrity/simulation-analytics-AI semantic documents. | `docs(domain): establish ubiquitous language baseline` | HPR-P2-001 |
 | HPR-P2-004 | PENDING | Modules | Doc | Create one current-state `doc/modules/<module>.md` for each of the 24 implemented modules; do not create current-state module docs for agents/environment/otsecurity. | `docs(modules): add canonical module documentation` | HPR-P2-002..003 |
@@ -275,7 +275,7 @@ P0 security/audit verification is closed. P1 production infrastructure and survi
 
 Next executable task after that exact-head gate succeeds:
 
-`HPR-P2-001 — docs(governance): complete canonical documentation controls`
+`HPR-P2-002 — docs(architecture): establish canonical architecture set`
 
 The historical P1 evidence-block parallel-work exception is no longer needed for sequencing because HPR-P1-029 is complete. P3 remains deferred until P2 closes and its own approved requirements exist.
 

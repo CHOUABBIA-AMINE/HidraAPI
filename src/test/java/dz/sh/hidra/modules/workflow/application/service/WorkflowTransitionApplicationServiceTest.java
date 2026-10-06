@@ -90,6 +90,7 @@ class WorkflowTransitionApplicationServiceTest {
         org.mockito.Mockito.lenient().when(ownership.requireUnit(any())).thenAnswer(invocation->new dz.sh.hidra.modules.organization.application.contract.workflow.WorkflowOrganizationContract.Unit(invocation.getArgument(0),"Operations"));
         org.mockito.Mockito.lenient().when(stepRepository.findById("step-1")).thenReturn(Optional.of(new WorkflowStep(
             "step-1","def-1","REVIEW",null,"Review",null,1,true,null,null,null,true,false,false,TASK_UPDATED_AT,TASK_UPDATED_AT)));
+        org.mockito.Mockito.lenient().when(ownership.permitted(any(),any(),any())).thenReturn(true);
         service = new WorkflowTransitionApplicationService(
                 taskRepository,
                 instanceRepository,
@@ -169,6 +170,7 @@ class WorkflowTransitionApplicationServiceTest {
 
     @Test
     void rejectsMissingTransitionPermission() {
+        when(ownership.permitted(any(),any(),any())).thenReturn(false);
         WorkflowTask task = task();
         WorkflowInstance instance = instance();
         when(taskRepository.findByIdForUpdate("task-1")).thenReturn(Optional.of(task));

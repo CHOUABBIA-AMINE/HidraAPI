@@ -1618,3 +1618,14 @@ must be executed by its current eligible claimant. Explicit actor assignments ca
 be overridden by a different claimant. Missing or unsupported next-step assignment
 rules deny the entire transition atomically. Inbox/action queries resolve usernames
 through Identity rather than matching stored username snapshots.
+
+
+Only configured transition execution may write decision actions. Generic action recording
+accepts COMMENT with no decision, requires authenticated eligible task ownership when
+supplied (or the instance starter for instance comments), and uses canonical owner snapshots.
+Caller sequence, source, time and role evidence do not control persisted action authority.
+Instance row locking, next-sequence validation and a unique database key serialize action
+ordering. Action persistence inserts without merge and rejects overwrite/delete/truncate.
+Reasons use active WORKFLOW_REASON. Decision reason/comment rules and mandatory actor
+display evidence fail before persistence; configured transitions evaluate live Identity
+permissions and ignore caller-supplied permission sets.

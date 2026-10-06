@@ -107,7 +107,7 @@ No `party.application.contract.planning` package exists in the exact current tre
 | HMR-078 | HMSR-092 | simulation.SimulationCandidateChange | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-079 | HMSR-093 | simulation.SimulationRecommendation | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-080 | HMSR-094 | planning.Nomination | BLOCKED — OWNER CONTRACT REQUIRED | registered migration: absent; dedicated test: absent; Party→Planning contract absent |
-| HMR-081 | HMSR-095 | workflow.WorkflowAction | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
+| HMR-081 | HMSR-095 | workflow.WorkflowAction | IMPLEMENTED — CI PENDING | Generic recording permits comments only; configured transitions exclusively produce decisions using live Identity authority. Optional task ownership and conditional evidence are enforced; canonical actor snapshots and server-owned locked sequences replace caller evidence. Action persistence is insert-only with unique monotonic sequence and immutable database guards. Five focused behavior checks passed with temporary stubs; existing permission regression fixture updated. |
 | HMR-082 | HMSR-096 | hse.HseCase | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-083 | HMSR-097 | audit.AuditExportRequest | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-084 | HMSR-098 | documents.DocumentTargetLink | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
@@ -647,4 +647,9 @@ Validation is recorded at the final Batch 7 disposition; CI pending.
 ### Batch 7 HMR-066 implementation
 
 Actionable assignment, live actor/unit membership, catalog eligibility, actor/time pairs and chronology are enforced. Terminal task evidence is immutable; generic creation is starter-bound, missing next-step rules fail closed, and execution/query paths no longer authorize by username snapshots. Seven focused behavior checks passed with temporary stubs; existing transition fixtures updated for new owner dependencies.
+Validation is recorded at the final Batch 7 disposition; CI pending.
+
+### Batch 7 HMR-081 implementation
+
+Generic recording permits comments only; configured transitions exclusively produce decisions using live Identity authority. Optional task ownership and conditional evidence are enforced; canonical actor snapshots and server-owned locked sequences replace caller evidence. Action persistence is insert-only with unique monotonic sequence and immutable database guards. Five focused behavior checks passed with temporary stubs; existing permission regression fixture updated.
 Validation is recorded at the final Batch 7 disposition; CI pending.

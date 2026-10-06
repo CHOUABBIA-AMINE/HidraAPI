@@ -7,7 +7,7 @@
  *
  * @Name        : WorkflowAction
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-10-06
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -111,6 +111,17 @@ import java.time.Instant;
         sourceSystem = normalize(sourceSystem);
         ipAddressHash = normalize(ipAddressHash);
         userAgentHash = normalize(userAgentHash);
+        if(actorDisplayNameSnapshot==null || actionSequence<1)
+            throw new InvalidWorkflowValueException("Workflow action requires actor display evidence and a positive sequence.");
+        boolean stateDecision=switch(actionType){
+            case APPROVE,REJECT,REQUEST_CORRECTION,CORRECT,RETURN,DELEGATE,ESCALATE,CANCEL -> true;
+            default -> false;
+        };
+        if(stateDecision && (decision==null || !actionType.name().equals(decision.name())))
+            throw new InvalidWorkflowValueException("Workflow action type and configured decision must agree.");
+        if(!stateDecision && decision!=null && !(actionType==WorkflowActionType.COMMENT && decision==WorkflowDecision.COMMENT))
+            throw new InvalidWorkflowValueException("Lifecycle evidence cannot carry an unrelated workflow decision.");
+        if(decision!=null) new dz.sh.hidra.modules.workflow.domain.service.WorkflowDecisionGuard().ensureReasonAndCommentRules(decision,reasonId,commentText);
         }
 
         private static String normalize(String value) {

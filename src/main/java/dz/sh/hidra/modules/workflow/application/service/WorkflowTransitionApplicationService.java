@@ -49,14 +49,12 @@ import dz.sh.hidra.modules.workflow.domain.value.WorkflowTaskStatus;
 import java.time.Instant;
 import java.util.NoSuchElementException;
 import java.util.Objects;
-import java.util.Set;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class WorkflowTransitionApplicationService implements ExecuteWorkflowTransitionUseCase {
 
-    private static final String ALL_PERMISSIONS = "*";
     private static final String SOURCE_SYSTEM = "HIDRA_API";
 
     private final WorkflowTaskRepositoryPort taskRepository;
@@ -137,8 +135,8 @@ public class WorkflowTransitionApplicationService implements ExecuteWorkflowTran
                 command.decisionNote(),
                 command.commentText(),
                 command.actorId(),
-                command.actorUsername(),
-                command.actorDisplayName(),
+                actor.username(),
+                actor.displayName(),
                 task.assignedRoleCodeSnapshot(),
                 task.assignedOrganizationUnitId(),
                 task.assignedOrganizationUnitNameSnapshot(),
@@ -186,8 +184,8 @@ public class WorkflowTransitionApplicationService implements ExecuteWorkflowTran
                 String.valueOf(instance.status()),
                 String.valueOf(nextInstanceStatus),
                 command.actorId(),
-                command.actorUsername(),
-                command.actorDisplayName(),
+                actor.username(),
+                actor.displayName(),
                 task.assignedRoleCodeSnapshot(),
                 action.id(),
                 command.reasonId(),
@@ -231,10 +229,11 @@ public class WorkflowTransitionApplicationService implements ExecuteWorkflowTran
         if (transition.targetModuleCallback() != null) {
             throw new WorkflowBoundaryViolationException("Workflow target-module callback execution is not available for this transition.");
         }
-        if (!permissionSatisfied(transition.requiredPermissionCode(), command.effectivePermissions())) {
+        if (!ownership.permitted(command.actorId(), transition.requiredPermissionCode(), instance.id())) {
             throw new WorkflowTransitionDeniedException("Authenticated actor lacks the permission required by this workflow transition.");
         }
         decisionGuard.ensureReasonAndCommentRules(transition.decision(), command.reasonId(), command.commentText());
+        if(command.reasonId()!=null) configuration.requireActiveCatalog(command.reasonId(),"WORKFLOW_REASON");
         if (transition.reasonRequired() && command.reasonId() == null) {
             throw new WorkflowBoundaryViolationException("Workflow transition requires a reason.");
         }
@@ -330,12 +329,6 @@ public class WorkflowTransitionApplicationService implements ExecuteWorkflowTran
             case CANCEL -> WorkflowTaskStatus.CANCELLED;
             case COMMENT -> throw new WorkflowBoundaryViolationException("COMMENT cannot complete a workflow task.");
         };
-    }
-
-    private static boolean permissionSatisfied(String requiredPermission, Set<String> permissions) {
-        return requiredPermission == null
-                || permissions.contains(ALL_PERMISSIONS)
-                || permissions.contains(requiredPermission);
     }
 
     private static String firstNonBlank(String... values) {

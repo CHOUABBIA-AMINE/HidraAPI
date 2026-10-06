@@ -168,8 +168,27 @@ public class WorkflowApplicationService implements StartWorkflowInstanceUseCase,
     }
 
     @Override
+    @Transactional
     public WorkflowActionSummaryDto recordWorkflowAction(RecordWorkflowActionCommand command) {
         Objects.requireNonNull(command, "Record workflow action command must not be null.");
+        Instant now = Instant.now();
+        if(command.actionType()!=dz.sh.hidra.modules.workflow.domain.value.WorkflowActionType.COMMENT || command.decision()!=null)
+            throw new InvalidWorkflowValueException("Generic Workflow recording permits COMMENT only; decisions require configured transitions.");
+        if(command.commentText()==null || command.commentText().isBlank()) throw new InvalidWorkflowValueException("Workflow comment text required.");
+        var actor=ownership.requireCurrentActor(command.actorId());
+        // Use the same task-before-instance lock order as configured transition execution.
+        WorkflowTask task=command.taskId()==null?null:taskRepositoryPort.findByIdForUpdate(command.taskId()).orElseThrow(()->new InvalidWorkflowValueException("Unknown Workflow action task."));
+        var instance=instanceRepositoryPort.findByIdForUpdate(command.instanceId()).orElseThrow(()->new InvalidWorkflowValueException("Unknown Workflow action instance."));
+        if(task!=null){
+            if(!task.instanceId().equals(instance.id())) throw new InvalidWorkflowValueException("Workflow action task belongs to another instance.");
+            var step=steps.findById(task.stepId()).orElseThrow(()->new InvalidWorkflowValueException("Unknown Workflow action step."));
+            if(!instance.definitionId().equals(step.definitionId()) || !ownership.canExecute(task,actor.id(),step.allowClaim()))
+                throw new InvalidWorkflowValueException("Workflow actor is not eligible for this task-scoped comment.");
+        } else if(!instance.startedByActorId().equals(actor.id())) throw new InvalidWorkflowValueException("Instance-scoped comments require the instance starter.");
+        if(command.reasonId()!=null) configuration.requireActiveCatalog(command.reasonId(),"WORKFLOW_REASON");
+        var unit=command.organizationUnitId()==null?null:ownership.requireUnit(command.organizationUnitId());
+        if(unit!=null && !ownership.member(actor,unit.id())) throw new InvalidWorkflowValueException("Workflow comment organization context requires eligible membership.");
+        long sequence=actionRepositoryPort.nextSequence(instance.id());
         WorkflowAction action = new WorkflowAction(
                 WorkflowId.newId().value(),
                 command.instanceId(),
@@ -180,18 +199,18 @@ public class WorkflowApplicationService implements StartWorkflowInstanceUseCase,
                 command.decisionNote(),
                 command.commentText(),
                 command.actorId(),
-                command.actorUsernameSnapshot(),
-                command.actorDisplayNameSnapshot(),
-                command.actorRoleCodeSnapshot(),
+                actor.username(),
+                actor.displayName(),
+                null,
                 command.organizationUnitId(),
-                command.organizationUnitNameSnapshot(),
-                command.organizationRoleCodeSnapshot(),
+                unit==null?null:unit.name(),
+                null,
                 command.correlationId(),
-                command.actionSequence(),
-                command.sourceSystem(),
+                sequence,
+                "HIDRA_API",
                 null,
                 null,
-                command.actedAt() == null ? Instant.now() : command.actedAt()
+                now
         );
         return WorkflowApplicationMapper.toSummary(actionRepositoryPort.save(action));
     }

@@ -4259,7 +4259,8 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-095`
 - Exact commit: `fix(workflow): remediate semantic review WorkflowAction`
-- Status: **Planned**
+- Status: **Completed — CI pending**
+- Batch 7 implementation: Generic recording permits comments only; configured transitions exclusively produce decisions using live Identity authority. Optional task ownership and conditional evidence are enforced; canonical actor snapshots and server-owned locked sequences replace caller evidence. Action persistence is insert-only with unique monotonic sequence and immutable database guards. Five focused behavior checks passed with temporary stubs; existing permission regression fixture updated. Canonical scope/migration admission supersedes legacy filenames.
 - SCC: —
 - Recorded upstream HMS dependencies: organization.OrganizationUnit, workflow.WorkflowInstance, workflow.WorkflowTask
 - HMSR correction count: 6

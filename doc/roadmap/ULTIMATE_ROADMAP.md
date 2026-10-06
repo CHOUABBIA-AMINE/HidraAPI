@@ -1267,3 +1267,7 @@ Before updating the existing transition fixture for live Identity permission eva
 admit `src/test/java/dz/sh/hidra/modules/workflow/application/service/WorkflowTransitionApplicationServiceTest.java`
 to HMR-081 as well as HMR-066. This is a dependency fixture repair, not a new semantic
 task; owner-authorized live permission evaluation supersedes caller permission sets.
+
+### Batch 7 HMR-081 — IMPLEMENTED, CI PENDING
+
+Generic recording permits comments only; configured transitions exclusively produce decisions using live Identity authority. Optional task ownership and conditional evidence are enforced; canonical actor snapshots and server-owned locked sequences replace caller evidence. Action persistence is insert-only with unique monotonic sequence and immutable database guards. Five focused behavior checks passed with temporary stubs; existing permission regression fixture updated.

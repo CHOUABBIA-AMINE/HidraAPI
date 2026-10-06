@@ -287,6 +287,26 @@ The submitted block instead contains trailing `Z` timestamps. Those timestamps r
 
 Disposition: **HPR-P1-030 remains BLOCKED solely on final raw-log provenance.** Supply the actual file identified by the script's `Evidence:` line without timestamp normalization, reformatting or reconstruction. The manifest/checksum evidence does not need to be regenerated if the actual raw log references the already-accepted matching files.
 
+### HPR-P1-030 seventh submitted package review — 2026-10-06
+
+The latest package fixes the UTC timestamp-format mismatch and preserves the previously accepted manifest/hash evidence.
+
+One final raw-table provenance contradiction remains in the `Flyway migration baseline:` block.
+
+The current script prints the database's `flyway_schema_history.description` column. For Flyway versioned SQL migrations, the description is derived from the migration filename after the `__` separator, with underscores represented as spaces. Repository examples therefore require:
+
+- `V20260611_001__create_identity_tables.sql` → `create identity tables`;
+- `V20260611_002__create_organization_tables.sql` → `create organization tables`;
+- `V20260611_003__create_party_tables.sql` → `create party tables`;
+- `V20261004_049__hmr_049_risk_risk_register.sql` → `hmr 049 risk risk register`;
+- `V20261005_001__provision_risk_register_created_audit_taxonomy.sql` → `provision risk register created audit taxonomy`.
+
+The submitted table instead records the generic description `migration` for rows 1 through 80. Those values do not reconcile with the authoritative HidraAPI migration filenames and cannot be the literal Flyway history produced by those migrations.
+
+The row-82 value is also shown as `provision risk register created au..`. The repository invokes ordinary aligned `psql -c` output without a column-width truncation setting; such output expands the text column rather than replacing the tail with `..`. This is further evidence that the block was reformatted rather than copied byte-for-byte from the generated evidence file.
+
+Disposition: **HPR-P1-030 remains BLOCKED on raw evidence provenance.** The 82-row `version|checksum` manifests, their SHA-256 digest, equality check, marker behavior and stated RPO/RTO remain accepted as internally consistent operator-supplied evidence. Closure now requires the actual script-generated evidence file itself, without manually reconstructed descriptions, table widths, timestamps or messages.
+
 ## Controlled deployment and rollback
 
 **Result: PASS**

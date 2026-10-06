@@ -256,6 +256,9 @@ remains BLOCKED until HPR-P1-021..029 are completed and their evidence satisfies
 
 ### HPR-P1-022 Patroni/HAProxy TLS alignment evidence
 
+- first exact-head full CI #547 / run id `37394262823`: **FAILED** at `Validate production PostgreSQL HA artifacts`; diagnosis found malformed generated content in `validate-postgres-ha-artifacts.sh`, not a Patroni/HAProxy runtime-contract failure; Maven and later stages were skipped;
+- repair replaces the corrupted validator with a clean fail-fast static validator using fixed-string assertions for the mTLS contract and shell syntax validation for the failover harness; HPR-P1-023 remains blocked until the repaired exact head passes full CI;
+
 - execution base SHA: `b630e6f29bcedbc882346495f3187673a37ca193`;
 - pre-task exact-head full CI #546 / run id `37393293127`: **SUCCESS**;
 - Patroni REST remains configured with `certfile`, `keyfile`, `cafile` and `verify_client: required`;

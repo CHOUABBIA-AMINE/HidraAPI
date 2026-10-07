@@ -1336,3 +1336,44 @@ forensic and architecture registries match at 28 exact packages. Focused Maven t
 and clean verify remain locally blocked by uncached Boot parent 4.1.1. Canonical
 Markdown validation and git diff checks passed. Complete replacement CI pending
 at preparation; publish and stop after trigger. Do not start Batch 8.
+
+
+## HPR-P2-008 Batch 8 preflight split — 2026-10-07
+
+Owner Next selects attached Planning Batch 8 (HMR-064/HMR-065, SCC-04).
+Exact repaired head ec63af0414d7fa85b9200d4bd181ac799bd072ed is green:
+production CI #581/run 37570918095 and Documentation #74/run 37570918094.
+Batch 7 HMR-055, 061, 066, 081, 099 are now COMPLETED with complete CI evidence.
+
+Fresh source/HMSR/DDD review confirms both Planning obligations remain required.
+HMR-065 reveals PL-PREREQ-01: no admitted Planning-facing Topology/Identity/Organization
+owner boundaries; REGION/NETWORK scopes listed in the DDD have no Topology owner
+entity/resolver. The candidate Organization scope registry contract uses different
+identity semantics and cannot silently replace native Topology identity.
+
+Under AGENTS.md §3.2.9 and HMRB-030, split and stop before production mutation.
+HMR-065 is BLOCKED; HMR-064 stays STILL REQUIRED, held for coordinated SCC-safe
+admission. Current totals: 22 implemented, 33 still required, two blocked (065, 080).
+No Planning implementation or schema changes are claimed.
+
+The concrete six-part PL-PREREQ-01 proposal, exact additional paths, migration order
+and tests are recorded in `doc/model-remediation/RECONCILIATION.md`, Batch 8 preflight.
+Proposed scope resolves existing Topology IDs only, denies unsupported REGION/NETWORK,
+binds creator to authenticated eligible Identity actor, validates optional owner unit,
+adds existing catalog-family checks, and establishes same-plan nullable revision pointers
+after revision uniqueness. No new taxonomy, cross-module FK or lifecycle redesign.
+
+This documentation-only preflight is admitted to exactly:
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `doc/model-remediation/RECONCILIATION.md`
+
+Exact supporting commit: `docs(planning): record Batch 8 owner-contract preflight`.
+Run canonical documentation checks and git diff checks. Publish and stop after observing
+documentation CI trigger; production CI ignores this scope. Acceptance/amendment of the
+recorded contract proposal and fresh canonical scope admission are required before the
+Planning semantic commits. Do not execute Batch 9.
+
+Preflight validation: all 82 canonical Markdown files passed UTF-8/nonempty/conflict
+checks; git diff --check passed. Only the two admitted documentation paths changed.
+No Maven test run is required for this documentation-only change. Documentation CI
+trigger pending at commit preparation; production CI remains at verified #581.

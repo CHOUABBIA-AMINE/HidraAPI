@@ -81,18 +81,18 @@ No `party.application.contract.planning` package exists in the exact current tre
 | HMR-052 | HMSR-061 | notification.NotificationMessage | COMPLETED — HPR-P2-008 | Recipient/request composite FK; exact-version/template FK and pre-dispatch composition guard; required-input schema checked for sendable states; inputs/version frozen; active NOTIFICATION_PRIORITY eligibility; V20261006_005; dedicated unit and PostgreSQL tests added. |
 | HMR-053 | HMSR-062 | telemetry.TrustedTelemetryReading | COMPLETED — HPR-P2-008 | Telemetry trust application use case derives values/provenance/binding from locked source evidence; PASSED plus MEDIUM/HIGH/CERTIFIED, ACTIVE point and active QUALITY_CODE required; composite assessment/reading identity and optional unit/batch FKs; snapshot preservation; V20261006_008; focused unit and PostgreSQL tests added; CI pending. |
 | HMR-054 | HMSR-063 | topology.Equipment | COMPLETED — HPR-P2-008 | EquipmentType identity/code is sole active classification; EquipmentKind deleted from domain/JPA; forward V20261006_009 preserves legacy strings, rejects conflicting classification/orphan attachments and adds nullable same-module FKs; manufacturer checked by existing Party contract; snapshots preserved; focused tests added; CI pending. |
-| HMR-055 | HMSR-064 | workflow.WorkflowInstance | IMPLEMENTED — CI PENDING | Owner-bound starts enforce active definition/version and exact binding, governed purpose/type, current-step coherence and owner target/actor snapshots; nonterminal uniqueness and same-definition/version database guards. Planning target registry denies unsupported/ambiguous owners. Eight focused behavior checks passed with temporary stubs; local Maven blocked by uncached parent, not a JUnit/PostgreSQL pass. |
+| HMR-055 | HMSR-064 | workflow.WorkflowInstance | COMPLETED — CI #581 GREEN | Owner-bound starts enforce active definition/version and exact binding, governed purpose/type, current-step coherence and owner target/actor snapshots; nonterminal uniqueness and same-definition/version database guards. Planning target registry denies unsupported/ambiguous owners. Eight focused behavior checks passed with temporary stubs; local Maven blocked by uncached parent, not a JUnit/PostgreSQL pass. |
 | HMR-056 | HMSR-067 | integration.IntegrationExchangeMessage | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-057 | HMSR-068 | reporting.ReportRun | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-058 | HMSR-069 | risk.RiskAssessment | STILL REQUIRED | no migration registered; dedicated test: absent; revalidate obligations before mutation |
 | HMR-059 | HMSR-071 | leakdetection.LeakEscalationReference | COMPLETED — HPR-P2-008 | Optional candidate validated before save and protected by V20261006_001 nullable same-module FK with fail-closed orphan preflight; no case-primary equality rule. |
 | HMR-060 | HMSR-072 | notification.NotificationDeliveryAttempt | COMPLETED — HPR-P2-008 | Channel/message composite FK; create-only EntityManager.persist plus PK race protection; update/delete/truncate rejected; permanent/cancelled automatic retry rejected; V20261006_006; dedicated unit and PostgreSQL tests added. |
-| HMR-061 | HMSR-073 | workflow.WorkflowTransition | IMPLEMENTED — CI PENDING | Distinct same-definition steps and unique source decisions are protected in configuration persistence and PostgreSQL. Unsupported conditions/callbacks/COMMENT cannot attach to ACTIVE definitions or survive activation; runtime remains fail closed. Three focused behavior checks passed with temporary stubs; PostgreSQL validation pending CI. |
+| HMR-061 | HMSR-073 | workflow.WorkflowTransition | COMPLETED — CI #581 GREEN | Distinct same-definition steps and unique source decisions are protected in configuration persistence and PostgreSQL. Unsupported conditions/callbacks/COMMENT cannot attach to ACTIVE definitions or survive activation; runtime remains fail closed. Three focused behavior checks passed with temporary stubs; PostgreSQL validation pending CI. |
 | HMR-062 | HMSR-074 | incident.Incident | STILL REQUIRED | no migration registered; dedicated test: absent; revalidate obligations before mutation |
 | HMR-063 | HMSR-075 | identity.User | COMPLETED — HPR-P2-008 | Nonblank username enforced in domain; PostgreSQL named username/email uniqueness, nullable-email semantics and fail-closed legacy preflight; optional Employee resolved through Organization-owned contract; no cross-module FK. V20261006_010 and focused tests added; final CI pending. |
 | HMR-064 | HMSR-076 | planning.PlanRevision | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
-| HMR-065 | HMSR-077 | planning.OperationalPlan | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
-| HMR-066 | HMSR-078 | workflow.WorkflowTask | IMPLEMENTED — CI PENDING | Actionable assignment, live actor/unit membership, catalog eligibility, actor/time pairs and chronology are enforced. Terminal task evidence is immutable; generic creation is starter-bound, missing next-step rules fail closed, and execution/query paths no longer authorize by username snapshots. Seven focused behavior checks passed with temporary stubs; existing transition fixtures updated for new owner dependencies. |
+| HMR-065 | HMSR-077 | planning.OperationalPlan | BLOCKED — PL-PREREQ-01 | Planning-facing owner contracts/scope policy not admitted; REGION/NETWORK have no Topology entity-backed resolver; see Batch 8 preflight below. |
+| HMR-066 | HMSR-078 | workflow.WorkflowTask | COMPLETED — CI #581 GREEN | Actionable assignment, live actor/unit membership, catalog eligibility, actor/time pairs and chronology are enforced. Terminal task evidence is immutable; generic creation is starter-bound, missing next-step rules fail closed, and execution/query paths no longer authorize by username snapshots. Seven focused behavior checks passed with temporary stubs; existing transition fixtures updated for new owner dependencies. |
 | HMR-067 | HMSR-079 | documents.Document | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-068 | HMSR-080 | documents.DocumentVersion | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-069 | HMSR-081 | assets.MaintenanceWorkOrder | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
@@ -107,7 +107,7 @@ No `party.application.contract.planning` package exists in the exact current tre
 | HMR-078 | HMSR-092 | simulation.SimulationCandidateChange | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-079 | HMSR-093 | simulation.SimulationRecommendation | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-080 | HMSR-094 | planning.Nomination | BLOCKED — OWNER CONTRACT REQUIRED | registered migration: absent; dedicated test: absent; Party→Planning contract absent |
-| HMR-081 | HMSR-095 | workflow.WorkflowAction | IMPLEMENTED — CI PENDING | Generic recording permits comments only; configured transitions exclusively produce decisions using live Identity authority. Optional task ownership and conditional evidence are enforced; canonical actor snapshots and server-owned locked sequences replace caller evidence. Action persistence is insert-only with unique monotonic sequence and immutable database guards. Five focused behavior checks passed with temporary stubs; existing permission regression fixture updated. |
+| HMR-081 | HMSR-095 | workflow.WorkflowAction | COMPLETED — CI #581 GREEN | Generic recording permits comments only; configured transitions exclusively produce decisions using live Identity authority. Optional task ownership and conditional evidence are enforced; canonical actor snapshots and server-owned locked sequences replace caller evidence. Action persistence is insert-only with unique monotonic sequence and immutable database guards. Five focused behavior checks passed with temporary stubs; existing permission regression fixture updated. |
 | HMR-082 | HMSR-096 | hse.HseCase | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-083 | HMSR-097 | audit.AuditExportRequest | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-084 | HMSR-098 | documents.DocumentTargetLink | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
@@ -125,7 +125,7 @@ No `party.application.contract.planning` package exists in the exact current tre
 | HMR-096 | HMSR-113 | hse.HseClosure | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-097 | HMSR-114 | hse.HseCorrectivePreventiveAction | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-098 | HMSR-115 | integrity.IntegrityCase | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
-| HMR-099 | HMSR-116 | workflow.WorkflowStateHistory | IMPLEMENTED — CI PENDING | Mandatory status/actor display evidence fails fast. History persistence inserts and flushes without upsert; optional task/step/action/reason references are checked for instance/definition and action evidence coherence. Database guards prohibit update/delete/truncate. Four focused behavior checks passed with temporary stubs; ten PostgreSQL/Hibernate cases added for CI, not locally executed. |
+| HMR-099 | HMSR-116 | workflow.WorkflowStateHistory | COMPLETED — CI #581 GREEN | Mandatory status/actor display evidence fails fast. History persistence inserts and flushes without upsert; optional task/step/action/reason references are checked for instance/definition and action evidence coherence. Database guards prohibit update/delete/truncate. Four focused behavior checks passed with temporary stubs; ten PostgreSQL/Hibernate cases added for CI, not locally executed. |
 | HMR-100 | HMSR-117 | alarm.Alarm | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-101 | HMSR-118 | audit.AuditAccessRecord | STILL REQUIRED | no migration registered; dedicated test: absent; revalidate obligations before mutation |
 | HMR-102 | HMSR-119 | audit.AuditBeforeAfterValue | STILL REQUIRED | no migration registered; dedicated test: absent; revalidate obligations before mutation |
@@ -150,7 +150,7 @@ No `party.application.contract.planning` package exists in the exact current tre
 ## HPR-P2-008 Progress
 
 - HMR-050 — **COMPLETED** at the first HPR-P2-008 execution step.
-- Batch 7 **IMPLEMENTED — CI PENDING**: HMR-055, 061, 066, 081, 099. Owner `Go ahead` accepted the prerequisite; all five retain independent commits. Next proposed owner scope is Batch 8 (Planning HMR-064, 065), gated on green Batch 7 CI and fresh admission.
+- Batch 7 **COMPLETED — CI #581 GREEN**: HMR-055, 061, 066, 081, 099; exact repaired head ec63af0414d7fa85b9200d4bd181ac799bd072ed. Batch 8 preflight split below; no Planning implementation claimed.
 - Current remaining: **34 STILL REQUIRED + 1 BLOCKED (HMR-080)**; 22 implementations completed.
 
 - HMR-051 — **COMPLETED**: Topology and optional Organization references validated on every case save; snapshot preserved; no migration because primary-candidate FK already exists; owner contract and architecture export added.
@@ -726,3 +726,116 @@ attempted with `bash ./mvnw -o -q`; both blocked before compilation by the uncac
 Spring Boot 4.1.1 parent. Documentation UTF-8/nonempty/conflict and git diff checks
 passed. Exact replacement CI trigger pending at commit preparation; stop after
 observing the trigger. Batch 8 remains gated on successful complete replacement CI.
+
+## Batch 8 preflight and concrete owner-contract proposal — 2026-10-07
+
+Selected scope: attached Batch 8, HMR-064/HMSR-076 and HMR-065/HMSR-077,
+SCC-04. Exact production baseline ec63af0414d7fa85b9200d4bd181ac799bd072ed:
+CI #581 (run 37570918095) and Documentation #74 (37570918094) completed
+successfully. This closes Batch 7's CI-pending disposition; preceding entries are
+historical preparation/repair records.
+
+### Live evidence and split
+
+HMR-064 remains required: PlanRevision does not require a positive revision number;
+its repository save lacks reason-family/base-lineage enforcement; metadata update can
+change an APPROVED revision. Published schema has no per-plan revision-number uniqueness
+or nullable base-lineage FK. Its four registered obligations remain valid.
+
+HMR-065 remains required: OperationalPlan normalizes required nameFr/scope type to
+null; creation trusts incoming scope, creator and responsible-unit IDs. Existing owner
+contracts are consumer-specific: Topology organization/risk contracts, Identity Workflow
+actor contract, Organization Workflow unit contract. The registered Organization scope
+query returns an Organization scope registry ID, not the native Topology scope ID required
+by Planning, so substituting it would change identity meaning.
+
+Planning DDD lists PIPELINE_SYSTEM, PIPELINE, FACILITY, REGION, NETWORK. Topology has
+owner repositories/resolvers for the first three; no REGION/NETWORK owner entity/resolver
+is evidenced. Existing ACTIVE responsibility assignability is not evidence that Planning
+must require ACTIVE topology. A Planning-facing owner boundary and unsupported-scope
+policy must be explicitly admitted. Catalog PLAN_TYPE and REVISION_REASON families are
+already defined; no new taxonomy is needed.
+
+PL-PREREQ-01 blocks HMR-065. AGENTS.md §3.2.9 and HMRB-030 require splitting before
+mutation. HMR-064 stays STILL REQUIRED, held with the coordinated pair until a fresh
+SCC-safe scope admission. No Java, SQL, tests, catalog rows or release version changed.
+Current register totals: **22 implemented, 33 still required, two blocked (065, 080)**.
+
+### Proposed decision for the next execution
+
+1. Export `topology.application.contract.planning.PlanningTopologyScopeContract`:
+   `Optional<Scope> resolve(String scopeType, String scopeId)`, with Scope containing
+   canonical id/code/name. Topology-owned `PlanningTopologyScopeQueryService` reads its
+   own repositories. Accept existing PIPELINE_SYSTEM, PIPELINE, FACILITY identities;
+   deny missing/unknown scopes and REGION/NETWORK until their owners are implemented.
+   Do not alias them to other objects or seed invented data. Validate existence without
+   imposing a new ACTIVE-only Planning lifecycle rule. Planning stores owner display
+   snapshots; snapshots never grant identity or eligibility.
+2. Export `identity.application.contract.planning.PlanningCreatorContract`:
+   `Optional<Creator> eligibleCreator(String actorId, Instant at)`, canonical Creator ID.
+   Identity-owned `PlanningCreatorQueryService` delegates internally to the existing
+   live ACTIVE/unlocked actor eligibility policy. Creation additionally binds creator
+   to CurrentSecurityContext's authenticated principal; reject caller impersonation.
+   No new Workflow permission/role requirement or Identity database FK.
+3. Export `organization.application.contract.planning.PlanningResponsibleUnitContract`:
+   `Optional<Unit> availableUnit(String unitId, Instant at)`, canonical Unit ID/name.
+   Organization-owned `PlanningResponsibleUnitQueryAdapter` delegates internally to
+   its existing ACTIVE, half-open validity policy. Validate only populated responsible
+   units; do not require membership or promote the optional reference to mandatory.
+4. HMR-064: positive revision number; concurrency-safe UNIQUE(plan_id, revision_number);
+   nullable self FK for base_revision_id and normalized no-self-reference check; exact
+   active REVISION_REASON family on writes. Deny metadata updates of persisted APPROVED
+   revisions under the existing lock, backed by a database guard against approved-row
+   mutation/deletion. Do not invent additional editable-state transitions or require
+   base lineage to be same-plan where the governing review does not specify it.
+5. HMR-065: require nameFr/scope type; unique plan code; active PLAN_TYPE on writes;
+   owner checks above. Introduce UNIQUE(plan_id,id) on revisions before composite nullable
+   current/approved FKs `(id,current_revision_id)` / `(id,approved_revision_id)` referencing
+   revision `(plan_id,id)`. Existing parent revision->plan FK remains. Create plan with
+   null pointers, create revision, then assign pointer; no circular insert or external FK.
+   No new product owner, closed-period policy or approval lifecycle orchestration.
+6. Additive forward migrations proposed:
+   `V20261007_001__hmr_064_planning_plan_revision.sql`, then
+   `V20261007_002__hmr_065_planning_operational_plan.sql`, subject to fresh maximum-version
+   check. Fail on invalid legacy numbers, duplicates, orphan lineage, wrong families or
+   cross-plan pointers; no silent renumbering, retagging or fabricated owner data.
+
+### Proposed exact scope extension and validation
+
+Retain each legacy HMR allowlist and exact commit message. Before implementation,
+admit canonical roadmap/reconciliation updates to each HMR, replace unused backdated
+migration registrations with the forward names above, and register these additional
+exact paths (prefix src/main/java/dz/sh/hidra/modules/):
+
+| HMR | Additional production path |
+|---|---|
+| 064 | planning/application/port/out/PlanningCatalogEligibilityPort.java |
+| 064 | planning/infrastructure/persistence/adapter/JpaPlanningCatalogEligibilityAdapter.java |
+| 065 | topology/application/contract/planning/PlanningTopologyScopeContract.java |
+| 065 | topology/application/service/PlanningTopologyScopeQueryService.java |
+| 065 | identity/application/contract/planning/PlanningCreatorContract.java |
+| 065 | identity/application/service/PlanningCreatorQueryService.java |
+| 065 | organization/application/contract/planning/PlanningResponsibleUnitContract.java |
+| 065 | organization/infrastructure/query/PlanningResponsibleUnitQueryAdapter.java |
+
+HMR-064 additionally admits its existing application-service/controller fixture tests;
+HMR-065 must admit `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java` and
+`src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java` for the same three exact
+public package exports in both registries. Add
+`src/test/java/dz/sh/hidra/modules/planning/infrastructure/persistence/PlanningSemanticPostgresTest.java`
+to both HMRs for additive schema, competing uniqueness, approved immutability, catalog
+families and correlated-pointer cases. HMR-065 admits dedicated owner query tests at
+`src/test/java/dz/sh/hidra/modules/topology/application/service/PlanningTopologyScopeQueryServiceTest.java`,
+`src/test/java/dz/sh/hidra/modules/identity/application/service/PlanningCreatorQueryServiceTest.java`,
+and `src/test/java/dz/sh/hidra/modules/organization/infrastructure/query/PlanningResponsibleUnitQueryAdapterTest.java`.
+No private cross-module imports or broad architecture exceptions.
+
+Validation after admission: Maven compile; registered PlanRevision and OperationalPlan
+semantic tests; existing PlanRevision update/controller tests; new owner and PostgreSQL
+tests; both architecture/forensic guards; full test and clean verify including OpenAPI CI.
+Local environment blocks remain reportable; temporary API checks are not Maven or DB passes.
+
+This is a concrete proposal, not production authorization or implementation. Next owner
+decision is acceptance or amendment of PL-PREREQ-01, followed by fresh exact-head baseline
+verification and canonical scope admission. Do not advance to Batch 9. For this docs-only
+preflight, publish once and stop after documentation CI is observed triggered.

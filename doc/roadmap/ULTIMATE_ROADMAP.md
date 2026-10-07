@@ -1301,3 +1301,38 @@ Current totals: 22 implementations, 34 still required, one blocked (080).
 Next proposed owner-selected batch: attached Batch 8 Planning (HMR-064, HMR-065),
 only after green final Batch 7 CI and fresh dependency/scope admission. Publish the
 commit chain once; observe final-head CI trigger and stop without awaiting completion.
+
+
+## HPR-P2-008 Batch 7 CI #580 guardrail repair admission — 2026-10-07
+
+Owner `Fail` selects repair of CI run 37525353444 at
+f6d833c6362e57192f7719125b7d59b4ee938ae1. Repository verification ran
+736 tests, one failure, zero errors and zero skipped. The sole failure is
+ForensicRemediationClosureTest.crossModulePrivateImportsRemainClosed: its duplicate
+export registry lacks the three public contract packages admitted for HMR-055 and
+already present in ArchitectureGuardrailTest. The Workflow semantic/PostgreSQL tests
+reported no failures. OpenAPI publication/compatibility steps were skipped after failure.
+
+Before test mutation, admit exact repair scope:
+- `src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java`
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `doc/model-remediation/RECONCILIATION.md`
+
+Exact repair message: `test(workflow): align forensic guardrail with admitted owner contracts`.
+Add only Workflow target, Identity Workflow actor and Organization Workflow contract
+package exports, preserving all private-package checks. No new production boundary,
+semantic implementation, migration, broad exception or disabled assertion. Validate
+all five source-scanning forensic checks, export-registry parity, focused Maven tests
+and clean verify; record environment blocks honestly. Publish replacement head and
+stop after CI trigger. Batch 8 remains gated on successful complete replacement CI.
+
+
+### Batch 7 CI #580 repair implementation — 2026-10-07
+
+The three HMR-055 public contract package exports are now mirrored in
+ForensicRemediationClosureTest. No production/schema changes or broad exception.
+All five actual forensic source-scanning methods passed with temporary JUnit APIs;
+forensic and architecture registries match at 28 exact packages. Focused Maven tests
+and clean verify remain locally blocked by uncached Boot parent 4.1.1. Canonical
+Markdown validation and git diff checks passed. Complete replacement CI pending
+at preparation; publish and stop after trigger. Do not start Batch 8.

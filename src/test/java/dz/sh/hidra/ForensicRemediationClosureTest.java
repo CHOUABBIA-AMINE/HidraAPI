@@ -7,7 +7,7 @@
  *
  * @Name        : ForensicRemediationClosureTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-06
+ * @UpdatedOn   : 2026-10-07
  *
  * @Type        : Test
  * @Layer       : Architecture Test
@@ -50,6 +50,9 @@ class ForensicRemediationClosureTest {
     );
 
     private static final Set<String> EXPORTED_PACKAGES = Set.of(
+            "dz.sh.hidra.modules.workflow.application.contract.target",
+            "dz.sh.hidra.modules.identity.application.contract.workflow",
+            "dz.sh.hidra.modules.organization.application.contract.workflow",
             "dz.sh.hidra.modules.workflow.application.contract.planning",
             "dz.sh.hidra.modules.workflow.application.contract.organization",
             "dz.sh.hidra.modules.workflow.application.contract.alarm",

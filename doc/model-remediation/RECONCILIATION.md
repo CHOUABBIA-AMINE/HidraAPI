@@ -699,3 +699,30 @@ Final-head GitHub production/documentation CI trigger pending at preparation. Pu
 all chained commits atomically and stop after observing trigger; do not wait for CI
 completion or execute Batch 8 automatically. Current totals: **22 implemented,
 34 still required, one blocked (HMR-080)**.
+
+
+### Batch 7 CI #580 forensic export repair — 2026-10-07
+
+Run 37525353444 at f6d833c failed Repository verification with **736 tests,
+one failure, zero errors, zero skipped**. The sole failure is the source-scanning
+ForensicRemediationClosureTest.crossModulePrivateImportsRemainClosed. Its export
+registry omitted the three admitted public packages:
+- `workflow.application.contract.target`
+- `identity.application.contract.workflow`
+- `organization.application.contract.workflow`
+
+ArchitectureGuardrailTest already registers these explicit HMR-055 boundaries.
+Added the same exact packages to the forensic registry. Its import scanner,
+private-package denial and assertions remain intact. Production code and migrations
+are unchanged. All other tests, including the new Workflow semantic/PostgreSQL
+cases, reported no failures in CI #580; complete verification is still not green.
+OpenAPI publication and compatibility gates were skipped after the test failure.
+
+All five actual forensic source-scanning methods compiled and passed using the JDK
+source-launch compiler with temporary JUnit annotation/assertion APIs. Both export
+registries now match at 28 exact packages. This is not a Maven/JUnit pass claim.
+Focused ForensicRemediationClosureTest/ArchitectureGuardrailTest and clean verify
+attempted with `bash ./mvnw -o -q`; both blocked before compilation by the uncached
+Spring Boot 4.1.1 parent. Documentation UTF-8/nonempty/conflict and git diff checks
+passed. Exact replacement CI trigger pending at commit preparation; stop after
+observing the trigger. Batch 8 remains gated on successful complete replacement CI.

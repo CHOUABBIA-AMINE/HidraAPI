@@ -228,7 +228,7 @@ Each model task implements only the obligations recorded in its source HMSR sect
 | HMR-062 | HMSR-074 | incident | Incident | — | organization.OrganizationUnit, workflow.WorkflowInstance | `fix(incident): remediate semantic review Incident` | Planned |
 | HMR-063 | HMSR-075 | identity | User | — | organization.Employee | `fix(identity): remediate semantic review User` | Completed — Batch 5; final CI pending |
 | HMR-064 | HMSR-076 | planning | PlanRevision | SCC-04 | planning.OperationalPlan, planning.PlanRevision, workflow.WorkflowInstance | `fix(planning): remediate semantic review PlanRevision` | Completed — CI pending |
-| HMR-065 | HMSR-077 | planning | OperationalPlan | SCC-04 | organization.OrganizationUnit, planning.PlanRevision, planning.PlanningPeriod | `fix(planning): remediate semantic review OperationalPlan` | Planned |
+| HMR-065 | HMSR-077 | planning | OperationalPlan | SCC-04 | organization.OrganizationUnit, planning.PlanRevision, planning.PlanningPeriod | `fix(planning): remediate semantic review OperationalPlan` | Completed — CI pending |
 | HMR-066 | HMSR-078 | workflow | WorkflowTask | — | organization.OrganizationUnit, workflow.WorkflowInstance, workflow.WorkflowStep | `fix(workflow): remediate semantic review WorkflowTask` | Planned |
 | HMR-067 | HMSR-079 | documents | Document | SCC-05 | documents.DocumentVersion | `fix(documents): remediate semantic review Document` | Planned |
 | HMR-068 | HMSR-080 | documents | DocumentVersion | SCC-05 | documents.Document, documents.DocumentStorageObject, documents.DocumentVersion, workflow.WorkflowInstance | `fix(documents): remediate semantic review DocumentVersion` | Planned |
@@ -3589,11 +3589,12 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-077`
 - Exact commit: `fix(planning): remediate semantic review OperationalPlan`
-- Status: **Planned**
+- Status: **Completed — CI pending**
+- Batch 8 implementation: Required French name/scope type, unique plan code, active PLAN_TYPE, owner-controlled Topology/Identity/Organization references and same-plan nullable revision pointers enforced. Creation binds authenticated eligible actor and snapshots owner display values; unsupported REGION/NETWORK denied. Forward V20261007_002; twelve focused HMR-065/owner/catalog checks passed with temporary API stubs. Nine combined PostgreSQL cases registered; Maven compile/focused/full test/clean verify blocked before compilation by uncached Boot 4.1.1/Maven Central DNS. Full CI pending.
 - SCC: SCC-04
 - Recorded upstream HMS dependencies: organization.OrganizationUnit, planning.PlanRevision, planning.PlanningPeriod
 - HMSR correction count: 6
-- Additive Flyway: `src/main/resources/db/migration/V20261004_065__hmr_065_planning_operational_plan.sql`
+- Additive Flyway: `src/main/resources/db/migration/V20261007_002__hmr_065_planning_operational_plan.sql`
 - Owner-contract prerequisite: Existing candidate owner contract(s): organization:src/main/java/dz/sh/hidra/modules/organization/application/port/in/OperationalScopeQueryUseCase.java; organization:src/main/java/dz/sh/hidra/modules/organization/application/port/in/OrganizationAdministrationQueryUseCase.java; organization:src/main/java/dz/sh/hidra/modules/organization/application/port/out/OperationalScopeTargetResolverPort.java
 - Exact write allowlist:
   - `docs/data definition/Planning.md`
@@ -3612,7 +3613,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
   - `src/main/java/dz/sh/hidra/modules/planning/infrastructure/persistence/entity/OperationalPlanJpaEntity.java`
   - `src/main/java/dz/sh/hidra/modules/planning/infrastructure/persistence/mapper/PlanningPersistenceMapper.java`
   - `src/main/java/dz/sh/hidra/modules/planning/infrastructure/persistence/repository/OperationalPlanJpaRepository.java`
-  - `src/main/resources/db/migration/V20261004_065__hmr_065_planning_operational_plan.sql`
+  - `src/main/resources/db/migration/V20261007_002__hmr_065_planning_operational_plan.sql`
   - `src/test/java/dz/sh/hidra/modules/planning/semantic/OperationalPlanSemanticRemediationTest.java`
 - Exact validation:
   - `./mvnw -q -DskipTests compile`
@@ -5304,7 +5305,7 @@ The following are execution registrations only; they do not change any HMR's sem
 | HMRB-027 | HMR-061 | Solo | **Planned.** Workflow transition composition, uniqueness and executable-condition governance. |
 | HMRB-028 | HMR-062 | Solo | **Planned.** Incident catalog, cross-context identity, Topology scope and lifecycle invariants. |
 | HMRB-029 | HMR-063 | Solo | **Completed in owner Batch 5.** Identity username/email concurrency-safe uniqueness plus Organization employee validation. |
-| HMRB-030 | HMR-064, HMR-065 | Coordinated Batch | **Planned, conditional preflight.** SCC-04 PlanRevision/OperationalPlan pair; chain in SCC-safe migration/application order and split if owner-contract or migration conflict appears. |
+| HMRB-030 | HMR-064, HMR-065 | Coordinated Batch | **Completed — CI pending.** PL-PREREQ-01 accepted; forward migrations 20261007_001/002. SCC-04 PlanRevision/OperationalPlan pair; chain in SCC-safe migration/application order and split if owner-contract or migration conflict appears. |
 | HMRB-031 | HMR-066 | Solo | **Planned.** Workflow task assignment/claim/completion lifecycle plus owner-controlled eligibility. |
 | HMRB-032 | HMR-067, HMR-068 | Coordinated Batch | **Planned, conditional preflight.** SCC-05 Document/DocumentVersion pair; preserve current-version/supersession ordering and split if Identity/Workflow owner-contract gaps appear. |
 | HMRB-033 | HMR-069 | Solo | **Planned.** Assets work-order same-module and multiple cross-context provenance references. |

@@ -41,6 +41,7 @@ class PlanningSemanticPostgresTest {
     @BeforeEach void setup() throws Exception {
         emptySchema();
         sql(Files.readString(MIGRATIONS.resolve("V20261007_001__hmr_064_planning_plan_revision.sql")));
+        sql(Files.readString(MIGRATIONS.resolve("V20261007_002__hmr_065_planning_operational_plan.sql")));
         catalog("reason","REVISION_REASON",true);catalog("type","PLAN_TYPE",true);catalog("wrong","PERIOD_TYPE",true);
         sql(plan("plan","P1"));sql(plan("other","P2"));
     }
@@ -88,5 +89,39 @@ class PlanningSemanticPostgresTest {
         emptySchema();sql(plan("plan","P"));sql(revision("bad","plan",0,"DRAFT"));
         assertThrows(SQLException.class,()->sql(Files.readString(MIGRATIONS.resolve("V20261007_001__hmr_064_planning_plan_revision.sql"))));
         try(var c=connection();var s=c.createStatement();var r=s.executeQuery("SELECT revision_number FROM hidra_planning_plan_revision WHERE id='bad'")){assertTrue(r.next());assertEquals(0,r.getInt(1));}
+    }
+
+    @Test void planPointersMustExistAndBelongToSamePlan() throws Exception {
+        sql(revision("rev","plan",1,"DRAFT"));sql(revision("other-rev","other",1,"APPROVED"));
+        assertThrows(SQLException.class,()->sql("UPDATE hidra_planning_operational_plan SET current_revision_id='missing' WHERE id='plan'"));
+        assertThrows(SQLException.class,()->sql("UPDATE hidra_planning_operational_plan SET current_revision_id='other-rev' WHERE id='plan'"));
+        assertThrows(SQLException.class,()->sql("UPDATE hidra_planning_operational_plan SET approved_revision_id='other-rev' WHERE id='plan'"));
+        sql("UPDATE hidra_planning_operational_plan SET current_revision_id='rev',approved_revision_id='rev' WHERE id='plan'");
+        assertThrows(SQLException.class,()->sql("UPDATE hidra_planning_plan_revision SET plan_id='other',revision_number=2 WHERE id='rev'"));
+        sql("UPDATE hidra_planning_operational_plan SET current_revision_id=null,approved_revision_id=null WHERE id='plan'");
+    }
+    @Test void planNameScopeTypeAndActiveTypeFamilyEnforced() throws Exception {
+        assertThrows(SQLException.class,()->sql("UPDATE hidra_planning_operational_plan SET name_fr=' ' WHERE id='plan'"));
+        assertThrows(SQLException.class,()->sql("UPDATE hidra_planning_operational_plan SET topology_scope_type=' ' WHERE id='plan'"));
+        assertThrows(SQLException.class,()->sql("UPDATE hidra_planning_operational_plan SET plan_type_id='wrong' WHERE id='plan'"));
+        sql("UPDATE hidra_planning_catalog_entry SET active=false WHERE id='type'");
+        assertThrows(SQLException.class,()->sql(plan("new","P3")));
+        sql("UPDATE hidra_planning_catalog_entry SET active=true WHERE id='type'");sql(plan("new","P3"));
+    }
+    @Test void competingPlanCodesHaveExactlyOneWinner() throws Exception {
+        var pool=Executors.newFixedThreadPool(2);var go=new CountDownLatch(1);
+        try {
+            var a=pool.submit(()->insertAfter(go,plan("a","SHARED")));
+            var b=pool.submit(()->insertAfter(go,plan("b","SHARED")));
+            go.countDown();assertEquals(1,a.get(20,TimeUnit.SECONDS)+b.get(20,TimeUnit.SECONDS));
+        } finally {pool.shutdownNow();}
+    }
+    @Test void legacyCrossPlanPointerAbortsWithoutReassignment() throws Exception {
+        emptySchema();catalog("type","PLAN_TYPE",true);sql(plan("plan","P1"));sql(plan("other","P2"));
+        sql(revision("foreign-rev","other",1,"DRAFT"));
+        sql("UPDATE hidra_planning_operational_plan SET current_revision_id='foreign-rev' WHERE id='plan'");
+        sql(Files.readString(MIGRATIONS.resolve("V20261007_001__hmr_064_planning_plan_revision.sql")));
+        assertThrows(SQLException.class,()->sql(Files.readString(MIGRATIONS.resolve("V20261007_002__hmr_065_planning_operational_plan.sql"))));
+        try(var c=connection();var s2=c.createStatement();var r=s2.executeQuery("SELECT current_revision_id FROM hidra_planning_operational_plan WHERE id='plan'")){assertTrue(r.next());assertEquals("foreign-rev",r.getString(1));}
     }
 }

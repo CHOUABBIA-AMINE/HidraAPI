@@ -7,7 +7,7 @@
  *
  * @Name        : OperationalPlan
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-10-07
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -102,6 +102,12 @@ import java.time.Instant;
             throw new InvalidPlanningValueException("OperationalPlan created by actor id must not be blank.");
         }
 
+        if (nameFr == null || nameFr.isBlank()) {
+            throw new InvalidPlanningValueException("OperationalPlan French name must not be blank.");
+        }
+        if (topologyScopeType == null || topologyScopeType.isBlank()) {
+            throw new InvalidPlanningValueException("OperationalPlan topology scope type must not be blank.");
+        }
         id = normalize(id);
         periodId = normalize(periodId);
         code = normalize(code);

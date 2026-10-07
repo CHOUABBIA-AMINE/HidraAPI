@@ -1314,3 +1314,19 @@ references an existing Planning revision; normalized self-lineage is denied. Wri
 require active REVISION_REASON entries. Approved rows cannot be changed, deleted or
 truncated; create a new revision for post-approval changes. Migration V20261007_001
 aborts on invalid legacy data instead of renumbering or fabricating references.
+
+
+### HMR-065 runtime enforcement — 2026-10-07
+
+Plan French name and scope type fail fast; code uniqueness is concurrency-safe in
+PostgreSQL. PLAN_TYPE must resolve to an active Planning entry. Topology's Planning
+contract resolves PIPELINE_SYSTEM, PIPELINE and FACILITY owner-native IDs with current
+code/name snapshots. REGION/NETWORK remain documented candidates but new writes deny
+until owner-backed resolvers exist; no aliases or inferred identities. Existence does
+not impose a new ACTIVE-only Topology lifecycle rule. Creator must match the authenticated
+eligible Identity actor. Populated responsible unit follows Organization's active/time
+validity policy; optional remains optional and membership is not required.
+Current/approved pointers are nullable composite same-module FKs to revisions of the
+same plan. Insert plan with null pointers, create revision, then assign pointer. Forward
+V20261007_002 preserves published migration history; wrong-family/orphan/cross-plan legacy
+data aborts rather than being reassigned. No product owner or lifecycle orchestration added.

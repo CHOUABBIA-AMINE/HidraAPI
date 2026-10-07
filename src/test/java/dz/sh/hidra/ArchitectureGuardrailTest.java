@@ -76,6 +76,7 @@ class ArchitectureGuardrailTest {
      * architecture decision/roadmap task that creates that public module contract.
      */
     private static final Set<String> EXPORTED_CROSS_MODULE_PACKAGE_PREFIXES = Set.of(
+            "dz.sh.hidra.modules.workflow.application.contract.documents",
             "dz.sh.hidra.modules.workflow.application.contract.target",
             "dz.sh.hidra.modules.identity.application.contract.workflow",
             "dz.sh.hidra.modules.organization.application.contract.workflow",

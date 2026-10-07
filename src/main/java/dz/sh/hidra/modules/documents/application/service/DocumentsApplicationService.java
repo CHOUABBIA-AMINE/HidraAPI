@@ -116,9 +116,14 @@ public class DocumentsApplicationService implements RegisterDocumentUseCase, Upl
     }
 
     @Override
+    @Transactional
     public DocumentVersionSummaryDto uploadDocumentVersion(UploadDocumentVersionCommand command) {
         Objects.requireNonNull(command, "Upload document version command must not be null.");
         Instant now = Instant.now();
+        var actor=currentActor(command.uploadedByActorId(),now);
+        String documentId=text(command.documentId());
+        if(documentId==null || documentRepositoryPort.findById(documentId).isEmpty())
+            throw new IllegalArgumentException("Existing document required.");
         DocumentVersion version = new DocumentVersion(
                 DocumentId.newId().value(),
                 command.documentId(),
@@ -140,8 +145,8 @@ public class DocumentsApplicationService implements RegisterDocumentUseCase, Upl
                 command.effectiveFrom(),
                 command.effectiveTo(),
                 DocumentVersionStatus.DRAFT,
-                command.uploadedByActorId(),
-                command.uploadedByDisplayNameSnapshot(),
+                actor.id(),
+                actor.displayName(),
                 now,
                 null,
                 null,

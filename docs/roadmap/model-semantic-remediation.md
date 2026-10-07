@@ -231,7 +231,7 @@ Each model task implements only the obligations recorded in its source HMSR sect
 | HMR-065 | HMSR-077 | planning | OperationalPlan | SCC-04 | organization.OrganizationUnit, planning.PlanRevision, planning.PlanningPeriod | `fix(planning): remediate semantic review OperationalPlan` | Completed — CI pending |
 | HMR-066 | HMSR-078 | workflow | WorkflowTask | — | organization.OrganizationUnit, workflow.WorkflowInstance, workflow.WorkflowStep | `fix(workflow): remediate semantic review WorkflowTask` | Planned |
 | HMR-067 | HMSR-079 | documents | Document | SCC-05 | documents.DocumentVersion | `fix(documents): remediate semantic review Document` | Completed — CI pending |
-| HMR-068 | HMSR-080 | documents | DocumentVersion | SCC-05 | documents.Document, documents.DocumentStorageObject, documents.DocumentVersion, workflow.WorkflowInstance | `fix(documents): remediate semantic review DocumentVersion` | Planned |
+| HMR-068 | HMSR-080 | documents | DocumentVersion | SCC-05 | documents.Document, documents.DocumentStorageObject, documents.DocumentVersion, workflow.WorkflowInstance | `fix(documents): remediate semantic review DocumentVersion` | Completed — CI pending |
 | HMR-069 | HMSR-081 | assets | MaintenanceWorkOrder | — | assets.MaintainableAsset, organization.OrganizationUnit, workflow.WorkflowInstance | `fix(assets): remediate semantic review MaintenanceWorkOrder` | Planned |
 | HMR-070 | HMSR-082 | custody | CustodyTransferTicket | — | custody.CustodyMeasurementPeriod, workflow.WorkflowInstance | `fix(custody): remediate semantic review CustodyTransferTicket` | Planned |
 | HMR-071 | HMSR-084 | integration | IntegrationDeadLetterRecord | — | integration.ExternalSystem, integration.IntegrationExchangeMessage, integration.IntegrationJobRun | `fix(integration): remediate semantic review IntegrationDeadLetterRecord` | Planned |
@@ -3798,11 +3798,12 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-080`
 - Exact commit: `fix(documents): remediate semantic review DocumentVersion`
-- Status: **Planned**
+- Status: **Completed — CI pending**
+- Batch 9 implementation: Required upload metadata, positive per-document unique numbers, nullable existing supersession and owner-controlled Identity/Workflow references enforced. Generic upload derives authenticated uploader display. Binary prevalidates metadata and registers known-rollback new-blob cleanup; failed cleanup preserves original error, unknown commit outcome preserves content and logs reconciliation. Forward V20261007_004; 10 focused owner/version/cleanup methods passed with temporary APIs; nine combined PostgreSQL cases include transactional storage rollback and confirmed commit failure. Local focused Maven blocked by uncached Boot 4.1.1 parent; full CI pending.
 - SCC: SCC-05
 - Recorded upstream HMS dependencies: documents.Document, documents.DocumentStorageObject, documents.DocumentVersion, workflow.WorkflowInstance
 - HMSR correction count: 5
-- Additive Flyway: `src/main/resources/db/migration/V20261004_068__hmr_068_documents_document_version.sql`
+- Additive Flyway: `src/main/resources/db/migration/V20261007_004__hmr_068_documents_document_version.sql`
 - Owner-contract prerequisite: Existing candidate owner contract(s): workflow:src/main/java/dz/sh/hidra/modules/workflow/application/port/in/WorkflowQueryUseCase.java; workflow:src/main/java/dz/sh/hidra/modules/workflow/application/port/out/WorkflowEligibilityLookupPort.java
 - Exact write allowlist:
   - `docs/data definition/Documents.md`
@@ -3821,7 +3822,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
   - `src/main/java/dz/sh/hidra/modules/documents/infrastructure/persistence/entity/DocumentVersionJpaEntity.java`
   - `src/main/java/dz/sh/hidra/modules/documents/infrastructure/persistence/mapper/DocumentsPersistenceMapper.java`
   - `src/main/java/dz/sh/hidra/modules/documents/infrastructure/persistence/repository/DocumentVersionJpaRepository.java`
-  - `src/main/resources/db/migration/V20261004_068__hmr_068_documents_document_version.sql`
+  - `src/main/resources/db/migration/V20261007_004__hmr_068_documents_document_version.sql`
   - `src/test/java/dz/sh/hidra/modules/documents/semantic/DocumentVersionSemanticRemediationTest.java`
 - Exact validation:
   - `./mvnw -q -DskipTests compile`

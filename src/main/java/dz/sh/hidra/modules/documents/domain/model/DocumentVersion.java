@@ -7,7 +7,7 @@
  *
  * @Name        : DocumentVersion
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-10-07
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -117,6 +117,9 @@ import java.time.LocalDate;
             throw new InvalidDocumentValueException("DocumentVersion superseded by version id must not reference itself.");
         }
 
+        if(versionNumber<1)throw new InvalidDocumentValueException("Version number must be positive.");
+        for(String value:new String[]{mimeType,originalFilename,checksumAlgorithm,checksumValue,uploadedByDisplayNameSnapshot})
+            if(value==null || value.isBlank())throw new InvalidDocumentValueException("Required upload metadata must not be blank.");
         id = normalize(id);
         documentId = normalize(documentId);
         versionLabel = normalize(versionLabel);
@@ -135,6 +138,7 @@ import java.time.LocalDate;
         uploadedByDisplayNameSnapshot = normalize(uploadedByDisplayNameSnapshot);
         approvedByWorkflowInstanceId = normalize(approvedByWorkflowInstanceId);
         supersededByVersionId = normalize(supersededByVersionId);
+        if(id.equals(supersededByVersionId))throw new InvalidDocumentValueException("Version cannot supersede itself.");
         }
         public boolean immutableVersion() {
             return versionStatus == DocumentVersionStatus.APPROVED

@@ -7,7 +7,7 @@
  *
  * @Name        : DocumentContentTransferService
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-13
+ * @UpdatedOn   : 2026-10-07
  *
  * @Type        : Class
  * @Layer       : Application
@@ -34,6 +34,14 @@ import dz.sh.hidra.modules.documents.domain.model.DocumentStorageObject;
 import dz.sh.hidra.modules.documents.domain.model.DocumentVersion;
 import dz.sh.hidra.modules.documents.domain.value.DocumentId;
 import dz.sh.hidra.modules.documents.domain.value.DocumentStorageStatus;
+import dz.sh.hidra.modules.identity.application.contract.documents.DocumentsActorContract;
+import dz.sh.hidra.modules.documents.application.port.out.DocumentRepositoryPort;
+import dz.sh.hidra.platform.security.CurrentSecurityContext;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import java.io.InputStream;
 import java.time.Instant;
 import java.util.Locale;
@@ -41,7 +49,7 @@ import java.util.Objects;
 import org.springframework.stereotype.Service;
 
 @Service
-public final class DocumentContentTransferService implements UploadDocumentBinaryVersionUseCase, DownloadDocumentVersionContentUseCase {
+public class DocumentContentTransferService implements UploadDocumentBinaryVersionUseCase, DownloadDocumentVersionContentUseCase {
 
     private static final String DEFAULT_CONTENT_TYPE = "application/octet-stream";
 
@@ -50,31 +58,70 @@ public final class DocumentContentTransferService implements UploadDocumentBinar
     private final DocumentVersionRepositoryPort versionRepositoryPort;
     private final UploadDocumentVersionUseCase uploadDocumentVersionUseCase;
 
+    private final DocumentsActorContract actors;
+    private final CurrentSecurityContext security;
+    private final DocumentRepositoryPort documents;
+
     public DocumentContentTransferService(
             DocumentBinaryStoragePort binaryStoragePort,
             DocumentStorageObjectRepositoryPort storageObjectRepositoryPort,
             DocumentVersionRepositoryPort versionRepositoryPort,
-            UploadDocumentVersionUseCase uploadDocumentVersionUseCase
+            UploadDocumentVersionUseCase uploadDocumentVersionUseCase,
+            DocumentsActorContract actors,CurrentSecurityContext security,DocumentRepositoryPort documents
     ) {
         this.binaryStoragePort = Objects.requireNonNull(binaryStoragePort, "DocumentBinaryStoragePort must not be null.");
         this.storageObjectRepositoryPort = Objects.requireNonNull(storageObjectRepositoryPort, "DocumentStorageObjectRepositoryPort must not be null.");
         this.versionRepositoryPort = Objects.requireNonNull(versionRepositoryPort, "DocumentVersionRepositoryPort must not be null.");
         this.uploadDocumentVersionUseCase = Objects.requireNonNull(uploadDocumentVersionUseCase, "UploadDocumentVersionUseCase must not be null.");
+        this.actors=Objects.requireNonNull(actors);this.security=Objects.requireNonNull(security);this.documents=Objects.requireNonNull(documents);
     }
 
     @Override
+    @Transactional
     public DocumentVersionSummaryDto uploadDocumentBinaryVersion(UploadDocumentBinaryVersionCommand command) {
         Objects.requireNonNull(command, "Upload document binary command must not be null.");
         if (command.content() == null) {
             throw invalid("Document binary content must not be null.");
         }
 
+        if(!TransactionSynchronizationManager.isActualTransactionActive() || !TransactionSynchronizationManager.isSynchronizationActive())
+            throw new IllegalStateException("Binary upload requires transactional orchestration.");
+        String actorId=security.currentPrincipal().filter(p->p.authenticated()).map(p->p.actorId().value())
+            .orElseThrow(()->new SecurityException("Authenticated uploader required."));
+        if(!actorId.equals(command.uploadedByActorId()==null?null:command.uploadedByActorId().trim()))
+            throw new SecurityException("Uploader must match authenticated principal.");
+        var actor=actors.eligibleActor(actorId,Instant.now()).filter(a->actorId.equals(a.id()))
+            .orElseThrow(()->invalid("Eligible Identity uploader required."));
+        if(actor.displayName()==null || actor.displayName().isBlank())throw invalid("Uploader display required.");
+        String documentId=requireText(command.documentId(),"Document identity required.");
+        if(documents.findById(documentId).isEmpty())throw invalid("Existing document required.");
+        if(command.versionNumber()<1)throw invalid("Version number must be positive.");
+        if(command.effectiveFrom()!=null && command.effectiveTo()!=null && command.effectiveTo().isBefore(command.effectiveFrom()))
+            throw invalid("Effective dates must be ordered.");
         String filename = safeFilename(command.originalFilename());
         String contentType = normalizeContentType(command.contentType());
         String storageObjectId = DocumentId.newId().value();
+        AtomicBoolean cleanupAttempted=new AtomicBoolean();
+        AtomicReference<Throwable> failure=new AtomicReference<>();
+        Runnable cleanup=()->{
+            if(!cleanupAttempted.compareAndSet(false,true))return;
+            try{binaryStoragePort.delete(storageObjectId);}
+            catch(RuntimeException | Error cleanupError){
+                if(failure.get()!=null && failure.get()!=cleanupError)failure.get().addSuppressed(cleanupError);
+                System.getLogger(DocumentContentTransferService.class.getName()).log(System.Logger.Level.ERROR,
+                    "New document blob rollback cleanup failed; owner reconciliation required: "+storageObjectId,cleanupError);
+            }
+        };
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization(){
+            @Override public void afterCompletion(int status){
+                if(status==STATUS_ROLLED_BACK)cleanup.run();
+                else if(status==STATUS_UNKNOWN)System.getLogger(DocumentContentTransferService.class.getName())
+                    .log(System.Logger.Level.ERROR,"Unknown document upload commit outcome; preserve blob for owner reconciliation: "+storageObjectId);
+            }
+        });
+        try {
         DocumentBinaryStoragePort.StoredBinary stored = binaryStoragePort.store(storageObjectId, command.content());
         if (!storageObjectRepositoryPort.isActiveStorageProvider(stored.storageProviderId())) {
-            binaryStoragePort.delete(storageObjectId);
             throw invalid("Storage provider must reference an active DOCUMENT_STORAGE_PROVIDER catalog entry.");
         }
         Instant now = Instant.now();
@@ -115,9 +162,10 @@ public final class DocumentContentTransferService implements UploadDocumentBinar
                 command.documentDate(),
                 command.effectiveFrom(),
                 command.effectiveTo(),
-                command.uploadedByActorId(),
-                command.uploadedByDisplayNameSnapshot()
+                actor.id(),
+                actor.displayName()
         ));
+        }catch(RuntimeException | Error error){failure.set(error);cleanup.run();throw error;}
     }
 
     @Override

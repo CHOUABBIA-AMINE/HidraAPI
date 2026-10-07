@@ -2082,3 +2082,7 @@ Validation: compile, both dedicated semantic tests, new Identity owner test, sha
 PostgreSQL integration cases, existing IntegrationJobRun/controller tests, architecture/
 forensic guards, full test and clean verify. Report local Maven/runtime blocks accurately.
 Published migration bytes remain immutable.
+
+### Batch 11 HMR-056 — IMPLEMENTED, CI PENDING
+
+Optional run/endpoint existence, correlated endpoint/system ownership and active exact existing MESSAGE_TYPE/PAYLOAD_FORMAT catalogs enforced on saves. Forward V20261007_010 adds nullable/composite FKs and catalog guards without rewriting legacy evidence. Five dedicated and five PostgreSQL cases prepared. Local compile/focused Maven blocked before execution by uncached Boot parent; CI pending.

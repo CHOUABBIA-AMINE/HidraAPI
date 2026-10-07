@@ -214,7 +214,7 @@ Each model task implements only the obligations recorded in its source HMSR sect
 | HMR code | HMSR source | Module | Model | SCC | Upstream HMS dependencies | Exact commit message | Status |
 |---|---|---|---|---|---|---|---|
 | HMR-055 | HMSR-064 | workflow | WorkflowInstance | — | workflow.WorkflowDefinition, workflow.WorkflowStep | `fix(workflow): remediate semantic review WorkflowInstance` | Planned |
-| HMR-056 | HMSR-067 | integration | IntegrationExchangeMessage | — | integration.ExternalSystem, integration.IntegrationJobRun | `fix(integration): remediate semantic review IntegrationExchangeMessage` | Planned |
+| HMR-056 | HMSR-067 | integration | IntegrationExchangeMessage | — | integration.ExternalSystem, integration.IntegrationJobRun | `fix(integration): remediate semantic review IntegrationExchangeMessage` | Implemented — CI pending |
 | HMR-057 | HMSR-068 | reporting | ReportRun | — | reporting.ReportDefinition, reporting.ReportRequest | `fix(reporting): remediate semantic review ReportRun` | Planned |
 | HMR-058 | HMSR-069 | risk | RiskAssessment | — | risk.RiskRegister | `fix(risk): remediate semantic review RiskAssessment` | Planned |
 | HMR-059 | HMSR-071 | leakdetection | LeakEscalationReference | — | leakdetection.LeakCandidate, leakdetection.LeakDetectionCase | `fix(leakdetection): remediate semantic review LeakEscalationReference` | Completed — Batch 1 |
@@ -3166,11 +3166,11 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-067`
 - Exact commit: `fix(integration): remediate semantic review IntegrationExchangeMessage`
-- Status: **Planned**
+- Status: **Implemented — CI pending**
 - SCC: —
 - Recorded upstream HMS dependencies: integration.ExternalSystem, integration.IntegrationJobRun
 - HMSR correction count: 3
-- Additive Flyway: `src/main/resources/db/migration/V20261004_056__hmr_056_integration_integration_exchange_message.sql`
+- Additive Flyway: `src/main/resources/db/migration/V20261007_010__hmr_056_integration_exchange_message.sql` (canonical Batch 11 admission)
 - Owner-contract prerequisite: No cross-module owner-contract prerequisite recorded by this HMSR correction.
 - Exact write allowlist:
   - `docs/data definition/Integration.md`
@@ -3194,6 +3194,8 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
   1. **Protect populated `jobRunId` as a same-module IntegrationJobRun reference.** Preserve optionality, but prevent dangling run identities.
   2. **Protect and validate populated `endpointId`.** Resolve the Integration-owned endpoint and ensure it belongs to the same `externalSystemId` recorded by the message.
   3. **Resolve message-type and payload-format controlled-value semantics.** Generic IntegrationCatalogEntry existence is insufficient unless the repository explicitly defines the allowed family/eligibility contract; HMSR-067 does not invent missing family names.
+
+- Batch 11 implementation: Optional run/endpoint existence, correlated endpoint/system ownership and active exact existing MESSAGE_TYPE/PAYLOAD_FORMAT catalogs enforced on saves. Forward V20261007_010 adds nullable/composite FKs and catalog guards without rewriting legacy evidence. Five dedicated and five PostgreSQL cases prepared. Local compile/focused Maven blocked before execution by uncached Boot parent; CI pending.
 
 #### HMR-057 — reporting.ReportRun
 

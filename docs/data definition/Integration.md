@@ -1728,3 +1728,14 @@ It does not own the meaning of that data.
 
 The owning business module always remains the source of truth for accepted Hidra business facts.
 
+
+
+## Accepted Batch 11 exchange evidence policy — 2026-10-07
+
+IntegrationExchangeMessage validates active exact MESSAGE_TYPE/PAYLOAD_FORMAT catalog
+families already named by this DDD. Optional jobRunId resolves to IntegrationJobRun;
+optional endpointId resolves to ExternalEndpoint and must have the same externalSystemId
+as the message. Nullable local FKs and a composite endpoint/system FK protect concurrent
+changes. No additional run/system, direction/status or payload-mode rule is inferred.
+Inactive catalog rows remain historical evidence, but cannot authorize new writes.
+Invalid legacy references/families abort migration without retagging or reassignment.

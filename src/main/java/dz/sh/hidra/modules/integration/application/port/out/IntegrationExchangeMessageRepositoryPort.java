@@ -7,7 +7,7 @@
  *
  * @Name        : IntegrationExchangeMessageRepositoryPort
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-07
  *
  * @Type        : Interface
  * @Layer       : Application
@@ -28,6 +28,7 @@ import java.util.Optional;
  */
 public interface IntegrationExchangeMessageRepositoryPort {
 
+    /** Validate optional run/endpoint ownership and active exact catalog families before writes. */
     IntegrationExchangeMessage save(IntegrationExchangeMessage model);
 
     Optional<IntegrationExchangeMessage> findById(String id);

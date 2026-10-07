@@ -5,7 +5,7 @@
  * @Author      : Abir MEDJERAB
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  *
- * @Name        : ReportRunRepositoryPort
+ * @Name        : ReportQueueEvidencePort
  * @CreatedOn   : 2025-06-26
  * @UpdatedOn   : 2026-10-07
  *
@@ -14,22 +14,12 @@
  * @Module      : reporting
  * @Package     : dz.sh.hidra.modules.reporting.application.port.out
  *
- * @Description : Repository port for ReportRun.
+ * @Description : Enforces Reporting execution and output integrity through explicit owner boundaries.
  *
  */
 package dz.sh.hidra.modules.reporting.application.port.out;
-
-import dz.sh.hidra.modules.reporting.domain.model.ReportRun;
-
-import java.util.Optional;
-
-/**
- * Repository port for ReportRun.
- */
-public interface ReportRunRepositoryPort {
-
-    /** Persists terminal evidence and SQL-protected request/template lineage; new queues use the authoritative queue service. */
-    ReportRun save(ReportRun model);
-
-    Optional<ReportRun> findById(String id);
+/** Reporting-owned concrete evidence for a new queue operation. */
+public interface ReportQueueEvidencePort {
+    boolean eligibleTemplate(String versionId, String definitionId);
+    boolean requiredParametersPresent(String requestId, String definitionId);
 }

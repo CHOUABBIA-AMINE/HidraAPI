@@ -215,7 +215,7 @@ Each model task implements only the obligations recorded in its source HMSR sect
 |---|---|---|---|---|---|---|---|
 | HMR-055 | HMSR-064 | workflow | WorkflowInstance | — | workflow.WorkflowDefinition, workflow.WorkflowStep | `fix(workflow): remediate semantic review WorkflowInstance` | Planned |
 | HMR-056 | HMSR-067 | integration | IntegrationExchangeMessage | — | integration.ExternalSystem, integration.IntegrationJobRun | `fix(integration): remediate semantic review IntegrationExchangeMessage` | Implemented — CI pending |
-| HMR-057 | HMSR-068 | reporting | ReportRun | — | reporting.ReportDefinition, reporting.ReportRequest | `fix(reporting): remediate semantic review ReportRun` | Planned |
+| HMR-057 | HMSR-068 | reporting | ReportRun | — | reporting.ReportDefinition, reporting.ReportRequest | `fix(reporting): remediate semantic review ReportRun` | Implemented — CI pending |
 | HMR-058 | HMSR-069 | risk | RiskAssessment | — | risk.RiskRegister | `fix(risk): remediate semantic review RiskAssessment` | Planned |
 | HMR-059 | HMSR-071 | leakdetection | LeakEscalationReference | — | leakdetection.LeakCandidate, leakdetection.LeakDetectionCase | `fix(leakdetection): remediate semantic review LeakEscalationReference` | Completed — Batch 1 |
 | HMR-060 | HMSR-072 | notification | NotificationDeliveryAttempt | — | notification.NotificationMessage | `fix(notification): remediate semantic review NotificationDeliveryAttempt` | Completed — Batch 2; channel-consistent create-only evidence and permanent-retry guard; CI pending |
@@ -3201,11 +3201,11 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-068`
 - Exact commit: `fix(reporting): remediate semantic review ReportRun`
-- Status: **Planned**
+- Status: **Implemented — CI pending**
 - SCC: —
 - Recorded upstream HMS dependencies: reporting.ReportDefinition, reporting.ReportRequest
 - HMSR correction count: 5
-- Additive Flyway: `src/main/resources/db/migration/V20261004_057__hmr_057_reporting_report_run.sql`
+- Additive Flyway: `src/main/resources/db/migration/V20261007_012__hmr_057_reporting_report_run.sql` (accepted Batch 12)
 - Owner-contract prerequisite: No cross-module owner-contract prerequisite recorded by this HMSR correction.
 - Exact write allowlist:
   - `docs/data definition/Reporting.md`
@@ -3236,6 +3236,8 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
   3. **Enforce template-version lineage before queueing.** The exact ReportTemplateVersion must resolve through its ReportTemplate to the same ReportDefinition as the request/run.
   4. **Queue only an eligible request with all required parameters present.** Reuse the previously recorded HMSR-057 request approval/access semantics; do not bypass them from the run-queue path.
   5. **Enforce the explicit terminal-state invariants.** COMPLETED requires `completedAt`; FAILED requires `failureReason` at the authoritative domain/transition boundary.
+
+- Batch 12 implementation: Queue eligibility/access/approval, exact template lineage, concrete required parameters and terminal evidence enforced. Forward 012 corrects run/parameter request FKs and guards lineage/history. Eight Run, four QueueEvidence and nine PostgreSQL cases prepared; local runtime validation follows; CI pending.
 
 #### HMR-058 — risk.RiskAssessment
 

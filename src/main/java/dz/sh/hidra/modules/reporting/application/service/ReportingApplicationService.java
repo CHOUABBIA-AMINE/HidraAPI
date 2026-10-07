@@ -7,7 +7,7 @@
  *
  * @Name        : ReportingApplicationService
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-05
+ * @UpdatedOn   : 2026-10-07
  *
  * @Type        : Class
  * @Layer       : Application
@@ -54,6 +54,7 @@ import dz.sh.hidra.modules.reporting.domain.value.ReportRunStatus;
 import dz.sh.hidra.modules.reporting.domain.value.ReportingId;
 
 import java.time.Instant;
+import dz.sh.hidra.modules.reporting.application.port.out.ReportQueueEvidencePort;
 import java.util.Objects;
 
 /**
@@ -69,6 +70,7 @@ public final class ReportingApplicationService implements CreateReportDefinition
     private final ReportingAccessAuthorizationContract accessAuthorizationContract;
     private final ReportingWorkflowApprovalContract workflowApprovalContract;
     private final ReportingOrganizationUnitReferenceContract organizationUnitReferenceContract;
+    private final ReportQueueEvidencePort queueEvidence;
     private final ReportReproducibilityGuard reproducibilityGuard = new ReportReproducibilityGuard();
 
     @Autowired
@@ -79,8 +81,10 @@ public final class ReportingApplicationService implements CreateReportDefinition
             ReportOutputArtifactRepositoryPort artifactRepositoryPort,
             ReportingAccessAuthorizationContract accessAuthorizationContract,
             ReportingWorkflowApprovalContract workflowApprovalContract,
-            ReportingOrganizationUnitReferenceContract organizationUnitReferenceContract
+            ReportingOrganizationUnitReferenceContract organizationUnitReferenceContract,
+            ReportQueueEvidencePort queueEvidence
     ) {
+        this.queueEvidence = Objects.requireNonNull(queueEvidence);
         this.definitionRepositoryPort = Objects.requireNonNull(definitionRepositoryPort, "Report definition repository port must not be null.");
         this.requestRepositoryPort = Objects.requireNonNull(requestRepositoryPort, "Report request repository port must not be null.");
         this.runRepositoryPort = Objects.requireNonNull(runRepositoryPort, "Report run repository port must not be null.");
@@ -88,6 +92,16 @@ public final class ReportingApplicationService implements CreateReportDefinition
         this.accessAuthorizationContract = Objects.requireNonNull(accessAuthorizationContract, "Reporting access authorization contract must not be null.");
         this.workflowApprovalContract = Objects.requireNonNull(workflowApprovalContract, "Reporting workflow approval contract must not be null.");
         this.organizationUnitReferenceContract = Objects.requireNonNull(organizationUnitReferenceContract, "Reporting OrganizationUnit contract must not be null.");
+    }
+
+    public ReportingApplicationService(ReportDefinitionRepositoryPort definitions,ReportRequestRepositoryPort requests,
+            ReportRunRepositoryPort runs,ReportOutputArtifactRepositoryPort artifacts,
+            ReportingAccessAuthorizationContract access,ReportingWorkflowApprovalContract approval,
+            ReportingOrganizationUnitReferenceContract organization){
+        this(definitions,requests,runs,artifacts,access,approval,organization,new ReportQueueEvidencePort(){
+            public boolean eligibleTemplate(String version,String definition){return false;}
+            public boolean requiredParametersPresent(String request,String definition){return false;}
+        });
     }
 
     public ReportingApplicationService(
@@ -192,6 +206,18 @@ public final class ReportingApplicationService implements CreateReportDefinition
                     "ReportRun request and definition must reference the same report definition."
             );
         }
+        if(definition.status()!=ReportDefinitionStatus.ACTIVE
+                || (request.status()!=ReportRequestStatus.SUBMITTED && request.status()!=ReportRequestStatus.APPROVED))
+            throw new InvalidReportingValueException("New queue requires an ACTIVE definition and a queueable request.");
+        if(definition.restricted() && !hasRestrictedAccess(new RequestReportCommand(
+                request.reportDefinitionId(),request.requestedByActorId(),request.requestedByUsernameSnapshot(),
+                request.requestedByDisplayNameSnapshot(),request.requestedByRoleCodeSnapshot(),request.organizationUnitId(),
+                request.organizationUnitNameSnapshot(),request.purpose(),request.correlationId(),request.workflowReferenceId()),definition))
+            throw new InvalidReportingValueException("Restricted queue access was not authorized.");
+        if(!queueEvidence.eligibleTemplate(command.templateVersionId(),definition.id()))
+            throw new InvalidReportingValueException("Queue template must be active and belong to the selected definition.");
+        if(!queueEvidence.requiredParametersPresent(request.id(),definition.id()))
+            throw new InvalidReportingValueException("Required concrete request parameters are missing or invalid.");
         if (definition.requiresApproval()) {
             if (request.status() != ReportRequestStatus.APPROVED
                     || request.workflowReferenceId() == null

@@ -2282,3 +2282,7 @@ Validation: compile, dedicated Run/Artifact/QueueEvidence/Document owner tests, 
 PostgreSQL cases, existing Reporting request/definition tests, architecture/forensic,
 full test and clean verify. Record dependency/runtime blocks. Publish ordered exact
 trees and advance main once; observe production CI started and stop.
+
+### Batch 12 HMR-057 — IMPLEMENTED, CI PENDING
+
+Queue eligibility/access/approval, exact template lineage, concrete required parameters and terminal evidence enforced. Forward 012 corrects run/parameter request FKs and guards lineage/history. Eight Run, four QueueEvidence and nine PostgreSQL cases prepared; local runtime validation follows; CI pending.

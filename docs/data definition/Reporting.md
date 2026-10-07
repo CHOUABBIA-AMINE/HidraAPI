@@ -1515,3 +1515,18 @@ Reporting is the formal operational output layer of Hidra.
 It freezes trusted inputs, generates official artifacts, and tracks publication/distribution.
 It is not analytics, not audit, not documents, and not the owner of operational truth.
 ```
+
+
+## Batch 12 ReportRun execution integrity — 2026-10-07
+
+New queues require ACTIVE definition, SUBMITTED/APPROVED non-approval request or
+APPROVED with Workflow confirmation when approval is required. Restricted access
+is revalidated against persisted requester/scope evidence via Identity. ACTIVE exact
+version and active template must share the request/run definition. Every active
+required parameter needs concrete request evidence matching definition/code and
+one typed field; zero/false count, blank text does not, defaults are not materialized.
+COMPLETED requires completedAt and FAILED requires nonblank failureReason. Historical
+runs preserve retired versions on unrelated updates; relational lineage remains valid.
+Forward 012 corrects run-request and parameter-value request FKs; historical invalid
+data aborts rather than being reassigned. No new request transition or duplicate-run
+claim follows from these queue checks.

@@ -7,7 +7,7 @@
  *
  * @Name        : ReportRun
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-10-07
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -99,6 +99,10 @@ import java.time.Instant;
         reportDefinitionId = normalize(reportDefinitionId);
         templateVersionId = normalize(templateVersionId);
         failureReason = normalize(failureReason);
+        if(status == ReportRunStatus.COMPLETED && completedAt == null)
+            throw new InvalidReportingValueException("Completed ReportRun requires completedAt.");
+        if(status == ReportRunStatus.FAILED && failureReason == null)
+            throw new InvalidReportingValueException("Failed ReportRun requires failureReason.");
         correlationId = normalize(correlationId);
         }
         public boolean terminalStatus() {

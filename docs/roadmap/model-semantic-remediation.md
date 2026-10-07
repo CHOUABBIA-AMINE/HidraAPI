@@ -5318,7 +5318,7 @@ The following are execution registrations only; they do not change any HMR's sem
 | HMRB-021 | HMR-054 | Solo | **Blocked until prerequisite.** Equipment catalog reconciliation plus unresolved Party owner lookup. |
 | HMRB-022 | HMR-055 | Solo | **Planned.** Workflow start eligibility, target ownership, current-step coherence and non-terminal uniqueness. |
 | HMRB-023 | HMR-056 | Solo | **Implemented — CI pending within accepted attached Batch 11.** Integration message same-module reference/coherence and unresolved controlled-value families. |
-| HMRB-024 | HMR-057 | Solo | **Planned.** Reporting run FK correction, definition/template lineage, queue eligibility and terminal invariants. |
+| HMRB-024 | HMR-057 | Solo | **Implemented — CI pending within accepted attached Batch 12.** Reporting run FK correction, definition/template lineage, queue eligibility and terminal invariants. |
 | HMRB-025 | HMR-058 | Solo | **Planned.** Risk scope set, scoring policy, approval evidence/workflow and immutability. |
 | HMRB-026 | HMR-059, HMR-060 | Batch | **Planned.** Narrow same-module reference protection plus append-only/retry-state integrity; no owner contract prerequisite or SCC. |
 | HMRB-027 | HMR-061 | Solo | **Planned.** Workflow transition composition, uniqueness and executable-condition governance. |
@@ -5345,7 +5345,7 @@ The following are execution registrations only; they do not change any HMR's sem
 | HMRB-048 | HMR-090 | Solo | **Planned.** Incident closure transaction and evidence/verification preconditions. |
 | HMRB-049 | HMR-091 | Solo | **Planned.** Incident relationship FK correction, family semantics and duplicate/inverse policy. |
 | HMRB-050 | HMR-092 | Solo | **Planned.** Incident response-action lifecycle eligibility and catalog family. |
-| HMRB-051 | HMR-093 | Solo | **Planned.** Reporting artifact FK correction plus Documents-owned evidence references. |
+| HMRB-051 | HMR-093 | Solo | **Implemented — CI pending within accepted attached Batch 12.** Reporting artifact FK correction plus Documents-owned evidence references. |
 | HMRB-052 | HMR-094 | Solo | **Planned.** Planning target value-shape, revision compatibility, Topology and Telemetry validation. |
 | HMRB-053 | HMR-095 | Solo | **Implemented — CI pending within accepted attached Batch 10.** AuditEvent append-only ledger, catalog families and sensitive-payload redaction/limits. |
 | HMRB-054 | HMR-096 | Solo | **Planned.** HSE closure transactional lifecycle with Workflow/Identity ownership. |

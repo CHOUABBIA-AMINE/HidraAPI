@@ -2290,3 +2290,35 @@ Queue eligibility/access/approval, exact template lineage, concrete required par
 ### Batch 12 HMR-093 — IMPLEMENTED, CI PENDING
 
 Existing run and nonblank Documents reference evidence required; every supplied reference is independently owner-validated. Forward 013 corrects artifact/run FK without Documents FK. Six focused methods, one Documents owner method and five additional PostgreSQL cases prepared; CI pending.
+
+
+## HPR-P2-008 Batch 12 final disposition — 2026-10-07
+
+Accepted REP-PREREQ-01 is resolved within combined 057 → 093, preserving independent
+HMR/HMSR obligations, exact commits and scopes. HMR-057 and HMR-093 are IMPLEMENTED —
+CI PENDING. Totals: 35 implemented (two CI pending), 21 still required, one blocked HMR-080.
+Previous 33 green through production CI #585; preflight Documentation #83 passed.
+
+Authoritative queue checks definition/request/template lineage, active new-queue policy,
+request status, Workflow approval, restricted Identity access and required concrete typed
+parameters. SQL 012 corrects run/parameter request FKs, guards lineage and terminal evidence,
+and preserves retired-version historical updates. Output registration validates existing
+run and each supplied distinct Documents-owned reference. SQL 013 corrects artifact/run FK
+and reference shape. No foreign-module FK, taxonomy, new transition, executor or duplicate
+run guarantee. Parameters are evaluated at queue time; no immutability claim is introduced.
+
+Local Maven compile/focused/existing/full/verify blocked before execution by uncached Boot
+4.1.1 parent; online compile confirms Maven Central DNS failure. 189 temporary-API source
+units compiled; 13 actual domain/typed-field behavior checks and five forensic source scans
+passed with temporary external APIs. 17 Java files syntax parsed; headers, 13/16-path
+independent scopes, 38 matching exact exports and 82 canonical Markdown checks passed.
+These do not establish real Maven/JUnit/Spring/JPA/PostgreSQL verification. 19 dedicated
+methods and 14 PostgreSQL cases await CI. Database fixtures test base/HRA-111 relevant
+clauses/HMR-013 plus forward 012/013, not complete Flyway history. Reconciliation records
+validation commands, boundaries and actual results. Published SQL remains immutable.
+
+Supporting exact message: `docs(reporting): record Batch 12 validation disposition`.
+Publish scope admission, two semantic commits and this record as exact trees; advance main
+once, observe production CI started, then stop. Next proposed owner scope: attached Batch 13
+Simulation HMR-078/HMR-079 after green Batch 12 CI and fresh source/owner/exact admission.
+Do not execute automatically. Project version remains 0.6.0-SNAPSHOT.

@@ -141,8 +141,8 @@ No `party.application.contract.planning` package exists in the exact current tre
 - HMR-009 confirmed **COMPLETED** and removed as a carry-over blocker;
 - HMR-050..106 evaluated: **57**;
 - HMR-050..106 **STILL REQUIRED**: **21**;
-- HMR-050..106 **BLOCKED**: **3**;
-- HMR-050..106 **IMPLEMENTED during HPR-P2-008**: **33** (green production CI through #585);
+- HMR-050..106 **BLOCKED**: **1**;
+- HMR-050..106 **IMPLEMENTED during HPR-P2-008**: **35** (two Batch 12 items CI pending; previous 33 green through #585);
 - HMR-050..106 **SUPERSEDED**: **0**;
 - HMR-054 completed; repaired CI #575 is green;
 - HMR-080 remains blocked; HMR-055 prerequisite resolved and implemented in Batch 7.
@@ -151,7 +151,7 @@ No `party.application.contract.planning` package exists in the exact current tre
 
 - HMR-050 — **COMPLETED** at the first HPR-P2-008 execution step.
 - Batch 7 **COMPLETED — CI #581 GREEN**: HMR-055, 061, 066, 081, 099; exact repaired head ec63af0414d7fa85b9200d4bd181ac799bd072ed. Batch 8 preflight split below; no Planning implementation claimed.
-- Current remaining: **21 STILL REQUIRED + 3 BLOCKED (HMR-057, HMR-080, HMR-093)**; 33 implementations have green production CI through #585.
+- Current remaining: **21 STILL REQUIRED + 1 BLOCKED (HMR-080)**; 35 implementations, including two Batch 12 items awaiting full CI.
 
 - HMR-051 — **COMPLETED**: Topology and optional Organization references validated on every case save; snapshot preserved; no migration because primary-candidate FK already exists; owner contract and architecture export added.
 
@@ -1628,3 +1628,70 @@ Queue eligibility/access/approval, exact template lineage, concrete required par
 ### Batch 12 HMR-093 — IMPLEMENTED, CI PENDING
 
 Existing run and nonblank Documents reference evidence required; every supplied reference is independently owner-validated. Forward 013 corrects artifact/run FK without Documents FK. Six focused methods, one Documents owner method and five additional PostgreSQL cases prepared; CI pending.
+
+
+## Batch 12 final implementation and validation disposition — 2026-10-07
+
+Owner Next accepted REP-PREREQ-01 and the registered combined 057 → 093 scope. Exact
+independent HMR-057/HMSR-068 and HMR-093/HMSR-110 semantic commits are IMPLEMENTED —
+CI PENDING. Current totals: **35 implemented, 21 still required, one blocked HMR-080**.
+Previous 33 have green production CI #585; preflight Documentation #83 passed.
+
+New queue operations require ACTIVE definition, matching request definition, queueable
+SUBMITTED/APPROVED status, approval-required APPROVED state plus Workflow confirmation,
+restricted Identity access from persisted requester/scope, ACTIVE exact version/active
+template lineage and active required concrete parameter evidence. Matching definition
+and code with exactly one corresponding typed field is required; zero/false are concrete,
+blank text is absent and defaults are not materialized. Terminal completedAt/failureReason
+rules are enforced. Forward 012 corrects run and parameter-value request FKs and adds
+correlated request/definition integrity, template lineage and parent-reparent guards.
+Existing queue trigger is superseded additively so unrelated historical updates preserve
+retired versions. Version/template rows are share-locked to serialize conflicting reparent
+writes. Parameters are evaluated at queue time; no parameter immutability, new request
+transition, job executor or duplicate-run guarantee is introduced.
+
+Artifact generation requires an existing run and at least one normalized Documents ID;
+every supplied ID is validated through Documents-owned distinct document/storage lookups.
+No pairing/lifecycle/binary-availability inference or completed-only creation rule follows.
+Checksum requirements remain. Forward 013 corrects artifact/run FK and reference shape;
+no Documents foreign FK or private import. SQL cannot prove cross-module existence;
+Documents owner validation is the authoritative application boundary. Compatibility
+constructors without new lookup dependencies fail closed on those operations.
+
+### Validation actually performed
+
+- Offline compile, HMR-057 focused Run/QueueEvidence/PostgreSQL selection, HMR-093 focused
+  Artifact/Documents-owner/PostgreSQL selection, existing Reporting request/definition and
+  architecture/forensic selection, full test and clean verify were attempted. All failed
+  before compilation/test execution because Boot 4.1.1 parent is uncached. Online compile
+  confirms repo.maven.apache.org temporary failure in name resolution. No Maven pass.
+- 189 actual-source/temporary-API units compiled using Java's compiler. This detects type
+  and signature errors but is not real Spring/JPA/Mockito/JUnit compatibility verification.
+- 13 actual Java behavior checks passed with temporary external APIs: three actual domain
+  test methods for terminal evidence, normalized artifact references and checksum, plus
+  ten typed-field policy checks (all seven value types, zero/false, blank/absent/multiple
+  field rejection). Mockito service and owner tests were not simulated or claimed passed.
+- Five actual forensic source scans passed with temporary JUnit APIs. Both architecture
+  registries contain the same 38 exact exported packages, without duplicates. 17 changed
+  Java files syntax parsed; canonical author/creation/update headers checked. Independent
+  semantic scope checks passed (13 HMR-057 paths, 16 HMR-093 paths). All 82 canonical
+  Markdown files are valid UTF-8/nonempty/conflict-free. Whitespace checks pass.
+- Only new forward SQL 012/013 changes; published migration files are unchanged.
+
+### Validation prepared for production CI
+
+19 dedicated semantic/owner methods (8 Run, 4 QueueEvidence, 6 Artifact, 1 Documents owner)
+and 14 PostgreSQL cases await CI. Database cases cover corrected request/artifact FKs,
+request/definition/template consistency, retired-template historical updates, queue status,
+approval/restricted-policy gates, required concrete fields, zero/false, terminal evidence,
+legacy orphan/reference-shape abort without fabricated repair, and concurrent template
+reparent/queue and run-delete/artifact races. The fixtures execute Reporting base SQL,
+three actual HRA-111 incorrect FK clauses, actual HMR-013 and these two forward migrations.
+They do not replace the complete Flyway chain or existing CI Spring/architecture/OpenAPI
+gates. No local Docker/PostgreSQL service or actual Maven dependency graph was available.
+
+Scope admission, two independent semantic commits and this validation record are published
+as exact trees with one final branch advancement. Observe production CI started and stop;
+CI pending at preparation. Next proposed owner scope is attached Batch 13 Simulation
+HMR-078/HMR-079, gated on green Batch 12 production CI and fresh source/owner/exact-scope
+admission. Do not execute Batch 13 automatically; release stays 0.6.0-SNAPSHOT.

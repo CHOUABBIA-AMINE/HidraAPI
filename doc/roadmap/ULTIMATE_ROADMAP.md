@@ -1722,3 +1722,7 @@ Validation: compile, each semantic target, registered owner/registry tests, bina
 storage and rollback tests, DocumentsSemanticPostgresTest, both architecture/forensic guards,
 full test and clean verify. Report local dependency/JDK/Docker constraints accurately.
 Chain all commits then publish main once; observe CI trigger and stop without waiting.
+
+### Batch 9 HMR-067 — IMPLEMENTED, CI PENDING
+
+Required title/creator display, active exact document catalogs, code uniqueness and same-document current-version pointers enforced. Registration binds authenticated eligible Identity actor and canonical owner snapshots; neutral registry supports Topology/Planning and denies missing/ambiguous owners. Forward V20261007_003; 11 focused methods passed with temporary APIs, four PostgreSQL cases added. Compile/focused Maven blocked before compilation by uncached Boot 4.1.1 parent; full CI pending.

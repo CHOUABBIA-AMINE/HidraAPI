@@ -990,3 +990,7 @@ hidra.documents.storage.provider-id
 ```
 
 No provider ID or provider catalog row is invented by HMR-008. An unset, unknown, inactive, or wrong-family provider ID causes upload to fail closed before storage-object metadata is persisted.
+
+### HMR-067 runtime enforcement — 2026-10-07
+
+Required title/creator display, active exact document catalogs, code uniqueness and same-document current-version pointers enforced. Registration binds authenticated eligible Identity actor and canonical owner snapshots; neutral registry supports Topology/Planning and denies missing/ambiguous owners. Forward V20261007_003; 11 focused methods passed with temporary APIs, four PostgreSQL cases added. Compile/focused Maven blocked before compilation by uncached Boot 4.1.1 parent; full CI pending.

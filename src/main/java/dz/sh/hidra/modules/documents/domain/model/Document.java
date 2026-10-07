@@ -7,7 +7,7 @@
  *
  * @Name        : Document
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-10-07
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -98,6 +98,8 @@ import java.time.Instant;
             throw new InvalidDocumentValueException("Document created by actor id must not be blank.");
         }
 
+        if(titleFr==null || titleFr.isBlank() || createdByDisplayNameSnapshot==null || createdByDisplayNameSnapshot.isBlank())
+            throw new InvalidDocumentValueException("French title and creator display snapshot are required.");
         id = normalize(id);
         code = normalize(code);
         titleAr = normalize(titleAr);
@@ -114,6 +116,9 @@ import java.time.Instant;
         ownerTargetLabelSnapshot = normalize(ownerTargetLabelSnapshot);
         createdByActorId = normalize(createdByActorId);
         createdByDisplayNameSnapshot = normalize(createdByDisplayNameSnapshot);
+        boolean anyOwner=ownerModule!=null || ownerTargetTypeCode!=null || ownerTargetId!=null;
+        if(anyOwner && (ownerModule==null || ownerTargetTypeCode==null || ownerTargetId==null))
+            throw new InvalidDocumentValueException("Owner target module/type/id must be complete or absent.");
         }
         public boolean physicallyProtected() {
             return status == DocumentStatus.APPROVED

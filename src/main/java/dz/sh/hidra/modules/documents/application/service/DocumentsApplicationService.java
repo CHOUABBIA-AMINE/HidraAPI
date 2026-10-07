@@ -7,7 +7,7 @@
  *
  * @Name        : DocumentsApplicationService
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-07
  *
  * @Type        : Class
  * @Layer       : Application
@@ -41,6 +41,11 @@ import dz.sh.hidra.modules.documents.domain.value.DocumentId;
 import dz.sh.hidra.modules.documents.domain.value.DocumentStatus;
 import dz.sh.hidra.modules.documents.domain.value.DocumentVersionStatus;
 
+import dz.sh.hidra.modules.identity.application.contract.documents.DocumentsActorContract;
+import dz.sh.hidra.modules.documents.application.port.out.DocumentsCatalogEligibilityPort;
+import dz.sh.hidra.modules.documents.application.port.out.DocumentTargetLookupPort;
+import dz.sh.hidra.platform.security.CurrentSecurityContext;
+import org.springframework.transaction.annotation.Transactional;
 import java.time.Instant;
 import java.util.Objects;
 
@@ -48,26 +53,42 @@ import java.util.Objects;
  * Application service for document registration, versioning, and linking.
  */
 @Service
-public final class DocumentsApplicationService implements RegisterDocumentUseCase, UploadDocumentVersionUseCase, LinkDocumentToTargetUseCase {
+public class DocumentsApplicationService implements RegisterDocumentUseCase, UploadDocumentVersionUseCase, LinkDocumentToTargetUseCase {
 
     private final DocumentRepositoryPort documentRepositoryPort;
     private final DocumentVersionRepositoryPort versionRepositoryPort;
     private final DocumentTargetLinkRepositoryPort targetLinkRepositoryPort;
 
+    private final DocumentsActorContract actors;
+    private final DocumentsCatalogEligibilityPort catalogs;
+    private final DocumentTargetLookupPort targets;
+    private final CurrentSecurityContext security;
+
     public DocumentsApplicationService(
             DocumentRepositoryPort documentRepositoryPort,
             DocumentVersionRepositoryPort versionRepositoryPort,
-            DocumentTargetLinkRepositoryPort targetLinkRepositoryPort
+            DocumentTargetLinkRepositoryPort targetLinkRepositoryPort,
+            DocumentsActorContract actors, DocumentsCatalogEligibilityPort catalogs,
+            DocumentTargetLookupPort targets, CurrentSecurityContext security
     ) {
         this.documentRepositoryPort = Objects.requireNonNull(documentRepositoryPort, "Document repository port must not be null.");
         this.versionRepositoryPort = Objects.requireNonNull(versionRepositoryPort, "Document version repository port must not be null.");
         this.targetLinkRepositoryPort = Objects.requireNonNull(targetLinkRepositoryPort, "Document target link repository port must not be null.");
+        this.actors=Objects.requireNonNull(actors);this.catalogs=Objects.requireNonNull(catalogs);
+        this.targets=Objects.requireNonNull(targets);this.security=Objects.requireNonNull(security);
     }
 
     @Override
+    @Transactional
     public DocumentSummaryDto registerDocument(RegisterDocumentCommand command) {
         Objects.requireNonNull(command, "Register document command must not be null.");
         Instant now = Instant.now();
+        var actor=currentActor(command.createdByActorId(),now);
+        catalogs.requireActive(command.documentTypeId(),"DOCUMENT_TYPE");
+        catalogs.requireActive(command.classificationId(),"DOCUMENT_CLASSIFICATION");
+        if(text(command.documentCategoryId())!=null)catalogs.requireActive(command.documentCategoryId(),"DOCUMENT_CATEGORY");
+        String module=text(command.ownerModule()),type=text(command.ownerTargetTypeCode()),id=text(command.ownerTargetId());
+        var owner=module==null && type==null && id==null ? null : targets.requireTarget(module,type,id);
         Document document = new Document(
                 DocumentId.newId().value(),
                 command.code(),
@@ -80,13 +101,13 @@ public final class DocumentsApplicationService implements RegisterDocumentUseCas
                 command.confidentialityLevel(),
                 DocumentStatus.DRAFT,
                 null,
-                command.ownerModule(),
-                command.ownerTargetTypeCode(),
-                command.ownerTargetId(),
-                command.ownerTargetCodeSnapshot(),
-                command.ownerTargetLabelSnapshot(),
-                command.createdByActorId(),
-                command.createdByDisplayNameSnapshot(),
+                module,
+                type,
+                id,
+                owner==null?null:owner.code(),
+                owner==null?null:owner.label(),
+                actor.id(),
+                actor.displayName(),
                 now,
                 now,
                 null
@@ -150,4 +171,13 @@ public final class DocumentsApplicationService implements RegisterDocumentUseCas
         );
         return DocumentsApplicationMapper.toSummary(targetLinkRepositoryPort.save(link));
     }
+
+    private DocumentsActorContract.Actor currentActor(String supplied,Instant at){
+        String id=security.currentPrincipal().filter(p->p.authenticated()).map(p->p.actorId().value())
+            .orElseThrow(()->new SecurityException("Authenticated actor required."));
+        if(!id.equals(text(supplied)))throw new SecurityException("Actor must match authenticated principal.");
+        return actors.eligibleActor(id,at).filter(a->id.equals(a.id()))
+            .orElseThrow(()->new IllegalArgumentException("Eligible Identity actor required."));
+    }
+    private static String text(String value){return value==null || value.isBlank()?null:value.trim();}
 }

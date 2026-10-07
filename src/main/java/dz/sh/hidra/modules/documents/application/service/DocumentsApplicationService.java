@@ -156,20 +156,29 @@ public class DocumentsApplicationService implements RegisterDocumentUseCase, Upl
     }
 
     @Override
+    @Transactional
     public DocumentTargetLinkSummaryDto linkDocumentToTarget(LinkDocumentToTargetCommand command) {
         Objects.requireNonNull(command, "Link document command must not be null.");
+        var actor=currentActor(command.linkedByActorId(),Instant.now());
+        String documentId=text(command.documentId()),versionId=text(command.documentVersionId());
+        if(documentId==null || documentRepositoryPort.findById(documentId).isEmpty())
+            throw new IllegalArgumentException("Existing document required.");
+        if(versionId!=null)versionRepositoryPort.findById(versionId).filter(v->documentId.equals(v.documentId()))
+            .orElseThrow(()->new IllegalArgumentException("Linked version must belong to this document."));
+        catalogs.requireActive(command.linkRoleId(),"DOCUMENT_LINK_ROLE");
+        var target=targets.requireTarget(command.targetModule(),command.targetTypeCode(),command.targetId());
         DocumentTargetLink link = new DocumentTargetLink(
                 DocumentId.newId().value(),
                 command.documentId(),
-                command.documentVersionId(),
+                versionId,
                 command.targetModule(),
                 command.targetTypeCode(),
-                command.targetId(),
-                command.targetCodeSnapshot(),
-                command.targetLabelSnapshot(),
+                target.id(),
+                target.code(),
+                target.label(),
                 command.linkRoleId(),
                 command.primaryLink(),
-                command.linkedByActorId(),
+                actor.id(),
                 Instant.now(),
                 null,
                 true

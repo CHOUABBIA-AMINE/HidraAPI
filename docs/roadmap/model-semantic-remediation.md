@@ -252,7 +252,7 @@ Each model task implements only the obligations recorded in its source HMSR sect
 | HMR-081 | HMSR-095 | workflow | WorkflowAction | — | organization.OrganizationUnit, workflow.WorkflowInstance, workflow.WorkflowTask | `fix(workflow): remediate semantic review WorkflowAction` | Planned |
 | HMR-082 | HMSR-096 | hse | HseCase | — | incident.Incident, organization.OrganizationUnit, workflow.WorkflowInstance | `fix(hse): remediate semantic review HseCase` | Planned |
 | HMR-083 | HMSR-097 | audit | AuditExportRequest | — | documents.Document, workflow.WorkflowInstance | `fix(audit): remediate semantic review AuditExportRequest` | Planned |
-| HMR-084 | HMSR-098 | documents | DocumentTargetLink | — | documents.Document, documents.DocumentVersion | `fix(documents): remediate semantic review DocumentTargetLink` | Planned |
+| HMR-084 | HMSR-098 | documents | DocumentTargetLink | — | documents.Document, documents.DocumentVersion | `fix(documents): remediate semantic review DocumentTargetLink` | Completed — CI pending |
 | HMR-085 | HMSR-100 | identity | AuthorizationDecision | — | identity.User | `fix(identity): remediate semantic review AuthorizationDecision` | Completed |
 | HMR-086 | HMSR-101 | identity | AuthorizationDelegationGrant | — | identity.Permission, identity.Role, identity.User | `fix(identity): remediate semantic review AuthorizationDelegationGrant` | Completed — Batch 5; final CI pending |
 | HMR-087 | HMSR-104 | identity | LoginSession | — | identity.IdentityProvider, identity.User | `fix(identity): remediate semantic review LoginSession` | Completed — Batch 5; final CI pending |
@@ -4388,11 +4388,12 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-098`
 - Exact commit: `fix(documents): remediate semantic review DocumentTargetLink`
-- Status: **Planned**
+- Status: **Completed — CI pending**
+- Batch 9 implementation: Required target module, active exact DOCUMENT_LINK_ROLE and owner-controlled target resolution enforced. Authenticated linking actor and canonical owner snapshots replace caller identity/display claims; optional version must belong to linked document, protected by composite FK. Forward V20261007_005; four focused methods passed with temporary APIs and three PostgreSQL cases added (12 combined). Both public export registries match 34 exact packages; all five forensic scans passed with temporary APIs. Focused Maven blocked by uncached parent; full CI pending.
 - SCC: —
 - Recorded upstream HMS dependencies: documents.Document, documents.DocumentVersion
 - HMSR correction count: 4
-- Additive Flyway: `src/main/resources/db/migration/V20261004_084__hmr_084_documents_document_target_link.sql`
+- Additive Flyway: `src/main/resources/db/migration/V20261007_005__hmr_084_documents_document_target_link.sql`
 - Owner-contract prerequisite: Owner-controlled validation required by HMSR; no concrete upstream HMS owner is registered, so preserve neutral/reference semantics and do not invent a cross-module FK.
 - Exact write allowlist:
   - `docs/data definition/Documents.md`
@@ -4405,7 +4406,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
   - `src/main/java/dz/sh/hidra/modules/documents/infrastructure/persistence/entity/DocumentTargetLinkJpaEntity.java`
   - `src/main/java/dz/sh/hidra/modules/documents/infrastructure/persistence/mapper/DocumentsPersistenceMapper.java`
   - `src/main/java/dz/sh/hidra/modules/documents/infrastructure/persistence/repository/DocumentTargetLinkJpaRepository.java`
-  - `src/main/resources/db/migration/V20261004_084__hmr_084_documents_document_target_link.sql`
+  - `src/main/resources/db/migration/V20261007_005__hmr_084_documents_document_target_link.sql`
   - `src/test/java/dz/sh/hidra/modules/documents/semantic/DocumentTargetLinkSemanticRemediationTest.java`
 - Exact validation:
   - `./mvnw -q -DskipTests compile`
@@ -5309,7 +5310,7 @@ The following are execution registrations only; they do not change any HMR's sem
 | HMRB-029 | HMR-063 | Solo | **Completed in owner Batch 5.** Identity username/email concurrency-safe uniqueness plus Organization employee validation. |
 | HMRB-030 | HMR-064, HMR-065 | Coordinated Batch | **Completed — CI pending.** PL-PREREQ-01 accepted; forward migrations 20261007_001/002. SCC-04 PlanRevision/OperationalPlan pair; chain in SCC-safe migration/application order and split if owner-contract or migration conflict appears. |
 | HMRB-031 | HMR-066 | Solo | **Planned.** Workflow task assignment/claim/completion lifecycle plus owner-controlled eligibility. |
-| HMRB-032 | HMR-067, HMR-068 | Coordinated Batch | **Planned, conditional preflight.** SCC-05 Document/DocumentVersion pair; preserve current-version/supersession ordering and split if Identity/Workflow owner-contract gaps appear. |
+| HMRB-032 | HMR-067, HMR-068 | Coordinated Batch | **Completed — CI pending.** DOC-PREREQ-01 accepted; attached Batch 9 canonical scope adds HMR-084. SCC-05 Document/DocumentVersion pair; preserve current-version/supersession ordering and split if Identity/Workflow owner-contract gaps appear. |
 | HMRB-033 | HMR-069 | Solo | **Planned.** Assets work-order same-module and multiple cross-context provenance references. |
 | HMRB-034 | HMR-070 | Solo | **Planned.** Custody ticket evidence plus Identity/Workflow/Audit ownership. |
 | HMRB-035 | HMR-071 | Solo | **Planned.** Integration dead-letter evidence, same-module references and manual-resolution identity. |
@@ -5322,7 +5323,7 @@ The following are execution registrations only; they do not change any HMR's sem
 | HMRB-042 | HMR-081 | Solo | **Planned.** Workflow decision-authority, task ownership, actor evidence and race-safe action sequencing. |
 | HMRB-043 | HMR-082 | Solo | **Planned.** HSE case closure lifecycle and multi-owner references. |
 | HMRB-044 | HMR-083 | Solo | **Planned.** Audit export sanitization, purpose family, Workflow/Documents ownership and self-auditing behavior. |
-| HMRB-045 | HMR-084 | Solo | **Planned.** Documents polymorphic target validation with no concrete upstream owner registered. |
+| HMRB-045 | HMR-084 | Solo | **Completed — CI pending within admitted attached Batch 9.** Documents polymorphic target validation with no concrete upstream owner registered. |
 | HMRB-046 | HMR-085 | Solo | **Completed; CI pending.** High-risk authorization evaluation order, explainability and conditional decision persistence. |
 | HMRB-047 | HMR-086, HMR-087, HMR-088, HMR-089 | Batch | **Completed in owner Batch 5.** Four consecutive same-module Identity corrections with no cross-module owner prerequisite; preserve one commit/test contract per HMR. |
 | HMRB-048 | HMR-090 | Solo | **Planned.** Incident closure transaction and evidence/verification preconditions. |

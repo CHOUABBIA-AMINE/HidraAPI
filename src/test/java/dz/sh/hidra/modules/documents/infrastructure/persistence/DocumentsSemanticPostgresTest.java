@@ -61,6 +61,7 @@ class DocumentsSemanticPostgresTest {
     @BeforeEach void setup()throws Exception{
         emptySchema();sql(Files.readString(MIGRATIONS.resolve("V20261007_003__hmr_067_documents_document.sql")));
         sql(Files.readString(MIGRATIONS.resolve("V20261007_004__hmr_068_documents_document_version.sql")));
+        sql(Files.readString(MIGRATIONS.resolve("V20261007_005__hmr_084_documents_document_target_link.sql")));
         catalog("type","DOCUMENT_TYPE");catalog("classification","DOCUMENT_CLASSIFICATION");catalog("category","DOCUMENT_CATEGORY");catalog("role","DOCUMENT_LINK_ROLE");
         sql(document("doc","D"));sql(document("other","OTHER"));
     }
@@ -156,5 +157,24 @@ class DocumentsSemanticPostgresTest {
         assertEquals(java.util.Set.of("existing-blob"),blobs);
         assertEquals(1L,jdbc.queryForObject("SELECT count(*) FROM hidra_documents_storage_object",Long.class));
         assertEquals(0L,jdbc.queryForObject("SELECT count(*) FROM hidra_documents_document_version WHERE id='created'",Long.class));
+    }
+
+    String link(String id,String versionId){return "INSERT INTO hidra_documents_target_link(id,document_id,document_version_id,target_module,target_type_code,target_id,link_role_id,primary_link,linked_by_actor_id,linked_at,active) VALUES ('"+id+"','doc',"+(versionId==null?"null":"'"+versionId+"'")+",'topology','PIPELINE','pipe','role',false,'actor',now(),true)";}
+    @Test void optionalLinkedVersionMustBelongToLinkedDocument()throws Exception{
+        sql(version("own","doc",1));sql(version("foreign","other",1));sql(link("document-wide",null));sql(link("specific","own"));
+        assertThrows(SQLException.class,()->sql(link("wrong","foreign")));assertThrows(SQLException.class,()->sql(link("missing","missing")));
+    }
+    @Test void targetModuleAndActiveExactLinkRoleFamily()throws Exception{
+        sql(link("link",null));assertThrows(SQLException.class,()->sql("UPDATE hidra_documents_target_link SET target_module=' ' WHERE id='link'"));
+        assertThrows(SQLException.class,()->sql("UPDATE hidra_documents_target_link SET link_role_id='type' WHERE id='link'"));
+        sql("UPDATE hidra_documents_catalog_entry SET active=false WHERE id='role'");assertThrows(SQLException.class,()->sql(link("inactive",null)));
+    }
+    @Test void legacyCrossDocumentLinkAbortsWithoutReassignment()throws Exception{
+        emptySchema();catalog("type","DOCUMENT_TYPE");catalog("classification","DOCUMENT_CLASSIFICATION");catalog("role","DOCUMENT_LINK_ROLE");
+        sql(document("doc","D"));sql(document("other","OTHER"));sql(version("foreign","other",1));sql(link("wrong","foreign"));
+        sql(Files.readString(MIGRATIONS.resolve("V20261007_003__hmr_067_documents_document.sql")));
+        sql(Files.readString(MIGRATIONS.resolve("V20261007_004__hmr_068_documents_document_version.sql")));
+        assertThrows(SQLException.class,()->sql(Files.readString(MIGRATIONS.resolve("V20261007_005__hmr_084_documents_document_target_link.sql"))));
+        try(var c=connection();var stmt=c.createStatement();var r=stmt.executeQuery("SELECT document_version_id FROM hidra_documents_target_link WHERE id='wrong'")){assertTrue(r.next());assertEquals("foreign",r.getString(1));}
     }
 }

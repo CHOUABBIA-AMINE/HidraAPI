@@ -7,7 +7,7 @@
  *
  * @Name        : DocumentTargetLink
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-10-07
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -87,6 +87,7 @@ import java.time.Instant;
             throw new InvalidDocumentValueException("DocumentTargetLink linked at must not be null.");
         }
 
+        if(targetModule==null || targetModule.isBlank())throw new InvalidDocumentValueException("Target module required.");
         id = normalize(id);
         documentId = normalize(documentId);
         documentVersionId = normalize(documentVersionId);

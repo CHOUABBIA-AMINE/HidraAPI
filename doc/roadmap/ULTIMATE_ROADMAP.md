@@ -1520,3 +1520,205 @@ UTF-8/nonempty/conflict checks; git diff --check passed. No Maven test run requi
 this docs-only change. Publish once and stop after Documentation CI trigger; full production
 CI ignores this scope. Acceptance/amendment and fresh canonical combined SCC-05 admission
 are required before three independent semantic commits. Do not execute Batch 10.
+
+
+## HPR-P2-008 Batch 9 accepted contract and exact scope — 2026-10-07
+
+Owner Next accepts DOC-PREREQ-01 at 37ddb90. Exact current main is that docs-only
+preflight head; Documentation #77 passed. Production CI #582's sole verification job
+completed successfully at f56d55c, including OpenAPI gates. Intervening changes are
+only the two admitted Markdown files; this is the green production baseline.
+
+DOC-PREREQ-01's eight-part actor/owner/Workflow/catalog/SCC/storage decision is admitted.
+Combined three-task batch HMR-067 -> HMR-068 -> HMR-084 explicitly supersedes legacy
+pair/solo envelope selection while preserving each obligation and exact semantic commit.
+No new owner taxonomy or lifecycle state machine; supported target subset and fail-closed
+unknown/ambiguous owners as proposed. Forward 003/004/005 replace unused backdated names.
+Published migrations remain immutable. No release-version change or Batch 10 execution.
+
+Storage cleanup is registered for known transaction rollback, including commit failures
+with a confirmed rollback. Unknown commit outcomes must preserve content and log owner
+reconciliation rather than deleting a possibly committed referenced object. Cleanup failure
+must preserve the original exception and remain visible; do not pretend blob storage and
+PostgreSQL commit atomically. Validate auth/document/version/date metadata before storage.
+
+Exact write scopes follow; existing fixture/test paths retained. No unlisted files:
+
+### HMR-067 exact files
+
+- `doc/model-remediation/RECONCILIATION.md`
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `docs/data definition/Documents.md`
+- `docs/roadmap/model-semantic-remediation.md`
+- `src/main/java/dz/sh/hidra/modules/documents/api/DocumentsApi.java`
+- `src/main/java/dz/sh/hidra/modules/documents/api/rest/DocumentsContentApiExceptionHandler.java`
+- `src/main/java/dz/sh/hidra/modules/documents/api/rest/DocumentsRestApi.java`
+- `src/main/java/dz/sh/hidra/modules/documents/api/rest/controller/DocumentsController.java`
+- `src/main/java/dz/sh/hidra/modules/documents/api/rest/controller/SpringDocumentsController.java`
+- `src/main/java/dz/sh/hidra/modules/documents/api/rest/mapper/DocumentsGeneratedRestMapper.java`
+- `src/main/java/dz/sh/hidra/modules/documents/api/rest/mapper/DocumentsRestMapper.java`
+- `src/main/java/dz/sh/hidra/modules/documents/api/rest/request/LinkDocumentToTargetRequest.java`
+- `src/main/java/dz/sh/hidra/modules/documents/api/rest/request/RegisterDocumentRequest.java`
+- `src/main/java/dz/sh/hidra/modules/documents/api/rest/request/UploadDocumentBinaryVersionRequest.java`
+- `src/main/java/dz/sh/hidra/modules/documents/api/rest/request/UploadDocumentVersionRequest.java`
+- `src/main/java/dz/sh/hidra/modules/documents/api/rest/response/DocumentResponse.java`
+- `src/main/java/dz/sh/hidra/modules/documents/api/rest/response/DocumentTargetLinkResponse.java`
+- `src/main/java/dz/sh/hidra/modules/documents/api/rest/response/DocumentVersionResponse.java`
+- `src/main/java/dz/sh/hidra/modules/documents/application/command/LinkDocumentToTargetCommand.java`
+- `src/main/java/dz/sh/hidra/modules/documents/application/command/RegisterDocumentCommand.java`
+- `src/main/java/dz/sh/hidra/modules/documents/application/command/UploadDocumentBinaryVersionCommand.java`
+- `src/main/java/dz/sh/hidra/modules/documents/application/command/UploadDocumentVersionCommand.java`
+- `src/main/java/dz/sh/hidra/modules/documents/application/contract/target/DocumentsOwnedTargetLookup.java`
+- `src/main/java/dz/sh/hidra/modules/documents/application/dto/DocumentSummaryDto.java`
+- `src/main/java/dz/sh/hidra/modules/documents/application/dto/DocumentTargetLinkSummaryDto.java`
+- `src/main/java/dz/sh/hidra/modules/documents/application/dto/DocumentVersionContentDto.java`
+- `src/main/java/dz/sh/hidra/modules/documents/application/dto/DocumentVersionSummaryDto.java`
+- `src/main/java/dz/sh/hidra/modules/documents/application/mapper/DocumentsApplicationMapper.java`
+- `src/main/java/dz/sh/hidra/modules/documents/application/port/in/DownloadDocumentVersionContentUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/documents/application/port/in/LinkDocumentToTargetUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/documents/application/port/in/RegisterDocumentUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/documents/application/port/in/UploadDocumentBinaryVersionUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/documents/application/port/in/UploadDocumentVersionUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/documents/application/port/out/DocumentAuditEventPort.java`
+- `src/main/java/dz/sh/hidra/modules/documents/application/port/out/DocumentBinaryStoragePort.java`
+- `src/main/java/dz/sh/hidra/modules/documents/application/port/out/DocumentIdentityReferencePort.java`
+- `src/main/java/dz/sh/hidra/modules/documents/application/port/out/DocumentIntegrationReferencePort.java`
+- `src/main/java/dz/sh/hidra/modules/documents/application/port/out/DocumentRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/documents/application/port/out/DocumentStorageObjectRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/documents/application/port/out/DocumentTargetLinkRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/documents/application/port/out/DocumentTargetLookupPort.java`
+- `src/main/java/dz/sh/hidra/modules/documents/application/port/out/DocumentTargetReferencePort.java`
+- `src/main/java/dz/sh/hidra/modules/documents/application/port/out/DocumentVersionRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/documents/application/port/out/DocumentWorkflowReferencePort.java`
+- `src/main/java/dz/sh/hidra/modules/documents/application/port/out/DocumentsCatalogEligibilityPort.java`
+- `src/main/java/dz/sh/hidra/modules/documents/application/service/DocumentContentTransferService.java`
+- `src/main/java/dz/sh/hidra/modules/documents/application/service/DocumentTargetLookupService.java`
+- `src/main/java/dz/sh/hidra/modules/documents/application/service/DocumentsApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/documents/domain/exception/DocumentContentTransferException.java`
+- `src/main/java/dz/sh/hidra/modules/documents/domain/exception/DocumentsBoundaryViolationException.java`
+- `src/main/java/dz/sh/hidra/modules/documents/domain/exception/DocumentsDomainException.java`
+- `src/main/java/dz/sh/hidra/modules/documents/domain/exception/InvalidDocumentValueException.java`
+- `src/main/java/dz/sh/hidra/modules/documents/domain/model/Document.java`
+- `src/main/java/dz/sh/hidra/modules/documents/domain/model/DocumentStorageObject.java`
+- `src/main/java/dz/sh/hidra/modules/documents/domain/model/DocumentTargetLink.java`
+- `src/main/java/dz/sh/hidra/modules/documents/domain/model/DocumentVersion.java`
+- `src/main/java/dz/sh/hidra/modules/documents/domain/policy/DocumentsBoundaryPolicy.java`
+- `src/main/java/dz/sh/hidra/modules/documents/domain/service/DocumentStorageMetadataGuard.java`
+- `src/main/java/dz/sh/hidra/modules/documents/domain/value/DocumentAccessLevel.java`
+- `src/main/java/dz/sh/hidra/modules/documents/domain/value/DocumentExternalSyncStatus.java`
+- `src/main/java/dz/sh/hidra/modules/documents/domain/value/DocumentExtractionStatus.java`
+- `src/main/java/dz/sh/hidra/modules/documents/domain/value/DocumentExtractionType.java`
+- `src/main/java/dz/sh/hidra/modules/documents/domain/value/DocumentId.java`
+- `src/main/java/dz/sh/hidra/modules/documents/domain/value/DocumentPrincipalType.java`
+- `src/main/java/dz/sh/hidra/modules/documents/domain/value/DocumentReviewStatus.java`
+- `src/main/java/dz/sh/hidra/modules/documents/domain/value/DocumentStatus.java`
+- `src/main/java/dz/sh/hidra/modules/documents/domain/value/DocumentStorageStatus.java`
+- `src/main/java/dz/sh/hidra/modules/documents/domain/value/DocumentVersionStatus.java`
+- `src/main/java/dz/sh/hidra/modules/documents/infrastructure/DocumentsInfrastructure.java`
+- `src/main/java/dz/sh/hidra/modules/documents/infrastructure/configuration/DocumentsModuleConfiguration.java`
+- `src/main/java/dz/sh/hidra/modules/documents/infrastructure/integration/DocumentsExternalReferenceResolver.java`
+- `src/main/java/dz/sh/hidra/modules/documents/infrastructure/integration/NoopDocumentsExternalReferenceResolver.java`
+- `src/main/java/dz/sh/hidra/modules/documents/infrastructure/persistence/DocumentsPersistence.java`
+- `src/main/java/dz/sh/hidra/modules/documents/infrastructure/persistence/adapter/JpaDocumentRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/documents/infrastructure/persistence/adapter/JpaDocumentStorageObjectRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/documents/infrastructure/persistence/adapter/JpaDocumentTargetLinkRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/documents/infrastructure/persistence/adapter/JpaDocumentVersionRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/documents/infrastructure/persistence/adapter/JpaDocumentsCatalogEligibilityAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/documents/infrastructure/persistence/entity/DocumentAccessGrantJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/documents/infrastructure/persistence/entity/DocumentCatalogEntryJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/documents/infrastructure/persistence/entity/DocumentCatalogTranslationJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/documents/infrastructure/persistence/entity/DocumentExternalReferenceJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/documents/infrastructure/persistence/entity/DocumentExtractionRecordJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/documents/infrastructure/persistence/entity/DocumentJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/documents/infrastructure/persistence/entity/DocumentRetentionRecordJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/documents/infrastructure/persistence/entity/DocumentReviewReferenceJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/documents/infrastructure/persistence/entity/DocumentStorageObjectJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/documents/infrastructure/persistence/entity/DocumentTargetLinkJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/documents/infrastructure/persistence/entity/DocumentVersionJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/documents/infrastructure/persistence/mapper/DocumentsPersistenceMapper.java`
+- `src/main/java/dz/sh/hidra/modules/documents/infrastructure/persistence/repository/DocumentAccessGrantJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/documents/infrastructure/persistence/repository/DocumentCatalogEntryJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/documents/infrastructure/persistence/repository/DocumentCatalogTranslationJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/documents/infrastructure/persistence/repository/DocumentExternalReferenceJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/documents/infrastructure/persistence/repository/DocumentExtractionRecordJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/documents/infrastructure/persistence/repository/DocumentJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/documents/infrastructure/persistence/repository/DocumentRetentionRecordJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/documents/infrastructure/persistence/repository/DocumentReviewReferenceJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/documents/infrastructure/persistence/repository/DocumentStorageObjectJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/documents/infrastructure/persistence/repository/DocumentTargetLinkJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/documents/infrastructure/persistence/repository/DocumentVersionJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/documents/infrastructure/storage/DocumentStorageAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/documents/infrastructure/storage/LocalDocumentBinaryStorageAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/documents/infrastructure/storage/NoopDocumentStorageAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/contract/documents/DocumentsActorContract.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/DocumentsActorQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/planning/application/service/DocumentsPlanningTargetLookup.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/DocumentsTopologyTargetLookup.java`
+- `src/main/resources/db/migration/V20261007_003__hmr_067_documents_document.sql`
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java`
+- `src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java`
+- `src/test/java/dz/sh/hidra/modules/documents/api/rest/controller/SpringDocumentsControllerContentTransferTest.java`
+- `src/test/java/dz/sh/hidra/modules/documents/application/service/DocumentTargetLookupServiceTest.java`
+- `src/test/java/dz/sh/hidra/modules/documents/infrastructure/persistence/DocumentsSemanticPostgresTest.java`
+- `src/test/java/dz/sh/hidra/modules/documents/infrastructure/storage/LocalDocumentBinaryStorageAdapterTest.java`
+- `src/test/java/dz/sh/hidra/modules/documents/semantic/DocumentSemanticRemediationTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/application/service/DocumentsActorQueryServiceTest.java`
+- `src/test/java/dz/sh/hidra/modules/planning/application/service/DocumentsPlanningTargetLookupTest.java`
+- `src/test/java/dz/sh/hidra/modules/topology/application/service/DocumentsTopologyTargetLookupTest.java`
+
+### HMR-068 exact files
+
+- `doc/model-remediation/RECONCILIATION.md`
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `docs/data definition/Documents.md`
+- `docs/roadmap/model-semantic-remediation.md`
+- `src/main/java/dz/sh/hidra/modules/documents/api/rest/request/UploadDocumentVersionRequest.java`
+- `src/main/java/dz/sh/hidra/modules/documents/api/rest/response/DocumentVersionResponse.java`
+- `src/main/java/dz/sh/hidra/modules/documents/application/command/UploadDocumentVersionCommand.java`
+- `src/main/java/dz/sh/hidra/modules/documents/application/dto/DocumentVersionContentDto.java`
+- `src/main/java/dz/sh/hidra/modules/documents/application/dto/DocumentVersionSummaryDto.java`
+- `src/main/java/dz/sh/hidra/modules/documents/application/port/in/DownloadDocumentVersionContentUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/documents/application/port/in/UploadDocumentVersionUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/documents/application/port/out/DocumentVersionRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/documents/application/service/DocumentContentTransferService.java`
+- `src/main/java/dz/sh/hidra/modules/documents/application/service/DocumentsApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/documents/domain/model/DocumentVersion.java`
+- `src/main/java/dz/sh/hidra/modules/documents/domain/value/DocumentVersionStatus.java`
+- `src/main/java/dz/sh/hidra/modules/documents/infrastructure/persistence/adapter/JpaDocumentVersionRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/documents/infrastructure/persistence/entity/DocumentVersionJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/documents/infrastructure/persistence/mapper/DocumentsPersistenceMapper.java`
+- `src/main/java/dz/sh/hidra/modules/documents/infrastructure/persistence/repository/DocumentVersionJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/workflow/application/contract/documents/DocumentsApprovalReferenceContract.java`
+- `src/main/java/dz/sh/hidra/modules/workflow/application/service/DocumentsApprovalReferenceQueryService.java`
+- `src/main/resources/db/migration/V20261007_004__hmr_068_documents_document_version.sql`
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java`
+- `src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java`
+- `src/test/java/dz/sh/hidra/modules/documents/api/rest/controller/SpringDocumentsControllerContentTransferTest.java`
+- `src/test/java/dz/sh/hidra/modules/documents/application/service/DocumentContentTransferServiceTest.java`
+- `src/test/java/dz/sh/hidra/modules/documents/infrastructure/persistence/DocumentsSemanticPostgresTest.java`
+- `src/test/java/dz/sh/hidra/modules/documents/semantic/DocumentVersionSemanticRemediationTest.java`
+- `src/test/java/dz/sh/hidra/modules/workflow/application/service/DocumentsApprovalReferenceQueryServiceTest.java`
+
+### HMR-084 exact files
+
+- `doc/model-remediation/RECONCILIATION.md`
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `docs/data definition/Documents.md`
+- `docs/roadmap/model-semantic-remediation.md`
+- `src/main/java/dz/sh/hidra/modules/documents/api/rest/response/DocumentTargetLinkResponse.java`
+- `src/main/java/dz/sh/hidra/modules/documents/application/dto/DocumentTargetLinkSummaryDto.java`
+- `src/main/java/dz/sh/hidra/modules/documents/application/port/out/DocumentTargetLinkRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/documents/application/service/DocumentsApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/documents/domain/model/DocumentTargetLink.java`
+- `src/main/java/dz/sh/hidra/modules/documents/infrastructure/persistence/adapter/JpaDocumentTargetLinkRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/documents/infrastructure/persistence/entity/DocumentTargetLinkJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/documents/infrastructure/persistence/mapper/DocumentsPersistenceMapper.java`
+- `src/main/java/dz/sh/hidra/modules/documents/infrastructure/persistence/repository/DocumentTargetLinkJpaRepository.java`
+- `src/main/resources/db/migration/V20261007_005__hmr_084_documents_document_target_link.sql`
+- `src/test/java/dz/sh/hidra/modules/documents/infrastructure/persistence/DocumentsSemanticPostgresTest.java`
+- `src/test/java/dz/sh/hidra/modules/documents/semantic/DocumentTargetLinkSemanticRemediationTest.java`
+
+Validation: compile, each semantic target, registered owner/registry tests, binary controller/
+storage and rollback tests, DocumentsSemanticPostgresTest, both architecture/forensic guards,
+full test and clean verify. Report local dependency/JDK/Docker constraints accurately.
+Chain all commits then publish main once; observe CI trigger and stop without waiting.

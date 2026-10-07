@@ -141,8 +141,8 @@ No `party.application.contract.planning` package exists in the exact current tre
 - HMR-009 confirmed **COMPLETED** and removed as a carry-over blocker;
 - HMR-050..106 evaluated: **57**;
 - HMR-050..106 **STILL REQUIRED**: **29**;
-- HMR-050..106 **BLOCKED**: **4**;
-- HMR-050..106 **IMPLEMENTED during HPR-P2-008**: **24** (Batch 8 complete at CI #582);
+- HMR-050..106 **BLOCKED**: **1**;
+- HMR-050..106 **IMPLEMENTED during HPR-P2-008**: **27** (three Batch 9 items CI pending);
 - HMR-050..106 **SUPERSEDED**: **0**;
 - HMR-054 completed; repaired CI #575 is green;
 - HMR-080 remains blocked; HMR-055 prerequisite resolved and implemented in Batch 7.
@@ -151,7 +151,7 @@ No `party.application.contract.planning` package exists in the exact current tre
 
 - HMR-050 — **COMPLETED** at the first HPR-P2-008 execution step.
 - Batch 7 **COMPLETED — CI #581 GREEN**: HMR-055, 061, 066, 081, 099; exact repaired head ec63af0414d7fa85b9200d4bd181ac799bd072ed. Batch 8 preflight split below; no Planning implementation claimed.
-- Current remaining: **29 STILL REQUIRED + 4 BLOCKED (HMR-067, 068, 080, 084)**; 24 implementations have green production CI through #582.
+- Current remaining: **29 STILL REQUIRED + 1 BLOCKED (HMR-080)**; 27 implementations, including three Batch 9 items awaiting full CI.
 
 - HMR-051 — **COMPLETED**: Topology and optional Organization references validated on every case save; snapshot preserved; no migration because primary-candidate FK already exists; owner contract and architecture export added.
 
@@ -1037,3 +1037,51 @@ Required upload metadata, positive per-document unique numbers, nullable existin
 ### Batch 9 HMR-084 — IMPLEMENTED, CI PENDING
 
 Required target module, active exact DOCUMENT_LINK_ROLE and owner-controlled target resolution enforced. Authenticated linking actor and canonical owner snapshots replace caller identity/display claims; optional version must belong to linked document, protected by composite FK. Forward V20261007_005; four focused methods passed with temporary APIs and three PostgreSQL cases added (12 combined). Both public export registries match 34 exact packages; all five forensic scans passed with temporary APIs. Focused Maven blocked by uncached parent; full CI pending.
+
+## Batch 9 final implementation and validation disposition — 2026-10-07
+
+Owner Next accepted DOC-PREREQ-01. HMR-067, HMR-068 and HMR-084 retain independent
+exact semantic commits under the admitted combined SCC-05 scope. Three forward
+migrations 003/004/005 preserve published schema history. Identity actors, neutral owner
+targets and optional Workflow references are owner-controlled; unregistered/missing/
+ambiguous targets deny. Existing snapshots remain historical evidence; new writes derive
+canonical actor/target display values. Catalog families and local version composition are
+protected without foreign module FKs or invented approval/unlink lifecycle rules.
+
+Storage rollback cleanup targets only the newly generated blob ID. Known rollback cleans
+content, including confirmed commit-failure rollback; metadata joins the same database
+transaction. Cleanup errors remain logged and preserve the original error. Unknown commit
+outcomes preserve possibly referenced content and log owner reconciliation. Binary and
+PostgreSQL storage are not one atomic physical transaction. No release version change.
+Current totals: **27 implemented, 29 still required, one blocked (HMR-080)**.
+
+Validation performed:
+- `bash ./mvnw -q -DskipTests compile`: failed before source compilation resolving
+  uncached Boot parent 4.1.1; Maven Central DNS Temporary failure in name resolution.
+- Offline compile and focused Maven sets attempted for each HMR:
+  DocumentSemanticRemediationTest plus actor/owner/registry/PostgreSQL tests;
+  DocumentVersionSemanticRemediationTest, DocumentContentTransferServiceTest, existing
+  binary controller/storage tests, Workflow reference and PostgreSQL tests;
+  DocumentTargetLinkSemanticRemediationTest and PostgreSQL tests. All blocked by the
+  same uncached parent before compilation, not semantic test failures.
+- `bash ./mvnw -o -q test` and `bash ./mvnw -o -q clean verify`: same parent block.
+- JDK source compiler compiled 219 actual source/temporary API units. Eleven HMR-067
+  owner/document/registry methods, ten HMR-068 Workflow/version/cleanup methods and four
+  HMR-084 link methods passed with temporary annotation/assertion APIs (25 total).
+  All five actual forensic source-scanning methods passed with temporary JUnit APIs.
+  This is not Maven/JUnit/framework integration/PostgreSQL verification.
+- Twelve PostgreSQL cases registered: current-version parent correlation; required
+  document display/title/owner tuple and catalog families; competing document-code
+  uniqueness; legacy wrong-current-version abort; version metadata/number/nullable
+  supersession; competing version numbers; legacy-number abort; duplicate-version
+  storage-metadata rollback/new-blob cleanup; confirmed commit failure rollback/cleanup;
+  optional link-version correlation; target module/role family; legacy wrong-link abort.
+  Real Spring/JDBC transaction cases await Docker CI. Host JDK17; Docker/PostgreSQL absent.
+- Both architecture/forensic export registries match at 34 exact public packages;
+  31 changed Java syntax/header checks and all independent HMR write-scope checks passed.
+  Canonical Markdown UTF-8/nonempty/conflict and git diff checks passed.
+
+Publish chained scope/HMR/validation commits once, observe final-head CI trigger and
+stop. Full CI pending at preparation. Next proposed owner scope is attached Batch 10
+Audit evidence (HMR-083, HMR-095, HMR-101, HMR-102), only after green Batch 9 CI and
+fresh source/owner/scope admission. Do not execute it automatically.

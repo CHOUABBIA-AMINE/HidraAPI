@@ -1734,3 +1734,32 @@ Required upload metadata, positive per-document unique numbers, nullable existin
 ### Batch 9 HMR-084 — IMPLEMENTED, CI PENDING
 
 Required target module, active exact DOCUMENT_LINK_ROLE and owner-controlled target resolution enforced. Authenticated linking actor and canonical owner snapshots replace caller identity/display claims; optional version must belong to linked document, protected by composite FK. Forward V20261007_005; four focused methods passed with temporary APIs and three PostgreSQL cases added (12 combined). Both public export registries match 34 exact packages; all five forensic scans passed with temporary APIs. Focused Maven blocked by uncached parent; full CI pending.
+
+
+## HPR-P2-008 Batch 9 final disposition — 2026-10-07
+
+DOC-PREREQ-01 resolved by owner Next and the accepted combined scope. HMR-067, HMR-068
+and HMR-084 independently IMPLEMENTED — CI PENDING. Document/version/code/catalog and
+same-document pointer/link invariants are enforced. New registration/upload/link writes
+use authenticated eligible Identity actors and owner-resolved targets/snapshots; optional
+Workflow approval IDs resolve through the Workflow owner. Unknown/ambiguous target owners
+deny. No new approval lifecycle, primary-link policy or cross-module FK.
+
+Forward migrations 20261007_003/004/005 preserve published history; invalid legacy rows
+abort for owner reconciliation. Binary prevalidation occurs before storage. Newly created
+content is cleaned on known rollback (including confirmed commit failure) while database
+metadata rolls back. Cleanup errors preserve the original error and are logged. Unknown
+commit outcomes preserve content for reconciliation; no claim of atomic blob/database commit.
+
+219 actual source/API units compiled; 25 focused behavior methods and five actual forensic
+source checks passed with temporary APIs. Twelve PostgreSQL/Spring-JDBC cases registered
+for CI. Maven compile/focused/full test/clean verify blocked by uncached Boot parent 4.1.1
+and Maven Central DNS before compilation; no Maven/JUnit/PostgreSQL pass claimed. Both
+export registries match 34 exact packages; 31 changed Java syntax/header checks, scopes,
+canonical Markdown and git diff passed. Detailed validation is in RECONCILIATION.md.
+Totals: 27 implemented, 29 still required, one blocked (080). Publish once and stop after
+CI trigger. Supporting final validation scope is exactly this roadmap and reconciliation;
+message `docs(documents): record Batch 9 validation disposition`.
+
+Next proposed owner scope: attached Batch 10 Audit evidence HMR-083, HMR-095, HMR-101,
+HMR-102, gated on green final Batch 9 CI and fresh source/owner/scope admission.

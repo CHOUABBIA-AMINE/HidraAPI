@@ -5088,7 +5088,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-119`
 - Exact commit: `fix(audit): remediate semantic review AuditBeforeAfterValue`
-- Status: **Planned**
+- Status: **Implemented — CI pending**
 - SCC: —
 - Recorded upstream HMS dependencies: audit.AuditEvent
 - HMSR correction count: 4
@@ -5114,6 +5114,8 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
   2. **Enforce Audit sensitive-data policy:** masked/sensitive before/after evidence must not retain raw text; use hashes or masked/reference-only representations as appropriate.
   3. **Validate supplied `maskReasonId` against the Audit `MASK_REASON` catalog family while preserving optionality.**
   4. **Make AuditBeforeAfterValue persistence genuinely append-only so an existing evidence row cannot be overwritten through generic save semantics.**
+
+- Batch 10 implementation: Required fieldPath, masked/sensitive raw-text exclusion, optional exact active MASK_REASON and existing parent event enforced. Hash-only evidence and changed=false remain legal. Persist/flush insertion plus V20261007_009 local FKs/checks/UPDATE/DELETE denial preserve immutable rows. Six focused and five added PostgreSQL/JPA/concurrency/legacy checks prepared. Temporary API type compilation passed; local focused Maven blocked by uncached Boot parent; CI pending.
 
 #### HMR-103 — monitoring.PlanActualDeviation
 

@@ -1218,3 +1218,11 @@ Batch 10 access records insert with persist/flush and cannot merge existing IDs.
 Optional auditEventId/exportRequestId stay nullable, but populated IDs must exist;
 nullable same-module FKs protect concurrent reference changes. UPDATE/DELETE is denied
 at the database boundary. Catalogs and search projections remain independently mutable.
+
+
+Batch 10 before/after evidence requires fieldPath and an existing parent AuditEvent.
+Masked/MASKED or credential-sensitive paths prohibit raw before/after text; supplied
+hashes remain evidence and unchanged rows remain legal. Optional maskReasonId resolves
+in active MASK_REASON. Generic inserts sanitize unmasked text, use persist/flush and
+cannot replace existing IDs. SQL protects required paths, masked raw-text exclusion,
+local references and immutable rows. No new before/after producer is introduced.

@@ -7,7 +7,7 @@
  *
  * @Name        : AuditBeforeAfterValueRepositoryPort
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-07
  *
  * @Type        : Interface
  * @Layer       : Application
@@ -28,6 +28,7 @@ import java.util.Optional;
  */
 public interface AuditBeforeAfterValueRepositoryPort {
 
+    /** Append immutable evidence for an existing event; do not merge an existing ID. */
     AuditBeforeAfterValue save(AuditBeforeAfterValue model);
 
     Optional<AuditBeforeAfterValue> findById(String id);

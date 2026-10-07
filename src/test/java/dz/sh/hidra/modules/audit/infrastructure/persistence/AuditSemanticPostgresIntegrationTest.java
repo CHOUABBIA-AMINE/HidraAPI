@@ -50,7 +50,7 @@ class AuditSemanticPostgresIntegrationTest {
         sql(Files.readString(MIGRATIONS.resolve("V20260611_017__create_audit_tables.sql")));
     }
     void migrate()throws Exception{
-        for(String name:new String[]{"V20261007_006__hmr_083_audit_export_request.sql","V20261007_007__hmr_095_audit_event.sql","V20261007_008__hmr_101_audit_access_record.sql"}) sql(Files.readString(MIGRATIONS.resolve(name)));
+        for(String name:new String[]{"V20261007_006__hmr_083_audit_export_request.sql","V20261007_007__hmr_095_audit_event.sql","V20261007_008__hmr_101_audit_access_record.sql","V20261007_009__hmr_102_audit_before_after_value.sql"}) sql(Files.readString(MIGRATIONS.resolve(name)));
     }
     void catalog(String id,String family)throws SQLException{sql("INSERT INTO hidra_audit_catalog_entry(id,catalog_name,code,active,sort_order,system_defined,created_at,updated_at) VALUES ('"+id+"','"+family+"','"+id+"',true,0,false,now(),now())");}
     @BeforeEach void setup()throws Exception{emptySchema();migrate();catalog("purpose","EXPORT_PURPOSE");catalog("type","EVENT_TYPE");catalog("category","EVENT_CATEGORY");catalog("severity","SEVERITY");catalog("reason","DECISION_REASON");catalog("mask","MASK_REASON");}
@@ -217,5 +217,43 @@ class AuditSemanticPostgresIntegrationTest {
                 if(i==0){adapter.save(row);tx.commit();}else{assertThrows(RuntimeException.class,()->adapter.save(row));tx.rollback();}
             }
         }
+    }
+    String valueSql(String id,String field,boolean masked,String text,String reason){return "INSERT INTO hidra_audit_before_after_value(id,audit_event_id,field_path,value_type,before_value_text,before_value_hash,masked,mask_reason_id,changed,recorded_at) VALUES ('"+id+"','event','"+field+"','STRING',"+(text==null?"null":"'"+text+"'")+",'hash',"+masked+","+(reason==null?"null":"'"+reason+"'")+",false,now())";}
+    @Test void beforeAfterRequiredPathMaskedRawAndReasonFamiliesAreProtected()throws Exception{
+        sql(eventSql("event"));sql(valueSql("hash","actor.api-key",true,null,"mask"));sql(valueSql("ordinary","pressure",false,"12",null));
+        assertThrows(SQLException.class,()->sql(valueSql("blank"," ",false,null,null)));
+        assertThrows(SQLException.class,()->sql(valueSql("raw","pressure",true,"raw",null)));
+        assertThrows(SQLException.class,()->sql(valueSql("sensitive","actor.private_key",false,"raw",null)));
+        assertThrows(SQLException.class,()->sql(valueSql("masked-type","pressure",false,"raw",null).replace("'STRING'","'MASKED'")));
+        assertThrows(SQLException.class,()->sql(valueSql("family","pressure",true,null,"reason")));
+        sql("UPDATE hidra_audit_catalog_entry SET active=false WHERE id='mask'");
+        assertThrows(SQLException.class,()->sql(valueSql("inactive","pressure",true,null,"mask")));
+    }
+    @Test void beforeAfterCannotBeUpdatedDeletedOrInsertedWithUnknownParent()throws Exception{
+        assertThrows(SQLException.class,()->sql(valueSql("missing","pressure",false,"12",null)));
+        sql(eventSql("event"));sql(valueSql("value","pressure",false,"12",null));
+        assertThrows(SQLException.class,()->sql("UPDATE hidra_audit_before_after_value SET before_value_text='13' WHERE id='value'"));
+        assertThrows(SQLException.class,()->sql("DELETE FROM hidra_audit_before_after_value WHERE id='value'"));
+    }
+    @Test void concurrentBeforeAfterIdsHaveOneWinner()throws Exception{
+        sql(eventSql("event"));var pool=Executors.newFixedThreadPool(2);var go=new CountDownLatch(1);
+        try{var a=pool.submit(()->insertAfter(go,valueSql("same","pressure",false,"12",null)));var b=pool.submit(()->insertAfter(go,valueSql("same","pressure",false,"13",null)));go.countDown();assertEquals(1,a.get(20,TimeUnit.SECONDS)+b.get(20,TimeUnit.SECONDS));}finally{pool.shutdownNow();}
+    }
+    @Test void legacyMaskedRawEvidenceAbortsWithoutDeletingText()throws Exception{
+        emptySchema();catalog("type","EVENT_TYPE");catalog("category","EVENT_CATEGORY");sql(eventSql("event"));sql(valueSql("legacy","pressure",true,"raw",null));
+        assertThrows(SQLException.class,()->migrate());
+        try(var c=connection();var s=c.createStatement();var r=s.executeQuery("SELECT before_value_text FROM hidra_audit_before_after_value WHERE id='legacy'")){assertTrue(r.next());assertEquals("raw",r.getString(1));}
+    }
+    @Test void actualJpaBeforeAfterPreservesExistingEvidenceOnDuplicate()throws Exception{
+        sql(eventSql("event"));
+        try(var factory=configuration(AuditBeforeAfterValueJpaEntity.class).buildSessionFactory()){
+            for(int i=0;i<2;i++)try(var session=factory.openSession()){
+                var tx=session.beginTransaction();var events=mock(AuditEventJpaRepository.class);when(events.existsById("event")).thenReturn(true);
+                var adapter=new JpaAuditBeforeAfterValueRepositoryAdapter(mock(AuditBeforeAfterValueJpaRepository.class),session,events,(id,family)->{},new AuditInputPolicy());
+                var row=new AuditBeforeAfterValue("jpa-value","event","pressure",null,AuditValueType.STRING,"12",null,null,null,false,null,false,Instant.now());
+                if(i==0){adapter.save(row);tx.commit();}else{assertThrows(RuntimeException.class,()->adapter.save(row));tx.rollback();}
+            }
+        }
+        try(var c=connection();var s=c.createStatement();var r=s.executeQuery("SELECT before_value_text FROM hidra_audit_before_after_value WHERE id='jpa-value'")){assertTrue(r.next());assertEquals("12",r.getString(1));}
     }
 }

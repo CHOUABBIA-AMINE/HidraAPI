@@ -7,7 +7,7 @@
  *
  * @Name        : AuditSensitiveDataGuard
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-07
  *
  * @Type        : Class
  * @Layer       : Domain
@@ -30,6 +30,12 @@ public class AuditSensitiveDataGuard {
     public void ensureSensitiveValueIsMasked(String fieldPath, boolean masked) {
         if (AuditBoundaryPolicy.isSensitiveFieldPath(fieldPath) && !masked) {
             throw new AuditBoundaryViolationException("Sensitive audit value must be masked, hashed, redacted, or reference-only.");
+        }
+    }
+    public void ensureNoRawSensitiveEvidence(String fieldPath, boolean masked, String before, String after) {
+        if ((masked || AuditBoundaryPolicy.isSensitiveFieldPath(fieldPath))
+                && ((before != null && !before.isBlank()) || (after != null && !after.isBlank()))) {
+            throw new AuditBoundaryViolationException("Sensitive or masked Audit evidence must not retain raw text.");
         }
     }
 }

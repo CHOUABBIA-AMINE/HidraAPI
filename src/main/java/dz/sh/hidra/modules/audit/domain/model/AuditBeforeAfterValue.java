@@ -7,7 +7,7 @@
  *
  * @Name        : AuditBeforeAfterValue
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-10-07
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -74,6 +74,12 @@ import java.time.Instant;
             throw new InvalidAuditValueException("AuditBeforeAfterValue recorded at must not be null.");
         }
 
+        if (fieldPath == null || fieldPath.isBlank()) {
+            throw new InvalidAuditValueException("Audit before/after field path is required.");
+        }
+        new dz.sh.hidra.modules.audit.domain.service.AuditSensitiveDataGuard()
+                .ensureNoRawSensitiveEvidence(fieldPath, masked || valueType == AuditValueType.MASKED,
+                        beforeValueText, afterValueText);
         id = normalize(id);
         auditEventId = normalize(auditEventId);
         fieldPath = normalize(fieldPath);

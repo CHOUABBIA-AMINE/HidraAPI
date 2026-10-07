@@ -7,7 +7,7 @@
  *
  * @Name        : PlanRevisionUpdateApplicationService
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-10-07
  *
  * @Type        : Class
  * @Layer       : Application
@@ -25,6 +25,8 @@ import dz.sh.hidra.modules.planning.application.port.out.PlanRevisionRepositoryP
 import dz.sh.hidra.modules.planning.domain.exception.PlanningRevisionConflictException;
 import dz.sh.hidra.modules.planning.domain.model.OperationalPlan;
 import dz.sh.hidra.modules.planning.domain.model.PlanRevision;
+import dz.sh.hidra.modules.planning.application.port.out.PlanningCatalogEligibilityPort;
+import dz.sh.hidra.modules.planning.domain.value.PlanRevisionStatus;
 import java.time.Instant;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -36,13 +38,16 @@ public class PlanRevisionUpdateApplicationService implements UpdatePlanRevisionU
 
     private final PlanRevisionRepositoryPort revisionRepository;
     private final OperationalPlanRepositoryPort planRepository;
+    private final PlanningCatalogEligibilityPort catalogs;
 
     public PlanRevisionUpdateApplicationService(
             PlanRevisionRepositoryPort revisionRepository,
-            OperationalPlanRepositoryPort planRepository
+            OperationalPlanRepositoryPort planRepository,
+            PlanningCatalogEligibilityPort catalogs
     ) {
         this.revisionRepository = Objects.requireNonNull(revisionRepository, "PlanRevisionRepositoryPort must not be null.");
         this.planRepository = Objects.requireNonNull(planRepository, "OperationalPlanRepositoryPort must not be null.");
+        this.catalogs = Objects.requireNonNull(catalogs);
     }
 
     @Override
@@ -55,6 +60,9 @@ public class PlanRevisionUpdateApplicationService implements UpdatePlanRevisionU
 
         PlanRevision revision = revisionRepository.findByIdForUpdate(revisionId.trim())
                 .orElseThrow(() -> new NoSuchElementException("Unknown plan revision: " + revisionId.trim()));
+        if (revision.status() == PlanRevisionStatus.APPROVED) {
+            throw new PlanningRevisionConflictException("Approved revisions are immutable; create a new revision.");
+        }
         OperationalPlan plan = planRepository.findById(revision.planId())
                 .orElseThrow(() -> new NoSuchElementException("Unknown operational plan: " + revision.planId()));
 
@@ -69,6 +77,9 @@ public class PlanRevisionUpdateApplicationService implements UpdatePlanRevisionU
             );
         }
 
+        if (command.changeReasonCodeId() != null) {
+            catalogs.requireActive(command.changeReasonCodeId(), "REVISION_REASON");
+        }
         Instant updatedAt = Instant.now();
         if (!updatedAt.isAfter(revision.updatedAt())) {
             updatedAt = revision.updatedAt().plusNanos(1);

@@ -1305,3 +1305,12 @@ A workflow-approved reopen must first move the period out of CLOSED.
 ```
 
 `PlanningPeriod.allowsNewPlanRevisions()` exposes this owning-domain fact. The application/workflow path that creates revisions must enforce it when the `OperationalPlan` / `PlanRevision` remediation tasks execute; clients must not infer or bypass it.
+
+
+### HMR-064 runtime enforcement — 2026-10-07
+
+Revision numbers are positive and unique per plan in PostgreSQL. Populated base lineage
+references an existing Planning revision; normalized self-lineage is denied. Writes
+require active REVISION_REASON entries. Approved rows cannot be changed, deleted or
+truncated; create a new revision for post-approval changes. Migration V20261007_001
+aborts on invalid legacy data instead of renumbering or fabricating references.

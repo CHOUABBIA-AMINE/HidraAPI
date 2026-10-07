@@ -7,7 +7,7 @@
  *
  * @Name        : JpaPlanRevisionRepositoryAdapter
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-12
+ * @UpdatedOn   : 2026-10-07
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -25,6 +25,9 @@ import dz.sh.hidra.modules.planning.infrastructure.persistence.mapper.PlanningPe
 import dz.sh.hidra.modules.planning.infrastructure.persistence.repository.PlanRevisionJpaRepository;
 import org.springframework.stereotype.Component;
 
+import dz.sh.hidra.modules.planning.application.port.out.PlanningCatalogEligibilityPort;
+import dz.sh.hidra.modules.planning.domain.value.PlanRevisionStatus;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -32,14 +35,25 @@ import java.util.Optional;
 public class JpaPlanRevisionRepositoryAdapter implements PlanRevisionRepositoryPort {
 
     private final PlanRevisionJpaRepository repository;
+    private final PlanningCatalogEligibilityPort catalogs;
 
-    public JpaPlanRevisionRepositoryAdapter(PlanRevisionJpaRepository repository) {
+    public JpaPlanRevisionRepositoryAdapter(PlanRevisionJpaRepository repository, PlanningCatalogEligibilityPort catalogs) {
         this.repository = Objects.requireNonNull(repository, "PlanRevisionJpaRepository must not be null.");
+        this.catalogs = Objects.requireNonNull(catalogs);
     }
 
     @Override
+    @Transactional
     public PlanRevision save(PlanRevision model) {
-        return PlanningPersistenceMapper.toDomain(repository.save(PlanningPersistenceMapper.toEntity(model)));
+        Objects.requireNonNull(model);
+        repository.findByIdForUpdate(model.id()).map(PlanningPersistenceMapper::toDomain)
+                .filter(old -> old.status() == PlanRevisionStatus.APPROVED && !old.equals(model))
+                .ifPresent(old -> { throw new IllegalArgumentException("Approved revisions are immutable."); });
+        if (model.baseRevisionId() != null && !repository.existsById(model.baseRevisionId())) {
+            throw new IllegalArgumentException("Unknown base revision: " + model.baseRevisionId());
+        }
+        if (model.changeReasonCodeId() != null) catalogs.requireActive(model.changeReasonCodeId(), "REVISION_REASON");
+        return PlanningPersistenceMapper.toDomain(repository.saveAndFlush(PlanningPersistenceMapper.toEntity(model)));
     }
 
     @Override

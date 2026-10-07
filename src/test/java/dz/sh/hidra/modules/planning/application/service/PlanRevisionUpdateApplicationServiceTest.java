@@ -7,7 +7,7 @@
  *
  * @Name        : PlanRevisionUpdateApplicationServiceTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-10-07
  *
  * @Type        : Class
  * @Layer       : Test
@@ -51,7 +51,7 @@ class PlanRevisionUpdateApplicationServiceTest {
     void setUp() {
         revisionRepository = mock(PlanRevisionRepositoryPort.class);
         planRepository = mock(OperationalPlanRepositoryPort.class);
-        service = new PlanRevisionUpdateApplicationService(revisionRepository, planRepository);
+        service = new PlanRevisionUpdateApplicationService(revisionRepository, planRepository, (id, family) -> {});
     }
 
     @Test

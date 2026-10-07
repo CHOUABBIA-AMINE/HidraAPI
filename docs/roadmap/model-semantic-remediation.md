@@ -227,7 +227,7 @@ Each model task implements only the obligations recorded in its source HMSR sect
 |---|---|---|---|---|---|---|---|
 | HMR-062 | HMSR-074 | incident | Incident | — | organization.OrganizationUnit, workflow.WorkflowInstance | `fix(incident): remediate semantic review Incident` | Planned |
 | HMR-063 | HMSR-075 | identity | User | — | organization.Employee | `fix(identity): remediate semantic review User` | Completed — Batch 5; final CI pending |
-| HMR-064 | HMSR-076 | planning | PlanRevision | SCC-04 | planning.OperationalPlan, planning.PlanRevision, workflow.WorkflowInstance | `fix(planning): remediate semantic review PlanRevision` | Planned |
+| HMR-064 | HMSR-076 | planning | PlanRevision | SCC-04 | planning.OperationalPlan, planning.PlanRevision, workflow.WorkflowInstance | `fix(planning): remediate semantic review PlanRevision` | Completed — CI pending |
 | HMR-065 | HMSR-077 | planning | OperationalPlan | SCC-04 | organization.OrganizationUnit, planning.PlanRevision, planning.PlanningPeriod | `fix(planning): remediate semantic review OperationalPlan` | Planned |
 | HMR-066 | HMSR-078 | workflow | WorkflowTask | — | organization.OrganizationUnit, workflow.WorkflowInstance, workflow.WorkflowStep | `fix(workflow): remediate semantic review WorkflowTask` | Planned |
 | HMR-067 | HMSR-079 | documents | Document | SCC-05 | documents.DocumentVersion | `fix(documents): remediate semantic review Document` | Planned |
@@ -3549,11 +3549,12 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-076`
 - Exact commit: `fix(planning): remediate semantic review PlanRevision`
-- Status: **Planned**
+- Status: **Completed — CI pending**
+- Batch 8 implementation: Positive per-plan revision numbers, nullable validated base lineage, active REVISION_REASON and approved metadata/persistence/database immutability enforced. Forward V20261007_001; four focused checks passed using temporary API/assertion stubs, not Maven/JUnit. Five PostgreSQL cases registered; local compile/focused Maven blocked by uncached Boot 4.1.1 parent. Full database validation pending CI.
 - SCC: SCC-04
 - Recorded upstream HMS dependencies: planning.OperationalPlan, planning.PlanRevision, workflow.WorkflowInstance
 - HMSR correction count: 4
-- Additive Flyway: `src/main/resources/db/migration/V20261004_064__hmr_064_planning_plan_revision.sql`
+- Additive Flyway: `src/main/resources/db/migration/V20261007_001__hmr_064_planning_plan_revision.sql`
 - Owner-contract prerequisite: No cross-module owner-contract prerequisite recorded by this HMSR correction.
 - Exact write allowlist:
   - `docs/data definition/Planning.md`
@@ -3569,7 +3570,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
   - `src/main/java/dz/sh/hidra/modules/planning/infrastructure/persistence/entity/PlanRevisionJpaEntity.java`
   - `src/main/java/dz/sh/hidra/modules/planning/infrastructure/persistence/mapper/PlanningPersistenceMapper.java`
   - `src/main/java/dz/sh/hidra/modules/planning/infrastructure/persistence/repository/PlanRevisionJpaRepository.java`
-  - `src/main/resources/db/migration/V20261004_064__hmr_064_planning_plan_revision.sql`
+  - `src/main/resources/db/migration/V20261007_001__hmr_064_planning_plan_revision.sql`
   - `src/test/java/dz/sh/hidra/modules/planning/api/rest/controller/PlanRevisionCommandControllerTest.java`
   - `src/test/java/dz/sh/hidra/modules/planning/application/service/PlanRevisionUpdateApplicationServiceTest.java`
   - `src/test/java/dz/sh/hidra/modules/planning/semantic/PlanRevisionSemanticRemediationTest.java`

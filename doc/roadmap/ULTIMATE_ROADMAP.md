@@ -1457,3 +1457,7 @@ Exact per-HMR write scope (no unlisted paths):
 Validation: compile, both dedicated semantic tests, existing PlanRevision update/controller
 tests, new owner and PostgreSQL tests, architecture/forensic guards, full test and clean
 verify. Report local dependency/JDK/DB blocks accurately. No release-version change.
+
+### Batch 8 HMR-064 — IMPLEMENTED, CI PENDING
+
+Positive per-plan revision numbers, nullable validated base lineage, active REVISION_REASON and approved metadata/persistence/database immutability enforced. Forward V20261007_001; four focused checks passed using temporary API/assertion stubs, not Maven/JUnit. Five PostgreSQL cases registered; local compile/focused Maven blocked by uncached Boot 4.1.1 parent. Full database validation pending CI.

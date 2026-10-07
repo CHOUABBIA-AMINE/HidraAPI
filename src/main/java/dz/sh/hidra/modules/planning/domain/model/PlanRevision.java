@@ -7,7 +7,7 @@
  *
  * @Name        : PlanRevision
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-10-07
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -82,12 +82,18 @@ import java.time.Instant;
             throw new InvalidPlanningValueException("PlanRevision base revision id must not reference itself.");
         }
 
+        if (revisionNumber <= 0) {
+            throw new InvalidPlanningValueException("Revision number must be positive.");
+        }
         id = normalize(id);
         planId = normalize(planId);
         revisionCode = normalize(revisionCode);
         changeReasonCodeId = normalize(changeReasonCodeId);
         changeReasonText = normalize(changeReasonText);
         baseRevisionId = normalize(baseRevisionId);
+        if (id.equals(baseRevisionId)) {
+            throw new InvalidPlanningValueException("Revision cannot be its own base.");
+        }
         submittedByActorId = normalize(submittedByActorId);
         approvedByActorId = normalize(approvedByActorId);
         workflowInstanceId = normalize(workflowInstanceId);

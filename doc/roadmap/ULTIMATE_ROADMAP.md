@@ -2010,3 +2010,75 @@ after acceptance. Exhaustive file allowlists and validation targets must be admi
 before production mutation. Only canonical roadmap and reconciliation change now.
 Supporting exact message: `docs(integration): record Batch 11 resolver preflight`.
 Accept or amend INT-PREREQ-01, then admit scope and implement independently. No Batch 12.
+
+
+## HPR-P2-008 Batch 11 accepted resolver and exact scope — 2026-10-07
+
+Owner Next accepts INT-PREREQ-01 at 2188e822192f5857ee0120008ba4722a8d5e828c.
+Exact current main is that docs-only preflight, Documentation #81 green. Production CI
+#584 at 712ec827e905f92b8f280a7ac8fec95eaf5cc8c9 is green; intervening changes are
+only canonical roadmap/reconciliation. This is the green production baseline.
+
+The eight-part decision is accepted: existing active MESSAGE_TYPE/PAYLOAD_FORMAT,
+optional local references, correlated endpoint ownership, Integration-facing Identity
+resolver contract, authenticated eligible actor on new manual trios, complete-trio
+shape and unchanged historical provenance. SQL freezes already recorded manual trios,
+including concurrent updates; no new terminal-status/manual equivalence, payload-mode
+rule, replay/resolution producer, foreign FK or permission taxonomy.
+
+INT-PREREQ-01 is resolved. Admit 056 → 071 as an explicit combined exception to legacy
+solo HMRB-023/HMRB-035. Preserve each HMSR, exact message, allowed paths and independent
+status/commit. Replace only unused migration registrations with forward 010/011 below.
+Publish one final branch advancement; observe production CI triggering and stop. No
+Batch 12 or release-version change. Supporting exact scope commit:
+`docs(integration): admit Batch 11 resolver and reference scope`.
+Exhaustive independent semantic write paths (no unlisted paths):
+
+### HMR-056 admitted files
+
+Source `HMSR-067`; exact commit `fix(integration): remediate semantic review IntegrationExchangeMessage`.
+
+- `doc/model-remediation/RECONCILIATION.md`
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `docs/data definition/Integration.md`
+- `docs/roadmap/model-semantic-remediation.md`
+- `src/main/java/dz/sh/hidra/modules/integration/api/rest/response/IntegrationExchangeMessageResponse.java`
+- `src/main/java/dz/sh/hidra/modules/integration/application/dto/IntegrationExchangeMessageSummaryDto.java`
+- `src/main/java/dz/sh/hidra/modules/integration/application/port/out/IntegrationExchangeMessageRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/integration/domain/model/IntegrationExchangeMessage.java`
+- `src/main/java/dz/sh/hidra/modules/integration/infrastructure/persistence/adapter/JpaIntegrationExchangeMessageRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/integration/infrastructure/persistence/entity/IntegrationExchangeMessageJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/integration/infrastructure/persistence/mapper/IntegrationPersistenceMapper.java`
+- `src/main/java/dz/sh/hidra/modules/integration/infrastructure/persistence/repository/IntegrationExchangeMessageJpaRepository.java`
+- `src/main/resources/db/migration/V20261007_010__hmr_056_integration_exchange_message.sql`
+- `src/test/java/dz/sh/hidra/modules/integration/infrastructure/persistence/IntegrationSemanticPostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/integration/semantic/IntegrationExchangeMessageSemanticRemediationTest.java`
+
+### HMR-071 admitted files
+
+Source `HMSR-084`; exact commit `fix(integration): remediate semantic review IntegrationDeadLetterRecord`.
+
+- `doc/model-remediation/RECONCILIATION.md`
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `docs/data definition/Integration.md`
+- `docs/roadmap/model-semantic-remediation.md`
+- `src/main/java/dz/sh/hidra/modules/identity/application/contract/integration/IntegrationResolverContract.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/contract/integration/package-info.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/IntegrationResolverQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/integration/application/port/out/IntegrationDeadLetterRecordRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/integration/domain/model/IntegrationDeadLetterRecord.java`
+- `src/main/java/dz/sh/hidra/modules/integration/infrastructure/persistence/adapter/JpaIntegrationDeadLetterRecordRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/integration/infrastructure/persistence/entity/IntegrationDeadLetterRecordJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/integration/infrastructure/persistence/mapper/IntegrationPersistenceMapper.java`
+- `src/main/java/dz/sh/hidra/modules/integration/infrastructure/persistence/repository/IntegrationDeadLetterRecordJpaRepository.java`
+- `src/main/resources/db/migration/V20261007_011__hmr_071_integration_dead_letter_record.sql`
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java`
+- `src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/application/service/IntegrationResolverQueryServiceTest.java`
+- `src/test/java/dz/sh/hidra/modules/integration/infrastructure/persistence/IntegrationSemanticPostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/integration/semantic/IntegrationDeadLetterRecordSemanticRemediationTest.java`
+
+Validation: compile, both dedicated semantic tests, new Identity owner test, shared
+PostgreSQL integration cases, existing IntegrationJobRun/controller tests, architecture/
+forensic guards, full test and clean verify. Report local Maven/runtime blocks accurately.
+Published migration bytes remain immutable.

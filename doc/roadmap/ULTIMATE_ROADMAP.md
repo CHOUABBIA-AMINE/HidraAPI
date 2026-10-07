@@ -1377,3 +1377,83 @@ Preflight validation: all 82 canonical Markdown files passed UTF-8/nonempty/conf
 checks; git diff --check passed. Only the two admitted documentation paths changed.
 No Maven test run is required for this documentation-only change. Documentation CI
 trigger pending at commit preparation; production CI remains at verified #581.
+
+
+## HPR-P2-008 Batch 8 contract and scope admission — 2026-10-07
+
+Owner Next accepts PL-PREREQ-01 recorded at 4a32665. Exact current main is that
+preflight-only head; Documentation #75 passed. Production CI #581 at ec63af0 passed;
+all intervening changes are the two Markdown paths, with no production/schema/test
+change. This is the green production baseline for coordinated SCC-04 execution.
+
+The six-part contract proposal is accepted as recorded, including unsupported-scope
+denial, authenticated eligible creator, optional live owner unit, catalog families,
+approved immutability and SCC-safe correlated pointers. PL-PREREQ-01 is resolved.
+Execute HMR-064 then HMR-065 as independent exact semantic commits; advance main once.
+Do not execute Batch 9; stop after final-head CI trigger. Published migrations immutable.
+Legacy unused backdated migration registrations are replaced by the forward paths below.
+Exact per-HMR write scope (no unlisted paths):
+
+### HMR-064 admitted files
+
+- `doc/model-remediation/RECONCILIATION.md`
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `docs/data definition/Planning.md`
+- `docs/roadmap/model-semantic-remediation.md`
+- `docs/roadmap/planning.md`
+- `src/main/java/dz/sh/hidra/modules/planning/api/rest/controller/PlanRevisionCommandController.java`
+- `src/main/java/dz/sh/hidra/modules/planning/application/port/in/UpdatePlanRevisionUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/planning/application/port/out/PlanRevisionRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/planning/application/port/out/PlanningCatalogEligibilityPort.java`
+- `src/main/java/dz/sh/hidra/modules/planning/application/service/PlanRevisionUpdateApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/planning/domain/model/PlanRevision.java`
+- `src/main/java/dz/sh/hidra/modules/planning/domain/value/PlanRevisionStatus.java`
+- `src/main/java/dz/sh/hidra/modules/planning/infrastructure/persistence/adapter/JpaPlanRevisionRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/planning/infrastructure/persistence/adapter/JpaPlanningCatalogEligibilityAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/planning/infrastructure/persistence/entity/PlanRevisionJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/planning/infrastructure/persistence/mapper/PlanningPersistenceMapper.java`
+- `src/main/java/dz/sh/hidra/modules/planning/infrastructure/persistence/repository/PlanRevisionJpaRepository.java`
+- `src/main/resources/db/migration/V20261007_001__hmr_064_planning_plan_revision.sql`
+- `src/test/java/dz/sh/hidra/modules/planning/api/rest/controller/PlanRevisionCommandControllerTest.java`
+- `src/test/java/dz/sh/hidra/modules/planning/application/service/PlanRevisionUpdateApplicationServiceTest.java`
+- `src/test/java/dz/sh/hidra/modules/planning/infrastructure/persistence/PlanningSemanticPostgresTest.java`
+- `src/test/java/dz/sh/hidra/modules/planning/semantic/PlanRevisionSemanticRemediationTest.java`
+
+### HMR-065 admitted files
+
+- `doc/model-remediation/RECONCILIATION.md`
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `docs/data definition/Planning.md`
+- `docs/roadmap/model-semantic-remediation.md`
+- `docs/roadmap/planning.md`
+- `src/main/java/dz/sh/hidra/modules/identity/application/contract/planning/PlanningCreatorContract.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/PlanningCreatorQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/organization/application/contract/planning/PlanningResponsibleUnitContract.java`
+- `src/main/java/dz/sh/hidra/modules/organization/infrastructure/query/PlanningResponsibleUnitQueryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/planning/api/rest/request/CreateOperationalPlanRequest.java`
+- `src/main/java/dz/sh/hidra/modules/planning/api/rest/response/OperationalPlanResponse.java`
+- `src/main/java/dz/sh/hidra/modules/planning/application/command/CreateOperationalPlanCommand.java`
+- `src/main/java/dz/sh/hidra/modules/planning/application/dto/OperationalPlanSummaryDto.java`
+- `src/main/java/dz/sh/hidra/modules/planning/application/port/in/CreateOperationalPlanUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/planning/application/port/out/OperationalPlanRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/planning/application/service/OperationalPlanApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/planning/domain/model/OperationalPlan.java`
+- `src/main/java/dz/sh/hidra/modules/planning/domain/value/OperationalPlanStatus.java`
+- `src/main/java/dz/sh/hidra/modules/planning/infrastructure/persistence/adapter/JpaOperationalPlanRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/planning/infrastructure/persistence/entity/OperationalPlanJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/planning/infrastructure/persistence/mapper/PlanningPersistenceMapper.java`
+- `src/main/java/dz/sh/hidra/modules/planning/infrastructure/persistence/repository/OperationalPlanJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/contract/planning/PlanningTopologyScopeContract.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/PlanningTopologyScopeQueryService.java`
+- `src/main/resources/db/migration/V20261007_002__hmr_065_planning_operational_plan.sql`
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java`
+- `src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/application/service/PlanningCreatorQueryServiceTest.java`
+- `src/test/java/dz/sh/hidra/modules/organization/infrastructure/query/PlanningResponsibleUnitQueryAdapterTest.java`
+- `src/test/java/dz/sh/hidra/modules/planning/infrastructure/persistence/PlanningSemanticPostgresTest.java`
+- `src/test/java/dz/sh/hidra/modules/planning/semantic/OperationalPlanSemanticRemediationTest.java`
+- `src/test/java/dz/sh/hidra/modules/topology/application/service/PlanningTopologyScopeQueryServiceTest.java`
+
+Validation: compile, both dedicated semantic tests, existing PlanRevision update/controller
+tests, new owner and PostgreSQL tests, architecture/forensic guards, full test and clean
+verify. Report local dependency/JDK/DB blocks accurately. No release-version change.

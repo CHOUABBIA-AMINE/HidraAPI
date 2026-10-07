@@ -90,11 +90,11 @@ No `party.application.contract.planning` package exists in the exact current tre
 | HMR-061 | HMSR-073 | workflow.WorkflowTransition | COMPLETED — CI #581 GREEN | Distinct same-definition steps and unique source decisions are protected in configuration persistence and PostgreSQL. Unsupported conditions/callbacks/COMMENT cannot attach to ACTIVE definitions or survive activation; runtime remains fail closed. Three focused behavior checks passed with temporary stubs; PostgreSQL validation pending CI. |
 | HMR-062 | HMSR-074 | incident.Incident | STILL REQUIRED | no migration registered; dedicated test: absent; revalidate obligations before mutation |
 | HMR-063 | HMSR-075 | identity.User | COMPLETED — HPR-P2-008 | Nonblank username enforced in domain; PostgreSQL named username/email uniqueness, nullable-email semantics and fail-closed legacy preflight; optional Employee resolved through Organization-owned contract; no cross-module FK. V20261006_010 and focused tests added; final CI pending. |
-| HMR-064 | HMSR-076 | planning.PlanRevision | IMPLEMENTED — CI PENDING | Positive per-plan revision numbers, nullable validated base lineage, active REVISION_REASON and approved metadata/persistence/database immutability enforced. Forward V20261007_001; four focused checks passed using temporary API/assertion stubs, not Maven/JUnit. Five PostgreSQL cases registered; local compile/focused Maven blocked by uncached Boot 4.1.1 parent. Full database validation pending CI. |
-| HMR-065 | HMSR-077 | planning.OperationalPlan | IMPLEMENTED — CI PENDING | Required French name/scope type, unique plan code, active PLAN_TYPE, owner-controlled Topology/Identity/Organization references and same-plan nullable revision pointers enforced. Creation binds authenticated eligible actor and snapshots owner display values; unsupported REGION/NETWORK denied. Forward V20261007_002; twelve focused HMR-065/owner/catalog checks passed with temporary API stubs. Nine combined PostgreSQL cases registered; Maven compile/focused/full test/clean verify blocked before compilation by uncached Boot 4.1.1/Maven Central DNS. Full CI pending. |
+| HMR-064 | HMSR-076 | planning.PlanRevision | COMPLETED — CI #582 GREEN | Positive per-plan revision numbers, nullable validated base lineage, active REVISION_REASON and approved metadata/persistence/database immutability enforced. Forward V20261007_001; four focused checks passed using temporary API/assertion stubs, not Maven/JUnit. Five PostgreSQL cases registered; local compile/focused Maven blocked by uncached Boot 4.1.1 parent. Full database validation pending CI. |
+| HMR-065 | HMSR-077 | planning.OperationalPlan | COMPLETED — CI #582 GREEN | Required French name/scope type, unique plan code, active PLAN_TYPE, owner-controlled Topology/Identity/Organization references and same-plan nullable revision pointers enforced. Creation binds authenticated eligible actor and snapshots owner display values; unsupported REGION/NETWORK denied. Forward V20261007_002; twelve focused HMR-065/owner/catalog checks passed with temporary API stubs. Nine combined PostgreSQL cases registered; Maven compile/focused/full test/clean verify blocked before compilation by uncached Boot 4.1.1/Maven Central DNS. Full CI pending. |
 | HMR-066 | HMSR-078 | workflow.WorkflowTask | COMPLETED — CI #581 GREEN | Actionable assignment, live actor/unit membership, catalog eligibility, actor/time pairs and chronology are enforced. Terminal task evidence is immutable; generic creation is starter-bound, missing next-step rules fail closed, and execution/query paths no longer authorize by username snapshots. Seven focused behavior checks passed with temporary stubs; existing transition fixtures updated for new owner dependencies. |
-| HMR-067 | HMSR-079 | documents.Document | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
-| HMR-068 | HMSR-080 | documents.DocumentVersion | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
+| HMR-067 | HMSR-079 | documents.Document | BLOCKED — DOC-PREREQ-01 | Missing admitted owner validation; live paths trust supplied external IDs. Concrete Batch 9 contract/storage proposal below. |
+| HMR-068 | HMSR-080 | documents.DocumentVersion | BLOCKED — DOC-PREREQ-01 | Missing admitted owner validation; live paths trust supplied external IDs. Concrete Batch 9 contract/storage proposal below. |
 | HMR-069 | HMSR-081 | assets.MaintenanceWorkOrder | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-070 | HMSR-082 | custody.CustodyTransferTicket | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-071 | HMSR-084 | integration.IntegrationDeadLetterRecord | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
@@ -110,7 +110,7 @@ No `party.application.contract.planning` package exists in the exact current tre
 | HMR-081 | HMSR-095 | workflow.WorkflowAction | COMPLETED — CI #581 GREEN | Generic recording permits comments only; configured transitions exclusively produce decisions using live Identity authority. Optional task ownership and conditional evidence are enforced; canonical actor snapshots and server-owned locked sequences replace caller evidence. Action persistence is insert-only with unique monotonic sequence and immutable database guards. Five focused behavior checks passed with temporary stubs; existing permission regression fixture updated. |
 | HMR-082 | HMSR-096 | hse.HseCase | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-083 | HMSR-097 | audit.AuditExportRequest | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
-| HMR-084 | HMSR-098 | documents.DocumentTargetLink | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
+| HMR-084 | HMSR-098 | documents.DocumentTargetLink | BLOCKED — DOC-PREREQ-01 | Missing admitted owner validation; live paths trust supplied external IDs. Concrete Batch 9 contract/storage proposal below. |
 | HMR-085 | HMSR-100 | identity.AuthorizationDecision | IMPLEMENTED — CI #579 PASSED | Transactional graph, bounded ABAC, verified mappings, deterministic evidence and configurable persistence; Batch 6 implementation below. |
 | HMR-086 | HMSR-101 | identity.AuthorizationDelegationGrant | COMPLETED — HPR-P2-008 | Required nonblank delegation reason and validTo carried through domain/JPA/mapper; DelegationStatus narrowed to ACTIVE/REVOKED/EXPIRED; optional Role and Permission validated with nullable same-module FKs; no XOR rule; V20261006_011 fails closed on legacy evidence; focused tests added; final CI pending. |
 | HMR-087 | HMSR-104 | identity.LoginSession | COMPLETED — HPR-P2-008 | AuthenticationProtocol sessionType and independent endedAt carried through domain/JPA/mapper; exact ExternalIdentity propagated from LDAP/OIDC through principal/input/completion; terminal lifecycle preserves lastSeenAt and prior termination; V20261006_012 requires explicit legacy protocol evidence; no inferred historical termination; focused tests added; final CI pending. |
@@ -140,9 +140,9 @@ No `party.application.contract.planning` package exists in the exact current tre
 - HMR-005 corrected from stale planned status to **COMPLETED**;
 - HMR-009 confirmed **COMPLETED** and removed as a carry-over blocker;
 - HMR-050..106 evaluated: **57**;
-- HMR-050..106 **STILL REQUIRED**: **32**;
-- HMR-050..106 **BLOCKED**: **1**;
-- HMR-050..106 **IMPLEMENTED during HPR-P2-008**: **24** (two Batch 8 items CI pending);
+- HMR-050..106 **STILL REQUIRED**: **29**;
+- HMR-050..106 **BLOCKED**: **4**;
+- HMR-050..106 **IMPLEMENTED during HPR-P2-008**: **24** (Batch 8 complete at CI #582);
 - HMR-050..106 **SUPERSEDED**: **0**;
 - HMR-054 completed; repaired CI #575 is green;
 - HMR-080 remains blocked; HMR-055 prerequisite resolved and implemented in Batch 7.
@@ -151,7 +151,7 @@ No `party.application.contract.planning` package exists in the exact current tre
 
 - HMR-050 — **COMPLETED** at the first HPR-P2-008 execution step.
 - Batch 7 **COMPLETED — CI #581 GREEN**: HMR-055, 061, 066, 081, 099; exact repaired head ec63af0414d7fa85b9200d4bd181ac799bd072ed. Batch 8 preflight split below; no Planning implementation claimed.
-- Current remaining: **32 STILL REQUIRED + 1 BLOCKED (HMR-080)**; 24 implementations, including two Batch 8 items awaiting complete CI.
+- Current remaining: **29 STILL REQUIRED + 4 BLOCKED (HMR-067, 068, 080, 084)**; 24 implementations have green production CI through #582.
 
 - HMR-051 — **COMPLETED**: Topology and optional Organization references validated on every case save; snapshot preserved; no migration because primary-candidate FK already exists; owner contract and architecture export added.
 
@@ -880,3 +880,151 @@ Publish chained admission/HMR/validation commits once, observe final-head CI tri
 and stop. Final CI pending at preparation. Next owner-selected scope is attached Batch 9,
 Documents aggregate HMR-067, 068, 084, only after complete Batch 8 CI is green and fresh
 preflight/admission. Do not execute it automatically.
+
+## Batch 9 preflight and concrete contract/storage proposal — 2026-10-07
+
+Owner Next selects attached Batch 9: HMR-067/HMSR-079, HMR-068/HMSR-080 and
+HMR-084/HMSR-098. Exact main/production head f56d55c0247875c5640ed61375da6b0896db9da6
+confirmed by git fetch. CI #582/run 37643327683: the single verification job
+112867542873 completed successfully, including Repository verification, deterministic
+OpenAPI publication, base generation and backward compatibility. Documentation #76 was
+already observed successful. Generic GitHub fetch calls timed out; purpose-built jobs
+retrieval supplied the complete successful job evidence. Batch 8 CI-pending entries above
+are historical preparation records; HMR-064/065 are now completed.
+
+### Live evidence and split
+
+All three HMSR obligation sets remain required. Document and DocumentVersion are SCC-05;
+DocumentTargetLink depends on both. Legacy HMRB-032 pairs 067/068, while HMRB-045 keeps
+084 solo; the attached three-task scope needs explicit canonical combined admission.
+
+DocumentsApplicationService accepts caller creator/uploader/display/target values and
+saves them without owner lookups. DocumentTargetLookupPort named by the DDD is absent;
+DocumentTargetReferencePort only accepts one untyped string. Identity/Workflow outbound
+ports similarly expose a boolean without owner implementations. No Documents-facing
+Identity/Workflow owner contracts or typed target providers are evidenced.
+NoopDocumentsExternalReferenceResolver returns true for all targets/actors/workflows but
+is not wired into these writes. Its existence is not proof of owner validation; no
+production entry path may acquire an accept-all fallback.
+
+DocumentContentTransferService stores the physical blob and storage metadata before
+UploadDocumentVersionUseCase is invoked. New uploader/catalog/parent/version-uniqueness
+failures therefore need prevalidation and rollback cleanup to avoid orphan content.
+These are DOC-PREREQ-01 owner-contract and storage-order prerequisites, not resolved
+by assuming foreign domain/repository access or a cross-module FK.
+
+AGENTS.md §3.2.9 and the SCC conditional envelope require stopping before mutation.
+HMR-067, 068 and 084 are BLOCKED pending the concrete decision below. No production,
+SQL, test, catalog or release-version mutation is claimed. Current register totals:
+**24 implemented, 29 still required, four blocked (067, 068, 080, 084)**.
+
+### Concrete proposed decision
+
+1. Identity exports `identity.application.contract.documents.DocumentsActorContract`:
+   `Optional<Actor> eligibleActor(String actorId, Instant at)`, Actor containing canonical
+   id/displayName. Identity-owned DocumentsActorQueryService delegates internally to
+   existing ACTIVE/unlocked actor eligibility; no new role/permission requirement.
+   Register/upload/link operations require the supplied actor to match authenticated
+   CurrentSecurityContext, with server-derived display snapshots at creation. Existing
+   historical snapshots remain evidence and must not be silently refreshed on reads.
+2. Documents exports neutral `documents.application.contract.target.DocumentsOwnedTargetLookup`:
+   module(), targetTypeCodes(), resolve(typeCode,targetId), returning optional canonical
+   target id/code/label. Owner implementations read only their own repositories.
+   Documents' outbound DocumentTargetLookupPort/DocumentTargetLookupService require exactly
+   one matching owner provider, canonical ID equality and existence. Missing, unsupported
+   or ambiguous providers fail closed; caller code/label cannot stand in for identity.
+   Optional owner tuple is all absent or complete module/type/id; blank normalization must
+   not bypass a partially populated tuple. New snapshots use owner display data.
+3. Initial approved target registry proposal: module `topology` with PIPELINE_SYSTEM,
+   PIPELINE, FACILITY, EQUIPMENT; module `planning` with OPERATIONAL_PLAN, PLAN_REVISION.
+   Providers are Topology-/Planning-owned; validate existence across historical/lifecycle
+   states without inventing an ACTIVE-only attachment rule. Other modules/types, including
+   unregistered `incidents`/`hse` aliases, deny new writes until explicitly owned providers
+   are registered. This is a proposed support subset, not a global closed taxonomy.
+4. Workflow exports `workflow.application.contract.documents.DocumentsApprovalReferenceContract`:
+   boolean exists(String instanceId), implemented by DocumentsApprovalReferenceQueryService
+   reading Workflow's own instance repository. Validate populated approval instance IDs
+   without external FK. Do not invent completed-state, decision, purpose or target-equality
+   requirements absent from these reviews. Routing/approval remains Workflow-owned.
+5. HMR-067 enforces required titleFr/creator display, unique Document.code and exact active
+   DOCUMENT_TYPE/DOCUMENT_CLASSIFICATION/optional DOCUMENT_CATEGORY. Add same-module catalog
+   FKs/guards; existing invalid legacy rows abort. Protect populated currentVersionId with
+   UNIQUE(document_id,id) on versions plus FK(document.id,current_version_id) to version
+   (document_id,id). Tables already exist: introduce this composite target before the
+   nullable pointer. Create document with null pointer, insert version, then assign pointer.
+6. HMR-068 enforces required MIME/filename/checksum algorithm/value/uploader display, positive
+   versionNumber and UNIQUE(document_id,version_number). Nullable supersededByVersionId
+   references an existing local version with normalized no-self-reference; do not invent
+   same-document supersession or full approval state-machine rules not required by HMSR.
+   Keep existing document/storage FKs and date ordering; do not reject zero-byte files.
+7. HMR-084 enforces targetModule, exact active DOCUMENT_LINK_ROLE and owner target resolution.
+   Nullable version uses composite FK(document_id,document_version_id) to version
+   (document_id,id), preserving document-wide links when null. No external target FK,
+   primary-link uniqueness or new unlink-state matrix.
+8. Binary transfer validates actor, document identity and version metadata before writing
+   physical content; the transactional orchestration retains database uniqueness as the
+   race arbiter. Register rollback cleanup for the newly created blob, including transaction
+   commit failures, and clean it on pre-transaction/write failure. Only this upload's new
+   blob may be deleted; preserve the original error if cleanup itself fails. Roll back new
+   storage metadata when version creation fails. Do not silently delete existing objects or
+   claim object storage and PostgreSQL have one physical transaction.
+
+### Exact additional scope proposed for admission
+
+Retain each HMR's legacy allowlist and exact semantic commit message. All three admit
+canonical roadmap/reconciliation and Documents DDD status updates. Forward additive
+migrations, subject to fresh maximum-version check:
+- `src/main/resources/db/migration/V20261007_003__hmr_067_documents_document.sql`
+- `src/main/resources/db/migration/V20261007_004__hmr_068_documents_document_version.sql`
+- `src/main/resources/db/migration/V20261007_005__hmr_084_documents_document_target_link.sql`
+
+Replace unused backdated registrations; never edit published migrations. Before mutation,
+register exact extra production paths (prefix src/main/java/dz/sh/hidra/modules/):
+
+| HMR | Additional production path |
+|---|---|
+| 067 | identity/application/contract/documents/DocumentsActorContract.java |
+| 067 | identity/application/service/DocumentsActorQueryService.java |
+| 067 | documents/application/contract/target/DocumentsOwnedTargetLookup.java |
+| 067 | documents/application/port/out/DocumentTargetLookupPort.java |
+| 067 | documents/application/service/DocumentTargetLookupService.java |
+| 067 | documents/application/port/out/DocumentsCatalogEligibilityPort.java |
+| 067 | documents/infrastructure/persistence/adapter/JpaDocumentsCatalogEligibilityAdapter.java |
+| 067 | topology/application/service/DocumentsTopologyTargetLookup.java |
+| 067 | planning/application/service/DocumentsPlanningTargetLookup.java |
+| 068 | workflow/application/contract/documents/DocumentsApprovalReferenceContract.java |
+| 068 | workflow/application/service/DocumentsApprovalReferenceQueryService.java |
+| 068 | documents/application/service/DocumentsApplicationService.java |
+| 068 | documents/application/service/DocumentContentTransferService.java |
+| 084 | documents/application/service/DocumentsApplicationService.java |
+
+HMR-067 additionally admits both exact guard files:
+`src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java` and
+`src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java`, mirroring three exact
+exports (Identity documents, Workflow documents, Documents target) in both registries.
+Workflow documents export addition belongs to HMR-068; therefore admit both guard files
+there as well, without broad/private-package exceptions. Register new owner/lookup tests:
+- `src/test/java/dz/sh/hidra/modules/identity/application/service/DocumentsActorQueryServiceTest.java` (067)
+- `src/test/java/dz/sh/hidra/modules/topology/application/service/DocumentsTopologyTargetLookupTest.java` (067)
+- `src/test/java/dz/sh/hidra/modules/planning/application/service/DocumentsPlanningTargetLookupTest.java` (067)
+- `src/test/java/dz/sh/hidra/modules/documents/application/service/DocumentTargetLookupServiceTest.java` (067)
+- `src/test/java/dz/sh/hidra/modules/workflow/application/service/DocumentsApprovalReferenceQueryServiceTest.java` (068)
+- `src/test/java/dz/sh/hidra/modules/documents/application/service/DocumentContentTransferServiceTest.java` (068)
+- `src/test/java/dz/sh/hidra/modules/documents/infrastructure/persistence/DocumentsSemanticPostgresTest.java` (all three)
+
+HMR-068 admits the existing exact
+`src/test/java/dz/sh/hidra/modules/documents/api/rest/controller/SpringDocumentsControllerContentTransferTest.java`
+for new dependencies/rollback fixtures, if required. Preserve each registered dedicated
+semantic test and message: Document, DocumentVersion, DocumentTargetLink. Apply 067,
+then 068, then 084; supporting admission/status commits allowed, no semantic squash.
+
+Validation after acceptance: compile; three dedicated semantic tests; owner registry
+missing/ambiguous targets, actor impersonation and optional Workflow checks; existing
+binary API/storage tests plus rollback/commit-failure cleanup; PostgreSQL competing code/
+version uniqueness, current/link composition and nullable lineage; both guards; full test
+and clean verify/OpenAPI CI. Local environment blocks must be reported accurately.
+
+This is a reviewable proposal, not implementation. Accept or amend DOC-PREREQ-01,
+then recheck baseline and explicitly admit the combined SCC-05 three-task scope before
+production edits. For this docs-only preflight, stop after documentation CI trigger;
+do not execute Batch 10 automatically.

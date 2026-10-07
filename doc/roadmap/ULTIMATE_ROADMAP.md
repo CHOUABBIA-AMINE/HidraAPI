@@ -1489,3 +1489,34 @@ Next proposed owner scope: attached Batch 9 Documents (HMR-067, HMR-068, HMR-084
 gated on green final Batch 8 CI and fresh source/owner-contract/write-scope admission.
 Supporting final validation documentation is admitted to this roadmap and reconciliation
 only; exact message `docs(planning): record Batch 8 validation disposition`.
+
+
+## HPR-P2-008 Batch 9 preflight split — 2026-10-07
+
+Owner Next selects attached Documents Batch 9 (HMR-067, 068, 084). Exact head
+f56d55c0247875c5640ed61375da6b0896db9da6 is unchanged after git fetch. CI #582's
+single verification job 112867542873 completed successfully, including repository and
+OpenAPI compatibility gates (run 37643327683). Documentation #76 passed. Batch 8
+HMR-064/HMR-065 are now COMPLETED with green CI; previous pending entries are historical.
+
+Fresh HMSR/DDD/current-source review confirms all three Documents corrections remain
+required. DOC-PREREQ-01: Documents-facing Identity/Workflow owner contracts and a typed
+owner target registry are absent; the present no-op resolver accepts everything and is
+unwired. Current writes copy caller IDs directly. Binary content is stored before version
+creation, so new validation/uniqueness failures also need admitted rollback cleanup.
+
+AGENTS.md §3.2.9 requires splitting and stopping before mutation. HMR-067, HMR-068,
+HMR-084 are BLOCKED pending the concrete eight-part contract/target/storage proposal in
+`doc/model-remediation/RECONCILIATION.md`, Batch 9 preflight. It proposes authenticated
+eligible actors, owner-resolved supported target tuples, optional Workflow existence,
+exact catalog families, SCC-safe current/link pointers and safe new-blob rollback cleanup.
+No single universal target FK, invented approval policy or global closed taxonomy.
+Totals: 24 implemented, 29 still required, four blocked (067, 068, 080, 084).
+
+This documentation-only preflight is admitted to exactly this roadmap and the canonical
+reconciliation. Exact supporting message: `docs(documents): record Batch 9 owner-contract preflight`.
+No production/test/SQL/catalog/release change. All 82 canonical Markdown files passed
+UTF-8/nonempty/conflict checks; git diff --check passed. No Maven test run required for
+this docs-only change. Publish once and stop after Documentation CI trigger; full production
+CI ignores this scope. Acceptance/amendment and fresh canonical combined SCC-05 admission
+are required before three independent semantic commits. Do not execute Batch 10.

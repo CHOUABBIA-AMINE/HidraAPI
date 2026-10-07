@@ -2090,3 +2090,32 @@ Optional run/endpoint existence, correlated endpoint/system ownership and active
 ### Batch 11 HMR-071 — IMPLEMENTED, CI PENDING
 
 Required failure evidence, all-or-none manual trio and optional local references enforced. New manual evidence requires authenticated eligible Identity actor; recorded provenance is immutable without historical actor revalidation. Forward V20261007_011 supplies nullable FKs/checks and concurrent provenance guard. Eight focused methods, one Identity owner method and five added PostgreSQL cases prepared. Temporary API type compilation passed; local focused Maven blocked by uncached Boot parent; CI pending.
+
+
+## HPR-P2-008 Batch 11 final disposition — 2026-10-07
+
+Accepted INT-PREREQ-01 is resolved within registered 056 → 071 scope. Independent
+HMR-056/HMSR-067 and HMR-071/HMSR-084 semantic commits are IMPLEMENTED — CI PENDING.
+Current totals: 33 implemented (two CI pending), 23 still required, one blocked HMR-080.
+Previous 31 have green production CI #584. ExchangeMessage optional references,
+endpoint/system coherence and active exact catalogs are enforced; DeadLetterRecord
+required evidence, optional references and complete manual provenance are enforced.
+New manual provenance requires an authenticated eligible Identity actor. Existing
+complete provenance cannot be altered and historical actor lifecycle is not revalidated.
+Forward 010/011 only; no catalog seed, foreign FK, status matrix or release-version change.
+
+Local Maven compile/focused/existing/full/verify are blocked before execution by uncached
+Boot 4.1.1 parent; online compile confirms Maven Central DNS failure. 158 temporary-API
+source units compiled; four actual behavior checks and five forensic source scans passed
+with temporary external APIs. 14 changed Java files syntax parsed; headers, independent
+9/16-path semantic scopes, 37 matching exact public exports and 82 canonical Markdown
+checks passed. These do not establish real Maven/JUnit/Spring/JPA/PostgreSQL verification.
+14 dedicated semantic/owner methods and 10 database cases await CI; the latter test the
+Integration base plus these forward migrations, not the full Flyway chain. Reconciliation
+records exact validation disposition and limits.
+
+Supporting exact message: `docs(integration): record Batch 11 validation disposition`.
+Publish scope admission, two semantic commits and this validation disposition; advance
+main once after exact-tree checks, observe production CI started, then stop. Next proposed
+owner scope: attached Batch 12 Reporting HMR-057/HMR-093, gated on green Batch 11 CI and
+fresh source/owner/exhaustive-scope admission. Do not execute automatically.

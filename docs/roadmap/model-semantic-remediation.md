@@ -5313,7 +5313,7 @@ The following are execution registrations only; they do not change any HMR's sem
 | HMRB-020 | HMR-053 | Solo | **Planned.** Telemetry trust gate, provenance consistency and ACTIVE-point eligibility. |
 | HMRB-021 | HMR-054 | Solo | **Blocked until prerequisite.** Equipment catalog reconciliation plus unresolved Party owner lookup. |
 | HMRB-022 | HMR-055 | Solo | **Planned.** Workflow start eligibility, target ownership, current-step coherence and non-terminal uniqueness. |
-| HMRB-023 | HMR-056 | Solo | **Planned.** Integration message same-module reference/coherence and unresolved controlled-value families. |
+| HMRB-023 | HMR-056 | Solo | **Implemented — CI pending within accepted attached Batch 11.** Integration message same-module reference/coherence and unresolved controlled-value families. |
 | HMRB-024 | HMR-057 | Solo | **Planned.** Reporting run FK correction, definition/template lineage, queue eligibility and terminal invariants. |
 | HMRB-025 | HMR-058 | Solo | **Planned.** Risk scope set, scoring policy, approval evidence/workflow and immutability. |
 | HMRB-026 | HMR-059, HMR-060 | Batch | **Planned.** Narrow same-module reference protection plus append-only/retry-state integrity; no owner contract prerequisite or SCC. |
@@ -5325,7 +5325,7 @@ The following are execution registrations only; they do not change any HMR's sem
 | HMRB-032 | HMR-067, HMR-068 | Coordinated Batch | **Completed — CI pending.** DOC-PREREQ-01 accepted; attached Batch 9 canonical scope adds HMR-084. SCC-05 Document/DocumentVersion pair; preserve current-version/supersession ordering and split if Identity/Workflow owner-contract gaps appear. |
 | HMRB-033 | HMR-069 | Solo | **Planned.** Assets work-order same-module and multiple cross-context provenance references. |
 | HMRB-034 | HMR-070 | Solo | **Planned.** Custody ticket evidence plus Identity/Workflow/Audit ownership. |
-| HMRB-035 | HMR-071 | Solo | **Planned.** Integration dead-letter evidence, same-module references and manual-resolution identity. |
+| HMRB-035 | HMR-071 | Solo | **Implemented — CI pending within accepted attached Batch 11.** Integration dead-letter evidence, same-module references and manual-resolution identity. |
 | HMRB-036 | HMR-072 | Solo | **Planned.** Integrity assessment same-module plus Identity/Workflow owner validation. |
 | HMRB-037 | HMR-073, HMR-074, HMR-075, HMR-076 | Batch | **Planned.** Four consecutive narrow Organization corrections: one disabled-unit lifecycle guard and three mandatory-nullability alignments. |
 | HMRB-038 | HMR-077 | Solo | **Planned.** Risk external evidence tuple plus owner-controlled polymorphic evidence validation. |

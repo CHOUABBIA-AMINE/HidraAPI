@@ -140,9 +140,9 @@ No `party.application.contract.planning` package exists in the exact current tre
 - HMR-005 corrected from stale planned status to **COMPLETED**;
 - HMR-009 confirmed **COMPLETED** and removed as a carry-over blocker;
 - HMR-050..106 evaluated: **57**;
-- HMR-050..106 **STILL REQUIRED**: **24**;
-- HMR-050..106 **BLOCKED**: **2**;
-- HMR-050..106 **IMPLEMENTED during HPR-P2-008**: **31** (green production CI through #584);
+- HMR-050..106 **STILL REQUIRED**: **23**;
+- HMR-050..106 **BLOCKED**: **1**;
+- HMR-050..106 **IMPLEMENTED during HPR-P2-008**: **33** (two Batch 11 items CI pending; previous 31 green through #584);
 - HMR-050..106 **SUPERSEDED**: **0**;
 - HMR-054 completed; repaired CI #575 is green;
 - HMR-080 remains blocked; HMR-055 prerequisite resolved and implemented in Batch 7.
@@ -151,7 +151,7 @@ No `party.application.contract.planning` package exists in the exact current tre
 
 - HMR-050 — **COMPLETED** at the first HPR-P2-008 execution step.
 - Batch 7 **COMPLETED — CI #581 GREEN**: HMR-055, 061, 066, 081, 099; exact repaired head ec63af0414d7fa85b9200d4bd181ac799bd072ed. Batch 8 preflight split below; no Planning implementation claimed.
-- Current remaining: **24 STILL REQUIRED + 2 BLOCKED (HMR-071, HMR-080)**; 31 implementations have green production CI through #584.
+- Current remaining: **23 STILL REQUIRED + 1 BLOCKED (HMR-080)**; 33 implementations, including two Batch 11 items awaiting full CI.
 
 - HMR-051 — **COMPLETED**: Topology and optional Organization references validated on every case save; snapshot preserved; no migration because primary-candidate FK already exists; owner contract and architecture export added.
 
@@ -1470,3 +1470,60 @@ Optional run/endpoint existence, correlated endpoint/system ownership and active
 ### Batch 11 HMR-071 — IMPLEMENTED, CI PENDING
 
 Required failure evidence, all-or-none manual trio and optional local references enforced. New manual evidence requires authenticated eligible Identity actor; recorded provenance is immutable without historical actor revalidation. Forward V20261007_011 supplies nullable FKs/checks and concurrent provenance guard. Eight focused methods, one Identity owner method and five added PostgreSQL cases prepared. Temporary API type compilation passed; local focused Maven blocked by uncached Boot parent; CI pending.
+
+
+## Batch 11 final implementation and validation disposition — 2026-10-07
+
+Owner Next accepted INT-PREREQ-01; the resolver decision is implemented within admitted
+056 → 071 scope, with independent exact semantic commits. HMR-056/HMSR-067 and
+HMR-071/HMSR-084 are IMPLEMENTED — CI PENDING. Current totals: **33 implemented,
+23 still required, one blocked (HMR-080)**. Previous 31 have green production CI #584.
+
+ExchangeMessage saves enforce optional local run/endpoint existence, endpoint ownership
+by the selected external system and active exact existing MESSAGE_TYPE/PAYLOAD_FORMAT
+families. Forward 010 provides nullable local/composite FKs and active-family SQL guards.
+DeadLetterRecord requires nonblank failure stage/reason message, all-or-none normalized
+manual actor/time/comment and existing optional local references. New manual evidence
+matches the authenticated actor and Identity's current eligibility through the explicit
+IntegrationResolverContract. Complete recorded provenance remains immutable on updates,
+without revalidating historical actor lifecycle. Forward 011 checks evidence shape and
+references and freezes recorded trios, including competing updates. Status alone does
+not imply manual resolution; no new status matrix or replay producer is introduced.
+No foreign-module FK, catalog seed or published migration rewrite occurs.
+
+### Validation actually performed
+
+- Offline Maven compile, each dedicated semantic test with shared PostgreSQL tests,
+  the Identity owner test, existing IntegrationJobRun/controller and architecture/forensic
+  selections, full test and clean verify were attempted. All failed before compilation
+  or test execution because the Boot 4.1.1 parent is uncached. Online compile confirms
+  repo.maven.apache.org temporary failure in name resolution. No Maven pass is claimed.
+- 158 source/temporary-API units compiled with Java's compiler. This detects source
+  type/signature issues but does not establish real Spring/JPA/Mockito/JUnit compatibility.
+- Four actual Java behavior checks passed with temporary external APIs: required failure
+  evidence, all six partial manual trios, absent/complete trios with independent status
+  semantics, and Identity delegation using the supplied current time. This is not
+  Maven/JUnit execution; Mockito adapter tests were not simulated.
+- All five actual forensic source scans passed with temporary JUnit annotations/assertions.
+  Both architecture registries have the same 37 exact public packages, without duplicates.
+  14 changed Java files syntax parsed; author/created/updated headers checked. Independent
+  HMR-056 and HMR-071 commit scopes pass (9 and 16 paths respectively). All 82 canonical
+  Markdown files are valid UTF-8/nonempty/conflict-free; diff whitespace checks pass.
+- Only new forward V20261007_010/011 SQL is changed. Published migrations are unchanged.
+
+### Validation prepared for production CI
+
+14 dedicated semantic/owner test methods (5 ExchangeMessage, 8 DeadLetterRecord,
+1 Identity owner) and 10 PostgreSQL cases await CI. Database cases cover optional local
+references, correlated ownership, active catalog families, required/partial evidence,
+legacy violation abort without repair, historical provenance immutability and concurrent
+endpoint reparent/manual-resolution writers. The SQL tests create the Integration base
+schema and execute these two forward migrations; they do not replace the full Flyway
+chain or existing Spring/controller/architecture/OpenAPI verification gates. No local
+Docker/PostgreSQL service or real Maven dependency graph was available.
+
+Publish exact trees as scope admission, two semantic commits and this supporting
+disposition; advance main once, observe production CI started, then stop. CI is pending
+at preparation. Next proposed scope is attached Batch 12 Reporting HMR-057/HMR-093,
+only after Batch 11 CI is green and fresh source/owner/exhaustive-scope admission.
+Do not execute Batch 12 automatically.

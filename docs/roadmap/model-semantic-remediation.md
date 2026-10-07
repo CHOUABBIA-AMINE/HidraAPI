@@ -251,7 +251,7 @@ Each model task implements only the obligations recorded in its source HMSR sect
 | HMR-080 | HMSR-094 | planning | Nomination | — | party.Party, planning.PlanRevision | `fix(planning): remediate semantic review Nomination` | Blocked — owner lookup contract prerequisite unresolved |
 | HMR-081 | HMSR-095 | workflow | WorkflowAction | — | organization.OrganizationUnit, workflow.WorkflowInstance, workflow.WorkflowTask | `fix(workflow): remediate semantic review WorkflowAction` | Planned |
 | HMR-082 | HMSR-096 | hse | HseCase | — | incident.Incident, organization.OrganizationUnit, workflow.WorkflowInstance | `fix(hse): remediate semantic review HseCase` | Planned |
-| HMR-083 | HMSR-097 | audit | AuditExportRequest | — | documents.Document, workflow.WorkflowInstance | `fix(audit): remediate semantic review AuditExportRequest` | Planned |
+| HMR-083 | HMSR-097 | audit | AuditExportRequest | — | documents.Document, workflow.WorkflowInstance | `fix(audit): remediate semantic review AuditExportRequest` | Implemented — CI pending |
 | HMR-084 | HMSR-098 | documents | DocumentTargetLink | — | documents.Document, documents.DocumentVersion | `fix(documents): remediate semantic review DocumentTargetLink` | Completed — CI pending |
 | HMR-085 | HMSR-100 | identity | AuthorizationDecision | — | identity.User | `fix(identity): remediate semantic review AuthorizationDecision` | Completed |
 | HMR-086 | HMSR-101 | identity | AuthorizationDelegationGrant | — | identity.Permission, identity.Role, identity.User | `fix(identity): remediate semantic review AuthorizationDelegationGrant` | Completed — Batch 5; final CI pending |
@@ -268,7 +268,7 @@ Each model task implements only the obligations recorded in its source HMSR sect
 | HMR code | HMSR source | Module | Model | SCC | Upstream HMS dependencies | Exact commit message | Status |
 |---|---|---|---|---|---|---|---|
 | HMR-094 | HMSR-111 | planning | PlanTarget | — | planning.Nomination, planning.PlanRevision, telemetry.TelemetryPoint | `fix(planning): remediate semantic review PlanTarget` | Planned |
-| HMR-095 | HMSR-112 | audit | AuditEvent | — | organization.OrganizationUnit, workflow.WorkflowAction, workflow.WorkflowInstance, workflow.WorkflowTask | `fix(audit): remediate semantic review AuditEvent` | Planned |
+| HMR-095 | HMSR-112 | audit | AuditEvent | — | organization.OrganizationUnit, workflow.WorkflowAction, workflow.WorkflowInstance, workflow.WorkflowTask | `fix(audit): remediate semantic review AuditEvent` | Implemented — CI pending |
 | HMR-096 | HMSR-113 | hse | HseClosure | — | hse.HseCase, workflow.WorkflowInstance | `fix(hse): remediate semantic review HseClosure` | Planned |
 | HMR-097 | HMSR-114 | hse | HseCorrectivePreventiveAction | — | assets.MaintenanceWorkOrder, hse.HseCase, organization.OrganizationUnit, workflow.WorkflowTask | `fix(hse): remediate semantic review HseCorrectivePreventiveAction` | Planned |
 | HMR-098 | HMSR-115 | integrity | IntegrityCase | — | hse.HseCase, incident.Incident, integrity.PipelineDefect, organization.OrganizationUnit, workflow.WorkflowInstance | `fix(integrity): remediate semantic review IntegrityCase` | Planned |
@@ -279,8 +279,8 @@ Each model task implements only the obligations recorded in its source HMSR sect
 | HMR code | HMSR source | Module | Model | SCC | Upstream HMS dependencies | Exact commit message | Status |
 |---|---|---|---|---|---|---|---|
 | HMR-100 | HMSR-117 | alarm | Alarm | — | incident.Incident, organization.OrganizationUnit, planning.PlanTarget, telemetry.TelemetryReading, workflow.WorkflowInstance | `fix(alarm): remediate semantic review Alarm` | Planned |
-| HMR-101 | HMSR-118 | audit | AuditAccessRecord | — | audit.AuditEvent, audit.AuditExportRequest | `fix(audit): remediate semantic review AuditAccessRecord` | Planned |
-| HMR-102 | HMSR-119 | audit | AuditBeforeAfterValue | — | audit.AuditEvent | `fix(audit): remediate semantic review AuditBeforeAfterValue` | Planned |
+| HMR-101 | HMSR-118 | audit | AuditAccessRecord | — | audit.AuditEvent, audit.AuditExportRequest | `fix(audit): remediate semantic review AuditAccessRecord` | Implemented — CI pending |
+| HMR-102 | HMSR-119 | audit | AuditBeforeAfterValue | — | audit.AuditEvent | `fix(audit): remediate semantic review AuditBeforeAfterValue` | Implemented — CI pending |
 | HMR-103 | HMSR-120 | monitoring | PlanActualDeviation | — | planning.PlanTarget, telemetry.TelemetryPoint, telemetry.TrustedTelemetryReading | `fix(monitoring): remediate semantic review PlanActualDeviation` | Planned |
 
 ### 8.9 Dependency level 8
@@ -4356,7 +4356,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 - SCC: —
 - Recorded upstream HMS dependencies: documents.Document, workflow.WorkflowInstance
 - HMSR correction count: 5
-- Additive Flyway: `src/main/resources/db/migration/V20261004_083__hmr_083_audit_audit_export_request.sql`
+- Additive Flyway: `src/main/resources/db/migration/V20261007_006__hmr_083_audit_export_request.sql` (accepted canonical Batch 10 admission)
 - Owner-contract prerequisite: Existing candidate owner contract(s): documents:src/main/java/dz/sh/hidra/modules/documents/application/port/out/DocumentIdentityReferencePort.java; documents:src/main/java/dz/sh/hidra/modules/documents/application/port/out/DocumentIntegrationReferencePort.java; documents:src/main/java/dz/sh/hidra/modules/documents/application/port/out/DocumentTargetReferencePort.java; documents:src/main/java/dz/sh/hidra/modules/documents/application/port/out/DocumentWorkflowReferencePort.java; workflow:src/main/java/dz/sh/hidra/modules/workflow/application/port/in/WorkflowQueryUseCase.java; workflow:src/main/java/dz/sh/hidra/modules/workflow/application/port/out/WorkflowEligibilityLookupPort.java
 - Exact write allowlist:
   - `docs/data definition/Audit.md`
@@ -4749,7 +4749,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 - SCC: —
 - Recorded upstream HMS dependencies: organization.OrganizationUnit, workflow.WorkflowAction, workflow.WorkflowInstance, workflow.WorkflowTask
 - HMSR correction count: 4
-- Additive Flyway: not pre-authorized by HMR-002
+- Additive Flyway: `src/main/resources/db/migration/V20261007_007__hmr_095_audit_event.sql` (accepted canonical Batch 10 admission)
 - Owner-contract prerequisite: No cross-module owner-contract prerequisite recorded by this HMSR correction.
 - Exact write allowlist:
   - `docs/data definition/Audit.md`
@@ -5058,7 +5058,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 - SCC: —
 - Recorded upstream HMS dependencies: audit.AuditEvent, audit.AuditExportRequest
 - HMSR correction count: 3
-- Additive Flyway: not pre-authorized by HMR-002
+- Additive Flyway: `src/main/resources/db/migration/V20261007_008__hmr_101_audit_access_record.sql` (accepted canonical Batch 10 admission)
 - Owner-contract prerequisite: No cross-module owner-contract prerequisite recorded by this HMSR correction.
 - Exact write allowlist:
   - `docs/data definition/Audit.md`
@@ -5092,7 +5092,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 - SCC: —
 - Recorded upstream HMS dependencies: audit.AuditEvent
 - HMSR correction count: 4
-- Additive Flyway: not pre-authorized by HMR-002
+- Additive Flyway: `src/main/resources/db/migration/V20261007_009__hmr_102_audit_before_after_value.sql` (accepted canonical Batch 10 admission)
 - Owner-contract prerequisite: No cross-module owner-contract prerequisite recorded by this HMSR correction.
 - Exact write allowlist:
   - `docs/data definition/Audit.md`
@@ -5330,7 +5330,7 @@ The following are execution registrations only; they do not change any HMR's sem
 | HMRB-041 | HMR-080 | Solo | **Blocked until prerequisite.** Nomination has unresolved Party lookup and broader product/unit ownership reconciliation. |
 | HMRB-042 | HMR-081 | Solo | **Planned.** Workflow decision-authority, task ownership, actor evidence and race-safe action sequencing. |
 | HMRB-043 | HMR-082 | Solo | **Planned.** HSE case closure lifecycle and multi-owner references. |
-| HMRB-044 | HMR-083 | Solo | **Planned.** Audit export sanitization, purpose family, Workflow/Documents ownership and self-auditing behavior. |
+| HMRB-044 | HMR-083 | Solo | **Implemented — CI pending within accepted attached Batch 10.** Audit export sanitization, purpose family, Workflow/Documents ownership and self-auditing behavior. |
 | HMRB-045 | HMR-084 | Solo | **Completed — CI pending within admitted attached Batch 9.** Documents polymorphic target validation with no concrete upstream owner registered. |
 | HMRB-046 | HMR-085 | Solo | **Completed; CI pending.** High-risk authorization evaluation order, explainability and conditional decision persistence. |
 | HMRB-047 | HMR-086, HMR-087, HMR-088, HMR-089 | Batch | **Completed in owner Batch 5.** Four consecutive same-module Identity corrections with no cross-module owner prerequisite; preserve one commit/test contract per HMR. |
@@ -5339,13 +5339,13 @@ The following are execution registrations only; they do not change any HMR's sem
 | HMRB-050 | HMR-092 | Solo | **Planned.** Incident response-action lifecycle eligibility and catalog family. |
 | HMRB-051 | HMR-093 | Solo | **Planned.** Reporting artifact FK correction plus Documents-owned evidence references. |
 | HMRB-052 | HMR-094 | Solo | **Planned.** Planning target value-shape, revision compatibility, Topology and Telemetry validation. |
-| HMRB-053 | HMR-095 | Solo | **Planned.** AuditEvent append-only ledger, catalog families and sensitive-payload redaction/limits. |
+| HMRB-053 | HMR-095 | Solo | **Implemented — CI pending within accepted attached Batch 10.** AuditEvent append-only ledger, catalog families and sensitive-payload redaction/limits. |
 | HMRB-054 | HMR-096 | Solo | **Planned.** HSE closure transactional lifecycle with Workflow/Identity ownership. |
 | HMRB-055 | HMR-097 | Solo | **Planned.** HSE CAPA lifecycle plus Assets/Organization/Workflow/Identity ownership. |
 | HMRB-056 | HMR-098 | Solo | **Planned.** Integrity case family definition and multi-module owner boundaries. |
 | HMRB-057 | HMR-099 | Solo | **Planned.** Workflow history append-only evidence and reference coherence. |
 | HMRB-058 | HMR-100 | Solo | **Planned.** Alarm aggregate lifecycle establishment; creation/acknowledgement/closure event atomicity. |
-| HMRB-059 | HMR-101, HMR-102 | Batch | **Planned.** Consecutive Audit evidence records; append-only semantics plus bounded same-module/catalog validation. |
+| HMRB-059 | HMR-101, HMR-102 | Batch | **Implemented — CI pending within accepted attached Batch 10.** Consecutive Audit evidence records; append-only semantics plus bounded same-module/catalog validation. |
 | HMRB-060 | HMR-103 | Solo | **Planned.** Monitoring deviation requires Planning/Telemetry owner validation and same-module evaluation coherence. |
 | HMRB-061 | HMR-104 | Solo | **Planned.** Alarm acknowledgement transactional lifecycle; high-risk lifecycle orchestration remains isolated. |
 | HMRB-062 | HMR-105 | Solo | **Planned.** Alarm closure transactional lifecycle, one-closure invariant and Workflow ownership. |

@@ -141,8 +141,8 @@ No `party.application.contract.planning` package exists in the exact current tre
 - HMR-009 confirmed **COMPLETED** and removed as a carry-over blocker;
 - HMR-050..106 evaluated: **57**;
 - HMR-050..106 **STILL REQUIRED**: **25**;
-- HMR-050..106 **BLOCKED**: **5**;
-- HMR-050..106 **IMPLEMENTED during HPR-P2-008**: **27** (green production CI through #583);
+- HMR-050..106 **BLOCKED**: **1**;
+- HMR-050..106 **IMPLEMENTED during HPR-P2-008**: **31** (four Batch 10 items CI pending; previous 27 green through #583);
 - HMR-050..106 **SUPERSEDED**: **0**;
 - HMR-054 completed; repaired CI #575 is green;
 - HMR-080 remains blocked; HMR-055 prerequisite resolved and implemented in Batch 7.
@@ -151,7 +151,7 @@ No `party.application.contract.planning` package exists in the exact current tre
 
 - HMR-050 — **COMPLETED** at the first HPR-P2-008 execution step.
 - Batch 7 **COMPLETED — CI #581 GREEN**: HMR-055, 061, 066, 081, 099; exact repaired head ec63af0414d7fa85b9200d4bd181ac799bd072ed. Batch 8 preflight split below; no Planning implementation claimed.
-- Current remaining: **25 STILL REQUIRED + 5 BLOCKED (HMR-080, 083, 095, 101, 102)**; 27 implementations have green production CI through #583.
+- Current remaining: **25 STILL REQUIRED + 1 BLOCKED (HMR-080)**; 31 implementations, including four Batch 10 items awaiting full CI.
 
 - HMR-051 — **COMPLETED**: Topology and optional Organization references validated on every case save; snapshot preserved; no migration because primary-candidate FK already exists; owner contract and architecture export added.
 
@@ -1261,3 +1261,73 @@ Access records use persist/flush without merge; populated optional AuditEvent/ex
 ### Batch 10 HMR-102 — IMPLEMENTED, CI PENDING
 
 Required fieldPath, masked/sensitive raw-text exclusion, optional exact active MASK_REASON and existing parent event enforced. Hash-only evidence and changed=false remain legal. Persist/flush insertion plus V20261007_009 local FKs/checks/UPDATE/DELETE denial preserve immutable rows. Six focused and five added PostgreSQL/JPA/concurrency/legacy checks prepared. Temporary API type compilation passed; local focused Maven blocked by uncached Boot parent; CI pending.
+
+
+## Batch 10 final implementation and validation disposition — 2026-10-07
+
+Owner Next accepted AUD-PREREQ-01. Four independent exact semantic commits preserve
+HMR-083/HMSR-097, HMR-095/HMSR-112, HMR-101/HMSR-118 and HMR-102/HMSR-119. All are
+IMPLEMENTED — CI PENDING; previous 27 implementations have green production CI through
+#583. Current totals: **31 implemented, 25 still required, one blocked (HMR-080)**.
+
+Export creation requires filter/format, active EXPORT_PURPOSE and owner-proven optional
+Workflow/Documents references. The present generic boundary admits REQUESTED only;
+no approval/execution/unmasking claim follows from existence. One EXPORT access row
+with sanitized-filter SHA-256 joins the request transaction; evidence failure rolls
+back the request. Export inserts also use persist/flush, preventing ID replacement.
+Event/access/before-after evidence has insert-only JPA and SQL UPDATE/DELETE denial.
+Exact active catalog families, nullable local references, required module/type/path,
+JSON budgets/depth and masked raw-text exclusion are enforced. Technical actorId,
+optional reason/reference values and changed=false retain their documented optionality.
+
+The accepted 65,536-byte/depth-32 policy parses JSON strictly, rejecting duplicate
+keys and trailing tokens, redacts nested credential-key values and rejects supported
+credential patterns even in JSON property names. Basic authorization is recognized
+by decoded user:password structure so ordinary text such as "Basic station inspection"
+remains legal. Arbitrary unlabelled secrets cannot be inferred. PostgreSQL limits the
+stored jsonb textual representation; its added whitespace can reject a near-limit input
+whose compact application representation was within budget. Both boundaries fail
+without truncation. No historical evidence or published migration is rewritten.
+
+### Validation actually performed
+
+- `bash ./mvnw -o -q -DskipTests compile`: blocked before compilation by uncached
+  Spring Boot 4.1.1 parent. Online compile also failed: repo.maven.apache.org temporary
+  failure in name resolution. No Maven compile success is claimed.
+- Each dedicated semantic focused test plus the shared integration test was attempted
+  with offline Maven; HMR-083 also selected both owner queries. All failed at the same
+  parent-resolution stage. Full `bash ./mvnw -o -q test` and
+  `bash ./mvnw -o -q clean verify` likewise failed before executing tests.
+- 177 actual-source/temporary-API units compiled with Java's compiler. This detects
+  project type/signature errors, but does not establish real Jackson/Spring/Hibernate,
+  Mockito/JUnit or PostgreSQL compatibility. JSON parser behavior was deliberately
+  not simulated and is not claimed passed.
+- 16 actual Java domain/text/hash/recursive-policy checks passed using temporary
+  external annotation/assertion/API surfaces: five domain methods, four credential
+  rejections, benign text and known SHA-256, two Basic credential/ordinary-text checks,
+  three recursive map/list policy checks. These are not Maven/JUnit execution.
+- All five actual ForensicRemediationClosureTest source scans passed with temporary
+  JUnit annotation/assertion APIs. Both public-export registries have the same 36 exact
+  packages, with no duplicates. Private-import and wire-model checks remain closed.
+- 34 changed Java files syntax parsed; canonical author/creation/update headers checked.
+  Each semantic commit's changed paths match its independent admitted allowlist.
+  All 82 canonical Markdown files are valid UTF-8/nonempty/conflict-free; diff whitespace
+  checks pass. Forward SQL is only V20261007_006/007/008/009; existing SQL is unchanged.
+
+### Validation prepared for production CI
+
+24 dedicated semantic/owner test methods (8 export, 5 event, 3 access, 6 before-after,
+2 owner queries) plus 17 PostgreSQL/Spring/Hibernate cases are prepared, not locally
+passed. The latter cover stored JSON, catalog families, mutable catalog lifecycle,
+request/evidence rollback, actual JPA insert-only behavior for all four models,
+concurrent duplicate IDs, optional orphan denial, direct UPDATE/DELETE and upsert
+rejection, raw masked exclusion and invalid legacy migration abort. Existing Audit
+Risk/Organization/Alarm contracts, architecture, full verification and OpenAPI gates
+remain part of CI. No Docker/PostgreSQL service or real Maven dependency graph was
+available locally.
+
+Final publication includes scope admission, four semantic commits and this supporting
+validation disposition. Advance main once after exact-tree comparison, observe production
+CI triggering, then stop. CI pending at preparation. Next proposed owner scope is attached
+Batch 11 Integration evidence HMR-056/HMR-071, only after Batch 10 CI is green and fresh
+source/owner/exact-scope admission. No automatic Batch 11 execution.

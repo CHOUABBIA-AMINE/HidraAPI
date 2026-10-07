@@ -1949,3 +1949,32 @@ Access records use persist/flush without merge; populated optional AuditEvent/ex
 ### Batch 10 HMR-102 — IMPLEMENTED, CI PENDING
 
 Required fieldPath, masked/sensitive raw-text exclusion, optional exact active MASK_REASON and existing parent event enforced. Hash-only evidence and changed=false remain legal. Persist/flush insertion plus V20261007_009 local FKs/checks/UPDATE/DELETE denial preserve immutable rows. Six focused and five added PostgreSQL/JPA/concurrency/legacy checks prepared. Temporary API type compilation passed; local focused Maven blocked by uncached Boot parent; CI pending.
+
+
+## HPR-P2-008 Batch 10 final disposition — 2026-10-07
+
+AUD-PREREQ-01 accepted by owner Next and resolved within the registered four-task scope.
+HMR-083/095/101/102 are independently IMPLEMENTED — CI PENDING, preserving exact
+semantic messages and allowed paths. Current totals: 31 implemented (four CI pending),
+25 still required, one blocked HMR-080. Previous 27 have green production CI through #583.
+
+Export request creation uses strict bounded sanitized JSON, exact active purpose,
+owner-proven optional references and one transactional access-evidence row. REQUESTED
+only; approval/execution/unmasking are not inferred. Event/access/before-after records
+use persist/flush and DB UPDATE/DELETE denial, with required/family/reference/masking
+checks. Existing published migrations unchanged; additive forward 006/007/008/009.
+No taxonomy seed, before/after producer, release-version change or Batch 11 work.
+
+Local Maven compile/focused/full/verify blocked before execution by uncached Boot 4.1.1
+parent; online compile confirms Maven Central DNS failure. 177 temporary-API source
+units compiled; 16 actual Java domain/text/hash/recursive-policy checks and five forensic
+source scans passed using temporary external APIs. 34 changed Java files syntax parsed;
+headers/scope/36 exact public exports/82 canonical Markdown checks passed. These do not
+constitute real Maven/JUnit/Jackson/Spring/Hibernate/PostgreSQL verification. 24 dedicated
+semantic/owner tests and 17 integration cases await CI. Details and parsing/secret-detection
+limits are recorded in reconciliation; stored jsonb textual size may exceed compact JSON.
+
+Supporting message: `docs(audit): record Batch 10 validation disposition`.
+One final main advancement; observe production CI triggering and stop. Next proposed
+owner scope: attached Batch 11 HMR-056/HMR-071, gated on green Batch 10 production CI and
+fresh source/owner/exhaustive-scope admission. Do not execute automatically.

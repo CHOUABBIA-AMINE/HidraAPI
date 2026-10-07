@@ -41,7 +41,7 @@ class ReportingSemanticPostgresIntegrationTest {
         }
         file("V20261004_013__hmr_013_reporting_report_definition.sql");
     }
-    void migrate()throws Exception{file("V20261007_012__hmr_057_reporting_report_run.sql");}
+    void migrate()throws Exception{file("V20261007_012__hmr_057_reporting_report_run.sql");file("V20261007_013__hmr_093_reporting_report_output_artifact.sql");}
     void definition(String id)throws SQLException{sql("INSERT INTO hidra_reporting_report_definition(id,code,name_fr,report_category_id,owner_module,status,requires_approval,restricted,created_at,updated_at) VALUES ('"+id+"','"+id+"','Rapport','category','reporting','ACTIVE',false,false,now(),now())");}
     void seeds()throws SQLException{
         sql("INSERT INTO hidra_reporting_catalog_entry(id,catalog_name,code,active,sort_order,system_defined,created_at,updated_at) VALUES ('category','REPORT_CATEGORY','category',true,0,false,now(),now())");
@@ -110,5 +110,34 @@ class ReportingSemanticPostgresIntegrationTest {
     boolean attempt(CountDownLatch start,String statement)throws Exception{
         start.await();try(var c=connection();var s=c.createStatement()){c.setAutoCommit(false);s.execute("SET LOCAL lock_timeout='5s'");
             try{s.execute(statement);c.commit();return true;}catch(SQLException e){c.rollback();if(!"23514".equals(e.getSQLState()) && !"23503".equals(e.getSQLState()))throw e;return false;}}
+    }
+
+    String artifact(String id,String run,String storage,String document){return "INSERT INTO hidra_reporting_output_artifact(id,report_run_id,artifact_type,format,file_name,mime_type,storage_object_reference_id,document_reference_id,checksum,generated_at,created_at) VALUES ('"+id+"','"+run+"','PRIMARY_REPORT','PDF','report.pdf','application/pdf',"+(storage==null?"null":"'"+storage+"'")+","+(document==null?"null":"'"+document+"'")+",'hash',now(),now())";}
+    @Test void artifactRunForeignKeyAcceptsQueuedRunAndRejectsOrphans()throws Exception{
+        sql(run("run"));sql(artifact("artifact","run","storage",null));assertThrows(SQLException.class,()->sql(artifact("orphan","missing","storage",null)));
+        assertThrows(SQLException.class,()->sql("DELETE FROM hidra_reporting_run WHERE id='run'"));
+    }
+    @Test void artifactRequiresNonblankDocumentOrStorageShapeWithoutForeignModuleFk()throws Exception{
+        sql(run("run"));assertThrows(SQLException.class,()->sql(artifact("none","run",null,null)));assertThrows(SQLException.class,()->sql(artifact("blank","run"," ","document")));
+        sql(artifact("document","run",null,"document"));sql(artifact("storage","run","storage",null));sql(artifact("both","run","storage","document"));
+        try(var c=connection();var s=c.createStatement();var r=s.executeQuery("SELECT count(*) FROM pg_constraint WHERE contype='f' AND conrelid='hidra_reporting_output_artifact'::regclass AND confrelid<>'hidra_reporting_run'::regclass")){assertTrue(r.next());assertEquals(0,r.getInt(1));}
+    }
+    @Test void legacyArtifactOrphanAbortsForwardMigration()throws Exception{
+        oldSchema();file("V20261007_012__hmr_057_reporting_report_run.sql");seeds();
+        sql("INSERT INTO hidra_reporting_catalog_entry(id,catalog_name,code,active,sort_order,system_defined,created_at,updated_at) VALUES ('catalog','OTHER','catalog',true,0,false,now(),now())");
+        sql(artifact("legacy","catalog","storage",null));assertThrows(SQLException.class,()->file("V20261007_013__hmr_093_reporting_report_output_artifact.sql"));
+        try(var c=connection();var s=c.createStatement();var r=s.executeQuery("SELECT report_run_id FROM hidra_reporting_output_artifact WHERE id='legacy'")){assertTrue(r.next());assertEquals("catalog",r.getString(1));}
+    }
+    @Test void legacyArtifactWithoutDocumentsEvidenceAbortsWithoutInventingReference()throws Exception{
+        oldSchema();file("V20261007_012__hmr_057_reporting_report_run.sql");seeds();sql(run("run"));
+        sql("INSERT INTO hidra_reporting_catalog_entry(id,catalog_name,code,active,sort_order,system_defined,created_at,updated_at) VALUES ('run','OTHER','run',true,0,false,now(),now())");
+        sql(artifact("legacy","run",null,null));assertThrows(SQLException.class,()->file("V20261007_013__hmr_093_reporting_report_output_artifact.sql"));
+        try(var c=connection();var s=c.createStatement();var r=s.executeQuery("SELECT storage_object_reference_id,document_reference_id FROM hidra_reporting_output_artifact WHERE id='legacy'")){assertTrue(r.next());assertNull(r.getString(1));assertNull(r.getString(2));}
+    }
+    @Test void concurrentRunDeleteAndArtifactInsertCannotBothCommit()throws Exception{
+        sql(run("run"));var start=new CountDownLatch(1);var pool=Executors.newFixedThreadPool(2);
+        try{var output=pool.submit(()->attempt(start,artifact("concurrent","run","storage",null)));var deletion=pool.submit(()->attempt(start,"DELETE FROM hidra_reporting_run WHERE id='run'"));start.countDown();
+            assertEquals(1,(output.get(15,TimeUnit.SECONDS)?1:0)+(deletion.get(15,TimeUnit.SECONDS)?1:0));
+        }finally{pool.shutdownNow();}
     }
 }

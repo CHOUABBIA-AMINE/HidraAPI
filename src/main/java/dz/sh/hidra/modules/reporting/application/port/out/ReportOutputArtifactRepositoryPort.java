@@ -7,7 +7,7 @@
  *
  * @Name        : ReportOutputArtifactRepositoryPort
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-07
  *
  * @Type        : Interface
  * @Layer       : Application
@@ -28,6 +28,7 @@ import java.util.Optional;
  */
 public interface ReportOutputArtifactRepositoryPort {
 
+    /** Persists SQL-protected run lineage and reference shape; supplied Documents IDs are validated through their owner at generation. */
     ReportOutputArtifact save(ReportOutputArtifact model);
 
     Optional<ReportOutputArtifact> findById(String id);

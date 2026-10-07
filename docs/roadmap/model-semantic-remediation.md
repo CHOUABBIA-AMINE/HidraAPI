@@ -261,7 +261,7 @@ Each model task implements only the obligations recorded in its source HMSR sect
 | HMR-090 | HMSR-107 | incident | IncidentClosure | — | incident.Incident, workflow.WorkflowInstance | `fix(incident): remediate semantic review IncidentClosure` | Planned |
 | HMR-091 | HMSR-108 | incident | IncidentRelatedIncident | — | incident.Incident | `fix(incident): remediate semantic review IncidentRelatedIncident` | Planned |
 | HMR-092 | HMSR-109 | incident | IncidentResponseAction | — | incident.Incident, organization.OrganizationUnit | `fix(incident): remediate semantic review IncidentResponseAction` | Planned |
-| HMR-093 | HMSR-110 | reporting | ReportOutputArtifact | — | documents.Document, documents.DocumentStorageObject, reporting.ReportRun | `fix(reporting): remediate semantic review ReportOutputArtifact` | Planned |
+| HMR-093 | HMSR-110 | reporting | ReportOutputArtifact | — | documents.Document, documents.DocumentStorageObject, reporting.ReportRun | `fix(reporting): remediate semantic review ReportOutputArtifact` | Implemented — CI pending |
 
 ### 8.7 Dependency level 6
 
@@ -4684,11 +4684,11 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-110`
 - Exact commit: `fix(reporting): remediate semantic review ReportOutputArtifact`
-- Status: **Planned**
+- Status: **Implemented — CI pending**
 - SCC: —
 - Recorded upstream HMS dependencies: documents.Document, documents.DocumentStorageObject, reporting.ReportRun
 - HMSR correction count: 3
-- Additive Flyway: not pre-authorized by HMR-002
+- Additive Flyway: `src/main/resources/db/migration/V20261007_013__hmr_093_reporting_report_output_artifact.sql` (accepted Batch 12)
 - Owner-contract prerequisite: Existing candidate owner contract(s): documents:src/main/java/dz/sh/hidra/modules/documents/application/port/out/DocumentIdentityReferencePort.java; documents:src/main/java/dz/sh/hidra/modules/documents/application/port/out/DocumentIntegrationReferencePort.java; documents:src/main/java/dz/sh/hidra/modules/documents/application/port/out/DocumentTargetReferencePort.java; documents:src/main/java/dz/sh/hidra/modules/documents/application/port/out/DocumentWorkflowReferencePort.java
 - Exact write allowlist:
   - `docs/data definition/Reporting.md`
@@ -4711,6 +4711,8 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
   1. **Correct HRA-111 so `report_run_id` references `hidra_reporting_run(id)`, not `hidra_reporting_catalog_entry(id)`.**
   2. **Make artifact generation fail closed when the referenced ReportRun does not exist.**
   3. **Enforce the DDD invariant that every artifact references at least one Documents storage object or Document metadata record; validate supplied cross-module references through Documents-owned contracts without adding cross-module DB FKs.**
+
+- Batch 12 implementation: Existing run and nonblank Documents reference evidence required; every supplied reference is independently owner-validated. Forward 013 corrects artifact/run FK without Documents FK. Six focused methods, one Documents owner method and five additional PostgreSQL cases prepared; CI pending.
 
 #### HMR-094 — planning.PlanTarget
 

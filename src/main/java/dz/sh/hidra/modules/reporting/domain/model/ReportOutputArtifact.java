@@ -7,7 +7,7 @@
  *
  * @Name        : ReportOutputArtifact
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-10-07
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -89,6 +89,8 @@ import java.time.Instant;
         storageObjectReferenceId = normalize(storageObjectReferenceId);
         documentReferenceId = normalize(documentReferenceId);
         checksum = normalize(checksum);
+        if(storageObjectReferenceId == null && documentReferenceId == null)
+            throw new InvalidReportingValueException("Report artifact requires a Documents storage or document reference.");
         }
         public boolean reproducibleArtifact() {
             return checksum != null && !checksum.isBlank()

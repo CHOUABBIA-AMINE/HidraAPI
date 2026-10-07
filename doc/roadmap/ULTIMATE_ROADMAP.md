@@ -2286,3 +2286,7 @@ trees and advance main once; observe production CI started and stop.
 ### Batch 12 HMR-057 — IMPLEMENTED, CI PENDING
 
 Queue eligibility/access/approval, exact template lineage, concrete required parameters and terminal evidence enforced. Forward 012 corrects run/parameter request FKs and guards lineage/history. Eight Run, four QueueEvidence and nine PostgreSQL cases prepared; local runtime validation follows; CI pending.
+
+### Batch 12 HMR-093 — IMPLEMENTED, CI PENDING
+
+Existing run and nonblank Documents reference evidence required; every supplied reference is independently owner-validated. Forward 013 corrects artifact/run FK without Documents FK. Six focused methods, one Documents owner method and five additional PostgreSQL cases prepared; CI pending.

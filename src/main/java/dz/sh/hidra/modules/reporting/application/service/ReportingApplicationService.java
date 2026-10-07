@@ -54,6 +54,7 @@ import dz.sh.hidra.modules.reporting.domain.value.ReportRunStatus;
 import dz.sh.hidra.modules.reporting.domain.value.ReportingId;
 
 import java.time.Instant;
+import dz.sh.hidra.modules.documents.application.contract.reporting.ReportingDocumentReferenceContract;
 import dz.sh.hidra.modules.reporting.application.port.out.ReportQueueEvidencePort;
 import java.util.Objects;
 
@@ -71,6 +72,7 @@ public final class ReportingApplicationService implements CreateReportDefinition
     private final ReportingWorkflowApprovalContract workflowApprovalContract;
     private final ReportingOrganizationUnitReferenceContract organizationUnitReferenceContract;
     private final ReportQueueEvidencePort queueEvidence;
+    private final ReportingDocumentReferenceContract documents;
     private final ReportReproducibilityGuard reproducibilityGuard = new ReportReproducibilityGuard();
 
     @Autowired
@@ -82,8 +84,10 @@ public final class ReportingApplicationService implements CreateReportDefinition
             ReportingAccessAuthorizationContract accessAuthorizationContract,
             ReportingWorkflowApprovalContract workflowApprovalContract,
             ReportingOrganizationUnitReferenceContract organizationUnitReferenceContract,
-            ReportQueueEvidencePort queueEvidence
+            ReportQueueEvidencePort queueEvidence,
+            ReportingDocumentReferenceContract documents
     ) {
+        this.documents=Objects.requireNonNull(documents);
         this.queueEvidence = Objects.requireNonNull(queueEvidence);
         this.definitionRepositoryPort = Objects.requireNonNull(definitionRepositoryPort, "Report definition repository port must not be null.");
         this.requestRepositoryPort = Objects.requireNonNull(requestRepositoryPort, "Report request repository port must not be null.");
@@ -92,6 +96,16 @@ public final class ReportingApplicationService implements CreateReportDefinition
         this.accessAuthorizationContract = Objects.requireNonNull(accessAuthorizationContract, "Reporting access authorization contract must not be null.");
         this.workflowApprovalContract = Objects.requireNonNull(workflowApprovalContract, "Reporting workflow approval contract must not be null.");
         this.organizationUnitReferenceContract = Objects.requireNonNull(organizationUnitReferenceContract, "Reporting OrganizationUnit contract must not be null.");
+    }
+
+    public ReportingApplicationService(ReportDefinitionRepositoryPort definitions,ReportRequestRepositoryPort requests,
+            ReportRunRepositoryPort runs,ReportOutputArtifactRepositoryPort artifacts,
+            ReportingAccessAuthorizationContract access,ReportingWorkflowApprovalContract approval,
+            ReportingOrganizationUnitReferenceContract organization,ReportQueueEvidencePort evidence){
+        this(definitions,requests,runs,artifacts,access,approval,organization,evidence,new ReportingDocumentReferenceContract(){
+            public boolean documentExists(String id){return false;}
+            public boolean storageObjectExists(String id){return false;}
+        });
     }
 
     public ReportingApplicationService(ReportDefinitionRepositoryPort definitions,ReportRequestRepositoryPort requests,
@@ -305,6 +319,15 @@ public final class ReportingApplicationService implements CreateReportDefinition
     @Override
     public ReportOutputArtifactSummaryDto generateReportArtifact(GenerateReportArtifactCommand command) {
         Objects.requireNonNull(command, "Generate report artifact command must not be null.");
+        if(runRepositoryPort.findById(command.reportRunId()).isEmpty())
+            throw new InvalidReportingValueException("Artifact ReportRun must exist.");
+        String storage=normalize(command.storageObjectReferenceId()),document=normalize(command.documentReferenceId());
+        if(storage==null && document==null)
+            throw new InvalidReportingValueException("Artifact requires at least one Documents reference.");
+        if(storage!=null && !documents.storageObjectExists(storage))
+            throw new InvalidReportingValueException("Artifact storage reference is unknown to Documents.");
+        if(document!=null && !documents.documentExists(document))
+            throw new InvalidReportingValueException("Artifact document reference is unknown to Documents.");
         ReportOutputArtifact artifact = new ReportOutputArtifact(
                 ReportingId.newId().value(),
                 command.reportRunId(),

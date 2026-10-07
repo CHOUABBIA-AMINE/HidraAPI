@@ -119,7 +119,7 @@ No `party.application.contract.planning` package exists in the exact current tre
 | HMR-090 | HMSR-107 | incident.IncidentClosure | STILL REQUIRED | no migration registered; dedicated test: absent; revalidate obligations before mutation |
 | HMR-091 | HMSR-108 | incident.IncidentRelatedIncident | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-092 | HMSR-109 | incident.IncidentResponseAction | STILL REQUIRED | no migration registered; dedicated test: absent; revalidate obligations before mutation |
-| HMR-093 | HMSR-110 | reporting.ReportOutputArtifact | BLOCKED — REP-PREREQ-01 | Live-source prerequisites and concrete decision recorded below; awaiting acceptance and exact scope admission. |
+| HMR-093 | HMSR-110 | reporting.ReportOutputArtifact | IMPLEMENTED — CI PENDING | Existing run and nonblank Documents reference evidence required; every supplied reference is independently owner-validated. Forward 013 corrects artifact/run FK without Documents FK. Six focused methods, one Documents owner method and five additional PostgreSQL cases prepared; CI pending. |
 | HMR-094 | HMSR-111 | planning.PlanTarget | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-095 | HMSR-112 | audit.AuditEvent | COMPLETED — CI #584 GREEN | Required source/target module and target type, active exact event/category/optional severity/reason families, bounded sanitized payload/free text and persist/flush insertion enforced. Forward V20261007_007 adds optional catalog FKs, family guards and immutable event UPDATE/DELETE denial. Five focused and four added PostgreSQL/JPA/concurrency checks prepared; local focused Maven blocked by uncached Boot parent; CI #584 passed. |
 | HMR-096 | HMSR-113 | hse.HseClosure | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
@@ -1624,3 +1624,7 @@ Next action: accept or amend REP-PREREQ-01, then admit exact scope and implement
 ### Batch 12 HMR-057 — IMPLEMENTED, CI PENDING
 
 Queue eligibility/access/approval, exact template lineage, concrete required parameters and terminal evidence enforced. Forward 012 corrects run/parameter request FKs and guards lineage/history. Eight Run, four QueueEvidence and nine PostgreSQL cases prepared; local runtime validation follows; CI pending.
+
+### Batch 12 HMR-093 — IMPLEMENTED, CI PENDING
+
+Existing run and nonblank Documents reference evidence required; every supplied reference is independently owner-validated. Forward 013 corrects artifact/run FK without Documents FK. Six focused methods, one Documents owner method and five additional PostgreSQL cases prepared; CI pending.

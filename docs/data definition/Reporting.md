@@ -1530,3 +1530,13 @@ runs preserve retired versions on unrelated updates; relational lineage remains 
 Forward 012 corrects run-request and parameter-value request FKs; historical invalid
 data aborts rather than being reassigned. No new request transition or duplicate-run
 claim follows from these queue checks.
+
+
+## Batch 12 ReportOutputArtifact lineage — 2026-10-07
+
+Generation requires an existing ReportRun and at least one normalized Documents
+storage-object or document-metadata ID. Supplied IDs are independently validated by
+Documents-owned distinct lookups. Existence does not imply lifecycle eligibility,
+binary availability or pairing. A queued run may have artifacts; no completed-only
+rule is introduced. Existing checksum requirements remain. Forward 013 corrects
+artifact/run FK and enforces reference shape; no foreign-module DB FK is introduced.

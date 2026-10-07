@@ -2119,3 +2119,96 @@ Publish scope admission, two semantic commits and this validation disposition; a
 main once after exact-tree checks, observe production CI started, then stop. Next proposed
 owner scope: attached Batch 12 Reporting HMR-057/HMR-093, gated on green Batch 11 CI and
 fresh source/owner/exhaustive-scope admission. Do not execute automatically.
+
+
+## HPR-P2-008 Batch 12 Reporting prerequisite preflight — 2026-10-07
+
+Current exact main: 609f3b78adacf929dd31f630083d6189621a16d5. Production CI #585
+(run 37674577775) completed SUCCESS. Batch 11 HMR-056/HMR-071 are now CI-confirmed;
+33 implemented items have green production CI. Owner Next selects attached Batch 12
+HMR-057/HMSR-068 then HMR-093/HMSR-110. Neither semantic task is implemented here.
+
+### Live evidence and prerequisite REP-PREREQ-01
+
+AGENTS.md section 3.2.9 requires splitting out an unregistered prerequisite before
+semantic mutation. The following current source evidence makes scope admission necessary:
+
+- ReportingApplicationService.queueReportRun already resolves request and definition,
+  checks their correspondence, and asks ReportingWorkflowApprovalContract for approval
+  when required. These HMSR-068 claims are partly stale. It still omits explicit queueable
+  state for non-approval requests, active-definition/access revalidation, template lineage
+  and required parameter evidence. The service itself is absent from HMR-057's allowlist.
+- V20261004_013__hmr_013_reporting_report_definition.sql already implements a database
+  run queue gate requiring ACTIVE definition, matching access-policy scope, approved
+  request shape when required, ACTIVE version and active template of the same definition.
+  Its trigger also runs on FK-column updates, requiring care to preserve historical
+  reproducibility when unrelated run updates bind those columns again.
+- V20260929_002__enforce_same_module_reference_integrity_b.sql still points run request
+  fk_hra111_reporting_019 and artifact run fk_hra111_reporting_009 to catalog entries.
+  It also points parameter-value request fk_hra111_reporting_012 to catalog entries.
+  The latter blocks ordinary required-parameter evidence and is an upstream prerequisite
+  beyond the original HMR-057 list. All three corrections require forward migrations;
+  published SQL must remain immutable and invalid historical rows must abort migration.
+- Required parameter definitions/values currently have JPA repositories but no application
+  query port. Values carry TEXT/NUMBER/BOOLEAN/DATE/DATE_TIME/JSON/REFERENCE and the DDD
+  says one matching value field and required values before queueing. Default definitions
+  alone do not constitute recorded concrete request parameter evidence.
+- generateReportArtifact does not load a run. ReportOutputArtifact does not enforce at
+  least one normalized document/storage ID at construction. HMR-093 authorizes no SQL
+  and omits the service from its exact paths despite the required FK repair.
+- Documents exposes target and Audit-specific contracts only; the Audit contract looks
+  up Document metadata, not storage objects. The listed legacy Documents outbound ports
+  are not exported lookups for Reporting. Documents owns both DocumentRepositoryPort
+  and DocumentStorageObjectRepositoryPort and can expose distinct existence checks.
+
+### Concrete decision proposed for owner acceptance
+
+1. Admit 057 then 093 as attached Batch 12, preserving individual exact semantic messages,
+   independent tests/statuses/commits, and one final branch advancement.
+2. Extend HMR-057 to the authoritative Reporting service and an internal application
+   query boundary for template lineage and required parameters, implemented through
+   Reporting-owned persistence. Preserve current owner contracts and private boundaries.
+3. For a new queue operation require ACTIVE definition; allow SUBMITTED or APPROVED
+   requests for non-approval definitions, and APPROVED plus Workflow-owned approval for
+   approval-required definitions. Reuse Identity-owned access checks for restricted
+   definitions with persisted requester/scope evidence. Rejected/cancelled/draft/already
+   queued/running/completed requests cannot initiate a fresh queue through this path.
+   This does not introduce a new request transition or promise duplicate-run prevention.
+4. New queues require the existing ACTIVE version/active template policy and matching
+   request/run/template definition lineage. Historical persisted runs retain their exact
+   version even after retirement; unrelated updates must not reapply new-queue lifecycle
+   eligibility. Always preserve relational coherence; do not rewrite historical IDs.
+5. Every active required parameter definition needs concrete request evidence matching
+   its definition and code, with exactly the value field required by its recorded valueType.
+   Blank text/reference/JSON is absent, while numeric zero and false are valid. Defaults
+   are not silently materialized. No new expression engine or parameter taxonomy is added.
+6. HMR-057's forward migration also corrects parameter-value request FK as a narrowly
+   admitted prerequisite, as well as run request FK, lineage and explicit terminal rules:
+   COMPLETED requires completedAt; FAILED requires nonblank failureReason. Proposed name
+   V20261007_012__hmr_057_reporting_report_run.sql replaces the unused backdated name.
+   Preserve existing forward history and fail closed on invalid legacy data.
+7. Add Documents-owned application.contract.reporting.ReportingDocumentReferenceContract
+   with distinct documentExists and storageObjectExists queries. Documents implements
+   these through its own ports. Existence is the admitted rule; no unstated lifecycle,
+   provider-active, binary-content availability or document/storage pairing rule follows.
+8. HMR-093 checks run existence and at least one normalized Documents reference; if both
+   references are supplied, validate both. Preserve checksum requirements. Artifact
+   creation need not wait for COMPLETED. Add the correct same-module run FK and reference
+   shape CHECK in V20261007_013__hmr_093_reporting_report_output_artifact.sql. No Documents
+   cross-module FK, private import or storage access is permitted.
+9. After acceptance, register exhaustive independent paths before production mutation,
+   including service, internal query port/adapter, Documents contract/query/owner test,
+   both export registries, focused semantic and PostgreSQL tests, and affected existing
+   Reporting service/controller fixtures. No extra production scopes are implied.
+10. Validate new queue eligibility, access/approval denial, template mismatch, missing
+    or empty required values including false/zero, historical template retirement,
+    terminal invariants, Documents reference distinctions, FK correction, invalid legacy
+    abort and relevant concurrent writes. Run focused/existing/architecture/full verify
+    gates and report local dependency/runtime limits. Observe final production CI started
+    and stop; do not advance to Batch 13 automatically.
+
+Disposition: HMR-057 and HMR-093 BLOCKED pending REP-PREREQ-01 acceptance and exhaustive
+scope admission. Current totals: 33 implemented, 21 still required, three blocked
+(HMR-057, HMR-080, HMR-093). Only canonical roadmap/reconciliation change in this preflight.
+Exact supporting message: `docs(reporting): record Batch 12 execution preflight`.
+Next action: accept or amend REP-PREREQ-01, then admit exact scope and implement 057/093.

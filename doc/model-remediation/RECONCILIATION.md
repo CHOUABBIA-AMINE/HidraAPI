@@ -93,8 +93,8 @@ No `party.application.contract.planning` package exists in the exact current tre
 | HMR-064 | HMSR-076 | planning.PlanRevision | COMPLETED — CI #582 GREEN | Positive per-plan revision numbers, nullable validated base lineage, active REVISION_REASON and approved metadata/persistence/database immutability enforced. Forward V20261007_001; four focused checks passed using temporary API/assertion stubs, not Maven/JUnit. Five PostgreSQL cases registered; local compile/focused Maven blocked by uncached Boot 4.1.1 parent. Full database validation pending CI. |
 | HMR-065 | HMSR-077 | planning.OperationalPlan | COMPLETED — CI #582 GREEN | Required French name/scope type, unique plan code, active PLAN_TYPE, owner-controlled Topology/Identity/Organization references and same-plan nullable revision pointers enforced. Creation binds authenticated eligible actor and snapshots owner display values; unsupported REGION/NETWORK denied. Forward V20261007_002; twelve focused HMR-065/owner/catalog checks passed with temporary API stubs. Nine combined PostgreSQL cases registered; Maven compile/focused/full test/clean verify blocked before compilation by uncached Boot 4.1.1/Maven Central DNS. Full CI pending. |
 | HMR-066 | HMSR-078 | workflow.WorkflowTask | COMPLETED — CI #581 GREEN | Actionable assignment, live actor/unit membership, catalog eligibility, actor/time pairs and chronology are enforced. Terminal task evidence is immutable; generic creation is starter-bound, missing next-step rules fail closed, and execution/query paths no longer authorize by username snapshots. Seven focused behavior checks passed with temporary stubs; existing transition fixtures updated for new owner dependencies. |
-| HMR-067 | HMSR-079 | documents.Document | IMPLEMENTED — CI PENDING | Required title/creator display, active exact document catalogs, code uniqueness and same-document current-version pointers enforced. Registration binds authenticated eligible Identity actor and canonical owner snapshots; neutral registry supports Topology/Planning and denies missing/ambiguous owners. Forward V20261007_003; 11 focused methods passed with temporary APIs, four PostgreSQL cases added. Compile/focused Maven blocked before compilation by uncached Boot 4.1.1 parent; full CI pending. |
-| HMR-068 | HMSR-080 | documents.DocumentVersion | IMPLEMENTED — CI PENDING | Required upload metadata, positive per-document unique numbers, nullable existing supersession and owner-controlled Identity/Workflow references enforced. Generic upload derives authenticated uploader display. Binary prevalidates metadata and registers known-rollback new-blob cleanup; failed cleanup preserves original error, unknown commit outcome preserves content and logs reconciliation. Forward V20261007_004; 10 focused owner/version/cleanup methods passed with temporary APIs; nine combined PostgreSQL cases include transactional storage rollback and confirmed commit failure. Local focused Maven blocked by uncached Boot 4.1.1 parent; full CI pending. |
+| HMR-067 | HMSR-079 | documents.Document | COMPLETED — CI #583 GREEN | Required title/creator display, active exact document catalogs, code uniqueness and same-document current-version pointers enforced. Registration binds authenticated eligible Identity actor and canonical owner snapshots; neutral registry supports Topology/Planning and denies missing/ambiguous owners. Forward V20261007_003; 11 focused methods passed with temporary APIs, four PostgreSQL cases added. Compile/focused Maven blocked before compilation by uncached Boot 4.1.1 parent; full CI #583 passed. |
+| HMR-068 | HMSR-080 | documents.DocumentVersion | COMPLETED — CI #583 GREEN | Required upload metadata, positive per-document unique numbers, nullable existing supersession and owner-controlled Identity/Workflow references enforced. Generic upload derives authenticated uploader display. Binary prevalidates metadata and registers known-rollback new-blob cleanup; failed cleanup preserves original error, unknown commit outcome preserves content and logs reconciliation. Forward V20261007_004; 10 focused owner/version/cleanup methods passed with temporary APIs; nine combined PostgreSQL cases include transactional storage rollback and confirmed commit failure. Local focused Maven blocked by uncached Boot 4.1.1 parent; full CI #583 passed. |
 | HMR-069 | HMSR-081 | assets.MaintenanceWorkOrder | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-070 | HMSR-082 | custody.CustodyTransferTicket | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-071 | HMSR-084 | integration.IntegrationDeadLetterRecord | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
@@ -109,8 +109,8 @@ No `party.application.contract.planning` package exists in the exact current tre
 | HMR-080 | HMSR-094 | planning.Nomination | BLOCKED — OWNER CONTRACT REQUIRED | registered migration: absent; dedicated test: absent; Party→Planning contract absent |
 | HMR-081 | HMSR-095 | workflow.WorkflowAction | COMPLETED — CI #581 GREEN | Generic recording permits comments only; configured transitions exclusively produce decisions using live Identity authority. Optional task ownership and conditional evidence are enforced; canonical actor snapshots and server-owned locked sequences replace caller evidence. Action persistence is insert-only with unique monotonic sequence and immutable database guards. Five focused behavior checks passed with temporary stubs; existing permission regression fixture updated. |
 | HMR-082 | HMSR-096 | hse.HseCase | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
-| HMR-083 | HMSR-097 | audit.AuditExportRequest | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
-| HMR-084 | HMSR-098 | documents.DocumentTargetLink | IMPLEMENTED — CI PENDING | Required target module, active exact DOCUMENT_LINK_ROLE and owner-controlled target resolution enforced. Authenticated linking actor and canonical owner snapshots replace caller identity/display claims; optional version must belong to linked document, protected by composite FK. Forward V20261007_005; four focused methods passed with temporary APIs and three PostgreSQL cases added (12 combined). Both public export registries match 34 exact packages; all five forensic scans passed with temporary APIs. Focused Maven blocked by uncached parent; full CI pending. |
+| HMR-083 | HMSR-097 | audit.AuditExportRequest | BLOCKED — AUD-PREREQ-01 | Fresh source confirms remaining obligations; concrete owner/policy/append-only proposal below. |
+| HMR-084 | HMSR-098 | documents.DocumentTargetLink | COMPLETED — CI #583 GREEN | Required target module, active exact DOCUMENT_LINK_ROLE and owner-controlled target resolution enforced. Authenticated linking actor and canonical owner snapshots replace caller identity/display claims; optional version must belong to linked document, protected by composite FK. Forward V20261007_005; four focused methods passed with temporary APIs and three PostgreSQL cases added (12 combined). Both public export registries match 34 exact packages; all five forensic scans passed with temporary APIs. Focused Maven blocked by uncached parent; full CI #583 passed. |
 | HMR-085 | HMSR-100 | identity.AuthorizationDecision | IMPLEMENTED — CI #579 PASSED | Transactional graph, bounded ABAC, verified mappings, deterministic evidence and configurable persistence; Batch 6 implementation below. |
 | HMR-086 | HMSR-101 | identity.AuthorizationDelegationGrant | COMPLETED — HPR-P2-008 | Required nonblank delegation reason and validTo carried through domain/JPA/mapper; DelegationStatus narrowed to ACTIVE/REVOKED/EXPIRED; optional Role and Permission validated with nullable same-module FKs; no XOR rule; V20261006_011 fails closed on legacy evidence; focused tests added; final CI pending. |
 | HMR-087 | HMSR-104 | identity.LoginSession | COMPLETED — HPR-P2-008 | AuthenticationProtocol sessionType and independent endedAt carried through domain/JPA/mapper; exact ExternalIdentity propagated from LDAP/OIDC through principal/input/completion; terminal lifecycle preserves lastSeenAt and prior termination; V20261006_012 requires explicit legacy protocol evidence; no inferred historical termination; focused tests added; final CI pending. |
@@ -121,14 +121,14 @@ No `party.application.contract.planning` package exists in the exact current tre
 | HMR-092 | HMSR-109 | incident.IncidentResponseAction | STILL REQUIRED | no migration registered; dedicated test: absent; revalidate obligations before mutation |
 | HMR-093 | HMSR-110 | reporting.ReportOutputArtifact | STILL REQUIRED | no migration registered; dedicated test: absent; revalidate obligations before mutation |
 | HMR-094 | HMSR-111 | planning.PlanTarget | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
-| HMR-095 | HMSR-112 | audit.AuditEvent | STILL REQUIRED | no migration registered; dedicated test: absent; revalidate obligations before mutation |
+| HMR-095 | HMSR-112 | audit.AuditEvent | BLOCKED — AUD-PREREQ-01 | Fresh source confirms remaining obligations; concrete owner/policy/append-only proposal below. |
 | HMR-096 | HMSR-113 | hse.HseClosure | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-097 | HMSR-114 | hse.HseCorrectivePreventiveAction | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-098 | HMSR-115 | integrity.IntegrityCase | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-099 | HMSR-116 | workflow.WorkflowStateHistory | COMPLETED — CI #581 GREEN | Mandatory status/actor display evidence fails fast. History persistence inserts and flushes without upsert; optional task/step/action/reason references are checked for instance/definition and action evidence coherence. Database guards prohibit update/delete/truncate. Four focused behavior checks passed with temporary stubs; ten PostgreSQL/Hibernate cases added for CI, not locally executed. |
 | HMR-100 | HMSR-117 | alarm.Alarm | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
-| HMR-101 | HMSR-118 | audit.AuditAccessRecord | STILL REQUIRED | no migration registered; dedicated test: absent; revalidate obligations before mutation |
-| HMR-102 | HMSR-119 | audit.AuditBeforeAfterValue | STILL REQUIRED | no migration registered; dedicated test: absent; revalidate obligations before mutation |
+| HMR-101 | HMSR-118 | audit.AuditAccessRecord | BLOCKED — AUD-PREREQ-01 | Fresh source confirms remaining obligations; concrete owner/policy/append-only proposal below. |
+| HMR-102 | HMSR-119 | audit.AuditBeforeAfterValue | BLOCKED — AUD-PREREQ-01 | Fresh source confirms remaining obligations; concrete owner/policy/append-only proposal below. |
 | HMR-103 | HMSR-120 | monitoring.PlanActualDeviation | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-104 | HMSR-121 | alarm.AlarmAcknowledgement | STILL REQUIRED | no migration registered; dedicated test: absent; revalidate obligations before mutation |
 | HMR-105 | HMSR-122 | alarm.AlarmClosure | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
@@ -140,9 +140,9 @@ No `party.application.contract.planning` package exists in the exact current tre
 - HMR-005 corrected from stale planned status to **COMPLETED**;
 - HMR-009 confirmed **COMPLETED** and removed as a carry-over blocker;
 - HMR-050..106 evaluated: **57**;
-- HMR-050..106 **STILL REQUIRED**: **29**;
-- HMR-050..106 **BLOCKED**: **1**;
-- HMR-050..106 **IMPLEMENTED during HPR-P2-008**: **27** (three Batch 9 items CI pending);
+- HMR-050..106 **STILL REQUIRED**: **25**;
+- HMR-050..106 **BLOCKED**: **5**;
+- HMR-050..106 **IMPLEMENTED during HPR-P2-008**: **27** (green production CI through #583);
 - HMR-050..106 **SUPERSEDED**: **0**;
 - HMR-054 completed; repaired CI #575 is green;
 - HMR-080 remains blocked; HMR-055 prerequisite resolved and implemented in Batch 7.
@@ -151,7 +151,7 @@ No `party.application.contract.planning` package exists in the exact current tre
 
 - HMR-050 — **COMPLETED** at the first HPR-P2-008 execution step.
 - Batch 7 **COMPLETED — CI #581 GREEN**: HMR-055, 061, 066, 081, 099; exact repaired head ec63af0414d7fa85b9200d4bd181ac799bd072ed. Batch 8 preflight split below; no Planning implementation claimed.
-- Current remaining: **29 STILL REQUIRED + 1 BLOCKED (HMR-080)**; 27 implementations, including three Batch 9 items awaiting full CI.
+- Current remaining: **25 STILL REQUIRED + 5 BLOCKED (HMR-080, 083, 095, 101, 102)**; 27 implementations have green production CI through #583.
 
 - HMR-051 — **COMPLETED**: Topology and optional Organization references validated on every case save; snapshot preserved; no migration because primary-candidate FK already exists; owner contract and architecture export added.
 
@@ -1085,3 +1085,163 @@ Publish chained scope/HMR/validation commits once, observe final-head CI trigger
 stop. Full CI pending at preparation. Next proposed owner scope is attached Batch 10
 Audit evidence (HMR-083, HMR-095, HMR-101, HMR-102), only after green Batch 9 CI and
 fresh source/owner/scope admission. Do not execute it automatically.
+
+## Batch 10 preflight and concrete audit evidence proposal — 2026-10-07
+
+Owner Next selects attached Batch 10 HMR-083/HMSR-097, HMR-095/HMSR-112,
+HMR-101/HMSR-118 and HMR-102/HMSR-119. Exact main is
+6f147586583e61c0ac8212bb8dd0db14d635dabd, tree
+327d8888d35b031423fa52753a697d9f36e32fba. Production CI #583/run 37656134940
+completed successfully: job 112911441374 passed repository verification,
+deterministic OpenAPI publication, base generation and backward compatibility.
+Documentation #78 was previously observed successful. Batch 9 CI-pending entries
+above are historical preparation records; all three Document HMRs are now completed.
+
+### Fresh evidence and required split
+
+- HMR-083: AuditExportRequest normalizes filterJson/format without required checks;
+  AuditApplicationService passes filter JSON straight through and saves only the request.
+  purposeId has no active EXPORT_PURPOSE family guard. Optional Workflow/Documents
+  references are unchecked. AuditWorkflowReferencePort/AuditDocumentReferencePort have
+  no implementation; NoopAuditExternalReferenceResolver returns true and is not proof
+  of authoritative owner validation. Export creation emits neither AuditEvent nor
+  AuditAccessRecord. Legacy HMRB-044 keeps this lifecycle/policy work solo.
+- HMR-095: required module/type fields remain only normalized; catalog FKs prove
+  existence, not EVENT_TYPE/EVENT_CATEGORY/SEVERITY/DECISION_REASON family membership.
+  JpaAuditEventRepositoryAdapter uses generic save (merge capable), with no insert-only
+  or DB immutability guard. reasonText/payloadJson pass through unchanged. The DDD
+  requires a payload limit but supplies no number; AuditModuleConfiguration is an
+  unwired record of booleans, not an enforceable approval or sensitive-data policy.
+- HMR-101: generic save can replace an existing access ID; supplied optional event/export
+  IDs lack existence checks. Optionality must remain unchanged.
+- HMR-102: fieldPath is only normalized; masked/MASKED records may keep raw text;
+  AuditSensitiveDataGuard checks a flag but does not remove raw text. MASK_REASON family
+  validation and insert-only protection are absent. No current before/after producer was
+  found; do not invent one.
+
+These obligations need AUD-PREREQ-01: owner contracts, a concrete approved sanitation
+budget, shared boundary scope, and database-backed append-only enforcement. Old
+V20261004_083 would sort before already published migrations; forward filenames need
+new canonical admission. Under AGENTS.md §3.2.9, stop before any semantic mutation.
+All four selected HMRs remain blocked pending the decision below. No production, test,
+SQL, taxonomy, version or API-contract mutation is included in this preflight.
+Current totals: **27 implemented, 25 still required, five blocked** (including HMR-080).
+
+### Proposed owner decision — AUD-PREREQ-01
+
+1. **Combined scope and order.** Admit the attached four-task envelope in order
+   083 → 095 → 101 → 102, with one exact semantic commit per HMR. This explicitly
+   supersedes legacy solo HMRB-044/HMRB-053 only for this approved scope. HMR-083 adds
+   common sanitation/catalog support and the request transaction; subsequent HMRs
+   extend it within separately registered paths. Publish one final branch advancement;
+   observe CI triggering and stop. No Batch 11 execution or release-version change.
+2. **Owner references.** Documents exports
+   `documents.application.contract.audit.AuditDocumentReferenceContract` with
+   `boolean exists(String documentId)`, implemented by AuditDocumentReferenceQueryService
+   using Documents' own repository. Workflow exports
+   `workflow.application.contract.audit.AuditWorkflowReferenceContract` with
+   `boolean exists(String instanceId)`, implemented by AuditWorkflowReferenceQueryService
+   using Workflow's own repository. Audit adapter implements its existing outbound
+   AuditDocumentReferencePort and AuditWorkflowReferencePort by delegation. Blank optional
+   references normalize to null; populated references must resolve. No private imports,
+   cross-module FKs, reuse of a Documents-specific contract for Audit, or accept-all fallback.
+   Historical reads retain snapshots; validation applies to new writes.
+3. **Request versus approval.** The present use case creates REQUESTED only. Existing
+   optional Workflow reference proves existence, not approval. No purpose-to-approval
+   mapping exists in governing source: do not infer one from an enum or configuration
+   boolean. This scope grants no export execution, unmasking, approval, completion or
+   result-document creation. Non-REQUESTED writes through this generic boundary fail
+   closed until a separately admitted lifecycle/approval policy supplies owner-proven
+   authorization and target correlation. Optional result document, if supplied on an
+   admitted write, must exist through its owner; no invented artifact-type requirement.
+4. **Explicit data budget and sanitation.** Propose a fixed **65,536 UTF-8 byte** ceiling
+   for payloadJson and filterJson, including bounded parsing depth **32**. These numbers
+   are a proposed owner decision, not a claim about existing DDD evidence. Reject
+   oversized or invalid JSON and duplicate keys before storage, never silently truncate.
+   Parse with the repository's existing Jackson dependency; recursively remove values
+   of credential-sensitive keys after case/separator normalization (password, token,
+   secret, private key, credential, API key, session, authorization, cookie).
+   Replace sensitive-key values with a fixed redaction marker; handle nested objects
+   and arrays. Reject recognizable credential material such as private-key blocks,
+   bearer/basic authorization and labelled credential assignments in unstructured
+   strings/free text. The supported detection patterns must be explicit and tested;
+   arbitrary unlabelled secrets cannot be inferred. Keep raw inputs out of errors/logs.
+   Apply policy to filter/payload and audit free-text before the authoritative write;
+   enforce existing DDD field lengths, not a new smaller free-text budget. Apply the
+   same guard to repository writes so callers cannot bypass the application service.
+   SQL can enforce structure/size/required fields but is not a general secret classifier.
+5. **Self-auditing without new taxonomy.** In one Spring transaction, persist a fresh
+   REQUESTED export and exactly one AuditAccessRecord with existing accessType EXPORT,
+   its exportRequestId, requesting actor snapshot, requestedAt and SHA-256 of the
+   sanitized filter. It proves a request, not successful data export; resultCount remains
+   null. Save directly through Audit-owned ports without recursive record/export calls.
+   If evidence persistence fails, roll back the request. This uses an existing enum and
+   DDD reference; no catalog seed or AUDIT_EXPORT_REQUESTED event is necessary. Actual
+   export processing must create separate outcome evidence when explicitly implemented.
+6. **Catalog eligibility.** Audit-owned shared eligibility port/adapter validates active,
+   exact EXPORT_PURPOSE, EVENT_TYPE, EVENT_CATEGORY, optional SEVERITY, DECISION_REASON
+   and MASK_REASON as used by each HMR. Do not retag rows or seed invented IDs.
+   Add nullable same-module FKs where absent and insertion family guards. Deactivation
+   preserves historical evidence; no retroactive rewrite. Invalid legacy rows abort
+   migrations for explicit reconciliation.
+7. **Append-only mechanism.** Keep existing save signatures for compatibility but
+   document insert-only semantics for AuditEvent/AuditAccessRecord/AuditBeforeAfterValue.
+   Use EntityManager.persist plus flush inside a transaction, never merge; primary-key
+   uniqueness protects concurrent duplicate IDs. DB UPDATE/DELETE triggers protect
+   all three evidence tables. No generic status/hash/timestamp update exemption is
+   admitted; future seals/redaction/retention use appended evidence until a separate
+   governed transition exists. Do not freeze mutable search projections/catalogs or
+   invent a before/after producer. Preserve same-module mandatory parent FKs.
+8. **Before/after evidence.** Reject blank fieldPath. Normalize sensitive field-path
+   segments using the shared sensitive classifier. If masked=true, valueType=MASKED,
+   or fieldPath is sensitive, prohibit beforeValueText/afterValueText; preserve supplied
+   hashes/reference-only metadata. Prefer rejecting raw masked evidence over silently
+   destroying evidence. Also guard unmasked free text against recognizable credentials.
+   Validate optional MASK_REASON; changed=false remains legal. Add DB checks for
+   required fieldPath and explicitly masked raw-text prohibition.
+9. **Forward migrations.** Proposed filenames, all after current V20261007_005:
+   - HMR-083: V20261007_006__hmr_083_audit_export_request.sql
+   - HMR-095: V20261007_007__hmr_095_audit_event.sql
+   - HMR-101: V20261007_008__hmr_101_audit_access_record.sql
+   - HMR-102: V20261007_009__hmr_102_audit_before_after_value.sql
+   Published migrations remain immutable. Preflight invalid existing required values,
+   JSON budgets, catalog families, optional orphan references and masked raw evidence;
+   abort without deleting or rewriting historical audit data.
+
+### Proposed scope additions and validation admission
+
+Preserve each HMR's legacy exact commit, full HMSR obligations and existing allowlist,
+except replace stale migration filenames with the four forward names above. On
+acceptance, register exhaustive paths before mutation. Proposed additions:
+
+- HMR-083 owns AuditApplicationService, AuditSensitiveDataGuard, AuditBoundaryPolicy;
+  new AuditCatalogEligibilityPort/JpaAuditCatalogEligibilityAdapter, AuditInputPolicy;
+  new AuditOwnerReferenceAdapter; the two owner contracts and query services named
+  above; package-info.java for their public packages; both architecture public-export
+  registries; AuditExportRequestSemanticRemediationTest and shared
+  AuditSemanticPostgresIntegrationTest. Existing Audit document/workflow outbound
+  ports may gain explicit reference semantics. Register common sanitation tests here.
+- HMR-095 also owns AuditApplicationService, shared input/catalog policy as needed,
+  event adapter/entity/repository/domain/contract paths already allowed, dedicated
+  AuditEventSemanticRemediationTest and shared PostgreSQL integration test.
+- HMR-101 also owns AuditApplicationService if access prevalidation is required,
+  dedicated AuditAccessRecordSemanticRemediationTest and shared PostgreSQL integration
+  test; its existing repository/adapter/domain paths remain independently scoped.
+- HMR-102 also owns shared AuditSensitiveDataGuard/AuditBoundaryPolicy/AuditInputPolicy
+  if required, dedicated AuditBeforeAfterValueSemanticRemediationTest and shared
+  PostgreSQL integration test; no producer/application API is introduced.
+- Each semantic commit updates its own status in canonical Ultimate Roadmap,
+  reconciliation and legacy remediation, plus Audit DDD where it defines policy.
+  Supporting scope/validation documentation commits are separately identified.
+
+Run compile, each dedicated focused test, shared PostgreSQL integration tests, relevant
+owner/architecture tests, full test and clean verify. Cover malformed/duplicate/nested
+JSON, multibyte byte boundaries and depth, credential redaction, optional reference
+unknowns, active exact catalogs, atomic export/evidence rollback, concurrent duplicate
+IDs, DB direct UPDATE/DELETE rejection, masked raw-text denial and legacy migration
+abort. Verify adapters with actual JPA/PostgreSQL behavior, not only mocked existence
+checks. Preserve existing Risk/Organization/Alarm audit contract compatibility.
+
+This is a concrete reviewable proposal, not implementation or completed validation.
+Accept or amend AUD-PREREQ-01, then register exact exhaustive paths, recheck green
+production head and prepare the four independent commits. Do not advance automatically.

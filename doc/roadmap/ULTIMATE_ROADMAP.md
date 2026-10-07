@@ -1763,3 +1763,37 @@ message `docs(documents): record Batch 9 validation disposition`.
 
 Next proposed owner scope: attached Batch 10 Audit evidence HMR-083, HMR-095, HMR-101,
 HMR-102, gated on green final Batch 9 CI and fresh source/owner/scope admission.
+
+## HPR-P2-008 Batch 10 preflight split — 2026-10-07
+
+Owner Next selects attached Audit evidence Batch 10 (HMR-083, 095, 101, 102).
+Exact production main 6f147586583e61c0ac8212bb8dd0db14d635dabd has green CI #583
+(run 37656134940, job 112911441374), including Maven repository verification and
+OpenAPI publication/base/backward compatibility. Batch 9 HMR-067/068/084 are now
+COMPLETED; their prior CI-pending entries are historical preparation records.
+
+Fresh HMSR-097/112/118/119 and source review confirms owner-reference, export
+self-auditing, sanitation/size and append-only gaps. Audit has no wired owner
+implementations or concrete payload budget; generic saves permit merges. The legacy
+083 migration would precede published history. Four tasks are BLOCKED — AUD-PREREQ-01
+before any production mutation, per AGENTS.md §3.2.9. Current reconciliation totals:
+27 implemented, 25 still required, five blocked (080, 083, 095, 101, 102).
+
+The concrete reviewable proposal is in `doc/model-remediation/RECONCILIATION.md`,
+Batch 10 preflight. Proposed decision: admit 083 → 095 → 101 → 102 as a four-task
+exception to the legacy solo audit scopes; owner-controlled Documents/Workflow existence
+contracts; REQUESTED-only scope with no inferred approval/execution/unmasking;
+65,536 UTF-8 byte JSON budgets and depth 32; recursive sensitive-key redaction and
+explicit credential-pattern rejection; one transactional EXPORT access-evidence row
+per export request; exact active Audit catalog families; persist/flush plus DB
+UPDATE/DELETE denial for event/access/before-after evidence; masked raw-text rejection.
+Numeric budgets are new proposed owner choices, not existing requirements. No new
+Audit taxonomy or before/after producer. Historical evidence is not rewritten.
+
+Proposed forward migrations V20261007_006/007/008/009 replace stale/not-yet-authorized
+names only after acceptance. Exhaustive per-HMR paths and validation targets must be
+registered before mutation, preserving exact legacy semantic commit messages.
+Only this canonical roadmap and reconciliation may change in this preflight.
+Exact supporting commit: `docs(audit): record Batch 10 evidence preflight`.
+No production, SQL, tests, API, catalog or version change; no Batch 11 execution.
+Accept or amend AUD-PREREQ-01, then admit exact scope and implement independently.

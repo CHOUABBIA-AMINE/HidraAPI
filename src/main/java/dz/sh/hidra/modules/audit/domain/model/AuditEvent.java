@@ -7,7 +7,7 @@
  *
  * @Name        : AuditEvent
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-10-07
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -162,6 +162,10 @@ import java.time.Instant;
             throw new InvalidAuditValueException("AuditEvent recorded at must not be null.");
         }
 
+        if (sourceModule == null || sourceModule.isBlank() || targetModule == null || targetModule.isBlank()
+                || targetType == null || targetType.isBlank()) {
+            throw new InvalidAuditValueException("Audit event source/target module and target type are required.");
+        }
         id = normalize(id);
         eventTypeId = normalize(eventTypeId);
         eventCategoryId = normalize(eventCategoryId);

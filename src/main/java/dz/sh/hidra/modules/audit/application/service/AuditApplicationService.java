@@ -99,7 +99,7 @@ public class AuditApplicationService implements RecordAuditEventUseCase, Request
                 command.operation(),
                 command.decisionCode(),
                 command.reasonId(),
-                command.reasonText(),
+                inputPolicy.text(command.reasonText(),1000),
                 null,
                 command.workflowInstanceId(),
                 command.workflowTaskId(),
@@ -117,7 +117,7 @@ public class AuditApplicationService implements RecordAuditEventUseCase, Request
                 null,
                 null,
                 null,
-                command.payloadJson()
+                inputPolicy.json(command.payloadJson(),false)
         );
         return AuditApplicationMapper.toSummary(auditEventRepositoryPort.save(event));
     }

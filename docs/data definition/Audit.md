@@ -1204,3 +1204,11 @@ execution, unmasking and completion need separately governed authorization. One 
 AuditAccessRecord with sanitized-filter SHA-256 is appended in the request transaction;
 null resultCount means no successful export is asserted. Evidence failure rolls back the
 request. No export-specific catalog taxonomy is introduced by this correction.
+
+
+Batch 10 event writes validate active exact EVENT_TYPE/EVENT_CATEGORY and optional
+SEVERITY/DECISION_REASON. AuditEvent inserts use persist/flush; duplicate IDs cannot
+merge existing evidence. Database UPDATE/DELETE is denied, including status/hash or
+timestamp changes. Future lifecycle markers must append governed evidence. Payload
+and free text are guarded at application/persistence boundaries; technical/system
+actorId remains optional. Existing catalog deactivation does not rewrite history.

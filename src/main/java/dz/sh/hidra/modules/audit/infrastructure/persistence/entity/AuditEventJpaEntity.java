@@ -7,7 +7,7 @@
  *
  * @Name        : AuditEventJpaEntity
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-07
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -171,6 +171,7 @@ import java.time.Instant;
     @Column(name = "previous_hash_value", nullable = true, length = 256)
     private String previousHashValue;
 
+    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.JSON)
     @Column(name = "payload_json", nullable = true, columnDefinition = "jsonb")
     private String payloadJson;
 

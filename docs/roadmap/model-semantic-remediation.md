@@ -4745,7 +4745,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-112`
 - Exact commit: `fix(audit): remediate semantic review AuditEvent`
-- Status: **Planned**
+- Status: **Implemented — CI pending**
 - SCC: —
 - Recorded upstream HMS dependencies: organization.OrganizationUnit, workflow.WorkflowAction, workflow.WorkflowInstance, workflow.WorkflowTask
 - HMSR correction count: 4
@@ -4777,6 +4777,8 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
   2. **Validate mandatory `eventTypeId` / `eventCategoryId` and supplied optional `severityId` / `reasonId` against their correct Audit catalog families, not merely any Audit catalog row.**
   3. **Make AuditEvent persistence genuinely append-only so an existing event cannot be silently overwritten or mutated outside explicitly governed evidence-preserving lifecycle behavior.**
   4. **Sanitize/redact audit free-text/structured payload inputs and enforce an evidence-backed size limit for `payloadJson` before persistence; secrets and credential material must never enter the ledger.**
+
+- Batch 10 implementation: Required source/target module and target type, active exact event/category/optional severity/reason families, bounded sanitized payload/free text and persist/flush insertion enforced. Forward V20261007_007 adds optional catalog FKs, family guards and immutable event UPDATE/DELETE denial. Five focused and four added PostgreSQL/JPA/concurrency checks prepared; local focused Maven blocked by uncached Boot parent; CI pending.
 
 #### HMR-096 — hse.HseClosure
 

@@ -50,7 +50,7 @@ class AuditSemanticPostgresIntegrationTest {
         sql(Files.readString(MIGRATIONS.resolve("V20260611_017__create_audit_tables.sql")));
     }
     void migrate()throws Exception{
-        for(String name:new String[]{"V20261007_006__hmr_083_audit_export_request.sql"}) sql(Files.readString(MIGRATIONS.resolve(name)));
+        for(String name:new String[]{"V20261007_006__hmr_083_audit_export_request.sql","V20261007_007__hmr_095_audit_event.sql"}) sql(Files.readString(MIGRATIONS.resolve(name)));
     }
     void catalog(String id,String family)throws SQLException{sql("INSERT INTO hidra_audit_catalog_entry(id,catalog_name,code,active,sort_order,system_defined,created_at,updated_at) VALUES ('"+id+"','"+family+"','"+id+"',true,0,false,now(),now())");}
     @BeforeEach void setup()throws Exception{emptySchema();migrate();catalog("purpose","EXPORT_PURPOSE");catalog("type","EVENT_TYPE");catalog("category","EVENT_CATEGORY");catalog("severity","SEVERITY");catalog("reason","DECISION_REASON");catalog("mask","MASK_REASON");}
@@ -107,5 +107,89 @@ class AuditSemanticPostgresIntegrationTest {
         assertThrows(IllegalStateException.class,()->template.execute(status->service.requestAuditExport(new RequestAuditExportCommand("actor",null,"purpose","{}","JSON",null))));
         assertEquals(Long.valueOf(0),jdbc.queryForObject("SELECT count(*) FROM hidra_audit_export_request",Long.class));
         assertEquals(Long.valueOf(0),jdbc.queryForObject("SELECT count(*) FROM hidra_audit_access_record",Long.class));
+    }
+    static AuditEvent event(String id,String source,String target,String targetType,String severity,String reason,String reasonText,String payload) {
+        return new AuditEvent(id,
+                "type",
+                "category",
+                severity,
+                source,
+                null,
+                null,
+                "OBSERVED",
+                null,
+                AuditEventStatus.RECORDED,
+                null,
+                AuditActorType.SYSTEM,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                target,
+                targetType,
+                "asset",
+                null,
+                null,
+                AuditOperation.READ,
+                null,
+                reason,
+                reasonText,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                Instant.now(),
+                Instant.now(),
+                null,
+                null,
+                null,
+                payload);
+    }
+
+    String eventSql(String id){return "INSERT INTO hidra_audit_event(id,event_type_id,event_category_id,source_module,action_code,event_status,actor_type,target_module,target_type,target_id,operation,occurred_at,recorded_at) VALUES ('"+id+"','type','category','audit','OBSERVED','RECORDED','SYSTEM','topology','ASSET','asset','READ',now(),now())";}
+    @Test void eventRequiredFamiliesOptionalCatalogsAndPayloadAreProtected()throws Exception{
+        assertThrows(SQLException.class,()->sql(eventSql("blank").replace("'audit'","' '")));
+        assertThrows(SQLException.class,()->sql(eventSql("wrong").replace("'type','category'","'category','type'")));
+        assertThrows(SQLException.class,()->sql(eventSql("severity").replace("operation,occurred_at","operation,severity_id,occurred_at").replace("'READ',now()","'READ','reason',now()")));
+        assertThrows(SQLException.class,()->sql(eventSql("reason").replace("operation,occurred_at","operation,reason_id,occurred_at").replace("'READ',now()","'READ','severity',now()")));
+        assertThrows(SQLException.class,()->sql(eventSql("large").replace("operation,occurred_at","operation,payload_json,occurred_at").replace("'READ',now()","'READ','[\""+"x".repeat(65533)+"\"]',now()")));
+        sql("UPDATE hidra_audit_catalog_entry SET active=false WHERE id='type'");
+        assertThrows(SQLException.class,()->sql(eventSql("inactive")));
+    }
+    @Test void eventCannotBeUpdatedDeletedOrUpserted()throws Exception{
+        sql(eventSql("event"));
+        assertThrows(SQLException.class,()->sql("UPDATE hidra_audit_event SET event_status='SEALED' WHERE id='event'"));
+        assertThrows(SQLException.class,()->sql("DELETE FROM hidra_audit_event WHERE id='event'"));
+        assertThrows(SQLException.class,()->sql(eventSql("event")+" ON CONFLICT(id) DO UPDATE SET target_id='other'"));
+    }
+    int insertAfter(CountDownLatch go,String query)throws Exception{go.await(10,TimeUnit.SECONDS);try{sql(query);return 1;}catch(SQLException e){assertEquals("23505",e.getSQLState());return 0;}}
+    @Test void concurrentEventIdsHaveOneWinner()throws Exception{
+        var pool=Executors.newFixedThreadPool(2);var go=new CountDownLatch(1);
+        try{var a=pool.submit(()->insertAfter(go,eventSql("same")));var b=pool.submit(()->insertAfter(go,eventSql("same")));go.countDown();assertEquals(1,a.get(20,TimeUnit.SECONDS)+b.get(20,TimeUnit.SECONDS));}finally{pool.shutdownNow();}
+    }
+    @Test void actualJpaEventSanitizesAndDuplicateCannotReplaceEvidence()throws Exception{
+        try(var factory=configuration(AuditEventJpaEntity.class).buildSessionFactory()){
+            try(var session=factory.openSession()){
+                var tx=session.beginTransaction();
+                var adapter=new JpaAuditEventRepositoryAdapter(mock(AuditEventJpaRepository.class),session,(id,family)->{},new AuditInputPolicy());
+                adapter.save(event("jpa-event","audit","topology","ASSET",null,null,"Routine","{\"secret\":\"raw\"}"));tx.commit();
+            }
+            try(var session=factory.openSession()){
+                var tx=session.beginTransaction();
+                var adapter=new JpaAuditEventRepositoryAdapter(mock(AuditEventJpaRepository.class),session,(id,family)->{},new AuditInputPolicy());
+                assertThrows(RuntimeException.class,()->adapter.save(event("jpa-event","audit","topology","ASSET",null,null,"Changed",null)));tx.rollback();
+            }
+        }
+        try(var c=connection();var s=c.createStatement();var r=s.executeQuery("SELECT reason_text,payload_json::text FROM hidra_audit_event WHERE id='jpa-event'")){assertTrue(r.next());assertEquals("Routine",r.getString(1));assertTrue(r.getString(2).contains("[REDACTED]"));}
     }
 }

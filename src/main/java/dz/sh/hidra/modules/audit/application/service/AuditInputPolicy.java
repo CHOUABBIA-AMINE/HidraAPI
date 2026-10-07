@@ -121,4 +121,53 @@ public final class AuditInputPolicy {
                     .digest(sanitized.getBytes(StandardCharsets.UTF_8)));
         } catch (NoSuchAlgorithmException e) { throw new IllegalStateException("SHA-256 is unavailable."); }
     }
+    public dz.sh.hidra.modules.audit.domain.model.AuditEvent event(dz.sh.hidra.modules.audit.domain.model.AuditEvent model) {
+        return new dz.sh.hidra.modules.audit.domain.model.AuditEvent(
+                text(model.id(),80),
+                text(model.eventTypeId(),80),
+                text(model.eventCategoryId(),80),
+                text(model.severityId(),80),
+                text(model.sourceModule(),80),
+                text(model.sourceComponent(),120),
+                text(model.sourceEventId(),120),
+                text(model.actionCode(),120),
+                text(model.actionLabelSnapshot(),240),
+                model.eventStatus(),
+                text(model.actorId(),120),
+                model.actorType(),
+                text(model.actorDisplayNameSnapshot(),160),
+                text(model.actorUsernameSnapshot(),120),
+                text(model.actorRoleCodeSnapshot(),120),
+                text(model.organizationUnitId(),120),
+                text(model.organizationUnitCodeSnapshot(),120),
+                text(model.organizationUnitNameSnapshot(),160),
+                text(model.targetModule(),80),
+                text(model.targetType(),120),
+                text(model.targetId(),120),
+                text(model.targetCodeSnapshot(),120),
+                text(model.targetLabelSnapshot(),240),
+                model.operation(),
+                text(model.decisionCode(),120),
+                text(model.reasonId(),80),
+                text(model.reasonText(),1000),
+                text(model.commentText(),2000),
+                text(model.workflowInstanceId(),120),
+                text(model.workflowTaskId(),120),
+                text(model.workflowActionId(),120),
+                text(model.workflowFromState(),80),
+                text(model.workflowToState(),80),
+                text(model.requestId(),120),
+                text(model.correlationId(),120),
+                text(model.causationId(),120),
+                text(model.ipAddressMasked(),80),
+                text(model.userAgentSnapshot(),500),
+                text(model.sourceSystemCode(),120),
+                model.occurredAt(),
+                model.recordedAt(),
+                text(model.retentionPolicyId(),80),
+                text(model.hashValue(),256),
+                text(model.previousHashValue(),256),
+                json(model.payloadJson(),false));
+    }
+
 }

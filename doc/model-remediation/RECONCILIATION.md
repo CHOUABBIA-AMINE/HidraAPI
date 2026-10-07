@@ -121,7 +121,7 @@ No `party.application.contract.planning` package exists in the exact current tre
 | HMR-092 | HMSR-109 | incident.IncidentResponseAction | STILL REQUIRED | no migration registered; dedicated test: absent; revalidate obligations before mutation |
 | HMR-093 | HMSR-110 | reporting.ReportOutputArtifact | STILL REQUIRED | no migration registered; dedicated test: absent; revalidate obligations before mutation |
 | HMR-094 | HMSR-111 | planning.PlanTarget | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
-| HMR-095 | HMSR-112 | audit.AuditEvent | BLOCKED — AUD-PREREQ-01 | Fresh source confirms remaining obligations; concrete owner/policy/append-only proposal below. |
+| HMR-095 | HMSR-112 | audit.AuditEvent | IMPLEMENTED — CI PENDING | Required source/target module and target type, active exact event/category/optional severity/reason families, bounded sanitized payload/free text and persist/flush insertion enforced. Forward V20261007_007 adds optional catalog FKs, family guards and immutable event UPDATE/DELETE denial. Five focused and four added PostgreSQL/JPA/concurrency checks prepared; local focused Maven blocked by uncached Boot parent; CI pending. |
 | HMR-096 | HMSR-113 | hse.HseClosure | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-097 | HMSR-114 | hse.HseCorrectivePreventiveAction | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-098 | HMSR-115 | integrity.IntegrityCase | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
@@ -1249,3 +1249,7 @@ production head and prepare the four independent commits. Do not advance automat
 ### Batch 10 HMR-083 — IMPLEMENTED, CI PENDING
 
 Required export metadata, active EXPORT_PURPOSE, owner-controlled optional Workflow/Documents references, bounded sanitized filters and one transactional EXPORT access record implemented. Generic writes admit REQUESTED only and persist/flush without merge. Forward V20261007_006; eight focused tests, two owner tests and four PostgreSQL/Spring/JPA tests prepared. Local Maven compile/focused blocked before compilation by uncached Boot 4.1.1 parent; production CI pending.
+
+### Batch 10 HMR-095 — IMPLEMENTED, CI PENDING
+
+Required source/target module and target type, active exact event/category/optional severity/reason families, bounded sanitized payload/free text and persist/flush insertion enforced. Forward V20261007_007 adds optional catalog FKs, family guards and immutable event UPDATE/DELETE denial. Five focused and four added PostgreSQL/JPA/concurrency checks prepared; local focused Maven blocked by uncached Boot parent; CI pending.

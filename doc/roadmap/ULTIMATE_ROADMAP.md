@@ -2212,3 +2212,73 @@ scope admission. Current totals: 33 implemented, 21 still required, three blocke
 (HMR-057, HMR-080, HMR-093). Only canonical roadmap/reconciliation change in this preflight.
 Exact supporting message: `docs(reporting): record Batch 12 execution preflight`.
 Next action: accept or amend REP-PREREQ-01, then admit exact scope and implement 057/093.
+
+
+## HPR-P2-008 Batch 12 accepted execution and exact scope — 2026-10-07
+
+Owner Next accepts the full REP-PREREQ-01 proposal at 5e13fda49b4ccfa3cd6940548a8c4b4d4d4875b9.
+Documentation #83 passed there; production CI #585 passed on its production parent
+609f3b78adacf929dd31f630083d6189621a16d5. Preflight changes only canonical documentation.
+REP-PREREQ-01 is resolved; admit attached combined 057 → 093, including narrow required
+parameter request FK prerequisite, new Documents-specific public lookup and forward
+012/013 migrations. Preserve all ten accepted decisions, individual source HMSR,
+exact semantic commits/statuses/tests. No release change or Batch 13 implementation.
+Register supporting exact scope message: `docs(reporting): admit Batch 12 execution scope`.
+Exhaustive independent paths follow; no unlisted files are admitted.
+
+### HMR-57 admitted paths
+
+- `doc/model-remediation/RECONCILIATION.md`
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `docs/data definition/Reporting.md`
+- `docs/roadmap/model-semantic-remediation.md`
+- `src/main/java/dz/sh/hidra/modules/reporting/api/rest/request/QueueReportRunRequest.java`
+- `src/main/java/dz/sh/hidra/modules/reporting/api/rest/response/ReportRunResponse.java`
+- `src/main/java/dz/sh/hidra/modules/reporting/application/command/QueueReportRunCommand.java`
+- `src/main/java/dz/sh/hidra/modules/reporting/application/dto/ReportRunSummaryDto.java`
+- `src/main/java/dz/sh/hidra/modules/reporting/application/port/in/QueueReportRunUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/reporting/application/port/out/ReportQueueEvidencePort.java`
+- `src/main/java/dz/sh/hidra/modules/reporting/application/port/out/ReportRunRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/reporting/application/service/ReportingApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/reporting/domain/model/ReportRun.java`
+- `src/main/java/dz/sh/hidra/modules/reporting/domain/value/ReportRunMode.java`
+- `src/main/java/dz/sh/hidra/modules/reporting/domain/value/ReportRunStatus.java`
+- `src/main/java/dz/sh/hidra/modules/reporting/infrastructure/persistence/adapter/JpaReportQueueEvidenceAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/reporting/infrastructure/persistence/adapter/JpaReportRunRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/reporting/infrastructure/persistence/entity/ReportRunJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/reporting/infrastructure/persistence/mapper/ReportingPersistenceMapper.java`
+- `src/main/java/dz/sh/hidra/modules/reporting/infrastructure/persistence/repository/ReportRunJpaRepository.java`
+- `src/main/resources/db/migration/V20261007_012__hmr_057_reporting_report_run.sql`
+- `src/test/java/dz/sh/hidra/modules/reporting/infrastructure/persistence/ReportingSemanticPostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/reporting/semantic/ReportQueueEvidenceSemanticTest.java`
+- `src/test/java/dz/sh/hidra/modules/reporting/semantic/ReportRunSemanticRemediationTest.java`
+
+### HMR-93 admitted paths
+
+- `doc/model-remediation/RECONCILIATION.md`
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `docs/data definition/Reporting.md`
+- `docs/roadmap/model-semantic-remediation.md`
+- `src/main/java/dz/sh/hidra/modules/documents/application/contract/reporting/ReportingDocumentReferenceContract.java`
+- `src/main/java/dz/sh/hidra/modules/documents/application/contract/reporting/package-info.java`
+- `src/main/java/dz/sh/hidra/modules/documents/application/service/ReportingDocumentReferenceQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/reporting/api/rest/response/ReportOutputArtifactResponse.java`
+- `src/main/java/dz/sh/hidra/modules/reporting/application/dto/ReportOutputArtifactSummaryDto.java`
+- `src/main/java/dz/sh/hidra/modules/reporting/application/port/out/ReportOutputArtifactRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/reporting/application/service/ReportingApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/reporting/domain/model/ReportOutputArtifact.java`
+- `src/main/java/dz/sh/hidra/modules/reporting/infrastructure/persistence/adapter/JpaReportOutputArtifactRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/reporting/infrastructure/persistence/entity/ReportOutputArtifactJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/reporting/infrastructure/persistence/mapper/ReportingPersistenceMapper.java`
+- `src/main/java/dz/sh/hidra/modules/reporting/infrastructure/persistence/repository/ReportOutputArtifactJpaRepository.java`
+- `src/main/resources/db/migration/V20261007_013__hmr_093_reporting_report_output_artifact.sql`
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java`
+- `src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java`
+- `src/test/java/dz/sh/hidra/modules/documents/application/service/ReportingDocumentReferenceQueryServiceTest.java`
+- `src/test/java/dz/sh/hidra/modules/reporting/infrastructure/persistence/ReportingSemanticPostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/reporting/semantic/ReportOutputArtifactSemanticRemediationTest.java`
+
+Validation: compile, dedicated Run/Artifact/QueueEvidence/Document owner tests, shared
+PostgreSQL cases, existing Reporting request/definition tests, architecture/forensic,
+full test and clean verify. Record dependency/runtime blocks. Publish ordered exact
+trees and advance main once; observe production CI started and stop.

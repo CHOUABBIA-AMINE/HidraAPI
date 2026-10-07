@@ -234,7 +234,7 @@ Each model task implements only the obligations recorded in its source HMSR sect
 | HMR-068 | HMSR-080 | documents | DocumentVersion | SCC-05 | documents.Document, documents.DocumentStorageObject, documents.DocumentVersion, workflow.WorkflowInstance | `fix(documents): remediate semantic review DocumentVersion` | Completed — CI pending |
 | HMR-069 | HMSR-081 | assets | MaintenanceWorkOrder | — | assets.MaintainableAsset, organization.OrganizationUnit, workflow.WorkflowInstance | `fix(assets): remediate semantic review MaintenanceWorkOrder` | Planned |
 | HMR-070 | HMSR-082 | custody | CustodyTransferTicket | — | custody.CustodyMeasurementPeriod, workflow.WorkflowInstance | `fix(custody): remediate semantic review CustodyTransferTicket` | Planned |
-| HMR-071 | HMSR-084 | integration | IntegrationDeadLetterRecord | — | integration.ExternalSystem, integration.IntegrationExchangeMessage, integration.IntegrationJobRun | `fix(integration): remediate semantic review IntegrationDeadLetterRecord` | Planned |
+| HMR-071 | HMSR-084 | integration | IntegrationDeadLetterRecord | — | integration.ExternalSystem, integration.IntegrationExchangeMessage, integration.IntegrationJobRun | `fix(integration): remediate semantic review IntegrationDeadLetterRecord` | Implemented — CI pending |
 | HMR-072 | HMSR-085 | integrity | IntegrityAssessment | — | integrity.IntegrityProgram, workflow.WorkflowInstance | `fix(integrity): remediate semantic review IntegrityAssessment` | Planned |
 | HMR-073 | HMSR-087 | organization | EmployeeAssignment | — | organization.Employee, organization.OrganizationUnit, organization.Position | `fix(organization): remediate semantic review EmployeeAssignment` | Completed — Batch 1 |
 | HMR-074 | HMSR-088 | organization | OrganizationDelegation | — | organization.Employee, organization.ResponsibilityAssignment | `fix(organization): remediate semantic review OrganizationDelegation` | Completed — Batch 1 |
@@ -3918,11 +3918,11 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-084`
 - Exact commit: `fix(integration): remediate semantic review IntegrationDeadLetterRecord`
-- Status: **Planned**
+- Status: **Implemented — CI pending**
 - SCC: —
 - Recorded upstream HMS dependencies: integration.ExternalSystem, integration.IntegrationExchangeMessage, integration.IntegrationJobRun
 - HMSR correction count: 3
-- Additive Flyway: `src/main/resources/db/migration/V20261004_071__hmr_071_integration_integration_dead_letter_record.sql`
+- Additive Flyway: `src/main/resources/db/migration/V20261007_011__hmr_071_integration_dead_letter_record.sql` (canonical Batch 11 admission)
 - Owner-contract prerequisite: Owner-controlled validation required by HMSR; no concrete upstream HMS owner is registered, so preserve neutral/reference semantics and do not invent a cross-module FK.
 - Exact write allowlist:
   - `docs/data definition/Integration.md`
@@ -3944,6 +3944,8 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
   1. **Enforce all DDD-required failure evidence before persistence.** `failureStage` and `reasonMessage` must be non-blank in addition to the already-enforced `reasonCode` and `status`.
   2. **Protect populated optional same-module evidence references.** `jobRunId`, `exchangeMessageId`, `inboundRecordId`, and `outboundRecordId` must fail closed to existing Integration-owned records.
   3. **Enforce the explicit manual-resolution trio.** When manual resolution is recorded, `resolvedByActorId`, `resolvedAt`, and `resolutionComment` must all be present; resolver identity should be validated through the Identity/security boundary without a cross-module FK.
+
+- Batch 11 implementation: Required failure evidence, all-or-none manual trio and optional local references enforced. New manual evidence requires authenticated eligible Identity actor; recorded provenance is immutable without historical actor revalidation. Forward V20261007_011 supplies nullable FKs/checks and concurrent provenance guard. Eight focused methods, one Identity owner method and five added PostgreSQL cases prepared. Temporary API type compilation passed; local focused Maven blocked by uncached Boot parent; CI pending.
 
 #### HMR-072 — integrity.IntegrityAssessment
 

@@ -1739,3 +1739,17 @@ as the message. Nullable local FKs and a composite endpoint/system FK protect co
 changes. No additional run/system, direction/status or payload-mode rule is inferred.
 Inactive catalog rows remain historical evidence, but cannot authorize new writes.
 Invalid legacy references/families abort migration without retagging or reassignment.
+
+
+## Accepted Batch 11 manual-resolution evidence policy — 2026-10-07
+
+Dead-letter failureStage/reasonMessage are required before persistence. Optional
+jobRunId/exchangeMessageId/inboundRecordId/outboundRecordId must resolve within
+Integration and remain nullable. Manual actor/time/comment evidence is all absent
+or complete after blank normalization; status alone is not equated with manual action.
+New complete manual evidence must match the authenticated actor and resolve through
+Identity's IntegrationResolverContract using current ACTIVE/unlocked eligibility.
+An existing complete trio is preserved unchanged on unrelated updates; historical
+actors are not revalidated against today's lifecycle. Replacement/removal fails closed,
+including concurrent SQL updates. Domain/SQL validate shape; SQL does not prove Identity
+ownership. No new manual-resolution or replay producer, state matrix or foreign FK.

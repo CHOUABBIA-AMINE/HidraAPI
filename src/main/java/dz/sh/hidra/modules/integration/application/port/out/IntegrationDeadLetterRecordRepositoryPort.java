@@ -7,7 +7,7 @@
  *
  * @Name        : IntegrationDeadLetterRecordRepositoryPort
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-07
  *
  * @Type        : Interface
  * @Layer       : Application
@@ -28,6 +28,7 @@ import java.util.Optional;
  */
 public interface IntegrationDeadLetterRecordRepositoryPort {
 
+    /** Validate optional evidence and authenticated new resolution; preserve recorded resolver provenance. */
     IntegrationDeadLetterRecord save(IntegrationDeadLetterRecord model);
 
     Optional<IntegrationDeadLetterRecord> findById(String id);

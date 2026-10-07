@@ -7,7 +7,7 @@
  *
  * @Name        : IntegrationDeadLetterRecord
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-10-07
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -84,6 +84,8 @@ import java.time.Instant;
             throw new InvalidIntegrationValueException("IntegrationDeadLetterRecord status must not be null.");
         }
 
+        if(failureStage==null || failureStage.isBlank() || reasonMessage==null || reasonMessage.isBlank())
+            throw new InvalidIntegrationValueException("Integration dead-letter failure stage and reason message are required.");
         id = normalize(id);
         externalSystemId = normalize(externalSystemId);
         jobRunId = normalize(jobRunId);
@@ -98,7 +100,11 @@ import java.time.Instant;
         sanitizedPayload = normalize(sanitizedPayload);
         resolvedByActorId = normalize(resolvedByActorId);
         resolutionComment = normalize(resolutionComment);
+        boolean anyResolution=resolvedByActorId!=null || resolvedAt!=null || resolutionComment!=null;
+        if(anyResolution && (resolvedByActorId==null || resolvedAt==null || resolutionComment==null))
+            throw new InvalidIntegrationValueException("Manual resolution requires actor, timestamp and comment together.");
         }
+        public boolean hasManualResolution() { return resolvedByActorId != null; }
         public boolean replayable() {
             return status == DeadLetterStatus.OPEN
                     || status == DeadLetterStatus.UNDER_REVIEW;

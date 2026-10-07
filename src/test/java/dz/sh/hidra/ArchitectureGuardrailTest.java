@@ -105,6 +105,7 @@ class ArchitectureGuardrailTest {
             "dz.sh.hidra.modules.organization.application.contract.identity",
             "dz.sh.hidra.modules.topology.application.contract.planning",
             "dz.sh.hidra.modules.identity.application.contract.documents",
+            "dz.sh.hidra.modules.identity.application.contract.integration",
             "dz.sh.hidra.modules.documents.application.contract.target",
             "dz.sh.hidra.modules.documents.application.contract.audit",
             "dz.sh.hidra.modules.workflow.application.contract.audit",

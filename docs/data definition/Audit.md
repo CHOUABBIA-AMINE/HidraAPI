@@ -1212,3 +1212,9 @@ merge existing evidence. Database UPDATE/DELETE is denied, including status/hash
 timestamp changes. Future lifecycle markers must append governed evidence. Payload
 and free text are guarded at application/persistence boundaries; technical/system
 actorId remains optional. Existing catalog deactivation does not rewrite history.
+
+
+Batch 10 access records insert with persist/flush and cannot merge existing IDs.
+Optional auditEventId/exportRequestId stay nullable, but populated IDs must exist;
+nullable same-module FKs protect concurrent reference changes. UPDATE/DELETE is denied
+at the database boundary. Catalogs and search projections remain independently mutable.

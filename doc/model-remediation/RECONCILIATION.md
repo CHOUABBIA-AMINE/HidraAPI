@@ -127,7 +127,7 @@ No `party.application.contract.planning` package exists in the exact current tre
 | HMR-098 | HMSR-115 | integrity.IntegrityCase | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-099 | HMSR-116 | workflow.WorkflowStateHistory | COMPLETED — CI #581 GREEN | Mandatory status/actor display evidence fails fast. History persistence inserts and flushes without upsert; optional task/step/action/reason references are checked for instance/definition and action evidence coherence. Database guards prohibit update/delete/truncate. Four focused behavior checks passed with temporary stubs; ten PostgreSQL/Hibernate cases added for CI, not locally executed. |
 | HMR-100 | HMSR-117 | alarm.Alarm | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
-| HMR-101 | HMSR-118 | audit.AuditAccessRecord | BLOCKED — AUD-PREREQ-01 | Fresh source confirms remaining obligations; concrete owner/policy/append-only proposal below. |
+| HMR-101 | HMSR-118 | audit.AuditAccessRecord | IMPLEMENTED — CI PENDING | Access records use persist/flush without merge; populated optional AuditEvent/export IDs must exist. Forward V20261007_008 supplies nullable local FKs and UPDATE/DELETE denial. Three focused and four added PostgreSQL/JPA/concurrency/orphan checks prepared; local focused Maven blocked by uncached Boot parent; CI pending. |
 | HMR-102 | HMSR-119 | audit.AuditBeforeAfterValue | BLOCKED — AUD-PREREQ-01 | Fresh source confirms remaining obligations; concrete owner/policy/append-only proposal below. |
 | HMR-103 | HMSR-120 | monitoring.PlanActualDeviation | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-104 | HMSR-121 | alarm.AlarmAcknowledgement | STILL REQUIRED | no migration registered; dedicated test: absent; revalidate obligations before mutation |
@@ -1253,3 +1253,7 @@ Required export metadata, active EXPORT_PURPOSE, owner-controlled optional Workf
 ### Batch 10 HMR-095 — IMPLEMENTED, CI PENDING
 
 Required source/target module and target type, active exact event/category/optional severity/reason families, bounded sanitized payload/free text and persist/flush insertion enforced. Forward V20261007_007 adds optional catalog FKs, family guards and immutable event UPDATE/DELETE denial. Five focused and four added PostgreSQL/JPA/concurrency checks prepared; local focused Maven blocked by uncached Boot parent; CI pending.
+
+### Batch 10 HMR-101 — IMPLEMENTED, CI PENDING
+
+Access records use persist/flush without merge; populated optional AuditEvent/export IDs must exist. Forward V20261007_008 supplies nullable local FKs and UPDATE/DELETE denial. Three focused and four added PostgreSQL/JPA/concurrency/orphan checks prepared; local focused Maven blocked by uncached Boot parent; CI pending.

@@ -50,7 +50,7 @@ class AuditSemanticPostgresIntegrationTest {
         sql(Files.readString(MIGRATIONS.resolve("V20260611_017__create_audit_tables.sql")));
     }
     void migrate()throws Exception{
-        for(String name:new String[]{"V20261007_006__hmr_083_audit_export_request.sql","V20261007_007__hmr_095_audit_event.sql"}) sql(Files.readString(MIGRATIONS.resolve(name)));
+        for(String name:new String[]{"V20261007_006__hmr_083_audit_export_request.sql","V20261007_007__hmr_095_audit_event.sql","V20261007_008__hmr_101_audit_access_record.sql"}) sql(Files.readString(MIGRATIONS.resolve(name)));
     }
     void catalog(String id,String family)throws SQLException{sql("INSERT INTO hidra_audit_catalog_entry(id,catalog_name,code,active,sort_order,system_defined,created_at,updated_at) VALUES ('"+id+"','"+family+"','"+id+"',true,0,false,now(),now())");}
     @BeforeEach void setup()throws Exception{emptySchema();migrate();catalog("purpose","EXPORT_PURPOSE");catalog("type","EVENT_TYPE");catalog("category","EVENT_CATEGORY");catalog("severity","SEVERITY");catalog("reason","DECISION_REASON");catalog("mask","MASK_REASON");}
@@ -191,5 +191,31 @@ class AuditSemanticPostgresIntegrationTest {
             }
         }
         try(var c=connection();var s=c.createStatement();var r=s.executeQuery("SELECT reason_text,payload_json::text FROM hidra_audit_event WHERE id='jpa-event'")){assertTrue(r.next());assertEquals("Routine",r.getString(1));assertTrue(r.getString(2).contains("[REDACTED]"));}
+    }
+    @Test void accessOptionalReferencesAndImmutableStorageAreProtected()throws Exception{
+        sql(access("none",null,null));sql(eventSql("event"));sql(export("export","purpose","{}"));sql(access("both","event","export"));
+        assertThrows(SQLException.class,()->sql(access("missing-event","missing",null)));
+        assertThrows(SQLException.class,()->sql(access("missing-export",null,"missing")));
+        assertThrows(SQLException.class,()->sql("UPDATE hidra_audit_access_record SET actor_id='other' WHERE id='both'"));
+        assertThrows(SQLException.class,()->sql("DELETE FROM hidra_audit_access_record WHERE id='both'"));
+    }
+    @Test void concurrentAccessIdsCannotOverwrite()throws Exception{
+        var pool=Executors.newFixedThreadPool(2);var go=new CountDownLatch(1);
+        try{var a=pool.submit(()->insertAfter(go,access("same",null,null)));var b=pool.submit(()->insertAfter(go,access("same",null,null)));go.countDown();assertEquals(1,a.get(20,TimeUnit.SECONDS)+b.get(20,TimeUnit.SECONDS));}finally{pool.shutdownNow();}
+    }
+    @Test void legacyOrphanAccessAbortsWithoutDeletion()throws Exception{
+        emptySchema();sql(access("orphan","missing",null));
+        assertThrows(SQLException.class,()->migrate());
+        try(var c=connection();var s=c.createStatement();var r=s.executeQuery("SELECT audit_event_id FROM hidra_audit_access_record WHERE id='orphan'")){assertTrue(r.next());assertEquals("missing",r.getString(1));}
+    }
+    @Test void actualJpaAccessDoesNotMergeExistingIds()throws Exception{
+        try(var factory=configuration(AuditAccessRecordJpaEntity.class).buildSessionFactory()){
+            for(int i=0;i<2;i++)try(var session=factory.openSession()){
+                var tx=session.beginTransaction();
+                var adapter=new JpaAuditAccessRecordRepositoryAdapter(mock(AuditAccessRecordJpaRepository.class),session,mock(AuditEventJpaRepository.class),mock(AuditExportRequestJpaRepository.class));
+                var row=new AuditAccessRecord("jpa-access","actor",null,AuditAccessType.VIEW,null,null,null,null,null,Instant.now(),null);
+                if(i==0){adapter.save(row);tx.commit();}else{assertThrows(RuntimeException.class,()->adapter.save(row));tx.rollback();}
+            }
+        }
     }
 }

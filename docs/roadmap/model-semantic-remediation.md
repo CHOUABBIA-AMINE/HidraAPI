@@ -5054,7 +5054,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-118`
 - Exact commit: `fix(audit): remediate semantic review AuditAccessRecord`
-- Status: **Planned**
+- Status: **Implemented — CI pending**
 - SCC: —
 - Recorded upstream HMS dependencies: audit.AuditEvent, audit.AuditExportRequest
 - HMSR correction count: 3
@@ -5081,6 +5081,8 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
   1. **Make AuditAccessRecord persistence genuinely append-only so an existing record ID cannot be overwritten through generic save semantics.**
   2. **Fail closed on a supplied unknown `auditEventId` while preserving its documented optionality.**
   3. **Fail closed on a supplied unknown `exportRequestId` while preserving its documented optionality.**
+
+- Batch 10 implementation: Access records use persist/flush without merge; populated optional AuditEvent/export IDs must exist. Forward V20261007_008 supplies nullable local FKs and UPDATE/DELETE denial. Three focused and four added PostgreSQL/JPA/concurrency/orphan checks prepared; local focused Maven blocked by uncached Boot parent; CI pending.
 
 #### HMR-102 — audit.AuditBeforeAfterValue
 

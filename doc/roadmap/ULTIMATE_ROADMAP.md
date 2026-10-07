@@ -1941,3 +1941,7 @@ Required export metadata, active EXPORT_PURPOSE, owner-controlled optional Workf
 ### Batch 10 HMR-095 — IMPLEMENTED, CI PENDING
 
 Required source/target module and target type, active exact event/category/optional severity/reason families, bounded sanitized payload/free text and persist/flush insertion enforced. Forward V20261007_007 adds optional catalog FKs, family guards and immutable event UPDATE/DELETE denial. Five focused and four added PostgreSQL/JPA/concurrency checks prepared; local focused Maven blocked by uncached Boot parent; CI pending.
+
+### Batch 10 HMR-101 — IMPLEMENTED, CI PENDING
+
+Access records use persist/flush without merge; populated optional AuditEvent/export IDs must exist. Forward V20261007_008 supplies nullable local FKs and UPDATE/DELETE denial. Three focused and four added PostgreSQL/JPA/concurrency/orphan checks prepared; local focused Maven blocked by uncached Boot parent; CI pending.

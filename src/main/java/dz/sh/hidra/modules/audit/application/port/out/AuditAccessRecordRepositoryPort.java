@@ -7,7 +7,7 @@
  *
  * @Name        : AuditAccessRecordRepositoryPort
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-07
  *
  * @Type        : Interface
  * @Layer       : Application
@@ -28,6 +28,7 @@ import java.util.Optional;
  */
 public interface AuditAccessRecordRepositoryPort {
 
+    /** Append a fresh ID; optional references, when supplied, must exist. */
     AuditAccessRecord save(AuditAccessRecord model);
 
     Optional<AuditAccessRecord> findById(String id);

@@ -1978,3 +1978,35 @@ Supporting message: `docs(audit): record Batch 10 validation disposition`.
 One final main advancement; observe production CI triggering and stop. Next proposed
 owner scope: attached Batch 11 HMR-056/HMR-071, gated on green Batch 10 production CI and
 fresh source/owner/exhaustive-scope admission. Do not execute automatically.
+
+
+## HPR-P2-008 Batch 11 preflight split — 2026-10-07
+
+Owner Next selects attached Integration evidence HMR-056/HMR-071. Exact production
+main 712ec827e905f92b8f280a7ac8fec95eaf5cc8c9 is green at CI #584, run 37667837697,
+job 112951543842, including repository verification and OpenAPI publication/base/
+backward compatibility. Batch 10 HMR-083/095/101/102 are now COMPLETED; earlier pending
+preparation notes are historical.
+
+Fresh review resolves HMSR-067's stale missing-family claim: current Integration DDD
+explicitly names MESSAGE_TYPE/PAYLOAD_FORMAT, so active exact-family guards require
+no invented taxonomy. Optional job/endpoint lookup and endpoint/system coherence
+remain unimplemented. HMSR-084 failure/trio/local-reference guards remain absent;
+there is no Integration-facing Identity resolver contract or authenticated manual
+write rule. INT-PREREQ-01 is split out under AGENTS.md §3.2.9 before mutation.
+HMR-071 BLOCKED; HMR-056 STILL REQUIRED and unexecuted pending combined scope.
+Current totals: 31 implemented, 24 still required, two blocked (071, 080).
+
+The concrete proposal is in `doc/model-remediation/RECONCILIATION.md`, Batch 11 preflight:
+admit 056 → 071 with individual exact commits; optional local reference FKs and
+endpoint/system composite correlation; active existing catalog families; Identity-owned
+IntegrationResolverContract using existing ACTIVE/unlocked eligibility; authenticated
+actor match on new manual trios; complete-trio shape and preservation of historical
+resolver evidence. No terminal-status/manual equivalence, new resolution/replay API,
+payload cardinality, cross-module FK or release-version change.
+
+Proposed forward migrations V20261007_010/011 replace only unused backdated registrations
+after acceptance. Exhaustive file allowlists and validation targets must be admitted
+before production mutation. Only canonical roadmap and reconciliation change now.
+Supporting exact message: `docs(integration): record Batch 11 resolver preflight`.
+Accept or amend INT-PREREQ-01, then admit scope and implement independently. No Batch 12.

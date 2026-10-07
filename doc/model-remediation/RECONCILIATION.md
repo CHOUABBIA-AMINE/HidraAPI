@@ -82,7 +82,7 @@ No `party.application.contract.planning` package exists in the exact current tre
 | HMR-053 | HMSR-062 | telemetry.TrustedTelemetryReading | COMPLETED — HPR-P2-008 | Telemetry trust application use case derives values/provenance/binding from locked source evidence; PASSED plus MEDIUM/HIGH/CERTIFIED, ACTIVE point and active QUALITY_CODE required; composite assessment/reading identity and optional unit/batch FKs; snapshot preservation; V20261006_008; focused unit and PostgreSQL tests added; CI pending. |
 | HMR-054 | HMSR-063 | topology.Equipment | COMPLETED — HPR-P2-008 | EquipmentType identity/code is sole active classification; EquipmentKind deleted from domain/JPA; forward V20261006_009 preserves legacy strings, rejects conflicting classification/orphan attachments and adds nullable same-module FKs; manufacturer checked by existing Party contract; snapshots preserved; focused tests added; CI pending. |
 | HMR-055 | HMSR-064 | workflow.WorkflowInstance | COMPLETED — CI #581 GREEN | Owner-bound starts enforce active definition/version and exact binding, governed purpose/type, current-step coherence and owner target/actor snapshots; nonterminal uniqueness and same-definition/version database guards. Planning target registry denies unsupported/ambiguous owners. Eight focused behavior checks passed with temporary stubs; local Maven blocked by uncached parent, not a JUnit/PostgreSQL pass. |
-| HMR-056 | HMSR-067 | integration.IntegrationExchangeMessage | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
+| HMR-056 | HMSR-067 | integration.IntegrationExchangeMessage | STILL REQUIRED — BATCH 11 PREFLIGHT | Current DDD explicitly names MESSAGE_TYPE/PAYLOAD_FORMAT; optional run/endpoint checks and correlated endpoint ownership still absent. Execution waits for combined scope admission. |
 | HMR-057 | HMSR-068 | reporting.ReportRun | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-058 | HMSR-069 | risk.RiskAssessment | STILL REQUIRED | no migration registered; dedicated test: absent; revalidate obligations before mutation |
 | HMR-059 | HMSR-071 | leakdetection.LeakEscalationReference | COMPLETED — HPR-P2-008 | Optional candidate validated before save and protected by V20261006_001 nullable same-module FK with fail-closed orphan preflight; no case-primary equality rule. |
@@ -97,7 +97,7 @@ No `party.application.contract.planning` package exists in the exact current tre
 | HMR-068 | HMSR-080 | documents.DocumentVersion | COMPLETED — CI #583 GREEN | Required upload metadata, positive per-document unique numbers, nullable existing supersession and owner-controlled Identity/Workflow references enforced. Generic upload derives authenticated uploader display. Binary prevalidates metadata and registers known-rollback new-blob cleanup; failed cleanup preserves original error, unknown commit outcome preserves content and logs reconciliation. Forward V20261007_004; 10 focused owner/version/cleanup methods passed with temporary APIs; nine combined PostgreSQL cases include transactional storage rollback and confirmed commit failure. Local focused Maven blocked by uncached Boot 4.1.1 parent; full CI #583 passed. |
 | HMR-069 | HMSR-081 | assets.MaintenanceWorkOrder | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-070 | HMSR-082 | custody.CustodyTransferTicket | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
-| HMR-071 | HMSR-084 | integration.IntegrationDeadLetterRecord | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
+| HMR-071 | HMSR-084 | integration.IntegrationDeadLetterRecord | BLOCKED — INT-PREREQ-01 | Resolver Identity owner contract and authenticated manual-resolution write rule need admission; required failure/trio/local-reference guards still absent. |
 | HMR-072 | HMSR-085 | integrity.IntegrityAssessment | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-073 | HMSR-087 | organization.EmployeeAssignment | COMPLETED — HPR-P2-008 | Assignment service resolves same-module OrganizationUnit and rejects missing or non-ACTIVE units before save; existing employee/unit/position FKs retained; no migration. |
 | HMR-074 | HMSR-088 | organization.OrganizationDelegation | COMPLETED — HPR-P2-008 | JPA responsibility_assignment_id is mandatory; V20261006_002 aborts on legacy null rows before SET NOT NULL; existing same-module FK preserved; real PostgreSQL focused tests added. |
@@ -109,7 +109,7 @@ No `party.application.contract.planning` package exists in the exact current tre
 | HMR-080 | HMSR-094 | planning.Nomination | BLOCKED — OWNER CONTRACT REQUIRED | registered migration: absent; dedicated test: absent; Party→Planning contract absent |
 | HMR-081 | HMSR-095 | workflow.WorkflowAction | COMPLETED — CI #581 GREEN | Generic recording permits comments only; configured transitions exclusively produce decisions using live Identity authority. Optional task ownership and conditional evidence are enforced; canonical actor snapshots and server-owned locked sequences replace caller evidence. Action persistence is insert-only with unique monotonic sequence and immutable database guards. Five focused behavior checks passed with temporary stubs; existing permission regression fixture updated. |
 | HMR-082 | HMSR-096 | hse.HseCase | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
-| HMR-083 | HMSR-097 | audit.AuditExportRequest | IMPLEMENTED — CI PENDING | Required export metadata, active EXPORT_PURPOSE, owner-controlled optional Workflow/Documents references, bounded sanitized filters and one transactional EXPORT access record implemented. Generic writes admit REQUESTED only and persist/flush without merge. Forward V20261007_006; eight focused tests, two owner tests and four PostgreSQL/Spring/JPA tests prepared. Local Maven compile/focused blocked before compilation by uncached Boot 4.1.1 parent; production CI pending. |
+| HMR-083 | HMSR-097 | audit.AuditExportRequest | COMPLETED — CI #584 GREEN | Required export metadata, active EXPORT_PURPOSE, owner-controlled optional Workflow/Documents references, bounded sanitized filters and one transactional EXPORT access record implemented. Generic writes admit REQUESTED only and persist/flush without merge. Forward V20261007_006; eight focused tests, two owner tests and four PostgreSQL/Spring/JPA tests prepared. Local Maven compile/focused blocked before compilation by uncached Boot 4.1.1 parent; production CI #584 passed. |
 | HMR-084 | HMSR-098 | documents.DocumentTargetLink | COMPLETED — CI #583 GREEN | Required target module, active exact DOCUMENT_LINK_ROLE and owner-controlled target resolution enforced. Authenticated linking actor and canonical owner snapshots replace caller identity/display claims; optional version must belong to linked document, protected by composite FK. Forward V20261007_005; four focused methods passed with temporary APIs and three PostgreSQL cases added (12 combined). Both public export registries match 34 exact packages; all five forensic scans passed with temporary APIs. Focused Maven blocked by uncached parent; full CI #583 passed. |
 | HMR-085 | HMSR-100 | identity.AuthorizationDecision | IMPLEMENTED — CI #579 PASSED | Transactional graph, bounded ABAC, verified mappings, deterministic evidence and configurable persistence; Batch 6 implementation below. |
 | HMR-086 | HMSR-101 | identity.AuthorizationDelegationGrant | COMPLETED — HPR-P2-008 | Required nonblank delegation reason and validTo carried through domain/JPA/mapper; DelegationStatus narrowed to ACTIVE/REVOKED/EXPIRED; optional Role and Permission validated with nullable same-module FKs; no XOR rule; V20261006_011 fails closed on legacy evidence; focused tests added; final CI pending. |
@@ -121,14 +121,14 @@ No `party.application.contract.planning` package exists in the exact current tre
 | HMR-092 | HMSR-109 | incident.IncidentResponseAction | STILL REQUIRED | no migration registered; dedicated test: absent; revalidate obligations before mutation |
 | HMR-093 | HMSR-110 | reporting.ReportOutputArtifact | STILL REQUIRED | no migration registered; dedicated test: absent; revalidate obligations before mutation |
 | HMR-094 | HMSR-111 | planning.PlanTarget | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
-| HMR-095 | HMSR-112 | audit.AuditEvent | IMPLEMENTED — CI PENDING | Required source/target module and target type, active exact event/category/optional severity/reason families, bounded sanitized payload/free text and persist/flush insertion enforced. Forward V20261007_007 adds optional catalog FKs, family guards and immutable event UPDATE/DELETE denial. Five focused and four added PostgreSQL/JPA/concurrency checks prepared; local focused Maven blocked by uncached Boot parent; CI pending. |
+| HMR-095 | HMSR-112 | audit.AuditEvent | COMPLETED — CI #584 GREEN | Required source/target module and target type, active exact event/category/optional severity/reason families, bounded sanitized payload/free text and persist/flush insertion enforced. Forward V20261007_007 adds optional catalog FKs, family guards and immutable event UPDATE/DELETE denial. Five focused and four added PostgreSQL/JPA/concurrency checks prepared; local focused Maven blocked by uncached Boot parent; CI #584 passed. |
 | HMR-096 | HMSR-113 | hse.HseClosure | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-097 | HMSR-114 | hse.HseCorrectivePreventiveAction | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-098 | HMSR-115 | integrity.IntegrityCase | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-099 | HMSR-116 | workflow.WorkflowStateHistory | COMPLETED — CI #581 GREEN | Mandatory status/actor display evidence fails fast. History persistence inserts and flushes without upsert; optional task/step/action/reason references are checked for instance/definition and action evidence coherence. Database guards prohibit update/delete/truncate. Four focused behavior checks passed with temporary stubs; ten PostgreSQL/Hibernate cases added for CI, not locally executed. |
 | HMR-100 | HMSR-117 | alarm.Alarm | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
-| HMR-101 | HMSR-118 | audit.AuditAccessRecord | IMPLEMENTED — CI PENDING | Access records use persist/flush without merge; populated optional AuditEvent/export IDs must exist. Forward V20261007_008 supplies nullable local FKs and UPDATE/DELETE denial. Three focused and four added PostgreSQL/JPA/concurrency/orphan checks prepared; local focused Maven blocked by uncached Boot parent; CI pending. |
-| HMR-102 | HMSR-119 | audit.AuditBeforeAfterValue | IMPLEMENTED — CI PENDING | Required fieldPath, masked/sensitive raw-text exclusion, optional exact active MASK_REASON and existing parent event enforced. Hash-only evidence and changed=false remain legal. Persist/flush insertion plus V20261007_009 local FKs/checks/UPDATE/DELETE denial preserve immutable rows. Six focused and five added PostgreSQL/JPA/concurrency/legacy checks prepared. Temporary API type compilation passed; local focused Maven blocked by uncached Boot parent; CI pending. |
+| HMR-101 | HMSR-118 | audit.AuditAccessRecord | COMPLETED — CI #584 GREEN | Access records use persist/flush without merge; populated optional AuditEvent/export IDs must exist. Forward V20261007_008 supplies nullable local FKs and UPDATE/DELETE denial. Three focused and four added PostgreSQL/JPA/concurrency/orphan checks prepared; local focused Maven blocked by uncached Boot parent; CI #584 passed. |
+| HMR-102 | HMSR-119 | audit.AuditBeforeAfterValue | COMPLETED — CI #584 GREEN | Required fieldPath, masked/sensitive raw-text exclusion, optional exact active MASK_REASON and existing parent event enforced. Hash-only evidence and changed=false remain legal. Persist/flush insertion plus V20261007_009 local FKs/checks/UPDATE/DELETE denial preserve immutable rows. Six focused and five added PostgreSQL/JPA/concurrency/legacy checks prepared. Temporary API type compilation passed; local focused Maven blocked by uncached Boot parent; CI #584 passed. |
 | HMR-103 | HMSR-120 | monitoring.PlanActualDeviation | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-104 | HMSR-121 | alarm.AlarmAcknowledgement | STILL REQUIRED | no migration registered; dedicated test: absent; revalidate obligations before mutation |
 | HMR-105 | HMSR-122 | alarm.AlarmClosure | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
@@ -140,9 +140,9 @@ No `party.application.contract.planning` package exists in the exact current tre
 - HMR-005 corrected from stale planned status to **COMPLETED**;
 - HMR-009 confirmed **COMPLETED** and removed as a carry-over blocker;
 - HMR-050..106 evaluated: **57**;
-- HMR-050..106 **STILL REQUIRED**: **25**;
-- HMR-050..106 **BLOCKED**: **1**;
-- HMR-050..106 **IMPLEMENTED during HPR-P2-008**: **31** (four Batch 10 items CI pending; previous 27 green through #583);
+- HMR-050..106 **STILL REQUIRED**: **24**;
+- HMR-050..106 **BLOCKED**: **2**;
+- HMR-050..106 **IMPLEMENTED during HPR-P2-008**: **31** (green production CI through #584);
 - HMR-050..106 **SUPERSEDED**: **0**;
 - HMR-054 completed; repaired CI #575 is green;
 - HMR-080 remains blocked; HMR-055 prerequisite resolved and implemented in Batch 7.
@@ -151,7 +151,7 @@ No `party.application.contract.planning` package exists in the exact current tre
 
 - HMR-050 — **COMPLETED** at the first HPR-P2-008 execution step.
 - Batch 7 **COMPLETED — CI #581 GREEN**: HMR-055, 061, 066, 081, 099; exact repaired head ec63af0414d7fa85b9200d4bd181ac799bd072ed. Batch 8 preflight split below; no Planning implementation claimed.
-- Current remaining: **25 STILL REQUIRED + 1 BLOCKED (HMR-080)**; 31 implementations, including four Batch 10 items awaiting full CI.
+- Current remaining: **24 STILL REQUIRED + 2 BLOCKED (HMR-071, HMR-080)**; 31 implementations have green production CI through #584.
 
 - HMR-051 — **COMPLETED**: Topology and optional Organization references validated on every case save; snapshot preserved; no migration because primary-candidate FK already exists; owner contract and architecture export added.
 
@@ -1331,3 +1331,134 @@ validation disposition. Advance main once after exact-tree comparison, observe p
 CI triggering, then stop. CI pending at preparation. Next proposed owner scope is attached
 Batch 11 Integration evidence HMR-056/HMR-071, only after Batch 10 CI is green and fresh
 source/owner/exact-scope admission. No automatic Batch 11 execution.
+
+
+## Batch 11 preflight and concrete Integration resolver proposal — 2026-10-07
+
+Owner Next selects attached Integration evidence Batch 11, HMR-056/HMSR-067 and
+HMR-071/HMSR-084. Exact production main is
+712ec827e905f92b8f280a7ac8fec95eaf5cc8c9. CI #584/run 37667837697 completed
+successfully; job 112951543842 passed repository verification and deterministic
+OpenAPI publication/base generation/backward compatibility. Batch 10's four pending
+preparation entries are historical; all four audit HMRs are now completed.
+
+### Fresh source evidence and split
+
+HMR-056 still requires optional IntegrationJobRun existence, optional endpoint
+existence and endpoint.externalSystemId == message.externalSystemId. The current
+JpaIntegrationExchangeMessageRepositoryAdapter uses generic save with no local
+lookups or family eligibility checks. Mandatory system/catalog generic FKs remain
+existing protection; optional job/endpoint edges are only indexed in the base schema.
+
+The old HMSR-067 missing-family statement is superseded by current source evidence:
+`docs/data definition/Integration.md`, section 6.25 IntegrationCatalogEntry, explicitly
+lists MESSAGE_TYPE and PAYLOAD_FORMAT under recommended catalog names (lines 1299–1300
+at this production head). active is defined as whether an entry can be used. Therefore
+exact active MESSAGE_TYPE/PAYLOAD_FORMAT validation is evidence-backed; no new family
+name, hard-coded catalog ID or catalog seed is proposed.
+
+HMR-071 still requires nonblank failureStage/reasonMessage, populated optional
+jobRunId/exchangeMessageId/inboundRecordId/outboundRecordId existence and complete
+manual-resolution actor/time/comment evidence. Current domain only normalizes those
+strings; current repository adapter performs no validation. No dead-letter resolution
+application producer or Integration-facing Identity resolver contract was found.
+Existing Workflow/Documents/Planning contracts belong to their respective consumers;
+Integration must not treat a consumer-specific contract as its own API. Existing
+IntegrationJobRun validation proves manual actor presence, not owner identity, and
+is outside this batch's correction scope.
+
+INT-PREREQ-01 is the missing owner-contract and authenticated manual-write decision.
+AGENTS.md §3.2.9 requires splitting it out and stopping before mutation. Both legacy
+HMRB-023/HMRB-035 are solo; the attached two-task envelope also needs explicit combined
+canonical admission. Unused V20261004_056/071 would sort before published migrations:
+forward names must be registered. HMR-071 is blocked; HMR-056 remains required but
+unexecuted until accepted batch scope. Totals: **31 implemented, 24 still required,
+two blocked** (HMR-071 and HMR-080). No production/test/SQL/API/version change.
+
+### Proposed owner decision — INT-PREREQ-01
+
+1. Admit the attached two-task envelope in order HMR-056 → HMR-071, preserving the
+   full HMSR obligations, exact messages and independent commits. This is a bounded
+   combined exception to legacy solo HMRB-023/HMRB-035. Advance main once after scope
+   checks and validation; observe production CI triggering and stop. No Batch 12.
+2. HMR-056 validates optional run and endpoint through Integration-owned repositories
+   at every save. Require endpoint's externalSystemId to equal message's system ID;
+   no extra run/system, direction, storage-mode or lifecycle rule is inferred.
+   Mandatory messageTypeId/payloadFormatId must resolve to active exact MESSAGE_TYPE/
+   PAYLOAD_FORMAT entries. Preserve null optional run/endpoint values.
+3. Add forward same-module protection: nullable message job-run FK;
+   UNIQUE(endpoint.id, endpoint.external_system_id) plus message composite FK
+   (endpoint_id, external_system_id) to endpoint (id, external_system_id). Keep existing
+   mandatory ExternalSystem/catalog FKs. Catalog family/active guards apply to new
+   writes; no historical catalog retagging. Orphan/mismatched legacy rows abort for
+   reconciliation, rather than reassigning messages.
+4. Identity exports `identity.application.contract.integration.IntegrationResolverContract`
+   with `boolean eligibleResolver(String actorId, Instant at)`. Identity-owned
+   `IntegrationResolverQueryService` implements it using Identity's existing ACTIVE/
+   unlocked actor eligibility internally. No new permission/role is invented. Only
+   this contract crosses the module boundary; no Identity domain/repository import
+   or cross-module FK. Add its exact public package to both architecture registries.
+5. HMR-071 requires failureStage/reasonMessage as nonblank strings. Preserve their
+   current technical/string semantics; do not convert failureStage or reasonCode into
+   new enums/catalog references. Supplied optional run/message/inbound/outbound IDs
+   must resolve within Integration; add nullable FKs to protect concurrent references.
+   Do not require every reference or infer they belong to one run/system absent a
+   correction requiring that correlation.
+6. A manual trio is all absent or complete after normalization. Any populated actor,
+   timestamp or comment counts as manual evidence and requires all three. Do not equate
+   every terminal status with manual resolution; REPLAYED/IGNORED retain their documented
+   independent flows and no complete status matrix is invented. Status alone does not
+   create or validate a resolver identity; no new resolution/replay API is introduced.
+7. Generic dead-letter saves that newly record a complete manual trio must require
+   resolvedByActorId to equal the authenticated CurrentSecurityContext actor and to be
+   eligible through the Identity owner contract at current time. A caller's backdated
+   resolvedAt cannot establish present eligibility. Existing complete recorded trios
+   are retained unchanged on unrelated updates, without rechecking a historical actor's
+   current lifecycle. Replacing/removing an existing complete trio fails closed so
+   provenance is preserved; a separately governed correction would be needed. Insert
+   with prepopulated manual evidence is treated as a new manual write and validated.
+   Domain/SQL also protect complete-trio shape; SQL does not prove external identity.
+8. Proposed forward migrations:
+   - HMR-056: V20261007_010__hmr_056_integration_exchange_message.sql
+   - HMR-071: V20261007_011__hmr_071_integration_dead_letter_record.sql
+   Both follow published V20261007_009. Invalid legacy required failure evidence,
+   optional orphan references and partial manual trios abort. Existing migrations and
+   historical payload/failure evidence are never rewritten. No arbitrary JSON size,
+   payload-mode cardinality, new replay producer or cleanup deletion is admitted.
+
+### Proposed scope and validation admission
+
+On acceptance, register exhaustive per-HMR paths before mutation. Preserve each legacy
+allowlist except unused migration replacements, plus canonical roadmap/reconciliation
+and the shared IntegrationSemanticPostgresIntegrationTest. Proposed additions:
+
+- HMR-056: existing message repository adapter/domain/entity/repository/mapper/port paths;
+  optional IntegrationApplicationService if authoritative prevalidation requires it;
+  dedicated IntegrationExchangeMessageSemanticRemediationTest and shared PostgreSQL
+  cases for run optionality/existence, endpoint correlation/concurrent ownership,
+  active exact families and invalid legacy abort. Same-module repositories are read
+  through the adapter; no new foreign owner contract is required for these edges.
+- HMR-071: existing dead-letter adapter/domain/entity/repository/mapper/port paths;
+  new Identity IntegrationResolverContract, contract package-info.java,
+  IntegrationResolverQueryService and dedicated owner query test; both public-export
+  registries; dedicated IntegrationDeadLetterRecordSemanticRemediationTest and shared
+  PostgreSQL cases. Inject the existing CurrentSecurityContext into the authoritative
+  adapter for newly recorded manual evidence. No new dead-letter command/controller.
+- Supporting admission/validation documentation commits are separate; each semantic
+  commit updates its independent canonical/legacy status and DDD policy as applicable.
+  Exact semantic messages remain:
+  `fix(integration): remediate semantic review IntegrationExchangeMessage` and
+  `fix(integration): remediate semantic review IntegrationDeadLetterRecord`.
+
+Run compile; both dedicated semantic tests; Identity owner test; shared PostgreSQL
+integration tests; existing IntegrationJobRun/controller tests and architecture/forensic
+checks; full test and clean verify. Cover wrong/inactive catalog families, unknown
+optional IDs, cross-system endpoints, blank failure evidence, every partial manual-trio
+combination, wrong authenticated actor, ineligible Identity actor, complete new manual
+writes, unchanged historical trios and denied provenance replacement/removal. Prove
+nullable/composite SQL FKs and legacy migration abort on actual PostgreSQL. Report
+local dependency/runtime blocks accurately.
+
+This is a concrete proposal, not implementation or completed validation. Accept or amend
+INT-PREREQ-01, then register exact scope, recheck green production baseline, prepare the
+two independent commits and publish one final head. Do not execute automatically.

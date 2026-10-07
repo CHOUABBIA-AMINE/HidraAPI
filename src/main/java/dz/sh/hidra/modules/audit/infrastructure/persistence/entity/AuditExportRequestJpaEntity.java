@@ -7,7 +7,7 @@
  *
  * @Name        : AuditExportRequestJpaEntity
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-07
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -48,6 +48,7 @@ import java.time.Instant;
     @Column(name = "purpose_id", nullable = false, length = 80)
     private String purposeId;
 
+    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.JSON)
     @Column(name = "filter_json", nullable = false, columnDefinition = "jsonb")
     private String filterJson;
 

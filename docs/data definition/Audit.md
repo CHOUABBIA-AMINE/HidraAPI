@@ -1187,3 +1187,20 @@ Logs help developers debug.
 Audit helps the company prove what happened.
 Do not confuse them.
 ```
+
+
+## Accepted Batch 10 audit input and request policy — 2026-10-07
+
+Audit filter/payload JSON is limited to 65,536 UTF-8 bytes and nesting depth 32;
+only objects/arrays are admitted. Invalid JSON, duplicate keys, trailing tokens and
+oversized inputs fail without truncation. Credential-sensitive key values are recursively
+redacted, including case/separator variants. Recognizable credential strings (private-key
+blocks, bearer/basic authorization, labelled credential assignments) fail closed; arbitrary
+unlabelled secrets cannot be inferred. Raw input never appears in policy errors.
+
+Export request creation admits REQUESTED only. Optional Workflow/Documents references
+resolve through owner existence contracts; existence does not prove approval. Approval,
+execution, unmasking and completion need separately governed authorization. One EXPORT
+AuditAccessRecord with sanitized-filter SHA-256 is appended in the request transaction;
+null resultCount means no successful export is asserted. Evidence failure rolls back the
+request. No export-specific catalog taxonomy is introduced by this correction.

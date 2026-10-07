@@ -4352,7 +4352,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-097`
 - Exact commit: `fix(audit): remediate semantic review AuditExportRequest`
-- Status: **Planned**
+- Status: **Implemented — CI pending**
 - SCC: —
 - Recorded upstream HMS dependencies: documents.Document, workflow.WorkflowInstance
 - HMSR correction count: 5
@@ -4383,6 +4383,8 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
   3. **Validate `purposeId` against the active/eligible exact Audit `EXPORT_PURPOSE` catalog family** and add appropriate same-module integrity protection consistent with repository architecture.
   4. **Preserve Workflow/Documents ownership:** validate optional workflow approval and result-document references through owner-controlled contracts where required; never introduce cross-module database FKs.
   5. **Make audit export activity itself auditable**, including request/access/export execution evidence through Audit-owned application paths while avoiding recursive evidence creation.
+
+- Batch 10 implementation: Required export metadata, active EXPORT_PURPOSE, owner-controlled optional Workflow/Documents references, bounded sanitized filters and one transactional EXPORT access record implemented. Generic writes admit REQUESTED only and persist/flush without merge. Forward V20261007_006; eight focused tests, two owner tests and four PostgreSQL/Spring/JPA tests prepared. Local Maven compile/focused blocked before compilation by uncached Boot 4.1.1 parent; production CI pending.
 
 #### HMR-084 — documents.DocumentTargetLink
 

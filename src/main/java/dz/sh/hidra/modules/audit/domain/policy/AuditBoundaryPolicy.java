@@ -7,7 +7,7 @@
  *
  * @Name        : AuditBoundaryPolicy
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-07
  *
  * @Type        : Class
  * @Layer       : Domain
@@ -49,13 +49,12 @@ public final class AuditBoundaryPolicy {
         if (fieldPath == null) {
             return false;
         }
-        String normalized = fieldPath.toLowerCase(Locale.ROOT);
-        return normalized.contains("password")
-                || normalized.contains("token")
-                || normalized.contains("secret")
-                || normalized.contains("privatekey")
-                || normalized.contains("credential")
-                || normalized.contains("apikey")
-                || normalized.contains("session");
+        String normalized = java.text.Normalizer.normalize(fieldPath, java.text.Normalizer.Form.NFKC)
+                .toLowerCase(Locale.ROOT).replaceAll("[^a-z0-9]", "");
+        return normalized.contains("password") || normalized.contains("token")
+                || normalized.contains("secret") || normalized.contains("privatekey")
+                || normalized.contains("credential") || normalized.contains("apikey")
+                || normalized.contains("session") || normalized.contains("authorization")
+                || normalized.contains("cookie");
     }
 }

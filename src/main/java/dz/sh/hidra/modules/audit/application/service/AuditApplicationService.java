@@ -7,7 +7,7 @@
  *
  * @Name        : AuditApplicationService
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-07
  *
  * @Type        : Class
  * @Layer       : Application
@@ -48,7 +48,9 @@ import java.util.Objects;
  * Application service for audit events, export requests, and access records.
  */
 @Service
-public final class AuditApplicationService implements RecordAuditEventUseCase, RequestAuditExportUseCase, RecordAuditAccessUseCase {
+public class AuditApplicationService implements RecordAuditEventUseCase, RequestAuditExportUseCase, RecordAuditAccessUseCase {
+
+    private final AuditInputPolicy inputPolicy;
 
     private final AuditEventRepositoryPort auditEventRepositoryPort;
     private final AuditExportRequestRepositoryPort exportRequestRepositoryPort;
@@ -57,8 +59,10 @@ public final class AuditApplicationService implements RecordAuditEventUseCase, R
     public AuditApplicationService(
             AuditEventRepositoryPort auditEventRepositoryPort,
             AuditExportRequestRepositoryPort exportRequestRepositoryPort,
-            AuditAccessRecordRepositoryPort accessRecordRepositoryPort
+            AuditAccessRecordRepositoryPort accessRecordRepositoryPort,
+            AuditInputPolicy inputPolicy
     ) {
+        this.inputPolicy = Objects.requireNonNull(inputPolicy);
         this.auditEventRepositoryPort = Objects.requireNonNull(auditEventRepositoryPort, "Audit event repository port must not be null.");
         this.exportRequestRepositoryPort = Objects.requireNonNull(exportRequestRepositoryPort, "Audit export request repository port must not be null.");
         this.accessRecordRepositoryPort = Objects.requireNonNull(accessRecordRepositoryPort, "Audit access record repository port must not be null.");
@@ -119,6 +123,7 @@ public final class AuditApplicationService implements RecordAuditEventUseCase, R
     }
 
     @Override
+    @org.springframework.transaction.annotation.Transactional
     public AuditExportRequestSummaryDto requestAuditExport(RequestAuditExportCommand command) {
         Objects.requireNonNull(command, "Request audit export command must not be null.");
         Instant now = Instant.now();
@@ -127,7 +132,7 @@ public final class AuditApplicationService implements RecordAuditEventUseCase, R
                 command.requestedByActorId(),
                 command.requestedByDisplayNameSnapshot(),
                 command.purposeId(),
-                command.filterJson(),
+                inputPolicy.json(command.filterJson(), true),
                 command.format(),
                 AuditExportStatus.REQUESTED,
                 command.workflowInstanceId(),
@@ -138,7 +143,12 @@ public final class AuditApplicationService implements RecordAuditEventUseCase, R
                 null,
                 null
         );
-        return AuditApplicationMapper.toSummary(exportRequestRepositoryPort.save(exportRequest));
+        AuditExportRequest saved = exportRequestRepositoryPort.save(exportRequest);
+        accessRecordRepositoryPort.save(new AuditAccessRecord(
+                AuditId.newId().value(), saved.requestedByActorId(), saved.requestedByDisplayNameSnapshot(),
+                dz.sh.hidra.modules.audit.domain.value.AuditAccessType.EXPORT, null,
+                inputPolicy.hash(saved.filterJson()), saved.id(), null, null, now, null));
+        return AuditApplicationMapper.toSummary(saved);
     }
 
     @Override

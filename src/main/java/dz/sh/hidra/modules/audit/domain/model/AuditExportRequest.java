@@ -7,7 +7,7 @@
  *
  * @Name        : AuditExportRequest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-10-07
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -80,6 +80,9 @@ import java.time.Instant;
             throw new InvalidAuditValueException("AuditExportRequest requested at must not be null.");
         }
 
+        if (filterJson == null || filterJson.isBlank() || format == null || format.isBlank()) {
+            throw new InvalidAuditValueException("Audit export filter and format are required.");
+        }
         id = normalize(id);
         requestedByActorId = normalize(requestedByActorId);
         requestedByDisplayNameSnapshot = normalize(requestedByDisplayNameSnapshot);

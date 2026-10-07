@@ -1933,3 +1933,7 @@ Validation: compile; each dedicated semantic test; shared PostgreSQL integration
 owner queries, existing Audit contract tests and architecture/forensic checks; full test
 and clean verify. Report dependency/runtime blocks without claiming simulated API checks
 are Maven/JUnit/PostgreSQL results. No release-version change.
+
+### Batch 10 HMR-083 — IMPLEMENTED, CI PENDING
+
+Required export metadata, active EXPORT_PURPOSE, owner-controlled optional Workflow/Documents references, bounded sanitized filters and one transactional EXPORT access record implemented. Generic writes admit REQUESTED only and persist/flush without merge. Forward V20261007_006; eight focused tests, two owner tests and four PostgreSQL/Spring/JPA tests prepared. Local Maven compile/focused blocked before compilation by uncached Boot 4.1.1 parent; production CI pending.

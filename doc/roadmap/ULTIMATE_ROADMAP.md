@@ -1797,3 +1797,139 @@ Only this canonical roadmap and reconciliation may change in this preflight.
 Exact supporting commit: `docs(audit): record Batch 10 evidence preflight`.
 No production, SQL, tests, API, catalog or version change; no Batch 11 execution.
 Accept or amend AUD-PREREQ-01, then admit exact scope and implement independently.
+
+
+## HPR-P2-008 Batch 10 accepted policy and exact scope — 2026-10-07
+
+Owner Next accepts AUD-PREREQ-01 at ae149677bc31e179fa6828da3599a16a1a850e07.
+Current main is that documentation-only preflight; Documentation #79 passed. Production
+CI #583 at 6f147586583e61c0ac8212bb8dd0db14d635dabd is green; intervening scope is
+exactly two Markdown files. The accepted nine-part decision includes 65,536 UTF-8 bytes,
+JSON depth 32, owner existence, REQUESTED-only writes, transactional access evidence,
+active exact catalogs and persist/flush plus DB UPDATE/DELETE protection. Approval,
+execution/unmasking and future evidence lifecycle remain outside scope.
+
+AUD-PREREQ-01 is resolved. Explicitly admit attached four-task batch 083 → 095 → 101 → 102
+as the bounded combined exception to legacy solo HMRB-044/HMRB-053. Each retains its
+HMSR obligations, exact commit and independent status. Published migrations immutable;
+replace only unused registrations with forward 006/007/008/009 names below.
+One atomic main advancement after validation; observe CI starting and stop. No Batch 11.
+Supporting scope message: `docs(audit): admit Batch 10 policy and evidence scope`.
+Exact paths per semantic commit (no unlisted paths):
+
+### HMR-083 admitted files
+
+Source: `HMSR-097`; exact commit `fix(audit): remediate semantic review AuditExportRequest`.
+
+- `doc/model-remediation/RECONCILIATION.md`
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `docs/data definition/Audit.md`
+- `docs/roadmap/model-semantic-remediation.md`
+- `src/main/java/dz/sh/hidra/modules/audit/api/rest/request/RequestAuditExportRequest.java`
+- `src/main/java/dz/sh/hidra/modules/audit/api/rest/response/AuditExportRequestResponse.java`
+- `src/main/java/dz/sh/hidra/modules/audit/application/dto/AuditExportRequestSummaryDto.java`
+- `src/main/java/dz/sh/hidra/modules/audit/application/port/out/AuditCatalogEligibilityPort.java`
+- `src/main/java/dz/sh/hidra/modules/audit/application/port/out/AuditDocumentReferencePort.java`
+- `src/main/java/dz/sh/hidra/modules/audit/application/port/out/AuditExportRequestRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/audit/application/port/out/AuditWorkflowReferencePort.java`
+- `src/main/java/dz/sh/hidra/modules/audit/application/service/AuditApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/audit/application/service/AuditInputPolicy.java`
+- `src/main/java/dz/sh/hidra/modules/audit/domain/model/AuditExportRequest.java`
+- `src/main/java/dz/sh/hidra/modules/audit/domain/policy/AuditBoundaryPolicy.java`
+- `src/main/java/dz/sh/hidra/modules/audit/domain/service/AuditSensitiveDataGuard.java`
+- `src/main/java/dz/sh/hidra/modules/audit/infrastructure/integration/AuditOwnerReferenceAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/audit/infrastructure/persistence/adapter/JpaAuditCatalogEligibilityAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/audit/infrastructure/persistence/adapter/JpaAuditExportRequestRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/audit/infrastructure/persistence/entity/AuditExportRequestJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/audit/infrastructure/persistence/mapper/AuditPersistenceMapper.java`
+- `src/main/java/dz/sh/hidra/modules/audit/infrastructure/persistence/repository/AuditExportRequestJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/documents/application/contract/audit/AuditDocumentReferenceContract.java`
+- `src/main/java/dz/sh/hidra/modules/documents/application/contract/audit/package-info.java`
+- `src/main/java/dz/sh/hidra/modules/documents/application/service/AuditDocumentReferenceQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/workflow/application/contract/audit/AuditWorkflowReferenceContract.java`
+- `src/main/java/dz/sh/hidra/modules/workflow/application/contract/audit/package-info.java`
+- `src/main/java/dz/sh/hidra/modules/workflow/application/service/AuditWorkflowReferenceQueryService.java`
+- `src/main/resources/db/migration/V20261007_006__hmr_083_audit_export_request.sql`
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java`
+- `src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java`
+- `src/test/java/dz/sh/hidra/modules/audit/infrastructure/persistence/AuditSemanticPostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/audit/semantic/AuditExportRequestSemanticRemediationTest.java`
+- `src/test/java/dz/sh/hidra/modules/documents/application/service/AuditDocumentReferenceQueryServiceTest.java`
+- `src/test/java/dz/sh/hidra/modules/workflow/application/service/AuditWorkflowReferenceQueryServiceTest.java`
+
+### HMR-095 admitted files
+
+Source: `HMSR-112`; exact commit `fix(audit): remediate semantic review AuditEvent`.
+
+- `doc/model-remediation/RECONCILIATION.md`
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `docs/data definition/Audit.md`
+- `docs/roadmap/model-semantic-remediation.md`
+- `src/main/java/dz/sh/hidra/modules/audit/api/rest/request/RecordAuditEventRequest.java`
+- `src/main/java/dz/sh/hidra/modules/audit/api/rest/response/AuditEventResponse.java`
+- `src/main/java/dz/sh/hidra/modules/audit/application/command/RecordAuditEventCommand.java`
+- `src/main/java/dz/sh/hidra/modules/audit/application/dto/AuditEventSummaryDto.java`
+- `src/main/java/dz/sh/hidra/modules/audit/application/port/in/RecordAuditEventUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/audit/application/port/out/AuditCatalogEligibilityPort.java`
+- `src/main/java/dz/sh/hidra/modules/audit/application/port/out/AuditEventRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/audit/application/service/AuditApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/audit/application/service/AuditInputPolicy.java`
+- `src/main/java/dz/sh/hidra/modules/audit/domain/model/AuditEvent.java`
+- `src/main/java/dz/sh/hidra/modules/audit/domain/policy/AuditBoundaryPolicy.java`
+- `src/main/java/dz/sh/hidra/modules/audit/domain/service/AuditSensitiveDataGuard.java`
+- `src/main/java/dz/sh/hidra/modules/audit/domain/value/AuditEventStatus.java`
+- `src/main/java/dz/sh/hidra/modules/audit/infrastructure/persistence/adapter/JpaAuditCatalogEligibilityAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/audit/infrastructure/persistence/adapter/JpaAuditEventRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/audit/infrastructure/persistence/entity/AuditEventJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/audit/infrastructure/persistence/mapper/AuditPersistenceMapper.java`
+- `src/main/java/dz/sh/hidra/modules/audit/infrastructure/persistence/repository/AuditEventJpaRepository.java`
+- `src/main/resources/db/migration/V20261007_007__hmr_095_audit_event.sql`
+- `src/test/java/dz/sh/hidra/modules/audit/infrastructure/persistence/AuditSemanticPostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/audit/semantic/AuditEventSemanticRemediationTest.java`
+
+### HMR-101 admitted files
+
+Source: `HMSR-118`; exact commit `fix(audit): remediate semantic review AuditAccessRecord`.
+
+- `doc/model-remediation/RECONCILIATION.md`
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `docs/data definition/Audit.md`
+- `docs/roadmap/model-semantic-remediation.md`
+- `src/main/java/dz/sh/hidra/modules/audit/api/rest/response/AuditAccessRecordResponse.java`
+- `src/main/java/dz/sh/hidra/modules/audit/application/dto/AuditAccessRecordSummaryDto.java`
+- `src/main/java/dz/sh/hidra/modules/audit/application/port/out/AuditAccessRecordRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/audit/application/service/AuditApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/audit/domain/model/AuditAccessRecord.java`
+- `src/main/java/dz/sh/hidra/modules/audit/infrastructure/persistence/adapter/JpaAuditAccessRecordRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/audit/infrastructure/persistence/entity/AuditAccessRecordJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/audit/infrastructure/persistence/mapper/AuditPersistenceMapper.java`
+- `src/main/java/dz/sh/hidra/modules/audit/infrastructure/persistence/repository/AuditAccessRecordJpaRepository.java`
+- `src/main/resources/db/migration/V20261007_008__hmr_101_audit_access_record.sql`
+- `src/test/java/dz/sh/hidra/modules/audit/infrastructure/persistence/AuditSemanticPostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/audit/semantic/AuditAccessRecordSemanticRemediationTest.java`
+
+### HMR-102 admitted files
+
+Source: `HMSR-119`; exact commit `fix(audit): remediate semantic review AuditBeforeAfterValue`.
+
+- `doc/model-remediation/RECONCILIATION.md`
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `docs/data definition/Audit.md`
+- `docs/roadmap/model-semantic-remediation.md`
+- `src/main/java/dz/sh/hidra/modules/audit/application/port/out/AuditBeforeAfterValueRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/audit/application/service/AuditInputPolicy.java`
+- `src/main/java/dz/sh/hidra/modules/audit/domain/model/AuditBeforeAfterValue.java`
+- `src/main/java/dz/sh/hidra/modules/audit/domain/policy/AuditBoundaryPolicy.java`
+- `src/main/java/dz/sh/hidra/modules/audit/domain/service/AuditSensitiveDataGuard.java`
+- `src/main/java/dz/sh/hidra/modules/audit/infrastructure/persistence/adapter/JpaAuditBeforeAfterValueRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/audit/infrastructure/persistence/entity/AuditBeforeAfterValueJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/audit/infrastructure/persistence/mapper/AuditPersistenceMapper.java`
+- `src/main/java/dz/sh/hidra/modules/audit/infrastructure/persistence/repository/AuditBeforeAfterValueJpaRepository.java`
+- `src/main/resources/db/migration/V20261007_009__hmr_102_audit_before_after_value.sql`
+- `src/test/java/dz/sh/hidra/modules/audit/infrastructure/persistence/AuditSemanticPostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/audit/semantic/AuditBeforeAfterValueSemanticRemediationTest.java`
+
+Validation: compile; each dedicated semantic test; shared PostgreSQL integration tests;
+owner queries, existing Audit contract tests and architecture/forensic checks; full test
+and clean verify. Report dependency/runtime blocks without claiming simulated API checks
+are Maven/JUnit/PostgreSQL results. No release-version change.

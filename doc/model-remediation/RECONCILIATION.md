@@ -140,9 +140,9 @@ No `party.application.contract.planning` package exists in the exact current tre
 - HMR-005 corrected from stale planned status to **COMPLETED**;
 - HMR-009 confirmed **COMPLETED** and removed as a carry-over blocker;
 - HMR-050..106 evaluated: **57**;
-- HMR-050..106 **STILL REQUIRED**: **34**;
+- HMR-050..106 **STILL REQUIRED**: **32**;
 - HMR-050..106 **BLOCKED**: **1**;
-- HMR-050..106 **COMPLETED during HPR-P2-008**: **22**;
+- HMR-050..106 **IMPLEMENTED during HPR-P2-008**: **24** (two Batch 8 items CI pending);
 - HMR-050..106 **SUPERSEDED**: **0**;
 - HMR-054 completed; repaired CI #575 is green;
 - HMR-080 remains blocked; HMR-055 prerequisite resolved and implemented in Batch 7.
@@ -151,7 +151,7 @@ No `party.application.contract.planning` package exists in the exact current tre
 
 - HMR-050 — **COMPLETED** at the first HPR-P2-008 execution step.
 - Batch 7 **COMPLETED — CI #581 GREEN**: HMR-055, 061, 066, 081, 099; exact repaired head ec63af0414d7fa85b9200d4bd181ac799bd072ed. Batch 8 preflight split below; no Planning implementation claimed.
-- Current remaining: **34 STILL REQUIRED + 1 BLOCKED (HMR-080)**; 22 implementations completed.
+- Current remaining: **32 STILL REQUIRED + 1 BLOCKED (HMR-080)**; 24 implementations, including two Batch 8 items awaiting complete CI.
 
 - HMR-051 — **COMPLETED**: Topology and optional Organization references validated on every case save; snapshot preserved; no migration because primary-candidate FK already exists; owner contract and architecture export added.
 
@@ -845,3 +845,38 @@ Positive per-plan revision numbers, nullable validated base lineage, active REVI
 ### Batch 8 HMR-065 implementation — 2026-10-07
 
 Required French name/scope type, unique plan code, active PLAN_TYPE, owner-controlled Topology/Identity/Organization references and same-plan nullable revision pointers enforced. Creation binds authenticated eligible actor and snapshots owner display values; unsupported REGION/NETWORK denied. Forward V20261007_002; twelve focused HMR-065/owner/catalog checks passed with temporary API stubs. Nine combined PostgreSQL cases registered; Maven compile/focused/full test/clean verify blocked before compilation by uncached Boot 4.1.1/Maven Central DNS. Full CI pending.
+
+## Batch 8 final implementation and validation disposition — 2026-10-07
+
+PL-PREREQ-01 accepted by owner Next; HMR-064 and HMR-065 each retain an independent
+exact semantic commit. Two forward migrations 20261007_001/002 preserve published
+history and establish revision guards before correlated plan pointers. Three new public
+owner contract packages appear in both architecture/forensic registries (31 exact exports).
+Unsupported REGION/NETWORK remain denied. No external FK, invented taxonomy, product
+owner or approval lifecycle orchestration. Invalid legacy rows require owner reconciliation.
+Current totals: **24 implemented, 32 still required, one blocked (HMR-080)**.
+
+Validation performed:
+- `bash ./mvnw -q -DskipTests compile`: Maven Central DNS failure resolving uncached
+  Spring Boot parent 4.1.1; blocked before source compilation.
+- `bash ./mvnw -o -q -Dtest=PlanRevisionSemanticRemediationTest,PlanRevisionUpdateApplicationServiceTest,PlanRevisionCommandControllerTest,PlanningSemanticPostgresTest test`:
+  blocked by the same uncached parent.
+- `bash ./mvnw -o -q -Dtest=OperationalPlanSemanticRemediationTest,PlanningTopologyScopeQueryServiceTest,PlanningCreatorQueryServiceTest,PlanningResponsibleUnitQueryAdapterTest,PlanningSemanticPostgresTest,ArchitectureGuardrailTest,ForensicRemediationClosureTest test`:
+  blocked by the same uncached parent.
+- Complete `bash ./mvnw -o -q test` and `bash ./mvnw -o -q clean verify`: same parent block.
+- Host JDK17; no Docker/PostgreSQL. JDK source compiler compiled 150 actual source/
+  temporary API units. Sixteen dedicated behavior methods and all five actual forensic
+  source-scanning methods passed with temporary annotation/assertion APIs. These are
+  not Maven/JUnit/framework integration/PostgreSQL pass claims.
+- Nine PostgreSQL cases added for CI: positive/unique revision number plus nullable
+  lineage; approved update/delete/truncate guards; exact active reason family; competing
+  revision uniqueness; legacy-number abort without renumbering; current/approved same-plan
+  pointers; required name/scope and active plan-type family; competing plan-code uniqueness;
+  legacy cross-plan pointer abort without reassignment.
+- Changed Java syntax/header checks, exact per-HMR path scope and both export registries
+  passed. Canonical Markdown UTF-8/nonempty/conflict checks and git diff --check passed.
+
+Publish chained admission/HMR/validation commits once, observe final-head CI trigger,
+and stop. Final CI pending at preparation. Next owner-selected scope is attached Batch 9,
+Documents aggregate HMR-067, 068, 084, only after complete Batch 8 CI is green and fresh
+preflight/admission. Do not execute it automatically.

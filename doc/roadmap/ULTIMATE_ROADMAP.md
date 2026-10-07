@@ -1465,3 +1465,27 @@ Positive per-plan revision numbers, nullable validated base lineage, active REVI
 ### Batch 8 HMR-065 — IMPLEMENTED, CI PENDING
 
 Required French name/scope type, unique plan code, active PLAN_TYPE, owner-controlled Topology/Identity/Organization references and same-plan nullable revision pointers enforced. Creation binds authenticated eligible actor and snapshots owner display values; unsupported REGION/NETWORK denied. Forward V20261007_002; twelve focused HMR-065/owner/catalog checks passed with temporary API stubs. Nine combined PostgreSQL cases registered; Maven compile/focused/full test/clean verify blocked before compilation by uncached Boot 4.1.1/Maven Central DNS. Full CI pending.
+
+
+## HPR-P2-008 Batch 8 final disposition — 2026-10-07
+
+PL-PREREQ-01 resolved by owner Next and canonical scope admission. HMR-064 and HMR-065
+independently IMPLEMENTED — CI PENDING. Positive/unique revision identity, optional lineage,
+exact active catalog families and approved immutability are protected. Plans use owner
+scope/actor/unit contracts and nullable same-plan revision pointers with SCC-safe forward
+migrations 20261007_001/002. Only PIPELINE_SYSTEM/PIPELINE/FACILITY new scopes are supported;
+REGION/NETWORK deny until owned resolvers exist. No published migration/version changes.
+
+Sixteen dedicated behavior checks and five actual forensic source checks passed with
+temporary API/assertion stubs; 150 source/API units compiled. Nine PostgreSQL cases
+registered for CI. Maven compile, both focused sets, full test and clean verify attempted
+but blocked before compilation by Boot parent 4.1.1/Maven Central DNS. These local checks
+are not Maven/JUnit/PostgreSQL success claims. Both export registries match 31 exact
+packages; Java syntax/headers, canonical Markdown, admitted scopes and git diff passed.
+Detailed commands/results are in RECONCILIATION.md. Totals: 24 implemented, 32 still
+required, one blocked (080). Publish chain atomically and stop after CI trigger.
+
+Next proposed owner scope: attached Batch 9 Documents (HMR-067, HMR-068, HMR-084),
+gated on green final Batch 8 CI and fresh source/owner-contract/write-scope admission.
+Supporting final validation documentation is admitted to this roadmap and reconciliation
+only; exact message `docs(planning): record Batch 8 validation disposition`.

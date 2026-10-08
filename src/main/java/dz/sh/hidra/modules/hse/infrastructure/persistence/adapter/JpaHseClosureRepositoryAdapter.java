@@ -35,14 +35,16 @@ import java.util.Optional;
 public class JpaHseClosureRepositoryAdapter implements HseClosureRepositoryPort {
 
     private final HseClosureJpaRepository repository;
+    private final dz.sh.hidra.modules.hse.application.port.out.HseClosureLifecyclePort lifecycle;
 
-    public JpaHseClosureRepositoryAdapter(HseClosureJpaRepository repository) {
+    public JpaHseClosureRepositoryAdapter(HseClosureJpaRepository repository, dz.sh.hidra.modules.hse.application.port.out.HseClosureLifecyclePort lifecycle) {
         this.repository = Objects.requireNonNull(repository, "HseClosureJpaRepository must not be null.");
+        this.lifecycle = Objects.requireNonNull(lifecycle);
     }
 
     @Override
     public HseClosure save(HseClosure model) {
-        return HsePersistenceMapper.toDomain(repository.save(HsePersistenceMapper.toEntity(model)));
+        return lifecycle.close(model);
     }
 
     @Override

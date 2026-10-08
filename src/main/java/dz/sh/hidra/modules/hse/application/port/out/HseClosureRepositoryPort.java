@@ -28,6 +28,7 @@ import java.util.Optional;
  */
 public interface HseClosureRepositoryPort {
 
+    /** Authoritative closure creation: atomically close the parent and append history. Never a merge. */
     HseClosure save(HseClosure model);
 
     Optional<HseClosure> findById(String id);

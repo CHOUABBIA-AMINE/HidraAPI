@@ -269,7 +269,7 @@ Each model task implements only the obligations recorded in its source HMSR sect
 |---|---|---|---|---|---|---|---|
 | HMR-094 | HMSR-111 | planning | PlanTarget | — | planning.Nomination, planning.PlanRevision, telemetry.TelemetryPoint | `fix(planning): remediate semantic review PlanTarget` | Planned |
 | HMR-095 | HMSR-112 | audit | AuditEvent | — | organization.OrganizationUnit, workflow.WorkflowAction, workflow.WorkflowInstance, workflow.WorkflowTask | `fix(audit): remediate semantic review AuditEvent` | Implemented — CI pending |
-| HMR-096 | HMSR-113 | hse | HseClosure | — | hse.HseCase, workflow.WorkflowInstance | `fix(hse): remediate semantic review HseClosure` | Planned |
+| HMR-096 | HMSR-113 | hse | HseClosure | — | hse.HseCase, workflow.WorkflowInstance | `fix(hse): remediate semantic review HseClosure` | Completed |
 | HMR-097 | HMSR-114 | hse | HseCorrectivePreventiveAction | — | assets.MaintenanceWorkOrder, hse.HseCase, organization.OrganizationUnit, workflow.WorkflowTask | `fix(hse): remediate semantic review HseCorrectivePreventiveAction` | Planned |
 | HMR-098 | HMSR-115 | integrity | IntegrityCase | — | hse.HseCase, incident.Incident, integrity.PipelineDefect, organization.OrganizationUnit, workflow.WorkflowInstance | `fix(integrity): remediate semantic review IntegrityCase` | Planned |
 | HMR-099 | HMSR-116 | workflow | WorkflowStateHistory | — | workflow.WorkflowAction, workflow.WorkflowInstance, workflow.WorkflowStep, workflow.WorkflowTask | `fix(workflow): remediate semantic review WorkflowStateHistory` | Planned |
@@ -4822,7 +4822,7 @@ uncached Boot parent 4.1.1 offline. Real Spring/JPA/PostgreSQL tests await final
 - SCC: —
 - Recorded upstream HMS dependencies: hse.HseCase, workflow.WorkflowInstance
 - HMSR correction count: 3
-- Additive Flyway: `src/main/resources/db/migration/V20261004_096__hmr_096_hse_hse_closure.sql`
+- Additive Flyway: `src/main/resources/db/migration/V20261008_015__hmr_096_hse_closure_atomic_evidence.sql`
 - Owner-contract prerequisite: Existing candidate owner contract(s): workflow:src/main/java/dz/sh/hidra/modules/workflow/application/port/in/WorkflowQueryUseCase.java; workflow:src/main/java/dz/sh/hidra/modules/workflow/application/port/out/WorkflowEligibilityLookupPort.java
 - Exact write allowlist:
   - `docs/data definition/Hse.md`
@@ -4833,7 +4833,7 @@ uncached Boot parent 4.1.1 offline. Real Spring/JPA/PostgreSQL tests await final
   - `src/main/java/dz/sh/hidra/modules/hse/infrastructure/persistence/entity/HseClosureJpaEntity.java`
   - `src/main/java/dz/sh/hidra/modules/hse/infrastructure/persistence/mapper/HsePersistenceMapper.java`
   - `src/main/java/dz/sh/hidra/modules/hse/infrastructure/persistence/repository/HseClosureJpaRepository.java`
-  - `src/main/resources/db/migration/V20261004_096__hmr_096_hse_hse_closure.sql`
+  - `src/main/resources/db/migration/V20261008_015__hmr_096_hse_closure_atomic_evidence.sql`
   - `src/test/java/dz/sh/hidra/modules/hse/semantic/HseClosureSemanticRemediationTest.java`
 - Exact validation:
   - `./mvnw -q -DskipTests compile`
@@ -5570,3 +5570,27 @@ in offline mode; Java 21/Docker/PostgreSQL are unavailable locally. Real runtime
 verification remains final-head CI responsibility. Scope, preserved SQL and Markdown
 checks are required before publication. HMR-082 implementation Completed pending CI;
 HMR-096 and HMR-097 now admitted/in progress; HMR-080 remains blocked.
+
+
+### HMR-096 accepted Batch 17 execution result
+
+Canonical Batch 17 accepted execution scopes supersede the historical allowlist.
+Status: Completed implementation; final-head CI pending. Exact commit: `fix(hse): remediate semantic review HseClosure`.
+
+HMSR-113 independently recovered. Every closure repository save now delegates to the
+HSE lifecycle coordinator; it never merges evidence. New closure/history records use
+EntityManager.persist and flush inside the REQUIRED transaction, using own JPA repositories
+and no circular repository-port dependency. Forward 015 serializes closure insertion on
+the parent, enforces the existing attestation guard, checks actual old status in closure
+history, and denies closure overwrite/delete/truncate and case truncate. No new uniqueness,
+RESOLVED-only, regulatory flag or summary domain rule is introduced.
+
+Four focused closure unit methods and four additional real PostgreSQL/Spring-JPA methods
+are prepared, including rollback after all three flushed writes, exact shared time/actor/
+correlation, concurrent one-winner closure, replay rejection and immutable evidence. These
+have not run locally. Changed production and focused test signatures compiled against
+temporary APIs. Twelve actual coordinator/delegation checks passed with controlled owned
+repositories; this does not demonstrate database rollback or lock behavior. Focused Maven
+execution stops before tests at uncached Boot 4.1.1 offline parent resolution. Real runtime
+verification remains final-head CI. HMR-096 implementation Completed pending CI; next
+admitted task HMR-097. HPR-P2-008 remains open and HMR-080 independently blocked.

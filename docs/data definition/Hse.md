@@ -187,3 +187,24 @@ in offline mode; Java 21/Docker/PostgreSQL are unavailable locally. Real runtime
 verification remains final-head CI responsibility. Scope, preserved SQL and Markdown
 checks are required before publication. HMR-082 implementation Completed pending CI;
 HMR-096 and HMR-097 now admitted/in progress; HMR-080 remains blocked.
+
+
+### HMR-096 executable contract reconciliation
+
+HMSR-113 independently recovered. Every closure repository save now delegates to the
+HSE lifecycle coordinator; it never merges evidence. New closure/history records use
+EntityManager.persist and flush inside the REQUIRED transaction, using own JPA repositories
+and no circular repository-port dependency. Forward 015 serializes closure insertion on
+the parent, enforces the existing attestation guard, checks actual old status in closure
+history, and denies closure overwrite/delete/truncate and case truncate. No new uniqueness,
+RESOLVED-only, regulatory flag or summary domain rule is introduced.
+
+Four focused closure unit methods and four additional real PostgreSQL/Spring-JPA methods
+are prepared, including rollback after all three flushed writes, exact shared time/actor/
+correlation, concurrent one-winner closure, replay rejection and immutable evidence. These
+have not run locally. Changed production and focused test signatures compiled against
+temporary APIs. Twelve actual coordinator/delegation checks passed with controlled owned
+repositories; this does not demonstrate database rollback or lock behavior. Focused Maven
+execution stops before tests at uncached Boot 4.1.1 offline parent resolution. Real runtime
+verification remains final-head CI. HMR-096 implementation Completed pending CI; next
+admitted task HMR-097. HPR-P2-008 remains open and HMR-080 independently blocked.

@@ -36,13 +36,15 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 @Component
 public class JpaHseClosureLifecycleAdapter implements HseClosureLifecyclePort {
+    private final jakarta.persistence.EntityManager entityManager;
     private final HseCaseJpaRepository cases;
     private final HseClosureJpaRepository closures;
     private final HseCaseStatusHistoryJpaRepository histories;
     private final HseActorContract actors;
     private final HseWorkflowReferenceContract workflows;
     public JpaHseClosureLifecycleAdapter(HseCaseJpaRepository cases,HseClosureJpaRepository closures,
-            HseCaseStatusHistoryJpaRepository histories,HseActorContract actors,HseWorkflowReferenceContract workflows) {
+            HseCaseStatusHistoryJpaRepository histories,HseActorContract actors,HseWorkflowReferenceContract workflows,jakarta.persistence.EntityManager entityManager) {
+        this.entityManager=Objects.requireNonNull(entityManager);
         this.cases=Objects.requireNonNull(cases);this.closures=Objects.requireNonNull(closures);
         this.histories=Objects.requireNonNull(histories);this.actors=Objects.requireNonNull(actors);this.workflows=Objects.requireNonNull(workflows);
     }
@@ -60,9 +62,11 @@ public class JpaHseClosureLifecycleAdapter implements HseClosureLifecyclePort {
         if(closures.existsById(requested.id())) throw new IllegalArgumentException("Closure evidence is append-only.");
         var closure=new HseClosure(requested.id(),parent.id(),requested.closureSummary(),requested.impactAssessed(),
                 requested.capaCompleted(),requested.evidenceReviewed(),requested.regulatoryReviewed(),actor.id(),actor.displayName(),at,requested.workflowInstanceId());
-        closures.saveAndFlush(HsePersistenceMapper.toEntity(closure));
-        histories.saveAndFlush(new HseCaseStatusHistoryJpaEntity(HseId.newId().value(),parent.id(),parent.status(),HseCaseStatus.CLOSED,
+        entityManager.persist(HsePersistenceMapper.toEntity(closure));
+        entityManager.flush();
+        entityManager.persist(new HseCaseStatusHistoryJpaEntity(HseId.newId().value(),parent.id(),parent.status(),HseCaseStatus.CLOSED,
                 null,closure.closureSummary(),actor.id(),actor.displayName(),at,closure.id()));
+        entityManager.flush();
         cases.saveAndFlush(HsePersistenceMapper.toEntity(parent.closedAt(at)));
         return closure;
     }

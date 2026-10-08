@@ -158,3 +158,18 @@ When populated during rule creation, Monitoring must validate the point through 
 
 Monitoring does not import Telemetry domain, repository, JPA, or infrastructure types, and no
 Monitoring-to-Telemetry database foreign key is created.
+
+## HMR-103 accepted deviation references
+
+The live record service and direct repository saves both validate the mandatory Planning
+target through its exported scalar authority. New/changed optional Telemetry point and
+trusted-reading identities resolve through their owners; populated reading/point identities
+must agree. Supplied Monitoring evaluation is locked, must exist and must agree with each
+populated revision/topology/point context for which resolved evidence is available.
+
+Optional references and missing optional evaluation context remain legal; no expected flow
+state owner obligation, arithmetic policy, lifecycle/counter update or stricter trust policy
+is invented. Existing severity fallback, 20-field shape and unchanged historical snapshots
+are retained. Forward 021 adds only local evaluation integrity and context/race guards.
+External contracts establish write-time evidence without cross-module database FKs or
+cross-owner relational lifetime guarantees. Runtime verification remains pending CI.

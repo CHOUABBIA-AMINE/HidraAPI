@@ -22,10 +22,18 @@ package dz.sh.hidra.modules.monitoring.infrastructure.persistence.repository;
 import dz.sh.hidra.modules.monitoring.infrastructure.persistence.entity.MonitoringEvaluationJpaEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import jakarta.persistence.LockModeType;
+import org.springframework.data.jpa.repository.Lock;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import java.util.Optional;
 
 /**
  * Spring Data JPA repository for MonitoringEvaluation.
  */
 @Repository
 public interface MonitoringEvaluationJpaRepository extends JpaRepository<MonitoringEvaluationJpaEntity, String> {
+    @Lock(LockModeType.PESSIMISTIC_READ)
+    @Query("select reference from MonitoringEvaluationJpaEntity reference where reference.id = :id")
+    Optional<MonitoringEvaluationJpaEntity> findByIdForShare(@Param("id") String id);
 }

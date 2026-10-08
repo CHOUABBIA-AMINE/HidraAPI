@@ -4715,9 +4715,72 @@ commits and advance main once under the expected-head lease. Observe production 
 start and stop for owner Next/Fail. HPR-P2-008 remains open, 0.6.0-SNAPSHOT remains
 unchanged, and this work supplies no physical survivability evidence.
 
+## HPR-P2-008 Batch 19 independent execution — HMR-103 — 2026-10-08
+
+PTMD-PREREQ-01 remains ACCEPTED. HMR-094 is the independent ordered parent semantic
+commit; HMR-103 changes only its own admitted production/test paths and execution memory.
+HMSR-120 section 133 was checked against the current 20-field domain/entity/mapper,
+live record command/service, own evaluation repository and actual Telemetry authority.
+
+| Subject | Current status | Evidence |
+|---|---|---|
+| HMR-094 / HMSR-111 | IMPLEMENTED — FINAL CI PENDING | Independent Planning commit with forward 019/020 and narrow target export. |
+| HMR-103 / HMSR-120 | IMPLEMENTED — FINAL CI PENDING | Live record and direct-save validation, mandatory Planning owner lookup, fresh optional point/reading owner evidence and locked evaluation context; forward 021. |
+| HMR-080 | BLOCKED | Independent unresolved owner contract remains. |
+
+DeviationReferenceValidation is an application-owned validation boundary implemented
+by the own persistence validator. Both the proxyable transactional live record service
+and the transactional direct-save adapter validate before saveAndFlush. Mandatory target
+identity resolves through the Planning scalar contract. Fresh/changed populated Telemetry
+references resolve through their owners; populated reading and point identities agree.
+Each populated evaluation revision/topology/point context is compared with available
+resolved target/deviation/reading evidence. Missing optional context is not fabricated.
+
+The 20-field shape, optional expected flow state/unit and neutral topology snapshots,
+numeric behavior and existing severity fallback are preserved. Unchanged historical
+owner evidence and snapshots are not refreshed. No successful-evaluation requirement,
+counter update, arithmetic recalculation or new Telemetry trust threshold is introduced.
+
+Forward 021 fails on orphan/inconsistent local evaluation history without rewriting
+records. Its nullable local FK and shared evaluation/context guards protect deletion,
+reassignment and truncation races. It contains no Monitoring-to-Planning/Telemetry FK.
+External contracts establish write-time evidence, not cross-owner lifetime guarantees.
+
+Six focused deviation methods, one actual trusted-reading owner-provider method and
+eight PostgreSQL/Spring-JPA methods are prepared. Tests cover live-path/direct-save
+denial, optional nulls, unknown target/point/reading/evaluation, point disagreement,
+evaluation coherence, fallback severity, migration abort, flushed rollback and races.
+
+Additional required commands:
+
+- `./mvnw -q -Dtest=PlanActualDeviationSemanticRemediationTest test`
+- `./mvnw -q -Dtest=MonitoringTrustedReadingReferenceContractTest,PlanActualDeviationSemanticPostgresIntegrationTest test`
+
+The compile, both architecture suites, full test and clean verify commands from the
+HMR-094 record also apply to the complete final tree. No shell/Java/Maven/PostgreSQL
+execution tool is exposed in this session, so no required Maven/JUnit/database command
+has run locally and none is reported passed. Static source/scope/forward-migration and
+documentation checks are separate from runtime verification.
+
+Current reconciliation: 50 CI-confirmed implementations, two IMPLEMENTED — FINAL CI
+PENDING (HMR-094/103), four STILL REQUIRED (HMR-100/104/105/106), and one BLOCKED
+(HMR-080), 57 evaluated. Pending implementations are not counted as CI-confirmed.
+HPR-P2-008 remains open. Project version remains 0.6.0-SNAPSHOT; no new physical
+survivability evidence is claimed. Publish the chained two-commit head to main once
+under the expected 8670579fe1a2945191fbb32ea5147355d3343d50 lease, verify both
+published trees and confirm production CI starts, then STOP for owner Next/Fail.
+Attached row 20 is only a future recommendation subject to its own admission; it is not
+executed by Batch 19. A failure is repaired in the responsible scope before advancing.
+
 Static preparation checks completed in the available JavaScript environment: exact
 independent allowlists, nonempty content, added-line whitespace, canonical Java headers,
 balanced source delimiters, owner-contract-only cross-module imports, retained 22/20
 domain field counts and same-module forward FK endpoints passed. All 82 canonical
 Markdown files passed the documentation workflow's nonempty/conflict-marker checks.
 These checks do not execute javac, Maven, ArchUnit, Spring or PostgreSQL.
+
+HMR-094 exact independent parent commit: `3845b7d30637ec9fc7306a527a0ae569b501fa89`;
+verified tree: `30d59eb45882dd01b52956b0ce63e00a2ef72f3a`. Its exact 31 changed paths and
+every prepared UTF-8 file content were compared with GitHub's immutable tree/blobs;
+no other baseline blob changed. The downstream tree will be checked independently
+before the single main ref advancement.

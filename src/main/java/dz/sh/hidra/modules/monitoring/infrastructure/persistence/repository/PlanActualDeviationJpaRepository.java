@@ -22,10 +22,18 @@ package dz.sh.hidra.modules.monitoring.infrastructure.persistence.repository;
 import dz.sh.hidra.modules.monitoring.infrastructure.persistence.entity.PlanActualDeviationJpaEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import jakarta.persistence.LockModeType;
+import org.springframework.data.jpa.repository.Lock;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import java.util.Optional;
 
 /**
  * Spring Data JPA repository for PlanActualDeviation.
  */
 @Repository
 public interface PlanActualDeviationJpaRepository extends JpaRepository<PlanActualDeviationJpaEntity, String> {
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("select reference from PlanActualDeviationJpaEntity reference where reference.id = :id")
+    Optional<PlanActualDeviationJpaEntity> findByIdForUpdate(@Param("id") String id);
 }

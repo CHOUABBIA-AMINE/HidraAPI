@@ -5157,11 +5157,11 @@ uncached Boot parent 4.1.1 offline. Real Spring/JPA/PostgreSQL tests await final
 
 - Source review: `HMSR-120`
 - Exact commit: `fix(monitoring): remediate semantic review PlanActualDeviation`
-- Status: **Planned**
+- Status: **Implemented — CI pending**
 - SCC: —
 - Recorded upstream HMS dependencies: planning.PlanTarget, telemetry.TelemetryPoint, telemetry.TrustedTelemetryReading
 - HMSR correction count: 3
-- Additive Flyway: `src/main/resources/db/migration/V20261004_103__hmr_103_monitoring_plan_actual_deviation.sql`
+- Additive Flyway: `src/main/resources/db/migration/V20261008_021__hmr_103_monitoring_plan_actual_deviation_integrity.sql` (accepted canonical Batch 19 envelope; original unexecuted registration superseded)
 - Owner-contract prerequisite: Existing candidate owner contract(s): planning:src/main/java/dz/sh/hidra/modules/planning/application/port/in/PlanningQueryUseCase.java; planning:src/main/java/dz/sh/hidra/modules/planning/application/port/out/PlanningQueryPort.java; telemetry:src/main/java/dz/sh/hidra/modules/telemetry/application/port/in/TelemetryQueryUseCase.java
 - Exact write allowlist:
   - `docs/data definition/Monitoring.md`
@@ -5183,6 +5183,8 @@ uncached Boot parent 4.1.1 offline. Real Spring/JPA/PostgreSQL tests await final
   1. **Fail closed on the mandatory `planTargetId` through a Planning-owned public reference/lookup contract before recording a deviation; do not introduce a cross-module FK.**
   2. **Validate supplied optional `trustedTelemetryReadingId` / `telemetryPointId` through Telemetry-owned contracts when the comparison relies on them as live evidence, preserving optionality and avoiding cross-module FKs.**
   3. **Validate a supplied optional same-module `evaluationId` and preserve Monitoring evaluation/deviation coherence.**
+
+- Batch 19 execution: accepted canonical scope supersedes this historical allowlist. Both live record and direct saves validate mandatory Planning target and fresh optional Telemetry references, reading/point agreement and locked evaluation context. Historical evidence, optionality, severity fallback and the 20-field shape remain. Six focused, one owner-provider and eight PostgreSQL/Spring-JPA methods prepared; runtime commands not executed here because no execution facility is exposed. Final CI pending.
 
 #### HMR-104 — alarm.AlarmAcknowledgement
 

@@ -20,6 +20,7 @@
 package dz.sh.hidra.modules.monitoring.application.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import dz.sh.hidra.modules.monitoring.application.command.RecordDeviationCommand;
 import dz.sh.hidra.modules.monitoring.application.dto.DeviationSummaryDto;
@@ -38,20 +39,24 @@ import java.util.Objects;
  * Application service for monitoring deviations.
  */
 @Service
-public final class DeviationApplicationService implements RecordDeviationUseCase {
+public class DeviationApplicationService implements RecordDeviationUseCase {
 
     private final PlanActualDeviationRepositoryPort repositoryPort;
     private final DeviationSeverityClassifier severityClassifier;
+    private final DeviationReferenceValidation referenceValidation;
 
     public DeviationApplicationService(
             PlanActualDeviationRepositoryPort repositoryPort,
-            DeviationSeverityClassifier severityClassifier
+            DeviationSeverityClassifier severityClassifier,
+            DeviationReferenceValidation referenceValidation
     ) {
         this.repositoryPort = Objects.requireNonNull(repositoryPort, "Plan actual deviation repository port must not be null.");
         this.severityClassifier = Objects.requireNonNull(severityClassifier, "Deviation severity classifier must not be null.");
+        this.referenceValidation = Objects.requireNonNull(referenceValidation);
     }
 
     @Override
+    @Transactional
     public DeviationSummaryDto recordDeviation(RecordDeviationCommand command) {
         Objects.requireNonNull(command, "Record deviation command must not be null.");
         PlanActualDeviation deviation = new PlanActualDeviation(
@@ -76,6 +81,6 @@ public final class DeviationApplicationService implements RecordDeviationUseCase
                 command.reasonCode(),
                 command.reasonMessage()
         );
-        return MonitoringApplicationMapper.toSummary(repositoryPort.save(deviation));
+        return MonitoringApplicationMapper.toSummary(repositoryPort.save(referenceValidation.validate(deviation, null)));
     }
 }

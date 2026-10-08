@@ -4784,3 +4784,49 @@ verified tree: `30d59eb45882dd01b52956b0ce63e00a2ef72f3a`. Its exact 31 changed 
 every prepared UTF-8 file content were compared with GitHub's immutable tree/blobs;
 no other baseline blob changed. The downstream tree will be checked independently
 before the single main ref advancement.
+
+## HPR-P2-008 Batch 19 CI #599 repair — HMR-094 — 2026-10-08
+
+Owner Fail authorizes diagnosis and repair of the responsible Batch 19 scope.
+Fresh main remains 74ea302432eff8434466d7162134b99923ce3161. Production CI #599
+(37800524622), job 113391171981, failed in production Java compilation before test,
+migration, JPA, race or OpenAPI execution. Documentation CI #105 passed.
+
+The HMR-094 PlanningTargetTopologyReferenceQueryAdapter switch expression was the
+receiver of Optional.filter. Its untyped default Optional.empty caused Java to infer
+an Optional of a captured Object type. The filter therefore could not call Asset.id
+or Asset.code, and its result could not satisfy Optional<Asset>. This was a source
+compilation defect in HMR-094, not missing owner policy data or an HMR-103 failure.
+
+Repair: give the switch result an explicit local Optional<Asset> target type, then
+apply the existing identity/nonblank-code filter. Seven typed namespaces, unknown
+namespace denial, owner repositories and snapshot meaning remain identical.
+Exact registered semantic message remains
+`fix(planning): remediate semantic review PlanTarget`; this is a narrow follow-up
+repair, not an amendment or rewrite of either published Batch 19 commit.
+
+Exact write scope is the provider above plus
+`doc/roadmap/ULTIMATE_ROADMAP.md` and `doc/model-remediation/RECONCILIATION.md`.
+No test, migration, POM, workflow, Monitoring implementation or later task changes.
+
+Current environment now exposes a shell and Java 17 compiler module. The original
+actual provider and scalar contract were compiled against temporary dependency stubs
+and reproduced the same inference failure. The repaired actual source compiled with
+`java com.sun.tools.javac.Main`; its temporary executable smoke covered all seven
+namespaces and unknown/alias/missing/mismatched/blank-code/null denial. The provider's
+actual Git diff passed `git diff --check`. These checks do not constitute Java 21,
+real Spring/JPA, repository JUnit, ArchUnit or PostgreSQL execution.
+
+A fresh Maven preflight using the exact current POM/wrapper attempted
+`./mvnw -q -DskipTests compile` and exited 1: Spring Boot parent 4.1.1 is absent
+from the local cache and repo.maven.apache.org has temporary DNS resolution failure.
+Only Java 17 is installed. Required focused/owner/architecture/full-test/clean-verify
+runtime results remain pending replacement Java 21/PostgreSQL CI; no pass is inferred
+from this isolated stub check.
+
+HMR-094 is IMPLEMENTED — CI REPAIR PENDING; HMR-103 remains IMPLEMENTED — FINAL CI
+PENDING because CI #599 did not reach its tests. Reconciliation remains 50 CI-confirmed,
+two pending implementations, four STILL REQUIRED Alarm subjects and HMR-080 BLOCKED.
+HPR-P2-008 remains open; version and physical survivability evidence are unchanged.
+Publish this exact three-file follow-up under the current-head lease, verify its tree,
+confirm replacement production CI starts, then STOP for owner Next/Fail. No Batch 20.

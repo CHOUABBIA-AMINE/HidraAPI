@@ -56,7 +56,7 @@ public final class PlanningTargetTopologyReferenceQueryAdapter implements Planni
     public java.util.Optional<Asset> resolve(String type,String id) {
         if(type==null || type.isBlank() || id==null || id.isBlank()) return java.util.Optional.empty();
         String key=id.trim();
-        return (switch(type.trim()) {
+        java.util.Optional<Asset> resolved = switch(type.trim()) {
             case "PIPELINE_SYSTEM" -> pipelineSystem.findById(key).map(x -> new Asset(x.id(),x.code(),x.nameFr()));
             case "PIPELINE" -> pipeline.findById(key).map(x -> new Asset(x.id(),x.code(),x.nameFr()));
             case "SEGMENT" -> pipelineSegment.findById(key).map(x -> new Asset(x.id(),x.code(),null));
@@ -65,6 +65,7 @@ public final class PlanningTargetTopologyReferenceQueryAdapter implements Planni
             case "NODE" -> topologyNode.findById(key).map(x -> new Asset(x.id(),x.code(),x.name()));
             case "CONNECTION" -> topologyConnection.findById(key).map(x -> new Asset(x.id(),x.code(),null));
             default -> java.util.Optional.empty();
-        }).filter(asset -> key.equals(asset.id()) && asset.code() != null && !asset.code().isBlank());
+        };
+        return resolved.filter(asset -> key.equals(asset.id()) && asset.code() != null && !asset.code().isBlank());
     }
 }

@@ -3460,3 +3460,239 @@ the Spring Boot 4.1.1 parent is uncached in offline mode. CI #594 did execute 99
 with one inventory failure; that result does not establish repaired-head success.
 Publication triggers replacement production CI; Batch 15 remains CI pending until
 the repaired head passes. No subsequent batch is started.
+
+## HPR-P2-008 Batch 16 execution preflight — 2026-10-08
+
+Owner `next` selects HMR-069/HMSR-081, HMR-070/HMSR-082 and HMR-072/HMSR-085.
+Exact current main `e2e92bae7d69c54a46fa92702b539858404bf7ce` passed full CI #595
+(run 37779319871). Java 21 repository verification, current and historical OpenAPI
+generation, backward compatibility, upload and all P1 artifact checks passed.
+Documentation CI #96 (37779319926) also passed. This closes the Batch 15 CI gate:
+HMR-062/090/091/092 are now CI-confirmed, including the HMR-091 inventory repair.
+This task performs a documentation-only preflight; production source remains unchanged.
+
+### WORK-PREREQ-01 — live owner-contract and migration-order gaps
+
+AGENTS.md section 3.2.9 requires: "If an HMR reveals an unregistered prerequisite, SCC
+complication, owner-contract gap, cross-module lifecycle dependency, migration-order
+conflict, or materially larger semantic redesign, split it out and stop before mutating
+that HMR." Each recovered HMSR and current source establish these concrete gaps:
+
+| Task / review | Live defect and scope gap |
+|---|---|
+| HMR-069 / HMSR-081 | `MaintenanceWorkOrder` normalizes blank title to null; `AssetsApplicationService.createMaintenanceWorkOrder` copies plan/recommendation/assignment/creator/Workflow IDs. `JpaMaintenanceWorkOrderRepositoryAdapter.save` maps directly to save. No optional maintenance-plan FK exists. The original write scope omits Identity, Integrity and Workflow owner interfaces/providers and both architecture export registries. |
+| HMR-070 / HMSR-082 | `CustodyApplicationService.createTransferTicket` accepts optional batch/calculation, issuer and Workflow IDs; `JpaCustodyTransferTicketRepositoryAdapter.save` directly saves arbitrary populated approval/Audit references. Optional batch/calculation FKs and Custody-specific Identity/Workflow/Audit contracts are absent from current source and the original write scope. Creation currently leaves Audit and approver fields null; no fabricated approval or Audit record may fill them. |
+| HMR-072 / HMSR-085 | `IntegrityApplicationService.createIntegrityAssessment` copies optional programme, assessor and Workflow IDs. `JpaIntegrityAssessmentRepositoryAdapter.save` maps directly to save. Optional programme FK and Integrity-specific Identity/Workflow context contracts are absent from the original write scope. Reviewer/approver/Audit creation fields remain null; HMSR-085 does not establish a current Audit-population defect. |
+
+Existing `AssetsOrganizationUnitReferenceContract.exists` and its Organization-owned
+`AssetsOrganizationUnitReferenceQueryService` can serve HMR-069's unit existence
+obligation without a new Organization contract. Existing Identity Workflow-actor policy
+can be reused internally by new Identity-owned providers, but its Workflow-specific
+export must not become a client-owned actor implementation. Existing Workflow queries
+and `WorkflowConfigurationPort` are owner internals, not exported client context
+attestation. `IntegrityAssetsRecommendationPort` is an Integrity outbound port; it does
+not attest Integrity-owned recommendation provenance to Assets. No foreign JPA import,
+permissive Noop or raw cross-module SQL is an acceptable replacement for these owners.
+
+Migration tail is published `V20261008_010__hmr_090_incident_closure_governance.sql`.
+The legacy V20261004_069/070/072 names are backdated and absent. Authorize forward
+011/012/013 below before implementation; never alter published migrations or enable
+out-of-order migration to conceal the ordering conflict.
+
+### Concrete Batch 16 execution proposal for acceptance
+
+1. Admit three independent task commits in attached order HMR-069 -> HMR-070 -> HMR-072,
+   retaining separate reviews, scopes, migrations, validation results and statuses.
+   This envelope authorizes reference-integrity corrections, not new business approval
+   orchestration or lifecycle redesign. Exact semantic messages remain:
+
+   | Task | Exact semantic message | Forward migration |
+   |---|---|---|
+   | HMR-069 | `fix(assets): remediate semantic review MaintenanceWorkOrder` | `V20261008_011__hmr_069_assets_maintenance_work_order.sql` |
+   | HMR-070 | `fix(custody): remediate semantic review CustodyTransferTicket` | `V20261008_012__hmr_070_custody_custody_transfer_ticket.sql` |
+   | HMR-072 | `fix(integrity): remediate semantic review IntegrityAssessment` | `V20261008_013__hmr_072_integrity_integrity_assessment.sql` |
+
+2. HMR-069 rejects null/blank title before persistence and preserves optional description,
+   assignment, priority and timestamps. Add nullable maintenance_plan_id -> Assets-owned
+   maintenance plan FK with validated legacy preflight and ON DELETE RESTRICT. Preserve
+   existing maintained-asset and generic work-order-type FKs. Resolve populated Integrity
+   recommendation through an Integrity-owned scalar contract, unit through the existing
+   Organization contract and actors through Identity. Require Workflow owner attestation
+   of the exact work-order ID/module/type and a valid definition target binding when
+   a reference is populated. No invented plan/asset correlation, timestamp ordering,
+   work-order-number uniqueness or unsupported catalog-family rule.
+3. HMR-070 adds nullable local batch and quantity-calculation FKs with fail-closed legacy
+   validation and ON DELETE RESTRICT. Validate populated issuer/approver through Identity;
+   validate populated Workflow through its owner against the exact ticket context. Resolve
+   populated auditReferenceId through an Audit-owned query and verify the actual Audit
+   event targets that ticket. Keep scalar references, null creation approval/Audit values
+   and optionality. Do not synthesize Audit events, approvals, number uniqueness, temporal
+   rules, approval actor/time coupling or batch/period correlation not established by HMSR.
+4. HMR-072 adds nullable program_id -> Integrity programme FK with validated legacy
+   preflight and ON DELETE RESTRICT. Validate populated actor references through Identity
+   and Workflow against the exact assessment context. Preserve unresolved methodologyId,
+   optional programme and existing assessment-type catalog integrity. No invented title
+   domain invariant, assessment-number uniqueness, approval state machine or current
+   Audit-population obligation. Retain Audit scalar ownership for any separately admitted
+   future population flow.
+5. Every owner contract returns narrow scalar/boolean evidence. Providers query only their
+   own ports/persistence. Identity validates referenced real actor eligibility; actor
+   snapshots and caller strings are not authority. Workflow attestation checks target
+   module, target ID, actual WORKFLOW_TARGET_TYPE and configured definition target/purpose
+   binding; mere instance existence is insufficient. Do not infer business approval from
+   existence or seed permissive Workflow configuration. Undefined or mismatched configured
+   target types deny. Workflow start/transition support for these new clients is outside
+   this batch; unsupported start targets remain denied by the existing owner registry.
+6. Guard the authoritative repository saves so application and direct adapter writes cannot
+   bypass reference checks. Preserve valid unchanged historical provenance without using
+   it for fresh authorization; check all new/changed populated owner references. Do not
+   replace legacy evidence automatically or accept an owner lookup failure. Add exact
+   package exports to both architecture test registries, preserving every existing rule.
+7. Prepare focused domain/adapter/owner tests and real PostgreSQL migration tests for null
+   optional values, missing local references, legacy orphan rollback, wrong actor/owner,
+   wrong Workflow module/type/target/binding, unavailable owner, wrong Audit ticket target,
+   successful valid references and historical preservation. Verify local FK race behavior
+   through actual PostgreSQL. No stubs/mock outputs count as database or Maven evidence.
+8. Run each registered compile/focused/full-test/clean-verify target. If this Java 17 host
+   with no Docker and uncached Spring Boot 4.1.1 parent cannot run them, record that exact
+   limitation and require production Java 21/PostgreSQL/full OpenAPI CI. Publish the three
+   commits on existing main once, confirm final-head CI triggered, then stop for next/fail.
+   No PR, release, tag, version change, HPR-P2-008 final PASS or Batch 17 is included.
+
+### Proposed exhaustive per-HMR write scopes
+
+The following paths are proposed for acceptance, not permission for production mutation
+in this preflight. Retained original client paths are an allowlist; change only necessary
+files. Shared documentation/architecture paths may recur across individual commits.
+
+#### HMR-069 proposed scope
+
+- `docs/data definition/Assets.md`
+- `docs/roadmap/model-semantic-remediation.md`
+- `src/main/java/dz/sh/hidra/modules/assets/api/rest/request/CreateMaintenanceWorkOrderRequest.java`
+- `src/main/java/dz/sh/hidra/modules/assets/api/rest/response/MaintenanceWorkOrderResponse.java`
+- `src/main/java/dz/sh/hidra/modules/assets/application/command/CreateMaintenanceWorkOrderCommand.java`
+- `src/main/java/dz/sh/hidra/modules/assets/application/dto/MaintenanceWorkOrderSummaryDto.java`
+- `src/main/java/dz/sh/hidra/modules/assets/application/port/in/CreateMaintenanceWorkOrderUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/assets/application/port/out/MaintenanceWorkOrderRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/assets/domain/model/MaintenanceWorkOrder.java`
+- `src/main/java/dz/sh/hidra/modules/assets/domain/value/MaintenanceWorkOrderStatus.java`
+- `src/main/java/dz/sh/hidra/modules/assets/infrastructure/persistence/adapter/JpaMaintenanceWorkOrderRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/assets/infrastructure/persistence/entity/MaintenanceWorkOrderJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/assets/infrastructure/persistence/entity/MaintenanceWorkOrderTaskJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/assets/infrastructure/persistence/mapper/AssetsPersistenceMapper.java`
+- `src/main/java/dz/sh/hidra/modules/assets/infrastructure/persistence/repository/MaintenanceWorkOrderJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/assets/infrastructure/persistence/repository/MaintenanceWorkOrderTaskJpaRepository.java`
+- `src/main/resources/db/migration/V20261008_011__hmr_069_assets_maintenance_work_order.sql`
+- `src/test/java/dz/sh/hidra/modules/assets/semantic/MaintenanceWorkOrderSemanticRemediationTest.java`
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `doc/model-remediation/RECONCILIATION.md`
+- `src/main/java/dz/sh/hidra/modules/assets/infrastructure/persistence/adapter/MaintenanceWorkOrderReferenceValidation.java`
+- `src/test/java/dz/sh/hidra/modules/assets/infrastructure/persistence/MaintenanceWorkOrderSemanticPostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java`
+- `src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/contract/assets/MaintenanceWorkOrderActorReferenceContract.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/contract/assets/package-info.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/MaintenanceWorkOrderActorReferenceQueryService.java`
+- `src/test/java/dz/sh/hidra/modules/identity/semantic/MaintenanceWorkOrderActorReferenceContractTest.java`
+- `src/main/java/dz/sh/hidra/modules/workflow/application/contract/assets/MaintenanceWorkOrderWorkflowReferenceContract.java`
+- `src/main/java/dz/sh/hidra/modules/workflow/application/contract/assets/package-info.java`
+- `src/main/java/dz/sh/hidra/modules/workflow/application/service/MaintenanceWorkOrderWorkflowReferenceQueryService.java`
+- `src/test/java/dz/sh/hidra/modules/workflow/semantic/MaintenanceWorkOrderWorkflowReferenceContractTest.java`
+- `src/main/java/dz/sh/hidra/modules/integrity/application/contract/assets/MaintenanceRecommendationReferenceContract.java`
+- `src/main/java/dz/sh/hidra/modules/integrity/application/contract/assets/package-info.java`
+- `src/main/java/dz/sh/hidra/modules/integrity/infrastructure/persistence/adapter/MaintenanceRecommendationReferenceQueryAdapter.java`
+- `src/test/java/dz/sh/hidra/modules/integrity/semantic/MaintenanceRecommendationReferenceContractTest.java`
+
+#### HMR-070 proposed scope
+
+- `docs/data definition/Custody.md`
+- `docs/roadmap/model-semantic-remediation.md`
+- `src/main/java/dz/sh/hidra/modules/custody/api/rest/request/CreateCustodyTransferTicketRequest.java`
+- `src/main/java/dz/sh/hidra/modules/custody/api/rest/response/CustodyTransferTicketResponse.java`
+- `src/main/java/dz/sh/hidra/modules/custody/application/command/CreateCustodyTransferTicketCommand.java`
+- `src/main/java/dz/sh/hidra/modules/custody/application/dto/CustodyTransferTicketSummaryDto.java`
+- `src/main/java/dz/sh/hidra/modules/custody/application/port/in/CreateCustodyTransferTicketUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/custody/application/port/out/CustodyTransferTicketRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/custody/domain/model/CustodyTransferTicket.java`
+- `src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/JpaCustodyTransferTicketRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/entity/CustodyTransferTicketJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/mapper/CustodyPersistenceMapper.java`
+- `src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/repository/CustodyTransferTicketJpaRepository.java`
+- `src/main/resources/db/migration/V20261008_012__hmr_070_custody_custody_transfer_ticket.sql`
+- `src/test/java/dz/sh/hidra/modules/custody/semantic/CustodyTransferTicketSemanticRemediationTest.java`
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `doc/model-remediation/RECONCILIATION.md`
+- `src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/CustodyTransferTicketReferenceValidation.java`
+- `src/test/java/dz/sh/hidra/modules/custody/infrastructure/persistence/CustodyTransferTicketSemanticPostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java`
+- `src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/contract/custody/CustodyTransferTicketActorReferenceContract.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/contract/custody/package-info.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/CustodyTransferTicketActorReferenceQueryService.java`
+- `src/test/java/dz/sh/hidra/modules/identity/semantic/CustodyTransferTicketActorReferenceContractTest.java`
+- `src/main/java/dz/sh/hidra/modules/workflow/application/contract/custody/CustodyTransferTicketWorkflowReferenceContract.java`
+- `src/main/java/dz/sh/hidra/modules/workflow/application/contract/custody/package-info.java`
+- `src/main/java/dz/sh/hidra/modules/workflow/application/service/CustodyTransferTicketWorkflowReferenceQueryService.java`
+- `src/test/java/dz/sh/hidra/modules/workflow/semantic/CustodyTransferTicketWorkflowReferenceContractTest.java`
+- `src/main/java/dz/sh/hidra/modules/audit/application/contract/custody/CustodyTicketAuditReferenceContract.java`
+- `src/main/java/dz/sh/hidra/modules/audit/application/contract/custody/package-info.java`
+- `src/main/java/dz/sh/hidra/modules/audit/application/service/CustodyTicketAuditReferenceQueryService.java`
+- `src/test/java/dz/sh/hidra/modules/audit/semantic/CustodyTicketAuditReferenceContractTest.java`
+
+#### HMR-072 proposed scope
+
+- `docs/data definition/Integrity.md`
+- `docs/roadmap/model-semantic-remediation.md`
+- `src/main/java/dz/sh/hidra/modules/integrity/api/rest/request/CreateIntegrityAssessmentRequest.java`
+- `src/main/java/dz/sh/hidra/modules/integrity/api/rest/response/IntegrityAssessmentResponse.java`
+- `src/main/java/dz/sh/hidra/modules/integrity/application/command/CreateIntegrityAssessmentCommand.java`
+- `src/main/java/dz/sh/hidra/modules/integrity/application/dto/IntegrityAssessmentSummaryDto.java`
+- `src/main/java/dz/sh/hidra/modules/integrity/application/port/in/CreateIntegrityAssessmentUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/integrity/application/port/out/IntegrityAssessmentRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/integrity/domain/model/IntegrityAssessment.java`
+- `src/main/java/dz/sh/hidra/modules/integrity/domain/value/IntegrityAssessmentStatus.java`
+- `src/main/java/dz/sh/hidra/modules/integrity/infrastructure/persistence/adapter/JpaIntegrityAssessmentRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/integrity/infrastructure/persistence/entity/IntegrityAssessmentJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/integrity/infrastructure/persistence/entity/IntegrityAssessmentScopeJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/integrity/infrastructure/persistence/mapper/IntegrityPersistenceMapper.java`
+- `src/main/java/dz/sh/hidra/modules/integrity/infrastructure/persistence/repository/IntegrityAssessmentJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/integrity/infrastructure/persistence/repository/IntegrityAssessmentScopeJpaRepository.java`
+- `src/main/resources/db/migration/V20261008_013__hmr_072_integrity_integrity_assessment.sql`
+- `src/test/java/dz/sh/hidra/modules/integrity/semantic/IntegrityAssessmentSemanticRemediationTest.java`
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `doc/model-remediation/RECONCILIATION.md`
+- `src/main/java/dz/sh/hidra/modules/integrity/infrastructure/persistence/adapter/IntegrityAssessmentReferenceValidation.java`
+- `src/test/java/dz/sh/hidra/modules/integrity/infrastructure/persistence/IntegrityAssessmentSemanticPostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java`
+- `src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/contract/integrity/IntegrityAssessmentActorReferenceContract.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/contract/integrity/package-info.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/IntegrityAssessmentActorReferenceQueryService.java`
+- `src/test/java/dz/sh/hidra/modules/identity/semantic/IntegrityAssessmentActorReferenceContractTest.java`
+- `src/main/java/dz/sh/hidra/modules/workflow/application/contract/integrity/IntegrityAssessmentWorkflowReferenceContract.java`
+- `src/main/java/dz/sh/hidra/modules/workflow/application/contract/integrity/package-info.java`
+- `src/main/java/dz/sh/hidra/modules/workflow/application/service/IntegrityAssessmentWorkflowReferenceQueryService.java`
+- `src/test/java/dz/sh/hidra/modules/workflow/semantic/IntegrityAssessmentWorkflowReferenceContractTest.java`
+
+### Preflight disposition
+
+HMR-069/070/072 are BLOCKED pending WORK-PREREQ-01 acceptance; no production Java,
+SQL, application configuration or OpenAPI shape changed. HMR-080's independent Party
+prerequisite remains blocked. Totals: 43 CI-confirmed implementations, 10 STILL REQUIRED,
+four BLOCKED, 57 evaluated. Batch 15 is confirmed by exact-head CI #595; this is not
+HPR-P2-008 final PASS.
+
+Exact preflight scope: `doc/roadmap/ULTIMATE_ROADMAP.md` and
+`doc/model-remediation/RECONCILIATION.md` only. Exact supporting message:
+`docs(platform): record Batch 16 execution preflight`.
+Validate UTF-8/nonempty/conflict-marker-free canonical Markdown, exact two-file scope,
+unchanged production tree and git diff --check. Trigger applicable documentation CI on
+main, then stop. Next registered action: owner next accepts WORK-PREREQ-01 and the
+proposed exhaustive scopes, subject to a fresh green production baseline; execute the
+three separate semantic tasks above. Owner amendment may narrow the proposal.
+
+Preflight checks completed: the exact documentation-workflow Python validator passed
+for all 82 canonical Markdown files; exact two-file write scope, unchanged production/
+CI/POM tree, independent proposed scopes and git diff --check passed. No Maven,
+PostgreSQL or new production test was executed for this documentation-only change.

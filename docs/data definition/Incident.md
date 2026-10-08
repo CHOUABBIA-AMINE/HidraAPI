@@ -1059,3 +1059,7 @@ It starts when an abnormal situation must be managed as a case.
 It ends when the case is resolved, evidenced, and closed.
 It never replaces monitoring, alarm management, leak detection, HSE, workflow, audit, or SCADA.
 ```
+
+### HMR-062 executed semantic reconciliation — 2026-10-08
+
+Catalog families and active new-reference eligibility, owner-controlled Identity/Organization/Topology/Workflow references, authenticated creator and canonical creation snapshots, temporal/state coupling and responsible-owner snapshot for CLOSED are enforced. Generic saves cannot establish CLOSED and existing CLOSED parents are immutable. A parent pessimistic lock is exported for coordinated lifecycle writes. Noop reference resolver now denies. Forward 007 preserves existing FKs and adds nullable priority integrity and local catalog/state guards. Production sources compiled against temporary framework APIs; eight real domain/fallback checks passed. Nine focused owner/domain methods and two real PostgreSQL tests are prepared. Local Maven compilation is blocked before execution by uncached Spring Boot 4.1.1 parent and offline resolution; no JUnit/database pass is claimed.

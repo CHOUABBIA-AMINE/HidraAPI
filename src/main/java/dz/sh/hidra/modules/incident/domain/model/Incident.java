@@ -143,6 +143,13 @@ import java.math.BigDecimal;
             throw new InvalidIncidentValueException("Incident created by actor id must not be blank.");
         }
 
+        if(detectedAt.isAfter(reportedAt)) throw new InvalidIncidentValueException("Detection cannot follow reporting without an estimated-time model.");
+        if(closedAt!=null && status!=IncidentStatus.CLOSED) throw new InvalidIncidentValueException("closedAt requires CLOSED.");
+        if(resolvedAt!=null && status!=IncidentStatus.RESOLVED && status!=IncidentStatus.CLOSED) throw new InvalidIncidentValueException("resolvedAt requires RESOLVED or CLOSED.");
+        if(cancelledAt!=null && status!=IncidentStatus.CANCELLED) throw new InvalidIncidentValueException("cancelledAt requires CANCELLED.");
+        if(status==IncidentStatus.CLOSED && !((responsibleActorId!=null && !responsibleActorId.isBlank() && responsibleActorNameSnapshot!=null && !responsibleActorNameSnapshot.isBlank())
+                || (responsibleOrganizationUnitId!=null && !responsibleOrganizationUnitId.isBlank() && responsibleOrganizationUnitNameSnapshot!=null && !responsibleOrganizationUnitNameSnapshot.isBlank())))
+            throw new InvalidIncidentValueException("CLOSED requires responsible owner identity and snapshot.");
         id = normalize(id);
         incidentNumber = normalize(incidentNumber);
         title = normalize(title);

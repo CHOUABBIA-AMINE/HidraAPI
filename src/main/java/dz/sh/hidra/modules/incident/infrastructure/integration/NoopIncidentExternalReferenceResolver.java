@@ -26,31 +26,31 @@ public class NoopIncidentExternalReferenceResolver implements IncidentExternalRe
 
     @Override
     public boolean monitoringAlertCandidateExists(String referenceId) {
-        return true;
+        return false;
     }
 
     @Override
     public boolean alarmExists(String alarmId) {
-        return true;
+        return false;
     }
 
     @Override
     public boolean leakDetectionCaseExists(String leakCaseId) {
-        return true;
+        return false;
     }
 
     @Override
     public boolean topologyAssetExists(String topologyAssetTypeCode, String topologyAssetId) {
-        return true;
+        return false;
     }
 
     @Override
     public boolean workflowInstanceExists(String workflowInstanceId) {
-        return true;
+        return false;
     }
 
     @Override
     public boolean documentExists(String documentReferenceId) {
-        return true;
+        return false;
     }
 }

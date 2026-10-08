@@ -38,13 +38,33 @@ public class JpaIncidentRepositoryAdapter implements IncidentRepositoryPort {
 
     private final IncidentJpaRepository repository;
 
-    public JpaIncidentRepositoryAdapter(IncidentJpaRepository repository) {
+    private final IncidentCatalogValidation catalogs;
+    private final dz.sh.hidra.modules.incident.application.port.out.IncidentReferencePolicyPort references;
+    public JpaIncidentRepositoryAdapter(IncidentJpaRepository repository, IncidentCatalogValidation catalogs,
+            dz.sh.hidra.modules.incident.application.port.out.IncidentReferencePolicyPort references) {
+        this.catalogs=Objects.requireNonNull(catalogs);this.references=Objects.requireNonNull(references);
         this.repository = Objects.requireNonNull(repository, "IncidentJpaRepository must not be null.");
     }
 
     @Override
+    @org.springframework.transaction.annotation.Transactional
     public Incident save(Incident model) {
+        var old=findByIdForUpdate(model.id()).orElse(null);
+        if(model.status()==dz.sh.hidra.modules.incident.domain.value.IncidentStatus.CLOSED && (old==null || !old.equals(model)))
+            throw new IllegalArgumentException("CLOSED state is owned by the atomic closure operation.");
+        if(old!=null && old.status()==dz.sh.hidra.modules.incident.domain.value.IncidentStatus.CLOSED && !old.equals(model))
+            throw new IllegalArgumentException("Closed Incident is immutable.");
+        catalogs.require(model.classificationId(),"INCIDENT_CLASSIFICATION",old==null || !Objects.equals(old.classificationId(),model.classificationId()));
+        catalogs.require(model.severityId(),"INCIDENT_SEVERITY",old==null || !Objects.equals(old.severityId(),model.severityId()));
+        if(model.priorityId()!=null) catalogs.require(model.priorityId(),"INCIDENT_PRIORITY",old==null || !Objects.equals(old.priorityId(),model.priorityId()));
+        references.validate(model,old);
         return IncidentPersistenceMapper.toDomain(repository.save(IncidentPersistenceMapper.toEntity(model)));
+    }
+
+    @Override
+    @org.springframework.transaction.annotation.Transactional
+    public Optional<Incident> findByIdForUpdate(String id) {
+        return repository.findByIdForUpdate(id).map(IncidentPersistenceMapper::toDomain);
     }
 
     @Override

@@ -53,20 +53,29 @@ public final class IncidentApplicationService implements OpenIncidentUseCase, Re
     private final IncidentResponseActionRepositoryPort responseActionRepositoryPort;
     private final IncidentClosureRepositoryPort closureRepositoryPort;
 
+    private final dz.sh.hidra.modules.incident.application.port.out.IncidentReferencePolicyPort references;
+
     public IncidentApplicationService(
             IncidentRepositoryPort incidentRepositoryPort,
             IncidentResponseActionRepositoryPort responseActionRepositoryPort,
-            IncidentClosureRepositoryPort closureRepositoryPort
+            IncidentClosureRepositoryPort closureRepositoryPort,
+            dz.sh.hidra.modules.incident.application.port.out.IncidentReferencePolicyPort references
     ) {
+        this.references=Objects.requireNonNull(references);
         this.incidentRepositoryPort = Objects.requireNonNull(incidentRepositoryPort, "Incident repository port must not be null.");
         this.responseActionRepositoryPort = Objects.requireNonNull(responseActionRepositoryPort, "Incident response action repository port must not be null.");
         this.closureRepositoryPort = Objects.requireNonNull(closureRepositoryPort, "Incident closure repository port must not be null.");
     }
 
     @Override
+    @org.springframework.transaction.annotation.Transactional
     public IncidentSummaryDto openIncident(OpenIncidentCommand command) {
         Objects.requireNonNull(command, "Open incident command must not be null.");
         Instant now = Instant.now();
+        var actor=references.currentActor(now);
+        var unit=command.responsibleOrganizationUnitId()==null ? null : references.organizationUnit(command.responsibleOrganizationUnitId());
+        if((command.topologyAssetId()==null)!=(command.topologyAssetTypeCode()==null)) throw new IllegalArgumentException("Topology type and identifier must be supplied together.");
+        var asset=command.topologyAssetId()==null ? null : references.topologyAsset(command.topologyAssetTypeCode(),command.topologyAssetId());
         Incident incident = new Incident(
                 IncidentId.newId().value(),
                 command.incidentNumber(),
@@ -84,15 +93,15 @@ public final class IncidentApplicationService implements OpenIncidentUseCase, Re
                 command.occurredAt(),
                 command.topologyAssetTypeCode(),
                 command.topologyAssetId(),
-                command.topologyAssetCode(),
-                command.topologyAssetNameSnapshot(),
+                asset==null ? command.topologyAssetCode() : asset.code(),
+                asset==null ? command.topologyAssetNameSnapshot() : asset.label(),
                 command.locationDescriptionAr(),
                 command.locationDescriptionLt(),
                 command.latitude(),
                 command.longitude(),
                 command.responsibleOrganizationUnitId(),
-                command.responsibleOrganizationUnitCode(),
-                command.responsibleOrganizationUnitNameSnapshot(),
+                unit==null ? command.responsibleOrganizationUnitCode() : unit.code(),
+                unit==null ? command.responsibleOrganizationUnitNameSnapshot() : unit.label(),
                 null,
                 null,
                 null,
@@ -101,8 +110,8 @@ public final class IncidentApplicationService implements OpenIncidentUseCase, Re
                 null,
                 null,
                 null,
-                command.createdByActorId(),
-                command.createdByActorNameSnapshot(),
+                actor.id(),
+                actor.label(),
                 now,
                 now
         );

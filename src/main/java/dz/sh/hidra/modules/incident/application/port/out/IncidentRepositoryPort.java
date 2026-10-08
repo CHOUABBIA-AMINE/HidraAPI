@@ -32,6 +32,8 @@ public interface IncidentRepositoryPort {
 
     Optional<Incident> findById(String id);
 
+    default Optional<Incident> findByIdForUpdate(String id) { throw new UnsupportedOperationException("Locked Incident lookup required."); }
+
     List<Incident> findAll(int page, int size);
 
     long count();

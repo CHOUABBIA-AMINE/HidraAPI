@@ -3396,7 +3396,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-074`
 - Exact commit: `fix(incident): remediate semantic review Incident`
-- Status: **Planned**
+- Status: **Implemented — Batch 15; CI pending**
 - SCC: —
 - Recorded upstream HMS dependencies: organization.OrganizationUnit, workflow.WorkflowInstance
 - HMSR correction count: 5
@@ -5514,3 +5514,7 @@ Current totals: 39 implementations (37 CI-confirmed through #590; two Batch 14 C
 17 STILL REQUIRED, one BLOCKED (HMR-080), 57 evaluated. Publish the chained semantic
 commits to existing main once using expected-head protection; confirm production CI
 started and stop for owner `next`/`fail`. No release, tag, PR or final HPR-P2-008 PASS.
+
+HMR-062 implemented under accepted canonical Batch 15 scope; source HMSR obligations
+and historical write scope above are preserved. Canonical Ultimate Roadmap contains
+actual forward migration, owner contracts, exact files and CI-pending validation.

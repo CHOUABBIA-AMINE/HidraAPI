@@ -3257,3 +3257,105 @@ change. Applicable push CI is Documentation Validation; production CI #593 remai
 verified source baseline. Stop after documentation CI is triggered. Next registered
 action: accept/amend INC-PREREQ-01, register exact paths and implement Batch 15 in the
 order above. No semantic completion or full HPR-P2-008 PASS is claimed by this preflight.
+
+## HPR-P2-008 Batch 15 accepted execution envelope — 2026-10-08
+
+Owner `next` accepts INC-PREREQ-01 on fde6cbf001c5fac9575f5a30ec01c414304d9ede.
+Documentation CI #94 (37773681973) passed. The production tree is unchanged from
+green Java 21/full/OpenAPI CI #593 at cfc7798477c70d10e1c3e0afd4dd7e1b42676898.
+Admit order HMR-062 -> HMR-091 -> HMR-092 -> HMR-090, four independent exact semantic
+commits with one atomic final branch advance. No later batch or PR. The accepted
+preflight governs policy configuration, missing-policy denial, owner contracts and
+forward migrations 007..010. No production completion is claimed at admission.
+
+### Exhaustive HMR-062 scope
+
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `doc/model-remediation/RECONCILIATION.md`
+- `docs/roadmap/model-semantic-remediation.md`
+- `docs/data definition/Incident.md`
+- `src/main/java/dz/sh/hidra/modules/incident/application/service/IncidentApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/incident/application/port/out/IncidentReferencePolicyPort.java`
+- `src/main/java/dz/sh/hidra/modules/incident/application/port/out/IncidentRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/incident/domain/model/Incident.java`
+- `src/main/java/dz/sh/hidra/modules/incident/infrastructure/integration/NoopIncidentExternalReferenceResolver.java`
+- `src/main/java/dz/sh/hidra/modules/incident/infrastructure/integration/IncidentReferencePolicyAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/incident/infrastructure/persistence/adapter/JpaIncidentRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/incident/infrastructure/persistence/repository/IncidentJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/incident/infrastructure/persistence/adapter/IncidentCatalogValidation.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/contract/incident/IncidentActorContract.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/contract/incident/package-info.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/IncidentActorQueryService.java`
+- `src/test/java/dz/sh/hidra/modules/identity/semantic/IncidentActorContractTest.java`
+- `src/main/java/dz/sh/hidra/modules/organization/application/contract/incident/IncidentOrganizationContract.java`
+- `src/main/java/dz/sh/hidra/modules/organization/application/contract/incident/package-info.java`
+- `src/main/java/dz/sh/hidra/modules/organization/application/service/IncidentOrganizationQueryService.java`
+- `src/test/java/dz/sh/hidra/modules/organization/semantic/IncidentOrganizationContractTest.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/contract/incident/IncidentTopologyContract.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/contract/incident/package-info.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/integration/IncidentTopologyQueryAdapter.java`
+- `src/test/java/dz/sh/hidra/modules/topology/semantic/IncidentTopologyContractTest.java`
+- `src/main/java/dz/sh/hidra/modules/workflow/application/contract/incident/IncidentWorkflowContract.java`
+- `src/main/java/dz/sh/hidra/modules/workflow/application/contract/incident/package-info.java`
+- `src/main/java/dz/sh/hidra/modules/workflow/application/service/IncidentWorkflowQueryService.java`
+- `src/test/java/dz/sh/hidra/modules/workflow/semantic/IncidentWorkflowContractTest.java`
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java`
+- `src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java`
+- `src/test/java/dz/sh/hidra/modules/incident/semantic/IncidentSemanticRemediationTest.java`
+- `src/test/java/dz/sh/hidra/modules/incident/infrastructure/persistence/IncidentSemanticPostgresIntegrationTest.java`
+- `src/main/resources/db/migration/V20261008_007__hmr_062_incident_reference_lifecycle_integrity.sql`
+
+### Exhaustive HMR-091 scope
+
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `doc/model-remediation/RECONCILIATION.md`
+- `docs/roadmap/model-semantic-remediation.md`
+- `docs/data definition/Incident.md`
+- `src/main/java/dz/sh/hidra/modules/incident/domain/model/IncidentRelatedIncident.java`
+- `src/main/java/dz/sh/hidra/modules/incident/infrastructure/persistence/adapter/JpaIncidentRelatedIncidentRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/incident/infrastructure/persistence/repository/IncidentRelatedIncidentJpaRepository.java`
+- `src/test/java/dz/sh/hidra/modules/incident/semantic/IncidentRelatedIncidentSemanticRemediationTest.java`
+- `src/test/java/dz/sh/hidra/modules/incident/infrastructure/persistence/IncidentSemanticPostgresIntegrationTest.java`
+- `src/main/resources/db/migration/V20261008_008__hmr_091_incident_relationship_integrity.sql`
+
+### Exhaustive HMR-092 scope
+
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `doc/model-remediation/RECONCILIATION.md`
+- `docs/roadmap/model-semantic-remediation.md`
+- `docs/data definition/Incident.md`
+- `src/main/java/dz/sh/hidra/modules/incident/domain/model/IncidentResponseAction.java`
+- `src/main/java/dz/sh/hidra/modules/incident/application/service/IncidentApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/incident/infrastructure/persistence/adapter/JpaIncidentResponseActionRepositoryAdapter.java`
+- `src/test/java/dz/sh/hidra/modules/incident/semantic/IncidentResponseActionSemanticRemediationTest.java`
+- `src/test/java/dz/sh/hidra/modules/incident/infrastructure/persistence/IncidentSemanticPostgresIntegrationTest.java`
+- `src/main/resources/db/migration/V20261008_009__hmr_092_incident_response_action_integrity.sql`
+
+### Exhaustive HMR-090 scope
+
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `doc/model-remediation/RECONCILIATION.md`
+- `docs/roadmap/model-semantic-remediation.md`
+- `docs/data definition/Incident.md`
+- `src/main/java/dz/sh/hidra/modules/incident/domain/model/IncidentClosure.java`
+- `src/main/java/dz/sh/hidra/modules/incident/application/service/IncidentApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/incident/application/port/out/IncidentClosureEvidencePort.java`
+- `src/main/java/dz/sh/hidra/modules/incident/infrastructure/persistence/adapter/JpaIncidentClosureEvidenceAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/incident/infrastructure/persistence/adapter/JpaIncidentClosureRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/incident/infrastructure/persistence/repository/IncidentClosureJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/workflow/application/service/IncidentWorkflowQueryService.java`
+- `src/test/java/dz/sh/hidra/modules/workflow/semantic/IncidentWorkflowContractTest.java`
+- `src/test/java/dz/sh/hidra/modules/incident/semantic/IncidentClosureSemanticRemediationTest.java`
+- `src/test/java/dz/sh/hidra/modules/incident/infrastructure/persistence/IncidentSemanticPostgresIntegrationTest.java`
+- `src/main/resources/db/migration/V20261008_010__hmr_090_incident_closure_governance.sql`
+
+Each task recovers its own source HMSR review and validates focused tests. Production
+CI owns actual Java 21 Maven/PostgreSQL/Spring/OpenAPI validation when this host cannot
+resolve the build parent. Temporary API compilation is not a Maven or integration pass.
+
+### Batch 15 HMR-062 implementation result — 2026-10-08
+
+Catalog families and active new-reference eligibility, owner-controlled Identity/Organization/Topology/Workflow references, authenticated creator and canonical creation snapshots, temporal/state coupling and responsible-owner snapshot for CLOSED are enforced. Generic saves cannot establish CLOSED and existing CLOSED parents are immutable. A parent pessimistic lock is exported for coordinated lifecycle writes. Noop reference resolver now denies. Forward 007 preserves existing FKs and adds nullable priority integrity and local catalog/state guards. Production sources compiled against temporary framework APIs; eight real domain/fallback checks passed. Nine focused owner/domain methods and two real PostgreSQL tests are prepared. Local Maven compilation is blocked before execution by uncached Spring Boot 4.1.1 parent and offline resolution; no JUnit/database pass is claimed.
+
+Exact semantic commit: `fix(incident): remediate semantic review Incident`.
+Implementation complete; production Java 21/Maven/PostgreSQL/OpenAPI CI pending.

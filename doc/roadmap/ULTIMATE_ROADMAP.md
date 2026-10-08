@@ -249,7 +249,7 @@ P1 is **CLOSED** only when this closure SHA passes the repository's full exact-h
 | HPR-P2-005 | COMPLETED — deterministic OpenAPI 3.1 contract version-controlled from exact executable P1 closure CI artifact; canonical API overview, conventions, authentication/authorization, error-model limitation, versioning/compatibility and OpenAPI-governance documents established; shared machine-readable error envelope remains explicitly NOT ESTABLISHED | API | Code/Doc | Generate and version-control deterministic `doc/api/openapi.yaml`; create API overview, conventions, auth, error, versioning/compatibility and OpenAPI governance docs. | `docs(api): establish versioned api contract` | HPR-P1-008 |
 | HPR-P2-006 | COMPLETED — canonical current database architecture, schema ownership, Flyway policy and generated persistence dictionary established from 82 current Flyway migrations, 469 current module JPA persistence entities, production configuration and closed P1 PostgreSQL/backup evidence; stale pre-closure DB stage documents retained as historical provenance | Database | Doc | Create database architecture, schema ownership, Flyway policy and current generated data dictionary from current migrations/JPA evidence. | `docs(database): establish canonical database documentation` | HPR-P2-001 |
 | HPR-P2-007 | COMPLETED — exact-source reconciliation established: HMR-005 corrected to completed, HMR-009 confirmed completed/stale carry-over removed, HMR-054 historical blocker resolved by current Party→Topology contract, HMR-050..106 reconciled to 56 still-required + 1 blocked (HMR-080), 0 superseded; legacy roadmap preserved as history | Semantic Remediation | Code/Doc | Inventory unresolved HMR/HMSR obligations against exact current source; mark each as completed, still required, blocked, or superseded with evidence. | `docs(model-remediation): reconcile remaining semantic obligations` | HPR-P2-003 |
-| HPR-P2-008 | IN PROGRESS — HMR-050 and attached Batches 1..7 implemented; 22 completed, 34 still-required HMRs and HMR-080 blocked. Batch 7 Workflow prerequisite resolved; five independent semantic commits, final CI pending. Local full Maven validation blocked by Maven Central DNS/uncached parent; temporary compilation and 27 behavior checks passed. | Semantic Remediation | Code | Execute still-required semantic remediation in dependency order using revalidated HMSR obligations; do not restart completed HMRs without regression evidence. | `fix(model): continue reconciled semantic remediation` | HPR-P2-007 |
+| HPR-P2-008 | IN PROGRESS — 39 semantic implementations verified through exact-head CI #593; attached Batch 15 HMR-062/090/091/092 preflight records INC-PREREQ-01; 13 still required and five blocked including HMR-080, 57 evaluated. No Batch 15 production implementation yet. | Semantic Remediation | Code | Execute still-required semantic remediation in dependency order using revalidated HMSR obligations; do not restart completed HMRs without regression evidence. | `fix(model): continue reconciled semantic remediation` | HPR-P2-007 |
 | HPR-P2-009 | PENDING | Semantic Remediation | Doc | Transfer permanent semantic decisions from legacy review/roadmaps into `doc/domain/` and `doc/modules/`, then preserve legacy files as execution history. | `docs(model-remediation): canonicalize semantic decisions` | HPR-P2-008 | IN PROGRESS — HMR-050 and attached Batches 1..6 implemented; 17 completed, 39 still-required HMRs and HMR-080 blocked in the HMR-050..106 register. Baseline production CI #576 passed; final Batch 6 CI pending. Local full Maven validation blocked by Maven Central DNS/uncached parent, Java 17 and absent Docker. | Semantic Remediation | Code | Execute still-required semantic remediation in dependency order using revalidated HMSR obligations; do not restart completed HMRs without regression evidence. | `fix(model): continue reconciled semantic remediation` | HPR-P2-007 |
 | HPR-P2-010 | PENDING | Data Governance | Doc | Create data governance, retention/archival, provenance and legacy-data migration documents without inventing retention values. | `docs(data): establish data governance baseline` | HPR-P2-001 |
 | HPR-P2-011 | PENDING | Testing | Doc | Create test strategy, architecture testing, database testing, API testing and requirements traceability documents tied to executable evidence. | `docs(testing): establish verification documentation` | HPR-P2-002..006 |
@@ -3104,3 +3104,156 @@ Historical application generation and compatibility execution with the selected 
 remain replacement-CI gates; no completed green run or Batch 14 closure is claimed.
 Publish this supporting commit on main, confirm new CI triggered, stop for owner
 notification. No later HMR, PR, tag or release is included.
+
+## HPR-P2-008 Batch 15 Incident execution preflight — 2026-10-08
+
+Owner `next` selects row 15 of attached `00 - Batchs Roadmap.txt`: HMR-062/HMSR-074,
+HMR-090/HMSR-107, HMR-091/HMSR-108 and HMR-092/HMSR-109. Exact main baseline
+`cfc7798477c70d10e1c3e0afd4dd7e1b42676898` passed full CI #593 / run
+`37772142318`. Job `Java 21 Maven verification` passed repository verification,
+current and historical OpenAPI generation, backward compatibility and artifact upload,
+as well as all registered infrastructure checks. Batch 14 HMR-077/058 and both CI
+repairs are now CI-confirmed. This task is a documentation-only preflight.
+
+### INC-PREREQ-01 — independently recovered live gaps
+
+AGENTS.md section 3.2.9 requires: "If an HMR reveals an unregistered prerequisite, SCC
+complication, owner-contract gap, cross-module lifecycle dependency, migration-order
+conflict, or materially larger semantic redesign, split it out and stop before mutating
+that HMR." Current source and each of the four individual source reviews establish:
+
+| Subject | Live evidence and scope gap |
+|---|---|
+| HMR-062 / Incident | `IncidentApplicationService.openIncident` copies caller creator/catalog/asset/unit data. `Incident` checks presence but not detected/reported ordering or resolved/closed state coupling. `JpaIncidentRepositoryAdapter.save` directly maps/saves. No Incident-specific Identity, Organization, Topology or Workflow owner contract is exported in `ArchitectureGuardrailTest`. Original scope does not admit those owners or a migration. |
+| HMR-090 / IncidentClosure | `closeIncident` creates/saves a closure without loading the parent, validating RESOLVED, changing CLOSED/closedAt, checking resolution/evidence or declaring a coherent transaction. Its original scope excludes that live application service, parent locking and resolution/evidence lookup. `IncidentResolutionJpaRepository` and `IncidentEvidenceLinkJpaRepository` expose only generic JpaRepository methods. No pre-authorized closure migration exists. |
+| HMR-091 / IncidentRelatedIncident | `fk_hra111_incident_013` in published V20260929_001 incorrectly references `hidra_incident_catalog_entry`; both identifiers must reference `hidra_incident`. Domain `selfRelationship()` reports but does not prohibit self-links; createdAt is unchecked. Adapter directly saves without family or pair policy. Legacy V20261004_091 is backdated behind published V20261008_006. |
+| HMR-092 / IncidentResponseAction | `recordResponseAction` directly saves without loading Incident or invoking `canReceiveResponseAction()`. Adapter has no catalog/lifecycle validation. Nonblank description is not enforced. Original scope excludes the service, parent lock and transaction protection needed against a concurrent close. |
+
+`NoopIncidentExternalReferenceResolver` returns true for every lookup, including typed
+Topology and Workflow existence. It is not evidence of owner validation and must not
+be wired as the implementation of any admitted authoritative path. Source review of
+`IncidentModuleConfiguration.defaults()` finds a generic evidence-required boolean,
+not an executable classification/severity policy or Workflow approval attestation.
+
+The Incident DDD (`docs/data definition/Incident.md`, sections 4, 6.8, 6.9 and 6.11)
+requires resolved-only closure, a resolution, reviewed evidence and responsible-owner
+snapshot, with additional evidence/approval conditions determined by policy. Current
+`IncidentCatalogEntryJpaEntity` has only family/code/active/order/system/timestamps;
+no minor-severity, closure-approval or inverse-direction metadata can be inferred.
+Do not interpret an arbitrary severity code or ID as an approved threshold, require
+universal true RCA/follow-up flags, or invent bidirectional relationship semantics.
+
+### Concrete execution proposal for acceptance
+
+1. Admit Batch 15 as the coordinated Incident aggregate correction in order
+   HMR-062 -> HMR-091 -> HMR-092 -> HMR-090. Closure executes last after validated parent
+   persistence and response-action serialization exist. Retain four source reviews,
+   individual exact scopes, tests, statuses and separate exact commits:
+
+   | HMR | Exact semantic commit |
+   |---|---|
+   | HMR-062 | `fix(incident): remediate semantic review Incident` |
+   | HMR-091 | `fix(incident): remediate semantic review IncidentRelatedIncident` |
+   | HMR-092 | `fix(incident): remediate semantic review IncidentResponseAction` |
+   | HMR-090 | `fix(incident): remediate semantic review IncidentClosure` |
+
+2. HMR-062 preserves the 37-field aggregate and enums. Enforce exact active families
+   INCIDENT_CLASSIFICATION, INCIDENT_SEVERITY and populated INCIDENT_PRIORITY for new
+   or changed references; preserve valid historical snapshots without treating them as
+   authorization. Enforce detectedAt <= reportedAt (there is no estimated-time flag),
+   resolvedAt only for RESOLVED/CLOSED, closedAt only for CLOSED and the required
+   responsible-owner snapshot for CLOSED. Preserve the DDD cancelledAt/CANCELLED coupling
+   and CLOSED immutability; do not invent other timestamp ordering. Creator identity
+   binds to the actual authenticated eligible Identity actor, never caller snapshots.
+   Validate populated responsible actor/unit, typed Topology and Workflow references
+   through narrowly exported owner contracts with canonical scalar snapshots. Unknown,
+   missing or ambiguous owner/type fails closed. No foreign-module JPA import or FK.
+   Guard application and adapter saves; generic save must not bypass closure governance.
+3. Introduce Incident-specific owner interfaces under each owner's
+   `application.contract.incident` with providers executing inside Identity, Organization,
+   Topology and Workflow. Reuse owner-controlled queries/policies internally rather than
+   exporting foreign domain/JPA objects. Initial typed assets are PIPELINE, SEGMENT,
+   FACILITY, EQUIPMENT, NODE and CONNECTION, following existing Topology ownership;
+   do not silently alias STATION or accept unsupported neutral type strings. Workflow
+   existence alone never proves permission, target correlation or a closure decision.
+   Architecture exports and focused owner-contract/denial tests must be explicitly scoped.
+4. HMR-091 uses forward V20261008_008 to replace only the erroneous related-side FK,
+   preserving the correct incident/type FKs. Fail legacy preflight on orphan/self-link/
+   invalid catalog/timestamp rows without deleting or rewriting evidence. Enforce
+   non-self IDs, createdAt and active RELATED_INCIDENT_RELATIONSHIP_TYPE for writes.
+   Register an explicit Incident-owned relationship policy keyed by catalog type,
+   defining directional versus symmetric semantics and any reciprocal type; absent or
+   conflicting configuration rejects creation. Symmetric links use one canonical pair
+   and reject a reverse duplicate. Directional links reject exact duplicates and
+   explicitly configured reciprocal duplicates; never collapse unrelated PARENT/CHILD
+   or MERGED_INTO relationships without a configured rule. Lock parent pairs in stable
+   identifier order and enforce admitted database uniqueness for races. Existing
+   historical conflicting pairs require operator reconciliation, not automatic merging.
+5. HMR-092 loads/locks the actual parent and rejects missing/DRAFT/CLOSED/CANCELLED/MERGED
+   according to `canReceiveResponseAction()`. Enforce nonblank description and active
+   RESPONSE_ACTION_TYPE. Serialize action insertion against closure using the same parent
+   lock/transaction boundary at application and persistence paths. Preserve optional
+   timestamps/outcomes and neutral targets; no invented terminal-result requirement.
+   Validate populated Organization/Identity references through their owner contracts.
+   Recording never issues physical equipment commands. Forward V20261008_009 adds
+   same-module/catalog and lifecycle guards with fail-closed legacy preflight.
+6. HMR-090 closes only a locked RESOLVED Incident with a valid resolution record and
+   policy-required persisted evidence. Require nonblank closureSummary, resolutionVerified
+   and evidenceReviewed, eligible authenticated closing actor and responsible-owner
+   snapshot. Define an explicit Incident-owned closure policy keyed by classification
+   and severity with evidence and Workflow-approval requirements; no default permissive
+   policy and no invented minor threshold. Missing policy fails closed. When configured,
+   require Workflow-owned authority for this exact Incident/closure target and actual
+   recorded approval; reject mismatched/unused existence-only references. Root-cause and
+   follow-up requirements are driven by resolution/policy evidence, not blanket booleans.
+   Save the immutable closure and CLOSED parent/closedAt in one REQUIRED transaction.
+   Prevent duplicate closure, replay, generic-save bypass and concurrent action/close;
+   failure rolls back both records and any Workflow operation performed in that transaction.
+   No fabricated resolution/evidence/approval or automatic permission grants.
+7. Authorize forward filenames, never change published SQL:
+
+   | Owner task | Proposed forward migration |
+   |---|---|
+   | HMR-062 | `V20261008_007__hmr_062_incident_reference_lifecycle_integrity.sql` |
+   | HMR-091 | `V20261008_008__hmr_091_incident_relationship_integrity.sql` |
+   | HMR-092 | `V20261008_009__hmr_092_incident_response_action_integrity.sql` |
+   | HMR-090 | `V20261008_010__hmr_090_incident_closure_governance.sql` |
+
+   Companion local policy/evidence tables may be introduced with these forward migrations
+   where required; no synthesized legacy policies or data repair by inference. Policy
+   metadata must have explicit family/active/consistency constraints, and missing policy
+   remains a clear denial. Recheck the actual migration tail before admission.
+8. Before production mutation, register exhaustive per-HMR paths covering the original
+   subject files plus IncidentApplicationService, domain/persistence/catalog validation,
+   parent lock APIs, same-module resolution/evidence repositories and ports, policy
+   persistence, required owner contracts/providers, architecture exports, API/command/mapper
+   paths actually changed and focused tests. Preserve existing OpenAPI shapes where feasible;
+   any additive operation has an explicit use case and contract. No later batch, release,
+   version change, PR or cross-module FK is included.
+9. Validate each HMSR independently: wrong/inactive family and missing/unsupported owner;
+   temporal/status invariants and snapshot preservation; correct related-side FK, self-link,
+   missing time and pair/inverse races; forbidden parent action states; absent resolution/
+   evidence/policy, false confirmations and wrong Workflow actor/target; successful closure
+   with identical parent/record close time; rollback, duplicate close, closed immutability
+   and concurrent close/action. Use unit/owner/architecture tests plus real PostgreSQL
+   integration/transaction/concurrency tests. Run registered compile/focused/full tests,
+   Java 21 clean verify and generated OpenAPI compatibility. Publish the four-commit chain
+   once; confirm final-head CI started and stop for owner notification.
+
+### Current disposition and validation
+
+All four Batch 15 HMRs are BLOCKED pending INC-PREREQ-01 acceptance and exhaustive
+scope registration; no Incident production code has changed. Totals: 39 CI-confirmed
+implementations, 13 STILL REQUIRED and five BLOCKED (HMR-062/090/091/092/080), 57 evaluated.
+HMR-080's independent Party prerequisite remains unchanged.
+
+This preflight's exact write scope is only `doc/roadmap/ULTIMATE_ROADMAP.md` and
+`doc/model-remediation/RECONCILIATION.md`. Exact supporting commit:
+`docs(incident): record Batch 15 execution preflight`.
+
+Validation: canonical Markdown UTF-8/nonempty/conflict-marker validation and
+`git diff --check`; no Maven/runtime/database test is claimed for this documentation
+change. Applicable push CI is Documentation Validation; production CI #593 remains the
+verified source baseline. Stop after documentation CI is triggered. Next registered
+action: accept/amend INC-PREREQ-01, register exact paths and implement Batch 15 in the
+order above. No semantic completion or full HPR-P2-008 PASS is claimed by this preflight.

@@ -2421,3 +2421,59 @@ and remain blocked before compilation by uncached Boot parent 4.1.1. Canonical M
 whitespace and the exact fifteen-file scope passed. No new files, published SQL edits,
 API/lifecycle changes, release or later batch. Confirm replacement exact-head CI started
 and stop; Batch 14 is implementation-only until all production gates are green.
+
+
+## HPR-P2-008 Batch 14 / CI #592 compatibility-base repair — 2026-10-08
+
+Owner `fail` authorizes this supporting repair only. Actual run 37769772026 on
+aa0539ea672ff4e29f01872026d727aef067d3e1 passed Java 21 Maven clean verify and
+current-head OpenAPI generation. The failed step is historical-base OpenAPI generation:
+GitHub push event.before selected 76dbbd721822e3e8e109d02c0b82a4ed2d6e9285, which
+still contains the bean collision already corrected on current main. Compatibility
+comparison therefore never ran. HMR-077/058 remain CI-pending until the full gate passes.
+
+Repair push/manual CI base selection using successful completed production CI runs
+for .github/workflows/ci.yml on main, requiring the candidate SHA to be an ancestor of
+the requested event base. Ignore documentation runs, failures, foreign branches and
+non-ancestors. Latest successful applicable history identifies CI #590 /
+d53b616de28abcd680da827e09ea7677bc7e4a31, before Batch 14. Preserve PR exact target-base
+behavior. Missing/invalid base, GitHub lookup failure or absence of a verified ancestor
+fails closed; never substitute current HEAD, patch historical source, or skip comparison.
+Continue generating the genuine historical application and running the unchanged OpenAPI
+compatibility checker. Add Actions read permission only for provenance lookup.
+
+Exhaustive scope:
+
+- `.github/workflows/ci.yml`
+- `.github/scripts/resolve_openapi_base.py`
+- `.github/scripts/test_resolve_openapi_base.py`
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `doc/model-remediation/RECONCILIATION.md`
+
+Exact supporting message: `fix(ci): select a verified OpenAPI compatibility base`.
+Validate resolver behavior with real temporary Git ancestry and controlled GitHub history,
+workflow YAML/shell syntax, unchanged comparator, canonical docs and exact five-file scope.
+No production Java, Flyway, API contract, release, PR or next batch is included. Publish
+main with expected-SHA protection, confirm new production CI triggered, stop.
+
+
+### CI #592 repair result
+
+The resolver now obtains completed successful production-CI history using read-only
+Actions access and verifies candidate ancestry against the requested push/manual base.
+PR comparison retains its exact target SHA. Fourteen Python regressions passed using
+real temporary Git graphs and controlled history, including broken-parent fallback,
+verified-parent preservation, exclusion of docs/foreign/current-head runs, pagination,
+invalid/missing history and lookup failure, exact PR behavior and GitHub output. A
+separate check using actual retrieved GitHub success history and actual repository Git
+ancestry selected d53b616de28abcd680da827e09ea7677bc7e4a31 / CI #590 for this repair.
+Python compilation, workflow YAML and all embedded Bash syntax passed. Every workflow
+step except base resolution is byte-for-byte structurally unchanged, including genuine
+historical application generation and the existing backward-compatibility comparator.
+Canonical docs, whitespace and exact five-file scope passed. Production Java/Flyway/API
+bytes are unchanged; local Maven rerun is unnecessary for this Python/workflow-only
+repair, and current-head Java 21 clean verify already passed in actual CI #592.
+Historical application generation and compatibility execution with the selected base
+remain replacement-CI gates; no completed green run or Batch 14 closure is claimed.
+Publish this supporting commit on main, confirm new CI triggered, stop for owner
+notification. No later HMR, PR, tag or release is included.

@@ -216,6 +216,23 @@ import java.time.Instant;
             );
         }
 
+        public Alarm withAcknowledgement(Instant at, String actorId) {
+            Instant latestAt = acknowledgedAt != null && acknowledgedAt.isAfter(at) ? acknowledgedAt : at;
+            String latestActor = latestAt.equals(at) ? actorId : acknowledgedByActorId;
+            AlarmState nextState = clearedAt == null && (currentState == AlarmState.RAISED
+                    || currentState == AlarmState.ACTIVE || currentState == AlarmState.ACKNOWLEDGED)
+                    ? AlarmState.ACKNOWLEDGED : currentState;
+            Instant changedAt = lastUpdatedAt.isAfter(at) ? lastUpdatedAt : at;
+            return new Alarm(id, alarmNumber, alarmTypeId, severityId, priorityId,
+                    titleAr, titleFr, titleEn, descriptionAr, descriptionFr, descriptionEn,
+                    sourceType, sourceReferenceId, monitoringAlertCandidateId, monitoringEvaluationId,
+                    telemetryReadingId, planningTargetId, topologyAssetTypeCode, topologyAssetId,
+                    topologyAssetCode, topologyAssetNameSnapshot, nextState, raisedAt, firstDetectedAt,
+                    changedAt, clearedAt, closedAt, latestAt, latestActor, owningOrganizationUnitId,
+                    owningOrganizationUnitCode, owningOrganizationUnitNameSnapshot, workflowInstanceId,
+                    incidentId, correlationId, createdAt, changedAt);
+        }
+
         private static String normalize(String value) {
             if (value == null || value.isBlank()) {
                 return null;

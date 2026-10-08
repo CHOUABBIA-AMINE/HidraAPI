@@ -5230,3 +5230,28 @@ Markdown checks passed. Runtime validation remains pending final production CI.
 
 Exact message: fix(alarm): remediate semantic review Alarm. Version remains
 0.6.0-SNAPSHOT, HPR-P2-008 open, HMR-080 blocked and physical survivability unchanged.
+
+## HPR-P2-008 Batch 20 independent execution — HMR-104 — 2026-10-08
+
+ALRM-PREREQ-01 remains ACCEPTED. HMSR-121 section 134 was independently recovered
+against the live nine-field acknowledgement, service and local FK. Live service and
+direct evidence adapter lock the owning Alarm and fail closed on unknown or terminal
+state. The adapter atomically flushes acknowledgement, current Alarm snapshots and
+one stable ACKNOWLEDGED action event. CLEARED/ESCALATED/SHELVED/SUPPRESSED states
+remain meaningful; older evidence cannot overwrite the latest actor/time snapshot.
+Exact evidence replay is a no-op; changed existing evidence is rejected. Multiple
+acknowledgement IDs remain legal, with no one-row uniqueness or new migration.
+
+HMR-104 is IMPLEMENTED — FINAL CI PENDING. Three focused and three PostgreSQL/
+Spring-JPA tests are prepared for direct/live paths, replay, unknown/terminal denial,
+visibility preservation, flushed event-failure rollback and a real lock wait against
+concurrent closure. These runtime suites have not passed locally. The fresh focused
+Maven command is attempted; the unchanged missing Boot 4.1.1 parent/DNS limitation
+blocks repository execution before tests. Isolated actual core compilation against
+temporary dependency stubs passed on Java 17; exact scope/header/whitespace and
+canonical Markdown checks passed. This is not Java 21/Maven/JUnit/ArchUnit/database
+execution evidence. HMR-100's acknowledgement obligation is now implemented through
+this separate commit; its closure obligation remains for HMR-105.
+
+Exact message: fix(alarm): remediate semantic review AlarmAcknowledgement. Preserve
+0.6.0-SNAPSHOT, HPR-P2-008 open, HMR-080 blocked and physical survivability evidence.

@@ -110,8 +110,12 @@ public class AlarmApplicationService implements RaiseAlarmUseCase, AcknowledgeAl
     }
 
     @Override
+    @org.springframework.transaction.annotation.Transactional
     public String acknowledgeAlarm(AcknowledgeAlarmCommand command) {
         Objects.requireNonNull(command, "Acknowledge alarm command must not be null.");
+        Alarm alarm = alarmRepositoryPort.findByIdForUpdate(command.alarmId())
+                .orElseThrow(() -> new IllegalArgumentException("Unknown alarm: " + command.alarmId()));
+        new dz.sh.hidra.modules.alarm.domain.service.AlarmLifecycleGuard().ensureCanAcknowledge(alarm);
         AlarmAcknowledgement acknowledgement = new AlarmAcknowledgement(
                 AlarmId.newId().value(),
                 command.alarmId(),

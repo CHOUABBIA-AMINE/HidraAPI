@@ -2476,3 +2476,76 @@ RECONCILIATION.md. Exact supporting commit: `docs(simulation): record Batch 13 e
 Documentation validation is the applicable CI for this docs-only commit; no production
 verification is claimed for unimplemented Batch 13 work. Next action: accept or amend this
 concrete proposal, then admit exhaustive scopes and implement 078/079 in individual commits.
+
+
+## HPR-P2-008 Batch 13 accepted execution envelope — 2026-10-08
+
+Owner `next` accepts SIM-PREREQ-01 on preflight fe8fe8452cda4055607884a64387ed0f8cb89355.
+Production baseline CI #588 is green; documentation CI #87 passed on the preflight.
+Attached execution order is HMR-078/HMSR-092 -> HMR-079/HMSR-093, retaining individual
+exact semantic commits and validation. The accepted proposal above governs behavior.
+Replace the unexecuted backdated migration registrations with forward 001/002 below;
+forward 003 is Audit-owned taxonomy prerequisite attached to HMR-079. No published SQL is edited.
+
+### Exhaustive HMR-078 write scope
+
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `doc/model-remediation/RECONCILIATION.md`
+- `docs/roadmap/model-semantic-remediation.md`
+- `docs/data definition/Simulation.md`
+- `src/main/java/dz/sh/hidra/modules/simulation/domain/model/SimulationCandidateChange.java`
+- `src/main/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/adapter/JpaSimulationCandidateChangeRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/repository/SimulationCatalogEntryJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/contract/simulation/SimulationTopologyTargetContract.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/integration/SimulationTopologyTargetContractAdapter.java`
+- `src/test/java/dz/sh/hidra/modules/simulation/semantic/SimulationCandidateChangeSemanticRemediationTest.java`
+- `src/test/java/dz/sh/hidra/modules/topology/infrastructure/integration/SimulationTopologyTargetContractAdapterTest.java`
+- `src/main/resources/db/migration/V20261008_001__hmr_078_simulation_candidate_change_integrity.sql`
+
+Exact commit: `fix(simulation): remediate semantic review SimulationCandidateChange`.
+
+### Exhaustive HMR-079 write scope
+
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `doc/model-remediation/RECONCILIATION.md`
+- `docs/roadmap/model-semantic-remediation.md`
+- `docs/data definition/Simulation.md`
+- `docs/data definition/Audit.md`
+- `src/main/java/dz/sh/hidra/modules/simulation/domain/model/SimulationRecommendation.java`
+- `src/main/java/dz/sh/hidra/modules/simulation/application/port/out/SimulationRecommendationRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/simulation/application/service/SimulationApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/adapter/JpaSimulationRecommendationRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/audit/application/contract/simulation/SimulationRecommendationAuditContract.java`
+- `src/main/java/dz/sh/hidra/modules/audit/application/contract/simulation/package-info.java`
+- `src/main/java/dz/sh/hidra/modules/audit/infrastructure/integration/SimulationRecommendationAuditContractAdapter.java`
+- `src/test/java/dz/sh/hidra/modules/simulation/semantic/SimulationRecommendationSemanticRemediationTest.java`
+- `src/test/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/SimulationSemanticPostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/audit/infrastructure/integration/SimulationRecommendationAuditContractAdapterTest.java`
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java`
+- `src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java`
+- `src/main/resources/db/migration/V20261008_002__hmr_079_simulation_recommendation_integrity.sql`
+- `src/main/resources/db/migration/V20261008_003__provision_simulation_recommendation_audit_taxonomy.sql`
+
+Exact commit: `fix(simulation): remediate semantic review SimulationRecommendation`.
+
+Focused verification: SimulationCandidateChangeSemanticRemediationTest,
+SimulationTopologyTargetContractAdapterTest, SimulationRecommendationSemanticRemediationTest,
+SimulationRecommendationAuditContractAdapterTest, SimulationSemanticPostgresIntegrationTest,
+existing Simulation tests and both architecture registries; compile, test and clean verify.
+No release change, later HMR, direct Topology mutation or cross-module FK is admitted.
+
+### Batch 13 HMR-078 implementation result — 2026-10-08
+
+HMSR-092 live review recovered independently. Enforced targetType/afterValue, locked
+SIMULATION_CHANGE_TYPE family/active eligibility on new references, and Topology-owned
+lookup for PIPELINE/SEGMENT/FACILITY/EQUIPMENT/NODE/CONNECTION. No model-scope vocabulary
+change, actuation or foreign-module FK. Existing candidate/type FKs retained. Forward 001
+rejects invalid legacy fields/family without repair and prevents family reclassification
+while permitting unchanged inactive historical references. Compatibility writes fail closed.
+Validation: seven Java files parsed; actual Simulation domain/entities/mapper/repositories
+and changed adapters type-compiled on Java 17 with dependency stubs; 30 actual-boundary
+harness checks passed. Maven compile/focused tests cannot resolve Boot parent 4.1.1 offline;
+wrapper invoked with bash because checkout executable bit is absent. No real Spring,
+JUnit or PostgreSQL pass claimed. Exact-head Java 21 CI pending final 079 publication.
+Current subjects: 35 CI-confirmed + one implemented pending CI + 20 still required/in
+progress + one blocked HMR-080. Next attached task HMR-079; stop after final CI starts.

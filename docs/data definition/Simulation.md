@@ -1118,3 +1118,14 @@ Topology-owned aggregates and must currently exist and be ACTIVE.
 `SEGMENT_GROUP` and `FACILITY_NETWORK` remain documented scope vocabulary but fail closed
 as unsupported while Topology has no owned aggregate representation for those concepts.
 No cross-module database foreign key or direct Topology domain/repository dependency is introduced.
+
+
+## HMR-078 implementation clarification — 2026-10-08
+
+Candidate changes require nonblank targetType/targetId/afterValue and an eligible exact
+SIMULATION_CHANGE_TYPE for new or changed references. Topology resolves the scalar target
+through its exported candidate-target interface for PIPELINE, SEGMENT, FACILITY, EQUIPMENT,
+NODE or CONNECTION; model scopes remain separate. Existence is the admitted target rule.
+Unchanged historical inactive types retain evidence; referenced catalog families cannot
+be reclassified. Candidate changes remain descriptive proposals and cannot actuate equipment.
+Forward V20261008_001 aborts invalid legacy content without inventing corrective evidence.

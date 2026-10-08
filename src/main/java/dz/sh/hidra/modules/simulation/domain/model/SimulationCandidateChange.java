@@ -73,6 +73,12 @@ import java.time.Instant;
             throw new InvalidSimulationValueException("SimulationCandidateChange target id must not be blank.");
         }
 
+        if (targetType == null || targetType.isBlank()) {
+            throw new InvalidSimulationValueException("SimulationCandidateChange target type must not be blank.");
+        }
+        if (afterValue == null || afterValue.isBlank()) {
+            throw new InvalidSimulationValueException("SimulationCandidateChange after value must not be blank.");
+        }
         id = normalize(id);
         candidateId = normalize(candidateId);
         changeTypeId = normalize(changeTypeId);

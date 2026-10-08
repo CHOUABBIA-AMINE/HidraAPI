@@ -4160,11 +4160,11 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-092`
 - Exact commit: `fix(simulation): remediate semantic review SimulationCandidateChange`
-- Status: **Planned**
+- Status: **Completed — implementation; exact-head batch CI pending**
 - SCC: —
 - Recorded upstream HMS dependencies: simulation.SimulationOptimizationCandidate
 - HMSR correction count: 3
-- Additive Flyway: `src/main/resources/db/migration/V20261004_078__hmr_078_simulation_simulation_candidate_change.sql`
+- Additive Flyway: `src/main/resources/db/migration/V20261008_001__hmr_078_simulation_candidate_change_integrity.sql`
 - Owner-contract prerequisite: Owner-controlled validation required by HMSR; no concrete upstream HMS owner is registered, so preserve neutral/reference semantics and do not invent a cross-module FK.
 - Exact write allowlist:
   - `docs/data definition/Simulation.md`
@@ -4175,7 +4175,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
   - `src/main/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/entity/SimulationCandidateChangeJpaEntity.java`
   - `src/main/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/mapper/SimulationPersistenceMapper.java`
   - `src/main/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/repository/SimulationCandidateChangeJpaRepository.java`
-  - `src/main/resources/db/migration/V20261004_078__hmr_078_simulation_simulation_candidate_change.sql`
+  - `src/main/resources/db/migration/V20261008_001__hmr_078_simulation_candidate_change_integrity.sql`
   - `src/test/java/dz/sh/hidra/modules/simulation/semantic/SimulationCandidateChangeSemanticRemediationTest.java`
 - Exact validation:
   - `./mvnw -q -DskipTests compile`
@@ -4186,6 +4186,13 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
   1. **Enforce all DDD-required candidate-change values before persistence.** `targetType` and `afterValue` must be nonblank in addition to the already-enforced `targetId`.
   2. **Validate `changeTypeId` against the active/eligible exact `SIMULATION_CHANGE_TYPE` catalog family**, not only generic Simulation catalog existence.
   3. **Validate the Topology-owned target through a Topology-owned lookup/application boundary** for supported `targetType`/`targetId` combinations while preserving scalar references and avoiding cross-module database FKs.
+
+
+Accepted SIM-PREREQ-01 supersedes the original narrow scope with the exhaustive Batch 13
+Ultimate Roadmap list. Live HMSR-092 obligations revalidated; scalar owner lookup, required
+content and catalog/SQL guards implemented. Java syntax/type checks and 30 boundary harness
+checks passed with dependency stubs. Maven compile/focused tests blocked before compilation
+by uncached Spring Boot parent 4.1.1 in offline mode; full Java 21/PostgreSQL CI pending.
 
 #### HMR-079 — simulation.SimulationRecommendation
 

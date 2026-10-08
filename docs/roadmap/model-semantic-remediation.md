@@ -235,7 +235,7 @@ Each model task implements only the obligations recorded in its source HMSR sect
 | HMR-069 | HMSR-081 | assets | MaintenanceWorkOrder | — | assets.MaintainableAsset, organization.OrganizationUnit, workflow.WorkflowInstance | `fix(assets): remediate semantic review MaintenanceWorkOrder` | Implemented — CI pending |
 | HMR-070 | HMSR-082 | custody | CustodyTransferTicket | — | custody.CustodyMeasurementPeriod, workflow.WorkflowInstance | `fix(custody): remediate semantic review CustodyTransferTicket` | Implemented — CI pending |
 | HMR-071 | HMSR-084 | integration | IntegrationDeadLetterRecord | — | integration.ExternalSystem, integration.IntegrationExchangeMessage, integration.IntegrationJobRun | `fix(integration): remediate semantic review IntegrationDeadLetterRecord` | Implemented — CI pending |
-| HMR-072 | HMSR-085 | integrity | IntegrityAssessment | — | integrity.IntegrityProgram, workflow.WorkflowInstance | `fix(integrity): remediate semantic review IntegrityAssessment` | Planned |
+| HMR-072 | HMSR-085 | integrity | IntegrityAssessment | — | integrity.IntegrityProgram, workflow.WorkflowInstance | `fix(integrity): remediate semantic review IntegrityAssessment` | Implemented — CI pending |
 | HMR-073 | HMSR-087 | organization | EmployeeAssignment | — | organization.Employee, organization.OrganizationUnit, organization.Position | `fix(organization): remediate semantic review EmployeeAssignment` | Completed — Batch 1 |
 | HMR-074 | HMSR-088 | organization | OrganizationDelegation | — | organization.Employee, organization.ResponsibilityAssignment | `fix(organization): remediate semantic review OrganizationDelegation` | Completed — Batch 1 |
 | HMR-075 | HMSR-089 | organization | OrganizationHierarchySnapshot | — | organization.Employee | `fix(organization): remediate semantic review OrganizationHierarchySnapshot` | Completed — Batch 1 |
@@ -3959,11 +3959,11 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-085`
 - Exact commit: `fix(integrity): remediate semantic review IntegrityAssessment`
-- Status: **Planned**
+- Status: **Implemented — CI pending**
 - SCC: —
 - Recorded upstream HMS dependencies: integrity.IntegrityProgram, workflow.WorkflowInstance
 - HMSR correction count: 3
-- Additive Flyway: `src/main/resources/db/migration/V20261004_072__hmr_072_integrity_integrity_assessment.sql`
+- Additive Flyway: `src/main/resources/db/migration/V20261008_013__hmr_072_integrity_integrity_assessment.sql`
 - Owner-contract prerequisite: Existing candidate owner contract(s): workflow:src/main/java/dz/sh/hidra/modules/workflow/application/port/in/WorkflowQueryUseCase.java; workflow:src/main/java/dz/sh/hidra/modules/workflow/application/port/out/WorkflowEligibilityLookupPort.java
 - Exact write allowlist:
   - `docs/data definition/Integrity.md`
@@ -3982,7 +3982,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
   - `src/main/java/dz/sh/hidra/modules/integrity/infrastructure/persistence/mapper/IntegrityPersistenceMapper.java`
   - `src/main/java/dz/sh/hidra/modules/integrity/infrastructure/persistence/repository/IntegrityAssessmentJpaRepository.java`
   - `src/main/java/dz/sh/hidra/modules/integrity/infrastructure/persistence/repository/IntegrityAssessmentScopeJpaRepository.java`
-  - `src/main/resources/db/migration/V20261004_072__hmr_072_integrity_integrity_assessment.sql`
+  - `src/main/resources/db/migration/V20261008_013__hmr_072_integrity_integrity_assessment.sql`
   - `src/test/java/dz/sh/hidra/modules/integrity/semantic/IntegrityAssessmentSemanticRemediationTest.java`
 - Exact validation:
   - `./mvnw -q -DskipTests compile`
@@ -3993,6 +3993,9 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
   1. **Protect populated `programId` as a same-module Integrity reference.** When present, it must resolve to an existing `IntegrityProgram`.
   2. **Validate populated actor identity through the Identity/security owner boundary.** The live creation path currently accepts `assessedByActorId` directly; future review/approval paths must follow the same ownership rule. Do not add cross-module Identity FKs.
   3. **Validate populated `workflowInstanceId` through a Workflow-owned application contract** and verify the intended Integrity-assessment context; do not introduce a cross-module Workflow FK.
+
+- Accepted Batch 16 exhaustive scope in canonical Ultimate Roadmap supersedes the original client-only scope.
+- Execution: Nullable programme membership now fails closed to Integrity-owned records with validated forward 013 FK. Identity validates new/changed assessor, reviewer and approver references; Workflow validates the exact assessment module/type/ID and configured purpose binding. Locked transactional adapter saves preserve unchanged historical provenance and reject missing/changed owners. Methodology, title domain semantics, optional programme, lifecycle and current null Audit metadata retain their original contracts. Changed production and 18 focused unit signatures compiled with temporary APIs; eight actual domain/reference checks passed using controlled owner fixtures. Four real PostgreSQL tests prepared for nullable links, orphan rollback and parent-delete races. Focused Maven plus compile/full-test/clean-verify targets stop before execution at uncached offline Spring Boot 4.1.1 parent. Final-head CI pending.
 
 #### HMR-073 — organization.EmployeeAssignment
 

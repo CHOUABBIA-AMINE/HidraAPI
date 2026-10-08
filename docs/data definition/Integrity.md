@@ -208,3 +208,9 @@ The existing HRA-111 same-module foreign key continues to protect
 `hidra_integrity_program.program_type_id -> hidra_integrity_catalog_entry.id`.
 HMR-050 therefore requires no new schema migration after exact-current revalidation.
 
+
+## HMR-072 execution reconciliation — 2026-10-08
+
+Nullable programme membership now fails closed to Integrity-owned records with validated forward 013 FK. Identity validates new/changed assessor, reviewer and approver references; Workflow validates the exact assessment module/type/ID and configured purpose binding. Locked transactional adapter saves preserve unchanged historical provenance and reject missing/changed owners. Methodology, title domain semantics, optional programme, lifecycle and current null Audit metadata retain their original contracts. Changed production and 18 focused unit signatures compiled with temporary APIs; eight actual domain/reference checks passed using controlled owner fixtures. Four real PostgreSQL tests prepared for nullable links, orphan rollback and parent-delete races. Focused Maven plus compile/full-test/clean-verify targets stop before execution at uncached offline Spring Boot 4.1.1 parent.
+
+Actual production verification remains the final-head CI gate.

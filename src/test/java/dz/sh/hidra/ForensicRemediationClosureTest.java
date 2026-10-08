@@ -96,6 +96,8 @@ class ForensicRemediationClosureTest {
             "dz.sh.hidra.modules.organization.application.contract.incident",
             "dz.sh.hidra.modules.topology.application.contract.incident",
             "dz.sh.hidra.modules.workflow.application.contract.incident",
+            "dz.sh.hidra.modules.workflow.application.contract.integrity",
+            "dz.sh.hidra.modules.identity.application.contract.integrity",
             "dz.sh.hidra.modules.audit.application.contract.custody",
             "dz.sh.hidra.modules.workflow.application.contract.custody",
             "dz.sh.hidra.modules.identity.application.contract.custody",

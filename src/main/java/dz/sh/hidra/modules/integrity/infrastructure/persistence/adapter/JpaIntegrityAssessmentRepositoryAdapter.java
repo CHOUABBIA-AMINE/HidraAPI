@@ -7,7 +7,7 @@
  *
  * @Name        : JpaIntegrityAssessmentRepositoryAdapter
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-08
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -24,6 +24,7 @@ import dz.sh.hidra.modules.integrity.domain.model.IntegrityAssessment;
 import dz.sh.hidra.modules.integrity.infrastructure.persistence.mapper.IntegrityPersistenceMapper;
 import dz.sh.hidra.modules.integrity.infrastructure.persistence.repository.IntegrityAssessmentJpaRepository;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -35,14 +36,20 @@ import java.util.Optional;
 public class JpaIntegrityAssessmentRepositoryAdapter implements IntegrityAssessmentRepositoryPort {
 
     private final IntegrityAssessmentJpaRepository repository;
+    private final IntegrityAssessmentReferenceValidation validation;
 
-    public JpaIntegrityAssessmentRepositoryAdapter(IntegrityAssessmentJpaRepository repository) {
+    public JpaIntegrityAssessmentRepositoryAdapter(IntegrityAssessmentJpaRepository repository, IntegrityAssessmentReferenceValidation validation) {
         this.repository = Objects.requireNonNull(repository, "IntegrityAssessmentJpaRepository must not be null.");
+        this.validation = Objects.requireNonNull(validation);
     }
 
     @Override
+    @Transactional
     public IntegrityAssessment save(IntegrityAssessment model) {
-        return IntegrityPersistenceMapper.toDomain(repository.save(IntegrityPersistenceMapper.toEntity(model)));
+        Objects.requireNonNull(model);
+        var previous=repository.findByIdForUpdate(model.id()).map(IntegrityPersistenceMapper::toDomain).orElse(null);
+        validation.validate(model,previous);
+        return IntegrityPersistenceMapper.toDomain(repository.saveAndFlush(IntegrityPersistenceMapper.toEntity(model)));
     }
 
     @Override

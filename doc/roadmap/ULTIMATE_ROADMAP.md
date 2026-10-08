@@ -3729,3 +3729,60 @@ Exact semantic message: `fix(custody): remediate semantic review CustodyTransfer
 Implementation complete; actual production Java 21/Spring/PostgreSQL/OpenAPI verification
 is pending final-head CI. No prepared test or temporary API compile is an executed
 Maven/JUnit/PostgreSQL pass. No foreign-module FK, PR, release or later batch is included.
+
+### Batch 16 HMR-072 implementation result — 2026-10-08
+
+Source HMSR-085 and current creation/domain/adapter/owner/Flyway evidence independently
+recovered before this task. Nullable programme membership now fails closed to Integrity-owned records with validated forward 013 FK. Identity validates new/changed assessor, reviewer and approver references; Workflow validates the exact assessment module/type/ID and configured purpose binding. Locked transactional adapter saves preserve unchanged historical provenance and reject missing/changed owners. Methodology, title domain semantics, optional programme, lifecycle and current null Audit metadata retain their original contracts. Changed production and 18 focused unit signatures compiled with temporary APIs; eight actual domain/reference checks passed using controlled owner fixtures. Four real PostgreSQL tests prepared for nullable links, orphan rollback and parent-delete races. Focused Maven plus compile/full-test/clean-verify targets stop before execution at uncached offline Spring Boot 4.1.1 parent.
+
+Exact semantic message: `fix(integrity): remediate semantic review IntegrityAssessment`.
+Implementation complete; actual production Java 21/Spring/PostgreSQL/OpenAPI verification
+is pending final-head CI. No prepared test or temporary API compile is an executed
+Maven/JUnit/PostgreSQL pass. No foreign-module FK, PR, release or later batch is included.
+
+## HPR-P2-008 Batch 16 final implementation disposition — 2026-10-08
+
+Accepted WORK-PREREQ-01 is implemented in three independently scoped semantic commits:
+
+| Task / source review | Exact semantic commit | Actual changed scope |
+|---|---|---|
+| HMR-069 / HMSR-081 | b3c67ecce4e09758468e428d5534a0fbf3f8659a | 25 files; work-order title/plan and owner references, forward 011 |
+| HMR-070 / HMSR-082 | 8ee951a2f35a8f194ebec823cb99df9cf20d28cf | 24 files; ticket evidence and owner references, forward 012 |
+| HMR-072 / HMSR-085 | This exact semantic commit | 20 files; programme/actor/Workflow references, forward 013 |
+
+Validation actually completed locally: changed production and all 60 prepared unit
+method signatures plus 14 PostgreSQL method signatures compiled against temporary
+framework/JUnit/Mockito/Testcontainers APIs. Twenty-eight real domain/client-reference
+behavior checks and twenty real Identity/Workflow/Audit provider checks passed using
+controlled owner repository fixtures. These 48 checks are not Maven/JUnit/Spring or
+PostgreSQL execution. Fifty changed Java files parsed; canonical headers, proxyability
+and all eight deliberate owner package exports in both architecture registries checked.
+All 123 published migrations are byte-identical to baseline; only forward 011/012/013
+are new. The exact per-task scopes and 82 canonical Markdown files validated, and
+whitespace checks passed. No current API/command/DTO/REST shape changed.
+
+Each task's focused Maven command, plus compile/full-test/clean-verify targets, was
+invoked through bash ./mvnw -o -B -q. All stopped before compilation/test execution at
+the uncached Spring Boot 4.1.1 parent. This host has Java 17 and no Docker/PostgreSQL;
+no local Java 21, database migration, Spring transaction or OpenAPI run is claimed.
+Prepared PostgreSQL cases exercise actual base-table and forward SQL, optional/missing
+parents, legacy orphan rollback and parent-delete/reference races. Full baseline Flyway
+and owner bean/architecture/runtime/contract validation remain actual production CI gates.
+
+Deployment boundary: Workflow reference contracts require actual MAINTENANCE_WORK_ORDER,
+CUSTODY_TRANSFER_TICKET or INTEGRITY_ASSESSMENT target catalogs and an active exact
+configured definition/purpose binding. No permissive configuration or approval evidence
+is seeded. Unsupported workflow starts remain denied by the existing owner registry;
+new workflow start/approval orchestration is outside this admitted reference batch.
+Unchanged historical owner references are preserved; new/changed references require real
+owner eligibility/context. Missing owners, configuration or lookup failures fail closed.
+Legacy local orphans or blank work-order titles require operator reconciliation; no
+automatic data rewriting is introduced. Approval/Audit creation nullability and each
+HMSR's explicitly unresolved taxonomy/lifecycle/temporal rules remain preserved.
+
+Totals: 46 implementations (43 CI-confirmed plus three Batch 16 CI pending), 10 STILL
+REQUIRED and one independent BLOCKED (HMR-080), 57 evaluated. Advance existing main
+once to the final three-commit head with expected-SHA protection, confirm full CI started,
+then stop for owner next/fail. No semantic verification closure before green final-head
+CI, no HPR-P2-008 final PASS, PR, tag, release, version bump or later batch execution.
+Next action after green CI and owner next: fresh preflight of the next attached batch.

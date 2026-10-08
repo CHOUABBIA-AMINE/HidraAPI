@@ -2621,3 +2621,149 @@ before compilation by uncached Boot parent 4.1.1. Canonical documentation, white
 and exact three-file scope checks passed. Publish repair, confirm new CI started, stop.
 Batch 13 remains implementation-only pending green exact-head production verification;
 HPR-P2-008 next batch remains gated. No new files, release or production behavior change.
+
+
+## HPR-P2-008 Batch 14 Risk prerequisite preflight — 2026-10-08
+
+Owner `next` selects attached "00 - Batchs Roadmap.txt" row 14: HMR-058/HMSR-069
+RiskAssessment and HMR-077/HMSR-091 RiskEvidenceLink. Exact production baseline
+d53b616de28abcd680da827e09ea7677bc7e4a31 is green in CI #590 (37762171060).
+Batch 13 HMR-078/079 and the migration-fixture repair are now CI-confirmed.
+This preflight mutates documentation only; no Batch 14 production change is claimed.
+
+### RISK-PREREQ-01 — live unregistered owner/lifecycle prerequisites
+
+AGENTS.md section 3.2.9 requires: "If an HMR reveals an unregistered prerequisite, SCC
+complication, owner-contract gap, cross-module lifecycle dependency, migration-order
+conflict, or materially larger semantic redesign, split it out and stop before mutating
+that HMR." Independently recovered HMSR-069 and HMSR-091 plus current source show:
+
+- HMR-058's original exact scope omits RiskApplicationService, assessment-scope commands/
+  ports, scoring and approval use cases, public owner contracts and migrations. There is
+  no pre-authorized assessment migration. Implementing all five obligations is materially
+  larger than adding field checks to the existing record.
+- createRiskAssessment creates only a DRAFT parent from optional scalar scopeId; no
+  RiskAssessmentScope child is created. Scope and matrix exist as JPA-owned auxiliary
+  models, but no corresponding domain/application creation path is present. The parent
+  has scoring values but no selected matrix/cell provenance. RiskMatrixJpaEntity has no
+  methodology binding from which an automatic matrix-selection rule can be inferred.
+- Generic assessment save admits arbitrary scoring, APPROVED/ACTIVE state and later
+  mutation. No actual assessment scoring or approval use case exists. Draft scoring
+  fields are intentionally optional; do not require complete scoring at creation.
+- Approval requires validated evidence, authenticated Identity/Workflow authority,
+  reviewer/approver snapshots, actual approval time, Audit evidence and immutability.
+  Existing RiskWorkflowPort/RiskAuditEventPort only expose boolean available(id); they
+  cannot attest an assessment-specific approval or record approval evidence. Existing
+  RiskRegisterAuditContract is creation-specific and must remain so.
+- HMR-077's exact scope omits its active application addition path and owner adapters.
+  RiskEvidenceLink accepts blank module/type and its JPA adapter merely saves. The
+  owner-specific Risk lookup interfaces expose only available(id), with no module/type
+  dispatch implementation wired to the active path.
+- NoopRiskExternalEvidenceResolver always returns true; source references show only
+  its declaration and interface, not a bean/caller validating the active add-evidence
+  path. It must not become the implementation of owner validation.
+- Existing exported Risk Organization/Topology contracts can be reused for assessment
+  scopes. Identity's WorkflowActorContract and Workflow's Planning-specific orchestration
+  are not Risk approval interfaces; existence-only Workflow references are insufficient.
+- Assessment approval depends on validated RiskEvidenceLink while evidence links depend
+  on an existing assessment. This is a lifecycle dependency, not a reason to create a
+  database cross-module FK or to approve an assessment before its evidence is validated.
+- Latest published migration is V20261008_003. Unexecuted V20261004_077 is backdated.
+
+### Concrete proposal for owner acceptance
+
+1. Preserve Batch 14's two semantic subjects, but explicitly admit execution order
+   HMR-077 -> HMR-058. Existing assessments permit evidence validation first; approval
+   must consume that validated boundary. Retain each source review, exhaustive exact
+   write scope, tests/status and separate exact semantic commit. HMR-058's lifecycle
+   work is reviewed as one governed aggregate change; no later batch is included.
+2. HMR-077: require nonblank evidenceModule/evidenceType/evidenceId at the domain and
+   persistence boundaries. Add a Risk-owned typed evidence registry with explicit
+   owner-provided contracts. Initial supported module/type pairs resolve these existing
+   source models (type tokens are the exact model names in this table):
+
+   | Module | Evidence type |
+   |---|---|
+   | monitoring | MonitoringEvaluation |
+   | monitoring | RiskSignal |
+   | alarm | Alarm |
+   | incident | Incident |
+   | hse | HseCase |
+   | integrity | IntegrityCase |
+   | assets | MaintenanceWorkOrder |
+   | simulation | SimulationRun |
+   | telemetry | TelemetryReading |
+   | custody | CustodyTransferTicket |
+   | documents | Document |
+   | audit | AuditEvent |
+
+   Providers execute inside source owners and return scalar existence/eligibility plus
+   available canonical snapshots. Unknown/ambiguous/unavailable module/type fails closed;
+   explicit aliases require registration, never wildcard lookup or a permissive fallback.
+   Neutral historical evidence need not be ACTIVE unless its owner already defines an
+   eligibility rule. Do not invent universal source lifecycle requirements, mandatory
+   snapshots or duplicate-link uniqueness. Route both application addition and JPA save
+   through validation; remove/deny the always-true fallback. No foreign-owner JPA import
+   into Risk and no foreign-module FK. Forward
+   V20261008_004__hmr_077_risk_evidence_identity_integrity.sql rejects invalid legacy
+   tuples without rewriting them and retains the existing assessment FK.
+3. HMR-058 creation: accept a required nonempty structured scope list, create parent
+   and authoritative child scopes atomically, and owner-resolve each supported scope.
+   Initial scope vocabulary reuses existing Organization/Topology ownership: ORGANIZATION_UNIT,
+   PIPELINE_SYSTEM, PIPELINE, FACILITY, EQUIPMENT. Other DDD examples fail closed until
+   their exact owner contracts are admitted; do not alias STATION or infer object type
+   from a bare ID. Retain optional parent scopeId as legacy convenience metadata, never
+   as a substitute for child rows. Existing scalar-only callers must supply structured
+   scopes; no synthetic legacy child is created. Add commit-time same-module protection
+   for at least one scope and deletion/reparenting races. Invalid legacy scope absence
+   requires explicit reconciliation, not inferred scope type.
+4. Require exact eligible RISK_ASSESSMENT_TYPE and the repository's preserved spelling
+   RISK_METHODLOGY. Populated inherent/residual likelihood/consequence/rating/confidence
+   references must match their exact catalog families with local nullable FK integrity.
+   Eligibility applies to new/changed use; preserve coherent historical inactive values.
+   Drafts may remain unscored and validFrom <= validTo remains the admitted time rule.
+5. Add an explicit matrix-scoring operation: caller selects inherent cell and optional
+   residual cell from actual Risk-owned matrices; persist selected cell/matrix/version
+   provenance and derive scores/ratings from those cells, never free caller numbers or
+   an assumed multiplication formula. Require a same-assessment existing control/treatment
+   context for residual scoring. Validate selected versions and preserve approved scoring
+   provenance against cell edits, deletion or matrix reversion. Do not invent a matrix/
+   methodology association absent from source; matrix choice is explicit, not inferred.
+6. Add explicit submission/approval operations using Risk-specific Identity and Workflow
+   owner contracts. Reuse configured Workflow transition authority and actual authenticated
+   actor resolution; no caller-supplied permission sets, fabricated reviewer identity,
+   automatic permission grants or universal transition matrix. Approval must attest the
+   exact Risk assessment target and an actual configured approval decision, validated
+   evidence and scopes, canonical reviewer/approver snapshots and actual approval time.
+   No generic repository save may create/transition to APPROVED/ACTIVE.
+7. Add Audit-owned RiskAssessmentAuditContract, recording sanitized scalar approval
+   evidence in the same transaction as Workflow decision/assessment persistence. Return
+   a real receipt for auditReferenceId. Missing authority/taxonomy/owner reference or Audit
+   failure aborts the operation. Provision/reuse active EVENT_TYPE/RISK_ASSESSMENT_APPROVED
+   and EVENT_CATEGORY/BUSINESS; reject conflicting/inactive taxonomy. Approved/ACTIVE
+   assessments and their scopes/scoring/evidence associations are immutable in place;
+   new review/revision records preserve the old evidence. No REQUIRES_NEW, fake historical
+   approvals or foreign-module FKs.
+8. Forward V20261008_005__hmr_058_risk_assessment_governance.sql carries local scope/
+   scoring/reference/immutability guards with legacy preflight. Forward
+   V20261008_006__provision_risk_assessment_audit_taxonomy.sql is Audit-owned. Published
+   SQL bytes remain unchanged. Before mutation, register exhaustive paths for API/command/
+   DTO/mappers, scope/scoring/approval ports and services, JPA adapters/entities/repositories,
+   source-owner contracts/providers, architecture exports, required taxonomy and focused
+   unit/PostgreSQL/Spring/concurrency tests. Existing API shapes are preserved additively
+   where feasible; generated OpenAPI compatibility is mandatory. Do not claim closure
+   based solely on field checks while governance paths remain absent.
+9. Validate every admitted owner/type and denied unknown/missing references; required
+   tuple/scope/catalog behavior; matrix-derived scores and residual context; authenticated
+   permission/target denial; successful real Audit approval; transaction rollback; approved
+   immutability and concurrent mutation/deletion. Run focused/existing/architecture,
+   full Java 21 verification and OpenAPI compatibility. Publish final semantic chain once,
+   confirm production CI started, stop until owner notification.
+
+Disposition: HMR-058/HMR-077 BLOCKED pending RISK-PREREQ-01 acceptance and exact-scope
+admission. Counts: 37 CI-confirmed implementations, 17 still required, three blocked
+(HMR-058, HMR-077, HMR-080), 57 evaluated. This preflight changes only Ultimate Roadmap
+and canonical RECONCILIATION.md. Exact supporting commit:
+`docs(risk): record Batch 14 execution preflight`. Applicable CI is documentation-only.
+Next action: accept/amend this concrete scope, then register exhaustive files and implement
+HMR-077 followed by HMR-058; no production PASS is claimed by this preflight.

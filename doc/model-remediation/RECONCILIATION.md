@@ -2802,3 +2802,34 @@ proxyability and each exact write scope validated; git diff --check passed. Prep
 22 dedicated unit methods and 17 PostgreSQL integration methods. The initial HMR-062
 unit set contained ten methods (the earlier nine-method summary undercounted it).
 No prepared test is represented as an executed Maven/JUnit/PostgreSQL pass.
+
+## HPR-P2-008 Batch 15 CI #594 repair admission — 2026-10-08
+
+CI run 37777352374 on 8d7b73ef07074379f2ceb6336938ee6f858e3fe4 failed only
+InternalReferenceIntegrityMigrationTest.installsAndValidatesEveryClassifiedSameModuleForeignKey:
+995 tests, one failure, zero errors/skips; inventory expected 551 but observed 550.
+HMR-091 forward 008 correctly replaces fk_hra111_incident_013 with
+fk_hmr091_related_incident (related_incident_id -> hidra_incident.id), but the
+inventory test includes only the three earlier Reporting replacements. Admit a
+supporting repair under AGENTS.md section 3.2.8: include the Incident replacement,
+verify its exact owner/table endpoints and validation, and assert the superseded FK
+is absent. Preserve the 551 historical obligations and every published migration.
+
+Exact supporting commit: `test(incident): reconcile HMR-091 foreign key inventory`.
+Exhaustive write scope:
+- `src/test/java/dz/sh/hidra/InternalReferenceIntegrityMigrationTest.java`
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `doc/model-remediation/RECONCILIATION.md`
+
+Validation target: `bash ./mvnw -o -B -q -Dtest=InternalReferenceIntegrityMigrationTest test`,
+Java syntax parsing, replacement inventory/source checks and git diff --check.
+No production change, new migration, PR, next batch or final PASS is authorized.
+Replacement CI must be triggered on main, then execution pauses for owner next/fail.
+
+Repair validation completed: Java syntax parsing and four-replacement inventory/forward
+SQL endpoint checks passed; the historical 551 expectation remains unchanged and no
+migration file changed. Focused Maven test invocation stopped before execution because
+the Spring Boot 4.1.1 parent is uncached in offline mode. CI #594 did execute 995 tests
+with one inventory failure; that result does not establish repaired-head success.
+Publication triggers replacement production CI; Batch 15 remains CI pending until
+the repaired head passes. No subsequent batch is started.

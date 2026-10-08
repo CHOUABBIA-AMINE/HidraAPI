@@ -59,12 +59,15 @@ class InternalReferenceIntegrityMigrationTest {
 
     private static final int NEW_HRA_111_FOREIGN_KEYS = 551;
 
-    // HMR-057/093 replace three misclassified catalog FKs with Reporting-owned lineage FKs.
-    private static final Map<String, List<String>> REPORTING_REPLACEMENTS = Map.of(
-            "hmr057_request_fk", List.of("hidra_reporting_run", "hidra_reporting_request"),
-            "hmr057_parameter_request_fk", List.of("hidra_reporting_parameter_value", "hidra_reporting_request"),
-            "hmr093_run_fk", List.of("hidra_reporting_output_artifact", "hidra_reporting_run")
+    // HMR-057/093/091 replace misclassified catalog FKs with owner-local lineage FKs.
+    private static final Map<String, ForeignKeyReplacement> SAME_MODULE_REPLACEMENTS = Map.of(
+            "hmr057_request_fk", new ForeignKeyReplacement("reporting", "hidra_reporting_run", "hidra_reporting_request"),
+            "hmr057_parameter_request_fk", new ForeignKeyReplacement("reporting", "hidra_reporting_parameter_value", "hidra_reporting_request"),
+            "hmr093_run_fk", new ForeignKeyReplacement("reporting", "hidra_reporting_output_artifact", "hidra_reporting_run"),
+            "fk_hmr091_related_incident", new ForeignKeyReplacement("incident", "hidra_incident_related_incident", "hidra_incident")
     );
+
+    private record ForeignKeyReplacement(String module, String childTable, String parentTable) {}
 
     private static final Map<String, String> MODULE_TABLE_PREFIXES = new HashMap<>();
 
@@ -125,7 +128,7 @@ class InternalReferenceIntegrityMigrationTest {
                          JOIN pg_class parent ON parent.oid = c.confrelid
                          WHERE c.contype = 'f'
                            AND (c.conname LIKE 'fk_hra111_%'
-                                OR c.conname IN ('hmr057_request_fk', 'hmr057_parameter_request_fk', 'hmr093_run_fk'))
+                                OR c.conname IN ('hmr057_request_fk', 'hmr057_parameter_request_fk', 'hmr093_run_fk', 'fk_hmr091_related_incident'))
                      ) integrity_constraints
                      ORDER BY constraint_name
                      """
@@ -139,11 +142,11 @@ class InternalReferenceIntegrityMigrationTest {
                 boolean validated = resultSet.getBoolean("validated");
 
                 String module;
-                if (REPORTING_REPLACEMENTS.containsKey(constraintName)) {
-                    List<String> endpoints = REPORTING_REPLACEMENTS.get(constraintName);
-                    assertThat(childTable).as("replacement child for %s", constraintName).isEqualTo(endpoints.get(0));
-                    assertThat(parentTable).as("replacement parent for %s", constraintName).isEqualTo(endpoints.get(1));
-                    module = "reporting";
+                if (SAME_MODULE_REPLACEMENTS.containsKey(constraintName)) {
+                    ForeignKeyReplacement endpoints = SAME_MODULE_REPLACEMENTS.get(constraintName);
+                    assertThat(childTable).as("replacement child for %s", constraintName).isEqualTo(endpoints.childTable());
+                    assertThat(parentTable).as("replacement parent for %s", constraintName).isEqualTo(endpoints.parentTable());
+                    module = endpoints.module();
                 } else {
                     module = moduleFromConstraintName(constraintName);
                 }
@@ -163,10 +166,10 @@ class InternalReferenceIntegrityMigrationTest {
         }
 
         assertThat(observed).isEqualTo(NEW_HRA_111_FOREIGN_KEYS);
-        for (String replacement : REPORTING_REPLACEMENTS.keySet()) {
+        for (String replacement : SAME_MODULE_REPLACEMENTS.keySet()) {
             assertThat(constraintExists(replacement)).as("replacement %s exists", replacement).isTrue();
         }
-        for (String superseded : List.of("fk_hra111_reporting_019", "fk_hra111_reporting_012", "fk_hra111_reporting_009")) {
+        for (String superseded : List.of("fk_hra111_reporting_019", "fk_hra111_reporting_012", "fk_hra111_reporting_009", "fk_hra111_incident_013")) {
             assertThat(constraintExists(superseded)).as("superseded %s is removed", superseded).isFalse();
         }
         assertThat(constraintExists("fk_org_district_state")).isTrue();

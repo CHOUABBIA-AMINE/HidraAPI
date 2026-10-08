@@ -1,0 +1,21 @@
+/**
+ *
+ * @Project     : HidraAPI
+ * @Product     : Hidra - Hydrocarbon Intelligence for Data, Risk, and Analytics
+ * @Author      : Abir MEDJERAB
+ * @Owner       : Sonatrach / TRC : Digitalization Initiative
+ *
+ * @Name        : package-info
+ * @CreatedOn   : 2025-06-26
+ * @UpdatedOn   : 2026-10-08
+ *
+ * @Type        : PackageInfo
+ * @Layer       : Application
+ * @Module      : topology
+ * @Package     : dz.sh.hidra.modules.topology.application.contract.integrity
+ *
+ * @Description : Validates IntegrityCase provenance through explicit owner-controlled references.
+ *
+ */
+package dz.sh.hidra.modules.topology.application.contract.integrity;
+

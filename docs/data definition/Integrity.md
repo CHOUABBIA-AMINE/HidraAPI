@@ -214,3 +214,33 @@ HMR-050 therefore requires no new schema migration after exact-current revalidat
 Nullable programme membership now fails closed to Integrity-owned records with validated forward 013 FK. Identity validates new/changed assessor, reviewer and approver references; Workflow validates the exact assessment module/type/ID and configured purpose binding. Locked transactional adapter saves preserve unchanged historical provenance and reject missing/changed owners. Methodology, title domain semantics, optional programme, lifecycle and current null Audit metadata retain their original contracts. Changed production and 18 focused unit signatures compiled with temporary APIs; eight actual domain/reference checks passed using controlled owner fixtures. Four real PostgreSQL tests prepared for nullable links, orphan rollback and parent-delete races. Focused Maven plus compile/full-test/clean-verify targets stop before execution at uncached offline Spring Boot 4.1.1 parent.
 
 Actual production verification remains the final-head CI gate.
+
+## HMR-098 — IntegrityCase executable reference contract
+
+- primaryDefectId remains optional; supplied IDs require an existing Integrity-owned
+  PipelineDefect, with a nullable ON DELETE RESTRICT FK. No defect-status or topology
+  equality restriction is adopted.
+- caseTypeId requires exact family membership from explicitly approved
+  hidra_integrity_catalog_field_policy metadata for field role CASE_TYPE. The role
+  is not a catalog_name. New/changed references require active mapping and entry.
+  No family/default metadata is automatically seeded. Used mapping/catalog identity
+  is protected; valid unchanged inactive history remains readable and writable.
+- New/changed topology linkage uses Topology's case reference export for PIPELINE,
+  SEGMENT, FACILITY, EQUIPMENT, NODE and CONNECTION. Its code snapshot is canonical
+  on fresh linkage and immutable for an unchanged historical target.
+- Optional new/changed opening actor, unit and Workflow context use their owner
+  contracts. Workflow targets the actual Integrity case and configured active binding;
+  this attests context, not approval. Neutral HSE/Incident sources and optional severity
+  remain scalar references without invented live-state/family requirements.
+- The 20-field contract, stable lifecycle, optional values and openedAt <= closedAt
+  remain. No stronger CLOSED/time, close/resolve operation, Workflow orchestration,
+  required optional reference, foreign database FK or asset action is introduced.
+- Forward 017/018 preserve all published migrations. Existing cases without approved
+  family metadata fail 018, leaving committed 017 available for approved configuration
+  and retry. Orphan/family/time inconsistency requires reconciliation from real evidence.
+  Deployments must provision approved CASE_TYPE metadata before fresh case writes.
+
+Validation: 53 actual controlled-fixture checks passed; Java source/test signatures
+compiled using temporary APIs. Thirty unit and twelve real PostgreSQL/Spring-JPA test
+methods are prepared, not executed locally. Maven verification stops before execution
+at uncached offline Spring Boot parent 4.1.1. Actual runtime verification remains CI.

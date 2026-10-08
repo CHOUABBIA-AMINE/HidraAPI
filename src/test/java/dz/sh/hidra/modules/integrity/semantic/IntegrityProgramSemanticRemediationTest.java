@@ -89,7 +89,8 @@ class IntegrityProgramSemanticRemediationTest {
                 programRepository,
                 assessmentRepository,
                 caseRepository,
-                organizationContract
+                organizationContract,
+                mock(dz.sh.hidra.modules.integrity.application.port.out.PipelineDefectRepositoryPort.class)
         );
 
         when(organizationContract.exists("org-1")).thenReturn(true);
@@ -116,7 +117,8 @@ class IntegrityProgramSemanticRemediationTest {
                 programRepository,
                 assessmentRepository,
                 caseRepository,
-                organizationContract
+                organizationContract,
+                mock(dz.sh.hidra.modules.integrity.application.port.out.PipelineDefectRepositoryPort.class)
         );
 
         when(organizationContract.exists("missing-org")).thenReturn(false);

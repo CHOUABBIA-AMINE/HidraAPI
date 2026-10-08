@@ -271,7 +271,7 @@ Each model task implements only the obligations recorded in its source HMSR sect
 | HMR-095 | HMSR-112 | audit | AuditEvent | — | organization.OrganizationUnit, workflow.WorkflowAction, workflow.WorkflowInstance, workflow.WorkflowTask | `fix(audit): remediate semantic review AuditEvent` | Implemented — CI pending |
 | HMR-096 | HMSR-113 | hse | HseClosure | — | hse.HseCase, workflow.WorkflowInstance | `fix(hse): remediate semantic review HseClosure` | Completed |
 | HMR-097 | HMSR-114 | hse | HseCorrectivePreventiveAction | — | assets.MaintenanceWorkOrder, hse.HseCase, organization.OrganizationUnit, workflow.WorkflowTask | `fix(hse): remediate semantic review HseCorrectivePreventiveAction` | Completed |
-| HMR-098 | HMSR-115 | integrity | IntegrityCase | — | hse.HseCase, incident.Incident, integrity.PipelineDefect, organization.OrganizationUnit, workflow.WorkflowInstance | `fix(integrity): remediate semantic review IntegrityCase` | Planned |
+| HMR-098 | HMSR-115 | integrity | IntegrityCase | — | hse.HseCase, incident.Incident, integrity.PipelineDefect, organization.OrganizationUnit, workflow.WorkflowInstance | `fix(integrity): remediate semantic review IntegrityCase` | Completed |
 | HMR-099 | HMSR-116 | workflow | WorkflowStateHistory | — | workflow.WorkflowAction, workflow.WorkflowInstance, workflow.WorkflowStep, workflow.WorkflowTask | `fix(workflow): remediate semantic review WorkflowStateHistory` | Planned |
 
 ### 8.8 Dependency level 7
@@ -4880,11 +4880,11 @@ uncached Boot parent 4.1.1 offline. Real Spring/JPA/PostgreSQL tests await final
 
 - Source review: `HMSR-115`
 - Exact commit: `fix(integrity): remediate semantic review IntegrityCase`
-- Status: **Planned**
+- Status: **Completed implementation — final-head CI pending**
 - SCC: —
 - Recorded upstream HMS dependencies: hse.HseCase, incident.Incident, integrity.PipelineDefect, organization.OrganizationUnit, workflow.WorkflowInstance
 - HMSR correction count: 3
-- Additive Flyway: `src/main/resources/db/migration/V20261004_098__hmr_098_integrity_integrity_case.sql`
+- Additive Flyway: `src/main/resources/db/migration/V20261008_017__hmr_098_integrity_case_catalog_field_policy.sql` and `src/main/resources/db/migration/V20261008_018__hmr_098_integrity_case_reference_integrity.sql`; the accepted canonical Batch 18 scope supersedes the original historical allowlist below.
 - Owner-contract prerequisite: Existing candidate owner contract(s): hse:src/main/java/dz/sh/hidra/modules/hse/application/port/in/HseQueryUseCase.java; hse:src/main/java/dz/sh/hidra/modules/hse/application/port/out/HseAlarmReferencePort.java; hse:src/main/java/dz/sh/hidra/modules/hse/application/port/out/HseAuditReferencePort.java; hse:src/main/java/dz/sh/hidra/modules/hse/application/port/out/HseDocumentReferencePort.java; hse:src/main/java/dz/sh/hidra/modules/hse/application/port/out/HseIncidentReferencePort.java; hse:src/main/java/dz/sh/hidra/modules/hse/application/port/out/HseLeakDetectionReferencePort.java; hse:src/main/java/dz/sh/hidra/modules/hse/application/port/out/HseTopologyReferencePort.java; hse:src/main/java/dz/sh/hidra/modules/hse/application/port/out/HseWorkflowReferencePort.java; incident:src/main/java/dz/sh/hidra/modules/incident/application/port/in/IncidentQueryUseCase.java; organization:src/main/java/dz/sh/hidra/modules/organization/application/port/in/OperationalScopeQueryUseCase.java; organization:src/main/java/dz/sh/hidra/modules/organization/application/port/in/OrganizationAdministrationQueryUseCase.java; organization:src/main/java/dz/sh/hidra/modules/organization/application/port/out/OperationalScopeTargetResolverPort.java; workflow:src/main/java/dz/sh/hidra/modules/workflow/application/port/in/WorkflowQueryUseCase.java; workflow:src/main/java/dz/sh/hidra/modules/workflow/application/port/out/WorkflowEligibilityLookupPort.java
 - Exact write allowlist:
   - `docs/data definition/Integrity.md`
@@ -5376,7 +5376,7 @@ The following are execution registrations only; they do not change any HMR's sem
 | HMRB-053 | HMR-095 | Solo | **Implemented — CI pending within accepted attached Batch 10.** AuditEvent append-only ledger, catalog families and sensitive-payload redaction/limits. |
 | HMRB-054 | HMR-096 | Solo | **Planned.** HSE closure transactional lifecycle with Workflow/Identity ownership. |
 | HMRB-055 | HMR-097 | Solo | **Planned.** HSE CAPA lifecycle plus Assets/Organization/Workflow/Identity ownership. |
-| HMRB-056 | HMR-098 | Solo | **Planned.** Integrity case family definition and multi-module owner boundaries. |
+| HMRB-056 | HMR-098 | Solo | **Completed implementation, final CI pending.** Accepted Batch 18 explicit case-family metadata, optional defect and owner reference integrity. |
 | HMRB-057 | HMR-099 | Solo | **Planned.** Workflow history append-only evidence and reference coherence. |
 | HMRB-058 | HMR-100 | Solo | **Planned.** Alarm aggregate lifecycle establishment; creation/acknowledgement/closure event atomicity. |
 | HMRB-059 | HMR-101, HMR-102 | Batch | **Implemented — CI pending within accepted attached Batch 10.** Consecutive Audit evidence records; append-only semantics plus bounded same-module/catalog validation. |
@@ -5649,3 +5649,67 @@ Current total: 49 implementations (46 CI-confirmed, three awaiting final-head CI
 seven STILL REQUIRED and one BLOCKED, 57 evaluated. HPR-P2-008 remains open.
 Next attached batch is row 18, HMR-098 / IntegrityCase, subject to fresh admission,
 green baseline and owner next. No later task executes in this envelope.
+
+### Batch 18 HMR-098 implementation result — 2026-10-08
+
+HMSR-115 recovered independently and IC-PREREQ-01 accepted. Opening commands validate
+populated optional primaryDefectId through the own repository before case persistence.
+The transactional adapter locks an existing case and validates the supplied defect via
+shared own-row lookup, explicit CASE_TYPE field-to-family metadata and exact catalog
+membership. Fresh/changed type references require active mapping and entry; no catalog
+family, ID or code is guessed or seeded. Valid unchanged inactive history retains its
+stored provenance. Unknown defect and invalid references fail closed before saving.
+
+New/changed Topology linkage resolves through a narrow owner export for PIPELINE,
+SEGMENT, FACILITY, EQUIPMENT, NODE and CONNECTION. Actual owner ID/code is used;
+unsupported namespaces and missing typed targets deny. Fresh code snapshots are canonical;
+unchanged history is never refreshed, and snapshot overwrite is rejected. Populated new/
+changed actor and unit use Identity/Organization. Workflow validates the actual Integrity
+case ID/module, active INTEGRITY_CASE target type and purpose plus configured binding.
+Context does not prove approval. Neutral optional HSE/Incident sources, optional severity,
+all 20 fields, stable statuses and current timestamp ordering retain their semantics.
+No defect status/topology equality, required optional reference, stronger CLOSED/time
+coupling, Workflow start, actor-authentication mandate or cross-module FK is invented.
+
+Forward 017 creates unseeded owner policy metadata. Forward 018 validates legacy family,
+nullable defect provenance and temporal order, adds validated ON DELETE RESTRICT local
+defect integrity and time-order reinforcement, and guards taxonomy eligibility/used mapping
+and catalog identity/family. Used taxonomy cannot be reassigned, erased or truncated.
+The existing mandatory case-type FK stays. Existing cases without approved metadata block
+018; operator-approved configuration after independently committed 017 allows retry.
+Legacy orphan/wrong-family/time errors require evidence-backed reconciliation; migrations
+never fabricate or rewrite historical records. Fresh case writes require approved mapping
+as an explicit deployment prerequisite. Noop reference resolver is not used as owner proof.
+
+Validation actually performed: all 23 changed Java files parsed. Changed production/owner
+sources, real Integrity domain/entities/mappers and 30 focused unit plus 12 PostgreSQL/
+Spring-JPA method signatures compiled on Java 17 against temporary dependency APIs.
+Fifty-three actual source-level behavior checks passed with controlled ports/repositories:
+30 domain/application/adapter and 23 real owner-provider checks. These do not constitute
+JUnit, Spring, Hibernate, database locking, rollback or PostgreSQL execution. Twenty-six
+new focused unit methods plus four existing programme methods and twelve actual PostgreSQL
+methods are prepared; constructor fixtures preserve prior programme behavior. PostgreSQL
+coverage includes optional/local reference rejection, fail-closed legacy rollback without
+fabricated repair, mapping-provisioning retry, inactive history, taxonomy protection,
+ordering, defect deletion and catalog/mapping races, and actual JPA rollback after flush.
+
+All 129 previously published SQL migrations are byte-identical to the baseline. Exact
+admitted write scope, both architecture exports, canonical Markdown validation and
+whitespace checks are performed before publication. Maven compile, focused/owner/existing/
+architecture tests, full test and clean verify were attempted via bash mvnw -o -B -q;
+all stop before compilation/test execution at uncached Spring Boot parent 4.1.1 offline
+resolution. Java 21, PostgreSQL and Docker are absent locally. Actual Java 21/full Flyway/
+Spring/PostgreSQL/architecture/OpenAPI validation remains the final-head CI obligation.
+
+| Subject | Current disposition | Evidence |
+|---|---|---|
+| HMR-098 / IntegrityCase | Completed implementation | Pending final-head CI |
+| IC-PREREQ-01 | Accepted and implemented | Explicit metadata/contracts/admitted scope |
+| HMR-080 | Blocked | Independent unresolved prerequisite |
+
+Current total: 50 implementations (49 CI-confirmed, one awaiting CI), six STILL REQUIRED
+and one BLOCKED, 57 evaluated. HPR-P2-008 is not finally closed. Exact semantic message:
+`fix(integrity): remediate semantic review IntegrityCase`. Publish once to main, confirm
+production CI starts, then stop for owner next/fail. No branch/PR/release or later task.
+Next is attached row 19, subject to fresh admission and green baseline; no numerically
+adjacent legacy subject is automatically selected by this solo envelope.

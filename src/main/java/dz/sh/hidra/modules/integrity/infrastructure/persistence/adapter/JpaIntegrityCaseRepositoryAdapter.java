@@ -35,14 +35,20 @@ import java.util.Optional;
 public class JpaIntegrityCaseRepositoryAdapter implements IntegrityCaseRepositoryPort {
 
     private final IntegrityCaseJpaRepository repository;
+    private final IntegrityCaseReferenceValidation references;
 
-    public JpaIntegrityCaseRepositoryAdapter(IntegrityCaseJpaRepository repository) {
+    public JpaIntegrityCaseRepositoryAdapter(IntegrityCaseJpaRepository repository, IntegrityCaseReferenceValidation references) {
         this.repository = Objects.requireNonNull(repository, "IntegrityCaseJpaRepository must not be null.");
+        this.references=Objects.requireNonNull(references);
     }
 
     @Override
+    @org.springframework.transaction.annotation.Transactional
     public IntegrityCase save(IntegrityCase model) {
-        return IntegrityPersistenceMapper.toDomain(repository.save(IntegrityPersistenceMapper.toEntity(model)));
+        Objects.requireNonNull(model);
+        var previous=repository.findByIdForUpdate(model.id()).map(IntegrityPersistenceMapper::toDomain).orElse(null);
+        var validated=references.validate(model,previous);
+        return IntegrityPersistenceMapper.toDomain(repository.saveAndFlush(IntegrityPersistenceMapper.toEntity(validated)));
     }
 
     @Override

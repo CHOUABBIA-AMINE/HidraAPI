@@ -124,7 +124,7 @@ No `party.application.contract.planning` package exists in the exact current tre
 | HMR-095 | HMSR-112 | audit.AuditEvent | COMPLETED — CI #584 GREEN | Required source/target module and target type, active exact event/category/optional severity/reason families, bounded sanitized payload/free text and persist/flush insertion enforced. Forward V20261007_007 adds optional catalog FKs, family guards and immutable event UPDATE/DELETE denial. Five focused and four added PostgreSQL/JPA/concurrency checks prepared; local focused Maven blocked by uncached Boot parent; CI #584 passed. |
 | HMR-096 | HMSR-113 | hse.HseClosure | IMPLEMENTED — CI #597 GREEN | Accepted Batch 17 implementation passed full Java 21/PostgreSQL/OpenAPI CI on cfb3681ef1c79b4416336a3533cbc0599b4fd6b2. |
 | HMR-097 | HMSR-114 | hse.HseCorrectivePreventiveAction | IMPLEMENTED — CI #597 GREEN | Accepted Batch 17 implementation passed full Java 21/PostgreSQL/OpenAPI CI on cfb3681ef1c79b4416336a3533cbc0599b4fd6b2. |
-| HMR-098 | HMSR-115 | integrity.IntegrityCase | BLOCKED — IC-PREREQ-01 | Batch 18 explicit case-family mapping, real typed owner contracts and exhaustive scope admission pending; no production mutation. |
+| HMR-098 | HMSR-115 | integrity.IntegrityCase | IMPLEMENTED — FINAL CI PENDING | Accepted IC-PREREQ-01: optional defect lookup/FK, explicit case-family metadata, typed owner validation and forward 017/018; final Java 21/PostgreSQL/OpenAPI CI pending. |
 | HMR-099 | HMSR-116 | workflow.WorkflowStateHistory | COMPLETED — CI #581 GREEN | Mandatory status/actor display evidence fails fast. History persistence inserts and flushes without upsert; optional task/step/action/reason references are checked for instance/definition and action evidence coherence. Database guards prohibit update/delete/truncate. Four focused behavior checks passed with temporary stubs; ten PostgreSQL/Hibernate cases added for CI, not locally executed. |
 | HMR-100 | HMSR-117 | alarm.Alarm | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-101 | HMSR-118 | audit.AuditAccessRecord | COMPLETED — CI #584 GREEN | Access records use persist/flush without merge; populated optional AuditEvent/export IDs must exist. Forward V20261007_008 supplies nullable local FKs and UPDATE/DELETE denial. Three focused and four added PostgreSQL/JPA/concurrency/orphan checks prepared; local focused Maven blocked by uncached Boot parent; CI #584 passed. |
@@ -3722,3 +3722,77 @@ workflow validation. Exact two-file scope and unchanged production/tests/CI/POM/
 migrations were verified; git diff --check passed. Forty-two proposed execution paths
 are explicitly registered, including forward 017/018 and required constructor fixtures.
 No production implementation or Maven/PostgreSQL test is claimed by this preflight.
+
+## HPR-P2-008 Batch 18 accepted execution envelope — 2026-10-08
+
+Owner next accepts IC-PREREQ-01 on preflight 15a97be510bb227536c5682be17f703e14d7fe8d.
+Main still matches that head; Documentation CI #101 (37791702797) is green. Production
+remains byte-identical to cfb3681ef1c79b4416336a3533cbc0599b4fd6b2, full CI #597 green.
+The proposal above and its exhaustive 42-path scope are now admitted for HMR-098 alone.
+Exact semantic message and forward 017/018 stay registered; no published SQL, foreign
+FK, later HMR, branch, PR or release is admitted. Use only needed paths. Record actual
+local verification and final-head CI start before stopping for owner next/fail.
+
+### Batch 18 HMR-098 implementation result — 2026-10-08
+
+HMSR-115 recovered independently and IC-PREREQ-01 accepted. Opening commands validate
+populated optional primaryDefectId through the own repository before case persistence.
+The transactional adapter locks an existing case and validates the supplied defect via
+shared own-row lookup, explicit CASE_TYPE field-to-family metadata and exact catalog
+membership. Fresh/changed type references require active mapping and entry; no catalog
+family, ID or code is guessed or seeded. Valid unchanged inactive history retains its
+stored provenance. Unknown defect and invalid references fail closed before saving.
+
+New/changed Topology linkage resolves through a narrow owner export for PIPELINE,
+SEGMENT, FACILITY, EQUIPMENT, NODE and CONNECTION. Actual owner ID/code is used;
+unsupported namespaces and missing typed targets deny. Fresh code snapshots are canonical;
+unchanged history is never refreshed, and snapshot overwrite is rejected. Populated new/
+changed actor and unit use Identity/Organization. Workflow validates the actual Integrity
+case ID/module, active INTEGRITY_CASE target type and purpose plus configured binding.
+Context does not prove approval. Neutral optional HSE/Incident sources, optional severity,
+all 20 fields, stable statuses and current timestamp ordering retain their semantics.
+No defect status/topology equality, required optional reference, stronger CLOSED/time
+coupling, Workflow start, actor-authentication mandate or cross-module FK is invented.
+
+Forward 017 creates unseeded owner policy metadata. Forward 018 validates legacy family,
+nullable defect provenance and temporal order, adds validated ON DELETE RESTRICT local
+defect integrity and time-order reinforcement, and guards taxonomy eligibility/used mapping
+and catalog identity/family. Used taxonomy cannot be reassigned, erased or truncated.
+The existing mandatory case-type FK stays. Existing cases without approved metadata block
+018; operator-approved configuration after independently committed 017 allows retry.
+Legacy orphan/wrong-family/time errors require evidence-backed reconciliation; migrations
+never fabricate or rewrite historical records. Fresh case writes require approved mapping
+as an explicit deployment prerequisite. Noop reference resolver is not used as owner proof.
+
+Validation actually performed: all 23 changed Java files parsed. Changed production/owner
+sources, real Integrity domain/entities/mappers and 30 focused unit plus 12 PostgreSQL/
+Spring-JPA method signatures compiled on Java 17 against temporary dependency APIs.
+Fifty-three actual source-level behavior checks passed with controlled ports/repositories:
+30 domain/application/adapter and 23 real owner-provider checks. These do not constitute
+JUnit, Spring, Hibernate, database locking, rollback or PostgreSQL execution. Twenty-six
+new focused unit methods plus four existing programme methods and twelve actual PostgreSQL
+methods are prepared; constructor fixtures preserve prior programme behavior. PostgreSQL
+coverage includes optional/local reference rejection, fail-closed legacy rollback without
+fabricated repair, mapping-provisioning retry, inactive history, taxonomy protection,
+ordering, defect deletion and catalog/mapping races, and actual JPA rollback after flush.
+
+All 129 previously published SQL migrations are byte-identical to the baseline. Exact
+admitted write scope, both architecture exports, canonical Markdown validation and
+whitespace checks are performed before publication. Maven compile, focused/owner/existing/
+architecture tests, full test and clean verify were attempted via bash mvnw -o -B -q;
+all stop before compilation/test execution at uncached Spring Boot parent 4.1.1 offline
+resolution. Java 21, PostgreSQL and Docker are absent locally. Actual Java 21/full Flyway/
+Spring/PostgreSQL/architecture/OpenAPI validation remains the final-head CI obligation.
+
+| Subject | Current disposition | Evidence |
+|---|---|---|
+| HMR-098 / IntegrityCase | Completed implementation | Pending final-head CI |
+| IC-PREREQ-01 | Accepted and implemented | Explicit metadata/contracts/admitted scope |
+| HMR-080 | Blocked | Independent unresolved prerequisite |
+
+Current total: 50 implementations (49 CI-confirmed, one awaiting CI), six STILL REQUIRED
+and one BLOCKED, 57 evaluated. HPR-P2-008 is not finally closed. Exact semantic message:
+`fix(integrity): remediate semantic review IntegrityCase`. Publish once to main, confirm
+production CI starts, then stop for owner next/fail. No branch/PR/release or later task.
+Next is attached row 19, subject to fresh admission and green baseline; no numerically
+adjacent legacy subject is automatically selected by this solo envelope.

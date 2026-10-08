@@ -249,7 +249,7 @@ P1 is **CLOSED** only when this closure SHA passes the repository's full exact-h
 | HPR-P2-005 | COMPLETED — deterministic OpenAPI 3.1 contract version-controlled from exact executable P1 closure CI artifact; canonical API overview, conventions, authentication/authorization, error-model limitation, versioning/compatibility and OpenAPI-governance documents established; shared machine-readable error envelope remains explicitly NOT ESTABLISHED | API | Code/Doc | Generate and version-control deterministic `doc/api/openapi.yaml`; create API overview, conventions, auth, error, versioning/compatibility and OpenAPI governance docs. | `docs(api): establish versioned api contract` | HPR-P1-008 |
 | HPR-P2-006 | COMPLETED — canonical current database architecture, schema ownership, Flyway policy and generated persistence dictionary established from 82 current Flyway migrations, 469 current module JPA persistence entities, production configuration and closed P1 PostgreSQL/backup evidence; stale pre-closure DB stage documents retained as historical provenance | Database | Doc | Create database architecture, schema ownership, Flyway policy and current generated data dictionary from current migrations/JPA evidence. | `docs(database): establish canonical database documentation` | HPR-P2-001 |
 | HPR-P2-007 | COMPLETED — exact-source reconciliation established: HMR-005 corrected to completed, HMR-009 confirmed completed/stale carry-over removed, HMR-054 historical blocker resolved by current Party→Topology contract, HMR-050..106 reconciled to 56 still-required + 1 blocked (HMR-080), 0 superseded; legacy roadmap preserved as history | Semantic Remediation | Code/Doc | Inventory unresolved HMR/HMSR obligations against exact current source; mark each as completed, still required, blocked, or superseded with evidence. | `docs(model-remediation): reconcile remaining semantic obligations` | HPR-P2-003 |
-| HPR-P2-008 | IN PROGRESS — 49 semantic implementations verified through CI #597; six STILL REQUIRED and two BLOCKED (HMR-080, HMR-098/IC-PREREQ-01), 57 evaluated. Batch 18 solo preflight prepared; no final closure. | Semantic Remediation | Code | Execute still-required semantic remediation in dependency order using revalidated HMSR obligations; do not restart completed HMRs without regression evidence. | `fix(model): continue reconciled semantic remediation` | HPR-P2-007 |
+| HPR-P2-008 | IN PROGRESS — 50 implementations (49 verified through CI #597, HMR-098 pending final-head CI); six STILL REQUIRED and one BLOCKED HMR-080, 57 evaluated. IC-PREREQ-01 implemented; no final closure. | Semantic Remediation | Code | Execute still-required semantic remediation in dependency order using revalidated HMSR obligations; do not restart completed HMRs without regression evidence. | `fix(model): continue reconciled semantic remediation` | HPR-P2-007 |
 | HPR-P2-009 | PENDING | Semantic Remediation | Doc | Transfer permanent semantic decisions from legacy review/roadmaps into `doc/domain/` and `doc/modules/`, then preserve legacy files as execution history. | `docs(model-remediation): canonicalize semantic decisions` | HPR-P2-008 | IN PROGRESS — HMR-050 and attached Batches 1..6 implemented; 17 completed, 39 still-required HMRs and HMR-080 blocked in the HMR-050..106 register. Baseline production CI #576 passed; final Batch 6 CI pending. Local full Maven validation blocked by Maven Central DNS/uncached parent, Java 17 and absent Docker. | Semantic Remediation | Code | Execute still-required semantic remediation in dependency order using revalidated HMSR obligations; do not restart completed HMRs without regression evidence. | `fix(model): continue reconciled semantic remediation` | HPR-P2-007 |
 | HPR-P2-010 | PENDING | Data Governance | Doc | Create data governance, retention/archival, provenance and legacy-data migration documents without inventing retention values. | `docs(data): establish data governance baseline` | HPR-P2-001 |
 | HPR-P2-011 | PENDING | Testing | Doc | Create test strategy, architecture testing, database testing, API testing and requirements traceability documents tied to executable evidence. | `docs(testing): establish verification documentation` | HPR-P2-002..006 |
@@ -4349,3 +4349,77 @@ workflow validation. Exact two-file scope and unchanged production/tests/CI/POM/
 migrations were verified; git diff --check passed. Forty-two proposed execution paths
 are explicitly registered, including forward 017/018 and required constructor fixtures.
 No production implementation or Maven/PostgreSQL test is claimed by this preflight.
+
+## HPR-P2-008 Batch 18 accepted execution envelope — 2026-10-08
+
+Owner next accepts IC-PREREQ-01 on preflight 15a97be510bb227536c5682be17f703e14d7fe8d.
+Main still matches that head; Documentation CI #101 (37791702797) is green. Production
+remains byte-identical to cfb3681ef1c79b4416336a3533cbc0599b4fd6b2, full CI #597 green.
+The proposal above and its exhaustive 42-path scope are now admitted for HMR-098 alone.
+Exact semantic message and forward 017/018 stay registered; no published SQL, foreign
+FK, later HMR, branch, PR or release is admitted. Use only needed paths. Record actual
+local verification and final-head CI start before stopping for owner next/fail.
+
+### Batch 18 HMR-098 implementation result — 2026-10-08
+
+HMSR-115 recovered independently and IC-PREREQ-01 accepted. Opening commands validate
+populated optional primaryDefectId through the own repository before case persistence.
+The transactional adapter locks an existing case and validates the supplied defect via
+shared own-row lookup, explicit CASE_TYPE field-to-family metadata and exact catalog
+membership. Fresh/changed type references require active mapping and entry; no catalog
+family, ID or code is guessed or seeded. Valid unchanged inactive history retains its
+stored provenance. Unknown defect and invalid references fail closed before saving.
+
+New/changed Topology linkage resolves through a narrow owner export for PIPELINE,
+SEGMENT, FACILITY, EQUIPMENT, NODE and CONNECTION. Actual owner ID/code is used;
+unsupported namespaces and missing typed targets deny. Fresh code snapshots are canonical;
+unchanged history is never refreshed, and snapshot overwrite is rejected. Populated new/
+changed actor and unit use Identity/Organization. Workflow validates the actual Integrity
+case ID/module, active INTEGRITY_CASE target type and purpose plus configured binding.
+Context does not prove approval. Neutral optional HSE/Incident sources, optional severity,
+all 20 fields, stable statuses and current timestamp ordering retain their semantics.
+No defect status/topology equality, required optional reference, stronger CLOSED/time
+coupling, Workflow start, actor-authentication mandate or cross-module FK is invented.
+
+Forward 017 creates unseeded owner policy metadata. Forward 018 validates legacy family,
+nullable defect provenance and temporal order, adds validated ON DELETE RESTRICT local
+defect integrity and time-order reinforcement, and guards taxonomy eligibility/used mapping
+and catalog identity/family. Used taxonomy cannot be reassigned, erased or truncated.
+The existing mandatory case-type FK stays. Existing cases without approved metadata block
+018; operator-approved configuration after independently committed 017 allows retry.
+Legacy orphan/wrong-family/time errors require evidence-backed reconciliation; migrations
+never fabricate or rewrite historical records. Fresh case writes require approved mapping
+as an explicit deployment prerequisite. Noop reference resolver is not used as owner proof.
+
+Validation actually performed: all 23 changed Java files parsed. Changed production/owner
+sources, real Integrity domain/entities/mappers and 30 focused unit plus 12 PostgreSQL/
+Spring-JPA method signatures compiled on Java 17 against temporary dependency APIs.
+Fifty-three actual source-level behavior checks passed with controlled ports/repositories:
+30 domain/application/adapter and 23 real owner-provider checks. These do not constitute
+JUnit, Spring, Hibernate, database locking, rollback or PostgreSQL execution. Twenty-six
+new focused unit methods plus four existing programme methods and twelve actual PostgreSQL
+methods are prepared; constructor fixtures preserve prior programme behavior. PostgreSQL
+coverage includes optional/local reference rejection, fail-closed legacy rollback without
+fabricated repair, mapping-provisioning retry, inactive history, taxonomy protection,
+ordering, defect deletion and catalog/mapping races, and actual JPA rollback after flush.
+
+All 129 previously published SQL migrations are byte-identical to the baseline. Exact
+admitted write scope, both architecture exports, canonical Markdown validation and
+whitespace checks are performed before publication. Maven compile, focused/owner/existing/
+architecture tests, full test and clean verify were attempted via bash mvnw -o -B -q;
+all stop before compilation/test execution at uncached Spring Boot parent 4.1.1 offline
+resolution. Java 21, PostgreSQL and Docker are absent locally. Actual Java 21/full Flyway/
+Spring/PostgreSQL/architecture/OpenAPI validation remains the final-head CI obligation.
+
+| Subject | Current disposition | Evidence |
+|---|---|---|
+| HMR-098 / IntegrityCase | Completed implementation | Pending final-head CI |
+| IC-PREREQ-01 | Accepted and implemented | Explicit metadata/contracts/admitted scope |
+| HMR-080 | Blocked | Independent unresolved prerequisite |
+
+Current total: 50 implementations (49 CI-confirmed, one awaiting CI), six STILL REQUIRED
+and one BLOCKED, 57 evaluated. HPR-P2-008 is not finally closed. Exact semantic message:
+`fix(integrity): remediate semantic review IntegrityCase`. Publish once to main, confirm
+production CI starts, then stop for owner next/fail. No branch/PR/release or later task.
+Next is attached row 19, subject to fresh admission and green baseline; no numerically
+adjacent legacy subject is automatically selected by this solo envelope.

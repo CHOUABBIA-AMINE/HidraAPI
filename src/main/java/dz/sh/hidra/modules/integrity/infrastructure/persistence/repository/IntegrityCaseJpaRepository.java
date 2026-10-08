@@ -28,4 +28,8 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface IntegrityCaseJpaRepository extends JpaRepository<IntegrityCaseJpaEntity, String> {
+    @org.springframework.data.jpa.repository.Lock(jakarta.persistence.LockModeType.PESSIMISTIC_WRITE)
+    @org.springframework.data.jpa.repository.Query("select c from IntegrityCaseJpaEntity c where c.id = :id")
+    java.util.Optional<IntegrityCaseJpaEntity> findByIdForUpdate(@org.springframework.data.repository.query.Param("id") String id);
+
 }

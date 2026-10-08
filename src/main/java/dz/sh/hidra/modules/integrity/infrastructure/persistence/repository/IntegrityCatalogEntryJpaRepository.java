@@ -28,4 +28,8 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface IntegrityCatalogEntryJpaRepository extends JpaRepository<IntegrityCatalogEntryJpaEntity, String> {
+    @org.springframework.data.jpa.repository.Lock(jakarta.persistence.LockModeType.PESSIMISTIC_READ)
+    @org.springframework.data.jpa.repository.Query("select c from IntegrityCatalogEntryJpaEntity c where c.id = :id")
+    java.util.Optional<IntegrityCatalogEntryJpaEntity> findByIdForShare(@org.springframework.data.repository.query.Param("id") String id);
+
 }

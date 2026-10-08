@@ -50,8 +50,9 @@ import java.util.Objects;
  * Application service for integrity program, assessment, and case workflows.
  */
 @Service
-public final class IntegrityApplicationService implements CreateIntegrityProgramUseCase, CreateIntegrityAssessmentUseCase, OpenIntegrityCaseUseCase {
+public class IntegrityApplicationService implements CreateIntegrityProgramUseCase, CreateIntegrityAssessmentUseCase, OpenIntegrityCaseUseCase {
 
+    private final dz.sh.hidra.modules.integrity.application.port.out.PipelineDefectRepositoryPort defects;
     private final IntegrityProgramRepositoryPort programRepositoryPort;
     private final IntegrityAssessmentRepositoryPort assessmentRepositoryPort;
     private final IntegrityCaseRepositoryPort caseRepositoryPort;
@@ -61,8 +62,10 @@ public final class IntegrityApplicationService implements CreateIntegrityProgram
             IntegrityProgramRepositoryPort programRepositoryPort,
             IntegrityAssessmentRepositoryPort assessmentRepositoryPort,
             IntegrityCaseRepositoryPort caseRepositoryPort,
-            IntegrityOrganizationUnitReferenceContract organizationUnitReferenceContract
+            IntegrityOrganizationUnitReferenceContract organizationUnitReferenceContract,
+            dz.sh.hidra.modules.integrity.application.port.out.PipelineDefectRepositoryPort defects
     ) {
+        this.defects=Objects.requireNonNull(defects);
         this.programRepositoryPort = Objects.requireNonNull(programRepositoryPort, "Integrity program repository port must not be null.");
         this.assessmentRepositoryPort = Objects.requireNonNull(assessmentRepositoryPort, "Integrity assessment repository port must not be null.");
         this.caseRepositoryPort = Objects.requireNonNull(caseRepositoryPort, "Integrity case repository port must not be null.");
@@ -132,8 +135,12 @@ public final class IntegrityApplicationService implements CreateIntegrityProgram
     }
 
     @Override
+    @org.springframework.transaction.annotation.Transactional
     public IntegrityCaseSummaryDto openIntegrityCase(OpenIntegrityCaseCommand command) {
         Objects.requireNonNull(command, "Open integrity case command must not be null.");
+        if(command.primaryDefectId()!=null && !command.primaryDefectId().isBlank()
+                && defects.findById(command.primaryDefectId().trim()).filter(d -> command.primaryDefectId().trim().equals(d.id())).isEmpty())
+            throw new dz.sh.hidra.modules.integrity.domain.exception.InvalidIntegrityValueException("Known optional primary defect required before opening an IntegrityCase.");
         Instant now = Instant.now();
         IntegrityCase integrityCase = new IntegrityCase(
                 IntegrityId.newId().value(),

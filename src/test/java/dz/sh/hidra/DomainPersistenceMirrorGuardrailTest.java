@@ -7,14 +7,14 @@
  *
  * @Name        : DomainPersistenceMirrorGuardrailTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-10-08
  *
  * @Type        : Test
  * @Layer       : Architecture Test
  * @Module      : repository
  * @Package     : dz.sh.hidra
  *
- * @Description : Protects the HRA-060/HRA-061 domain-versus-persistence mirror disposition.
+ * @Description : Protects the historical mirror disposition and exact approved live-domain reclassifications.
  *
  */
 package dz.sh.hidra;
@@ -39,6 +39,7 @@ class DomainPersistenceMirrorGuardrailTest {
     private static final Path CLASSIFICATION =
             Path.of("docs/architecture/domain-persistence-mirror-classification.md");
     private static final Path MODULES_ROOT = Path.of("src/main/java/dz/sh/hidra/modules");
+    private static final Pair ALARM_LIFECYCLE_EVENT = new Pair("alarm", "AlarmLifecycleEvent");
 
     private static final Pattern MODULE_LINE =
             Pattern.compile("(?m)^- \\*\\*([a-z]+) \\(\\d+\\):\\*\\* (.+)$");
@@ -47,19 +48,26 @@ class DomainPersistenceMirrorGuardrailTest {
     @Test
     void hra061RetiredMirrorsStayRetiredAndPersistenceModelsStayOwnedByInfrastructure() throws IOException {
         String markdown = Files.readString(CLASSIFICATION);
-        List<Pair> realDomain = pairs(
+        List<Pair> realDomain = new ArrayList<>(pairs(
                 markdown,
                 "## 6. Pair-by-pair REAL_DOMAIN disposition",
                 "## 7. Pair-by-pair READ_PERSISTENCE_MODEL disposition"
-        );
-        List<Pair> retired = pairs(
+        ));
+        List<Pair> retired = new ArrayList<>(pairs(
                 markdown,
                 "## 7. Pair-by-pair READ_PERSISTENCE_MODEL disposition",
                 "## 8. Boundary-model disposition"
-        );
+        ));
 
         assertEquals(51, realDomain.size(), "HRA-060 REAL_DOMAIN inventory drifted.");
         assertEquals(343, retired.size(), "HRA-060 READ_PERSISTENCE_MODEL inventory drifted.");
+
+        // Accepted ALRM-PREREQ-01 restored this one split; the historical cohort stays intact.
+        assertTrue(retired.remove(ALARM_LIFECYCLE_EVENT), "Historical AlarmLifecycleEvent entry is missing.");
+        assertTrue(!realDomain.contains(ALARM_LIFECYCLE_EVENT), "Historical cohort contains a duplicate reclassification.");
+        realDomain.add(ALARM_LIFECYCLE_EVENT);
+        assertEquals(52, realDomain.size(), "Effective REAL_DOMAIN inventory drifted.");
+        assertEquals(342, retired.size(), "Effective retired inventory drifted.");
 
         List<String> violations = new ArrayList<>();
         Map<String, String> mapperSources = new HashMap<>();
@@ -80,6 +88,22 @@ class DomainPersistenceMirrorGuardrailTest {
         for (Pair pair : realDomain) {
             mustExist(violations, domainPath(pair), "REAL_DOMAIN record");
             mustExist(violations, entityPath(pair), "REAL_DOMAIN JPA entity");
+        }
+
+        mustExist(violations, portPath(ALARM_LIFECYCLE_EVENT), "approved lifecycle event port");
+        mustExist(violations, adapterPath(ALARM_LIFECYCLE_EVENT), "approved lifecycle event adapter");
+        mustExist(violations, repositoryPath(ALARM_LIFECYCLE_EVENT), "approved lifecycle event repository");
+        String alarmMapper = mapperSources.computeIfAbsent("alarm", DomainPersistenceMirrorGuardrailTest::mapperSource);
+        if (!Pattern.compile("\\bAlarmLifecycleEvent\\b").matcher(alarmMapper).find()) {
+            violations.add("approved lifecycle event mapper is missing");
+        }
+
+        Path policy = moduleRoot(ALARM_LIFECYCLE_EVENT).resolve("domain/policy/AlarmShelvingPolicy.java");
+        mustExist(violations, policy, "live lifecycle event domain consumer");
+        if (Files.isRegularFile(policy) && !Pattern.compile(
+                "restorationState\\s*\\(\\s*Alarm\\s+\\w+\\s*,\\s*AlarmLifecycleEvent\\s+\\w+\\s*\\)"
+        ).matcher(Files.readString(policy)).find()) {
+            violations.add("AlarmShelvingPolicy no longer consumes authoritative lifecycle event evidence");
         }
 
         assertTrue(violations.isEmpty(), () -> "HRA-061 mirror disposition drifted: " + violations);

@@ -5358,3 +5358,65 @@ Publish the four independent chained commits by advancing main once under expect
 head 05ec5a5866930e62bb5e70c82606b445ae168ef1, compare every immutable tree/blob
 and confirm production CI starts, then STOP. Do not wait for completion. Owner Next
 checks that CI; Fail diagnoses and repairs only its responsible scope before advancing.
+
+## HPR-P2-008 Batch 20 CI #601 repair admission — 2026-10-08
+
+Owner Next checks the published Batch 20 gate; it does not select a later batch.
+Main remains `3841da6332d8abda073c50871e4c28348cf3f4df`. Production CI #601
+(run 37810221486) FAILED: 1,232 tests, one failure, zero errors/skips. Documentation
+CI #108 passed. The sole failure is DomainPersistenceMirrorGuardrailTest: historical
+HRA-061 retirement still prohibits AlarmLifecycleEvent's record/port/adapter/mapper.
+Accepted ALRM-PREREQ-01 explicitly restored that split; the current
+AlarmShelvingPolicy.restorationState consumes the domain event as authoritative
+previous-state evidence. This now satisfies the classification's REAL_DOMAIN rule.
+Do not delete the accepted lifecycle machinery or broadly disable the guard.
+
+Admit a supporting responsible-scope repair under AGENTS.md section 3.2.8.
+Preserve the historical 51/343 classification and its 394-member cohort verbatim;
+apply exactly one live reclassification, alarm.AlarmLifecycleEvent, to effective
+52 REAL_DOMAIN / 342 retired pairs. Require its domain/JPA split, port, adapter,
+repository, mapper and live shelving-domain consumer. All other retirement guards
+remain enforced. This is inventory reconciliation, not a lifecycle redesign.
+
+Exact supporting commit: `test(alarm): reconcile lifecycle event mirror disposition`.
+Exhaustive write scope:
+
+- `src/test/java/dz/sh/hidra/DomainPersistenceMirrorGuardrailTest.java`
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `doc/model-remediation/RECONCILIATION.md`
+
+Validation: focused mirror/architecture/forensic tests, full test and clean verify;
+historical/effective inventory and negative mutation probes; git diff --check and
+canonical Markdown checks. Reassess Java/Maven/DNS/Docker availability. No production
+code, published migration, legacy classification, API, POM or workflow change is
+admitted. Keep all four independent semantic commits. Batch 20 remains implemented
+but NOT CI-confirmed; 52 confirmed + four awaiting repaired-head CI + HMR-080 blocked.
+HPR-P2-008 remains open, version 0.6.0-SNAPSHOT unchanged, no physical-survivability
+or release claim. Publish once under the current-head lease, verify the exact tree,
+confirm replacement production CI starts, then STOP without waiting for completion.
+
+### Repair validation and publication disposition
+
+Fresh local commands all exited 1 before compilation/test execution:
+`bash mvnw -B -q -Dtest=DomainPersistenceMirrorGuardrailTest test`;
+`bash mvnw -B -q -Dtest=DomainPersistenceMirrorGuardrailTest,ArchitectureGuardrailTest,ForensicRemediationClosureTest test`;
+`bash mvnw -B -q test`; `bash mvnw -B -q clean verify`.
+Spring Boot parent 4.1.1 is uncached; repo.maven.apache.org has temporary DNS failure.
+Only Java 17 is available; Java 21 and Docker remain absent. No local Maven/JUnit/
+Spring/PostgreSQL/ArchUnit pass or repaired production success is claimed.
+
+The actual guard body compiled and executed via the installed Java 17 compiler
+module with temporary assertion/annotation stubs outside the repository. The sole
+compatibility substitution in that temporary copy was getFirst() -> get(0);
+production test source retains Java 21 getFirst(). Positive historical/effective
+inventory, all pair paths, mapper and live domain-consumer checks passed. Three
+independent copied-fixture negative probes rejected unrelated retired AlarmComment
+revival, missing AlarmShelvingPolicy and missing approved lifecycle event port.
+This is limited source/guard logic evidence, not repository JUnit execution.
+
+Exact three-file scope and git diff --check passed; all 82 canonical Markdown files
+passed nonempty/conflict-marker checks. Historical classification and the entire
+production/migration/API/POM/workflow tree remain unchanged. Publish the registered
+supporting repair with parent/lease 3841da6332d8abda073c50871e4c28348cf3f4df.
+Keep 52 confirmed + four implementations pending repaired-head CI; do not advance
+to another batch. Observe replacement production CI start, then STOP.

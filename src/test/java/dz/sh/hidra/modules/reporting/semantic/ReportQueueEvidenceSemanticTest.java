@@ -34,7 +34,11 @@ class ReportQueueEvidenceSemanticTest {
     final ReportParameterValueJpaRepository values=mock(ReportParameterValueJpaRepository.class);
     JpaReportQueueEvidenceAdapter adapter(){return new JpaReportQueueEvidenceAdapter(templates,versions,definitions,values);}
     ReportParameterDefinitionJpaEntity required(){var d=mock(ReportParameterDefinitionJpaEntity.class);when(d.active()).thenReturn(true);when(d.required()).thenReturn(true);when(d.reportDefinitionId()).thenReturn("definition");when(d.id()).thenReturn("parameter");when(d.code()).thenReturn("code");return d;}
-    ReportParameterValueJpaEntity value(ReportValueType type){var v=mock(ReportParameterValueJpaEntity.class);when(v.reportRequestId()).thenReturn("request");when(v.parameterDefinitionId()).thenReturn("parameter");when(v.parameterCode()).thenReturn("code");when(v.valueType()).thenReturn(type);return v;}
+    ReportParameterValueJpaEntity value(ReportValueType type){
+        // Preserve real absent-field semantics: Mockito's default for nullable Boolean is false.
+        return spy(new ReportParameterValueJpaEntity("value", "request", "parameter", "code", type,
+                null, null, null, null, null, null, java.time.Instant.EPOCH));
+    }
     @Test void templateRequiresActiveVersionActiveTemplateAndDefinitionLineage(){
         var v=mock(ReportTemplateVersionJpaEntity.class);var t=mock(ReportTemplateJpaEntity.class);
         when(versions.findById("version")).thenReturn(Optional.of(v));when(v.status()).thenReturn(ReportTemplateVersionStatus.ACTIVE);when(v.reportTemplateId()).thenReturn("template");
@@ -56,8 +60,8 @@ class ReportQueueEvidenceSemanticTest {
         var requiredDefinition = required();
         when(definitions.findAll()).thenReturn(List.of(requiredDefinition));
         for(var type:ReportValueType.values()){
-            var v=value(type);switch(type){case TEXT,REFERENCE->when(v.valueText()).thenReturn("value");case NUMBER->when(v.valueNumber()).thenReturn(BigDecimal.ZERO);case BOOLEAN->when(v.valueBoolean()).thenReturn(false);case DATE->when(v.valueDate()).thenReturn(java.time.LocalDate.of(2026,10,7));case DATE_TIME->when(v.valueDateTime()).thenReturn(java.time.Instant.EPOCH);case JSON->when(v.valueJson()).thenReturn("{}");}
-            when(values.findAll()).thenReturn(List.of(v));assertTrue(adapter().requiredParametersPresent("request","definition"));
+            var v=value(type);assertNull(v.valueBoolean());switch(type){case TEXT,REFERENCE->when(v.valueText()).thenReturn("value");case NUMBER->when(v.valueNumber()).thenReturn(BigDecimal.ZERO);case BOOLEAN->when(v.valueBoolean()).thenReturn(false);case DATE->when(v.valueDate()).thenReturn(java.time.LocalDate.of(2026,10,7));case DATE_TIME->when(v.valueDateTime()).thenReturn(java.time.Instant.EPOCH);case JSON->when(v.valueJson()).thenReturn("{}");}
+            when(values.findAll()).thenReturn(List.of(v));assertTrue(adapter().requiredParametersPresent("request","definition"), "Concrete parameter type: " + type);
         }
     }
     @Test void inactiveAndOptionalDefinitionsDoNotCreateRequiredDefaults(){

@@ -2348,3 +2348,27 @@ before execution because Spring Boot parent 4.1.1 is absent from the offline Mav
 These source checks do not establish a JUnit/Mockito/PostgreSQL pass.
 Full PostgreSQL/Mockito verification remains replacement CI pending; confirm it started and
 stop until `next` or `fail`. Batch 13 remains gated on green production CI.
+
+### Batch 12 CI #587 parameter-fixture repair — 2026-10-08
+
+CI #587 / run 37752314699 on `0276365b307250cca365bad21e09ed17142b2010`
+ran 895 tests: two assertion failures and no errors. The prior SQL fixture and FK
+inventory regressions are resolved. ReportQueueEvidenceSemanticTest now reaches its
+positive assertions; default Mockito nullable Boolean false supplies an unintended
+second populated field for non-BOOLEAN fixtures. Production's exactly-one-field
+predicate must remain intact.
+
+Admit only ReportQueueEvidenceSemanticTest and these two canonical records for exact
+supporting commit `test(reporting): preserve nullable parameter fixture fields`.
+Use spies over real ReportParameterValueJpaEntity instances initialized with absent
+fields NULL. Keep selected false/zero values concrete, reject extra fields and assert
+initial nullable Boolean absence for every value type. No production, migration,
+release, semantic obligation or Batch 13 change.
+
+Validation: changed test syntax and whitespace checks pass. Twenty-two checks executed
+against the actual entity and actual concrete-value predicate with temporary external
+annotation/repository APIs: NULL absence, all seven selected types including zero/false,
+and rejection of two fields. This is not Mockito/JUnit/Spring/JPA runtime verification.
+Focused Maven test is blocked before execution by uncached offline Boot 4.1.1 parent.
+Replacement full CI remains pending. Confirm it started, then stop until `next` or `fail`.
+Batch 13 HMR-078/HMR-079 remains gated on green production CI.

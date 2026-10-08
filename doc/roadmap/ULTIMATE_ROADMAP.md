@@ -3786,3 +3786,273 @@ once to the final three-commit head with expected-SHA protection, confirm full C
 then stop for owner next/fail. No semantic verification closure before green final-head
 CI, no HPR-P2-008 final PASS, PR, tag, release, version bump or later batch execution.
 Next action after green CI and owner next: fresh preflight of the next attached batch.
+
+## HPR-P2-008 Batch 17 HSE execution preflight — 2026-10-08
+
+Owner next selects row 17 of the current attached `00 - Batchs Roadmap.txt`:
+HMR-082/HMSR-096, HMR-096/HMSR-113 and HMR-097/HMSR-114. The attached source was
+read in full and confirms HSE lifecycle after Batch 16. Exact main baseline
+68e330562b03cf92c5500b99ffceca1fd024d083 passed full CI #596 / run 37783579023.
+Java 21 repository verification, all infrastructure checks, current/base OpenAPI
+generation, backward compatibility and artifact upload passed. Documentation CI #98
+(run 37783579385) passed. HMR-069/070/072 are now CI-confirmed; this task is a
+documentation-only preflight and introduces no HSE production mutation.
+
+### HSE-PREREQ-01 — independently recovered live scope and policy gaps
+
+AGENTS.md section 3.2.9 requires: "If an HMR reveals an unregistered prerequisite, SCC
+complication, owner-contract gap, cross-module lifecycle dependency, migration-order
+conflict, or materially larger semantic redesign, split it out and stop before mutating
+that HMR." All three source reviews and current source have been recovered separately:
+
+| Subject | Live evidence and prerequisite |
+|---|---|
+| HMR-082 / HseCase | `HseApplicationService.closeHseCase` directly constructs/saves closure without loading a case, invoking `HseCaseClosureGuard`, updating CLOSED/closedAt or inserting status history. Original scope excludes this service and atomic closure coordination. `HseCaseRepositoryPort` has no locked lookup, and `JpaHseCaseRepositoryAdapter.save` directly merges. Identity/Organization/Workflow owner contracts and architecture exports require admitted scope. |
+| HMR-096 / HseClosure | `JpaHseClosureRepositoryAdapter.save` directly merges standalone closure evidence. The 11-field model and correct local case FK do not supply lifecycle authority. Original scope excludes service, locked parent, closure/history coordination and owning-case adapter. No registered transaction or concurrency protection couples the records. |
+| HMR-097 / CAPA | `HseApplicationService.createHseCapa` copies the parent/action/owner/work-order/task IDs without loading the parent or enforcing catalog-family semantics. `JpaHseCorrectivePreventiveActionRepositoryAdapter.save` directly merges. Its scope excludes the service, catalog-policy definition and owner providers. Generic action-type FK proves row existence, not intended family. No authoritative family name is present in the live DDD or provisioning. |
+
+The live `HseCaseClosureGuard` rejects null parent, CLOSED/CANCELLED parent and false
+impactAssessed/capaCompleted/evidenceReviewed flags. It does not require RESOLVED,
+regulatoryReviewed=true, a nonblank closure summary, or particular CAPA states. Those
+extra rules must not be invented. `HseCaseStatusHistory` is explicitly append-only in
+the HSE DDD. Current status-history JPA repository exposes only generic persistence;
+no application status-history creation path accompanies closure.
+
+HSE catalog rows use `catalog_name`, not an inferred fixed CAPA-family enum. The module
+configuration defaults are generic booleans, not field-to-family policy. The target
+Noop resolver returns true; it cannot serve as actual owner evidence. Neutral Incident,
+Audit and polymorphic target IDs/snapshots remain neutral as HMSR-096 directs; this
+batch does not convert them to mandatory live-reference checks without domain policy.
+
+Migration tail is published V20261008_013. Original V20261004_082/096/097 are absent
+and backdated. New atomic lifecycle/policy infrastructure and forward migrations
+014/015/016 must be admitted before implementation; published SQL remains immutable.
+
+### Concrete coordinated execution proposal for acceptance
+
+1. Admit HMR-082 -> HMR-096 -> HMR-097 in attached order. Preserve each independent HMSR,
+   exact scope, validation result, status and separate semantic commit. HMR-082 restores
+   the application closure/lifecycle operation; HMR-096 routes standalone closure saves
+   through that same operation and reinforces stored evidence. HMR-097 validates CAPA.
+
+   | Task | Exact semantic message | Proposed forward migration |
+   |---|---|---|
+   | HMR-082 | `fix(hse): remediate semantic review HseCase` | `V20261008_014__hmr_082_hse_case_lifecycle.sql` |
+   | HMR-096 | `fix(hse): remediate semantic review HseClosure` | `V20261008_015__hmr_096_hse_closure_atomic_evidence.sql` |
+   | HMR-097 | `fix(hse): remediate semantic review HseCorrectivePreventiveAction` | `V20261008_016__hmr_097_hse_capa_reference_catalog_integrity.sql` |
+
+2. HMR-082 adds a locked parent lookup and an HSE-owned `HseClosureLifecyclePort` with
+   `JpaHseClosureLifecycleAdapter` coordinating one REQUIRED transaction. The application
+   close path loads the actual case and calls the existing guard before writing evidence.
+   The coordinator revalidates the locked case, persists closure, updates CLOSED/closedAt
+   and writes old-status -> CLOSED history with one server-owned microsecond timestamp.
+   All three writes commit or roll back together. Preserve supported nonterminal statuses
+   admitted by the current guard; do not impose RESOLVED-only closure. Keep regulatory
+   review optional under existing policy. Make the transactional service proxyable.
+3. Bind the closing actor to the authenticated eligible Identity actor and canonical
+   display evidence through a narrow Identity-owned HSE contract. Caller snapshots are
+   not authority. Validate populated new/changed reporter/responsible-unit/Workflow
+   references through Identity/Organization/Workflow owners. Optional Workflow context
+   must target the actual HSE case with configured target/purpose binding; instance
+   existence never proves approval. Preserve valid historical scalar snapshots on reads
+   and unchanged references; no live owner refresh of historical evidence.
+4. Generic case saves cannot independently establish CLOSED or alter the recorded closed
+   lifecycle tuple. Preserve unrelated fields and existing enum/required-field semantics.
+   Add append-only status-history protection and fail-closed stored lifecycle/evidence
+   consistency checks, with legacy preflight that reports incoherent rows instead of
+   manufacturing timestamps, history, flags or actor evidence. Keep existing case-type/
+   severity catalog FKs; their exact families and priority remain unresolved pending
+   authoritative HSE taxonomy evidence. No external relational FK or new REST shape.
+5. HMR-096 routes `HseClosureRepositoryPort.save` through the same lifecycle coordinator,
+   never through generic merge. The coordinator uses owned JPA repositories directly so
+   the closure adapter does not create a dependency cycle. Require the loaded guard and
+   exact parent/closure/history timestamp and actor coherence on every authoritative
+   closure path. Closure evidence/status history cannot be overwritten or erased.
+   Concurrent/replayed closure is rejected by parent serialization and closed-lifecycle
+   guard. Do not add a one-closure-row-per-case SQL uniqueness rule unless separately
+   adopted by HSE design; HMSR-113 does not establish that invariant. Real transaction
+   tests must demonstrate rollback, matching case/history and one successful concurrent
+   authoritative close. Do not equate boolean attestations with independently persisted
+   impact/CAPA/evidence findings; this batch enforces the actual existing guard.
+6. HMR-097 loads/locks the owning case before CAPA creation and revalidates parent
+   existence in adapter saves. Apply only evidenced case-lifecycle eligibility rules;
+   currently none narrows CAPA creation to a status subset. Do not inherit Incident's
+   DRAFT/CLOSED/CANCELLED exclusions. Keep the CAPA lifecycle, optional completion/
+   verification metadata, title domain semantics and numbering constraints unchanged.
+7. Establish explicit HSE-owned field-to-catalog-family policy for the CAPA action-type
+   role. An internal field-role key is not a fabricated catalog family name. Forward 014
+   may create the unseeded `hidra_hse_catalog_field_policy`; an operator must approve the
+   actual existing catalog_name used for CAPA. `HseCatalogFieldPolicy` and forward 016
+   require one active explicit mapping and exact family membership/eligibility for new
+   or changed action-type references. Missing/ambiguous/ineligible configuration denies;
+   never guess a family from entry code/ID or seed permissive defaults. Protect used
+   mapping identity from retroactive reassignment. Valid unchanged historical catalog
+   references remain readable after deactivation.
+8. Forward 016 validates legacy CAPA family membership against the explicit mapping.
+   If legacy CAPA exists without a mapping, it fails rather than silently classifying it.
+   Flyway's earlier committed 014 creates the empty policy table, allowing an operator
+   to provision approved metadata before retrying 016; no synthetic row is inserted by
+   migrations. Incoherent existing lifecycle records may block 014 itself and require
+   operator reconciliation supported by real evidence. No automatic data rewrite.
+9. Validate populated CAPA owner/verifier through Identity, unit through Organization,
+   linked work order through Assets and Workflow task through Workflow. Expose only
+   scalar/boolean owner contracts, with provider internals remaining within each owner.
+   Workflow task validation must resolve the actual task's instance and the intended
+   HSE case or CAPA target context with explicit type/binding; no arbitrary task existence
+   shortcut. Do not invent a work-order/case correlation or assignment requirement.
+   HSE records CAPA evidence; no physical equipment command or foreign workflow mutation.
+10. Add exact exported packages to both architecture registries. Focused tests cover each
+    guard rejection, eligible closure of supported statuses, null/unknown case, rollback
+    at every write boundary, concurrent closes, matching history/timestamps, direct-save
+    bypass, immutable evidence, correct/wrong/missing CAPA policy, legacy migration
+    rollback, eligible/missing owners, wrong task/context, preserved optional/history
+    semantics and deliberately unsupported stronger rules. Run actual PostgreSQL/Spring
+    transaction/concurrency and full Java 21 clean verify/OpenAPI gates in CI. Local
+    API-stub compilation or controlled fixtures never substitute for runtime evidence.
+11. Execute each task's registered compile/focused/full-test/clean-verify targets; record
+    any uncached Boot 4.1.1/Java 17/no-Docker limitation honestly. Publish the three exact
+    commits on existing main once, confirm final-head production CI started and stop for
+    owner next/fail. No PR, release, version change, HPR-P2-008 final PASS or Batch 18.
+
+### Proposed exhaustive per-HMR write scopes
+
+These proposed scopes require acceptance before production mutation. Existing client
+paths remain allowed; change only necessary files. Shared lifecycle/owner/tests may
+recur where a task independently reinforces the admitted operation.
+
+#### HMR-082 proposed scope
+
+- `docs/data definition/Hse.md`
+- `docs/roadmap/model-semantic-remediation.md`
+- `src/main/java/dz/sh/hidra/modules/hse/api/rest/request/CloseHseCaseRequest.java`
+- `src/main/java/dz/sh/hidra/modules/hse/api/rest/request/OpenHseCaseRequest.java`
+- `src/main/java/dz/sh/hidra/modules/hse/api/rest/response/HseCaseResponse.java`
+- `src/main/java/dz/sh/hidra/modules/hse/application/command/CloseHseCaseCommand.java`
+- `src/main/java/dz/sh/hidra/modules/hse/application/command/OpenHseCaseCommand.java`
+- `src/main/java/dz/sh/hidra/modules/hse/application/dto/HseCaseSummaryDto.java`
+- `src/main/java/dz/sh/hidra/modules/hse/application/port/in/CloseHseCaseUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/hse/application/port/in/OpenHseCaseUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/hse/application/port/out/HseCaseRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/hse/domain/model/HseCase.java`
+- `src/main/java/dz/sh/hidra/modules/hse/domain/service/HseCaseClosureGuard.java`
+- `src/main/java/dz/sh/hidra/modules/hse/domain/value/HseCaseSourceType.java`
+- `src/main/java/dz/sh/hidra/modules/hse/domain/value/HseCaseStatus.java`
+- `src/main/java/dz/sh/hidra/modules/hse/infrastructure/persistence/adapter/JpaHseCaseRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/hse/infrastructure/persistence/entity/HseCaseEvidenceLinkJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/hse/infrastructure/persistence/entity/HseCaseJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/hse/infrastructure/persistence/entity/HseCaseStatusHistoryJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/hse/infrastructure/persistence/mapper/HsePersistenceMapper.java`
+- `src/main/java/dz/sh/hidra/modules/hse/infrastructure/persistence/repository/HseCaseEvidenceLinkJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/hse/infrastructure/persistence/repository/HseCaseJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/hse/infrastructure/persistence/repository/HseCaseStatusHistoryJpaRepository.java`
+- `src/main/resources/db/migration/V20261008_014__hmr_082_hse_case_lifecycle.sql`
+- `src/test/java/dz/sh/hidra/modules/hse/semantic/HseCaseSemanticRemediationTest.java`
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `doc/model-remediation/RECONCILIATION.md`
+- `src/main/java/dz/sh/hidra/modules/hse/application/service/HseApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/hse/application/port/out/HseClosureLifecyclePort.java`
+- `src/main/java/dz/sh/hidra/modules/hse/infrastructure/persistence/adapter/JpaHseClosureLifecycleAdapter.java`
+- `src/test/java/dz/sh/hidra/modules/hse/infrastructure/persistence/HseLifecycleSemanticPostgresIntegrationTest.java`
+- `src/main/java/dz/sh/hidra/modules/hse/infrastructure/persistence/repository/HseClosureJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/hse/infrastructure/persistence/entity/HseClosureJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/hse/infrastructure/persistence/adapter/HseCaseReferenceValidation.java`
+- `src/main/java/dz/sh/hidra/modules/hse/infrastructure/configuration/HseCatalogFieldPolicy.java`
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java`
+- `src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/contract/hse/HseActorContract.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/contract/hse/package-info.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/HseActorQueryService.java`
+- `src/test/java/dz/sh/hidra/modules/identity/semantic/HseActorContractTest.java`
+- `src/main/java/dz/sh/hidra/modules/organization/application/contract/hse/HseOrganizationReferenceContract.java`
+- `src/main/java/dz/sh/hidra/modules/organization/application/contract/hse/package-info.java`
+- `src/main/java/dz/sh/hidra/modules/organization/application/service/HseOrganizationReferenceQueryService.java`
+- `src/test/java/dz/sh/hidra/modules/organization/semantic/HseOrganizationReferenceContractTest.java`
+- `src/main/java/dz/sh/hidra/modules/workflow/application/contract/hse/HseWorkflowReferenceContract.java`
+- `src/main/java/dz/sh/hidra/modules/workflow/application/contract/hse/package-info.java`
+- `src/main/java/dz/sh/hidra/modules/workflow/application/service/HseWorkflowReferenceQueryService.java`
+- `src/test/java/dz/sh/hidra/modules/workflow/semantic/HseWorkflowReferenceContractTest.java`
+
+#### HMR-096 proposed scope
+
+- `docs/data definition/Hse.md`
+- `docs/roadmap/model-semantic-remediation.md`
+- `src/main/java/dz/sh/hidra/modules/hse/application/port/out/HseClosureRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/hse/domain/model/HseClosure.java`
+- `src/main/java/dz/sh/hidra/modules/hse/infrastructure/persistence/adapter/JpaHseClosureRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/hse/infrastructure/persistence/entity/HseClosureJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/hse/infrastructure/persistence/mapper/HsePersistenceMapper.java`
+- `src/main/java/dz/sh/hidra/modules/hse/infrastructure/persistence/repository/HseClosureJpaRepository.java`
+- `src/main/resources/db/migration/V20261008_015__hmr_096_hse_closure_atomic_evidence.sql`
+- `src/test/java/dz/sh/hidra/modules/hse/semantic/HseClosureSemanticRemediationTest.java`
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `doc/model-remediation/RECONCILIATION.md`
+- `src/main/java/dz/sh/hidra/modules/hse/application/service/HseApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/hse/application/port/out/HseCaseRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/hse/infrastructure/persistence/repository/HseCaseJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/hse/application/port/out/HseClosureLifecyclePort.java`
+- `src/main/java/dz/sh/hidra/modules/hse/infrastructure/persistence/adapter/JpaHseClosureLifecycleAdapter.java`
+- `src/test/java/dz/sh/hidra/modules/hse/infrastructure/persistence/HseLifecycleSemanticPostgresIntegrationTest.java`
+- `src/main/java/dz/sh/hidra/modules/hse/domain/service/HseCaseClosureGuard.java`
+- `src/main/java/dz/sh/hidra/modules/hse/infrastructure/persistence/repository/HseCaseStatusHistoryJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/hse/infrastructure/persistence/entity/HseCaseStatusHistoryJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/hse/infrastructure/persistence/adapter/JpaHseCaseRepositoryAdapter.java`
+- `src/test/java/dz/sh/hidra/modules/hse/semantic/HseCaseSemanticRemediationTest.java`
+
+#### HMR-097 proposed scope
+
+- `docs/data definition/Hse.md`
+- `docs/roadmap/model-semantic-remediation.md`
+- `src/main/java/dz/sh/hidra/modules/hse/application/port/out/HseCorrectivePreventiveActionRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/hse/domain/model/HseCorrectivePreventiveAction.java`
+- `src/main/java/dz/sh/hidra/modules/hse/infrastructure/persistence/adapter/JpaHseCorrectivePreventiveActionRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/hse/infrastructure/persistence/entity/HseCorrectivePreventiveActionJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/hse/infrastructure/persistence/mapper/HsePersistenceMapper.java`
+- `src/main/java/dz/sh/hidra/modules/hse/infrastructure/persistence/repository/HseCorrectivePreventiveActionJpaRepository.java`
+- `src/main/resources/db/migration/V20261008_016__hmr_097_hse_capa_reference_catalog_integrity.sql`
+- `src/test/java/dz/sh/hidra/modules/hse/semantic/HseCorrectivePreventiveActionSemanticRemediationTest.java`
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `doc/model-remediation/RECONCILIATION.md`
+- `src/main/java/dz/sh/hidra/modules/hse/application/service/HseApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/hse/application/port/out/HseCaseRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/hse/infrastructure/persistence/repository/HseCaseJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/hse/application/port/out/HseClosureLifecyclePort.java`
+- `src/main/java/dz/sh/hidra/modules/hse/infrastructure/persistence/adapter/JpaHseClosureLifecycleAdapter.java`
+- `src/test/java/dz/sh/hidra/modules/hse/infrastructure/persistence/HseLifecycleSemanticPostgresIntegrationTest.java`
+- `src/main/java/dz/sh/hidra/modules/hse/application/command/CreateHseCapaCommand.java`
+- `src/main/java/dz/sh/hidra/modules/hse/application/port/in/CreateHseCapaUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/hse/infrastructure/persistence/adapter/HseCapaReferenceValidation.java`
+- `src/main/java/dz/sh/hidra/modules/hse/infrastructure/configuration/HseCatalogFieldPolicy.java`
+- `src/main/java/dz/sh/hidra/modules/hse/infrastructure/persistence/repository/HseCatalogEntryJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/hse/infrastructure/persistence/adapter/JpaHseCaseRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/assets/application/contract/hse/HseWorkOrderReferenceContract.java`
+- `src/main/java/dz/sh/hidra/modules/assets/application/contract/hse/package-info.java`
+- `src/main/java/dz/sh/hidra/modules/assets/application/service/HseWorkOrderReferenceQueryService.java`
+- `src/test/java/dz/sh/hidra/modules/assets/semantic/HseWorkOrderReferenceContractTest.java`
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java`
+- `src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java`
+- `src/main/java/dz/sh/hidra/modules/workflow/application/contract/hse/HseWorkflowReferenceContract.java`
+- `src/main/java/dz/sh/hidra/modules/workflow/application/service/HseWorkflowReferenceQueryService.java`
+- `src/test/java/dz/sh/hidra/modules/workflow/semantic/HseWorkflowReferenceContractTest.java`
+
+### Current disposition and preflight validation
+
+HMR-082/096/097 are BLOCKED pending HSE-PREREQ-01 acceptance; no HSE production path,
+SQL or runtime configuration changed. HMR-080 remains independently blocked. Totals:
+46 CI-confirmed implementations, seven STILL REQUIRED and four BLOCKED, 57 evaluated.
+HPR-P2-008 is not finally closed. Next attached batch after this HSE batch is row 18,
+HMR-098 / IntegrityCase, subject to its own fresh admission and green baseline.
+
+This preflight's exact write scope is only `doc/roadmap/ULTIMATE_ROADMAP.md` and
+`doc/model-remediation/RECONCILIATION.md`. Exact supporting message:
+`docs(hse): record Batch 17 execution preflight`.
+
+Validate canonical UTF-8/nonempty/conflict-marker-free Markdown, exact two-file scope,
+unchanged production/CI/POM tree and git diff --check. No Maven/PostgreSQL test is
+claimed for this documentation change. Trigger applicable Documentation Validation
+on main, then stop. Owner next accepts HSE-PREREQ-01 and proposed exhaustive scopes,
+subject to fresh baseline validation; an amendment may narrow the design first.
+
+Preflight checks completed: exact documentation-workflow validation passed for all
+82 canonical Markdown files. Exact two-file scope, unchanged production/CI/POM bytes,
+independent proposed scopes/migration registration and git diff --check passed. No
+production, database or Maven verification was run for this documentation-only change.

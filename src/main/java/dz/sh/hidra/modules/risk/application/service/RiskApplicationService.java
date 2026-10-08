@@ -7,7 +7,7 @@
  *
  * @Name        : RiskApplicationService
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-05
+ * @UpdatedOn   : 2026-10-08
  *
  * @Type        : Class
  * @Layer       : Application
@@ -223,7 +223,7 @@ public class RiskApplicationService implements CreateRiskRegisterUseCase, Create
                 now,
                 now
         );
-        return RiskApplicationMapper.toSummary(assessmentRepositoryPort.save(assessment));
+        return RiskApplicationMapper.toSummary(assessmentRepositoryPort.create(assessment, command.scopes()));
     }
 
     @Override

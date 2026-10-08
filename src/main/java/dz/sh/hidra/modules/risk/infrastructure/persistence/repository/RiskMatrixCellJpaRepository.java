@@ -7,7 +7,7 @@
  *
  * @Name        : RiskMatrixCellJpaRepository
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-04
+ * @UpdatedOn   : 2026-10-08
  *
  * @Type        : Interface
  * @Layer       : Infrastructure
@@ -61,4 +61,9 @@ public interface RiskMatrixCellJpaRepository
             @Param("entryId") String entryId,
             @Param("catalogName") String catalogName
     );
+
+    @org.springframework.data.jpa.repository.Lock(jakarta.persistence.LockModeType.PESSIMISTIC_READ)
+    @org.springframework.data.jpa.repository.Query("select e from RiskMatrixCellJpaEntity e where e.id = :id")
+    java.util.Optional<dz.sh.hidra.modules.risk.infrastructure.persistence.entity.RiskMatrixCellJpaEntity> findLocked(
+            @org.springframework.data.repository.query.Param("id") String id);
 }

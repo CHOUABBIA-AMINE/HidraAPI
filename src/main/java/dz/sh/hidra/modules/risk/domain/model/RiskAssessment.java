@@ -7,7 +7,7 @@
  *
  * @Name        : RiskAssessment
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-10-08
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -100,6 +100,15 @@ import java.math.BigDecimal;
     ) {
 
         public RiskAssessment {
+        if (status == RiskAssessmentStatus.APPROVED || status == RiskAssessmentStatus.ACTIVE) {
+            if (reviewedByActorId == null || reviewedByActorId.isBlank()
+                    || reviewedByDisplayNameSnapshot == null || reviewedByDisplayNameSnapshot.isBlank()
+                    || approvedByActorId == null || approvedByActorId.isBlank()
+                    || approvedByDisplayNameSnapshot == null || approvedByDisplayNameSnapshot.isBlank()
+                    || approvedAt == null || workflowReferenceId == null || workflowReferenceId.isBlank()
+                    || auditReferenceId == null || auditReferenceId.isBlank())
+                throw new InvalidRiskValueException("Approved assessment requires actual reviewer, approver, Workflow and Audit context.");
+        }
         // HRA-051 required: id
         if (id == null || id.isBlank()) {
             throw new InvalidRiskValueException("RiskAssessment id must not be blank.");

@@ -84,7 +84,7 @@ No `party.application.contract.planning` package exists in the exact current tre
 | HMR-055 | HMSR-064 | workflow.WorkflowInstance | COMPLETED — CI #581 GREEN | Owner-bound starts enforce active definition/version and exact binding, governed purpose/type, current-step coherence and owner target/actor snapshots; nonterminal uniqueness and same-definition/version database guards. Planning target registry denies unsupported/ambiguous owners. Eight focused behavior checks passed with temporary stubs; local Maven blocked by uncached parent, not a JUnit/PostgreSQL pass. |
 | HMR-056 | HMSR-067 | integration.IntegrationExchangeMessage | IMPLEMENTED — CI #585 PASSED | Optional run/endpoint existence, correlated endpoint/system ownership and active exact existing MESSAGE_TYPE/PAYLOAD_FORMAT catalogs enforced on saves. Forward V20261007_010 adds nullable/composite FKs and catalog guards without rewriting legacy evidence. Five dedicated and five PostgreSQL cases prepared. Local compile/focused Maven blocked before execution by uncached Boot parent; CI pending. |
 | HMR-057 | HMSR-068 | reporting.ReportRun | IMPLEMENTED — CI #588 GREEN | Queue eligibility/access/approval, exact template lineage, concrete required parameters and terminal evidence enforced. Forward 012 corrects run/parameter request FKs and guards lineage/history. Eight Run, four QueueEvidence and nine PostgreSQL cases prepared; local runtime validation follows; Full production CI #588 passed. |
-| HMR-058 | HMSR-069 | risk.RiskAssessment | BLOCKED | RISK-PREREQ-01: Batch 14 owner evidence and governed assessment lifecycle require admission. |
+| HMR-058 | HMSR-069 | risk.RiskAssessment | IMPLEMENTED — CI PENDING | Accepted RISK-PREREQ-01: atomic structured scopes, matrix provenance, authenticated Workflow/Audit approval and approved immutability; final CI pending. |
 | HMR-059 | HMSR-071 | leakdetection.LeakEscalationReference | COMPLETED — HPR-P2-008 | Optional candidate validated before save and protected by V20261006_001 nullable same-module FK with fail-closed orphan preflight; no case-primary equality rule. |
 | HMR-060 | HMSR-072 | notification.NotificationDeliveryAttempt | COMPLETED — HPR-P2-008 | Channel/message composite FK; create-only EntityManager.persist plus PK race protection; update/delete/truncate rejected; permanent/cancelled automatic retry rejected; V20261006_006; dedicated unit and PostgreSQL tests added. |
 | HMR-061 | HMSR-073 | workflow.WorkflowTransition | COMPLETED — CI #581 GREEN | Distinct same-definition steps and unique source decisions are protected in configuration persistence and PostgreSQL. Unsupported conditions/callbacks/COMMENT cannot attach to ACTIVE definitions or survive activation; runtime remains fail closed. Three focused behavior checks passed with temporary stubs; PostgreSQL validation pending CI. |
@@ -141,8 +141,8 @@ No `party.application.contract.planning` package exists in the exact current tre
 - HMR-009 confirmed **COMPLETED** and removed as a carry-over blocker;
 - HMR-050..106 evaluated: **57**;
 - HMR-050..106 **STILL REQUIRED**: **17**;
-- HMR-050..106 **BLOCKED**: **2** (HMR-058, HMR-080);
-- HMR-050..106 **IMPLEMENTED during HPR-P2-008**: **38** (37 CI-confirmed through #590; HMR-077 CI pending);
+- HMR-050..106 **BLOCKED**: **1** (HMR-080);
+- HMR-050..106 **IMPLEMENTED during HPR-P2-008**: **39** (37 CI-confirmed through #590; two Batch 14 implementations CI pending);
 - HMR-050..106 **SUPERSEDED**: **0**;
 - HMR-054 completed; repaired CI #575 is green;
 - HMR-080 remains blocked; HMR-055 prerequisite resolved and implemented in Batch 7.
@@ -151,7 +151,7 @@ No `party.application.contract.planning` package exists in the exact current tre
 
 - HMR-050 — **COMPLETED** at the first HPR-P2-008 execution step.
 - Batch 7 **COMPLETED — CI #581 GREEN**: HMR-055, 061, 066, 081, 099; exact repaired head ec63af0414d7fa85b9200d4bd181ac799bd072ed. Batch 8 preflight split below; no Planning implementation claimed.
-- Current remaining: **17 STILL REQUIRED + 2 BLOCKED (HMR-058, HMR-080)**; 37 CI-confirmed and one CI-pending implementation.
+- Current remaining: **17 STILL REQUIRED + 1 BLOCKED (HMR-080)**; 37 CI-confirmed and two Batch 14 CI-pending implementations.
 
 - HMR-051 — **COMPLETED**: Topology and optional Organization references validated on every case save; snapshot preserved; no migration because primary-candidate FK already exists; owner contract and architecture export added.
 
@@ -2261,3 +2261,101 @@ using dependency API stubs. These are not Maven/JUnit/Spring/PostgreSQL executio
 before compilation by uncached Spring Boot parent 4.1.1. Java 21/real PostgreSQL and
 full OpenAPI verification remain production CI obligations. HMR-077 implementation
 is staged first; HMR-058 remains in progress and no production PASS is claimed.
+
+
+## HPR-P2-008 Batch 14 implementation result — 2026-10-08
+
+RISK-PREREQ-01 was accepted by owner `next`; the exact registered scopes govern both
+subjects. HMSR-091 and HMSR-069 were independently re-read. The successful baseline
+is CI #590 on d53b616de28abcd680da827e09ea7677bc7e4a31, followed by docs-only
+preflight d71e725cdc20d25a9c3322318f4b34107fcab51a. No new batch is included.
+
+| Subject | Implementation | Verification disposition |
+|---|---|---|
+| HMR-077 / RiskEvidenceLink | 93df7f22ab566d0894e00fca27dd047e1053b560; exact `fix(risk): remediate semantic review RiskEvidenceLink` | Implemented; final-head production CI pending |
+| HMR-058 / RiskAssessment | This semantic commit; exact `fix(risk): remediate semantic review RiskAssessment` | Implemented; final-head production CI pending |
+
+### Assessment obligations and enforcement
+
+- Creation uses required nonempty structured scopes, owner-resolved through Organization
+  or Topology, and persists parent/children in one transaction. Supported types are exactly
+  ORGANIZATION_UNIT, PIPELINE_SYSTEM, PIPELINE, FACILITY and EQUIPMENT. Legacy scalar
+  `scopeId` remains convenience metadata. The assessor snapshot is canonical Identity
+  metadata; supplied assessor ID, when present, must match the authenticated principal.
+- Exact eligible RISK_ASSESSMENT_TYPE and preserved RISK_METHODLOGY are checked.
+  Nullable likelihood/consequence/rating/confidence use exact Risk families and local
+  FKs; coherent unchanged inactive historical references remain usable.
+- Explicit scoring selects actual active matrix cells and derives likelihood, consequence,
+  score and rating without a universal multiplication formula. An assessment-owned
+  companion row preserves inherent/residual cell, matrix and version provenance.
+  Residual scoring requires an existing same-assessment CONTROL or TREATMENT_PLAN.
+  No matrix/methodology association is invented; drafts may remain unscored.
+- Submission is explicit DRAFT -> UNDER_REVIEW. Approval resolves the actual authenticated
+  Identity actor and delegates the configured final APPROVE decision to Workflow's existing
+  transition engine, which checks current actor/assignment/live configured permission.
+  The instance must target this exact `risk`/`RISK_ASSESSMENT` assessment. An actual prior
+  APPROVE action on that same instance supplies the reviewer evidence. Caller permission
+  sets and reviewer/approver snapshots are never accepted. Workflow task/instance locks
+  follow the existing engine's order. Nonfinal decisions and incoherent action evidence
+  abort the transaction.
+- Approval requires at least one currently owner-validated evidence link, valid scopes
+  and coherent scoring provenance when populated. Audit owns sanitized scalar approval
+  evidence and returns the real auditReferenceId. Workflow execution, Audit persistence
+  and the assessment update join the same REQUIRED transaction. Any failure rolls back.
+- Generic assessment save cannot create scope-less rows, score freely, set approval
+  metadata or enter APPROVED/ACTIVE. Approved parent rows, scope/scoring/evidence
+  associations, selected matrix/cell provenance and residual reference integrity are
+  protected against edits/deletion/reparenting and relevant TRUNCATE bypasses.
+  Revisions use new assessment rows; approved history is not rewritten.
+
+### Forward migrations and API
+
+V20261008_004 enforces complete evidence identity; V20261008_005 supplies same-module
+assessment catalog FKs/family eligibility, deferred scope/score completeness, serialized
+association guards, scoring provenance, residual context and approved immutability.
+V20261008_006 provisions/reuses active Audit EVENT_TYPE/RISK_ASSESSMENT_APPROVED and
+EVENT_CATEGORY/BUSINESS, rejecting inactive/conflicting taxonomy. Legacy missing scopes,
+existing scoring without genuine provenance and existing approvals requiring historical
+owner reconciliation abort migration; no inferred child, score, approval or data repair
+is performed. Published migration bytes and cross-module FK policy remain unchanged.
+
+Creation adds `scopes` to the existing request/command with source-compatible legacy
+constructors, which yield an empty list and fail closed at execution. The existing assessment response and
+34-field domain shape are preserved. New explicit endpoints have stable
+operation IDs: POST /api/v1/risk/assessments/{id}/score, /submit and /approve. Existing
+MapStruct record mapping carries the same structured scope type. Full generated OpenAPI
+compatibility remains a CI gate. Configure an active owner-managed Workflow target type
+RISK_ASSESSMENT, binding/purpose, review/final approval route, assignments and permission
+using the existing Workflow administration boundary before exercising approval. This
+change supplies no automatic permission grant, workflow definition or fabricated action.
+
+### Actual local validation and limits
+
+- 17 evidence domain/registry harness checks passed; 27 assessment aggregate behavior
+  checks passed, including missing scopes/catalogs, owner snapshots, cell-derived scoring,
+  residual-context denial, submission, evidence-before-approval, actual owner metadata/
+  receipt handling, Audit failure preventing parent save and approved mutation denial.
+  Harness owners/repositories are controlled in-memory substitutes; they do not prove
+  Spring transaction rollback or PostgreSQL enforcement.
+- Actual changed production/domain/owner Java and five focused JUnit test sources type
+  compiled with temporary framework/dependency API stubs on available JDK 17. Syntax
+  parsing and whitespace/exhaustive scope checks passed. This is not Java 21 Maven/JUnit
+  execution and does not validate framework behavior.
+- Focused JUnit tests cover each evidence owner/type's missing and present dispatch,
+  scopes/catalogs/scoring/approval, Identity eligibility/canonical metadata, Workflow
+  exact target/review/permission denial/final-action coherence, and Audit sanitation.
+  Ten PostgreSQL/Testcontainers cases were added for migration/legacy/catalog/score/
+  immutability, residual context, scope deletion races, waiting evidence/cell mutations,
+  and real Spring/JPA assessment+Audit commit/rollback. The transactional Workflow-owner
+  receipt in the isolated aggregate test is explicitly a fixture; configured Workflow
+  execution is covered separately through the owner/core tests. These tests are not
+  claimed as locally executed because Docker/PostgreSQL are unavailable.
+- Local Maven compile, focused tests, full tests and clean verify were all attempted
+  offline and blocked before compilation by uncached Spring Boot parent 4.1.1. P1 closure
+  evidence validation passed; infrastructure/version/release artifacts are unchanged.
+  Exact-head CI must run real Java 21, PostgreSQL/Spring, architecture and OpenAPI gates.
+
+Current totals: 39 implementations (37 CI-confirmed through #590; two Batch 14 CI-pending),
+17 STILL REQUIRED, one BLOCKED (HMR-080), 57 evaluated. Publish the chained semantic
+commits to existing main once using expected-head protection; confirm production CI
+started and stop for owner `next`/`fail`. No release, tag, PR or final HPR-P2-008 PASS.

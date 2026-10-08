@@ -7,7 +7,7 @@
  *
  * @Name        : RiskCatalogEntryJpaRepository
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-08
  *
  * @Type        : Interface
  * @Layer       : Infrastructure
@@ -28,4 +28,9 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface RiskCatalogEntryJpaRepository extends JpaRepository<RiskCatalogEntryJpaEntity, String> {
+
+    @org.springframework.data.jpa.repository.Lock(jakarta.persistence.LockModeType.PESSIMISTIC_READ)
+    @org.springframework.data.jpa.repository.Query("select e from RiskCatalogEntryJpaEntity e where e.id = :id")
+    java.util.Optional<dz.sh.hidra.modules.risk.infrastructure.persistence.entity.RiskCatalogEntryJpaEntity> findLocked(
+            @org.springframework.data.repository.query.Param("id") String id);
 }

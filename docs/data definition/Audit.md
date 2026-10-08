@@ -1239,3 +1239,14 @@ publisher remains absent; no actor identity is fabricated. Missing/inactive taxo
 evidence fails publication. Forward 003 reuses active taxonomy, aborts conflicts/inactive rows,
 and does not reconstruct historical publication events. Simulation owns publication; Audit
 owns evidence recording. No cross-module database FK is introduced.
+
+
+### Risk assessment approval owner boundary — HMR-058
+
+RiskAssessmentAuditContract appends a real approval event and returns its persisted
+receipt. Required active taxonomy is EVENT_TYPE/RISK_ASSESSMENT_APPROVED and
+EVENT_CATEGORY/BUSINESS, provisioned by forward V20261008_006. Sanitized scalar payload
+contains assessment/reviewer/review-action/approval-action identities and actual approval
+time; sensitive assessment descriptions/evidence bodies are omitted. Audit joins the
+outer Risk approval transaction; failure aborts Workflow decision and assessment approval.
+No foreign-owner DB FK or synthetic historical approval is introduced. Final CI pending.

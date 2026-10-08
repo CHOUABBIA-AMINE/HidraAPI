@@ -7,7 +7,7 @@
  *
  * @Name        : RiskEvidenceLinkJpaRepository
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-08
  *
  * @Type        : Interface
  * @Layer       : Infrastructure
@@ -28,4 +28,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface RiskEvidenceLinkJpaRepository extends JpaRepository<RiskEvidenceLinkJpaEntity, String> {
+    java.util.List<dz.sh.hidra.modules.risk.infrastructure.persistence.entity.RiskEvidenceLinkJpaEntity> findByRiskAssessmentId(String riskAssessmentId);
 }

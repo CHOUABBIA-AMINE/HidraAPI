@@ -250,7 +250,7 @@ Each model task implements only the obligations recorded in its source HMSR sect
 |---|---|---|---|---|---|---|---|
 | HMR-080 | HMSR-094 | planning | Nomination | — | party.Party, planning.PlanRevision | `fix(planning): remediate semantic review Nomination` | Blocked — owner lookup contract prerequisite unresolved |
 | HMR-081 | HMSR-095 | workflow | WorkflowAction | — | organization.OrganizationUnit, workflow.WorkflowInstance, workflow.WorkflowTask | `fix(workflow): remediate semantic review WorkflowAction` | Planned |
-| HMR-082 | HMSR-096 | hse | HseCase | — | incident.Incident, organization.OrganizationUnit, workflow.WorkflowInstance | `fix(hse): remediate semantic review HseCase` | Planned |
+| HMR-082 | HMSR-096 | hse | HseCase | — | incident.Incident, organization.OrganizationUnit, workflow.WorkflowInstance | `fix(hse): remediate semantic review HseCase` | Completed |
 | HMR-083 | HMSR-097 | audit | AuditExportRequest | — | documents.Document, workflow.WorkflowInstance | `fix(audit): remediate semantic review AuditExportRequest` | Implemented — CI pending |
 | HMR-084 | HMSR-098 | documents | DocumentTargetLink | — | documents.Document, documents.DocumentVersion | `fix(documents): remediate semantic review DocumentTargetLink` | Completed — CI pending |
 | HMR-085 | HMSR-100 | identity | AuthorizationDecision | — | identity.User | `fix(identity): remediate semantic review AuthorizationDecision` | Completed |
@@ -4341,7 +4341,7 @@ uncached Boot parent 4.1.1 offline. Real Spring/JPA/PostgreSQL tests await final
 - SCC: —
 - Recorded upstream HMS dependencies: incident.Incident, organization.OrganizationUnit, workflow.WorkflowInstance
 - HMSR correction count: 4
-- Additive Flyway: `src/main/resources/db/migration/V20261004_082__hmr_082_hse_hse_case.sql`
+- Additive Flyway: `src/main/resources/db/migration/V20261008_014__hmr_082_hse_case_lifecycle.sql`
 - Owner-contract prerequisite: Existing candidate owner contract(s): incident:src/main/java/dz/sh/hidra/modules/incident/application/port/in/IncidentQueryUseCase.java; organization:src/main/java/dz/sh/hidra/modules/organization/application/port/in/OperationalScopeQueryUseCase.java; organization:src/main/java/dz/sh/hidra/modules/organization/application/port/in/OrganizationAdministrationQueryUseCase.java; organization:src/main/java/dz/sh/hidra/modules/organization/application/port/out/OperationalScopeTargetResolverPort.java; workflow:src/main/java/dz/sh/hidra/modules/workflow/application/port/in/WorkflowQueryUseCase.java; workflow:src/main/java/dz/sh/hidra/modules/workflow/application/port/out/WorkflowEligibilityLookupPort.java
 - Exact write allowlist:
   - `docs/data definition/Hse.md`
@@ -4367,7 +4367,7 @@ uncached Boot parent 4.1.1 offline. Real Spring/JPA/PostgreSQL tests await final
   - `src/main/java/dz/sh/hidra/modules/hse/infrastructure/persistence/repository/HseCaseEvidenceLinkJpaRepository.java`
   - `src/main/java/dz/sh/hidra/modules/hse/infrastructure/persistence/repository/HseCaseJpaRepository.java`
   - `src/main/java/dz/sh/hidra/modules/hse/infrastructure/persistence/repository/HseCaseStatusHistoryJpaRepository.java`
-  - `src/main/resources/db/migration/V20261004_082__hmr_082_hse_hse_case.sql`
+  - `src/main/resources/db/migration/V20261008_014__hmr_082_hse_case_lifecycle.sql`
   - `src/test/java/dz/sh/hidra/modules/hse/semantic/HseCaseSemanticRemediationTest.java`
 - Exact validation:
   - `./mvnw -q -DskipTests compile`
@@ -5539,3 +5539,34 @@ actual forward migration, owner contracts, exact files and CI-pending validation
 HMR-090 implemented under accepted canonical Batch 15 scope; source HMSR obligations
 and historical write scope above are preserved. Canonical Ultimate Roadmap contains
 actual forward migration, owner contracts, exact files and CI-pending validation.
+
+
+### HMR-082 accepted Batch 17 execution result
+
+Canonical Batch 17 accepted execution scopes supersede the historical allowlist.
+Status: Completed implementation; final-head CI pending. Exact commit: `fix(hse): remediate semantic review HseCase`.
+
+HMSR-096 recovered independently from the live source review. Application closure loads
+and pessimistically locks the owning case before calling the existing guard. The new
+REQUIRED lifecycle coordinator revalidates under that lock, binds the authenticated
+eligible Identity actor, validates optional exact HSE Workflow context, and persists
+closure, CLOSED/closedAt and old-status -> CLOSED history with one server microsecond
+timestamp. No RESOLVED-only or regulatoryReviewed requirement is invented. Boolean
+attestations remain the existing guard inputs, not proof of independently stored findings.
+
+Generic parent saves cannot establish CLOSED or change a recorded closed tuple. New or
+changed reporter/unit/Workflow references use narrow owner contracts; unchanged historical
+snapshots remain readable without owner refresh. Neutral Incident/Audit/target references
+and existing case-type/severity FKs remain unchanged; exact case catalog families are still
+unresolved. Forward 014 creates unseeded field-family metadata and enforces deferred
+case/closure/history coherence, closed tuple immutability and append-only status history.
+Legacy incoherence aborts migration without data repair. No cross-module FK is introduced.
+
+Validation: production HSE/owner sources and focused test signatures compiled on Java 17
+against temporary dependency APIs. Fourteen actual domain/application checks passed with
+controlled ports. Focused owner/domain and PostgreSQL tests are prepared, not executed
+locally. Maven compilation stops before execution at uncached Spring Boot parent 4.1.1
+in offline mode; Java 21/Docker/PostgreSQL are unavailable locally. Real runtime/full
+verification remains final-head CI responsibility. Scope, preserved SQL and Markdown
+checks are required before publication. HMR-082 implementation Completed pending CI;
+HMR-096 and HMR-097 now admitted/in progress; HMR-080 remains blocked.

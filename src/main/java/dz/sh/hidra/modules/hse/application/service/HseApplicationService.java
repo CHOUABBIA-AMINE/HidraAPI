@@ -48,20 +48,20 @@ import java.util.Objects;
  * Application service for HSE case and CAPA workflows.
  */
 @Service
-public final class HseApplicationService implements OpenHseCaseUseCase, CreateHseCapaUseCase, CloseHseCaseUseCase {
+public class HseApplicationService implements OpenHseCaseUseCase, CreateHseCapaUseCase, CloseHseCaseUseCase {
 
     private final HseCaseRepositoryPort hseCaseRepositoryPort;
     private final HseCorrectivePreventiveActionRepositoryPort capaRepositoryPort;
-    private final HseClosureRepositoryPort closureRepositoryPort;
+    private final dz.sh.hidra.modules.hse.application.port.out.HseClosureLifecyclePort closureLifecycle;
 
     public HseApplicationService(
             HseCaseRepositoryPort hseCaseRepositoryPort,
             HseCorrectivePreventiveActionRepositoryPort capaRepositoryPort,
-            HseClosureRepositoryPort closureRepositoryPort
+            dz.sh.hidra.modules.hse.application.port.out.HseClosureLifecyclePort closureLifecycle
     ) {
         this.hseCaseRepositoryPort = Objects.requireNonNull(hseCaseRepositoryPort, "HSE case repository port must not be null.");
         this.capaRepositoryPort = Objects.requireNonNull(capaRepositoryPort, "HSE CAPA repository port must not be null.");
-        this.closureRepositoryPort = Objects.requireNonNull(closureRepositoryPort, "HSE closure repository port must not be null.");
+        this.closureLifecycle = Objects.requireNonNull(closureLifecycle);
     }
 
     @Override
@@ -133,8 +133,12 @@ public final class HseApplicationService implements OpenHseCaseUseCase, CreateHs
     }
 
     @Override
+    @org.springframework.transaction.annotation.Transactional
     public String closeHseCase(CloseHseCaseCommand command) {
         Objects.requireNonNull(command, "Close HSE case command must not be null.");
+        var parent=hseCaseRepositoryPort.findByIdForUpdate(command.hseCaseId()).orElse(null);
+        new dz.sh.hidra.modules.hse.domain.service.HseCaseClosureGuard().ensureCanClose(parent,
+                command.impactAssessed(),command.capaCompleted(),command.evidenceReviewed());
         HseClosure closure = new HseClosure(
                 HseId.newId().value(),
                 command.hseCaseId(),
@@ -148,6 +152,6 @@ public final class HseApplicationService implements OpenHseCaseUseCase, CreateHs
                 Instant.now(),
                 command.workflowInstanceId()
         );
-        return closureRepositoryPort.save(closure).id();
+        return closureLifecycle.close(closure).id();
     }
 }

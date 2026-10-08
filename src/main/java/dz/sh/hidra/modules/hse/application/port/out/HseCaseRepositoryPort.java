@@ -29,6 +29,9 @@ public interface HseCaseRepositoryPort {
 
     Optional<HseCase> findById(String id);
 
+    /** Must be invoked within the lifecycle transaction. */
+    Optional<HseCase> findByIdForUpdate(String id);
+
     List<HseCase> findAll(int page, int size);
 
     long count();

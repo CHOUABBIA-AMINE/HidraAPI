@@ -142,6 +142,11 @@ import java.time.Instant;
         workflowInstanceId = normalize(workflowInstanceId);
         auditReferenceId = normalize(auditReferenceId);
         }
+        /** Copies unrelated context unchanged while recording the authoritative closure time. */
+        public HseCase closedAt(Instant at) {
+            java.util.Objects.requireNonNull(at, "Closure time required.");
+            return new HseCase(id, caseNumber, title, description, caseTypeId, severityId, priorityId, HseCaseStatus.CLOSED, sourceType, incidentReferenceId, incidentCodeSnapshot, incidentTitleSnapshot, targetModule, targetTypeCode, targetId, targetCodeSnapshot, targetLabelSnapshot, occurredAt, reportedAt, reportedByActorId, reportedByDisplayNameSnapshot, responsibleOrganizationUnitId, responsibleOrganizationUnitNameSnapshot, workflowInstanceId, auditReferenceId, controlledAt, resolvedAt, at, createdAt, at);
+        }
         public boolean closedLifecycle() {
             return status == HseCaseStatus.CLOSED
                     || status == HseCaseStatus.CANCELLED;

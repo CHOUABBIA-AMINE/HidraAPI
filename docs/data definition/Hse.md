@@ -159,3 +159,31 @@ It must not import incident, leakdetection, topology, assets, integrity, organiz
 Domain, application, and infrastructure HSE models must not use `@Schema` or OpenAPI annotations.
 
 `@Schema` is allowed only in HSE API request/response models.
+
+
+### HMR-082 executable contract reconciliation
+
+HMSR-096 recovered independently from the live source review. Application closure loads
+and pessimistically locks the owning case before calling the existing guard. The new
+REQUIRED lifecycle coordinator revalidates under that lock, binds the authenticated
+eligible Identity actor, validates optional exact HSE Workflow context, and persists
+closure, CLOSED/closedAt and old-status -> CLOSED history with one server microsecond
+timestamp. No RESOLVED-only or regulatoryReviewed requirement is invented. Boolean
+attestations remain the existing guard inputs, not proof of independently stored findings.
+
+Generic parent saves cannot establish CLOSED or change a recorded closed tuple. New or
+changed reporter/unit/Workflow references use narrow owner contracts; unchanged historical
+snapshots remain readable without owner refresh. Neutral Incident/Audit/target references
+and existing case-type/severity FKs remain unchanged; exact case catalog families are still
+unresolved. Forward 014 creates unseeded field-family metadata and enforces deferred
+case/closure/history coherence, closed tuple immutability and append-only status history.
+Legacy incoherence aborts migration without data repair. No cross-module FK is introduced.
+
+Validation: production HSE/owner sources and focused test signatures compiled on Java 17
+against temporary dependency APIs. Fourteen actual domain/application checks passed with
+controlled ports. Focused owner/domain and PostgreSQL tests are prepared, not executed
+locally. Maven compilation stops before execution at uncached Spring Boot parent 4.1.1
+in offline mode; Java 21/Docker/PostgreSQL are unavailable locally. Real runtime/full
+verification remains final-head CI responsibility. Scope, preserved SQL and Markdown
+checks are required before publication. HMR-082 implementation Completed pending CI;
+HMR-096 and HMR-097 now admitted/in progress; HMR-080 remains blocked.

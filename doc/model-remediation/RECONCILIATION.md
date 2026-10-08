@@ -3429,3 +3429,45 @@ Preflight checks completed: exact documentation-workflow validation passed for a
 82 canonical Markdown files. Exact two-file scope, unchanged production/CI/POM bytes,
 independent proposed scopes/migration registration and git diff --check passed. No
 production, database or Maven verification was run for this documentation-only change.
+
+
+## HPR-P2-008 Batch 17 accepted execution envelope — 2026-10-08
+
+Owner `next` accepts HSE-PREREQ-01 on preflight
+91c4cbe45bab2786af9581f7130e0960c2ed1e0a. Main remains that head;
+Documentation CI #99 (37785917783) passed. Production is byte-identical to
+68e330562b03cf92c5500b99ffceca1fd024d083, successful full CI #596 (37783579023).
+The accepted proposal and exhaustive proposed scopes above are now admitted as
+execution scopes, in order HMR-082 -> HMR-096 -> HMR-097. Forward 014/015/016
+and each exact semantic message remain independent; no published migration rewrite,
+PR, release or later batch is admitted. Each task uses only required admitted paths.
+Record independent implementation results below; final-head CI must start before
+pausing for owner `next` or `fail`. Do not claim final CI success before it exists.
+
+
+### Batch 17 HMR-082 implementation result — 2026-10-08
+
+HMSR-096 recovered independently from the live source review. Application closure loads
+and pessimistically locks the owning case before calling the existing guard. The new
+REQUIRED lifecycle coordinator revalidates under that lock, binds the authenticated
+eligible Identity actor, validates optional exact HSE Workflow context, and persists
+closure, CLOSED/closedAt and old-status -> CLOSED history with one server microsecond
+timestamp. No RESOLVED-only or regulatoryReviewed requirement is invented. Boolean
+attestations remain the existing guard inputs, not proof of independently stored findings.
+
+Generic parent saves cannot establish CLOSED or change a recorded closed tuple. New or
+changed reporter/unit/Workflow references use narrow owner contracts; unchanged historical
+snapshots remain readable without owner refresh. Neutral Incident/Audit/target references
+and existing case-type/severity FKs remain unchanged; exact case catalog families are still
+unresolved. Forward 014 creates unseeded field-family metadata and enforces deferred
+case/closure/history coherence, closed tuple immutability and append-only status history.
+Legacy incoherence aborts migration without data repair. No cross-module FK is introduced.
+
+Validation: production HSE/owner sources and focused test signatures compiled on Java 17
+against temporary dependency APIs. Fourteen actual domain/application checks passed with
+controlled ports. Focused owner/domain and PostgreSQL tests are prepared, not executed
+locally. Maven compilation stops before execution at uncached Spring Boot parent 4.1.1
+in offline mode; Java 21/Docker/PostgreSQL are unavailable locally. Real runtime/full
+verification remains final-head CI responsibility. Scope, preserved SQL and Markdown
+checks are required before publication. HMR-082 implementation Completed pending CI;
+HMR-096 and HMR-097 now admitted/in progress; HMR-080 remains blocked.

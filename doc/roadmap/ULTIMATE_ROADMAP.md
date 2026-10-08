@@ -5255,3 +5255,31 @@ this separate commit; its closure obligation remains for HMR-105.
 
 Exact message: fix(alarm): remediate semantic review AlarmAcknowledgement. Preserve
 0.6.0-SNAPSHOT, HPR-P2-008 open, HMR-080 blocked and physical survivability evidence.
+
+## HPR-P2-008 Batch 20 independent execution — HMR-105 — 2026-10-08
+
+ALRM-PREREQ-01 remains ACCEPTED. HMSR-122 section 135 was recovered independently
+against ten-field closure, local FK, live service, own guard and absent uniqueness.
+Live/direct closure now locks Alarm, rejects unknown/terminal or already closed
+evidence, requires actual CLEARED state or clearedAt for normal closure, and treats
+CANCELLED as the sole clear-before-close exception. ESCALATED alone no longer
+bypasses clearing. Closure, terminal snapshot/closedAt and one CLOSED/CANCELLED
+event flush in one transaction. Exact replay is a no-op; mutation is rejected.
+Optional review workflow remains optional even when requiresReview is true; no
+closure reason family, cross-owner FK or upstream lookup policy is invented.
+
+Forward 023 aborts on duplicate or orphan historical closures and installs UNIQUE
+(alarm_id), preserving all evidence. Three focused and five actual PostgreSQL/
+Spring-JPA tests are prepared for live cancellation/clear denial, flushed rollback,
+duplicate migration abort, close-versus-close and ack-versus-close races. They are
+not locally executed passes. The focused Maven command is attempted on this tree;
+repository execution remains blocked by uncached Boot parent/DNS. Actual core
+source compilation against temporary dependency stubs passed on Java 17, with
+scope/header/whitespace/all canonical Markdown checks; this is not real Maven,
+JUnit, Spring, PostgreSQL or ArchUnit validation.
+
+HMR-105 is IMPLEMENTED — FINAL CI PENDING. HMR-100's dependent acknowledgement and
+closure obligations are now implemented in the separate HMR-104/105 commits, but
+none of these pending implementations increases the 52 CI-confirmed total. Exact
+message: fix(alarm): remediate semantic review AlarmClosure. HPR-P2-008 stays open,
+0.6.0-SNAPSHOT unchanged; HMR-080 and physical survivability disposition unchanged.

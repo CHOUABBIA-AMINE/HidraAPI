@@ -131,8 +131,13 @@ public class AlarmApplicationService implements RaiseAlarmUseCase, AcknowledgeAl
     }
 
     @Override
+    @org.springframework.transaction.annotation.Transactional
     public String closeAlarm(CloseAlarmCommand command) {
         Objects.requireNonNull(command, "Close alarm command must not be null.");
+        Alarm alarm = alarmRepositoryPort.findByIdForUpdate(command.alarmId())
+                .orElseThrow(() -> new IllegalArgumentException("Unknown alarm: " + command.alarmId()));
+        new dz.sh.hidra.modules.alarm.domain.service.AlarmLifecycleGuard().ensureCanClose(alarm,
+                command.closureType() == dz.sh.hidra.modules.alarm.domain.value.AlarmClosureType.CANCELLED);
         AlarmClosure closure = new AlarmClosure(
                 AlarmId.newId().value(),
                 command.alarmId(),

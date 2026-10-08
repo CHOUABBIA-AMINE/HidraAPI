@@ -7,7 +7,7 @@
  *
  * @Name        : AlarmClosureJpaRepository
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-08
  *
  * @Type        : Interface
  * @Layer       : Infrastructure
@@ -28,4 +28,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface AlarmClosureJpaRepository extends JpaRepository<AlarmClosureJpaEntity, String> {
+    boolean existsByAlarmId(String alarmId);
 }

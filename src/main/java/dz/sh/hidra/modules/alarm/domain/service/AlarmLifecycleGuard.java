@@ -41,11 +41,10 @@ public class AlarmLifecycleGuard {
         if (alarm == null) {
             throw new AlarmLifecycleViolationException("Alarm must not be null.");
         }
-        boolean suppressionWithUnderlyingClear = alarm.currentState() == AlarmState.SUPPRESSED && alarm.clearedAt() != null;
-        if (!cancelled
-                && alarm.currentState() != AlarmState.CLEARED
-                && alarm.currentState() != AlarmState.ESCALATED
-                && !suppressionWithUnderlyingClear) {
+        if (alarm.closed() || alarm.closedAt() != null) {
+            throw new AlarmLifecycleViolationException("Alarm is already closed or cancelled.");
+        }
+        if (!cancelled && alarm.currentState() != AlarmState.CLEARED && alarm.clearedAt() == null) {
             throw new AlarmLifecycleViolationException("Alarm cannot be closed before clear unless explicitly cancelled.");
         }
     }

@@ -233,6 +233,18 @@ import java.time.Instant;
                     incidentId, correlationId, createdAt, changedAt);
         }
 
+        public Alarm withClosure(Instant at, boolean cancelled) {
+            Instant changedAt = lastUpdatedAt.isAfter(at) ? lastUpdatedAt : at;
+            return new Alarm(id, alarmNumber, alarmTypeId, severityId, priorityId,
+                    titleAr, titleFr, titleEn, descriptionAr, descriptionFr, descriptionEn,
+                    sourceType, sourceReferenceId, monitoringAlertCandidateId, monitoringEvaluationId,
+                    telemetryReadingId, planningTargetId, topologyAssetTypeCode, topologyAssetId,
+                    topologyAssetCode, topologyAssetNameSnapshot, cancelled ? AlarmState.CANCELLED : AlarmState.CLOSED,
+                    raisedAt, firstDetectedAt, changedAt, clearedAt, at, acknowledgedAt, acknowledgedByActorId,
+                    owningOrganizationUnitId, owningOrganizationUnitCode, owningOrganizationUnitNameSnapshot,
+                    workflowInstanceId, incidentId, correlationId, createdAt, changedAt);
+        }
+
         private static String normalize(String value) {
             if (value == null || value.isBlank()) {
                 return null;

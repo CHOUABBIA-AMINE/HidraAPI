@@ -74,6 +74,15 @@ import java.time.Instant;
             throw new InvalidSimulationValueException("SimulationRecommendation recommendation status must not be null.");
         }
 
+        if (title == null || title.isBlank()) {
+            throw new InvalidSimulationValueException("SimulationRecommendation title must not be blank.");
+        }
+        if (description == null || description.isBlank()) {
+            throw new InvalidSimulationValueException("SimulationRecommendation description must not be blank.");
+        }
+        if (createdAt == null) {
+            throw new InvalidSimulationValueException("SimulationRecommendation createdAt must not be null.");
+        }
         id = normalize(id);
         runId = normalize(runId);
         candidateId = normalize(candidateId);

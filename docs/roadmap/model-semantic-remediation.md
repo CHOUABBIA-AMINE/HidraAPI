@@ -4198,11 +4198,11 @@ by uncached Spring Boot parent 4.1.1 in offline mode; full Java 21/PostgreSQL CI
 
 - Source review: `HMSR-093`
 - Exact commit: `fix(simulation): remediate semantic review SimulationRecommendation`
-- Status: **Planned**
+- Status: **Completed — implementation; exact-head batch CI pending**
 - SCC: —
 - Recorded upstream HMS dependencies: simulation.SimulationOptimizationCandidate, simulation.SimulationRun
 - HMSR correction count: 5
-- Additive Flyway: `src/main/resources/db/migration/V20261004_079__hmr_079_simulation_simulation_recommendation.sql`
+- Additive Flyway: `src/main/resources/db/migration/V20261008_002__hmr_079_simulation_recommendation_integrity.sql`
 - Owner-contract prerequisite: Owner-controlled validation required by HMSR; no concrete upstream HMS owner is registered, so preserve neutral/reference semantics and do not invent a cross-module FK.
 - Exact write allowlist:
   - `docs/data definition/Simulation.md`
@@ -4219,7 +4219,7 @@ by uncached Spring Boot parent 4.1.1 in offline mode; full Java 21/PostgreSQL CI
   - `src/main/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/entity/SimulationRecommendationJpaEntity.java`
   - `src/main/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/mapper/SimulationPersistenceMapper.java`
   - `src/main/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/repository/SimulationRecommendationJpaRepository.java`
-  - `src/main/resources/db/migration/V20261004_079__hmr_079_simulation_simulation_recommendation.sql`
+  - `src/main/resources/db/migration/V20261008_002__hmr_079_simulation_recommendation_integrity.sql`
   - `src/test/java/dz/sh/hidra/modules/simulation/semantic/SimulationRecommendationSemanticRemediationTest.java`
 - Exact validation:
   - `./mvnw -q -DskipTests compile`
@@ -4232,6 +4232,16 @@ by uncached Spring Boot parent 4.1.1 in offline mode; full Java 21/PostgreSQL CI
   3. **When `confidenceLevelId` is supplied, validate it against the active/eligible exact `SIMULATION_CONFIDENCE_LEVEL` family.**
   4. **When `candidateId` is supplied, validate the optional same-module candidate reference fail-closed and add/retain appropriate same-module persistence protection consistent with repository integrity architecture.**
   5. **Make publication emit audit-ready evidence through the Audit-owned/application boundary** as required by the Simulation DDD; do not introduce cross-module database coupling.
+
+
+Accepted SIM-PREREQ-01 supersedes the original narrow scope with the exhaustive Batch 13
+Ultimate Roadmap list. Live HMSR-093 obligations revalidated independently. Required content,
+exact eligible catalog references, optional local candidate integrity and audited transactional
+publication implemented; Audit taxonomy forward 003 attached. Generic PUBLISHED writes and
+legacy publication implementations fail closed. Existing lifecycle and optional actor/export
+metadata preserved. Local Java syntax/type and 28 actual-boundary harness checks passed with
+dependency stubs; Maven compile/focused/full test/clean verify blocked before compilation by
+uncached Boot parent 4.1.1 offline. Real Spring/JPA/PostgreSQL tests await final exact-head CI.
 
 #### HMR-080 — planning.Nomination
 

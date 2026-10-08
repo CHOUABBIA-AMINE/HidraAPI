@@ -281,6 +281,6 @@ public final class SimulationApplicationService implements CreateSimulationModel
                 now,
                 now
         );
-        return SimulationApplicationMapper.toSummary(recommendationRepositoryPort.save(recommendation));
+        return SimulationApplicationMapper.toSummary(recommendationRepositoryPort.publish(recommendation));
     }
 }

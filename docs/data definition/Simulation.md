@@ -1129,3 +1129,17 @@ NODE or CONNECTION; model scopes remain separate. Existence is the admitted targ
 Unchanged historical inactive types retain evidence; referenced catalog families cannot
 be reclassified. Candidate changes remain descriptive proposals and cannot actuate equipment.
 Forward V20261008_001 aborts invalid legacy content without inventing corrective evidence.
+
+
+## HMR-079 implementation clarification — 2026-10-08
+
+Recommendation title, description and createdAt are mandatory. New references require
+active exact SIMULATION_RECOMMENDATION_TYPE and optional SIMULATION_CONFIDENCE_LEVEL;
+optional candidates must exist and retain nullable local FK integrity. No candidate/run
+equality or completed-run policy is implied. Historical unchanged inactive catalogs remain
+readable/editable as evidence. Publication creates a new recommendation through the explicit
+transactional repository publication operation; generic PUBLISHED saves cannot bypass Audit.
+Persisted publication time is captured at execution, supplied actor stays optional, and Audit
+failure or missing taxonomy rolls the publication back. Existing lifecycle values and scalar
+export metadata remain intact. No actuation or direct target-module mutation is permitted.
+Forward 002/003 enforce local integrity/provision Audit taxonomy without invented legacy data.

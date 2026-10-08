@@ -30,5 +30,10 @@ public interface SimulationRecommendationRepositoryPort {
 
     SimulationRecommendation save(SimulationRecommendation model);
 
+    /** Creates publication and its Audit evidence atomically; older implementations fail closed. */
+    default SimulationRecommendation publish(SimulationRecommendation model) {
+        throw new IllegalStateException("Audited Simulation publication is unavailable.");
+    }
+
     Optional<SimulationRecommendation> findById(String id);
 }

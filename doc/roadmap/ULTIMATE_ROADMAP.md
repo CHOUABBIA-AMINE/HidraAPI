@@ -2549,3 +2549,41 @@ wrapper invoked with bash because checkout executable bit is absent. No real Spr
 JUnit or PostgreSQL pass claimed. Exact-head Java 21 CI pending final 079 publication.
 Current subjects: 35 CI-confirmed + one implemented pending CI + 20 still required/in
 progress + one blocked HMR-080. Next attached task HMR-079; stop after final CI starts.
+
+### Batch 13 HMR-079 implementation result — 2026-10-08
+
+HMSR-093 source review recovered independently. Domain enforces title/description/createdAt.
+Write boundary resolves run and optional candidate without inventing candidate/run equality
+or completed-run eligibility. Locked catalog reads enforce exact recommendation/confidence
+families and new-reference active eligibility, preserving unchanged inactive history.
+Forward 002 adds nullable candidate/confidence local FKs, required-content checks, family
+guards and fail-closed legacy preflight. Forward 003 provisions/reuses active Audit taxonomy,
+rejecting duplicates/inactive rows without reactivation or historical evidence fabrication.
+
+SimulationRecommendationRepositoryPort.publish creates a new PUBLISHED row using persist/
+flush, captures actual publication time and invokes Audit's scalar publication contract in
+the same required transaction. Generic PUBLISHED save is rejected. Legacy implementations
+without audited publication fail closed. Audit emits recommendation/run/optional candidate/
+type/supplied actor/time through AuditInputPolicy and real event recording, excludes raw
+descriptions, and must return a nonblank receipt. Missing taxonomy, invalid references,
+Audit failure and duplicate IDs abort publication; no best-effort/REQUIRES_NEW path.
+No direct target-module write, actuation or foreign-module FK is introduced.
+
+Validation actually performed: 12 changed Java files parsed; changed production boundaries
+plus actual Simulation domain/entities/mapper/application/repository types and Audit command/
+DTO/catalog types compiled on Java 17 with dependency stubs. Twenty-eight HMR-079 boundary
+harness checks passed; combined batch count 58. Stubs do not constitute Spring/JUnit/Jackson
+sanitation/PostgreSQL execution. Focused unit tests and real PostgreSQL migration/concurrency/
+Spring-JPA tests are added, including successful actual Audit service/event persistence and
+rollback of both flushed records on injected failure, missing taxonomy and competing same-ID
+publishers. No real integration pass is claimed locally.
+
+Attempted bash mvnw -o -q compile (-DskipTests), focused/existing/architecture test, test, and
+clean verify: all stop before compilation because Boot parent 4.1.1 is not cached. Only Java
+17 is installed; PostgreSQL/Docker are absent. Java 21 full verification belongs to exact-head
+CI. Canonical Markdown and whitespace/scope checks passed. Independent 078 semantic commit
+d15e78f4c37c8a5915d28e2aa13d9c080a109224 precedes this exact 079 semantic commit. Publish once
+on main, confirm final production CI started, then stop until owner `next` or `fail`.
+Current total: 37 implemented (35 CI-confirmed, two awaiting CI), 19 still required, one
+blocked HMR-080, 57 evaluated. Next HPR-P2-008 batch requires fresh admission and green CI;
+no later HMR is automatically admitted by Batch 13.

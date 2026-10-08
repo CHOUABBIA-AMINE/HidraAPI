@@ -1226,3 +1226,16 @@ hashes remain evidence and unchanged rows remain legal. Optional maskReasonId re
 in active MASK_REASON. Generic inserts sanitize unmasked text, use persist/flush and
 cannot replace existing IDs. SQL protects required paths, masked raw-text exclusion,
 local references and immutable rows. No new before/after producer is introduced.
+
+
+## Simulation publication owner contract — HMR-079, 2026-10-08
+
+Audit exports SimulationRecommendationAuditContract for scalar publication evidence: actual
+recommendation/run/optional candidate/type/supplied actor/publication time. Its adapter resolves
+active EVENT_TYPE/SIMULATION_RECOMMENDATION_PUBLISHED and EVENT_CATEGORY/BUSINESS, validates
+bounded evidence with AuditInputPolicy, and records an immutable Audit event in the caller's
+publication transaction. No raw description or credentials are included. An absent optional
+publisher remains absent; no actor identity is fabricated. Missing/inactive taxonomy or denied
+evidence fails publication. Forward 003 reuses active taxonomy, aborts conflicts/inactive rows,
+and does not reconstruct historical publication events. Simulation owns publication; Audit
+owns evidence recording. No cross-module database FK is introduced.

@@ -249,7 +249,7 @@ P1 is **CLOSED** only when this closure SHA passes the repository's full exact-h
 | HPR-P2-005 | COMPLETED — deterministic OpenAPI 3.1 contract version-controlled from exact executable P1 closure CI artifact; canonical API overview, conventions, authentication/authorization, error-model limitation, versioning/compatibility and OpenAPI-governance documents established; shared machine-readable error envelope remains explicitly NOT ESTABLISHED | API | Code/Doc | Generate and version-control deterministic `doc/api/openapi.yaml`; create API overview, conventions, auth, error, versioning/compatibility and OpenAPI governance docs. | `docs(api): establish versioned api contract` | HPR-P1-008 |
 | HPR-P2-006 | COMPLETED — canonical current database architecture, schema ownership, Flyway policy and generated persistence dictionary established from 82 current Flyway migrations, 469 current module JPA persistence entities, production configuration and closed P1 PostgreSQL/backup evidence; stale pre-closure DB stage documents retained as historical provenance | Database | Doc | Create database architecture, schema ownership, Flyway policy and current generated data dictionary from current migrations/JPA evidence. | `docs(database): establish canonical database documentation` | HPR-P2-001 |
 | HPR-P2-007 | COMPLETED — exact-source reconciliation established: HMR-005 corrected to completed, HMR-009 confirmed completed/stale carry-over removed, HMR-054 historical blocker resolved by current Party→Topology contract, HMR-050..106 reconciled to 56 still-required + 1 blocked (HMR-080), 0 superseded; legacy roadmap preserved as history | Semantic Remediation | Code/Doc | Inventory unresolved HMR/HMSR obligations against exact current source; mark each as completed, still required, blocked, or superseded with evidence. | `docs(model-remediation): reconcile remaining semantic obligations` | HPR-P2-003 |
-| HPR-P2-008 | IN PROGRESS — 50 COMPLETED semantic tasks (49 verified through CI #597, HMR-098 final-head CI pending); six STILL REQUIRED and one BLOCKED HMR-080, 57 evaluated. IC-PREREQ-01 implemented; no final closure. | Semantic Remediation | Code | Execute still-required semantic remediation in dependency order using revalidated HMSR obligations; do not restart completed HMRs without regression evidence. | `fix(model): continue reconciled semantic remediation` | HPR-P2-007 |
+| HPR-P2-008 | IN PROGRESS — 56 CI-confirmed implementations through repaired Batch 20 CI #602; zero STILL REQUIRED, one BLOCKED HMR-080, 57 evaluated. Nomination Party/product/unit ownership prerequisite unresolved; no final closure. | Semantic Remediation | Code | Execute still-required semantic remediation in dependency order using revalidated HMSR obligations; do not restart completed HMRs without regression evidence. | `fix(model): continue reconciled semantic remediation` | HPR-P2-007 |
 | HPR-P2-009 | PENDING | Semantic Remediation | Doc | Transfer permanent semantic decisions from legacy review/roadmaps into `doc/domain/` and `doc/modules/`, then preserve legacy files as execution history. | `docs(model-remediation): canonicalize semantic decisions` | HPR-P2-008 | IN PROGRESS — HMR-050 and attached Batches 1..6 implemented; 17 completed, 39 still-required HMRs and HMR-080 blocked in the HMR-050..106 register. Baseline production CI #576 passed; final Batch 6 CI pending. Local full Maven validation blocked by Maven Central DNS/uncached parent, Java 17 and absent Docker. | Semantic Remediation | Code | Execute still-required semantic remediation in dependency order using revalidated HMSR obligations; do not restart completed HMRs without regression evidence. | `fix(model): continue reconciled semantic remediation` | HPR-P2-007 |
 | HPR-P2-010 | PENDING | Data Governance | Doc | Create data governance, retention/archival, provenance and legacy-data migration documents without inventing retention values. | `docs(data): establish data governance baseline` | HPR-P2-001 |
 | HPR-P2-011 | PENDING | Testing | Doc | Create test strategy, architecture testing, database testing, API testing and requirements traceability documents tied to executable evidence. | `docs(testing): establish verification documentation` | HPR-P2-002..006 |
@@ -5420,3 +5420,93 @@ production/migration/API/POM/workflow tree remain unchanged. Publish the registe
 supporting repair with parent/lease 3841da6332d8abda073c50871e4c28348cf3f4df.
 Keep 52 confirmed + four implementations pending repaired-head CI; do not advance
 to another batch. Observe replacement production CI start, then STOP.
+
+## HPR-P2-008 Batch 20 confirmation and Nomination ownership preflight — 2026-10-08
+
+Owner Next rechecks the published repair. Main is unchanged at
+`74ef372c82a790cdad63a77038fd60afb0de9c44`, tree
+`547c934bd5f655438942fec176a2e619784bd8bb`.
+Production CI #602 (37831581087) PASSED on this exact head. Its Java 21 repository
+verification (`./mvnw -B -q clean verify`), deterministic current/base OpenAPI
+generation, backward compatibility and artifact upload all passed.
+Documentation CI #109 (37831581203) also passed. This is new exact-head CI evidence,
+not a local Maven pass or new physical-survivability evidence.
+
+| HMR / review | Current disposition | Independent semantic commit |
+|---|---|---|
+| HMR-100 / HMSR-117 | COMPLETED — CI #602 GREEN | 2c1693390e943356346c23d611222cee18609979 |
+| HMR-104 / HMSR-121 | COMPLETED — CI #602 GREEN | 4373b97ad1e6cd5908bd05591e9b494499818af6 |
+| HMR-105 / HMSR-122 | COMPLETED — CI #602 GREEN | 0445518741bc62ba35ed117a81b1c143ea1b0171 |
+| HMR-106 / HMSR-123 | COMPLETED — CI #602 GREEN | 3841da6332d8abda073c50871e4c28348cf3f4df |
+
+The separate inventory repair is 74ef372c82a790cdad63a77038fd60afb0de9c44.
+Current reconciliation is **56 CI-confirmed, zero pending CI, zero STILL REQUIRED,
+one BLOCKED HMR-080, 57 evaluated**. Historical preparation/repair notes remain
+provenance; this section supersedes their pending-CI counts.
+
+### Solo HMR-080 live prerequisite recovery
+
+Recover HMSR-094 section 107, the seven HMR-080 obligations and Planning DDD
+section 6.5 against this exact source before selecting production execution.
+The 26-field Nomination still accepts nonpositive quantity, an equal start/end
+and missing audit timestamps. Its direct JPA adapter only maps/saves. Existing
+same-module FKs prove revision/catalog existence, not semantic ownership; no
+revision-scoped code uniqueness or dedicated HMR-080 tests/migration are present.
+NominationJpaRepository and PlanScenarioJpaRepository now expose shared parent
+lookups from Batch 19. This does not implement Nomination's remaining obligations.
+
+| Reference | Current evidence | Decision or contract still required |
+|---|---|---|
+| shipperPartyId / counterpartyId | Party exports only Topology/Assets contracts; no party.application.contract.planning | Register a Party-owned Planning scalar lookup, with canonical shipper code evidence; no Party private imports or cross-module FK. |
+| productTypeId | Required reference; existing FK points at PlanningCatalogEntry; DDD defines no PRODUCT_TYPE family | Identify the authoritative product owner and identifier store, then authorize its public contract and persistence alignment. |
+| quantityUnitId | Required reference; existing FK points at PlanningCatalogEntry; no QUANTITY_UNIT family | Identify the authoritative quantity-unit owner/store and eligibility semantics. |
+| rateUnitId | Optional reference; DDD defines no RATE_UNIT family or definitive owner | Identify its authoritative owner/store; preserve optionality and do not infer it from quantityUnitId. |
+| scenarioId | Optional same-module PlanScenario; owning revision available in current source | Reconcile the local edge and same-revision compatibility before changing application/schema constraints. |
+| source/destination assets | Existing Topology-owned typed Planning lookup available | Review reuse and snapshot preservation in the final implementation scope. |
+| contractReferenceId | No canonical contract-master owner established | Retain the neutral optional scalar; do not fabricate an owner or approval rule. |
+
+The concrete recommended Party boundary is
+`party.application.contract.planning.PlanningPartyReferenceContract`, returning
+only optional scalar Party ID/code evidence from a Party-owned provider. No Party
+ACTIVE/shipper-role restriction is inferred from an existence obligation.
+Existing historical snapshots remain historical; fresh references use owner evidence.
+This is a proposed boundary, not an admitted production file scope.
+
+**NOM-OWNER-01 — BLOCKED / OWNER DECISION REQUIRED.** Supply the authoritative
+module/catalog or external owner and ID store for productTypeId, quantityUnitId
+and rateUnitId, with applicable eligibility semantics. HMSR-094 section 107.7 says
+the correction "must not invent a new Planning taxonomy merely to satisfy the
+existing FK shape." Thus guessed Planning families, guessed Telemetry ownership,
+permissive resolvers and unseeded metadata pretending to establish a business
+owner are not substitutes for this decision. A bare Next does not supply it.
+
+After that decision, register a complete solo HMR-080 prerequisite amendment:
+exact owner contracts/providers, architecture exports, independent exhaustive file
+scope, fresh snapshot/historical policy, same-revision scenario integrity, forward
+migration filename after published 024, and focused/owner/PostgreSQL rollback/race/
+architecture/full-test/clean-verify checks. Preserve its exact semantic message
+`fix(planning): remediate semantic review Nomination`. Do not reuse the legacy
+20261004 migration name behind the current tail or modify any published migration.
+No HMR-080 production work or complete implementation scope is authorized here.
+
+### Documentation publication
+
+Register this supporting preflight as
+`docs(planning): record Nomination ownership preflight`.
+Entire write scope: `doc/roadmap/ULTIMATE_ROADMAP.md` and
+`doc/model-remediation/RECONCILIATION.md`. Update the current counts/independent
+statuses, preserve historical evidence, and validate the two-file diff with
+`git diff --check` plus the documentation workflow's UTF-8/nonempty/conflict-marker
+checks over all canonical Markdown. No Maven/runtime test is required or claimed
+for this documentation-only tree. Exact executable validation remains CI #602.
+
+Publish once under expected head 74ef372c82a790cdad63a77038fd60afb0de9c44,
+verify immutable tree/blobs, observe Documentation Validation start and STOP
+without waiting. Production CI ignores this documentation-only push; no new
+production run is claimed. HPR-P2-008 remains OPEN; HPR-P2-009 is not selected.
+Keep 0.6.0-SNAPSHOT, physical-survivability disposition and release state unchanged.
+
+Pre-publication validation passed: exact two-document scope, git diff --check,
+and all 82 canonical Markdown UTF-8/nonempty/conflict-marker checks. Production,
+test, migration, API, POM, workflows and legacy evidence are byte-for-byte unchanged.
+No local runtime test or HMR-080 implementation is claimed by this preflight.

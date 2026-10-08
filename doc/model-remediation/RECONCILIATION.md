@@ -106,7 +106,7 @@ No `party.application.contract.planning` package exists in the exact current tre
 | HMR-077 | HMSR-091 | risk.RiskEvidenceLink | COMPLETED — CI #593 GREEN | Typed owner evidence validation and named provider beans verified by Java 21 clean verify and OpenAPI compatibility at cfc7798477c70d10e1c3e0afd4dd7e1b42676898. |
 | HMR-078 | HMSR-092 | simulation.SimulationCandidateChange | COMPLETED — CI #590 GREEN | Accepted SIM-PREREQ-01; required change values, active exact catalog and Topology target lookup; forward 001. |
 | HMR-079 | HMSR-093 | simulation.SimulationRecommendation | COMPLETED — CI #590 GREEN | Required content, exact catalogs, nullable local references and transactional Audit-owned publication; forward 002/003. |
-| HMR-080 | HMSR-094 | planning.Nomination | BLOCKED — OWNER CONTRACT REQUIRED | registered migration: absent; dedicated test: absent; Party→Planning contract absent |
+| HMR-080 | HMSR-094 | planning.Nomination | BLOCKED — PARTY AND PRODUCT/UNIT OWNERSHIP | HMSR-094 revalidated at 74ef372c82a790cdad63a77038fd60afb0de9c44; Party→Planning export absent; product/unit owner unresolved; scenario same-revision reconciliation needed. |
 | HMR-081 | HMSR-095 | workflow.WorkflowAction | COMPLETED — CI #581 GREEN | Generic recording permits comments only; configured transitions exclusively produce decisions using live Identity authority. Optional task ownership and conditional evidence are enforced; canonical actor snapshots and server-owned locked sequences replace caller evidence. Action persistence is insert-only with unique monotonic sequence and immutable database guards. Five focused behavior checks passed with temporary stubs; existing permission regression fixture updated. |
 | HMR-082 | HMSR-096 | hse.HseCase | COMPLETED — CI #597 GREEN | Accepted Batch 17 implementation passed full Java 21/PostgreSQL/OpenAPI CI on cfb3681ef1c79b4416336a3533cbc0599b4fd6b2. |
 | HMR-083 | HMSR-097 | audit.AuditExportRequest | COMPLETED — CI #584 GREEN | Required export metadata, active EXPORT_PURPOSE, owner-controlled optional Workflow/Documents references, bounded sanitized filters and one transactional EXPORT access record implemented. Generic writes admit REQUESTED only and persist/flush without merge. Forward V20261007_006; eight focused tests, two owner tests and four PostgreSQL/Spring/JPA tests prepared. Local Maven compile/focused blocked before compilation by uncached Boot 4.1.1 parent; production CI #584 passed. |
@@ -126,13 +126,13 @@ No `party.application.contract.planning` package exists in the exact current tre
 | HMR-097 | HMSR-114 | hse.HseCorrectivePreventiveAction | COMPLETED — CI #597 GREEN | Accepted Batch 17 implementation passed full Java 21/PostgreSQL/OpenAPI CI on cfb3681ef1c79b4416336a3533cbc0599b4fd6b2. |
 | HMR-098 | HMSR-115 | integrity.IntegrityCase | COMPLETED — CI #598 GREEN | Accepted IC-PREREQ-01 implementation passed full production CI on 863d113fbee88f71ff7e2c3b593b415e5b70d07a. |
 | HMR-099 | HMSR-116 | workflow.WorkflowStateHistory | COMPLETED — CI #581 GREEN | Mandatory status/actor display evidence fails fast. History persistence inserts and flushes without upsert; optional task/step/action/reason references are checked for instance/definition and action evidence coherence. Database guards prohibit update/delete/truncate. Four focused behavior checks passed with temporary stubs; ten PostgreSQL/Hibernate cases added for CI, not locally executed. |
-| HMR-100 | HMSR-117 | alarm.Alarm | IMPLEMENTED — FINAL CI PENDING | Accepted ALRM-PREREQ-01; independent Batch 20 lifecycle commit with focused and PostgreSQL/Spring-JPA sources; exact final production CI pending. |
+| HMR-100 | HMSR-117 | alarm.Alarm | COMPLETED — CI #602 GREEN | Accepted ALRM-PREREQ-01; independent Batch 20 lifecycle commit with focused and PostgreSQL/Spring-JPA sources; Java 21 clean verify and OpenAPI compatibility passed at repaired head 74ef372c82a790cdad63a77038fd60afb0de9c44. |
 | HMR-101 | HMSR-118 | audit.AuditAccessRecord | COMPLETED — CI #584 GREEN | Access records use persist/flush without merge; populated optional AuditEvent/export IDs must exist. Forward V20261007_008 supplies nullable local FKs and UPDATE/DELETE denial. Three focused and four added PostgreSQL/JPA/concurrency/orphan checks prepared; local focused Maven blocked by uncached Boot parent; CI #584 passed. |
 | HMR-102 | HMSR-119 | audit.AuditBeforeAfterValue | COMPLETED — CI #584 GREEN | Required fieldPath, masked/sensitive raw-text exclusion, optional exact active MASK_REASON and existing parent event enforced. Hash-only evidence and changed=false remain legal. Persist/flush insertion plus V20261007_009 local FKs/checks/UPDATE/DELETE denial preserve immutable rows. Six focused and five added PostgreSQL/JPA/concurrency/legacy checks prepared. Temporary API type compilation passed; local focused Maven blocked by uncached Boot parent; CI #584 passed. |
 | HMR-103 | HMSR-120 | monitoring.PlanActualDeviation | COMPLETED — CI #600 PASSED | Independent semantic commit 74ea302432eff8434466d7162134b99923ce3161; live/direct-save owner/evaluation validation and forward 021 verified by final repaired-head CI. |
-| HMR-104 | HMSR-121 | alarm.AlarmAcknowledgement | IMPLEMENTED — FINAL CI PENDING | Accepted ALRM-PREREQ-01; independent Batch 20 lifecycle commit with focused and PostgreSQL/Spring-JPA sources; exact final production CI pending. |
-| HMR-105 | HMSR-122 | alarm.AlarmClosure | IMPLEMENTED — FINAL CI PENDING | Accepted ALRM-PREREQ-01; independent Batch 20 lifecycle commit with focused and PostgreSQL/Spring-JPA sources; exact final production CI pending. |
-| HMR-106 | HMSR-123 | alarm.AlarmShelving | IMPLEMENTED — FINAL CI PENDING | Accepted ALRM-PREREQ-01; independent Batch 20 lifecycle commit with focused and PostgreSQL/Spring-JPA sources; exact final production CI pending. |
+| HMR-104 | HMSR-121 | alarm.AlarmAcknowledgement | COMPLETED — CI #602 GREEN | Accepted ALRM-PREREQ-01; independent Batch 20 lifecycle commit with focused and PostgreSQL/Spring-JPA sources; Java 21 clean verify and OpenAPI compatibility passed at repaired head 74ef372c82a790cdad63a77038fd60afb0de9c44. |
+| HMR-105 | HMSR-122 | alarm.AlarmClosure | COMPLETED — CI #602 GREEN | Accepted ALRM-PREREQ-01; independent Batch 20 lifecycle commit with focused and PostgreSQL/Spring-JPA sources; Java 21 clean verify and OpenAPI compatibility passed at repaired head 74ef372c82a790cdad63a77038fd60afb0de9c44. |
+| HMR-106 | HMSR-123 | alarm.AlarmShelving | COMPLETED — CI #602 GREEN | Accepted ALRM-PREREQ-01; independent Batch 20 lifecycle commit with focused and PostgreSQL/Spring-JPA sources; Java 21 clean verify and OpenAPI compatibility passed at repaired head 74ef372c82a790cdad63a77038fd60afb0de9c44. |
 
 ## Reconciliation Totals
 
@@ -140,9 +140,9 @@ No `party.application.contract.planning` package exists in the exact current tre
 - HMR-005 corrected from stale planned status to **COMPLETED**;
 - HMR-009 confirmed **COMPLETED** and removed as a carry-over blocker;
 - HMR-050..106 evaluated: **57**;
-- HMR-050..106 **STILL REQUIRED**: **0**; four Alarm implementations await final CI; HMR-080 remains separately BLOCKED;
+- HMR-050..106 **STILL REQUIRED**: **0**; HMR-080 remains separately BLOCKED;
 - HMR-050..106 **BLOCKED**: **1** (HMR-080);
-- HMR-050..106 **IMPLEMENTED during HPR-P2-008**: **56** (52 CI-confirmed through #600; four Batch 20 implementations pending final CI);
+- HMR-050..106 **IMPLEMENTED during HPR-P2-008**: **56**, all CI-confirmed through #602;
 - HMR-050..106 **SUPERSEDED**: **0**;
 - HMR-054 completed; repaired CI #575 is green;
 - HMR-080 remains blocked; HMR-055 prerequisite resolved and implemented in Batch 7.
@@ -151,7 +151,7 @@ No `party.application.contract.planning` package exists in the exact current tre
 
 - HMR-050 — **COMPLETED** at the first HPR-P2-008 execution step.
 - Batch 7 **COMPLETED — CI #581 GREEN**: HMR-055, 061, 066, 081, 099; exact repaired head ec63af0414d7fa85b9200d4bd181ac799bd072ed. Batch 8 preflight split below; no Planning implementation claimed.
-- Current remaining: **4 IMPLEMENTED — FINAL CI PENDING + 1 BLOCKED (HMR-080)**; 52 CI-confirmed through #600. ALRM-PREREQ-01 accepted and Batch 20 prepared; do not count it confirmed before green production CI.
+- Current remaining: **1 BLOCKED (HMR-080)**; 56 CI-confirmed through #602. Batch 20 is green on repaired production head 74ef372c82a790cdad63a77038fd60afb0de9c44; HPR-P2-008 remains open pending the final ownership prerequisite.
 
 - HMR-051 — **COMPLETED**: Topology and optional Organization references validated on every case save; snapshot preserved; no migration because primary-candidate FK already exists; owner contract and architecture export added.
 
@@ -4716,10 +4716,10 @@ No POM/workflow/route/private-module/previous migration modification is included
 
 | Subject | Status after preparation | Independent semantic commit / tree |
 |---|---|---|
-| HMR-100 / HMSR-117 | IMPLEMENTED — FINAL CI PENDING | 2c1693390e943356346c23d611222cee18609979 / 23f90c246df353ca5c31a1fc6a39736ca3071bc6 |
-| HMR-104 / HMSR-121 | IMPLEMENTED — FINAL CI PENDING | 4373b97ad1e6cd5908bd05591e9b494499818af6 / 13f67c0cd1133d3ddb388ebcbdff9d1db8c4d2a4 |
-| HMR-105 / HMSR-122 | IMPLEMENTED — FINAL CI PENDING | 0445518741bc62ba35ed117a81b1c143ea1b0171 / 69dac5de4e0356ffe586c37852baefe928adbac8 |
-| HMR-106 / HMSR-123 | IMPLEMENTED — FINAL CI PENDING | Ordered final commit uses fix(alarm): remediate semantic review AlarmShelving; exact published tree is independently checked before main advancement. |
+| HMR-100 / HMSR-117 | COMPLETED — CI #602 GREEN | 2c1693390e943356346c23d611222cee18609979 / 23f90c246df353ca5c31a1fc6a39736ca3071bc6 |
+| HMR-104 / HMSR-121 | COMPLETED — CI #602 GREEN | 4373b97ad1e6cd5908bd05591e9b494499818af6 / 13f67c0cd1133d3ddb388ebcbdff9d1db8c4d2a4 |
+| HMR-105 / HMSR-122 | COMPLETED — CI #602 GREEN | 0445518741bc62ba35ed117a81b1c143ea1b0171 / 69dac5de4e0356ffe586c37852baefe928adbac8 |
+| HMR-106 / HMSR-123 | COMPLETED — CI #602 GREEN | Ordered final commit uses fix(alarm): remediate semantic review AlarmShelving; exact published tree is independently checked before main advancement. |
 | HMR-080 | BLOCKED | Unresolved Party-to-Planning owner contract remains separate. |
 
 Current reconciliation: 52 CI-confirmed plus four implemented pending final-head
@@ -4785,3 +4785,93 @@ production/migration/API/POM/workflow tree remain unchanged. Publish the registe
 supporting repair with parent/lease 3841da6332d8abda073c50871e4c28348cf3f4df.
 Keep 52 confirmed + four implementations pending repaired-head CI; do not advance
 to another batch. Observe replacement production CI start, then STOP.
+
+## HPR-P2-008 Batch 20 confirmation and Nomination ownership preflight — 2026-10-08
+
+Owner Next rechecks the published repair. Main is unchanged at
+`74ef372c82a790cdad63a77038fd60afb0de9c44`, tree
+`547c934bd5f655438942fec176a2e619784bd8bb`.
+Production CI #602 (37831581087) PASSED on this exact head. Its Java 21 repository
+verification (`./mvnw -B -q clean verify`), deterministic current/base OpenAPI
+generation, backward compatibility and artifact upload all passed.
+Documentation CI #109 (37831581203) also passed. This is new exact-head CI evidence,
+not a local Maven pass or new physical-survivability evidence.
+
+| HMR / review | Current disposition | Independent semantic commit |
+|---|---|---|
+| HMR-100 / HMSR-117 | COMPLETED — CI #602 GREEN | 2c1693390e943356346c23d611222cee18609979 |
+| HMR-104 / HMSR-121 | COMPLETED — CI #602 GREEN | 4373b97ad1e6cd5908bd05591e9b494499818af6 |
+| HMR-105 / HMSR-122 | COMPLETED — CI #602 GREEN | 0445518741bc62ba35ed117a81b1c143ea1b0171 |
+| HMR-106 / HMSR-123 | COMPLETED — CI #602 GREEN | 3841da6332d8abda073c50871e4c28348cf3f4df |
+
+The separate inventory repair is 74ef372c82a790cdad63a77038fd60afb0de9c44.
+Current reconciliation is **56 CI-confirmed, zero pending CI, zero STILL REQUIRED,
+one BLOCKED HMR-080, 57 evaluated**. Historical preparation/repair notes remain
+provenance; this section supersedes their pending-CI counts.
+
+### Solo HMR-080 live prerequisite recovery
+
+Recover HMSR-094 section 107, the seven HMR-080 obligations and Planning DDD
+section 6.5 against this exact source before selecting production execution.
+The 26-field Nomination still accepts nonpositive quantity, an equal start/end
+and missing audit timestamps. Its direct JPA adapter only maps/saves. Existing
+same-module FKs prove revision/catalog existence, not semantic ownership; no
+revision-scoped code uniqueness or dedicated HMR-080 tests/migration are present.
+NominationJpaRepository and PlanScenarioJpaRepository now expose shared parent
+lookups from Batch 19. This does not implement Nomination's remaining obligations.
+
+| Reference | Current evidence | Decision or contract still required |
+|---|---|---|
+| shipperPartyId / counterpartyId | Party exports only Topology/Assets contracts; no party.application.contract.planning | Register a Party-owned Planning scalar lookup, with canonical shipper code evidence; no Party private imports or cross-module FK. |
+| productTypeId | Required reference; existing FK points at PlanningCatalogEntry; DDD defines no PRODUCT_TYPE family | Identify the authoritative product owner and identifier store, then authorize its public contract and persistence alignment. |
+| quantityUnitId | Required reference; existing FK points at PlanningCatalogEntry; no QUANTITY_UNIT family | Identify the authoritative quantity-unit owner/store and eligibility semantics. |
+| rateUnitId | Optional reference; DDD defines no RATE_UNIT family or definitive owner | Identify its authoritative owner/store; preserve optionality and do not infer it from quantityUnitId. |
+| scenarioId | Optional same-module PlanScenario; owning revision available in current source | Reconcile the local edge and same-revision compatibility before changing application/schema constraints. |
+| source/destination assets | Existing Topology-owned typed Planning lookup available | Review reuse and snapshot preservation in the final implementation scope. |
+| contractReferenceId | No canonical contract-master owner established | Retain the neutral optional scalar; do not fabricate an owner or approval rule. |
+
+The concrete recommended Party boundary is
+`party.application.contract.planning.PlanningPartyReferenceContract`, returning
+only optional scalar Party ID/code evidence from a Party-owned provider. No Party
+ACTIVE/shipper-role restriction is inferred from an existence obligation.
+Existing historical snapshots remain historical; fresh references use owner evidence.
+This is a proposed boundary, not an admitted production file scope.
+
+**NOM-OWNER-01 — BLOCKED / OWNER DECISION REQUIRED.** Supply the authoritative
+module/catalog or external owner and ID store for productTypeId, quantityUnitId
+and rateUnitId, with applicable eligibility semantics. HMSR-094 section 107.7 says
+the correction "must not invent a new Planning taxonomy merely to satisfy the
+existing FK shape." Thus guessed Planning families, guessed Telemetry ownership,
+permissive resolvers and unseeded metadata pretending to establish a business
+owner are not substitutes for this decision. A bare Next does not supply it.
+
+After that decision, register a complete solo HMR-080 prerequisite amendment:
+exact owner contracts/providers, architecture exports, independent exhaustive file
+scope, fresh snapshot/historical policy, same-revision scenario integrity, forward
+migration filename after published 024, and focused/owner/PostgreSQL rollback/race/
+architecture/full-test/clean-verify checks. Preserve its exact semantic message
+`fix(planning): remediate semantic review Nomination`. Do not reuse the legacy
+20261004 migration name behind the current tail or modify any published migration.
+No HMR-080 production work or complete implementation scope is authorized here.
+
+### Documentation publication
+
+Register this supporting preflight as
+`docs(planning): record Nomination ownership preflight`.
+Entire write scope: `doc/roadmap/ULTIMATE_ROADMAP.md` and
+`doc/model-remediation/RECONCILIATION.md`. Update the current counts/independent
+statuses, preserve historical evidence, and validate the two-file diff with
+`git diff --check` plus the documentation workflow's UTF-8/nonempty/conflict-marker
+checks over all canonical Markdown. No Maven/runtime test is required or claimed
+for this documentation-only tree. Exact executable validation remains CI #602.
+
+Publish once under expected head 74ef372c82a790cdad63a77038fd60afb0de9c44,
+verify immutable tree/blobs, observe Documentation Validation start and STOP
+without waiting. Production CI ignores this documentation-only push; no new
+production run is claimed. HPR-P2-008 remains OPEN; HPR-P2-009 is not selected.
+Keep 0.6.0-SNAPSHOT, physical-survivability disposition and release state unchanged.
+
+Pre-publication validation passed: exact two-document scope, git diff --check,
+and all 82 canonical Markdown UTF-8/nonempty/conflict-marker checks. Production,
+test, migration, API, POM, workflows and legacy evidence are byte-for-byte unchanged.
+No local runtime test or HMR-080 implementation is claimed by this preflight.

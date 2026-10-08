@@ -1683,3 +1683,22 @@ Risk Management is not integrity.
 Risk Management is the governed explanation of exposure,
 priority, treatment, acceptance, and residual risk.
 ```
+
+
+### HMR-077 implementation — owner-validated Risk evidence
+
+HMSR-091 independently revalidated. Domain rejects blank identity components. The
+public typed Risk contract is implemented inside all eleven source owners, covering
+twelve exact types. Registry rejects unsupported, ambiguous, missing or mismatched
+source references and uses available canonical snapshots. Application addition and
+transactional JPA save both validate; legacy constructors and no-op fallback deny writes.
+Forward V20261008_004 rejects invalid legacy identity without repairs or foreign FKs.
+No duplicate uniqueness, mandatory snapshots or universal ACTIVE rule is introduced.
+Focused JUnit tests cover required tuple, missing/ambiguous owners, snapshots and each
+owner provider's exact repository dispatch. Seventeen real domain/registry harness
+checks passed; Java typed compilation of actual owner entities/providers/domain passed
+using dependency API stubs. These are not Maven/JUnit/Spring/PostgreSQL execution.
+`bash mvnw -o -q -Dtest=RiskEvidenceLinkSemanticRemediationTest test` is blocked
+before compilation by uncached Spring Boot parent 4.1.1. Java 21/real PostgreSQL and
+full OpenAPI verification remain production CI obligations. HMR-077 implementation
+is staged first; HMR-058 remains in progress and no production PASS is claimed.

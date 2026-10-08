@@ -36,12 +36,24 @@ public class JpaRiskEvidenceLinkRepositoryAdapter implements RiskEvidenceLinkRep
 
     private final RiskEvidenceLinkJpaRepository repository;
 
+    private final dz.sh.hidra.modules.risk.application.port.out.RiskEvidenceLookupPort evidenceLookup;
+
     public JpaRiskEvidenceLinkRepositoryAdapter(RiskEvidenceLinkJpaRepository repository) {
+        this(repository, link -> { throw new dz.sh.hidra.modules.risk.domain.exception.InvalidRiskValueException(
+                "Evidence owner validation is not configured."); });
+    }
+
+    @org.springframework.beans.factory.annotation.Autowired
+    public JpaRiskEvidenceLinkRepositoryAdapter(RiskEvidenceLinkJpaRepository repository,
+            dz.sh.hidra.modules.risk.application.port.out.RiskEvidenceLookupPort evidenceLookup) {
+        this.evidenceLookup = Objects.requireNonNull(evidenceLookup);
         this.repository = Objects.requireNonNull(repository, "RiskEvidenceLinkJpaRepository must not be null.");
     }
 
     @Override
+    @org.springframework.transaction.annotation.Transactional
     public RiskEvidenceLink save(RiskEvidenceLink model) {
+        model = evidenceLookup.validate(model);
         return RiskPersistenceMapper.toDomain(repository.save(RiskPersistenceMapper.toEntity(model)));
     }
 

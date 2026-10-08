@@ -60,14 +60,26 @@ public class RiskApplicationService implements CreateRiskRegisterUseCase, Create
     private final RiskOrganizationReferenceContract organizationReferenceContract;
     private final RiskTopologyScopeReferenceContract topologyScopeReferenceContract;
     private final RiskRegisterAuditContract auditContract;
+    private final dz.sh.hidra.modules.risk.application.port.out.RiskEvidenceLookupPort evidenceLookup;
 
+    public RiskApplicationService(RiskRegisterRepositoryPort registers,
+            RiskAssessmentRepositoryPort assessments, RiskEvidenceLinkRepositoryPort evidence,
+            RiskOrganizationReferenceContract organization, RiskTopologyScopeReferenceContract topology,
+            RiskRegisterAuditContract audit) {
+        this(registers, assessments, evidence, organization, topology, audit,
+                link -> { throw new InvalidRiskValueException("Evidence owner validation is not configured."); });
+    }
+
+
+    @org.springframework.beans.factory.annotation.Autowired
     public RiskApplicationService(
             RiskRegisterRepositoryPort registerRepositoryPort,
             RiskAssessmentRepositoryPort assessmentRepositoryPort,
             RiskEvidenceLinkRepositoryPort evidenceRepositoryPort,
             RiskOrganizationReferenceContract organizationReferenceContract,
             RiskTopologyScopeReferenceContract topologyScopeReferenceContract,
-            RiskRegisterAuditContract auditContract
+            RiskRegisterAuditContract auditContract,
+            dz.sh.hidra.modules.risk.application.port.out.RiskEvidenceLookupPort evidenceLookup
     ) {
         this.registerRepositoryPort = Objects.requireNonNull(registerRepositoryPort, "Risk register repository port must not be null.");
         this.assessmentRepositoryPort = Objects.requireNonNull(assessmentRepositoryPort, "Risk assessment repository port must not be null.");
@@ -75,6 +87,7 @@ public class RiskApplicationService implements CreateRiskRegisterUseCase, Create
         this.organizationReferenceContract = Objects.requireNonNull(organizationReferenceContract, "Risk Organization reference contract must not be null.");
         this.topologyScopeReferenceContract = Objects.requireNonNull(topologyScopeReferenceContract, "Risk Topology scope contract must not be null.");
         this.auditContract = Objects.requireNonNull(auditContract, "Risk Audit contract must not be null.");
+        this.evidenceLookup = Objects.requireNonNull(evidenceLookup);
     }
 
     @Override
@@ -229,6 +242,6 @@ public class RiskApplicationService implements CreateRiskRegisterUseCase, Create
                 command.evidenceSummary(),
                 Instant.now()
         );
-        return evidenceRepositoryPort.save(evidence).id();
+        return evidenceRepositoryPort.save(evidenceLookup.validate(evidence)).id();
     }
 }

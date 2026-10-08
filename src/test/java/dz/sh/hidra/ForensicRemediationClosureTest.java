@@ -88,6 +88,7 @@ class ForensicRemediationClosureTest {
             "dz.sh.hidra.modules.organization.application.contract.planning",
             "dz.sh.hidra.modules.topology.application.contract.risk",
             "dz.sh.hidra.modules.audit.application.contract.risk",
+            "dz.sh.hidra.modules.risk.application.contract.evidence",
             "dz.sh.hidra.modules.audit.application.contract.simulation"
     );
 

@@ -7,7 +7,7 @@
  *
  * @Name        : NoopRiskExternalEvidenceResolver
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-08
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -26,6 +26,6 @@ public class NoopRiskExternalEvidenceResolver implements RiskExternalEvidenceRes
 
     @Override
     public boolean evidenceExists(String evidenceModule, String evidenceType, String evidenceId) {
-        return true;
+        return false;
     }
 }

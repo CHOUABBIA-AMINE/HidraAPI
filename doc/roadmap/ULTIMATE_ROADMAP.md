@@ -2767,3 +2767,124 @@ and canonical RECONCILIATION.md. Exact supporting commit:
 `docs(risk): record Batch 14 execution preflight`. Applicable CI is documentation-only.
 Next action: accept/amend this concrete scope, then register exhaustive files and implement
 HMR-077 followed by HMR-058; no production PASS is claimed by this preflight.
+
+
+## HPR-P2-008 Batch 14 accepted execution envelope — 2026-10-08
+
+Owner `next` accepts RISK-PREREQ-01 on d71e725cdc20d25a9c3322318f4b34107fcab51a.
+CI #590 is green on d53b616de28abcd680da827e09ea7677bc7e4a31. Explicit order:
+HMR-077/HMSR-091 -> HMR-058/HMSR-069, with one exact semantic commit each.
+The accepted nine-part proposal governs behavior. A Risk-owned public neutral lookup
+contract is implemented by owner providers inside their modules (same pattern as
+WorkflowOwnedTargetLookup); Risk imports no owner-private model/repository. Scoring
+provenance is an assessment-owned companion row, preserving the existing 34-field
+assessment API while recording explicit cell/matrix/version and residual context.
+Creation gains a structured scope list; absent legacy-only scope input fails closed.
+Approval refers to an actual prior Workflow approval action as review evidence, executes
+the configured final approval transition using the authenticated actor, and records Audit
+in one transaction. No caller-supplied reviewer snapshot or permission grant is accepted.
+
+### Exhaustive HMR-077 scope
+
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `doc/model-remediation/RECONCILIATION.md`
+- `docs/roadmap/model-semantic-remediation.md`
+- `docs/data definition/Risk.md`
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java`
+- `src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java`
+- `src/main/java/dz/sh/hidra/modules/risk/domain/model/RiskEvidenceLink.java`
+- `src/main/java/dz/sh/hidra/modules/risk/application/contract/evidence/RiskOwnedEvidenceLookup.java`
+- `src/main/java/dz/sh/hidra/modules/risk/application/contract/evidence/package-info.java`
+- `src/main/java/dz/sh/hidra/modules/risk/application/port/out/RiskEvidenceLookupPort.java`
+- `src/main/java/dz/sh/hidra/modules/risk/application/service/RiskEvidenceRegistry.java`
+- `src/main/java/dz/sh/hidra/modules/risk/application/service/RiskApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/risk/infrastructure/persistence/adapter/JpaRiskEvidenceLinkRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/risk/infrastructure/integration/NoopRiskExternalEvidenceResolver.java`
+- `src/main/java/dz/sh/hidra/modules/monitoring/infrastructure/integration/RiskEvidenceQueryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/alarm/infrastructure/integration/RiskEvidenceQueryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/incident/infrastructure/integration/RiskEvidenceQueryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/hse/infrastructure/integration/RiskEvidenceQueryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/integrity/infrastructure/integration/RiskEvidenceQueryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/assets/infrastructure/integration/RiskEvidenceQueryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/simulation/infrastructure/integration/RiskEvidenceQueryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/telemetry/infrastructure/integration/RiskEvidenceQueryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/custody/infrastructure/integration/RiskEvidenceQueryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/documents/infrastructure/integration/RiskEvidenceQueryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/audit/infrastructure/integration/RiskEvidenceQueryAdapter.java`
+- `src/test/java/dz/sh/hidra/modules/risk/semantic/RiskEvidenceLinkSemanticRemediationTest.java`
+- `src/main/resources/db/migration/V20261008_004__hmr_077_risk_evidence_identity_integrity.sql`
+
+Exact commit: `fix(risk): remediate semantic review RiskEvidenceLink`.
+
+### Exhaustive HMR-058 scope
+
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `doc/model-remediation/RECONCILIATION.md`
+- `docs/roadmap/model-semantic-remediation.md`
+- `docs/data definition/Risk.md`
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java`
+- `src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java`
+- `docs/data definition/Audit.md`
+- `src/main/java/dz/sh/hidra/modules/risk/domain/model/RiskAssessment.java`
+- `src/main/java/dz/sh/hidra/modules/risk/application/command/RiskAssessmentScopeInput.java`
+- `src/main/java/dz/sh/hidra/modules/risk/application/command/CreateRiskAssessmentCommand.java`
+- `src/main/java/dz/sh/hidra/modules/risk/application/command/ScoreRiskAssessmentCommand.java`
+- `src/main/java/dz/sh/hidra/modules/risk/application/command/ApproveRiskAssessmentCommand.java`
+- `src/main/java/dz/sh/hidra/modules/risk/application/port/in/RiskAssessmentGovernanceUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/risk/application/port/out/RiskAssessmentRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/risk/application/service/RiskApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/risk/application/service/RiskAssessmentGovernanceService.java`
+- `src/main/java/dz/sh/hidra/modules/risk/api/rest/request/CreateRiskAssessmentRequest.java`
+- `src/main/java/dz/sh/hidra/modules/risk/api/rest/controller/RiskAssessmentGovernanceController.java`
+- `src/main/java/dz/sh/hidra/modules/risk/infrastructure/persistence/adapter/JpaRiskAssessmentRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/risk/infrastructure/persistence/adapter/JpaRiskEvidenceLinkRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/risk/infrastructure/persistence/repository/RiskAssessmentJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/risk/infrastructure/persistence/entity/RiskAssessmentScoringJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/risk/infrastructure/persistence/repository/RiskAssessmentScoringJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/risk/infrastructure/persistence/repository/RiskAssessmentScopeJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/risk/infrastructure/persistence/repository/RiskEvidenceLinkJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/risk/infrastructure/persistence/repository/RiskCatalogEntryJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/risk/infrastructure/persistence/repository/RiskMatrixCellJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/risk/infrastructure/persistence/repository/RiskMatrixJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/risk/infrastructure/integration/RiskAssessmentWorkflowTargetLookup.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/contract/risk/RiskActorContract.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/contract/risk/package-info.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/RiskActorQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/workflow/application/contract/risk/RiskAssessmentApprovalContract.java`
+- `src/main/java/dz/sh/hidra/modules/workflow/application/contract/risk/package-info.java`
+- `src/main/java/dz/sh/hidra/modules/workflow/application/service/RiskAssessmentApprovalService.java`
+- `src/main/java/dz/sh/hidra/modules/audit/application/contract/risk/RiskAssessmentAuditContract.java`
+- `src/main/java/dz/sh/hidra/modules/audit/infrastructure/integration/RiskAssessmentAuditContractAdapter.java`
+- `src/test/java/dz/sh/hidra/modules/risk/semantic/RiskAssessmentSemanticRemediationTest.java`
+- `src/test/java/dz/sh/hidra/modules/risk/infrastructure/persistence/RiskGovernancePostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/workflow/application/service/RiskAssessmentApprovalServiceTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/application/service/RiskActorQueryServiceTest.java`
+- `src/test/java/dz/sh/hidra/modules/audit/infrastructure/integration/RiskAssessmentAuditContractAdapterTest.java`
+- `src/main/resources/db/migration/V20261008_005__hmr_058_risk_assessment_governance.sql`
+- `src/main/resources/db/migration/V20261008_006__provision_risk_assessment_audit_taxonomy.sql`
+
+Exact commit: `fix(risk): remediate semantic review RiskAssessment`.
+
+Validate focused evidence/assessment/owner tests, PostgreSQL/Spring/concurrency tests,
+existing Risk and architecture tests, Maven compile/test/clean verify and OpenAPI
+compatibility. Report real local limitations. Publish final chain once, confirm CI
+started, stop. No release change or later semantic task is admitted.
+
+
+### HMR-077 implementation — owner-validated Risk evidence
+
+HMSR-091 independently revalidated. Domain rejects blank identity components. The
+public typed Risk contract is implemented inside all eleven source owners, covering
+twelve exact types. Registry rejects unsupported, ambiguous, missing or mismatched
+source references and uses available canonical snapshots. Application addition and
+transactional JPA save both validate; legacy constructors and no-op fallback deny writes.
+Forward V20261008_004 rejects invalid legacy identity without repairs or foreign FKs.
+No duplicate uniqueness, mandatory snapshots or universal ACTIVE rule is introduced.
+Focused JUnit tests cover required tuple, missing/ambiguous owners, snapshots and each
+owner provider's exact repository dispatch. Seventeen real domain/registry harness
+checks passed; Java typed compilation of actual owner entities/providers/domain passed
+using dependency API stubs. These are not Maven/JUnit/Spring/PostgreSQL execution.
+`bash mvnw -o -q -Dtest=RiskEvidenceLinkSemanticRemediationTest test` is blocked
+before compilation by uncached Spring Boot parent 4.1.1. Java 21/real PostgreSQL and
+full OpenAPI verification remain production CI obligations. HMR-077 implementation
+is staged first; HMR-058 remains in progress and no production PASS is claimed.

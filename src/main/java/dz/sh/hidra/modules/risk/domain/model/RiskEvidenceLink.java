@@ -7,7 +7,7 @@
  *
  * @Name        : RiskEvidenceLink
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-10-08
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -59,6 +59,10 @@ import java.time.Instant;
         // HRA-051 required: riskAssessmentId
         if (riskAssessmentId == null || riskAssessmentId.isBlank()) {
             throw new InvalidRiskValueException("RiskEvidenceLink risk assessment id must not be blank.");
+        }
+        if (evidenceModule == null || evidenceModule.isBlank()
+                || evidenceType == null || evidenceType.isBlank()) {
+            throw new InvalidRiskValueException("Evidence module and type must not be blank.");
         }
         // HRA-051 required: evidenceId
         if (evidenceId == null || evidenceId.isBlank()) {

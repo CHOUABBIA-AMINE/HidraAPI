@@ -240,7 +240,7 @@ Each model task implements only the obligations recorded in its source HMSR sect
 | HMR-074 | HMSR-088 | organization | OrganizationDelegation | — | organization.Employee, organization.ResponsibilityAssignment | `fix(organization): remediate semantic review OrganizationDelegation` | Completed — Batch 1 |
 | HMR-075 | HMSR-089 | organization | OrganizationHierarchySnapshot | — | organization.Employee | `fix(organization): remediate semantic review OrganizationHierarchySnapshot` | Completed — Batch 1 |
 | HMR-076 | HMSR-090 | organization | ShiftAssignment | — | organization.Employee, organization.OrganizationUnit, organization.Shift | `fix(organization): remediate semantic review ShiftAssignment` | Completed — Batch 1 |
-| HMR-077 | HMSR-091 | risk | RiskEvidenceLink | — | risk.RiskAssessment | `fix(risk): remediate semantic review RiskEvidenceLink` | Planned |
+| HMR-077 | HMSR-091 | risk | RiskEvidenceLink | — | risk.RiskAssessment | `fix(risk): remediate semantic review RiskEvidenceLink` | Implemented — CI pending |
 | HMR-078 | HMSR-092 | simulation | SimulationCandidateChange | — | simulation.SimulationOptimizationCandidate | `fix(simulation): remediate semantic review SimulationCandidateChange` | Planned |
 | HMR-079 | HMSR-093 | simulation | SimulationRecommendation | — | simulation.SimulationOptimizationCandidate, simulation.SimulationRun | `fix(simulation): remediate semantic review SimulationRecommendation` | Planned |
 
@@ -5397,3 +5397,22 @@ HMR-080 remains blocked. No next batch is executed as part of Batch 1.
 HMR-063 and HMR-086..089 are implemented. Canonical reconciliation and Ultimate
 Roadmap override older proposed-next notes. Next proposed owner batch is Batch 6,
 HMR-085 alone, after green Batch 5 CI and owner `next`. HMR-080 remains blocked.
+
+
+### HMR-077 implementation — owner-validated Risk evidence
+
+HMSR-091 independently revalidated. Domain rejects blank identity components. The
+public typed Risk contract is implemented inside all eleven source owners, covering
+twelve exact types. Registry rejects unsupported, ambiguous, missing or mismatched
+source references and uses available canonical snapshots. Application addition and
+transactional JPA save both validate; legacy constructors and no-op fallback deny writes.
+Forward V20261008_004 rejects invalid legacy identity without repairs or foreign FKs.
+No duplicate uniqueness, mandatory snapshots or universal ACTIVE rule is introduced.
+Focused JUnit tests cover required tuple, missing/ambiguous owners, snapshots and each
+owner provider's exact repository dispatch. Seventeen real domain/registry harness
+checks passed; Java typed compilation of actual owner entities/providers/domain passed
+using dependency API stubs. These are not Maven/JUnit/Spring/PostgreSQL execution.
+`bash mvnw -o -q -Dtest=RiskEvidenceLinkSemanticRemediationTest test` is blocked
+before compilation by uncached Spring Boot parent 4.1.1. Java 21/real PostgreSQL and
+full OpenAPI verification remain production CI obligations. HMR-077 implementation
+is staged first; HMR-058 remains in progress and no production PASS is claimed.

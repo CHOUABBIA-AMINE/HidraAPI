@@ -3359,3 +3359,10 @@ Catalog families and active new-reference eligibility, owner-controlled Identity
 
 Exact semantic commit: `fix(incident): remediate semantic review Incident`.
 Implementation complete; production Java 21/Maven/PostgreSQL/OpenAPI CI pending.
+
+### Batch 15 HMR-091 implementation result — 2026-10-08
+
+Forward 008 corrects only the related-side HRA-111 FK to Incident. Domain rejects normalized self-links and missing creation time. Exact active relationship catalog and explicit direction/reciprocal policy are required; no catalog-code heuristics or seeded policy. Symmetric pairs canonicalize; exact/configured inverse duplicates reject under stable parent locking and database uniqueness. Relationship evidence is append-only and used policy is immutable. Legacy invalid references, direction or duplicate evidence fail preflight without rewrite. Production sources compiled against temporary framework APIs; three real domain checks passed. Three focused methods and five additional PostgreSQL tests (including concurrent inverse insertion) prepared; database/runtime execution remains CI obligation.
+
+Exact semantic commit: `fix(incident): remediate semantic review IncidentRelatedIncident`.
+Implementation complete; production Java 21/Maven/PostgreSQL/OpenAPI CI pending.

@@ -65,6 +65,8 @@ import java.time.Instant;
             throw new InvalidIncidentValueException("IncidentRelatedIncident created by actor id must not be blank.");
         }
 
+        if(createdAt==null) throw new InvalidIncidentValueException("Relationship creation time is required.");
+        if(incidentId.trim().equals(relatedIncidentId.trim())) throw new InvalidIncidentValueException("Incident cannot be related to itself.");
         id = normalize(id);
         incidentId = normalize(incidentId);
         relatedIncidentId = normalize(relatedIncidentId);

@@ -28,4 +28,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface IncidentRelatedIncidentJpaRepository extends JpaRepository<IncidentRelatedIncidentJpaEntity, String> {
+    boolean existsByIncidentIdAndRelatedIncidentIdAndRelationshipTypeId(String incidentId,String relatedIncidentId,String relationshipTypeId);
 }

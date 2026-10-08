@@ -55,4 +55,40 @@ class IncidentSemanticPostgresIntegrationTest {
         sql("DROP FUNCTION hidra_incident_catalog_guard() CASCADE");
         assertThrows(SQLException.class,() -> file("V20261008_007__hmr_062_incident_reference_lifecycle_integrity.sql"));
     }
+
+    void relationships() throws Exception {baseline();file("V20261008_008__hmr_091_incident_relationship_integrity.sql");incident("a","OPEN");incident("b","OPEN");}
+    void link(String id,String from,String to) throws SQLException {
+        sql("INSERT INTO hidra_incident_related_incident VALUES ('"+id+"','"+from+"','"+to+"','relationship',null,'actor',now())");
+    }
+    @Test void correctedFkAcceptsIncidentIdsAndRejectsCatalogIds() throws Exception {
+        relationships();sql("INSERT INTO hidra_incident_relationship_policy VALUES ('relationship','SYMMETRIC',null,true)");link("link","a","b");
+        assertThrows(SQLException.class,() -> link("bad","a","wrong"));
+    }
+    @Test void explicitPolicyAndNoSelfLinkAreRequired() throws Exception {
+        relationships();assertThrows(SQLException.class,() -> link("missing-policy","a","b"));
+        sql("INSERT INTO hidra_incident_relationship_policy VALUES ('relationship','SYMMETRIC',null,true)");
+        assertThrows(SQLException.class,() -> link("self","a","a"));
+    }
+    @Test void symmetricInverseCannotCreateDuplicateEvidence() throws Exception {
+        relationships();sql("INSERT INTO hidra_incident_relationship_policy VALUES ('relationship','SYMMETRIC',null,true)");link("first","b","a");
+        assertThrows(SQLException.class,() -> link("inverse","a","b"));
+        assertThrows(SQLException.class,() -> sql("UPDATE hidra_incident_related_incident SET comment='rewrite'"));
+        assertThrows(SQLException.class,() -> sql("UPDATE hidra_incident_relationship_policy SET active=false"));
+    }
+    @Test void legacyRelatedCatalogIdBlocksMigrationWithoutRewritingIt() throws Exception {
+        baseline();incident("a","OPEN");link("legacy","a","wrong");
+        assertThrows(SQLException.class,() -> file("V20261008_008__hmr_091_incident_relationship_integrity.sql"));
+    }
+    @Test void concurrentSymmetricInverseOnlyCommitsOnce() throws Exception {
+        relationships();sql("INSERT INTO hidra_incident_relationship_policy VALUES ('relationship','SYMMETRIC',null,true)");
+        try(var first=connection();var second=connection()) {
+            first.setAutoCommit(false);second.setAutoCommit(false);
+            try(var statement=first.createStatement()) {statement.execute("INSERT INTO hidra_incident_related_incident VALUES ('first','a','b','relationship',null,'actor',now())");}
+            var executor=java.util.concurrent.Executors.newSingleThreadExecutor();
+            try {
+                var future=executor.submit(() -> {try(var statement=second.createStatement()){statement.execute("SET LOCAL statement_timeout='5s'");statement.execute("INSERT INTO hidra_incident_related_incident VALUES ('second','b','a','relationship',null,'actor',now())");second.commit();return true;}catch(SQLException denied){second.rollback();return false;}});
+                first.commit();assertFalse(future.get(10,java.util.concurrent.TimeUnit.SECONDS));
+            } finally {executor.shutdownNow();}
+        }
+    }
 }

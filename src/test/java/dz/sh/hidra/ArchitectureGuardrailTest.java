@@ -7,7 +7,7 @@
  *
  * @Name        : ArchitectureGuardrailTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-07
+ * @UpdatedOn   : 2026-10-08
  *
  * @Type        : Class
  * @Layer       : Test
@@ -91,6 +91,8 @@ class ArchitectureGuardrailTest {
             "dz.sh.hidra.modules.audit.application.contract.organization",
             "dz.sh.hidra.modules.audit.application.contract.alarm",
             "dz.sh.hidra.modules.party.application.contract.topology",
+            "dz.sh.hidra.modules.party.application.contract.planning",
+            "dz.sh.hidra.modules.custody.application.contract.planning",
             "dz.sh.hidra.modules.telemetry.application.contract.monitoring",
             "dz.sh.hidra.modules.telemetry.application.contract.planning",
             "dz.sh.hidra.modules.planning.application.contract.monitoring",

@@ -7,7 +7,7 @@
  *
  * @Name        : NominationJpaRepository
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-12
+ * @UpdatedOn   : 2026-10-08
  *
  * @Type        : Interface
  * @Layer       : Infrastructure
@@ -37,6 +37,10 @@ import java.util.Optional;
 public interface NominationJpaRepository extends JpaRepository<NominationJpaEntity, String> {
 
     Page<NominationJpaEntity> findByRevisionId(String revisionId, Pageable pageable);
+    boolean existsByRevisionIdAndCodeAndIdNot(String revisionId,String code,String id);
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("select reference from NominationJpaEntity reference where reference.id = :id")
+    Optional<NominationJpaEntity> findByIdForUpdate(@Param("id") String id);
     @Lock(LockModeType.PESSIMISTIC_READ)
     @Query("select reference from NominationJpaEntity reference where reference.id = :id")
     Optional<NominationJpaEntity> findByIdForShare(@Param("id") String id);

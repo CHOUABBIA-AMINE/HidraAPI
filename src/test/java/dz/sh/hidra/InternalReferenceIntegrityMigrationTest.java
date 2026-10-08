@@ -59,6 +59,12 @@ class InternalReferenceIntegrityMigrationTest {
 
     private static final int NEW_HRA_111_FOREIGN_KEYS = 551;
 
+    // NOM-OWNER-01 explicitly reclassifies these two historical obligations to public owner contracts.
+    private static final Map<String,String> OWNER_CONTRACT_RECLASSIFICATIONS = Map.of(
+            "fk_hra111_planning_010", "product_type_id",
+            "fk_hra111_planning_011", "quantity_unit_id"
+    );
+
     // HMR-057/093/091 replace misclassified catalog FKs with owner-local lineage FKs.
     private static final Map<String, ForeignKeyReplacement> SAME_MODULE_REPLACEMENTS = Map.of(
             "hmr057_request_fk", new ForeignKeyReplacement("reporting", "hidra_reporting_run", "hidra_reporting_request"),
@@ -165,7 +171,17 @@ class InternalReferenceIntegrityMigrationTest {
             }
         }
 
-        assertThat(observed).isEqualTo(NEW_HRA_111_FOREIGN_KEYS);
+        assertThat(observed + OWNER_CONTRACT_RECLASSIFICATIONS.size()).isEqualTo(NEW_HRA_111_FOREIGN_KEYS);
+        for (var entry : OWNER_CONTRACT_RECLASSIFICATIONS.entrySet()) {
+            assertThat(constraintExists(entry.getKey())).as("reclassified %s has no misowned FK",entry.getKey()).isFalse();
+            try (Connection connection=connection(); PreparedStatement statement=connection.prepareStatement(
+                    "SELECT count(*) FROM pg_constraint c JOIN pg_class t ON t.oid=c.conrelid "
+                    + "JOIN pg_attribute a ON a.attrelid=t.oid AND a.attnum=ANY(c.conkey) "
+                    + "WHERE c.contype='f' AND t.relname='hidra_planning_nomination' AND a.attname=?")) {
+                statement.setString(1,entry.getValue());
+                try (ResultSet result=statement.executeQuery()) {result.next();assertThat(result.getInt(1)).isZero();}
+            }
+        }
         for (String replacement : SAME_MODULE_REPLACEMENTS.keySet()) {
             assertThat(constraintExists(replacement)).as("replacement %s exists", replacement).isTrue();
         }

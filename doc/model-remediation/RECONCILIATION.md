@@ -68,9 +68,12 @@ The HMR-054 semantic implementation itself is still not evidenced by its registe
 
 ### HMR-080 — planning.Nomination
 
-**BLOCKED — Party→Planning owner contract remains absent.**
+**IMPLEMENTED — NOM-EXEC-01 accepted; exact-head production CI pending.**
 
-No `party.application.contract.planning` package exists in the exact current tree. HPR-P2-008 must not invent a direct Party-domain/repository dependency or cross-module FK. The owner contract must be explicitly introduced/authorized before HMR-080 can execute.
+The accepted standalone execution exports Party, Custody product and Telemetry unit
+contracts, validates direct saves and installs forward 025/026. The previous absent
+owner-contract blocker is superseded. This implementation is not CI-confirmed yet;
+HPR-P2-008 remains open.
 
 ## Reconciled Outstanding Register
 
@@ -106,7 +109,7 @@ No `party.application.contract.planning` package exists in the exact current tre
 | HMR-077 | HMSR-091 | risk.RiskEvidenceLink | COMPLETED — CI #593 GREEN | Typed owner evidence validation and named provider beans verified by Java 21 clean verify and OpenAPI compatibility at cfc7798477c70d10e1c3e0afd4dd7e1b42676898. |
 | HMR-078 | HMSR-092 | simulation.SimulationCandidateChange | COMPLETED — CI #590 GREEN | Accepted SIM-PREREQ-01; required change values, active exact catalog and Topology target lookup; forward 001. |
 | HMR-079 | HMSR-093 | simulation.SimulationRecommendation | COMPLETED — CI #590 GREEN | Required content, exact catalogs, nullable local references and transactional Audit-owned publication; forward 002/003. |
-| HMR-080 | HMSR-094 | planning.Nomination | BLOCKED — NOM-EXEC-01 ENVELOPE PENDING | Owner Apply and next accepts Custody products, Telemetry quantity/rate units and Party references; full solo design/scope/forward migrations registered below; no production implementation. |
+| HMR-080 | HMSR-094 | planning.Nomination | IMPLEMENTED — PRODUCTION CI PENDING | NOM-OWNER-01 and NOM-EXEC-01 accepted; transactional owner contracts, strict intrinsic/parent/code integrity, explicit approved historical ID transition and dedicated tests; forward 025/026; local Maven blocked before compilation. |
 | HMR-081 | HMSR-095 | workflow.WorkflowAction | COMPLETED — CI #581 GREEN | Generic recording permits comments only; configured transitions exclusively produce decisions using live Identity authority. Optional task ownership and conditional evidence are enforced; canonical actor snapshots and server-owned locked sequences replace caller evidence. Action persistence is insert-only with unique monotonic sequence and immutable database guards. Five focused behavior checks passed with temporary stubs; existing permission regression fixture updated. |
 | HMR-082 | HMSR-096 | hse.HseCase | COMPLETED — CI #597 GREEN | Accepted Batch 17 implementation passed full Java 21/PostgreSQL/OpenAPI CI on cfb3681ef1c79b4416336a3533cbc0599b4fd6b2. |
 | HMR-083 | HMSR-097 | audit.AuditExportRequest | COMPLETED — CI #584 GREEN | Required export metadata, active EXPORT_PURPOSE, owner-controlled optional Workflow/Documents references, bounded sanitized filters and one transactional EXPORT access record implemented. Generic writes admit REQUESTED only and persist/flush without merge. Forward V20261007_006; eight focused tests, two owner tests and four PostgreSQL/Spring/JPA tests prepared. Local Maven compile/focused blocked before compilation by uncached Boot 4.1.1 parent; production CI #584 passed. |
@@ -140,12 +143,12 @@ No `party.application.contract.planning` package exists in the exact current tre
 - HMR-005 corrected from stale planned status to **COMPLETED**;
 - HMR-009 confirmed **COMPLETED** and removed as a carry-over blocker;
 - HMR-050..106 evaluated: **57**;
-- HMR-050..106 **STILL REQUIRED**: **0**; HMR-080 remains separately BLOCKED;
-- HMR-050..106 **BLOCKED**: **1** (HMR-080);
-- HMR-050..106 **IMPLEMENTED during HPR-P2-008**: **56**, all CI-confirmed through #602;
+- HMR-050..106 **STILL REQUIRED**: **0**;
+- HMR-050..106 **BLOCKED**: **0**;
+- HMR-050..106 **IMPLEMENTED during HPR-P2-008**: **57**, 56 CI-confirmed through #602 and one HMR-080 pending production CI;
 - HMR-050..106 **SUPERSEDED**: **0**;
 - HMR-054 completed; repaired CI #575 is green;
-- HMR-080 remains blocked; HMR-055 prerequisite resolved and implemented in Batch 7.
+- HMR-080 is implemented with production CI pending; HMR-055 prerequisite resolved and implemented in Batch 7.
 
 ## HPR-P2-008 Progress
 
@@ -5149,3 +5152,71 @@ Pre-publication checks passed: exact two-document scope, git diff --check, all
 sections, 31 unique proposed scope paths, forward 025/026 naming and existing
 PlanTarget validation targets. No production/test/migration/POM/workflow or legacy
 file changed. This documentation-only task claims no new Maven/runtime result.
+
+## HPR-P2-008 solo HMR-080 execution acceptance — 2026-10-08
+
+Owner Next after 3df2ec4548eec8922f122c44bf0a1ac18d2256f3 ACCEPTS NOM-EXEC-01
+in full: twelve-part design, 31-path scope, owner contracts/policies, explicit approved
+historical mapping-only transition, forward 025/026, inventory reconciliation and
+runtime validation. NOM-OWNER-01 remains accepted. No repeat acceptance is needed.
+Main is unchanged at that preflight; documentation CI #111 passed. Executable tree
+is identical to green CI #602 on 74ef372c82a790cdad63a77038fd60afb0de9c44.
+HMSR-094 and current 26-field source/schema/owner boundaries were recovered before
+mutation. HMR-080 is IN PROGRESS, not completed. HPR-P2-008 stays open.
+
+## HPR-P2-008 solo HMR-080 implementation — 2026-10-08
+
+Exact semantic commit: `fix(planning): remediate semantic review Nomination`.
+Parent/expected-head lease: 3df2ec4548eec8922f122c44bf0a1ac18d2256f3.
+NOM-OWNER-01 and the complete NOM-EXEC-01 envelope are accepted. HMR-080 is
+IMPLEMENTED — PRODUCTION CI PENDING. Current count: 56 CI-confirmed, one pending,
+zero blocked/still-required, 57 evaluated. Earlier blocker/preflight states are history.
+
+Preserved all 26 fields, status values, persistence mirror and neutral optional
+contract reference. Positive quantity, strict period and audit timestamps are
+intrinsic. Direct saves are REQUIRED transactional, lock existing records, resolve
+revision/exact nomination family/same-revision scenario, enforce revision/code
+uniqueness and flush validated records. Exported owner providers join that transaction:
+Custody actual-ID product approval, Telemetry QUANTITY/RATE roles and explicit pairs,
+and optional Party identity/code. Owner rows and approval facts are locked; unit and
+Party identity locks use stable order. Fresh references require eligible evidence;
+unchanged valid history retains inactive references and canonical stored snapshots.
+Fresh Party/Topology snapshots come from their owners. No private-module imports or
+cross-module database FKs were introduced.
+
+025 installs four empty approval/mapping stores. 026 locks inputs, fails closed on
+invalid history or missing/wrong approved mappings, then removes only the two misowned
+Planning-catalog FKs and transitions the three scalar owner IDs. All other columns
+remain unchanged. The own scenario composite FK, intrinsic/code constraints, exact
+family guard and immutable approval/mapping history are installed. Published migrations
+and prior PlanTarget integrity remain unchanged. Nonempty deployments still require
+staged 025 provisioning by owners before 026; no guessed or seeded mappings exist.
+The historical inventory is explicitly reconciled as 551 = 549 structural constraints
++ two owner-contract reclassifications, without replacing them with cross-module FKs.
+
+Validation attempts (tracked wrapper is nonexecutable, so invoked through bash):
+
+- `bash mvnw -q -DskipTests compile`
+- `bash mvnw -q -Dtest=NominationSemanticRemediationTest test`
+- `bash mvnw -q -Dtest=PlanningProductReferenceQueryAdapterTest,PlanningUnitReferenceQueryAdapterTest,PlanningPartyReferenceQueryAdapterTest test`
+- `bash mvnw -q -Dtest=NominationSemanticPostgresIntegrationTest,PlanTargetSemanticRemediationTest,PlanTargetSemanticPostgresIntegrationTest test`
+- `bash mvnw -q -Dtest=ArchitectureGuardrailTest,ForensicRemediationClosureTest,DomainInvariantGuardrailTest,DomainPersistenceMirrorGuardrailTest,InternalReferenceIntegrityMigrationTest test`
+- `bash mvnw -q test`
+- `bash mvnw -q clean verify`
+
+All seven exited 1 before compilation: uncached Spring Boot parent 4.1.1 and
+`repo.maven.apache.org: Temporary failure in name resolution`. Java 17.0.20 is local;
+Java 21, Docker and PostgreSQL executables are absent. No local Maven/JUnit/Spring-JPA,
+PostgreSQL migration/rollback/race or OpenAPI success is claimed. Dedicated real-owner
+PostgreSQL/Spring-JPA tests are prepared for CI, including fail-closed staged migrations,
+exact historical transition, immutable metadata, rollback after flush, eligibility and
+parent/owner races, duplicate-code one-winner and dependent PlanTarget constraints.
+
+Supplementary checks passed: Java 17 source type checks of actual changed production
+and all five new test files against temporary external dependency stubs; actual domain/
+mapper JVM smoke (11 checks, no JPA/database); admitted scope/header/UTF-8/Markdown/
+whitespace checks, retained historical marker counts and static contract boundaries.
+These supplementary checks do not replace the required runtime gates. Keep version
+0.6.0-SNAPSHOT and HPR-P2-008 OPEN; no physical-survivability claim. Publish once,
+verify the exact immutable tree, confirm production CI starts and STOP without waiting.
+A subsequent Next reviews that CI; Fail repairs this scope before any later task.

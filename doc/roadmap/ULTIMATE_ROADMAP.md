@@ -249,7 +249,7 @@ P1 is **CLOSED** only when this closure SHA passes the repository's full exact-h
 | HPR-P2-005 | COMPLETED — deterministic OpenAPI 3.1 contract version-controlled from exact executable P1 closure CI artifact; canonical API overview, conventions, authentication/authorization, error-model limitation, versioning/compatibility and OpenAPI-governance documents established; shared machine-readable error envelope remains explicitly NOT ESTABLISHED | API | Code/Doc | Generate and version-control deterministic `doc/api/openapi.yaml`; create API overview, conventions, auth, error, versioning/compatibility and OpenAPI governance docs. | `docs(api): establish versioned api contract` | HPR-P1-008 |
 | HPR-P2-006 | COMPLETED — canonical current database architecture, schema ownership, Flyway policy and generated persistence dictionary established from 82 current Flyway migrations, 469 current module JPA persistence entities, production configuration and closed P1 PostgreSQL/backup evidence; stale pre-closure DB stage documents retained as historical provenance | Database | Doc | Create database architecture, schema ownership, Flyway policy and current generated data dictionary from current migrations/JPA evidence. | `docs(database): establish canonical database documentation` | HPR-P2-001 |
 | HPR-P2-007 | COMPLETED — exact-source reconciliation established: HMR-005 corrected to completed, HMR-009 confirmed completed/stale carry-over removed, HMR-054 historical blocker resolved by current Party→Topology contract, HMR-050..106 reconciled to 56 still-required + 1 blocked (HMR-080), 0 superseded; legacy roadmap preserved as history | Semantic Remediation | Code/Doc | Inventory unresolved HMR/HMSR obligations against exact current source; mark each as completed, still required, blocked, or superseded with evidence. | `docs(model-remediation): reconcile remaining semantic obligations` | HPR-P2-003 |
-| HPR-P2-008 | IN PROGRESS — 56 CI-confirmed implementations through repaired Batch 20 CI #602; zero STILL REQUIRED, one BLOCKED HMR-080, 57 evaluated. NOM-OWNER-01 accepted; solo NOM-EXEC-01 technical envelope pending; no final closure. | Semantic Remediation | Code | Execute still-required semantic remediation in dependency order using revalidated HMSR obligations; do not restart completed HMRs without regression evidence. | `fix(model): continue reconciled semantic remediation` | HPR-P2-007 |
+| HPR-P2-008 | IN PROGRESS — 56 CI-confirmed through repaired Batch 20 CI #602; HMR-080 implemented, production CI pending; zero STILL REQUIRED or BLOCKED, 57 evaluated. NOM-OWNER-01/NOM-EXEC-01 accepted; no final closure. | Semantic Remediation | Code | Execute still-required semantic remediation in dependency order using revalidated HMSR obligations; do not restart completed HMRs without regression evidence. | `fix(model): continue reconciled semantic remediation` | HPR-P2-007 |
 | HPR-P2-009 | PENDING | Semantic Remediation | Doc | Transfer permanent semantic decisions from legacy review/roadmaps into `doc/domain/` and `doc/modules/`, then preserve legacy files as execution history. | `docs(model-remediation): canonicalize semantic decisions` | HPR-P2-008 | IN PROGRESS — HMR-050 and attached Batches 1..6 implemented; 17 completed, 39 still-required HMRs and HMR-080 blocked in the HMR-050..106 register. Baseline production CI #576 passed; final Batch 6 CI pending. Local full Maven validation blocked by Maven Central DNS/uncached parent, Java 17 and absent Docker. | Semantic Remediation | Code | Execute still-required semantic remediation in dependency order using revalidated HMSR obligations; do not restart completed HMRs without regression evidence. | `fix(model): continue reconciled semantic remediation` | HPR-P2-007 |
 | HPR-P2-010 | PENDING | Data Governance | Doc | Create data governance, retention/archival, provenance and legacy-data migration documents without inventing retention values. | `docs(data): establish data governance baseline` | HPR-P2-001 |
 | HPR-P2-011 | PENDING | Testing | Doc | Create test strategy, architecture testing, database testing, API testing and requirements traceability documents tied to executable evidence. | `docs(testing): establish verification documentation` | HPR-P2-002..006 |
@@ -5784,3 +5784,71 @@ Pre-publication checks passed: exact two-document scope, git diff --check, all
 sections, 31 unique proposed scope paths, forward 025/026 naming and existing
 PlanTarget validation targets. No production/test/migration/POM/workflow or legacy
 file changed. This documentation-only task claims no new Maven/runtime result.
+
+## HPR-P2-008 solo HMR-080 execution acceptance — 2026-10-08
+
+Owner Next after 3df2ec4548eec8922f122c44bf0a1ac18d2256f3 ACCEPTS NOM-EXEC-01
+in full: twelve-part design, 31-path scope, owner contracts/policies, explicit approved
+historical mapping-only transition, forward 025/026, inventory reconciliation and
+runtime validation. NOM-OWNER-01 remains accepted. No repeat acceptance is needed.
+Main is unchanged at that preflight; documentation CI #111 passed. Executable tree
+is identical to green CI #602 on 74ef372c82a790cdad63a77038fd60afb0de9c44.
+HMSR-094 and current 26-field source/schema/owner boundaries were recovered before
+mutation. HMR-080 is IN PROGRESS, not completed. HPR-P2-008 stays open.
+
+## HPR-P2-008 solo HMR-080 implementation — 2026-10-08
+
+Exact semantic commit: `fix(planning): remediate semantic review Nomination`.
+Parent/expected-head lease: 3df2ec4548eec8922f122c44bf0a1ac18d2256f3.
+NOM-OWNER-01 and the complete NOM-EXEC-01 envelope are accepted. HMR-080 is
+IMPLEMENTED — PRODUCTION CI PENDING. Current count: 56 CI-confirmed, one pending,
+zero blocked/still-required, 57 evaluated. Earlier blocker/preflight states are history.
+
+Preserved all 26 fields, status values, persistence mirror and neutral optional
+contract reference. Positive quantity, strict period and audit timestamps are
+intrinsic. Direct saves are REQUIRED transactional, lock existing records, resolve
+revision/exact nomination family/same-revision scenario, enforce revision/code
+uniqueness and flush validated records. Exported owner providers join that transaction:
+Custody actual-ID product approval, Telemetry QUANTITY/RATE roles and explicit pairs,
+and optional Party identity/code. Owner rows and approval facts are locked; unit and
+Party identity locks use stable order. Fresh references require eligible evidence;
+unchanged valid history retains inactive references and canonical stored snapshots.
+Fresh Party/Topology snapshots come from their owners. No private-module imports or
+cross-module database FKs were introduced.
+
+025 installs four empty approval/mapping stores. 026 locks inputs, fails closed on
+invalid history or missing/wrong approved mappings, then removes only the two misowned
+Planning-catalog FKs and transitions the three scalar owner IDs. All other columns
+remain unchanged. The own scenario composite FK, intrinsic/code constraints, exact
+family guard and immutable approval/mapping history are installed. Published migrations
+and prior PlanTarget integrity remain unchanged. Nonempty deployments still require
+staged 025 provisioning by owners before 026; no guessed or seeded mappings exist.
+The historical inventory is explicitly reconciled as 551 = 549 structural constraints
++ two owner-contract reclassifications, without replacing them with cross-module FKs.
+
+Validation attempts (tracked wrapper is nonexecutable, so invoked through bash):
+
+- `bash mvnw -q -DskipTests compile`
+- `bash mvnw -q -Dtest=NominationSemanticRemediationTest test`
+- `bash mvnw -q -Dtest=PlanningProductReferenceQueryAdapterTest,PlanningUnitReferenceQueryAdapterTest,PlanningPartyReferenceQueryAdapterTest test`
+- `bash mvnw -q -Dtest=NominationSemanticPostgresIntegrationTest,PlanTargetSemanticRemediationTest,PlanTargetSemanticPostgresIntegrationTest test`
+- `bash mvnw -q -Dtest=ArchitectureGuardrailTest,ForensicRemediationClosureTest,DomainInvariantGuardrailTest,DomainPersistenceMirrorGuardrailTest,InternalReferenceIntegrityMigrationTest test`
+- `bash mvnw -q test`
+- `bash mvnw -q clean verify`
+
+All seven exited 1 before compilation: uncached Spring Boot parent 4.1.1 and
+`repo.maven.apache.org: Temporary failure in name resolution`. Java 17.0.20 is local;
+Java 21, Docker and PostgreSQL executables are absent. No local Maven/JUnit/Spring-JPA,
+PostgreSQL migration/rollback/race or OpenAPI success is claimed. Dedicated real-owner
+PostgreSQL/Spring-JPA tests are prepared for CI, including fail-closed staged migrations,
+exact historical transition, immutable metadata, rollback after flush, eligibility and
+parent/owner races, duplicate-code one-winner and dependent PlanTarget constraints.
+
+Supplementary checks passed: Java 17 source type checks of actual changed production
+and all five new test files against temporary external dependency stubs; actual domain/
+mapper JVM smoke (11 checks, no JPA/database); admitted scope/header/UTF-8/Markdown/
+whitespace checks, retained historical marker counts and static contract boundaries.
+These supplementary checks do not replace the required runtime gates. Keep version
+0.6.0-SNAPSHOT and HPR-P2-008 OPEN; no physical-survivability claim. Publish once,
+verify the exact immutable tree, confirm production CI starts and STOP without waiting.
+A subsequent Next reviews that CI; Fail repairs this scope before any later task.

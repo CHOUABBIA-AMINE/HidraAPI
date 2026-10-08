@@ -7,7 +7,7 @@
  *
  * @Name        : JpaNominationRepositoryAdapter
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-08
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -24,6 +24,7 @@ import dz.sh.hidra.modules.planning.domain.model.Nomination;
 import dz.sh.hidra.modules.planning.infrastructure.persistence.mapper.PlanningPersistenceMapper;
 import dz.sh.hidra.modules.planning.infrastructure.persistence.repository.NominationJpaRepository;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -35,14 +36,23 @@ import java.util.Optional;
 public class JpaNominationRepositoryAdapter implements NominationRepositoryPort {
 
     private final NominationJpaRepository repository;
+    private final NominationReferenceValidation validation;
 
-    public JpaNominationRepositoryAdapter(NominationJpaRepository repository) {
+    public JpaNominationRepositoryAdapter(NominationJpaRepository repository,NominationReferenceValidation validation) {
         this.repository = Objects.requireNonNull(repository, "NominationJpaRepository must not be null.");
+        this.validation=Objects.requireNonNull(validation);
     }
 
     @Override
+    @Transactional
     public Nomination save(Nomination model) {
-        return PlanningPersistenceMapper.toDomain(repository.save(PlanningPersistenceMapper.toEntity(model)));
+        Objects.requireNonNull(model);
+        var old=repository.findByIdForUpdate(model.id()).map(PlanningPersistenceMapper::toDomain).orElse(null);
+        var valid=validation.validate(model,old);
+        if(repository.existsByRevisionIdAndCodeAndIdNot(valid.revisionId(),valid.code(),valid.id())) {
+            throw new IllegalArgumentException("Nomination code already exists in revision.");
+        }
+        return PlanningPersistenceMapper.toDomain(repository.saveAndFlush(PlanningPersistenceMapper.toEntity(valid)));
     }
 
     @Override

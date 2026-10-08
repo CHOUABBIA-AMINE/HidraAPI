@@ -7,7 +7,7 @@
  *
  * @Name        : Nomination
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-10-08
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -125,8 +125,14 @@ import java.math.BigDecimal;
             throw new InvalidPlanningValueException("Nomination period end must not be null.");
         }
         // HRA-051 order: periodStart <= periodEnd
-        if (periodStart != null && periodEnd != null && periodEnd.isBefore(periodStart)) {
-            throw new InvalidPlanningValueException("Nomination period end must not be before period start.");
+        if (!periodStart.isBefore(periodEnd)) {
+            throw new InvalidPlanningValueException("Nomination period must have positive duration.");
+        }
+        if (quantity.signum() <= 0) throw new InvalidPlanningValueException("Nomination quantity must be positive.");
+        if (createdAt == null || updatedAt == null) throw new InvalidPlanningValueException("Nomination audit timestamps are required.");
+        if ((sourceAssetType == null || sourceAssetType.isBlank()) != (sourceAssetId == null || sourceAssetId.isBlank())
+                || (destinationAssetType == null || destinationAssetType.isBlank()) != (destinationAssetId == null || destinationAssetId.isBlank())) {
+            throw new InvalidPlanningValueException("Optional topology references require both type and identity.");
         }
 
         id = normalize(id);

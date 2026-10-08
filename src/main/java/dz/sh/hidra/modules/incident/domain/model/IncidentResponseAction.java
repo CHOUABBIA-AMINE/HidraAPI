@@ -86,6 +86,7 @@ import java.time.Instant;
             throw new InvalidIncidentValueException("IncidentResponseAction action status must not be null.");
         }
 
+        if(description==null || description.isBlank()) throw new InvalidIncidentValueException("Response action description is required.");
         id = normalize(id);
         incidentId = normalize(incidentId);
         actionTypeId = normalize(actionTypeId);

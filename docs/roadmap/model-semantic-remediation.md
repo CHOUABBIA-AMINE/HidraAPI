@@ -4668,7 +4668,7 @@ uncached Boot parent 4.1.1 offline. Real Spring/JPA/PostgreSQL tests await final
 
 - Source review: `HMSR-109`
 - Exact commit: `fix(incident): remediate semantic review IncidentResponseAction`
-- Status: **Planned**
+- Status: **Implemented — Batch 15; CI pending**
 - SCC: —
 - Recorded upstream HMS dependencies: incident.Incident, organization.OrganizationUnit
 - HMSR correction count: 3
@@ -5520,5 +5520,9 @@ and historical write scope above are preserved. Canonical Ultimate Roadmap conta
 actual forward migration, owner contracts, exact files and CI-pending validation.
 
 HMR-091 implemented under accepted canonical Batch 15 scope; source HMSR obligations
+and historical write scope above are preserved. Canonical Ultimate Roadmap contains
+actual forward migration, owner contracts, exact files and CI-pending validation.
+
+HMR-092 implemented under accepted canonical Batch 15 scope; source HMSR obligations
 and historical write scope above are preserved. Canonical Ultimate Roadmap contains
 actual forward migration, owner contracts, exact files and CI-pending validation.

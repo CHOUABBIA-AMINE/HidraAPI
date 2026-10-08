@@ -119,8 +119,11 @@ public final class IncidentApplicationService implements OpenIncidentUseCase, Re
     }
 
     @Override
+    @org.springframework.transaction.annotation.Transactional
     public String recordResponseAction(RecordIncidentResponseActionCommand command) {
         Objects.requireNonNull(command, "Record incident response action command must not be null.");
+        var parent=incidentRepositoryPort.findByIdForUpdate(command.incidentId()).orElseThrow(() -> new IllegalArgumentException("Unknown Incident."));
+        new dz.sh.hidra.modules.incident.domain.service.IncidentLifecycleGuard().ensureResponseActionAllowed(parent);
         Instant now = Instant.now();
         IncidentResponseAction action = new IncidentResponseAction(
                 IncidentId.newId().value(),

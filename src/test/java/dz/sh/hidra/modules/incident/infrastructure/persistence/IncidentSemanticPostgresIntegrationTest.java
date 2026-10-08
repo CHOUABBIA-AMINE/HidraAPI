@@ -91,4 +91,20 @@ class IncidentSemanticPostgresIntegrationTest {
             } finally {executor.shutdownNow();}
         }
     }
+
+    void responses() throws Exception {relationships();file("V20261008_009__hmr_092_incident_response_action_integrity.sql");}
+    void action(String id,String parent,String type,String description) throws SQLException {
+        sql("INSERT INTO hidra_incident_response_action(id,incident_id,action_type_id,action_status,description,created_at,updated_at) VALUES ('"+id+"','"+parent+"','"+type+"','PLANNED','"+description+"',now(),now())");
+    }
+    @Test void actionCatalogAndDescriptionAreEnforced() throws Exception {
+        responses();action("valid","a","action","Response");
+        assertThrows(SQLException.class,() -> action("wrong","a","wrong","Response"));
+        assertThrows(SQLException.class,() -> action("blank","a","action"," "));
+    }
+    @Test void terminalDraftAndMissingParentsRejectNewActions() throws Exception {
+        responses();assertThrows(SQLException.class,() -> action("missing","missing","action","Response"));
+        for(String state:new String[]{"DRAFT","CLOSED","CANCELLED","MERGED"}) {
+            incident(state,state);assertThrows(SQLException.class,() -> action("action-"+state,state,"action","Response"));
+        }
+    }
 }

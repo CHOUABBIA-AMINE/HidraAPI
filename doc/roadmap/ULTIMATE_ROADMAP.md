@@ -3366,3 +3366,10 @@ Forward 008 corrects only the related-side HRA-111 FK to Incident. Domain reject
 
 Exact semantic commit: `fix(incident): remediate semantic review IncidentRelatedIncident`.
 Implementation complete; production Java 21/Maven/PostgreSQL/OpenAPI CI pending.
+
+### Batch 15 HMR-092 implementation result — 2026-10-08
+
+The application and adapter lock and validate the real Incident parent before response writes, rejecting DRAFT/CLOSED/CANCELLED/MERGED and missing parents. Nonblank description and exact active RESPONSE_ACTION_TYPE are enforced. Optional performer/unit references resolve through their owners; performer snapshot is canonical. Target/timestamp/result optionality is preserved and no equipment command is issued. Forward 009 serializes database inserts/updates with parent closure and validates local catalog/description integrity without rewriting legacy records. Sources compiled against temporary framework APIs. Three dedicated unit methods and two additional PostgreSQL tests prepared; actual Maven/PostgreSQL execution remains pending CI.
+
+Exact semantic commit: `fix(incident): remediate semantic review IncidentResponseAction`.
+Implementation complete; production Java 21/Maven/PostgreSQL/OpenAPI CI pending.

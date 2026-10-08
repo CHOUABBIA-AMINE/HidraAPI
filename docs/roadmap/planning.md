@@ -208,3 +208,13 @@ HMR-006 establishes the PlanningPeriod baseline used by later Planning remediati
 - `CLOSED` periods expose `allowsNewPlanRevisions() == false`.
 
 The last rule is a cross-aggregate governance prerequisite: the owning OperationalPlan/PlanRevision application path must reject new revisions for a CLOSED period unless a workflow-approved reopen has already changed the period status. HMR-006 does not add a client-side inference or bypass this later enforcement.
+
+## HMR-094 Batch 19 execution
+
+PTMD-PREREQ-01 was accepted through owner Next. PlanTarget semantic integrity and the
+narrow Monitoring target export are implemented under the canonical exhaustive scope,
+using forward V20261008_019 and V20261008_020. Exact semantic commit:
+`fix(planning): remediate semantic review PlanTarget`. Runtime validation is pending CI;
+this session provides no shell/Java/Maven/PostgreSQL execution tool. Required commands,
+prepared focused/owner/PostgreSQL tests and evidence limits are recorded in
+`doc/roadmap/ULTIMATE_ROADMAP.md`. HPR-P2-008 remains open.

@@ -24,6 +24,7 @@ import dz.sh.hidra.modules.planning.domain.model.PlanTarget;
 import dz.sh.hidra.modules.planning.infrastructure.persistence.mapper.PlanningPersistenceMapper;
 import dz.sh.hidra.modules.planning.infrastructure.persistence.repository.PlanTargetJpaRepository;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -36,13 +37,20 @@ public class JpaPlanTargetRepositoryAdapter implements PlanTargetRepositoryPort 
 
     private final PlanTargetJpaRepository repository;
 
-    public JpaPlanTargetRepositoryAdapter(PlanTargetJpaRepository repository) {
+    private final PlanTargetReferenceValidation validation;
+
+    public JpaPlanTargetRepositoryAdapter(PlanTargetJpaRepository repository, PlanTargetReferenceValidation validation) {
         this.repository = Objects.requireNonNull(repository, "PlanTargetJpaRepository must not be null.");
+        this.validation = Objects.requireNonNull(validation);
     }
 
     @Override
+    @Transactional
     public PlanTarget save(PlanTarget model) {
-        return PlanningPersistenceMapper.toDomain(repository.save(PlanningPersistenceMapper.toEntity(model)));
+        Objects.requireNonNull(model);
+        var old = repository.findByIdForUpdate(model.id()).map(PlanningPersistenceMapper::toDomain).orElse(null);
+        var validated = validation.validate(model, old);
+        return PlanningPersistenceMapper.toDomain(repository.saveAndFlush(PlanningPersistenceMapper.toEntity(validated)));
     }
 
     @Override

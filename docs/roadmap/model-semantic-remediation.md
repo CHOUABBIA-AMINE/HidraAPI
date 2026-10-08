@@ -4744,11 +4744,11 @@ uncached Boot parent 4.1.1 offline. Real Spring/JPA/PostgreSQL tests await final
 
 - Source review: `HMSR-111`
 - Exact commit: `fix(planning): remediate semantic review PlanTarget`
-- Status: **Planned**
+- Status: **Implemented — CI pending**
 - SCC: —
 - Recorded upstream HMS dependencies: planning.Nomination, planning.PlanRevision, telemetry.TelemetryPoint
 - HMSR correction count: 5
-- Additive Flyway: `src/main/resources/db/migration/V20261004_094__hmr_094_planning_plan_target.sql`
+- Additive Flyway: `src/main/resources/db/migration/V20261008_019__hmr_094_planning_target_value_policy.sql` and `src/main/resources/db/migration/V20261008_020__hmr_094_planning_plan_target_integrity.sql` (accepted canonical Batch 19 envelope; original unexecuted registration superseded)
 - Owner-contract prerequisite: Existing candidate owner contract(s): telemetry:src/main/java/dz/sh/hidra/modules/telemetry/application/port/in/TelemetryQueryUseCase.java
 - Exact write allowlist:
   - `docs/data definition/Planning.md`
@@ -4774,6 +4774,8 @@ uncached Boot parent 4.1.1 offline. Real Spring/JPA/PostgreSQL tests await final
   3. **Fail closed on missing `topologyAssetType` before persistence; validate supplied topology references through Topology-owned public contracts when required.**
   4. **For supplied optional `nominationId` / `scenarioId`, validate same-module existence and revision compatibility instead of allowing cross-revision references.**
   5. **For supplied `telemetryPointId`, preserve the cross-module scalar boundary and validate through Telemetry-owned contracts when the use case requires a live point.**
+
+- Batch 19 execution: PTMD-PREREQ-01 accepted in canonical execution memory. The canonical exhaustive scope supersedes this historical allowlist. Locked parents, exact TARGET_TYPE/value policy, canonical fresh owner snapshots, unchanged historical provenance and narrow Monitoring target export implemented. Seven focused, three owner-provider and ten PostgreSQL/Spring-JPA methods prepared. No local Java/Maven/PostgreSQL execution facility is exposed; all required runtime checks await CI.
 
 #### HMR-095 — audit.AuditEvent
 

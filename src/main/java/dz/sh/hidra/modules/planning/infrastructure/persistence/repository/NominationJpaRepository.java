@@ -24,6 +24,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import jakarta.persistence.LockModeType;
+import org.springframework.data.jpa.repository.Lock;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import java.util.Optional;
 
 /**
  * Spring Data JPA repository for Nomination.
@@ -32,4 +37,7 @@ import org.springframework.stereotype.Repository;
 public interface NominationJpaRepository extends JpaRepository<NominationJpaEntity, String> {
 
     Page<NominationJpaEntity> findByRevisionId(String revisionId, Pageable pageable);
+    @Lock(LockModeType.PESSIMISTIC_READ)
+    @Query("select reference from NominationJpaEntity reference where reference.id = :id")
+    Optional<NominationJpaEntity> findByIdForShare(@Param("id") String id);
 }

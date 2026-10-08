@@ -22,10 +22,18 @@ package dz.sh.hidra.modules.planning.infrastructure.persistence.repository;
 import dz.sh.hidra.modules.planning.infrastructure.persistence.entity.PlanningCatalogEntryJpaEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import jakarta.persistence.LockModeType;
+import org.springframework.data.jpa.repository.Lock;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import java.util.Optional;
 
 /**
  * Spring Data JPA repository for PlanningCatalogEntry.
  */
 @Repository
 public interface PlanningCatalogEntryJpaRepository extends JpaRepository<PlanningCatalogEntryJpaEntity, String> {
+    @Lock(LockModeType.PESSIMISTIC_READ)
+    @Query("select reference from PlanningCatalogEntryJpaEntity reference where reference.id = :id")
+    Optional<PlanningCatalogEntryJpaEntity> findByIdForShare(@Param("id") String id);
 }

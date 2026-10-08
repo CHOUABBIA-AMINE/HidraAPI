@@ -4649,3 +4649,75 @@ validation; exact two-file scope and git diff --check passed. Production, tests,
 and all 131 published SQL migrations remain byte-identical to baseline. HMR-094 has
 35 explicit proposed paths and HMR-103 has 20, with independent messages and forward
 migrations. No implementation or runtime test is claimed by this supporting commit.
+
+## HPR-P2-008 Batch 19 accepted execution — HMR-094 — 2026-10-08
+
+PTMD-PREREQ-01 is **ACCEPTED**: the owner's explicit Next accepted the complete
+twelve-part preflight design, independent file scopes, forward migrations and ordered
+two-commit envelope. Acceptance is already granted; no repeat acceptance is required.
+The prior preflight BLOCKED/awaiting-acceptance disposition is historical and superseded.
+
+Fresh GitHub main is 8670579fe1a2945191fbb32ea5147355d3343d50. Its production,
+tests, build and workflow trees match 863d113fbee88f71ff7e2c3b593b415e5b70d07a.
+Production CI #598 (37794566250) and exact preflight documentation run #104
+(37796482087) were independently observed completed/success.
+
+HMSR-111 section 124 was independently recovered from the current review blob
+0ca320f4783ec26a46ce7c9469c9ef850596cf09 and checked against current PlanTarget,
+its mapper/entity/repository, parents, owner providers and published SQL. HMSR-120
+section 133 was recovered independently for the downstream task before mutation.
+
+| Subject | Current status | Evidence |
+|---|---|---|
+| HMR-094 / HMSR-111 | IMPLEMENTED — FINAL CI PENDING | 22-field shape retained; required topology namespace, locked own parents/revision compatibility, exact TARGET_TYPE, owner-approved NUMERIC/TEXT policy, canonical fresh owner snapshots and historical snapshot retention. |
+| HMR-103 / HMSR-120 | IN PROGRESS — ACCEPTED | Downstream independent commit; only its admitted scope may change. |
+| HMR-080 | BLOCKED | Existing unresolved owner contract is unchanged. |
+
+Forward 019 creates empty value-policy metadata keyed by actual catalog entry ID.
+Forward 020 checks legacy mappings and integrity before installing validated local
+FKs, composite nullable nomination/scenario revision FKs, shape checks and metadata
+race protection. Published migrations are unchanged. Missing legacy mappings stop
+020; an owner must provision actual approved metadata before retry. No seed, repair,
+cross-module FK, business classification switch or exclusivity rule is introduced.
+
+New narrow contracts are Topology Planning target identity, Telemetry Planning point
+identity/code and Planning Monitoring target context. Only the two new public package
+exports are admitted in both architecture suites; implementation packages remain private.
+Noop validators are not used. Approved revision immutability remains in force.
+
+Prepared validation: seven PlanTarget semantic methods, three actual owner-provider
+methods, and ten PostgreSQL/Spring-JPA methods covering migration abort/retry,
+nullable and cross-revision parents, approved revision immutability, inactive history,
+canonical snapshots, flushed rollback, direct-save denial and concurrent delete,
+reparent and metadata mutation. These are real JUnit/Testcontainers/Spring-JPA test
+sources, not evidence that runtime execution has passed.
+
+Required commands:
+
+- `./mvnw -q -DskipTests compile`
+- `./mvnw -q -Dtest=PlanTargetSemanticRemediationTest test`
+- `./mvnw -q -Dtest=MonitoringPlanTargetReferenceContractTest,PlanningTargetTopologyReferenceContractTest,PlanningTelemetryPointReferenceContractTest,PlanTargetSemanticPostgresIntegrationTest test`
+- `./mvnw -q -Dtest=ArchitectureGuardrailTest,ForensicRemediationClosureTest test`
+- `./mvnw -q test`
+- `./mvnw -q clean verify`
+
+Current environment assessment: this session exposes GitHub and JavaScript orchestration,
+but no shell/Java/Maven/PostgreSQL execution tool. No command above has been executed
+here; dependency cache or DNS failures from prior environments are not assumed.
+Scope, scalar-owner imports, field-shape retention, forward names, whitespace and
+documentation checks can be inspected directly. Runtime results remain pending
+production CI; CI runs `./mvnw -B -q clean verify` on Java 21 with PostgreSQL/Docker.
+Do not describe source checks as Java compilation, ArchUnit or PostgreSQL execution.
+
+The two exact semantic messages remain `fix(planning): remediate semantic review PlanTarget`
+then `fix(monitoring): remediate semantic review PlanActualDeviation`. Chain both
+commits and advance main once under the expected-head lease. Observe production CI
+start and stop for owner Next/Fail. HPR-P2-008 remains open, 0.6.0-SNAPSHOT remains
+unchanged, and this work supplies no physical survivability evidence.
+
+Static preparation checks completed in the available JavaScript environment: exact
+independent allowlists, nonempty content, added-line whitespace, canonical Java headers,
+balanced source delimiters, owner-contract-only cross-module imports, retained 22/20
+domain field counts and same-module forward FK endpoints passed. All 82 canonical
+Markdown files passed the documentation workflow's nonempty/conflict-marker checks.
+These checks do not execute javac, Maven, ArchUnit, Spring or PostgreSQL.

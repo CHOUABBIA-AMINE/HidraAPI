@@ -7,7 +7,7 @@
  *
  * @Name        : PlanTarget
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-10-08
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -87,6 +87,9 @@ import java.math.BigDecimal;
         // HRA-051 required: targetTypeId
         if (targetTypeId == null || targetTypeId.isBlank()) {
             throw new InvalidPlanningValueException("PlanTarget target type id must not be blank.");
+        }
+        if (topologyAssetType == null || topologyAssetType.isBlank()) {
+            throw new InvalidPlanningValueException("PlanTarget topology asset type must not be blank.");
         }
         // HRA-051 required: topologyAssetId
         if (topologyAssetId == null || topologyAssetId.isBlank()) {

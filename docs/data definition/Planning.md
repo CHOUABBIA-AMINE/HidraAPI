@@ -1330,3 +1330,21 @@ Current/approved pointers are nullable composite same-module FKs to revisions of
 same plan. Insert plan with null pointers, create revision, then assign pointer. Forward
 V20261007_002 preserves published migration history; wrong-family/orphan/cross-plan legacy
 data aborts rather than being reassigned. No product owner or lifecycle orchestration added.
+
+## HMR-094 accepted target semantics
+
+PlanTarget retains its 22-field shape, statuses and nondecreasing validity interval.
+topologyAssetType is required. Supplied optional nomination/scenario references are
+locked and must belong to the same resolved revision. TARGET_TYPE membership is exact.
+The Planning-owned target-value policy is keyed by real catalog entry ID and installed
+without seed data. Active fresh NUMERIC policy requires targetValue and nonblank unitId;
+TEXT requires nonblank targetTextValue. An additional representation is allowed.
+Missing policy fails closed; unchanged valid inactive history retains its mapping.
+
+New/changed typed topology and optional point references use owner-controlled scalar
+contracts. Canonical code/name snapshots come from Topology and point code from Telemetry.
+Unchanged snapshots are retained. The Planning-owned Monitoring target export returns
+scalar target/revision/topology/point/status/value/validity context without an invented
+active-status/time eligibility matrix. Local composite FKs protect revision compatibility;
+external reference evidence is checked at write time and does not establish cross-owner
+relational lifetime guarantees. Published SQL and other aggregate lifecycles remain intact.

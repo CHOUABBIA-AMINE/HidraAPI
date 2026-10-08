@@ -29,6 +29,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+
 import java.util.Optional;
 
 @Repository
@@ -39,4 +40,7 @@ public interface PlanRevisionJpaRepository extends JpaRepository<PlanRevisionJpa
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select revision from PlanRevisionJpaEntity revision where revision.id = :id")
     Optional<PlanRevisionJpaEntity> findByIdForUpdate(@Param("id") String id);
+    @Lock(LockModeType.PESSIMISTIC_READ)
+    @Query("select reference from PlanRevisionJpaEntity reference where reference.id = :id")
+    Optional<PlanRevisionJpaEntity> findByIdForShare(@Param("id") String id);
 }

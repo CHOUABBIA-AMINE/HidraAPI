@@ -24,6 +24,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import jakarta.persistence.LockModeType;
+import org.springframework.data.jpa.repository.Lock;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import java.util.Optional;
 
 /**
  * Spring Data JPA repository for PlanTarget.
@@ -32,4 +37,7 @@ import org.springframework.stereotype.Repository;
 public interface PlanTargetJpaRepository extends JpaRepository<PlanTargetJpaEntity, String> {
 
     Page<PlanTargetJpaEntity> findByRevisionId(String revisionId, Pageable pageable);
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("select reference from PlanTargetJpaEntity reference where reference.id = :id")
+    Optional<PlanTargetJpaEntity> findByIdForUpdate(@Param("id") String id);
 }

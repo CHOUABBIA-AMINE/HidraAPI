@@ -7,7 +7,7 @@
  *
  * @Name        : AlarmSuppressionJpaRepository
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-08
  *
  * @Type        : Interface
  * @Layer       : Infrastructure
@@ -52,10 +52,14 @@ public interface AlarmSuppressionJpaRepository
     @Query("select suppression from AlarmSuppressionJpaEntity suppression where suppression.id = :id")
     Optional<AlarmSuppressionJpaEntity> findByIdForUpdate(@Param("id") String id);
 
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
     List<AlarmSuppressionJpaEntity> findByStatusAndSuppressedUntilLessThanEqualOrderBySuppressedUntilAsc(
             AlarmSuppressionStatus status,
             Instant asOf
     );
-}
 
+    @Query(value = "select coalesce(alarm_id, scope_reference_id) from hidra_alarm_suppression where id = :id and scope_type = 'ALARM'", nativeQuery = true)
+    Optional<String> alarmIdForSuppression(@Param("id") String id);
+
+    @Query(value = "select id from hidra_alarm_suppression where status = 'ACTIVE' and suppressed_until <= :asOf order by case when scope_type = 'ALARM' then coalesce(alarm_id, scope_reference_id) else '' end, id", nativeQuery = true)
+    List<String> findDueIds(@Param("asOf") Instant asOf);
+}

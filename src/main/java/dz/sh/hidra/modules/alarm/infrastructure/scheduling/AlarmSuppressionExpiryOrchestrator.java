@@ -74,14 +74,14 @@ public class AlarmSuppressionExpiryOrchestrator {
         Objects.requireNonNull(asOf, "Suppression expiry instant must not be null.");
         String actorId = requireText(systemActorId, "Suppression expiry system actor must not be blank.");
 
-        List<AlarmSuppressionJpaEntity> due =
-                suppressionRepository.findByStatusAndSuppressedUntilLessThanEqualOrderBySuppressedUntilAsc(
-                        AlarmSuppressionStatus.ACTIVE,
-                        asOf
-                );
-
+        // Scalar discovery avoids stale managed entities after waiting for a lock.
+        List<String> due = suppressionRepository.findDueIds(asOf);
         int expired = 0;
-        for (AlarmSuppressionJpaEntity suppression : due) {
+        for (String candidateId : due) {
+            suppressionRepository.alarmIdForSuppression(candidateId).ifPresent(id ->
+                    alarmRepository.findByIdForUpdate(id).orElseThrow(() -> new IllegalStateException("Unknown alarm: " + id)));
+            AlarmSuppressionJpaEntity suppression = suppressionRepository.findByIdForUpdate(candidateId).orElse(null);
+            if (suppression == null) continue;
             if (!AlarmSuppressionPolicy.dueForExpiry(
                     suppression.status(),
                     suppression.suppressedUntil(),
@@ -121,7 +121,7 @@ public class AlarmSuppressionExpiryOrchestrator {
                 ? suppression.scopeReferenceId()
                 : suppression.alarmId();
 
-        Alarm alarm = alarmRepository.findById(alarmId)
+        Alarm alarm = alarmRepository.findByIdForUpdate(alarmId)
                 .orElseThrow(() -> new IllegalStateException(
                         "ALARM-scoped suppression references missing alarm: " + alarmId
                 ));

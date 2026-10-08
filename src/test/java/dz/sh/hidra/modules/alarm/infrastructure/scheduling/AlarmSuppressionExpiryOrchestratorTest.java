@@ -54,9 +54,8 @@ class AlarmSuppressionExpiryOrchestratorTest {
         AlarmSuppressionJpaEntity suppression = suppression(
                 AlarmSuppressionScopeType.TOPOLOGY_ASSET, "asset-1", null
         );
-        when(suppressions.findByStatusAndSuppressedUntilLessThanEqualOrderBySuppressedUntilAsc(
-                AlarmSuppressionStatus.ACTIVE, NOW
-        )).thenReturn(List.of(suppression));
+        when(suppressions.findDueIds(NOW)).thenReturn(List.of(suppression.id()));
+        when(suppressions.findByIdForUpdate(suppression.id())).thenReturn(Optional.of(suppression));
 
         int count = new AlarmSuppressionExpiryOrchestrator(
                 suppressions, alarms, events, audit
@@ -65,7 +64,7 @@ class AlarmSuppressionExpiryOrchestratorTest {
         assertThat(count).isEqualTo(1);
         assertThat(suppression.status()).isEqualTo(AlarmSuppressionStatus.EXPIRED);
         verify(audit).appendExpiry(any());
-        verify(alarms, never()).findById(any());
+        verify(alarms, never()).findByIdForUpdate(any());
         verify(events, never()).save(any());
     }
 
@@ -78,10 +77,10 @@ class AlarmSuppressionExpiryOrchestratorTest {
         AlarmSuppressionJpaEntity suppression = suppression(
                 AlarmSuppressionScopeType.ALARM, "alarm-1", "alarm-1"
         );
-        when(suppressions.findByStatusAndSuppressedUntilLessThanEqualOrderBySuppressedUntilAsc(
-                AlarmSuppressionStatus.ACTIVE, NOW
-        )).thenReturn(List.of(suppression));
-        when(alarms.findById("alarm-1")).thenReturn(Optional.of(alarm(AlarmState.SUPPRESSED, NOW.minusSeconds(60))));
+        when(suppressions.findDueIds(NOW)).thenReturn(List.of(suppression.id()));
+        when(suppressions.findByIdForUpdate(suppression.id())).thenReturn(Optional.of(suppression));
+        when(suppressions.alarmIdForSuppression("suppression-1")).thenReturn(Optional.of("alarm-1"));
+        when(alarms.findByIdForUpdate("alarm-1")).thenReturn(Optional.of(alarm(AlarmState.SUPPRESSED, NOW.minusSeconds(60))));
 
         int count = new AlarmSuppressionExpiryOrchestrator(
                 suppressions, alarms, events, audit
@@ -108,9 +107,8 @@ class AlarmSuppressionExpiryOrchestratorTest {
                 NOW.minusSeconds(300), NOW.plusSeconds(300), null, null,
                 AlarmSuppressionStatus.ACTIVE, null, "corr-1"
         );
-        when(suppressions.findByStatusAndSuppressedUntilLessThanEqualOrderBySuppressedUntilAsc(
-                AlarmSuppressionStatus.ACTIVE, NOW
-        )).thenReturn(List.of(future));
+        when(suppressions.findDueIds(NOW)).thenReturn(List.of(future.id()));
+        when(suppressions.findByIdForUpdate(future.id())).thenReturn(Optional.of(future));
 
         int count = new AlarmSuppressionExpiryOrchestrator(
                 suppressions, alarms, events, audit

@@ -7,7 +7,7 @@
  *
  * @Name        : AlarmPersistenceMapper
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-10-08
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -203,4 +203,10 @@ public final class AlarmPersistenceMapper {
                         entity.correlationId()
             );
         }
+    public static AlarmLifecycleEventJpaEntity toEntity(AlarmLifecycleEvent model) {
+        return new AlarmLifecycleEventJpaEntity(model.id(), model.alarmId(), model.eventType(), model.previousState(), model.newState(), model.reasonId(), model.reasonText(), model.actorId(), model.actorDisplayName(), model.organizationUnitId(), model.organizationUnitCode(), model.organizationUnitNameSnapshot(), model.occurredAt(), model.correlationId(), model.metadataJson());
+    }
+    public static AlarmLifecycleEvent toDomain(AlarmLifecycleEventJpaEntity entity) {
+        return new AlarmLifecycleEvent(entity.id(), entity.alarmId(), entity.eventType(), entity.previousState(), entity.newState(), entity.reasonId(), entity.reasonText(), entity.actorId(), entity.actorDisplayName(), entity.organizationUnitId(), entity.organizationUnitCode(), entity.organizationUnitNameSnapshot(), entity.occurredAt(), entity.correlationId(), entity.metadataJson());
+    }
 }

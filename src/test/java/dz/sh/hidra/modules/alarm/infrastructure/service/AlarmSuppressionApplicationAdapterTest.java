@@ -38,6 +38,23 @@ import org.junit.jupiter.api.Test;
 class AlarmSuppressionApplicationAdapterTest {
 
     @Test
+    void alarmScopeLocksAlarmAndRejectsActiveShelvingBeforeMutation() {
+        var suppressions=mock(AlarmSuppressionJpaRepository.class);
+        var alarms=mock(AlarmRepositoryPort.class);
+        when(alarms.findByIdForUpdate("alarm-1")).thenReturn(java.util.Optional.of(
+                dz.sh.hidra.modules.alarm.semantic.AlarmSemanticRemediationTest.alarm("alarm-1",
+                        dz.sh.hidra.modules.alarm.domain.value.AlarmState.RAISED,"Titre")));
+        when(alarms.hasActiveShelving("alarm-1")).thenReturn(true);
+        var service=new AlarmSuppressionApplicationAdapter(suppressions,alarms,
+                mock(AlarmLifecycleEventJpaRepository.class),mock(AlarmSuppressionApprovalService.class),
+                mock(AlarmSuppressionExpiryOrchestrator.class));
+        assertThatThrownBy(()->service.createSuppression(new CreateAlarmSuppressionCommand(
+                AlarmSuppressionScopeType.ALARM,"alarm-1","alarm-1",null,null,null,"reason-1",null,"actor-1",
+                Instant.now().plusSeconds(3600),null,"corr"))).isInstanceOf(AlarmSuppressionConflictException.class);
+        org.mockito.Mockito.verify(alarms,org.mockito.Mockito.never()).save(org.mockito.ArgumentMatchers.any());
+    }
+
+    @Test
     void createRejectsExistingExactActiveScope() {
         AlarmSuppressionJpaRepository suppressions = mock(AlarmSuppressionJpaRepository.class);
         when(suppressions.existsByScopeTypeAndScopeReferenceIdAndStatus(

@@ -7,7 +7,7 @@
  *
  * @Name        : AlarmApplicationService
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-08
  *
  * @Type        : Class
  * @Layer       : Application
@@ -46,7 +46,7 @@ import java.util.Objects;
  * Application service for alarm lifecycle commands.
  */
 @Service
-public final class AlarmApplicationService implements RaiseAlarmUseCase, AcknowledgeAlarmUseCase, CloseAlarmUseCase {
+public class AlarmApplicationService implements RaiseAlarmUseCase, AcknowledgeAlarmUseCase, CloseAlarmUseCase {
 
     private final AlarmRepositoryPort alarmRepositoryPort;
     private final AlarmAcknowledgementRepositoryPort acknowledgementRepositoryPort;
@@ -63,6 +63,7 @@ public final class AlarmApplicationService implements RaiseAlarmUseCase, Acknowl
     }
 
     @Override
+    @org.springframework.transaction.annotation.Transactional
     public AlarmSummaryDto raiseAlarm(RaiseAlarmCommand command) {
         Objects.requireNonNull(command, "Raise alarm command must not be null.");
         Instant now = Instant.now();

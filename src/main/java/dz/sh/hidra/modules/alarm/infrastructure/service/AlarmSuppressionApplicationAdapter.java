@@ -148,6 +148,8 @@ public class AlarmSuppressionApplicationAdapter
     @Transactional
     public AlarmSuppressionDto releaseSuppression(ReleaseAlarmSuppressionCommand command) {
         Objects.requireNonNull(command, "Release alarm suppression command must not be null.");
+        suppressionRepository.alarmIdForSuppression(command.suppressionId()).ifPresent(id ->
+                alarmRepository.findByIdForUpdate(id).orElseThrow(() -> new NoSuchElementException("Unknown alarm: " + id)));
         AlarmSuppressionJpaEntity suppression = suppressionRepository.findByIdForUpdate(command.suppressionId())
                 .orElseThrow(() -> new NoSuchElementException(
                         "Alarm suppression not found: " + command.suppressionId()
@@ -248,10 +250,13 @@ public class AlarmSuppressionApplicationAdapter
             String correlationId,
             Instant now
     ) {
-        Alarm alarm = alarmRepository.findById(alarmId)
+        Alarm alarm = alarmRepository.findByIdForUpdate(alarmId)
                 .orElseThrow(() -> new NoSuchElementException("Alarm not found: " + alarmId));
         if (alarm.closed()) {
             throw new AlarmSuppressionConflictException("Closed alarm cannot be suppressed.");
+        }
+        if (alarmRepository.hasActiveShelving(alarmId)) {
+            throw new AlarmSuppressionConflictException("ACTIVE shelving prevents ALARM-scoped suppression.");
         }
         if (alarm.currentState() == AlarmState.SUPPRESSED) {
             throw new AlarmSuppressionConflictException("Alarm is already suppressed.");
@@ -287,7 +292,7 @@ public class AlarmSuppressionApplicationAdapter
         String alarmId = suppression.alarmId() == null
                 ? suppression.scopeReferenceId()
                 : suppression.alarmId();
-        Alarm alarm = alarmRepository.findById(alarmId)
+        Alarm alarm = alarmRepository.findByIdForUpdate(alarmId)
                 .orElseThrow(() -> new NoSuchElementException("Alarm not found: " + alarmId));
         if (alarm.currentState() != AlarmState.SUPPRESSED) {
             return;

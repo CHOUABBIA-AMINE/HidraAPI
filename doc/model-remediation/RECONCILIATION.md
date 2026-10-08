@@ -4553,3 +4553,53 @@ Pre-publication validation: all 82 canonical Markdown files passed nonempty and
 merge-conflict-marker checks against the prepared tree; the actual two-file Git diff
 passed `git diff --check` (exit 0). Exact independent scope/message/forward-name
 checks passed. No production source changed and no proposed Alarm runtime test ran.
+
+## HPR-P2-008 Batch 20 acceptance — 2026-10-08
+
+Owner Next after published preflight 05ec5a5866930e62bb5e70c82606b445ae168ef1
+ACCEPTS ALRM-PREREQ-01 in full: twelve-part design, four independent exact scopes,
+forward 022/023/024 and runtime validation. The combined lifecycle exception is
+explicitly admitted. Do not ask for acceptance again. Main is unchanged at that
+preflight; production baseline 0cc3e5c6c4b675880a634b3a073905f4119a36b7 has green
+CI #600; documentation CI #107 passed. HMR-100 then 104 then 105 then 106 are
+IN PROGRESS. HPR-P2-008 remains open and HMR-080 separately blocked.
+
+## HPR-P2-008 Batch 20 independent execution — HMR-100 — 2026-10-08
+
+ALRM-PREREQ-01 is ACCEPTED. HMSR-117 section 130 was recovered against the live
+37-field model, service/mapper/entity, own catalog and event persistence, published
+local FKs and suppression writers before mutation. Required French title and exact
+ALARM_TYPE/ALARM_SEVERITY/optional ALARM_PRIORITY are enforced. Inactive valid
+family history is preserved; no guessed catalog data is supplied. New direct/live
+Alarm persistence appends exactly one RAISED event with security/server-owned actor
+evidence, stable initial identity and flushed atomic rollback. Application uses own
+event/actor ports; no infrastructure/private-module imports or cross-module FKs.
+
+Forward 022 aborts on invalid titles/families, orphan own evidence or duplicate
+initial events, installs priority integrity and catalog mutation locks/guards, and
+rejects event update/delete/truncate. Published SQL is unchanged. Valid historical
+event gaps remain history; no event or snapshot is fabricated. Suppression
+create/release/expiry now lock Alarm before own evidence; scalar candidate queries
+avoid stale managed objects after a wait. ALARM-scoped suppression rejects ACTIVE
+shelving while broad suppression, Workflow approval and Audit semantics remain.
+
+HMR-100 is IMPLEMENTED — DEPENDENT HMR-104/105 AND FINAL CI PENDING. Its two
+remaining lifecycle obligations are completed in their separate ordered scopes, not
+claimed complete by this intermediate creation commit. Focused/actor and real
+PostgreSQL/Spring-JPA sources cover creation/live/direct paths, wrong/missing family,
+inactive history, replay, flushed event-failure rollback, migration abort/retry,
+append-only evidence and catalog mutation race. Suppression regression sources are
+adapted to the locked scalar discovery and overlap denial.
+
+Fresh environment: ./mvnw cannot execute because its published mode is 100644;
+invocation via bash mvnw -q -DskipTests compile exited 1 before compilation: uncached
+Spring Boot parent 4.1.1 plus repo.maven.apache.org temporary DNS failure. Java 17
+is installed; Java 21 and Docker are absent. An offline focused Maven attempt also
+failed before tests on the missing parent. No repository JUnit/Spring/PostgreSQL/
+ArchUnit result is claimed. Isolated actual Alarm core sources compiled on Java 17
+against temporary dependency stubs (exit 0); this is a limited source/type check,
+not the admitted Java 21 Maven build. Scope/header/whitespace and all 82 canonical
+Markdown checks passed. Runtime validation remains pending final production CI.
+
+Exact message: fix(alarm): remediate semantic review Alarm. Version remains
+0.6.0-SNAPSHOT, HPR-P2-008 open, HMR-080 blocked and physical survivability unchanged.

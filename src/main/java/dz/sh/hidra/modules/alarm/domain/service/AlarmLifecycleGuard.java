@@ -7,7 +7,7 @@
  *
  * @Name        : AlarmLifecycleGuard
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-08
  *
  * @Type        : Class
  * @Layer       : Domain
@@ -32,7 +32,7 @@ public class AlarmLifecycleGuard {
         if (alarm == null) {
             throw new AlarmLifecycleViolationException("Alarm must not be null.");
         }
-        if (alarm.closed()) {
+        if (alarm.closed() || alarm.closedAt() != null) {
             throw new AlarmLifecycleViolationException("Closed or cancelled alarms cannot be acknowledged.");
         }
     }

@@ -5,7 +5,7 @@
  * @Author      : Abir MEDJERAB
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  *
- * @Name        : AlarmRepositoryPort
+ * @Name        : AlarmLifecycleActorPort
  * @CreatedOn   : 2025-06-26
  * @UpdatedOn   : 2026-10-08
  *
@@ -14,25 +14,16 @@
  * @Module      : alarm
  * @Package     : dz.sh.hidra.modules.alarm.application.port.out
  *
- * @Description : Repository port for Alarm.
+ * @Description : Enforces Alarm-owned transactional lifecycle evidence and integrity.
  *
  */
 package dz.sh.hidra.modules.alarm.application.port.out;
 
-import dz.sh.hidra.modules.alarm.domain.model.Alarm;
-
-import java.util.Optional;
-
-/**
- * Repository port for Alarm.
- */
-public interface AlarmRepositoryPort {
-
-    Alarm save(Alarm model);
-
-    Optional<Alarm> findById(String id);
-
-    Optional<Alarm> findByIdForUpdate(String id);
-
-    boolean hasActiveShelving(String alarmId);
+public interface AlarmLifecycleActorPort {
+    Actor currentActor();
+    record Actor(String id, String displayName) {
+        public Actor {
+            if (id == null || id.isBlank()) throw new IllegalArgumentException("Lifecycle actor is required.");
+        }
+    }
 }

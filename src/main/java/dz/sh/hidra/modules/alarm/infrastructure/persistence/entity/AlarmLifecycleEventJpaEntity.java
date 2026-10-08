@@ -7,7 +7,7 @@
  *
  * @Name        : AlarmLifecycleEventJpaEntity
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-08
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -81,6 +81,7 @@ import java.time.Instant;
     @Column(name = "correlation_id", nullable = true, length = 80)
     private String correlationId;
 
+    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.JSON)
     @Column(name = "metadata_json", nullable = true, columnDefinition = "jsonb")
     private String metadataJson;
 

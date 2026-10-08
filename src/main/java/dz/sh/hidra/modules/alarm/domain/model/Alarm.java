@@ -7,7 +7,7 @@
  *
  * @Name        : Alarm
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-10-08
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -120,6 +120,9 @@ import java.time.Instant;
         // HRA-051 required: severityId
         if (severityId == null || severityId.isBlank()) {
             throw new InvalidAlarmValueException("Alarm severity id must not be blank.");
+        }
+        if (titleFr == null || titleFr.isBlank()) {
+            throw new InvalidAlarmValueException("Alarm French title must not be blank.");
         }
         // HRA-051 required: sourceType
         if (sourceType == null) {

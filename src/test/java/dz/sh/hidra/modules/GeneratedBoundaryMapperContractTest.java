@@ -7,7 +7,7 @@
  *
  * @Name        : GeneratedBoundaryMapperContractTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-10-08
  *
  * @Type        : Test
  * @Layer       : API Test
@@ -27,6 +27,8 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.lang.reflect.RecordComponent;
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -36,6 +38,7 @@ import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 
@@ -97,14 +100,20 @@ class GeneratedBoundaryMapperContractTest {
     }
 
     private static Object instantiateRecord(Class<?> type) throws ReflectiveOperationException {
+        return instantiateRecord(type, "");
+    }
+
+    private static Object instantiateRecord(Class<?> type, String seed) throws ReflectiveOperationException {
         assertTrue(type.isRecord(), type.getName() + " must remain an immutable record contract.");
         RecordComponent[] components = type.getRecordComponents();
         Class<?>[] parameterTypes = Arrays.stream(components)
                 .map(RecordComponent::getType)
                 .toArray(Class<?>[]::new);
-        Object[] values = Arrays.stream(components)
-                .map(component -> syntheticValue(component.getType(), component.getName()))
-                .toArray();
+        Object[] values = new Object[components.length];
+        for (int index = 0; index < components.length; index++) {
+            values[index] = syntheticValue(components[index].getGenericType(),
+                    seed.isEmpty() ? components[index].getName() : seed + "-" + components[index].getName());
+        }
 
         Constructor<?> constructor = type.getDeclaredConstructor(parameterTypes);
         constructor.setAccessible(true);
@@ -139,7 +148,23 @@ class GeneratedBoundaryMapperContractTest {
         }
     }
 
-    private static Object syntheticValue(Class<?> type, String componentName) {
+    private static Object syntheticValue(Type componentType, String componentName)
+            throws ReflectiveOperationException {
+        if (componentType instanceof ParameterizedType parameterized
+                && parameterized.getRawType() == List.class
+                && parameterized.getActualTypeArguments().length == 1) {
+            Type elementType = parameterized.getActualTypeArguments()[0];
+            return List.of(
+                    syntheticValue(elementType, componentName + "-first"),
+                    syntheticValue(elementType, componentName + "-second")
+            );
+        }
+        if (!(componentType instanceof Class<?> type)) {
+            return fail("Unsupported exact-boundary test component type: " + componentType.getTypeName());
+        }
+        if (type.isRecord()) {
+            return instantiateRecord(type, componentName);
+        }
         if (type == String.class) {
             return componentName + "-value";
         }

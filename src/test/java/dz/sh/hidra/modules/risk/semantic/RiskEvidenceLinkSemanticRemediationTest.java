@@ -35,6 +35,28 @@ class RiskEvidenceLinkSemanticRemediationTest {
         return new RiskEvidenceLink("link", "assessment", module, type, id,
                 "caller-code", null, null, null, null, NOW);
     }
+    @Test void ownerProvidersHaveDistinctExplicitSpringBeanNames() {
+        var providerTypes = List.of(
+                dz.sh.hidra.modules.monitoring.infrastructure.integration.RiskEvidenceQueryAdapter.class,
+                dz.sh.hidra.modules.alarm.infrastructure.integration.RiskEvidenceQueryAdapter.class,
+                dz.sh.hidra.modules.incident.infrastructure.integration.RiskEvidenceQueryAdapter.class,
+                dz.sh.hidra.modules.hse.infrastructure.integration.RiskEvidenceQueryAdapter.class,
+                dz.sh.hidra.modules.integrity.infrastructure.integration.RiskEvidenceQueryAdapter.class,
+                dz.sh.hidra.modules.assets.infrastructure.integration.RiskEvidenceQueryAdapter.class,
+                dz.sh.hidra.modules.simulation.infrastructure.integration.RiskEvidenceQueryAdapter.class,
+                dz.sh.hidra.modules.telemetry.infrastructure.integration.RiskEvidenceQueryAdapter.class,
+                dz.sh.hidra.modules.custody.infrastructure.integration.RiskEvidenceQueryAdapter.class,
+                dz.sh.hidra.modules.documents.infrastructure.integration.RiskEvidenceQueryAdapter.class,
+                dz.sh.hidra.modules.audit.infrastructure.integration.RiskEvidenceQueryAdapter.class);
+        var names = new HashSet<String>();
+        for (var type : providerTypes) {
+            var component = type.getAnnotation(org.springframework.stereotype.Component.class);
+            assertThat(component).isNotNull();
+            assertThat(component.value().isBlank()).isFalse();
+            assertThat(names.add(component.value())).isTrue();
+        }
+        assertThat(names.size()).isEqualTo(providerTypes.size());
+    }
     @Test void incompleteIdentityIsRejectedBeforePersistence() {
         for (String blank : new String[]{null, "", "  ", "\t"}) {
             assertThatThrownBy(() -> link(blank, "Alarm", "id")).isInstanceOf(InvalidRiskValueException.class);

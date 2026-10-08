@@ -2359,3 +2359,65 @@ Current totals: 39 implementations (37 CI-confirmed through #590; two Batch 14 C
 17 STILL REQUIRED, one BLOCKED (HMR-080), 57 evaluated. Publish the chained semantic
 commits to existing main once using expected-head protection; confirm production CI
 started and stop for owner `next`/`fail`. No release, tag, PR or final HPR-P2-008 PASS.
+
+
+## HPR-P2-008 Batch 14 / CI #591 repair admission — 2026-10-08
+
+Owner `fail` selects repair only. Actual CI #591 / run 37768160388 on
+76dbbd721822e3e8e109d02c0b82a4ed2d6e9285 ran 955 tests: one failure, two errors,
+zero skipped. P1/runtime/HA/PITR/release/observability/database procedure gates passed.
+The mapper contract fixture cannot instantiate java.util.List introduced by structured
+assessment scopes (HMR-058). Both Spring context errors stem from eleven owner evidence
+adapters sharing implicit bean name riskEvidenceQueryAdapter (HMR-077). OpenAPI was
+skipped after test failure. No migration/scoring/evidence/approval test failure is reported.
+
+Repair: explicitly owner-qualify all eleven evidence provider bean names; preserve typed
+registry/list injection and all owner semantics. Extend the exact mapper fixture to construct
+nonempty parameterized lists and nested records, retaining every component/method-count
+assertion and rejecting unsupported types. Add provider bean-name uniqueness regression
+to the existing focused evidence test. No new semantic subject, migration, API shape,
+authority/lifecycle policy, release or later batch is admitted.
+
+Exhaustive repair scope:
+
+- `src/main/java/dz/sh/hidra/modules/monitoring/infrastructure/integration/RiskEvidenceQueryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/alarm/infrastructure/integration/RiskEvidenceQueryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/incident/infrastructure/integration/RiskEvidenceQueryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/hse/infrastructure/integration/RiskEvidenceQueryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/integrity/infrastructure/integration/RiskEvidenceQueryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/assets/infrastructure/integration/RiskEvidenceQueryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/simulation/infrastructure/integration/RiskEvidenceQueryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/telemetry/infrastructure/integration/RiskEvidenceQueryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/custody/infrastructure/integration/RiskEvidenceQueryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/documents/infrastructure/integration/RiskEvidenceQueryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/audit/infrastructure/integration/RiskEvidenceQueryAdapter.java`
+- `src/test/java/dz/sh/hidra/modules/GeneratedBoundaryMapperContractTest.java`
+- `src/test/java/dz/sh/hidra/modules/risk/semantic/RiskEvidenceLinkSemanticRemediationTest.java`
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `doc/model-remediation/RECONCILIATION.md`
+
+Exact supporting commit: `fix(risk): repair Batch 14 CI integration`.
+Validate focused mapper/evidence checks, canonical docs, Java syntax/type and exact
+scope/whitespace. Attempt real Maven tests; state local dependency limitations. Publish
+on existing main with expected-SHA protection, confirm replacement CI started, stop.
+Batch 14 remains CI-pending; no new batch may start before the repaired head is green.
+
+
+### CI #591 repair result
+
+All eleven evidence provider classes now use explicit owner-prefixed Spring component
+names; the typed provider registry is unchanged. The mapper fixture constructs two
+distinct populated scope records using generic type metadata. Existing exact component
+equality and 114-mapping coverage assertions remain intact; empty/dropped/reordered
+lists and unsupported raw/wildcard/Set types are not silently accepted. The focused
+evidence test now asserts explicit nonblank distinct bean names for every owner.
+Twenty checks on the actual repaired fixture/provider annotations passed, including
+nonempty/distinct scope generation, exact component equality, changed-list rejection,
+unsupported-type denial and eleven owner-specific component names. Actual production
+and focused test Java type/syntax checks passed with temporary dependency API stubs.
+These checks are not a full Spring context or generated MapStruct execution.
+Focused Maven mapper/evidence/application/authentication tests were attempted offline
+and remain blocked before compilation by uncached Boot parent 4.1.1. Canonical Markdown,
+whitespace and the exact fifteen-file scope passed. No new files, published SQL edits,
+API/lifecycle changes, release or later batch. Confirm replacement exact-head CI started
+and stop; Batch 14 is implementation-only until all production gates are green.

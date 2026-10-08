@@ -26,7 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 import java.util.Set;
 
-@Component
+@Component("hseRiskEvidenceQueryAdapter")
 public class RiskEvidenceQueryAdapter implements RiskOwnedEvidenceLookup {
     private final HseCaseJpaRepository repository0;
     public RiskEvidenceQueryAdapter(HseCaseJpaRepository repository0) {

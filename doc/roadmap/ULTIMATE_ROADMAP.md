@@ -249,7 +249,7 @@ P1 is **CLOSED** only when this closure SHA passes the repository's full exact-h
 | HPR-P2-005 | COMPLETED — deterministic OpenAPI 3.1 contract version-controlled from exact executable P1 closure CI artifact; canonical API overview, conventions, authentication/authorization, error-model limitation, versioning/compatibility and OpenAPI-governance documents established; shared machine-readable error envelope remains explicitly NOT ESTABLISHED | API | Code/Doc | Generate and version-control deterministic `doc/api/openapi.yaml`; create API overview, conventions, auth, error, versioning/compatibility and OpenAPI governance docs. | `docs(api): establish versioned api contract` | HPR-P1-008 |
 | HPR-P2-006 | COMPLETED — canonical current database architecture, schema ownership, Flyway policy and generated persistence dictionary established from 82 current Flyway migrations, 469 current module JPA persistence entities, production configuration and closed P1 PostgreSQL/backup evidence; stale pre-closure DB stage documents retained as historical provenance | Database | Doc | Create database architecture, schema ownership, Flyway policy and current generated data dictionary from current migrations/JPA evidence. | `docs(database): establish canonical database documentation` | HPR-P2-001 |
 | HPR-P2-007 | COMPLETED — exact-source reconciliation established: HMR-005 corrected to completed, HMR-009 confirmed completed/stale carry-over removed, HMR-054 historical blocker resolved by current Party→Topology contract, HMR-050..106 reconciled to 56 still-required + 1 blocked (HMR-080), 0 superseded; legacy roadmap preserved as history | Semantic Remediation | Code/Doc | Inventory unresolved HMR/HMSR obligations against exact current source; mark each as completed, still required, blocked, or superseded with evidence. | `docs(model-remediation): reconcile remaining semantic obligations` | HPR-P2-003 |
-| HPR-P2-008 | IN PROGRESS — 39 semantic implementations verified through exact-head CI #593; attached Batch 15 HMR-062/090/091/092 preflight records INC-PREREQ-01; 13 still required and five blocked including HMR-080, 57 evaluated. No Batch 15 production implementation yet. | Semantic Remediation | Code | Execute still-required semantic remediation in dependency order using revalidated HMSR obligations; do not restart completed HMRs without regression evidence. | `fix(model): continue reconciled semantic remediation` | HPR-P2-007 |
+| HPR-P2-008 | IN PROGRESS — 43 semantic implementations (39 verified through CI #593, four Batch 15 implementations awaiting final-head CI); 13 STILL REQUIRED and one BLOCKED HMR-080, 57 evaluated. Accepted INC-PREREQ-01 implemented in four independent commits. | Semantic Remediation | Code | Execute still-required semantic remediation in dependency order using revalidated HMSR obligations; do not restart completed HMRs without regression evidence. | `fix(model): continue reconciled semantic remediation` | HPR-P2-007 |
 | HPR-P2-009 | PENDING | Semantic Remediation | Doc | Transfer permanent semantic decisions from legacy review/roadmaps into `doc/domain/` and `doc/modules/`, then preserve legacy files as execution history. | `docs(model-remediation): canonicalize semantic decisions` | HPR-P2-008 | IN PROGRESS — HMR-050 and attached Batches 1..6 implemented; 17 completed, 39 still-required HMRs and HMR-080 blocked in the HMR-050..106 register. Baseline production CI #576 passed; final Batch 6 CI pending. Local full Maven validation blocked by Maven Central DNS/uncached parent, Java 17 and absent Docker. | Semantic Remediation | Code | Execute still-required semantic remediation in dependency order using revalidated HMSR obligations; do not restart completed HMRs without regression evidence. | `fix(model): continue reconciled semantic remediation` | HPR-P2-007 |
 | HPR-P2-010 | PENDING | Data Governance | Doc | Create data governance, retention/archival, provenance and legacy-data migration documents without inventing retention values. | `docs(data): establish data governance baseline` | HPR-P2-001 |
 | HPR-P2-011 | PENDING | Testing | Doc | Create test strategy, architecture testing, database testing, API testing and requirements traceability documents tied to executable evidence. | `docs(testing): establish verification documentation` | HPR-P2-002..006 |
@@ -3373,3 +3373,59 @@ The application and adapter lock and validate the real Incident parent before re
 
 Exact semantic commit: `fix(incident): remediate semantic review IncidentResponseAction`.
 Implementation complete; production Java 21/Maven/PostgreSQL/OpenAPI CI pending.
+
+### Batch 15 HMR-090 implementation result — 2026-10-08
+
+Formal closure validates locked RESOLVED parent, exactly one coherent persisted resolution, reviewed evidence and explicit classification/severity policy. Required RCA and corrective/preventive follow-up rules consume real rows and flags; no minor-severity heuristics or automatic policy seeds. Eligible authenticated closer and canonical snapshot replace caller identity. Optional/required Workflow approval attests exact Incident and INCIDENT_CLOSURE purpose, configured binding, actual final APPROVE action and completed approving task. Immutable closure and CLOSED parent share a server-owned microsecond timestamp in one REQUIRED transaction. Deferred database consistency, duplicate prevention, historical policy/evidence immutability and truncate denial prevent generic-save bypass and close/action races. Transactional services remain proxyable. Sources and focused test signatures compiled against temporary APIs; 19 actual domain/application behavior checks passed with controlled repository fixtures. Five closure and two Workflow unit methods plus eight PostgreSQL/JPA/concurrency methods prepared (17 integration methods total). Local Maven compile, focused tests, full tests and clean verify all stopped before execution at uncached Boot 4.1.1 offline parent resolution. Real Java 21/Spring/PostgreSQL/OpenAPI verification remains final-head CI obligation.
+
+Exact semantic commit: `fix(incident): remediate semantic review IncidentClosure`.
+Implementation complete; production Java 21/Maven/PostgreSQL/OpenAPI CI pending.
+
+## HPR-P2-008 Batch 15 final implementation disposition — 2026-10-08
+
+Accepted INC-PREREQ-01 now has four separate semantic implementations in the admitted
+order HMR-062 -> HMR-091 -> HMR-092 -> HMR-090. All original source HMSR obligations
+remain independently traceable. Exhaustive scopes and four forward migrations 007..010
+are recorded in the accepted envelope. No foreign-module relational FK is introduced.
+
+| Task | Semantic commit / result |
+|---|---|
+| HMR-062 / Incident | 0697a4e644bf3f965eb38b925b4a1162e4cae619; owner references/catalog/state invariants implemented |
+| HMR-091 / IncidentRelatedIncident | cdec336bcbf67567da8ca99833986639d2a2e0db; corrected FK and explicit pair policy implemented |
+| HMR-092 / IncidentResponseAction | 4395aaf1753504b166c15086c290e04845cf9fcf; locked parent lifecycle and action eligibility implemented |
+| HMR-090 / IncidentClosure | This exact semantic commit; atomic closure/parent/evidence governance implemented |
+
+Local validation: changed production and dedicated unit signatures compile using real
+repository/domain source and temporary framework APIs; 19 actual domain/application
+behavior checks pass with controlled repository fixtures; Java syntax parsing, exact
+per-task scope checks, published-migration byte preservation and canonical Markdown
+validation plus git diff --check are required before publication. Eight owner/domain
+unit classes and 17 real PostgreSQL integration methods cover the admitted subjects,
+including concurrent inverse links, duplicate closure, late response denial and real
+JPA commit/rollback. Those JUnit/PostgreSQL/Spring tests have NOT run locally: all four
+Maven targets (compile, focused, test, clean verify), invoked via bash ./mvnw -o because
+the checkout wrapper is not executable, fail before test execution at the uncached
+Spring Boot 4.1.1 parent. This host has Java 17 and no Docker/PostgreSQL tooling.
+
+Deployment limitation: relationship and closure policy tables intentionally have no
+synthetic defaults. Operators must approve exact family/direction and classification/
+severity policy rows before the affected operations are enabled. Missing policy denies
+the operation. Legacy invalid references, missing policy for existing formal closure,
+and incoherent evidence fail migration preflight; no automatic data rewrite is claimed.
+Workflow must have a real configured INCIDENT target and INCIDENT_CLOSURE purpose/binding
+and a completed final approval by the eligible closer when supplied/required.
+
+Current totals: 43 implementations (39 CI-confirmed, four Batch 15 CI pending),
+13 STILL REQUIRED, one BLOCKED (HMR-080), 57 evaluated. Publish this four-commit chain
+on existing main atomically and confirm final full CI started, then stop until owner
+next/fail. Do not mark semantic verification closed until that run is green. No PR,
+release, tag, version change, HPR-P2-008 final PASS or Batch 16 implementation is included.
+Next attached batch, after green CI and owner next: HMR-069/070/072, with fresh admission.
+
+Final Batch 15 local checks completed: 82 canonical Markdown files validated; all
+119 published migration files unchanged byte-for-byte; 42 changed Java files parsed;
+both explicit architecture export registries, canonical headers, transactional
+proxyability and each exact write scope validated; git diff --check passed. Prepared
+22 dedicated unit methods and 17 PostgreSQL integration methods. The initial HMR-062
+unit set contained ten methods (the earlier nine-method summary undercounted it).
+No prepared test is represented as an executed Maven/JUnit/PostgreSQL pass.

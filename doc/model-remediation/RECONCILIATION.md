@@ -116,7 +116,7 @@ No `party.application.contract.planning` package exists in the exact current tre
 | HMR-087 | HMSR-104 | identity.LoginSession | COMPLETED — HPR-P2-008 | AuthenticationProtocol sessionType and independent endedAt carried through domain/JPA/mapper; exact ExternalIdentity propagated from LDAP/OIDC through principal/input/completion; terminal lifecycle preserves lastSeenAt and prior termination; V20261006_012 requires explicit legacy protocol evidence; no inferred historical termination; focused tests added; final CI pending. |
 | HMR-088 | HMSR-105 | identity.UserPermissionGrant | COMPLETED — HPR-P2-008 | Domain and PostgreSQL enforce nonblank grantReason, bounded validTo and ACTIVE/REVOKED/EXPIRED for direct permission grants including emergency records; shared GrantStatus and optional role-grant reason/end remain unchanged; V20261006_013 and focused tests added; final CI pending. |
 | HMR-089 | HMSR-106 | identity.UserRoleGrant | COMPLETED — HPR-P2-008 | Authoritative ordinary role-grant application flow requires ACTIVE User before Role lookup/save; inactive states reject without implicit emergency bypass; optional reason/end and shared SUSPENDED role status preserved; focused tests added; no migration required; final CI pending. |
-| HMR-090 | HMSR-107 | incident.IncidentClosure | BLOCKED — INC-PREREQ-01 | Batch 15 live lifecycle/owner/policy/migration prerequisite preflight; no production change; see current execution proposal below. |
+| HMR-090 | HMSR-107 | incident.IncidentClosure | IMPLEMENTED — CI PENDING | Batch 15 accepted INC-PREREQ-01; IncidentClosure implemented; final-head CI pending. |
 | HMR-091 | HMSR-108 | incident.IncidentRelatedIncident | IMPLEMENTED — CI PENDING | Batch 15 accepted INC-PREREQ-01; IncidentRelatedIncident implemented; final-head CI pending. |
 | HMR-092 | HMSR-109 | incident.IncidentResponseAction | IMPLEMENTED — CI PENDING | Batch 15 accepted INC-PREREQ-01; IncidentResponseAction implemented; final-head CI pending. |
 | HMR-093 | HMSR-110 | reporting.ReportOutputArtifact | IMPLEMENTED — CI #588 GREEN | Existing run and nonblank Documents reference evidence required; every supplied reference is independently owner-validated. Forward 013 corrects artifact/run FK without Documents FK. Six focused methods, one Documents owner method and five additional PostgreSQL cases prepared; Full production CI #588 passed. |
@@ -2746,3 +2746,59 @@ The application and adapter lock and validate the real Incident parent before re
 
 Exact semantic commit: `fix(incident): remediate semantic review IncidentResponseAction`.
 Implementation complete; production Java 21/Maven/PostgreSQL/OpenAPI CI pending.
+
+### Batch 15 HMR-090 implementation result — 2026-10-08
+
+Formal closure validates locked RESOLVED parent, exactly one coherent persisted resolution, reviewed evidence and explicit classification/severity policy. Required RCA and corrective/preventive follow-up rules consume real rows and flags; no minor-severity heuristics or automatic policy seeds. Eligible authenticated closer and canonical snapshot replace caller identity. Optional/required Workflow approval attests exact Incident and INCIDENT_CLOSURE purpose, configured binding, actual final APPROVE action and completed approving task. Immutable closure and CLOSED parent share a server-owned microsecond timestamp in one REQUIRED transaction. Deferred database consistency, duplicate prevention, historical policy/evidence immutability and truncate denial prevent generic-save bypass and close/action races. Transactional services remain proxyable. Sources and focused test signatures compiled against temporary APIs; 19 actual domain/application behavior checks passed with controlled repository fixtures. Five closure and two Workflow unit methods plus eight PostgreSQL/JPA/concurrency methods prepared (17 integration methods total). Local Maven compile, focused tests, full tests and clean verify all stopped before execution at uncached Boot 4.1.1 offline parent resolution. Real Java 21/Spring/PostgreSQL/OpenAPI verification remains final-head CI obligation.
+
+Exact semantic commit: `fix(incident): remediate semantic review IncidentClosure`.
+Implementation complete; production Java 21/Maven/PostgreSQL/OpenAPI CI pending.
+
+## HPR-P2-008 Batch 15 final implementation disposition — 2026-10-08
+
+Accepted INC-PREREQ-01 now has four separate semantic implementations in the admitted
+order HMR-062 -> HMR-091 -> HMR-092 -> HMR-090. All original source HMSR obligations
+remain independently traceable. Exhaustive scopes and four forward migrations 007..010
+are recorded in the accepted envelope. No foreign-module relational FK is introduced.
+
+| Task | Semantic commit / result |
+|---|---|
+| HMR-062 / Incident | 0697a4e644bf3f965eb38b925b4a1162e4cae619; owner references/catalog/state invariants implemented |
+| HMR-091 / IncidentRelatedIncident | cdec336bcbf67567da8ca99833986639d2a2e0db; corrected FK and explicit pair policy implemented |
+| HMR-092 / IncidentResponseAction | 4395aaf1753504b166c15086c290e04845cf9fcf; locked parent lifecycle and action eligibility implemented |
+| HMR-090 / IncidentClosure | This exact semantic commit; atomic closure/parent/evidence governance implemented |
+
+Local validation: changed production and dedicated unit signatures compile using real
+repository/domain source and temporary framework APIs; 19 actual domain/application
+behavior checks pass with controlled repository fixtures; Java syntax parsing, exact
+per-task scope checks, published-migration byte preservation and canonical Markdown
+validation plus git diff --check are required before publication. Eight owner/domain
+unit classes and 17 real PostgreSQL integration methods cover the admitted subjects,
+including concurrent inverse links, duplicate closure, late response denial and real
+JPA commit/rollback. Those JUnit/PostgreSQL/Spring tests have NOT run locally: all four
+Maven targets (compile, focused, test, clean verify), invoked via bash ./mvnw -o because
+the checkout wrapper is not executable, fail before test execution at the uncached
+Spring Boot 4.1.1 parent. This host has Java 17 and no Docker/PostgreSQL tooling.
+
+Deployment limitation: relationship and closure policy tables intentionally have no
+synthetic defaults. Operators must approve exact family/direction and classification/
+severity policy rows before the affected operations are enabled. Missing policy denies
+the operation. Legacy invalid references, missing policy for existing formal closure,
+and incoherent evidence fail migration preflight; no automatic data rewrite is claimed.
+Workflow must have a real configured INCIDENT target and INCIDENT_CLOSURE purpose/binding
+and a completed final approval by the eligible closer when supplied/required.
+
+Current totals: 43 implementations (39 CI-confirmed, four Batch 15 CI pending),
+13 STILL REQUIRED, one BLOCKED (HMR-080), 57 evaluated. Publish this four-commit chain
+on existing main atomically and confirm final full CI started, then stop until owner
+next/fail. Do not mark semantic verification closed until that run is green. No PR,
+release, tag, version change, HPR-P2-008 final PASS or Batch 16 implementation is included.
+Next attached batch, after green CI and owner next: HMR-069/070/072, with fresh admission.
+
+Final Batch 15 local checks completed: 82 canonical Markdown files validated; all
+119 published migration files unchanged byte-for-byte; 42 changed Java files parsed;
+both explicit architecture export registries, canonical headers, transactional
+proxyability and each exact write scope validated; git diff --check passed. Prepared
+22 dedicated unit methods and 17 PostgreSQL integration methods. The initial HMR-062
+unit set contained ten methods (the earlier nine-method summary undercounted it).
+No prepared test is represented as an executed Maven/JUnit/PostgreSQL pass.

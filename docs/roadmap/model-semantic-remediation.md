@@ -225,7 +225,7 @@ Each model task implements only the obligations recorded in its source HMSR sect
 
 | HMR code | HMSR source | Module | Model | SCC | Upstream HMS dependencies | Exact commit message | Status |
 |---|---|---|---|---|---|---|---|
-| HMR-062 | HMSR-074 | incident | Incident | — | organization.OrganizationUnit, workflow.WorkflowInstance | `fix(incident): remediate semantic review Incident` | Planned |
+| HMR-062 | HMSR-074 | incident | Incident | — | organization.OrganizationUnit, workflow.WorkflowInstance | `fix(incident): remediate semantic review Incident` | Implemented — Batch 15; final CI pending |
 | HMR-063 | HMSR-075 | identity | User | — | organization.Employee | `fix(identity): remediate semantic review User` | Completed — Batch 5; final CI pending |
 | HMR-064 | HMSR-076 | planning | PlanRevision | SCC-04 | planning.OperationalPlan, planning.PlanRevision, workflow.WorkflowInstance | `fix(planning): remediate semantic review PlanRevision` | Completed — CI pending |
 | HMR-065 | HMSR-077 | planning | OperationalPlan | SCC-04 | organization.OrganizationUnit, planning.PlanRevision, planning.PlanningPeriod | `fix(planning): remediate semantic review OperationalPlan` | Completed — CI pending |
@@ -258,9 +258,9 @@ Each model task implements only the obligations recorded in its source HMSR sect
 | HMR-087 | HMSR-104 | identity | LoginSession | — | identity.IdentityProvider, identity.User | `fix(identity): remediate semantic review LoginSession` | Completed — Batch 5; final CI pending |
 | HMR-088 | HMSR-105 | identity | UserPermissionGrant | — | identity.Permission, identity.User | `fix(identity): remediate semantic review UserPermissionGrant` | Completed — Batch 5; final CI pending |
 | HMR-089 | HMSR-106 | identity | UserRoleGrant | — | identity.Role, identity.User | `fix(identity): remediate semantic review UserRoleGrant` | Completed — Batch 5; final CI pending |
-| HMR-090 | HMSR-107 | incident | IncidentClosure | — | incident.Incident, workflow.WorkflowInstance | `fix(incident): remediate semantic review IncidentClosure` | Planned |
-| HMR-091 | HMSR-108 | incident | IncidentRelatedIncident | — | incident.Incident | `fix(incident): remediate semantic review IncidentRelatedIncident` | Planned |
-| HMR-092 | HMSR-109 | incident | IncidentResponseAction | — | incident.Incident, organization.OrganizationUnit | `fix(incident): remediate semantic review IncidentResponseAction` | Planned |
+| HMR-090 | HMSR-107 | incident | IncidentClosure | — | incident.Incident, workflow.WorkflowInstance | `fix(incident): remediate semantic review IncidentClosure` | Implemented — Batch 15; final CI pending |
+| HMR-091 | HMSR-108 | incident | IncidentRelatedIncident | — | incident.Incident | `fix(incident): remediate semantic review IncidentRelatedIncident` | Implemented — Batch 15; final CI pending |
+| HMR-092 | HMSR-109 | incident | IncidentResponseAction | — | incident.Incident, organization.OrganizationUnit | `fix(incident): remediate semantic review IncidentResponseAction` | Implemented — Batch 15; final CI pending |
 | HMR-093 | HMSR-110 | reporting | ReportOutputArtifact | — | documents.Document, documents.DocumentStorageObject, reporting.ReportRun | `fix(reporting): remediate semantic review ReportOutputArtifact` | Implemented — CI pending |
 
 ### 8.7 Dependency level 6
@@ -4605,7 +4605,7 @@ uncached Boot parent 4.1.1 offline. Real Spring/JPA/PostgreSQL tests await final
 
 - Source review: `HMSR-107`
 - Exact commit: `fix(incident): remediate semantic review IncidentClosure`
-- Status: **Planned**
+- Status: **Implemented — Batch 15; CI pending**
 - SCC: —
 - Recorded upstream HMS dependencies: incident.Incident, workflow.WorkflowInstance
 - HMSR correction count: 4
@@ -5524,5 +5524,9 @@ and historical write scope above are preserved. Canonical Ultimate Roadmap conta
 actual forward migration, owner contracts, exact files and CI-pending validation.
 
 HMR-092 implemented under accepted canonical Batch 15 scope; source HMSR obligations
+and historical write scope above are preserved. Canonical Ultimate Roadmap contains
+actual forward migration, owner contracts, exact files and CI-pending validation.
+
+HMR-090 implemented under accepted canonical Batch 15 scope; source HMSR obligations
 and historical write scope above are preserved. Canonical Ultimate Roadmap contains
 actual forward migration, owner contracts, exact files and CI-pending validation.

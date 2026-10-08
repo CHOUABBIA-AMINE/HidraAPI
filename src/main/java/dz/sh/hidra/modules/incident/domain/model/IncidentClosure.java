@@ -69,6 +69,8 @@ import java.time.Instant;
             throw new InvalidIncidentValueException("IncidentClosure closed at must not be null.");
         }
 
+        if(closureSummary==null || closureSummary.isBlank()) throw new InvalidIncidentValueException("Closure summary is required.");
+        if(!resolutionVerified || !evidenceReviewed) throw new InvalidIncidentValueException("Closure requires resolution verification and evidence review.");
         id = normalize(id);
         incidentId = normalize(incidentId);
         closureSummary = normalize(closureSummary);

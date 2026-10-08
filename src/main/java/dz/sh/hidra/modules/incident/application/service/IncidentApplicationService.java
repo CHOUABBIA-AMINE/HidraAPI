@@ -47,7 +47,7 @@ import java.util.Objects;
  * Application service for incident lifecycle commands.
  */
 @Service
-public final class IncidentApplicationService implements OpenIncidentUseCase, RecordIncidentResponseActionUseCase, CloseIncidentUseCase {
+public class IncidentApplicationService implements OpenIncidentUseCase, RecordIncidentResponseActionUseCase, CloseIncidentUseCase {
 
     private final IncidentRepositoryPort incidentRepositoryPort;
     private final IncidentResponseActionRepositoryPort responseActionRepositoryPort;
@@ -150,8 +150,12 @@ public final class IncidentApplicationService implements OpenIncidentUseCase, Re
     }
 
     @Override
+    @org.springframework.transaction.annotation.Transactional
     public String closeIncident(CloseIncidentCommand command) {
         Objects.requireNonNull(command, "Close incident command must not be null.");
+        var parent=incidentRepositoryPort.findByIdForUpdate(command.incidentId()).orElseThrow(() -> new IllegalArgumentException("Unknown Incident."));
+        if(parent.status()!=IncidentStatus.RESOLVED) throw new IllegalArgumentException("Only RESOLVED incidents may close.");
+        var actor=references.currentActor(Instant.now());
         IncidentClosure closure = new IncidentClosure(
                 IncidentId.newId().value(),
                 command.incidentId(),
@@ -160,8 +164,8 @@ public final class IncidentApplicationService implements OpenIncidentUseCase, Re
                 command.evidenceReviewed(),
                 command.rootCauseReviewed(),
                 command.followUpActionsCreated(),
-                command.closedByActorId(),
-                command.closedByActorNameSnapshot(),
+                actor.id(),
+                actor.label(),
                 Instant.now(),
                 command.workflowInstanceId()
         );

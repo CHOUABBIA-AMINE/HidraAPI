@@ -4423,3 +4423,229 @@ and one BLOCKED, 57 evaluated. HPR-P2-008 is not finally closed. Exact semantic 
 production CI starts, then stop for owner next/fail. No branch/PR/release or later task.
 Next is attached row 19, subject to fresh admission and green baseline; no numerically
 adjacent legacy subject is automatically selected by this solo envelope.
+
+## HPR-P2-008 Batch 19 Planning targets and Monitoring execution preflight — 2026-10-08
+
+Owner next selects attached row 19: HMR-094 / PlanTarget followed by HMR-103 /
+PlanActualDeviation. This preflight starts from main
+0fe3b6b72535ac5211007a2ebc16cc19d22454a6, a documentation-only child of
+863d113fbee88f71ff7e2c3b593b415e5b70d07a. Full production CI #598
+(37794566250) passed on that production-identical parent; Documentation Validation
+#102 passed there and #103 (37794886938) passed on current main. HMR-098 is now a
+CI-confirmed implementation. These facts do not close HPR-P2-008 or substitute for
+physical survivability evidence.
+
+### PTMD-PREREQ-01 — independently recovered write-policy and owner-contract gaps
+
+HMSR-111 and HMSR-120 were independently recovered from
+`docs/roadmap/model-semantic-review.md`, sections 124 and 133, and checked against
+current production, DDD, repository contracts, architecture exports and migrations.
+
+| Current source | Finding |
+|---|---|
+| `planning/domain/model/PlanTarget.java` | Existing 22-field record permits blank topologyAssetType and lacks target-type-driven value checks. Optional nomination/scenario/point references remain nullable. |
+| `planning/infrastructure/persistence/adapter/JpaPlanTargetRepositoryAdapter.java` | save merges directly, without own parent/revision compatibility, locked reference validation, catalog-family or value-policy checks. There is no authoritative PlanTarget creation service to extend. |
+| `docs/data definition/Planning.md`, sections 6.7 and catalog definition | TARGET_TYPE is an explicit authoritative family. Numeric targets require targetValue and unitId. Non-numeric representations depend on target semantics; there is no per-entry representation configuration in live catalog/schema. Dynamic catalog IDs/codes must not be guessed into numeric/text classifications. |
+| `topology/application/contract/planning/PlanningTopologyScopeContract.java` and provider | Existing plan scope provider resolves PIPELINE_SYSTEM, PIPELINE and FACILITY. It does not cover all existing typed asset namespaces used elsewhere by owner providers. Scope and target contracts must retain their distinct meanings. |
+| `telemetry/application/port/in/TelemetryQueryUseCase.java` | Reading/time-series API has no point-by-ID or trusted-reading-by-ID authority. Existing MonitoringTelemetryPointReferenceContract provides owner-controlled point existence, but is insufficient for trusted reading identity/point provenance or a Planning code snapshot. |
+| `planning/application/port/in/PlanningQueryUseCase.java` and application/port/out/PlanningQueryPort.java | Public query API exposes targets as views, but current architecture admits narrowly exported contract packages. An internal domain-returning output port is not a legal Monitoring import. No narrow Monitoring target authority exists. |
+| `monitoring/application/service/DeviationApplicationService.java` | Live record path copies mandatory target and optional evaluation/Telemetry IDs without owner validation. This service is excluded from original HMR-103 scope. |
+| `monitoring/infrastructure/persistence/adapter/JpaPlanActualDeviationRepositoryAdapter.java` | Alternate direct saves bypass authoritative reference checks. Supplied evaluation requires an own lookup and context validation; MonitoringEvaluation exists as an own JPA entity/repository. |
+| Published migration tail / historical HMR registrations | Latest published migration is V20261008_018. Unexecuted V20261004_094 and V20261004_103 registrations are backdated; forward migrations must be explicitly registered without editing published SQL or enabling out-of-order execution. |
+
+Original HMR-094 and HMR-103 scopes contain 12 and 10 paths respectively. They omit
+required owner providers, representation-policy metadata, own parent lookup repositories,
+the live deviation service, actual PostgreSQL tests and architecture admission. AGENTS.md
+section 3.2 rule 9 says: "If an HMR reveals an unregistered prerequisite, SCC complication,
+owner-contract gap, cross-module lifecycle dependency, migration-order conflict, or materially
+larger semantic redesign, split it out and stop before mutating that HMR."
+HMR-094 and dependent HMR-103 are therefore BLOCKED on PTMD-PREREQ-01 acceptance;
+this supporting preflight changes only the two canonical execution-memory documents.
+
+### Concrete proposed two-commit execution envelope
+
+1. Admit exactly HMR-094 then HMR-103 in attached order, one independent semantic commit
+   each: `fix(planning): remediate semantic review PlanTarget`, then
+   `fix(monitoring): remediate semantic review PlanActualDeviation`. Their dependency is
+   one-way: Monitoring consumes a Planning-owned scalar contract. Introducing that export
+   does not make Planning depend on Monitoring implementation or create an SCC. Publish
+   the final chained batch head to main once under an expected-SHA lease; no branch/PR.
+2. HMR-094 preserves the existing 22-field API/domain/JPA shape, stable target statuses,
+   optional references, validity-order behavior and tolerated equality. HMSR-111 explicitly
+   declines a stronger strict interval rule despite the older DDD notation. No arbitrary
+   tolerance sign/order, lifecycle transition, unit owner validation, numeric recomputation,
+   target creation endpoint or universal ACTIVE-target requirement is invented.
+3. Require nonblank topologyAssetType in the domain. At the transactional adapter boundary,
+   lock an existing target, validate the own revision, optional nomination and scenario, and
+   require supplied own references to belong to that same revision. Shared parent locks and
+   validated nullable local FKs with revision compatibility prevent dangling references and
+   parent-reassignment/delete races. Reinforcement must not weaken existing HMR-064 approved
+   revision immutability or alter another aggregate's lifecycle.
+4. Resolve exact TARGET_TYPE catalog membership. Introduce Planning-owned unseeded
+   `hidra_planning_target_value_policy` keyed by the actual target-type entry ID, with an
+   explicit representation kind NUMERIC or TEXT and active flag. These are technical policy
+   discriminators, not hard-coded business target IDs/codes or new catalog entries. Numeric
+   policy requires a numeric value and nonblank unit; TEXT policy requires nonblank text.
+   Do not forbid an additional representation absent an explicit owner exclusivity rule.
+   Missing/inactive fresh policy or wrong-family entry fails closed. Shared policy/catalog
+   locks and database guards protect used identity, family and representation from mutation,
+   deletion or truncation. Valid unchanged inactive history remains readable and can retain
+   its existing mapping; changed type/value semantics must meet the configured policy.
+5. Policy installation and validation are separate forward migrations: 019 commits an empty
+   metadata structure; 020 fails if legacy targets lack approved policy or have orphan,
+   cross-revision, family, value or required-type inconsistencies. Owner-approved actual
+   representation mappings may then be provisioned before retrying 020. No guessed seed,
+   automatic historical repair, fabricated parent or data rewrite is allowed. Existing
+   generic target-type and revision FKs remain; local nullable references gain integrity.
+6. Add a narrow Topology-owned PlanningTargetTopologyReferenceContract/provider in the
+   already exported Planning package. Resolve actual owner identities for PIPELINE_SYSTEM,
+   PIPELINE, SEGMENT, FACILITY, EQUIPMENT, NODE and CONNECTION, using the appropriate
+   existing owner repositories. Unsupported/wrong namespace, mismatched identity or missing
+   asset denies new/changed linkage; do not alter existing plan-scope behavior or alias types.
+   Fresh code snapshot comes from the owner. Unchanged historical snapshots are retained
+   without live refresh and cannot be overwritten as arbitrary caller-supplied provenance.
+7. Add a narrow Telemetry-owned Planning point contract/provider returning actual ID/code.
+   A populated new/changed point must resolve through its real owner; null stays legal.
+   Fresh supplied point linkage stores the actual code snapshot and unchanged history is
+   retained. No cross-module FK or consumer import of Telemetry persistence/domain occurs.
+8. HMR-094 exports a narrow Planning-owned MonitoringPlanTargetReferenceContract/provider
+   with exact target ID, revision, topology namespace/ID, optional point ID and existing
+   status/value/validity context as needed. It resolves through own persistence/ports; absent
+   target denies. Historical target query remains readable, and an arbitrary new status/time
+   eligibility matrix is not imposed. Register only the new narrow contract packages in
+   both architecture suites; do not export internal application services/output ports.
+9. HMR-103 introduces DeviationReferenceValidation at the live record path and an own
+   transactional adapter validator for direct saves. Mandatory Planning target must resolve
+   exactly before persistence. New/changed populated Telemetry point uses existing owner
+   existence authority; new MonitoringTrustedReadingReferenceContract/provider resolves an
+   actual trusted reading and scalar point/trust provenance. Source trust eligibility remains
+   Telemetry's existing governed meaning; do not invent a stricter trust-level policy or
+   fabricate reading evidence. If a reading and point are both supplied, their identities
+   must agree. Null optional reading/point/evaluation remains legal. Existing stored source
+   snapshots are not refreshed during unrelated historical updates.
+10. Supplied Monitoring evaluation must exist. Validate each populated evaluation context
+    (plan revision, topology type/ID and point) against the resolved target/deviation/evidence
+    context; missing optional context is not fabricated or made universally mandatory.
+    Lock the own evaluation reference for the write and reinforce nullable local evaluation
+    FK/context protection in forward 021. Do not require successful/completed evaluation,
+    update evaluation counters, generate evidence or start another lifecycle. Preserve
+    optional expectedFlowStateId and neutral unit/topology snapshots without inventing
+    obligations HMSR-120 explicitly declines. Existing severity fallback, 20-field shape,
+    status/severity enums and numeric fields keep their behavior; no arithmetic recomputation,
+    rounding/zero-denominator policy or universal non-null value matrix is admitted.
+11. Keep own-module database race protection and cross-owner checks distinct: external
+    contracts establish reference evidence at write time, not relational lifetime guarantees.
+    No Planning-to-Topology/Telemetry or Monitoring-to-Planning/Telemetry FK is authorized.
+    No always-true Noop validator is accepted as owner evidence. Make transactional classes
+    proxyable; record operations validate before save and roll back failed flushed writes.
+12. Prepare focused unit/domain/application/adapter and actual owner-provider tests plus real
+    PostgreSQL/Spring-JPA migration/rollback/race tests. Cover missing policies/retry, numeric
+    and text shapes, wrong family, inactive history, missing/wrong typed asset, optional-null
+    references, cross-revision parents and reparent/delete races, canonical snapshots, unknown
+    target/point/reading/evaluation, reading-point mismatch, populated evaluation coherence,
+    direct-save bypass rejection and preserved severity behavior. Run compile, both focused
+    semantic suites, owner suites, architecture suites, full test and clean verify. Distinguish
+    source/fixture checks from real JUnit, Java 21, Spring and PostgreSQL execution.
+
+| Subject | Forward migrations | Focused suite | Exact semantic commit |
+|---|---|---|---|
+| HMR-094 | V20261008_019__hmr_094_planning_target_value_policy.sql; V20261008_020__hmr_094_planning_plan_target_integrity.sql | PlanTargetSemanticRemediationTest | fix(planning): remediate semantic review PlanTarget |
+| HMR-103 | V20261008_021__hmr_103_monitoring_plan_actual_deviation_integrity.sql | PlanActualDeviationSemanticRemediationTest | fix(monitoring): remediate semantic review PlanActualDeviation |
+
+### Exhaustive proposed HMR-094 scope
+
+Only needed paths below may change in its semantic commit after acceptance. Original
+historical scope/migration registration is superseded for this execution only.
+
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `doc/model-remediation/RECONCILIATION.md`
+- `docs/roadmap/model-semantic-remediation.md`
+- `docs/data definition/Planning.md`
+- `docs/roadmap/planning.md`
+- `src/main/java/dz/sh/hidra/modules/planning/application/port/out/PlanTargetRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/planning/domain/model/PlanTarget.java`
+- `src/main/java/dz/sh/hidra/modules/planning/domain/value/PlanTargetStatus.java`
+- `src/main/java/dz/sh/hidra/modules/planning/infrastructure/persistence/adapter/JpaPlanTargetRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/planning/infrastructure/persistence/entity/PlanTargetJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/planning/infrastructure/persistence/mapper/PlanningPersistenceMapper.java`
+- `src/main/java/dz/sh/hidra/modules/planning/infrastructure/persistence/repository/PlanTargetJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/planning/infrastructure/persistence/adapter/PlanTargetReferenceValidation.java`
+- `src/main/java/dz/sh/hidra/modules/planning/infrastructure/configuration/PlanningTargetValuePolicy.java`
+- `src/main/java/dz/sh/hidra/modules/planning/infrastructure/persistence/repository/PlanningCatalogEntryJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/planning/infrastructure/persistence/repository/PlanRevisionJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/planning/infrastructure/persistence/repository/NominationJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/planning/infrastructure/persistence/repository/PlanScenarioJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/planning/application/contract/monitoring/MonitoringPlanTargetReferenceContract.java`
+- `src/main/java/dz/sh/hidra/modules/planning/application/contract/monitoring/package-info.java`
+- `src/main/java/dz/sh/hidra/modules/planning/application/service/MonitoringPlanTargetReferenceQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/contract/planning/PlanningTargetTopologyReferenceContract.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/integration/PlanningTargetTopologyReferenceQueryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/telemetry/application/contract/planning/PlanningTelemetryPointReferenceContract.java`
+- `src/main/java/dz/sh/hidra/modules/telemetry/application/contract/planning/package-info.java`
+- `src/main/java/dz/sh/hidra/modules/telemetry/application/service/PlanningTelemetryPointReferenceQueryService.java`
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java`
+- `src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java`
+- `src/test/java/dz/sh/hidra/modules/planning/semantic/PlanTargetSemanticRemediationTest.java`
+- `src/test/java/dz/sh/hidra/modules/planning/infrastructure/persistence/PlanTargetSemanticPostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/planning/semantic/MonitoringPlanTargetReferenceContractTest.java`
+- `src/test/java/dz/sh/hidra/modules/topology/infrastructure/integration/PlanningTargetTopologyReferenceContractTest.java`
+- `src/test/java/dz/sh/hidra/modules/telemetry/semantic/PlanningTelemetryPointReferenceContractTest.java`
+- `src/main/resources/db/migration/V20261008_019__hmr_094_planning_target_value_policy.sql`
+- `src/main/resources/db/migration/V20261008_020__hmr_094_planning_plan_target_integrity.sql`
+
+### Exhaustive proposed HMR-103 scope
+
+Only needed paths below may change in its independent semantic commit after HMR-094.
+No alteration of HMR-094 production files is admitted by this downstream envelope.
+
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `doc/model-remediation/RECONCILIATION.md`
+- `docs/roadmap/model-semantic-remediation.md`
+- `docs/data definition/Monitoring.md`
+- `src/main/java/dz/sh/hidra/modules/monitoring/application/port/out/PlanActualDeviationRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/monitoring/domain/model/PlanActualDeviation.java`
+- `src/main/java/dz/sh/hidra/modules/monitoring/infrastructure/persistence/adapter/JpaPlanActualDeviationRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/monitoring/infrastructure/persistence/entity/PlanActualDeviationJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/monitoring/infrastructure/persistence/mapper/MonitoringPersistenceMapper.java`
+- `src/main/java/dz/sh/hidra/modules/monitoring/infrastructure/persistence/repository/PlanActualDeviationJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/monitoring/application/service/DeviationApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/monitoring/application/service/DeviationReferenceValidation.java`
+- `src/main/java/dz/sh/hidra/modules/monitoring/infrastructure/persistence/adapter/PlanActualDeviationReferenceValidation.java`
+- `src/main/java/dz/sh/hidra/modules/monitoring/infrastructure/persistence/repository/MonitoringEvaluationJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/telemetry/application/contract/monitoring/MonitoringTrustedReadingReferenceContract.java`
+- `src/main/java/dz/sh/hidra/modules/telemetry/application/service/MonitoringTrustedReadingReferenceQueryService.java`
+- `src/test/java/dz/sh/hidra/modules/monitoring/semantic/PlanActualDeviationSemanticRemediationTest.java`
+- `src/test/java/dz/sh/hidra/modules/monitoring/infrastructure/persistence/PlanActualDeviationSemanticPostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/telemetry/semantic/MonitoringTrustedReadingReferenceContractTest.java`
+- `src/main/resources/db/migration/V20261008_021__hmr_103_monitoring_plan_actual_deviation_integrity.sql`
+
+### Current disposition and preflight validation
+
+| Subject | Disposition | Reason |
+|---|---|---|
+| HMR-098 / Batch 18 | COMPLETED — CI #598 GREEN | Full production run passed on 863d113fbee88f71ff7e2c3b593b415e5b70d07a. |
+| HMR-094 / HMSR-111 | BLOCKED — PTMD-PREREQ-01 | Policy, owner-provider and forward-migration scope awaiting acceptance. |
+| HMR-103 / HMSR-120 | BLOCKED — PTMD-PREREQ-01 | Depends on admitted HMR-094 export plus live record/owner/evaluation scope. |
+| HMR-080 | BLOCKED | Independent unresolved prerequisite remains. |
+
+Current totals: 50 CI-confirmed implementations, four STILL REQUIRED (HMR-100/104/105/106)
+and three BLOCKED (HMR-080/094/103), 57 evaluated. HPR-P2-008 remains open. Earlier
+snapshot totals remain historical; this is the current reconciliation disposition.
+
+This preflight's exact write scope is only `doc/roadmap/ULTIMATE_ROADMAP.md` and
+`doc/model-remediation/RECONCILIATION.md`. Exact supporting commit:
+`docs(planning): record Batch 19 execution preflight`.
+
+Validate all canonical Markdown with the repository documentation workflow, exact two-file
+scope, git diff --check and byte-identical production/tests/CI/POM/published migrations.
+No production implementation, Maven test or PostgreSQL execution is claimed here.
+Documentation-only edits trigger Documentation Validation, not the production workflow.
+Confirm the applicable documentation run starts, then stop for owner next/fail. Owner next
+accepts PTMD-PREREQ-01 and this concrete ordered two-commit design/exhaustive scope,
+subject to fresh baseline verification. An amendment can narrow the proposal first.
+
+Preflight checks completed: all 82 canonical Markdown files passed repository workflow
+validation; exact two-file scope and git diff --check passed. Production, tests, CI, POM
+and all 131 published SQL migrations remain byte-identical to baseline. HMR-094 has
+35 explicit proposed paths and HMR-103 has 20, with independent messages and forward
+migrations. No implementation or runtime test is claimed by this supporting commit.

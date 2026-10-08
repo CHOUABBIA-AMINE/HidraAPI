@@ -249,7 +249,7 @@ P1 is **CLOSED** only when this closure SHA passes the repository's full exact-h
 | HPR-P2-005 | COMPLETED — deterministic OpenAPI 3.1 contract version-controlled from exact executable P1 closure CI artifact; canonical API overview, conventions, authentication/authorization, error-model limitation, versioning/compatibility and OpenAPI-governance documents established; shared machine-readable error envelope remains explicitly NOT ESTABLISHED | API | Code/Doc | Generate and version-control deterministic `doc/api/openapi.yaml`; create API overview, conventions, auth, error, versioning/compatibility and OpenAPI governance docs. | `docs(api): establish versioned api contract` | HPR-P1-008 |
 | HPR-P2-006 | COMPLETED — canonical current database architecture, schema ownership, Flyway policy and generated persistence dictionary established from 82 current Flyway migrations, 469 current module JPA persistence entities, production configuration and closed P1 PostgreSQL/backup evidence; stale pre-closure DB stage documents retained as historical provenance | Database | Doc | Create database architecture, schema ownership, Flyway policy and current generated data dictionary from current migrations/JPA evidence. | `docs(database): establish canonical database documentation` | HPR-P2-001 |
 | HPR-P2-007 | COMPLETED — exact-source reconciliation established: HMR-005 corrected to completed, HMR-009 confirmed completed/stale carry-over removed, HMR-054 historical blocker resolved by current Party→Topology contract, HMR-050..106 reconciled to 56 still-required + 1 blocked (HMR-080), 0 superseded; legacy roadmap preserved as history | Semantic Remediation | Code/Doc | Inventory unresolved HMR/HMSR obligations against exact current source; mark each as completed, still required, blocked, or superseded with evidence. | `docs(model-remediation): reconcile remaining semantic obligations` | HPR-P2-003 |
-| HPR-P2-008 | IN PROGRESS — 43 semantic implementations (39 verified through CI #593, four Batch 15 implementations awaiting final-head CI); 13 STILL REQUIRED and one BLOCKED HMR-080, 57 evaluated. Accepted INC-PREREQ-01 implemented in four independent commits. | Semantic Remediation | Code | Execute still-required semantic remediation in dependency order using revalidated HMSR obligations; do not restart completed HMRs without regression evidence. | `fix(model): continue reconciled semantic remediation` | HPR-P2-007 |
+| HPR-P2-008 | IN PROGRESS — 49 semantic implementations verified through CI #597; six STILL REQUIRED and two BLOCKED (HMR-080, HMR-098/IC-PREREQ-01), 57 evaluated. Batch 18 solo preflight prepared; no final closure. | Semantic Remediation | Code | Execute still-required semantic remediation in dependency order using revalidated HMSR obligations; do not restart completed HMRs without regression evidence. | `fix(model): continue reconciled semantic remediation` | HPR-P2-007 |
 | HPR-P2-009 | PENDING | Semantic Remediation | Doc | Transfer permanent semantic decisions from legacy review/roadmaps into `doc/domain/` and `doc/modules/`, then preserve legacy files as execution history. | `docs(model-remediation): canonicalize semantic decisions` | HPR-P2-008 | IN PROGRESS — HMR-050 and attached Batches 1..6 implemented; 17 completed, 39 still-required HMRs and HMR-080 blocked in the HMR-050..106 register. Baseline production CI #576 passed; final Batch 6 CI pending. Local full Maven validation blocked by Maven Central DNS/uncached parent, Java 17 and absent Docker. | Semantic Remediation | Code | Execute still-required semantic remediation in dependency order using revalidated HMSR obligations; do not restart completed HMRs without regression evidence. | `fix(model): continue reconciled semantic remediation` | HPR-P2-007 |
 | HPR-P2-010 | PENDING | Data Governance | Doc | Create data governance, retention/archival, provenance and legacy-data migration documents without inventing retention values. | `docs(data): establish data governance baseline` | HPR-P2-001 |
 | HPR-P2-011 | PENDING | Testing | Doc | Create test strategy, architecture testing, database testing, API testing and requirements traceability documents tied to executable evidence. | `docs(testing): establish verification documentation` | HPR-P2-002..006 |
@@ -4171,3 +4171,181 @@ Current total: 49 implementations (46 CI-confirmed, three awaiting final-head CI
 seven STILL REQUIRED and one BLOCKED, 57 evaluated. HPR-P2-008 remains open.
 Next attached batch is row 18, HMR-098 / IntegrityCase, subject to fresh admission,
 green baseline and owner next. No later task executes in this envelope.
+
+## HPR-P2-008 Batch 18 IntegrityCase execution preflight — 2026-10-08
+
+Owner `next` selects attached row 18, HMR-098 / IntegrityCase, as the next solo subject.
+Current main is cfb3681ef1c79b4416336a3533cbc0599b4fd6b2. Exact-head full production
+CI #597 (37789260852) passed, including Java 21 repository verification, PostgreSQL,
+all production infrastructure checks, deterministic current/base OpenAPI generation,
+backward compatibility and artifact upload. Documentation CI #100 passed on that head.
+Batch 17 HMR-082/096/097 are therefore CI-confirmed implementations. This does not
+independently close HPR-P2-008 or any physical survivability evidence obligation.
+
+### IC-PREREQ-01 — independently recovered scope and taxonomy gaps
+
+Live HMSR-115 (`docs/roadmap/model-semantic-review.md`, section 128) requires nullable
+primary-defect existence, explicit case-type family semantics and preserved owner
+boundaries. Its temporal rule remains openedAt <= closedAt, with no stronger universal
+status/time coupling, close/resolve use case or primary-defect topology equality rule.
+
+Current evidence:
+
+| Path | Live finding |
+|---|---|
+| `integrity/application/service/IntegrityApplicationService.java` | openIntegrityCase copies primaryDefectId, caseTypeId and external references without validating a supplied defect or type family. This application service is absent from the original HMR-098 scope. Adding the own defect port affects the two IntegrityProgram constructor fixtures, also absent from that scope. |
+| `integrity/infrastructure/persistence/adapter/JpaIntegrityCaseRepositoryAdapter.java` | save directly merges through the JPA repository. There is no write-boundary reference validator or locked existing-case read. |
+| `V20260611_013__create_integrity_tables.sql` and HRA-111 | Case-type generic catalog FK exists. primaryDefectId is nullable/indexed but has no local FK. Generic catalog existence cannot establish case-type family membership. |
+| `docs/data definition/Integrity.md`, live Integrity catalog Java and provisioning SQL | No authoritative case-type catalog_name or case field-family policy is defined. INTEGRITY_PROGRAM_TYPE is an existing programme family and cannot be reused as case taxonomy merely because it exists. Severity family also remains unresolved. |
+| `identity/.../contract/integrity`, `organization/.../contract/integrity`, `workflow/.../contract/integrity` | Organization has a reusable owner-controlled existence contract. Identity and Workflow currently export assessment-specific contracts, not case-specific reference authority. WorkflowAssessment matching cannot attest an IntegrityCase target. |
+| `topology/application/contract`, existing Topology providers | Narrow typed providers exist for other consumer contexts, but no IntegrityCase-specific exported contract/provider exists. Direct imports of Topology domain/JPA/repositories into Integrity remain forbidden. |
+| `integrity/infrastructure/integration/NoopIntegrityExternalReferenceResolver.java` | Always-true methods are not actual owner proof. The new authoritative case path must not use that fallback as validation. |
+
+Original HMR-098 scope has 18 paths, excludes the application service, owner providers,
+field-policy definition, catalog/defect validation repositories and architecture admission.
+Its unexecuted V20261004_098 registration predates the already published migration tail
+V20261008_016. Published SQL cannot be backdated or edited. AGENTS.md §3.2.9 requires
+stopping before production mutation when these unregistered prerequisites appear.
+HMR-098 is BLOCKED on IC-PREREQ-01; this preflight changes only the two canonical
+execution-memory documents and prepares the concrete remedy below.
+
+### Concrete solo execution proposal for acceptance
+
+1. Admit HMR-098/HMSR-115 alone, retaining exact semantic commit
+   `fix(integrity): remediate semantic review IntegrityCase`. Preserve the existing
+   20-field REST/application/domain/JPA shape, enum, required values and ordering rule.
+   No automatic close/resolve, status-history lifecycle orchestration, forced CLOSED
+   timestamp, defect status restriction, case-number uniqueness, required optional
+   actor/defect/source/unit/workflow, or defect-to-case topology equality is invented.
+2. Add optional primary-defect lookup at the application opening boundary using the
+   Integrity-owned repository port. Unknown populated IDs fail before case save. Adapter
+   writes revalidate the defect under a shared row lock, retain null optionality and lock
+   an existing case before validating changed references. Nullable ON DELETE RESTRICT FK
+   independently prevents dangling references and parent-delete races. Do not import
+   other modules' persistence types into Integrity. Make any transactional service
+   proxyable and retain existing programme/assessment constructor behavior through
+   explicitly updated fixtures.
+3. Establish an explicit unseeded Integrity-owned field-policy table
+   `hidra_integrity_catalog_field_policy`, with unique field_role and actual catalog_name.
+   Internal role `CASE_TYPE` is a field identifier, not a fabricated catalog family.
+   An operator must approve/provision the actual existing case-type family. Policy and
+   catalog shared locks require exactly one configured mapping and exact family membership.
+   New/changed references require active mapping/entry. Missing/ambiguous/ineligible mapping
+   denies; no code/ID/family heuristics or permissive defaults. Protect a used mapping and
+   referenced catalog family from reassignment/deletion/truncation that would invalidate
+   historical cases. Valid unchanged inactive references remain readable and writable.
+   severityId retains its current optional shape; no exact severity family is invented.
+4. Introduce a narrow Topology-owned scalar reference contract/provider for case targets.
+   Adopt the existing owner lookup vocabulary PIPELINE, SEGMENT, FACILITY, EQUIPMENT,
+   NODE and CONNECTION, using real owned repository reads with exact type/id identity.
+   Unknown/unsupported type or missing target denies new/changed linkage. Do not silently
+   alias different namespaces or add speculative target types. Fresh target code snapshots
+   come from Topology; unchanged historical snapshots remain readable without owner refresh.
+   This is reference proof at write time, not a cross-module relational lifetime guarantee.
+5. Validate populated new/changed openedByActorId via a narrow Identity-owned case
+   eligibility contract, responsibleOrganizationUnitId through the existing Organization
+   Integrity reference contract, and workflowInstanceId through a new case-specific Workflow
+   contract. Workflow attests the actual integrity module/case ID, configured active
+   WORKFLOW_TARGET_TYPE with code INTEGRITY_CASE, supplied active WORKFLOW_PURPOSE and
+   configured definition/type/purpose binding. Existence alone is insufficient; context
+   proof is not approval. Do not seed taxonomy, start Workflow or invent a purpose name,
+   approval/completion or actor-authentication requirement for this optional scalar field.
+6. sourceIncidentId/sourceHseCaseId remain neutral optional historical source context.
+   HMSR-115 and the DDD do not establish a current source-state/existence dependency for
+   this opening behavior; do not invent mandatory live source checks or foreign FKs.
+   All Topology, Identity, Organization, Workflow, HSE and Incident references remain
+   scalars/snapshots. Case saves never write another owner's lifecycle or assets.
+7. Replace the unexecuted historical migration registration with these independent forward
+   files inside the single HMR-098 semantic commit:
+
+   | Forward file | Purpose |
+   |---|---|
+   | `V20261008_017__hmr_098_integrity_case_catalog_field_policy.sql` | Create explicit unseeded owner field-policy metadata before the validation migration. |
+   | `V20261008_018__hmr_098_integrity_case_reference_integrity.sql` | Legacy parent/family/ordering preflight, validated nullable primary-defect FK, catalog eligibility/used-policy guards and existing temporal-order reinforcement. |
+
+   Existing cases without an approved mapping must block 018 instead of receiving a
+   guessed family. Flyway's earlier committed 017 allows operator-approved metadata
+   provisioning before retry. Legacy orphan/wrong-family/time inconsistency requires
+   reconciliation from real evidence, with no manufactured defect, time, actor or taxonomy.
+   No published migration is rewritten and the existing mandatory case-type FK stays.
+8. Add focused application/adapter/domain/owner tests: optional-null and missing/valid defect,
+   explicit mapping/family/eligibility failure, canonical fresh target and historical snapshots,
+   wrong typed Topology/Workflow context, optional actor/unit rejection, unchanged inactive
+   history, and preserved programme/assessment behavior. Real PostgreSQL/Spring tests cover
+   migration failure without rewrite, mapping-provisioning retry, nullable FK/delete races,
+   concurrent catalog reclassification and reference-write rollback. Run compile, focused/
+   existing/architecture tests, full test and clean verify; report actual local limitations.
+   Publish once on main, confirm final production CI starts, then stop for owner next/fail.
+
+### Exhaustive proposed HMR-098 write scope
+
+Only needed paths from this scope may change after acceptance. Original historical scope
+is superseded for this execution only; unaffected files need no cosmetic changes.
+
+- `docs/data definition/Integrity.md`
+- `docs/roadmap/model-semantic-remediation.md`
+- `src/main/java/dz/sh/hidra/modules/integrity/api/rest/request/OpenIntegrityCaseRequest.java`
+- `src/main/java/dz/sh/hidra/modules/integrity/api/rest/response/IntegrityCaseResponse.java`
+- `src/main/java/dz/sh/hidra/modules/integrity/application/command/OpenIntegrityCaseCommand.java`
+- `src/main/java/dz/sh/hidra/modules/integrity/application/dto/IntegrityCaseSummaryDto.java`
+- `src/main/java/dz/sh/hidra/modules/integrity/application/port/in/OpenIntegrityCaseUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/integrity/application/port/out/IntegrityCaseRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/integrity/domain/model/IntegrityCase.java`
+- `src/main/java/dz/sh/hidra/modules/integrity/domain/value/IntegrityCaseStatus.java`
+- `src/main/java/dz/sh/hidra/modules/integrity/infrastructure/persistence/adapter/JpaIntegrityCaseRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/integrity/infrastructure/persistence/entity/IntegrityCaseJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/integrity/infrastructure/persistence/entity/IntegrityCaseStatusHistoryJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/integrity/infrastructure/persistence/mapper/IntegrityPersistenceMapper.java`
+- `src/main/java/dz/sh/hidra/modules/integrity/infrastructure/persistence/repository/IntegrityCaseJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/integrity/infrastructure/persistence/repository/IntegrityCaseStatusHistoryJpaRepository.java`
+- `src/test/java/dz/sh/hidra/modules/integrity/semantic/IntegrityCaseSemanticRemediationTest.java`
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `doc/model-remediation/RECONCILIATION.md`
+- `src/main/resources/db/migration/V20261008_017__hmr_098_integrity_case_catalog_field_policy.sql`
+- `src/main/resources/db/migration/V20261008_018__hmr_098_integrity_case_reference_integrity.sql`
+- `src/main/java/dz/sh/hidra/modules/integrity/application/service/IntegrityApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/integrity/application/port/out/PipelineDefectRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/integrity/infrastructure/persistence/adapter/IntegrityCaseReferenceValidation.java`
+- `src/main/java/dz/sh/hidra/modules/integrity/infrastructure/configuration/IntegrityCatalogFieldPolicy.java`
+- `src/main/java/dz/sh/hidra/modules/integrity/infrastructure/persistence/repository/IntegrityCatalogEntryJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/integrity/infrastructure/persistence/repository/PipelineDefectJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/contract/integrity/IntegrityCaseTopologyReferenceContract.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/contract/integrity/package-info.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/integration/IntegrityCaseTopologyReferenceQueryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/contract/integrity/IntegrityCaseActorReferenceContract.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/IntegrityCaseActorReferenceQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/workflow/application/contract/integrity/IntegrityCaseWorkflowReferenceContract.java`
+- `src/main/java/dz/sh/hidra/modules/workflow/application/service/IntegrityCaseWorkflowReferenceQueryService.java`
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java`
+- `src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java`
+- `src/test/java/dz/sh/hidra/modules/integrity/semantic/IntegrityProgramSemanticRemediationTest.java`
+- `src/test/java/dz/sh/hidra/modules/integrity/infrastructure/persistence/IntegrityCaseSemanticPostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/topology/infrastructure/integration/IntegrityCaseTopologyReferenceContractTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/semantic/IntegrityCaseActorReferenceContractTest.java`
+- `src/test/java/dz/sh/hidra/modules/workflow/semantic/IntegrityCaseWorkflowReferenceContractTest.java`
+- `src/test/java/dz/sh/hidra/modules/organization/semantic/IntegrityOrganizationUnitReferenceContractTest.java`
+
+### Current disposition and preflight validation
+
+HMR-098 is BLOCKED pending IC-PREREQ-01 acceptance. HMR-080 remains independently
+BLOCKED. Current totals: 49 CI-confirmed implementations, six STILL REQUIRED and two
+BLOCKED, 57 evaluated. HPR-P2-008 remains open. After accepted HMR-098 implementation,
+follow the next attached row under fresh admission; do not select a later legacy code
+merely because it appears numerically adjacent.
+
+This preflight's exact write scope is only `doc/roadmap/ULTIMATE_ROADMAP.md` and
+`doc/model-remediation/RECONCILIATION.md`. Exact supporting commit:
+`docs(integrity): record Batch 18 execution preflight`.
+
+Validate all canonical Markdown as UTF-8/nonempty/conflict-marker-free, exact two-file
+scope, unchanged production/tests/CI/POM/migrations and git diff --check. No Maven or
+PostgreSQL execution is claimed for this docs-only change. Trigger applicable Documentation
+Validation on main, confirm it starts, then stop. Owner next accepts IC-PREREQ-01 and
+this concrete design/exhaustive scope, subject to fresh green-baseline verification;
+an amendment may narrow the proposal first. Production implementation has not started.
+
+Preflight checks completed: all 82 canonical Markdown files passed the exact documentation
+workflow validation. Exact two-file scope and unchanged production/tests/CI/POM/published
+migrations were verified; git diff --check passed. Forty-two proposed execution paths
+are explicitly registered, including forward 017/018 and required constructor fixtures.
+No production implementation or Maven/PostgreSQL test is claimed by this preflight.

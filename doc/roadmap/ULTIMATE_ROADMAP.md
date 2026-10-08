@@ -5283,3 +5283,78 @@ closure obligations are now implemented in the separate HMR-104/105 commits, but
 none of these pending implementations increases the 52 CI-confirmed total. Exact
 message: fix(alarm): remediate semantic review AlarmClosure. HPR-P2-008 stays open,
 0.6.0-SNAPSHOT unchanged; HMR-080 and physical survivability disposition unchanged.
+
+## HPR-P2-008 Batch 20 independent execution — HMR-106 — 2026-10-08
+
+ALRM-PREREQ-01 remains ACCEPTED. HMSR-123 section 136 was recovered independently
+against the live eleven-field shelving, service/port/mapper/entity, published own
+FKs and absent expiry path before mutation. Intrinsic end-after-start, exact locked
+SHELVING_REASON and the accepted open/uncleared state matrix are enforced. Direct
+and live shelving/finish paths lock Alarm before evidence, synchronize snapshots
+and append one stable SHELVED/UNSHELVED action event atomically. Active shelving
+and ALARM-scoped suppression are mutually denied on fresh writes under the same
+parent lock. Frozen creation evidence and exactly-once finishing are protected.
+
+Restoration uses the recorded source state, with later clear/terminal evidence
+preserved and acknowledgement precedence restricted to un-escalated underlying
+states; escalation remains meaningful as in HMR-104. Missing historical source
+evidence fails closed when restoration needs it. Optional unshelved actor remains
+optional; required event actor comes from the trusted security/server boundary.
+No fields, API routes, upstream owner facts or guessed historical events are added.
+
+Expiry discovers scalar IDs and crosses the transactional adapter proxy separately
+for each row. It rechecks due/status after Alarm-then-evidence locks, records EXPIRED
+and unshelvedAt/event occurrence at shelvedUntil, preserves terminal/current state
+and never moves lastUpdatedAt backwards. Retries, parallel workers and manual finish
+races cannot append a second finish event. An individual failure rolls back and is
+logged; other due rows may progress, while invalid legacy evidence remains denied.
+The existing Spring scheduler invokes this path with a server-owned actor. No claim
+of execution at an exact wall-clock nanosecond during process downtime is made.
+
+Forward 024 aborts on invalid intervals/family/own references or ACTIVE duplicates,
+adds strict interval and partial ACTIVE uniqueness, and guards used shelving reason
+identity/family/deletion/truncation. All published migrations remain byte-for-byte
+unchanged. Four focused, thirteen PostgreSQL/Spring-JPA and three scheduler tests
+are prepared. Actual runtime sources cover live/direct paths, event-failure flushed
+rollback, migration abort, missing legacy source denial, reason deletion/family races,
+shelve-versus-shelve, expiry workers, manual finish-versus-expiry, shelving-versus-
+suppression and suppression release/expiry-versus-cancellation. These are prepared
+real test sources, not local runtime passes.
+
+### Final-tree validation and truthful limits
+
+All ten admitted Maven targets were attempted through bash mvnw (the published
+wrapper mode is 100644): compile; all four focused classes; the exact security/
+suppression/API/scheduler regression group; the four PostgreSQL integration classes;
+both architecture suites; full test; clean verify. Every command exited 1 before
+compilation/tests because Spring Boot parent 4.1.1 is uncached and Maven Central DNS
+resolution fails. Java 17 is installed, Java 21 and Docker unavailable. No real
+Maven/JUnit/Spring/PostgreSQL/ArchUnit pass or test-method execution count is claimed.
+
+Actual changed production sources, including suppression coordination, and all eleven
+new test classes compiled in an isolated Java 17 check against temporary external
+dependency stubs (exit 0). An executable smoke over the actual adapters/domain with
+temporary in-memory repositories passed creation/replay, acknowledgement/cancellation,
+shelving overlap, expiry boundary/retry and restoration. This check has no transaction/
+database/JUnit semantics and does not replace CI. Exact authorized scopes, headers,
+37/9/10/11 and 15 event field counts, owner-neutral imports, forward migration names,
+all 82 canonical Markdown checks and each actual Git diff whitespace check passed.
+No POM/workflow/route/private-module/previous migration modification is included.
+
+| Subject | Status after preparation | Independent semantic commit / tree |
+|---|---|---|
+| HMR-100 / HMSR-117 | IMPLEMENTED — FINAL CI PENDING | 2c1693390e943356346c23d611222cee18609979 / 23f90c246df353ca5c31a1fc6a39736ca3071bc6 |
+| HMR-104 / HMSR-121 | IMPLEMENTED — FINAL CI PENDING | 4373b97ad1e6cd5908bd05591e9b494499818af6 / 13f67c0cd1133d3ddb388ebcbdff9d1db8c4d2a4 |
+| HMR-105 / HMSR-122 | IMPLEMENTED — FINAL CI PENDING | 0445518741bc62ba35ed117a81b1c143ea1b0171 / 69dac5de4e0356ffe586c37852baefe928adbac8 |
+| HMR-106 / HMSR-123 | IMPLEMENTED — FINAL CI PENDING | Ordered final commit uses fix(alarm): remediate semantic review AlarmShelving; exact published tree is independently checked before main advancement. |
+| HMR-080 | BLOCKED | Unresolved Party-to-Planning owner contract remains separate. |
+
+Current reconciliation: 52 CI-confirmed plus four implemented pending final-head
+production CI, one blocked HMR-080, 57 evaluated. Pending work is not counted as
+CI-confirmed. HPR-P2-008 remains OPEN. Project version stays 0.6.0-SNAPSHOT; no
+new physical survivability evidence, phase closure, release or later task is claimed.
+
+Publish the four independent chained commits by advancing main once under expected
+head 05ec5a5866930e62bb5e70c82606b445ae168ef1, compare every immutable tree/blob
+and confirm production CI starts, then STOP. Do not wait for completion. Owner Next
+checks that CI; Fail diagnoses and repairs only its responsible scope before advancing.

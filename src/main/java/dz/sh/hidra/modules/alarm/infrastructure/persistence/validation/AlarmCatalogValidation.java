@@ -33,6 +33,7 @@ public class AlarmCatalogValidation {
         requireFamily(alarm.severityId(), "ALARM_SEVERITY");
         if (alarm.priorityId() != null) requireFamily(alarm.priorityId(), "ALARM_PRIORITY");
     }
+    public void requireShelvingReason(String id) {requireFamily(id, "SHELVING_REASON");}
     public void requireFamily(String id, String family) {
         var entry = entries.findByIdForShare(id)
                 .orElseThrow(() -> new IllegalArgumentException("Unknown Alarm catalog entry: " + id));

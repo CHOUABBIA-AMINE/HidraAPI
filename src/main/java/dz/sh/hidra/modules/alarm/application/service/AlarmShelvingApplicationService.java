@@ -30,7 +30,7 @@ import java.util.Objects;
 import org.springframework.stereotype.Service;
 
 @Service
-public final class AlarmShelvingApplicationService implements ManageAlarmShelvingUseCase {
+public class AlarmShelvingApplicationService implements ManageAlarmShelvingUseCase {
 
     private final AlarmRepositoryPort alarmRepositoryPort;
     private final AlarmShelvingRepositoryPort shelvingRepositoryPort;
@@ -44,10 +44,12 @@ public final class AlarmShelvingApplicationService implements ManageAlarmShelvin
     }
 
     @Override
+    @org.springframework.transaction.annotation.Transactional
     public String shelve(ShelveAlarmCommand command) {
         Objects.requireNonNull(command, "ShelveAlarmCommand must not be null.");
-        alarmRepositoryPort.findById(command.alarmId())
+        var alarm = alarmRepositoryPort.findByIdForUpdate(command.alarmId())
                 .orElseThrow(() -> new IllegalArgumentException("Unknown alarm: " + command.alarmId()));
+        dz.sh.hidra.modules.alarm.domain.policy.AlarmShelvingPolicy.ensureCanShelve(alarm);
         Instant now = Instant.now();
         if (command.shelvedUntil() == null || !command.shelvedUntil().isAfter(now)) {
             throw new IllegalArgumentException("shelvedUntil must be after the current instant.");
@@ -61,8 +63,11 @@ public final class AlarmShelvingApplicationService implements ManageAlarmShelvin
     }
 
     @Override
+    @org.springframework.transaction.annotation.Transactional
     public String unshelve(UnshelveAlarmCommand command) {
         Objects.requireNonNull(command, "UnshelveAlarmCommand must not be null.");
+        alarmRepositoryPort.findByIdForUpdate(command.alarmId())
+                .orElseThrow(() -> new IllegalArgumentException("Unknown alarm: " + command.alarmId()));
         AlarmShelving existing = shelvingRepositoryPort.findById(command.shelvingId())
                 .orElseThrow(() -> new IllegalArgumentException("Unknown alarm shelving: " + command.shelvingId()));
         if (!Objects.equals(existing.alarmId(), command.alarmId())) {

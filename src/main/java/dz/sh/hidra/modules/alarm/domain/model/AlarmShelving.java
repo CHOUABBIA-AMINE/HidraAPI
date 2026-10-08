@@ -7,7 +7,7 @@
  *
  * @Name        : AlarmShelving
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-10-08
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -82,6 +82,9 @@ import java.time.Instant;
             throw new InvalidAlarmValueException("AlarmShelving status must not be null.");
         }
 
+        if (!shelvedUntil.isAfter(shelvedAt)) {
+            throw new InvalidAlarmValueException("Shelving end must be after shelving start.");
+        }
         id = normalize(id);
         alarmId = normalize(alarmId);
         shelvingReasonId = normalize(shelvingReasonId);

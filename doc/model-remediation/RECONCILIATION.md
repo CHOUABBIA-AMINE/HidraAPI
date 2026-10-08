@@ -126,13 +126,13 @@ No `party.application.contract.planning` package exists in the exact current tre
 | HMR-097 | HMSR-114 | hse.HseCorrectivePreventiveAction | COMPLETED — CI #597 GREEN | Accepted Batch 17 implementation passed full Java 21/PostgreSQL/OpenAPI CI on cfb3681ef1c79b4416336a3533cbc0599b4fd6b2. |
 | HMR-098 | HMSR-115 | integrity.IntegrityCase | COMPLETED — CI #598 GREEN | Accepted IC-PREREQ-01 implementation passed full production CI on 863d113fbee88f71ff7e2c3b593b415e5b70d07a. |
 | HMR-099 | HMSR-116 | workflow.WorkflowStateHistory | COMPLETED — CI #581 GREEN | Mandatory status/actor display evidence fails fast. History persistence inserts and flushes without upsert; optional task/step/action/reason references are checked for instance/definition and action evidence coherence. Database guards prohibit update/delete/truncate. Four focused behavior checks passed with temporary stubs; ten PostgreSQL/Hibernate cases added for CI, not locally executed. |
-| HMR-100 | HMSR-117 | alarm.Alarm | STILL REQUIRED — EXECUTION BLOCKED ALRM-PREREQ-01 | Live review recovered at 0cc3e5c6c4b675880a634b3a073905f4119a36b7; Batch 20 design, independent scopes, forward migrations and tests proposed; acceptance pending. |
+| HMR-100 | HMSR-117 | alarm.Alarm | IMPLEMENTED — FINAL CI PENDING | Accepted ALRM-PREREQ-01; independent Batch 20 lifecycle commit with focused and PostgreSQL/Spring-JPA sources; exact final production CI pending. |
 | HMR-101 | HMSR-118 | audit.AuditAccessRecord | COMPLETED — CI #584 GREEN | Access records use persist/flush without merge; populated optional AuditEvent/export IDs must exist. Forward V20261007_008 supplies nullable local FKs and UPDATE/DELETE denial. Three focused and four added PostgreSQL/JPA/concurrency/orphan checks prepared; local focused Maven blocked by uncached Boot parent; CI #584 passed. |
 | HMR-102 | HMSR-119 | audit.AuditBeforeAfterValue | COMPLETED — CI #584 GREEN | Required fieldPath, masked/sensitive raw-text exclusion, optional exact active MASK_REASON and existing parent event enforced. Hash-only evidence and changed=false remain legal. Persist/flush insertion plus V20261007_009 local FKs/checks/UPDATE/DELETE denial preserve immutable rows. Six focused and five added PostgreSQL/JPA/concurrency/legacy checks prepared. Temporary API type compilation passed; local focused Maven blocked by uncached Boot parent; CI #584 passed. |
 | HMR-103 | HMSR-120 | monitoring.PlanActualDeviation | COMPLETED — CI #600 PASSED | Independent semantic commit 74ea302432eff8434466d7162134b99923ce3161; live/direct-save owner/evaluation validation and forward 021 verified by final repaired-head CI. |
-| HMR-104 | HMSR-121 | alarm.AlarmAcknowledgement | STILL REQUIRED — EXECUTION BLOCKED ALRM-PREREQ-01 | Live review recovered at 0cc3e5c6c4b675880a634b3a073905f4119a36b7; Batch 20 design, independent scopes, forward migrations and tests proposed; acceptance pending. |
-| HMR-105 | HMSR-122 | alarm.AlarmClosure | STILL REQUIRED — EXECUTION BLOCKED ALRM-PREREQ-01 | Live review recovered at 0cc3e5c6c4b675880a634b3a073905f4119a36b7; Batch 20 design, independent scopes, forward migrations and tests proposed; acceptance pending. |
-| HMR-106 | HMSR-123 | alarm.AlarmShelving | STILL REQUIRED — EXECUTION BLOCKED ALRM-PREREQ-01 | Live review recovered at 0cc3e5c6c4b675880a634b3a073905f4119a36b7; Batch 20 design, independent scopes, forward migrations and tests proposed; acceptance pending. |
+| HMR-104 | HMSR-121 | alarm.AlarmAcknowledgement | IMPLEMENTED — FINAL CI PENDING | Accepted ALRM-PREREQ-01; independent Batch 20 lifecycle commit with focused and PostgreSQL/Spring-JPA sources; exact final production CI pending. |
+| HMR-105 | HMSR-122 | alarm.AlarmClosure | IMPLEMENTED — FINAL CI PENDING | Accepted ALRM-PREREQ-01; independent Batch 20 lifecycle commit with focused and PostgreSQL/Spring-JPA sources; exact final production CI pending. |
+| HMR-106 | HMSR-123 | alarm.AlarmShelving | IMPLEMENTED — FINAL CI PENDING | Accepted ALRM-PREREQ-01; independent Batch 20 lifecycle commit with focused and PostgreSQL/Spring-JPA sources; exact final production CI pending. |
 
 ## Reconciliation Totals
 
@@ -140,9 +140,9 @@ No `party.application.contract.planning` package exists in the exact current tre
 - HMR-005 corrected from stale planned status to **COMPLETED**;
 - HMR-009 confirmed **COMPLETED** and removed as a carry-over blocker;
 - HMR-050..106 evaluated: **57**;
-- HMR-050..106 **STILL REQUIRED**: **4** (HMR-100/104/105/106; execution held on ALRM-PREREQ-01 acceptance);
+- HMR-050..106 **STILL REQUIRED**: **0**; four Alarm implementations await final CI; HMR-080 remains separately BLOCKED;
 - HMR-050..106 **BLOCKED**: **1** (HMR-080);
-- HMR-050..106 **IMPLEMENTED during HPR-P2-008**: **52** (CI-confirmed through #600; no implementation pending CI);
+- HMR-050..106 **IMPLEMENTED during HPR-P2-008**: **56** (52 CI-confirmed through #600; four Batch 20 implementations pending final CI);
 - HMR-050..106 **SUPERSEDED**: **0**;
 - HMR-054 completed; repaired CI #575 is green;
 - HMR-080 remains blocked; HMR-055 prerequisite resolved and implemented in Batch 7.
@@ -151,7 +151,7 @@ No `party.application.contract.planning` package exists in the exact current tre
 
 - HMR-050 — **COMPLETED** at the first HPR-P2-008 execution step.
 - Batch 7 **COMPLETED — CI #581 GREEN**: HMR-055, 061, 066, 081, 099; exact repaired head ec63af0414d7fa85b9200d4bd181ac799bd072ed. Batch 8 preflight split below; no Planning implementation claimed.
-- Current remaining: **4 STILL REQUIRED + 1 BLOCKED (HMR-080)**; 52 CI-confirmed through #600. Four Alarm subjects await ALRM-PREREQ-01 acceptance; no Batch 20 implementation has started.
+- Current remaining: **4 IMPLEMENTED — FINAL CI PENDING + 1 BLOCKED (HMR-080)**; 52 CI-confirmed through #600. ALRM-PREREQ-01 accepted and Batch 20 prepared; do not count it confirmed before green production CI.
 
 - HMR-051 — **COMPLETED**: Topology and optional Organization references validated on every case save; snapshot preserved; no migration because primary-candidate FK already exists; owner contract and architecture export added.
 
@@ -4656,3 +4656,78 @@ closure obligations are now implemented in the separate HMR-104/105 commits, but
 none of these pending implementations increases the 52 CI-confirmed total. Exact
 message: fix(alarm): remediate semantic review AlarmClosure. HPR-P2-008 stays open,
 0.6.0-SNAPSHOT unchanged; HMR-080 and physical survivability disposition unchanged.
+
+## HPR-P2-008 Batch 20 independent execution — HMR-106 — 2026-10-08
+
+ALRM-PREREQ-01 remains ACCEPTED. HMSR-123 section 136 was recovered independently
+against the live eleven-field shelving, service/port/mapper/entity, published own
+FKs and absent expiry path before mutation. Intrinsic end-after-start, exact locked
+SHELVING_REASON and the accepted open/uncleared state matrix are enforced. Direct
+and live shelving/finish paths lock Alarm before evidence, synchronize snapshots
+and append one stable SHELVED/UNSHELVED action event atomically. Active shelving
+and ALARM-scoped suppression are mutually denied on fresh writes under the same
+parent lock. Frozen creation evidence and exactly-once finishing are protected.
+
+Restoration uses the recorded source state, with later clear/terminal evidence
+preserved and acknowledgement precedence restricted to un-escalated underlying
+states; escalation remains meaningful as in HMR-104. Missing historical source
+evidence fails closed when restoration needs it. Optional unshelved actor remains
+optional; required event actor comes from the trusted security/server boundary.
+No fields, API routes, upstream owner facts or guessed historical events are added.
+
+Expiry discovers scalar IDs and crosses the transactional adapter proxy separately
+for each row. It rechecks due/status after Alarm-then-evidence locks, records EXPIRED
+and unshelvedAt/event occurrence at shelvedUntil, preserves terminal/current state
+and never moves lastUpdatedAt backwards. Retries, parallel workers and manual finish
+races cannot append a second finish event. An individual failure rolls back and is
+logged; other due rows may progress, while invalid legacy evidence remains denied.
+The existing Spring scheduler invokes this path with a server-owned actor. No claim
+of execution at an exact wall-clock nanosecond during process downtime is made.
+
+Forward 024 aborts on invalid intervals/family/own references or ACTIVE duplicates,
+adds strict interval and partial ACTIVE uniqueness, and guards used shelving reason
+identity/family/deletion/truncation. All published migrations remain byte-for-byte
+unchanged. Four focused, thirteen PostgreSQL/Spring-JPA and three scheduler tests
+are prepared. Actual runtime sources cover live/direct paths, event-failure flushed
+rollback, migration abort, missing legacy source denial, reason deletion/family races,
+shelve-versus-shelve, expiry workers, manual finish-versus-expiry, shelving-versus-
+suppression and suppression release/expiry-versus-cancellation. These are prepared
+real test sources, not local runtime passes.
+
+### Final-tree validation and truthful limits
+
+All ten admitted Maven targets were attempted through bash mvnw (the published
+wrapper mode is 100644): compile; all four focused classes; the exact security/
+suppression/API/scheduler regression group; the four PostgreSQL integration classes;
+both architecture suites; full test; clean verify. Every command exited 1 before
+compilation/tests because Spring Boot parent 4.1.1 is uncached and Maven Central DNS
+resolution fails. Java 17 is installed, Java 21 and Docker unavailable. No real
+Maven/JUnit/Spring/PostgreSQL/ArchUnit pass or test-method execution count is claimed.
+
+Actual changed production sources, including suppression coordination, and all eleven
+new test classes compiled in an isolated Java 17 check against temporary external
+dependency stubs (exit 0). An executable smoke over the actual adapters/domain with
+temporary in-memory repositories passed creation/replay, acknowledgement/cancellation,
+shelving overlap, expiry boundary/retry and restoration. This check has no transaction/
+database/JUnit semantics and does not replace CI. Exact authorized scopes, headers,
+37/9/10/11 and 15 event field counts, owner-neutral imports, forward migration names,
+all 82 canonical Markdown checks and each actual Git diff whitespace check passed.
+No POM/workflow/route/private-module/previous migration modification is included.
+
+| Subject | Status after preparation | Independent semantic commit / tree |
+|---|---|---|
+| HMR-100 / HMSR-117 | IMPLEMENTED — FINAL CI PENDING | 2c1693390e943356346c23d611222cee18609979 / 23f90c246df353ca5c31a1fc6a39736ca3071bc6 |
+| HMR-104 / HMSR-121 | IMPLEMENTED — FINAL CI PENDING | 4373b97ad1e6cd5908bd05591e9b494499818af6 / 13f67c0cd1133d3ddb388ebcbdff9d1db8c4d2a4 |
+| HMR-105 / HMSR-122 | IMPLEMENTED — FINAL CI PENDING | 0445518741bc62ba35ed117a81b1c143ea1b0171 / 69dac5de4e0356ffe586c37852baefe928adbac8 |
+| HMR-106 / HMSR-123 | IMPLEMENTED — FINAL CI PENDING | Ordered final commit uses fix(alarm): remediate semantic review AlarmShelving; exact published tree is independently checked before main advancement. |
+| HMR-080 | BLOCKED | Unresolved Party-to-Planning owner contract remains separate. |
+
+Current reconciliation: 52 CI-confirmed plus four implemented pending final-head
+production CI, one blocked HMR-080, 57 evaluated. Pending work is not counted as
+CI-confirmed. HPR-P2-008 remains OPEN. Project version stays 0.6.0-SNAPSHOT; no
+new physical survivability evidence, phase closure, release or later task is claimed.
+
+Publish the four independent chained commits by advancing main once under expected
+head 05ec5a5866930e62bb5e70c82606b445ae168ef1, compare every immutable tree/blob
+and confirm production CI starts, then STOP. Do not wait for completion. Owner Next
+checks that CI; Fail diagnoses and repairs only its responsible scope before advancing.

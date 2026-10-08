@@ -7,7 +7,7 @@
  *
  * @Name        : AlarmShelvingRepositoryPort
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-08
  *
  * @Type        : Interface
  * @Layer       : Application
@@ -31,4 +31,6 @@ public interface AlarmShelvingRepositoryPort {
     AlarmShelving save(AlarmShelving model);
 
     Optional<AlarmShelving> findById(String id);
+
+    boolean expireIfDue(String shelvingId, java.time.Instant asOf, String systemActorId, String correlationId);
 }

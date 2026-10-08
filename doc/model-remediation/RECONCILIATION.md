@@ -95,7 +95,7 @@ No `party.application.contract.planning` package exists in the exact current tre
 | HMR-066 | HMSR-078 | workflow.WorkflowTask | COMPLETED — CI #581 GREEN | Actionable assignment, live actor/unit membership, catalog eligibility, actor/time pairs and chronology are enforced. Terminal task evidence is immutable; generic creation is starter-bound, missing next-step rules fail closed, and execution/query paths no longer authorize by username snapshots. Seven focused behavior checks passed with temporary stubs; existing transition fixtures updated for new owner dependencies. |
 | HMR-067 | HMSR-079 | documents.Document | COMPLETED — CI #583 GREEN | Required title/creator display, active exact document catalogs, code uniqueness and same-document current-version pointers enforced. Registration binds authenticated eligible Identity actor and canonical owner snapshots; neutral registry supports Topology/Planning and denies missing/ambiguous owners. Forward V20261007_003; 11 focused methods passed with temporary APIs, four PostgreSQL cases added. Compile/focused Maven blocked before compilation by uncached Boot 4.1.1 parent; full CI #583 passed. |
 | HMR-068 | HMSR-080 | documents.DocumentVersion | COMPLETED — CI #583 GREEN | Required upload metadata, positive per-document unique numbers, nullable existing supersession and owner-controlled Identity/Workflow references enforced. Generic upload derives authenticated uploader display. Binary prevalidates metadata and registers known-rollback new-blob cleanup; failed cleanup preserves original error, unknown commit outcome preserves content and logs reconciliation. Forward V20261007_004; 10 focused owner/version/cleanup methods passed with temporary APIs; nine combined PostgreSQL cases include transactional storage rollback and confirmed commit failure. Local focused Maven blocked by uncached Boot 4.1.1 parent; full CI #583 passed. |
-| HMR-069 | HMSR-081 | assets.MaintenanceWorkOrder | BLOCKED — WORK-PREREQ-01 | Batch 16 owner-contract scopes and forward migration admission pending; original HMSR obligations recovered. |
+| HMR-069 | HMSR-081 | assets.MaintenanceWorkOrder | IMPLEMENTED — CI PENDING | Accepted Batch 16 owner/local reference corrections implemented; final-head CI pending. |
 | HMR-070 | HMSR-082 | custody.CustodyTransferTicket | BLOCKED — WORK-PREREQ-01 | Batch 16 owner-contract scopes and forward migration admission pending; original HMSR obligations recovered. |
 | HMR-071 | HMSR-084 | integration.IntegrationDeadLetterRecord | IMPLEMENTED — CI #585 PASSED | Required failure evidence, all-or-none manual trio and optional local references enforced. New manual evidence requires authenticated eligible Identity actor; recorded provenance is immutable without historical actor revalidation. Forward V20261007_011 supplies nullable FKs/checks and concurrent provenance guard. Eight focused methods, one Identity owner method and five added PostgreSQL cases prepared. Temporary API type compilation passed; local focused Maven blocked by uncached Boot parent; CI pending. |
 | HMR-072 | HMSR-085 | integrity.IntegrityAssessment | BLOCKED — WORK-PREREQ-01 | Batch 16 owner-contract scopes and forward migration admission pending; original HMSR obligations recovered. |
@@ -3069,3 +3069,26 @@ Preflight checks completed: the exact documentation-workflow Python validator pa
 for all 82 canonical Markdown files; exact two-file write scope, unchanged production/
 CI/POM tree, independent proposed scopes and git diff --check passed. No Maven,
 PostgreSQL or new production test was executed for this documentation-only change.
+
+## HPR-P2-008 Batch 16 accepted execution envelope — 2026-10-08
+
+Owner next accepts WORK-PREREQ-01 and all three exhaustive scopes recorded in preflight
+commit a8233b68fe80688965236aa1ec3b4ac11c980990. Documentation CI #97 / run 37781458719
+passed. Its production tree is byte-identical to full green Java 21/PostgreSQL/OpenAPI
+CI #595 at e2e92bae7d69c54a46fa92702b539858404bf7ce. Execute HMR-069 -> HMR-070 -> HMR-072
+with separate exact semantic commits and forward migrations 011/012/013. The preflight
+scope lists now constitute each task's exhaustive write allowlist. Only necessary paths
+will change. Owner contracts, preserved optionality/history, fail-closed context checks
+and all explicitly excluded semantic inventions in WORK-PREREQ-01 remain binding.
+All three tasks are In Progress; HMR-080 remains independently blocked. Publish the
+chain once on main, confirm full CI started, then stop. No PR or later batch is authorized.
+
+### Batch 16 HMR-069 implementation result — 2026-10-08
+
+Source HMSR-081 and current creation/domain/adapter/owner/Flyway evidence independently
+recovered before this task. Required title, nullable local plan integrity and owner-controlled recommendation/unit/actor/Workflow context validation now guard authoritative transactional saves. Existing parent rows are pessimistically locked before historical-reference comparison; unchanged historical owner references are preserved and fresh or changed references fail closed. Forward 011 adds a validated plan FK and nonblank-title check without rewriting legacy rows. No unsupported type-family, assignment, temporal or uniqueness rules added. Changed production sources and 21 focused test signatures compiled with temporary framework/JUnit/Mockito APIs; 11 actual domain/reference behavior checks passed using controlled owner fixtures. Six real PostgreSQL cases prepared, including legacy rollback and concurrent parent deletion. Focused Maven invocation stopped before compilation/test execution at uncached offline Spring Boot 4.1.1 parent.
+
+Exact semantic message: `fix(assets): remediate semantic review MaintenanceWorkOrder`.
+Implementation complete; actual production Java 21/Spring/PostgreSQL/OpenAPI verification
+is pending final-head CI. No prepared test or temporary API compile is an executed
+Maven/JUnit/PostgreSQL pass. No foreign-module FK, PR, release or later batch is included.

@@ -188,3 +188,9 @@ serialIdentityId                      -> existing AssetSerialIdentity when popul
 No cross-module database foreign key is introduced. Same-module parent/model/serial references use
 nullable Assets-owned FKs, while the application and repository boundaries fail closed before writes.
 Manufacturer-role eligibility and Organization lifecycle eligibility are intentionally not invented.
+
+## HMR-069 execution reconciliation — 2026-10-08
+
+Required title, nullable local plan integrity and owner-controlled recommendation/unit/actor/Workflow context validation now guard authoritative transactional saves. Existing parent rows are pessimistically locked before historical-reference comparison; unchanged historical owner references are preserved and fresh or changed references fail closed. Forward 011 adds a validated plan FK and nonblank-title check without rewriting legacy rows. No unsupported type-family, assignment, temporal or uniqueness rules added. Changed production sources and 21 focused test signatures compiled with temporary framework/JUnit/Mockito APIs; 11 actual domain/reference behavior checks passed using controlled owner fixtures. Six real PostgreSQL cases prepared, including legacy rollback and concurrent parent deletion. Focused Maven invocation stopped before compilation/test execution at uncached offline Spring Boot 4.1.1 parent.
+
+Actual production verification remains the final-head CI gate.

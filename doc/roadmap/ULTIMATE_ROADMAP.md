@@ -3696,3 +3696,26 @@ Preflight checks completed: the exact documentation-workflow Python validator pa
 for all 82 canonical Markdown files; exact two-file write scope, unchanged production/
 CI/POM tree, independent proposed scopes and git diff --check passed. No Maven,
 PostgreSQL or new production test was executed for this documentation-only change.
+
+## HPR-P2-008 Batch 16 accepted execution envelope — 2026-10-08
+
+Owner next accepts WORK-PREREQ-01 and all three exhaustive scopes recorded in preflight
+commit a8233b68fe80688965236aa1ec3b4ac11c980990. Documentation CI #97 / run 37781458719
+passed. Its production tree is byte-identical to full green Java 21/PostgreSQL/OpenAPI
+CI #595 at e2e92bae7d69c54a46fa92702b539858404bf7ce. Execute HMR-069 -> HMR-070 -> HMR-072
+with separate exact semantic commits and forward migrations 011/012/013. The preflight
+scope lists now constitute each task's exhaustive write allowlist. Only necessary paths
+will change. Owner contracts, preserved optionality/history, fail-closed context checks
+and all explicitly excluded semantic inventions in WORK-PREREQ-01 remain binding.
+All three tasks are In Progress; HMR-080 remains independently blocked. Publish the
+chain once on main, confirm full CI started, then stop. No PR or later batch is authorized.
+
+### Batch 16 HMR-069 implementation result — 2026-10-08
+
+Source HMSR-081 and current creation/domain/adapter/owner/Flyway evidence independently
+recovered before this task. Required title, nullable local plan integrity and owner-controlled recommendation/unit/actor/Workflow context validation now guard authoritative transactional saves. Existing parent rows are pessimistically locked before historical-reference comparison; unchanged historical owner references are preserved and fresh or changed references fail closed. Forward 011 adds a validated plan FK and nonblank-title check without rewriting legacy rows. No unsupported type-family, assignment, temporal or uniqueness rules added. Changed production sources and 21 focused test signatures compiled with temporary framework/JUnit/Mockito APIs; 11 actual domain/reference behavior checks passed using controlled owner fixtures. Six real PostgreSQL cases prepared, including legacy rollback and concurrent parent deletion. Focused Maven invocation stopped before compilation/test execution at uncached offline Spring Boot 4.1.1 parent.
+
+Exact semantic message: `fix(assets): remediate semantic review MaintenanceWorkOrder`.
+Implementation complete; actual production Java 21/Spring/PostgreSQL/OpenAPI verification
+is pending final-head CI. No prepared test or temporary API compile is an executed
+Maven/JUnit/PostgreSQL pass. No foreign-module FK, PR, release or later batch is included.

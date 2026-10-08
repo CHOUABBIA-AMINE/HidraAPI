@@ -121,7 +121,10 @@ class ArchitectureGuardrailTest {
             "dz.sh.hidra.modules.identity.application.contract.incident",
             "dz.sh.hidra.modules.organization.application.contract.incident",
             "dz.sh.hidra.modules.topology.application.contract.incident",
-            "dz.sh.hidra.modules.workflow.application.contract.incident"
+            "dz.sh.hidra.modules.workflow.application.contract.incident",
+            "dz.sh.hidra.modules.integrity.application.contract.assets",
+            "dz.sh.hidra.modules.workflow.application.contract.assets",
+            "dz.sh.hidra.modules.identity.application.contract.assets"
     );
 
     /**

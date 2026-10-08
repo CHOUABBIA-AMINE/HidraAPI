@@ -7,7 +7,7 @@
  *
  * @Name        : MaintenanceWorkOrder
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-10-08
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -90,6 +90,10 @@ import java.time.Instant;
         // HRA-051 required: status
         if (status == null) {
             throw new InvalidAssetsValueException("MaintenanceWorkOrder status must not be null.");
+        }
+
+        if (title == null || title.isBlank()) {
+            throw new InvalidAssetsValueException("MaintenanceWorkOrder title must not be blank.");
         }
 
         id = normalize(id);

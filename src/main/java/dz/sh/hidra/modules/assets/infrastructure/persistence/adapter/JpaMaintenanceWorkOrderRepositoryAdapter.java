@@ -7,7 +7,7 @@
  *
  * @Name        : JpaMaintenanceWorkOrderRepositoryAdapter
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-08
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -24,6 +24,7 @@ import dz.sh.hidra.modules.assets.domain.model.MaintenanceWorkOrder;
 import dz.sh.hidra.modules.assets.infrastructure.persistence.mapper.AssetsPersistenceMapper;
 import dz.sh.hidra.modules.assets.infrastructure.persistence.repository.MaintenanceWorkOrderJpaRepository;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -35,14 +36,20 @@ import java.util.Optional;
 public class JpaMaintenanceWorkOrderRepositoryAdapter implements MaintenanceWorkOrderRepositoryPort {
 
     private final MaintenanceWorkOrderJpaRepository repository;
+    private final MaintenanceWorkOrderReferenceValidation validation;
 
-    public JpaMaintenanceWorkOrderRepositoryAdapter(MaintenanceWorkOrderJpaRepository repository) {
+    public JpaMaintenanceWorkOrderRepositoryAdapter(MaintenanceWorkOrderJpaRepository repository, MaintenanceWorkOrderReferenceValidation validation) {
         this.repository = Objects.requireNonNull(repository, "MaintenanceWorkOrderJpaRepository must not be null.");
+        this.validation = Objects.requireNonNull(validation);
     }
 
     @Override
+    @Transactional
     public MaintenanceWorkOrder save(MaintenanceWorkOrder model) {
-        return AssetsPersistenceMapper.toDomain(repository.save(AssetsPersistenceMapper.toEntity(model)));
+        Objects.requireNonNull(model);
+        var previous=repository.findByIdForUpdate(model.id()).map(AssetsPersistenceMapper::toDomain).orElse(null);
+        validation.validate(model,previous);
+        return AssetsPersistenceMapper.toDomain(repository.saveAndFlush(AssetsPersistenceMapper.toEntity(model)));
     }
 
     @Override

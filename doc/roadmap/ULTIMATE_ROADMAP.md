@@ -5852,3 +5852,40 @@ These supplementary checks do not replace the required runtime gates. Keep versi
 0.6.0-SNAPSHOT and HPR-P2-008 OPEN; no physical-survivability claim. Publish once,
 verify the exact immutable tree, confirm production CI starts and STOP without waiting.
 A subsequent Next reviews that CI; Fail repairs this scope before any later task.
+
+
+## HPR-P2-008 solo HMR-080 CI #603 repair — 2026-10-08
+
+User Fail authorizes repair of the responsible Nomination scope. Main is unchanged
+at 41904baff2becbdd03e19d3b2da005a28ad8d8a0, tree
+07fb8d1e0d400d6c897f7f0cf023fbcabde75d27. Production CI #603
+(37838748435) FAILED: Java 21 compiled and ran 1,263 tests, zero assertion failures,
+four errors and zero skipped. OpenAPI publication/compatibility was skipped after
+the verification failure. Documentation CI #112 passed on that implementation head.
+
+Three errors were Mockito UnfinishedStubbing in PlanningUnitReferenceQueryAdapterTest:
+the unit fixture helper stubbed another mock inside an unfinished repository when/
+thenReturn. Prepare each mocked unit before repository stubbing; retain all eligibility,
+role/pair and lock-order assertions. The fourth error was a missing required
+PlanTarget topology_asset_code in NominationSemanticPostgresIntegrationTest's dependent
+FK fixture. Supply the explicit owner-approved test snapshot and retain both downstream
+revision-change/deletion assertions. These are fixture corrections only.
+
+Repair write scope: those two test files and the two canonical documents. No production
+Java, published migration, POM, version, workflow or legacy file changes. Reuse the exact
+HMR-080 semantic message: `fix(planning): remediate semantic review Nomination`.
+Expected-head lease is the failed 41904baff2becbdd03e19d3b2da005a28ad8d8a0.
+
+Reattempted compile, focused semantic, owner-provider, PostgreSQL/PlanTarget, guardrail,
+full-test and clean-verify Maven targets through bash mvnw: all fail before compilation
+because the Boot 4.1.1 parent remains uncached and Maven Central DNS resolution fails.
+Local Java remains 17; Docker/PostgreSQL executables are absent. Isolated actual-source
+Java type checks with temporary external dependency stubs passed for production and all
+five new test files; this is not Mockito/Spring/JPA/PostgreSQL runtime success. Exact
+four-file scope, retained assertions, canonical documentation and git diff --check
+passed. Production runtime confirmation is pending on the repaired head.
+
+Keep HMR-080 IMPLEMENTED — REPAIRED CI PENDING, 56 CI-confirmed plus one pending,
+57 evaluated. HPR-P2-008 stays OPEN; version 0.6.0-SNAPSHOT unchanged; no physical
+survivability claim. Publish once with the lease, verify the exact tree, confirm new
+production CI starts and STOP without waiting. Do not execute any later task.

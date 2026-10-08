@@ -250,7 +250,7 @@ class NominationSemanticPostgresIntegrationTest {
                 assertEquals("NOMINATION_TYPE",scalar("SELECT catalog_name FROM hidra_planning_catalog_entry WHERE id='type'"));
                 sql("INSERT INTO hidra_planning_catalog_entry VALUES('target-type','TARGET_TYPE','TARGET',true,0,false,now(),now())");
                 sql("INSERT INTO hidra_planning_target_value_policy VALUES('target-type','NUMERIC',true)");
-                sql("INSERT INTO hidra_planning_plan_target(id,revision_id,nomination_id,target_type_id,topology_asset_type,topology_asset_id,target_value,unit_id,status,valid_from,valid_to,created_at,updated_at) VALUES('target','rev','saved','target-type','PIPELINE','fixture',1,'q','DRAFT',now(),now(),now(),now())");
+                sql("INSERT INTO hidra_planning_plan_target(id,revision_id,nomination_id,target_type_id,topology_asset_type,topology_asset_id,topology_asset_code,target_value,unit_id,status,valid_from,valid_to,created_at,updated_at) VALUES('target','rev','saved','target-type','PIPELINE','fixture','OWNER_APPROVED_TEST_FIXTURE',1,'q','DRAFT',now(),now(),now(),now())");
                 assertThrows(SQLException.class,() -> sql("UPDATE hidra_planning_nomination SET revision_id='other' WHERE id='saved'"));
                 assertThrows(SQLException.class,() -> sql("DELETE FROM hidra_planning_nomination WHERE id='saved'"));
             } finally {pool.shutdownNow();}

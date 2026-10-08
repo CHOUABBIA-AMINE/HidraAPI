@@ -32,20 +32,23 @@ class PlanningUnitReferenceQueryAdapterTest {
     TelemetryUnitJpaEntity unit(String id){var u=mock(TelemetryUnitJpaEntity.class);when(u.id()).thenReturn(id);when(u.active()).thenReturn(true);when(u.dimension()).thenReturn("OWNER_DIMENSION");return u;}
     @Test void rolesAreRequiredEvenForExistingEngineeringUnits() {
         var repo=mock(TelemetryUnitJpaRepository.class);var jdbc=mock(JdbcTemplate.class);
-        when(repo.findByIdForShare("q")).thenReturn(Optional.of(unit("q")));
+        var quantity=unit("q");
+        when(repo.findByIdForShare("q")).thenReturn(Optional.of(quantity));
         when(jdbc.query(anyString(),org.mockito.ArgumentMatchers.<RowMapper<Boolean>>any(),eq("q"),eq("QUANTITY"))).thenReturn(List.of());
         assertTrue(new PlanningUnitReferenceQueryAdapter(repo,jdbc).resolve("q",null).isEmpty());
     }
     @Test void optionalRateAndInactiveRolesAreExplicit() {
         var repo=mock(TelemetryUnitJpaRepository.class);var jdbc=mock(JdbcTemplate.class);
-        when(repo.findByIdForShare("q")).thenReturn(Optional.of(unit("q")));
+        var quantity=unit("q");
+        when(repo.findByIdForShare("q")).thenReturn(Optional.of(quantity));
         when(jdbc.query(anyString(),org.mockito.ArgumentMatchers.<RowMapper<Boolean>>any(),eq("q"),eq("QUANTITY"))).thenReturn(List.of(false));
         var resolved=new PlanningUnitReferenceQueryAdapter(repo,jdbc).resolve("q",null).orElseThrow();
         assertNull(resolved.rate());assertFalse(resolved.quantity().active());
     }
     @Test void sortedIdentityLocksAndApprovedPairAreRequired() {
         var repo=mock(TelemetryUnitJpaRepository.class);var jdbc=mock(JdbcTemplate.class);
-        when(repo.findByIdForShare("z")).thenReturn(Optional.of(unit("z")));when(repo.findByIdForShare("a")).thenReturn(Optional.of(unit("a")));
+        var quantity=unit("z");var rate=unit("a");
+        when(repo.findByIdForShare("z")).thenReturn(Optional.of(quantity));when(repo.findByIdForShare("a")).thenReturn(Optional.of(rate));
         when(jdbc.query(anyString(),org.mockito.ArgumentMatchers.<RowMapper<Boolean>>any(),eq("z"),eq("QUANTITY"))).thenReturn(List.of(true));
         when(jdbc.query(anyString(),org.mockito.ArgumentMatchers.<RowMapper<Boolean>>any(),eq("a"),eq("RATE"))).thenReturn(List.of(true));
         when(jdbc.query(anyString(),org.mockito.ArgumentMatchers.<RowMapper<Boolean>>any(),eq("z"),eq("a"))).thenReturn(List.of(),List.of(false));

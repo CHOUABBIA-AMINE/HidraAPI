@@ -22,4 +22,5 @@ package dz.sh.hidra.modules.workflow.application.contract.hse;
 /** Context reference attestation only; does not grant approval or start a workflow. */
 public interface HseWorkflowReferenceContract {
     boolean caseMatches(String instanceId, String caseId);
+    boolean taskMatches(String taskId, String caseId, String capaId);
 }

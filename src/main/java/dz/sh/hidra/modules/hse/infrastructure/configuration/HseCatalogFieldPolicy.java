@@ -27,9 +27,10 @@ import org.springframework.stereotype.Component;
 public class HseCatalogFieldPolicy {
     private final EntityManager entityManager;
     public HseCatalogFieldPolicy(EntityManager entityManager) {this.entityManager=Objects.requireNonNull(entityManager);}
-    public String requiredFamily(String fieldRole) {
-        var rows=entityManager.createNativeQuery("SELECT catalog_name FROM hidra_hse_catalog_field_policy WHERE field_role=:role AND active=true FOR SHARE")
-                .setParameter("role",fieldRole).getResultList();
+    public String requiredFamily(String fieldRole) {return requiredFamily(fieldRole,true);}
+    public String requiredFamily(String fieldRole,boolean activeRequired) {
+        var rows=entityManager.createNativeQuery("SELECT catalog_name FROM hidra_hse_catalog_field_policy WHERE field_role=:role AND (:eligible=false OR active=true) FOR SHARE")
+                .setParameter("role",fieldRole).setParameter("eligible",activeRequired).getResultList();
         if(rows.size()!=1 || !(rows.get(0) instanceof String family) || family.isBlank())
             throw new IllegalArgumentException("Exactly one active owner-approved HSE catalog mapping required: "+fieldRole);
         return family;

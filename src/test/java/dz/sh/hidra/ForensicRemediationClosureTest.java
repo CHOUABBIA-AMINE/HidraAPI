@@ -106,7 +106,8 @@ class ForensicRemediationClosureTest {
             "dz.sh.hidra.modules.identity.application.contract.assets",
             "dz.sh.hidra.modules.identity.application.contract.hse",
             "dz.sh.hidra.modules.organization.application.contract.hse",
-            "dz.sh.hidra.modules.workflow.application.contract.hse"
+            "dz.sh.hidra.modules.workflow.application.contract.hse",
+            "dz.sh.hidra.modules.assets.application.contract.hse"
     );
 
     private static final Set<String> EXPECTED_WIRE_BLOCKER = Set.of();

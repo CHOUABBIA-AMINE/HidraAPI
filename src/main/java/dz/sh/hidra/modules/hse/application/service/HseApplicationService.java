@@ -104,8 +104,12 @@ public class HseApplicationService implements OpenHseCaseUseCase, CreateHseCapaU
     }
 
     @Override
+    @org.springframework.transaction.annotation.Transactional
     public HseCapaSummaryDto createHseCapa(CreateHseCapaCommand command) {
         Objects.requireNonNull(command, "Create HSE CAPA command must not be null.");
+        var parent=hseCaseRepositoryPort.findByIdForUpdate(command.hseCaseId()).orElseThrow(() -> new IllegalArgumentException("Known owning HSE case required."));
+        if(!command.hseCaseId().equals(parent.id())) throw new IllegalArgumentException("Exact owning HSE case required.");
+        // Current HSE policy does not restrict CAPA creation to a parent-status subset.
         Instant now = Instant.now();
         HseCorrectivePreventiveAction action = new HseCorrectivePreventiveAction(
                 HseId.newId().value(),

@@ -82,7 +82,7 @@ class HseLifecycleSemanticPostgresIntegrationTest {
             };
             var manager=new JpaTransactionManager(emf);transaction=new TransactionTemplate(manager);
             var coordinator=new JpaHseClosureLifecycleAdapter(repos.getRepository(HseCaseJpaRepository.class),repos.getRepository(HseClosureJpaRepository.class),
-                    repos.getRepository(HseCaseStatusHistoryJpaRepository.class),actors,(id,target) -> false,em);
+                    repos.getRepository(HseCaseStatusHistoryJpaRepository.class),actors,new dz.sh.hidra.modules.workflow.application.contract.hse.HseWorkflowReferenceContract() {public boolean caseMatches(String id,String target) {return false;}public boolean taskMatches(String id,String parent,String capa) {return false;}},em);
             var proxy=new ProxyFactory(coordinator);proxy.addAdvice(new TransactionInterceptor(manager,new AnnotationTransactionAttributeSource()));
             port=new JpaHseClosureRepositoryAdapter(repos.getRepository(HseClosureJpaRepository.class),(HseClosureLifecyclePort)proxy.getProxy());
         }
@@ -119,5 +119,46 @@ class HseLifecycleSemanticPostgresIntegrationTest {
         migrate();parent();assertThrows(SQLException.class,() -> sql("INSERT INTO hidra_hse_closure VALUES('closure','case','summary',false,true,true,false,'actor','Actor',now(),null)"));
         sql("UPDATE hidra_hse_case SET status='CANCELLED'");try(var runtime=new RuntimeFixture()) {assertThrows(RuntimeException.class,() -> runtime.port.save(requested("closure")));}
         assertEquals(0,count("hidra_hse_closure"));
+    }
+    void policy() throws SQLException {sql("INSERT INTO hidra_hse_catalog_field_policy VALUES('CAPA_ACTION_TYPE','OWNER_APPROVED_FIXTURE',true,now(),now())");}
+    void type(String id,String family,boolean active) throws SQLException {sql("INSERT INTO hidra_hse_catalog_entry VALUES('"+id+"','"+family+"','CODE',"+active+",0,false,now(),now())");}
+    void capa(Connection c,String id,String type) throws SQLException {try(var st=c.createStatement()) {st.execute("INSERT INTO hidra_hse_capa(id,hse_case_id,action_number,action_type_id,title,verification_required,status,created_at,updated_at) VALUES('"+id+"','case','CAPA','"+type+"','Title',false,'PROPOSED',now(),now())");}}
+    void capaMigration() throws Exception {file("V20261008_016__hmr_097_hse_capa_reference_catalog_integrity.sql");}
+    @Test void missingMappingAndWrongFamilyOrInactiveFreshTypeRejectCapa() throws Exception {
+        migrate();parent();type("type","OWNER_APPROVED_FIXTURE",true);capaMigration();
+        try(var c=connection()) {assertThrows(SQLException.class,() -> capa(c,"missingPolicy","type"));}
+        policy();type("wrong","OTHER",true);type("inactive","OWNER_APPROVED_FIXTURE",false);
+        try(var c=connection()) {assertThrows(SQLException.class,() -> capa(c,"wrongFamily","wrong"));assertThrows(SQLException.class,() -> capa(c,"inactiveType","inactive"));capa(c,"valid","type");}
+    }
+    @Test void unchangedInactiveHistorySurvivesButMappingIdentityCannotBeReassigned() throws Exception {
+        migrate();parent();policy();type("type","OWNER_APPROVED_FIXTURE",true);capaMigration();try(var c=connection()) {capa(c,"capa","type");}
+        sql("UPDATE hidra_hse_catalog_entry SET active=false WHERE id='type'");sql("UPDATE hidra_hse_catalog_field_policy SET active=false");sql("UPDATE hidra_hse_capa SET title='Updated' WHERE id='capa'");
+        assertThrows(SQLException.class,() -> sql("UPDATE hidra_hse_catalog_field_policy SET catalog_name='OTHER'"));assertThrows(SQLException.class,() -> sql("DELETE FROM hidra_hse_catalog_field_policy"));
+        assertThrows(SQLException.class,() -> sql("UPDATE hidra_hse_catalog_entry SET catalog_name='OTHER' WHERE id='type'"));assertThrows(SQLException.class,() -> sql("TRUNCATE hidra_hse_catalog_field_policy"));
+    }
+    @Test void legacyWithoutMappingFailsThenApprovedMappingPermitsRetryWithoutDataRewrite() throws Exception {
+        migrate();parent();type("type","OWNER_APPROVED_FIXTURE",true);try(var c=connection()) {capa(c,"legacy","type");}
+        assertThrows(SQLException.class,this::capaMigration);assertEquals(1,count("hidra_hse_capa"));assertEquals(0,count("hidra_hse_catalog_field_policy"));
+        policy();capaMigration();assertEquals(1,count("hidra_hse_capa"));
+    }
+    @Test void legacyWrongFamilyFailsAndDoesNotReclassifyIt() throws Exception {
+        migrate();parent();policy();type("wrong","OTHER",true);try(var c=connection()) {capa(c,"legacy","wrong");}assertThrows(SQLException.class,this::capaMigration);
+        try(var c=connection();var st=c.createStatement();var r=st.executeQuery("SELECT catalog_name FROM hidra_hse_catalog_entry WHERE id='wrong'")) {assertTrue(r.next());assertEquals("OTHER",r.getString(1));}
+    }
+    @Test void committedParentDeletionWinsAgainstConcurrentCapaInsert() throws Exception {
+        migrate();parent();policy();type("type","OWNER_APPROVED_FIXTURE",true);capaMigration();var pool=Executors.newSingleThreadExecutor();var attempting=new CountDownLatch(1);
+        try(var deleting=connection()) {
+            deleting.setAutoCommit(false);try(var st=deleting.createStatement()) {st.execute("DELETE FROM hidra_hse_case WHERE id='case'");}
+            var write=pool.submit(() -> {try(var c=connection()) {attempting.countDown();capa(c,"late","type");return false;}catch(SQLException denied) {return true;}});
+            assertTrue(attempting.await(5,TimeUnit.SECONDS));assertThrows(TimeoutException.class,() -> write.get(150,TimeUnit.MILLISECONDS));deleting.commit();assertTrue(write.get(10,TimeUnit.SECONDS));
+        } finally {pool.shutdownNow();}
+    }
+    @Test void concurrentFamilyReclassificationCannotInvalidateCommittedCapa() throws Exception {
+        migrate();parent();policy();type("type","OWNER_APPROVED_FIXTURE",true);capaMigration();var pool=Executors.newSingleThreadExecutor();var attempting=new CountDownLatch(1);
+        try(var writing=connection()) {
+            writing.setAutoCommit(false);capa(writing,"capa","type");
+            var update=pool.submit(() -> {try(var c=connection();var st=c.createStatement()) {attempting.countDown();st.execute("UPDATE hidra_hse_catalog_entry SET catalog_name='OTHER' WHERE id='type'");return false;}catch(SQLException denied) {return true;}});
+            assertTrue(attempting.await(5,TimeUnit.SECONDS));assertThrows(TimeoutException.class,() -> update.get(150,TimeUnit.MILLISECONDS));writing.commit();assertTrue(update.get(10,TimeUnit.SECONDS));assertEquals(1,count("hidra_hse_capa"));
+        } finally {pool.shutdownNow();}
     }
 }

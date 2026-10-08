@@ -28,4 +28,8 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface HseCatalogEntryJpaRepository extends JpaRepository<HseCatalogEntryJpaEntity, String> {
+    @org.springframework.data.jpa.repository.Lock(jakarta.persistence.LockModeType.PESSIMISTIC_READ)
+    @org.springframework.data.jpa.repository.Query("select c from HseCatalogEntryJpaEntity c where c.id = :id")
+    java.util.Optional<HseCatalogEntryJpaEntity> findByIdForShare(@org.springframework.data.repository.query.Param("id") String id);
+
 }

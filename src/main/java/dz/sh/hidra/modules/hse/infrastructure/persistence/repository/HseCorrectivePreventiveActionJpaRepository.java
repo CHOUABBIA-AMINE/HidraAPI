@@ -28,4 +28,8 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface HseCorrectivePreventiveActionJpaRepository extends JpaRepository<HseCorrectivePreventiveActionJpaEntity, String> {
+    @org.springframework.data.jpa.repository.Lock(jakarta.persistence.LockModeType.PESSIMISTIC_WRITE)
+    @org.springframework.data.jpa.repository.Query("select c from HseCorrectivePreventiveActionJpaEntity c where c.id = :id")
+    java.util.Optional<HseCorrectivePreventiveActionJpaEntity> findByIdForUpdate(@org.springframework.data.repository.query.Param("id") String id);
+
 }

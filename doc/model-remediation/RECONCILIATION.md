@@ -3492,3 +3492,55 @@ repositories; this does not demonstrate database rollback or lock behavior. Focu
 execution stops before tests at uncached Boot 4.1.1 offline parent resolution. Real runtime
 verification remains final-head CI. HMR-096 implementation Completed pending CI; next
 admitted task HMR-097. HPR-P2-008 remains open and HMR-080 independently blocked.
+
+
+### Batch 17 HMR-097 implementation result — 2026-10-08
+
+HMSR-114 recovered independently. Application and adapter load/lock the real owning HSE
+case before CAPA writes. Current policy does not impose a case-status subset. Locked
+catalog validation requires explicit CAPA_ACTION_TYPE field-role metadata and exact
+catalog_name membership, with active mapping/entry eligibility for new/changed types.
+Missing or ambiguous policy denies instead of guessing a family. Valid unchanged inactive
+history remains readable and writable without live snapshot refresh. New/changed owner
+and verifier use Identity; unit uses Organization; work order uses Assets; Workflow task
+must resolve its actual HSE_CASE/HSE_CAPA instance context and configured type/purpose
+binding. Fresh owner/unit snapshots are canonical. No assignment, approval, completion/
+verification-state or work-order/case correlation rule is invented.
+
+Forward 016 checks legacy family/parent integrity, locks parent/mapping/catalog on writes,
+protects used mapping/family identity from reassignment, and prevents policy truncation.
+Existing CAPA without an approved mapping blocks 016. Forward 014 remains independently
+committed so an operator can provision actual approved metadata and retry; no mapping is
+seeded, guessed or automatically repaired. Closed/closure legacy incoherence can separately
+block 014 and requires reconciliation from real evidence. Published SQL is unchanged.
+
+Validation performed: all 37 changed Java files parsed; changed production/owner boundaries
+and 30 focused unit plus 13 PostgreSQL/Spring-JPA test method signatures compiled on Java
+17 against temporary APIs. Thirty-nine actual domain/application/coordinator/CAPA checks
+passed with controlled ports/repositories (14 + 12 + 13); this is not real transaction,
+JUnit, Spring, Hibernate or PostgreSQL verification. All 126 published migration files
+are byte-identical to the baseline. Canonical 82 Markdown validation and independent
+write scopes passed. git diff --check is required before committing/publishing.
+
+Attempted bash mvnw -o -B -q compile (-DskipTests), focused HSE/owner/architecture tests,
+full test and clean verify all stop before execution because Spring Boot parent 4.1.1 is
+uncached offline. Java 21, Docker and PostgreSQL are unavailable locally. Real runtime,
+full Flyway, architecture and OpenAPI compatibility verification remains final-head CI.
+No test pass is fabricated from expected database behavior.
+
+HMR-082 semantic commit: 2a8438d1b0577d9a932697a386feb51507ea6b17 (30 changed files).
+HMR-096 semantic commit: 404f0e5e41d48d656bb5196f47acd7ebfe9c0455 (10 changed files).
+HMR-097 retains its own exact semantic commit. Advance main once to the final chain,
+confirm production CI starts, then stop for owner next/fail; no PR is created.
+
+| Subject | Current status | Evidence disposition |
+|---|---|---|
+| HMR-082 / HseCase | Completed implementation | Pending final-head CI |
+| HMR-096 / HseClosure | Completed implementation | Pending final-head CI |
+| HMR-097 / HseCorrectivePreventiveAction | Completed implementation | Pending final-head CI |
+| HMR-080 | Blocked | Independent unresolved prerequisite |
+
+Current total: 49 implementations (46 CI-confirmed, three awaiting final-head CI),
+seven STILL REQUIRED and one BLOCKED, 57 evaluated. HPR-P2-008 remains open.
+Next attached batch is row 18, HMR-098 / IntegrityCase, subject to fresh admission,
+green baseline and owner next. No later task executes in this envelope.

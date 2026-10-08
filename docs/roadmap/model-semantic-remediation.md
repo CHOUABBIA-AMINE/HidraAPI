@@ -270,7 +270,7 @@ Each model task implements only the obligations recorded in its source HMSR sect
 | HMR-094 | HMSR-111 | planning | PlanTarget | — | planning.Nomination, planning.PlanRevision, telemetry.TelemetryPoint | `fix(planning): remediate semantic review PlanTarget` | Planned |
 | HMR-095 | HMSR-112 | audit | AuditEvent | — | organization.OrganizationUnit, workflow.WorkflowAction, workflow.WorkflowInstance, workflow.WorkflowTask | `fix(audit): remediate semantic review AuditEvent` | Implemented — CI pending |
 | HMR-096 | HMSR-113 | hse | HseClosure | — | hse.HseCase, workflow.WorkflowInstance | `fix(hse): remediate semantic review HseClosure` | Completed |
-| HMR-097 | HMSR-114 | hse | HseCorrectivePreventiveAction | — | assets.MaintenanceWorkOrder, hse.HseCase, organization.OrganizationUnit, workflow.WorkflowTask | `fix(hse): remediate semantic review HseCorrectivePreventiveAction` | Planned |
+| HMR-097 | HMSR-114 | hse | HseCorrectivePreventiveAction | — | assets.MaintenanceWorkOrder, hse.HseCase, organization.OrganizationUnit, workflow.WorkflowTask | `fix(hse): remediate semantic review HseCorrectivePreventiveAction` | Completed |
 | HMR-098 | HMSR-115 | integrity | IntegrityCase | — | hse.HseCase, incident.Incident, integrity.PipelineDefect, organization.OrganizationUnit, workflow.WorkflowInstance | `fix(integrity): remediate semantic review IntegrityCase` | Planned |
 | HMR-099 | HMSR-116 | workflow | WorkflowStateHistory | — | workflow.WorkflowAction, workflow.WorkflowInstance, workflow.WorkflowStep, workflow.WorkflowTask | `fix(workflow): remediate semantic review WorkflowStateHistory` | Planned |
 
@@ -4853,7 +4853,7 @@ uncached Boot parent 4.1.1 offline. Real Spring/JPA/PostgreSQL tests await final
 - SCC: —
 - Recorded upstream HMS dependencies: assets.MaintenanceWorkOrder, hse.HseCase, organization.OrganizationUnit, workflow.WorkflowTask
 - HMSR correction count: 3
-- Additive Flyway: `src/main/resources/db/migration/V20261004_097__hmr_097_hse_hse_corrective_preventive_action.sql`
+- Additive Flyway: `src/main/resources/db/migration/V20261008_016__hmr_097_hse_capa_reference_catalog_integrity.sql`
 - Owner-contract prerequisite: Existing candidate owner contract(s): assets:src/main/java/dz/sh/hidra/modules/assets/application/port/out/AssetsAuditReferencePort.java; assets:src/main/java/dz/sh/hidra/modules/assets/application/port/out/AssetsDocumentReferencePort.java; assets:src/main/java/dz/sh/hidra/modules/assets/application/port/out/AssetsPartyReferencePort.java; assets:src/main/java/dz/sh/hidra/modules/assets/application/port/out/AssetsTelemetryReferencePort.java; assets:src/main/java/dz/sh/hidra/modules/assets/application/port/out/AssetsTopologyLookupPort.java; assets:src/main/java/dz/sh/hidra/modules/assets/application/port/out/AssetsWorkflowReferencePort.java; organization:src/main/java/dz/sh/hidra/modules/organization/application/port/in/OperationalScopeQueryUseCase.java; organization:src/main/java/dz/sh/hidra/modules/organization/application/port/in/OrganizationAdministrationQueryUseCase.java; organization:src/main/java/dz/sh/hidra/modules/organization/application/port/out/OperationalScopeTargetResolverPort.java; workflow:src/main/java/dz/sh/hidra/modules/workflow/application/port/in/WorkflowQueryUseCase.java; workflow:src/main/java/dz/sh/hidra/modules/workflow/application/port/out/WorkflowEligibilityLookupPort.java
 - Exact write allowlist:
   - `docs/data definition/Hse.md`
@@ -4864,7 +4864,7 @@ uncached Boot parent 4.1.1 offline. Real Spring/JPA/PostgreSQL tests await final
   - `src/main/java/dz/sh/hidra/modules/hse/infrastructure/persistence/entity/HseCorrectivePreventiveActionJpaEntity.java`
   - `src/main/java/dz/sh/hidra/modules/hse/infrastructure/persistence/mapper/HsePersistenceMapper.java`
   - `src/main/java/dz/sh/hidra/modules/hse/infrastructure/persistence/repository/HseCorrectivePreventiveActionJpaRepository.java`
-  - `src/main/resources/db/migration/V20261004_097__hmr_097_hse_hse_corrective_preventive_action.sql`
+  - `src/main/resources/db/migration/V20261008_016__hmr_097_hse_capa_reference_catalog_integrity.sql`
   - `src/test/java/dz/sh/hidra/modules/hse/semantic/HseCorrectivePreventiveActionSemanticRemediationTest.java`
 - Exact validation:
   - `./mvnw -q -DskipTests compile`
@@ -5594,3 +5594,58 @@ repositories; this does not demonstrate database rollback or lock behavior. Focu
 execution stops before tests at uncached Boot 4.1.1 offline parent resolution. Real runtime
 verification remains final-head CI. HMR-096 implementation Completed pending CI; next
 admitted task HMR-097. HPR-P2-008 remains open and HMR-080 independently blocked.
+
+
+### HMR-097 accepted Batch 17 execution result
+
+Canonical Batch 17 accepted execution scopes supersede the historical allowlist.
+Status: Completed implementation; final-head CI pending. Exact commit: `fix(hse): remediate semantic review HseCorrectivePreventiveAction`.
+
+HMSR-114 recovered independently. Application and adapter load/lock the real owning HSE
+case before CAPA writes. Current policy does not impose a case-status subset. Locked
+catalog validation requires explicit CAPA_ACTION_TYPE field-role metadata and exact
+catalog_name membership, with active mapping/entry eligibility for new/changed types.
+Missing or ambiguous policy denies instead of guessing a family. Valid unchanged inactive
+history remains readable and writable without live snapshot refresh. New/changed owner
+and verifier use Identity; unit uses Organization; work order uses Assets; Workflow task
+must resolve its actual HSE_CASE/HSE_CAPA instance context and configured type/purpose
+binding. Fresh owner/unit snapshots are canonical. No assignment, approval, completion/
+verification-state or work-order/case correlation rule is invented.
+
+Forward 016 checks legacy family/parent integrity, locks parent/mapping/catalog on writes,
+protects used mapping/family identity from reassignment, and prevents policy truncation.
+Existing CAPA without an approved mapping blocks 016. Forward 014 remains independently
+committed so an operator can provision actual approved metadata and retry; no mapping is
+seeded, guessed or automatically repaired. Closed/closure legacy incoherence can separately
+block 014 and requires reconciliation from real evidence. Published SQL is unchanged.
+
+Validation performed: all 37 changed Java files parsed; changed production/owner boundaries
+and 30 focused unit plus 13 PostgreSQL/Spring-JPA test method signatures compiled on Java
+17 against temporary APIs. Thirty-nine actual domain/application/coordinator/CAPA checks
+passed with controlled ports/repositories (14 + 12 + 13); this is not real transaction,
+JUnit, Spring, Hibernate or PostgreSQL verification. All 126 published migration files
+are byte-identical to the baseline. Canonical 82 Markdown validation and independent
+write scopes passed. git diff --check is required before committing/publishing.
+
+Attempted bash mvnw -o -B -q compile (-DskipTests), focused HSE/owner/architecture tests,
+full test and clean verify all stop before execution because Spring Boot parent 4.1.1 is
+uncached offline. Java 21, Docker and PostgreSQL are unavailable locally. Real runtime,
+full Flyway, architecture and OpenAPI compatibility verification remains final-head CI.
+No test pass is fabricated from expected database behavior.
+
+HMR-082 semantic commit: 2a8438d1b0577d9a932697a386feb51507ea6b17 (30 changed files).
+HMR-096 semantic commit: 404f0e5e41d48d656bb5196f47acd7ebfe9c0455 (10 changed files).
+HMR-097 retains its own exact semantic commit. Advance main once to the final chain,
+confirm production CI starts, then stop for owner next/fail; no PR is created.
+
+| Subject | Current status | Evidence disposition |
+|---|---|---|
+| HMR-082 / HseCase | Completed implementation | Pending final-head CI |
+| HMR-096 / HseClosure | Completed implementation | Pending final-head CI |
+| HMR-097 / HseCorrectivePreventiveAction | Completed implementation | Pending final-head CI |
+| HMR-080 | Blocked | Independent unresolved prerequisite |
+
+Current total: 49 implementations (46 CI-confirmed, three awaiting final-head CI),
+seven STILL REQUIRED and one BLOCKED, 57 evaluated. HPR-P2-008 remains open.
+Next attached batch is row 18, HMR-098 / IntegrityCase, subject to fresh admission,
+green baseline and owner next. No later task executes in this envelope.

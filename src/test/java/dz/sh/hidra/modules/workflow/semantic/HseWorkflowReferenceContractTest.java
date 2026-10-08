@@ -27,10 +27,11 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 class HseWorkflowReferenceContractTest {
+    final WorkflowTaskRepositoryPort tasks=mock(WorkflowTaskRepositoryPort.class);
     final WorkflowInstanceRepositoryPort instances=mock(WorkflowInstanceRepositoryPort.class);
     final WorkflowConfigurationPort configuration=mock(WorkflowConfigurationPort.class);
     final WorkflowInstance instance=mock(WorkflowInstance.class);
-    final HseWorkflowReferenceQueryService service=new HseWorkflowReferenceQueryService(instances,configuration);
+    final HseWorkflowReferenceQueryService service=new HseWorkflowReferenceQueryService(instances,configuration,tasks);
     void valid() {
         when(instances.findById("workflow")).thenReturn(Optional.of(instance));when(instance.id()).thenReturn("workflow");
         when(instance.targetModule()).thenReturn("hse");when(instance.targetId()).thenReturn("target");when(instance.targetTypeId()).thenReturn("type");
@@ -47,4 +48,12 @@ class HseWorkflowReferenceContractTest {
     @Test void missingBindingIsRejected() {valid();when(configuration.activeBinding("definition","hse","type","purpose")).thenReturn(false);assertFalse(service.caseMatches("workflow","target"));}
     @Test void unavailableConfigurationFailsClosed() {valid();when(configuration.requireActiveCatalog("type","WORKFLOW_TARGET_TYPE")).thenThrow(new IllegalStateException("unavailable"));assertThrows(IllegalStateException.class,() -> service.caseMatches("workflow","target"));}
     @Test void missingInstanceIsRejected() {when(instances.findById("missing")).thenReturn(Optional.empty());assertFalse(service.caseMatches("missing","target"));}
+    @Test void taskMustResolveItsActualHseContext() {
+        valid();var task=mock(dz.sh.hidra.modules.workflow.domain.model.WorkflowTask.class);
+        when(task.id()).thenReturn("task");when(task.instanceId()).thenReturn("workflow");when(tasks.findById("task")).thenReturn(Optional.of(task));
+        assertTrue(service.taskMatches("task","target","capa"));assertFalse(service.taskMatches("task","wrong","capa"));
+        when(instance.targetId()).thenReturn("capa");when(configuration.requireActiveCatalog("type","WORKFLOW_TARGET_TYPE")).thenReturn(new WorkflowConfigurationPort.Catalog("type","WORKFLOW_TARGET_TYPE","HSE_CAPA",true));
+        assertTrue(service.taskMatches("task","target","capa"));when(configuration.activeBinding("definition","hse","type","purpose")).thenReturn(false);assertFalse(service.taskMatches("task","target","capa"));
+    }
+    @Test void missingTaskIsRejected() {when(tasks.findById("missing")).thenReturn(Optional.empty());assertFalse(service.taskMatches("missing","case","capa"));}
 }

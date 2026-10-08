@@ -34,14 +34,23 @@ import org.springframework.stereotype.Component;
 public class JpaHseCorrectivePreventiveActionRepositoryAdapter implements HseCorrectivePreventiveActionRepositoryPort {
 
     private final HseCorrectivePreventiveActionJpaRepository repository;
+    private final dz.sh.hidra.modules.hse.infrastructure.persistence.repository.HseCaseJpaRepository cases;
+    private final HseCapaReferenceValidation references;
 
-    public JpaHseCorrectivePreventiveActionRepositoryAdapter(HseCorrectivePreventiveActionJpaRepository repository) {
+    public JpaHseCorrectivePreventiveActionRepositoryAdapter(HseCorrectivePreventiveActionJpaRepository repository, dz.sh.hidra.modules.hse.infrastructure.persistence.repository.HseCaseJpaRepository cases, HseCapaReferenceValidation references) {
         this.repository = Objects.requireNonNull(repository, "HseCorrectivePreventiveActionJpaRepository must not be null.");
+        this.cases=Objects.requireNonNull(cases);this.references=Objects.requireNonNull(references);
     }
 
     @Override
+    @org.springframework.transaction.annotation.Transactional
     public HseCorrectivePreventiveAction save(HseCorrectivePreventiveAction model) {
-        return HsePersistenceMapper.toDomain(repository.save(HsePersistenceMapper.toEntity(model)));
+        Objects.requireNonNull(model);
+        if(cases.findByIdForUpdate(model.hseCaseId()).filter(p -> model.hseCaseId().equals(p.id())).isEmpty())
+            throw new IllegalArgumentException("Known owning HSE case required.");
+        var old=repository.findByIdForUpdate(model.id()).map(HsePersistenceMapper::toDomain).orElse(null);
+        var validated=references.validate(model,old);
+        return HsePersistenceMapper.toDomain(repository.save(HsePersistenceMapper.toEntity(validated)));
     }
 
     @Override

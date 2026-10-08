@@ -1695,3 +1695,29 @@ as exact trees with one final branch advancement. Observe production CI started 
 CI pending at preparation. Next proposed owner scope is attached Batch 13 Simulation
 HMR-078/HMR-079, gated on green Batch 12 production CI and fresh source/owner/exact-scope
 admission. Do not execute Batch 13 automatically; release stays 0.6.0-SNAPSHOT.
+
+## Batch 12 CI #586 regression repair — 2026-10-08
+
+Production CI #586 / run 37683362119 on `7a5d98a8defa92fb5151dcddba34a90f1c958125` ran 895 tests:
+one failure and three errors. Per AGENTS.md section 3.2.8 and owner `next`, repair only
+Batch 12 regressions; do not begin Batch 13. Admit the following exact repair paths:
+
+- `src/test/java/dz/sh/hidra/InternalReferenceIntegrityMigrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/reporting/semantic/ReportQueueEvidenceSemanticTest.java`
+- `src/test/java/dz/sh/hidra/modules/reporting/infrastructure/persistence/ReportingSemanticPostgresIntegrationTest.java`
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `doc/model-remediation/RECONCILIATION.md`
+
+Exact supporting commit: `test(reporting): repair Batch 12 CI fixtures and reference inventory`.
+Materialize required-parameter mocks before starting repository stubbing, provide explicit
+mask_sensitive_values in the access-policy SQL fixture, and include the three corrected
+Reporting FK replacements in the original 551-reference inventory. Assert exact child/parent
+tables, validation and removal of superseded names; preserve the classified count rather than
+lowering it. No production source, published migration, release or semantic obligation changes.
+Validation: all three changed Java tests syntax-parse successfully. The replacement endpoint
+map matches published SQL exactly, all published migration bytes are unchanged, and the
+five-file scope/whitespace checks pass. Focused test, compile and clean verify attempts stop
+before execution because Spring Boot parent 4.1.1 is absent from the offline Maven cache.
+These source checks do not establish a JUnit/Mockito/PostgreSQL pass.
+Full PostgreSQL/Mockito verification remains replacement CI pending; confirm it started and
+stop until `next` or `fail`. Batch 13 remains gated on green production CI.

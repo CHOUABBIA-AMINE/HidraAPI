@@ -7,7 +7,7 @@
  *
  * @Name        : ReportingSemanticPostgresIntegrationTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-07
+ * @UpdatedOn   : 2026-10-08
  *
  * @Type        : Class
  * @Layer       : Test
@@ -77,7 +77,7 @@ class ReportingSemanticPostgresIntegrationTest {
         sql("UPDATE hidra_reporting_request SET status='SUBMITTED' WHERE id='request'");sql("UPDATE hidra_reporting_report_definition SET requires_approval=true WHERE id='definition'");
         assertThrows(SQLException.class,()->sql(run("approval")));
         sql("UPDATE hidra_reporting_request SET status='APPROVED',workflow_reference_id='workflow' WHERE id='request'");sql(run("approved"));
-        sql("INSERT INTO hidra_reporting_access_policy(id,report_definition_id,scope_type,scope_reference_id,permission_code,restricted,created_at,updated_at) VALUES ('policy','definition','ACTOR','other-actor','REPORT_READ',true,now(),now())");
+        sql("INSERT INTO hidra_reporting_access_policy(id,report_definition_id,scope_type,scope_reference_id,permission_code,restricted,mask_sensitive_values,created_at,updated_at) VALUES ('policy','definition','ACTOR','other-actor','REPORT_READ',true,true,now(),now())");
         sql("UPDATE hidra_reporting_report_definition SET restricted=true WHERE id='definition'");assertThrows(SQLException.class,()->sql(run("restricted")));
     }
     @Test void requiredConcreteFieldsRejectMissingBlankWrongAndMultipleValues()throws Exception{

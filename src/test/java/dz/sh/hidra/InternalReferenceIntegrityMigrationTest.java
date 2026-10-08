@@ -7,7 +7,7 @@
  *
  * @Name        : InternalReferenceIntegrityMigrationTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-29
+ * @UpdatedOn   : 2026-10-08
  *
  * @Type        : Class
  * @Layer       : Repository Remediation Test
@@ -28,6 +28,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.flywaydb.core.Flyway;
@@ -57,6 +58,13 @@ class InternalReferenceIntegrityMigrationTest {
             MigrationVersion.fromVersion("20260928.002");
 
     private static final int NEW_HRA_111_FOREIGN_KEYS = 551;
+
+    // HMR-057/093 replace three misclassified catalog FKs with Reporting-owned lineage FKs.
+    private static final Map<String, List<String>> REPORTING_REPLACEMENTS = Map.of(
+            "hmr057_request_fk", List.of("hidra_reporting_run", "hidra_reporting_request"),
+            "hmr057_parameter_request_fk", List.of("hidra_reporting_parameter_value", "hidra_reporting_request"),
+            "hmr093_run_fk", List.of("hidra_reporting_output_artifact", "hidra_reporting_run")
+    );
 
     private static final Map<String, String> MODULE_TABLE_PREFIXES = new HashMap<>();
 
@@ -116,7 +124,8 @@ class InternalReferenceIntegrityMigrationTest {
                          JOIN pg_class child ON child.oid = c.conrelid
                          JOIN pg_class parent ON parent.oid = c.confrelid
                          WHERE c.contype = 'f'
-                           AND c.conname LIKE 'fk_hra111_%'
+                           AND (c.conname LIKE 'fk_hra111_%'
+                                OR c.conname IN ('hmr057_request_fk', 'hmr057_parameter_request_fk', 'hmr093_run_fk'))
                      ) integrity_constraints
                      ORDER BY constraint_name
                      """
@@ -129,7 +138,15 @@ class InternalReferenceIntegrityMigrationTest {
                 String parentTable = resultSet.getString("parent_table");
                 boolean validated = resultSet.getBoolean("validated");
 
-                String module = moduleFromConstraintName(constraintName);
+                String module;
+                if (REPORTING_REPLACEMENTS.containsKey(constraintName)) {
+                    List<String> endpoints = REPORTING_REPLACEMENTS.get(constraintName);
+                    assertThat(childTable).as("replacement child for %s", constraintName).isEqualTo(endpoints.get(0));
+                    assertThat(parentTable).as("replacement parent for %s", constraintName).isEqualTo(endpoints.get(1));
+                    module = "reporting";
+                } else {
+                    module = moduleFromConstraintName(constraintName);
+                }
 
                 assertThat(tableBelongsToModule(module, childTable))
                         .as("child table %s for %s stays in module %s",
@@ -146,6 +163,12 @@ class InternalReferenceIntegrityMigrationTest {
         }
 
         assertThat(observed).isEqualTo(NEW_HRA_111_FOREIGN_KEYS);
+        for (String replacement : REPORTING_REPLACEMENTS.keySet()) {
+            assertThat(constraintExists(replacement)).as("replacement %s exists", replacement).isTrue();
+        }
+        for (String superseded : List.of("fk_hra111_reporting_019", "fk_hra111_reporting_012", "fk_hra111_reporting_009")) {
+            assertThat(constraintExists(superseded)).as("superseded %s is removed", superseded).isFalse();
+        }
         assertThat(constraintExists("fk_org_district_state")).isTrue();
         assertThat(constraintExists("fk_hidra_identity_local_credential_user")).isTrue();
     }

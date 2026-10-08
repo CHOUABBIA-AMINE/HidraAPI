@@ -1960,3 +1960,37 @@ on main, confirm final production CI started, then stop until owner `next` or `f
 Current total: 37 implemented (35 CI-confirmed, two awaiting CI), 19 still required, one
 blocked HMR-080, 57 evaluated. Next HPR-P2-008 batch requires fresh admission and green CI;
 no later HMR is automatically admitted by Batch 13.
+
+
+## HPR-P2-008 Batch 13 CI #589 migration-fixture repair — 2026-10-08
+
+Owner `fail` requests repair of failed exact head 9863f11ed20ee5eec415756f55f4add9d2b0084f.
+CI #589 (37760863845), job 113256645699: 916 tests, zero failures, eight errors,
+all SimulationSemanticPostgresIntegrationTest setup errors: PostgreSQL reports
+"LOCK TABLE can only be used in transaction blocks". The fixture executes migration
+files through an autocommit connection, unlike Flyway's transactional execution.
+Admit only these exact repair paths:
+
+- `src/test/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/SimulationSemanticPostgresIntegrationTest.java`
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `doc/model-remediation/RECONCILIATION.md`
+
+Exact supporting message: `test(simulation): run migration fixtures transactionally`.
+Execute each migration on its own explicit JDBC transaction; commit successful files,
+roll back failures and retain the original exception. Keep ad hoc SQL helpers unchanged.
+Do not edit published migrations or production Java, and do not begin another batch.
+
+### CI #589 repair result
+
+Only the migration-file test helper changes: disable JDBC autocommit before executing
+the complete file, commit success, rollback failure, preserve the original exception
+and suppress any rollback failure. This preserves atomic migration rollback and table
+locks while leaving production/migration bytes intact. Eight checks on the extracted
+actual helper using JDBC proxies passed (success ordering, rollback, runtime failure,
+connection closure and original exception preservation); Java syntax passed. These
+checks do not claim actual PostgreSQL/Spring execution. Focused command
+`bash mvnw -o -q -Dtest=SimulationSemanticPostgresIntegrationTest test` remains blocked
+before compilation by uncached Boot parent 4.1.1. Canonical documentation, whitespace
+and exact three-file scope checks passed. Publish repair, confirm new CI started, stop.
+Batch 13 remains implementation-only pending green exact-head production verification;
+HPR-P2-008 next batch remains gated. No new files, release or production behavior change.

@@ -60,7 +60,20 @@ class SimulationSemanticPostgresIntegrationTest {
         return DriverManager.getConnection(POSTGRES.getJdbcUrl(),POSTGRES.getUsername(),POSTGRES.getPassword());
     }
     void sql(String text) throws SQLException {try(var c=connection();var s=c.createStatement()){s.execute(text);}}
-    void file(String name) throws Exception {sql(Files.readString(MIGRATIONS.resolve(name)));}
+    void file(String name) throws Exception {
+        String migration=Files.readString(MIGRATIONS.resolve(name));
+        try(var c=connection()) {
+            // Match Flyway: LOCK TABLE and all migration statements share one transaction.
+            c.setAutoCommit(false);
+            try(var statement=c.createStatement()) {
+                statement.execute(migration);
+                c.commit();
+            } catch(SQLException | RuntimeException failure) {
+                try {c.rollback();} catch(SQLException rollbackFailure) {failure.addSuppressed(rollbackFailure);}
+                throw failure;
+            }
+        }
+    }
     void oldSchema() throws Exception {
         sql("DROP SCHEMA public CASCADE; CREATE SCHEMA public");
         file("V20260611_022__create_simulation_tables.sql");file("V20260611_017__create_audit_tables.sql");

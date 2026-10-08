@@ -233,7 +233,7 @@ Each model task implements only the obligations recorded in its source HMSR sect
 | HMR-067 | HMSR-079 | documents | Document | SCC-05 | documents.DocumentVersion | `fix(documents): remediate semantic review Document` | Completed — CI pending |
 | HMR-068 | HMSR-080 | documents | DocumentVersion | SCC-05 | documents.Document, documents.DocumentStorageObject, documents.DocumentVersion, workflow.WorkflowInstance | `fix(documents): remediate semantic review DocumentVersion` | Completed — CI pending |
 | HMR-069 | HMSR-081 | assets | MaintenanceWorkOrder | — | assets.MaintainableAsset, organization.OrganizationUnit, workflow.WorkflowInstance | `fix(assets): remediate semantic review MaintenanceWorkOrder` | Implemented — CI pending |
-| HMR-070 | HMSR-082 | custody | CustodyTransferTicket | — | custody.CustodyMeasurementPeriod, workflow.WorkflowInstance | `fix(custody): remediate semantic review CustodyTransferTicket` | Planned |
+| HMR-070 | HMSR-082 | custody | CustodyTransferTicket | — | custody.CustodyMeasurementPeriod, workflow.WorkflowInstance | `fix(custody): remediate semantic review CustodyTransferTicket` | Implemented — CI pending |
 | HMR-071 | HMSR-084 | integration | IntegrationDeadLetterRecord | — | integration.ExternalSystem, integration.IntegrationExchangeMessage, integration.IntegrationJobRun | `fix(integration): remediate semantic review IntegrationDeadLetterRecord` | Implemented — CI pending |
 | HMR-072 | HMSR-085 | integrity | IntegrityAssessment | — | integrity.IntegrityProgram, workflow.WorkflowInstance | `fix(integrity): remediate semantic review IntegrityAssessment` | Planned |
 | HMR-073 | HMSR-087 | organization | EmployeeAssignment | — | organization.Employee, organization.OrganizationUnit, organization.Position | `fix(organization): remediate semantic review EmployeeAssignment` | Completed — Batch 1 |
@@ -3887,11 +3887,11 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
 
 - Source review: `HMSR-082`
 - Exact commit: `fix(custody): remediate semantic review CustodyTransferTicket`
-- Status: **Planned**
+- Status: **Implemented — CI pending**
 - SCC: —
 - Recorded upstream HMS dependencies: custody.CustodyMeasurementPeriod, workflow.WorkflowInstance
 - HMSR correction count: 3
-- Additive Flyway: `src/main/resources/db/migration/V20261004_070__hmr_070_custody_custody_transfer_ticket.sql`
+- Additive Flyway: `src/main/resources/db/migration/V20261008_012__hmr_070_custody_custody_transfer_ticket.sql`
 - Owner-contract prerequisite: Existing candidate owner contract(s): workflow:src/main/java/dz/sh/hidra/modules/workflow/application/port/in/WorkflowQueryUseCase.java; workflow:src/main/java/dz/sh/hidra/modules/workflow/application/port/out/WorkflowEligibilityLookupPort.java
 - Exact write allowlist:
   - `docs/data definition/Custody.md`
@@ -3907,7 +3907,7 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
   - `src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/entity/CustodyTransferTicketJpaEntity.java`
   - `src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/mapper/CustodyPersistenceMapper.java`
   - `src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/repository/CustodyTransferTicketJpaRepository.java`
-  - `src/main/resources/db/migration/V20261004_070__hmr_070_custody_custody_transfer_ticket.sql`
+  - `src/main/resources/db/migration/V20261008_012__hmr_070_custody_custody_transfer_ticket.sql`
   - `src/test/java/dz/sh/hidra/modules/custody/semantic/CustodyTransferTicketSemanticRemediationTest.java`
 - Exact validation:
   - `./mvnw -q -DskipTests compile`
@@ -3918,6 +3918,9 @@ The following lists are **write allowlists**, not mandatory-change lists. A prod
   1. **Protect populated same-module evidence references.** `batchId` and `quantityCalculationId` must fail closed to existing Custody-owned records.
   2. **Validate populated Identity/Workflow references through owner-controlled contracts.** This covers issuer/approver actor IDs and `workflowInstanceId`; do not introduce cross-module database FKs.
   3. **Preserve Audit ownership for `auditReferenceId` and validate/populate it through an Audit-owned application/publication boundary** rather than direct persistence coupling.
+
+- Accepted Batch 16 exhaustive scope in canonical Ultimate Roadmap supersedes the original client-only scope.
+- Execution: Nullable batch/calculation references now fail closed through Custody-owned checks and validated forward 012 FKs. Identity validates new/changed issuer and approver IDs; Workflow attests exact ticket context and configured binding; Audit owner resolves populated evidence for the exact Custody ticket. Locked transactional adapter saves prevent bypass while unchanged historical provenance remains preserved. Creation retains null approval/Audit values and optionality. No invented approval coupling, transition/temporal rule or cross-module FK. Changed production and 21 focused unit signatures compiled against temporary APIs; nine actual reference behavior checks passed with controlled owner fixtures. Four real PostgreSQL tests prepared, including legacy orphan rollback and concurrent parent deletion. Focused Maven stopped before execution at uncached offline Boot 4.1.1 parent. Final-head CI pending.
 
 #### HMR-071 — integration.IntegrationDeadLetterRecord
 

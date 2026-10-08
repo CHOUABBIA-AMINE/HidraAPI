@@ -7,7 +7,7 @@
  *
  * @Name        : JpaCustodyTransferTicketRepositoryAdapter
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-08
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -24,6 +24,7 @@ import dz.sh.hidra.modules.custody.domain.model.CustodyTransferTicket;
 import dz.sh.hidra.modules.custody.infrastructure.persistence.mapper.CustodyPersistenceMapper;
 import dz.sh.hidra.modules.custody.infrastructure.persistence.repository.CustodyTransferTicketJpaRepository;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -35,14 +36,20 @@ import java.util.Optional;
 public class JpaCustodyTransferTicketRepositoryAdapter implements CustodyTransferTicketRepositoryPort {
 
     private final CustodyTransferTicketJpaRepository repository;
+    private final CustodyTransferTicketReferenceValidation validation;
 
-    public JpaCustodyTransferTicketRepositoryAdapter(CustodyTransferTicketJpaRepository repository) {
+    public JpaCustodyTransferTicketRepositoryAdapter(CustodyTransferTicketJpaRepository repository, CustodyTransferTicketReferenceValidation validation) {
         this.repository = Objects.requireNonNull(repository, "CustodyTransferTicketJpaRepository must not be null.");
+        this.validation = Objects.requireNonNull(validation);
     }
 
     @Override
+    @Transactional
     public CustodyTransferTicket save(CustodyTransferTicket model) {
-        return CustodyPersistenceMapper.toDomain(repository.save(CustodyPersistenceMapper.toEntity(model)));
+        Objects.requireNonNull(model);
+        var previous=repository.findByIdForUpdate(model.id()).map(CustodyPersistenceMapper::toDomain).orElse(null);
+        validation.validate(model,previous);
+        return CustodyPersistenceMapper.toDomain(repository.saveAndFlush(CustodyPersistenceMapper.toEntity(model)));
     }
 
     @Override

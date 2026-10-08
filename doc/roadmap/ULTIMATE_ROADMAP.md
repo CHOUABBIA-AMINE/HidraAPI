@@ -3719,3 +3719,13 @@ Exact semantic message: `fix(assets): remediate semantic review MaintenanceWorkO
 Implementation complete; actual production Java 21/Spring/PostgreSQL/OpenAPI verification
 is pending final-head CI. No prepared test or temporary API compile is an executed
 Maven/JUnit/PostgreSQL pass. No foreign-module FK, PR, release or later batch is included.
+
+### Batch 16 HMR-070 implementation result — 2026-10-08
+
+Source HMSR-082 and current creation/domain/adapter/owner/Flyway evidence independently
+recovered before this task. Nullable batch/calculation references now fail closed through Custody-owned checks and validated forward 012 FKs. Identity validates new/changed issuer and approver IDs; Workflow attests exact ticket context and configured binding; Audit owner resolves populated evidence for the exact Custody ticket. Locked transactional adapter saves prevent bypass while unchanged historical provenance remains preserved. Creation retains null approval/Audit values and optionality. No invented approval coupling, transition/temporal rule or cross-module FK. Changed production and 21 focused unit signatures compiled against temporary APIs; nine actual reference behavior checks passed with controlled owner fixtures. Four real PostgreSQL tests prepared, including legacy orphan rollback and concurrent parent deletion. Focused Maven stopped before execution at uncached offline Boot 4.1.1 parent.
+
+Exact semantic message: `fix(custody): remediate semantic review CustodyTransferTicket`.
+Implementation complete; actual production Java 21/Spring/PostgreSQL/OpenAPI verification
+is pending final-head CI. No prepared test or temporary API compile is an executed
+Maven/JUnit/PostgreSQL pass. No foreign-module FK, PR, release or later batch is included.

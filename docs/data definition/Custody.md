@@ -216,3 +216,9 @@ quantityUnitId != null
 HMR-027 deliberately does not invent a catalog-family name, active-entry eligibility rule,
 differenceQuantity/quantityUnitId pairing requirement, quantity sign rule, or additional
 discrepancy lifecycle transition.
+
+## HMR-070 execution reconciliation — 2026-10-08
+
+Nullable batch/calculation references now fail closed through Custody-owned checks and validated forward 012 FKs. Identity validates new/changed issuer and approver IDs; Workflow attests exact ticket context and configured binding; Audit owner resolves populated evidence for the exact Custody ticket. Locked transactional adapter saves prevent bypass while unchanged historical provenance remains preserved. Creation retains null approval/Audit values and optionality. No invented approval coupling, transition/temporal rule or cross-module FK. Changed production and 21 focused unit signatures compiled against temporary APIs; nine actual reference behavior checks passed with controlled owner fixtures. Four real PostgreSQL tests prepared, including legacy orphan rollback and concurrent parent deletion. Focused Maven stopped before execution at uncached offline Boot 4.1.1 parent.
+
+Actual production verification remains the final-head CI gate.

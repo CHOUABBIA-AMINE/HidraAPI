@@ -120,19 +120,19 @@ No `party.application.contract.planning` package exists in the exact current tre
 | HMR-091 | HMSR-108 | incident.IncidentRelatedIncident | COMPLETED — CI #595 GREEN | Batch 15 and inventory repair passed full Java 21/PostgreSQL/OpenAPI CI at e2e92bae7d69c54a46fa92702b539858404bf7ce. |
 | HMR-092 | HMSR-109 | incident.IncidentResponseAction | COMPLETED — CI #595 GREEN | Batch 15 and inventory repair passed full Java 21/PostgreSQL/OpenAPI CI at e2e92bae7d69c54a46fa92702b539858404bf7ce. |
 | HMR-093 | HMSR-110 | reporting.ReportOutputArtifact | COMPLETED — CI #588 GREEN | Existing run and nonblank Documents reference evidence required; every supplied reference is independently owner-validated. Forward 013 corrects artifact/run FK without Documents FK. Six focused methods, one Documents owner method and five additional PostgreSQL cases prepared; Full production CI #588 passed. |
-| HMR-094 | HMSR-111 | planning.PlanTarget | IMPLEMENTED — CI REPAIR PENDING | CI #599 exposed topology-provider Optional inference compile failure; narrow typed-switch repair prepared; replacement CI pending. |
+| HMR-094 | HMSR-111 | planning.PlanTarget | COMPLETED — CI #600 PASSED | Independent semantic commit 3845b7d30637ec9fc7306a527a0ae569b501fa89 plus narrow repair 0cc3e5c6c4b675880a634b3a073905f4119a36b7; Java 21 clean verify and OpenAPI green on repaired Batch 19 final tree. |
 | HMR-095 | HMSR-112 | audit.AuditEvent | COMPLETED — CI #584 GREEN | Required source/target module and target type, active exact event/category/optional severity/reason families, bounded sanitized payload/free text and persist/flush insertion enforced. Forward V20261007_007 adds optional catalog FKs, family guards and immutable event UPDATE/DELETE denial. Five focused and four added PostgreSQL/JPA/concurrency checks prepared; local focused Maven blocked by uncached Boot parent; CI #584 passed. |
 | HMR-096 | HMSR-113 | hse.HseClosure | COMPLETED — CI #597 GREEN | Accepted Batch 17 implementation passed full Java 21/PostgreSQL/OpenAPI CI on cfb3681ef1c79b4416336a3533cbc0599b4fd6b2. |
 | HMR-097 | HMSR-114 | hse.HseCorrectivePreventiveAction | COMPLETED — CI #597 GREEN | Accepted Batch 17 implementation passed full Java 21/PostgreSQL/OpenAPI CI on cfb3681ef1c79b4416336a3533cbc0599b4fd6b2. |
 | HMR-098 | HMSR-115 | integrity.IntegrityCase | COMPLETED — CI #598 GREEN | Accepted IC-PREREQ-01 implementation passed full production CI on 863d113fbee88f71ff7e2c3b593b415e5b70d07a. |
 | HMR-099 | HMSR-116 | workflow.WorkflowStateHistory | COMPLETED — CI #581 GREEN | Mandatory status/actor display evidence fails fast. History persistence inserts and flushes without upsert; optional task/step/action/reason references are checked for instance/definition and action evidence coherence. Database guards prohibit update/delete/truncate. Four focused behavior checks passed with temporary stubs; ten PostgreSQL/Hibernate cases added for CI, not locally executed. |
-| HMR-100 | HMSR-117 | alarm.Alarm | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
+| HMR-100 | HMSR-117 | alarm.Alarm | STILL REQUIRED — EXECUTION BLOCKED ALRM-PREREQ-01 | Live review recovered at 0cc3e5c6c4b675880a634b3a073905f4119a36b7; Batch 20 design, independent scopes, forward migrations and tests proposed; acceptance pending. |
 | HMR-101 | HMSR-118 | audit.AuditAccessRecord | COMPLETED — CI #584 GREEN | Access records use persist/flush without merge; populated optional AuditEvent/export IDs must exist. Forward V20261007_008 supplies nullable local FKs and UPDATE/DELETE denial. Three focused and four added PostgreSQL/JPA/concurrency/orphan checks prepared; local focused Maven blocked by uncached Boot parent; CI #584 passed. |
 | HMR-102 | HMSR-119 | audit.AuditBeforeAfterValue | COMPLETED — CI #584 GREEN | Required fieldPath, masked/sensitive raw-text exclusion, optional exact active MASK_REASON and existing parent event enforced. Hash-only evidence and changed=false remain legal. Persist/flush insertion plus V20261007_009 local FKs/checks/UPDATE/DELETE denial preserve immutable rows. Six focused and five added PostgreSQL/JPA/concurrency/legacy checks prepared. Temporary API type compilation passed; local focused Maven blocked by uncached Boot parent; CI #584 passed. |
-| HMR-103 | HMSR-120 | monitoring.PlanActualDeviation | BLOCKED — PTMD-PREREQ-01 | Batch 19 target export, live record and trusted-reading/evaluation scope prepared; awaiting acceptance. |
-| HMR-104 | HMSR-121 | alarm.AlarmAcknowledgement | STILL REQUIRED | no migration registered; dedicated test: absent; revalidate obligations before mutation |
-| HMR-105 | HMSR-122 | alarm.AlarmClosure | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
-| HMR-106 | HMSR-123 | alarm.AlarmShelving | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
+| HMR-103 | HMSR-120 | monitoring.PlanActualDeviation | COMPLETED — CI #600 PASSED | Independent semantic commit 74ea302432eff8434466d7162134b99923ce3161; live/direct-save owner/evaluation validation and forward 021 verified by final repaired-head CI. |
+| HMR-104 | HMSR-121 | alarm.AlarmAcknowledgement | STILL REQUIRED — EXECUTION BLOCKED ALRM-PREREQ-01 | Live review recovered at 0cc3e5c6c4b675880a634b3a073905f4119a36b7; Batch 20 design, independent scopes, forward migrations and tests proposed; acceptance pending. |
+| HMR-105 | HMSR-122 | alarm.AlarmClosure | STILL REQUIRED — EXECUTION BLOCKED ALRM-PREREQ-01 | Live review recovered at 0cc3e5c6c4b675880a634b3a073905f4119a36b7; Batch 20 design, independent scopes, forward migrations and tests proposed; acceptance pending. |
+| HMR-106 | HMSR-123 | alarm.AlarmShelving | STILL REQUIRED — EXECUTION BLOCKED ALRM-PREREQ-01 | Live review recovered at 0cc3e5c6c4b675880a634b3a073905f4119a36b7; Batch 20 design, independent scopes, forward migrations and tests proposed; acceptance pending. |
 
 ## Reconciliation Totals
 
@@ -140,9 +140,9 @@ No `party.application.contract.planning` package exists in the exact current tre
 - HMR-005 corrected from stale planned status to **COMPLETED**;
 - HMR-009 confirmed **COMPLETED** and removed as a carry-over blocker;
 - HMR-050..106 evaluated: **57**;
-- HMR-050..106 **STILL REQUIRED**: **17**;
+- HMR-050..106 **STILL REQUIRED**: **4** (HMR-100/104/105/106; execution held on ALRM-PREREQ-01 acceptance);
 - HMR-050..106 **BLOCKED**: **1** (HMR-080);
-- HMR-050..106 **IMPLEMENTED during HPR-P2-008**: **39** (37 CI-confirmed through #590; two Batch 14 implementations CI pending);
+- HMR-050..106 **IMPLEMENTED during HPR-P2-008**: **52** (CI-confirmed through #600; no implementation pending CI);
 - HMR-050..106 **SUPERSEDED**: **0**;
 - HMR-054 completed; repaired CI #575 is green;
 - HMR-080 remains blocked; HMR-055 prerequisite resolved and implemented in Batch 7.
@@ -151,7 +151,7 @@ No `party.application.contract.planning` package exists in the exact current tre
 
 - HMR-050 — **COMPLETED** at the first HPR-P2-008 execution step.
 - Batch 7 **COMPLETED — CI #581 GREEN**: HMR-055, 061, 066, 081, 099; exact repaired head ec63af0414d7fa85b9200d4bd181ac799bd072ed. Batch 8 preflight split below; no Planning implementation claimed.
-- Current remaining: **17 STILL REQUIRED + 1 BLOCKED (HMR-080)**; 37 CI-confirmed and two Batch 14 CI-pending implementations.
+- Current remaining: **4 STILL REQUIRED + 1 BLOCKED (HMR-080)**; 52 CI-confirmed through #600. Four Alarm subjects await ALRM-PREREQ-01 acceptance; no Batch 20 implementation has started.
 
 - HMR-051 — **COMPLETED**: Topology and optional Organization references validated on every case save; snapshot preserved; no migration because primary-candidate FK already exists; owner contract and architecture export added.
 
@@ -4203,3 +4203,353 @@ two pending implementations, four STILL REQUIRED Alarm subjects and HMR-080 BLOC
 HPR-P2-008 remains open; version and physical survivability evidence are unchanged.
 Publish this exact three-file follow-up under the current-head lease, verify its tree,
 confirm replacement production CI starts, then STOP for owner Next/Fail. No Batch 20.
+
+## HPR-P2-008 Batch 19 CI closure and Batch 20 execution preflight — 2026-10-08
+
+### Verified position and attached selection
+
+Owner Next requests continuation after the responsible HMR-094 repair. Fresh GitHub
+main is `0cc3e5c6c4b675880a634b3a073905f4119a36b7`, tree
+`b7bd9cc4992596b838a3544eea4523a156498bdd`. Production CI #600
+([run 37801562605](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/37801562605))
+completed SUCCESS on that exact head. Its Java 21 repository-verification step ran
+`./mvnw -B -q clean verify`; Docker/Testcontainers and PostgreSQL execution are
+visible in the job log. Deterministic OpenAPI publication and compatibility also passed.
+Quiet Maven output does not provide a per-method count; none is invented.
+
+HMR-094 / HMSR-111 and HMR-103 / HMSR-120 are now COMPLETED — CI #600 PASSED.
+Their independently published semantic commits remain
+`3845b7d30637ec9fc7306a527a0ae569b501fa89` and
+`74ea302432eff8434466d7162134b99923ce3161`; the narrow HMR-094 repair is
+`0cc3e5c6c4b675880a634b3a073905f4119a36b7`. PTMD-PREREQ-01 was already
+accepted and is not reopened. Reconciliation is 52 CI-confirmed implementations,
+four still-required Alarm subjects and one separately blocked HMR-080, 57 evaluated.
+
+The owner attachment `00 - Batchs Roadmap.txt` was recovered in full: row 20 is
+Alarm lifecycle, HMR-100 then HMR-104, HMR-105 and HMR-106. It requests atomic
+creation, acknowledgement, closure, shelving, expiry and lifecycle events.
+This selects the next preflight; it does not override the prerequisite stop rule.
+
+### Live HMSR recovery and prerequisite disposition
+
+HMSR-117 section 130, HMSR-121 section 134, HMSR-122 section 135 and HMSR-123
+section 136 were recovered independently against current source at the exact head.
+The Alarm DDD is supporting evidence; its stale no-implementation opening is not
+current implementation truth.
+
+| HMR | Live evidence | Remaining obligation |
+|---|---|---|
+| HMR-100 / HMSR-117 | 37-field Alarm; required French title only normalized; catalog FKs prove existence only; raise saves no event; ack/close save evidence only | Correct title and ALARM_TYPE/ALARM_SEVERITY/optional ALARM_PRIORITY membership; atomic RAISED event and coherent acknowledgement/closure. |
+| HMR-104 / HMSR-121 | 9-field acknowledgement; local Alarm FK; live service neither loads Alarm nor updates snapshots/events | Locked eligibility, evidence + state/snapshot + exactly one event; multiple acknowledgements remain legal. |
+| HMR-105 / HMSR-122 | 10-field closure; local Alarm FK; no one-closure uniqueness; live guard permits uncleared ESCALATED | Clear-before-close unless cancelled, terminal snapshot/event and one closure per Alarm. |
+| HMR-106 / HMSR-123 | 11-field shelving; live creation checks end time but not eligibility/family; no partial uniqueness; explicit unshelve only | Intrinsic interval, SHELVING_REASON family, serialized one-ACTIVE rule, state/event synchronization and deterministic expiry. |
+
+The four legacy scopes do not together register the needed application-owned lifecycle
+event port/model/adapter, PostgreSQL/Spring tests or shelving expiry path. HMR-104/105
+omit the live shared service. The legacy 20261004 migrations would be inserted behind
+the published 20261008_021 tail. Existing suppression writes share the Alarm row and
+currently read it without the common lifecycle lock, so adding isolated shelving locks
+would leave a lost-update race.
+
+AGENTS.md §3.2.9 requires: "If an HMR reveals an unregistered prerequisite, SCC
+complication, owner-contract gap, cross-module lifecycle dependency, migration-order
+conflict, or materially larger semantic redesign, split it out and stop before mutating
+that HMR." Section 3.2.10 keeps lifecycle orchestration solo by default unless this
+roadmap explicitly authorizes combined execution.
+
+Register **ALRM-PREREQ-01 — PROPOSED / AWAITING OWNER ACCEPTANCE** for the complete
+envelope below. All four HMRs remain BLOCKED for execution pending acceptance;
+none is implemented by this preflight. No cross-module SCC is introduced: shared
+lifecycle machinery is owned entirely by Alarm. Explicit acceptance admits this
+four-commit lifecycle envelope as the §3.2.10 exception. Owner Next in response to
+this published proposal accepts ALRM-PREREQ-01 and its full design/scope/validation;
+record that acceptance before implementation and do not ask for it again.
+
+This supporting documentation-only commit is registered as
+`docs(alarm): record Batch 20 execution preflight`. Its entire write scope is
+`doc/roadmap/ULTIMATE_ROADMAP.md` and
+`doc/model-remediation/RECONCILIATION.md`; no production/test/migration/version
+changes are authorized in the preflight.
+
+### Concrete proposed four-commit design
+
+1. Execute only HMR-100, HMR-104, HMR-105, HMR-106, in that order with the exact
+   messages below. Shared-file overlap is explicitly admitted only for the incremental
+   obligations named under each HMR. HMR-100's acknowledgement/closure obligations
+   are satisfied by dependent HMR-104/105 in the final tree; do not mark HMR-100
+   complete on its intermediate creation-only tree. Track each HMR independently and
+   count completion only after green final-head production CI. Chain all commits and
+   update main once under the expected-head lease; direct publication, no PR.
+2. Preserve Alarm/acknowledgement/closure/shelving 37/9/10/11-field domain and API/JPA
+   shapes, source/state/status vocabularies, optional snapshots and correlation fields.
+   Require nonblank titleFr before persistence. Enforce exact catalog membership
+   ALARM_TYPE, ALARM_SEVERITY, optional ALARM_PRIORITY and SHELVING_REASON by
+   Alarm-owned locked lookup and database reinforcement. No guessed IDs, catalog
+   seeds, new closure-reason family or universal active-catalog requirement is invented.
+   Historical inactive entries retain correct-family meaning; family mutation/deletion
+   of used entries cannot invalidate records.
+3. Introduce the 15-field AlarmLifecycleEvent domain representation and an append-only
+   application outgoing port with a JPA adapter/mapper. Application services must not
+   import infrastructure entities/repositories. Create one RAISED event atomically with
+   fresh Alarm persistence, including direct new-Alarm adapter saves, without a second
+   service-level event write. Obtain initial event actor evidence from an Alarm outgoing
+   actor port implemented with CurrentActorResolver: authenticated actor/name when
+   available, otherwise the existing server-owned SYSTEM_ACTOR_ID for trusted internal
+   creation. The port does not accept a browser-selected actor. Existing ack/close/shelve
+   REST attribution remains authenticated and unchanged. Initial event identity is stable
+   per Alarm; repeated save must not append another RAISED event.
+4. Make application lifecycle entry points proxyable and transactional. Lock the owning
+   Alarm before reading lifecycle eligibility and keep evidence, Alarm snapshot and event
+   writes in one REQUIRED transaction. Direct acknowledgement/closure/shelving adapter
+   saves enforce the same operation, not a bypass and not a duplicate orchestration.
+   For existing evidence identity, exact replay is a no-op with no second event; changed
+   immutable acknowledgement/closure evidence is rejected. Evidence adapters own the
+   write operation; services load/guard and delegate, without separately appending the
+   same action. Lifecycle event IDs derived from operation/evidence identity and the
+   existing event primary key protect retries. Event persistence flushes before success;
+   any failure rolls back the entire operation.
+5. HMR-104 loads/fails closed on missing or terminal Alarm, updates acknowledgedAt,
+   acknowledgedByActorId, lastUpdatedAt and updatedAt, and writes one ACKNOWLEDGED
+   action event. RAISED/ACTIVE/ACKNOWLEDGED move to ACKNOWLEDGED; existing CLEARED,
+   ESCALATED, SHELVED or SUPPRESSED state remains meaningful while acknowledgement
+   snapshots advance. Do not reopen a cleared Alarm or drop a visibility overlay.
+   The event's previous/new states record the actual states even for a same-state action.
+   CLOSED/CANCELLED or populated closedAt deny fresh acknowledgement. Multiple fresh
+   acknowledgement evidence IDs remain legal; no UNIQUE(alarm_id) on that table.
+6. HMR-105 loads/locks Alarm, rejects an existing closure and terminal Alarm, and requires
+   actual clear evidence for normal closure: CLEARED state or populated clearedAt.
+   ESCALATED alone is not a clear-before-close exception. CANCELLED closure is the sole
+   DDD exception and sets AlarmState.CANCELLED; other closures set CLOSED. Set closedAt,
+   lastUpdatedAt and updatedAt and append one CLOSED or CANCELLED event as appropriate.
+   Persist one closure with UNIQUE(alarm_id); concurrent attempts cannot both succeed.
+   Do not invent a mandatory requiresReview-to-workflow coupling or closure reason family.
+   Clearing/escalation endpoints are not introduced. Closing a shelved/suppressed record
+   with clear evidence is legal; later visibility release/expiry must not reopen it.
+7. HMR-106's explicit eligibility policy admits RAISED, ACTIVE, ACKNOWLEDGED or ESCALATED
+   only while nonterminal and without clearedAt or closedAt. CLEARED, CLOSED, CANCELLED,
+   existing SHELVED and SUPPRESSED deny fresh shelving. This is the proposed narrow
+   active/open policy, not a claim that the old review already specified this exact matrix.
+   Validate shelving reason and shelvedUntil > shelvedAt intrinsically and in PostgreSQL.
+   Serialize creation under the Alarm lock and a partial unique index on ACTIVE alarm_id.
+   Set currentState=SHELVED, lastUpdatedAt/updatedAt, and append one SHELVED event.
+8. Explicit unshelve checks the locked Alarm/evidence relationship and ACTIVE status.
+   Finish the shelving with COMPLETED, actual unshelvedAt and supplied trusted actor,
+   updating Alarm and appending exactly one UNSHELVED action event. Restore from the
+   authoritative SHELVED event's previousState, with later cleared/acknowledged/closed
+   evidence taking precedence; never guess a historical previousState or synthesize an
+   event. Preserve terminal or subsequently changed state. Fresh rows always have a
+   source event; missing legacy source evidence fails closed if restoration needs it.
+   Event metadata may carry evidence identity without changing the field shape.
+9. Add a scheduled server-owned shelving expiry trigger and a proxyable transactional
+   per-record orchestrator. Select candidates with status ACTIVE and shelvedUntil <= asOf,
+   then lock Alarm followed by shelving and recheck due/status. Mark EXPIRED, record
+   unshelvedAt=shelvedUntil and the server-owned scheduler actor, update lastUpdatedAt
+   consistently without moving it backwards, and append one UNSHELVED action event at
+   the contractual due instant. Delayed evaluation retains the due instant as evidence.
+   Retries, two workers and manual-unshelve races yield one finish/event. Closed/cancelled
+   Alarm state remains terminal. This is bounded scheduler evaluation, not a guarantee
+   that a stopped process executes a job at an exact wall-clock nanosecond.
+10. All admitted Alarm lifecycle writers use a common Alarm-first lock order, followed by
+    own evidence row and catalog locks as needed. Narrow suppression changes only
+    coordinate its existing create/release/expiry writes with this order and reject fresh
+    ALARM-scoped suppression while ACTIVE shelving exists, preventing conflicting
+    visibility overlays. Shelving likewise denies an ACTIVE ALARM-scoped suppression.
+    Broad-scope suppression, Workflow approval, Audit evidence and established expiry
+    policy remain intact. No suppression feature redesign is admitted. Recheck under
+    lock after candidate discovery; never hold a shelving/suppression lock and then wait
+    for Alarm. Regression tests must prove existing suppression behavior and terminal
+    preservation, plus overlap/race denial.
+11. Add only forward 022/023/024 below. Validate existing required titles/families,
+    duplicate RAISED events, duplicate closures, shelving interval/family/ACTIVE
+    duplicates and dangling same-module references before constraints. Fail closed on
+    violations with actionable diagnostics; do not rewrite historical data, fabricate
+    missing lifecycle events, clear timestamps or actors, or seed guessed classifications.
+    Preserve valid legacy snapshots and event gaps as history; fresh admitted writes
+    establish lifecycle evidence. Append-only event guards reject update/delete/truncate.
+    Do not promise arbitrary raw SQL has application actor/eligibility evidence.
+12. Cross-module references remain neutral scalars/snapshots. These reviewed lifecycle
+    operations depend on the own Alarm/catalog and security actor boundary; they do not
+    decide from live Monitoring/Telemetry/Planning/Topology/Organization/Workflow/Incident
+    facts, so no new owner lookup is invented merely to refresh a snapshot. In particular,
+    optional reviewWorkflowInstanceId does not become an approval prerequisite. Do not
+    invoke NoopAlarmExternalReferenceResolver as validation evidence. Any implementation
+    needing an actual live owner fact must stop and separately register that contract.
+    No private-module imports, cross-module FKs, OT actuation, POM/version change,
+    API route expansion or HMR-080 work is admitted.
+
+### Independent exact scopes and semantic messages
+
+These lists supersede the legacy write allowlists only after ALRM-PREREQ-01 acceptance.
+Each list is exhaustive; listed files may be created/updated as necessary, no others.
+Canonical memory updates in each semantic commit record that HMR independently.
+The legacy DDD/register are supporting evidence and are not rewritten by this batch.
+
+#### HMR-100 — fix(alarm): remediate semantic review Alarm
+
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `doc/model-remediation/RECONCILIATION.md`
+- `src/main/java/dz/sh/hidra/modules/alarm/application/service/AlarmApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/alarm/application/port/out/AlarmRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/alarm/application/port/out/AlarmLifecycleEventRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/alarm/application/port/out/AlarmLifecycleActorPort.java`
+- `src/main/java/dz/sh/hidra/modules/alarm/domain/model/Alarm.java`
+- `src/main/java/dz/sh/hidra/modules/alarm/domain/model/AlarmLifecycleEvent.java`
+- `src/main/java/dz/sh/hidra/modules/alarm/domain/service/AlarmLifecycleGuard.java`
+- `src/main/java/dz/sh/hidra/modules/alarm/infrastructure/security/AlarmLifecycleActorAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/alarm/infrastructure/persistence/adapter/JpaAlarmRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/alarm/infrastructure/persistence/adapter/JpaAlarmLifecycleEventRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/alarm/infrastructure/persistence/validation/AlarmCatalogValidation.java`
+- `src/main/java/dz/sh/hidra/modules/alarm/infrastructure/persistence/entity/AlarmLifecycleEventJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/alarm/infrastructure/persistence/mapper/AlarmPersistenceMapper.java`
+- `src/main/java/dz/sh/hidra/modules/alarm/infrastructure/persistence/repository/AlarmJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/alarm/infrastructure/persistence/repository/AlarmCatalogEntryJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/alarm/infrastructure/persistence/repository/AlarmLifecycleEventJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/alarm/infrastructure/persistence/repository/AlarmSuppressionJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/alarm/infrastructure/service/AlarmSuppressionApplicationAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/alarm/infrastructure/scheduling/AlarmSuppressionExpiryOrchestrator.java`
+- `src/test/java/dz/sh/hidra/modules/alarm/semantic/AlarmSemanticRemediationTest.java`
+- `src/test/java/dz/sh/hidra/modules/alarm/infrastructure/persistence/AlarmSemanticPostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/alarm/infrastructure/security/AlarmLifecycleActorAdapterTest.java`
+- `src/test/java/dz/sh/hidra/modules/alarm/infrastructure/service/AlarmSuppressionApplicationAdapterTest.java`
+- `src/test/java/dz/sh/hidra/modules/alarm/infrastructure/scheduling/AlarmSuppressionExpiryOrchestratorTest.java`
+- `src/main/resources/db/migration/V20261008_022__hmr_100_alarm_lifecycle_integrity.sql`
+
+#### HMR-104 — fix(alarm): remediate semantic review AlarmAcknowledgement
+
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `doc/model-remediation/RECONCILIATION.md`
+- `src/main/java/dz/sh/hidra/modules/alarm/application/service/AlarmApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/alarm/domain/model/Alarm.java`
+- `src/main/java/dz/sh/hidra/modules/alarm/application/port/out/AlarmAcknowledgementRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/alarm/infrastructure/persistence/adapter/JpaAlarmAcknowledgementRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/alarm/infrastructure/persistence/repository/AlarmAcknowledgementJpaRepository.java`
+- `src/test/java/dz/sh/hidra/modules/alarm/semantic/AlarmAcknowledgementSemanticRemediationTest.java`
+- `src/test/java/dz/sh/hidra/modules/alarm/infrastructure/persistence/AlarmAcknowledgementSemanticPostgresIntegrationTest.java`
+
+#### HMR-105 — fix(alarm): remediate semantic review AlarmClosure
+
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `doc/model-remediation/RECONCILIATION.md`
+- `src/main/java/dz/sh/hidra/modules/alarm/application/service/AlarmApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/alarm/domain/model/Alarm.java`
+- `src/main/java/dz/sh/hidra/modules/alarm/domain/service/AlarmLifecycleGuard.java`
+- `src/main/java/dz/sh/hidra/modules/alarm/application/port/out/AlarmClosureRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/alarm/infrastructure/persistence/adapter/JpaAlarmClosureRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/alarm/infrastructure/persistence/repository/AlarmClosureJpaRepository.java`
+- `src/test/java/dz/sh/hidra/modules/alarm/semantic/AlarmClosureSemanticRemediationTest.java`
+- `src/test/java/dz/sh/hidra/modules/alarm/infrastructure/persistence/AlarmClosureSemanticPostgresIntegrationTest.java`
+- `src/main/resources/db/migration/V20261008_023__hmr_105_alarm_closure_integrity.sql`
+
+#### HMR-106 — fix(alarm): remediate semantic review AlarmShelving
+
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `doc/model-remediation/RECONCILIATION.md`
+- `src/main/java/dz/sh/hidra/modules/alarm/application/port/in/ManageAlarmShelvingUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/alarm/application/port/out/AlarmShelvingRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/alarm/application/service/AlarmShelvingApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/alarm/domain/model/AlarmShelving.java`
+- `src/main/java/dz/sh/hidra/modules/alarm/domain/policy/AlarmShelvingPolicy.java`
+- `src/main/java/dz/sh/hidra/modules/alarm/infrastructure/persistence/adapter/JpaAlarmShelvingRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/alarm/infrastructure/persistence/validation/AlarmCatalogValidation.java`
+- `src/main/java/dz/sh/hidra/modules/alarm/infrastructure/persistence/repository/AlarmShelvingJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/alarm/infrastructure/scheduling/AlarmShelvingExpiryJob.java`
+- `src/main/java/dz/sh/hidra/modules/alarm/infrastructure/scheduling/AlarmShelvingExpiryOrchestrator.java`
+- `src/test/java/dz/sh/hidra/modules/alarm/semantic/AlarmShelvingSemanticRemediationTest.java`
+- `src/test/java/dz/sh/hidra/modules/alarm/infrastructure/persistence/AlarmShelvingSemanticPostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/alarm/infrastructure/scheduling/AlarmShelvingExpiryJobTest.java`
+- `src/test/java/dz/sh/hidra/modules/alarm/infrastructure/scheduling/AlarmShelvingExpiryOrchestratorTest.java`
+- `src/main/resources/db/migration/V20261008_024__hmr_106_alarm_shelving_integrity.sql`
+
+HMR-100 owns creation/title/catalog/event machinery and the narrow suppression lock
+coordination. HMR-104 owns acknowledgement service/adapter/snapshot behavior.
+HMR-105 owns closure service/adapter/snapshot/eligibility and uniqueness.
+HMR-106 owns shelving/unshelving/expiry and extends the existing own catalog validator
+only with SHELVING_REASON. The shared mapper/event/lock interfaces are prepared by
+HMR-100 for these exact downstream operations; their presence is not early completion
+of a downstream HMR.
+
+### Forward migration authorization proposed
+
+| HMR | Forward migration | Required behavior |
+|---|---|---|
+| HMR-100 | `V20261008_022__hmr_100_alarm_lifecycle_integrity.sql` | Required title, exact type/severity/optional priority families with metadata race guards, append-only lifecycle history and fresh initial-event uniqueness; preserve published local FKs and valid history. |
+| HMR-104 | None | Existing own Alarm FK suffices; acknowledgement multiplicity remains legal. Runtime transaction/lock/event coherence is mandatory. |
+| HMR-105 | `V20261008_023__hmr_105_alarm_closure_integrity.sql` | Fail on existing duplicate closures; install one-closure-per-Alarm uniqueness without deleting/merging evidence. |
+| HMR-106 | `V20261008_024__hmr_106_alarm_shelving_integrity.sql` | Fail on invalid intervals/families/ACTIVE duplicates; intrinsic interval and partial ACTIVE uniqueness plus used shelving-family guards. |
+
+All filenames are under `src/main/resources/db/migration/`. Existing published SQL
+remains byte-for-byte unchanged, including the HMR-094/103 policy/integrity migrations.
+An empty database does not justify guessed production catalog provisioning. Deployment
+against invalid historical records intentionally stops for owner remediation outside
+this implementation; no migration silently manufactures missing evidence.
+
+### Admitted validation proposal
+
+Run compile and each HMR's focused test independently after preparing that HMR:
+
+- `./mvnw -q -DskipTests compile`
+- `./mvnw -q -Dtest=AlarmSemanticRemediationTest test`
+- `./mvnw -q -Dtest=AlarmAcknowledgementSemanticRemediationTest test`
+- `./mvnw -q -Dtest=AlarmClosureSemanticRemediationTest test`
+- `./mvnw -q -Dtest=AlarmShelvingSemanticRemediationTest test`
+
+On the final exact tree run:
+
+- `./mvnw -q -Dtest=AlarmLifecycleActorAdapterTest,AlarmSuppressionApplicationAdapterTest,AlarmSuppressionExpiryOrchestratorTest,AlarmSuppressionPolicyTest,AlarmSuppressionApprovalServiceTest,AlarmSuppressionPersistenceMigrationTest,SpringAlarmControllerActorAttributionTest,AlarmRestMapperTest,AlarmSuppressionControllerTest,AlarmSuppressionRoutePermissionTest,AlarmShelvingExpiryJobTest,AlarmShelvingExpiryOrchestratorTest test`
+- `./mvnw -q -Dtest=AlarmSemanticPostgresIntegrationTest,AlarmAcknowledgementSemanticPostgresIntegrationTest,AlarmClosureSemanticPostgresIntegrationTest,AlarmShelvingSemanticPostgresIntegrationTest test`
+- `./mvnw -q -Dtest=ArchitectureGuardrailTest,ForensicRemediationClosureTest test`
+- `./mvnw -q test`
+- `./mvnw -q clean verify`
+- `git diff --check` for each prepared semantic diff.
+
+Focused tests must cover correct/incorrect family, missing/blank title, optional priority,
+unchanged snapshots, one initial event, actor attribution, unknown/terminal Alarm denial,
+repeated legal acknowledgements, visibility/clear/escalation preservation, clear versus
+cancel closure, duplicate closure, strict shelving interval, exact eligibility matrix,
+active overlap, manual finish and deterministic due boundary.
+
+PostgreSQL/Spring-JPA tests must invoke the actual transactional service proxies and
+direct adapters, flush the real Alarm/evidence/event writes, inject event failure and
+prove complete rollback. Migration cases test valid history retention, invalid title/family,
+duplicate initial events/closures/ACTIVE shelving and malformed intervals causing abort,
+retry after independently supplied valid owner data, published migration immutability,
+append-only update/delete/truncate denial and nullable own-reference integrity. Do not
+execute guessed automatic fixes as retry setup.
+
+Race cases require two real transactions/connections: ack versus close; close versus
+close; shelve versus shelve; expiry versus explicit unshelve; two expiry workers;
+shelving versus ALARM-scoped suppression; suppression release/expiry versus lifecycle
+writes; and catalog family mutation/delete versus target writes. Verify evidence/event
+cardinality, terminal preservation, lock-order completion and absence of partial state.
+An in-memory fake or a test that only searches SQL strings is not runtime race evidence.
+
+No new exported owner package is proposed. Both architecture suites must still prove
+module ownership and application-to-infrastructure isolation. Current security attribution
+and prior suppression approval/Audit tests are regression gates, not live owner facts
+fabricated by a permissive stub.
+
+This preflight is documentation-only: no production Maven/JUnit/Spring/PostgreSQL
+execution is needed or claimed for it. Exact-head CI #600 is prior production evidence,
+not execution of the proposed Alarm tests. Reassess local Java/Maven/dependency/DNS/
+Docker/PostgreSQL availability at implementation time and report actual limitations.
+
+### Publication and next owner action
+
+Validate the two-document diff and all canonical Markdown using the documentation
+workflow's exact checks; publish only this supporting commit to main under the
+`0cc3e5c6c4b675880a634b3a073905f4119a36b7` lease, compare its immutable tree/blobs,
+confirm Documentation Validation starts and STOP without waiting for completion.
+Production CI ignores documentation-only pushes; do not falsely claim a new production
+run for this preflight.
+
+Next after owner acceptance: execute the four independent semantic commits above,
+observe production CI start and STOP. A Fail diagnoses and repairs its responsible
+scope before any further task. HPR-P2-008 remains open, HMR-080 remains separately
+owner-contract blocked, project version remains 0.6.0-SNAPSHOT, and no physical
+survivability evidence or phase closure is claimed. No release/version action or later
+batch is included.
+
+Pre-publication validation: all 82 canonical Markdown files passed nonempty and
+merge-conflict-marker checks against the prepared tree; the actual two-file Git diff
+passed `git diff --check` (exit 0). Exact independent scope/message/forward-name
+checks passed. No production source changed and no proposed Alarm runtime test ran.

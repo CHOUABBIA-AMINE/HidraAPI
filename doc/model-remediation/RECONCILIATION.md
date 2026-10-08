@@ -83,7 +83,7 @@ No `party.application.contract.planning` package exists in the exact current tre
 | HMR-054 | HMSR-063 | topology.Equipment | COMPLETED — HPR-P2-008 | EquipmentType identity/code is sole active classification; EquipmentKind deleted from domain/JPA; forward V20261006_009 preserves legacy strings, rejects conflicting classification/orphan attachments and adds nullable same-module FKs; manufacturer checked by existing Party contract; snapshots preserved; focused tests added; CI pending. |
 | HMR-055 | HMSR-064 | workflow.WorkflowInstance | COMPLETED — CI #581 GREEN | Owner-bound starts enforce active definition/version and exact binding, governed purpose/type, current-step coherence and owner target/actor snapshots; nonterminal uniqueness and same-definition/version database guards. Planning target registry denies unsupported/ambiguous owners. Eight focused behavior checks passed with temporary stubs; local Maven blocked by uncached parent, not a JUnit/PostgreSQL pass. |
 | HMR-056 | HMSR-067 | integration.IntegrationExchangeMessage | IMPLEMENTED — CI #585 PASSED | Optional run/endpoint existence, correlated endpoint/system ownership and active exact existing MESSAGE_TYPE/PAYLOAD_FORMAT catalogs enforced on saves. Forward V20261007_010 adds nullable/composite FKs and catalog guards without rewriting legacy evidence. Five dedicated and five PostgreSQL cases prepared. Local compile/focused Maven blocked before execution by uncached Boot parent; CI pending. |
-| HMR-057 | HMSR-068 | reporting.ReportRun | IMPLEMENTED — CI PENDING | Queue eligibility/access/approval, exact template lineage, concrete required parameters and terminal evidence enforced. Forward 012 corrects run/parameter request FKs and guards lineage/history. Eight Run, four QueueEvidence and nine PostgreSQL cases prepared; local runtime validation follows; CI pending. |
+| HMR-057 | HMSR-068 | reporting.ReportRun | IMPLEMENTED — CI #588 GREEN | Queue eligibility/access/approval, exact template lineage, concrete required parameters and terminal evidence enforced. Forward 012 corrects run/parameter request FKs and guards lineage/history. Eight Run, four QueueEvidence and nine PostgreSQL cases prepared; local runtime validation follows; Full production CI #588 passed. |
 | HMR-058 | HMSR-069 | risk.RiskAssessment | STILL REQUIRED | no migration registered; dedicated test: absent; revalidate obligations before mutation |
 | HMR-059 | HMSR-071 | leakdetection.LeakEscalationReference | COMPLETED — HPR-P2-008 | Optional candidate validated before save and protected by V20261006_001 nullable same-module FK with fail-closed orphan preflight; no case-primary equality rule. |
 | HMR-060 | HMSR-072 | notification.NotificationDeliveryAttempt | COMPLETED — HPR-P2-008 | Channel/message composite FK; create-only EntityManager.persist plus PK race protection; update/delete/truncate rejected; permanent/cancelled automatic retry rejected; V20261006_006; dedicated unit and PostgreSQL tests added. |
@@ -104,8 +104,8 @@ No `party.application.contract.planning` package exists in the exact current tre
 | HMR-075 | HMSR-089 | organization.OrganizationHierarchySnapshot | COMPLETED — HPR-P2-008 | JPA captured_by_employee_id is mandatory; V20261006_003 aborts on legacy null rows before SET NOT NULL; existing same-module FK preserved; real PostgreSQL focused tests added. |
 | HMR-076 | HMSR-090 | organization.ShiftAssignment | COMPLETED — HPR-P2-008 | JPA organization_unit_id is mandatory; V20261006_004 aborts on legacy null rows before SET NOT NULL; existing same-module FK preserved; real PostgreSQL focused tests added. |
 | HMR-077 | HMSR-091 | risk.RiskEvidenceLink | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
-| HMR-078 | HMSR-092 | simulation.SimulationCandidateChange | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
-| HMR-079 | HMSR-093 | simulation.SimulationRecommendation | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
+| HMR-078 | HMSR-092 | simulation.SimulationCandidateChange | BLOCKED | SIM-PREREQ-01: owner target/audit interfaces and adapted write scope require admission; Batch 13 preflight below. |
+| HMR-079 | HMSR-093 | simulation.SimulationRecommendation | BLOCKED | SIM-PREREQ-01: owner target/audit interfaces and adapted write scope require admission; Batch 13 preflight below. |
 | HMR-080 | HMSR-094 | planning.Nomination | BLOCKED — OWNER CONTRACT REQUIRED | registered migration: absent; dedicated test: absent; Party→Planning contract absent |
 | HMR-081 | HMSR-095 | workflow.WorkflowAction | COMPLETED — CI #581 GREEN | Generic recording permits comments only; configured transitions exclusively produce decisions using live Identity authority. Optional task ownership and conditional evidence are enforced; canonical actor snapshots and server-owned locked sequences replace caller evidence. Action persistence is insert-only with unique monotonic sequence and immutable database guards. Five focused behavior checks passed with temporary stubs; existing permission regression fixture updated. |
 | HMR-082 | HMSR-096 | hse.HseCase | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
@@ -119,7 +119,7 @@ No `party.application.contract.planning` package exists in the exact current tre
 | HMR-090 | HMSR-107 | incident.IncidentClosure | STILL REQUIRED | no migration registered; dedicated test: absent; revalidate obligations before mutation |
 | HMR-091 | HMSR-108 | incident.IncidentRelatedIncident | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-092 | HMSR-109 | incident.IncidentResponseAction | STILL REQUIRED | no migration registered; dedicated test: absent; revalidate obligations before mutation |
-| HMR-093 | HMSR-110 | reporting.ReportOutputArtifact | IMPLEMENTED — CI PENDING | Existing run and nonblank Documents reference evidence required; every supplied reference is independently owner-validated. Forward 013 corrects artifact/run FK without Documents FK. Six focused methods, one Documents owner method and five additional PostgreSQL cases prepared; CI pending. |
+| HMR-093 | HMSR-110 | reporting.ReportOutputArtifact | IMPLEMENTED — CI #588 GREEN | Existing run and nonblank Documents reference evidence required; every supplied reference is independently owner-validated. Forward 013 corrects artifact/run FK without Documents FK. Six focused methods, one Documents owner method and five additional PostgreSQL cases prepared; Full production CI #588 passed. |
 | HMR-094 | HMSR-111 | planning.PlanTarget | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
 | HMR-095 | HMSR-112 | audit.AuditEvent | COMPLETED — CI #584 GREEN | Required source/target module and target type, active exact event/category/optional severity/reason families, bounded sanitized payload/free text and persist/flush insertion enforced. Forward V20261007_007 adds optional catalog FKs, family guards and immutable event UPDATE/DELETE denial. Five focused and four added PostgreSQL/JPA/concurrency checks prepared; local focused Maven blocked by uncached Boot parent; CI #584 passed. |
 | HMR-096 | HMSR-113 | hse.HseClosure | STILL REQUIRED | registered migration: absent; dedicated test: absent; revalidate obligations before mutation |
@@ -140,9 +140,9 @@ No `party.application.contract.planning` package exists in the exact current tre
 - HMR-005 corrected from stale planned status to **COMPLETED**;
 - HMR-009 confirmed **COMPLETED** and removed as a carry-over blocker;
 - HMR-050..106 evaluated: **57**;
-- HMR-050..106 **STILL REQUIRED**: **21**;
-- HMR-050..106 **BLOCKED**: **1**;
-- HMR-050..106 **IMPLEMENTED during HPR-P2-008**: **35** (two Batch 12 items CI pending; previous 33 green through #585);
+- HMR-050..106 **STILL REQUIRED**: **19**;
+- HMR-050..106 **BLOCKED**: **3**;
+- HMR-050..106 **IMPLEMENTED during HPR-P2-008**: **35** (all CI-confirmed through #588);
 - HMR-050..106 **SUPERSEDED**: **0**;
 - HMR-054 completed; repaired CI #575 is green;
 - HMR-080 remains blocked; HMR-055 prerequisite resolved and implemented in Batch 7.
@@ -151,7 +151,7 @@ No `party.application.contract.planning` package exists in the exact current tre
 
 - HMR-050 — **COMPLETED** at the first HPR-P2-008 execution step.
 - Batch 7 **COMPLETED — CI #581 GREEN**: HMR-055, 061, 066, 081, 099; exact repaired head ec63af0414d7fa85b9200d4bd181ac799bd072ed. Batch 8 preflight split below; no Planning implementation claimed.
-- Current remaining: **21 STILL REQUIRED + 1 BLOCKED (HMR-080)**; 35 implementations, including two Batch 12 items awaiting full CI.
+- Current remaining: **19 STILL REQUIRED + 3 BLOCKED (HMR-078, HMR-079, HMR-080)**; 35 CI-confirmed implementations.
 
 - HMR-051 — **COMPLETED**: Topology and optional Organization references validated on every case save; snapshot preserved; no migration because primary-candidate FK already exists; owner contract and architecture export added.
 
@@ -1745,3 +1745,107 @@ and rejection of two fields. This is not Mockito/JUnit/Spring/JPA runtime verifi
 Focused Maven test is blocked before execution by uncached offline Boot 4.1.1 parent.
 Replacement full CI remains pending. Confirm it started, then stop until `next` or `fail`.
 Batch 13 HMR-078/HMR-079 remains gated on green production CI.
+
+## HPR-P2-008 Batch 13 Simulation prerequisite preflight — 2026-10-08
+
+Owner `next` selects proposed HMR-078/HMSR-092 followed by HMR-079/HMSR-093.
+Exact main d843015b362abbc6929a6de03a8578d907d8fdfb is green in production CI #588
+(run 37754846776). Batch 12's two implementations and both fixture repairs are now
+CI-confirmed. There are 35 implemented subjects with green production verification.
+No Batch 13 production mutation is performed in this preflight.
+
+### SIM-PREREQ-01 — concrete live owner-boundary and write-scope gap
+
+AGENTS.md section 3.2.9 states: "If an HMR reveals an unregistered prerequisite, SCC
+complication, owner-contract gap, cross-module lifecycle dependency, migration-order
+conflict, or materially larger semantic redesign, split it out and stop before mutating
+that HMR." The live evidence requires admission before semantic implementation:
+
+- HMR-078 requires PIPELINE/SEGMENT/FACILITY/EQUIPMENT/NODE/CONNECTION target validation.
+  Existing SimulationTopologyScopeContract/TopologySimulationScopeQueryService resolves
+  only PIPELINE_SYSTEM and PIPELINE as model scopes with ACTIVE eligibility; it is not
+  a candidate-target contract. Extending its model-scope vocabulary implicitly would
+  change another semantic task. Topology owns the relevant repositories, including
+  PipelineSegmentJpaRepository and TopologyNodeJpaRepository where public domain ports
+  are absent. Simulation must not import these private persistence types.
+- JpaSimulationCandidateChangeRepositoryAdapter currently maps and saves without catalog
+  family or target lookup. Domain targetType/afterValue normalize blank to null. Existing
+  HRA-111 parent candidate and generic change-type FKs are present and should be retained.
+- SimulationApplicationService publishes PUBLISHED records directly. It has no Audit
+  publication interface, catalog checks or optional candidate validation. Its path is
+  absent from HMR-079's original exact list, despite the required publication correction.
+  Both recommendation repositories currently admit generic saves without audit evidence.
+- Recommendation run/type FKs exist. Optional candidate/confidence FKs are absent. Title,
+  description and createdAt are not domain-guarded. Simulation catalog active/family fields
+  and Audit-owned RecordAuditEventUseCase/AuditInputPolicy already exist for reuse.
+- Audit exports Organization, Alarm and Risk-specific contracts, but no Simulation contract.
+  RiskRegisterAuditContractAdapter demonstrates active EVENT_TYPE/EVENT_CATEGORY resolution
+  and delegation to Audit-owned event recording. No provisioned Simulation publication
+  EVENT_TYPE was found; missing taxonomy must fail closed, not silently omit evidence.
+- Latest migration is V20261007_013. Unexecuted V20261004_078/079 registrations are
+  backdated relative to published history and must be replaced with forward versions.
+
+### Concrete proposal for owner acceptance
+
+1. Admit attached 078 -> 079 with independent exact semantic messages, source reviews,
+   tests and statuses. Preserve the descriptive no-actuation boundary and existing
+   PUBLISHED lifecycle; introduce no adoption workflow, solver policy or field command.
+2. Add distinct Topology-owned application.contract.simulation.SimulationTopologyTargetContract
+   with scalar type/ID existence resolution, implemented inside Topology through its own
+   six repositories. Supported exact types are PIPELINE, SEGMENT, FACILITY, EQUIPMENT,
+   NODE and CONNECTION. Missing/unsupported/blank targets fail closed. Existence is the
+   admitted rule; no unstated ACTIVE lifecycle rule or new snapshots are imposed. Leave
+   model-scope resolution unchanged. The existing exported Topology package suffices.
+3. Enforce nonblank targetType/afterValue in the change domain and active exact
+   SIMULATION_CHANGE_TYPE at the write boundary. Retain the parent candidate FK; add
+   field/family SQL integrity with fail-closed legacy preflight in
+   V20261008_001__hmr_078_simulation_candidate_change_integrity.sql. Topology stays scalar,
+   with no foreign-module FK. Catalog eligibility applies to new/reference-changing use;
+   historical inactive catalog records are not rewritten. Lock catalog reads to serialize
+   concurrent eligibility changes; preserve family coherence of referenced catalog rows.
+4. Enforce recommendation title/description/createdAt before persistence. Require active
+   exact SIMULATION_RECOMMENDATION_TYPE and, when supplied, SIMULATION_CONFIDENCE_LEVEL;
+   resolve optional candidate fail closed. Add nullable local candidate/confidence FKs,
+   required-field/family guards and legacy abort in
+   V20261008_002__hmr_079_simulation_recommendation_integrity.sql. Do not invent candidate/run
+   equality or completed-run prerequisites absent from HMSR-093.
+5. Add Audit-owned application.contract.simulation.SimulationRecommendationAuditContract
+   and an Audit integration adapter. Scalar publication evidence includes recommendation,
+   run, optional candidate, type, actor when supplied and actual publication time. Keep
+   publisher optional, never invent an actor, and use AuditInputPolicy for emitted content.
+   Include no raw credentials, tokens or unrestricted sensitive description payloads.
+6. Use an explicit transactional publication operation that persists/flushes a new
+   PUBLISHED recommendation and invokes that Audit owner interface in the same transaction.
+   Generic save must not create or transition into PUBLISHED without this path. Missing
+   taxonomy, denied references or Audit failure rolls publication back. No REQUIRES_NEW,
+   asynchronous best-effort logging, fabricated historical publication or duplicate-audit
+   guarantee is substituted for successful publication evidence. Keep existing lifecycle
+   states and optional export metadata. Compatibility constructors lacking the new owner
+   dependency must fail closed for publication.
+7. Provision active Audit EVENT_TYPE/SIMULATION_RECOMMENDATION_PUBLISHED and reuse or
+   provision EVENT_CATEGORY/BUSINESS through Audit-owned forward
+   V20261008_003__provision_simulation_recommendation_audit_taxonomy.sql, following the
+   existing Risk creation taxonomy pattern. Conflicting/inactive owner taxonomy requires
+   reconciliation rather than automatic reactivation. Preserve all published SQL bytes.
+8. After acceptance, register exhaustive independent exact paths before mutation:
+   078 domain/repository adapter/port as needed, Simulation catalog query, new Topology
+   target contract and owner adapter, focused change/owner tests and forward 001;
+   079 domain/publication port/adapter/service and affected fixtures, new Audit contract,
+   package-info/integration adapter and owner tests, both architecture export registries,
+   recommendation and transactional PostgreSQL tests, forward 002/003. Shared progress
+   scope is canonical roadmaps/reconciliation, legacy semantic register and Simulation/Audit
+   data definitions. No unlisted production paths or release changes are implied.
+9. Validate required fields, every supported/missing/unsupported target, exact catalog
+   family/eligibility, optional reference behavior, actual successful Audit emission,
+   generic-publication rejection and transactional rollback. PostgreSQL tests cover local
+   FKs, invalid legacy abort without fabricated repair and relevant concurrent catalog/
+   publication writers. Run focused/existing/architecture/full verify and report actual
+   dependency/runtime limits. Confirm final production CI started and stop.
+
+Disposition: HMR-078 and HMR-079 BLOCKED pending SIM-PREREQ-01 acceptance/exhaustive admission.
+Current totals: 35 CI-confirmed implementations, 19 still required, three blocked
+(HMR-078, HMR-079, HMR-080). This preflight changes only Ultimate Roadmap and canonical
+RECONCILIATION.md. Exact supporting commit: `docs(simulation): record Batch 13 execution preflight`.
+Documentation validation is the applicable CI for this docs-only commit; no production
+verification is claimed for unimplemented Batch 13 work. Next action: accept or amend this
+concrete proposal, then admit exhaustive scopes and implement 078/079 in individual commits.

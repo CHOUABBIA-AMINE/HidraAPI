@@ -2372,3 +2372,107 @@ and rejection of two fields. This is not Mockito/JUnit/Spring/JPA runtime verifi
 Focused Maven test is blocked before execution by uncached offline Boot 4.1.1 parent.
 Replacement full CI remains pending. Confirm it started, then stop until `next` or `fail`.
 Batch 13 HMR-078/HMR-079 remains gated on green production CI.
+
+## HPR-P2-008 Batch 13 Simulation prerequisite preflight — 2026-10-08
+
+Owner `next` selects proposed HMR-078/HMSR-092 followed by HMR-079/HMSR-093.
+Exact main d843015b362abbc6929a6de03a8578d907d8fdfb is green in production CI #588
+(run 37754846776). Batch 12's two implementations and both fixture repairs are now
+CI-confirmed. There are 35 implemented subjects with green production verification.
+No Batch 13 production mutation is performed in this preflight.
+
+### SIM-PREREQ-01 — concrete live owner-boundary and write-scope gap
+
+AGENTS.md section 3.2.9 states: "If an HMR reveals an unregistered prerequisite, SCC
+complication, owner-contract gap, cross-module lifecycle dependency, migration-order
+conflict, or materially larger semantic redesign, split it out and stop before mutating
+that HMR." The live evidence requires admission before semantic implementation:
+
+- HMR-078 requires PIPELINE/SEGMENT/FACILITY/EQUIPMENT/NODE/CONNECTION target validation.
+  Existing SimulationTopologyScopeContract/TopologySimulationScopeQueryService resolves
+  only PIPELINE_SYSTEM and PIPELINE as model scopes with ACTIVE eligibility; it is not
+  a candidate-target contract. Extending its model-scope vocabulary implicitly would
+  change another semantic task. Topology owns the relevant repositories, including
+  PipelineSegmentJpaRepository and TopologyNodeJpaRepository where public domain ports
+  are absent. Simulation must not import these private persistence types.
+- JpaSimulationCandidateChangeRepositoryAdapter currently maps and saves without catalog
+  family or target lookup. Domain targetType/afterValue normalize blank to null. Existing
+  HRA-111 parent candidate and generic change-type FKs are present and should be retained.
+- SimulationApplicationService publishes PUBLISHED records directly. It has no Audit
+  publication interface, catalog checks or optional candidate validation. Its path is
+  absent from HMR-079's original exact list, despite the required publication correction.
+  Both recommendation repositories currently admit generic saves without audit evidence.
+- Recommendation run/type FKs exist. Optional candidate/confidence FKs are absent. Title,
+  description and createdAt are not domain-guarded. Simulation catalog active/family fields
+  and Audit-owned RecordAuditEventUseCase/AuditInputPolicy already exist for reuse.
+- Audit exports Organization, Alarm and Risk-specific contracts, but no Simulation contract.
+  RiskRegisterAuditContractAdapter demonstrates active EVENT_TYPE/EVENT_CATEGORY resolution
+  and delegation to Audit-owned event recording. No provisioned Simulation publication
+  EVENT_TYPE was found; missing taxonomy must fail closed, not silently omit evidence.
+- Latest migration is V20261007_013. Unexecuted V20261004_078/079 registrations are
+  backdated relative to published history and must be replaced with forward versions.
+
+### Concrete proposal for owner acceptance
+
+1. Admit attached 078 -> 079 with independent exact semantic messages, source reviews,
+   tests and statuses. Preserve the descriptive no-actuation boundary and existing
+   PUBLISHED lifecycle; introduce no adoption workflow, solver policy or field command.
+2. Add distinct Topology-owned application.contract.simulation.SimulationTopologyTargetContract
+   with scalar type/ID existence resolution, implemented inside Topology through its own
+   six repositories. Supported exact types are PIPELINE, SEGMENT, FACILITY, EQUIPMENT,
+   NODE and CONNECTION. Missing/unsupported/blank targets fail closed. Existence is the
+   admitted rule; no unstated ACTIVE lifecycle rule or new snapshots are imposed. Leave
+   model-scope resolution unchanged. The existing exported Topology package suffices.
+3. Enforce nonblank targetType/afterValue in the change domain and active exact
+   SIMULATION_CHANGE_TYPE at the write boundary. Retain the parent candidate FK; add
+   field/family SQL integrity with fail-closed legacy preflight in
+   V20261008_001__hmr_078_simulation_candidate_change_integrity.sql. Topology stays scalar,
+   with no foreign-module FK. Catalog eligibility applies to new/reference-changing use;
+   historical inactive catalog records are not rewritten. Lock catalog reads to serialize
+   concurrent eligibility changes; preserve family coherence of referenced catalog rows.
+4. Enforce recommendation title/description/createdAt before persistence. Require active
+   exact SIMULATION_RECOMMENDATION_TYPE and, when supplied, SIMULATION_CONFIDENCE_LEVEL;
+   resolve optional candidate fail closed. Add nullable local candidate/confidence FKs,
+   required-field/family guards and legacy abort in
+   V20261008_002__hmr_079_simulation_recommendation_integrity.sql. Do not invent candidate/run
+   equality or completed-run prerequisites absent from HMSR-093.
+5. Add Audit-owned application.contract.simulation.SimulationRecommendationAuditContract
+   and an Audit integration adapter. Scalar publication evidence includes recommendation,
+   run, optional candidate, type, actor when supplied and actual publication time. Keep
+   publisher optional, never invent an actor, and use AuditInputPolicy for emitted content.
+   Include no raw credentials, tokens or unrestricted sensitive description payloads.
+6. Use an explicit transactional publication operation that persists/flushes a new
+   PUBLISHED recommendation and invokes that Audit owner interface in the same transaction.
+   Generic save must not create or transition into PUBLISHED without this path. Missing
+   taxonomy, denied references or Audit failure rolls publication back. No REQUIRES_NEW,
+   asynchronous best-effort logging, fabricated historical publication or duplicate-audit
+   guarantee is substituted for successful publication evidence. Keep existing lifecycle
+   states and optional export metadata. Compatibility constructors lacking the new owner
+   dependency must fail closed for publication.
+7. Provision active Audit EVENT_TYPE/SIMULATION_RECOMMENDATION_PUBLISHED and reuse or
+   provision EVENT_CATEGORY/BUSINESS through Audit-owned forward
+   V20261008_003__provision_simulation_recommendation_audit_taxonomy.sql, following the
+   existing Risk creation taxonomy pattern. Conflicting/inactive owner taxonomy requires
+   reconciliation rather than automatic reactivation. Preserve all published SQL bytes.
+8. After acceptance, register exhaustive independent exact paths before mutation:
+   078 domain/repository adapter/port as needed, Simulation catalog query, new Topology
+   target contract and owner adapter, focused change/owner tests and forward 001;
+   079 domain/publication port/adapter/service and affected fixtures, new Audit contract,
+   package-info/integration adapter and owner tests, both architecture export registries,
+   recommendation and transactional PostgreSQL tests, forward 002/003. Shared progress
+   scope is canonical roadmaps/reconciliation, legacy semantic register and Simulation/Audit
+   data definitions. No unlisted production paths or release changes are implied.
+9. Validate required fields, every supported/missing/unsupported target, exact catalog
+   family/eligibility, optional reference behavior, actual successful Audit emission,
+   generic-publication rejection and transactional rollback. PostgreSQL tests cover local
+   FKs, invalid legacy abort without fabricated repair and relevant concurrent catalog/
+   publication writers. Run focused/existing/architecture/full verify and report actual
+   dependency/runtime limits. Confirm final production CI started and stop.
+
+Disposition: HMR-078 and HMR-079 BLOCKED pending SIM-PREREQ-01 acceptance/exhaustive admission.
+Current totals: 35 CI-confirmed implementations, 19 still required, three blocked
+(HMR-078, HMR-079, HMR-080). This preflight changes only Ultimate Roadmap and canonical
+RECONCILIATION.md. Exact supporting commit: `docs(simulation): record Batch 13 execution preflight`.
+Documentation validation is the applicable CI for this docs-only commit; no production
+verification is claimed for unimplemented Batch 13 work. Next action: accept or amend this
+concrete proposal, then admit exhaustive scopes and implement 078/079 in individual commits.

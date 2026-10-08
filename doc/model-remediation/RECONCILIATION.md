@@ -106,7 +106,7 @@ No `party.application.contract.planning` package exists in the exact current tre
 | HMR-077 | HMSR-091 | risk.RiskEvidenceLink | COMPLETED — CI #593 GREEN | Typed owner evidence validation and named provider beans verified by Java 21 clean verify and OpenAPI compatibility at cfc7798477c70d10e1c3e0afd4dd7e1b42676898. |
 | HMR-078 | HMSR-092 | simulation.SimulationCandidateChange | COMPLETED — CI #590 GREEN | Accepted SIM-PREREQ-01; required change values, active exact catalog and Topology target lookup; forward 001. |
 | HMR-079 | HMSR-093 | simulation.SimulationRecommendation | COMPLETED — CI #590 GREEN | Required content, exact catalogs, nullable local references and transactional Audit-owned publication; forward 002/003. |
-| HMR-080 | HMSR-094 | planning.Nomination | BLOCKED — PARTY AND PRODUCT/UNIT OWNERSHIP | HMSR-094 revalidated at 74ef372c82a790cdad63a77038fd60afb0de9c44; Party→Planning export absent; product/unit owner unresolved; scenario same-revision reconciliation needed. |
+| HMR-080 | HMSR-094 | planning.Nomination | BLOCKED — NOM-EXEC-01 ENVELOPE PENDING | Owner Apply and next accepts Custody products, Telemetry quantity/rate units and Party references; full solo design/scope/forward migrations registered below; no production implementation. |
 | HMR-081 | HMSR-095 | workflow.WorkflowAction | COMPLETED — CI #581 GREEN | Generic recording permits comments only; configured transitions exclusively produce decisions using live Identity authority. Optional task ownership and conditional evidence are enforced; canonical actor snapshots and server-owned locked sequences replace caller evidence. Action persistence is insert-only with unique monotonic sequence and immutable database guards. Five focused behavior checks passed with temporary stubs; existing permission regression fixture updated. |
 | HMR-082 | HMSR-096 | hse.HseCase | COMPLETED — CI #597 GREEN | Accepted Batch 17 implementation passed full Java 21/PostgreSQL/OpenAPI CI on cfb3681ef1c79b4416336a3533cbc0599b4fd6b2. |
 | HMR-083 | HMSR-097 | audit.AuditExportRequest | COMPLETED — CI #584 GREEN | Required export metadata, active EXPORT_PURPOSE, owner-controlled optional Workflow/Documents references, bounded sanitized filters and one transactional EXPORT access record implemented. Generic writes admit REQUESTED only and persist/flush without merge. Forward V20261007_006; eight focused tests, two owner tests and four PostgreSQL/Spring/JPA tests prepared. Local Maven compile/focused blocked before compilation by uncached Boot 4.1.1 parent; production CI #584 passed. |
@@ -4875,3 +4875,277 @@ Pre-publication validation passed: exact two-document scope, git diff --check,
 and all 82 canonical Markdown UTF-8/nonempty/conflict-marker checks. Production,
 test, migration, API, POM, workflows and legacy evidence are byte-for-byte unchanged.
 No local runtime test or HMR-080 implementation is claimed by this preflight.
+
+## HPR-P2-008 solo HMR-080 ownership acceptance and execution preflight — 2026-10-08
+
+Owner explicitly answered **Apply and next** to the ownership recommendation.
+This ACCEPTS **NOM-OWNER-01**: Custody owns product identities selected from
+hidra_custody_catalog_entry.id; Telemetry owns quantity/rate identities selected from
+hidra_telemetry_unit.id; Party owns shipper/counterparty identities. New/changed
+values require owner-approved eligibility; valid unchanged historical references
+and snapshots remain legal after deactivation. Unit roles/compatibility and historical
+ID mappings require explicit approval rather than name/factor guesses. The optional
+same-revision Scenario edge is reconciled locally; contractReferenceId stays neutral.
+No external enterprise product master was designated. Do not ask for this ownership
+acceptance again. This decision supersedes NOM-OWNER-01's previous ownership blocker.
+
+Exact main remains d073ae13f9a79726f41839c4dec7f49fc6d57f8d, tree
+0c4e346b0cd3f4677dc43a240c654155e18d57a5. Documentation CI #110
+(37834172227) passed. Only two canonical documents changed since repaired production
+74ef372c82a790cdad63a77038fd60afb0de9c44, whose full CI #602 passed.
+Thus the executable baseline remains green and identical. HMSR-094 section 107,
+all seven HMR-080 obligations, Planning DDD 6.5, the current 26-field domain/JPA,
+direct adapter, own-parent/catalog lookups and published SQL were recovered again.
+
+### Prerequisite disposition and next registered execution
+
+The accepted ownership decision is not implemented by a provider yet. The legacy
+scope lacks the Custody/Telemetry/Party exports/providers, owner approval metadata,
+transactional direct-save validation, PostgreSQL tests and architecture/inventory
+reconciliation. Its 20261004 migration would precede the published 20261008_024 tail.
+AGENTS.md section 3.2.9 requires splitting an unregistered owner-contract or
+migration-order prerequisite before production mutation; section 3.1 keeps this solo.
+
+Register **NOM-EXEC-01 — PROPOSED SOLO EXECUTION ENVELOPE** below. This task applies
+the ownership decision and prepares/publishes the complete two-document preflight;
+it does not start production implementation. Owner Next after this published
+preflight selects and accepts the complete solo envelope, including explicit
+mapping-only historical migration and exact scopes/validation, then executes only
+HMR-080. That Next does not reopen NOM-OWNER-01. If scope becomes materially larger
+or actual owner metadata introduces another decision, stop before affected mutation.
+
+Exact semantic commit: `fix(planning): remediate semantic review Nomination`.
+One standalone HMR-080 commit, direct main publication with expected-head lease,
+no PR, no batch, no unrelated semantic completion or phase closure.
+
+### Complete proposed design
+
+1. Preserve all 26 Nomination fields, existing optionality, status enum and API/JPA
+   shape. Require quantity > 0, periodStart < periodEnd, createdAt and updatedAt.
+   Keep the historical HRA-051 marker cohort intact; additional semantic guards
+   are not added as historical marker comments. Do not invent rate positivity,
+   rate/rateUnitId pairing, lifecycle transitions or timestamp ordering obligations.
+2. Make JpaNominationRepositoryAdapter.save proxyable and REQUIRED transactional.
+   Lock an existing Nomination for update, then resolve/lock its mandatory revision
+   and optional scenario using the current shared lookups; supplied scenario must
+   have the same revision. No approved-revision editing rule is invented. Preserve
+   downstream PlanTarget's existing composite Nomination/revision FK and published
+   uq_hmr094_nomination_revision. Code identity is unique per revision, backed by
+   an application check excluding the current ID and a database UNIQUE(revision_id,code).
+3. Require exact NOMINATION_TYPE membership on every save through Planning's locked
+   catalog lookup. New/changed type IDs must be active; unchanged correct-family
+   inactive history remains legal. Reinforce exact family and fresh eligibility in
+   PostgreSQL, with metadata mutation/write race guards. Do not seed catalog values.
+4. Export Custody-owned PlanningProductReferenceContract with optional scalar product
+   identity/code and eligibility evidence. Its own infrastructure provider resolves
+   the actual Custody catalog entry plus explicit Planning-product approval metadata.
+   A generic catalog row alone is not a product approval. Use an empty, owner-approved
+   per-ID product policy rather than inventing PRODUCT_TYPE or Planning catalog families.
+   The approved policy establishes eligibility for Planning consumption; it does not
+   redefine the existing Custody product usages or declare enterprise master ownership.
+5. Export Telemetry-owned PlanningUnitReferenceContract in its existing Planning
+   contract package. Resolve the quantity and optional rate unit together, returning
+   scalar ID/code/symbol/dimension and separate approval/active evidence. Owners
+   approve QUANTITY/RATE consumption roles and explicit quantity/rate ID pairs.
+   This metadata qualifies usage of actual TelemetryUnit identities; it is not a
+   new unit taxonomy. Resolve/lock distinct units in sorted ID order, then roles/
+   pair metadata in a stable order. No conversion is performed. Never infer rate
+   compatibility from a code, dimension label, factor, or matching symbol alone.
+   A supplied rate unit requires an approved pair; a new/changed pair must be active.
+   Only new/changed unit IDs require active unit/role eligibility. A valid unchanged
+   inactive unit may remain when the other reference changes and the owner has
+   explicitly approved the new pair. Missing approvals fail closed.
+6. Export Party-owned PlanningPartyReferenceContract returning optional scalar ID/code.
+   Its own provider uses a shared Party lookup for a new/changed supplied identity.
+   Resolve multiple Party IDs in stable sorted order. Do not require active status,
+   commercial role or contract ownership merely to satisfy existence semantics.
+   A fresh shipper uses the canonical Party code; unchanged shipper reference retains
+   its historical snapshot. Counterparty stays optional and gains no new snapshot field.
+7. Reuse the existing Topology-owned typed Planning lookup for source/destination.
+   Each optional asset reference must contain both type and ID when either is supplied;
+   fresh references obtain canonical owner code, unchanged references retain snapshots.
+   Clear the related snapshot when removing its reference. Unsupported/missing fresh
+   assets fail closed. The existing contract supplies lookup evidence; no new claim
+   of global Topology deletion serialization or durable cross-module FK is made.
+8. Centralize reference validation at the actual direct-save adapter boundary, so
+   callers cannot bypass it. Application/domain code imports no owner persistence.
+   New/changed product/unit references use Custody/Telemetry contracts; unchanged
+   historical owner identities do not require reactivation or snapshot refresh.
+   Changing quantity alone does not change unit identity. Preserve neutral contract
+   scalar and all other historical evidence. Adapter flushes before successful return;
+   owner rejection or persistence failure leaves no partial Nomination write.
+   Existing source has no dedicated Nomination create API/use case; do not add one.
+9. Install only the forward metadata/integrity migrations below. Published migrations
+   stay byte-for-byte unchanged. Owner policy tables and mapping evidence start EMPTY.
+   Own metadata FKs may reference only their own module's table; no cross-module FK.
+   Owners must explicitly provision product approvals, unit roles/pairs and reviewed
+   legacy mappings. No sample catalog rows, guessed approvals or inferred mappings.
+10. Reconcile the scalar-FK inventory explicitly: fk_hra111_planning_010 (product)
+    and fk_hra111_planning_011 (quantity unit) become owner-contract obligations, not
+    same-module database relationships. Preserve the historical 551 obligation count;
+    current structural HRA-111/replacement inventory is 549 plus these two named,
+    tested ownership reclassifications. Do not manufacture replacement cross-module
+    FKs or simply lower the historical constant. Assert the exact retired constraints
+    and columns, absence of replacement cross-module FKs, all remaining validated
+    own constraints, and runtime rejection through the actual owner contracts.
+11. Both architecture registries explicitly add only
+    party.application.contract.planning and custody.application.contract.planning;
+    telemetry.application.contract.planning is already exported. Keep exports in sync,
+    retain application-to-infrastructure isolation, forbid private owner imports and
+    test named provider wiring. Existing generic reader/security policy is unchanged.
+    Do not recreate retired Product/Unit domain mirrors just for repository plumbing.
+12. Keep NominationScheduleLine, OperationalPlan, PlanTarget and all other product/unit
+    consumers outside this correction. Their ownership harmonization is separate
+    future scope, not silently executed here. No new REST route, POM/workflow change,
+    release, physical-survivability assertion, HPR-P2-009 or HPR-P2-008 closure.
+
+### Exact independent HMR-080 write scope
+
+This proposed scope supersedes the legacy allowlist only after NOM-EXEC-01 acceptance.
+Listed paths may be created/updated as needed; no others. Legacy DDD/register and
+classification inventories remain preserved evidence.
+
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `doc/model-remediation/RECONCILIATION.md`
+- `src/main/java/dz/sh/hidra/modules/planning/application/port/out/NominationRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/planning/domain/model/Nomination.java`
+- `src/main/java/dz/sh/hidra/modules/planning/infrastructure/persistence/adapter/JpaNominationRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/planning/infrastructure/persistence/adapter/NominationReferenceValidation.java`
+- `src/main/java/dz/sh/hidra/modules/planning/infrastructure/persistence/entity/NominationJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/planning/infrastructure/persistence/mapper/PlanningPersistenceMapper.java`
+- `src/main/java/dz/sh/hidra/modules/planning/infrastructure/persistence/repository/NominationJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/custody/application/contract/planning/PlanningProductReferenceContract.java`
+- `src/main/java/dz/sh/hidra/modules/custody/application/contract/planning/package-info.java`
+- `src/main/java/dz/sh/hidra/modules/custody/infrastructure/integration/PlanningProductReferenceQueryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/repository/CustodyCatalogEntryJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/telemetry/application/contract/planning/PlanningUnitReferenceContract.java`
+- `src/main/java/dz/sh/hidra/modules/telemetry/application/contract/planning/package-info.java`
+- `src/main/java/dz/sh/hidra/modules/telemetry/infrastructure/integration/PlanningUnitReferenceQueryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/telemetry/infrastructure/persistence/repository/TelemetryUnitJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/party/application/contract/planning/PlanningPartyReferenceContract.java`
+- `src/main/java/dz/sh/hidra/modules/party/application/contract/planning/package-info.java`
+- `src/main/java/dz/sh/hidra/modules/party/infrastructure/integration/PlanningPartyReferenceQueryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/repository/PartyJpaRepository.java`
+- `src/main/resources/db/migration/V20261008_025__hmr_080_nomination_owner_reference_policies.sql`
+- `src/main/resources/db/migration/V20261008_026__hmr_080_planning_nomination_integrity.sql`
+- `src/test/java/dz/sh/hidra/modules/planning/semantic/NominationSemanticRemediationTest.java`
+- `src/test/java/dz/sh/hidra/modules/planning/infrastructure/persistence/NominationSemanticPostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/custody/infrastructure/integration/PlanningProductReferenceQueryAdapterTest.java`
+- `src/test/java/dz/sh/hidra/modules/telemetry/infrastructure/integration/PlanningUnitReferenceQueryAdapterTest.java`
+- `src/test/java/dz/sh/hidra/modules/party/infrastructure/integration/PlanningPartyReferenceQueryAdapterTest.java`
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java`
+- `src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java`
+- `src/test/java/dz/sh/hidra/InternalReferenceIntegrityMigrationTest.java`
+
+Existing PlanRevision/PlanScenario/PlanningCatalog repositories and Topology lookup
+are read/reused without changes. DomainInvariantGuardrailTest remains unchanged;
+new semantic guards must preserve its historical marker-count expectations.
+
+### Forward migration design and historical transition
+
+| Migration | Proposed responsibility |
+|---|---|
+| V20261008_025__hmr_080_nomination_owner_reference_policies.sql | Install empty Custody product approval, Telemetry unit roles/pairs, and Planning per-Nomination legacy reference-mapping evidence. No data classifications or updates. |
+| V20261008_026__hmr_080_planning_nomination_integrity.sql | Fail-closed preflight; only explicitly approved reference-ID transition; remove the two misowned Planning-catalog FKs; install intrinsic/code/family/scenario integrity and validate all own constraints. |
+
+025 creates only these bounded metadata stores:
+
+- hidra_custody_planning_product_policy: actual catalog_entry_id primary key,
+  active and nonblank approval_reference; own FK to hidra_custody_catalog_entry.
+- hidra_telemetry_planning_unit_role: (unit_id, usage_role) primary key, usage_role
+  QUANTITY or RATE, active and approval_reference; own FK to hidra_telemetry_unit.
+- hidra_telemetry_planning_unit_pair: (quantity_unit_id, rate_unit_id) primary key,
+  active and approval_reference; own unit FKs. Both roles must resolve through
+  the owner provider. These are explicit approved compatibility facts.
+- hidra_planning_nomination_reference_mapping: (nomination_id, field_name) key,
+  field_name PRODUCT/QUANTITY_UNIT/RATE_UNIT, exact legacy_id, canonical_owner_id
+  and nonblank approval_reference; own Nomination FK, no cross-module target FK.
+  Mappings are per record/field, not guessed global aliases.
+
+A nonempty historical deployment pauses Nomination writes, migrates through 025,
+then provisions independently reviewed approvals/mappings before requesting 026.
+Even identical old/new IDs require explicit mapping evidence; coincident names/IDs
+do not establish equivalence. Tests may insert clearly identified owner-approved
+fixtures; the production migrations contain none.
+
+026 locks migration inputs/affected records against concurrent changes and validates
+every existing positive quantity, strict interval, timestamp, revision/code identity,
+exact nomination family, same-revision scenario, coherent optional asset pair and
+complete mapping for each populated product/unit field. It verifies each mapped
+target exists in the accepted owner store with approved role/product/pair metadata.
+Valid inactive approvals/owner rows remain legal for historical mappings; active
+fresh eligibility is enforced by the runtime contract. Missing/ambiguous approvals,
+wrong legacy identity, unknown targets, incompatible units, invalid historical rows
+or duplicates abort with actionable diagnostics and no data/constraint partial commit.
+
+Only after complete preflight, 026 removes fk_hra111_planning_010 and _011 and applies
+the reviewed mapping to those three scalar ID fields. This explicit owner-approved
+transition is authorized by NOM-EXEC-01; it is not an automatic data repair. Preserve
+every other column, including topology/Party snapshots, numeric values and timestamps.
+Null optional rate unit stays null. Retain mapping evidence. No deduplication, implicit
+identity mapping or automatic correction of intrinsic historical violations.
+
+Reuse uq_hmr094_scenario_revision to add the nullable Nomination
+(scenario_id,revision_id) -> PlanScenario(id,revision_id) own composite FK. Retain
+existing revision/nomination-type/PlanTarget relationships. Owner metadata own FKs
+restrict deletion of registered product/unit identities; metadata identity/approval
+history must not be deleted/truncated or remapped after successful transition.
+Active flags may change with write serialization; an active-to-inactive change does
+not rewrite historical Nomination evidence. Do not promise arbitrary raw SQL supplies
+application-level Party/Topology evidence or a durable cross-module constraint.
+
+### Admitted implementation validation
+
+Reassess local Java 21, Maven/dependency/DNS, Docker and PostgreSQL before implementation.
+Run the actual commands; do not substitute prepared fixtures/stubs for runtime evidence.
+
+- `./mvnw -q -DskipTests compile`
+- `./mvnw -q -Dtest=NominationSemanticRemediationTest test`
+- `./mvnw -q -Dtest=PlanningProductReferenceQueryAdapterTest,PlanningUnitReferenceQueryAdapterTest,PlanningPartyReferenceQueryAdapterTest test`
+- `./mvnw -q -Dtest=NominationSemanticPostgresIntegrationTest,PlanTargetSemanticRemediationTest,PlanTargetSemanticPostgresIntegrationTest test`
+- `./mvnw -q -Dtest=ArchitectureGuardrailTest,ForensicRemediationClosureTest,DomainInvariantGuardrailTest,DomainPersistenceMirrorGuardrailTest,InternalReferenceIntegrityMigrationTest test`
+- `./mvnw -q test`
+- `./mvnw -q clean verify`
+- `git diff --check`
+
+Focused checks: quantity sign, strict period, audit timestamps, all 26 fields/statuses,
+same-revision scenario, duplicate revision/code (same code in another revision legal),
+exact active fresh NOMINATION_TYPE and inactive unchanged history; unapproved/wrong
+product/units/pairs, optional rate unit, no inferred rate pairing, Party/Topology
+missing/fresh/unchanged snapshots, neutral contract and direct-save flush rollback.
+Owner tests exercise real provider queries/wiring and missing/inactive role/pair facts.
+
+Real PostgreSQL/Spring-JPA tests must use proxied direct saves and actual owner
+providers, not permissive mocked contracts as evidence. Cover empty database,
+staged 025 provisioning, 026 exact approved ID transition with all other columns
+unchanged, absent/mismatched/ambiguous mapping, unknown/incompatible owner targets,
+invalid quantities/intervals/duplicate codes/scenarios, migration rollback including
+the old FK/ID state, explicit valid owner fixture retry, immutable mapping/policy
+history and family guards. Two connections/transactions test duplicate code races,
+revision/scenario changes, NOMINATION_TYPE family/active mutation, owner deletion
+and eligibility deactivation against fresh writes. Check stable owner lock order,
+one winner where appropriate, complete rollback and valid historical replay.
+Keep prior PlanTarget validation/dependent FK behavior and the 551 = 549 + 2 inventory
+reconciliation in the same verification tree; do not defer known guardrail drift.
+
+### Preflight publication and next action
+
+Exact supporting commit: `docs(planning): record solo Nomination execution preflight`.
+This supporting task writes ONLY the two canonical documents. HMR-080 remains
+**BLOCKED — NOM-EXEC-01 technical envelope acceptance pending**, not implemented.
+Ownership is ACCEPTED; no repeat ownership question. Count remains 56 CI-confirmed
+plus one blocked, 57 evaluated. HPR-P2-008 stays OPEN; version 0.6.0-SNAPSHOT unchanged.
+
+Validate the two-document diff and all canonical Markdown with the documentation
+workflow checks. Publish once under d073ae13f9a79726f41839c4dec7f49fc6d57f8d lease,
+verify immutable trees/blobs, confirm Documentation Validation starts and STOP
+without waiting for completion. Production CI ignores documentation-only pushes.
+Next selects the standalone HMR-080 envelope above; implementation records acceptance,
+retains exact semantic message, publishes with expected-head lease and stops once
+production CI starts. A Fail repairs the responsible scope before later work.
+
+Pre-publication checks passed: exact two-document scope, git diff --check, all
+82 canonical Markdown UTF-8/nonempty/conflict-marker checks, identical preflight
+sections, 31 unique proposed scope paths, forward 025/026 naming and existing
+PlanTarget validation targets. No production/test/migration/POM/workflow or legacy
+file changed. This documentation-only task claims no new Maven/runtime result.

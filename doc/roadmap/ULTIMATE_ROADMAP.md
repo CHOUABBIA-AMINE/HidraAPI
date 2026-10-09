@@ -506,13 +506,153 @@ Its design may use synthetic gas networks; do not demand daily pilot values befo
 creating reusable input contracts. Exact new files/migration names and numerical engine
 methods are selected during their bounded preflights, not by this decision record.
 
+#### HPR-P25-002 Input-Contract Execution Preflight — 2026-10-09
+
+Owner Next selects ONLY this documentation-only preflight, exact message
+`docs(twin): register HPR-P25-002 execution preflight`. Write ONLY the roadmap and
+reconciliation. Verified parent `61c1311f458e6844d28c4b4d162b0916885d01a0`, tree
+`774e1806a8953b5582dcb32081256449d5d290de`; Documentation #144
+(run 37955963870) PASSED. Mandatory instructions and both execution memories read;
+local source tree matches. Source behavior remains unchanged by this preflight.
+
+##### Source revalidation and selected technical boundaries
+
+- Topology exports `SimulationTopologyScopeContract` and
+  `SimulationTopologyTargetContract` under its already architecture-exported
+  `application/contract/simulation` package. Scope resolution currently supports
+  active PIPELINE/PIPELINE_SYSTEM and explicitly rejects SEGMENT_GROUP/FACILITY_NETWORK.
+  It checks eligibility, not physical completeness or immutable connected-network data.
+- `topology/infrastructure/persistence/entity/TopologySnapshotJpaEntity.java` has
+  snapshot code/version and JSONB payload. Do not infer payload schema, numerical
+  completeness or immutable capture API from table fields.
+- `simulation/infrastructure/persistence/entity/SimulationInputSnapshotJpaEntity.java`
+  has scenario/topology/other snapshot references, capturedAt and captureHash; no
+  corresponding current SimulationInputSnapshot domain record was found. Preserve this
+  entity/table and its historical semantics; the first stage does not remap it.
+- Node/segment JPA records and Equipment expose asset connectivity/identity, not complete
+  physical curves or internal gas-engine inputs. Custody's Planning product contract
+  exports catalogue identity only. Telemetry trust remains owned by Telemetry.
+- ArchitectureGuardrailTest already exports Topology's simulation contract package.
+  The first stage below imports no foreign module, so no new export/architecture
+  allowlist change is needed. Later owner adapters require explicit exact-file review.
+
+Selected engineering boundary: Simulation owns immutable solver input representations
+and copies of versioned parameters, not the mutable source-of-truth network/catalogue.
+Topology retains connectivity/configuration; Custody retains product identity; Telemetry
+retains raw/trusted measurement provenance. Integration handles read-only acquisition.
+Adapters use owner-exported DTOs, never foreign domain aggregates/JPA entities. Engine
+inputs are prepared through Simulation application orchestration and local ports.
+This is an implementation design consistent with existing boundaries, not fabricated
+approval of GZ2 operating parameters or a new cross-module catalogue owner.
+
+##### Input decomposition and version semantics
+
+First build an **input manifest**: identities, versions, validity and provenance of the
+inputs selected for one calculation. This is a concrete domain contract, not a placeholder
+solver or a claim that physical payloads already exist. Later stages add typed payloads,
+owner exports and capture/persistence. Distinguish metadata validation from physical
+readiness; a valid manifest alone must never authorize an operational recommendation.
+
+Every source version records kind, owner, source identity, immutable revision identity,
+payload SHA-256 reference, recordedAt, effectiveFrom and optional effectiveUntil, plus
+origin/evidence identity. Use inclusive start/exclusive end intervals. A missing end
+means open-ended validity, not that the value is verified forever. Corrections create a
+new revision; never update old run inputs. A digest is a reference at the domain stage;
+canonical hashing/content verification belongs to capture, not guessed hash strings.
+
+The manifest records identity/schema version, product identity reference, scope identity,
+STEADY_STATE or TRANSIENT mode, initial stateAt, capturedAt, source versions, optional
+measurement watermark and transient horizonEnd. Versions must be valid at initial
+stateAt and recorded by capturedAt; initial state cannot be later than capture. Planned
+future conditions belong in the transient schedule, never invented measured history.
+Transient runs additionally reference a BOUNDARY_SCHEDULE with horizonEnd > stateAt.
+A steady-state manifest has no transient horizon/schedule. A watermark, when supplied,
+cannot be later than stateAt. Future forecast/scenario events remain distinguishable
+from observations. Do not assign arbitrary freshness/uncertainty limits here.
+
+Base source kinds: TOPOLOGY_CONFIGURATION, FLUID_MODEL, EQUIPMENT_PARAMETERS,
+OPERATING_STATE; require exactly one explicit reference for each kind. EQUIPMENT_PARAMETERS
+may identify an explicitly empty equipment model for a synthetic pipe-only network,
+not an implicit missing/default curve. TRANSIENT adds BOUNDARY_SCHEDULE. Every source
+kind has one revision in the initial manifest; an older/newer duplicate cannot silently
+win. Richer partitioned inputs require a separately registered schema revision.
+Origins: APPROVED_PARAMETER, TRUSTED_TELEMETRY, ESTIMATED, SYNTHETIC, SCENARIO and
+FORECAST. Origin is declared evidence metadata, not proof of trust; later capture
+resolves source evidence and validates whether the origin is permitted for the kind.
+Mark any manifest with a SYNTHETIC source as synthetic; no operational readiness method
+is introduced. Engine product/mode capability checks remain a separate execution gate.
+
+##### Bounded HPR-P25-002 implementation stages
+
+The parent HPR-P25-002 stays PENDING until all required stages are implemented and
+verified; this preflight completion does not complete product-aware physical inputs.
+Each stage retains its own commit and later evidence; no batch is selected.
+
+| Code | Status | Domain/Module | Type | Exact execution requirement | Exact commit message | Depends on |
+|---|---|---|---|---|---|---|
+| HPR-P25-002A | PENDING | Simulation / Input manifest | Code/Test | Implement immutable manifest, source-version identities/validity/origin and steady-state/transient metadata invariants under the exact six-file envelope below. | `feat(simulation): establish immutable input manifest contracts` | HPR-P25-002 preflight Documentation CI success |
+| HPR-P25-002B | PENDING | Simulation / Physical payloads | Code/Test | Define validated typed network/fluid/equipment/initial-state and transient timeline payloads with units, reference basis and missing-data semantics; register exact files and numeric design assumptions before mutation. | `feat(simulation): define versioned physical input payloads` | HPR-P25-002A; selected payload/physics preflight |
+| HPR-P25-002C | PENDING | Owner modules / Simulation | Code/Test | Implement bounded owner-exported topology/product/measurement queries and Simulation adapters; preserve eligibility/trust/ownership and reject unavailable physical inputs. | `feat(simulation): resolve versioned owner input references` | HPR-P25-002B; exact owner-contract/export preflight |
+| HPR-P25-002D | PENDING | Simulation / Capture | Code/Test | Assemble coherent immutable payload/manifest captures, verify canonical hashes and evidence, persist reproducible revisions and reject incompatible/missing inputs; register forward migration only if source-backed design requires one. | `feat(simulation): capture reproducible network calculation inputs` | HPR-P25-002C; exact capture/schema preflight |
+
+##### HPR-P25-002A exact implementation envelope
+
+The next owner Next after successful preflight Documentation CI selects ONLY
+HPR-P25-002A implementation; this preflight already registers its exact scope.
+Do not create another documentation-only preflight for A unless evidence changes.
+
+Create ONLY:
+
+1. `src/main/java/dz/sh/hidra/modules/simulation/domain/value/SimulationInputMode.java`
+   — enum STEADY_STATE and TRANSIENT; no implicit mode default.
+2. `src/main/java/dz/sh/hidra/modules/simulation/domain/model/SimulationInputSourceVersion.java`
+   — immutable Java record with nested SourceKind/Origin enums and local validation.
+3. `src/main/java/dz/sh/hidra/modules/simulation/domain/model/SimulationInputManifest.java`
+   — immutable Java record with defensive list copy and coherent mode/time/version rules.
+4. `src/test/java/dz/sh/hidra/modules/simulation/domain/model/SimulationInputManifestTest.java`
+   — meaningful positive/negative metadata and temporal/immutability cases.
+
+Update ONLY `doc/roadmap/ULTIMATE_ROADMAP.md` and
+`doc/model-remediation/RECONCILIATION.md`. Total authorized scope: six paths.
+Canonical Java headers keep Author Abir MEDJERAB and CreatedOn 2025-06-26.
+Reuse existing InvalidSimulationValueException; production imports only Java standard
+library and local Simulation types. No Spring/JPA/foreign modules, physical calculation,
+controller/API, dictionary/OpenAPI regeneration, dependencies, POM, workflows, existing
+models/entities or ArchitectureGuardrailTest may change. No migration is needed because
+these contracts are not persisted or exposed; later capture has a separate schema gate.
+Nested validation/private helpers stay within these three production files.
+
+Minimum behavioral validation: valid synthetic steady-state and transient manifests;
+required IDs and positive schema version; valid SHA-256 syntax; effective interval and
+captured/recorded/state/watermark order; missing/duplicate source kinds; transient horizon
+and schedule requirements; rejection of schedule in steady-state; unmodifiable defensive
+copy; synthetic origin detection and preserved original version after replacement input.
+Use fixed timestamps; never depend on wall-clock time or actual GZ2 values. Test only
+metadata guarantees, not hydraulic accuracy. Origin declarations do not bypass trust.
+
+Commands when A is selected:
+`./mvnw -B -q -Dtest=SimulationInputManifestTest,ArchitectureGuardrailTest test`,
+then `./mvnw -B -q clean verify`; also canonical documentation/OpenAPI/P1 evidence
+validators and `git diff --check`. Require exact-head applicable full CI and report
+local toolchain/dependency blocks accurately. Publish with expected-parent lease;
+observe CI startup and STOP for owner Next/Fail. Do not implement B..D or the engine.
+
+For B/C/D, first select a supporting exact preflight message
+`docs(twin): register HPR-P25-002X execution preflight`, replacing X with B/C/D,
+writing these two execution memories only. Later exact files/contracts/migrations are
+not authorized by this high-level decomposition. Physical formulation/units/reference
+fixtures can be designed with synthetic cases; actual GZ2 data gates field calibration.
+HPR-P25-008A numerical design may start after the physical input contract is established;
+no solver method is dictated by a manifest. HPR-P25-017 closure includes A..D as well as
+008A..F; incomplete inputs cannot be hidden by parent-task metadata completion.
+
 #### Execution registry
 
 | Code | Status | Domain/Module | Type | Exact execution requirement | Exact commit message | Depends on |
 |---|---|---|---|---|---|---|
 | HPR-P25-000 | COMPLETED — registration 02e86faa48c49c0c83c2ad51ccc4f1c52686f6c4 passed Documentation #142/run 37948108881; no runtime implementation | Roadmap / Reconciliation | Doc | Register the owner-defined operational twin cycle, ordered tasks, prerequisites, acceptance gates and next requirements preflight. | `docs(roadmap): register phase 2.5 operational digital twin` | P0/P1/P2 closed; owner instruction 2026-10-09 |
 | HPR-P25-001 | COMPLETED — requirements/source preflight d65cba71421ed5c994a8f63864754aa6083b7837 passed Documentation #143; owner selected GZ2 gas, both modes, own engine and dynamic versioned inputs; field acceptance remains a later qualification gate | Cross-module requirements | Doc | Inventory exact-source gaps and owners; specify product/use-case coverage, data needs, solver integration options, steady-state/transient scope, operational/security issue classes, tolerances and acceptance fixtures; record unresolved owner decisions and implementation envelopes. | `docs(twin): define requirements and execution preflight` | HPR-P25-000; successful registration documentation CI |
-| HPR-P25-002 | PENDING | Topology / Custody / Simulation | Code/Test | Extend only demonstrated gaps in product-aware connected topology, fluid-property/composition references, equipment characteristics and versioned operating configurations; reject unsupported physics/product combinations. | `feat(topology): establish product aware twin network inputs` | HPR-P25-001 approved input/ownership contracts |
+| HPR-P25-002 | PENDING — input-contract preflight delivered; implementation split into HPR-P25-002A..D, all PENDING | Topology / Custody / Simulation | Code/Test | Extend only demonstrated gaps in product-aware connected topology, fluid-property/composition references, equipment characteristics and versioned operating configurations; reject unsupported physics/product combinations. | `feat(topology): establish product aware twin network inputs` | HPR-P25-001 approved input/ownership contracts |
 | HPR-P25-003 | PENDING | Topology / Telemetry / API | Code/Test | Provide authorized network map/state APIs with product and asset layers, connectivity, measured/estimated overlays, quality/freshness and issue location; verify the frontend integration contract. | `feat(topology): expose operational twin visualization` | HPR-P25-002 |
 | HPR-P25-004 | PENDING | Integration / Telemetry | Code/Test/Config | Implement the approved read-only acquisition adapter and coherent timestamp/unit/asset binding; verify replay, duplicates, late/missing readings, disconnect and recovery while retaining raw provenance and trust rules. | `feat(telemetry): synchronize trusted network measurements` | HPR-P25-001 approved source/access/latency contract; HPR-P25-002 |
 | HPR-P25-005 | PENDING | Analytics / Topology / Telemetry | Code/Test | Reconstruct a versioned time-coherent network state using approved physical methods; distinguish measured, estimated and unknown values and observability; retain input/configuration lineage and uncertainty. | `feat(analytics): reconstruct operational network state` | HPR-P25-004; approved estimator/model contract |
@@ -527,7 +667,7 @@ methods are selected during their bounded preflights, not by this decision recor
 | HPR-P25-014 | PENDING | Analytics / Simulation | Code/Test/Doc | Build provenance-controlled learning datasets from actual actions/outcomes; evaluate proposed detector, calibration or recommendation updates offline, version them and require validated promotion/rollback without weakening physical or safety constraints. | `feat(analytics): govern learning from operational outcomes` | HPR-P25-013; approved learning objective/evaluation policy |
 | HPR-P25-015 | PENDING | API / Operator Experience | Test/Doc | Demonstrate operator visualization, issue-to-run explanation, candidate comparisons, decision capture and outcome views with the selected frontend; record separate frontend repository/version evidence and accessibility/authorization checks. | `test(twin): verify operator visualization and decision workflow` | HPR-P25-003; HPR-P25-010..014; selected frontend environment |
 | HPR-P25-016 | PENDING | Cross-module verification / Operations | Test/Doc | Execute end-to-end historical replay and governed pilot cases including adverse downstream effects, scope expansion, unavailable solver, poor/stale data, unobservable state, nonconvergence and learning rollback; retain exact-source/environment evidence and runbooks. | `test(twin): verify operational decision feedback cycle` | HPR-P25-015; approved pilot/data/environment |
-| HPR-P25-017 | PENDING | Governance | Doc | Independently audit all P2.5 gates against actual execution and per-product/mode evidence; close only after exact-head applicable CI and operator acceptance, with unsupported coverage explicitly retained. | `docs(roadmap): close phase 2.5 operational twin verification` | HPR-P25-001..016; HPR-P25-008A..F |
+| HPR-P25-017 | PENDING | Governance | Doc | Independently audit all P2.5 gates against actual execution and per-product/mode evidence; close only after exact-head applicable CI and operator acceptance, with unsupported coverage explicitly retained. | `docs(roadmap): close phase 2.5 operational twin verification` | HPR-P25-001..016; HPR-P25-002A..D; HPR-P25-008A..F |
 
 #### Boundaries, acceptance gates and unresolved decisions
 
@@ -660,13 +800,17 @@ then clarified that network/model/operating data changes and must be versioned i
 Owner Next selects ONLY `docs(twin): record approved phase 2.5 input decisions`,
 writing the roadmap and reconciliation; this decision update implements no engine.
 
-Next recommended task: **HPR-P25-002 input-contract execution preflight**, exact
-supporting message `docs(twin): register HPR-P25-002 execution preflight`. Define
-bounded file/contract/migration/test envelopes for immutable inputs before source
-mutation. Synthetic reference networks can support development. GZ2 topology,
-measurements, limits and current curves must be ingested/qualified to claim GZ2 accuracy.
-Remaining D25-05..09 values block their field/operational claims, not all development.
-Observe decision-record Documentation Validation startup and STOP for owner Next/Fail.
+Owner Next selects HPR-P25-002 documentation-only input-contract preflight, exact
+message `docs(twin): register HPR-P25-002 execution preflight`. Documentation #144
+(run 37955963870) PASSED on parent 61c1311f458e6844d28c4b4d162b0916885d01a0,
+tree 774e1806a8953b5582dcb32081256449d5d290de. Current source remains unchanged.
+
+Next recommended task: **HPR-P25-002A — immutable input manifest contracts** after
+successful preflight Documentation CI. Its exact six-file implementation envelope is
+registered above; execute A only, no repeat preflight unless source evidence changes.
+The manifest validates references/times/versions, not physical readiness or GZ2 accuracy.
+HPR-P25-002 stays PENDING until 002A..D are complete; remaining field acceptance gates
+retain their applicability. Observe preflight Documentation Validation startup and STOP.
 P0/P1/P2 remain CLOSED; P2.5 PLANNED/OPEN; P3 DEFERRED; 57 HMR completions,
 123 subjects, formal v0.6.0 and current 0.7.0-SNAPSHOT remain preserved.
 
@@ -8833,3 +8977,10 @@ Actual decision-record validation PASSED: canonical documentation (95 documents,
 Exactly two documentation files change; prior phase/HMR registry identities are
 preserved. Exact-head Documentation CI follows publication; no engine execution
 or GZ2 physical validation is claimed.
+
+Actual HPR-P25-002 preflight checks PASSED: canonical documentation (95 documents,
+5,063 relative links, 24 modules, 13 P2 rows), offline OpenAPI (244 paths,
+263 operations, 231 schemas), P1 closure evidence and git diff --check.
+Exact two-document scope and retained phase/HMR rows verified; four new 002A..D
+identities registered. No runtime/source/physics change is claimed; Documentation
+CI follows publication.

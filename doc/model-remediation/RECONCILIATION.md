@@ -7400,3 +7400,69 @@ Actual decision-record validation PASSED: canonical documentation (95 documents,
 Exactly two documentation files change; prior phase/HMR registry identities are
 preserved. Exact-head Documentation CI follows publication; no engine execution
 or GZ2 physical validation is claimed.
+
+
+## HPR-P25-002 Input-Contract Preflight — 2026-10-09
+
+Owner Next selects `docs(twin): register HPR-P25-002 execution preflight` after
+Documentation #144/run 37955963870 PASSED on exact parent
+61c1311f458e6844d28c4b4d162b0916885d01a0, tree
+774e1806a8953b5582dcb32081256449d5d290de. Mandatory AGENTS/roadmap/reconciliation
+read and local tree matches. Write ONLY the roadmap and this reconciliation.
+
+Revalidated Topology Simulation scope/target exports and ArchitectureGuardrailTest.
+Scope resolver currently supports active PIPELINE/PIPELINE_SYSTEM, rejects
+SEGMENT_GROUP/FACILITY_NETWORK; it does not export complete physical inputs.
+TopologySnapshotJpaEntity carries version/JSON payload; SimulationInputSnapshotJpaEntity
+only references snapshots/captureHash and has no current corresponding domain record.
+Equipment/node/segment structures do not establish physical curves. Custody product
+identity and Telemetry trust remain owned by their existing modules.
+
+Technical design retains owner truth and introduces Simulation-owned immutable
+manifest/payload copies. Manifest captures source owner/id/revision/digest/evidence,
+origin, recorded/effective times, mode, product/scope, initial state/capture time,
+watermark and transient horizon/schedule. Effective intervals are start-inclusive/end-
+exclusive. Corrections create new versions. Metadata consistency does not establish
+actual hash integrity, physical completeness, trust or numerical readiness; later
+capture validates actual evidence/payloads. Synthetic fixtures enable development
+without hardcoding GZ2 or treating field data as a prerequisite for pure contracts.
+
+Parent HPR-P25-002 remains PENDING. Register four PENDING stages: 002A immutable
+manifest; 002B typed physical payloads; 002C owner queries/adapters; 002D reproducible
+capture/persistence. Each retains the exact message in the roadmap. Phase closure
+includes all four stages in addition to the six engine stages.
+
+Next recommended selection after successful preflight Documentation CI: HPR-P25-002A,
+exact message `feat(simulation): establish immutable input manifest contracts`.
+Create ONLY Simulation domain/value/SimulationInputMode.java,
+domain/model/SimulationInputSourceVersion.java, domain/model/SimulationInputManifest.java
+under src/main/java/dz/sh/hidra/modules/simulation and
+src/test/java/dz/sh/hidra/modules/simulation/domain/model/SimulationInputManifestTest.java.
+Update ONLY the roadmap and this reconciliation. Total six-path scope. Canonical headers,
+local InvalidSimulationValueException, immutable Java records/nested enums and defensive
+list copies; no foreign/Spring/JPA imports. No migration: nothing persisted or exposed.
+No architecture export/API/schema/dependency/workflow/other production change admitted.
+
+A tests cover valid fixed-time synthetic cases and invalid identity/digest/schema,
+validity/recorded/capture/state/watermark ordering, duplicate/missing source kinds,
+mode/horizon/schedule consistency, defensive immutability and synthetic detection.
+Exact commands: ./mvnw -B -q -Dtest=SimulationInputManifestTest,ArchitectureGuardrailTest test,
+then ./mvnw -B -q clean verify, canonical docs/OpenAPI/P1 evidence and git diff --check.
+Applicable exact-head full CI is required; report local blocks, never invent runtime
+verification. Observe CI startup and STOP. Do not execute A during this preflight.
+No repeat A preflight is needed unless evidence changes. B/C/D require their own
+exact-file/schema preflights with `docs(twin): register HPR-P25-002X execution preflight`.
+
+Actual GZ2 data, limits, sources and solver physical validation remain field qualification
+gates. Manifest success is not an executing engine. P0/P1/P2 CLOSED, P2.5 OPEN,
+P3 DEFERRED, 57 HMR completions, 123 subjects, v0.6.0 and 0.7.0-SNAPSHOT preserved.
+Validate this two-document preflight with canonical docs/OpenAPI/P1 evidence, whitespace
+and scope/registry checks; publish using expected-parent lease, verify parent/tree/files
+and observe Documentation CI startup, then STOP for owner Next/Fail.
+
+Actual HPR-P25-002 preflight checks PASSED: canonical documentation (95 documents,
+5,063 relative links, 24 modules, 13 P2 rows), offline OpenAPI (244 paths,
+263 operations, 231 schemas), P1 closure evidence and git diff --check.
+Exact two-document scope and retained phase/HMR rows verified; four new 002A..D
+identities registered. No runtime/source/physics change is claimed; Documentation
+CI follows publication.

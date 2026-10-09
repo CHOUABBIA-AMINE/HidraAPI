@@ -7090,3 +7090,155 @@ Publication uses one expected-head update from
 `ci(docs): validate canonical documentation`. Verify immutable tree/blobs and confirm
 both workflows start, then STOP without waiting for completion. A later Next checks
 both exact-head results before HPR-P2-013 preflight; it does not execute closure now.
+
+## HPR-P2-013 canonical-governance closure preflight — 2026-10-09
+
+### Selection and verified baseline
+
+The owner's instruction selects PREFLIGHT ONLY. Main was rechecked unchanged at
+`e4dba168c9e612a5fd49d50b155fa3b2d8d64e40`, tree
+`1cb256871d8afe77c02ab7b98b58ef3a80f303ce`. GitHub independently confirms both
+exact-head runs completed successfully: Documentation Validation #124 (37909982710)
+and production CI #605 (37909982823). Their jobs/steps passed, including Java 21
+clean verify, PostgreSQL verification, fresh OpenAPI snapshot equality and supported
+compatibility. This is CI evidence, not a new local runtime or physical campaign.
+AGENTS.md and both canonical execution memories were read before mutation.
+
+HPR-P2-001..012 are COMPLETED. The primary reconciliation has exactly 57 COMPLETED
+HMR-050..106 rows, including HMR-080. The permanent catalogue retains 123 subject
+rows. HPR-P2-013 stays PENDING, P2 OPEN and every P3 code DEFERRED. Project version
+remains 0.6.0-SNAPSHOT. This supporting publication does not execute closure.
+
+### Actual read-only review and concrete closure defect
+
+- Both maintained Python test suites passed: ten tests each, twenty total.
+  `python3 .github/scripts/validate_docs.py` passed for 95 canonical Markdown
+  documents, 3,215 local links, 24 modules and 13 primary P2 rows.
+  `python3 .github/scripts/validate_openapi_snapshot.py` passed offline integrity:
+  244 paths, 263 operations and 231 schemas. External-link uptime, complete narrative
+  truth and comprehensive OpenAPI certification are outside these checks.
+- Current production source/test/resources/POM and ops/production blobs are unchanged
+  from the HPR-P2-009 semantic parent `44d4fe773d69ed51dd90820140c8d9e7aee6cba2`
+  and CI #604 source `617c2eec812e3a5734957ee9fa0360f6f5613032`.
+  The 24 module inventories and domain evidence therefore retain their exact source
+  applicability; CI #605 adds current execution evidence without inventing per-class
+  report/skip inspection. Canonical legacy review/remediation links resolve and their
+  subordinate authority is explicit in SEMANTIC_DECISIONS.md and DOCUMENT_REGISTER.md.
+- A real current-state database-documentation defect remains. The five HPR-P2-006
+  database documents describe 82 migrations and 469 entities, while direct current
+  filesystem/annotation enumeration finds 139 unique versioned SQL migrations and
+  470 module @Entity classes across 24 modules. Risk has 25 entities; the old dictionary
+  lists 24 and omits RiskAssessmentScoringJpaEntity. Its global migration inventory
+  omits 57 current files; current tail is
+  `V20261008_026__hmr_080_planning_nomination_integrity.sql`.
+  Per-module filename lists also need regeneration. Filename matching is descriptive,
+  not proof of exclusive table/semantic ownership.
+- Structural CI intentionally does not certify these database inventory claims; its
+  passing result cannot waive this defect. HPR-P2-013 must reconcile it before closure.
+  The original P1 82-migration deployed/recovery scope remains historical evidence and
+  must not be changed to 139 or presented as acceptance of the current deployed schema.
+- Current root/register/validation guide still say HPR-P2-012 exact-head results follow
+  publication. Preserve those dated records as history and add the now-verified #124/
+  #605 result separately. Supersession must be explicit; do not mass-rewrite prior
+  execution paragraphs or alter P1 evidence to make current summaries look uniform.
+
+### Proposed accepted-on-Next bounded design
+
+1. Recheck fresh main and this preflight's exact-head documentation result before
+   implementation. Revalidate #124/#605 identities, primary P2 prerequisites, source
+   inventory and current contracts. Changed source or additional narrative defects
+   require a revised bounded proposal before expanding the write scope.
+2. Refresh only the five current database documents from source: enumerate all 139
+   unique forward SQL filenames in version order, all 470 @Entity classes by owning
+   module, corrected module totals and current tail. Regenerate the complete dictionary
+   and descriptive filename lists; verify exact set equality against source, duplicates
+   and RiskAssessmentScoringJpaEntity. Record the actual verified source parent/date.
+   Preserve HPR-P2-006/P1 generation and 82-migration physical provenance explicitly
+   as historical. Do not infer physical table/column/type/constraint details from class
+   names, execute migrations, repair data or claim deployment acceptance.
+3. Add a source-backed closure review to the root/index/register and API/domain/module
+   indexes: all 24 implemented modules, canonical navigation/status inheritance,
+   architecture/domain/API/database/data/testing readiness and legacy supersession.
+   Keep the permanent 123-subject catalogue, all 57 completion identities and retained
+   legacy estate unchanged. No invented human owner or business approval is admitted.
+4. Update the validation guide/register with verified HPR-P2-012 CI evidence and exact
+   bounds. Keep the canonical API object and generation provenance unchanged: CI #604
+   generated the committed object; CI #605 freshly checked semantic equality. Strict
+   equality excludes only x-hidra-ci-source-sha and does not waive compatibility.
+5. Record only HPR-P2-013 implementation completion and a P2 closure-verification gate
+   in the primary roadmap and reconciliation. Replace immediate-next execution with
+   the pending exact-head closure verification; do not select a P3 task. Final P2
+   VERIFIED/CLOSED disposition requires both successful workflows on the resulting
+   closure SHA, checked on a later owner notification/Next. Do not pre-assert that
+   future results passed. Preserve P0/P1 disposition and their original applicability.
+6. Keep unknown business retention/policy mappings, per-class no-skips coverage,
+   production-data/import acceptance, comprehensive endpoint/performance/OT coverage,
+   runtime inference/actuation and fresh physical survivability explicitly unestablished
+   by P2 closure. TimescaleDB, PostGIS and unimplemented industrial/AI extensions stay
+   DEFERRED/TARGET. Existing P1 verification is not reopened absent regression evidence.
+7. Run both maintained suites, full canonical and offline snapshot validators,
+   exact database set/count checks, 24-module/source linkage, 123-subject and 57-HMR
+   identity preservation, P2/P3 registry/gate checks, all other tracked-blob comparison,
+   version check and git diff --check. Attempt admitted clean verify with accurate
+   environmental limits; no local execution result substitutes for exact-head CI.
+   No new maintained validator or test is needed for this bounded documentation refresh.
+8. Publish one exact registered implementation commit,
+   `docs(roadmap): close P2 canonical governance`, using fresh expected-head lease.
+   Verify immutable parent/tree/blobs and exactly the thirteen admitted paths. Confirm
+   Documentation Validation starts. Full production CI is ALSO mandatory for closure:
+   docs-only push is ignored by ci.yml, so use its existing workflow_dispatch on this
+   exact main SHA. The current GitHub connector exposes no dispatch action; if that
+   remains so, the owner must run HidraAPI CI through GitHub Actions. Do not change
+   workflow triggers or use a dummy executable change to force CI. Until dispatch is
+   confirmed and both exact-head results subsequently pass, closure verification stays
+   pending. Stop after startup observation; never wait for completion or execute P3.
+
+### Exhaustive future implementation write scope — thirteen existing paths
+
+Update only:
+
+- `doc/README.md`
+- `doc/governance/DOCUMENT_REGISTER.md`
+- `doc/governance/DOCUMENTATION_VALIDATION.md`
+- `doc/database/README.md`
+- `doc/database/DATABASE_ARCHITECTURE.md`
+- `doc/database/SCHEMA_OWNERSHIP.md`
+- `doc/database/FLYWAY_POLICY.md`
+- `doc/database/DATA_DICTIONARY.md`
+- `doc/api/README.md`
+- `doc/domain/README.md`
+- `doc/modules/README.md`
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `doc/model-remediation/RECONCILIATION.md`
+
+Create no repository files. Preserve all individual module docs, permanent semantic
+catalogue, API snapshot, validation manifest/scripts/tests/workflows, historical P1
+database/operations evidence, all docs/**, runtime source/tests/resources/POM and
+migrations. No tag, release, version change, deployment, import, policy approval,
+physical campaign or P3 execution. A defect beyond this allowlist requires re-preflight.
+
+### Supporting preflight publication and actual validation
+
+Register supporting exact message:
+`docs(roadmap): record P2 canonical governance closure preflight`.
+This preflight appends the identical envelope ONLY to
+doc/roadmap/ULTIMATE_ROADMAP.md and doc/model-remediation/RECONCILIATION.md.
+No future implementation file is refreshed now, and all primary HPR/HMR statuses
+remain unchanged. Validate exact two-file scope, identical envelopes, thirteen unique
+existing future paths, unchanged registry rows/catalogue/source/migrations/version,
+both Python suites, actual canonical/snapshot validators and git diff --check.
+Publish one supporting commit to main with expected head
+`e4dba168c9e612a5fd49d50b155fa3b2d8d64e40`, verify immutable parent/tree/blobs and all
+other files unchanged, confirm Documentation Validation starts, then STOP. Production
+CI ignores this preflight's two-document scope and is not required for the supporting
+proposal. A later Next accepts only the bounded HPR-P2-013 design after checking this
+preflight's documentation result; it does not select P3. No Maven/runtime or physical
+execution was performed in this preflight.
+
+Actual supporting checks PASSED on 2026-10-09: twenty maintained Python tests;
+canonical validation (95 documents, 3,215 links, 24 modules, 13 P2 rows); offline
+OpenAPI integrity (244/263/231); identical appended envelopes; exact two-file tracked
+scope; thirteen unique existing future paths; all HPR/HMR rows unchanged; 123 catalogue
+subjects and 57 COMPLETED reconciliation rows preserved; version 0.6.0-SNAPSHOT;
+git diff --check. Database/source inventory and unchanged executable-blob comparisons
+above actually ran. No local Maven/runtime/physical result is claimed.

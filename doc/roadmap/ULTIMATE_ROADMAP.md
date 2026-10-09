@@ -591,8 +591,8 @@ Each stage retains its own commit and later evidence; no batch is selected.
 | Code | Status | Domain/Module | Type | Exact execution requirement | Exact commit message | Depends on |
 |---|---|---|---|---|---|---|
 | HPR-P25-002A | COMPLETED — implementation eef35dbd35d4558a4ceb57f87d8670fb97c933ea passed full Java 21 CI #612 and Documentation #146; three immutable contracts and 14 JUnit tests present; per-class report not independently retained at this baseline | Simulation / Input manifest | Code/Test | Implement immutable manifest, source-version identities/validity/origin and steady-state/transient metadata invariants under the exact six-file envelope below. | `feat(simulation): establish immutable input manifest contracts` | HPR-P25-002 preflight Documentation CI success |
-| HPR-P25-002B | PENDING — B1..B3 CI-confirmed completed; B4 implemented pending exact-head full CI; 002C/002D remain separate prerequisites for parent 002 | Simulation / Physical payloads | Code/Test | Define validated typed network/fluid/equipment/initial-state and transient timeline payloads with units, reference basis and missing-data semantics; register exact files and numeric design assumptions before mutation. | `feat(simulation): define versioned physical input payloads` | HPR-P25-002A; selected payload/physics preflight |
-| HPR-P25-002C | PENDING | Owner modules / Simulation | Code/Test | Implement bounded owner-exported topology/product/measurement queries and Simulation adapters; preserve eligibility/trust/ownership and reject unavailable physical inputs. | `feat(simulation): resolve versioned owner input references` | HPR-P25-002B; exact owner-contract/export preflight |
+| HPR-P25-002B | PENDING — B1..B4 CI-confirmed completed; aggregate closure not selected; 002C/002D remain separate prerequisites for parent 002 | Simulation / Physical payloads | Code/Test | Define validated typed network/fluid/equipment/initial-state and transient timeline payloads with units, reference basis and missing-data semantics; register exact files and numeric design assumptions before mutation. | `feat(simulation): define versioned physical input payloads` | HPR-P25-002A; selected payload/physics preflight |
+| HPR-P25-002C | PENDING — owner-query preflight registered; next bounded implementation C1, C2/C3 require later exact preflights | Owner modules / Simulation | Code/Test | Implement bounded owner-exported topology/product/measurement queries and Simulation adapters; preserve eligibility/trust/ownership and reject unavailable physical inputs. | `feat(simulation): resolve versioned owner input references` | HPR-P25-002B; exact owner-contract/export preflight |
 | HPR-P25-002D | PENDING | Simulation / Capture | Code/Test | Assemble coherent immutable payload/manifest captures, verify canonical hashes and evidence, persist reproducible revisions and reject incompatible/missing inputs; register forward migration only if source-backed design requires one. | `feat(simulation): capture reproducible network calculation inputs` | HPR-P25-002C; exact capture/schema preflight |
 
 ##### HPR-P25-002A exact implementation envelope
@@ -687,7 +687,7 @@ all required payload stages are complete; no stage is executed by this preflight
 | HPR-P25-002B1 | COMPLETED — 803efff1326cc20bc54b4a22d6daa8608b5233dc passed Java 21 production CI #614 and Documentation #150; three immutable pipe-graph records and 13 synthetic JUnit tests present; individual report not independently inspected | Simulation / Physical network | Code/Test | Implement immutable typed nodes/pipe segments and connected network validation using the exact six-path envelope below. | `feat(simulation): define physical network input contracts` | HPR-P25-002A; successful B preflight documentation CI |
 | HPR-P25-002B2 | COMPLETED — 97332bba3861348a6d4acf2aa995d1ad537cbc1c passed Java 21 production CI #615 and Documentation #152; four immutable records and 19 synthetic JUnit tests present; per-class XML not independently inspected | Simulation / Fluid and equipment | Code/Test | Define versioned gas composition/property-method references and current equipment/curve/configuration payloads with explicit units/validity; no property calculation or universal product support is implied. | `feat(simulation): define fluid and equipment input contracts` | HPR-P25-002B1; exact B2 preflight |
 | HPR-P25-002B3 | COMPLETED — 599bb58115f3d06140d8230a54d7969f743c0c3a passed Java 21 production CI #616 and Documentation #154; four immutable records and 19 synthetic JUnit tests present; per-class XML not independently inspected | Simulation / State and boundaries | Code/Test | Define measured/estimated initial-state quantities and time-dependent boundary/action schedules with quantity basis, time ordering, interpolation declarations and missing-value semantics. | `feat(simulation): define state and boundary timeline inputs` | HPR-P25-002B2; exact B3 preflight |
-| HPR-P25-002B4 | IN PROGRESS — combined structural graph and exact-source gas scalar assembly records plus 20 synthetic JUnit tests implemented; local Maven blocked by Central DNS/uncached Boot parent; exact-head full CI pending | Simulation / Payload assembly | Code/Test | Bind typed payload/version identities to manifests, validate node/equipment references and steady/transient completeness, preserving synthetic/provenance distinctions; canonical hash verification remains capture scope. | `feat(simulation): assemble consistent physical input payloads` | HPR-P25-002B1..B3; exact B4 preflight |
+| HPR-P25-002B4 | COMPLETED — 938fa25d8856243cf340cecbf65ffcdbfaa27659 passed Java 21 Production #617 and Documentation #156; two assembly records and 20 JUnit methods present; per-class XML not independently inspected | Simulation / Payload assembly | Code/Test | Bind typed payload/version identities to manifests, validate node/equipment references and steady/transient completeness, preserving synthetic/provenance distinctions; canonical hash verification remains capture scope. | `feat(simulation): assemble consistent physical input payloads` | HPR-P25-002B1..B3; exact B4 preflight |
 
 Gas/property/equipment methods and transient thermal/event fidelity will be specified
 in numerical design HPR-P25-008A; payload references must not silently select a method.
@@ -765,7 +765,7 @@ calibration/field-acceptance input; synthetic contract development can proceed.
 |---|---|---|---|---|---|---|
 | HPR-P25-000 | COMPLETED — registration 02e86faa48c49c0c83c2ad51ccc4f1c52686f6c4 passed Documentation #142/run 37948108881; no runtime implementation | Roadmap / Reconciliation | Doc | Register the owner-defined operational twin cycle, ordered tasks, prerequisites, acceptance gates and next requirements preflight. | `docs(roadmap): register phase 2.5 operational digital twin` | P0/P1/P2 closed; owner instruction 2026-10-09 |
 | HPR-P25-001 | COMPLETED — requirements/source preflight d65cba71421ed5c994a8f63864754aa6083b7837 passed Documentation #143; owner selected GZ2 gas, both modes, own engine and dynamic versioned inputs; field acceptance remains a later qualification gate | Cross-module requirements | Doc | Inventory exact-source gaps and owners; specify product/use-case coverage, data needs, solver integration options, steady-state/transient scope, operational/security issue classes, tolerances and acceptance fixtures; record unresolved owner decisions and implementation envelopes. | `docs(twin): define requirements and execution preflight` | HPR-P25-000; successful registration documentation CI |
-| HPR-P25-002 | PENDING — input-contract preflight delivered; implementation split into HPR-P25-002A..D, all PENDING | Topology / Custody / Simulation | Code/Test | Extend only demonstrated gaps in product-aware connected topology, fluid-property/composition references, equipment characteristics and versioned operating configurations; reject unsupported physics/product combinations. | `feat(topology): establish product aware twin network inputs` | HPR-P25-001 approved input/ownership contracts |
+| HPR-P25-002 | PENDING — input-contract preflight delivered; A and B1..B4 CI-confirmed; C/D and aggregate closure remain PENDING | Topology / Custody / Simulation | Code/Test | Extend only demonstrated gaps in product-aware connected topology, fluid-property/composition references, equipment characteristics and versioned operating configurations; reject unsupported physics/product combinations. | `feat(topology): establish product aware twin network inputs` | HPR-P25-001 approved input/ownership contracts |
 | HPR-P25-003 | PENDING | Topology / Telemetry / API | Code/Test | Provide authorized network map/state APIs with product and asset layers, connectivity, measured/estimated overlays, quality/freshness and issue location; verify the frontend integration contract. | `feat(topology): expose operational twin visualization` | HPR-P25-002 |
 | HPR-P25-004 | PENDING | Integration / Telemetry | Code/Test/Config | Implement the approved read-only acquisition adapter and coherent timestamp/unit/asset binding; verify replay, duplicates, late/missing readings, disconnect and recovery while retaining raw provenance and trust rules. | `feat(telemetry): synchronize trusted network measurements` | HPR-P25-001 approved source/access/latency contract; HPR-P25-002 |
 | HPR-P25-005 | PENDING | Analytics / Topology / Telemetry | Code/Test | Reconstruct a versioned time-coherent network state using approved physical methods; distinguish measured, estimated and unknown values and observability; retain input/configuration lineage and uncertainty. | `feat(analytics): reconstruct operational network state` | HPR-P25-004; approved estimator/model contract |
@@ -10189,3 +10189,157 @@ preflight: `docs(twin): register HPR-P25-002C execution preflight`.
 parent/tree/five paths, observe production/Documentation startup on exact head and STOP.
 P0/P1/P2 CLOSED, P2.5 OPEN, P3 DEFERRED, 57 completed HMRs, 123 permanent subjects,
 formal v0.6.0 and development 0.7.0-SNAPSHOT preserved.
+
+
+## HPR-P25-002C Owner Query and Adapter Preflight — 2026-10-09
+
+Owner Next selects ONLY `docs(twin): register HPR-P25-002C execution preflight`.
+Write ONLY doc/roadmap/ULTIMATE_ROADMAP.md and doc/model-remediation/RECONCILIATION.md.
+Verified main 938fa25d8856243cf340cecbf65ffcdbfaa27659, tree
+926fb7fdf87a351eb9aafe40c1d31e920ebdd4b7: Production #617/run 37976570634
+and Documentation #156/run 37976570645 completed SUCCESS on that exact SHA.
+B4's 20 JUnit methods are present; individual XML reports were not independently
+inspected. Remote full Java 21 CI supersedes the recorded local Maven limitation;
+that historical limitation is retained. Mandatory instructions and both execution
+memories read, source synchronized before mutation. No implementation executes here.
+
+### Owner evidence and missing-data boundary
+
+- Topology application/contract/simulation/SimulationTopologyScopeContract.java and
+  application/service/TopologySimulationScopeQueryService.java export supported,
+  exists and ACTIVE eligibility only for PIPELINE_SYSTEM/PIPELINE; SEGMENT_GROUP and
+  FACILITY_NETWORK are explicitly unsupported. They do not export physical revisions.
+  Pipeline domain/model/Pipeline.java has nominal diameter/design pressure; persistence
+  PipelineSegmentJpaEntity has endpoints/nullable lengthKm, TopologyNodeJpaEntity has
+  nullable elevationMeters. No domain revision/roughness/internal-diameter contract
+  was found in the inspected Topology domain. Do not manufacture a revision from
+  updatedAt, use a live catalog row as immutable history, or infer physical geometry.
+- Custody application/contract/planning/PlanningProductReferenceContract.java and
+  infrastructure/integration/PlanningProductReferenceQueryAdapter.java export identity,
+  code and Planning policy eligibility under mandatory transaction/shared locks.
+  Planning approval is not Simulation gas eligibility. No inspected Custody domain
+  contract provides versioned gas composition, property methods or reference basis.
+- Telemetry domain/model/TrustedTelemetryReading.java already retains actual values,
+  units, quality assessment/code, TrustLevel, source/trusted times, original reading,
+  point, asset binding, topologySnapshotId and ingestionBatchId. Its existing Monitoring
+  export provides only id/pointId/trustLevel. TrustedTelemetryReadingRepositoryPort
+  supports exact findById, allowing a useful owner-controlled evidence export now.
+  Presence of a trusted-reading row, enum name or topologySnapshotId does not prove
+  Simulation suitability, a coherent network revision or canonical input digest.
+- Simulation application/port/out/TopologySnapshotLookupPort.java and
+  TelemetryTrustedReadingSnapshotPort.java are boolean availability interfaces; do not
+  retrofit their meaning or pretend they capture the new immutable physical payload.
+  Owner equipment characteristic versions/approved limits remain missing prerequisites.
+
+The next bounded implementation is C1: export existing raw Telemetry evidence and
+adapt it into a Simulation-owned application projection without exposing Telemetry
+domain/JPA classes. This is useful read-only acquisition, not completed versioned
+physical-input resolution. Parent 002C/002 and aggregate B closure remain PENDING;
+B1..B4 implementation CI is confirmed, no independent closure task is selected here.
+
+### Bounded C stages
+
+| Code | Status | Exact purpose | Exact commit message | Gate |
+|---|---|---|---|---|
+| HPR-P25-002C1 | PENDING | Owner-controlled trusted-reading evidence export and Simulation adapter | `feat(simulation): resolve owner trusted reading evidence` | Successful C preflight Documentation CI; B1..B4 exact-head CI confirmed |
+| HPR-P25-002C2 | PENDING — exact-file preflight required | Topology/product eligibility adapters and explicit missing physical-revision results | `feat(simulation): resolve owner topology and product eligibility` | C1 CI; `docs(twin): register HPR-P25-002C2 execution preflight` |
+| HPR-P25-002C3 | PENDING — source/schema preflight required | Versioned physical source resolution, unit/reference conversion and Simulation suitability policy | `feat(simulation): resolve qualified physical source revisions` | C2 CI; `docs(twin): register HPR-P25-002C3 execution preflight`; demonstrated owner gaps/ownership/schema and approval evidence |
+
+C2/C3 are ordered planning registrations, not exact write authorization. C3 may need
+further bounded stages once actual source storage and policies are designed. Do not
+add owner tables, trust thresholds, unit conversions or synthetic production resolvers
+under C1. Parent completion requires topology/product/equipment/state revisions to be
+resolved and unavailable or unqualified inputs rejected, not only these projections.
+Canonical hash/capture/persistence remains 002D; solver design/execution remains 008A..F.
+
+### C1 exact next implementation envelope
+
+After this preflight Documentation CI succeeds, owner Next selects ONLY C1.
+Create ONLY these seven paths:
+
+1. src/main/java/dz/sh/hidra/modules/telemetry/application/contract/simulation/SimulationTrustedReadingContract.java
+2. src/main/java/dz/sh/hidra/modules/telemetry/application/service/SimulationTrustedReadingQueryService.java
+3. src/main/java/dz/sh/hidra/modules/simulation/application/port/out/SimulationTrustedReadingEvidencePort.java
+4. src/main/java/dz/sh/hidra/modules/simulation/infrastructure/integration/TelemetryTrustedReadingEvidenceQueryAdapter.java
+5. src/test/java/dz/sh/hidra/modules/telemetry/application/service/SimulationTrustedReadingQueryServiceTest.java
+6. src/test/java/dz/sh/hidra/modules/simulation/infrastructure/integration/TelemetryTrustedReadingEvidenceQueryAdapterTest.java
+7. src/test/java/dz/sh/hidra/modules/simulation/application/port/out/SimulationTrustedReadingEvidencePortTest.java
+
+Update ONLY src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java and both execution
+memories: ten tracked paths total. No migration, entity/repository change, REST/API,
+OpenAPI/dictionary regeneration, POM/dependencies/workflows, Kernel/Platform, existing
+Simulation payload/manifest/availability port or other owner code changes.
+
+Owner contract method: Optional<ReadingEvidence> resolve(String id). Nested immutable
+record ReadingEvidence carries exactly existing fields, preserving their values:
+String id, readingId, pointId; BigDecimal numericValue; String textValue;
+Boolean booleanValue; String unitId, qualityCodeId, trustLevel;
+Instant sourceTimestamp, trustedAt; String qualityAssessmentId, topologyAssetTypeCode,
+topologyAssetId, topologyAssetCode, topologySnapshotId, ingestionBatchId.
+TrustLevel is exported as its existing enum name, not a foreign domain enum.
+No field called revisionId/digest, synthetic marker or approved/eligible flag is invented.
+No extra value validation or normalization modifies stored evidence. The immutable
+projection is not a SimulationStateQuantityInput and supplies no default physical value.
+
+Owner service is @Service, implements owner contract, constructor-injects only
+TrustedTelemetryReadingRepositoryPort. Blank/null IDs return Optional.empty without
+repository access; trim nonblank lookup IDs; findById and require returned id equals
+normalized requested id. Missing/mismatched rows return empty. Map all fields unchanged,
+including nullable optional metadata and numeric/text/boolean alternatives. Do not
+silently suppress low/untrusted evidence or promote it; explicit downstream qualification
+will decide suitability. Preserve even ambiguous value alternatives for assessment;
+never convert raw evidence into a known physical scalar here. Repository failures
+propagate, not masquerade as a successful absence or usable snapshot.
+
+Simulation port method Optional<ReadingEvidence> resolve(String id); its own nested
+immutable record has the same fields/types, with no Telemetry import. Adapter is
+@Component, constructor-injects only SimulationTrustedReadingContract; blank/null
+requests return empty without owner call, nonblank IDs trimmed, returned ID must match.
+Copy every field into Simulation-owned record; missing/mismatch remains empty and
+owner failures propagate. No call to solver, capture, acquisition endpoint or OT.
+No wiring into existing scenario/run workflows, no default/noop fallback bean.
+
+Architecture decision: add ONLY
+ dz.sh.hidra.modules.telemetry.application.contract.simulation
+to deliberate exported package prefixes and add a focused positive export assertion
+plus negative owner domain/persistence access assertions. Keep all existing rules and
+exceptions. Foreign Telemetry access is confined to this Simulation infrastructure
+adapter through that public contract; owner never imports Simulation. All new production
+imports Java/local types, appropriate Spring stereotype, and this deliberate contract
+only. Preserve canonical headers, Author Abir MEDJERAB, CreatedOn 2025-06-26 and actual
+execution-date UpdatedOn. Nested records/helpers stay in listed files.
+
+### Required C1 validation and stop boundary
+
+Meaningful deterministic JUnit tests with synthetic fixtures and stub/mock ports cover:
+all field values round-trip; null/blank/trimmed IDs and zero calls for invalid IDs;
+missing/mismatched IDs; each TrustLevel name without reclassification; numeric zero and
+negative values preserved; text/boolean and multiple/missing alternatives preserved;
+null optional provenance/unit/asset fields preserved without defaults; exact fixed
+source/trusted timestamps and raw units; repository/owner exceptions propagate;
+constructor null dependency rejection; projection equality and replacement evidence
+leaves original values unchanged. At least one distinct-field fixture guards against
+swapped mapping fields. Tests claim metadata transport only, not trusted physics.
+
+Run ./mvnw -B -q -Dtest=SimulationTrustedReadingQueryServiceTest,TelemetryTrustedReadingEvidenceQueryAdapterTest,SimulationTrustedReadingEvidencePortTest,SimulationPhysicalInputPayloadTest,ArchitectureGuardrailTest test
+then ./mvnw -B -q clean verify. Use bash if wrapper is nonexecutable without chmod;
+report actual environment/dependency failures. Run maintained validator tests, canonical
+docs, offline OpenAPI, P1 closure evidence, whitespace and exact ten-path checks.
+Require remote full CI for implementation completion. Publish exact registered message
+with expected-parent lease; verify remote parent/tree/file scope, observe production
+and Documentation CI startup on exact implementation head, then STOP for Next/Fail.
+Do not execute C2/C3/002D/engine or phase closure automatically.
+
+This documentation-only preflight runs the maintained 37 validator tests, canonical
+docs/offline OpenAPI/P1 evidence, whitespace and exact two-path checks; no Java source
+change means no new Maven verification claim. Publish with expected-parent lease,
+verify remote parent/tree/two files and observe exact-head Documentation CI startup,
+then STOP. Next registered selection: C1 implementation after documentation success.
+P0/P1/P2 CLOSED, P2.5 OPEN, P3 DEFERRED, 57 HMR implementations, 123 permanent subjects
+and development 0.7.0-SNAPSHOT preserved; no runtime solver or GZ2 calibration claimed.
+
+Preflight validation completed: 37 maintained validator tests PASSED; validate_docs.py
+PASSED (95 documents, 5063 links, 24 modules, 13 P2 rows); offline OpenAPI validator
+PASSED (244 paths, 263 operations, 231 schemas); validate_p1_closure.py and
+git diff --check PASSED. Exact two-document scope and historical registry retention
+checked; no Maven run required for this documentation-only change.

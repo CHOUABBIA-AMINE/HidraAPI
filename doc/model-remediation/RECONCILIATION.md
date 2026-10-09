@@ -6191,3 +6191,228 @@ commit to main with the expected-head lease; verify immutable commit/tree/blobs,
 confirm Documentation Validation starts and STOP without waiting. Production CI
 ignores this docs-only scope. A later Next selects HPR-P2-012 preflight after the
 exact-head documentation result is checked; failure requires responsible-scope repair.
+
+## HPR-P2-012 canonical-validation preflight — 2026-10-09
+
+### Selection and verified baseline
+
+The owner's Next after HPR-P2-011 selects this preflight only. Current main is
+unchanged at `6cc9974b54e9d5c82334a62214a76f89519e7aef`, tree
+`e2d1696dc2a36da65afbd332964505ad0b1813da`. Documentation Validation #122
+(run 37898624297) PASSED. Production CI #604 (37841205677) PASSED at executable
+baseline `617c2eec812e3a5734957ee9fa0360f6f5613032`, tree
+`e450c699544f99e96f2b447fc04215f7f4c5f344`. Those existing results were checked;
+no fresh Maven/runtime or physical campaign was performed for this preflight.
+
+HPR-P2-012 stays PENDING. A subsequent Next after this published proposal accepts
+its full twelve-part design and exhaustive 21-path implementation scope, exact commit
+`ci(docs): validate canonical documentation`. HPR-P2-013 stays PENDING, P3 DEFERRED
+and P2 OPEN; this preflight creates no validator, workflow change or snapshot refresh.
+
+### Current validation and concrete drift recovered
+
+- `.github/workflows/docs.yml` currently checks doc/ Markdown UTF-8/nonempty/conflict
+  markers only. It triggers on doc/** and Markdown, not validation-script/manifest
+  changes. Production CI ignores doc/**, docs/** and Markdown but runs on workflow/
+  script changes. Its full checkout permits Git ancestry/provenance checks.
+- A read-only audit of all 94 canonical Markdown files resolved 3,194 current inline
+  relative Markdown links/anchors with zero missing targets/anchors. That local audit
+  is not yet a maintained CI checker, semantic approval or external-link availability
+  evidence. Ordinary CURRENT/HISTORICAL statuses coexist with bold formatting,
+  eleven preserved P1 operating/status phrases and roadmap ACTIVE control metadata.
+  Historical P1 descriptions must not be rewritten to satisfy a new parser.
+- The canonical snapshot is sorted compact JSON plus newline, valid as the existing
+  YAML 1.2 JSON subset. It records generator
+  `6822f3ce79b305e1c22f48ff20ef0b0bd2c7f135`, 240 paths, 259 operations and
+  227 schemas. Its file SHA-256 is
+  `97f601447dc5291afe9bc1775c8ea30b04eb1d2e412e8a3a4e04ce28f03b50d8`.
+  This checksum is a file digest, not the ZIP artifact digest or Git blob SHA.
+- Retrieved exact successful CI #604 OpenAPI artifact ID 11577329466,
+  name hidra-api-openapi-617c2eec812e3a5734957ee9fa0360f6f5613032. The downloaded
+  ZIP SHA-256 was independently matched to GitHub metadata:
+  `2ff35c384c54b2d49e50aa2a9e646a67c62427e8afcc8db92e17e5368a91b334`.
+  ZIP contains exactly hidra-api.json; source-SHA provenance equals the executable
+  baseline. Initial direct-download HTTP 403 was resolved with an ordinary HTTP
+  client User-Agent; artifact retrieval/digest validation ultimately succeeded.
+- The retained generated JSON SHA-256 is
+  `1ee03ad711b79c7ef42767a6aa3c685f4857800f09f03002deeac49e4e2d23d4`.
+  Deterministic compact conversion of that exact object has SHA-256
+  `ba9511455ebabb51c704ef510d08f4fdc766f29d8def0a34ef7a8f1acf86d9fd`.
+  It has 244 paths, 263 operations and 231 schemas. Ignoring only source-SHA
+  provenance, it differs from the canonical snapshot in paths/components. Four paths
+  are added: OIDC evaluate and Risk assessment approve/score/submit; no paths removed
+  or existing path objects changed. Four schemas are added and one existing schema
+  differs. These are generated evidence differences, not hand-authored API changes.
+- Actual command `python3 .github/scripts/openapi_compatibility.py
+  doc/api/openapi.yaml /workspace/scratch/4115643ef669/hidra-openapi-ci604.json`
+  PASSED: no supported breaking changes detected. That bounded compatibility result
+  does not imply equality or complete OpenAPI/JSON Schema compatibility coverage.
+  Current API governance explicitly treats executable/snapshot divergence as a
+  defect requiring generated reconciliation, not silently accepted historical drift.
+
+### Accepted-on-Next proposed design — twelve parts
+
+1. Introduce standard-library Python canonical documentation and OpenAPI validators,
+   each with meaningful positive/negative unittest fixtures. Add one reviewed JSON
+   validation manifest and a canonical governance validation guide. These files
+   implement bounded structural/governance checks, not business approval, physical
+   survivability, arbitrary semantic coverage or a new legal/operational standard.
+2. Preserve existing UTF-8/nonempty/conflict checks across all canonical Markdown.
+   Resolve inline/reference-style local Markdown links and fragments, including
+   duplicate GitHub-style heading anchors, formatting, percent encoding and explicit
+   IDs where present. Ignore fenced examples and external/mailto links without
+   networking; reject missing/case-mismatched targets and repository escapes.
+   Code examples/artifact paths are not indiscriminately treated as hyperlinks.
+3. Validate declared document statuses/metadata via the containing-index inheritance
+   allowed by DOCUMENTATION_STANDARD.md. Handle bold status formatting; preserve
+   HISTORICAL evidence and explicitly admit exact eleven legacy P1 status phrases
+   with path-specific rationale, plus the roadmap ACTIVE control format. Unknown
+   statuses must fail; never globally whitelist arbitrary text, scan historical
+   appended execution paragraphs as current status or rewrite P1 evidence.
+4. The reviewed manifest declares the canonical document inventory, required domain/
+   index/register entry points, 24 implemented module roots/documents and their
+   navigation obligations. Compare actual files/source module roots/index targets,
+   reject missing/duplicate/unregistered current module documents and inconsistent
+   CURRENT/register/index claims. Treat security/operations directories without a
+   README according to their actual register/navigation, not fabricated indexes.
+   Inventory updates require deliberate manifest/document review, not automatic
+   acceptance of new files or broad permanent exemptions.
+5. Check the primary roadmap P2 registry for unique codes, seven-column shape, allowed
+   task statuses and coherent selected-next/closure claims, together with canonical
+   register/index readiness. Do not freeze all historical prose or clone execution
+   statuses into another register. Preserve unrelated HMR/HPR rows; this task completes
+   only HPR-P2-012 and leaves HPR-P2-013 as the next preflight. Closure consistency
+   checks must permit a later deliberately admitted HPR-P2-013 completion.
+6. Recover the exact verified CI #604 generated object and refresh doc/api/openapi.yaml
+   solely by sorted compact JSON conversion plus newline. Record generator/run/
+   artifact/digest provenance and update API index/overview counts to 244/263/231.
+   Preserve old HPR-P2-005 provenance as historical generation evidence. Do not
+   hand-edit endpoint/schema/security content, label this docs/CI commit as the
+   generator, or silently retain the known 240/259/227 snapshot mismatch.
+7. OpenAPI validation rejects malformed/duplicate-key/nonfinite JSON, invalid source
+   SHA/provenance, unsupported snapshot structure and unresolved local references.
+   Enforce exact deterministic snapshot serialization, expected generated-source
+   identity, reviewed manifest file digest/counts and representative bearer/public/
+   protected/OIDC security assertions. Clearly limit this to the repository's JSON
+   snapshot subset and supported structural checks, not full OpenAPI certification.
+8. In production CI, compare the freshly generated object with the committed canonical
+   object after removing ONLY x-hidra-ci-source-sha for semantic equality; validate
+   each actual source SHA separately against its expected generation context. Preserve
+   every other field/list/security/description. Reordered object keys are irrelevant;
+   arrays and all semantic values remain significant. Genuine difference fails closed
+   and requires an artifact-derived, reviewed snapshot/provenance refresh, never an
+   ignore list or compatibility-as-equality shortcut. Retain existing compatibility
+   base resolver, its tests, supported compatibility check and artifact upload.
+9. Wire validators and their tests into documentation CI and production CI. Broaden
+   documentation triggers to the exact validation scripts/tests/manifest and workflow
+   paths; retain normal doc/Markdown triggers, read-only permissions and concurrency.
+   Documentation CI stays offline/no Maven for structural/snapshot checks. Production
+   CI additionally verifies fresh runtime snapshot equality after generation, retains
+   Java 21/PostgreSQL/full clean verify and the existing HA/release/backup/observability/
+   maintenance evidence gates. No release.yml or deployment changes are admitted.
+10. Document current control coverage, commands, manifest maintenance, historical
+    status handling and generated-only snapshot refresh in DOCUMENTATION_VALIDATION.md.
+    Update root/governance/API navigation and only the four admitted testing documents'
+    affected CI/snapshot claims. Preserve their HPR-P2-011 test/traceability identities
+    and prior execution limits; change governance applicability explicitly rather
+    than presenting refreshed CI as new per-class/physical evidence.
+11. Run both standard-library test suites and actual full-repository validators,
+    including negative cases for paths/anchors/case/escapes/status/index/module/registry
+    drift and OpenAPI source/refs/security/serialization/real semantic differences.
+    Validate old-to-refreshed supported compatibility and exact object/digest fidelity.
+    Assess current Java/Maven/dependency/Docker prerequisites and attempt the admitted
+    clean verify; record real results/skips or exact environmental limitations, not
+    earlier assumed DNS/dependency failures. Do not turn a pre-compilation block into
+    a test failure or claim per-class no skips without actual report evidence.
+12. Record acceptance, exact checks and only HPR-P2-012 completion in canonical memory.
+    Preserve legacy docs/**, all runtime Java/tests/POM/configuration, migrations and
+    other canonical evidence. Publish one exact-message commit to main once using a
+    fresh expected-head lease; verify immutable parent/tree/blobs and all other files
+    unchanged. This implementation changes workflow/scripts, so BOTH documentation
+    and production CI must start. Confirm startup and STOP, never wait for completion
+    or execute HPR-P2-013/P3 automatically. A failure requires responsible-scope repair.
+
+### Exhaustive future implementation write scope — 21 paths
+
+Create only:
+
+- `.github/scripts/validate_docs.py`
+- `.github/scripts/test_validate_docs.py`
+- `.github/scripts/validate_openapi_snapshot.py`
+- `.github/scripts/test_validate_openapi_snapshot.py`
+- `.github/documentation-validation.json`
+- `doc/governance/DOCUMENTATION_VALIDATION.md`
+
+Update only:
+
+- `.github/workflows/docs.yml`
+- `.github/workflows/ci.yml`
+- `doc/api/openapi.yaml`
+- `doc/api/README.md`
+- `doc/api/API_OVERVIEW.md`
+- `doc/api/OPENAPI_GOVERNANCE.md`
+- `doc/README.md`
+- `doc/governance/README.md`
+- `doc/governance/DOCUMENT_REGISTER.md`
+- `doc/testing/README.md`
+- `doc/testing/TEST_STRATEGY.md`
+- `doc/testing/API_TESTING.md`
+- `doc/testing/REQUIREMENTS_TRACEABILITY.md`
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `doc/model-remediation/RECONCILIATION.md`
+
+No production Java/test/resource/POM/migration, release workflow, dependency, source
+import, tag/release or physical campaign. Existing compatibility/resolver scripts
+are preserved. Only the known generated snapshot and admitted metadata/CI statements
+are refreshed; no mass rewrite of historical canonical/legacy documentation.
+
+### Admitted validation and publication
+
+Before implementation, verify fresh main, exact-head documentation CI and successful
+executable baseline/artifact provenance. Reacquire the approved artifact if needed;
+check ZIP/member/source/digests and no extraction path escape before using its object.
+Run `python3 .github/scripts/test_validate_docs.py` and
+`python3 .github/scripts/test_validate_openapi_snapshot.py`, then actual full canonical
+and OpenAPI validators with their documented CLI. Run supported old/new compatibility
+and compare refreshed bytes/digest to the approved generated object. Attempt
+`./mvnw -B -q clean verify` with accurate result/environment/report limits. Workflow
+wiring/trigger/permission checks must prove both structural and fresh-runtime gates
+are invoked; do not weaken existing production verification or disable failures.
+
+Canonical count is currently 94 Markdown documents; the new guide makes 95. Verify
+all relative links/anchors, document/index/status inheritance and reviewed legacy
+status exceptions, 24 module roots, 57 HMR and 123 subject identities preserved,
+primary P2 registry shape/next gate, exhaustive 21-path scope, version
+0.6.0-SNAPSHOT, git diff --check and every other tracked blob unchanged. New tests
+must exercise actual validation failures, not merely mirror implementation text.
+No execution success is fabricated when prerequisites fail. Implementation publication
+uses `ci(docs): validate canonical documentation`; confirm both CI workflows start
+then STOP. A later Next selects HPR-P2-013 preflight only after both exact-head gates
+are checked; its closure is not executed by this task.
+
+### This preflight's supporting execution and actual checks
+
+Registered supporting message: `ci(docs): record canonical validation preflight`.
+Write ONLY doc/roadmap/ULTIMATE_ROADMAP.md and
+ doc/model-remediation/RECONCILIATION.md. No future implementation file is changed
+or created now. Validate identical envelopes, 21 unique future paths (six new/fifteen
+existing), all 94 canonical Markdown files, preserved HMR/HPR rows and P2 row shape,
+exact two-file scope and git diff --check. Read-only 3,194 inline relative links and
+artifact retrieval/digest/object comparison plus supported compatibility checks above
+actually ran; snapshot refresh, validators and Maven/runtime execution did not.
+Publish one supporting commit directly to main using expected head
+`6cc9974b54e9d5c82334a62214a76f89519e7aef`; verify immutable tree/blobs and every
+other file unchanged, confirm Documentation Validation starts and STOP. Production
+CI ignores this preflight's two-document scope. HPR-P2-012 remains PENDING.
+
+### Actual supporting validation result
+
+`python3 /workspace/scratch/4115643ef669/p2-012-preflight-validate.py` PASSED:
+identical envelopes; exactly two modified memories; 21 unique future paths with six
+new/fifteen existing; all 94 canonical Markdown files UTF-8/nonempty/conflict-free;
+all HMR/HPR rows unchanged and primary P2 row shape preserved. Project version remains
+0.6.0-SNAPSHOT. `git diff --check` PASSED. No proposed validator/test/manifest/guide,
+workflow or snapshot was created/changed. Exact publication checks additionally
+require all other tracked blobs unchanged. Current source/artifact comparison,
+3,194-link read-only audit and supported old/generated compatibility results are
+recorded above; no Maven/runtime or physical execution is claimed.

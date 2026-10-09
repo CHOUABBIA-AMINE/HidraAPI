@@ -9241,3 +9241,119 @@ C3 preflight validation PASSED: all 37 maintained validator tests; canonical doc
 263 operations, 231 schemas); P1 evidence; whitespace; exact two-document scope;
 historical registries/version retention. No production source changed or Maven pass
 claimed. C2 verified completed by #620/#161; C3/C3A and parent 002C/002 remain PENDING.
+
+
+## HPR-P25-002 Consolidated Delivery Plan — 2026-10-09
+
+Owner accepted the roadmap trace/recommendation with Ok / Next before further source
+implementation. This selects ONLY HPR-P25-002-PLAN1, exact message
+`docs(twin): consolidate HPR-P25-002 delivery plan`.
+Write ONLY doc/roadmap/ULTIMATE_ROADMAP.md and doc/model-remediation/RECONCILIATION.md.
+Verified parent c9dc28b743eff614e8f336ae754864a45d6b71bd, tree
+e21559ff585155cfd82a2e69b6c5e65c9b67b233; Documentation #162/run 37986429630
+PASSED. Production #620 at 15795dc000c60080dea0566d275d42d843420ba8 remains
+the latest verified executable baseline. Mandatory instructions/execution memories read,
+source synchronized. No production/test/schema/workflow change or phase closure here.
+
+This owner-approved consolidation supersedes per-substage selection/preflight sequencing
+in the earlier C3 section, not its source findings, physical requirements or historical
+commit identities. It preserves all completed A/B/C1/C2 implementations and evidence.
+B is now recorded completed from its four CI-confirmed implementation leaves; this is
+status alignment, not a fabricated parent implementation commit or closure of 002/Phase2.5.
+Parent 002 and C remain PENDING until resolved sources and reproducible capture exist.
+
+### Four delivery outcomes and acceptance evidence
+
+| Delivery | Retained implementation codes | Concrete completion evidence | Position |
+|---|---|---|---|
+| Network revisions | HPR-P25-002C3A + HPR-P25-002C3B | Persist two explicit synthetic physical network revisions; query each exact source/revision through an owner export; prove original content unchanged, conflicting same-identity content rejected and missing revision unavailable | Next delivery; neither code implemented |
+| Qualified fluid and equipment | HPR-P25-002C3C + HPR-P25-002C3D | Resolve versioned gas composition/method and current equipment parameters with source/approval evidence; reject unsupported or unqualified combinations; retain synthetic status and explicit limits | Pending network delivery |
+| Qualified operating state | HPR-P25-002C3E | Resolve coherent state with actual owner trust/binding evidence and explicit quantity/unit/reference conversions; reject missing or incompatible basis and retain raw provenance | Pending fluid/equipment delivery |
+| Reproducible calculation input | HPR-P25-002C3F + HPR-P25-002D | Resolve all selected source revisions into one immutable typed payload/manifest; compute and verify canonical hashes; persist and reload identical capture; demonstrate replacement cannot alter original | Pending qualified state delivery |
+
+The first acceptance case is a connected synthetic gas network, using actual persistence
+and owner queries rather than in-memory mocks as storage evidence. An explicitly empty
+equipment model may support the first pipe-only case; it does not complete equipment
+coverage or hide missing real station parameters. Actual GZ2 data/approval/calibration
+is a later operational gate. These outcomes do not by themselves establish an engine.
+
+Keep the original implementation messages and separate commits. Delivery groupings are
+not new semantic tasks, releases or squashed substitutes for retained task codes.
+Exact files, migrations, ownership, qualification and tests still matter. A delivery is
+complete only when its usable acceptance behavior and applicable exact-head CI pass;
+adding a record/interface alone is an intermediate implementation result.
+
+### Consolidated execution protocol
+
+1. Use ONE shared exact-file execution preflight for each delivery, covering its retained
+   codes, dependency order, individual commit messages, file/migration allowlists and
+   acceptance tests. Do not demand a second documentation commit merely because the next
+   code in that already-preflighted delivery is selected. Revisit only material source,
+   ownership/schema/approval or failure evidence changes.
+2. Shared preflight must make the entire delivery concrete before mutation. If a schema,
+   security/ownership contract or source policy remains unregistered, complete its design
+   inside that preflight; do not implement invented policy or broad unspecified writes.
+3. For a preflighted delivery, one owner Next may execute its listed two retained codes in
+   order, with separate commits and one final branch advancement/CI observation when
+   connector/dependencies permit. This is the owner-approved P2.5 delivery envelope,
+   distinct from historical HMR remediation batches. No general multi-stage permission
+   beyond the selected delivery is implied. Single-code state delivery remains bounded.
+4. Tests must exercise the delivery acceptance behavior, plus necessary lower-level
+   invariants and architecture rules. Keep full repository verification, both architecture
+   export registries when applicable, documentation/OpenAPI/P1/whitespace/scope evidence.
+   Report blocked commands accurately; a standalone harness is not full verification.
+5. Publish with expected-parent lease, verify remote commit chain/tree/individual scopes,
+   observe applicable exact-head CI startup and STOP. Owner Next/Fail remains the control;
+   never proceed into the next delivery, engine or phase closure automatically.
+6. Do not introduce deeper nested codes for routine files, serializers, mappers or tests.
+   They belong to the selected delivery's exact envelope. A genuine independent semantic
+   or approval gap may be split, with a specific reason and observable completion target.
+
+### Next registered selection
+
+Next owner Next after this plan's Documentation CI succeeds selects ONLY a shared
+network-revision delivery preflight:
+`docs(twin): register network revision delivery preflight`.
+Supporting code HPR-P25-002-NETWORK-PREFLIGHT; scope remains these two execution memories.
+It must retain C3A's already-defined record/validation requirements, review whether the
+source/store/export representation needs adjustments, and register C3B's actual storage,
+canonical representation, migration, owner contract/adapter, tests and documentation
+consequences in the same envelope. Do not repeat C3A's general source-gap review. The
+combined code envelope is not authorized until that schema/file plan is concrete.
+This replaces the former immediate standalone C3A selection and separate later C3B
+preflight selection; historical text is retained as history. C3A/C3B code not executed here.
+
+After network-delivery CI, the subsequent owner-selected shared preflights are:
+`docs(twin): register fluid equipment delivery preflight`,
+`docs(twin): register operating state delivery preflight`, and
+`docs(twin): register reproducible input delivery preflight`.
+They replace the separate per-code C3C/C3D/C3E/C3F/002D preflight sequence. Their code
+write scopes/migrations are not implicitly authorized by this planning registration.
+
+### Engine work and Phase 2.5 position
+
+HPR-P25-008A numerical design may be separately selected after network-delivery CI,
+using the completed B physical input contracts and retained known owner/field gaps.
+Full parent 002 closure is not a prerequisite for mathematical design or synthetic
+reference planning; actual engine execution still requires complete compatible inputs.
+A future owner Next must explicitly select that design track and its exact preflight;
+it does not run alongside this task automatically. Keep original 008A..F messages.
+
+Near-term product target: one stored-revision synthetic network resolved into a persisted
+reproducible input, followed by an executing steady-state calculation with conservation
+and independent reference evidence. Then equipment/transient verification and actual
+GZ2 calibration. Do not market contract counts or planning commits as runtime progress.
+
+Source boundaries remain: no direct OT actuation, no inferred physical values/approved
+limits, no unverified deployments, no synthetic-to-operational promotion from labels.
+P0/P1/P2 CLOSED, P2.5 OPEN, P3 DEFERRED, 57 HMR implementations, 123 subjects and
+0.7.0-SNAPSHOT retained. No release, deployment, calibrated GZ2 model or solver claim.
+This planning task runs maintained 37 validator tests, canonical docs/offline OpenAPI/P1
+evidence, whitespace and exact two-file scope; no Maven pass claimed. Verify remote
+parent/tree/two paths, observe Documentation CI startup and STOP.
+
+PLAN1 validation PASSED: 37 maintained validator tests; canonical docs (95 documents,
+5063 links, 24 modules, 13 P2 rows); offline OpenAPI (244 paths, 263 operations,
+231 schemas); P1 evidence; whitespace; exact two-document scope; retained historical
+registries/version. Plan implementation recorded, exact-head Documentation CI pending;
+network-delivery shared preflight remains the next selected task after successful CI.

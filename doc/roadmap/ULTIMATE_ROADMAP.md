@@ -10241,7 +10241,7 @@ B1..B4 implementation CI is confirmed, no independent closure task is selected h
 
 | Code | Status | Exact purpose | Exact commit message | Gate |
 |---|---|---|---|---|
-| HPR-P25-002C1 | PENDING | Owner-controlled trusted-reading evidence export and Simulation adapter | `feat(simulation): resolve owner trusted reading evidence` | Successful C preflight Documentation CI; B1..B4 exact-head CI confirmed |
+| HPR-P25-002C1 | IN PROGRESS — owner evidence export and Simulation adapter plus 16 JUnit methods implemented; local Maven blocked by dependency DNS; exact-head full CI pending | Owner-controlled trusted-reading evidence export and Simulation adapter | `feat(simulation): resolve owner trusted reading evidence` | Successful C preflight Documentation CI; B1..B4 exact-head CI confirmed |
 | HPR-P25-002C2 | PENDING — exact-file preflight required | Topology/product eligibility adapters and explicit missing physical-revision results | `feat(simulation): resolve owner topology and product eligibility` | C1 CI; `docs(twin): register HPR-P25-002C2 execution preflight` |
 | HPR-P25-002C3 | PENDING — source/schema preflight required | Versioned physical source resolution, unit/reference conversion and Simulation suitability policy | `feat(simulation): resolve qualified physical source revisions` | C2 CI; `docs(twin): register HPR-P25-002C3 execution preflight`; demonstrated owner gaps/ownership/schema and approval evidence |
 
@@ -10343,3 +10343,70 @@ PASSED (95 documents, 5063 links, 24 modules, 13 P2 rows); offline OpenAPI valid
 PASSED (244 paths, 263 operations, 231 schemas); validate_p1_closure.py and
 git diff --check PASSED. Exact two-document scope and historical registry retention
 checked; no Maven run required for this documentation-only change.
+
+
+## HPR-P25-002C1 Trusted Reading Evidence Implementation — 2026-10-09
+
+Owner Next selects ONLY C1 after exact-head Documentation #157/run 37977891201
+completed SUCCESS on f0a9213d130c0d96f7b2b3dd27768851587b9c79, tree
+9778f015ca57a3eb37f09381d6cab7b840865e15. Main/source synchronized, mandatory
+AGENTS and both execution memories read; registered ten-path envelope retained.
+Exact message: `feat(simulation): resolve owner trusted reading evidence`.
+
+Created SimulationTrustedReadingContract and SimulationTrustedReadingQueryService
+under Telemetry application, SimulationTrustedReadingEvidencePort under Simulation
+application/port/out, TelemetryTrustedReadingEvidenceQueryAdapter under Simulation
+infrastructure/integration, plus the three registered test classes. Updated only
+ArchitectureGuardrailTest and these two execution memories: ten tracked paths.
+Canonical Java headers retained. No entity/repository/availability-port/payload/schema/
+migration/API/OpenAPI/dictionary/POM/dependency/workflow/Kernel/Platform change.
+
+Both evidence records copy all 17 existing scalar/provenance fields. Owner lookup uses
+only TrustedTelemetryReadingRepositoryPort; adapter uses only the new public owner
+contract. Null/blank requests return empty without lookup; trim lookup IDs and reject
+mismatched returned identities. Missing rows remain absent, dependency failures propagate.
+Raw units/times, quality and asset/snapshot/batch provenance, numeric/text/boolean
+alternatives and missing optional metadata remain unchanged. All existing trust enum
+names are transported, including UNTRUSTED; no physical eligibility is assigned and no
+trust level is promoted. Nullable/multiple alternatives are evidence for later assessment,
+not known simulation scalars. No fabricated immutable owner revision or digest.
+
+The only new architecture export is telemetry.application.contract.simulation. A new
+focused classifier test admits that contract/nested evidence and rejects owner domain,
+persistence and private repository access; all prior rules/exports/exceptions retained.
+No runtime scenario/run wiring, capture, solver, fallback resolver or OT action added.
+
+Sixteen deterministic JUnit methods in three new classes cover distinct-field mapping,
+null/blank/no-call and trimmed lookups, missing/mismatched IDs, all trust levels, zero/
+negative/raw numeric values, text/boolean/multiple/missing alternatives, nullable optional
+metadata, fixed source/trusted times, exception propagation, null dependencies and
+immutable equality/replacement. Added one focused architecture method. Fixtures are
+synthetic; no actual GZ2 values, trust approval or measured hydraulic accuracy claimed.
+
+Actual local validation:
+- bash ./mvnw -B -q -Dtest=SimulationTrustedReadingQueryServiceTest,TelemetryTrustedReadingEvidenceQueryAdapterTest,SimulationTrustedReadingEvidencePortTest,SimulationPhysicalInputPayloadTest,ArchitectureGuardrailTest test
+  and bash ./mvnw -B -q clean verify both FAILED before compilation: uncached Spring
+  Boot parent 4.1.1; repo.maven.apache.org temporary DNS resolution failure. Available
+  Java 17.0.20 is not required Java 21; wrapper permissions unchanged. No local Maven,
+  JUnit, Spring integration, ArchUnit or full verification pass is claimed.
+- Temporary source copies compiled using Java 17 jdk.compiler/com.sun.tools.javac.Main;
+  Spring stereotype imports/annotations removed in service/adapter copies only, JUnit
+  imports/annotations replaced in test copies with plain custom assertions. All 16
+  scenario bodies PASSED 90 assertions. No framework package stubs or repository changes;
+  this fallback does not establish framework wiring or Java 21/full verification.
+
+C1 remains IN PROGRESS pending exact-head applicable full CI; parent 002C/002 remain
+PENDING. Missing physical revisions/units/reference conversion and qualified trust policy
+remain C2/C3/002D prerequisites. No complete physical model, operational readiness,
+executing engine or GZ2 calibration established. Preserve P0/P1/P2 CLOSED, P2.5 OPEN,
+P3 DEFERRED, all 57 HMR implementations, 123 subjects and 0.7.0-SNAPSHOT.
+Next registered step after successful C1 CI is documentation-only C2 exact preflight:
+`docs(twin): register HPR-P25-002C2 execution preflight`.
+Publish with expected-parent lease, verify remote parent/tree/ten files, observe exact-head
+production and Documentation CI startup, then STOP. No C2/C3/002D/engine/closure execution.
+
+Additional local checks PASSED: all 37 maintained validator tests; canonical docs
+(95 documents, 5063 links, 24 modules, 13 P2 rows); offline OpenAPI (244 paths,
+263 operations, 231 schemas); P1 evidence; whitespace; exact ten-path envelope;
+canonical headers/import boundaries; sole deliberate export addition and historical
+registry/version retention. These do not substitute for pending implementation CI.

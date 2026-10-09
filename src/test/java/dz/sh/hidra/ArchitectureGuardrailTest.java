@@ -7,7 +7,7 @@
  *
  * @Name        : ArchitectureGuardrailTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-08
+ * @UpdatedOn   : 2026-10-09
  *
  * @Type        : Class
  * @Layer       : Test
@@ -94,6 +94,7 @@ class ArchitectureGuardrailTest {
             "dz.sh.hidra.modules.party.application.contract.planning",
             "dz.sh.hidra.modules.custody.application.contract.planning",
             "dz.sh.hidra.modules.telemetry.application.contract.monitoring",
+            "dz.sh.hidra.modules.telemetry.application.contract.simulation",
             "dz.sh.hidra.modules.telemetry.application.contract.planning",
             "dz.sh.hidra.modules.planning.application.contract.monitoring",
             "dz.sh.hidra.modules.topology.application.contract.assets",
@@ -427,6 +428,21 @@ class ArchitectureGuardrailTest {
                 ),
                 "The deliberate Audit suppression contract exported to Alarm must remain allowed."
         );
+    }
+
+    @Test
+    void simulationTelemetryEvidenceExportKeepsOwnerInternalsPrivate() {
+        String adapter = "dz.sh.hidra.modules.simulation.infrastructure.integration.TelemetryTrustedReadingEvidenceQueryAdapter";
+        assertFalse(isForbiddenCrossModuleDependency(adapter,
+                "dz.sh.hidra.modules.telemetry.application.contract.simulation.SimulationTrustedReadingContract"));
+        assertFalse(isForbiddenCrossModuleDependency(adapter,
+                "dz.sh.hidra.modules.telemetry.application.contract.simulation.SimulationTrustedReadingContract$ReadingEvidence"));
+        assertTrue(isForbiddenCrossModuleDependency(adapter,
+                "dz.sh.hidra.modules.telemetry.domain.model.TrustedTelemetryReading"));
+        assertTrue(isForbiddenCrossModuleDependency(adapter,
+                "dz.sh.hidra.modules.telemetry.infrastructure.persistence.entity.TrustedTelemetryReadingJpaEntity"));
+        assertTrue(isForbiddenCrossModuleDependency(adapter,
+                "dz.sh.hidra.modules.telemetry.application.port.out.TrustedTelemetryReadingRepositoryPort"));
     }
 
     @Test

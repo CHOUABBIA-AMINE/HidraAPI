@@ -591,7 +591,7 @@ Each stage retains its own commit and later evidence; no batch is selected.
 | Code | Status | Domain/Module | Type | Exact execution requirement | Exact commit message | Depends on |
 |---|---|---|---|---|---|---|
 | HPR-P25-002A | COMPLETED — implementation eef35dbd35d4558a4ceb57f87d8670fb97c933ea passed full Java 21 CI #612 and Documentation #146; three immutable contracts and 14 JUnit tests present; per-class report not independently retained at this baseline | Simulation / Input manifest | Code/Test | Implement immutable manifest, source-version identities/validity/origin and steady-state/transient metadata invariants under the exact six-file envelope below. | `feat(simulation): establish immutable input manifest contracts` | HPR-P25-002 preflight Documentation CI success |
-| HPR-P25-002B | PENDING — payload preflight delivered; B1..B4 registered, none implemented | Simulation / Physical payloads | Code/Test | Define validated typed network/fluid/equipment/initial-state and transient timeline payloads with units, reference basis and missing-data semantics; register exact files and numeric design assumptions before mutation. | `feat(simulation): define versioned physical input payloads` | HPR-P25-002A; selected payload/physics preflight |
+| HPR-P25-002B | PENDING — B1 implemented pending exact-head full CI; B2..B4 remain PENDING | Simulation / Physical payloads | Code/Test | Define validated typed network/fluid/equipment/initial-state and transient timeline payloads with units, reference basis and missing-data semantics; register exact files and numeric design assumptions before mutation. | `feat(simulation): define versioned physical input payloads` | HPR-P25-002A; selected payload/physics preflight |
 | HPR-P25-002C | PENDING | Owner modules / Simulation | Code/Test | Implement bounded owner-exported topology/product/measurement queries and Simulation adapters; preserve eligibility/trust/ownership and reject unavailable physical inputs. | `feat(simulation): resolve versioned owner input references` | HPR-P25-002B; exact owner-contract/export preflight |
 | HPR-P25-002D | PENDING | Simulation / Capture | Code/Test | Assemble coherent immutable payload/manifest captures, verify canonical hashes and evidence, persist reproducible revisions and reject incompatible/missing inputs; register forward migration only if source-backed design requires one. | `feat(simulation): capture reproducible network calculation inputs` | HPR-P25-002C; exact capture/schema preflight |
 
@@ -684,7 +684,7 @@ all required payload stages are complete; no stage is executed by this preflight
 
 | Code | Status | Domain/Module | Type | Exact execution requirement | Exact commit message | Depends on |
 |---|---|---|---|---|---|---|
-| HPR-P25-002B1 | PENDING | Simulation / Physical network | Code/Test | Implement immutable typed nodes/pipe segments and connected network validation using the exact six-path envelope below. | `feat(simulation): define physical network input contracts` | HPR-P25-002A; successful B preflight documentation CI |
+| HPR-P25-002B1 | IN PROGRESS — three immutable physical pipe-graph records and 13 synthetic JUnit tests implemented; local Maven blocked by Central DNS/uncached Boot parent, Java 17 only; exact-head full CI pending | Simulation / Physical network | Code/Test | Implement immutable typed nodes/pipe segments and connected network validation using the exact six-path envelope below. | `feat(simulation): define physical network input contracts` | HPR-P25-002A; successful B preflight documentation CI |
 | HPR-P25-002B2 | PENDING | Simulation / Fluid and equipment | Code/Test | Define versioned gas composition/property-method references and current equipment/curve/configuration payloads with explicit units/validity; no property calculation or universal product support is implied. | `feat(simulation): define fluid and equipment input contracts` | HPR-P25-002B1; exact B2 preflight |
 | HPR-P25-002B3 | PENDING | Simulation / State and boundaries | Code/Test | Define measured/estimated initial-state quantities and time-dependent boundary/action schedules with quantity basis, time ordering, interpolation declarations and missing-value semantics. | `feat(simulation): define state and boundary timeline inputs` | HPR-P25-002B2; exact B3 preflight |
 | HPR-P25-002B4 | PENDING | Simulation / Payload assembly | Code/Test | Bind typed payload/version identities to manifests, validate node/equipment references and steady/transient completeness, preserving synthetic/provenance distinctions; canonical hash verification remains capture scope. | `feat(simulation): assemble consistent physical input payloads` | HPR-P25-002B1..B3; exact B4 preflight |
@@ -9347,3 +9347,63 @@ Actual B preflight local checks PASSED: canonical documentation (95 documents,
 231 schemas), P1 evidence and whitespace. Exact two-document scope and retained
 phase/HMR rows verified; four unique B1..B4 identities registered. No physical
 source/calculation is implemented; supporting Documentation CI follows publication.
+
+
+## HPR-P25-002B1 Physical Network Input Implementation — 2026-10-09
+
+Owner selects ONLY HPR-P25-002B1, exact message
+`feat(simulation): define physical network input contracts`. GitHub confirms main
+9a94345dc8f578dfe39f1ddeb2e845e62b375545, tree
+a5eb747471cf278f286eeee83edb2d43244ae899, and exact-head Documentation
+#149/run 37963444826 completed SUCCESS. Mandatory AGENTS/roadmap/reconciliation
+and published B1 envelope read; local source tree matches. No changed-source
+reason to repeat preflight was found.
+
+Created ONLY Simulation domain/model/SimulationNetworkNodeInput.java,
+SimulationPipeSegmentInput.java and SimulationPhysicalNetworkInput.java under
+src/main/java/dz/sh/hidra/modules/simulation, plus
+src/test/java/dz/sh/hidra/modules/simulation/domain/model/SimulationPhysicalNetworkInputTest.java.
+Updated ONLY the Ultimate Roadmap and reconciliation: six tracked paths.
+Records reuse InvalidSimulationValueException and import only Java/local Simulation.
+Canonical headers retain author/creation date and set UpdatedOn 2026-10-09.
+
+Contracts require explicit SI elevation, length, internal diameter and roughness;
+signed/zero elevation and zero roughness are valid. IDs use the existing trim-based,
+case-preserving normalization. No missing value becomes zero; no nominal diameter
+or design pressure becomes a physical/operating input. Defensive immutable lists
+require at least two nodes and one pipe; duplicate normalized IDs, null entries,
+dangling endpoints, isolated nodes and disconnected components are rejected.
+Undirected connectivity preserves original pipe orientation; cycles, meshes and
+distinct parallel pipes are accepted. This pipe-only graph is not complete station/
+equipment modeling, an executing solver, operational readiness or a complete GZ2 model.
+
+Thirteen JUnit tests prepared for synthetic single-pipe, branched, meshed/parallel
+networks; identity normalization and every missing identity position; required and
+invalid physical values; self-loops; null/empty/undersized lists and null entries;
+duplicate IDs; either dangling endpoint; isolation and disconnected non-isolated
+components; both defensive lists and immutable replacement topology/physical values.
+No actual GZ2 parameters, operational limits or numerical accuracy claims introduced.
+
+Actual validation:
+- Wrapper is not executable; used bash without changing tracked permissions.
+- bash ./mvnw -B -q -Dtest=SimulationPhysicalNetworkInputTest,SimulationInputManifestTest,ArchitectureGuardrailTest test
+  and bash ./mvnw -B -q clean verify both BLOCKED before compilation by uncached
+  Spring Boot parent 4.1.1 and repo.maven.apache.org temporary DNS failure.
+  Local runtime is Java 17.0.20, not required Java 21. No Maven/JUnit/ArchUnit pass claimed.
+- Three production records and existing exceptions compiled through Java 17
+  jdk.compiler/com.sun.tools.javac.Main. External temporary smoke harness PASSED
+  50 checks for values, graph validity, orientation, copying and revision replacement.
+  This is not execution of the JUnit tests or full repository verification.
+- Canonical documentation, offline OpenAPI, retained P1 closure evidence and whitespace/
+  exact six-path checks PASSED. Historical phase/HMR registries and semantic catalogue
+  preserved; no POM/dependency/API/OpenAPI/dictionary/schema/migration/workflow,
+  owner module, Kernel/Platform or architecture export change.
+
+B1 remains IN PROGRESS pending exact-head full CI; parent B/002 remain PENDING.
+B2/B3/B4 and engine stages were not executed. Next registered selection after B1 CI
+success is B2 documentation-only exact-file preflight:
+`docs(twin): register HPR-P25-002B2 execution preflight`.
+Publish with expected-parent lease, verify remote parent/tree/six paths, observe both
+production and Documentation CI startup on exact implementation head and STOP.
+P0/P1/P2 CLOSED, P2.5 OPEN, P3 DEFERRED, 57 HMR completions, 123 semantic subjects,
+formal v0.6.0 and development 0.7.0-SNAPSHOT remain preserved.

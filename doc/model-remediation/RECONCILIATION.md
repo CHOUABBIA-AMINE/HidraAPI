@@ -2,7 +2,7 @@
 
 ## Status
 
-CURRENT — all 57 reconciled HMR implementations COMPLETED; permanent 123-subject semantic transfer complete. P2 is OPEN after the independent audit at c7d580cc7988f069bb939eb682664200e043c9bf failed Checks 9–11; HPR-P2-005 API documentation correction is implemented and awaiting publication documentation CI; HPR-P2-006 correction and HPR-P2-013 re-verification remain pending. Prior #127/#606 success remains historical verified evidence. P3 remains DEFERRED.
+CURRENT — all 57 reconciled HMR implementations COMPLETED; permanent 123-subject semantic transfer complete. P2 is OPEN after the independent audit at c7d580cc7988f069bb939eb682664200e043c9bf failed Checks 9–11; HPR-P2-005 API documentation correction is COMPLETED after exact-head Documentation Validation #131 passed; HPR-P2-006 correction and HPR-P2-013 re-verification remain pending. Prior #127/#606 success remains historical verified evidence. P3 remains DEFERRED.
 
 ## Historical HPR-P2-007 Verification Baseline
 
@@ -6870,3 +6870,20 @@ controls execution over older dated statuses. HPR-P2-006/013 remain PENDING;
 P2 OPEN/P3 DEFERRED. Every HMR row, 57 completions, 123 semantic subjects, version
 0.6.0-SNAPSHOT and historical provenance remain preserved. No semantic/runtime,
 database, source/test/configuration, deployment, import or release change is made.
+
+## HPR-P2-005 verification and HPR-P2-006 preflight — 2026-10-09
+
+GitHub main remained `4d41f265374156846a86d31f3d30e2b0fe00dd91`; Documentation
+Validation #131/run 37921916637 completed SUCCESS on that exact SHA.
+HPR-P2-005 is COMPLETED; this supersedes its dated publication-awaiting-CI statements.
+The owner selected HPR-P2-006 preflight only. The
+[bounded database plan](../roadmap/ULTIMATE_ROADMAP.md#hpr-p2-006-concrete-database-correction-preflight--2026-10-09)
+requires Stage A disposable-CI catalog evidence, then separately selected Stage B
+physical dictionary/ownership/policy completion. The local environment lacks
+PostgreSQL/Docker tooling; no migrated schema or artifact is claimed here.
+
+Only roadmap/reconciliation controls change in this preflight. HPR-P2-006/013 remain
+PENDING; P2 OPEN/P3 DEFERRED. All 57 HMR and historical table rows, 123 semantic
+subjects, prior physical/CI provenance and version 0.6.0-SNAPSHOT are preserved.
+No tool/workflow/dictionary implementation, runtime/database change, deployment,
+import, release or P3 task executes through this planning publication.

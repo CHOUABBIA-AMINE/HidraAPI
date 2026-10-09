@@ -8259,3 +8259,207 @@ Publish expected-parent lease, verify remote parent/tree/seven paths, observe bo
 production/Documentation startup on the exact head and STOP for owner Next/Fail.
 P0/P1/P2 CLOSED, P2.5 OPEN, P3 DEFERRED, 57 completed HMRs, 123 permanent subjects,
 formal v0.6.0 and development 0.7.0-SNAPSHOT preserved.
+
+
+## HPR-P25-002B4 Consistent Physical Payload Preflight — 2026-10-09
+
+Owner Next selects ONLY `docs(twin): register HPR-P25-002B4 execution preflight`.
+Write ONLY doc/roadmap/ULTIMATE_ROADMAP.md and doc/model-remediation/RECONCILIATION.md.
+GitHub main 599bb58115f3d06140d8230a54d7969f743c0c3a, tree
+6c341992625e2ede837cd5944fae285b0b57685b, passed exact-head production
+#616/run 37970322450 and Documentation #154/run 37970322487.
+Job 113954981627 confirms successful Java 21 repository verification, retained
+operations/P1 checks, OpenAPI equality/backward compatibility, migrated dictionary
+and test-report retention. B3 COMPLETED; 19 JUnit methods present, no independent
+per-class XML/skip inspection claimed. Mandatory instructions/execution memories
+read; local tree matches before mutation. No production source changed here.
+
+### Source-backed design and graph prerequisite resolution
+
+Reviewed SimulationInputManifest/SimulationInputSourceVersion; all B1 graph, B2
+fluid/curve/equipment and B3 state/series/schedule records; ArchitectureGuardrailTest.
+Existing records validate their local data, but not cross-payload binding, physical
+reference existence, nested curve capture validity, state completeness or nested
+synthetic propagation. Manifest.sources carries one metadata source per kind;
+digest syntax is not actual payload-integrity verification. Owner adapters/real
+source evidence remain 002C/002D; physics capability remains 008A..F.
+
+B1 SimulationPhysicalNetworkInput accepts only a connected pipe graph and rejects
+isolated nodes or pipe-disconnected components. A real equipment link joining two
+pipe subnetworks cannot be wrapped in that record without fake connecting pipes.
+Resolve the already registered B4 prerequisite with a NEW combined-graph record;
+do not weaken B1 or modify its constructor/tests. Reuse its immutable node/pipe
+records plus B2 typed equipment links, with connectivity over their union. This
+supports structural compressor/valve joins without claiming active hydraulic
+connectivity through a stopped/closed/bypassed asset. Topology truth stays owner-held.
+
+B4 is assembly schema version 1 for gas scalar initial-state payloads. It performs
+strict data coherence, not operational/physics readiness. Required known state
+coverage below is a bounded engineering data contract, not chosen equations,
+observability/convergence evidence or GZ2 operating policy. A complete spatial
+transient profile, current operating limits, valve laws, compressor envelopes,
+thermal initialization and supported boundary/method behavior are additional gates.
+Those future exact-file/schema preflights must extend this representation explicitly;
+do not hide unresolved physics behind an empty readiness flag or successful constructor.
+
+### Exact B4 implementation envelope for a later owner Next
+
+After successful preflight Documentation CI, owner Next selects ONLY B4, exact message
+`feat(simulation): assemble consistent physical input payloads`.
+Create ONLY two files under src/main/java/dz/sh/hidra/modules/simulation/domain/model/:
+
+1. SimulationConnectedNetworkInput.java
+   Immutable record fields: String id, String scopeType, String scopeId,
+   SimulationInputSourceVersion sourceVersion, List<SimulationNetworkNodeInput> nodes,
+   List<SimulationPipeSegmentInput> pipeSegments, SimulationEquipmentModelInput equipmentModel.
+   Require normalized nonblank id/scopeId and scopeType from existing manifest set
+   PIPELINE_SYSTEM/PIPELINE/SEGMENT_GROUP/FACILITY_NETWORK; identifiers alone do not
+   grant owner eligibility or hydraulic independence. Require TOPOLOGY_CONFIGURATION
+   source and nonnull equipmentModel. Defensive required lists, no null entries,
+   at least two nodes and one real pipe. Nodes unique by normalized id. Pipes unique
+   by normalized id; pipe IDs must be disjoint from equipment IDs (one link namespace).
+   Reuse B2's validated equipment/curve records; no new equipment kind or inferred links.
+   All pipe and equipment endpoints must exist in nodes. Validate no isolated node and
+   one undirected connected component over PIPE PLUS EQUIPMENT edges. Preserve link
+   orientation and order; allow cycles and distinct parallel/cross-kind links.
+   Nodes with only equipment incidence and pipe components joined by equipment are
+   valid structural graphs. Explicit empty equipment model preserves pipe-only use.
+   No conversion to B1, fabricated zero-length pipes, valve opening-based edge deletion,
+   active hydraulic partition algorithm, bypass inference or owner mutation.
+
+2. SimulationPhysicalInputPayload.java
+   Immutable record fields: SimulationInputManifest manifest,
+   SimulationConnectedNetworkInput network, SimulationGasFluidInput fluid,
+   SimulationInitialStateInput initialState, SimulationBoundaryScheduleInput boundarySchedule.
+   First four required; boundarySchedule nullable ONLY for STEADY_STATE. Require manifest
+   schemaVersion EXACT 1, the currently specified assembly schema (do not accept unknown
+   future schemas merely because the manifest allows positive values). No new product
+   whitelist from labels; fluid is gas-typed, real catalogue/product compatibility is 002C.
+   No generic oil/H2 accuracy/capability claim from accepting a productReference string.
+
+   Source binding: map manifest.sources by SourceKind using existing unique-kind invariant.
+   Require full SimulationInputSourceVersion record equality for network.sourceVersion
+   vs TOPOLOGY_CONFIGURATION, fluid.sourceVersion vs FLUID_MODEL,
+   network.equipmentModel.sourceVersion vs EQUIPMENT_PARAMETERS,
+   initialState.sourceVersion vs OPERATING_STATE, and transient schedule.sourceVersion
+   vs BOUNDARY_SCHEDULE. Equality includes owner/source/revision/digest/time/origin/evidence,
+   not just revisionId; never silently choose a latest/different revision. Payload object
+   id is a local representation identity; do not assume it equals sourceId or scopeId.
+   Require network.scopeType/scopeId == manifest.scopeType/scopeId and
+   fluid.productReference == manifest.productReference. Initial state.stateAt == manifest.stateAt.
+
+   Curve binding: every contained curve, including unused declared curves, must reference
+   selected fluid.id and fluid.sourceVersion.revisionId. Each curve's source effectiveAt
+   manifest.stateAt, recordedAt <= manifest.capturedAt and <= equipmentModel.sourceVersion.recordedAt.
+   B2 already verifies compressor configuration resolves contained curve id/revision.
+   Curve source kind is EQUIPMENT_PARAMETERS, but its identity need not equal the aggregate
+   model source; the aggregate revision pins its immutable contained curve data. No
+   content hash computation/trust verification, head/property/valve method resolution,
+   interpolation evaluation or numerical applicability selection in B4.
+
+   Physical reference integrity: every initial-state target must exist in the selected
+   NODE/PIPE/EQUIPMENT namespace, including optional UNKNOWN quantities. Equipment
+   quantity COMPRESSOR_SPEED must target COMPRESSOR, VALVE_OPENING must target VALVE;
+   no equipment cross-kind reinterpretation. Structural quantity keys must be used,
+   never ID-only or ambiguous delimiter strings. Preserve extra legitimate quantities.
+
+   Required scalar known-state coverage (schema 1): every node has known absolute
+   pressure and temperature; every pipe has known oriented mass flow; every compressor
+   has known speed and every valve has known opening. TRANSIENT additionally requires
+   known pipe pressure and temperature scalar values. A required key absent or UNKNOWN
+   rejects assembly. Optional unknown quantities can remain explicit without making
+   required values ready. No missing-to-zero/interpolation/default, inference from a
+   boundary point or arbitrary freshness threshold. Existing B3 numeric validity applies.
+   This set is scalar input completeness, not complete distributed transient state.
+   Zero speed/closed opening are admissible data; engine execution must reject modes/
+   active connectivity/behavior it has not qualified. Configured B2 values and actual
+   initial values need not be equal: scenario parameters and baseline observations
+   remain distinct, without inferring a performed operator action.
+
+   Watermark coherence: if supplied, every initial MEASURED quantity.valueAt <=
+   manifest.measurementWatermark; estimated/synthetic times are not observed-watermark
+   facts. Existing B3 checks value/evidence against initial/source revision and manifest
+   source equality bounds recording by capturedAt. Do not invent maximum age/latency.
+
+   Mode/timeline coherence: STEADY_STATE boundarySchedule must be null (manifest already
+   excludes boundary source/horizon). TRANSIENT requires schedule, startsAt exactly
+   manifest.stateAt and endsAt exactly manifest.horizonEnd. Validate every schedule target
+   against network nodes/equipment and equipment kind, with unique target/quantity keys
+   already enforced by B3. Require every scheduled target/quantity key present and known
+   in initialState, so an action/forecast is anchored to an explicit baseline quantity.
+   Do not require first scheduled value to equal initial state: immediate scenario
+   steps are allowed and remain proposed input, not measured action/outcome. B3 validates
+   complete horizon anchors and point recording/provenance. Boundary selection/rank,
+   number of pressure or flow constraints, energy balance and physical well-posedness
+   remain numerical design gates; all-node measured pressure is not all-node imposed pressure.
+
+   Synthetic propagation: if any initial quantity knowledge SYNTHETIC, require its
+   OPERATING_STATE source origin SYNTHETIC. If any schedule point origin SYNTHETIC,
+   require BOUNDARY_SCHEDULE source origin SYNTHETIC. If any curve source origin
+   SYNTHETIC, require aggregate EQUIPMENT_PARAMETERS source origin SYNTHETIC.
+   Reject a misleading real-only parent declaration even if some other manifest source
+   already marks the overall run synthetic. Add public boolean synthetic() returning
+   manifest.synthetic() only after those invariants; this is provenance, never readiness.
+   Other measured/estimated/forecast/scenario distinctions remain in unchanged nested data;
+   origin declarations still require later actual evidence validation.
+
+Create ONLY
+src/test/java/dz/sh/hidra/modules/simulation/domain/model/SimulationPhysicalInputPayloadTest.java.
+Update ONLY both execution memories: five tracked implementation paths total.
+No B1/B2/B3/manifest/source-version/existing test edits, migration, persistence or API
+exposure. Canonical Java headers retain Author Abir MEDJERAB, CreatedOn 2025-06-26,
+current UpdatedOn. Reuse InvalidSimulationValueException; standard Java/local Simulation
+imports only. Helpers/nested key records remain in the two new records. No owner module,
+API/OpenAPI/dictionary/schema/POM/dependency/workflow/Kernel/Platform/export change.
+
+### Meaningful synthetic tests and required verification
+
+Graph cases: pipe-only, real pipes joined solely by compressor/valve links, equipment-only
+incidence at a node, cycles/parallel links and preserved directions. Reject null/empty/
+undersized lists, duplicate nodes/pipes, pipe-equipment ID collision, either dangling
+pipe/equipment endpoint, isolated nodes and union-disconnected components. Prove B1
+still rejects its disconnected pipe-only input; the new combined graph accepts the
+proper equipment join without fake geometry or modifying B1. Test defensive node/pipe
+lists and nested equipment immutability, scope identity/kind/source validation.
+
+Payload cases: complete synthetic steady and transient fixtures; optional unknowns and
+signed/zero flows; immediate scenario change allowed; nested origins retained. Reject
+null required objects, unsupported schema, every mismatched full source field/reference,
+scope/product/state/horizon mismatch, forbidden/missing schedule, stale/future/expired
+curve revisions or curve recorded after aggregate model, wrong fluid id/revision;
+dangling initial/schedule targets and equipment-kind mismatch; missing/UNKNOWN required
+node/pipe/equipment state for each mode, missing/unknown scheduled baseline key;
+measured value later than declared watermark; hidden synthetic initial/schedule/curve
+sources including when another manifest source is synthetic. Verify pure declared real
+metadata fixtures yield synthetic false without claiming verified field trust.
+Test replacement topology/model/fluid/state/schedule revisions preserve earlier values,
+metadata, orientations and immutable lists. No GZ2 values/solver outputs invented.
+
+Later B4 implementation commands:
+`./mvnw -B -q -Dtest=SimulationPhysicalInputPayloadTest,SimulationStateBoundaryInputTest,SimulationFluidEquipmentInputTest,SimulationPhysicalNetworkInputTest,SimulationInputManifestTest,ArchitectureGuardrailTest test`
+then `./mvnw -B -q clean verify`, maintained validator suites, canonical docs/offline
+OpenAPI/P1 evidence, whitespace, exact five-path and retained registry/version checks.
+Use bash if wrapper not executable without tracked chmod; report local dependency/
+environment limitations. Publish expected-parent lease, verify remote parent/tree/files,
+observe both exact-head production/Documentation startup and STOP for owner Next/Fail.
+B4 and parent B remain pending applicable CI; 002 also still requires 002C/002D.
+After B4 CI success, next registered selection is 002C owner-query/adapters exact-file
+preflight `docs(twin): register HPR-P25-002C execution preflight`, not engine execution.
+No owner export or migration path is authorized until that preflight establishes it.
+
+Current preflight runs only maintained validator suites, canonical docs/offline OpenAPI/
+P1 evidence, whitespace and exact two-document/registry/version checks. No runtime
+Maven rerun required solely for docs. Publish registered preflight message using
+expected-parent lease, verify remote parent/tree/two paths, observe Documentation
+startup and STOP. B4 stays PENDING, no combined graph or payload source implemented
+here. Do not repeat B4 preflight unless evidence changes. P0/P1/P2 CLOSED, P2.5 OPEN,
+P3 DEFERRED, 57 completed HMRs, 123 permanent subjects, v0.6.0 and 0.7.0-SNAPSHOT preserved.
+
+
+Actual B4 preflight checks PASSED: all 37 maintained validator tests (10 docs,
+10 OpenAPI, 17 dictionary), canonical docs (95 documents, 5,063 links, 24 modules,
+13 P2 rows), offline OpenAPI (244 paths, 263 operations, 231 schemas), P1 closure
+evidence and whitespace. Exact two-document scope, retained phase/HMR registries
+and 0.7.0-SNAPSHOT verified. B3 completion is exact-head CI-backed; B4 source,
+full numerical readiness and field qualification remain pending. Supporting
+preflight Documentation CI follows publication.

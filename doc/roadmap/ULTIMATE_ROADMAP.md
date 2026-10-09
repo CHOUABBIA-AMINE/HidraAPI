@@ -592,7 +592,7 @@ Each stage retains its own commit and later evidence; no batch is selected.
 |---|---|---|---|---|---|---|
 | HPR-P25-002A | COMPLETED — implementation eef35dbd35d4558a4ceb57f87d8670fb97c933ea passed full Java 21 CI #612 and Documentation #146; three immutable contracts and 14 JUnit tests present; per-class report not independently retained at this baseline | Simulation / Input manifest | Code/Test | Implement immutable manifest, source-version identities/validity/origin and steady-state/transient metadata invariants under the exact six-file envelope below. | `feat(simulation): establish immutable input manifest contracts` | HPR-P25-002 preflight Documentation CI success |
 | HPR-P25-002B | PENDING — B1..B4 CI-confirmed completed; aggregate closure not selected; 002C/002D remain separate prerequisites for parent 002 | Simulation / Physical payloads | Code/Test | Define validated typed network/fluid/equipment/initial-state and transient timeline payloads with units, reference basis and missing-data semantics; register exact files and numeric design assumptions before mutation. | `feat(simulation): define versioned physical input payloads` | HPR-P25-002A; selected payload/physics preflight |
-| HPR-P25-002C | PENDING — C1 and repair CI-confirmed; C2 implemented pending full CI; C3 requires later preflight | Owner modules / Simulation | Code/Test | Implement bounded owner-exported topology/product/measurement queries and Simulation adapters; preserve eligibility/trust/ownership and reject unavailable physical inputs. | `feat(simulation): resolve versioned owner input references` | HPR-P25-002B; exact owner-contract/export preflight |
+| HPR-P25-002C | PENDING — C1/C2 CI-confirmed; C3 decomposed, next C3A physical owner revision contract | Owner modules / Simulation | Code/Test | Implement bounded owner-exported topology/product/measurement queries and Simulation adapters; preserve eligibility/trust/ownership and reject unavailable physical inputs. | `feat(simulation): resolve versioned owner input references` | HPR-P25-002B; exact owner-contract/export preflight |
 | HPR-P25-002D | PENDING | Simulation / Capture | Code/Test | Assemble coherent immutable payload/manifest captures, verify canonical hashes and evidence, persist reproducible revisions and reject incompatible/missing inputs; register forward migration only if source-backed design requires one. | `feat(simulation): capture reproducible network calculation inputs` | HPR-P25-002C; exact capture/schema preflight |
 
 ##### HPR-P25-002A exact implementation envelope
@@ -10242,8 +10242,8 @@ B1..B4 implementation CI is confirmed, no independent closure task is selected h
 | Code | Status | Exact purpose | Exact commit message | Gate |
 |---|---|---|---|---|
 | HPR-P25-002C1 | COMPLETED — 28cd17ca96c7f9bbd195601f0cd24e718c8ce632 plus c6b2fa7257fd603965f4a6faa9a05b1cd094e8cb repair passed Java 21 Production #619 and Documentation #159; 16 JUnit methods present; per-class XML not independently inspected | Owner-controlled trusted-reading evidence export and Simulation adapter | `feat(simulation): resolve owner trusted reading evidence` | Successful C preflight Documentation CI; B1..B4 exact-head CI confirmed |
-| HPR-P25-002C2 | IN PROGRESS — six owner/Simulation contracts and adapters, 22 JUnit methods and both export registries implemented; local Maven blocked by dependency DNS; exact-head full CI pending | Topology/product eligibility adapters and explicit missing physical-revision results | `feat(simulation): resolve owner topology and product eligibility` | C1 CI; `docs(twin): register HPR-P25-002C2 execution preflight` |
-| HPR-P25-002C3 | PENDING — source/schema preflight required | Versioned physical source resolution, unit/reference conversion and Simulation suitability policy | `feat(simulation): resolve qualified physical source revisions` | C2 CI; `docs(twin): register HPR-P25-002C3 execution preflight`; demonstrated owner gaps/ownership/schema and approval evidence |
+| HPR-P25-002C2 | COMPLETED — 15795dc000c60080dea0566d275d42d843420ba8 passed Java 21 Production #620 and Documentation #161; six contracts/adapters and 22 JUnit methods present; per-class XML not independently inspected | Topology/product eligibility adapters and explicit missing physical-revision results | `feat(simulation): resolve owner topology and product eligibility` | C1 CI; `docs(twin): register HPR-P25-002C2 execution preflight` |
+| HPR-P25-002C3 | PENDING — source gaps decomposed into C3A..F; C3A exact envelope registered, later stages require preflights | Versioned physical source resolution, unit/reference conversion and Simulation suitability policy | `feat(simulation): resolve qualified physical source revisions` | C2 CI; `docs(twin): register HPR-P25-002C3 execution preflight`; demonstrated owner gaps/ownership/schema and approval evidence |
 
 C2/C3 are ordered planning registrations, not exact write authorization. C3 may need
 further bounded stages once actual source storage and policies are designed. Do not
@@ -10696,3 +10696,203 @@ Additional checks PASSED: 37 maintained validator tests; canonical docs (95 docu
 231 schemas); P1 evidence; whitespace; exact thirteen-path envelope; canonical
 headers/import boundaries; same sole Custody export in both registries; retained
 historical rows/version. These checks do not substitute for pending exact-head CI.
+
+
+## HPR-P25-002C3 Qualified Physical Source Preflight — 2026-10-09
+
+Owner Next selects ONLY `docs(twin): register HPR-P25-002C3 execution preflight`.
+Write ONLY doc/roadmap/ULTIMATE_ROADMAP.md and doc/model-remediation/RECONCILIATION.md.
+Verified main 15795dc000c60080dea0566d275d42d843420ba8, tree
+851e285aa7380099a70a774b3a5494bbbd628598: Production #620/run 37983724675
+and Documentation #161/run 37983724639 completed SUCCESS on this exact SHA.
+C2 has six production contracts/adapters and 22 new JUnit methods; per-class XML not
+independently inspected. Mandatory instructions and execution memories read, source
+synchronized before mutation. No source/schema implementation occurs in this preflight.
+
+### Source-backed gaps and qualification disposition
+
+Topology domain/model/Pipeline.java contains nominal diameter/design pressure and live
+createdAt/updatedAt, not approved operating limits/internal diameter or immutable revision
+identity. Equipment.java supplies identity/attachments/status; TopologyConnection.java
+supplies graph links/classification/capacity, not current compressor curves or valve laws.
+Persistence PipelineSegmentJpaEntity/TopologyNodeJpaEntity retain nullable geometry;
+owner application repository ports do not expose a complete physical revision aggregate.
+Simulation's validated B1..B4 graph is a consumer payload, not owner source storage.
+C2 ScopeEvidence echoes requested identity and deliberately has missing physical status.
+
+Custody's generic catalogue and C2 candidate export have no Simulation classification,
+composition/method versions or approval records. Planning eligibility remains a different
+policy. SimulationGasFluidInput requires composition/property-method references but does
+not resolve them. Assets owns maintenance/condition records; inspected Topology equipment
+and Assets domain models do not supply versioned compressor/valve characteristics and
+approved operating envelopes. Equipment source ownership must distinguish Topology's
+network incidence from equipment parameter/maintenance evidence rather than merge tables.
+
+Telemetry's TrustedTelemetryReadingApplicationService already enforces PASSED assessment,
+MEDIUM/HIGH/CERTIFIED under TelemetryTrustPolicy, ACTIVE point, eligible quality, optional
+unit/batch existence and selected binding rules using TelemetryTrustEvidencePort. C1 exports
+raw persisted evidence including enum level, units and topology snapshot binding. Reusing
+an enum label alone is not replay of those owner facts. Unit identity existence is not
+quantity dimension, absolute/gauge pressure basis or volumetric/mass conversion evidence.
+SimulationInputSourceVersion declares origin/digest/revision metadata; B4 compares exact
+records but performs no source lookup, digest computation or owner qualification.
+
+Missing source storage cannot be solved by adapters returning fabricated versions or
+hardcoded MISSING responses indefinitely. C3 is decomposed into real owner revision,
+storage, policy and conversion prerequisites, then the actual qualified resolver. C3A
+starts the first missing owner physical contract; this is not parent completion. Synthetic
+fixtures remain legitimate development inputs, explicitly distinguishable from actual
+GZ2 field sources and operational approval. No actual source data/approval is supplied
+by this preflight; no unknown geometry, thresholds, property laws or trust policy values
+are invented. P0/P1/P2 closure and 123-subject historical catalogue remain preserved.
+
+### Source storage and approval design decisions
+
+- Topology owns immutable physical network revision content with stable sourceId and
+  revisionId, explicit recorded/effective times, declaration provenance and evidence.
+  A new revision replaces a prior revision in a selection, never mutates that prior object.
+  The owner contract represents normalized supplied geometry and equipment incidence;
+  no live entity timestamp is a revision, and no nominal-to-internal diameter conversion.
+- Later C3B storage must be a separate append-only owner revision store, not edits to
+  live Pipeline/Equipment tables. Before its migration, register exact schema, versioned
+  canonical representation/digest, unique source/revision identity, atomic writes/replay,
+  rejection of conflicting content, immutable update/delete rules, query/export ownership,
+  authorization/evidence and repository-backed integration tests. A caller-supplied digest
+  or evidence string is not proof. Keep live scope eligibility separate from stored
+  revision content. No migration filename or write endpoint is authorized in this stage.
+- Custody must own explicit Simulation product classification/approval and immutable
+  composition/property-method revisions. Future policy needs qualified evidence binding
+  exact candidate identity/revision, product kind, compatible method revision and effective
+  interval; no generic catalogue/Planning policy shortcut. Approval is resolved through
+  actual owner/governance records and permitted operations, not trusted merely because
+  a DTO says APPROVED. Missing policy/source yields unavailable/unqualified results.
+- Equipment incidence belongs to Topology; current curves/valve parameters/approved limits
+  require a source-backed ownership and append-only revision preflight before persistence.
+  Assets maintenance observations may be evidence, not automatically approved performance.
+  Explicit synthetic pipe-only empty equipment models remain distinguishable from missing
+  real equipment inputs. Do not infer approvals or limits from design pressure.
+- Unit/reference conversion and state qualification must resolve owner unit definitions,
+  quantity dimension and pressure/flow/reference basis plus raw value/asset/time/quality
+  evidence. Gas volumetric flow cannot become kg/s without explicit compatible reference
+  conditions, composition/property method and resolved conversion evidence. Gauge pressure
+  cannot become absolute without explicit ambient reference. Reject missing/incompatible
+  basis instead of guessing. Reuse existing Telemetry trust meaning; additional Simulation
+  freshness/uncertainty/field acceptance limits require governed inputs, not new constants.
+- Final C3F resolves exact owner revisions and explicit qualification evidence as of the
+  chosen operating state/capture time, fails closed on absent/unsupported/ineligible data,
+  retains conversion and source references, and assembles existing typed physical inputs.
+  Parent 002D later performs coherent persisted capture and canonical hash verification;
+  per-owner source revision storage is distinct from the Simulation captured aggregate.
+  No engine readiness or operational approval arises solely from structurally valid records.
+
+### Bounded C3 execution registry
+
+| Code | Status | Exact purpose | Exact commit message | Gate |
+|---|---|---|---|---|
+| HPR-P25-002C3A | PENDING — exact four-path envelope below | Immutable Topology-owned physical network revision contract | `feat(topology): define immutable physical network revisions` | Successful C3 preflight Documentation CI; C2 full CI confirmed |
+| HPR-P25-002C3B | PENDING — storage/export/schema preflight required | Append-only Topology physical revision store and owner export | `feat(topology): persist physical network source revisions` | C3A CI; `docs(twin): register HPR-P25-002C3B execution preflight` |
+| HPR-P25-002C3C | PENDING — policy/fluid/schema preflight required | Custody Simulation product approval and immutable gas fluid source revisions | `feat(custody): establish qualified gas fluid revisions` | C3B CI; `docs(twin): register HPR-P25-002C3C execution preflight` |
+| HPR-P25-002C3D | PENDING — ownership/parameters/schema preflight required | Versioned equipment characteristics and governed limits | `feat(simulation): resolve governed equipment parameter revisions` | C3C CI; `docs(twin): register HPR-P25-002C3D execution preflight` |
+| HPR-P25-002C3E | PENDING — unit/state/qualification preflight required | Explicit unit/reference conversion evidence and qualified operating-state revisions | `feat(simulation): qualify converted owner operating state` | C3D CI; `docs(twin): register HPR-P25-002C3E execution preflight` |
+| HPR-P25-002C3F | PENDING — exact resolver preflight required | Resolve qualified physical source revisions into typed inputs | `feat(simulation): resolve qualified physical source revisions` | C3A..E CI; `docs(twin): register HPR-P25-002C3F execution preflight` |
+
+Each later envelope must register actual files/migration/dictionary/OpenAPI consequences
+before mutation; split larger semantic tasks as necessary. No batch is selected. The
+previous parent C3 message is retained for final C3F resolver; no empty parent commit.
+Parent C3/002C/002 remain PENDING until their real required source/qualification/capture
+work is verified, irrespective of individual contract status. No aggregate closure here.
+
+### C3A exact next implementation envelope
+
+After successful Documentation CI on this preflight, next owner Next selects ONLY C3A.
+Do not repeat its preflight unless source evidence changes. Create ONLY:
+
+1. src/main/java/dz/sh/hidra/modules/topology/domain/model/TopologyPhysicalNetworkRevision.java
+2. src/test/java/dz/sh/hidra/modules/topology/domain/model/TopologyPhysicalNetworkRevisionTest.java
+
+Update ONLY these two execution memories. Total four tracked paths. Production imports
+only standard Java/local Topology exception; reuse InvalidTopologyValueException.
+No Simulation/other owner/framework/JPA import, new dependency, export/architecture test
+change, existing entity/repository/model mutation, migration, API/OpenAPI/dictionary
+regeneration, POM/workflow, Kernel or Platform change. Nested types/private helpers stay
+in the single production file; no utility/package skeleton. Canonical headers retain
+Author Abir MEDJERAB, CreatedOn 2025-06-26, UpdatedOn actual implementation date.
+
+Immutable outer Java record TopologyPhysicalNetworkRevision fields, in this order:
+String sourceId, String revisionId, ScopeType scopeType, String scopeId,
+Instant recordedAt, Instant effectiveFrom, Instant effectiveUntil, Origin origin,
+String evidenceReference, List<Node> nodes, List<PipeSegment> pipeSegments,
+List<EquipmentLink> equipmentLinks.
+Nested ScopeType enum: PIPELINE_SYSTEM, PIPELINE only, matching existing owner support.
+Nested Origin enum: DECLARED_PARAMETER, SYNTHETIC. DECLARED_PARAMETER means supplied
+non-synthetic declaration, not approved/trusted/verified actual field data. No default
+origin or operational readiness/approval method. Require nonblank normalized source,
+revision, scope and evidence IDs; nonnull scopeType/origin/recordedAt/effectiveFrom;
+optional effectiveUntil must be strictly after effectiveFrom. effectiveAt(Instant at)
+requires nonnull at and uses inclusive start/exclusive end; open end permitted. Allow
+retroactive and scheduled effective dates; do not invent ordering between recordedAt
+and effectiveFrom. Later capture/approval checks enforce their own as-of coherence.
+
+Nested Node(String id, BigDecimal elevationMeters): required normalized id and required
+elevation; signed/zero valid. Nested PipeSegment(String id, String fromNodeId,
+String toNodeId, BigDecimal lengthMeters, BigDecimal internalDiameterMeters,
+BigDecimal absoluteRoughnessMeters): nonblank normalized IDs, distinct endpoints,
+required positive length/internal diameter, required nonnegative roughness. No nominal
+size/design-pressure inference or missing-to-zero conversion. Values are explicitly
+supplied in SI, not implicitly converted from existing live owner units. Original unit/
+conversion evidence is a required later source-ingestion/qualification responsibility.
+
+Nested EquipmentLink(String id, String fromNodeId, String toNodeId, EquipmentKind kind):
+required normalized IDs, distinct endpoints and nonnull kind. Nested EquipmentKind enum
+COMPRESSOR, VALVE. These two kinds bound the initial gas graph, not the existing owner
+EquipmentType catalogue or engine capability approval; do not infer kind from a label.
+No curve/operating point/valve law/approved limit in this incidence-only type. Other asset
+kinds require later exact schema/capability preflight rather than silent reinterpretation.
+
+Defensive immutable ordered lists; require all three lists, reject null entries. At least
+two nodes and one actual pipe; equipmentLinks may be explicitly empty. Reject duplicate
+normalized node IDs, duplicate pipe IDs, duplicate equipment IDs and pipe/equipment link
+ID collisions; node and link namespaces remain distinct. Endpoints must exist, no node
+may be isolated; validate one undirected connected component using the union of pipes
+and equipment links. Equipment can join disconnected pipe subnetworks and be a node's
+only incidence; preserve orientation and insertion order. Allow cycles/meshes and distinct
+parallel pipe/equipment links. No fake pipe needed for a compressor/valve connection.
+Graph connectivity does not imply flow through closed/stopped assets, station completeness,
+complete downstream consequence scope, operating feasibility or a qualified GZ2 model.
+No requirement that sourceId equals scopeId or revisionId equals asset id; source revisions
+are explicit identities. No hash, persisted lookup, owner export, capture or solver here.
+
+### C3A meaningful validation and stop boundary
+
+Deterministic synthetic JUnit fixtures cover valid pipe-only single/branched/meshed and
+parallel graphs; equipment joins and equipment-only node incidence; parallel cross-kind
+links/orientations preserved; both scope types/origins, normalized identities, signed/zero
+elevations and zero roughness; explicit empty equipment. Negative tests cover all missing/
+blank identities/enums/times/numbers, invalid intervals and effective-time boundaries,
+nonpositive dimensions/negative roughness/self links, null/empty lists/null entries,
+normalized duplicates/link collisions, dangling endpoints, isolated nodes and disconnected
+union. Assert source-list mutations cannot change record/exposed lists are unmodifiable,
+replacement revision with changed geometry/links/times preserves earlier content and
+value equality/hash stability. Never supply actual GZ2 thresholds/data or a wall clock.
+
+When C3A executes run ./mvnw -B -q -Dtest=TopologyPhysicalNetworkRevisionTest,SimulationPhysicalNetworkInputTest,SimulationPhysicalInputPayloadTest,ArchitectureGuardrailTest,ForensicRemediationClosureTest test
+then ./mvnw -B -q clean verify; use bash without chmod if wrapper nonexecutable. Run
+maintained validator tests, canonical docs/offline OpenAPI/P1 evidence, whitespace,
+exact four-path/header/import and historical/version checks. Report dependency/toolchain
+failures accurately, require full exact-head CI for completion. Publish expected-parent
+lease, verify remote parent/tree/four files, observe Production/Documentation startup and
+STOP for Next/Fail. No storage/schema/export/C3B..F/002D/engine/closure execution.
+
+Next registered selection after successful C3A CI is documentation-only
+`docs(twin): register HPR-P25-002C3B execution preflight`.
+This current docs-only C3 preflight runs 37 validator tests, canonical docs/offline
+OpenAPI/P1 evidence, whitespace and exact two-file scope. No Java/Maven pass claimed.
+Publish expected-parent lease, verify remote parent/tree/two files, observe exact-head
+Documentation CI startup and STOP. Preserve P0/P1/P2 CLOSED, P2.5 OPEN, P3 DEFERRED,
+57 HMR implementations, 123 subjects, 0.7.0-SNAPSHOT; no executing solver/calibrated GZ2.
+
+C3 preflight validation PASSED: all 37 maintained validator tests; canonical docs
+(95 documents, 5063 links, 24 modules, 13 P2 rows); offline OpenAPI (244 paths,
+263 operations, 231 schemas); P1 evidence; whitespace; exact two-document scope;
+historical registries/version retention. No production source changed or Maven pass
+claimed. C2 verified completed by #620/#161; C3/C3A and parent 002C/002 remain PENDING.

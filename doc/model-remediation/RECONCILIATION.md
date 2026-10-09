@@ -8187,3 +8187,75 @@ P1 closure evidence and whitespace. Exact two-document scope and retained phase/
 HMR registries/version verified. B2 completion rests on exact-head successful CI;
 B3 source implementation and physical completeness remain pending. Supporting
 preflight Documentation CI follows publication.
+
+
+## HPR-P25-002B3 State and Boundary Timeline Implementation — 2026-10-09
+
+Owner Next selects ONLY B3 after exact-head Documentation #153/run 37969289943
+completed SUCCESS on parent 4f561895d89632a5f80f89ce808404e532d16f0b,
+tree e2a43fcbe66c453a40ad3374a42af1152ce98011. Mandatory AGENTS/roadmap/
+reconciliation and registered B3 envelope read; local source tree matches.
+Exact message: `feat(simulation): define state and boundary timeline inputs`.
+
+Created ONLY SimulationStateQuantityInput.java, SimulationInitialStateInput.java,
+SimulationBoundarySeriesInput.java and SimulationBoundaryScheduleInput.java in
+src/main/java/dz/sh/hidra/modules/simulation/domain/model, plus
+src/test/java/dz/sh/hidra/modules/simulation/domain/model/SimulationStateBoundaryInputTest.java.
+Updated ONLY roadmap/reconciliation: seven tracked paths. Canonical headers retained;
+production imports only Java/local Simulation, reuses InvalidSimulationValueException.
+No persistence/API exposure or migration. Existing B1/B2/manifest/source/test,
+owner modules, schema/API/OpenAPI/dictionary/POM/dependency/workflow/Kernel/Platform/
+architecture exports unchanged.
+
+State quantities preserve MEASURED/ESTIMATED/SYNTHETIC/UNKNOWN declarations;
+known data requires numeric value/time/recorded evidence and UNKNOWN forbids all
+three while retaining missingness evidence. Quantity enums enforce explicit SI basis,
+legal NODE/PIPE/EQUIPMENT target combinations, signed/zero oriented pipe flow and
+node injection, positive absolute pressure/temperature, nonnegative measured speed
+and valve opening 0..1. No missing value defaults or operational threshold invented.
+Initial-state source kind/validity, state/revision/evidence ordering and structural
+unique target/quantity keys enforced; delayed evidence and partial unknowns retained.
+
+Boundary series preserve ordered distinct points, explicit STEP_PREVIOUS/LINEAR
+declarations and observed/scenario/forecast/synthetic origin/evidence. Future observed
+points rejected, future planned points allowed. Node/equipment targets only; no PIPE
+boundary coercion. Schedule source kind/initial effective selection, ordered horizon,
+exact first/last anchors, unique IDs/structural keys and frozen recorded evidence
+are required. All list layers defensive/unmodifiable; prior revisions remain intact.
+Interpolation is never evaluated; endpoint coverage does not claim a hydraulic solution.
+
+Nineteen synthetic JUnit test methods prepared for knowledge/missing-data shapes,
+all legal targets and quantity edges, every illegal target including UNKNOWN,
+identity/evidence/enums, source validity/exclusive ends, future state/value/evidence,
+delayed observations/partial unknowns, null/empty/duplicate structural keys;
+STEP/LINEAR mixed-origin schedules, unsupported origins/PIPE targets, range/identity/
+shape errors, timestamp duplicates/order, future observations, horizon anchors,
+recorded-after-source rejection, nested copying and immutable revision replacement.
+
+Actual validation:
+- Required focused command invoked as bash ./mvnw -B -q
+  -Dtest=SimulationStateBoundaryInputTest,SimulationFluidEquipmentInputTest,SimulationPhysicalNetworkInputTest,SimulationInputManifestTest,ArchitectureGuardrailTest test;
+  bash ./mvnw -B -q clean verify also attempted. Both BLOCKED before compilation by
+  uncached Spring Boot parent 4.1.1 and repo.maven.apache.org temporary DNS failure.
+  Wrapper tracked permissions unchanged. Runtime Java 17.0.20, not required Java 21.
+- Four production records plus existing source-version/exceptions compiled through
+  Java 17 jdk.compiler/com.sun.tools.javac.Main. Direct test compilation was blocked
+  by absent JUnit API; no JUnit/ArchUnit/full repository pass claimed locally.
+- An external temporary standalone harness adapted the 19 scenario bodies using its
+  own plain assertions and no JUnit classes. PASSED 174 custom assertions on Java 17.
+  This validates scenario behavior but is not JUnit execution or Java 21 full verification.
+- All 37 maintained validator tests, canonical documentation, offline OpenAPI, retained
+  P1 evidence, whitespace, exact seven-path and retained registry/version checks PASSED.
+
+B3 IN PROGRESS pending exact-head full CI; parent B/002 remain PENDING. No estimator,
+telemetry acquisition/trust resolution, equations, interpolation evaluator, OT actuation
+or complete transient profile/station/GZ2 model introduced. B4 must bind sources,
+manifest/state/horizon/IDs, retain nested synthetic provenance and define exact graph/
+completeness extensions; numerical capability/initialization/physics qualification
+remains later engine work. B4/002C/002D/engine stages were not executed.
+Next registered step after B3 CI success is B4 documentation-only exact-file preflight:
+`docs(twin): register HPR-P25-002B4 execution preflight`.
+Publish expected-parent lease, verify remote parent/tree/seven paths, observe both
+production/Documentation startup on the exact head and STOP for owner Next/Fail.
+P0/P1/P2 CLOSED, P2.5 OPEN, P3 DEFERRED, 57 completed HMRs, 123 permanent subjects,
+formal v0.6.0 and development 0.7.0-SNAPSHOT preserved.

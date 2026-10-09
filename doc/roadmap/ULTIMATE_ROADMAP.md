@@ -11249,3 +11249,46 @@ NETWORK-PREFLIGHT validation PASSED: 37 maintained validator tests; canonical do
 historical content/version retained. No source mutation or Maven/runtime persistence pass
 claimed. Shared preflight registered; C3A/C3B remain PENDING until delivery implementation
 and applicable exact-head CI. Documentation CI on this publication awaits observation.
+
+## HPR-P25-002C3A Local Candidate — 2026-10-09
+
+Owner Next resumed the already registered network delivery. Remote main remains
+2a66db636d77416fb675c24591b027cfbd428303 (tree
+5a46b1835a55402a1819c40ff9bc5508f9adbea7); Documentation #164/run 37988273509
+PASSED on that exact head. Production #620/run 37983724675 PASSED on executable
+baseline 15795dc000c60080dea0566d275d42d843420ba8.
+
+Prepared the exact C3A domain record and 19 synthetic JUnit test methods. Explicit
+source/revision/scope/time/origin/evidence, supplied SI values and ordered defensive
+lists are retained; connectivity uses pipes plus equipment incidence. Equipment can
+join pipe subnetworks or provide a node's only incidence. No defaults, approvals,
+physical inference, solver, public write API or architecture-export mutation.
+
+C3A remains PENDING: local candidate only, not published or CI-confirmed. Focused
+Maven validation and clean verify both failed before compilation: uncached Spring
+Boot parent 4.1.1 cannot resolve because repo.maven.apache.org DNS fails. Environment
+has Java 17, not required Java 21; no javac executable, Docker or PostgreSQL tools.
+Package installation also failed on runtime setgroups/setegid/seteuid operations.
+Compilation through Java 17's existing jdk.compiler module succeeded for the domain
+record and its actual local exceptions; this is not Java 21/Maven/JUnit acceptance.
+
+The required dictionary generator refused collection outside its designated disposable
+Actions database. No full-chain catalog for the new migration exists in this local
+execution; old-source artifacts cannot substitute. Do not fabricate dictionary metadata
+or advance main without exact-source migrated-catalog evidence. Keep C3B and all
+C3/C/002 parents PENDING. Separate C3A/C3B commits and single leased main advancement
+remain the publication protocol once required evidence is available. Retain
+0.7.0-SNAPSHOT, P0/P1/P2 CLOSED, P2.5 OPEN, P3 DEFERRED, 57 HMR implementations
+and 123 permanent semantic subjects.
+
+Local candidate checks: 21 independent standalone Java 17 domain smoke checks PASSED
+(normalization, explicit decimal values, equipment-only incidence/joins, effective interval,
+immutable lists/hash, duplicates/collisions, isolated/disconnected/dangling graphs, self
+links, invalid values and mesh/parallel orientation). All 37 maintained validator tests,
+canonical docs (95 documents/5063 links/24 modules/13 P2 rows), offline OpenAPI
+(244 paths/263 operations/231 schemas), P1 evidence, whitespace and header/import
+checks PASSED. Both architecture export registries are unchanged. No JUnit, Java 21,
+Maven full verification, PostgreSQL acceptance or new exact-head CI pass is claimed.
+A local four-path C3A checkpoint uses its registered exact message; main remains at the
+verified preflight. C3B cannot publish until actual full-chain catalog capture/regeneration
+is available. No dictionary is hand-edited and no parent is closed.

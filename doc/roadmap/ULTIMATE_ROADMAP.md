@@ -779,7 +779,7 @@ that exact implementation; no individual JUnit/skip report was inspected here.
 
 | Code | Status | Domain/Module | Type | Exact execution requirement | Exact commit message | Depends on |
 |---|---|---|---|---|---|---|
-| HPR-CI-001 | IN PROGRESS | CI / Verification | Infra | Run the unchanged full test suite in two reused isolated JVM forks; retain Surefire reports and count summaries for performance/coverage comparison; preserve all production/API/database/operations gates and verify exact-head CI. | `perf(ci): parallelize isolated test JVM execution` | owner instruction; full #612 green |
+| HPR-CI-001 | COMPLETED — optimized full CI #613 and Documentation #147 PASSED at 3e9c19142a750b1aab3ca6fb3afdf5df5906b318; job 726s to 395s, Maven 592s to 281s; log summary 1,277 tests / zero failures, errors or skips | CI / Verification | Infra | Run the unchanged full test suite in two reused isolated JVM forks; retain Surefire reports and count summaries for performance/coverage comparison; preserve all production/API/database/operations gates and verify exact-head CI. | `perf(ci): parallelize isolated test JVM execution` | owner instruction; full #612 green |
 
 Exact write allowlist: `.github/workflows/ci.yml`,
 `doc/roadmap/ULTIMATE_ROADMAP.md`, `doc/model-remediation/RECONCILIATION.md`.
@@ -851,17 +851,21 @@ message `docs(twin): register HPR-P25-002 execution preflight`. Documentation #1
 (run 37955963870) PASSED on parent 61c1311f458e6844d28c4b4d162b0916885d01a0,
 tree 774e1806a8953b5582dcb32081256449d5d290de. Current source remains unchanged.
 
-Owner selects **HPR-CI-001 production CI optimization**, exact message
-`perf(ci): parallelize isolated test JVM execution`, before further product work.
-HPR-P25-002A full CI #612 and Documentation #146 PASSED at eef35dbd35d4558a4ceb57f87d8670fb97c933ea.
-Its previous IN PROGRESS/pending-CI narrative is superseded by these results.
+HPR-CI-001 is COMPLETED: full CI #613/run 37961219860 and Documentation
+#147/run 37961220149 PASSED at exact optimization commit
+3e9c19142a750b1aab3ca6fb3afdf5df5906b318, tree
+664d21d3be2fc3b867032abc7170074ac61adf27. Job elapsed fell from 726s to 395s;
+Maven verification fell from 592s to 281s. The optimized-run log summary reports
+324 Surefire XML files, 1,277 tests, zero failures/errors/skips, with all existing
+OpenAPI/database/P1/operations gates successful. This is a measured single-run
+comparison, not a guaranteed duration or an independent archive-level audit.
 
-Use the exact three-file envelope above. CI optimization remains IN PROGRESS until
-actual optimized-run evidence is available. Preserve all production checks and review
-Surefire timing/count artifacts before claiming a performance improvement. After
-successful CI, owner Next selects optimization verification and then the bounded
-HPR-P25-002B physical-payload preflight as applicable; no product implementation is
-selected by this maintenance step. Observe applicable CI startup and STOP.
+Owner Next selects ONLY the two-document verification record, exact message
+`docs(ci): record verified production CI optimization`. Workflow remains unchanged.
+Next recommended task: **HPR-P25-002B physical-input payload preflight**, exact
+supporting message `docs(twin): register HPR-P25-002B execution preflight`,
+same two-document scope. No product source stage is selected by this verification.
+Observe supporting Documentation Validation startup and STOP for owner Next/Fail.
 P0/P1/P2 remain CLOSED; P2.5 PLANNED/OPEN; P3 DEFERRED; 57 HMR completions,
 123 subjects, formal v0.6.0 and current 0.7.0-SNAPSHOT remain preserved.
 
@@ -9107,3 +9111,61 @@ OpenAPI (244 paths, 263 operations, 231 schemas), P1 evidence and whitespace
 checks PASSED. Exact three-file scope and retained phase/HMR rows verified.
 No optimized runner/Maven duration is available locally; exact-head full CI
 will provide concurrency, resource and speedup evidence after publication.
+
+
+## HPR-CI-001 Verified Optimization Result — 2026-10-09
+
+Owner Next selects evidence reconciliation before resuming Phase 2.5. Main remains
+3e9c19142a750b1aab3ca6fb3afdf5df5906b318, tree
+664d21d3be2fc3b867032abc7170074ac61adf27. Mandatory AGENTS/roadmap/
+reconciliation reads completed; local tree matches. Full CI #613/run 37961219860
+and Documentation #147/run 37961220149 completed SUCCESS on this exact SHA.
+All full-CI steps succeeded, including Java 21 clean verify with two isolated reused
+forks, current OpenAPI equality, historical backward compatibility, migrated
+dictionary comparison and existing P1/operations gates. HPR-CI-001 COMPLETED.
+
+| Measured step | Baseline #612 | Optimized #613 | Observed reduction |
+|---|---|---|---|
+| Verification job elapsed | 726 seconds (12m06s) | 395 seconds (6m35s) | 331 seconds / 45.6 percent |
+| Maven repository verification | 592 seconds (9m52s) | 281 seconds (4m41s) | 311 seconds / 52.5 percent |
+
+Timings come from GitHub job/step timestamps: baseline job 113915537522 and
+optimized job 113924240920. The unchanged test source set and retained original
+workflow gates were checked at optimization publication. Optimized logs directly
+report 324 Surefire XML files and 1,277 tests, failures 0, errors 0, skipped 0.
+Test report upload succeeded; artifact ID 11631059984, size 1,631,791 bytes,
+digest sha256:8337e0167dd7f1e911e0d8f5027746d59b4de2a88d7c6a56ceae4cfefdb1b2cc,
+name hidra-test-reports-3e9c19142a750b1aab3ca6fb3afdf5df5906b318, retained
+until 2026-10-23T16:49:24Z. Artifact metadata verified through GitHub.
+The binary archive was not independently downloaded/parsed; counts are the executed
+workflow log summary. Baseline #612 did not publish this report, so an independent
+per-class baseline-versus-optimized XML comparison is not claimed.
+
+Runtime OpenAPI equality verified 244 paths, 263 operations and 231 schemas.
+Dictionary log evidence reports 139 migrations, 470 JPA mappings, 482 relations,
+reviewed_dictionary_checked true, unresolved_owners [] and source_sha equal to
+3e9c19142a750b1aab3ca6fb3afdf5df5906b318. Source bundle remains
+86f6ba5923e63c0cd601f7722ca0282e486d59fc92bb120616710fb3cd1799d4.
+No per-class manifest test count is inferred from the aggregate alone.
+
+This single before/after comparison supports observed improvement, not a fixed SLO
+or causal timing guarantee across variable runner/cache conditions. No failures or
+skips are reported in the optimized run; no further fork increase or workflow
+change is selected. Continue retaining diagnostics for future regressions.
+
+Supporting exact message: `docs(ci): record verified production CI optimization`.
+Write ONLY doc/roadmap/ULTIMATE_ROADMAP.md and doc/model-remediation/RECONCILIATION.md.
+No source/test/workflow/POM/schema/API/dependency change or full-runtime rerun is
+needed solely for this evidence record. Full #613 remains pinned to the optimized
+executable commit, not this documentation-only record. Validate canonical docs,
+offline OpenAPI, retained P1 evidence, whitespace and exact two-file scope.
+Publish with expected-parent lease, verify parent/tree/files, observe Documentation
+Validation startup and STOP. Next recommended owner selection is HPR-P25-002B
+physical-input preflight / `docs(twin): register HPR-P25-002B execution preflight`.
+P0/P1/P2 CLOSED, P2.5 OPEN, P3 DEFERRED, 57 HMR completions, 123 subjects,
+formal v0.6.0 and current 0.7.0-SNAPSHOT remain preserved.
+
+Actual supporting verification checks PASSED: canonical documentation (95 documents,
+5,063 links, 24 modules, 13 P2 rows), offline OpenAPI (244 paths, 263 operations,
+231 schemas), P1 evidence and git diff --check. Exact two-document scope and
+retained phase/HMR identities verified. Supporting Documentation CI follows publication.

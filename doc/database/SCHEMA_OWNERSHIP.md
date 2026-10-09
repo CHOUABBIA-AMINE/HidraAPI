@@ -136,3 +136,9 @@ P1 deployed/recovery evidence retains its original scope. No production-data/imp
 approval, business retention/policy values, hydraulic/ML runtime execution or field
 actuation is established. Version remains 0.6.0-SNAPSHOT. No executable, migration,
 contract snapshot, dictionary, ownership metadata or operating artifact is changed.
+
+## Phase 2.5 append-only physical revisions
+
+The [physical revision migration](../../src/main/resources/db/migration/V20261009_001__p25_topology_physical_network_revisions.sql), [Topology JDBC adapter](../../src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcTopologyPhysicalNetworkRevisionRepositoryAdapter.java) and [domain contract](../../src/main/java/dz/sh/hidra/modules/topology/domain/model/TopologyPhysicalNetworkRevision.java) establish Topology ownership of `public.hidra_topology_physical_network_revision`. This JDBC-only store has no JPA entity and preserves live asset and snapshot tables. The reviewed ownership metadata records its explicit owner, purpose and source evidence.
+
+Exact source/revision identity and authoritative canonical bytes are immutable under ordinary writes. Built-in PostgreSQL SHA-256 checks payload integrity; owner reads additionally decode, re-encode and validate domain content and payload/key agreement. No lossy duplicated timestamp/geometry columns, mutable live-asset foreign keys, seed data or operational approval policy is introduced. Queries cross the exported application boundary, never direct foreign-module JDBC access. Stored declared origin/evidence and valid hashes confer no operational trust. Full-chain migrated-catalog verification is a publication gate, not implied by this source description.

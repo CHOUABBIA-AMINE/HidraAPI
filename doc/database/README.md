@@ -92,3 +92,9 @@ P1 deployed/recovery evidence retains its original scope. No production-data/imp
 approval, business retention/policy values, hydraulic/ML runtime execution or field
 actuation is established. Version remains 0.6.0-SNAPSHOT. No executable, migration,
 contract snapshot, dictionary, ownership metadata or operating artifact is changed.
+
+## Phase 2.5 network revision candidate — capture pending
+
+The registered network delivery adds a separate Topology-owned JDBC revision store via [V20261009_001](../../src/main/resources/db/migration/V20261009_001__p25_topology_physical_network_revisions.sql). Ownership metadata now contains 22 source-linked overrides. Historical counts and captures above remain their original verified scope; they do not include this new migration.
+
+The current physical dictionary has deliberately not been hand-edited. Publication requires an actual full-chain migrated PostgreSQL 16 catalog with the candidate migration/source inventory, reviewed ownership and regeneration/check using the existing generator. The new PostgreSQL integration test captures the generator's schema-only catalog query in a read-only repeatable-read transaction after actual full-chain Flyway migration/validation. On GitHub Actions it emits compressed catalog evidence with exact checkout/source-bundle/dictionary digests for retrieval when local PostgreSQL collection is unavailable. It exports no business rows or credentials. This equivalent disposable-catalog route does not weaken the maintained CI dictionary comparison. Capture results/counts and applicability will be recorded only after actual evidence is obtained.

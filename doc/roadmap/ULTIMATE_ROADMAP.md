@@ -11292,3 +11292,42 @@ Maven full verification, PostgreSQL acceptance or new exact-head CI pass is clai
 A local four-path C3A checkpoint uses its registered exact message; main remains at the
 verified preflight. C3B cannot publish until actual full-chain catalog capture/regeneration
 is available. No dictionary is hand-edited and no parent is closed.
+
+## HPR-P25-002C3B Network Delivery Candidate — 2026-10-09
+
+Owner Next resumed the existing envelope; no new preflight or deeper code was introduced.
+C3A local parent 7a2b09e359a64a7a8468b2f1fa9e4eef2363e1cd retains its exact four
+paths and registered message. C3B prepares its ten registered new paths and six of seven
+updated paths. DATA_DICTIONARY remains unchanged until actual full-chain migrated
+PostgreSQL evidence is obtained; no physical metadata is invented. The registered
+forward migration is still V20261009_001, separate from all existing asset/snapshot tables.
+
+Candidate implementation: exact append/find/findStored owner port, standard-Java immutable
+Simulation DTOs, read-only owner query, deterministic binary codec with signed decimal
+scale/full Instant precision/strict UTF-8/re-encoding, SHA-256 verified JDBC reads, atomic
+identical replay and conflicting content rejection, normal-write UPDATE/DELETE/TRUNCATE
+triggers and reviewed JDBC ownership. Meaningful codec/contract/query/PostgreSQL tests
+cover exact scalars, corruption, replay, real proxied transactions, concurrent conflicts,
+rollback, sentinel preservation and full-chain Flyway catalog capture. No new write API,
+Simulation resolver, dependency/workflow/export/catalogue/Kernel/Platform change.
+
+Local Java 21/Maven and PostgreSQL acceptance remain unavailable. A candidate branch/draft
+PR may use unchanged CI to obtain equivalent actual full-chain disposable catalog evidence
+from the integration test's compressed schema-only job-log capture. No main advancement,
+completion status, runtime success or final dictionary capture is implied by this candidate.
+C3A/C3B/C3/C/002 remain PENDING; 0.7.0-SNAPSHOT and all historical phase/catalogue counts
+are retained. Once exact-source capture is validated, regenerate/check dictionary, preserve
+separate C3A/C3B commits, advance main once with expected-parent lease, observe final
+Production/Documentation CI startup and STOP.
+
+C3B local candidate validation: standard-Java port/DTO/codec compilation using the
+existing Java 17 compiler module PASSED; independent expected bytes/digest/negative-scale
+roundtrip and 235 malformed/truncated payload smoke checks PASSED. All 37 maintained
+validator tests, canonical docs (95 documents/5073 links/24 modules/13 P2 rows), offline
+OpenAPI (244 paths/263 operations/231 schemas), P1 evidence and whitespace PASSED.
+Registered focused Maven command and clean verify both FAILED before compilation on the
+uncached Spring Boot 4.1.1 parent/Maven Central DNS failure. No JUnit or PostgreSQL
+acceptance is claimed. Validation candidate has sixteen C3B changed paths (ten new/six
+updated); the final seventeen-path C3B commit must additionally include the actually
+regenerated dictionary. Candidate CI is evidentiary staging, not main publication or task
+closure. Both architecture export registries and all workflows are unchanged.

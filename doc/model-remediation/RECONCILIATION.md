@@ -9357,3 +9357,240 @@ PLAN1 validation PASSED: 37 maintained validator tests; canonical docs (95 docum
 231 schemas); P1 evidence; whitespace; exact two-document scope; retained historical
 registries/version. Plan implementation recorded, exact-head Documentation CI pending;
 network-delivery shared preflight remains the next selected task after successful CI.
+
+
+## HPR-P25-002 Shared Network Revision Delivery Preflight — 2026-10-09
+
+### Selection, evidence and retained tasks
+
+Owner Next selects ONLY HPR-P25-002-NETWORK-PREFLIGHT, exact message
+`docs(twin): register network revision delivery preflight`. Write ONLY these two
+execution memories now. Verified main f55e2fb26b6a6eb64e03ad4403846f5d5a7ada7e,
+tree eb0eee9b1e3191ff6e4f6613f593fc4b5df161f3; Documentation #163/run 37987465475
+PASSED. Latest executable baseline remains 15795dc000c60080dea0566d275d42d843420ba8,
+Production #620 PASSED. Mandatory instructions/memories read before mutation.
+
+This shared preflight supersedes standalone C3A/C3B selection and intervening preflight/
+CI requirements in historical C3 text. Preserve C3A's already defined physical record,
+field order, validation and tests; no domain representation adjustment is needed.
+C3A/C3B remain PENDING. No source/test/schema/dictionary change or phase closure here.
+
+| Order | Retained code | Exact separate message | Scope |
+|---|---|---|---|
+| 1 | HPR-P25-002C3A | `feat(topology): define immutable physical network revisions` | Earlier exact four paths |
+| 2 | HPR-P25-002C3B | `feat(topology): persist physical network source revisions` | Seventeen paths below |
+
+After successful preflight Documentation CI, one owner Next selects both codes in order
+as ONE network delivery envelope: separate commits, chain C3B to C3A, advance main once
+with expected-parent lease, verify each commit scope/final tree, observe final-head
+Production/Documentation CI startup and STOP. No further routine C3B preflight. Before
+source execution verify unchanged main, successful documentation head and green latest
+production baseline; revisit material changed source/schema/failure evidence only.
+
+### Source review and representation choice
+
+TopologySnapshotJpaEntity and V20260611_004__create_topology_tables.sql have a general
+JSON/status/workflow snapshot model, not this physical source-revision contract. Preserve
+it and all live asset tables. Current migration chain ends V20261008_026; V20261009_001
+is unoccupied at verified parent. Recheck before implementation; a collision requires
+explicit re-registration, never overwrite a prior migration.
+
+topology.application.contract.simulation is already exported in BOTH ArchitectureGuardrailTest
+and ForensicRemediationClosureTest; no export-prefix/registry mutation is needed. Application
+cannot depend on infrastructure. Standard-Java codec stays with JDBC adapter; owner port
+returns domain objects internally; query maps to public DTOs. No Simulation code change now.
+Existing PostgreSQL tests use Testcontainers PostgreSQL 16, JDBC, DriverManagerDataSource
+and real transaction proxies. Reuse available dependencies. Production CI compares an actual
+full-chain catalog capture against DATA_DICTIONARY.md. JDBC-only persistence needs reviewed
+ownership metadata and a regenerated physical dictionary; no new JPA entity is necessary.
+
+### C3A retained exact scope and requirements
+
+Create ONLY:
+1. src/main/java/dz/sh/hidra/modules/topology/domain/model/TopologyPhysicalNetworkRevision.java
+2. src/test/java/dz/sh/hidra/modules/topology/domain/model/TopologyPhysicalNetworkRevisionTest.java
+
+Update ONLY doc/roadmap/ULTIMATE_ROADMAP.md and doc/model-remediation/RECONCILIATION.md.
+Earlier C3A field order/nested enums and full meaningful test requirements remain binding:
+source/revision/scope/recorded/effective times/origin/evidence and immutable ordered nodes,
+pipes/equipment links; inclusive-start/exclusive-end effectiveAt; explicit supplied SI;
+signed/zero elevation, positive length/internal diameter, nonnegative roughness; normalized
+IDs, valid nonself endpoints, disjoint pipe/equipment IDs, no isolated nodes and connected
+undirected union. Preserve orientation, meshes/cycles/parallel links, equipment-only node
+incidence and equipment joins. At least two nodes/one real pipe, explicit empty equipment
+allowed. No defaults, nominal-diameter/design-pressure inference, hash/framework/persistence/
+foreign owner imports. Reuse InvalidTopologyValueException. No adjustments for storage.
+
+### C3B exact write allowlist
+
+Create ONLY these ten files:
+1. src/main/java/dz/sh/hidra/modules/topology/application/port/out/TopologyPhysicalNetworkRevisionRepositoryPort.java
+2. src/main/java/dz/sh/hidra/modules/topology/application/contract/simulation/SimulationPhysicalNetworkRevisionContract.java
+3. src/main/java/dz/sh/hidra/modules/topology/application/service/TopologySimulationPhysicalNetworkRevisionQueryService.java
+4. src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/TopologyPhysicalNetworkRevisionCodec.java
+5. src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcTopologyPhysicalNetworkRevisionRepositoryAdapter.java
+6. src/main/resources/db/migration/V20261009_001__p25_topology_physical_network_revisions.sql
+7. src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/TopologyPhysicalNetworkRevisionCodecTest.java
+8. src/test/java/dz/sh/hidra/modules/topology/application/service/TopologySimulationPhysicalNetworkRevisionQueryServiceTest.java
+9. src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/TopologyPhysicalNetworkRevisionPostgresIntegrationTest.java
+10. src/test/java/dz/sh/hidra/modules/topology/application/contract/simulation/SimulationPhysicalNetworkRevisionContractTest.java
+
+Update ONLY these seven files:
+11. .github/database-dictionary-ownership.json
+12. doc/database/DATA_DICTIONARY.md
+13. doc/database/SCHEMA_OWNERSHIP.md
+14. doc/database/README.md
+15. doc/roadmap/ULTIMATE_ROADMAP.md
+16. doc/model-remediation/RECONCILIATION.md
+17. doc/modules/topology.md
+
+Seventeen C3B paths; nineteen distinct paths across delivery. Module document path verified
+as doc/modules/topology.md. No other paths: preserve existing entities/live repositories,
+controllers/APIs/OpenAPI, Simulation/other owners, catalogue, dependencies/POM, scripts/
+workflows, architecture exports, Kernel and Platform. Canonical Java headers retain Author
+Abir MEDJERAB, CreatedOn 2025-06-26, UpdatedOn actual implementation date. No deeper codes
+for codec/mapping/tests. All helpers/nested DTOs remain in the listed files.
+
+### Exact owner ports and public query boundary
+
+Repository methods: TopologyPhysicalNetworkRevision append(TopologyPhysicalNetworkRevision
+revision), Optional<TopologyPhysicalNetworkRevision> find(String sourceId,String revisionId),
+Optional<StoredRevision> findStored(String sourceId,String revisionId). Nested immutable
+StoredRevision carries revision, String payloadFormat, String sha256. Require nonnull
+revision and trimmed/nonblank lookup identities; reject malformed owner input using
+InvalidTopologyValueException. find delegates to verified findStored. Identical replay
+returns the stored equivalent revision; conflicting same-identity content throws that
+exception without mutation. No update/delete/list/latest/fallback methods.
+
+Public SimulationPhysicalNetworkRevisionContract: Optional<Revision> find(String sourceId,
+String revisionId). Nested Revision metadata matches domain field order followed by ordered
+List<Node>, List<PipeSegment>, List<EquipmentLink>, String payloadFormat, String sha256.
+Nested element fields match domain scalars. Use String enum names for scopeType/origin/
+equipment kind, not domain enums/types. Standard Java imports only; immutable defensive
+lists reject null entries; required identities/metadata/physical scalars and exact enum
+names are validated, optional end interval preserved, exact format and lowercase 64-hex
+digest required. Use IllegalArgumentException for malformed public DTO construction.
+Contract tests exercise valid exports, malformed metadata/scalars and immutable boundaries.
+
+Query service @Service/@Transactional(readOnly=true), constructor-injected owner port,
+calls findStored once and maps validated owner objects into fresh DTOs with stored verified
+format/digest. Missing exact revision yields Optional.empty; integrity errors propagate,
+never become missing. Normalize/reject lookup identities consistently. No domain/JDBC/
+codec/Spring type leaks into DTOs. Storage does not imply live scope eligibility or approval;
+existing live scope query remains separate. No Simulation adapter/resolver mutation now.
+
+Writes are internal Topology repository operations exercised by tests and available to a
+later registered owner ingestion use case. No public write endpoint, invented actor policy
+or implicit credential/approval bypass. Supplied origin/evidence remain declarations;
+DECLARED_PARAMETER and a correct digest grant no operational trust. No synthetic live-asset
+registration, inferred SI values, approval or live-status mutation.
+
+### Canonical bytes and digest
+
+Standard Java/local Topology codec methods encode(revision), decode(byte[]) and sha256(byte[])
+with defensive arrays. Format tag HIDRA_TOPOLOGY_PHYSICAL_NETWORK_V1. Deterministic
+DataOutputStream/DataInputStream layout: signed 32-bit big-endian UTF-8 string byte length
+then bytes; first string format tag, then metadata in domain field order. Enums encode
+names. Instants: signed 64-bit epoch seconds then signed 32-bit nanos. Optional end: one
+byte 0 absent/1 present, then Instant if present. Three lists: signed 32-bit count then
+elements in insertion order, fields in their declared order. BigDecimals: length-prefixed
+toPlainString text followed by signed 32-bit scale; reconstruct exactly with setScale
+without rounding, including negative scales. No floating point/locale/default charset.
+
+Lowercase SHA-256 covers all bytes including format, IDs/times/evidence/origin/physical
+values/equipment incidence. Order, orientation and decimal scale are identity-significant:
+1.0 and 1.00 may have different digests; do not silently sort, normalize or round scalars.
+Integrity is not approval. No clock/random value in representation. Decode rejects unknown
+format, malformed UTF-8 with strict decoder, invalid lengths/counts/optional marker/enums/
+nanos, truncated/trailing bytes and domain-invalid values/graphs. Bound allocations from
+remaining bytes, not invented operational thresholds. Re-encode and compare full bytes
+to reject noncanonical decimal/identity spelling. No Java object serialization or Jackson.
+Codec tests include a fixed synthetic fixture with independently specified expected bytes/
+digest, scalar/order/orientation/scale sensitivity, negative-time/nanosecond/null-end round
+trips and corrupt/unsupported inputs. This preserves full Instant precision in payload.
+
+### Authorized forward migration and append semantics
+
+Create ONLY hidra_topology_physical_network_revision with source_id text NOT NULL,
+revision_id text NOT NULL, payload_format text NOT NULL, canonical_payload bytea NOT NULL,
+sha256 varchar(64) NOT NULL. Primary key (source_id,revision_id). CHECK normalized nonblank
+IDs, exact supported format, nonempty payload, lowercase 64-hex digest and sha256 =
+encode(sha256(canonical_payload),'hex') using PostgreSQL's built-in SHA-256. Metadata/
+geometry occur once in authoritative bytes; no lossy duplicate timestamp columns, arbitrary
+text size limit, FK to mutable live assets/catalogues/Simulation, seed/backfill/default
+geometry/approval or pgcrypto extension. Synthetic/historical revisions remain independent
+of live eligibility. Preserve all prior migrations/tables/rows.
+
+Create a Topology-named trigger function, BEFORE UPDATE OR DELETE row trigger and BEFORE
+TRUNCATE statement trigger that always reject mutation. These normal-write protections
+do not claim administrators cannot disable triggers. One authorized forward SQL file only.
+
+Adapter @Repository, constructor-injected JdbcTemplate, owns standard codec. append is
+@Transactional: compute bytes/digest internally; parameterized INSERT ... ON CONFLICT
+(source_id,revision_id) DO NOTHING then separate exact SELECT and compare format/full
+bytes/digest. Identical replay succeeds; different content rejects; never DO UPDATE.
+Separate SELECT sees a concurrent committed winner under ordinary READ COMMITTED; no
+claim of arbitrary isolation retry support. Propagated failures roll back transaction.
+Every read recomputes digest, checks format, decodes/re-encodes, verifies payload identities
+match row key and rejects corruption. Caller-supplied hash is never trusted; arrays do
+not escape public DTOs. A hash-consistent but domain-invalid row still fails read.
+
+### Acceptance tests and complete verification
+
+PostgreSQL test uses existing PostgreSQL 16 Testcontainers, new migration on disposable
+schema, real JdbcTemplate adapter, transaction proxy/manager and owner query service.
+Persist two synthetic revisions of one source with changed geometry; query both exact
+identities through public contract; compare all ordered scalars/metadata/origin/evidence/
+digest. Original remains identical after replacement and replay; missing revision is empty.
+No mocks count as persistence evidence. Cover sequential/concurrent identical replay,
+competing conflicting content with exactly one winner, transaction rollback, direct SQL
+duplicate/bad-digest/blank-ID/unknown-format rejection, UPDATE/DELETE/TRUNCATE rejection,
+empty-schema creation and existing sentinel preservation. Direct SQL hash-consistent corrupt
+bytes/mismatched payload key must fail owner read. Bounded concurrent waits/separate
+connections and real transaction proxies must exercise transaction annotations.
+
+Docker-disabled skips are reported as skipped, never acceptance success. Completion needs
+PostgreSQL tests actually run in exact-head CI plus full verify green. No workflow changes
+to suppress failures/skips. Query unit tests cover mapping/normalization/missing/integrity
+failure; contract/domain/codec tests cover meaningful independent invariants.
+
+Run C3A's previously registered focused command before its separate commit. C3B runs:
+`bash ./mvnw -B -q -Dtest=TopologyPhysicalNetworkRevisionTest,TopologyPhysicalNetworkRevisionCodecTest,SimulationPhysicalNetworkRevisionContractTest,TopologySimulationPhysicalNetworkRevisionQueryServiceTest,TopologyPhysicalNetworkRevisionPostgresIntegrationTest,SimulationPhysicalNetworkInputTest,SimulationPhysicalInputPayloadTest,ArchitectureGuardrailTest,ForensicRemediationClosureTest test`
+then `bash ./mvnw -B -q clean verify`. Bash preserves tracked wrapper permissions.
+Run all 37 maintained validator tests, canonical docs, offline OpenAPI, P1 evidence,
+whitespace and exact per-commit/delivery/header/import checks. Both export registries
+remain unchanged and checked. Report toolchain/dependency failures accurately.
+
+Ownership override public.hidra_topology_physical_network_revision: owner topology,
+purpose append-only physical source revisions; evidence new migration, adapter and domain
+record. SCHEMA_OWNERSHIP and topology module document explain JDBC owner, immutable
+identity/query boundary, supplied SI/evidence, synthetic limitations and missing behavior.
+Database README records actual capture provenance/counts/ownership consequences while
+preserving historical deployment/recovery evidence. No new catalogue subjects introduced.
+
+Regenerate DATA_DICTIONARY with existing generator from an ACTUAL full-chain migrated
+PostgreSQL catalog and exact source inventory with reviewed ownership override. Retain
+schema.json/verification as temporary evidence only; use collect/render then --check.
+Do not fabricate catalog facts, hand-invent table metadata or suppress comparison. If
+local collection is unavailable, obtain equivalent exact-source disposable catalog evidence
+before C3B publication; otherwise report blocker and stop before branch advancement.
+No dependency/workflow edits to evade this gate. Offline OpenAPI remains identical.
+
+### Current validation and next control
+
+This docs-only preflight runs maintained validator tests, canonical docs/offline OpenAPI,
+P1 evidence, whitespace and exact two-file/historical/version checks. No Maven/runtime
+persistence success claimed here. Publish with lease, verify remote parent/tree/two paths,
+observe Documentation CI startup and STOP. Next after success selects C3A+C3B network
+implementation; after successful delivery select shared fluid/equipment preflight unless
+owner explicitly selects separately admitted 008A design. No automatic next delivery.
+P0/P1/P2 CLOSED, P2.5 OPEN, P3 DEFERRED, 57 HMR implementations, 123 permanent subjects,
+0.7.0-SNAPSHOT retained. No solver, calibrated GZ2, direct OT actuation, inferred operating
+threshold or verified deployment claim. C3/C/002 remain PENDING.
+
+NETWORK-PREFLIGHT validation PASSED: 37 maintained validator tests; canonical docs
+(95 documents, 5063 links, 24 modules, 13 P2 rows); offline OpenAPI (244 paths,
+263 operations, 231 schemas); P1 evidence; whitespace; exact two-document scope;
+historical content/version retained. No source mutation or Maven/runtime persistence pass
+claimed. Shared preflight registered; C3A/C3B remain PENDING until delivery implementation
+and applicable exact-head CI. Documentation CI on this publication awaits observation.

@@ -11292,3 +11292,151 @@ Maven full verification, PostgreSQL acceptance or new exact-head CI pass is clai
 A local four-path C3A checkpoint uses its registered exact message; main remains at the
 verified preflight. C3B cannot publish until actual full-chain catalog capture/regeneration
 is available. No dictionary is hand-edited and no parent is closed.
+
+## HPR-P25-002C3B Network Delivery Candidate — 2026-10-09
+
+Owner Next resumed the existing envelope; no new preflight or deeper code was introduced.
+C3A local parent 7a2b09e359a64a7a8468b2f1fa9e4eef2363e1cd retains its exact four
+paths and registered message. C3B prepares its ten registered new paths and six of seven
+updated paths. DATA_DICTIONARY remains unchanged until actual full-chain migrated
+PostgreSQL evidence is obtained; no physical metadata is invented. The registered
+forward migration is still V20261009_001, separate from all existing asset/snapshot tables.
+
+Candidate implementation: exact append/find/findStored owner port, standard-Java immutable
+Simulation DTOs, read-only owner query, deterministic binary codec with signed decimal
+scale/full Instant precision/strict UTF-8/re-encoding, SHA-256 verified JDBC reads, atomic
+identical replay and conflicting content rejection, normal-write UPDATE/DELETE/TRUNCATE
+triggers and reviewed JDBC ownership. Meaningful codec/contract/query/PostgreSQL tests
+cover exact scalars, corruption, replay, real proxied transactions, concurrent conflicts,
+rollback, sentinel preservation and full-chain Flyway catalog capture. No new write API,
+Simulation resolver, dependency/workflow/export/catalogue/Kernel/Platform change.
+
+Local Java 21/Maven and PostgreSQL acceptance remain unavailable. A candidate branch/draft
+PR may use unchanged CI to obtain equivalent actual full-chain disposable catalog evidence
+from the integration test's compressed schema-only job-log capture. No main advancement,
+completion status, runtime success or final dictionary capture is implied by this candidate.
+C3A/C3B/C3/C/002 remain PENDING; 0.7.0-SNAPSHOT and all historical phase/catalogue counts
+are retained. Once exact-source capture is validated, regenerate/check dictionary, preserve
+separate C3A/C3B commits, advance main once with expected-parent lease, observe final
+Production/Documentation CI startup and STOP.
+
+C3B local candidate validation: standard-Java port/DTO/codec compilation using the
+existing Java 17 compiler module PASSED; independent expected bytes/digest/negative-scale
+roundtrip and 235 malformed/truncated payload smoke checks PASSED. All 37 maintained
+validator tests, canonical docs (95 documents/5073 links/24 modules/13 P2 rows), offline
+OpenAPI (244 paths/263 operations/231 schemas), P1 evidence and whitespace PASSED.
+Registered focused Maven command and clean verify both FAILED before compilation on the
+uncached Spring Boot 4.1.1 parent/Maven Central DNS failure. No JUnit or PostgreSQL
+acceptance is claimed. Validation candidate has sixteen C3B changed paths (ten new/six
+updated); the final seventeen-path C3B commit must additionally include the actually
+regenerated dictionary. Candidate CI is evidentiary staging, not main publication or task
+closure. Both architecture export registries and all workflows are unchanged.
+
+## HPR-P25-002 Network Candidate Java 21 Validation — 2026-10-09
+
+Owner requested no PRs. Draft #135 was CLOSED WITHOUT MERGE; do not create/reopen/use
+PRs for this delivery. Main remains 2a66db636d77416fb675c24591b027cfbd428303. Remote
+candidate C3A is 93cbff8839048ba82ea22ae0ae0bd36011966654, parent verified preflight;
+its tree matches the original local C3A checkpoint. Candidate C3B
+02a23fafbbcf0143dd4f9279cffcfabccde7f826 had Documentation #165 PASSED. Production
+#621/run 37992042813 attempts 1 and 2 FAILED before checkout on Docker Hub anonymous
+postgres:16 pull rate limits. Zero tests and no migrated-catalog evidence were produced.
+The closed PR and past run are historical staging only; no further PR selection is admitted.
+
+Recovered local environment without repository dependency/workflow changes: downloaded
+Ubuntu OpenJDK 21.0.12 and PostgreSQL 16.15 into scratch via existing APT, configured
+Maven's existing runtime proxy per invocation, and resolved the actual Spring Boot 4.1.1
+parent/dependencies. The earlier Java 17/DNS blockage is historical, not the current local
+Java validation state. Mockito's default dynamic attachment was unavailable here; using
+its existing dependency as a startup Java agent fixed local execution without changing
+POM, mocking behavior or assertions. Temporary tools/proxy configuration remain outside Git.
+
+Codec review found independently declared decimal scales could expand a short malicious
+payload. Reconstruction now requires canonical plain notation; nonnegative scale must
+match supplied fraction digits, and nonzero negative scale cannot exceed supplied trailing
+zeros. Signed negative scales, including zero at Integer.MIN_VALUE scale, remain exact.
+This bounds reconstruction by supplied bytes without inventing a physical threshold.
+An additional meaningful regression test covers extreme signed scales and negative-scale
+zero roundtrip; only the already registered codec and codec-test paths changed.
+
+Final Java 21 focused command used all nine registered test classes plus local Maven
+settings/startup agent: 95 tests total, 86 PASSED, 9 PostgreSQL tests SKIPPED, zero failures
+or errors. Full bash ./mvnw -B -q clean verify with the same local environment settings
+and startup agent PASSED: 1430 tests total, 1136 PASSED, 294 Docker-dependent SKIPPED,
+zero failures/errors, 339 Surefire report files. Both architecture guardrail suites ran
+and PASSED; export registries unchanged. Source/test compilation and real JUnit execution
+are now established locally, not just standalone smoke checks. No exact-head CI pass or
+PostgreSQL acceptance is inferred from these results.
+
+Docker remains unavailable. Local PostgreSQL binaries work but initdb refuses the root-only
+runtime; no unprivileged UID is mapped and an ordinary namespace attempt was denied.
+No server was started and no root guard was bypassed. The actual full-chain PostgreSQL
+catalog and dictionary regeneration remain mandatory and unavailable. DATA_DICTIONARY
+remains unchanged; final C3B still requires its seventeenth changed path from actual
+catalog evidence. Preserve CI dictionary comparison and no-PR/direct-main lease protocol.
+C3A/C3B and all parents remain PENDING. No main advancement, phase closure, release,
+solver, calibrated GZ2 or operational approval claim. 0.7.0-SNAPSHOT retained.
+
+## HPR-P25-002 Network Candidate PostgreSQL Evidence — 2026-10-09
+
+No-PR manual Production #622/run 37996634815 executed exact candidate
+4c771cf86cc5ff61a341f451d90ad7c241e2422a. Repository clean verify PASSED:
+1430 tests, zero failures/errors/skips. All nine network PostgreSQL tests ran;
+actual full-chain capture contained 140 migrations, 470 JPA mappings, 483 relations
+and zero unresolved owners. Maintained documentation/production validators and runtime
+OpenAPI equality PASSED. Overall CI FAILED at current database dictionary comparison;
+the dictionary still records the historical 139-migration/482-relation capture.
+
+Recovered the complete 96-part schema-only catalog from that exact job's logs.
+Its canonical SHA-256 a1952d019fbc6932660303c1525649a10d6112811a4d6288b763fb5f8fc9d7e1
+matches emitted verification. Existing generator validated exact source inventory and
+reviewed ownership; regenerated temporary dictionary SHA-256 is
+ef9a0537f595295423207783ae11f13d039500455ef5f1552640c6de72c60167.
+The existing --check reproduces Physical dictionary drift. This is real disposable
+PostgreSQL evidence, not fabricated schema facts or production deployment evidence.
+
+Capture used postgres:16-alpine with server_version 16.15; the unchanged maintained CI
+collector uses postgres:16 with Debian version metadata. Comparison ignores only the
+validated source-SHA line. Align the already registered integration-test image to the
+existing CI postgres:16 image before obtaining a fresh equivalent capture; do not invent
+or normalize catalog facts, alter the generator or weaken comparison. DATA_DICTIONARY
+remains unchanged pending that fresh evidence. Only the registered test and two execution
+memories change in this candidate correction; separate C3A/C3B chain retained.
+Main remains 2a66db636d77416fb675c24591b027cfbd428303. C3A/C3B and all parents
+remain PENDING; no later delivery, release, solver, calibrated GZ2 or operational approval
+claim. 0.7.0-SNAPSHOT retained. Dispatch existing candidate CI without PR, observe startup
+and STOP; inspect fresh capture on the next owner selection before dictionary publication.
+
+## HPR-P25-002 Network Candidate Dictionary Regeneration — 2026-10-09
+
+No-PR manual Production #623/run 37997704862 executed exact candidate
+c82cf6a80425dc191b2c00c290375a5406b54620. Full clean verify PASSED with 1430
+tests, zero failures/errors/skips, including actual network PostgreSQL acceptance.
+Documentation/production validators and runtime OpenAPI equality PASSED. Overall run
+FAILED at maintained dictionary comparison because the historical checked-in dictionary
+was deliberately awaiting actual aligned catalog capture. Compatibility checks after
+that failed step did not run; no overall CI pass is claimed.
+
+The complete 97-part schema-only capture was recovered and its canonical SHA-256
+verified as e6fe19c09169f6576ba92ec84f08adf8ec8ad14c08f70792917aef7f5a2e090d.
+Actual PostgreSQL server metadata is 16.15 (Debian 16.15-1.pgdg13+2), matching the
+maintained CI collector image. Existing generator validates the exact source bundle
+9462e6a083bcb9b0b2a4f78da230fae396c318b5a05ecafd0f4998d27db77900 and reviewed
+ownership: 140 migrations, 470 JPA mappings, 483 relations, zero unresolved owners.
+DATA_DICTIONARY is regenerated from this actual catalog using --input/--source-sha/
+--ownership/--render; its SHA-256 is
+0ef393290fe02cbb1086c6992b9a63a3e135ccba03d5efe19fef585edd197756.
+No schema facts were invented or hand-edited. Existing --check must now pass locally
+and maintained CI comparison remains unchanged. This disposable catalog establishes
+source-schema applicability only, not deployment, calibration or operational approval.
+
+The candidate now includes all seventeen registered C3B paths (ten new/seven updated),
+with nineteen distinct paths across the separate C3A/C3B delivery. Only dictionary,
+database README and two execution memories change in this evidence-finalization step.
+Preserve C3A 93cbff8839048ba82ea22ae0ae0bd36011966654 as separate parent; no PR.
+Main remains 2a66db636d77416fb675c24591b027cfbd428303 until candidate full CI
+including dictionary comparison and compatibility is green. C3A/C3B and all parents
+remain PENDING pending publication; 0.7.0-SNAPSHOT and all phase/catalogue counts retained.
+Dispatch existing candidate CI, observe startup and STOP. After green candidate evidence,
+record executed leaf completion, advance main once with expected-parent lease, observe
+final exact-head Production/Documentation CI startup and STOP; no later delivery selected.

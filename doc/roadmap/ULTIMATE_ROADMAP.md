@@ -590,7 +590,7 @@ Each stage retains its own commit and later evidence; no batch is selected.
 
 | Code | Status | Domain/Module | Type | Exact execution requirement | Exact commit message | Depends on |
 |---|---|---|---|---|---|---|
-| HPR-P25-002A | IN PROGRESS — three immutable contracts and 14 JUnit tests implemented; standalone Java 17 compilation/smoke assertions passed; local Maven blocked before compilation by Central DNS; exact-head Java 21 CI pending | Simulation / Input manifest | Code/Test | Implement immutable manifest, source-version identities/validity/origin and steady-state/transient metadata invariants under the exact six-file envelope below. | `feat(simulation): establish immutable input manifest contracts` | HPR-P25-002 preflight Documentation CI success |
+| HPR-P25-002A | COMPLETED — implementation eef35dbd35d4558a4ceb57f87d8670fb97c933ea passed full Java 21 CI #612 and Documentation #146; three immutable contracts and 14 JUnit tests present; per-class report not independently retained at this baseline | Simulation / Input manifest | Code/Test | Implement immutable manifest, source-version identities/validity/origin and steady-state/transient metadata invariants under the exact six-file envelope below. | `feat(simulation): establish immutable input manifest contracts` | HPR-P25-002 preflight Documentation CI success |
 | HPR-P25-002B | PENDING | Simulation / Physical payloads | Code/Test | Define validated typed network/fluid/equipment/initial-state and transient timeline payloads with units, reference basis and missing-data semantics; register exact files and numeric design assumptions before mutation. | `feat(simulation): define versioned physical input payloads` | HPR-P25-002A; selected payload/physics preflight |
 | HPR-P25-002C | PENDING | Owner modules / Simulation | Code/Test | Implement bounded owner-exported topology/product/measurement queries and Simulation adapters; preserve eligibility/trust/ownership and reject unavailable physical inputs. | `feat(simulation): resolve versioned owner input references` | HPR-P25-002B; exact owner-contract/export preflight |
 | HPR-P25-002D | PENDING | Simulation / Capture | Code/Test | Assemble coherent immutable payload/manifest captures, verify canonical hashes and evidence, persist reproducible revisions and reject incompatible/missing inputs; register forward migration only if source-backed design requires one. | `feat(simulation): capture reproducible network calculation inputs` | HPR-P25-002C; exact capture/schema preflight |
@@ -767,6 +767,52 @@ actual v0.6.0 tag and latest non-draft, non-prerelease GitHub Release were check
 Release refs/assets are preserved. No source/test/schema/dependency/workflow/API,
 production promotion, physical exercise, import or P3 work is admitted.
 
+### Owner-selected Production CI Optimization — 2026-10-09
+
+The owner explicitly pauses Phase 2.5 advancement and selects production CI optimization
+because completed runs take too long. This is a separate bounded maintenance task,
+not HPR-P25-002B or a deferred industrial capability. Verified parent main
+`eef35dbd35d4558a4ceb57f87d8670fb97c933ea`, tree
+`7951dd38b554f6260575bd942e8b07d726c53d02`; full CI #612/run 37958649053 and
+Documentation #146/run 37958648746 both PASSED. HPR-P25-002A is COMPLETED at
+that exact implementation; no individual JUnit/skip report was inspected here.
+
+| Code | Status | Domain/Module | Type | Exact execution requirement | Exact commit message | Depends on |
+|---|---|---|---|---|---|---|
+| HPR-CI-001 | IN PROGRESS | CI / Verification | Infra | Run the unchanged full test suite in two reused isolated JVM forks; retain Surefire reports and count summaries for performance/coverage comparison; preserve all production/API/database/operations gates and verify exact-head CI. | `perf(ci): parallelize isolated test JVM execution` | owner instruction; full #612 green |
+
+Exact write allowlist: `.github/workflows/ci.yml`,
+`doc/roadmap/ULTIMATE_ROADMAP.md`, `doc/model-remediation/RECONCILIATION.md`.
+No POM, source/test logic, migrations, dependencies, release workflow, runner type,
+service image, canonical schema/API or product stage changes are admitted.
+
+Measured GitHub job/step evidence for #612 (job 113915537522): 726 seconds total,
+Repository verification 592s, current OpenAPI launch 31s, base OpenAPI generation
+51s, service setup 23s, dictionary capture 10s. Maven alone is about 82 percent of
+the job. Existing Maven cache is already enabled; caching configuration alone does
+not address that observed bottleneck. Testcontainers logs confirm per-class database
+containers; source search found no fixed shared PostgreSQL port, test filesystem
+writes, ProcessBuilder or global System.setProperty/System.clearProperty calls.
+No test-method/thread parallelism is enabled; two forks isolate JVM/static/Spring
+state and individual Testcontainers databases, while each fork runs classes normally.
+This inspection reduces interference risk but is not a guarantee; exact CI is required.
+
+Retain `clean verify` and all tests. Append only `-DforkCount=2 -DreuseForks=true`
+to the current-head Maven command. Do not skip database/integration/architecture tests,
+reuse mutable database containers between classes or change historical base selection.
+Add always-run Surefire summary/artifact steps showing tests/failures/errors/skips and
+XML report count, plus per-class timing evidence. Missing reports are reported rather
+than overriding an earlier build failure. Failures in existing steps remain failures.
+No reduction in checks or fixed speedup is claimed. Two forks increase concurrent
+CPU/memory/container demand; evaluate actual #613-or-later evidence before closure.
+Revert fork count to one within this bounded task if resource/interference evidence
+requires it; do not silently reduce coverage to achieve a timing target.
+
+Next selection after successful optimization CI: compare wall-clock/Maven timing and
+report totals, close HPR-CI-001 only with actual evidence, then resume the recommended
+HPR-P25-002B physical-input preflight on owner Next. Do not auto-execute product work.
+Observe both applicable workflows starting and STOP for owner Next/Fail.
+
 ## 6. Immediate Next Execution
 
 HPR-REL-002 is COMPLETED. Main's 0.7.0-SNAPSHOT transition is verified at
@@ -805,19 +851,17 @@ message `docs(twin): register HPR-P25-002 execution preflight`. Documentation #1
 (run 37955963870) PASSED on parent 61c1311f458e6844d28c4b4d162b0916885d01a0,
 tree 774e1806a8953b5582dcb32081256449d5d290de. Current source remains unchanged.
 
-Owner Next selects ONLY HPR-P25-002A implementation, exact message
-`feat(simulation): establish immutable input manifest contracts`. Preflight
-Documentation #145/run 37956618791 PASSED on parent
-e968ca3f829a53e5b1addcfde17357d7e4e55125, tree
-84732e31d06452d85cf60d4d44f5bf77f1a45992. The exact six-path scope is implemented.
-A remains IN PROGRESS until applicable exact-head CI is successful; parent
-HPR-P25-002 remains PENDING. No physical payload or simulation engine is executed.
+Owner selects **HPR-CI-001 production CI optimization**, exact message
+`perf(ci): parallelize isolated test JVM execution`, before further product work.
+HPR-P25-002A full CI #612 and Documentation #146 PASSED at eef35dbd35d4558a4ceb57f87d8670fb97c933ea.
+Its previous IN PROGRESS/pending-CI narrative is superseded by these results.
 
-After successful A CI, next recommended task is **HPR-P25-002B physical-payload
-preflight**, exact supporting message
-`docs(twin): register HPR-P25-002B execution preflight`, two-document scope only.
-Do not execute B source changes before its exact envelope is registered.
-Observe applicable implementation CI startup and STOP for owner Next/Fail.
+Use the exact three-file envelope above. CI optimization remains IN PROGRESS until
+actual optimized-run evidence is available. Preserve all production checks and review
+Surefire timing/count artifacts before claiming a performance improvement. After
+successful CI, owner Next selects optimization verification and then the bounded
+HPR-P25-002B physical-payload preflight as applicable; no product implementation is
+selected by this maintenance step. Observe applicable CI startup and STOP.
 P0/P1/P2 remain CLOSED; P2.5 PLANNED/OPEN; P3 DEFERRED; 57 HMR completions,
 123 subjects, formal v0.6.0 and current 0.7.0-SNAPSHOT remain preserved.
 
@@ -9053,3 +9097,13 @@ Publish with expected-parent lease, verify tree/parent/exact scope, observe both
 applicable Documentation and full production CI startup, then STOP for owner Next/Fail.
 P0/P1/P2 CLOSED, P2.5 OPEN, P3 DEFERRED, 57 HMR completions, 123 semantic subjects,
 formal v0.6.0 and development 0.7.0-SNAPSHOT remain preserved.
+
+Actual HPR-CI-001 local checks PASSED: workflow YAML and every shell block parsed;
+all original steps/settings/order retained except two-fork Maven flags; summary
+aggregation/order/empty-report behavior exercised with temporary XML fixtures;
+37 canonical validator tests PASSED (10 documentation, 10 OpenAPI, 17 dictionary).
+Canonical docs (95 documents, 5,063 links, 24 modules, 13 P2 rows), offline
+OpenAPI (244 paths, 263 operations, 231 schemas), P1 evidence and whitespace
+checks PASSED. Exact three-file scope and retained phase/HMR rows verified.
+No optimized runner/Maven duration is available locally; exact-head full CI
+will provide concurrency, resource and speedup evidence after publication.

@@ -7528,3 +7528,47 @@ Publish with expected-parent lease, verify tree/parent/exact scope, observe both
 applicable Documentation and full production CI startup, then STOP for owner Next/Fail.
 P0/P1/P2 CLOSED, P2.5 OPEN, P3 DEFERRED, 57 HMR completions, 123 semantic subjects,
 formal v0.6.0 and development 0.7.0-SNAPSHOT remain preserved.
+
+
+## HPR-CI-001 Production CI Optimization — 2026-10-09
+
+Owner confirms CI results and explicitly selects optimization before further product
+work. GitHub confirms full #612/run 37958649053 and Documentation #146/run
+37958648746 PASSED on parent eef35dbd35d4558a4ceb57f87d8670fb97c933ea,
+tree 7951dd38b554f6260575bd942e8b07d726c53d02. HPR-P25-002A is COMPLETED;
+14 JUnit tests are present but no per-class execution/skip report was independently
+inspected. Source/runtime implementation is unchanged by this maintenance task.
+
+Register HPR-CI-001 / `perf(ci): parallelize isolated test JVM execution`. Write
+ONLY .github/workflows/ci.yml, the Ultimate Roadmap and this reconciliation.
+Measured #612 job 113915537522: total 726s; Maven 592s; current OpenAPI 31s;
+historical base generation 51s; service setup 23s; dictionary capture 10s.
+Source inspection confirms per-class Testcontainers/dynamic ports; no fixed shared
+PostgreSQL port, filesystem mutation, ProcessBuilder or global system-property
+mutation found in tests. Cache is already enabled. Preserve all checks and
+clean verify; use two isolated reused JVM forks, no method/thread parallelism.
+Record per-class Surefire XML/timing plus aggregate test/failure/error/skip counts
+with always-run diagnostics. Do not skip tests or share mutable database containers.
+
+HPR-CI-001 remains IN PROGRESS pending optimized exact-head full CI and actual
+performance/report evidence. Additional concurrent memory/CPU/container demand
+requires observed verification; no speedup is claimed before measurement.
+Same-scope rollback to one fork is permitted if optimized-run evidence requires it.
+No POM/source/test/migration/dependency/API/release-workflow or product task changes.
+Keep full OpenAPI equality/backward compatibility/current dictionary/P1/operations
+gates and existing compatibility-base selection. Validate workflow syntax and retained
+step invariants plus canonical docs/OpenAPI/P1 checks and exact three-file scope.
+Publish with expected-head lease, verify parent/tree/files, observe both workflows
+starting and STOP. After passing optimization evidence, resume HPR-P25-002B
+physical-payload preflight only on owner Next. P0/P1/P2 CLOSED, P2.5 OPEN,
+P3 DEFERRED, 57 HMR completions, 123 subjects and 0.7.0-SNAPSHOT preserved.
+
+Actual HPR-CI-001 local checks PASSED: workflow YAML and every shell block parsed;
+all original steps/settings/order retained except two-fork Maven flags; summary
+aggregation/order/empty-report behavior exercised with temporary XML fixtures;
+37 canonical validator tests PASSED (10 documentation, 10 OpenAPI, 17 dictionary).
+Canonical docs (95 documents, 5,063 links, 24 modules, 13 P2 rows), offline
+OpenAPI (244 paths, 263 operations, 231 schemas), P1 evidence and whitespace
+checks PASSED. Exact three-file scope and retained phase/HMR rows verified.
+No optimized runner/Maven duration is available locally; exact-head full CI
+will provide concurrency, resource and speedup evidence after publication.

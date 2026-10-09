@@ -96,7 +96,47 @@ jobs:
         run: chmod +x mvnw
 
       - name: Repository verification
-        run: ./mvnw -B -q clean verify
+        # Parallelize test classes across isolated JVMs, not methods sharing a database.
+        # Testcontainers retains a separate dynamically addressed database per class.
+        run: ./mvnw -B -q clean verify -DforkCount=2 -DreuseForks=true
+
+      - name: Summarize test execution and timings
+        if: always()
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import os
+          import xml.etree.ElementTree as ET
+          from pathlib import Path
+
+          reports = sorted(Path('target/surefire-reports').glob('TEST-*.xml'))
+          counts = dict(tests=0, failures=0, errors=0, skipped=0)
+          timings = []
+          for report in reports:
+              suite = ET.parse(report).getroot()
+              for key in counts:
+                  counts[key] += int(suite.get(key, '0'))
+              timings.append((float(suite.get('time', '0')), suite.get('name', report.stem)))
+          lines = ['## Maven test execution', f'Report files: {len(reports)}',
+                   ', '.join(f'{key}: {value}' for key, value in counts.items())]
+          if not reports:
+              lines.append('No Surefire reports available; inspect the repository verification step.')
+          lines.extend(['', 'Slowest test classes (reported elapsed seconds):'])
+          lines.extend(f'- {name}: {seconds:.3f}s' for seconds, name in sorted(timings, reverse=True)[:15])
+          summary = '\n'.join(lines) + '\n'
+          print(summary)
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a', encoding='utf-8') as output:
+              output.write(summary)
+          PY
+
+      - name: Retain test execution and timing reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hidra-test-reports-${{ github.sha }}
+          path: target/surefire-reports/TEST-*.xml
+          if-no-files-found: warn
+          retention-days: 14
 
       - name: Publish deterministic OpenAPI contract
         shell: bash

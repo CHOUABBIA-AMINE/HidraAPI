@@ -30,7 +30,7 @@ Documentation authority follows the repository governance and the owner/decision
 | `doc/security/**` | CURRENT where individually stated | Canonical P0 security baseline and approved security procedures | No P2 replacement implied by HPR-P2-001 |
 | `doc/architecture/**` | CURRENT where individually stated | Canonical HPR-P2-002 architecture set; `RUNTIME_ARCHITECTURE.md` is historical P1 provenance | HPR-P2-002 complete |
 | `doc/operations/**` | CURRENT where individually stated | P1 operational, HA, DR, deployment, observability and survivability evidence | Preserve; later tasks may cross-link |
-| `doc/database/**` | CURRENT where individually stated | Canonical HPR-P2-006 database architecture, ownership, Flyway policy and generated persistence dictionary; earlier P1 stage docs retained as provenance | HPR-P2-006 complete |
+| `doc/database/**` | CURRENT where individually stated | Reviewed 482-relation physical dictionary, source-linked ownership and Flyway rules; PostgreSQL 16 disposable-CI applicability; earlier P1 evidence retained | HPR-P2-006 IN PROGRESS pending Stage B exact-head CI |
 | `doc/domain/**` | CURRENT where individually stated | Canonical ubiquitous language, ownership and focused semantic baseline from current source | HPR-P2-003 complete; HPR-P2-009 refreshed lasting semantics |
 | `doc/modules/**` | CURRENT | Canonical current-state documentation for all 24 implemented module roots; excludes non-implemented agents/environment/otsecurity | HPR-P2-004 complete; HPR-P2-009 refreshed inventories/decisions |
 | `doc/api/**` | CURRENT | Canonical OpenAPI snapshot plus current source-backed query/correlation/error rules; older untouched guides retain generation applicability | HPR-P2-005 audit correction implemented; exact-head documentation CI PENDING; P2 OPEN |
@@ -152,3 +152,14 @@ retains historical applicability and does not supersede this current disposition
 Database dictionary/ownership policy completeness remains unresolved under audit
 Checks 10–11; this API correction does not remediate or reverify those documents.
 All 57 HMR implementations and 123 semantic subjects retain their closed identities.
+
+## HPR-P2-006 Stage B readiness — 2026-10-09
+
+The [database index](../database/README.md) records verified Stage A #133/#607,
+archive identity/digests and actual 481-table/one-sequence coverage. Stage B replaces
+inventory-only dictionary claims with actual physical columns/constraints/indexes/
+triggers and reviewed ownership, while preserving original generation/P1 applicability.
+Current content is source-backed; completion still requires both fresh exact-head CI
+workflows and successful final dictionary comparison. No production data acceptance,
+PG18 physical capture, owner policy values, deployment or P2 closure is inferred.
+HPR-P2-006 IN PROGRESS; HPR-P2-013 PENDING; P2 OPEN/P3 DEFERRED.

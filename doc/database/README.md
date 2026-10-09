@@ -2,64 +2,68 @@
 
 ## Status
 
-CURRENT — canonical database index established by HPR-P2-006.
+CURRENT — reviewed source-chain dictionary and governance; HPR-P2-006 publication gates pending. P2 OPEN; P3 DEFERRED.
 
-## Verification Baseline
+## Verified capture and applicability
 
-Current inventory source parent: `00c4fda266b2dfd175cca37ad789dc9462a5af0b`, verified 2026-10-09.
+Capture source: `8b51b52b2aa31f7a2f0ca2b08a6066387663d092`, tree `7df0095e2ad73bbb41b143cf8b8906abd7f15bf0`, 2026-10-09.
+[Documentation #133](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/37927031188) and
+[Production #607](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/37927031269) passed at that exact source.
 
-Historical HPR-P2-006 generation baseline: `aeb9008d74b90f102ab8706b9a23f1a6eb6cbe9c`
+Reviewed artifact: `hidra-database-schema-8b51b52b2aa31f7a2f0ca2b08a6066387663d092`, ID 11614189981;
+[artifact](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/37927031269/artifacts/11614189981).
+Archive SHA-256: `1ba744af02d7bcdd6ffd72c5ff66dc231dbda9d40c03bf51441ca0b2ae8cde72`.
+Members: schema.json, DATA_DICTIONARY.md, verification.json. Downloaded archive hash matches GitHub; draft regeneration matched byte-for-byte.
+Catalog document SHA-256: `ba01997dbdb999d7bd93db4a2358b94fc3ac91d1df0fc301dc3bc365962bc0cb`.
+Source bundle SHA-256: `86f6ba5923e63c0cd601f7722ca0282e486d59fc92bb120616710fb3cd1799d4`.
+Generator format 1; Python standard library; psql client 16.15 (Ubuntu); server 16.15 (Debian).
 
-Current repository inventory below includes subsequent semantic-remediation migrations. P1 physical evidence retains its original executable/deployed applicability.
+The full 139-migration chain completed Flyway and Hibernate validation in disposable CI PostgreSQL 16 before read-only collection and before base-revision startup. This is source-chain evidence for that engine, not production deployment, production data acceptance or PostgreSQL-18 catalog verification.
 
-Verified repository facts used by this set:
+| Verified scope | Count |
+|---|---:|
+| Physical tables | 481 |
+| PostgreSQL sequences | 1 |
+| All catalog relations | 482 |
+| Catalog columns, including sequence metadata columns | 5,840 |
+| JPA table mappings across 24 modules | 470 |
+| Java column mappings, including two aliases | 5,781 |
+| Unique mapped physical columns | 5,779 |
+| Constraints / indexes / non-internal triggers | 1,355 / 3,030 / 155 |
+| Foreign keys | 688 |
+| Unresolved relation owners after source review | 0 |
 
-- PostgreSQL is the authoritative application database.
-- Flyway migration location is `src/main/resources/db/migration`.
-- Current versioned migration count: **139**.
-- JPA uses `hibernate.ddl-auto=validate`.
-- Flyway is enabled, `validate-on-migrate=true`, `baseline-on-migrate=false`, and `clean-disabled=true`.
-- Current module JPA persistence-entity count: **470** across **24** business modules.
-- P1 production database stack is PostgreSQL streaming replication + Patroni + etcd + HAProxy.
-- Backup/WAL/PITR implementation is pgBackRest.
-- Closed P1 evidence records controlled failover/single-writer/fencing/application recovery and successful PITR with achieved RPO 15 seconds and RTO 37 minutes.
+## Canonical set
 
-## Canonical Set
+- [Database architecture](DATABASE_ARCHITECTURE.md): current application/database and P1 HA/DR architecture.
+- [Schema ownership](SCHEMA_OWNERSHIP.md): physical naming, exceptions, technical and non-JPA relations, reference governance.
+- [Flyway policy](FLYWAY_POLICY.md): version allocation, immutable history and safe schema/data evolution.
+- [Physical dictionary](DATA_DICTIONARY.md): every captured relation and ordered column, actual SQL type/nullability/default, mapping, constraint/index/trigger/function evidence and migration mentions.
 
-- `DATABASE_ARCHITECTURE.md` — current application/database and P1 HA/DR architecture.
-- `SCHEMA_OWNERSHIP.md` — module persistence ownership and cross-module rules.
-- `FLYWAY_POLICY.md` — schema-change authority and migration lifecycle.
-- `DATA_DICTIONARY.md` — generated current persistence inventory from the 139-migration chain and 470 JPA entities.
+The dictionary is generated exactly; editorial provenance belongs here and in ownership policy. Migration mentions do not claim initial introduction. [Ownership metadata](../../.github/database-dictionary-ownership.json) contains 21 source-linked overrides; other owners derive from current JPA modules. It contains no policy rows, credentials or invented approvals.
 
-## Historical P1 Stage Documents
+## Reproduce and check
 
-The following remain preserved as stage evidence, but their pre-closure status statements are no longer current authority:
+From repository root, extract the reviewed artifact into a disposable directory. Verify archive digest and exact source identity first:
 
-- `POSTGRES_HIGH_AVAILABILITY.md` — HPR-P1-003 target-model baseline.
-- `DATABASE_OPERATIONS_RUNBOOK.md` — HPR-P1-011 product-neutral operating baseline.
-- `POSTGRES_FAILOVER_IMPLEMENTATION.md` — HPR-P1-016 implementation-stage baseline.
-- `BACKUP_PITR_IMPLEMENTATION.md` — HPR-P1-017 implementation-stage baseline.
+```bash
+python3 .github/scripts/generate_data_dictionary.py \
+  --input /path/to/schema.json \
+  --source-sha 8b51b52b2aa31f7a2f0ca2b08a6066387663d092 \
+  --ownership .github/database-dictionary-ownership.json \
+  --render /tmp/HidraAPI-DATA_DICTIONARY.md \
+  --check doc/database/DATA_DICTIONARY.md
+```
 
-Current runtime/operations procedures under `ops/production/postgres/**` and closed P1 evidence supersede contradictory pre-implementation statements in those historical documents.
+The input source digest must equal current migration/JPA source. A documentation-only publication has its own Git SHA; it does not replace the capture SHA. For executable or migration changes obtain a fresh full-chain CI capture, review ownership and regenerate deliberately before committing.
 
-## Authority Rule
+CI uses `--collect target/database/schema.json --source-sha "${{ github.sha }}" --render target/database/DATA_DICTIONARY.md` with the same ownership/check arguments. Collection permits only the designated local disposable Actions database and performs no migration, reset or business-row export. Ownership metadata activates final comparison. Only the validated capture SHA line is ignored; physical facts, source bundle, owners and remaining provenance must match. Partial extraction, invalid history, unsupported mappings, unresolved owners or dictionary drift fail; CI never updates Git.
 
-Physical schema truth is the ordered Flyway migration chain applied to PostgreSQL. JPA mappings are runtime/application persistence mappings and are validated against that schema; they are not a second independent DDL authority.
+## Historical generation and operating evidence
 
-TimescaleDB and PostGIS remain NOT IMPLEMENTED / DEFERRED.
+Original HPR-P2-006 generation `aeb9008d74b90f102ab8706b9a23f1a6eb6cbe9c` recorded 82 migrations/469 entities. Source inventory refresh `00c4fda266b2dfd175cca37ad789dc9462a5af0b` recorded 139/470, but did not establish the physical dictionary now supplied. Both remain historical provenance in Git.
 
-## HPR-P2-013 source refresh and historical applicability
+P1 deployed/recovery evidence retains its original deployed SHA and 82-migration scope, including achieved RPO 15 seconds/RTO 37 minutes. It does not prove deployment or recovery of the current chain. PostgreSQL streaming replication/Patroni/etcd/HAProxy and pgBackRest operating procedures remain authoritative within their measured scope.
+[Historical HA](POSTGRES_HIGH_AVAILABILITY.md), [runbook](DATABASE_OPERATIONS_RUNBOOK.md), [failover](POSTGRES_FAILOVER_IMPLEMENTATION.md) and [backup](BACKUP_PITR_IMPLEMENTATION.md) stages remain preserved; current [operations](../../ops/production/postgres/DATABASE_OPERATIONS.md) and closed P1 evidence control contradictions.
 
-Current repository verification: `00c4fda266b2dfd175cca37ad789dc9462a5af0b`, 2026-10-09. Source inventory contains
-**139** unique versioned migrations and **470** module @Entity classes across
-**24** modules, including **25** Risk entities. Current tail:
-`V20261008_026__hmr_080_planning_nomination_integrity.sql`. The original HPR-P2-006 generation at
-`aeb9008d74b90f102ab8706b9a23f1a6eb6cbe9c` recorded 82 migrations/469 entities;
-that is preserved historical generation evidence, superseded for current inventory.
-
-Retained P1 deployed/recovery evidence keeps its original deployed SHA, 82-migration
-scope and measured RPO/RTO. This source refresh is not an assertion that all 139
-migrations have been deployed or physically recovered. Database documentation
-completion and exact-head CI do not establish current production-data acceptance.
-Full P2 closure verification remains pending both CI workflows on the resulting
-implementation commit; P3 remains DEFERRED. No schema/data/runtime change is made.
+Flyway defines schema evolution; JPA validates mappings. TimescaleDB/PostGIS remain NOT IMPLEMENTED / DEFERRED. No schema, data, deployment or version change is made by this publication. Fresh Stage B production CI must exercise the final dictionary comparison before HPR-P2-006 completes; HPR-P2-013 separately verifies all twelve checks.

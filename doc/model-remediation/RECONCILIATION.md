@@ -2,7 +2,7 @@
 
 ## Status
 
-CURRENT — all 57 reconciled HMR implementations COMPLETED; permanent 123-subject semantic transfer complete. P2 is OPEN after the independent audit at c7d580cc7988f069bb939eb682664200e043c9bf failed Checks 9–11; HPR-P2-005 API documentation correction is COMPLETED after exact-head Documentation Validation #131 passed; HPR-P2-006 Stage A tooling/CI is implemented and IN PROGRESS pending exact-head CI/schema evidence review and Stage B correction; HPR-P2-013 re-verification remains pending. Prior #127/#606 success remains historical verified evidence. P3 remains DEFERRED.
+CURRENT — all 57 reconciled HMR implementations COMPLETED; permanent 123-subject semantic transfer complete. P2 is OPEN after the independent audit at c7d580cc7988f069bb939eb682664200e043c9bf failed Checks 9–11; HPR-P2-005 API documentation correction is COMPLETED after exact-head Documentation Validation #131 passed; HPR-P2-006 Stage A #133/#607 passed and artifact was reviewed; Stage B physical dictionary/ownership/Flyway correction is implemented and IN PROGRESS pending publication documentation/full CI and final dictionary comparison; HPR-P2-013 re-verification remains pending. Prior #127/#606 success remains historical verified evidence. P3 remains DEFERRED.
 
 ## Historical HPR-P2-007 Verification Baseline
 
@@ -6907,3 +6907,26 @@ both exact-head CI runs and schema artifact before separately selecting Stage B.
 HPR-P2-005 remains COMPLETED, HPR-P2-013 PENDING; P2 OPEN/P3 DEFERRED. All HMR rows,
 57 completions, 123 subjects, version 0.6.0-SNAPSHOT and historical evidence remain.
 No application/migration/schema/policy/owner-value, deployment, import or release change.
+
+## HPR-P2-006 Stage B physical dictionary and governance — 2026-10-09
+
+Main parent `8b51b52b2aa31f7a2f0ca2b08a6066387663d092` remained unchanged;
+Documentation #133 and Production #607 passed. The schema archive digest matched
+GitHub; its draft regenerated exactly and migration/JPA hashes match current source.
+The owner then separately selected Stage B. Only the eight admitted dictionary,
+policy, ownership metadata and control paths change.
+
+The reviewed dictionary covers 481 tables and one sequence, 5,840 catalog columns,
+1,355 constraints, 3,030 indexes and 155 triggers. All 139 successful migrations and
+470 JPA tables reconcile; 21 source-linked overrides leave zero unresolved owners.
+Three retained unmapped legacy columns and actual prefix exceptions are documented.
+All 688 physical FKs are within resolved owners; cross-module IDs/snapshots and
+provider contracts do not transfer semantic ownership. Actual policy/business values
+remain external approval decisions; no schema/data provision or HMR restart occurs.
+
+Current [Stage B record](../roadmap/ULTIMATE_ROADMAP.md#hpr-p2-006-stage-b-implementation--2026-10-09)
+controls older pending records. HPR-P2-006 remains IN PROGRESS pending both fresh
+exact-head workflows and final integrated dictionary comparison. HPR-P2-013 PENDING;
+P2 OPEN/P3 DEFERRED. All 57 HMR completions, 123 subjects, historical/P1 provenance
+and version 0.6.0-SNAPSHOT remain. Next verifies publication gates before any closure
+preflight; stop after CI startup for notification.

@@ -60,18 +60,54 @@ Business/module ownership determines semantic responsibility for persisted busin
 
 These are complementary responsibilities, not competing schema authorities.
 
-## HPR-P2-013 source refresh and historical applicability
+## Reviewed physical naming and coverage
 
-Current repository verification: `00c4fda266b2dfd175cca37ad789dc9462a5af0b`, 2026-10-09. Source inventory contains
-**139** unique versioned migrations and **470** module @Entity classes across
-**24** modules, including **25** Risk entities. Current tail:
-`V20261008_026__hmr_080_planning_nomination_integrity.sql`. The original HPR-P2-006 generation at
-`aeb9008d74b90f102ab8706b9a23f1a6eb6cbe9c` recorded 82 migrations/469 entities;
-that is preserved historical generation evidence, superseded for current inventory.
+Current capture and full provenance: [database index](README.md). All 481 tables and one sequence have a source-backed owner. The 470 JPA tables supply module ownership; 11 non-JPA tables and the identity sequence require explicit metadata. Entity count is not table count.
 
-Retained P1 deployed/recovery evidence keeps its original deployed SHA, 82-migration
-scope and measured RPO/RTO. This source refresh is not an assertion that all 139
-migrations have been deployed or physically recovered. Database documentation
-completion and exact-head CI do not establish current production-data acceptance.
-Full P2 closure verification remains pending both CI workflows on the resulting
-implementation commit; P3 remains DEFERRED. No schema/data/runtime change is made.
+Most modules use `hidra_<module>_*`; actual exceptions are:
+
+| Module | Physical naming |
+|---|---|
+| assets | `hidra_asset_*` |
+| organization | `hidra_org_*` |
+| leakdetection | `hidra_leak_detection_*` |
+| alarm | `hidra_alarm` plus `hidra_alarm_*` |
+| incident | `hidra_incident` plus `hidra_incident_*` |
+| risk | `hidra_risk_*` plus `hidra_residual_risk_assessment` |
+
+Names alone never grant ownership. The exact relation entries, JPA paths and migration evidence in the [dictionary](DATA_DICTIONARY.md) control exceptions. [Reviewed metadata](../../.github/database-dictionary-ownership.json) links each override to existing source.
+
+| Non-JPA relation | Owner | Purpose |
+|---|---|---|
+| flyway_schema_history | flyway | Technical execution/history evidence |
+| hidra_custody_planning_product_policy | custody | Product eligibility and approval provenance |
+| hidra_telemetry_planning_unit_role | telemetry | Quantity/rate unit-role eligibility |
+| hidra_telemetry_planning_unit_pair | telemetry | Quantity/rate compatibility |
+| hidra_planning_nomination_reference_mapping | planning | Per-nomination legacy-to-owner mapping |
+| hidra_planning_target_value_policy | planning | Numeric/text target representation policy |
+| hidra_hse_catalog_field_policy | hse | Field-role/catalog-family metadata |
+| hidra_integrity_catalog_field_policy | integrity | Field-role/catalog-family metadata |
+| hidra_incident_closure_policy | incident | Classification/severity closure requirements |
+| hidra_incident_relationship_policy | incident | Direction/reciprocal relationship policy |
+| hidra_integration_job_run_sequence | integration | Per-job run counter table; not a SQL sequence |
+| hidra_org_operational_scope_id_seq | organization | Registry identity sequence |
+
+This classifies ownership and structure, not approved products, unit pairs, catalog families, per-record mappings or policy values. Those approvals remain external owner decisions; no values are provisioned here.
+
+## Actual reference forms and new-change requirements
+
+The reviewed catalog contains 688 foreign keys; all reference relations with the same resolved owner. Zero cross-owner physical FKs were found in this capture. This does not imply that cross-module references are absent: IDs and snapshots do not necessarily have database FKs. For example, Nomination retains source/destination asset IDs, shipper-party ID and code snapshot; OperationalScope stores target identity without owning provider state. HMR-080 product/unit owner references use explicit policy/mapping structures and owner contracts rather than turning provider tables into Planning aggregates.
+
+For new same-module FKs, review aggregate lifecycle, ordered composite keys, delete/update actions, nullability and historical-data preflight. Use explicit RESTRICT/NO ACTION where loss of historical evidence must be prevented; CASCADE needs a documented lifecycle justification, not a blanket prohibition or default.
+
+For new cross-module IDs/snapshots/FKs, require both module owners to review meaning, existence/eligibility validation, historical snapshots, failure behavior, deletion/reassignment and migration order. Prefer provider application contracts for semantic checks. A proposed physical FK additionally requires explicit boundary and deployment-coupling justification plus Database Operations review. These are governance admission requirements, not a claim that every historical change carried recorded approvals. A DB FK does not enforce catalog family, eligibility, workflow approval or transfer aggregate ownership.
+
+No provider persistence imports or direct writes are admitted by these rules. Generic platform access remains confined to its reviewed Workbench boundary. Database Operations owns execution/backup/recovery; semantic owners approve meaning and actual mappings.
+
+## Retained physical columns and multi-module review
+
+Three physical columns have no current JPA mapping: `hidra_org_reporting_line.reporting_line_type` is the HMR-028 trigger-synchronized compatibility projection; `hidra_topology_equipment.legacy_equipment_kind` and `hidra_topology_equipment_type.legacy_equipment_kind` retain HMR-054 historical values. They are included in the dictionary and must not be deleted or interpreted as current catalog authority merely because Java no longer maps them.
+
+TelemetryPoint has 18 columns and validated owner-unit FK; TopologyConnection has 12 columns, catalog/segment FKs and a no-self-loop check; Nomination has 26 columns, five checks, the ordered `(scenario_id, revision_id)` composite FK and HMR-080 type trigger. Organization, Assets and Leakdetection prefix samples and non-JPA policies were reviewed against the complete migration chain. See exact constraints/indexes/functions in the dictionary; existence alone does not establish production data approval.
+
+Current HPR-P2-006 content is implemented pending Stage B exact-head documentation/full CI. P2 OPEN/P3 DEFERRED; original 82-migration P1 evidence and earlier generation identities retain historical applicability described in the index.

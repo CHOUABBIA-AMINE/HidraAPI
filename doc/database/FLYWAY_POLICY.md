@@ -54,24 +54,34 @@ On migration failure, preserve Flyway/error/history evidence and determine wheth
 
 Exceptional Flyway history repair requires explicit Database Operations + Application Engineering review and retained justification.
 
-## Data Dictionary Regeneration
+## Naming and version allocation
 
-The canonical persistence dictionary must be regenerated whenever executable changes add/remove/rename JPA persistence entities or change the Flyway migration chain.
+Current files use `V<version>__<description>.sql`, for example `V20261008_026__hmr_080_planning_nomination_integrity.sql`. Underscore-separated numeric components normalize to Flyway dotted versions (`20261008.026`); ordering is numeric, not lexical. Reserve the next unique version in repository coordination before preparing a migration; scan the entire current chain and parallel branches for collisions, recheck after rebasing, and never reuse a normalized version even with a different filename. No sequence value is allocated by this documentation change.
 
-HPR-P2-012 implements bounded canonical structure and OpenAPI drift checks. It does not compare database inventory counts to Java/SQL source. This refresh performs that source comparison explicitly; it adds no automated database drift rule.
+The current chain has 139 unique versions, from `V20260611_001__create_identity_tables.sql` through the tail above. CI retains ordered script/version/checksum/success history and source hashes. Startup Flyway validation checks applied-file consistency; the collector preserves actual Flyway checksums, not a substitute home-grown checksum algorithm.
 
-## HPR-P2-013 source refresh and historical applicability
+## Additive, destructive and data-change preflight
 
-Current repository verification: `00c4fda266b2dfd175cca37ad789dc9462a5af0b`, 2026-10-09. Source inventory contains
-**139** unique versioned migrations and **470** module @Entity classes across
-**24** modules, including **25** Risk entities. Current tail:
-`V20261008_026__hmr_080_planning_nomination_integrity.sql`. The original HPR-P2-006 generation at
-`aeb9008d74b90f102ab8706b9a23f1a6eb6cbe9c` recorded 82 migrations/469 entities;
-that is preserved historical generation evidence, superseded for current inventory.
+Every new migration requires a bounded roadmap authorization, owning module, exact file/version, expected schema/data effect, affected contracts and validation evidence. Run the complete ordered chain and Hibernate validation on disposable PostgreSQL; include meaningful negative/history/concurrency cases where constraints or orchestration change. Refresh the dictionary from actual catalogs after migration.
 
-Retained P1 deployed/recovery evidence keeps its original deployed SHA, 82-migration
-scope and measured RPO/RTO. This source refresh is not an assertion that all 139
-migrations have been deployed or physically recovered. Database documentation
-completion and exact-head CI do not establish current production-data acceptance.
-Full P2 closure verification remains pending both CI workflows on the resulting
-implementation commit; P3 remains DEFERRED. No schema/data/runtime change is made.
+Prefer additive evolution: introduce compatible structure, reconcile actual historical data with reviewed mappings, verify readers/writers and then separately authorize retirement. Assess NOT NULL/default/index/FK/check additions for existing data, scan/lock duration, rewrite/storage needs and deployment compatibility. If using NOT VALID during an approved transition, record the later validation step; an unvalidated constraint must never be silently described as enforced historical integrity.
+
+Destructive or irreversible changes (drop/rename/type narrowing, record deletion, semantic rewrite) require explicit owner and Database Operations review of retained history, data inventory, dependency impact, lock/downtime budget, tested recovery and reconciliation. Establish a recoverable backup/WAL position and a restore verification plan from the [operations procedures](../../ops/production/postgres/DATABASE_OPERATIONS.md) and [PITR exercise](../../ops/production/postgres/scripts/verify-pitr-restore.sh). Existing P1 RPO/RTO measurements have their own scope; they are not a fresh restore rehearsal for a new migration.
+
+Data migrations must use approved source-to-owner mappings, classification/policy values and provenance. Define preconditions, affected-row bounds, duplicate/orphan checks, concurrency control and postconditions; fail closed on ambiguous historical records. Do not seed invented business approvals or resolve a failed migration by guessed defaults. HMR-080 illustrates separately provisioned approved metadata before guarded integrity changes.
+
+Record reversal feasibility before execution. Application rollback does not reverse an applied migration. Prefer forward corrective evolution compatible with restored application behavior; if reversal requires restoring the database, document recovery point, possible data loss, application compatibility and controlled acceptance. PostgreSQL transactionality is not proof every operation is safely reversible.
+
+## History, failure and exceptional repair
+
+Retain the original error, migration script/hash, actual Flyway history and database state before intervention; inspect partial effects and stop uncontrolled retries. [History capture](../../ops/production/postgres/scripts/capture-flyway-history.sh) and controlled operating procedures supply evidence. Never edit applied migrations, delete/falsify history, disable validate-on-migrate, enable baseline-on-migrate to hide mismatch or run production clean.
+
+Exceptional repair requires explicit Database Operations and Application Engineering review, semantic-owner involvement for data effects, a documented root cause and approved before/after history/checksum evidence. Repair metadata only after reconciling actual schema/data state and rerunning validation; repair is not schema rollback or authorization to accept changed SQL. No repair command or production execution is performed here.
+
+## Dictionary regeneration and CI drift gate
+
+Use the exact [regeneration/check command](README.md#reproduce-and-check) and reviewed ownership metadata. Fresh migrated PostgreSQL catalogs control physical facts; source parsing supplies mappings and fails on unsupported forms. Current schema collection precedes base-revision startup. Ownership metadata activates `--check doc/database/DATA_DICTIONARY.md` in full CI; comparison ignores only the validated capture SHA line. Source bundle, columns/types/defaults/nullability, ordered keys/FKs/actions, constraint flags, indexes, triggers/functions and ownership drift must be reviewed and committed deliberately. CI never auto-updates Git.
+
+Markdown CI stays database-free. Full production CI must pass at the publication SHA and exercise the integrated check before HPR-P2-006 completes. The new metadata path triggers full CI under the existing workflow; no workflow change is required. Future documentation-only changes still require dispatch when a fresh physical comparison is necessary.
+
+Historical generation at `aeb9008d74b90f102ab8706b9a23f1a6eb6cbe9c` (82/469), later source inventory refresh (139/470), and P1 deployed/recovery evidence retain their original applicability. Current physical capture/provenance is recorded in the [index](README.md); no production deployment or data approval follows from CI. P2 OPEN/P3 DEFERRED.

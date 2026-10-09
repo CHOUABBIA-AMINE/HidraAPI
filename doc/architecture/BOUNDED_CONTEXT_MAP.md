@@ -39,19 +39,41 @@ Package-root presence proves structural implementation, not semantic completenes
 
 ## Verified Cross-Context Contract Relationships
 
-The current architecture exposes cross-module application contracts in the direction **contract owner → named consumer**:
+Verified source parent: `00c4fda266b2dfd175cca37ad789dc9462a5af0b`, 2026-10-09. This refresh supersedes the
+historical HPR-P2-002 relationship list for current package inventory. The 24-module
+root list remains unchanged. Current exports comprise 63 unique packages and 70
+non-package-info Java files; [the complete contract inventory](CROSS_MODULE_CONTRACTS.md)
+matches architecture enforcement exactly.
 
-```text
-workflow     -> planning, organization, alarm, reporting
-topology     -> organization, simulation, leakdetection, analytics, assets, risk
-organization -> analytics, assets, integration, reporting, risk
-audit        -> organization, alarm, risk
-party        -> topology, assets
-telemetry    -> monitoring
-identity     -> reporting
-```
+The direction below is contract owner to named module-consumer package. It is an
+exported dependency surface, not a guarantee of complete deployed interaction.
 
-These relationships are derived from current `application.contract.<consumer>` packages and the exported-package allowlist in `ArchitectureGuardrailTest`. They are architectural dependency surfaces, not claims that every possible business interaction is represented here.
+| Contract owner | Named module-consumer packages |
+|---|---|
+| assets | hse |
+| audit | alarm, custody, organization, risk, simulation |
+| custody | planning |
+| documents | audit, reporting |
+| identity | assets, custody, documents, hse, incident, integration, integrity, planning, reporting, risk, workflow |
+| integrity | assets |
+| organization | analytics, assets, hse, identity, incident, integration, integrity, leakdetection, planning, reporting, risk, workflow |
+| party | assets, planning, topology |
+| planning | monitoring |
+| telemetry | monitoring, planning |
+| topology | analytics, assets, incident, integrity, leakdetection, organization, planning, risk, simulation |
+| workflow | alarm, assets, audit, custody, documents, hse, incident, integrity, organization, planning, reporting, risk |
+
+Three additional neutral extension packages have no invented module consumer:
+
+| Owner | Extension package suffix | Exported lookup type |
+|---|---|---|
+| documents | target | DocumentsOwnedTargetLookup |
+| workflow | target | WorkflowOwnedTargetLookup |
+| risk | evidence | RiskOwnedEvidenceLookup |
+
+`target` and `evidence` are extension roles, not current business module roots.
+All packages above derive from Java declarations and ArchitectureGuardrailTest;
+current implementations still require the actual owner provider and admission rules.
 
 ## Boundary Rule
 

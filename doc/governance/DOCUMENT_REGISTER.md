@@ -100,3 +100,37 @@ remains pending and P2 open. Exact-head documentation CI follows publication.
 ## HPR-P2-012 validation applicability
 
 Source parent `508337351eef03b82e2c6078a7c8523013efd063`, checked 2026-10-09. [Validation guide](DOCUMENTATION_VALIDATION.md) registers both maintained Python validators/tests and the reviewed manifest. The API snapshot is refreshed solely from verified successful CI #604 generation evidence; older API/P1 documentation retains its own applicability. Validation is bounded structural/governance evidence, not new business/physical approval. HPR-P2-013 remains pending and P2 open; exact-head production and documentation gates follow publication.
+
+## HPR-P2-013 current canonical review — 2026-10-09
+
+Verified source parent: `00c4fda266b2dfd175cca37ad789dc9462a5af0b`. Revised preflight Documentation Validation
+#126 (37913628486) PASSED before this implementation. HPR-P2-012 documentation #124
+(37909982710) and production #605 (37909982823) PASSED at
+`e4dba168c9e612a5fd49d50b155fa3b2d8d64e40`.
+
+All 24 module documents and canonical indexes remain registered; maintained metadata,
+local links and source module roots are checked by canonical validation. Permanent
+semantics retain 123 subjects and reconciliation retains 57 completed HMR identities.
+The executable source/test/resources/POM and production operations are unchanged from
+the semantic-transfer and CI #604 baselines. Legacy docs/** remains subordinate
+history; no review verdict is used as current execution authority.
+
+Current database inventory is refreshed to 139 unique versioned migrations and 470
+module entities. Current architecture exports are 70 Java files in 63 packages,
+including neutral extension roles. Original architecture/database/P1 provenance
+retains its own source/deployed applicability. The current API object is unchanged:
+CI #604 generated the snapshot; #605 freshly verified equality except source-SHA
+provenance and independently passed supported compatibility. No endpoint/schema or
+security value is manually edited.
+
+HPR-P2-013 documentation implementation is complete, but P2 final VERIFIED/CLOSED
+disposition is PENDING both successful CI workflows on the resulting implementation
+SHA. Current implementation publication is not CI success. No P3 task is selected.
+Prior dated pending/publication statements above retain historical applicability and
+are superseded by this current review where they describe the earlier execution state.
+
+Unknown business retention/policy approvals, complete endpoint/performance/OT coverage,
+per-class no-skips evidence, deployed-data/import acceptance, runtime inference/actuation
+and fresh physical survivability are not established by this documentation closure.
+P0/P1 disposition and original physical evidence remain unchanged absent regression.
+TimescaleDB, PostGIS and unimplemented industrial/AI extensions remain DEFERRED/TARGET.

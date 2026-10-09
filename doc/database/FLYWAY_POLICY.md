@@ -40,13 +40,13 @@ Rules:
 
 Migration directory: `src/main/resources/db/migration`
 
-Migration count: **82**
+Migration count: **139**
 
 First migration: `V20260611_001__create_identity_tables.sql`
 
-Current tail: `V20261005_001__provision_risk_register_created_audit_taxonomy.sql`
+Current tail: `V20261008_026__hmr_080_planning_nomination_integrity.sql`
 
-The closed P1 recovery evidence independently reconciled the current 82-migration tail in the restored executable tree.
+Historical closed P1 recovery evidence reconciled its own 82-migration restored executable tree; it does not prove deployment/recovery of the current 139-migration source chain.
 
 ## Migration Failure
 
@@ -58,4 +58,20 @@ Exceptional Flyway history repair requires explicit Database Operations + Applic
 
 The canonical persistence dictionary must be regenerated whenever executable changes add/remove/rename JPA persistence entities or change the Flyway migration chain.
 
-HPR-P2-012 may add automated drift checks; HPR-P2-006 does not modify CI.
+HPR-P2-012 implements bounded canonical structure and OpenAPI drift checks. It does not compare database inventory counts to Java/SQL source. This refresh performs that source comparison explicitly; it adds no automated database drift rule.
+
+## HPR-P2-013 source refresh and historical applicability
+
+Current repository verification: `00c4fda266b2dfd175cca37ad789dc9462a5af0b`, 2026-10-09. Source inventory contains
+**139** unique versioned migrations and **470** module @Entity classes across
+**24** modules, including **25** Risk entities. Current tail:
+`V20261008_026__hmr_080_planning_nomination_integrity.sql`. The original HPR-P2-006 generation at
+`aeb9008d74b90f102ab8706b9a23f1a6eb6cbe9c` recorded 82 migrations/469 entities;
+that is preserved historical generation evidence, superseded for current inventory.
+
+Retained P1 deployed/recovery evidence keeps its original deployed SHA, 82-migration
+scope and measured RPO/RTO. This source refresh is not an assertion that all 139
+migrations have been deployed or physically recovered. Database documentation
+completion and exact-head CI do not establish current production-data acceptance.
+Full P2 closure verification remains pending both CI workflows on the resulting
+implementation commit; P3 remains DEFERRED. No schema/data/runtime change is made.

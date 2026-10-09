@@ -33,12 +33,12 @@ A module owns the persistence entities and migration-created tables representing
 | party | 30 | `V20260611_003__create_party_tables.sql` |
 | planning | 16 | `V20260611_006__create_planning_tables.sql` |
 | reporting | 22 | `V20260611_024__create_reporting_tables.sql` |
-| risk | 24 | `V20260611_011__create_risk_tables.sql` |
+| risk | 25 | `V20260611_011__create_risk_tables.sql` |
 | simulation | 25 | `V20260611_022__create_simulation_tables.sql` |
 | telemetry | 16 | `V20260611_005__create_telemetry_tables.sql` |
 | topology | 22 | `V20260611_004__create_topology_tables.sql` |
 | workflow | 17 | `V20260611_016__create_workflow_tables.sql` |
-| **Total** | **469** | **24 initial module schema migrations** |
+| **Total** | **470** | **24 initial module schema migrations** |
 
 Later migrations refine constraints, add/remove fields, and remediate selected tables. The ordered migration chain, not the initial create migration alone, defines current physical schema.
 
@@ -59,3 +59,19 @@ Database Operations owns production PostgreSQL operation, HA, backup, recovery a
 Business/module ownership determines semantic responsibility for persisted business state.
 
 These are complementary responsibilities, not competing schema authorities.
+
+## HPR-P2-013 source refresh and historical applicability
+
+Current repository verification: `00c4fda266b2dfd175cca37ad789dc9462a5af0b`, 2026-10-09. Source inventory contains
+**139** unique versioned migrations and **470** module @Entity classes across
+**24** modules, including **25** Risk entities. Current tail:
+`V20261008_026__hmr_080_planning_nomination_integrity.sql`. The original HPR-P2-006 generation at
+`aeb9008d74b90f102ab8706b9a23f1a6eb6cbe9c` recorded 82 migrations/469 entities;
+that is preserved historical generation evidence, superseded for current inventory.
+
+Retained P1 deployed/recovery evidence keeps its original deployed SHA, 82-migration
+scope and measured RPO/RTO. This source refresh is not an assertion that all 139
+migrations have been deployed or physically recovered. Database documentation
+completion and exact-head CI do not establish current production-data acceptance.
+Full P2 closure verification remains pending both CI workflows on the resulting
+implementation commit; P3 remains DEFERRED. No schema/data/runtime change is made.

@@ -39,3 +39,15 @@ Target or deferred architecture is not current implementation. In particular:
 - Redis/distributed cache is not selected merely because process-local cache exists.
 - `agents`, `environment` and `otsecurity` are not current module source roots and must not be documented as implemented modules.
 - canonical domain semantics are maintained under `doc/domain/**` by HPR-P2-003; per-module current-state documents remain HPR-P2-004 scope.
+
+## HPR-P2-013 architecture verification
+
+Verified source parent `00c4fda266b2dfd175cca37ad789dc9462a5af0b`, 2026-10-09. The current
+[contract inventory](CROSS_MODULE_CONTRACTS.md) and [context map](BOUNDED_CONTEXT_MAP.md)
+are refreshed to 70 Java files in 63 exported packages, exactly matching architecture
+enforcement. Neutral target/evidence extension roles are separated from named module
+consumers. This current export inventory supersedes the old HPR-P2-002 relationship
+tables; its original baseline remains historical provenance. No architecture rule,
+export permission, runtime dependency or P1 physical evidence is changed. Other
+architecture descriptions keep their own applicability. P2 final verification is
+pending both exact-head CI gates; P3 remains DEFERRED.

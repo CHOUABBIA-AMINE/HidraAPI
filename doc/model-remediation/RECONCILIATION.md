@@ -6739,3 +6739,47 @@ immutable parent/tree/blobs, confirm Documentation Validation starts, then STOP.
 This two-document supporting revision needs no full production dispatch. A subsequent
 Next after its exact-head documentation result accepts the complete revised design
 and sixteen-path scope. HPR-P2-013 stays PENDING, P2 OPEN and all P3 tasks DEFERRED.
+
+## HPR-P2-013 accepted implementation — 2026-10-09
+
+The owner's Next accepts the original eight-part proposal plus the revised four-part
+amendment and sixteen-path allowlist. Main is unchanged at `00c4fda266b2dfd175cca37ad789dc9462a5af0b`, tree
+`3fd8da771d07eb0ce270e74d44b6b057fbb646ee`; exact-head Documentation Validation
+#126 PASSED. Only the sixteen admitted existing documentation files are changed.
+Exact message: `docs(roadmap): close P2 canonical governance`.
+
+Database dictionary/global and per-module inventories are regenerated from current
+source: 139 unique migrations, 470 entities, Risk 25 and current 026 tail. Architecture
+inventory is regenerated from 70 Java files in exactly 63 exported packages; context
+relationships distinguish module consumers from three neutral owner-lookup extensions.
+Root/register/validation/API/domain/module indexes record verified #124/#605 evidence
+and current closure limits. Historical architecture/database/P1 provenance is preserved.
+
+All HPR-P2-001..012 and 57 HMR completions retain their identities; only HPR-P2-013
+implementation is completed. P2 remains OPEN pending both successful exact-head CI
+workflows on this implementation SHA. P3 stays DEFERRED; no next P3 is selected.
+Publication verification must confirm immutable parent/tree/blobs and exact scope.
+Documentation CI starts automatically; full production CI must be workflow-dispatched
+on the exact resulting SHA. Current connector exposes no dispatch tool, so owner
+GitHub Actions dispatch is necessary. Stop after startup observation, without waiting.
+
+### HPR-P2-013 actual implementation validation
+
+Both maintained Python suites PASSED: twenty tests. Full canonical validation PASSED
+for 95 documents, 3,289 relative links, 24 modules and 13 primary P2 rows. Offline
+OpenAPI integrity PASSED at 244 paths, 263 operations and 231 schemas; snapshot bytes
+are unchanged. Independent source checks PASSED for the complete global/per-module
+139-migration and 470-entity dictionary, module ownership totals and 70-file/63-package
+architecture tuples/consumer/neutral-extension relationships. Exactly sixteen existing
+admitted documentation files changed; all other tracked blobs, original P1 physical
+provenance, legacy evidence, 57 HMR identities, 123 semantic subjects and version
+0.6.0-SNAPSHOT are unchanged. Only the primary HPR-P2-013 implementation row changed;
+final P2 closure remains OPEN pending both exact-head CI gates. git diff --check PASSED.
+
+Actual ./mvnw -B -q clean verify could not start because the tracked wrapper is not
+executable. Actual bash ./mvnw -B -q clean verify FAILED before compilation resolving
+uncached Spring Boot parent 4.1.1 due to repo.maven.apache.org DNS failure. Installed
+Java is 17.0.20; Java 21 is required. No local Java/JPA/runtime success is claimed.
+Successful production CI #605 is prior exact-head evidence, not verification of this
+future publication. Documentation CI startup and mandatory owner-dispatched full CI
+must be reported separately; no future success or final P2 closure is pre-asserted.

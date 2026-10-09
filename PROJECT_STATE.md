@@ -23,13 +23,15 @@ evidence scope; 57 HMR completions, 123 permanent subjects and P3 DEFERRED remai
 HPR-REL-002 / `chore(release): start 0.7.0 development` after formal release
 existence was verified. Only the POM project version changes; dependencies,
 features, API metadata v1 and schema remain unchanged. The development transition
-commit is the commit carrying this record and POM 0.7.0-SNAPSHOT; pin its real
-SHA after publication during exact-head verification. HPR-REL-002 is IN PROGRESS
-pending both documentation and full HidraAPI CI on the transition SHA. Release
-CI #610 is not verification of the new development commit.
+commit is `ce8867c252fb537d9cca652f9b397a6d35bbc96a`, tree
+`a5a5dd39214d7f5cfdcee96af878c437103211a5`. Documentation #140 (37941995197)
+and full HidraAPI CI #611 (37941995284) both PASSED on this exact transition SHA.
+HPR-REL-002 is COMPLETED. Release CI #610 separately verifies the formal release.
+The v0.6.0 release-management cycle and development transition are complete under
+AGENTS.md §19. This supporting record does not replace either immutable baseline.
 
-Next selected stage: verify those transition CI gates after startup and owner
-Next/failure notification. No P3, new release, deployment or import is selected.
+No next executable stage is automatically selected. P3 requires separate approved
+requirements and owner task selection. No new release, deployment or import is selected.
 Production promotion requires its own approved change and controlled release
 workflow. No new physical exercise, data acceptance or owner-policy approval is
 inferred from release publication or the development-version transition.

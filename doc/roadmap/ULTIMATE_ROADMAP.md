@@ -281,7 +281,7 @@ data import or next development-version transition is selected.
 | Code | Status | Domain/Module | Type | Exact execution requirement | Exact commit message | Depends on |
 |---|---|---|---|---|---|---|
 | HPR-REL-001 | COMPLETED — release alignment 09bf1cbf82c20f19c50ebb1ff9e27047c7f34856 verified by Documentation #138 and full HidraAPI CI #610; v0.6.0 tag and GitHub Release published by owner on 2026-10-09 | Release Management | Build/Doc | Align the project version to 0.6.0 and record the completed platform milestone; publish only the five-path release-alignment scope below; require successful exact-SHA documentation and full production CI before release readiness. | `chore(release): prepare 0.6.0 platform milestone` | P0/P1/P2 closed; verified release preflight |
-| HPR-REL-002 | IN PROGRESS — owner-published v0.6.0 verified; release records and 0.7.0-SNAPSHOT transition implemented; exact transition CI PENDING | Release Management | Build/Doc | Record real v0.6.0 publication and immutable target; advance only the Maven project version to 0.7.0-SNAPSHOT; refresh release/development traceability within the five-path scope below; verify both exact-head CI workflows. | `chore(release): start 0.7.0 development` | HPR-REL-001; v0.6.0 tag/release exist |
+| HPR-REL-002 | COMPLETED — 0.7.0-SNAPSHOT transition ce8867c252fb537d9cca652f9b397a6d35bbc96a verified by Documentation #140 and full HidraAPI CI #611; published v0.6.0 target preserved | Release Management | Build/Doc | Record real v0.6.0 publication and immutable target; advance only the Maven project version to 0.7.0-SNAPSHOT; refresh release/development traceability within the five-path scope below; verify both exact-head CI workflows. | `chore(release): start 0.7.0 development` | HPR-REL-001; v0.6.0 tag/release exist |
 
 HPR-REL-001 write allowlist: pom.xml, VERSIONS.md, PROJECT_STATE.md,
 doc/roadmap/ULTIMATE_ROADMAP.md and doc/model-remediation/RECONCILIATION.md.
@@ -298,21 +298,28 @@ production promotion, physical exercise, import or P3 work is admitted.
 
 ## 6. Immediate Next Execution
 
-Selected HPR-REL-002: record the owner's published v0.6.0 release and advance main
-to 0.7.0-SNAPSHOT. Exact message: `chore(release): start 0.7.0 development`.
+HPR-REL-002 is COMPLETED. Main's 0.7.0-SNAPSHOT transition is verified at
+`ce8867c252fb537d9cca652f9b397a6d35bbc96a`, tree
+`a5a5dd39214d7f5cfdcee96af878c437103211a5`. Documentation #140 (37941995197)
+and full HidraAPI CI #611 (37941995284) both completed SUCCESS on that exact SHA.
 Release v0.6.0 is published as the latest normal release, ID 407972853, at
 2026-10-09T14:02:18Z. Its lightweight/unsigned tag resolves directly to
 `09bf1cbf82c20f19c50ebb1ff9e27047c7f34856`, verified by Documentation #138 and
 production CI #610. Preserve that target; a development commit is not a release
 tag target. Release publication does not establish production deployment.
 
-After transition publication, observe both documentation and full CI startup and
-STOP for the owner's Next/failure notification. HPR-REL-002 remains IN PROGRESS
-until both workflows pass on the exact transition SHA, including Java 21 clean
-verify, OpenAPI equality/compatibility, current dictionary comparison and P1 gates.
-Prior release CI #610 and parent documentation #139 are inherited evidence,
-not verification of the new snapshot commit. The next selected stage verifies
-these transition gates; it does not select P3, production deployment or a new release.
+Full transition CI #611 passed Java 21 clean verify, OpenAPI equality/compatibility,
+current migrated dictionary comparison and retained P1 evidence/operations gates.
+Release CI #610 remains attached to the immutable formal release SHA; #611
+separately verifies the development transition. The v0.6.0 release-management
+cycle and next-development transition are complete under AGENTS.md §19.
+
+No next executable task is automatically selected. P3 requires a separate approved
+requirement and owner task selection; production promotion requires its own
+approved change and controlled release workflow. This four-document evidence
+record needs Documentation Validation startup/result verification; full #611
+remains pinned to the transition SHA, not the supporting record SHA. Stop after
+documentation startup without selecting features, another version or deployment.
 P0/P1/P2 CLOSED, P3 DEFERRED, 57 HMR completions and 123 subjects remain unchanged.
 
 ### Retained P2 closure disposition
@@ -8412,3 +8419,50 @@ Actual `bash ./mvnw -B -q clean verify` FAILED before compilation resolving the
 uncached Spring Boot parent 4.1.1 because repo.maven.apache.org DNS is unavailable.
 Installed Java is 17.0.20; Java 21 is required. The new transition requires its
 own full GitHub CI and documentation results; no future success is pre-asserted.
+
+
+## HPR-REL-002 final exact-transition verification — 2026-10-09
+
+The owner's Next selects verification and recording of the development transition.
+GitHub main was rechecked unchanged at ce8867c252fb537d9cca652f9b397a6d35bbc96a,
+tree a5a5dd39214d7f5cfdcee96af878c437103211a5; the local full tree matched.
+AGENTS.md, Ultimate Roadmap and reconciliation were read from that exact SHA before
+mutation. POM is 0.7.0-SNAPSHOT. Both required transition runs completed SUCCESS:
+
+- Documentation Validation #140, run 37941995197;
+- full HidraAPI CI #611, run 37941995284.
+
+Production job 113858453078, Java 21 Maven verification, and every reported step
+succeeded. Java 21 clean verify, canonical validators, retained P1 evidence/HA/
+release/backup/observability/database-operations gates, fresh OpenAPI publication,
+canonical runtime equality, base generation and backward compatibility, migrated
+dictionary comparison/capture and artifact retention all passed. Actual job logs
+record OpenAPI runtime equality (244 paths, 263 operations, 231 schemas), 139
+migrations, 470 JPA mappings, 482 relations, reviewed_dictionary_checked true,
+zero unresolved owners and source_sha ce8867c252fb537d9cca652f9b397a6d35bbc96a.
+The source bundle remains 86f6ba5923e63c0cd601f7722ca0282e486d59fc92bb120616710fb3cd1799d4.
+No artifact archive or per-class execution/skip report was independently inspected
+here; cumulative CI success does not imply unbounded endpoint/performance/OT
+coverage, policy approval, import/data acceptance or new physical exercises.
+
+HPR-REL-002 is COMPLETED. Formal v0.6.0 still resolves to verified release SHA
+09bf1cbf82c20f19c50ebb1ff9e27047c7f34856; GitHub latest release remains published,
+non-draft and non-prerelease at 2026-10-09T14:02:18Z. The lightweight/unsigned tag
+is unchanged. Main's verified development baseline is ce8867c252fb537d9cca652f9b397a6d35bbc96a,
+version 0.7.0-SNAPSHOT. Release-management completion under AGENTS.md §19 does not
+assert production deployment. P0/P1/P2 CLOSED, P3 DEFERRED, all 57 HMR completions
+and 123 semantic subjects remain preserved. Dated PENDING preparation statements
+retain historical scope and are superseded by this exact-transition result.
+
+Supporting exact message: `docs(release): record verified 0.7.0 development`.
+Write ONLY VERSIONS.md, PROJECT_STATE.md, doc/roadmap/ULTIMATE_ROADMAP.md and
+doc/model-remediation/RECONCILIATION.md; every other tracked blob/POM remains
+unchanged. Validate canonical documentation, offline OpenAPI, P1 evidence, exact
+four-file scope, identical verification records and preserved phase/HMR/catalogue
+identities. Publish once with expected-head lease from the transition SHA, verify
+immutable parent/tree/files, observe Documentation Validation startup and STOP.
+Full #611 remains attached to the executable transition SHA; a documentation-only
+supporting record does not require repeating full CI or become a replacement
+release tag/transition target. No further version, release, P3 capability,
+deployment/import/policy or physical campaign is selected. A future workstream
+requires its own owner task selection and applicable requirements.

@@ -2,8 +2,9 @@
 
 **Current release/development state — 2026-10-09:** `v0.6.0` is the published
 latest formal release at `09bf1cbf82c20f19c50ebb1ff9e27047c7f34856`, verified by
-Documentation #138 and full HidraAPI CI #610. Main advances to `0.7.0-SNAPSHOT`
-under HPR-REL-002; exact transition verification remains PENDING.
+Documentation #138 and full HidraAPI CI #610. Main is on `0.7.0-SNAPSHOT` at
+`ce8867c252fb537d9cca652f9b397a6d35bbc96a`, verified by Documentation #140 and
+full HidraAPI CI #611; HPR-REL-002 is COMPLETED.
 
 ## 1. Purpose
 
@@ -183,7 +184,7 @@ not pre-emptively in this baseline-alignment change.
 | Tag / GitHub Release | `v0.6.0` / HidraAPI v0.6.0, ID 407972853; published by owner 2026-10-09T14:02:18Z, latest, non-draft, non-prerelease |
 | Tag form | Lightweight/unsigned ref, directly targeting the release-alignment commit; no signed annotated tag is claimed |
 | Last formal release | `v0.6.0`, release commit `09bf1cbf82c20f19c50ebb1ff9e27047c7f34856`; previous formal release v0.5.0 remains historical |
-| Current development line | `0.7.0-SNAPSHOT` transition under HPR-REL-002; exact transition CI PENDING |
+| Current development line | `0.7.0-SNAPSHOT` at ce8867c252fb537d9cca652f9b397a6d35bbc96a; HPR-REL-002 COMPLETED; Documentation #140 and full HidraAPI CI #611 PASSED |
 
 The coherent milestone comprises the completed P0 security/audit closure, P1
 production-readiness and survivability controls with their retained evidence scope,
@@ -223,10 +224,14 @@ as the tag target or infer production deployment from publication.
 The owner selected HPR-REL-002 after the real tag and GitHub Release were verified:
 `chore(release): start 0.7.0 development`. Only the POM project version changes
 from 0.6.0 to 0.7.0-SNAPSHOT; no dependencies/features/schema/API change is included.
-The transition commit is the commit carrying this record and POM 0.7.0-SNAPSHOT;
-pin its actual SHA during subsequent exact-head verification. Both documentation
-and full HidraAPI CI are required on that SHA; #610 validates the formal release,
-not the new snapshot. HPR-REL-002 remains IN PROGRESS until both gates pass.
+The transition commit is `ce8867c252fb537d9cca652f9b397a6d35bbc96a`, tree
+`a5a5dd39214d7f5cfdcee96af878c437103211a5`, with POM 0.7.0-SNAPSHOT.
+Documentation #140 / run 37941995197 and full HidraAPI CI #611 / run 37941995284
+both PASSED on that SHA. HPR-REL-002 is COMPLETED. Release #610 remains the exact
+formal-release evidence; #611 separately verifies the development transition.
+The release-management cycle is complete under AGENTS.md §19, without asserting
+production deployment. This supporting documentation record is not a replacement
+release tag target or executable transition baseline.
 
 [Published v0.6.0 release](https://github.com/CHOUABBIA-AMINE/HidraAPI/releases/tag/v0.6.0).
 P3 remains DEFERRED. Production promotion, private-data imports, owner-policy

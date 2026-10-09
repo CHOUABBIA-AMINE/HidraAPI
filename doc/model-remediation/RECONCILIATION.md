@@ -7194,3 +7194,50 @@ Actual `bash ./mvnw -B -q clean verify` FAILED before compilation resolving the
 uncached Spring Boot parent 4.1.1 because repo.maven.apache.org DNS is unavailable.
 Installed Java is 17.0.20; Java 21 is required. The new transition requires its
 own full GitHub CI and documentation results; no future success is pre-asserted.
+
+
+## HPR-REL-002 final exact-transition verification — 2026-10-09
+
+The owner's Next selects verification and recording of the development transition.
+GitHub main was rechecked unchanged at ce8867c252fb537d9cca652f9b397a6d35bbc96a,
+tree a5a5dd39214d7f5cfdcee96af878c437103211a5; the local full tree matched.
+AGENTS.md, Ultimate Roadmap and reconciliation were read from that exact SHA before
+mutation. POM is 0.7.0-SNAPSHOT. Both required transition runs completed SUCCESS:
+
+- Documentation Validation #140, run 37941995197;
+- full HidraAPI CI #611, run 37941995284.
+
+Production job 113858453078, Java 21 Maven verification, and every reported step
+succeeded. Java 21 clean verify, canonical validators, retained P1 evidence/HA/
+release/backup/observability/database-operations gates, fresh OpenAPI publication,
+canonical runtime equality, base generation and backward compatibility, migrated
+dictionary comparison/capture and artifact retention all passed. Actual job logs
+record OpenAPI runtime equality (244 paths, 263 operations, 231 schemas), 139
+migrations, 470 JPA mappings, 482 relations, reviewed_dictionary_checked true,
+zero unresolved owners and source_sha ce8867c252fb537d9cca652f9b397a6d35bbc96a.
+The source bundle remains 86f6ba5923e63c0cd601f7722ca0282e486d59fc92bb120616710fb3cd1799d4.
+No artifact archive or per-class execution/skip report was independently inspected
+here; cumulative CI success does not imply unbounded endpoint/performance/OT
+coverage, policy approval, import/data acceptance or new physical exercises.
+
+HPR-REL-002 is COMPLETED. Formal v0.6.0 still resolves to verified release SHA
+09bf1cbf82c20f19c50ebb1ff9e27047c7f34856; GitHub latest release remains published,
+non-draft and non-prerelease at 2026-10-09T14:02:18Z. The lightweight/unsigned tag
+is unchanged. Main's verified development baseline is ce8867c252fb537d9cca652f9b397a6d35bbc96a,
+version 0.7.0-SNAPSHOT. Release-management completion under AGENTS.md §19 does not
+assert production deployment. P0/P1/P2 CLOSED, P3 DEFERRED, all 57 HMR completions
+and 123 semantic subjects remain preserved. Dated PENDING preparation statements
+retain historical scope and are superseded by this exact-transition result.
+
+Supporting exact message: `docs(release): record verified 0.7.0 development`.
+Write ONLY VERSIONS.md, PROJECT_STATE.md, doc/roadmap/ULTIMATE_ROADMAP.md and
+doc/model-remediation/RECONCILIATION.md; every other tracked blob/POM remains
+unchanged. Validate canonical documentation, offline OpenAPI, P1 evidence, exact
+four-file scope, identical verification records and preserved phase/HMR/catalogue
+identities. Publish once with expected-head lease from the transition SHA, verify
+immutable parent/tree/files, observe Documentation Validation startup and STOP.
+Full #611 remains attached to the executable transition SHA; a documentation-only
+supporting record does not require repeating full CI or become a replacement
+release tag/transition target. No further version, release, P3 capability,
+deployment/import/policy or physical campaign is selected. A future workstream
+requires its own owner task selection and applicable requirements.

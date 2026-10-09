@@ -1,5 +1,9 @@
 # HidraAPI Version History
 
+**Current preparation — 2026-10-09:** `0.6.0` release-alignment candidate;
+exact-candidate verification PENDING. Last formal release remains `v0.5.0`.
+No `v0.6.0` tag or GitHub Release has been created by this preparation.
+
 ## 1. Purpose
 
 This document reconstructs the logical HidraAPI release history from the live `main` branch,
@@ -89,7 +93,7 @@ unless such tags actually exist.
 
 ## 5. Current baseline
 
-The verified repository baseline is:
+The last formally released repository baseline is:
 
 ```text
 0.5.0
@@ -147,7 +151,7 @@ The release plugin is tooling only; adding it does not itself create tags or rel
 Signed Git tags are recommended for formal releases, but signing is intentionally not forced in the
 POM until the release environment has a verified signing identity and key configuration.
 
-## 8. Next development line
+## 8. Historical 0.5.0 development-line transition
 
 After a formal `v0.5.0` release is created from the verified release-alignment commit, normal
 development should advance to:
@@ -158,3 +162,39 @@ development should advance to:
 
 That development-version transition should be performed as part of the formal release procedure,
 not pre-emptively in this baseline-alignment change.
+
+## 9. Prepared 0.6.0 platform milestone — 2026-10-09
+
+| Field | Prepared state |
+|---|---|
+| Intended release | `0.6.0` — pre-1.0 minor architecture and stabilization milestone |
+| Task / exact commit message | HPR-REL-001 / `chore(release): prepare 0.6.0 platform milestone` |
+| Semantic milestone anchor | `a8905e32289a583f47b831e0381783e556ae0c8d` — renewed P2 canonical-governance closure |
+| Verified milestone gates | Documentation #136 / run 37932486353 and full HidraAPI CI #609 / run 37933120029, both successful on the milestone anchor |
+| Preparation source parent | `ac6cbb4b1cd584b0c780dd208543f41ebe326e06` — verified P2 closure evidence record; Documentation #137 / run 37934631329 successful |
+| Release-alignment commit | The commit carrying this record and POM 0.6.0; pin its actual SHA during subsequent exact-candidate verification |
+| Candidate verification | PENDING — require documentation and full HidraAPI CI on that exact alignment SHA; inherited milestone CI is insufficient |
+| Tag / GitHub Release | NOT CREATED; future `v0.6.0` requires separate explicit authorization and successful exact-candidate verification |
+| Last formal release | `v0.5.0`, release commit `492d9916369a58e60c1a437647411e7c5a523990` |
+| Next development line | Intended `0.7.0-SNAPSHOT`, only after formal release exists or separately directed by the owner |
+
+The coherent milestone comprises the completed P0 security/audit closure, P1
+production-readiness and survivability controls with their retained evidence scope,
+P2 canonical governance/API/database documentation, and all 57 reconciled HMR
+implementations. The permanent semantic catalogue retains 123 subjects across
+24 implemented modules. These are architecture/capability and stabilization
+changes since 0.5.0, justifying a minor milestone rather than a patch release.
+
+Source-of-truth completion evidence remains in the
+[Ultimate Roadmap](doc/roadmap/ULTIMATE_ROADMAP.md) and
+[reconciliation](doc/model-remediation/RECONCILIATION.md). P3, TimescaleDB,
+PostGIS and future industrial extensions remain DEFERRED/TARGET. This candidate
+does not claim unrestricted endpoint/performance/OT coverage, new physical
+survivability exercises, production-data/import acceptance, unknown business
+policy approval or deployed autonomous AI/actuation.
+
+API metadata remains `v1`; the Maven release version is a separate version line.
+No API snapshot, schema, migration, dependency or feature change is included.
+Never tag the milestone anchor: its POM contains 0.6.0-SNAPSHOT. The eventual tag
+must resolve to the exact successfully verified release-alignment commit containing
+POM 0.6.0. Record the actual tag form and release date only after they exist.

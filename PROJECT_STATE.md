@@ -2,10 +2,36 @@
 
 **Captured:** 2026-09-22. **Release state refreshed:** 2026-09-29. **Canonical integration branch:** [main](https://github.com/CHOUABBIA-AMINE/HidraAPI/tree/main). **Current release-state baseline before this documentation change:** [63f3f60974ce57eb8cd5e42910397615195624fb](https://github.com/CHOUABBIA-AMINE/HidraAPI/commit/63f3f60974ce57eb8cd5e42910397615195624fb). Older workstream sections remain dated handoff evidence unless explicitly refreshed below. This file is a non-secret handoff, not an assertion about future PR/branch status, live deployments or an authorization to migrate data.
 
+**Current release preparation — 2026-10-09:** HPR-REL-001 prepares the `0.6.0`
+release-alignment candidate from main `ac6cbb4b1cd584b0c780dd208543f41ebe326e06`.
+POM is `0.6.0`; exact-candidate verification is PENDING. Last formal release is
+still `v0.5.0` at `492d9916369a58e60c1a437647411e7c5a523990`. No `v0.6.0` tag,
+GitHub Release or deployment is created by this preparation. This current record
+supersedes the dated release/development-state claims in section 0 below.
+Older workstream deliverables and selection statements remain dated handoff
+evidence; current platform execution is governed by the
+[Ultimate Roadmap](doc/roadmap/ULTIMATE_ROADMAP.md).
+
+The semantic milestone anchor is P2 closure
+`a8905e32289a583f47b831e0381783e556ae0c8d`, verified by Documentation #136 and
+full HidraAPI CI #609. P0/P1/P2 are closed within their documented evidence scope;
+all 57 reconciled HMR implementations and 123 permanent semantic subjects remain.
+P3 is DEFERRED. Prior closure CI does not verify the new alignment commit.
+
+Next selected stage after publication: verify successful documentation and full
+HidraAPI CI on the exact HPR-REL-001 SHA, then pin that actual candidate SHA in
+release traceability. Release readiness and HPR-REL-001 completion remain pending.
+Tagging/publication require separate explicit authorization under AGENTS.md §19.
+The intended subsequent development line is `0.7.0-SNAPSHOT`; do not perform that
+transition until the formal release exists or the owner explicitly directs it.
+Production promotion additionally requires its own approved change and controlled
+release workflow. No data import, new physical exercise or owner-policy approval
+is inferred from this release candidate.
+
 Before resuming, read [AGENTS.md](AGENTS.md), the relevant module/workstream roadmap, [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), [coding policy](docs/policy/Coding-policy.md), and [ADR index](docs/adr/README.md). Recheck current main, PR and CI state rather than assuming this snapshot remains current.
 
 
-## 0. Current release state — refreshed 2026-09-29
+## 0. Historical release state — refreshed 2026-09-29
 
 - **Last formal release:** `0.5.0`.
 - **Git tag / GitHub Release:** `v0.5.0` / `HidraAPI v0.5.0`.

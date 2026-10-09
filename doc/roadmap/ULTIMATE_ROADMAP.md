@@ -270,7 +270,44 @@ P1 is **CLOSED** only when this closure SHA passes the repository's full exact-h
 | HPR-P3-007 | DEFERRED | Spatial / Topology | Code/Test | Reconcile route geometry with existing KP/linear referencing; verify SRID, geometry validity, route/KP consistency and query performance. | `test(topology): verify spatial route semantics` | HPR-P3-006 |
 | HPR-P3-008 | DEFERRED | Future Capability Governance | Doc | Keep MQTT/Sparkplug and other audit-classified industrial extensions deferred until a separately approved requirement exists; update CURRENT status only after implementation evidence exists. | `docs(roadmap): reconcile deferred industrial capabilities` | approved requirement |
 
+### Governed Release Preparation — separate from P3
+
+The owner's "Do next" on 2026-10-09 selects registration and preparation of the
+bounded 0.6.0 release-alignment candidate described by the preceding release
+preflight. This is explicit selection of release preparation under AGENTS.md §19;
+P2 closure alone did not authorize it. No tag, GitHub Release, production rollout,
+data import or next development-version transition is selected.
+
+| Code | Status | Domain/Module | Type | Exact execution requirement | Exact commit message | Depends on |
+|---|---|---|---|---|---|---|
+| HPR-REL-001 | IN PROGRESS — preparation selected; candidate metadata prepared; exact candidate CI PENDING | Release Management | Build/Doc | Align the project version to 0.6.0 and record the completed platform milestone; publish only the five-path release-alignment scope below; require successful exact-SHA documentation and full production CI before release readiness. | `chore(release): prepare 0.6.0 platform milestone` | P0/P1/P2 closed; verified release preflight |
+
+HPR-REL-001 write allowlist: pom.xml, VERSIONS.md, PROJECT_STATE.md,
+doc/roadmap/ULTIMATE_ROADMAP.md and doc/model-remediation/RECONCILIATION.md.
+No source, tests, migrations, dependencies, workflows, generated contract,
+dictionary, owner policies, operations scripts or legacy evidence may change.
+The exact-HMR identities and all P0/P1/P2/P3 registry rows remain unchanged.
+
 ## 6. Immediate Next Execution
+
+**Selected HPR-REL-001: prepare the 0.6.0 release-alignment candidate.** After
+publication, the next selection verifies BOTH documentation and full HidraAPI CI
+on the exact release-alignment SHA, including Java 21 clean verify, OpenAPI
+equality/compatibility, migrated dictionary comparison and existing P1 gates.
+The POM change starts full CI through the existing push trigger. Observe startup
+and STOP for the owner's Next/failure notification; do not wait for completion.
+Candidate readiness remains PENDING until those exact-SHA results are successful.
+Existing P2 #136/#609 and main documentation #137 are inherited milestone evidence,
+not verification of the new release candidate.
+
+Keep milestone anchor a8905e32289a583f47b831e0381783e556ae0c8d distinct from the
+future release-alignment SHA. Only a separately authorized tag may eventually
+target the verified alignment SHA whose POM contains 0.6.0. Tag creation, GitHub
+Release publication and production deployment remain separately governed.
+P3 stays DEFERRED. Advance to 0.7.0-SNAPSHOT only after the formal release exists
+or an explicit owner instruction permits that separate transition.
+
+### Retained P2 closure disposition
 
 HPR-P2-013 is COMPLETED; Phase P2 is VERIFIED/CLOSED following renewed 12/12
 substantive audit and successful exact-head Documentation Validation #136
@@ -8193,3 +8230,63 @@ memories are refreshed by this evidence record. The successful production CI
 #609 remains attached to the exact executable/metadata implementation SHA;
 a documentation-only evidence commit requires documentation validation but
 does not imply that full production CI reran on the new documentation-only SHA.
+
+
+## HPR-REL-001 bounded release-alignment preparation — 2026-10-09
+
+The owner's "Do next" selects registration and preparation following the read-only
+release preflight; this authorization is distinct from P2 closure. AGENTS.md,
+Ultimate Roadmap and reconciliation were re-read at unchanged GitHub main
+ac6cbb4b1cd584b0c780dd208543f41ebe326e06, tree
+4ed7be83ee5a25dd1ecc63feea053e48f8ccbc0f, before changes. The isolated local
+baseline was reconstructed and its complete tree matched that GitHub tree.
+
+The preflight inspected pom.xml, VERSIONS.md, PROJECT_STATE.md, completed phase
+records, current main/CI, all returned Git tag refs and GitHub Releases, ci.yml,
+release.yml, OpenAPI configuration and maintained validators. The only published
+tag/release is v0.5.0 at 492d9916369a58e60c1a437647411e7c5a523990. The existing
+0.6.0-SNAPSHOT development line and completed architecture/stabilization milestone
+justify preparing 0.6.0. This is release preparation, not a completed formal release.
+
+Registered exact message: `chore(release): prepare 0.6.0 platform milestone`.
+Write ONLY pom.xml, VERSIONS.md, PROJECT_STATE.md,
+doc/roadmap/ULTIMATE_ROADMAP.md and doc/model-remediation/RECONCILIATION.md.
+The POM project version becomes 0.6.0; dependencies and release-plugin settings
+remain unchanged. Version history and project state distinguish the candidate,
+last formal release, semantic anchor and pending exact-SHA verification.
+HPR-REL-001 remains IN PROGRESS pending successful candidate CI.
+
+The semantic milestone anchor a8905e32289a583f47b831e0381783e556ae0c8d has successful
+Documentation #136 and production #609. Current parent documentation #137 passed.
+Those results are inherited evidence, not verification of the candidate. Publish
+one preparation commit from the verified parent with an expected-head lease;
+verify immutable parent/tree/changed paths and observe both documentation and full
+HidraAPI CI startup. The POM change activates the existing full-CI push trigger.
+STOP after startup; wait for owner Next/failure notification before verification.
+Required candidate gates include Java 21 clean verify, canonical documentation,
+fresh OpenAPI identity/equality and backward compatibility, current migrated
+physical dictionary comparison and the existing P1 evidence/operations gates.
+
+P0/P1/P2 disposition, 57 completed HMR identities including HMR-080, 123 permanent
+subjects, P3 DEFERRED rows, legacy records and physical evidence applicability are
+preserved. OpenAPI stays v1. No source/test/schema/migration/workflow/configuration,
+contract/dictionary/owner-policy, data import, physical campaign or deployment
+change is selected. No tag or GitHub Release is created; these require separate
+explicit authorization under AGENTS.md §19. A future v0.6.0 tag must target the
+successfully verified alignment SHA, never the snapshot-version milestone anchor.
+Do not advance to 0.7.0-SNAPSHOT until formal release exists or separately directed.
+
+
+Local preparation validation PASSED: 37 maintained Python tests (10 documentation,
+10 OpenAPI, 17 dictionary); canonical validator (95 documents, 5,062 links,
+24 modules, 13 P2 rows); offline OpenAPI integrity (244 paths, 263 operations,
+231 schemas); P1 closure evidence validator; exact five-file allowlist; unchanged
+P0/P1/P2/P3 primary registry rows and 57 completed HMR identities; unchanged
+permanent semantic catalogue; only the POM project version changed; all other
+tracked blobs unchanged; git diff --check. These are local/static checks.
+
+Actual `bash ./mvnw -B -q clean verify` FAILED before compilation resolving the
+uncached Spring Boot parent 4.1.1 because repo.maven.apache.org DNS is unavailable.
+Installed Java is 17.0.20; Java 21 is required. No local Java/runtime verification
+success is claimed. Full GitHub CI on the future alignment SHA is mandatory;
+release readiness and HPR-REL-001 completion remain PENDING.

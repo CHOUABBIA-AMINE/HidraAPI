@@ -248,7 +248,7 @@ P1 is **CLOSED** only when this closure SHA passes the repository's full exact-h
 | HPR-P2-003 | COMPLETED — canonical ubiquitous language, domain ownership and focused topology/telemetry, alarm-incident-leak, assets-integrity, and simulation-analytics-AI semantic baselines established from exact current source; AI/autonomous inference remains explicitly NOT ESTABLISHED | Domain | Doc | Create `UBIQUITOUS_LANGUAGE.md`, domain ownership and focused topology/telemetry/alarm-incident-leak/assets-integrity/simulation-analytics-AI semantic documents. | `docs(domain): establish ubiquitous language baseline` | HPR-P2-001 |
 | HPR-P2-004 | COMPLETED — canonical current-state documents created for all 24 implemented module roots from live domain/API/application/persistence/contract inventories; no current-state docs created for agents/environment/otsecurity | Modules | Doc | Create one current-state `doc/modules/<module>.md` for each of the 24 implemented modules; do not create current-state module docs for agents/environment/otsecurity. | `docs(modules): add canonical module documentation` | HPR-P2-002..003 |
 | HPR-P2-005 | COMPLETED — audit Check 9 documentation correction at 4d41f265374156846a86d31f3d30e2b0fe00dd91; exact-head Documentation Validation #131 PASSED; runtime/OpenAPI unchanged | API | Code/Doc | Complete source-backed API conventions and runtime error documentation under the bounded audit amendment below; preserve the generated-envelope limitation and committed contract. | `docs(api): establish versioned api contract` | HPR-P1-008 |
-| HPR-P2-006 | IN PROGRESS — Stage A #133/#607 PASSED and artifact reviewed; Stage B physical dictionary/ownership/Flyway rules implemented; 482 relations resolved; publication documentation/full CI and final drift gate PENDING | Database | Doc | Complete the current physical table/column dictionary and explicit ownership/FK/migration governance under the bounded audit amendment below; preserve applied SQL and historical evidence. | `docs(database): establish canonical database documentation` | HPR-P2-001 |
+| HPR-P2-006 | COMPLETED — Stage B 1bc3c1bba2d08a0b493e5ece43e834e8d56d04f0; Documentation #134 and Production #608 PASSED; integrated physical dictionary check true, 482 relations and zero unresolved owners | Database | Doc | Complete the current physical table/column dictionary and explicit ownership/FK/migration governance under the bounded audit amendment below; preserve applied SQL and historical evidence. | `docs(database): establish canonical database documentation` | HPR-P2-001 |
 | HPR-P2-007 | COMPLETED — exact-source reconciliation established: HMR-005 corrected to completed, HMR-009 confirmed completed/stale carry-over removed, HMR-054 historical blocker resolved by current Party→Topology contract, HMR-050..106 reconciled to 56 still-required + 1 blocked (HMR-080), 0 superseded; legacy roadmap preserved as history | Semantic Remediation | Code/Doc | Inventory unresolved HMR/HMSR obligations against exact current source; mark each as completed, still required, blocked, or superseded with evidence. | `docs(model-remediation): reconcile remaining semantic obligations` | HPR-P2-003 |
 | HPR-P2-008 | COMPLETED — owner-authorized closure after final reconciliation preflight; all 57 HMR implementations confirmed by CI #604, zero pending, STILL REQUIRED or BLOCKED; documentation preflight CI #115 passed. P2 phase remains open. | Semantic Remediation | Code | Execute still-required semantic remediation in dependency order using revalidated HMSR obligations; do not restart completed HMRs without regression evidence. | `fix(model): continue reconciled semantic remediation` | HPR-P2-007 |
 | HPR-P2-009 | COMPLETED — 123 permanent subject decisions transferred with current source/test/migration evidence; all 24 module inventories and domain/index metadata refreshed; 37-path scope and 83-file Markdown/link checks passed; exact-head documentation CI follows publication | Semantic Remediation | Doc | Transfer permanent semantic decisions from legacy review/roadmaps into `doc/domain/` and `doc/modules/`, then preserve legacy files as execution history. | `docs(model-remediation): canonicalize semantic decisions` | HPR-P2-008 |
@@ -272,17 +272,16 @@ P1 is **CLOSED** only when this closure SHA passes the repository's full exact-h
 
 ## 6. Immediate Next Execution
 
-The owner's Next selected HPR-P2-006 Stage B after both Stage A workflows passed
-and the exact-source artifact was inspected. Stage B implements the eight admitted
-paths with exact message `docs(database): establish canonical database documentation`.
-HPR-P2-006 remains IN PROGRESS pending fresh publication CI.
+HPR-P2-006 is COMPLETED after exact-head Documentation #134 and Production #608
+passed on `1bc3c1bba2d08a0b493e5ece43e834e8d56d04f0`. The integrated physical
+dictionary comparison ran successfully with zero unresolved owners. HPR-P2-005 is
+also COMPLETED. This owner-selected continuation publishes renewed HPR-P2-013
+PREFLIGHT ONLY; it does not perform the audit or execute closure.
 
-Next selection: `HPR-P2-006 — verify Stage B documentation/full CI and dictionary drift gate`.
-Require both exact-head workflows to pass and confirm the integrated physical dictionary
-comparison ran successfully. The new ownership JSON triggers full CI automatically.
-Stop after startup observation for the owner's Next/failure notification. A failure
-requires responsible-scope repair. HPR-P2-013 separately re-verifies all twelve audit
-checks after HPR-P2-006 completion; no closure or P3 task executes here.
+Next selection: `HPR-P2-013 — read-only twelve-check re-verification` after this
+preflight's documentation CI passes. Pin one fresh SHA and follow the renewed bounded
+envelope below. Only 12/12 substantive VERIFIED findings can admit a separately
+selected closure publication. Keep P2 OPEN and HPR-P2-013 PENDING in this preflight.
 
 P2 is OPEN. All P3 codes remain DEFERRED. The dated closure at
 `22a9b34225242c52fd502e421570af8b46879e4e` and CI #127/#606 remain retained
@@ -291,6 +290,107 @@ This current disposition supersedes older P2 CLOSED/no-next-task statements and
 historical pending/closed assertions in indexes or execution records. P0/P1 are
 unchanged absent regression evidence. All 57 HMR implementations (including HMR-080),
 123 semantic subjects and version `0.6.0-SNAPSHOT` remain unchanged.
+
+### HPR-P2-006 verification and renewed HPR-P2-013 preflight — 2026-10-09
+
+Verified main: `1bc3c1bba2d08a0b493e5ece43e834e8d56d04f0`, tree
+`82e183f0bd671b3ac8ae384bfafd2fadf8522bda`, unchanged when checked.
+[Documentation #134](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/37929244701)
+and [Production #608](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/37929244240)
+completed SUCCESS at that exact SHA. Job 113815603963 succeeded through Maven
+verification, current OpenAPI equality, schema capture/final comparison, artifact
+retention and base compatibility. The actual collection summary reports
+`reviewed_dictionary_checked: true`, 139 migrations, 470 JPA tables, 482 relations,
+zero unresolved owners and unchanged source bundle
+`86f6ba5923e63c0cd601f7722ca0282e486d59fc92bb120616710fb3cd1799d4`.
+
+Retained Stage B schema artifact ID 11615823318, name
+`hidra-database-schema-1bc3c1bba2d08a0b493e5ece43e834e8d56d04f0`, GitHub archive digest
+`706b903af40c1d33faea828287a4eab139bb6f413bb8176ea9d5872e7774564a`.
+CI summary catalog-document digest `cde91b616f951bd465db0844a69e4472a3eebb45dcff9559e5380d21ace15ac4`;
+generated dictionary digest `53e2848cc822e001e21abed5b74858e6557a4c2c2a8a673610ac7f9f05e8b6dc`.
+These differ from the Stage A capture because the validated capture source SHA is
+part of each generated object; final comparison ignores only its documented Markdown
+SHA line. No Stage B archive download/hash recomputation is claimed by this review.
+Stage A archive/content was directly inspected before Stage B, and #608 now proves
+fresh integrated equality against reviewed committed content. HPR-P2-006 is COMPLETED.
+
+#### Renewed bounded execution
+
+This preflight supersedes historical closure scopes that proposed fixing inventory-only
+database/architecture content. Those corrections now exist; do not regenerate or
+rewrite the physical dictionary as a status change. Current architecture lists 70
+contract files/63 packages, and 24 module slices exist plus their README. These are
+preflight inventory observations, not a renewed twelve-check verdict.
+
+1. After preflight documentation CI succeeds and the owner's Next, run ONLY the
+   read-only P2 audit against one newly pinned default-branch SHA. Use the existing
+   Final Audit P2 benchmark/report structure and the live roadmap as authority.
+   Re-read canonical governance, exact three legacy warnings, module contents,
+   ubiquitous language, legacy-to-canonical semantic decisions, simulation/analytics/
+   AI boundaries, committed OpenAPI, generation/drift gates, API/error conventions,
+   physical dictionary/ownership/Flyway policy and requirements traceability.
+2. Produce twelve separate classifications with exact paths/sections/source evidence;
+   map additional live P2 requirements to the closest check. Check 11 uses the actual
+   canonical FLYWAY_POLICY.md rather than inventing the prompt's alternate filename.
+   Verify content, not status markers. Keep artifact/CI/source applicability separate.
+   Preserve P1 historical applicability without auditing P1 or claiming production
+   data approvals, hydraulic/ML execution, or deferred capability implementation.
+3. If any check fails, return FAIL plus responsible-scope defects and stop before
+   closure. Publish no closure on partial verification. A new defect needing excluded
+   files requires a concrete amendment and separate remediation selection.
+4. If all twelve are VERIFIED, report PASS at the pinned audit SHA and a concrete
+   current-metadata closure patch for separate owner selection. Reconcile stale
+   publication-pending/CLOSED summaries through dated supersession; preserve old
+   records and generation provenance. Do not infer that a past 12/12 or CI run proves
+   the new audit. Do not create or alter runtime or physical evidence.
+5. Future closure uses exactly `docs(roadmap): close P2 canonical governance` and
+   stays IN PROGRESS/P2 OPEN pending both exact-head closure workflows. Docs-only
+   push starts documentation CI but is ignored by production CI; use existing
+   workflow_dispatch at the exact closure head. No dispatch connector is exposed
+   currently: owner Actions dispatch is required unless a supported authorized
+   capability becomes available. Never alter triggers or add dummy executable edits.
+   Observe startup and stop for notification; final CLOSED requires both results.
+
+#### Future closure metadata allowlist — fifteen existing paths
+
+Only these paths may receive necessary current status/provenance updates after the
+read-only audit and separate closure selection:
+
+- `doc/README.md`
+- `doc/governance/DOCUMENT_REGISTER.md`
+- `doc/governance/DOCUMENTATION_VALIDATION.md`
+- `doc/database/README.md`
+- `doc/database/DATABASE_ARCHITECTURE.md`
+- `doc/database/SCHEMA_OWNERSHIP.md`
+- `doc/database/FLYWAY_POLICY.md`
+- `doc/api/README.md`
+- `doc/domain/README.md`
+- `doc/modules/README.md`
+- `doc/architecture/README.md`
+- `doc/architecture/CROSS_MODULE_CONTRACTS.md`
+- `doc/architecture/BOUNDED_CONTEXT_MAP.md`
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `doc/model-remediation/RECONCILIATION.md`
+
+This is an exhaustive maximum allowlist, not an instruction to edit every file.
+Create no repository file. DATA_DICTIONARY.md and its ownership JSON remain exact
+reviewed generation inputs/content; all scripts/workflows/manifest/API snapshot,
+individual module docs/permanent catalogue, docs/**, source/tests/resources/SQL/POM,
+ops and historical physical evidence are excluded. Preserve every 57-HMR identity,
+123 subjects and 0.6.0-SNAPSHOT. No release/tag, version, deployment, import, business
+approval, new physical campaign or P3 work is admitted.
+
+#### This supporting publication
+
+Exact message: `docs(roadmap): revise P2 canonical governance closure preflight`.
+Only this roadmap and RECONCILIATION.md change now; record HPR-P2-006 verified completion
+and renewed preflight disposition. HPR-P2-013 remains PENDING; P2 OPEN/P3 DEFERRED.
+Validate canonical links/status, offline OpenAPI, two-path/excluded-blob scope,
+57-row/123-subject/version preservation and diff checks. Publish against fresh expected
+main; verify immutable parent/tree/files and documentation CI startup, then STOP.
+No full production dispatch is needed for this planning commit; it changes no executable
+or dictionary inputs and does not claim a new physical comparison.
 
 ### HPR-P2-006 Stage B implementation — 2026-10-09
 

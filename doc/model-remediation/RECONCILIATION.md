@@ -2,7 +2,7 @@
 
 ## Status
 
-CURRENT — all 57 reconciled HMR implementations COMPLETED; permanent 123-subject semantic transfer complete. P2 is OPEN after the independent audit at c7d580cc7988f069bb939eb682664200e043c9bf failed Checks 9–11; HPR-P2-005 API documentation correction is COMPLETED after exact-head Documentation Validation #131 passed; HPR-P2-006 Stage A #133/#607 passed and artifact was reviewed; Stage B physical dictionary/ownership/Flyway correction is implemented and IN PROGRESS pending publication documentation/full CI and final dictionary comparison; HPR-P2-013 re-verification remains pending. Prior #127/#606 success remains historical verified evidence. P3 remains DEFERRED.
+CURRENT — all 57 reconciled HMR implementations COMPLETED; permanent 123-subject semantic transfer complete. P2 is OPEN after the independent audit at c7d580cc7988f069bb939eb682664200e043c9bf failed Checks 9–11; HPR-P2-005 API documentation correction is COMPLETED after exact-head Documentation Validation #131 passed; HPR-P2-006 is COMPLETED after Stage B Documentation #134 and Production #608 passed with integrated dictionary comparison true and zero unresolved owners; HPR-P2-013 re-verification remains pending. Prior #127/#606 success remains historical verified evidence. P3 remains DEFERRED.
 
 ## Historical HPR-P2-007 Verification Baseline
 
@@ -6930,3 +6930,24 @@ exact-head workflows and final integrated dictionary comparison. HPR-P2-013 PEND
 P2 OPEN/P3 DEFERRED. All 57 HMR completions, 123 subjects, historical/P1 provenance
 and version 0.6.0-SNAPSHOT remain. Next verifies publication gates before any closure
 preflight; stop after CI startup for notification.
+
+## HPR-P2-006 verification and renewed closure preflight — 2026-10-09
+
+Main `1bc3c1bba2d08a0b493e5ece43e834e8d56d04f0` remained unchanged. Exact-head
+Documentation #134 and Production #608 PASSED. Collection/final comparison reports
+reviewed_dictionary_checked=true, 482 relations, zero unresolved owners and unchanged
+139-migration/470-JPA source bundle. HPR-P2-006 is COMPLETED. GitHub retains the fresh
+schema artifact ID 11615823318; this review inspected CI summary/steps and artifact
+metadata, not a second archive download. Stage A archive/content review remains valid.
+
+The [renewed bounded preflight](../roadmap/ULTIMATE_ROADMAP.md#hpr-p2-006-verification-and-renewed-hpr-p2-013-preflight--2026-10-09)
+controls historical closure envelopes. Only the two execution memories change now.
+Next after documentation CI selects read-only twelve-check re-verification; all twelve
+must be VERIFIED before a separately selected fifteen-path maximum metadata closure
+patch. Exact closure message and future documentation/full CI gate remain mandatory;
+production dispatch must use the exact closure head. No dummy edits or premature
+CLOSED disposition. HPR-P2-013 PENDING; P2 OPEN/P3 DEFERRED.
+
+All 57 completed HMR identities including HMR-080, 123 semantic subjects, original
+P1/generation applicability and 0.6.0-SNAPSHOT remain. No dictionary/owner-policy,
+source/test/configuration/SQL, deployment/import/version/release or P3 change.

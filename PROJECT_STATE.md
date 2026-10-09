@@ -1,36 +1,43 @@
 # HidraAPI / HyFlo — Project State Handoff
 
-**Captured:** 2026-09-22. **Release state refreshed:** 2026-09-29. **Canonical integration branch:** [main](https://github.com/CHOUABBIA-AMINE/HidraAPI/tree/main). **Current release-state baseline before this documentation change:** [63f3f60974ce57eb8cd5e42910397615195624fb](https://github.com/CHOUABBIA-AMINE/HidraAPI/commit/63f3f60974ce57eb8cd5e42910397615195624fb). Older workstream sections remain dated handoff evidence unless explicitly refreshed below. This file is a non-secret handoff, not an assertion about future PR/branch status, live deployments or an authorization to migrate data.
+**Captured:** 2026-09-22. **Release state refreshed:** 2026-10-09. **Canonical integration branch:** [main](https://github.com/CHOUABBIA-AMINE/HidraAPI/tree/main). **Current release-state baseline before this change:** [045f062f782b0f5240f255853db2e9025e69d631](https://github.com/CHOUABBIA-AMINE/HidraAPI/commit/045f062f782b0f5240f255853db2e9025e69d631). Older workstream sections remain dated handoff evidence unless explicitly refreshed below. This file is a non-secret handoff, not an assertion about future PR/branch status, live deployments or an authorization to migrate data.
 
-**Current release verification — 2026-10-09:** HPR-REL-001 is COMPLETED; the `0.6.0`
-release-alignment candidate is `09bf1cbf82c20f19c50ebb1ff9e27047c7f34856`, tree
-`d46f669bda1bf74e2fe35ede3d57aa554d0c1919`, prepared from main
-`ac6cbb4b1cd584b0c780dd208543f41ebe326e06`.
-POM is `0.6.0`; Documentation #138 / run 37936829457 and full HidraAPI CI #610 /
-run 37936829442 both PASSED on the exact candidate SHA. It is READY FOR AUTHORIZED
-PUBLICATION. Last formal release is
-still `v0.5.0` at `492d9916369a58e60c1a437647411e7c5a523990`. No `v0.6.0` tag,
-GitHub Release or deployment is created by this preparation. This current record
-supersedes the dated release/development-state claims in section 0 below.
-Older workstream deliverables and selection statements remain dated handoff
-evidence; current platform execution is governed by the
+**Current release/development state — 2026-10-09:** last formal release is
+[v0.6.0 / HidraAPI v0.6.0](https://github.com/CHOUABBIA-AMINE/HidraAPI/releases/tag/v0.6.0),
+GitHub Release ID 407972853, published by owner at 2026-10-09T14:02:18Z.
+GitHub reports latest, non-draft and non-prerelease. The lightweight/unsigned
+v0.6.0 tag directly resolves to release-alignment commit
+`09bf1cbf82c20f19c50ebb1ff9e27047c7f34856`, tree
+`d46f669bda1bf74e2fe35ede3d57aa554d0c1919`; its POM is 0.6.0. Documentation #138
+(run 37936829457) and full HidraAPI CI #610 (run 37936829442) PASSED on that
+exact release SHA. No signed annotated tag or production deployment is claimed.
+
+HPR-REL-001 is COMPLETED. The supporting readiness record
+`045f062f782b0f5240f255853db2e9025e69d631` passed Documentation #139
+(run 37938799294); it is not the release tag target. The semantic milestone
+anchor remains P2 closure `a8905e32289a583f47b831e0381783e556ae0c8d`, verified by
+Documentation #136 and production #609. P0/P1/P2 remain CLOSED within documented
+evidence scope; 57 HMR completions, 123 permanent subjects and P3 DEFERRED remain.
+
+**Current development line:** `0.7.0-SNAPSHOT`, selected by the owner under
+HPR-REL-002 / `chore(release): start 0.7.0 development` after formal release
+existence was verified. Only the POM project version changes; dependencies,
+features, API metadata v1 and schema remain unchanged. The development transition
+commit is the commit carrying this record and POM 0.7.0-SNAPSHOT; pin its real
+SHA after publication during exact-head verification. HPR-REL-002 is IN PROGRESS
+pending both documentation and full HidraAPI CI on the transition SHA. Release
+CI #610 is not verification of the new development commit.
+
+Next selected stage: verify those transition CI gates after startup and owner
+Next/failure notification. No P3, new release, deployment or import is selected.
+Production promotion requires its own approved change and controlled release
+workflow. No new physical exercise, data acceptance or owner-policy approval is
+inferred from release publication or the development-version transition.
+
+This current record supersedes the dated release/development-state claims in
+section 0 below. Older workstream deliverables remain dated handoff evidence;
+current execution is governed by the
 [Ultimate Roadmap](doc/roadmap/ULTIMATE_ROADMAP.md).
-
-The semantic milestone anchor is P2 closure
-`a8905e32289a583f47b831e0381783e556ae0c8d`, verified by Documentation #136 and
-full HidraAPI CI #609. P0/P1/P2 are closed within their documented evidence scope;
-all 57 reconciled HMR implementations and 123 permanent semantic subjects remain.
-P3 is DEFERRED. Candidate verification uses #138/#610 independently of prior closure CI.
-
-No next executable stage is automatically selected. Tagging/publication require
-separate explicit authorization under AGENTS.md §19 and must target verified
-release-alignment SHA `09bf1cbf82c20f19c50ebb1ff9e27047c7f34856`. The documentation
-verification record is not a replacement tag target or a claim of formal release.
-The intended subsequent development line is `0.7.0-SNAPSHOT`; do not perform that
-transition until the formal release exists or the owner explicitly directs it.
-Production promotion additionally requires its own approved change and controlled
-release workflow. No data import, new physical exercise or owner-policy approval
-is inferred from this release candidate.
 
 Before resuming, read [AGENTS.md](AGENTS.md), the relevant module/workstream roadmap, [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), [coding policy](docs/policy/Coding-policy.md), and [ADR index](docs/adr/README.md). Recheck current main, PR and CI state rather than assuming this snapshot remains current.
 

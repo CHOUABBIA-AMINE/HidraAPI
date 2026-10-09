@@ -1,9 +1,9 @@
 # HidraAPI Version History
 
-**Current verification — 2026-10-09:** `0.6.0` release-alignment candidate
-`09bf1cbf82c20f19c50ebb1ff9e27047c7f34856` is READY FOR AUTHORIZED PUBLICATION;
-Documentation #138 and full HidraAPI CI #610 PASSED on that exact SHA.
-Last formal release remains `v0.5.0`. No `v0.6.0` tag or GitHub Release exists.
+**Current release/development state — 2026-10-09:** `v0.6.0` is the published
+latest formal release at `09bf1cbf82c20f19c50ebb1ff9e27047c7f34856`, verified by
+Documentation #138 and full HidraAPI CI #610. Main advances to `0.7.0-SNAPSHOT`
+under HPR-REL-002; exact transition verification remains PENDING.
 
 ## 1. Purpose
 
@@ -78,6 +78,7 @@ architecture/capability closures rather than raw commit count.
 | `0.3.0` | `7b24dc122e52dd0c5471307e3611f2a3d999ae7d` | 2026-09-15 — AUTH-030 authentication gap closure | Dynamic LOCAL + LDAP/AD + OIDC routing; persistent LOCAL credentials; unified Hidra principal, session and JWT contracts; safe administrator bootstrap; authorization ownership; secret/architecture guardrails; deployment runbook and verified authentication closure. |
 | `0.4.0` | `be3fefdd86094f2f2645a737c1d9375e7daff7b0` | 2026-09-29 — forensic remediation closure | Repository-wide architectural hardening: dead event/orphan removal, domain invariant enforcement, deliberate domain/JPA simplification, generated boundary mapping, cross-module contract repairs, REST/domain leakage remediation, and same-module referential integrity enforcement. |
 | **`0.5.0`** | **`4cadc132ce4cbb9d2aa075eaaf4f3dfeb69cf2dc`** | **2026-09-29 — ORG-033 operational-scope correction closure** | Canonical operational-scope registry; multi-scope responsibilities; authoritative owner resolution; Identity authorization + Workflow + Audit governance; concurrency protection; canonical REST/OpenAPI; legacy scope-schema retirement; and issue #130 end-to-end acceptance closure. |
+| **`0.6.0`** | **`09bf1cbf82c20f19c50ebb1ff9e27047c7f34856`** | **2026-10-09 — formal v0.6.0 release; semantic milestone anchor a8905e32289a583f47b831e0381783e556ae0c8d** | P0 security/audit closure, P1 production-readiness/survivability controls within retained evidence scope, P2 canonical governance/API/database documentation and all 57 reconciled HMR implementations; permanent 123-subject catalogue; exact release CI #610 passed. |
 
 ## 4. Interpretation of historical version labels
 
@@ -97,7 +98,7 @@ unless such tags actually exist.
 The last formally released repository baseline is:
 
 ```text
-0.5.0
+0.6.0
 ```
 
 The logical reconstructed progression is:
@@ -118,6 +119,8 @@ The logical reconstructed progression is:
 0.4.0
     ↓
 0.5.0
+    ↓
+0.6.0
 ```
 
 The project remains pre-`1.0.0`: controlled data provisioning and other future product work remain
@@ -125,8 +128,10 @@ outside the completed release milestones documented here.
 
 ## 6. Release tagging rule
 
-The hashes in the table are **milestone traceability anchors**. A Git release tag should point to a
-commit whose POM contains the matching release version.
+The historical rows through 0.5.0 contain **milestone traceability anchors**.
+The 0.6.0 row records its actual formal release-alignment commit and identifies
+the semantic milestone separately. A Git release tag must point to a commit
+whose POM contains the matching release version.
 
 Therefore `v0.5.0` must **not** be retroactively placed on
 `4cadc132ce4cbb9d2aa075eaaf4f3dfeb69cf2dc`, because that historical milestone commit still
@@ -164,20 +169,21 @@ development should advance to:
 That development-version transition should be performed as part of the formal release procedure,
 not pre-emptively in this baseline-alignment change.
 
-## 9. Verified 0.6.0 release candidate — 2026-10-09
+## 9. Published 0.6.0 platform release — 2026-10-09
 
-| Field | Verified candidate state |
+| Field | Published release state |
 |---|---|
-| Intended release | `0.6.0` — pre-1.0 minor architecture and stabilization milestone |
+| Formal release | `0.6.0` — pre-1.0 minor architecture and stabilization milestone |
 | Task / exact commit message | HPR-REL-001 / `chore(release): prepare 0.6.0 platform milestone` |
 | Semantic milestone anchor | `a8905e32289a583f47b831e0381783e556ae0c8d` — renewed P2 canonical-governance closure |
 | Verified milestone gates | Documentation #136 / run 37932486353 and full HidraAPI CI #609 / run 37933120029, both successful on the milestone anchor |
 | Preparation source parent | `ac6cbb4b1cd584b0c780dd208543f41ebe326e06` — verified P2 closure evidence record; Documentation #137 / run 37934631329 successful |
 | Release-alignment commit | `09bf1cbf82c20f19c50ebb1ff9e27047c7f34856`, tree `d46f669bda1bf74e2fe35ede3d57aa554d0c1919`; POM 0.6.0 |
-| Candidate verification | PASSED — Documentation #138 / run 37936829457 and full HidraAPI CI #610 / run 37936829442, both successful on the exact alignment SHA |
-| Tag / GitHub Release | NOT CREATED; future `v0.6.0` requires separate explicit authorization and must target the verified alignment SHA above |
-| Last formal release | `v0.5.0`, release commit `492d9916369a58e60c1a437647411e7c5a523990` |
-| Next development line | Intended `0.7.0-SNAPSHOT`, only after formal release exists or separately directed by the owner |
+| Release verification | PASSED — Documentation #138 / run 37936829457 and full HidraAPI CI #610 / run 37936829442, both successful on the exact alignment SHA |
+| Tag / GitHub Release | `v0.6.0` / HidraAPI v0.6.0, ID 407972853; published by owner 2026-10-09T14:02:18Z, latest, non-draft, non-prerelease |
+| Tag form | Lightweight/unsigned ref, directly targeting the release-alignment commit; no signed annotated tag is claimed |
+| Last formal release | `v0.6.0`, release commit `09bf1cbf82c20f19c50ebb1ff9e27047c7f34856`; previous formal release v0.5.0 remains historical |
+| Current development line | `0.7.0-SNAPSHOT` transition under HPR-REL-002; exact transition CI PENDING |
 
 The coherent milestone comprises the completed P0 security/audit closure, P1
 production-readiness and survivability controls with their retained evidence scope,
@@ -196,11 +202,12 @@ policy approval or deployed autonomous AI/actuation.
 
 API metadata remains `v1`; the Maven release version is a separate version line.
 No API snapshot, schema, migration, dependency or feature change is included.
-Never tag the milestone anchor: its POM contains 0.6.0-SNAPSHOT. The eventual tag
-must resolve to the exact successfully verified release-alignment commit containing
-POM 0.6.0. Record the actual tag form and release date only after they exist.
+The milestone anchor contains POM 0.6.0-SNAPSHOT and is not the tag target.
+The actual v0.6.0 tag resolves to the successfully verified alignment commit
+containing POM 0.6.0. Preserve this published tag; never move it to the development
+transition or supporting evidence-record commit.
 
-HPR-REL-001 preparation is COMPLETED; the formal release remains unpublished.
+HPR-REL-001 preparation is COMPLETED; the formal release is published.
 CI #610's Java 21 production job passed clean verify, generated OpenAPI identity
 and canonical equality, backward compatibility, current migrated dictionary
 comparison and retained P1 evidence/operations gates. Its dictionary summary
@@ -208,5 +215,19 @@ reports 139 migrations, 470 JPA mappings, 482 relations, reviewed dictionary
 checked true and zero unresolved owners. The exact-SHA OpenAPI and schema artifacts
 were retained. Artifact metadata and CI logs were inspected; artifact archives
 and per-class execution/skip reports were not independently re-inspected here.
-This evidence-record commit does not replace the verified release-alignment SHA
-as the future tag target or assert a new full production run on the record SHA.
+The release/development record does not replace the verified release-alignment SHA
+as the tag target or infer production deployment from publication.
+
+## 10. Post-release development transition — 2026-10-09
+
+The owner selected HPR-REL-002 after the real tag and GitHub Release were verified:
+`chore(release): start 0.7.0 development`. Only the POM project version changes
+from 0.6.0 to 0.7.0-SNAPSHOT; no dependencies/features/schema/API change is included.
+The transition commit is the commit carrying this record and POM 0.7.0-SNAPSHOT;
+pin its actual SHA during subsequent exact-head verification. Both documentation
+and full HidraAPI CI are required on that SHA; #610 validates the formal release,
+not the new snapshot. HPR-REL-002 remains IN PROGRESS until both gates pass.
+
+[Published v0.6.0 release](https://github.com/CHOUABBIA-AMINE/HidraAPI/releases/tag/v0.6.0).
+P3 remains DEFERRED. Production promotion, private-data imports, owner-policy
+approvals and new physical campaigns are separate actions.

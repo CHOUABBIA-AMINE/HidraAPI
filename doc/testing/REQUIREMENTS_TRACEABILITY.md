@@ -30,11 +30,11 @@ labelled as newly passing. All Testcontainers classes can skip without Docker.
 | P0 security/audit boundaries | [Security architecture](../security/SECURITY_ARCHITECTURE.md), [HidraOperationalWorkbenchHttpExposureTest](../../src/test/java/dz/sh/hidra/platform/workbench/HidraOperationalWorkbenchHttpExposureTest.java), [HidraRouteAuthorizationInterceptorTest](../../src/test/java/dz/sh/hidra/platform/permissions/HidraRouteAuthorizationInterceptorTest.java) | Specific exposure/permission assertions, not every route or imported actor's authenticity |
 | P1 runtime/PostgreSQL/backup/release/observability/maintenance | [production CI](../../.github/workflows/ci.yml), [closure validator](../../.github/scripts/validate_p1_closure.py), [P1 exercise](../operations/P1_SURVIVABILITY_EXERCISE_EVIDENCE_2026-10-06.md) | Artifact validation versus operator-supplied physical exercise at the historical deployment/schema |
 | P2 architecture/module boundaries | [Architecture Testing](ARCHITECTURE_TESTING.md), [24 modules](../modules/README.md) | Classified dependency/source/mapper scope, not universal semantics |
-| P2 API generation/compatibility | [API Testing](API_TESTING.md), [production CI](../../.github/workflows/ci.yml) | Generated-current/base supported comparison; older canonical snapshot not refreshed |
+| P2 API generation/compatibility | [API Testing](API_TESTING.md), [production CI](../../.github/workflows/ci.yml) | Generated-current/base supported compatibility; HPR-P2-012 snapshot refresh and strict runtime equality |
 | P2 database/reference integrity | [Database Testing](DATABASE_TESTING.md), [InternalReferenceIntegrityMigrationTest](../../src/test/java/dz/sh/hidra/InternalReferenceIntegrityMigrationTest.java) | Full migration validation and selected SQL/JPA fixtures remain distinct |
 | P2 semantic remediation/transfer | [HMR evidence](#hmr-evidence-matrix), [permanent decisions](../domain/SEMANTIC_DECISIONS.md) | E1 cumulative CI; historical review count is not case count |
 | P2 data governance | [Data governance](../data/README.md) | Documents approved infrastructure controls and explicit business/import unknowns |
-| Current documentation gate | [documentation CI](../../.github/workflows/docs.yml) | UTF-8/nonempty/conflicts only; later drift/closure gates pending |
+| Current documentation gate | [documentation CI](../../.github/workflows/docs.yml) | Reviewed inventory/metadata/local links/index/module/P2 and snapshot checks; final closure remains pending |
 
 ## Module evidence navigation
 
@@ -146,5 +146,7 @@ performance/OT safety acceptance, universal multi-owner end-to-end behavior and
 populated production import approval remain NOT ESTABLISHED by this matrix. Actual
 requirement/case/result/exception provenance is required for any later campaign.
 No source test or historical CI result is silently promoted to new deployment or
-physical evidence. HPR-P2-012 enforcement and HPR-P2-013 closure remain pending;
+physical evidence. HPR-P2-012 enforcement is implemented; HPR-P2-013 closure remains pending;
 this task creates no new tests, policies, migration, importer or P2 closure.
+
+HPR-P2-012 control applicability: parent `508337351eef03b82e2c6078a7c8523013efd063`, 2026-10-09. [Validation guide](../governance/DOCUMENTATION_VALIDATION.md) distinguishes actual Python checks/retained-artifact equality, the blocked current Maven attempt and pending new runtime CI. All 57 HMR identities/evidence rows and 24 module counts retain their HPR-P2-011 scope.

@@ -25,7 +25,7 @@ the ordinary Surefire selection; there is no separately configured integration p
 | Full application context | [HidraApplicationTests](../../src/test/java/dz/sh/hidra/HidraApplicationTests.java) | Context startup, Flyway and JPA validation; not all business use cases |
 | Generated contract/compatibility | [production CI](../../.github/workflows/ci.yml) | Runtime OpenAPI/security assertions and supported comparison rules |
 | Operational artifacts/procedures | [production CI](../../.github/workflows/ci.yml) and [P1 exercise](../operations/P1_SURVIVABILITY_EXERCISE_EVIDENCE_2026-10-06.md) | Static artifact checks differ from retained operator/physical evidence |
-| Canonical documentation | [documentation CI](../../.github/workflows/docs.yml) | UTF-8/nonempty/conflict checks; link/status/index drift is later scope |
+| Canonical documentation | [documentation CI](../../.github/workflows/docs.yml) | Reviewed inventory/metadata/local-link/index/module/P2 and deterministic snapshot checks; runtime equality runs in production CI |
 
 Static source inventory at this parent: 324 test-tree Java files, 323 filenames ending
 Test.java/Tests.java and one OrganizationMandatoryReferenceMigrationSupport helper.
@@ -76,3 +76,7 @@ Coverage thresholds, mutation/performance gates, complete endpoint/filter-chain 
 real multi-owner end-to-end campaigns require their own admitted scope/evidence.
 They are NOT ESTABLISHED by inventory or prior CI success. No new test runner,
 report-upload step, benchmark or policy gate is implemented here.
+
+## HPR-P2-012 validation update
+
+Source parent `508337351eef03b82e2c6078a7c8523013efd063`, checked 2026-10-09. [Validation guide](../governance/DOCUMENTATION_VALIDATION.md) records the new Python suites and CI gates. The original Java test inventory/results retain HPR-P2-011 applicability. Current clean verify was attempted through Bash and blocked before compilation by Boot-parent/Maven Central DNS resolution; Java 17 is installed. New runtime CI remains pending after publication.

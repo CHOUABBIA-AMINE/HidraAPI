@@ -52,6 +52,16 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Test canonical documentation validators
+        run: |
+          python3 .github/scripts/test_validate_docs.py
+          python3 .github/scripts/test_validate_openapi_snapshot.py
+
+      - name: Validate canonical documentation and OpenAPI snapshot
+        run: |
+          python3 .github/scripts/validate_docs.py
+          python3 .github/scripts/validate_openapi_snapshot.py
+
       - name: Validate P1 survivability closure evidence
         shell: bash
         run: python3 .github/scripts/validate_p1_closure.py
@@ -161,6 +171,12 @@ jobs:
           payload['x-hidra-ci-source-sha'] = '${{ github.sha }}'
           path.write_text(json.dumps(payload, indent=2, sort_keys=True) + '\n', encoding='utf-8')
           PY
+
+      - name: Enforce canonical OpenAPI snapshot equality
+        run: >-
+          python3 .github/scripts/validate_openapi_snapshot.py
+          --generated target/openapi/hidra-api.json
+          --generated-source-sha "${{ github.sha }}"
 
       - name: Resolve OpenAPI compatibility base
         id: openapi-base

@@ -50,7 +50,7 @@ Schema compatibility rule, every authentication-policy change or HTTP behavior.
 Current output is uploaded as hidra-api-openapi-<SHA>, retained 30 days by the workflow.
 An artifact name/source SHA supplies provenance; it does not approve operational data.
 
-## Canonical snapshot and documentation boundary
+## Historical HPR-P2-011 snapshot/documentation boundary
 
 [OpenAPI governance](../api/OPENAPI_GOVERNANCE.md) and
 [versioned snapshot](../api/openapi.yaml) retain HPR-P2-005 provenance. Their older
@@ -60,9 +60,13 @@ not regenerate either contract or assert snapshot equality. The [documentation C
 Markdown UTF-8/nonempty/conflicts. It does not enforce link/status/index drift or
 canonical-vs-generated OpenAPI equality; those controls belong to HPR-P2-012.
 
+## HPR-P2-012 implemented drift controls
+
+Source parent `508337351eef03b82e2c6078a7c8523013efd063`, checked 2026-10-09. The snapshot now derives from verified CI #604 (244 paths/263 operations/231 schemas). [Validation guide](../governance/DOCUMENTATION_VALIDATION.md) records offline structural/serialization/provenance and exact production runtime equality, removing only the validated source-SHA field. Compatibility remains distinct. Equality against the retained successful generator was checked locally; new exact-head runtime generation is a pending CI result, not a claimed local Maven pass. The preceding section retains historical HPR-P2-011 applicability.
+
 ## TARGET and NOT ESTABLISHED
 
 Complete route/filter-chain coverage, universal error behavior, production endpoint
-acceptance and canonical snapshot equality with current generated output are
-NOT ESTABLISHED here. No mock fixture or generated schema proves every runtime
+acceptance and new exact-head runtime acceptance are
+NOT ESTABLISHED by the documented controls. No mock fixture or generated schema proves every runtime
 authorization decision. Further enforcement needs its own admitted scope.

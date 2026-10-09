@@ -253,7 +253,7 @@ P1 is **CLOSED** only when this closure SHA passes the repository's full exact-h
 | HPR-P2-009 | COMPLETED — 123 permanent subject decisions transferred with current source/test/migration evidence; all 24 module inventories and domain/index metadata refreshed; 37-path scope and 83-file Markdown/link checks passed; exact-head documentation CI follows publication | Semantic Remediation | Doc | Transfer permanent semantic decisions from legacy review/roadmaps into `doc/domain/` and `doc/modules/`, then preserve legacy files as execution history. | `docs(model-remediation): canonicalize semantic decisions` | HPR-P2-008 |
 | HPR-P2-010 | COMPLETED — five-document governance baseline established; 24-module ownership, approved infrastructure retention, source-backed provenance and TARGET legacy admission separated from unknown business approvals; nine-path and 88-file Markdown checks passed; exact-head documentation CI follows publication | Data Governance | Doc | Create data governance, retention/archival, provenance and legacy-data migration documents without inventing retention values. | `docs(data): establish data governance baseline` | HPR-P2-001 |
 | HPR-P2-011 | COMPLETED — six source-backed verification documents established; all 24 module roots and 57 closed HMR obligations linked; ten-path and 94-file Markdown checks passed; test presence, historical CI and uninspected execution/skip evidence remain distinct; exact-head documentation CI follows publication | Testing | Doc | Create test strategy, architecture testing, database testing, API testing and requirements traceability documents tied to executable evidence. | `docs(testing): establish verification documentation` | HPR-P2-002..006 |
-| HPR-P2-012 | PENDING | Documentation CI | Infra | Add documentation validation for canonical links/status/index drift and deterministic OpenAPI contract checks. | `ci(docs): validate canonical documentation` | HPR-P2-001..011 |
+| HPR-P2-012 | COMPLETED — maintained canonical metadata/link/index/module/P2 and deterministic OpenAPI validators/tests wired into both CI workflows; snapshot refreshed from verified CI #604 artifact; strict fresh-runtime equality added; local Maven blocked before compilation by Boot-parent/Central DNS; exact-head CI follows publication | Documentation CI | Infra | Add documentation validation for canonical links/status/index drift and deterministic OpenAPI contract checks. | `ci(docs): validate canonical documentation` | HPR-P2-001..011 |
 | HPR-P2-013 | PENDING | Governance | Doc | Verify all 24 module docs, canonical indexes, API/database/domain docs and legacy supersession links; close P2. | `docs(roadmap): close P2 canonical governance` | HPR-P2-001..012 |
 
 ### Phase P3 — Deferred Industrial Scale / Future Capabilities
@@ -273,15 +273,15 @@ P1 is **CLOSED** only when this closure SHA passes the repository's full exact-h
 
 P0 security/audit verification is closed. P1 production infrastructure and survivability verification is closed subject to successful exact-head full CI on the HPR-P1-012 closure SHA.
 
-Current next task after accepted HPR-P2-011 verification documentation and its documentation gate:
+Current next task after accepted HPR-P2-012 validation implementation and both exact-head gates:
 
-`HPR-P2-012 — ci(docs): validate canonical documentation`
+`HPR-P2-013 — docs(roadmap): close P2 canonical governance`
 
-A subsequent Next selects HPR-P2-012 preflight only after checking HPR-P2-011
-exact-head documentation CI. Recover current validation and contract evidence, then
-propose bounded canonical link/status/index drift and deterministic OpenAPI controls
-before implementation. HPR-P2-012/013 remain PENDING and P2 OPEN; final closure,
-business-policy/import approval and P3 are not selected by HPR-P2-011.
+A subsequent Next selects HPR-P2-013 preflight only after checking HPR-P2-012
+production and documentation CI. Reconcile all canonical indexes, module/domain/API/
+database/data/testing evidence and retained historical applicability before proposing
+bounded closure. HPR-P2-013 remains PENDING and P2 OPEN; no closure, business-policy
+approval, data import or P3 task is selected by HPR-P2-012.
 
 The historical P1 evidence-block parallel-work exception is no longer needed for sequencing because HPR-P1-029 is complete. P3 remains deferred until P2 closes and its own approved requirements exist.
 
@@ -7048,3 +7048,45 @@ workflow or snapshot was created/changed. Exact publication checks additionally
 require all other tracked blobs unchanged. Current source/artifact comparison,
 3,194-link read-only audit and supported old/generated compatibility results are
 recorded above; no Maven/runtime or physical execution is claimed.
+
+## HPR-P2-012 accepted execution — 2026-10-09
+
+The owner's Next accepts the complete twelve-part design and 21-path scope after
+preflight `508337351eef03b82e2c6078a7c8523013efd063`, tree
+`048cf9a026e60d5be286c5f60c114669df7b70a8`. Main is unchanged; Documentation
+Validation #123 (37900777368) PASSED. Production CI #604 remains PASSED at
+`617c2eec812e3a5734957ee9fa0360f6f5613032`. Retained artifact ZIP/member/source
+and all recorded digests were independently checked again before snapshot refresh.
+Exact implementation message: `ci(docs): validate canonical documentation`.
+No P2 closure, source/runtime policy changes, release or physical campaign selected.
+
+### HPR-P2-012 actual implementation checks — 2026-10-09
+
+Both maintained standard-library Python suites PASSED: 20 tests covering isolated
+positive estates/contracts and actual negative validation failures. The canonical
+validator PASSED for 95 documents, 3,215 relative links, 24 modules and 13 primary
+P2 rows. Offline snapshot integrity and retained CI #604 generated-object equality
+PASSED: 244 paths, 263 operations, 231 schemas. The unchanged compatibility checker
+PASSED against the preserved prior snapshot with no supported breaking changes.
+Workflow YAML parsed; all prior production steps, their order and job/trigger/service/
+permission/concurrency settings were preserved. Both workflows run the new tests and
+offline validators; production additionally requires fresh runtime snapshot equality.
+
+Local `./mvnw -B -q clean verify` could not start because the tracked wrapper is
+nonexecutable. The actual `bash ./mvnw -B -q clean verify` attempt FAILED before
+compilation: uncached Spring Boot parent 4.1.1 could not resolve because
+repo.maven.apache.org DNS failed. Only Java 17 is installed; Java 21 is required.
+No local Java/test/JPA/runtime success is claimed. Existing CI #604 remains historical
+generation evidence; new exact-head Java 21/PostgreSQL production CI is required.
+
+Implementation scope is exactly six new and fifteen existing admitted paths.
+Project version remains 0.6.0-SNAPSHOT. All executable source/test/resource/POM,
+published migrations, legacy and other documentation blobs remain unchanged;
+57 HMR register and 123 semantic-review subject identities are preserved.
+HPR-P2-012 implementation is recorded complete, with new CI results pending.
+HPR-P2-013 remains pending; P2 open, P3 deferred and physical evidence unestablished.
+Publication uses one expected-head update from
+`508337351eef03b82e2c6078a7c8523013efd063`, with exact message
+`ci(docs): validate canonical documentation`. Verify immutable tree/blobs and confirm
+both workflows start, then STOP without waiting for completion. A later Next checks
+both exact-head results before HPR-P2-013 preflight; it does not execute closure now.

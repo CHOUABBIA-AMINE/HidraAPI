@@ -43,5 +43,9 @@ current deployed-data/physical acceptance are NOT ESTABLISHED by this set. Prior
 [P1 exercise](../operations/P1_SURVIVABILITY_EXERCISE_EVIDENCE_2026-10-06.md) keeps its own
 deployed SHA, 82-migration applicability and operator-supplied distinctions. The
 current source has 139 migration versions; neither fixtures nor CI artifact validators
-supply new physical evidence for that schema. HPR-P2-012 documentation drift controls
-and HPR-P2-013 closure remain pending; P3 deferred and P2 open.
+supply new physical evidence for that schema. HPR-P2-012 documentation drift controls are implemented;
+HPR-P2-013 closure remains pending; P3 deferred and P2 open.
+
+## HPR-P2-012 control update
+
+Source parent `508337351eef03b82e2c6078a7c8523013efd063`, 2026-10-09. [Validation guide](../governance/DOCUMENTATION_VALIDATION.md) records the added suites/manifest/gates and verified generated snapshot refresh. Prior HPR-P2-011 test results remain historical; the current Maven clean-verify attempt blocked before compilation and new exact-head runtime CI is pending. No new per-class/physical execution result is invented.

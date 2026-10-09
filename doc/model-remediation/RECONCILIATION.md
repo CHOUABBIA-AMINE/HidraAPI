@@ -6416,3 +6416,45 @@ workflow or snapshot was created/changed. Exact publication checks additionally
 require all other tracked blobs unchanged. Current source/artifact comparison,
 3,194-link read-only audit and supported old/generated compatibility results are
 recorded above; no Maven/runtime or physical execution is claimed.
+
+## HPR-P2-012 accepted execution — 2026-10-09
+
+The owner's Next accepts the complete twelve-part design and 21-path scope after
+preflight `508337351eef03b82e2c6078a7c8523013efd063`, tree
+`048cf9a026e60d5be286c5f60c114669df7b70a8`. Main is unchanged; Documentation
+Validation #123 (37900777368) PASSED. Production CI #604 remains PASSED at
+`617c2eec812e3a5734957ee9fa0360f6f5613032`. Retained artifact ZIP/member/source
+and all recorded digests were independently checked again before snapshot refresh.
+Exact implementation message: `ci(docs): validate canonical documentation`.
+No P2 closure, source/runtime policy changes, release or physical campaign selected.
+
+### HPR-P2-012 actual implementation checks — 2026-10-09
+
+Both maintained standard-library Python suites PASSED: 20 tests covering isolated
+positive estates/contracts and actual negative validation failures. The canonical
+validator PASSED for 95 documents, 3,215 relative links, 24 modules and 13 primary
+P2 rows. Offline snapshot integrity and retained CI #604 generated-object equality
+PASSED: 244 paths, 263 operations, 231 schemas. The unchanged compatibility checker
+PASSED against the preserved prior snapshot with no supported breaking changes.
+Workflow YAML parsed; all prior production steps, their order and job/trigger/service/
+permission/concurrency settings were preserved. Both workflows run the new tests and
+offline validators; production additionally requires fresh runtime snapshot equality.
+
+Local `./mvnw -B -q clean verify` could not start because the tracked wrapper is
+nonexecutable. The actual `bash ./mvnw -B -q clean verify` attempt FAILED before
+compilation: uncached Spring Boot parent 4.1.1 could not resolve because
+repo.maven.apache.org DNS failed. Only Java 17 is installed; Java 21 is required.
+No local Java/test/JPA/runtime success is claimed. Existing CI #604 remains historical
+generation evidence; new exact-head Java 21/PostgreSQL production CI is required.
+
+Implementation scope is exactly six new and fifteen existing admitted paths.
+Project version remains 0.6.0-SNAPSHOT. All executable source/test/resource/POM,
+published migrations, legacy and other documentation blobs remain unchanged;
+57 HMR register and 123 semantic-review subject identities are preserved.
+HPR-P2-012 implementation is recorded complete, with new CI results pending.
+HPR-P2-013 remains pending; P2 open, P3 deferred and physical evidence unestablished.
+Publication uses one expected-head update from
+`508337351eef03b82e2c6078a7c8523013efd063`, with exact message
+`ci(docs): validate canonical documentation`. Verify immutable tree/blobs and confirm
+both workflows start, then STOP without waiting for completion. A later Next checks
+both exact-head results before HPR-P2-013 preflight; it does not execute closure now.

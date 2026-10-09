@@ -1,0 +1,870 @@
+{
+  "current_indexes": [
+    "doc/README.md",
+    "doc/governance/README.md",
+    "doc/domain/README.md",
+    "doc/modules/README.md",
+    "doc/architecture/README.md",
+    "doc/database/README.md",
+    "doc/api/README.md",
+    "doc/data/README.md",
+    "doc/testing/README.md"
+  ],
+  "documents": {
+    "doc/README.md": {
+      "metadata_from": [
+        "doc/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/api/API_CONVENTIONS.md": {
+      "metadata_from": [
+        "doc/api/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/api/API_OVERVIEW.md": {
+      "metadata_from": [
+        "doc/api/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/api/AUTHENTICATION_AUTHORIZATION.md": {
+      "metadata_from": [
+        "doc/api/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/api/ERROR_MODEL.md": {
+      "metadata_from": [
+        "doc/api/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/api/OPENAPI_GOVERNANCE.md": {
+      "metadata_from": [
+        "doc/api/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/api/README.md": {
+      "metadata_from": [
+        "doc/api/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/api/VERSIONING_COMPATIBILITY.md": {
+      "metadata_from": [
+        "doc/api/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/architecture/ARCHITECTURE_OVERVIEW.md": {
+      "metadata_from": [
+        "doc/architecture/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/architecture/BOUNDED_CONTEXT_MAP.md": {
+      "metadata_from": [
+        "doc/architecture/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/architecture/CROSS_MODULE_CONTRACTS.md": {
+      "metadata_from": [
+        "doc/architecture/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/architecture/HEXAGONAL_ARCHITECTURE.md": {
+      "metadata_from": [
+        "doc/architecture/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/architecture/MODULE_BOUNDARIES.md": {
+      "metadata_from": [
+        "doc/architecture/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/architecture/README.md": {
+      "metadata_from": [
+        "doc/architecture/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/architecture/RUNTIME_ARCHITECTURE.md": {
+      "metadata_from": [
+        "doc/architecture/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "HISTORICAL"
+    },
+    "doc/architecture/SYSTEM_CONTEXT.md": {
+      "metadata_from": [
+        "doc/architecture/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/architecture/TECHNOLOGY_STACK.md": {
+      "metadata_from": [
+        "doc/architecture/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/data/DATA_GOVERNANCE.md": {
+      "metadata_from": [
+        "doc/data/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/data/DATA_PROVENANCE.md": {
+      "metadata_from": [
+        "doc/data/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/data/LEGACY_DATA_MIGRATION.md": {
+      "metadata_from": [
+        "doc/data/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/data/README.md": {
+      "metadata_from": [
+        "doc/data/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/data/RETENTION_ARCHIVAL.md": {
+      "metadata_from": [
+        "doc/data/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/database/BACKUP_PITR_IMPLEMENTATION.md": {
+      "metadata_from": [
+        "doc/database/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "HISTORICAL"
+    },
+    "doc/database/DATABASE_ARCHITECTURE.md": {
+      "metadata_from": [
+        "doc/database/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/database/DATABASE_OPERATIONS_RUNBOOK.md": {
+      "metadata_from": [
+        "doc/database/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "HISTORICAL"
+    },
+    "doc/database/DATA_DICTIONARY.md": {
+      "metadata_from": [
+        "doc/database/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/database/FLYWAY_POLICY.md": {
+      "metadata_from": [
+        "doc/database/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/database/POSTGRES_FAILOVER_IMPLEMENTATION.md": {
+      "metadata_from": [
+        "doc/database/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "HISTORICAL"
+    },
+    "doc/database/POSTGRES_HIGH_AVAILABILITY.md": {
+      "metadata_from": [
+        "doc/database/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "HISTORICAL"
+    },
+    "doc/database/README.md": {
+      "metadata_from": [
+        "doc/database/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/database/SCHEMA_OWNERSHIP.md": {
+      "metadata_from": [
+        "doc/database/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/domain/ALARM_INCIDENT_LEAK.md": {
+      "metadata_from": [
+        "doc/domain/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/domain/ASSETS_INTEGRITY.md": {
+      "metadata_from": [
+        "doc/domain/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/domain/DOMAIN_OWNERSHIP.md": {
+      "metadata_from": [
+        "doc/domain/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/domain/README.md": {
+      "metadata_from": [
+        "doc/domain/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/domain/SEMANTIC_DECISIONS.md": {
+      "metadata_from": [
+        "doc/domain/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/domain/SIMULATION_ANALYTICS_AI.md": {
+      "metadata_from": [
+        "doc/domain/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/domain/TOPOLOGY_TELEMETRY.md": {
+      "metadata_from": [
+        "doc/domain/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/domain/UBIQUITOUS_LANGUAGE.md": {
+      "metadata_from": [
+        "doc/domain/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/governance/DOCUMENTATION_STANDARD.md": {
+      "metadata_from": [
+        "doc/governance/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/governance/DOCUMENTATION_VALIDATION.md": {
+      "metadata_from": [
+        "doc/governance/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/governance/DOCUMENT_LIFECYCLE.md": {
+      "metadata_from": [
+        "doc/governance/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/governance/DOCUMENT_REGISTER.md": {
+      "metadata_from": [
+        "doc/governance/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/governance/DOCUMENT_STATUS_MODEL.md": {
+      "metadata_from": [
+        "doc/governance/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/governance/README.md": {
+      "metadata_from": [
+        "doc/governance/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/model-remediation/RECONCILIATION.md": {
+      "metadata_from": [
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/modules/README.md": {
+      "metadata_from": [
+        "doc/modules/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/modules/alarm.md": {
+      "metadata_from": [
+        "doc/modules/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/modules/analytics.md": {
+      "metadata_from": [
+        "doc/modules/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/modules/assets.md": {
+      "metadata_from": [
+        "doc/modules/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/modules/audit.md": {
+      "metadata_from": [
+        "doc/modules/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/modules/configuration.md": {
+      "metadata_from": [
+        "doc/modules/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/modules/custody.md": {
+      "metadata_from": [
+        "doc/modules/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/modules/documents.md": {
+      "metadata_from": [
+        "doc/modules/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/modules/hse.md": {
+      "metadata_from": [
+        "doc/modules/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/modules/identity.md": {
+      "metadata_from": [
+        "doc/modules/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/modules/incident.md": {
+      "metadata_from": [
+        "doc/modules/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/modules/integration.md": {
+      "metadata_from": [
+        "doc/modules/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/modules/integrity.md": {
+      "metadata_from": [
+        "doc/modules/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/modules/leakdetection.md": {
+      "metadata_from": [
+        "doc/modules/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/modules/monitoring.md": {
+      "metadata_from": [
+        "doc/modules/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/modules/notification.md": {
+      "metadata_from": [
+        "doc/modules/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/modules/organization.md": {
+      "metadata_from": [
+        "doc/modules/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/modules/party.md": {
+      "metadata_from": [
+        "doc/modules/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/modules/planning.md": {
+      "metadata_from": [
+        "doc/modules/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/modules/reporting.md": {
+      "metadata_from": [
+        "doc/modules/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/modules/risk.md": {
+      "metadata_from": [
+        "doc/modules/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/modules/simulation.md": {
+      "metadata_from": [
+        "doc/modules/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/modules/telemetry.md": {
+      "metadata_from": [
+        "doc/modules/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/modules/topology.md": {
+      "metadata_from": [
+        "doc/modules/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/modules/workflow.md": {
+      "metadata_from": [
+        "doc/modules/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/operations/APPLICATION_HIGH_AVAILABILITY.md": {
+      "metadata_from": [
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "LEGACY-P1"
+    },
+    "doc/operations/CI_CD_RELEASE_GUIDE.md": {
+      "metadata_from": [
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "LEGACY-P1"
+    },
+    "doc/operations/DEPLOYMENT_RUNBOOK.md": {
+      "metadata_from": [
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "LEGACY-P1"
+    },
+    "doc/operations/DISASTER_RECOVERY_OBJECTIVES.md": {
+      "metadata_from": [
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "LEGACY-P1"
+    },
+    "doc/operations/DISASTER_RECOVERY_RUNBOOK.md": {
+      "metadata_from": [
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "LEGACY-P1"
+    },
+    "doc/operations/ENVIRONMENT_CONFIGURATION.md": {
+      "metadata_from": [
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "LEGACY-P1"
+    },
+    "doc/operations/HIGH_AVAILABILITY_ARCHITECTURE.md": {
+      "metadata_from": [
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "LEGACY-P1"
+    },
+    "doc/operations/OBSERVABILITY_AND_SRE.md": {
+      "metadata_from": [
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "LEGACY-P1"
+    },
+    "doc/operations/P1_OWNER_APPROVED_VALUES.md": {
+      "metadata_from": [
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "LEGACY-P1"
+    },
+    "doc/operations/P1_SURVIVABILITY_EXERCISE_EVIDENCE_2026-10-06.md": {
+      "metadata_from": [
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "LEGACY-P1"
+    },
+    "doc/operations/PRODUCTION_INFRASTRUCTURE_STACK.md": {
+      "metadata_from": [
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "LEGACY-P1"
+    },
+    "doc/roadmap/ULTIMATE_ROADMAP.md": {
+      "metadata_from": [
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "ACTIVE"
+    },
+    "doc/security/INCIDENT_RESPONSE.md": {
+      "metadata_from": [
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/security/SECRETS_AND_CERTIFICATES.md": {
+      "metadata_from": [
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/security/SECURITY_ARCHITECTURE.md": {
+      "metadata_from": [
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/security/THREAT_MODEL.md": {
+      "metadata_from": [
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/security/TRUST_BOUNDARIES.md": {
+      "metadata_from": [
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/security/WORKBENCH_DATA_EXPOSURE.md": {
+      "metadata_from": [
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/testing/API_TESTING.md": {
+      "metadata_from": [
+        "doc/testing/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/testing/ARCHITECTURE_TESTING.md": {
+      "metadata_from": [
+        "doc/testing/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/testing/DATABASE_TESTING.md": {
+      "metadata_from": [
+        "doc/testing/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/testing/README.md": {
+      "metadata_from": [
+        "doc/testing/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/testing/REQUIREMENTS_TRACEABILITY.md": {
+      "metadata_from": [
+        "doc/testing/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
+    "doc/testing/TEST_STRATEGY.md": {
+      "metadata_from": [
+        "doc/testing/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    }
+  },
+  "format_version": 1,
+  "indexes": {
+    "doc/README.md": [
+      "doc/governance/README.md",
+      "doc/domain/README.md",
+      "doc/modules/README.md",
+      "doc/architecture/README.md",
+      "doc/database/README.md",
+      "doc/api/README.md",
+      "doc/data/README.md",
+      "doc/testing/README.md",
+      "doc/roadmap/ULTIMATE_ROADMAP.md",
+      "doc/governance/DOCUMENT_REGISTER.md",
+      "doc/model-remediation/RECONCILIATION.md",
+      "doc/domain/SEMANTIC_DECISIONS.md",
+      "doc/governance/DOCUMENTATION_VALIDATION.md"
+    ],
+    "doc/api/README.md": [
+      "doc/api/API_CONVENTIONS.md",
+      "doc/api/API_OVERVIEW.md",
+      "doc/api/AUTHENTICATION_AUTHORIZATION.md",
+      "doc/api/ERROR_MODEL.md",
+      "doc/api/OPENAPI_GOVERNANCE.md",
+      "doc/api/VERSIONING_COMPATIBILITY.md"
+    ],
+    "doc/architecture/README.md": [
+      "doc/architecture/ARCHITECTURE_OVERVIEW.md",
+      "doc/architecture/BOUNDED_CONTEXT_MAP.md",
+      "doc/architecture/CROSS_MODULE_CONTRACTS.md",
+      "doc/architecture/HEXAGONAL_ARCHITECTURE.md",
+      "doc/architecture/MODULE_BOUNDARIES.md",
+      "doc/architecture/RUNTIME_ARCHITECTURE.md",
+      "doc/architecture/SYSTEM_CONTEXT.md",
+      "doc/architecture/TECHNOLOGY_STACK.md"
+    ],
+    "doc/data/README.md": [
+      "doc/data/DATA_GOVERNANCE.md",
+      "doc/data/DATA_PROVENANCE.md",
+      "doc/data/LEGACY_DATA_MIGRATION.md",
+      "doc/data/RETENTION_ARCHIVAL.md"
+    ],
+    "doc/database/README.md": [
+      "doc/database/BACKUP_PITR_IMPLEMENTATION.md",
+      "doc/database/DATABASE_ARCHITECTURE.md",
+      "doc/database/DATABASE_OPERATIONS_RUNBOOK.md",
+      "doc/database/DATA_DICTIONARY.md",
+      "doc/database/FLYWAY_POLICY.md",
+      "doc/database/POSTGRES_FAILOVER_IMPLEMENTATION.md",
+      "doc/database/POSTGRES_HIGH_AVAILABILITY.md",
+      "doc/database/SCHEMA_OWNERSHIP.md"
+    ],
+    "doc/domain/README.md": [
+      "doc/domain/ALARM_INCIDENT_LEAK.md",
+      "doc/domain/ASSETS_INTEGRITY.md",
+      "doc/domain/DOMAIN_OWNERSHIP.md",
+      "doc/domain/SEMANTIC_DECISIONS.md",
+      "doc/domain/SIMULATION_ANALYTICS_AI.md",
+      "doc/domain/TOPOLOGY_TELEMETRY.md",
+      "doc/domain/UBIQUITOUS_LANGUAGE.md"
+    ],
+    "doc/governance/README.md": [
+      "doc/governance/DOCUMENTATION_STANDARD.md",
+      "doc/governance/DOCUMENTATION_VALIDATION.md",
+      "doc/governance/DOCUMENT_LIFECYCLE.md",
+      "doc/governance/DOCUMENT_REGISTER.md",
+      "doc/governance/DOCUMENT_STATUS_MODEL.md"
+    ],
+    "doc/modules/README.md": [
+      "doc/modules/alarm.md",
+      "doc/modules/analytics.md",
+      "doc/modules/assets.md",
+      "doc/modules/audit.md",
+      "doc/modules/configuration.md",
+      "doc/modules/custody.md",
+      "doc/modules/documents.md",
+      "doc/modules/hse.md",
+      "doc/modules/identity.md",
+      "doc/modules/incident.md",
+      "doc/modules/integration.md",
+      "doc/modules/integrity.md",
+      "doc/modules/leakdetection.md",
+      "doc/modules/monitoring.md",
+      "doc/modules/notification.md",
+      "doc/modules/organization.md",
+      "doc/modules/party.md",
+      "doc/modules/planning.md",
+      "doc/modules/reporting.md",
+      "doc/modules/risk.md",
+      "doc/modules/simulation.md",
+      "doc/modules/telemetry.md",
+      "doc/modules/topology.md",
+      "doc/modules/workflow.md"
+    ],
+    "doc/testing/README.md": [
+      "doc/testing/API_TESTING.md",
+      "doc/testing/ARCHITECTURE_TESTING.md",
+      "doc/testing/DATABASE_TESTING.md",
+      "doc/testing/REQUIREMENTS_TRACEABILITY.md",
+      "doc/testing/TEST_STRATEGY.md"
+    ]
+  },
+  "legacy_statuses": {
+    "doc/operations/APPLICATION_HIGH_AVAILABILITY.md": {
+      "line": "APPROVED TARGET \u2014 HPR-P1-002",
+      "rationale": "Preserved P1 stage/owner/procedure wording; its own applicability and later exercise evidence remain distinct. Not a new CURRENT or physical verification claim."
+    },
+    "doc/operations/CI_CD_RELEASE_GUIDE.md": {
+      "line": "CONTROLLED PIPELINE IMPLEMENTED / LIVE PRODUCTION-EQUIVALENT EXECUTION PENDING \u2014 HPR-P1-018",
+      "rationale": "Preserved P1 stage/owner/procedure wording; its own applicability and later exercise evidence remain distinct. Not a new CURRENT or physical verification claim."
+    },
+    "doc/operations/DEPLOYMENT_RUNBOOK.md": {
+      "line": "APPROVED PRODUCT-NEUTRAL PROCEDURE \u2014 HPR-P1-007",
+      "rationale": "Preserved P1 stage/owner/procedure wording; its own applicability and later exercise evidence remain distinct. Not a new CURRENT or physical verification claim."
+    },
+    "doc/operations/DISASTER_RECOVERY_OBJECTIVES.md": {
+      "line": "APPROVED TARGET \u2014 HPR-P1-004",
+      "rationale": "Preserved P1 stage/owner/procedure wording; its own applicability and later exercise evidence remain distinct. Not a new CURRENT or physical verification claim."
+    },
+    "doc/operations/DISASTER_RECOVERY_RUNBOOK.md": {
+      "line": "APPROVED PROCEDURE \u2014 HPR-P1-005",
+      "rationale": "Preserved P1 stage/owner/procedure wording; its own applicability and later exercise evidence remain distinct. Not a new CURRENT or physical verification claim."
+    },
+    "doc/operations/ENVIRONMENT_CONFIGURATION.md": {
+      "line": "CURRENT CONFIGURATION CONTRACT + APPROVED OPERATING REQUIREMENTS \u2014 HPR-P1-007",
+      "rationale": "Preserved P1 stage/owner/procedure wording; its own applicability and later exercise evidence remain distinct. Not a new CURRENT or physical verification claim."
+    },
+    "doc/operations/HIGH_AVAILABILITY_ARCHITECTURE.md": {
+      "line": "APPROVED TARGET ARCHITECTURE \u2014 HPR-P1-006",
+      "rationale": "Preserved P1 stage/owner/procedure wording; its own applicability and later exercise evidence remain distinct. Not a new CURRENT or physical verification claim."
+    },
+    "doc/operations/OBSERVABILITY_AND_SRE.md": {
+      "line": "OPERATING MODEL ESTABLISHED / P1 ALERTING IMPLEMENTED-PENDING-LIVE-EXERCISE \u2014 HPR-P1-010 + HPR-P1-019",
+      "rationale": "Preserved P1 stage/owner/procedure wording; its own applicability and later exercise evidence remain distinct. Not a new CURRENT or physical verification claim."
+    },
+    "doc/operations/P1_OWNER_APPROVED_VALUES.md": {
+      "line": "OWNER-APPROVED \u2014 2026-10-05",
+      "rationale": "Preserved P1 stage/owner/procedure wording; its own applicability and later exercise evidence remain distinct. Not a new CURRENT or physical verification claim."
+    },
+    "doc/operations/P1_SURVIVABILITY_EXERCISE_EVIDENCE_2026-10-06.md": {
+      "line": "COMPLETED \u2014 2026-10-06",
+      "rationale": "Preserved P1 stage/owner/procedure wording; its own applicability and later exercise evidence remain distinct. Not a new CURRENT or physical verification claim."
+    },
+    "doc/operations/PRODUCTION_INFRASTRUCTURE_STACK.md": {
+      "line": "OWNER-APPROVED PRODUCTION INFRASTRUCTURE BASELINE \u2014 HPR-P1-013",
+      "rationale": "Preserved P1 stage/owner/procedure wording; its own applicability and later exercise evidence remain distinct. Not a new CURRENT or physical verification claim."
+    }
+  },
+  "metadata_signals": {
+    "current_target_separation": "TARGET|DEFERRED",
+    "implementation_applicability": "baseline|applicability|source parent",
+    "owner_authority": "owner|authority|accountab",
+    "source_evidence": "source|evidence",
+    "unresolved_limits": "NOT ESTABLISHED|unresolved|unknown|unestablished",
+    "verification_point": "verif|checked|2026-\\d\\d-\\d\\d"
+  },
+  "module_source": "src/main/java/dz/sh/hidra/modules",
+  "modules": [
+    "alarm",
+    "analytics",
+    "assets",
+    "audit",
+    "configuration",
+    "custody",
+    "documents",
+    "hse",
+    "identity",
+    "incident",
+    "integration",
+    "integrity",
+    "leakdetection",
+    "monitoring",
+    "notification",
+    "organization",
+    "party",
+    "planning",
+    "reporting",
+    "risk",
+    "simulation",
+    "telemetry",
+    "topology",
+    "workflow"
+  ],
+  "openapi": {
+    "counts": {
+      "operations": 263,
+      "paths": 244,
+      "schemas": 231
+    },
+    "path": "doc/api/openapi.yaml",
+    "provenance": {
+      "artifact_id": 11577329466,
+      "conclusion": "success",
+      "json_sha256": "1ee03ad711b79c7ef42767a6aa3c685f4857800f09f03002deeac49e4e2d23d4",
+      "run_id": 37841205677,
+      "source_sha": "617c2eec812e3a5734957ee9fa0360f6f5613032",
+      "zip_sha256": "2ff35c384c54b2d49e50aa2a9e646a67c62427e8afcc8db92e17e5368a91b334"
+    },
+    "sha256": "ba9511455ebabb51c704ef510d08f4fdc766f29d8def0a34ef7a8f1acf86d9fd",
+    "source_sha": "617c2eec812e3a5734957ee9fa0360f6f5613032"
+  },
+  "register": "doc/governance/DOCUMENT_REGISTER.md",
+  "register_areas": {
+    "doc/api/**": "CURRENT",
+    "doc/data/**": "CURRENT",
+    "doc/governance/**": "CURRENT",
+    "doc/modules/**": "CURRENT",
+    "doc/testing/**": "CURRENT"
+  },
+  "roadmap": "doc/roadmap/ULTIMATE_ROADMAP.md"
+}

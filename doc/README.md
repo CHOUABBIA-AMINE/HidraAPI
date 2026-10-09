@@ -31,6 +31,8 @@ The legacy `docs/` tree is preserved for historical, audit, semantic-review, ADR
 
 15. [Testing and verification](testing/README.md) — strategy, architecture, database, API and requirements evidence.
 
+16. [Documentation validation](governance/DOCUMENTATION_VALIDATION.md) — enforced structural checks and generated OpenAPI equality.
+
 ## Canonical Domains
 
 | Domain | Current canonical material | P2 disposition |
@@ -70,6 +72,8 @@ Target, deferred, historical and execution-history documents never override cont
 
 Last semantic/navigation verification: HPR-P2-009 on 2026-10-09, source parent `44d4fe773d69ed51dd90820140c8d9e7aee6cba2`. Domain/module metadata and current-versus-target boundaries follow their containing indexes; untouched sets retain their own applicability.
 
-Data-governance/navigation verification: HPR-P2-010 on 2026-10-09, source parent `b36733fc05e789613485606e1e1dd1731b11af53`. Business approvals and executable import/disposal remain explicitly unestablished; HPR-P2-012/013 remain pending and P2 stays open.
+Data-governance/navigation verification: HPR-P2-010 on 2026-10-09, source parent `b36733fc05e789613485606e1e1dd1731b11af53`. Business approvals and executable import/disposal remain explicitly unestablished; HPR-P2-013 remains pending and P2 stays open.
 
 Testing/navigation verification: HPR-P2-011 on 2026-10-09, source parent `35d9d949aa773a4d754c22d00181330f579f752b`. Test presence, historical CI, uninspected per-class results/skips and retained physical evidence remain distinct; no runtime tests were rerun by the documentation task.
+
+Validation/navigation verification: HPR-P2-012, source parent `508337351eef03b82e2c6078a7c8523013efd063`, 2026-10-09. Both structural documentation and production runtime-snapshot gates are wired; exact-head CI follows publication, P2 stays open.

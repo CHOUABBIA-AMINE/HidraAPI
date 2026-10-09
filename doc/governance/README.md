@@ -22,6 +22,8 @@ This directory defines how HidraAPI documentation becomes canonical, how status 
 - `DOCUMENT_STATUS_MODEL.md` — allowed status vocabulary.
 - `DOCUMENT_REGISTER.md` — canonical domain/status register and later-P2 readiness map.
 
+- [DOCUMENTATION_VALIDATION.md](DOCUMENTATION_VALIDATION.md) — HPR-P2-012 implemented checks, manifest maintenance and generated-only snapshot refresh.
+
 ## Metadata Rule
 
 A canonical document must identify the required metadata directly or inherit it from an explicit containing index/register. The register must never upgrade an unverified implementation claim to CURRENT. Unknown ownership or applicability remains explicit rather than being inferred.

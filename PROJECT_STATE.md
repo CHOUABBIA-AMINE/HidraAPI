@@ -2,9 +2,13 @@
 
 **Captured:** 2026-09-22. **Release state refreshed:** 2026-09-29. **Canonical integration branch:** [main](https://github.com/CHOUABBIA-AMINE/HidraAPI/tree/main). **Current release-state baseline before this documentation change:** [63f3f60974ce57eb8cd5e42910397615195624fb](https://github.com/CHOUABBIA-AMINE/HidraAPI/commit/63f3f60974ce57eb8cd5e42910397615195624fb). Older workstream sections remain dated handoff evidence unless explicitly refreshed below. This file is a non-secret handoff, not an assertion about future PR/branch status, live deployments or an authorization to migrate data.
 
-**Current release preparation — 2026-10-09:** HPR-REL-001 prepares the `0.6.0`
-release-alignment candidate from main `ac6cbb4b1cd584b0c780dd208543f41ebe326e06`.
-POM is `0.6.0`; exact-candidate verification is PENDING. Last formal release is
+**Current release verification — 2026-10-09:** HPR-REL-001 is COMPLETED; the `0.6.0`
+release-alignment candidate is `09bf1cbf82c20f19c50ebb1ff9e27047c7f34856`, tree
+`d46f669bda1bf74e2fe35ede3d57aa554d0c1919`, prepared from main
+`ac6cbb4b1cd584b0c780dd208543f41ebe326e06`.
+POM is `0.6.0`; Documentation #138 / run 37936829457 and full HidraAPI CI #610 /
+run 37936829442 both PASSED on the exact candidate SHA. It is READY FOR AUTHORIZED
+PUBLICATION. Last formal release is
 still `v0.5.0` at `492d9916369a58e60c1a437647411e7c5a523990`. No `v0.6.0` tag,
 GitHub Release or deployment is created by this preparation. This current record
 supersedes the dated release/development-state claims in section 0 below.
@@ -16,12 +20,12 @@ The semantic milestone anchor is P2 closure
 `a8905e32289a583f47b831e0381783e556ae0c8d`, verified by Documentation #136 and
 full HidraAPI CI #609. P0/P1/P2 are closed within their documented evidence scope;
 all 57 reconciled HMR implementations and 123 permanent semantic subjects remain.
-P3 is DEFERRED. Prior closure CI does not verify the new alignment commit.
+P3 is DEFERRED. Candidate verification uses #138/#610 independently of prior closure CI.
 
-Next selected stage after publication: verify successful documentation and full
-HidraAPI CI on the exact HPR-REL-001 SHA, then pin that actual candidate SHA in
-release traceability. Release readiness and HPR-REL-001 completion remain pending.
-Tagging/publication require separate explicit authorization under AGENTS.md §19.
+No next executable stage is automatically selected. Tagging/publication require
+separate explicit authorization under AGENTS.md §19 and must target verified
+release-alignment SHA `09bf1cbf82c20f19c50ebb1ff9e27047c7f34856`. The documentation
+verification record is not a replacement tag target or a claim of formal release.
 The intended subsequent development line is `0.7.0-SNAPSHOT`; do not perform that
 transition until the formal release exists or the owner explicitly directs it.
 Production promotion additionally requires its own approved change and controlled

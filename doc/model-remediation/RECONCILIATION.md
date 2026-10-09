@@ -7080,3 +7080,57 @@ uncached Spring Boot parent 4.1.1 because repo.maven.apache.org DNS is unavailab
 Installed Java is 17.0.20; Java 21 is required. No local Java/runtime verification
 success is claimed. Full GitHub CI on the future alignment SHA is mandatory;
 release readiness and HPR-REL-001 completion remain PENDING.
+
+
+## HPR-REL-001 exact-candidate verification — 2026-10-09
+
+The owner's Next selects verification and recording of the prepared candidate,
+not tag/release publication or deployment. GitHub main was independently checked
+unchanged at release-alignment commit 09bf1cbf82c20f19c50ebb1ff9e27047c7f34856,
+tree d46f669bda1bf74e2fe35ede3d57aa554d0c1919. AGENTS.md, Ultimate Roadmap and
+reconciliation were read from that SHA before mutation. POM is 0.6.0.
+
+Both required exact-candidate runs completed SUCCESS:
+
+- Documentation Validation #138, run 37936829457;
+- HidraAPI CI #610, run 37936829442.
+
+Production job 113840861520, Java 21 Maven verification, and every reported step
+succeeded. This includes Java 21 clean verify, canonical validators, retained P1
+HA/release/backup/observability/database-operations gates, deterministic OpenAPI
+publication, fresh-runtime canonical equality, base-revision generation and
+backward compatibility, migrated dictionary capture/comparison and artifact retention.
+The actual job log records OpenAPI equality (244 paths, 263 operations, 231 schemas)
+and dictionary reviewed_dictionary_checked true, unresolved_owners [], 139
+migrations, 470 JPA mappings, 482 relations and candidate source SHA. The source
+bundle remains 86f6ba5923e63c0cd601f7722ca0282e486d59fc92bb120616710fb3cd1799d4.
+
+GitHub artifact metadata confirms both retained, unexpired exact-SHA artifacts:
+OpenAPI ID 11620670294, archive digest
+6dc81efc2fb323be97b65de48a259fe985b610c893bd8f92108f41ce2eb6f2da;
+database schema ID 11620720084, archive digest
+43d17f190289d191571032501b41c19ab904cab7db73a4da9a9d888a06b32fb5.
+These are observed GitHub metadata, not locally downloaded/rehashed archives.
+Per-class execution/skip reports were not independently inspected. CI success
+adds no production-data/import acceptance, unknown policy approval, new physical
+exercise, comprehensive performance/OT coverage or autonomous AI claim.
+
+HPR-REL-001 is COMPLETED and the candidate is READY FOR AUTHORIZED PUBLICATION.
+The only observed published tag/release remains v0.5.0 on
+492d9916369a58e60c1a437647411e7c5a523990. No v0.6.0 tag/release/deployment occurs.
+The future tag target remains the verified alignment SHA 09bf1cbf82c20f19c50ebb1ff9e27047c7f34856,
+not this supporting evidence-record commit or snapshot-version milestone a8905e3.
+POM stays 0.6.0; no 0.7.0-SNAPSHOT transition is authorized. P0/P1/P2 CLOSED,
+P3 DEFERRED, 57 HMR completions and 123 subjects remain unchanged. Dated preparation
+PENDING statements retain historical scope and are superseded by this result.
+
+Supporting exact message: `docs(release): record verified 0.6.0 candidate`.
+Write ONLY VERSIONS.md, PROJECT_STATE.md, doc/roadmap/ULTIMATE_ROADMAP.md and
+doc/model-remediation/RECONCILIATION.md. All other tracked blobs remain unchanged.
+Validate canonical docs, offline OpenAPI integrity, P1 evidence, exact four-file
+scope, candidate/POM identity and preserved phase/HMR/catalogue records. Publish
+with expected-head lease from the alignment SHA, verify immutable parent/tree/paths,
+observe Documentation Validation startup and STOP. Full CI #610 remains pinned
+to the alignment SHA; a docs-only evidence record does not require another full
+production run. Explicit publication authorization is the next release prerequisite
+under AGENTS.md §19; no executable next task is automatically selected.

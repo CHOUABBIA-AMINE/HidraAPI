@@ -1,8 +1,9 @@
 # HidraAPI Version History
 
-**Current preparation — 2026-10-09:** `0.6.0` release-alignment candidate;
-exact-candidate verification PENDING. Last formal release remains `v0.5.0`.
-No `v0.6.0` tag or GitHub Release has been created by this preparation.
+**Current verification — 2026-10-09:** `0.6.0` release-alignment candidate
+`09bf1cbf82c20f19c50ebb1ff9e27047c7f34856` is READY FOR AUTHORIZED PUBLICATION;
+Documentation #138 and full HidraAPI CI #610 PASSED on that exact SHA.
+Last formal release remains `v0.5.0`. No `v0.6.0` tag or GitHub Release exists.
 
 ## 1. Purpose
 
@@ -163,18 +164,18 @@ development should advance to:
 That development-version transition should be performed as part of the formal release procedure,
 not pre-emptively in this baseline-alignment change.
 
-## 9. Prepared 0.6.0 platform milestone — 2026-10-09
+## 9. Verified 0.6.0 release candidate — 2026-10-09
 
-| Field | Prepared state |
+| Field | Verified candidate state |
 |---|---|
 | Intended release | `0.6.0` — pre-1.0 minor architecture and stabilization milestone |
 | Task / exact commit message | HPR-REL-001 / `chore(release): prepare 0.6.0 platform milestone` |
 | Semantic milestone anchor | `a8905e32289a583f47b831e0381783e556ae0c8d` — renewed P2 canonical-governance closure |
 | Verified milestone gates | Documentation #136 / run 37932486353 and full HidraAPI CI #609 / run 37933120029, both successful on the milestone anchor |
 | Preparation source parent | `ac6cbb4b1cd584b0c780dd208543f41ebe326e06` — verified P2 closure evidence record; Documentation #137 / run 37934631329 successful |
-| Release-alignment commit | The commit carrying this record and POM 0.6.0; pin its actual SHA during subsequent exact-candidate verification |
-| Candidate verification | PENDING — require documentation and full HidraAPI CI on that exact alignment SHA; inherited milestone CI is insufficient |
-| Tag / GitHub Release | NOT CREATED; future `v0.6.0` requires separate explicit authorization and successful exact-candidate verification |
+| Release-alignment commit | `09bf1cbf82c20f19c50ebb1ff9e27047c7f34856`, tree `d46f669bda1bf74e2fe35ede3d57aa554d0c1919`; POM 0.6.0 |
+| Candidate verification | PASSED — Documentation #138 / run 37936829457 and full HidraAPI CI #610 / run 37936829442, both successful on the exact alignment SHA |
+| Tag / GitHub Release | NOT CREATED; future `v0.6.0` requires separate explicit authorization and must target the verified alignment SHA above |
 | Last formal release | `v0.5.0`, release commit `492d9916369a58e60c1a437647411e7c5a523990` |
 | Next development line | Intended `0.7.0-SNAPSHOT`, only after formal release exists or separately directed by the owner |
 
@@ -198,3 +199,14 @@ No API snapshot, schema, migration, dependency or feature change is included.
 Never tag the milestone anchor: its POM contains 0.6.0-SNAPSHOT. The eventual tag
 must resolve to the exact successfully verified release-alignment commit containing
 POM 0.6.0. Record the actual tag form and release date only after they exist.
+
+HPR-REL-001 preparation is COMPLETED; the formal release remains unpublished.
+CI #610's Java 21 production job passed clean verify, generated OpenAPI identity
+and canonical equality, backward compatibility, current migrated dictionary
+comparison and retained P1 evidence/operations gates. Its dictionary summary
+reports 139 migrations, 470 JPA mappings, 482 relations, reviewed dictionary
+checked true and zero unresolved owners. The exact-SHA OpenAPI and schema artifacts
+were retained. Artifact metadata and CI logs were inspected; artifact archives
+and per-class execution/skip reports were not independently re-inspected here.
+This evidence-record commit does not replace the verified release-alignment SHA
+as the future tag target or assert a new full production run on the record SHA.

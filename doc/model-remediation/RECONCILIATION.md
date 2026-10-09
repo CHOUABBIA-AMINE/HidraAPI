@@ -2,7 +2,7 @@
 
 ## Status
 
-CURRENT — HPR-P2-008 COMPLETED with 57 CI-confirmed implementations; HPR-P2-009 permanent semantic transfer completed, with exact-head documentation CI following publication.
+CURRENT — all 57 reconciled HMR implementations COMPLETED; permanent 123-subject semantic transfer complete; P2 VERIFIED/CLOSED at 22a9b34225242c52fd502e421570af8b46879e4e after Documentation CI #127 and production CI #606 PASSED. P3 remains DEFERRED.
 
 ## Historical HPR-P2-007 Verification Baseline
 
@@ -6783,3 +6783,59 @@ Java is 17.0.20; Java 21 is required. No local Java/JPA/runtime success is claim
 Successful production CI #605 is prior exact-head evidence, not verification of this
 future publication. Documentation CI startup and mandatory owner-dispatched full CI
 must be reported separately; no future success or final P2 closure is pre-asserted.
+
+## HPR-P2-013 final exact-head verification — 2026-10-09
+
+The owner's "Next it pass" selects final verification, not P3 execution. GitHub main
+was independently rechecked unchanged at implementation commit
+`22a9b34225242c52fd502e421570af8b46879e4e`, tree
+`baf49159b6203cded89666cb5fe3b548e7516bad`.
+
+Both required exact-head gates PASSED:
+
+- Documentation Validation #127, run 37914336195, on the implementation SHA;
+- full production CI #606, run 37915669392, on the same implementation SHA.
+
+GitHub reports completed/success for both. Production job and every reported step
+succeeded, including Java 21 clean verify, PostgreSQL-backed repository verification,
+retained P1 artifact/evidence gates, fresh OpenAPI generation, canonical snapshot
+semantic equality and supported backward compatibility. CI success does not assert
+per-class no-skips inspection, complete endpoint/performance/OT coverage, current
+deployed-data acceptance, owner policy approval or a fresh physical campaign.
+
+Final disposition: HPR-P2-001..013 COMPLETED; P2 VERIFIED/CLOSED at the exact
+implementation SHA above. All 57 reconciled HMR implementations remain completed,
+including HMR-080; the permanent catalogue retains 123 subjects. Current source
+inventories remain 24 modules, 139 migrations, 470 entities and 70 contract Java files
+in 63 exported packages. P0/P1 disposition and original physical provenance are
+unchanged. Version remains 0.6.0-SNAPSHOT. No release/tag/version/deployment/import.
+
+This result supersedes the prior P2 OPEN/pending-CI statements in dated implementation,
+preflight and index records for the verified closure. It does not rewrite their
+historical applicability, extend P1's 82-migration physical evidence or promote
+unknown business/operational/AI claims. CURRENT status means the documented scope,
+not unlimited production acceptance.
+
+All P3 codes remain DEFERRED. There is no automatically selected executable task.
+HPR-P3-001 capacity requirements and HPR-P3-005 spatial requirements are separate
+future owner selections; neither is executed or approved by this closure record.
+TimescaleDB/PostGIS and industrial extensions remain DEFERRED/TARGET until their own
+requirements, measurements and architecture decisions authorize implementation.
+
+Supporting exact message: `docs(roadmap): record verified P2 closure`.
+Write ONLY doc/roadmap/ULTIMATE_ROADMAP.md and
+ doc/model-remediation/RECONCILIATION.md. Preserve all other tracked blobs and
+historical paragraphs. This documentation-only evidence record does not create a
+new executable closure baseline or require repeating the already successful full
+CI #606. The resulting supporting commit needs Documentation Validation startup
+and subsequent result verification; a failure requires responsible-scope repair.
+Publish once with expected-head lease from
+`22a9b34225242c52fd502e421570af8b46879e4e`, verify immutable parent/tree/blobs and
+confirm Documentation Validation starts, then STOP without waiting or executing P3.
+
+Actual supporting validation PASSED: full canonical validator (95 documents, 3,289
+links, 24 modules, 13 P2 rows), offline OpenAPI integrity (244/263/231), identical
+final-verification envelopes, exact two-file scope, all other tracked blobs unchanged,
+57 completed HMR rows/123 catalogue subjects/version preservation, unchanged P3
+DEFERRED registry and git diff --check. No local runtime/physical campaign was rerun;
+new exact-head production evidence is the successful CI #606 described above.

@@ -6546,3 +6546,202 @@ expected-head lease, verify immutable commit/tree/blob identity, confirm Documen
 Validation starts and STOP without waiting for completion. Production CI ignores
 this documentation-only scope. A later Next selects HPR-P2-011 preflight after the
 exact-head documentation result is checked; a failure must be repaired first.
+
+## HPR-P2-011 verification-documentation preflight — 2026-10-09
+
+### Selection and exact baseline
+
+The owner's Next after HPR-P2-010 selects this preflight only. Main is unchanged at
+`50fd7f9cb97343a6495c2dff5bf54175145bba39`, tree
+`67f4b002c6450729402d9a5a8fc351b68662665e`. Exact-head Documentation Validation
+#120 (run 37896521355) PASSED. Production CI #604 (run 37841205677) PASSED on
+executable baseline `617c2eec812e3a5734957ee9fa0360f6f5613032`, tree
+`e450c699544f99e96f2b447fc04215f7f4c5f344`. Its job steps confirm repository
+clean verify, operational-artifact validation, OpenAPI generation/base selection,
+compatibility and artifact upload succeeded. These are prior CI results checked now,
+not a new local execution, per-class report inspection or physical exercise.
+
+HPR-P2-011 remains PENDING; no testing set is created now. A subsequent Next after
+this published preflight accepts the complete design and exhaustive scope below for
+one implementation commit: `docs(testing): establish verification documentation`.
+HPR-P2-012/013 remain PENDING, P3 DEFERRED and P2 OPEN.
+
+### Current evidence recovered
+
+- `pom.xml` declares Java 21, Spring Boot parent 4.1.1, JUnit/Spring testing,
+  Spring Security testing, Testcontainers PostgreSQL and ArchUnit 1.4.2, and a
+  Surefire plugin. No Failsafe or JaCoCo plugin or numeric coverage gate is declared
+  in the inspected POM/workflows. Do not invent a separate integration-test phase,
+  coverage percentage, mutation gate or test count from file counts.
+- Static inventory: 324 test-tree Java files; 323 filenames ending Test.java/Tests.java
+  and one OrganizationMandatoryReferenceMigrationSupport.java helper; tests occur
+  under all 24 module roots. All 47 directly annotated Testcontainers classes use
+  disabledWithoutDocker=true. No direct @Disabled annotation was found. These are
+  source counts, not discovered/executed test cases or proof that nothing can skip.
+- `.github/workflows/ci.yml` runs `./mvnw -B -q clean verify` with Java 21 and a
+  PostgreSQL 16 service. The test profile is actually
+  `src/main/resources/application-test.properties`, not src/test/resources. It
+  defaults to localhost PostgreSQL and permits datasource overrides; individual
+  containers override their own URLs. HidraApplicationTests uses postgres:18-alpine,
+  Flyway validation and JPA validate; focused containers include postgres:16-alpine.
+  Do not turn these distinct paths into a claim that every test uses one DB/version.
+- `ArchitectureGuardrailTest`, `ForensicRemediationClosureTest`,
+  `DomainPersistenceMirrorGuardrailTest`, `DomainInvariantGuardrailTest` and
+  `modules/GeneratedBoundaryMapperContractTest` enforce distinct boundaries through
+  ArchUnit, source/reflection and generated-mapper checks. Owner-provider tests are
+  a separate contract population, not substitutes for live transaction evidence.
+- `InternalReferenceIntegrityMigrationTest` exercises Flyway and classified local
+  foreign keys, including orphan fail-closed/rollback checks. Focused
+  PlanTargetSemanticPostgresIntegrationTest, PlanActualDeviationSemanticPostgresIntegrationTest
+  and NominationSemanticPostgresIntegrationTest execute selected migrations, direct
+  SQL and real Spring/JPA transactions, rollback and controlled race cases. Some
+  owner-contract inputs are stubbed in those fixtures; database/transaction reality
+  does not imply a complete live cross-module end-to-end environment.
+- HTTP/controller tests include standalone MockMvc and mocks; security/authorization,
+  request context, workbench exposure, document transfer and generated contracts have
+  different scopes. DocumentContentTransferServiceTest distinguishes confirmed
+  rollback from unknown/committed outcomes. Presence of a controller test is not a
+  blanket assertion that the full security filter chain or every route was exercised.
+- CI generates sorted OpenAPI JSON with source-SHA provenance and representative
+  security assertions; `.github/scripts/resolve_openapi_base.py` uses the exact PR
+  target or a successful production-CI ancestor for push/dispatch, with ancestry and
+  fail-closed selection. It runs test_resolve_openapi_base.py before selection and
+  openapi_compatibility.py against generated base/current contracts. The canonical
+  `doc/api/openapi.yaml` retains its own older HPR-P2-005 generation provenance; this
+  task neither refreshes it nor asserts exact current snapshot equality.
+- `.github/workflows/docs.yml` checks canonical Markdown UTF-8/nonempty/conflicts,
+  not links/status/index drift or canonical-vs-generated OpenAPI equality. Production
+  CI ignores doc/**, docs/** and Markdown-only scope. Its explicit uploaded artifact
+  is the generated OpenAPI contract; do not describe a configured Surefire report
+  upload or invent per-test results without actual retained report evidence.
+- P1 scripts in ops/production/ validate artifacts/procedures and CI checks
+  `.github/scripts/validate_p1_closure.py`. The retained P1 exercise distinguishes
+  repository-verified from operator-supplied observations at deployed
+  `66f6d7f12d1f7d52f8725cd4747cf4c777bfd29a` with 82 migrations. A static artifact
+  check or PostgreSQL fixture is not new HA/DR/physical retention evidence for the
+  current 139-version migration chain.
+
+### Proposed implementation design — ten parts
+
+1. Create a six-document CURRENT testing set with inherited index metadata: source
+   parent/date, status, repository/module owner authority, actual evidence and
+   explicit unresolved facts. No invented named testing authority, production
+   acceptance or executed result. Separate implemented checks from TARGET additions.
+2. TEST_STRATEGY.md documents the actual test populations and their limits: pure
+   domain/application/unit, owner-provider contracts, source/ArchUnit/reflection,
+   generated mappers, standalone HTTP/security, PostgreSQL migration, Spring-JPA
+   transaction/race, full application context, CI OpenAPI and operational artifact
+   checks. Distinguish source presence, selected local run, exact-head CI, skipped
+   classes, deployment acceptance and retained physical/operator evidence.
+3. Give source-backed commands for focused selections, full test and clean verify;
+   describe Java/Maven prerequisites, dependency availability, Docker/images, isolated
+   disposable PostgreSQL and actual test profile overrides. The current preflight
+   and docs-only implementation require no Maven/runtime rerun; prior dependency/DNS
+   limitations are historical, not a diagnosis of the present environment. Any later
+   attempted command must report actual exit/results/skips and exact limitation.
+   Never point destructive schema-reset tests at production or disguise a skip as pass.
+4. ARCHITECTURE_TESTING.md explains actual rules and their owning tests, the narrow
+   exported contract/allowlist mechanism, kernel/framework and application/API/JPA
+   boundaries, reviewed workbench exception, owned persistence models and DTO mapper
+   contracts. Describe rule-test mechanisms and scope accurately; package/file counts
+   are not dynamic behavioral or universal semantic coverage.
+5. DATABASE_TESTING.md separates full Flyway/context validation from targeted SQL
+   migration fixtures and real Spring/JPA adapter tests, including explicit mocked
+   owner inputs. Link concrete orphan/policy fail-closed, replay/snapshot/optionality,
+   transaction rollback and both-order race examples. Test fixtures are approved test
+   facts, not production policy seeds; passing empty fixtures does not prove populated
+   deployments have approved mappings. Preserve all applied migrations/history.
+6. API_TESTING.md distinguishes standalone MockMvc/controller tests, security/context
+   and permission tests, full application startup and runtime contract generation.
+   Record current compatibility-base resolver/checker, representative security
+   assertions and artifact provenance, plus limitations of its supported comparison.
+   Canonical OpenAPI and older API/error documents retain their own applicability;
+   no contract regeneration, endpoint change or universal error-envelope claim.
+7. REQUIREMENTS_TRACEABILITY.md gives a source-backed evidence matrix for completed
+   platform gate categories and permanent module semantics. Include all 57 closed
+   HMR-050..106 obligations with their HMSR/subject, canonical decision/module,
+   exact test source, relevant migration/contract evidence and historical CI scope
+   where actually established. Reference the 123-subject semantic catalogue rather
+   than duplicate it as a new execution register. Verify uniqueness/contiguity;
+   review disposition, HMR completion, test presence and actual execution remain
+   different facts. Explicitly mark missing/partial/runtime-unverified evidence.
+8. Cover all 24 implemented module roots by actual evidence navigation; link existing
+   module/domain/data/database/API/security/operations sources without editing them.
+   Preserve the closed 57-row HMR register and all unrelated HPR statuses. Do not
+   infer exhaustive branch/endpoint/performance/load/OT safety coverage, AI/solver
+   execution, imported production acceptance or mature physical backup coverage.
+9. Update doc/README.md and DOCUMENT_REGISTER.md to register all six testing documents
+   with exact source applicability. Existing docs/** and canonical historical evidence
+   stay byte-preserved. No code, test, configuration, POM, migration, workflow, dataset,
+   release/tag or extra testing artifact is admitted by this documentation task.
+10. Record owner acceptance, actual validation and completion in both canonical
+    execution memories after transfer. Complete only HPR-P2-011. Documentation drift
+    enforcement belongs to HPR-P2-012, final closure to HPR-P2-013; neither is executed
+    now. Unknown coverage/enforcement alone is a documented gap, not a new runtime
+    requirement or a reason to manufacture validation evidence.
+
+### Exhaustive future implementation write scope — ten paths
+
+Create only:
+
+- `doc/testing/README.md`
+- `doc/testing/TEST_STRATEGY.md`
+- `doc/testing/ARCHITECTURE_TESTING.md`
+- `doc/testing/DATABASE_TESTING.md`
+- `doc/testing/API_TESTING.md`
+- `doc/testing/REQUIREMENTS_TRACEABILITY.md`
+
+Update only:
+
+- `doc/README.md`
+- `doc/governance/DOCUMENT_REGISTER.md`
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `doc/model-remediation/RECONCILIATION.md`
+
+### Admitted implementation validation and publication
+
+Recheck current main, exact-head documentation CI and the green executable baseline
+before implementation. Recover actual POM/workflow/test profile, source inventory,
+architecture/owner/HTTP/database examples, compatibility logic and prior P1 applicability.
+Verify six-document metadata, 24-module navigation and all 57 HMR traceability rows;
+resolve all touched-set relative links/anchors and cited source paths. Do not equate
+source counts or a job success with per-class execution/no skips without reports.
+
+Validate canonical UTF-8/nonempty/conflict checks (88 currently; six new files make
+94), git diff --check, exhaustive ten-path scope, untouched legacy/source/configuration
+and published migration preservation. HMR rows and unrelated HPR statuses remain
+unchanged; P2 rows retain seven columns; project version stays 0.6.0-SNAPSHOT.
+Documentation-only scope requires no Maven/runtime rerun. If a runtime check is
+actually attempted, record its real results and prerequisites instead of importing
+old local limitations. No deployment/import/physical campaign is authorized here.
+
+Use `docs(testing): establish verification documentation`, one commit, direct main
+publication once with a fresh expected-head lease. Verify immutable parent/tree/blobs
+and all other files unchanged. Confirm Documentation Validation starts, then STOP
+without waiting for completion. Production CI ignores this docs-only scope. A later
+Next selects HPR-P2-012 preflight after this implementation's exact-head documentation
+result; failure requires repair of the responsible scope first.
+
+### This preflight's supporting execution
+
+Registered supporting message: `docs(testing): record verification documentation preflight`.
+Write ONLY `doc/roadmap/ULTIMATE_ROADMAP.md` and
+`doc/model-remediation/RECONCILIATION.md`; no doc/testing/ document is created now.
+Check identical envelope text, ten unique future paths, preserved HMR/HPR rows, all
+88 canonical Markdown files, git diff --check and exact two-file scope. Publish one
+supporting commit directly to main using expected head
+`50fd7f9cb97343a6495c2dff5bf54175145bba39`; verify immutable tree/blobs and every
+other tracked file unchanged. Confirm Documentation Validation starts and STOP.
+HPR-P2-011 remains PENDING until accepted implementation actually completes.
+
+### Actual preflight validation
+
+`python3 /workspace/scratch/4115643ef669/p2-011-preflight-validate.py` PASSED:
+identical preflight envelopes in both memories; exactly two modified files; ten unique
+future paths with six new documents; all 88 canonical Markdown files UTF-8/nonempty
+and free of conflict markers; cited test classes/helpers resolve; all HMR/HPR table
+rows unchanged and P2 row shape preserved. `git diff --check` PASSED. No testing set,
+Maven/runtime check, source/test/configuration change, migration or operational
+execution was performed. Published-tree validation additionally verifies that every
+other tracked blob is byte-identical to the parent. The registered implementation
+remains PENDING and requires the subsequent acceptance described above.

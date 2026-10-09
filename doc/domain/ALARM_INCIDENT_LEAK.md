@@ -11,7 +11,7 @@ CURRENT focused semantic baseline.
 Current lifecycle rules include:
 
 - closed or cancelled alarms cannot be acknowledged;
-- normal close requires CLEARED or ESCALATED state, with a special allowed suppressed state when the underlying alarm has cleared; explicit cancellation follows its own close path;
+- normal close requires CLEARED state or durable clearedAt evidence; explicit cancellation may close without prior clear. ESCALATED alone is insufficient, including when visibility is suppressed;
 - suppression may target an alarm, alarm type, topology asset, monitoring rule or source;
 - open-ended suppression requires workflow approval evidence;
 - overlapping ACTIVE suppression for the same scope/reference is rejected;
@@ -63,3 +63,37 @@ Alarm, incident and leak detection remain distinct bounded contexts:
 ## Not Established
 
 No autonomous safety shutdown, valve/pump control, SCADA/PLC/RTU/SIS/ESD actuation or unverified automatic incident creation is claimed by this document.
+
+## Durable creation and lifecycle evidence
+
+[AlarmLifecycleGuard](../../src/main/java/dz/sh/hidra/modules/alarm/domain/service/AlarmLifecycleGuard.java)
+defines acknowledgement/close eligibility. The repository lifecycle paths append
+one raised/action/finish event with the parent-state mutation in the same transaction;
+these are formal Alarm records rather than caller-manufactured lifecycle history.
+[Alarm decisions](SEMANTIC_DECISIONS.md#alarm-decisions) cover direct saves, live
+paths, immutability and duplicate/race behavior. Multiple acknowledgements remain
+legal historical evidence; closure produces one immutable terminal decision.
+Optional review metadata does not introduce mandatory Workflow approval for every
+Alarm close/cancellation.
+
+Shelving has strict start/end ordering, exact reason family and one ACTIVE shelf.
+Expiry records contractual due time and restores durable prior alarm evidence,
+without reopening closed/cancelled/cleared state or moving snapshots backward.
+The [shelving expiry orchestrator](../../src/main/java/dz/sh/hidra/modules/alarm/infrastructure/scheduling/AlarmShelvingExpiryOrchestrator.java)
+uses the transactional record boundary and isolates failed records. Suppression and
+shelving synchronize under the same alarm parent lock, including release/cancellation
+and manual/expiry races. Broad suppression expiry records its scope audit without
+pretending it is an individual alarm mutation.
+
+Incident closure is separately governed: a RESOLVED incident, real resolution,
+policy-required persisted evidence and any required owner-confirmed Workflow approval
+precede atomic parent/closure persistence. Confirmations alone cannot fabricate that
+evidence. See [Incident decisions](SEMANTIC_DECISIONS.md#incident-decisions) and
+[IncidentLifecycleGuard](../../src/main/java/dz/sh/hidra/modules/incident/domain/service/IncidentLifecycleGuard.java).
+Response actions serialize against closure and remain work evidence, not field commands.
+
+Leak candidate profile/run consistency, topology owner snapshots and optional case
+ownership are governed by [LeakDetection decisions](SEMANTIC_DECISIONS.md#leakdetection-decisions).
+The confidence thresholds above come directly from
+[LeakConfidenceClassifier](../../src/main/java/dz/sh/hidra/modules/leakdetection/domain/service/LeakConfidenceClassifier.java),
+not an approved external engineering safety standard.

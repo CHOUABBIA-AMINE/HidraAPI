@@ -23,7 +23,9 @@ The legacy `docs/` tree is preserved for historical, audit, semantic-review, ADR
 9. `doc/modules/README.md` — canonical current-state index for all 24 implemented business modules.
 10. `doc/api/README.md` — canonical versioned API contract and API governance set.
 11. `doc/database/README.md` — canonical current database architecture, ownership, Flyway policy and generated persistence dictionary.
-12. `doc/model-remediation/RECONCILIATION.md` — exact-current-source reconciliation of remaining legacy HMR/HMSR obligations.
+12. `doc/model-remediation/RECONCILIATION.md` — completed semantic-remediation execution evidence and historical reconciliation.
+
+13. [Permanent semantic decisions](domain/SEMANTIC_DECISIONS.md) — current-source rules for all 123 reviewed subjects, with module and evidence links.
 
 ## Canonical Domains
 
@@ -35,10 +37,10 @@ The legacy `docs/` tree is preserved for historical, audit, semantic-review, ADR
 | Security | `doc/security/**` | Existing canonical P0 security baseline |
 | Operations | `doc/operations/**` | Existing canonical P1 operations/survivability baseline |
 | Database | `doc/database/README.md` and linked canonical set | CURRENT — HPR-P2-006; earlier P1 stage documents retained as historical evidence |
-| Domain | `doc/domain/README.md` and linked canonical set | CURRENT — HPR-P2-003 |
-| Modules | `doc/modules/README.md` plus 24 current-state module documents | CURRENT — HPR-P2-004 |
+| Domain | `doc/domain/README.md` and linked canonical set | CURRENT — HPR-P2-003; semantics refreshed by HPR-P2-009 |
+| Modules | `doc/modules/README.md` plus 24 current-state module documents | CURRENT — HPR-P2-004; inventories refreshed by HPR-P2-009 |
 | API | `doc/api/README.md`, governance set and `doc/api/openapi.yaml` | CURRENT — HPR-P2-005 |
-| Semantic remediation | `doc/model-remediation/RECONCILIATION.md` | CURRENT reconciliation — HPR-P2-007; execution continues under HPR-P2-008 |
+| Semantic remediation | `doc/model-remediation/RECONCILIATION.md` | CURRENT reconciliation — HPR-P2-007; HPR-P2-008 completed; permanent decisions transferred by HPR-P2-009 |
 | Data governance | not yet established | HPR-P2-010 |
 | Testing | not yet established | HPR-P2-011 |
 
@@ -61,3 +63,5 @@ Target, deferred, historical and execution-history documents never override cont
 ## Legacy Preservation
 
 `docs/**` is intentionally retained. Do not delete, rewrite, or silently promote legacy material merely because equivalent canonical documentation exists. When legacy evidence is used, reconcile it against current evidence and record its applicability in the canonical document or register.
+
+Last semantic/navigation verification: HPR-P2-009 on 2026-10-09, source parent `44d4fe773d69ed51dd90820140c8d9e7aee6cba2`. Domain/module metadata and current-versus-target boundaries follow their containing indexes; later P2 governance sets remain pending.

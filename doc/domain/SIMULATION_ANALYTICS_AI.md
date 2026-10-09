@@ -14,7 +14,7 @@ A simulation recommendation is explicitly human-facing and is derived from a run
 - simulation may not write directly to foreign operational module tables;
 - `SimulationSafetyGuard` enforces these restrictions.
 
-The application exposes a `SimulationSolverPort` whose current contract only reports solver availability by reference. Repository search at the HPR-P2-003 baseline found no implementation of that port. Therefore an executing external solver integration is **NOT ESTABLISHED** by current source.
+The application exposes a `SimulationSolverPort` whose current contract only reports solver availability by reference. Repository search at the HPR-P2-009 parent found no implementation of that port. Therefore an executing external solver integration is **NOT ESTABLISHED** by current source.
 
 ## Analytics
 
@@ -51,7 +51,7 @@ Its current domain method `runtimeDigitalTwin()` returns false. Therefore the ca
 
 **NOT ESTABLISHED / DEFERRED**
 
-At the HPR-P2-003 baseline:
+At the HPR-P2-009 parent:
 
 - there is no current `agents` source module root;
 - repository search did not establish a model-inference execution component;
@@ -60,3 +60,25 @@ At the HPR-P2-003 baseline:
 - digital-twin readiness explicitly is not runtime digital twin behavior.
 
 Accordingly, documentation must not claim autonomous AI, agentic control, predictive actuation or closed-loop field control. Future AI capabilities require explicit approved requirements, architecture, implementation, tests, evidence and safety/governance controls before becoming CURRENT.
+
+## Version, terminal and publication semantics
+
+[Simulation decisions](SEMANTIC_DECISIONS.md#simulation-decisions) preserve model/version
+and scenario/run provenance, supported owner targets and immutable completed runs.
+Recommendation publication uses actual publication time, a flushed record and an
+Audit receipt through its publication port; generic save cannot impersonate publication.
+Optional publisher metadata stays optional. A selected feasible optimization candidate
+or published recommendation remains human-facing decision support.
+
+[Analytics decisions](SEMANTIC_DECISIONS.md#analytics-decisions) preserve immutable published
+dataset versions, captured projection-definition versions, terminal completion/failure
+evidence and owner-resolved metric scopes. Analytics insights retain governed source
+lineage while remaining advisory. These are executable record invariants, not a new
+inference engine or validated operational forecasting accuracy claim.
+
+Source boundaries: [SimulationSafetyGuard](../../src/main/java/dz/sh/hidra/modules/simulation/domain/service/SimulationSafetyGuard.java),
+[SimulationSolverPort](../../src/main/java/dz/sh/hidra/modules/simulation/application/port/out/SimulationSolverPort.java),
+[AnalyticsInsight](../../src/main/java/dz/sh/hidra/modules/analytics/domain/model/AnalyticsInsight.java) and
+[DigitalTwinReadinessAssessment](../../src/main/java/dz/sh/hidra/modules/analytics/domain/model/DigitalTwinReadinessAssessment.java).
+No executing SimulationSolverPort implementation was found at the verified parent;
+its current availability-reference contract is not solver execution evidence.

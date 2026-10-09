@@ -2,15 +2,15 @@
 
 ## Status
 
-CURRENT — canonical HPR-P2-004 module document.
+CURRENT — canonical module inventory and HPR-P2-009 permanent semantics.
 
 ## Verification Baseline
 
-Source baseline: `f3c703048402f3dcf1a520aceea64e64c4861035`
+Source baseline: `44d4fe773d69ed51dd90820140c8d9e7aee6cba2`
 
 Package root: `dz.sh.hidra.modules.party`
 
-This document describes source-visible current state. It does not promote legacy `docs/**` material to authority and does not substitute for the canonical API/database contracts created by later P2 tasks.
+Verified on 2026-10-09 against the source parent above. Metadata follows [the module index](README.md); business accountability follows this owning module, without an invented named human owner. Historical HPR-P2-004 established the inventory; HPR-P2-009 refreshes source applicability and lasting semantics. The canonical [API](../api/README.md) and [database](../database/README.md) sets retain their separate authority.
 
 ## Responsibility
 
@@ -20,98 +20,120 @@ The module has the current Hexagonal structure `api/`, `application/`, `domain/`
 
 ## Domain Model
 
-Current domain model types:
+Current domain model types (package-info excluded):
 
-- `Party`
-- `PartyRoleAssignment`
+- [Party](../../src/main/java/dz/sh/hidra/modules/party/domain/model/Party.java)
+- [PartyRoleAssignment](../../src/main/java/dz/sh/hidra/modules/party/domain/model/PartyRoleAssignment.java)
 
-Domain policies: `PartyBoundaryPolicy`
+Domain policies:
 
-Domain services: `PartySelectionService`
+- [PartyBoundaryPolicy](../../src/main/java/dz/sh/hidra/modules/party/domain/policy/PartyBoundaryPolicy.java)
 
-Canonical semantic context: `../domain/DOMAIN_OWNERSHIP.md`.
+Domain services:
+
+- [PartySelectionService](../../src/main/java/dz/sh/hidra/modules/party/domain/service/PartySelectionService.java)
+
+Canonical semantic context: [ownership](../domain/DOMAIN_OWNERSHIP.md) and [permanent decisions](../domain/SEMANTIC_DECISIONS.md).
 
 ## Application and API Surface
 
 Current inbound/use-case ports:
 
-- `AssignPartyRoleUseCase`
-- `RegisterPartyUseCase`
+- [AssignPartyRoleUseCase](../../src/main/java/dz/sh/hidra/modules/party/application/port/in/AssignPartyRoleUseCase.java)
+- [RegisterPartyUseCase](../../src/main/java/dz/sh/hidra/modules/party/application/port/in/RegisterPartyUseCase.java)
 
 Current application services:
 
-- `AssetsPartyReferenceQueryService`
-- `PartyApplicationService`
-- `PartyRoleAssignmentApplicationService`
-- `TopologyPartyReferenceQueryService`
+- [AssetsPartyReferenceQueryService](../../src/main/java/dz/sh/hidra/modules/party/application/service/AssetsPartyReferenceQueryService.java)
+- [PartyApplicationService](../../src/main/java/dz/sh/hidra/modules/party/application/service/PartyApplicationService.java)
+- [PartyRoleAssignmentApplicationService](../../src/main/java/dz/sh/hidra/modules/party/application/service/PartyRoleAssignmentApplicationService.java)
+- [TopologyPartyReferenceQueryService](../../src/main/java/dz/sh/hidra/modules/party/application/service/TopologyPartyReferenceQueryService.java)
 
 Current API/controller classes:
 
-- `PartyController`
-- `SpringPartyController`
+- [PartyController](../../src/main/java/dz/sh/hidra/modules/party/api/rest/controller/PartyController.java)
+- [SpringPartyController](../../src/main/java/dz/sh/hidra/modules/party/api/rest/controller/SpringPartyController.java)
 
-These class inventories establish implemented adapters/use-case surfaces. Exact HTTP paths, request/response schemas, authentication requirements and compatibility semantics are HPR-P2-005 scope.
+These inventories identify source-visible adapters/use cases, not proof of every external integration. Exact wire contracts and compatibility rules are maintained in [the API set](../api/README.md).
 
 ## Persistence
 
-Current JPA persistence entity count: **30**.
+Current JPA entity count: **30** (classes annotated `@Entity`, excluding package-info).
 
 Persistence entities:
 
-- `ContractorQualificationJpaEntity`
-- `ManufacturerProfileJpaEntity`
-- `OperatorProfileJpaEntity`
-- `OwnerProfileJpaEntity`
-- `PartyAddressJpaEntity`
-- `PartyBankReferenceJpaEntity`
-- `PartyCatalogEntryJpaEntity`
-- `PartyCatalogTranslationJpaEntity`
-- `PartyCertificationJpaEntity`
-- `PartyComplianceStatusJpaEntity`
-- `PartyContactPersonJpaEntity`
-- `PartyContactPointJpaEntity`
-- `PartyDocumentReferenceJpaEntity`
-- `PartyExternalReferenceJpaEntity`
-- `PartyJpaEntity`
-- `PartyLegalProfileJpaEntity`
-- `PartyOwnershipLinkJpaEntity`
-- `PartyQualificationJpaEntity`
-- `PartyRegistrationJpaEntity`
-- `PartyRelationshipJpaEntity`
-- `PartyRiskSnapshotJpaEntity`
-- `PartyRoleAssignmentJpaEntity`
-- `PartyRoleJpaEntity`
-- `PartyRoleTranslationJpaEntity`
-- `PartyStatusHistoryJpaEntity`
-- `PartyTaxIdentifierJpaEntity`
-- `PartyTypeJpaEntity`
-- `PartyTypeTranslationJpaEntity`
-- `SupplierQualificationJpaEntity`
-- `VendorQualificationJpaEntity`
+- [ContractorQualificationJpaEntity](../../src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/entity/ContractorQualificationJpaEntity.java)
+- [ManufacturerProfileJpaEntity](../../src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/entity/ManufacturerProfileJpaEntity.java)
+- [OperatorProfileJpaEntity](../../src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/entity/OperatorProfileJpaEntity.java)
+- [OwnerProfileJpaEntity](../../src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/entity/OwnerProfileJpaEntity.java)
+- [PartyAddressJpaEntity](../../src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/entity/PartyAddressJpaEntity.java)
+- [PartyBankReferenceJpaEntity](../../src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/entity/PartyBankReferenceJpaEntity.java)
+- [PartyCatalogEntryJpaEntity](../../src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/entity/PartyCatalogEntryJpaEntity.java)
+- [PartyCatalogTranslationJpaEntity](../../src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/entity/PartyCatalogTranslationJpaEntity.java)
+- [PartyCertificationJpaEntity](../../src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/entity/PartyCertificationJpaEntity.java)
+- [PartyComplianceStatusJpaEntity](../../src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/entity/PartyComplianceStatusJpaEntity.java)
+- [PartyContactPersonJpaEntity](../../src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/entity/PartyContactPersonJpaEntity.java)
+- [PartyContactPointJpaEntity](../../src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/entity/PartyContactPointJpaEntity.java)
+- [PartyDocumentReferenceJpaEntity](../../src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/entity/PartyDocumentReferenceJpaEntity.java)
+- [PartyExternalReferenceJpaEntity](../../src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/entity/PartyExternalReferenceJpaEntity.java)
+- [PartyJpaEntity](../../src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/entity/PartyJpaEntity.java)
+- [PartyLegalProfileJpaEntity](../../src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/entity/PartyLegalProfileJpaEntity.java)
+- [PartyOwnershipLinkJpaEntity](../../src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/entity/PartyOwnershipLinkJpaEntity.java)
+- [PartyQualificationJpaEntity](../../src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/entity/PartyQualificationJpaEntity.java)
+- [PartyRegistrationJpaEntity](../../src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/entity/PartyRegistrationJpaEntity.java)
+- [PartyRelationshipJpaEntity](../../src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/entity/PartyRelationshipJpaEntity.java)
+- [PartyRiskSnapshotJpaEntity](../../src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/entity/PartyRiskSnapshotJpaEntity.java)
+- [PartyRoleAssignmentJpaEntity](../../src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/entity/PartyRoleAssignmentJpaEntity.java)
+- [PartyRoleJpaEntity](../../src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/entity/PartyRoleJpaEntity.java)
+- [PartyRoleTranslationJpaEntity](../../src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/entity/PartyRoleTranslationJpaEntity.java)
+- [PartyStatusHistoryJpaEntity](../../src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/entity/PartyStatusHistoryJpaEntity.java)
+- [PartyTaxIdentifierJpaEntity](../../src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/entity/PartyTaxIdentifierJpaEntity.java)
+- [PartyTypeJpaEntity](../../src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/entity/PartyTypeJpaEntity.java)
+- [PartyTypeTranslationJpaEntity](../../src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/entity/PartyTypeTranslationJpaEntity.java)
+- [SupplierQualificationJpaEntity](../../src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/entity/SupplierQualificationJpaEntity.java)
+- [VendorQualificationJpaEntity](../../src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/entity/VendorQualificationJpaEntity.java)
 
-Current persistence repository-adapter classes:
+Persistence repository adapters and reference validators:
 
-- `JpaPartyRepositoryAdapter`
-- `JpaPartyRoleAssignmentRepositoryAdapter`
+- [JpaPartyRepositoryAdapter](../../src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/adapter/JpaPartyRepositoryAdapter.java)
+- [JpaPartyRoleAssignmentRepositoryAdapter](../../src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/adapter/JpaPartyRoleAssignmentRepositoryAdapter.java)
 
-Table/schema ownership and the generated data dictionary are HPR-P2-006 scope; class presence is not used here to invent database constraints or retention policy.
+Table/schema ownership and the generated dictionary remain in [the database set](../database/README.md). Entity presence does not invent constraints, retention policy or production-data approval.
 
 ## Cross-Module Boundary
 
-Exported contracts owned by this module:
+Exported application contracts owned by this module:
 
-- consumer `assets`: `AssetsPartyReferenceContract`
-- consumer `topology`: `TopologyPartyReferenceContract`
+- [AssetsPartyReferenceContract](../../src/main/java/dz/sh/hidra/modules/party/application/contract/assets/AssetsPartyReferenceContract.java)
+- [PlanningPartyReferenceContract](../../src/main/java/dz/sh/hidra/modules/party/application/contract/planning/PlanningPartyReferenceContract.java)
+- [TopologyPartyReferenceContract](../../src/main/java/dz/sh/hidra/modules/party/application/contract/topology/TopologyPartyReferenceContract.java)
 
-Current outbound application ports used to reach persistence or collaborating capabilities:
+Imported scalar contracts supplied by collaborating owners:
 
-- `PartyRepositoryPort`
-- `PartyRoleAssignmentRepositoryPort`
+No source class is present in this category at the verified parent.
 
-Cross-module collaboration must preserve the canonical architecture rule: no direct import of another module's private domain, infrastructure or non-exported application packages.
+Outbound application ports (persistence and collaborating capabilities):
+
+- [PartyRepositoryPort](../../src/main/java/dz/sh/hidra/modules/party/application/port/out/PartyRepositoryPort.java)
+- [PartyRoleAssignmentRepositoryPort](../../src/main/java/dz/sh/hidra/modules/party/application/port/out/PartyRoleAssignmentRepositoryPort.java)
+
+Export scope is checked by [architecture guardrails](../../src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java) and [forensic closure](../../src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java). Consumers use deliberately exported contracts; private domain, infrastructure and non-exported application packages remain private. Owner existence, eligibility and approval are separate predicates and cannot be substituted for one another.
 
 ## Current-State Limits
 
-- File/class presence documents implementation structure, not proof that every business workflow, external dependency or production integration is exercised.
-- HPR-P2-004 does not resolve legacy HMR/HMSR semantic obligations; HPR-P2-007/008 remain the reconciliation/remediation authority.
-- `agents`, `environment` and `otsecurity` are not current implemented module roots and are not implied by this document.
+- Source/class presence is structural evidence; this documentation transfer executes no runtime test or external system.
+- Legacy reviews/roadmaps remain unchanged history. HPR-P2-008 is closed; durable rules now live in [the semantic register](../domain/SEMANTIC_DECISIONS.md), with execution evidence in [reconciliation](../model-remediation/RECONCILIATION.md).
+- Optional references and historical replay follow the subject-specific rules; no universal active-only rule is implied.
+- Retention values, owner-approved policy contents and workload/physical survivability are not established by documentation.
+- `agents`, `environment` and `otsecurity` are not implemented module roots. Target/deferred capabilities require separately admitted implementation.
+
+## Permanent Semantic Decisions
+
+Party owns external counterparty identity and effective-dated business roles. Unique master/active assignment identity is preserved without treating Party roles as authorization or transferring ownership to consumer snapshots.
+
+The linked decisions carry the precise per-subject exceptions and source/test/migration evidence:
+
+| Subject | Canonical decision |
+|---|---|
+| Party | [HMSR-004 reconciled rule](../domain/SEMANTIC_DECISIONS.md#party-party) |
+| PartyRoleAssignment | [HMSR-049 reconciled rule](../domain/SEMANTIC_DECISIONS.md#party-partyroleassignment) |

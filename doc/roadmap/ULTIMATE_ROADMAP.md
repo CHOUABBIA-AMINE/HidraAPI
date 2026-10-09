@@ -250,7 +250,7 @@ P1 is **CLOSED** only when this closure SHA passes the repository's full exact-h
 | HPR-P2-006 | COMPLETED — canonical current database architecture, schema ownership, Flyway policy and generated persistence dictionary established from 82 current Flyway migrations, 469 current module JPA persistence entities, production configuration and closed P1 PostgreSQL/backup evidence; stale pre-closure DB stage documents retained as historical provenance | Database | Doc | Create database architecture, schema ownership, Flyway policy and current generated data dictionary from current migrations/JPA evidence. | `docs(database): establish canonical database documentation` | HPR-P2-001 |
 | HPR-P2-007 | COMPLETED — exact-source reconciliation established: HMR-005 corrected to completed, HMR-009 confirmed completed/stale carry-over removed, HMR-054 historical blocker resolved by current Party→Topology contract, HMR-050..106 reconciled to 56 still-required + 1 blocked (HMR-080), 0 superseded; legacy roadmap preserved as history | Semantic Remediation | Code/Doc | Inventory unresolved HMR/HMSR obligations against exact current source; mark each as completed, still required, blocked, or superseded with evidence. | `docs(model-remediation): reconcile remaining semantic obligations` | HPR-P2-003 |
 | HPR-P2-008 | COMPLETED — owner-authorized closure after final reconciliation preflight; all 57 HMR implementations confirmed by CI #604, zero pending, STILL REQUIRED or BLOCKED; documentation preflight CI #115 passed. P2 phase remains open. | Semantic Remediation | Code | Execute still-required semantic remediation in dependency order using revalidated HMSR obligations; do not restart completed HMRs without regression evidence. | `fix(model): continue reconciled semantic remediation` | HPR-P2-007 |
-| HPR-P2-009 | PENDING | Semantic Remediation | Doc | Transfer permanent semantic decisions from legacy review/roadmaps into `doc/domain/` and `doc/modules/`, then preserve legacy files as execution history. | `docs(model-remediation): canonicalize semantic decisions` | HPR-P2-008 |
+| HPR-P2-009 | COMPLETED — 123 permanent subject decisions transferred with current source/test/migration evidence; all 24 module inventories and domain/index metadata refreshed; 37-path scope and 83-file Markdown/link checks passed; exact-head documentation CI follows publication | Semantic Remediation | Doc | Transfer permanent semantic decisions from legacy review/roadmaps into `doc/domain/` and `doc/modules/`, then preserve legacy files as execution history. | `docs(model-remediation): canonicalize semantic decisions` | HPR-P2-008 |
 | HPR-P2-010 | PENDING | Data Governance | Doc | Create data governance, retention/archival, provenance and legacy-data migration documents without inventing retention values. | `docs(data): establish data governance baseline` | HPR-P2-001 |
 | HPR-P2-011 | PENDING | Testing | Doc | Create test strategy, architecture testing, database testing, API testing and requirements traceability documents tied to executable evidence. | `docs(testing): establish verification documentation` | HPR-P2-002..006 |
 | HPR-P2-012 | PENDING | Documentation CI | Infra | Add documentation validation for canonical links/status/index drift and deterministic OpenAPI contract checks. | `ci(docs): validate canonical documentation` | HPR-P2-001..011 |
@@ -273,12 +273,14 @@ P1 is **CLOSED** only when this closure SHA passes the repository's full exact-h
 
 P0 security/audit verification is closed. P1 production infrastructure and survivability verification is closed subject to successful exact-head full CI on the HPR-P1-012 closure SHA.
 
-Current next task after owner-authorized HPR-P2-008 closure and its recorded exact-head gates:
+Current next task after accepted HPR-P2-009 semantic transfer and its documentation gate:
 
-`HPR-P2-009 — docs(model-remediation): canonicalize semantic decisions`
+`HPR-P2-010 — docs(data): establish data governance baseline`
 
-Begin with a fresh current-source preflight and a bounded documentation write scope.
-HPR-P2-009 remains PENDING; the HPR-P2-008 closure does not execute it automatically.
+Begin with a fresh current-source preflight and bounded documentation scope after
+checking HPR-P2-009 exact-head documentation CI. HPR-P2-010 remains PENDING;
+no data-governance files, retention values or successor execution are admitted by
+the HPR-P2-009 transfer. P2 stays OPEN.
 
 The historical P1 evidence-block parallel-work exception is no longer needed for sequencing because HPR-P1-029 is complete. P3 remains deferred until P2 closes and its own approved requirements exist.
 
@@ -6230,3 +6232,78 @@ inventory, unique scope, seven-field P2 registry/statuses, all 82 canonical Mark
 files and `git diff --check`. Verify exact published tree/blobs and unchanged files;
 advance main once using the preflight lease above. Confirm documentation CI starts
 and STOP. No new runtime test, physical evidence, tag or release is claimed.
+
+
+## HPR-P2-009 accepted execution — 2026-10-09
+
+The owner's Next after publication of preflight
+44d4fe773d69ed51dd90820140c8d9e7aee6cba2 accepts its twelve-part design and
+exhaustive 37-path scope. Execute HPR-P2-009 only, exact commit
+`docs(model-remediation): canonicalize semantic decisions`. Main is unchanged at
+that preflight parent, tree 46281ca048114fa73cf428ed0f197f3e407e43d4;
+documentation CI #117 (37891746514) PASSED. Production CI #604 (37841205677)
+remains PASSED on executable baseline 617c2eec812e3a5734957ee9fa0360f6f5613032.
+The accepted transfer is documentation-only; HPR-P2-008 stays COMPLETED, P2 stays
+OPEN and no successor is selected. Execution results follow below.
+
+
+### Completed transfer and validation
+
+HPR-P2-009 is COMPLETED within its accepted documentation scope. Created only
+`doc/domain/SEMANTIC_DECISIONS.md`, with 123 unique subject decision entries,
+19 APPROVED / 104 REVISE historical dispositions and all 104 subject-HMR mappings.
+Recovered the detailed legacy reviews and reconciled the transferred rules with
+current domain/JPA, application/repository guard, owner contract, migration and test
+evidence. Historical verdicts are provenance, not new governance statuses. Every
+REVISE subject links its existing dedicated semantic test; these tests were inspected,
+not newly executed. The completed 57-row HPR-P2-008 register remains byte-preserved.
+
+Refreshed all 24 module inventories with linked domain/policy/service/use-case/API,
+JPA entity/repository and owned/imported contract evidence. Updated the existing
+seven domain documents, root navigation and documentation register at source parent
+44d4fe773d69ed51dd90820140c8d9e7aee6cba2. Corrected Alarm normal close eligibility,
+made Telemetry trust promotion evidence explicit, transferred Planning/Monitoring
+reference/policy context, kept direct versus ordinary Identity grant contracts
+separate, and documented owner snapshots, append-only evidence and binary rollback
+limits. Subject-specific optionality/history exceptions remain explicit.
+
+Current inventory checks PASSED: 24 modules; 148 domain/model Java files comprising
+124 actual model types plus 24 package descriptors; 470 JPA entities; 70 contract
+Java files excluding package-info; 63 matching architecture exports; 139 unique
+Flyway versions. AlarmLifecycleEvent is the single added model beyond the historical
+catalogue and receives no invented HMSR identifier.
+
+Documentation validation PASSED: 83 canonical Markdown files valid UTF-8, nonempty
+and free of conflict markers; 123 unique traceability rows and decision anchors;
+19/104 disposition totals and 104 exact historical HMR mappings; all 24 linked
+current model/entity/export inventories; 2,719 existing relative links/anchors in
+the touched set; inherited/direct metadata; exact 37-path allowlist with one new
+file; unchanged HMR register rows and unrelated HPR statuses; seven-field P2 registry;
+`git diff --check`. The local checks were run with the temporary
+`p2-009-validate.py` inspection script and the documentation workflow's equivalent
+UTF-8/nonempty/conflict checks; no new repository test or CI workflow was introduced.
+The link check resolves file/heading destinations; semantic meaning was reviewed
+separately against the cited source and tests rather than inferred from path existence.
+
+No local Maven/runtime test was required or run for this docs-only tree; production
+CI #604 remains prior exact executable evidence, not a fresh validation result.
+Preserved all source/configuration/tests/POM, published migrations, API/database/
+architecture/operations sets and every legacy `docs/**` byte. In particular, the
+HPR-P2-006 generated dictionary retains its own historical applicability and is not
+regenerated under this scope. Version remains 0.6.0-SNAPSHOT. No release/tag, guessed
+policy mapping, silent historical repair or physical survivability claim is introduced.
+Approved mappings and populated-deployment acceptance remain separate owner facts;
+no new business uncertainty is resolved by a historical APPROVED label.
+
+Exact implementation commit: `docs(model-remediation): canonicalize semantic decisions`.
+Publication uses expected-head lease 44d4fe773d69ed51dd90820140c8d9e7aee6cba2,
+one parent and one advancement of main. Verify immutable published parent/tree/blobs
+and unchanged files against the exact local index before publication. Confirm
+Documentation Validation starts, then STOP without waiting for its completion;
+production CI ignores these documentation-only paths. A failed documentation run
+must be repaired before successor work.
+
+Next registered task: HPR-P2-010 — `docs(data): establish data governance baseline`.
+It remains PENDING. A subsequent Next selects its current-source preflight after
+checking this transfer's documentation CI, not automatic retention/provenance design
+or P2 closure. HPR-P2-011..013 remain PENDING and P3 DEFERRED.

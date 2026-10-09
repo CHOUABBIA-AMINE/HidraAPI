@@ -14,7 +14,7 @@ Legacy/reference/evidence root: `docs/`
 
 Execution authority: `doc/roadmap/ULTIMATE_ROADMAP.md`
 
-Last governance verification point: HPR-P2-001 execution baseline `36924e1303b1884cd501e83f236c7cd834e338d5`; post-commit validation is recorded by the resulting GitHub Actions run.
+Last semantic/navigation verification: HPR-P2-009 on 2026-10-09, source parent `44d4fe773d69ed51dd90820140c8d9e7aee6cba2`. HPR-P2-001 established the governance baseline; individual untouched sets retain their own applicability. Post-publication validation belongs to the resulting exact-head documentation run.
 
 ## Ownership
 
@@ -22,7 +22,7 @@ Documentation authority follows the repository governance and the owner/decision
 
 ## Domain Register
 
-| Canonical area | Status at HPR-P2-001 | Authority / applicability | Next canonicalization work |
+| Canonical area | Current register status | Authority / applicability | Next canonicalization work |
 |---|---|---|---|
 | `doc/README.md` | CURRENT | Repository documentation entry point and precedence/navigation control | Maintain as domains are added |
 | `doc/governance/**` | CURRENT | Documentation governance, lifecycle, status and register controls | HPR-P2-001 complete |
@@ -31,10 +31,10 @@ Documentation authority follows the repository governance and the owner/decision
 | `doc/architecture/**` | CURRENT where individually stated | Canonical HPR-P2-002 architecture set; `RUNTIME_ARCHITECTURE.md` is historical P1 provenance | HPR-P2-002 complete |
 | `doc/operations/**` | CURRENT where individually stated | P1 operational, HA, DR, deployment, observability and survivability evidence | Preserve; later tasks may cross-link |
 | `doc/database/**` | CURRENT where individually stated | Canonical HPR-P2-006 database architecture, ownership, Flyway policy and generated persistence dictionary; earlier P1 stage docs retained as provenance | HPR-P2-006 complete |
-| `doc/domain/**` | CURRENT where individually stated | Canonical ubiquitous language, ownership and focused semantic baseline from current source | HPR-P2-003 complete |
-| `doc/modules/**` | CURRENT | Canonical current-state documentation for all 24 implemented module roots; excludes non-implemented agents/environment/otsecurity | HPR-P2-004 complete |
+| `doc/domain/**` | CURRENT where individually stated | Canonical ubiquitous language, ownership and focused semantic baseline from current source | HPR-P2-003 complete; HPR-P2-009 refreshed lasting semantics |
+| `doc/modules/**` | CURRENT | Canonical current-state documentation for all 24 implemented module roots; excludes non-implemented agents/environment/otsecurity | HPR-P2-004 complete; HPR-P2-009 refreshed inventories/decisions |
 | `doc/api/**` | CURRENT | Canonical version-controlled OpenAPI 3.1 contract plus overview, conventions, authentication, error-model, compatibility and OpenAPI-governance controls | HPR-P2-005 complete |
-| `doc/model-remediation/**` | CURRENT | Exact-current-source reconciliation of legacy HMR/HMSR execution obligations; legacy `docs/roadmap/model-semantic-remediation.md` remains history | HPR-P2-007 complete; HPR-P2-008 executes still-required items |
+| `doc/model-remediation/**` | CURRENT | Exact-current-source reconciliation of legacy HMR/HMSR execution obligations; legacy `docs/roadmap/model-semantic-remediation.md` remains history | HPR-P2-007/008 complete; HPR-P2-009 transfers lasting rules into domain/module docs |
 | Data-governance canonical set | NOT ESTABLISHED | Retention/provenance values must not be invented | HPR-P2-010 |
 | Testing canonical set | NOT ESTABLISHED | Verification documentation must remain tied to executable evidence | HPR-P2-011 |
 | Documentation CI drift controls | PARTIAL | Lightweight documentation validation exists; P2 link/status/index drift controls are later scope | HPR-P2-012 |
@@ -54,3 +54,17 @@ Legacy material must not be mass-rewritten to match present state. Supersession 
 ## Current vs Target Discipline
 
 Existing implementation claims require current repository/runtime/migration/test/CI evidence. Target or deferred architecture must be labelled as such. HPR-P2-001 does not promote any P2 architecture, domain, module, API, database, data-governance or testing target to CURRENT.
+
+## Permanent semantic transfer
+
+[SEMANTIC_DECISIONS.md](../domain/SEMANTIC_DECISIONS.md) is CURRENT for the verified
+source parent: 123 unique historical subjects, 19/104 historical dispositions and
+104 subject-HMR mappings. It indexes lasting rules and current evidence rather than
+replacing the roadmap or cloning execution statuses. [Domain](../domain/README.md)
+and all 24 [module documents](../modules/README.md) use the same verification parent.
+Legacy reviews/roadmaps remain byte-preserved execution/review history. The closed
+57-row reconciliation is distinct from the complete historical catalogue.
+
+Approved policy/mapping values, runtime inference/actuation, populated production-data
+acceptance and physical survivability are not established by the transfer. HPR-P2-010
+and later governance gates remain pending; this register does not close P2.

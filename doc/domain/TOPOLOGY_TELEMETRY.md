@@ -20,7 +20,7 @@ Topology references exported to other modules are references/contracts, not tran
 
 ## Telemetry Acquisition and Point Semantics
 
-`TelemetrySource` represents acquisition-source metadata. The source type/protocol are references rather than a hard-coded protocol implementation. Current source documentation names possible source categories such as SCADA, historian, OPC server, API feed, manual import source or edge gateway, but HPR-P2-003 does not claim that any particular industrial transport protocol is implemented.
+`TelemetrySource` represents acquisition-source metadata. The source type/protocol are references rather than a hard-coded protocol implementation. Current source documentation names possible source categories such as SCADA, historian, OPC server, API feed, manual import source or edge gateway, but canonicalization does not claim that any particular industrial transport protocol is implemented.
 
 Only an ACTIVE telemetry source is `ingestionEligible()`. Source endpoint/external-reference strings are rejected when they embed recognized secret material.
 
@@ -53,7 +53,7 @@ This model establishes a semantic distinction between raw acquisition evidence a
 
 ## Cross-Domain Boundary
 
-Current architecture exports telemetry reference capability to monitoring and topology reference capability to several consumers. Consumers must use those deliberate contracts/references and must not import telemetry/topology private aggregates.
+Current architecture exports Telemetry point/trusted-reading evidence to Monitoring and Planning, plus Topology typed-reference capability to its documented consumers. Consumers must use those deliberate contracts/references and must not import telemetry/topology private aggregates.
 
 ## Not Established
 
@@ -63,4 +63,37 @@ HPR-P2-003 does not establish:
 - a specific SCADA/PLC/RTU ingestion protocol;
 - TimescaleDB;
 - PostGIS;
-- automatic trust promotion rules beyond the currently implemented validation/source models.
+- trust promotion beyond the explicit evidence gate described below; assessment thresholds or cleansing algorithms are not invented.
+
+## Catalog identity and owned references
+
+System, pipeline, connection and equipment types are extensible catalog identities,
+not closed enum taxonomies. Same-module parent/attachment integrity is owned by
+Topology; optional Party manufacturer/owner references use the Party contracts.
+Fresh references and unchanged historical snapshots have their specific rules in
+[Topology decisions](SEMANTIC_DECISIONS.md#topology-decisions) and
+[the Topology module](../modules/topology.md#cross-module-boundary).
+
+## The implemented trust gate
+
+[TrustedTelemetryReadingApplicationService](../../src/main/java/dz/sh/hidra/modules/telemetry/application/service/TrustedTelemetryReadingApplicationService.java)
+requires the raw reading, point and assessment identities to agree. Assessment must
+be PASSED and [TelemetryTrustPolicy](../../src/main/java/dz/sh/hidra/modules/telemetry/domain/policy/TelemetryTrustPolicy.java)
+accepts only MEDIUM, HIGH or CERTIFIED; the service never upgrades assessment trust.
+The point is ACTIVE, quality family is eligible, and populated optional unit/batch
+provenance exists. Values/unit/quality/time come from evidence rather than caller input.
+An unbound point remains possible; a single applicable binding may be selected,
+while multiple bindings require explicit selection. Historical trusted snapshots
+remain evidence after point retirement/rebinding rather than being refreshed.
+See [Telemetry decisions](SEMANTIC_DECISIONS.md#telemetry-decisions).
+
+## Expected versus observed evidence
+
+Planning owns [PlanTarget](SEMANTIC_DECISIONS.md#planning-plantarget), not Telemetry.
+Its exact TARGET_TYPE and empty-until-approved NUMERIC/TEXT policy determine target
+shape without guessing quantity meaning or exclusivity. Monitoring resolves its
+mandatory Planning target through the scalar export. Optional point, trusted reading
+and evaluation contexts must be coherent where populated; reference checks do not
+turn optional fields into mandatory links. Unchanged historical evidence/snapshots
+remain preserved. See [PlanActualDeviation](SEMANTIC_DECISIONS.md#monitoring-planactualdeviation)
+and [Planning](../modules/planning.md#cross-module-boundary).

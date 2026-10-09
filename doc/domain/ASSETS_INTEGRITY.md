@@ -46,3 +46,25 @@ Assets and integrity use topology IDs/types/codes/snapshots and organization/par
 ## Not Established
 
 This document does not invent maintenance scheduling rules, inspection standards, remaining-life engineering equations, acceptance limits or automated maintenance authorization beyond source-visible behavior.
+
+## Permanent reference and history rules
+
+[Assets decisions](SEMANTIC_DECISIONS.md#assets-decisions) distinguish local parent
+existence from unsupported business correlation: a referenced maintenance plan must
+exist, but its existence does not impose asset equality. Fresh actor/unit/recommendation
+and Workflow references are owner-validated; optional and valid unchanged historical
+references remain permitted. Owner lookup failure propagates before writes.
+
+[Integrity decisions](SEMANTIC_DECISIONS.md#integrity-decisions) retain nullable source
+finding, program and defect references with local existence integrity when populated.
+Cases use explicit approved taxonomy policy rather than guessed catalog families.
+Fresh topology/actor/unit/Workflow evidence comes from owners; unchanged taxonomy
+and historical target snapshots are preserved. An existing optional defect does not
+impose an unsupported topology/status equality, and timestamp ordering does not invent
+CLOSED-state timestamp coupling. The related
+[IntegrityCaseReferenceValidation](../../src/main/java/dz/sh/hidra/modules/integrity/infrastructure/persistence/adapter/IntegrityCaseReferenceValidation.java)
+and [MaintenanceWorkOrderReferenceValidation](../../src/main/java/dz/sh/hidra/modules/assets/infrastructure/persistence/adapter/MaintenanceWorkOrderReferenceValidation.java)
+are the owned validation boundaries; their guard tests/migrations are linked per subject.
+
+HSE CAPA follows its own approved action-family policy and owner contracts; it does
+not silently gain an Integrity or Assets rule. See [HSE decisions](SEMANTIC_DECISIONS.md#hse-decisions).

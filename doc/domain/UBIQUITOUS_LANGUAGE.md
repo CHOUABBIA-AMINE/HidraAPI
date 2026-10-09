@@ -54,3 +54,24 @@ Terms below use current HidraAPI class/field/policy names. They are canonical fo
 - "Maintainable asset" must not replace topology-owned physical identity.
 - "Raw telemetry reading" must not automatically be described as trusted.
 - References/snapshots must not be described as cross-module aggregate ownership.
+
+## Governed reference and evidence vocabulary
+
+| Term | Canonical meaning and decision |
+|---|---|
+| Operational Scope Registry ID | Organization's independent positive registry identity; distinct from the referenced owner ID. See [OperationalScope](SEMANTIC_DECISIONS.md#organization-operationalscope). |
+| Identity Role / Permission | Hidra security authority, distinct from Party business role or Organization position. See [Identity decisions](SEMANTIC_DECISIONS.md#identity-decisions). |
+| Planning Target | Planning-owned expected value under exact TARGET_TYPE and approved NUMERIC/TEXT policy, with same-revision context. See [PlanTarget](SEMANTIC_DECISIONS.md#planning-plantarget). |
+| Nomination | Planning movement quantity with explicitly approved Custody product and Telemetry quantity/rate roles and compatibility facts. See [Nomination](SEMANTIC_DECISIONS.md#planning-nomination). |
+| Plan-Actual Deviation | Monitoring-owned comparison using Planning target and optional coherent Telemetry/evaluation evidence. See [PlanActualDeviation](SEMANTIC_DECISIONS.md#monitoring-planactualdeviation). |
+| Active Fresh Reference | Subject-specific current eligibility required for new/changed identity; not a blanket rule for every optional owner reference. |
+| Historical Snapshot | Preserved context from the original owner resolution; unchanged evidence is not silently refreshed after retirement or rebinding. |
+| Approved Mapping | Explicit owner metadata keyed by actual registered identity; code similarity is not approval. |
+| Append-only Evidence | Inserted immutable evidence on the guarded path; replay/failure cannot become a merge overwrite. See [Audit](SEMANTIC_DECISIONS.md#audit-decisions) and [Workflow](SEMANTIC_DECISIONS.md#workflow-decisions). |
+| Owner-confirmed Approval | Actual decision/context confirmed by the owner, not mere presence of a Workflow ID. |
+| Storage Rollback Cleanup | Cleanup of only the newly created blob after failure/confirmed rollback; unknown commit outcome preserves possibly referenced content for reconciliation. See [Documents](../modules/documents.md#permanent-semantic-decisions). |
+
+Every precise optionality, lifecycle and provenance exception remains in
+[the subject register](SEMANTIC_DECISIONS.md); vocabulary does not impose a stronger
+general policy. Required/optional localized text remains subject-specific rather than
+an invented universal translation requirement.

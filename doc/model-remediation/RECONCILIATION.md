@@ -68,11 +68,12 @@ The HMR-054 semantic implementation itself is still not evidenced by its registe
 
 ### HMR-080 — planning.Nomination
 
-**IMPLEMENTED — NOM-EXEC-01 accepted; exact-head production CI pending.**
+**COMPLETED — exact-head production CI #604 PASSED.**
 
 The accepted standalone execution exports Party, Custody product and Telemetry unit
 contracts, validates direct saves and installs forward 025/026. The previous absent
-owner-contract blocker is superseded. This implementation is not CI-confirmed yet;
+owner-contract blocker is superseded. Implementation 41904baff2becbdd03e19d3b2da005a28ad8d8a0
+and fixture repair 617c2eec812e3a5734957ee9fa0360f6f5613032 are confirmed by CI #604;
 HPR-P2-008 remains open.
 
 ## Reconciled Outstanding Register
@@ -109,7 +110,7 @@ HPR-P2-008 remains open.
 | HMR-077 | HMSR-091 | risk.RiskEvidenceLink | COMPLETED — CI #593 GREEN | Typed owner evidence validation and named provider beans verified by Java 21 clean verify and OpenAPI compatibility at cfc7798477c70d10e1c3e0afd4dd7e1b42676898. |
 | HMR-078 | HMSR-092 | simulation.SimulationCandidateChange | COMPLETED — CI #590 GREEN | Accepted SIM-PREREQ-01; required change values, active exact catalog and Topology target lookup; forward 001. |
 | HMR-079 | HMSR-093 | simulation.SimulationRecommendation | COMPLETED — CI #590 GREEN | Required content, exact catalogs, nullable local references and transactional Audit-owned publication; forward 002/003. |
-| HMR-080 | HMSR-094 | planning.Nomination | IMPLEMENTED — PRODUCTION CI PENDING | NOM-OWNER-01 and NOM-EXEC-01 accepted; transactional owner contracts, strict intrinsic/parent/code integrity, explicit approved historical ID transition and dedicated tests; forward 025/026; local Maven blocked before compilation. |
+| HMR-080 | HMSR-094 | planning.Nomination | COMPLETED — CI #604 PASSED | NOM-OWNER-01/NOM-EXEC-01 accepted; implementation 41904baff2becbdd03e19d3b2da005a28ad8d8a0 and fixture repair 617c2eec812e3a5734957ee9fa0360f6f5613032; full Java 21 verification, PostgreSQL/Spring-JPA tests and OpenAPI compatibility passed; forward 025/026. |
 | HMR-081 | HMSR-095 | workflow.WorkflowAction | COMPLETED — CI #581 GREEN | Generic recording permits comments only; configured transitions exclusively produce decisions using live Identity authority. Optional task ownership and conditional evidence are enforced; canonical actor snapshots and server-owned locked sequences replace caller evidence. Action persistence is insert-only with unique monotonic sequence and immutable database guards. Five focused behavior checks passed with temporary stubs; existing permission regression fixture updated. |
 | HMR-082 | HMSR-096 | hse.HseCase | COMPLETED — CI #597 GREEN | Accepted Batch 17 implementation passed full Java 21/PostgreSQL/OpenAPI CI on cfb3681ef1c79b4416336a3533cbc0599b4fd6b2. |
 | HMR-083 | HMSR-097 | audit.AuditExportRequest | COMPLETED — CI #584 GREEN | Required export metadata, active EXPORT_PURPOSE, owner-controlled optional Workflow/Documents references, bounded sanitized filters and one transactional EXPORT access record implemented. Generic writes admit REQUESTED only and persist/flush without merge. Forward V20261007_006; eight focused tests, two owner tests and four PostgreSQL/Spring/JPA tests prepared. Local Maven compile/focused blocked before compilation by uncached Boot 4.1.1 parent; production CI #584 passed. |
@@ -145,10 +146,10 @@ HPR-P2-008 remains open.
 - HMR-050..106 evaluated: **57**;
 - HMR-050..106 **STILL REQUIRED**: **0**;
 - HMR-050..106 **BLOCKED**: **0**;
-- HMR-050..106 **IMPLEMENTED during HPR-P2-008**: **57**, 56 CI-confirmed through #602 and one HMR-080 pending production CI;
+- HMR-050..106 **IMPLEMENTED during HPR-P2-008**: **57**, all CI-confirmed through #604, zero pending;
 - HMR-050..106 **SUPERSEDED**: **0**;
 - HMR-054 completed; repaired CI #575 is green;
-- HMR-080 is implemented with production CI pending; HMR-055 prerequisite resolved and implemented in Batch 7.
+- HMR-080 completed with repaired-head CI #604 passed; HMR-055 prerequisite resolved and implemented in Batch 7.
 
 ## HPR-P2-008 Progress
 
@@ -5257,3 +5258,41 @@ Keep HMR-080 IMPLEMENTED — REPAIRED CI PENDING, 56 CI-confirmed plus one pendi
 57 evaluated. HPR-P2-008 stays OPEN; version 0.6.0-SNAPSHOT unchanged; no physical
 survivability claim. Publish once with the lease, verify the exact tree, confirm new
 production CI starts and STOP without waiting. Do not execute any later task.
+
+
+## HPR-P2-008 solo HMR-080 CI confirmation — 2026-10-09
+
+Owner Next selects confirmation of the repaired Nomination head. GitHub main is
+617c2eec812e3a5734957ee9fa0360f6f5613032, tree
+e450c699544f99e96f2b447fc04215f7f4c5f344, unchanged since repair publication.
+Production CI #604 (37841205677) completed SUCCESS on that exact SHA. Java 21
+repository verification, deterministic current OpenAPI generation, base-revision
+OpenAPI generation, compatibility enforcement and artifact upload all passed.
+The compatibility log reports no supported breaking changes. This confirms the
+admitted semantic/provider/architecture/full-test and PostgreSQL/Spring-JPA
+migration/rollback/race suites in the Java 21 clean-verify tree. Documentation
+CI #113 (37841205659) passed on the same SHA.
+
+HMR-080 / HMSR-094 is COMPLETED — CI #604 PASSED. Implementation commit:
+41904baff2becbdd03e19d3b2da005a28ad8d8a0; separate fixture repair:
+617c2eec812e3a5734957ee9fa0360f6f5613032. CI #603's four fixture errors are
+superseded by the repaired-head success. Earlier pending/blocked sections are history.
+Current HMR-050..106 reconciliation: 57 evaluated, 57 CI-confirmed implementations,
+zero pending, zero STILL REQUIRED and zero BLOCKED. HPR-P2-008 remains IN PROGRESS;
+this confirms the last HMR implementation, not final governance/phase closure.
+
+Supporting commit: `docs(planning): record Nomination CI confirmation`. Authorized
+write scope is ONLY doc/roadmap/ULTIMATE_ROADMAP.md and
+ doc/model-remediation/RECONCILIATION.md. Validate exact two-file scope, canonical
+Markdown UTF-8/nonempty/conflict checks and git diff --check; publish once with
+expected-head lease 617c2eec812e3a5734957ee9fa0360f6f5613032 and verify the exact
+immutable tree. The executable tree must remain identical to green CI #604.
+Documentation-only publication starts Documentation Validation; production CI
+ignores these paths. Confirm documentation CI starts and STOP without waiting.
+
+No new local Maven/runtime execution is required or claimed for this two-document
+confirmation. Prior local Java/dependency/DNS/Docker limitations remain accurately
+recorded; GitHub Java 21 CI supplies runtime evidence. Version remains
+0.6.0-SNAPSHOT. No physical survivability evidence, release, later HPR execution or
+HPR-P2-008 completion is claimed. Next recommended work is an explicit HPR-P2-008
+final reconciliation/closure preflight; do not execute HPR-P2-009 automatically.

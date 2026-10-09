@@ -591,7 +591,7 @@ Each stage retains its own commit and later evidence; no batch is selected.
 | Code | Status | Domain/Module | Type | Exact execution requirement | Exact commit message | Depends on |
 |---|---|---|---|---|---|---|
 | HPR-P25-002A | COMPLETED — implementation eef35dbd35d4558a4ceb57f87d8670fb97c933ea passed full Java 21 CI #612 and Documentation #146; three immutable contracts and 14 JUnit tests present; per-class report not independently retained at this baseline | Simulation / Input manifest | Code/Test | Implement immutable manifest, source-version identities/validity/origin and steady-state/transient metadata invariants under the exact six-file envelope below. | `feat(simulation): establish immutable input manifest contracts` | HPR-P25-002 preflight Documentation CI success |
-| HPR-P25-002B | PENDING — B1 CI-confirmed completed; B2 implemented pending exact-head full CI; B3..B4 remain PENDING | Simulation / Physical payloads | Code/Test | Define validated typed network/fluid/equipment/initial-state and transient timeline payloads with units, reference basis and missing-data semantics; register exact files and numeric design assumptions before mutation. | `feat(simulation): define versioned physical input payloads` | HPR-P25-002A; selected payload/physics preflight |
+| HPR-P25-002B | PENDING — B1/B2 CI-confirmed completed; B3 exact-file preflight delivered, implementation pending; B4 remains PENDING | Simulation / Physical payloads | Code/Test | Define validated typed network/fluid/equipment/initial-state and transient timeline payloads with units, reference basis and missing-data semantics; register exact files and numeric design assumptions before mutation. | `feat(simulation): define versioned physical input payloads` | HPR-P25-002A; selected payload/physics preflight |
 | HPR-P25-002C | PENDING | Owner modules / Simulation | Code/Test | Implement bounded owner-exported topology/product/measurement queries and Simulation adapters; preserve eligibility/trust/ownership and reject unavailable physical inputs. | `feat(simulation): resolve versioned owner input references` | HPR-P25-002B; exact owner-contract/export preflight |
 | HPR-P25-002D | PENDING | Simulation / Capture | Code/Test | Assemble coherent immutable payload/manifest captures, verify canonical hashes and evidence, persist reproducible revisions and reject incompatible/missing inputs; register forward migration only if source-backed design requires one. | `feat(simulation): capture reproducible network calculation inputs` | HPR-P25-002C; exact capture/schema preflight |
 
@@ -685,8 +685,8 @@ all required payload stages are complete; no stage is executed by this preflight
 | Code | Status | Domain/Module | Type | Exact execution requirement | Exact commit message | Depends on |
 |---|---|---|---|---|---|---|
 | HPR-P25-002B1 | COMPLETED — 803efff1326cc20bc54b4a22d6daa8608b5233dc passed Java 21 production CI #614 and Documentation #150; three immutable pipe-graph records and 13 synthetic JUnit tests present; individual report not independently inspected | Simulation / Physical network | Code/Test | Implement immutable typed nodes/pipe segments and connected network validation using the exact six-path envelope below. | `feat(simulation): define physical network input contracts` | HPR-P25-002A; successful B preflight documentation CI |
-| HPR-P25-002B2 | IN PROGRESS — four immutable gas/equipment records and 19 synthetic JUnit tests implemented; Maven locally blocked by Central DNS/uncached Boot parent; exact-head full CI pending | Simulation / Fluid and equipment | Code/Test | Define versioned gas composition/property-method references and current equipment/curve/configuration payloads with explicit units/validity; no property calculation or universal product support is implied. | `feat(simulation): define fluid and equipment input contracts` | HPR-P25-002B1; exact B2 preflight |
-| HPR-P25-002B3 | PENDING | Simulation / State and boundaries | Code/Test | Define measured/estimated initial-state quantities and time-dependent boundary/action schedules with quantity basis, time ordering, interpolation declarations and missing-value semantics. | `feat(simulation): define state and boundary timeline inputs` | HPR-P25-002B2; exact B3 preflight |
+| HPR-P25-002B2 | COMPLETED — 97332bba3861348a6d4acf2aa995d1ad537cbc1c passed Java 21 production CI #615 and Documentation #152; four immutable records and 19 synthetic JUnit tests present; per-class XML not independently inspected | Simulation / Fluid and equipment | Code/Test | Define versioned gas composition/property-method references and current equipment/curve/configuration payloads with explicit units/validity; no property calculation or universal product support is implied. | `feat(simulation): define fluid and equipment input contracts` | HPR-P25-002B1; exact B2 preflight |
+| HPR-P25-002B3 | PENDING — state/boundary timeline exact-file preflight delivered; no B3 production source implemented | Simulation / State and boundaries | Code/Test | Define measured/estimated initial-state quantities and time-dependent boundary/action schedules with quantity basis, time ordering, interpolation declarations and missing-value semantics. | `feat(simulation): define state and boundary timeline inputs` | HPR-P25-002B2; exact B3 preflight |
 | HPR-P25-002B4 | PENDING | Simulation / Payload assembly | Code/Test | Bind typed payload/version identities to manifests, validate node/equipment references and steady/transient completeness, preserving synthetic/provenance distinctions; canonical hash verification remains capture scope. | `feat(simulation): assemble consistent physical input payloads` | HPR-P25-002B1..B3; exact B4 preflight |
 
 Gas/property/equipment methods and transient thermal/event fidelity will be specified
@@ -9653,3 +9653,192 @@ Publish with expected-parent lease, verify remote parent/tree/seven files, obser
 production/Documentation startup on the exact head and STOP for owner Next/Fail.
 P0/P1/P2 CLOSED, P2.5 OPEN, P3 DEFERRED, 57 completed HMR implementations,
 123 semantic subjects, v0.6.0 and 0.7.0-SNAPSHOT preserved.
+
+
+## HPR-P25-002B3 State and Boundary Timeline Preflight — 2026-10-09
+
+Owner Next selects ONLY `docs(twin): register HPR-P25-002B3 execution preflight`.
+Write ONLY doc/roadmap/ULTIMATE_ROADMAP.md and doc/model-remediation/RECONCILIATION.md.
+GitHub main 97332bba3861348a6d4acf2aa995d1ad537cbc1c, tree
+0c54e3849c0a8877280f1b6c533d76056c49339c, passed exact-head production
+#615/run 37967717239 and Documentation #152/run 37967717190.
+Job 113946166670 confirms Java 21 repository verification and retained P1/operations,
+OpenAPI equality/backward compatibility, dictionary and report-retention steps succeeded.
+B2 is COMPLETED. Nineteen JUnit methods are source-visible; individual XML/skip counts
+not independently inspected. Mandatory instructions and execution memories read;
+local tree matches before mutation. No source change selected in this preflight.
+
+### Source findings and boundary
+
+Reviewed SimulationInputManifest/SimulationInputSourceVersion, B1 physical graph and
+B2 gas/equipment input records; Telemetry domain/model/TelemetryReading.java and
+TrustedTelemetryReading.java; ArchitectureGuardrailTest.java owner-export boundaries.
+Manifest has mode/stateAt/capturedAt/measurementWatermark/horizonEnd and exactly one
+OPERATING_STATE plus transient BOUNDARY_SCHEDULE source reference. It has no numeric
+initial state or schedule. Raw/trusted readings retain source timestamps, quality/
+trust/assessment provenance and generic values/units; they are not solver-ready SI
+quantities and must not be foreign-domain imports into Simulation. Existing B2 configured
+speed/opening is selected model data, not actual measured running state.
+
+B3 defines immutable Simulation copies, not telemetry trust rules, an estimator,
+actuator commands or owner API adapters. Explicit quantity names prevent absolute/
+gauge pressure or actual/standard volumetric/mass flow confusion. No missing value
+becomes zero and no quality/freshness/accuracy/operating threshold is invented.
+Later 002C/002D must retain conversion/reference/trust evidence and resolve sources.
+
+### Exact later B3 implementation envelope
+
+After successful preflight Documentation CI, owner Next selects ONLY B3, exact message
+`feat(simulation): define state and boundary timeline inputs`.
+Create ONLY four files under
+src/main/java/dz/sh/hidra/modules/simulation/domain/model/:
+
+1. SimulationStateQuantityInput.java
+   Immutable record fields: TargetKind targetKind, String targetId, Quantity quantity,
+   Knowledge knowledge, BigDecimal value, Instant valueAt, Instant evidenceRecordedAt,
+   String evidenceReference. Nested enums TargetKind NODE/PIPE/EQUIPMENT;
+   Knowledge MEASURED/ESTIMATED/SYNTHETIC/UNKNOWN. Require all enums and normalized
+   nonblank target/evidence identity (existing trim, case preserved).
+   Nested Quantity enum EXACT values and legal targets/ranges:
+   PRESSURE_PASCALS_ABSOLUTE: NODE or PIPE, >0;
+   TEMPERATURE_KELVIN: NODE or PIPE, >0;
+   PIPE_MASS_FLOW_KILOGRAMS_PER_SECOND: PIPE, signed including zero;
+   NODE_MASS_INJECTION_KILOGRAMS_PER_SECOND: NODE, signed including zero;
+   COMPRESSOR_SPEED_REVOLUTIONS_PER_MINUTE: EQUIPMENT, >=0;
+   VALVE_OPENING_FRACTION: EQUIPMENT, >=0 and <=1.
+   Pipe flow positive follows B1 fromNodeId->toNodeId, negative reverses it. Node mass
+   injection positive adds mass to scope, negative withdraws; no volumetric equivalence.
+   Known values require value/valueAt/evidenceRecordedAt; valueAt <= evidenceRecordedAt.
+   UNKNOWN requires all three null, with evidenceReference explaining missingness;
+   do not label absent observations as measured zero. Apply target compatibility even
+   for UNKNOWN; known numeric ranges via BigDecimal signum/compareTo.
+   Quantity may expose package-local validation for reuse by the series constructor;
+   keep validation inside this record/nested enum, no additional utility/value file.
+   MEASURED is declared observation provenance, not verified trust. ESTIMATED valueAt
+   is estimate's physical state time; SYNTHETIC is explicitly fixture data.
+
+2. SimulationInitialStateInput.java
+   Immutable record fields: String id, SimulationInputSourceVersion sourceVersion,
+   Instant stateAt, List<SimulationStateQuantityInput> quantities.
+   Require normalized nonblank id, source kind OPERATING_STATE, stateAt present,
+   sourceVersion effectiveAt(stateAt), stateAt <= sourceVersion.recordedAt.
+   Defensive nonempty required list, no null entries or duplicate normalized composite
+   keys (targetKind,targetId,quantity). Use structural key comparison, not ambiguous
+   delimiter concatenation; nested private record or equivalent local structure allowed.
+   For each known quantity: valueAt <= stateAt, evidenceRecordedAt <= sourceVersion.recordedAt.
+   Delayed evidence recorded after stateAt is allowed if included by source revision;
+   capturedAt/watermark matching remains manifest assembly work. UNKNOWN values retained.
+   Partial/unknown input is representable without claiming executable completeness.
+   No fabricated node/pipe quantities, running-state inference or readiness method.
+
+3. SimulationBoundarySeriesInput.java
+   Immutable record fields: String id, SimulationStateQuantityInput.TargetKind targetKind,
+   String targetId, SimulationStateQuantityInput.Quantity quantity,
+   Interpolation interpolation, List<Point> points.
+   Nested Interpolation enum EXACT STEP_PREVIOUS and LINEAR; required explicit choice.
+   Require normalized nonblank series/target IDs, target/quantity compatibility and
+   defensive points with at least two entries, no null entries. Boundary series target
+   only NODE (pressure, temperature or mass injection) or EQUIPMENT (compressor speed
+   or valve opening); reject PIPE boundary series. A pipe flow observation is initial
+   state, not silently a node boundary. Physics-supported boundary combinations remain
+   solver-design gates. Numeric validation reuses the declared Quantity ranges.
+   Nested Point record fields: Instant at, BigDecimal value,
+   SimulationInputSourceVersion.Origin origin, Instant recordedAt, String evidenceReference.
+   Require all fields and nonblank normalized evidence. Allowed origin EXACT
+   TRUSTED_TELEMETRY/SCENARIO/FORECAST/SYNTHETIC; reject ESTIMATED/APPROVED_PARAMETER
+   here rather than relabel them as observed boundaries. TRUSTED_TELEMETRY point requires
+   at <= recordedAt; future scenario/forecast/synthetic points may have at > recordedAt.
+   Trust remains a declared origin until evidence resolved, no synthetic truth promotion.
+   Point constructor checks shape/origin/time; series checks quantity-specific ranges
+   and strictly ascending distinct at timestamps. No sorting/coalescing conflicting
+   points. Preserve per-point origin/time/evidence; mixing future forecasts and known
+   history is explicit. Initial estimates belong in initial state, not boundary history.
+   STEP_PREVIOUS means value at a knot applies on [knot,nextKnot); final knot is end
+   anchor. LINEAR declares interpolation between adjacent knots. No valueAt evaluator,
+   interpolation/extrapolation implementation, wall-clock lookup or default is added.
+   Linear controls are declared ramps, not supported real equipment dynamics or commands.
+
+4. SimulationBoundaryScheduleInput.java
+   Immutable record fields: String id, SimulationInputSourceVersion sourceVersion,
+   Instant startsAt, Instant endsAt, List<SimulationBoundarySeriesInput> series.
+   Require normalized nonblank id, source kind BOUNDARY_SCHEDULE, required times with
+   endsAt > startsAt, sourceVersion effectiveAt(startsAt). Defensive nonempty list,
+   no null entries; unique normalized series IDs and structural target/quantity keys.
+   Each series first point EXACT startsAt and last point EXACT endsAt; require no
+   points outside this closed data interval. EndsAt is an explicit endpoint anchor for
+   horizon coverage, not license for extrapolation. No silent holding past last point,
+   gap filling, empty default schedule or conversion of UNKNOWN to known.
+   Every point recordedAt <= schedule sourceVersion.recordedAt. Together with measured
+   point at<=recordedAt this rejects future observations invented after frozen revision.
+   Planned future point times are permitted; record/evidence must already be selected.
+   Source effective interval governs revision selection at startsAt, not automatic
+   cancellation mid-horizon: immutable schedule payload covers its declared horizon.
+   Initial state/manifest/capture/horizon equality and referenced physical IDs are B4.
+
+Create ONLY
+src/test/java/dz/sh/hidra/modules/simulation/domain/model/SimulationStateBoundaryInputTest.java.
+Update ONLY the two execution memories: seven tracked implementation paths total.
+Canonical Java headers keep Author Abir MEDJERAB, CreatedOn 2025-06-26, current UpdatedOn.
+Reuse InvalidSimulationValueException; production imports only standard Java/local
+Simulation. Helpers, enums and nested records stay inside four new files. No migration:
+records neither persisted nor API-exposed. No B1/B2/manifest/existing test edits,
+owner-module/API/OpenAPI/dictionary/schema/POM/dependency/workflow/Kernel/Platform/
+architecture export change. No state acquisition or runtime equations in this stage.
+
+### Missing-data, completeness and follow-up gates
+
+B3 constructor validity is not hydraulic readiness. Node/pipe scalars are not a full
+spatial pipe profile; transient solver initialization/thermal state/discretization,
+equipment off/bypass behavior, curves/limits and boundary well-posedness require B4
+and engine preflights. Zero measured speed can represent data while B2 selected-map
+configuration requires positive speed; do not infer stopped/bypass physics from this
+number. Reject incompatible actual execution later rather than modifying old contracts
+or fabricating additional connectivity. B4 must explicitly admit any required schema
+extension. It also must propagate nested SYNTHETIC evidence and reject any misleading
+real-only manifest label, validate known/unknown completeness for chosen mode and
+network, bind sources/times/IDs, and distinguish forecast action from actual outcome.
+No local numerical bounds here are operational thresholds or GZ2 acceptance policies.
+
+### Meaningful synthetic tests and validation
+
+Use fixed Instant/BigDecimal fixtures: measured/estimated/synthetic/unknown initial
+quantities; every legal target/range with signed/zero flows, zero speed, opening 0/1;
+blank/null identity/evidence/enums, wrong target, missing known fields, forbidden
+unknown fields, invalid pressure/temperature/speed/opening, evidence/time order.
+Cover source-kind/validity exclusive end, future state/evidence, empty/null/duplicate
+structural keys including normalization, delayed evidence retained and partial unknowns.
+Cover explicit STEP_PREVIOUS/LINEAR schedules with history/scenario/forecast/synthetic
+origins; missing interpolation, unsupported origin/PIPE boundaries, invalid numeric
+values, duplicate/descending timestamps, future observed point, point recorded after
+source revision, absent/null/undersized series, missing/wrong horizon anchors, invalid
+interval/source kind/validity and duplicate series IDs or target/quantity keys.
+Prove defensive copies at all three list layers, unmodifiable access, replacement
+initial-state/schedule revisions retaining earlier values/origins/times. Do not assert
+interpolated output, numerical accuracy, operational completeness or measured trust.
+
+Later implementation commands:
+`./mvnw -B -q -Dtest=SimulationStateBoundaryInputTest,SimulationFluidEquipmentInputTest,SimulationPhysicalNetworkInputTest,SimulationInputManifestTest,ArchitectureGuardrailTest test`
+then `./mvnw -B -q clean verify`, canonical docs/OpenAPI/P1 validators, whitespace,
+exact seven-path and preserved registry/version checks. Use bash for a non-executable
+wrapper without chmod; report environment/dependency failures accurately. Publish
+with expected-parent lease, verify remote parent/tree/files, observe both exact-head
+production/Documentation startup and STOP. B4 still requires its registered exact-file
+preflight: `docs(twin): register HPR-P25-002B4 execution preflight`.
+
+Current documentation-only preflight validates all maintained validator suites,
+canonical docs/offline OpenAPI/P1 evidence, whitespace, exact two-document scope and
+preserved registries/version. No local Maven/runtime rerun required solely for docs.
+B3 and parent B/002 stay PENDING; no B3 record/source/solver/OT action implemented.
+Publish exact preflight message with expected-parent lease, verify parent/tree/two
+paths, observe Documentation CI startup and STOP for owner Next/Fail. Do not repeat
+B3 preflight unless evidence changes. P0/P1/P2 CLOSED, P2.5 OPEN, P3 DEFERRED,
+57 completed HMRs, 123 permanent subjects, v0.6.0 and 0.7.0-SNAPSHOT preserved.
+
+
+Actual B3 preflight checks PASSED: all 37 maintained validator tests (10 docs,
+10 OpenAPI, 17 dictionary); canonical docs (95 documents, 5,063 links, 24 modules,
+13 P2 rows); offline OpenAPI (244 paths, 263 operations, 231 schemas); retained
+P1 closure evidence and whitespace. Exact two-document scope and retained phase/
+HMR registries/version verified. B2 completion rests on exact-head successful CI;
+B3 source implementation and physical completeness remain pending. Supporting
+preflight Documentation CI follows publication.

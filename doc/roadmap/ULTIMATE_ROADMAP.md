@@ -272,19 +272,19 @@ P1 is **CLOSED** only when this closure SHA passes the repository's full exact-h
 
 ## 6. Immediate Next Execution
 
-Current owner instruction: analyze the independent P2 audit and update the roadmap.
-This is a documentation-only planning amendment, not implementation of the remedies.
-Exact supporting commit message: `docs(roadmap): reopen P2 after governance audit`.
-Write scope: this roadmap and the current Status of
-`doc/model-remediation/RECONCILIATION.md`, with a dated authority note there.
+Current owner instruction: Next selects the bounded HPR-P2-005 preflight only.
+Preflight publication message: `docs(roadmap): record P2 API remediation preflight`.
+Preflight write scope: ONLY this roadmap. No API documentation implementation,
+source change, contract regeneration, database remediation or closure is performed.
 
-Next selection: `HPR-P2-005 — bounded API documentation remediation preflight`.
-Revalidate current main and documentation CI, then publish the concrete allowlist,
-source mapping, acceptance checks and implementation scope before execution.
-After HPR-P2-005 is corrected and its documentation CI passes, select HPR-P2-006;
-after its corrections and applicable CI pass, select HPR-P2-013 final verification.
-Use each existing registered exact commit message; one HPR code per instruction.
-No remediation or closure is executed by this planning amendment.
+Next selection: `HPR-P2-005 — implement bounded API documentation correction`,
+only after successful Documentation Validation on this preflight publication and
+the owner's next selection. Use the existing exact implementation message
+`docs(api): establish versioned api contract` and the six-path allowlist below.
+HPR-P2-005 remains PENDING; preflight readiness does not close audit Check 9.
+After its correction and documentation CI pass, select HPR-P2-006 preflight;
+HPR-P2-013 remains PENDING renewed twelve-check and exact-head closure verification.
+One HPR code per instruction; no later task is automatically executed.
 
 P2 is OPEN. All P3 codes remain DEFERRED. The dated closure at
 `22a9b34225242c52fd502e421570af8b46879e4e` and CI #127/#606 remain retained
@@ -293,6 +293,91 @@ This current disposition supersedes older P2 CLOSED/no-next-task statements and
 historical pending/closed assertions in indexes or execution records. P0/P1 are
 unchanged absent regression evidence. All 57 HMR implementations (including HMR-080),
 123 semantic subjects and version `0.6.0-SNAPSHOT` remain unchanged.
+
+### HPR-P2-005 concrete API correction preflight — 2026-10-09
+
+Verified parent main: `83b844e22865bf5ad131bce414070c04f801e942`, tree
+`150b886dd7fe19ef1c13f4012bf4765fe94e19e8`. Documentation Validation #129,
+[run 37920338282](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/37920338282),
+completed SUCCESS on that exact SHA. The preflight re-read AGENTS.md, this roadmap,
+and current RECONCILIATION.md before mutation. Production/runtime source and the
+committed contract are unchanged from the pinned audit; no fresh runtime result
+is claimed. The owner has selected preparation/publication, not implementation.
+
+#### Exact implementation write allowlist
+
+| Existing file | Bounded change |
+|---|---|
+| `doc/api/API_CONVENTIONS.md` | Evidence-backed representative query/pagination/filter/sort rules, page shapes and correlation behavior; scope every rule to its operation/path |
+| `doc/api/ERROR_MODEL.md` | Runtime advice mapping/body structure, scoped overrides, filter/framework limits, validation/not-found/conflict/auth/server cases and current generated response counts |
+| `doc/api/README.md` | Current correction applicability, owner/source navigation and runtime-versus-generated authority; preserve initial/current generator provenance |
+| `doc/governance/DOCUMENT_REGISTER.md` | Reconcile API readiness/applicability with completed correction and still-open P2; preserve historical verification notes |
+| `doc/roadmap/ULTIMATE_ROADMAP.md` | Record actual correction/source checks and pending exact-head CI; update only HPR-P2-005 disposition after its required evidence exists |
+| `doc/model-remediation/RECONCILIATION.md` | Append current API correction/phase authority note; preserve every HMR row and historical execution envelope |
+
+No new file is admitted. All other tracked paths are excluded, including
+`doc/api/openapi.yaml`, application/configuration/test code, migrations, workflows,
+ops, database/domain/module docs, legacy docs, POM, VERSIONS.md and PROJECT_STATE.md.
+The registered canonical API filenames remain unchanged.
+
+#### Concrete source-to-document mapping
+
+Paths below are read-only implementation evidence at the verified parent; line
+ranges are navigation aids, while source content controls any final claim.
+
+| Documentation topic | Exact production evidence | Verified rule/qualification to carry into the correction |
+|---|---|---|
+| Workbench GET list and POST search | `src/main/java/dz/sh/hidra/platform/workbench/HidraOperationalWorkbenchController.java` (58–85), `HidraOperationalWorkbenchService.java` in the same package (55–57, 106–144, 229–287) | GET uses page/size/q; POST uses OperationalSearchRequest. Missing/negative page becomes 0; missing/nonpositive size becomes 50; positive size clamps at 200. Do not substitute kernel validation rules |
+| Workbench filtering/sorting/shape | `src/main/java/dz/sh/hidra/platform/workbench/OperationalSearchRequest.java` (27–34), `OperationalPageResponse.java` (27–35), service predicates/order above | query is trimmed lowercase substring LIKE over approved searchable fields; filters AND string-equality predicates over approved exposed fields, ignoring unknown/null fields. Valid sortBy with case-insensitive desc descends, otherwise ascends; absent/unknown sort creates no order. Page response identifies module/resource/page/size/totalElements/totalPages/items; no universal stable ordering promise |
+| Telemetry readings | `src/main/java/dz/sh/hidra/modules/telemetry/api/rest/controller/TelemetryQueryController.java` (46–55), `src/main/java/dz/sh/hidra/modules/telemetry/infrastructure/query/JpaTelemetryQueryAdapter.java` (51–62, page helper) | Defaults page=0/size=100; adapter clamps page >=0 and size 1–500. from/to are optional inclusive timestamp filters; state is optional case-insensitive text match, not an invented enum-validation rule; order sourceTimestamp descending. Kernel Page shape applies to this response |
+| Telemetry trend/latest | Same controller (58–70) and query adapter (66–90, unitId helper) | Trend defaults limit=1000, clamps 1–10000, returns a list in ascending sourceTimestamp order; it is not paged. Unknown point and absent latest reading throw IllegalArgumentException, so the generic missing-resource 404 must not be promised for these paths |
+| Kernel pagination scope | `src/main/java/dz/sh/hidra/kernel/pagination/PageRequest.java` (25–50), `src/main/java/dz/sh/hidra/kernel/pagination/Page.java` | Kernel PageRequest rejects negative pages and sizes outside 1–200, normalizes sorting. Describe only actual usages; do not impose its admission policy on Workbench or telemetry adapters |
+| Correlation metadata | `src/main/java/dz/sh/hidra/platform/web/PlatformHeaders.java` (27–28), `HidraRequestContextFilter.java` in the same package (43–95) | Highest-precedence OncePerRequestFilter trims supplied IDs, generates UUID fallback for absent/blank values, populates logging/MDC, sets both response headers and clears context in finally. IDs are tracing metadata, not authenticated actor identity; no unsupported format/uniqueness/async/error-dispatch guarantee |
+| Global controller advice | `src/main/java/dz/sh/hidra/platform/exception/HidraGlobalExceptionHandler.java` (43–133) | Domain 422; Platform/unexpected 500; NoSuchElement 404; IllegalArgument/validation/constraint 400; Authentication 401; AccessDenied 403 when handled by this advice. ProblemDetail plus code/path/timestamp, optional correlationId/requestId, validation fieldErrors and configured optional exception detail; no universal guarantee for exceptions handled elsewhere |
+| Scoped overrides | `src/main/java/dz/sh/hidra/modules/planning/api/rest/PlanningRevisionApiExceptionHandler.java`; `src/main/java/dz/sh/hidra/modules/alarm/api/rest/AlarmSuppressionApiExceptionHandler.java`; `src/main/java/dz/sh/hidra/modules/assets/api/rest/AssetsApiExceptionHandler.java`; `src/main/java/dz/sh/hidra/modules/workflow/api/rest/WorkflowTransitionApiExceptionHandler.java`; `src/main/java/dz/sh/hidra/modules/documents/api/rest/DocumentsContentApiExceptionHandler.java` | All five use highest-precedence advice scoped to named controllers. Planning/Alarm/Assets conflicts 409; Workflow conflict 409/denial 403; Documents invalid content 400/not-found 404/storage failure 503. Document exact codes and actual bodies, which do not inherit every global extension |
+| Authentication/filter boundary | `src/main/java/dz/sh/hidra/platform/configuration/HidraSecurityConfiguration.java`; existing `doc/api/AUTHENTICATION_AUTHORIZATION.md` | JWT resource-server chains are distinct from MVC controller advice; do not claim global ProblemDetail fields for all authentication/filter failures. Describe source-proven mappings and mark universal filter error-body contract NOT ESTABLISHED; no unrelated security audit |
+| Generated contract and counts | `doc/api/openapi.yaml`; `.github/scripts/validate_openapi_snapshot.py`; `.github/workflows/ci.yml` fresh equality step | 244 paths, 263 operations, 231 schemas; 258 HTTP-200 and five HTTP-201 response declarations, no declared 4xx/5xx. Runtime limits/defaults not encoded in generated schemas must be labelled source-derived; contract bytes/provenance remain unchanged |
+
+#### Test evidence and claim limits
+
+Read existing tests as corroboration: global handler test has missing-resource 404
+and authorization 403 assertions; Planning handler test asserts stable 409 code;
+Workbench service test covers ignored non-approved filter/sort fields and approved
+search strings; context-filter test concerns caller actor metadata separation.
+These files are respectively under `src/test/java/dz/sh/hidra/platform/exception`,
+`modules/planning/api/rest`, `platform/workbench` and `platform/web` with the matching
+production-class name plus Test. Their existence is not a fresh passing result,
+complete endpoint coverage or proof of every normalization behavior. No new test or
+runtime execution is required solely to change prose; claims come from inspected source.
+
+#### Implementation acceptance and validation
+
+1. Both affected API guides must contain substantive client-oriented tables/rules,
+   current applicability/source links, explicit generated/runtime separation and
+   scoped examples. Avoid blanket REST/error/pagination conventions not in source.
+2. ERROR_MODEL must correct 254 to 258 HTTP-200 declarations and retain the five
+   HTTP-201 declarations. State the runtime ProblemDetail fields and exceptions
+   accurately without changing the unestablished shared generated-error limitation.
+3. Verify every documented query default, clamp, filter, sort and page/list shape
+   against its actual controller, adapter and committed schema. Verify every error
+   code/status/extension against the responsible advice, including scoped 503.
+   Generic not-found 404 must not override the observed IllegalArgument 400 paths.
+4. Update API index/register applicability, then record HPR-P2-005 correction and
+   its actual verification point. It stays pending CI at publication; never claim
+   new exact-head success before GitHub reports it. HPR-P2-006/013 remain PENDING.
+5. Run `PYTHONDONTWRITEBYTECODE=1 python3 .github/scripts/validate_docs.py`,
+   `PYTHONDONTWRITEBYTECODE=1 python3 .github/scripts/validate_openapi_snapshot.py`,
+   `git diff --check`, exact six-path scope verification and source/contract spot
+   checks. Confirm identical excluded-file blobs, 57 HMR identities, 123 subjects
+   and version 0.6.0-SNAPSHOT. No full Maven/production CI solely for these docs.
+6. Publish one implementation commit with the registered message and expected-head
+   lease, verify its immutable parent/tree/files and observe Documentation Validation
+   startup, then STOP for the owner's Next/failure notification. If scope or source
+   requires executable changes, stop and amend the preflight before mutation.
+
+This preflight does not change API behavior or close the audit. P2 stays OPEN and
+P3 stays DEFERRED. The historical successful production CI remains valid at its
+original SHA; no new runtime, deployment, import, release or version result is claimed.
 
 ### Independent P2 audit analysis and bounded correction plan — 2026-10-09
 

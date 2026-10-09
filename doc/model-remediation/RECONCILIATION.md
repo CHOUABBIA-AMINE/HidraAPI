@@ -8587,7 +8587,7 @@ B1..B4 implementation CI is confirmed, no independent closure task is selected h
 | Code | Status | Exact purpose | Exact commit message | Gate |
 |---|---|---|---|---|
 | HPR-P25-002C1 | COMPLETED — 28cd17ca96c7f9bbd195601f0cd24e718c8ce632 plus c6b2fa7257fd603965f4a6faa9a05b1cd094e8cb repair passed Java 21 Production #619 and Documentation #159; 16 JUnit methods present; per-class XML not independently inspected | Owner-controlled trusted-reading evidence export and Simulation adapter | `feat(simulation): resolve owner trusted reading evidence` | Successful C preflight Documentation CI; B1..B4 exact-head CI confirmed |
-| HPR-P25-002C2 | PENDING — exact thirteen-path preflight registered; implementation not executed | Topology/product eligibility adapters and explicit missing physical-revision results | `feat(simulation): resolve owner topology and product eligibility` | C1 CI; `docs(twin): register HPR-P25-002C2 execution preflight` |
+| HPR-P25-002C2 | IN PROGRESS — six owner/Simulation contracts and adapters, 22 JUnit methods and both export registries implemented; local Maven blocked by dependency DNS; exact-head full CI pending | Topology/product eligibility adapters and explicit missing physical-revision results | `feat(simulation): resolve owner topology and product eligibility` | C1 CI; `docs(twin): register HPR-P25-002C2 execution preflight` |
 | HPR-P25-002C3 | PENDING — source/schema preflight required | Versioned physical source resolution, unit/reference conversion and Simulation suitability policy | `feat(simulation): resolve qualified physical source revisions` | C2 CI; `docs(twin): register HPR-P25-002C3 execution preflight`; demonstrated owner gaps/ownership/schema and approval evidence |
 
 C2/C3 are ordered planning registrations, not exact write authorization. C3 may need
@@ -8966,3 +8966,78 @@ C2 preflight validation PASSED: all 37 maintained validator tests; canonical doc
 scope and historical registry/version retention. No Java source changed or Maven
 verification claimed. C1 and its R1 repair are verified completed by #619/#159;
 C2 implementation remains PENDING.
+
+
+## HPR-P25-002C2 Owner Eligibility Evidence Implementation — 2026-10-09
+
+Owner Next selects ONLY C2 after Documentation #160/run 37982159094 completed
+SUCCESS at parent 68746ddcf058705151b71cb2880135801c98566c, tree
+e9c98ce2a0d0dae0f92252e1ea596302a9d7fe70. Mandatory instructions and execution
+memories read, current source synchronized, exact thirteen-path envelope retained.
+Exact message: `feat(simulation): resolve owner topology and product eligibility`.
+
+Created the nine registered paths: Custody SimulationProductCandidateContract and
+SimulationProductCandidateQueryAdapter; SimulationTopologyScopeEvidencePort and
+SimulationProductCandidateEvidencePort; TopologyScopeEvidenceQueryAdapter and
+CustodyProductCandidateEvidenceQueryAdapter; three corresponding registered test classes.
+Updated only both architecture export tests and these two memories. No schema/migration,
+existing entity/repository/owner scope contract/service, availability port, runtime
+workflow, physical payload, API/OpenAPI/dictionary/POM/dependency/workflow/Kernel/Platform
+change. Canonical headers retained; Custody transactional adapter nonfinal for proxying.
+
+Owner catalogue adapter uses existing findById within @Transactional(readOnly=true),
+normalizes requested IDs and requires exact returned ID. Raw catalogue name/code,
+activity and created/updated timestamps copy without classification or revision inference.
+Missing/mismatched rows remain absent, invalid requests make no lookup, failures propagate.
+Simulation adapter copies that owner contract evidence; product eligibility remains
+UNASSESSED and physical status MISSING_VERSIONED_FLUID_SOURCE for all returned candidates.
+Generic catalogue presence/activity/code spelling does not imply product/gas approval.
+Planning policy is not imported or queried; absent physical properties remain missing.
+
+Topology adapter uses existing public owner scope contract, retains unsupported/missing/
+inactive/eligible results and echoes normalized requested identity without claiming an
+independently returned identity/revision. ScopeEvidence validates required IDs and all
+coherent boolean combinations; malformed/null results reject. Every scope result exposes
+MISSING_VERSIONED_TOPOLOGY_SOURCE, including eligible scopes. Invalid requests make no
+owner call and failures propagate. No connected consequence scope, geometry or revision
+is fabricated. No runtime consumer wiring, captured immutable source, digest or solver.
+
+Added only custody.application.contract.simulation to BOTH deliberate export registries;
+new focused ArchitectureGuardrailTest method admits Custody/Topology public contracts and
+nested records and rejects private domain/persistence/repository imports. All existing
+rules, historical exports and forensic scanner assertions remain unchanged.
+
+Twenty-two new deterministic JUnit methods: owner catalogue mapping/identity/lookup/raw
+nullable metadata/activity/immutable replacement; Simulation candidate transport plus
+unassessed/missing status; all legal and illegal scope flag combinations, required/trimmed
+identity echoes, unsupported type passthrough, missing physical source, null result,
+exception/null dependency and immutable equality/replacement. All fixtures synthetic;
+no actual GZ2 inputs, product classification, approval or hydraulic accuracy claimed.
+
+Actual local validation:
+- bash ./mvnw -B -q -Dtest=SimulationProductCandidateQueryAdapterTest,TopologyScopeEvidenceQueryAdapterTest,CustodyProductCandidateEvidenceQueryAdapterTest,TopologySimulationScopeQueryServiceTest,ArchitectureGuardrailTest,ForensicRemediationClosureTest test
+  and bash ./mvnw -B -q clean verify both FAILED before compilation: uncached Spring
+  Boot parent 4.1.1 plus repo.maven.apache.org temporary DNS resolution failure. Java
+  17.0.20 available, not required Java 21; wrapper permissions unchanged. No local
+  Maven/JUnit/Spring/JPA/transaction/ArchUnit/full verification pass is claimed.
+- Temporary dependency-free source copies compiled via Java 17 jdk.compiler: framework
+  annotations/imports stripped; copied repository reduced to its inherited findById
+  signature; JUnit replaced with plain assertions. New 22 scenario bodies PASSED 113
+  custom assertions. Temporary forensic source harness reproduced the rejected new
+  Custody contract with original registry and PASSED five existing scenarios/eight
+  assertions with aligned registry. No framework-package stubs or tracked harness files;
+  this does not validate framework proxying, persistence or full Java 21 execution.
+
+C2 IN PROGRESS pending exact-head full CI; parent 002C/002 remain PENDING. C3 source/
+version/unit/reference/qualification gaps persist. P0/P1/P2 CLOSED, P2.5 OPEN,
+P3 DEFERRED, all 57 HMR implementations, 123 subjects and 0.7.0-SNAPSHOT preserved.
+Next registered selection after successful C2 CI is documentation-only
+`docs(twin): register HPR-P25-002C3 execution preflight`.
+Publish expected-parent lease, verify remote parent/tree/thirteen files, observe
+Production/Documentation startup and STOP. No C3/002D/engine/closure execution.
+
+Additional checks PASSED: 37 maintained validator tests; canonical docs (95 documents,
+5063 links, 24 modules, 13 P2 rows); offline OpenAPI (244 paths, 263 operations,
+231 schemas); P1 evidence; whitespace; exact thirteen-path envelope; canonical
+headers/import boundaries; same sole Custody export in both registries; retained
+historical rows/version. These checks do not substitute for pending exact-head CI.

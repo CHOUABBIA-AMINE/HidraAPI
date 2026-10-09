@@ -93,6 +93,7 @@ class ArchitectureGuardrailTest {
             "dz.sh.hidra.modules.party.application.contract.topology",
             "dz.sh.hidra.modules.party.application.contract.planning",
             "dz.sh.hidra.modules.custody.application.contract.planning",
+            "dz.sh.hidra.modules.custody.application.contract.simulation",
             "dz.sh.hidra.modules.telemetry.application.contract.monitoring",
             "dz.sh.hidra.modules.telemetry.application.contract.simulation",
             "dz.sh.hidra.modules.telemetry.application.contract.planning",
@@ -443,6 +444,32 @@ class ArchitectureGuardrailTest {
                 "dz.sh.hidra.modules.telemetry.infrastructure.persistence.entity.TrustedTelemetryReadingJpaEntity"));
         assertTrue(isForbiddenCrossModuleDependency(adapter,
                 "dz.sh.hidra.modules.telemetry.application.port.out.TrustedTelemetryReadingRepositoryPort"));
+    }
+
+    @Test
+    void simulationOwnerEvidenceExportsKeepPrivateTypesClosed() {
+        String custodyAdapter = "dz.sh.hidra.modules.simulation.infrastructure.integration.CustodyProductCandidateEvidenceQueryAdapter";
+        String topologyAdapter = "dz.sh.hidra.modules.simulation.infrastructure.integration.TopologyScopeEvidenceQueryAdapter";
+        assertFalse(isForbiddenCrossModuleDependency(custodyAdapter,
+                "dz.sh.hidra.modules.custody.application.contract.simulation.SimulationProductCandidateContract"));
+        assertFalse(isForbiddenCrossModuleDependency(custodyAdapter,
+                "dz.sh.hidra.modules.custody.application.contract.simulation.SimulationProductCandidateContract$Candidate"));
+        assertFalse(isForbiddenCrossModuleDependency(topologyAdapter,
+                "dz.sh.hidra.modules.topology.application.contract.simulation.SimulationTopologyScopeContract"));
+        assertFalse(isForbiddenCrossModuleDependency(topologyAdapter,
+                "dz.sh.hidra.modules.topology.application.contract.simulation.SimulationTopologyScopeContract$ScopeResolution"));
+        assertTrue(isForbiddenCrossModuleDependency(custodyAdapter,
+                "dz.sh.hidra.modules.custody.infrastructure.persistence.entity.CustodyCatalogEntryJpaEntity"));
+        assertTrue(isForbiddenCrossModuleDependency(custodyAdapter,
+                "dz.sh.hidra.modules.custody.domain.model.CustodyBatch"));
+        assertTrue(isForbiddenCrossModuleDependency(custodyAdapter,
+                "dz.sh.hidra.modules.custody.infrastructure.persistence.repository.CustodyCatalogEntryJpaRepository"));
+        assertTrue(isForbiddenCrossModuleDependency(topologyAdapter,
+                "dz.sh.hidra.modules.topology.domain.model.Pipeline"));
+        assertTrue(isForbiddenCrossModuleDependency(topologyAdapter,
+                "dz.sh.hidra.modules.topology.infrastructure.persistence.entity.PipelineJpaEntity"));
+        assertTrue(isForbiddenCrossModuleDependency(topologyAdapter,
+                "dz.sh.hidra.modules.topology.application.port.out.PipelineRepositoryPort"));
     }
 
     @Test

@@ -13,7 +13,7 @@
 | Field | Value |
 |---|---|
 | Status | ACTIVE |
-| P2 canonical governance | OPEN — independent P2 audit at c7d580cc7988f069bb939eb682664200e043c9bf verified 9/12 checks; Checks 9, 10 and 11 require documentation remediation; prior exact-head CI remains historical verified evidence |
+| P2 canonical governance | VERIFIED/CLOSED — renewed independent audit 12/12 VERIFIED at 7be1c9cb47ed9b6f73a7692d0a328ad870e2b4d4; exact-head Documentation Validation #136 and production CI #609 PASSED at a8905e32289a583f47b831e0381783e556ae0c8d; earlier 9/12 audit preserved as history |
 | Roadmap code | HPR — Hidra Platform Readiness |
 | Canonical documentation root | `doc/` |
 | Legacy/reference documentation root | `docs/` |
@@ -255,7 +255,7 @@ P1 is **CLOSED** only when this closure SHA passes the repository's full exact-h
 | HPR-P2-010 | COMPLETED — five-document governance baseline established; 24-module ownership, approved infrastructure retention, source-backed provenance and TARGET legacy admission separated from unknown business approvals; nine-path and 88-file Markdown checks passed; exact-head documentation CI follows publication | Data Governance | Doc | Create data governance, retention/archival, provenance and legacy-data migration documents without inventing retention values. | `docs(data): establish data governance baseline` | HPR-P2-001 |
 | HPR-P2-011 | COMPLETED — six source-backed verification documents established; all 24 module roots and 57 closed HMR obligations linked; ten-path and 94-file Markdown checks passed; test presence, historical CI and uninspected execution/skip evidence remain distinct; exact-head documentation CI follows publication | Testing | Doc | Create test strategy, architecture testing, database testing, API testing and requirements traceability documents tied to executable evidence. | `docs(testing): establish verification documentation` | HPR-P2-002..006 |
 | HPR-P2-012 | COMPLETED — maintained canonical metadata/link/index/module/P2 and deterministic OpenAPI validators/tests wired into both CI workflows; snapshot refreshed from verified CI #604 artifact; strict fresh-runtime equality added; local Maven blocked before compilation by Boot-parent/Central DNS; exact-head CI follows publication | Documentation CI | Infra | Add documentation validation for canonical links/status/index drift and deterministic OpenAPI contract checks. | `ci(docs): validate canonical documentation` | HPR-P2-001..011 |
-| HPR-P2-013 | IN PROGRESS — renewed read-only audit PASS, 12/12 VERIFIED at 7be1c9cb47ed9b6f73a7692d0a328ad870e2b4d4; closure metadata implemented; both closure-head CI gates PENDING; P2 OPEN | Governance | Doc | Reverify all twelve P2 checks after HPR-P2-005/006 corrections, canonical status/index consistency and exact-head CI; close P2 only with 12/12 VERIFIED. | `docs(roadmap): close P2 canonical governance` | HPR-P2-001..012 |
+| HPR-P2-013 | COMPLETED — renewed 12/12 audit VERIFIED at 7be1c9cb47ed9b6f73a7692d0a328ad870e2b4d4; exact-head Documentation Validation #136 and production CI #609 PASSED at a8905e32289a583f47b831e0381783e556ae0c8d; P2 VERIFIED/CLOSED | Governance | Doc | Reverify all twelve P2 checks after HPR-P2-005/006 corrections, canonical status/index consistency and exact-head CI; close P2 only with 12/12 VERIFIED. | `docs(roadmap): close P2 canonical governance` | HPR-P2-001..012 |
 
 ### Phase P3 — Deferred Industrial Scale / Future Capabilities
 
@@ -272,26 +272,25 @@ P1 is **CLOSED** only when this closure SHA passes the repository's full exact-h
 
 ## 6. Immediate Next Execution
 
-The separately selected HPR-P2-013 closure metadata implementation records renewed
-PASS/12-of-12 substantive verification at `7be1c9cb47ed9b6f73a7692d0a328ad870e2b4d4`
-and verified HPR-P2-005/006 correction gates. Exact message:
-`docs(roadmap): close P2 canonical governance`.
+HPR-P2-013 is COMPLETED; Phase P2 is VERIFIED/CLOSED following renewed 12/12
+substantive audit and successful exact-head Documentation Validation #136
+(run 37932486353) and full production CI #609 (run 37933120029) on
+`a8905e32289a583f47b831e0381783e556ae0c8d`. The documentation-only
+closure evidence record does not create a new executable baseline.
 
-Next selection: `HPR-P2-013 — verify both exact-head closure CI gates`.
-HPR-P2-013 is IN PROGRESS, P2 OPEN. Require successful documentation and full
-production CI on the resulting closure commit, including current OpenAPI equality
-and physical dictionary comparison, before final COMPLETED/P2 CLOSED disposition.
-Docs-only push starts documentation CI; full CI needs existing workflow_dispatch on
-that exact main head. No dispatch connector is currently exposed; owner Actions
-startup remains necessary unless a supported authorized capability becomes available.
-Never alter triggers or add dummy executable changes to force it. Stop after startup
-observation for Next/failure notification; no P3 work executes.
+All HPR-P2-001..013 are COMPLETED. All P3 tasks remain DEFERRED; no P3
+execution is automatically selected. Any future P3 work requires a separate
+owner-approved requirement and task selection. Formal v0.6.0 release preparation
+is a distinct governed workflow under AGENTS.md §19, not authorized by this
+P2 verification step. The project remains `0.6.0-SNAPSHOT`; no release,
+tag, version, deployment or data-import action occurs here.
 
-All HPR-P2-001..012 remain COMPLETED. All P3 codes are DEFERRED. Current audit/gate
-record below supersedes the earlier 9/12 audit FAIL for corrected content and dated
-CLOSED/pending statements while preserving their measured scope. P0/P1 are unchanged
-absent regression evidence. Preserve all 57 HMR identities including HMR-080, all
-123 subjects, production-data/approval unknowns and version 0.6.0-SNAPSHOT.
+Historical preflight, reopened 9/12 audit, pending-CI and earlier closure
+statements below retain their dated evidence scope and are superseded by this
+final exact-head result. P0/P1 status and their physical applicability remain
+unchanged. Preserve 57 HMR completions, 123 semantic subjects and explicit
+limitations on business approval, runtime inference, deployed-data acceptance,
+OT coverage and future industrial extensions.
 
 ### HPR-P2-013 renewed audit and closure metadata implementation — 2026-10-09
 
@@ -8155,3 +8154,42 @@ final-verification envelopes, exact two-file scope, all other tracked blobs unch
 57 completed HMR rows/123 catalogue subjects/version preservation, unchanged P3
 DEFERRED registry and git diff --check. No local runtime/physical campaign was rerun;
 new exact-head production evidence is the successful CI #606 described above.
+
+## HPR-P2-013 renewed final exact-head verification — 2026-10-09
+
+The owner's Next selected verification of the two previously required exact-head
+closure gates, not a P3 task or a software release. Main was independently checked
+at `a8905e32289a583f47b831e0381783e556ae0c8d` (closure metadata commit
+`docs(roadmap): close P2 canonical governance`), with tree
+`20fd066722ef96dca9a6f345bacb579ba0f52af2`.
+
+Both GitHub Actions runs completed SUCCESS on this exact implementation SHA:
+
+- Documentation Validation #136, run 37932486353, push event;
+- HidraAPI CI #609, run 37933120029, workflow_dispatch event.
+
+The production job `Java 21 Maven verification` completed SUCCESS. GitHub reports
+successful steps for Java 21 setup, repository verification, canonical validators,
+OpenAPI publication and snapshot equality, migrated database dictionary capture
+and retention, base-revision OpenAPI generation and backward compatibility,
+alongside the retained P1 release/HA/backup/operations evidence gates.
+These observed CI results satisfy the final exact-head gates; they do not assert
+per-class no-skips inspection, production-data/import acceptance, unknown business
+policy approvals, comprehensive endpoint/performance/OT coverage, a new physical
+survivability exercise or deployed AI/actuation.
+
+The separately pinned renewed substantive audit verified 12/12 checks at
+`7be1c9cb47ed9b6f73a7692d0a328ad870e2b4d4`. HPR-P2-005 and HPR-P2-006
+corrections remain completed; all HPR-P2-001..013 are now COMPLETED and Phase P2
+is VERIFIED/CLOSED. Preserve all 57 completed HMR identities and 123 semantic
+subjects. P0/P1 disposition and historical physical applicability are unchanged.
+All P3 tasks remain DEFERRED. No P3, release/tag/version, deployment, data import
+or owner-policy action is authorized or executed by this closure record.
+
+This final verification supersedes dated OPEN/pending-CI and the prior 9/12 audit
+as CURRENT execution disposition without rewriting historical evidence. The
+project version remains `0.6.0-SNAPSHOT`. Only the two canonical execution
+memories are refreshed by this evidence record. The successful production CI
+#609 remains attached to the exact executable/metadata implementation SHA;
+a documentation-only evidence commit requires documentation validation but
+does not imply that full production CI reran on the new documentation-only SHA.

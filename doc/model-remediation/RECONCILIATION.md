@@ -2,7 +2,7 @@
 
 ## Status
 
-CURRENT — all 57 reconciled HMR implementations COMPLETED; permanent 123-subject semantic transfer complete. HPR-P2-005/006 corrections are COMPLETED; renewed P2 audit PASS with 12/12 VERIFIED at 7be1c9cb47ed9b6f73a7692d0a328ad870e2b4d4. HPR-P2-013 closure metadata is implemented and IN PROGRESS pending both closure-head CI gates; P2 remains OPEN, P3 DEFERRED. Prior 9/12 FAIL and #127/#606 retain historical applicability.
+CURRENT — all 57 reconciled HMR implementations COMPLETED; permanent 123-subject semantic transfer complete. HPR-P2-005/006 corrections are COMPLETED; renewed P2 audit PASS with 12/12 VERIFIED at 7be1c9cb47ed9b6f73a7692d0a328ad870e2b4d4. HPR-P2-013 is COMPLETED and P2 VERIFIED/CLOSED after exact-head Documentation Validation #136 and production CI #609 PASSED at a8905e32289a583f47b831e0381783e556ae0c8d. P3 remains DEFERRED; prior 9/12 FAIL and #127/#606 retain historical applicability.
 
 ## Historical HPR-P2-007 Verification Baseline
 
@@ -6981,3 +6981,42 @@ dispatch action; owner Actions startup is required unless a supported authorized
 capability becomes available. No dummy changes or premature CLOSED claim. Publish
 `docs(roadmap): close P2 canonical governance`, verify files/parent/tree, observe
 startup and stop for Next/failure notification; no later roadmap task executes.
+
+## HPR-P2-013 renewed final exact-head verification — 2026-10-09
+
+The owner's Next selected verification of the two previously required exact-head
+closure gates, not a P3 task or a software release. Main was independently checked
+at `a8905e32289a583f47b831e0381783e556ae0c8d` (closure metadata commit
+`docs(roadmap): close P2 canonical governance`), with tree
+`20fd066722ef96dca9a6f345bacb579ba0f52af2`.
+
+Both GitHub Actions runs completed SUCCESS on this exact implementation SHA:
+
+- Documentation Validation #136, run 37932486353, push event;
+- HidraAPI CI #609, run 37933120029, workflow_dispatch event.
+
+The production job `Java 21 Maven verification` completed SUCCESS. GitHub reports
+successful steps for Java 21 setup, repository verification, canonical validators,
+OpenAPI publication and snapshot equality, migrated database dictionary capture
+and retention, base-revision OpenAPI generation and backward compatibility,
+alongside the retained P1 release/HA/backup/operations evidence gates.
+These observed CI results satisfy the final exact-head gates; they do not assert
+per-class no-skips inspection, production-data/import acceptance, unknown business
+policy approvals, comprehensive endpoint/performance/OT coverage, a new physical
+survivability exercise or deployed AI/actuation.
+
+The separately pinned renewed substantive audit verified 12/12 checks at
+`7be1c9cb47ed9b6f73a7692d0a328ad870e2b4d4`. HPR-P2-005 and HPR-P2-006
+corrections remain completed; all HPR-P2-001..013 are now COMPLETED and Phase P2
+is VERIFIED/CLOSED. Preserve all 57 completed HMR identities and 123 semantic
+subjects. P0/P1 disposition and historical physical applicability are unchanged.
+All P3 tasks remain DEFERRED. No P3, release/tag/version, deployment, data import
+or owner-policy action is authorized or executed by this closure record.
+
+This final verification supersedes dated OPEN/pending-CI and the prior 9/12 audit
+as CURRENT execution disposition without rewriting historical evidence. The
+project version remains `0.6.0-SNAPSHOT`. Only the two canonical execution
+memories are refreshed by this evidence record. The successful production CI
+#609 remains attached to the exact executable/metadata implementation SHA;
+a documentation-only evidence commit requires documentation validation but
+does not imply that full production CI reran on the new documentation-only SHA.

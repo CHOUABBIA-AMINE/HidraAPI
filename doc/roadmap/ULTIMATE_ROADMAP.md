@@ -250,7 +250,7 @@ P1 is **CLOSED** only when this closure SHA passes the repository's full exact-h
 | HPR-P2-006 | COMPLETED — canonical current database architecture, schema ownership, Flyway policy and generated persistence dictionary established from 82 current Flyway migrations, 469 current module JPA persistence entities, production configuration and closed P1 PostgreSQL/backup evidence; stale pre-closure DB stage documents retained as historical provenance | Database | Doc | Create database architecture, schema ownership, Flyway policy and current generated data dictionary from current migrations/JPA evidence. | `docs(database): establish canonical database documentation` | HPR-P2-001 |
 | HPR-P2-007 | COMPLETED — exact-source reconciliation established: HMR-005 corrected to completed, HMR-009 confirmed completed/stale carry-over removed, HMR-054 historical blocker resolved by current Party→Topology contract, HMR-050..106 reconciled to 56 still-required + 1 blocked (HMR-080), 0 superseded; legacy roadmap preserved as history | Semantic Remediation | Code/Doc | Inventory unresolved HMR/HMSR obligations against exact current source; mark each as completed, still required, blocked, or superseded with evidence. | `docs(model-remediation): reconcile remaining semantic obligations` | HPR-P2-003 |
 | HPR-P2-008 | IN PROGRESS — 57 CI-confirmed through repaired Nomination CI #604; zero pending, STILL REQUIRED or BLOCKED, 57 evaluated. NOM-OWNER-01/NOM-EXEC-01 accepted; final reconciliation remains open, no phase closure. | Semantic Remediation | Code | Execute still-required semantic remediation in dependency order using revalidated HMSR obligations; do not restart completed HMRs without regression evidence. | `fix(model): continue reconciled semantic remediation` | HPR-P2-007 |
-| HPR-P2-009 | PENDING | Semantic Remediation | Doc | Transfer permanent semantic decisions from legacy review/roadmaps into `doc/domain/` and `doc/modules/`, then preserve legacy files as execution history. | `docs(model-remediation): canonicalize semantic decisions` | HPR-P2-008 | IN PROGRESS — HMR-050 and attached Batches 1..6 implemented; 17 completed, 39 still-required HMRs and HMR-080 blocked in the HMR-050..106 register. Baseline production CI #576 passed; final Batch 6 CI pending. Local full Maven validation blocked by Maven Central DNS/uncached parent, Java 17 and absent Docker. | Semantic Remediation | Code | Execute still-required semantic remediation in dependency order using revalidated HMSR obligations; do not restart completed HMRs without regression evidence. | `fix(model): continue reconciled semantic remediation` | HPR-P2-007 |
+| HPR-P2-009 | PENDING | Semantic Remediation | Doc | Transfer permanent semantic decisions from legacy review/roadmaps into `doc/domain/` and `doc/modules/`, then preserve legacy files as execution history. | `docs(model-remediation): canonicalize semantic decisions` | HPR-P2-008 |
 | HPR-P2-010 | PENDING | Data Governance | Doc | Create data governance, retention/archival, provenance and legacy-data migration documents without inventing retention values. | `docs(data): establish data governance baseline` | HPR-P2-001 |
 | HPR-P2-011 | PENDING | Testing | Doc | Create test strategy, architecture testing, database testing, API testing and requirements traceability documents tied to executable evidence. | `docs(testing): establish verification documentation` | HPR-P2-002..006 |
 | HPR-P2-012 | PENDING | Documentation CI | Infra | Add documentation validation for canonical links/status/index drift and deterministic OpenAPI contract checks. | `ci(docs): validate canonical documentation` | HPR-P2-001..011 |
@@ -5927,3 +5927,72 @@ recorded; GitHub Java 21 CI supplies runtime evidence. Version remains
 0.6.0-SNAPSHOT. No physical survivability evidence, release, later HPR execution or
 HPR-P2-008 completion is claimed. Next recommended work is an explicit HPR-P2-008
 final reconciliation/closure preflight; do not execute HPR-P2-009 automatically.
+
+
+## HPR-P2-008 final reconciliation preflight — 2026-10-09
+
+Owner Next after 66712d6fc6f5a383bb2f826311d7a469a531fbb4 selects this supporting
+preflight only. Current main is unchanged at that SHA, tree
+6a93358bfa5c977507876025b3201eac2f535304. Documentation CI #114 (37889505086)
+passed. Production baseline 617c2eec812e3a5734957ee9fa0360f6f5613032, tree
+e450c699544f99e96f2b447fc04215f7f4c5f344, has green CI #604 (37841205677):
+Java 21 clean verify, current/base OpenAPI generation and compatibility enforcement.
+A complete GitHub tree comparison found only the two canonical documents changed
+between production baseline and main; every executable/test/migration blob is identical.
+
+### Bounded current-source reconciliation
+
+| Check | Verified result |
+|---|---|
+| Canonical HMR-050..106 register | 57 unique contiguous HMR codes, 57 unique HMSR references, all COMPLETED |
+| Current implementation inventories | 57 subject domain records and 57 corresponding JPA entities exist |
+| Dedicated semantic test inventory | All 57 subject SemanticRemediationTest files exist in their module semantic packages |
+| Owner-contract architecture exports | Both guardrail inventories match exactly: 63 existing exported packages |
+| Published Flyway inventory | 139 versioned migrations, no duplicate version identifiers |
+| Runtime gate | Exact production baseline passed CI #604; documentation-only descendants preserve that tree |
+| Reconciled outstanding work | Zero STILL REQUIRED, BLOCKED or pending-CI HMRs in this register |
+| Version | 0.6.0-SNAPSHOT unchanged |
+
+This is a register/source/evidence preflight, not a fresh independent business-rule
+acceptance audit of every legacy review. It introduces no new implementation or
+runtime result. No concrete regression was found by these bounded checks; completed
+HMRs remain closed unless new regression evidence appears.
+
+### Canonical drift corrected
+
+Twelve current register rows retained stale pending-CI prose despite later green
+verification; their evidence now points to cumulative CI #604. Corrected the current
+HMR-054 implementation-required sentence, HMR-080 exclusion, one-blocked progress
+summary and ambiguous historical baseline heading. The malformed HPR-P2-009 registry
+row contained a stale Batch 6 HPR-P2-008 status appended after its seven proper fields;
+removed that appended fragment while preserving P2-009 PENDING and its dependency.
+Historical batch preparation, local environment limits, repair and earlier blocker
+sections remain evidence; they do not override the current register.
+
+### Remaining closure and deployment boundaries
+
+HPR-P2-008 remains IN PROGRESS/OPEN under the user's explicit instruction. This
+preflight does not mark it completed, unlock HPR-P2-009, execute a later HPR, change a
+release/version, or claim physical survivability. Final closure is a separate explicit
+decision; 57 CI-confirmed HMR implementations alone must not silently close governance.
+The successor HPR-P2-009 permanent-decision transfer remains PENDING, as do subsequent
+P2 governance/documentation gates. No successor files are written by this preflight.
+
+Owner-approved policy/mapping provisioning remains a deployment prerequisite where
+historical data exists: PlanTarget 019/020 and Nomination 025/026 intentionally fail
+closed without approved facts. Green empty-database/test fixtures do not assert that
+an actual populated deployment has approved mappings. Preserve published migrations;
+never seed guessed mappings, repair historical records silently or add cross-module FKs.
+
+### Supporting publication scope and checks
+
+Exact supporting commit: `docs(model-remediation): record final reconciliation preflight`.
+Write ONLY doc/roadmap/ULTIMATE_ROADMAP.md and doc/model-remediation/RECONCILIATION.md.
+Validate 57-row completeness/source/test identities, matching exports, unique migration
+versions, seven-field P2 registry rows, canonical Markdown UTF-8/nonempty/conflict checks
+and git diff --check. Publish once with expected-head lease
+66712d6fc6f5a383bb2f826311d7a469a531fbb4; verify exact immutable tree/blobs and all other
+files unchanged. Confirm Documentation Validation starts and STOP without waiting.
+Production CI ignores this documentation-only push. No local Maven run is required or
+claimed for this two-document task. Next recommended decision is the explicit
+HPR-P2-008 closure disposition; this preflight provides evidence without granting it.

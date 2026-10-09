@@ -247,7 +247,7 @@ P1 is **CLOSED** only when this closure SHA passes the repository's full exact-h
 | HPR-P2-002 | COMPLETED — canonical current/target-separated architecture set established from live package, ArchUnit, runtime/configuration and P1 infrastructure evidence; historical architecture material remains preserved and subordinate | Architecture | Doc | Create current/target-separated system context, architecture overview, bounded-context map, Hexagonal boundaries, module boundaries, cross-module contracts and technology stack. | `docs(architecture): establish canonical architecture set` | HPR-P2-001 |
 | HPR-P2-003 | COMPLETED — canonical ubiquitous language, domain ownership and focused topology/telemetry, alarm-incident-leak, assets-integrity, and simulation-analytics-AI semantic baselines established from exact current source; AI/autonomous inference remains explicitly NOT ESTABLISHED | Domain | Doc | Create `UBIQUITOUS_LANGUAGE.md`, domain ownership and focused topology/telemetry/alarm-incident-leak/assets-integrity/simulation-analytics-AI semantic documents. | `docs(domain): establish ubiquitous language baseline` | HPR-P2-001 |
 | HPR-P2-004 | COMPLETED — canonical current-state documents created for all 24 implemented module roots from live domain/API/application/persistence/contract inventories; no current-state docs created for agents/environment/otsecurity | Modules | Doc | Create one current-state `doc/modules/<module>.md` for each of the 24 implemented modules; do not create current-state module docs for agents/environment/otsecurity. | `docs(modules): add canonical module documentation` | HPR-P2-002..003 |
-| HPR-P2-005 | PENDING — reopened for audit Check 9 only; committed contract and drift enforcement remain VERIFIED; runtime error/query/correlation documentation incomplete and HTTP-200 count stale | API | Code/Doc | Complete source-backed API conventions and runtime error documentation under the bounded audit amendment below; preserve the generated-envelope limitation and committed contract. | `docs(api): establish versioned api contract` | HPR-P1-008 |
+| HPR-P2-005 | IN PROGRESS — audit Check 9 documentation correction implemented against b39c87dcaf887ada1d22c6a88d1e1f51b9f7ecaa; source/contract checks passed; publication documentation CI PENDING | API | Code/Doc | Complete source-backed API conventions and runtime error documentation under the bounded audit amendment below; preserve the generated-envelope limitation and committed contract. | `docs(api): establish versioned api contract` | HPR-P1-008 |
 | HPR-P2-006 | PENDING — reopened for audit Checks 10 and 11; 139-migration/470-entity inventory is current but lacks physical dictionary entries and complete schema/migration rules | Database | Doc | Complete the current physical table/column dictionary and explicit ownership/FK/migration governance under the bounded audit amendment below; preserve applied SQL and historical evidence. | `docs(database): establish canonical database documentation` | HPR-P2-001 |
 | HPR-P2-007 | COMPLETED — exact-source reconciliation established: HMR-005 corrected to completed, HMR-009 confirmed completed/stale carry-over removed, HMR-054 historical blocker resolved by current Party→Topology contract, HMR-050..106 reconciled to 56 still-required + 1 blocked (HMR-080), 0 superseded; legacy roadmap preserved as history | Semantic Remediation | Code/Doc | Inventory unresolved HMR/HMSR obligations against exact current source; mark each as completed, still required, blocked, or superseded with evidence. | `docs(model-remediation): reconcile remaining semantic obligations` | HPR-P2-003 |
 | HPR-P2-008 | COMPLETED — owner-authorized closure after final reconciliation preflight; all 57 HMR implementations confirmed by CI #604, zero pending, STILL REQUIRED or BLOCKED; documentation preflight CI #115 passed. P2 phase remains open. | Semantic Remediation | Code | Execute still-required semantic remediation in dependency order using revalidated HMSR obligations; do not restart completed HMRs without regression evidence. | `fix(model): continue reconciled semantic remediation` | HPR-P2-007 |
@@ -272,18 +272,16 @@ P1 is **CLOSED** only when this closure SHA passes the repository's full exact-h
 
 ## 6. Immediate Next Execution
 
-Current owner instruction: Next selects the bounded HPR-P2-005 preflight only.
-Preflight publication message: `docs(roadmap): record P2 API remediation preflight`.
-Preflight write scope: ONLY this roadmap. No API documentation implementation,
-source change, contract regeneration, database remediation or closure is performed.
+The owner's Next selected HPR-P2-005 implementation after preflight Documentation
+Validation #130 PASSED. The six admitted existing documentation files are corrected;
+HPR-P2-005 is IN PROGRESS until its publication Documentation Validation succeeds.
+Exact implementation message: `docs(api): establish versioned api contract`.
 
-Next selection: `HPR-P2-005 — implement bounded API documentation correction`,
-only after successful Documentation Validation on this preflight publication and
-the owner's next selection. Use the existing exact implementation message
-`docs(api): establish versioned api contract` and the six-path allowlist below.
-HPR-P2-005 remains PENDING; preflight readiness does not close audit Check 9.
-After its correction and documentation CI pass, select HPR-P2-006 preflight;
-HPR-P2-013 remains PENDING renewed twelve-check and exact-head closure verification.
+Next selection: `HPR-P2-005 — verify correction publication Documentation Validation`.
+Observe startup and STOP for the owner's Next/failure notification. If it passes,
+record completion and select HPR-P2-006 bounded dictionary/schema-policy preflight;
+if it fails, repair the responsible scope before advancing. HPR-P2-006 and
+HPR-P2-013 remain PENDING. No database correction or closure is executed here.
 One HPR code per instruction; no later task is automatically executed.
 
 P2 is OPEN. All P3 codes remain DEFERRED. The dated closure at
@@ -293,6 +291,40 @@ This current disposition supersedes older P2 CLOSED/no-next-task statements and
 historical pending/closed assertions in indexes or execution records. P0/P1 are
 unchanged absent regression evidence. All 57 HMR implementations (including HMR-080),
 123 semantic subjects and version `0.6.0-SNAPSHOT` remain unchanged.
+
+### HPR-P2-005 API correction implementation — 2026-10-09
+
+Verified main parent: `b39c87dcaf887ada1d22c6a88d1e1f51b9f7ecaa`, tree
+`95cfc6a0002a3e548e8a5d199af084f3bb9b0383`. Preflight Documentation Validation
+#130, [run 37920910941](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/37920910941),
+completed SUCCESS. AGENTS.md, this roadmap and RECONCILIATION.md were re-read.
+Exactly the six preflight-admitted existing files change: API_CONVENTIONS.md,
+ERROR_MODEL.md, API README, canonical DOCUMENT_REGISTER.md, this roadmap and
+RECONCILIATION.md. No new file, contract, executable, test, migration or workflow.
+
+The two guides now describe operation-scoped defaults/clamps/filter/sort/response
+shapes; tracing header trim/fallback/context behavior; global advice status/code/body
+mapping; all five high-priority scoped advice classes, including Documents 503;
+and authentication/filter body limits. Current generated declarations are 258 HTTP
+200 and five HTTP 201. The shared generated error envelope remains NOT ESTABLISHED.
+Source revalidation corrected the preflight's page-type mapping: Telemetry returns
+its nested TelemetryQueryUseCase.Page with hasNext, not kernel.pagination.Page.
+No application behavior changed, including existing IllegalArgument not-found 400.
+
+Actual local validation: canonical documentation validation PASSED (95 documents,
+3,330 relative links, 24 modules and 13 primary P2 rows), offline OpenAPI integrity PASSED
+(244 paths/263 operations/231 schemas), git diff --check PASSED. Exact six-file scope,
+source/DTO/advice/contract checks and excluded-file preservation PASSED before
+publication. All 57 primary HMR rows and all 111 current/historical HMR table rows
+are byte-preserved; the subject catalogue remains 123 entries. Source-linked tests were read, not rerun; no new Java/runtime/physical
+success is claimed. The unchanged snapshot still uses its retained generator SHA.
+
+HPR-P2-005 implementation is complete but remains IN PROGRESS pending exact-head
+publication Documentation Validation. Audit Check 9 has a source-backed correction;
+final twelve-check verdict is not pre-asserted. HPR-P2-006/013 remain PENDING, P2 OPEN,
+P3 DEFERRED. Preserve 57 HMR completions, 123 subjects, prior CI/physical provenance
+and version 0.6.0-SNAPSHOT. Publish once with an expected-head lease, verify immutable
+parent/tree/files, observe documentation CI startup, then STOP for notification.
 
 ### HPR-P2-005 concrete API correction preflight — 2026-10-09
 
@@ -329,7 +361,7 @@ ranges are navigation aids, while source content controls any final claim.
 |---|---|---|
 | Workbench GET list and POST search | `src/main/java/dz/sh/hidra/platform/workbench/HidraOperationalWorkbenchController.java` (58–85), `HidraOperationalWorkbenchService.java` in the same package (55–57, 106–144, 229–287) | GET uses page/size/q; POST uses OperationalSearchRequest. Missing/negative page becomes 0; missing/nonpositive size becomes 50; positive size clamps at 200. Do not substitute kernel validation rules |
 | Workbench filtering/sorting/shape | `src/main/java/dz/sh/hidra/platform/workbench/OperationalSearchRequest.java` (27–34), `OperationalPageResponse.java` (27–35), service predicates/order above | query is trimmed lowercase substring LIKE over approved searchable fields; filters AND string-equality predicates over approved exposed fields, ignoring unknown/null fields. Valid sortBy with case-insensitive desc descends, otherwise ascends; absent/unknown sort creates no order. Page response identifies module/resource/page/size/totalElements/totalPages/items; no universal stable ordering promise |
-| Telemetry readings | `src/main/java/dz/sh/hidra/modules/telemetry/api/rest/controller/TelemetryQueryController.java` (46–55), `src/main/java/dz/sh/hidra/modules/telemetry/infrastructure/query/JpaTelemetryQueryAdapter.java` (51–62, page helper) | Defaults page=0/size=100; adapter clamps page >=0 and size 1–500. from/to are optional inclusive timestamp filters; state is optional case-insensitive text match, not an invented enum-validation rule; order sourceTimestamp descending. Kernel Page shape applies to this response |
+| Telemetry readings | `src/main/java/dz/sh/hidra/modules/telemetry/api/rest/controller/TelemetryQueryController.java` (46–55), `src/main/java/dz/sh/hidra/modules/telemetry/infrastructure/query/JpaTelemetryQueryAdapter.java` (51–62, page helper) | Defaults page=0/size=100; adapter clamps page >=0 and size 1–500. from/to are optional inclusive timestamp filters; state is optional case-insensitive text match, not an invented enum-validation rule; order sourceTimestamp descending. TelemetryQueryUseCase.Page shape, including hasNext, applies to this response |
 | Telemetry trend/latest | Same controller (58–70) and query adapter (66–90, unitId helper) | Trend defaults limit=1000, clamps 1–10000, returns a list in ascending sourceTimestamp order; it is not paged. Unknown point and absent latest reading throw IllegalArgumentException, so the generic missing-resource 404 must not be promised for these paths |
 | Kernel pagination scope | `src/main/java/dz/sh/hidra/kernel/pagination/PageRequest.java` (25–50), `src/main/java/dz/sh/hidra/kernel/pagination/Page.java` | Kernel PageRequest rejects negative pages and sizes outside 1–200, normalizes sorting. Describe only actual usages; do not impose its admission policy on Workbench or telemetry adapters |
 | Correlation metadata | `src/main/java/dz/sh/hidra/platform/web/PlatformHeaders.java` (27–28), `HidraRequestContextFilter.java` in the same package (43–95) | Highest-precedence OncePerRequestFilter trims supplied IDs, generates UUID fallback for absent/blank values, populates logging/MDC, sets both response headers and clears context in finally. IDs are tracing metadata, not authenticated actor identity; no unsupported format/uniqueness/async/error-dispatch guarantee |

@@ -2,7 +2,7 @@
 
 ## Status
 
-CURRENT — canonical API index; snapshot refreshed by HPR-P2-012.
+CURRENT — canonical API index; snapshot refreshed by HPR-P2-012; runtime conventions/error documentation corrected under HPR-P2-005 on 2026-10-09.
 
 ## Historical HPR-P2-005 Contract Provenance
 
@@ -104,3 +104,32 @@ per-class no-skips evidence, deployed-data/import acceptance, runtime inference/
 and fresh physical survivability are not established by this documentation closure.
 P0/P1 disposition and original physical evidence remain unchanged absent regression.
 TimescaleDB, PostGIS and unimplemented industrial/AI extensions remain DEFERRED/TARGET.
+
+## HPR-P2-005 API documentation audit correction — 2026-10-09
+
+Current source verification parent: `b39c87dcaf887ada1d22c6a88d1e1f51b9f7ecaa`.
+Preflight Documentation Validation #130, run 37920910941, PASSED on that SHA.
+[API conventions](API_CONVENTIONS.md) now documents representative Workbench and
+Telemetry query/paging/filter/sort rules, actual response DTOs and tracing headers.
+[Error model](ERROR_MODEL.md) now documents global MVC mappings and five scoped
+advice classes, body differences, validation/not-found cases, and filter boundaries.
+These are source-derived current descriptions, not a new universal error contract.
+
+The unchanged committed snapshot has 258 HTTP-200 and five HTTP-201 declarations;
+its 244-path/263-operation/231-schema summary and generator provenance above govern
+current generated counts. Untouched API guides retain their original generation
+applicability; older numeric summaries must not override the current snapshot.
+This bounded correction does not reverify every untouched guide or change auth/API
+behavior. Shared generated 4xx/5xx/error-envelope coverage remains NOT ESTABLISHED.
+
+Ownership follows the canonical register and existing repository/module authorities;
+this correction appoints no new named owner or grants new business/security approval.
+Source links identify the responsible controller/advice/adapter rather than treating
+an index as executable truth. Future changes must reconcile these source-derived
+rules with the generated contract and current implementation.
+
+HPR-P2-005 correction implementation is complete; exact-head Documentation Validation
+on its publication is PENDING. P2 remains OPEN for HPR-P2-006 and HPR-P2-013; P3 is
+DEFERRED. The current roadmap supersedes dated CLOSED/pending-CI statements for phase
+execution. Prior generation/CI provenance remains historical evidence at its SHA.
+No runtime tests, schema changes, deployment, import or release were performed here.

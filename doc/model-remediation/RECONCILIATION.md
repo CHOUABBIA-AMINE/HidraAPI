@@ -2,7 +2,7 @@
 
 ## Status
 
-CURRENT — all 57 reconciled HMR implementations COMPLETED; permanent 123-subject semantic transfer complete. P2 is OPEN after the independent audit at c7d580cc7988f069bb939eb682664200e043c9bf failed Checks 9–11; HPR-P2-005/006 corrections and HPR-P2-013 re-verification are pending. Prior #127/#606 success remains historical verified evidence. P3 remains DEFERRED.
+CURRENT — all 57 reconciled HMR implementations COMPLETED; permanent 123-subject semantic transfer complete. P2 is OPEN after the independent audit at c7d580cc7988f069bb939eb682664200e043c9bf failed Checks 9–11; HPR-P2-005 API documentation correction is implemented and awaiting publication documentation CI; HPR-P2-006 correction and HPR-P2-013 re-verification remain pending. Prior #127/#606 success remains historical verified evidence. P3 remains DEFERRED.
 
 ## Historical HPR-P2-007 Verification Baseline
 
@@ -6853,3 +6853,20 @@ closure. This note supersedes earlier phase CLOSED/no-next-task assertions only.
 All 57 HMR completions and 123 semantic subjects, historical CI/physical provenance,
 P0/P1 disposition and version 0.6.0-SNAPSHOT are preserved. P3 remains DEFERRED.
 No corrective implementation is executed by this documentation-only amendment.
+
+## HPR-P2-005 API documentation correction — 2026-10-09
+
+The owner selected implementation after preflight Documentation Validation #130
+PASSED on `b39c87dcaf887ada1d22c6a88d1e1f51b9f7ecaa`. The approved six-file scope
+corrects API conventions/errors and supporting applicability/control records.
+Current runtime mappings remain distinct from the unchanged generated OpenAPI;
+258 HTTP-200/five HTTP-201 declarations are reconciled. Telemetry uses its own
+Page DTO with hasNext; kernel page rules are not imposed on that adapter.
+
+HPR-P2-005 implementation is complete and IN PROGRESS pending its exact-head
+publication documentation CI. Next verifies that gate before HPR-P2-006 preflight.
+Current [roadmap](../roadmap/ULTIMATE_ROADMAP.md#hpr-p2-005-api-correction-implementation--2026-10-09)
+controls execution over older dated statuses. HPR-P2-006/013 remain PENDING;
+P2 OPEN/P3 DEFERRED. Every HMR row, 57 completions, 123 semantic subjects, version
+0.6.0-SNAPSHOT and historical provenance remain preserved. No semantic/runtime,
+database, source/test/configuration, deployment, import or release change is made.

@@ -33,7 +33,7 @@ Documentation authority follows the repository governance and the owner/decision
 | `doc/database/**` | CURRENT where individually stated | Canonical HPR-P2-006 database architecture, ownership, Flyway policy and generated persistence dictionary; earlier P1 stage docs retained as provenance | HPR-P2-006 complete |
 | `doc/domain/**` | CURRENT where individually stated | Canonical ubiquitous language, ownership and focused semantic baseline from current source | HPR-P2-003 complete; HPR-P2-009 refreshed lasting semantics |
 | `doc/modules/**` | CURRENT | Canonical current-state documentation for all 24 implemented module roots; excludes non-implemented agents/environment/otsecurity | HPR-P2-004 complete; HPR-P2-009 refreshed inventories/decisions |
-| `doc/api/**` | CURRENT | Canonical version-controlled OpenAPI 3.1 contract plus overview, conventions, authentication, error-model, compatibility and OpenAPI-governance controls | HPR-P2-005 complete |
+| `doc/api/**` | CURRENT | Canonical OpenAPI snapshot plus current source-backed query/correlation/error rules; older untouched guides retain generation applicability | HPR-P2-005 audit correction implemented; exact-head documentation CI PENDING; P2 OPEN |
 | `doc/model-remediation/**` | CURRENT | Exact-current-source reconciliation of legacy HMR/HMSR execution obligations; legacy `docs/roadmap/model-semantic-remediation.md` remains history | HPR-P2-007/008 complete; HPR-P2-009 transfers lasting rules into domain/module docs |
 | `doc/data/**` | CURRENT | Five-document HPR-P2-010 governance baseline at source parent `b36733fc05e789613485606e1e1dd1731b11af53`; approved infrastructure controls and source-backed provenance separated from TARGET admission and unknown business decisions | HPR-P2-010 complete |
 | `doc/testing/**` | CURRENT | Six-document HPR-P2-011 source-backed strategy, architecture/database/API testing and requirements evidence; source parent `35d9d949aa773a4d754c22d00181330f579f752b`, prior CI and execution limits explicit | HPR-P2-011 complete |
@@ -134,3 +134,21 @@ per-class no-skips evidence, deployed-data/import acceptance, runtime inference/
 and fresh physical survivability are not established by this documentation closure.
 P0/P1 disposition and original physical evidence remain unchanged absent regression.
 TimescaleDB, PostGIS and unimplemented industrial/AI extensions remain DEFERRED/TARGET.
+
+## HPR-P2-005 corrected API applicability — 2026-10-09
+
+Verified source parent: `b39c87dcaf887ada1d22c6a88d1e1f51b9f7ecaa`;
+preflight Documentation Validation #130 PASSED. [API index](../api/README.md),
+[conventions](../api/API_CONVENTIONS.md) and [error model](../api/ERROR_MODEL.md)
+identify actual Workbench/Telemetry paging and DTO differences, tracing headers,
+global MVC mappings and five scoped advice overrides. Runtime facts remain distinct
+from the unchanged generated contract and its missing common error-envelope coverage.
+No universal page/filter/error-body policy is inferred.
+
+Current execution disposition follows the Ultimate Roadmap: HPR-P2-005 correction
+implemented and IN PROGRESS pending its exact-head documentation CI; HPR-P2-006 and
+HPR-P2-013 PENDING. P2 remains OPEN; P3 DEFERRED. Earlier area-complete/closed prose
+retains historical applicability and does not supersede this current disposition.
+Database dictionary/ownership policy completeness remains unresolved under audit
+Checks 10–11; this API correction does not remediate or reverify those documents.
+All 57 HMR implementations and 123 semantic subjects retain their closed identities.

@@ -13,7 +13,7 @@
 | Field | Value |
 |---|---|
 | Status | ACTIVE |
-| P2 canonical governance | VERIFIED/CLOSED — HPR-P2-013 at 22a9b34225242c52fd502e421570af8b46879e4e; Documentation CI #127 and production CI #606 PASSED |
+| P2 canonical governance | OPEN — independent P2 audit at c7d580cc7988f069bb939eb682664200e043c9bf verified 9/12 checks; Checks 9, 10 and 11 require documentation remediation; prior exact-head CI remains historical verified evidence |
 | Roadmap code | HPR — Hidra Platform Readiness |
 | Canonical documentation root | `doc/` |
 | Legacy/reference documentation root | `docs/` |
@@ -247,15 +247,15 @@ P1 is **CLOSED** only when this closure SHA passes the repository's full exact-h
 | HPR-P2-002 | COMPLETED — canonical current/target-separated architecture set established from live package, ArchUnit, runtime/configuration and P1 infrastructure evidence; historical architecture material remains preserved and subordinate | Architecture | Doc | Create current/target-separated system context, architecture overview, bounded-context map, Hexagonal boundaries, module boundaries, cross-module contracts and technology stack. | `docs(architecture): establish canonical architecture set` | HPR-P2-001 |
 | HPR-P2-003 | COMPLETED — canonical ubiquitous language, domain ownership and focused topology/telemetry, alarm-incident-leak, assets-integrity, and simulation-analytics-AI semantic baselines established from exact current source; AI/autonomous inference remains explicitly NOT ESTABLISHED | Domain | Doc | Create `UBIQUITOUS_LANGUAGE.md`, domain ownership and focused topology/telemetry/alarm-incident-leak/assets-integrity/simulation-analytics-AI semantic documents. | `docs(domain): establish ubiquitous language baseline` | HPR-P2-001 |
 | HPR-P2-004 | COMPLETED — canonical current-state documents created for all 24 implemented module roots from live domain/API/application/persistence/contract inventories; no current-state docs created for agents/environment/otsecurity | Modules | Doc | Create one current-state `doc/modules/<module>.md` for each of the 24 implemented modules; do not create current-state module docs for agents/environment/otsecurity. | `docs(modules): add canonical module documentation` | HPR-P2-002..003 |
-| HPR-P2-005 | COMPLETED — deterministic OpenAPI 3.1 contract version-controlled from exact executable P1 closure CI artifact; canonical API overview, conventions, authentication/authorization, error-model limitation, versioning/compatibility and OpenAPI-governance documents established; shared machine-readable error envelope remains explicitly NOT ESTABLISHED | API | Code/Doc | Generate and version-control deterministic `doc/api/openapi.yaml`; create API overview, conventions, auth, error, versioning/compatibility and OpenAPI governance docs. | `docs(api): establish versioned api contract` | HPR-P1-008 |
-| HPR-P2-006 | COMPLETED — canonical current database architecture, schema ownership, Flyway policy and generated persistence dictionary established from 82 current Flyway migrations, 469 current module JPA persistence entities, production configuration and closed P1 PostgreSQL/backup evidence; stale pre-closure DB stage documents retained as historical provenance | Database | Doc | Create database architecture, schema ownership, Flyway policy and current generated data dictionary from current migrations/JPA evidence. | `docs(database): establish canonical database documentation` | HPR-P2-001 |
+| HPR-P2-005 | PENDING — reopened for audit Check 9 only; committed contract and drift enforcement remain VERIFIED; runtime error/query/correlation documentation incomplete and HTTP-200 count stale | API | Code/Doc | Complete source-backed API conventions and runtime error documentation under the bounded audit amendment below; preserve the generated-envelope limitation and committed contract. | `docs(api): establish versioned api contract` | HPR-P1-008 |
+| HPR-P2-006 | PENDING — reopened for audit Checks 10 and 11; 139-migration/470-entity inventory is current but lacks physical dictionary entries and complete schema/migration rules | Database | Doc | Complete the current physical table/column dictionary and explicit ownership/FK/migration governance under the bounded audit amendment below; preserve applied SQL and historical evidence. | `docs(database): establish canonical database documentation` | HPR-P2-001 |
 | HPR-P2-007 | COMPLETED — exact-source reconciliation established: HMR-005 corrected to completed, HMR-009 confirmed completed/stale carry-over removed, HMR-054 historical blocker resolved by current Party→Topology contract, HMR-050..106 reconciled to 56 still-required + 1 blocked (HMR-080), 0 superseded; legacy roadmap preserved as history | Semantic Remediation | Code/Doc | Inventory unresolved HMR/HMSR obligations against exact current source; mark each as completed, still required, blocked, or superseded with evidence. | `docs(model-remediation): reconcile remaining semantic obligations` | HPR-P2-003 |
 | HPR-P2-008 | COMPLETED — owner-authorized closure after final reconciliation preflight; all 57 HMR implementations confirmed by CI #604, zero pending, STILL REQUIRED or BLOCKED; documentation preflight CI #115 passed. P2 phase remains open. | Semantic Remediation | Code | Execute still-required semantic remediation in dependency order using revalidated HMSR obligations; do not restart completed HMRs without regression evidence. | `fix(model): continue reconciled semantic remediation` | HPR-P2-007 |
 | HPR-P2-009 | COMPLETED — 123 permanent subject decisions transferred with current source/test/migration evidence; all 24 module inventories and domain/index metadata refreshed; 37-path scope and 83-file Markdown/link checks passed; exact-head documentation CI follows publication | Semantic Remediation | Doc | Transfer permanent semantic decisions from legacy review/roadmaps into `doc/domain/` and `doc/modules/`, then preserve legacy files as execution history. | `docs(model-remediation): canonicalize semantic decisions` | HPR-P2-008 |
 | HPR-P2-010 | COMPLETED — five-document governance baseline established; 24-module ownership, approved infrastructure retention, source-backed provenance and TARGET legacy admission separated from unknown business approvals; nine-path and 88-file Markdown checks passed; exact-head documentation CI follows publication | Data Governance | Doc | Create data governance, retention/archival, provenance and legacy-data migration documents without inventing retention values. | `docs(data): establish data governance baseline` | HPR-P2-001 |
 | HPR-P2-011 | COMPLETED — six source-backed verification documents established; all 24 module roots and 57 closed HMR obligations linked; ten-path and 94-file Markdown checks passed; test presence, historical CI and uninspected execution/skip evidence remain distinct; exact-head documentation CI follows publication | Testing | Doc | Create test strategy, architecture testing, database testing, API testing and requirements traceability documents tied to executable evidence. | `docs(testing): establish verification documentation` | HPR-P2-002..006 |
 | HPR-P2-012 | COMPLETED — maintained canonical metadata/link/index/module/P2 and deterministic OpenAPI validators/tests wired into both CI workflows; snapshot refreshed from verified CI #604 artifact; strict fresh-runtime equality added; local Maven blocked before compilation by Boot-parent/Central DNS; exact-head CI follows publication | Documentation CI | Infra | Add documentation validation for canonical links/status/index drift and deterministic OpenAPI contract checks. | `ci(docs): validate canonical documentation` | HPR-P2-001..011 |
-| HPR-P2-013 | COMPLETED — P2 VERIFIED/CLOSED at 22a9b34225242c52fd502e421570af8b46879e4e; exact-head Documentation CI #127 and production CI #606 PASSED; database/architecture inventories reconciled | Governance | Doc | Verify all 24 module docs, canonical indexes, API/database/domain docs and legacy supersession links; close P2. | `docs(roadmap): close P2 canonical governance` | HPR-P2-001..012 |
+| HPR-P2-013 | PENDING — reopened final closure after independent audit FAIL (9/12 VERIFIED); prior #127/#606 success remains valid for its measured scope | Governance | Doc | Reverify all twelve P2 checks after HPR-P2-005/006 corrections, canonical status/index consistency and exact-head CI; close P2 only with 12/12 VERIFIED. | `docs(roadmap): close P2 canonical governance` | HPR-P2-001..012 |
 
 ### Phase P3 — Deferred Industrial Scale / Future Capabilities
 
@@ -272,22 +272,131 @@ P1 is **CLOSED** only when this closure SHA passes the repository's full exact-h
 
 ## 6. Immediate Next Execution
 
-P0 security/audit verification is closed. P1 production infrastructure and survivability verification is closed subject to successful exact-head full CI on the HPR-P1-012 closure SHA.
+Current owner instruction: analyze the independent P2 audit and update the roadmap.
+This is a documentation-only planning amendment, not implementation of the remedies.
+Exact supporting commit message: `docs(roadmap): reopen P2 after governance audit`.
+Write scope: this roadmap and the current Status of
+`doc/model-remediation/RECONCILIATION.md`, with a dated authority note there.
 
-HPR-P2-013 final verification is complete. P2 is VERIFIED/CLOSED at
-`22a9b34225242c52fd502e421570af8b46879e4e`: exact-head Documentation Validation
-#127 and full production CI #606 PASSED. The supporting record below preserves
-that executable verification identity; documentation-only evidence publication does
-not substitute a new runtime/deployed verification SHA.
+Next selection: `HPR-P2-005 — bounded API documentation remediation preflight`.
+Revalidate current main and documentation CI, then publish the concrete allowlist,
+source mapping, acceptance checks and implementation scope before execution.
+After HPR-P2-005 is corrected and its documentation CI passes, select HPR-P2-006;
+after its corrections and applicable CI pass, select HPR-P2-013 final verification.
+Use each existing registered exact commit message; one HPR code per instruction.
+No remediation or closure is executed by this planning amendment.
 
-No next executable task is selected. All P3 codes remain DEFERRED until the owner
-selects a separately bounded task and its required operational/architecture decisions
-exist. HPR-P3-001 capacity requirements and HPR-P3-005 spatial requirements are
-possible future prerequisites, not automatically approved or executed work.
+P2 is OPEN. All P3 codes remain DEFERRED. The dated closure at
+`22a9b34225242c52fd502e421570af8b46879e4e` and CI #127/#606 remain retained
+verification evidence, but do not prove the substantive properties failed below.
+This current disposition supersedes older P2 CLOSED/no-next-task statements and
+historical pending/closed assertions in indexes or execution records. P0/P1 are
+unchanged absent regression evidence. All 57 HMR implementations (including HMR-080),
+123 semantic subjects and version `0.6.0-SNAPSHOT` remain unchanged.
 
-Verify the supporting record's documentation CI on a later notification/Next;
-repair any responsible-scope failure. No source/workflow change, release or P3
-execution is selected by this final P2 evidence record.
+### Independent P2 audit analysis and bounded correction plan — 2026-10-09
+
+Audit baseline: `c7d580cc7988f069bb939eb682664200e043c9bf`, default branch main,
+tree `e4feb1e63596f6759e57bd663d412a233d54900e`. The owner requested this roadmap
+amendment after the read-only twelve-check report returned FAIL: 9/12 VERIFIED.
+Files existing, inventory counts, roadmap markers and passing structural CI are
+not sufficient proof of substantive documentation completeness.
+
+| Audit checks | Classification | Execution disposition |
+|---|---|---|
+| 1–8 and 12 | VERIFIED | Preserve authority, 24 module slices, semantics, capability boundaries, committed OpenAPI, drift gate and source traceability; do not restart implementation absent regression |
+| 9 — API conventions/error model | FAILED — SUPERFICIAL IMPLEMENTATION | Reopen HPR-P2-005 for documentation correction |
+| 10 — current data dictionary | FAILED — SUPERFICIAL IMPLEMENTATION | Reopen HPR-P2-006 for physical dictionary completion |
+| 11 — schema ownership/migration policy | FAILED — SUPERFICIAL IMPLEMENTATION | Reopen HPR-P2-006 for explicit governance rules |
+| Final P2 gate | FAIL | Reopen HPR-P2-013; require twelve substantive VERIFIED results |
+
+The missing generated shared error envelope is an acknowledged live-benchmark
+limitation, not a new runtime implementation requirement. The registered names
+`SIMULATION_ANALYTICS_AI.md` and `FLYWAY_POLICY.md` are valid canonical replacements
+for different filenames in the audit prompt. Neither naming difference is a defect.
+Check 11 already has meaningful immutability, validation, controlled execution,
+backup/history and forward-fix safeguards; complete its missing rules rather than
+claiming Flyway governance is wholly absent. Specific SQL data preflights already
+exist, but do not replace a documented general change-admission policy.
+
+#### HPR-P2-005 bounded correction — audit Check 9
+
+Affected documents: `doc/api/API_CONVENTIONS.md` and `doc/api/ERROR_MODEL.md`.
+Preflight may admit their containing index and canonical status/register metadata
+only where needed for current applicability; enumerate every path before mutation.
+
+Required evidence and acceptance:
+
+1. Document representative operation-specific page/size/filter/sort fields,
+   defaults, limits and response shapes from actual controllers/DTOs/contract.
+   `kernel/pagination/PageRequest.java` uses zero-based pages, sizes 1–200 and
+   sorting normalization; do not promote those rules to all endpoints without evidence.
+2. Describe actual `PlatformHeaders` and `HidraRequestContextFilter` handling of
+   X-Correlation-Id/X-Request-Id, fallback generation and response headers, with scope.
+3. Map `HidraGlobalExceptionHandler` ProblemDetail fields/extensions and evidenced
+   400/401/403/404/422/500 cases; describe validation fieldErrors and scoped 409
+   `PlanningRevisionApiExceptionHandler` behavior. Do not claim controller advice
+   governs every security/filter/module path; identify evidenced exceptions/unknowns.
+4. Reconcile the stale HTTP-200 count (254) with the committed snapshot (258),
+   retaining five HTTP-201 operations and 263 operations overall at this baseline.
+5. Separate runtime source evidence from generated OpenAPI: the latter documents
+   success responses and does not establish a universal generated error envelope.
+   Do not manually edit openapi.yaml or change executable behavior to close this check.
+6. Validate links/metadata and source-contract consistency; require successful
+   documentation CI on the correction commit. Runtime source/contract changes are
+   outside this bounded task and require separate admission if genuinely necessary.
+
+#### HPR-P2-006 bounded correction — audit Checks 10 and 11
+
+Core affected documents: `doc/database/DATA_DICTIONARY.md`,
+`doc/database/SCHEMA_OWNERSHIP.md` and `doc/database/FLYWAY_POLICY.md`.
+The preflight must define a reproducible extraction/verification method and exact
+allowlist. It may admit a maintained dictionary generator and focused validation
+only if required, with explicit paths, metadata/index registration and CI impact.
+Do not use an unverified text parser as authoritative final schema evidence.
+
+Required evidence and acceptance:
+
+1. Describe the current physical schema after the ordered Flyway chain, not only
+   initial CREATE TABLE statements or JPA class names. Include actual schema/table,
+   owner, columns, SQL/JPA types, nullability, PK/FK, unique/check constraints,
+   important indexes and semantic purpose; retain source and applicability links.
+2. Reconcile complete module/table coverage and later ALTER/drop/rename changes
+   against current mappings. Current evidence is 139 migrations and 470 entities
+   across 24 modules; entity count is not table count. Include owner-policy,
+   technical or other migration-created tables as applicable; do not omit tables
+   merely because no module @Entity represents them. Report unresolved differences.
+3. Record an exact repeatable generation command/tool/version and source baseline.
+   If actual ordered-schema extraction is unavailable, report the blocker and
+   publish the concrete prerequisite; do not call an inventory a complete dictionary.
+4. Cross-check at minimum TelemetryPoint, TopologyConnection and Nomination against
+   current JPA and all relevant migrations, then validate repository-wide coverage.
+5. Map actual physical tables/prefixes and exceptions to accountable owners.
+   Define same-module and cross-module FK/reference admission, lifecycle/ownership
+   constraints, approval requirements and application-contract boundaries. Describe
+   current SQL accurately; any newly proposed rule remains TARGET pending owner
+   approval rather than silently asserting that all existing SQL complies.
+6. Specify migration naming/version allocation and duplicate prevention using the
+   real V<version>__<description>.sql chain; preserve applied-file/history immutability.
+   Define additive evolution expectations, destructive/data-affecting preflight,
+   reviewed mappings, backup/rollback planning, forward-fix and exceptional repair.
+   Link existing runbook and populated-data safeguards instead of inventing approvals.
+7. Verify configuration, history handling and actual database-test/CI scope.
+   Run documentation validation and the extraction checks. If tooling/tests/workflows
+   change, run their required checks and full exact-head CI; docs-only correction
+   follows the existing lightweight protocol. No applied SQL or runtime schema change.
+
+#### HPR-P2-013 renewed closure gate
+
+After the two correction tasks pass applicable CI, rerun all twelve checks against
+one newly pinned SHA. Require explicit evidence and 12/12 VERIFIED, reconcile current
+canonical indexes/status metadata and the reconciliation phase status, preserve all
+legacy evidence, and require both documentation and full production CI on the
+resulting closure implementation SHA. Passing CI alone cannot close failed content
+checks. Keep P2 OPEN until the substantive and exact-head gates both pass; observe
+CI startup and stop for the owner's Next/failure notification under the current
+execution protocol. P3 remains DEFERRED; no release, version, deployment or import.
+
 
 ### P1 evidence-block parallel progression authorization — 2026-10-06
 

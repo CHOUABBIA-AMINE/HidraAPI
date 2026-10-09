@@ -2,7 +2,7 @@
 
 ## Status
 
-CURRENT — all 57 reconciled HMR implementations COMPLETED; permanent 123-subject semantic transfer complete; P2 VERIFIED/CLOSED at 22a9b34225242c52fd502e421570af8b46879e4e after Documentation CI #127 and production CI #606 PASSED. P3 remains DEFERRED.
+CURRENT — all 57 reconciled HMR implementations COMPLETED; permanent 123-subject semantic transfer complete. P2 is OPEN after the independent audit at c7d580cc7988f069bb939eb682664200e043c9bf failed Checks 9–11; HPR-P2-005/006 corrections and HPR-P2-013 re-verification are pending. Prior #127/#606 success remains historical verified evidence. P3 remains DEFERRED.
 
 ## Historical HPR-P2-007 Verification Baseline
 
@@ -6839,3 +6839,17 @@ final-verification envelopes, exact two-file scope, all other tracked blobs unch
 57 completed HMR rows/123 catalogue subjects/version preservation, unchanged P3
 DEFERRED registry and git diff --check. No local runtime/physical campaign was rerun;
 new exact-head production evidence is the successful CI #606 described above.
+
+## Independent P2 governance audit disposition — 2026-10-09
+
+The owner requested analysis and a roadmap update after the twelve-check audit at
+`c7d580cc7988f069bb939eb682664200e043c9bf`: 9/12 VERIFIED, overall FAIL.
+Checks 9–11 expose incomplete API documentation, physical dictionary content and
+schema/migration policy; they do not reopen any completed HMR implementation.
+Current execution authority is the bounded correction plan in
+[the Ultimate Roadmap](../roadmap/ULTIMATE_ROADMAP.md#independent-p2-audit-analysis-and-bounded-correction-plan--2026-10-09).
+HPR-P2-005 and HPR-P2-006 are PENDING correction; HPR-P2-013 is PENDING renewed
+closure. This note supersedes earlier phase CLOSED/no-next-task assertions only.
+All 57 HMR completions and 123 semantic subjects, historical CI/physical provenance,
+P0/P1 disposition and version 0.6.0-SNAPSHOT are preserved. P3 remains DEFERRED.
+No corrective implementation is executed by this documentation-only amendment.

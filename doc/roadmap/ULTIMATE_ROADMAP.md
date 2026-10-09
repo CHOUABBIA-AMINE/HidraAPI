@@ -591,7 +591,7 @@ Each stage retains its own commit and later evidence; no batch is selected.
 | Code | Status | Domain/Module | Type | Exact execution requirement | Exact commit message | Depends on |
 |---|---|---|---|---|---|---|
 | HPR-P25-002A | COMPLETED — implementation eef35dbd35d4558a4ceb57f87d8670fb97c933ea passed full Java 21 CI #612 and Documentation #146; three immutable contracts and 14 JUnit tests present; per-class report not independently retained at this baseline | Simulation / Input manifest | Code/Test | Implement immutable manifest, source-version identities/validity/origin and steady-state/transient metadata invariants under the exact six-file envelope below. | `feat(simulation): establish immutable input manifest contracts` | HPR-P25-002 preflight Documentation CI success |
-| HPR-P25-002B | PENDING — B1..B3 CI-confirmed completed; B4 combined-graph/payload exact-file preflight delivered, implementation pending | Simulation / Physical payloads | Code/Test | Define validated typed network/fluid/equipment/initial-state and transient timeline payloads with units, reference basis and missing-data semantics; register exact files and numeric design assumptions before mutation. | `feat(simulation): define versioned physical input payloads` | HPR-P25-002A; selected payload/physics preflight |
+| HPR-P25-002B | PENDING — B1..B3 CI-confirmed completed; B4 implemented pending exact-head full CI; 002C/002D remain separate prerequisites for parent 002 | Simulation / Physical payloads | Code/Test | Define validated typed network/fluid/equipment/initial-state and transient timeline payloads with units, reference basis and missing-data semantics; register exact files and numeric design assumptions before mutation. | `feat(simulation): define versioned physical input payloads` | HPR-P25-002A; selected payload/physics preflight |
 | HPR-P25-002C | PENDING | Owner modules / Simulation | Code/Test | Implement bounded owner-exported topology/product/measurement queries and Simulation adapters; preserve eligibility/trust/ownership and reject unavailable physical inputs. | `feat(simulation): resolve versioned owner input references` | HPR-P25-002B; exact owner-contract/export preflight |
 | HPR-P25-002D | PENDING | Simulation / Capture | Code/Test | Assemble coherent immutable payload/manifest captures, verify canonical hashes and evidence, persist reproducible revisions and reject incompatible/missing inputs; register forward migration only if source-backed design requires one. | `feat(simulation): capture reproducible network calculation inputs` | HPR-P25-002C; exact capture/schema preflight |
 
@@ -687,7 +687,7 @@ all required payload stages are complete; no stage is executed by this preflight
 | HPR-P25-002B1 | COMPLETED — 803efff1326cc20bc54b4a22d6daa8608b5233dc passed Java 21 production CI #614 and Documentation #150; three immutable pipe-graph records and 13 synthetic JUnit tests present; individual report not independently inspected | Simulation / Physical network | Code/Test | Implement immutable typed nodes/pipe segments and connected network validation using the exact six-path envelope below. | `feat(simulation): define physical network input contracts` | HPR-P25-002A; successful B preflight documentation CI |
 | HPR-P25-002B2 | COMPLETED — 97332bba3861348a6d4acf2aa995d1ad537cbc1c passed Java 21 production CI #615 and Documentation #152; four immutable records and 19 synthetic JUnit tests present; per-class XML not independently inspected | Simulation / Fluid and equipment | Code/Test | Define versioned gas composition/property-method references and current equipment/curve/configuration payloads with explicit units/validity; no property calculation or universal product support is implied. | `feat(simulation): define fluid and equipment input contracts` | HPR-P25-002B1; exact B2 preflight |
 | HPR-P25-002B3 | COMPLETED — 599bb58115f3d06140d8230a54d7969f743c0c3a passed Java 21 production CI #616 and Documentation #154; four immutable records and 19 synthetic JUnit tests present; per-class XML not independently inspected | Simulation / State and boundaries | Code/Test | Define measured/estimated initial-state quantities and time-dependent boundary/action schedules with quantity basis, time ordering, interpolation declarations and missing-value semantics. | `feat(simulation): define state and boundary timeline inputs` | HPR-P25-002B2; exact B3 preflight |
-| HPR-P25-002B4 | PENDING — combined pipe/equipment graph and consistent payload exact-file preflight delivered; no B4 source implemented | Simulation / Payload assembly | Code/Test | Bind typed payload/version identities to manifests, validate node/equipment references and steady/transient completeness, preserving synthetic/provenance distinctions; canonical hash verification remains capture scope. | `feat(simulation): assemble consistent physical input payloads` | HPR-P25-002B1..B3; exact B4 preflight |
+| HPR-P25-002B4 | IN PROGRESS — combined structural graph and exact-source gas scalar assembly records plus 20 synthetic JUnit tests implemented; local Maven blocked by Central DNS/uncached Boot parent; exact-head full CI pending | Simulation / Payload assembly | Code/Test | Bind typed payload/version identities to manifests, validate node/equipment references and steady/transient completeness, preserving synthetic/provenance distinctions; canonical hash verification remains capture scope. | `feat(simulation): assemble consistent physical input payloads` | HPR-P25-002B1..B3; exact B4 preflight |
 
 Gas/property/equipment methods and transient thermal/event fidelity will be specified
 in numerical design HPR-P25-008A; payload references must not silently select a method.
@@ -10118,3 +10118,74 @@ evidence and whitespace. Exact two-document scope, retained phase/HMR registries
 and 0.7.0-SNAPSHOT verified. B3 completion is exact-head CI-backed; B4 source,
 full numerical readiness and field qualification remain pending. Supporting
 preflight Documentation CI follows publication.
+
+
+## HPR-P25-002B4 Consistent Physical Payload Implementation — 2026-10-09
+
+Owner Next selects ONLY B4 after exact-head Documentation #155/run 37975207187
+completed SUCCESS on parent 211b8d5dae066017b9d2305a16eac23c38ee599d,
+tree d7746bc0fc28068f8b2c1585842099628550f762. Mandatory AGENTS/roadmap/
+reconciliation and registered B4 envelope read; local source tree matches.
+Exact message: `feat(simulation): assemble consistent physical input payloads`.
+
+Created ONLY SimulationConnectedNetworkInput.java and SimulationPhysicalInputPayload.java
+in src/main/java/dz/sh/hidra/modules/simulation/domain/model, plus
+src/test/java/dz/sh/hidra/modules/simulation/domain/model/SimulationPhysicalInputPayloadTest.java.
+Updated ONLY roadmap/reconciliation: five tracked paths. Canonical headers retained;
+standard Java/local Simulation imports, existing InvalidSimulationValueException.
+No B1/B2/B3/manifest/source-version/existing test change, migration/persistence/API
+exposure, owner module/API/OpenAPI/dictionary/schema/POM/dependency/workflow/Kernel/
+Platform/architecture export change.
+
+Combined immutable graph requires real pipes and explicit equipment model, unique
+node/link identities, disjoint pipe/equipment IDs, valid endpoints and connected
+undirected union with no isolated node. Equipment-only incidence and real equipment
+joins between pipe subnetworks are allowed while retaining orientation/cycles/parallel
+links. B1 pipe-only contract remains unchanged; no fake pipes/geometry introduced.
+Structural connectivity does not establish active flow through closed/stopped assets.
+
+Payload schema 1 binds complete source-version record equality, scope/product/state/
+horizon, exact selected curve fluid revision, curve effective/capture/aggregate recording
+times, physical namespaces and equipment-kind quantities. Required known scalar node,
+pipe and equipment coverage is mode-specific; optional unknowns retained. Measured
+values respect declared watermark; transient controls need known baseline keys and exact
+horizon anchors. Immediate proposed scenario changes need not equal baseline values.
+Nested synthetic state/schedule/curve data requires its own synthetic parent source,
+even when another source already makes the manifest synthetic. synthetic() exposes
+provenance only. No hashing/trust validation, property/valve law resolution, hydraulic
+well-posedness, distributed transient initialization, interpolation or actuation claimed.
+
+Twenty synthetic JUnit methods prepared for pipe-only/equipment-joined graphs, nodes
+with only equipment incidence, cycles/parallel/cross-kind links and orientations;
+identity/scope/source/list/endpoint/duplicate/collision/isolated/disconnected errors;
+complete steady/transient and declared-real metadata fixtures; exact source-field
+mismatch for every manifest kind; scope/product/time/schema/curve fluid/capture/validity
+errors; dangling/unknown targets and cross-kind equipment controls; every missing or
+UNKNOWN required scalar in both modes; watermark; mode/horizon/schedule baseline;
+hidden synthetic parents; defensive lists and replacement revisions/physical values.
+No actual GZ2 data or measured solver accuracy used or inferred.
+
+Actual validation:
+- bash ./mvnw -B -q -Dtest=SimulationPhysicalInputPayloadTest,SimulationStateBoundaryInputTest,SimulationFluidEquipmentInputTest,SimulationPhysicalNetworkInputTest,SimulationInputManifestTest,ArchitectureGuardrailTest test
+  and bash ./mvnw -B -q clean verify attempted; both BLOCKED before compilation by
+  uncached Spring Boot parent 4.1.1 and repo.maven.apache.org temporary DNS failure.
+  Wrapper permissions unchanged; Java 17.0.20 available, not required Java 21.
+  No local Maven/JUnit/ArchUnit/full verification pass claimed.
+- New records and their existing local record/exception/value dependencies compiled
+  through Java 17 jdk.compiler/com.sun.tools.javac.Main. External temporary standalone
+  harness adapted all 20 scenario bodies with plain custom assertions and no JUnit
+  classes; PASSED 220 assertions. This is not JUnit or full Java 21 verification.
+- All 37 maintained validator tests, canonical docs/offline OpenAPI/P1 evidence,
+  whitespace, exact five-path and retained phase/HMR/version checks PASSED.
+
+B4 IN PROGRESS and parent B remains PENDING until exact-head full CI verification;
+002 remains PENDING with owner queries/capture still unimplemented. No solver, numerical
+readiness, field calibration or complete operational GZ2 model established. Limits,
+full spatial/thermal state, boundary/active-equipment behavior and actual method
+capability remain explicit future exact-file/schema/numerical qualification gates.
+Next registered step after successful B4 CI is documentation-only owner-query/adapters
+preflight: `docs(twin): register HPR-P25-002C execution preflight`.
+002C/002D/engine stages not executed. Publish expected-parent lease, verify remote
+parent/tree/five paths, observe production/Documentation startup on exact head and STOP.
+P0/P1/P2 CLOSED, P2.5 OPEN, P3 DEFERRED, 57 completed HMRs, 123 permanent subjects,
+formal v0.6.0 and development 0.7.0-SNAPSHOT preserved.

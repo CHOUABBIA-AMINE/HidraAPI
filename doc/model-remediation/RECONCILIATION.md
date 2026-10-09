@@ -6113,3 +6113,81 @@ Maven/runtime check, source/test/configuration change, migration or operational
 execution was performed. Published-tree validation additionally verifies that every
 other tracked blob is byte-identical to the parent. The registered implementation
 remains PENDING and requires the subsequent acceptance described above.
+
+## HPR-P2-011 accepted execution — 2026-10-09
+
+The owner's Next after preflight `35d9d949aa773a4d754c22d00181330f579f752b` accepts its full ten-part design
+and ten-path scope. Main is unchanged at that parent, tree
+`8ee453938d3c20565fee270c0938bed6e5fdfd9c`; Documentation Validation #121
+(run 37897171261) PASSED. Production CI #604 (37841205677) remains PASSED on
+`617c2eec812e3a5734957ee9fa0360f6f5613032`. Execute only the registered
+`docs(testing): establish verification documentation`; no runtime/test/CI changes,
+per-class execution claims, physical campaign or successor task are selected.
+
+## HPR-P2-011 completed verification documentation — 2026-10-09
+
+Accepted ten-part design implemented within the exhaustive ten-path scope, exact
+commit `docs(testing): establish verification documentation`. Verified parent
+`35d9d949aa773a4d754c22d00181330f579f752b`, tree
+`8ee453938d3c20565fee270c0938bed6e5fdfd9c`; parent Documentation Validation #121
+(run 37897171261) PASSED. Production CI #604 (37841205677) PASSED on executable
+baseline `617c2eec812e3a5734957ee9fa0360f6f5613032`, tree
+`e450c699544f99e96f2b447fc04215f7f4c5f344`. These prior results were rechecked;
+no Maven/runtime or per-class report/skip inspection was performed locally.
+
+Created exactly six documents in doc/testing/: README.md, TEST_STRATEGY.md,
+ARCHITECTURE_TESTING.md, DATABASE_TESTING.md, API_TESTING.md and
+REQUIREMENTS_TRACEABILITY.md. Updated only doc/README.md,
+doc/governance/DOCUMENT_REGISTER.md, doc/roadmap/ULTIMATE_ROADMAP.md and
+doc/model-remediation/RECONCILIATION.md. Canonical navigation/register now records
+CURRENT testing documentation with the verified source parent and inherited owner
+metadata. Only HPR-P2-011 is completed; its registry row and immediate next execution
+are updated. All legacy files and untouched semantic/API/database/data/security/
+operations documents keep their own applicability and byte-preserved evidence.
+
+### Actual implementation and limits
+
+- Strategy documents source-backed focused, architecture/contract, database, full-test
+  and clean-verify commands, prerequisites and actual test-profile paths. Inventory
+  records 324 Java files, 323 test-named files, one helper and 47 Docker-optional
+  Testcontainers classes, not executed case counts or coverage percentages.
+- Architecture identifies actual ArchUnit/source/reflection/mapper assertions and
+  exact exported owner boundaries; the transitional dependency map is currently
+  empty. Static rules and contract examples do not imply universal runtime semantics.
+- Database distinguishes full Flyway/context from selected SQL and real Spring/JPA
+  fixture paths, mocked owner inputs, fail-closed policy/orphan behavior, historical
+  replay, transaction rollback and controlled race orderings. Existing migration
+  history and production mapping admission are unchanged; fixtures do not approve
+  populated deployments or repeat HA/DR/physical recovery evidence.
+- API distinguishes standalone MockMvc/mocks, direct OIDC metadata, permission/filter
+  fixtures and complete context. Runtime OpenAPI generation/security checks, bounded
+  compatibility and exact-PR/successful-production-ancestor base logic are documented.
+  Canonical OpenAPI retains older generation provenance and is not regenerated.
+- Requirements traceability links all 24 actual module roots, the 57 unique contiguous
+  HMR-050..106 identities/HMSR subjects and exact semantic tests/migrations/contracts.
+  The 123-subject permanent catalogue remains authority; this is evidence navigation,
+  not a second execution register. Cumulative prior CI #604 applies as historical
+  scope; uninspected per-class executed/skipped results are explicitly unestablished.
+
+### Actual local validation
+
+`python3 /workspace/scratch/4115643ef669/p2-011-validate.py` PASSED: exactly ten
+allowed paths with six new documents; all 94 canonical Markdown files UTF-8/nonempty
+and free of conflict markers; 390 touched-set relative links/anchors resolve; exactly
+24 module rows match current roots; 57 traceability rows match permanent catalogue
+identities/anchors and dedicated test sources; static 324/323/47 source counts match;
+139 migration versions remain unique. Required six-document metadata is present.
+HMR register rows and unrelated HPR rows are preserved; P2 rows retain seven columns;
+project version stays 0.6.0-SNAPSHOT. `git diff --check` PASSED. Exact published-tree
+checks require every other tracked blob unchanged. No runtime/schema reset/import,
+deployment, physical campaign, test/workflow/POM/configuration change or release/tag.
+
+Complete endpoint/branch/performance/OT safety coverage, universal multi-owner
+end-to-end validation, current deployed-data/import acceptance and new physical
+survivability evidence remain NOT ESTABLISHED by this task. Prior P1 evidence keeps
+its deployed SHA, 82-migration scope and repository/operator distinctions. HPR-P2-012
+and HPR-P2-013 remain PENDING, P3 DEFERRED and P2 OPEN. Publish one exact-message
+commit to main with the expected-head lease; verify immutable commit/tree/blobs,
+confirm Documentation Validation starts and STOP without waiting. Production CI
+ignores this docs-only scope. A later Next selects HPR-P2-012 preflight after the
+exact-head documentation result is checked; failure requires responsible-scope repair.

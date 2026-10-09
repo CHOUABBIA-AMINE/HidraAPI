@@ -29,6 +29,8 @@ The legacy `docs/` tree is preserved for historical, audit, semantic-review, ADR
 
 14. [Data governance](data/README.md) — current ownership, retention/archival, provenance and legacy-data admission baseline.
 
+15. [Testing and verification](testing/README.md) — strategy, architecture, database, API and requirements evidence.
+
 ## Canonical Domains
 
 | Domain | Current canonical material | P2 disposition |
@@ -44,7 +46,7 @@ The legacy `docs/` tree is preserved for historical, audit, semantic-review, ADR
 | API | `doc/api/README.md`, governance set and `doc/api/openapi.yaml` | CURRENT — HPR-P2-005 |
 | Semantic remediation | `doc/model-remediation/RECONCILIATION.md` | CURRENT reconciliation — HPR-P2-007; HPR-P2-008 completed; permanent decisions transferred by HPR-P2-009 |
 | Data governance | [Data index](data/README.md) and four linked governance documents | CURRENT — HPR-P2-010 |
-| Testing | not yet established | HPR-P2-011 |
+| Testing | [Testing index](testing/README.md) and five linked verification documents | CURRENT — HPR-P2-011 |
 
 Absence of a later P2 canonical set does not invalidate existing P0/P1 evidence. It means that the corresponding P2 canonicalization task has not yet executed.
 
@@ -68,4 +70,6 @@ Target, deferred, historical and execution-history documents never override cont
 
 Last semantic/navigation verification: HPR-P2-009 on 2026-10-09, source parent `44d4fe773d69ed51dd90820140c8d9e7aee6cba2`. Domain/module metadata and current-versus-target boundaries follow their containing indexes; untouched sets retain their own applicability.
 
-Data-governance/navigation verification: HPR-P2-010 on 2026-10-09, source parent `b36733fc05e789613485606e1e1dd1731b11af53`. Business approvals and executable import/disposal remain explicitly unestablished; HPR-P2-011..013 remain pending and P2 stays open.
+Data-governance/navigation verification: HPR-P2-010 on 2026-10-09, source parent `b36733fc05e789613485606e1e1dd1731b11af53`. Business approvals and executable import/disposal remain explicitly unestablished; HPR-P2-012/013 remain pending and P2 stays open.
+
+Testing/navigation verification: HPR-P2-011 on 2026-10-09, source parent `35d9d949aa773a4d754c22d00181330f579f752b`. Test presence, historical CI, uninspected per-class results/skips and retained physical evidence remain distinct; no runtime tests were rerun by the documentation task.

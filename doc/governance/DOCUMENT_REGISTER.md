@@ -36,7 +36,7 @@ Documentation authority follows the repository governance and the owner/decision
 | `doc/api/**` | CURRENT | Canonical version-controlled OpenAPI 3.1 contract plus overview, conventions, authentication, error-model, compatibility and OpenAPI-governance controls | HPR-P2-005 complete |
 | `doc/model-remediation/**` | CURRENT | Exact-current-source reconciliation of legacy HMR/HMSR execution obligations; legacy `docs/roadmap/model-semantic-remediation.md` remains history | HPR-P2-007/008 complete; HPR-P2-009 transfers lasting rules into domain/module docs |
 | `doc/data/**` | CURRENT | Five-document HPR-P2-010 governance baseline at source parent `b36733fc05e789613485606e1e1dd1731b11af53`; approved infrastructure controls and source-backed provenance separated from TARGET admission and unknown business decisions | HPR-P2-010 complete |
-| Testing canonical set | NOT ESTABLISHED | Verification documentation must remain tied to executable evidence | HPR-P2-011 |
+| `doc/testing/**` | CURRENT | Six-document HPR-P2-011 source-backed strategy, architecture/database/API testing and requirements evidence; source parent `35d9d949aa773a4d754c22d00181330f579f752b`, prior CI and execution limits explicit | HPR-P2-011 complete |
 | Documentation CI drift controls | PARTIAL | Lightweight documentation validation exists; P2 link/status/index drift controls are later scope | HPR-P2-012 |
 
 ## Status Interpretation
@@ -79,5 +79,20 @@ checked on 2026-10-09.
 Business durations, source-owner/reuse approvals, canonical dataset precedence,
 complete enforcement and executable import acceptance remain NOT ESTABLISHED; TARGET
 admission requirements do not approve data or create workers. Untouched database and
-operational sets retain their own historical applicability. HPR-P2-011..013 remain
+operational sets retain their own historical applicability. HPR-P2-012/013 remain
 pending, P3 deferred and P2 open. Exact-head documentation CI follows publication.
+
+## Verification documentation baseline
+
+[Testing index](../testing/README.md) registers [strategy](../testing/TEST_STRATEGY.md),
+[architecture](../testing/ARCHITECTURE_TESTING.md), [database](../testing/DATABASE_TESTING.md),
+[API](../testing/API_TESTING.md) and [requirements traceability](../testing/REQUIREMENTS_TRACEABILITY.md).
+All six are CURRENT documentation at source parent
+`35d9d949aa773a4d754c22d00181330f579f752b`, checked on 2026-10-09. The matrix
+covers all 24 module roots and 57 closed HMR obligations with actual source evidence;
+it does not clone the roadmap or invent executed cases/coverage. Prior full CI #604
+and parent documentation CI #121 passed; no local Maven/runtime campaign occurred.
+Per-class retained report/skip inspection, complete endpoint/performance coverage,
+current deployed-data acceptance and fresh physical evidence are NOT ESTABLISHED.
+Untouched canonical/legacy sources keep their own applicability; HPR-P2-012/013
+remain pending and P2 open. Exact-head documentation CI follows publication.

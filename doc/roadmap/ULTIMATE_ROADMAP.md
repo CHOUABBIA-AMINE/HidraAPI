@@ -255,7 +255,7 @@ P1 is **CLOSED** only when this closure SHA passes the repository's full exact-h
 | HPR-P2-010 | COMPLETED — five-document governance baseline established; 24-module ownership, approved infrastructure retention, source-backed provenance and TARGET legacy admission separated from unknown business approvals; nine-path and 88-file Markdown checks passed; exact-head documentation CI follows publication | Data Governance | Doc | Create data governance, retention/archival, provenance and legacy-data migration documents without inventing retention values. | `docs(data): establish data governance baseline` | HPR-P2-001 |
 | HPR-P2-011 | COMPLETED — six source-backed verification documents established; all 24 module roots and 57 closed HMR obligations linked; ten-path and 94-file Markdown checks passed; test presence, historical CI and uninspected execution/skip evidence remain distinct; exact-head documentation CI follows publication | Testing | Doc | Create test strategy, architecture testing, database testing, API testing and requirements traceability documents tied to executable evidence. | `docs(testing): establish verification documentation` | HPR-P2-002..006 |
 | HPR-P2-012 | COMPLETED — maintained canonical metadata/link/index/module/P2 and deterministic OpenAPI validators/tests wired into both CI workflows; snapshot refreshed from verified CI #604 artifact; strict fresh-runtime equality added; local Maven blocked before compilation by Boot-parent/Central DNS; exact-head CI follows publication | Documentation CI | Infra | Add documentation validation for canonical links/status/index drift and deterministic OpenAPI contract checks. | `ci(docs): validate canonical documentation` | HPR-P2-001..011 |
-| HPR-P2-013 | PENDING — reopened final closure after independent audit FAIL (9/12 VERIFIED); prior #127/#606 success remains valid for its measured scope | Governance | Doc | Reverify all twelve P2 checks after HPR-P2-005/006 corrections, canonical status/index consistency and exact-head CI; close P2 only with 12/12 VERIFIED. | `docs(roadmap): close P2 canonical governance` | HPR-P2-001..012 |
+| HPR-P2-013 | IN PROGRESS — renewed read-only audit PASS, 12/12 VERIFIED at 7be1c9cb47ed9b6f73a7692d0a328ad870e2b4d4; closure metadata implemented; both closure-head CI gates PENDING; P2 OPEN | Governance | Doc | Reverify all twelve P2 checks after HPR-P2-005/006 corrections, canonical status/index consistency and exact-head CI; close P2 only with 12/12 VERIFIED. | `docs(roadmap): close P2 canonical governance` | HPR-P2-001..012 |
 
 ### Phase P3 — Deferred Industrial Scale / Future Capabilities
 
@@ -272,24 +272,95 @@ P1 is **CLOSED** only when this closure SHA passes the repository's full exact-h
 
 ## 6. Immediate Next Execution
 
-HPR-P2-006 is COMPLETED after exact-head Documentation #134 and Production #608
-passed on `1bc3c1bba2d08a0b493e5ece43e834e8d56d04f0`. The integrated physical
-dictionary comparison ran successfully with zero unresolved owners. HPR-P2-005 is
-also COMPLETED. This owner-selected continuation publishes renewed HPR-P2-013
-PREFLIGHT ONLY; it does not perform the audit or execute closure.
+The separately selected HPR-P2-013 closure metadata implementation records renewed
+PASS/12-of-12 substantive verification at `7be1c9cb47ed9b6f73a7692d0a328ad870e2b4d4`
+and verified HPR-P2-005/006 correction gates. Exact message:
+`docs(roadmap): close P2 canonical governance`.
 
-Next selection: `HPR-P2-013 — read-only twelve-check re-verification` after this
-preflight's documentation CI passes. Pin one fresh SHA and follow the renewed bounded
-envelope below. Only 12/12 substantive VERIFIED findings can admit a separately
-selected closure publication. Keep P2 OPEN and HPR-P2-013 PENDING in this preflight.
+Next selection: `HPR-P2-013 — verify both exact-head closure CI gates`.
+HPR-P2-013 is IN PROGRESS, P2 OPEN. Require successful documentation and full
+production CI on the resulting closure commit, including current OpenAPI equality
+and physical dictionary comparison, before final COMPLETED/P2 CLOSED disposition.
+Docs-only push starts documentation CI; full CI needs existing workflow_dispatch on
+that exact main head. No dispatch connector is currently exposed; owner Actions
+startup remains necessary unless a supported authorized capability becomes available.
+Never alter triggers or add dummy executable changes to force it. Stop after startup
+observation for Next/failure notification; no P3 work executes.
 
-P2 is OPEN. All P3 codes remain DEFERRED. The dated closure at
-`22a9b34225242c52fd502e421570af8b46879e4e` and CI #127/#606 remain retained
-verification evidence, but do not prove the substantive properties failed below.
-This current disposition supersedes older P2 CLOSED/no-next-task statements and
-historical pending/closed assertions in indexes or execution records. P0/P1 are
-unchanged absent regression evidence. All 57 HMR implementations (including HMR-080),
-123 semantic subjects and version `0.6.0-SNAPSHOT` remain unchanged.
+All HPR-P2-001..012 remain COMPLETED. All P3 codes are DEFERRED. Current audit/gate
+record below supersedes the earlier 9/12 audit FAIL for corrected content and dated
+CLOSED/pending statements while preserving their measured scope. P0/P1 are unchanged
+absent regression evidence. Preserve all 57 HMR identities including HMR-080, all
+123 subjects, production-data/approval unknowns and version 0.6.0-SNAPSHOT.
+
+### HPR-P2-013 renewed audit and closure metadata implementation — 2026-10-09
+
+Verified parent/audit SHA: `7be1c9cb47ed9b6f73a7692d0a328ad870e2b4d4`, tree
+`143314774f1c95eb1393c4a9b2a1737cddd14f65`. Default branch main remained unchanged.
+[Documentation #135](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/37931016005)
+PASSED at that SHA. AGENTS.md, this roadmap and RECONCILIATION.md were read before
+mutation. The owner's separate Next selects metadata implementation after the audit;
+this is not an automatic transition from a preflight or a claim of future CI success.
+
+The read-only forensic audit returned PASS, with exactly twelve VERIFIED classifications:
+
+| Check | Requirement / inspected evidence | Observed content and assessment | Status |
+|---|---|---|---|
+| 1 | Exact legacy supersession notices: docs/data definition/Agents.md, docs/roadmap/model-semantic-remediation.md, docs/ARCHITECTURE.md | All three lines 1–2 contain exact WARNING: SUPERSEDED DOCUMENT and canonical roadmap target; retained legacy statuses do not select current execution | VERIFIED |
+| 2 | doc/README.md Authority; DOCUMENTATION_STANDARD Required Metadata/Evidence Rules; DOCUMENT_STATUS_MODEL; DOCUMENT_LIFECYCLE | Canonical/legacy authority, CURRENT/TARGET/HISTORICAL meaning, evidence, ownership, review applicability and preservation/transition rules are substantive | VERIFIED |
+| 3 | UBIQUITOUS_LANGUAGE; TOPOLOGY_TELEMETRY; ALARM_INCIDENT_LEAK; linked subject register | Hidra-specific ownership, raw/trusted distinction, graph/self-loop, lifecycle/leak rules and prohibited shortcuts; corroborated source, not generic industry definitions | VERIFIED |
+| 4 | Every doc/modules/*.md and actual module source roots | 25 Markdown files: README plus exactly 24 substantive slices, with responsibility/domain/API/persistence/boundary/limits/semantic sections and resolving source links; source roots equal slices | VERIFIED |
+| 5 | Legacy HMR-005/031/080 obligations compared with SEMANTIC_DECISIONS and telemetry/topology/planning slices | Compatibility metadata, catalog connections/self-loop rejection and actual Nomination owner contracts/mappings transferred with current source/migration/test evidence; 123 subjects and 57 completed identities retained | VERIFIED |
+| 6 | SIMULATION_ANALYTICS_AI; SimulationSafetyGuard/SolverPort; AnalyticsInsight; DigitalTwinReadinessAssessment | Port has no executing implementation in current production source; advisoryOnly true/runtimeDigitalTwin false; actuation/foreign writes rejected; metadata is not ML/solver execution | VERIFIED |
+| 7 | Git-tracked doc/api/openapi.yaml and OPENAPI_GOVERNANCE | Generated versioned OpenAPI 3.1.0: 244 paths/263 operations/231 schemas; generation identity retained independently from publication | VERIFIED |
+| 8 | ci.yml Enforce canonical OpenAPI snapshot equality; validate_openapi_snapshot.compare_generated | Fresh generated object must match committed object, ignoring only validated x-hidra-ci-source-sha; mismatch raises error; compatibility is a separate gate | VERIFIED |
+| 9 | API_CONVENTIONS/ERROR_MODEL versus Workbench/telemetry adapter/context filter/global and scoped advice | Actual distinct pagination/filter/sort/tracing/body/status behavior documented, including IllegalArgument not-found to 400 and scoped conflicts; universal generated error envelope explicitly unestablished | VERIFIED |
+| 10 | DATA_DICTIONARY, generator, source-linked ownership and catalog artifact | Reproducible 481 tables + one sequence, 5,840 catalog columns, 1,355 constraints, 3,030 indexes, 155 triggers; 139 migrations/470 JPA reconcile; TelemetryPoint/TopologyConnection/Nomination and exceptions checked; zero unresolved owners | VERIFIED |
+| 11 | Actual SCHEMA_OWNERSHIP and FLYWAY_POLICY (not prompt's alternate filename) | Prefix exceptions/non-JPA owners, same/cross-module reference governance, unique version allocation, immutable history, additive/destructive/data preflight, recovery/reversal/forward fix/repair rules are explicit; no invented approved values | VERIFIED |
+| 12 | REQUIREMENTS_TRACEABILITY platform/module/HMR matrices and representative actual tests/contracts/migrations | All 209 source links resolve; inspected global 404/403 and Planning 409 tests, semantic/architecture/migration evidence; existing tests, cumulative CI and uninspected per-class reports remain distinct | VERIFIED |
+
+Exact module slices: alarm, analytics, assets, audit, configuration, custody, documents,
+hse, identity, incident, integration, integrity, leakdetection, monitoring, notification,
+organization, party, planning, reporting, risk, simulation, telemetry, topology, workflow.
+No non-module metadata or deferred agents/environment/otsecurity root is counted.
+Architecture source inventory is 70 contract Java files in 63 exported packages;
+neutral target/evidence extensions are not invented consumer modules. Additional live
+P2 data governance requirements were checked through current ownership/provenance/
+retention/legacy admission documents: infrastructure policies retain their own scope,
+unknown business values and proposed admission remain explicit NOT ESTABLISHED/TARGET.
+
+No unresolved Phase P2 governance or contract defects were identified at the pinned
+audit SHA. This substantive PASS is separate from closure publication and its future
+CI results. Earlier #127/#606 and 9/12 audit results retain historical scope.
+HPR-P2-005 #131 and HPR-P2-006 #134/#608 now substantively correct Checks 9–11;
+#608 fresh physical comparison reports reviewed_dictionary_checked=true and zero
+unresolved owners. Its executable/migration/JPA applicability is unchanged here.
+
+Actual implementation changes thirteen existing metadata paths within the fifteen-path
+maximum: doc/README; governance DOCUMENT_REGISTER/DOCUMENTATION_VALIDATION; database
+README/DATABASE_ARCHITECTURE/SCHEMA_OWNERSHIP/FLYWAY_POLICY; API/domain/modules/architecture
+README; this roadmap and RECONCILIATION. Architecture inventory files need no change.
+No file is created. DATA_DICTIONARY and ownership JSON, API object/manifest/scripts/
+workflows, individual modules/catalogue, docs/**, source/tests/resources/SQL/POM, ops,
+P1 physical and original generation evidence remain excluded and unchanged.
+
+Audit validation actually passed: all 37 tooling fixtures; canonical validation
+(95 documents, 5,050 links, 24 modules, 13 primary P2 rows); offline OpenAPI; physical
+dictionary render/check from reviewed Stage A capture with current identical source
+bundle and zero unresolved owners; module/source equality; 123 subjects/57 completion
+identities; 598 semantic source links and 209 requirements source links. This metadata
+publication checks PASSED: all 37 fixtures; canonical validation (95 documents,
+5,062 links, 24 modules, 13 primary P2 rows); offline OpenAPI; current dictionary
+comparison with zero unresolved owners; exact thirteen-path/excluded tracked blobs,
+57 HMR identities/123 subjects/version/P3 preservation and git diff --check.
+No local Java/database campaign is claimed.
+
+Publish one exact registered commit with expected-head lease; verify parent/tree/
+thirteen files and documentation CI startup. Existing workflow_dispatch must start
+full Production CI on this exact closure head. Do not mark HPR-P2-013 COMPLETED or
+P2 CLOSED until both exact-head runs pass; final dictionary/OpenAPI gates are mandatory.
+Stop for notification after startup. No P3, release/tag/version, deployment/import,
+policy approval or new physical campaign executes.
 
 ### HPR-P2-006 verification and renewed HPR-P2-013 preflight — 2026-10-09
 

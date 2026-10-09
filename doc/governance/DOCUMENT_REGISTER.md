@@ -30,10 +30,10 @@ Documentation authority follows the repository governance and the owner/decision
 | `doc/security/**` | CURRENT where individually stated | Canonical P0 security baseline and approved security procedures | No P2 replacement implied by HPR-P2-001 |
 | `doc/architecture/**` | CURRENT where individually stated | Canonical HPR-P2-002 architecture set; `RUNTIME_ARCHITECTURE.md` is historical P1 provenance | HPR-P2-002 complete |
 | `doc/operations/**` | CURRENT where individually stated | P1 operational, HA, DR, deployment, observability and survivability evidence | Preserve; later tasks may cross-link |
-| `doc/database/**` | CURRENT where individually stated | Reviewed 482-relation physical dictionary, source-linked ownership and Flyway rules; PostgreSQL 16 disposable-CI applicability; earlier P1 evidence retained | HPR-P2-006 IN PROGRESS pending Stage B exact-head CI |
+| `doc/database/**` | CURRENT where individually stated | Reviewed 482-relation physical dictionary, source-linked ownership and Flyway rules; PostgreSQL 16 disposable-CI applicability; earlier P1 evidence retained | HPR-P2-006 COMPLETED; #134/#608 passed with physical comparison |
 | `doc/domain/**` | CURRENT where individually stated | Canonical ubiquitous language, ownership and focused semantic baseline from current source | HPR-P2-003 complete; HPR-P2-009 refreshed lasting semantics |
 | `doc/modules/**` | CURRENT | Canonical current-state documentation for all 24 implemented module roots; excludes non-implemented agents/environment/otsecurity | HPR-P2-004 complete; HPR-P2-009 refreshed inventories/decisions |
-| `doc/api/**` | CURRENT | Canonical OpenAPI snapshot plus current source-backed query/correlation/error rules; older untouched guides retain generation applicability | HPR-P2-005 audit correction implemented; exact-head documentation CI PENDING; P2 OPEN |
+| `doc/api/**` | CURRENT | Canonical OpenAPI snapshot plus current source-backed query/correlation/error rules; older untouched guides retain generation applicability | HPR-P2-005 COMPLETED; #131 passed; P2 closure gates pending |
 | `doc/model-remediation/**` | CURRENT | Exact-current-source reconciliation of legacy HMR/HMSR execution obligations; legacy `docs/roadmap/model-semantic-remediation.md` remains history | HPR-P2-007/008 complete; HPR-P2-009 transfers lasting rules into domain/module docs |
 | `doc/data/**` | CURRENT | Five-document HPR-P2-010 governance baseline at source parent `b36733fc05e789613485606e1e1dd1731b11af53`; approved infrastructure controls and source-backed provenance separated from TARGET admission and unknown business decisions | HPR-P2-010 complete |
 | `doc/testing/**` | CURRENT | Six-document HPR-P2-011 source-backed strategy, architecture/database/API testing and requirements evidence; source parent `35d9d949aa773a4d754c22d00181330f579f752b`, prior CI and execution limits explicit | HPR-P2-011 complete |
@@ -163,3 +163,28 @@ Current content is source-backed; completion still requires both fresh exact-hea
 workflows and successful final dictionary comparison. No production data acceptance,
 PG18 physical capture, owner policy values, deployment or P2 closure is inferred.
 HPR-P2-006 IN PROGRESS; HPR-P2-013 PENDING; P2 OPEN/P3 DEFERRED.
+
+## Renewed HPR-P2-013 audit and closure gate — 2026-10-09
+
+The read-only P2 audit at `7be1c9cb47ed9b6f73a7692d0a328ad870e2b4d4`
+returned PASS: all twelve checks VERIFIED. Preflight Documentation #135 passed at
+that SHA. HPR-P2-005 correction is COMPLETED after #131; HPR-P2-006 is COMPLETED
+at `1bc3c1bba2d08a0b493e5ece43e834e8d56d04f0` after Documentation #134 and
+Production #608 passed, including fresh physical dictionary comparison with zero
+unresolved owners. These later facts supersede earlier publication-pending summaries;
+dated historical records and their original applicability remain preserved.
+
+This closure metadata implementation records the audit and verified prerequisites.
+HPR-P2-013 is IN PROGRESS; P2 remains OPEN pending both documentation and full
+production CI on the resulting closure commit. The exact current disposition and
+retained twelve-check evidence follow [the roadmap](../roadmap/ULTIMATE_ROADMAP.md).
+Docs-only push does not start full production CI: the existing HidraAPI CI manual
+workflow must run on the exact closure head. No preceding CI result substitutes for
+that gate. Stop after startup observation; no P3 task is selected.
+
+All 24 module slices, 123 semantic subjects and 57 completed HMR identities remain.
+Source-derived schema facts retain disposable PostgreSQL-16 capture applicability;
+P1 deployed/recovery evidence retains its original scope. No production-data/import
+approval, business retention/policy values, hydraulic/ML runtime execution or field
+actuation is established. Version remains 0.6.0-SNAPSHOT. No executable, migration,
+contract snapshot, dictionary, ownership metadata or operating artifact is changed.

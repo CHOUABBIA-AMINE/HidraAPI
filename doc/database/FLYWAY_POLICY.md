@@ -85,3 +85,28 @@ Use the exact [regeneration/check command](README.md#reproduce-and-check) and re
 Markdown CI stays database-free. Full production CI must pass at the publication SHA and exercise the integrated check before HPR-P2-006 completes. The new metadata path triggers full CI under the existing workflow; no workflow change is required. Future documentation-only changes still require dispatch when a fresh physical comparison is necessary.
 
 Historical generation at `aeb9008d74b90f102ab8706b9a23f1a6eb6cbe9c` (82/469), later source inventory refresh (139/470), and P1 deployed/recovery evidence retain their original applicability. Current physical capture/provenance is recorded in the [index](README.md); no production deployment or data approval follows from CI. P2 OPEN/P3 DEFERRED.
+
+## Renewed HPR-P2-013 audit and closure gate — 2026-10-09
+
+The read-only P2 audit at `7be1c9cb47ed9b6f73a7692d0a328ad870e2b4d4`
+returned PASS: all twelve checks VERIFIED. Preflight Documentation #135 passed at
+that SHA. HPR-P2-005 correction is COMPLETED after #131; HPR-P2-006 is COMPLETED
+at `1bc3c1bba2d08a0b493e5ece43e834e8d56d04f0` after Documentation #134 and
+Production #608 passed, including fresh physical dictionary comparison with zero
+unresolved owners. These later facts supersede earlier publication-pending summaries;
+dated historical records and their original applicability remain preserved.
+
+This closure metadata implementation records the audit and verified prerequisites.
+HPR-P2-013 is IN PROGRESS; P2 remains OPEN pending both documentation and full
+production CI on the resulting closure commit. The exact current disposition and
+retained twelve-check evidence follow [the roadmap](../roadmap/ULTIMATE_ROADMAP.md).
+Docs-only push does not start full production CI: the existing HidraAPI CI manual
+workflow must run on the exact closure head. No preceding CI result substitutes for
+that gate. Stop after startup observation; no P3 task is selected.
+
+All 24 module slices, 123 semantic subjects and 57 completed HMR identities remain.
+Source-derived schema facts retain disposable PostgreSQL-16 capture applicability;
+P1 deployed/recovery evidence retains its original scope. No production-data/import
+approval, business retention/policy values, hydraulic/ML runtime execution or field
+actuation is established. Version remains 0.6.0-SNAPSHOT. No executable, migration,
+contract snapshot, dictionary, ownership metadata or operating artifact is changed.

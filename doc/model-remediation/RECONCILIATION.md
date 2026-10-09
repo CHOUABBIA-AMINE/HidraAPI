@@ -2,7 +2,7 @@
 
 ## Status
 
-CURRENT — all 57 reconciled HMR implementations COMPLETED; permanent 123-subject semantic transfer complete. P2 is OPEN after the independent audit at c7d580cc7988f069bb939eb682664200e043c9bf failed Checks 9–11; HPR-P2-005 API documentation correction is COMPLETED after exact-head Documentation Validation #131 passed; HPR-P2-006 is COMPLETED after Stage B Documentation #134 and Production #608 passed with integrated dictionary comparison true and zero unresolved owners; HPR-P2-013 re-verification remains pending. Prior #127/#606 success remains historical verified evidence. P3 remains DEFERRED.
+CURRENT — all 57 reconciled HMR implementations COMPLETED; permanent 123-subject semantic transfer complete. HPR-P2-005/006 corrections are COMPLETED; renewed P2 audit PASS with 12/12 VERIFIED at 7be1c9cb47ed9b6f73a7692d0a328ad870e2b4d4. HPR-P2-013 closure metadata is implemented and IN PROGRESS pending both closure-head CI gates; P2 remains OPEN, P3 DEFERRED. Prior 9/12 FAIL and #127/#606 retain historical applicability.
 
 ## Historical HPR-P2-007 Verification Baseline
 
@@ -6951,3 +6951,33 @@ CLOSED disposition. HPR-P2-013 PENDING; P2 OPEN/P3 DEFERRED.
 All 57 completed HMR identities including HMR-080, 123 semantic subjects, original
 P1/generation applicability and 0.6.0-SNAPSHOT remain. No dictionary/owner-policy,
 source/test/configuration/SQL, deployment/import/version/release or P3 change.
+
+## HPR-P2-013 renewed audit and closure metadata — 2026-10-09
+
+The read-only audit at `7be1c9cb47ed9b6f73a7692d0a328ad870e2b4d4`, tree
+143314774f1c95eb1393c4a9b2a1737cddd14f65, returned PASS: twelve separate VERIFIED
+checks. Preflight Documentation #135 passed; main remained unchanged. The owner then
+separately selected the exact registered closure metadata implementation. Required
+AGENTS/roadmap/reconciliation authority was read before mutation.
+
+[Retained twelve-check evidence](../roadmap/ULTIMATE_ROADMAP.md#hpr-p2-013-renewed-audit-and-closure-metadata-implementation--2026-10-09)
+records exact canonical/legacy/source/CI subjects and observed properties. It includes
+24 substantive slices, 123 semantic subjects, 57 completed HMR identities, committed
+OpenAPI/failing drift gate, source-scoped API/error behavior, reproducible physical
+dictionary and concrete ownership/Flyway/traceability rules. Corrected Checks 9–11
+supersede the prior failed content verdict without rewriting that historical audit.
+
+Thirteen existing metadata paths change within the fifteen-path maximum. Physical
+dictionary/ownership JSON, API snapshot, validators/workflows, module semantics,
+legacy source, runtime/SQL/POM and operating evidence remain unchanged. All HMR rows
+and completion identities, original P1/generation applicability and 0.6.0-SNAPSHOT
+remain. No business approvals, deployment/import, runtime inference or field actuation
+is established by the audit or metadata publication.
+
+HPR-P2-013 is IN PROGRESS; P2 OPEN/P3 DEFERRED pending BOTH exact-head documentation
+and full production CI on the closure commit. Production must use existing manual
+workflow_dispatch because doc-only push is ignored. Current connector exposes no
+dispatch action; owner Actions startup is required unless a supported authorized
+capability becomes available. No dummy changes or premature CLOSED claim. Publish
+`docs(roadmap): close P2 canonical governance`, verify files/parent/tree, observe
+startup and stop for Next/failure notification; no later roadmap task executes.

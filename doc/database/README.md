@@ -2,7 +2,7 @@
 
 ## Status
 
-CURRENT — reviewed source-chain dictionary and governance; HPR-P2-006 publication gates pending. P2 OPEN; P3 DEFERRED.
+CURRENT — reviewed source-chain dictionary and governance; HPR-P2-006 COMPLETED after #134/#608. P2 closure gates pending; P3 DEFERRED.
 
 ## Verified capture and applicability
 
@@ -66,4 +66,29 @@ Original HPR-P2-006 generation `aeb9008d74b90f102ab8706b9a23f1a6eb6cbe9c` record
 P1 deployed/recovery evidence retains its original deployed SHA and 82-migration scope, including achieved RPO 15 seconds/RTO 37 minutes. It does not prove deployment or recovery of the current chain. PostgreSQL streaming replication/Patroni/etcd/HAProxy and pgBackRest operating procedures remain authoritative within their measured scope.
 [Historical HA](POSTGRES_HIGH_AVAILABILITY.md), [runbook](DATABASE_OPERATIONS_RUNBOOK.md), [failover](POSTGRES_FAILOVER_IMPLEMENTATION.md) and [backup](BACKUP_PITR_IMPLEMENTATION.md) stages remain preserved; current [operations](../../ops/production/postgres/DATABASE_OPERATIONS.md) and closed P1 evidence control contradictions.
 
-Flyway defines schema evolution; JPA validates mappings. TimescaleDB/PostGIS remain NOT IMPLEMENTED / DEFERRED. No schema, data, deployment or version change is made by this publication. Fresh Stage B production CI must exercise the final dictionary comparison before HPR-P2-006 completes; HPR-P2-013 separately verifies all twelve checks.
+Flyway defines schema evolution; JPA validates mappings. TimescaleDB/PostGIS remain NOT IMPLEMENTED / DEFERRED. No schema, data, deployment or version change is made by this publication. Stage B Production #608 exercised the final dictionary comparison successfully; HPR-P2-006 is COMPLETED. Renewed HPR-P2-013 audit verified all twelve checks; closure-head CI remains pending.
+
+## Renewed HPR-P2-013 audit and closure gate — 2026-10-09
+
+The read-only P2 audit at `7be1c9cb47ed9b6f73a7692d0a328ad870e2b4d4`
+returned PASS: all twelve checks VERIFIED. Preflight Documentation #135 passed at
+that SHA. HPR-P2-005 correction is COMPLETED after #131; HPR-P2-006 is COMPLETED
+at `1bc3c1bba2d08a0b493e5ece43e834e8d56d04f0` after Documentation #134 and
+Production #608 passed, including fresh physical dictionary comparison with zero
+unresolved owners. These later facts supersede earlier publication-pending summaries;
+dated historical records and their original applicability remain preserved.
+
+This closure metadata implementation records the audit and verified prerequisites.
+HPR-P2-013 is IN PROGRESS; P2 remains OPEN pending both documentation and full
+production CI on the resulting closure commit. The exact current disposition and
+retained twelve-check evidence follow [the roadmap](../roadmap/ULTIMATE_ROADMAP.md).
+Docs-only push does not start full production CI: the existing HidraAPI CI manual
+workflow must run on the exact closure head. No preceding CI result substitutes for
+that gate. Stop after startup observation; no P3 task is selected.
+
+All 24 module slices, 123 semantic subjects and 57 completed HMR identities remain.
+Source-derived schema facts retain disposable PostgreSQL-16 capture applicability;
+P1 deployed/recovery evidence retains its original scope. No production-data/import
+approval, business retention/policy values, hydraulic/ML runtime execution or field
+actuation is established. Version remains 0.6.0-SNAPSHOT. No executable, migration,
+contract snapshot, dictionary, ownership metadata or operating artifact is changed.

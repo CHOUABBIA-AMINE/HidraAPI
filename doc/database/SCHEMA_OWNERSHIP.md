@@ -110,4 +110,29 @@ Three physical columns have no current JPA mapping: `hidra_org_reporting_line.re
 
 TelemetryPoint has 18 columns and validated owner-unit FK; TopologyConnection has 12 columns, catalog/segment FKs and a no-self-loop check; Nomination has 26 columns, five checks, the ordered `(scenario_id, revision_id)` composite FK and HMR-080 type trigger. Organization, Assets and Leakdetection prefix samples and non-JPA policies were reviewed against the complete migration chain. See exact constraints/indexes/functions in the dictionary; existence alone does not establish production data approval.
 
-Current HPR-P2-006 content is implemented pending Stage B exact-head documentation/full CI. P2 OPEN/P3 DEFERRED; original 82-migration P1 evidence and earlier generation identities retain historical applicability described in the index.
+Current HPR-P2-006 content is COMPLETED after Stage B Documentation #134 and Production #608 passed, including final dictionary comparison. P2 OPEN/P3 DEFERRED; original 82-migration P1 evidence and earlier generation identities retain historical applicability described in the index.
+
+## Renewed HPR-P2-013 audit and closure gate — 2026-10-09
+
+The read-only P2 audit at `7be1c9cb47ed9b6f73a7692d0a328ad870e2b4d4`
+returned PASS: all twelve checks VERIFIED. Preflight Documentation #135 passed at
+that SHA. HPR-P2-005 correction is COMPLETED after #131; HPR-P2-006 is COMPLETED
+at `1bc3c1bba2d08a0b493e5ece43e834e8d56d04f0` after Documentation #134 and
+Production #608 passed, including fresh physical dictionary comparison with zero
+unresolved owners. These later facts supersede earlier publication-pending summaries;
+dated historical records and their original applicability remain preserved.
+
+This closure metadata implementation records the audit and verified prerequisites.
+HPR-P2-013 is IN PROGRESS; P2 remains OPEN pending both documentation and full
+production CI on the resulting closure commit. The exact current disposition and
+retained twelve-check evidence follow [the roadmap](../roadmap/ULTIMATE_ROADMAP.md).
+Docs-only push does not start full production CI: the existing HidraAPI CI manual
+workflow must run on the exact closure head. No preceding CI result substitutes for
+that gate. Stop after startup observation; no P3 task is selected.
+
+All 24 module slices, 123 semantic subjects and 57 completed HMR identities remain.
+Source-derived schema facts retain disposable PostgreSQL-16 capture applicability;
+P1 deployed/recovery evidence retains its original scope. No production-data/import
+approval, business retention/policy values, hydraulic/ML runtime execution or field
+actuation is established. Version remains 0.6.0-SNAPSHOT. No executable, migration,
+contract snapshot, dictionary, ownership metadata or operating artifact is changed.

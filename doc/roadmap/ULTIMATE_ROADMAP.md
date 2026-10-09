@@ -6048,3 +6048,185 @@ Its HPR-P2-008 dependency is now satisfied; status remains PENDING. A subsequent
 selects a fresh current-source preflight and bounded write scope for that task. This
 closure neither performs the permanent-decision transfer nor modifies its successor
 files automatically.
+
+
+## HPR-P2-009 semantic canonicalization preflight — 2026-10-09
+
+### Selection, gates and publication boundary
+
+The owner's Next after HPR-P2-008 closure selects this current-source preflight.
+HPR-P2-008 is COMPLETED; HPR-P2-009 remains PENDING and its permanent transfer has
+not started. P2 remains OPEN. This proposal does not select HPR-P2-010..013 or P3.
+A subsequent Next accepts the complete bounded implementation envelope below;
+execute only HPR-P2-009, using its exact registered commit:
+`docs(model-remediation): canonicalize semantic decisions`.
+
+Verified main/expected-head lease: 5f98dc1c5e6a329a54b64a912caa2cd5c5a8989c,
+tree 5cf152ed59ba92f97125b1cbe2bd866c061048c5. Closure documentation CI #116
+(37891083272) PASSED on that head. Production baseline remains
+617c2eec812e3a5734957ee9fa0360f6f5613032, tree
+e450c699544f99e96f2b447fc04215f7f4c5f344, with CI #604 (37841205677) PASSED.
+Its Java 21 clean verify and current/base OpenAPI compatibility are prior exact-head
+runtime evidence, not new tests performed by this documentation task.
+
+### Recovered evidence and reason for the envelope
+
+The legacy semantic review register contains 123 unique HMSR subjects: 19 APPROVED
+and 104 REVISE, with no DEFER/REMOVE entries. All 123 subject domain source files
+exist at this head. The legacy remediation register maps 104 subject HMRs
+(HMR-003..106); HMR-001/002 are supporting preparation. The canonical execution
+register covers the later 57 (HMR-050..106), all CI-confirmed. These are different
+populations: do not claim that the 57-row reconciliation independently audited all
+104 remediations or that historical APPROVED alone proves a current invariant.
+
+The current source inventory has 24 modules, 148 domain/model Java files, 470 JPA
+entity files and 70 application/contract Java files excluding package-info.
+The last closure verification matched 63 exported contract packages across the two
+architecture inventories and 139 unique Flyway versions. Recompute these inventories
+at the implementation parent; do not use counts as substitutes for source review.
+
+Canonical domain documents retain the HPR-P2-003 baseline and module documents the
+HPR-P2-004 baseline. Planning now exports
+`src/main/java/dz/sh/hidra/modules/planning/application/contract/monitoring/MonitoringPlanTargetReferenceContract.java`,
+where the old module document described no export. The Alarm domain description
+allows ESCALATED as sufficient for normal close, while current
+`src/main/java/dz/sh/hidra/modules/alarm/domain/service/AlarmLifecycleGuard.java`
+requires CLEARED state or populated clearedAt unless explicitly cancelled, and
+rejects already closed alarms. Root navigation and the governance register retain
+pre-closure remediation wording. These concrete drifts justify refreshing the full
+existing domain/module set rather than copying stale review conclusions.
+
+### Complete implementation design
+
+1. Recover each of the 123 detailed HMSR reviews and its historical disposition;
+   map the 104 REVISE subjects to their HMR identifiers. Reconcile every durable
+   statement with current domain/entity, application write paths, repository guards,
+   owner contracts/providers, migrations and relevant executable tests. Where source
+   does not establish the proposed rule, document the uncertainty rather than invent
+   a rule or open a new implementation obligation without concrete evidence.
+2. Create `doc/domain/SEMANTIC_DECISIONS.md` as the durable semantic decision register.
+   Include one unique traceability entry per reviewed module.subject, source HMSR,
+   HMR where applicable, canonical decision location and current source/test evidence.
+   Separate lasting rules from historical review verdicts and execution results.
+   Index newer source types in module inventories without inventing HMSR identifiers.
+3. Transfer the cross-module invariants into the existing domain ownership/language
+   and focused domain documents. Public scalar owner contracts, module-private
+   persistence, local integrity/composite keys and explicit ownership remain distinct;
+   no cross-module database FKs or private-module imports are proposed.
+4. Refresh all 24 existing module documents and their index against current source.
+   Describe actual domain types, exported contracts, inbound owner evidence and
+   controlled write paths with navigable evidence; retain current versus target
+   boundaries. Module summaries and the semantic register must cross-link rather
+   than duplicate contradictory decision narratives.
+5. Explain exact catalog membership, active fresh references versus valid unchanged
+   historical mappings, canonical owner snapshots and approval metadata only where
+   current source enforces them. Document PlanTarget numeric/text policy and Nomination
+   owner-approved product/quantity-role mappings as fail-closed deployment prerequisites;
+   no guessed mapping, exclusivity, unit pair, seed or historical repair is authorized.
+6. Transfer Planning revision/parent contexts and the Monitoring target scalar
+   contract, Telemetry point/reading agreement and trusted-reading evidence. Explain
+   populated optional-reference contexts and historical snapshot preservation without
+   promoting optional references to mandatory ones or claiming universal trust.
+7. Transfer Alarm raised-state/lifecycle, acknowledgement, clear/close/cancel,
+   suppression approval and shelving-expiry behavior from the actual orchestration
+   and guard paths. Keep Incident, LeakDetection and Monitoring responsibilities
+   separate. Correct the identified close-rule drift with precise source evidence.
+8. Transfer authenticated actor provenance, append-only/immutable evidence, guarded
+   repositories, transactional writes and owner-provider validation where implemented.
+   Workflow activation/callback/approval rules, document storage rollback and unknown
+   commit limits must follow actual code/tests; do not promise stronger guarantees.
+9. Preserve analytics/simulation advisory boundaries and all deferred AI inference,
+   autonomous actuation, digital-twin, TimescaleDB/PostGIS and industrial protocol
+   claims. Documentation transfer is neither physical survivability nor populated
+   production-data acceptance, and introduces no new operational SLO or retention value.
+10. Update root navigation and the documentation register for the new decision register
+    and refreshed source applicability. Supply metadata directly or through containing
+    indexes: status, owner authority, exact verified parent, evidence, current/target,
+    unresolved decisions and verification point. Do not invent named business owners.
+11. Preserve every legacy `docs/**` file byte-for-byte as review/execution history.
+    Preserve all HMR commits, migration history and the closed 57-row reconciliation.
+    Update only current canonical execution memory for HPR-P2-009 results; do not
+    rewrite historical batch/preflight prose as if it were current. Keep version
+    0.6.0-SNAPSHOT and remaining P2/P3 statuses unchanged.
+12. Stop before any code, test, migration, database dictionary, architecture/API,
+    operational procedure or workflow change becomes necessary. Record concrete
+    out-of-scope findings and reconcile the task envelope before expanding it.
+    This is one documentation commit, not reopened semantic implementation batches.
+
+### Exhaustive future implementation write scope — 37 paths
+
+Only the following paths are admitted for the subsequent HPR-P2-009 implementation;
+all existing paths are updates, and SEMANTIC_DECISIONS.md is the sole new file:
+
+- `doc/README.md`
+- `doc/governance/DOCUMENT_REGISTER.md`
+- `doc/domain/ALARM_INCIDENT_LEAK.md`
+- `doc/domain/ASSETS_INTEGRITY.md`
+- `doc/domain/DOMAIN_OWNERSHIP.md`
+- `doc/domain/README.md`
+- `doc/domain/SIMULATION_ANALYTICS_AI.md`
+- `doc/domain/TOPOLOGY_TELEMETRY.md`
+- `doc/domain/UBIQUITOUS_LANGUAGE.md`
+- `doc/domain/SEMANTIC_DECISIONS.md`
+- `doc/modules/README.md`
+- `doc/modules/alarm.md`
+- `doc/modules/analytics.md`
+- `doc/modules/assets.md`
+- `doc/modules/audit.md`
+- `doc/modules/configuration.md`
+- `doc/modules/custody.md`
+- `doc/modules/documents.md`
+- `doc/modules/hse.md`
+- `doc/modules/identity.md`
+- `doc/modules/incident.md`
+- `doc/modules/integration.md`
+- `doc/modules/integrity.md`
+- `doc/modules/leakdetection.md`
+- `doc/modules/monitoring.md`
+- `doc/modules/notification.md`
+- `doc/modules/organization.md`
+- `doc/modules/party.md`
+- `doc/modules/planning.md`
+- `doc/modules/reporting.md`
+- `doc/modules/risk.md`
+- `doc/modules/simulation.md`
+- `doc/modules/telemetry.md`
+- `doc/modules/topology.md`
+- `doc/modules/workflow.md`
+- `doc/model-remediation/RECONCILIATION.md`
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+
+### Admitted validation and completion evidence
+
+Before implementation, reverify main, its documentation CI and the executable green
+baseline; changed source requires fresh reconciliation. Recover all detailed reviews,
+not just register summaries. Before publication, verify 123 unique traceability rows,
+19/104 historical dispositions, 104 HMR mappings, all 24 module documents and exact
+current inventory/exports. Validate each documented invariant against its cited source
+and focused tests/migrations; a path-existence check alone does not validate meaning.
+Check Markdown relative links and referenced anchors/source paths in the touched set,
+metadata coverage, current/target discipline and absence of unsupported guarantees.
+Run the existing documentation workflow's UTF-8/nonempty/conflict-marker validation
+for all canonical Markdown (currently 82 files; the proposed new register makes 83),
+`git diff --check`, and exhaustive 37-path allowlist/legacy-byte-preservation checks.
+No Maven runtime rerun is required for a documentation-only tree; report prior CI and
+new documentation checks separately, without inheriting unperformed test claims.
+
+Complete HPR-P2-009 only after the durable transfer and these checks actually pass.
+Publish the exact registered implementation commit directly to main once with its
+fresh expected-head lease. Verify exact immutable parent/tree/blobs and unchanged
+files; confirm Documentation Validation has started, then STOP without waiting.
+Production CI ignores the documentation-only scope. Do not automatically execute
+HPR-P2-010; a new Next is required. If documentation CI fails, repair its responsible
+scope before any successor.
+
+### This preflight's narrow supporting publication
+
+Exact supporting commit: `docs(model-remediation): record semantic canonicalization preflight`.
+Write ONLY `doc/roadmap/ULTIMATE_ROADMAP.md` and
+`doc/model-remediation/RECONCILIATION.md`. The 37-path transfer is proposed, not
+performed or accepted by this preflight alone. Validate the measured review/HMR/source
+inventory, unique scope, seven-field P2 registry/statuses, all 82 canonical Markdown
+files and `git diff --check`. Verify exact published tree/blobs and unchanged files;
+advance main once using the preflight lease above. Confirm documentation CI starts
+and STOP. No new runtime test, physical evidence, tag or release is claimed.

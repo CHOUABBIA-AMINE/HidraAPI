@@ -7242,3 +7242,132 @@ scope; thirteen unique existing future paths; all HPR/HMR rows unchanged; 123 ca
 subjects and 57 COMPLETED reconciliation rows preserved; version 0.6.0-SNAPSHOT;
 git diff --check. Database/source inventory and unchanged executable-blob comparisons
 above actually ran. No local Maven/runtime/physical result is claimed.
+
+## HPR-P2-013 closure scope re-preflight — 2026-10-09
+
+### Accepted selection, verified gates and responsible-scope stop
+
+The owner's Next selected the previously published bounded HPR-P2-013 design.
+GitHub main is unchanged at `f9fe69e5e4e24c928d61b2b73da7e59882a7b558`, tree
+`1fd98b130c5a597f36c9241e927081893c1eb521`. Exact preflight Documentation Validation
+#125 (37913003387) PASSED. HPR-P2-012 Documentation Validation #124 (37909982710)
+and production CI #605 (37909982823) were independently rechecked PASSED at
+`e4dba168c9e612a5fd49d50b155fa3b2d8d64e40`. AGENTS.md, the current roadmap and
+reconciliation control this work.
+
+The accepted preflight explicitly requires: "A defect beyond this allowlist requires
+re-preflight." Current source review found a second closure defect outside its
+thirteen-path scope. Therefore no accepted implementation path has been refreshed,
+no HPR-P2-013 completion is recorded and closure execution stops before mutation.
+This supporting revision updates only the two execution memories. It is not the
+registered `docs(roadmap): close P2 canonical governance` implementation commit.
+
+### Additional current-source evidence
+
+`doc/architecture/CROSS_MODULE_CONTRACTS.md` describes its old HPR-P2-002 surface as
+CURRENT and lists 22 contract names. Actual current source contains 70 Java files
+under application/contract, excluding package-info, in 63 unique packages. The source
+package set exactly equals EXPORTED_CROSS_MODULE_PACKAGE_PREFIXES in
+`src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java`. Forty-eight current file
+names are absent from the old architecture table. Those 70 files are an inventory
+unit, not a claim that all files are interfaces or independent operational contracts.
+
+`doc/architecture/BOUNDED_CONTEXT_MAP.md` repeats the old relationship surface while
+claiming it derives from current source/allowlist. Its module-root list is still correct,
+but contract relationships need refresh. Architecture README applicability must record
+the new verification without changing historical HPR-P2-002 provenance.
+
+Three exported package suffixes are neutral extension surfaces, not module consumers:
+documents.application.contract.target (DocumentsOwnedTargetLookup),
+workflow.application.contract.target (WorkflowOwnedTargetLookup), and
+risk.application.contract.evidence (RiskOwnedEvidenceLookup). An updated table must
+distinguish these from actual named module-consumer packages and must not invent
+implemented modules named target or evidence. Source presence/allowlisting is not
+proof of provider availability or all owner interactions in a deployed system.
+
+The previously recovered database defect is unchanged: 139 unique forward migrations,
+470 @Entity classes, Risk 25 versus the old 24, and 57 missing migration filenames.
+Database refresh remains necessary. Original P1 deployed/recovery scope stays 82 and
+must not be relabelled as current-schema physical acceptance.
+
+### Revised accepted-on-Next proposal
+
+The complete eight-part bounded design in the immediately preceding HPR-P2-013
+preflight remains proposed, with these explicit amendments:
+
+1. Add exactly three existing architecture files to the implementation allowlist:
+   README.md, CROSS_MODULE_CONTRACTS.md and BOUNDED_CONTEXT_MAP.md under
+   doc/architecture/. All other previously admitted thirteen paths remain unchanged.
+2. Regenerate the complete architecture contract file/package inventory directly from
+   current Java package declarations and source filenames; verify 70 unique files and
+   exact 63-package agreement with architecture enforcement. Include direct evidence
+   links, owner, named consumer or neutral extension role; retain convention/boundary
+   rules without misclassifying target/evidence packages. Refresh bounded-context
+   relationships from the same verified package set, keeping the 24-module list intact.
+   Record source parent/date and preserve original architecture-baseline provenance.
+   No Java, architecture enforcement, export permission or runtime behavior changes.
+3. Verify refreshed architecture table/source set equality, duplicate/missing entries,
+   exact owner/consumer/neutral relationships and current database dictionary equality.
+   Retain all prior canonical/snapshot tests, source/preservation/version checks and
+   evidence limits. New source defects beyond these sixteen paths require re-preflight.
+4. Implementation still uses exactly `docs(roadmap): close P2 canonical governance`.
+   HPR-P2-013 implementation completion is distinct from P2 final VERIFIED/CLOSED
+   disposition, which remains pending until both documentation and full production CI
+   succeed on that resulting SHA. The docs-only production workflow requires existing
+   workflow_dispatch; no dispatch tool is currently exposed, so owner GitHub Actions
+   dispatch remains necessary unless an authorized supported capability becomes
+   available. Do not alter workflows or add a dummy executable change. Confirm startup
+   and STOP; no waiting or P3 execution is authorized.
+
+### Exhaustive revised future implementation scope — sixteen existing paths
+
+Update only:
+
+- `doc/README.md`
+- `doc/governance/DOCUMENT_REGISTER.md`
+- `doc/governance/DOCUMENTATION_VALIDATION.md`
+- `doc/database/README.md`
+- `doc/database/DATABASE_ARCHITECTURE.md`
+- `doc/database/SCHEMA_OWNERSHIP.md`
+- `doc/database/FLYWAY_POLICY.md`
+- `doc/database/DATA_DICTIONARY.md`
+- `doc/api/README.md`
+- `doc/domain/README.md`
+- `doc/modules/README.md`
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `doc/model-remediation/RECONCILIATION.md`
+- `doc/architecture/README.md`
+- `doc/architecture/CROSS_MODULE_CONTRACTS.md`
+- `doc/architecture/BOUNDED_CONTEXT_MAP.md`
+
+Create no repository files. All other previously stated preservation/exclusion rules
+remain unchanged: individual module docs, 123-subject semantic catalogue, API snapshot,
+manifest/scripts/tests/workflows, historical P1 evidence, docs/**, all runtime
+source/tests/resources/POM and migrations remain untouched. No policy/business
+approval, release/tag/version change, deployment/import or physical campaign.
+
+### Actual checks and supporting publication
+
+Read-only source enumeration and 63-package set comparison above PASSED. Both
+maintained Python suites PASSED (twenty tests). Canonical validation PASSED for
+95 documents, 3,215 links, 24 modules and 13 P2 rows; offline snapshot validation
+PASSED at 244 paths, 263 operations and 231 schemas. Structural success does not
+certify the stale architecture/database narrative; it cannot waive either defect.
+
+Actual local `./mvnw -B -q clean verify` could not start: tracked wrapper is not
+executable. `bash ./mvnw -B -q clean verify` then failed BEFORE compilation resolving
+uncached Spring Boot parent 4.1.1 because repo.maven.apache.org DNS failed. Installed
+Java is 17.0.20, while Java 21 is required. No local Java/JPA/runtime test result or
+physical campaign is claimed. Prior exact-head production CI #605 remains successful.
+
+Supporting exact message:
+`docs(roadmap): revise P2 canonical governance closure preflight`.
+Append this identical revised envelope only to the two canonical execution memories;
+leave all primary HPR/HMR rows and all other tracked blobs unchanged. Verify sixteen
+unique existing future paths, unchanged 57 completed HMR identities/123 subjects,
+version 0.6.0-SNAPSHOT, maintained validators and git diff --check. Publish once with
+fresh expected-head lease from `f9fe69e5e4e24c928d61b2b73da7e59882a7b558`, verify
+immutable parent/tree/blobs, confirm Documentation Validation starts, then STOP.
+This two-document supporting revision needs no full production dispatch. A subsequent
+Next after its exact-head documentation result accepts the complete revised design
+and sixteen-path scope. HPR-P2-013 stays PENDING, P2 OPEN and all P3 tasks DEFERRED.

@@ -294,12 +294,136 @@ hydraulic scenarios, automated issue-to-simulation orchestration, operator outco
 feedback and deployed learning are NOT ESTABLISHED by this baseline.
 See [simulation/analytics semantics](../domain/SIMULATION_ANALYTICS_AI.md).
 
+#### HPR-P25-001 Requirements and Execution Preflight — 2026-10-09
+
+Owner Next selects this documentation-only preflight after Documentation #142
+(run 37948108881) PASSED on registration SHA
+`02e86faa48c49c0c83c2ad51ccc4f1c52686f6c4`, tree
+`2f0354ef2677706c9d67a267ea3419120086ed21`. The verified local source tree is
+identical. Exact message: `docs(twin): define requirements and execution preflight`.
+Write only this roadmap and `doc/model-remediation/RECONCILIATION.md`.
+
+**Disposition: review delivered; HPR-P25-001 BLOCKED on required owner decisions.**
+The desired multi-product decision-feedback cycle is approved as a product target;
+no first demonstrator, hydraulic mode, solver access or numeric operational acceptance
+limits have been supplied. AGENTS.md §19 preserves `0.7.0-SNAPSHOT`. Do not interpret
+this preflight as physics approval, a simulator purchase or implementation selection.
+
+##### Exact-source gap and ownership matrix
+
+Paths below are under `src/main/java/dz/sh/hidra/modules/` at the verified parent.
+Presence is source evidence, not a current field integration or accuracy claim.
+
+| Requirement | Source evidence | Missing obligation / proposed owner boundary |
+|---|---|---|
+| Connected physical network | `topology/domain/model/Pipeline.java` has nominal diameter, design pressure, length and units; `topology/infrastructure/persistence/entity/PipelineSegmentJpaEntity.java` has node endpoints, KP, length and direction; nodes/segments are persistence models, not current domain aggregates | Topology owns connectivity/configuration. Establish approved versioned input export and segment-level physical completeness; do not invent existing domain node/segment records. |
+| Product identity versus physics | `custody/application/contract/planning/PlanningProductReferenceContract.java` returns id/code/active; `custody/infrastructure/persistence/entity/CustodyBatchJpaEntity.java` has productTypeId | Custody retains catalogue identity; proposed Simulation-owned immutable fluid/composition/property-method inputs need explicit contract approval. A Planning-specific contract is not automatically reusable by Simulation. |
+| Operator map | `topology/infrastructure/visualization/JpaTopologyMapVisualizationAdapter.java` and `topology/api/rest/controller/TopologyMapController.java` expose layers/GeoJSON; segment lines derive from endpoints | Reuse map APIs; add product/state/issue overlays and authorization only for demonstrated gaps. Authoritative surveyed routes and an integrated frontend are not proved. |
+| Raw and trusted measurements | `telemetry/domain/model/TelemetryReading.java` retains timestamp/sequence/hash/correlation; `telemetry/application/service/TrustedTelemetryReadingApplicationService.java` checks PASSED trust, active point and binding | Telemetry owns measurement trust/provenance; coherent watermarks, freshness policy, units and live acquisition need verified contracts and source evidence. |
+| External acquisition | `integration/infrastructure/integration/NoopExternalConnectorGateway.java` returns true for canConnect/canExchange without performing acquisition | Integration owns approved read-only external transport. Those booleans cannot establish source reachability, data synchronization or OT access. |
+| Analytics and estimated state | `analytics/domain/model/DigitalTwinReadinessAssessment.java` returns runtimeDigitalTwin false; `analytics/application/service/AnalyticsApplicationService.java` provides analytics use cases | Analytics owns derived read models/state estimates. Physical estimator execution, uncertainty and observability gates are not established; never overwrite operational truth with estimates. |
+| Issue detection | `monitoring/application/service/MonitoringRuleApplicationService.java` creates rules; `monitoring/domain/service/DeviationSeverityClassifier.java` classifies percentage differences; LeakDetection has case services | Monitoring/LeakDetection own their issue records. Existing thresholds are not calibrated multi-product detector limits; correlated state-driven detection and cyber-source evidence need explicit scope. |
+| Simulation execution | `simulation/application/service/SimulationApplicationService.java` queues runs; `simulation/application/port/out/SimulationSolverPort.java` only has available(referenceId); repository search found no implementation | Simulation owns execution/model/result lifecycle behind ports; implement a real solver adapter, validate snapshots/boundaries and retain diagnostics before claiming hydraulic calculation. |
+| Decisions and learning | `simulation/domain/service/SimulationSafetyGuard.java` forbids field actuation; `analytics/domain/model/AnalyticsInsight.java` is advisory-only; Workflow/Audit and simulation recommendations exist | Proposed Workflow-owned decision/action capture with Audit evidence, Analytics-owned outcome evaluation and governed learning, Simulation-owned predictions. Actual action/outcome linkage and learning effectiveness are not established. |
+
+##### Required product and physical-input contract
+
+| Target | Visualization requirement | Simulation qualification before supported status |
+|---|---|---|
+| Gas | Product/composition labels, pipelines/stations and operating configuration | Approved composition/property method, pressure/temperature/flow basis, compression curves and relevant inventory/boundary behavior; modes selected by owner |
+| Oil/liquid | Product/batch labels, pumping configuration and connected routes | Approved fluid density/viscosity/property provenance, elevation/profile and pump characteristics; transient/surge claims require appropriate validated mode |
+| H2 | Explicit hydrogen identity, operating configuration and asset restrictions | Validated H2 property/model support plus approved asset/material operating constraints; gas catalogue classification alone is insufficient |
+| Blends/other products | Configurable identity and product assignment with clear unsupported markers | Approved composition range, property method and equipment compatibility envelope; prohibit silent default to another fluid's model |
+
+A simulation input must include snapshot identity/time/watermark, topology/configuration
+version, asset IDs, nodes/connections, segment lengths/elevations/internal diameter and
+approved resistance parameters, fluid/composition/property version, boundary conditions,
+active equipment state and current curves, units and flow reference basis, measurement
+quality/uncertainty, operating limits and solver product/mode capability. Required versus
+optional fields and allowed estimation must be fixed by the selected solver/mode contract.
+Existing nominal diameter must not silently become internal diameter; design pressure
+must not silently become an approved operating limit. Missing critical inputs invalidate
+execution rather than become zero/default values. Numerical limits remain unapproved.
+
+##### Decision register — no fabricated operational policy
+
+| Decision | Current status / required owner evidence | Blocks |
+|---|---|---|
+| D25-01 first demonstrator | UNRESOLVED: choose product, bounded connected network, representative operator action and data owner. All requested products remain in the target matrix. | HPR-P25-001 completion; qualified implementation/pilot |
+| D25-02 physical modes | UNRESOLVED: steady-state and/or transient modes per product/use case; transient event/linepack/surge coverage is not inferred | Physics contract; HPR-P25-005/008/009 |
+| D25-03 real engine | UNRESOLVED: select permitted solver(s), supported products/modes, license/deployment/interface, version and access evidence | HPR-P25-008 execution |
+| D25-04 input ownership | PROPOSED ONLY: Topology physical network/configuration; Custody product identity; Simulation versioned fluid/model inputs/current curve snapshots; exported owner contracts rather than foreign JPA | HPR-P25-002 preflight/implementation |
+| D25-05 measurements/security | UNRESOLVED: acquisition source and interface, read-only access/environment, unit/flow basis/time alignment, freshness/latency/replay policy; independent cybersecurity evidence source if included | HPR-P25-004/006 field claims |
+| D25-06 physical acceptance | UNRESOLVED: independent reference dataset, sensor uncertainty, residual/calibration/convergence tolerances per product/mode, estimator observability and valid envelope | HPR-P25-005/009 and closure |
+| D25-07 issue/decision policy | UNRESOLVED: issue coverage, limits/severity/false-alarm acceptance, feasible candidate actions, approval authority, simulation budgets and emergency escalation | HPR-P25-006/010/011/012 |
+| D25-08 operator and outcomes | UNRESOLVED: frontend repository/environment, pilot approval, actual-action evidence, observation windows and attribution/confounder policy | HPR-P25-013/015/016 |
+| D25-09 learning governance | UNRESOLVED: learning objective, admissible data, held-out evaluation, drift thresholds, promotion authority and rollback criteria | HPR-P25-014/017 |
+
+Solver integration alternatives to evaluate, not procurement recommendations: existing
+licensed external engine via supported API/batch/service interface; approved open-source
+engine with demonstrated product/mode coverage; purpose-built internal engine with its
+own verification and maintenance program. No named engine, vendor, interface or license
+is selected or claimed available by this preflight. Evaluate capability, reproducibility,
+calibration, integration security, failures, operations and licensing before D25-03 closes.
+
+##### Acceptance fixture register — specifications, not executed tests
+
+| Fixture | Required expected behavior / evidence | Acceptance values |
+|---|---|---|
+| F25-01 product/network map | Gas, oil, H2 and other-product assets/connectivity and switching configurations render consistently; unsupported simulation shown explicitly | Product assignments and reference topology approved by data owner |
+| F25-02 trust/replay | Duplicate/out-of-order/stale/invalid-unit/disconnected readings preserve raw provenance and cannot create a falsely fresh trusted state; replay recovery deterministic | D25-05 bounds, clock/unit policy and trusted-reading criteria |
+| F25-03 reconstructed state | Known measured/estimated/unknown quantities remain distinct; unobservable or inconsistent boundary state refuses actionable results | D25-06 uncertainty/observability/residual limits |
+| F25-04 local harm elsewhere | Candidate improves station A but violates a constraint at connected station B; proposal rejects/modifies action and explains affected assets; disconnected network unaffected | Approved solver reference case, D25-06 accuracy and D25-07 limits |
+| F25-05 scope expansion | Geographic cut intersects connected effects; insufficient boundary data expands scope or refuses execution; local/full runs compared | Approved cut/boundary case and comparison tolerance |
+| F25-06 real engine failures | Actual adapter executes pinned engine; timeout, unavailable engine, cancellation, invalid product/mode and nonconvergence never become successful predictions | D25-03 interface/timeout contract and resource budget |
+| F25-07 issue coverage | Positive/negative process/sensor/security cases distinguish suspect signals, repeat triggers and true issues; urgent alarm path proceeds independently | D25-07 detector and D25-05 security-source policy |
+| F25-08 decision and outcome | Reject/modify/apply paths capture authenticated actor and actual action/time; predicted/observed differences include concurrent changes and missing outcomes | D25-08 observation/attribution policy |
+| F25-09 learning rollback | Dataset excludes unapplied recommendations as action labels; held-out evaluation gates promotion; adverse update rolls back without relaxing physics/safety limits | D25-09 evaluation and drift criteria |
+| F25-10 end-to-end operator pilot | Selected frontend shows the full telemetry/issue/run/proposal/action/outcome trace with authorization and environment versions | D25-01/08 pilot acceptance and full Phase 2.5 coverage matrix |
+
+These fixtures provide reproducible requirements. No numerical hydraulic, detector,
+latency or learning acceptance is approved and no fixture execution is claimed here.
+
+##### Bounded implementation envelopes and next selection
+
+All implementation paths remain non-authorized until their exact selected-task preflight.
+The following decomposition controls scope; it is not a broad module write allowlist:
+
+- HPR-P25-002: first settle D25-04 and the selected input/product/mode contract. Reuse
+  existing Topology/Custody identities. Separate topology export, fluid/version inputs
+  and equipment/configuration additions into individually registered stages if required.
+  Domain nodes/segments must not be invented from persistence inventory. Exact new files
+  and any forward migration name depend on this design decision and are not yet admitted.
+- HPR-P25-003/004: bounded map read-model/API work and one approved read-only acquisition
+  adapter; preserve owner contracts, unit/trust semantics and strict access boundaries.
+- HPR-P25-005..009: bounded estimator, detector, connected-scope resolver, real solver
+  adapter and independent calibration tests; no universal physics engine is implied.
+- HPR-P25-010..014: bounded issue/run orchestration, candidate evaluation, actual-action
+  capture, outcome evaluation and offline learning stages; retain immutable provenance.
+- HPR-P25-015..017: integrated frontend evidence, replay/pilot operations and independent
+  closure audit; separate frontend changes require their own repository authorization.
+
+Every implementation preflight must name exact source/test/contract/API/docs paths,
+forward migration filename (or justified no-migration decision), owner exports and
+ArchitectureGuardrailTest changes if required. Validate focused behavior plus Java 21
+`./mvnw -B -q clean verify`, applicable PostgreSQL/OpenAPI/architecture checks and
+exact-head CI; real solver/field/pilot evidence is additional to mocks and CI.
+For this preflight run only canonical documentation/OpenAPI/P1 evidence validation,
+whitespace and exact two-file scope; runtime Maven is not required by doc-only rules.
+
+**Next executable disposition:** resolve D25-01..04 first and amend this two-document
+preflight before selecting HPR-P25-002 implementation. Supporting decision-record
+message: `docs(twin): record approved phase 2.5 input decisions`. Record only decisions
+actually supplied by the owner; do not promote proposals to approved policy. Missing
+operational/solver data blocks affected later stages, not all independent future review.
+No implementation, migration, solver installation, release or deployment is selected.
+
 #### Execution registry
 
 | Code | Status | Domain/Module | Type | Exact execution requirement | Exact commit message | Depends on |
 |---|---|---|---|---|---|---|
-| HPR-P25-000 | COMPLETED — owner-selected Phase 2.5 registration; documentation validation required on publication; no runtime implementation | Roadmap / Reconciliation | Doc | Register the owner-defined operational twin cycle, ordered tasks, prerequisites, acceptance gates and next requirements preflight. | `docs(roadmap): register phase 2.5 operational digital twin` | P0/P1/P2 closed; owner instruction 2026-10-09 |
-| HPR-P25-001 | PENDING | Cross-module requirements | Doc | Inventory exact-source gaps and owners; specify product/use-case coverage, data needs, solver integration options, steady-state/transient scope, operational/security issue classes, tolerances and acceptance fixtures; record unresolved owner decisions and implementation envelopes. | `docs(twin): define requirements and execution preflight` | HPR-P25-000; successful registration documentation CI |
+| HPR-P25-000 | COMPLETED — registration 02e86faa48c49c0c83c2ad51ccc4f1c52686f6c4 passed Documentation #142/run 37948108881; no runtime implementation | Roadmap / Reconciliation | Doc | Register the owner-defined operational twin cycle, ordered tasks, prerequisites, acceptance gates and next requirements preflight. | `docs(roadmap): register phase 2.5 operational digital twin` | P0/P1/P2 closed; owner instruction 2026-10-09 |
+| HPR-P25-001 | BLOCKED — source gap review and bounded requirements preflight published; first demonstrator, product/mode physics contracts, solver/access and operational acceptance values await owner decisions | Cross-module requirements | Doc | Inventory exact-source gaps and owners; specify product/use-case coverage, data needs, solver integration options, steady-state/transient scope, operational/security issue classes, tolerances and acceptance fixtures; record unresolved owner decisions and implementation envelopes. | `docs(twin): define requirements and execution preflight` | HPR-P25-000; successful registration documentation CI |
 | HPR-P25-002 | PENDING | Topology / Custody / Simulation | Code/Test | Extend only demonstrated gaps in product-aware connected topology, fluid-property/composition references, equipment characteristics and versioned operating configurations; reject unsupported physics/product combinations. | `feat(topology): establish product aware twin network inputs` | HPR-P25-001 approved input/ownership contracts |
 | HPR-P25-003 | PENDING | Topology / Telemetry / API | Code/Test | Provide authorized network map/state APIs with product and asset layers, connectivity, measured/estimated overlays, quality/freshness and issue location; verify the frontend integration contract. | `feat(topology): expose operational twin visualization` | HPR-P25-002 |
 | HPR-P25-004 | PENDING | Integration / Telemetry | Code/Test/Config | Implement the approved read-only acquisition adapter and coherent timestamp/unit/asset binding; verify replay, duplicates, late/missing readings, disconnect and recovery while retaining raw provenance and trust rules. | `feat(telemetry): synchronize trusted network measurements` | HPR-P25-001 approved source/access/latency contract; HPR-P25-002 |
@@ -441,11 +565,13 @@ registration is `275a5d38e888ad70e33db4081ef03783e9e1e427`, tree
 (run 37944111978) PASSED. Source/runtime remains on the verified 0.7.0 development
 line; documentation registration is not solver execution or twin delivery.
 
-Next recommended selection: **HPR-P25-001 — requirements and execution preflight**,
-after successful registration Documentation Validation. It is not executed here.
+HPR-P25-001 source review and requirements preflight is delivered but BLOCKED on
+required owner decisions D25-01..09, detailed in Phase 2.5. Registration Documentation
+#142/run 37948108881 PASSED. Resolve the first demonstrator, physical modes, real
+engine and input ownership (D25-01..04) before HPR-P25-002 implementation selection.
 Resolve the product/mode rollout, real solver access, telemetry/security sources,
 operator/pilot environment and measurable acceptance criteria before implementation.
-Observe registration Documentation Validation startup and STOP for owner Next/Fail.
+Observe requirements-preflight Documentation Validation startup and STOP for owner Next/Fail.
 P0/P1/P2 remain CLOSED; P2.5 PLANNED/OPEN; P3 DEFERRED; 57 HMR completions,
 123 subjects, formal v0.6.0 and current 0.7.0-SNAPSHOT remain preserved.
 
@@ -8599,3 +8725,9 @@ Actual local registration checks PASSED: canonical documentation validation (95 
 (244 paths, 263 operations, 231 schemas), P1 closure evidence validation and
 `git diff --check`. Exactly two documentation files changed. These checks do not
 establish runtime twin implementation; exact-head Documentation CI follows publication.
+
+Actual local HPR-P25-001 checks PASSED: canonical documentation (95 documents,
+5,063 relative links, 24 modules, 13 P2 rows), offline OpenAPI (244 paths,
+263 operations, 231 schemas), P1 closure evidence and git diff --check.
+Exactly two documentation files change; exact-head Documentation CI follows
+publication. No runtime, solver or acceptance-fixture execution is claimed.

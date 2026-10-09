@@ -2,7 +2,7 @@
 
 ## Status
 
-CURRENT — all 57 reconciled HMR implementations COMPLETED; permanent 123-subject semantic transfer complete. HPR-P2-005/006 corrections are COMPLETED; renewed P2 audit PASS with 12/12 VERIFIED at 7be1c9cb47ed9b6f73a7692d0a328ad870e2b4d4. HPR-P2-013 is COMPLETED and P2 VERIFIED/CLOSED after exact-head Documentation Validation #136 and production CI #609 PASSED at a8905e32289a583f47b831e0381783e556ae0c8d. Phase P2.5 is PLANNED/OPEN under owner-selected HPR-P25-000; operational twin runtime remains NOT ESTABLISHED. P3 remains DEFERRED; prior 9/12 FAIL and #127/#606 retain historical applicability.
+CURRENT — all 57 reconciled HMR implementations COMPLETED; permanent 123-subject semantic transfer complete. HPR-P2-005/006 corrections are COMPLETED; renewed P2 audit PASS with 12/12 VERIFIED at 7be1c9cb47ed9b6f73a7692d0a328ad870e2b4d4. HPR-P2-013 is COMPLETED and P2 VERIFIED/CLOSED after exact-head Documentation Validation #136 and production CI #609 PASSED at a8905e32289a583f47b831e0381783e556ae0c8d. Phase P2.5 is PLANNED/OPEN; HPR-P25-000 registration CI #142 PASSED and HPR-P25-001 requirements preflight is BLOCKED on required owner decisions; operational twin runtime remains NOT ESTABLISHED. P3 remains DEFERRED; prior 9/12 FAIL and #127/#606 retain historical applicability.
 
 ## Historical HPR-P2-007 Verification Baseline
 
@@ -7287,3 +7287,60 @@ Actual local registration checks PASSED: canonical documentation validation (95 
 (244 paths, 263 operations, 231 schemas), P1 closure evidence validation and
 `git diff --check`. Exactly two documentation files changed. These checks do not
 establish runtime twin implementation; exact-head Documentation CI follows publication.
+
+
+## HPR-P25-001 Requirements Preflight — 2026-10-09
+
+Owner Next selects source review and requirements preflight after Documentation
+#142/run 37948108881 PASSED on exact registration SHA
+02e86faa48c49c0c83c2ad51ccc4f1c52686f6c4, tree
+2f0354ef2677706c9d67a267ea3419120086ed21. Read AGENTS.md, Ultimate Roadmap
+and this reconciliation before mutation; verified local source tree is identical.
+
+Exact message: `docs(twin): define requirements and execution preflight`. Write
+ONLY doc/roadmap/ULTIMATE_ROADMAP.md and doc/model-remediation/RECONCILIATION.md.
+Review delivered; HPR-P25-001 BLOCKED because no approved first demonstrator,
+physical modes, solver/access, input ownership or operational acceptance values
+have been supplied. Ultimate Roadmap governing rule 13 applies.
+The earlier PENDING selection is historical, not current execution permission.
+
+The roadmap now contains the exact-source ownership/gap matrix, requested
+gas/oil/H2/blends/other-product coverage, physical-input requirements, unresolved
+D25-01..09 decisions, F25-01..10 fixture specifications, solver integration
+alternatives without selecting an engine, and bounded implementation envelopes.
+Existing nominal diameter/design pressure must not silently become internal
+diameter/approved operating limit. Persistence node/segment inventory is not
+a current domain aggregate. Custody Planning product export is id/code/active,
+not a Simulation fluid model. NoopExternalConnectorGateway returns true without
+acquisition; SimulationSolverPort only checks available(referenceId) with no
+implementation found. runtimeDigitalTwin remains false. Existing severity
+classification is not approved multi-product detection accuracy.
+
+Ownership proposals retain Topology connectivity/configuration, Custody product
+identity, Telemetry trust, Integration read-only acquisition, Analytics derived
+state/outcomes/learning, Simulation immutable physical inputs/execution/predictions
+and Workflow/Audit actual-action decisions/evidence. New contracts and exports
+require bounded exact-file preflight; no foreign JPA access or new module is approved.
+
+First resolve D25-01..04: demonstrator, physical modes, engine/access and input
+ownership. Subsequent source/field thresholds, product/mode validation data, issue
+policy, operator environment/outcome windows and learning promotion/rollback need
+D25-05..09. F25 fixtures are specifications only, not executed acceptance tests.
+HPR-P25-002..017 remain PENDING and cannot bypass their prerequisite decisions.
+Supporting decision record exact message:
+`docs(twin): record approved phase 2.5 input decisions`; same two-file write scope.
+No owner approval is invented. This record must be amended with actual decisions
+before implementation selection; no implementation is automatically selected.
+
+Validate canonical documentation, offline OpenAPI, retained P1 evidence, whitespace
+and exact two-file scope; preserve P0/P1/P2/REL registry rows and all HMR subjects.
+Publish with expected-parent lease, verify parent/tree/files, observe Documentation
+Validation startup and STOP for owner Next/Fail. No runtime/physics execution
+is claimed. P0/P1/P2 CLOSED, P2.5 OPEN, P3 DEFERRED, 57 HMR completions,
+123 subjects, formal v0.6.0 and development 0.7.0-SNAPSHOT are unchanged.
+
+Actual local HPR-P25-001 checks PASSED: canonical documentation (95 documents,
+5,063 relative links, 24 modules, 13 P2 rows), offline OpenAPI (244 paths,
+263 operations, 231 schemas), P1 closure evidence and git diff --check.
+Exactly two documentation files change; exact-head Documentation CI follows
+publication. No runtime, solver or acceptance-fixture execution is claimed.

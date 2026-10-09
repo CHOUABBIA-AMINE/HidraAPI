@@ -13,6 +13,7 @@
 | Field | Value |
 |---|---|
 | Status | ACTIVE |
+| P2.5 operational digital twin | PLANNED / OPEN — owner-prioritized telemetry-to-simulation-to-decision-to-outcome-to-learning cycle; runtime NOT ESTABLISHED |
 | P2 canonical governance | VERIFIED/CLOSED — renewed independent audit 12/12 VERIFIED at 7be1c9cb47ed9b6f73a7692d0a328ad870e2b4d4; exact-head Documentation Validation #136 and production CI #609 PASSED at a8905e32289a583f47b831e0381783e556ae0c8d; earlier 9/12 audit preserved as history |
 | Roadmap code | HPR — Hidra Platform Readiness |
 | Canonical documentation root | `doc/` |
@@ -37,7 +38,7 @@
 7. `docs/roadmap/model-semantic-remediation.md` is subordinate execution-history/reference evidence. Its summary/status text is not execution authority.
 8. Before executing a legacy semantic obligation, revalidate its HMSR evidence, current source, dependencies, write scope, migration need, and regression tests.
 9. `doc/` is the canonical maintained documentation hierarchy. `docs/` remains preserved evidence/reference material.
-10. P3 capabilities remain deferred until measured requirements and approved architecture justify adoption.
+10. Phase P2.5 is the owner-prioritized operational digital twin workstream following P2 closure; its registration does not establish runtime execution. P3 capabilities remain deferred until measured requirements and approved architecture justify adoption.
 11. Never invent RTO, RPO, SLO, deployment topology, database topology, throughput targets, retention periods, SRIDs, or industrial protocols.
 12. A capability moves from TARGET/DEFERRED to CURRENT only after implementation, tests, configuration/migrations, and operating procedures provide evidence.
 13. If a task requires an owner/business/operations decision not present in repository evidence, mark the task BLOCKED and stop; do not fabricate the decision.
@@ -257,6 +258,124 @@ P1 is **CLOSED** only when this closure SHA passes the repository's full exact-h
 | HPR-P2-012 | COMPLETED — maintained canonical metadata/link/index/module/P2 and deterministic OpenAPI validators/tests wired into both CI workflows; snapshot refreshed from verified CI #604 artifact; strict fresh-runtime equality added; local Maven blocked before compilation by Boot-parent/Central DNS; exact-head CI follows publication | Documentation CI | Infra | Add documentation validation for canonical links/status/index drift and deterministic OpenAPI contract checks. | `ci(docs): validate canonical documentation` | HPR-P2-001..011 |
 | HPR-P2-013 | COMPLETED — renewed 12/12 audit VERIFIED at 7be1c9cb47ed9b6f73a7692d0a328ad870e2b4d4; exact-head Documentation Validation #136 and production CI #609 PASSED at a8905e32289a583f47b831e0381783e556ae0c8d; P2 VERIFIED/CLOSED | Governance | Doc | Reverify all twelve P2 checks after HPR-P2-005/006 corrections, canonical status/index consistency and exact-head CI; close P2 only with 12/12 VERIFIED. | `docs(roadmap): close P2 canonical governance` | HPR-P2-001..012 |
 
+### Phase P2.5 — Operational Digital Twin and Decision Feedback
+
+**Status: PLANNED / OPEN — requirements registration only; runtime capability NOT ESTABLISHED.**
+Stable task prefix: `HPR-P25` (Phase 2.5). Owner instruction on 2026-10-09 explicitly
+selects this roadmap update after defining the following product priority:
+
+**Collected telemetry -> analytics/network-state assessment -> issue or safety/security
+concern -> real simulation -> proposed decision -> actual decision and measured outcome
+-> validated AI learning.**
+
+Hidra must visualize connected pipeline networks carrying gas, oil, hydrogen (H2),
+blends and other configured products. The purpose is to prevent a locally beneficial
+operator action from causing unacceptable effects elsewhere. Simulation must evaluate
+the connected network state and consequences, rather than react to an isolated reading.
+Local, geographical and full-network scopes are required; geographic selection alone
+is insufficient to establish hydraulic independence.
+
+This phase follows CLOSED P0/P1/P2 and is the next product priority before general P3
+industrial scaling. P3 rows stay DEFERRED: TimescaleDB/PostGIS/MQTT adoption is not
+implicitly selected. A measured P2.5 prerequisite may separately select the relevant
+P3 task with its existing approval gates; Phase 2.5 does not bypass those gates.
+Version remains `0.7.0-SNAPSHOT`; no release or deployment is selected.
+
+#### Verified foundation and missing execution boundary
+
+At source baseline `275a5d38e888ad70e33db4081ef03783e9e1e427`, topology has network
+models and a working source-visible map/GeoJSON adapter/controller; telemetry has raw
+and trusted reading models/application services; simulation has model/scenario/run
+records and run queueing. These are reusable foundations, not end-to-end twin proof.
+`DigitalTwinReadinessAssessment.runtimeDigitalTwin()` returns false, and
+`SimulationSolverPort` only reports availability; no executing implementation was
+found. Continuous field synchronization, calibrated state estimation, executing
+hydraulic scenarios, automated issue-to-simulation orchestration, operator outcome
+feedback and deployed learning are NOT ESTABLISHED by this baseline.
+See [simulation/analytics semantics](../domain/SIMULATION_ANALYTICS_AI.md).
+
+#### Execution registry
+
+| Code | Status | Domain/Module | Type | Exact execution requirement | Exact commit message | Depends on |
+|---|---|---|---|---|---|---|
+| HPR-P25-000 | COMPLETED — owner-selected Phase 2.5 registration; documentation validation required on publication; no runtime implementation | Roadmap / Reconciliation | Doc | Register the owner-defined operational twin cycle, ordered tasks, prerequisites, acceptance gates and next requirements preflight. | `docs(roadmap): register phase 2.5 operational digital twin` | P0/P1/P2 closed; owner instruction 2026-10-09 |
+| HPR-P25-001 | PENDING | Cross-module requirements | Doc | Inventory exact-source gaps and owners; specify product/use-case coverage, data needs, solver integration options, steady-state/transient scope, operational/security issue classes, tolerances and acceptance fixtures; record unresolved owner decisions and implementation envelopes. | `docs(twin): define requirements and execution preflight` | HPR-P25-000; successful registration documentation CI |
+| HPR-P25-002 | PENDING | Topology / Custody / Simulation | Code/Test | Extend only demonstrated gaps in product-aware connected topology, fluid-property/composition references, equipment characteristics and versioned operating configurations; reject unsupported physics/product combinations. | `feat(topology): establish product aware twin network inputs` | HPR-P25-001 approved input/ownership contracts |
+| HPR-P25-003 | PENDING | Topology / Telemetry / API | Code/Test | Provide authorized network map/state APIs with product and asset layers, connectivity, measured/estimated overlays, quality/freshness and issue location; verify the frontend integration contract. | `feat(topology): expose operational twin visualization` | HPR-P25-002 |
+| HPR-P25-004 | PENDING | Integration / Telemetry | Code/Test/Config | Implement the approved read-only acquisition adapter and coherent timestamp/unit/asset binding; verify replay, duplicates, late/missing readings, disconnect and recovery while retaining raw provenance and trust rules. | `feat(telemetry): synchronize trusted network measurements` | HPR-P25-001 approved source/access/latency contract; HPR-P25-002 |
+| HPR-P25-005 | PENDING | Analytics / Topology / Telemetry | Code/Test | Reconstruct a versioned time-coherent network state using approved physical methods; distinguish measured, estimated and unknown values and observability; retain input/configuration lineage and uncertainty. | `feat(analytics): reconstruct operational network state` | HPR-P25-004; approved estimator/model contract |
+| HPR-P25-006 | PENDING | Monitoring / LeakDetection / Risk / Analytics | Code/Test | Implement the approved issue catalogue and correlated detection across the connected network; distinguish sensor/data faults, suspected process faults and safety/security signals, with severity, confidence, supported coverage and evidence. | `feat(monitoring): detect network issues from trusted state` | HPR-P25-005; approved detector thresholds/fixtures |
+| HPR-P25-007 | PENDING | Simulation / Topology | Code/Test | Select connected local/regional/full-network simulation scope; derive validated boundary conditions, propagate potential effects and expand scope or reject execution when boundaries are inadequate. | `feat(simulation): resolve connected scope and boundary conditions` | HPR-P25-005; HPR-P25-002 |
+| HPR-P25-008 | PENDING | Simulation / Integration | Code/Test/Config | Implement a real approved solver adapter with input/output mapping, units, product/mode capability checks, immutable version provenance, diagnostics and timeout/cancellation handling; verify actual execution beyond availability metadata. | `feat(simulation): execute approved hydraulic solver` | HPR-P25-001 selected solver/access/license; HPR-P25-007 |
+| HPR-P25-009 | PENDING | Simulation / Analytics | Test/Doc | Calibrate and validate solver/estimator behavior against approved measured/reference cases and current equipment curves; publish per-product/mode tolerances, residuals, uncertainty and validity envelope. | `test(simulation): validate calibrated network physics` | HPR-P25-008; HPR-P25-005; approved validation data |
+| HPR-P25-010 | PENDING | Monitoring / Simulation / Workflow | Code/Test | Automatically trigger governed real simulations from eligible issues using traceable state snapshots, debounce/deduplication, priorities and bounded resource budgets; retain failures and preserve independent alarm handling. | `feat(simulation): orchestrate issue triggered network runs` | HPR-P25-006..009 |
+| HPR-P25-011 | PENDING | Simulation / Risk / Analytics | Code/Test | Evaluate candidate operator actions against baseline and affected-network constraints; present expected benefits, adverse effects elsewhere, uncertainty and alternatives; reject infeasible/out-of-validity recommendations. | `feat(simulation): propose network validated operator decisions` | HPR-P25-009..010; approved constraints and candidate action contract |
+| HPR-P25-012 | PENDING | Workflow / Audit / Simulation | Code/Test | Record authenticated human approval, rejection/modification and the action actually applied with time/scope/context; preserve advisory boundaries and immutable links to the recommendation and runs. | `feat(workflow): record operator decisions and applied actions` | HPR-P25-011 |
+| HPR-P25-013 | PENDING | Analytics / Telemetry / Audit | Code/Test | Compare post-action telemetry with predicted outcomes in an approved observation window; retain actual action, confounders, confidence and attribution limits; detect unexpected effects elsewhere. | `feat(analytics): evaluate observed decision outcomes` | HPR-P25-012; HPR-P25-004 |
+| HPR-P25-014 | PENDING | Analytics / Simulation | Code/Test/Doc | Build provenance-controlled learning datasets from actual actions/outcomes; evaluate proposed detector, calibration or recommendation updates offline, version them and require validated promotion/rollback without weakening physical or safety constraints. | `feat(analytics): govern learning from operational outcomes` | HPR-P25-013; approved learning objective/evaluation policy |
+| HPR-P25-015 | PENDING | API / Operator Experience | Test/Doc | Demonstrate operator visualization, issue-to-run explanation, candidate comparisons, decision capture and outcome views with the selected frontend; record separate frontend repository/version evidence and accessibility/authorization checks. | `test(twin): verify operator visualization and decision workflow` | HPR-P25-003; HPR-P25-010..014; selected frontend environment |
+| HPR-P25-016 | PENDING | Cross-module verification / Operations | Test/Doc | Execute end-to-end historical replay and governed pilot cases including adverse downstream effects, scope expansion, unavailable solver, poor/stale data, unobservable state, nonconvergence and learning rollback; retain exact-source/environment evidence and runbooks. | `test(twin): verify operational decision feedback cycle` | HPR-P25-015; approved pilot/data/environment |
+| HPR-P25-017 | PENDING | Governance | Doc | Independently audit all P2.5 gates against actual execution and per-product/mode evidence; close only after exact-head applicable CI and operator acceptance, with unsupported coverage explicitly retained. | `docs(roadmap): close phase 2.5 operational twin verification` | HPR-P25-001..016 |
+
+#### Boundaries, acceptance gates and unresolved decisions
+
+- **Product coverage:** gas, oil, H2, blends and other configured products are target
+  visualization coverage. Validate hydraulic capability separately for each fluid,
+  composition and simulation mode; do not claim universal solver support from a
+  product catalogue. HPR-P25-001 must choose the first demonstrator and register the
+  remaining rollout matrix; phase closure cannot silently omit requested products.
+- **State and detection:** define measurable freshness, time alignment, sensor quality,
+  topology completeness, estimation/observability and uncertainty limits from approved
+  requirements. Use a versioned issue catalogue with positive/negative replay cases,
+  false-alarm/missed-detection evidence and an explicit unsupported-issue boundary.
+  The ambition to detect all issue kinds is not a current universal detection claim.
+- **Physical fidelity:** steady-state versus transient modes, solver(s), licenses,
+  integration interface and property methods remain requirements decisions. Pressure
+  surges, shutdown evolution, linepack and other time-dependent claims require verified
+  appropriate transient execution. Use actual/current performance curves and validate
+  calibration with independent reference cases; record invalid/nonconvergent results.
+- **Scope and decisions:** every run must retain topology/configuration version,
+  measurement watermark, input snapshot, boundary conditions, product properties,
+  solver/version, result status and validity. Demonstrate a case where an apparently
+  beneficial local action is rejected or modified because it harms another location.
+  Evaluate the full connected consequence scope when a local boundary is insufficient.
+- **Safety and security:** distinguish process safety events from cybersecurity evidence.
+  Trusted security-source integration and an approved response playbook are prerequisites
+  for cyber claims. Preserve existing alerts, emergency procedures, SIS and OT separation;
+  simulation must not delay urgent protection or treat suspect telemetry as trustworthy.
+  Decision proposals remain human-facing; this phase does not authorize direct field
+  actuation or bypass SimulationSafetyGuard, Analytics advisory-only or module ownership.
+- **Learning:** recommendations alone are not outcome labels. Track the real action,
+  timing, other simultaneous changes, observed effects and attribution limits. Validate
+  updates offline before governed promotion; support rollback and drift monitoring.
+  Physical validity and approved safety constraints remain independently enforced.
+- **Operator delivery:** HidraAPI provides backend contracts. An API/map adapter is not
+  proof of a delivered frontend; HPR-P25-015 needs explicit integrated frontend evidence.
+- **Closure:** require per-task source/tests and exact-head applicable CI, actual solver
+  evidence, approved product/mode coverage, operator acceptance, failure/recovery behavior,
+  security boundaries and repeatable operational procedures. Mocks alone cannot establish
+  field synchronization, hydraulic accuracy, a live twin or AI learning effectiveness.
+
+#### Bounded task selection and write authorization
+
+HPR-P25-000 writes ONLY `doc/roadmap/ULTIMATE_ROADMAP.md` and
+`doc/model-remediation/RECONCILIATION.md`. It registers the plan and preserves all
+P0/P1/P2 closures, 57 completed HMR implementations and 123 semantic subjects.
+HPR-P25-001 is the next recommended task, not executed by this registration.
+When selected, it writes ONLY these same two documents and records its source gap
+matrix, owner decisions, acceptance fixtures and implementation envelopes in the
+roadmap. No source, schema, runtime configuration or dependency change is admitted.
+
+Before each HPR-P25-002..017 mutation, a documentation-only preflight must register
+exact file/migration allowlists, owner contracts, product/mode scope, validation
+commands and evidence prerequisites in both execution memories. Use supporting
+message `docs(twin): register HPR-P25-NNN execution preflight` with NNN replaced by
+the selected task number; implementation retains the exact registered message above.
+Split a materially larger task into registered bounded stages before implementation.
+No cross-module persistence access, new module or dependency is implied by this plan.
+Absent required solver/data/access/owner evidence, mark the affected task BLOCKED.
+Execute one selected task; observe applicable CI startup and STOP for owner Next/Fail.
+
 ### Phase P3 — Deferred Industrial Scale / Future Capabilities
 
 | Code | Status | Domain/Module | Type | Exact execution requirement | Exact commit message | Depends on |
@@ -314,13 +433,21 @@ Release CI #610 remains attached to the immutable formal release SHA; #611
 separately verifies the development transition. The v0.6.0 release-management
 cycle and next-development transition are complete under AGENTS.md §19.
 
-No next executable task is automatically selected. P3 requires a separate approved
-requirement and owner task selection; production promotion requires its own
-approved change and controlled release workflow. This four-document evidence
-record needs Documentation Validation startup/result verification; full #611
-remains pinned to the transition SHA, not the supporting record SHA. Stop after
-documentation startup without selecting features, another version or deployment.
-P0/P1/P2 CLOSED, P3 DEFERRED, 57 HMR completions and 123 subjects remain unchanged.
+Owner instruction on 2026-10-09 selects HPR-P25-000, the documentation-only
+registration of Phase 2.5, with exact message
+`docs(roadmap): register phase 2.5 operational digital twin`. Current main before
+registration is `275a5d38e888ad70e33db4081ef03783e9e1e427`, tree
+`fd8dff20c50a0193adbbc321c1a360925ded81b1`; Documentation #141
+(run 37944111978) PASSED. Source/runtime remains on the verified 0.7.0 development
+line; documentation registration is not solver execution or twin delivery.
+
+Next recommended selection: **HPR-P25-001 — requirements and execution preflight**,
+after successful registration Documentation Validation. It is not executed here.
+Resolve the product/mode rollout, real solver access, telemetry/security sources,
+operator/pilot environment and measurable acceptance criteria before implementation.
+Observe registration Documentation Validation startup and STOP for owner Next/Fail.
+P0/P1/P2 remain CLOSED; P2.5 PLANNED/OPEN; P3 DEFERRED; 57 HMR completions,
+123 subjects, formal v0.6.0 and current 0.7.0-SNAPSHOT remain preserved.
 
 ### Retained P2 closure disposition
 
@@ -8466,3 +8593,9 @@ supporting record does not require repeating full CI or become a replacement
 release tag/transition target. No further version, release, P3 capability,
 deployment/import/policy or physical campaign is selected. A future workstream
 requires its own owner task selection and applicable requirements.
+
+Actual local registration checks PASSED: canonical documentation validation (95 documents,
+5,063 relative links, 24 modules, 13 P2 rows), offline OpenAPI validation
+(244 paths, 263 operations, 231 schemas), P1 closure evidence validation and
+`git diff --check`. Exactly two documentation files changed. These checks do not
+establish runtime twin implementation; exact-head Documentation CI follows publication.

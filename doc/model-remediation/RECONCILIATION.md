@@ -2,7 +2,7 @@
 
 ## Status
 
-CURRENT — all 57 reconciled HMR implementations COMPLETED; permanent 123-subject semantic transfer complete. HPR-P2-005/006 corrections are COMPLETED; renewed P2 audit PASS with 12/12 VERIFIED at 7be1c9cb47ed9b6f73a7692d0a328ad870e2b4d4. HPR-P2-013 is COMPLETED and P2 VERIFIED/CLOSED after exact-head Documentation Validation #136 and production CI #609 PASSED at a8905e32289a583f47b831e0381783e556ae0c8d. P3 remains DEFERRED; prior 9/12 FAIL and #127/#606 retain historical applicability.
+CURRENT — all 57 reconciled HMR implementations COMPLETED; permanent 123-subject semantic transfer complete. HPR-P2-005/006 corrections are COMPLETED; renewed P2 audit PASS with 12/12 VERIFIED at 7be1c9cb47ed9b6f73a7692d0a328ad870e2b4d4. HPR-P2-013 is COMPLETED and P2 VERIFIED/CLOSED after exact-head Documentation Validation #136 and production CI #609 PASSED at a8905e32289a583f47b831e0381783e556ae0c8d. Phase P2.5 is PLANNED/OPEN under owner-selected HPR-P25-000; operational twin runtime remains NOT ESTABLISHED. P3 remains DEFERRED; prior 9/12 FAIL and #127/#606 retain historical applicability.
 
 ## Historical HPR-P2-007 Verification Baseline
 
@@ -7241,3 +7241,49 @@ supporting record does not require repeating full CI or become a replacement
 release tag/transition target. No further version, release, P3 capability,
 deployment/import/policy or physical campaign is selected. A future workstream
 requires its own owner task selection and applicable requirements.
+
+
+## Phase 2.5 Registration — 2026-10-09
+
+Owner-selected HPR-P25-000 registers the operational digital twin priority in the
+Ultimate Roadmap: product-aware gas/oil/H2/other-product visualization; collected
+trusted telemetry -> analytics/network-state assessment -> issue or safety/security
+concern -> real local/regional/full-network simulation -> proposed operator decision
+-> actual action and measured outcome -> validated AI learning. Prevent harmful
+effects elsewhere from an apparently beneficial local action.
+
+Verified parent main: 275a5d38e888ad70e33db4081ef03783e9e1e427, tree
+fd8dff20c50a0193adbbc321c1a360925ded81b1; Documentation #141/run 37944111978
+PASSED. Existing topology/map, raw/trusted telemetry and simulation metadata are
+foundations; runtimeDigitalTwin returns false and the solver availability port
+is not executing hydraulic simulation. This registration changes no such behavior.
+
+HPR-P25-000 exact message: `docs(roadmap): register phase 2.5 operational digital twin`.
+Write ONLY doc/roadmap/ULTIMATE_ROADMAP.md and doc/model-remediation/RECONCILIATION.md.
+HPR-P25-001..017 are PENDING; Phase 2.5 PLANNED/OPEN, runtime NOT ESTABLISHED.
+Next recommended task is HPR-P25-001, requirements/source gap and execution
+preflight; when selected it writes only these same two execution memories.
+Subsequent implementation requires registered exact file/migration/owner/validation
+envelopes, approved product/mode and solver/data evidence; missing decisions block
+affected tasks. Supporting preflight message is
+`docs(twin): register HPR-P25-NNN execution preflight`, substituting the task number.
+
+The roadmap retains per-product/mode physics validation, connected-scope boundary
+conditions, adverse effects elsewhere, real solver evidence, operator review,
+independent urgent safety/security response, actual-action outcome attribution,
+offline learning evaluation/promotion/rollback and separate integrated frontend
+evidence as acceptance gates. No direct OT actuation is authorized. P3 technologies
+remain deferred and need their own measured requirements/selection.
+
+Validate canonical documentation, offline OpenAPI, P1 evidence, whitespace and
+exact two-file scope. Publish using the verified-parent expected-head lease, verify
+parent/tree/files and observe Documentation Validation startup, then STOP for owner
+Next/Fail. No full runtime campaign is claimed for this documentation-only change.
+P0/P1/P2 CLOSED, all 57 HMR completions and 123 semantic subjects are preserved;
+no HMR is reopened. Formal v0.6.0 and 0.7.0-SNAPSHOT remain unchanged.
+
+Actual local registration checks PASSED: canonical documentation validation (95 documents,
+5,063 relative links, 24 modules, 13 P2 rows), offline OpenAPI validation
+(244 paths, 263 operations, 231 schemas), P1 closure evidence validation and
+`git diff --check`. Exactly two documentation files changed. These checks do not
+establish runtime twin implementation; exact-head Documentation CI follows publication.

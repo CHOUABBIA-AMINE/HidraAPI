@@ -8586,8 +8586,8 @@ B1..B4 implementation CI is confirmed, no independent closure task is selected h
 
 | Code | Status | Exact purpose | Exact commit message | Gate |
 |---|---|---|---|---|
-| HPR-P25-002C1 | IN PROGRESS — owner evidence export and Simulation adapter plus 16 JUnit methods implemented; local Maven blocked by dependency DNS; exact-head full CI pending | Owner-controlled trusted-reading evidence export and Simulation adapter | `feat(simulation): resolve owner trusted reading evidence` | Successful C preflight Documentation CI; B1..B4 exact-head CI confirmed |
-| HPR-P25-002C2 | PENDING — exact-file preflight required | Topology/product eligibility adapters and explicit missing physical-revision results | `feat(simulation): resolve owner topology and product eligibility` | C1 CI; `docs(twin): register HPR-P25-002C2 execution preflight` |
+| HPR-P25-002C1 | COMPLETED — 28cd17ca96c7f9bbd195601f0cd24e718c8ce632 plus c6b2fa7257fd603965f4a6faa9a05b1cd094e8cb repair passed Java 21 Production #619 and Documentation #159; 16 JUnit methods present; per-class XML not independently inspected | Owner-controlled trusted-reading evidence export and Simulation adapter | `feat(simulation): resolve owner trusted reading evidence` | Successful C preflight Documentation CI; B1..B4 exact-head CI confirmed |
+| HPR-P25-002C2 | PENDING — exact thirteen-path preflight registered; implementation not executed | Topology/product eligibility adapters and explicit missing physical-revision results | `feat(simulation): resolve owner topology and product eligibility` | C1 CI; `docs(twin): register HPR-P25-002C2 execution preflight` |
 | HPR-P25-002C3 | PENDING — source/schema preflight required | Versioned physical source resolution, unit/reference conversion and Simulation suitability policy | `feat(simulation): resolve qualified physical source revisions` | C2 CI; `docs(twin): register HPR-P25-002C3 execution preflight`; demonstrated owner gaps/ownership/schema and approval evidence |
 
 C2/C3 are ordered planning registrations, not exact write authorization. C3 may need
@@ -8799,3 +8799,170 @@ documents/5063 links), offline OpenAPI (244 paths/263 operations/231 schemas), P
 evidence, whitespace, exact three-path scope and version/historical registry checks
 PASSED. No runtime code or test rule/assertion changed. Repair implemented pending
 exact-head full CI; stop after CI startup.
+
+
+## HPR-P25-002C2 Topology and Product Evidence Preflight — 2026-10-09
+
+Owner Next selects ONLY `docs(twin): register HPR-P25-002C2 execution preflight`.
+Write ONLY doc/roadmap/ULTIMATE_ROADMAP.md and doc/model-remediation/RECONCILIATION.md.
+Verified main c6b2fa7257fd603965f4a6faa9a05b1cd094e8cb, tree
+ce17d98a33a65c1bb0704ec7ceedbcee19fca01e: Production #619/run 37979772893
+and Documentation #159/run 37979772904 completed SUCCESS at this exact SHA.
+C1 implementation 28cd17ca96c7f9bbd195601f0cd24e718c8ce632 plus export repair
+are CI-confirmed; retain #618 failure and local dependency limitations as history.
+Mandatory instructions and both execution memories read; current source synchronized.
+No C2 code executes in this documentation-only stage. Parent 002C/002 remain PENDING.
+
+### Revalidated source and eligibility boundary
+
+Topology's application/contract/simulation/SimulationTopologyScopeContract.java returns
+supported/exists/eligible; application/service/TopologySimulationScopeQueryService.java
+resolves PIPELINE_SYSTEM and PIPELINE via owner repository ports and ACTIVE status.
+SEGMENT_GROUP/FACILITY_NETWORK/other types remain unsupported. The public result has
+no resolved identity or revision; adapters may echo a normalized requested scope but
+must not present that echo as independently returned owner identity or immutable topology.
+Existing SimulationApplicationService consumes this contract for model scope validation;
+C2 does not change that workflow or its existing boolean snapshot ports.
+
+Custody infrastructure/persistence/entity/CustodyCatalogEntryJpaEntity.java stores id,
+catalogName, code, active and createdAt/updatedAt (plus sortOrder/systemDefined).
+CustodyCatalogEntryJpaRepository.java inherits findById and has findByIdForShare.
+The inspected generic catalogue has no source-backed Simulation gas policy or canonical
+product-catalog discriminator. PlanningProductReferenceQueryAdapter additionally queries
+hidra_custody_planning_product_policy under mandatory transaction/shared locks. That
+policy belongs to Planning; reusing its approval for Simulation would invent authority.
+
+C2 therefore exports a product CANDIDATE catalogue reference, preserving catalogue name
+and activity, and leaves Simulation product eligibility UNASSESSED. Any catalogue can
+be returned as candidate evidence; presence/activity does not establish that the row is
+a product, gas, fluid-method compatible or approved for Simulation. No classification
+from code/name spelling, hardcoded GZ2 allowlist or generic catalogue active=true rule.
+A source-backed classification/approval policy remains an explicit C3 prerequisite.
+Topology eligibility is existing scope identity/status eligibility only. Neither result
+has versioned physical inputs; C2 exposes explicit missing-source status for both.
+No revision/digest is invented from IDs, catalogue timestamps or live owner data.
+
+### C2 exact next implementation envelope
+
+After successful Documentation CI on this preflight, next owner Next selects ONLY C2.
+Exact implementation message already registered:
+`feat(simulation): resolve owner topology and product eligibility`.
+The eligibility claim is bounded to existing Topology scope eligibility and explicit
+UNASSESSED product policy. Create ONLY these nine paths:
+
+1. src/main/java/dz/sh/hidra/modules/custody/application/contract/simulation/SimulationProductCandidateContract.java
+2. src/main/java/dz/sh/hidra/modules/custody/infrastructure/integration/SimulationProductCandidateQueryAdapter.java
+3. src/main/java/dz/sh/hidra/modules/simulation/application/port/out/SimulationTopologyScopeEvidencePort.java
+4. src/main/java/dz/sh/hidra/modules/simulation/application/port/out/SimulationProductCandidateEvidencePort.java
+5. src/main/java/dz/sh/hidra/modules/simulation/infrastructure/integration/TopologyScopeEvidenceQueryAdapter.java
+6. src/main/java/dz/sh/hidra/modules/simulation/infrastructure/integration/CustodyProductCandidateEvidenceQueryAdapter.java
+7. src/test/java/dz/sh/hidra/modules/custody/infrastructure/integration/SimulationProductCandidateQueryAdapterTest.java
+8. src/test/java/dz/sh/hidra/modules/simulation/infrastructure/integration/TopologyScopeEvidenceQueryAdapterTest.java
+9. src/test/java/dz/sh/hidra/modules/simulation/infrastructure/integration/CustodyProductCandidateEvidenceQueryAdapterTest.java
+
+Update ONLY src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java,
+src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java and both execution memories.
+Total thirteen tracked paths. No new migration/table, existing entity/repository/owner
+scope contract/service, application service/runtime workflows, payloads, availability
+ports, API/OpenAPI/dictionary, POM/dependencies/workflows, Kernel or Platform changes.
+Private helpers/nested records/enums stay in these files. Canonical headers retain
+Author Abir MEDJERAB, CreatedOn 2025-06-26; UpdatedOn is actual implementation date.
+
+### Exact contract, adapter and missing-input semantics
+
+Custody owner contract: Optional<Candidate> resolve(String id). Nested immutable record
+Candidate(String id, String catalogName, String code, boolean active, Instant createdAt,
+Instant updatedAt). Export only Java types; retain all raw field values without additional
+normalization or revision semantics. Custody adapter is @Component, nonfinal for Spring
+transaction proxying, constructor-injects only CustodyCatalogEntryJpaRepository. Method
+@Transactional(readOnly=true) uses existing findById; blank/null IDs return empty without
+repository call, nonblank requests trimmed, returned id must equal the normalized request.
+Missing/mismatched rows return empty; exceptions propagate. Copy the six fields exactly,
+including inactive rows or missing timestamps. No JDBC policy query, Planning dependency,
+shared-lock snapshot/capture claim, writes, classification or generated defaults.
+
+Simulation product port: Optional<CandidateEvidence> resolve(String id). Nested immutable
+CandidateEvidence has the same six fields/types. Nested enum EligibilityStatus has only
+UNASSESSED; method simulationEligibility() on CandidateEvidence returns UNASSESSED.
+Nested enum PhysicalInputStatus has only MISSING_VERSIONED_FLUID_SOURCE; method
+physicalInputStatus() returns that value. Neither active flag nor timestamps can alter
+these results. Do not use ready/approved booleans, populate fluid properties or add a
+revision field. Optional empty means candidate not resolved; resolved but unassessed
+means policy and physical data are still missing, never a usable calculation input.
+
+Simulation product adapter is @Component, constructor-injects only
+SimulationProductCandidateContract. Null/blank requests return empty without owner call;
+trim others; filter returned ID equality, copy all six fields without reclassification.
+Missing/mismatched returned IDs, including null ID, return empty; exceptions propagate.
+No foreign Custody domain/JPA/repository import in Simulation.
+
+Simulation topology port: Optional<ScopeEvidence> resolve(String scopeType, String scopeId).
+Nested immutable ScopeEvidence(String scopeType, String scopeId, boolean supported,
+boolean exists, boolean eligible). Required nonblank normalized type/id; reject logically
+inconsistent flags (exists requires supported, eligible requires both exists/supported)
+using InvalidSimulationValueException. Nested enum PhysicalInputStatus has only
+MISSING_VERSIONED_TOPOLOGY_SOURCE; physicalInputStatus() always returns that explicit
+status, including eligible scopes. No geometry, revision, qualified boundary or readiness
+method is inferred. Scope identity is the normalized request echo described above.
+
+Topology adapter is @Component, constructor-injects only existing
+SimulationTopologyScopeContract. Null/blank type or ID returns empty with no owner call;
+trim both otherwise; copy owner's three flags into ScopeEvidence. Unsupported, missing,
+inactive and eligible owner results remain distinguishable and do not become absent.
+Require nonnull owner result; malformed flag combinations reject through ScopeEvidence;
+owner failures propagate. Do not inspect owner tables, change scope support, invent
+identity checks unavailable in the public result, or infer product/connected scope.
+
+New production imports only Java, own module types, appropriate Spring annotations and
+these deliberate owner contracts in Simulation infrastructure adapters. Custody owns
+its JPA dependency. Add ONLY custody.application.contract.simulation to BOTH deliberate
+architecture export registries. Topology's export already exists. Extend focused tests
+in ArchitectureGuardrailTest to admit owner contracts/nested records while rejecting
+private owner domain/persistence/repository imports. Retain all rules, historical exports
+and forensic scanning assertions; do not repeat the C1 companion-registry omission.
+No runtime consumer wiring, physical input resolver fallback, hash/capture or OT action.
+
+### Meaningful tests and validation
+
+Three registered JUnit classes use deterministic synthetic fixtures and mocked/stubbed
+owners/repositories without Spring context/database. Cover every six-field product
+mapping with distinct strings/fixed timestamps, active and inactive catalogue candidates,
+unknown catalogue names/codes with no gas inference, nullable timestamps, blank/null/
+trimmed inputs and no calls for invalid IDs, missing/mismatched/null returned identities,
+lookup exceptions and null dependencies. Verify UNASSESSED/MISSING statuses regardless
+of candidate activity and original evidence unchanged after replacement rows.
+
+Topology cases cover every supported/exists/eligible legal combination (unsupported,
+missing, inactive, active), normalized request echo, explicit missing physical source
+for all results; all illegal flag combinations and nonnull result rule; blank/null
+fields/no-call, arbitrary unsupported type passthrough, owner failure propagation and
+null dependency. Test immutable record equality and preserved earlier result after owner
+replacement. Tests demonstrate transport/eligibility boundaries, not coherent physical
+capture, catalogue product classification, Simulation approval or hydraulic accuracy.
+
+When C2 executes run ./mvnw -B -q -Dtest=SimulationProductCandidateQueryAdapterTest,TopologyScopeEvidenceQueryAdapterTest,CustodyProductCandidateEvidenceQueryAdapterTest,TopologySimulationScopeQueryServiceTest,ArchitectureGuardrailTest,ForensicRemediationClosureTest test
+then ./mvnw -B -q clean verify. If wrapper is nonexecutable use bash without changing
+tracked permissions; accurately report environment/dependency failures. Run maintained
+validator tests, canonical docs/offline OpenAPI/P1 evidence, whitespace, exact thirteen
+paths and retained historical/version/export checks. Require full exact-head CI before
+completion. Publish expected-parent lease, verify remote parent/tree/files, observe
+Production/Documentation startup and STOP for Next/Fail. No C3/002D/engine/closure work.
+
+Next selection after successful C2 CI: documentation-only
+`docs(twin): register HPR-P25-002C3 execution preflight`. That preflight must resolve
+actual missing source/version storage, product approval and unit/reference basis gaps
+before authorizing code, split larger prerequisites as needed and never replace absent
+physical data with defaults. C2 does not complete parent 002C or product-aware inputs.
+
+This current docs-only task runs 37 validator tests, canonical docs/offline OpenAPI/P1
+evidence, whitespace and exact two-file scope; no Maven pass claimed. Verify remote
+parent/tree/two paths and exact-head Documentation CI startup, then STOP.
+P0/P1/P2 CLOSED, P2.5 OPEN, P3 DEFERRED, 57 HMR implementations, 123 subjects,
+0.7.0-SNAPSHOT and absence of an executing hydraulic solver/GZ2 calibration preserved.
+
+C2 preflight validation PASSED: all 37 maintained validator tests; canonical docs
+(95 documents, 5063 links, 24 modules, 13 P2 rows); offline OpenAPI (244 paths,
+263 operations, 231 schemas); P1 closure evidence; whitespace; exact two-document
+scope and historical registry/version retention. No Java source changed or Maven
+verification claimed. C1 and its R1 repair are verified completed by #619/#159;
+C2 implementation remains PENDING.

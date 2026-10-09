@@ -35,7 +35,7 @@ Documentation authority follows the repository governance and the owner/decision
 | `doc/modules/**` | CURRENT | Canonical current-state documentation for all 24 implemented module roots; excludes non-implemented agents/environment/otsecurity | HPR-P2-004 complete; HPR-P2-009 refreshed inventories/decisions |
 | `doc/api/**` | CURRENT | Canonical version-controlled OpenAPI 3.1 contract plus overview, conventions, authentication, error-model, compatibility and OpenAPI-governance controls | HPR-P2-005 complete |
 | `doc/model-remediation/**` | CURRENT | Exact-current-source reconciliation of legacy HMR/HMSR execution obligations; legacy `docs/roadmap/model-semantic-remediation.md` remains history | HPR-P2-007/008 complete; HPR-P2-009 transfers lasting rules into domain/module docs |
-| Data-governance canonical set | NOT ESTABLISHED | Retention/provenance values must not be invented | HPR-P2-010 |
+| `doc/data/**` | CURRENT | Five-document HPR-P2-010 governance baseline at source parent `b36733fc05e789613485606e1e1dd1731b11af53`; approved infrastructure controls and source-backed provenance separated from TARGET admission and unknown business decisions | HPR-P2-010 complete |
 | Testing canonical set | NOT ESTABLISHED | Verification documentation must remain tied to executable evidence | HPR-P2-011 |
 | Documentation CI drift controls | PARTIAL | Lightweight documentation validation exists; P2 link/status/index drift controls are later scope | HPR-P2-012 |
 
@@ -66,5 +66,18 @@ Legacy reviews/roadmaps remain byte-preserved execution/review history. The clos
 57-row reconciliation is distinct from the complete historical catalogue.
 
 Approved policy/mapping values, runtime inference/actuation, populated production-data
-acceptance and physical survivability are not established by the transfer. HPR-P2-010
-and later governance gates remain pending; this register does not close P2.
+acceptance and physical survivability are not established by the transfer. Later
+governance gates remain pending; this register does not close P2.
+
+## Data governance baseline
+
+The [data index](../data/README.md) registers [ownership](../data/DATA_GOVERNANCE.md),
+[retention/archival](../data/RETENTION_ARCHIVAL.md), [provenance](../data/DATA_PROVENANCE.md)
+and [legacy-data migration governance](../data/LEGACY_DATA_MIGRATION.md). All five are
+CURRENT documentation at source parent `b36733fc05e789613485606e1e1dd1731b11af53`,
+checked on 2026-10-09.
+Business durations, source-owner/reuse approvals, canonical dataset precedence,
+complete enforcement and executable import acceptance remain NOT ESTABLISHED; TARGET
+admission requirements do not approve data or create workers. Untouched database and
+operational sets retain their own historical applicability. HPR-P2-011..013 remain
+pending, P3 deferred and P2 open. Exact-head documentation CI follows publication.

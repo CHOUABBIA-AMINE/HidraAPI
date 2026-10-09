@@ -27,6 +27,8 @@ The legacy `docs/` tree is preserved for historical, audit, semantic-review, ADR
 
 13. [Permanent semantic decisions](domain/SEMANTIC_DECISIONS.md) — current-source rules for all 123 reviewed subjects, with module and evidence links.
 
+14. [Data governance](data/README.md) — current ownership, retention/archival, provenance and legacy-data admission baseline.
+
 ## Canonical Domains
 
 | Domain | Current canonical material | P2 disposition |
@@ -41,7 +43,7 @@ The legacy `docs/` tree is preserved for historical, audit, semantic-review, ADR
 | Modules | `doc/modules/README.md` plus 24 current-state module documents | CURRENT — HPR-P2-004; inventories refreshed by HPR-P2-009 |
 | API | `doc/api/README.md`, governance set and `doc/api/openapi.yaml` | CURRENT — HPR-P2-005 |
 | Semantic remediation | `doc/model-remediation/RECONCILIATION.md` | CURRENT reconciliation — HPR-P2-007; HPR-P2-008 completed; permanent decisions transferred by HPR-P2-009 |
-| Data governance | not yet established | HPR-P2-010 |
+| Data governance | [Data index](data/README.md) and four linked governance documents | CURRENT — HPR-P2-010 |
 | Testing | not yet established | HPR-P2-011 |
 
 Absence of a later P2 canonical set does not invalidate existing P0/P1 evidence. It means that the corresponding P2 canonicalization task has not yet executed.
@@ -64,4 +66,6 @@ Target, deferred, historical and execution-history documents never override cont
 
 `docs/**` is intentionally retained. Do not delete, rewrite, or silently promote legacy material merely because equivalent canonical documentation exists. When legacy evidence is used, reconcile it against current evidence and record its applicability in the canonical document or register.
 
-Last semantic/navigation verification: HPR-P2-009 on 2026-10-09, source parent `44d4fe773d69ed51dd90820140c8d9e7aee6cba2`. Domain/module metadata and current-versus-target boundaries follow their containing indexes; later P2 governance sets remain pending.
+Last semantic/navigation verification: HPR-P2-009 on 2026-10-09, source parent `44d4fe773d69ed51dd90820140c8d9e7aee6cba2`. Domain/module metadata and current-versus-target boundaries follow their containing indexes; untouched sets retain their own applicability.
+
+Data-governance/navigation verification: HPR-P2-010 on 2026-10-09, source parent `b36733fc05e789613485606e1e1dd1731b11af53`. Business approvals and executable import/disposal remain explicitly unestablished; HPR-P2-011..013 remain pending and P2 stays open.

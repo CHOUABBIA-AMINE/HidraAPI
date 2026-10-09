@@ -251,7 +251,7 @@ P1 is **CLOSED** only when this closure SHA passes the repository's full exact-h
 | HPR-P2-007 | COMPLETED — exact-source reconciliation established: HMR-005 corrected to completed, HMR-009 confirmed completed/stale carry-over removed, HMR-054 historical blocker resolved by current Party→Topology contract, HMR-050..106 reconciled to 56 still-required + 1 blocked (HMR-080), 0 superseded; legacy roadmap preserved as history | Semantic Remediation | Code/Doc | Inventory unresolved HMR/HMSR obligations against exact current source; mark each as completed, still required, blocked, or superseded with evidence. | `docs(model-remediation): reconcile remaining semantic obligations` | HPR-P2-003 |
 | HPR-P2-008 | COMPLETED — owner-authorized closure after final reconciliation preflight; all 57 HMR implementations confirmed by CI #604, zero pending, STILL REQUIRED or BLOCKED; documentation preflight CI #115 passed. P2 phase remains open. | Semantic Remediation | Code | Execute still-required semantic remediation in dependency order using revalidated HMSR obligations; do not restart completed HMRs without regression evidence. | `fix(model): continue reconciled semantic remediation` | HPR-P2-007 |
 | HPR-P2-009 | COMPLETED — 123 permanent subject decisions transferred with current source/test/migration evidence; all 24 module inventories and domain/index metadata refreshed; 37-path scope and 83-file Markdown/link checks passed; exact-head documentation CI follows publication | Semantic Remediation | Doc | Transfer permanent semantic decisions from legacy review/roadmaps into `doc/domain/` and `doc/modules/`, then preserve legacy files as execution history. | `docs(model-remediation): canonicalize semantic decisions` | HPR-P2-008 |
-| HPR-P2-010 | PENDING | Data Governance | Doc | Create data governance, retention/archival, provenance and legacy-data migration documents without inventing retention values. | `docs(data): establish data governance baseline` | HPR-P2-001 |
+| HPR-P2-010 | COMPLETED — five-document governance baseline established; 24-module ownership, approved infrastructure retention, source-backed provenance and TARGET legacy admission separated from unknown business approvals; nine-path and 88-file Markdown checks passed; exact-head documentation CI follows publication | Data Governance | Doc | Create data governance, retention/archival, provenance and legacy-data migration documents without inventing retention values. | `docs(data): establish data governance baseline` | HPR-P2-001 |
 | HPR-P2-011 | PENDING | Testing | Doc | Create test strategy, architecture testing, database testing, API testing and requirements traceability documents tied to executable evidence. | `docs(testing): establish verification documentation` | HPR-P2-002..006 |
 | HPR-P2-012 | PENDING | Documentation CI | Infra | Add documentation validation for canonical links/status/index drift and deterministic OpenAPI contract checks. | `ci(docs): validate canonical documentation` | HPR-P2-001..011 |
 | HPR-P2-013 | PENDING | Governance | Doc | Verify all 24 module docs, canonical indexes, API/database/domain docs and legacy supersession links; close P2. | `docs(roadmap): close P2 canonical governance` | HPR-P2-001..012 |
@@ -273,14 +273,15 @@ P1 is **CLOSED** only when this closure SHA passes the repository's full exact-h
 
 P0 security/audit verification is closed. P1 production infrastructure and survivability verification is closed subject to successful exact-head full CI on the HPR-P1-012 closure SHA.
 
-Current next task after accepted HPR-P2-009 semantic transfer and its documentation gate:
+Current next task after accepted HPR-P2-010 governance implementation and its documentation gate:
 
-`HPR-P2-010 — docs(data): establish data governance baseline`
+`HPR-P2-011 — docs(testing): establish verification documentation`
 
-Begin with a fresh current-source preflight and bounded documentation scope after
-checking HPR-P2-009 exact-head documentation CI. HPR-P2-010 remains PENDING;
-no data-governance files, retention values or successor execution are admitted by
-the HPR-P2-009 transfer. P2 stays OPEN.
+A subsequent Next selects HPR-P2-011 preflight only after checking HPR-P2-010
+exact-head documentation CI. Reinspect current executable verification evidence and
+propose its bounded documentation scope before implementation. HPR-P2-011..013 remain
+PENDING; business-policy approval, legacy provisioning and P3 are not selected by the
+HPR-P2-010 documentation baseline. P2 stays OPEN.
 
 The historical P1 evidence-block parallel-work exception is no longer needed for sequencing because HPR-P1-029 is complete. P3 remains deferred until P2 closes and its own approved requirements exist.
 
@@ -6473,3 +6474,75 @@ all 83 canonical Markdown files, git diff --check and exact two-document scope.
 Verify published immutable tree/blobs and unchanged files, advance main once using
 the lease above, confirm documentation CI starts and STOP without waiting.
 HPR-P2-010 stays PENDING until accepted implementation actually completes.
+
+
+## HPR-P2-010 accepted execution — 2026-10-09
+
+The owner's Next after preflight b36733fc05e789613485606e1e1dd1731b11af53
+accepts the complete nine-part design and nine-path write scope. Execute only
+HPR-P2-010, exact commit `docs(data): establish data governance baseline`.
+Main is unchanged at that parent, tree 75b696c41115ad8b070e47699714afea30ac9053;
+documentation CI #119 (37894804566) PASSED. Production CI #604 remains PASSED
+on executable baseline 617c2eec812e3a5734957ee9fa0360f6f5613032. No dataset
+approval/import, runtime policy implementation or successor execution is selected.
+
+## HPR-P2-010 completed governance baseline — 2026-10-09
+
+Accepted scope implemented as one exact-message commit:
+`docs(data): establish data governance baseline`.
+Verified publication parent `b36733fc05e789613485606e1e1dd1731b11af53`, tree
+`75b696c41115ad8b070e47699714afea30ac9053`; parent Documentation Validation #119
+(run 37894804566) passed. The executable baseline remains
+`617c2eec812e3a5734957ee9fa0360f6f5613032`, tree
+`e450c699544f99e96f2b447fc04215f7f4c5f344`, with production CI #604
+(run 37841205677) passed. Those prior results were rechecked, not rerun locally.
+
+Created exactly `doc/data/README.md`, `DATA_GOVERNANCE.md`, `RETENTION_ARCHIVAL.md`,
+`DATA_PROVENANCE.md` and `LEGACY_DATA_MIGRATION.md` under that same directory.
+Updated only `doc/README.md`, `doc/governance/DOCUMENT_REGISTER.md`, this roadmap
+and `doc/model-remediation/RECONCILIATION.md`: nine paths, five new/four updated.
+The index and register establish the CURRENT documentation baseline at the verified
+parent; existing semantic/database/API/security/operational documents keep their own
+applicability. All legacy evidence, published migrations and runtime files are preserved.
+
+### Implementation and evidence limits
+
+- Source-backed ownership covers all 24 implemented modules without invented human
+  stewards, confidentiality classes or grants. Path-specific references/actors and
+  history/snapshot preservation follow the existing permanent semantic decisions.
+- Approved P1 backup, metrics and log controls are sourced separately from business
+  retention metadata. The monthly checker distinction is explicit: BOOTSTRAP coverage
+  permits extra distinct months within the cap; exact set equality applies in MATURE.
+  Prior operator/P1 exercise evidence retains its deployed SHA and 82-migration scope.
+- The bounded source/configuration/test search did not establish an application
+  business retention/disposal worker wired to the Audit/Documents metadata. This does
+  not assert that external deployed tools are absent. Append-only controls and rollback
+  binary cleanup do not establish business archival, legal holds or disposal approval.
+- Provenance identifies actual owner/write paths and their limits. Legacy inventories
+  remain historical, with later structural extraction qualifying older access limits;
+  counts/filenames/hash identity do not establish source ownership or dataset precedence.
+  The TARGET admission sequence creates no importer and authorizes no SQL/data loading.
+- Schema migrations remain distinct from import approval. Current 139-version source
+  does not silently refresh the older database dictionary. Planning policy/catalog
+  admission remains fail-closed; no mapping/value is fabricated or historical row repaired.
+
+### Actual local validation
+
+`python3 /workspace/scratch/4115643ef669/p2-010-validate.py` passed: exactly nine
+allowed paths; five new documents; all 88 canonical Markdown files UTF-8/nonempty and
+free of conflict markers; 100 relative links/anchors resolve; exactly 24 ownership
+rows match actual module roots; 139 unique migration versions; numeric infrastructure
+retention claims match existing source configuration. HMR register rows and unrelated
+HPR statuses are byte-preserved; P2 rows retain seven fields; project version remains
+`0.6.0-SNAPSHOT`. `git diff --check` passed. Exact-tree publication checks additionally
+require all other tracked blobs unchanged. No Maven/runtime, database/import,
+deployment or physical evidence campaign was performed by this documentation task.
+
+Only HPR-P2-010 is completed. Business durations, source-owner/reuse approvals,
+canonical dataset precedence, complete business enforcement and import acceptance
+remain NOT ESTABLISHED. No legacy HDP/HMS task is unblocked, no release/tag is created,
+HPR-P2-011..013 remain PENDING, P3 DEFERRED and P2 OPEN. Publish main once using the
+expected-head lease, verify immutable commit/tree/blob identity, confirm Documentation
+Validation starts and STOP without waiting for completion. Production CI ignores
+this documentation-only scope. A later Next selects HPR-P2-011 preflight after the
+exact-head documentation result is checked; a failure must be repaired first.

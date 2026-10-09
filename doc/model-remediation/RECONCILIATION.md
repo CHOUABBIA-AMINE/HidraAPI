@@ -5676,3 +5676,169 @@ Next registered task: HPR-P2-010 — `docs(data): establish data governance base
 It remains PENDING. A subsequent Next selects its current-source preflight after
 checking this transfer's documentation CI, not automatic retention/provenance design
 or P2 closure. HPR-P2-011..013 remain PENDING and P3 DEFERRED.
+
+
+## HPR-P2-010 data-governance preflight — 2026-10-09
+
+### Selection and verified gates
+
+The owner's Next after HPR-P2-009 publication selects this current-source preflight.
+HPR-P2-010 remains PENDING; the data-governance set has not been created. A subsequent
+Next accepts the complete documentation design and nine-path implementation scope
+below, selecting only HPR-P2-010 and its exact registered implementation commit:
+`docs(data): establish data governance baseline`.
+
+Verified main/expected-head lease: a5eba6e4a3d8e9761c12cc0d6edcaf25422eaa3b,
+tree 32b1cfda4869ce6214a5a08a2c5674946d77b8e6. Documentation CI #118
+(37894279307) PASSED on that exact head. Production baseline remains
+617c2eec812e3a5734957ee9fa0360f6f5613032, tree
+e450c699544f99e96f2b447fc04215f7f4c5f344, with prior production CI #604
+(37841205677) PASSED. Subsequent commits are documentation-only. No new runtime
+result or physical survivability evidence is established by this preflight.
+HPR-P2-001 dependency is satisfied; HPR-P2-008/009 stay COMPLETED, P2 OPEN,
+HPR-P2-011..013 PENDING and P3 DEFERRED. Version remains 0.6.0-SNAPSHOT.
+
+### Current-source findings
+
+No canonical data-governance set exists yet. Required documentation metadata and
+current/target discipline follow doc/governance/DOCUMENTATION_STANDARD.md and
+DOCUMENT_LIFECYCLE.md. Current module ownership and durable semantic rules are
+already in doc/modules/ and doc/domain/SEMANTIC_DECISIONS.md; data governance must
+cross-link them rather than create conflicting ownership or repeat legacy verdicts.
+
+Retention has several distinct evidence populations:
+
+| Population | Observed authoritative evidence | Preflight interpretation |
+|---|---|---|
+| Operational recovery | ops/production/postgres/pgbackrest/pgbackrest.conf.tpl, repo1 time-based full retention 35 days | Existing approved P1 recovery control, not a row-level business retention period |
+| Monthly recovery points | ops/production/postgres/pgbackrest/RETENTION_POLICY.md and check-monthly-retention.sh; HIDRA-P1-BACKUP-RETENTION-001, October 2026 start, one completed full point per UTC month, count ceiling 12, latest-point age no more than 35 days | Preserve BOOTSTRAP versus MATURE coverage and the approved policy; configuration alone is not storage independence or new restore proof |
+| Metrics | ops/production/observability/prometheus/prometheus.service.tpl; --storage.tsdb.retention.time=30d | Existing metrics storage control, not Audit/business data policy |
+| Logs | ops/production/observability/loki/loki.yml; retention_period 2160h with compactor retention enabled | Existing 90-day log control; deletion configuration does not establish business-record disposal approval |
+| Audit business evidence | AuditRetentionPolicyJpaEntity: retentionDays, archiveAfterDays, legalHoldSupported, purgeAllowed and validity; AuditRetentionPolicyPort only exposes available(referenceId) | Metadata/API shape is present; approved per-category values and implemented enforcement must be proven separately |
+| Document business evidence | DocumentRetentionRecordJpaEntity: retainUntil, legalHold/reason, archive object/time and disposal metadata | Persistence fields do not prove an archive worker, legal-hold enforcement or authorized deletion |
+
+The Audit retention port and Audit/Document retention repositories are declarations
+in current source; this bounded search did not establish a retention/disposal worker
+from those declarations. Implementation must examine wider service/configuration/test
+paths before making a stronger absence or enforcement claim. Archive lifecycle flags,
+backup expiry, append-only evidence and storage cleanup are different operations.
+Do not transplant infrastructure retention into Telemetry, Audit, Documents, employee,
+Custody or any other business records.
+
+Provenance evidence includes Telemetry raw/assessment/trusted linkage, canonical owner
+snapshots, Planning/Monitoring revision/reference contexts, Analytics dataset lineage
+and data-source entities, captured versions/watermarks, document checksums and binary
+rollback behavior, Integration exchange/dead-letter provenance, and append-only
+Audit/Workflow/Alarm evidence. Each proves its coded scope, not universally complete
+lineage, authenticated provenance for every row, or external source authenticity.
+
+Legacy docs/roadmap/data-provisioning.md remains paused/blocked historical execution
+material. docs/data-provisioning/source-inventory.md, target-inventory.md and
+source-classification.md retain provisional source identities, limitations and owner/
+security gates; some evidence concerns HyFloAPI source artifacts rather than approved
+HidraAPI import data. Inventory presence, Git access, filename chronology or structural
+row counts are not import eligibility. HPR-P2-008/009 completion does not automatically
+approve a dataset, source-target mapping or import; no legacy HDP/HMS task is selected.
+
+### Complete proposed documentation design
+
+1. Establish doc/data/README.md as CURRENT index for the bounded data-governance set,
+   with exact source parent/date, business-module accountability, evidence links,
+   current versus target/deferred separation and explicitly unresolved owner decisions.
+   Named human owners, legal retention duties and dataset approval are not invented.
+2. DATA_GOVERNANCE.md records ownership for all 24 existing modules, distinguishing
+   operational truth, reference/master data, raw/trusted evidence, derived outputs,
+   configuration/security material and historical records where source supports it.
+   Link actual module/semantic authority and the existing security controls. Record
+   unknown classification/approval facts explicitly; do not manufacture sensitivity
+   labels, policy IDs, access rights or a new enterprise classification taxonomy.
+3. RETENTION_ARCHIVAL.md separates approved infrastructure controls from business
+   policy metadata and actual enforcement. Preserve the exact 35-day repo1, monthly
+   repo2 policy with bootstrap/mature boundary, Prometheus 30d and Loki 2160h controls
+   with source/policy applicability. Cross-link prior P1 evidence at its actual
+   historical deployment/schema baseline, without claiming this task proves physical
+   independence/restorability or mature coverage. Business durations, triggers,
+   legal-hold/disposal approvals and enforcement remain NOT ESTABLISHED where absent.
+4. Identify metadata versus actual archive/purge/retention adapters, schedulers and
+   tests through current-source checks. Append-only evidence protection is not a
+   complete retention engine. Describe owner decisions needed before destructive
+   disposal as governance prerequisites, not implemented code or a newly authorized
+   purge operation. No arbitrary expiration, guessed legal period or new policy seed.
+5. DATA_PROVENANCE.md gives an evidence matrix for acquisition/source IDs, correlation,
+   raw/assessment/trusted reading links, revision/parent context, source watermark and
+   captured dataset/report/simulation versions, canonical snapshots, actor evidence,
+   checksum/hash and append-only lifecycle. State exactly which owner/write path
+   verifies each fact. Hash metadata does not alone prove authenticity; snapshots are
+   historical context and their controlled preservation differs from live refresh.
+6. LEGACY_DATA_MIGRATION.md records the current no-import baseline and a TARGET
+   governed sequence: immutable source identity and permitted read-only inspection,
+   source-owner/confidentiality approval, dataset-level classification/precedence,
+   explicit field/unit/identifier mapping and UNMAPPED disposition, owner-approved
+   policies, validation/dry-run/reconciliation, controlled loading, rollback/recovery
+   evidence and retained provenance. These are documented admission requirements,
+   not approved datasets, executable ETL or permission to run legacy SQL/scripts.
+7. Distinguish Flyway schema migration from business-data provisioning. Applied
+   migrations/history remain immutable; startup checks must not be bypassed. Planning
+   target and Nomination migrations fail closed pending approved actual-ID policies/
+   product/unit mappings; do not seed guessed facts or silently repair history.
+   Link the canonical database policy with its stated baseline, not a claim that
+   its older 82-migration dictionary describes the current 139-version chain.
+8. Update root navigation and DOCUMENT_REGISTER.md to register the five-file set and
+   its exact applicability. Keep legacy docs/** and all existing semantic, database,
+   API, security and operational evidence byte-preserved. No new operational standard,
+   legal opinion, release, POM/code/migration/configuration/workflow or imported dataset.
+9. Record acceptance, validation and completion only in canonical execution memory
+   after the actual transfer. Complete only HPR-P2-010; do not execute HPR-P2-011/012,
+   regenerate the dictionary, unblock legacy HDP/HMS tasks, close P2 or run P3.
+   A concrete need for an unadmitted implementation change requires scope reconciliation
+   before that change; documenting an unestablished business fact alone is not a blocker.
+
+### Exhaustive future implementation write scope — nine paths
+
+Create only:
+
+- `doc/data/README.md`
+- `doc/data/DATA_GOVERNANCE.md`
+- `doc/data/RETENTION_ARCHIVAL.md`
+- `doc/data/DATA_PROVENANCE.md`
+- `doc/data/LEGACY_DATA_MIGRATION.md`
+
+Update only:
+
+- `doc/README.md`
+- `doc/governance/DOCUMENT_REGISTER.md`
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `doc/model-remediation/RECONCILIATION.md`
+
+### Admitted validation and publication
+
+At implementation, verify fresh main/documentation CI and the green executable
+baseline. Reinspect the retention policy/configuration/checker, business metadata
+and any relevant runtime workers, provenance owner/write paths, prior P1 evidence
+and legacy inventory/classification applicability. Resolve all evidence links/anchors;
+check 24-module ownership coverage, all five new documents/index navigation and
+required metadata. Every numeric retention assertion needs its existing authoritative
+source and limited population; no business duration or legal obligation is guessed.
+Label unresolved approvals, enforcement and import facts explicitly. Ensure all HMR
+rows, unrelated HPR statuses and historical evidence are unchanged.
+
+Run canonical UTF-8/nonempty/conflict checks (currently 83 Markdown files; five new
+files make 88), relative link/anchor checks for the touched set, git diff --check and
+exhaustive nine-path/legacy preservation checks. Documentation-only scope requires
+no Maven/runtime rerun; prior CI and new documentation validation remain distinct.
+Use exact registered implementation message, one commit and a fresh expected-head
+lease to publish directly to main once. Verify exact immutable parent/tree/blobs and
+all other files unchanged. Confirm Documentation Validation starts and STOP without
+waiting; production CI ignores this docs-only scope. If it fails, repair before any
+successor. Next after implementation selects HPR-P2-011 preflight only after its CI check.
+
+### This preflight's supporting scope
+
+Exact supporting commit: `docs(data): record governance baseline preflight`.
+Write ONLY doc/roadmap/ULTIMATE_ROADMAP.md and
+ doc/model-remediation/RECONCILIATION.md; no doc/data/ file is created now.
+Validate identical envelope text, nine unique future paths, P2 registry/statuses,
+all 83 canonical Markdown files, git diff --check and exact two-document scope.
+Verify published immutable tree/blobs and unchanged files, advance main once using
+the lease above, confirm documentation CI starts and STOP without waiting.
+HPR-P2-010 stays PENDING until accepted implementation actually completes.

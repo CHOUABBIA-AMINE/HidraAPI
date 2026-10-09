@@ -591,7 +591,7 @@ Each stage retains its own commit and later evidence; no batch is selected.
 | Code | Status | Domain/Module | Type | Exact execution requirement | Exact commit message | Depends on |
 |---|---|---|---|---|---|---|
 | HPR-P25-002A | COMPLETED — implementation eef35dbd35d4558a4ceb57f87d8670fb97c933ea passed full Java 21 CI #612 and Documentation #146; three immutable contracts and 14 JUnit tests present; per-class report not independently retained at this baseline | Simulation / Input manifest | Code/Test | Implement immutable manifest, source-version identities/validity/origin and steady-state/transient metadata invariants under the exact six-file envelope below. | `feat(simulation): establish immutable input manifest contracts` | HPR-P25-002 preflight Documentation CI success |
-| HPR-P25-002B | PENDING | Simulation / Physical payloads | Code/Test | Define validated typed network/fluid/equipment/initial-state and transient timeline payloads with units, reference basis and missing-data semantics; register exact files and numeric design assumptions before mutation. | `feat(simulation): define versioned physical input payloads` | HPR-P25-002A; selected payload/physics preflight |
+| HPR-P25-002B | PENDING — payload preflight delivered; B1..B4 registered, none implemented | Simulation / Physical payloads | Code/Test | Define validated typed network/fluid/equipment/initial-state and transient timeline payloads with units, reference basis and missing-data semantics; register exact files and numeric design assumptions before mutation. | `feat(simulation): define versioned physical input payloads` | HPR-P25-002A; selected payload/physics preflight |
 | HPR-P25-002C | PENDING | Owner modules / Simulation | Code/Test | Implement bounded owner-exported topology/product/measurement queries and Simulation adapters; preserve eligibility/trust/ownership and reject unavailable physical inputs. | `feat(simulation): resolve versioned owner input references` | HPR-P25-002B; exact owner-contract/export preflight |
 | HPR-P25-002D | PENDING | Simulation / Capture | Code/Test | Assemble coherent immutable payload/manifest captures, verify canonical hashes and evidence, persist reproducible revisions and reject incompatible/missing inputs; register forward migration only if source-backed design requires one. | `feat(simulation): capture reproducible network calculation inputs` | HPR-P25-002C; exact capture/schema preflight |
 
@@ -646,6 +646,119 @@ HPR-P25-008A numerical design may start after the physical input contract is est
 no solver method is dictated by a manifest. HPR-P25-017 closure includes A..D as well as
 008A..F; incomplete inputs cannot be hidden by parent-task metadata completion.
 
+#### HPR-P25-002B Physical-Input Payload Preflight — 2026-10-09
+
+Owner Next selects ONLY `docs(twin): register HPR-P25-002B execution preflight`.
+Write ONLY this roadmap and reconciliation. Verified parent
+`929073662786da201e051170520013d4d3402ebf`, tree
+`67290cdd14ca646819de3e252508e724a6abc0b7`; Documentation #148
+(run 37962488460) PASSED. Full optimized #613 remains attached to executable
+3e9c19142a750b1aab3ca6fb3afdf5df5906b318. Mandatory instructions/execution memories
+read; source tree matches before mutation. No production source is changed here.
+
+##### Source and data-contract findings
+
+SimulationInputManifest and SimulationInputSourceVersion enforce immutable metadata,
+source kinds, initial effective-time/capture coherence and mode/schedule references.
+They contain no typed pipe geometry, fluid properties, equipment characteristics or
+state/timeline values. They cannot prove physical readiness from a digest reference.
+Topology's PipelineSegmentJpaEntity exposes endpoints, nullable lengthKm/KP and direction;
+TopologyNodeJpaEntity exposes nullable elevationMeters/coordinates. Pipeline nominal
+size/design pressure are not internal diameter/approved operating limits. Equipment
+identity/attachment is not a measured characteristic curve. No such missing value
+may become zero, inferred nominal dimensions or a hardcoded GZ2 parameter.
+
+Simulation owns immutable normalized payloads copied through owner contracts in later
+002C. Physical data validity/provenance comes from source versions and actual capture
+verification in 002D. Keep Topology truth and existing tables unchanged. Prefer explicit
+unit-bearing field names in SI for numerical payloads; retain original units/conversion
+provenance in capture. Pressures will be absolute pascals, temperatures kelvin and flows
+mass kg/s for the future gas contracts; volumetric readings require explicit reference
+conditions/conversion rather than implicit equivalence. These are internal representation
+choices, not approval of fluid equations or operating limits.
+
+##### Physical payload stages
+
+Split HPR-P25-002B to preserve bounded implementations. Parent B stays PENDING until
+all required payload stages are complete; no stage is executed by this preflight.
+
+| Code | Status | Domain/Module | Type | Exact execution requirement | Exact commit message | Depends on |
+|---|---|---|---|---|---|---|
+| HPR-P25-002B1 | PENDING | Simulation / Physical network | Code/Test | Implement immutable typed nodes/pipe segments and connected network validation using the exact six-path envelope below. | `feat(simulation): define physical network input contracts` | HPR-P25-002A; successful B preflight documentation CI |
+| HPR-P25-002B2 | PENDING | Simulation / Fluid and equipment | Code/Test | Define versioned gas composition/property-method references and current equipment/curve/configuration payloads with explicit units/validity; no property calculation or universal product support is implied. | `feat(simulation): define fluid and equipment input contracts` | HPR-P25-002B1; exact B2 preflight |
+| HPR-P25-002B3 | PENDING | Simulation / State and boundaries | Code/Test | Define measured/estimated initial-state quantities and time-dependent boundary/action schedules with quantity basis, time ordering, interpolation declarations and missing-value semantics. | `feat(simulation): define state and boundary timeline inputs` | HPR-P25-002B2; exact B3 preflight |
+| HPR-P25-002B4 | PENDING | Simulation / Payload assembly | Code/Test | Bind typed payload/version identities to manifests, validate node/equipment references and steady/transient completeness, preserving synthetic/provenance distinctions; canonical hash verification remains capture scope. | `feat(simulation): assemble consistent physical input payloads` | HPR-P25-002B1..B3; exact B4 preflight |
+
+Gas/property/equipment methods and transient thermal/event fidelity will be specified
+in numerical design HPR-P25-008A; payload references must not silently select a method.
+Owner-provided SIMONE/SPS and other tool information supplies future benchmark context,
+not proof of access, interchangeable models or accuracy. External comparisons require
+identical qualified inputs, units and boundary conditions plus independent reference
+and measured evidence. H2/liquid/other-product physics requires separate qualification.
+
+##### HPR-P25-002B1 exact next implementation envelope
+
+After successful preflight Documentation CI, the next owner Next selects ONLY B1.
+This preflight already registers B1; do not repeat a preflight unless evidence changes.
+
+Create ONLY:
+
+1. `src/main/java/dz/sh/hidra/modules/simulation/domain/model/SimulationNetworkNodeInput.java`
+   — immutable Java record: id and required elevationMeters (BigDecimal). Signed/zero
+   elevation is valid; missing elevation is not silently converted to sea level.
+2. `src/main/java/dz/sh/hidra/modules/simulation/domain/model/SimulationPipeSegmentInput.java`
+   — immutable Java record: id, fromNodeId, toNodeId, lengthMeters,
+   internalDiameterMeters and absoluteRoughnessMeters (BigDecimal). Required positive
+   length/diameter; required nonnegative roughness; distinct endpoints and nonblank IDs.
+   Endpoint orientation defines a reference direction, not a prohibition of reverse flow.
+   No nominal-to-internal diameter inference or hydraulic equation is introduced.
+3. `src/main/java/dz/sh/hidra/modules/simulation/domain/model/SimulationPhysicalNetworkInput.java`
+   — immutable Java record: id, topologyRevisionId, nodes and pipeSegments. Defensive
+   copies; at least two nodes and one pipe; unique normalized node/pipe IDs; no null
+   entries, dangling endpoints, unused isolated nodes or disconnected components.
+   Validate undirected connected scope while preserving each pipe's reference direction.
+   Allow cycles and distinct parallel pipes: a meshed network is not a tree.
+4. `src/test/java/dz/sh/hidra/modules/simulation/domain/model/SimulationPhysicalNetworkInputTest.java`
+   — meaningful synthetic graph/physical-value/immutability tests.
+
+Update ONLY this roadmap and reconciliation. Total six tracked paths; no migration
+because records are not persisted/exposed. Reuse InvalidSimulationValueException.
+Canonical Java headers retain Author Abir MEDJERAB, CreatedOn 2025-06-26; production
+imports only Java standard library and local Simulation types. No changes to existing
+manifest/source-version classes, Topology/Custody/Telemetry entities/contracts, schema,
+API/OpenAPI/dictionary, dependency/POM/workflow, Kernel/Platform or architecture exports.
+Private helpers stay within these three new production records; no utility package.
+
+B1 is a pipe-graph payload, not the complete station/equipment graph or a physical
+solver. Compressor/valve links and boundary policies come in later payload stages;
+record any required graph schema extension in their preflights. Do not claim all assets
+or a disconnected portfolio can be simulated from this connected pipe-only contract.
+A geographical selection must include the connected consequence scope or be expanded
+by later HPR-P25-007; rejecting a disconnected payload does not select field boundaries.
+
+Minimum tests: valid single pipe, branched/meshed graph and parallel pipes; valid signed
+or zero elevation/zero roughness; rejection of blank/null identities, missing numbers,
+nonpositive length/diameter, negative roughness, identical endpoints, duplicate IDs,
+dangling endpoints, null/empty lists, isolated node/disconnected components; source-list
+mutation cannot alter the record and exposed lists are unmodifiable. Replacement revision
+preserves earlier physical values. Use explicitly synthetic BigDecimal fixtures and no
+current GZ2 values, arbitrary freshness/accuracy bounds or wall-clock dependencies.
+
+When B1 is selected run
+`./mvnw -B -q -Dtest=SimulationPhysicalNetworkInputTest,SimulationInputManifestTest,ArchitectureGuardrailTest test`,
+then `./mvnw -B -q clean verify`, canonical docs/OpenAPI/P1 validators and whitespace/
+exact-scope checks. Report local Java/Maven/dependency limitations accurately. Full
+optimized production CI and Documentation CI must start on the published implementation;
+stop for owner Next/Fail, do not automatically execute B2 or the numerical engine.
+
+B2/B3/B4 first require exact-file/migration/units/test preflights, messages
+`docs(twin): register HPR-P25-002B2 execution preflight`,
+`docs(twin): register HPR-P25-002B3 execution preflight`, and
+`docs(twin): register HPR-P25-002B4 execution preflight`, two-document scope only.
+Parent 002B/002 and phase closure include all four substeps; code or mathematical
+choices beyond B1 are not authorized by this envelope. Live GZ2 data remains a
+calibration/field-acceptance input; synthetic contract development can proceed.
+
 #### Execution registry
 
 | Code | Status | Domain/Module | Type | Exact execution requirement | Exact commit message | Depends on |
@@ -667,7 +780,7 @@ no solver method is dictated by a manifest. HPR-P25-017 closure includes A..D as
 | HPR-P25-014 | PENDING | Analytics / Simulation | Code/Test/Doc | Build provenance-controlled learning datasets from actual actions/outcomes; evaluate proposed detector, calibration or recommendation updates offline, version them and require validated promotion/rollback without weakening physical or safety constraints. | `feat(analytics): govern learning from operational outcomes` | HPR-P25-013; approved learning objective/evaluation policy |
 | HPR-P25-015 | PENDING | API / Operator Experience | Test/Doc | Demonstrate operator visualization, issue-to-run explanation, candidate comparisons, decision capture and outcome views with the selected frontend; record separate frontend repository/version evidence and accessibility/authorization checks. | `test(twin): verify operator visualization and decision workflow` | HPR-P25-003; HPR-P25-010..014; selected frontend environment |
 | HPR-P25-016 | PENDING | Cross-module verification / Operations | Test/Doc | Execute end-to-end historical replay and governed pilot cases including adverse downstream effects, scope expansion, unavailable solver, poor/stale data, unobservable state, nonconvergence and learning rollback; retain exact-source/environment evidence and runbooks. | `test(twin): verify operational decision feedback cycle` | HPR-P25-015; approved pilot/data/environment |
-| HPR-P25-017 | PENDING | Governance | Doc | Independently audit all P2.5 gates against actual execution and per-product/mode evidence; close only after exact-head applicable CI and operator acceptance, with unsupported coverage explicitly retained. | `docs(roadmap): close phase 2.5 operational twin verification` | HPR-P25-001..016; HPR-P25-002A..D; HPR-P25-008A..F |
+| HPR-P25-017 | PENDING | Governance | Doc | Independently audit all P2.5 gates against actual execution and per-product/mode evidence; close only after exact-head applicable CI and operator acceptance, with unsupported coverage explicitly retained. | `docs(roadmap): close phase 2.5 operational twin verification` | HPR-P25-001..016; HPR-P25-002A..D; HPR-P25-002B1..B4; HPR-P25-008A..F |
 
 #### Boundaries, acceptance gates and unresolved decisions
 
@@ -862,10 +975,13 @@ comparison, not a guaranteed duration or an independent archive-level audit.
 
 Owner Next selects ONLY the two-document verification record, exact message
 `docs(ci): record verified production CI optimization`. Workflow remains unchanged.
-Next recommended task: **HPR-P25-002B physical-input payload preflight**, exact
-supporting message `docs(twin): register HPR-P25-002B execution preflight`,
-same two-document scope. No product source stage is selected by this verification.
-Observe supporting Documentation Validation startup and STOP for owner Next/Fail.
+Owner Next now selects ONLY HPR-P25-002B physical-input payload preflight,
+exact message `docs(twin): register HPR-P25-002B execution preflight`. Parent
+929073662786da201e051170520013d4d3402ebf passed Documentation #148/run 37962488460.
+The six-path B1 implementation envelope is registered above; no source changes here.
+Next recommended task after successful preflight Documentation CI:
+**HPR-P25-002B1 — physical network input contracts**. Execute only B1, no repeat
+preflight unless evidence changes. Observe Documentation startup and STOP.
 P0/P1/P2 remain CLOSED; P2.5 PLANNED/OPEN; P3 DEFERRED; 57 HMR completions,
 123 subjects, formal v0.6.0 and current 0.7.0-SNAPSHOT remain preserved.
 
@@ -9169,3 +9285,65 @@ Actual supporting verification checks PASSED: canonical documentation (95 docume
 5,063 links, 24 modules, 13 P2 rows), offline OpenAPI (244 paths, 263 operations,
 231 schemas), P1 evidence and git diff --check. Exact two-document scope and
 retained phase/HMR identities verified. Supporting Documentation CI follows publication.
+
+
+## HPR-P25-002B Physical Payload Preflight — 2026-10-09
+
+Owner Next selects ONLY `docs(twin): register HPR-P25-002B execution preflight`.
+Write ONLY the Ultimate Roadmap and reconciliation. Parent main
+929073662786da201e051170520013d4d3402ebf, tree
+67290cdd14ca646819de3e252508e724a6abc0b7 passed Documentation #148/run 37962488460.
+Read AGENTS/roadmap/reconciliation before mutation; source tree matches. Full #613
+remains pinned to optimized executable 3e9c19142a750b1aab3ca6fb3afdf5df5906b318.
+
+Revalidated manifest/source-version metadata, Topology node/segment/equipment and
+owner boundaries. Manifest has no typed physical payload; nullable Topology values
+are not complete geometry or operating policy. No nominal-diameter/internal-diameter
+or design-pressure/operating-limit substitution. Physical inputs are immutable
+Simulation-owned copies; owner truth/trust remains in Topology/Custody/Telemetry.
+Explicit SI quantity names and conversion/reference provenance apply to future gas
+contracts; no physics method or arbitrary accuracy/field threshold is selected.
+
+Register four PENDING substeps 002B1 physical pipe graph, B2 fluid/equipment, B3
+initial state/boundary schedule, B4 consistency assembly; exact messages and
+dependencies are in the roadmap. Parent B/002 remain PENDING; no source implemented.
+Future gas-engine methods require numerical design; commercial tool information
+is benchmark context, not model/access/equivalence evidence. GZ2 data qualifies
+field calibration, not synthetic contract development. Other products remain targets.
+
+Next owner Next after successful preflight Documentation CI selects ONLY B1, exact
+message `feat(simulation): define physical network input contracts`. Create ONLY
+src/main/java/dz/sh/hidra/modules/simulation/domain/model/SimulationNetworkNodeInput.java,
+src/main/java/dz/sh/hidra/modules/simulation/domain/model/SimulationPipeSegmentInput.java,
+src/main/java/dz/sh/hidra/modules/simulation/domain/model/SimulationPhysicalNetworkInput.java,
+src/test/java/dz/sh/hidra/modules/simulation/domain/model/SimulationPhysicalNetworkInputTest.java.
+Update ONLY both execution memories: total six tracked paths. Existing exception and
+local Simulation/Java types only; canonical author/date headers. No migration,
+persistence/API/schema/dependency/workflow/foreign-module/architecture change.
+
+Node requires identity/elevationMeters; pipe requires identity/distinct endpoints,
+positive length/internal diameter and nonnegative absolute roughness in meters.
+Network requires id/topologyRevisionId, defensive node/pipe lists, unique normalized
+IDs, valid endpoints and one connected undirected component with no isolated nodes.
+Cycles and distinct parallel pipes allowed; reference orientation permits reverse
+flow. No hydraulic equations or station/equipment graph completeness is claimed.
+
+Tests use synthetic BigDecimal networks for valid pipe/branch/mesh/parallel cases,
+missing/invalid dimensions/IDs, duplicates/dangling endpoints, disconnected/isolated
+graphs and defensive immutability/replacement revisions. Required commands when B1
+is selected: ./mvnw -B -q -Dtest=SimulationPhysicalNetworkInputTest,SimulationInputManifestTest,ArchitectureGuardrailTest test,
+then ./mvnw -B -q clean verify and canonical docs/OpenAPI/P1/scope checks; accurately
+report local limitations. Observe both implementation workflows starting and STOP.
+No repeat B1 preflight unless evidence changes; B2/B3/B4 need their own exact-file
+preflights using their registered messages. Phase closure includes all four substeps.
+
+Validate this two-document preflight with canonical docs/OpenAPI/P1/whitespace and
+retained registry checks. Publish with expected-parent lease, verify tree/parent/files,
+observe Documentation startup and STOP. P0/P1/P2 CLOSED, P2.5 OPEN, P3 DEFERRED,
+57 HMR completions, 123 subjects, v0.6.0 and 0.7.0-SNAPSHOT preserved.
+
+Actual B preflight local checks PASSED: canonical documentation (95 documents,
+5,063 links, 24 modules, 13 P2 rows), offline OpenAPI (244 paths, 263 operations,
+231 schemas), P1 evidence and whitespace. Exact two-document scope and retained
+phase/HMR rows verified; four unique B1..B4 identities registered. No physical
+source/calculation is implemented; supporting Documentation CI follows publication.

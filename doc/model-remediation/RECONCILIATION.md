@@ -7630,3 +7630,65 @@ Actual supporting verification checks PASSED: canonical documentation (95 docume
 5,063 links, 24 modules, 13 P2 rows), offline OpenAPI (244 paths, 263 operations,
 231 schemas), P1 evidence and git diff --check. Exact two-document scope and
 retained phase/HMR identities verified. Supporting Documentation CI follows publication.
+
+
+## HPR-P25-002B Physical Payload Preflight — 2026-10-09
+
+Owner Next selects ONLY `docs(twin): register HPR-P25-002B execution preflight`.
+Write ONLY the Ultimate Roadmap and reconciliation. Parent main
+929073662786da201e051170520013d4d3402ebf, tree
+67290cdd14ca646819de3e252508e724a6abc0b7 passed Documentation #148/run 37962488460.
+Read AGENTS/roadmap/reconciliation before mutation; source tree matches. Full #613
+remains pinned to optimized executable 3e9c19142a750b1aab3ca6fb3afdf5df5906b318.
+
+Revalidated manifest/source-version metadata, Topology node/segment/equipment and
+owner boundaries. Manifest has no typed physical payload; nullable Topology values
+are not complete geometry or operating policy. No nominal-diameter/internal-diameter
+or design-pressure/operating-limit substitution. Physical inputs are immutable
+Simulation-owned copies; owner truth/trust remains in Topology/Custody/Telemetry.
+Explicit SI quantity names and conversion/reference provenance apply to future gas
+contracts; no physics method or arbitrary accuracy/field threshold is selected.
+
+Register four PENDING substeps 002B1 physical pipe graph, B2 fluid/equipment, B3
+initial state/boundary schedule, B4 consistency assembly; exact messages and
+dependencies are in the roadmap. Parent B/002 remain PENDING; no source implemented.
+Future gas-engine methods require numerical design; commercial tool information
+is benchmark context, not model/access/equivalence evidence. GZ2 data qualifies
+field calibration, not synthetic contract development. Other products remain targets.
+
+Next owner Next after successful preflight Documentation CI selects ONLY B1, exact
+message `feat(simulation): define physical network input contracts`. Create ONLY
+src/main/java/dz/sh/hidra/modules/simulation/domain/model/SimulationNetworkNodeInput.java,
+src/main/java/dz/sh/hidra/modules/simulation/domain/model/SimulationPipeSegmentInput.java,
+src/main/java/dz/sh/hidra/modules/simulation/domain/model/SimulationPhysicalNetworkInput.java,
+src/test/java/dz/sh/hidra/modules/simulation/domain/model/SimulationPhysicalNetworkInputTest.java.
+Update ONLY both execution memories: total six tracked paths. Existing exception and
+local Simulation/Java types only; canonical author/date headers. No migration,
+persistence/API/schema/dependency/workflow/foreign-module/architecture change.
+
+Node requires identity/elevationMeters; pipe requires identity/distinct endpoints,
+positive length/internal diameter and nonnegative absolute roughness in meters.
+Network requires id/topologyRevisionId, defensive node/pipe lists, unique normalized
+IDs, valid endpoints and one connected undirected component with no isolated nodes.
+Cycles and distinct parallel pipes allowed; reference orientation permits reverse
+flow. No hydraulic equations or station/equipment graph completeness is claimed.
+
+Tests use synthetic BigDecimal networks for valid pipe/branch/mesh/parallel cases,
+missing/invalid dimensions/IDs, duplicates/dangling endpoints, disconnected/isolated
+graphs and defensive immutability/replacement revisions. Required commands when B1
+is selected: ./mvnw -B -q -Dtest=SimulationPhysicalNetworkInputTest,SimulationInputManifestTest,ArchitectureGuardrailTest test,
+then ./mvnw -B -q clean verify and canonical docs/OpenAPI/P1/scope checks; accurately
+report local limitations. Observe both implementation workflows starting and STOP.
+No repeat B1 preflight unless evidence changes; B2/B3/B4 need their own exact-file
+preflights using their registered messages. Phase closure includes all four substeps.
+
+Validate this two-document preflight with canonical docs/OpenAPI/P1/whitespace and
+retained registry checks. Publish with expected-parent lease, verify tree/parent/files,
+observe Documentation startup and STOP. P0/P1/P2 CLOSED, P2.5 OPEN, P3 DEFERRED,
+57 HMR completions, 123 subjects, v0.6.0 and 0.7.0-SNAPSHOT preserved.
+
+Actual B preflight local checks PASSED: canonical documentation (95 documents,
+5,063 links, 24 modules, 13 P2 rows), offline OpenAPI (244 paths, 263 operations,
+231 schemas), P1 evidence and whitespace. Exact two-document scope and retained
+phase/HMR rows verified; four unique B1..B4 identities registered. No physical
+source/calculation is implemented; supporting Documentation CI follows publication.

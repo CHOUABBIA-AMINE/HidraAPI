@@ -249,7 +249,7 @@ P1 is **CLOSED** only when this closure SHA passes the repository's full exact-h
 | HPR-P2-005 | COMPLETED — deterministic OpenAPI 3.1 contract version-controlled from exact executable P1 closure CI artifact; canonical API overview, conventions, authentication/authorization, error-model limitation, versioning/compatibility and OpenAPI-governance documents established; shared machine-readable error envelope remains explicitly NOT ESTABLISHED | API | Code/Doc | Generate and version-control deterministic `doc/api/openapi.yaml`; create API overview, conventions, auth, error, versioning/compatibility and OpenAPI governance docs. | `docs(api): establish versioned api contract` | HPR-P1-008 |
 | HPR-P2-006 | COMPLETED — canonical current database architecture, schema ownership, Flyway policy and generated persistence dictionary established from 82 current Flyway migrations, 469 current module JPA persistence entities, production configuration and closed P1 PostgreSQL/backup evidence; stale pre-closure DB stage documents retained as historical provenance | Database | Doc | Create database architecture, schema ownership, Flyway policy and current generated data dictionary from current migrations/JPA evidence. | `docs(database): establish canonical database documentation` | HPR-P2-001 |
 | HPR-P2-007 | COMPLETED — exact-source reconciliation established: HMR-005 corrected to completed, HMR-009 confirmed completed/stale carry-over removed, HMR-054 historical blocker resolved by current Party→Topology contract, HMR-050..106 reconciled to 56 still-required + 1 blocked (HMR-080), 0 superseded; legacy roadmap preserved as history | Semantic Remediation | Code/Doc | Inventory unresolved HMR/HMSR obligations against exact current source; mark each as completed, still required, blocked, or superseded with evidence. | `docs(model-remediation): reconcile remaining semantic obligations` | HPR-P2-003 |
-| HPR-P2-008 | IN PROGRESS — 57 CI-confirmed through repaired Nomination CI #604; zero pending, STILL REQUIRED or BLOCKED, 57 evaluated. NOM-OWNER-01/NOM-EXEC-01 accepted; final reconciliation remains open, no phase closure. | Semantic Remediation | Code | Execute still-required semantic remediation in dependency order using revalidated HMSR obligations; do not restart completed HMRs without regression evidence. | `fix(model): continue reconciled semantic remediation` | HPR-P2-007 |
+| HPR-P2-008 | COMPLETED — owner-authorized closure after final reconciliation preflight; all 57 HMR implementations confirmed by CI #604, zero pending, STILL REQUIRED or BLOCKED; documentation preflight CI #115 passed. P2 phase remains open. | Semantic Remediation | Code | Execute still-required semantic remediation in dependency order using revalidated HMSR obligations; do not restart completed HMRs without regression evidence. | `fix(model): continue reconciled semantic remediation` | HPR-P2-007 |
 | HPR-P2-009 | PENDING | Semantic Remediation | Doc | Transfer permanent semantic decisions from legacy review/roadmaps into `doc/domain/` and `doc/modules/`, then preserve legacy files as execution history. | `docs(model-remediation): canonicalize semantic decisions` | HPR-P2-008 |
 | HPR-P2-010 | PENDING | Data Governance | Doc | Create data governance, retention/archival, provenance and legacy-data migration documents without inventing retention values. | `docs(data): establish data governance baseline` | HPR-P2-001 |
 | HPR-P2-011 | PENDING | Testing | Doc | Create test strategy, architecture testing, database testing, API testing and requirements traceability documents tied to executable evidence. | `docs(testing): establish verification documentation` | HPR-P2-002..006 |
@@ -273,9 +273,12 @@ P1 is **CLOSED** only when this closure SHA passes the repository's full exact-h
 
 P0 security/audit verification is closed. P1 production infrastructure and survivability verification is closed subject to successful exact-head full CI on the HPR-P1-012 closure SHA.
 
-Next executable task after that exact-head gate succeeds:
+Current next task after owner-authorized HPR-P2-008 closure and its recorded exact-head gates:
 
-`HPR-P2-008 — fix(model): continue reconciled semantic remediation`
+`HPR-P2-009 — docs(model-remediation): canonicalize semantic decisions`
+
+Begin with a fresh current-source preflight and a bounded documentation write scope.
+HPR-P2-009 remains PENDING; the HPR-P2-008 closure does not execute it automatically.
 
 The historical P1 evidence-block parallel-work exception is no longer needed for sequencing because HPR-P1-029 is complete. P3 remains deferred until P2 closes and its own approved requirements exist.
 
@@ -5996,3 +5999,52 @@ files unchanged. Confirm Documentation Validation starts and STOP without waitin
 Production CI ignores this documentation-only push. No local Maven run is required or
 claimed for this two-document task. Next recommended decision is the explicit
 HPR-P2-008 closure disposition; this preflight provides evidence without granting it.
+
+
+## HPR-P2-008 owner-authorized closure — 2026-10-09
+
+After the final preflight, the assistant explicitly asked whether Next authorizes
+closing HPR-P2-008 and supersedes the earlier instruction not to mark it complete.
+The owner's subsequent Next is the answer accepting that closure disposition.
+This supersedes the earlier keep-open restriction for HPR-P2-008 only. It does not
+authorize executing HPR-P2-009 or closing the P2 phase.
+
+Current main/expected-head lease: 51eb83ce2cb764483d5af581fa5970560bc9e0b2.
+Preflight tree: 0853ced905805c39ea8d08533615e59d57bdd9e1. Documentation
+CI #115 (37890008753) passed on that exact SHA. Production baseline remains
+617c2eec812e3a5734957ee9fa0360f6f5613032, tree
+e450c699544f99e96f2b447fc04215f7f4c5f344, with CI #604 (37841205677) PASSED:
+Java 21 clean verify, current/base OpenAPI generation and backward compatibility.
+Only the two canonical documents differ from that green executable tree.
+
+HPR-P2-008 is COMPLETED. The registered HMR-050..106 obligations are reconciled:
+57 evaluated, 57 CI-confirmed implementations, zero pending, zero STILL REQUIRED,
+zero BLOCKED and zero superseded. The final preflight checked all 57 subject domain
+records, 57 JPA entities, 57 dedicated semantic tests, 63 matching exported contract
+packages, 139 uniquely versioned migrations and the current seven-field P2 registry.
+Each independent HMR commit and repair remains in history; this closure does not
+squash or replace semantic implementations. Completed HMRs remain closed absent
+concrete regression evidence. Earlier open/pending/preflight states are historical.
+
+Exact registered closure commit: `fix(model): continue reconciled semantic remediation`.
+This closure changes ONLY doc/roadmap/ULTIMATE_ROADMAP.md and
+ doc/model-remediation/RECONCILIATION.md. No production/test/migration/POM/workflow,
+legacy document, tag or release is changed. Validate the two-document scope, 57-row
+register/source identities, P2 registry shape/statuses, canonical Markdown and
+git diff --check; verify exact immutable published tree/blobs and all other files
+unchanged. Publish once with the expected-head lease above. Documentation Validation
+starts for this documentation-only push; production CI ignores these paths. Confirm
+documentation CI starts and STOP without waiting for completion.
+
+Closure is semantic-remediation execution governance, not physical survivability
+or production-data acceptance. Populated PlanTarget/Nomination deployments still
+require independently approved owner policies/mappings before their fail-closed
+migrations; no guessed facts or silent historical repair are authorized. The recorded
+local Maven/Java/Docker limits remain unchanged; no new local runtime result is claimed.
+Version remains 0.6.0-SNAPSHOT. P2 stays OPEN through its remaining governance gates.
+
+Next registered task: HPR-P2-009 — `docs(model-remediation): canonicalize semantic decisions`.
+Its HPR-P2-008 dependency is now satisfied; status remains PENDING. A subsequent Next
+selects a fresh current-source preflight and bounded write scope for that task. This
+closure neither performs the permanent-decision transfer nor modifies its successor
+files automatically.

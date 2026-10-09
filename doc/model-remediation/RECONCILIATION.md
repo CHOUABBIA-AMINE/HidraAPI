@@ -2,7 +2,7 @@
 
 ## Status
 
-CURRENT — HPR-P2-008 final reconciliation preflight; 57 CI-confirmed implementations.
+CURRENT — HPR-P2-008 COMPLETED by owner-authorized closure; 57 CI-confirmed implementations.
 
 ## Historical HPR-P2-007 Verification Baseline
 
@@ -75,8 +75,8 @@ by repaired CI #575 and cumulative current-tree CI #604; do not reopen HMR-054.
 The accepted standalone execution exports Party, Custody product and Telemetry unit
 contracts, validates direct saves and installs forward 025/026. The previous absent
 owner-contract blocker is superseded. Implementation 41904baff2becbdd03e19d3b2da005a28ad8d8a0
-and fixture repair 617c2eec812e3a5734957ee9fa0360f6f5613032 are confirmed by CI #604;
-HPR-P2-008 remains open.
+and fixture repair 617c2eec812e3a5734957ee9fa0360f6f5613032 are confirmed by CI #604.
+The owner-authorized HPR-P2-008 closure is recorded below; P2 remains open.
 
 ## Reconciled Outstanding Register
 
@@ -157,7 +157,7 @@ HPR-P2-008 remains open.
 
 - HMR-050 — **COMPLETED** at the first HPR-P2-008 execution step.
 - Batch 7 **COMPLETED — CI #581 GREEN**: HMR-055, 061, 066, 081, 099; exact repaired head ec63af0414d7fa85b9200d4bd181ac799bd072ed. Batch 8 preflight split below; no Planning implementation claimed.
-- Current remaining: **0 STILL REQUIRED, 0 BLOCKED, 0 pending CI**; all 57 implementations are CI-confirmed through #604 on 617c2eec812e3a5734957ee9fa0360f6f5613032. NOM-OWNER-01/NOM-EXEC-01 and HMR-080 are resolved. HPR-P2-008 remains open for the explicit final reconciliation/closure decision.
+- Current remaining: **0 STILL REQUIRED, 0 BLOCKED, 0 pending CI**; all 57 implementations are CI-confirmed through #604 on 617c2eec812e3a5734957ee9fa0360f6f5613032. NOM-OWNER-01/NOM-EXEC-01 and HMR-080 are resolved. HPR-P2-008 is COMPLETED following the owner's closure authorization; HPR-P2-009 remains PENDING.
 
 - HMR-051 — **COMPLETED**: Topology and optional Organization references validated on every case save; snapshot preserved; no migration because primary-candidate FK already exists; owner contract and architecture export added.
 
@@ -188,7 +188,8 @@ Before each HMR:
 
 HMR-080's owner-contract prerequisite and accepted solo execution are resolved by
 NOM-OWNER-01/NOM-EXEC-01 and CI #604. No remaining HMR in this register may be
-restarted without concrete regression evidence. HPR-P2-008 closure remains separate.
+restarted without concrete regression evidence. HPR-P2-008 closure is owner-authorized
+and recorded below; HPR-P2-009 remains a separate pending task.
 
 ## Legacy Preservation
 
@@ -5369,3 +5370,52 @@ files unchanged. Confirm Documentation Validation starts and STOP without waitin
 Production CI ignores this documentation-only push. No local Maven run is required or
 claimed for this two-document task. Next recommended decision is the explicit
 HPR-P2-008 closure disposition; this preflight provides evidence without granting it.
+
+
+## HPR-P2-008 owner-authorized closure — 2026-10-09
+
+After the final preflight, the assistant explicitly asked whether Next authorizes
+closing HPR-P2-008 and supersedes the earlier instruction not to mark it complete.
+The owner's subsequent Next is the answer accepting that closure disposition.
+This supersedes the earlier keep-open restriction for HPR-P2-008 only. It does not
+authorize executing HPR-P2-009 or closing the P2 phase.
+
+Current main/expected-head lease: 51eb83ce2cb764483d5af581fa5970560bc9e0b2.
+Preflight tree: 0853ced905805c39ea8d08533615e59d57bdd9e1. Documentation
+CI #115 (37890008753) passed on that exact SHA. Production baseline remains
+617c2eec812e3a5734957ee9fa0360f6f5613032, tree
+e450c699544f99e96f2b447fc04215f7f4c5f344, with CI #604 (37841205677) PASSED:
+Java 21 clean verify, current/base OpenAPI generation and backward compatibility.
+Only the two canonical documents differ from that green executable tree.
+
+HPR-P2-008 is COMPLETED. The registered HMR-050..106 obligations are reconciled:
+57 evaluated, 57 CI-confirmed implementations, zero pending, zero STILL REQUIRED,
+zero BLOCKED and zero superseded. The final preflight checked all 57 subject domain
+records, 57 JPA entities, 57 dedicated semantic tests, 63 matching exported contract
+packages, 139 uniquely versioned migrations and the current seven-field P2 registry.
+Each independent HMR commit and repair remains in history; this closure does not
+squash or replace semantic implementations. Completed HMRs remain closed absent
+concrete regression evidence. Earlier open/pending/preflight states are historical.
+
+Exact registered closure commit: `fix(model): continue reconciled semantic remediation`.
+This closure changes ONLY doc/roadmap/ULTIMATE_ROADMAP.md and
+ doc/model-remediation/RECONCILIATION.md. No production/test/migration/POM/workflow,
+legacy document, tag or release is changed. Validate the two-document scope, 57-row
+register/source identities, P2 registry shape/statuses, canonical Markdown and
+git diff --check; verify exact immutable published tree/blobs and all other files
+unchanged. Publish once with the expected-head lease above. Documentation Validation
+starts for this documentation-only push; production CI ignores these paths. Confirm
+documentation CI starts and STOP without waiting for completion.
+
+Closure is semantic-remediation execution governance, not physical survivability
+or production-data acceptance. Populated PlanTarget/Nomination deployments still
+require independently approved owner policies/mappings before their fail-closed
+migrations; no guessed facts or silent historical repair are authorized. The recorded
+local Maven/Java/Docker limits remain unchanged; no new local runtime result is claimed.
+Version remains 0.6.0-SNAPSHOT. P2 stays OPEN through its remaining governance gates.
+
+Next registered task: HPR-P2-009 — `docs(model-remediation): canonicalize semantic decisions`.
+Its HPR-P2-008 dependency is now satisfied; status remains PENDING. A subsequent Next
+selects a fresh current-source preflight and bounded write scope for that task. This
+closure neither performs the permanent-decision transfer nor modifies its successor
+files automatically.

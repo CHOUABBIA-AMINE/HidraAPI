@@ -2,7 +2,7 @@
 
 ## Status
 
-CURRENT — all 57 reconciled HMR implementations COMPLETED; permanent 123-subject semantic transfer complete. HPR-P2-005/006 corrections are COMPLETED; renewed P2 audit PASS with 12/12 VERIFIED at 7be1c9cb47ed9b6f73a7692d0a328ad870e2b4d4. HPR-P2-013 is COMPLETED and P2 VERIFIED/CLOSED after exact-head Documentation Validation #136 and production CI #609 PASSED at a8905e32289a583f47b831e0381783e556ae0c8d. Phase P2.5 is PLANNED/OPEN; HPR-P25-000 registration CI #142 PASSED and HPR-P25-001 requirements preflight is BLOCKED on required owner decisions; operational twin runtime remains NOT ESTABLISHED. P3 remains DEFERRED; prior 9/12 FAIL and #127/#606 retain historical applicability.
+CURRENT — all 57 reconciled HMR implementations COMPLETED; permanent 123-subject semantic transfer complete. HPR-P2-005/006 corrections are COMPLETED; renewed P2 audit PASS with 12/12 VERIFIED at 7be1c9cb47ed9b6f73a7692d0a328ad870e2b4d4. HPR-P2-013 is COMPLETED and P2 VERIFIED/CLOSED after exact-head Documentation Validation #136 and production CI #609 PASSED at a8905e32289a583f47b831e0381783e556ae0c8d. Phase P2.5 is PLANNED/OPEN; HPR-P25-000 registration CI #142 PASSED and HPR-P25-001 source/requirements preflight is COMPLETED following owner decisions: GZ2 gas, both modes, own engine and dynamic versioned inputs; field qualification remains pending; operational twin runtime remains NOT ESTABLISHED. P3 remains DEFERRED; prior 9/12 FAIL and #127/#606 retain historical applicability.
 
 ## Historical HPR-P2-007 Verification Baseline
 
@@ -7344,3 +7344,59 @@ Actual local HPR-P25-001 checks PASSED: canonical documentation (95 documents,
 263 operations, 231 schemas), P1 closure evidence and git diff --check.
 Exactly two documentation files change; exact-head Documentation CI follows
 publication. No runtime, solver or acceptance-fixture execution is claimed.
+
+
+## Approved Phase 2.5 Direction and Dynamic Inputs — 2026-10-09
+
+Owner Next selects `docs(twin): record approved phase 2.5 input decisions` after
+selecting gas, GZ2, both steady-state/transient modes and Hidra's own simulation
+engine, then clarifying that input data changes. Parent main
+d65cba71421ed5c994a8f63864754aa6083b7837, tree
+8991a8b4ceed382cd324a85b554dfd3f061c646e passed Documentation #143/run 37953635173.
+Read mandatory AGENTS/roadmap/reconciliation; local source tree matches parent.
+Write ONLY doc/roadmap/ULTIMATE_ROADMAP.md and this reconciliation.
+
+HPR-P25-001 is COMPLETED as source/requirements preflight delivery with decisions
+and explicit remaining qualification gates; historical BLOCKED direction is superseded.
+D25-01 pilot gas/GZ2, D25-02 both modes and D25-03 own-engine direction are owner
+selected. No exact GZ2 topology, curves, numeric limits, physics formulation, license
+or operational readiness is inferred. D25-04 remains bounded technical contract
+design for HPR-P25-002; D25-05..09 remain applicable to their field/operational claims.
+
+Version network/configuration, gas/model parameters/current curves/limits and trusted
+operating measurements with effective times, units and provenance. Each run pins an
+immutable coherent snapshot and engine version; transient runs also pin initial state
+and time-dependent boundary/action schedules. Corrections create new versions/runs;
+keep measured history, estimated state, forecasts and scenario actions distinguishable.
+Do not hardcode GZ2 or treat all parameters as changing daily.
+
+Actual GZ2 data gates calibration, pilot acceptance and operational recommendations,
+not input-contract/engine development using clearly synthetic reference networks.
+Independent numerical verification and later measured physical validation are distinct.
+No synthetic result establishes GZ2 pressure/flow/capacity or safety performance.
+
+Internal-engine scope is decomposed into six PENDING prerequisites HPR-P25-008A..F:
+numerical design, steady-state implementation, equipment behavior, transient
+implementation, independent numerical verification and lifecycle execution adapter.
+The roadmap registers each exact message; later exact-file preflight is mandatory.
+Existing HPR-P25-008 identity/message remains for final governed execution;
+HPR-P25-009 remains distinct GZ2 calibration. HPR-P25-017 closure must include all
+added prerequisites. Both gas modes are required; all other product targets remain
+and need separate physical qualification. No engine code or method is implemented here.
+
+Next recommended task: HPR-P25-002 documentation-only input-contract preflight,
+exact message `docs(twin): register HPR-P25-002 execution preflight`, same two-file
+scope. Define ownership/export, immutable versioned inputs and bounded implementation
+file/migration/test envelopes using representative synthetic gas networks. No further
+stage is automatically selected. P0/P1/P2 CLOSED, P2.5 OPEN, P3 DEFERRED, all 57
+HMR completions, 123 subjects, formal v0.6.0 and 0.7.0-SNAPSHOT remain preserved.
+Validate canonical documentation/OpenAPI/P1 evidence, whitespace, scope and retained
+registry identities; publish with expected-parent lease, verify immutable parent/tree/files,
+observe Documentation Validation startup and STOP for owner Next/Fail.
+
+Actual decision-record validation PASSED: canonical documentation (95 documents,
+5,063 relative links, 24 modules, 13 P2 rows), offline OpenAPI (244 paths,
+263 operations, 231 schemas), P1 closure evidence and git diff --check.
+Exactly two documentation files change; prior phase/HMR registry identities are
+preserved. Exact-head Documentation CI follows publication; no engine execution
+or GZ2 physical validation is claimed.

@@ -303,7 +303,9 @@ Owner Next selects this documentation-only preflight after Documentation #142
 identical. Exact message: `docs(twin): define requirements and execution preflight`.
 Write only this roadmap and `doc/model-remediation/RECONCILIATION.md`.
 
-**Disposition: review delivered; HPR-P25-001 BLOCKED on required owner decisions.**
+**Historical disposition at d65cba7: review delivered; HPR-P25-001 was BLOCKED.**
+The approved decisions recorded below supersede that product-direction blocker.
+The following original review retains its baseline applicability.
 The desired multi-product decision-feedback cycle is approved as a product target;
 no first demonstrator, hydraulic mode, solver access or numeric operational acceptance
 limits have been supplied. AGENTS.md §19 preserves `0.7.0-SNAPSHOT`. Do not interpret
@@ -349,21 +351,22 @@ execution rather than become zero/default values. Numerical limits remain unappr
 
 | Decision | Current status / required owner evidence | Blocks |
 |---|---|---|
-| D25-01 first demonstrator | UNRESOLVED: choose product, bounded connected network, representative operator action and data owner. All requested products remain in the target matrix. | HPR-P25-001 completion; qualified implementation/pilot |
-| D25-02 physical modes | UNRESOLVED: steady-state and/or transient modes per product/use case; transient event/linepack/surge coverage is not inferred | Physics contract; HPR-P25-005/008/009 |
-| D25-03 real engine | UNRESOLVED: select permitted solver(s), supported products/modes, license/deployment/interface, version and access evidence | HPR-P25-008 execution |
-| D25-04 input ownership | PROPOSED ONLY: Topology physical network/configuration; Custody product identity; Simulation versioned fluid/model inputs/current curve snapshots; exported owner contracts rather than foreign JPA | HPR-P25-002 preflight/implementation |
+| D25-01 first demonstrator | OWNER SELECTED: GZ2 gas pilot. Exact topology, connected boundaries, action cases and data owner are versioned pilot data/qualification inputs, not hardcoded engine constants. All products remain target scope. | Real GZ2 pilot qualification; synthetic development may proceed |
+| D25-02 physical modes | OWNER SELECTED: both steady-state and transient for gas; build/verify steady-state before transient. Specific event/model fidelity is established by numerical design and validation. | Qualified mode claims; no transient accuracy inferred from selection |
+| D25-03 real engine | OWNER SELECTED: Hidra-owned engine. No external license/access prerequisite for developing our engine; mathematical design, property methods, numerical verification and executable adapter remain required. | HPR-P25-008A..F and umbrella execution evidence |
+| D25-04 input ownership | ENGINEERING DESIGN FOR PREFLIGHT: preserve Topology network/configuration, Custody catalogue identity, Telemetry trust and Simulation immutable fluid/model/curve input snapshots; define exact exported contracts during HPR-P25-002 preflight. Owner has selected dynamic data, not a new catalogue owner. | Exact HPR-P25-002 input contracts before source mutation |
 | D25-05 measurements/security | UNRESOLVED: acquisition source and interface, read-only access/environment, unit/flow basis/time alignment, freshness/latency/replay policy; independent cybersecurity evidence source if included | HPR-P25-004/006 field claims |
 | D25-06 physical acceptance | UNRESOLVED: independent reference dataset, sensor uncertainty, residual/calibration/convergence tolerances per product/mode, estimator observability and valid envelope | HPR-P25-005/009 and closure |
 | D25-07 issue/decision policy | UNRESOLVED: issue coverage, limits/severity/false-alarm acceptance, feasible candidate actions, approval authority, simulation budgets and emergency escalation | HPR-P25-006/010/011/012 |
 | D25-08 operator and outcomes | UNRESOLVED: frontend repository/environment, pilot approval, actual-action evidence, observation windows and attribution/confounder policy | HPR-P25-013/015/016 |
 | D25-09 learning governance | UNRESOLVED: learning objective, admissible data, held-out evaluation, drift thresholds, promotion authority and rollback criteria | HPR-P25-014/017 |
 
-Solver integration alternatives to evaluate, not procurement recommendations: existing
+Historical alternatives considered before the own-engine decision (not selected): existing
 licensed external engine via supported API/batch/service interface; approved open-source
 engine with demonstrated product/mode coverage; purpose-built internal engine with its
-own verification and maintenance program. No named engine, vendor, interface or license
-is selected or claimed available by this preflight. Evaluate capability, reproducibility,
+own verification and maintenance program. No external engine, vendor, interface or license
+is selected or claimed available. The subsequent owner decision selects an internal
+engine; these alternatives no longer block product-direction selection. Evaluate capability, reproducibility,
 calibration, integration security, failures, operations and licensing before D25-03 closes.
 
 ##### Acceptance fixture register — specifications, not executed tests
@@ -411,26 +414,111 @@ exact-head CI; real solver/field/pilot evidence is additional to mocks and CI.
 For this preflight run only canonical documentation/OpenAPI/P1 evidence validation,
 whitespace and exact two-file scope; runtime Maven is not required by doc-only rules.
 
-**Next executable disposition:** resolve D25-01..04 first and amend this two-document
-preflight before selecting HPR-P25-002 implementation. Supporting decision-record
+**Current next executable disposition:** owner product/mode/engine decisions are
+recorded below; next select HPR-P25-002 documentation-only input-contract preflight
+before any implementation. Field values and GZ2 data acceptance gate the actual pilot,
+not independent engine development with explicitly synthetic reference fixtures. Supporting decision-record
 message: `docs(twin): record approved phase 2.5 input decisions`. Record only decisions
 actually supplied by the owner; do not promote proposals to approved policy. Missing
 operational/solver data blocks affected later stages, not all independent future review.
 No implementation, migration, solver installation, release or deployment is selected.
+
+#### Approved Direction and Dynamic Input Decision Record — 2026-10-09
+
+Owner statements after HPR-P25-001: gas; GZ2 pilot; both steady-state and transient;
+Hidra's own simulation engine; input data can change daily. The owner's Next selects
+this supporting decision update, exact message
+`docs(twin): record approved phase 2.5 input decisions`. Write ONLY the Ultimate
+Roadmap and reconciliation. Verified parent d65cba71421ed5c994a8f63864754aa6083b7837,
+tree 8991a8b4ceed382cd324a85b554dfd3f061c646e; Documentation #143
+(run 37953635173) PASSED. No source/configuration/migration changes occur here.
+
+**Preflight delivery is complete; implementation and field qualification remain pending.**
+Do not claim the owner approved numeric tolerances, a physics formulation, actual
+GZ2 asset inventory or a field deployment. Those are later technical/data gates.
+The former lack of actual GZ2 data must not prevent designing the engine and its
+input contracts using representative, explicitly synthetic reference networks.
+
+##### Dynamic data lifecycle
+
+- Topology/configuration: connected network, routes, station/equipment identities and
+  valve/compressor configurations; version each effective change, never hardcode GZ2.
+- Model/parameter data: gas composition/property input, pipe dimensions/resistance,
+  elevations, current equipment curves and approved limits with provenance, units,
+  effective periods and validity. Do not assume every parameter changes daily or allow
+  unreviewed sensor values to replace structural parameters and safety limits.
+- Operating state: timestamped trusted pressure/flow/temperature and equipment states;
+  preserve measured/estimated/unknown distinctions, quality, age and source watermark.
+- Run inputs: immutable coherent snapshot of all selected versions and times, with
+  deterministic content identity. Corrections create a new version/run and cannot
+  silently alter previous results. A latest-data view is not a reproducible run input.
+- Transient inputs: frozen initial state plus a versioned time-dependent boundary/action
+  schedule for the simulation horizon. Distinguish measured history, planned scenario
+  actions and forecasts; snapshots do not imply constant conditions throughout a run.
+- Outcomes: compare the actual action and measured timeline with the matching prediction,
+  accounting for changed configurations/parameters and concurrent actions. State estimation
+  and calibration updates must retain their own provenance and validation.
+
+Development may execute explicitly synthetic test cases with known answers and test-only
+limits. Reject incomplete/inconsistent actual run inputs. Field synchronization, calibration
+and operational recommendations need qualified GZ2 data and approved acceptance policies.
+Synthetic success is not GZ2 capacity, safety or operating performance evidence.
+
+##### Own-engine decomposition under HPR-P25-008
+
+The old external-adapter-sized task is insufficient for an internal solver. Register the
+following bounded prerequisites; each has its own exact message and later exact-file
+preflight. The existing HPR-P25-008 identity/message is retained as the final governed
+execution integration. No mathematical method or implementation is selected here.
+
+| Code | Status | Domain/Module | Type | Exact execution requirement | Exact commit message | Depends on |
+|---|---|---|---|---|---|---|
+| HPR-P25-008A | PENDING | Simulation / Numerical design | Doc | Specify gas equations/assumptions, gas-property methods, units/reference basis, boundary/initial conditions, supported network/equipment behavior, numerical method/convergence/stability plan, test tolerances and independent reference strategy. | `docs(simulation): define internal gas engine numerical design` | HPR-P25-001 decisions; HPR-P25-002 input contract |
+| HPR-P25-008B | PENDING | Simulation / Steady-state | Code/Test | Implement verified steady-state pipe/network calculation against analytical or independent synthetic reference cases; expose residuals, conservation, validity and nonconvergence, without claiming GZ2 calibration. | `feat(simulation): implement internal steady state gas solver` | HPR-P25-008A |
+| HPR-P25-008C | PENDING | Simulation / Equipment | Code/Test | Integrate approved compressor/valve/regulator behavior and current curve/configuration input contracts; test constraints, flow changes and effects across connected branches. | `feat(simulation): model gas network equipment behavior` | HPR-P25-008B; HPR-P25-002 equipment inputs |
+| HPR-P25-008D | PENDING | Simulation / Transient | Code/Test | Implement time-dependent gas-network behavior with initial state and boundary/action timelines; verify conservation, spatial/time refinement, stability and applicable event response within declared fidelity. | `feat(simulation): implement internal transient gas solver` | HPR-P25-008C |
+| HPR-P25-008E | PENDING | Simulation / Independent verification | Test/Doc | Independently verify both engine modes against reproducible analytical/manufactured/reference cases, numerical refinement and adverse/failure cases; publish supported range and errors, distinct from GZ2 calibration. | `test(simulation): verify internal gas engine numerical behavior` | HPR-P25-008B..D |
+| HPR-P25-008F | PENDING | Simulation / Execution adapter | Code/Test | Bind versioned engine to run lifecycle and immutable input/result contracts; verify actual execution, cancellation/timeouts/resource budgets and reproducibility; keep numerical code isolated from controllers/JPA. | `feat(simulation): integrate internal gas engine execution` | HPR-P25-008E; HPR-P25-007 connected scope |
+
+HPR-P25-008 completes only after all six prerequisites and governed execution evidence.
+HPR-P25-009 remains the separate calibration/physical validation gate with actual
+qualified GZ2 measurements and current equipment parameters. HPR-P25-005 may design
+its estimator before engine completion; claimed physical estimation accuracy requires
+verified model execution and independent data. No dependency cycle is introduced:
+numerical design/engine verification can use synthetic network inputs; operational scope
+and live-state orchestration follow their existing dependencies.
+
+HPR-P25-008A..F preflight messages follow
+`docs(twin): register HPR-P25-008X execution preflight`, replacing X with A..F.
+All numerical business behavior belongs to Simulation, never the Kernel or technical
+Platform. Product/mode support is explicit: internal gas development does not qualify
+liquid, H2 or blend calculations. Multi-product visualization/extension targets remain.
+No hardcoded GZ2 geometry/limits, autonomous OT actuation or unsafe recommendation is
+admitted. Phase closure must account for every added prerequisite and coverage limit.
+
+##### Next bounded preflight
+
+HPR-P25-002 next selection is documentation-only: same two execution memories,
+exact supporting message `docs(twin): register HPR-P25-002 execution preflight`.
+Settle the technical input ownership/export contracts, version/effective-time semantics,
+immutable snapshot schema and narrowly registered source/test/migration stages.
+Its design may use synthetic gas networks; do not demand daily pilot values before
+creating reusable input contracts. Exact new files/migration names and numerical engine
+methods are selected during their bounded preflights, not by this decision record.
 
 #### Execution registry
 
 | Code | Status | Domain/Module | Type | Exact execution requirement | Exact commit message | Depends on |
 |---|---|---|---|---|---|---|
 | HPR-P25-000 | COMPLETED — registration 02e86faa48c49c0c83c2ad51ccc4f1c52686f6c4 passed Documentation #142/run 37948108881; no runtime implementation | Roadmap / Reconciliation | Doc | Register the owner-defined operational twin cycle, ordered tasks, prerequisites, acceptance gates and next requirements preflight. | `docs(roadmap): register phase 2.5 operational digital twin` | P0/P1/P2 closed; owner instruction 2026-10-09 |
-| HPR-P25-001 | BLOCKED — source gap review and bounded requirements preflight published; first demonstrator, product/mode physics contracts, solver/access and operational acceptance values await owner decisions | Cross-module requirements | Doc | Inventory exact-source gaps and owners; specify product/use-case coverage, data needs, solver integration options, steady-state/transient scope, operational/security issue classes, tolerances and acceptance fixtures; record unresolved owner decisions and implementation envelopes. | `docs(twin): define requirements and execution preflight` | HPR-P25-000; successful registration documentation CI |
+| HPR-P25-001 | COMPLETED — requirements/source preflight d65cba71421ed5c994a8f63864754aa6083b7837 passed Documentation #143; owner selected GZ2 gas, both modes, own engine and dynamic versioned inputs; field acceptance remains a later qualification gate | Cross-module requirements | Doc | Inventory exact-source gaps and owners; specify product/use-case coverage, data needs, solver integration options, steady-state/transient scope, operational/security issue classes, tolerances and acceptance fixtures; record unresolved owner decisions and implementation envelopes. | `docs(twin): define requirements and execution preflight` | HPR-P25-000; successful registration documentation CI |
 | HPR-P25-002 | PENDING | Topology / Custody / Simulation | Code/Test | Extend only demonstrated gaps in product-aware connected topology, fluid-property/composition references, equipment characteristics and versioned operating configurations; reject unsupported physics/product combinations. | `feat(topology): establish product aware twin network inputs` | HPR-P25-001 approved input/ownership contracts |
 | HPR-P25-003 | PENDING | Topology / Telemetry / API | Code/Test | Provide authorized network map/state APIs with product and asset layers, connectivity, measured/estimated overlays, quality/freshness and issue location; verify the frontend integration contract. | `feat(topology): expose operational twin visualization` | HPR-P25-002 |
 | HPR-P25-004 | PENDING | Integration / Telemetry | Code/Test/Config | Implement the approved read-only acquisition adapter and coherent timestamp/unit/asset binding; verify replay, duplicates, late/missing readings, disconnect and recovery while retaining raw provenance and trust rules. | `feat(telemetry): synchronize trusted network measurements` | HPR-P25-001 approved source/access/latency contract; HPR-P25-002 |
 | HPR-P25-005 | PENDING | Analytics / Topology / Telemetry | Code/Test | Reconstruct a versioned time-coherent network state using approved physical methods; distinguish measured, estimated and unknown values and observability; retain input/configuration lineage and uncertainty. | `feat(analytics): reconstruct operational network state` | HPR-P25-004; approved estimator/model contract |
 | HPR-P25-006 | PENDING | Monitoring / LeakDetection / Risk / Analytics | Code/Test | Implement the approved issue catalogue and correlated detection across the connected network; distinguish sensor/data faults, suspected process faults and safety/security signals, with severity, confidence, supported coverage and evidence. | `feat(monitoring): detect network issues from trusted state` | HPR-P25-005; approved detector thresholds/fixtures |
 | HPR-P25-007 | PENDING | Simulation / Topology | Code/Test | Select connected local/regional/full-network simulation scope; derive validated boundary conditions, propagate potential effects and expand scope or reject execution when boundaries are inadequate. | `feat(simulation): resolve connected scope and boundary conditions` | HPR-P25-005; HPR-P25-002 |
-| HPR-P25-008 | PENDING | Simulation / Integration | Code/Test/Config | Implement a real approved solver adapter with input/output mapping, units, product/mode capability checks, immutable version provenance, diagnostics and timeout/cancellation handling; verify actual execution beyond availability metadata. | `feat(simulation): execute approved hydraulic solver` | HPR-P25-001 selected solver/access/license; HPR-P25-007 |
+| HPR-P25-008 | PENDING | Simulation / Integration | Code/Test/Config | After HPR-P25-008A..F, establish governed execution of Hidra-owned gas engine for both modes with immutable inputs, product/mode checks, diagnostics, failure handling and real execution evidence. | `feat(simulation): execute approved hydraulic solver` | HPR-P25-008A..F; HPR-P25-007 |
 | HPR-P25-009 | PENDING | Simulation / Analytics | Test/Doc | Calibrate and validate solver/estimator behavior against approved measured/reference cases and current equipment curves; publish per-product/mode tolerances, residuals, uncertainty and validity envelope. | `test(simulation): validate calibrated network physics` | HPR-P25-008; HPR-P25-005; approved validation data |
 | HPR-P25-010 | PENDING | Monitoring / Simulation / Workflow | Code/Test | Automatically trigger governed real simulations from eligible issues using traceable state snapshots, debounce/deduplication, priorities and bounded resource budgets; retain failures and preserve independent alarm handling. | `feat(simulation): orchestrate issue triggered network runs` | HPR-P25-006..009 |
 | HPR-P25-011 | PENDING | Simulation / Risk / Analytics | Code/Test | Evaluate candidate operator actions against baseline and affected-network constraints; present expected benefits, adverse effects elsewhere, uncertainty and alternatives; reject infeasible/out-of-validity recommendations. | `feat(simulation): propose network validated operator decisions` | HPR-P25-009..010; approved constraints and candidate action contract |
@@ -439,7 +527,7 @@ No implementation, migration, solver installation, release or deployment is sele
 | HPR-P25-014 | PENDING | Analytics / Simulation | Code/Test/Doc | Build provenance-controlled learning datasets from actual actions/outcomes; evaluate proposed detector, calibration or recommendation updates offline, version them and require validated promotion/rollback without weakening physical or safety constraints. | `feat(analytics): govern learning from operational outcomes` | HPR-P25-013; approved learning objective/evaluation policy |
 | HPR-P25-015 | PENDING | API / Operator Experience | Test/Doc | Demonstrate operator visualization, issue-to-run explanation, candidate comparisons, decision capture and outcome views with the selected frontend; record separate frontend repository/version evidence and accessibility/authorization checks. | `test(twin): verify operator visualization and decision workflow` | HPR-P25-003; HPR-P25-010..014; selected frontend environment |
 | HPR-P25-016 | PENDING | Cross-module verification / Operations | Test/Doc | Execute end-to-end historical replay and governed pilot cases including adverse downstream effects, scope expansion, unavailable solver, poor/stale data, unobservable state, nonconvergence and learning rollback; retain exact-source/environment evidence and runbooks. | `test(twin): verify operational decision feedback cycle` | HPR-P25-015; approved pilot/data/environment |
-| HPR-P25-017 | PENDING | Governance | Doc | Independently audit all P2.5 gates against actual execution and per-product/mode evidence; close only after exact-head applicable CI and operator acceptance, with unsupported coverage explicitly retained. | `docs(roadmap): close phase 2.5 operational twin verification` | HPR-P25-001..016 |
+| HPR-P25-017 | PENDING | Governance | Doc | Independently audit all P2.5 gates against actual execution and per-product/mode evidence; close only after exact-head applicable CI and operator acceptance, with unsupported coverage explicitly retained. | `docs(roadmap): close phase 2.5 operational twin verification` | HPR-P25-001..016; HPR-P25-008A..F |
 
 #### Boundaries, acceptance gates and unresolved decisions
 
@@ -565,13 +653,20 @@ registration is `275a5d38e888ad70e33db4081ef03783e9e1e427`, tree
 (run 37944111978) PASSED. Source/runtime remains on the verified 0.7.0 development
 line; documentation registration is not solver execution or twin delivery.
 
-HPR-P25-001 source review and requirements preflight is delivered but BLOCKED on
-required owner decisions D25-01..09, detailed in Phase 2.5. Registration Documentation
-#142/run 37948108881 PASSED. Resolve the first demonstrator, physical modes, real
-engine and input ownership (D25-01..04) before HPR-P25-002 implementation selection.
-Resolve the product/mode rollout, real solver access, telemetry/security sources,
-operator/pilot environment and measurable acceptance criteria before implementation.
-Observe requirements-preflight Documentation Validation startup and STOP for owner Next/Fail.
+HPR-P25-001 requirements/source review is COMPLETED as a preflight deliverable;
+Documentation #143/run 37953635173 PASSED on d65cba71421ed5c994a8f63864754aa6083b7837.
+The owner selected gas, GZ2, both steady-state/transient modes and a Hidra-owned engine,
+then clarified that network/model/operating data changes and must be versioned input.
+Owner Next selects ONLY `docs(twin): record approved phase 2.5 input decisions`,
+writing the roadmap and reconciliation; this decision update implements no engine.
+
+Next recommended task: **HPR-P25-002 input-contract execution preflight**, exact
+supporting message `docs(twin): register HPR-P25-002 execution preflight`. Define
+bounded file/contract/migration/test envelopes for immutable inputs before source
+mutation. Synthetic reference networks can support development. GZ2 topology,
+measurements, limits and current curves must be ingested/qualified to claim GZ2 accuracy.
+Remaining D25-05..09 values block their field/operational claims, not all development.
+Observe decision-record Documentation Validation startup and STOP for owner Next/Fail.
 P0/P1/P2 remain CLOSED; P2.5 PLANNED/OPEN; P3 DEFERRED; 57 HMR completions,
 123 subjects, formal v0.6.0 and current 0.7.0-SNAPSHOT remain preserved.
 
@@ -8731,3 +8826,10 @@ Actual local HPR-P25-001 checks PASSED: canonical documentation (95 documents,
 263 operations, 231 schemas), P1 closure evidence and git diff --check.
 Exactly two documentation files change; exact-head Documentation CI follows
 publication. No runtime, solver or acceptance-fixture execution is claimed.
+
+Actual decision-record validation PASSED: canonical documentation (95 documents,
+5,063 relative links, 24 modules, 13 P2 rows), offline OpenAPI (244 paths,
+263 operations, 231 schemas), P1 closure evidence and git diff --check.
+Exactly two documentation files change; prior phase/HMR registry identities are
+preserved. Exact-head Documentation CI follows publication; no engine execution
+or GZ2 physical validation is claimed.

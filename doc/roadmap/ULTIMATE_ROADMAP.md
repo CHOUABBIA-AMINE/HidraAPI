@@ -590,7 +590,7 @@ Each stage retains its own commit and later evidence; no batch is selected.
 
 | Code | Status | Domain/Module | Type | Exact execution requirement | Exact commit message | Depends on |
 |---|---|---|---|---|---|---|
-| HPR-P25-002A | PENDING | Simulation / Input manifest | Code/Test | Implement immutable manifest, source-version identities/validity/origin and steady-state/transient metadata invariants under the exact six-file envelope below. | `feat(simulation): establish immutable input manifest contracts` | HPR-P25-002 preflight Documentation CI success |
+| HPR-P25-002A | IN PROGRESS — three immutable contracts and 14 JUnit tests implemented; standalone Java 17 compilation/smoke assertions passed; local Maven blocked before compilation by Central DNS; exact-head Java 21 CI pending | Simulation / Input manifest | Code/Test | Implement immutable manifest, source-version identities/validity/origin and steady-state/transient metadata invariants under the exact six-file envelope below. | `feat(simulation): establish immutable input manifest contracts` | HPR-P25-002 preflight Documentation CI success |
 | HPR-P25-002B | PENDING | Simulation / Physical payloads | Code/Test | Define validated typed network/fluid/equipment/initial-state and transient timeline payloads with units, reference basis and missing-data semantics; register exact files and numeric design assumptions before mutation. | `feat(simulation): define versioned physical input payloads` | HPR-P25-002A; selected payload/physics preflight |
 | HPR-P25-002C | PENDING | Owner modules / Simulation | Code/Test | Implement bounded owner-exported topology/product/measurement queries and Simulation adapters; preserve eligibility/trust/ownership and reject unavailable physical inputs. | `feat(simulation): resolve versioned owner input references` | HPR-P25-002B; exact owner-contract/export preflight |
 | HPR-P25-002D | PENDING | Simulation / Capture | Code/Test | Assemble coherent immutable payload/manifest captures, verify canonical hashes and evidence, persist reproducible revisions and reject incompatible/missing inputs; register forward migration only if source-backed design requires one. | `feat(simulation): capture reproducible network calculation inputs` | HPR-P25-002C; exact capture/schema preflight |
@@ -805,12 +805,19 @@ message `docs(twin): register HPR-P25-002 execution preflight`. Documentation #1
 (run 37955963870) PASSED on parent 61c1311f458e6844d28c4b4d162b0916885d01a0,
 tree 774e1806a8953b5582dcb32081256449d5d290de. Current source remains unchanged.
 
-Next recommended task: **HPR-P25-002A — immutable input manifest contracts** after
-successful preflight Documentation CI. Its exact six-file implementation envelope is
-registered above; execute A only, no repeat preflight unless source evidence changes.
-The manifest validates references/times/versions, not physical readiness or GZ2 accuracy.
-HPR-P25-002 stays PENDING until 002A..D are complete; remaining field acceptance gates
-retain their applicability. Observe preflight Documentation Validation startup and STOP.
+Owner Next selects ONLY HPR-P25-002A implementation, exact message
+`feat(simulation): establish immutable input manifest contracts`. Preflight
+Documentation #145/run 37956618791 PASSED on parent
+e968ca3f829a53e5b1addcfde17357d7e4e55125, tree
+84732e31d06452d85cf60d4d44f5bf77f1a45992. The exact six-path scope is implemented.
+A remains IN PROGRESS until applicable exact-head CI is successful; parent
+HPR-P25-002 remains PENDING. No physical payload or simulation engine is executed.
+
+After successful A CI, next recommended task is **HPR-P25-002B physical-payload
+preflight**, exact supporting message
+`docs(twin): register HPR-P25-002B execution preflight`, two-document scope only.
+Do not execute B source changes before its exact envelope is registered.
+Observe applicable implementation CI startup and STOP for owner Next/Fail.
 P0/P1/P2 remain CLOSED; P2.5 PLANNED/OPEN; P3 DEFERRED; 57 HMR completions,
 123 subjects, formal v0.6.0 and current 0.7.0-SNAPSHOT remain preserved.
 
@@ -8984,3 +8991,65 @@ Actual HPR-P25-002 preflight checks PASSED: canonical documentation (95 document
 Exact two-document scope and retained phase/HMR rows verified; four new 002A..D
 identities registered. No runtime/source/physics change is claimed; Documentation
 CI follows publication.
+
+
+## HPR-P25-002A Immutable Input Manifest Implementation — 2026-10-09
+
+Owner Next selects HPR-P25-002A after preflight Documentation #145/run
+37956618791 PASSED on exact parent e968ca3f829a53e5b1addcfde17357d7e4e55125,
+tree 84732e31d06452d85cf60d4d44f5bf77f1a45992. Mandatory instruction/roadmap/
+reconciliation reads completed; source tree matched before mutation. Exact message:
+`feat(simulation): establish immutable input manifest contracts`.
+
+Created ONLY src/main/java/dz/sh/hidra/modules/simulation/domain/value/SimulationInputMode.java,
+src/main/java/dz/sh/hidra/modules/simulation/domain/model/SimulationInputSourceVersion.java,
+src/main/java/dz/sh/hidra/modules/simulation/domain/model/SimulationInputManifest.java and
+src/test/java/dz/sh/hidra/modules/simulation/domain/model/SimulationInputManifestTest.java.
+Updated ONLY the Ultimate Roadmap and reconciliation; six tracked paths total.
+No migration, persistence/API exposure, owner export, dependency or workflow change.
+
+Contracts enforce explicit mode/schema/product/scope identities; SHA-256 syntax and
+canonical lowercase reference; required source/evidence/revision metadata; effective
+start-inclusive/end-exclusive intervals; initial-state/capture/watermark/recorded
+time coherence; exactly one reference per required kind; transient future horizon
+and boundary schedule; steady-state exclusion of both; defensive immutable lists.
+Any synthetic source marks the input synthetic. Declared origins/digests are not
+verified trust/content; no readiness method or hydraulic calculation is introduced.
+Corrections/replacements leave previously constructed input manifests unchanged.
+
+Fourteen JUnit tests prepared for positive synthetic modes, replacement/defensive
+immutability, validity boundaries/open ends, expired/future sources, post-capture
+revisions, missing/duplicate/null source kinds, horizon/schedule combinations,
+initial/capture/watermark ordering, identity/schema/mode/time requirements, source
+evidence, digest syntax/normalization and synthetic-origin detection.
+
+Actual validation:
+- Direct ./mvnw focused test invocation failed with permission denied because the
+  checked-out wrapper is not executable. No chmod/file-mode change was made.
+- bash ./mvnw -B -q -Dtest=SimulationInputManifestTest,ArchitectureGuardrailTest test
+  and bash ./mvnw -B -q clean verify both BLOCKED before compilation by uncached
+  Spring Boot parent 4.1.1 and repo.maven.apache.org temporary DNS failure.
+  Local runtime is Java 17.0.20, not the required Java 21. No Maven/JUnit pass claimed.
+- Standalone production contracts plus existing local exception classes compiled
+  using Java 17's jdk.compiler/com.sun.tools.javac.Main (javac launcher absent).
+  A temporary external smoke harness passed valid steady/transient, synthetic flag,
+  defensive copy/unmodifiable selection, missing schedule, forbidden steady schedule,
+  duplicate source and exclusive effective-end checks. This is not execution of the
+  14 JUnit tests, ArchitectureGuardrailTest or full Java 21 verification.
+- Canonical documentation validation PASSED (95 documents, 5,063 relative links,
+  24 modules, 13 P2 rows), offline OpenAPI PASSED (244 paths, 263 operations,
+  231 schemas), retained P1 closure evidence PASSED and git diff --check PASSED.
+
+HPR-P25-002A remains IN PROGRESS pending exact-head applicable full CI;
+HPR-P25-002 remains PENDING and B/C/D/engine stages are not executed.
+After successful A CI, next recommendation is HPR-P25-002B documentation-only
+physical-payload preflight, exact message
+`docs(twin): register HPR-P25-002B execution preflight`; same two execution memories.
+Vendor tool information supplied by owner can guide later benchmark requirements;
+no external engine access, Sonatrach installation evidence, equivalence or license
+is inferred, and no vendor engine/model is imported in this stage.
+
+Publish with expected-parent lease, verify tree/parent/exact scope, observe both
+applicable Documentation and full production CI startup, then STOP for owner Next/Fail.
+P0/P1/P2 CLOSED, P2.5 OPEN, P3 DEFERRED, 57 HMR completions, 123 semantic subjects,
+formal v0.6.0 and development 0.7.0-SNAPSHOT remain preserved.

@@ -591,7 +591,7 @@ Each stage retains its own commit and later evidence; no batch is selected.
 | Code | Status | Domain/Module | Type | Exact execution requirement | Exact commit message | Depends on |
 |---|---|---|---|---|---|---|
 | HPR-P25-002A | COMPLETED — implementation eef35dbd35d4558a4ceb57f87d8670fb97c933ea passed full Java 21 CI #612 and Documentation #146; three immutable contracts and 14 JUnit tests present; per-class report not independently retained at this baseline | Simulation / Input manifest | Code/Test | Implement immutable manifest, source-version identities/validity/origin and steady-state/transient metadata invariants under the exact six-file envelope below. | `feat(simulation): establish immutable input manifest contracts` | HPR-P25-002 preflight Documentation CI success |
-| HPR-P25-002B | PENDING — B1 implemented pending exact-head full CI; B2..B4 remain PENDING | Simulation / Physical payloads | Code/Test | Define validated typed network/fluid/equipment/initial-state and transient timeline payloads with units, reference basis and missing-data semantics; register exact files and numeric design assumptions before mutation. | `feat(simulation): define versioned physical input payloads` | HPR-P25-002A; selected payload/physics preflight |
+| HPR-P25-002B | PENDING — B1 CI-confirmed completed; B2 exact-file preflight delivered, implementation pending; B3..B4 remain PENDING | Simulation / Physical payloads | Code/Test | Define validated typed network/fluid/equipment/initial-state and transient timeline payloads with units, reference basis and missing-data semantics; register exact files and numeric design assumptions before mutation. | `feat(simulation): define versioned physical input payloads` | HPR-P25-002A; selected payload/physics preflight |
 | HPR-P25-002C | PENDING | Owner modules / Simulation | Code/Test | Implement bounded owner-exported topology/product/measurement queries and Simulation adapters; preserve eligibility/trust/ownership and reject unavailable physical inputs. | `feat(simulation): resolve versioned owner input references` | HPR-P25-002B; exact owner-contract/export preflight |
 | HPR-P25-002D | PENDING | Simulation / Capture | Code/Test | Assemble coherent immutable payload/manifest captures, verify canonical hashes and evidence, persist reproducible revisions and reject incompatible/missing inputs; register forward migration only if source-backed design requires one. | `feat(simulation): capture reproducible network calculation inputs` | HPR-P25-002C; exact capture/schema preflight |
 
@@ -684,8 +684,8 @@ all required payload stages are complete; no stage is executed by this preflight
 
 | Code | Status | Domain/Module | Type | Exact execution requirement | Exact commit message | Depends on |
 |---|---|---|---|---|---|---|
-| HPR-P25-002B1 | IN PROGRESS — three immutable physical pipe-graph records and 13 synthetic JUnit tests implemented; local Maven blocked by Central DNS/uncached Boot parent, Java 17 only; exact-head full CI pending | Simulation / Physical network | Code/Test | Implement immutable typed nodes/pipe segments and connected network validation using the exact six-path envelope below. | `feat(simulation): define physical network input contracts` | HPR-P25-002A; successful B preflight documentation CI |
-| HPR-P25-002B2 | PENDING | Simulation / Fluid and equipment | Code/Test | Define versioned gas composition/property-method references and current equipment/curve/configuration payloads with explicit units/validity; no property calculation or universal product support is implied. | `feat(simulation): define fluid and equipment input contracts` | HPR-P25-002B1; exact B2 preflight |
+| HPR-P25-002B1 | COMPLETED — 803efff1326cc20bc54b4a22d6daa8608b5233dc passed Java 21 production CI #614 and Documentation #150; three immutable pipe-graph records and 13 synthetic JUnit tests present; individual report not independently inspected | Simulation / Physical network | Code/Test | Implement immutable typed nodes/pipe segments and connected network validation using the exact six-path envelope below. | `feat(simulation): define physical network input contracts` | HPR-P25-002A; successful B preflight documentation CI |
+| HPR-P25-002B2 | PENDING — exact-file fluid/equipment preflight delivered; no B2 production source implemented | Simulation / Fluid and equipment | Code/Test | Define versioned gas composition/property-method references and current equipment/curve/configuration payloads with explicit units/validity; no property calculation or universal product support is implied. | `feat(simulation): define fluid and equipment input contracts` | HPR-P25-002B1; exact B2 preflight |
 | HPR-P25-002B3 | PENDING | Simulation / State and boundaries | Code/Test | Define measured/estimated initial-state quantities and time-dependent boundary/action schedules with quantity basis, time ordering, interpolation declarations and missing-value semantics. | `feat(simulation): define state and boundary timeline inputs` | HPR-P25-002B2; exact B3 preflight |
 | HPR-P25-002B4 | PENDING | Simulation / Payload assembly | Code/Test | Bind typed payload/version identities to manifests, validate node/equipment references and steady/transient completeness, preserving synthetic/provenance distinctions; canonical hash verification remains capture scope. | `feat(simulation): assemble consistent physical input payloads` | HPR-P25-002B1..B3; exact B4 preflight |
 
@@ -9407,3 +9407,184 @@ Publish with expected-parent lease, verify remote parent/tree/six paths, observe
 production and Documentation CI startup on exact implementation head and STOP.
 P0/P1/P2 CLOSED, P2.5 OPEN, P3 DEFERRED, 57 HMR completions, 123 semantic subjects,
 formal v0.6.0 and development 0.7.0-SNAPSHOT remain preserved.
+
+
+## HPR-P25-002B2 Fluid and Equipment Input Preflight — 2026-10-09
+
+Owner Next selects ONLY the registered documentation preflight, exact message
+`docs(twin): register HPR-P25-002B2 execution preflight`. Write ONLY
+`doc/roadmap/ULTIMATE_ROADMAP.md` and `doc/model-remediation/RECONCILIATION.md`.
+GitHub main is 803efff1326cc20bc54b4a22d6daa8608b5233dc, tree
+ae8508a1a613adfac5b45cf7d1b4557191eb13ff. Exact-head production
+#614/run 37965240956 and Documentation #150/run 37965240996 completed SUCCESS.
+Production job 113937836513 confirms Java 21 repository verification, retained
+operations/P1 checks, OpenAPI publication/equality/backward compatibility and
+migrated dictionary steps succeeded. B1 is COMPLETED; 13 test methods are present,
+but no independent per-class XML/skip inspection is claimed. Mandatory AGENTS,
+roadmap/reconciliation and current selected source read; local source tree matches.
+
+### Current source and engineering boundary
+
+Source reviewed: SimulationInputManifest.java, SimulationInputSourceVersion.java,
+SimulationPhysicalNetworkInput.java, SimulationNetworkNodeInput.java and
+SimulationPipeSegmentInput.java in Simulation domain/model; Topology domain/model/
+Equipment.java; Custody application/contract/planning/PlanningProductReferenceContract.java;
+Simulation domain/policy/SimulationSafetyPolicy.java; ArchitectureGuardrailTest.java.
+Existing manifests pin FLUID_MODEL/EQUIPMENT_PARAMETERS references and declared
+origins/evidence/validity, but not physical contents. Topology Equipment has identity,
+attachment/type/status, not a current measured compressor map or valve characteristic.
+Custody's existing Planning contract supplies catalogue identity/code/active only;
+it is neither a gas composition nor a Simulation export. B2 imports no owner module
+and does not extend that contract or architecture exports. Owner adapters remain 002C.
+
+Simulation copies source-selected, immutable gas/equipment payloads. Catalogue,
+connectivity and raw/trusted observation ownership stay unchanged. Daily correction
+creates a replacement source revision; it cannot mutate prior records. Source-version
+metadata conveys declared provenance/validity, not verified physical truth/hash integrity.
+No inferred design curve, catalogue-derived composition or default operating limit.
+Actual current GZ2 curves/compositions and reference evidence remain calibration gates.
+
+### Exact B2 implementation envelope for a later owner Next
+
+After successful Documentation CI on this preflight, the next owner Next selects ONLY
+HPR-P25-002B2, exact implementation message
+`feat(simulation): define fluid and equipment input contracts`.
+Create ONLY these four production files under
+`src/main/java/dz/sh/hidra/modules/simulation/domain/model/`:
+
+1. `SimulationGasFluidInput.java`
+   Immutable record fields: String id, SimulationInputSourceVersion sourceVersion,
+   String productReference, String propertyMethodReference, String propertyMethodRevisionId,
+   String propertyMethodEvidenceReference, List<Component> components.
+   Nested immutable Component record: String componentReference, BigDecimal moleFraction.
+   Require sourceVersion.kind FLUID_MODEL; all identities/evidence nonblank with existing
+   trim/case-preserving normalization. Require nonempty defensive components, no null
+   entries or duplicate normalized componentReference. Each fraction must be >0 and <=1;
+   exact BigDecimal sum numerically equals 1 using compareTo, not scale-sensitive equals.
+   This is a declared complete mole-fraction basis, not rounded measured fractions:
+   reject incomplete sums instead of inventing normalization or tolerance. Acquisition
+   rounding/conversion evidence requires later owner/capture design. Omitted constituents
+   are not known zeros. No hardcoded chemistry/component list, molecular weights, density,
+   viscosity, compressibility, heating value, equation of state or property method default.
+   Method reference/revision/evidence is required metadata, not installed capability.
+
+2. `SimulationCompressorCurveInput.java`
+   Immutable record fields: String id, SimulationInputSourceVersion sourceVersion,
+   String fluidInputId, String fluidRevisionId, String headDefinitionReference,
+   String efficiencyDefinitionReference, String interpolationMethodReference,
+   BigDecimal referenceInletPressurePascalsAbsolute,
+   BigDecimal referenceInletTemperatureKelvin, List<SpeedLine> speedLines.
+   Require EQUIPMENT_PARAMETERS source kind, required normalized identities/definition/
+   interpolation references, strictly positive reference pressure/temperature and
+   nonempty defensive speedLines. A source evidence reference is already mandatory in
+   SimulationInputSourceVersion; a design/nameplate map is not assumed to be current.
+   Nested SpeedLine: BigDecimal rotationalSpeedRevolutionsPerMinute, List<Point> points.
+   Positive speed; nonempty immutable points with at least two points; reject duplicate
+   numerically equal speeds even with different BigDecimal scales. Input speed lines
+   must be strictly ascending; never silently sort supplied evidence.
+   Nested Point: BigDecimal massFlowKilogramsPerSecond, BigDecimal specificHeadJoulesPerKilogram,
+   BigDecimal efficiencyFraction. Require positive mass flow, nonnegative specific head,
+   efficiency >0 and <=1; per-line mass flows strictly ascending by numerical compareTo.
+   No monotonic-head assumption. Reference inlet/fluid/definition metadata prevents
+   unlabeled curve ordinates from masquerading as interchangeable head/efficiency types.
+   This stage stores declared data; it does not convert corrected/actual/standard flow,
+   compute head, select polytropic/isentropic models, interpolate/extrapolate, establish
+   surge/choke boundaries, or claim a speed/pressure/temperature applicability envelope.
+   Bounds, corrections and actual method compatibility remain numerical/capture gates.
+
+3. `SimulationEquipmentInput.java`
+   Immutable record fields: String id, String fromNodeId, String toNodeId,
+   Kind kind, CompressorConfiguration compressor, ValveConfiguration valve.
+   Nested enum Kind ONLY COMPRESSOR and VALVE. Require distinct nonblank normalized
+   endpoints and exactly the matching configuration, rejecting null/foreign configuration.
+   Nested CompressorConfiguration: String curveId, String curveRevisionId,
+   BigDecimal configuredSpeedRevolutionsPerMinute. Required curve identity/revision;
+   positive configured speed. This is a selected model configuration, not a measured
+   running-state claim or start/stop instruction. Off/bypass/transient behavior comes later.
+   Nested ValveConfiguration: String characteristicReference, String characteristicRevisionId,
+   String characteristicEvidenceReference, BigDecimal configuredOpeningFraction.
+   Required reference/revision/evidence, opening >=0 and <=1 (fully closed/open accepted).
+   Reference-only characteristic does not prove an executing valve law or imply an
+   invented Kv/Cv unit basis. Characteristic resolution, pressure-loss law, isolation
+   and bypass topology require later numerical/assembly design; no readiness method.
+   No actuator methods, commands, owner status translation or arbitrary operating limits.
+
+4. `SimulationEquipmentModelInput.java`
+   Immutable record fields: String id, SimulationInputSourceVersion sourceVersion,
+   List<SimulationEquipmentInput> equipment, List<SimulationCompressorCurveInput> compressorCurves.
+   Require EQUIPMENT_PARAMETERS source kind, nonblank identity, defensive required lists,
+   no null entries or duplicate normalized equipment/curve identities. Explicit empty
+   equipment and empty curves is a valid declared pipe-only model, never a default for
+   absent actual data. Reject nonempty curves when equipment is empty. Each compressor
+   configuration must resolve curveId and curveRevisionId to a contained curve's id and
+   sourceVersion.revisionId; distinct equipment may share one pinned curve. Do not require
+   all curves to be consumed, or silently replace a missing/revised curve. Retain nested
+   source validity/evidence; initial-state/capture coherence across model and curve sources
+   is checked later by B4/002D, not guessed without a manifest/state time.
+
+Create ONLY test file
+`src/test/java/dz/sh/hidra/modules/simulation/domain/model/SimulationFluidEquipmentInputTest.java`.
+Update ONLY the two execution memories. Total B2 implementation scope: seven tracked paths.
+All BigDecimal values required; no floating-point conversion, missing-to-zero fallback,
+Spring/JPA/foreign imports or utility package. Reuse InvalidSimulationValueException.
+Canonical Java headers preserve Author Abir MEDJERAB, CreatedOn 2025-06-26 and current
+UpdatedOn. Private helpers/nested records/enums stay within the four admitted records.
+No migration: payloads are neither persisted nor API-exposed. Do not modify B1/manifest,
+Topology/Custody/Telemetry/other owner production, APIs/OpenAPI/dictionary/schema,
+POM/dependencies/workflows, Kernel/Platform, architecture exports or existing tests.
+
+### Assembly and graph limits
+
+B2 is a bounded declared-data representation, not a complete gas solver contract.
+B4 must bind fluid id/revision and model/curve source versions to the selected manifest,
+validate actual node references, temporal coherence and supported method semantics.
+B1 validates a connected PIPE-ONLY graph: equipment-only joins, compressor/valve cuts,
+closed valves and bypasses cannot be represented as invented pipes or missing-value
+geometry. B4's later preflight must explicitly address any graph-schema extension and
+its exact-file authority before modifying B1. B2 does not require equipment endpoints
+already connected by an artificial pipe, and does not validate whole-network physics.
+Do not claim complete station/equipment/GZ2 modeling from B1+B2, or hide unrepresented
+connectivity/characteristic data behind a successful record constructor.
+
+### Required meaningful synthetic tests and checks
+
+Test complete single-component and multicomponent mixtures including differing decimal
+scales; no hardcoded GZ2 data. Reject missing identities/method/evidence/source/wrong
+source kinds, missing/empty/null/duplicate components, missing/nonpositive/out-of-range
+fractions and sums below/above one. Cover valid multi-speed/nonmonotonic-head maps,
+invalid reference pressure/temperature, missing definitions/interpolation, null/empty
+speed/point lists, insufficient points, duplicate/descending speeds or mass flows,
+missing/invalid ordinates/efficiency; preserve supplied values and order.
+Cover both equipment kinds, configuration exclusivity, normalized self-loops,
+missing/invalid speed/opening, opening 0/1 boundaries, explicit empty equipment model,
+duplicate/null identities, dangling and revision-mismatched curves and shared curves.
+Verify all nested defensive lists and source-list mutation resistance; constructing
+replacement fluid/equipment/curve revisions leaves prior source/physical values intact.
+Do not assert measured curve accuracy or solver readiness from synthetic success.
+
+For later B2 implementation run:
+`./mvnw -B -q -Dtest=SimulationFluidEquipmentInputTest,SimulationPhysicalNetworkInputTest,SimulationInputManifestTest,ArchitectureGuardrailTest test`
+then `./mvnw -B -q clean verify`, canonical docs/OpenAPI/P1 validators, whitespace,
+exact seven-file scope and preserved registry/version checks. If wrapper is not executable,
+use bash without permission changes. Report environment/dependency failures accurately.
+Publish with expected-parent lease, verify remote parent/tree/paths, observe both full
+production and Documentation CI on the exact implementation head and STOP. B3 requires
+its already registered documentation-only exact-file preflight; do not execute it early.
+
+This current preflight runs canonical docs/OpenAPI/P1 validation, maintained validator
+tests, whitespace, exact two-document scope and preserved phase/HMR/version checks.
+No Maven/runtime rerun required solely for this documentation change. B2 and parent
+B/002 remain PENDING; no B2 record or physics implementation created in this turn.
+Publish this preflight with expected-parent lease, verify parent/tree/two paths,
+observe Documentation CI startup and STOP for owner Next/Fail. Do not repeat this
+B2 preflight unless source evidence changes. P0/P1/P2 CLOSED, P2.5 OPEN, P3 DEFERRED,
+57 completed HMR implementations, 123 subjects, v0.6.0 and 0.7.0-SNAPSHOT preserved.
+
+
+Actual B2 preflight checks PASSED: all 37 maintained validator tests (10 docs,
+10 OpenAPI, 17 dictionary); canonical docs (95 documents, 5,063 relative links,
+24 modules, 13 P2 rows); offline OpenAPI (244 paths, 263 operations, 231 schemas);
+P1 closure evidence and whitespace. Exact two-document scope and preserved phase/
+HMR registries/version verified. B1 completion is supported by exact-head CI;
+B2 implementation, characteristic resolution and numerical/field qualification
+remain pending. Supporting preflight Documentation CI follows publication.

@@ -7,7 +7,7 @@
  *
  * @Name        : ForensicRemediationClosureTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-08
+ * @UpdatedOn   : 2026-10-09
  *
  * @Type        : Test
  * @Layer       : Architecture Test
@@ -68,6 +68,7 @@ class ForensicRemediationClosureTest {
             "dz.sh.hidra.modules.party.application.contract.planning",
             "dz.sh.hidra.modules.custody.application.contract.planning",
             "dz.sh.hidra.modules.telemetry.application.contract.monitoring",
+            "dz.sh.hidra.modules.telemetry.application.contract.simulation",
             "dz.sh.hidra.modules.telemetry.application.contract.planning",
             "dz.sh.hidra.modules.planning.application.contract.monitoring",
             "dz.sh.hidra.modules.topology.application.contract.assets",

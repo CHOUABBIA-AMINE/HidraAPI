@@ -8755,3 +8755,47 @@ Additional local checks PASSED: all 37 maintained validator tests; canonical doc
 263 operations, 231 schemas); P1 evidence; whitespace; exact ten-path envelope;
 canonical headers/import boundaries; sole deliberate export addition and historical
 registry/version retention. These do not substitute for pending implementation CI.
+
+
+## HPR-P25-002C1-R1 Failed CI Export Registry Repair — 2026-10-09
+
+Owner Fail selects only corrective repair of C1. Verified failed implementation parent
+28cd17ca96c7f9bbd195601f0cd24e718c8ce632, tree
+b67131e721c19cbab886c1d43b7c8e97191cbf04. Production #618/run 37978605641
+FAILED; Documentation #158/run 37978605640 PASSED. Job 113983101081 logs report
+1365 tests, one failure, zero errors/skips: ForensicRemediationClosureTest's
+crossModulePrivateImportsRemainClosed rejected the deliberate Telemetry evidence export.
+ArchitectureGuardrailTest's export was updated by C1, but its companion forensic
+source scanner registry was missed. This is an incomplete test registry alignment,
+not grounds to weaken private-module checks or change runtime evidence behavior.
+
+Corrective task HPR-P25-002C1-R1, exact message:
+`fix(architecture): align simulation telemetry forensic export`.
+Admit ONLY src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java plus these two
+execution memories: three tracked paths, no new file. Add ONLY the already-approved
+telemetry.application.contract.simulation prefix to EXPORTED_PACKAGES, retain every
+previous export and all scanners/assertions, and update canonical UpdatedOn date.
+This corrective envelope supplements the original ten-path implementation scope;
+no later C2/physical source/solver work or phase closure is selected.
+
+Validation commands: bash ./mvnw -B -q -Dtest=ForensicRemediationClosureTest,ArchitectureGuardrailTest,SimulationTrustedReadingQueryServiceTest,TelemetryTrustedReadingEvidenceQueryAdapterTest,SimulationTrustedReadingEvidencePortTest test
+and bash ./mvnw -B -q clean verify; maintained 37 validator tests, canonical docs,
+offline OpenAPI, P1 closure evidence, whitespace and exact three-path checks.
+If dependencies remain unavailable, report accurately and use an external temporary
+plain-assertion harness for the forensic scanner without claiming JUnit/full CI.
+Publish expected-parent lease, verify remote parent/tree/files, observe exact-head
+Production/Documentation CI startup and STOP. C1 remains IN PROGRESS pending successful
+repair CI; C2 preflight is next only after successful CI. Preserve all historical
+registries/phase/HMR/catalogue evidence and 0.7.0-SNAPSHOT.
+
+R1 validation result: both required Maven commands FAILED before compilation because
+Spring Boot parent 4.1.1 is uncached and repo.maven.apache.org DNS resolution failed;
+Java 17.0.20 available, not required Java 21, wrapper permissions unchanged. Temporary
+Java 17 source harness removed JUnit annotations/imports only and supplied custom
+assertions: original forensic source reproduced the exact rejected export; repaired
+source passed all five existing scenario bodies / eight assertions. This is not a
+JUnit/ArchUnit/full verification pass. All 37 validator tests, canonical docs (95
+documents/5063 links), offline OpenAPI (244 paths/263 operations/231 schemas), P1
+evidence, whitespace, exact three-path scope and version/historical registry checks
+PASSED. No runtime code or test rule/assertion changed. Repair implemented pending
+exact-head full CI; stop after CI startup.

@@ -591,7 +591,7 @@ Each stage retains its own commit and later evidence; no batch is selected.
 | Code | Status | Domain/Module | Type | Exact execution requirement | Exact commit message | Depends on |
 |---|---|---|---|---|---|---|
 | HPR-P25-002A | COMPLETED — implementation eef35dbd35d4558a4ceb57f87d8670fb97c933ea passed full Java 21 CI #612 and Documentation #146; three immutable contracts and 14 JUnit tests present; per-class report not independently retained at this baseline | Simulation / Input manifest | Code/Test | Implement immutable manifest, source-version identities/validity/origin and steady-state/transient metadata invariants under the exact six-file envelope below. | `feat(simulation): establish immutable input manifest contracts` | HPR-P25-002 preflight Documentation CI success |
-| HPR-P25-002B | PENDING — B1 CI-confirmed completed; B2 exact-file preflight delivered, implementation pending; B3..B4 remain PENDING | Simulation / Physical payloads | Code/Test | Define validated typed network/fluid/equipment/initial-state and transient timeline payloads with units, reference basis and missing-data semantics; register exact files and numeric design assumptions before mutation. | `feat(simulation): define versioned physical input payloads` | HPR-P25-002A; selected payload/physics preflight |
+| HPR-P25-002B | PENDING — B1 CI-confirmed completed; B2 implemented pending exact-head full CI; B3..B4 remain PENDING | Simulation / Physical payloads | Code/Test | Define validated typed network/fluid/equipment/initial-state and transient timeline payloads with units, reference basis and missing-data semantics; register exact files and numeric design assumptions before mutation. | `feat(simulation): define versioned physical input payloads` | HPR-P25-002A; selected payload/physics preflight |
 | HPR-P25-002C | PENDING | Owner modules / Simulation | Code/Test | Implement bounded owner-exported topology/product/measurement queries and Simulation adapters; preserve eligibility/trust/ownership and reject unavailable physical inputs. | `feat(simulation): resolve versioned owner input references` | HPR-P25-002B; exact owner-contract/export preflight |
 | HPR-P25-002D | PENDING | Simulation / Capture | Code/Test | Assemble coherent immutable payload/manifest captures, verify canonical hashes and evidence, persist reproducible revisions and reject incompatible/missing inputs; register forward migration only if source-backed design requires one. | `feat(simulation): capture reproducible network calculation inputs` | HPR-P25-002C; exact capture/schema preflight |
 
@@ -685,7 +685,7 @@ all required payload stages are complete; no stage is executed by this preflight
 | Code | Status | Domain/Module | Type | Exact execution requirement | Exact commit message | Depends on |
 |---|---|---|---|---|---|---|
 | HPR-P25-002B1 | COMPLETED — 803efff1326cc20bc54b4a22d6daa8608b5233dc passed Java 21 production CI #614 and Documentation #150; three immutable pipe-graph records and 13 synthetic JUnit tests present; individual report not independently inspected | Simulation / Physical network | Code/Test | Implement immutable typed nodes/pipe segments and connected network validation using the exact six-path envelope below. | `feat(simulation): define physical network input contracts` | HPR-P25-002A; successful B preflight documentation CI |
-| HPR-P25-002B2 | PENDING — exact-file fluid/equipment preflight delivered; no B2 production source implemented | Simulation / Fluid and equipment | Code/Test | Define versioned gas composition/property-method references and current equipment/curve/configuration payloads with explicit units/validity; no property calculation or universal product support is implied. | `feat(simulation): define fluid and equipment input contracts` | HPR-P25-002B1; exact B2 preflight |
+| HPR-P25-002B2 | IN PROGRESS — four immutable gas/equipment records and 19 synthetic JUnit tests implemented; Maven locally blocked by Central DNS/uncached Boot parent; exact-head full CI pending | Simulation / Fluid and equipment | Code/Test | Define versioned gas composition/property-method references and current equipment/curve/configuration payloads with explicit units/validity; no property calculation or universal product support is implied. | `feat(simulation): define fluid and equipment input contracts` | HPR-P25-002B1; exact B2 preflight |
 | HPR-P25-002B3 | PENDING | Simulation / State and boundaries | Code/Test | Define measured/estimated initial-state quantities and time-dependent boundary/action schedules with quantity basis, time ordering, interpolation declarations and missing-value semantics. | `feat(simulation): define state and boundary timeline inputs` | HPR-P25-002B2; exact B3 preflight |
 | HPR-P25-002B4 | PENDING | Simulation / Payload assembly | Code/Test | Bind typed payload/version identities to manifests, validate node/equipment references and steady/transient completeness, preserving synthetic/provenance distinctions; canonical hash verification remains capture scope. | `feat(simulation): assemble consistent physical input payloads` | HPR-P25-002B1..B3; exact B4 preflight |
 
@@ -9588,3 +9588,68 @@ P1 closure evidence and whitespace. Exact two-document scope and preserved phase
 HMR registries/version verified. B1 completion is supported by exact-head CI;
 B2 implementation, characteristic resolution and numerical/field qualification
 remain pending. Supporting preflight Documentation CI follows publication.
+
+
+## HPR-P25-002B2 Fluid and Equipment Input Implementation — 2026-10-09
+
+Owner Next selects ONLY B2 after GitHub-confirmed Documentation #151/run 37966757118
+completed SUCCESS on exact parent de3849c1438c008e2500eb44f18e902849b6985f,
+tree cb0775d44d6a56f1568cde5a176d951c37f4b787. Mandatory AGENTS/roadmap/
+reconciliation and registered B2 envelope read; local source tree matches.
+Exact message: `feat(simulation): define fluid and equipment input contracts`.
+
+Created ONLY SimulationGasFluidInput.java, SimulationCompressorCurveInput.java,
+SimulationEquipmentInput.java and SimulationEquipmentModelInput.java in
+src/main/java/dz/sh/hidra/modules/simulation/domain/model, plus
+src/test/java/dz/sh/hidra/modules/simulation/domain/model/SimulationFluidEquipmentInputTest.java.
+Updated ONLY Ultimate Roadmap and reconciliation: seven tracked paths total.
+Canonical headers retained; local InvalidSimulationValueException reused;
+production imports only Java/local Simulation. No migration because records are
+neither persisted nor exposed. No existing source/test/owner/API/OpenAPI/dictionary/
+schema/POM/dependency/workflow/Kernel/Platform/architecture-export change.
+
+Fluid contract enforces complete exact mole-fraction sums with numeric BigDecimal
+comparison, positive component fractions, explicit product/method/revision/evidence,
+correct source kind and unique normalized component references. Curve contract retains
+explicit fluid/revision/head/efficiency/interpolation references and positive reference
+absolute pressure/temperature; immutable speed lines/points require strictly ascending
+numeric speeds/flows, nonnegative head and efficiency >0 and <=1. No automatic sorting,
+normalization, property calculation, interpolation/extrapolation or method selection.
+Equipment has distinct endpoints and exactly matching compressor/valve configuration;
+positive configured compressor speed and valve opening 0..1 are explicit selected
+model data, not measured running state or actuation instructions. Equipment model
+resolves exact contained curve revisions, rejects duplicate/null identities and
+preserves intentionally empty pipe-only models, shared curves and unused declared curves.
+All nested lists are defensive/unmodifiable; replacements retain earlier records.
+
+Nineteen synthetic JUnit tests prepared for complete single/multiple mixtures with
+scale-independent sums; missing/wrong source kinds and all identity/method/evidence
+positions; invalid/missing/duplicate/incomplete composition; multi-speed/nonmonotonic
+head maps; invalid/missing curve references/quantities/lists and speed/flow order;
+configuration exclusivity/self-loops/identity/value boundaries; explicit empty models,
+shared/unused curves, duplicate/null/dangling/revised references; every defensive nested
+list and replacement composition/curve/equipment revisions. No actual GZ2 data used.
+
+Actual validation:
+- Non-executable wrapper invoked with bash; tracked permissions unchanged.
+- bash ./mvnw -B -q -Dtest=SimulationFluidEquipmentInputTest,SimulationPhysicalNetworkInputTest,SimulationInputManifestTest,ArchitectureGuardrailTest test
+  and bash ./mvnw -B -q clean verify BLOCKED before compilation: uncached Spring Boot
+  parent 4.1.1, repo.maven.apache.org temporary DNS failure. Local runtime is Java
+  17.0.20, not required Java 21. No Maven/JUnit/ArchUnit pass claimed locally.
+- Four new records plus existing source-version/exceptions compiled through Java 17
+  jdk.compiler/com.sun.tools.javac.Main. Temporary external smoke harness PASSED 81
+  value/graph-reference/configuration/immutability checks. Not JUnit/full verification.
+- All 37 maintained validator tests PASSED; canonical docs, offline OpenAPI, P1 closure
+  evidence, whitespace, exact seven-path and retained registry/version checks PASSED.
+
+B2 remains IN PROGRESS pending applicable exact-head CI; B/002 remain PENDING.
+No solver, station connectivity, valve law, surge/choke/operating envelope or GZ2
+qualification claimed. Graph-schema extension and fluid/source/time binding remain
+B4 preflight/assembly work; property/characteristic compatibility and numerical
+qualification remain engine/capture gates. B3/B4 and later engine stages not executed.
+Next registered selection after successful B2 CI is documentation-only B3 exact-file
+preflight: `docs(twin): register HPR-P25-002B3 execution preflight`.
+Publish with expected-parent lease, verify remote parent/tree/seven files, observe both
+production/Documentation startup on the exact head and STOP for owner Next/Fail.
+P0/P1/P2 CLOSED, P2.5 OPEN, P3 DEFERRED, 57 completed HMR implementations,
+123 semantic subjects, v0.6.0 and 0.7.0-SNAPSHOT preserved.

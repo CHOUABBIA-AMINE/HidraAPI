@@ -7933,3 +7933,68 @@ P1 closure evidence and whitespace. Exact two-document scope and preserved phase
 HMR registries/version verified. B1 completion is supported by exact-head CI;
 B2 implementation, characteristic resolution and numerical/field qualification
 remain pending. Supporting preflight Documentation CI follows publication.
+
+
+## HPR-P25-002B2 Fluid and Equipment Input Implementation — 2026-10-09
+
+Owner Next selects ONLY B2 after GitHub-confirmed Documentation #151/run 37966757118
+completed SUCCESS on exact parent de3849c1438c008e2500eb44f18e902849b6985f,
+tree cb0775d44d6a56f1568cde5a176d951c37f4b787. Mandatory AGENTS/roadmap/
+reconciliation and registered B2 envelope read; local source tree matches.
+Exact message: `feat(simulation): define fluid and equipment input contracts`.
+
+Created ONLY SimulationGasFluidInput.java, SimulationCompressorCurveInput.java,
+SimulationEquipmentInput.java and SimulationEquipmentModelInput.java in
+src/main/java/dz/sh/hidra/modules/simulation/domain/model, plus
+src/test/java/dz/sh/hidra/modules/simulation/domain/model/SimulationFluidEquipmentInputTest.java.
+Updated ONLY Ultimate Roadmap and reconciliation: seven tracked paths total.
+Canonical headers retained; local InvalidSimulationValueException reused;
+production imports only Java/local Simulation. No migration because records are
+neither persisted nor exposed. No existing source/test/owner/API/OpenAPI/dictionary/
+schema/POM/dependency/workflow/Kernel/Platform/architecture-export change.
+
+Fluid contract enforces complete exact mole-fraction sums with numeric BigDecimal
+comparison, positive component fractions, explicit product/method/revision/evidence,
+correct source kind and unique normalized component references. Curve contract retains
+explicit fluid/revision/head/efficiency/interpolation references and positive reference
+absolute pressure/temperature; immutable speed lines/points require strictly ascending
+numeric speeds/flows, nonnegative head and efficiency >0 and <=1. No automatic sorting,
+normalization, property calculation, interpolation/extrapolation or method selection.
+Equipment has distinct endpoints and exactly matching compressor/valve configuration;
+positive configured compressor speed and valve opening 0..1 are explicit selected
+model data, not measured running state or actuation instructions. Equipment model
+resolves exact contained curve revisions, rejects duplicate/null identities and
+preserves intentionally empty pipe-only models, shared curves and unused declared curves.
+All nested lists are defensive/unmodifiable; replacements retain earlier records.
+
+Nineteen synthetic JUnit tests prepared for complete single/multiple mixtures with
+scale-independent sums; missing/wrong source kinds and all identity/method/evidence
+positions; invalid/missing/duplicate/incomplete composition; multi-speed/nonmonotonic
+head maps; invalid/missing curve references/quantities/lists and speed/flow order;
+configuration exclusivity/self-loops/identity/value boundaries; explicit empty models,
+shared/unused curves, duplicate/null/dangling/revised references; every defensive nested
+list and replacement composition/curve/equipment revisions. No actual GZ2 data used.
+
+Actual validation:
+- Non-executable wrapper invoked with bash; tracked permissions unchanged.
+- bash ./mvnw -B -q -Dtest=SimulationFluidEquipmentInputTest,SimulationPhysicalNetworkInputTest,SimulationInputManifestTest,ArchitectureGuardrailTest test
+  and bash ./mvnw -B -q clean verify BLOCKED before compilation: uncached Spring Boot
+  parent 4.1.1, repo.maven.apache.org temporary DNS failure. Local runtime is Java
+  17.0.20, not required Java 21. No Maven/JUnit/ArchUnit pass claimed locally.
+- Four new records plus existing source-version/exceptions compiled through Java 17
+  jdk.compiler/com.sun.tools.javac.Main. Temporary external smoke harness PASSED 81
+  value/graph-reference/configuration/immutability checks. Not JUnit/full verification.
+- All 37 maintained validator tests PASSED; canonical docs, offline OpenAPI, P1 closure
+  evidence, whitespace, exact seven-path and retained registry/version checks PASSED.
+
+B2 remains IN PROGRESS pending applicable exact-head CI; B/002 remain PENDING.
+No solver, station connectivity, valve law, surge/choke/operating envelope or GZ2
+qualification claimed. Graph-schema extension and fluid/source/time binding remain
+B4 preflight/assembly work; property/characteristic compatibility and numerical
+qualification remain engine/capture gates. B3/B4 and later engine stages not executed.
+Next registered selection after successful B2 CI is documentation-only B3 exact-file
+preflight: `docs(twin): register HPR-P25-002B3 execution preflight`.
+Publish with expected-parent lease, verify remote parent/tree/seven files, observe both
+production/Documentation startup on the exact head and STOP for owner Next/Fail.
+P0/P1/P2 CLOSED, P2.5 OPEN, P3 DEFERRED, 57 completed HMR implementations,
+123 semantic subjects, v0.6.0 and 0.7.0-SNAPSHOT preserved.

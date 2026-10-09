@@ -248,7 +248,7 @@ P1 is **CLOSED** only when this closure SHA passes the repository's full exact-h
 | HPR-P2-003 | COMPLETED — canonical ubiquitous language, domain ownership and focused topology/telemetry, alarm-incident-leak, assets-integrity, and simulation-analytics-AI semantic baselines established from exact current source; AI/autonomous inference remains explicitly NOT ESTABLISHED | Domain | Doc | Create `UBIQUITOUS_LANGUAGE.md`, domain ownership and focused topology/telemetry/alarm-incident-leak/assets-integrity/simulation-analytics-AI semantic documents. | `docs(domain): establish ubiquitous language baseline` | HPR-P2-001 |
 | HPR-P2-004 | COMPLETED — canonical current-state documents created for all 24 implemented module roots from live domain/API/application/persistence/contract inventories; no current-state docs created for agents/environment/otsecurity | Modules | Doc | Create one current-state `doc/modules/<module>.md` for each of the 24 implemented modules; do not create current-state module docs for agents/environment/otsecurity. | `docs(modules): add canonical module documentation` | HPR-P2-002..003 |
 | HPR-P2-005 | COMPLETED — audit Check 9 documentation correction at 4d41f265374156846a86d31f3d30e2b0fe00dd91; exact-head Documentation Validation #131 PASSED; runtime/OpenAPI unchanged | API | Code/Doc | Complete source-backed API conventions and runtime error documentation under the bounded audit amendment below; preserve the generated-envelope limitation and committed contract. | `docs(api): establish versioned api contract` | HPR-P1-008 |
-| HPR-P2-006 | PENDING — reopened for audit Checks 10 and 11; 139-migration/470-entity inventory is current but lacks physical dictionary entries and complete schema/migration rules | Database | Doc | Complete the current physical table/column dictionary and explicit ownership/FK/migration governance under the bounded audit amendment below; preserve applied SQL and historical evidence. | `docs(database): establish canonical database documentation` | HPR-P2-001 |
+| HPR-P2-006 | IN PROGRESS — Stage A catalog tooling/CI implemented; 17 generator fixtures and 20 existing validator tests passed locally; full exact-head CI and schema artifact review PENDING; Stage B dictionary/policy not implemented | Database | Doc | Complete the current physical table/column dictionary and explicit ownership/FK/migration governance under the bounded audit amendment below; preserve applied SQL and historical evidence. | `docs(database): establish canonical database documentation` | HPR-P2-001 |
 | HPR-P2-007 | COMPLETED — exact-source reconciliation established: HMR-005 corrected to completed, HMR-009 confirmed completed/stale carry-over removed, HMR-054 historical blocker resolved by current Party→Topology contract, HMR-050..106 reconciled to 56 still-required + 1 blocked (HMR-080), 0 superseded; legacy roadmap preserved as history | Semantic Remediation | Code/Doc | Inventory unresolved HMR/HMSR obligations against exact current source; mark each as completed, still required, blocked, or superseded with evidence. | `docs(model-remediation): reconcile remaining semantic obligations` | HPR-P2-003 |
 | HPR-P2-008 | COMPLETED — owner-authorized closure after final reconciliation preflight; all 57 HMR implementations confirmed by CI #604, zero pending, STILL REQUIRED or BLOCKED; documentation preflight CI #115 passed. P2 phase remains open. | Semantic Remediation | Code | Execute still-required semantic remediation in dependency order using revalidated HMSR obligations; do not restart completed HMRs without regression evidence. | `fix(model): continue reconciled semantic remediation` | HPR-P2-007 |
 | HPR-P2-009 | COMPLETED — 123 permanent subject decisions transferred with current source/test/migration evidence; all 24 module inventories and domain/index metadata refreshed; 37-path scope and 83-file Markdown/link checks passed; exact-head documentation CI follows publication | Semantic Remediation | Doc | Transfer permanent semantic decisions from legacy review/roadmaps into `doc/domain/` and `doc/modules/`, then preserve legacy files as execution history. | `docs(model-remediation): canonicalize semantic decisions` | HPR-P2-008 |
@@ -272,20 +272,18 @@ P1 is **CLOSED** only when this closure SHA passes the repository's full exact-h
 
 ## 6. Immediate Next Execution
 
-The owner's Next verified HPR-P2-005 correction Documentation Validation #131
-SUCCESS on `4d41f265374156846a86d31f3d30e2b0fe00dd91`, and selects HPR-P2-006
-preflight only. HPR-P2-005 is COMPLETED. This planning publication changes only
-this roadmap and RECONCILIATION.md; no dictionary generator, database, policy,
-workflow or dictionary content is implemented here.
-Exact preflight message: `docs(roadmap): record P2 database remediation preflight`.
+The owner's Next selected HPR-P2-006 Stage A after preflight Documentation Validation
+#132 PASSED on `04e1cee9b584c0d834cb885faea3fd0046d0ea5f`. Stage A tooling and CI
+integration are implemented within the six admitted paths. Exact supporting message:
+`ci(database): capture canonical schema evidence`. HPR-P2-006 is IN PROGRESS.
 
-Next selection: `HPR-P2-006 — Stage A disposable-CI schema evidence preparation`,
-after successful documentation CI on this preflight and the owner's next selection.
-Use the explicit two-stage envelope below: Stage A captures reviewed schema evidence;
-Stage B completes the physical dictionary and governance against that evidence.
-HPR-P2-006 remains PENDING until implementation starts and cannot close on a source
-inventory, an unverified parser, artifact presence or Stage A alone. HPR-P2-013
-remains PENDING renewed twelve-check and exact-head closure. P3 is DEFERRED.
+Next selection: `HPR-P2-006 — verify Stage A CI and retained schema evidence`.
+Require successful documentation and full production CI on the Stage A commit,
+then inspect its exact-source artifact, history/source digests, relation/mapping
+coverage and representative tables before separately selecting Stage B. Stop after
+startup observation for the owner's Next/failure notification. A failed run requires
+responsible-scope repair; absent artifacts or unresolved extraction cannot become
+CURRENT dictionary evidence. Stage B and HPR-P2-013 remain unexecuted/PENDING.
 
 P2 is OPEN. All P3 codes remain DEFERRED. The dated closure at
 `22a9b34225242c52fd502e421570af8b46879e4e` and CI #127/#606 remain retained
@@ -294,6 +292,74 @@ This current disposition supersedes older P2 CLOSED/no-next-task statements and
 historical pending/closed assertions in indexes or execution records. P0/P1 are
 unchanged absent regression evidence. All 57 HMR implementations (including HMR-080),
 123 semantic subjects and version `0.6.0-SNAPSHOT` remain unchanged.
+
+### HPR-P2-006 Stage A implementation — 2026-10-09
+
+Verified main parent: `04e1cee9b584c0d834cb885faea3fd0046d0ea5f`, tree
+`93c7f126fec15904d7e4df87610e9762b6796dde`. Documentation Validation #132,
+[run 37922894396](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/37922894396),
+completed SUCCESS. AGENTS.md, this roadmap and RECONCILIATION.md were re-read.
+
+Exactly six admitted paths: new `.github/scripts/generate_data_dictionary.py` and
+`test_generate_data_dictionary.py`, existing `.github/workflows/ci.yml` and `docs.yml`,
+this roadmap and RECONCILIATION.md. No dictionary/policy/ownership metadata, application,
+configuration, migration, POM, ops, legacy, OpenAPI or release/version file changes.
+
+The collector requires the designated local disposable Actions database and matching
+checkout/source SHA; uses psql ON_ERROR_STOP plus a read-only repeatable-read snapshot;
+and captures metadata only. PostgreSQL catalogs supply physical types/nullability,
+keys/FKs/actions/validation/indexes/triggers/functions/views/sequence facts. Flyway
+history identities/success/checksums are retained after the existing successful full
+Flyway/JPA startup, with migration/JPA source hashes. No SQL regex replay or schema
+reset is performed. JPA discovery is mapping evidence, not physical schema authority.
+Unsupported persistent forms fail; existing read-only association aliases are retained.
+
+Actual local mapping discovery: 139 migrations, 470 distinct JPA table mappings,
+5,781 field/column mappings including read-only aliases; source bundle SHA-256
+`86f6ba5923e63c0cd601f7722ca0282e486d59fc92bb120616710fb3cd1799d4`.
+These are source counts, not predicted catalog relation/physical column totals.
+Unknown non-JPA owners remain UNRESOLVED; Stage A renders DRAFT, never CURRENT.
+
+Actual CLI in production CI, after current runtime/OpenAPI equality and before
+base-revision startup:
+
+```bash
+python3 .github/scripts/generate_data_dictionary.py \
+  --collect target/database/schema.json --source-sha "${{ github.sha }}" \
+  --render target/database/DATA_DICTIONARY.md
+```
+
+When `.github/database-dictionary-ownership.json` exists, the same step adds
+`--ownership .github/database-dictionary-ownership.json --check doc/database/DATA_DICTIONARY.md`.
+Comparison fails on generated content drift and ignores only the validated capture
+source SHA line; it never edits Git. Stage B has not provided that metadata yet.
+Offline review uses `--input <captured-schema.json> --source-sha <exact-capture-sha>`
+with --render and, for final comparison, --ownership/--check. Source digest drift fails.
+
+CI explicitly supplies PostgreSQL client availability and reports psql version.
+The service remains postgres:16. Retained artifact name:
+`hidra-database-schema-${{ github.sha }}`; members are schema.json, DATA_DICTIONARY.md
+and verification.json under target/database. Artifact identity/digest and actual
+engine/source/coverage must be reviewed after successful full CI; none is claimed now.
+Both workflows run generator fixtures; Markdown-only validation stays database-free.
+
+Actual local checks: 17 generator tests PASSED; existing documentation-validator
+and OpenAPI-validator suites PASSED (10 tests each). Workflow YAML and capture-before-
+base ordering checks PASSED. Source mapping discovery PASSED. Canonical validation
+PASSED (95 documents, 3,332 relative links, 24 modules, 13 primary P2 rows); offline
+OpenAPI validation PASSED (244 paths, 263 operations, 231 schemas). Exact six-path
+scope and git diff --check PASSED; excluded tracked blobs remain unchanged.
+No PostgreSQL/Docker tools
+exist locally, so no real catalog query was exercised. Actual
+`bash ./mvnw -B -q clean verify` FAILED before compilation resolving uncached Spring
+Boot parent 4.1.1 because repo.maven.apache.org DNS failed; no Java/runtime success
+is claimed. These limits do not waive successful full exact-head production CI.
+
+HPR-P2-006 stays IN PROGRESS pending Stage A CI/artifact review and Stage B correction.
+HPR-P2-013 stays PENDING; P2 OPEN/P3 DEFERRED. Preserve all 57 HMR completions, all
+123 semantic subjects, prior physical/CI provenance and version 0.6.0-SNAPSHOT.
+Publish with expected-head lease, verify immutable parent/tree/files and observe both
+CI workflows start, then STOP for notification; do not manufacture catalog output.
 
 ### HPR-P2-006 concrete database correction preflight — 2026-10-09
 

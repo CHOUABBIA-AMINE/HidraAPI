@@ -2,7 +2,7 @@
 
 ## Status
 
-CURRENT — all 57 reconciled HMR implementations COMPLETED; permanent 123-subject semantic transfer complete. P2 is OPEN after the independent audit at c7d580cc7988f069bb939eb682664200e043c9bf failed Checks 9–11; HPR-P2-005 API documentation correction is COMPLETED after exact-head Documentation Validation #131 passed; HPR-P2-006 correction and HPR-P2-013 re-verification remain pending. Prior #127/#606 success remains historical verified evidence. P3 remains DEFERRED.
+CURRENT — all 57 reconciled HMR implementations COMPLETED; permanent 123-subject semantic transfer complete. P2 is OPEN after the independent audit at c7d580cc7988f069bb939eb682664200e043c9bf failed Checks 9–11; HPR-P2-005 API documentation correction is COMPLETED after exact-head Documentation Validation #131 passed; HPR-P2-006 Stage A tooling/CI is implemented and IN PROGRESS pending exact-head CI/schema evidence review and Stage B correction; HPR-P2-013 re-verification remains pending. Prior #127/#606 success remains historical verified evidence. P3 remains DEFERRED.
 
 ## Historical HPR-P2-007 Verification Baseline
 
@@ -6887,3 +6887,23 @@ PENDING; P2 OPEN/P3 DEFERRED. All 57 HMR and historical table rows, 123 semantic
 subjects, prior physical/CI provenance and version 0.6.0-SNAPSHOT are preserved.
 No tool/workflow/dictionary implementation, runtime/database change, deployment,
 import, release or P3 task executes through this planning publication.
+
+## HPR-P2-006 Stage A schema evidence tooling — 2026-10-09
+
+The owner selected Stage A after preflight Documentation Validation #132 PASSED on
+`04e1cee9b584c0d834cb885faea3fd0046d0ea5f`. Only the six admitted tooling/workflow/
+control paths change. Read-only catalog collection follows successful current
+Flyway/JPA startup in disposable CI and precedes base-revision startup; captured
+schema/history/mapping evidence and a DRAFT dictionary are retained as an artifact.
+No artifact, full CI success or CURRENT physical dictionary is claimed at publication.
+
+Local generator fixtures (17) and existing validator tests (20) passed. Mapping
+inventory found 139 migrations, 470 JPA tables and 5,781 mappings including aliases.
+No local PostgreSQL/Docker extraction was available. Maven clean verify failed before
+compilation on Maven Central DNS/uncached Boot parent 4.1.1; this is not runtime proof.
+Current [Stage A record](../roadmap/ULTIMATE_ROADMAP.md#hpr-p2-006-stage-a-implementation--2026-10-09)
+controls over older pending/preflight notes. HPR-P2-006 is IN PROGRESS; Next verifies
+both exact-head CI runs and schema artifact before separately selecting Stage B.
+HPR-P2-005 remains COMPLETED, HPR-P2-013 PENDING; P2 OPEN/P3 DEFERRED. All HMR rows,
+57 completions, 123 subjects, version 0.6.0-SNAPSHOT and historical evidence remain.
+No application/migration/schema/policy/owner-value, deployment, import or release change.

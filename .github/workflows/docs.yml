@@ -11,6 +11,9 @@ on:
       - ".github/scripts/test_validate_docs.py"
       - ".github/scripts/validate_openapi_snapshot.py"
       - ".github/scripts/test_validate_openapi_snapshot.py"
+      - ".github/scripts/generate_data_dictionary.py"
+      - ".github/scripts/test_generate_data_dictionary.py"
+      - ".github/database-dictionary-ownership.json"
       - ".github/documentation-validation.json"
       - ".github/workflows/docs.yml"
       - ".github/workflows/ci.yml"
@@ -24,6 +27,9 @@ on:
       - ".github/scripts/test_validate_docs.py"
       - ".github/scripts/validate_openapi_snapshot.py"
       - ".github/scripts/test_validate_openapi_snapshot.py"
+      - ".github/scripts/generate_data_dictionary.py"
+      - ".github/scripts/test_generate_data_dictionary.py"
+      - ".github/database-dictionary-ownership.json"
       - ".github/documentation-validation.json"
       - ".github/workflows/docs.yml"
       - ".github/workflows/ci.yml"
@@ -50,6 +56,7 @@ jobs:
         run: |
           python3 .github/scripts/test_validate_docs.py
           python3 .github/scripts/test_validate_openapi_snapshot.py
+          python3 .github/scripts/test_generate_data_dictionary.py
 
       - name: Validate canonical documentation and OpenAPI snapshot
         run: |

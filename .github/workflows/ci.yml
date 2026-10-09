@@ -56,6 +56,7 @@ jobs:
         run: |
           python3 .github/scripts/test_validate_docs.py
           python3 .github/scripts/test_validate_openapi_snapshot.py
+          python3 .github/scripts/test_generate_data_dictionary.py
 
       - name: Validate canonical documentation and OpenAPI snapshot
         run: |
@@ -177,6 +178,43 @@ jobs:
           python3 .github/scripts/validate_openapi_snapshot.py
           --generated target/openapi/hidra-api.json
           --generated-source-sha "${{ github.sha }}"
+
+      - name: Capture current migrated database dictionary evidence
+        shell: bash
+        env:
+          PGHOST: 127.0.0.1
+          PGPORT: "5432"
+          PGDATABASE: hidra_test
+          PGUSER: hidra
+          PGPASSWORD: hidra
+        run: |
+          set -euo pipefail
+          if ! command -v psql >/dev/null; then
+            sudo apt-get update
+            sudo apt-get install --yes --no-install-recommends postgresql-client
+          fi
+          psql --version
+          mkdir -p target/database
+          DICTIONARY_ARGS=()
+          if [ -f .github/database-dictionary-ownership.json ]; then
+            DICTIONARY_ARGS+=(--ownership .github/database-dictionary-ownership.json --check doc/database/DATA_DICTIONARY.md)
+          fi
+          python3 .github/scripts/generate_data_dictionary.py \
+            --collect target/database/schema.json \
+            --source-sha "${{ github.sha }}" \
+            --render target/database/DATA_DICTIONARY.md \
+            "${DICTIONARY_ARGS[@]}" > target/database/verification.json
+          cat target/database/verification.json
+
+      - name: Retain current database dictionary evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: hidra-database-schema-${{ github.sha }}
+          path: |
+            target/database/schema.json
+            target/database/DATA_DICTIONARY.md
+            target/database/verification.json
+          if-no-files-found: error
 
       - name: Resolve OpenAPI compatibility base
         id: openapi-base

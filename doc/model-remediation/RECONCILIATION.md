@@ -11564,3 +11564,12 @@ scope checked against fff0b69. All executable/test source, both architecture exp
 POM/version, permanent dictionary, source contracts and workflows are unchanged. No new
 Maven/runtime/PostgreSQL/equipment numerical or deployment acceptance is claimed. The
 70-digit decimal work above is independent reference derivation, not an equipment solver pass.
+
+
+## HPR-P25-008C — Synthetic Compressor/Valve Code Candidate (2026-10-10)
+
+Owner Next implements ONLY the ten-path compressor/valve synthetic candidate previously authorized at `fe7be4bfd016568ed1a958b4eea5ce7d948d21ad` and validated by Documentation #187, with exact execution message `feat(simulation): model gas network equipment behavior`. Five new Java/test classes and updates to the original `SteadyStateGasSolver` and `SteadyStateGasSolverTest`, plus this roadmap, Reconciliation and `doc/modules/simulation.md` make up the exact authorized 10 paths. No migration, POM, API, architecture export, production EOS, field data, regulator, transient model or external library is selected.
+
+The bounded synthetic methods use explicit `SYNTHETIC_..._V1` names, complete rectangular interpolation with analytic derivatives, reversible isothermal compressor head, direct pressure-difference valve table, and a separate full pipe/equipment union solver. The physical pipe formulation and legacy solver signatures are preserved; results keep pipe and equipment identities separate. Twelve added deterministic tests target independent synthetic map, whole-network and refusal cases. They are proposed tests, not certified evidence before running. The 960 GZ4 fixture rows are not numerical oracles. No real GZ4 field trust, qualification or regulator law is implied.
+
+**Implementation candidate awaiting exact-head CI and independent numerical acceptance:** HPR-P25-008C remains PENDING. Even successful Java CI cannot close its regulator obligation; follow-up owner Next must separately inspect full 008C numeric reference matrix and remaining gap, never auto-execute 008D or field calibration. Exact-file/source scope and canonical Java headers must be verified on commit. Missing local project checkout prevents claiming local Maven success; GitHub full Java CI and Documentation CI are mandatory and must be reported separately.

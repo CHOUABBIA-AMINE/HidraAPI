@@ -22,6 +22,12 @@ package dz.sh.hidra.modules.simulation.domain.service;
 import dz.sh.hidra.modules.simulation.domain.model.SimulationPhysicalNetworkInput;
 import dz.sh.hidra.modules.simulation.domain.model.SimulationPipeSegmentInput;
 import dz.sh.hidra.modules.simulation.domain.model.SteadyStateGasSolution;
+import dz.sh.hidra.modules.simulation.domain.model.SimulationSyntheticEquipmentNetworkInput;
+import dz.sh.hidra.modules.simulation.domain.model.SimulationEquipmentGasSolution;
+import dz.sh.hidra.modules.simulation.domain.model.SimulationEquipmentParameterRevision;
+import dz.sh.hidra.modules.simulation.domain.model.SimulationEquipmentParameterRevision.*;
+import java.util.Set;
+import java.util.EnumMap;
 import java.util.ArrayDeque;
 import java.util.Comparator;
 import java.util.Arrays;
@@ -439,4 +445,307 @@ public final class SteadyStateGasSolver {
         // Pressure boundaries have computed exchanges, not independent zero-injection constraints.
         return new SteadyStateGasSolution(converged, status, pressures, flows, mass, momentum, iterations, exchanges);
     }
+
+    private record SyntheticEquipmentEdge(String id, int from, int to, Equipment equipment,
+            CompressorCurve compressor, ValveCharacteristic valve, String method, boolean closed,
+            Map<Quantity,GovernedLimit> limits) { }
+    private record SyntheticEquipmentContext(List<String> ids, List<Edge> pipes, List<SyntheticEquipmentEdge> equipment,
+            int[] columns, double[] fixed, double[] injections, int unknownCount,
+            SyntheticGasProperties gas, NumericalControls controls) { }
+
+    /** Independent union mode: synthetic map-only equipment, no operational source promotion. */
+    public SimulationEquipmentGasSolution solveSyntheticIdealGasEquipmentNetwork(
+            SimulationSyntheticEquipmentNetworkInput input, Map<String, Boundary> nodeBoundaries,
+            SyntheticGasProperties gas, NumericalControls controls,
+            Map<String, Double> unknownPressureGuesses,
+            Map<String, Double> realPipeFlowGuesses, Map<String, Double> equipmentFlowGuesses) {
+        if (input == null || nodeBoundaries == null || gas == null || controls == null
+                || unknownPressureGuesses == null || realPipeFlowGuesses == null || equipmentFlowGuesses == null)
+            throw new IllegalArgumentException("All synthetic union inputs, controls and guesses required.");
+        var nodes=input.nodes().stream().sorted(Comparator.comparing(n->n.id())).toList();
+        var pipes=input.pipes().stream().sorted(Comparator.comparing(p->p.id())).toList();
+        var devices=input.equipmentRevision().equipment().stream().sorted(Comparator.comparing(e->e.id())).toList();
+        var index=new HashMap<String,Integer>();
+        for(int i=0;i<nodes.size();i++)index.put(nodes.get(i).id(),i);
+        if(!nodeBoundaries.keySet().equals(index.keySet()))throw new IllegalArgumentException("Exact union node boundaries required.");
+        double scale=controls.pressureScalePascals(), qscale=controls.flowScaleKilogramsPerSecond();
+        double s2=scale*scale;
+        int[] columns=new int[nodes.size()];
+        Arrays.fill(columns,-1);
+        var fixed=new double[nodes.size()];
+        var injections=new double[nodes.size()];
+        var unknowns=new HashSet<String>();
+        int nunknown=0;
+        for(int i=0;i<nodes.size();i++){
+            var id=nodes.get(i).id();var b=nodeBoundaries.get(id);
+            if(b==null)throw new IllegalArgumentException("Null boundary.");
+            if(b.pressurePascalsAbsolute()!=null){
+                fixed[i]=positive(b.pressurePascalsAbsolute()*b.pressurePascalsAbsolute()/s2,"pressure boundary");
+            }else{
+                columns[i]=nunknown++;unknowns.add(id);injections[i]=b.injectionKilogramsPerSecond();
+            }
+        }
+        if(nunknown==nodes.size()||!unknownPressureGuesses.keySet().equals(unknowns))
+            throw new IllegalArgumentException("Exact unknown pressures and at least one datum required.");
+        var pid=new HashSet<String>();pipes.forEach(p->pid.add(p.id()));
+        var eid=new HashSet<String>();devices.forEach(e->eid.add(e.id()));
+        if(!realPipeFlowGuesses.keySet().equals(pid)||!equipmentFlowGuesses.keySet().equals(eid))
+            throw new IllegalArgumentException("Exact real pipe/equipment flow guesses required.");
+        double c=gas.molarMassKilogramsPerMole()/(GAS_CONSTANT*gas.temperatureKelvin());
+        var pipeEdges=new ArrayList<Edge>();
+        for(var pipe:pipes){
+            double d=positive(pipe.internalDiameterMeters().doubleValue(),"diameter");
+            double length=positive(pipe.lengthMeters().doubleValue(),"length");
+            double roughness=finite(pipe.absoluteRoughnessMeters().doubleValue(),"roughness");
+            if(roughness<0)throw new IllegalArgumentException("Negative roughness.");
+            int f=index.get(pipe.fromNodeId()),t=index.get(pipe.toNodeId());
+            double dz=nodes.get(t).elevationMeters().doubleValue()-nodes.get(f).elevationMeters().doubleValue();
+            double h=finite(-2*c*GRAVITY*dz,"elevation exponent");
+            double phi=Math.abs(h)<1e-7?1+h/2+h*h/6:Math.expm1(h)/h;
+            double area=PI*d*d/4;
+            pipeEdges.add(new Edge(pipe.id(),f,t,d,roughness,positive(Math.exp(h),"hydrostatic factor"),
+                    positive(length*phi/(c*d*area*area),"friction factor"),gas.viscosityPascalSeconds()));
+        }
+        var curves=new HashMap<String,CompressorCurve>();
+        for(var e:input.equipmentRevision().compressorCurves())curves.put(e.id()+"@"+e.revisionId(),e);
+        var valves=new HashMap<String,ValveCharacteristic>();
+        for(var e:input.equipmentRevision().valveCharacteristics())valves.put(e.id()+"@"+e.revisionId(),e);
+        var limitsByEquipment=new HashMap<String,EnumMap<Quantity,GovernedLimit>>();
+        for(var limit:input.equipmentRevision().governedLimits())
+            limitsByEquipment.computeIfAbsent(limit.equipmentId(),k->new EnumMap<>(Quantity.class))
+                    .put(limit.quantity(),limit);
+        var evaluator=new SimulationEquipmentBehaviorEvaluator();
+        var equipmentEdges=new ArrayList<SyntheticEquipmentEdge>();
+        var adjacent=new HashMap<Integer,Set<Integer>>();
+        for(int i=0;i<nodes.size();i++)adjacent.put(i,new HashSet<>());
+        for(var edge:pipeEdges){adjacent.get(edge.from()).add(edge.to());adjacent.get(edge.to()).add(edge.from());}
+        for(var e:devices){
+            int f=index.get(e.fromNodeId()),t=index.get(e.toNodeId());
+            if(nodes.get(f).elevationMeters().compareTo(nodes.get(t).elevationMeters())!=0)
+                throw new IllegalArgumentException("Synthetic equipment requires equal endpoint elevation.");
+            CompressorCurve curve=null;ValveCharacteristic valve=null;boolean closed=false;
+            if(e.kind()==Kind.COMPRESSOR){
+                curve=curves.get(e.curveId()+"@"+e.curveRevisionId());
+                if(curve==null||columns[f]>=0||nodeBoundaries.get(e.fromNodeId()).pressurePascalsAbsolute()
+                        !=curve.referenceInletPressurePascalsAbsolute().doubleValue()
+                        ||gas.temperatureKelvin()!=curve.referenceInletTemperatureKelvin().doubleValue())
+                    throw new IllegalArgumentException("Compressor requires exact anchored reference inlet P/T.");
+                evaluator.compressor(curve,e.configuredSpeedRevolutionsPerMinute().doubleValue()==0?0:
+                        curve.speedLines().getFirst().points().getFirst().massFlowKilogramsPerSecond().doubleValue(),
+                        e.configuredSpeedRevolutionsPerMinute().doubleValue());
+            } else {
+                valve=valves.get(e.characteristicId()+"@"+e.characteristicRevisionId());
+                if(valve==null||gas.temperatureKelvin()!=valve.referenceTemperatureKelvin().doubleValue())
+                    throw new IllegalArgumentException("Valve requires exact reference T.");
+                closed=e.configuredOpeningFraction().doubleValue()==0;
+                if(closed){
+                    var zero=evaluator.valve(valve,input.valveMethods().get(e.id()),0,0);
+                    if(!zero.closed())throw new IllegalArgumentException("Closed valve map must have zero flow.");
+                    for(var point:valve.openingLines().getFirst().points())
+                        if(point.massFlowKilogramsPerSecond().signum()!=0)
+                            throw new IllegalArgumentException("Closed valve line must be entirely zero.");
+                }else evaluator.valve(valve,input.valveMethods().get(e.id()),0,e.configuredOpeningFraction().doubleValue());
+            }
+            equipmentEdges.add(new SyntheticEquipmentEdge(e.id(),f,t,e,curve,valve,input.valveMethods().get(e.id()),closed,Map.copyOf(limitsByEquipment.get(e.id()))));
+            if(!closed){adjacent.get(f).add(t);adjacent.get(t).add(f);}
+        }
+        var seen=new HashSet<Integer>();
+        for(int root=0;root<nodes.size();root++)if(seen.add(root)){
+            var queue=new ArrayDeque<Integer>();queue.add(root);boolean anchored=false;
+            while(!queue.isEmpty()){
+                int v=queue.removeFirst();
+                if(columns[v]<0)anchored=true;
+                for(int next:adjacent.get(v))if(seen.add(next))queue.add(next);
+            }
+            if(!anchored)throw new IllegalArgumentException("Unanchored active component after isolation.");
+        }
+        var ctx=new SyntheticEquipmentContext(nodes.stream().map(n->n.id()).toList(),pipeEdges,
+                equipmentEdges,columns,fixed,injections,nunknown,gas,controls);
+        int n=nunknown+pipeEdges.size()+equipmentEdges.size();
+        var state=new double[n];
+        for(int i=0;i<nodes.size();i++)if(columns[i]>=0){
+            double p=positive(unknownPressureGuesses.get(nodes.get(i).id()),"initial pressure");
+            state[columns[i]]=positive(p*p/s2,"scaled initial pressure");
+        }
+        for(int j=0;j<pipeEdges.size();j++)
+            state[nunknown+j]=finite(realPipeFlowGuesses.get(pipeEdges.get(j).id()),"initial pipe flow")/qscale;
+        for(int j=0;j<equipmentEdges.size();j++)
+            state[nunknown+pipeEdges.size()+j]=finite(equipmentFlowGuesses.get(equipmentEdges.get(j).id()),"initial equipment flow")/qscale;
+        var evaluation=evaluateEquipment(state,ctx,evaluator);
+        if(evaluation.failure()!=null)
+            throw new IllegalArgumentException("Invalid initial synthetic hydraulic guess: "+evaluation.failure());
+        int iterations=0;
+        while(evaluation.merit()>1&&iterations<controls.maximumIterations()){
+            var step=linearStep(evaluation.jacobian(),evaluation.residual(),controls.relativePivotTolerance());
+            if(step==null)return equipmentSolution(false,"SINGULAR_OR_ILL_CONDITIONED",iterations,state,ctx,evaluator);
+            boolean accepted=false;String failure=null;
+            double alpha=1;
+            for(int attempt=0;attempt<controls.maximumLineSearchSteps();attempt++,alpha*=0.5){
+                var trialState=state.clone();
+                for(int i=0;i<n;i++)trialState[i]+=alpha*step[i];
+                var trial=evaluateEquipment(trialState,ctx,evaluator);
+                if(trial.failure()==null&&(trial.merit()<=1||trial.merit()<evaluation.merit()*(1-1e-4*alpha))){
+                    state=trialState;evaluation=trial;accepted=true;break;
+                }
+                failure=trial.failure();
+            }
+            iterations++;
+            if(!accepted)return equipmentSolution(false,failure==null?"LINE_SEARCH_FAILED":failure,iterations,state,ctx,evaluator);
+        }
+        boolean converged=evaluation.merit()<=1;
+        return equipmentSolution(converged,converged?"CONVERGED_SYNTHETIC_GAS_EQUIPMENT_V1":"ITERATION_LIMIT",
+                iterations,state,ctx,evaluator);
+    }
+
+    private static Evaluation evaluateEquipment(double[] state,SyntheticEquipmentContext ctx,
+            SimulationEquipmentBehaviorEvaluator evaluator){
+        int size=state.length,unknown=ctx.unknownCount();
+        var residual=new double[size];var jacobian=new double[size][size];
+        double S=ctx.controls().pressureScalePascals(),Q=ctx.controls().flowScaleKilogramsPerSecond(),S2=S*S;
+        for(double v:state)if(!Double.isFinite(v))
+            return new Evaluation(residual,jacobian,Double.POSITIVE_INFINITY,"NONFINITE_STATE");
+        for(int i=0;i<unknown;i++)if(!(state[i]>0))
+            return new Evaluation(residual,jacobian,Double.POSITIVE_INFINITY,"NONPHYSICAL_PRESSURE");
+        var u=new double[ctx.ids().size()];
+        var pressure=new double[u.length];
+        for(int i=0;i<u.length;i++){
+            u[i]=ctx.columns()[i]<0?ctx.fixed()[i]:state[ctx.columns()[i]];
+            if(!(u[i]>0))return new Evaluation(residual,jacobian,Double.POSITIVE_INFINITY,"NONPHYSICAL_PRESSURE");
+            pressure[i]=S*Math.sqrt(u[i]);
+        }
+        for(int i=0;i<u.length;i++)if(ctx.columns()[i]>=0)
+            residual[ctx.columns()[i]]=-ctx.injections()[i]/Q;
+        for(int j=0;j<ctx.pipes().size();j++){
+            var e=ctx.pipes().get(j);int row=unknown+j,flowColumn=row;
+            double q=state[flowColumn]*Q;
+            var loss=frictionProductAndDerivative(q,e);
+            if(loss==null)return new Evaluation(residual,jacobian,Double.POSITIVE_INFINITY,"UNSUPPORTED_PIPE_REYNOLDS");
+            residual[row]=u[e.to()]-e.exponential()*u[e.from()]+e.lossFactor()*loss[0]/S2;
+            addFlow(residual,jacobian,ctx.columns(),e.from(),e.to(),flowColumn,state[flowColumn]);
+            if(ctx.columns()[e.from()]>=0)jacobian[row][ctx.columns()[e.from()]]-=e.exponential();
+            if(ctx.columns()[e.to()]>=0)jacobian[row][ctx.columns()[e.to()]]+=1;
+            jacobian[row][flowColumn]=e.lossFactor()*loss[1]*Q/S2;
+        }
+        for(int j=0;j<ctx.equipment().size();j++){
+            var e=ctx.equipment().get(j);
+            int row=unknown+ctx.pipes().size()+j,flowColumn=row;
+            double q=state[flowColumn]*Q;
+            double pFrom=pressure[e.from()],pTo=pressure[e.to()];
+            addFlow(residual,jacobian,ctx.columns(),e.from(),e.to(),flowColumn,state[flowColumn]);
+            try{
+                verifyLimits(e,ctx.gas().temperatureKelvin(),pFrom,q);
+                if(e.compressor()!=null){
+                    var v=evaluator.compressor(e.compressor(),q,e.equipment().configuredSpeedRevolutionsPerMinute().doubleValue());
+                    double rT=GAS_CONSTANT*ctx.gas().temperatureKelvin()/ctx.gas().molarMassKilogramsPerMole();
+                    if(q<=0||pTo<pFrom)
+                        throw new IllegalArgumentException("Compressor reverse or noncompressing regime.");
+                    residual[row]=Math.log(pTo/pFrom)-v.headJoulesPerKilogram()/rT;
+                    if(ctx.columns()[e.from()]>=0)jacobian[row][ctx.columns()[e.from()]]=-0.5/u[e.from()];
+                    if(ctx.columns()[e.to()]>=0)jacobian[row][ctx.columns()[e.to()]]=0.5/u[e.to()];
+                    jacobian[row][flowColumn]=-v.headFlowDerivative()*Q/rT;
+                } else if(e.closed()){
+                    double dp=Math.abs(pFrom-pTo);
+                    var max=e.valve().openingLines().getFirst().points().getLast().differentialPressurePascals().doubleValue();
+                    if(dp>max)throw new IllegalArgumentException("Closed valve pressure exceeds synthetic map.");
+                    residual[row]=state[flowColumn];
+                    jacobian[row][flowColumn]=1;
+                }else{
+                    double dp=pFrom-pTo;
+                    if(dp<0||q<0)throw new IllegalArgumentException("Active valve reverse differential/flow.");
+                    var value=evaluator.valve(e.valve(),e.method(),dp,e.equipment().configuredOpeningFraction().doubleValue());
+                    if(value.closed())throw new IllegalArgumentException("Zero flow at nonzero valve opening.");
+                    residual[row]=(q-value.massFlowKilogramsPerSecond())/Q;
+                    if(ctx.columns()[e.from()]>=0)jacobian[row][ctx.columns()[e.from()]]
+                        =-value.flowDifferentialPressureDerivative()*S2/(2*pFrom*Q);
+                    if(ctx.columns()[e.to()]>=0)jacobian[row][ctx.columns()[e.to()]]
+                        =value.flowDifferentialPressureDerivative()*S2/(2*pTo*Q);
+                    jacobian[row][flowColumn]=1;
+                }
+            }catch(IllegalArgumentException ex){
+                return new Evaluation(residual,jacobian,Double.POSITIVE_INFINITY,"UNSUPPORTED_EQUIPMENT_STATE");
+            }
+        }
+        double merit=0;
+        for(int i=0;i<size;i++){
+            if(!Double.isFinite(residual[i]))return new Evaluation(residual,jacobian,Double.POSITIVE_INFINITY,"NONFINITE_RESIDUAL");
+            double tol=i<unknown||i>=unknown+ctx.pipes().size()&&ctx.equipment().get(i-unknown-ctx.pipes().size()).compressor()==null
+                    ?ctx.controls().massToleranceKilogramsPerSecond()/Q
+                    :ctx.controls().momentumRelativeTolerance();
+            merit=Math.max(merit,Math.abs(residual[i])/tol);
+            for(double v:jacobian[i])if(!Double.isFinite(v))
+                return new Evaluation(residual,jacobian,Double.POSITIVE_INFINITY,"NONFINITE_JACOBIAN");
+        }
+        return new Evaluation(residual,jacobian,merit,null);
+    }
+
+    private static void addFlow(double[] r,double[][] jac,int[] cols,int from,int to,int qColumn,double qScaled){
+        if(cols[from]>=0){r[cols[from]]+=qScaled;jac[cols[from]][qColumn]+=1;}
+        if(cols[to]>=0){r[cols[to]]-=qScaled;jac[cols[to]][qColumn]-=1;}
+    }
+    private static void verifyLimits(SyntheticEquipmentEdge e,double T,double inletPressure,double flow){
+        for(var entry:e.limits().entrySet()){
+            double v=switch(entry.getKey()){
+                case INLET_PRESSURE_PASCALS_ABSOLUTE -> inletPressure;
+                case INLET_TEMPERATURE_KELVIN -> T;
+                case MASS_FLOW_KILOGRAMS_PER_SECOND -> flow;
+                case ROTATIONAL_SPEED_REVOLUTIONS_PER_MINUTE -> e.equipment().configuredSpeedRevolutionsPerMinute().doubleValue();
+                case OPENING_FRACTION -> e.equipment().configuredOpeningFraction().doubleValue();
+            };
+            if(!Double.isFinite(v)||v<entry.getValue().minimumInclusive().doubleValue()
+                    ||v>entry.getValue().maximumInclusive().doubleValue())
+                throw new IllegalArgumentException("Outside explicit synthetic equipment limits.");
+        }
+    }
+
+    private static SimulationEquipmentGasSolution equipmentSolution(boolean converged,String status,int iterations,
+            double[] state,SyntheticEquipmentContext ctx,SimulationEquipmentBehaviorEvaluator evaluator){
+        double S=ctx.controls().pressureScalePascals(),Q=ctx.controls().flowScaleKilogramsPerSecond();
+        var pressures=new HashMap<String,Double>();
+        for(int i=0;i<ctx.ids().size();i++){
+            double u=ctx.columns()[i]<0?ctx.fixed()[i]:state[ctx.columns()[i]];
+            if(!(u>0)||!Double.isFinite(u)){
+                var failed=new SteadyStateGasSolution(false,status,Map.of(),Map.of(),Map.of(),Map.of(),iterations,Map.of());
+                return new SimulationEquipmentGasSolution(failed,Map.of(),Map.of(),Map.of(),Map.of());
+            }
+            pressures.put(ctx.ids().get(i),S*Math.sqrt(u));
+        }
+        var flows=new HashMap<String,Double>();var equipmentFlows=new HashMap<String,Double>();
+        var mass=new HashMap<String,Double>();var pipeResiduals=new HashMap<String,Double>();
+        var compResiduals=new HashMap<String,Double>();var valveResiduals=new HashMap<String,Double>();
+        var power=new HashMap<String,Double>();
+        double[] net=new double[ctx.ids().size()];
+        for(int j=0;j<ctx.pipes().size();j++){
+            var e=ctx.pipes().get(j);double q=state[ctx.unknownCount()+j]*Q;
+            flows.put(e.id(),q);net[e.from()]+=q;net[e.to()]-=q;
+            var g=frictionProductAndDerivative(q,e);
+            if(g!=null){
+                double from=pressures.get(ctx.ids().get(e.from())),to=pressures.get(ctx.ids().get(e.to()));
+                pipeResiduals.put(e.id(),to*to-e.exponential()*from*from+e.lossFactor()*g[0]);
+            }
+        }
+        for(int j=0;j<ctx.equipment().size();j++){
+            var e=ctx.equipment().get(j);
+            double q=state[ctx.unknownCount()+ctx.pipes().size()+j]*Q;
+            equipmentFlows.put(e.id(),q);net[e.from()]+=q;net[e.to()]-=q;
+            double pFrom=pressures.get(ctx.ids().get(e.from())),pTo=pressures.get(ctx.ids().get(e.to()));
+            try{
+                if(e.compressor()!=null){
+                    var v=evaluator.compressor(e.compressor(),q,e.equipment().configuredSpeedRevolutionsPerMinute().doubleValue());
+                    double rT=GAS_CONSTANT*ctx.gas().temperatureKelvin()/ctx.gas().molarMassKilogramsPerMole();
+                    compResiduals.put(e.id(),Math.log(pTo/pFrom)-v.headJoulesPerKilogram()/rT);
+                    power.put(e.id(),q*v.headJoulesPerKilogram()/v.efficiency());
+                } else if(e.closed())valveResiduals.put(e.id(),q);
+                else{
+                    var v=evaluator.valve(e.valve(),e.method(),pFrom-pTo,e.equipment().configuredOpeningFraction().doubleValue());
+                    valveResiduals.put(e.id(),q-v.massFlowKilogramsPerSecond());
+                }
+            }catch(IllegalArgumentException ex){/* Failure diagnostic stays nonconverged; no fabricated map power. */}
+        }
+        var exchange=new HashMap<String,Double>();
+        for(int i=0;i<net.length;i++)if(ctx.columns()[i]<0)exchange.put(ctx.ids().get(i),net[i]);
+        else mass.put(ctx.ids().get(i),net[i]-ctx.injections()[i]);
+        var pipe=new SteadyStateGasSolution(converged,status,pressures,flows,mass,pipeResiduals,iterations,exchange);
+        return new SimulationEquipmentGasSolution(pipe,equipmentFlows,compResiduals,valveResiduals,power);
+    }
+
 }

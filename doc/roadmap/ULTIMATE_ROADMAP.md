@@ -11923,3 +11923,129 @@ P2 rows; offline OpenAPI 244 paths/263 operations/231 schemas; P1 closure eviden
 whitespace; exact two-document append-only scope; both export registries and version
 unchanged. No Java, Maven or future fluid/equipment persistence success claimed. Final
 preflight Documentation CI startup awaits publication observation.
+
+
+## HPR-P25-002 Shared Fluid Equipment Delivery Preflight — Characteristic Provenance Correction — 2026-10-10
+
+Owner Next selects this bounded documentation-only correction to the shared delivery
+preflight of 2026-10-10. Publish only the two execution memories with the existing
+registered message `docs(twin): register fluid equipment delivery preflight`.
+No implementation constituent or parent is closed by this correction.
+
+### Verified position and material gap
+
+Main is `64193682c5b198c03684b9e2f2a428e22204fb85`; exact-head Documentation #167
+PASSED. C3C candidate `7bd2e1fa6039f53ba8733ecdcec699ab5d02b52b`, parent main,
+tree `eaf1207f5bfc14163589031dbb2e40396a868982`, has the exact registered 28 paths.
+Production CI #628 (run 38034141409) PASSED on that exact candidate: 1467 tests,
+zero failures/errors/skips, actual PostgreSQL acceptance, runtime OpenAPI equality
+(244 paths, 263 operations, 231 schemas), and maintained dictionary comparison.
+Actual full-chain capture: 141 migrations, 470 JPA mappings, 486 relations, zero
+unresolved owners; source inventory bundle SHA-256
+`2863b637159942c0a01a23d6406fec034f051361f5be6de951834fd18f8b3b9f`.
+CI catalog artifact SHA-256
+`73c88671677e79b93b97ae402f1f1b4c391d7e3649637a673f0e3dc0d128d1fc`;
+CI generated dictionary SHA-256
+`28822bf6ee7585ad543a46443a673c35e3e7a63c53aca20b4c85c0c68bdb3c80`.
+The candidate dictionary was regenerated with the maintained generator from the
+verified exact-source PostgreSQL capture; its comparison is green. No PR or partial
+implementation delivery was published to main.
+
+Before any C3D file mutation, source review found a material schema gap: the shared
+preflight requires synthetic curve evidence to force synthetic aggregate origin,
+but its characteristic field lists omit origin and independently applicable time.
+The characteristics are independently persisted and reusable. Aggregate metadata
+cannot preserve the provenance or validity of each reused source. Existing
+[SimulationCompressorCurveInput.java](../../src/main/java/dz/sh/hidra/modules/simulation/domain/model/SimulationCompressorCurveInput.java)
+retains its own source version;
+[SimulationInputSourceVersion.java](../../src/main/java/dz/sh/hidra/modules/simulation/domain/model/SimulationInputSourceVersion.java)
+defines origin and recorded/effective timestamps;
+[SimulationPhysicalInputPayload.java](../../src/main/java/dz/sh/hidra/modules/simulation/domain/model/SimulationPhysicalInputPayload.java)
+checks curve time coherence and synthetic propagation. The 20 existing payload tests
+passed locally and again in #628. AGENTS.md section 3.2 rule 9 required stopping
+before mutating C3D; this correction explicitly registers the missing facts.
+
+### Binding replacement fields and qualification rules
+
+This section supersedes ONLY the CompressorCurve and ValveCharacteristic field lists
+and related provenance/time acceptance rules in the original shared preflight.
+All other exact fields, owner contracts, allowlists, migrations, encoding primitives,
+validation commands, publication rules and retained status remain binding.
+
+CompressorCurve canonical order:
+id, revisionId, recordedAt, effectiveFrom, effectiveUntil, origin, evidenceReference,
+fluidSourceId, fluidRevisionId, fluidSha256, headDefinitionReference,
+efficiencyDefinitionReference, interpolationMethodReference,
+referenceInletPressurePascalsAbsolute, referenceInletTemperatureKelvin, speedLines.
+
+ValveCharacteristic canonical order:
+id, revisionId, recordedAt, effectiveFrom, effectiveUntil, origin, evidenceReference,
+fluidSourceId, fluidRevisionId, fluidSha256, referenceTemperatureKelvin, openingLines.
+
+Each characteristic supplies nonnull recordedAt and effectiveFrom, optional effectiveUntil
+strictly after effectiveFrom, and nonnull origin DECLARED_PARAMETER or SYNTHETIC.
+Validity is start-inclusive/end-exclusive; null end means explicitly open-ended.
+No default timestamp, inferred origin, approval promotion or value inferred from labels,
+fluid, network or aggregate metadata. Each characteristic recordedAt must be no later
+than the containing equipment revision recordedAt. Preserve nanoseconds and ordered
+content in immutable domain records, owner-local ports and complete resolved bundles.
+
+Registration and qualified reads must check each characteristic's own recordedAt and
+validity at the explicit evaluationAt, actual approvedAt and server qualifiedAt used
+by the original qualification contract. A future-recorded, not-yet-effective or expired
+characteristic makes qualification unavailable; structurally invalid input rejects at
+construction and corrupted canonical persistence raises an integrity error.
+Each characteristic must match its exact selected fluid binding and independent store.
+SYNTHETIC network, fluid, compressor curve OR valve characteristic requires SYNTHETIC
+equipment aggregate. Reject a DECLARED_PARAMETER aggregate with any synthetic source,
+including hidden synthetic characteristics alongside other synthetic dependencies.
+Actual approval cannot change the stored origin or characteristic validity.
+
+Encode these supplied facts in the stated order in both independently stored
+characteristic bodies and the nested aggregate encoding. Use existing strict Instant,
+optional marker and enum encoding. All characteristic and aggregate digests are computed
+from complete canonical bytes; changes to origin/time must change content and cannot
+replay a different body under the same (kind,id,revisionId). Reuse across aggregate
+revisions requires byte-identical independently stored characteristics. Atomic append,
+rollback, strict decoding, verified reads and UPDATE/DELETE/TRUNCATE protection remain.
+No characteristic table column is added: the registered immutable canonical_payload
+retains these facts. Existing format names remain valid for their first implementation;
+no C3D payload or migration has previously been published.
+
+### Acceptance and unchanged execution envelope
+
+Within the already registered C3D domain/codec/query/qualification/PostgreSQL/integration
+test paths, cover both characteristic kinds: required fields, invalid time interval,
+future recording relative to aggregate and selection, validity start/end boundaries,
+expiry at approval/qualification/evaluation, independent origin retention, hidden
+synthetic propagation, positive valid declared/synthetic cases, nanosecond round trips,
+canonical digest sensitivity, conflicting origin/time identity replay, independent-store
+equality, cross-aggregate reuse, transactional rollback and actual PostgreSQL reads.
+Keep existing B records and PhysicalInputPayload guards unchanged. No routine deeper
+code, standalone mapper, new file, dependency, export, public API, engine or physical
+default is admitted. C3C remains 28 paths, C3D 27, combined 49 distinct paths.
+
+After this documentation-only correction's exact-head Documentation CI passes, owner
+Next resumes ONLY the shared C3C/C3D delivery. Rebase/reconstruct the accepted C3C
+candidate onto the correction head using its exact message and allowlist; preserve
+historical execution-memory content and append its independently accepted evidence.
+The correction changes no executable source inventory. Preserve the verified catalog
+artifact and source inventory checks; do not invent fresh exact-head executable results.
+Execute C3D with its original exact message, amended fields, original focused commands
+and full clean verify, actual full-chain PostgreSQL dictionary regeneration and retained
+CI comparison. Chain the separate C3C and C3D commits, advance main once with an
+expected-parent lease, verify individual scope/parents/final tree, observe final-head
+Production/Documentation CI startup and STOP. No PR or automatic CI-completion wait.
+
+C3C/C3D and C3E/C3F/C3/002C/002D/002 remain PENDING until combined delivery acceptance.
+Retain 0.7.0-SNAPSHOT, P0/P1/P2 CLOSED, P2.5 OPEN, P3 DEFERRED, 57 reconciled HMR
+implementations and 123 permanent subjects. No executing solver, calibrated GZ2 twin,
+operational approval, threshold, verified deployment or direct OT action is claimed.
+The next selection after successful completed fluid/equipment delivery CI remains
+`docs(twin): register operating state delivery preflight`; it is not selected here.
+
+CHARACTERISTIC-PROVENANCE-CORRECTION local validation PASSED: 51 maintained validator
+tests; canonical docs 95 documents/5084 links/24 modules/13 P2 rows; offline OpenAPI
+244 paths/263 operations/231 schemas; P1 closure evidence; whitespace; exact two-file
+append-only scope; executable source, both export registries and version unchanged.
+No new Maven or C3D persistence pass claimed. Publication awaits exact-head docs startup.

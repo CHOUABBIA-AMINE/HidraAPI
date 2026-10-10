@@ -21,6 +21,33 @@
     "owner": "assets",
     "purpose": "Assets-owned maintainable-asset state; physical prefix is hidra_asset rather than hidra_assets."
   },
+  "public.hidra_custody_gas_fluid_qualification": {
+    "evidence": [
+      "src/main/java/dz/sh/hidra/modules/custody/domain/model/CustodyGasFluidRevision.java",
+      "src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/JdbcCustodyGasFluidRevisionRepositoryAdapter.java",
+      "src/main/resources/db/migration/V20261010_001__p25_custody_gas_fluid_revisions.sql"
+    ],
+    "owner": "custody",
+    "purpose": "Immutable exact qualification evidence reattested against actual current Workflow configuration and actions."
+  },
+  "public.hidra_custody_gas_fluid_revision": {
+    "evidence": [
+      "src/main/java/dz/sh/hidra/modules/custody/domain/model/CustodyGasFluidRevision.java",
+      "src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/JdbcCustodyGasFluidRevisionRepositoryAdapter.java",
+      "src/main/resources/db/migration/V20261010_001__p25_custody_gas_fluid_revisions.sql"
+    ],
+    "owner": "custody",
+    "purpose": "Immutable gas composition/product snapshots and binding; SHA-256 provides integrity, not approval."
+  },
+  "public.hidra_custody_gas_method_revision": {
+    "evidence": [
+      "src/main/java/dz/sh/hidra/modules/custody/domain/model/CustodyGasFluidRevision.java",
+      "src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/JdbcCustodyGasFluidRevisionRepositoryAdapter.java",
+      "src/main/resources/db/migration/V20261010_001__p25_custody_gas_fluid_revisions.sql"
+    ],
+    "owner": "custody",
+    "purpose": "Immutable supplied gas method applicability; source declaration does not establish an executing property algorithm."
+  },
   "public.hidra_custody_planning_product_policy": {
     "evidence": [
       "src/main/resources/db/migration/V20261008_025__hmr_080_nomination_owner_reference_policies.sql",

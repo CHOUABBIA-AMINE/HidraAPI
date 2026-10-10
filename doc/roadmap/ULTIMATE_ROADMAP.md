@@ -12049,3 +12049,67 @@ tests; canonical docs 95 documents/5084 links/24 modules/13 P2 rows; offline Ope
 244 paths/263 operations/231 schemas; P1 closure evidence; whitespace; exact two-file
 append-only scope; executable source, both export registries and version unchanged.
 No new Maven or C3D persistence pass claimed. Publication awaits exact-head docs startup.
+
+## HPR-P25-002C3C Fluid Source Candidate — 2026-10-10
+
+Current main `64193682c5b198c03684b9e2f2a428e22204fb85` and exact-head Documentation #167
+PASSED. The latest executable base remains network delivery `9cde9dd7005edd4ed6b85129c4ff889001a8f38f`,
+with Production #625 and Documentation #166 PASSED. Owner Next selects only the registered
+shared C3C/C3D envelope; no PR is created and main has not advanced.
+
+C3C candidate implements immutable gas/product/composition/method/governance facts,
+strict canonical codecs, separate append-only stores, exact owner query and server-derived
+qualification. Shared Workflow evidence reads actual current configuration and exact final
+instance/task/action evidence. Owner digest subjects use the existing target export package.
+No public write endpoint, property algorithm, production approval/policy seed, physical
+default, dependency, workflow YAML or export registry change is introduced.
+
+Java 21 was restored outside Git and baseline compile passed. Focused local Java/architecture
+checks passed; seven new PostgreSQL tests were Docker-skipped and do NOT meet acceptance.
+Full local clean verify completed: 1467 tests, zero failures/errors, 301 Docker-related skips.
+The seven new PostgreSQL cases are included in those skips; actual PostgreSQL acceptance
+and catalog/test evidence remain pending. The 37 maintained validator tests plus 14
+resolve-base tests passed (51 total); canonical docs 95 documents/5085 links/24 modules/13
+P2 rows, offline OpenAPI 244 paths/263 operations/231 schemas, P1 evidence and whitespace passed.
+Reviewed ownership metadata names the three exact Custody JDBC tables and source files.
+DATA_DICTIONARY remains unchanged until actual full-chain collection; no schema facts are
+fabricated. Candidate branch/manual CI without a PR is admitted by the shared preflight.
+
+C3C and C3D remain PENDING; no constituent or parent is closed before acceptance. Retain
+0.7.0-SNAPSHOT, P0/P1/P2 CLOSED, P2.5 OPEN, P3 DEFERRED, 57 reconciled HMR implementations
+and 123 semantic subjects. Synthetic fixtures do not supply actual GZ2 acceptance,
+calibration, an executing hydraulic solver or operational authority.
+
+
+## HPR-P25-002C3C Actual PostgreSQL Candidate Evidence — 2026-10-10
+
+Candidate Production CI #626 failed catalog collection because the disposable test database
+used the default name; the registered test now explicitly selects `hidra_test`, preserving
+the existing generator provenance check. Candidate `25707cf7389ecb2077e80210a58e589da7ca9960`
+Production CI #627 ran all 1467 tests with zero failures, errors or skips, including the
+seven new actual PostgreSQL cases. Runtime OpenAPI equality passed (244 paths, 263
+operations, 231 schemas). The run then failed the maintained dictionary comparison because
+the candidate dictionary had intentionally remained at the prior migration inventory.
+
+The new capture test exported actual full-chain PostgreSQL 16.15 schema-only evidence
+from that exact candidate: 141 migrations, 470 JPA mappings, 486 relations, no unresolved
+owners. Verified artifact SHA-256 is
+`83f37bb2bc9286b4d79be5495c61af8e8b2f1d0325f84a7e7b1b4bb4012acae9`;
+source inventory bundle is
+`2863b637159942c0a01a23d6406fec034f051361f5be6de951834fd18f8b3b9f`.
+The existing generator regenerated DATA_DICTIONARY from that verified capture and
+reviewed ownership; generated dictionary SHA-256 is
+`500412fbb44cb0dcc892f6b45f6d1f739599aa7d5860d0e33a40650d91688354`.
+No catalog facts were hand-edited and CI comparison remains unchanged. The amended
+candidate requires another exact-head CI observation; #627 is not a passing run.
+
+Main remains `64193682c5b198c03684b9e2f2a428e22204fb85`; no PR or partial delivery
+publication. C3C/C3D and parents remain PENDING. The separately reported C3D characteristic
+origin/time schema gap still blocks C3D mutation and combined main advancement under
+AGENTS.md section 3.2 rule 9. No operating-state delivery is selected.
+
+
+C3C reconstructed onto verified correction head 19cfae0d63096e85c5109ec822f39f05fa073956.
+Documentation #168 PASSED. Candidate #628 provides accepted executable and actual
+PostgreSQL/dictionary evidence for unchanged C3C source inventory; no fresh exact-head
+execution claimed. C3D and combined publication remain pending.

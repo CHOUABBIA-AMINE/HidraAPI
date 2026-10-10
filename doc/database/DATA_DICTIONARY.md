@@ -6,10 +6,10 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `8b51b52b2aa31f7a2f0ca2b08a6066387663d092`
+Captured source SHA: `c82cf6a80425dc191b2c00c290375a5406b54620`
 PostgreSQL server: `16.15 (Debian 16.15-1.pgdg13+2)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `86f6ba5923e63c0cd601f7722ca0282e486d59fc92bb120616710fb3cd1799d4`.
-Migrations: 139; JPA mappings: 470; catalog relations: 482; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `9462e6a083bcb9b0b2a4f78da230fae396c318b5a05ecafd0f4998d27db77900`.
+Migrations: 140; JPA mappings: 470; catalog relations: 483; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -24913,6 +24913,54 @@ Persisted TopologyNodeJpaEntity state; semantic authority remains with topology.
 #### Triggers
 
 None captured in this catalog category.
+
+### public.hidra_topology_physical_network_revision
+
+Owner: **topology**; relation kind: `r`.
+
+Topology-owned append-only physical source revisions with canonical payload integrity; stored provenance and digest do not establish operational approval or live asset eligibility.
+
+- Evidence: [V20261009_001__p25_topology_physical_network_revisions.sql](../../src/main/resources/db/migration/V20261009_001__p25_topology_physical_network_revisions.sql)
+- Evidence: [JdbcTopologyPhysicalNetworkRevisionRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcTopologyPhysicalNetworkRevisionRepositoryAdapter.java)
+- Evidence: [TopologyPhysicalNetworkRevision.java](../../src/main/java/dz/sh/hidra/modules/topology/domain/model/TopologyPhysicalNetworkRevision.java)
+- Migration mention (not inferred introduction): [V20261009_001__p25_topology_physical_network_revisions.sql](../../src/main/resources/db/migration/V20261009_001__p25_topology_physical_network_revisions.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| source_id | text | False | None; identity=; generated= | No current mapped Java column | — |
+| revision_id | text | False | None; identity=; generated= | No current mapped Java column | — |
+| payload_format | text | False | None; identity=; generated= | No current mapped Java column | — |
+| canonical_payload | bytea | False | None; identity=; generated= | No current mapped Java column | — |
+| sha256 | character varying(64) | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `ck_topology_physical_digest`: CHECK (sha256::text ~ '^[0-9a-f]{64}$'::text AND sha256::text = encode(sha256(canonical_payload), 'hex'::text))
+  - Catalog attributes: {"columns": ["sha256", "canonical_payload"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `ck_topology_physical_format`: CHECK (payload_format = 'HIDRA_TOPOLOGY_PHYSICAL_NETWORK_V1'::text)
+  - Catalog attributes: {"columns": ["payload_format"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `ck_topology_physical_payload`: CHECK (octet_length(canonical_payload) &gt; 0)
+  - Catalog attributes: {"columns": ["canonical_payload"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `ck_topology_physical_revision_id`: CHECK (revision_id !~ '^[\x01-\x20]&#124;[\x01-\x20]$'::text AND revision_id !~ '^[[:space:]]*$'::text)
+  - Catalog attributes: {"columns": ["revision_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `ck_topology_physical_source_id`: CHECK (source_id !~ '^[\x01-\x20]&#124;[\x01-\x20]$'::text AND source_id !~ '^[[:space:]]*$'::text)
+  - Catalog attributes: {"columns": ["source_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `pk_topology_physical_network_revision`: PRIMARY KEY (source_id, revision_id)
+  - Catalog attributes: {"columns": ["source_id", "revision_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+
+#### Indexes
+
+- `pk_topology_physical_network_revision`: CREATE UNIQUE INDEX pk_topology_physical_network_revision ON public.hidra_topology_physical_network_revision USING btree (source_id, revision_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `topology_physical_revision_no_truncate`: CREATE TRIGGER topology_physical_revision_no_truncate BEFORE TRUNCATE ON hidra_topology_physical_network_revision FOR EACH STATEMENT EXECUTE FUNCTION hidra_topology_reject_physical_revision_mutation()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_topology_reject_physical_revision_mutation()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_topology_reject_physical_revision_mutation()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'Topology physical source revisions are append-only' USING ERRCODE = '23514';<br>END;<br>$function$<br>
+- `topology_physical_revision_no_update_delete`: CREATE TRIGGER topology_physical_revision_no_update_delete BEFORE DELETE OR UPDATE ON hidra_topology_physical_network_revision FOR EACH ROW EXECUTE FUNCTION hidra_topology_reject_physical_revision_mutation()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_topology_reject_physical_revision_mutation()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_topology_reject_physical_revision_mutation()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'Topology physical source revisions are append-only' USING ERRCODE = '23514';<br>END;<br>$function$<br>
 
 ### public.hidra_topology_pipeline
 

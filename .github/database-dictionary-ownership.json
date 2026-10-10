@@ -153,5 +153,14 @@
     ],
     "owner": "topology",
     "purpose": "Topology-owned equipment-type state; legacy_equipment_kind is retained historical data and does not control the current catalog mapping."
+  },
+  "public.hidra_topology_physical_network_revision": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261009_001__p25_topology_physical_network_revisions.sql",
+      "src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcTopologyPhysicalNetworkRevisionRepositoryAdapter.java",
+      "src/main/java/dz/sh/hidra/modules/topology/domain/model/TopologyPhysicalNetworkRevision.java"
+    ],
+    "owner": "topology",
+    "purpose": "Topology-owned append-only physical source revisions with canonical payload integrity; stored provenance and digest do not establish operational approval or live asset eligibility."
   }
 }

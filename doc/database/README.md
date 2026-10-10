@@ -92,3 +92,15 @@ P1 deployed/recovery evidence retains its original scope. No production-data/imp
 approval, business retention/policy values, hydraulic/ML runtime execution or field
 actuation is established. Version remains 0.6.0-SNAPSHOT. No executable, migration,
 contract snapshot, dictionary, ownership metadata or operating artifact is changed.
+
+## Phase 2.5 network revision candidate — capture pending
+
+The registered network delivery adds a separate Topology-owned JDBC revision store via [V20261009_001](../../src/main/resources/db/migration/V20261009_001__p25_topology_physical_network_revisions.sql). Ownership metadata now contains 22 source-linked overrides. Historical counts and captures above remain their original verified scope; they do not include this new migration.
+
+The current physical dictionary has deliberately not been hand-edited. Publication requires an actual full-chain migrated PostgreSQL 16 catalog with the candidate migration/source inventory, reviewed ownership and regeneration/check using the existing generator. The new PostgreSQL integration test captures the generator's schema-only catalog query in a read-only repeatable-read transaction after actual full-chain Flyway migration/validation. On GitHub Actions it emits compressed catalog evidence with exact checkout/source-bundle/dictionary digests for retrieval when local PostgreSQL collection is unavailable. It exports no business rows or credentials. This equivalent disposable-catalog route does not weaken the maintained CI dictionary comparison. Capture results/counts and applicability will be recorded only after actual evidence is obtained.
+
+## Phase 2.5 network revision actual catalog regeneration — 2026-10-09
+
+Production CI #623 (run 37997704862) on candidate `c82cf6a80425dc191b2c00c290375a5406b54620` passed all 1430 tests with no skips, including real network persistence and full-chain Flyway capture. Its overall result failed the maintained dictionary comparison while awaiting regeneration. The recovered schema-only catalog hash is `e6fe19c09169f6576ba92ec84f08adf8ec8ad14c08f70792917aef7f5a2e090d`; PostgreSQL is `16.15 (Debian 16.15-1.pgdg13+2)`. The existing generator verified exact source inventory and reviewed ownership, then regenerated [DATA_DICTIONARY](DATA_DICTIONARY.md): 140 migrations, 470 JPA mappings, 483 catalog relations and zero unresolved owners. Source bundle hash: `9462e6a083bcb9b0b2a4f78da230fae396c318b5a05ecafd0f4998d27db77900`. Dictionary hash: `0ef393290fe02cbb1086c6992b9a63a3e135ccba03d5efe19fef585edd197756`.
+
+The regenerated dictionary adds the actual separate Topology revision table, constraints, index and mutation-protection triggers; existing asset/snapshot tables are preserved. This actual disposable catalog is equivalent source-schema evidence, not business rows, production deployment, solver calibration or operational approval. Historical captures above retain their original scope. Main publication still requires green candidate CI with the unchanged dictionary comparison; version remains 0.7.0-SNAPSHOT.

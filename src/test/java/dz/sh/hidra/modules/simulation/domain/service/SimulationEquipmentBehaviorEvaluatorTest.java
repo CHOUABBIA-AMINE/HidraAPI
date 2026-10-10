@@ -93,4 +93,57 @@ class SimulationEquipmentBehaviorEvaluatorTest {
                         new ValvePoint(new BigDecimal("1000"),BigDecimal.ZERO)))));
         assertThrows(IllegalArgumentException.class,()->evaluator.valve(badValve,SimulationEquipmentBehaviorEvaluator.VALVE,500,0.5));
     }
+
+    // Frozen synthetic reference matrix (fe7be4b); map equations are independent of evaluator internals.
+    private static void referenceDerivative(double expected,double actual) {
+        assertEquals(expected,actual,Math.max(1e-10,1e-8*Math.abs(expected)));
+    }
+    @Test void independentCompressorOneSidedEndpointAndInteriorDerivatives() {
+        var c=curve();
+        double dq=1e-5,dn=0.01;
+        for(double q:new double[]{1,1.5,2}) for(double rpm:new double[]{1000,1500,2000}) {
+            var value=evaluator.compressor(c,q,rpm);
+            // Independent bilinear model: H(1000,q)=120-20q; H(2000,q)=240-40q.
+            double head=(120-20*q)*(2-rpm/1000)+(240-40*q)*(rpm/1000-1);
+            assertEquals(head,value.headJoulesPerKilogram(),1e-12);
+            assertEquals(0.85-0.05*q,value.efficiency(),1e-12);
+            referenceDerivative(-20*rpm/1000,value.headFlowDerivative());
+            referenceDerivative(0.12-0.02*q,value.headSpeedDerivative());
+            referenceDerivative(-0.05,value.efficiencyFlowDerivative());
+            referenceDerivative(0,value.efficiencySpeedDerivative());
+            double nextQ=q==2?q-dq:q+dq,nextN=rpm==2000?rpm-dn:rpm+dn;
+            double slopeQ=(evaluator.compressor(c,nextQ,rpm).headJoulesPerKilogram()-value.headJoulesPerKilogram())/(nextQ-q);
+            double slopeN=(evaluator.compressor(c,q,nextN).headJoulesPerKilogram()-value.headJoulesPerKilogram())/(nextN-rpm);
+            referenceDerivative(value.headFlowDerivative(),slopeQ);
+            referenceDerivative(value.headSpeedDerivative(),slopeN);
+            double etaSlope=(evaluator.compressor(c,nextQ,rpm).efficiency()-value.efficiency())/(nextQ-q);
+            referenceDerivative(value.efficiencyFlowDerivative(),etaSlope);
+        }
+    }
+    @Test void independentValveEndpointOneSidedAndInteriorFiniteDifferences() {
+        var v=valve();
+        double ddp=0.01, da=1e-5;
+        for(double dp:new double[]{0,500,1000}) for(double a:new double[]{0.25,0.5,1}) {
+            var value=evaluator.valve(v,SimulationEquipmentBehaviorEvaluator.VALVE,dp,a);
+            assertEquals(0.002*dp*a,value.massFlowKilogramsPerSecond(),1e-12);
+            referenceDerivative(0.002*a,value.flowDifferentialPressureDerivative());
+            referenceDerivative(0.002*dp,value.flowOpeningDerivative());
+            double nextDp=dp==1000?dp-ddp:dp+ddp,nextA=a==1?a-da:a+da;
+            double dpSlope=(evaluator.valve(v,SimulationEquipmentBehaviorEvaluator.VALVE,nextDp,a)
+                    .massFlowKilogramsPerSecond()-value.massFlowKilogramsPerSecond())/(nextDp-dp);
+            double aSlope=(evaluator.valve(v,SimulationEquipmentBehaviorEvaluator.VALVE,dp,nextA)
+                    .massFlowKilogramsPerSecond()-value.massFlowKilogramsPerSecond())/(nextA-a);
+            referenceDerivative(value.flowDifferentialPressureDerivative(),dpSlope);
+            referenceDerivative(value.flowOpeningDerivative(),aSlope);
+        }
+        for(double dp:new double[]{0,500,1000}) {
+            var shut=evaluator.valve(v,SimulationEquipmentBehaviorEvaluator.VALVE,dp,0);
+            assertTrue(shut.closed());
+            assertEquals(0,shut.massFlowKilogramsPerSecond(),0);
+            assertThrows(IllegalArgumentException.class,()->evaluator.valve(v,SimulationEquipmentBehaviorEvaluator.VALVE,dp,1.00001));
+        }
+        assertThrows(IllegalArgumentException.class,()->evaluator.valve(v,SimulationEquipmentBehaviorEvaluator.VALVE,1000.01,0.5));
+        assertThrows(IllegalArgumentException.class,()->evaluator.compressor(curve(),Double.NaN,1500));
+    }
+
 }

@@ -421,4 +421,235 @@ class SteadyStateGasSolverTest {
                 Map.of(),Map.of("valve",-0.5)));
     }
 
+
+    // Frozen 008C mathematical reference: two fixed end pressures and independent scalar roots.
+    private static final double EQUIPMENT_PIPE_K=112920561.0523195743145253870422;
+    private static double bisect(java.util.function.DoubleUnaryOperator f,double lo,double hi) {
+        double a=f.applyAsDouble(lo),b=f.applyAsDouble(hi);
+        assertTrue(Double.isFinite(a)&&Double.isFinite(b)&&a*b<0,"Independent root not bracketed");
+        for(int i=0;i<110;i++) {
+            double mid=(lo+hi)/2, value=f.applyAsDouble(mid);
+            if(value==0)return mid;
+            if(Math.signum(value)==Math.signum(a)){lo=mid;a=value;}else{hi=mid;b=value;}
+        }
+        return (lo+hi)/2;
+    }
+    private static void equipmentConservation(SimulationEquipmentGasSolution result,
+            Map<String,Boundary> boundaries,
+            java.util.List<SimulationPipeSegmentInput> pipes,
+            java.util.List<Equipment> devices) {
+        assertTrue(result.pipeSolution().converged(),result.pipeSolution().status());
+        var net=new HashMap<String,Double>();
+        for(var pipe:pipes) {
+            double q=result.pipeSolution().pipeMassFlowKilogramsPerSecond().get(pipe.id());
+            net.merge(pipe.fromNodeId(),q,Double::sum);
+            net.merge(pipe.toNodeId(),-q,Double::sum);
+        }
+        for(var e:devices) {
+            double q=result.equipmentMassFlowsKilogramsPerSecond().get(e.id());
+            net.merge(e.fromNodeId(),q,Double::sum);
+            net.merge(e.toNodeId(),-q,Double::sum);
+        }
+        double sum=0;
+        for(var entry:boundaries.entrySet()) {
+            double expected=entry.getValue().injectionKilogramsPerSecond()==null
+                    ?result.pipeSolution().pressureBoundaryInjectionKilogramsPerSecond().get(entry.getKey())
+                    :entry.getValue().injectionKilogramsPerSecond();
+            assertEquals(expected,net.getOrDefault(entry.getKey(),0d),1e-10);
+            sum+=expected;
+        }
+        assertEquals(0,sum,1e-10);
+        result.pipeSolution().nodeMassResidualKilogramsPerSecond().values()
+                .forEach(v->assertTrue(Math.abs(v)<=1e-11,"Node mass residual "+v));
+        result.compressorLogPressureResiduals().values()
+                .forEach(v->assertTrue(Math.abs(v)<=1e-12,"Compressor log residual "+v));
+        result.valveFlowResidualsKilogramsPerSecond().values()
+                .forEach(v->assertTrue(Math.abs(v)<=1e-11,"Valve mass residual "+v));
+        result.pipeSolution().pipePressureSquaredResidualPascalsSquared().values()
+                .forEach(v->assertTrue(Math.abs(v)/(200000d*200000d)<=1e-12,"Pipe residual "+v));
+    }
+    @Test void compressorSpeedResponseAtBothFixedEndPressuresMatchesIndependentRoots() {
+        double pc=199771.448460542870,rT=8.31446261815324*300/0.018;
+        for(double rpm:new double[]{1000,2000}) {
+            var input=equipmentNet(oneDevice(Kind.COMPRESSOR,rpm),true);
+            var boundaries=Map.of("a",pressure(200000),"b",injection(0),"c",pressure(pc));
+            double reference=bisect(q->200000d*200000d*Math.exp(2*((120-20*q)*(2-rpm/1000)
+                    +(240-40*q)*(rpm/1000-1))/rT)-EQUIPMENT_PIPE_K*q-pc*pc,1,2);
+            double expected=rpm==1000?1.290965510130259:1.691354711061536;
+            assertEquals(expected,reference,1e-8);
+            double mid=rpm==1000?200135.974201857170:200248.895984309708;
+            for(double offset:new double[]{-1,1}) {
+                var result=equipment(input,boundaries,Map.of("b",mid+offset),
+                        Map.of("bc",reference+0.001*offset),
+                        Map.of("compressor",reference+0.001*offset));
+                assertEquals(reference,result.equipmentMassFlowsKilogramsPerSecond().get("compressor"),
+                        Math.max(1e-10,1e-8*reference));
+                assertEquals(mid,result.pipeSolution().nodePressurePascalsAbsolute().get("b"),0.0002);
+                assertEquals(reference,result.pipeSolution().pressureBoundaryInjectionKilogramsPerSecond().get("a"),1e-8);
+                assertEquals(-reference,result.pipeSolution().pressureBoundaryInjectionKilogramsPerSecond().get("c"),1e-8);
+                equipmentConservation(result,boundaries,input.pipes(),input.equipmentRevision().equipment());
+            }
+        }
+    }
+    @Test void valveOpeningResponseAtBothFixedEndPressuresMatchesIndependentRoots() {
+        double pc=199358.445317658515;
+        for(double opening:new double[]{0.25,1}) {
+            var input=equipmentNet(oneDevice(Kind.VALVE,opening),true);
+            var boundaries=Map.of("a",pressure(200000),"b",injection(0),"c",pressure(pc));
+            double reference=bisect(q->Math.pow(200000-q/(0.002*opening),2)
+                    -EQUIPMENT_PIPE_K*q-pc*pc,0.01,1.9);
+            double expected=opening==0.25?0.280995000256254:0.819307289276717;
+            double intermediate=opening==0.25?199438.009999487493:199590.346355361642;
+            assertEquals(expected,reference,1e-8);
+            var result=equipment(input,boundaries,Map.of("b",intermediate+0.8),
+                    Map.of("bc",reference),Map.of("valve",reference));
+            assertEquals(reference,result.equipmentMassFlowsKilogramsPerSecond().get("valve"),
+                    Math.max(1e-10,1e-8*reference));
+            assertEquals(intermediate,result.pipeSolution().nodePressurePascalsAbsolute().get("b"),0.0002);
+            assertEquals(reference,result.pipeSolution().pressureBoundaryInjectionKilogramsPerSecond().get("a"),1e-8);
+            assertEquals(-reference,result.pipeSolution().pressureBoundaryInjectionKilogramsPerSecond().get("c"),1e-8);
+            equipmentConservation(result,boundaries,input.pipes(),input.equipmentRevision().equipment());
+        }
+    }
+    private static SimulationSyntheticEquipmentNetworkInput multiValve(
+            String[][] links,double[] openings,List<SimulationPipeSegmentInput> pipes) {
+        var proto=oneDevice(Kind.VALVE,0.5);
+        var original=proto.equipment().getFirst();
+        var items=new ArrayList<Equipment>();var limits=new ArrayList<GovernedLimit>();
+        var methods=new HashMap<String,String>();
+        var ids=new java.util.TreeSet<String>();
+        for(int i=0;i<links.length;i++) {
+            var link=links[i];ids.add(link[1]);ids.add(link[2]);
+            items.add(new Equipment(link[0],link[1],link[2],Kind.VALVE,null,null,null,
+                    original.characteristicId(),original.characteristicRevisionId(),BigDecimal.valueOf(openings[i])));
+            for(var limit:proto.governedLimits())limits.add(new GovernedLimit(link[0],limit.quantity(),
+                    limit.minimumInclusive(),limit.maximumInclusive(),limit.evidenceReference()));
+            methods.put(link[0],SimulationEquipmentBehaviorEvaluator.VALVE);
+        }
+        for(var p:pipes){ids.add(p.fromNodeId());ids.add(p.toNodeId());}
+        var revision=new SimulationEquipmentParameterRevision(proto.sourceId(),proto.revisionId(),
+                proto.recordedAt(),proto.effectiveFrom(),proto.effectiveUntil(),proto.origin(),
+                proto.evidenceReference(),proto.networkSourceId(),proto.networkRevisionId(),proto.networkSha256(),
+                proto.fluidSourceId(),proto.fluidRevisionId(),proto.fluidSha256(),proto.fluidQualificationId(),
+                items,List.of(),proto.valveCharacteristics(),limits,proto.governanceBinding());
+        var nodes=ids.stream().map(id->node(id,0)).toList();
+        return new SimulationSyntheticEquipmentNetworkInput("synthetic-multivalve",revision.networkSourceId(),
+                revision.networkRevisionId(),revision.networkSha256(),revision.fluidSourceId(),
+                revision.fluidRevisionId(),revision.fluidSha256(),revision.fluidQualificationId(),
+                SimulationEquipmentParameterRevisionTest.AT,nodes,pipes,revision,methods);
+    }
+    @Test void threeValveMeshedTriangleMatchesAllIndependentFlowAndBoundaryReferences() {
+        var net=multiValve(new String[][]{{"ab","a","b"},{"ac","a","c"},{"bc","b","c"}},
+                new double[]{0.5,0.5,0.5},List.of());
+        var b=Map.of("a",pressure(200000),"b",injection(-0.3),"c",injection(-0.6));
+        var initialP=Map.of("b",199599d,"c",199499d);
+        var initialQ=Map.of("ab",0.4,"ac",0.5,"bc",0.1);
+        var s=equipment(net,b,initialP,Map.of(),initialQ);
+        assertEquals(199600,s.pipeSolution().nodePressurePascalsAbsolute().get("b"),0.0002);
+        assertEquals(199500,s.pipeSolution().nodePressurePascalsAbsolute().get("c"),0.0002);
+        for(var e:Map.of("ab",0.4,"ac",0.5,"bc",0.1).entrySet())
+            assertEquals(e.getValue(),s.equipmentMassFlowsKilogramsPerSecond().get(e.getKey()),1e-8);
+        assertEquals(0.9,s.pipeSolution().pressureBoundaryInjectionKilogramsPerSecond().get("a"),1e-8);
+        assertTrue(s.pipeSolution().pipeMassFlowKilogramsPerSecond().isEmpty());
+        equipmentConservation(s,b,net.pipes(),net.equipmentRevision().equipment());
+        var reorder=multiValve(new String[][]{{"bc","b","c"},{"ac","a","c"},{"ab","a","b"}},
+                new double[]{0.5,0.5,0.5},List.of());
+        assertEquals(s,equipment(reorder,b,initialP,Map.of(),initialQ));
+    }
+    @Test void unequalParallelValvesHaveDistinctFlowsWithoutFakePipes() {
+        var net=multiValve(new String[][]{{"v1","a","b"},{"v2","a","b"}},
+                new double[]{0.5,0.25},List.of());
+        var b=Map.of("a",pressure(200000),"b",injection(-0.75));
+        var solved=equipment(net,b,Map.of("b",199499d),Map.of(),Map.of("v1",0.5,"v2",0.25));
+        assertEquals(199500,solved.pipeSolution().nodePressurePascalsAbsolute().get("b"),0.0002);
+        assertEquals(0.5,solved.equipmentMassFlowsKilogramsPerSecond().get("v1"),1e-8);
+        assertEquals(0.25,solved.equipmentMassFlowsKilogramsPerSecond().get("v2"),1e-8);
+        assertEquals(0.75,solved.pipeSolution().pressureBoundaryInjectionKilogramsPerSecond().get("a"),1e-8);
+        assertTrue(solved.pipeSolution().pipeMassFlowKilogramsPerSecond().isEmpty());
+        equipmentConservation(solved,b,net.pipes(),net.equipmentRevision().equipment());
+    }
+    @Test void actualPipeBranchAndMeshAcrossEquipmentAreMassConservative() {
+        var pipes=List.of(
+                new SimulationPipeSegmentInput("bc","b","c",BigDecimal.valueOf(1000),BigDecimal.ONE,BigDecimal.ZERO),
+                new SimulationPipeSegmentInput("bd","b","d",BigDecimal.valueOf(1000),BigDecimal.ONE,BigDecimal.ZERO),
+                new SimulationPipeSegmentInput("cd","c","d",BigDecimal.valueOf(1000),BigDecimal.ONE,BigDecimal.ZERO));
+        var net=multiValve(new String[][]{{"ab","a","b"}},new double[]{0.5},pipes);
+        var b=Map.of("a",pressure(200000),"b",injection(0),"c",injection(-0.25),"d",injection(-0.25));
+        double pB=199500,pOut=Math.sqrt(pB*pB-EQUIPMENT_PIPE_K*0.25);
+        var solved=equipment(net,b,Map.of("b",pB-1,"c",pOut-1,"d",pOut-1),
+                Map.of("bc",0.25,"bd",0.25,"cd",0d),Map.of("ab",0.5));
+        assertEquals(pB,solved.pipeSolution().nodePressurePascalsAbsolute().get("b"),0.0002);
+        assertEquals(pOut,solved.pipeSolution().nodePressurePascalsAbsolute().get("c"),0.0002);
+        assertEquals(pOut,solved.pipeSolution().nodePressurePascalsAbsolute().get("d"),0.0002);
+        assertEquals(0.5,solved.equipmentMassFlowsKilogramsPerSecond().get("ab"),1e-8);
+        assertEquals(0.25,solved.pipeSolution().pipeMassFlowKilogramsPerSecond().get("bc"),1e-8);
+        assertEquals(0.25,solved.pipeSolution().pipeMassFlowKilogramsPerSecond().get("bd"),1e-8);
+        assertEquals(0,solved.pipeSolution().pipeMassFlowKilogramsPerSecond().get("cd"),1e-10);
+        equipmentConservation(solved,b,net.pipes(),net.equipmentRevision().equipment());
+    }
+    @Test void closedValveIsolationAndInconsistentDemandCannotBePresentedAsConverged() {
+        var net=equipmentNet(oneDevice(Kind.VALVE,0),true);
+        var b=Map.of("a",pressure(200000),"b",injection(0),"c",pressure(199000));
+        var result=equipment(net,b,Map.of("b",199000d),Map.of("bc",0d),Map.of("valve",0d));
+        assertTrue(result.pipeSolution().converged(),result.pipeSolution().status());
+        assertEquals(0,result.equipmentMassFlowsKilogramsPerSecond().get("valve"),1e-11);
+        assertEquals(199000,result.pipeSolution().nodePressurePascalsAbsolute().get("b"),0.0002);
+        equipmentConservation(result,b,net.pipes(),net.equipmentRevision().equipment());
+        // With the closed valve, an island without a pressure datum must reject nonzero demand.
+        var inconsistent=Map.of("a",pressure(200000),"b",injection(0.1),"c",injection(0));
+        assertThrows(IllegalArgumentException.class,()->equipment(net,inconsistent,
+                Map.of("b",199000d,"c",199000d),Map.of("bc",0d),Map.of("valve",0d)));
+    }
+    @Test void badEquipmentBoundaryGuessAndNumericalBudgetCannotClaimConvergence() {
+        var net=equipmentNet(oneDevice(Kind.VALVE,0.5),true);
+        var b=Map.of("a",pressure(200000),"b",injection(0),"c",pressure(199358.445317658515));
+        assertThrows(IllegalArgumentException.class,()->equipment(net,b,Map.of("b",-10d),
+                Map.of("bc",0.5),Map.of("valve",0.5)));
+        assertThrows(IllegalArgumentException.class,()->equipment(net,b,Map.of("b",199500d),
+                Map.of("bc",0.5),Map.of("valve",-0.5)));
+        assertThrows(IllegalArgumentException.class,()->equipment(net,b,Map.of("b",199500d),
+                Map.of("fake-pipe",0.5),Map.of("valve",0.5)));
+        var limited=new NumericalControls(200000,2,1e-11,1e-12,1e-14,1,40);
+        var partial=solver.solveSyntheticIdealGasEquipmentNetwork(net,b,EQUIPMENT_GAS,limited,
+                Map.of("b",199400d),Map.of("bc",0.3),Map.of("valve",0.3));
+        assertFalse(partial.pipeSolution().converged(),"Single Newton iteration cannot fake acceptance");
+        assertEquals("ITERATION_LIMIT",partial.pipeSolution().status());
+    }
+
+
+    @Test void reversedPhysicalPipeRemainsRealAndSignedAcrossValveBridge() {
+        var source=equipmentNet(oneDevice(Kind.VALVE,0.5),true);
+        var reversed=new SimulationSyntheticEquipmentNetworkInput(source.id(),
+                source.networkSourceId(),source.networkRevisionId(),source.networkSha256(),
+                source.fluidSourceId(),source.fluidRevisionId(),source.fluidSha256(),
+                source.fluidQualificationId(),source.at(),source.nodes(),
+                List.of(new SimulationPipeSegmentInput("bc","c","b",new BigDecimal("1000"),
+                        BigDecimal.ONE,BigDecimal.ZERO)),
+                source.equipmentRevision(),source.valveMethods());
+        var boundaries=Map.of("a",pressure(200000),"b",injection(0),"c",injection(-0.5));
+        var result=equipment(reversed,boundaries,Map.of("b",199499d,"c",199357d),
+                Map.of("bc",-0.5),Map.of("valve",0.5));
+        assertEquals(199500,result.pipeSolution().nodePressurePascalsAbsolute().get("b"),0.0002);
+        assertEquals(199358.445317658515,result.pipeSolution().nodePressurePascalsAbsolute().get("c"),0.0002);
+        assertEquals(-0.5,result.pipeSolution().pipeMassFlowKilogramsPerSecond().get("bc"),1e-8);
+        assertEquals(0.5,result.equipmentMassFlowsKilogramsPerSecond().get("valve"),1e-8);
+        equipmentConservation(result,boundaries,reversed.pipes(),reversed.equipmentRevision().equipment());
+    }
+    @Test void compressorOffReferenceAndReverseEquipmentOperationsFailClosed() {
+        var compressor=equipmentNet(oneDevice(Kind.COMPRESSOR,1500),false);
+        assertThrows(IllegalArgumentException.class,()->equipment(compressor,
+                Map.of("a",pressure(199999),"b",injection(-1.5)),
+                Map.of("b",200190d),Map.of(),Map.of("compressor",1.5)));
+        assertThrows(IllegalArgumentException.class,()->equipment(compressor,
+                Map.of("a",pressure(200000),"b",pressure(199900)),
+                Map.of(),Map.of(),Map.of("compressor",1.5)));
+        var valve=equipmentNet(oneDevice(Kind.VALVE,0.5),false);
+        assertThrows(IllegalArgumentException.class,()->equipment(valve,
+                Map.of("a",pressure(200000),"b",pressure(200100)),
+                Map.of(),Map.of(),Map.of("valve",0.5)));
+        assertThrows(IllegalArgumentException.class,()->equipment(valve,
+                Map.of("a",pressure(200000),"b",injection(-0.5)),
+                Map.of("b",199500d),Map.of(),Map.of("valve",-0.5)));
+    }
+
 }

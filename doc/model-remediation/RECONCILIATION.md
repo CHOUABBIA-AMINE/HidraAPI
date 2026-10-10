@@ -11090,3 +11090,64 @@ to finish successfully. Maintained validators passed 51 tests; canonical documen
 Java headers/imports were checked; both architecture export registries, version/POM
 and DATA_DICTIONARY.md remain unchanged. Full exact-head GitHub CI remains the
 numerical acceptance gate; publication observes startup only, then stops.
+
+
+## HPR-P25-008B — Verified Synthetic Numerical Acceptance (2026-10-10)
+
+Owner Next selects only this acceptance record, supporting commit
+`docs(twin): record HPR-P25-008B numerical acceptance`, with exactly two updated
+paths: doc/roadmap/ULTIMATE_ROADMAP.md and doc/model-remediation/RECONCILIATION.md.
+No executable, module document, dependency, schema, dictionary or export changes.
+
+Current authoritative main is `f09f6bad12051100fa26a6d91d3ab7961fef6779`, parent
+`c022d9257900d3f8a8d4628c1e081d337f78e2c9`, tree
+`e99adf4de9de20aa9679227067de95b851ccfa15`. The remote commit, single parent,
+matching local/remote tree and exact six-file remediation scope were verified.
+Exact-head Production CI #634/run 38049453879 and Documentation Validation
+#184/run 38049453861 both PASSED. Production job 114205467545 reports 1,503 tests,
+zero failures, errors or skips; all repository verification, runtime OpenAPI equality,
+OpenAPI backward compatibility and current migrated dictionary evidence steps passed.
+This actual CI result supersedes pending acceptance in the prior delivery entry.
+Local Docker-related skips remain historical local limitations, not persistence passes.
+
+Source/test review confirms the registered synthetic connected pipe-network baseline:
+pressure-squared/flow unknowns and incidence balances, orientation/elevation signs,
+continuous zero-flow laminar derivative, flow-dependent turbulent derivative, scaled
+pivoted damped Newton, explicit pressure/injection boundaries and solved pressure-node
+exchanges. Independent closed-form Poiseuille/hydrostatic benchmarks cover forward,
+reverse, elevation, actual branching, triangle mesh and parallel links; mixed-boundary
+and global balance assertions, tighter tolerances/changed guesses, deterministic replay,
+independent bracketed turbulent reference and derivative perturbations passed. Budget,
+conditioning, unsupported regime and failed/nonphysical step cases retain nonconvergence.
+The local focused suite passed 73 tests without skips; full local verification passed
+with the separately disclosed Docker skips. Passing legacy tree tests alone was not
+used for acceptance; original tree API and seven-argument result constructor remain.
+
+**HPR-P25-008B: COMPLETED for the explicitly synthetic constant-property ideal-gas,
+isothermal connected pipe-network numerical baseline admitted by the remediation
+preflight.** This is not a qualified real-gas property engine, calibrated GZ4 twin,
+large-network performance qualification, equipment/transient implementation, operational
+approval or verified deployment. Dense small-network numerical scope and unsupported
+transitional friction remain explicit. Original prototype/failure/repair and acceptance-gap
+history remain intact. HPR-P25-008C-F and parent 008 remain PENDING; C3E remains
+BLOCKED for qualified source-policy design; C3F/002D remain PENDING.
+
+After this record's exact-head Documentation Validation passes, a separate owner Next
+may select ONLY the HPR-P25-008C equipment execution preflight, supporting message
+`docs(twin): register HPR-P25-008C equipment execution preflight`, initially scoped to
+these same two execution memories. Read actual equipment revision/query/curve contracts,
+current solver incidence and numerical design before registering exact files and laws.
+Report any missing owner-approved behavior/qualification contract; do not invent curves,
+limits, compressor/regulator/valve laws or operational approval. This is a source review
+and preflight selection, not authorization to execute 008C implementation, add an EOS,
+start transients or close parent 008. Preserve GZ4 first gas pilot, GZ2 later candidate,
+0.7.0-SNAPSHOT, P0/P1/P2 CLOSED, P2.5 OPEN, P3 DEFERRED, 57 HMR completions
+and the permanent 123-subject catalogue. Publish with expected-parent lease, verify
+exact two-document scope/parent/tree, observe Documentation CI startup, then STOP.
+
+Acceptance-record documentation validation PASSED: 51 maintained validator tests;
+canonical documentation 95 documents/5,115 links/24 modules/13 P2 rows; offline
+OpenAPI 244 paths/263 operations/231 schemas; P1 closure and whitespace. Exact
+two-document scope checked; only the current 008B summary row is updated, with
+append-only evidence elsewhere. No new Maven/runtime pass is claimed for this
+record; exact executable acceptance remains the verified f09f6bad CI above.

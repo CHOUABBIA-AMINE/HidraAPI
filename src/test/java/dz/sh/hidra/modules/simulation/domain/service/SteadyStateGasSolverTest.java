@@ -383,8 +383,8 @@ class SteadyStateGasSolverTest {
         assertTrue(result.pipeSolution().converged(),result.pipeSolution().status());
         assertEquals(199500,result.pipeSolution().nodePressurePascalsAbsolute().get("b"),0.0002);
         assertEquals(199358.445317658515,result.pipeSolution().nodePressurePascalsAbsolute().get("c"),0.0002);
-        assertEquals(0.5,result.equipmentMassFlowsKilogramsPerSecond().get("valve"),1e-8);
-        assertEquals(0.5,result.pipeSolution().pressureBoundaryInjectionKilogramsPerSecond().get("a"),1e-8);
+        assertEquals(0.5,result.equipmentMassFlowsKilogramsPerSecond().get("valve"),flowTolerance(0.5));
+        assertEquals(0.5,result.pipeSolution().pressureBoundaryInjectionKilogramsPerSecond().get("a"),flowTolerance(0.5));
         assertTrue(Math.abs(result.valveFlowResidualsKilogramsPerSecond().get("valve"))<=1e-11);
     }
     @Test void equipmentOnlyCompressorAndValveHaveNoFakePipeFlows(){
@@ -705,5 +705,54 @@ class SteadyStateGasSolverTest {
         assertFalse(partial.pipeSolution().converged());
         assertTrue(List.of("ITERATION_LIMIT","LINE_SEARCH_FAILED","UNSUPPORTED_EQUIPMENT_STATE")
                 .contains(partial.pipeSolution().status()),partial.pipeSolution().status());
+    }
+
+    @Test void strictlyControlledCompressorBridgeReproducesIndependentPowerPressureAndMassReferences() {
+        var network=equipmentNet(oneDevice(Kind.COMPRESSOR,1500),true);
+        var boundaries=Map.of("a",pressure(200000),"b",injection(0),"c",injection(-1.5));
+        var strict=new NumericalControls(200000,2,1e-13,1e-14,1e-14,60,40);
+        // Frozen analytic isothermal and Poiseuille roots, not production-solver outputs.
+        double expectedB=200194.936153744447;
+        double expectedC=199771.448460542870;
+        double expectedPower=261.290322580645;
+        for(double offset:new double[]{-0.05,0.05}) {
+            var value=solver.solveSyntheticIdealGasEquipmentNetwork(
+                    network,boundaries,EQUIPMENT_GAS,strict,
+                    Map.of("b",expectedB+offset,"c",expectedC+offset),
+                    Map.of("bc",1.5),Map.of("compressor",1.5));
+            assertTrue(value.pipeSolution().converged(),value.pipeSolution().status());
+            assertEquals(expectedB,value.pipeSolution().nodePressurePascalsAbsolute().get("b"),0.0002);
+            assertEquals(expectedC,value.pipeSolution().nodePressurePascalsAbsolute().get("c"),0.0002);
+            assertEquals(1.5,value.equipmentMassFlowsKilogramsPerSecond().get("compressor"),
+                    flowTolerance(1.5));
+            assertEquals(1.5,value.pipeSolution().pipeMassFlowKilogramsPerSecond().get("bc"),
+                    flowTolerance(1.5));
+            assertEquals(1.5,value.pipeSolution().pressureBoundaryInjectionKilogramsPerSecond().get("a"),
+                    flowTolerance(1.5));
+            assertEquals(expectedPower,value.compressorShaftPowerWatts().get("compressor"),1e-5);
+            equipmentConservation(value,boundaries,network.pipes(),network.equipmentRevision().equipment());
+        }
+    }
+    @Test void compressorImpossibleFullNewtonTrialExhaustsOneStepLineSearchWithPhysicalRefusal() {
+        var network=equipmentNet(oneDevice(Kind.COMPRESSOR,1500),false);
+        var boundaries=Map.of("a",pressure(200000),"b",injection(-1.5));
+        var oneTrial=new NumericalControls(200000,2,1e-11,1e-12,1e-14,60,1);
+        // At q=1.5 mass balance is already exact. With inlet 200 kPa and
+        // initial outlet 400 kPa, Newton's p_b^2/S^2 variable starts at 4.
+        // The independent compressor map gives H=135 J/kg at N=1500 rpm.
+        // The full pressure-squared Newton trial becomes
+        // 4 - 8*(ln(2) - 135/(R*T/M)) < 0; no output from the solver is
+        // used to derive this separate, intentionally inadmissible trial.
+        double rT=8.31446261815324*300/0.018;
+        double predictedTrialSquared=4-8*(Math.log(2)-135/rT);
+        assertTrue(predictedTrialSquared<0,"Frozen independent full Newton trial must be nonphysical");
+        var refused=solver.solveSyntheticIdealGasEquipmentNetwork(
+                network,boundaries,EQUIPMENT_GAS,oneTrial,
+                Map.of("b",400000d),Map.of(),Map.of("compressor",1.5));
+        assertFalse(refused.pipeSolution().converged());
+        assertEquals("NONPHYSICAL_PRESSURE",refused.pipeSolution().status());
+        assertEquals(1,refused.pipeSolution().iterations());
+        // Refusal has not modified the originally feasible positive pressure guess.
+        assertEquals(400000,refused.pipeSolution().nodePressurePascalsAbsolute().get("b"),0.0002);
     }
 }

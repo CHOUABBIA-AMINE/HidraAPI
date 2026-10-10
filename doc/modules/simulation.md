@@ -225,3 +225,45 @@ Before 008B implementation, establish a **new conservation-consistent numerical 
 Do not use: constant unversioned compressibility or assumed standard cubic meter conversion as industrial truth; node-by-node hardcoded pressure interpolation as a solver; irreversible dependence of core numerical code on external Python/process engines; a steady solution advertised as dynamic transients; synthetic historical sums as real SCADA traces; coupling to automatic OT actuation; or transfer of a gas-only validity claim to oil/H2/blends. The above steady/transient formulations are **design selections requiring numerical verification**, not measured performance assertions. The choice of actual sparse library, friction-transition treatment, EOS implementation and transient flux remains an 008B/008D preflight and verification decision, not a hidden implementation authorization here.
 
 **008A design acceptance:** this specification is the sole 008A numerical design deliverable; review mathematical consistency, source-contract binding, source provenance, negative cases, and later independent benchmark obligations; apply exact-head documentation CI. Implementation 008B is a separately owner-selected next task and requires its own preflight. No numerical source or tests were created for 008A.
+
+
+## HPR-P25-008B — Synthetic Connected-Network Acceptance Remediation (2026-10-10)
+
+The internal `SteadyStateGasSolver.solveSyntheticIdealGasNetwork` adds a bounded
+synthetic ideal-gas damped Newton reference for connected pipes, including meshes
+and parallel links. Each node supplies exactly one pressure or injection boundary;
+pressure-boundary mass exchanges are computed outputs. Temperature, molar mass,
+viscosity, initial unknown pressures, initial pipe flows, numerical scales/tolerances
+and iteration/line-search limits are supplied explicitly through nested immutable
+records. It calculates no field property method and consumes no telemetry or GZ4
+fixture import. The existing tree method and seven-argument solution constructor
+remain source-compatible.
+
+Unknowns are oriented pipe flows and pressure-squared values at injection nodes.
+Node conservation and integrated isothermal Darcy/elevation relations form a square
+system. The implementation uses an analytical flow-dependent friction Jacobian, the
+continuous zero-flow laminar derivative, scaled partial-pivot linear solves and
+positivity-preserving residual-reducing line search. Unsupported transitional Reynolds,
+nonphysical pressure, singular/ill-conditioned Jacobian, failed line search and iteration
+limit do not report convergence. Results contain actual iteration count, immutable
+finite pressure/flow maps, injection-node mass residuals, pipe momentum residuals and
+computed pressure-boundary exchanges. Pressure boundaries are not independently
+constrained to zero injection. No iteration-history trace or sparse large-network
+performance validation is claimed.
+
+Independent tests use the separately derived compressible Poiseuille relation
+`p_i^2-p_j^2=256*mu*L*q/(pi*c*D^4)`, high-precision reference constants and the
+zero-flow hydrostatic exponential. They verify forward/reverse pressure and flow,
+flowing elevation, an actual branch, triangle loop, parallel orientation, multiple
+pressure boundaries with an interior injection, global mass balance, distinct initial
+guesses/tighter tolerances, deterministic graph replay, independently bracketed
+turbulent flow and central-perturbation derivative agreement. Controlled low-budget,
+conditioning, unsupported and nonphysical cases test failure reporting. Numerical
+values and tolerances are development references, not GZ4 operating limits.
+
+The model remains the declared uniform-temperature ideal-gas, low-inertia synthetic
+reference with laminar/Swamee-Jain Darcy friction. General EOS/property qualification,
+equipment laws, transients, field calibration, production state qualification and run
+integration are separate gates. C3E remains blocked. 008B numerical acceptance remains
+pending exact-head full Java CI; no operational or calibrated twin claim follows from
+the local benchmark pass.

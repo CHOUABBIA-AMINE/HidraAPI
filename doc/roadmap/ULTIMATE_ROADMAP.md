@@ -12689,3 +12689,59 @@ DEFERRED, GZ4 first gas pilot, version 0.7.0-SNAPSHOT, 57 HMR implementations an
 24 modules/13 P2 rows; offline OpenAPI 244 paths/263 operations/231 schemas;
 P1 evidence; whitespace; exact two-file append-only scope. No new executable
 verification or solver acceptance claimed. Java, schema, exports and version unchanged.
+
+
+## HPR-P25-008B — Connected Synthetic Gas Network Remediation Delivery (2026-10-10)
+
+Owner Next selected ONLY the six-file remediation authorized by
+`c022d9257900d3f8a8d4628c1e081d337f78e2c9`, whose exact-head Documentation
+#183/run 38048559162 PASSED. Registered implementation message remains
+`feat(simulation): implement internal steady state gas solver`; prior prototype and
+friction repair history remain unchanged. Current implementation updates exactly the
+three registered existing Java/test files, module document and two execution memories.
+No new path, dependency, API, schema, fixture, export or property engine is introduced.
+
+The new synthetic network entry point uses explicit immutable boundary/property/control
+records, caller-supplied initial guesses, pressure-squared/flow scaling, analytical
+laminar/turbulent Jacobian, deterministic pivoted dense solve and bounded damped Newton
+iterations. It handles loops/parallel links and heterogeneous pressure/injection
+boundaries, computes pressure-node exchanges and reports finite residual maps/actual
+iteration count. Distinct nonconvergence diagnostics preserve partial valid state
+without treating it as converged. The original tree entry point and solution constructor
+remain compatible. No unsupported transitional-friction interpolation is invented.
+
+Independent benchmark evidence is in SteadyStateGasSolverTest: high-precision
+Poiseuille/hydrostatic targets, reversed/flowing-elevation cases, actual branch, meshed
+triangle, parallel reversed links, multiple pressure boundaries with interior injection,
+independent global mass/momentum checks, two initial guesses and tighter tolerances,
+deterministic replay, independent bracketed turbulent oracle, central derivative
+perturbation, conditioning/refusal and controlled iteration/line-search failure.
+The registered focused command PASSED locally: 73 tests, zero failures/errors/skips.
+A standalone Java 21 compile and independent mesh/hydrostatic probe also passed;
+this is supplemental evidence, not a substitute for Maven/CI. Initial offline Maven
+attempts failed because the refreshed environment lacked the Spring Boot 4.1.1 parent
+and then Surefire 3.5.6. Temporary online settings restored dependencies; test compile
+and focused Maven then passed with Java 21 and the existing Mockito agent.
+
+HPR-P25-008B: REMEDIATION IMPLEMENTED — numerical acceptance PENDING exact-head
+full Java CI and maintained independent acceptance checks. Do not mark complete solely
+from local tests or start 008C. C3E qualified source remains BLOCKED, C3F/002D and
+008C-F/008 parents remain PENDING. Preserve GZ4 first pilot, 0.7.0-SNAPSHOT,
+P0/P1/P2 CLOSED, P2.5 OPEN, P3 DEFERRED, 57 HMR completions and 123 subjects.
+The internal synthetic numerical solver now executes; this is not a qualified real-gas
+property engine, calibrated field twin, production deployment or OT actuation.
+Final local validation evidence and exact-head CI startup are recorded separately;
+publish with expected-parent lease and STOP after Production/Documentation CI startup.
+
+Local final validation for this six-file remediation PASSED with Java 21: registered
+focused Maven 73 tests, zero failures/errors/skips; full `clean verify` 1,503 tests,
+zero failures/errors and 309 skips. Docker is unavailable locally; skipped persistence
+checks are not PostgreSQL acceptance. This delivery changes no persistence/schema.
+An initial full-verify attempt failed on an expired temporary proxy endpoint while
+resolving the clean plugin; regenerated temporary settings allowed the full command
+to finish successfully. Maintained validators passed 51 tests; canonical documentation
+95 documents/5,115 links/24 modules/13 P2 rows; offline OpenAPI 244 paths/263 operations/
+231 schemas; P1 closure and whitespace passed. Exact six-file scope and canonical
+Java headers/imports were checked; both architecture export registries, version/POM
+and DATA_DICTIONARY.md remain unchanged. Full exact-head GitHub CI remains the
+numerical acceptance gate; publication observes startup only, then stops.

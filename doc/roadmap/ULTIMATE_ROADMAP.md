@@ -12497,3 +12497,195 @@ This preflight's **write allowlist is exactly** `doc/roadmap/ULTIMATE_ROADMAP.md
 ### Sequential gate
 
 Next eligible owner Next is the **008B source-backed remediation exact-file and benchmark authorization**, with the two memory docs as its preflight scope, not implementation. Only after the authorization's exact-head Documentation Validation passes may a different owner Next execute the authorized code/test remediation and observe focused Java 21 tests, `bash ./mvnw -B -q clean verify`, relevant architecture checks and exact-head full Java CI; no claimed success without actual results. Mark 008B COMPLETED only if full numerical acceptance is independently established. 008C–F and umbrella 008 remain PENDING and not automatically selected. C3E qualified operating-state remains BLOCKED. GZ4 stays first gas pilot, P2.5 OPEN and `0.7.0-SNAPSHOT` unchanged.
+
+
+## HPR-P25-008B — Remediation Exact-File and Independent Benchmark Authorization (2026-10-10)
+
+### Selection, source review and status
+
+Owner Next selects this documentation authorization following preflight main
+`61021607ebf4b108a8d54ce04266cd33026cff50`, whose exact-head Documentation
+#182/run 38048065518 PASSED. Supporting commit uses the registered message
+`docs(twin): register HPR-P25-008B acceptance remediation preflight`. This action
+writes only ULTIMATE_ROADMAP and RECONCILIATION. It executes no solver remediation.
+The latest numerical source is corrected tree prototype
+`44a418ba95c678f8d872eb82ebf32b2382da7fa9`, with Production #633 and
+Documentation #180 passing as recorded by the preceding preflight. No new exact-head
+Maven acceptance is claimed here. 008B remains PENDING until remediation acceptance.
+
+Actual source review: SimulationPhysicalNetworkInput admits connected undirected
+loops and parallel links with unique oriented pipe identities; SteadyStateGasSolver
+adds a tree-only edge-count restriction, one pressure datum and balanced prescribed
+injections. Its coefficient repair uses the Darcy pressure-squared loss, but current
+tests mostly assert ordering and self-generated residuals. SteadyStateGasSolution
+contains immutable pressure/flow/residual maps and iterations, without pressure-node
+exchange output. Only the solver and its test construct/use this solution in the
+current source search. No executing production EOS or state/property resolver exists.
+Keep the accepted 008A design and C3E qualification block separate from numerical
+synthetic acceptance. GZ4 fixture rows and daily aggregates are not numerical oracles.
+
+### Independent equation and dimensional review
+
+For this bounded synthetic baseline, supplied uniform ideal-gas temperature T, molar
+mass M and dynamic viscosity mu are explicit. Define c=M/(R*T), rho=c*p, cross-section
+A=pi*D^2/4 and x=p^2. c has units kg/(m^3 Pa). R=8.31446261815324 and
+g=9.80665 retain the existing solver's declared reference constants; no field gas
+property or GZ4 parameter is inferred. Neglect convective acceleration consistently
+with the prototype's low-inertia isothermal Darcy model; do not claim validation of
+the full subsonic/thermal design outside this reference formulation.
+
+Darcy momentum with constant signed pipe flow q and linearly varying elevation gives
+dx/ds + 2*c*g*(dz/ds)*x = -f_D*q*abs(q)/(c*D*A^2). For oriented i->j,
+h=-2*c*g*(z_j-z_i), phi(h)=expm1(h)/h with continuous phi(0)=1, and
+x_j=exp(h)*x_i - f_D*L*q*abs(q)*phi(h)/(c*D*A^2). The loss is Pa^2:
+q^2/(c*D*A^2) times L has that dimension. Reversal changes q*abs(q)'s sign,
+not geometry orientation. At q=0, p_j=p_i*exp(-c*g*(z_j-z_i)). Use stable
+expm1 and a reviewed small-h limit; refuse overflow/nonfinite or nonpositive pressure.
+
+An independent laminar oracle eliminates friction evaluation entirely: Re=
+4*abs(q)/(pi*D*mu), f_D=64/Re, so a horizontal pipe satisfies
+x_i-x_j=K*q, K=256*mu*L/(pi*c*D^4). This compressible Poiseuille form
+is dimensionally Pa^2 per kg/s and has a finite derivative at q=0. Test code
+must use this separately derived relation and independently evaluated reference
+constants, never invoke production friction/momentum helpers or accept their returned
+residuals as the oracle. The zero-flow hydrostatic exponential is another independent
+closed form. Laminar/turbulent thresholds retain the current synthetic model;
+transitional Re in [2300,4000] remains explicitly unsupported. Swamee-Jain is a
+declared synthetic Darcy approximation, not calibrated roughness or a production EOS.
+
+### Minimum mixed-boundary connected-network formulation
+
+For N nodes and E oriented pipes, each node has exactly ONE boundary declaration:
+either fixed positive absolute pressure or a finite signed prescribed injection
+(including explicit zero). At least one fixed-pressure node is required. Reject
+missing/unknown/duplicate/both-type boundary assignments; a pressure-node injection
+is solved as exchange, never independently prescribed or implicitly assumed zero.
+Multiple pressure nodes are admitted without adding injection constraints there.
+Unknowns are E flows and N-k pressure-squared values when k nodes have fixed
+pressure. Equations are E oriented pipe momentum relations and N-k node balances:
+B*q=s at injection nodes, with B positive for an outgoing edge and negative for an
+incoming edge. Thus the system is square (E+N-k equations/unknowns), including
+loops and parallel edges. Pressure-node exchanges are computed from B*q and
+reported explicitly; total computed/specified exchanges must balance. Boundary
+count alone does not prove nonsingularity; assess the actual scaled Jacobian.
+
+Use a bounded damped Newton solve over scaled pressure-squared/flow variables with
+a deterministic pivoted dense linear solve inside this small synthetic baseline.
+No new numerical dependency is admitted. Derive/document Jacobian terms, including
+finite zero-flow laminar derivative and flow-dependent turbulent friction. Derivative
+tests must compare independent perturbations in supported domains. Reject unsupported
+property regime rather than silently freeze friction or invent transitional behavior.
+Line search must preserve finite positive pressures and reduce scaled residual merit;
+a failed admissible step is a reported failure, not convergence. Supply immutable
+explicit initial guesses for unknown pressure/flow values and finite positive scales,
+tolerances, iteration and line-search limits through numerical controls; no field
+thresholds or implicit operational defaults. Independent verification must compare
+variable changes, external node/pipe residuals and analytical errors.
+
+Expose distinct nonconverged status strings for iteration limit, singular/ill-conditioned
+system, failed admissible line search, nonphysical pressure and unsupported regime.
+Structural invalidity rejects before iteration. Return actual iteration count and
+finite diagnostics without labeling partial or empty results converged. Preserve the
+existing tree method signature and original reference behavior for callers/tests;
+add a separately named synthetic network solve entry point. Do not call single-pass
+tree propagation an iterative meshed solver or silently expand physical scope.
+
+### Independently calculated benchmark inputs and machine acceptance
+
+All numbers below are DEVELOPMENT BENCHMARKS, not GZ4 geometry, gas properties,
+operating thresholds or approved numerical/field tolerances. Independent 70-digit
+Decimal arithmetic with explicitly written pi and R evaluated the laminar/hydrostatic
+closed forms during this source review; no production solver or external engine was
+run to generate these references. Synthetic constants T=300 K, M=0.018 kg/mol,
+mu=0.00001 Pa s; horizontal pipe L=1000 m, D=0.01 m, roughness=0 m; datum
+p_a=5000000 Pa. For q=0.0001 kg/s, Re=1273.239544735162686... and
+K=11292056105231.957431452538704223... Pa^2/(kg/s).
+
+| Case | Independent target and required assertion |
+|---|---|
+| Horizontal forward | Injection +0.0001 at a, -0.0001 at b: x_a-x_b=1129205610.523195743145... Pa^2; p_b=4999887.078163813571654... Pa |
+| Horizontal reverse | Same datum, reversed injection: q_ab=-0.0001; p_b=5000112.919285975805046... Pa |
+| Hydrostatic | Zero flow, z_b-z_a=100 m: p_b=4964740.841675542439863... Pa; flow exactly zero within stated numerical tolerance |
+| Actual branch | Edges a->b and a->c with identical geometry; prescribed withdrawals -0.00005 at b and c; each flow 0.00005, each pressure squared drop K*0.00005; independently assess both leaf and supply balance |
+| Meshed triangle | Equal pipes a->b, a->c, c->b; +0.0001 at a, -0.0001 at b, zero at c; q_ab=0.0001*2/3 and q_ac=q_cb=0.0001/3, p_b=4999924.719059243116160... Pa; x_c=x_a-K*0.0001/3 |
+| Parallel links | Two equal a->b pipes share a total 0.0001; each flow 0.00005; preserve both IDs/orientation and compare pressure to the independent K*q drop |
+| Multiple pressure / mixed boundaries | Fix a and b at the independent forward pressures, solve their exchanges; also prescribe an interior node injection in a separately manufactured network; do not impose a second independent injection at a pressure boundary |
+
+For these fixtures: analytical pressure error <= max(0.001 Pa, 1e-10*reference Pa),
+flow error <= max(1e-12 kg/s, 1e-8*abs(reference flow)); independent normalized
+pressure-squared momentum residual <=1e-12 using supplied pressure-squared scale,
+and mass residual <=max(1e-12 kg/s, 1e-8*supplied flow scale). These targets are
+tentative development acceptance limits, supported by the independently calculated
+references, not field approval. Repeat with tighter solve tolerances and at least two
+explicit initial guesses; analytical error must remain within limits and stable,
+never loosen a threshold merely to hide failure. Test independent dimensional/sign
+relations and global mass balance, not just returned residuals.
+
+Also require: nonzero elevation with flowing pipe assessed against independently
+evaluated integrated equation; supported turbulent flow checked using a separately
+authored bracketed scalar reference calculation; ordered deterministic replay and
+orientation reversal; finite-difference Jacobian cross-check; contrasting pipe
+resistances/poor conditioning with honest conditioning diagnostics; bad or absent
+pressure datum, nonfinite/negative properties, incompatible boundaries, transitional
+regime and nonphysical pressure refusal; an explicit insufficient iteration budget
+with nonconverged status. A failure case is not an analytical accuracy pass.
+No NeqSim/pandapipes/DWSIM dependency or comparison result is claimed.
+
+### Exact future implementation allowlist and owner contracts
+
+After this authorization's exact-head Documentation CI passes, a SEPARATE owner
+Next selects ONLY remediation of HPR-P25-008B with its registered implementation
+message `feat(simulation): implement internal steady state gas solver`. Preserve
+the original prototype/repair commits as historical evidence. Exact six updated paths:
+
+1. src/main/java/dz/sh/hidra/modules/simulation/domain/service/SteadyStateGasSolver.java
+2. src/main/java/dz/sh/hidra/modules/simulation/domain/model/SteadyStateGasSolution.java
+3. src/test/java/dz/sh/hidra/modules/simulation/domain/service/SteadyStateGasSolverTest.java
+4. doc/modules/simulation.md
+5. doc/roadmap/ULTIMATE_ROADMAP.md
+6. doc/model-remediation/RECONCILIATION.md
+
+No new file is authorized. New immutable boundary, explicit synthetic property and
+numerical-control/initial-guess records may be nested inside SteadyStateGasSolver.
+SteadyStateGasSolution may add an immutable computed pressure-boundary-injection map
+with a source-compatible existing seven-argument constructor for the legacy tree
+method; verify finite maps/status invariants. Solver/test imports stay Java/domain
+and JUnit only; canonical AGENTS.md headers retain Author and CreatedOn. Keep
+SimulationPhysicalNetworkInput, initial-state/boundary/physical payload and owner
+contracts unchanged. No general property interface or actual EOS implementation is
+authorized: adding one would require separate exact-file/property-method review.
+The method accepts only explicit synthetic ideal-gas properties. This scope closes
+connected pipe-network numerical acceptance for that declared baseline, not the
+future qualified real-gas engine or C3E/C3F run-input path.
+
+No POM/dependency, migration, schema, dictionary, fixtures, REST/API, run service,
+architecture-export registry, Kernel/Platform, equipment law, transient algorithm or
+operational actuation changes are admitted. Both architecture registries stay intact.
+If this nested/internal scope cannot achieve the derived formulation and independent
+acceptance, report the material scope gap before adding files; do not weaken tests.
+
+### Future validation and publication gates
+
+Focused: `bash ./mvnw -B -q -Dtest=SteadyStateGasSolverTest,SimulationStateBoundaryInputTest,SimulationPhysicalInputPayloadTest,ArchitectureGuardrailTest,ForensicRemediationClosureTest test`.
+Then `bash ./mvnw -B -q clean verify`, maintained validator tests, canonical docs,
+offline/runtime OpenAPI, P1 evidence, whitespace, headers/imports and exact six-file
+check. Wrapper via bash without permission changes. Recheck Java 21/dependency
+availability; distinguish Docker-skipped local checks from real CI acceptance.
+Publish only accepted bounded remediation, verify parent/tree/scope and observe
+exact-head Production/Documentation CI startup, then STOP. Mark 008B complete only
+after independent acceptance and exact-head full Java CI are actually verified;
+passing legacy tree tests alone is insufficient. No automatic 008C, parent closure
+or CI-completion wait.
+
+This documentation action must itself pass all maintained validators, canonical docs,
+OpenAPI/P1 and exact two-file append-only/whitespace checks; publish with expected
+parent lease, observe exact-head Documentation CI startup and STOP. 008B/008C-F/008
+remain PENDING; C3E real qualification BLOCKED; P0/P1/P2 CLOSED, P2.5 OPEN, P3
+DEFERRED, GZ4 first gas pilot, version 0.7.0-SNAPSHOT, 57 HMR implementations and
+123 subjects unchanged. No calibrated twin, field qualification or verified deployment.
+
+008B-REMEDIATION-AUTHORIZATION documentation validation PASSED: 51 tests
+(37 maintained plus 14 resolve-base); canonical docs 95 documents/5115 links/
+24 modules/13 P2 rows; offline OpenAPI 244 paths/263 operations/231 schemas;
+P1 evidence; whitespace; exact two-file append-only scope. No new executable
+verification or solver acceptance claimed. Java, schema, exports and version unchanged.

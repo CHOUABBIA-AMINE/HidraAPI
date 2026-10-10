@@ -108,3 +108,8 @@ The regenerated dictionary adds the actual separate Topology revision table, con
 ## C3C Candidate Collection Gate
 
 The registered Custody gas source migration adds three owner-reviewed JDBC tables. It changes no existing capture history or production deployment claim. C3C acceptance requires a new actual PostgreSQL 16 full-chain catalog with exact source inventory and generation through the maintained dictionary tool. The current dictionary is retained until that capture is obtained; Docker-skipped local tests do not establish persistence or catalog success. CI dictionary comparison remains enabled.
+
+
+## Phase 2.5 governed equipment source revisions
+
+C3D adds separate Simulation equipment parameter, characteristic and qualification stores through V20261010_002. Candidate acceptance requires actual full-chain PostgreSQL capture and dictionary regeneration through the maintained generator with reviewed ownership. Existing CI dictionary comparison remains binding; Docker-skipped tests do not meet acceptance.

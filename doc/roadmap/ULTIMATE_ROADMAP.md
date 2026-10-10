@@ -12134,3 +12134,112 @@ No parent closure, later code, version change, production approval or OT action 
 Final publication commits contain only documentation completion/evidence edits beyond
 the accepted executable inventory; final-head CI startup will be observed after the
 one leased main advancement, without claiming a new completed exact-head CI result.
+
+
+## HPR-P25-002C3D Equipment Parameter Revision Candidate — 2026-10-10
+
+The registered fluid/equipment envelope continues from main
+`19cfae0d63096e85c5109ec822f39f05fa073956` after exact-head Documentation
+#168/run 38035403028 PASSED. The C3C implementation is reconstructed as
+`e2dde09fe57277ab5fd30ee53772d74655917fbf`, parent main, tree
+`f632fe0a15aaa5437fc24177fd3f5077cc391961`. Its executable inventory is unchanged
+from accepted candidate #628; the correction and reconstruction evidence are retained.
+This does not invent a new exact-head CI result.
+
+C3D implements immutable supplied compressor/valve maps and governed limits, independent
+characteristic origin/time, exact qualified Custody fluid and stored Topology joins,
+actual Workflow evidence re-attestation, deterministic strict owner codecs, computed
+SHA-256 and three append-only JDBC tables. No public write endpoint, executing physics,
+operating-state resolver, operational approval or source promotion is introduced.
+Tests cover independent provenance, canonical bytes/hash/negative scales, immutable
+bundles, actual approval/withdrawal, replay, concurrent conflicting map reuse, rollback,
+mutation protection, corruption and schema-only actual catalog capture.
+
+Local Java 21 focused command PASSED: 81 tests, zero failures/errors, eight PostgreSQL
+tests skipped because Docker is unavailable. Full `bash ./mvnw -B -q clean verify`
+(with offline cached dependencies and the existing Mockito agent) PASSED: 1489 tests,
+zero failures/errors, 309 Docker-dependent skips. These skips are NOT PostgreSQL
+acceptance. All 51 maintained/additional validator tests passed; canonical docs
+95 documents/5103 links/24 modules/13 P2 rows, offline OpenAPI 244 paths/263 operations/
+231 schemas, P1 evidence and whitespace passed. Both architecture registries and
+0.7.0-SNAPSHOT are unchanged. Java headers checked against AGENTS.md.
+
+Candidate publication is solely to obtain the registered equivalent exact-source
+disposable PostgreSQL evidence without a PR. The C3D dictionary remains the verified
+C3C dictionary until actual full-chain capture permits maintained-generator regeneration;
+its comparison is expected to require that regeneration. No invented schema metadata
+is substituted. Main remains unchanged. C3C/C3D and all retained parent statuses remain
+PENDING until combined acceptance. Actual PostgreSQL, runtime OpenAPI and final
+dictionary comparison remain gates before one leased main advancement.
+
+
+### C3D candidate #629 dictionary repair — 2026-10-10
+
+Exact candidate `0dd8097dd5b4db055e92f0bf74629d2c7ac39dfb` Production #629/
+run 38036678840 FAILED at the maintained dictionary capture/comparison gate.
+Repository verification PASSED: 1489 tests, zero failures/errors/skips, including
+actual PostgreSQL persistence, full-owner qualification, replay/concurrency/rollback,
+append-only protection and corruption tests. Runtime OpenAPI equality PASSED:
+244 paths, 263 operations, 231 schemas. No Java/schema repair was indicated.
+
+The actual full-chain disposable PostgreSQL 16.15 catalog was captured by the
+registered C3D persistence test and independently by existing owner capture tests,
+with identical hashes: 142 migrations, 470 JPA mappings, 489 relations, no unresolved
+owners. Exact source bundle SHA-256:
+`bf4b114cc8094c565dfa3bb2a1b0449f198cbc971123d2dee960ed7a433b5f30`.
+Catalog artifact SHA-256:
+`0eacdbb90985fcd7de7ee8dd8aec74d6699217f0bba1fe96767b87d42f7172b0`.
+All 97 ordered compressed schema-only log parts were recovered and their decompressed
+hash and exact source SHA verified before using the maintained generator.
+
+DATA_DICTIONARY was regenerated through generate_data_dictionary.py using that actual
+catalog and reviewed ownership. Generated dictionary SHA-256:
+`86888cd7aa8819b90b461932fc051ffa5f81aefb0d78bc13794722bd4766bb00`.
+The maintained comparison against the regenerated file PASSED; the prior C3C
+dictionary fails against this exact catalog. No fabricated catalog facts or hand-edited
+physical dictionary were used, and the CI comparison remains unchanged.
+
+Amend only the registered C3D constituent with regenerated dictionary and these
+evidence additions: exact final C3D scope 27 paths, C3C scope 28, combined 49.
+Executable inventory is unchanged from #629, so no repeated local executable verify
+is claimed or required for these documentation-only evidence edits. Main remains
+`19cfae0d63096e85c5109ec822f39f05fa073956`; C3C/C3D remain PENDING until
+combined candidate acceptance. Rerun exact candidate CI before main advancement.
+
+
+## HPR-P25-002C3D Accepted Equipment Parameter Delivery — 2026-10-10
+
+| Code | Current status | Acceptance evidence |
+|---|---|---|
+| HPR-P25-002C3C | COMPLETED | Accepted gas fluid/method revisions and actual owner qualification; separate preceding constituent commit |
+| HPR-P25-002C3D | COMPLETED | Complete immutable maps/limits, independent characteristic provenance/time, exact fluid/network joins and actual Workflow qualification; Production #630 PASSED |
+| HPR-P25-002C3E / HPR-P25-002C3F | PENDING | No operating-state or run-input delivery selected |
+| HPR-P25-002C3 / HPR-P25-002C / HPR-P25-002D / HPR-P25-002 | PENDING | Parent and later gates remain open |
+
+Exact candidate `aa100e90d35673510ac5ca87dc0ec334e24abd47`, tree
+`0ff3c176e03c362d1e301a4eea9277afa84b581d`, Production #630/run
+38037439182 PASSED. All 1489 tests ran with zero failures/errors/skips, including
+real PostgreSQL full-chain persistence/owner qualification, independent characteristic
+replay and concurrent conflicts, rollback, SQL mutation protection and integrity checks.
+Runtime OpenAPI equality and backward compatibility passed: 244 paths, 263 operations,
+231 schemas. Maintained dictionary comparison passed with no unresolved owners.
+
+CI actual catalog: 142 migrations, 470 JPA mappings, 489 relations, PostgreSQL 16.15.
+Source bundle SHA-256 `bf4b114cc8094c565dfa3bb2a1b0449f198cbc971123d2dee960ed7a433b5f30`.
+#630 catalog SHA-256 `64cd6533a3e4ef584d57b312329f33c6cf052b6674691196c7bea5e7d8f587c4`.
+#630 generated dictionary SHA-256 `b7f7717aefdc7857867a16355795ffb63c026e8686b423c0ae4696e6cac90a54`.
+The committed dictionary remains the actual #629-catalog regeneration documented above;
+#630 verifies its maintained comparison. Capture headers identify different exact source
+commits; executable inventory and reviewed physical schema are identical.
+
+Final completion edits change only the two execution memories. C3C retains 28 paths;
+C3D retains 27; combined delivery has exactly 49 distinct paths. No repeated executable
+verify for documentation-only edits and no invented final-head passing CI result.
+Publish the separate registered commits in order with one expected-parent lease from
+main `19cfae0d63096e85c5109ec822f39f05fa073956`; verify remote chain/scopes/final
+tree, observe final-head Production/Documentation CI startup and STOP. No PR.
+Retain 0.7.0-SNAPSHOT, P0/P1/P2 CLOSED, P2.5 OPEN, P3 DEFERRED, 57 reconciled HMR
+implementations and 123 permanent subjects. No solver, calibrated GZ2 twin, operational
+threshold, verified deployment or direct OT action is claimed.
+The next registered selection after successful final delivery CI is
+`docs(twin): register operating state delivery preflight`; it is not selected here.

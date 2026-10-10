@@ -6,10 +6,10 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `25707cf7389ecb2077e80210a58e589da7ca9960`
+Captured source SHA: `0dd8097dd5b4db055e92f0bf74629d2c7ac39dfb`
 PostgreSQL server: `16.15 (Debian 16.15-1.pgdg13+2)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `2863b637159942c0a01a23d6406fec034f051361f5be6de951834fd18f8b3b9f`.
-Migrations: 141; JPA mappings: 470; catalog relations: 486; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `bf4b114cc8094c565dfa3bb2a1b0449f198cbc971123d2dee960ed7a433b5f30`.
+Migrations: 142; JPA mappings: 470; catalog relations: 489; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -22336,6 +22336,162 @@ Persisted SimulationConstraintEvaluationJpaEntity state; semantic authority rema
 #### Triggers
 
 None captured in this catalog category.
+
+### public.hidra_simulation_equipment_characteristic_revision
+
+Owner: **simulation**; relation kind: `r`.
+
+Simulation-owned independent immutable compressor/valve characteristics retaining supplied origin and recording/validity times.
+
+- Evidence: [SimulationEquipmentParameterRevision.java](../../src/main/java/dz/sh/hidra/modules/simulation/domain/model/SimulationEquipmentParameterRevision.java)
+- Evidence: [JdbcSimulationEquipmentParameterRevisionRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/adapter/JdbcSimulationEquipmentParameterRevisionRepositoryAdapter.java)
+- Evidence: [V20261010_002__p25_simulation_equipment_parameter_revisions.sql](../../src/main/resources/db/migration/V20261010_002__p25_simulation_equipment_parameter_revisions.sql)
+- Migration mention (not inferred introduction): [V20261010_002__p25_simulation_equipment_parameter_revisions.sql](../../src/main/resources/db/migration/V20261010_002__p25_simulation_equipment_parameter_revisions.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| kind | text | False | None; identity=; generated= | No current mapped Java column | — |
+| characteristic_id | text | False | None; identity=; generated= | No current mapped Java column | — |
+| revision_id | text | False | None; identity=; generated= | No current mapped Java column | — |
+| payload_format | text | False | None; identity=; generated= | No current mapped Java column | — |
+| canonical_payload | bytea | False | None; identity=; generated= | No current mapped Java column | — |
+| sha256 | character varying(64) | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_simulation_equipment_characterist_canonical_payload_check`: CHECK (octet_length(canonical_payload) &gt; 0)
+  - Catalog attributes: {"columns": ["canonical_payload"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_simulation_equipment_characterist_characteristic_id_check`: CHECK (characteristic_id !~ '^[\x01-\x20]&#124;[\x01-\x20]$'::text AND characteristic_id !~ '^[[:space:]]*$'::text)
+  - Catalog attributes: {"columns": ["characteristic_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_simulation_equipment_characteristic_rev_revision_id_check`: CHECK (revision_id !~ '^[\x01-\x20]&#124;[\x01-\x20]$'::text AND revision_id !~ '^[[:space:]]*$'::text)
+  - Catalog attributes: {"columns": ["revision_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_simulation_equipment_characteristic_revision_check`: CHECK (kind = 'COMPRESSOR'::text AND payload_format = 'HIDRA_SIMULATION_COMPRESSOR_CURVE_V1'::text OR kind = 'VALVE'::text AND payload_format = 'HIDRA_SIMULATION_VALVE_CHARACTERISTIC_V1'::text)
+  - Catalog attributes: {"columns": ["kind", "payload_format"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_simulation_equipment_characteristic_revision_check1`: CHECK (sha256::text ~ '^[0-9a-f]{64}$'::text AND sha256::text = encode(sha256(canonical_payload), 'hex'::text))
+  - Catalog attributes: {"columns": ["sha256", "canonical_payload"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_simulation_equipment_characteristic_revision_kind_check`: CHECK (kind = ANY (ARRAY['COMPRESSOR'::text, 'VALVE'::text]))
+  - Catalog attributes: {"columns": ["kind"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_simulation_equipment_characteristic_revision_pkey`: PRIMARY KEY (kind, characteristic_id, revision_id)
+  - Catalog attributes: {"columns": ["kind", "characteristic_id", "revision_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+
+#### Indexes
+
+- `hidra_simulation_equipment_characteristic_revision_pkey`: CREATE UNIQUE INDEX hidra_simulation_equipment_characteristic_revision_pkey ON public.hidra_simulation_equipment_characteristic_revision USING btree (kind, characteristic_id, revision_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `hidra_simulation_equipment_characteristic_revision_no_truncate`: CREATE TRIGGER hidra_simulation_equipment_characteristic_revision_no_truncate BEFORE TRUNCATE ON hidra_simulation_equipment_characteristic_revision FOR EACH STATEMENT EXECUTE FUNCTION hidra_simulation_equipment_revision_deny_mutation()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_simulation_equipment_revision_deny_mutation()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_simulation_equipment_revision_deny_mutation()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'Simulation equipment revision evidence is append-only';<br>END;<br>$function$<br>
+- `hidra_simulation_equipment_characteristic_revision_no_update_de`: CREATE TRIGGER hidra_simulation_equipment_characteristic_revision_no_update_de BEFORE DELETE OR UPDATE ON hidra_simulation_equipment_characteristic_revision FOR EACH ROW EXECUTE FUNCTION hidra_simulation_equipment_revision_deny_mutation()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_simulation_equipment_revision_deny_mutation()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_simulation_equipment_revision_deny_mutation()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'Simulation equipment revision evidence is append-only';<br>END;<br>$function$<br>
+
+### public.hidra_simulation_equipment_parameter_qualification
+
+Owner: **simulation**; relation kind: `r`.
+
+Simulation-owned immutable exact source qualification reattested against current Workflow and source-owner evidence.
+
+- Evidence: [SimulationEquipmentParameterRevision.java](../../src/main/java/dz/sh/hidra/modules/simulation/domain/model/SimulationEquipmentParameterRevision.java)
+- Evidence: [JdbcSimulationEquipmentParameterRevisionRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/adapter/JdbcSimulationEquipmentParameterRevisionRepositoryAdapter.java)
+- Evidence: [V20261010_002__p25_simulation_equipment_parameter_revisions.sql](../../src/main/resources/db/migration/V20261010_002__p25_simulation_equipment_parameter_revisions.sql)
+- Migration mention (not inferred introduction): [V20261010_002__p25_simulation_equipment_parameter_revisions.sql](../../src/main/resources/db/migration/V20261010_002__p25_simulation_equipment_parameter_revisions.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| qualification_id | text | False | None; identity=; generated= | No current mapped Java column | — |
+| source_id | text | False | None; identity=; generated= | No current mapped Java column | — |
+| revision_id | text | False | None; identity=; generated= | No current mapped Java column | — |
+| payload_format | text | False | None; identity=; generated= | No current mapped Java column | — |
+| canonical_payload | bytea | False | None; identity=; generated= | No current mapped Java column | — |
+| sha256 | character varying(64) | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_simulation_equipment_parameter_qu_canonical_payload_check`: CHECK (octet_length(canonical_payload) &gt; 0)
+  - Catalog attributes: {"columns": ["canonical_payload"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_simulation_equipment_parameter_qua_qualification_id_check`: CHECK (qualification_id !~ '^[\x01-\x20]&#124;[\x01-\x20]$'::text AND qualification_id !~ '^[[:space:]]*$'::text)
+  - Catalog attributes: {"columns": ["qualification_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_simulation_equipment_parameter_quali_payload_format_check`: CHECK (payload_format = 'HIDRA_SIMULATION_EQUIPMENT_QUALIFICATION_V1'::text)
+  - Catalog attributes: {"columns": ["payload_format"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_simulation_equipment_parameter_qualific_revision_id_check`: CHECK (revision_id !~ '^[\x01-\x20]&#124;[\x01-\x20]$'::text AND revision_id !~ '^[[:space:]]*$'::text)
+  - Catalog attributes: {"columns": ["revision_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_simulation_equipment_parameter_qualificat_source_id_check`: CHECK (source_id !~ '^[\x01-\x20]&#124;[\x01-\x20]$'::text AND source_id !~ '^[[:space:]]*$'::text)
+  - Catalog attributes: {"columns": ["source_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_simulation_equipment_parameter_qualification_check`: CHECK (sha256::text ~ '^[0-9a-f]{64}$'::text AND sha256::text = encode(sha256(canonical_payload), 'hex'::text))
+  - Catalog attributes: {"columns": ["sha256", "canonical_payload"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_simulation_equipment_parameter_qualification_pkey`: PRIMARY KEY (qualification_id)
+  - Catalog attributes: {"columns": ["qualification_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_simulation_equipment_parameter_source_id_revision_id_fkey`: FOREIGN KEY (source_id, revision_id) REFERENCES hidra_simulation_equipment_parameter_revision(source_id, revision_id)
+  - Catalog attributes: {"columns": ["source_id", "revision_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["source_id", "revision_id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_simulation_equipment_parameter_revision"}, "type": "f", "validated": true}
+
+#### Indexes
+
+- `hidra_simulation_equipment_parameter_qualification_pkey`: CREATE UNIQUE INDEX hidra_simulation_equipment_parameter_qualification_pkey ON public.hidra_simulation_equipment_parameter_qualification USING btree (qualification_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `hidra_simulation_equipment_parameter_qualification_no_truncate`: CREATE TRIGGER hidra_simulation_equipment_parameter_qualification_no_truncate BEFORE TRUNCATE ON hidra_simulation_equipment_parameter_qualification FOR EACH STATEMENT EXECUTE FUNCTION hidra_simulation_equipment_revision_deny_mutation()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_simulation_equipment_revision_deny_mutation()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_simulation_equipment_revision_deny_mutation()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'Simulation equipment revision evidence is append-only';<br>END;<br>$function$<br>
+- `hidra_simulation_equipment_parameter_qualification_no_update_de`: CREATE TRIGGER hidra_simulation_equipment_parameter_qualification_no_update_de BEFORE DELETE OR UPDATE ON hidra_simulation_equipment_parameter_qualification FOR EACH ROW EXECUTE FUNCTION hidra_simulation_equipment_revision_deny_mutation()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_simulation_equipment_revision_deny_mutation()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_simulation_equipment_revision_deny_mutation()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'Simulation equipment revision evidence is append-only';<br>END;<br>$function$<br>
+
+### public.hidra_simulation_equipment_parameter_revision
+
+Owner: **simulation**; relation kind: `r`.
+
+Simulation-owned immutable equipment parameters with exact qualified fluid/network bindings and supplied maps/limits.
+
+- Evidence: [SimulationEquipmentParameterRevision.java](../../src/main/java/dz/sh/hidra/modules/simulation/domain/model/SimulationEquipmentParameterRevision.java)
+- Evidence: [JdbcSimulationEquipmentParameterRevisionRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/adapter/JdbcSimulationEquipmentParameterRevisionRepositoryAdapter.java)
+- Evidence: [V20261010_002__p25_simulation_equipment_parameter_revisions.sql](../../src/main/resources/db/migration/V20261010_002__p25_simulation_equipment_parameter_revisions.sql)
+- Migration mention (not inferred introduction): [V20261010_002__p25_simulation_equipment_parameter_revisions.sql](../../src/main/resources/db/migration/V20261010_002__p25_simulation_equipment_parameter_revisions.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| source_id | text | False | None; identity=; generated= | No current mapped Java column | — |
+| revision_id | text | False | None; identity=; generated= | No current mapped Java column | — |
+| payload_format | text | False | None; identity=; generated= | No current mapped Java column | — |
+| canonical_payload | bytea | False | None; identity=; generated= | No current mapped Java column | — |
+| sha256 | character varying(64) | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_simulation_equipment_parameter_re_canonical_payload_check`: CHECK (octet_length(canonical_payload) &gt; 0)
+  - Catalog attributes: {"columns": ["canonical_payload"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_simulation_equipment_parameter_revis_payload_format_check`: CHECK (payload_format = 'HIDRA_SIMULATION_EQUIPMENT_PARAMETERS_V1'::text)
+  - Catalog attributes: {"columns": ["payload_format"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_simulation_equipment_parameter_revision_check`: CHECK (sha256::text ~ '^[0-9a-f]{64}$'::text AND sha256::text = encode(sha256(canonical_payload), 'hex'::text))
+  - Catalog attributes: {"columns": ["sha256", "canonical_payload"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_simulation_equipment_parameter_revision_pkey`: PRIMARY KEY (source_id, revision_id)
+  - Catalog attributes: {"columns": ["source_id", "revision_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_simulation_equipment_parameter_revision_revision_id_check`: CHECK (revision_id !~ '^[\x01-\x20]&#124;[\x01-\x20]$'::text AND revision_id !~ '^[[:space:]]*$'::text)
+  - Catalog attributes: {"columns": ["revision_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_simulation_equipment_parameter_revision_sha256_key`: UNIQUE (sha256)
+  - Catalog attributes: {"columns": ["sha256"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_simulation_equipment_parameter_revision_source_id_check`: CHECK (source_id !~ '^[\x01-\x20]&#124;[\x01-\x20]$'::text AND source_id !~ '^[[:space:]]*$'::text)
+  - Catalog attributes: {"columns": ["source_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+
+#### Indexes
+
+- `hidra_simulation_equipment_parameter_revision_pkey`: CREATE UNIQUE INDEX hidra_simulation_equipment_parameter_revision_pkey ON public.hidra_simulation_equipment_parameter_revision USING btree (source_id, revision_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+- `hidra_simulation_equipment_parameter_revision_sha256_key`: CREATE UNIQUE INDEX hidra_simulation_equipment_parameter_revision_sha256_key ON public.hidra_simulation_equipment_parameter_revision USING btree (sha256)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `hidra_simulation_equipment_parameter_revision_no_truncate`: CREATE TRIGGER hidra_simulation_equipment_parameter_revision_no_truncate BEFORE TRUNCATE ON hidra_simulation_equipment_parameter_revision FOR EACH STATEMENT EXECUTE FUNCTION hidra_simulation_equipment_revision_deny_mutation()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_simulation_equipment_revision_deny_mutation()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_simulation_equipment_revision_deny_mutation()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'Simulation equipment revision evidence is append-only';<br>END;<br>$function$<br>
+- `hidra_simulation_equipment_parameter_revision_no_update_delete`: CREATE TRIGGER hidra_simulation_equipment_parameter_revision_no_update_delete BEFORE DELETE OR UPDATE ON hidra_simulation_equipment_parameter_revision FOR EACH ROW EXECUTE FUNCTION hidra_simulation_equipment_revision_deny_mutation()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_simulation_equipment_revision_deny_mutation()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_simulation_equipment_revision_deny_mutation()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'Simulation equipment revision evidence is append-only';<br>END;<br>$function$<br>
 
 ### public.hidra_simulation_evidence_link
 

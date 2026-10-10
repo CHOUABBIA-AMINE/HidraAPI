@@ -11151,3 +11151,139 @@ OpenAPI 244 paths/263 operations/231 schemas; P1 closure and whitespace. Exact
 two-document scope checked; only the current 008B summary row is updated, with
 append-only evidence elsewhere. No new Maven/runtime pass is claimed for this
 record; exact executable acceptance remains the verified f09f6bad CI above.
+
+
+## HPR-P25-008C — Equipment Execution Preflight (2026-10-10)
+
+Owner Next selects ONLY `docs(twin): register HPR-P25-008C equipment execution
+preflight`, writing exactly doc/roadmap/ULTIMATE_ROADMAP.md and
+doc/model-remediation/RECONCILIATION.md. Current main
+`77cdead5a48990b1f6ac72441ee3c27a8e456f92` passed exact-head Documentation
+#185/run 38050232637. Executable baseline remains
+`f09f6bad12051100fa26a6d91d3ab7961fef6779`, accepted by Production #634 and
+Documentation #184. This action is source review and documentation, not 008C code.
+
+### Binding owner clarification: use available data, optional requests
+
+The owner will provide actual field data and handle calibration at deployment.
+Use existing repository data/contracts and explicitly synthetic development fixtures
+now. Additional information requests are OPTIONAL and must not become a prerequisite
+for continuing synthetic development. Do not ask the owner to supply field maps,
+measurements, operating thresholds or approvals merely to execute this numerical work.
+Record unknowns, unsupported behavior and resulting validity limits explicitly; do not
+fabricate unavailable facts. This clarification supersedes interpreting missing actual
+field values as a development blocker. It does not turn synthetic evidence into qualified
+field data or remove provenance, numerical well-posedness or operational qualification
+checks. Actual runs require their necessary inputs; optional information requests do
+not mean an engine can compute a missing physical parameter. C3E's real-source policy
+and field/calibration claims remain separately gated, not a dependency of synthetic 008C.
+
+### Source findings and reusable evidence
+
+SimulationEquipmentParameterRevision already owns immutable compressor/valve data,
+exact equipment endpoints, configured speed/opening, ordered maps, SI head/flow/pressure,
+efficiency fractions, definition/interpolation references, supplied limits, independent
+origin/effective times and pinned network/fluid identities. Its query service verifies
+exact qualified source, Workflow and topology evidence; qualification is not an executable
+law or operator approval. Preserve those contracts and their append-only source stores.
+SimulationEquipmentModelInput / SimulationEquipmentInput provide the older local
+configuration contracts; do not substitute them for the fuller stored valve maps.
+SimulationConnectedNetworkInput checks connectivity of the pipe/equipment union.
+SimulationPhysicalNetworkInput and the accepted SteadyStateGasSolver entry points
+currently use pipe-only incidence. A genuine integration gap is equipment edges and
+connectivity across equipment: equipment-only connections must not be silently dropped,
+replaced by fictitious pipes, or rejected solely because the pipe subgraph is disconnected.
+
+SimulationEquipmentParameterRevisionTest already supplies SYNTHETIC curves at speeds
+1000 and 2000 RPM, flows 1 and 2 kg/s, respective heads 100/80 and 200/160 J/kg,
+efficiencies 0.80/0.75, reference inlet 200000 Pa/300 K, valve maps at openings
+0 and 1 with differential pressure 0/1000 Pa and flow 0/2 kg/s on the open line.
+These are development data, not GZ4 equipment. They suffice for independently computed
+interpolation candidates: at 1500 RPM and 1.5 kg/s, sequential linear interpolation
+would yield head 135 J/kg and efficiency 0.775; at opening 0.5 and differential pressure
+500 Pa, sequential linear interpolation would yield flow 0.5 kg/s. These are arithmetic
+references for a proposed method, not evidence that the existing text reference executes
+that method or defines compressor thermodynamics. No additional field data is requested.
+
+### Material method/schema gaps and bounded disposition
+
+Stored headDefinitionReference, efficiencyDefinitionReference and
+interpolationMethodReference are opaque text, including generic synthetic fixture labels.
+No runtime method registry, pressure-ratio/head conversion, extrapolation policy,
+reverse/choked compressor/valve treatment or active equipment residual exists in these
+contracts. Select and independently derive an explicitly named synthetic method before
+implementing it; unsupported definitions must fail rather than all text being treated as
+a common approved law. Distinguish head from shaft work/efficiency, declare temperature
+and reference-inlet restrictions, and expose out-of-map/limit refusal. Do not infer real
+surge/choke or thermal behavior from the supplied points. Non-strict/flat valve maps,
+including the supplied zero-flow closed characteristic, require a well-posed closed-edge
+constraint rather than division by zero or invented leakage. Closed equipment may split
+hydraulic components; pressure anchors/well-posedness must be evaluated on the resulting
+active network, while preserving every physical edge identity and selected state.
+
+REGULATOR is absent from current topology and Simulation equipment-kind contracts;
+COMPRESSOR and VALVE are the only admitted kinds. Treat regulator support as an
+explicit schema/ownership gap under existing 008C, not as a valve alias. It requires
+separate source-backed exact-file registration before mutation. Do not claim the whole
+008C equipment obligation complete from a partial compressor/valve demonstration.
+These are design tasks for the agent, not mandatory information requests to the owner.
+No new deeper routine codes, broad schema rewrite or qualification bypass is selected.
+
+### Candidate implementation envelope and independent acceptance
+
+The next source-backed authorization must settle executable method definitions and
+register a final exact-file allowlist before Java changes. Candidate bounded local paths:
+- src/main/java/dz/sh/hidra/modules/simulation/domain/service/SimulationEquipmentBehaviorEvaluator.java (new)
+- src/test/java/dz/sh/hidra/modules/simulation/domain/service/SimulationEquipmentBehaviorEvaluatorTest.java (new)
+- src/main/java/dz/sh/hidra/modules/simulation/domain/service/SteadyStateGasSolver.java (update)
+- src/main/java/dz/sh/hidra/modules/simulation/domain/model/SteadyStateGasSolution.java (update if equipment diagnostics require it)
+- src/test/java/dz/sh/hidra/modules/simulation/domain/service/SteadyStateGasSolverTest.java (update)
+- doc/modules/simulation.md (update)
+- doc/roadmap/ULTIMATE_ROADMAP.md (update)
+- doc/model-remediation/RECONCILIATION.md (update)
+
+These eight candidates are NOT a write authorization: exact method/union-input design
+may require a different bounded set, which must be registered explicitly. Numerical
+code remains Simulation-domain/Java only; no controller, JPA, Workflow or owner-query
+call inside iteration. Caller-supplied immutable synthetic input can reuse stored value
+contracts without claiming actual qualification. Preserve both legacy solver signatures,
+result compatibility and existing physical/source contracts; do not alter pipe-only
+contract validation to hide equipment connectivity. No new dependency, EOS, migration,
+dictionary, export, workflow, public API, Kernel/Platform, transients or OT action.
+
+Required future acceptance: independent map interpolation/endpoints and derivatives;
+unknown-method/out-of-map/reference/limit rejection; closed valve with zero flow;
+compressor/valve pressure and flow relation benchmarks independently derived for the
+selected synthetic law; connected branches, equipment bridges, loops/parallel edges,
+orientation and calculated boundary exchanges; global mass balance; changing supplied
+speed/opening changes the whole connected solution; deterministic replay, tighter
+tolerances and alternative initial guesses; disconnected/ill-conditioned/unsupported
+regimes and budget failure; all existing pipe-only independent references preserved.
+Numerical targets must be derived and fixed during method authorization, not loosened
+to conceal failures. No synthetic accuracy result is claimed by this preflight.
+
+### Next selection, validation and publication
+
+HPR-P25-008C remains PENDING (preflight delivered; material method/union/regulator
+gaps identified). After this preflight's exact-head Documentation CI passes, a separate
+owner Next selects ONLY the two-memory source-backed method and exact-file authorization,
+message `docs(twin): authorize HPR-P25-008C synthetic equipment methods`.
+The agent researches/derives supported synthetic methods from primary technical sources
+and available fixtures; optional owner information may refine them but is not obligatory.
+No implementation is selected until that authorization has registered a concrete scope.
+This is a genuine mathematical/schema gap assessment, not another data-request gate.
+
+Run maintained validator tests, canonical docs, offline OpenAPI, P1 closure, whitespace
+and exact two-document append-only scope. No Maven/runtime pass is claimed for this
+source-review-only action. Publish directly to main with expected-parent lease, verify
+remote parent/tree/scope, observe Documentation CI startup, then STOP. Retain 008B's
+accepted synthetic baseline; 008C-F/008, C3F/002D remain PENDING, C3E real qualification
+BLOCKED; GZ4 first pilot/GZ2 later candidate, 0.7.0-SNAPSHOT, P0/P1/P2 CLOSED,
+P2.5 OPEN, P3 DEFERRED, 57 completed HMRs and 123 catalogue subjects unchanged.
+
+008C equipment-preflight documentation validation PASSED: 51 maintained validator
+tests; canonical docs 95 documents/5,115 links/24 modules/13 P2 rows; offline OpenAPI
+244 paths/263 operations/231 schemas; P1 closure and whitespace. Exact two-file
+append-only scope verified. Both architecture export registries, all Java/test code,
+POM/version, dictionary and workflows are unchanged. No new numerical, runtime,
+PostgreSQL or deployment acceptance is claimed; executable baseline remains f09f6bad.

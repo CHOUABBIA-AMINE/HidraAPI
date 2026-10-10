@@ -11480,3 +11480,446 @@ operational approval, deployed current schema or direct OT actuation is establis
 Next registered selection after network-delivery CI is the shared fluid/equipment
 preflight: docs(twin): register fluid equipment delivery preflight. HPR-P25-008A
 numerical design remains separately selectable; neither next item executes automatically.
+
+## HPR-P25-002 Shared Fluid Equipment Delivery Preflight — 2026-10-10
+
+### Authority, verified base and owner-approved boundary
+
+Supporting identifier HPR-P25-002-FLUID-EQUIPMENT-PREFLIGHT; registered message:
+`docs(twin): register fluid equipment delivery preflight`.
+This documentation task changes ONLY ULTIMATE_ROADMAP and RECONCILIATION. No Java,
+schema, dictionary, dependency, workflow, architecture-registry or runtime mutation here.
+Main 9cde9dd7005edd4ed6b85129c4ff889001a8f38f is verified; exact-head Production
+#625/run 38027321953 and Documentation #166/run 38027321897 PASSED. C3A/C3B are
+COMPLETED with separate commits and actual dictionary/PostgreSQL evidence. The owner
+Next approved the proposed ownership model after the source-backed gap was reported.
+
+Custody owns immutable gas composition, product classification and declared property-
+method applicability; Simulation owns immutable engineering equipment parameter revisions
+and supplied limits; Topology retains physical incidence. Assets maintenance observations
+may be source evidence but do not become engineering parameters or approvals implicitly.
+Workflow owns configured decision evidence, not gas physics. These decisions resolve the
+material ownership/qualification gap inside this shared preflight. No new semantic subject
+or deeper routine task code is introduced. Earlier per-code preflight requirements are
+superseded by this one concrete envelope; historical records remain unchanged.
+
+After this preflight's exact-head Documentation CI passes, one owner Next selects ONLY:
+1. HPR-P25-002C3C: `feat(custody): establish qualified gas fluid revisions`.
+2. HPR-P25-002C3D: `feat(simulation): resolve governed equipment parameter revisions`.
+Separate commits, this order, one main advancement with expected-parent lease. No second
+preflight between these constituents. Material new evidence must be reported explicitly.
+
+### Current source evidence and honest qualification meaning
+
+SimulationProductCandidateContract and its query adapter expose catalogue id/name/code/
+active/createdAt/updatedAt only. Generic CustodyApprovalReferenceJpaEntity has status,
+actor/ticket/workflow references but no exact gas-method revision/digest binding; it is
+not accepted as fluid approval merely because approvalStatus is APPROVED. Workflow's
+CustodyTransferTicketWorkflowReferenceContract matches ticket context only. Existing
+WorkflowOwnedTargetLookup supports owner-validated neutral targets. Workflow instance,
+task and append-only action ports expose purpose, target, definition version, decision,
+actor and completion evidence; WorkflowConfigurationPort checks active catalog/binding.
+Use these actual owner boundaries, not another module's JPA/domain classes.
+
+SimulationGasFluidInput already enforces positive declared mole fractions summing exactly
+to one. SimulationEquipmentInput/SimulationCompressorCurveInput/SimulationEquipmentModelInput
+hold supplied configuration, declared map data and curve references. They calculate no
+properties, interpolation or hydraulic response. TopologyPhysicalNetworkRevision stores
+supplied physical incidence; live Equipment and generic attributes are not versioned
+performance maps. Qualification in this delivery means governed suitability of exact
+source input records for declared advisory modelling use. It does not certify numerical
+implementation, physical accuracy, field calibration or operational safety.
+
+Supported input representations here: GAS_MOLE_FRACTION composition, supplied SI compressor
+speed-line maps and supplied SI valve differential-pressure/mass-flow characteristic points.
+Reject other representations. A property-method reference/revision remains a declared
+source identifier with explicitly approved applicability, not an executing method. No
+algorithm name/version is hardcoded as numerically supported. Unknown method declarations,
+component coverage, references or approved applicability fail closed. Numerical capability
+support remains 008A..F; final C3F must also check the selected engine's actual capability.
+No read API may report SOURCE_QUALIFIED as ENGINE_READY, OPERATIONALLY_APPROVED or calibrated.
+
+### C3C exact content and validation
+
+CustodyGasFluidRevision fields, in canonical order:
+sourceId, revisionId, recordedAt, effectiveFrom, effectiveUntil, origin,
+evidenceReference, productSnapshot, productKind, method, components, governanceBinding.
+Origin is DECLARED_PARAMETER or SYNTHETIC; productKind is GAS. ProductSnapshot fields:
+id, catalogName, code, active, createdAt, updatedAt; these preserve actual candidate
+facts and are never proof of approval. Source append verifies the exact current Custody
+candidate through the existing owner repository; supplied snapshot must match every
+field. Qualified read rechecks current identity, active flag and snapshot equality;
+changed/inactive/missing product yields unavailable, never fallback to Planning policy.
+No inferred gas classification from catalogue text/code. ProductKind GAS is part of the
+exact revision submitted to governance, including synthetic fixtures.
+
+Method fields: reference, revisionId, recordedAt, effectiveFrom, effectiveUntil, origin,
+evidenceReference, inputRepresentation,
+allowedComponentReferences, minimumPressurePascalsAbsolute, maximumPressurePascalsAbsolute,
+minimumTemperatureKelvin, maximumTemperatureKelvin, supportedUses. inputRepresentation
+must be GAS_MOLE_FRACTION. supportedUses is a nonempty ordered duplicate-free list of
+STEADY_STATE and/or TRANSIENT; it describes approved source applicability only. Component
+coverage is a nonempty ordered duplicate-free list; each composition component must be
+covered. Every method field is explicitly supplied; no catalogue lookup may invent a
+method revision, range or component mapping. Method ranges are positive, ordered min<=max;
+composition is nonempty, ids unique after trimming, fractions positive and <=1, sum exactly
+1 by BigDecimal.compareTo. Preserve ordered values and exact scales; do not normalize
+mole fractions, apply tolerances or compute thermodynamic properties. The nested method
+is independently persisted under (reference,revisionId); it has coherent Instant validity
+and origin. Reusing that identity with changed canonical method facts rejects, including
+across different fluid sources. Source fluid and method must both be effective at selection
+time; a synthetic method requires synthetic fluid origin. Required strings
+trimmed/nonblank, no null children, defensive immutable lists. Times use Instant; interval
+start-inclusive/end-exclusive, end null or strictly after start. Approval cannot predate
+recordedAt or be effective outside the revision interval at qualification time.
+
+GovernanceBinding fields: definitionId, definitionVersion (positive), targetTypeId,
+purposeId. These ids must resolve actual active Workflow configuration with target module
+custody, target type code GAS_FLUID_REVISION, purpose code GAS_FLUID_INPUT_QUALIFICATION.
+Codes identify the technical context, not an approval or policy seed. Revision content
+includes the exact binding, so altering method, composition or governance creates another
+revision/hash. approval target id is the computed canonical revision SHA-256; do not
+accept caller-selected target identity or digest. Target lookup exports exactly persisted
+revision digests with immutable labels; it never exports live catalogue timestamps as
+revision identities. No production Workflow definitions, permissions, actual approvals,
+method ranges or physical values are seeded by migration.
+
+Revision append is an internal owner operation, with no new public write endpoint.
+Repository operations append, findStored(sourceId,revisionId), findByApprovalTargetId(digest),
+appendMethod(method), findMethodStored(reference,revisionId),
+appendQualification(sourceId,revisionId,qualification), findQualification(exact qualificationId).
+Method append/replay and fluid append share an actual transaction; verified fluid reads
+compare the full nested method with the separately stored exact immutable method.
+Nested StoredRevision exposes decoded revision, format and computed digest. Qualification
+fields: qualificationId, sourceId, revisionId, payloadSha256, qualifiedAt (server Instant),
+workflowInstanceId, workflowTaskId, workflowActionId, approverId, approverDisplayName,
+approvedAt, definitionId, definitionVersion, targetTypeId, purposeId. Qualifier receives
+only source/revision and actual instance/task/action references; server reads all actor,
+time and decision evidence. Domain qualification record may be nested in the revision
+repository port; codec encodes both revision and qualification with separate discriminators.
+The qualification contains no caller-trusted APPROVED boolean. Duplicate qualification
+identity with different canonical content is rejected. Same source may have multiple
+explicit qualification records; query always pins one, never chooses latest implicitly.
+
+SimulationGasFluidRevisionContract uses standard-Java immutable nested DTOs, not Custody
+or Simulation domain types. Exact query signature resolve(sourceId,revisionId,qualificationId,
+evaluationAt,supportedUse); raw stored lookup findStored(sourceId,revisionId) for audit.
+Qualified result includes complete typed source content, computed digest/format, product
+snapshot, exact qualification evidence and origin. Missing/unqualified/incompatible query
+returns Optional.empty; stored integrity failure is an explicit error, not absence. Never
+promote SYNTHETIC origin after workflow approval. No actual GZ2 source is supplied here.
+
+### Shared Workflow approval evidence, implemented once in C3C
+
+RevisionApprovalEvidenceContract is added INSIDE already exported workflow.application.
+contract.target. No export registry or transitional dependency exception is changed.
+Request fields: targetModule, targetDigest, definitionId, definitionVersion, targetTypeId,
+purposeId, instanceId, taskId, actionId, evaluationAt. Result fields match actual persisted
+instance/task/action ids, definition/binding, actor id/display snapshot and actedAt.
+Only custody/GAS_FLUID_REVISION/GAS_FLUID_INPUT_QUALIFICATION and simulation/
+EQUIPMENT_PARAMETER_REVISION/EQUIPMENT_PARAMETER_QUALIFICATION contexts are admitted.
+Request must exactly match configured active target type/purpose catalogs and active
+binding; no wildcard purpose, caller boolean or generic ticket approval accepted.
+
+Query actual Workflow instance/task/action through existing owner ports, read-only,
+REQUIRED transaction: exact targetModule and targetId=computed digest, expected definition
+id/version/type/purpose; instance COMPLETED, task APPROVED, actual completed actor/time;
+action APPROVE with decision APPROVE, same instance/task, actor matches task completion,
+actedAt matches task.completedAt and instance.completedAt, not after evaluationAt.
+Actual actor display must be nonblank. Require actionSequence equal nextSequence(instance)-1
+so an earlier APPROVE is not final evidence. Configuration must still be active at read;
+withdrawn binding/catalog causes unqualified results. Historical configuration replay is
+not implied; query evaluates current governance against the explicit evaluation time.
+No blanket catch of persistence/integrity errors. No APPROVE action is created by this
+read contract; use existing configured authenticated Workflow transitions for actual
+approval. Owner target lookups support the exact digest subjects, without Workflow
+importing owner private types. Missing governance means unavailable; no default approval.
+
+Qualification registration and qualified queries use one actual PostgreSQL transaction
+with coherent revision/qualification/configuration/action reads (REPEATABLE_READ for the
+multi-query assessment). Cross-module infrastructure adapters consume exported contracts;
+owner services use local ports only. Decode/verify qualification and re-attest actual
+Workflow on each qualified read. Directly inserted forged qualification cannot qualify
+without coherent actual owner evidence. This is a new revision evidence query, not
+reuse or weakening of existing Reporting/ticket approval semantics. Existing Workflow
+lifecycle, actor permission and transition checks remain unchanged.
+
+### C3D exact engineering parameter content and validation
+
+SimulationEquipmentParameterRevision fields, canonical order:
+sourceId, revisionId, recordedAt, effectiveFrom, effectiveUntil, origin, evidenceReference,
+networkSourceId, networkRevisionId, networkSha256, fluidSourceId, fluidRevisionId,
+fluidSha256, fluidQualificationId, equipment, compressorCurves, valveCharacteristics,
+governedLimits, governanceBinding. Origin DECLARED_PARAMETER or SYNTHETIC. Stored network
+is the exact Topology source/revision/digest; fluid is exact qualified Custody source/
+revision/digest/qualification. Never use current live equipment attributes as parameters.
+Sources must be effective at explicit evaluationAt; recordedAt not after selection time.
+Equipment governance uses module simulation, EQUIPMENT_PARAMETER_REVISION target type,
+EQUIPMENT_PARAMETER_QUALIFICATION purpose and the same actual evidence rules as C3C.
+
+Equipment items: id, fromNodeId, toNodeId, kind, curveId, curveRevisionId,
+configuredSpeedRevolutionsPerMinute, characteristicId, characteristicRevisionId,
+configuredOpeningFraction. Kind COMPRESSOR or VALVE, exactly corresponding fields present,
+other kind fields absent. Id/orientation/kind exactly match selected Topology equipment
+incidence. Cover every selected incidence exactly once; unknown/duplicate/missing ids or
+reversed endpoints reject. Compressor speed positive; valve opening in [0,1]. Empty
+model permitted only when exact network has zero equipment incidence and all maps/limits
+are explicitly empty; it is an intentional pipe-only model, never missing-parameter fallback.
+
+CompressorCurve fields: id, revisionId, evidenceReference, fluidSourceId, fluidRevisionId,
+fluidSha256, headDefinitionReference, efficiencyDefinitionReference,
+interpolationMethodReference, referenceInletPressurePascalsAbsolute,
+referenceInletTemperatureKelvin, speedLines. Preserve explicit exact fluid binding.
+SpeedLine fields rotationalSpeedRevolutionsPerMinute, points. Point fields massFlowKilogramsPerSecond,
+specificHeadJoulesPerKilogram, efficiencyFraction. Enforce existing B2 invariants: ascending
+unique positive speeds; >=2 points/line with ascending positive mass flow, nonnegative
+head and efficiency in (0,1]. No interpolation/extrapolation/correction executes here.
+All curves must be referenced by equipment; no unused or duplicate curve revisions.
+Curve and valve bodies are independently persisted under (kind,id,revisionId); conflicting
+reuse across equipment-model revisions rejects atomically. They are nested owner domain
+records and codec variants, without extra task codes or standalone mapper files.
+Configured speed must lie inside supplied speed range; source applicability must cover
+reference pressure/temperature. Scientific head/efficiency/interpolation identifiers are
+supplied evidence, not a claim that Hidra implements or validates those numerical methods.
+
+ValveCharacteristic fields: id, revisionId, evidenceReference, fluidSourceId, fluidRevisionId,
+fluidSha256, referenceTemperatureKelvin, openingLines. OpeningLine: openingFraction,
+points. Point: differentialPressurePascals, massFlowKilogramsPerSecond. Ordered unique
+opening fractions in [0,1]; nonempty lines, >=2 points/line, strictly ascending nonnegative
+differential pressure, nonnegative mass flow. Reference temperature positive. Configured
+opening within supplied opening range. No inferred valve coefficient, standard flow,
+ambient pressure, law, density or conversion. Reject unsupported characteristic forms;
+no compressor/valve kind interchange or duplicate/unused characteristic revisions.
+
+GovernedLimit fields: equipmentId, quantity, minimumInclusive, maximumInclusive,
+evidenceReference. Quantity enum INLET_PRESSURE_PASCALS_ABSOLUTE, INLET_TEMPERATURE_KELVIN,
+MASS_FLOW_KILOGRAMS_PER_SECOND, ROTATIONAL_SPEED_REVOLUTIONS_PER_MINUTE, OPENING_FRACTION.
+Each equipment has exactly one pressure, temperature and mass-flow range; compressor
+also speed, valve also opening. Quantity/kind correspondence, unique pair, min<=max,
+positive pressure/temperature, nonnegative flow/speed, fractional opening [0,1]; require
+supplied configured speed/opening inside declared limits. No defaults or numerical
+operating thresholds. Approved source applicability does not authorize an operational
+decision; engine/runtime must later evaluate network consequences and validity of maps.
+
+Qualified read resolves exact Topology contract and Custody contract through local ports,
+checks full source integrity/time/origin/bindings/coverage and actual Workflow. Missing,
+withdrawn, changed or incompatible source yields unavailable; corrupt stored data errors.
+SYNTHETIC network/fluid/curve evidence requires SYNTHETIC equipment revision; approval
+cannot promote it. Source digest and approval digest are computed, not caller trusted.
+Return complete immutable resolved bundle: revision, digest, qualification, qualified fluid
+and stored network identities; scalar map data/limits stay available. Do not reduce valve
+characteristic data to a bare reference and claim complete resolved inputs. Existing B
+records and PhysicalInputPayload stay unchanged; C3F's later preflight must register
+mapping/capture of this complete bundle, including valve-law and limit content. No final
+Simulation resolver, run snapshot, engine or operating-state conversion implemented here.
+
+### Separate append-only schema and canonical persistence
+
+C3C migration V20261010_001__p25_custody_gas_fluid_revisions.sql creates ONLY
+public.hidra_custody_gas_method_revision, public.hidra_custody_gas_fluid_revision
+and public.hidra_custody_gas_fluid_qualification,
+plus owner-specific trigger function. C3D migration
+V20261010_002__p25_simulation_equipment_parameter_revisions.sql creates ONLY
+public.hidra_simulation_equipment_parameter_revision and
+public.hidra_simulation_equipment_parameter_qualification and
+public.hidra_simulation_equipment_characteristic_revision plus separate trigger function.
+Existing live asset/catalogue/snapshot/Workflow/approval-reference tables are preserved.
+No seed data, actual approvals, production roles, physics constants or model values.
+
+Each revision table: source_id text NOT NULL, revision_id text NOT NULL, payload_format
+text NOT NULL, canonical_payload bytea NOT NULL, sha256 varchar(64) NOT NULL. Composite
+PK(source_id,revision_id); UNIQUE(sha256) supports exact digest target lookup. Each
+qualification table: qualification_id text PK, source_id text NOT NULL, revision_id text
+NOT NULL, payload_format text NOT NULL, canonical_payload bytea NOT NULL, sha256 varchar(64)
+NOT NULL; composite FK to its owner's revision PK. No cross-owner FK or mutable source
+join. No defaults. Normalized nonblank text boundary checks, fixed allowed payload format,
+nonempty bytes, lowercase64hex digest equals encode(sha256(canonical_payload),'hex').
+Canonical revision includes source/revision identity so distinct identities cannot replay
+one payload. Qualification bytes include referenced revision digest/identity; verified reads
+check all row/payload key relationships and actual approval. No generic JPA save bypass.
+
+Custody method table: method_reference text, revision_id text, payload_format text,
+canonical_payload bytea, sha256 varchar(64), all NOT NULL; composite PK(method_reference,
+revision_id), canonical row/key integrity on read, same normalized-text/format/digest
+constraints. Fluid canonical bytes contain full method facts; verified read requires
+exact method-store equality. Simulation characteristic table: kind text (COMPRESSOR or
+VALVE), characteristic_id text, revision_id text, payload_format text, canonical_payload
+bytea, sha256 varchar(64), all NOT NULL; PK(kind,characteristic_id,revision_id); strict
+kind/format/key checks. Verified equipment reads require every nested body to match its
+exact immutable characteristic store. No cross-owner FK. Atomic per-owner append first
+stores/replays nested sources and then aggregate; any conflict rolls back all inserts.
+Additional local port operations appendCharacteristic(kind,body), findCharacteristicStored
+(kind,id,revisionId); body discriminators follow the listed curve/valve field order.
+
+Formats HIDRA_CUSTODY_GAS_METHOD_V1, HIDRA_CUSTODY_GAS_FLUID_V1 / HIDRA_CUSTODY_GAS_FLUID_QUALIFICATION_V1 and
+HIDRA_SIMULATION_EQUIPMENT_PARAMETERS_V1 / HIDRA_SIMULATION_EQUIPMENT_QUALIFICATION_V1,
+HIDRA_SIMULATION_COMPRESSOR_CURVE_V1 / HIDRA_SIMULATION_VALVE_CHARACTERISTIC_V1.
+Separate owner codecs; Java standard library only. Use the network delivery's reviewed
+encoding discipline without importing Topology's private codec. DataOutputStream big-endian;
+magic format as strict UTF-8 length-prefixed string, scalar fields in listed order, enum
+names as strings, Instant epoch seconds+nanos, optional value marker 0/1, ordered list
+lengths and ordered nested fields, exact decimals toPlainString PLUS signed scale.
+Qualification fields use listed order and server-derived values. Reject malformed length,
+invalid UTF-8, enum/marker, impossible time, duplicate identities, trailing/truncated bytes,
+noncanonical plaintext/scale, allocation-expanding scale or counts beyond remaining bytes.
+Zero with negative scale, including Integer.MIN_VALUE, must retain exact scale without
+expanding a malicious nonzero payload. Decode must re-encode byte-identically; SHA-256
+computed after canonical encoding and verified before every decode/read. Immutable
+standard-Java export DTOs must preserve decimal scale, list order and nanoseconds.
+
+Atomic append/replay: INSERT ON CONFLICT DO NOTHING then verified SELECT of winner in
+one real REQUIRED transaction; identical complete bytes/format/digest returns same record,
+conflicting same identity rejects. Qualification registration similarly append-only.
+UPDATE/DELETE row triggers and TRUNCATE statement triggers for all six new tables.
+Rollback/concurrency tests use independent real PostgreSQL connections and actual Spring
+transaction proxies. No Docker-skipped acceptance success. Schema-only ownership metadata
+review assigns three tables to Custody and three to Simulation with exact domain/adapter/
+migration evidence. Both implementation commits regenerate DATA_DICTIONARY with existing
+generator from actual full-chain migrated PostgreSQL catalog and exact-source inventory;
+maintain CI --check. Use postgres:16 matching maintained collector metadata, not Alpine.
+No fabricated catalog or hand-written schema facts. If equivalent exact-source disposable
+catalog evidence is unavailable, stop before main advancement. Candidate branch/manual CI
+may obtain actual capture without PR, retaining separate constituent commits.
+
+### Binding C3C file allowlist
+
+New paths (20):
+
+1. src/main/java/dz/sh/hidra/modules/custody/domain/model/CustodyGasFluidRevision.java
+2. src/main/java/dz/sh/hidra/modules/custody/application/port/out/CustodyGasFluidRevisionRepositoryPort.java
+3. src/main/java/dz/sh/hidra/modules/custody/application/port/out/CustodyGasFluidApprovalEvidencePort.java
+4. src/main/java/dz/sh/hidra/modules/custody/application/contract/simulation/SimulationGasFluidRevisionContract.java
+5. src/main/java/dz/sh/hidra/modules/custody/application/service/CustodyGasFluidRevisionQueryService.java
+6. src/main/java/dz/sh/hidra/modules/custody/application/service/CustodyGasFluidQualificationService.java
+7. src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/CustodyGasFluidRevisionCodec.java
+8. src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/JdbcCustodyGasFluidRevisionRepositoryAdapter.java
+9. src/main/java/dz/sh/hidra/modules/custody/infrastructure/integration/WorkflowGasFluidApprovalEvidenceAdapter.java
+10. src/main/java/dz/sh/hidra/modules/custody/infrastructure/integration/CustodyGasFluidWorkflowTargetLookup.java
+11. src/main/java/dz/sh/hidra/modules/workflow/application/contract/target/RevisionApprovalEvidenceContract.java
+12. src/main/java/dz/sh/hidra/modules/workflow/application/service/RevisionApprovalEvidenceQueryService.java
+13. src/main/resources/db/migration/V20261010_001__p25_custody_gas_fluid_revisions.sql
+14. src/test/java/dz/sh/hidra/modules/custody/domain/model/CustodyGasFluidRevisionTest.java
+15. src/test/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/CustodyGasFluidRevisionCodecTest.java
+16. src/test/java/dz/sh/hidra/modules/custody/application/service/CustodyGasFluidRevisionQueryServiceTest.java
+17. src/test/java/dz/sh/hidra/modules/custody/application/service/CustodyGasFluidQualificationServiceTest.java
+18. src/test/java/dz/sh/hidra/modules/custody/infrastructure/persistence/CustodyGasFluidRevisionPostgresIntegrationTest.java
+19. src/test/java/dz/sh/hidra/modules/workflow/application/service/RevisionApprovalEvidenceQueryServiceTest.java
+20. src/test/java/dz/sh/hidra/modules/workflow/infrastructure/persistence/RevisionApprovalEvidencePostgresIntegrationTest.java
+
+Updated paths (8):
+
+1. .github/database-dictionary-ownership.json
+2. doc/database/DATA_DICTIONARY.md
+3. doc/database/SCHEMA_OWNERSHIP.md
+4. doc/database/README.md
+5. doc/roadmap/ULTIMATE_ROADMAP.md
+6. doc/model-remediation/RECONCILIATION.md
+7. doc/modules/custody.md
+8. doc/modules/workflow.md
+
+### Binding C3D file allowlist
+
+New paths (20):
+
+1. src/main/java/dz/sh/hidra/modules/simulation/domain/model/SimulationEquipmentParameterRevision.java
+2. src/main/java/dz/sh/hidra/modules/simulation/application/port/out/SimulationEquipmentParameterRevisionRepositoryPort.java
+3. src/main/java/dz/sh/hidra/modules/simulation/application/port/out/SimulationEquipmentParameterApprovalEvidencePort.java
+4. src/main/java/dz/sh/hidra/modules/simulation/application/port/out/SimulationQualifiedFluidRevisionPort.java
+5. src/main/java/dz/sh/hidra/modules/simulation/application/port/out/SimulationStoredPhysicalNetworkRevisionPort.java
+6. src/main/java/dz/sh/hidra/modules/simulation/application/service/SimulationEquipmentParameterQualificationService.java
+7. src/main/java/dz/sh/hidra/modules/simulation/application/service/SimulationEquipmentParameterRevisionQueryService.java
+8. src/main/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/adapter/SimulationEquipmentParameterRevisionCodec.java
+9. src/main/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/adapter/JdbcSimulationEquipmentParameterRevisionRepositoryAdapter.java
+10. src/main/java/dz/sh/hidra/modules/simulation/infrastructure/integration/WorkflowEquipmentParameterApprovalEvidenceAdapter.java
+11. src/main/java/dz/sh/hidra/modules/simulation/infrastructure/integration/CustodyQualifiedFluidRevisionQueryAdapter.java
+12. src/main/java/dz/sh/hidra/modules/simulation/infrastructure/integration/TopologyStoredPhysicalNetworkRevisionQueryAdapter.java
+13. src/main/java/dz/sh/hidra/modules/simulation/infrastructure/integration/SimulationEquipmentParameterWorkflowTargetLookup.java
+14. src/main/resources/db/migration/V20261010_002__p25_simulation_equipment_parameter_revisions.sql
+15. src/test/java/dz/sh/hidra/modules/simulation/domain/model/SimulationEquipmentParameterRevisionTest.java
+16. src/test/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/adapter/SimulationEquipmentParameterRevisionCodecTest.java
+17. src/test/java/dz/sh/hidra/modules/simulation/application/service/SimulationEquipmentParameterQualificationServiceTest.java
+18. src/test/java/dz/sh/hidra/modules/simulation/application/service/SimulationEquipmentParameterRevisionQueryServiceTest.java
+19. src/test/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/SimulationEquipmentParameterRevisionPostgresIntegrationTest.java
+20. src/test/java/dz/sh/hidra/modules/simulation/infrastructure/integration/QualifiedFluidEquipmentDeliveryIntegrationTest.java
+
+Updated paths (7):
+
+1. .github/database-dictionary-ownership.json
+2. doc/database/DATA_DICTIONARY.md
+3. doc/database/SCHEMA_OWNERSHIP.md
+4. doc/database/README.md
+5. doc/roadmap/ULTIMATE_ROADMAP.md
+6. doc/model-remediation/RECONCILIATION.md
+7. doc/modules/simulation.md
+
+C3C exact scope: 28 paths; C3D exact scope: 27 paths; combined delivery: 49 distinct paths.
+No other path admitted. Repository ports may use nested immutable records; services may
+use private mapping methods. Routine codecs/mappers/tests remain inside C3C/C3D, without
+new deeper task codes. No new public write API, workflow YAML, dependencies, architecture
+export registry, Kernel/Platform change, catalogue subject, Simulation run resolver or
+operational actuation. Owner exports use already exported packages; both architecture
+registries stay unchanged. Governance query lives in Workflow target contract as listed,
+not a new cross-module permission exception. Existing B/C1/C2 and network contracts remain.
+
+### Acceptance and exact validation
+
+C3C tests: two synthetic revisions of one source persisted and queried independently;
+exact product snapshot/classification and method/component/use coverage; absent/mismatched/
+inactive catalogue, missing method/ranges, wrong fractions, conflicting method identity reuse and unsupported representation
+reject; actual configured Workflow approval of exact digest qualifies only that revision.
+Prior APPROVE/wrong target/task/purpose/type/version/action/actor/time, inactive binding,
+forged approval boolean or direct forged qualification must not qualify. Origin remains
+SYNTHETIC after real synthetic test workflow. Changed composition/method/governance needs
+new digest/revision and new approval. Persisted qualification evidence is immutable,
+exactly selected and revalidated; current withdrawal yields unavailable. Real PostgreSQL
+full-chain, identical/conflicting replay, concurrent winner, rollback, SQL mutation denial,
+verified corruption and sentinel preservation; meaningful independent bytes/hash/negative-
+scale/nanosecond fixtures; governance persistence uses actual Workflow records/transitions.
+
+C3D tests: exact qualified fluid plus stored network joins; compressor and valve bundles
+with full maps/limits; reject mismatched fluid digest/revision/qualification, network digest,
+orientation/kind/coverage, unsupported maps, missing limits, configured value outside
+supplied ranges, synthetic promotion and absent/invalid/withdrawn exact equipment approval.
+Conflicting same-id/revision map body reuse across models rejects under concurrent
+append. Two changed synthetic parameter revisions persist independently and prior content stays
+unchanged; old approval cannot qualify replacement. Explicit empty equipment only for
+verified pipe-only network. Real Workflow approvals, owner queries and PostgreSQL stores
+are acceptance evidence, mocks only isolated query/domain tests. No hydraulic result claimed.
+
+C3C focused command:
+`bash ./mvnw -B -q -Dtest=CustodyGasFluidRevisionTest,CustodyGasFluidRevisionCodecTest,CustodyGasFluidRevisionQueryServiceTest,CustodyGasFluidQualificationServiceTest,CustodyGasFluidRevisionPostgresIntegrationTest,RevisionApprovalEvidenceQueryServiceTest,RevisionApprovalEvidencePostgresIntegrationTest,SimulationFluidEquipmentInputTest,ArchitectureGuardrailTest,ForensicRemediationClosureTest test`
+Then `bash ./mvnw -B -q clean verify` before its separate commit.
+C3D focused command:
+`bash ./mvnw -B -q -Dtest=SimulationEquipmentParameterRevisionTest,SimulationEquipmentParameterRevisionCodecTest,SimulationEquipmentParameterQualificationServiceTest,SimulationEquipmentParameterRevisionQueryServiceTest,SimulationEquipmentParameterRevisionPostgresIntegrationTest,QualifiedFluidEquipmentDeliveryIntegrationTest,SimulationFluidEquipmentInputTest,SimulationPhysicalInputPayloadTest,ArchitectureGuardrailTest,ForensicRemediationClosureTest test`
+Then `bash ./mvnw -B -q clean verify` before its separate commit.
+Run 37 maintained documentation/OpenAPI/dictionary validator tests (resolve-base tests are
+additional), canonical docs, offline/runtime OpenAPI equality, P1 evidence, whitespace,
+headers/imports and exact per-commit/delivery scope. Invoke wrapper via bash if not executable;
+never change tracked permissions. Recheck toolchain/dependencies; report all actual failures
+and skipped persistence accurately. Temporary environment settings/tools stay outside Git.
+Do not repeat a passing executable verify solely for documentation-only evidence edits.
+
+### Publication protocol and retained position
+
+This preflight validates only two documents; no Maven or persistence pass is claimed for
+unimplemented fluid/equipment sources. Publish with expected-parent lease from verified
+main, verify parent/tree/exact two-file scope, observe Documentation CI startup and STOP.
+After Documentation CI passes, owner Next executes the two registered constituents with
+separate commits, actual catalog regeneration per migration and one main advancement.
+Observe final exact-head Production/Documentation CI startup and STOP; no automatic wait
+for completion, subsequent operating-state preflight or parent closure. No PR.
+
+C3C/C3D remain PENDING until implemented and accepted; C3E/C3F/C3/002C/002D/002 remain
+PENDING. P0/P1/P2 CLOSED, P2.5 OPEN, P3 DEFERRED; 57 reconciled HMR implementations,
+123 permanent semantic subjects, 0.7.0-SNAPSHOT retained. Actual GZ2 data, governed
+field acceptance and calibration gate operational claims; no solver or calibrated twin
+exists. No thresholds, physical values, approvals or verified deployment are invented.
+The next registered selection after successful fluid/equipment delivery CI is
+`docs(twin): register operating state delivery preflight`; not automatically executed.
+
+FLUID-EQUIPMENT-PREFLIGHT local validation PASSED: 37 maintained validator tests plus
+14 resolve-base tests (51 total); canonical docs 95 documents/5078 links/24 modules/13
+P2 rows; offline OpenAPI 244 paths/263 operations/231 schemas; P1 closure evidence;
+whitespace; exact two-document append-only scope; both export registries and version
+unchanged. No Java, Maven or future fluid/equipment persistence success claimed. Final
+preflight Documentation CI startup awaits publication observation.

@@ -47,6 +47,20 @@ import java.util.HexFormat;
 
 public final class TopologyPhysicalNetworkRevisionCodec {
     public static final String FORMAT = "HIDRA_TOPOLOGY_PHYSICAL_NETWORK_V1";
+    public static final String FORMAT_V2 = "HIDRA_TOPOLOGY_PHYSICAL_NETWORK_V2";
+
+    /** Historical V1 bytes stay identical; only REGULATOR revisions use V2. */
+    public String formatFor(TopologyPhysicalNetworkRevision revision) {
+        if (revision == null) {
+            throw invalid("Physical revision must be supplied.");
+        }
+        return revision.equipmentLinks().stream().anyMatch(link -> link.kind() == EquipmentKind.REGULATOR)
+                ? FORMAT_V2 : FORMAT;
+    }
+
+    public static boolean supportsFormat(String format) {
+        return FORMAT.equals(format) || FORMAT_V2.equals(format);
+    }
 
     public byte[] encode(TopologyPhysicalNetworkRevision revision) {
         if (revision == null) {
@@ -55,7 +69,7 @@ public final class TopologyPhysicalNetworkRevisionCodec {
         try {
             var bytes = new ByteArrayOutputStream();
             var out = new DataOutputStream(bytes);
-            string(out, FORMAT);
+            string(out, formatFor(revision));
             string(out, revision.sourceId());
             string(out, revision.revisionId());
             string(out, revision.scopeType().name());
@@ -103,7 +117,8 @@ public final class TopologyPhysicalNetworkRevisionCodec {
         byte[] bytes = payload.clone();
         try {
             var in = new DataInputStream(new ByteArrayInputStream(bytes));
-            if (!FORMAT.equals(string(in))) {
+            String format = string(in);
+            if (!supportsFormat(format)) {
                 throw invalid("Unsupported physical revision format.");
             }
             String source = string(in);
@@ -139,8 +154,8 @@ public final class TopologyPhysicalNetworkRevisionCodec {
             }
             var decoded = new TopologyPhysicalNetworkRevision(source, revision, scopeType, scope, recorded, from,
                     until, origin, evidence, nodes, pipes, equipment);
-            if (!Arrays.equals(bytes, encode(decoded))) {
-                throw invalid("Physical revision encoding is not canonical.");
+            if (!format.equals(formatFor(decoded)) || !Arrays.equals(bytes, encode(decoded))) {
+                throw invalid("Physical revision format/kind mismatch or noncanonical encoding.");
             }
             return decoded;
         } catch (IOException | IllegalArgumentException | ArithmeticException | DateTimeException failure) {

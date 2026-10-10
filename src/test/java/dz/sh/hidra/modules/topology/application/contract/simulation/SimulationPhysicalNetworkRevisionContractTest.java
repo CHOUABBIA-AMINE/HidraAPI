@@ -44,6 +44,23 @@ class SimulationPhysicalNetworkRevisionContractTest {
     }
 
     @Test
+    void regulatorRequiresSeparateV2FormatWhileV1ExistingKindsRemainAccepted() {
+        var regulator = new Draft();
+        regulator.equipment = List.of(new EquipmentLink("reg", "a", "b", "REGULATOR"));
+        regulator.format = "HIDRA_TOPOLOGY_PHYSICAL_NETWORK_V2";
+        assertEquals("REGULATOR", regulator.build().equipmentLinks().get(0).kind());
+        assertEquals(regulator.format, regulator.build().payloadFormat());
+        regulator.format = "HIDRA_TOPOLOGY_PHYSICAL_NETWORK_V1";
+        assertThrows(IllegalArgumentException.class, regulator::build);
+        var old = new Draft();
+        old.format = "HIDRA_TOPOLOGY_PHYSICAL_NETWORK_V2";
+        assertThrows(IllegalArgumentException.class, old::build);
+        old.format = "HIDRA_TOPOLOGY_PHYSICAL_NETWORK_V1";
+        assertEquals("VALVE", old.build().equipmentLinks().get(0).kind());
+        assertThrows(IllegalArgumentException.class, () -> new EquipmentLink("reg", "a", "b", "regulator"));
+    }
+
+    @Test
     void rejectsAllMissingOrBlankMetadataAndUnknownEnumFormatDigest() {
         for(String bad:Arrays.asList(null,""," ","\t\n")) {
             invalid(d->d.source=bad); invalid(d->d.revision=bad); invalid(d->d.scopeId=bad); invalid(d->d.evidence=bad);

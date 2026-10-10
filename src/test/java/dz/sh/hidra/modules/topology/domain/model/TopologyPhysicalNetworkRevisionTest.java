@@ -45,6 +45,25 @@ class TopologyPhysicalNetworkRevisionTest {
     private static final Instant END = START.plusSeconds(60);
 
     @Test
+    void acceptsDistinctRegulatorIncidenceWithoutRelaxingGraphIdentity() {
+        var draft = new Draft();
+        draft.equipment = List.of(new EquipmentLink("regulator", "a", "b", EquipmentKind.REGULATOR));
+        var revision = draft.build();
+        assertEquals(EquipmentKind.REGULATOR, revision.equipmentLinks().get(0).kind());
+        assertEquals("regulator", revision.equipmentLinks().get(0).id());
+        assertEquals(List.of("a", "b"), revision.nodes().stream().map(Node::id).toList());
+        assertEquals(1, revision.pipeSegments().size());
+        assertThrows(UnsupportedOperationException.class, () -> revision.equipmentLinks().clear());
+        invalidDraft(d -> d.equipment = List.of(
+                new EquipmentLink("p", "a", "b", EquipmentKind.REGULATOR)));
+        invalidDraft(d -> d.equipment = List.of(
+                new EquipmentLink("regulator", "a", "missing", EquipmentKind.REGULATOR)));
+        invalidDraft(d -> d.equipment = List.of(
+                new EquipmentLink("regulator", "a", "b", EquipmentKind.REGULATOR),
+                new EquipmentLink("regulator", "b", "a", EquipmentKind.REGULATOR)));
+    }
+
+    @Test
     void acceptsExplicitSinglePipeValuesAndEmptyEquipment() {
         var revision = new Draft().build();
         assertEquals(new BigDecimal("-12.50"), revision.nodes().get(0).elevationMeters());

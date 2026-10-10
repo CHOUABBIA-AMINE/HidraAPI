@@ -46,15 +46,16 @@ public class JdbcTopologyPhysicalNetworkRevisionRepositoryAdapter implements Top
         }
         byte[] payload = codec.encode(revision);
         String digest = codec.sha256(payload);
+        String format = codec.formatFor(revision);
         jdbc.update("""
                 INSERT INTO hidra_topology_physical_network_revision
                     (source_id,revision_id,payload_format,canonical_payload,sha256)
                 VALUES (?,?,?,?,?) ON CONFLICT (source_id,revision_id) DO NOTHING
-                """, revision.sourceId(), revision.revisionId(), TopologyPhysicalNetworkRevisionCodec.FORMAT,
+                """, revision.sourceId(), revision.revisionId(), format,
                 payload, digest);
         var stored = findStored(revision.sourceId(), revision.revisionId())
                 .orElseThrow(() -> invalid("Appended physical revision is unavailable."));
-        if (!stored.payloadFormat().equals(TopologyPhysicalNetworkRevisionCodec.FORMAT)
+        if (!stored.payloadFormat().equals(format)
                 || !stored.sha256().equals(digest) || !Arrays.equals(codec.encode(stored.revision()), payload)) {
             throw invalid("Conflicting physical revision content for the same source/revision identity.");
         }
@@ -79,11 +80,14 @@ public class JdbcTopologyPhysicalNetworkRevisionRepositoryAdapter implements Top
                     String format = row.getString("payload_format");
                     byte[] payload = row.getBytes("canonical_payload");
                     String digest = row.getString("sha256");
-                    if (!TopologyPhysicalNetworkRevisionCodec.FORMAT.equals(format)
+                    if (!TopologyPhysicalNetworkRevisionCodec.supportsFormat(format)
                             || payload == null || !codec.sha256(payload).equals(digest)) {
                         throw invalid("Stored physical revision integrity check failed.");
                     }
                     var value = codec.decode(payload);
+                    if (!format.equals(codec.formatFor(value))) {
+                        throw invalid("Stored physical revision format is incompatible with equipment kinds.");
+                    }
                     if (!source.equals(value.sourceId()) || !revision.equals(value.revisionId())
                             || !source.equals(row.getString("source_id")) || !revision.equals(row.getString("revision_id"))) {
                         throw invalid("Stored physical revision payload identity does not match its row key.");

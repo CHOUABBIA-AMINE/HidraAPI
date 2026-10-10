@@ -64,6 +64,28 @@ class TopologySimulationPhysicalNetworkRevisionQueryServiceTest {
     }
 
     @Test
+    void exportsV2RegulatorIncidenceAndExactStoredIdentityWithoutRewritingV1() {
+        var repository = mock(TopologyPhysicalNetworkRevisionRepositoryPort.class);
+        var value = new TopologyPhysicalNetworkRevision("s", "v2", ScopeType.PIPELINE, "q",
+                Instant.EPOCH, Instant.EPOCH, null, Origin.SYNTHETIC, "synthetic-evidence",
+                List.of(new Node("a", BigDecimal.ZERO), new Node("b", BigDecimal.ONE)),
+                List.of(new PipeSegment("p", "a", "b", BigDecimal.ONE, BigDecimal.ONE, BigDecimal.ZERO)),
+                List.of(new EquipmentLink("reg", "b", "a", EquipmentKind.REGULATOR)));
+        when(repository.findStored("s", "v2")).thenReturn(Optional.of(
+                new StoredRevision(value, "HIDRA_TOPOLOGY_PHYSICAL_NETWORK_V2", "b".repeat(64))));
+        var exported = new TopologySimulationPhysicalNetworkRevisionQueryService(repository)
+                .find("s", "v2").orElseThrow();
+        assertEquals("REGULATOR", exported.equipmentLinks().get(0).kind());
+        assertEquals("b", exported.equipmentLinks().get(0).fromNodeId());
+        assertEquals("HIDRA_TOPOLOGY_PHYSICAL_NETWORK_V2", exported.payloadFormat());
+        assertEquals("b".repeat(64), exported.sha256());
+        verify(repository).findStored("s", "v2");
+        verifyNoMoreInteractions(repository);
+        assertThrows(InvalidTopologyValueException.class, () ->
+                new StoredRevision(value, "HIDRA_TOPOLOGY_PHYSICAL_NETWORK_V1", "b".repeat(64)));
+    }
+
+    @Test
     void preservesMissingExactRevisionWithoutFallback() {
         var repository=mock(TopologyPhysicalNetworkRevisionRepositoryPort.class);
         when(repository.findStored("s","missing")).thenReturn(Optional.empty());

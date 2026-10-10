@@ -50,9 +50,11 @@ public interface SimulationPhysicalNetworkRevisionContract {
             if (nodes.size() < 2 || pipeSegments.isEmpty()) {
                 throw new IllegalArgumentException("Physical revision requires two nodes and a real pipe.");
             }
-            if (!"HIDRA_TOPOLOGY_PHYSICAL_NETWORK_V1".equals(payloadFormat)
-                    || sha256 == null || !sha256.matches("[0-9a-f]{64}")) {
-                throw new IllegalArgumentException("Unsupported physical revision format or digest.");
+            boolean regulatorPresent = equipmentLinks.stream().anyMatch(link -> "REGULATOR".equals(link.kind()));
+            boolean acceptedFormat = ("HIDRA_TOPOLOGY_PHYSICAL_NETWORK_V1".equals(payloadFormat) && !regulatorPresent)
+                    || ("HIDRA_TOPOLOGY_PHYSICAL_NETWORK_V2".equals(payloadFormat) && regulatorPresent);
+            if (!acceptedFormat || sha256 == null || !sha256.matches("[0-9a-f]{64}")) {
+                throw new IllegalArgumentException("Unsupported physical revision format, kind or digest.");
             }
         }
     }
@@ -86,7 +88,7 @@ public interface SimulationPhysicalNetworkRevisionContract {
             fromNodeId = identity(fromNodeId, "Equipment from node");
             toNodeId = identity(toNodeId, "Equipment to node");
             distinct(fromNodeId, toNodeId);
-            oneOf(kind, "Equipment kind", "COMPRESSOR", "VALVE");
+            oneOf(kind, "Equipment kind", "COMPRESSOR", "VALVE", "REGULATOR");
         }
     }
 
@@ -116,10 +118,13 @@ public interface SimulationPhysicalNetworkRevisionContract {
         }
     }
 
-    private static void oneOf(String value, String field, String first, String second) {
-        if (!first.equals(value) && !second.equals(value)) {
-            throw new IllegalArgumentException(field + " has an unsupported enum name.");
+    private static void oneOf(String value, String field, String... permitted) {
+        for (String candidate : permitted) {
+            if (candidate.equals(value)) {
+                return;
+            }
         }
+        throw new IllegalArgumentException(field + " has an unsupported enum name.");
     }
 
     private static <T> List<T> immutable(List<T> values) {

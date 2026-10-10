@@ -32,9 +32,15 @@ public interface TopologyPhysicalNetworkRevisionRepositoryPort {
 
     record StoredRevision(TopologyPhysicalNetworkRevision revision, String payloadFormat, String sha256) {
         public StoredRevision {
-            if (revision == null || !"HIDRA_TOPOLOGY_PHYSICAL_NETWORK_V1".equals(payloadFormat)
-                    || sha256 == null || !sha256.matches("[0-9a-f]{64}")) {
+            if (revision == null || sha256 == null || !sha256.matches("[0-9a-f]{64}")) {
                 throw new InvalidTopologyValueException("Stored physical revision metadata is invalid.");
+            }
+            boolean regulatorPresent = revision.equipmentLinks().stream()
+                    .anyMatch(link -> link.kind() == TopologyPhysicalNetworkRevision.EquipmentKind.REGULATOR);
+            boolean acceptedFormat = ("HIDRA_TOPOLOGY_PHYSICAL_NETWORK_V1".equals(payloadFormat) && !regulatorPresent)
+                    || ("HIDRA_TOPOLOGY_PHYSICAL_NETWORK_V2".equals(payloadFormat) && regulatorPresent);
+            if (!acceptedFormat) {
+                throw new InvalidTopologyValueException("Stored physical revision format/kind mismatch.");
             }
         }
     }

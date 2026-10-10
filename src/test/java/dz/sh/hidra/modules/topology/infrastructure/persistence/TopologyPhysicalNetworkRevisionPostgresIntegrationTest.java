@@ -62,6 +62,8 @@ class TopologyPhysicalNetworkRevisionPostgresIntegrationTest {
     static final PostgreSQLContainer<?> POSTGRES = new PostgreSQLContainer<>("postgres:16")
             .withDatabaseName("hidra_test");
     private static final Path MIGRATION = Path.of("src/main/resources/db/migration/V20261009_001__p25_topology_physical_network_revisions.sql");
+    private static final Path REGULATOR_MIGRATION = Path.of(
+            "src/main/resources/db/migration/V20261010_003__p25_topology_regulator_physical_revision_format.sql");
     private static final String TABLE = "hidra_topology_physical_network_revision";
     private JdbcTemplate jdbc;
     private DataSourceTransactionManager transactions;
@@ -179,6 +181,37 @@ class TopologyPhysicalNetworkRevisionPostgresIntegrationTest {
     }
 
     @Test
+    void versionedMigrationPreservesV1RowsAndAddsOnlyV2RegulatorCapability() throws Exception {
+        var existing = fixture("old", "100.00");
+        repository.append(existing);
+        var before = query.find("source", "old").orElseThrow();
+        var regulator = regulatorFixture("reg");
+        assertThrows(RuntimeException.class, () -> repository.append(regulator));
+        assertEquals(1L, count());
+        jdbc.execute(Files.readString(REGULATOR_MIGRATION));
+        assertEquals(regulator, repository.append(regulator));
+        var v2 = query.find("source", "reg").orElseThrow();
+        assertExport(regulator, v2);
+        assertEquals("HIDRA_TOPOLOGY_PHYSICAL_NETWORK_V2", v2.payloadFormat());
+        assertEquals(before, query.find("source", "old").orElseThrow());
+        assertEquals(existing, repository.append(existing));
+        assertEquals(regulator, repository.append(regulator));
+        assertEquals(2L, count());
+        assertThrows(InvalidTopologyValueException.class, () -> repository.append(regulatorFixture("old")));
+
+        var codec = new TopologyPhysicalNetworkRevisionCodec();
+        byte[] v2Bytes = codec.encode(regulator);
+        insert("source", "forged", codec.FORMAT, v2Bytes, codec.sha256(v2Bytes));
+        assertThrows(InvalidTopologyValueException.class, () -> repository.findStored("source", "forged"));
+        assertThrows(RuntimeException.class, () -> insert("source", "unknown", "UNKNOWN",
+                v2Bytes, codec.sha256(v2Bytes)));
+        assertThrows(RuntimeException.class, () -> jdbc.update("UPDATE " + TABLE + " SET revision_id='illegal'"));
+        assertThrows(RuntimeException.class, () -> jdbc.update("DELETE FROM " + TABLE));
+        assertThrows(RuntimeException.class, () -> jdbc.execute("TRUNCATE " + TABLE));
+        assertEquals("preserved", jdbc.queryForObject("SELECT id FROM topology_test_sentinel", String.class));
+    }
+
+    @Test
     void forwardMigrationCreatesEmptyStoreAndPreservesExistingSentinel() {
         assertEquals(0L, count());
         assertEquals("preserved", jdbc.queryForObject("SELECT id FROM topology_test_sentinel", String.class));
@@ -200,6 +233,8 @@ class TopologyPhysicalNetworkRevisionPostgresIntegrationTest {
         }
         repository.append(fixture("r1", "100.00"));
         assertExport(fixture("r1", "100.00"), query.find("source", "r1").orElseThrow());
+        repository.append(regulatorFixture("reg-full"));
+        assertExport(regulatorFixture("reg-full"), query.find("source", "reg-full").orElseThrow());
         captureExactCatalog();
     }
 
@@ -326,6 +361,14 @@ class TopologyPhysicalNetworkRevisionPostgresIntegrationTest {
                 List.of(new EquipmentLink("e","c","b",EquipmentKind.COMPRESSOR)));
     }
 
+    private static TopologyPhysicalNetworkRevision regulatorFixture(String revision) {
+        var existing = fixture(revision, "100.00");
+        return new TopologyPhysicalNetworkRevision(existing.sourceId(), existing.revisionId(),
+                existing.scopeType(), existing.scopeId(), existing.recordedAt(), existing.effectiveFrom(),
+                existing.effectiveUntil(), existing.origin(), existing.evidenceReference(), existing.nodes(),
+                existing.pipeSegments(), List.of(new EquipmentLink("regulator", "c", "b", EquipmentKind.REGULATOR)));
+    }
+
     private static void assertExport(TopologyPhysicalNetworkRevision expected, SimulationPhysicalNetworkRevisionContract.Revision actual) {
         assertEquals(expected.sourceId(),actual.sourceId()); assertEquals(expected.revisionId(),actual.revisionId());
         assertEquals(expected.scopeType().name(),actual.scopeType()); assertEquals(expected.scopeId(),actual.scopeId());
@@ -350,6 +393,6 @@ class TopologyPhysicalNetworkRevisionPostgresIntegrationTest {
             assertEquals(e.id(),a.id());assertEquals(e.fromNodeId(),a.fromNodeId());assertEquals(e.toNodeId(),a.toNodeId());assertEquals(e.kind().name(),a.kind());
         }
         var codec=new TopologyPhysicalNetworkRevisionCodec();
-        assertEquals(codec.FORMAT,actual.payloadFormat());assertEquals(codec.sha256(codec.encode(expected)),actual.sha256());
+        assertEquals(codec.formatFor(expected),actual.payloadFormat());assertEquals(codec.sha256(codec.encode(expected)),actual.sha256());
     }
 }

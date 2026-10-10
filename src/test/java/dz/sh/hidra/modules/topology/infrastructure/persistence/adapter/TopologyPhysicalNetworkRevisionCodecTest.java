@@ -40,6 +40,16 @@ class TopologyPhysicalNetworkRevisionCodecTest {
             + "000000000000000100000001700000000162000000016100000003313030fffffffe00000004302e3530000000020000000130"
             + "00000000000000010000000165000000016100000001620000000556414c5645";
     private static final String DIGEST = "58a7fbb9800a4c67b3f1cf448e268ab44b9e49f71ed120213c6e5deeb3eb4613";
+    // Independently packed using Python struct (>i, >qi) and hashlib.sha256.
+    // The existing V1 literal and digest are deliberately not regenerated.
+    private static final String REGULATOR_V2_HEX =
+            "0000002248494452415f544f504f4c4f47595f504859534943414c5f4e4554574f524b5f5632000000017300000001"
+            + "7200000008504950454c494e450000000171ffffffffffffffff075bcd15fffffffffffffffe3ade68b10000000009"
+            + "53594e5448455449430000000178000000020000000161000000052d312e3030000000020000000162000000013000"
+            + "0000000000000100000001700000000162000000016100000003313030fffffffe00000004302e3530000000020000"
+            + "000130000000000000000100000001650000000161000000016200000009524547554c41544f52";
+    private static final String REGULATOR_V2_DIGEST =
+            "8a245b58a7904fe9df0f5eda3969d8614f0408baba4f8bb2e39731cad5e0cdd2";
     private final TopologyPhysicalNetworkRevisionCodec codec = new TopologyPhysicalNetworkRevisionCodec();
 
     @Test
@@ -49,6 +59,30 @@ class TopologyPhysicalNetworkRevisionCodecTest {
         assertEquals(DIGEST, codec.sha256(expected));
         assertEquals(fixture(), codec.decode(expected));
         assertEquals(-2, codec.decode(expected).pipeSegments().get(0).lengthMeters().scale());
+    }
+
+    @Test
+    void regulatorMatchesIndependentV2BytesDigestAndRejectsHeaderSpoofing() {
+        var regulator = regulatorFixture();
+        byte[] independent = HexFormat.of().parseHex(REGULATOR_V2_HEX);
+        assertEquals(227, independent.length);
+        assertEquals(TopologyPhysicalNetworkRevisionCodec.FORMAT_V2, codec.formatFor(regulator));
+        assertArrayEquals(independent, codec.encode(regulator));
+        assertEquals(REGULATOR_V2_DIGEST, codec.sha256(independent));
+        assertEquals(regulator, codec.decode(independent));
+        assertEquals(TopologyPhysicalNetworkRevisionCodec.FORMAT, codec.formatFor(fixture()));
+        assertArrayEquals(HexFormat.of().parseHex(HEX), codec.encode(fixture()));
+        byte[] v2ClaimingV1 = independent.clone();
+        v2ClaimingV1[37] = '1';
+        assertThrows(InvalidTopologyValueException.class, () -> codec.decode(v2ClaimingV1));
+        byte[] v1ClaimingV2 = HexFormat.of().parseHex(HEX);
+        v1ClaimingV2[37] = '2';
+        assertThrows(InvalidTopologyValueException.class, () -> codec.decode(v1ClaimingV2));
+        byte[] broken = independent.clone();
+        broken[broken.length - 1] = 'E';
+        assertThrows(InvalidTopologyValueException.class, () -> codec.decode(broken));
+        assertThrows(InvalidTopologyValueException.class,
+                () -> codec.decode(Arrays.copyOf(independent, independent.length + 1)));
     }
 
     @Test
@@ -151,6 +185,14 @@ class TopologyPhysicalNetworkRevisionCodecTest {
                 List.of(new Node("a",BigDecimal.ZERO.setScale(Integer.MIN_VALUE)),f.nodes().get(1)),
                 f.pipeSegments(),f.equipmentLinks());
         assertEquals(zero, codec.decode(codec.encode(zero)));
+    }
+
+    private static TopologyPhysicalNetworkRevision regulatorFixture() {
+        var original = fixture();
+        return copy(original, original.sourceId(), original.revisionId(), original.scopeType(),
+                original.scopeId(), original.recordedAt(), original.effectiveFrom(), original.effectiveUntil(),
+                original.origin(), original.evidenceReference(), original.nodes(), original.pipeSegments(),
+                List.of(new EquipmentLink("e", "a", "b", EquipmentKind.REGULATOR)));
     }
 
     private static TopologyPhysicalNetworkRevision fixture() {

@@ -49,7 +49,7 @@ public record TopologyPhysicalNetworkRevision(
     /** DECLARED_PARAMETER is a supplied declaration, not verified or approved field data. */
     public enum Origin { DECLARED_PARAMETER, SYNTHETIC }
 
-    public enum EquipmentKind { COMPRESSOR, VALVE }
+    public enum EquipmentKind { COMPRESSOR, VALVE, REGULATOR }
 
     public TopologyPhysicalNetworkRevision {
         sourceId = identity(sourceId, "Source identity");

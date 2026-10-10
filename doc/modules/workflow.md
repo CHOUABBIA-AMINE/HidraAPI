@@ -188,3 +188,9 @@ The linked decisions carry the precise per-subject exceptions and source/test/mi
 | WorkflowTask | [HMSR-078 reconciled rule](../domain/SEMANTIC_DECISIONS.md#workflow-workflowtask) |
 | WorkflowAction | [HMSR-095 reconciled rule](../domain/SEMANTIC_DECISIONS.md#workflow-workflowaction) |
 | WorkflowStateHistory | [HMSR-116 reconciled rule](../domain/SEMANTIC_DECISIONS.md#workflow-workflowstatehistory) |
+
+## Exact Revision Approval Evidence
+
+The [revision approval evidence contract](../../src/main/java/dz/sh/hidra/modules/workflow/application/contract/target/RevisionApprovalEvidenceContract.java) lives inside the existing exported target package. It admits only registered Custody gas-fluid and Simulation equipment-parameter qualification contexts. The owner query requires current active target/purpose configuration and binding, an exact digest-bound completed instance, an approved task and matching final APPROVE action, actor and completion time. Earlier approval actions cannot qualify a replacement revision.
+
+This read contract creates no approval and changes no execution permissions or lifecycle. Qualification consumers must reattest persisted evidence on each read. Current governance withdrawal yields unavailable; historical mutable configuration replay is not claimed. Actual configured transitions remain the only application route to state-changing approval. C3C runtime acceptance remains pending until real PostgreSQL tests are verified.

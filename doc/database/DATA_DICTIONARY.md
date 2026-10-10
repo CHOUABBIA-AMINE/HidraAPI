@@ -6,10 +6,10 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `c82cf6a80425dc191b2c00c290375a5406b54620`
+Captured source SHA: `25707cf7389ecb2077e80210a58e589da7ca9960`
 PostgreSQL server: `16.15 (Debian 16.15-1.pgdg13+2)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `9462e6a083bcb9b0b2a4f78da230fae396c318b5a05ecafd0f4998d27db77900`.
-Migrations: 140; JPA mappings: 470; catalog relations: 483; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `2863b637159942c0a01a23d6406fec034f051361f5be6de951834fd18f8b3b9f`.
+Migrations: 141; JPA mappings: 470; catalog relations: 486; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -5645,6 +5645,159 @@ Persisted CustodyDocumentReferenceJpaEntity state; semantic authority remains wi
 #### Triggers
 
 None captured in this catalog category.
+
+### public.hidra_custody_gas_fluid_qualification
+
+Owner: **custody**; relation kind: `r`.
+
+Immutable exact qualification evidence reattested against actual current Workflow configuration and actions.
+
+- Evidence: [CustodyGasFluidRevision.java](../../src/main/java/dz/sh/hidra/modules/custody/domain/model/CustodyGasFluidRevision.java)
+- Evidence: [JdbcCustodyGasFluidRevisionRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/JdbcCustodyGasFluidRevisionRepositoryAdapter.java)
+- Evidence: [V20261010_001__p25_custody_gas_fluid_revisions.sql](../../src/main/resources/db/migration/V20261010_001__p25_custody_gas_fluid_revisions.sql)
+- Migration mention (not inferred introduction): [V20261010_001__p25_custody_gas_fluid_revisions.sql](../../src/main/resources/db/migration/V20261010_001__p25_custody_gas_fluid_revisions.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| qualification_id | text | False | None; identity=; generated= | No current mapped Java column | — |
+| source_id | text | False | None; identity=; generated= | No current mapped Java column | — |
+| revision_id | text | False | None; identity=; generated= | No current mapped Java column | — |
+| payload_format | text | False | None; identity=; generated= | No current mapped Java column | — |
+| canonical_payload | bytea | False | None; identity=; generated= | No current mapped Java column | — |
+| sha256 | character varying(64) | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_custody_gas_fluid_qualificatio_source_id_revision_id_fkey`: FOREIGN KEY (source_id, revision_id) REFERENCES hidra_custody_gas_fluid_revision(source_id, revision_id)
+  - Catalog attributes: {"columns": ["source_id", "revision_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["source_id", "revision_id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_custody_gas_fluid_revision"}, "type": "f", "validated": true}
+- `hidra_custody_gas_fluid_qualification_canonical_payload_check`: CHECK (octet_length(canonical_payload) &gt; 0)
+  - Catalog attributes: {"columns": ["canonical_payload"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_gas_fluid_qualification_check`: CHECK (sha256::text ~ '^[0-9a-f]{64}$'::text AND sha256::text = encode(sha256(canonical_payload), 'hex'::text))
+  - Catalog attributes: {"columns": ["sha256", "canonical_payload"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_gas_fluid_qualification_payload_format_check`: CHECK (payload_format = 'HIDRA_CUSTODY_GAS_FLUID_QUALIFICATION_V1'::text)
+  - Catalog attributes: {"columns": ["payload_format"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_gas_fluid_qualification_pkey`: PRIMARY KEY (qualification_id)
+  - Catalog attributes: {"columns": ["qualification_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_custody_gas_fluid_qualification_qualification_id_check`: CHECK (qualification_id !~ '^[\x01-\x20]&#124;[\x01-\x20]$'::text AND qualification_id !~ '^[[:space:]]*$'::text)
+  - Catalog attributes: {"columns": ["qualification_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_gas_fluid_qualification_revision_id_check`: CHECK (revision_id !~ '^[\x01-\x20]&#124;[\x01-\x20]$'::text AND revision_id !~ '^[[:space:]]*$'::text)
+  - Catalog attributes: {"columns": ["revision_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_gas_fluid_qualification_source_id_check`: CHECK (source_id !~ '^[\x01-\x20]&#124;[\x01-\x20]$'::text AND source_id !~ '^[[:space:]]*$'::text)
+  - Catalog attributes: {"columns": ["source_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+
+#### Indexes
+
+- `hidra_custody_gas_fluid_qualification_pkey`: CREATE UNIQUE INDEX hidra_custody_gas_fluid_qualification_pkey ON public.hidra_custody_gas_fluid_qualification USING btree (qualification_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `hidra_custody_gas_fluid_qualification_no_truncate`: CREATE TRIGGER hidra_custody_gas_fluid_qualification_no_truncate BEFORE TRUNCATE ON hidra_custody_gas_fluid_qualification FOR EACH STATEMENT EXECUTE FUNCTION hidra_custody_gas_revision_deny_mutation()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_custody_gas_revision_deny_mutation()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_custody_gas_revision_deny_mutation()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'Custody gas revision evidence is append-only';<br>END;<br>$function$<br>
+- `hidra_custody_gas_fluid_qualification_no_update_delete`: CREATE TRIGGER hidra_custody_gas_fluid_qualification_no_update_delete BEFORE DELETE OR UPDATE ON hidra_custody_gas_fluid_qualification FOR EACH ROW EXECUTE FUNCTION hidra_custody_gas_revision_deny_mutation()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_custody_gas_revision_deny_mutation()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_custody_gas_revision_deny_mutation()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'Custody gas revision evidence is append-only';<br>END;<br>$function$<br>
+
+### public.hidra_custody_gas_fluid_revision
+
+Owner: **custody**; relation kind: `r`.
+
+Immutable gas composition/product snapshots and binding; SHA-256 provides integrity, not approval.
+
+- Evidence: [CustodyGasFluidRevision.java](../../src/main/java/dz/sh/hidra/modules/custody/domain/model/CustodyGasFluidRevision.java)
+- Evidence: [JdbcCustodyGasFluidRevisionRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/JdbcCustodyGasFluidRevisionRepositoryAdapter.java)
+- Evidence: [V20261010_001__p25_custody_gas_fluid_revisions.sql](../../src/main/resources/db/migration/V20261010_001__p25_custody_gas_fluid_revisions.sql)
+- Migration mention (not inferred introduction): [V20261010_001__p25_custody_gas_fluid_revisions.sql](../../src/main/resources/db/migration/V20261010_001__p25_custody_gas_fluid_revisions.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| source_id | text | False | None; identity=; generated= | No current mapped Java column | — |
+| revision_id | text | False | None; identity=; generated= | No current mapped Java column | — |
+| payload_format | text | False | None; identity=; generated= | No current mapped Java column | — |
+| canonical_payload | bytea | False | None; identity=; generated= | No current mapped Java column | — |
+| sha256 | character varying(64) | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_custody_gas_fluid_revision_canonical_payload_check`: CHECK (octet_length(canonical_payload) &gt; 0)
+  - Catalog attributes: {"columns": ["canonical_payload"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_gas_fluid_revision_check`: CHECK (sha256::text ~ '^[0-9a-f]{64}$'::text AND sha256::text = encode(sha256(canonical_payload), 'hex'::text))
+  - Catalog attributes: {"columns": ["sha256", "canonical_payload"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_gas_fluid_revision_payload_format_check`: CHECK (payload_format = 'HIDRA_CUSTODY_GAS_FLUID_V1'::text)
+  - Catalog attributes: {"columns": ["payload_format"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_gas_fluid_revision_pkey`: PRIMARY KEY (source_id, revision_id)
+  - Catalog attributes: {"columns": ["source_id", "revision_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_custody_gas_fluid_revision_revision_id_check`: CHECK (revision_id !~ '^[\x01-\x20]&#124;[\x01-\x20]$'::text AND revision_id !~ '^[[:space:]]*$'::text)
+  - Catalog attributes: {"columns": ["revision_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_gas_fluid_revision_sha256_key`: UNIQUE (sha256)
+  - Catalog attributes: {"columns": ["sha256"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_custody_gas_fluid_revision_source_id_check`: CHECK (source_id !~ '^[\x01-\x20]&#124;[\x01-\x20]$'::text AND source_id !~ '^[[:space:]]*$'::text)
+  - Catalog attributes: {"columns": ["source_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+
+#### Indexes
+
+- `hidra_custody_gas_fluid_revision_pkey`: CREATE UNIQUE INDEX hidra_custody_gas_fluid_revision_pkey ON public.hidra_custody_gas_fluid_revision USING btree (source_id, revision_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+- `hidra_custody_gas_fluid_revision_sha256_key`: CREATE UNIQUE INDEX hidra_custody_gas_fluid_revision_sha256_key ON public.hidra_custody_gas_fluid_revision USING btree (sha256)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `hidra_custody_gas_fluid_revision_no_truncate`: CREATE TRIGGER hidra_custody_gas_fluid_revision_no_truncate BEFORE TRUNCATE ON hidra_custody_gas_fluid_revision FOR EACH STATEMENT EXECUTE FUNCTION hidra_custody_gas_revision_deny_mutation()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_custody_gas_revision_deny_mutation()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_custody_gas_revision_deny_mutation()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'Custody gas revision evidence is append-only';<br>END;<br>$function$<br>
+- `hidra_custody_gas_fluid_revision_no_update_delete`: CREATE TRIGGER hidra_custody_gas_fluid_revision_no_update_delete BEFORE DELETE OR UPDATE ON hidra_custody_gas_fluid_revision FOR EACH ROW EXECUTE FUNCTION hidra_custody_gas_revision_deny_mutation()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_custody_gas_revision_deny_mutation()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_custody_gas_revision_deny_mutation()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'Custody gas revision evidence is append-only';<br>END;<br>$function$<br>
+
+### public.hidra_custody_gas_method_revision
+
+Owner: **custody**; relation kind: `r`.
+
+Immutable supplied gas method applicability; source declaration does not establish an executing property algorithm.
+
+- Evidence: [CustodyGasFluidRevision.java](../../src/main/java/dz/sh/hidra/modules/custody/domain/model/CustodyGasFluidRevision.java)
+- Evidence: [JdbcCustodyGasFluidRevisionRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/JdbcCustodyGasFluidRevisionRepositoryAdapter.java)
+- Evidence: [V20261010_001__p25_custody_gas_fluid_revisions.sql](../../src/main/resources/db/migration/V20261010_001__p25_custody_gas_fluid_revisions.sql)
+- Migration mention (not inferred introduction): [V20261010_001__p25_custody_gas_fluid_revisions.sql](../../src/main/resources/db/migration/V20261010_001__p25_custody_gas_fluid_revisions.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| method_reference | text | False | None; identity=; generated= | No current mapped Java column | — |
+| revision_id | text | False | None; identity=; generated= | No current mapped Java column | — |
+| payload_format | text | False | None; identity=; generated= | No current mapped Java column | — |
+| canonical_payload | bytea | False | None; identity=; generated= | No current mapped Java column | — |
+| sha256 | character varying(64) | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_custody_gas_method_revision_canonical_payload_check`: CHECK (octet_length(canonical_payload) &gt; 0)
+  - Catalog attributes: {"columns": ["canonical_payload"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_gas_method_revision_check`: CHECK (sha256::text ~ '^[0-9a-f]{64}$'::text AND sha256::text = encode(sha256(canonical_payload), 'hex'::text))
+  - Catalog attributes: {"columns": ["sha256", "canonical_payload"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_gas_method_revision_method_reference_check`: CHECK (method_reference !~ '^[\x01-\x20]&#124;[\x01-\x20]$'::text AND method_reference !~ '^[[:space:]]*$'::text)
+  - Catalog attributes: {"columns": ["method_reference"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_gas_method_revision_payload_format_check`: CHECK (payload_format = 'HIDRA_CUSTODY_GAS_METHOD_V1'::text)
+  - Catalog attributes: {"columns": ["payload_format"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_gas_method_revision_pkey`: PRIMARY KEY (method_reference, revision_id)
+  - Catalog attributes: {"columns": ["method_reference", "revision_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_custody_gas_method_revision_revision_id_check`: CHECK (revision_id !~ '^[\x01-\x20]&#124;[\x01-\x20]$'::text AND revision_id !~ '^[[:space:]]*$'::text)
+  - Catalog attributes: {"columns": ["revision_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+
+#### Indexes
+
+- `hidra_custody_gas_method_revision_pkey`: CREATE UNIQUE INDEX hidra_custody_gas_method_revision_pkey ON public.hidra_custody_gas_method_revision USING btree (method_reference, revision_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `hidra_custody_gas_method_revision_no_truncate`: CREATE TRIGGER hidra_custody_gas_method_revision_no_truncate BEFORE TRUNCATE ON hidra_custody_gas_method_revision FOR EACH STATEMENT EXECUTE FUNCTION hidra_custody_gas_revision_deny_mutation()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_custody_gas_revision_deny_mutation()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_custody_gas_revision_deny_mutation()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'Custody gas revision evidence is append-only';<br>END;<br>$function$<br>
+- `hidra_custody_gas_method_revision_no_update_delete`: CREATE TRIGGER hidra_custody_gas_method_revision_no_update_delete BEFORE DELETE OR UPDATE ON hidra_custody_gas_method_revision FOR EACH ROW EXECUTE FUNCTION hidra_custody_gas_revision_deny_mutation()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_custody_gas_revision_deny_mutation()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_custody_gas_revision_deny_mutation()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'Custody gas revision evidence is append-only';<br>END;<br>$function$<br>
 
 ### public.hidra_custody_measurement_period
 

@@ -138,3 +138,9 @@ The linked decisions carry the precise per-subject exceptions and source/test/mi
 | CustodyMeasurementPeriod | [HMSR-020 reconciled rule](../domain/SEMANTIC_DECISIONS.md#custody-custodymeasurementperiod) |
 | CustodyDiscrepancy | [HMSR-029 reconciled rule](../domain/SEMANTIC_DECISIONS.md#custody-custodydiscrepancy) |
 | CustodyTransferTicket | [HMSR-082 reconciled rule](../domain/SEMANTIC_DECISIONS.md#custody-custodytransferticket) |
+
+## Qualified Gas Source Revisions
+
+HPR-P25-002C3C introduces [immutable supplied gas sources](../../src/main/java/dz/sh/hidra/modules/custody/domain/model/CustodyGasFluidRevision.java) and the exported [exact qualified query](../../src/main/java/dz/sh/hidra/modules/custody/application/contract/simulation/SimulationGasFluidRevisionContract.java). Source declarations retain actual product snapshots, ordered mole fractions, independently immutable method applicability, evidence, validity and exact governance binding. No fraction normalization, physical default or numerical property algorithm is supplied.
+
+The [JDBC store](../../src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/JdbcCustodyGasFluidRevisionRepositoryAdapter.java) verifies canonical bytes and computed digests on every read. Qualification pins an explicit record and reattests the actual final Workflow action and current product/configuration. Withdrawal yields unavailable; corrupted storage raises an integrity error. Synthetic source origin remains synthetic after approval. There is no public write endpoint, GZ2 data or operational eligibility claim. Runtime acceptance remains pending in the execution memories until actual PostgreSQL evidence is verified.

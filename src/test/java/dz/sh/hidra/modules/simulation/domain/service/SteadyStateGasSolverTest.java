@@ -422,6 +422,9 @@ class SteadyStateGasSolverTest {
     }
 
 
+    private static double flowTolerance(double expected) {
+        return Math.max(1e-10,1e-8*Math.abs(expected));
+    }
     // Frozen 008C mathematical reference: two fixed end pressures and independent scalar roots.
     private static final double EQUIPMENT_PIPE_K=112920561.0523195743145253870422;
     private static double bisect(java.util.function.DoubleUnaryOperator f,double lo,double hi) {
@@ -455,10 +458,10 @@ class SteadyStateGasSolverTest {
             double expected=entry.getValue().injectionKilogramsPerSecond()==null
                     ?result.pipeSolution().pressureBoundaryInjectionKilogramsPerSecond().get(entry.getKey())
                     :entry.getValue().injectionKilogramsPerSecond();
-            assertEquals(expected,net.getOrDefault(entry.getKey(),0d),1e-10);
+            assertEquals(expected,net.getOrDefault(entry.getKey(),0d),1e-11);
             sum+=expected;
         }
-        assertEquals(0,sum,1e-10);
+        assertEquals(0,sum,boundaries.size()*1e-11);
         result.pipeSolution().nodeMassResidualKilogramsPerSecond().values()
                 .forEach(v->assertTrue(Math.abs(v)<=1e-11,"Node mass residual "+v));
         result.compressorLogPressureResiduals().values()
@@ -476,7 +479,7 @@ class SteadyStateGasSolverTest {
             double reference=bisect(q->200000d*200000d*Math.exp(2*((120-20*q)*(2-rpm/1000)
                     +(240-40*q)*(rpm/1000-1))/rT)-EQUIPMENT_PIPE_K*q-pc*pc,1,2);
             double expected=rpm==1000?1.290965510130259:1.691354711061536;
-            assertEquals(expected,reference,1e-8);
+            assertEquals(expected,reference,flowTolerance(expected));
             double mid=rpm==1000?200135.974201857170:200248.895984309708;
             for(double offset:new double[]{-1,1}) {
                 var result=equipment(input,boundaries,Map.of("b",mid+offset),
@@ -485,8 +488,8 @@ class SteadyStateGasSolverTest {
                 assertEquals(reference,result.equipmentMassFlowsKilogramsPerSecond().get("compressor"),
                         Math.max(1e-10,1e-8*reference));
                 assertEquals(mid,result.pipeSolution().nodePressurePascalsAbsolute().get("b"),0.0002);
-                assertEquals(reference,result.pipeSolution().pressureBoundaryInjectionKilogramsPerSecond().get("a"),1e-8);
-                assertEquals(-reference,result.pipeSolution().pressureBoundaryInjectionKilogramsPerSecond().get("c"),1e-8);
+                assertEquals(reference,result.pipeSolution().pressureBoundaryInjectionKilogramsPerSecond().get("a"),flowTolerance(reference));
+                assertEquals(-reference,result.pipeSolution().pressureBoundaryInjectionKilogramsPerSecond().get("c"),flowTolerance(-reference));
                 equipmentConservation(result,boundaries,input.pipes(),input.equipmentRevision().equipment());
             }
         }
@@ -500,14 +503,14 @@ class SteadyStateGasSolverTest {
                     -EQUIPMENT_PIPE_K*q-pc*pc,0.01,1.9);
             double expected=opening==0.25?0.280995000256254:0.819307289276717;
             double intermediate=opening==0.25?199438.009999487493:199590.346355361642;
-            assertEquals(expected,reference,1e-8);
+            assertEquals(expected,reference,flowTolerance(expected));
             var result=equipment(input,boundaries,Map.of("b",intermediate+0.8),
                     Map.of("bc",reference),Map.of("valve",reference));
             assertEquals(reference,result.equipmentMassFlowsKilogramsPerSecond().get("valve"),
                     Math.max(1e-10,1e-8*reference));
             assertEquals(intermediate,result.pipeSolution().nodePressurePascalsAbsolute().get("b"),0.0002);
-            assertEquals(reference,result.pipeSolution().pressureBoundaryInjectionKilogramsPerSecond().get("a"),1e-8);
-            assertEquals(-reference,result.pipeSolution().pressureBoundaryInjectionKilogramsPerSecond().get("c"),1e-8);
+            assertEquals(reference,result.pipeSolution().pressureBoundaryInjectionKilogramsPerSecond().get("a"),flowTolerance(reference));
+            assertEquals(-reference,result.pipeSolution().pressureBoundaryInjectionKilogramsPerSecond().get("c"),flowTolerance(-reference));
             equipmentConservation(result,boundaries,input.pipes(),input.equipmentRevision().equipment());
         }
     }
@@ -548,8 +551,8 @@ class SteadyStateGasSolverTest {
         assertEquals(199600,s.pipeSolution().nodePressurePascalsAbsolute().get("b"),0.0002);
         assertEquals(199500,s.pipeSolution().nodePressurePascalsAbsolute().get("c"),0.0002);
         for(var e:Map.of("ab",0.4,"ac",0.5,"bc",0.1).entrySet())
-            assertEquals(e.getValue(),s.equipmentMassFlowsKilogramsPerSecond().get(e.getKey()),1e-8);
-        assertEquals(0.9,s.pipeSolution().pressureBoundaryInjectionKilogramsPerSecond().get("a"),1e-8);
+            assertEquals(e.getValue(),s.equipmentMassFlowsKilogramsPerSecond().get(e.getKey()),flowTolerance(e.getValue()));
+        assertEquals(0.9,s.pipeSolution().pressureBoundaryInjectionKilogramsPerSecond().get("a"),flowTolerance(0.9));
         assertTrue(s.pipeSolution().pipeMassFlowKilogramsPerSecond().isEmpty());
         equipmentConservation(s,b,net.pipes(),net.equipmentRevision().equipment());
         var reorder=multiValve(new String[][]{{"bc","b","c"},{"ac","a","c"},{"ab","a","b"}},
@@ -562,9 +565,9 @@ class SteadyStateGasSolverTest {
         var b=Map.of("a",pressure(200000),"b",injection(-0.75));
         var solved=equipment(net,b,Map.of("b",199499d),Map.of(),Map.of("v1",0.5,"v2",0.25));
         assertEquals(199500,solved.pipeSolution().nodePressurePascalsAbsolute().get("b"),0.0002);
-        assertEquals(0.5,solved.equipmentMassFlowsKilogramsPerSecond().get("v1"),1e-8);
-        assertEquals(0.25,solved.equipmentMassFlowsKilogramsPerSecond().get("v2"),1e-8);
-        assertEquals(0.75,solved.pipeSolution().pressureBoundaryInjectionKilogramsPerSecond().get("a"),1e-8);
+        assertEquals(0.5,solved.equipmentMassFlowsKilogramsPerSecond().get("v1"),flowTolerance(0.5));
+        assertEquals(0.25,solved.equipmentMassFlowsKilogramsPerSecond().get("v2"),flowTolerance(0.25));
+        assertEquals(0.75,solved.pipeSolution().pressureBoundaryInjectionKilogramsPerSecond().get("a"),flowTolerance(0.75));
         assertTrue(solved.pipeSolution().pipeMassFlowKilogramsPerSecond().isEmpty());
         equipmentConservation(solved,b,net.pipes(),net.equipmentRevision().equipment());
     }
@@ -581,9 +584,9 @@ class SteadyStateGasSolverTest {
         assertEquals(pB,solved.pipeSolution().nodePressurePascalsAbsolute().get("b"),0.0002);
         assertEquals(pOut,solved.pipeSolution().nodePressurePascalsAbsolute().get("c"),0.0002);
         assertEquals(pOut,solved.pipeSolution().nodePressurePascalsAbsolute().get("d"),0.0002);
-        assertEquals(0.5,solved.equipmentMassFlowsKilogramsPerSecond().get("ab"),1e-8);
-        assertEquals(0.25,solved.pipeSolution().pipeMassFlowKilogramsPerSecond().get("bc"),1e-8);
-        assertEquals(0.25,solved.pipeSolution().pipeMassFlowKilogramsPerSecond().get("bd"),1e-8);
+        assertEquals(0.5,solved.equipmentMassFlowsKilogramsPerSecond().get("ab"),flowTolerance(0.5));
+        assertEquals(0.25,solved.pipeSolution().pipeMassFlowKilogramsPerSecond().get("bc"),flowTolerance(0.25));
+        assertEquals(0.25,solved.pipeSolution().pipeMassFlowKilogramsPerSecond().get("bd"),flowTolerance(0.25));
         assertEquals(0,solved.pipeSolution().pipeMassFlowKilogramsPerSecond().get("cd"),1e-10);
         equipmentConservation(solved,b,net.pipes(),net.equipmentRevision().equipment());
     }
@@ -631,8 +634,8 @@ class SteadyStateGasSolverTest {
                 Map.of("bc",-0.5),Map.of("valve",0.5));
         assertEquals(199500,result.pipeSolution().nodePressurePascalsAbsolute().get("b"),0.0002);
         assertEquals(199358.445317658515,result.pipeSolution().nodePressurePascalsAbsolute().get("c"),0.0002);
-        assertEquals(-0.5,result.pipeSolution().pipeMassFlowKilogramsPerSecond().get("bc"),1e-8);
-        assertEquals(0.5,result.equipmentMassFlowsKilogramsPerSecond().get("valve"),1e-8);
+        assertEquals(-0.5,result.pipeSolution().pipeMassFlowKilogramsPerSecond().get("bc"),flowTolerance(-0.5));
+        assertEquals(0.5,result.equipmentMassFlowsKilogramsPerSecond().get("valve"),flowTolerance(0.5));
         equipmentConservation(result,boundaries,reversed.pipes(),reversed.equipmentRevision().equipment());
     }
     @Test void compressorOffReferenceAndReverseEquipmentOperationsFailClosed() {
@@ -652,4 +655,55 @@ class SteadyStateGasSolverTest {
                 Map.of("b",199500d),Map.of(),Map.of("valve",-0.5)));
     }
 
+
+    @Test void twoPipeIslandsJoinThroughRealValveAndRetainSeparateLinkIds() {
+        var ac=new SimulationPipeSegmentInput("ac","a","c",new BigDecimal("1000"),BigDecimal.ONE,BigDecimal.ZERO);
+        var bd=new SimulationPipeSegmentInput("bd","b","d",new BigDecimal("1000"),BigDecimal.ONE,BigDecimal.ZERO);
+        var net=multiValve(new String[][]{{"ab","a","b"}},new double[]{0.5},List.of(ac,bd));
+        var boundaries=Map.of("a",pressure(200000),"b",injection(0),"c",injection(0),"d",injection(-0.5));
+        double pd=Math.sqrt(199500d*199500d-EQUIPMENT_PIPE_K*0.5);
+        var guess=Map.of("b",199499d,"c",199999d,"d",pd-1);
+        var value=equipment(net,boundaries,guess,Map.of("ac",0d,"bd",0.5),Map.of("ab",0.5));
+        assertEquals(200000,value.pipeSolution().nodePressurePascalsAbsolute().get("c"),0.0002);
+        assertEquals(199500,value.pipeSolution().nodePressurePascalsAbsolute().get("b"),0.0002);
+        assertEquals(pd,value.pipeSolution().nodePressurePascalsAbsolute().get("d"),0.0002);
+        assertEquals(0,value.pipeSolution().pipeMassFlowKilogramsPerSecond().get("ac"),flowTolerance(0));
+        assertEquals(0.5,value.pipeSolution().pipeMassFlowKilogramsPerSecond().get("bd"),flowTolerance(0.5));
+        assertEquals(0.5,value.equipmentMassFlowsKilogramsPerSecond().get("ab"),flowTolerance(0.5));
+        assertEquals(2,value.pipeSolution().pipeMassFlowKilogramsPerSecond().size());
+        assertEquals(1,value.equipmentMassFlowsKilogramsPerSecond().size());
+        equipmentConservation(value,boundaries,net.pipes(),net.equipmentRevision().equipment());
+        var reverseOrder=multiValve(new String[][]{{"ab","a","b"}},new double[]{0.5},List.of(bd,ac));
+        assertEquals(value,equipment(reverseOrder,boundaries,guess,
+                Map.of("ac",0d,"bd",0.5),Map.of("ab",0.5)));
+    }
+    @Test void independentlyTightenedEquipmentControlsAndBadPivotFailClosed() {
+        var net=equipmentNet(oneDevice(Kind.VALVE,0.5),true);
+        var b=Map.of("a",pressure(200000),"b",injection(0),"c",injection(-0.5));
+        double downstream=199358.445317658515;
+        var strict=new NumericalControls(200000,2,1e-13,1e-14,1e-14,60,40);
+        for(double perturb:new double[]{0,0.1}) {
+            var value=solver.solveSyntheticIdealGasEquipmentNetwork(net,b,EQUIPMENT_GAS,strict,
+                    Map.of("b",199500+perturb,"c",downstream+perturb),
+                    Map.of("bc",0.5+perturb*0.001),Map.of("valve",0.5+perturb*0.001));
+            assertTrue(value.pipeSolution().converged(),value.pipeSolution().status());
+            assertEquals(199500,value.pipeSolution().nodePressurePascalsAbsolute().get("b"),0.0002);
+            assertEquals(downstream,value.pipeSolution().nodePressurePascalsAbsolute().get("c"),0.0002);
+            assertEquals(0.5,value.equipmentMassFlowsKilogramsPerSecond().get("valve"),flowTolerance(0.5));
+            equipmentConservation(value,b,net.pipes(),net.equipmentRevision().equipment());
+        }
+        var strictPivot=new NumericalControls(200000,2,1e-11,1e-12,0.9,60,40);
+        var unaccepted=solver.solveSyntheticIdealGasEquipmentNetwork(net,b,EQUIPMENT_GAS,strictPivot,
+                Map.of("b",199499d,"c",downstream-1),Map.of("bc",0.5),Map.of("valve",0.5));
+        assertFalse(unaccepted.pipeSolution().converged());
+        assertEquals("SINGULAR_OR_ILL_CONDITIONED",unaccepted.pipeSolution().status());
+        var shortBudget=new NumericalControls(200000,2,1e-11,1e-12,1e-14,1,1);
+        var partial=solver.solveSyntheticIdealGasEquipmentNetwork(net,
+                Map.of("a",pressure(200000),"b",injection(0),"c",pressure(downstream)),
+                EQUIPMENT_GAS,shortBudget,Map.of("b",199400d),
+                Map.of("bc",0.3),Map.of("valve",0.3));
+        assertFalse(partial.pipeSolution().converged());
+        assertTrue(List.of("ITERATION_LIMIT","LINE_SEARCH_FAILED","UNSUPPORTED_EQUIPMENT_STATE")
+                .contains(partial.pipeSolution().status()),partial.pipeSolution().status());
+    }
 }

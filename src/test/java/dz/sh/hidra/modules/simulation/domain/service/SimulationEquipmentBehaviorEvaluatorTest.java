@@ -146,4 +146,108 @@ class SimulationEquipmentBehaviorEvaluatorTest {
         assertThrows(IllegalArgumentException.class,()->evaluator.compressor(curve(),Double.NaN,1500));
     }
 
+
+    // Independently manufactured three-by-three compressor map: both inner and outer
+    // knot derivatives have deliberately different left/right slopes.
+    private static CompressorCurve kinkedCompressor() {
+        var base=curve();
+        var lines=List.of(
+            new SpeedLine(new BigDecimal("1000"),List.of(
+                new CompressorPoint(new BigDecimal("1"),new BigDecimal("100"),new BigDecimal("0.80")),
+                new CompressorPoint(new BigDecimal("1.5"),new BigDecimal("90"),new BigDecimal("0.78")),
+                new CompressorPoint(new BigDecimal("2"),new BigDecimal("60"),new BigDecimal("0.72")))),
+            new SpeedLine(new BigDecimal("1500"),List.of(
+                new CompressorPoint(new BigDecimal("1"),new BigDecimal("150"),new BigDecimal("0.82")),
+                new CompressorPoint(new BigDecimal("1.5"),new BigDecimal("140"),new BigDecimal("0.79")),
+                new CompressorPoint(new BigDecimal("2"),new BigDecimal("110"),new BigDecimal("0.73")))),
+            new SpeedLine(new BigDecimal("2000"),List.of(
+                new CompressorPoint(new BigDecimal("1"),new BigDecimal("210"),new BigDecimal("0.84")),
+                new CompressorPoint(new BigDecimal("1.5"),new BigDecimal("195"),new BigDecimal("0.81")),
+                new CompressorPoint(new BigDecimal("2"),new BigDecimal("145"),new BigDecimal("0.75")))));
+        return new CompressorCurve(base.id(),base.revisionId(),base.recordedAt(),base.effectiveFrom(),
+                base.effectiveUntil(),base.origin(),base.evidenceReference(),base.fluidSourceId(),
+                base.fluidRevisionId(),base.fluidSha256(),base.headDefinitionReference(),
+                base.efficiencyDefinitionReference(),base.interpolationMethodReference(),
+                base.referenceInletPressurePascalsAbsolute(),base.referenceInletTemperatureKelvin(),lines);
+    }
+    @Test void kinkedCompressorInteriorKnotsChooseRightCellAndOneSidedDerivatives() {
+        var c=kinkedCompressor();
+        var at=evaluator.compressor(c,1.5,1500);
+        assertEquals(140,at.headJoulesPerKilogram(),1e-12);
+        assertEquals(0.79,at.efficiency(),1e-12);
+        referenceDerivative(-60,at.headFlowDerivative());
+        referenceDerivative(0.11,at.headSpeedDerivative());
+        referenceDerivative(-0.12,at.efficiencyFlowDerivative());
+        referenceDerivative(0.00004,at.efficiencySpeedDerivative());
+        double dq=1e-5,dn=0.01;
+        referenceDerivative(-60,(evaluator.compressor(c,1.5+dq,1500).headJoulesPerKilogram()
+                -at.headJoulesPerKilogram())/dq);
+        referenceDerivative(0.11,(evaluator.compressor(c,1.5,1500+dn).headJoulesPerKilogram()
+                -at.headJoulesPerKilogram())/dn);
+        referenceDerivative(-20,(at.headJoulesPerKilogram()
+                -evaluator.compressor(c,1.5-dq,1500).headJoulesPerKilogram())/dq);
+        referenceDerivative(0.10,(at.headJoulesPerKilogram()
+                -evaluator.compressor(c,1.5,1500-dn).headJoulesPerKilogram())/dn);
+        var inner=evaluator.compressor(c,1.75,1750);
+        // Independent bilinear interpolation of head(1500,1.75)=125,
+        // head(2000,1.75)=170, eta(1500,1.75)=.76, eta(2000,1.75)=.78.
+        assertEquals(147.5,inner.headJoulesPerKilogram(),1e-12);
+        assertEquals(0.77,inner.efficiency(),1e-12);
+        referenceDerivative(-80,inner.headFlowDerivative());
+        referenceDerivative(0.09,inner.headSpeedDerivative());
+        referenceDerivative(-0.12,inner.efficiencyFlowDerivative());
+        referenceDerivative(0.00004,inner.efficiencySpeedDerivative());
+        referenceDerivative(inner.headFlowDerivative(),
+                (evaluator.compressor(c,1.75+dq,1750).headJoulesPerKilogram()
+                -evaluator.compressor(c,1.75-dq,1750).headJoulesPerKilogram())/(2*dq));
+        referenceDerivative(inner.headSpeedDerivative(),
+                (evaluator.compressor(c,1.75,1750+dn).headJoulesPerKilogram()
+                -evaluator.compressor(c,1.75,1750-dn).headJoulesPerKilogram())/(2*dn));
+    }
+    private static ValveCharacteristic kinkedValve() {
+        var b=valve();
+        return new ValveCharacteristic(b.id(),b.revisionId(),b.recordedAt(),b.effectiveFrom(),
+                b.effectiveUntil(),b.origin(),b.evidenceReference(),b.fluidSourceId(),
+                b.fluidRevisionId(),b.fluidSha256(),b.referenceTemperatureKelvin(),List.of(
+                    new OpeningLine(new BigDecimal("0"),List.of(
+                        new ValvePoint(BigDecimal.ZERO,BigDecimal.ZERO),
+                        new ValvePoint(new BigDecimal("500"),BigDecimal.ZERO),
+                        new ValvePoint(new BigDecimal("1000"),BigDecimal.ZERO))),
+                    new OpeningLine(new BigDecimal("0.5"),List.of(
+                        new ValvePoint(BigDecimal.ZERO,BigDecimal.ZERO),
+                        new ValvePoint(new BigDecimal("500"),new BigDecimal("0.5")),
+                        new ValvePoint(new BigDecimal("1000"),new BigDecimal("1.5")))),
+                    new OpeningLine(new BigDecimal("1"),List.of(
+                        new ValvePoint(BigDecimal.ZERO,BigDecimal.ZERO),
+                        new ValvePoint(new BigDecimal("500"),new BigDecimal("1.5")),
+                        new ValvePoint(new BigDecimal("1000"),new BigDecimal("2.5"))))));
+    }
+    @Test void kinkedValveInteriorPressureAndOpeningKnotsUseRightOneSidedCell() {
+        var c=kinkedValve();
+        double h=0.01,ha=1e-5;
+        var at=evaluator.valve(c,SimulationEquipmentBehaviorEvaluator.VALVE,500,0.5);
+        assertEquals(0.5,at.massFlowKilogramsPerSecond(),1e-12);
+        referenceDerivative(0.002,at.flowDifferentialPressureDerivative());
+        referenceDerivative(2,at.flowOpeningDerivative());
+        referenceDerivative(0.002,(evaluator.valve(c,SimulationEquipmentBehaviorEvaluator.VALVE,500+h,0.5)
+                .massFlowKilogramsPerSecond()-at.massFlowKilogramsPerSecond())/h);
+        referenceDerivative(0.001,(at.massFlowKilogramsPerSecond()
+                -evaluator.valve(c,SimulationEquipmentBehaviorEvaluator.VALVE,500-h,0.5)
+                .massFlowKilogramsPerSecond())/h);
+        referenceDerivative(2,(evaluator.valve(c,SimulationEquipmentBehaviorEvaluator.VALVE,500,0.5+ha)
+                .massFlowKilogramsPerSecond()-at.massFlowKilogramsPerSecond())/ha);
+        referenceDerivative(1,(at.massFlowKilogramsPerSecond()
+                -evaluator.valve(c,SimulationEquipmentBehaviorEvaluator.VALVE,500,0.5-ha)
+                .massFlowKilogramsPerSecond())/ha);
+        var interior=evaluator.valve(c,SimulationEquipmentBehaviorEvaluator.VALVE,750,0.75);
+        assertEquals(1.5,interior.massFlowKilogramsPerSecond(),1e-12);
+        referenceDerivative(0.002,interior.flowDifferentialPressureDerivative());
+        referenceDerivative(2,interior.flowOpeningDerivative());
+        referenceDerivative(interior.flowDifferentialPressureDerivative(),
+                (evaluator.valve(c,SimulationEquipmentBehaviorEvaluator.VALVE,750+h,0.75)
+                .massFlowKilogramsPerSecond()
+                -evaluator.valve(c,SimulationEquipmentBehaviorEvaluator.VALVE,750-h,0.75)
+                .massFlowKilogramsPerSecond())/(2*h));
+        assertTrue(evaluator.valve(c,SimulationEquipmentBehaviorEvaluator.VALVE,1000,0).closed());
+    }
 }

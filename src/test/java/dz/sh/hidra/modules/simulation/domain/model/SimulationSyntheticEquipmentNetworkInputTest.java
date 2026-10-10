@@ -133,4 +133,80 @@ public class SimulationSyntheticEquipmentNetworkInputTest {
         }
     }
 
+
+    private static SimulationSyntheticEquipmentNetworkInput atTime(
+            SimulationEquipmentParameterRevision revision,java.time.Instant at) {
+        var accepted=union(approved());
+        return new SimulationSyntheticEquipmentNetworkInput("synthetic-time-case",
+                revision.networkSourceId(),revision.networkRevisionId(),revision.networkSha256(),
+                revision.fluidSourceId(),revision.fluidRevisionId(),revision.fluidSha256(),
+                revision.fluidQualificationId(),at,accepted.nodes(),accepted.pipes(),
+                revision,accepted.valveMethods());
+    }
+    @Test void declaredOriginCannotMasqueradeAsSyntheticEvenWithIdenticalMapNumbers() {
+        var b=approved();var c=b.compressorCurves().getFirst();
+        var v=b.valveCharacteristics().getFirst();
+        var declaredCurve=new CompressorCurve(c.id(),c.revisionId(),c.recordedAt(),
+                c.effectiveFrom(),c.effectiveUntil(),Origin.DECLARED_PARAMETER,c.evidenceReference(),
+                c.fluidSourceId(),c.fluidRevisionId(),c.fluidSha256(),c.headDefinitionReference(),
+                c.efficiencyDefinitionReference(),c.interpolationMethodReference(),
+                c.referenceInletPressurePascalsAbsolute(),c.referenceInletTemperatureKelvin(),c.speedLines());
+        var declaredValve=new ValveCharacteristic(v.id(),v.revisionId(),v.recordedAt(),
+                v.effectiveFrom(),v.effectiveUntil(),Origin.DECLARED_PARAMETER,v.evidenceReference(),
+                v.fluidSourceId(),v.fluidRevisionId(),v.fluidSha256(),
+                v.referenceTemperatureKelvin(),v.openingLines());
+        var declared=new SimulationEquipmentParameterRevision(b.sourceId(),b.revisionId(),
+                b.recordedAt(),b.effectiveFrom(),b.effectiveUntil(),Origin.DECLARED_PARAMETER,
+                b.evidenceReference(),b.networkSourceId(),b.networkRevisionId(),b.networkSha256(),
+                b.fluidSourceId(),b.fluidRevisionId(),b.fluidSha256(),b.fluidQualificationId(),
+                b.equipment(),List.of(declaredCurve),List.of(declaredValve),
+                b.governedLimits(),b.governanceBinding());
+        assertEquals(Origin.DECLARED_PARAMETER,declared.origin());
+        assertThrows(IllegalArgumentException.class,()->atTime(declared,SimulationEquipmentParameterRevisionTest.AT));
+    }
+    @Test void timeEndIsExclusiveForAggregateAndCharacteristicRevisions() {
+        var b=approved();
+        var at=SimulationEquipmentParameterRevisionTest.AT;
+        var until=at.plusSeconds(60);
+        var aggregateEnds=new SimulationEquipmentParameterRevision(b.sourceId(),b.revisionId(),
+                b.recordedAt(),b.effectiveFrom(),until,b.origin(),b.evidenceReference(),
+                b.networkSourceId(),b.networkRevisionId(),b.networkSha256(),
+                b.fluidSourceId(),b.fluidRevisionId(),b.fluidSha256(),b.fluidQualificationId(),
+                b.equipment(),b.compressorCurves(),b.valveCharacteristics(),
+                b.governedLimits(),b.governanceBinding());
+        assertNotNull(atTime(aggregateEnds,at));
+        assertThrows(IllegalArgumentException.class,()->atTime(aggregateEnds,until));
+        var c=b.compressorCurves().getFirst();
+        var expiring=new CompressorCurve(c.id(),c.revisionId(),c.recordedAt(),c.effectiveFrom(),
+                until,c.origin(),c.evidenceReference(),c.fluidSourceId(),c.fluidRevisionId(),
+                c.fluidSha256(),c.headDefinitionReference(),c.efficiencyDefinitionReference(),
+                c.interpolationMethodReference(),c.referenceInletPressurePascalsAbsolute(),
+                c.referenceInletTemperatureKelvin(),c.speedLines());
+        var characteristicEnds=new SimulationEquipmentParameterRevision(b.sourceId(),b.revisionId(),
+                b.recordedAt(),b.effectiveFrom(),b.effectiveUntil(),b.origin(),b.evidenceReference(),
+                b.networkSourceId(),b.networkRevisionId(),b.networkSha256(),b.fluidSourceId(),
+                b.fluidRevisionId(),b.fluidSha256(),b.fluidQualificationId(),b.equipment(),
+                List.of(expiring),b.valveCharacteristics(),b.governedLimits(),b.governanceBinding());
+        assertNotNull(atTime(characteristicEnds,at));
+        assertThrows(IllegalArgumentException.class,()->atTime(characteristicEnds,until));
+    }
+    @Test void exactNetworkFluidDigestsAndDeclaredEndpointsRemainRequired() {
+        var b=approved();var accepted=union(b);
+        for(boolean network:new boolean[]{true,false}) {
+            assertThrows(IllegalArgumentException.class,()->new SimulationSyntheticEquipmentNetworkInput(
+                    accepted.id(),accepted.networkSourceId(),accepted.networkRevisionId(),
+                    network?"f".repeat(64):accepted.networkSha256(),
+                    accepted.fluidSourceId(),accepted.fluidRevisionId(),
+                    network?accepted.fluidSha256():"f".repeat(64),
+                    accepted.fluidQualificationId(),accepted.at(),accepted.nodes(),accepted.pipes(),
+                    b,accepted.valveMethods()));
+        }
+        assertThrows(IllegalArgumentException.class,()->new SimulationSyntheticEquipmentNetworkInput(
+                accepted.id(),accepted.networkSourceId(),accepted.networkRevisionId(),accepted.networkSha256(),
+                accepted.fluidSourceId(),accepted.fluidRevisionId(),accepted.fluidSha256(),
+                accepted.fluidQualificationId(),accepted.at(),
+                List.of(new SimulationNetworkNodeInput("a",BigDecimal.ZERO),
+                        new SimulationNetworkNodeInput("z",BigDecimal.ZERO)),
+                accepted.pipes(),b,accepted.valveMethods()));
+    }
 }

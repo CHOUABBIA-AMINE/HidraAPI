@@ -29,6 +29,7 @@ import java.util.HashMap;
 import dz.sh.hidra.modules.simulation.domain.model.SteadyStateGasSolution;
 import dz.sh.hidra.modules.simulation.domain.model.SimulationSyntheticEquipmentNetworkInput;
 import dz.sh.hidra.modules.simulation.domain.model.SimulationEquipmentParameterRevision;
+import dz.sh.hidra.modules.simulation.domain.model.SimulationEquipmentGasSolution;
 import dz.sh.hidra.modules.simulation.domain.model.SimulationEquipmentParameterRevision.*;
 import dz.sh.hidra.modules.simulation.domain.model.SimulationSyntheticEquipmentNetworkInputTest;
 import dz.sh.hidra.modules.simulation.domain.model.SimulationEquipmentParameterRevisionTest;

@@ -10758,3 +10758,32 @@ The eventual 008B implementation must deliver an independently testable **steady
 **Validation gate for later 008B:** targeted deterministic JUnit and numerical reference tests, conservation/residual/nonconvergence and architecture tests, `bash ./mvnw -B -q clean verify`, and exact-head full Java 21 CI and Documentation Validation as applicable. State the actual test count/observed result only after execution; an external reference tool comparison requires actual same-assumption run evidence.
 
 The next eligible owner Next is the **HPR-P25-008B exact-file implementation authorization/preflight assessment**, not the implementation itself. No auto-execution of 008B, 008C, 008D, 008E or C3E. P0/P1/P2 CLOSED, P2.5 OPEN, P3 DEFERRED, GZ4 selected gas pilot; `0.7.0-SNAPSHOT` remains unchanged.
+
+
+## HPR-P25-008B — Exact Java/Test Write Allowlist Authorization (2026-10-10)
+
+### Evidence and scope of owner Next
+
+Exact parent `561497f74400b3f56e801244b61c8f6393fe7ef2` passed Documentation Validation #177. `HPR-P25-008A` delivered the design accepted by #176 at `d2104489de0065d950c3cf956307c18f3b79e4ef`. Live source tree inspection found simulation-owned `src/main/java/dz/sh/hidra/modules/simulation/domain/{model,service,policy}`; domain/service contains `SimulationSafetyGuard.java` but **no steady-state numerical solver**. Existing domain/model types include `SimulationPhysicalNetworkInput`, `SimulationPipeSegmentInput`, `SimulationNetworkNodeInput`, `SimulationGasFluidInput`, `SimulationStateQuantityInput`, `SimulationInitialStateInput`, `SimulationBoundarySeriesInput` and `SimulationPhysicalInputPayload`. Existing numerical input tests are under `src/test/java/dz/sh/hidra/modules/simulation/domain/model`. The application port `SimulationSolverPort` exists but does not authorize execution adapter work in 008B.
+
+This supporting commit `docs(twin): authorize HPR-P25-008B implementation scope` changes **only** the two execution memories `doc/roadmap/ULTIMATE_ROADMAP.md` and `doc/model-remediation/RECONCILIATION.md`. It does not create Java source, tests, migration or change the Maven dependencies. `HPR-P25-008B` remains PENDING until a later separately selected implementation commit.
+
+### Exact authorized later implementation file set
+
+The next owner-selected `HPR-P25-008B` implementation (`feat(simulation): implement internal steady state gas solver`) may create **exactly**:
+
+1. `src/main/java/dz/sh/hidra/modules/simulation/domain/service/SteadyStateGasSolver.java` — pure Java 21 solver and internal evaluation strategy restricted to the 008A-approved isothermal, single-phase synthetic reference physics; no Spring/JPA/database/controller coupling.
+2. `src/main/java/dz/sh/hidra/modules/simulation/domain/model/SteadyStateGasSolution.java` — immutable output value/result diagnostics with explicitly represented convergence/failure and per-node/pipe residuals.
+3. `src/test/java/dz/sh/hidra/modules/simulation/domain/service/SteadyStateGasSolverTest.java` — deterministic JUnit tests of mathematical baseline, admissibility, residuals, sign reversal, convergence/nonconvergence, under-/over-constrained and graph cases.
+
+The first two packages already exist; the test service directory need not exist yet, and no placeholder package, `package-info.java` or unrelated file is admitted. Existing files (including source contracts, POM, architecture tests, module documentation, Flyway and other domain modules) must remain byte-identical. Only two execution memories may be updated after implementation to register status/CI results, making the full later implementation write allowlist these **five exact paths** (three code/test, two roadmap memories). All new Java files must follow AGENTS.md canonical header (`@Author Abir MEDJERAB`, `@CreatedOn 2025-06-26`).
+
+### Physical and numerical admissibility limitations
+
+The exact three code/test files can implement **a bounded ideal-gas, prescribed constant isothermal T, constant gas molar mass and viscosity synthetic analytical reference method** only when those properties are passed as explicit development fixture parameters; no GZ4 physical EOS/composition/reference standard is supplied or inferred. This is a verifiable *mathematical prototype* of the 008A formulation, not a general-property method integration, GZ4 qualified simulator, or complete equipment model. An ideal-gas reference must be explicitly labeled SYNTHETIC/REFERENCE and cannot accept masqueraded operational inputs. No external NeqSim/pandapipes/DWSIM runtime dependency or fabricated license/tool use. If existing simulation contract constructors cannot represent the chosen minimal mathematical input without introducing new unapproved files, stop and register a new evidence-backed preflight rather than altering them.
+
+Implementation must use a physically coherent reference oracle independent of the prior 960 nonconserving GZ4-inspired records. Required focused tests: analytic horizontal isothermal low-Mach ideal-gas pipe (including friction sign), zero-flow/hydrostatic elevation, branched continuity with imposed datum and injection sign, pressure positivity, invalid diameter/roughness/property/revision/boundary consistency, failure on unconstrained or overconstrained boundary systems, reproducible convergence and explicit residual/iteration diagnostics. Unsupported Reynolds transition, methods, coupled equipment, real GZ3 connections, nonisothermal/transient behavior and unqualified field data must fail closed. Numerical tolerances chosen for tests are declared reproducible **software benchmark tolerances**, not industry operating limits. Do not report successful conservation/nonconvergence behavior without executed tests.
+
+### Later validation and progress control
+
+The separately selected implementation must run focused tests (e.g., `bash ./mvnw -B -q -Dtest=SteadyStateGasSolverTest test`), `bash ./mvnw -B -q clean verify`, architecture and documentation gates, then observe exact-head production CI; report unavailable local Maven/container tooling explicitly if applicable. Verify diff file scope and `git diff --check` before publishing. If any gate fails, stop and repair only 008B. This documentation-only authorization must pass exact-head Documentation Validation before any implementation. Do not advance automatically to 008C, 008D, 008E, 008F or C3E. HPR-P25-008B and parent 008 remain PENDING, P2.5 OPEN, GZ4 first gas pilot, C3E source-policy BLOCKED, P0/P1/P2 CLOSED, P3 DEFERRED, version `0.7.0-SNAPSHOT`.

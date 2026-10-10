@@ -12243,3 +12243,33 @@ implementations and 123 permanent subjects. No solver, calibrated GZ2 twin, oper
 threshold, verified deployment or direct OT action is claimed.
 The next registered selection after successful final delivery CI is
 `docs(twin): register operating state delivery preflight`; it is not selected here.
+
+
+## HPR-P25-002 Shared Operating State Delivery Preflight — 2026-10-10
+
+### Selection and immutable baseline
+
+Owner Next selected ONLY the shared documentation preflight following the successful C3C/C3D delivery. Registered supporting identifier: HPR-P25-002-OPERATING-STATE-PREFLIGHT. Exact documentation commit message: `docs(twin): register operating state delivery preflight`. Expected main parent: `e972f4997b1e36af2158e839d86330bb5167f36b`. At selection, that exact head passed Java 21 HidraAPI CI #631 and Documentation Validation #169; C3C and C3D are COMPLETED. This preflight writes ONLY `doc/roadmap/ULTIMATE_ROADMAP.md` and `doc/model-remediation/RECONCILIATION.md`. No runtime, database migration, architecture export or P2.5 parent status change is authorized by this documentation selection.
+
+### Exact-source observations and unresolved qualification boundary
+
+1. `simulation/domain/model/SimulationInitialStateInput.java` requires an effective OPERATING_STATE source revision, state timestamp, nonempty immutable quantities, unique target/quantity keys and consistent recorded/evidence times; its presence does not prove source-backed operating-state qualification.
+2. `simulation/domain/model/SimulationStateQuantityInput.java` declares pressure in absolute pascals, temperature in kelvin, signed mass flows in kg/s, speed in rpm and valve opening fraction, with MEASURED / ESTIMATED / SYNTHETIC / UNKNOWN and explicit evidence reference. Declared SI labels do not perform incoming unit conversion or establish an approved reference basis.
+3. `telemetry/application/contract/simulation/SimulationTrustedReadingContract.java` and `simulation/application/port/out/SimulationTrustedReadingEvidencePort.java` expose read-only numeric/text/boolean alternatives, source unit and quality IDs, trust level, timestamps, point/asset binding, topology snapshot and batch provenance. Both explicitly export raw evidence, not simulator-ready physical qualification.
+4. Accepted C3C/C3D source revisions provide separately governed fluid and equipment inputs but do not qualify a coherent initial-state snapshot, approved telemetry conversion or synchronized measurement watermark. The existing no-op external acquisition path is not evidence of live GZ2 synchronization.
+
+### HPR-P25-002C3E delivery contract / blocked implementation authorization
+
+Target remains the original `HPR-P25-002C3E`, exact implementation message `feat(simulation): qualify converted owner operating state`. Execution is **BLOCKED FOR SOURCE-POLICY DESIGN**, not marked complete or started, until an exact, source-backed implementation preflight registers all of the following without inventing values:
+
+- Qualified owner mapping of each source telemetry point and topology binding to NODE/PIPE/EQUIPMENT and the exact allowed quantity, target ID, physical direction and equipment configuration revision. Resolve ambiguity explicitly and reject incompatible topology/revision mappings.
+- Authoritative source unit catalogue and approved reference-basis conversion for absolute versus gauge pressure, temperature, mass flow, volumetric/standard-volume basis and any composition-dependent conversion. Identify required contextual inputs; unsupported conversion and missing reference basis must fail closed, never silently assume standard conditions or a conversion factor.
+- Owner-approved trust and time-coherence policy (eligible trust/quality states, timestamp/watermark consistency, late/duplicate/conflicting readings, effective revision windows, estimation admissibility and freshness tolerances) backed by actual source records and evidence. Do not fabricate a freshness/quality threshold or convert UNKNOWN into MEASURED.
+- Immutable versioned operating-state revision ownership, canonical persisted representation, exact source/evidence lookup and qualification/withdrawal semantics. Decide from current persistence ownership/schema inspection whether a forward-only migration is genuinely required. Preserve read-only owner ports and cross-module architecture boundaries.
+- A reproducible synthetic pipe/node/equipment state case tied to exact qualified network, fluid and equipment revision identities; negative cases for wrong asset/quantity, incompatible unit/reference, untrusted or mismatched timestamps, duplicate state keys, absent/withdrawn revision and forged provenance. PostgreSQL integration/append-only/concurrency tests are mandatory if persistence is selected; mocks alone are not acceptance evidence.
+
+**Implementation write allowlist: NOT YET AUTHORIZED.** No Java paths, test paths or migration filename may be selected by analogy with C3C/D. The exact file/schema ownership and physical conversion reference evidence must be enumerated and approved within the operating-state preflight before an implementation Next can proceed. This is a material source/policy gap; guessing a conversion table, trust threshold, schema or GZ2 parameter would violate AGENTS.md and the P2.5 safety gates. Scope of this commit is precisely the two documentation memories listed above.
+
+### Acceptance and next-state control
+
+The selected documentation action registers this source-backed blocking decision; it does not assert a passing Maven command, field synchronization, physically qualified operating state, GZ2 calibration or solver operation. Documentation CI must be observed on its exact published SHA. P0/P1/P2 remain CLOSED; P2.5 OPEN; P3 DEFERRED; HPR-P25-002C3E, C3F, 002D and parents 002C3/002C/002 remain PENDING. Preserve 0.7.0-SNAPSHOT, 57 HMR completions and 123 permanent semantic subjects. Once source-owned unit/reference, binding/trust and revision persistence decisions are verified, complete the C3E exact-file implementation authorization as a bounded documentation amendment; only then may a separate owner Next execute C3E. Do not proceed automatically to C3F/002D, numerical engine, deployment or closure.

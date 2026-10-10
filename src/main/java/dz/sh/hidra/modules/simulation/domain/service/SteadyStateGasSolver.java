@@ -177,7 +177,7 @@ public final class SteadyStateGasSolver {
         double h = -2 * coefficient * GRAVITY * deltaElevation;
         double factor = Math.exp(h);
         double phi = Math.abs(h) < 1e-7 ? 1 + h / 2 + h * h / 6 : Math.expm1(h) / h;
-        double loss = friction * coefficient * length * orientedMass * Math.abs(orientedMass) / (diameter * area * area);
+        double loss = friction * length * orientedMass * Math.abs(orientedMass) / (coefficient * diameter * area * area);
         return inletPressure * inletPressure * factor - loss * phi;
     }
 

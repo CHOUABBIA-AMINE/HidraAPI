@@ -56,7 +56,7 @@ class SteadyStateGasSolverTest {
         var result = solve(tree(List.of(node("a",0),node("b",100)),List.of(pipe("ab","a","b"))),
                 Map.of("a",0d,"b",0d),"a");
         assertTrue(result.converged());
-        assertEquals(0d,result.pipeMassFlowKilogramsPerSecond().get("ab"));
+        assertEquals(0d,result.pipeMassFlowKilogramsPerSecond().get("ab"),0d);
         assertTrue(result.nodePressurePascalsAbsolute().get("b") < 5_000_000);
     }
 

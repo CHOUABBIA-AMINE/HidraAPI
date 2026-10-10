@@ -149,6 +149,33 @@
     "owner": "risk",
     "purpose": "Risk-owned residual-risk assessment; hidra_residual_risk prefix is an explicit exception."
   },
+  "public.hidra_simulation_equipment_characteristic_revision": {
+    "evidence": [
+      "src/main/java/dz/sh/hidra/modules/simulation/domain/model/SimulationEquipmentParameterRevision.java",
+      "src/main/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/adapter/JdbcSimulationEquipmentParameterRevisionRepositoryAdapter.java",
+      "src/main/resources/db/migration/V20261010_002__p25_simulation_equipment_parameter_revisions.sql"
+    ],
+    "owner": "simulation",
+    "purpose": "Simulation-owned independent immutable compressor/valve characteristics retaining supplied origin and recording/validity times."
+  },
+  "public.hidra_simulation_equipment_parameter_qualification": {
+    "evidence": [
+      "src/main/java/dz/sh/hidra/modules/simulation/domain/model/SimulationEquipmentParameterRevision.java",
+      "src/main/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/adapter/JdbcSimulationEquipmentParameterRevisionRepositoryAdapter.java",
+      "src/main/resources/db/migration/V20261010_002__p25_simulation_equipment_parameter_revisions.sql"
+    ],
+    "owner": "simulation",
+    "purpose": "Simulation-owned immutable exact source qualification reattested against current Workflow and source-owner evidence."
+  },
+  "public.hidra_simulation_equipment_parameter_revision": {
+    "evidence": [
+      "src/main/java/dz/sh/hidra/modules/simulation/domain/model/SimulationEquipmentParameterRevision.java",
+      "src/main/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/adapter/JdbcSimulationEquipmentParameterRevisionRepositoryAdapter.java",
+      "src/main/resources/db/migration/V20261010_002__p25_simulation_equipment_parameter_revisions.sql"
+    ],
+    "owner": "simulation",
+    "purpose": "Simulation-owned immutable equipment parameters with exact qualified fluid/network bindings and supplied maps/limits."
+  },
   "public.hidra_telemetry_planning_unit_pair": {
     "evidence": [
       "src/main/resources/db/migration/V20261008_025__hmr_080_nomination_owner_reference_policies.sql",

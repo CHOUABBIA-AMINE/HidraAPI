@@ -161,3 +161,8 @@ The linked decisions carry the precise per-subject exceptions and source/test/mi
 | SimulationOptimizationCandidate | [HMSR-066 reconciled rule](../domain/SEMANTIC_DECISIONS.md#simulation-simulationoptimizationcandidate) |
 | SimulationCandidateChange | [HMSR-092 reconciled rule](../domain/SEMANTIC_DECISIONS.md#simulation-simulationcandidatechange) |
 | SimulationRecommendation | [HMSR-093 reconciled rule](../domain/SEMANTIC_DECISIONS.md#simulation-simulationrecommendation) |
+
+
+## Phase 2.5 governed equipment source revisions
+
+Immutable equipment parameter source revisions retain exact stored network and qualified gas-fluid identities, full supplied compressor/valve maps, explicit limits and independent characteristic origin/time. Exact qualified reads reattest current owner and Workflow evidence through local ports. Internal append-only JDBC operations and canonical SHA-256 integrity add no public write endpoint, executing property algorithm, hydraulic solver, engine-ready claim, operational approval or OT action. C3D candidate acceptance and actual PostgreSQL/dictionary evidence remain pending.

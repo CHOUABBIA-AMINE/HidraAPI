@@ -10458,3 +10458,74 @@ C3C reconstructed onto verified correction head 19cfae0d63096e85c5109ec822f39f05
 Documentation #168 PASSED. Candidate #628 provides accepted executable and actual
 PostgreSQL/dictionary evidence for unchanged C3C source inventory; no fresh exact-head
 execution claimed. C3D and combined publication remain pending.
+
+
+## HPR-P25-002C3D Equipment Parameter Revision Candidate — 2026-10-10
+
+The registered fluid/equipment envelope continues from main
+`19cfae0d63096e85c5109ec822f39f05fa073956` after exact-head Documentation
+#168/run 38035403028 PASSED. The C3C implementation is reconstructed as
+`e2dde09fe57277ab5fd30ee53772d74655917fbf`, parent main, tree
+`f632fe0a15aaa5437fc24177fd3f5077cc391961`. Its executable inventory is unchanged
+from accepted candidate #628; the correction and reconstruction evidence are retained.
+This does not invent a new exact-head CI result.
+
+C3D implements immutable supplied compressor/valve maps and governed limits, independent
+characteristic origin/time, exact qualified Custody fluid and stored Topology joins,
+actual Workflow evidence re-attestation, deterministic strict owner codecs, computed
+SHA-256 and three append-only JDBC tables. No public write endpoint, executing physics,
+operating-state resolver, operational approval or source promotion is introduced.
+Tests cover independent provenance, canonical bytes/hash/negative scales, immutable
+bundles, actual approval/withdrawal, replay, concurrent conflicting map reuse, rollback,
+mutation protection, corruption and schema-only actual catalog capture.
+
+Local Java 21 focused command PASSED: 81 tests, zero failures/errors, eight PostgreSQL
+tests skipped because Docker is unavailable. Full `bash ./mvnw -B -q clean verify`
+(with offline cached dependencies and the existing Mockito agent) PASSED: 1489 tests,
+zero failures/errors, 309 Docker-dependent skips. These skips are NOT PostgreSQL
+acceptance. All 51 maintained/additional validator tests passed; canonical docs
+95 documents/5103 links/24 modules/13 P2 rows, offline OpenAPI 244 paths/263 operations/
+231 schemas, P1 evidence and whitespace passed. Both architecture registries and
+0.7.0-SNAPSHOT are unchanged. Java headers checked against AGENTS.md.
+
+Candidate publication is solely to obtain the registered equivalent exact-source
+disposable PostgreSQL evidence without a PR. The C3D dictionary remains the verified
+C3C dictionary until actual full-chain capture permits maintained-generator regeneration;
+its comparison is expected to require that regeneration. No invented schema metadata
+is substituted. Main remains unchanged. C3C/C3D and all retained parent statuses remain
+PENDING until combined acceptance. Actual PostgreSQL, runtime OpenAPI and final
+dictionary comparison remain gates before one leased main advancement.
+
+
+### C3D candidate #629 dictionary repair — 2026-10-10
+
+Exact candidate `0dd8097dd5b4db055e92f0bf74629d2c7ac39dfb` Production #629/
+run 38036678840 FAILED at the maintained dictionary capture/comparison gate.
+Repository verification PASSED: 1489 tests, zero failures/errors/skips, including
+actual PostgreSQL persistence, full-owner qualification, replay/concurrency/rollback,
+append-only protection and corruption tests. Runtime OpenAPI equality PASSED:
+244 paths, 263 operations, 231 schemas. No Java/schema repair was indicated.
+
+The actual full-chain disposable PostgreSQL 16.15 catalog was captured by the
+registered C3D persistence test and independently by existing owner capture tests,
+with identical hashes: 142 migrations, 470 JPA mappings, 489 relations, no unresolved
+owners. Exact source bundle SHA-256:
+`bf4b114cc8094c565dfa3bb2a1b0449f198cbc971123d2dee960ed7a433b5f30`.
+Catalog artifact SHA-256:
+`0eacdbb90985fcd7de7ee8dd8aec74d6699217f0bba1fe96767b87d42f7172b0`.
+All 97 ordered compressed schema-only log parts were recovered and their decompressed
+hash and exact source SHA verified before using the maintained generator.
+
+DATA_DICTIONARY was regenerated through generate_data_dictionary.py using that actual
+catalog and reviewed ownership. Generated dictionary SHA-256:
+`86888cd7aa8819b90b461932fc051ffa5f81aefb0d78bc13794722bd4766bb00`.
+The maintained comparison against the regenerated file PASSED; the prior C3C
+dictionary fails against this exact catalog. No fabricated catalog facts or hand-edited
+physical dictionary were used, and the CI comparison remains unchanged.
+
+Amend only the registered C3D constituent with regenerated dictionary and these
+evidence additions: exact final C3D scope 27 paths, C3C scope 28, combined 49.
+Executable inventory is unchanged from #629, so no repeated local executable verify
+is claimed or required for these documentation-only evidence edits. Main remains
+`19cfae0d63096e85c5109ec822f39f05fa073956`; C3C/C3D remain PENDING until
+combined candidate acceptance. Rerun exact candidate CI before main advancement.

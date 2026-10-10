@@ -148,3 +148,8 @@ Exact source/revision identity and authoritative canonical bytes are immutable u
 C3C registers three Custody-owned append-only JDBC tables: `public.hidra_custody_gas_method_revision`, `public.hidra_custody_gas_fluid_revision` and `public.hidra_custody_gas_fluid_qualification`. The [forward migration](../../src/main/resources/db/migration/V20261010_001__p25_custody_gas_fluid_revisions.sql), [owner model](../../src/main/java/dz/sh/hidra/modules/custody/domain/model/CustodyGasFluidRevision.java) and [JDBC adapter](../../src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/JdbcCustodyGasFluidRevisionRepositoryAdapter.java) establish source ownership. Reviewed metadata names those exact sources; no JPA mapping is invented.
 
 Method and aggregate appends share an owner transaction. Qualifications reference only their local revision identity; no cross-owner physical foreign key is added. UPDATE, DELETE and TRUNCATE are denied. The migration seeds no catalogue, method, policy, approval or physical values. Current live tables are preserved. Actual full-chain catalog capture and dictionary regeneration remain mandatory acceptance gates.
+
+
+## Phase 2.5 governed equipment source revisions
+
+Simulation owns the three append-only JDBC tables: `hidra_simulation_equipment_parameter_revision`, `hidra_simulation_equipment_parameter_qualification` and `hidra_simulation_equipment_characteristic_revision`. Reviewed ownership metadata links their domain, adapter and migration sources. Independent characteristic bytes retain explicit origin and recording/validity times; no live asset state, operational policy or physical defaults are inferred.

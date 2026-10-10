@@ -121,7 +121,8 @@ public class SimulationSyntheticEquipmentNetworkInputTest {
                 connected.at(),connected.nodes(),List.of(),rev,connected.valveMethods()));
     }
     @Test void rejectsAnyMissingOrGenericValveSelectionAndUnboundNode() {
-        var r=approved(),net=union(r);
+        var r=approved();
+        var net=union(r);
         for(var map:List.of(Map.<String,String>of(),
                 Map.of("valve","SYNTHETIC_UNGOVERNED"),
                 Map.of("valve",SimulationEquipmentBehaviorEvaluator.VALVE,"other",SimulationEquipmentBehaviorEvaluator.VALVE))) {

@@ -12942,3 +12942,280 @@ tests; canonical docs 95 documents/5,115 links/24 modules/13 P2 rows; offline Op
 append-only scope verified. Both architecture export registries, all Java/test code,
 POM/version, dictionary and workflows are unchanged. No new numerical, runtime,
 PostgreSQL or deployment acceptance is claimed; executable baseline remains f09f6bad.
+
+
+## HPR-P25-008C — Synthetic Equipment Methods and Implementation Authorization (2026-10-10)
+
+Owner Next selects ONLY `docs(twin): authorize HPR-P25-008C synthetic equipment methods`.
+This delivery appends exactly the two execution memories, doc/roadmap/ULTIMATE_ROADMAP.md
+and doc/model-remediation/RECONCILIATION.md; it implements no Java behavior. Authoritative
+main was reverified as fff0b69f6624a822b4054ae4ce3d3676a054951b, single parent
+77cdead5a48990b1f6ac72441ee3c27a8e456f92, tree 3e39ef3347dc005904105d144b01089489171a77.
+Exact-head Documentation CI #186/run 38053537817 is now verified COMPLETED/SUCCESS.
+Local clean source tree matched that remote tree. AGENTS.md, current roadmap/control
+status, reconciliation and the latest equipment preflight in both memories were read.
+Executable acceptance remains f09f6bad/Production #634; no new runtime pass is asserted.
+
+### Revalidated source ownership and primary technical basis
+
+Current SimulationEquipmentParameterRevision and its maintained model test retain immutable
+synthetic maps, kind-specific limits, exact endpoint/configuration/curve revisions, origins,
+effective times, network/fluid digests and governance identity. The application query service
+SimulationEquipmentParameterRevisionQueryService resolves source/Workflow/topology evidence;
+it supplies no executable equipment law or operator approval. Numerical iteration must not
+call it or its ports. SimulationConnectedNetworkInput checks pipe/equipment union connectivity
+but still requires at least one real pipe and uses the older equipment model. Its construction
+does not resolve the stored full valve maps. SimulationPhysicalNetworkInput and both current
+SteadyStateGasSolver signatures remain pipe-only; their validation must not be weakened.
+SimulationEquipmentInput.Kind, SimulationEquipmentParameterRevision.Kind and Topology's
+SimulationPhysicalNetworkRevisionContract.EquipmentLink admit COMPRESSOR/VALVE only.
+
+Primary sources accessed 2026-10-10:
+
+- [NIST DATAPLOT bilinear interpolation, pp. 3-4/3-5](https://www.itl.nist.gov/div898/software/dataplot/refman2/ch3/bilinter.pdf): weighted interpolation on a complete rectangular grid, within its supplied bounds. This supports interpolation mathematics, not a compressor or valve physical law.
+- [Skogestad, Chemical and Energy Process Engineering, chapter 6, equations 6.2, 6.4 and 6.7](https://skoge.folk.ntnu.no/book-cep/sample/bok_English_all1_final.pdf): reversible steady-flow compression work, ideal-gas isothermal integration and efficiency correction. This supplies the derivation below; the interpretation of these particular synthetic map values is an explicit design choice.
+- [NASA Glenn compressor thermodynamics](https://www.grc.nasa.gov/www/k-12/airplane/compth.html): distinguishes pressure ratio, ideal work, efficiency and temperature rise for an adiabatic model. That is a different model; no adiabatic exponent or thermal defaults are imported here.
+- [Modelica Association ValveCompressible](https://doc.modelica.org/om/Modelica.Fluid.Valves.ValveCompressible.html): compressible valve behavior needs additional sizing/choking parameters and an explicit reverse-flow policy. The synthetic table below does not implement or claim IEC/ISA sizing or choked-flow coverage.
+
+These references justify the mathematical distinctions and validity boundaries. None approves
+Sonatrach/GZ4 equipment. Field data and calibration remain owner deployment work. Additional
+owner information is optional; no field map or threshold request gates this synthetic work.
+
+### Named executable synthetic semantics
+
+The new evaluator uses an explicit finite method selection, never a fallback for arbitrary
+reference text. Compressor references must exactly name `SYNTHETIC_ISOTHERMAL_HEAD_V1`,
+`SYNTHETIC_ISOTHERMAL_EFFICIENCY_V1` and `SYNTHETIC_RECTANGULAR_LINEAR_V1` in the existing
+head/efficiency/interpolation fields. Valve selection explicitly names
+`SYNTHETIC_FORWARD_DP_TABLE_V1` in the new numerical input: the stored valve contract has
+no interpolation-method field. Unknown names and mismatched selections refuse execution.
+The historical generic fixture labels remain opaque and unsupported as executable names.
+New tests derive clearly labeled synthetic revisions with named references from the existing
+point values; they do not rewrite, promote or reinterpret the original source fixtures.
+Aggregate and used characteristic origins must all be SYNTHETIC; declared/qualified real
+sources are not admitted by this development entry point. Supplied times/bindings remain
+checked without asserting Workflow qualification or industrial operating permission.
+
+For either map, first interpolate in flow/differential pressure on each bounding speed/opening
+line, then interpolate the two values in speed/opening. Require identical inner coordinate
+grids across lines. For a rectangle, with weights t and u, the value is
+`(1-u)*((1-t)*z00+t*z01)+u*((1-t)*z10+t*z11)`; differentiate that expression analytically.
+No extrapolation, affinity-law scaling, corrected-flow/speed conversion or invented data.
+Single outer lines admit their exact coordinate only, with no outer-direction sensitivity
+claim. At an inner knot choose the cell to the right; at the maximum choose the last cell
+to the left. Endpoints use the inward derivative. Disclose the one-sided convention;
+the interpolant is continuous, not generally continuously differentiable at knots.
+
+**Compressor:** map H is ideal reversible isothermal specific work [J/kg], not actual shaft
+work, isentropic head or polytropic head. With caller-supplied T and molar mass M, set
+`rT = R*T/M`, using the already accepted universal R = 8.31446261815324 J/(mol K).
+Integrating `v dp`, with ideal specific volume `v=rT/p`, gives `H=rT*ln(p_out/p_in)`.
+Thus the compressor residual is `ln(p_out/p_in)-H(q,N)/rT`; map efficiency eta means
+`ideal isothermal work / actual shaft work`, so specific shaft work is H/eta and power
+is q*H/eta. Efficiency does not multiply/divide the pressure-ratio exponent again.
+The gas remains at the prescribed reference temperature; cooling is assumed externally
+and is not modeled. No thermal/energy balance, fuel consumption or motor rating is claimed.
+For this uncorrected reference map only, the compressor inlet must be an explicit pressure
+boundary equal to the map reference inlet pressure, and T equal to its reference temperature
+(numeric equality after finite SI conversion). An unanchored or off-reference compressor
+inlet is refused, not silently corrected. This restricts interior/series compressor layouts;
+later off-reference support requires another explicit method, not weakened admission.
+Equipment endpoints must have equal elevation in this local lumped method; pipe elevation
+continues to use the accepted formulation. Positive forward map flow only, positive eta,
+nonnegative H and p_out >= p_in; reverse, zero-flow outside the map, surge/choke, thermal
+and alternate head definitions remain unsupported. Enforce every supplied kind-specific
+limit at admitted initial, trial and final states. Limits are synthetic bounds, not approvals.
+
+**Valve:** positive differential pressure is `dp=p_from-p_to`; the directly tabulated law
+is `q=F(dp,opening)` in kg/s and Pa at its supplied reference T. This is an empirical
+synthetic table, with no Cv/Kv/density or gas-standard conversion. Require T equality,
+equal equipment endpoint elevations, a complete rectangular dp grid beginning at zero,
+nonnegative values and zero flow at zero dp. Active interpolated characteristics must
+be strictly increasing in dp; a bounding zero-opening zero line is allowed. Negative dp
+or active reverse flow refuses; dp beyond the supplied map refuses, without identifying
+a physical choking threshold. Supplied inlet pressure, T, flow and opening limits apply.
+Flat nonzero or nonmonotone active maps are unsupported, rather than inverted arbitrarily.
+An explicitly selected opening zero with an entirely zero interpolated line is CLOSED:
+use the equation `q=0` with unit flow derivative and zero pressure derivatives, never
+`dp/q`, fictitious leakage or a pressure-equality constraint. Its initial flow must be zero
+and remains exactly zero. Either sign of static closed-valve differential pressure is
+allowed only within the magnitude of the supplied dp map; this permits isolation with
+no reverse transport. A zero line selected at nonzero opening is refused in V1.
+
+### Union-network input, equations and result design
+
+Add SimulationSyntheticEquipmentNetworkInput as an immutable domain numerical input with
+raw nodes/real pipes, the full SimulationEquipmentParameterRevision, explicit method selections,
+an evaluation Instant and explicit network/fluid source/revision/digest identity values.
+It validates exact supplied revision-binding agreement, effective intervals and SYNTHETIC
+origins; this is local input integrity, not independent authentication of raw geometry against
+a stored payload digest or source qualification. Nodes and pipe/equipment IDs are unique/disjoint, endpoints exist, every equipment selection resolves,
+and the full structural union is connected. Require at least two nodes and one actual link;
+an equipment-only union is admitted by this separate synthetic contract. Do not manufacture
+a SimulationPhysicalNetworkInput, fictitious pipe or truncated connected subgraph. Existing
+source, connected-network and physical-network contracts remain unchanged. Caller-supplied
+gas properties, all node boundaries, controls and exact guesses remain mandatory; no physical
+defaults are introduced. The older valve reference is not a substitute for stored points.
+
+Add a separate internal `solveSyntheticIdealGasEquipmentNetwork` entry point with that input,
+the existing Boundary/SyntheticGasProperties/NumericalControls values, exact unknown-node
+pressure guesses and exact real-pipe/equipment flow guesses. Existing tree/network signatures
+and both seven/eight-argument SteadyStateGasSolution constructors remain unchanged. Sort
+nodes and typed real links deterministically. Pressure-squared unknowns and one flow per
+real link use a single incidence balance at every injection node. Compute pressure-boundary
+exchange from ALL incident links; every pressure node's exchange is an output, not a supplied
+injection. Preserve accepted pipe residual/friction/elevation equations without recalibration.
+
+Let `u=p^2/S^2` and `v=q/Q`, with caller pressure/flow scales S and Q. The compressor row
+above has derivatives `-1/(2*u_in)`, `1/(2*u_out)` and `-H_q*Q/rT` (omit fixed-pressure
+columns). Its tolerance is the caller's dimensionless momentum tolerance. Active valve row
+is `(q-F)/Q`; pressure derivatives are `-F_dp*S^2/(2*p_from*Q)` and
+`+F_dp*S^2/(2*p_to*Q)`, flow derivative 1; use massTolerance/Q. Closed row is q/Q, also
+using massTolerance/Q. No flat-map inversion occurs. General interpolation sensitivities
+H_q/H_N, eta_q/eta_N and F_dp/F_opening are returned for independent testing; configuration
+is fixed in each solve. Retain scaled pivoted damped Newton, caller budgets and pivot checks;
+reject unsupported/out-of-map/limit trial states during damping, never clamp to feasibility.
+Invalid initial inputs refuse before iteration; exhausted damping/budget/conditioning failures
+produce explicit nonconvergence, never a successful partial solution.
+
+Remove CLOSED edges only from the active-connectivity analysis, retaining their identity and
+zero flow in the equations/result. Every resulting active component, including an isolated
+node, requires at least one explicit pressure anchor. Balanced floating components still have
+undetermined absolute pressure and are refused. Inconsistent demand isolated by a closed
+valve must not converge; do not invent supply or silently drop a node. Graph anchoring is
+necessary, not sufficient: inconsistent boundaries, nonunique active maps or a singular
+Jacobian still require refusal/nonconvergence. No automatic regulator switching is inferred.
+
+Add SimulationEquipmentGasSolution wrapping SteadyStateGasSolution plus immutable equipment
+flow, dimensionless compressor residual, valve flow residual [kg/s] and compressor shaft-power
+[W] maps. The wrapped pipe maps contain ONLY actual pipe IDs; node balances and boundary
+exchanges cover the entire union. Keys, units, finite values and diagnostics must be checked
+in maintained solver tests. No equipment is mislabeled a pipe, and no public HTTP/run adapter
+or persistence contract is added. Results explicitly identify the bounded synthetic method.
+
+### Independently derived references and fixed numerical acceptance
+
+Interpolation arithmetic from the existing fixture is independent of any evaluator:
+H(q,N)=(N/1000)*(120-20*q) over q=1..2 kg/s and N=1000..2000 RPM;
+eta(q)=0.85-0.05*q. At q=1.5,N=1500: H=135 J/kg, eta=0.775,
+H_q=-30 J/kg per (kg/s), H_N=0.09 J/kg per RPM, eta_q=-0.05 per (kg/s), eta_N=0.
+Valve F(dp,a)=0.002*a*dp; at a=0.5,dp=500: q=0.5 kg/s,
+F_dp=0.001 kg/(s Pa), F_a=1 kg/s. Endpoints and inward/one-sided derivatives must also pass.
+
+The following numbers were independently calculated with Python decimal precision 70,
+decimal exp/sqrt and 230-step bracketed bisection; no production solver/evaluator or test
+helper supplied the references. Explicit synthetic properties are T=300 K, M=0.018 kg/mol,
+mu=0.01 Pa s (a development value, not a gas field fact/default). All nodes below have z=0.
+The downstream real pipe has L=1000 m, D=1 m, roughness=0. Its laminar Reynolds numbers
+remain below 2300 for these flows. Integrating compressible Poiseuille independently gives
+`p_b^2-p_c^2=K*q`, where `K=256*mu*L*(R*T/M)/(pi*D^4)`;
+K=112920561.0523195743145253870422 Pa^2 per (kg/s).
+
+| Independent case | Supplied boundary/configuration | Reference |
+|---|---|---|
+| Compressor pressure and power | p_a=200000 Pa, N=1500 RPM, q=1.5 kg/s | p_b=200194.936153744447 Pa; p_b/p_a=1.00097468076872223; shaft power=261.290322580645 W |
+| Compressor bridge a-b, real pipe b-c | a pressure 200000 Pa, b injection 0, c injection -1.5 kg/s, N=1500 RPM | both link flows=1.5 kg/s; p_c=199771.448460542870 Pa; pressure-boundary exchange a=+1.5 kg/s |
+| Speed response with both end pressures fixed | same bridge, a=200000 Pa and c=199771.448460542870 Pa, b injection 0 | N=1000: q=1.290965510130259 kg/s, p_b=200135.974201857170 Pa; N=2000: q=1.691354711061536 kg/s, p_b=200248.895984309708 Pa; end exchanges +q/-q |
+| Valve bridge a-b, real pipe b-c | a=200000 Pa, b injection 0, c injection -0.5 kg/s, opening=0.5 | both link flows=0.5 kg/s; p_b=199500 Pa; p_c=199358.445317658515 Pa |
+| Opening response with both end pressures fixed | a=200000 Pa, c=199358.445317658515 Pa, b injection 0 | opening=0.25: q=0.280995000256254 kg/s, p_b=199438.009999487493 Pa; opening=1: q=0.819307289276717 kg/s, p_b=199590.346355361642 Pa |
+| Closed bridge with anchored components | preceding valve bridge, opening=0, both end pressure boundaries retained, b injection 0 | valve and pipe flow=0 exactly; p_b=p_c; both boundary exchanges=0; removing c anchor refuses floating b-c component |
+| Valve triangle mesh | a=200000 Pa; b injection -0.3, c injection -0.6 kg/s; ab/ac/bc all opening=0.5 | p_b=199600 Pa, p_c=199500 Pa; q_ab=0.4, q_ac=0.5, q_bc=0.1 kg/s; a exchange=0.9 kg/s |
+| Parallel valves a-b | a=200000 Pa, b injection -0.75 kg/s; openings 0.5/0.25 | p_b=199500 Pa; individual flows 0.5/0.25 kg/s; a exchange=0.75 kg/s |
+
+For speed-response roots use `200000^2*exp(2*H(q,N)/rT)-K*q-p_c^2=0` on [1,2].
+For opening-response roots use `(200000-q/(0.002*a))^2-K*q-p_c^2=0` on [0,2].
+Both are strictly decreasing on the stated admissible intervals; bisection supplies an
+independent scalar reference. The published end pressures are rounded to 15+ significant
+digits; reproduce full decimal references from these expressions. The historical compressor/
+valve two-edge source fixture is not automatically a feasible hydraulic loop: its source
+integrity tests do not establish a common flow within both maps. Test unsupported infeasibility
+as such, rather than treating that fixture as a solved oracle.
+
+Freeze these development targets before implementation: map values absolute error <=1e-12
+in their respective SI units; analytic derivative comparison <=max(1e-10,1e-8*abs(reference)),
+using centered differences inside cells (steps q=1e-5 kg/s, N=0.01 RPM, dp=0.01 Pa,
+opening=1e-5), and inward differences at endpoints/knots. Pressure reference error <=0.0002 Pa;
+flow error <=max(1e-10 kg/s,1e-8*abs(reference)); power error <=1e-5 W (covers propagated
+flow/map comparison error). Reference tests
+use S=200000 Pa, Q=2 kg/s, mass tolerance=1e-11 kg/s, momentum tolerance=1e-12,
+pivot tolerance=1e-14, iteration budget=60 and line-search budget=40. These are explicit
+test controls, never implementation defaults or operating thresholds. Pipe residual target
+is <=S^2*momentumTolerance=0.04 Pa^2; compressor log residual <=1e-12; valve residual
+and injection-node balance <=1e-11 kg/s. Independently sum all exchanges and prescribed
+injections: global error <=nodeCount*1e-11 kg/s. Tighter runs use mass=1e-13 and
+momentum=1e-14; reference tolerances do not loosen. Admissible alternative guesses,
+input order changes and deterministic replay must preserve the accepted result. Require
+roundoff-aware derivative evidence at knots using the declared side, not centered slopes
+across a discontinuity. If targets expose a real numerical defect, repair it; do not weaken
+the targets to hide failure. No Java equipment accuracy result is claimed by this derivation.
+
+Future tests must cover all rows above plus unknown methods/generic text, nonrectangular
+grids, references, limits, endpoints, every unsupported regime, reverse equipment refusal,
+closed isolation with/without anchors, inconsistent closed demand, equipment-only union,
+disconnected pipe subgraphs linked by real equipment, real-pipe/equipment branches/meshes/
+parallel links, reversed real-pipe orientation, every boundary exchange, changed speed/opening
+across the whole network, conditioning/budget/damping failure and invalid guesses. Preserve
+all accepted independent pipe-only analytical/turbulent/failure benchmarks and compatibility.
+
+### Final exact-file implementation allowlist and outstanding regulator obligation
+
+After this documentation commit's exact-head Documentation CI passes, a separate owner Next
+selects ONLY `feat(simulation): model gas network equipment behavior` under existing
+HPR-P25-008C, for this bounded synthetic compressor/valve candidate. Final exact allowlist:
+
+1. src/main/java/dz/sh/hidra/modules/simulation/domain/service/SimulationEquipmentBehaviorEvaluator.java (new; named methods, interpolation/derivatives and refusal)
+2. src/test/java/dz/sh/hidra/modules/simulation/domain/service/SimulationEquipmentBehaviorEvaluatorTest.java (new; independent map/pressure/work references and failures)
+3. src/main/java/dz/sh/hidra/modules/simulation/domain/model/SimulationSyntheticEquipmentNetworkInput.java (new; immutable full union and exact synthetic bindings)
+4. src/test/java/dz/sh/hidra/modules/simulation/domain/model/SimulationSyntheticEquipmentNetworkInputTest.java (new; union/binding/method/time/origin validation)
+5. src/main/java/dz/sh/hidra/modules/simulation/domain/model/SimulationEquipmentGasSolution.java (new; typed equipment diagnostics wrapping compatible pipe result)
+6. src/main/java/dz/sh/hidra/modules/simulation/domain/service/SteadyStateGasSolver.java (update; separate union entry point and typed incidence/residuals)
+7. src/test/java/dz/sh/hidra/modules/simulation/domain/service/SteadyStateGasSolverTest.java (update; independent whole-network references, failures and result compatibility)
+8. doc/modules/simulation.md (update; executable method/input/result limits and measured evidence)
+9. doc/roadmap/ULTIMATE_ROADMAP.md (update; candidate delivery/evidence, retain partial status)
+10. doc/model-remediation/RECONCILIATION.md (update; matching candidate/evidence)
+
+This replaces the eight-path candidate list: the new input and its test are necessary because
+neither existing input represents the full stored-map numerical union; the separate new result
+replaces the optional SteadyStateGasSolution change and preserves its record compatibility.
+Numerical production code remains Simulation-domain with Java dependencies only. No new
+dependency, production EOS, migration, dictionary, architecture export, Workflow, HTTP API,
+Kernel/Platform change, transient, qualified-source bypass or OT action is authorized.
+
+REGULATOR remains a genuine topology/Simulation source-schema and ownership gap: there is
+no regulator kind, setpoint/control-mode contract, capacity characteristic or active-state law.
+Do not alias it to VALVE. Its eventual design must settle downstream pressure control versus
+fully open/closed capacity states, upstream headroom and capacity constraints, source revision/
+provenance and exact cross-module ownership before a separate bounded path registration.
+That design is agent work using available contracts, not a mandatory owner field-data request.
+No regulator files are authorized in this candidate. HPR-P25-008C therefore remains PENDING
+even if this partial compressor/valve candidate later passes CI; do not close 008C, start 008D
+or claim the full equipment obligation from these methods. No deeper routine codes are created.
+
+Future implementation validation: Java 21 focused evaluator/new-input/solver tests plus the
+existing SimulationEquipmentParameterRevisionTest, SimulationConnectedNetworkInputTest and
+SimulationPhysicalNetworkInputTest; `bash ./mvnw -B -q clean verify` with disclosed environment
+limitations; all maintained validators, canonical docs, offline OpenAPI, P1 closure, whitespace,
+exact ten-file scope and header/import/compatibility checks. Publish that separately selected
+candidate with expected-parent lease, verify remote parent/tree/individual scope, observe
+exact-head Production/Documentation CI startup, then STOP pending owner Next/Fail. Numerical
+candidate acceptance and remaining regulator scope must be assessed independently afterward.
+
+### Current documentation validation and stop condition
+
+For this authorization only, run the four maintained Python validator test programs, canonical
+documentation/OpenAPI validators, validate_p1_closure.py, git diff --check and exact two-memory
+append-only scope checks. Publish directly to main with expected-parent lease; verify remote
+head/parent/tree and each file, observe exact-head Documentation CI startup, then STOP. Do not
+wait automatically for completion or implement the future allowlist. Version 0.7.0-SNAPSHOT,
+P0/P1/P2 CLOSED, P2.5 OPEN, P3 DEFERRED, 57 completed HMRs, 123 permanent subjects,
+GZ4 first gas pilot/GZ2 later candidate, 008B accepted synthetic baseline, C3E real-source
+qualification BLOCKED and C3F/002D/008C-F/008 PENDING remain unchanged. Recommendations
+remain advisory. Synthetic derivations establish no calibrated twin, deployment or OT approval.
+
+008C method-authorization documentation validation PASSED: 51 maintained validator tests;
+canonical docs 95 documents/5,115 links/24 modules/13 P2 rows; offline OpenAPI 244 paths/
+263 operations/231 schemas; P1 closure and whitespace. Exact two-document append-only
+scope checked against fff0b69. All executable/test source, both architecture export registries,
+POM/version, permanent dictionary, source contracts and workflows are unchanged. No new
+Maven/runtime/PostgreSQL/equipment numerical or deployment acceptance is claimed. The
+70-digit decimal work above is independent reference derivation, not an equipment solver pass.

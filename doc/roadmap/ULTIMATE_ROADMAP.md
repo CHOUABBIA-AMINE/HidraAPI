@@ -16903,3 +16903,191 @@ remain DEFERRED; regulator Slice B suspended and Slice C unauthorized. This task
 neither numerical execution nor publication authority. Publish directly to existing main
 with expected-head `36dbd08d3ceb18b1d77e140a664faba4dfafbabb`, verify exact new-head CI
 startup and STOP until owner `next` or `fail`. No PR, branch, release or deployment.
+
+## 2026-10-11 — Register HPR-P25-037 immutable station graph PostgreSQL persistence
+
+### Active selection, baseline and registration scope
+
+This is the next bounded **P35-B registration stage** selected by the owner's continuation
+instruction and the active Universal Hidra Platform dashboard. It supersedes that dashboard's
+"NOT REGISTERED" persistence disposition only after this registration is published; it does
+not select its future implementation or P35-C. Supporting registration message:
+`docs(topology): register immutable station graph sql persistence`.
+Only this roadmap and `doc/model-remediation/RECONCILIATION.md` change, append-only.
+
+Starting main `da0f0836ed8d1f6dbbaa447d711b9c63be469b05`, tree
+`c916981506f0250c69b81dd58c89701aa8f54ca8`; Documentation #229/run 38146884638
+SUCCESS on that exact SHA. HPR-P25-036 implementation at
+`a8f34638b31ca18ead266450c1f91a57d693d914` passed full Production #649/run
+38145851093 and Documentation #228/run 38145851090. Git comparison shows only the
+two governance files changed between that production baseline and starting main.
+Source equivalence is not a production run on the documentation-only head.
+AGENTS.md, PROJECT_STATE.md, active execution view and reconciliation were read.
+
+### Recovered implementation and governance anchors
+
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/StationInternalGraphRevisionRepositoryPort.java`
+  already defines append/find/findStored, exact facility/revision identity, canonical replay,
+  conflicting-content rejection and stored metadata. It exports no foreign-module API.
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/StationInternalGraphRevisionCodec.java`
+  supplies V1 canonical bytes, strict decode/re-encode, SHA-256 and bounded payload handling.
+  All source/time/evidence/predecessor/qualification fields remain inside those exact bytes.
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcTopologyPhysicalNetworkRevisionRepositoryAdapter.java`
+  supplies the existing JdbcTemplate/transaction/insert-on-conflict/exact verified read pattern.
+  Its physical revision data, codec and SQL are read-only precedents.
+- `src/main/resources/db/migration/V20261009_001__p25_topology_physical_network_revisions.sql`
+  demonstrates composite identity, bytea/digest constraints and immutable mutation triggers.
+  `doc/database/FLYWAY_POLICY.md` requires forward-only allocation, fresh/upgrade validation,
+  actual-catalog dictionary regeneration and no applied-migration edits.
+- `.github/scripts/generate_data_dictionary.py`, `.github/database-dictionary-ownership.json`
+  and `.github/workflows/ci.yml` make source/catalog/ownership drift a full-CI gate. The
+  dictionary must be regenerated from actual migrated PostgreSQL, never guessed from SQL.
+- `src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/TopologyPhysicalNetworkRevisionPostgresIntegrationTest.java`
+  supplies PostgreSQL 16, transactional proxies, race/rollback tests and full-chain catalog
+  capture precedent; `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java` preserves
+  application-port and private module boundaries.
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/Facility.java` carries ownerPartyId;
+  `src/main/java/dz/sh/hidra/modules/topology/application/service/FacilityApplicationService.java`
+  verifies supplied Party references. Neither grants access to an arbitrary revision identity.
+  `src/main/java/dz/sh/hidra/platform/security/TenantContext.java` is a thread-local holder,
+  not proof of database isolation; `src/main/java/dz/sh/hidra/platform/configuration/HidraSecurityConfiguration.java`
+  supplies JWT authentication, not station-history authorization.
+  Existing `src/main/java/dz/sh/hidra/modules/topology/api/rest/controller/SpringTopologyController.java`
+  exposes facility/pipeline-system operations, no station revision publication.
+
+### Registered future task and exclusive write contract
+
+| Field | Binding contract |
+|---|---|
+| Code / owner | HPR-P25-037 / Topology |
+| Objective | Implement owner-private immutable PostgreSQL station graph append and exact verified read |
+| Exact implementation message | `feat(topology): persist immutable station graph revisions` |
+| Initial status | REGISTERED / PLANNED — NOT SELECTED, NOT IMPLEMENTED |
+| Prerequisites | Successful exact-head Documentation CI for this registration; separate owner Next; refreshed main/source/CI; migration/path collision recheck |
+| Existing accepted contract | HPR-P25-032 graph, 034 envelope, 036 codec/port; preserve all bytes and signatures |
+| Future implementation acceptance | Java 21, PostgreSQL 16 fresh and upgrade tests, architecture checks, dictionary drift check, full exact-head production CI |
+| Excluded | REST/API/export/Workbench exposure, company authorization, publication/head selection, numerical engines, release or phase closure |
+
+Exclusive **future implementation** allowlist (this registration creates none of these files):
+
+1. NEW `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcStationInternalGraphRevisionRepositoryAdapter.java`
+2. NEW `src/main/resources/db/migration/V20261011_002__p25_topology_station_graph_revisions.sql`
+3. NEW `src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/StationInternalGraphRevisionPostgresIntegrationTest.java`
+4. EXISTING `.github/database-dictionary-ownership.json` — add only the new table's source-backed Topology ownership entry.
+5. EXISTING `doc/database/DATA_DICTIONARY.md` — deterministic actual-catalog regeneration for the additive migration, preserving reviewed existing ownership.
+6. EXISTING `doc/roadmap/ULTIMATE_ROADMAP.md` — append task status and evidence.
+7. EXISTING `doc/model-remediation/RECONCILIATION.md` — append matching evidence.
+
+No other file is writable: domain/port/codec, existing tests/migrations, security, dependencies,
+workflow, exports and version stay unchanged. Preserve canonical Java headers. Stop and
+re-register if the implementation requires a broader contract, catalog-owner correction or
+additional source file. No migration or PostgreSQL execution occurs in this registration.
+
+### Migration reservation, storage and integrity
+
+The exact main tree contains **144** SQL migration files and 144 unique normalized versions;
+actual tail is `V20261011_001__p25_simulation_regulator_parameter_revision_format.sql`.
+HPR-P25-037 code and all three new paths were absent. Reserve normalized **20261011.002**
+for the named additive migration. Relevant remote candidate branch snapshots
+`codex/p25-fluid-equipment-candidate` at `aa100e90d35673510ac5ca87dc0ec334e24abd47`
+and `codex/p25-network-revision-candidate` at `570e3b816e5b04c56c6e2c25969461c79e63a998`
+contain neither that version nor a station-graph migration. This is a bounded collision
+check, not a lock over every external branch; re-scan live main/relevant parallel work
+before implementation and publication. Any collision requires a new registration, not
+silent reassignment. Historical counts in Flyway policy retain their recorded applicability.
+
+New table `hidra_topology_station_graph_revision`: nonblank normalized text facility_id
+and revision_id as composite primary key; payload_format text; canonical_payload bytea;
+sha256 varchar(64); all NOT NULL. Admit only `HIDRA_TOPOLOGY_STATION_GRAPH_REVISION_V1`,
+1..1048576 payload bytes and lowercase 64-hex digest equal to PostgreSQL SHA-256 of those
+bytes. Identity checks reject surrounding ASCII trim characters and whitespace-only values
+following the existing physical-table convention. No default organization, fabricated site,
+recorded-time replacement, projection timestamp truncation or seeded station is permitted.
+All supplied metadata/Instant nanoseconds are authoritative in V1 bytes; this task introduces
+no duplicate mutable metadata columns, facility FK or authoritative master-data eligibility.
+Synthetic declarations can be stored without provisioning a live installation.
+
+Use dedicated Topology function `hidra_topology_reject_station_graph_revision_mutation`
+and triggers `topology_station_graph_revision_no_update_delete` /
+`topology_station_graph_revision_no_truncate` to reject UPDATE/DELETE/TRUNCATE. They are
+append-only application safeguards, not protection against privileged administrative bypass.
+Verify bytes, format, digest and row/payload identities on **every** read; use existing strict
+codec so hash-consistent malformed/noncanonical bytes fail. Corruption is an error, never
+Optional.empty. Exact facility/revision absence alone returns empty; no latest fallback.
+
+### Append, transaction and security boundary
+
+The adapter implements the existing port using JdbcTemplate and Spring transactions.
+Encode first; insert with ON CONFLICT (facility_id,revision_id) DO NOTHING; exact read
+within the same transaction and compare format, digest and complete canonical bytes.
+Same bytes, including reordered equivalent graph members, return the canonical stored
+revision without mutation. Different bytes at the same key fail under existing
+InvalidTopologyValueException conventions. Distinct facility keys may reuse revision IDs.
+
+Test concurrent identical and conflicting appends through actual transaction proxies under
+PostgreSQL READ COMMITTED: one durable row, both identical calls succeed; conflicting
+calls have one winner and one domain conflict. Exceptions and outer-transaction failure
+must roll back new appends. Stricter ambient transaction isolation may produce database
+serialization failures which propagate; no retry/idempotency claim beyond the tested
+contract and no caught-and-ignored database failure is authorized.
+
+Predecessor remains supplied intent only. No existence lookup, current head, expected-head
+compare-and-set, withdrawal, source verification, Workflow approval, actor attribution or
+published graph is created. Only owner-private internal persistence is exposed. No new
+permissions/grants, controller, cross-module contract or Workbench resource are admitted.
+Facility-key separation is **not company/tenant access isolation**. P35-C must separately
+register authenticated company/facility scope and historical access checks before user-facing
+reads/writes; F1/F4 company-isolation gates remain OPEN. Real site data is optional deployment
+input, never a dependency of this synthetic storage slice.
+
+Migration is additive and unseeded. Test fresh complete Flyway chain and upgrade from the
+actual 144-file predecessor chain with retained existing records/catalog evidence. Verify
+new empty store, applied history, validate(), immutable old checksums and unchanged physical
+V1/V2 retrieval. Application rollback retains the new unused table and applied migration;
+no down migration, production DROP/TRUNCATE, Flyway clean/repair or database restore is
+authorized. SQL failure must leave no partial table/functions/triggers when transactional
+migration execution fails. Production backup/PITR operations remain separate.
+
+### Future validation and stop boundary
+
+Focused future command:
+`bash mvnw -B -q -Dtest=StationInternalGraphRevisionPostgresIntegrationTest,StationInternalGraphRevisionCodecTest,StationInternalGraphRevisionRepositoryPortTest,ArchitectureGuardrailTest test`.
+
+Integration tests must execute, not merely skip for absent Docker. Cover labelled synthetic
+serial/parallel and DRAFT/qualified declarations; original exact historical bytes after newer
+appends; two distinct facility namespaces; exact absence/blank lookup; canonical permutation
+replay; conflicting content; actual concurrent races and transaction rollback; empty/oversized
+payload, invalid identity/format/digest; duplicate key and mutation guards; hash-consistent
+malformed/noncanonical and mismatched identity payload; privileged digest-bypass read rejection
+in disposable schema only. Check source/evidence/predecessor/time/qualification round trips;
+supplied VERIFIED is not independent attestation. No manufacturer or live SCADA inputs.
+
+Generate the dictionary through the existing collector/renderer against the actual full
+migrated PostgreSQL 16 catalog and reviewed new ownership entry; verify only expected
+additive catalog/source changes. Run canonical documentation/OpenAPI validators and
+`bash mvnw -B -q clean verify` (or full CI's equivalent two-fork command), JPA validation
+and generated OpenAPI equality/compatibility. If local dependencies/database cannot run,
+report exact limitations and leave acceptance pending; never hand-author physical catalog
+facts or count skipped integration tests as a pass.
+
+| Updated active disposition | Status / next action |
+|---|---|
+| P35-B / HPR-P25-037 registration | Published documentation contract; exact-head Documentation CI acceptance PENDING |
+| HPR-P25-037 implementation | PLANNED — separate owner Next after accepted registration |
+| P35-C lifecycle / API | NOT REGISTERED — separate company-scope/actor/publication contract required |
+| F1–F4 PLATFORM / SITE | End-to-end PLATFORM outcomes OPEN; no SITE or industrial acceptance granted |
+| Simulator / P3 | DEFERRED; gas-first, optional GZ2 pilot, own-engine steady/transient direction preserved in history |
+
+Stop after this registration's exact-head Documentation Validation starts. No implementation,
+release, version change, closure, deployment or automatic next stage.
+
+### Registration validation actually completed
+
+- `python3 .github/scripts/test_validate_docs.py`: 10 tests PASS.
+- `python3 .github/scripts/test_validate_openapi_snapshot.py`: 10 tests PASS.
+- `python3 .github/scripts/test_generate_data_dictionary.py`: 17 tests PASS.
+- `python3 .github/scripts/validate_docs.py`: PASS — 95 documents, 5,286 relative links, 24 modules, 13 P2 rows.
+- `python3 .github/scripts/validate_openapi_snapshot.py`: PASS — offline snapshot only, 263 operations, 244 paths, 231 schemas.
+- `git diff --check`: PASS after removing added blank EOF lines.
+- Exact two-document allowlist, unchanged original prefixes and unchanged remaining Git tree checked before publication.
+No Maven, JUnit, PostgreSQL, migration or industrial test execution is claimed for this documentation-only stage.

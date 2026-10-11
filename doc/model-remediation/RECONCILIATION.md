@@ -14725,3 +14725,45 @@ simulator/P3 DEFERRED, regulator Slice B suspended, Slice C unauthorized.
 No old task, acceptance proof, workflow, migration, version or implementation is
 silently deleted or reclassified. This is a documentation-only interpretation and
 navigation change; the active index does not supersede live source or executable CI evidence.
+
+## 2026-10-11 — HPR-P25-037 immutable station graph SQL persistence registration
+
+Owner continuation selects the active dashboard's next P35-B **registration only**, from
+main `da0f0836ed8d1f6dbbaa447d711b9c63be469b05`, tree
+`c916981506f0250c69b81dd58c89701aa8f54ca8`. Exact-head Documentation #229 SUCCESS;
+Production #649 and Documentation #228 SUCCESS at HPR-P25-036 implementation
+`a8f34638b31ca18ead266450c1f91a57d693d914`. Comparison confirms only these two
+documents differ from that green code baseline; no production run on the docs head is claimed.
+
+Registration message `docs(topology): register immutable station graph sql persistence`
+changes only this reconciliation and the Ultimate Roadmap, preserving original bytes.
+The appended roadmap registers HPR-P25-037 future message
+`feat(topology): persist immutable station graph revisions` with exclusive new JDBC adapter,
+PostgreSQL integration test and `V20261011_002__p25_topology_station_graph_revisions.sql`,
+plus exact ownership/dictionary and two governance paths. Main has 144 unique normalized
+migration versions; 20261011.002 and all new paths/code are absent. Two recovered p25
+candidate branch snapshots also have no collision. Recheck before separate implementation.
+
+Live codec/port/physical persistence precedents, Flyway policy, transaction/test patterns,
+dictionary drift gate, Facility owner linkage, JWT security and TenantContext were inspected.
+Storage retains supplied V1 canonical bytes and all nanosecond/time/provenance metadata;
+idempotent exact replay and conflicting-content rejection, byte/digest/identity verification,
+immutable mutation guards, races/rollback and actual fresh/upgrade Flyway evidence are
+required future tests. Actual-catalog dictionary regeneration is explicitly in scope to avoid
+unregistered drift repair. No schema or code was created and no PostgreSQL test ran here.
+
+Owner-private facility/revision storage does not establish company/tenant isolation,
+authenticated publication or accepted source evidence. No default operator/installation,
+real-data requirement, endpoint, grant, export or Workbench exposure is authorized.
+Company-scoped historical access and actor/publication lifecycle require later P35-C
+registration before user-facing access. F1–F4 PLATFORM remain OPEN; no SITE acceptance.
+P2.5 OPEN, simulator/P3 DEFERRED; prior gas-first/GZ2 pilot/own-engine steady/transient
+direction is preserved without numerical development. Version and closure remain unchanged.
+
+HPR-P25-037 registration is published with Documentation acceptance PENDING; future
+implementation is PLANNED / NOT SELECTED. Stop at new-head Documentation CI startup.
+
+Registration validation: 37 documentation/OpenAPI/dictionary validator tests PASS;
+canonical documentation validation PASS (95 documents, 5,286 links, 24 modules);
+offline OpenAPI snapshot PASS; diff whitespace and two-document/preserved-prefix scope PASS.
+No Java/database implementation or test result is claimed.

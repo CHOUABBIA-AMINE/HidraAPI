@@ -13690,3 +13690,109 @@ Historical `HIDRA_TOPOLOGY_PHYSICAL_NETWORK_V1` bytes/digests, accepted compress
 **Current status at candidate commit:** HPR-P25-008C Slice A physical Topology source **IMPLEMENTED, full acceptance PENDING exact-head green CI after dictionary remediation**; HPR-P25-008C/P25-008 PENDING, Slice B and 008D–F NOT AUTHORIZED; P2.5 OPEN, P0/P1/P2 CLOSED, P3 DEFERRED, GZ4 SYNTHETIC DEVELOPMENT_TEST_ONLY, C3E qualified operating state BLOCKED, `0.7.0-SNAPSHOT` unchanged. No SCADA/OT actuation, field calibration, release or tag.
 
 **STOP after post-commit exact-head Java CI and Documentation Validation are observed.** A new owner Next and independently source-backed acceptance record are required before advancing to Slice B.
+
+
+## HPR-P25-008C — REGULATOR Slice A Verified Acceptance Disposition (2026-10-11)
+
+### Selected action and exact evidence baseline
+
+Owner Next selects the separately required independent acceptance record following the
+physical dictionary remediation at main `3fcb2ea8d7f922d1942411316139eb80a0703188`.
+This action uses the already registered active-008C supporting review message
+`docs(twin): record HPR-P25-008C numerical acceptance gaps`. Its closed write scope is
+exactly `doc/roadmap/ULTIMATE_ROADMAP.md` and
+`doc/model-remediation/RECONCILIATION.md`, append-only. Despite the historical message,
+this record accepts only Topology physical incidence/contract/storage; it does not
+claim a regulator numerical acceptance or implement Slice B/C. No new task code,
+production file, dictionary, test, migration, workflow, dependency or release is changed.
+
+- Exact-head **HidraAPI CI #642**, run **38126610581**, head
+  `3fcb2ea8d7f922d1942411316139eb80a0703188`: **SUCCESS**. Java 21 Maven
+  verification job **114432175020** passed all steps, including
+  `./mvnw -B -q clean verify -DforkCount=2 -DreuseForks=true`. The actual
+  Surefire summary is **1,543 tests, 0 failures, 0 errors, 0 skipped**. This is
+  observed GitHub execution, not local Maven execution or a prediction.
+- Exact-head **Documentation Validation #205**, run **38112926987**, at the
+  same SHA: **SUCCESS**. Both candidate workflow gates are satisfied.
+- `Capture current migrated database dictionary evidence` now **PASSED**. Its
+  actual JSON reports `reviewed_dictionary_checked: true`, **143 migrations**,
+  **489 relations**, **470 JPA mappings**, `unresolved_owners: []`, PostgreSQL
+  **16.15 (Debian 16.15-1.pgdg13+2)**, exact source SHA above and source-bundle
+  SHA-256 `33de956f4183f927e93d21f7a2258afe714ea9e8d3f33c348a00cdd380ade78d`.
+  The current-run catalog SHA-256 is
+  `acf00431ed14668312990aba062e724b4ea534fb630ab6b7e35dbe8171cecfd0` and generated
+  dictionary SHA-256 is
+  `df4049ed0aac5a08e87d0d0d61bcc28da698d4ef1a182cfe021659972458b114`.
+  The committed dictionary retains its captured #641 source line and full-byte digest
+  `585c57b92161f0651eb227234d32f780e79e057ecce619daa3e664601d04eae3`.
+  These complete hashes are distinct because captures bind different source SHAs;
+  the maintained checker explicitly normalizes only the capture-SHA line. Its
+  successful exact-head comparison, rather than invented complete-byte equality,
+  establishes that CURRENT physical facts/source inventory now agree. Dictionary
+  retention/upload also passed. The earlier #641 dictionary gate failure is resolved.
+- Actual runtime OpenAPI equality passed with **244 paths, 263 operations and 231
+  schemas**; the base-revision comparison passed with **no supported breaking changes**.
+  Canonical documentation, architecture/Maven, full migration-chain and production
+  artifact validations passed within the same run. These are repository CI gates,
+  not new physical field experiments or OT safety certification.
+
+### Independent source/scope review and accepted boundary
+
+The original Slice A implementation at
+`44223044cdc5c53116d8108f842488d77d04a512`, relative to its authorized parent
+`70e074ec60249282b0351802d52bce11a1f6791a`, contains exactly the admitted 13 paths:
+five Topology Java sources, five existing Topology tests, one forward migration and
+these two documents. Subsequent changes through the current baseline affect only the
+two execution documents and generated database dictionary. Topology source, tests,
+original V1 bytes/digests and Flyway files have not been altered by dictionary repair.
+
+Source review confirms distinct REGULATOR incidence, strict V1/non-regulator versus
+V2/regulator kind/format association in codec, export and stored metadata, immutable
+exact source/revision identity, digest checks and JDBC replay validation. Forward
+`V20261010_003__p25_topology_regulator_physical_revision_format.sql` extends only the
+format CHECK; historical `V20261009_001`, digest constraint and append-only refusal
+remain. Actual CI includes the PostgreSQL integration suite and its full-chain
+catalog capture; its versioned migration test preserves V1 rows and adds V2 regulator
+capability. The existing independent codec literals remain unchanged:
+
+- V1 SHA-256 `58a7fbb9800a4c67b3f1cf448e268ab44b9e49f71ed120213c6e5deeb3eb4613`.
+- V2 SHA-256 `8a245b58a7904fe9df0f5eda3969d8614f0408baba4f8bb2e39731cad5e0cdd2`.
+
+**Decision: ACCEPTED for HPR-P25-008C REGULATOR Slice A Topology physical
+incidence, immutable export, versioned canonical storage and forward database
+compatibility only**, based on the independently reviewed source and exact-head
+Java/PostgreSQL/dictionary/documentation evidence above. This clears Slice A's
+acceptance blocker after #641; the dictionary correction is verified, not merely proposed.
+
+### Remaining work and next selected action
+
+Simulation's current `SimulationStoredPhysicalNetworkRevisionPort` still restricts
+its input to V1 and COMPRESSOR/VALVE. V2 REGULATOR must continue to fail closed until
+Slice B is independently admitted and implemented. There is no executed regulator
+capacity law, downstream setpoint control or switching solver accepted by Slice A.
+The existing accepted V1 synthetic compressor/valve numerical boundary stays intact.
+
+The next eligible owner-selected action is **the separate HPR-P25-008C REGULATOR
+Slice B Simulation source/input/characteristic-persistence preflight**, using the
+already registered supporting message
+`docs(twin): register HPR-P25-008C equipment execution preflight` and initially only
+these two append-only canonical documents. It must inspect actual Simulation enum
+branches, qualified owner query/digest/effective-time checks, immutable codec bytes,
+JDBC constraints and Flyway inventory, then register a concrete closed implementation
+scope and test/migration filenames before any Slice B Java or SQL change. That READ/Doc
+preflight is not silently included in this acceptance action. Numerical evaluator and
+solver integration belong to separately authorized Slice C.
+
+HPR-P25-008C and parent 008 remain **PENDING**; P2.5 **OPEN**, P0/P1/P2 **CLOSED**,
+P3 **DEFERRED**, C3E qualified operating-state input **BLOCKED**, GZ4
+**SYNTHETIC DEVELOPMENT_TEST_ONLY**, development `0.7.0-SNAPSHOT` unchanged.
+008D–F and external-engine connectors are not authorized by this action. Deployment
+calibration may supply physical inputs later; no additional real-world data request
+is made a prerequisite for this bounded source/schema acceptance. No simulator
+dependency, SCADA/OT actuation, release or tag is added.
+
+Validate the unchanged repository documentation validators and OpenAPI snapshot,
+exact two-document append-only scope and whitespace. No new local Maven/PostgreSQL
+execution is claimed. **STOP after observing this acceptance commit's Documentation
+Validation has started; wait for owner Next or Fail.** A green documentation review
+does not independently complete regulator physics or the parent equipment task.

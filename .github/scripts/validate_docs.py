@@ -161,7 +161,7 @@ def validate_links(root, path, text, anchor_cache=None):
         if dest.startswith('#'):
             resolved = (path, unquote(dest[1:]))
         else:
-            resolved = local_target(root, path.parent, dest)
+            resolved = local_target(root, path.parent.parent if path.name == 'ULTIMATE_ROADMAP_HISTORY.md' else path.parent, dest)
         if resolved is None:
             continue
         target, fragment = resolved
@@ -286,7 +286,7 @@ def validate(root, manifest):
     for index in manifest['current_indexes']:
         if inventory[index]['status'] != 'CURRENT':
             raise ValueError('Index/register CURRENT disagreement: ' + index)
-    rows = primary_p2(texts[manifest['roadmap']])
+    rows = primary_p2(texts[manifest.get('historical_roadmap', manifest['roadmap'])])
     register_rows = [line for line in register.splitlines() if line.startswith('| Documentation CI drift controls |')]
     required = 'CURRENT' if rows['HPR-P2-012'] == 'COMPLETED' else 'PARTIAL'
     if len(register_rows) != 1 or register_rows[0].split('|')[2].strip() != required:

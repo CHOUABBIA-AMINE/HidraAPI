@@ -656,6 +656,18 @@
         "doc/governance/DOCUMENT_REGISTER.md"
       ],
       "status": "CURRENT"
+    },
+    "doc/roadmap/PLATFORM_ACCEPTANCE.md": {
+      "status": "CURRENT",
+      "metadata_from": [
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ]
+    },
+    "doc/roadmap/history/ULTIMATE_ROADMAP_HISTORY.md": {
+      "status": "HISTORICAL",
+      "metadata_from": [
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ]
     }
   },
   "format_version": 1,
@@ -761,47 +773,47 @@
   },
   "legacy_statuses": {
     "doc/operations/APPLICATION_HIGH_AVAILABILITY.md": {
-      "line": "APPROVED TARGET \u2014 HPR-P1-002",
+      "line": "APPROVED TARGET — HPR-P1-002",
       "rationale": "Preserved P1 stage/owner/procedure wording; its own applicability and later exercise evidence remain distinct. Not a new CURRENT or physical verification claim."
     },
     "doc/operations/CI_CD_RELEASE_GUIDE.md": {
-      "line": "CONTROLLED PIPELINE IMPLEMENTED / LIVE PRODUCTION-EQUIVALENT EXECUTION PENDING \u2014 HPR-P1-018",
+      "line": "CONTROLLED PIPELINE IMPLEMENTED / LIVE PRODUCTION-EQUIVALENT EXECUTION PENDING — HPR-P1-018",
       "rationale": "Preserved P1 stage/owner/procedure wording; its own applicability and later exercise evidence remain distinct. Not a new CURRENT or physical verification claim."
     },
     "doc/operations/DEPLOYMENT_RUNBOOK.md": {
-      "line": "APPROVED PRODUCT-NEUTRAL PROCEDURE \u2014 HPR-P1-007",
+      "line": "APPROVED PRODUCT-NEUTRAL PROCEDURE — HPR-P1-007",
       "rationale": "Preserved P1 stage/owner/procedure wording; its own applicability and later exercise evidence remain distinct. Not a new CURRENT or physical verification claim."
     },
     "doc/operations/DISASTER_RECOVERY_OBJECTIVES.md": {
-      "line": "APPROVED TARGET \u2014 HPR-P1-004",
+      "line": "APPROVED TARGET — HPR-P1-004",
       "rationale": "Preserved P1 stage/owner/procedure wording; its own applicability and later exercise evidence remain distinct. Not a new CURRENT or physical verification claim."
     },
     "doc/operations/DISASTER_RECOVERY_RUNBOOK.md": {
-      "line": "APPROVED PROCEDURE \u2014 HPR-P1-005",
+      "line": "APPROVED PROCEDURE — HPR-P1-005",
       "rationale": "Preserved P1 stage/owner/procedure wording; its own applicability and later exercise evidence remain distinct. Not a new CURRENT or physical verification claim."
     },
     "doc/operations/ENVIRONMENT_CONFIGURATION.md": {
-      "line": "CURRENT CONFIGURATION CONTRACT + APPROVED OPERATING REQUIREMENTS \u2014 HPR-P1-007",
+      "line": "CURRENT CONFIGURATION CONTRACT + APPROVED OPERATING REQUIREMENTS — HPR-P1-007",
       "rationale": "Preserved P1 stage/owner/procedure wording; its own applicability and later exercise evidence remain distinct. Not a new CURRENT or physical verification claim."
     },
     "doc/operations/HIGH_AVAILABILITY_ARCHITECTURE.md": {
-      "line": "APPROVED TARGET ARCHITECTURE \u2014 HPR-P1-006",
+      "line": "APPROVED TARGET ARCHITECTURE — HPR-P1-006",
       "rationale": "Preserved P1 stage/owner/procedure wording; its own applicability and later exercise evidence remain distinct. Not a new CURRENT or physical verification claim."
     },
     "doc/operations/OBSERVABILITY_AND_SRE.md": {
-      "line": "OPERATING MODEL ESTABLISHED / P1 ALERTING IMPLEMENTED-PENDING-LIVE-EXERCISE \u2014 HPR-P1-010 + HPR-P1-019",
+      "line": "OPERATING MODEL ESTABLISHED / P1 ALERTING IMPLEMENTED-PENDING-LIVE-EXERCISE — HPR-P1-010 + HPR-P1-019",
       "rationale": "Preserved P1 stage/owner/procedure wording; its own applicability and later exercise evidence remain distinct. Not a new CURRENT or physical verification claim."
     },
     "doc/operations/P1_OWNER_APPROVED_VALUES.md": {
-      "line": "OWNER-APPROVED \u2014 2026-10-05",
+      "line": "OWNER-APPROVED — 2026-10-05",
       "rationale": "Preserved P1 stage/owner/procedure wording; its own applicability and later exercise evidence remain distinct. Not a new CURRENT or physical verification claim."
     },
     "doc/operations/P1_SURVIVABILITY_EXERCISE_EVIDENCE_2026-10-06.md": {
-      "line": "COMPLETED \u2014 2026-10-06",
+      "line": "COMPLETED — 2026-10-06",
       "rationale": "Preserved P1 stage/owner/procedure wording; its own applicability and later exercise evidence remain distinct. Not a new CURRENT or physical verification claim."
     },
     "doc/operations/PRODUCTION_INFRASTRUCTURE_STACK.md": {
-      "line": "OWNER-APPROVED PRODUCTION INFRASTRUCTURE BASELINE \u2014 HPR-P1-013",
+      "line": "OWNER-APPROVED PRODUCTION INFRASTRUCTURE BASELINE — HPR-P1-013",
       "rationale": "Preserved P1 stage/owner/procedure wording; its own applicability and later exercise evidence remain distinct. Not a new CURRENT or physical verification claim."
     }
   },
@@ -866,5 +878,6 @@
     "doc/modules/**": "CURRENT",
     "doc/testing/**": "CURRENT"
   },
-  "roadmap": "doc/roadmap/ULTIMATE_ROADMAP.md"
+  "roadmap": "doc/roadmap/ULTIMATE_ROADMAP.md",
+  "historical_roadmap": "doc/roadmap/history/ULTIMATE_ROADMAP_HISTORY.md"
 }

@@ -1,5 +1,9 @@
 # HidraAPI — F1–F4 Synthetic PLATFORM Acceptance
 
+## Status
+
+CURRENT — canonical PLATFORM synthetic acceptance planning criteria.
+
 > Criteria only; none of these rows are asserted to have passed. Actual acceptance requires tests and exact-head evidence. Compare to historical HPR-P25-030 A–I before registering exact implementation cases.
 
 | Case | PLATFORM software criterion | Example explicitly synthetic evidence | Dependencies | Status |

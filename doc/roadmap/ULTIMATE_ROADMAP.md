@@ -2,7 +2,14 @@
 
 > **Authoritative active execution document.** Complete CURRENT task table first, detailed REMAINING task descriptions second. Full completed-task actions, earlier exact task messages, historical tables, preflight records and CI evidence are preserved **verbatim** in [history/ULTIMATE_ROADMAP_HISTORY.md](history/ULTIMATE_ROADMAP_HISTORY.md). Live code, migrations, tests, `AGENTS.md` and exact-head CI outrank stale historical claims.
 
-## 1. Consolidated task table — statuses and dependencies
+## 1. Control Status
+
+| Field | Value |
+|---|---|
+| Status | ACTIVE |
+| Purpose | Universal platform task register with detail and dependencies |
+
+## 2. Consolidated task table — statuses and dependencies
 
 **Product policy:** Hidra is universal, configurable and company/network/product independent. No real customer data, P&IDs, vendor curves or live SCADA are prerequisites for generic development. PLATFORM software testing uses explicit synthetic data; customer SITE commissioning is an entirely separate gate. Numerical simulation work is deferred.
 
@@ -39,7 +46,7 @@
 | P2.5 design/preflight 018–030, 033, 035 | DESIGN/PREFLIGHT DELIVERED only; no implied runtime acceptance | [Historical definitions](history/ULTIMATE_ROADMAP_HISTORY.md) |
 | Formal v0.6.0 / development 0.7.0-SNAPSHOT | RETAINED release and development state | [Historical release evidence](history/ULTIMATE_ROADMAP_HISTORY.md) |
 
-## 2. Remaining-task execution rules
+## 3. Remaining-task execution rules
 
 1. The table above governs selection, never a historical `NEXT` note. Only registered exact HPR tasks may change code; check prerequisites, required full CI, migration authorization, exclusive file allowlist and commit message in their detailed registration.
 2. At each step recheck live `main` SHA, `AGENTS.md`, `PROJECT_STATE.md`, reconciliation, production code, migrations, tests and CI. Commit guarded by expected-head and STOP after one registered code.
@@ -47,7 +54,7 @@
 4. Generic PLATFORM tests are synthetic and can establish only software behavior; SITE acceptance needs real operator-specific provenance and competent approval and is not implied by full CI.
 5. Proposed files for unregistered tasks are **candidate ownership areas**, not exact permitted mutations; names should not be fabricated prematurely. Deletions: **none authorized** unless a future registered task expressly lists them.
 
-## 3. Detailed descriptions of remaining tasks
+## 4. Detailed descriptions of remaining tasks
 
 ### HPR-P25-037 — Immutable station-graph PostgreSQL append and exact read
 
@@ -196,7 +203,7 @@
 
 Parent P2.5 002–017, 008C–F, mixed 020–031 and other old `PENDING` rows are preserved as historical requirements, not a second queue. Reconcile independent engineering/configuration/monitoring requirements into explicitly registered F1–F4 tasks; simulator-dependent work remains deferred. **Files create/update/delete:** None authorized by this classification.
 
-## 4. Full authoritative HPR-P25-037 registration — preserved verbatim
+## 5. Full authoritative HPR-P25-037 registration — preserved verbatim
 
 > The following is copied exactly from the previously committed HPR-P25-037 registration. It preserves the authorized SQL design, immutable storage constraints, exact test and file rules. Its historical baseline/CI-pending language refers to the time of registration, not an assertion about current CI status.
 
@@ -389,7 +396,7 @@ release, version change, closure, deployment or automatic next stage.
 No Maven, JUnit, PostgreSQL, migration or industrial test execution is claimed for this documentation-only stage.
 
 
-## 5. Governance and history
+## 6. Governance and history
 
 - [Full original task registry, completed actions, evidence and superseded proposals](history/ULTIMATE_ROADMAP_HISTORY.md) (unaltered original roadmap snapshot, `91e74c80c9ad327150174ddada08de058e5de7f7`).
 - [PLATFORM acceptance matrix](PLATFORM_ACCEPTANCE.md): synthetic verification; no SITE certification.

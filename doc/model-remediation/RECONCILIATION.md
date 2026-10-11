@@ -15144,3 +15144,64 @@ Production CI must execute those gates. All 44 new actor tests and the other foc
 tests passed in the full run too. Exact six-file create/update scope, canonical new
 Java headers, JDK-only contract, sole architecture export addition, preserved
 historical roadmap/reconciliation and whitespace checks PASS. No other files changed.
+
+
+## 2026-10-11 — Accepted HPR-P25-040 and registered HPR-P25-041 paired scoped permission export
+
+Owner Next selects one bounded registration on main
+`d96e420757f79aaf04e28b3f65c719f12e3029a0`, tree
+`9fdcffd5de33c1c924aa10d75bfc77cd7f9a4d58`. Exact-head Production #656/run38163429403
+and Docs #242/run38163429395 SUCCESS; job114540937978 reports 1,659 tests,
+zero failures/errors/skips, 365 reports. Full verification, runtime OpenAPI/snapshot/
+compatibility and actual PostgreSQL dictionary pass: 145 migrations, 470 JPA mappings,
+490 relations, no unresolved owners. HPR-P25-040 accepted for actor-only scope.
+
+Read AGENTS.md, current roadmap/reconciliation and Identity owner source before changes.
+Registered HPR-P25-041 after code/path collision checks. Current exact message
+`docs(identity): register paired topology permission export` updates only these two
+governance docs; exact future implementation message
+`feat(identity): export paired topology scoped permission checks` is NOT executed now.
+Future six-file allowlist and binding semantics/tests are fully registered in the roadmap:
+CREATE TopologyScopedAccessContract and TopologyScopedAccessQueryService; CREATE matching
+unit and PostgreSQL integration tests under Identity application/service; UPDATE these
+two docs. Identity contract.topology is already exported, so no guardrail mutation.
+
+Concrete source correction: Permission Java and V20261004_011 PostgreSQL regex require
+lower-case context:resource:action. Historical unregistered dotted policy proposal is
+superseded by `topology:station-revision:<action>` for author/publish/read-current/
+read-history/list-history/withdraw/reactivate/transfer. No permission seed, SQL or
+relaxed domain/schema constraint. Explicit CUSTOM `topology-company:<Party.id>` and
+FACILITY `<Facility.id>` scopes retain the approved paired-decision policy.
+
+Future JDK-only request contains operation/companyPartyId/facilityId only. Capture
+accepted currentActor once; both existing owner evaluator queries use its User.id,
+canonical action code, STATION_GRAPH_REVISION and the same facility resource ID.
+Company decision first, then facility only after company PERMIT; each non-null DTO
+requires permitted=true AND decision=PERMIT. Missing/invalid/inconsistent decisions
+deny; failures propagate; no role/claim/name/default-company/global-scope shortcut.
+No scope/actor supplied by caller, no cache or partial/evidence result exposed.
+
+The registered synthetic PostgreSQL test must exercise real owner evidence with exact
+CUSTOM/FACILITY grants, action/resource, revocation/time/status and two-company/facility/
+user isolation. 040 covers trusted authentication separately. No future tests ran now.
+Existing evaluator/global grant behavior is retained without added delegation semantics.
+These sequential current-evidence checks are not an atomic publication grant, ownership
+proof, full native-provider revocation proof or transfer decision across both owners.
+Cross-owner evidence linearization and live Facility/Party/epoch binding remain separate
+mandatory unregistered gates; no Topology caller, public API or lifecycle enabled.
+
+Registration source-complete, exact-head Docs acceptance PENDING; implementation Planned
+only after passing registration CI and separate Next. F1–F4/P2.5 OPEN, simulator/P3
+DEFERRED; prior gas-first/GZ2 own-engine steady/transient/operator-controlled direction,
+synthetic development and owner-supplied deployment calibration preserved. No version,
+release, deployment or closure. Verify exact two-document guarded publication and
+new-head Docs startup, then STOP without waiting or advancing.
+
+
+HPR-P25-041 registration publication validation: 10 documentation-validator and 10
+OpenAPI-validator unit tests PASS; canonical docs PASS (97 documents, 5,302 relative
+links, 24 modules, 13 P2 rows); offline OpenAPI PASS (263 operations, 244 paths,
+231 schemas); existing P1 closure evidence consistency PASS. Exact two-document
+scope, four absent future CREATE paths, existing source references, eight owner-valid
+permission-code formats, historical registration/reconciliation preservation and
+whitespace checks PASS. No Java/Maven/database execution or closure performed.

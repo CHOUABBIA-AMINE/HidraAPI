@@ -13,14 +13,15 @@
 
 **Product policy:** Hidra is universal, configurable and company/network/product independent. No real customer data, P&IDs, vendor curves or live SCADA are prerequisites for generic development. PLATFORM software testing uses explicit synthetic data; customer SITE commissioning is an entirely separate gate. Numerical simulation work is deferred.
 
-**Code discipline:** `HPR-P25-037` is implemented and CI accepted; `HPR-P25-038` policy design is accepted; `HPR-P25-039` Party eligibility is accepted; `HPR-P25-040` trusted Topology actor export is implemented; full exact-head CI acceptance is pending. Scoped permission/revocation and publication slices remain unregistered. Codes `F1-02` etc. are **planning references only** and MUST NOT be executed or treated as approved HPR codes before registration, exact commit message and exact create/update/delete file allowlists. Dependencies are minimum known gates, not blanket permission.
+**Code discipline:** `HPR-P25-037` is implemented and CI accepted; `HPR-P25-038` policy design is accepted; `HPR-P25-039` Party eligibility is accepted; `HPR-P25-040` trusted Topology actor export is CI accepted; `HPR-P25-041` paired scoped permission export is registered. Cross-owner revocation/linearization and publication slices remain unregistered. Codes `F1-02` etc. are **planning references only** and MUST NOT be executed or treated as approved HPR codes before registration, exact commit message and exact create/update/delete file allowlists. Dependencies are minimum known gates, not blanket permission.
 
 | Order | Code / planning reference | Task | Current status | Dependencies / gate | Track |
 |---|---|---|---|---|---|
 | 1 | HPR-P25-037 | Immutable station-graph PostgreSQL persistence | COMPLETED — exact-head Production #654 and Docs #237 SUCCESS | Accepted at `0868f2d17ce0eaefc53902ce36fa711681cd406b` after bounded #653 repair | F1 |
 | 2 | HPR-P25-038 / F1-02 preflight | Station revision publication/history policy and implementation decomposition | COMPLETED — policy Docs #239 SUCCESS | Accepted at `34222374ef5451144766bc07dfe5957d67b4c5fb` | F1 |
 | 2.1 | HPR-P25-039 | Party-owned eligibility contract exported to Topology | COMPLETED — exact-head Production #655 and Docs #240 SUCCESS | Accepted at `5a279f27cd3058c909629f78b67b417a7e607e18` | F1 |
-| 2.2 | HPR-P25-040 | Identity-owned trusted current human actor export to Topology | COMPLETED in source — full exact-head CI acceptance PENDING | Docs #241 SUCCESS; selected owner Next; exact six-file scope | F1 |
+| 2.2 | HPR-P25-040 | Identity-owned trusted current human actor export to Topology | COMPLETED — exact-head Production #656 and Docs #242 SUCCESS | Accepted at `d96e420757f79aaf04e28b3f65c719f12e3029a0` | F1 |
+| 2.3 | HPR-P25-041 | Identity-owned paired company/facility permission export | REGISTERED — implementation PLANNED / NOT SELECTED | Accepted 040; passing registration Docs CI; separate owner Next; exact six-file scope | F1 |
 | 2a | F1-02 implementation | Station revision history / transactional publication | PLANNED — not registered or implemented | HPR-P25-038 policy design; exact implementation allowlist and subsequent owner Next | F1 |
 | 3 | F1-03 | Company-scoped authoring, topology APIs and exact-history access | PLANNED — needs HPR registration | F1-02; authorization/API contracts | F1 |
 | 4 | F1-04 | Synthetic multi-company topology validation | PLANNED — needs HPR registration | F1-03; registered acceptance test envelope | F1 |
@@ -2054,3 +2055,180 @@ Production CI must execute those gates. All 44 new actor tests and the other foc
 tests passed in the full run too. Exact six-file create/update scope, canonical new
 Java headers, JDK-only contract, sole architecture export addition, preserved
 historical roadmap/reconciliation and whitespace checks PASS. No other files changed.
+
+
+## 2026-10-11 — Register HPR-P25-041 paired Topology scoped permission export
+
+### Selection and accepted evidence
+
+Owner Next selects the bounded registration following accepted HPR-P25-040.
+Current main `d96e420757f79aaf04e28b3f65c719f12e3029a0`, tree
+`9fdcffd5de33c1c924aa10d75bfc77cd7f9a4d58`;
+[Production #656](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38163429403)
+and [Docs #242](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38163429395)
+SUCCESS on that exact SHA. Production job 114540937978 reports **1,659 tests,
+zero failures/errors/skips**, 365 reports, and passes full verification, runtime
+OpenAPI/snapshot/backward compatibility and migrated PostgreSQL dictionary gates.
+PostgreSQL 16.15: 145 migrations, 470 JPA mappings, 490 relations, no unresolved
+owners; source bundle `78811d82a24ae8c1aee2cd3597f8d653c1bac78734ff07b7ec244701dcab4885`.
+This accepts trusted actor resolution only, not company membership or publication.
+
+AGENTS.md, current roadmap/reconciliation and Identity owner/evaluator/persistence
+source were recovered before mutation. HPR-P25-041 and four future CREATE paths
+were absent. Current exact registration message:
+`docs(identity): register paired topology permission export`.
+Current changes are restricted to this roadmap and reconciliation. No Java, grant,
+permission seed, SQL, domain, architecture guard or API implementation occurs here.
+
+### Source recovery and resolved boundary
+
+| Current source | Observation | Registered consequence |
+|---|---|---|
+| `src/main/java/dz/sh/hidra/modules/identity/application/contract/topology/TopologyCurrentActorContract.java` | Accepted no-argument trusted human User.id export | Resolve once; never accept caller-selected actor or technical name |
+| `src/main/java/dz/sh/hidra/modules/identity/application/port/in/EvaluatePermissionUseCase.java` and `src/main/java/dz/sh/hidra/modules/identity/application/service/IdentityAuthorizationApplicationService.java` | Existing evidence-backed owner evaluation; each call has its own time/transaction and optional decision persistence | Delegate two explicit scoped requests; no new evidence engine or atomicity claim |
+| `src/main/java/dz/sh/hidra/modules/identity/domain/value/AuthorizationScope.java` and `src/main/java/dz/sh/hidra/modules/identity/domain/value/ScopeType.java` | CUSTOM/FACILITY available; null scopeType defaults GLOBAL | Construct explicit CUSTOM and FACILITY, never null/GLOBAL requests |
+| `src/main/java/dz/sh/hidra/modules/identity/domain/model/Permission.java` and `src/main/resources/db/migration/V20261004_011__hmr_011_identity_permission.sql` | Both require `^[a-z0-9-]+:[a-z0-9-]+:[a-z0-9-]+$` | Supersede unregistered dotted proposal with valid colon-delimited codes |
+| `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaAuthorizationEvidenceAdapter.java` | Current user/permission, scope grants, provider/link/assertion and policy evidence; existing GLOBAL covering semantics | Reuse unchanged; no roles/details/company-label shortcut, no added delegation or membership semantics |
+| `src/main/java/dz/sh/hidra/modules/identity/domain/service/AuthorizationPolicyEvaluator.java` | DENY precedence, INDETERMINATE never permits | Require both DTO.permitted and decision PERMIT for each result |
+| `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/SpringAuthorizationContextAdapter.java` | Assertion bound to normalized principal; ordinary native bearer carries no trusted external assertion | Never reconstruct permissions from native token roles or cached claims |
+| `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java` | Identity application.contract.topology already explicitly exported by 040 | No architecture-file update needed or allowed |
+
+The historical HPR-P25-038 dotted `topology.station-revision.<action>` proposal
+was not implemented/seeded and is invalid against current owner source. The exact
+registered replacement is `topology:station-revision:<action>` below. This corrects
+syntax only, retaining distinct actions and paired company/facility decisions;
+no migration, relaxed regex, compatibility alias or permission provisioning.
+
+| Public Operation | Exact permission code |
+|---|---|
+| AUTHOR | `topology:station-revision:author` |
+| PUBLISH | `topology:station-revision:publish` |
+| READ_CURRENT | `topology:station-revision:read-current` |
+| READ_HISTORY | `topology:station-revision:read-history` |
+| LIST_HISTORY | `topology:station-revision:list-history` |
+| WITHDRAW | `topology:station-revision:withdraw` |
+| REACTIVATE | `topology:station-revision:reactivate` |
+| TRANSFER | `topology:station-revision:transfer` |
+
+### Registered next executable implementation — HPR-P25-041
+
+**Exact message:** `feat(identity): export paired topology scoped permission checks`.
+**Gate:** successful current registration exact-head Docs CI, separate owner Next,
+refreshed source/path checks, accepted HPR-P25-040. NOT selected/implemented here.
+
+| Operation | Exact authorized implementation path |
+|---|---|
+| CREATE | `src/main/java/dz/sh/hidra/modules/identity/application/contract/topology/TopologyScopedAccessContract.java` |
+| CREATE | `src/main/java/dz/sh/hidra/modules/identity/application/service/TopologyScopedAccessQueryService.java` |
+| CREATE | `src/test/java/dz/sh/hidra/modules/identity/application/service/TopologyScopedAccessQueryServiceTest.java` |
+| CREATE | `src/test/java/dz/sh/hidra/modules/identity/application/service/TopologyScopedAccessPostgresIntegrationTest.java` |
+| UPDATE | `doc/roadmap/ULTIMATE_ROADMAP.md` |
+| UPDATE | `doc/model-remediation/RECONCILIATION.md` |
+| DELETE | None authorized |
+
+Four new Java files use canonical AGENTS.md headers. No dependency, configuration,
+existing actor/authorization/evidence adapter/domain, architecture test, migration,
+production data/permission, dictionary, Topology consumer/controller/API mutation.
+
+Public JDK-only contract exposes `boolean permitted(Request request)` with nested
+`Operation` enum from the exact table and immutable `Request(Operation operation,
+String companyPartyId, String facilityId)`. Request rejects null operation and
+null/blank references with IllegalArgumentException; trims references consistently
+with owners. No user ID, arbitrary permission code, scope type, roles, claim,
+company default, epoch or authorization-model/JPA/framework type is accepted.
+The references are scope inputs, not evidence of Facility ownership or Party eligibility.
+
+New Identity application @Service implements this contract. Its public constructor
+injects non-null TopologyCurrentActorContract and EvaluatePermissionUseCase. Null
+request returns false without accessing either dependency. Resolve currentActor once;
+absent actor returns false without evaluator calls. Use that single trusted User.id
+for both evaluations, never resolve a second actor or use caller identity.
+
+Map Operation through closed exact mapping. Both queries use that permission code,
+resource type `STATION_GRAPH_REVISION`, resourceReferenceId = normalized facilityId.
+First query: explicit `AuthorizationScope(ScopeType.CUSTOM,
+"topology-company:" + normalized companyPartyId, null)`.
+Second query: explicit `AuthorizationScope(ScopeType.FACILITY,
+normalized facilityId, null)`. No GLOBAL/null-scope request, prefix parsing,
+username/owner equality, display-name or configured-claim fallback. The same target
+resource ID binds both permission queries; distinct scopes remain separate decisions.
+
+Evaluate company first; unless non-null result has permitted=true and decision=PERMIT,
+return false and do not evaluate facility. Facility result must satisfy the same
+conjunction. DENY, INDETERMINATE, null/inconsistent DTO deny; no debug/reason/claims
+or partial result is exposed. Dependency/infrastructure failures propagate, never
+become permits or silently synthesized denials. No caching/context mutation or
+new transaction/lock wrapper; owner use-case persistence behavior remains unchanged.
+Absent/inactive permissions deny through the owner evaluator; production permission
+seeding/provisioning is not authorized. Explicit eligible GLOBAL grants retain the
+existing evaluator's coverage behavior; they do not prove company membership.
+
+### Required future validation and acceptance
+
+Unit tests: all eight operation mappings and owner-valid Permission construction;
+exact actor/resource/scope/reference on both queries; trimming/invalid Request fields;
+null request and absent actor no evaluator; actor captured once/two different users;
+company-only/facility-only grant insufficient; each DENY/INDETERMINATE, null result,
+permitted=false+PERMIT and permitted=true+non-PERMIT deny; company rejection short
+circuits; evaluator/actor failures propagate; no implicit/global/default-company
+request; no actor/scope/permission field in public request; dependency null guards.
+Use real DTOs and synthetic IDs; capture actual queries, not implementation-only mocks.
+
+New PostgreSQL integration test uses synthetic isolated fixtures and real
+TopologyScopedAccessQueryService -> IdentityAuthorizationApplicationService ->
+JpaAuthorizationEvidenceAdapter -> AuthorizationPolicyEvaluator, with existing owner
+schema/migrations and explicit CUSTOM/FACILITY grants for the canonical permission.
+Use real current evidence, not stubbed permit results. Trusted actor stub isolates
+this pair export (actual authentication already covered by 040); assertion port null
+and persistence settings false isolate internal grants without credentials. Cover:
+both grants required; two companies/two facilities and two users remain independent;
+wrong action/resource, missing/inactive Permission, revoked/expired/future grant,
+explicit denial on either scope and inactive/locked User deny; revocation/status changes
+are observed on subsequent calls. Verify Permission regex/SQL accepts exact code.
+Use bounded synthetic grant time windows; same established isolated Testcontainers
+PostgreSQL pattern with disabledWithoutDocker=true, honestly report local skips and
+require exact-head CI execution. No concurrent atomic-revocation claim from these tests.
+
+Focused command:
+`bash mvnw -B -q -Dtest=TopologyScopedAccessQueryServiceTest,TopologyScopedAccessPostgresIntegrationTest,TopologyCurrentActorQueryAdapterTest,AuthorizationAssertionTrustTest,AuthorizationEvidencePostgresTest,ArchitectureGuardrailTest test`;
+then `bash mvnw -B -q clean verify`, existing docs/OpenAPI validators and exact
+six-file/header/export-unchanged checks. Runtime-only local proxy/Mockito agent
+adaptation may be disclosed without changing repository configuration. Production
+CI must run database integrations without skips and runtime OpenAPI/dictionary gates.
+
+### Deferred mandatory gates and present disposition
+
+A pair of sequential current-evidence evaluations is not atomic with later reads,
+JDBC publication or revocation. Both may observe different times/transactions.
+HPR-P25-041 is an owner permission-query prerequisite only: no ownership/epoch,
+Party/company eligibility, provider-link revocation proof for every native context,
+evidence generation/locks, transfer across both companies, delegation extension,
+publication/history/API or permission seed. No user-facing access is enabled by it.
+Topology must later bind live authoritative Facility.ownerPartyId and active Party;
+transfer requires both old/new company contexts and its distinct facility decision.
+Cross-owner linearization covering user/grant/policy/provider/Party/Facility changes
+remains a separately registered mandatory prerequisite before those operations.
+Never retain/use a returned boolean as later publication authority or concurrency proof.
+
+| Task | Current status | Next |
+|---|---|---|
+| HPR-P25-040 | Completed — Production #656 / Docs #242 SUCCESS | Retain trusted human actor-only boundary |
+| HPR-P25-041 registration | Completed in source; Docs acceptance PENDING | Publish exact two docs and stop |
+| HPR-P25-041 implementation | Planned / NOT SELECTED / NOT IMPLEMENTED | Passing registration Docs and separate owner Next select exact six files |
+| Cross-owner revocation/linearization and Topology owner/epoch/lifecycle/API | Planned / NOT REGISTERED / NOT IMPLEMENTED | Source-backed separate allowlists/gates required |
+| F1–F4/P2.5 | OPEN | No closure or PLATFORM/SITE acceptance |
+| Simulator/P3 | DEFERRED | Retain gas-first/GZ2 own-engine steady/transient direction |
+
+Current stage validation is docs-only; no future Java/Maven/database tests are claimed.
+Guarded direct-main commit, verify exact parent/tree/two paths and exact-head Docs
+startup, then STOP without waiting or advancing. Version/release, deployment,
+operator control, real-data calibration requirements and closure unchanged.
+
+
+HPR-P25-041 registration publication validation: 10 documentation-validator and 10
+OpenAPI-validator unit tests PASS; canonical docs PASS (97 documents, 5,302 relative
+links, 24 modules, 13 P2 rows); offline OpenAPI PASS (263 operations, 244 paths,
+231 schemas); existing P1 closure evidence consistency PASS. Exact two-document
+scope, four absent future CREATE paths, existing source references, eight owner-valid
+permission-code formats, historical registration/reconciliation preservation and
+whitespace checks PASS. No Java/Maven/database execution or closure performed.

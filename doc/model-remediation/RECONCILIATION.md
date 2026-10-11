@@ -12584,3 +12584,657 @@ PASS (10 documentation + 10 OpenAPI + 17 dictionary tests); documentation valida
 (95 documents, 5118 relative links); offline OpenAPI validation PASS (244 paths,
 263 operations, 231 schemas); whitespace check PASS. No application source changed,
 so the unchanged source is covered by CI #643's successful full Maven verification.
+
+## 2026-10-11 — Flexible operator-configured simulation roadmap realignment
+
+### Authorization, exact baseline and current execution gate
+
+The owner selected the attached “Ultimate Roadmap Realignment for a Flexible,
+Customizable, Extensible and Calibration-Ready Simulation Platform” prompt.
+This is one documentation-only governance amendment. Its supporting commit message
+is newly registered here, not asserted to have been previously registered:
+`docs(roadmap): define flexible multi-product simulation engine architecture`.
+Exact write scope: this roadmap and append-only
+`doc/model-remediation/RECONCILIATION.md`. All other files are read-only.
+No newly registered development work executes in this amendment.
+
+Live main before writing: `336599a1837230c5c396f1369ff2f03f23ca74d4`, tree
+`f4d82cbc260fb5563e0aa09e6f0c285dc834165c`. Documentation #209
+(run 38132354873) completed SUCCESS on that exact head. Latest production #643
+(run 38131248148) FAILED on source candidate
+`93539be7ccfce1ef779d596511a11240c4d33898`: its 1561 tests passed with zero
+failures/errors/skips, but database dictionary equality failed. The authentic
+144-migration catalog was reconciled by main 336599a; full production verification
+of that repaired head remains NOT VERIFIED. Documentation success is not a substitute.
+Production #642 passed on earlier source 3fcb2ea8d7f922d1942411316139eb80a0703188.
+No production workflow dispatch or production status change is made by this task.
+
+Read/reconciled authorities: AGENTS.md, PROJECT_STATE.md (current release section;
+older handoffs are historical), this roadmap and reconciliation; current Topology,
+Simulation, Assets, Custody, Telemetry and Workflow module documents; modular monolith,
+PostgreSQL/Flyway and API-boundary ADRs; coding policy; current source, migrations,
+REST controllers, tests and both CI workflows. The evidence index below links the
+specific source basis and qualifies what each layer proves.
+
+Execution state is preserved: P0/P1/P2 CLOSED within their existing evidence scope;
+P2.5 OPEN; P3 DEFERRED; HPR-P25-008A/B completed within their accepted synthetic scope;
+008C PENDING, compressor/valve sub-scope accepted, REGULATOR Slice A ACCEPTED,
+Slice B IN PROGRESS / acceptance PENDING, Slice C NOT AUTHORIZED; 008D–F and umbrella
+008 PENDING. C3E real operating-state qualification remains BLOCKED. GZ4 remains
+SYNTHETIC DEVELOPMENT_TEST_ONLY; later pilot history is not rewritten. Version remains
+0.7.0-SNAPSHOT. Existing 002C/002D delivery/capture and 009 calibration obligations remain.
+
+### Audit method and evidence limitations
+
+Classification vocabulary: IMPLEMENTED, PARTIAL, MISSING, BLOCKED, NOT VERIFIED,
+DEFERRED. IMPLEMENTED always names a bounded source capability; it does not imply
+complete operator provisioning, deployment or industrial fitness. PARTIAL means useful
+existing structures/workflows with unmet target requirements. MISSING means no matching
+capability was located in the inspected owning source, API or schema inventory, not
+absence from every possible external system. NOT VERIFIED applies to unexecuted
+workflow/acceptance evidence; BLOCKED retains an actual gate. DEFERRED applies to future
+product/model rollout. Source inspection and previously observed CI are separate evidence.
+No new application, SQL, external solver or field exercise was executed for this audit.
+
+Evidence aliases in this section resolve to exact source files in the index below.
+JPA entities indicate mapped storage; JDBC revision stores intentionally have no JPA
+entity and must not be assessed as absent storage for that reason. Referenced tests are
+existing verification mechanisms, not newly executed provisioning cases A–I.
+
+### Engineering data persistence and provisioning audit
+
+| Category | Classification and verified capability | Domain / persistence / migration evidence | Application/API, validation, history and tests | Remaining requirement / priority |
+|---|---|---|---|---|
+| Pipeline systems, pipelines, nodes, segments and connections | PARTIAL; system creation and hydraulic connected-revision representation exist | T01, T10, T12–T13; Topology initial schema and physical revision migrations | T05–T06 create a DRAFT system using an existing type; T01 validates unique oriented links/endpoints and undirected connectivity; T02–T04 append/retrieve/export exact revisions; X01–X03 | No verified complete create/save/read/revise operator workflow for arbitrary supported networks; cross-system association and active hydraulic eligibility need explicit contracts. Foundation priority, 018/020/023. |
+| Stations and facilities | PARTIAL; facilities have identity, kind, lifecycle and coordinates; installed equipment can reference them | T09, T14–T15 and facility/type-version/attribute tables in initial Topology schema | T07–T08 register a PLANNED facility and verify supplied Party existence; X13 covers the owner reference; T01 carries equipment incidence independently | Missing verified station-internal headers, series/parallel arrangements, per-unit configuration and effective station revisions as one operator workflow. Foundation priority, 020. |
+| Geographic coordinates | PARTIAL; facility/node latitude/longitude numeric(10,7), elevation numeric(12,4) mapped and stored | T13–T14; initial Topology SQL; facility domain T09 | T08 accepts coordinates; T09 has identity/status rules but no latitude/longitude range checks in its constructor; T22 emits supplied points. Storage scale is not survey accuracy | CRS, geodetic/vertical datum, range/unit rules, survey evidence, uncertainty and historical coordinate revisions need explicit design. Never infer WGS84 or accuracy from decimal scale. Foundation priority, 019. |
+| Route geometry and elevation profiles | MISSING as a complete authoritative profile capability; endpoints and segment kilometer points are PARTIAL | T12 has start/end kilometer points and length; T01 nodes carry elevation but no chainage/profile association; T22 uses two endpoint coordinates per segment | T23 provides map reads, not route/profile writes; X01 preserves current node/pipe revision facts but does not prove intermediate-profile capture | Ordered route points, engineering sections/elevation-by-chainage and revisioned survey evidence; separate derived solver mesh. Equal endpoint elevations must not erase intermediate hills. Foundation priority, 019. |
+| Pipe physical parameters | PARTIAL; catalogue nominal diameter/design pressure differ from immutable hydraulic inputs | T10 contains nominal diameter/unit and design pressure; T01 has explicit length, internal diameter, absolute roughness and node elevations; T02 and physical revision store persist these | T01 rejects absent/nonpositive length/internal diameter and negative roughness; X01/X02 verify revision invariants. No public physical-engineering revision editor located in T05 | Wall thickness/material/specification, physical section changes, constraint provenance/uncertainty and actual-vs-nominal diameter semantics require provisioned versions. Review Integrity measurements as separate owner evidence, not automatic design truth. Foundation priority, 018/019. |
+| Installed equipment identity and manufacturer/model linkage | PARTIAL; Topology equipment identity/location and Assets maintainable/model/installation records exist | T11/T15, A01–A03; initial Topology and Assets migrations | A04/A05 register/update maintainable assets through existing contracts; T01 preserves equipment edge IDs. An Assets write is not a Topology equipment-installation editor | Reconcile type → manufacturer Party → model → installed hydraulic unit → characteristic → operating settings. No duplicate asset registry; no verified public per-unit hydraulic provisioning. Foundation priority, 020. |
+| Equipment/facility custom attributes | PARTIAL storage; not a qualified engineering schema engine | T16–T20 have definition/type-version, unit code, required flag, text/number/JSON and validity periods; initial Topology schema | Existing JPA repositories store these shapes; T05 exposes system/facility operations, not full definition/value authoring. No complete attribute create/read/revision acceptance located | Enforce typed units, cardinality, applicability and required values; preserve origin/revisions; immutable characteristic linkage. JSON and number columns alone prove neither manufacturer-law support nor complete customization. Foundation priority, 020/021. |
+| Compressor/valve manufacturer characteristics | PARTIAL; immutable exact-fluid-bound characteristics and aggregate parameters implemented | S01/S03/S04; characteristic, parameter and qualification tables in equipment revision migration | S05/S06 resolve and qualify exact sources with Workflow; ordered maps, SI head/flow/pressure, speed/opening, definitions, times/limits; X04/X05/X15. S11 executes only named SYNTHETIC laws | Public import/edit/read/revise workflow, manufacturer/model lineage and broader validated families are missing. A supplied definition reference does not execute an arbitrary law. Foundation priority, 021/024. |
+| REGULATOR characteristic storage and configuration | PARTIAL; Slice B candidate source exists, full-head acceptance NOT VERIFIED | S02/S01/S03/S04 plus regulator format migration; independent characteristic V1 and aggregate V2 | Named synthetic capacity/configuration and exact bindings; X04/X06. T01/T03 accept physical V2; S08/S09 explicitly reject regulator numerical assembly | Finish existing Slice B exact-head CI/independent acceptance first; separately authorize Slice C numerical integration. Do not equate a stored setpoint with an executable regulator. Existing 008C priority. |
+| Product and fluid definitions | PARTIAL; GAS composition/method revisions and exact governance exist | C01/C02; immutable gas method/fluid/qualification tables in Custody migration | C03/C04 reattest exact approval/method evidence; C01 requires positive mole fractions summing exactly to one, component/method compatibility, positive P/T ranges and origin propagation; X10/X11. C05 has ticket/period/discrepancy operations, not a complete fluid authoring API | Versioned product provisioning, property calculations/provider identity, density/viscosity/Z/phase applicability and public historical workflow. H2/blends/liquids are not established by GAS enum or catalogue entries. Foundation priority, 022/024; future qualification 027. |
+| Historical engineering revisions and baseline | IMPLEMENTED for bounded immutable Topology/Custody/equipment source stores; PARTIAL for complete baseline | T01–T04, C01–C04, S01–S06; database digest/mutation guards. T21 general snapshot and S15 input snapshot exist | X01/X04/X10 exercise immutable replay/conflict/corruption; S07/S08 validate coherent source metadata/payload schema. Snapshot IDs/hash columns do not prove complete engineering freeze | Pin geometry/profile/station/product/characteristic/constraints plus overlay and model/provider/controls; resolvable historical revisions and explicit current-vs-historical governance semantics. Foundation priority, 023; reuse 002D. |
+| Operator-facing complete engineering provisioning | PARTIAL individual writes; full workflow NOT VERIFIED | T05–T08, A04–A05, C05, S12–S13 are actual application-facing surfaces | System/facility, maintainable asset and scenario/queue operations exist. No Case A round-trip for three stations/nine turbocompressors with full profiles and characteristics has been verified | Authorization, draft validation/diagnostics, save/read/revise/publish baseline, import/export round-trip and reference resolution must be designed as complete workflows. 018–023 precede dependent operational claims. |
+| Calibration data correspondence | PARTIAL trust/history building blocks; calibration dataset linkage MISSING | Q01/Q02 bind points and timestamps/units/quality to topology; Q03/Q04 own trusted reads; S07/S15 track input references | X12 tests trusted-reading export. Preserving a reading is not sensor-to-model correspondence, residual generation or independent calibration evidence | Time alignment, binding-effective history, sensor location/quantity/unit basis, baseline/model/run/dataset correspondence, residuals/uncertainty and retention need governed contracts. 026 refines existing 009/013/014. |
+
+The existing facility/node coordinate decimal declarations are checked against initial
+Flyway SQL, not inferred from Java types. Coordinate pairing/range/precision validation,
+node create APIs and surveyed accuracy are NOT VERIFIED as an end-to-end operator
+contract. No claim is made that a current GeoJSON line follows the real surveyed route.
+Topology's physical source constructor requires at least two nodes and one real pipe;
+equipment-only physical source acceptance is not silently assumed. Supported synthetic
+numerical union topology is a separate contract. These limitations remain visible.
+
+### Numerical and execution architecture assessment
+
+S10 provides actual Java-only synthetic tree, connected pipe-network and connected
+compressor/valve equipment-network entry points. Independent reference and adverse tests
+are X07/X08. It uses explicit SI inputs, pressure anchors, gas constants/properties,
+iterative controls, residual/conservation diagnostics and explicit failure/refusal behavior.
+It is a bounded isothermal ideal-gas implementation, not an industrial gas EOS,
+nonisothermal heat model, universal compressor model or liquid/transient solver.
+S11 selects named synthetic head/efficiency interpolation and forward valve tables,
+refuses incompatible methods/out-of-map inputs and does not silently extrapolate.
+Series/parallel/loop behavior is evaluated on supplied supported link graphs, not by
+manufacturer-specific Java branches. Do not change accepted reference values or methods.
+
+REGULATOR parameters in S02 are expressly SYNTHETIC-only; S08 rejects their physical
+assembly and S09 rejects their numerical union integration. Slice C remains outstanding.
+Pumps, reciprocating/centrifugal/driver-specific industrial behavior, transient evolution,
+liquid hydraulics, multiphase methods and qualified hydrogen/blend behavior are MISSING
+as verified implementations in this numerical scope, with future rollout DEFERRED.
+Boundary/initial-state records describe inputs; they do not prove a transient solver.
+Large-network performance acceptance is NOT VERIFIED; no capacity claim follows from tests.
+
+S14 currently exposes only `boolean available(String referenceId)`. It is not an
+execution-provider adapter. S12 creates model/scenario metadata and queues a run after
+reference/eligibility checks; its queue method saves QUEUED state and does not invoke S10.
+S13 exposes these operations, not a completed interactive engine execution lifecycle.
+S16 stores model-version/solver-profile metadata but lacks an executable applicability
+registry. Full manual execution is PARTIAL infrastructure; proactive dispatch, governed
+scheduled/event runs, parameter sweeps, cancellation/resource isolation and normalized
+provider execution remain MISSING in this inspected path. Existing 008F retains execution
+integration; 025 adds its complete-mode design requirements, without replacing its meaning.
+
+### Binding target architecture decisions
+
+1. **Operator configuration authority.** Authorized operators author supported engineering
+   definitions and effective revisions. Network/station/unit/product changes do not require
+   solver source changes where a verified model already supports the supplied inputs.
+   A new physics family remains reviewed development with independent verification.
+2. **Canonical ownership.** Topology owns physical connectivity, locations, installed
+   hydraulic associations, route/profile and effective station configuration. Assets owns
+   maintainable-asset identity/lifecycle evidence and model/manufacturer references; Party
+   retains manufacturer identity. Custody currently owns canonical gas product/method
+   revisions. Simulation owns the existing numerical characteristic revision store,
+   operating scenario overlays, input capture, calculation and result semantics.
+   No transfer of those stores is authorized; 018/021 reconcile operator manufacturer
+   source metadata and references without duplicating canonical records. Telemetry owns
+   raw/trusted measurements and their binding/quality; Workflow owns actual approvals.
+3. **Engineering representation before dependent execution.** Geometry, chainage/profile,
+   section parameters, equipment incidence, product revision and supplied constraints
+   become qualified baseline prerequisites for any operational capability using them.
+   Current accepted synthetic numerical development remains possible with complete
+   explicitly synthetic fixtures; missing field data is not a blanket development blocker.
+4. **Three distinct representations.** Physical geographic route and surveyed evidence;
+   engineering sections/elevation profile; derived numerical mesh with transformation
+   identity/hash and error/refinement evidence. Solver discretization cannot overwrite or
+   impersonate survey geometry. Equal endpoint heights do not imply a flat profile.
+5. **Three separately testable flexibility levels.** Configuration: validated supported
+   units/maps/boundaries/network/products from data. Model: versioned reviewed behavior,
+   property and numerical extensions behind stable contracts. Execution: one qualified
+   frozen request/result architecture for interactive, comparative, batch, sweep,
+   scheduled/event and optional provider modes. No arbitrary user scripts or executable
+   equations; a declarative mechanism requires a separate bounded reviewed design.
+6. **Independent unit identity and typed characteristics.** Type, manufacturer, model,
+   installed unit, characteristic revision, operating setting, proposed replacement and
+   behavior model remain separate. Preserve curve axes, units, reference conditions,
+   provenance, validity/interpolation domain and limits. Field-characterized, estimated,
+   synthetic and calibrated parameters cannot masquerade as manufacturer certificates.
+7. **Reproducibility with explicit governance.** Freeze exact owner revisions/digests,
+   effective times, source evidence and qualification, scenario overlay, provider/model
+   versions, initial/boundary data and solver controls. Reuse existing source stores and
+   002D capture. Preserve bytes across version extension. Retrieval of immutable history
+   and permission to execute that history are distinct; current withdrawal behavior is
+   not rewritten into historical authorization by this roadmap.
+8. **Applicability before calculation.** A registry declares stable family/version,
+   equipment/products/phases/regimes, required inputs/units/reference basis, validity,
+   numerical strategy, verification/accuracy evidence, diagnostics and resource/mode
+   limits. Preflight reports unmet requirements together where safe; never invent pipe
+   diameter, curve, boundary or property values to obtain convergence. Convergence is
+   separate from physical feasibility, data qualification and safety approval.
+9. **Scenario isolation.** Alternative product, equipment, routing, dispatch, setpoint or
+   capacity proposal is a separately versioned overlay. Cloning never edits installed
+   assets or historical product/manufacturer data. Retain exact earlier baseline references.
+10. **Advisory proactive execution.** Qualified triggers share manual assembly/applicability
+    and result contracts. Enforce freshness, time coherence, idempotency, quotas, concurrency,
+    cancellation, bounded retry and notifications. No automatic OT/SCADA actuation.
+11. **Calibration separation.** Physical correction, what-if variation, numerical
+    calibration and industrial qualification are separate governed processes. Calibration
+    has its own eligible parameter set, dataset/derived revision, uncertainty/validity and
+    reproducible method; never changes original surveys, dimensions, certificates or runs.
+12. **Internal/external coexistence.** Internal mathematical implementation remains
+    independent. External providers are optional candidates, never automatic substitutes.
+    Numerical code remains free of REST/JPA/telemetry/vendor object graphs. Preserve
+    modular-monolith, Java 21, owner ports and strict architecture boundaries.
+
+### External/reference provider research disposition — checked 2026-10-11
+
+The following primary pages were consulted; vendor/project descriptions establish
+candidate scope, not HidraAPI interoperability, installed entitlements or numerical acceptance.
+The earlier three-engine reference study remains unexecuted research; its comparison
+pins are historical candidates, not silently upgraded dependencies.
+
+| Candidate | Evidence-backed research role | Primary source and outstanding eligibility |
+|---|---|---|
+| SIMONE | Potential gas-network execution/reference provider; vendor describes steady/transient modes and an input/output/execution API | https://www.liwacom.com/index.php ; obtain exact licensed version, interface specification, units/model transformation and execution/cancellation evidence before adapter selection. No installed license/API access verified here. |
+| PIPEPHASE | Potential pipeline-study reference; adapter suitability NOT VERIFIED | https://www.aveva.com/en/perspectives/blog/upgrade-from-pipephase-to-aveva-process-simulation/ ; vendor identifies Pipeline Network Design as PIPEPHASE and discusses migration to Process Simulation. Do not conflate their interfaces or treat the newer product as an installed PIPEPHASE replacement. Old datasheet fetch returned 404; exact-version technical/API/license evidence remains required. |
+| Synergi/SPS | Potential independent gas/liquid steady/transient hydraulic reference/provider | https://www.dnv.com/services/synergi-pipeline-simulator/ ; vendor states single-phase gas/liquid core and no transient multiphase simulation. HidraAPI adapter interface/version/entitlement and benchmark equivalence unverified. |
+| NeqSim | Thermodynamic/property reference and conditional reviewed provider candidate | https://github.com/equinor/neqsim and https://github.com/equinor/neqsim/blob/master/LICENSE ; Java fluid/process project with Apache-2.0 project license. Exact artifact/native/dependency licenses, composition/EOS/units, isolation and model validity must be checked. |
+| pandapipes | Independent hydraulic-network benchmark; conditional provider research | https://pandapipes.readthedocs.io/en/latest/pipeflow/pipeflow_procedure.html ; node/branch hydraulic calculation and optional heat transfer. Fluid library entries do not qualify hydrogen or liquids for HyFlo; pin version/model/API/pressure convention and license. |
+| DWSIM | Independent process/property/equipment benchmark; conditional automation candidate | https://dwsim.org/wiki/index.php?title=Automation ; official COM/.NET automation describes flowsheet access. Exact-version runtime/platform, license and equipment method equivalence remain gates; no conservative transient pipeline model inferred. |
+
+The provider-neutral design under 024 must specify capability discovery, exact input
+transformation/version/hash, SI normalization (absolute/gauge pressure and reference
+flow basis included), product/model applicability, solver settings, start/status/result,
+timeout/cancellation semantics, diagnostics, resource isolation, normalized results,
+raw-output references and reproducibility. No floating provider selection or fallback
+that conceals a changed model. Benchmark cases freeze independent expectations before
+execution, compare only like physics and record NONCOMPARABLE where necessary.
+No dependency, package, engine, external service or executable experiment is installed.
+
+### Dependency realignment and foundation milestones
+
+This amendment refines open obligations and adds bounded future design/preflight tasks.
+It does not reopen accepted work or authorize an existing later task. New codes
+HPR-P25-018 through HPR-P25-027 were collision-checked against both execution memories
+before writing. They extend Phase 2.5; they are not a new release or Phase 3 selection.
+
+| Milestone | Required deliverable and honest completion boundary | Relationship to existing work |
+|---|---|---|
+| F1 — Engineering provisioning | Implemented and verified operator authoring/read/revision for supported topology, profiles, sections, stations, units, manufacturer data and product inputs | 018–022 design the missing paths; subsequent separately registered implementation supplies them; refine 002 inputs and 003 visualization. Documentation alone cannot close F1. |
+| F2 — Reproducible baseline | Exact retrievable owner revisions plus scenario/model/control freeze; compatibility and historical cases B/I | 023 design reuses 002C/002D stores/capture; no competing snapshot system. F1 completeness gates corresponding real run input. |
+| F3 — Flexible models/providers | Implemented registry/applicability/extension contracts with an independently verified selected internal model; external adapter optional | 024 designs extension; preserve 008A–F; future product-specific laws require their own scope and evidence. Registry presence alone is not physics qualification. |
+| S1 — Verified numerical capability | Complete 008C regulator scopes, then separately admitted 008D transient and 008E independent verification within declared synthetic scope | F1/F2 do not retroactively invalidate accepted synthetic 008B or compressor/valve fixtures. Full profiles/real inputs required only for claims depending on them. |
+| E1 — Manual and proactive execution | Implemented common immutable request/result and actual lifecycle for enabled modes; policy/freshness/idempotency/budget cases | Existing 007/008F/008 integration; 025 mode design and 004/005 qualified-source/state dependencies. Synthetic manual/batch cases can precede live telemetry. |
+| C1 — Calibration readiness | Versioned measurement-to-model datasets and reusable predictions/diagnostics with immutable source history | 026 refines 009/013/014; readiness is not a fitted algorithm or industrial accuracy claim. |
+| Q1 — Product/mode qualification | Per-product/mode evidence and cases A–I actually executed, with explicit unsupported coverage | 027 designs verification; 009/016/017 retain acceptance ownership. No automatic universal gas/H2/liquid coverage. |
+
+Ordering: preserve immediate 008C Slice B acceptance → separately selected Slice C
+preflight/integration. No new task interrupts that track automatically. Once the repaired
+baseline is verified and the owner selects foundation work, 018 establishes ownership
+and concrete implementation envelopes. 019 and 020 are compatible independent designs
+under 018; 021 follows equipment identity design; 022 follows product-owner design in
+018. 023 follows 019–022 designs and registers the baseline/capture implementation scope.
+024 follows required input/characteristic/product contracts; 025 follows 023/024 and
+preserves 008F/007 execution prerequisites; 026 follows baseline/execution design with
+Telemetry correspondence; 027 follows all these designs and existing numerical design.
+Actual operational execution gates require implemented/verified prerequisite milestones,
+not just completion of the corresponding design documents. This breaks no synthetic
+solver development dependency and introduces no cycle with live-state estimation.
+
+Current 008A/B completed statuses, 008C sub-scope meanings and 008D/E/F exact messages
+remain unchanged. 002D gains complete baseline requirements only for new supported
+engineering data; existing verified source-store behavior is reused. 003 must render
+qualified geometry without confusing endpoints with surveyed routes. 004/005 and C3E
+remain qualified telemetry/state gates. 009 keeps calibration/physical validation;
+013/014 keep outcome/learning governance. 017 closure is prospectively extended to
+account for 018–027 design dispositions, implemented F1/F2/F3/E1/C1 requirements and
+Q1 acceptance within explicitly selected coverage. Deferred coverage requires explicit
+owner disposition; no retrospective closure/status rewrite is made.
+
+### Newly admitted bounded task registry
+
+All ten tasks below initially have **PLANNED — NOT SELECTED** status and are **Doc / Design
+Preflight**, because new schema/API/owner paths have not yet been settled. Their exact
+intended write scope is ONLY `doc/roadmap/ULTIMATE_ROADMAP.md` and append-only
+`doc/model-remediation/RECONCILIATION.md`. This is a closed allowlist for each task,
+not permission to mutate the owner source paths in its evidence. No new file is allowed.
+Each design must output collision-checked, individually executable implementation codes,
+exact file/test allowlists, forward migration filename where needed, acceptance gates and
+exact commit messages before any later implementation is selected. This bounded output
+is required, rather than inventing Java/schema paths in this governance amendment.
+
+Common validation/CI contract **D** for every task: run maintained documentation,
+OpenAPI and dictionary validator unit suites, canonical docs, offline OpenAPI snapshot,
+P1 closure and whitespace checks; inspect full diff/two-file scope; protect main with
+expected-head update; verify exact-head Documentation CI starts and stop. Completion
+requires observed successful applicable exact-head Documentation CI before a next selection.
+Do not claim Maven/numerical/PostgreSQL/runtime success from D. Later code envelopes
+must require appropriate Java 21 focused/full Maven, architecture/API compatibility,
+full-chain PostgreSQL/Flyway and authentic dictionary reconciliation gates when schema
+changes; numerical envelopes additionally need independent frozen references/adverse
+cases and declared tolerances. Common history contract **H**: preserve existing source
+formats/digests, fixtures and accepted semantics, never rewrite applied migrations,
+never silently requalify/replace history, and use forward version extension plus replay
+and upgrade tests. Common exclusion **N**: no implementation, dependency install,
+operational data/approval invention, release/PR/branch/deployment, OT actuation or newly
+selected implementation task. D/H/N apply independently to each row and detail below.
+
+| Code | Title / owner | Dependencies (design sequence; implementation gates remain separate) | Exact commit message | Initial status |
+|---|---|---|---|---|
+| HPR-P25-018 | Engineering provisioning and canonical ownership preflight / Topology, Assets, Custody, Simulation | Verified repair-head baseline; owner selection after active 008C acceptance disposition | `docs(twin): define engineering provisioning contracts` | PLANNED — NOT SELECTED |
+| HPR-P25-019 | Geospatial route/profile and pipe engineering preflight / Topology | 018 | `docs(topology): define revisioned route and elevation profiles` | PLANNED — NOT SELECTED |
+| HPR-P25-020 | Station/unit/attribute provisioning preflight / Topology and Assets | 018 | `docs(topology): define station and installed unit provisioning` | PLANNED — NOT SELECTED |
+| HPR-P25-021 | Manufacturer characteristic provisioning preflight / Simulation with Assets/Party/Topology references | 020; existing 008C source disposition | `docs(simulation): define manufacturer characteristic provisioning` | PLANNED — NOT SELECTED |
+| HPR-P25-022 | Multi-product and property-method provisioning preflight / Custody and Simulation | 018; existing Custody gas contract | `docs(custody): define multi product property provisioning` | PLANNED — NOT SELECTED |
+| HPR-P25-023 | Engineering baseline/scenario freeze preflight / Topology, Simulation | 019–022; existing 002C/002D contracts | `docs(simulation): define reproducible engineering baselines` | PLANNED — NOT SELECTED |
+| HPR-P25-024 | Model registry and provider-neutral extension preflight / Simulation | 021–023; existing 008A/B/C numerical boundaries | `docs(simulation): define model and provider extension contracts` | PLANNED — NOT SELECTED |
+| HPR-P25-025 | Common manual/proactive execution preflight / Simulation, Telemetry | 023/024; existing 004/007/008F dependency design | `docs(simulation): define governed execution modes` | PLANNED — NOT SELECTED |
+| HPR-P25-026 | Calibration dataset/correspondence preflight / Telemetry, Simulation; Analytics consumer | 023/025; existing 009/013/014 obligations | `docs(simulation): define calibration readiness contracts` | PLANNED — NOT SELECTED |
+| HPR-P25-027 | Per-product qualification and end-to-end acceptance design / Simulation and owning engineering contexts | 018–026; existing 008A–F/009/016 acceptance design | `docs(twin): define engineering acceptance and product qualification` | PLANNED — NOT SELECTED |
+
+#### HPR-P25-018 — Complete supported engineering authoring before operational use
+
+Objective/justification: turn the PARTIAL E2E provisioning audit into explicit owner
+workflows without rebuilding existing system/facility/asset writes. Evidence: T01/T05–T11,
+A01–A05, C01–C05, S01/S07/S12. Cross-module contracts: Topology canonical identity,
+Assets lifecycle/model, Party manufacturer, Custody product, Simulation characteristics
+and Workflow approval. Functional requirements: authorized draft, completeness diagnostics,
+save/read/revise, applicable effective selection and controlled import/export.
+Data model: category → owner → immutable revision → provenance/units/validity/uncertainty;
+separate supplied unknowns from required run inputs. API: identify existing reusable
+requests and concrete missing create/read/revision contracts with authorization/error
+semantics. Persistence: transaction/uniqueness/reference and immutable-history plan,
+forward migrations only where gaps require. Acceptance: specify Case A lossless round-trip
+and H missing-data diagnostics, rollback/replay/concurrency, unauthorized authoring and
+foreign-owner lookup failure. Numerical scope: no computation; completeness is not model
+fitness. Output implementation envelopes per owner instead of a broad cross-module batch.
+D/H/N and the exact two-document scope apply; exclude importing actual private datasets.
+
+#### HPR-P25-019 — Authoritative route, geodesy and section/profile preservation
+
+Objective/justification: remedy endpoint-only route representation without confusing
+map geometry and mesh. Evidence: T09–T14/T22/T23 and physical revision codec T03.
+Owner/contracts: Topology geometry/profile revision queries; Simulation transformation
+consumer; Integrity evidence read references only where applicable. Functional/data:
+ordered geographic points, CRS/datum/vertical datum, units, survey/uncertainty/source dates,
+chainage origin/order, section boundaries and supplied internal diameter/wall/material/
+roughness/constraints; distinguish geometric length and engineering supplied length.
+API: draft/save/read/revise/import profile with precise validation and historical queries.
+Persistence: versioned profile/section children, reference integrity, atomic append,
+no geometry/coordinate migration inferred in this task. Validate range, datum transformations
+and round-trip precision using declared test sources; reject unknown CRS/incompatible
+units, reversed/duplicate/out-of-range chainage, missing section data and inconsistent
+geometry. Numerical acceptance design: Case E equal endpoints/nonflat profile; derived
+mesh lineage/refinement and conservation obligations for the later selected method,
+without inventing survey accuracy or numerical tolerances. Cases B/I preserve old
+profile bytes and earlier input. D/H/N; exclude adopting PostGIS or a geometry library
+without a separately reviewed dependency decision.
+
+#### HPR-P25-020 — Independent installed units and station hydraulic configurations
+
+Objective/justification: represent three stations with nine individually configured
+units and real headers/series/parallel incidence without reducing a station to one
+compressor. Evidence: T01/T11/T15–T20 and A01–A05. Owners/contracts: Topology hydraulic
+identity/configuration; Assets maintainable/model/lifecycle linkage; Party manufacturer
+existence; Simulation read-consumer. Functional/data: unit identity, facility, type,
+manufacturer/model, installation/retirement, source/limits/characteristic references;
+station header/internal path state and effective configuration; typed attribute schemas
+with dimensional/required-value semantics. API: exact authorized station/unit and
+attribute definition/value authoring/read/revision contracts; no owner bypass.
+Persistence: reconcile existing tables first, version only missing config, enforce typed
+values and identity/reference constraints atomically. Acceptance: Case A independent-unit
+round-trip and I replacements/history; reject duplicate identity, wrong family/model,
+invalid lifecycle, dangling hydraulic endpoints, required-attribute/unit errors and
+conflicting concurrent changes. Numerical acceptance: preserved oriented edge identities
+and supported series/parallel/isolated state preflight, not industrial machine equations.
+D/H/N; exclude duplicating maintainable assets or altering existing Assets lifecycle policy.
+
+#### HPR-P25-021 — Manufacturer evidence as reusable versioned engineering data
+
+Objective/justification: expose controlled compatible characteristic provisioning while
+keeping current S01–S06 stores and immutable bytes. Evidence: S01–S06/S11, A01/A02,
+X04–X06/X15. Owners/contracts: Simulation characteristic store; Assets/Party manufacturer
+model identity; Topology installed association; Custody exact-fluid method; Workflow exact
+approval. Functional/data: independent characteristic revisions, maps/axes/units/reference
+states, definitions/interpolation validity, power/driver/speed/temperature/pressure/product
+limits and technical-document evidence; original manufacturer, field-characterized,
+estimate, synthetic and calibrated origins remain explicit. API: compatible import,
+validation diagnostics, save/read/revision and controlled qualification; no arbitrary
+formula payload. Persistence: reuse immutable append/query and independently stored
+characteristics; add source metadata only through a settled forward version envelope.
+Acceptance: Case C compatible second-manufacturer map without solver edits, no installed
+asset change; cases B/I history, wrong-fluid/method/reference refusal, malformed/flat/
+nonmonotonic map handling per selected law, out-of-map refusal, forged approval and
+partial-insert rollback. Numerical obligations: frozen independent interpolation/endpoint/
+derivative and limit tests for each new supported family; manufacturer data is not
+industrial machine-law validation. D/H/N; no actual compressor certificates requested as
+a mandatory development input; no real-source promotion of synthetic regulator data.
+
+#### HPR-P25-022 — Product definitions and property methods with explicit applicability
+
+Objective/justification: extend supported product inputs without pretending GAS metadata
+implements all fluid physics. Evidence: C01–C05, S07/S08/S10 and X10/X11.
+Owners/contracts: preserve Custody canonical gas composition/method qualification;
+Simulation consumes explicit immutable property/model outputs. Settle new product-owner
+coverage without transferring existing gas records. Functional/data: product classification,
+composition/basis, source lab data and dates, method/version, reference P/T, phases,
+validity, density/viscosity/Z and uncertainty when supplied/calculated; no constant-data
+substitute for a condition-dependent model. API: authorized versioned product/method
+create/read/qualification and full preflight diagnostics. Persistence: preserve gas V1
+and exact-digest approval; new kind/format only through a registered compatible envelope.
+Acceptance: case D hydrogen switch preserves natural-gas history and either executes a
+qualified family or lists missing applicability; wrong fractions/basis, units, phases,
+P/T range and unknown method fail. Numerical obligations: independent property states
+and model-equivalent gas/H2/blend/liquid references before any capability claim;
+no model is selected here. D/H/N; product design may proceed on explicit synthetic data;
+operational property qualification still requires actual evidence.
+
+#### HPR-P25-023 — Baseline manifests, scenario overlays and historical retrieval
+
+Objective/justification: extend reusable sources and 002D capture into a complete
+engineering baseline without another competing snapshot store. Evidence: T01–T04/T21,
+C01–C04, S01–S08/S15 and X01/X04/X10/X14. Owners/contracts: exact Topology geometry/
+station/network, Custody fluid, Simulation characteristics/overlay/models, Telemetry
+operating source and Workflow governance. Functional/data: canonical ordered baseline
+references/digests, effective/captured times, source origin/evidence, supported constraint
+and profile revisions; immutable scenario overlay and execution freeze includes provider/
+model/controls/boundary schedules and measurement watermark. API: draft validation,
+freeze/read/clone/history, exact revision selection and execution-eligibility diagnostics.
+Persistence: atomic capture/index references, retention/retrievability and corruption
+checks; retain existing withdrawn-governance semantics while keeping historical facts
+accessible through authorized read contracts. Acceptance: B/I byte-exact historical
+reproduction after later changes; never substitute latest; reject dangling/digest-conflict/
+wrong-effective-time captures, synthetic laundering and overlay changes to installed
+assets; crash/partial commit and competing freeze replay cases. Numerical: matching frozen
+inputs/model yields reproducible contract within declared platform tolerance, not universal
+bit-identical floating results across providers. D/H/N; no existing source digests rewritten.
+
+#### HPR-P25-024 — Configurable models and eligible internal/external providers
+
+Objective/justification: separate supported data parameterization, reviewed model additions
+and execution providers; S14 availability is not execution. Evidence: S09–S11/S14/S16,
+X07/X08, external primary pages above and earlier three-engine research amendment.
+Owner/contracts: Simulation-owned neutral immutable request/result and property/behavior
+contracts; infrastructure contains optional vendor adapters. Functional/data: registry
+identity/family/revision, units/schema/products/phases/regimes, required inputs/reference
+conditions, validity, numerical strategy, verification errors, diagnostics/budgets/modes;
+capabilities and deterministically pinned selections, not silent fallback. API: describe
+eligible capabilities/configurations; no vendor graphs or operator executable scripts.
+Persistence: model/profile metadata compatibility and exact engine/transform/artifact
+references; do not persist mutable solver graphs as engineering truth. Acceptance:
+unsupported product/equipment/mode/ref condition rejected before execution; provider
+unavailable/license absent/timeout/crash/malformed result all explicit; parameter sweeps
+change supported supplied values without Java branches. Numerical: independent analytical/
+manufactured/reference matrix, dimensional normalization and NONCOMPARABLE classification;
+freeze expected tolerances before running. D/H/N; external integration remains optional,
+requires exact artifact/license/SBOM/isolation and separate closed implementation scope;
+no change to accepted internal synthetic laws or compulsory external benchmark before 008D.
+
+#### HPR-P25-025 — One validated request lifecycle for manual and proactive modes
+
+Objective/justification: replace queue-only assumptions with specified actual execution,
+while retaining 007/008F integration meanings. Evidence: S12–S16, S07/S08, Q01–Q04, X09/X12.
+Owner/contracts: Simulation execution/scenario/results; Telemetry trusted trigger data;
+Workflow/identity policy, notifications through established owners. Functional/data:
+interactive, compare, batch/sweep, schedule and qualified event modes share frozen
+assembly/preflight/result semantics; source freshness, active revision resolution,
+trigger evidence, idempotency/dedup, quotas, concurrency, cancellation, bounded retries,
+status/history and diagnostics. API: authorized start/status/cancel/result/compare and
+policy-managed triggers, no OT endpoint. Persistence: run/attempt/trigger lineage,
+atomic admission and crash/recovery/idempotency plan using existing run structures.
+Acceptance: G same scenario/controls yields consistent manual/proactive input digests and
+results within selected numerical contract; stale/late/missing trigger, duplicate event,
+withdrawn qualification, canceled/orphaned run, exhaustion and provider outage handled.
+Numerical: preserve convergence/feasibility/qualification distinctions and input immutability.
+D/H/N; synthetic modes can be verified without live SCADA; operational proactive admission
+requires F1/F2/F3, qualified source/state and selected provider evidence, never OT actuation.
+
+#### HPR-P25-026 — Calibration-ready correspondence without changing asset facts
+
+Objective/justification: make future physically interpretable calibration possible from
+retrievable qualified source data. Evidence: Q01–Q04, S07/S15, C01/S01 and existing
+009/013/014 ownership. Owners/contracts: Telemetry measurement/binding/quality history;
+Simulation predictions/model/run/parameter lineage; Analytics may consume datasets.
+Functional/data: sensor/quantity/location and effective binding, unit/reference basis,
+source timestamps/time alignment, engineering baseline, initial/boundary inputs,
+observations/predictions/residuals/uncertainty, dataset revision and parameter provenance.
+API: authorized reproducible dataset/prediction retrieval and eligibility diagnostics;
+calibration-derived revisions separate from installed facts and certificates.
+Persistence: immutable correspondence/dataset lineage and retention plan, no raw-reading
+or certificate mutation. Acceptance: F retrieval after engineering/sensor changes;
+reject ambiguous binding/time basis, stale/poor/unqualified readings and unit mismatch;
+prevent overwriting original source/history. Future algorithm obligations: parameter
+bounds, sensitivity/identifiability, objective, independent validation holdout, uncertainty/
+residual diagnostics, overfitting checks and model-version comparisons with reproducible
+method. Numerical accuracy/fit is not claimed by readiness or AI training. D/H/N;
+actual deployment calibration data remains later owner-provided evidence, not a blocker
+for synthetic readiness contract development.
+
+#### HPR-P25-027 — Independent end-to-end engineering and product/mode acceptance
+
+Objective/justification: prevent design/storage/CI counts from closing industrial capability.
+Evidence: complete audit above, X01–X15 and retained 008/009/015–017 acceptance gates.
+Owners/contracts: Topology/Assets/Custody/Telemetry/Workflow verify their own authoring/
+qualification; Simulation verifies inputs/calculation; operator decision remains human.
+Functional/data: product × phase × equipment family × model/provider × steady/transient ×
+execution-mode coverage register, raw reproducible cases A–I, exact baseline/provenance,
+unsupported disposition and rollout sequence. API: verification through actual supported
+write/read/revision/run contracts; no new API in this design. Persistence: full-chain
+upgrade/replay/history/data-loss and append-only checks, authentic generated dictionary.
+Acceptance: independently derive expectations/units/tolerances before execution; retain
+raw outputs/errors, convergence/residual/conservation, refinement/replay and large-network
+budget evidence; numerical success separate from field/safety qualification. Future
+rollout order: synthetic existing gas compatibility, selected qualified natural gas,
+separately reviewed hydrogen/blends and liquids/pump models as requirements justify;
+multiphase only by a distinct qualified model. Missing license/model/data refuses
+execution, not an invented pass. D/H/N; this is acceptance design, not actual case execution
+or phase closure. Split future numerical/property/provisioning envelopes when ownership
+or method uncertainty makes one implementation too broad.
+
+### Independent future acceptance cases A–I
+
+| Case | Required observable behavior and preserved evidence | Blocking prerequisites for the claim |
+|---|---|---|
+| A — Full operator provisioning | Author an entirely new supported network, three compressor stations and three independently configured turbocompressors per station; coordinates/profile/pipe parameters/maps/product/boundaries round-trip without loss. Save/read/revise through actual authorized application APIs, not direct seed SQL | Implemented F1/F2; 019–023 design outputs and their separately admitted implementations; no simulation pass inferred from storage |
+| B — Historical baseline reproduction | Change one characteristic revision; earlier exact baseline/input still resolves original bytes/digests, rather than latest revision | F2; historical qualification/execution eligibility stated separately |
+| C — Alternative manufacturer scenario | Compatible proposed compressor/model/map changes scenario results where supported, requires no solver code edit, leaves installed equipment unchanged | 020/021/023/024 implemented within selected behavior family; numerical compatibility evidence |
+| D — Hydrogen conversion study | Clone gas scenario; retain old product and baseline; execute only with verified applicable product/property/equipment/hydraulic models, otherwise report every unmet preflight requirement without misleading results | 022/024, F2/F3 and per-product Q1; no hydrogen support inferred from product name |
+| E — Nonflat equal-endpoint pipeline | Store ordered intermediate chainage/elevation; reproduce original profile and derived mesh lineage; selected model uses profile or explicitly refuses unsupported geometry | 019/F2; applicable discretization and refinement evidence |
+| F — Calibration readiness | Retrieve matching frozen engineering/model/input/prediction and qualified observation/time/binding/quality records, dataset identity and residual/uncertainty provenance without changing originals | 026/C1; algorithm fitting and industrial validation are separate later work |
+| G — Dual modes | Same eligible frozen scenario through manual and qualified proactive admission uses consistent input/model/result semantics; trigger lineage is extra evidence, no hidden source substitution | F2/F3/E1; qualified-source freshness/governance for operational trigger |
+| H — Incomplete/unqualified inputs | Missing internal diameter, characteristic, property applicability, critical boundary or revision yields explicit diagnostics; no physical defaults invented, no solver launch on invalid input | F1/F2/F3 preflight and negative tests |
+| I — Historical engineering change | Authorized station/unit/profile correction creates a new effective revision; old configurations and earlier results remain retrievable and existing digests remain unchanged | F1/F2; lifecycle/concurrency/upgrade/history tests |
+
+All cases are future obligations, not executed acceptance results. Independent field
+fitness, operational policy and safety authorization remain separate from numerical
+and database verification. Field/source requests may refine a design but are optional
+for synthetic development; required real run inputs cannot be guessed at execution.
+
+### Preservation and next action
+
+Only an append-only documentation amendment is authorized here. Topology semantics,
+physical V1/V2 history, regulator storage candidates, compressor/valve methods,
+synthetic solver/source fixtures, manufacturer records, product approvals, immutable
+hashes, historical Flyway files, API/OpenAPI, dependencies, workflows, private datasets,
+accepted roadmap records and release/version files remain untouched.
+
+The single next permissible action remains an owner-selected **HPR-P25-008C Slice B
+exact-repair-head verification and acceptance disposition**, contingent on successful
+full production verification covering the dictionary repair and independent source/storage
+review. If no production run exists, obtain an authorized workflow dispatch; do not claim
+Documentation CI establishes it. This governance task does not perform that dispatch.
+A failure selects bounded repair, not acceptance. Slice C then needs its own owner
+selection and closed preflight; 018–027 are NOT SELECTED and may not execute automatically.
+Before subsequent foundation implementation, use 018 to register concrete owner/file
+scopes, after the current acceptance disposition and an explicit owner selection.
+
+Publication protocol: validate D and two-file append-only scope, publish directly to main
+with expected-head protection and the exact registered supporting message, verify remote
+commit/tree/paths and exact-head Documentation CI startup, then STOP without waiting
+for production CI or executing any newly admitted task.
+
+### Exact source evidence index
+
+
+**Topology**
+
+- T01: [TopologyPhysicalNetworkRevision.java](../../src/main/java/dz/sh/hidra/modules/topology/domain/model/TopologyPhysicalNetworkRevision.java)
+- T02: [JdbcTopologyPhysicalNetworkRevisionRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcTopologyPhysicalNetworkRevisionRepositoryAdapter.java)
+- T03: [TopologyPhysicalNetworkRevisionCodec.java](../../src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/TopologyPhysicalNetworkRevisionCodec.java)
+- T04: [TopologySimulationPhysicalNetworkRevisionQueryService.java](../../src/main/java/dz/sh/hidra/modules/topology/application/service/TopologySimulationPhysicalNetworkRevisionQueryService.java)
+- T05: [SpringTopologyController.java](../../src/main/java/dz/sh/hidra/modules/topology/api/rest/controller/SpringTopologyController.java)
+- T06: [PipelineSystemApplicationService.java](../../src/main/java/dz/sh/hidra/modules/topology/application/service/PipelineSystemApplicationService.java)
+- T07: [FacilityApplicationService.java](../../src/main/java/dz/sh/hidra/modules/topology/application/service/FacilityApplicationService.java)
+- T08: [RegisterFacilityRequest.java](../../src/main/java/dz/sh/hidra/modules/topology/api/rest/request/RegisterFacilityRequest.java)
+- T09: [Facility.java](../../src/main/java/dz/sh/hidra/modules/topology/domain/model/Facility.java)
+- T10: [Pipeline.java](../../src/main/java/dz/sh/hidra/modules/topology/domain/model/Pipeline.java)
+- T11: [Equipment.java](../../src/main/java/dz/sh/hidra/modules/topology/domain/model/Equipment.java)
+- T12: [PipelineSegmentJpaEntity.java](../../src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/PipelineSegmentJpaEntity.java)
+- T13: [TopologyNodeJpaEntity.java](../../src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/TopologyNodeJpaEntity.java)
+- T14: [FacilityJpaEntity.java](../../src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/FacilityJpaEntity.java)
+- T15: [EquipmentJpaEntity.java](../../src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/EquipmentJpaEntity.java)
+- T16: [EquipmentAttributeDefinitionJpaEntity.java](../../src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/EquipmentAttributeDefinitionJpaEntity.java)
+- T17: [EquipmentAttributeValueJpaEntity.java](../../src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/EquipmentAttributeValueJpaEntity.java)
+- T18: [EquipmentTypeVersionJpaEntity.java](../../src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/EquipmentTypeVersionJpaEntity.java)
+- T19: [FacilityAttributeDefinitionJpaEntity.java](../../src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/FacilityAttributeDefinitionJpaEntity.java)
+- T20: [FacilityAttributeValueJpaEntity.java](../../src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/FacilityAttributeValueJpaEntity.java)
+- T21: [TopologySnapshotJpaEntity.java](../../src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/TopologySnapshotJpaEntity.java)
+- T22: [JpaTopologyMapVisualizationAdapter.java](../../src/main/java/dz/sh/hidra/modules/topology/infrastructure/visualization/JpaTopologyMapVisualizationAdapter.java)
+- T23: [TopologyMapController.java](../../src/main/java/dz/sh/hidra/modules/topology/api/rest/controller/TopologyMapController.java)
+
+**Assets**
+
+- A01: [AssetModelJpaEntity.java](../../src/main/java/dz/sh/hidra/modules/assets/infrastructure/persistence/entity/AssetModelJpaEntity.java)
+- A02: [AssetManufacturerReferenceJpaEntity.java](../../src/main/java/dz/sh/hidra/modules/assets/infrastructure/persistence/entity/AssetManufacturerReferenceJpaEntity.java)
+- A03: [AssetInstallationJpaEntity.java](../../src/main/java/dz/sh/hidra/modules/assets/infrastructure/persistence/entity/AssetInstallationJpaEntity.java)
+- A04: [AssetsApplicationService.java](../../src/main/java/dz/sh/hidra/modules/assets/application/service/AssetsApplicationService.java)
+- A05: [SpringAssetsController.java](../../src/main/java/dz/sh/hidra/modules/assets/api/rest/controller/SpringAssetsController.java)
+
+**Custody**
+
+- C01: [CustodyGasFluidRevision.java](../../src/main/java/dz/sh/hidra/modules/custody/domain/model/CustodyGasFluidRevision.java)
+- C02: [JdbcCustodyGasFluidRevisionRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/JdbcCustodyGasFluidRevisionRepositoryAdapter.java)
+- C03: [CustodyGasFluidRevisionQueryService.java](../../src/main/java/dz/sh/hidra/modules/custody/application/service/CustodyGasFluidRevisionQueryService.java)
+- C04: [CustodyGasFluidQualificationService.java](../../src/main/java/dz/sh/hidra/modules/custody/application/service/CustodyGasFluidQualificationService.java)
+- C05: [SpringCustodyController.java](../../src/main/java/dz/sh/hidra/modules/custody/api/rest/controller/SpringCustodyController.java)
+
+**Simulation**
+
+- S01: [SimulationEquipmentParameterRevision.java](../../src/main/java/dz/sh/hidra/modules/simulation/domain/model/SimulationEquipmentParameterRevision.java)
+- S02: [SimulationRegulatorCharacteristicRevision.java](../../src/main/java/dz/sh/hidra/modules/simulation/domain/model/SimulationRegulatorCharacteristicRevision.java)
+- S03: [JdbcSimulationEquipmentParameterRevisionRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/adapter/JdbcSimulationEquipmentParameterRevisionRepositoryAdapter.java)
+- S04: [SimulationEquipmentParameterRevisionCodec.java](../../src/main/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/adapter/SimulationEquipmentParameterRevisionCodec.java)
+- S05: [SimulationEquipmentParameterRevisionQueryService.java](../../src/main/java/dz/sh/hidra/modules/simulation/application/service/SimulationEquipmentParameterRevisionQueryService.java)
+- S06: [SimulationEquipmentParameterQualificationService.java](../../src/main/java/dz/sh/hidra/modules/simulation/application/service/SimulationEquipmentParameterQualificationService.java)
+- S07: [SimulationInputManifest.java](../../src/main/java/dz/sh/hidra/modules/simulation/domain/model/SimulationInputManifest.java)
+- S08: [SimulationPhysicalInputPayload.java](../../src/main/java/dz/sh/hidra/modules/simulation/domain/model/SimulationPhysicalInputPayload.java)
+- S09: [SimulationSyntheticEquipmentNetworkInput.java](../../src/main/java/dz/sh/hidra/modules/simulation/domain/model/SimulationSyntheticEquipmentNetworkInput.java)
+- S10: [SteadyStateGasSolver.java](../../src/main/java/dz/sh/hidra/modules/simulation/domain/service/SteadyStateGasSolver.java)
+- S11: [SimulationEquipmentBehaviorEvaluator.java](../../src/main/java/dz/sh/hidra/modules/simulation/domain/service/SimulationEquipmentBehaviorEvaluator.java)
+- S12: [SimulationApplicationService.java](../../src/main/java/dz/sh/hidra/modules/simulation/application/service/SimulationApplicationService.java)
+- S13: [SpringSimulationController.java](../../src/main/java/dz/sh/hidra/modules/simulation/api/rest/controller/SpringSimulationController.java)
+- S14: [SimulationSolverPort.java](../../src/main/java/dz/sh/hidra/modules/simulation/application/port/out/SimulationSolverPort.java)
+- S15: [SimulationInputSnapshotJpaEntity.java](../../src/main/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/entity/SimulationInputSnapshotJpaEntity.java)
+- S16: [SimulationModelVersionJpaEntity.java](../../src/main/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/entity/SimulationModelVersionJpaEntity.java)
+
+**Telemetry**
+
+- Q01: [TelemetryPointBindingJpaEntity.java](../../src/main/java/dz/sh/hidra/modules/telemetry/infrastructure/persistence/entity/TelemetryPointBindingJpaEntity.java)
+- Q02: [TrustedTelemetryReadingJpaEntity.java](../../src/main/java/dz/sh/hidra/modules/telemetry/infrastructure/persistence/entity/TrustedTelemetryReadingJpaEntity.java)
+- Q03: [SimulationTrustedReadingQueryService.java](../../src/main/java/dz/sh/hidra/modules/telemetry/application/service/SimulationTrustedReadingQueryService.java)
+- Q04: [TrustedTelemetryReadingApplicationService.java](../../src/main/java/dz/sh/hidra/modules/telemetry/application/service/TrustedTelemetryReadingApplicationService.java)
+
+**Workflow**
+
+- W01: [RevisionApprovalEvidenceContract.java](../../src/main/java/dz/sh/hidra/modules/workflow/application/contract/target/RevisionApprovalEvidenceContract.java)
+
+**Existing test mechanisms**
+
+- X01: [TopologyPhysicalNetworkRevisionPostgresIntegrationTest.java](../../src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/TopologyPhysicalNetworkRevisionPostgresIntegrationTest.java)
+- X02: [TopologyPhysicalNetworkRevisionTest.java](../../src/test/java/dz/sh/hidra/modules/topology/domain/model/TopologyPhysicalNetworkRevisionTest.java)
+- X03: [TopologyPhysicalNetworkRevisionCodecTest.java](../../src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/TopologyPhysicalNetworkRevisionCodecTest.java)
+- X04: [SimulationEquipmentParameterRevisionPostgresIntegrationTest.java](../../src/test/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/SimulationEquipmentParameterRevisionPostgresIntegrationTest.java)
+- X05: [SimulationEquipmentParameterRevisionTest.java](../../src/test/java/dz/sh/hidra/modules/simulation/domain/model/SimulationEquipmentParameterRevisionTest.java)
+- X06: [SimulationRegulatorCharacteristicRevisionTest.java](../../src/test/java/dz/sh/hidra/modules/simulation/domain/model/SimulationRegulatorCharacteristicRevisionTest.java)
+- X07: [SteadyStateGasSolverTest.java](../../src/test/java/dz/sh/hidra/modules/simulation/domain/service/SteadyStateGasSolverTest.java)
+- X08: [SimulationEquipmentBehaviorEvaluatorTest.java](../../src/test/java/dz/sh/hidra/modules/simulation/domain/service/SimulationEquipmentBehaviorEvaluatorTest.java)
+- X09: [SimulationApplicationServiceTest.java](../../src/test/java/dz/sh/hidra/modules/simulation/application/service/SimulationApplicationServiceTest.java)
+- X10: [CustodyGasFluidRevisionPostgresIntegrationTest.java](../../src/test/java/dz/sh/hidra/modules/custody/infrastructure/persistence/CustodyGasFluidRevisionPostgresIntegrationTest.java)
+- X11: [CustodyGasFluidRevisionTest.java](../../src/test/java/dz/sh/hidra/modules/custody/domain/model/CustodyGasFluidRevisionTest.java)
+- X12: [SimulationTrustedReadingQueryServiceTest.java](../../src/test/java/dz/sh/hidra/modules/telemetry/application/service/SimulationTrustedReadingQueryServiceTest.java)
+- X13: [FacilitySemanticRemediationTest.java](../../src/test/java/dz/sh/hidra/modules/topology/semantic/FacilitySemanticRemediationTest.java)
+- X14: [SimulationPhysicalInputPayloadTest.java](../../src/test/java/dz/sh/hidra/modules/simulation/domain/model/SimulationPhysicalInputPayloadTest.java)
+- X15: [SimulationEquipmentParameterRevisionQueryServiceTest.java](../../src/test/java/dz/sh/hidra/modules/simulation/application/service/SimulationEquipmentParameterRevisionQueryServiceTest.java)
+
+**Schema, governance and CI evidence**
+
+- [V20260611_004__create_topology_tables.sql](../../src/main/resources/db/migration/V20260611_004__create_topology_tables.sql)
+- [V20260611_014__create_assets_tables.sql](../../src/main/resources/db/migration/V20260611_014__create_assets_tables.sql)
+- [V20260611_005__create_telemetry_tables.sql](../../src/main/resources/db/migration/V20260611_005__create_telemetry_tables.sql)
+- [V20260611_022__create_simulation_tables.sql](../../src/main/resources/db/migration/V20260611_022__create_simulation_tables.sql)
+- [V20261009_001__p25_topology_physical_network_revisions.sql](../../src/main/resources/db/migration/V20261009_001__p25_topology_physical_network_revisions.sql)
+- [V20261010_003__p25_topology_regulator_physical_revision_format.sql](../../src/main/resources/db/migration/V20261010_003__p25_topology_regulator_physical_revision_format.sql)
+- [V20261010_001__p25_custody_gas_fluid_revisions.sql](../../src/main/resources/db/migration/V20261010_001__p25_custody_gas_fluid_revisions.sql)
+- [V20261010_002__p25_simulation_equipment_parameter_revisions.sql](../../src/main/resources/db/migration/V20261010_002__p25_simulation_equipment_parameter_revisions.sql)
+- [V20261011_001__p25_simulation_regulator_parameter_revision_format.sql](../../src/main/resources/db/migration/V20261011_001__p25_simulation_regulator_parameter_revision_format.sql)
+- [0001-modular-monolith-hexagonal.md](../../docs/adr/0001-modular-monolith-hexagonal.md)
+- [0002-postgresql-flyway.md](../../docs/adr/0002-postgresql-flyway.md)
+- [0003-api-module-boundaries.md](../../docs/adr/0003-api-module-boundaries.md)
+- [Coding-policy.md](../../docs/policy/Coding-policy.md)
+- [ci.yml](../../.github/workflows/ci.yml)
+- [docs.yml](../../.github/workflows/docs.yml)
+
+### Actual amendment validation and publication disposition
+
+Pre-publication validation PASSED: `test_validate_docs.py` (10 tests),
+`test_validate_openapi_snapshot.py` (10), `test_generate_data_dictionary.py` (17),
+`test_resolve_openapi_base.py` (14 isolated validator tests, not a live CI pass);
+`validate_docs.py` (95 documents, 5286 relative links, 24 modules, 13 P2 rows),
+`validate_openapi_snapshot.py` (244 paths, 263 operations, 231 schemas; offline),
+`validate_p1_closure.py` and `git diff --check`. All 51 validator tests passed.
+The full append-only amendment and evidence links were reviewed; exactly the two
+allowed files changed. Ten new task codes are absent from both original documents,
+each has a registry message, detailed acceptance/design requirements and the same
+explicit two-file design allowlist. Original document prefixes are byte-identical;
+all production/test/schema/API/configuration and numerical evidence files are unchanged.
+
+No Maven, numerical solver, PostgreSQL, external-engine or field test was run for this
+documentation-only task. No future implementation/acceptance is marked completed.
+New-head Documentation CI must be observed after publication; its completion is not
+asserted in this pre-publication record. Production verification of the active regulator
+repair remains a separate pending gate. Publish with the newly registered supporting
+message, protect expected main 336599a1837230c5c396f1369ff2f03f23ca74d4 and STOP.

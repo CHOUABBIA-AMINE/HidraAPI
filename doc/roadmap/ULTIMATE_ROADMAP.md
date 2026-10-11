@@ -13,7 +13,7 @@
 | Field | Value |
 |---|---|
 | Status | ACTIVE |
-| P2.5 operational digital twin | PLANNED / OPEN — owner-prioritized telemetry-to-simulation-to-decision-to-outcome-to-learning cycle; runtime NOT ESTABLISHED |
+| P2.5 operational digital twin | OPEN — Track A engineering/operational foundations ACTIVE PRIORITY; Track B simulator DEFERRED; no development task selected; runtime acceptance NOT ESTABLISHED |
 | P2 canonical governance | VERIFIED/CLOSED — renewed independent audit 12/12 VERIFIED at 7be1c9cb47ed9b6f73a7692d0a328ad870e2b4d4; exact-head Documentation Validation #136 and production CI #609 PASSED at a8905e32289a583f47b831e0381783e556ae0c8d; earlier 9/12 audit preserved as history |
 | Roadmap code | HPR — Hidra Platform Readiness |
 | Canonical documentation root | `doc/` |
@@ -14893,3 +14893,603 @@ New-head Documentation CI must be observed after publication; its completion is 
 asserted in this pre-publication record. Production verification of the active regulator
 repair remains a separate pending gate. Publish with the newly registered supporting
 message, protect expected main 336599a1837230c5c396f1369ff2f03f23ca74d4 and STOP.
+
+## 2026-10-11 — Owner decision: defer simulator and prioritize engineering foundations
+
+### Current authority, live baseline and selected scope
+
+**HYFLO SIMULATION ENGINE DEVELOPMENT — DEFERRED.**
+
+The owner explicitly selected one documentation-only sequencing amendment through the
+attached “Defer Simulation Engine Development and Prioritize Operator Engineering Data
+Platform” prompt. This prospectively supersedes earlier next-task selections and the
+requirement to complete active regulator acceptance before engineering foundation design.
+It does not cancel simulation, remove functionality or change any historical acceptance.
+Newly registered supporting commit message:
+`docs(roadmap): defer simulator and prioritize engineering foundations`.
+Only this roadmap and append-only `doc/model-remediation/RECONCILIATION.md` may change.
+The amendment is selected; no engineering or simulator development task is selected.
+
+Live initial main: `c3f47c79248d8e645e1fbe924ede79782dda6c17`, tree
+`c3d82dffce445e1fbdde42b419f5f30a1b59996e`. Exact-head Documentation #210
+(run 38133035441) completed SUCCESS. Documentation #209 passed on dictionary repair
+`336599a1837230c5c396f1369ff2f03f23ca74d4`. Latest production #643
+(run 38131248148) remains FAILURE on source
+`93539be7ccfce1ef779d596511a11240c4d33898`; 1561 tests passed with zero
+failures/errors/skips, but dictionary equality failed. The catalog-based dictionary repair
+is committed; no subsequent production run was observed in live recovery. Full repair-head
+production verification is therefore NOT VERIFIED, not silently accepted by docs CI.
+
+P0/P1/P2 remain CLOSED within their recorded evidence scope; P3 remains DEFERRED;
+P2.5 remains OPEN, with independent foundation milestones now active priorities and
+simulation completion suspended. Version remains 0.7.0-SNAPSHOT. Historical GZ4 synthetic
+pilot restrictions remain; no field-data, accuracy, calibration or operational qualification
+is invented. This task does not dispatch production CI or execute an acceptance exercise.
+
+### Truthful regulator and pending-source disposition
+
+HPR-P25-008A/B remain completed within accepted synthetic scope. Accepted compressor/
+valve 008C sub-scope and REGULATOR Slice A remain accepted. Slice B is
+**SOURCE COMMITTED / VERIFICATION AND ACCEPTANCE PENDING — SUSPENDED BY OWNER DEFERRAL**.
+Its source/storage candidate and dictionary correction remain intact. The failed #643
+result is not changed to PASS. Slice C remains NOT AUTHORIZED and SIMULATOR_DEFERRED.
+008C/008 remain incomplete; 008D/E/F retain original requirements and dependencies but
+are SIMULATOR_DEFERRED. An existing defect repair or production verification may later
+be separately selected without authorizing a new numerical feature. There is no evidence
+of a newly accepted Slice B in this recovery.
+
+Engineering design may inspect/reuse already implemented bounded source stores without
+claiming Slice B accepted. Foundation design has no requirement to complete its numerical
+follow-up. Before any later executable foundation change, independently obtain the
+applicable green production baseline or register a tightly bounded correction for an
+actual existing defect; simulator deferral is not permission to bypass CI. A successful
+baseline verification would not by itself reactivate or accept any deferred simulator task.
+
+### Source and ownership findings supporting the split
+
+The preceding 2026-10-11 source audit and its exact source index remain the detailed
+engineering-gap baseline. Re-read module responsibilities, current application contracts,
+revision models/adapters, owning migrations and workflows before this amendment.
+The source distinguishes:
+
+- Topology's physical revision domain/codec/JDBC append-and-read path from its limited
+  public system/facility authoring APIs. Installed hydraulic incidence and effective
+  physical configuration remain Topology authority.
+- Assets' maintainable/model/manufacturer/installation/lifecycle records from Topology's
+  installed hydraulic association. Party retains manufacturer identity. These records
+  must be linked through owner contracts, not copied into a second asset registry.
+- Custody's current immutable GAS composition/method/qualification store from numerical
+  property execution. Product authoring and supplied metadata do not require a new EOS.
+- Simulation's existing immutable characteristic source store from its numerical
+  evaluator/solver. Manufacturer-data provisioning can use a properly authorized data
+  contract owned by Simulation without invoking numerical behavior or moving its store.
+- Telemetry's trust gate and source/unit/quality/effective binding provenance from
+  simulation-calibration correspondence. TrustedTelemetryReadingApplicationService
+  requires PASSED assessment, accepted trust level, active point, eligible quality and
+  supplied eligible binding; these independent semantics stay active and unmodified.
+- Monitoring's DeviationApplicationService/owner-reference validation and Workflow's
+  target-transition application service from simulator-generated predictions. Existing
+  independent services are reusable evidence, not proof of a new outcome-learning system.
+- SimulationApplicationService's queue operation from actual solver execution;
+  SimulationSolverPort supplies availability only. Neither is required to save an
+  engineering baseline or display a qualified measurement.
+
+Foundation geometry/profile work preserves physical source geometry separately from
+future solver meshes. Decimal coordinate scale remains storage precision, not surveyed
+accuracy. Pipe nominal diameter and internal hydraulic diameter remain distinct.
+Unknown real parameters must stay unknown or prevent complete baseline publication.
+Ordinary qualified ingestion/history/location binding continue; autonomous OT actuation
+remains excluded. Existing source contracts in Simulation may be referenced for compatibility
+without imposing a running simulator, model registry, external adapter or numerical approval.
+
+### Classification rules and complete-inventory coverage
+
+The task audit covers original P0, P1, P2, P2.5, P3, release and CI registries, their
+objectives/dependencies/acceptance, plus every literal legacy HMR identifier in this
+roadmap. Historical tables are not mechanically treated as current: e.g. HMR-080's old
+blocker is superseded by its recorded #604 completion and the 57/57 closure record.
+The symbolic message templates HPR-P25-002X and HPR-P25-008X are not task codes.
+Inventory appendices below account for every original literal identifier; changed P2.5
+obligations receive the complete disposition matrix. No omitted task is implicitly selected.
+
+Classes: FOUNDATION_ACTIVE = independent engineering/operational priority, not selected;
+FOUNDATION_SCOPE_REFINEMENT = mixed scope separated prospectively;
+SIMULATOR_DEFERRED = original future numerical/execution scope retained, not selected;
+COMPLETED_PRESERVED = no reopening of bounded accepted history;
+INDEPENDENT_UNCHANGED = unrelated status/dependencies unchanged;
+BLOCKED_OR_PENDING_ACCEPTANCE = unresolved gate retained honestly. A mixed task's original
+parent stays incomplete until its original obligations are fulfilled or a future explicit
+closure disposition is authorized. Delivering its independent successor does not silently
+close the parent. Original exact implementation messages remain unchanged.
+
+### Binding scope and dependency changes for engineering design tasks
+
+- **018 stays FOUNDATION_ACTIVE / PLANNED — NOT SELECTED.** Its former dependency on
+  completed regulator acceptance is prospectively removed for documentation design.
+  New prerequisites: this amendment's successful Documentation CI, explicit owner
+  selection, live source/CI recovery and honest pending-source disposition. Preserve
+  operator authoring/save/read/revise, canonical ownership, import/export, units,
+  completeness/authorization and historical data. Later implementation must resolve
+  an applicable green baseline independently, not bypass pending verification.
+- **019 stays FOUNDATION_ACTIVE / PLANNED — NOT SELECTED**, after 018 design. Route,
+  CRS/datum/vertical datum, intermediate elevation/chainage, physical sections, diameter,
+  wall/material/roughness/constraints, survey evidence/uncertainty and version history
+  remain active. Numerical mesh generation/refinement/model use is SIMULATOR_DEFERRED
+  under original numerical obligations. No PostGIS/TimescaleDB adoption is selected;
+  reconcile P3-005/006/007 spatial scope before choosing a storage technology, avoiding
+  a duplicate design or hidden prerequisite on a deferred extension.
+- **020 stays FOUNDATION_ACTIVE / PLANNED — NOT SELECTED**, after 018. Preserve
+  per-unit identity, facility/header/incidence, series/parallel configuration, manufacturer/
+  model, installation/retirement, typed technical attributes and effective configuration.
+  No solver required for CRUD, incidence validation or history.
+- **021 is FOUNDATION_SCOPE_REFINEMENT / PLANNED — NOT SELECTED**, after 020 design
+  and source-store compatibility review, with no dependency on new 008C acceptance.
+  Same original objective and message; prospective design scope narrows to authoring,
+  limits/maps/tables, units/reference conditions/documentation/origin/applicability,
+  characteristic binding, exact revisions and history. Preserve source-store ownership.
+  New equipment physics, solver coupling, executable interpolation model extensions,
+  registry integration and numerical benchmarks remain recorded under original 008C/024/
+  027 obligations and deferred. Data-shape/axis/unit validation stays active.
+- **022 is FOUNDATION_SCOPE_REFINEMENT / PLANNED — NOT SELECTED**, after 018 and
+  current Custody source review. Preserve product identity/classification/composition,
+  supplied properties, units/reference conditions/method/applicability metadata,
+  qualification where independently applicable, origin and history. EOS/property-provider
+  execution, gas/H2/liquid hydraulic modeling and numerical benchmarks remain deferred
+  under 024/027 and original physics rollout. Do not calculate unsupplied properties.
+- **023 retains its original engineering-baseline AND scenario-freeze meaning and
+  message; PLANNED — NOT SELECTED / FOUNDATION_SCOPE_REFINEMENT.** Register 028 as
+  its independently executable engineering-baseline obligation. Original numerical
+  overlay/model/control/provider/run-snapshot/result replay scope remains deferred in
+  023; parent is not accepted by completing 028. No prior 023 implementation was claimed.
+- **024/025/026/027 remain original design tasks, incomplete, NOT SELECTED and
+  SIMULATOR_DEFERRED.** Preserve registry/providers, manual/proactive simulation,
+  calibration correspondence and numerical qualification respectively. Ordinary
+  telemetry/history remains independent. Data-only acceptance formerly mixed into 027
+  moves to independent 030/031 obligations; 027 is not silently closed or renamed.
+
+The ten original exact messages, technical contracts and earlier acceptance history
+remain accessible in the preceding realignment. These prospective refinements do not
+turn any documentation task into Java or schema implementation.
+
+### Track A — active engineering and operational foundation milestones
+
+| Milestone | Independently verifiable outcome | Design/envelope prerequisites | Actual completion gate |
+|---|---|---|---|
+| F1 — Operator Engineering Provisioning | Authorized supported pipeline/branch/station/unit/manufacturer/product/geometry/physical-section data create/save/read/revise and lossless supported import/export | 018; then 019/020, 021 after 020, 022 after 018; separately registered concrete implementation envelopes | Case A/B/C/D/G through actual APIs and persistence; nine independently configured turbocompressors; no solver invocation |
+| F2 — Authoritative Engineering Baselines | Freeze/read/compare/reconstruct exact topology/profile/section/station/unit/characteristic/product revisions with effective times, evidence/approval and digests | 028 after 019–022 designs; reuse accepted source stores; later implemented F1 | Case E plus B/C/D history, corruption/conflict/concurrency/retention and authorized historic retrieval; no scenario/run controls required |
+| F3 — Operational Monitoring Foundation | Qualified source/point/measurement association with canonical location/assets, units/quality/source times/binding-effective history; explicit measured/estimated/unknown display | Existing independent 003/004 source contracts; 029 scopes independent 005/006/012–016 obligations; concrete source/access/latency policy before real acquisition | Case F/G plus visualization/freshness/source loss/duplicate/late reading evidence; no solver-calibration or universal industrial detector claim |
+| F4 — Engineering Data Acceptance | Independent operator data-quality, round-trip/history/reference/authorization checks pass against implemented F1/F2/F3 | 030 acceptance design; implementations and approved test scope; 031 independent closure | Actual cases A–G with exact source/environment/raw test evidence; Documentation CI alone cannot establish F4 |
+
+This is an independent foundation completion path, not closure of all original P2.5
+simulation obligations. F1/F2/F3 may have bounded implemented subsets; F4 states exact
+supported coverage and unsupported gaps. No field-survey certainty or sensor qualification
+is inferred from records. P2.5 stays OPEN after a foundation milestone unless separately
+reconciled through an authorized program-level decision; 017 remains full-cycle closure.
+
+### Dependency graph and hidden-edge disposition
+
+```mermaid
+flowchart TD
+    A["018: provisioning contracts"] --> B["019: geometry and profiles"]
+    A --> C["020: stations and units"]
+    C --> D["021: manufacturer data"]
+    A --> E["022: product data"]
+    B --> F["028: engineering baseline"]
+    D --> F
+    E --> F
+    A --> G["029: monitoring contracts"]
+    F --> H["030: acceptance design"]
+    G --> H
+    H --> I["Implemented F1, F2 and F3"]
+    I --> J["031: foundation acceptance audit"]
+```
+
+These arrows are design/output sequencing, not proof of implementation. 028 includes
+020's station/unit scope through the 021 dependency and explicitly rechecks it.
+029 may design measurement views against exact current owner references without requiring
+028 completion; integrated baseline/measurement acceptance requires both F2 and F3.
+030 plans verification; its design completion never creates implemented F1/F2/F3.
+Each later implementation envelope registers its own dependency edges and CI requirements.
+
+Original 003/004 used umbrella 002; their independent prerequisites now mean the
+specific source identity/eligibility/version/measurement contracts needed for their own
+operation, not all deferred simulation capture or numerical stages. Original 005 requires
+004 and an approved estimator/method: trusted measured-state association can proceed
+independently, but physical inference requiring a solver remains deferred; 029 must
+specify legitimate non-simulator estimation or retain UNKNOWN. Original 006 requires
+supported trusted state and approved detector thresholds; existing independent alarm
+processing is preserved, never treated as issue-triggered simulation.
+
+Original 012–014 dependencies on 011/predictions do not vanish by assertion: independent
+human action/observation/provenance work gets a concrete contract separation under 029,
+then separately registered implementation. Original solver-specific recommendation,
+prediction/residual/calibration/learning requirements stay deferred. Original 015/016
+operator/foundation testing maps to 030 with no hidden dependency on 010–014 simulator
+execution. Original 017 is not reused for F4 closure; new 031 audits foundation only.
+Original 002D calculation-input capture remains deferred; engineering capture uses 028,
+not a fake successful simulation manifest. C3E's operating-source blocker remains
+recorded; ordinary Telemetry trusted storage can proceed independently through its
+owner semantics. No current source dependency/export registry is edited in this task.
+
+The active design graph has no edge to 007, unfinished 008, 008D/E/F, 009, 010/011,
+023 numerical freeze, 024/025/026/027 or another numerical provider/model/solver gate.
+If a later concrete design needs a currently missing owner contract, register the bounded
+foundation prerequisite; do not invoke or silently reactivate deferred work to satisfy it.
+
+### New independently executable split tasks
+
+Codes 028–031 were collision-checked against both pre-amendment execution memories.
+All are **PLANNED — NOT SELECTED**. Exact write allowlist for each is this roadmap
+and append-only reconciliation only; no new file. Register source-backed exact-file
+implementation codes/messages/migration filenames before later application changes.
+Common history rule: preserve accepted source bytes/digests, backward reads/replay,
+owner authority and all applied migrations; new engineering history uses forward
+append/revision rather than rewriting certificates, approvals, telemetry or old baselines.
+Common validation: maintained documentation/OpenAPI/dictionary/base-resolver unit tests,
+canonical documentation, offline OpenAPI, P1 closure, whitespace and exact scope;
+expected-head publication and exact-head Documentation CI. Later executable changes
+require appropriate focused/full Java 21 Maven, architecture/API checks and real full-chain
+PostgreSQL/Flyway/dictionary evidence when schema changes. No simulator accuracy gate.
+
+#### HPR-P25-028 — Authoritative engineering baseline management preflight
+
+Owner: Topology baseline authority with Assets/Custody/Simulation source owners and
+Workflow evidence. Objective: independently specify exact freeze/read/compare/history
+of a supported engineering configuration. Justification/evidence: existing Topology,
+Custody and characteristic immutable stores plus general snapshot structures are useful,
+but not the complete operator baseline workflow verified by a Case E test.
+Dependencies: 019/020/021/022 designs (018 transitively); existing source compatibility
+review, explicit owner selection. No 023 numerical capture or solver dependency.
+Deliverables: owner-defined baseline identity/revision, exact geometry/profile/section/
+station/unit/manufacturer/product/constraint references/digests, source/effective/capture
+and qualification evidence, authorized historical retrieval and supported import/export;
+concrete implementation envelopes and source-selection/retention rules.
+API/persistence design: freeze/read/revision/compare and immutable reference resolution,
+atomic append/rollback/replay, no installed-source duplication or simulation run required.
+Acceptance: data-only cases B/C/D/E/G, old-baseline reconstruction after updates,
+withdrawn current governance distinguished from authorized historic facts, corrupt/missing/
+wrong-effective/dangling revision refusal, conflicting parallel writes and partial capture.
+No numerical result replay or provider controls; no production data import.
+Exact message: `docs(topology): define authoritative engineering baseline management`.
+Selection/completion: separately owner-selected two-document preflight; accepted only
+with its exact-head Documentation CI and complete implementation registration, not F2 closure.
+
+#### HPR-P25-029 — Independent operational state and action evidence preflight
+
+Owners: Telemetry raw/trusted/binding/time-quality, Topology physical reference, Monitoring
+supported issue/state views, Workflow human action authority, Analytics observed-outcome
+consumer and Audit evidence through existing contracts.
+Objective: preserve independent monitoring and human operational records by separating
+mixed 005/006/012/013/014/015/016 scope. Evidence: actual trusted-reading trust/export,
+measurement binding entities, Monitoring deviation owner validation and Workflow target
+transition service; these do not establish a complete monitoring or learning pipeline.
+Dependencies: 018 owner design, existing trusted source/query and independent 003/004
+requirements; explicit source/quality/units/observation/permission requirements where needed.
+No 011 simulation prediction, 025 execution, 026 residual or 028 numerical freeze dependency.
+Deliverables: bounded measured-state association/view contract with UNKNOWN semantics,
+non-simulator methods only if justified, authenticated human applied-action record,
+observation windows/confounders and factual outcome provenance; per-owner minimal
+implementation envelopes, no generic cross-module broad implementation authorization.
+API/persistence: authorized read/bind/action/history contracts, quality/freshness/effective
+binding and traceable action/time/source/evidence retention using existing owner stores.
+Acceptance: cases F/G, units/point/asset identity mismatch, late/duplicate/stale/missing/
+unqualified data, withdrawn owner permission, incompatible effective binding, source
+loss/recovery and audit replay; no unsupported physical inference or attribution claim.
+Exclude solver estimates, predicted-benefit/residual/calibration datasets, automatic
+learning promotion, numerical scheduling and OT commands. Ordinary detector-learning
+work may later proceed only under a separately scoped approved objective/evidence policy.
+Exact message: `docs(operations): separate independent monitoring and action evidence`.
+Selection/completion: separately selected two-document preflight and successful exact-head
+Documentation CI; F3 needs subsequent actual implementation/verification.
+
+#### HPR-P25-030 — Engineering foundation acceptance design preflight
+
+Owners: independent verification with Topology/Assets/Custody/Telemetry/Workflow owners.
+Objective: isolate data acceptance from original 027 numerical qualification and 015/016
+simulation-feedback demonstration. Dependencies: 018–022, 028 and 029 design outputs;
+current source inventory/CI and explicit selection. No deferred numerical dependency.
+Deliverables: exact test/env/authorization matrix for cases A–G, supported record/units/
+profile/product/reference/history coverage, independent frozen data-round-trip expectations,
+raw evidence collection, negative/concurrency/upgrade/import-export verification and
+exact future test-file envelopes/messages. API/persistence requirements: exercise actual
+supported write/read/revision/baseline/binding contracts, not direct SQL seeding as proof
+of an operator workflow. Preserve old revisions and applied SQL; verify integrity/retention.
+Acceptance of this design requires complete case-to-contract/test/owner mapping,
+no numerical result prerequisite and exact-head Documentation CI. Case execution remains
+future implementation/testing; no invented coordinate/manufacturer/product values except
+explicitly synthetic fixtures with declared provenance. Exclude hydraulic acceptance,
+provider comparisons, numerical fitting, frontend repository changes and operational imports.
+Exact message: `docs(testing): define engineering foundation acceptance cases`.
+
+#### HPR-P25-031 — Independent engineering foundation closure audit
+
+Owner: roadmap/independent verification; each source owner accountable for its evidence.
+Objective: independently disposition F1/F2/F3/F4 with exact supported coverage, separate
+from deferred 017 full simulation-cycle closure. Dependencies: accepted 030 verification
+design, implemented/verified F1/F2/F3, actual cases A–G, live applicable exact-head CI,
+explicit owner/operator acceptance of the claimed foundation scope. No simulator gate.
+Deliverables: source/environment/CI/raw-test evidence reconciliation, all acceptance
+results and unsupported gaps, owner/authorization/history/reference audit and explicit
+foundation PASS/CLOSED or BLOCKED/PENDING disposition. API/schema: read-only audit of
+actual contracts and real PostgreSQL round-trip/upgrade evidence; no source changes.
+Compatibility: preserve all historical source formats, rows, hashes and simulator records.
+Negative acceptance: fail/scope-limit missing operator path, invented default engineering
+fact, corrupt/dangling history, unauthorized reference or missing test/CI evidence.
+Exact allowlist: this roadmap and append-only reconciliation; exact message:
+`docs(roadmap): audit engineering foundation acceptance`.
+Initially PLANNED — NOT SELECTED; no implementation, automatic task continuation,
+full P2.5 closure, release or industrial solver/OT readiness claim.
+
+### Active foundation acceptance cases — independent of simulation
+
+| Case | Required actual evidence | Governing tasks |
+|---|---|---|
+| A — Complete provisioning | Actual authorized save/read/revise of a new pipeline and branches, three stations/nine distinct units, manufacturer/model/parameters, coordinates/profile/physical sections and product; no loss | 018–022 implementations; 030 tests |
+| B — Manufacturer revision | New independent characteristic revision with documentation/units/origin; old revision/digest and earlier baseline unchanged | 021/028 implementations |
+| C — Geographic revision | Evidence-based route/profile revision preserves earlier geometry; valid CRS/vertical datum/chainage and history | 019/028 implementations |
+| D — Product revision | Identity/composition/supplied properties/units/reference/method applicability/provenance independently stored/retrieved; no EOS or hydraulic model required | 022/028 implementations |
+| E — Baseline persistence | Exact topology/profile/section/station/unit/characteristic/product/effective/governance references reconstruct original engineering configuration after later source changes | 028 implementation; original stores reused |
+| F — Measurement reference | Eligible point bound to canonical asset/location; source identity/units/timestamps/quality and effective historic binding verified | Independent 003/004 and 029 implementations |
+| G — Invalid inputs | Invalid coordinates, missing required refs/characteristics, wrong units/chainage/composition/installation/date/reference are rejected or retained only as clearly incomplete drafts; incomplete configuration cannot publish as complete baseline | Every owning implementation; 030/031 |
+
+These new Track A cases intentionally have a separate namespace from the earlier
+simulation cases A–I, which remain preserved under Track B. Future implementation/tests
+must declare both namespace and exact applicable case. Data-shape validity/qualification
+is not industrial fitness; no solver execution, mesh refinement, convergence, residual,
+comparison engine or calibration algorithm is needed to pass Track A cases.
+
+### Track B — deferred simulator registry and reactivation
+
+The task matrix below retains all original codes, messages, dependencies and technical
+requirements for calculation-source assembly, connected-scope/boundary derivation,
+regulator numerics, transient/steady solver verification, real-gas/H2/blend/liquid physics,
+equipment/property model registry, external/reference-engine research/adapters, scenario
+freeze, manual/proactive execution, model calibration, prediction-based recommendation/
+feedback and numerical/industrial qualification. Completed synthetic implementations stay
+available and unchanged; no dependency is installed, deleted or replaced. External
+three-engine research remains deferred, not an executed benchmark.
+
+Reactivation requires explicit owner authorization, review of implemented engineering
+baseline capability/coverage, exact live main/CI, truthful pending acceptance/defect
+reconciliation, source-format/input compatibility, current physics/model requirements,
+a separately registered next task with closed allowlist and original/new applicable
+independent numerical and CI acceptance. Completing any foundation task never triggers
+simulation automatically. Incomplete simulator tasks remain incomplete/deferred, not
+cancelled/failed/obsolete/completed; their prior evidence limits remain visible.
+
+### Preservation and single next eligible task
+
+This amendment preserves code/tests/APIs/OpenAPI, migrations/schema/constraints,
+manufacturer/asset/product/measurement records, numerical behavior/fixtures/hash oracles,
+accepted source formats, all historical execution records, existing release tags and
+0.7.0-SNAPSHOT. No canonical store ownership moves. Reconciliation is append-only;
+roadmap current-control rows are prospectively aligned, with historical registries retained.
+
+The single next eligible foundation task is **HPR-P25-018 engineering provisioning and
+canonical ownership preflight**, ONLY after this amendment's successful exact-head
+Documentation CI, explicit owner selection and refreshed live source/CI/ownership review.
+It uses the already registered `docs(twin): define engineering provisioning contracts`
+message and two-document design scope. Pending Slice B verification is recorded and
+suspended, not a mandatory dependency of this documentation preflight; any later code
+change still needs its applicable baseline verification and exact implementation scope.
+No next task is selected/executed by this amendment. Stop after new-head Documentation
+CI startup observation; report pending completion honestly.
+
+### Complete affected-task disposition matrix
+
+This prospective matrix governs selection; older registry/status rows remain historical records. Original objectives, exact messages and deliverables remain binding within their retained scope. “Active” denotes a priority, never a selected implementation. Each mixed parent remains incomplete. All next actions require separate owner selection.
+
+| Task code | Existing status | New disposition | Owner | Dependency change | Preserved scope | Deferred scope | Acceptance gate | Selection state | Required next action |
+|---|---|---|---|---|---|---|---|---|---|
+| HPR-P25-000 | COMPLETED within recorded bounded scope | COMPLETED_PRESERVED | Roadmap / Reconciliation | None; historical dependencies retained | All accepted source and evidence | None in accepted scope | Original evidence retained; no reopening | Preserved completion | None |
+| HPR-P25-001 | COMPLETED within recorded bounded scope | COMPLETED_PRESERVED | Cross-module requirements | None; historical dependencies retained | All accepted source and evidence | None in accepted scope | Original evidence retained; no reopening | Preserved completion | None |
+| HPR-P25-002 | PENDING — input-contract preflight delivered; A and B1..B4 CI-confirmed; C/D and aggregate closure remain PENDING | FOUNDATION_SCOPE_REFINEMENT | Topology / Custody / Simulation | Independent successor/design 018/028/029; simulator-dependent parent edges retained for deferred scope | Independent source data, history, monitoring/action or foundation acceptance | Original simulation input/execution, prediction, calibration or numerical obligations | Independent cases A–G; mixed parent not closed | NOT SELECTED | 018/028/029 separately selected scope separation |
+| HPR-P25-002A | COMPLETED within recorded bounded scope | COMPLETED_PRESERVED | Simulation / Input manifest | None; historical dependencies retained | All accepted source and evidence | None in accepted scope | Original evidence retained; no reopening | Preserved completion | None |
+| HPR-P25-002B | COMPLETED within recorded bounded scope | COMPLETED_PRESERVED | Simulation / Physical payloads | None; historical dependencies retained | All accepted source and evidence | None in accepted scope | Original evidence retained; no reopening | Preserved completion | None |
+| HPR-P25-002B1 | COMPLETED within recorded bounded scope | COMPLETED_PRESERVED | Simulation / Physical network | None; historical dependencies retained | All accepted source and evidence | None in accepted scope | Original evidence retained; no reopening | Preserved completion | None |
+| HPR-P25-002B2 | COMPLETED within recorded bounded scope | COMPLETED_PRESERVED | Simulation / Fluid and equipment | None; historical dependencies retained | All accepted source and evidence | None in accepted scope | Original evidence retained; no reopening | Preserved completion | None |
+| HPR-P25-002B3 | COMPLETED within recorded bounded scope | COMPLETED_PRESERVED | Simulation / State and boundaries | None; historical dependencies retained | All accepted source and evidence | None in accepted scope | Original evidence retained; no reopening | Preserved completion | None |
+| HPR-P25-002B4 | COMPLETED within recorded bounded scope | COMPLETED_PRESERVED | Simulation / Payload assembly | None; historical dependencies retained | All accepted source and evidence | None in accepted scope | Original evidence retained; no reopening | Preserved completion | None |
+| HPR-P25-002C | PENDING — C1/C2 CI-confirmed; remaining C3/002D organized into four delivery outcomes; next shared network-delivery preflight | FOUNDATION_SCOPE_REFINEMENT | Owner modules / Simulation | Independent successor/design 018/028; simulator-dependent parent edges retained for deferred scope | Independent source data, history, monitoring/action or foundation acceptance | Original simulation input/execution, prediction, calibration or numerical obligations | Independent cases A–G; mixed parent not closed | NOT SELECTED | 018/028 separately selected scope separation |
+| HPR-P25-002C1 | COMPLETED within recorded bounded scope | COMPLETED_PRESERVED | Cross-module engineering governance | None; historical dependencies retained | All accepted source and evidence | None in accepted scope | Original evidence retained; no reopening | Preserved completion | None |
+| HPR-P25-002C2 | COMPLETED within recorded bounded scope | COMPLETED_PRESERVED | Cross-module engineering governance | None; historical dependencies retained | All accepted source and evidence | None in accepted scope | Original evidence retained; no reopening | Preserved completion | None |
+| HPR-P25-002C3 | Registered in prior amendment; PLANNED — NOT SELECTED | FOUNDATION_SCOPE_REFINEMENT | Cross-module engineering governance | Independent successor/design 018/028/029; simulator-dependent parent edges retained for deferred scope | Independent source data, history, monitoring/action or foundation acceptance | Original simulation input/execution, prediction, calibration or numerical obligations | Independent cases A–G; mixed parent not closed | NOT SELECTED | 018/028/029 separately selected scope separation |
+| HPR-P25-002C3A | COMPLETED within recorded bounded scope | COMPLETED_PRESERVED | Cross-module engineering governance | None; historical dependencies retained | All accepted source and evidence | None in accepted scope | Original evidence retained; no reopening | Preserved completion | None |
+| HPR-P25-002C3B | COMPLETED within recorded bounded scope | COMPLETED_PRESERVED | Cross-module engineering governance | None; historical dependencies retained | All accepted source and evidence | None in accepted scope | Original evidence retained; no reopening | Preserved completion | None |
+| HPR-P25-002C3C | COMPLETED within recorded bounded scope | COMPLETED_PRESERVED | Cross-module engineering governance | None; historical dependencies retained | All accepted source and evidence | None in accepted scope | Original evidence retained; no reopening | Preserved completion | None |
+| HPR-P25-002C3D | COMPLETED within recorded bounded scope | COMPLETED_PRESERVED | Cross-module engineering governance | None; historical dependencies retained | All accepted source and evidence | None in accepted scope | Original evidence retained; no reopening | Preserved completion | None |
+| HPR-P25-002C3E | BLOCKED — operating source/qualification | BLOCKED_OR_PENDING_ACCEPTANCE + FOUNDATION_SCOPE_REFINEMENT | Cross-module engineering governance | Blocker retained; independent owner contracts under 029 | Qualified measurement/provenance requirements | Simulation-qualified operating input acceptance | Actual qualified source and owner contract evidence | NOT SELECTED | 029 bounded independent-source preflight |
+| HPR-P25-002C3F | Registered in prior amendment; PLANNED — NOT SELECTED | FOUNDATION_SCOPE_REFINEMENT | Cross-module engineering governance | Independent successor/design 028; simulator-dependent parent edges retained for deferred scope | Independent source data, history, monitoring/action or foundation acceptance | Original simulation input/execution, prediction, calibration or numerical obligations | Independent cases A–G; mixed parent not closed | NOT SELECTED | 028 separately selected scope separation |
+| HPR-P25-002D | PENDING | FOUNDATION_SCOPE_REFINEMENT | Simulation / Capture | Independent successor/design 028; simulator-dependent parent edges retained for deferred scope | Independent source data, history, monitoring/action or foundation acceptance | Original simulation input/execution, prediction, calibration or numerical obligations | Independent cases A–G; mixed parent not closed | NOT SELECTED | 028 separately selected scope separation |
+| HPR-P25-003 | PENDING | FOUNDATION_ACTIVE | Topology / Telemetry / API | 003/004: specific independent owner contracts, not all 002; 018: amendment docs CI + owner selection; 019/020: 018 | Original independent visualization/measurement or engineering provisioning objective | Any solver use remains outside this independent scope | Original independent acceptance; design is not implementation; F1/F3 actual cases | NOT SELECTED | Own bounded preflight/implementation after prerequisites |
+| HPR-P25-004 | PENDING | FOUNDATION_ACTIVE | Integration / Telemetry | 003/004: specific independent owner contracts, not all 002; 018: amendment docs CI + owner selection; 019/020: 018 | Original independent visualization/measurement or engineering provisioning objective | Any solver use remains outside this independent scope | Original independent acceptance; design is not implementation; F1/F3 actual cases | NOT SELECTED | Own bounded preflight/implementation after prerequisites |
+| HPR-P25-005 | PENDING | FOUNDATION_SCOPE_REFINEMENT | Analytics / Topology / Telemetry | Independent successor/design 029; simulator-dependent parent edges retained for deferred scope | Independent source data, history, monitoring/action or foundation acceptance | Original simulation input/execution, prediction, calibration or numerical obligations | Independent cases A–G; mixed parent not closed | NOT SELECTED | 029 separately selected scope separation |
+| HPR-P25-006 | PENDING | FOUNDATION_SCOPE_REFINEMENT | Monitoring / LeakDetection / Risk / Analytics | Independent successor/design 029; simulator-dependent parent edges retained for deferred scope | Independent source data, history, monitoring/action or foundation acceptance | Original simulation input/execution, prediction, calibration or numerical obligations | Independent cases A–G; mixed parent not closed | NOT SELECTED | 029 separately selected scope separation |
+| HPR-P25-007 | PENDING | SIMULATOR_DEFERRED | Simulation / Topology | Original numerical/whole-cycle prerequisites retained | Existing implementation and original future requirements | Remaining original simulator-dependent scope (017: full-cycle closure) | Explicit owner reactivation, live preflight, applicable CI and original evidence | NOT SELECTED | None until reactivation |
+| HPR-P25-008 | PENDING | SIMULATOR_DEFERRED | Simulation / Integration | Original numerical/whole-cycle prerequisites retained | Existing implementation and original future requirements | Remaining original simulator-dependent scope (017: full-cycle closure) | Explicit owner reactivation, live preflight, applicable CI and original evidence | NOT SELECTED | None until reactivation |
+| HPR-P25-008A | COMPLETED within recorded bounded scope | COMPLETED_PRESERVED | Simulation / Numerical design | None; historical dependencies retained | All accepted source and evidence | None in accepted scope | Original evidence retained; no reopening | Preserved completion | None |
+| HPR-P25-008B | COMPLETED within recorded bounded scope | COMPLETED_PRESERVED | Simulation / Steady-state | None; historical dependencies retained | All accepted source and evidence | None in accepted scope | Original evidence retained; no reopening | Preserved completion | None |
+| HPR-P25-008C | PARTIAL accepted scopes; REG Slice B verification PENDING | BLOCKED_OR_PENDING_ACCEPTANCE + SIMULATOR_DEFERRED | Simulation / Equipment | Original dependencies retained, selection suspended | Accepted compressor/valve and REG Slice A; committed B source | Unaccepted B verification suspended; C not authorized; remaining numerics | No new acceptance; later exact-source applicable CI and numerical evidence | NOT SELECTED | Explicit reactivation or separately selected existing-defect verification |
+| HPR-P25-008D | PENDING | SIMULATOR_DEFERRED | Simulation / Transient | Original numerical/whole-cycle prerequisites retained | Existing implementation and original future requirements | Remaining original simulator-dependent scope (017: full-cycle closure) | Explicit owner reactivation, live preflight, applicable CI and original evidence | NOT SELECTED | None until reactivation |
+| HPR-P25-008E | PENDING | SIMULATOR_DEFERRED | Simulation / Independent verification | Original numerical/whole-cycle prerequisites retained | Existing implementation and original future requirements | Remaining original simulator-dependent scope (017: full-cycle closure) | Explicit owner reactivation, live preflight, applicable CI and original evidence | NOT SELECTED | None until reactivation |
+| HPR-P25-008F | PENDING | SIMULATOR_DEFERRED | Simulation / Execution adapter | Original numerical/whole-cycle prerequisites retained | Existing implementation and original future requirements | Remaining original simulator-dependent scope (017: full-cycle closure) | Explicit owner reactivation, live preflight, applicable CI and original evidence | NOT SELECTED | None until reactivation |
+| HPR-P25-009 | PENDING | SIMULATOR_DEFERRED | Simulation / Analytics | Original numerical/whole-cycle prerequisites retained | Existing implementation and original future requirements | Remaining original simulator-dependent scope (017: full-cycle closure) | Explicit owner reactivation, live preflight, applicable CI and original evidence | NOT SELECTED | None until reactivation |
+| HPR-P25-010 | PENDING | SIMULATOR_DEFERRED | Monitoring / Simulation / Workflow | Original numerical/whole-cycle prerequisites retained | Existing implementation and original future requirements | Remaining original simulator-dependent scope (017: full-cycle closure) | Explicit owner reactivation, live preflight, applicable CI and original evidence | NOT SELECTED | None until reactivation |
+| HPR-P25-011 | PENDING | SIMULATOR_DEFERRED | Simulation / Risk / Analytics | Original numerical/whole-cycle prerequisites retained | Existing implementation and original future requirements | Remaining original simulator-dependent scope (017: full-cycle closure) | Explicit owner reactivation, live preflight, applicable CI and original evidence | NOT SELECTED | None until reactivation |
+| HPR-P25-012 | PENDING | FOUNDATION_SCOPE_REFINEMENT | Workflow / Audit / Simulation | Independent successor/design 029; simulator-dependent parent edges retained for deferred scope | Independent source data, history, monitoring/action or foundation acceptance | Original simulation input/execution, prediction, calibration or numerical obligations | Independent cases A–G; mixed parent not closed | NOT SELECTED | 029 separately selected scope separation |
+| HPR-P25-013 | PENDING | FOUNDATION_SCOPE_REFINEMENT | Analytics / Telemetry / Audit | Independent successor/design 029; simulator-dependent parent edges retained for deferred scope | Independent source data, history, monitoring/action or foundation acceptance | Original simulation input/execution, prediction, calibration or numerical obligations | Independent cases A–G; mixed parent not closed | NOT SELECTED | 029 separately selected scope separation |
+| HPR-P25-014 | PENDING | FOUNDATION_SCOPE_REFINEMENT | Analytics / Simulation | Independent successor/design 029; simulator-dependent parent edges retained for deferred scope | Independent source data, history, monitoring/action or foundation acceptance | Original simulation input/execution, prediction, calibration or numerical obligations | Independent cases A–G; mixed parent not closed | NOT SELECTED | 029 separately selected scope separation |
+| HPR-P25-015 | PENDING | FOUNDATION_SCOPE_REFINEMENT | API / Operator Experience | Independent successor/design 030; simulator-dependent parent edges retained for deferred scope | Independent source data, history, monitoring/action or foundation acceptance | Original simulation input/execution, prediction, calibration or numerical obligations | Independent cases A–G; mixed parent not closed | NOT SELECTED | 030 separately selected scope separation |
+| HPR-P25-016 | PENDING | FOUNDATION_SCOPE_REFINEMENT | Cross-module verification / Operations | Independent successor/design 030; simulator-dependent parent edges retained for deferred scope | Independent source data, history, monitoring/action or foundation acceptance | Original simulation input/execution, prediction, calibration or numerical obligations | Independent cases A–G; mixed parent not closed | NOT SELECTED | 030 separately selected scope separation |
+| HPR-P25-017 | PENDING | SIMULATOR_DEFERRED | Governance | Original numerical/whole-cycle prerequisites retained | Existing implementation and original future requirements | Remaining original simulator-dependent scope (017: full-cycle closure) | Explicit owner reactivation, live preflight, applicable CI and original evidence | NOT SELECTED | None until reactivation |
+| HPR-P25-018 | Registered in prior amendment; PLANNED — NOT SELECTED | FOUNDATION_ACTIVE | Cross-module engineering governance | 003/004: specific independent owner contracts, not all 002; 018: amendment docs CI + owner selection; 019/020: 018 | Original independent visualization/measurement or engineering provisioning objective | Any solver use remains outside this independent scope | Original independent acceptance; design is not implementation; F1/F3 actual cases | NOT SELECTED | Own bounded preflight/implementation after prerequisites |
+| HPR-P25-019 | Registered in prior amendment; PLANNED — NOT SELECTED | FOUNDATION_ACTIVE | Cross-module engineering governance | 003/004: specific independent owner contracts, not all 002; 018: amendment docs CI + owner selection; 019/020: 018 | Original independent visualization/measurement or engineering provisioning objective | Any solver use remains outside this independent scope | Original independent acceptance; design is not implementation; F1/F3 actual cases | NOT SELECTED | Own bounded preflight/implementation after prerequisites |
+| HPR-P25-020 | Registered in prior amendment; PLANNED — NOT SELECTED | FOUNDATION_ACTIVE | Cross-module engineering governance | 003/004: specific independent owner contracts, not all 002; 018: amendment docs CI + owner selection; 019/020: 018 | Original independent visualization/measurement or engineering provisioning objective | Any solver use remains outside this independent scope | Original independent acceptance; design is not implementation; F1/F3 actual cases | NOT SELECTED | Own bounded preflight/implementation after prerequisites |
+| HPR-P25-021 | Registered in prior amendment; PLANNED — NOT SELECTED | FOUNDATION_SCOPE_REFINEMENT | Cross-module engineering governance | Independent successor/design 021 after 020; simulator-dependent parent edges retained for deferred scope | Independent source data, history, monitoring/action or foundation acceptance | Original simulation input/execution, prediction, calibration or numerical obligations | Independent cases A–G; mixed parent not closed | NOT SELECTED | 021 after 020 separately selected scope separation |
+| HPR-P25-022 | Registered in prior amendment; PLANNED — NOT SELECTED | FOUNDATION_SCOPE_REFINEMENT | Cross-module engineering governance | Independent successor/design 022 after 018; simulator-dependent parent edges retained for deferred scope | Independent source data, history, monitoring/action or foundation acceptance | Original simulation input/execution, prediction, calibration or numerical obligations | Independent cases A–G; mixed parent not closed | NOT SELECTED | 022 after 018 separately selected scope separation |
+| HPR-P25-023 | Registered in prior amendment; PLANNED — NOT SELECTED | FOUNDATION_SCOPE_REFINEMENT | Cross-module engineering governance | Independent successor/design 028; simulator-dependent parent edges retained for deferred scope | Independent source data, history, monitoring/action or foundation acceptance | Original simulation input/execution, prediction, calibration or numerical obligations | Independent cases A–G; mixed parent not closed | NOT SELECTED | 028 separately selected scope separation |
+| HPR-P25-024 | Registered in prior amendment; PLANNED — NOT SELECTED | SIMULATOR_DEFERRED | Cross-module engineering governance | Original numerical/whole-cycle prerequisites retained | Existing implementation and original future requirements | Remaining original simulator-dependent scope (017: full-cycle closure) | Explicit owner reactivation, live preflight, applicable CI and original evidence | NOT SELECTED | None until reactivation |
+| HPR-P25-025 | Registered in prior amendment; PLANNED — NOT SELECTED | SIMULATOR_DEFERRED | Cross-module engineering governance | Original numerical/whole-cycle prerequisites retained | Existing implementation and original future requirements | Remaining original simulator-dependent scope (017: full-cycle closure) | Explicit owner reactivation, live preflight, applicable CI and original evidence | NOT SELECTED | None until reactivation |
+| HPR-P25-026 | Registered in prior amendment; PLANNED — NOT SELECTED | SIMULATOR_DEFERRED | Cross-module engineering governance | Original numerical/whole-cycle prerequisites retained | Existing implementation and original future requirements | Remaining original simulator-dependent scope (017: full-cycle closure) | Explicit owner reactivation, live preflight, applicable CI and original evidence | NOT SELECTED | None until reactivation |
+| HPR-P25-027 | Registered in prior amendment; PLANNED — NOT SELECTED | SIMULATOR_DEFERRED | Cross-module engineering governance | Original numerical/whole-cycle prerequisites retained | Existing implementation and original future requirements | Remaining original simulator-dependent scope (017: full-cycle closure) | Explicit owner reactivation, live preflight, applicable CI and original evidence | NOT SELECTED | None until reactivation |
+| HPR-P25-028 | NEW — PLANNED | FOUNDATION_ACTIVE | Topology coordinates Assets/Custody/Workflow | 019/020/021/022 accepted designs | Independent foundation objective; original mixed parents preserved | All numerical implementation excluded | Detailed registration above; actual evidence required | PLANNED — NOT SELECTED | Engineering baseline preflight after owner selection |
+| HPR-P25-029 | NEW — PLANNED | FOUNDATION_ACTIVE | Telemetry/Monitoring/Workflow/Audit/Analytics | 018 and specific current independent owner contracts | Independent foundation objective; original mixed parents preserved | All numerical implementation excluded | Detailed registration above; actual evidence required | PLANNED — NOT SELECTED | Independent monitoring/action preflight after owner selection |
+| HPR-P25-030 | NEW — PLANNED | FOUNDATION_ACTIVE | Cross-module verification | 018–022/028/029 design outputs | Independent foundation objective; original mixed parents preserved | All numerical implementation excluded | Detailed registration above; actual evidence required | PLANNED — NOT SELECTED | Foundation acceptance-case preflight after owner selection |
+| HPR-P25-031 | NEW — PLANNED | FOUNDATION_ACTIVE | Governance / Operations | 030; implemented verified F1/F2/F3; actual cases; applicable CI; operator acceptance | Independent foundation objective; original mixed parents preserved | All numerical implementation excluded | Detailed registration above; actual evidence required | PLANNED — NOT SELECTED | Independent foundation closure audit after owner selection |
+
+### Complete remaining roadmap inventory — preserved and independent obligations
+
+The following exact-code inventory covers all non-P2.5 identifiers actually present before amendment. Canonical objectives, deliverables, acceptance, owners, messages and dependency edges remain unchanged; no new numerical prerequisite is introduced. HMR historical-only references do not constitute a newly verified completion. P1-009/010 retain their historical decision blockers; implemented P1-018/019 superseding evidence is preserved. P3 retains its original deferral, independently of simulator deferral. No earlier operational test is rerun or requalified here.
+
+| Exact task | Verified record status | Classification | Owner / dependency disposition | Preserved and deferred scope | Acceptance / selection / next action |
+|---|---|---|---|---|---|
+| HMR-001 | Historical reference; unchanged | INDEPENDENT_UNCHANGED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HMR-003 | Historical reference; unchanged | INDEPENDENT_UNCHANGED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HMR-005 | Historical reference; unchanged | INDEPENDENT_UNCHANGED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HMR-009 | Historical reference; unchanged | INDEPENDENT_UNCHANGED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HMR-013 | Historical reference; unchanged | INDEPENDENT_UNCHANGED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HMR-028 | Historical reference; unchanged | INDEPENDENT_UNCHANGED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HMR-050 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HMR-051 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HMR-052 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HMR-053 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HMR-054 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HMR-055 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HMR-056 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HMR-057 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HMR-058 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HMR-059 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HMR-060 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HMR-061 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HMR-062 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HMR-063 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HMR-064 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HMR-065 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HMR-066 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HMR-067 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HMR-068 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HMR-069 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HMR-070 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HMR-071 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HMR-072 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HMR-073 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HMR-074 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HMR-075 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HMR-076 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HMR-077 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HMR-078 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HMR-079 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HMR-080 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HMR-081 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HMR-082 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HMR-083 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HMR-084 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HMR-085 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HMR-086 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HMR-087 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HMR-088 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HMR-089 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HMR-090 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HMR-091 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HMR-092 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HMR-093 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HMR-094 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HMR-095 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HMR-096 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HMR-097 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HMR-098 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HMR-099 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HMR-100 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HMR-101 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HMR-102 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HMR-103 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HMR-104 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HMR-105 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HMR-106 | CI-confirmed implemented in existing 57-task ledger | COMPLETED_PRESERVED | Existing accountable owner retained; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-CI-001 | COMPLETED within recorded scope | COMPLETED_PRESERVED | CI / Verification; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P0-001 | COMPLETED within recorded scope | COMPLETED_PRESERVED | Platform / Workbench / Identity; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P0-002 | COMPLETED within recorded scope | COMPLETED_PRESERVED | Platform / Workbench / Identity; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P0-003 | COMPLETED within recorded scope | COMPLETED_PRESERVED | Architecture Testing; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P0-004 | COMPLETED within recorded scope | COMPLETED_PRESERVED | API / Security; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P0-005 | COMPLETED within recorded scope | COMPLETED_PRESERVED | Platform / Logging; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P0-006 | COMPLETED within recorded scope | COMPLETED_PRESERVED | Security; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P0-007 | COMPLETED within recorded scope | COMPLETED_PRESERVED | Repository; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P0-008 | COMPLETED within recorded scope | COMPLETED_PRESERVED | Platform / Workbench / API; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P0-009 | COMPLETED within recorded scope | COMPLETED_PRESERVED | CI / OpenAPI; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P0-010 | COMPLETED within recorded scope | COMPLETED_PRESERVED | Security Architecture; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P0-011 | COMPLETED within recorded scope | COMPLETED_PRESERVED | Security / Telemetry; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P0-012 | COMPLETED within recorded scope | COMPLETED_PRESERVED | Security / Secrets / Certificates; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P0-013 | COMPLETED within recorded scope | COMPLETED_PRESERVED | Security / Incident Governance; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P0-014 | COMPLETED within recorded scope | COMPLETED_PRESERVED | Security Operations; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P0-015 | COMPLETED within recorded scope | COMPLETED_PRESERVED | Repository / Independent Audit; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P1-001 | COMPLETED within recorded scope | COMPLETED_PRESERVED | Runtime Architecture; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P1-002 | COMPLETED within recorded scope | COMPLETED_PRESERVED | Application Runtime; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P1-003 | COMPLETED within recorded scope | COMPLETED_PRESERVED | PostgreSQL; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P1-004 | COMPLETED within recorded scope | COMPLETED_PRESERVED | DR; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P1-005 | COMPLETED within recorded scope | COMPLETED_PRESERVED | DR; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P1-006 | COMPLETED within recorded scope | COMPLETED_PRESERVED | HA; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P1-007 | COMPLETED within recorded scope | COMPLETED_PRESERVED | Deployment; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P1-008 | COMPLETED within recorded scope | COMPLETED_PRESERVED | CI / API; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P1-009 | Historical BLOCKED-DECISION; superseded operationally by 018/019 | INDEPENDENT_UNCHANGED | CD; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P1-010 | Historical BLOCKED-DECISION; superseded operationally by 018/019 | INDEPENDENT_UNCHANGED | Observability; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P1-011 | COMPLETED within recorded scope | COMPLETED_PRESERVED | Database Operations; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P1-012 | COMPLETED within recorded scope | COMPLETED_PRESERVED | Survivability Verification; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P1-013 | COMPLETED within recorded scope | COMPLETED_PRESERVED | Production Infrastructure Decisions; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P1-014 | COMPLETED within recorded scope | COMPLETED_PRESERVED | Runtime Safety; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P1-015 | COMPLETED within recorded scope | COMPLETED_PRESERVED | Application HA; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P1-016 | COMPLETED within recorded scope | COMPLETED_PRESERVED | PostgreSQL HA / Connections; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P1-017 | COMPLETED within recorded scope | COMPLETED_PRESERVED | Backup / WAL / PITR; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P1-018 | COMPLETED within recorded scope | COMPLETED_PRESERVED | CD / Release; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P1-019 | COMPLETED within recorded scope | COMPLETED_PRESERVED | Observability / SRE; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P1-020 | COMPLETED within recorded scope | COMPLETED_PRESERVED | Database Operations; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P1-021 | COMPLETED within recorded scope | COMPLETED_PRESERVED | Backup / PITR; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P1-022 | COMPLETED within recorded scope | COMPLETED_PRESERVED | PostgreSQL HA; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P1-023 | COMPLETED within recorded scope | COMPLETED_PRESERVED | Application HA; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P1-024 | COMPLETED within recorded scope | COMPLETED_PRESERVED | PostgreSQL / Application Recovery; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P1-025 | COMPLETED within recorded scope | COMPLETED_PRESERVED | Release / Deployment; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P1-026 | COMPLETED within recorded scope | COMPLETED_PRESERVED | Observability / SRE; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P1-027 | COMPLETED within recorded scope | COMPLETED_PRESERVED | Database Operations; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P1-028 | COMPLETED within recorded scope | COMPLETED_PRESERVED | Retention / Archival; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P1-029 | COMPLETED within recorded scope | COMPLETED_PRESERVED | Survivability Exercise; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P2-001 | COMPLETED within recorded scope | COMPLETED_PRESERVED | Governance; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P2-002 | COMPLETED within recorded scope | COMPLETED_PRESERVED | Architecture; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P2-003 | COMPLETED within recorded scope | COMPLETED_PRESERVED | Domain; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P2-004 | COMPLETED within recorded scope | COMPLETED_PRESERVED | Modules; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P2-005 | COMPLETED within recorded scope | COMPLETED_PRESERVED | API; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P2-006 | COMPLETED within recorded scope | COMPLETED_PRESERVED | Database; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P2-007 | COMPLETED within recorded scope | COMPLETED_PRESERVED | Semantic Remediation; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P2-008 | COMPLETED within recorded scope | COMPLETED_PRESERVED | Semantic Remediation; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P2-009 | COMPLETED within recorded scope | COMPLETED_PRESERVED | Semantic Remediation; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P2-010 | COMPLETED within recorded scope | COMPLETED_PRESERVED | Data Governance; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P2-011 | COMPLETED within recorded scope | COMPLETED_PRESERVED | Testing; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P2-012 | COMPLETED within recorded scope | COMPLETED_PRESERVED | Documentation CI; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P2-013 | COMPLETED within recorded scope | COMPLETED_PRESERVED | Governance; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P3-001 | DEFERRED (existing phase decision) | INDEPENDENT_UNCHANGED | Telemetry / Performance; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P3-002 | DEFERRED (existing phase decision) | INDEPENDENT_UNCHANGED | Telemetry / TimescaleDB; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P3-003 | DEFERRED (existing phase decision) | INDEPENDENT_UNCHANGED | Telemetry / TimescaleDB; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P3-004 | DEFERRED (existing phase decision) | INDEPENDENT_UNCHANGED | Telemetry; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P3-005 | DEFERRED (existing phase decision) | INDEPENDENT_UNCHANGED | Spatial / Topology; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P3-006 | DEFERRED (existing phase decision) | INDEPENDENT_UNCHANGED | Spatial / PostGIS; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P3-007 | DEFERRED (existing phase decision) | INDEPENDENT_UNCHANGED | Spatial / Topology; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-P3-008 | DEFERRED (existing phase decision) | INDEPENDENT_UNCHANGED | Future Capability Governance; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-REL-001 | COMPLETED within recorded scope | COMPLETED_PRESERVED | Release Management; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+| HPR-REL-002 | COMPLETED within recorded scope | COMPLETED_PRESERVED | Release Management; original dependency edges unchanged | All original scope retained; no new simulator deferral | Existing gate retained; no reopening/selection; future scope needs owner authorization |
+
+Inventory reconciliation: **182 actual existing distinct task codes**, plus **4 collision-free new codes**, all accounted for above. `HPR-P25-002X` and `HPR-P25-008X` are historical placeholder patterns, not executable task registrations. Ranges in historical prose refer to the exact individual codes above. No roadmap obligation is implicitly cancelled.
+
+### Amendment validation and publication boundary
+
+Executed locally on the recovered main source with this two-document amendment:
+
+- `python3 .github/scripts/test_validate_docs.py`: PASS, 10 tests.
+- `python3 .github/scripts/test_validate_openapi_snapshot.py`: PASS, 10 tests.
+- `python3 .github/scripts/test_generate_data_dictionary.py`: PASS, 17 tests.
+- `python3 .github/scripts/test_resolve_openapi_base.py`: PASS, 14 tests; its printed CI/base is a unit-test fixture, not live CI evidence.
+- `python3 .github/scripts/validate_docs.py`: PASS, 95 documents, 5286 relative links, 24 modules and 13 P2 rows.
+- `python3 .github/scripts/validate_openapi_snapshot.py`: PASS, offline snapshot only, 244 paths / 263 operations / 231 schemas.
+- `python3 .github/scripts/validate_p1_closure.py`: PASS, maintained evidence-shape validator; no new infrastructure exercise.
+- `git diff --check`: PASS.
+- Independent scratch audit: PASS, all 182 pre-existing literal task codes classified, four collision-free new registrations, acyclic foundation design dependencies with no required deferred numerical node; all 69 existing source-index paths present.
+- Byte-preservation/scope audit: PASS, reconciliation is append-only; roadmap history byte-identical except its single prospective P2.5 current-control row; exactly the two authorized documents differ. New registration objectives, owners, prerequisites, deliverables, write scope, API/persistence design, compatibility, negative cases, messages, selection gates and exclusions reviewed.
+
+No Java/PostgreSQL/solver acceptance exercise was executed for this documentation-only change. Dictionary generator unit tests do not prove production catalog equality. Full production #643 failure and pending Slice B acceptance remain unresolved as stated above. Publish only on the recovered expected-head lease; verify the new commit changes exactly these two files and observe its exact-head Documentation CI startup. This record does not predict that run's result; stop at startup and await owner notification. No branch, PR, tag, release, deployment or subsequent task is authorized.

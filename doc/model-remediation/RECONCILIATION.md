@@ -14844,3 +14844,64 @@ Repair publication checks actually completed: 10 documentation validator tests a
 10 OpenAPI validator tests PASS; canonical docs PASS (97 documents, 5,302 links,
 24 modules, 13 P2 rows); offline OpenAPI PASS (263 operations, 244 paths, 231 schemas);
 existing P1 closure evidence consistency PASS. These are not full Java CI acceptance.
+
+
+## 2026-10-11 — Accepted HPR-P25-037 and registered HPR-P25-038 publication-policy preflight
+
+Owner Next selects prerequisite recovery and one F1-02 registration. Current main
+`0868f2d17ce0eaefc53902ce36fa711681cd406b`, tree
+`c1ad7d374fa19a7529b6aef741acb13ca73badbb`;
+[Production #654](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38155023632)
+and [Docs #237](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38155023649)
+SUCCESS on that exact SHA. Production reports 1,606 tests, zero failures/errors/skips,
+repository verification, OpenAPI snapshot/compatibility and actual-catalog dictionary
+checks passed: 145 migrations, 470 JPA mappings, 490 relations, no unresolved owners.
+HPR-P25-037 storage and bounded regulator test repair are now ACCEPTED within their
+source scope; earlier pending/blocked statements remain historical evidence.
+
+Current AGENTS.md, active roadmap, reconciliation and source contracts were read.
+Facility.ownerPartyId is optional; Party export proves existence only. Technical actor
+resolution and TenantContext do not establish company access. Identity has evidence-backed
+permissions and FACILITY/CUSTOM scopes, but no COMPANY scope or exported Topology
+access contract. Architecture exports must be explicitly registered if extended.
+Station revision V1 bytes and private append/read remain unchanged and cannot be treated
+as publication, human approval, history authorization or company membership evidence.
+
+Registration message `docs(topology): register station revision publication preflight`
+changes only this reconciliation and the Ultimate Roadmap. The active status dashboard
+records accepted 037 and the next registered HPR-P25-038 documentation-only preflight.
+Original verbatim 037 registration and historical snapshot are preserved. No new/deleted
+file, Java, SQL, dictionary, dependency, permission, API, version, release or closure change.
+
+Future HPR-P25-038 exact message:
+`docs(topology): define station revision publication and history policy`.
+Its exclusive write allowlist is the same two documents; no migration is reserved.
+A separate owner Next after successful registration Documentation CI selects policy
+execution. The binding roadmap contract requires concrete authoritative owner/actor
+and grant semantics, authorized exact/list history and transfer/revocation rules,
+publication eligibility distinct from source classification, generation/predecessor CAS
+with first-head and competing-head races, transactional evidence/head updates, bounded
+reauthorized replay, immutable correction/withdrawal and source-backed module contracts.
+It must register at most the first resolved small implementation slice with exact files,
+message and acceptance gates; unresolved cross-owner contracts must be resolved first.
+No runtime publication or security implementation is authorized by registration.
+
+Synthetic two-company test design must cover unauthorized/anonymous/forged/default
+scope access, owner transfer/revocation, historical disclosure, missing/wrong predecessor,
+concurrent and stale/ABA updates, same/different replay, corrupt reads, transaction rollback,
+immutable corrections/withdrawal, time provenance and migration/API compatibility gates.
+These future tests have not run here. Current validation is documentation-only.
+
+HPR-P25-038 registration source-complete, Docs acceptance PENDING; execution PLANNED.
+F1-02 runtime/F1-03 API unregistered; F1–F4/P2.5 OPEN. Simulator/P3 DEFERRED; prior
+gas-first/GZ2/own-engine steady/transient direction retained without numerical work.
+No SITE commissioning or physical certification follows from synthetic/platform CI.
+Publish one guarded main commit, confirm exact-head Docs CI startup, then STOP.
+
+
+Registration validation actually completed: 10 documentation-validator tests and 10
+OpenAPI-validator tests PASS; canonical documentation PASS (97 documents, 5,302 links,
+24 modules, 13 P2 rows); offline OpenAPI PASS (263 operations, 244 paths, 231 schemas);
+existing P1 closure evidence consistency PASS. Exact two-document scope, unchanged
+verbatim 037 registration/history and whitespace checks PASS before publication.
+No new Java/database execution is claimed by this registration.

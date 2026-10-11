@@ -13,12 +13,13 @@
 
 **Product policy:** Hidra is universal, configurable and company/network/product independent. No real customer data, P&IDs, vendor curves or live SCADA are prerequisites for generic development. PLATFORM software testing uses explicit synthetic data; customer SITE commissioning is an entirely separate gate. Numerical simulation work is deferred.
 
-**Code discipline:** `HPR-P25-037` is an already **registered** execution code. Codes `F1-02` etc. are **planning references only** and MUST NOT be executed or treated as approved HPR codes before registration, exact commit message and exact create/update/delete file allowlists. Dependencies are minimum known gates, not blanket permission.
+**Code discipline:** `HPR-P25-037` is implemented and CI accepted; `HPR-P25-038` is the next **registered documentation-only preflight**. Codes `F1-02` etc. are **planning references only** and MUST NOT be executed or treated as approved HPR codes before registration, exact commit message and exact create/update/delete file allowlists. Dependencies are minimum known gates, not blanket permission.
 
 | Order | Code / planning reference | Task | Current status | Dependencies / gate | Track |
 |---|---|---|---|---|---|
-| 1 | HPR-P25-037 | Immutable station-graph PostgreSQL persistence | REGISTERED — awaiting CI acceptance; implementation not selected | HPR-P25-032/034/035/036; registration Docs CI; owner Next | F1 |
-| 2 | F1-02 | Station revision history / transactional publication policy | PLANNED — needs HPR registration | HPR-P25-037 implemented/verified; owner/actor/CAS policy | F1 |
+| 1 | HPR-P25-037 | Immutable station-graph PostgreSQL persistence | COMPLETED — exact-head Production #654 and Docs #237 SUCCESS | Accepted at `0868f2d17ce0eaefc53902ce36fa711681cd406b` after bounded #653 repair | F1 |
+| 2 | HPR-P25-038 / F1-02 preflight | Station revision publication/history policy and implementation decomposition | REGISTERED — preflight execution PLANNED; registration Docs CI pending | Accepted HPR-P25-037; passing registration Docs CI; separate owner Next | F1 |
+| 2a | F1-02 implementation | Station revision history / transactional publication | PLANNED — not registered or implemented | HPR-P25-038 policy design; exact implementation allowlist and subsequent owner Next | F1 |
 | 3 | F1-03 | Company-scoped authoring, topology APIs and exact-history access | PLANNED — needs HPR registration | F1-02; authorization/API contracts | F1 |
 | 4 | F1-04 | Synthetic multi-company topology validation | PLANNED — needs HPR registration | F1-03; registered acceptance test envelope | F1 |
 | 5 | F2-01 | Company-owned product/property/method configuration | PLANNED — needs HPR registration | F1 owner and scope model; property-method policy | F2 |
@@ -58,7 +59,7 @@
 
 ### HPR-P25-037 — Immutable station-graph PostgreSQL append and exact read
 
-**State:** REGISTERED / PLANNED — future implementation is not selected. Registration baseline is `91e74c80c9ad327150174ddada08de058e5de7f7`; do not infer CI acceptance without checking its actual completed run.
+**State:** COMPLETED within immutable storage scope. Implementation `4e7ac44f9eb917fa6eee42aaf858e2e6b0886fa4` plus corrective test commit `0868f2d17ce0eaefc53902ce36fa711681cd406b`; exact-head Production #654 and Documentation #237 SUCCESS. The complete original registration below remains historical and binding for its delivered scope.
 
 **Exact approved implementation commit:** `feat(topology): persist immutable station graph revisions`
 
@@ -1302,3 +1303,163 @@ Repair publication checks actually completed: 10 documentation validator tests a
 10 OpenAPI validator tests PASS; canonical docs PASS (97 documents, 5,302 links,
 24 modules, 13 P2 rows); offline OpenAPI PASS (263 operations, 244 paths, 231 schemas);
 existing P1 closure evidence consistency PASS. These are not full Java CI acceptance.
+
+
+## 2026-10-11 — Register HPR-P25-038 station revision publication/history policy preflight
+
+### Selected registration and accepted prerequisite
+
+Owner Next selects the active F1-02 prerequisite recovery and registration after
+HPR-P25-037 acceptance. Current main `0868f2d17ce0eaefc53902ce36fa711681cd406b`,
+tree `c1ad7d374fa19a7529b6aef741acb13ca73badbb`. Exact-head
+[Production #654](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38155023632)
+and [Documentation #237](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38155023649)
+completed SUCCESS. Production job 114516116736 completed repository verification,
+OpenAPI publication/snapshot/compatibility and actual database dictionary gates.
+Its test summary reports **1,606 tests, zero failures/errors/skips**. Actual PostgreSQL
+16.15 capture checks 145 migrations, 470 JPA mappings, 490 relations and no unresolved
+owners. This accepts owner-private station storage and the bounded regulator test
+repair; it does not establish publication authority or multi-company isolation.
+
+Current AGENTS.md, active roadmap, reconciliation and current production source were
+read. HPR-P25-038 was absent from the active/history registry. Only two governance
+files change in this registration; the active dashboard now records accepted 037
+and next registered 038. Original verbatim 037 registration and the immutable
+historical snapshot are retained. Registration message:
+`docs(topology): register station revision publication preflight`.
+
+### Recovered source and unresolved contract boundaries
+
+| Source | Observed implementation | Consequence for 038 |
+|---|---|---|
+| `src/main/java/dz/sh/hidra/modules/topology/domain/model/StationInternalGraphRevision.java` | Immutable declaration with supplied predecessor, qualification and provenance; no company or authenticated publisher | Keep V1 bytes stable; publication metadata must be separate |
+| `src/main/java/dz/sh/hidra/modules/topology/application/port/out/StationInternalGraphRevisionRepositoryPort.java` and `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcStationInternalGraphRevisionRepositoryAdapter.java` | Exact facility/revision append/read and integrity verification; no head, grant or predecessor enforcement | Do not turn this storage port into an authorization oracle |
+| `src/main/java/dz/sh/hidra/modules/topology/domain/model/Facility.java`, `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/FacilityJpaEntity.java` and `src/main/java/dz/sh/hidra/modules/topology/application/service/FacilityApplicationService.java` | Optional ownerPartyId plus descriptive snapshots; registration checks Party existence | Party existence and mutable owner reference are insufficient for company grants or historical access |
+| `src/main/java/dz/sh/hidra/modules/party/application/contract/topology/TopologyPartyReferenceContract.java` | Public existence-only export | Company semantics need an explicit owner contract; no importing private Party domain/persistence |
+| `src/main/java/dz/sh/hidra/platform/security/CurrentActorResolver.java`, `src/main/java/dz/sh/hidra/platform/security/SpringSecurityCurrentSecurityContext.java` and `src/main/java/dz/sh/hidra/platform/security/AuthenticatedPrincipal.java` | Technical authenticated actor/name resolution with anonymous fallback | Derive actor from trusted current context; reject anonymous publisher and caller-supplied identity |
+| `src/main/java/dz/sh/hidra/platform/security/TenantContext.java` | Optional thread-local string, including currentOrDefault | A technical tenant string/default is not proof of company membership or facility access |
+| `src/main/java/dz/sh/hidra/modules/identity/application/service/IdentityAuthorizationApplicationService.java` and `src/main/java/dz/sh/hidra/modules/identity/domain/value/ScopeType.java` | Evidence-backed permission evaluation; scopes include FACILITY and CUSTOM, not COMPANY | Review reuse through an Identity-owned public export; do not invent a COMPANY enum or bypass policy evaluation |
+| `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java` | Explicit exported cross-module packages; no Identity-to-Topology authorization export currently listed | Any later new export and architecture allowlist amendment need exact registration |
+| `src/main/java/dz/sh/hidra/modules/topology/api/rest/TopologyRestApi.java` | REST marker interface only; no station publication operation is declared there | REST/OpenAPI changes are separate future F1-03 implementation |
+
+These are source-backed findings, not new permission grants or an executed policy.
+No default company, Sonatrach-specific access, automatic owner transfer or arbitrary
+JWT/header company assertion is selected. Synthetic companies/facilities/actors are
+sufficient for all generic design and later software acceptance cases.
+
+### Registered next executable task — HPR-P25-038
+
+**Exact future execution message:**
+`docs(topology): define station revision publication and history policy`.
+
+**Task type:** documentation-only design preflight. A separate owner Next after this
+registration's successful exact-head Documentation CI selects 038. It does not select
+publication Java, SQL, company grants, API or closure in the same instruction.
+
+**Exclusive execution write allowlist:**
+
+| Operation | Exact path |
+|---|---|
+| UPDATE | `doc/roadmap/ULTIMATE_ROADMAP.md` — current statuses plus detailed source-backed policy and bounded future implementation registration |
+| UPDATE | `doc/model-remediation/RECONCILIATION.md` — matching policy, acceptance gaps and validation evidence |
+| CREATE / DELETE | None authorized |
+
+All other paths, including `doc/roadmap/history/ULTIMATE_ROADMAP_HISTORY.md`, Java,
+SQL, dictionary, OpenAPI, frontend, dependencies, security settings, versions and
+release artifacts are read-only in 038. No migration version is reserved or authorized
+by this preflight. Later migration numbers must be selected from refreshed live source.
+
+### Binding preflight outputs and decisions to resolve
+
+1. **Identity and ownership:** distinguish technical tenant, Company/Party identity,
+   authenticated Identity actor, facility ownership and access grant. Choose the
+   authoritative company representation using existing Party/Identity contracts and
+   evidence-backed grants. Specify rejection of absent/unowned facilities, absent
+   authenticated actor, ambiguous owner, default tenant and unverified supplied company.
+   Document delegation/administrative access separately from ownership. Existing V1
+   stored synthetic revisions stay intact; storage alone never grants access.
+2. **Authorized history:** define separate append/author, publish, current-head,
+   exact-history and list-history operations, with authorization before existence or
+   payload disclosure. Freeze authoritative ownership attribution in publication
+   evidence and resolve transfer semantics explicitly: historical ownership cannot
+   silently grant current access to either old or new owner. Specify not-found versus
+   access-denied disclosure, bounded deterministic pagination and corrupt-read failure.
+   Access checks apply even to identical replay and old revisions.
+3. **Publication semantics:** separate stored DRAFT, structural qualification, declared
+   VERIFIED evidence and actual authenticated publication. Define first publication,
+   expected predecessor/head, conflicts and immutable predecessor existence under the
+   same authorized facility. Explicitly decide whether STRUCTURALLY_QUALIFIED is a
+   publication eligibility condition; it cannot stand in for human/operational approval.
+   No source attestation or workflow approval may be invented from a classification.
+4. **Atomic compare-and-set:** define a monotonic head generation plus exact predecessor
+   comparison so stale requests and ABA-style reuse cannot pass. Choose one transaction
+   boundary for validated stored revision, immutable publication evidence and head CAS;
+   initial-head and competing publication races have one winner, and losers leave no
+   head/event/aggregate side effects. No retry may silently substitute a newer head.
+5. **Replay and corrections:** define bounded request identity scoped by authoritative
+   company/facility/operation, digest and authenticated actor. Identical retry must not
+   increment generation or duplicate events; changed request content/actor/scope conflicts.
+   Reauthorization precedes returning any replay result. Corrections, withdrawal and
+   reactivation are explicit immutable events; define whether withdrawn state retains
+   generation and how subsequent expected-head rules work. Existing revision bytes are
+   never rewritten or deleted. Transport outcomes must distinguish rejection from
+   absence and storage/integrity failures.
+6. **Persistence and boundaries:** propose separate owner/publication/head metadata,
+   constraints, foreign references, locks/CAS and transaction ownership without
+   modifying V1 serialization. State owner-transfer and grant-revocation races and
+   how reads/publication fail closed. Reuse only public owner contracts; enumerate
+   any required Identity/Party export and architecture allowlist prerequisite. Do not
+   smuggle cross-module private imports into a Topology implementation.
+7. **Executable decomposition:** produce dependency-ordered small implementation
+   slices and register at most the first resolved slice, with an exact unique HPR code,
+   message, CREATE/UPDATE/DELETE paths, migration authorization only if needed,
+   focused tests and full CI/dictionary gates. Candidates are not permission until
+   registered. If an ownership/security contract is unresolved, record the concrete
+   prerequisite and register its bounded resolution instead of broad publication code.
+
+The expected next design yields an implementable policy, not another generic inventory.
+Every consequential decision must cite current source, identify newly proposed behavior,
+and distinguish PLATFORM acceptance from optional SITE commissioning. No real deployment
+calibration or manufacturer data is required for this policy.
+
+### Required future acceptance matrix and current validation
+
+The 038 design must map each future test to an owner and proposed implementation slice:
+first publication; exact historical retrieval; two authorized synthetic companies;
+cross-company/anonymous/forged-actor/default-tenant denial; unowned/missing facility;
+revoked grant and owner transfer; stale/absent/wrong-facility predecessor; concurrent
+first/head updates; ABA protection; same/different request replay; transaction failure
+without publication side effects; corrupt bytes/digest; effective versus recorded and
+publication instants; corrections/withdrawal without rewriting old payload; bounded
+history ordering; fresh/actual-predecessor migrations and OpenAPI compatibility where
+API is later introduced. Do not claim those future tests have executed in registration.
+
+Exact present registration and future 038 documentation checks:
+`python3 .github/scripts/test_validate_docs.py`,
+`python3 .github/scripts/test_validate_openapi_snapshot.py`,
+`python3 .github/scripts/validate_docs.py`,
+`python3 .github/scripts/validate_openapi_snapshot.py`,
+`python3 .github/scripts/validate_p1_closure.py`, `git diff --check`, exact two-document
+scope and unchanged historical/verbatim registration checks. Maven/database execution
+is not applicable to a documentation-only registration or design.
+
+| Task | Current status | Next authorized selection |
+|---|---|---|
+| HPR-P25-037 and #653 correction | Completed — exact-head Production #654 and Docs #237 SUCCESS | Retain accepted owner-private storage scope |
+| HPR-P25-038 registration | Completed in source; exact-head Docs CI PENDING | Publish `docs(topology): register station revision publication preflight` |
+| HPR-P25-038 execution | Planned / NOT EXECUTED | Passing registration Docs CI and separate owner Next select only the two-document policy preflight |
+| F1-02 runtime publication and F1-03 API | Planned / NOT REGISTERED / NOT IMPLEMENTED | Exact later implementation contract and subsequent owner selection required |
+| F1–F4 / P2.5 | OPEN | No end-to-end PLATFORM or SITE gate/closure implied |
+| Simulator / P3 | DEFERRED | Prior gas-first/GZ2/own-engine steady/transient direction retained; no numerical execution selected |
+
+Publish only this two-document registration directly to main with guarded expected
+head; verify new commit/tree/parent/scope and exact-head Documentation CI starts,
+then STOP without waiting for completion or executing 038. Version unchanged.
+
+
+Registration validation actually completed: 10 documentation-validator tests and 10
+OpenAPI-validator tests PASS; canonical documentation PASS (97 documents, 5,302 links,
+24 modules, 13 P2 rows); offline OpenAPI PASS (263 operations, 244 paths, 231 schemas);
+existing P1 closure evidence consistency PASS. Exact two-document scope, unchanged
+verbatim 037 registration/history and whitespace checks PASS before publication.
+No new Java/database execution is claimed by this registration.

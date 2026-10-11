@@ -15454,3 +15454,90 @@ relative links, 24 modules, 13 P2 rows); offline OpenAPI PASS (263 operations,
 executing closure. Exact two-document scope, both future CREATE paths absent,
 existing source references, preserved historical roadmap/reconciliation and
 whitespace checks PASS. No Java/Maven/database execution in this docs-only stage.
+
+
+## 2026-10-11 — HPR-P25-042 live Facility/Party owner-reference implementation
+
+Owner Next selects the registered four-file implementation after exact-head
+[Docs #247](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38170018239)
+SUCCESS on registration `14cb079832da0781858d5b224b578a73e6c47b7c`.
+Current main `58f1b3b70adc13053f7427bb130125ededea7854`, tree
+`ec2746a52d12f8807b7fd1396022154ef5f16ddf`, includes concurrent documentation-only
+Organization gap review, roadmap progress tracking and the owner's execution-summary
+correction. All were recovered. Current section 1.1 is preserved except the selected
+042 row now records implementation complete in source and pending exact-head CI.
+Registration, execution order, four-file allowlist and runtime source are unchanged.
+[Docs #250](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38170636571)
+is SUCCESS on this current head; Docs #249 is also SUCCESS. Latest
+[Production #658](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38169424558)
+is SUCCESS on `74d0d222c470fcb16402db41aec3de0c57836d0a`; Docs #248 was observed
+queued at initial recovery and subsequently recorded SUCCESS in the owner's section 1.1. Registration Docs and full runtime prerequisite
+gates are green; no failed CI is bypassed. AGENTS.md, current roadmap/reconciliation,
+Facility/domain/port, accepted Party export, storage limits and architecture rules
+were reread; both CREATE paths absent before mutation. Concurrent gap review remains
+unchanged and does not select unrelated remediation.
+Exact message: `feat(topology): resolve live station revision owner references`.
+
+Executed only the four-file allowlist: CREATE StationRevisionOwnerQueryService and
+its unit test; UPDATE these two governance documents. The final Spring service
+constructor requires FacilityRepositoryPort and accepted TopologyPartyEligibilityContract.
+Its Optional<OwnerReference> resolve(String facilityId) returns a nested immutable
+record of facilityId/companyPartyId. Records trim and reject blank/null or over-80
+code-point references with IllegalArgumentException; query invalid input returns empty
+without touching either dependency. Bounds use Unicode code points without truncation.
+
+Each call finds the trimmed exact Facility.id once, rejects absence or mismatched
+identity before querying Party, derives only live Facility.ownerPartyId, rejects
+missing/overlong owner and requires accepted Party active-reference eligibility.
+Success returns only those exact identities. Populated owner snapshots, names,
+facility code/type, tenant/default/company arguments and actor claims do not supply
+ownership. Every call rereads current owner and eligibility; failures propagate.
+No save, cache, Identity permission query or transaction wrapper is introduced.
+FacilityKind/FacilityStatus are not extra query filters; an owner reference grants
+no lifecycle/type access. Existing owner contracts/guardrails remain unchanged.
+
+Synthetic deterministic tests capture actual Facility/Party lookups and prohibit saves.
+They cover invalid/no-access input, normalization with case preservation, absent and
+mismatched facility, plausible snapshots with invalid owner, eligible/ineligible owner,
+independent facilities/owners, owner/eligibility/removal changes across calls, every
+FacilityStatus/FacilityKind, ASCII/supplementary Unicode 80/81-code-point boundaries,
+immutable prior observation, both dependency failures and constructor/record guards.
+No new Spring context or database-specific behavior is claimed for these tests.
+
+OwnerReference remains a sequential observation only: no permission, membership,
+legal-company classification, ownership epoch/publication binding, atomic revocation
+or transfer evidence. No user-facing operation is enabled. Accepted 041 permissions
+must later be evaluated using authoritative derived owner under a separately registered
+cross-owner evidence protocol; no previous reference/boolean authorizes a later
+transaction. User/grant/policy/provider/Party/Facility linearization remains mandatory
+before public publication/history/API; owner epoch, transfer and publication services
+remain unregistered. After full exact-head CI succeeds and separate owner Next,
+recover/register that bounded protocol; do not execute it in this stage.
+
+F1–F4/P2.5 OPEN and simulator/P3 DEFERRED. Gas-first/GZ2 own-engine steady/transient,
+dynamic versioned inputs, operator-controlled recommendations, synthetic development
+and owner-supplied deployment calibration retained. Version/release/deployment and
+closure unchanged. Source Completed; full exact-head CI acceptance PENDING. Publish
+one guarded direct-main commit, verify exact parent/tree/four paths and Production/
+Docs startup, then STOP without waiting for completion or advancing.
+
+
+HPR-P25-042 focused validation: registered four-suite Maven selection completed
+successfully (exit 0), 100 tests passed, zero failures/errors/skips: owner query 42,
+Party eligibility 9, paired permission 34 and architecture guards 15. Full registered
+`bash mvnw -B -q clean verify` completed successfully (exit 0), produced the executable
+jar and reported 1,743 tests across 368 reports: 1,406 passed, 337 skipped, zero
+failures/errors. All 42 new tests passed in the full run. Docker-dependent suites
+remain locally skipped because /var/run/docker.sock is absent; exact-head Production
+CI must execute PostgreSQL/runtime OpenAPI/dictionary gates before full acceptance.
+Java 21, runtime-only Maven proxy settings and explicit Mockito 5.23.0 Java agent
+were used without repository configuration changes. Concurrent main advancement
+changed only documentation; tested production/test source is unchanged.
+
+Documentation-validator 10 and OpenAPI-validator 10 unit tests PASS; canonical docs
+PASS (98 documents, 5,306 relative links, 24 modules, 13 P2 rows); offline OpenAPI
+PASS (263 operations, 244 paths, 231 schemas); existing P1 closure evidence consistency
+PASS without executing closure. Final four-file/header/absent-at-baseline CREATE,
+unchanged exports/configuration/gap register, historical roadmap/reconciliation,
+owner execution-summary preservation apart from selected 042 status and whitespace checks PASS. Full exact-head
+CI acceptance remains PENDING; publish and verify startup, then STOP.

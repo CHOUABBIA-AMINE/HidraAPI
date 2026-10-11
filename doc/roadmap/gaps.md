@@ -11,6 +11,9 @@ CURRENT — ongoing module review; findings below are not automatically authoriz
 | ID-GAP-001 | identity | Secure first-use activation for locally authenticated users | UNVERIFIED | Identity credential lifecycle; onboarding policy |
 | ID-GAP-002 | identity | Station monitoring limited to stations within an authorized organizational unit | PARTIAL / END-TO-END UNVERIFIED | Identity, Organization, Topology, Monitoring, Telemetry |
 | ID-GAP-003 | identity | Login using LDAP or Active Directory credentials | IMPLEMENTED IN SOURCE; SITE QUALIFICATION OUTSTANDING | Identity provider configuration, directory availability, linked user |
+| ORG-GAP-001 | party / organization | Country of a third-party company and its addresses | IMPLEMENTED IN PARTY; reference-code validation unverified | Party master data, country-reference policy |
+| ORG-GAP-002 | organization | Parent organizational unit and hierarchy read | IMPLEMENTED; reorganization history/validation requires qualification | Organization hierarchy, effective dates |
+| ORG-GAP-003 | organization | Complete historical occupancy of employee jobs and positions | PARTIAL — assignment timeline query implemented; lifecycle unverified | EmployeeAssignment, Position, effective periods, employee APIs |
 
 ## Identity
 
@@ -50,9 +53,41 @@ CURRENT — ongoing module review; findings below are not automatically authoriz
 
 **Disposition:** IMPLEMENTED IN SOURCE — SITE UNQUALIFIED.
 
+## Organization — Review 02
+
+### ORG-GAP-001 — Third-party company country
+
+**Question:** Can Hidra register a third-party company's country?
+
+**Evidence:** Party's `Party.java` has mandatory `countryCode` and optional `jurisdictionCode`. `RegisterPartyRequest.java` exposes both. `PartyAddressJpaEntity.java` independently holds mandatory address `countryCode`, plus region, city and postal address.
+
+**Disposition:** IMPLEMENTED in **Party** (not Organization). No duplicate Organization country field is recommended. Country-code catalogue/ISO validation and company-vs-address consistency have not been fully verified and are **qualification questions**, not proven missing features.
+
+**Acceptance:** Synthetic companies in different countries and multiple international addresses; reject invalid/unapproved codes under registered policy; verify country-specific authorization and scope where required.
+
+### ORG-GAP-002 — Parent organization and hierarchy
+
+**Evidence:** `OrganizationUnit.java` includes `parentUnitId`, temporal validity and self-parent rejection. `OrganizationUnitJpaRepository.java` supplies a recursive would-create-cycle test. `OrganizationAdministrationQueryController.java` exposes `GET /api/v1/organization/hierarchy` and `GET /api/v1/organization/units/{id}/children`, backed by `JpaOrganizationAdministrationQueryAdapter.java`.
+
+**Disposition:** IMPLEMENTED for basic parent/child relationships and reading hierarchical trees. A complete reparenting/reorganization workflow, time-versioned parent ancestry, cycle safeguards at every mutation and cross-company isolation are **not established by this review**.
+
+**Acceptance:** Multi-level synthetic trees, orphan/unknown parent, cross-company link rejection, cyclic changes, concurrent reparenting, and as-of-date ancestry only if owner requirements require historical org charts.
+
+### ORG-GAP-003 — History of occupied jobs and positions
+
+**Evidence:** `EmployeeAssignment.java` captures `employeeId`, `organizationUnitId`, `positionId`, `assignmentType`, `validFrom`, `validTo` and `status`. `OrganizationAdministrationQueryController.java` exposes `GET /api/v1/organization/employees/{id}/assignments` and filtered `GET /api/v1/organization/assignments`; its query adapter orders records by `validFrom` descending.
+
+**Gap:** The assignment read timeline exists, but `EmployeeAssignmentApplicationService.java` shows only assignment creation and `EmployeeAssignmentRepositoryPort.java` exposes save and exact read. Closing old appointments, appointment overlap rules, reassignment with effective dating, corrections, and querying all past occupants of a position have **not been verified end-to-end**.
+
+**Expected:** For each employee, authorized users can inspect current and past positions, organizational units and dates; for a position, inspect permitted succession history. Historical facts survive a new assignment, organization reparenting and corrections; enforce explicit simultaneous/acting assignment policy rather than inferring it.
+
+**Acceptance:** Synthetic promotion, transfer, dual/acting role, end-dating, invalid overlap, correction/audit and historical authorization, plus position-occupant history.
+
+**Disposition:** PARTIAL — preservation and retrieval primitives exist; full assignment lifecycle requires deeper verification.
+
 ## Remaining modules
 
-The other 23 business modules have not yet been reviewed through this question-and-answer process. No capability gap or completion claim is made for them. Add a section and numbered issue entries when evidence is reviewed.
+Identity and Organization have now been reviewed for the specific questions raised; Party has been partially checked for company country. The other 22 modules have not been reviewed through this question-and-answer process. No capability gap or completion claim is made for them. Add a section and numbered issue entries when evidence is reviewed.
 
 ## Governance
 

@@ -16296,3 +16296,58 @@ Cases require real owner implementations and separate verified tests. Documentat
 ### Next recommended work
 
 After exact-head #029 documentation CI passes and separate owner instruction, HPR-P25-030 — engineering foundation acceptance design preflight (`docs(twin): define independent foundation acceptance cases`) per its registered roadmap, or separately register one bounded owner-specific implementation envelope; never mark F1/F2/F3 closed from preflights. HPR-P25-031 is closure audit only after actual implementations and operator evidence. Stop after new-head CI startup.
+
+## 2026-10-11 — HPR-P25-030 independent engineering foundation acceptance design
+
+### Prerequisite and execution envelope
+
+Owner `next` selects exactly HPR-P25-030, registered message `docs(testing): define engineering foundation acceptance cases`. Starting live `main` is `df42bd70657ed2229bdab05e19846ac69c8da2bc`; Documentation #218/run 38138327887 SUCCESS on this exact commit accepts HPR-P25-029 **as documentation-only preflight**. Prior 018–022 and 028 design CI gates were verified; none constitutes implemented operator provisioning or industrial acceptance. Only `doc/roadmap/ULTIMATE_ROADMAP.md` and `doc/model-remediation/RECONCILIATION.md` may be modified, append-only. P2.5 OPEN, P3 and simulation-engine work DEFERRED, regulator Slice B SOURCE COMMITTED / VERIFICATION AND ACCEPTANCE PENDING — SUSPENDED, Slice C unauthorized. No Java, tests, SQL, API, GitHub configuration, hydraulic execution, data import or deployed workflow changed by 030.
+
+### Evidence classes and acceptance rules
+
+Design acceptance is not test execution. Every future case result must identify: immutable source commit/revision and its owner, applicable API/owner contracts and OpenAPI snapshot, exact test file and assertion, environment/JDK/PostgreSQL/Flyway chain, synthetic or authentic fixture classification, permission actor and workflow decision, command/CI run SHA/result, raw log/artifact/digest, failures and reviewer. No fabricated values or PASS. A design preflight is COMPLETED only on successful exact-head Documentation CI; foundation F1/F2/F3/F4 remains PENDING until implementation, real cases and scoped operator acceptance.
+
+Admit data-only case outcomes without an executable simulator; accepted source data is not an accepted physical solver model, validated machine law, calculated recommendation or safe OT action. Synthetic GZ4 engineering fixtures must be visibly labelled SYNTHETIC and cannot be promoted into operator-accepted plant evidence. For actual industrial acceptance, source provenance and qualified operator witnesses are required independently. Missing evidence yields BLOCKED/NOT_RUN/UNSUPPORTED, never implicit success.
+
+### Canonical A–G case-to-owner/test/contract matrix
+
+| Case | Owner and exact contract design input | Test fixture and future assertion | Implemented status |
+|---|---|---|---|
+| A — station and installed units | Topology facility/equipment and approved station graph revision exports; Assets maintainable installation/model reference; Party manufacturer identity | Independently identified synthetic stations and units, suction/discharge headers, parallel and series paths; authorized create→read→revise→history; preserve identity, units and lifecycle; deny duplicate/conflicting/dangling units | NOT EXECUTED; 020 design does not implement graph authoring |
+| B — revisioned history | Topology immutable physical revision and future station/route profiles, Custody qualified sources, Simulation immutable characteristics, Workflow approval | Freeze a complete supported source collection, revise components, retrieve exact old identity/digest/effective history and withdrawn-current-evidence label; no latest substitution | NOT EXECUTED; 028 freeze is design only |
+| C — independent manufacturer | Simulation characteristic append/read and owner-approved future manufacturer source contracts; Assets model/Party manufacturer validation | Import second source/characteristic revision with evidence and compatible model without installed-asset mutation or solver changes; exact original bytes intact; unsupported law remains unqualified | NOT EXECUTED; 021 operator import is design only |
+| D — product change | Custody GAS V1 composition/method/qualification; planned multi-product contract; Simulation read-only exact source | Preserve natural-gas history, submit explicitly synthetic hydrogen/blend candidate and return accepted source-only state or precise missing-method/phase/applicability diagnostics; never claim runnable fluid physics | NOT EXECUTED; 022 multi-product implementation absent |
+| E — route/profile and baseline | Topology route/section/KP/CRS/vertical datum and station incidence owner revisions; 028 baseline owner manifest | Different intermediate elevation profiles with same endpoints remain distinct; exact section chainage, pipe parameters and per-unit connections round trip, then immutable baseline compare/export/history | NOT EXECUTED; 019/020/028 are design only |
+| F — trustworthy observation | Telemetry raw/trusted reading, point-to-Topology effective binding, qualified units/time and Monitoring fact/deviation contract | Synthetic qualified measurement with exact source/trust times and unit/binding; wrong identity, stale, missing or unqualified feed resolves to UNKNOWN/unavailable; no inferred health | NOT EXECUTED; 029 end-to-end view is design only |
+| G — human action and factual outcome | Workflow authenticated action, Topology target, Telemetry time series, Audit and Analytics observation lineage | Permissioned human performed-action declaration and confirmation separate from approval; original/corrected audit trail; before/after windows and confounders, INDETERMINATE when evidence lacks causal support | NOT EXECUTED; 029 action/outcome integration is design only |
+
+H — common missing input diagnostics and I — replacement/effective-history from earlier 018–022 remain mandatory cross-cutting acceptance dimensions rather than invented A–G completions.
+
+### Test, environment, negative and migration matrix
+
+| Level | Future requirements and evidence |
+|---|---|
+| Domain + application | Java 21, exact registered owner-domain test classes for graph identity, profile/CRS/unit validity, product fraction/basis, characteristic provenance, source digest and immutability, trusted-quality/UNKNOWN, authorization and action evidence. Specify actual filenames in separately approved implementation codes; not yet allocated. |
+| API + OpenAPI | Authenticated owner-scoped create/draft/validate/publish/read/revise/history/compare/export/import; positive 2xx and precise 4xx/409/422 as registered schema permits; forbidden resource must not leak identities. Existing endpoints/old response codecs remain backward compatible. |
+| Persistence + migration | Testcontainers PostgreSQL with complete forward-only Flyway migrations, identical replay, different-byte conflict, stale expected predecessor, concurrent read/write, transaction rollback and no mutation of historical gas V1, characteristic V1, network V1/V2 bytes; no direct SQL seeding as evidence of an operator write workflow. |
+| Multi-owner and workflow | Actual application-port exports and Workflow approval/actuation distinction, resource/tenant/site boundaries, exact source time/qualification, partial upstream failure/withdrawal, atomic *local* publish and explicit cross-owner consistency gap diagnosis; no fictitious distributed transaction. |
+| Data lineage + retention | Source effective vs captured vs recorded time, missing parent/child, corrupt SHA/format, old-baseline reconstruction after replacement, authorized old-source reads, constrained export/import confidentiality, original vendor/lab evidence checks and retention. |
+| Environment and result capture | Record test data provenance, seed generator/version and synthetic flag, database/Java versions, migration validation, invocation, exact head and CI, artifact location/SHA, raw stderr/stdout, known skips, non-Docker fallback and reviewer decision. Documentation CI never substitutes for production CI, database integration or operator sign-off. |
+
+Negative cases must cover: missing physical stations/routes/manufacturer/characteristic/product method; zero or wrong unit/pressure basis, duplicate identity, out-of-range P/T, malformed map, unsupported fluid, wrong branch/chainage, false matching asset, stale/future reading, clock skew/source loss, revoked approval, invalid binding, forged actor, partial rollback, unauthorized history/export, corrupted source and simultaneous competing publication. No threshold/value is guessed; each later accepted implementation declares supported numeric policy. HPR-P25-030 does not require solver output, interpolation acceptance, simulation residual, SCADA control or comparative hydraulic benchmarks.
+
+### Separate implementation acceptance envelopes
+
+F1 — Operator engineering provisioning: individual registered Topology/Assets/Party/Custody/Simulation source-owner implementation and API/test codes implementing A/C/D/E/H/I, with explicit migration permissions.
+
+F2 — Authoritative source baseline: separately registered 028 implementation, exact owner read/qualification/consistency contracts and PostgreSQL round trip implementing B/E; not simulation execution.
+
+F3 — Trusted observation and human applied-action history: separately registered Telemetry/Monitoring/Workflow/Audit/Analytics owner code and API/test cases F/G, independently of numerical results.
+
+F4 — Governance/operational acceptance: independent implemented-contract and migration audit, complete current production CI, raw cases A–G, restricted-resource permission and recorded competent operator acceptance. 031 is only a closure-audit design/decision after these gates; no preflight qualifies them by itself.
+
+Each future envelope needs its own exact HPR code, commit message, bounded old/new file allowlist, migration filename/owner if required, reproducible tests and CI requirements **before execution**. No blanket module allowlist or one-shot F1/F2/F3 implementation authorization; existing code, revisions, migration history and regulator evidence are preserved.
+
+### Status and next boundary
+
+HPR-P25-029: COMPLETED as documentation preflight on Documentation #218 SUCCESS. HPR-P25-030: DESIGN PUBLISHED / NEW-HEAD DOCUMENTATION CI ACCEPTANCE PENDING. P2.5 remains OPEN and F1–F4 remain evidence-pending. Next recommended step after 030 exact-head documentation success is **not automatic 031 closure**: separately register and implement the smallest bounded owner-specific foundation task, then verify actual relevant acceptance cases. HPR-P25-031 may be selected as a read-only BLOCKED/PENDING audit only if desired, but cannot close without F1/F2/F3/F4. Stop at CI startup.

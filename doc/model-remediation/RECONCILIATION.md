@@ -15074,3 +15074,73 @@ links, 24 modules, 13 P2 rows); offline OpenAPI PASS (263 operations, 244 paths,
 231 schemas); existing P1 closure evidence consistency PASS. Exact two-document
 scope, absent future CREATE paths, preserved historical registrations/reconciliation
 and whitespace checks PASS. No Java/Maven execution or closure performed.
+
+
+## 2026-10-11 — HPR-P25-040 trusted current Topology actor implementation
+
+Owner Next selects the registered implementation after exact-head
+[Docs #241](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38158841101)
+SUCCESS on main `55e1e929f859b0512a7fa4e3ec45123ec7246185`, tree
+`d8027cb598820522f7df3f5cd6e1453990c46ba1`. Latest Production #655 on accepted
+`5a279f27cd3058c909629f78b67b417a7e607e18` remains SUCCESS. Refreshed AGENTS.md,
+roadmap/reconciliation, Identity owner source and CREATE-path absence before mutation.
+Exact message: `feat(identity): export trusted current topology actor`.
+
+Executed exactly the registered six-file allowlist: three new canonical-header Java
+files (TopologyCurrentActorContract, TopologyCurrentActorQueryAdapter and its test),
+the single ArchitectureGuardrailTest export-prefix addition, and these two governance
+documents. No dependency/configuration, existing decoder/issuer/provider/domain,
+Topology consumer, controller, SQL, migration or dictionary artifact mutation.
+
+The JDK-only no-argument Optional<Actor(userId)> contract validates/normalizes its
+sole stable reference. Identity's infrastructure adapter snapshots authentication,
+rejects anonymous/unauthenticated and unsupported contexts, revalidates the original
+native bearer through qualified hidraJwtDecoder, and trusts only returned canonical
+sub. It ignores cached JWT subject, configured name, username, roles and details.
+Explicit normalized LOCAL/LDAP/ACTIVE_DIRECTORY password contexts and normalized
+OIDC contexts use HidraPrincipal.userId. Every call reads exact findById and requires
+matching ACTIVE, currently unlocked HUMAN User. One captured clock Instant, no
+username fallback/cache/default company/context mutation; invalid JWT denies while
+unrelated decoder and repository runtime failures propagate. Two-argument @Autowired
+constructor selects native decoder without a new global Clock bean.
+
+Synthetic test coverage: 44 actor tests including parameterized provider/status/type
+matrix, cached subject/name/details rejection, actual HS256 wrong issuer/expiry/signature,
+OIDC external-subject separation, current locks/status changes and exact lock expiry,
+independent identities, missing/mismatched records, exception propagation, public
+reference validation and Spring wiring with both decoder beans. Bearer fixtures use
+the authenticated authorities constructor; one-argument Spring bearer tokens are
+unauthenticated and remain denied.
+
+Validation: registered focused Maven test selection PASS — 66 tests, zero
+failures/errors/skips: actor 44, unified JWT compatibility 4, assertion trust 3,
+architecture guardrails 15. Java 21; runtime-only Maven proxy settings resolve the
+initial Central DNS failure; runtime-only `-DargLine=-javaagent:<local mockito-core
+5.23.0 jar>` avoids this environment's Mockito self-attachment restriction. No build
+configuration change. Documentation-validator 10 and OpenAPI-validator 10 tests PASS;
+canonical docs PASS (97 documents, 5,302 relative links, 24 modules, 13 P2 rows),
+offline OpenAPI PASS (263 operations, 244 paths, 231 schemas); existing P1 closure
+evidence consistency PASS. This validates existing evidence, not execution of closure.
+
+Actor identity is not a company/facility permission, provider-link revocation proof
+or publication authority. Those paired owner decisions and transaction/evidence
+linearization remain unregistered; no publication/history API is enabled. After full
+exact-head CI succeeds and a separate owner Next, recover/register that bounded
+permission/revocation prerequisite before any lifecycle implementation. F1–F4/P2.5
+OPEN; simulator/P3 DEFERRED with prior gas-first/GZ2 own-engine steady/transient
+direction retained. Version/release, deployment, real-data calibration and closure
+unchanged. Source implementation Completed, full exact-head CI acceptance PENDING.
+Publish direct main with expected-head guard; confirm exact commit/tree/six paths and
+Production/Docs CI startup, then STOP without waiting or advancing.
+
+
+HPR-P25-040 final local verification: `bash mvnw -B -q clean verify` with the same
+runtime-only proxy settings and explicit Mockito Java agent completed successfully
+(exit 0), produced the executable jar, and reported 1,659 tests: **1,330 passed,
+329 skipped, zero failures/errors** across 365 reports. The 329 skips in 53 suites
+are Docker-dependent integrations; this environment has no Docker socket. These
+skips are not full PostgreSQL/dictionary/OpenAPI runtime acceptance; exact-head
+Production CI must execute those gates. All 44 new actor tests and the other focused
+tests passed in the full run too. Exact six-file create/update scope, canonical new
+Java headers, JDK-only contract, sole architecture export addition, preserved
+historical roadmap/reconciliation and whitespace checks PASS. No other files changed.

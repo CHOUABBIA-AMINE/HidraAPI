@@ -668,6 +668,12 @@
       "metadata_from": [
         "doc/governance/DOCUMENT_REGISTER.md"
       ]
+    },
+    "doc/roadmap/gaps.md": {
+      "metadata_from": [
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
     }
   },
   "format_version": 1,

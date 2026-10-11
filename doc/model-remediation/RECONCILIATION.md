@@ -12141,3 +12141,175 @@ exact two-document append-only scope and whitespace. No new local Maven/PostgreS
 execution is claimed. **STOP after observing this acceptance commit's Documentation
 Validation has started; wait for owner Next or Fail.** A green documentation review
 does not independently complete regulator physics or the parent equipment task.
+
+
+## HPR-P25-008C — REGULATOR Slice B Simulation Source and Storage Preflight (2026-10-11)
+
+### Selection, baseline and current write boundary
+
+Owner Next selects this READ/Doc preflight after Slice A acceptance at
+`054ff2f268b534ad982520b6b20bccff5ce20cee`. Its exact-head Documentation Validation
+**#206 (38127675869) SUCCESS** was verified before mutation; main still matches that SHA.
+Production is identical to `3fcb2ea8d7f922d1942411316139eb80a0703188`, whose full
+**CI #642 (38126610581) SUCCESS** includes 1,543 tests with no failures/errors/skips,
+143 migrations, 489 relations, 470 JPA mappings, dictionary equality and OpenAPI checks.
+Slice A Topology physical contract/storage is accepted; numerical REGULATOR behavior is not.
+
+Current closed write scope: append only `doc/roadmap/ULTIMATE_ROADMAP.md` and
+`doc/model-remediation/RECONCILIATION.md`. Exact supporting message:
+`docs(twin): register HPR-P25-008C equipment execution preflight`.
+No production/test/schema/dictionary mutation is performed by this preflight.
+
+### Recovered source findings
+
+| Source path relative to Simulation module | Actual finding |
+|---|---|
+| `domain/model/SimulationEquipmentParameterRevision.java` | Kind supports COMPRESSOR/VALVE; several else/ternary branches interpret any non-compressor as valve. Exact curve/characteristic revision, fluid digest, origin, effective time and governed-limit rules must be retained explicitly for each kind. |
+| `domain/model/SimulationEquipmentInput.java` and `SimulationEquipmentModelInput.java` | Typed configuration supports only compressor speed and valve opening. Adding an enum alone would not establish regulator configuration or exact characteristic linkage. |
+| `application/port/out/SimulationStoredPhysicalNetworkRevisionPort.java` | Rejects V2 and REGULATOR; Topology's already accepted owner export maps kind names without requiring a new Topology edit. |
+| `application/service/SimulationEquipmentParameterRevisionQueryService.java` | Existing repeatable-read owner qualification rechecks exact network/fluid identity/digest, equipment/endpoints, source origin, effective times and Workflow evidence at approval, qualification and use. Regulator provenance must use this authority rather than bypassing it. |
+| `infrastructure/persistence/adapter/SimulationEquipmentParameterRevisionCodec.java` | Aggregate format V1 plus standalone compressor/valve and qualification formats; kind names and optional fields are serialized. Historical byte order/BigDecimal scales must not change. |
+| `infrastructure/persistence/adapter/JdbcSimulationEquipmentParameterRevisionRepositoryAdapter.java` | Appends exact standalone characteristics before aggregate, hashes bytes and verifies identical replay/key/content. It has no regulator characteristic branch. |
+| `V20261010_002__p25_simulation_equipment_parameter_revisions.sql` | Real DDL restricts characteristic kind to COMPRESSOR/VALVE, couples kind/format, and restricts aggregate format to V1. It retains SHA-256 checks, immutable keys and UPDATE/DELETE/TRUNCATE refusal triggers. Forward migration is necessary. |
+| `domain/model/SimulationPhysicalInputPayload.java` and `SimulationSyntheticEquipmentNetworkInput.java` | Schema-one assembly chooses compressor speed versus valve opening; current numerical union admits existing kinds without a regulator equation. Both need explicit regulator refusal before an enum extension can safely ship. |
+| Existing codec test | Frozen independent compressor-characteristic digest is c06a3e17d5f04e572ef169fdcb204d38cc52edbe7ed2160152b2b6d6d4309fa6. Current V1 aggregate/valve/qualification byte fixtures must be frozen independently before changing the codec, rather than updating expected bytes to match new code. |
+
+### Concrete bounded Slice B design for subsequent owner selection
+
+1. Add distinct REGULATOR configuration/source support. Extend existing records with
+   backwards-compatible overloads for their published Java constructors. Use explicit
+   exhaustive kind branches: compressor/valve fields are forbidden on regulators and
+   regulator fields forbidden on old kinds. Preserve old empty-regulator constructors,
+   accessors and behavior; no valve alias, inferred setpoint or implicit characteristic.
+2. Introduce `SimulationRegulatorCharacteristicRevision` as an immutable source record,
+   not an evaluator. It carries actual ID/revision, recorded/effective interval, explicit
+   SYNTHETIC origin/evidence, exact fluid source/revision/digest, positive reference
+   temperature, capacity method, positive coefficient in kg s^-1 Pa^-1/2 and supplied
+   ordered positive upstream/downstream absolute-pressure and positive differential-pressure
+   domains. Only the previously registered development method
+   `SYNTHETIC_REGULATOR_SQRT_DP_CAPACITY_V1` is supported by this bounded source version.
+   It executes no square root, interpolation, hydraulic law or claimed field conversion.
+3. Regulator configuration names the exact characteristic ID/revision, design method
+   `SYNTHETIC_REGULATOR_DOWNSTREAM_SETPOINT_CAPACITY_V1`, positive absolute downstream
+   setpoint and explicit OPEN/CLOSED isolation. These are supplied configuration facts;
+   REGULATING/CAPACITY_LIMITED are derived future solver outcomes, not caller-selected
+   operating truth. Permit only DOWNSTREAM_SETPOINT control in this version. Reject absent,
+   unknown, incompatible or non-SYNTHETIC regulator source. No actual field characteristic,
+   bypass, reverse regulation, droop, choking or dynamic controller model is invented.
+4. Aggregate retains immutable exact equipment topology/fluid bindings and contains a
+   separate regulator-characteristic list with duplicate/missing/unused revision refusal.
+   Characteristic provenance/effective intervals and origin propagate exactly as old source
+   types. Require complete kind-specific supplied limits, including downstream absolute
+   setpoint pressure, inlet pressure/temperature and mass-flow range, without guessed values.
+   Check configured setpoint/temperature/domain compatibility structurally; evaluate neither
+   capacity nor feasibility. The known synthetic p_u=200000 Pa, p_set=180000 Pa and k=0.01
+   remain development fixtures, never defaults or mandatory real calibration inputs.
+5. Accept Topology V1 for old kinds and V2 only with actual REGULATOR incidence in
+   SimulationStoredPhysicalNetworkRevisionPort, matching the accepted owner export exactly.
+   Qualified query must retain every existing Workflow/network/fluid/digest/time check,
+   exact equipment set/endpoints/kind and synthetic propagation. Check regulator declared
+   temperature/pressure domains against the existing fluid-method declared validity range.
+   Metadata compatibility does not prove an executable EOS or operational approval.
+6. Keep historical aggregate `HIDRA_SIMULATION_EQUIPMENT_PARAMETERS_V1` byte-identical for
+   revisions without regulators. Use separate `HIDRA_SIMULATION_EQUIPMENT_PARAMETERS_V2`
+   for revisions containing regulators and
+   `HIDRA_SIMULATION_REGULATOR_CHARACTERISTIC_V1` for their standalone source record.
+   Decode only the exact header/kind association; reject V1-with-regulator and
+   V2-without-regulator, bad/trailing/truncated/noncanonical UTF-8/decimal/time bytes,
+   wrong identity and corrupt digest. Existing compressor/valve/qualification formats and
+   their bytes remain unchanged. Qualification still binds the actual aggregate digest;
+   its existing V1 payload is not relabeled or automatically upgraded.
+7. Repository port/JDBC adapter add explicit regulator characteristic append/read authority.
+   Persist all exact referenced characteristics transactionally before aggregate, verify
+   stored key/format/bytes/hash and identical replay, and reject competing conflicting
+   revisions. No historical row rewrite, permissive merge/upsert or guessed provenance.
+8. Register forward-only
+   `V20261011_001__p25_simulation_regulator_parameter_revision_format.sql` (absent at current
+   head). Extend only characteristic kind/kind-format and aggregate format checks after
+   identifying actual existing constraint names. Preserve old columns, immutable primary
+   keys, uniqueness, qualification FK, SHA-256 checks and every mutation refusal trigger.
+   No new owner relation, seed or rewrite; original V20261010_002 is immutable.
+9. Explicitly reject REGULATOR in schema-one SimulationPhysicalInputPayload and current
+   SimulationSyntheticEquipmentNetworkInput before old compressor/valve interpretations
+   occur. Typed configuration and qualified persisted source may exist, but neither the old
+   assembly nor current solver may accidentally consume it. State quantity enums, source
+   manifest schema, boundary schedules, evaluator and solver equations stay unchanged in
+   Slice B. Their complete physical-input/numerical integration requires separately selected
+   Slice C. No regulator setpoint is encoded as valve opening or compressor speed.
+10. Add source/configuration/codec/repository/qualification and owner delivery tests. Before
+    production codec edits, derive fixed independent literal V1 and new V2/regulator fixtures
+    and digests from specified byte layouts, preserving the existing compressor oracle.
+    Test exact kind/format identity, optional old constructor compatibility, no unused source,
+    duplicate IDs, wrong topology/fluid/time/Workflow authority, forged origin, domain mismatch,
+    missing characteristic and bounded complete metadata. PostgreSQL tests must apply the old
+    and forward migration, prove old bytes survive, enforce digest/immutability, test identical
+    and conflicting replay/concurrency and transaction rollback, and exercise the full chain.
+    Include physical-assembly and numerical-union regulator refusal tests; existing frozen
+    compressor/valve numerical tests must pass without changing their oracles.
+11. Include the generated CURRENT dictionary in the future scope to avoid repeating #641.
+    Use only the unchanged maintained generator with an authentic exact-source fully migrated
+    PostgreSQL catalog (local disposable database or independently authenticated complete CI
+    capture). Review the complete output and source inventory; never hand-invent metadata or
+    claim a generator run that did not occur. Verify 144 migrations if only this new migration
+    is added; relation count is expected unchanged, but actual catalog output determines it.
+    If authentic catalog evidence is unavailable, stop with dictionary acceptance pending;
+    do not weaken CI or fabricate the output. Ownership JSON/generator/CI are read-only.
+
+### Registered future implementation scope and verification
+
+A subsequent owner Next, after successful preflight Documentation Validation, may select
+only this Slice B implementation under existing HPR-P25-008C, with newly registered exact
+supporting message `feat(simulation): add regulator parameter revision contract`.
+Only needed paths in this exhaustive closed list may change; there is no permission to
+alter another owner's implementation or extend numerical scope.
+
+- `src/main/java/dz/sh/hidra/modules/simulation/domain/model/SimulationEquipmentParameterRevision.java`
+- `src/main/java/dz/sh/hidra/modules/simulation/domain/model/SimulationEquipmentInput.java`
+- `src/main/java/dz/sh/hidra/modules/simulation/domain/model/SimulationEquipmentModelInput.java`
+- `src/main/java/dz/sh/hidra/modules/simulation/domain/model/SimulationPhysicalInputPayload.java`
+- `src/main/java/dz/sh/hidra/modules/simulation/domain/model/SimulationSyntheticEquipmentNetworkInput.java`
+- `src/main/java/dz/sh/hidra/modules/simulation/application/port/out/SimulationStoredPhysicalNetworkRevisionPort.java`
+- `src/main/java/dz/sh/hidra/modules/simulation/application/port/out/SimulationEquipmentParameterRevisionRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/simulation/application/service/SimulationEquipmentParameterRevisionQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/adapter/SimulationEquipmentParameterRevisionCodec.java`
+- `src/main/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/adapter/JdbcSimulationEquipmentParameterRevisionRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/simulation/domain/model/SimulationRegulatorCharacteristicRevision.java`
+- `src/test/java/dz/sh/hidra/modules/simulation/domain/model/SimulationEquipmentParameterRevisionTest.java`
+- `src/test/java/dz/sh/hidra/modules/simulation/domain/model/SimulationFluidEquipmentInputTest.java`
+- `src/test/java/dz/sh/hidra/modules/simulation/domain/model/SimulationPhysicalInputPayloadTest.java`
+- `src/test/java/dz/sh/hidra/modules/simulation/domain/model/SimulationSyntheticEquipmentNetworkInputTest.java`
+- `src/test/java/dz/sh/hidra/modules/simulation/application/service/SimulationEquipmentParameterRevisionQueryServiceTest.java`
+- `src/test/java/dz/sh/hidra/modules/simulation/application/service/SimulationEquipmentParameterQualificationServiceTest.java`
+- `src/test/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/adapter/SimulationEquipmentParameterRevisionCodecTest.java`
+- `src/test/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/SimulationEquipmentParameterRevisionPostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/simulation/infrastructure/integration/QualifiedFluidEquipmentDeliveryIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/simulation/domain/model/SimulationRegulatorCharacteristicRevisionTest.java`
+- `src/main/resources/db/migration/V20261011_001__p25_simulation_regulator_parameter_revision_format.sql`
+- `doc/database/DATA_DICTIONARY.md`
+- `doc/roadmap/ULTIMATE_ROADMAP.md`
+- `doc/model-remediation/RECONCILIATION.md`
+
+Future implementation must run focused source/input/query/qualification/codec/PostgreSQL/
+delivery/refusal suites, unchanged compressor/valve numerical and architecture suites,
+`bash ./mvnw -B -q clean verify`, maintained documentation/OpenAPI/dictionary validators,
+exact write-scope and whitespace checks. Report unavailable local Java 21/Maven/PostgreSQL
+execution precisely. Acceptance requires actual exact-new-head production CI and
+Documentation Validation, full-chain dictionary equality, immutable V1 fixtures and
+regulator refusal at the current solver boundary; no acceptance follows from file presence.
+If source review exposes another enum consumer or database requirement outside this scope,
+stop and register its concrete need rather than editing extra files.
+
+### Present status and stop
+
+Slice A remains ACCEPTED; Slice B = PREFLIGHT REGISTERED, IMPLEMENTATION NOT STARTED.
+Slice C numerical coupling and physical assembly remain NOT AUTHORIZED by this action.
+HPR-P25-008C/008 PENDING, 008D–F NOT AUTHORIZED, P2.5 OPEN, P0/P1/P2 CLOSED,
+P3 DEFERRED, C3E operating-state qualification BLOCKED, GZ4 SYNTHETIC DEVELOPMENT_TEST_ONLY,
+`0.7.0-SNAPSHOT` unchanged. No external-engine connector, simulator dependency, SCADA/OT
+command, physical field calibration, deployment, tag or release is added. Additional real
+world data is optional for this bounded development step and can be supplied at calibration.
+
+Current preflight validates only the two append-only documents and repository documentation
+controls; no new Java, Maven, PostgreSQL or numerical test is claimed. STOP once exact-head
+Documentation Validation starts. Owner Next selects the above Slice B implementation;
+do not silently chain it into this documentation preflight.

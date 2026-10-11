@@ -16510,3 +16510,211 @@ Following paths are proposed *only* for later registration after verifying missi
 Future design must inspect actual Topology application services, security/tenancy and current migration latest head before allocating even one file. Test requirements: synthetic labelled fixtures, exact previous-byte retrieval, replay same bytes versus conflict, different station/revision, digest mismatch/tamper, unknown codec, concurrent append, transaction failure and rollback, new/upgrade Flyway, append-only enforcement and restricted history. Require Java 21, PostgreSQL 16/Testcontainers, complete production CI and exact-head acceptance evidence. No acceptance of F1–F4 based on design alone.
 
 **Disposition:** HPR-P25-035 DESIGN PREFLIGHT PUBLISHED / EXACT-HEAD DOCUMENTATION CI PENDING. Proposed P35-A/B/C are NOT REGISTERED implementation codes and have no write authority. P2.5 OPEN, HPR-P25-031 not eligible, P3 and simulator DEFERRED, regulator Slice B SUSPENDED, Slice C unauthorized. Stop at CI startup.
+
+## 2026-10-11 — Register HPR-P25-036 station graph codec and repository contract
+
+### Live recovery and selected registration
+
+Owner `next` selects the smallest HPR-P25-035 successor registration, not unregistered
+application edits. Initial live main `f1659fe7677050c1a0d80542506db401ccbbdcec`, tree
+`fc6e27832ce5d63613b66467d82ced4c59fc5766`. Exact-head Documentation #226/run
+38144509211 SUCCESS accepts **HPR-P25-035 as a documentation preflight only**.
+Production #644/run 38135634129 SUCCESS on `a691843f359126a9f439217862f780b5806c5fd2`
+verifies the previous dictionary repair; #643 is historical failure, not the current
+production verification result. More recent Production #648/run 38143295059 SUCCESS
+on `8496f19ce2f45630f500c48e65a1b881af1c2be1` verifies the implemented station revision
+domain envelope. Git comparison from that source to starting main shows only these two
+governance documents changed. This source-equivalence check is not an invented exact-head
+production run. 032/034 supply declarative domain semantics, not persistence/publication.
+
+Supporting registration message admitted through this roadmap mechanism:
+`docs(topology): register station graph codec and repository contract`.
+This selected registration changes only `doc/roadmap/ULTIMATE_ROADMAP.md` and append-only
+`doc/model-remediation/RECONCILIATION.md`. Both histories remain intact; all other paths
+are read-only. AGENTS.md is unchanged since the previous recovery; its exact-message,
+one-task, source-authority and closed-allowlist instructions continue to govern.
+
+### Source-backed decomposition and ownership
+
+Actual current source anchors:
+
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/StationInternalGraph.java`:
+  immutable header/unit/edge declarations; station+graph revision identity; DRAFT/COMPLETE;
+  explicit ports and distinct per-equipment identity. Lists are copied, not canonical-sorted.
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/StationInternalGraphRevision.java`:
+  same graph/envelope identities; SYNTHETIC/DECLARED/VERIFIED declaration, recorded/effective
+  instants, optional end/evidence/predecessor and DRAFT/STRUCTURALLY_QUALIFIED. A reference
+  string is not independently verified source evidence or authenticated approval.
+- `src/main/java/dz/sh/hidra/modules/topology/domain/service/StationInternalGraphRevisionValidator.java`:
+  graph inspection and deterministic qualification diagnostics; structured qualification
+  must satisfy the existing graph validator, not merely an envelope flag.
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/TopologyPhysicalNetworkRevisionRepositoryPort.java`:
+  owner-private exact append/find/findStored pattern; metadata validates recognized format
+  and digest shape. No new foreign-module export is implied by an application port.
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/TopologyPhysicalNetworkRevisionCodec.java`:
+  strict versioned UTF-8/canonical binary, exact re-encode and SHA-256 precedent; its physical
+  V1/V2 format and bytes must remain unchanged, not repurposed for station graphs.
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java`: infrastructure implements
+  application output ports; foreign private implementation imports stay forbidden.
+
+P35-A can be delivered without SQL, authenticated publication or a simulated running network:
+register a new codec plus an owner-private repository contract and focused tests. P35-B SQL
+and P35-C lifecycle remain separate, unregistered implementations. No domain rewrite is
+required to introduce persistence format; canonicalization belongs to the new adapter codec.
+
+### Registered future task — HPR-P25-036
+
+| Field | Binding future implementation contract |
+|---|---|
+| Code | HPR-P25-036, collision-free in both starting execution memories |
+| Objective | Define canonical station-graph revision bytes and exact owner-private append/read interface, independently of persistent storage or publication |
+| Owner | Topology application output port and persistence-adapter codec; domain remains framework-neutral |
+| Exact implementation message | `feat(topology): add station graph revision codec and repository contract` |
+| Initial status | REGISTERED / PLANNED — NOT SELECTED, NOT EXECUTED |
+| Prerequisites | Accepted 032/034 source domain, accepted 035 preflight, this registration's successful exact-head Documentation CI, separate owner `next`, refreshed source/CI and file-absence checks |
+| Deliverables | One versioned codec; one application output port; two focused test classes; truthful task status/evidence in the two governance documents |
+| Schema/API | None: no migration/table/repository adapter/controller/REST/OpenAPI/export-registry mutation |
+| Historical compatibility | All physical V1/V2 bytes, station graph/envelope domain, prior tests, migrations and evidence unchanged |
+| Acceptance | Reproducible codec and metadata tests; applicable architecture/full Java 21 CI on actual implementation commit; no database/operator acceptance claim |
+
+### Exclusive future implementation write allowlist
+
+Four NEW files (verified absent at initial main; verify again before implementation):
+
+1. `src/main/java/dz/sh/hidra/modules/topology/application/port/out/StationInternalGraphRevisionRepositoryPort.java`
+2. `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/StationInternalGraphRevisionCodec.java`
+3. `src/test/java/dz/sh/hidra/modules/topology/application/port/out/StationInternalGraphRevisionRepositoryPortTest.java`
+4. `src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/StationInternalGraphRevisionCodecTest.java`
+
+Two existing evidence files, append-only:
+
+5. `doc/roadmap/ULTIMATE_ROADMAP.md`
+6. `doc/model-remediation/RECONCILIATION.md`
+
+No other source/test path is authorized. Preserve canonical Java headers including Author
+Abir MEDJERAB / CreatedOn 2025-06-26. Stop/re-scope before any implementation requiring
+existing domain modification, dependency or architecture-guard relaxation. This registration
+itself creates NONE of the four Java files; these are future write permissions only.
+
+### Canonical station revision wire contract — V1
+
+Allocate new format identifier **`HIDRA_TOPOLOGY_STATION_GRAPH_REVISION_V1`**, separate
+from both physical-network identifiers. This is a newly registered planned identifier,
+not a claimed existing wire format. Codec surface: encode revision, decode byte array and
+sha256 byte array, using JDK classes only; null/invalid data fails using existing Topology
+exception conventions. No Java object serialization, JSON-default ordering or environment
+locale/zone dependence. Domain object constructors and qualified graph validation remain
+binding on encode/decode; DRAFT diagnostics are not promoted into qualified publication.
+
+V1 field order (all supplied domain fields covered, no runtime approval data added):
+format; envelope facilityId; revisionId; sourceClassification name; recordedAt;
+effectiveFrom; optional effectiveUntil; optional evidenceReference;
+optional expectedPredecessorRevisionId; qualification name; graph facilityId;
+graph revisionId; graph status; headers; units; edges.
+
+Encode strings as strict UTF-8 with nonnegative four-byte big-endian byte length. Optional
+values use an explicit byte 0/1 followed by content only for 1; reject any other marker.
+Instants use signed eight-byte epoch second then four-byte nano (0..999999999), validated
+against Instant range. Lists use nonnegative four-byte count. Enums use exact names, not
+ordinal positions. Header fields: id/kind/portId. Unit fields: equipmentId/facilityId/
+inletPortId/outletPortId. Edge fields: id/fromPortId/toPortId. Strings retain existing domain
+normalization; a noncanonical alternate whitespace encoding is rejected by re-encode equality.
+
+Collection sequence is not physical route order: normalize headers by `id`, units by
+`equipmentId`, edges by `id`, with Java String natural ordering, independently of caller
+iteration. No header/edge/equipment ID case folding, graph traversal, port relabeling or
+string Unicode normalization. Duplicates remain invalid under domain rules, never deduplicated.
+Decode produces the canonical order; record-list equality to a permuted input is not promised.
+Encode must not mutate original lists. Deterministic graph meaning is preserved; future
+sequence-sensitive attributes would require an explicitly versioned format extension.
+
+For bounded input handling, planned V1 codec limits are **1 MiB canonical payload**, **10,000
+members per collection** and **65,536 UTF-8 bytes per string**; these are format resource
+limits, not industrial capacity claims. Check on both encode and decode before allocating
+or iterating untrusted lengths; reject count inconsistent with remaining bytes. Future higher
+capacity needs a separately scoped compatibility change, not silent bound removal.
+
+Decode defensively copies supplied bytes and rejects unknown header/enums, malformed UTF-8,
+negative/oversized lengths/counts, invalid option flags/time values, truncation/trailing bytes,
+contradictory identity/provenance/qualification and noncanonical unsorted representation.
+Re-encode decoded content and require exact byte equality. SHA-256 covers the entire V1
+canonical byte array including metadata and header; render lowercase 64-character hexadecimal.
+A checksum detects byte corruption, not source authenticity, operator approval or tamper-proof
+storage against an administrator. No generated digest or golden expected hash is invented here.
+
+### Owner-private repository port contract — no implementation yet
+
+Registered methods: `append(StationInternalGraphRevision)` returns the stored canonical
+revision; `find(String facilityId, String revisionId)` returns Optional revision;
+`findStored(String facilityId, String revisionId)` returns Optional metadata wrapper.
+StoredRevision contains revision, payloadFormat and sha256; require nonnull revision, exactly
+the registered V1 header and lowercase 64-hex digest shape. Constructor shape checks are not
+payload equality: a future adapter must verify bytes/digest/identity on every read.
+Application port must not import the infrastructure codec, Spring/JPA or foreign internals.
+
+Port JavaDoc specifies future adapter semantics: same exact station+revision and canonical
+bytes replays safely, different bytes conflicts; absence returns Optional.empty, corruption
+propagates an error, no `latest` or foreign-station fallback. Blank identities rejected by
+future implementations under existing conventions. Predecessor token is serialized supplied
+intent only in 036: no head-row comparison, current selection, predecessor existence, approval,
+withdrawal or transaction is executed by an interface. No fake in-memory repository is needed
+to pretend these future SQL properties were tested.
+
+### Focused tests and validation gates
+
+Future focused command:
+`./mvnw -B -q -Dtest=StationInternalGraphRevisionCodecTest,StationInternalGraphRevisionRepositoryPortTest test`.
+Then applicable architecture checks and full production CI on the actual implementation SHA.
+If local Java/Maven dependencies cannot run, report exact limitation and rely only on observed
+CI results; do not replace test execution with a fabricated pass.
+
+Codec cases: labelled synthetic serial and parallel graphs, DRAFT and qualified envelope,
+optional field present/absent, negative epoch seconds/nanos boundaries, equivalent input
+permutations yielding equal bytes/digest, decode canonical order and unchanged source lists,
+different station/revision/evidence/time/predecessor/status/edge giving different payload,
+byte-array defensive copies, determinism across repeated calls. Verify SHA using independently
+computed JDK SHA-256 over actual bytes; stable format field-layout fixture, not a guessed hash.
+
+Negative cases: null payload, unknown format, malformed UTF-8, unrecognized enum, negative/
+oversized length/count, resource limits, truncated optional/time/member fields, invalid nano,
+invalid option marker, trailing bytes, shuffled noncanonical list bytes, duplicate IDs,
+graph/envelope identity mismatch and a STRUCTURALLY_QUALIFIED declaration with invalid graph.
+Test that a DRAFT stays DRAFT and VERIFIED remains a supplied declaration with evidence reference,
+not a codec-generated attestation. Metadata wrapper tests reject wrong header/null revision/
+malformed digest and retain the exact valid revision; they do not test nonexistent SQL.
+
+No PostgreSQL integration test is appropriate for an unimplemented adapter. Future P35-B
+must register actual adapter/migration/tests, fresh and upgrade Flyway, concurrent append,
+rollback, immutability and read-integrity evidence. 036 does not close these obligations.
+
+### Current disposition and stop boundary
+
+| Task | Status | Scope |
+|---|---|---|
+| HPR-P25-035 | COMPLETED — documentation preflight | f1659fe7677050c1a0d80542506db401ccbbdcec, Documentation #226 SUCCESS |
+| HPR-P25-036 | REGISTERED — NOT SELECTED / NOT EXECUTED | Separate owner instruction after this registration's documentation acceptance |
+| P35-B / P35-C | Unregistered future persistence / publication slices | Exact SQL/adapter/security/lifecycle envelopes and owner selection still required |
+
+P2.5 remains OPEN, F1–F4 unaccepted as complete operator workflows, P3/simulator DEFERRED,
+regulator Slice B suspended and Slice C unauthorized. #644/#648 production success is
+recorded without falsely closing Slice B industrial/numerical gates. No release, branch,
+PR, deployment or continued implementation. Publish this registration with expected-head
+lease; verify new-head Documentation CI startup and STOP until owner `next` or `fail`.
+
+### Registration validation actually executed
+
+All commands completed successfully for this documentation-only registration:
+
+- `python3 .github/scripts/test_validate_docs.py`: 10 tests PASS.
+- `python3 .github/scripts/test_validate_openapi_snapshot.py`: 10 tests PASS.
+- `python3 .github/scripts/test_generate_data_dictionary.py`: 17 tests PASS.
+- `python3 .github/scripts/test_resolve_openapi_base.py`: 14 tests PASS; its CI #590 output is a test fixture, not live pipeline evidence.
+- `python3 .github/scripts/validate_docs.py`: PASS, 95 documents / 5,286 relative links / 24 modules / 13 P2 rows.
+- `python3 .github/scripts/validate_openapi_snapshot.py`: PASS, offline snapshot only, 263 operations / 244 paths / 231 schemas.
+- `python3 .github/scripts/validate_p1_closure.py`: PASS, existing closure evidence consistency, not a new infrastructure exercise.
+- `git diff --check`: PASS.
+
+Exactly the two registered governance files changed; their preexisting bytes were preserved.
+No future Java file was created and no Java/database execution is claimed by this registration.
+Main expected-head lease remains `f1659fe7677050c1a0d80542506db401ccbbdcec`;
+new-head Documentation CI startup is verified after publication, without awaiting completion.

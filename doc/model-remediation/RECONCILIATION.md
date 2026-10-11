@@ -15017,3 +15017,60 @@ unit tests PASS; canonical docs PASS (97 documents, 5,302 links, 24 modules, 13 
 offline OpenAPI PASS (263 operations, 244 paths, 231 schemas); existing P1 closure evidence
 consistency PASS. Exact five-file scope, retained records/history, canonical Java headers
 and whitespace checks PASS before publishing. Full Maven/ArchUnit acceptance remains pending.
+
+
+## 2026-10-11 — Accepted HPR-P25-039 and registered HPR-P25-040 current-actor prerequisite
+
+Owner Next selects one bounded registration on main
+`5a279f27cd3058c909629f78b67b417a7e607e18`, tree
+`2ee33701a94212719bba9ce09080881ba0b450da`; exact-head Production #655/run38157165810
+and Docs #240/run38157165726 SUCCESS. Production job114522415052 reports 1,615 tests,
+zero failures/errors/skips; full verification, OpenAPI and actual PostgreSQL dictionary
+gates pass: 145 migrations, 470 JPA mappings, 490 relations, no unresolved owners.
+HPR-P25-039 accepted within eligibility-only scope, not company access/publication.
+
+Current instructions, roadmap/reconciliation and Identity authentication/security source
+were recovered. Native Hidra bearer sub is internal User.id, unlike separate username
+and configurable authentication name. hidraJwtDecoder validates own issuer/time/signature
+and configured audience. Local/directory providers and OIDC converter normalize trusted
+contexts to HidraPrincipal.userId. Technical actor/name fallback and existing Workflow
+eligibleReference username fallback are not the proposed Topology actor boundary.
+User.active/locked and UserType.HUMAN supply fresh owner rules.
+
+Registration message `docs(identity): register trusted topology actor export` updates
+only these two governance documents and their current status. New HPR-P25-040 exact
+future implementation `feat(identity): export trusted current topology actor` is
+registered after collision/source checks, NOT executed now. Six-file allowlist: CREATE
+Identity application.contract.topology TopologyCurrentActorContract.java; CREATE
+Identity infrastructure.security TopologyCurrentActorQueryAdapter.java and its matching
+infrastructure.security test; UPDATE only ArchitectureGuardrailTest exported-package
+set and these two docs. Full exact paths/semantics/tests are binding in the roadmap.
+No SQL/migration, grants, dependency, API, config or existing JWT/domain/caller mutation.
+
+The public JDK-only no-argument contract returns Optional<Actor(userId)> only. Adapter
+revalidates native bearer through existing qualified decoder and uses returned sub;
+accepts only explicitly supported normalized local/directory/OIDC token shapes; rejects
+anonymous, string/name-only, unsupported/faked claims and noncanonical native subject.
+Current exact ACTIVE unlocked HUMAN User lookup is mandatory; repository/runtime failures
+propagate, invalid JWT gives absence, no username lookup/cache/default company. Fixed-clock
+unit matrix covers exact lock boundary, status/user-type changes, two identities, context
+preservation, failures and real HS256 negative issuer/signature/time checks. Future full
+Maven/architecture/Spring wiring CI required; no such tests ran in this registration.
+
+Identity actor reference is neither membership nor scoped permission, provider/link
+revocation proof or transactional authority. Paired company/facility decisions and
+cross-owner authorization evidence linearization remain separate unregistered prerequisites
+before user-facing history/publication. Ownership/epoch/CAS/replay/API not implemented.
+
+HPR-P25-040 registration source-complete, exact-head Docs acceptance PENDING; implementation
+PLANNED after passing registration Docs CI and separate Next. F1–F4/P2.5 OPEN;
+simulator/P3 DEFERRED; version/release, industrial/SITE acceptance and closure unchanged.
+Two-document guarded main publication, verify exact new-head Docs startup, then STOP.
+
+
+HPR-P25-040 registration publication validation: 10 documentation-validator and 10
+OpenAPI-validator unit tests PASS; canonical docs PASS (97 documents, 5,302 relative
+links, 24 modules, 13 P2 rows); offline OpenAPI PASS (263 operations, 244 paths,
+231 schemas); existing P1 closure evidence consistency PASS. Exact two-document
+scope, absent future CREATE paths, preserved historical registrations/reconciliation
+and whitespace checks PASS. No Java/Maven execution or closure performed.

@@ -13,13 +13,14 @@
 
 **Product policy:** Hidra is universal, configurable and company/network/product independent. No real customer data, P&IDs, vendor curves or live SCADA are prerequisites for generic development. PLATFORM software testing uses explicit synthetic data; customer SITE commissioning is an entirely separate gate. Numerical simulation work is deferred.
 
-**Code discipline:** `HPR-P25-037` is implemented and CI accepted; `HPR-P25-038` policy design is accepted; `HPR-P25-039` Party eligibility is implemented with full CI acceptance pending. The next Identity authorization slice is not registered. Codes `F1-02` etc. are **planning references only** and MUST NOT be executed or treated as approved HPR codes before registration, exact commit message and exact create/update/delete file allowlists. Dependencies are minimum known gates, not blanket permission.
+**Code discipline:** `HPR-P25-037` is implemented and CI accepted; `HPR-P25-038` policy design is accepted; `HPR-P25-039` Party eligibility is accepted; `HPR-P25-040` trusted Topology actor export is registered. Scoped permission/revocation and publication slices remain unregistered. Codes `F1-02` etc. are **planning references only** and MUST NOT be executed or treated as approved HPR codes before registration, exact commit message and exact create/update/delete file allowlists. Dependencies are minimum known gates, not blanket permission.
 
 | Order | Code / planning reference | Task | Current status | Dependencies / gate | Track |
 |---|---|---|---|---|---|
 | 1 | HPR-P25-037 | Immutable station-graph PostgreSQL persistence | COMPLETED — exact-head Production #654 and Docs #237 SUCCESS | Accepted at `0868f2d17ce0eaefc53902ce36fa711681cd406b` after bounded #653 repair | F1 |
 | 2 | HPR-P25-038 / F1-02 preflight | Station revision publication/history policy and implementation decomposition | COMPLETED — policy Docs #239 SUCCESS | Accepted at `34222374ef5451144766bc07dfe5957d67b4c5fb` | F1 |
-| 2.1 | HPR-P25-039 | Party-owned eligibility contract exported to Topology | COMPLETED in source — exact-head full CI acceptance PENDING | Docs #239 SUCCESS; selected current owner Next; exact five-file scope | F1 |
+| 2.1 | HPR-P25-039 | Party-owned eligibility contract exported to Topology | COMPLETED — exact-head Production #655 and Docs #240 SUCCESS | Accepted at `5a279f27cd3058c909629f78b67b417a7e607e18` | F1 |
+| 2.2 | HPR-P25-040 | Identity-owned trusted current human actor export to Topology | REGISTERED — implementation PLANNED / NOT SELECTED | Accepted 039; successful registration Docs CI; separate owner Next; exact six-file scope | F1 |
 | 2a | F1-02 implementation | Station revision history / transactional publication | PLANNED — not registered or implemented | HPR-P25-038 policy design; exact implementation allowlist and subsequent owner Next | F1 |
 | 3 | F1-03 | Company-scoped authoring, topology APIs and exact-history access | PLANNED — needs HPR registration | F1-02; authorization/API contracts | F1 |
 | 4 | F1-04 | Synthetic multi-company topology validation | PLANNED — needs HPR registration | F1-03; registered acceptance test envelope | F1 |
@@ -1809,3 +1810,177 @@ unit tests PASS; canonical docs PASS (97 documents, 5,302 links, 24 modules, 13 
 offline OpenAPI PASS (263 operations, 244 paths, 231 schemas); existing P1 closure evidence
 consistency PASS. Exact five-file scope, retained records/history, canonical Java headers
 and whitespace checks PASS before publishing. Full Maven/ArchUnit acceptance remains pending.
+
+
+## 2026-10-11 — Register HPR-P25-040 trusted Topology actor export
+
+### Selection and accepted evidence
+
+Owner Next selects one bounded Identity prerequisite registration following accepted
+HPR-P25-039. Current main `5a279f27cd3058c909629f78b67b417a7e607e18`, tree
+`2ee33701a94212719bba9ce09080881ba0b450da`;
+[Production #655](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38157165810)
+and [Docs #240](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38157165726)
+SUCCESS on that exact SHA. Production job 114522415052 passes repository verification,
+OpenAPI publication/snapshot/backward compatibility and migrated catalog/dictionary.
+Its summary reports **1,615 tests, zero failures/errors/skips**. Actual PostgreSQL 16.15
+capture: 145 migrations, 470 JPA mappings, 490 relations, zero unresolved owners;
+source bundle `78811d82a24ae8c1aee2cd3597f8d653c1bac78734ff07b7ec244701dcab4885`.
+This accepts Party eligibility only, not company authorization or publication authority.
+
+AGENTS.md, active roadmap, reconciliation and current identity/security source were
+recovered. HPR-P25-040 and its three CREATE paths are absent. Current registration
+message `docs(identity): register trusted topology actor export` changes only the
+two governance files, records accepted 039 and registers the first resolved Identity
+slice. No Java, policy grant, SQL, API or architecture test is changed in registration.
+
+### Recovered actor-binding source and design boundary
+
+| Source | Observed contract | Selected consequence |
+|---|---|---|
+| `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/HidraAccessTokenIssuer.java` | Common bearer subject is principal.userId; optional configured principal claim also carries that ID; username is separate | Native bearer actor comes from revalidated sub, never configurable getName/username claim |
+| `src/main/java/dz/sh/hidra/platform/configuration/HidraJwtDecoderConfiguration.java` | Qualified hidraJwtDecoder validates own HS256 issuer/time and configured audience; external decoder is separate | Reuse this exact local-token decoder for native-token binding; no manual claim/signature shortcut |
+| `src/main/java/dz/sh/hidra/modules/identity/domain/model/HidraPrincipal.java` | Stable userId distinct from username; getName returns userId | A normalized provider principal supplies userId only after trusted authenticated context |
+| `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/LocalAuthenticationProvider.java` and `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/LdapAuthenticationProvider.java` | Verified local/directory credentials yield authenticated UsernamePasswordAuthenticationToken with HidraPrincipal | Permit these concrete normalized provider contexts, not arbitrary string principals |
+| `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/IdentityOidcJwtAuthenticationConverter.java` and `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/HidraOidcAuthenticationToken.java` | External issuer/subject is resolved to local User and normalized OIDC token; this is distinct from ordinary native bearer | Support normalized OIDC token binding; do not parse raw external JWT as a native User.id |
+| `src/main/java/dz/sh/hidra/modules/identity/application/port/out/UserRepositoryPort.java` and `src/main/java/dz/sh/hidra/modules/identity/domain/model/User.java` | findById/findByUsername; active and locked(Instant) domain rules | Use exact findById only; recheck current ACTIVE, unlocked HUMAN user each invocation |
+| `src/main/java/dz/sh/hidra/platform/security/SpringSecurityCurrentSecurityContext.java` | Technical name resolver without User lookup | Do not equate technical ActorId/name with publication User.id or reuse anonymous fallback |
+| `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/SpringAuthorizationContextAdapter.java` | Authorization assertion binds to current normalized User.id; native bearer has no HidraPrincipal | Actor resolution is separate from later scoped permission and external evidence adaptation; no permission shortcut from token roles |
+| `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java` | Public module exports are explicitly listed; no Identity contract.topology currently | Register exactly one new export package with its public contract, preserving all other guard rules |
+
+The first slice exposes only a stable authenticated human actor reference. It does
+not resolve company/facility ownership, check permissions, carry authorization claims,
+prove token/provider revocation, grant publication or serialize concurrent revocation.
+UserType.HUMAN is selected for this operator-facing contract; SERVICE, SYSTEM,
+INTEGRATION and BREAK_GLASS are not eligible. Administrative/break-glass or automated
+actors require their own registered semantics rather than anonymous/system fallback.
+Local/directory/OIDC normalized tokens are trusted authentication-context inputs,
+not caller-created REST DTOs. This adapter does not reauthenticate provider credentials
+or independently validate every upstream provider/link status; those remain owner
+permission/evidence gates before any user-facing publication or history access.
+
+### Registered next executable implementation — HPR-P25-040
+
+**Exact message:** `feat(identity): export trusted current topology actor`.
+**Gate:** passing current registration exact-head Docs CI, separate owner Next,
+refreshed source/path checks, accepted HPR-P25-039. NOT implemented by registration.
+
+| Operation | Exact authorized implementation path |
+|---|---|
+| CREATE | `src/main/java/dz/sh/hidra/modules/identity/application/contract/topology/TopologyCurrentActorContract.java` |
+| CREATE | `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/TopologyCurrentActorQueryAdapter.java` |
+| CREATE | `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/TopologyCurrentActorQueryAdapterTest.java` |
+| UPDATE | `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java` — add only `dz.sh.hidra.modules.identity.application.contract.topology` to existing explicit exported-package set |
+| UPDATE | `doc/roadmap/ULTIMATE_ROADMAP.md` |
+| UPDATE | `doc/model-remediation/RECONCILIATION.md` |
+| DELETE | None authorized |
+
+No migration, permission seed, controller, dependency, configuration, existing actor
+contract/adapter, JWT issuer/decoder/converter or domain mutation is authorized. No
+Topology consumer is added early. Three new Java files use canonical AGENTS.md headers.
+The public contract imports only JDK types, exposes `Optional<Actor> currentActor()`
+and nested immutable `record Actor(String userId)`. Actor rejects null/blank IDs,
+normalizes outer whitespace consistently with Identity and exposes only User.id;
+no username, employee, provider claim, credentials, permission, company or JPA type.
+No input argument allows a caller to choose user identity.
+
+The new Identity infrastructure @Component adapter owns Spring Security integration.
+Its injected production constructor takes UserRepositoryPort and
+`@Qualifier("hidraJwtDecoder") JwtDecoder`, rejects null, and delegates to a same-package
+constructor with Clock.systemUTC for fixed-clock tests; use explicit @Autowired on the
+production constructor if necessary for unambiguous Spring selection. No new global
+Clock bean. Resolve current SecurityContextHolder.Authentication once per call, require
+non-null authenticated context and exclude AnonymousAuthenticationToken regardless
+of flags. Do not write/clear/replace caller SecurityContext or token details.
+
+Supported identity extraction is closed:
+
+1. **JwtAuthenticationToken:** re-decode its original bearer value through the injected
+   hidraJwtDecoder. Derive candidate from returned validated JWT sub, not the possibly
+   forged/cached Jwt object or Authentication.getName/roles/details. Missing/blank
+   token or subject denies without User lookup. Require subject already canonical
+   (no outer-whitespace alternate User identity). JwtException means no eligible actor;
+   do not swallow unrelated decoder/runtime or repository failures. Raw external
+   issuer tokens are rejected by the own-issuer decoder. Do not log/copy bearer values.
+2. **Authenticated UsernamePasswordAuthenticationToken + HidraPrincipal:** accept only
+   LOCAL, LDAP or ACTIVE_DIRECTORY authenticationType. Extract principal.userId;
+   generic string/custom principal, OIDC-shaped password token and unsupported provider
+   types deny. Local/directory authentication remains the existing providers' job.
+3. **Authenticated HidraOidcAuthenticationToken:** require HidraPrincipal.authenticationType
+   OIDC and extract its userId. Do not convert raw external subject into local User ID
+   or use arbitrary Authentication subclasses just because their principal looks similar.
+
+For a valid extracted ID, capture trusted clock Instant once, exact repository findById,
+require returned User.id equals candidate, User.active(), !User.locked(now), and
+userType HUMAN. Return only fresh Actor(user.id). Missing, mismatched, non-active,
+time-locked or nonhuman user gives empty. Do not findByUsername, reuse role claims,
+use ThreadLocal tenant/company defaults, cache User status, or treat repository failure
+as absence. At lockedUntil equality the existing User.locked rule no longer time-locks
+an ACTIVE user; status LOCKED still denies. Constructor clock null is rejected.
+
+### Required tests and exact validation
+
+New tests use synthetic real User/HidraPrincipal records and clear SecurityContext in
+@AfterEach. Fixed Clock isolates temporal boundaries. Required matrix:
+
+- Trusted native bearer subject resolves ACTIVE HUMAN even when token authentication
+  name, username, roles, details and other actor-like claims disagree; use redecoded
+  subject as sole candidate and verify decoder receives original token exactly.
+- Forged cached JWT sub cannot override decoder result; missing/noncanonical subject,
+  expired/wrong-issuer/tampered token (JwtException) denies before User repository access.
+  Include at least one real HS256 issuer/time/signature test with disposable test-only
+  key/Nimbus decoder, complementing existing HidraUnifiedJwtCompatibilityTest. Do not
+  replace production decoder behavior with a permissive test stub in that case.
+- Normalized LOCAL/LDAP/ACTIVE_DIRECTORY and OIDC contexts resolve local User.id without
+  username fallback. Unsupported provider/principal/token, missing/anonymous/unauthenticated
+  contexts deny and do not access repositories/decoder. Supplied details/authorities
+  alone never produce identity. Include OIDC external subject != internal User.id.
+- Missing, mismatched ID, each non-ACTIVE UserStatus, active future lock and all non-HUMAN
+  UserType values deny; exact lock expiry is tested; status/lock changes are observed
+  on new invocation. Two different User IDs remain independent.
+- Repository failure and unrelated decoder failure propagate; null dependencies and
+  contract blank Actor ID reject; existing SecurityContext is unchanged by resolution.
+  Reflection/type checks ensure contract remains framework/domain/JPA-free as needed
+  by ArchitectureGuardrailTest. These are future tests, not executed here.
+
+Future focused command:
+`bash mvnw -B -q -Dtest=TopologyCurrentActorQueryAdapterTest,HidraUnifiedJwtCompatibilityTest,AuthorizationAssertionTrustTest,ArchitectureGuardrailTest test`;
+then `bash mvnw -B -q clean verify`, existing documentation/OpenAPI checks and exact
+six-file/header/export-delta validation. Full exact-head Production CI including
+architecture, Spring bean wiring, dictionary and OpenAPI gates is mandatory. Local
+Maven failure must be disclosed rather than represented as acceptance. No database
+schema changes imply no authorized dictionary rewrite. Export prefix addition must
+not weaken any forbidden private cross-module import or other architecture rule.
+
+### Deferred obligations and present disposition
+
+Next after this actor slice passes full CI is a separately registered paired
+company/facility permission export and current authorization-evidence/revocation
+protocol. Actor identity alone never satisfies either HPR-P25-038 scoped decision.
+Provider/link/user/grant/Party/facility races and transaction linearization remain
+unimplemented, as do ownership epoch, transfer, CAS publication, replay and history API.
+No broad publish/permission service is admitted by the current narrow contract.
+
+| Task | Current status | Next |
+|---|---|---|
+| HPR-P25-039 | Completed — exact-head Production #655 / Docs #240 SUCCESS | Retain Party eligibility-only boundary |
+| HPR-P25-040 registration | Completed in source; Docs acceptance PENDING | Publish `docs(identity): register trusted topology actor export` and stop |
+| HPR-P25-040 implementation | Planned / NOT SELECTED / NOT IMPLEMENTED | Successful registration Docs CI and separate owner Next select exact six files |
+| Scoped Identity permissions / revocation and Topology lifecycle | Planned / NOT REGISTERED / NOT IMPLEMENTED | Separate contract, allowlist and acceptance gates |
+| F1–F4/P2.5 | OPEN | No PLATFORM/SITE closure |
+| Simulator/P3 | DEFERRED | Prior gas-first/GZ2/own-engine steady/transient direction retained without numerical work |
+
+Present registration validation is documentation-only: registered doc-validator unit
+commands, canonical docs/offline OpenAPI, existing P1 closure evidence consistency,
+exact two-document diff and preserved registration/history checks. No current Java
+or security execution is claimed. Guarded direct-main commit; verify exact parent,
+tree/two paths and new-head Docs CI startup, then STOP without waiting for completion.
+No PR, next implementation, version, release, deployment, real-data requirement or closure.
+
+
+HPR-P25-040 registration publication validation: 10 documentation-validator and 10
+OpenAPI-validator unit tests PASS; canonical docs PASS (97 documents, 5,302 relative
+links, 24 modules, 13 P2 rows); offline OpenAPI PASS (263 operations, 244 paths,
+231 schemas); existing P1 closure evidence consistency PASS. Exact two-document
+scope, absent future CREATE paths, preserved historical registrations/reconciliation
+and whitespace checks PASS. No Java/Maven execution or closure performed.

@@ -14974,3 +14974,46 @@ OpenAPI-validator tests PASS; canonical docs PASS (97 documents, 5,302 links, 24
 P1 closure evidence consistency PASS. Two-document/retained-record/source-path/collision
 and whitespace checks PASS. No new Java, PostgreSQL or authorization acceptance run
 is claimed by this documentation-only policy design.
+
+
+## 2026-10-11 — HPR-P25-039 Party-owned active-reference eligibility implementation
+
+Owner Next executes `feat(party): export topology party reference eligibility` on main
+`34222374ef5451144766bc07dfe5957d67b4c5fb`, tree
+`fcde730e5aebeb01d28e1040fdb55d58baf553ae`; HPR-P25-038 Docs #239/run38156540664
+SUCCESS. Last full accepted code `0868f2d17ce0eaefc53902ce36fa711681cd406b` passed
+Production #654; intervening revisions are governance-only. Instructions and source
+were reread, CREATE paths absent, exact five-file scope verified before implementation.
+
+New public Party TopologyPartyEligibilityContract, Spring eligibility service and
+focused test implement only active exact-reference eligibility. Actual Party domain
+rule is reused; blank avoids repository, missing/non-active/wrong identity false,
+repository failures propagate and new lookups observe status changes. Existing
+exists service/contract/tests stay unchanged for all statuses. No Topology caller,
+company grant, Identity actor, source approval, database, migration or API is added.
+Two governance files update disposition; history and original registrations retained.
+
+Registered Java-21 focused Maven target including ArchitectureGuardrailTest attempted
+but BLOCKED before compilation by unavailable Boot parent 4.1.1 / Maven Central DNS.
+Offline Java-21 clean verify also attempted and blocked by the uncached parent.
+Final exact sources compiled directly with Java 21 and actual repository-managed jars;
+JUnit Platform **13 tests PASS, zero failures/errors/skips**: nine new eligibility,
+one unchanged existence and three unchanged Party semantic tests. No temporary source
+substitution or standalone assertion rewrite. This does not establish full Maven,
+architecture, Spring startup, API or database acceptance; those remain exact-head CI gates.
+
+HPR-P25-038 docs accepted; HPR-P25-039 source-complete/full CI acceptance PENDING.
+Remaining Identity authorization, owner epoch, publication/history/API scopes are
+unregistered. After passing repaired/current full CI and separate Next, recover/register
+bounded Identity current-user/scoped authorization and revocation prerequisites.
+No default tenant/company, version/release, deployment, physical qualification,
+end-to-end PLATFORM/SITE acceptance or closure. F1–F4/P2.5 OPEN; simulator/P3 DEFERRED.
+Publish exact five files with expected-head guard, verify commit/tree/parent/scope and
+new-head full/Docs CI starts, STOP without waiting or advancing.
+
+
+HPR-P25-039 publication validation: 10 documentation-validator and 10 OpenAPI-validator
+unit tests PASS; canonical docs PASS (97 documents, 5,302 links, 24 modules, 13 P2 rows);
+offline OpenAPI PASS (263 operations, 244 paths, 231 schemas); existing P1 closure evidence
+consistency PASS. Exact five-file scope, retained records/history, canonical Java headers
+and whitespace checks PASS before publishing. Full Maven/ArchUnit acceptance remains pending.

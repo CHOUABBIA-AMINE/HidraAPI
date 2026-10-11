@@ -13,13 +13,13 @@
 
 **Product policy:** Hidra is universal, configurable and company/network/product independent. No real customer data, P&IDs, vendor curves or live SCADA are prerequisites for generic development. PLATFORM software testing uses explicit synthetic data; customer SITE commissioning is an entirely separate gate. Numerical simulation work is deferred.
 
-**Code discipline:** `HPR-P25-037` is implemented and CI accepted; `HPR-P25-038` policy design is delivered; `HPR-P25-039` is the next **registered Party eligibility implementation**. Codes `F1-02` etc. are **planning references only** and MUST NOT be executed or treated as approved HPR codes before registration, exact commit message and exact create/update/delete file allowlists. Dependencies are minimum known gates, not blanket permission.
+**Code discipline:** `HPR-P25-037` is implemented and CI accepted; `HPR-P25-038` policy design is accepted; `HPR-P25-039` Party eligibility is implemented with full CI acceptance pending. The next Identity authorization slice is not registered. Codes `F1-02` etc. are **planning references only** and MUST NOT be executed or treated as approved HPR codes before registration, exact commit message and exact create/update/delete file allowlists. Dependencies are minimum known gates, not blanket permission.
 
 | Order | Code / planning reference | Task | Current status | Dependencies / gate | Track |
 |---|---|---|---|---|---|
 | 1 | HPR-P25-037 | Immutable station-graph PostgreSQL persistence | COMPLETED — exact-head Production #654 and Docs #237 SUCCESS | Accepted at `0868f2d17ce0eaefc53902ce36fa711681cd406b` after bounded #653 repair | F1 |
-| 2 | HPR-P25-038 / F1-02 preflight | Station revision publication/history policy and implementation decomposition | COMPLETED in source — policy documentation CI pending | Registration Docs #238 SUCCESS; current owner Next | F1 |
-| 2.1 | HPR-P25-039 | Party-owned eligibility contract exported to Topology | REGISTERED — implementation PLANNED / NOT SELECTED | Accepted 038 Docs CI; separate owner Next; exact five-file allowlist below | F1 |
+| 2 | HPR-P25-038 / F1-02 preflight | Station revision publication/history policy and implementation decomposition | COMPLETED — policy Docs #239 SUCCESS | Accepted at `34222374ef5451144766bc07dfe5957d67b4c5fb` | F1 |
+| 2.1 | HPR-P25-039 | Party-owned eligibility contract exported to Topology | COMPLETED in source — exact-head full CI acceptance PENDING | Docs #239 SUCCESS; selected current owner Next; exact five-file scope | F1 |
 | 2a | F1-02 implementation | Station revision history / transactional publication | PLANNED — not registered or implemented | HPR-P25-038 policy design; exact implementation allowlist and subsequent owner Next | F1 |
 | 3 | F1-03 | Company-scoped authoring, topology APIs and exact-history access | PLANNED — needs HPR registration | F1-02; authorization/API contracts | F1 |
 | 4 | F1-04 | Synthetic multi-company topology validation | PLANNED — needs HPR registration | F1-03; registered acceptance test envelope | F1 |
@@ -1729,3 +1729,83 @@ OpenAPI-validator tests PASS; canonical docs PASS (97 documents, 5,302 links, 24
 P1 closure evidence consistency PASS. Two-document/retained-record/source-path/collision
 and whitespace checks PASS. No new Java, PostgreSQL or authorization acceptance run
 is claimed by this documentation-only policy design.
+
+
+## 2026-10-11 — Execute HPR-P25-039 Party eligibility export
+
+Owner Next selects exactly registered message
+`feat(party): export topology party reference eligibility` on main
+`34222374ef5451144766bc07dfe5957d67b4c5fb`, tree
+`fcde730e5aebeb01d28e1040fdb55d58baf553ae`.
+[HPR-P25-038 Docs #239](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38156540664)
+SUCCESS on that exact SHA. Last full accepted code baseline
+`0868f2d17ce0eaefc53902ce36fa711681cd406b` passed Production #654 and Docs #237;
+intervening commits change only the two governance documents. Current AGENTS.md,
+roadmap, reconciliation, Party model/status/repository, public export conventions,
+existing existence service/tests and architecture exported-package rule were reread.
+Three CREATE paths were absent. Exact five-file allowlist retained; no added prerequisite.
+
+Three new files deliver the Party-owned `TopologyPartyEligibilityContract`, stateless
+Spring `TopologyPartyEligibilityQueryService`, and focused test. Only the roadmap and
+reconciliation are updated. The public method eligibleForNewReference(String) uses
+trimmed exact lookup, verifies returned identity and delegates the ACTIVE rule to
+existing Party.selectableForNewReference. Blank/null avoids repository access;
+missing/non-ACTIVE/mismatched identity returns false. Repository failures propagate,
+constructor null is rejected, each query observes current repository state. No cache,
+Party domain/JPA object exported, caller actor/company default, permission or source
+attestation. Existing exists behavior stays unchanged for every stored status.
+
+Nine new tests use actual synthetic Party records for all five statuses, two identities,
+whitespace/case preservation, blank/no interaction, missing and mismatched identity,
+status change/no caching, repository error and null constructor. They also exercise
+existing existence behavior alongside eligibility for every status. No Spring context,
+database or real deployment data is needed for this slice. Existing exported
+Party application.contract.topology package already covers the new interface;
+ArchitectureGuardrailTest and its allowlist are unchanged. All new Java headers
+retain canonical author Abir MEDJERAB and CreatedOn 2025-06-26.
+
+Validation actually executed:
+
+- Registered Java-21 focused Maven command attempted:
+  `bash mvnw -B -q -Dtest=TopologyPartyEligibilityQueryServiceTest,TopologyPartyReferenceQueryServiceTest,PartySemanticRemediationTest,ArchitectureGuardrailTest test`.
+  BLOCKED before compilation: parent Spring Boot 4.1.1 cannot resolve due to Maven
+  Central `Temporary failure in name resolution`. Java-21
+  `bash mvnw -o -B -q clean verify` also attempted, blocked by the uncached same parent.
+  No full Maven/ArchUnit/whole-application success is claimed locally.
+- Actual final production/test sources compiled with OpenJDK 21.0.12 using downloaded
+  repository-managed dependencies from Boot 4.1.1 BOM: Spring 7.0.9, JUnit 6.0.3,
+  Mockito 5.23.0, Byte Buddy 1.18.11, AssertJ 3.27.7 and Mockito's Objenesis 3.3.
+  No stub/edited test sources or substitute assertions. Local JUnit Platform execution
+  **13 tests PASS, zero failures/errors/skips**: 9 new eligibility tests, unchanged
+  TopologyPartyReferenceQueryServiceTest (1) and PartySemanticRemediationTest (3).
+  This is focused direct Java/JUnit execution; it does not substitute for the pending
+  full architecture/CI gates. Final rerun follows the test-source cleanup only.
+- Registered documentation validator units, canonical docs/offline OpenAPI, existing
+  P1 evidence consistency and exact five-file/retained-record/header/whitespace checks
+  are completed before publication and reported with actual results.
+
+No old production/test source, application caller, Party existence contract, domain,
+JPA mapping, migration, dictionary, API/export route, dependency, architecture rule,
+version/release or historical snapshot is changed. Source bundle for migration/JPA
+catalog stays unchanged; full CI independently verifies dictionary/OpenAPI gates.
+Party eligibility remains a prerequisite only, not authenticated company access.
+
+| Task | Current status | Next gate |
+|---|---|---|
+| HPR-P25-038 | Completed — exact-head Docs #239 SUCCESS | Retain target policy, no runtime authority inferred |
+| HPR-P25-039 | Completed in source — full exact-head CI acceptance PENDING | Guarded main publication, verify full/Docs startup, STOP |
+| Identity authorization export | Planned / NOT REGISTERED / NOT IMPLEMENTED | After accepted 039 full CI and separate Next, recover current-user binding/paired scoped decisions/revocation protocol and register the first bounded prerequisite |
+| Topology owner/epoch/publication/history/API | Planned / NOT REGISTERED / NOT IMPLEMENTED | Depends on accepted Identity contract and individually registered scopes |
+| F1–F4/P2.5 | OPEN | No PLATFORM or SITE closure |
+| Simulator/P3 | DEFERRED | Prior gas-first/GZ2/own-engine steady/transient direction retained without numerical work |
+
+One exact commit, direct main with expected-head lease; verify parent/tree/five paths
+and exact-head Production/Documentation CI startup then STOP. No PR, CI-completion
+wait, automatic next slice, release, version or closure.
+
+
+HPR-P25-039 publication validation: 10 documentation-validator and 10 OpenAPI-validator
+unit tests PASS; canonical docs PASS (97 documents, 5,302 links, 24 modules, 13 P2 rows);
+offline OpenAPI PASS (263 operations, 244 paths, 231 schemas); existing P1 closure evidence
+consistency PASS. Exact five-file scope, retained records/history, canonical Java headers
+and whitespace checks PASS before publishing. Full Maven/ArchUnit acceptance remains pending.

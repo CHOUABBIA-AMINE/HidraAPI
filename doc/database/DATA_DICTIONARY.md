@@ -6,10 +6,10 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `0dd8097dd5b4db055e92f0bf74629d2c7ac39dfb`
+Captured source SHA: `44223044cdc5c53116d8108f842488d77d04a512`
 PostgreSQL server: `16.15 (Debian 16.15-1.pgdg13+2)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `bf4b114cc8094c565dfa3bb2a1b0449f198cbc971123d2dee960ed7a433b5f30`.
-Migrations: 142; JPA mappings: 470; catalog relations: 489; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `33de956f4183f927e93d21f7a2258afe714ea9e8d3f33c348a00cdd380ade78d`.
+Migrations: 143; JPA mappings: 470; catalog relations: 489; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -25233,6 +25233,7 @@ Topology-owned append-only physical source revisions with canonical payload inte
 - Evidence: [JdbcTopologyPhysicalNetworkRevisionRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcTopologyPhysicalNetworkRevisionRepositoryAdapter.java)
 - Evidence: [TopologyPhysicalNetworkRevision.java](../../src/main/java/dz/sh/hidra/modules/topology/domain/model/TopologyPhysicalNetworkRevision.java)
 - Migration mention (not inferred introduction): [V20261009_001__p25_topology_physical_network_revisions.sql](../../src/main/resources/db/migration/V20261009_001__p25_topology_physical_network_revisions.sql)
+- Migration mention (not inferred introduction): [V20261010_003__p25_topology_regulator_physical_revision_format.sql](../../src/main/resources/db/migration/V20261010_003__p25_topology_regulator_physical_revision_format.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -25246,7 +25247,7 @@ Topology-owned append-only physical source revisions with canonical payload inte
 
 - `ck_topology_physical_digest`: CHECK (sha256::text ~ '^[0-9a-f]{64}$'::text AND sha256::text = encode(sha256(canonical_payload), 'hex'::text))
   - Catalog attributes: {"columns": ["sha256", "canonical_payload"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
-- `ck_topology_physical_format`: CHECK (payload_format = 'HIDRA_TOPOLOGY_PHYSICAL_NETWORK_V1'::text)
+- `ck_topology_physical_format`: CHECK (payload_format = ANY (ARRAY['HIDRA_TOPOLOGY_PHYSICAL_NETWORK_V1'::text, 'HIDRA_TOPOLOGY_PHYSICAL_NETWORK_V2'::text]))
   - Catalog attributes: {"columns": ["payload_format"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
 - `ck_topology_physical_payload`: CHECK (octet_length(canonical_payload) &gt; 0)
   - Catalog attributes: {"columns": ["canonical_payload"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}

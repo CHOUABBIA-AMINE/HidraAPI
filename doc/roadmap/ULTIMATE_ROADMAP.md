@@ -13,7 +13,7 @@
 
 **Product policy:** Hidra is universal, configurable and company/network/product independent. No real customer data, P&IDs, vendor curves or live SCADA are prerequisites for generic development. PLATFORM software testing uses explicit synthetic data; customer SITE commissioning is an entirely separate gate. Numerical simulation work is deferred.
 
-**Code discipline:** `HPR-P25-037` is implemented and CI accepted; `HPR-P25-038` policy design is accepted; `HPR-P25-039` Party eligibility is accepted; `HPR-P25-040` trusted Topology actor export is CI accepted; `HPR-P25-041` paired scoped permission export is implemented; full exact-head CI acceptance is pending. Cross-owner revocation/linearization and publication slices remain unregistered. Codes `F1-02` etc. are **planning references only** and MUST NOT be executed or treated as approved HPR codes before registration, exact commit message and exact create/update/delete file allowlists. Dependencies are minimum known gates, not blanket permission.
+**Code discipline:** `HPR-P25-037` is implemented and CI accepted; `HPR-P25-038` policy design is accepted; `HPR-P25-039` Party eligibility is accepted; `HPR-P25-040` trusted Topology actor export is CI accepted; `HPR-P25-041` paired scoped permission export is CI accepted; `HPR-P25-042` live Facility/Party owner-reference query is registered below, not implemented. Cross-owner revocation/linearization and publication slices remain unregistered. Codes `F1-02` etc. are **planning references only** and MUST NOT be executed or treated as approved HPR codes before registration, exact commit message and exact create/update/delete file allowlists. Dependencies are minimum known gates, not blanket permission.
 
 | Order | Code / planning reference | Task | Current status | Dependencies / gate | Track |
 |---|---|---|---|---|---|
@@ -21,7 +21,8 @@
 | 2 | HPR-P25-038 / F1-02 preflight | Station revision publication/history policy and implementation decomposition | COMPLETED — policy Docs #239 SUCCESS | Accepted at `34222374ef5451144766bc07dfe5957d67b4c5fb` | F1 |
 | 2.1 | HPR-P25-039 | Party-owned eligibility contract exported to Topology | COMPLETED — exact-head Production #655 and Docs #240 SUCCESS | Accepted at `5a279f27cd3058c909629f78b67b417a7e607e18` | F1 |
 | 2.2 | HPR-P25-040 | Identity-owned trusted current human actor export to Topology | COMPLETED — exact-head Production #656 and Docs #242 SUCCESS | Accepted at `d96e420757f79aaf04e28b3f65c719f12e3029a0` | F1 |
-| 2.3 | HPR-P25-041 | Identity-owned paired company/facility permission export | COMPLETED in source — full exact-head CI acceptance PENDING | Docs #243 SUCCESS; selected owner Next; exact six-file scope | F1 |
+| 2.3 | HPR-P25-041 | Identity-owned paired company/facility permission export | COMPLETED — exact-head Production #657 and Docs #244 SUCCESS | Accepted at `6429b8dc0e449b54db89d520ba14c22ce424db1c` | F1 |
+| 2.4 | HPR-P25-042 | Topology live Facility/Party owner-reference query | PLANNED — registered below; NOT IMPLEMENTED | Passing registration Docs CI, accepted 039/041 and separate owner Next; exact four-file scope | F1 |
 | 2a | F1-02 implementation | Station revision history / transactional publication | PLANNED — not registered or implemented | HPR-P25-038 policy design; exact implementation allowlist and subsequent owner Next | F1 |
 | 3 | F1-03 | Company-scoped authoring, topology APIs and exact-history access | PLANNED — needs HPR registration | F1-02; authorization/API contracts | F1 |
 | 4 | F1-04 | Synthetic multi-company topology validation | PLANNED — needs HPR registration | F1-03; registered acceptance test envelope | F1 |
@@ -2317,3 +2318,167 @@ skipped locally; this is not full PostgreSQL/runtime dictionary/OpenAPI acceptan
 Exact-head Production CI must execute those gates. All 34 new unit cases passed
 in the full run. Final exact-scope/header/history/whitespace checks and canonical
 docs/offline OpenAPI validation passed before publication; no version/closure change.
+
+
+## 2026-10-11 — Register HPR-P25-042 live Facility/Party owner-reference query
+
+### Selected documentation stage and accepted evidence
+
+Owner Next selects prerequisite recovery and registration following accepted 041.
+Current main is `3b6fc769f9362bc394f9de732cab82f49207be2e`, tree
+`be86de5cc1bbfbb1c72213adc32a7ff659b53146`. Main advanced during preparation from
+`74d0d222c470fcb16402db41aec3de0c57836d0a` through a gap-register-only Organization
+review; that prior commit added the gap register, document-register entry and docs
+configuration. Both commits leave Java, migrations, runtime and active roadmap/
+reconciliation unchanged. Current exact-head
+[Docs #246](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38169890562)
+is SUCCESS; earlier Docs #245 is SUCCESS. Production #658 on 74d0d222 was observed
+IN_PROGRESS and is not claimed accepted; 3b6fc769 has only its Docs run.
+This documentation-only stage uses green registration/docs evidence and unchanged
+runtime source accepted on 041; it does not bypass a failed runtime gate. Before
+future code execution recheck then-current main and latest Production/Docs evidence.
+
+HPR-P25-041 implementation `6429b8dc0e449b54db89d520ba14c22ce424db1c` has exact-head
+[Production #657](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38168669849)
+and [Docs #244](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38168669827)
+SUCCESS. Production job `114556451251` reports 1,704 tests, zero failures/errors/skips,
+367 reports. PostgreSQL 16.15 actual-catalog dictionary verification covers 145
+migrations, 470 JPA mappings and 490 relations with no unresolved owners; runtime
+OpenAPI and repository gates passed. Source bundle SHA-256 is
+`78811d82a24ae8c1aee2cd3597f8d653c1bac78734ff07b7ec244701dcab4885`.
+This accepts only 041's paired permission query, not membership, live ownership,
+linearization, publication or PLATFORM/SITE completion.
+
+Read AGENTS.md, PROJECT_STATE.md, current roadmap/reconciliation and
+[gap register](gaps.md). Gap findings do not authorize execution: ID-GAP-001 first-use
+activation still needs onboarding policy; ID-GAP-002 organization/station scope is
+not company membership; ID-GAP-003 directory source implementation is not SITE
+qualification. ORG-GAP-001 country-reference qualification, ORG-GAP-002 hierarchy/reorganization
+qualification and ORG-GAP-003 assignment lifecycle remain separate reviews. No duplicate
+Organization country field or unrelated lifecycle implementation is selected. This
+stage follows the active F1 order and preserves the owner's concurrent findings.
+Exact current-stage message:
+`docs(topology): register live station revision owner query`.
+Current-stage exclusive UPDATE allowlist is these two governance documents only:
+`doc/roadmap/ULTIMATE_ROADMAP.md` and `doc/model-remediation/RECONCILIATION.md`.
+CREATE/DELETE: none. No future implementation is selected in this registration commit.
+
+### Source recovery and bounded decomposition
+
+- `src/main/java/dz/sh/hidra/modules/topology/domain/model/Facility.java` exposes
+  normalized optional ownerPartyId and descriptive owner code/name snapshots. Identity
+  is Facility.id, not its code, facility type, tenant or display name.
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/FacilityRepositoryPort.java`
+  and `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JpaFacilityRepositoryAdapter.java`
+  provide current exact-ID lookup. Registration checks Party existence only; no accepted
+  query currently derives a station revision's live company context.
+- `src/main/java/dz/sh/hidra/modules/party/application/contract/topology/TopologyPartyEligibilityContract.java`
+  and its owner `TopologyPartyEligibilityQueryService` deny absent, mismatched or
+  non-ACTIVE Party references. Existing exported prefix is already accepted by
+  `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java`; no new export is needed.
+- Facility and Party JPA identity columns and Facility.owner_party_id are length 80.
+  The new query must normalize and validate bounded references without truncation.
+  PostgreSQL character limits mean 80 Unicode code points, not 80 UTF-16 code units.
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/FacilityStatus.java` and
+  `FacilityKind.java` are descriptive master state/type. This owner-reference-only
+  query introduces no new facility lifecycle or station-kind permission policy.
+  Publication eligibility and historical access still require their later gates.
+- Accepted Identity actor/paired permission exports are read-only prerequisites. A
+  company supplied to 041 is not proof that Facility belongs to it. First resolve
+  Topology's live owner; later permission evaluation must use that derived reference.
+
+### Registered next executable task — HPR-P25-042
+
+Exact implementation message:
+`feat(topology): resolve live station revision owner references`.
+State: PLANNED / REGISTERED / NOT IMPLEMENTED. Separate owner Next after passing
+registration Docs selects only this bounded query. Recheck source and latest CI first;
+failed CI must be repaired before feature execution.
+
+Exclusive implementation allowlist (four files):
+
+| Action | Exact path |
+|---|---|
+| CREATE | `src/main/java/dz/sh/hidra/modules/topology/application/service/StationRevisionOwnerQueryService.java` |
+| CREATE | `src/test/java/dz/sh/hidra/modules/topology/application/service/StationRevisionOwnerQueryServiceTest.java` |
+| UPDATE | `doc/roadmap/ULTIMATE_ROADMAP.md` |
+| UPDATE | `doc/model-remediation/RECONCILIATION.md` |
+
+DELETE: none. No migration, repository/mapper/entity/domain mutation, public cross-module
+export, architecture allowlist, permission seed, configuration, dependency, API,
+dictionary, gap-register, release/version, deployment or closure changes authorized.
+Both CREATE paths were checked absent. Canonical Java headers preserve Author Abir
+MEDJERAB and CreatedOn 2025-06-26; Application and appropriate Test layers.
+
+Register a final Spring @Service with constructor-required FacilityRepositoryPort and
+accepted TopologyPartyEligibilityContract. Provide
+`Optional<OwnerReference> resolve(String facilityId)` with a nested immutable public
+JDK-only `OwnerReference(String facilityId, String companyPartyId)` record. This is
+Topology-private application data, not a newly exported consumer contract. Record
+references are trimmed, nonblank and bounded to 80 code points; reject invalid record
+construction with IllegalArgumentException. No actor, caller company, snapshot,
+permission, epoch, generation, grant flag, payload or revision lookup in this interface.
+
+Null/blank/overlong query identity returns Optional.empty without repository access.
+Find the trimmed exact Facility.id once. Missing or differently identified result,
+blank/overlong live ownerPartyId, or an ineligible Party returns Optional.empty.
+Only call Party eligibility for that derived owner after Facility identity validation.
+Return the normalized exact facility/owner pair only if eligibility is true. Do not
+consult caller company, owner snapshots, code/name, authentication claims or defaults.
+No save/mutation, Identity evaluation, cache, transaction wrapper or retained authority.
+Every invocation rereads the Facility and owner eligibility; repository/Party failures
+propagate, never become an empty successful lookup. Existing Facility statuses/kinds
+are not additional filters here: returning a reference is not granting any operation.
+
+### Focused validation and mandatory deferred gates
+
+Use synthetic fixtures, deterministic repository/Party fakes and captured inputs.
+Tests must cover null/blank/overlong input and no dependencies invoked; exact trimmed
+lookup; absent/mismatched Facility; missing/overlong owner despite plausible snapshots;
+Party false/true and exact derived identity; independent facilities/owners; fresh owner
+and Party eligibility on subsequent calls; no save; both dependency failures and null
+constructor guards. Cover the nested record's normalization, null/blank/length bounds
+and Unicode 80-code-point boundary. Parameterize all FacilityStatus/FacilityKind values
+to prove the query introduces no implicit lifecycle/type access rule. No real data,
+Spring context or database-specific behavior is introduced by this small application
+query; existing database suites remain mandatory in full CI.
+
+Focused command:
+`bash mvnw -B -q -Dtest=StationRevisionOwnerQueryServiceTest,TopologyPartyEligibilityQueryServiceTest,TopologyScopedAccessQueryServiceTest,ArchitectureGuardrailTest test`;
+then `bash mvnw -B -q clean verify`, documentation/OpenAPI validators and exact
+four-file/header/unchanged-export/history checks. Report Docker skips honestly; full
+exact-head Production CI must execute PostgreSQL/runtime dictionary/OpenAPI gates.
+Runtime-only proxy/Mockito agent adaptation may be disclosed without repository edits.
+
+OwnerReference is an observation, not permission, legal-company classification,
+membership, an ownership epoch, publication binding or transfer evidence. A later
+owner/Party change invalidates assumptions based on it; a prior result cannot authorize
+later work. Party eligibility and Facility lookup are sequential, not atomic. Cross-owner
+revocation/linearization across user/grant/policy/provider/Party/Facility remains a
+mandatory separately registered prerequisite before public reads/writes. Snapshotting
+Party.id cannot replace that protocol. 042 neither calls the paired permission export
+nor turns its boolean into transaction authority. No user-facing operation is enabled.
+
+| Task | Current status | Next |
+|---|---|---|
+| HPR-P25-041 | Completed — Production #657 / Docs #244 SUCCESS | Retain paired owner-query-only evidence scope |
+| HPR-P25-042 registration | Completed in source; exact-head Docs acceptance PENDING | Publish exact two docs; verify Docs startup and STOP |
+| HPR-P25-042 implementation | Planned / REGISTERED / NOT IMPLEMENTED | Passing registration Docs, current CI recheck and separate owner Next select exact four files |
+| Cross-owner linearization, ownership epoch/transfer and publication/history/API | Planned / NOT REGISTERED / NOT IMPLEMENTED | Recover and register separate bounded owner protocols |
+| F1–F4 / P2.5 | OPEN | No closure or PLATFORM/SITE acceptance |
+| Simulator / P3 | DEFERRED | Retain gas-first/GZ2 own-engine steady/transient and operator control |
+
+Synthetic development and owner-supplied deployment calibration remain the policy.
+Current version and formal release remain unchanged. This stage validates documents
+only; no future Java/Maven/database results are claimed. Publish one guarded direct-main
+commit, verify exact parent/tree/two paths and exact-head Docs startup, then STOP
+without waiting for CI completion or selecting another stage.
+
+
+HPR-P25-042 registration publication validation: documentation-validator 10 and
+OpenAPI-validator 10 unit tests PASS; canonical docs PASS (98 documents, 5,305
+relative links, 24 modules, 13 P2 rows); offline OpenAPI PASS (263 operations,
+244 paths, 231 schemas); existing P1 closure evidence consistency PASS without
+executing closure. Exact two-document scope, both future CREATE paths absent,
+existing source references, preserved historical roadmap/reconciliation and
+whitespace checks PASS. No Java/Maven/database execution in this docs-only stage.

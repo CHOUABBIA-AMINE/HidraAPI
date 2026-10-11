@@ -39,11 +39,27 @@ class StationInternalGraphValidatorTest {
                 new Edge("e", "s", "i3"), new Edge("f", "o3", "d"));
         return new StationInternalGraph("station", "synthetic-r1", status, headers, units, edges);
     }
-    @Test void recognizesDeclaredSeriesAndParallelWithoutNumerics() {
+    @Test void distinguishesSeriesBranchFromIndividualParallelUnitsWithoutNumerics() {
+        // Synthetic chain u1 -> u2 and a separate u3 branch: no *single* pair
+        // shares both declared header junctions without traversing another unit.
         var report = validator.inspect(sample(Status.COMPLETE));
         assertTrue(report.complete());
         assertTrue(report.seriesPairs().contains("u1>u2"));
-        assertTrue(report.parallelPairs().contains("u2|u3") || report.parallelPairs().contains("u1|u3"));
+        assertTrue(report.parallelPairs().isEmpty());
+
+        // Independently declared units u1/u3 between the same suction/discharge
+        // junctions are an unambiguous unit-level parallel configuration.
+        var headers = List.of(new Header("s", HeaderKind.SUCTION, "s"),
+                new Header("d", HeaderKind.DISCHARGE, "d"));
+        var units = List.of(new Unit("u1", "station", "i1", "o1"),
+                new Unit("u3", "station", "i3", "o3"));
+        var edges = List.of(new Edge("a", "s", "i1"), new Edge("b", "o1", "d"),
+                new Edge("c", "s", "i3"), new Edge("d", "o3", "d"));
+        var parallel = validator.inspect(new StationInternalGraph(
+                "station", "synthetic-parallel-r1", Status.COMPLETE, headers, units, edges));
+        assertTrue(parallel.complete());
+        assertEquals(List.of("u1|u3"), parallel.parallelPairs());
+        assertTrue(parallel.seriesPairs().isEmpty());
     }
     @Test void incompleteDraftReturnsDeterministicDiagnosticsButCompleteRejects() {
         var draft = new StationInternalGraph("station", "r", Status.DRAFT,

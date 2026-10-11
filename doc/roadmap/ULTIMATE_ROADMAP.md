@@ -16718,3 +16718,103 @@ Exactly the two registered governance files changed; their preexisting bytes wer
 No future Java file was created and no Java/database execution is claimed by this registration.
 Main expected-head lease remains `f1659fe7677050c1a0d80542506db401ccbbdcec`;
 new-head Documentation CI startup is verified after publication, without awaiting completion.
+
+## 2026-10-11 — Execute HPR-P25-036 station graph codec and repository contract
+
+### Selection and baseline
+
+Owner `next` selects registered HPR-P25-036 after registration acceptance. Starting main
+`36dbd08d3ceb18b1d77e140a664faba4dfafbabb`, tree
+`3667f8ba17292bccade4017c640f7b77b15799d5`; Documentation #227/run 38145291402
+completed SUCCESS on that exact SHA. Latest previously observed Production #648/run
+38143295059 SUCCESS on `8496f19ce2f45630f500c48e65a1b881af1c2be1`; comparison to
+starting main changes only the two governance documents. This is source equivalence,
+not a production run on the registration SHA. Current domain, validator, physical codec,
+private output-port precedent and architecture guards were inspected before implementation.
+Four registered Java paths were absent; no collision or scope expansion was required.
+AGENTS.md remains binding and unchanged.
+
+Exact implementation message:
+`feat(topology): add station graph revision codec and repository contract`.
+
+### Implementation and closed scope
+
+Four new files, exactly as registered:
+
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/StationInternalGraphRevisionRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/StationInternalGraphRevisionCodec.java`
+- `src/test/java/dz/sh/hidra/modules/topology/application/port/out/StationInternalGraphRevisionRepositoryPortTest.java`
+- `src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/StationInternalGraphRevisionCodecTest.java`
+
+Only `doc/roadmap/ULTIMATE_ROADMAP.md` and `doc/model-remediation/RECONCILIATION.md`
+are updated, append-only. No existing Java/domain/test, physical V1/V2 byte contract,
+Flyway migration, dependency, configuration, API/export, release or architecture rule changes.
+
+The codec implements `HIDRA_TOPOLOGY_STATION_GRAPH_REVISION_V1`: explicit field order,
+strict UTF-8 byte lengths, named enums, signed epoch seconds/nanos, explicit optional flags,
+and all graph/envelope fields. Headers sort by header identity, units by equipment identity,
+edges by edge identity using String natural order. Input lists remain untouched; decoded
+lists use canonical order. No flow path ordering, ID normalization or operational inference.
+
+Wire limits are 1 MiB payload, 10,000 members per collection, 65,536 UTF-8 bytes per string.
+Output growth is bounded during writing; input length/count checks precede allocation and
+iteration. Decode clones bytes, applies existing constructors and revision/graph validation,
+rejects unknown format/enums, malformed UTF-8, invalid sizes/options/instants, contradictory
+identity/qualification, truncation/trailing bytes and any noncanonical representation through
+exact re-encode equality. Encode applies the same existing structural validator. DRAFT stays
+DRAFT; VERIFIED remains the supplied classification, not a codec-generated attestation.
+SHA-256 covers supplied complete bytes, rendered lowercase hexadecimal; it is not approval
+or authenticated evidence.
+
+The owner-private output port defines append/find/findStored and a StoredRevision metadata
+record. It imports domain/JDK only, never the infrastructure codec. Metadata validates V1
+header, nonnull revision and digest shape. JavaDoc binds future adapters to canonical replay
+versus conflicting content, exact identity reads, corruption failure and byte/digest verification.
+No storage adapter, current head, compare-and-set, publication or predecessor validation has
+been executed. The supplied predecessor is serialized intent only.
+
+### Validation actually performed and limitations
+
+- Registered focused Maven invocation attempted: direct `./mvnw` is not executable in this
+  checkout (Permission denied). Equivalent `bash mvnw -B -q -Dtest=StationInternalGraphRevisionCodecTest,StationInternalGraphRevisionRepositoryPortTest test`
+  reaches Maven but is BLOCKED by unavailable Spring Boot parent `4.1.1`: Maven Central
+  `repo.maven.apache.org` fails DNS resolution. No Maven/JUnit/ArchUnit pass is claimed.
+- An existing local OpenJDK **21.0.12** compiled both new production files and their actual
+  domain dependencies with `javac -d /tmp/p036-classes -sourcepath src/main/java`.
+- Local standalone execution used temporary copies of the two focused test sources with
+  JUnit annotations/imports removed and equivalent assertion methods plus main entry points.
+  The committed test sources remain standard JUnit 5. Actual Java 21 execution completed
+  **17 codec assertion methods + 3 metadata assertion methods PASS**. This is isolated
+  executable validation, explicitly not the JUnit engine, Maven or full architecture suite.
+- These checks exercise synthetic serial/parallel graphs, qualification/DRAFT and supplied
+  provenance, optional fields, extreme instants, permutation invariance, canonical decoded
+  order, independent wire-layout fixture and independent SHA-256, valid changed declarations,
+  all truncated payload prefixes, trailing/unknown/noncanonical bytes, UTF-8 errors, duplicate
+  IDs, graph/identity contradictions, options/nanos/time ranges, digest metadata and size limits.
+- `python3 .github/scripts/test_validate_docs.py`: 10 PASS.
+- `python3 .github/scripts/test_validate_openapi_snapshot.py`: 10 PASS.
+- `python3 .github/scripts/test_generate_data_dictionary.py`: 17 PASS.
+- `python3 .github/scripts/test_resolve_openapi_base.py`: 14 PASS; CI #590 output is its fixture.
+- `python3 .github/scripts/validate_docs.py`: PASS, 95 documents / 5,286 links / 24 modules / 13 P2 rows.
+- `python3 .github/scripts/validate_openapi_snapshot.py`: PASS, offline snapshot, 263 operations / 244 paths / 231 schemas.
+- `python3 .github/scripts/validate_p1_closure.py`: PASS, existing evidence consistency only.
+- `git diff --check`: PASS; closed six-file scope and preexisting document prefixes preserved.
+
+No PostgreSQL adapter exists in this task, so no persistence/concurrency/Flyway integration
+execution or industrial/operator acceptance is claimed. Full Java 21 production CI and
+architecture validation remain pending on the new implementation SHA; stop after startup.
+
+### Updated execution disposition
+
+| Task | Status | Evidence and boundary |
+|---|---|---|
+| HPR-P25-036 registration | Completed | Exact-head Documentation #227 SUCCESS |
+| HPR-P25-036 implementation | Completed — implementation published; exact-head CI acceptance PENDING | Codec/output port and two tests; local isolated Java 21 checks passed; Maven blocked as above |
+| P35-B SQL persistence | Planned successor, NOT REGISTERED / NOT EXECUTED | Next owner `next` permits prerequisite recovery and bounded registration, not unregistered SQL changes |
+| P35-C authenticated publication | NOT REGISTERED / NOT EXECUTED | Depends on actual storage and separately authorized lifecycle/security contract |
+
+P2.5 remains OPEN; F1–F4 remain unaccepted end-to-end operator workflows. P3/simulator
+remain DEFERRED; regulator Slice B suspended and Slice C unauthorized. This task creates
+neither numerical execution nor publication authority. Publish directly to existing main
+with expected-head `36dbd08d3ceb18b1d77e140a664faba4dfafbabb`, verify exact new-head CI
+startup and STOP until owner `next` or `fail`. No PR, branch, release or deployment.

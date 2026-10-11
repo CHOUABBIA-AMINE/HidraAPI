@@ -15701,3 +15701,243 @@ is claimed. Stop after published-head Documentation CI starts; await owner `next
 - Byte/scope/source audit: PASS; both existing documents are append-only in this task, all 69 prior source-index paths exist, exactly two authorized files changed, no new HPR execution code or implementation file.
 
 Source inspection and design acceptance mapping are complete; executable operator cases are future evidence. No Maven, PostgreSQL, real data import or solver exercise is claimed. Publication uses the recovered expected-head lease. Its new Documentation CI result remains pending at startup; no next task is selected until owner instruction and applicable acceptance. Production #643 and Slice B pending verification remain unchanged.
+
+## 2026-10-11 — HPR-P25-019 revisioned route, elevation profile and pipe engineering preflight
+
+### Live baseline, prior acceptance and selected scope
+
+Owner `next` selects HPR-P25-019 only. Initial main
+`b6f0d7102e28558675260b9064a9c38c913c5ddf`, tree
+`34c8d73065258f64b57bce5e4e92149dd744bde0`. Documentation #212/run
+38134901343 completed SUCCESS on that exact head; **HPR-P25-018 is COMPLETED as a
+source-backed documentation preflight**, not an implemented operator workflow. This
+append-only status supersedes its prior awaiting-CI row without rewriting history.
+Latest observed production #643 failure and suspended regulator Slice B acceptance remain
+unresolved; no production acceptance or numerical feature is selected by a docs result.
+
+Exact message: `docs(topology): define revisioned route and elevation profiles`.
+Only this roadmap and append-only `doc/model-remediation/RECONCILIATION.md` may change.
+AGENTS.md and current execution memories govern; Java/API/schema/migrations/dependencies,
+module documentation and numerical fixtures are read-only. No private survey/manufacturer
+records, real coordinates or industrial acceptance are invented. Version and closed phases
+unchanged. This task defines supported engineering data, not a geometry library or mesh.
+
+### Current source findings and evidence anchors
+
+Use the preceding T/X source index for exact paths; all claims here are source inspection.
+
+| Source | Existing semantics | Gap addressed by this design |
+|---|---|---|
+| T09 / Facility; T14 FacilityJpaEntity | Facility scalar latitude/longitude and elevation; stored angular scale 7 and elevation scale 4 | Scalar precision is not surveyed accuracy, CRS, datum, provenance or intermediate route geometry |
+| T10 / Pipeline; PipelineJpaEntity | Nominal diameter/unit, design pressure/unit and supplied totalLengthKm | Nominal size is not internal diameter; supplied total length is not a verified geometry-derived length |
+| T12–T14 / node, segment and facility persistence | TopologyNodeJpaEntity scalar coordinates/elevation; PipelineSegmentJpaEntity endpoint IDs, start/end KP and lengthKm | No ordered survey profile or vertical/horizontal datum metadata is established by these inspected fields |
+| T22 / JpaTopologyMapVisualizationAdapter.segmentCoordinates | Segment LineString uses from/to node longitude/latitude and optional elevation; missing node coordinates omit feature | Rendered straight endpoint link is not an authoritative surveyed alignment or complete-data status |
+| T23 / TopologyMapController | Existing read-only map layers/features/geojson/search | No route/profile draft, revise, publish or historic query API implied |
+| T01/T02/T03 / physical revision and adapter/codec | Node elevations; supplied pipe length/internal diameter/roughness; exact source/revision digest and protected append/read | Preserve accepted V1/V2 payloads; separate authoritative profile revision, rather than editing old digest content |
+| X01/X02/X03/X13 / existing physical and facility tests | Current integrity/codec/domain/semantic regression anchors | Future geographic acceptance needs additional declared fixtures, operator/API and PostgreSQL evidence |
+
+The legacy module inventory includes historical pending wording; latest roadmap acceptance
+and actual source remain authoritative. No globally missing feature is inferred solely from
+one entity: the gap is a complete supported owner workflow with ordered revision/provenance
+semantics, not absence of all geometry-shaped data elsewhere in the repository.
+
+### Canonical ownership and P3 overlap resolution
+
+Topology owns geographic engineering routes, physical sections, profile revisions and their
+network attachment. Documents/Integrity may supply owner-exported survey/inspection evidence
+references; inspections do not silently replace design wall thickness or authoritative route
+history. Assets and Custody consume/refer to topology identity; neither writes route tables.
+Simulation is a future read consumer of pinned data. No current solver or provider capability
+is required to save/read a supported engineering profile.
+
+HPR-P3-005 retains its deferred storage/spatial-query architecture decision. This 019 design
+specifies source-independent engineering semantics and required workflow, not that technology
+approval. HPR-P3-006 PostGIS provisioning/indexing and P3-007 extension-backed spatial/query
+verification remain DEFERRED. Scalar/node/KP stores remain authoritative for their current
+contracts until separately accepted owner evolution; new revisions must link rather than
+silently reinterpret them. No SRID assignment, coordinate backfill, route snapping or extension
+installation occurs. A later bounded implementation may use ordinary PostgreSQL owner tables
+for ordered data after its approved persistence preflight; it cannot claim P3 spatial gates
+closed. CRS transformation, geometry-library use and spatial performance need their own
+approved method/dependency decision if required. This avoids both a duplicate authoritative
+route store and a hidden dependency on deferred PostGIS.
+
+### Proposed semantic model — independent of storage technology
+
+| Engineering object | Required semantic content and invariants |
+|---|---|
+| Route/profile revision | Exact owner source/revision and pipeline/branch/segment scope; recorded/effective times, predecessor, origin and evidence; schema/representation version; route direction and linear-reference revision; known completeness state |
+| Coordinate reference metadata | Declared geographic/projected kind, CRS authority/code or controlled definition/version, coordinate axis order and units, horizontal datum; coordinate epoch when the declared system requires it; supported applicability |
+| Vertical reference | Declared height kind, vertical datum/reference and unit, observation/source dates; reference to approved transformation method if transformed; unknown vertical datum remains explicit |
+| Ordered route vertices | Stable within-revision sample identities, sequence, supplied coordinate values, declared reference metadata and engineering location association; no undirected graph traversal used as route order |
+| Elevation samples | Route revision and chainage/measure reference, ordered local measure, supplied elevation and vertical reference, origin/source/uncertainty where available; retain intermediate highs/lows independently of endpoint values |
+| Engineering section | Exact start/end measures and attachment; supplied length, internal diameter, wall thickness/material/roughness and applicable constraints with units, source, applicability and validity; unknowns explicit |
+| Measurement provenance | Evidence identity/revision, observation method/time, declared accuracy/uncertainty or UNKNOWN, original units/values; distinguish manufacturer/design/inspection/as-built/survey declarations |
+| Revision evidence | Actor/source, authorization and required Workflow approval reference, exact canonical digest/format where published; old source/effective/reference content recoverable |
+
+These are design requirements, not existing Java records or database columns. Source identity,
+revision ID and catalog codes follow existing owner conventions; no invented SRID/UUID policy.
+A complete network contains separately scoped routes/branches. A branching graph is not one
+polyline; preserve each route/section identity and incidence. Geometry crossings do not imply
+physical connectivity. Closed/looped routes need explicit supported linear-reference origin
+and disambiguated closure; otherwise retain draft with an unsupported-shape diagnostic.
+
+### Coordinates, elevation, chainage and dimensions
+
+Accept only declared supported reference systems. For a geographic latitude/longitude
+representation validate declared axes and units, latitude range -90..90 and longitude range
+-180..180; these are not valid bounds for projected easting/northing. API longitude/latitude
+ordering, domain fields and export representation must be explicit; never swap axes heuristically.
+Do not assume a missing CRS is WGS84 or a legacy elevation is orthometric. Missing/unsupported
+reference metadata allows controlled incomplete draft retention, blocks affected complete
+publication or transformation, and produces a precise diagnostic.
+
+Original coordinates and heights remain source facts. If later transformation is supported,
+store input reference/values, output reference/values, approved algorithm/version, necessary
+reference data/epoch, and stated transformation uncertainty. Unsupported or unavailable
+method fails explicitly. No guessed geoid offset, degree-to-meter conversion, silent datum
+mixing or reprojection. Accuracy and acceptance tolerances are declared requirement/source
+metadata; neither storage decimal scale nor visual agreement establishes survey accuracy.
+
+Use an explicit local route measure and unit with defined origin/direction. Local chainage
+starts at the declared local origin, is strictly increasing for distinct profile samples and
+is bounded by the declared supported route extent. Survey KP may have an offset, direction
+or station equations; it is not automatically identical to local measure. Store/version
+mapping segments and any approved discontinuity, or diagnose unsupported mapping rather
+than overwriting existing start/end KP. A station equation is not a duplicate sample identity.
+Branches have separate measure origins. Reversal creates a new revision with explicit
+measure/attachment mapping; it must not reverse old historic references implicitly.
+
+Section intervals must be ordered, positive-length and within scope. Shared boundaries are
+allowed through explicit half-open interval semantics with the final endpoint included;
+no undocumented overlap/gap in a declared complete profile. Discontinuities/material changes
+use section boundaries with retained provenance. An actual gap may be saved as incomplete
+instead of interpolated to make the record complete. Duplicate geographic points are not
+universally illegal: distinguish a declared vertical/profile feature from accidental duplicate
+sample/zero-length interval; unsupported representation must be diagnosed.
+
+Retain supplied engineering length, computed geodesic/projected length (only with an approved
+method), profile length and map-rendering length as distinct quantities. A declared comparison
+rule may diagnose disagreement, never replace supplied length. Preserve nominal diameter/unit
+separately from supplied internal diameter; do not derive internal diameter from nominal size
+or subtract wall thickness without explicit applicable source/approved relation. Wall/design
+and measured corrosion thickness are distinct. Roughness/material/pressure limits must carry
+units and provenance; unresolved dimensional conversion or physical inconsistency blocks the
+affected complete scope. No hydraulic calculation proves record validity in this track.
+
+### Authoring, revision and owner API design
+
+Follow 018 draft/read/update/validate/publish lifecycle and authorization. Missing operations:
+owner route/profile draft creation and edit, completeness diagnosis, exact-source revision
+publication/read/history, effective-time lookup and controlled profile import/export. Domain
+rules stay framework-neutral; controllers use Topology application ports; adapters implement
+owner ports; approved cross-module exports carry stable exact IDs/revisions, not JPA entities.
+
+Existing `/api/v1/topology/map` aliases remain compatible. A future map view must label endpoint
+fallback versus authoritative revision geometry and expose absent/incomplete coverage without
+presenting a missing rendered feature as a healthy complete route. It may simplify for display
+only with declared derivation, version and source linkage; the authoritative ordered profile
+must remain unchanged. Pagination must not truncate a profile while claiming it complete.
+
+Exact endpoint names/classes/permissions and wire shapes must be registered with the bounded
+implementation task. Reads must identify revision, reference systems, units, supported extent,
+completeness and provenance. Canonical engineering source values are not generic Workbench
+writes. Enforce resource authorization for read/edit/publish/history/export; restricted coordinates
+must not leak through validation errors or map search. Preserve old client aliases and historic
+scalar/KP reads; any new representation is versioned and additive until separately approved.
+
+### Persistence, integrity, compatibility and proposed envelopes
+
+Prefer separate Topology-owned immutable route/profile/section revisions attached by exact
+references to existing physical identities. Mutable drafts and immutable publication are separate
+contracts; a partial draft cannot be passed into the strict physical revision as complete. Do
+not widen old V1/V2 codecs or modify old payloads/digests just to store profile points. 028 freezes
+the exact profile/section reference alongside physical revision, station, characteristic and
+product references; earlier frozen data must not resolve to a newer route automatically.
+
+Append profile/children atomically; enforce parent/sample uniqueness, attachment and ordering,
+format/digest verification, equal-content replay and conflicting identity rejection, expected
+base revision and coherent effective selection. Avoid cascade deletion of historic samples or
+FKs that prevent preserving legitimate historical owner references. Unknown/corrupt format,
+wrong owner/identity/digest or incomplete referenced section fails. Canonical decimal precision
+and scale policy must be explicit; reject unsupported precision instead of silently rounding.
+Existing angular numeric(10,7), elevation numeric(12,4), KP/length numeric(12,4) are current
+constraints, not automatic new-profile storage limits or evidence of positional accuracy.
+
+Implementation-envelope candidates (not executable code authorization):
+
+| Envelope | Exact existing anchors to review | Required bounded scope before code |
+|---|---|---|
+| G1 domain / Topology | TopologyPhysicalNetworkRevision.java; Pipeline.java; node/segment entities | New owner route/profile/section domain records and validation policies; exact proposed file names, supported CRS/units/measure catalog and tests |
+| G2 source persistence / Topology | TopologyPhysicalNetworkRevisionCodec.java; JdbcTopologyPhysicalNetworkRevisionRepositoryAdapter.java; existing graph migration | Separate immutable revision port/codec/adapter/children and forward-only migration with exact registered filename; old-format and full-chain PostgreSQL tests |
+| G3 operator API / Topology | SpringTopologyController.java; current request conventions; TopologyMapController.java | Exact draft/validate/publish/read/history/import/export use cases, DTOs, authorization, error codes and OpenAPI compatibility |
+| G4 rendering/read export / Topology | TopologyMapVisualizationUseCase.java; JpaTopologyMapVisualizationAdapter.java; existing owner physical export | Authoritative geometry association, labelled fallback/missing coverage, exact-reference consumer export and bounded pagination |
+| G5 acceptance / verification | TopologyPhysicalNetworkRevisionTest, CodecTest, PostgresIntegrationTest; FacilitySemanticRemediationTest | Declared synthetic geographic/profile fixtures, API/round-trip/history/negative cases and implementation-specific exact test files |
+
+Each envelope requires a unique task code/message and exact existing/new write paths before
+selection. No broad directory allowlist, migration name or missing class path is guessed here.
+G1 precedes G2/G3; G4 consumes accepted G2/G3; G5 verifies implemented scope. Where approval/
+reference contracts are missing, register their bounded owner prerequisite rather than importing
+foreign private implementations. Source constants/fixtures and applied SQL remain unchanged.
+Production implementation additionally requires applicable green baseline or separately selected
+existing-defect correction; this preflight does not bypass #643.
+
+### Required future acceptance and negative evidence
+
+| Case | Required actual result, not executed here |
+|---|---|
+| Authoritative profile round trip | Authorized draft/save/publish/read/export preserves ordered supplied points, reference systems, intermediate elevations, section parameters, units and evidence |
+| Equal-endpoint/nonflat profile | Declared synthetic profile with equal endpoint elevations and an intermediate high/low remains nonflat after save/read; map endpoint line is not its source representation |
+| Reference/axis/unit validity | Unknown CRS, wrong axis declaration, invalid geographic range, unsupported datum/epoch/units and unavailable transformation produce explicit diagnostics/refusal |
+| Linear reference | Reversed/duplicate/out-of-range local measures, section overlap/gap and unsupported KP equation fail complete publication; supported branch/reversal mapping preserves attachments |
+| Pipe engineering | Missing internal diameter, unsupported dimensions, inconsistent section/constraint and unsupplied material/roughness remain explicit; nominal diameter is not substituted |
+| History and revision integrity | Revise route/profile/section; earlier bytes/digests and 028 baseline references unchanged; old physical V1/V2 reads still work; no latest fallback |
+| Replay/rollback/concurrency | Identical replay, conflicting identity, stale base, parallel publication and failed child append behave atomically with no complete partial profile |
+| Permissions/reference failure | Unauthorized edit/read/history/export, actor spoofing, wrong pipeline owner/attachment, absent evidence and reference outage cannot publish or leak restricted data |
+| Import/export/precision | Declared version, CRS/vertical datum/axis/units and supported decimal semantics survive exchange; malformed, precision-losing or contradictory package rejected before complete publication |
+| Map coverage | Authoritative profile versus endpoint fallback labelled; missing geometry not hidden as complete; no unordered branch concatenation, implicit snapping or pagination-induced truncation |
+
+Future numeric tolerances come from approved source/test requirements, never fabricated survey
+truth. Fixtures must declare synthetic origin and intended precision. No raw geographic test,
+PostgreSQL migration or API round-trip was executed for this design.
+
+### Deferred numerical consumption and future compatibility
+
+Solver mesh/resampling/interpolation, slope discretization, refinement/conservation benchmarks,
+transient effects and scenario controls remain SIMULATOR_DEFERRED. A future derived mesh must
+reference exact engineering/profile revision, method/version and transformation provenance;
+resampling must not overwrite authoritative survey samples. Equal endpoints/nonflat acceptance
+is data preservation now, not claimed pressure/energy fidelity. Simulation consumer evolution
+requires explicit reactivation and independent numerical evidence. Independent engineering
+publication never triggers a solver or grants OT command authority.
+
+### Current status and next task
+
+| Task | Current disposition | Evidence / gate |
+|---|---|---|
+| HPR-P25-018 | COMPLETED — documentation preflight only | b6f0d7102e28558675260b9064a9c38c913c5ddf; exact-head Documentation #212 SUCCESS |
+| HPR-P25-019 | IN PROGRESS — preflight delivered; published-head Documentation acceptance PENDING | Current source/design and local validation below; no production implementation |
+| HPR-P25-020 | PLANNED — NOT SELECTED; next recommended preflight | Owner next instruction after 019 documentation acceptance; refresh station/unit/source/ownership contracts |
+
+018's passed design enables 020; finishing 019 does not select it automatically. P2.5 remains
+OPEN, F1/F2 unverified as complete operator capabilities, P3 unchanged. Stop after new-head
+Documentation CI starts and await owner notification.
+
+### Executed HPR-P25-019 validation and publication boundary
+
+- `python3 .github/scripts/test_validate_docs.py`: PASS, 10 tests.
+- `python3 .github/scripts/test_validate_openapi_snapshot.py`: PASS, 10 tests.
+- `python3 .github/scripts/test_generate_data_dictionary.py`: PASS, 17 tests.
+- `python3 .github/scripts/test_resolve_openapi_base.py`: PASS, 14 tests; printed base/CI is a unit-test fixture, not production verification.
+- `python3 .github/scripts/validate_docs.py`: PASS, 95 documents, 5286 relative links, 24 modules, 13 P2 rows.
+- `python3 .github/scripts/validate_openapi_snapshot.py`: PASS, offline snapshot only: 244 paths / 263 operations / 231 schemas.
+- `python3 .github/scripts/validate_p1_closure.py`: PASS, evidence-shape validator only.
+- `git diff --check`: PASS, including final source-locator correction.
+- Scope/history/source audit: PASS; both histories byte-preserved through append-only updates; exactly two documents changed; 69 prior source anchors exist; production source, applied SQL, old physical formats and numerical fixtures unchanged.
+
+The complete amendment was reviewed for owner separation, missing-data behavior, P3 overlap,
+no required simulator/PostGIS execution, and explicit future implementation/test envelopes.
+No Java/runtime, geodesy transformation, PostgreSQL migration, survey or hydraulic exercise
+was run. Use expected-head publication; confirm changed files and new-head Documentation CI
+startup, then stop. Its completion is pending at startup; latest production failure and Slice B
+suspended acceptance remain unchanged. No task beyond 019 is executed.

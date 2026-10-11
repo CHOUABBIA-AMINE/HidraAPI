@@ -7,7 +7,7 @@
  *
  * @Name        : JdbcSimulationEquipmentParameterRevisionRepositoryAdapter
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-10
+ * @UpdatedOn   : 2026-10-11
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -22,6 +22,7 @@ package dz.sh.hidra.modules.simulation.infrastructure.persistence.adapter;
 import dz.sh.hidra.modules.simulation.application.port.out.SimulationEquipmentParameterRevisionRepositoryPort;
 import dz.sh.hidra.modules.simulation.domain.exception.InvalidSimulationValueException;
 import dz.sh.hidra.modules.simulation.domain.model.SimulationEquipmentParameterRevision;
+import dz.sh.hidra.modules.simulation.domain.model.SimulationRegulatorCharacteristicRevision;
 import dz.sh.hidra.modules.simulation.domain.model.SimulationEquipmentParameterRevision.*;
 import java.util.Arrays;
 import java.util.Optional;
@@ -41,9 +42,10 @@ public class JdbcSimulationEquipmentParameterRevisionRepositoryAdapter implement
         if (v == null) throw invalid("Missing gas source revision.");
         for(var c:v.compressorCurves())appendCharacteristic(c);
         for(var c:v.valveCharacteristics())appendCharacteristic(c);
+        for(var c:v.regulatorCharacteristics())appendCharacteristic(c);
         byte[] bytes = codec.encode(v); String sha = codec.sha256(bytes);
         insert("hidra_simulation_equipment_parameter_revision", "source_id,revision_id", new Object[]{v.sourceId(), v.revisionId()},
-                SimulationEquipmentParameterRevisionCodec.FORMAT, bytes, sha);
+                SimulationEquipmentParameterRevisionCodec.format(v), bytes, sha);
         var winner = findStored(v.sourceId(), v.revisionId()).orElseThrow(() -> invalid("Missing appended source."));
         identical(bytes, codec.encode(winner.revision())); return winner.revision();
     }
@@ -71,6 +73,18 @@ public class JdbcSimulationEquipmentParameterRevisionRepositoryAdapter implement
             if(!"VALVE".equals(r.getString("kind"))||!v.id().equals(r.getString("characteristic_id"))||!v.revisionId().equals(r.getString("revision_id")))throw invalid("Characteristic row key integrity failed.");return v;
         },"VALVE",identity(id),identity(revision)).stream().findFirst();
     }
+    @Override @Transactional public SimulationRegulatorCharacteristicRevision appendCharacteristic(SimulationRegulatorCharacteristicRevision v){
+        byte[] bytes=codec.encodeRegulatorCharacteristic(v);
+        jdbc.update("INSERT INTO hidra_simulation_equipment_characteristic_revision (kind,characteristic_id,revision_id,payload_format,canonical_payload,sha256) VALUES (?,?,?,?,?,?) ON CONFLICT (kind,characteristic_id,revision_id) DO NOTHING",
+                "REGULATOR",v.id(),v.revisionId(),SimulationEquipmentParameterRevisionCodec.REGULATOR_FORMAT,bytes,codec.sha256(bytes));
+        var winner=findRegulatorCharacteristicStored(v.id(),v.revisionId()).orElseThrow(()->invalid("Missing regulator characteristic."));identical(bytes,codec.encodeRegulatorCharacteristic(winner));return winner;
+    }
+    @Override @Transactional(readOnly=true) public Optional<SimulationRegulatorCharacteristicRevision> findRegulatorCharacteristicStored(String id,String revision){
+        return jdbc.query("SELECT * FROM hidra_simulation_equipment_characteristic_revision WHERE kind=? AND characteristic_id=? AND revision_id=?",(r,n)->{
+            var v=codec.decodeRegulatorCharacteristic(verified(r.getString("payload_format"),r.getBytes("canonical_payload"),r.getString("sha256"),SimulationEquipmentParameterRevisionCodec.REGULATOR_FORMAT));
+            if(!"REGULATOR".equals(r.getString("kind"))||!v.id().equals(r.getString("characteristic_id"))||!v.revisionId().equals(r.getString("revision_id")))throw invalid("Regulator row identity mismatch.");return v;
+        },"REGULATOR",identity(id),identity(revision)).stream().findFirst();
+    }
     @Override @Transactional(readOnly = true)
     public Optional<StoredRevision> findStored(String source, String revision) {
         return read("source_id=? AND revision_id=?", identity(source), identity(revision));
@@ -83,11 +97,14 @@ public class JdbcSimulationEquipmentParameterRevisionRepositoryAdapter implement
     private Optional<StoredRevision> read(String predicate, Object... args) {
         return jdbc.query("SELECT * FROM hidra_simulation_equipment_parameter_revision WHERE " + predicate, (r, n) -> {
             String format = r.getString("payload_format"); String sha = r.getString("sha256");
-            var v = codec.decode(verified(format, r.getBytes("canonical_payload"), sha, SimulationEquipmentParameterRevisionCodec.FORMAT));
+            if(!SimulationEquipmentParameterRevisionCodec.FORMAT.equals(format)&&!SimulationEquipmentParameterRevisionCodec.FORMAT_V2.equals(format))throw invalid("Unknown aggregate row format.");
+            var v = codec.decode(verified(format, r.getBytes("canonical_payload"), sha, format));
+            if(!format.equals(SimulationEquipmentParameterRevisionCodec.format(v)))throw invalid("Aggregate row format/kind mismatch.");
             if (!v.sourceId().equals(r.getString("source_id")) || !v.revisionId().equals(r.getString("revision_id")))
                 throw invalid("Source row identity differs from canonical identity.");
             for(var c:v.compressorCurves())identical(codec.encodeCompressorCurve(c),codec.encodeCompressorCurve(findCompressorCurveStored(c.id(),c.revisionId()).orElseThrow(()->invalid("Missing immutable curve."))));
             for(var c:v.valveCharacteristics())identical(codec.encodeValveCharacteristic(c),codec.encodeValveCharacteristic(findValveCharacteristicStored(c.id(),c.revisionId()).orElseThrow(()->invalid("Missing immutable valve."))));
+            for(var c:v.regulatorCharacteristics())identical(codec.encodeRegulatorCharacteristic(c),codec.encodeRegulatorCharacteristic(findRegulatorCharacteristicStored(c.id(),c.revisionId()).orElseThrow(()->invalid("Missing immutable regulator."))));
             return new StoredRevision(v, format, sha);
         }, args).stream().findFirst();
     }

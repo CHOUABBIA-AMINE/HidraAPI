@@ -7,7 +7,7 @@
  *
  * @Name        : SimulationEquipmentInput
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-09
+ * @UpdatedOn   : 2026-10-11
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -29,8 +29,10 @@ public record SimulationEquipmentInput(
         String toNodeId,
         Kind kind,
         CompressorConfiguration compressor,
-        ValveConfiguration valve
+        ValveConfiguration valve,
+        SimulationEquipmentParameterRevision.RegulatorConfiguration regulator
 ) {
+    public SimulationEquipmentInput(String id,String fromNodeId,String toNodeId,Kind kind,CompressorConfiguration compressor,ValveConfiguration valve) { this(id,fromNodeId,toNodeId,kind,compressor,valve,null); }
     public SimulationEquipmentInput {
         id = required(id, "Equipment identity");
         fromNodeId = required(fromNodeId, "From-node identity");
@@ -38,7 +40,7 @@ public record SimulationEquipmentInput(
         if (fromNodeId.equals(toNodeId)) {
             throw new InvalidSimulationValueException("Equipment endpoints must be distinct.");
         }
-        if (kind == null
+        if ((kind == Kind.REGULATOR)!=(regulator!=null) || (kind==Kind.REGULATOR && (compressor!=null || valve!=null)) || kind == null
                 || (kind == Kind.COMPRESSOR && (compressor == null || valve != null))
                 || (kind == Kind.VALVE && (valve == null || compressor != null))) {
             throw new InvalidSimulationValueException("Equipment requires exactly its kind's configuration.");
@@ -46,7 +48,7 @@ public record SimulationEquipmentInput(
     }
 
     public enum Kind {
-        COMPRESSOR, VALVE
+        COMPRESSOR, VALVE, REGULATOR
     }
 
     public record CompressorConfiguration(String curveId, String curveRevisionId,

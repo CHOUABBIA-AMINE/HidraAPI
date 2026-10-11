@@ -7,7 +7,7 @@
  *
  * @Name        : SimulationEquipmentParameterRevisionQueryService
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-10
+ * @UpdatedOn   : 2026-10-11
  *
  * @Type        : Class
  * @Layer       : Application
@@ -85,6 +85,11 @@ public class SimulationEquipmentParameterRevisionQueryService {
         for(var c:v.compressorCurves())if(!inside(c.referenceInletPressurePascalsAbsolute(),method.minimumPressurePascalsAbsolute(),method.maximumPressurePascalsAbsolute())
                 ||!inside(c.referenceInletTemperatureKelvin(),method.minimumTemperatureKelvin(),method.maximumTemperatureKelvin()))return Optional.empty();
         for(var c:v.valveCharacteristics())if(!inside(c.referenceTemperatureKelvin(),method.minimumTemperatureKelvin(),method.maximumTemperatureKelvin()))return Optional.empty();
+        for(var c:v.regulatorCharacteristics())if(!inside(c.referenceTemperatureKelvin(),method.minimumTemperatureKelvin(),method.maximumTemperatureKelvin())
+                ||!inside(c.minimumUpstreamPressurePascalsAbsolute(),method.minimumPressurePascalsAbsolute(),method.maximumPressurePascalsAbsolute())
+                ||!inside(c.maximumUpstreamPressurePascalsAbsolute(),method.minimumPressurePascalsAbsolute(),method.maximumPressurePascalsAbsolute())
+                ||!inside(c.minimumDownstreamPressurePascalsAbsolute(),method.minimumPressurePascalsAbsolute(),method.maximumPressurePascalsAbsolute())
+                ||!inside(c.maximumDownstreamPressurePascalsAbsolute(),method.minimumPressurePascalsAbsolute(),method.maximumPressurePascalsAbsolute()))return Optional.empty();
         return Optional.of(new ResolvedSources(f,n));
     }
     private static boolean inside(BigDecimal v,BigDecimal lo,BigDecimal hi){return v.compareTo(lo)>=0&&v.compareTo(hi)<=0;}

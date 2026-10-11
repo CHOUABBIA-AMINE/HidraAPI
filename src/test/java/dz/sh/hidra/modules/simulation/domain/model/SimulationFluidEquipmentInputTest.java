@@ -7,7 +7,7 @@
  *
  * @Name        : SimulationFluidEquipmentInputTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-09
+ * @UpdatedOn   : 2026-10-11
  *
  * @Type        : Class
  * @Layer       : Domain Test
@@ -347,4 +347,14 @@ class SimulationFluidEquipmentInputTest {
                 TIME, TIME, null, Origin.SYNTHETIC, "synthetic-evidence");
     }
     private static void invalid(org.junit.jupiter.api.function.Executable operation) { assertThrows(InvalidSimulationValueException.class, operation); }
+
+    @Test void regulatorHasDistinctTypedConfigurationAndCannotUseLegacyFields(){
+        var c=SimulationRegulatorCharacteristicRevisionTest.configuration(SimulationEquipmentParameterRevision.Isolation.OPEN);
+        var reg=new SimulationEquipmentInput("r","a","b",SimulationEquipmentInput.Kind.REGULATOR,null,null,c);assertEquals(c,reg.regulator());
+        assertThrows(InvalidSimulationValueException.class,()->new SimulationEquipmentInput("r","a","b",SimulationEquipmentInput.Kind.REGULATOR,null,null));
+        var valve=new SimulationEquipmentInput.ValveConfiguration("v","r","synthetic",new BigDecimal("0.5"));
+        assertThrows(InvalidSimulationValueException.class,()->new SimulationEquipmentInput("r","a","b",SimulationEquipmentInput.Kind.REGULATOR,null,valve,c));
+        assertThrows(InvalidSimulationValueException.class,()->new SimulationEquipmentInput("v","a","b",SimulationEquipmentInput.Kind.VALVE,null,valve,c));
+    }
+
 }

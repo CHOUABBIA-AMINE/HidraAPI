@@ -7,7 +7,7 @@
  *
  * @Name        : SimulationEquipmentParameterRevisionRepositoryPort
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-10
+ * @UpdatedOn   : 2026-10-11
  *
  * @Type        : Interface
  * @Layer       : Application
@@ -20,6 +20,7 @@
 package dz.sh.hidra.modules.simulation.application.port.out;
 
 import dz.sh.hidra.modules.simulation.domain.model.SimulationEquipmentParameterRevision;
+import dz.sh.hidra.modules.simulation.domain.model.SimulationRegulatorCharacteristicRevision;
 import dz.sh.hidra.modules.simulation.domain.model.SimulationEquipmentParameterRevision.*;
 import java.time.Instant;
 import java.util.Optional;
@@ -48,6 +49,8 @@ public interface SimulationEquipmentParameterRevisionRepositoryPort {
     SimulationEquipmentParameterRevision append(SimulationEquipmentParameterRevision revision);
     Optional<StoredRevision> findStored(String sourceId, String revisionId);
     Optional<StoredRevision> findByApprovalTargetId(String digest);
+    SimulationRegulatorCharacteristicRevision appendCharacteristic(SimulationRegulatorCharacteristicRevision value);
+    Optional<SimulationRegulatorCharacteristicRevision> findRegulatorCharacteristicStored(String id,String revisionId);
     CompressorCurve appendCharacteristic(CompressorCurve value);
     ValveCharacteristic appendCharacteristic(ValveCharacteristic value);
     Optional<CompressorCurve> findCompressorCurveStored(String id, String revisionId);

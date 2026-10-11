@@ -7,7 +7,7 @@
  *
  * @Name        : SimulationSyntheticEquipmentNetworkInputTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-10
+ * @UpdatedOn   : 2026-10-11
  *
  * @Type        : Class
  * @Layer       : Domain Test
@@ -209,4 +209,8 @@ public class SimulationSyntheticEquipmentNetworkInputTest {
                         new SimulationNetworkNodeInput("z",BigDecimal.ZERO)),
                 accepted.pipes(),b,accepted.valveMethods()));
     }
+
+    @Test void refusesRegulatorBeforeAnyNumericalInterpretation(){var v=SimulationRegulatorCharacteristicRevisionTest.regulatorFixture();
+        var rejected=assertThrows(IllegalArgumentException.class,()->union(v));assertTrue(rejected.getMessage().contains("numerical integration"));}
+
 }

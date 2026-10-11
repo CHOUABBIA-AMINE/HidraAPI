@@ -7,7 +7,7 @@
  *
  * @Name        : SimulationPhysicalInputPayloadTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-09
+ * @UpdatedOn   : 2026-10-11
  *
  * @Type        : Class
  * @Layer       : Domain Test
@@ -387,4 +387,12 @@ class SimulationPhysicalInputPayloadTest {
     private static SimulationInputSourceVersion origin(SimulationInputSourceVersion s, Origin origin) { return new SimulationInputSourceVersion(s.kind(), s.owner(), s.sourceId(), s.revisionId(), s.payloadSha256(), s.recordedAt(), s.effectiveFrom(), s.effectiveUntil(), origin, s.evidenceReference()); }
     private static Fixture withSyntheticTopology(Fixture f) { var t = origin(f.network.sourceVersion(), Origin.SYNTHETIC); var sources = f.manifest.sources().stream().map(s -> s.kind() == SourceKind.TOPOLOGY_CONFIGURATION ? t : s).toList(); var m = manifest(f.manifest, 1, "gas", "PIPELINE", "scope", STATE, END, null, sources); var g = new SimulationConnectedNetworkInput(f.network.id(), f.network.scopeType(), f.network.scopeId(), t, f.network.nodes(), f.network.pipeSegments(), f.network.equipmentModel()); return new Fixture(m, g, f.fluid, f.initial, f.schedule); }
     private static void invalid(org.junit.jupiter.api.function.Executable operation) { assertThrows(InvalidSimulationValueException.class, operation); }
+
+    @Test void schemaOneRefusesTypedRegulatorConfiguration(){var f=fixture(SimulationInputMode.STEADY_STATE,true,"r1");
+        var c=SimulationRegulatorCharacteristicRevisionTest.configuration(SimulationEquipmentParameterRevision.Isolation.OPEN);
+        var item=new SimulationEquipmentInput("regulator","b","c",Kind.REGULATOR,null,null,c);
+        var model=model(f,List.of(item),List.of());var network=graph(f,f.network.nodes(),f.network.pipeSegments(),model);
+        var rejected=assertThrows(InvalidSimulationValueException.class,()->new SimulationPhysicalInputPayload(f.manifest,network,f.fluid,f.initial,null));
+        assertTrue(rejected.getMessage().contains("separate numerical integration"));}
+
 }

@@ -7,7 +7,7 @@
  *
  * @Name        : SteadyStateGasSolver
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-10
+ * @UpdatedOn   : 2026-10-11
  *
  * @Type        : Class
  * @Layer       : Domain
@@ -690,6 +690,7 @@ public final class SteadyStateGasSolver {
                 case MASS_FLOW_KILOGRAMS_PER_SECOND -> flow;
                 case ROTATIONAL_SPEED_REVOLUTIONS_PER_MINUTE -> e.equipment().configuredSpeedRevolutionsPerMinute().doubleValue();
                 case OPENING_FRACTION -> e.equipment().configuredOpeningFraction().doubleValue();
+                case DOWNSTREAM_SETPOINT_PRESSURE_PASCALS_ABSOLUTE -> throw new IllegalArgumentException("Regulator numerical integration not supported.");
             };
             if(!Double.isFinite(v)||v<entry.getValue().minimumInclusive().doubleValue()
                     ||v>entry.getValue().maximumInclusive().doubleValue())

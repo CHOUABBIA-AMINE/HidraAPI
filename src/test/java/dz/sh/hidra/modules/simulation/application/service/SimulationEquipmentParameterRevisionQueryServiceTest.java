@@ -7,7 +7,7 @@
  *
  * @Name        : SimulationEquipmentParameterRevisionQueryServiceTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-10
+ * @UpdatedOn   : 2026-10-11
  *
  * @Type        : Class
  * @Layer       : Test
@@ -55,4 +55,24 @@ public class SimulationEquipmentParameterRevisionQueryServiceTest {
         when(networks.find("network","n1")).thenReturn(Optional.of(network(false)));when(approvals.resolve(anyString(),any(),anyString(),anyString(),anyString(),any())).thenReturn(Optional.empty());assertTrue(query.resolve("equipment","r1","q",AT,SimulationQualifiedFluidRevisionPort.SupportedUse.STEADY_STATE).isEmpty());}
     @Test void characteristicExpiryAtAnySelectedTimeMakesItUnavailable(){setup();var v=build("r1",SimulationEquipmentParameterRevision.Origin.SYNTHETIC,curve(SimulationEquipmentParameterRevision.Origin.SYNTHETIC,AT,AT,AT.plusSeconds(1)),valve(SimulationEquipmentParameterRevision.Origin.SYNTHETIC,AT,AT,null));
         when(revisions.findStored("equipment","r1")).thenReturn(Optional.of(new StoredRevision(v,"HIDRA_SIMULATION_EQUIPMENT_PARAMETERS_V1","c".repeat(64))));assertTrue(query.resolve("equipment","r1","q",AT.plusSeconds(1),SimulationQualifiedFluidRevisionPort.SupportedUse.STEADY_STATE).isEmpty());}
+
+    public static SimulationStoredPhysicalNetworkRevisionPort.Revision regulatorNetwork(){var n=network(false);return new SimulationStoredPhysicalNetworkRevisionPort.Revision(n.sourceId(),n.revisionId(),n.scopeType(),n.scopeId(),n.recordedAt(),n.effectiveFrom(),n.effectiveUntil(),n.origin(),n.evidenceReference(),n.nodes(),n.pipeSegments(),
+        List.of(new SimulationStoredPhysicalNetworkRevisionPort.EquipmentLink("regulator","a","b","REGULATOR")),"HIDRA_TOPOLOGY_PHYSICAL_NETWORK_V2",n.sha256());}
+    @Test void exactQualifiedRegulatorBundlePreservesBothOwnerAuthorities(){setup();var v=dz.sh.hidra.modules.simulation.domain.model.SimulationRegulatorCharacteristicRevisionTest.regulatorFixture();
+        when(revisions.findStored("equipment","r1")).thenReturn(Optional.of(new StoredRevision(v,"HIDRA_SIMULATION_EQUIPMENT_PARAMETERS_V2","c".repeat(64))));
+        when(networks.find("network","n1")).thenReturn(Optional.of(regulatorNetwork()));
+        var result=query.resolve("equipment","r1","q",AT,SimulationQualifiedFluidRevisionPort.SupportedUse.STEADY_STATE).orElseThrow();assertEquals(v.regulatorCharacteristics(),result.stored().revision().regulatorCharacteristics());
+        when(networks.find("network","n1")).thenReturn(Optional.of(network(false)));assertTrue(query.resolve("equipment","r1","q",AT,SimulationQualifiedFluidRevisionPort.SupportedUse.STEADY_STATE).isEmpty());
+        when(networks.find("network","n1")).thenReturn(Optional.of(regulatorNetwork()));when(approvals.resolve(anyString(),any(),anyString(),anyString(),anyString(),any())).thenReturn(Optional.empty());
+        assertTrue(query.resolve("equipment","r1","q",AT,SimulationQualifiedFluidRevisionPort.SupportedUse.STEADY_STATE).isEmpty());}
+    @Test void regulatorFluidDomainMismatchAndExactTopologyFormatAreRefused(){setup();var v=dz.sh.hidra.modules.simulation.domain.model.SimulationRegulatorCharacteristicRevisionTest.regulatorFixture();
+        when(revisions.findStored("equipment","r1")).thenReturn(Optional.of(new StoredRevision(v,"HIDRA_SIMULATION_EQUIPMENT_PARAMETERS_V2","c".repeat(64))));when(networks.find("network","n1")).thenReturn(Optional.of(regulatorNetwork()));
+        var f=fluid();var x=f.stored().revision();var m=x.method();
+        var narrow=new SimulationQualifiedFluidRevisionPort.Method(m.reference(),m.revisionId(),m.recordedAt(),m.effectiveFrom(),m.effectiveUntil(),m.origin(),m.evidenceReference(),m.inputRepresentation(),m.allowedComponentReferences(),d("150000"),m.maximumPressurePascalsAbsolute(),m.minimumTemperatureKelvin(),m.maximumTemperatureKelvin(),m.supportedUses());
+        var changed=new SimulationQualifiedFluidRevisionPort.Revision(x.sourceId(),x.revisionId(),x.recordedAt(),x.effectiveFrom(),x.effectiveUntil(),x.origin(),x.evidenceReference(),x.productSnapshot(),x.productKind(),narrow,x.components(),x.governanceBinding());
+        when(fluids.resolve(eq("fluid"),eq("f1"),eq("fluid-qualified"),any(),any())).thenReturn(Optional.of(new SimulationQualifiedFluidRevisionPort.QualifiedRevision(new SimulationQualifiedFluidRevisionPort.StoredRevision(changed,f.stored().payloadFormat(),f.stored().sha256()),f.qualification())));
+        assertTrue(query.resolve("equipment","r1","q",AT,SimulationQualifiedFluidRevisionPort.SupportedUse.STEADY_STATE).isEmpty());
+        var n=regulatorNetwork();assertThrows(IllegalArgumentException.class,()->new SimulationStoredPhysicalNetworkRevisionPort.Revision(n.sourceId(),n.revisionId(),n.scopeType(),n.scopeId(),n.recordedAt(),n.effectiveFrom(),n.effectiveUntil(),n.origin(),n.evidenceReference(),n.nodes(),n.pipeSegments(),n.equipmentLinks(),"HIDRA_TOPOLOGY_PHYSICAL_NETWORK_V1",n.sha256()));
+        var old=network(false);assertThrows(IllegalArgumentException.class,()->new SimulationStoredPhysicalNetworkRevisionPort.Revision(old.sourceId(),old.revisionId(),old.scopeType(),old.scopeId(),old.recordedAt(),old.effectiveFrom(),old.effectiveUntil(),old.origin(),old.evidenceReference(),old.nodes(),old.pipeSegments(),old.equipmentLinks(),"HIDRA_TOPOLOGY_PHYSICAL_NETWORK_V2",old.sha256()));
+        assertThrows(IllegalArgumentException.class,()->new SimulationStoredPhysicalNetworkRevisionPort.Revision(n.sourceId(),n.revisionId(),n.scopeType(),n.scopeId(),n.recordedAt(),n.effectiveFrom(),n.effectiveUntil(),n.origin(),n.evidenceReference(),n.nodes(),n.pipeSegments(),n.equipmentLinks(),n.payloadFormat(),"bad"));}
 }

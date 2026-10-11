@@ -7,7 +7,7 @@
  *
  * @Name        : SimulationPhysicalInputPayload
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-09
+ * @UpdatedOn   : 2026-10-11
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -53,6 +53,7 @@ public record SimulationPhysicalInputPayload(
             sources.put(source.kind(), source);
         }
         var equipmentModel = network.equipmentModel();
+        if(equipmentModel.equipment().stream().anyMatch(e->e.kind()==Kind.REGULATOR)) throw new InvalidSimulationValueException("Regulator physical assembly awaits separate numerical integration.");
         bind(sources, network.sourceVersion());
         bind(sources, fluid.sourceVersion());
         bind(sources, equipmentModel.sourceVersion());

@@ -7,7 +7,7 @@
  *
  * @Name        : SimulationEquipmentParameterRevisionPostgresIntegrationTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-10
+ * @UpdatedOn   : 2026-10-11
  *
  * @Type        : Class
  * @Layer       : Test
@@ -87,7 +87,8 @@ public class SimulationEquipmentParameterRevisionPostgresIntegrationTest {
     @Autowired WorkflowTaskRepositoryPort tasks;
     final SimulationEquipmentParameterRevisionCodec codec=new SimulationEquipmentParameterRevisionCodec();
     @AfterEach void clearSecurity(){SecurityContextHolder.clearContext();}
-    SimulationEquipmentParameterRevision prepared(){
+    SimulationEquipmentParameterRevision prepared(){return prepared(false);}
+    SimulationEquipmentParameterRevision prepared(boolean regulator){
         String id=UUID.randomUUID().toString();String fd="fluid-def-"+id,ft="fluid-type-"+id,fp="fluid-purpose-"+id;
         var f=RevisionApprovalEvidencePostgresIntegrationTest.fluid(jdbc,products,"f1",fd,ft,fp);fluids.append(f);
         var fs=fluids.findStored(f.sourceId(),f.revisionId()).orElseThrow();
@@ -97,10 +98,10 @@ public class SimulationEquipmentParameterRevisionPostgresIntegrationTest {
             TopologyPhysicalNetworkRevision.Origin.SYNTHETIC,"synthetic fixture, no operational claim",
             List.of(new TopologyPhysicalNetworkRevision.Node("a",d("0")),new TopologyPhysicalNetworkRevision.Node("b",d("0"))),
             List.of(new TopologyPhysicalNetworkRevision.PipeSegment("pipe","a","b",d("100"),d("0.5"),d("0.001"))),
-            List.of(new TopologyPhysicalNetworkRevision.EquipmentLink("compressor","a","b",TopologyPhysicalNetworkRevision.EquipmentKind.COMPRESSOR),
+            regulator?List.of(new TopologyPhysicalNetworkRevision.EquipmentLink("regulator","a","b",TopologyPhysicalNetworkRevision.EquipmentKind.REGULATOR)):List.of(new TopologyPhysicalNetworkRevision.EquipmentLink("compressor","a","b",TopologyPhysicalNetworkRevision.EquipmentKind.COMPRESSOR),
                 new TopologyPhysicalNetworkRevision.EquipmentLink("valve","b","a",TopologyPhysicalNetworkRevision.EquipmentKind.VALVE)));
         networks.append(n);var ns=networks.findStored(n.sourceId(),n.revisionId()).orElseThrow();
-        return rebind(fixture("r1"),"equipment-"+id,n.sourceId(),n.revisionId(),ns.sha256(),f.sourceId(),f.revisionId(),fs.sha256(),fq.qualificationId(),new GovernanceBinding("equipment-def-"+id,1,"equipment-type-"+id,"equipment-purpose-"+id));
+        return rebind(regulator?dz.sh.hidra.modules.simulation.domain.model.SimulationRegulatorCharacteristicRevisionTest.regulatorFixture():fixture("r1"),"equipment-"+id,n.sourceId(),n.revisionId(),ns.sha256(),f.sourceId(),f.revisionId(),fs.sha256(),fq.qualificationId(),new GovernanceBinding("equipment-def-"+id,1,"equipment-type-"+id,"equipment-purpose-"+id));
     }
     Qualification approved(SimulationEquipmentParameterRevision v){revisions.append(v);var s=revisions.findStored(v.sourceId(),v.revisionId()).orElseThrow();var b=v.governanceBinding();
         var a=RevisionApprovalEvidencePostgresIntegrationTest.approve(jdbc,workflow,transitions,tasks,"simulation",b.definitionId(),b.targetTypeId(),b.purposeId(),s.sha256());
@@ -231,4 +232,48 @@ public class SimulationEquipmentParameterRevisionPostgresIntegrationTest {
         }
     }
 
+
+    @Test void qualifiedRegulatorUsesRealOwnerExportsAndWithdrawnAuthorityFails(){var v=prepared(true);var q=approved(v);
+        var result=query.resolve(v.sourceId(),v.revisionId(),q.qualificationId(),Instant.now(),SimulationQualifiedFluidRevisionPort.SupportedUse.STEADY_STATE).orElseThrow();
+        assertEquals(SimulationEquipmentParameterRevisionCodec.FORMAT_V2,result.stored().payloadFormat());assertEquals("HIDRA_TOPOLOGY_PHYSICAL_NETWORK_V2",result.network().payloadFormat());
+        assertEquals(v.networkSha256(),result.network().sha256());assertEquals(v.fluidSha256(),result.fluid().stored().sha256());assertEquals(v.regulatorCharacteristics(),result.stored().revision().regulatorCharacteristics());
+        jdbc.update("UPDATE hidra_workflow_definition_target_binding SET active=false WHERE id=?",v.governanceBinding().definitionId()+"-binding");
+        assertTrue(query.resolve(v.sourceId(),v.revisionId(),q.qualificationId(),Instant.now(),SimulationQualifiedFluidRevisionPort.SupportedUse.STEADY_STATE).isEmpty());
+    }
+
+    @Test void regulatorReplayConflictDigestFormatAndTransactionRollback(){var v=prepared(true);revisions.append(v);assertEquals(v,revisions.append(v));var c=v.regulatorCharacteristics().getFirst();
+        assertEquals(c,revisions.findRegulatorCharacteristicStored(c.id(),c.revisionId()).orElseThrow());assertEquals(c,revisions.appendCharacteristic(c));
+        var changed=new dz.sh.hidra.modules.simulation.domain.model.SimulationRegulatorCharacteristicRevision(c.id(),c.revisionId(),c.recordedAt(),c.effectiveFrom(),c.effectiveUntil(),c.origin(),c.evidenceReference(),c.fluidSourceId(),c.fluidRevisionId(),c.fluidSha256(),c.referenceTemperatureKelvin(),c.capacityMethod(),d("0.02"),c.minimumUpstreamPressurePascalsAbsolute(),c.maximumUpstreamPressurePascalsAbsolute(),c.minimumDownstreamPressurePascalsAbsolute(),c.maximumDownstreamPressurePascalsAbsolute(),c.minimumDifferentialPressurePascals(),c.maximumDifferentialPressurePascals());
+        assertThrows(InvalidSimulationValueException.class,()->revisions.appendCharacteristic(changed));
+        byte[] bytes=codec.encodeRegulatorCharacteristic(c);
+        assertThrows(org.springframework.dao.DataAccessException.class,()->jdbc.update("INSERT INTO hidra_simulation_equipment_characteristic_revision(kind,characteristic_id,revision_id,payload_format,canonical_payload,sha256) VALUES (?,?,?,?,?,?)","REGULATOR","wrong-format-"+UUID.randomUUID(),"r1",SimulationEquipmentParameterRevisionCodec.VALVE_FORMAT,bytes,codec.sha256(bytes)));
+        assertThrows(org.springframework.dao.DataAccessException.class,()->jdbc.update("INSERT INTO hidra_simulation_equipment_characteristic_revision(kind,characteristic_id,revision_id,payload_format,canonical_payload,sha256) VALUES (?,?,?,?,?,?)","REGULATOR","wrong-hash-"+UUID.randomUUID(),"r1",SimulationEquipmentParameterRevisionCodec.REGULATOR_FORMAT,bytes,"0".repeat(64)));
+        String corrupt="reg-corrupt-"+UUID.randomUUID();jdbc.update("INSERT INTO hidra_simulation_equipment_characteristic_revision(kind,characteristic_id,revision_id,payload_format,canonical_payload,sha256) VALUES (?,?,?,?,?,?)","REGULATOR",corrupt,"r1",SimulationEquipmentParameterRevisionCodec.REGULATOR_FORMAT,bytes,codec.sha256(bytes));
+        assertThrows(InvalidSimulationValueException.class,()->revisions.findRegulatorCharacteristicStored(corrupt,"r1"));
+        var fresh=prepared(true);new TransactionTemplate(transactions).executeWithoutResult(tx->{revisions.append(fresh);tx.setRollbackOnly();});
+        assertTrue(revisions.findStored(fresh.sourceId(),fresh.revisionId()).isEmpty());var g=fresh.regulatorCharacteristics().getFirst();assertTrue(revisions.findRegulatorCharacteristicStored(g.id(),g.revisionId()).isEmpty());
+    }
+    @Test void concurrentRegulatorConflictsHaveOneWinnerAndNoLosingAggregate() throws Exception {var v=prepared(true);var c=v.regulatorCharacteristics().getFirst();
+        var changed=new dz.sh.hidra.modules.simulation.domain.model.SimulationRegulatorCharacteristicRevision(c.id(),c.revisionId(),c.recordedAt(),c.effectiveFrom(),c.effectiveUntil(),c.origin(),c.evidenceReference(),c.fluidSourceId(),c.fluidRevisionId(),c.fluidSha256(),c.referenceTemperatureKelvin(),c.capacityMethod(),d("0.02"),c.minimumUpstreamPressurePascalsAbsolute(),c.maximumUpstreamPressurePascalsAbsolute(),c.minimumDownstreamPressurePascalsAbsolute(),c.maximumDownstreamPressurePascalsAbsolute(),c.minimumDifferentialPressurePascals(),c.maximumDifferentialPressurePascals());
+        var other=new SimulationEquipmentParameterRevision(v.sourceId(),"conflict-reg-r2",v.recordedAt(),v.effectiveFrom(),v.effectiveUntil(),v.origin(),v.evidenceReference(),v.networkSourceId(),v.networkRevisionId(),v.networkSha256(),v.fluidSourceId(),v.fluidRevisionId(),v.fluidSha256(),v.fluidQualificationId(),v.equipment(),v.compressorCurves(),v.valveCharacteristics(),v.governedLimits(),v.governanceBinding(),List.of(changed));
+        var gate=new CountDownLatch(1);var pool=Executors.newFixedThreadPool(2);try{var jobs=new ArrayList<Future<Boolean>>();for(var candidate:List.of(v,other))jobs.add(pool.submit(()->{assertTrue(gate.await(10,TimeUnit.SECONDS));try{revisions.append(candidate);return true;}catch(InvalidSimulationValueException rejected){return false;}}));
+            gate.countDown();int wins=0;for(var job:jobs)if(job.get(30,TimeUnit.SECONDS))wins++;assertEquals(1,wins);assertEquals(1L,jdbc.queryForObject("SELECT count(*) FROM hidra_simulation_equipment_parameter_revision WHERE source_id=?",Long.class,v.sourceId()));
+        }finally{pool.shutdownNow();}}
+    @Test void forwardMigrationPreservesHistoricalPayloadBytesAndImmutability() throws Exception {
+        try(var database=new PostgreSQLContainer<>("postgres:16").withDatabaseName("hidra_upgrade")){database.start();
+            Flyway.configure().dataSource(database.getJdbcUrl(),database.getUsername(),database.getPassword()).locations("filesystem:src/main/resources/db/migration").target("20261010.003").load().migrate();
+            var old=fixture("r1");byte[] payload=codec.encode(old);String sha=codec.sha256(payload);
+            try(var connection=DriverManager.getConnection(database.getJdbcUrl(),database.getUsername(),database.getPassword())){
+                try(var insert=connection.prepareStatement("INSERT INTO hidra_simulation_equipment_parameter_revision(source_id,revision_id,payload_format,canonical_payload,sha256) VALUES (?,?,?,?,?)")){
+                    insert.setString(1,old.sourceId());insert.setString(2,old.revisionId());insert.setString(3,SimulationEquipmentParameterRevisionCodec.FORMAT);insert.setBytes(4,payload);insert.setString(5,sha);insert.executeUpdate();}
+            }
+            var upgraded=Flyway.configure().dataSource(database.getJdbcUrl(),database.getUsername(),database.getPassword()).locations("filesystem:src/main/resources/db/migration").load();assertEquals(1,upgraded.migrate().migrationsExecuted);upgraded.validate();
+            try(var connection=DriverManager.getConnection(database.getJdbcUrl(),database.getUsername(),database.getPassword());var statement=connection.createStatement()){
+                try(var rows=statement.executeQuery("SELECT canonical_payload,sha256,payload_format FROM hidra_simulation_equipment_parameter_revision")){assertTrue(rows.next());assertArrayEquals(payload,rows.getBytes(1));assertEquals(sha,rows.getString(2));assertEquals(SimulationEquipmentParameterRevisionCodec.FORMAT,rows.getString(3));assertFalse(rows.next());}
+                assertThrows(java.sql.SQLException.class,()->statement.executeUpdate("UPDATE hidra_simulation_equipment_parameter_revision SET payload_format=payload_format"));
+                assertThrows(java.sql.SQLException.class,()->statement.executeUpdate("DELETE FROM hidra_simulation_equipment_parameter_revision"));
+                assertThrows(java.sql.SQLException.class,()->statement.execute("TRUNCATE hidra_simulation_equipment_parameter_revision CASCADE"));
+            }
+        }
+    }
 }

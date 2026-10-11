@@ -13968,3 +13968,219 @@ Current preflight validates only the two append-only documents and repository do
 controls; no new Java, Maven, PostgreSQL or numerical test is claimed. STOP once exact-head
 Documentation Validation starts. Owner Next selects the above Slice B implementation;
 do not silently chain it into this documentation preflight.
+
+
+## HPR-P25-008C REGULATOR Slice B candidate — compile blocker and scope correction (2026-10-11)
+
+Owner Next selected the Slice B implementation from the successful preflight at
+`9184a406572924a3cbe3f09df43078b84528d233` (Documentation Validation #207,
+run 38129075512, SUCCESS). The production baseline remains the accepted CI #642
+source; this candidate has not been committed, published or accepted.
+
+### Prepared candidate and actual validation
+
+Within the registered Slice B paths, the working candidate adds distinct synthetic
+regulator source/configuration, exact fluid/characteristic references, supplied
+pressure/temperature/limit checks, separate aggregate V2/characteristic V1 codecs,
+transactional standalone characteristic storage, Topology V1/V2 association checks,
+and explicit schema-one/current numerical-union regulator refusal. Historical
+constructors remain available. Forward migration V20261011_001 extends only three
+existing format/kind checks using names recovered from the authenticated CURRENT
+143-migration dictionary. Historical migrations have not been rewritten.
+
+Fixed independent Python struct/hashlib oracles were frozen before production codec
+changes. A scratch-only Java 21.0.12 assertion harness compiled the exact source
+closure and executed 76 actual test method bodies across source/model/codec and
+unchanged equipment evaluator tests: 76 passed. This harness uses a minimal assertion
+shim; it is not JUnit, Maven, full architecture validation or PostgreSQL evidence.
+It verifies these independent literal digests without replacing expected values:
+
+| Payload | SHA-256 |
+|---|---|
+| Historical aggregate V1 | cd7f1bf536d6cbdcfe37ba11ebaff9bf4d3d5ab8a7e4cdd45f80d8bae3103a67 |
+| Historical compressor V1 | c06a3e17d5f04e572ef169fdcb204d38cc52edbe7ed2160152b2b6d6d4309fa6 |
+| Historical valve V1 | f73f65fa62592215438d4250224557751a7f0960f28e2e04bb5881b14ee07619 |
+| Historical qualification V1 | abcedebafd791fbc0af99a11ccc178416fafb9d43f3af0af5b9b2aebc898dbd8 |
+| Regulator characteristic V1 | 0db79517c6a0e6798c267522a8a4b5ce7bd83cc17fdb2c919533201766506af3 |
+| Regulator aggregate V2 | 6f862a2e161ad426713159e2b113a74971c5c9f751e9477d71004959ae7119de |
+
+`JAVA_HOME=<recovered Java 21> bash ./mvnw -B -q -DskipTests compile` was
+attempted and failed before compilation: Spring Boot parent 4.1.1 is uncached and
+repo.maven.apache.org DNS resolution is unavailable. No Maven/JUnit/PostgreSQL
+pass is claimed. New PostgreSQL upgrade/replay/conflict/rollback/real-owner delivery
+tests are prepared but unexecuted. No disposable PostgreSQL/Docker is available;
+the authentic 144-migration catalog and generated CURRENT dictionary remain pending.
+The existing dictionary is deliberately unchanged rather than reconstructed from SQL.
+
+### Concrete newly discovered compile prerequisite
+
+Adding the admitted kind-specific quantity
+`DOWNSTREAM_SETPOINT_PRESSURE_PASCALS_ABSOLUTE` makes an existing exhaustive switch
+in `src/main/java/dz/sh/hidra/modules/simulation/domain/service/SteadyStateGasSolver.java`
+(`verifyLimits`) non-exhaustive. A direct Java 21 compilation including the unchanged
+solver and its frozen tests reports:
+
+```text
+SteadyStateGasSolver.java:687: error: the switch expression does not cover all possible input values
+```
+
+The registered 25-path Slice B scope expressly leaves this solver read-only. Its
+source remains unchanged, and the noncompiling candidate is not published. This is
+an enum-consumer prerequisite, not a request for regulator numerical implementation.
+
+A subsequent owner Next may select a corrected Slice B envelope consisting of the
+same 25 registered paths plus exactly:
+
+- `src/main/java/dz/sh/hidra/modules/simulation/domain/service/SteadyStateGasSolver.java`
+
+The additional scope permits only an explicit switch case for the new regulator
+quantity that throws an unsupported-regulator IllegalArgumentException. No pressure,
+flow, capacity, isolation or controller equation, existing case/oracle, solver parameter,
+state quantity, schedule or numerical outcome may change. Existing union refusal stays
+in place. Retain exact supporting message
+`feat(simulation): add regulator parameter revision contract` for the finished candidate.
+Recompile and run unchanged frozen compressor/valve solver tests, then the required
+focused/Maven/architecture/PostgreSQL/full-chain dictionary checks before acceptance.
+If authenticated new catalog evidence remains unavailable, stop with dictionary
+acceptance pending; do not fabricate it or weaken its gate.
+
+### Current disposition
+
+Slice A = ACCEPTED. Slice B = BLOCKED BEFORE PUBLICATION by the additional exhaustive
+switch consumer and pending authentic dictionary evidence. Slice C and 008D–F remain
+NOT AUTHORIZED. HPR-P25-008C/008 remain PENDING, P2.5 OPEN, P0/P1/P2 CLOSED,
+P3 DEFERRED, C3E BLOCKED, GZ4 SYNTHETIC DEVELOPMENT_TEST_ONLY and
+`0.7.0-SNAPSHOT` unchanged. No new commit/CI start is claimed. Stop here; subsequent
+owner Next selects only the above correction and completion of the same Slice B.
+
+Local repository controls on the stopped candidate: documentation validator passed
+(95 documents); offline OpenAPI validator passed (244 paths, 263 operations, 231 schemas);
+maintained validator unit suites passed (10 + 10 + 17 tests); whitespace and closed-scope
+checks passed. These do not establish Maven, numerical-solver or catalog acceptance.
+
+Prepared candidate file inventory (uncommitted):
+
+- CREATED: `src/main/java/dz/sh/hidra/modules/simulation/domain/model/SimulationRegulatorCharacteristicRevision.java`
+- CREATED: `src/main/resources/db/migration/V20261011_001__p25_simulation_regulator_parameter_revision_format.sql`
+- CREATED: `src/test/java/dz/sh/hidra/modules/simulation/domain/model/SimulationRegulatorCharacteristicRevisionTest.java`
+- UPDATED: `doc/model-remediation/RECONCILIATION.md`
+- UPDATED: `doc/roadmap/ULTIMATE_ROADMAP.md`
+- UPDATED: `src/main/java/dz/sh/hidra/modules/simulation/application/port/out/SimulationEquipmentParameterRevisionRepositoryPort.java`
+- UPDATED: `src/main/java/dz/sh/hidra/modules/simulation/application/port/out/SimulationStoredPhysicalNetworkRevisionPort.java`
+- UPDATED: `src/main/java/dz/sh/hidra/modules/simulation/application/service/SimulationEquipmentParameterRevisionQueryService.java`
+- UPDATED: `src/main/java/dz/sh/hidra/modules/simulation/domain/model/SimulationEquipmentInput.java`
+- UPDATED: `src/main/java/dz/sh/hidra/modules/simulation/domain/model/SimulationEquipmentParameterRevision.java`
+- UPDATED: `src/main/java/dz/sh/hidra/modules/simulation/domain/model/SimulationPhysicalInputPayload.java`
+- UPDATED: `src/main/java/dz/sh/hidra/modules/simulation/domain/model/SimulationSyntheticEquipmentNetworkInput.java`
+- UPDATED: `src/main/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/adapter/JdbcSimulationEquipmentParameterRevisionRepositoryAdapter.java`
+- UPDATED: `src/main/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/adapter/SimulationEquipmentParameterRevisionCodec.java`
+- UPDATED: `src/test/java/dz/sh/hidra/modules/simulation/application/service/SimulationEquipmentParameterQualificationServiceTest.java`
+- UPDATED: `src/test/java/dz/sh/hidra/modules/simulation/application/service/SimulationEquipmentParameterRevisionQueryServiceTest.java`
+- UPDATED: `src/test/java/dz/sh/hidra/modules/simulation/domain/model/SimulationEquipmentParameterRevisionTest.java`
+- UPDATED: `src/test/java/dz/sh/hidra/modules/simulation/domain/model/SimulationFluidEquipmentInputTest.java`
+- UPDATED: `src/test/java/dz/sh/hidra/modules/simulation/domain/model/SimulationPhysicalInputPayloadTest.java`
+- UPDATED: `src/test/java/dz/sh/hidra/modules/simulation/domain/model/SimulationSyntheticEquipmentNetworkInputTest.java`
+- UPDATED: `src/test/java/dz/sh/hidra/modules/simulation/infrastructure/integration/QualifiedFluidEquipmentDeliveryIntegrationTest.java`
+- UPDATED: `src/test/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/SimulationEquipmentParameterRevisionPostgresIntegrationTest.java`
+- UPDATED: `src/test/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/adapter/SimulationEquipmentParameterRevisionCodecTest.java`
+
+
+## HPR-P25-008C REGULATOR Slice B implementation candidate and CI handoff (2026-10-11)
+
+Owner "do it next" selected the exact scope correction recorded above. Remote main
+was rechecked at `9184a406572924a3cbe3f09df43078b84528d233`; exact-head Documentation
+Validation #207 is SUCCESS, and the unchanged production baseline CI #642 is SUCCESS.
+The supporting implementation message remains
+`feat(simulation): add regulator parameter revision contract`.
+
+The prepared Slice B source/configuration/codec/storage/migration and tests now include
+exactly one additional numerical-boundary refusal in SteadyStateGasSolver.verifyLimits:
+DOWNSTREAM_SETPOINT_PRESSURE_PASCALS_ABSOLUTE throws IllegalArgumentException.
+No existing numerical case, equation, fixture oracle, state quantity, schedule or solver
+parameter changes. The solver header date is updated. Typed configuration, independently
+stored characteristics and owner-qualified source delivery are available in this candidate;
+regulator execution remains refused by the current physical assembly/numerical union.
+
+The separate regulator characteristic is SYNTHETIC only, with supplied positive ordered
+pressure/differential-pressure ranges, coefficient, reference temperature, exact fluid
+identity/digest and recorded/effective provenance. Regulator OPEN/CLOSED isolation and
+DOWNSTREAM_SETPOINT control are supplied explicitly, with an exact characteristic revision
+and absolute pressure setpoint. No defaults, field calibration, capacity computation or
+operating-state claim is introduced. Aggregate reference/limit/domain validation rejects
+missing, duplicate, unused, non-synthetic, future-recorded or incompatible source. Qualified
+query retains exact Topology/Custody/Workflow identity, digest, provenance, time and authority
+checks. Topology V2 requires actual regulator incidence; V1 excludes it.
+
+Historical compressor/valve aggregate V1 and standalone/qualification bytes retain their
+independently frozen SHA-256 oracles. Regulator aggregates use V2; standalone regulator
+characteristics use V1. Decoders reject format/kind mismatches and noncanonical/truncated/
+trailing bytes. JDBC verifies canonical bytes, SHA-256, stored kind/key/format and exact
+standalone references, appends transactionally, and rejects conflicting immutable replay.
+Forward-only V20261011_001 extends only the authenticated existing kind/kind-format/aggregate
+format constraints. All 143 prior migration files and mutation-refusal triggers are retained.
+
+### Actual local validation and its limits
+
+Network dependency access was restored using the environment's configured proxy in
+scratch-only Maven settings. Recovered Java 21.0.12 and Maven wrapper 3.9.11 were used.
+An initial focused Maven test attempt failed because Mockito could not self-attach in this
+container. Re-running with the already resolved Byte Buddy agent explicitly supplied via
+Surefire argLine resolved that runtime limitation; no repository test configuration changed.
+
+| Executed check | Actual result |
+|---|---|
+| Java 21 source compilation including solver | PASS; exhaustive switch blocker resolved |
+| Scratch Java 21 assertion harness including frozen solver tests | 108 actual test bodies passed; auxiliary evidence, not JUnit |
+| Maven focused source/input/query/qualification/codec/evaluator/solver/PostgreSQL/delivery suites | PASS: 128 tests, zero failures/errors, 13 Docker-dependent integration skips |
+| Maven `clean verify` with scratch proxy settings and explicit Byte Buddy Java agent | PASS: 1561 tests, zero failures/errors, 315 Docker-dependent skips |
+| Focused source/input/query/qualification/codec/evaluator/solver suites after final JDBC/import review | PASS; no Docker suite added to this narrower repeat |
+| Maintained documentation/OpenAPI/dictionary validator unit suites | PASS: 10 + 10 + 17 tests |
+| Documentation validator and offline OpenAPI snapshot validator | PASS: 95 documents; 244 paths, 263 operations, 231 schemas |
+| Whitespace and closed write-scope checks | PASS; 24 changed paths within corrected 26-path envelope |
+
+For reproducibility, Maven execution is the repository wrapper with Java 21,
+`-s <scratch proxy settings> -B -q`, and
+`-DargLine=-javaagent:<resolved byte-buddy-agent-1.18.11.jar>`.
+Focused selection includes SimulationEquipmentParameterRevisionTest,
+SimulationRegulatorCharacteristicRevisionTest, SimulationFluidEquipmentInputTest,
+SimulationPhysicalInputPayloadTest, SimulationSyntheticEquipmentNetworkInputTest,
+SimulationEquipmentParameterRevisionQueryServiceTest,
+SimulationEquipmentParameterQualificationServiceTest,
+SimulationEquipmentParameterRevisionCodecTest, SimulationEquipmentBehaviorEvaluatorTest,
+SteadyStateGasSolverTest, SimulationEquipmentParameterRevisionPostgresIntegrationTest
+and QualifiedFluidEquipmentDeliveryIntegrationTest. Full verification uses `clean verify`.
+
+Actual local Maven success does not establish PostgreSQL integration success. A PostgreSQL
+16.15 package was downloaded and checksum-verified in scratch, but the container exposes
+only UID 0 and cannot create a non-root user namespace. No database was started, root
+checks were not bypassed, and no local full-chain catalog is claimed. Docker is absent.
+Prepared PostgreSQL tests cover old-chain upgrade byte preservation, immutable format/hash/
+identity refusal, exact and conflicting replay/concurrency, transactional rollback and
+actual Topology/Custody/Workflow regulator qualification/delivery. Their outcomes require CI.
+
+### Publication disposition and mandatory remaining reconciliation
+
+Slice B = IN PROGRESS / SOURCE CANDIDATE PREPARED; acceptance remains PENDING.
+The owner-requested publication/CI-start handoff may proceed for this compiling candidate
+to obtain real PostgreSQL execution and the existing schema-only CI log capture. The old
+143-migration CURRENT dictionary remains unchanged and is not represented as matching the
+new 144-migration source. Consequently dictionary equality is still a known unresolved gate;
+production CI may fail at this gate until authentic catalog reconciliation is performed.
+Neither the generator, ownership metadata nor CI checks are weakened to avoid that outcome.
+
+After the owner reports Next or Fail, first recover the authentic complete new-head catalog
+from the existing PostgreSQL test capture, verify its run/head/source inventory and full
+144-migration chain, run the unchanged maintained generator, review the complete dictionary
+and synchronize only the admitted DATA_DICTIONARY.md plus append-only execution records.
+Reconcile any actual PostgreSQL/test failure before acceptance. No catalog fact, operational
+log, evidence hash or PASS/CLOSED status may be reconstructed from expected behavior.
+This remains completion/repair of Slice B under HPR-P25-008C; it does not select Slice C.
+
+Updated candidate inventory: the 23 paths listed in the preceding stopped-candidate record
+plus `src/main/java/dz/sh/hidra/modules/simulation/domain/service/SteadyStateGasSolver.java`
+(only refusal case and header date). Three new files, 21 updated files; model input and
+dictionary paths remain unchanged. No branch, PR, external-engine dependency, release,
+deployment or operational authority is introduced. Slice A remains ACCEPTED; HPR-P25-008C/008
+PENDING, Slice C and 008D–F NOT AUTHORIZED, P2.5 OPEN, P0/P1/P2 CLOSED, P3 DEFERRED,
+C3E BLOCKED, GZ4 SYNTHETIC DEVELOPMENT_TEST_ONLY and `0.7.0-SNAPSHOT` unchanged.
+Stop once the published candidate's production CI has started; do not wait for completion.

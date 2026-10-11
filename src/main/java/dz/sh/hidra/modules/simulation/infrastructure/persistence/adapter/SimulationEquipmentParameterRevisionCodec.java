@@ -7,7 +7,7 @@
  *
  * @Name        : SimulationEquipmentParameterRevisionCodec
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-10
+ * @UpdatedOn   : 2026-10-11
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -21,6 +21,7 @@ package dz.sh.hidra.modules.simulation.infrastructure.persistence.adapter;
 
 import dz.sh.hidra.modules.simulation.domain.exception.InvalidSimulationValueException;
 import dz.sh.hidra.modules.simulation.domain.model.SimulationEquipmentParameterRevision;
+import dz.sh.hidra.modules.simulation.domain.model.SimulationRegulatorCharacteristicRevision;
 import dz.sh.hidra.modules.simulation.domain.model.SimulationEquipmentParameterRevision.*;
 import dz.sh.hidra.modules.simulation.application.port.out.SimulationEquipmentParameterRevisionRepositoryPort.Qualification;
 import java.io.*;
@@ -36,9 +37,47 @@ import java.time.DateTimeException;
 import java.util.*;
 public final class SimulationEquipmentParameterRevisionCodec {
     public static final String FORMAT="HIDRA_SIMULATION_EQUIPMENT_PARAMETERS_V1";
+    public static final String FORMAT_V2="HIDRA_SIMULATION_EQUIPMENT_PARAMETERS_V2";
+    public static final String REGULATOR_FORMAT="HIDRA_SIMULATION_REGULATOR_CHARACTERISTIC_V1";
+    public static String format(SimulationEquipmentParameterRevision v){return v.regulatorCharacteristics().isEmpty()?FORMAT:FORMAT_V2;}
     public static final String CURVE_FORMAT="HIDRA_SIMULATION_COMPRESSOR_CURVE_V1";
     public static final String VALVE_FORMAT="HIDRA_SIMULATION_VALVE_CHARACTERISTIC_V1";
     public static final String QUALIFICATION_FORMAT="HIDRA_SIMULATION_EQUIPMENT_QUALIFICATION_V1";
+    private static void writeRegulatorConfiguration(DataOutputStream out,RegulatorConfiguration v)throws IOException {
+        string(out,v.characteristicId());string(out,v.characteristicRevisionId());string(out,v.method());string(out,v.controlMode().name());string(out,v.isolation().name());decimal(out,v.downstreamSetpointPascalsAbsolute());
+    }
+    private static RegulatorConfiguration readRegulatorConfiguration(DataInputStream in)throws IOException {
+        return new RegulatorConfiguration(string(in),string(in),string(in),ControlMode.valueOf(string(in)),Isolation.valueOf(string(in)),decimal(in));
+    }
+    private static void writeRegulator(DataOutputStream out,SimulationRegulatorCharacteristicRevision v)throws IOException {
+        string(out,v.id());
+        string(out,v.revisionId());
+        instant(out,v.recordedAt());instant(out,v.effectiveFrom());out.writeByte(v.effectiveUntil()==null?0:1);if(v.effectiveUntil()!=null)instant(out,v.effectiveUntil());string(out,v.origin().name());
+        string(out,v.evidenceReference());
+        string(out,v.fluidSourceId());
+        string(out,v.fluidRevisionId());
+        string(out,v.fluidSha256());
+        decimal(out,v.referenceTemperatureKelvin());string(out,v.capacityMethod());
+        decimal(out,v.coefficientKilogramsPerSecondPerSquareRootPascal());
+        decimal(out,v.minimumUpstreamPressurePascalsAbsolute());
+        decimal(out,v.maximumUpstreamPressurePascalsAbsolute());
+        decimal(out,v.minimumDownstreamPressurePascalsAbsolute());
+        decimal(out,v.maximumDownstreamPressurePascalsAbsolute());
+        decimal(out,v.minimumDifferentialPressurePascals());
+        decimal(out,v.maximumDifferentialPressurePascals());
+    }
+    private static SimulationRegulatorCharacteristicRevision readRegulator(DataInputStream in)throws IOException {
+        return new SimulationRegulatorCharacteristicRevision(string(in),string(in),instant(in),instant(in),marker(in)==0?null:instant(in),Origin.valueOf(string(in)),string(in),string(in),string(in),string(in),decimal(in),string(in),decimal(in),decimal(in),decimal(in),decimal(in),decimal(in),decimal(in),decimal(in));
+    }
+    public byte[] encodeRegulatorCharacteristic(SimulationRegulatorCharacteristicRevision v) {
+        if(v==null)throw invalid("Missing regulator source.");
+        try{var b=new ByteArrayOutputStream();var out=new DataOutputStream(b);string(out,REGULATOR_FORMAT);writeRegulator(out,v);out.flush();return b.toByteArray();}catch(IOException e){throw invalid("Encoding failed.");}
+    }
+    public SimulationRegulatorCharacteristicRevision decodeRegulatorCharacteristic(byte[] payload) {
+        if(payload==null)throw invalid("Missing regulator bytes.");byte[] bytes=payload.clone();
+        try{var in=new DataInputStream(new ByteArrayInputStream(bytes));if(!REGULATOR_FORMAT.equals(string(in)))throw invalid("Unsupported regulator format.");var v=readRegulator(in);if(in.available()!=0||!Arrays.equals(bytes,encodeRegulatorCharacteristic(v)))throw invalid("Noncanonical regulator.");return v;}
+        catch(IOException|IllegalArgumentException|ArithmeticException|DateTimeException e){throw invalid("Malformed regulator payload.");}
+    }
     private static void writeGovernanceBinding(DataOutputStream out,GovernanceBinding v) throws IOException {
         string(out,v.definitionId());
         out.writeInt(v.definitionVersion());
@@ -52,7 +91,7 @@ public final class SimulationEquipmentParameterRevisionCodec {
         String purposeId=string(in);
         return new GovernanceBinding(definitionId,definitionVersion,targetTypeId,purposeId);
     }
-    private static void writeEquipment(DataOutputStream out,Equipment v) throws IOException {
+    private static void writeEquipment(DataOutputStream out,Equipment v,boolean v2) throws IOException {
         string(out,v.id());
         string(out,v.fromNodeId());
         string(out,v.toNodeId());
@@ -63,8 +102,9 @@ public final class SimulationEquipmentParameterRevisionCodec {
         out.writeByte(v.characteristicId() == null ? 0 : 1); if (v.characteristicId() != null) { string(out,v.characteristicId()); }
         out.writeByte(v.characteristicRevisionId() == null ? 0 : 1); if (v.characteristicRevisionId() != null) { string(out,v.characteristicRevisionId()); }
         out.writeByte(v.configuredOpeningFraction() == null ? 0 : 1); if (v.configuredOpeningFraction() != null) { decimal(out,v.configuredOpeningFraction()); }
+        if(v2){out.writeByte(v.regulator()==null?0:1);if(v.regulator()!=null)writeRegulatorConfiguration(out,v.regulator());}
     }
-    private static Equipment readEquipment(DataInputStream in) throws IOException {
+    private static Equipment readEquipment(DataInputStream in,boolean v2) throws IOException {
         String id=string(in);
         String fromNodeId=string(in);
         String toNodeId=string(in);
@@ -75,7 +115,8 @@ public final class SimulationEquipmentParameterRevisionCodec {
         String characteristicId=marker(in) == 0 ? null : string(in);
         String characteristicRevisionId=marker(in) == 0 ? null : string(in);
         BigDecimal configuredOpeningFraction=marker(in) == 0 ? null : decimal(in);
-        return new Equipment(id,fromNodeId,toNodeId,kind,curveId,curveRevisionId,configuredSpeedRevolutionsPerMinute,characteristicId,characteristicRevisionId,configuredOpeningFraction);
+        RegulatorConfiguration regulator=v2 && marker(in)!=0?readRegulatorConfiguration(in):null;
+        return new Equipment(id,fromNodeId,toNodeId,kind,curveId,curveRevisionId,configuredSpeedRevolutionsPerMinute,characteristicId,characteristicRevisionId,configuredOpeningFraction,regulator);
     }
     private static void writeCompressorPoint(DataOutputStream out,CompressorPoint v) throws IOException {
         decimal(out,v.massFlowKilogramsPerSecond());
@@ -211,13 +252,14 @@ public final class SimulationEquipmentParameterRevisionCodec {
         string(out,v.fluidRevisionId());
         string(out,v.fluidSha256());
         string(out,v.fluidQualificationId());
-        out.writeInt(v.equipment().size()); for(var item : v.equipment()) { writeEquipment(out,item); }
+        out.writeInt(v.equipment().size()); for(var item : v.equipment()) { writeEquipment(out,item,format(v).equals(FORMAT_V2)); }
         out.writeInt(v.compressorCurves().size()); for(var item : v.compressorCurves()) { writeCompressorCurve(out,item); }
         out.writeInt(v.valveCharacteristics().size()); for(var item : v.valveCharacteristics()) { writeValveCharacteristic(out,item); }
         out.writeInt(v.governedLimits().size()); for(var item : v.governedLimits()) { writeGovernedLimit(out,item); }
         writeGovernanceBinding(out,v.governanceBinding());
+        if(format(v).equals(FORMAT_V2)){out.writeInt(v.regulatorCharacteristics().size());for(var c:v.regulatorCharacteristics())writeRegulator(out,c);}
     }
-    private static SimulationEquipmentParameterRevision readSimulationEquipmentParameterRevision(DataInputStream in) throws IOException {
+    private static SimulationEquipmentParameterRevision readSimulationEquipmentParameterRevision(DataInputStream in,boolean v2) throws IOException {
         String sourceId=string(in);
         String revisionId=string(in);
         Instant recordedAt=instant(in);
@@ -232,12 +274,14 @@ public final class SimulationEquipmentParameterRevisionCodec {
         String fluidRevisionId=string(in);
         String fluidSha256=string(in);
         String fluidQualificationId=string(in);
-        int equipmentCount=count(in,4);var equipment=new ArrayList<Equipment>();for(int i=0;i<equipmentCount;i++) equipment.add(readEquipment(in));
+        int equipmentCount=count(in,4);var equipment=new ArrayList<Equipment>();for(int i=0;i<equipmentCount;i++) equipment.add(readEquipment(in,v2));
         int compressorCurvesCount=count(in,4);var compressorCurves=new ArrayList<CompressorCurve>();for(int i=0;i<compressorCurvesCount;i++) compressorCurves.add(readCompressorCurve(in));
         int valveCharacteristicsCount=count(in,4);var valveCharacteristics=new ArrayList<ValveCharacteristic>();for(int i=0;i<valveCharacteristicsCount;i++) valveCharacteristics.add(readValveCharacteristic(in));
         int governedLimitsCount=count(in,4);var governedLimits=new ArrayList<GovernedLimit>();for(int i=0;i<governedLimitsCount;i++) governedLimits.add(readGovernedLimit(in));
         GovernanceBinding governanceBinding=readGovernanceBinding(in);
-        return new SimulationEquipmentParameterRevision(sourceId,revisionId,recordedAt,effectiveFrom,effectiveUntil,origin,evidenceReference,networkSourceId,networkRevisionId,networkSha256,fluidSourceId,fluidRevisionId,fluidSha256,fluidQualificationId,equipment,compressorCurves,valveCharacteristics,governedLimits,governanceBinding);
+        var regulators=new ArrayList<SimulationRegulatorCharacteristicRevision>();
+        if(v2){int size=count(in,4);for(int i=0;i<size;i++)regulators.add(readRegulator(in));}
+        return new SimulationEquipmentParameterRevision(sourceId,revisionId,recordedAt,effectiveFrom,effectiveUntil,origin,evidenceReference,networkSourceId,networkRevisionId,networkSha256,fluidSourceId,fluidRevisionId,fluidSha256,fluidQualificationId,equipment,compressorCurves,valveCharacteristics,governedLimits,governanceBinding,regulators);
     }
     private static void writeQualification(DataOutputStream out,Qualification v) throws IOException {
         string(out,v.qualificationId());
@@ -276,13 +320,13 @@ public final class SimulationEquipmentParameterRevisionCodec {
     }
     public byte[] encode(SimulationEquipmentParameterRevision value) {
         if(value==null)throw invalid("Missing canonical value.");
-        try {var bytes=new ByteArrayOutputStream();var out=new DataOutputStream(bytes);string(out,FORMAT);writeSimulationEquipmentParameterRevision(out,value);out.flush();return bytes.toByteArray();}
+        try {var bytes=new ByteArrayOutputStream();var out=new DataOutputStream(bytes);string(out,format(value));writeSimulationEquipmentParameterRevision(out,value);out.flush();return bytes.toByteArray();}
         catch(IOException failure){throw invalid("Strict canonical encoding failed.");}
     }
     public SimulationEquipmentParameterRevision decode(byte[] payload) {
         if(payload==null)throw invalid("Missing canonical bytes.");byte[] bytes=payload.clone();
-        try {var in=new DataInputStream(new ByteArrayInputStream(bytes));if(!FORMAT.equals(string(in)))throw invalid("Unsupported canonical format.");
-            var value=readSimulationEquipmentParameterRevision(in);if(in.available()!=0||!Arrays.equals(bytes,encode(value)))throw invalid("Noncanonical or trailing bytes.");return value;}
+        try {var in=new DataInputStream(new ByteArrayInputStream(bytes));String format=string(in);if(!FORMAT.equals(format)&&!FORMAT_V2.equals(format))throw invalid("Unsupported canonical format.");
+            var value=readSimulationEquipmentParameterRevision(in,FORMAT_V2.equals(format));if(!format.equals(format(value)))throw invalid("Aggregate kind/format mismatch.");if(in.available()!=0||!Arrays.equals(bytes,encode(value)))throw invalid("Noncanonical or trailing bytes.");return value;}
         catch(IOException | IllegalArgumentException | ArithmeticException | DateTimeException failure){throw invalid("Malformed canonical payload.");}
     }
     public byte[] encodeCompressorCurve(CompressorCurve value) {

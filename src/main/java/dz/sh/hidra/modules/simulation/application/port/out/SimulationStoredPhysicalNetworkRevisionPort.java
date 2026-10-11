@@ -7,7 +7,7 @@
  *
  * @Name        : SimulationStoredPhysicalNetworkRevisionPort
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-10
+ * @UpdatedOn   : 2026-10-11
  *
  * @Type        : Interface
  * @Layer       : Application
@@ -50,9 +50,11 @@ public interface SimulationStoredPhysicalNetworkRevisionPort {
             if (nodes.size() < 2 || pipeSegments.isEmpty()) {
                 throw new IllegalArgumentException("Physical revision requires two nodes and a real pipe.");
             }
-            if (!"HIDRA_TOPOLOGY_PHYSICAL_NETWORK_V1".equals(payloadFormat)
-                    || sha256 == null || !sha256.matches("[0-9a-f]{64}")) {
-                throw new IllegalArgumentException("Unsupported physical revision format or digest.");
+            if(sha256==null || !sha256.matches("[0-9a-f]{64}")) throw new IllegalArgumentException("Exact digest required.");
+            boolean regulatorPresent=equipmentLinks.stream().anyMatch(e->"REGULATOR".equals(e.kind()));
+            if (!("HIDRA_TOPOLOGY_PHYSICAL_NETWORK_V1".equals(payloadFormat) && !regulatorPresent)
+                    && !("HIDRA_TOPOLOGY_PHYSICAL_NETWORK_V2".equals(payloadFormat) && regulatorPresent)) {
+                throw new IllegalArgumentException("Physical format/kind mismatch.");
             }
         }
     }
@@ -86,7 +88,7 @@ public interface SimulationStoredPhysicalNetworkRevisionPort {
             fromNodeId = identity(fromNodeId, "Equipment from node");
             toNodeId = identity(toNodeId, "Equipment to node");
             distinct(fromNodeId, toNodeId);
-            oneOf(kind, "Equipment kind", "COMPRESSOR", "VALVE");
+            oneOf(kind, "Equipment kind", "COMPRESSOR", "VALVE", "REGULATOR");
         }
     }
 
@@ -116,8 +118,8 @@ public interface SimulationStoredPhysicalNetworkRevisionPort {
         }
     }
 
-    private static void oneOf(String value, String field, String first, String second) {
-        if (!first.equals(value) && !second.equals(value)) {
+    private static void oneOf(String value, String field, String... choices) {
+        if (java.util.Arrays.stream(choices).noneMatch(choice -> choice.equals(value))) {
             throw new IllegalArgumentException(field + " has an unsupported enum name.");
         }
     }

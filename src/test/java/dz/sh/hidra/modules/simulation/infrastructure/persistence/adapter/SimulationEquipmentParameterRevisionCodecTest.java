@@ -7,7 +7,7 @@
  *
  * @Name        : SimulationEquipmentParameterRevisionCodecTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-10
+ * @UpdatedOn   : 2026-10-11
  *
  * @Type        : Class
  * @Layer       : Test
@@ -51,4 +51,26 @@ class SimulationEquipmentParameterRevisionCodecTest {
         int found=-1;for(int n=0;n<=bytes.length-text.length;n++)if(Arrays.equals(Arrays.copyOfRange(bytes,n,n+text.length),text)){found=n;break;}
         assertTrue(found>0);ByteBuffer.wrap(bytes,found+text.length,4).putInt(Integer.MIN_VALUE);assertThrows(InvalidSimulationValueException.class,()->codec.decodeCompressorCurve(bytes));
     }
+
+    @Test void independentFrozenLegacyAndRegulatorHashesRemainExact(){
+        // Derived from the byte-layout specification using Python struct/hashlib before codec edits.
+        var old=fixture("r1");assertEquals("cd7f1bf536d6cbdcfe37ba11ebaff9bf4d3d5ab8a7e4cdd45f80d8bae3103a67",codec.sha256(codec.encode(old)));
+        assertEquals("c06a3e17d5f04e572ef169fdcb204d38cc52edbe7ed2160152b2b6d6d4309fa6",codec.sha256(codec.encodeCompressorCurve(old.compressorCurves().getFirst())));
+        assertEquals("f73f65fa62592215438d4250224557751a7f0960f28e2e04bb5881b14ee07619",codec.sha256(codec.encodeValveCharacteristic(old.valveCharacteristics().getFirst())));
+        var q=new dz.sh.hidra.modules.simulation.application.port.out.SimulationEquipmentParameterRevisionRepositoryPort.Qualification("q","equipment","r1","c".repeat(64),AT,"i","t","a","actor","Synthetic",AT,"definition",1,"type","purpose");
+        assertEquals("abcedebafd791fbc0af99a11ccc178416fafb9d43f3af0af5b9b2aebc898dbd8",codec.sha256(codec.encodeQualification(q)));
+        var reg=dz.sh.hidra.modules.simulation.domain.model.SimulationRegulatorCharacteristicRevisionTest.regulatorFixture();
+        assertEquals("6f862a2e161ad426713159e2b113a74971c5c9f751e9477d71004959ae7119de",codec.sha256(codec.encode(reg)));
+        assertEquals("0db79517c6a0e6798c267522a8a4b5ce7bd83cc17fdb2c919533201766506af3",codec.sha256(codec.encodeRegulatorCharacteristic(reg.regulatorCharacteristics().getFirst())));
+        assertEquals(SimulationEquipmentParameterRevisionCodec.FORMAT_V2,codec.format(reg));assertEquals(reg,codec.decode(codec.encode(reg)));
+        assertEquals(reg.regulatorCharacteristics().getFirst(),codec.decodeRegulatorCharacteristic(codec.encodeRegulatorCharacteristic(reg.regulatorCharacteristics().getFirst())));
+    }
+    @Test void regulatorAndAggregateRejectTruncationTrailingBytesAndRelabeledHeaders(){var reg=dz.sh.hidra.modules.simulation.domain.model.SimulationRegulatorCharacteristicRevisionTest.regulatorFixture();
+        var bytes=codec.encodeRegulatorCharacteristic(reg.regulatorCharacteristics().getFirst());for(int n=0;n<bytes.length;n++){final int end=n;assertThrows(InvalidSimulationValueException.class,()->codec.decodeRegulatorCharacteristic(Arrays.copyOf(bytes,end)));}
+        assertThrows(InvalidSimulationValueException.class,()->codec.decodeRegulatorCharacteristic(Arrays.copyOf(bytes,bytes.length+1)));
+        byte[] v2=codec.encode(reg);v2[4+SimulationEquipmentParameterRevisionCodec.FORMAT_V2.length()-1]='1';assertThrows(InvalidSimulationValueException.class,()->codec.decode(v2));
+        byte[] v1=codec.encode(fixture("r1"));v1[4+SimulationEquipmentParameterRevisionCodec.FORMAT.length()-1]='2';assertThrows(InvalidSimulationValueException.class,()->codec.decode(v1));
+        assertThrows(InvalidSimulationValueException.class,()->codec.decode(Arrays.copyOf(codec.encode(reg),codec.encode(reg).length+1)));
+    }
+
 }

@@ -7,7 +7,7 @@
  *
  * @Name        : SimulationEquipmentParameterRevisionTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-10
+ * @UpdatedOn   : 2026-10-11
  *
  * @Type        : Class
  * @Layer       : Test
@@ -51,6 +51,12 @@ public class SimulationEquipmentParameterRevisionTest {
     }
     public static SimulationEquipmentParameterRevision rebind(SimulationEquipmentParameterRevision v,String source,String network,String networkRev,String networkHash,
             String fluid,String fluidRev,String fluidHash,String fluidQ,GovernanceBinding binding){
+
+        if(!v.regulatorCharacteristics().isEmpty()) {var g=v.regulatorCharacteristics().getFirst();var c=new SimulationRegulatorCharacteristicRevision(source+"-regulator",g.revisionId(),g.recordedAt(),g.effectiveFrom(),g.effectiveUntil(),g.origin(),g.evidenceReference(),fluid,fluidRev,fluidHash,g.referenceTemperatureKelvin(),g.capacityMethod(),g.coefficientKilogramsPerSecondPerSquareRootPascal(),g.minimumUpstreamPressurePascalsAbsolute(),g.maximumUpstreamPressurePascalsAbsolute(),g.minimumDownstreamPressurePascalsAbsolute(),g.maximumDownstreamPressurePascalsAbsolute(),g.minimumDifferentialPressurePascals(),g.maximumDifferentialPressurePascals());
+            var old=v.equipment().getFirst().regulator();var config=new RegulatorConfiguration(c.id(),c.revisionId(),old.method(),old.controlMode(),old.isolation(),old.downstreamSetpointPascalsAbsolute());
+            var item=new Equipment("regulator","a","b",Kind.REGULATOR,null,null,null,null,null,null,config);
+            return new SimulationEquipmentParameterRevision(source,v.revisionId(),v.recordedAt(),v.effectiveFrom(),v.effectiveUntil(),v.origin(),v.evidenceReference(),network,networkRev,networkHash,fluid,fluidRev,fluidHash,fluidQ,List.of(item),List.of(),List.of(),v.governedLimits(),binding,List.of(c));
+        }
         var c=v.compressorCurves().getFirst();var z=v.valveCharacteristics().getFirst();
         c=new CompressorCurve(c.id(),c.revisionId(),c.recordedAt(),c.effectiveFrom(),c.effectiveUntil(),c.origin(),c.evidenceReference(),fluid,fluidRev,fluidHash,c.headDefinitionReference(),c.efficiencyDefinitionReference(),c.interpolationMethodReference(),c.referenceInletPressurePascalsAbsolute(),c.referenceInletTemperatureKelvin(),c.speedLines());
         z=new ValveCharacteristic(z.id(),z.revisionId(),z.recordedAt(),z.effectiveFrom(),z.effectiveUntil(),z.origin(),z.evidenceReference(),fluid,fluidRev,fluidHash,z.referenceTemperatureKelvin(),z.openingLines());
@@ -62,10 +68,10 @@ public class SimulationEquipmentParameterRevisionTest {
     }
     @Test void suppliedMapsLimitsOriginsAreImmutable(){var v=fixture("r1");assertEquals(2,v.equipment().size());assertEquals(8,v.governedLimits().size());assertEquals(AT,v.compressorCurves().getFirst().recordedAt());
         assertThrows(UnsupportedOperationException.class,()->v.equipment().clear());assertThrows(UnsupportedOperationException.class,()->v.valveCharacteristics().getFirst().openingLines().clear());}
-    @Test void syntheticCurveOrValveCannotBePromoted(){for(var kind:Kind.values()){var c=curve(kind==Kind.COMPRESSOR?Origin.SYNTHETIC:Origin.DECLARED_PARAMETER,AT,AT,null);
+    @Test void syntheticCurveOrValveCannotBePromoted(){for(var kind:List.of(Kind.COMPRESSOR,Kind.VALVE)){var c=curve(kind==Kind.COMPRESSOR?Origin.SYNTHETIC:Origin.DECLARED_PARAMETER,AT,AT,null);
         var v=valve(kind==Kind.VALVE?Origin.SYNTHETIC:Origin.DECLARED_PARAMETER,AT,AT,null);assertThrows(InvalidSimulationValueException.class,()->build("r1",Origin.DECLARED_PARAMETER,c,v));}
         assertEquals(Origin.DECLARED_PARAMETER,build("r1",Origin.DECLARED_PARAMETER,curve(Origin.DECLARED_PARAMETER,AT,AT,null),valve(Origin.DECLARED_PARAMETER,AT,AT,null)).origin());}
-    @Test void timeBoundariesAndFutureRecordingAreIndependent(){for(var kind:Kind.values()){
+    @Test void timeBoundariesAndFutureRecordingAreIndependent(){for(var kind:List.of(Kind.COMPRESSOR,Kind.VALVE)){
         var c=curve(Origin.SYNTHETIC,AT,AT,kind==Kind.COMPRESSOR?AT.plusSeconds(60):null);var v=valve(Origin.SYNTHETIC,AT,AT,kind==Kind.VALVE?AT.plusSeconds(60):null);
         var x=build("r1",Origin.SYNTHETIC,c,v);assertTrue(x.effectiveAt(AT));assertFalse(x.effectiveAt(AT.minusNanos(1)));assertFalse(x.effectiveAt(AT.plusSeconds(60)));}
         assertThrows(InvalidSimulationValueException.class,()->build("r1",Origin.SYNTHETIC,curve(Origin.SYNTHETIC,AT.plusNanos(1),AT,null),valve(Origin.SYNTHETIC,AT,AT,null)));

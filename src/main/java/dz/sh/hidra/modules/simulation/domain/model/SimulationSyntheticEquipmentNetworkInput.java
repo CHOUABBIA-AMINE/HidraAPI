@@ -7,7 +7,7 @@
  *
  * @Name        : SimulationSyntheticEquipmentNetworkInput
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-10
+ * @UpdatedOn   : 2026-10-11
  *
  * @Type        : Record
  * @Layer       : Domain
@@ -52,6 +52,7 @@ public record SimulationSyntheticEquipmentNetworkInput(
         }
         var valveIds=new HashSet<String>();
         for(var e:equipmentRevision.equipment()) {
+            if(e.kind()==SimulationEquipmentParameterRevision.Kind.REGULATOR) throw new IllegalArgumentException("Regulator numerical integration not supported.");
             if(!links.add(e.id()))throw new IllegalArgumentException("Duplicate equipment/pipe ID.");
             connect(adj,e.fromNodeId(),e.toNodeId());
             if(e.kind()==SimulationEquipmentParameterRevision.Kind.VALVE) {

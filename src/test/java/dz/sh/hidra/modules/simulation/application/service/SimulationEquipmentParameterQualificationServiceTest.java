@@ -7,7 +7,7 @@
  *
  * @Name        : SimulationEquipmentParameterQualificationServiceTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-10
+ * @UpdatedOn   : 2026-10-11
  *
  * @Type        : Class
  * @Layer       : Test
@@ -38,4 +38,14 @@ class SimulationEquipmentParameterQualificationServiceTest {
         when(sources.compatible(eq(v),any(),isNull())).thenReturn(Optional.of(new SimulationEquipmentParameterRevisionQueryService.ResolvedSources(SimulationEquipmentParameterRevisionQueryServiceTest.fluid(),SimulationEquipmentParameterRevisionQueryServiceTest.network(false))));
         when(revisions.appendQualification(anyString(),anyString(),any())).thenAnswer(i->i.getArgument(2));var q=service.qualify("q","equipment","r1","i","t","a");assertEquals("actor",q.approverId());assertTrue(q.qualifiedAt().isAfter(AT));verify(sources).compatible(v,AT,null);
     }
+
+    @Test void regulatorQualificationRequiresExactDigestActualApprovalAndCompatibleSources(){var revisions=mock(SimulationEquipmentParameterRevisionRepositoryPort.class);var approvals=mock(SimulationEquipmentParameterApprovalEvidencePort.class);
+        var sources=mock(SimulationEquipmentParameterRevisionQueryService.class);var service=new SimulationEquipmentParameterQualificationService(revisions,approvals,sources);
+        var v=dz.sh.hidra.modules.simulation.domain.model.SimulationRegulatorCharacteristicRevisionTest.regulatorFixture();String digest="d".repeat(64);
+        when(revisions.findStored("equipment","r1")).thenReturn(Optional.of(new StoredRevision(v,"HIDRA_SIMULATION_EQUIPMENT_PARAMETERS_V2",digest)));
+        assertThrows(InvalidSimulationValueException.class,()->service.qualify("q","equipment","r1","i","t","a"));
+        when(approvals.resolve(eq(digest),eq(v.governanceBinding()),eq("i"),eq("t"),eq("a"),any())).thenReturn(Optional.of(new SimulationEquipmentParameterApprovalEvidencePort.Evidence("i","t","a","definition",1,"type","purpose","actor","Synthetic",AT)));
+        assertThrows(InvalidSimulationValueException.class,()->service.qualify("q","equipment","r1","i","t","a"));
+        when(sources.compatible(eq(v),any(),isNull())).thenReturn(Optional.of(new SimulationEquipmentParameterRevisionQueryService.ResolvedSources(SimulationEquipmentParameterRevisionQueryServiceTest.fluid(),SimulationEquipmentParameterRevisionQueryServiceTest.regulatorNetwork())));
+        when(revisions.appendQualification(anyString(),anyString(),any())).thenAnswer(i->i.getArgument(2));var q=service.qualify("q","equipment","r1","i","t","a");assertEquals(digest,q.payloadSha256());verify(sources).compatible(v,AT,null);}
 }

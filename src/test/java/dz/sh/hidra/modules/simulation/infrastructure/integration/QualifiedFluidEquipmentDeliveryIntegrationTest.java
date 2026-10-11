@@ -7,7 +7,7 @@
  *
  * @Name        : QualifiedFluidEquipmentDeliveryIntegrationTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-10
+ * @UpdatedOn   : 2026-10-11
  *
  * @Type        : Class
  * @Layer       : Test
@@ -87,7 +87,8 @@ class QualifiedFluidEquipmentDeliveryIntegrationTest {
     @Autowired WorkflowTaskRepositoryPort tasks;
     final SimulationEquipmentParameterRevisionCodec codec=new SimulationEquipmentParameterRevisionCodec();
     @AfterEach void clearSecurity(){SecurityContextHolder.clearContext();}
-    SimulationEquipmentParameterRevision prepared(){
+    SimulationEquipmentParameterRevision prepared(){return prepared(false);}
+    SimulationEquipmentParameterRevision prepared(boolean regulator){
         String id=UUID.randomUUID().toString();String fd="fluid-def-"+id,ft="fluid-type-"+id,fp="fluid-purpose-"+id;
         var f=RevisionApprovalEvidencePostgresIntegrationTest.fluid(jdbc,products,"f1",fd,ft,fp);fluids.append(f);
         var fs=fluids.findStored(f.sourceId(),f.revisionId()).orElseThrow();
@@ -97,10 +98,10 @@ class QualifiedFluidEquipmentDeliveryIntegrationTest {
             TopologyPhysicalNetworkRevision.Origin.SYNTHETIC,"synthetic fixture, no operational claim",
             List.of(new TopologyPhysicalNetworkRevision.Node("a",d("0")),new TopologyPhysicalNetworkRevision.Node("b",d("0"))),
             List.of(new TopologyPhysicalNetworkRevision.PipeSegment("pipe","a","b",d("100"),d("0.5"),d("0.001"))),
-            List.of(new TopologyPhysicalNetworkRevision.EquipmentLink("compressor","a","b",TopologyPhysicalNetworkRevision.EquipmentKind.COMPRESSOR),
+            regulator?List.of(new TopologyPhysicalNetworkRevision.EquipmentLink("regulator","a","b",TopologyPhysicalNetworkRevision.EquipmentKind.REGULATOR)):List.of(new TopologyPhysicalNetworkRevision.EquipmentLink("compressor","a","b",TopologyPhysicalNetworkRevision.EquipmentKind.COMPRESSOR),
                 new TopologyPhysicalNetworkRevision.EquipmentLink("valve","b","a",TopologyPhysicalNetworkRevision.EquipmentKind.VALVE)));
         networks.append(n);var ns=networks.findStored(n.sourceId(),n.revisionId()).orElseThrow();
-        return rebind(fixture("r1"),"equipment-"+id,n.sourceId(),n.revisionId(),ns.sha256(),f.sourceId(),f.revisionId(),fs.sha256(),fq.qualificationId(),new GovernanceBinding("equipment-def-"+id,1,"equipment-type-"+id,"equipment-purpose-"+id));
+        return rebind(regulator?dz.sh.hidra.modules.simulation.domain.model.SimulationRegulatorCharacteristicRevisionTest.regulatorFixture():fixture("r1"),"equipment-"+id,n.sourceId(),n.revisionId(),ns.sha256(),f.sourceId(),f.revisionId(),fs.sha256(),fq.qualificationId(),new GovernanceBinding("equipment-def-"+id,1,"equipment-type-"+id,"equipment-purpose-"+id));
     }
     Qualification approved(SimulationEquipmentParameterRevision v){revisions.append(v);var s=revisions.findStored(v.sourceId(),v.revisionId()).orElseThrow();var b=v.governanceBinding();
         var a=RevisionApprovalEvidencePostgresIntegrationTest.approve(jdbc,workflow,transitions,tasks,"simulation",b.definitionId(),b.targetTypeId(),b.purposeId(),s.sha256());
@@ -116,5 +117,13 @@ class QualifiedFluidEquipmentDeliveryIntegrationTest {
         assertEquals("Synthetic Reviewer",result.qualification().approverDisplayName());assertEquals(SimulationQualifiedFluidRevisionPort.Origin.SYNTHETIC,result.fluid().stored().revision().origin());
         jdbc.update("UPDATE hidra_workflow_definition_target_binding SET active=false WHERE id=?",result.fluid().qualification().definitionId()+"-binding");
         assertTrue(query.resolve(v.sourceId(),v.revisionId(),q.qualificationId(),Instant.now(),SimulationQualifiedFluidRevisionPort.SupportedUse.TRANSIENT).isEmpty());
+    }
+
+    @Test void qualifiedRegulatorUsesRealOwnerExportsAndWithdrawnAuthorityFails(){var v=prepared(true);var q=approved(v);
+        var result=query.resolve(v.sourceId(),v.revisionId(),q.qualificationId(),Instant.now(),SimulationQualifiedFluidRevisionPort.SupportedUse.STEADY_STATE).orElseThrow();
+        assertEquals(SimulationEquipmentParameterRevisionCodec.FORMAT_V2,result.stored().payloadFormat());assertEquals("HIDRA_TOPOLOGY_PHYSICAL_NETWORK_V2",result.network().payloadFormat());
+        assertEquals(v.networkSha256(),result.network().sha256());assertEquals(v.fluidSha256(),result.fluid().stored().sha256());assertEquals(v.regulatorCharacteristics(),result.stored().revision().regulatorCharacteristics());
+        jdbc.update("UPDATE hidra_workflow_definition_target_binding SET active=false WHERE id=?",v.governanceBinding().definitionId()+"-binding");
+        assertTrue(query.resolve(v.sourceId(),v.revisionId(),q.qualificationId(),Instant.now(),SimulationQualifiedFluidRevisionPort.SupportedUse.STEADY_STATE).isEmpty());
     }
 }

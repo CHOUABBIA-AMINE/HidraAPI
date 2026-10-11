@@ -16227,3 +16227,72 @@ Acceptance fixtures are synthetic and must never masquerade as surveyed coordina
 HPR-P25-022: **COMPLETED — DOCUMENTATION DESIGN ONLY**, verified on exact-head Documentation #216 SUCCESS. HPR-P25-028: **DESIGN PUBLISHED / NEW-HEAD DOCUMENTATION ACCEPTANCE PENDING** once published; completion only after exact-head Documentation CI succeeds. Operator baseline implementation, source completeness, test execution and end-user acceptance remain outstanding. P2.5 OPEN, P3 DEFERRED, Simulation development deferred.
 
 Next recommended independently selectable design: HPR-P25-029 — independent operational state and action evidence preflight, exact message `docs(operations): separate independent monitoring and action evidence`, after applicable source gates and separately supplied owner `next`. 030 acceptance-design needs accepted 018–022, 028/029 designs; 031 closure needs actual implemented/verified operator evidence. Stop immediately after confirming new exact-head Documentation CI starts.
+
+## 2026-10-11 — HPR-P25-029 independent operational monitoring and human-action evidence preflight
+
+### Task selection and acceptance boundary
+
+Owner `next` selects **only HPR-P25-029**. At recovery, live `main` is `6d4164bd212b3835003e0b064dc906cbbcffec07`; exact-head Documentation Validation #217/run 38138001438 SUCCESS accepts HPR-P25-028 **as documentation design only**, not an implemented baseline workflow. HPR-P25-018 and owner telemetry/monitoring semantics are prerequisites; HPR-P25-029 does not require numerical execution, simulator predictions, calibration, 028 numerical freeze or regulator Slice B acceptance. Exact registered message: `docs(operations): separate independent monitoring and action evidence`. Only this roadmap and `doc/model-remediation/RECONCILIATION.md` may change, append-only. Production #644 SUCCESS remains tied to older `a691843f359126a9f439217862f780b5806c5fd2`, not this head. P2.5 OPEN, P3 DEFERRED, simulation-engine development DEFERRED. Regulator Slice B SOURCE COMMITTED / VERIFICATION AND ACCEPTANCE PENDING — SUSPENDED; Slice C unauthorized.
+
+### Source-backed module contracts and non-claims
+
+| Source anchor | Verified current evidence | Required owner separation |
+|---|---|---|
+| `TrustedTelemetryReading.java`, `TrustedTelemetryReadingApplicationService.java` | Reading/point identity, numeric/text/boolean value, unit, quality code/trust, source/trust timestamps, assessment, binding and topology snapshot; service requires approved assessment, eligible trust/quality and active point | Telemetry alone owns raw/trusted data, point/binding provenance and time quality; a trusted reading is not a full verified plant state. |
+| `PlanActualDeviation.java`, `PlanActualDeviationReferenceValidation.java` | Monitoring deviation references plan target, trusted reading/point, Topology identity, expected/actual values, units, severity and history; validator resolves Planning and Telemetry owner contracts | Monitoring owns qualified deviations, status/views and evidence of evaluation; cannot alter source readings or invent operational state. |
+| `WorkflowAction.java`, Workflow module contract | Append-only actor/action/decision, task/instance, correlation, acted time, source and organizational role snapshots | Workflow owns authenticated human decision and action history; a decision/approval does **not** prove a physical intervention occurred. |
+| `doc/modules/topology.md`, `doc/modules/audit.md` | Topology owns facility/equipment/physical identity and Audit owns access/before-after/event/export evidence | Binding uses exact Topology identity/revision and Audit recording contracts, not shared JPA or automatic latest baseline. |
+| `doc/modules/analytics.md`, `doc/modules/monitoring.md`, `doc/modules/telemetry.md` | Analytics owns curated datasets/insights/readiness; Monitoring owns rules and plan-actual deviations | Analytics is a consumer of observed outcomes, not an authority to rewrite operational facts or promote a learned policy. |
+
+Existing source and reference validators show useful boundaries, **not** an accepted end-to-end measured-state, human-action and outcome pipeline. Unknown/unqualified/stale measurements remain unknown; neither a missing reading nor missing detector alert proves a healthy asset. Cross-module owner exports must preserve origin, resource permissions, exact IDs, data-quality and effective attachment. No manufactured SCADA payload, site threshold or operator action evidence.
+
+### Independent measured-state association contract
+
+The proposed monitoring observation consists of exact trusted-reading ID, point/source/ingestion batch, event/source/trust/received timestamps where available, value type, original value and unit, quality/trust/assessment, Topology asset type+ID+binding snapshot and effective binding interval, optional engineering baseline revision, observation availability status, calculation/projection time and evidence references. A displayed unit conversion requires an approved dimensional definition, method/version and retained raw value; never assume pressure gauge/absolute, °C/K, volumetric/mass flow or local timezone equivalence. Preserve raw event order, late arrivals, dedup/source identity and sample-vs-point cardinality. UNKNOWN, STALE, SOURCE_UNAVAILABLE, UNQUALIFIED, BINDING_CONFLICT and SUPPORTED_OBSERVED are proposed result labels, not implemented enums. State availability and trusted-reading quality are independent dimensions.
+
+An authorized point-to-asset association must validate point identity, intended measured quantity/unit, exact Topology asset and scope, binding source/effective interval, duplicate/conflicting bindings and source withdrawal. Historic reads pin time-effective binding and evidence, not today's attachment. Configuration change is not telemetry. No inferred unseen station header conditions, pressure propagation, leaks, equipment actuation or overall safety health from a single scalar signal. A fact view may show supplied limits/plan targets only when owner qualification, unit/basis and effective window agree; no unsupported formula or simulated value.
+
+Monitoring may expose versioned authorized read/bind/inspect/diagnose/list/history through owner application contracts, with quality/freshness/watermark, source loss and recovery cues, data completeness and explicit restricted resource visibility. Every observation must distinguish measured facts from plan targets, operator entries, analytics interpretations and missing source coverage. Incompatible original/expected quantity or absent validated target cannot become a fabricated deviation. A degraded feed displays not-available rather than maintaining a stale green health indicator.
+
+### Authenticated human applied-action and observed-outcome contracts
+
+Workflow records actual decision/authorization (who, what, when, target, reason, approved state). Separately record an operator-declared **performed action** only upon a validated authorized use case with actor identity, action class, intended asset/scope, declared execution time, observed confirmation/evidence, correction and recorded time; a Workflow approval is not itself physical completion. Allowed actions are human factual recording, not OT command transmission or automatic closure. For unverified field execution, use `DECLARED_NOT_VERIFIED`, with factual confirmations required before `EVIDENCE_SUPPORTED`; these are proposed statuses. No claim of valve manipulation, emergency response, changed setpoint or equipment shutdown without real evidence.
+
+Each action references exact owner target and, where relevant, approved baseline/configuration, reading/binding, workflow action/instance and immutable audit/correlation IDs. Separate planned, authorized, executed, confirmed, failed, disputed and superseded event status without overwriting historic entries. Enforce permissions and separation of duties where applicable. Duplicate/corrected entry uses superseding append records; do not rewrite an authenticated historic action. Never accept self-supplied actor claims or bypass Workflow/Audit via general Workbench writes.
+
+Analytics may evaluate a factual before/after observation window and deliver descriptive outcome with exact selected readings, data gaps, units, time alignment, operator action timestamp, confounding changes (product change, station/unit configuration, maintenance, source sensor, operating regime, concurrent action), method/version and observation limits. Correlation is not causation; a baseline shift or pressure change cannot automatically be attributed to an intervention. Without adequate windows, common basis, expected telemetry quality or confounder evidence report `OUTCOME_INDETERMINATE`, not improvement, avoidance of incident or learned optimization. No policy learning, autonomous actuation or performance benefit assertion.
+
+### Persistence/API authorization and integrity boundaries
+
+Owner-specific minimal read/writes only: Telemetry preserves raw/trusted readings and bindings; Topology exports physical identity/effective scope; Monitoring stores qualified evaluation and supported references; Workflow keeps immutable actor/actions; Audit maintains access/change evidence; Analytics stores derived observations with lineage. Before registering a new table, reconcile existing entities and migration-backed constraints. Additional immutable records need a separately selected migration/format with source-digest and authorization guarantees. No cross-module direct persistence. Use expected versions for binding changes, atomic local append and coherent reference re-attestation, and explicit handling for partial cross-module transaction failure (no false distributed atomicity).
+
+Design authorized endpoints for measured-state read/list/history, binding validate/revise, human-action record/correct/query, outcome evidence retrieve, and independent audit export. Exact paths, schemas, permissions, idempotency and file paths must be registered with future code. Apply tenant/site/resource authorization to values, station topology, person identity and history/export; deny restricted data through errors/metrics/logs. Immutable source ID/revision/time lineage must remain reconstructable on withdrawal or correction; current permission to act/read is re-evaluated separately from historic existence.
+
+### Bounded future implementation envelopes — not executable authorization
+
+| Envelope | Owner / narrow future task registration |
+|---|---|
+| O1 | Telemetry: source trust, unit, point-to-asset effective binding, timestamp/watermark and availability export; exact paths, rules, tests. |
+| O2 | Topology/Monitoring: versioned physical target resolution, quality-aware measured-state/deviation read views and UNKNOWN diagnostics; exact ports/API/security tests. |
+| O3 | Workflow/Audit: authenticated human declared/applied-action record with confirmation/evidence, immutable correction and access history; precise permissions and owner records. |
+| O4 | Analytics: factual before/after outcome provenance, window completeness and confounder recording with indeterminate outcomes; no learned controller or simulator. |
+| O5 | Cross-owner verification: synthetic trusted measurements and action history with contract/authorization, time, reconciliation, rollback, source loss and confidentiality tests. |
+
+Each envelope requires its own approved task code, exact registered message, file allowlist, owner contracts, applicable forward-only migration authorization and reproducible commands. O1/O2 source contracts precede consumption; O3 independent human action evidence may be developed without a numerical engine; O4 consumes accepted observations and actions. This task authorizes **none** of O1–O5. No simulator provider/model, calibration, numerical equipment mesh, predicted residual, SCADA command, production deployment or PostGIS requirement.
+
+### Future acceptance design — Cases F/G and negatives, NOT executed
+
+| Case | Actual implementation evidence required |
+|---|---|
+| F — qualified independent state | Synthetic trusted timestamped pressure/flow points with valid explicit unit, quality/trust, effective Topology binding and known target produce accurate fact-only read with lineage; missing/unqualified/stale points yield UNKNOWN/STALE, never healthy inferred state. |
+| G — human action and observed result | Authorized recorded operator action, separately evidenced execution, before/after observations and recorded confounders round-trip with exact actor/workflow/audit references; insufficient windows produce indeterminate outcome, not causal benefit. |
+| Identity and dimensions | Wrong point/asset/site, mismatched binding revision, incompatible unit/quantity/pressure reference, duplicate or overlapping attachment, outdated baseline and unsupported target fail closed. |
+| Time/source condition | Out-of-order/late/duplicate readings, replay batch, source clock skew, expired trust, missing assessment, feed outage/recovery and ambiguous effective binding produce explicit provenance/quality diagnostics. |
+| Governance/security | Forged action actor, nonexistent or withdrawn Workflow authorization, wrong tenant, unsupported confirmation, source data leakage and unauthorized export/revision are rejected and auditable. |
+| Integrity/history | Concurrent correction, stale revision, identical replay, different-content conflict, unexpected provider loss, transaction rollback, original raw/trusted reading history and old monitoring API behavior remain intact. |
+
+Cases require real owner implementations and separate verified tests. Documentation-only design creates no accepted SCADA capability, response record or certified industrial monitoring. HPR-P25-028: COMPLETED as design after #217; HPR-P25-029: DESIGN PUBLISHED / NEW-HEAD DOCUMENTATION CI ACCEPTANCE PENDING. P2.5 OPEN; full qualified foundation and operator acceptance still outstanding.
+
+### Next recommended work
+
+After exact-head #029 documentation CI passes and separate owner instruction, HPR-P25-030 — engineering foundation acceptance design preflight (`docs(twin): define independent foundation acceptance cases`) per its registered roadmap, or separately register one bounded owner-specific implementation envelope; never mark F1/F2/F3 closed from preflights. HPR-P25-031 is closure audit only after actual implementations and operator evidence. Stop after new-head CI startup.

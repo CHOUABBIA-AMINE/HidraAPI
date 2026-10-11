@@ -267,7 +267,8 @@ public class SimulationEquipmentParameterRevisionPostgresIntegrationTest {
                 try(var insert=connection.prepareStatement("INSERT INTO hidra_simulation_equipment_parameter_revision(source_id,revision_id,payload_format,canonical_payload,sha256) VALUES (?,?,?,?,?)")){
                     insert.setString(1,old.sourceId());insert.setString(2,old.revisionId());insert.setString(3,SimulationEquipmentParameterRevisionCodec.FORMAT);insert.setBytes(4,payload);insert.setString(5,sha);insert.executeUpdate();}
             }
-            var upgraded=Flyway.configure().dataSource(database.getJdbcUrl(),database.getUsername(),database.getPassword()).locations("filesystem:src/main/resources/db/migration").load();assertEquals(1,upgraded.migrate().migrationsExecuted);upgraded.validate();
+            // Keep this one-migration assertion scoped to the regulator upgrade, not future migrations.
+            var upgraded=Flyway.configure().dataSource(database.getJdbcUrl(),database.getUsername(),database.getPassword()).locations("filesystem:src/main/resources/db/migration").target("20261011.001").load();assertEquals(1,upgraded.migrate().migrationsExecuted);upgraded.validate();
             try(var connection=DriverManager.getConnection(database.getJdbcUrl(),database.getUsername(),database.getPassword());var statement=connection.createStatement()){
                 try(var rows=statement.executeQuery("SELECT canonical_payload,sha256,payload_format FROM hidra_simulation_equipment_parameter_revision")){assertTrue(rows.next());assertArrayEquals(payload,rows.getBytes(1));assertEquals(sha,rows.getString(2));assertEquals(SimulationEquipmentParameterRevisionCodec.FORMAT,rows.getString(3));assertFalse(rows.next());}
                 assertThrows(java.sql.SQLException.class,()->statement.executeUpdate("UPDATE hidra_simulation_equipment_parameter_revision SET payload_format=payload_format"));

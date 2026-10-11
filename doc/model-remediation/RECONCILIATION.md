@@ -14807,3 +14807,40 @@ F1-02/P35-C remains an unregistered future policy slice, not an executable task;
 instruction after CI acceptance may recover/register its company/actor/CAS/history scope.
 F1–F4/P2.5 OPEN; simulator/P3 DEFERRED. No release, version, closure, deployment, real-data
 requirement or industrial qualification change. STOP after exact publication-head CI starts.
+
+
+## 2026-10-11 — Production CI #653 regulator migration-test boundary repair
+
+Owner Fail admits one three-file corrective commit on main
+`4e7ac44f9eb917fa6eee42aaf858e2e6b0886fa4`, tree
+`f5ae80a8f0eecdc127161bc8d9e6fe61db031ea0`.
+Production #653/run 38152092321 FAILED; Docs #236/run 38152092327 SUCCESS.
+CI reports 1,606 tests, one failure, zero errors/skips: existing regulator upgrade
+test expected one migration but latest now applies regulator 20261011.001 plus
+station graph 20261011.002. No other test failure was reported.
+
+Message `test(simulation): bound regulator upgrade migration target` updates only
+`SimulationEquipmentParameterRevisionPostgresIntegrationTest.java` and appends
+these two governance records. The upgrade is bounded to its intended regulator
+version 20261011.001. Exact count, validation, old bytes/digest/format and immutable
+mutation checks remain intact. Separate unchanged station-graph tests retain full
+fresh/latest and actual predecessor upgrade coverage. No production code, migration,
+dictionary, workflow, dependency, API, version, release or historical record changes.
+
+Static version-boundary check PASS: exactly the regulator migration falls inside
+the selected upgrade; station graph remains the successor. Focused Java-21 Maven
+command is BLOCKED before compilation by unavailable Spring Boot parent 4.1.1:
+Maven Central DNS `Temporary failure in name resolution`. Docker is absent.
+No local database/JUnit or full-build success is asserted. Canonical documentation,
+offline OpenAPI, validator units, existing P1 evidence consistency and exact
+three-file/preserved-prefix/whitespace checks are validated before publication.
+
+HPR-P25-037 implementation remains source-complete but full CI acceptance BLOCKED
+by failed #653 until the corrective exact-head CI passes. Repair source complete,
+CI acceptance PENDING; stop at startup without waiting for completion. F1-02/P35-C
+is not registered or implemented. F1–F4/P2.5 OPEN; simulator/P3 DEFERRED.
+
+Repair publication checks actually completed: 10 documentation validator tests and
+10 OpenAPI validator tests PASS; canonical docs PASS (97 documents, 5,302 links,
+24 modules, 13 P2 rows); offline OpenAPI PASS (263 operations, 244 paths, 231 schemas);
+existing P1 closure evidence consistency PASS. These are not full Java CI acceptance.

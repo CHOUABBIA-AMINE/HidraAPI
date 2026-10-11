@@ -1246,3 +1246,59 @@ does not independently attest supplied VERIFIED evidence or publish an operator 
 Publish one guarded direct-main commit on the recovered expected head, verify its exact
 tree/parent/scope and new-head production/documentation CI startup, then STOP. No PR or
 automatic successor implementation.
+
+
+## 2026-10-11 — HPR-P25-037 CI #653 repair: bounded regulator upgrade target
+
+Owner Fail selects only the failed-CI repair on main
+`4e7ac44f9eb917fa6eee42aaf858e2e6b0886fa4`, tree
+`f5ae80a8f0eecdc127161bc8d9e6fe61db031ea0`. Production #653/run 38152092321
+FAILED; exact-head Documentation #236/run 38152092327 SUCCESS. Current
+AGENTS.md, active roadmap and reconciliation were recovered before the repair.
+
+The Maven log reports 1,606 tests, one failure, zero errors/skips. The sole failure
+is `SimulationEquipmentParameterRevisionPostgresIntegrationTest` method
+`forwardMigrationPreservesHistoricalPayloadBytesAndImmutability`, line 270:
+expected one migration, observed two. The test starts at 20261010.003 and migrates
+to latest, so the additive 20261011.002 station-graph migration joins its intended
+20261011.001 regulator upgrade. This is a stale test boundary, not evidence of
+lost historical bytes or a production persistence failure.
+
+The existing regulator test now explicitly targets `20261011.001`, retaining the
+exact one-migration assertion, Flyway validation, historical byte/hash/format
+checks and UPDATE/DELETE/TRUNCATE rejection checks. The unchanged station-graph
+integration suite independently covers the full fresh chain and real predecessor
+to latest upgrade, including preserved Flyway checksums and physical V1/V2 bytes.
+No assertion is weakened to accept an arbitrary migration count.
+
+Exact repair message: `test(simulation): bound regulator upgrade migration target`.
+Closed repair write scope, admitted by owner Fail: UPDATE only
+`src/test/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/SimulationEquipmentParameterRevisionPostgresIntegrationTest.java`,
+`doc/roadmap/ULTIMATE_ROADMAP.md` and
+`doc/model-remediation/RECONCILIATION.md`. No new/deleted file, production source,
+SQL migration, dictionary, dependency, workflow, API, version or historical
+snapshot changes. This corrective admission does not authorize another roadmap task.
+
+Validation: migration-version inventory confirms exactly one migration between
+20261010.003 and bounded 20261011.001; 20261011.002 remains its separate successor.
+Focused Java-21 Maven invocation was attempted:
+`bash mvnw -B -q '-Dtest=SimulationEquipmentParameterRevisionPostgresIntegrationTest#forwardMigrationPreservesHistoricalPayloadBytesAndImmutability,StationInternalGraphRevisionPostgresIntegrationTest' test`.
+It is BLOCKED before compilation by Spring Boot parent 4.1.1 resolution:
+`repo.maven.apache.org: Temporary failure in name resolution`. Local Docker is
+also absent. No local Java/PostgreSQL test pass is claimed for this repair.
+Documentation/OpenAPI validator tests, canonical documentation, offline OpenAPI,
+P1 evidence consistency, whitespace and closed-scope checks are run before
+publication and reported with their actual outcomes.
+
+| Task | Current disposition | Gate |
+|---|---|---|
+| HPR-P25-037 source implementation | Completed; full CI acceptance BLOCKED by #653 test boundary | Corrective commit prepared; exact-head full CI acceptance still required |
+| CI #653 repair | Completed in source; CI acceptance PENDING | Publish one guarded main commit, confirm exact-head CI starts, STOP |
+| F1-02 / P35-C | PLANNED / NOT REGISTERED / NOT IMPLEMENTED | Passing repaired full CI and separate owner Next before registration |
+| F1–F4 / P2.5 | OPEN | No PLATFORM or SITE acceptance/closure inferred |
+| Simulator / P3 | DEFERRED | No numerical continuation selected |
+
+Repair publication checks actually completed: 10 documentation validator tests and
+10 OpenAPI validator tests PASS; canonical docs PASS (97 documents, 5,302 links,
+24 modules, 13 P2 rows); offline OpenAPI PASS (263 operations, 244 paths, 231 schemas);
+existing P1 closure evidence consistency PASS. These are not full Java CI acceptance.

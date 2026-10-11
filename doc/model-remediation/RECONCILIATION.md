@@ -13838,3 +13838,211 @@ Executed locally on the recovered main source with this two-document amendment:
 - Byte-preservation/scope audit: PASS, reconciliation is append-only; roadmap history byte-identical except its single prospective P2.5 current-control row; exactly the two authorized documents differ. New registration objectives, owners, prerequisites, deliverables, write scope, API/persistence design, compatibility, negative cases, messages, selection gates and exclusions reviewed.
 
 No Java/PostgreSQL/solver acceptance exercise was executed for this documentation-only change. Dictionary generator unit tests do not prove production catalog equality. Full production #643 failure and pending Slice B acceptance remain unresolved as stated above. Publish only on the recovered expected-head lease; verify the new commit changes exactly these two files and observe its exact-head Documentation CI startup. This record does not predict that run's result; stop at startup and await owner notification. No branch, PR, tag, release, deployment or subsequent task is authorized.
+
+## 2026-10-11 — HPR-P25-018 engineering provisioning and canonical ownership preflight
+
+### Selection, source authority and scope
+
+Owner instruction `next` selects **HPR-P25-018 only**, under the preceding owner-directed
+foundation amendment. Initial main `0fdba2d6d8a015491f7507273602d63a6b2f107d`, tree
+`5e88e183b3cdac4d3c882e69e0faa434537617a5`; exact-head Documentation #211/run
+38134404881 SUCCESS. The amendment's documentation prerequisite is satisfied. Latest
+production #643 remains failed on `93539be7ccfce1ef779d596511a11240c4d33898`;
+repair-head full production verification is not established. REG Slice B acceptance stays
+SUSPENDED/PENDING; no numerical acceptance or Slice C execution is selected.
+The prospective amendment permits this design independently of numerical acceptance.
+
+Exact message: `docs(twin): define engineering provisioning contracts`.
+Authorized write scope: `doc/roadmap/ULTIMATE_ROADMAP.md` and append-only
+`doc/model-remediation/RECONCILIATION.md`. No Java/API/schema/workflow/dependency changes,
+private data import, OT command, new simulator work, branch/PR/release or deployment.
+AGENTS.md, current release state, latest roadmap/reconciliation and current source govern;
+PROJECT_STATE's older HDP handoff is retained and does not authorize importing records.
+P0/P1/P2 remain closed; P2.5 OPEN; version unchanged. This is a design delivery, not F1 acceptance.
+
+### Source-backed existing capability and gap inventory
+
+The preceding source index T/A/C/S/W and module documentation remain locators, not runtime
+proof. Current implementations were re-inspected at the source parent above. Existing
+HTTP aliases and immutable payloads remain compatible; no rewrite of accepted stores.
+
+| Subject / canonical owner | Current source evidence | Reusable capability | Remaining operator-workflow gap |
+|---|---|---|---|
+| System and facility / Topology | T05–T08: SpringTopologyController, PipelineSystemApplicationService, FacilityApplicationService and request records | POST system creation and facility registration; explicit type/catalog and Party references | Complete supported read/revise/graph authoring and completeness workflow is not established by these POST operations |
+| Physical graph / Topology | T01/T02/T03: physical revision domain, JDBC adapter and codec | Immutable connected supplied-SI graph, exact source/revision append/read, payload format and SHA-256 checks | HTTP draft/validate/publish/history workflows, geometry/profile references and operator baseline assembly remain to specify |
+| Installed equipment / Topology | T11 and current Equipment entity/attribute definitions/values | Physical identity, attachment fields, equipment type, manufacturer snapshots and lifecycle times exist | Owner-validated per-unit station incidence/configuration and typed engineering revision authoring require 020 design |
+| Maintainable unit / Assets | A01–A05: model/manufacturer/installation entities, service and controller | Existing register/update asset paths and model/manufacturer/installation references | Manufacturer-model and technical-attribute provisioning cannot be inferred from entity presence; preserve physical versus maintainable identities |
+| Manufacturer identity / Party | SpringPartyController and RegisterPartyRequest / AssignPartyRoleRequest | Existing party registration and role-assignment paths | Manufacturer eligibility and snapshots must use Party owner checks, never client-supplied names as authority |
+| Fluid source / Custody | C01–C04: GAS revision, repository, query and qualification service | Immutable composition/method revisions with exact references, fractions and qualification rules | Existing SpringCustodyController C05 serves custody operational actions, not complete fluid/method/product revision authoring |
+| Characteristic source / Simulation | S01/S03/S05/S06: parameter model, characteristic append/read and qualification | Accepted compressor/valve source stores and committed synthetic regulator candidate remain | Authorized manufacturer-data authoring/read/history outside solver execution, source-field extension and approval distinction require 021 |
+| Approval evidence / Workflow | W01: RevisionApprovalEvidenceContract | Resolve actual final evidence for exact digest, definition/version/instance/task/action and evaluation time | Define independent engineering publication policy and supported target contracts before assuming existing simulation approvals cover it |
+| Security / Identity + Platform | HidraSecurityConfiguration and existing owner reference policies | JWT/security infrastructure and method-security support exist | Authentication alone is not proof of resource/action authorization; each new operation needs subject/resource/reference policy and negative tests |
+
+Current physical source requires at least two nodes, one pipe, unique node/link identities,
+known link endpoints, no isolated nodes and one undirected connected component. Nodes carry
+supplied elevation; pipe segments carry length/internal diameter/absolute roughness; equipment
+links are incidence only. This contract is not a general incomplete-draft container and does
+not establish directed flow, intermediate survey profiles or hydraulic feasibility.
+Custody's current fluid revision is GAS-only, positive mole fractions sum exactly to one,
+and synthetic provenance cannot be upgraded by assertion. Multi-product metadata design
+must not imply oil/H2 EOS or simulation support. Existing regulator source constraints remain
+synthetic. Do not force broader supplied manufacturer facts into that synthetic schema.
+
+### Canonical ownership and reference contract
+
+Topology owns pipeline systems, pipelines/branches, physical nodes/connections, facilities,
+installed hydraulic equipment association, routes/profiles and effective physical configuration.
+Assets owns maintainability, serial/model/lifecycle and maintenance evidence. Party owns
+manufacturer identity/roles. Custody owns product/fluid source and composition metadata.
+Simulation retains its established characteristic revision store; use data contracts without
+executing a solver. Workflow owns approval actions/history; Documents/Integrity evidence
+continues through existing owner references rather than copied authoritative files.
+Telemetry owns measurement identity/trust/binding, not engineering parameter substitution.
+
+The provisioning coordinator is a Topology application workflow using deliberately exported
+owner contracts; it cannot read foreign JPA repositories, instantiate foreign private models,
+write another owner's tables or use Platform Workbench as a bypass. No new module or shared
+business kernel is required. Each owner validates its own domain and controls its transaction.
+Owner read failure and missing/ineligible reference are distinct from a supplied unknown.
+
+A future reference design must identify owner, resource/source identity, exact revision (where
+versioned), declared kind, applicable effective interval, origin/evidence and integrity digest
+where provided. Existing contract types remain the wire authority; this is a semantic design,
+not a new universal DTO or invented UUID/digest format. Snapshot names support historical
+presentation but do not replace identity/eligibility checks. Preserve historic evidence after
+retirement/withdrawal; current publication eligibility is a separate evaluation.
+
+### Operator authoring lifecycle and completeness semantics
+
+Proposed lifecycle: editable DRAFT → validated candidate → owner-approved PUBLISHED
+engineering revision, with later revisions appended. These are requirements for future
+contracts, not newly introduced enum values or guaranteed existing API states.
+
+1. Authorize actor and operation against supported engineering scope before lookup/write.
+2. Create/read/edit a draft with explicit units, source, evidence and supplied unknowns.
+   An incomplete draft may exist separately from strict immutable published source models.
+3. Validate locally without mutation: return field/object/reference diagnostics with stable
+   issue code, severity, requirement and supplied-value context; redact restricted values.
+4. Resolve exact foreign-owner identities/revisions and evaluate current publication policy.
+   Do not require a running solver, simulation approval, calibration dataset or provider registry.
+5. Publish only the complete declared engineering scope, using expected draft/base revision
+   and applicable approval evidence. Existence is not qualification; qualification is not
+   surveyed accuracy, equipment certification or numerical fitness.
+6. Read back exact revisions, including source/units/unknowns/effective selection and lineage.
+   Revise by append; preserve old content/digests and authorized history. No implicit latest
+   replacement of previously frozen references. 028 defines cross-owner baseline freeze.
+
+Completeness has separate checks: structural draft validity, supported engineering publication
+requirements, operator approval/evidence policy, and future numerical input/model requirements.
+Only the first three belong to Track A. An object may be saved as incomplete draft while a
+complete baseline is unavailable; never invent a diameter, location, composition, curve,
+operating condition, datum or precision to obtain a green status. No default value is a fact.
+Product/equipment/geographic supported coverage must be explicit in the validation response.
+
+### API, persistence and failure behavior design
+
+Reuse existing POST aliases `/api/v1/topology/pipeline-systems`, `/facilities`,
+`/api/v1/assets/maintainable-assets` and `/api/v1/party/parties` where their request/owner
+semantics fit. Preserve current aliases and existing asset update behavior. These existing
+operations do not authorize overloading a create request into a multi-owner bulk import.
+
+Missing capabilities to design/register separately: owner-local draft create/read/update,
+completeness validation, immutable source publish/read/history, effective revision lookup,
+controlled engineering import/export and baseline/reference resolution. Exact new endpoint
+names, request classes, status enums, permissions, pagination and migration filenames are
+not assigned by this preflight. 019–022/028/029 produce concrete contract/file envelopes;
+implementation starts only after registration and an applicable production baseline.
+
+Error design must fit the current exception/API convention: unauthenticated/unauthorized
+requests denied without leaking hidden resources; invalid fields/units/kinds diagnosed;
+missing permitted references distinguished from transient owner failure; conflicting expected
+revision or same identity/different content rejected; partial/mismatched publication refused.
+Exact status/error-code mapping must be fixed in each implementation contract and OpenAPI.
+
+Persist owner-local writes atomically with uniqueness and reference checks. Reuse existing
+append/read source ports and immutable codecs; same source/revision with equal canonical
+content is replay-safe where the existing adapter permits it, conflicting content is rejected.
+Keep current no-update/delete/truncate protections, old format decoders and applied Flyway
+checksums. New format/schema evolution needs a forward-only approved migration, old/new
+read tests, real full-chain PostgreSQL verification and regenerated authentic dictionary.
+
+Cross-owner publication cannot pretend to be one repository transaction. Prefer pinned
+pre-existing immutable owner revisions and publish a Topology reference revision only after
+all required references pass. Owner-local draft saves may succeed separately; an unresolved
+aggregate remains DRAFT/PENDING and invisible as a complete baseline. Define serialization/
+locking of referenced eligibility where needed, recheck at final publication, record resolved
+versions and fail/retry if conflicting effective policy changes. For unavoidable multi-owner
+writes register an explicit coordination/compensation design rather than hidden partial success.
+
+Import/export design: versioned supported engineering records plus exact reference/units/
+provenance/effective metadata; dry-run before write, source/conflict diagnostics, bounded sizes,
+no credentials or generic entity reflection. Equal replay versus conflicting identity explicit;
+export/import must preserve supported semantic content, not pretend byte-identical CSV encoding
+is canonical digest content. Unauthorized, unknown-version, missing-reference or partially
+invalid package must not publish a complete baseline. Private HDP datasets remain unapproved
+for import; this task consumes no real manufacturer, survey or operational data.
+
+### Owner-separated implementation envelopes — design only, not executable tasks
+
+The following envelopes identify current anchors and required outputs. They are not new
+HPR registrations or broad directory write authorizations. Before code, each needs one unique
+code/message, exact existing/new files, actual tests and any exact migration filename.
+No filename is fabricated for a class or migration whose design is not yet resolved.
+
+| Envelope / accountable owner | Current exact anchors (source index) | Required future deliverable | Preflight controlling precise implementation scope |
+|---|---|---|---|
+| E-T — Topology engineering authoring | T05/T06/T07 requests/services; T01/T02/T03 immutable graph; existing Pipeline/Equipment/attribute stores | Supported pipeline/branch/connectivity draft/read/revise, publication checks, owner reference ports and diagnostics; reuse system/facility paths | 019 geometry/profile; 020 station/unit; 028 aggregate baseline; each own exact-file registration |
+| E-A — Assets model/installation integration | A01/A02/A03 model/manufacturer/installation; A04/A05 asset write API | Qualified maintainable-unit/model/serial/manufacturer references and lifecycle/history association without duplicate physical authority | 020 and 021 source contracts; owner-local exact-file registration |
+| E-C — Custody product/fluid authoring | C01/C02/C03/C04 and SimulationProductCandidateContract | Supported product/method/composition metadata authoring and read/history; preserve existing GAS rules and independent evidence policy | 022; no new EOS/property engine |
+| E-S — Manufacturer characteristic data | S01/S03/S05/S06 and existing immutable formats | Authorized supported curve/table/limit/reference revision authoring/read/history; separate supplied data from numerical qualification | 021; no regulator feature or solver coupling |
+| E-W — Engineering approval/authorization | W01 and existing Workflow target export; Platform security; owner lookup services | Resource/action matrix, exact digest/target approval semantics, author/publisher separation where policy requires and historical permissions | Per-owner registration after 019–022; 028 publication evidence; do not widen Workflow blindly |
+| E-B — Baseline and supported exchange | T01/T02/T03, Custody and characteristic source queries | Exact multi-owner engineering reference bundle, freeze/read/compare/history, validation and dry-run exchange | 028; no scenario/run snapshot |
+| E-Q — Operator/monitoring acceptance | Existing topology/API tests and trusted-source contracts | Independent round-trip, missing-data, history, reference and authorization evidence; actual operator path, not SQL-only seeding | 029 monitoring separation, 030 case design and 031 final audit |
+
+Delivery order is design first: 018 → 019/020/022; 020 → 021; 019–022 → 028;
+018 + current trusted references → 029; outputs → 030; bounded implementations and actual
+verification → 031. No dependency on unfinished 008C/008D/E/F, 024–027 or numerical scenario
+freeze. 003/004 may later execute with their concrete source/eligibility contracts, not all 002.
+Known gaps are explicit future design inputs, not reasons to start a broad cross-module batch.
+
+### Required acceptance mapping and negative cases
+
+| Verification requirement | Future actual acceptance evidence | Responsible design |
+|---|---|---|
+| Complete supported operator authoring (Case A) | Through authorized APIs save/read/revise a supported system, branches, three stations/nine distinct units, manufacturer/product and engineering references without solver invocation | 019–022/030 |
+| Missing-data diagnostics | Save legitimate incomplete draft; diagnostics identify exact unknowns; complete publication blocked without invented values | Each owner, 030; corresponds to earlier preflight H diagnostics |
+| Geography and physical parameters (Case C) | CRS/vertical datum/unit/chainage validation, supported precision round trip; equal endpoints do not erase intermediate elevations | 019 |
+| Characteristic/product history (Cases B/D) | Append changed source; old content/digest, provenance and historic reference unchanged; no synthetic promotion or unsupplied computation | 021/022 |
+| Engineering baseline (Case E) | Exact freeze/read/reconstruct after later owner revisions; missing/corrupt/wrong-effective source fails; no automatic latest substitution | 028 |
+| Owner reference failure | Missing/inactive/unauthorized/wrong-kind/currently ineligible versus historical valid reference; owner outage cannot produce a complete publication | 020–022/028 |
+| Rollback/replay/concurrency | Atomic owner rollback, equal retry, conflicting retry, stale expected revision, simultaneous publication and partial aggregate refusal | Owner implementations and 030 |
+| Authorization (Case G) | Unauthenticated, disallowed read/write/publish/export, actor spoofing, forbidden foreign owner access and unavailable approval evidence denied | Owner/security/Workflow contracts and 030 |
+| Monitoring independence (Case F) | Qualified measurement association and UNKNOWN/freshness semantics remain independent of numerical input completeness | 029/030 |
+| Supported import/export | Declared format/revision and precision/provenance preserved; unsupported version, conflicting identity, restricted or malformed package rejected | 028/030 |
+
+These are required future test results, not executed runtime evidence. No physical accuracy,
+industrial qualification, throughput or actual manufacturer/survey truth is inferred.
+
+### Current task disposition and next selection boundary
+
+| Code | Current disposition | Evidence / remaining gate |
+|---|---|---|
+| HPR-P25-018 | IN PROGRESS — source-backed documentation preflight delivered; exact-head Documentation CI acceptance PENDING | Local documentation validation below; acceptance requires its published-head Documentation CI success |
+| HPR-P25-019 | PLANNED — NOT SELECTED; next recommended owner-selected preflight | After successful 018 Documentation CI, refresh live source/CI and reconcile geometry overlap with P3-005–007; no PostGIS dependency automatically selected |
+
+No F1 implementation, F2 baseline acceptance, production-baseline recovery or P2.5 closure
+is claimed. Stop after published-head Documentation CI starts; await owner `next` or `fail`.
+
+### Executed HPR-P25-018 validation
+
+- `python3 .github/scripts/test_validate_docs.py`: PASS, 10 tests.
+- `python3 .github/scripts/test_validate_openapi_snapshot.py`: PASS, 10 tests.
+- `python3 .github/scripts/test_generate_data_dictionary.py`: PASS, 17 tests.
+- `python3 .github/scripts/test_resolve_openapi_base.py`: PASS, 14 tests; its generated base/CI output is test-fixture evidence, not a live production baseline.
+- `python3 .github/scripts/validate_docs.py`: PASS, 95 documents / 5286 relative links / 24 modules / 13 P2 rows.
+- `python3 .github/scripts/validate_openapi_snapshot.py`: PASS, offline snapshot, 244 paths / 263 operations / 231 schemas.
+- `python3 .github/scripts/validate_p1_closure.py`: PASS, maintained evidence validator, no new infrastructure test.
+- `git diff --check`: PASS.
+- Byte/scope/source audit: PASS; both existing documents are append-only in this task, all 69 prior source-index paths exist, exactly two authorized files changed, no new HPR execution code or implementation file.
+
+Source inspection and design acceptance mapping are complete; executable operator cases are future evidence. No Maven, PostgreSQL, real data import or solver exercise is claimed. Publication uses the recovered expected-head lease. Its new Documentation CI result remains pending at startup; no next task is selected until owner instruction and applicable acceptance. Production #643 and Slice B pending verification remain unchanged.

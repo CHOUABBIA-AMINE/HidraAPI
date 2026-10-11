@@ -14905,3 +14905,72 @@ OpenAPI-validator tests PASS; canonical documentation PASS (97 documents, 5,302 
 existing P1 closure evidence consistency PASS. Exact two-document scope, unchanged
 verbatim 037 registration/history and whitespace checks PASS before publication.
 No new Java/database execution is claimed by this registration.
+
+
+## 2026-10-11 — HPR-P25-038 publication/history policy design and first implementation registration
+
+Owner Next executes registered `docs(topology): define station revision publication and history policy`
+on main `e2bec053214f1f4696c32fe4b0885f36def6572c`, tree
+`395617f0aa0e3c424a1c43bc3ac428e8ad8d9782`; registration Docs #238/run 38156075810
+SUCCESS. Last full code baseline `0868f2d17ce0eaefc53902ce36fa711681cd406b` passed
+Production #654/Docs #237; current docs-only head is code-equivalent, not itself a
+production-run SHA. Current instructions, source and owner contracts were recovered.
+Only the two registered governance documents change; historical snapshot and original
+registration records retained. No Java/SQL/permission/runtime/API implementation here.
+
+Selected target policy uses stable configured Party.id, explicit facility publication
+ownership epochs and Identity-owned current User.id binding. Party ACTIVE is existing
+new-reference eligibility, not company membership. Caller actor/company assertions,
+name-only technical actors and TenantContext defaults cannot grant access. Future scoped
+operations require both evidence-backed CUSTOM company and FACILITY decisions, rejecting
+DENY/INDETERMINATE; existing explicit GLOBAL grants are administrative policy evidence,
+not inferred membership. Grant/policy/owner revocation linearization requires a tested
+cross-owner evidence-generation or database lock/version prerequisite before exposure.
+
+V1 bytes stay stable. STRUCTURALLY_QUALIFIED/COMPLETE is required for publication but
+neither VERIFIED nor publication attests physical authenticity or operational approval.
+Immutable event metadata records authoritative owner/epoch/actor/digest and independent
+server time. Persistent facility generation guards exact predecessor CAS; initial and
+competing updates have one winner and full transactional rollback. Withdrawal retains
+last revision and increments generation; reactivation targets only retained revision.
+Transfer increments epoch/generation and requires an explicit separately authorized
+protocol, with no inherited historical access. Publication head is a declaration, not
+automatic effective-at or operational selection. Old drafts are not auto-adopted.
+
+Authorized history checks precede disclosure/replay. Opaque denial precedes existence;
+authorized missing is NOT_FOUND, corruption INTEGRITY_FAILURE. Exact and list permissions
+are separate; generation-ordered epoch-bound pagination max 100 freezes its upper bound.
+Immutable replay key <=128 UTF-8 bytes scopes company/facility/epoch/operation and binds
+actor/request digest/expectation. Identical reauthorized replay within 24 hours returns
+original result without generation change; changed content/actor conflicts; expired keys
+remain reserved and return REQUEST_EXPIRED. No silent deletion, retry against newer head,
+source upgrade or workflow approval. Full acceptance cases/owner mapping are in the roadmap.
+
+Concrete first resolved prerequisite registered as HPR-P25-039:
+`feat(party): export topology party reference eligibility`.
+Exclusive later CREATE paths: Party application.contract.topology
+`TopologyPartyEligibilityContract.java`, Party application.service
+`TopologyPartyEligibilityQueryService.java`, matching application.service test
+`TopologyPartyEligibilityQueryServiceTest.java`; UPDATE only these same two governance
+files; DELETE none. Exact full paths and focused/full validation are in the roadmap.
+No migration, table, architecture change, existing contract/caller change or permission
+seed. Exported Party package already exists. Method eligibleForNewReference returns
+true only for exact ACTIVE Party, blank/missing/nonactive/mismatched identity false,
+repository errors propagate. Real synthetic status/identity tests and unchanged existence
+semantics are mandatory. All three paths and code 039 were absent at current source.
+
+Identity access, facility/epoch binding, publication SQL and history/API are dependency-
+ordered candidates, NOT REGISTERED. No broad implementation proceeds before actor binding
+and revocation/owner race contracts are registered and tested. HPR-P25-038 policy delivered,
+new-head Docs acceptance PENDING; HPR-P25-039 registered/PLANNED/NOT IMPLEMENTED until
+successful policy Docs CI plus separate Next. F1–F4/P2.5 OPEN, simulator/P3 DEFERRED.
+No SITE/source certification, version, release, deployment, closure or real-data request.
+Publish one guarded main commit, confirm exact-head Docs CI starts, then STOP.
+
+
+HPR-P25-038 validation actually completed: 10 documentation-validator tests and 10
+OpenAPI-validator tests PASS; canonical docs PASS (97 documents, 5,302 links, 24 modules,
+13 P2 rows); offline OpenAPI PASS (263 operations, 244 paths, 231 schemas); existing
+P1 closure evidence consistency PASS. Two-document/retained-record/source-path/collision
+and whitespace checks PASS. No new Java, PostgreSQL or authorization acceptance run
+is claimed by this documentation-only policy design.

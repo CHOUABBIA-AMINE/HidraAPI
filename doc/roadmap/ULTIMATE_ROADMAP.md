@@ -13,12 +13,13 @@
 
 **Product policy:** Hidra is universal, configurable and company/network/product independent. No real customer data, P&IDs, vendor curves or live SCADA are prerequisites for generic development. PLATFORM software testing uses explicit synthetic data; customer SITE commissioning is an entirely separate gate. Numerical simulation work is deferred.
 
-**Code discipline:** `HPR-P25-037` is implemented and CI accepted; `HPR-P25-038` is the next **registered documentation-only preflight**. Codes `F1-02` etc. are **planning references only** and MUST NOT be executed or treated as approved HPR codes before registration, exact commit message and exact create/update/delete file allowlists. Dependencies are minimum known gates, not blanket permission.
+**Code discipline:** `HPR-P25-037` is implemented and CI accepted; `HPR-P25-038` policy design is delivered; `HPR-P25-039` is the next **registered Party eligibility implementation**. Codes `F1-02` etc. are **planning references only** and MUST NOT be executed or treated as approved HPR codes before registration, exact commit message and exact create/update/delete file allowlists. Dependencies are minimum known gates, not blanket permission.
 
 | Order | Code / planning reference | Task | Current status | Dependencies / gate | Track |
 |---|---|---|---|---|---|
 | 1 | HPR-P25-037 | Immutable station-graph PostgreSQL persistence | COMPLETED — exact-head Production #654 and Docs #237 SUCCESS | Accepted at `0868f2d17ce0eaefc53902ce36fa711681cd406b` after bounded #653 repair | F1 |
-| 2 | HPR-P25-038 / F1-02 preflight | Station revision publication/history policy and implementation decomposition | REGISTERED — preflight execution PLANNED; registration Docs CI pending | Accepted HPR-P25-037; passing registration Docs CI; separate owner Next | F1 |
+| 2 | HPR-P25-038 / F1-02 preflight | Station revision publication/history policy and implementation decomposition | COMPLETED in source — policy documentation CI pending | Registration Docs #238 SUCCESS; current owner Next | F1 |
+| 2.1 | HPR-P25-039 | Party-owned eligibility contract exported to Topology | REGISTERED — implementation PLANNED / NOT SELECTED | Accepted 038 Docs CI; separate owner Next; exact five-file allowlist below | F1 |
 | 2a | F1-02 implementation | Station revision history / transactional publication | PLANNED — not registered or implemented | HPR-P25-038 policy design; exact implementation allowlist and subsequent owner Next | F1 |
 | 3 | F1-03 | Company-scoped authoring, topology APIs and exact-history access | PLANNED — needs HPR registration | F1-02; authorization/API contracts | F1 |
 | 4 | F1-04 | Synthetic multi-company topology validation | PLANNED — needs HPR registration | F1-03; registered acceptance test envelope | F1 |
@@ -1463,3 +1464,268 @@ OpenAPI-validator tests PASS; canonical documentation PASS (97 documents, 5,302 
 existing P1 closure evidence consistency PASS. Exact two-document scope, unchanged
 verbatim 037 registration/history and whitespace checks PASS before publication.
 No new Java/database execution is claimed by this registration.
+
+
+## 2026-10-11 — Execute HPR-P25-038 station revision publication/history policy
+
+### Selection, evidence and current scope
+
+Owner Next selects registered HPR-P25-038 and exact message
+`docs(topology): define station revision publication and history policy`.
+Starting main `e2bec053214f1f4696c32fe4b0885f36def6572c`, tree
+`395617f0aa0e3c424a1c43bc3ac428e8ad8d9782`;
+[registration Documentation #238](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38156075810)
+SUCCESS. Last code baseline `0868f2d17ce0eaefc53902ce36fa711681cd406b` passed
+Production #654 and Docs #237. Only the two governance documents changed between
+that accepted code and current main; no production run on the docs head is claimed.
+Current AGENTS.md, roadmap, reconciliation, PROJECT_STATE.md and source were reread.
+Only these two documents change now. All policies below are selected target design,
+not deployed authorization, head storage, transfer or publication functionality.
+
+### Source-backed ownership and authorization decisions
+
+Company context is a configured **Party identity**, never a name, Party code snapshot,
+organization-unit name, tenant header or provider claim. A facility's authoritative
+ownerPartyId must resolve through a Party-owned public contract. Generic ownership
+uses stable Party.id and a separate publication ownership epoch; it does not infer
+legal-company classification from arbitrary partyTypeId/catalog labels. Party is
+already the master record for legal entities/business actors. Provisioning selects
+the owning Party explicitly; no operator/company default or seeded Sonatrach record.
+
+Source: `src/main/java/dz/sh/hidra/modules/party/domain/model/Party.java` already
+implements `selectableForNewReference()` as status ACTIVE. `PartyStatus` contains
+DRAFT, ACTIVE, SUSPENDED, BLOCKED, RETIRED. Existing
+`src/main/java/dz/sh/hidra/modules/party/application/service/TopologyPartyReferenceQueryService.java`
+checks only existence; existing optional Facility.ownerPartyId is not membership.
+Selected prerequisite: export active-reference eligibility separately, preserving
+existence-only behavior for historical/existing consumers. Eligibility is neither
+company membership nor publication permission. Non-active/unresolved owner denies
+new publication and user-facing publication history; privileged forensic retention
+access requires a separately registered administrative path, never implicit fallback.
+
+Publisher identity is the current authenticated **Identity User.id**. Do not copy
+`Authentication.getName()` or technical CurrentActorResolver actor into User.id without
+Identity binding. Source: `SpringSecurityCurrentSecurityContext` resolves a technical
+name; `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/IdentityOidcJwtAuthenticationConverter.java`
+resolves an external issuer/subject to active local User and `HidraPrincipal`;
+`src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/SpringAuthorizationContextAdapter.java`
+binds assertions to the current HidraPrincipal.userId. A future Identity-owned
+Topology export must resolve the current authenticated user and evaluate permissions;
+its request cannot accept a caller-chosen actor. Native-token User binding must be
+reviewed and tested in that export's separate preflight; unsupported principal shapes,
+anonymous/system actors, inactive/locked users and invalid assertions deny access.
+
+Selected access policy requires **both** an operation-specific company-context decision
+and a facility-context decision from Identity's current evidence-backed evaluator.
+Company context uses CUSTOM scope with exact reference `topology-company:<Party.id>`;
+facility uses FACILITY with Facility.id, resource type `STATION_GRAPH_REVISION`.
+No COMPANY enum or direct imports of Identity private models in Topology. Each future
+operation has a distinct permission code under `topology.station-revision.`:
+`author`, `publish`, `read-current`, `read-history`, `list-history`, `withdraw`,
+`reactivate`, `transfer`. These are proposed codes, not registered/seeded permissions.
+No GLOBAL scope request or null-scope default. Source
+`src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaAuthorizationEvidenceAdapter.java`
+allows an explicitly provisioned GLOBAL grant to cover a scoped request; that is
+existing policy behavior, not proof of company membership. Administrative/delegated
+access is permitted only by explicit active Identity evidence satisfying both decisions;
+no role-name, owner equality or JWT-authority shortcut. DENY/INDETERMINATE wins.
+
+Grant revocation and owner-change race semantics are mandatory implementation gates.
+A plain boolean authorization call plus a later JDBC append cannot promise atomic
+revocation. The future export/transaction design must define an evidence generation
+or consistent database lock/version protocol covering grant/policy/user/Party/facility
+changes and validate it at the operation's linearization point. Until tested, there
+is no claim of atomic cross-owner authorization. This concrete prerequisite follows
+Party eligibility and precedes user-facing reads/writes; no broad publication service
+is authorized here.
+
+### Exact historical access, ownership epochs and disclosure
+
+Each facility has one publication binding `(facilityId, companyPartyId, ownershipEpoch)`
+validated against live Facility.ownerPartyId. Existing unprovisioned synthetic V1 rows
+remain private historical storage, never automatically adopted or published. Null,
+missing/inactive/mismatched owner fails closed; arbitrary company argument cannot choose
+another namespace. Party/company IDs and Facility IDs are normalized by their owners;
+new public identity lengths must match underlying master storage limits, not silently
+truncate. Revisions retain their original global facility/revision keys and V1 bytes.
+
+Every public append, publish, head read, exact-history read, history list and replay
+first resolves trusted actor and authorized company/facility. Before authorization,
+missing and out-of-scope targets have the same opaque `ACCESS_DENIED` outcome; payload,
+revision existence, digest and count are not exposed. Once authorized, absent exact
+revision is NOT_FOUND; corrupt stored content is INTEGRITY_FAILURE and never absence
+or a latest fallback. Draft access is limited to the author operation's explicit scope;
+publication history cannot silently expose unpublished stored drafts.
+
+Immutable publication evidence freezes companyPartyId, ownershipEpoch, actor User.id,
+revision key/digest/format, previous head key, expected/result generation, operation,
+request key and server publication Instant. Original recorded/effective instants remain
+in V1. A later owner reference change places publication access on hold until explicit
+transfer succeeds; it does not alter old evidence. Transfer is a separately authorized
+action requiring both company contexts, facility permission and immutable transfer
+evidence; it increments ownership epoch and head generation. No transfer is implemented
+or automatically triggered by a master-data update. New owner sees only its epoch's
+publication history; prior company loses ordinary facility access after transfer.
+Cross-epoch historical access requires an explicit historical delegation/retention
+policy and separately registered implementation. Neither prior ownership nor current
+ownership alone grants past-epoch access. Initial publication in a new epoch creates
+an explicit new publication of a new revision; no silent inheritance of old active head.
+
+List-history requires the list permission and returns only the authorized epoch,
+ordered by unique monotonic event generation. Selected bounds: page size 1..100,
+opaque continuation bound to facility/company/epoch and frozen maximum generation;
+subsequent pages exclude events appended after that snapshot. Generation cursor is
+validated, not trusted for scope. Exact reads require their own history permission.
+No unbounded all-companies search, cross-owner count, guessed revision lookup or
+client-defined sort. Withdrawn events remain available under authorized history.
+
+### Publication, head compare-and-set and immutable event protocol
+
+A published revision must be STRUCTURALLY_QUALIFIED, graph COMPLETE, and pass existing
+structural/codec integrity checks. Stored DRAFT is admissible authoring but cannot
+publish. SYNTHETIC or DECLARED evidence can publish in a synthetic PLATFORM deployment;
+VERIFIED remains supplied provenance and is never elevated into source authenticity,
+Workflow approval, engineering certification or operating authorization. Publication
+means an authorized declaration, not a command to OT equipment. Qualification/evidence
+must not be fabricated by the publication service.
+
+Head metadata has a persistent facility generation, ownership epoch, last declared
+revision and state `UNPUBLISHED`, `PUBLISHED` or `WITHDRAWN`. Generation begins at 0;
+no deleting/reinitializing it after withdrawal or transfer. First publication requires
+expected generation 0 and null predecessor. Subsequent publication/correction requires
+exact current generation and last revision, matching the candidate V1 supplied
+expectedPredecessorRevisionId. A predecessor must be verified stored content at the
+same facility and the last publication in this epoch. Cannot branch from an older
+head, another facility, unpublished revision or previous ownership epoch. Generation
+overflow fails, never wraps. No stale request retry substitutes a new expected head.
+
+Selected linearization point is a successful guarded head write under one database
+transaction containing scope/evidence recheck, canonical revision append/conflict
+check, immutable publication/request evidence, and compare-and-set. Competing initial
+publications or updates from the same generation have exactly one winner; losers
+rollback all newly inserted revision/event/request rows. Previously stored private
+revisions remain intact. Exact PostgreSQL locking/unique-key/CAS technique must be
+registered with its future SQL slice. Integrity/storage failures propagate; no partial
+success, external side effect or guessed transaction retry. A repeatable authorized
+history snapshot must read ownership/access evidence and result consistently under
+that same documented protocol.
+
+| Operation | State and supplied expectation | Successful result |
+|---|---|---|
+| Initial publish | UNPUBLISHED in current epoch; expected current generation, no epoch predecessor | New immutable revision/event; PUBLISHED; generation +1 |
+| Publish/correct | Exact generation and last revision; new never-published revision ID in this epoch; candidate predecessor matches | New immutable revision/event; PUBLISHED; generation +1 |
+| Withdraw | PUBLISHED; exact generation and revision; distinct withdraw permission | WITHDRAWN event; retain last revision and payload; generation +1 |
+| Reactivate | WITHDRAWN; exact generation and retained revision; distinct reactivate permission | PUBLISHED event for retained revision; no append or qualification rewrite; generation +1 |
+| Transfer | Explicit transfer policy plus exact generation/epoch; no implicit owner update | Transfer event; epoch +1; generation +1; UNPUBLISHED for new epoch |
+
+For new-epoch initial publication generation is the retained facility generation,
+not 0; absence of an epoch predecessor is explicit. Ordinary first-ever publication
+is the only generation-0 case. Transfer details/security are a later separate slice.
+Reactivate cannot select arbitrary older content; publishing a new corrected revision
+is a different operation. Reusing a previously published revision as a correction is
+rejected, preventing revision-head ABA; generation also protects withdrawal/reactivation.
+New effective intervals do not retroactively rewrite history. The head represents the
+last published declaration, not necessarily the hydraulically/temporally applicable
+operating configuration. Effective-at selection needs a separately registered contract;
+publication timestamps never replace declared effective/recorded instants.
+
+### Bounded replay and time rules
+
+Request key is a nonblank opaque UTF-8 token of at most 128 bytes. Its uniqueness scope
+is `(companyPartyId, facilityId, ownershipEpoch, operation, requestKey)`; immutable
+request content additionally binds authenticated actor, candidate canonical digest,
+expected generation/predecessor and any withdrawal/reactivation reason. Selected retry
+window is 24 hours from server-recorded commit time, including nanoseconds. Do not trust
+a client expiry or clock to extend it. Replay lookup is a bounded exact key query.
+Authorization and live ownership recheck precede replay disclosure even inside the window.
+Identical actor/content retry within window returns the original result without another
+event or generation increment, even when head advanced later; it does not assert that
+old result is the current head. Changed actor/content conflicts. After expiry return
+REQUEST_EXPIRED; retain immutable key/evidence so expiry never permits key reuse.
+There is no automatic history/tombstone deletion. Rate/retention administration is a
+separate policy, not an in-memory unbounded replay map or silently evicted request key.
+
+Record server publication time independently from domain recordedAt/effectiveFrom/end;
+use Instant nanosecond-safe serialization in immutable evidence. A revision can describe
+past/future effects without triggering real-time execution. History order is generation,
+not timestamp ties; no overwriting supplied origin/evidence on retry.
+
+### Owner-separated implementation decomposition and acceptance mapping
+
+| Ordered slice | Responsibility and gate | Required synthetic acceptance |
+|---|---|---|
+| HPR-P25-039 — registered below | Party-only active-reference eligibility export; no grant or Topology call site | ACTIVE true, all other PartyStatus false, unknown/blank false, exact identity, errors propagate; old existence behavior preserved |
+| Identity authorization export — NOT REGISTERED | Current User.id binding, paired company/facility decisions, permission/evidence protocol, new exported package and architecture entry | Two companies, anonymous/forged/name-only/default-tenant denial, inactive/locked/revoked evidence, explicit admin/delegation, deny/indeterminate; cross-owner linearization |
+| Topology scope binding/transfer — NOT REGISTERED | Live Facility/Party scope, epoch evidence, explicit transfer/hold, coordinated authorization | Missing/unowned/inactive/mismatched facility; transfer races; no inherited access; scoped drafts and history |
+| Publication domain/application/SQL — NOT REGISTERED | V1-stable request/event/head models; one transactional append/CAS/replay operation; immutable SQL guards | First/competing/stale/wrong-facility predecessor, generation/ABA, same/different/expired replay, rollback and corrupt bytes; recorded/effective/publication instants |
+| History/correction/withdrawal — NOT REGISTERED | Scoped exact/snapshot list and event lifecycle using accepted authority protocol | Bounded stable pagination, revoked/transfer access, retained old bytes, withdraw/reactivate, no automatic latest/effective fallback |
+| F1-03 API — NOT REGISTERED | Authenticated transport, safe outcomes and owner adapters | OpenAPI backward compatibility, opaque denial/not-found distinction, invalid inputs and cross-company disclosure tests |
+
+SQL-bearing slices must separately register their actual files/version and constraints,
+exercise fresh full Flyway plus actual predecessor/checksum/payload upgrade, regenerate
+owner-backed dictionary from the migrated catalog and pass exact-head full CI. All slices
+remain independently selectable; no deferred provider/simulator/calibration implementation.
+The company/Identity evidence concurrency prerequisite is concrete and remains unimplemented;
+register only the resolved Party slice now, not a pretend all-owner solution.
+
+### Registered next implementation — HPR-P25-039
+
+**Exact message:** `feat(party): export topology party reference eligibility`.
+**Selection gate:** successful 038 exact-head Docs CI and separate owner Next, refreshed
+main/source and path collision check. The implementation is NOT executed in 038.
+
+| Operation | Exact allowed path |
+|---|---|
+| CREATE | `src/main/java/dz/sh/hidra/modules/party/application/contract/topology/TopologyPartyEligibilityContract.java` |
+| CREATE | `src/main/java/dz/sh/hidra/modules/party/application/service/TopologyPartyEligibilityQueryService.java` |
+| CREATE | `src/test/java/dz/sh/hidra/modules/party/application/service/TopologyPartyEligibilityQueryServiceTest.java` |
+| UPDATE | `doc/roadmap/ULTIMATE_ROADMAP.md` |
+| UPDATE | `doc/model-remediation/RECONCILIATION.md` |
+| DELETE | None authorized |
+
+Public Party-owned interface defines only
+`boolean eligibleForNewReference(String partyId)`; the service implements it using
+existing PartyRepositoryPort.findById and Party.selectableForNewReference. Null/blank
+returns false without repository access; trimmed exact identity lookup; absent or
+non-ACTIVE returns false. Resolved Party.id must match the trimmed requested id; a
+mismatched returned identity fails closed with false. Repository exceptions propagate
+rather than masquerading as absence. No exposed Party domain/JPA object, cache, fallback,
+Party type inference, company membership, facility permission, actor, default tenant,
+new database table, migration or permission seed. Existing exists contract/service remain
+unchanged for all statuses. New service is a Party Spring @Service, constructor null
+repository rejected, stateless and explicitly documented as eligibility only.
+Existing exported Party application.contract.topology package already permits this public
+contract; no architecture-rule change or Topology caller is authorized. Canonical Java
+headers required on all three new files with author/date per AGENTS.md.
+
+The new test must use real synthetic Party records for ACTIVE and each non-ACTIVE status,
+two independent Party identities, whitespace lookup, null/blank no repository invocation,
+missing reference, mismatched repository identity, constructor null and repository failure.
+Existing TopologyPartyReferenceQueryServiceTest must pass unchanged. Future validation:
+`bash mvnw -B -q -Dtest=TopologyPartyEligibilityQueryServiceTest,TopologyPartyReferenceQueryServiceTest,PartySemanticRemediationTest,ArchitectureGuardrailTest test`,
+`bash mvnw -B -q clean verify`, registered docs validators and exact five-file diff checks.
+If local Maven is blocked, disclose actual cause; exact-head Production CI remains the
+acceptance gate. No database/dictionary regeneration applies to this schema-free slice.
+
+### Executed disposition and stop
+
+| Task | Status | Next |
+|---|---|---|
+| HPR-P25-038 registration | Completed — Docs #238 SUCCESS | Accepted exact registered scope |
+| HPR-P25-038 policy | Completed in source; new-head Docs acceptance PENDING | Publish exact registered message and STOP at CI startup |
+| HPR-P25-039 Party eligibility | Registered / Planned / NOT IMPLEMENTED | After successful 038 Docs CI, separate owner Next implements only five allowed files |
+| Remaining Identity/Topology publication/history/API slices | Planned / NOT REGISTERED / NOT IMPLEMENTED | Dependency-specific contracts, files and exact CI acceptance required |
+| F1–F4/P2.5 | OPEN | No PLATFORM/SITE closure |
+| Simulator/P3 | DEFERRED | Preserve prior gas-first/GZ2/own-engine steady/transient direction; no numerical execution |
+
+No code, migration, permission or API is changed in this policy task. Version/release,
+industrial/source authenticity and closure remain unchanged. Two-document guarded direct
+main publication, exact parent/tree/scope and new-head Docs startup, then STOP.
+
+
+HPR-P25-038 validation actually completed: 10 documentation-validator tests and 10
+OpenAPI-validator tests PASS; canonical docs PASS (97 documents, 5,302 links, 24 modules,
+13 P2 rows); offline OpenAPI PASS (263 operations, 244 paths, 231 schemas); existing
+P1 closure evidence consistency PASS. Two-document/retained-record/source-path/collision
+and whitespace checks PASS. No new Java, PostgreSQL or authorization acceptance run
+is claimed by this documentation-only policy design.

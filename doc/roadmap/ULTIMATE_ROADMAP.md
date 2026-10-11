@@ -404,3 +404,9 @@ No Maven, JUnit, PostgreSQL, migration or industrial test execution is claimed f
 - [Agent governance](../../AGENTS.md): canonical task, commit, scope and header rules.
 
 **Current execution selection:** Registered HPR-P25-037 implementation only after its acceptance prerequisites and separate owner Next. No code, migration, release, deployment or simulator implementation is approved by this documentation-only restructure.
+
+## Legacy heading anchors — links retained for historical references
+
+The corresponding full content is preserved in [the historical roadmap](history/ULTIMATE_ROADMAP_HISTORY.md). These anchors keep older document links resolvable without restoring the interleaved historical narrative.
+
+

@@ -8,6 +8,91 @@
 >
 > Current implementation claims must be verified against production source, runtime configuration, Flyway migrations, architecture tests, and CI evidence before mutation.
 
+## CURRENT EXECUTION ROADMAP — UNIVERSAL HIDRA PLATFORM (2026-10-11)
+
+> **Read this active register first.** It supersedes historical `PLANNED`, `PENDING`,
+> project-specific GZ2/GZ4 assumptions and superseded task-selection suggestions elsewhere
+> in this document **for choosing new work only**. The full original registry below is
+> retained unchanged as audit/history, not a competing execution queue.
+> No status is retroactively rewritten; CI, industrial certification and the existence
+> of actual implementations must still be verified against the live code and exact-head runs.
+
+### Product invariant and two independent acceptance gates
+
+Hidra is a **company-independent, configurable platform** for multiple operators,
+network topologies, stations, installed units, petroleum/gas/other supported product
+definitions, measurement adapters and engineering information. It must develop and test
+without the operator's production network, real equipment curves, a live SCADA feed or
+historical operating records. No Sonatrach identity, GZ2/GZ4 installation, vendor curve,
+station count, geographical footprint or physical input is a required application default.
+
+**Gate PLATFORM**: source-backed capability, synthetic multi-organization/network/product
+fixtures, access isolation, versioned ownership, immutable history, failure cases,
+database/API validation and full exact-head CI. A feature can pass this gate with
+synthetic data and declared supported boundaries.
+
+**Gate SITE**: separate voluntary customer-specific provisioning, data provenance,
+commissioning, validated measurements/equipment characteristics, physical-method
+qualification (where applicable), local permissions and competent operator acceptance.
+SITE evidence is not required for generic platform development and must never be
+fabricated or inferred from PLATFORM tests. Neither gate silently grants industrial
+simulation accuracy or operator safety approval.
+
+### What F1–F4 mean for PLATFORM
+
+| Gate | Generic configurable platform outcome | PLATFORM acceptance (synthetic, multi-operator) | Customer SITE activity — separate |
+|---|---|---|---|
+| F1 | Topology and installed-equipment authoring | Create, validate, version and query different company-scoped directed networks, stations/ports/equipment, including unknown and invalid configurations, without source edits | Provide real station/line identities and connections |
+| F2 | Engineering characteristics and immutable baselines | Accept user-defined equipment/product/property metadata, qualified reference versions, immutable revision history, exact retrieval/compare/freeze, missing-data behavior; unsupported product-method combinations fail explicitly | Provide manufacturer curves, fluids, engineering approvals |
+| F3 | Telemetry, monitoring and action/outcome records independent of simulation | Register configurable adapters/tag bindings and source quality; ingest/replay synthetic measurements; preserve stale/UNKNOWN; record actor-authenticated declared actions separately from confirmed observed outcomes | Integrate live SCADA and approved operational procedures |
+| F4 | Platform integrity and reproducible release acceptance | Execute reusable, versioned synthetic acceptance cases A–I across different companies/products/networks; demonstrate tenant isolation, permissions, replay, concurrency, rollback, history and exact-head CI | Optional site acceptance and technical sign-off for each customer |
+
+F1–F4 are **PLATFORM outcomes** to be implemented and verified; *not all are
+complete*. Underlying HPR-P25-030 A–G and H/I remain useful as synthetic acceptance
+specifications, not demands for a particular operator's real data.
+
+### Compact live task dashboard
+
+| Track | State | Durable evidence / next action |
+|---|---|---|
+| P0 / P1 / P2 governance, security, survivability, semantic remediation | CLOSED within recorded scope | Preserve existing source, audits, runbooks and CI; P1-009/010 original blocked rows were operationally superseded by completed P1-018/019 |
+| Release baseline | v0.6.0 published; 0.7.0-SNAPSHOT development | No new release/version/tag without separate authorization |
+| HPR-CI-001 / 002 | COMPLETED within focused CI scope | CI optimization and manual fast feedback are optional developer feedback, not substitutes for full verification |
+| P2.5 foundation designs 018–030, 033, 035 | DESIGN/PREFLIGHT DELIVERED only | Historical proposals and acceptance case definitions preserved; their corresponding runtime capabilities must not be claimed complete |
+| HPR-P25-032 | CODE IMPLEMENTED, full CI #646 PASS | Declarative station graph + validator, no persistence or field commissioning |
+| HPR-P25-034 | CODE IMPLEMENTED, full CI #648 PASS | Immutable declarative station-graph revision envelope, not publication |
+| HPR-P25-036 | CODE IMPLEMENTED, exact-head full CI #649 and Docs #228 PASS at `a8f34638b31ca18ead266450c1f91a57d693d914` | Station graph canonical codec and repository port; **no database adapter** |
+| F1 next slice — station graph immutable SQL append/exact read | NEXT CANDIDATE — NOT REGISTERED OR IMPLEMENTED | First register P35-B source/migration/test contract after live Flyway, owner, permissions and rollback preflight; one bounded task per commit |
+| F1 remaining and F2/F3 integrations | OPEN — implementation needed | Operator-driven authoring/APIs, graph lifecycle, products/method registry, characteristics, frozen baselines, telemetry mappings/quality and actor/outcome evidence; register independent owner-scoped tasks |
+| F4 PLATFORM test/closure | OPEN — not accepted | Cross-organization/company isolation and synthetic cases A–I, full Java 21/Postgres/Flyway/API/permission/replay verification; never assert SITE acceptance |
+| Parent P2.5 002–017, 008C–F and mixed 020–031 tasks | HISTORICAL DEPENDENCY/UNFINISHED REQUIREMENT REGISTER | Do not run a parent or reopen completed designs as a bulk task; route independent foundation requirements through bounded new registrations; simulator-dependent execution remains deferred |
+| Simulator development / numerical execution | DEFERRED by owner | Preserve all historical accepted implementation and tests; no new physics/calibration/engine development |
+| P3 telemetry throughput/TimescaleDB, spatial PostGIS, industrial extensions | DEFERRED | Separate approved requirements and gates needed |
+
+### Clean delivery sequence — not blanket implementation authorization
+
+1. **F1 capability**: canonical codec/port already done → register and implement immutable
+   Topology PostgreSQL append/exact-read adapter with synthetic tests and explicit migration
+   version → transactionally controlled revision/history → operator-configurable REST/API
+   and company-scope isolation. Each arrow requires a new exact HPR registration.
+2. **F2 capability**: independent company-scoped product/equipment-characteristic metadata,
+   revisioned authoritative owner links and effective-history semantics → frozen engineering
+   baseline manifests with source availability diagnostics; no hardcoded manufacturers.
+3. **F3 capability**: configurable telemetry ingestion/source-binding and quality rules →
+   monitoring and action/outcome evidence independent of simulation calculations.
+4. **F4 PLATFORM closure**: portable multi-company synthetic tests and complete documented
+   acceptance matrix; verify full production CI and distinguish any future SITE qualification.
+
+**Task governance**: Before every code change, recover live `main` and relevant source,
+read `AGENTS.md`, `PROJECT_STATE.md`, this active view and reconciliation; choose
+exactly one registered task with dependency gates, owner, exact commit message and
+exclusive file/migration allowlist; commit only on guarded expected-head; stop after
+new-head CI startup. Existing HPR IDs and records are **never deleted, renumbered or
+implicitly completed**. Old `next` suggestions buried below do not authorize work.
+This roadmap refactor changes documentation only, no release, SQL, code or operator data.
+
+---
+
 ## 1. Control Status
 
 | Field | Value |

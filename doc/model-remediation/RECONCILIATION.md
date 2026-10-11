@@ -14698,3 +14698,30 @@ remain DEFERRED; regulator Slice B suspended and Slice C unauthorized. This task
 neither numerical execution nor publication authority. Publish directly to existing main
 with expected-head `36dbd08d3ceb18b1d77e140a664faba4dfafbabb`, verify exact new-head CI
 startup and STOP until owner `next` or `fail`. No PR, branch, release or deployment.
+
+
+## 2026-10-11 — Universal-platform roadmap consolidation and historical preservation
+
+Owner explicitly clarified product intent: Hidra is a configurable multi-company,
+multi-network and multi-product system, not software tailored to a provisioned Sonatrach
+installation. The active execution index now appears at the top of
+`doc/roadmap/ULTIMATE_ROADMAP.md` and is the selection authority for future `next`
+instructions. Detailed historical task codes, old pending/deferred rows, CI, implementation
+evidence and operator-specific preflight context remain retained as immutable provenance,
+but no longer determine current priority when they conflict with the new index.
+
+F1–F4 distinguish generic PLATFORM acceptance (fully synthetic and reproducible,
+without industrial operational data) from optional customer SITE provisioning and
+commissioning/engineering qualification. No true manufacturer characteristics, live
+SCADA, operator-specific station configuration or field acceptance is a prerequisite
+for building generic Topology, engineering data, telemetry, monitoring or governance.
+Synthetics can verify software contracts, not certify physical numerical validity.
+
+Latest recovered starting `main`: `a8f34638b31ca18ead266450c1f91a57d693d914`; exact-head Production CI #649 and
+Documentation #228 SUCCESS accepted HPR-P25-036 codec/port implementation on that SHA.
+Persistence P35-B and publication P35-C are NOT implemented; future candidate tasks
+need separate registrations. P0/P1/P2 closed within historical scope, P2.5 OPEN,
+simulator/P3 DEFERRED, regulator Slice B suspended, Slice C unauthorized.
+No old task, acceptance proof, workflow, migration, version or implementation is
+silently deleted or reclassified. This is a documentation-only interpretation and
+navigation change; the active index does not supersede live source or executable CI evidence.

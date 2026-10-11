@@ -6,10 +6,10 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `44223044cdc5c53116d8108f842488d77d04a512`
+Captured source SHA: `93539be7ccfce1ef779d596511a11240c4d33898`
 PostgreSQL server: `16.15 (Debian 16.15-1.pgdg13+2)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `33de956f4183f927e93d21f7a2258afe714ea9e8d3f33c348a00cdd380ade78d`.
-Migrations: 143; JPA mappings: 470; catalog relations: 489; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `1efb914f3ffecc808d6e827f63f3ffd910a9bf6c22e17e4dfc19ec7ec406a454`.
+Migrations: 144; JPA mappings: 470; catalog relations: 489; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -22347,6 +22347,7 @@ Simulation-owned independent immutable compressor/valve characteristics retainin
 - Evidence: [JdbcSimulationEquipmentParameterRevisionRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/adapter/JdbcSimulationEquipmentParameterRevisionRepositoryAdapter.java)
 - Evidence: [V20261010_002__p25_simulation_equipment_parameter_revisions.sql](../../src/main/resources/db/migration/V20261010_002__p25_simulation_equipment_parameter_revisions.sql)
 - Migration mention (not inferred introduction): [V20261010_002__p25_simulation_equipment_parameter_revisions.sql](../../src/main/resources/db/migration/V20261010_002__p25_simulation_equipment_parameter_revisions.sql)
+- Migration mention (not inferred introduction): [V20261011_001__p25_simulation_regulator_parameter_revision_format.sql](../../src/main/resources/db/migration/V20261011_001__p25_simulation_regulator_parameter_revision_format.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -22365,11 +22366,11 @@ Simulation-owned independent immutable compressor/valve characteristics retainin
   - Catalog attributes: {"columns": ["characteristic_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
 - `hidra_simulation_equipment_characteristic_rev_revision_id_check`: CHECK (revision_id !~ '^[\x01-\x20]&#124;[\x01-\x20]$'::text AND revision_id !~ '^[[:space:]]*$'::text)
   - Catalog attributes: {"columns": ["revision_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
-- `hidra_simulation_equipment_characteristic_revision_check`: CHECK (kind = 'COMPRESSOR'::text AND payload_format = 'HIDRA_SIMULATION_COMPRESSOR_CURVE_V1'::text OR kind = 'VALVE'::text AND payload_format = 'HIDRA_SIMULATION_VALVE_CHARACTERISTIC_V1'::text)
+- `hidra_simulation_equipment_characteristic_revision_check`: CHECK (kind = 'COMPRESSOR'::text AND payload_format = 'HIDRA_SIMULATION_COMPRESSOR_CURVE_V1'::text OR kind = 'VALVE'::text AND payload_format = 'HIDRA_SIMULATION_VALVE_CHARACTERISTIC_V1'::text OR kind = 'REGULATOR'::text AND payload_format = 'HIDRA_SIMULATION_REGULATOR_CHARACTERISTIC_V1'::text)
   - Catalog attributes: {"columns": ["kind", "payload_format"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
 - `hidra_simulation_equipment_characteristic_revision_check1`: CHECK (sha256::text ~ '^[0-9a-f]{64}$'::text AND sha256::text = encode(sha256(canonical_payload), 'hex'::text))
   - Catalog attributes: {"columns": ["sha256", "canonical_payload"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
-- `hidra_simulation_equipment_characteristic_revision_kind_check`: CHECK (kind = ANY (ARRAY['COMPRESSOR'::text, 'VALVE'::text]))
+- `hidra_simulation_equipment_characteristic_revision_kind_check`: CHECK (kind = ANY (ARRAY['COMPRESSOR'::text, 'VALVE'::text, 'REGULATOR'::text]))
   - Catalog attributes: {"columns": ["kind"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
 - `hidra_simulation_equipment_characteristic_revision_pkey`: PRIMARY KEY (kind, characteristic_id, revision_id)
   - Catalog attributes: {"columns": ["kind", "characteristic_id", "revision_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
@@ -22451,6 +22452,7 @@ Simulation-owned immutable equipment parameters with exact qualified fluid/netwo
 - Evidence: [JdbcSimulationEquipmentParameterRevisionRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/adapter/JdbcSimulationEquipmentParameterRevisionRepositoryAdapter.java)
 - Evidence: [V20261010_002__p25_simulation_equipment_parameter_revisions.sql](../../src/main/resources/db/migration/V20261010_002__p25_simulation_equipment_parameter_revisions.sql)
 - Migration mention (not inferred introduction): [V20261010_002__p25_simulation_equipment_parameter_revisions.sql](../../src/main/resources/db/migration/V20261010_002__p25_simulation_equipment_parameter_revisions.sql)
+- Migration mention (not inferred introduction): [V20261011_001__p25_simulation_regulator_parameter_revision_format.sql](../../src/main/resources/db/migration/V20261011_001__p25_simulation_regulator_parameter_revision_format.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -22464,7 +22466,7 @@ Simulation-owned immutable equipment parameters with exact qualified fluid/netwo
 
 - `hidra_simulation_equipment_parameter_re_canonical_payload_check`: CHECK (octet_length(canonical_payload) &gt; 0)
   - Catalog attributes: {"columns": ["canonical_payload"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
-- `hidra_simulation_equipment_parameter_revis_payload_format_check`: CHECK (payload_format = 'HIDRA_SIMULATION_EQUIPMENT_PARAMETERS_V1'::text)
+- `hidra_simulation_equipment_parameter_revis_payload_format_check`: CHECK (payload_format = ANY (ARRAY['HIDRA_SIMULATION_EQUIPMENT_PARAMETERS_V1'::text, 'HIDRA_SIMULATION_EQUIPMENT_PARAMETERS_V2'::text]))
   - Catalog attributes: {"columns": ["payload_format"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
 - `hidra_simulation_equipment_parameter_revision_check`: CHECK (sha256::text ~ '^[0-9a-f]{64}$'::text AND sha256::text = encode(sha256(canonical_payload), 'hex'::text))
   - Catalog attributes: {"columns": ["sha256", "canonical_payload"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}

@@ -12529,3 +12529,58 @@ deployment or operational authority is introduced. Slice A remains ACCEPTED; HPR
 PENDING, Slice C and 008D–F NOT AUTHORIZED, P2.5 OPEN, P0/P1/P2 CLOSED, P3 DEFERRED,
 C3E BLOCKED, GZ4 SYNTHETIC DEVELOPMENT_TEST_ONLY and `0.7.0-SNAPSHOT` unchanged.
 Stop once the published candidate's production CI has started; do not wait for completion.
+
+
+## 2026-10-11 — CI #643 repair: authentic Slice B regulator dictionary reconciliation
+
+HPR-P25-008C remains the selected task; this is supporting repair of Slice B, not
+selection of Slice C. Registered supporting commit message:
+`docs(database): synchronize regulator parameter revision dictionary`.
+Write scope is exactly `doc/database/DATA_DICTIONARY.md`, this roadmap and
+`doc/model-remediation/RECONCILIATION.md`; execution records are append-only.
+
+Production CI #643 (run 38131248148, job 114445864038) executed source head
+`93539be7ccfce1ef779d596511a11240c4d33898`. Maven verification succeeded:
+1561 tests, zero failures, zero errors, zero skips. Canonical documentation,
+OpenAPI and P1 validations succeeded. The only failed step was capture/check of
+current migrated database dictionary evidence; later compatibility steps were skipped.
+The reviewed dictionary still described the previous 143-migration source inventory.
+
+Recovered all 98 consecutive, numbered gzip/base64 catalog parts (0–97), including
+the terminal marker, from the existing PostgreSQL integration test's actual job logs.
+Decompressed canonical catalog SHA-256 equals the independently logged digest:
+`95d7bf06d01bc703367a95b970d361c6fb7762c43536590911c960bba318c5b6`.
+The unchanged maintained generator validated exact source SHA, source inventory,
+full Flyway history/checksums, ownership and complete PostgreSQL catalog, then rendered
+and checked the reviewed dictionary. No expected catalog or operational evidence was substituted.
+
+| Reconciled fact | Actual result |
+|---|---|
+| PostgreSQL server | 16.15 (Debian 16.15-1.pgdg13+2) |
+| Successful source migrations | 144 |
+| Catalog relations / JPA mappings / unresolved owners | 489 / 470 / 0 |
+| Source bundle SHA-256 | `1efb914f3ffecc808d6e827f63f3ffd910a9bf6c22e17e4dfc19ec7ec406a454` |
+| Generated dictionary SHA-256 | `184628d4fbf57ba25440134b3035e8b12beecb38f0aa8cbc94a59256e92faebf` |
+
+Complete generated diff review found only capture provenance/count changes, two
+new migration references and the three actual constraint extensions for regulator kind,
+kind/format pairing and equipment-parameter aggregate V2. Other physical catalog facts,
+columns, keys, indexes, triggers, relation count and JPA mapping count are unchanged.
+Generator, ownership metadata, migrations, application/test source and CI checks are unchanged.
+
+Maintained validator unit suites and documentation/OpenAPI validation must pass before
+publication, together with dictionary equality and `git diff --check`. This documentation-only
+repair requires an explicit production workflow dispatch because the production workflow
+ignores Markdown/documentation-only pushes. Publish on main without a branch or PR;
+confirm new-head CI started and stop, without waiting for completion.
+
+Slice B remains IN PROGRESS / acceptance PENDING until exact repair-head CI passes all
+remaining gates. Slice A remains ACCEPTED; HPR-P25-008C/008 PENDING, Slice C and 008D–F
+NOT AUTHORIZED, P2.5 OPEN, P0/P1/P2 CLOSED, P3 DEFERRED, C3E BLOCKED,
+GZ4 SYNTHETIC DEVELOPMENT_TEST_ONLY and `0.7.0-SNAPSHOT` unchanged.
+
+Actual pre-publication repair validation: dictionary equality PASS; validator unit suites
+PASS (10 documentation + 10 OpenAPI + 17 dictionary tests); documentation validation PASS
+(95 documents, 5118 relative links); offline OpenAPI validation PASS (244 paths,
+263 operations, 231 schemas); whitespace check PASS. No application source changed,
+so the unchanged source is covered by CI #643's successful full Maven verification.

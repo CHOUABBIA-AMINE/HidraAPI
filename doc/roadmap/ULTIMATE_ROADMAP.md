@@ -9,18 +9,24 @@
 | Status | ACTIVE |
 | Purpose | Universal platform task register with detail and dependencies |
 
-## 1.1 Functional module review progress — 2026-10-11
+## 1.1 Development execution progress — 2026-10-11
 
-This is **review progress tracking only**, not a new HPR execution registration or permission to implement fixes. Evidence and individual requirements are maintained in [gaps.md](gaps.md); production source, migrations, APIs, tests and exact-head CI outrank review claims. Review status means only the explicitly asked questions have been examined, **not** that a module is functionally complete.
+This is an execution-status summary of the authoritative task table below, **not** a module functional-gap review, new HPR registration, or claim of release/site acceptance. Detailed completed-task history remains in [history/ULTIMATE_ROADMAP_HISTORY.md](history/ULTIMATE_ROADMAP_HISTORY.md).
 
-| Business-process review order / scope | Review status | Evidence / finding summary | Next action / dependency |
-|---|---|---|---|
-| 1. Identity | REVIEWED — three stated questions only | ID-GAP-001 first-use activation UNVERIFIED; ID-GAP-002 organizational station-monitoring authorization PARTIAL / end-to-end UNVERIFIED; ID-GAP-003 LDAP/AD login IMPLEMENTED IN SOURCE, SITE qualification outstanding | Retain findings; no unregistered remediation |
-| 2. Organization | REVIEWED — three stated questions only | ORG-GAP-001 company country IMPLEMENTED in Party; ORG-GAP-002 basic parent/child hierarchy IMPLEMENTED; ORG-GAP-003 complete employee assignment/transfer history PARTIAL | Retain qualification gaps; no unregistered remediation |
-| Party dependency within Organization review | PARTIALLY REVIEWED — company-country ownership only | Party owns company country and address country; reference-code policy not fully qualified | Full Party module review not yet performed |
-| Remaining 22 of 24 modules | NOT REVIEWED in this question-by-question program | No module-wide functionality or completeness implied | Review individually in business-process dependency order following explicit owner selection |
+| Development stage | Recorded execution status | Boundary / next step |
+|---|---|---|
+| P0 / P1 / P2 platform foundation, security, governance and remediation | CLOSED within the roadmap's recorded acceptance scope | No reopening inferred |
+| P2.5 topology groundwork HPR-P25-032, 034, 036, 037 | CODE IMPLEMENTED; recorded production CI successful | Immutable station graph storage does not yet establish publication REST APIs |
+| HPR-P25-038 revision publication/history policy | COMPLETED as design / documentation | Runtime history/publication remains future implementation |
+| HPR-P25-039, 040, 041 owner, actor and paired scoped permission exports | CODE IMPLEMENTED; recorded production CI successful | No implication of complete cross-owner publication/authorization |
+| **HPR-P25-042 live Facility/Party owner-reference query** | **PLANNED / REGISTERED / NOT IMPLEMENTED** | Next registered development implementation, subject to prerequisites, current-head preflight and separate owner Next |
+| F1-02 through F1-04 publication, APIs and topology verification | PLANNED; subsequent implementation slices not registered | Register bounded HPRs before execution |
+| F2-01 through F2-04 product/equipment/engineering history | PLANNED; not registered | Dependent F1 ownership and history work |
+| F3-01 through F3-04 telemetry/monitoring/action evidence | PLANNED; not registered | Dependent topology and source-scope contracts |
+| F4-01 through F4-03 synthetic acceptance and platform gate | PLANNED; not registered | Dependent F1–F3 verifications |
+| Numerical simulation; P3 industrial extensions | DEFERRED | Explicit future authorization / gates required |
 
-**Review evidence:** Organization review refreshed at source baseline `14cb079832da0781858d5b224b578a73e6c47b7c` and recorded by documentation commit `47ab30985065bc28432ac51450e025da403d3fac`. Documentation Validation #248 (run `38170255006`) succeeded on that exact commit. This does **not** assert fresh Maven, database, or API integration tests for Organization. This review tracking update does not change HPR-P25-042 (PLANNED / NOT IMPLEMENTED), any F1–F4 task state, completed roadmap history, release disposition, or authorization gates.
+**Status source:** Current consolidated task table and recorded exact-head CI references below. Completion counts across all historical tasks or a percentage of overall platform delivery are **not** inferred from this planning table. No production code, migrations, API contract or implementation status is changed by this documentation correction.
 
 ## 2. Consolidated task table — statuses and dependencies
 

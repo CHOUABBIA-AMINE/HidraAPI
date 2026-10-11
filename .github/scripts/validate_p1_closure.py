@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 from pathlib import Path
 
-roadmap = Path("doc/roadmap/ULTIMATE_ROADMAP.md").read_text(encoding="utf-8")
+# P1 completed-task evidence moved byte-for-byte to historical roadmap;
+# never relax the original P1 closure assertions.
+roadmap = Path("doc/roadmap/history/ULTIMATE_ROADMAP_HISTORY.md").read_text(encoding="utf-8")
 evidence = Path("doc/operations/P1_SURVIVABILITY_EXERCISE_EVIDENCE_2026-10-06.md").read_text(encoding="utf-8")
 
 required_roadmap = [

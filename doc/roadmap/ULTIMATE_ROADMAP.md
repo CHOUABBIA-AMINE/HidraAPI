@@ -16375,3 +16375,25 @@ Owner `next` authorizes registration of the smallest missing independent foundat
 **Non-authorization:** no controllers, application ports, JPA, Flyway, PostGIS, characteristic codec, Assets/Party/Custody/Workflow foreign writes, maintenance lifecycle, source import, topological baseline publication, simulation equations/solver, regulator Slice B or HidraWEB. Later persistence/API/owner export tasks require *new* codes/messages/file allowlists/migrations/test gates. HPR-P25-031 is closure audit only after real F1/F2/F3/F4 acceptance; not next. Continue P2.5 OPEN, P3 and simulation engine DEFERRED.
 
 **Stopping rule:** publish registration only with expected-head guard. Verify exact two-file diff and startup of new-head Documentation Validation. Stop at CI startup, await `next` or `fail`. Registration is COMPLETE only after its own successful exact-head documentation gate; HPR-P25-032 implementation remains NOT EXECUTED until a new instruction and compliant CI/source prerequisite.
+
+
+## 2026-10-11 — HPR-CI-002 fast-feedback test execution registration (documentation only)
+
+### Live prerequisites and execution authorization
+
+Owner `next` after CI optimization assessment selects **registration only** for HPR-CI-002. Starting live `main` `91c89108941c1d902a2f447898c62fd1e3eae8a4` passed full Production CI #646 (run 38140699860). Earlier HPR-CI-001 is COMPLETED and must not be repeated. HPR-P25-032 station graph implementation/repair has passed exact-head production verification, without asserting industrial F1–F4 acceptance. P2.5 remains OPEN, P3/simulation-engine development DEFERRED; regulator Slice B suspended, Slice C unauthorized.
+
+Registration message: `docs(ci): register fast feedback test execution optimization`.
+Registration write allowlist: `doc/roadmap/ULTIMATE_ROADMAP.md` and `doc/model-remediation/RECONCILIATION.md` only; append-only. No workflow, POM, Java, tests, migration, release, or simulator edits during registration. Completion requires successful exact-head Documentation Validation CI; until then status is REGISTRATION COMMITTED / DOCUMENTATION CI PENDING.
+
+### Registered future execution — HPR-CI-002
+
+**Goal:** add independent fast feedback for deterministic domain/unit tests without weakening the full production acceptance gate. Implementation state **REGISTERED — NOT EXECUTED; awaiting successful registration documentation CI and separate owner `next`**. Exact implementation message: `ci(test): add bounded fast feedback verification`.
+
+**Exclusive future implementation allowlist:** `.github/workflows/ci-fast-feedback.yml` (new file only). No changes to `.github/workflows/ci.yml`, `pom.xml`, existing tests, report validators, Gradle/Maven wrappers, migrations or source. If a reliable selector requires those files, stop and request new authorization rather than expanding scope.
+
+**Behavior and safeguards:** GitHub Actions manual `workflow_dispatch` fast-feedback entry point, with Java 21, Maven wrapper, Maven dependency cache, and explicit deterministic test selection. Initial bounded selector: `StationInternalGraphTest,StationInternalGraphValidatorTest` as an illustrative narrow domain slice; do not imply all impacted tests are covered. Run `./mvnw -B -q -Dtest=StationInternalGraphTest,StationInternalGraphValidatorTest test` and fail on zero selected tests; forbid `-DskipTests`, `-Dmaven.test.skip=true` and permissive test-failure ignores. Never label or configure this job as a mandatory substitute for full repository verification. Preserve protected exact-head Production CI `./mvnw -B -q clean verify -DforkCount=2 -DreuseForks=true`, documentation validation, Postgres/Flyway/integration/architecture/OpenAPI/security evidence and all historical accepted tests. No permanent test count reduction, unstable concurrency change, tests disabled, or inferred industrial acceptance.
+
+**Validation gates:** syntax/static inspection of new workflow; its trigger must be manual, single allowlisted file diff, no elevated permissions or secrets, only existing tests invoked with JDK 21; execute focused tests locally when toolchain available or record NOT RUN; confirm new-head documentation/CI result when generated and preserve exact SHA. Measure wall-clock duration of manual fast-feedback runs against existing full CI, with actual run numbers and artifacts; any savings are PENDING until measured. Implementation commit stops after verified new-head workflow/CI startup, and any activation that requires additional owner approval is separately authorized.
+
+**Execution boundary:** registration first, then stop at documentation CI startup. No next HPR task or new foundation implementation is implicitly authorized.

@@ -16480,3 +16480,33 @@ Deliver a future **implementation** envelope proposal with exhaustive exact prod
 
 ### Governance and stop
 HPR-P25-035 is **REGISTERED — NOT EXECUTED** until registration Documentation CI succeeds and another owner `next`. P2.5 OPEN, F1–F4 industrial/operator acceptance PENDING, HPR-P25-031 closure not eligible, P3 and simulator work DEFERRED, regulator Slice B SUSPENDED and Slice C NOT AUTHORIZED. Commit registration with expected-head guard; stop after verifying exact two-file diff and new-head Documentation Validation startup.
+
+
+## 2026-10-11 — HPR-P25-035 station graph persistence prerequisite inventory (documentation-only)
+
+**Execution gate:** exact-head Documentation CI #225/run 38144021529 SUCCESS on starting main `e588d983e24ad1d6d5d0b81c6db83c1318e2e8a7`. Owner `next` selects the registered `docs(topology): inventory station graph persistence prerequisites` preflight only. Append-only documentation write allowlist: `doc/roadmap/ULTIMATE_ROADMAP.md`, `doc/model-remediation/RECONCILIATION.md`. No implementation, migration, tests, API or simulator work authorized.
+
+### Verified implementation anchors
+- Topology application output port `src/main/java/dz/sh/hidra/modules/topology/application/port/out/TopologyPhysicalNetworkRevisionRepositoryPort.java` defines append/exact-read/stored-metadata operations for *physical network revisions*, not station graphs.
+- Topology infrastructure adapter `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcTopologyPhysicalNetworkRevisionRepositoryAdapter.java` uses Spring `JdbcTemplate` and transactions; `TopologyPhysicalNetworkRevisionCodec.java` encodes/validates immutable physical bytes. These are patterns to inspect, not permission to reuse or rewrite old canonical bytes.
+- Existing `src/main/resources/db/migration/V20261009_001__p25_topology_physical_network_revisions.sql` creates `hidra_topology_physical_network_revision` with composite source/revision primary key, format, bytea payload, SHA-256 constraint and update/delete/truncate prevention triggers. `V20261010_003__p25_topology_regulator_physical_revision_format.sql` admits physical V2 alongside V1 without modifying historical bytes. Neither is a station graph migration.
+- The Topology persistence layout also contains `infrastructure/persistence/entity/FacilityJpaEntity.java`, `EquipmentJpaEntity.java`, `repository/FacilityJpaRepository.java`, `EquipmentJpaRepository.java`, and `adapter/JpaFacilityRepositoryAdapter.java`. Existing JPA entity/repository patterns are for current mutable master entities, not authority to treat graph revisions as mutable JPA entities.
+- Domain `StationInternalGraphRevision` from HPR-P25-034 and its validator declare revision/source/time evidence independently of database authority. No station graph persistent repository, canonical-byte codec, or approved actor interface was verified in this preflight.
+
+### Required separate implementation decomposition
+**P35-A — canonical codec and exact revision reads (candidate future registration):** define NEW separate station-graph format ID and deterministic binary codec with strict version, UTF-8, lengths, stable ID-based list ordering, canonical timestamps and explicit optional fields; verify decode→encode exact bytes and SHA-256. No reuse or re-encoding of physical V1/V2 bytes. Design an application output port for exact station/revision append/read; never claim an approved publication workflow from a successful append.
+
+**P35-B — PostgreSQL immutable persistence (separate registration):** allocate an unused forward-only migration identifier only after inspecting *all* Flyway names on the live head. Candidate Topology-owned station revision table with station/revision composite key, canonical bytea, format, digest and required metadata, immutable update/delete/truncate guards. A parallel head/predecessor/withdrawal-event strategy needs a separately qualified transaction/authorization design; do not conflate it with append-only payload insertion. Cross-owner read-only verification; no Assets/Party writes.
+
+**P35-C — published lifecycle/API (further separate registration):** require authenticated actor/source qualification, expected-head compare-and-append concurrency, bounded idempotency, corrections/withdrawal as events, historical authorization and OpenAPI backward compatibility. Keep publishing separate from structural COMPLETE and VERIFIED classification. No implicit industrial operator approval.
+
+### Explicit future file candidates — NOT an implementation allowlist
+Following paths are proposed *only* for later registration after verifying missing names and owner/test conventions:
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/StationInternalGraphRevisionRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/StationInternalGraphRevisionCodec.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcStationInternalGraphRevisionRepositoryAdapter.java`
+- corresponding separately named focused domain/codec/PostgreSQL integration tests, and ONE newly allocated Flyway migration filename (NOT assigned now).
+
+Future design must inspect actual Topology application services, security/tenancy and current migration latest head before allocating even one file. Test requirements: synthetic labelled fixtures, exact previous-byte retrieval, replay same bytes versus conflict, different station/revision, digest mismatch/tamper, unknown codec, concurrent append, transaction failure and rollback, new/upgrade Flyway, append-only enforcement and restricted history. Require Java 21, PostgreSQL 16/Testcontainers, complete production CI and exact-head acceptance evidence. No acceptance of F1–F4 based on design alone.
+
+**Disposition:** HPR-P25-035 DESIGN PREFLIGHT PUBLISHED / EXACT-HEAD DOCUMENTATION CI PENDING. Proposed P35-A/B/C are NOT REGISTERED implementation codes and have no write authority. P2.5 OPEN, HPR-P25-031 not eligible, P3 and simulator DEFERRED, regulator Slice B SUSPENDED, Slice C unauthorized. Stop at CI startup.

@@ -9,6 +9,19 @@
 | Status | ACTIVE |
 | Purpose | Universal platform task register with detail and dependencies |
 
+## 1.1 Functional module review progress — 2026-10-11
+
+This is **review progress tracking only**, not a new HPR execution registration or permission to implement fixes. Evidence and individual requirements are maintained in [gaps.md](gaps.md); production source, migrations, APIs, tests and exact-head CI outrank review claims. Review status means only the explicitly asked questions have been examined, **not** that a module is functionally complete.
+
+| Business-process review order / scope | Review status | Evidence / finding summary | Next action / dependency |
+|---|---|---|---|
+| 1. Identity | REVIEWED — three stated questions only | ID-GAP-001 first-use activation UNVERIFIED; ID-GAP-002 organizational station-monitoring authorization PARTIAL / end-to-end UNVERIFIED; ID-GAP-003 LDAP/AD login IMPLEMENTED IN SOURCE, SITE qualification outstanding | Retain findings; no unregistered remediation |
+| 2. Organization | REVIEWED — three stated questions only | ORG-GAP-001 company country IMPLEMENTED in Party; ORG-GAP-002 basic parent/child hierarchy IMPLEMENTED; ORG-GAP-003 complete employee assignment/transfer history PARTIAL | Retain qualification gaps; no unregistered remediation |
+| Party dependency within Organization review | PARTIALLY REVIEWED — company-country ownership only | Party owns company country and address country; reference-code policy not fully qualified | Full Party module review not yet performed |
+| Remaining 22 of 24 modules | NOT REVIEWED in this question-by-question program | No module-wide functionality or completeness implied | Review individually in business-process dependency order following explicit owner selection |
+
+**Review evidence:** Organization review refreshed at source baseline `14cb079832da0781858d5b224b578a73e6c47b7c` and recorded by documentation commit `47ab30985065bc28432ac51450e025da403d3fac`. Documentation Validation #248 (run `38170255006`) succeeded on that exact commit. This does **not** assert fresh Maven, database, or API integration tests for Organization. This review tracking update does not change HPR-P25-042 (PLANNED / NOT IMPLEMENTED), any F1–F4 task state, completed roadmap history, release disposition, or authorization gates.
+
 ## 2. Consolidated task table — statuses and dependencies
 
 **Product policy:** Hidra is universal, configurable and company/network/product independent. No real customer data, P&IDs, vendor curves or live SCADA are prerequisites for generic development. PLATFORM software testing uses explicit synthetic data; customer SITE commissioning is an entirely separate gate. Numerical simulation work is deferred.

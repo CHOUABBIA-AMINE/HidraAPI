@@ -879,5 +879,6 @@
     "doc/testing/**": "CURRENT"
   },
   "roadmap": "doc/roadmap/ULTIMATE_ROADMAP.md",
-  "historical_roadmap": "doc/roadmap/history/ULTIMATE_ROADMAP_HISTORY.md"
+  "historical_roadmap": "doc/roadmap/history/ULTIMATE_ROADMAP_HISTORY.md",
+  "historical_roadmap_blob_sha": "405c417411270188e73cf2489735b43b6e172969"
 }

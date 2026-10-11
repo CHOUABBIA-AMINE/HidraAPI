@@ -2,6 +2,7 @@
 """Offline checks for canonical inventory, links, metadata and primary P2 controls."""
 import argparse
 import collections
+import hashlib
 import re
 import unicodedata
 from pathlib import Path
@@ -229,7 +230,12 @@ def validate(root, manifest):
         link_count += validate_links(root, path, text, anchor_cache)
     for rel, entry in inventory.items():
         text = texts[rel]
-        if entry['status'] == 'ACTIVE':
+        if rel == manifest.get('historical_roadmap'):
+            data = text.encode('utf-8')
+            blob_digest = hashlib.sha1(b'blob ' + str(len(data)).encode('ascii') + b'\0' + data).hexdigest()
+            if blob_digest != manifest.get('historical_roadmap_blob_sha'):
+                raise ValueError('Historical roadmap snapshot differs from its immutable Git blob')
+        elif entry['status'] == 'ACTIVE':
             block = re.search(r'^## 1\. Control Status\n(.*?)(?=^## )', text, re.M | re.S)
             if rel != manifest['roadmap'] or not block or '| Status | ACTIVE |' not in block[1]:
                 raise ValueError('Invalid roadmap control status')

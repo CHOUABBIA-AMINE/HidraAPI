@@ -19,7 +19,8 @@ This is an execution-status summary of the authoritative task table below, **not
 | P2.5 topology groundwork HPR-P25-032, 034, 036, 037 | CODE IMPLEMENTED; recorded production CI successful | Immutable station graph storage does not yet establish publication REST APIs |
 | HPR-P25-038 revision publication/history policy | COMPLETED as design / documentation | Runtime history/publication remains future implementation |
 | HPR-P25-039, 040, 041 owner, actor and paired scoped permission exports | CODE IMPLEMENTED; recorded production CI successful | No implication of complete cross-owner publication/authorization |
-| **HPR-P25-042 live Facility/Party owner-reference query** | **COMPLETED IN SOURCE / EXACT-HEAD CI PENDING** | After passing CI and separate owner Next, register the mandatory cross-owner evidence protocol |
+| **HPR-P25-042 live Facility/Party owner-reference query** | **COMPLETED / PRODUCTION #659 AND DOCS #251 SUCCESS** | Accepted owner observation only; no publication authority |
+| **HPR-P25-043 cross-owner access linearization preflight** | **PLANNED / REGISTERED / DESIGN ONLY** | Passing registration Docs and separate owner Next select the two-document preflight |
 | F1-02 through F1-04 publication, APIs and topology verification | PLANNED; subsequent implementation slices not registered | Register bounded HPRs before execution |
 | F2-01 through F2-04 product/equipment/engineering history | PLANNED; not registered | Dependent F1 ownership and history work |
 | F3-01 through F3-04 telemetry/monitoring/action evidence | PLANNED; not registered | Dependent topology and source-scope contracts |
@@ -32,7 +33,7 @@ This is an execution-status summary of the authoritative task table below, **not
 
 **Product policy:** Hidra is universal, configurable and company/network/product independent. No real customer data, P&IDs, vendor curves or live SCADA are prerequisites for generic development. PLATFORM software testing uses explicit synthetic data; customer SITE commissioning is an entirely separate gate. Numerical simulation work is deferred.
 
-**Code discipline:** `HPR-P25-037` is implemented and CI accepted; `HPR-P25-038` policy design is accepted; `HPR-P25-039` Party eligibility is accepted; `HPR-P25-040` trusted Topology actor export is CI accepted; `HPR-P25-041` paired scoped permission export is CI accepted; `HPR-P25-042` live Facility/Party owner-reference query is implemented; full exact-head CI acceptance is pending. Cross-owner revocation/linearization and publication slices remain unregistered. Codes `F1-02` etc. are **planning references only** and MUST NOT be executed or treated as approved HPR codes before registration, exact commit message and exact create/update/delete file allowlists. Dependencies are minimum known gates, not blanket permission.
+**Code discipline:** `HPR-P25-037` is implemented and CI accepted; `HPR-P25-038` policy design is accepted; `HPR-P25-039` Party eligibility is accepted; `HPR-P25-040` trusted Topology actor export is CI accepted; `HPR-P25-041` paired scoped permission export is CI accepted; `HPR-P25-042` live Facility/Party owner-reference query is CI accepted; `HPR-P25-043` cross-owner access linearization design preflight is registered below, not executed. Runtime revocation/linearization and publication slices remain unregistered. Codes `F1-02` etc. are **planning references only** and MUST NOT be executed or treated as approved HPR codes before registration, exact commit message and exact create/update/delete file allowlists. Dependencies are minimum known gates, not blanket permission.
 
 | Order | Code / planning reference | Task | Current status | Dependencies / gate | Track |
 |---|---|---|---|---|---|
@@ -41,7 +42,8 @@ This is an execution-status summary of the authoritative task table below, **not
 | 2.1 | HPR-P25-039 | Party-owned eligibility contract exported to Topology | COMPLETED — exact-head Production #655 and Docs #240 SUCCESS | Accepted at `5a279f27cd3058c909629f78b67b417a7e607e18` | F1 |
 | 2.2 | HPR-P25-040 | Identity-owned trusted current human actor export to Topology | COMPLETED — exact-head Production #656 and Docs #242 SUCCESS | Accepted at `d96e420757f79aaf04e28b3f65c719f12e3029a0` | F1 |
 | 2.3 | HPR-P25-041 | Identity-owned paired company/facility permission export | COMPLETED — exact-head Production #657 and Docs #244 SUCCESS | Accepted at `6429b8dc0e449b54db89d520ba14c22ce424db1c` | F1 |
-| 2.4 | HPR-P25-042 | Topology live Facility/Party owner-reference query | COMPLETED in source — full exact-head CI acceptance PENDING | Registration Docs #247 SUCCESS; selected owner Next; exact four-file scope | F1 |
+| 2.4 | HPR-P25-042 | Topology live Facility/Party owner-reference query | COMPLETED — exact-head Production #659 and Docs #251 SUCCESS | Accepted at `ed6ec83f1b2163fc32a15f2f3c6964cf6758a025` | F1 |
+| 2.5 | HPR-P25-043 | Cross-owner access linearization design preflight | PLANNED — registered below; NOT EXECUTED | Accepted 039–042; passing registration Docs and separate owner Next; exact two-document scope | F1 |
 | 2a | F1-02 implementation | Station revision history / transactional publication | PLANNED — not registered or implemented | HPR-P25-038 policy design; exact implementation allowlist and subsequent owner Next | F1 |
 | 3 | F1-03 | Company-scoped authoring, topology APIs and exact-history access | PLANNED — needs HPR registration | F1-02; authorization/API contracts | F1 |
 | 4 | F1-04 | Synthetic multi-company topology validation | PLANNED — needs HPR registration | F1-03; registered acceptance test envelope | F1 |
@@ -2588,3 +2590,176 @@ PASS without executing closure. Final four-file/header/absent-at-baseline CREATE
 unchanged exports/configuration/gap register, historical roadmap/reconciliation,
 owner execution-summary preservation apart from selected 042 status and whitespace checks PASS. Full exact-head
 CI acceptance remains PENDING; publish and verify startup, then STOP.
+
+
+## 2026-10-11 — Register HPR-P25-043 cross-owner access linearization preflight
+
+### Selected registration and exact-head acceptance
+
+Owner Next selects the roadmap's mandatory prerequisite recovery/registration after
+HPR-P25-042 acceptance. Current main `ed6ec83f1b2163fc32a15f2f3c6964cf6758a025`,
+tree `f256abeadcbae9f9e9aa12d27abd9b6ae8aad003`, has exact-head
+[Production #659](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38171115192)
+and [Docs #251](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38171115202)
+SUCCESS. Production job `114563745937` reports 1,746 tests, zero failures/errors/skips,
+368 reports. PostgreSQL 16.15 actual-catalog verification covers 145 migrations,
+470 JPA mappings and 490 relations with no unresolved owners; repository/runtime
+OpenAPI gates passed. Source bundle SHA-256 remains
+`78811d82a24ae8c1aee2cd3597f8d653c1bac78734ff07b7ec244701dcab4885`.
+This accepts 042's live owner-reference observation only, not operation permission,
+company membership, ownership epoch, atomic revocation or publication functionality.
+
+AGENTS.md, PROJECT_STATE.md, current roadmap/reconciliation, accepted 039–042
+contracts/services, Identity evidence/transaction boundaries, representative writers,
+Party locking precedent, Topology storage and architecture rules were recovered.
+HPR-P25-043 is absent from earlier active/history/reconciliation registrations.
+The gap-review programme remains a separate source of findings, not execution
+selection. F1 remains the selected path; no numerical simulator or unrelated module
+remediation is reopened.
+
+Current-stage exact message:
+`docs(topology): register cross-owner access linearization preflight`.
+Current-stage exclusive UPDATE allowlist:
+`doc/roadmap/ULTIMATE_ROADMAP.md` and `doc/model-remediation/RECONCILIATION.md`.
+CREATE/DELETE: none. This commit registers a design task, not its execution or runtime
+implementation. Current status tables record 042 acceptance; earlier pending records
+remain historical and unchanged. Owner execution-summary structure is retained.
+
+### Concrete recovered gap and owner boundaries
+
+| Live source | Observed responsibility | Remaining gate |
+|---|---|---|
+| `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/TopologyCurrentActorQueryAdapter.java` | Validates supported authenticated human User and current local status | Actor lookup alone does not coordinate subsequent provider/user changes |
+| `src/main/java/dz/sh/hidra/modules/identity/application/service/TopologyScopedAccessQueryService.java` | Captures actor once; sequential company CUSTOM and facility FACILITY evaluations | Returned boolean is not a transaction-bound authority or ownership proof |
+| `src/main/java/dz/sh/hidra/modules/identity/application/service/IdentityAuthorizationApplicationService.java` | Each evaluate method is transactional; loads evidence at Instant.now and optionally saves decision | Independent evaluations do not establish one publication/history consistency boundary |
+| `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaAuthorizationEvidenceAdapter.java` | Reads user/permission, direct/role/group grants, external mappings/provenance, attributes and policy versions/rules | Evidence dependency set includes query predicates and rows that can appear/disappear, not just selected grants |
+| `src/main/java/dz/sh/hidra/modules/topology/application/service/StationRevisionOwnerQueryService.java` | Reads exact Facility.ownerPartyId, then Party active-reference eligibility | Sequential observation has no retained epoch, generation or lock authority |
+| `src/main/java/dz/sh/hidra/modules/party/application/service/TopologyPartyEligibilityQueryService.java` | Ordinary exact Party repository read; active-reference eligibility | No common cross-owner fence with Identity or Topology |
+| `src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/repository/PartyJpaRepository.java` | Existing findByIdForShare uses PESSIMISTIC_READ | This local precedent is not used by accepted eligibility lookup and is not a full evidence protocol |
+| `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcStationInternalGraphRevisionRepositoryAdapter.java` | Transactional immutable append and exact integrity-checked read | Private storage has no publication head, company binding or cross-owner authorization |
+
+Representative ordinary write paths include
+`src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaUserPermissionGrantRepositoryAdapter.java`,
+`src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/adapter/JpaPartyRepositoryAdapter.java`
+and `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JpaFacilityRepositoryAdapter.java`.
+`src/main/java/dz/sh/hidra/modules/identity/application/service/LocalAuthenticationOutcomeApplicationService.java`
+also updates User state under REQUIRES_NEW. This is an initial inventory, not a claim
+that every writer, authentication context or SQL path has been covered. The design
+must recover their complete dependency/mutation graph before selecting a protocol.
+
+### Registered next executable task — HPR-P25-043
+
+Exact design-task message:
+`docs(topology): define cross-owner access linearization policy`.
+State: PLANNED / REGISTERED / NOT EXECUTED. Passing exact-head registration Docs and
+separate owner Next select only this solo documentation preflight. Recheck current
+main and latest CI before mutation; failed CI must be repaired first.
+
+Exclusive design-task allowlist:
+
+| Action | Exact path |
+|---|---|
+| UPDATE | `doc/roadmap/ULTIMATE_ROADMAP.md` |
+| UPDATE | `doc/model-remediation/RECONCILIATION.md` |
+
+CREATE/DELETE: none. All production/test Java, runtime/build configuration, SQL/Flyway,
+architecture exports/guardrails, API/OpenAPI, dictionary/ownership artifacts, gap
+register, version/release/deployment and closure files are read-only. No migration
+number or future Java filename is reserved. No runtime lock, trigger, epoch or token
+is implemented or accepted by this registration or the forthcoming design commit.
+
+### Required bounded design output and acceptance gates
+
+1. **Complete source-derived read/write inventory.** Map owner, entity/table,
+   exact read predicates and every mutator for user status/type/lock, permission,
+   direct grants, user-role/group-membership/group-role/role-permission paths,
+   group/role status, external identity/provider/mappings, subject attributes and
+   definitions, policy/version/rule state and time windows, Party status and Facility
+   owner/state. Include inserts/deletes/new DENY evidence, mapping/link changes,
+   authentication outcomes/bootstrap/synchronization, repository save/bulk/native SQL
+   and permitted administrative/import paths. Explain delegation evidence actually
+   consumed by the current evaluator instead of assuming an unused grant is honored.
+   Record unresolved writers explicitly; do not declare coverage from representative
+   adapters or an application method's annotation alone.
+2. **Exact operation consistency contract.** Define trusted actor and provenance,
+   current derived company/facility, both distinct permission decisions and Party
+   eligibility in the same specified operation boundary. Cover all accepted local,
+   native bearer, OIDC, LDAP and Active Directory contexts, their provider/link and
+   token/session revocation limits. State unsupported contexts and fail-closed
+   outcomes; never infer membership from role/name/provider claims or GLOBAL grants.
+3. **Linearization and revocation proof.** Define successful write and protected
+   read linearization points, ordering of a concurrent revocation/owner change,
+   already committed revocation, no-check/later-use gaps and rollback behavior.
+   A boolean, repeated read, cached DTO, existing updatedAt or plain @Transactional
+   declaration is not a proof. Address missing-row/predicate/phantom changes as well
+   as updates to known evidence. Preserve explicit DENY/INDETERMINATE and storage/
+   integrity failures; no namespace/existence disclosure before authorized reads.
+4. **Source-compatible mechanism comparison and selection.** Compare owner-owned
+   lock/version fences and any database-enforced invalidation needed for all writers,
+   versus a database-wide/coarser fence and its cost. Define transaction propagation,
+   shared JPA/JDBC connection and transaction-manager participation, isolation,
+   lock ordering, deadlock/timeout handling and denial/decision-persistence side effects.
+   Existing Party share-read is a precedent only. A selected mechanism must account
+   for every bypass and newly inserted evidence; do not choose a guard that works
+   only when a new API writer cooperates. Verify specific PostgreSQL/Spring mechanics
+   against primary documentation when relied upon. If no bounded source-compatible
+   protocol can be justified, record the concrete blocker and separate prerequisite;
+   do not enable publication to work around it.
+5. **Time and authentication limits.** Specify one trusted evaluation instant,
+   future/expired grants, policy/assertion validity and lock windows; distinguish
+   clock expiry without a database write from persisted revocation. Bound transaction
+   duration and define what validity at the chosen linearization point means. Never
+   promise that remote directory/issuer changes are instantly known without an
+   implemented owner evidence contract; retain SITE qualification separation.
+6. **Topology lifecycle boundary.** Explain how live owner recheck will compose
+   with separately persisted ownership epochs/head generations, hold on owner change,
+   explicit transfer and both-company authorization, exact history/replay/list snapshots.
+   The owner-reference query intentionally has no FacilityStatus/FacilityKind access
+   policy; define any necessary operation restrictions explicitly rather than treating
+   a successful reference as eligibility. No epoch/head/transfer/publication schema
+   or service is authorized here; unchanged private V1 revision bytes remain private.
+7. **Synthetic PostgreSQL race-test specification.** Use deterministic barriers,
+   independent transactions/connections and explicit expected order, not sleeps.
+   Cover revocation before and during protected read/write, new denial/permission
+   removal, user lock/status, provider/link/mapping, role/group/attribute/policy,
+   Party suspension and Facility transfer, plus rollback, timeout and deadlock recovery.
+   Include independent users/companies/facilities and unsupported auth contexts.
+   Tests must prove the selected fence at the operation boundary and exercise real
+   owner evidence; sequential unit calls or stubbed permit do not prove concurrency.
+8. **Implementation decomposition.** Document owner contracts and any architecture
+   implications without private cross-module imports or circular callbacks. Identify
+   source-backed prerequisite slices, validation gates and eventual migration/catalog
+   requirements. Proposed areas are not write permission. A later separate registration
+   must assign each runtime slice its exact HPR/message/allowlist and CI gate; the
+   design commit may not implement them or silently register a broad batch.
+
+The preflight's acceptance is a reviewable source-backed design and concrete blocker/
+prerequisite disposition, not concurrency or runtime acceptance. Documentation-only
+validation: 10 documentation-validator and 10 OpenAPI-validator unit tests; canonical
+documentation and offline OpenAPI validators; existing P1 closure evidence consistency
+check only; exact two-document scope/history/reference/whitespace checks. No Maven,
+database execution, synthetic race result, closure or SITE commissioning is claimed.
+
+| Task | Current status | Next |
+|---|---|---|
+| HPR-P25-042 | Completed — Production #659 / Docs #251 SUCCESS | Retain live owner observation boundary |
+| HPR-P25-043 registration | Completed in source; exact-head Docs acceptance PENDING | Publish exact two docs; verify startup and STOP |
+| HPR-P25-043 design execution | Planned / REGISTERED / NOT EXECUTED | Passing registration Docs and separate owner Next select this two-document preflight |
+| Runtime evidence coordination, ownership epoch/transfer and publication/history/API | Planned / NOT REGISTERED / NOT IMPLEMENTED | Source-backed separate bounded registrations required |
+| F1–F4 / P2.5 | OPEN | No closure or PLATFORM/SITE acceptance |
+| Simulator / P3 | DEFERRED | Retain gas-first/GZ2 own-engine steady/transient and operator control |
+
+Dynamic versioned inputs, synthetic development and owner-supplied deployment
+calibration remain the policy. Current version/release remain unchanged. Publish
+one guarded direct-main commit, verify exact parent/tree/two paths and exact-head
+Docs startup, then STOP without waiting for CI completion or automatically advancing.
+
+
+HPR-P25-043 registration publication validation: documentation-validator 10 and
+OpenAPI-validator 10 unit tests PASS; canonical docs PASS (98 documents, 5,306
+relative links, 24 modules, 13 P2 rows); offline OpenAPI PASS (263 operations,
+244 paths, 231 schemas); existing P1 closure evidence consistency PASS without
+executing closure. Exact two-document scope, absent earlier 043 registration,
+existing source references, historical roadmap/reconciliation preservation and
+whitespace checks PASS. No Java/Maven/database execution, runtime coordination,
+release/version/deployment or closure change in this documentation-only stage.

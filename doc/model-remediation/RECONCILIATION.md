@@ -14767,3 +14767,43 @@ Registration validation: 37 documentation/OpenAPI/dictionary validator tests PAS
 canonical documentation validation PASS (95 documents, 5,286 links, 24 modules);
 offline OpenAPI snapshot PASS; diff whitespace and two-document/preserved-prefix scope PASS.
 No Java/database implementation or test result is claimed.
+
+## 2026-10-11 — HPR-P25-037 implementation reconciliation
+
+Owner Next selects registered `feat(topology): persist immutable station graph revisions`
+after registration Documentation #230 SUCCESS at `91e74c80c9ad327150174ddada08de058e5de7f7`.
+Starting main `b0da4134248949b922af3e46904f2a8d27a66726`, tree
+`f99f1d1171aa8e06a2cf3122a1711bbac691c5d2`; exact-head Production #652 SUCCESS.
+Current instructions/active roadmap and live code were recovered after owner roadmap
+reorganization. The immutable historical snapshot remains read-only.
+
+Exactly the seven registered files implement one new owner-private Topology JDBC adapter,
+one additive 20261011.002 migration, one PostgreSQL integration test, the new table ownership
+entry, the actual-catalog generated dictionary and appended evidence in these two governance
+files. V1 bytes/metadata remain unchanged; replay versus conflict, exact verified history,
+transactional rollback and immutable SQL safeguards are implemented. No publication,
+company permission, predecessor/head CAS or source authenticity is inferred from storage.
+
+Java 21 compilation PASS. JUnit Platform focused native PostgreSQL 16.15 execution:
+34 tests PASS (14 integration + 17 codec + 3 port), zero failures/errors/skips, including
+fresh 145-file Flyway, real 144-file upgrade preserving history/checksums and physical V1/V2,
+actual transaction races/rollback, corrupt reads and migration failure. Local Docker is
+absent; temporary fixture adapts only transport, committed methods/proxies remain intact.
+The UID-0 namespace required temporary native startup-root-check adaptation only; database
+catalog/transaction logic and packaged version bytes remain unchanged. Full unmodified
+Docker/Maven/ArchUnit/Hibernate/API acceptance is pending actual-head CI.
+
+Existing generator consumed the actual disposable PostgreSQL catalog and checked the
+generated dictionary: 145 migrations, 470 JPA mappings, 490 relations, no unresolved owners;
+only the new table and capture metadata differ. Source bundle
+`78811d82a24ae8c1aee2cd3597f8d653c1bac78734ff07b7ec244701dcab4885`;
+dictionary SHA-256 `74aa1b71d3a9f0841073986d3ac182fda6cf50850186f66a73cec69049ac12e0`.
+Capture baseline SHA denotes the starting checkout; manifest hashes identify candidate source.
+37 validator unit tests PASS. Full Maven attempts are blocked by unavailable parent POM/
+direct Java network resolution; no full build or architecture pass is invented.
+
+HPR-P25-037 source implementation COMPLETED, exact-head full CI acceptance PENDING.
+F1-02/P35-C remains an unregistered future policy slice, not an executable task; next owner
+instruction after CI acceptance may recover/register its company/actor/CAS/history scope.
+F1–F4/P2.5 OPEN; simulator/P3 DEFERRED. No release, version, closure, deployment, real-data
+requirement or industrial qualification change. STOP after exact publication-head CI starts.

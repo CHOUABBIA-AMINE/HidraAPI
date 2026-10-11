@@ -1158,3 +1158,91 @@ The corresponding full content is preserved in [the historical roadmap](history/
 <a id="validation-actually-performed-and-limitations"></a>
 <a id="updated-execution-disposition"></a>
 
+
+## 2026-10-11 — Execute HPR-P25-037 immutable station graph persistence
+
+### Selection and current disposition
+
+Owner Next selects exactly registered HPR-P25-037, message
+`feat(topology): persist immutable station graph revisions`.
+Starting main `b0da4134248949b922af3e46904f2a8d27a66726`, tree
+`f99f1d1171aa8e06a2cf3122a1711bbac691c5d2`, full Production CI #652/run
+38149648448 SUCCESS. Original registration `91e74c80c9ad327150174ddada08de058e5de7f7`
+passed exact-head Documentation #230/run 38148494634. Subsequent owner roadmap/history
+reorganization preserved the complete 037 contract. Current AGENTS.md, active roadmap,
+PROJECT_STATE.md, reconciliation, codec/port, physical persistence and test conventions
+were recovered. Reserved 20261011.002 and all three CREATE paths remained absent; 144
+predecessor versions remained unique. Relevant p25 candidate branches retained their
+previous inspected heads without a reserved-version collision.
+
+This appended status table supersedes the earlier registration-only 037 selection/status
+summaries while preserving the verbatim registration and original history:
+
+| Task | Current status | Next action / acceptance boundary |
+|---|---|---|
+| HPR-P25-037 registration | Completed — Documentation #230 SUCCESS | Registered seven-file contract accepted by owner Next |
+| HPR-P25-037 implementation | Completed — source and local focused validation; exact-head production CI acceptance PENDING | Stop at publication-head CI startup; full CI acceptance still required |
+| F1-02 / P35-C history/publication policy | PLANNED — NOT REGISTERED / NOT IMPLEMENTED | After accepted 037 full CI and separate Next, recover and register bounded actor/company/CAS/history contract |
+| F1–F4 / P2.5 | OPEN — end-to-end PLATFORM acceptance not established | No company-isolation, publication, SITE or numerical acceptance |
+| Simulator / P3 | DEFERRED | No new engine/calibration work, version, release, deployment or phase closure |
+
+### Implementation and exact scope
+
+Only the seven registered files change. The new Topology JDBC adapter implements existing
+append/find/findStored without changing port/domain/codec. V1 canonical bytes preserve every
+supplied field and Instant nanosecond. Same identity/bytes replay returns stored canonical
+content; differing bytes conflict. Every exact read verifies format, nonempty bounded payload,
+SHA-256, strict canonical decode and row/envelope identity. Absent exact keys return empty;
+corruption propagates an error. Spring transactions retain atomic append/outer rollback and
+database failure propagation. No retries, latest fallback, head CAS or predecessor enforcement.
+
+New additive Flyway `V20261011_002__p25_topology_station_graph_revisions.sql` creates the
+unseeded composite-key table, NOT NULL/normalized key/V1 format/1 MiB size/digest constraints
+and dedicated UPDATE/DELETE/TRUNCATE rejection triggers. No master-data FK or company
+default is introduced. One source-backed ownership JSON entry is added. The dictionary is
+generator-produced from actual migrated PostgreSQL, not handwritten schema facts.
+Existing physical V1/V2 bytes, all 144 migration files, other ownership entries, current
+domain/codec/API/security/Workbench/export/version and historical roadmap snapshot remain
+unchanged. Facility/revision namespace separation is not company authorization; storage
+does not independently attest supplied VERIFIED evidence or publish an operator decision.
+
+### Validation actually executed
+
+- Exact committed production/test sources compiled with local OpenJDK 21.0.12 and the
+  repository-managed Spring 7.0.9, JDBC 42.7.13, Flyway 12.4.0 and JUnit 6.0.3 dependencies.
+- Local JUnit Platform execution: **34 tests PASS, 0 failures/errors/skips**: 14 new PostgreSQL
+  integration methods, 17 existing codec methods and 3 existing port-metadata methods.
+  Initial PostgreSQL 16.11 run passed; repeated only to qualify the CI-matching
+  **16.15 (Debian 16.15-1.pgdg13+2)** database and catalog capture, again all 34 passed.
+- Docker is absent locally. Temporary test-source copy replaces only Testcontainers transport
+  with the disposable native database endpoint; committed test methods and Spring transaction
+  proxies are unchanged. Committed Testcontainers code compiled; Docker execution remains
+  an exact-head CI gate. The UID-0-only local namespace required disabling only startup root
+  checks in temporary native PostgreSQL tools; no catalog/SQL/transaction engine logic or
+  version metadata was altered. This is focused local validation, not full Maven/CI acceptance.
+- Exercised fresh full 145-migration Flyway chain and validation; actual 144-file predecessor
+  upgrade adds one migration and preserves prior Flyway checksums plus physical V1/V2 bytes.
+  Tests also cover supplied provenance/time/qualification, DRAFT and unprovisioned fixtures,
+  serial/parallel graphs, canonical replay/history, separate facility keys, conflicting and
+  identical races, outer/database failure rollback, invalid SQL inputs and immutable guards,
+  hash-consistent malformed/noncanonical/mismatched identity, privileged constraint-bypass
+  read failure, and transactional migration failure without partial table/triggers.
+- Actual read-only catalog query and existing generator/renderer/check PASS:
+  **145 migrations / 470 JPA mappings / 490 relations / zero unresolved owners**.
+  Source bundle SHA-256 `78811d82a24ae8c1aee2cd3597f8d653c1bac78734ff07b7ec244701dcab4885`;
+  generated dictionary SHA-256 `74aa1b71d3a9f0841073986d3ac182fda6cf50850186f66a73cec69049ac12e0`.
+  Capture SHA identifies the starting checkout; bundle hashes identify the candidate source
+  including the new migration. Dictionary diff contains only new relation and capture metadata.
+  Full CI must independently collect/check the actual implementation publication head.
+- Documentation/OpenAPI/dictionary validator unit commands: **10 + 10 + 17 PASS**.
+- Registered Maven focused invocation could not resolve Spring Boot parent 4.1.1 because
+  Java direct Maven Central DNS failed; proxy retry was unavailable. Java-21 offline
+  `bash mvnw -o -B -q clean verify` also failed on that uncached parent. No full Maven,
+  ArchUnit, Hibernate startup or generated OpenAPI pass is claimed locally.
+- Final canonical documentation, offline OpenAPI, P1 closure consistency, whitespace,
+  preserved-prefix, ownership/dictionary delta and exclusive seven-file checks are recorded
+  at publication. They do not imply operational, industrial or production deployment approval.
+
+Publish one guarded direct-main commit on the recovered expected head, verify its exact
+tree/parent/scope and new-head production/documentation CI startup, then STOP. No PR or
+automatic successor implementation.

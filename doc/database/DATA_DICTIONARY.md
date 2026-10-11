@@ -6,10 +6,10 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `93539be7ccfce1ef779d596511a11240c4d33898`
+Captured source SHA: `b0da4134248949b922af3e46904f2a8d27a66726`
 PostgreSQL server: `16.15 (Debian 16.15-1.pgdg13+2)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `1efb914f3ffecc808d6e827f63f3ffd910a9bf6c22e17e4dfc19ec7ec406a454`.
-Migrations: 144; JPA mappings: 470; catalog relations: 489; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `78811d82a24ae8c1aee2cd3597f8d653c1bac78734ff07b7ec244701dcab4885`.
+Migrations: 145; JPA mappings: 470; catalog relations: 490; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -25613,6 +25613,54 @@ Persisted TopologySnapshotJpaEntity state; semantic authority remains with topol
 #### Triggers
 
 None captured in this catalog category.
+
+### public.hidra_topology_station_graph_revision
+
+Owner: **topology**; relation kind: `r`.
+
+Topology-owned immutable station graph declarations with canonical byte integrity and exact history; storage does not establish company authorization or authenticated publication.
+
+- Evidence: [StationInternalGraphRevision.java](../../src/main/java/dz/sh/hidra/modules/topology/domain/model/StationInternalGraphRevision.java)
+- Evidence: [JdbcStationInternalGraphRevisionRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcStationInternalGraphRevisionRepositoryAdapter.java)
+- Evidence: [V20261011_002__p25_topology_station_graph_revisions.sql](../../src/main/resources/db/migration/V20261011_002__p25_topology_station_graph_revisions.sql)
+- Migration mention (not inferred introduction): [V20261011_002__p25_topology_station_graph_revisions.sql](../../src/main/resources/db/migration/V20261011_002__p25_topology_station_graph_revisions.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| facility_id | text | False | None; identity=; generated= | No current mapped Java column | — |
+| revision_id | text | False | None; identity=; generated= | No current mapped Java column | — |
+| payload_format | text | False | None; identity=; generated= | No current mapped Java column | — |
+| canonical_payload | bytea | False | None; identity=; generated= | No current mapped Java column | — |
+| sha256 | character varying(64) | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `ck_topology_station_graph_digest`: CHECK (sha256::text ~ '^[0-9a-f]{64}$'::text AND sha256::text = encode(sha256(canonical_payload), 'hex'::text))
+  - Catalog attributes: {"columns": ["sha256", "canonical_payload"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `ck_topology_station_graph_facility`: CHECK (facility_id !~ '^[\x01-\x20]&#124;[\x01-\x20]$'::text AND facility_id !~ '^[[:space:]]*$'::text)
+  - Catalog attributes: {"columns": ["facility_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `ck_topology_station_graph_format`: CHECK (payload_format = 'HIDRA_TOPOLOGY_STATION_GRAPH_REVISION_V1'::text)
+  - Catalog attributes: {"columns": ["payload_format"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `ck_topology_station_graph_payload`: CHECK (octet_length(canonical_payload) &gt;= 1 AND octet_length(canonical_payload) &lt;= 1048576)
+  - Catalog attributes: {"columns": ["canonical_payload"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `ck_topology_station_graph_revision`: CHECK (revision_id !~ '^[\x01-\x20]&#124;[\x01-\x20]$'::text AND revision_id !~ '^[[:space:]]*$'::text)
+  - Catalog attributes: {"columns": ["revision_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `pk_topology_station_graph_revision`: PRIMARY KEY (facility_id, revision_id)
+  - Catalog attributes: {"columns": ["facility_id", "revision_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+
+#### Indexes
+
+- `pk_topology_station_graph_revision`: CREATE UNIQUE INDEX pk_topology_station_graph_revision ON public.hidra_topology_station_graph_revision USING btree (facility_id, revision_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `topology_station_graph_revision_no_truncate`: CREATE TRIGGER topology_station_graph_revision_no_truncate BEFORE TRUNCATE ON hidra_topology_station_graph_revision FOR EACH STATEMENT EXECUTE FUNCTION hidra_topology_reject_station_graph_revision_mutation()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_topology_reject_station_graph_revision_mutation()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_topology_reject_station_graph_revision_mutation()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'Topology station graph revisions are append-only' USING ERRCODE = '23514';<br>END;<br>$function$<br>
+- `topology_station_graph_revision_no_update_delete`: CREATE TRIGGER topology_station_graph_revision_no_update_delete BEFORE DELETE OR UPDATE ON hidra_topology_station_graph_revision FOR EACH ROW EXECUTE FUNCTION hidra_topology_reject_station_graph_revision_mutation()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_topology_reject_station_graph_revision_mutation()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_topology_reject_station_graph_revision_mutation()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'Topology station graph revisions are append-only' USING ERRCODE = '23514';<br>END;<br>$function$<br>
 
 ### public.hidra_workflow_action
 

@@ -216,5 +216,14 @@
     ],
     "owner": "topology",
     "purpose": "Topology-owned append-only physical source revisions with canonical payload integrity; stored provenance and digest do not establish operational approval or live asset eligibility."
+  },
+  "public.hidra_topology_station_graph_revision": {
+    "evidence": [
+      "src/main/java/dz/sh/hidra/modules/topology/domain/model/StationInternalGraphRevision.java",
+      "src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcStationInternalGraphRevisionRepositoryAdapter.java",
+      "src/main/resources/db/migration/V20261011_002__p25_topology_station_graph_revisions.sql"
+    ],
+    "owner": "topology",
+    "purpose": "Topology-owned immutable station graph declarations with canonical byte integrity and exact history; storage does not establish company authorization or authenticated publication."
   }
 }

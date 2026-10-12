@@ -17266,3 +17266,77 @@ canonical new Java header, unchanged production Java/version/historical records,
 source references and whitespace PASS. Source implementation complete; required
 exact-head Production/Docs acceptance PENDING. No provider/link/binding/issuer/reader,
 B2/B3, publication, version/release/deployment/closure advancement.
+
+
+## 2026-10-12 — HPR-P25-046 CI #660 repair: migration-aware station upgrade gate
+
+Owner Fail selects repair only at main `194e9f57e4d9a49b0c898665d8d7b52923ba6ad8`,
+tree `0aeb8db876f2f2dcb4d8c54b0f8d988df4e65e6a`. Exact-head
+[Production #660](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38286247095)
+FAILED; [Docs #259](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38286247005)
+SUCCESS. AGENTS.md, PROJECT_STATE.md, roadmap/reconciliation and current source/CI
+were read. Maven repository verification reports **1,754 tests, 1 failure, 0 errors,
+0 skips**. The sole failure is
+`src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/StationInternalGraphRevisionPostgresIntegrationTest.java`,
+method upgradeFromActualPredecessorPreservesPhysicalV1V2BytesAndChecksums, line 289:
+expected one executed migration, observed two. The test starts at 20261011.001 and
+upgrades to latest; accepted station migration 20261011.002 and new LOCAL generation
+20261012.001 are both legitimately pending. The new credential suite executed in CI;
+no credential generation test failure or runtime SQL fault is reported by this run.
+Full runtime acceptance remains BLOCKED until a repaired exact-head full CI passes.
+
+Exact repair message:
+`test(topology): make station upgrade gate migration-aware`.
+Closed repair scope admitted by owner Fail: UPDATE only the existing station test,
+`doc/roadmap/ULTIMATE_ROADMAP.md` and `doc/model-remediation/RECONCILIATION.md`.
+CREATE/DELETE none. This corrective admission addresses the failed CI dependency,
+not a new roadmap stage or broader permission. SQL, production Java, dictionary,
+build/CI/dependencies, APIs, version/release/deployment, historical snapshot and
+closure unchanged. New LOCAL migration and its checksums remain intact.
+
+Repair reads the exact Flyway pending plan before migrate, requires a nonempty
+upgrade, compares migrationsExecuted with that exact planned count, validates all
+migrations and requires zero pending afterwards. The original 144-migration baseline,
+prior Flyway history/checksum comparison, physical V1/V2 byte equality/readback and
+station append assertions are preserved verbatim. Fresh full-chain verification still
+checks the source migration count, storage/trigger contract and empty store.
+Only the single count assertion block changes; the target remains latest because this
+station suite intentionally verifies predecessor-to-current compatibility.
+
+Focused real validation used Java 21, actual PostgreSQL 16.15 and the actual Maven
+project dependency classpath. A temporary scratch launch changed only Testcontainers
+address/wiring to the task-local TCP database, leaving both method bodies unchanged;
+userspace UID view is the same documented local fixture limitation as 046. JUnit
+completed **2 executed, 2 successful, 0 skipped, 0 failed**: repaired predecessor
+upgrade and fresh full chain. Flyway migrated/validated all 146 current migrations;
+planned upgrade count is now two and original checksum/byte invariants passed.
+Committed test source retains PostgreSQL 16 Testcontainers for exact-head CI.
+
+Focused Maven command also attempted with the actual Java 21 toolchain:
+`bash mvnw -o -B -q '-Dtest=StationInternalGraphRevisionPostgresIntegrationTest#upgradeFromActualPredecessorPreservesPhysicalV1V2BytesAndChecksums+freshFullFlywayChainCreatesEmptyStoreWithValidatedHistory' test`.
+Its exact completion/skip result is recorded in publication validation below; no
+Docker skip is claimed as behavioral acceptance. Canonical documentation/OpenAPI/
+dictionary validator unit tests, docs/offline OpenAPI, existing P1 evidence consistency,
+closed three-file scope, source/history/SQL checksums and whitespace are verified.
+No full local suite rerun or closure execution is selected; full repaired CI is required.
+
+HPR-P25-046 code remains implemented; full acceptance BLOCKED by historical #660,
+repair complete in source / exact-head Production and Docs PENDING. F1–F4/P2.5 OPEN,
+simulator/P3 DEFERRED. Preserve gas-first/GZ2, own engine, steady/transient, versioned
+inputs/operator control, synthetic development and owner deployment calibration.
+No version or closure change. Next after repaired full CI succeeds and owner Next is
+still area B provider/link generation recovery/registration; this repair advances none.
+Publish one guarded direct-main commit, verify exact parent/tree/three paths and
+required exact-head CI startup, then STOP without waiting for completion or advancing.
+
+
+CI #660 repair publication validation: focused Java-21 Maven completed compilation
+with 2 Docker-dependent tests skipped (not behavioral PASS); separate actual local
+PostgreSQL 16 launch executed the same two method bodies with 2 PASS, 0 skips/failures.
+All 37 validator unit checks PASS; canonical docs PASS (98 documents, 5,308 links,
+24 modules, 13 P2 rows), offline OpenAPI PASS (263 operations, 244 paths, 231 schemas),
+existing P1 evidence consistency PASS without closure execution. Exact three-file
+scope, one assertion block, preserved original byte/checksum invariants and detailed
+historical records, all 146 unchanged migration checksums and whitespace PASS.
+No production/dictionary/workflow/version/deployment change. Repair source complete;
+exact-head Production/Docs acceptance PENDING. No next stage executed.

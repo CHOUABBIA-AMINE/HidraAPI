@@ -23,7 +23,7 @@ This is an execution-status summary of the authoritative task table below, **not
 | **HPR-P25-043 cross-owner access linearization preflight** | **DESIGN COMPLETED / DOCS #253 SUCCESS** | Runtime B1/B2/B3 and race/performance gates remain OPEN |
 | **HPR-P25-044 B1 operation-authentication provenance policy** | **DESIGN COMPLETED / DOCS #255 SUCCESS** | Dedicated issuer/jti session binding selected; runtime storage/issuance/reader and B2/B3 remain OPEN |
 | **HPR-P25-045 B1 storage preflight** | **DESIGN COMPLETED / DOCS #257 SUCCESS** | DB security generations and immutable binding design selected; runtime OPEN |
-| **HPR-P25-046 LOCAL credential generation** | **CODE IMPLEMENTED / EXACT-HEAD CI PENDING** | Registration Docs #258 SUCCESS; local PostgreSQL 16 tests successful; area A only, no token/reader integration |
+| **HPR-P25-046 LOCAL credential generation** | **CODE IMPLEMENTED / CI #660 REPAIR PENDING ACCEPTANCE** | Docs #259 SUCCESS; sole station-upgrade count failure repaired; full exact-head CI required |
 | F1-02 through F1-04 publication, APIs and topology verification | PLANNED; subsequent implementation slices not registered | Register bounded HPRs before execution |
 | F2-01 through F2-04 product/equipment/engineering history | PLANNED; not registered | Dependent F1 ownership and history work |
 | F3-01 through F3-04 telemetry/monitoring/action evidence | PLANNED; not registered | Dependent topology and source-scope contracts |
@@ -36,7 +36,7 @@ This is an execution-status summary of the authoritative task table below, **not
 
 **Product policy:** Hidra is universal, configurable and company/network/product independent. No real customer data, P&IDs, vendor curves or live SCADA are prerequisites for generic development. PLATFORM software testing uses explicit synthetic data; customer SITE commissioning is an entirely separate gate. Numerical simulation work is deferred.
 
-**Code discipline:** `HPR-P25-037` is implemented and CI accepted; `HPR-P25-038` policy design is accepted; `HPR-P25-039` Party eligibility is accepted; `HPR-P25-040` trusted Topology actor export is CI accepted; `HPR-P25-041` paired scoped permission export is CI accepted; `HPR-P25-042` live Facility/Party owner-reference query is CI accepted; `HPR-P25-043` cross-owner access linearization design is Docs accepted; `HPR-P25-044` B1 operation-authentication provenance policy is completed as design below; policy Docs #255 SUCCESS. `HPR-P25-045` additive binding/credential-security storage policy is completed as design below; policy Docs #257 SUCCESS. `HPR-P25-046` LOCAL credential database generations are implemented below; exact-head Production/Docs acceptance PENDING. Runtime provenance, common-time and transaction-participation gates remain OPEN. Runtime revocation/linearization and publication slices remain unregistered. Codes `F1-02` etc. are **planning references only** and MUST NOT be executed or treated as approved HPR codes before registration, exact commit message and exact create/update/delete file allowlists. Dependencies are minimum known gates, not blanket permission.
+**Code discipline:** `HPR-P25-037` is implemented and CI accepted; `HPR-P25-038` policy design is accepted; `HPR-P25-039` Party eligibility is accepted; `HPR-P25-040` trusted Topology actor export is CI accepted; `HPR-P25-041` paired scoped permission export is CI accepted; `HPR-P25-042` live Facility/Party owner-reference query is CI accepted; `HPR-P25-043` cross-owner access linearization design is Docs accepted; `HPR-P25-044` B1 operation-authentication provenance policy is completed as design below; policy Docs #255 SUCCESS. `HPR-P25-045` additive binding/credential-security storage policy is completed as design below; policy Docs #257 SUCCESS. `HPR-P25-046` LOCAL credential generations are implemented; Docs #259 SUCCESS, Production #660 failed on station upgrade count and bounded repair is recorded below; repaired full CI acceptance PENDING. Runtime provenance, common-time and transaction-participation gates remain OPEN. Runtime revocation/linearization and publication slices remain unregistered. Codes `F1-02` etc. are **planning references only** and MUST NOT be executed or treated as approved HPR codes before registration, exact commit message and exact create/update/delete file allowlists. Dependencies are minimum known gates, not blanket permission.
 
 | Order | Code / planning reference | Task | Current status | Dependencies / gate | Track |
 |---|---|---|---|---|---|
@@ -49,7 +49,7 @@ This is an execution-status summary of the authoritative task table below, **not
 | 2.5 | HPR-P25-043 | Cross-owner access linearization design preflight | COMPLETED — design only; exact-head Docs #253 SUCCESS | Accepted at `f6dabb6a4585c7c30203352f9f96a2892aa79a84`; runtime B1/B2/B3 OPEN | F1 |
 | 2.6 | HPR-P25-044 | B1 operation-authentication provenance and session-binding policy preflight | COMPLETED — design only; exact-head Docs #255 SUCCESS | Accepted at `8a2c692825f0466441ae23d49ecc24324de89775`; B1 runtime/B2/B3 OPEN | F1 |
 | 2.7 | HPR-P25-045 | B1 binding and credential-security storage preflight | COMPLETED — design only; Docs #257 SUCCESS | Accepted at `8cb9c8560b57da14de43b3e391ec1808d2eb1395`; runtime A/B/C and B2/B3 OPEN | F1 |
-| 2.8 | HPR-P25-046 | LOCAL credential database security generation | COMPLETED in source — exact-head Production/Docs PENDING | Registration Docs #258 SUCCESS; local 9 tests executed on PostgreSQL 16; area A only | F1 |
+| 2.8 | HPR-P25-046 | LOCAL credential database security generation | CODE IMPLEMENTED — full CI acceptance BLOCKED by #660; repair in source | Docs #259 SUCCESS; bounded station test correction, repaired exact-head Production/Docs PENDING | F1 |
 | 2a | F1-02 implementation | Station revision history / transactional publication | PLANNED — not registered or implemented | HPR-P25-038 policy design; exact implementation allowlist and subsequent owner Next | F1 |
 | 3 | F1-03 | Company-scoped authoring, topology APIs and exact-history access | PLANNED — needs HPR registration | F1-02; authorization/API contracts | F1 |
 | 4 | F1-04 | Synthetic multi-company topology validation | PLANNED — needs HPR registration | F1-03; registered acceptance test envelope | F1 |
@@ -4321,3 +4321,77 @@ canonical new Java header, unchanged production Java/version/historical records,
 source references and whitespace PASS. Source implementation complete; required
 exact-head Production/Docs acceptance PENDING. No provider/link/binding/issuer/reader,
 B2/B3, publication, version/release/deployment/closure advancement.
+
+
+## 2026-10-12 — HPR-P25-046 CI #660 repair: migration-aware station upgrade gate
+
+Owner Fail selects repair only at main `194e9f57e4d9a49b0c898665d8d7b52923ba6ad8`,
+tree `0aeb8db876f2f2dcb4d8c54b0f8d988df4e65e6a`. Exact-head
+[Production #660](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38286247095)
+FAILED; [Docs #259](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38286247005)
+SUCCESS. AGENTS.md, PROJECT_STATE.md, roadmap/reconciliation and current source/CI
+were read. Maven repository verification reports **1,754 tests, 1 failure, 0 errors,
+0 skips**. The sole failure is
+`src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/StationInternalGraphRevisionPostgresIntegrationTest.java`,
+method upgradeFromActualPredecessorPreservesPhysicalV1V2BytesAndChecksums, line 289:
+expected one executed migration, observed two. The test starts at 20261011.001 and
+upgrades to latest; accepted station migration 20261011.002 and new LOCAL generation
+20261012.001 are both legitimately pending. The new credential suite executed in CI;
+no credential generation test failure or runtime SQL fault is reported by this run.
+Full runtime acceptance remains BLOCKED until a repaired exact-head full CI passes.
+
+Exact repair message:
+`test(topology): make station upgrade gate migration-aware`.
+Closed repair scope admitted by owner Fail: UPDATE only the existing station test,
+`doc/roadmap/ULTIMATE_ROADMAP.md` and `doc/model-remediation/RECONCILIATION.md`.
+CREATE/DELETE none. This corrective admission addresses the failed CI dependency,
+not a new roadmap stage or broader permission. SQL, production Java, dictionary,
+build/CI/dependencies, APIs, version/release/deployment, historical snapshot and
+closure unchanged. New LOCAL migration and its checksums remain intact.
+
+Repair reads the exact Flyway pending plan before migrate, requires a nonempty
+upgrade, compares migrationsExecuted with that exact planned count, validates all
+migrations and requires zero pending afterwards. The original 144-migration baseline,
+prior Flyway history/checksum comparison, physical V1/V2 byte equality/readback and
+station append assertions are preserved verbatim. Fresh full-chain verification still
+checks the source migration count, storage/trigger contract and empty store.
+Only the single count assertion block changes; the target remains latest because this
+station suite intentionally verifies predecessor-to-current compatibility.
+
+Focused real validation used Java 21, actual PostgreSQL 16.15 and the actual Maven
+project dependency classpath. A temporary scratch launch changed only Testcontainers
+address/wiring to the task-local TCP database, leaving both method bodies unchanged;
+userspace UID view is the same documented local fixture limitation as 046. JUnit
+completed **2 executed, 2 successful, 0 skipped, 0 failed**: repaired predecessor
+upgrade and fresh full chain. Flyway migrated/validated all 146 current migrations;
+planned upgrade count is now two and original checksum/byte invariants passed.
+Committed test source retains PostgreSQL 16 Testcontainers for exact-head CI.
+
+Focused Maven command also attempted with the actual Java 21 toolchain:
+`bash mvnw -o -B -q '-Dtest=StationInternalGraphRevisionPostgresIntegrationTest#upgradeFromActualPredecessorPreservesPhysicalV1V2BytesAndChecksums+freshFullFlywayChainCreatesEmptyStoreWithValidatedHistory' test`.
+Its exact completion/skip result is recorded in publication validation below; no
+Docker skip is claimed as behavioral acceptance. Canonical documentation/OpenAPI/
+dictionary validator unit tests, docs/offline OpenAPI, existing P1 evidence consistency,
+closed three-file scope, source/history/SQL checksums and whitespace are verified.
+No full local suite rerun or closure execution is selected; full repaired CI is required.
+
+HPR-P25-046 code remains implemented; full acceptance BLOCKED by historical #660,
+repair complete in source / exact-head Production and Docs PENDING. F1–F4/P2.5 OPEN,
+simulator/P3 DEFERRED. Preserve gas-first/GZ2, own engine, steady/transient, versioned
+inputs/operator control, synthetic development and owner deployment calibration.
+No version or closure change. Next after repaired full CI succeeds and owner Next is
+still area B provider/link generation recovery/registration; this repair advances none.
+Publish one guarded direct-main commit, verify exact parent/tree/three paths and
+required exact-head CI startup, then STOP without waiting for completion or advancing.
+
+
+CI #660 repair publication validation: focused Java-21 Maven completed compilation
+with 2 Docker-dependent tests skipped (not behavioral PASS); separate actual local
+PostgreSQL 16 launch executed the same two method bodies with 2 PASS, 0 skips/failures.
+All 37 validator unit checks PASS; canonical docs PASS (98 documents, 5,308 links,
+24 modules, 13 P2 rows), offline OpenAPI PASS (263 operations, 244 paths, 231 schemas),
+existing P1 evidence consistency PASS without closure execution. Exact three-file
+scope, one assertion block, preserved original byte/checksum invariants and detailed
+historical records, all 146 unchanged migration checksums and whitespace PASS.
+No production/dictionary/workflow/version/deployment change. Repair source complete;
+exact-head Production/Docs acceptance PENDING. No next stage executed.

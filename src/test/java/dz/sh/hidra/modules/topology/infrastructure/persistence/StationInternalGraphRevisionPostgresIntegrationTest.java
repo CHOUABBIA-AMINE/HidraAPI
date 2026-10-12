@@ -286,7 +286,12 @@ class StationInternalGraphRevisionPostgresIntegrationTest {
         var v2 = physicalFixture("v2", TopologyPhysicalNetworkRevision.EquipmentKind.REGULATOR);
         physical.append(v1); physical.append(v2);
         byte[] old1 = physicalPayload("v1"); byte[] old2 = physicalPayload("v2");
-        var current = flyway(null); assertEquals(1, current.migrate().migrationsExecuted); current.validate();
+        var current = flyway(null);
+        int pending = current.info().pending().length;
+        assertTrue(pending > 0, "The station revision migration must remain pending after its predecessor");
+        assertEquals(pending, current.migrate().migrationsExecuted);
+        current.validate();
+        assertEquals(0, current.info().pending().length);
         assertEquals(history, jdbc.queryForList("SELECT installed_rank,version,script,checksum,success FROM flyway_schema_history WHERE installed_rank<=144 ORDER BY installed_rank"));
         assertArrayEquals(old1, physicalPayload("v1")); assertArrayEquals(old2, physicalPayload("v2"));
         assertEquals(v1, physical.find("synthetic-source", "v1").orElseThrow());

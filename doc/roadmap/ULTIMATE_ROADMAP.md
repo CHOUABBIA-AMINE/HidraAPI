@@ -23,7 +23,8 @@ This is an execution-status summary of the authoritative task table below, **not
 | **HPR-P25-043 cross-owner access linearization preflight** | **DESIGN COMPLETED / DOCS #253 SUCCESS** | Runtime B1/B2/B3 and race/performance gates remain OPEN |
 | **HPR-P25-044 B1 operation-authentication provenance policy** | **DESIGN COMPLETED / DOCS #255 SUCCESS** | Dedicated issuer/jti session binding selected; runtime storage/issuance/reader and B2/B3 remain OPEN |
 | **HPR-P25-045 B1 storage preflight** | **DESIGN COMPLETED / DOCS #257 SUCCESS** | DB security generations and immutable binding design selected; runtime OPEN |
-| **HPR-P25-046 LOCAL credential generation** | **CODE IMPLEMENTED / CI #661 DICTIONARY REPAIR PENDING ACCEPTANCE** | #661: all 1,754 tests and runtime OpenAPI PASS, Docs #260 SUCCESS; exact CI dictionary provenance correction in source |
+| **HPR-P25-046 LOCAL credential generation** | **COMPLETED / PRODUCTION #662 AND DOCS #261 SUCCESS** | Accepted at repaired `554f2a0`; operation provenance runtime still OPEN |
+| **HPR-P25-047 provider/link generations** | **PLANNED / REGISTERED / NOT IMPLEMENTED** | Registration only; exact seven-file implementation after Docs PASS and separate owner Next |
 | F1-02 through F1-04 publication, APIs and topology verification | PLANNED; subsequent implementation slices not registered | Register bounded HPRs before execution |
 | F2-01 through F2-04 product/equipment/engineering history | PLANNED; not registered | Dependent F1 ownership and history work |
 | F3-01 through F3-04 telemetry/monitoring/action evidence | PLANNED; not registered | Dependent topology and source-scope contracts |
@@ -36,7 +37,7 @@ This is an execution-status summary of the authoritative task table below, **not
 
 **Product policy:** Hidra is universal, configurable and company/network/product independent. No real customer data, P&IDs, vendor curves or live SCADA are prerequisites for generic development. PLATFORM software testing uses explicit synthetic data; customer SITE commissioning is an entirely separate gate. Numerical simulation work is deferred.
 
-**Code discipline:** `HPR-P25-037` is implemented and CI accepted; `HPR-P25-038` policy design is accepted; `HPR-P25-039` Party eligibility is accepted; `HPR-P25-040` trusted Topology actor export is CI accepted; `HPR-P25-041` paired scoped permission export is CI accepted; `HPR-P25-042` live Facility/Party owner-reference query is CI accepted; `HPR-P25-043` cross-owner access linearization design is Docs accepted; `HPR-P25-044` B1 operation-authentication provenance policy is completed as design below; policy Docs #255 SUCCESS. `HPR-P25-045` additive binding/credential-security storage policy is completed as design below; policy Docs #257 SUCCESS. `HPR-P25-046` LOCAL credential generations are implemented; #661 passed all 1,754 tests and runtime OpenAPI, Docs #260 SUCCESS; dictionary provenance repair is recorded below and overall full CI acceptance remains PENDING. Runtime provenance, common-time and transaction-participation gates remain OPEN. Runtime revocation/linearization and publication slices remain unregistered. Codes `F1-02` etc. are **planning references only** and MUST NOT be executed or treated as approved HPR codes before registration, exact commit message and exact create/update/delete file allowlists. Dependencies are minimum known gates, not blanket permission.
+**Code discipline:** `HPR-P25-037` is implemented and CI accepted; `HPR-P25-038` policy design is accepted; `HPR-P25-039` Party eligibility is accepted; `HPR-P25-040` trusted Topology actor export is CI accepted; `HPR-P25-041` paired scoped permission export is CI accepted; `HPR-P25-042` live Facility/Party owner-reference query is CI accepted; `HPR-P25-043` cross-owner access linearization design is Docs accepted; `HPR-P25-044` B1 operation-authentication provenance policy is completed as design below; policy Docs #255 SUCCESS. `HPR-P25-045` additive binding/credential-security storage policy is completed as design below; policy Docs #257 SUCCESS. `HPR-P25-046` LOCAL credential generations and bounded CI repairs are accepted at repaired `554f2a0`: exact-head Production #662 and Docs #261 SUCCESS. `HPR-P25-047` provider/link database generations are registered below, PLANNED and NOT IMPLEMENTED; registration acceptance requires exact-head Docs and a separate owner Next. Runtime provenance, common-time and transaction-participation gates remain OPEN. Subsequent runtime revocation/linearization and publication slices remain unregistered. Codes `F1-02` etc. are **planning references only** and MUST NOT be executed or treated as approved HPR codes before registration, exact commit message and exact create/update/delete file allowlists. Dependencies are minimum known gates, not blanket permission.
 
 | Order | Code / planning reference | Task | Current status | Dependencies / gate | Track |
 |---|---|---|---|---|---|
@@ -49,7 +50,8 @@ This is an execution-status summary of the authoritative task table below, **not
 | 2.5 | HPR-P25-043 | Cross-owner access linearization design preflight | COMPLETED — design only; exact-head Docs #253 SUCCESS | Accepted at `f6dabb6a4585c7c30203352f9f96a2892aa79a84`; runtime B1/B2/B3 OPEN | F1 |
 | 2.6 | HPR-P25-044 | B1 operation-authentication provenance and session-binding policy preflight | COMPLETED — design only; exact-head Docs #255 SUCCESS | Accepted at `8a2c692825f0466441ae23d49ecc24324de89775`; B1 runtime/B2/B3 OPEN | F1 |
 | 2.7 | HPR-P25-045 | B1 binding and credential-security storage preflight | COMPLETED — design only; Docs #257 SUCCESS | Accepted at `8cb9c8560b57da14de43b3e391ec1808d2eb1395`; runtime A/B/C and B2/B3 OPEN | F1 |
-| 2.8 | HPR-P25-046 | LOCAL credential database security generation | CODE IMPLEMENTED — full CI acceptance BLOCKED by #661 dictionary provenance; repair in source | All 1,754 tests/runtime OpenAPI and Docs #260 PASS; corrected exact-head Production/Docs PENDING | F1 |
+| 2.8 | HPR-P25-046 | LOCAL credential database security generation | COMPLETED — exact-head Production #662 and Docs #261 SUCCESS | Accepted at repaired `554f2a07c2ddb1147ea1517f331ac6b7b87652b6`; B1 runtime still OPEN | F1 |
+| 2.9 | HPR-P25-047 | Provider and external-link database security generations | PLANNED — REGISTERED / NOT IMPLEMENTED | Accepted 045 area B and 046; registration Docs PASS plus separate owner Next; exact seven-file envelope below | F1 |
 | 2a | F1-02 implementation | Station revision history / transactional publication | PLANNED — not registered or implemented | HPR-P25-038 policy design; exact implementation allowlist and subsequent owner Next | F1 |
 | 3 | F1-03 | Company-scoped authoring, topology APIs and exact-history access | PLANNED — needs HPR registration | F1-02; authorization/API contracts | F1 |
 | 4 | F1-04 | Synthetic multi-company topology validation | PLANNED — needs HPR registration | F1-03; registered acceptance test envelope | F1 |
@@ -4481,3 +4483,212 @@ whitespace PASS. #661's 1,754 tests/runtime OpenAPI remain verified hosted evide
 no redundant local database/Maven rerun, code/CI/comparator relaxation or version/
 release/deployment/closure change. Repair source complete; corrected exact-head
 Production/Docs acceptance PENDING; no next stage executed.
+
+
+## 2026-10-12 — Register HPR-P25-047 provider and external-link database generations
+
+### Existing requirement, selection and accepted baseline
+
+This is area B of accepted HPR-P25-045, serving HPR-P25-044's operation-authentication
+provenance requirement. A provider disabled and reenabled, or a link reassigned and
+restored, can have the same current tuple as before. A monotonic database generation
+lets later trusted issuance/readers reject that old proof. This prerequisite comes
+from the approved storage plan; it adds no independent feature or new policy decision.
+
+Owner Next selects recovery/registration only. Current main
+`554f2a07c2ddb1147ea1517f331ac6b7b87652b6`, tree
+`bcf629839c5f0c15ad1e0c1cab2688a03def505b`; exact-head
+[Production #662](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38298596351)
+and [Docs #261](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38289958791)
+SUCCESS. #662's repository verification, runtime OpenAPI equality/compatibility and
+migrated dictionary verification all PASS. HPR-P25-046 is now COMPLETED within LOCAL
+database-generation scope, including the station upgrade and dictionary repairs.
+Historical #660/#661 failures and their repair records are preserved, not reclassified.
+B1 operation provenance, B2/B3 and publication remain OPEN.
+
+AGENTS.md, PROJECT_STATE.md, active roadmap/reconciliation, accepted 043–046,
+current provider/link source, migration chain, ORM/authentication tests and dictionary/
+CI source were rechecked. Pinned checkout blobs match GitHub source. HPR-P25-047 was
+absent from active/history/reconciliation before this registration.
+
+Exact current registration commit:
+`docs(identity): register provider and link generation implementation`.
+Exclusive current UPDATE scope: `doc/roadmap/ULTIMATE_ROADMAP.md` and
+`doc/model-remediation/RECONCILIATION.md`; CREATE/DELETE none. This registration executes
+no SQL, Maven, provider, database or race test and installs no runtime generation.
+
+### Recovered source and compatibility boundary
+
+| Exact existing source | Finding / consequence |
+|---|---|
+| `src/main/resources/db/migration/V20260611_001__create_identity_tables.sql` | Provider and external-link fields exist, without security_version; additive forward migration only |
+| `src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql` | Validated link-to-User/provider restrictive FKs already exist; preserve them |
+| `src/main/resources/db/migration/V20261004_010__hmr_010_identity_identity_provider.sql` | Provider code, active OIDC issuer and single active LOCAL/directory constraints; retain all existing checks/indexes |
+| `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/IdentityProviderJpaEntity.java` and `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/ExternalIdentityJpaEntity.java` | Unmapped generation; existing constructors omit new column, including nullable jsonb metadata/snapshots |
+| `src/main/java/dz/sh/hidra/modules/identity/domain/model/IdentityProvider.java`, `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/mapper/IdentityPersistenceMapper.java` and `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaIdentityProviderRepositoryAdapter.java` | Provider normalization/validation plus generic save/merge; retain production Java and prove real ORM compatibility |
+| `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/repository/IdentityProviderJpaRepository.java` and `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/repository/ExternalIdentityJpaRepository.java` | Inherited save/delete/bulk writers; link lookup uses provider/subject; database enforcement must cover ordinary writers |
+| `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/LdapAuthenticationProvider.java`, `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/IdentityOidcJwtAuthenticationConverter.java` and `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaAuthorizationEvidenceAdapter.java` | Current eligibility checks have no historical generation proof; leave assertion/LDAP/OIDC/authorization behavior unchanged here |
+| `src/test/java/dz/sh/hidra/modules/identity/semantic/IdentityProviderSemanticRemediationTest.java` | Existing validation/lookup tests are mock/source-based, not real generation or ORM proof; run read-only regression |
+| `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/LocalCredentialSecurityGenerationPostgresIntegrationTest.java` | Fresh-schema test hardcodes current tail 20261012.001; upgrade history excludes only that version. Bounded migration-aware repair required with the new migration |
+| `.github/scripts/generate_data_dictionary.py`, `.github/database-dictionary-ownership.json`, `doc/database/DATA_DICTIONARY.md` and `.github/workflows/ci.yml` | Actual migrated catalog coverage and strict comparator, including server build; regenerate authentic CI-compatible evidence, preserve generator/CI |
+
+Current tail is `V20261012_001__p25_identity_local_credential_security_generation.sql`.
+The selected new migration/test, version 20261012.002 and all names below are absent;
+identifiers fit PostgreSQL's limit. Recheck collisions at implementation. This inventory
+covers current source, not deployment/admin consumers or a deployed privilege audit.
+Existing external-link source is JPA entity/repository, not an invented domain adapter.
+
+### Registered next executable implementation — HPR-P25-047
+
+Exact implementation commit:
+`feat(identity): enforce provider and link security generations`.
+State: PLANNED / REGISTERED / NOT IMPLEMENTED. Successful registration exact-head Docs,
+separate owner Next, refreshed green source/CI and collision recheck select this one
+implementation. Repair failed CI first. No additional design-only stage is selected.
+
+| Action | Exclusive exact future implementation path |
+|---|---|
+| CREATE | `src/main/resources/db/migration/V20261012_002__p25_identity_provider_link_security_generations.sql` |
+| CREATE | `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProviderLinkSecurityGenerationPostgresIntegrationTest.java` |
+| UPDATE | `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/LocalCredentialSecurityGenerationPostgresIntegrationTest.java` |
+| UPDATE | `.github/database-dictionary-ownership.json` |
+| UPDATE | `doc/database/DATA_DICTIONARY.md` |
+| UPDATE | `doc/roadmap/ULTIMATE_ROADMAP.md` |
+| UPDATE | `doc/model-remediation/RECONCILIATION.md` |
+
+DELETE none. Seven-file solo envelope. Production Java, old migrations, current LOCAL
+SQL guards, sessions/bindings/completion/issuers/readers, permission exports/evaluator,
+API/OpenAPI, dependency/build/CI/generator, frontend, version/release/deployment and
+closure files stay read-only. Incompatibility outside this envelope requires concrete
+blocker recovery and separately registered correction, never implicit scope expansion.
+
+### Exact database contract from accepted area B
+
+1. Add `security_version bigint NOT NULL DEFAULT 1 CHECK (security_version > 0)`
+   to `public.hidra_identity_provider` and `public.hidra_identity_external_identity`.
+   Constraint names: `ck_p25_provider_security_version` and
+   `ck_p25_external_identity_security_version`. Existing valid rows initialize to 1;
+   every preexisting field/FK/index/check remains unchanged. No historical token/link/
+   session is thereby proven trusted. No global normalization, backfill of authority,
+   deletion, invented dates or credential/secret logging.
+2. Separate owner trigger functions `public.hidra_identity_provider_security_guard()`
+   and `public.hidra_identity_external_identity_security_guard()`, SECURITY INVOKER,
+   constrained search_path and static schema-qualified identifiers. No dynamic SQL,
+   caller/current_user escape, session writes or cross-owner mutations.
+3. Each relation has BEFORE INSERT OR UPDATE row guard, BEFORE DELETE row guard and
+   BEFORE TRUNCATE statement guard. Provider names:
+   `trg_p25_provider_security_write`, `trg_p25_provider_security_delete`,
+   `trg_p25_provider_security_truncate`. External-link names:
+   `trg_p25_external_identity_security_write`, `trg_p25_external_identity_security_delete`,
+   `trg_p25_external_identity_security_truncate`.
+4. INSERT accepts only initial version 1/default. UPDATE rejects id/created_at changes
+   and any caller version different from OLD. All updates use null-safe IS DISTINCT
+   FROM comparisons, not UPDATE OF filtering. One statement changing several security
+   fields advances once; unchanged/security-neutral writes retain OLD. At bigint
+   maximum a security change fails and rolls back; neutral writes may retain maximum.
+5. Apply exactly the accepted field classification below. Link User/provider/subject
+   reassignment remains allowed subject to existing FKs and advances generation; it is
+   not a new immutable-link rule. Rotate-away/back and disable/reenable advance each
+   time. Provider jsonb metadata comparison uses stored JSON value equality; changes
+   to key order alone do not invent a new semantic security event.
+6. DELETE/bulk DELETE and statement TRUNCATE are rejected for both tables, preventing
+   identity delete/recreate generation reset. Disable/retire is the selected lifecycle.
+   COPY, MERGE, UPSERT and native/bulk ORM must execute guards or reject; no bypass.
+   Privileged DDL/replication/trigger disabling remains outside ordinary-writer proof.
+   No deployed role separation, remote-provider revocation or unchanged-reference
+   secret rotation detection is claimed. Same-tuple explicit revocation needs a later
+   owner event contract; this migration does not introduce it.
+7. Forward transactional Flyway migration only; fail clearly on unexpected column/name/
+   required owner integrity rather than hide it with IF NOT EXISTS. Preserve all 146
+   prior migration bytes/checksums. No extra schema cleanup or provider policy seed.
+8. Add explicit dictionary ownership/evidence for both relations referencing their
+   existing entity and new migration. Generate/check actual physical catalog using
+   the unchanged generator; include versions/checks/triggers/functions. Strict server
+   build comparison must PASS with genuine evidence, not a fabricated build header.
+
+| Relation | Exact security fields advancing version | Neutral / immutable fields |
+|---|---|---|
+| Provider | code, provider_type, issuer_uri, authorization_endpoint, token_endpoint, jwks_uri, directory_base_dn, user_search_base, group_search_base, username_attribute, email_attribute, display_name_attribute, external_id_attribute, group_membership_attribute, sync_enabled, just_in_time_provisioning_enabled, status, metadata, secret_reference | name and updated_at neutral; id and created_at immutable |
+| External link | user_id, identity_provider_id, external_subject, external_immutable_id, external_username, external_distinguished_name, status | external_email, external_display_name, external_attributes_snapshot, last_login_at, last_synced_at and updated_at neutral; id and created_at immutable |
+
+Version transport remains later: no @Version or constructor/mapper changes, generation
+claim, binding or token issuance. Real DB read after flush demonstrates generated values;
+current unmapped return models are not authentication evidence. A stale security overwrite
+can advance again, never reset generation; general lost-update prevention is later work.
+Stored profile snapshots remain excluded from assertion authority under accepted policy.
+
+### Required synthetic proof and bounded existing-test update
+
+New canonical-header test uses actual PostgreSQL 16, real Flyway/JDBC and Spring/JPA;
+no mock generation proof or Docker skips counted as PASS. Required observations:
+
+- Fresh full chain and upgrade from exact predecessor 20261012.001 with existing
+  synthetic providers, Users and links; defaults/guards installed, original row fields
+  and all previous history/checksums preserved, Flyway validate and no pending migrations.
+- Every security field separately advances; unchanged and every neutral field retains.
+  Nullable fields cover both null transitions; provider metadata covers semantic jsonb
+  change and equivalent JSON; status/relink/provider/subject A/B/A advances twice.
+- Invalid INSERT versions, caller tampering, immutable id/createdAt changes, delete/
+  recreate/bulk DELETE/TRUNCATE and overflow reject atomically; original rows remain.
+  Maximum setup is isolated rolled-back test-owner DDL, with guards reenabled before
+  protected attempts; it grants no runtime bypass.
+- Real provider adapter and link repository save/merge, transaction+flush/current DB
+  read, unchanged/neutral updates and security change; injected downstream failure rolls
+  back fields and generation together. Prove nullable jsonb writer compatibility and
+  report a concrete existing-writer blocker instead of editing production mapping here.
+- Native/bulk SQL plus JPQL bulk update, COPY insert, MERGE and UPSERT exercise both
+  relations and demonstrate actual guard execution or acceptable rejection. Existing
+  provider code/OIDC/LOCAL/directory uniqueness and link User/provider FKs still reject
+  invalid state. Failures cannot persist partial field/version changes.
+- Independent connections, bounded barriers and confirmed statement/lock observations
+  show concurrent security writes serialize, rollback consumes no persistent increment
+  and two providers/links/Users remain isolated. No sleep-based race proof or live
+  provider/customer fixtures. These are row-generation races, not B2/B3 acceptance.
+
+The existing LOCAL credential test may change ONLY its fresh/upgrade migration assertions
+and canonical UpdatedOn if needed. Replace the latest-tail equality with explicit
+successful presence of migration 20261012.001 plus Flyway validation/no pending migrations.
+Retain exact pre-046 upgrade target 20261011.002, preexisting credential preservation and
+version=1. Compare the captured historical prefix by installed rank (or exact captured
+versions), rather than excluding only 046; assert all pending migrations execute and
+validate the full current chain. Preserve every credential/bootstrap/native/overflow/
+concurrency assertion and method. Do not weaken or skip tests to accommodate new SQL.
+
+Focused required command:
+`./mvnw -B -q -Dtest=ProviderLinkSecurityGenerationPostgresIntegrationTest,LocalCredentialSecurityGenerationPostgresIntegrationTest,IdentityProviderSemanticRemediationTest,LocalAuthenticationIntegrationTest,LdapAuthenticationProviderTest,IdentityOidcJwtAuthenticationConverterTest,AuthorizationAssertionTrustTest test`.
+Run 37 docs/OpenAPI/dictionary validator unit checks, canonical docs/offline OpenAPI,
+existing P1 evidence consistency, actual dictionary collect/render/check, exact seven-file
+scope, old migration/source/history preservation and whitespace. Real PostgreSQL tests
+must execute in applicable exact-head full CI; report local prerequisites honestly.
+Runtime acceptance requires full Production and Docs SUCCESS on exact implementation
+head. Publish one guarded direct-main commit, confirm exact-head required CI started,
+then STOP without waiting for completion or advancing.
+
+### Disposition and next concrete action
+
+| Stage | State / gate | Next |
+|---|---|---|
+| HPR-P25-046 area A | COMPLETED — Production #662 / Docs #261 SUCCESS at repaired 554f2a0 | Accepted LOCAL database generation only |
+| HPR-P25-047 registration | Completed in source; exact-head Docs PENDING | Publish only the two documentation files and verify startup |
+| HPR-P25-047 area B implementation | PLANNED / REGISTERED / NOT IMPLEMENTED | Separate owner Next after registration Docs PASS selects the seven-file implementation |
+| Area C binding, generation reads/trusted issuance, operation reader, B2/B3/publication | OPEN / not selected | Recover/register separately after area B full CI acceptance |
+
+F1–F4/P2.5 remain OPEN; simulator/P3 DEFERRED. Preserve gas-first/GZ2, Hidra's own
+engine, steady/transient direction, dynamic versioned inputs/operator control, synthetic
+development and owner-supplied deployment calibration. No version, release, deployment
+or closure change. One registration commit only; exact parent/tree/two-document scope,
+exact-head Docs startup, then STOP before the registered implementation.
+
+
+HPR-P25-047 registration publication validation: documentation-validator 10,
+OpenAPI-validator 10 and dictionary-generator 17 unit checks PASS. Canonical docs
+PASS (98 documents, 5,308 links, 24 modules, 13 P2 rows), offline OpenAPI PASS
+(263 operations, 244 paths, 231 schemas), existing P1 evidence consistency PASS
+without closure execution. Exact two-document scope, append-only reconciliation,
+mirrored registration, 21 existing source/test/dictionary/CI references, two future
+CREATE paths and migration/version/function/trigger/constraint collisions PASS.
+All 146 old SQL checksums, production/test/CI/version source and historical records
+preserved; whitespace PASS. Prior exact-head Production #662 and Docs #261 SUCCESS
+verify area A; no Maven/database/provider/race execution or runtime/schema mutation
+in this registration. Registration Docs acceptance PENDING; separate owner Next
+after success selects only the seven-file HPR-P25-047 implementation.

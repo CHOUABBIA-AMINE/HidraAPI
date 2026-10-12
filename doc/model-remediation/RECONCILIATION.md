@@ -16629,3 +16629,340 @@ registrations/reconciliation and historical roadmap, and whitespace checks PASS.
 No Java/Maven/database/provider/race execution, storage/token/session mutation,
 version/release/deployment or closure change. Registration acceptance remains
 exact-head Docs PENDING; 045 design and subsequent runtime work are not executed.
+
+
+## 2026-10-12 — Execute HPR-P25-045 operation binding storage policy
+
+### Selection, evidence and disposition
+
+Owner Continue/Next selects only `docs(identity): define operation binding storage policy`.
+Current main `31987c8a76e579ce9250d5dfc14aea7d3dbbdab4`, tree
+`c05e3d786d8ac352b9ffc0528b6d0d37ad7c4bdc`; registration
+[Docs #256](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38274790410)
+SUCCESS. Latest Production #659 remains SUCCESS on accepted 042. AGENTS.md,
+PROJECT_STATE.md, active roadmap/reconciliation, accepted 043/044, exact 045 registration,
+current source/migrations/tests and dictionary ownership were rechecked. UPDATE only
+roadmap and reconciliation, CREATE/DELETE none. Historical registration records preserved.
+
+**Selected design:** additive immutable JDBC binding storage; database-owned monotonic
+security_version on current credential, provider and external-link rows; restrictive
+identity/deletion guards; bound-session tuple/end-state guards. Use generation comparison,
+not mass session updates from provider/credential triggers. Security changes leave old
+bindings permanently ineligible even after disable/reenable or rotate/back. This is
+044's permitted generation alternative for provider/link invalidation, not terminalization
+of every generic login session. No runtime storage, issuer, reader or revocation is
+implemented. B2/B3 and publication remain OPEN. Design Completed; exact-head Docs PENDING.
+
+### Source owners and concrete compatibility findings
+
+Source references in the 045 registration remain binding evidence. Additional reviewed
+exact implementation/test paths:
+
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/IdentityProviderJpaEntity.java`
+  and `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/ExternalIdentityJpaEntity.java`:
+  security fields enumerated below, no generation; provider/link reads cannot detect an
+  earlier disable/relink followed by restored values.
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/mapper/IdentityPersistenceMapper.java`:
+  session/provider constructors map current fields; generation addition is not automatic.
+- `src/main/java/dz/sh/hidra/modules/identity/application/model/AuthenticatedPrincipalInput.java`:
+  current normalized input lacks verification-time security versions and source deadline;
+  no DTO or constructor shape establishes trusted completion origin.
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaLocalCredentialRepositoryAdapter.java`:
+  repository.save maps a new entity; generation must later be read back after flush/refresh,
+  not returned from a stale constructed object.
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/LocalAdministratorBootstrapApplicationService.java`:
+  new credential create only; existing complete administrator retained, incomplete existing
+  state rejected; additive default must preserve that behavior without a password reset.
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/IdentityAdministrationCommandApplicationService.java`:
+  inspected commands create roles/permissions/grants, not an exhaustive security writer gate.
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/AuthenticationSessionLifecycleApplicationService.java`
+  and `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaLoginSessionRepositoryAdapter.java`:
+  copied session entities use ordinary save. A prior ACTIVE copy can overwrite a concurrent
+  terminal row without a database/owner concurrency guard; annotations are not proof.
+- `src/test/java/dz/sh/hidra/modules/identity/semantic/LoginSessionSemanticRemediationTest.java`,
+  `src/test/java/dz/sh/hidra/modules/identity/semantic/LoginSessionIntegrityMigrationTest.java`,
+  `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/AuthorizationAssertionTrustTest.java`
+  and `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/TopologyCurrentActorQueryAdapterTest.java`:
+  current protocol/end-state and assertion/actor precedents; not binding/generation/race proof.
+
+Current tables are public.hidra_identity_user, public.hidra_identity_provider,
+public.hidra_identity_external_identity, public.hidra_identity_local_credential and
+public.hidra_identity_login_session. Existing session schema permits null provider/link/
+expiry; HMR-087 supplied protocol and endedAt without deriving provenance. No migration
+backfills native token association. Current credential FK references User; several legacy
+session/link references are plain IDs. New binding must enforce its own exact references
+without broad repair of unrelated historical owner records.
+
+Technical mechanics checked against primary documentation:
+[PostgreSQL 16 triggers](https://www.postgresql.org/docs/16/trigger-definition.html),
+[CREATE TRIGGER](https://www.postgresql.org/docs/16/sql-createtrigger.html),
+[constraints](https://www.postgresql.org/docs/16/ddl-constraints.html),
+[ALTER TABLE](https://www.postgresql.org/docs/16/sql-altertable.html),
+[limits](https://www.postgresql.org/docs/16/limits.html) and
+[Spring Data JPA persistence](https://docs.spring.io/spring-data/jpa/reference/jpa/entity-persistence.html).
+Triggers participate in the causing transaction; CHECK cannot reliably enforce other-row
+state; save may merge; trigger-updated values require deliberate readback. Our selected
+contract is source-derived design, not tested framework/database behavior.
+
+### Proposed exact binding relation and column contract — not a migration reservation
+
+Design relation: `public.hidra_identity_operation_binding`. This name/column contract is
+reviewable design only; a future implementation registration must recheck collision and
+assign exact migration/Java/test filenames. Select JDK immutable owner model plus private
+JDBC append/exact lookup adapter, not mutable JPA merge/upsert. No cross-module export
+or Topology session writer is authorized.
+
+| Column(s) | PostgreSQL type / nullability | Selected meaning / constraints |
+|---|---|---|
+| binding_id | varchar(36), NOT NULL PK | Server canonical lowercase hyphenated UUID, immutable |
+| format_version | smallint, NOT NULL | Exactly 1; no silent reinterpretation |
+| native_issuer | varchar(512) COLLATE C, NOT NULL | Exact verified configured issuer; nonblank, no leading/trailing whitespace, octet_length <=512 |
+| native_audience | varchar(512) COLLATE C, NOT NULL | Exact configured expected audience; nonblank, octet_length <=512; validated JWT audience contains it |
+| jti | varchar(36) COLLATE C, NOT NULL | Canonical server UUID; unique with native_issuer |
+| session_id | varchar(80), NOT NULL UNIQUE | Exact newly created canonical UUID session; FK current LoginSession.id |
+| user_id | varchar(80), NOT NULL | Exact sub/User; FK current User.id; existing owner IDs need not be UUID |
+| authentication_type | varchar(80), NOT NULL | LOCAL, LDAP, ACTIVE_DIRECTORY or OIDC only; exact selected provider type |
+| session_protocol | varchar(80), NOT NULL | LOCAL, LDAP or OIDC; AD maps LDAP, not the inverse |
+| provider_id | varchar(80), NOT NULL | Exact provider identity, FK current provider.id even for LOCAL |
+| provider_security_version | bigint, NOT NULL | Positive database version captured from trusted authentication and rechecked on completion |
+| external_identity_id | varchar(80), conditional NULL | Exact FK current external link.id; absent for LOCAL, required for other three types |
+| external_subject | text COLLATE C, conditional NULL | Exact verified source/link subject, required for external paths; not a JWT native sub or snapshot |
+| external_security_version | bigint, conditional NULL | Positive link version; same LOCAL/external nullability split |
+| source_issuer | text COLLATE C, conditional NULL | Exact verified external issuer for OIDC; absent for LOCAL/directory |
+| source_expires_at | timestamptz, conditional NULL | Finite original OIDC assertion deadline; absent for LOCAL/directory |
+| credential_id | varchar(80), conditional NULL | Exact credential FK only for LOCAL |
+| credential_security_version | bigint, conditional NULL | Positive credential version only for LOCAL |
+| issued_at, expires_at | timestamptz, NOT NULL | Whole-second UTC interval issued_at < expires_at; finite; OIDC expiry capped by source_expires_at |
+
+FKs are NOT DEFERRABLE with ON UPDATE RESTRICT / ON DELETE RESTRICT. Captured versions
+are immutable snapshots, NOT foreign keys to current (id,version): version updates must
+invalidate old eligibility without blocking security changes. A native issuer/jti pair
+and a session each belong to exactly one binding. PK/unique B-tree keys plus nonunique
+indexes on user_id, provider_id, external_identity_id and credential_id support reference
+checks and owner diagnostics; no permissions or company/facility indexes/columns.
+
+Select 512 UTF-8 bytes for indexed issuer/audience to keep new exact lookup keys small;
+these are explicit new storage-format limits, not inferred existing configuration limits.
+Existing deployment configuration/data must be checked before activating bound issuance;
+incompatible values fail with a concrete compatibility error, never truncation or hash-
+only identity. Existing source subject/issuer text stays text without a newly imposed
+legacy column cap. Later trusted completion must enforce a documented bounded request/
+JWT parser envelope and reject oversized provenance before storage; this does not alter
+old text records. Native verification must preserve exact strings/case; no trim/normalize
+of signed identities to force a match. Referenced IDs stay within current varchar(80)
+with exact equality, nonblank and no boundary whitespace; new UUID fields are stricter.
+
+CHECK predicates require explicit IS NULL/IS NOT NULL branches so SQL UNKNOWN cannot
+admit a partially missing provenance tuple. LOCAL: protocol LOCAL, external/source fields
+all absent, credential fields present. LDAP/AD: protocol LDAP, link/subject/version present,
+credential/source fields absent. OIDC: protocol OIDC, link/subject/version/source issuer/
+source deadline present, credential absent. Require isfinite timestamps and exact second
+precision by equality to date_trunc('second', value); timestamptz(0) rounding alone is
+insufficient. Source deadline may retain original precision; expires_at <= source deadline.
+No wall-clock-dependent CHECK claiming a row stays forever unexpired.
+
+Cross-row state is enforced at append, not by a CHECK subquery: in one actual transaction
+lock/re-read exact provider, external link if any, credential if LOCAL, User and session;
+validate exact User/provider/link/subject/type/protocol, current versions and current
+human/active/unlocked evidence, session ACTIVE/endedAt absent and exact issued/start/
+expiry agreement. Use fixed relation/row ordering; the later B3 full fence supersedes
+local locking for protected operations. PostgreSQL owner insert enforcement must validate
+relational tuples and version equality under locks for native writers as well. A DB tuple
+validator cannot prove a JWT signature or successful password check: trusted completion
+must supply that proof; arbitrary database inserts do not authorize a caller.
+
+Binding insert code must reject outside a transaction; SQL INSERT plus exact conflict
+read, no DO UPDATE or JPA merge. Exact replay matches every field, including binding_id,
+versions and timestamps, and returns already-stored evidence without rewriting it. Different
+binding_id at the same issuer/jti or session is a conflict even if some fields match.
+Absent exact lookup returns absent evidence; malformed input, integrity mismatch or
+storage failure returns error, not absence. Exact storage replay after expiry/end remains
+an immutable-storage result, never authentication or authorization. Race duplicate insert
+must converge under real unique constraints; no automatic retry changes IDs/deadlines.
+
+Reject all binding UPDATE/DELETE/TRUNCATE, including unchanged UPDATE; exact replay uses
+read only. No raw bearer/password/hash, arbitrary JSON/claims, signing secret or correlation-
+based authority in this relation. Identity controls append and retention; deletion of
+referenced owners is blocked. No cascade purges proof. Retention redesign needs a later
+registered owner policy; this stage does not invent retention periods.
+
+### Database security generations and ordinary-writer enforcement
+
+Select additive `security_version bigint NOT NULL DEFAULT 1 CHECK (security_version > 0)`
+on each current credential/provider/external-link relation. Existing rows start at 1 for
+future verification only; no historical token is treated as version 1 proof. Each relation
+has BEFORE INSERT/UPDATE row enforcement, plus DELETE and statement TRUNCATE rejection.
+Reject primary-ID changes and deletion on all rows so delete/recreate cannot reset versions;
+credential user_id reassignment is also rejected. Disable/retire is the supported future
+lifecycle instead. Link reassignment is allowed only as a security event and increments;
+its old binding remains permanently ineligible. Future hard delete/archive needs explicit
+retention/generation redesign. New constraint/trigger compatibility is gated, not claimed
+already compatible with every generic/native consumer.
+
+INSERT accepts only initial version 1/default. UPDATE rejects a supplied version different
+from OLD.security_version; normal writers do not control it. The database then computes
+OLD+1 on a security event, or OLD on unchanged/security-neutral fields. Fail on bigint
+maximum instead of wrapping/resetting; overflow aborts the whole statement/transaction.
+Use null-safe IS DISTINCT FROM comparisons and inspect all updates, not UPDATE OF alone.
+Do not use timestamp granularity, externally supplied generation, or hidden exemptions
+based on current_user/correlation metadata. Trigger functions are schema-qualified,
+search_path constrained and never dynamic-SQL identifiers from requests.
+
+| Relation | Fields that advance version | Explicit exemptions / immutable fields |
+|---|---|---|
+| Credential | password_hash, credential_status, password_changed_at | id/user_id/created_at immutable; updated_at alone is metadata. Rehash conservatively advances: no current trusted rehash classification exists |
+| Provider | code, provider_type, issuer_uri, authorization_endpoint, token_endpoint, jwks_uri, directory_base_dn, user_search_base, group_search_base, username_attribute, email_attribute, display_name_attribute, external_id_attribute, group_membership_attribute, sync_enabled, just_in_time_provisioning_enabled, status, metadata, secret_reference | id/created_at immutable; name and updated_at alone are presentation/metadata |
+| External link | user_id, identity_provider_id, external_subject, external_immutable_id, external_username, external_distinguished_name, status | id/created_at immutable; external_email/display_name, external_attributes_snapshot, last_login_at, last_synced_at and updated_at alone excluded; snapshots never confer assertion authority |
+
+A change from ACTIVE to inactive then ACTIVE, LINKED away then back, or password A/B/A
+increments each time; old captured version never becomes current again. Same-value status
+UPDATE alone is not a security event. Password reset must change password_changed_at or
+hash; reset to the same bytes/timestamp cannot be observed as a change. Any future explicit
+revoke/reset command with unchanged tuple must use a registered monotonic-increment owner
+DB operation, not caller-set version; no such command is implemented/claimed here.
+User/provider eligibility is still checked every operation. User lock/unlock is current
+state policy, not a selected new permanent User generation; future irreversible User
+session invalidation would need separate scope. External remote state changes remain
+unknown until locally observed; changing an external secret behind unchanged secret_reference
+needs an explicit future local security event, not a claim that SQL detects remote rotation.
+
+Normal JPA, bulk/native SQL, COPY insert and MERGE/UPSERT paths must meet these guards;
+upsert trigger ordering needs real tests, no assumptions. No delegated writer escape for
+TRUNCATE. DDL owners/superusers can disable/drop guards or alter replication behavior:
+that privilege is outside this protocol. Runtime role must lack ownership/DDL/trigger-
+disable/replication-bypass rights; migration/admin roles are governed separately. Controlled
+backup restore must restore constraints, triggers and versions unchanged before service.
+No current deployed role separation or admin protection is claimed tested.
+
+Selected generation triggers do not write LoginSession, preventing a provider-row-to-
+session lock inversion and mass updates. A mismatching bound session is operationally
+ineligible; its historical generic status need not be rewritten. Deadlock/lock-timeout
+still aborts all work; B3 proves complete lock ordering and protected-operation behavior.
+Security-version tables join 043's fence inventory; generation equality is not B2/B3 proof.
+
+### Bound-session stability, stale merges and JPA compatibility
+
+For session rows referenced by a binding, reject changes to id/User/provider/link/start/
+expiry/protocol and correlation/client metadata used in the stored tuple policy; choose
+all fields immutable except last_seen_at, status and ended_at. Permit ACTIVE to EXPIRED,
+REVOKED or LOGGED_OUT only with finite ended_at >= started_at. Never allow terminal to
+ACTIVE, terminal-state replacement or endedAt rewrite. Same terminal status/endedAt may
+be an idempotent read/no-op; stale ACTIVE save fails instead of silently merging. Bound
+ACTIVE rows require null endedAt; no new bound row may start already terminal.
+Reject bound-session DELETE; reject LoginSession TRUNCATE while bindings exist. Unbound
+legacy session semantics remain existing semantics until separately authorized. Session
+insert enforcement and subsequent binding append must lock session and security owner
+rows in one compatible order so lifecycle/create races cannot bypass guards.
+
+A bound-session guard reads association existence. A concurrently appended binding must
+be serialized against native session update/delete; checking existence without locking
+is insufficient. Select a common explicit row-lock discipline and binding-insert trigger
+that locks the session before reading its final tuple; session UPDATE already locks its
+row. For any destructive/unbound-row path, proof must show either update wins and append
+rejects changed tuple, or append wins and update sees binding under READ COMMITTED before
+mutation. Wrong isolation/cached snapshots or same-transaction append/mutate escape must
+be tested and rejected or separately constrained. Statement TRUNCATE requires relation-
+level serialization and explicit binding check; no scan-only race guarantee.
+
+Future generation reads must use read-only mapped version fields or exact JDBC owner
+queries, not Spring/JPA @Version driving a competing application increment. At save,
+flush and refresh/current DB read inside the writer transaction returns generated value;
+preloaded EntityManager/second-level cache must not supply authentication evidence.
+Later constructor/mapper/test changes are registered independently. Existing unmapped
+old JPA writers omit the new version column, so DEFAULT/trigger enforcement can operate,
+but this is only a compatibility hypothesis until actual bootstrap/save/merge/native
+integration tests pass. Stale security data overwrite may produce a new security version,
+never reset it; preventing all lost updates is a separate writer concurrency concern.
+
+### Forward migration, fresh/upgrade and rollout disposition
+
+Use three separately registered prerequisite areas: (A) LOCAL generation/guards,
+(B) provider/link generation/guards, (C) inert binding storage and bound-session guards.
+Then generation read contracts and trusted issuance, then operation reader, B2/B3 and
+publication. A/B contain different writer/compatibility risks and must not be hidden in
+C. No new migration filename/version is reserved here; recheck all current migration
+versions and relation/constraint/trigger/function names at registration. All names fit
+PostgreSQL identifier limit, unique and owner-prefixed. Old migrations remain byte-identical.
+
+A/B forward migrations initialize positive versions and install guards transactionally;
+preflight actual existing ID/User/createdAt/status/subject integrity needed by new guarded
+writes, report offending identifiers without credential material. Do not normalize/delete
+legacy data or invent missing times. Migration of valid credentials initializes version
+only, not password hash change/authentication/provenance. C starts an empty binding table;
+new FKs validate its records, no mandatory global repair/backfill of old orphan sessions.
+Unbound old sessions remain ineligible at future protected operations. C's guard does not
+retroactively rewrite old protocol/end history or impose whole-second bounds on old rows.
+
+Fresh schema and upgrade from exact previous migration tail must both pass full Flyway
+validate(), immutable old checksums and generated dictionary coverage. Applied forward
+migration failure rolls back where supported; successful DDL rollback is a registered
+forward corrective migration, never editing applied SQL or dropping evidence casually.
+If orphan or compatibility violations block a required guard, record a concrete data-
+integrity blocker; synthetic development fixtures suffice, owner real data is deployment.
+
+A/B guards change delete/reset semantics: require explicit later registration acceptance
+and controlled deployment writer inventory. No rolling compatibility promise based only
+on added columns. Prove old/new writer behavior with new guards; do not run old bound
+issuance (none currently exists) alongside new readers without eligibility gating. New
+protected operation remains unavailable until all B1/B2/B3 gates accepted; generic API
+response, original assertions and 040/041 exports stay untouched here. No feature flag,
+permission seed, client contract, release/version or deployment script is changed.
+
+### Required synthetic storage proof — specification only
+
+| Future real PostgreSQL 16 / owner test | Required observation |
+|---|---|
+| Fresh/upgrade, defaults, constraints/triggers and dictionary | Exact forward schema and all old checksums; legacy sessions stay unbound; generation init does not alter hashes/history |
+| Two Users/providers/links/sessions and independent companies/facilities | Exact FK/provenance/version tuples; association cannot imply company/facility permission |
+| Missing/null/unknown branch fields, nonfinite/fractional time, issuer byte limit and mismatched deadline | Constraints/owner append fail closed; no truncation or timestamp rounding acceptance |
+| PK/issuer+jti/session duplicate; exact/different replay on independent connections | One persisted immutable tuple; exact replay only; conflict rolls back; no UPDATE path |
+| Provider/link/credential mutate back; native SQL, bulk ORM, COPY, MERGE and upsert | Every actual security event advances, neutral event retains, supplied version/reset/overflow rejected |
+| Credential/User/owner delete/recreate and TRUNCATE | Guards/FKs preserve evidence and generations; governed privileged bypass explicitly outside acceptance |
+| Bound session touch, termination, stale ACTIVE/other-terminal merge, delete/expiry/provenance alteration | Tuple stable and original terminal end preserved; no resurrection; unbound compatibility demonstrated |
+| Binding append versus session native mutation/delete/truncate and provider/credential change | Independent connections, barriers and confirmed lock/statement observations; chosen winner produces consistent tuple/version or full failure |
+| Signing/completion and metadata-verified version capture | Later separate issuance tests compare verification-time versions, not a new current version; no token delivery asserted by storage tests |
+| JDBC/JPA same transaction rollback, generated version readback and cache | Exact generated values after flush/refresh; errors roll back; stale managed entity never yields trusted authority |
+| Application role versus DDL owner/restore | Ordinary writer guards execute; privileged bypass limits documented and restore verification mandatory |
+
+No sleep-based race proof, mock unique constraints, live provider or real customer fixture.
+No Maven/database/provider/race test was executed during this documentation design.
+
+### Candidate implementation areas and next selected boundary
+
+| Separate area — not registered for mutation | Source-backed candidate changes / acceptance |
+|---|---|
+| A LOCAL credential generation FIRST | Forward migration, real PostgreSQL and existing bootstrap/adapter regression tests; dictionary ownership/generation. DB-only additive generation can precede Java transport, which remains later. No credential reset service introduced |
+| B Provider/link generations | Forward migration, exact field classification and native/ORM provider/link tests, dictionary; read-only version transport/mappers registered when needed |
+| C Inert binding and bound-session storage | Immutable owner model/port, private JDBC adapter, forward migration/FKs/guards, real PostgreSQL session/concurrency tests, dictionary; issuer and reader stay inactive |
+| Generation reads/trusted issuance/lifecycle integration | Current credential/provider/link owner queries, AuthenticatedPrincipalInput, provider adapters, completion/issuer metadata and lifecycle; verify original authentication versions/deadline and one commit before token return |
+| Reader, B2, B3 and publication | Separate owner export/evaluator/transaction/race/performance and publication registrations; no private imports or callback cycles |
+
+Existing exact source paths above are review areas, not write permission. New filenames,
+migration versions, exact implementation HPR/message/allowlists/tests must be registered
+before code. Next eligible action after design exact-head Docs succeeds and separate
+owner Next is **recover/register area A LOCAL credential database-generation implementation**.
+If refreshed writer compatibility needs a prerequisite correction, register that blocker;
+do not silently weaken generation/delete protections or execute later areas.
+
+045 design is Completed in source; runtime storage/issuance/reader, B2/B3 and publication
+remain NOT IMPLEMENTED/OPEN. F1–F4/P2.5 OPEN, simulator/P3 DEFERRED. Preserve gas-first/GZ2,
+Hidra own engine, steady/transient direction, dynamic versioned inputs/operator control,
+synthetic development and owner-supplied deployment calibration. Version/release,
+deployment and closure unchanged. Publish one guarded two-document direct-main commit,
+verify exact parent/tree/scope and exact-head Docs startup, then STOP without waiting
+for completion or selecting another stage.
+
+
+HPR-P25-045 storage-policy publication validation: documentation-validator 10,
+OpenAPI-validator 10 and dictionary-generator 17 unit tests PASS; canonical docs
+PASS (98 documents, 5,306 relative links, 24 modules, 13 P2 rows); offline OpenAPI
+PASS (263 operations, 244 paths, 231 schemas); existing P1 closure evidence
+consistency PASS without executing closure. Exact two-document scope, 13 newly
+cited source/test paths plus preserved registration evidence, historical detailed
+registrations/reconciliation and unchanged historical roadmap, and whitespace PASS.
+PostgreSQL/Spring mechanics checked against linked primary documentation; selected
+storage/generation/guard contracts are design findings, not executed DB/JPA/race proof.
+No Maven/database/provider/race or closure execution; no runtime/schema/API/export,
+version/release/deployment mutation. Design Completed; exact-head Docs PENDING.
+Next is separate LOCAL credential-generation implementation recovery/registration
+only after policy Docs succeeds and owner Next; no automatic advance.

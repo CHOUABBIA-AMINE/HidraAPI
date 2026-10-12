@@ -23,7 +23,7 @@ This is an execution-status summary of the authoritative task table below, **not
 | **HPR-P25-043 cross-owner access linearization preflight** | **DESIGN COMPLETED / DOCS #253 SUCCESS** | Runtime B1/B2/B3 and race/performance gates remain OPEN |
 | **HPR-P25-044 B1 operation-authentication provenance policy** | **DESIGN COMPLETED / DOCS #255 SUCCESS** | Dedicated issuer/jti session binding selected; runtime storage/issuance/reader and B2/B3 remain OPEN |
 | **HPR-P25-045 B1 storage preflight** | **DESIGN COMPLETED / DOCS #257 SUCCESS** | DB security generations and immutable binding design selected; runtime OPEN |
-| **HPR-P25-046 LOCAL credential generation** | **CODE IMPLEMENTED / CI #660 REPAIR PENDING ACCEPTANCE** | Docs #259 SUCCESS; sole station-upgrade count failure repaired; full exact-head CI required |
+| **HPR-P25-046 LOCAL credential generation** | **CODE IMPLEMENTED / CI #661 DICTIONARY REPAIR PENDING ACCEPTANCE** | #661: all 1,754 tests and runtime OpenAPI PASS, Docs #260 SUCCESS; exact CI dictionary provenance correction in source |
 | F1-02 through F1-04 publication, APIs and topology verification | PLANNED; subsequent implementation slices not registered | Register bounded HPRs before execution |
 | F2-01 through F2-04 product/equipment/engineering history | PLANNED; not registered | Dependent F1 ownership and history work |
 | F3-01 through F3-04 telemetry/monitoring/action evidence | PLANNED; not registered | Dependent topology and source-scope contracts |
@@ -36,7 +36,7 @@ This is an execution-status summary of the authoritative task table below, **not
 
 **Product policy:** Hidra is universal, configurable and company/network/product independent. No real customer data, P&IDs, vendor curves or live SCADA are prerequisites for generic development. PLATFORM software testing uses explicit synthetic data; customer SITE commissioning is an entirely separate gate. Numerical simulation work is deferred.
 
-**Code discipline:** `HPR-P25-037` is implemented and CI accepted; `HPR-P25-038` policy design is accepted; `HPR-P25-039` Party eligibility is accepted; `HPR-P25-040` trusted Topology actor export is CI accepted; `HPR-P25-041` paired scoped permission export is CI accepted; `HPR-P25-042` live Facility/Party owner-reference query is CI accepted; `HPR-P25-043` cross-owner access linearization design is Docs accepted; `HPR-P25-044` B1 operation-authentication provenance policy is completed as design below; policy Docs #255 SUCCESS. `HPR-P25-045` additive binding/credential-security storage policy is completed as design below; policy Docs #257 SUCCESS. `HPR-P25-046` LOCAL credential generations are implemented; Docs #259 SUCCESS, Production #660 failed on station upgrade count and bounded repair is recorded below; repaired full CI acceptance PENDING. Runtime provenance, common-time and transaction-participation gates remain OPEN. Runtime revocation/linearization and publication slices remain unregistered. Codes `F1-02` etc. are **planning references only** and MUST NOT be executed or treated as approved HPR codes before registration, exact commit message and exact create/update/delete file allowlists. Dependencies are minimum known gates, not blanket permission.
+**Code discipline:** `HPR-P25-037` is implemented and CI accepted; `HPR-P25-038` policy design is accepted; `HPR-P25-039` Party eligibility is accepted; `HPR-P25-040` trusted Topology actor export is CI accepted; `HPR-P25-041` paired scoped permission export is CI accepted; `HPR-P25-042` live Facility/Party owner-reference query is CI accepted; `HPR-P25-043` cross-owner access linearization design is Docs accepted; `HPR-P25-044` B1 operation-authentication provenance policy is completed as design below; policy Docs #255 SUCCESS. `HPR-P25-045` additive binding/credential-security storage policy is completed as design below; policy Docs #257 SUCCESS. `HPR-P25-046` LOCAL credential generations are implemented; #661 passed all 1,754 tests and runtime OpenAPI, Docs #260 SUCCESS; dictionary provenance repair is recorded below and overall full CI acceptance remains PENDING. Runtime provenance, common-time and transaction-participation gates remain OPEN. Runtime revocation/linearization and publication slices remain unregistered. Codes `F1-02` etc. are **planning references only** and MUST NOT be executed or treated as approved HPR codes before registration, exact commit message and exact create/update/delete file allowlists. Dependencies are minimum known gates, not blanket permission.
 
 | Order | Code / planning reference | Task | Current status | Dependencies / gate | Track |
 |---|---|---|---|---|---|
@@ -49,7 +49,7 @@ This is an execution-status summary of the authoritative task table below, **not
 | 2.5 | HPR-P25-043 | Cross-owner access linearization design preflight | COMPLETED — design only; exact-head Docs #253 SUCCESS | Accepted at `f6dabb6a4585c7c30203352f9f96a2892aa79a84`; runtime B1/B2/B3 OPEN | F1 |
 | 2.6 | HPR-P25-044 | B1 operation-authentication provenance and session-binding policy preflight | COMPLETED — design only; exact-head Docs #255 SUCCESS | Accepted at `8a2c692825f0466441ae23d49ecc24324de89775`; B1 runtime/B2/B3 OPEN | F1 |
 | 2.7 | HPR-P25-045 | B1 binding and credential-security storage preflight | COMPLETED — design only; Docs #257 SUCCESS | Accepted at `8cb9c8560b57da14de43b3e391ec1808d2eb1395`; runtime A/B/C and B2/B3 OPEN | F1 |
-| 2.8 | HPR-P25-046 | LOCAL credential database security generation | CODE IMPLEMENTED — full CI acceptance BLOCKED by #660; repair in source | Docs #259 SUCCESS; bounded station test correction, repaired exact-head Production/Docs PENDING | F1 |
+| 2.8 | HPR-P25-046 | LOCAL credential database security generation | CODE IMPLEMENTED — full CI acceptance BLOCKED by #661 dictionary provenance; repair in source | All 1,754 tests/runtime OpenAPI and Docs #260 PASS; corrected exact-head Production/Docs PENDING | F1 |
 | 2a | F1-02 implementation | Station revision history / transactional publication | PLANNED — not registered or implemented | HPR-P25-038 policy design; exact implementation allowlist and subsequent owner Next | F1 |
 | 3 | F1-03 | Company-scoped authoring, topology APIs and exact-history access | PLANNED — needs HPR registration | F1-02; authorization/API contracts | F1 |
 | 4 | F1-04 | Synthetic multi-company topology validation | PLANNED — needs HPR registration | F1-03; registered acceptance test envelope | F1 |
@@ -4395,3 +4395,89 @@ scope, one assertion block, preserved original byte/checksum invariants and deta
 historical records, all 146 unchanged migration checksums and whitespace PASS.
 No production/dictionary/workflow/version/deployment change. Repair source complete;
 exact-head Production/Docs acceptance PENDING. No next stage executed.
+
+
+## 2026-10-12 — HPR-P25-046 CI #661 repair: exact CI dictionary provenance
+
+Owner Fail selects repair only at main `fa1bdf0ede51f5c5defcde25429e9dffd77483c2`,
+tree `43cb56090adb5078ed6b41174d67396d458aa2b7`. Exact-head
+[Production #661](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38287973157)
+FAILED at Capture current migrated database dictionary evidence;
+[Docs #260](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38287973137)
+SUCCESS. Current AGENTS.md, PROJECT_STATE.md, roadmap/reconciliation, workflow,
+generator/comparator and exact job logs were read before mutation.
+
+Repository verification now **PASS: 1,754 tests, 0 failures, 0 errors, 0 skipped**.
+Runtime OpenAPI equality PASS. The #660 station-upgrade repair is verified by this
+full suite, including the actual new PostgreSQL credential tests. Overall runtime
+acceptance remains blocked by the dictionary step. Its command redirects the failure
+diagnostic into target/database/verification.json, so the job log only exposes exit 1.
+Independent exact-head catalog evidence emitted by the existing C3D/C3C PostgreSQL tests
+permits deterministic reproduction without rerunning or changing CI.
+
+Root cause: committed dictionary used the genuine local Ubuntu PostgreSQL 16.15 server
+build string. CI uses Debian PostgreSQL 16.15; comparable_markdown ignores only capture
+source SHA and intentionally compares the server build too. Recovered CI generation
+passes the same source/catalog validation but the prior checked dictionary fails its
+exact comparison. The physical schema, trigger definitions, source bundle, mappings
+and owner facts are identical; only the capture-source line and server-version line
+differ. The LOCAL generation SQL and the station upgrade repair remain unchanged.
+
+Exact repair message: `docs(database): align dictionary with verified ci catalog`.
+Closed owner-Fail repair scope: UPDATE `doc/database/DATA_DICTIONARY.md`,
+`doc/roadmap/ULTIMATE_ROADMAP.md` and `doc/model-remediation/RECONCILIATION.md` only.
+CREATE/DELETE none. No production/test Java, SQL, generator/comparator, ownership,
+workflow/dependency, API, release/version/deployment or closure changes. This metadata
+correction does not register or execute another roadmap stage.
+
+### Exact evidence recovery and reproduction
+
+Recovered 98 contiguous HIDRA_P25_C3D_CATALOG_PART records from job 114940810776,
+base64-decoded and gzip-decompressed into the actual schema-only document. Verified
+exact source head, source bundle and the emitted catalog SHA-256 before regeneration;
+no rows, credentials or private data were recovered or fabricated.
+
+| Evidence | Verified value |
+|---|---|
+| Exact CI source SHA | fa1bdf0ede51f5c5defcde25429e9dffd77483c2 |
+| Source bundle SHA-256 | d85260b4f2eae88875be2a706ffbfc0b376f2d69af356e4d2ed37cdfcfc2ae2f |
+| Canonical schema document SHA-256 | 0ccace13117f34baa9edec5781827a0fc0564fe73b90592f70c5b43b08c8c8db |
+| Exact regenerated dictionary SHA-256 | f3dd5f942745cae620e5b5dc20d585e9f4e77155a5d6d8ce0cff5673cf9febd2 |
+| Actual server | 16.15 (Debian 16.15-1.pgdg13+2) |
+| Actual catalog/source coverage | 146 migrations, 470 JPA mappings, 490 relations; 0 unresolved owners |
+
+Unchanged `.github/scripts/generate_data_dictionary.py` with supported --input,
+exact source SHA and current ownership regenerated the dictionary. Hash matches the
+independently printed CI dictionary hash exactly; --check against the replacement PASS.
+Before replacement, the same comparator demonstrably rejects the local build header.
+No comparator relaxation, collector impersonation or guessed schema metadata.
+The replacement diff is exactly two provenance lines, with every physical relation/
+column/default/check/index/trigger/function/source/ownership fact preserved verbatim.
+Future repaired CI rechecks the same schema under its own verified capture SHA.
+
+HPR-P25-046 CODE IMPLEMENTED; #661 repository tests/OpenAPI PASS; overall full CI
+acceptance BLOCKED by metadata comparison until corrected exact-head Production/Docs
+passes. #660's historical failure remains recorded. No local database/Maven test rerun
+is needed for this two-line metadata correction; retain exact-head hosted test evidence
+and run dictionary/37 validator/docs/OpenAPI/P1 consistency/source/scope/checksum checks.
+No closure execution or feature advancement. Next only after repaired full CI succeeds
+and owner Next remains area B provider/link generation recovery/registration.
+
+F1–F4/P2.5 OPEN, simulator/P3 DEFERRED; preserve gas-first/GZ2, own engine, steady/
+transient, versioned inputs/operator control, synthetic development and owner calibration.
+Version/release/deployment/closure unchanged. Publish one guarded direct-main commit,
+verify exact parent/tree/three paths and required exact-head CI startup, then STOP
+without waiting for completion or advancing.
+
+
+CI #661 repair publication validation: exact CI schema head/bundle/catalog digest
+and regenerated dictionary digest verified; prior strict comparator mismatch
+reproduced, replacement dictionary --check PASS. All 37 validator unit checks,
+canonical docs (98 documents, 5,308 links, 24 modules, 13 P2 rows), offline OpenAPI
+(263 operations, 244 paths, 231 schemas) and existing P1 evidence consistency PASS.
+Closed three-file scope, exactly two dictionary provenance lines, every physical
+schema fact, historical detailed record and all 146 SQL checksums preserved;
+whitespace PASS. #661's 1,754 tests/runtime OpenAPI remain verified hosted evidence;
+no redundant local database/Maven rerun, code/CI/comparator relaxation or version/
+release/deployment/closure change. Repair source complete; corrected exact-head
+Production/Docs acceptance PENDING; no next stage executed.

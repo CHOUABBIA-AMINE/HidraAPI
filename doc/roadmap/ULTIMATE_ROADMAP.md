@@ -21,7 +21,7 @@ This is an execution-status summary of the authoritative task table below, **not
 | HPR-P25-039, 040, 041 owner, actor and paired scoped permission exports | CODE IMPLEMENTED; recorded production CI successful | No implication of complete cross-owner publication/authorization |
 | **HPR-P25-042 live Facility/Party owner-reference query** | **COMPLETED / PRODUCTION #659 AND DOCS #251 SUCCESS** | Accepted owner observation only; no publication authority |
 | **HPR-P25-043 cross-owner access linearization preflight** | **DESIGN COMPLETED / DOCS #253 SUCCESS** | Runtime B1/B2/B3 and race/performance gates remain OPEN |
-| **HPR-P25-044 B1 operation-authentication provenance policy** | **PLANNED / REGISTERED / DESIGN ONLY** | Passing registration Docs and separate owner Next select exact two-document policy preflight |
+| **HPR-P25-044 B1 operation-authentication provenance policy** | **DESIGN COMPLETED / POLICY DOCS PENDING** | Registration Docs #254 SUCCESS; dedicated issuer/jti session binding selected; runtime storage/issuance/reader and B2/B3 remain OPEN |
 | F1-02 through F1-04 publication, APIs and topology verification | PLANNED; subsequent implementation slices not registered | Register bounded HPRs before execution |
 | F2-01 through F2-04 product/equipment/engineering history | PLANNED; not registered | Dependent F1 ownership and history work |
 | F3-01 through F3-04 telemetry/monitoring/action evidence | PLANNED; not registered | Dependent topology and source-scope contracts |
@@ -34,7 +34,7 @@ This is an execution-status summary of the authoritative task table below, **not
 
 **Product policy:** Hidra is universal, configurable and company/network/product independent. No real customer data, P&IDs, vendor curves or live SCADA are prerequisites for generic development. PLATFORM software testing uses explicit synthetic data; customer SITE commissioning is an entirely separate gate. Numerical simulation work is deferred.
 
-**Code discipline:** `HPR-P25-037` is implemented and CI accepted; `HPR-P25-038` policy design is accepted; `HPR-P25-039` Party eligibility is accepted; `HPR-P25-040` trusted Topology actor export is CI accepted; `HPR-P25-041` paired scoped permission export is CI accepted; `HPR-P25-042` live Facility/Party owner-reference query is CI accepted; `HPR-P25-043` cross-owner access linearization design is Docs accepted; `HPR-P25-044` B1 operation-authentication provenance policy preflight is registered below, not executed. Runtime provenance, common-time and transaction-participation gates remain OPEN. Runtime revocation/linearization and publication slices remain unregistered. Codes `F1-02` etc. are **planning references only** and MUST NOT be executed or treated as approved HPR codes before registration, exact commit message and exact create/update/delete file allowlists. Dependencies are minimum known gates, not blanket permission.
+**Code discipline:** `HPR-P25-037` is implemented and CI accepted; `HPR-P25-038` policy design is accepted; `HPR-P25-039` Party eligibility is accepted; `HPR-P25-040` trusted Topology actor export is CI accepted; `HPR-P25-041` paired scoped permission export is CI accepted; `HPR-P25-042` live Facility/Party owner-reference query is CI accepted; `HPR-P25-043` cross-owner access linearization design is Docs accepted; `HPR-P25-044` B1 operation-authentication provenance policy is completed as design below; registration Docs #254 SUCCESS and policy exact-head Docs PENDING. Runtime provenance, common-time and transaction-participation gates remain OPEN. Runtime revocation/linearization and publication slices remain unregistered. Codes `F1-02` etc. are **planning references only** and MUST NOT be executed or treated as approved HPR codes before registration, exact commit message and exact create/update/delete file allowlists. Dependencies are minimum known gates, not blanket permission.
 
 | Order | Code / planning reference | Task | Current status | Dependencies / gate | Track |
 |---|---|---|---|---|---|
@@ -45,7 +45,7 @@ This is an execution-status summary of the authoritative task table below, **not
 | 2.3 | HPR-P25-041 | Identity-owned paired company/facility permission export | COMPLETED — exact-head Production #657 and Docs #244 SUCCESS | Accepted at `6429b8dc0e449b54db89d520ba14c22ce424db1c` | F1 |
 | 2.4 | HPR-P25-042 | Topology live Facility/Party owner-reference query | COMPLETED — exact-head Production #659 and Docs #251 SUCCESS | Accepted at `ed6ec83f1b2163fc32a15f2f3c6964cf6758a025` | F1 |
 | 2.5 | HPR-P25-043 | Cross-owner access linearization design preflight | COMPLETED — design only; exact-head Docs #253 SUCCESS | Accepted at `f6dabb6a4585c7c30203352f9f96a2892aa79a84`; runtime B1/B2/B3 OPEN | F1 |
-| 2.6 | HPR-P25-044 | B1 operation-authentication provenance and session-binding policy preflight | PLANNED — registered below; NOT EXECUTED | Accepted 043; passing registration Docs and separate owner Next; exact two-document scope | F1 |
+| 2.6 | HPR-P25-044 | B1 operation-authentication provenance and session-binding policy preflight | COMPLETED — design only; exact-head policy Docs PENDING | Registration Docs #254 SUCCESS at `ad37bb1da77f3a57b73fa06e2fe39417bc979ad4`; B1 runtime/B2/B3 OPEN | F1 |
 | 2a | F1-02 implementation | Station revision history / transactional publication | PLANNED — not registered or implemented | HPR-P25-038 policy design; exact implementation allowlist and subsequent owner Next | F1 |
 | 3 | F1-03 | Company-scoped authoring, topology APIs and exact-history access | PLANNED — needs HPR registration | F1-02; authorization/API contracts | F1 |
 | 4 | F1-04 | Synthetic multi-company topology validation | PLANNED — needs HPR registration | F1-03; registered acceptance test envelope | F1 |
@@ -3241,3 +3241,280 @@ cited source/test/migration references, historical roadmap/reconciliation preser
 and whitespace checks PASS. No Java/Maven/database/provider/race execution, token/
 session/schema mutation or release/version/deployment/closure change. Registration
 acceptance remains exact-head Docs PENDING; B1 policy execution is not selected here.
+
+
+## 2026-10-12 — Execute HPR-P25-044 operation-authentication provenance policy
+
+### Selection and source-backed disposition
+
+Owner continuation selects only `docs(identity): define operation authentication provenance policy`.
+Baseline main `ad37bb1da77f3a57b73fa06e2fe39417bc979ad4`, tree
+`45fcb81433f61b1bad47fa00ed8761a99a95b33e`; registration
+[Docs #254](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38211020728)
+SUCCESS. Latest runtime Production #659 remains SUCCESS at accepted 042.
+AGENTS.md, PROJECT_STATE.md, current roadmap/reconciliation, accepted 043 and the
+sources below were reviewed. Exclusive UPDATE scope is these two governance documents;
+CREATE/DELETE none. Historical records, including originally pending registrations,
+remain preserved. Policy Completed in source; exact-head policy Docs acceptance PENDING.
+
+**Decision:** dedicated immutable persisted association from validated Hidra issuer/jti
+to one exact LoginSession, with provider-specific provenance and current eligibility.
+This is a B1 design, not implemented authentication, revocation or publication authority.
+Storage, trusted completion and owner reader require separate registrations; B2/B3 remain
+OPEN. No new HPR code, Java filename, migration version or runtime allowlist is assigned.
+
+### Revalidated exact source and compatibility constraints
+
+| Exact source | Finding governing this policy |
+|---|---|
+| `src/main/java/dz/sh/hidra/modules/identity/application/service/AuthenticationCompletionApplicationService.java` | Constructs HidraPrincipal, calls issuer, then session lifecycle; completion has no transaction annotation and returns both sessionId and jti without association |
+| `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/HidraAccessTokenIssuer.java` | HS256 claims include sub, server UUID jti, iat/exp, authentication_type and provider ID; no session/link claim; timestamps use Instant.now |
+| `src/main/java/dz/sh/hidra/modules/identity/application/port/out/AccessTokenIssuerPort.java` and `src/main/java/dz/sh/hidra/modules/identity/application/model/IssuedAccessToken.java` | Principal-only issuance port; issued metadata has jti/time but not issuer/audience; future completion must obtain exact verified/configured metadata without unsigned parsing |
+| `src/main/java/dz/sh/hidra/platform/configuration/HidraJwtDecoderConfiguration.java` | Separate qualified native/external decoders; native HS256 issuer/time validation, audience conditional on configuration; protected-operation policy requires nonblank expected audience and verified membership |
+| `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/LocalAuthenticationProvider.java` | Current active LOCAL provider, credential and User; local success outcome recorded before completion |
+| `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/LdapAuthenticationProvider.java` | Actual provider is selected from exactly one active LDAP/ACTIVE_DIRECTORY candidate; verified external subject resolves link; selected type, not caller selector, is authoritative |
+| `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/IdentityOidcJwtAuthenticationConverter.java` | Validated issuer resolves active OIDC provider and LINKED subject/User; captures original verified assertion |
+| `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/SpringAuthorizationContextAdapter.java` and `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/HidraOidcAuthenticationToken.java` | OIDC carries bounded verified claims/expiry; ordinary native JWT carries no original external assertion; token class constructors alone are not an origin proof |
+| `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/TopologyCurrentActorQueryAdapter.java` | Accepted actor query redecodes native subject and checks human/current User; no session or provider/link proof |
+| `src/main/java/dz/sh/hidra/modules/identity/application/service/AuthenticationSessionLifecycleApplicationService.java` | Session UUID, ACTIVE lifecycle and expiry; LDAP and AD both record LDAP protocol; terminal sessions are preserved; no token association |
+| `src/main/java/dz/sh/hidra/modules/identity/domain/model/LoginSession.java` and `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/LoginSessionJpaEntity.java` | Existing ID references varchar(80), protocol varchar(80), nullable expiry and end time; no reliable auth-type or jti reconstruction |
+| `src/main/java/dz/sh/hidra/modules/identity/application/port/out/LoginSessionRepositoryPort.java` and `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/repository/LoginSessionJpaRepository.java` | Existing exact session read/save, no association lookup |
+| `src/main/java/dz/sh/hidra/modules/identity/domain/model/LocalCredential.java` and `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/LocalCredentialJpaEntity.java` | Credential identity/status/passwordChangedAt, but no monotonic security version; timestamp equality cannot prove no rotation |
+| `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/IdentityProviderJpaEntity.java` and `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/ExternalIdentityJpaEntity.java` | Provider type/status/issuer and link user/provider/externalSubject/status; external subject uses text |
+| `src/main/resources/db/migration/V20260611_001__create_identity_tables.sql` and `src/main/resources/db/migration/V20261006_012__hmr_087_login_session_evidence.sql` | Existing logical session fields and explicit protocol migration; old sessions are evidence, not token bindings; existing checksums remain immutable |
+| `src/main/java/dz/sh/hidra/modules/identity/application/model/VerifiedAuthorizationAssertion.java` | Immutable bounded claims from trusted infrastructure only; missing proof must not be filled by claims snapshots |
+| `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java` | Accepted public Topology contract prefix only; no export change authorized here |
+
+### Trusted provenance matrix for future protected operations
+
+All eligible paths require exact current ACTIVE/unlocked HUMAN User, current active
+provider of the recorded type, ACTIVE session with endedAt absent and finite expiry,
+plus exact immutable binding. No role, scope, username, getName, caller actor/provider/
+session, correlationId or approximate user/time query supplies absent proof.
+
+| Context | Required exact provenance / eligibility |
+|---|---|
+| Native Hidra bearer minted through LOCAL | Redecode original bearer with qualified native decoder; verified signature/algorithm, configured issuer/audience, sub/jti/iat/exp/authentication_type/provider match binding. LOCAL protocol, LOCAL provider, absent external link/subject; exact current active local credential and matching security version |
+| Native Hidra bearer minted through LDAP | Same native proof; recorded type LDAP and session protocol LDAP; current LDAP provider, LINKED exact link with identical User/provider/external subject; no LOCAL credential requirement |
+| Native Hidra bearer minted through ACTIVE_DIRECTORY | Same native proof; recorded type ACTIVE_DIRECTORY, LDAP session protocol and current AD provider/link agreement. Never infer AD from LDAP protocol or the request selector |
+| Native Hidra bearer minted through OIDC | Same native proof plus OIDC protocol, exact current OIDC provider/issuer and LINKED external subject. Binding retains verified source assertion deadline/issuer provenance; native token cannot recreate its live external claims |
+| Trusted in-memory LOCAL or LDAP/AD HidraPrincipal | Existing password-token shape alone is insufficient. Require server-only completion association to the same committed session/binding, provider-specific checks above and bounded validity; without it deny. Never accept arbitrary authenticated token constructors/details as receipt |
+| Trusted HidraOidcAuthenticationToken | Require original validated OIDC assertion with exact User/provider/link/subject, bounded expiry and current evidence plus server-only completion association. Current converter-before-completion context lacks that receipt: deny protected operations until separately integrated. Preserve existing completion bridge |
+| Anonymous, unauthenticated, system/service/nonhuman, generic strings, opaque principals, bare external JWT, SAML2/OAUTH2/API_TOKEN and other provider enum values | ACCESS_DENIED; no automatic protocol/provider fallback. KEYCLOAK/AZURE_AD/OKTA enum support in lifecycle is not an implemented accepted login route |
+
+Malformed/unbound/ineligible authentication produces opaque ACCESS_DENIED before
+payload/existence/count/history lookup; storage/decoder infrastructure failure or corrupt
+binding is an operational error, never a successful/absent result. No general API behavior
+is changed by this policy. Remote LDAP password/account changes and external OIDC logout
+remain unknown until locally reflected or bounded validity ends; no online introspection
+or instantaneous remote revocation is claimed.
+
+Native bound external-source authentication can support current internal permissions
+only after provider/link proof is established. It cannot supply missing external claims,
+ignore a DENY/indeterminate outcome or substitute an internal grant where an actual
+rule requires a verified external assertion. Preserve original trusted OIDC assertion
+processing; do not persist/replay its claim snapshot as a new assertion or copy native
+role/scope claims into one. Later reader/evaluator integration must prove this distinction.
+
+### Association alternatives and selected cardinality/integrity
+
+| Alternative | Disposition |
+|---|---|
+| Add signed session identity and authoritative association | Viable but needs preallocation and issuer-port/claim changes; still needs persisted provenance, lifecycle reads and legacy policy; session claim alone cannot bind source evidence |
+| Dedicated persisted issuer+jti association | SELECTED: existing server UUID jti provides exact lookup; leaves native claim envelope intact and avoids guessing session by user/time; additive owner storage still required |
+| Overload correlationId, client metadata or historical session fields | REJECTED: nonunique/caller metadata, wrong semantics and no trusted association |
+
+Select one new immutable binding per newly completed logical session and exactly one
+native access token per binding. Database uniqueness on (native issuer, jti) AND session
+identity; multiple independent sessions for one User are allowed. Refresh/multiple tokens
+per session, rebind, deletion/recreation and token replay as login are not approved.
+Existing sessions remain unbound; no retrofit or backfill by user/provider/time. Exact
+same binding retry may only compare identical fields in a registered internal persistence
+contract; any differing duplicate conflicts and rolls back. No bearer/signature/password/
+hash, claim snapshot, private key or credential material is stored in the binding.
+
+Selected persisted minimum: immutable binding identity/schema version, native issuer,
+configured audience, jti, subject/User, session reference, actual authentication type,
+provider identity/type, optional exact external-link identity and subject/source issuer,
+issuedAt/expiresAt, OIDC source expiresAt when applicable, and LOCAL credential identity/
+security-version only for LOCAL. Session/provider/User/link references must agree across
+all records; database foreign keys plus uniqueness/check constraints and immutable-write
+protection are required, with owner reader/completion verifying relational semantics.
+No cascading delete may silently erase/reassign association evidence; later registration
+must inventory existing owner deletes and choose explicit rejection/retention behavior.
+
+New binding/session/jti UUIDs are canonical lowercase hyphenated UUID text (36 characters)
+within current varchar(80) identity limits. Referenced owner IDs retain exact existing
+case/content, nonblank and <=80 characters; do not retrofit UUID rules onto existing User/
+provider/link IDs. Reject whitespace-bearing signed identity claims, wrong JSON types,
+unknown auth types, oversize IDs and mismatches; never trim or truncate an authenticated
+identifier to make it match. Issuer/audience/external subject preserve exact verified
+strings and case. Source external subject currently text: no arbitrary truncation/new
+site limit; future registration must document a transport/parser bound compatible with
+existing data and block incompatible values. Issuer/audience come from trusted deployment
+configuration, never request values; changing them requires reauthentication.
+
+Choose UTC whole-second token/session/binding timestamps to match JWT NumericDate
+representation; one completion time and exact shared finite deadline, issuedAt < expiresAt.
+Session start equals completion issuedAt; session expiry equals binding/token expiry and
+is capped by verified OIDC source expiry. LOCAL/directory tokens use configured positive
+Hidra TTL; OIDC requires source expiry, not a guessed deadline. Missing/null expiry is
+ineligible even though legacy session schema permits it. Current independently sampled
+session Instant.now does not yet satisfy this equality; completion/lifecycle integration
+is a prerequisite. Decoder skew must never extend protected-operation eligibility beyond
+actual deadline. B2 defines the authoritative operation instant and boundary-time proof.
+
+### Issuance, termination, credential policy and compatibility
+
+Trusted completion input must originate only from the actual successful provider path,
+not an arbitrary CompleteAuthenticatedPrincipalUseCase caller. Capture LOCAL credential
+ID/security version when its password is verified and compare that same version during
+completion; capturing only the new current version would wrongly accept a password
+verified before a concurrent rotation. Carry directory provider/link/subject provenance
+and original OIDC verified issuer/assertion/deadline through a bounded server-only input.
+No receipt may be synthesized from a caller's DTO or authenticated=true token shape.
+Current AuthenticatedPrincipalInput/HidraPrincipal do not prove all of this; trusted
+transport and writer synchronization require separately registered integration/tests.
+
+Future sequence: trusted provider authentication first; then an actual proxied Identity
+completion transaction rechecks current User/provider/link/credential, generates IDs and
+one time, creates the session, signs token using that bounded metadata, verifies issued
+metadata agreement, inserts immutable association and required session events, then
+commits all persistent work together. Server-only context receipt and existing response
+are released after successful commit; no detached or REQUIRES_NEW session/binding write.
+Signing/session/binding/event/uniqueness failure rolls back persistent completion and
+returns no token/receipt. Signed but unreturned token is discarded without logging; DB
+commit uncertainty returns error, never success or guessed recovery. Network loss after
+commit can leave a valid unseen session; a new explicit login creates a new pair. No
+existing API idempotency promise or automatic retry is inferred from correlationId.
+
+Existing LOCAL outcome service success means credentials verified before completion;
+its independent event is not rewritten as proof of committed token delivery. Keep that
+trace semantics explicit; non-LOCAL session LOGIN_SUCCESS stays in completion transaction.
+Authenticate providers outside the future protected-operation fence; do not perform slow
+remote verification while holding cross-owner locks. A completion-time recheck cannot
+retroactively prove a remote provider did not change between verification and commit.
+
+Logout/revoke/expiry retains the immutable binding and original terminal status/endedAt;
+no touch/retry/credential reauthentication resurrects the old session. End-state updates
+are owner-controlled, serialized with issuance and future protected operations. If a
+termination commits first, next operation denies; if operation fence wins, termination
+waits through operation commit/rollback. Real races and all lifecycle writers need B3
+acceptance; no result is claimed from current annotations. A terminal session cannot gain
+another binding. Reenable/relink must not resurrect sessions invalidated by an actual
+security event: provider disable/link unlink/reassignment must terminalize affected active
+sessions or advance an enforced security generation before returning success. That writer
+coverage is a later prerequisite, not existing runtime behavior.
+
+LOCAL credential disable/removal/replacement/reset/rotation must invalidate old LOCAL
+bindings and require fresh login, including rotate-away-and-back. Select an owner-controlled
+monotonic credential security version plus exact credential ID; increment on security
+changes atomically with credential writes, compare captured version on every operation.
+Ordinary metadata/rehash that does not change credentials needs an explicit classified
+writer contract before exemption. Current passwordChangedAt/updatedAt are not a version;
+no timestamp/hash fallback or local password hash in operation evidence. All credential
+writers including administrative/native SQL paths need database-enforced invalidation
+or a demonstrably exhaustive protocol, with upgrade handling separately registered.
+This is a concrete additional storage/writer prerequisite. LDAP/AD/OIDC paths require no
+local password setup; remote rotation does not imply local knowledge. Current provider/
+link changes deny mismatched or disabled evidence; irreversible invalidation semantics
+above also require writer implementation and concurrent tests.
+
+Existing AuthenticationResult/API fields sessionId, token type/value, jti and timestamps
+remain the intended response envelope; no additional client-supplied identity is accepted.
+Fresh login through already supported routes produces future eligible bindings after
+registered implementation. Legacy unbound tokens keep existing generic API behavior
+until separately authorized integration, but are denied at new protected-operation
+boundaries even if cryptographically valid; fresh login is required there. No backfill,
+forced rewrite of old sessions, breaking generic actor/permission export, version bump,
+release publication or API/OpenAPI edit is performed here. Compatibility tests must
+prove both envelopes and the deliberate protected-operation restriction before rollout.
+
+### Identity owner evidence and remaining fence/time gates
+
+Future immutable JDK-only Identity operation evidence carries trusted User/provider/type,
+exact session/binding identity, source/link provenance, credential version where relevant,
+issued/deadline metadata and validity outcome. It carries no bearer, password/hash, JPA
+entity, callable callback, reusable grant or caller actor. Identity resolves the ambient
+server-authenticated origin; Topology cannot set or mutate session provenance. Exact
+public method/package/DTO names and architecture export changes require registration.
+Existing 040 actor and 041 pair query remain accepted within their narrow scope; neither
+substitutes this evidence or authorizes publication by itself.
+
+Extend 043's Identity read/fence inventory with `public.hidra_identity_login_session`,
+`public.hidra_identity_local_credential` for LOCAL, and the separately named future binding/
+security-generation relations. User/provider/external-link relations already appear in
+043; actual full evidence graph still determines fence membership. Acquire all needed
+locks before reads in deterministic owner/relation order; never upgrade a partly read
+fence or reuse preloaded JPA/cache evidence. Session/binding reads, credential writes,
+provider/link invalidation and protected work must demonstrate same transaction/connection,
+rollback and lifetime under B3. Platform owns only technical transaction checks.
+
+B1 lookup establishes authentication provenance, not temporal permission. B2 remains
+required for one operation instant, strict deadlines and company/facility paired decisions;
+B3 remains required for participation, persisted-state fences and revocation ordering.
+Expiry DTOs, authenticated token constructors and signature revalidation alone prove
+neither gate. Global table fence contention, new writer coverage and remote state freshness
+remain explicit limits. No detached evidence may be cached as a permit across operations.
+
+### Synthetic verification specification — not executed in this stage
+
+| Required future test | Observable acceptance |
+|---|---|
+| All four supported native source types and trusted completed context counterparts | Correct exact binding and human/current owner state; LOCAL credential policy only on LOCAL; directory type retained despite LDAP protocol |
+| Real test-key signed JWT, wrong issuer/audience/algorithm/signature, malformed claims and decoder failures | Authentic valid tuple alone accepted; opaque rejection versus infrastructure error; no unsigned parsing or role/scope/name substitution |
+| Two users/providers/links/sessions; independent synthetic companies/facilities | Swap sub/jti/provider/link/session rejected; same-user different-session swap also rejected; authentication never grants either company's permission |
+| Legacy/unbound/missing/duplicate binding and unsupported/context-constructor-only authentication | Protected operation denies without payload/count/existence; duplicate conflict cannot deliver token; generic compatibility preserved |
+| Missing/expired/revoked/logged-out session; endAt inconsistency; locked/disabled/nonhuman User | Exact denial; expired boundary does not inherit decoder skew; old terminal evidence never resurrected |
+| Provider disable/reenable, link unlink/relink/reassignment, LOCAL credential rotation/back/replace | Original bindings remain invalid after security events; no LOCAL requirement on directory/OIDC; unobserved remote changes documented |
+| OIDC source expiry/provider issuer change; claim-dependent allow/DENY/missing assertion | Original trusted assertion preserved; source deadline caps session; no snapshot recreation or internal-grant bypass |
+| PostgreSQL 16 fresh and upgrade store, immutable rows, uniqueness/FK/check constraints | Existing migrations/checksums unchanged; old sessions remain unbound; exact binding and one-token/session constraints enforced by real database |
+| Completion signing/session/binding/event failure and response/commit uncertainty | Whole persistent completion rollback where commit not established; no token returned; existing LOCAL outcome distinguished |
+| Independent connections with barriers/latches for issuance/logout/revoke/credential/provider/link changes | Confirm actual statement/lock blocking with bounded waits; no sleeps; terminal writer/operation ordering and rollback proved after B3 |
+| Existing API envelope, original assertions and architecture contracts | Current clients need no session claim input; no private module imports/callback cycle; existing actor/pair behavior unchanged until selected integration |
+
+Synthetic credentials and test keys only, no live directory/issuer/SCADA or customer data.
+These are required test specifications, not passing Maven/database/provider/race results.
+B2/B3 operation and concurrency suites need separate registration and exact-head runtime CI.
+
+### Bounded prerequisite decomposition and next boundary
+
+| Proposed stage area — NOT REGISTERED | Source-backed ownership / required acceptance |
+|---|---|
+| Additive binding and LOCAL security-version storage preflight FIRST | Identity session/credential models, ports, persistence and exact schema constraints; recover all security writers/deletes, immutable association, version coverage, fresh/upgrade/replay and dictionary ownership. Forward migration and exact files/message/code require separate registration |
+| Trusted completion and lifecycle integration AFTER storage | Existing completion, issuer metadata contract, LOCAL/LDAP/OIDC trusted adapters, session lifecycle and APIs' existing response mapping; one physical completion transaction, source deadline, immutable receipt, invalidation and rollback tests |
+| Identity operation reader and permission integration AFTER issuance | Existing actor/security/context/evidence ownership plus separately registered immutable public contract/export; current session/provider/link/credential reads, error distinction and original assertion tests |
+| B2 common-time / boundary-time evidence | Separately registered Identity evaluator/clock contracts and paired permission proof; not bundled into B1 reader |
+| B3 owner-composed persisted-state fence and race/contention gate | Separately registered Identity/Party/Topology technical participation, enlarged inventory, real PostgreSQL lock/cache/rollback and deterministic races, performance envelope |
+| Publication/history/schema/API | Follow accepted B1/B2/B3 and race gates; no allowlist or execution selected |
+
+Candidate existing source owners above are review areas only; no new filenames/migration
+versions are fabricated or reserved. LOCAL version coverage and provider/link terminal
+invalidation are concrete unimplemented prerequisites; if recovery cannot establish
+complete writer/schema compatibility, record that blocker before implementation instead
+of enabling a fallback. This policy completes 044's design requirement, not the runtime.
+
+Next eligible action after policy exact-head Docs succeeds and separate owner Next is
+**recover/register the additive B1 binding/credential-security storage preflight first**.
+No next code/message/file allowlist is yet registered; do not execute a runtime stage.
+F1–F4/P2.5 remain OPEN, simulator/P3 DEFERRED. Retain gas-first/GZ2, Hidra own engine,
+steady/transient direction, dynamic versioned inputs and operator-controlled recommendations.
+Use synthetic development; owner supplies deployment calibration. Version/release,
+deployment and closure unchanged. Publish one guarded two-document direct-main commit,
+verify exact parent/tree/scope and exact-head Docs startup, then STOP without waiting
+for completion or advancing.
+
+
+HPR-P25-044 policy publication validation: documentation-validator 10,
+OpenAPI-validator 10 and dictionary-generator 17 unit tests PASS; canonical docs
+PASS (98 documents, 5,306 relative links, 24 modules, 13 P2 rows); offline OpenAPI
+PASS (263 operations, 244 paths, 231 schemas); existing P1 closure evidence
+consistency PASS without executing closure. Exact two-document scope, 24 cited
+production/model/port/migration/export source paths, unchanged historical detailed
+registrations/reconciliation, historical roadmap and whitespace checks PASS.
+Existing session integrity/semantic, actor and assertion trust tests were reviewed
+as precedents, not executed or claimed as native association/race proof. No Maven,
+database, provider, race or closure execution; no runtime/schema/API/export, version,
+release or deployment change. Policy design Completed; exact-head Docs acceptance
+PENDING. Next is separate B1 storage prerequisite recovery/registration only after
+successful policy Docs and owner Next; no automatic advance.

@@ -7,7 +7,7 @@
  *
  * @Name        : IdentityProviderJpaEntity
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-10-12
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -27,6 +27,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.Instant;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
     /**
      * Database-backed JPA entity for IdentityProvider.
@@ -95,6 +97,7 @@ import java.time.Instant;
     @Column(name = "status", nullable = false, length = 40)
     private IdentityProviderStatus status;
 
+    @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "metadata", nullable = true, columnDefinition = "jsonb")
     private String metadata;
 

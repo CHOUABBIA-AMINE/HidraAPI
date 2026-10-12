@@ -22,7 +22,8 @@ This is an execution-status summary of the authoritative task table below, **not
 | **HPR-P25-042 live Facility/Party owner-reference query** | **COMPLETED / PRODUCTION #659 AND DOCS #251 SUCCESS** | Accepted owner observation only; no publication authority |
 | **HPR-P25-043 cross-owner access linearization preflight** | **DESIGN COMPLETED / DOCS #253 SUCCESS** | Runtime B1/B2/B3 and race/performance gates remain OPEN |
 | **HPR-P25-044 B1 operation-authentication provenance policy** | **DESIGN COMPLETED / DOCS #255 SUCCESS** | Dedicated issuer/jti session binding selected; runtime storage/issuance/reader and B2/B3 remain OPEN |
-| **HPR-P25-045 B1 storage preflight** | **DESIGN COMPLETED / POLICY DOCS PENDING** | Registration Docs #256 SUCCESS; DB security generations and immutable binding design selected; runtime OPEN |
+| **HPR-P25-045 B1 storage preflight** | **DESIGN COMPLETED / DOCS #257 SUCCESS** | DB security generations and immutable binding design selected; runtime OPEN |
+| **HPR-P25-046 LOCAL credential generation** | **PLANNED / REGISTERED / IMPLEMENTATION** | Passing registration Docs and owner Next select six-file DB-generation implementation |
 | F1-02 through F1-04 publication, APIs and topology verification | PLANNED; subsequent implementation slices not registered | Register bounded HPRs before execution |
 | F2-01 through F2-04 product/equipment/engineering history | PLANNED; not registered | Dependent F1 ownership and history work |
 | F3-01 through F3-04 telemetry/monitoring/action evidence | PLANNED; not registered | Dependent topology and source-scope contracts |
@@ -35,7 +36,7 @@ This is an execution-status summary of the authoritative task table below, **not
 
 **Product policy:** Hidra is universal, configurable and company/network/product independent. No real customer data, P&IDs, vendor curves or live SCADA are prerequisites for generic development. PLATFORM software testing uses explicit synthetic data; customer SITE commissioning is an entirely separate gate. Numerical simulation work is deferred.
 
-**Code discipline:** `HPR-P25-037` is implemented and CI accepted; `HPR-P25-038` policy design is accepted; `HPR-P25-039` Party eligibility is accepted; `HPR-P25-040` trusted Topology actor export is CI accepted; `HPR-P25-041` paired scoped permission export is CI accepted; `HPR-P25-042` live Facility/Party owner-reference query is CI accepted; `HPR-P25-043` cross-owner access linearization design is Docs accepted; `HPR-P25-044` B1 operation-authentication provenance policy is completed as design below; policy Docs #255 SUCCESS. `HPR-P25-045` additive binding/credential-security storage policy is completed as design below; registration Docs #256 SUCCESS, policy exact-head Docs PENDING. Runtime provenance, common-time and transaction-participation gates remain OPEN. Runtime revocation/linearization and publication slices remain unregistered. Codes `F1-02` etc. are **planning references only** and MUST NOT be executed or treated as approved HPR codes before registration, exact commit message and exact create/update/delete file allowlists. Dependencies are minimum known gates, not blanket permission.
+**Code discipline:** `HPR-P25-037` is implemented and CI accepted; `HPR-P25-038` policy design is accepted; `HPR-P25-039` Party eligibility is accepted; `HPR-P25-040` trusted Topology actor export is CI accepted; `HPR-P25-041` paired scoped permission export is CI accepted; `HPR-P25-042` live Facility/Party owner-reference query is CI accepted; `HPR-P25-043` cross-owner access linearization design is Docs accepted; `HPR-P25-044` B1 operation-authentication provenance policy is completed as design below; policy Docs #255 SUCCESS. `HPR-P25-045` additive binding/credential-security storage policy is completed as design below; policy Docs #257 SUCCESS. `HPR-P25-046` LOCAL credential-generation implementation is registered below, not executed. Runtime provenance, common-time and transaction-participation gates remain OPEN. Runtime revocation/linearization and publication slices remain unregistered. Codes `F1-02` etc. are **planning references only** and MUST NOT be executed or treated as approved HPR codes before registration, exact commit message and exact create/update/delete file allowlists. Dependencies are minimum known gates, not blanket permission.
 
 | Order | Code / planning reference | Task | Current status | Dependencies / gate | Track |
 |---|---|---|---|---|---|
@@ -47,7 +48,8 @@ This is an execution-status summary of the authoritative task table below, **not
 | 2.4 | HPR-P25-042 | Topology live Facility/Party owner-reference query | COMPLETED — exact-head Production #659 and Docs #251 SUCCESS | Accepted at `ed6ec83f1b2163fc32a15f2f3c6964cf6758a025` | F1 |
 | 2.5 | HPR-P25-043 | Cross-owner access linearization design preflight | COMPLETED — design only; exact-head Docs #253 SUCCESS | Accepted at `f6dabb6a4585c7c30203352f9f96a2892aa79a84`; runtime B1/B2/B3 OPEN | F1 |
 | 2.6 | HPR-P25-044 | B1 operation-authentication provenance and session-binding policy preflight | COMPLETED — design only; exact-head Docs #255 SUCCESS | Accepted at `8a2c692825f0466441ae23d49ecc24324de89775`; B1 runtime/B2/B3 OPEN | F1 |
-| 2.7 | HPR-P25-045 | B1 binding and credential-security storage preflight | COMPLETED — design only; exact-head policy Docs PENDING | Registration Docs #256 SUCCESS at `31987c8a76e579ce9250d5dfc14aea7d3dbbdab4`; runtime A/B/C and B2/B3 OPEN | F1 |
+| 2.7 | HPR-P25-045 | B1 binding and credential-security storage preflight | COMPLETED — design only; Docs #257 SUCCESS | Accepted at `8cb9c8560b57da14de43b3e391ec1808d2eb1395`; runtime A/B/C and B2/B3 OPEN | F1 |
+| 2.8 | HPR-P25-046 | LOCAL credential database security generation | PLANNED — registered below; NOT IMPLEMENTED | Accepted 045 area A; passing registration Docs and owner Next; exact six-file envelope | F1 |
 | 2a | F1-02 implementation | Station revision history / transactional publication | PLANNED — not registered or implemented | HPR-P25-038 policy design; exact implementation allowlist and subsequent owner Next | F1 |
 | 3 | F1-03 | Company-scoped authoring, topology APIs and exact-history access | PLANNED — needs HPR registration | F1-02; authorization/API contracts | F1 |
 | 4 | F1-04 | Synthetic multi-company topology validation | PLANNED — needs HPR registration | F1-03; registered acceptance test envelope | F1 |
@@ -4019,3 +4021,198 @@ No Maven/database/provider/race or closure execution; no runtime/schema/API/expo
 version/release/deployment mutation. Design Completed; exact-head Docs PENDING.
 Next is separate LOCAL credential-generation implementation recovery/registration
 only after policy Docs succeeds and owner Next; no automatic advance.
+
+
+## 2026-10-12 — Register HPR-P25-046 LOCAL credential database generation implementation
+
+### Existing requirement served, selected stage and baseline
+
+This task implements area A of accepted HPR-P25-045, serving HPR-P25-044's LOCAL
+operation-authentication provenance requirement. A binding must retain the credential
+identity/security generation observed during password verification so a later reset,
+disable or rotate-away-and-back cannot leave an old binding eligible. Current timestamps
+cannot prove that. 046 adds the database generation prerequisite; later trusted issuance/
+reader integration will consume it. It does not add a new product feature or complete B1.
+
+Owner Next selects recovery and registration only. Main
+`8cb9c8560b57da14de43b3e391ec1808d2eb1395`, tree
+`a8c38cbac7f23d95a6f3d40aa37e7ae1a086cac7`; exact-head
+[Docs #257](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38276042659)
+SUCCESS. Latest Production #659 remains SUCCESS at accepted 042. AGENTS.md,
+PROJECT_STATE.md, active roadmap/reconciliation, accepted 043–045, credential storage/
+writers, bootstrap/authentication and current integration/dictionary/CI source were read.
+045 is accepted design only; runtime credential generations still absent. HPR-P25-046
+is absent from previous active/history/reconciliation registrations.
+
+Current registration exact message:
+`docs(identity): register local credential generation implementation`.
+Exclusive current UPDATE scope: `doc/roadmap/ULTIMATE_ROADMAP.md` and
+`doc/model-remediation/RECONCILIATION.md`; CREATE/DELETE none. No implementation runs here.
+
+### Recovered exact source and implementation boundary
+
+| Exact current source | Finding / consequence |
+|---|---|
+| `src/main/resources/db/migration/V20260915_001__create_identity_local_credential.sql` | Credential id/User/hash/status/times, unique User and FK to User; no generation. Preserve old checksum; additive forward migration only |
+| `src/main/java/dz/sh/hidra/modules/identity/domain/model/LocalCredential.java` and `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/LocalCredentialJpaEntity.java` | Current seven-component model/entity; version is not mapped. Keep production Java unchanged for this DB-only area A |
+| `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaLocalCredentialRepositoryAdapter.java` and `src/main/java/dz/sh/hidra/modules/identity/application/port/out/LocalCredentialRepositoryPort.java` | Generic save/exact reads; existing ORM writes omit new column. Real adapter tests must prove default/increment/rollback compatibility; no version evidence returned yet |
+| `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/repository/LocalCredentialJpaRepository.java` | Inherited native/JPA mutations/deletes exist. Database guard applies to ordinary writers, not just bootstrap |
+| `src/main/java/dz/sh/hidra/modules/identity/application/service/LocalAdministratorBootstrapApplicationService.java` and `src/main/java/dz/sh/hidra/modules/identity/application/port/in/BootstrapLocalAdministratorUseCase.java` | New-user creation and idempotent fully provisioned existing administrator; no reset of incomplete existing state. Must remain compatible |
+| `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/LocalAuthenticationProvider.java` | Verifies persisted active credential; does not capture version. Existing authentication behavior remains unchanged in 046 |
+| `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/LocalAuthenticationIntegrationTest.java` | Existing real Spring/JPA LOCAL authentication precedent uses PostgreSQL 18; keep it read-only and run regression; new focused test uses required PostgreSQL 16 |
+| `src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/StationInternalGraphRevisionPostgresIntegrationTest.java` | PostgreSQL 16/Flyway upgrade/rollback/race precedent; read-only reference, no modification |
+| `.github/scripts/generate_data_dictionary.py`, `.github/database-dictionary-ownership.json`, `doc/database/DATA_DICTIONARY.md` and `.github/workflows/ci.yml` | Source-linked actual migrated catalog/dictionary verification. Record identity ownership explicitly and regenerate actual physical dictionary; do not hand-invent SQL metadata |
+
+Collision check at this baseline: no migration version `20261012.001`, selected new
+migration/test paths, selected function/trigger/constraint names or existing credential
+security_version found; no prior 046 task. Recheck immediately before implementation.
+Current migration tail is `V20261011_002__p25_topology_station_graph_revisions.sql`.
+No live/admin writer or deployed privilege isolation is claimed assessed. Generic SQL
+and JPA must meet database enforcement; privileged DDL/replication bypass remains outside
+045's normal-writer boundary and outside 046 runtime acceptance.
+
+### Registered next executable implementation — HPR-P25-046
+
+Exact implementation commit message:
+`feat(identity): enforce local credential security generations`.
+State: PLANNED / REGISTERED / NOT IMPLEMENTED. Successful registration exact-head Docs,
+separate owner Next, refreshed source/head/CI and migration/path collision recheck select
+this one implementation. Repair failed CI first. No additional design-only task is needed
+before this selected implementation unless a concrete incompatibility is discovered.
+
+| Action | Exclusive exact future implementation path |
+|---|---|
+| CREATE | `src/main/resources/db/migration/V20261012_001__p25_identity_local_credential_security_generation.sql` |
+| CREATE | `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/LocalCredentialSecurityGenerationPostgresIntegrationTest.java` |
+| UPDATE | `.github/database-dictionary-ownership.json` |
+| UPDATE | `doc/database/DATA_DICTIONARY.md` |
+| UPDATE | `doc/roadmap/ULTIMATE_ROADMAP.md` |
+| UPDATE | `doc/model-remediation/RECONCILIATION.md` |
+
+DELETE none. All production Java, old SQL, token/completion/session/provider/link,
+security configuration, public exports/permission evaluator, APIs/OpenAPI, frontend,
+dependencies/build/CI/generator scripts, gap register, version/release/deployment and
+closure remain read-only. This is a six-file solo implementation, not blanket area B/C
+permission. A blocked scope cannot be expanded implicitly.
+
+### Exact database contract to implement
+
+1. Add `public.hidra_identity_local_credential.security_version bigint NOT NULL
+   DEFAULT 1` with constraint `ck_p25_local_credential_security_version` requiring
+   >0. All valid existing credentials initialize to 1 without changing hashes/status/
+   identity/timestamps; this is initial state for future logins, not legacy-token proof.
+2. Create owner function `public.hidra_identity_local_credential_security_guard()`
+   with constrained search_path and static schema-qualified identifiers. Select default
+   SECURITY INVOKER; it needs no cross-table privilege or session writes. No caller flag,
+   current_user exception or dynamic SQL. Ordinary statements/triggers share the transaction.
+3. Create `trg_p25_local_credential_security_write` BEFORE INSERT OR UPDATE FOR EACH
+   ROW. INSERT permits only security_version=1 (including default); null, zero, negative
+   or other supplied initial versions reject. UPDATE rejects id/user_id/created_at
+   changes and any caller change of security_version from OLD. Use IS DISTINCT FROM
+   for null-safe comparisons. If password_hash, credential_status or password_changed_at
+   changes, set NEW.security_version=OLD+1; else preserve OLD. updated_at alone and
+   unchanged save retain version. Rehash conservatively advances; no exemption selected.
+4. At bigint maximum a security-changing write raises error and rolls back; unchanged/
+   metadata-only writes may retain maximum. No wrap, reset, sequence allocation or
+   timestamp/hash-equality substitute for generation. Rotate A/B/A advances twice;
+   disable/re-enable likewise. Same tuple reset needs a future explicit owner event
+   contract; no reset service/API is introduced here.
+5. Create `trg_p25_local_credential_security_delete` BEFORE DELETE FOR EACH ROW and
+   `trg_p25_local_credential_security_truncate` BEFORE TRUNCATE FOR EACH STATEMENT;
+   guard rejects both so credential delete/recreate and bulk truncation cannot reset
+   generation. Existing FK/unique constraints remain; no cascade or table-wide repair.
+   Disable/retire remains the future supported credential lifecycle. Guard direct
+   native/JPA/bulk/MERGE/UPSERT/COPY paths according to actual executed event; operation
+   may reject rather than bypass protections. All names are <63 bytes and unoccupied.
+6. Migration fails concretely if table/column/name compatibility or required existing
+   identity integrity prevents the contract. No IF NOT EXISTS hiding a different
+   preexisting version column/function, no old migration rewrite, no hash/credential
+   logging or real-data prerequisite. Forward transactional Flyway migration only.
+7. Dictionary ownership adds explicit `public.hidra_identity_local_credential` identity
+   owner/evidence referencing existing entity and new migration; regenerate the physical
+   dictionary from the actual migrated catalog, including DB-only version/default/check/
+   trigger metadata captured by the existing generator. No generator/CI mutation.
+
+045 permits generation SQL enforcement before version transport. Existing Java cannot
+consume or return version yet. Do not add @Version, constructor/mapper changes, capture
+claims or binding table in 046. DB guards cover normal writes but privileged owners can
+alter/disable them; no deployment hardening or global session revocation is claimed.
+Deletion semantics are deliberately constrained as accepted area A design; new tests
+must show existing supported bootstrap/authentication/save still work.
+
+### Required real synthetic tests and validation
+
+New canonical-header test must run on actual PostgreSQL 16, with independent isolated
+fixtures/databases and real Flyway/JDBC plus real Spring/JPA credential adapter/bootstrap
+where specified. No mock generation proof. Required groups:
+
+- Fresh full migration chain and upgrade from exact preceding tail with a preexisting
+  synthetic credential; Flyway validate and unchanged old checksums, preserved row fields,
+  version default 1 and new constraints/trigger installation.
+- Normal inserts/default, forbidden supplied versions, unchanged/metadata-only update;
+  hash/status/passwordChangedAt changes including null transitions and rotate/back.
+- Reject version tampering, id/User/createdAt reassignment, row DELETE, bulk DELETE and
+  TRUNCATE; original credential and version remain after failed statement/transaction.
+- Real adapter save/update/read through transaction+flush; old unmapped entity preserves
+  DB version, a security change increments, metadata-only save retains and downstream
+  exception rolls back hash and generation together. Query DB version explicitly;
+  returned LocalCredential is not claimed to carry it.
+- Real bootstrap first creation then idempotent repeated invocation: no credential reset,
+  unchanged hash/generation; incomplete existing bootstrap refusal remains. Existing
+  LOCAL authentication integration regression also runs read-only.
+- Native SQL and bulk update; COPY insert and MERGE/UPSERT paths must demonstrate actual
+  guard execution/acceptable rejection, not claim untested generic coverage.
+- Bigint overflow using an isolated test-owner fixture that arranges maximum before
+  reenabling guard; protected overflow attempt must fail, metadata-only maximum retains.
+  Fixture setup privilege is not a claimed runtime permission/bypass protection.
+- Two synthetic Users/credentials for isolation; independent connections and bounded
+  barriers/confirmed statement or lock observations for concurrent security writes:
+  committed increments serialize, rolled-back change consumes no persistent generation;
+  delete/recreate attempts cannot reset identity/version. No sleep-based proof.
+
+Focused required command:
+`./mvnw -B -q -Dtest=LocalCredentialSecurityGenerationPostgresIntegrationTest,LocalAuthenticationIntegrationTest test`.
+New PostgreSQL tests must actually execute, not count Testcontainers Docker skips as PASS.
+Run 37 document/OpenAPI/dictionary validator unit tests, canonical docs/offline OpenAPI,
+P1 evidence consistency and exact six-file/source/history/whitespace/checksum scope.
+Collect/render/check dictionary using existing generator and real migrated PostgreSQL,
+review unresolved owners and regenerated diff. Capture true source/candidate provenance,
+never claim synthetic catalog is production data. Full Production and Documentation
+exact-head CI are required for runtime acceptance. After guarded publication confirm
+exact-head required CI startup and STOP; owner reports completion/failure before any next
+stage. No CI workflow dispatch or change is implied by this registration.
+
+If local Java/Maven/Docker/catalog prerequisite is unavailable, report exact limitation,
+never invent results; the required real tests must still execute in applicable exact-head
+production CI. If current supported writer compatibility needs another file or migration,
+record precise blocker and separately register corrective scope rather than weakening
+version/no-delete protections or modifying forbidden files.
+
+### Disposition and what follows concretely
+
+| Task | Status | Next |
+|---|---|---|
+| HPR-P25-045 storage policy | Completed design — Docs #257 SUCCESS | Accepted area A generation, area B provider/link and area C binding design |
+| HPR-P25-046 registration | Completed in source; exact-head Docs PENDING | Publish exactly two docs; verify startup and STOP |
+| HPR-P25-046 implementation | Planned / REGISTERED / NOT IMPLEMENTED | Passing registration Docs and owner Next implement exact six-file envelope |
+| Provider/link generations, binding storage, issuance/reader; B2/B3/publication | OPEN / no runtime registration | Separate bounded stages after area A full CI acceptance |
+
+046 is a prerequisite for operation provenance, not complete revocation/publication.
+F1–F4/P2.5 OPEN, simulator/P3 DEFERRED. Preserve gas-first/GZ2, own engine, steady/transient,
+versioned inputs and operator control; synthetic development, owner deployment calibration.
+No version/release/deployment or closure change. This registration adds no SQL/test code.
+One guarded direct-main commit; exact parent/tree/two-document scope and exact-head Docs
+startup, then STOP without waiting for completion or executing the registered implementation.
+
+
+HPR-P25-046 registration publication validation: documentation-validator 10,
+OpenAPI-validator 10 and dictionary-generator 17 unit tests PASS; canonical docs
+PASS (98 documents, 5,306 relative links, 24 modules, 13 P2 rows); offline OpenAPI
+PASS (263 operations, 244 paths, 231 schemas); existing P1 closure evidence
+consistency PASS without executing closure. Exact two-document scope, 15 existing
+source/test/dictionary/CI references, selected two future CREATE paths and migration
+version/function/trigger/constraint collision checks, absent previous 046 registration,
+historical detailed registrations/reconciliation, old migrations and whitespace PASS.
+No Maven/database/provider/race execution or SQL/test/schema/token/runtime mutation,
+version/release/deployment/closure change. Registration acceptance exact-head Docs
+PENDING; separate owner Next after success selects the registered six-file implementation.

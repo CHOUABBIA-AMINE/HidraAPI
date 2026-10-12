@@ -20,7 +20,7 @@ This is an execution-status summary of the authoritative task table below, **not
 | HPR-P25-038 revision publication/history policy | COMPLETED as design / documentation | Runtime history/publication remains future implementation |
 | HPR-P25-039, 040, 041 owner, actor and paired scoped permission exports | CODE IMPLEMENTED; recorded production CI successful | No implication of complete cross-owner publication/authorization |
 | **HPR-P25-042 live Facility/Party owner-reference query** | **COMPLETED / PRODUCTION #659 AND DOCS #251 SUCCESS** | Accepted owner observation only; no publication authority |
-| **HPR-P25-043 cross-owner access linearization preflight** | **PLANNED / REGISTERED / DESIGN ONLY** | Passing registration Docs and separate owner Next select the two-document preflight |
+| **HPR-P25-043 cross-owner access linearization preflight** | **DESIGN COMPLETED IN SOURCE / DOCS CI PENDING** | Runtime BLOCKED by provenance/time/transaction and race/performance gates; separately register prerequisites |
 | F1-02 through F1-04 publication, APIs and topology verification | PLANNED; subsequent implementation slices not registered | Register bounded HPRs before execution |
 | F2-01 through F2-04 product/equipment/engineering history | PLANNED; not registered | Dependent F1 ownership and history work |
 | F3-01 through F3-04 telemetry/monitoring/action evidence | PLANNED; not registered | Dependent topology and source-scope contracts |
@@ -33,7 +33,7 @@ This is an execution-status summary of the authoritative task table below, **not
 
 **Product policy:** Hidra is universal, configurable and company/network/product independent. No real customer data, P&IDs, vendor curves or live SCADA are prerequisites for generic development. PLATFORM software testing uses explicit synthetic data; customer SITE commissioning is an entirely separate gate. Numerical simulation work is deferred.
 
-**Code discipline:** `HPR-P25-037` is implemented and CI accepted; `HPR-P25-038` policy design is accepted; `HPR-P25-039` Party eligibility is accepted; `HPR-P25-040` trusted Topology actor export is CI accepted; `HPR-P25-041` paired scoped permission export is CI accepted; `HPR-P25-042` live Facility/Party owner-reference query is CI accepted; `HPR-P25-043` cross-owner access linearization design preflight is registered below, not executed. Runtime revocation/linearization and publication slices remain unregistered. Codes `F1-02` etc. are **planning references only** and MUST NOT be executed or treated as approved HPR codes before registration, exact commit message and exact create/update/delete file allowlists. Dependencies are minimum known gates, not blanket permission.
+**Code discipline:** `HPR-P25-037` is implemented and CI accepted; `HPR-P25-038` policy design is accepted; `HPR-P25-039` Party eligibility is accepted; `HPR-P25-040` trusted Topology actor export is CI accepted; `HPR-P25-041` paired scoped permission export is CI accepted; `HPR-P25-042` live Facility/Party owner-reference query is CI accepted; `HPR-P25-043` cross-owner access linearization design preflight is completed in source; exact-head Docs acceptance is pending. Authentication provenance, common evaluation-time and transaction-participation prerequisites remain unresolved. Runtime revocation/linearization and publication slices remain unregistered. Codes `F1-02` etc. are **planning references only** and MUST NOT be executed or treated as approved HPR codes before registration, exact commit message and exact create/update/delete file allowlists. Dependencies are minimum known gates, not blanket permission.
 
 | Order | Code / planning reference | Task | Current status | Dependencies / gate | Track |
 |---|---|---|---|---|---|
@@ -43,7 +43,7 @@ This is an execution-status summary of the authoritative task table below, **not
 | 2.2 | HPR-P25-040 | Identity-owned trusted current human actor export to Topology | COMPLETED — exact-head Production #656 and Docs #242 SUCCESS | Accepted at `d96e420757f79aaf04e28b3f65c719f12e3029a0` | F1 |
 | 2.3 | HPR-P25-041 | Identity-owned paired company/facility permission export | COMPLETED — exact-head Production #657 and Docs #244 SUCCESS | Accepted at `6429b8dc0e449b54db89d520ba14c22ce424db1c` | F1 |
 | 2.4 | HPR-P25-042 | Topology live Facility/Party owner-reference query | COMPLETED — exact-head Production #659 and Docs #251 SUCCESS | Accepted at `ed6ec83f1b2163fc32a15f2f3c6964cf6758a025` | F1 |
-| 2.5 | HPR-P25-043 | Cross-owner access linearization design preflight | PLANNED — registered below; NOT EXECUTED | Accepted 039–042; passing registration Docs and separate owner Next; exact two-document scope | F1 |
+| 2.5 | HPR-P25-043 | Cross-owner access linearization design preflight | COMPLETED in source — design only; exact-head Docs PENDING | Docs #252 SUCCESS; selected owner Next; runtime blockers below remain OPEN | F1 |
 | 2a | F1-02 implementation | Station revision history / transactional publication | PLANNED — not registered or implemented | HPR-P25-038 policy design; exact implementation allowlist and subsequent owner Next | F1 |
 | 3 | F1-03 | Company-scoped authoring, topology APIs and exact-history access | PLANNED — needs HPR registration | F1-02; authorization/API contracts | F1 |
 | 4 | F1-04 | Synthetic multi-company topology validation | PLANNED — needs HPR registration | F1-03; registered acceptance test envelope | F1 |
@@ -2763,3 +2763,316 @@ executing closure. Exact two-document scope, absent earlier 043 registration,
 existing source references, historical roadmap/reconciliation preservation and
 whitespace checks PASS. No Java/Maven/database execution, runtime coordination,
 release/version/deployment or closure change in this documentation-only stage.
+
+
+## 2026-10-12 — Execute HPR-P25-043 cross-owner access linearization design
+
+### Selection, scope and disposition
+
+Owner Next selects exact message
+`docs(topology): define cross-owner access linearization policy` after registration
+[Docs #252](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38203928712)
+SUCCESS on current main `b6ca8c5b199649d0602eee6bc548700f5742bc68`, tree
+`1d807899239f48164b686f9fb4e7979835509db2`. Latest accepted runtime remains 042,
+Production #659 and Docs #251 SUCCESS. AGENTS.md, active roadmap, reconciliation,
+PROJECT_STATE.md, current source, transactions, repositories/security and relevant
+primary PostgreSQL/Spring documentation were read. Only UPDATE these two governance
+documents; CREATE/DELETE none. No Java, migration, tests, API, permission seed,
+configuration, architecture export, dictionary, version, release, deployment or
+closure mutation. Earlier registration/implementation records remain historical.
+
+**Design result:** select an owner-composed coarse database table fence as the first
+source-compatible mechanism for persisted evidence, subject to the gates below.
+It covers ordinary SQL mutations without rewriting every existing writer. It is
+not implemented, performance-qualified or a complete access protocol. Runtime remains
+BLOCKED by native-token/session provenance, common-time evaluation and demonstrated
+transaction participation. These are concrete prerequisites, not implicit acceptance
+of 040/041/042 as publication authority. No new HPR/runtime allowlist is registered here.
+
+### Exact current evidence and mutation inventory
+
+Read root:
+`src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaAuthorizationEvidenceAdapter.java`.
+Its 19 entity classes, @Table mappings and predicates are enumerated below; each
+corresponding Spring Data repository is inspected. Table names are schema-qualified
+as public in the candidate fence, never caller supplied. Source prefixes:
+`src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/` and
+`src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/repository/`.
+
+| Exact table | Entity / repository basename | Read predicate / consumed state |
+|---|---|---|
+| `hidra_identity_attribute_definition` | `AttributeDefinitionJpaEntity` / `AttributeDefinitionJpaRepository` | attributeDefinitionId; status, target, dataType, multiValued, code |
+| `hidra_identity_authorization_policy` | `AuthorizationPolicyJpaEntity` / `AuthorizationPolicyJpaRepository` | policyDomain = Permission.permissionDomain; ACTIVE status |
+| `hidra_identity_authorization_policy_rule` | `AuthorizationPolicyRuleJpaEntity` / `AuthorizationPolicyRuleJpaRepository` | policyVersionId; ACTIVE, priority/effect/expressions/obligation |
+| `hidra_identity_authorization_policy_version` | `AuthorizationPolicyVersionJpaEntity` / `AuthorizationPolicyVersionJpaRepository` | policyId; ACTIVE and effective interval; exactly one eligible version |
+| `hidra_identity_external_group_mapping` | `ExternalGroupMappingJpaEntity` / `ExternalGroupMappingJpaRepository` | provider ID and membership sourceMappingId; status/mode/group/claim identifiers |
+| `hidra_identity_external_identity` | `ExternalIdentityJpaEntity` / `ExternalIdentityJpaRepository` | assertion external ID or user ID; LINKED status, provider/user/subject identity |
+| `hidra_identity_external_permission_mapping` | `ExternalPermissionMappingJpaEntity` / `ExternalPermissionMappingJpaRepository` | provider ID; DIRECT_GRANT, ACTIVE, permission, claim/effect |
+| `hidra_identity_external_role_mapping` | `ExternalRoleMappingJpaEntity` / `ExternalRoleMappingJpaRepository` | provider ID; DIRECT_GRANT, ACTIVE, role/claim/scope |
+| `hidra_identity_group` | `GroupJpaEntity` / `GroupJpaRepository` | group ID; ACTIVE status |
+| `hidra_identity_group_role_grant` | `GroupRoleGrantJpaEntity` / `GroupRoleGrantJpaRepository` | groupId; ACTIVE, validity, scope and role |
+| `hidra_identity_provider` | `IdentityProviderJpaEntity` / `IdentityProviderJpaRepository` | provider ID; ACTIVE for assertion, synchronization and attribute sources |
+| `hidra_identity_permission` | `PermissionJpaEntity` / `PermissionJpaRepository` | exact code; exactly one ACTIVE row, resourceType/domain/action |
+| `hidra_identity_role` | `RoleJpaEntity` / `RoleJpaRepository` | role ID; ACTIVE status |
+| `hidra_identity_role_permission_grant` | `RolePermissionGrantJpaEntity` / `RolePermissionGrantJpaRepository` | roleId plus permissionId; ACTIVE, validity, effect and condition |
+| `hidra_identity_subject_security_attribute` | `SubjectSecurityAttributeJpaEntity` / `SubjectSecurityAttributeJpaRepository` | subjectId and USER/GROUP/EXTERNAL_IDENTITY type; status/time/source/value |
+| `hidra_identity_user_group_membership` | `UserGroupMembershipJpaEntity` / `UserGroupMembershipJpaRepository` | userId; status, validity, type/group and source provider/mapping |
+| `hidra_identity_user` | `UserJpaEntity` / `UserJpaRepository` | user ID; ACTIVE/type/lockedUntil; trusted actor additionally HUMAN |
+| `hidra_identity_user_permission_grant` | `UserPermissionGrantJpaEntity` / `UserPermissionGrantJpaRepository` | userId plus permissionId; ACTIVE, validity, effect and matching scope |
+| `hidra_identity_user_role_grant` | `UserRoleGrantJpaEntity` / `UserRoleGrantJpaRepository` | userId; ACTIVE, validity, scope and role |
+
+Each listed repository extends JpaRepository: inherited save/saveAll/delete operations
+are mutator routes even where no current application command exposes them. Do not
+invent an implemented policy editor, group synchronizer or import API from those beans.
+Dedicated modifying adapters currently present for User, Permission, Role,
+UserPermissionGrant, UserRoleGrant, RolePermissionGrant, GroupRoleGrant,
+IdentityProvider and ExternalRoleMapping are their exact
+`Jpa<basename>RepositoryAdapter.java` files in the Identity persistence adapter directory.
+Other listed evidence rows have no dedicated modifying adapter found in that directory;
+ordinary repository/admin/import SQL still affects the same fenced relations.
+
+Concrete production callers/writers recovered:
+
+| Owner source | Mutations / boundary |
+|---|---|
+| `src/main/java/dz/sh/hidra/modules/identity/application/service/IdentityAdministrationCommandApplicationService.java` | Creates role/permission and user-role/role-permission/user-permission grants through owner ports; new DENY grants matter |
+| `src/main/java/dz/sh/hidra/modules/identity/application/service/IdentityUserApplicationService.java` | User creation via UserRepositoryPort |
+| `src/main/java/dz/sh/hidra/modules/identity/application/service/LocalAdministratorBootstrapApplicationService.java` | User, local credential, admin role and user-role grant writes |
+| `src/main/java/dz/sh/hidra/modules/identity/application/service/LocalAuthenticationOutcomeApplicationService.java` | Login outcome updates User lock/failure state under REQUIRES_NEW and writes authentication event |
+| `src/main/java/dz/sh/hidra/modules/identity/application/service/AuthenticationSessionLifecycleApplicationService.java` | Session start/touch/end/expiry and events; currently not consumed by 040/041 |
+| `src/main/java/dz/sh/hidra/modules/party/application/service/PartyApplicationService.java` and `src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/adapter/JpaPartyRepositoryAdapter.java` | Party save/registration; PartyJpaRepository inherits general CRUD |
+| `src/main/java/dz/sh/hidra/modules/topology/application/service/FacilityApplicationService.java` and `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JpaFacilityRepositoryAdapter.java` | Facility save/registration; FacilityJpaRepository inherits CRUD including owner/state replacement |
+
+Ownership relations add `public.hidra_party_party` and
+`public.hidra_topology_facility`: **21 current evidence relations** in total. Party is
+exact ACTIVE Party.id; Facility is exact Facility.id/live ownerPartyId. Owner snapshots,
+legal names and arbitrary partyTypeId do not define membership or legal-company type.
+LocalCredential and LoginSession are authentication lifecycle relations outside the
+current 19-table evaluator; the provenance prerequisite must decide their exact
+participation before the registry is considered complete for operation authentication.
+They cannot be silently omitted once the new contract consumes them.
+
+Production source scans covered repository inheritance, owner adapters/application
+callers, @Modifying/executeUpdate, JdbcTemplate mutations and direct table-name SQL.
+No custom native modifying statement for the 21 evidence relations was found in
+production Java. The reviewed Topology JDBC append targets private revision storage,
+not evidence. Flyway/admin SQL, cascades and future imports are not claimed absent:
+all ordinary mutations to a covered relation participate in PostgreSQL's table locking.
+Schema/read-graph changes require a new inventory and race test, not a stale hardcoded
+list. No external writer or deployed integration was exercised in this static preflight.
+
+`AuthorizationDelegationGrant` storage and adapter exist, but neither the current
+JpaAuthorizationEvidenceAdapter nor AuthorizationPolicyEvaluator consumes that table.
+This design does not add delegation permission; explicit access must continue to meet
+both actual evaluator decisions. `AuthorizationDecision` persistence is an output,
+not authorization evidence; excluding its table permits existing decision writes without
+upgrading an evidence-table lock. Decision failure still aborts the protected operation.
+
+### Authentication contexts and concrete blocker B1
+
+`src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/HidraAccessTokenIssuer.java`
+issues signed sub/jti/expiry, authentication_type and optional identity_provider_id.
+It does not bind externalIdentityId or session ID. In
+`src/main/java/dz/sh/hidra/modules/identity/application/service/AuthenticationCompletionApplicationService.java`,
+the token is issued before session creation. LoginSessionJpaEntity retains user,
+provider/external identity and state, but no token jti; LoginSessionJpaRepository has
+only inherited CRUD. There is no exact token/session relation for revocation lookup.
+
+`src/main/java/dz/sh/hidra/platform/configuration/HidraSecurityConfiguration.java`
+uses a standard JwtAuthenticationConverter for native tokens.
+`TopologyCurrentActorQueryAdapter` redecodes native JWT and reads exact subject User,
+but does not consume authentication_type/provider/session provenance.
+`SpringAuthorizationContextAdapter.currentFor` returns null for a JWT principal that
+is not HidraPrincipal. Thus a native token minted after LDAP/OIDC completion can use
+internal grants without rechecking its source provider/link through that adapter.
+This is a concrete limitation of accepted actor/query prerequisites, not a claim that
+signature validation is missing or existing generic endpoints must be altered now.
+
+| Context | Present source behavior | Required protected-operation disposition |
+|---|---|---|
+| Native Hidra bearer after LOCAL/LDAP/AD/OIDC completion | Validated token subject/User, but no exact session/source link recheck | B1 OPEN; no protected-operation fallback based on sub or authentication_type alone |
+| In-memory LOCAL HidraPrincipal password authentication | Human/User state; no external assertion | Require trusted origin, current local provider/credential/session policy; no arbitrary authenticated token shape |
+| LDAP / ACTIVE_DIRECTORY HidraPrincipal | Provider/link assertion without live directory claims; current evidence verifies stored eligibility | Bind exact trusted provider/link and validity in operation evidence; remote directory changes unknown until reflected locally |
+| HidraOidcAuthenticationToken | Verified assertion binds issuer subject, provider/link/User, claims and expiry | Recheck current owner state/mappings and assertion freshness under fence; preserve verified signed provenance, never stored claims snapshots |
+| Anonymous/system/unsupported/malformed provenance | No accepted trusted human context | Opaque ACCESS_DENIED before any payload/existence/count lookup |
+
+B1 prerequisite: a separately registered Identity-owned operation-authentication
+contract must bind verified token/context to exact current User, provider/link and
+session evidence and define legacy unbound tokens, logout/revocation and credential
+change behavior. Caller-supplied actor/provider/session IDs never repair the gap.
+Existing issued claims are hints until verified against authoritative bindings;
+username, roles, scope claims and equality to an owner grant no access. Issuer/directory
+revocation unknown to Hidra remains a SITE/freshness limit, not instantaneous global
+revocation. No new authentication flow or token/schema compatibility change occurs here.
+
+### Mechanism comparison and selected persisted-state fence
+
+| Mechanism | Disposition and reason |
+|---|---|
+| Boolean plus later write / updatedAt comparison / reread | Rejected: no common authority lifetime or predicate protection |
+| Lock only the selected user/grants/Party/Facility rows | Rejected as complete solution: a missing/new denial or mapping/policy row is not one of those locked rows |
+| Per-owner generation row + cooperative writers | Deferred: current inherited CRUD, bootstrap, auth outcome and SQL paths have no universally enforced invalidation contract |
+| Database triggers feeding owner generations | Deferred optimization: requires complete trigger/cascade coverage, new migrations/catalog ownership, deterministic fence order and concurrent invalidation proof |
+| Serializable annotation alone | Rejected as sufficient registration: current writers/boundary/auth clocks differ; annotation is not proof of commit ordering or provider freshness |
+| Coarse database evidence table fence | Selected persisted-state baseline: explicit SHARE locks on all enumerated relations before owner reads; known cost and remaining auth/time/transaction gates below |
+
+Technical basis checked on 2026-10-12:
+[PostgreSQL 16 explicit locking](https://www.postgresql.org/docs/16/explicit-locking.html),
+[LOCK](https://www.postgresql.org/docs/16/sql-lock.html),
+[transaction isolation](https://www.postgresql.org/docs/16/transaction-iso.html),
+[Spring propagation](https://docs.spring.io/spring-framework/reference/data-access/transaction/declarative/tx-propagation.html),
+[transaction proxy rules](https://docs.spring.io/spring-framework/reference/data-access/transaction/declarative/annotations.html)
+and [JpaTransactionManager](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/orm/jpa/JpaTransactionManager.html).
+The following operation policy is our source-derived design, not a claim of runtime
+verification or that the framework automatically implements it.
+
+PostgreSQL SHARE table locks conflict with ordinary evidence DML's ROW EXCLUSIVE
+locks, including insertion of previously absent rows. Acquire all covered relations
+before authority reads, then retain the locks through commit/rollback. READ COMMITTED
+reads after successful acquisition see committed evidence after earlier conflicting
+writers finish. Use fixed owner order Identity, Party, Topology; within an owner sort
+fully qualified relation names. Include child relations if the schema later gains
+inheritance/partitioning. A lock attempt outside an actual transaction fails closed.
+No table identifier comes from requests. Current Party findByIdForShare is a local
+row-lock precedent, not this fence.
+
+Ordinary protected reads/writes only read the 21 authority tables. Their own changes
+are to separately registered revision/head/event/request tables; acquire the facility
+head row lock after authority fences, in exact facility/epoch order. Transfer that
+also changes Facility must acquire its stronger SHARE ROW EXCLUSIVE Facility fence
+at the start, not upgrade later; then both old/new company decisions and epoch/head
+CAS. Transfer remains a later separate slice. Master owner updates outside transfer
+are serialized against operations but cause hold on the next operation if binding
+and live owner differ; no automatic epoch adoption or rewriting old history.
+
+Readers can share these fences; a protected operation blocks unrelated evidence
+writers too, including local login-outcome User updates and maintenance. This is a
+coarse baseline, not multi-company concurrency optimization. No network call, OT
+command, approval wait, long export/stream or directory authentication runs while
+fenced. Bound histories to the existing 1..100 design page and freeze generation.
+Before runtime selection benchmark lock hold/wait and auth/admin latency with
+synthetic companies and a registered timeout/transaction-duration envelope. Failure
+of that gate requires redesign; it does not authorize disabling the fence.
+
+### Operation boundary, temporal blocker B2 and participation blocker B3
+
+Future Topology application boundary owns the actual transaction and result:
+acquire owner fences; capture trusted operation provenance; derive exact current
+Facility/eligible Party; read persisted owner epoch/head; reject hold/mismatch; evaluate
+both operation permissions; validate request/predecessor/qualification; perform
+protected read or guarded head write plus immutable events/request/revision; commit;
+only then return materialized result. No service exposes a reusable permit or grants
+outside this boundary. Payload/count/revision-existence lookup follows authorization;
+absence/out-of-scope uses the same opaque denial. Stored integrity failures remain
+failures, not absence. F1 publication, payload and CAS schemas remain unregistered.
+
+**Ordering contract:** a committed revocation before fence acquisition must be seen
+and deny under current evidence. A revoker blocked by the operation's held fence can
+commit only after the operation terminates; the successful operation orders before
+that revocation. A revoked/changed Party/Facility has the same ordering. Rollback
+produces no publication/head/event/request mutation. Fences prevent persistent-state
+changes but do not freeze time, the issuer, or externally mutable directory state.
+
+**Write linearization remains successful guarded head mutation**, as accepted in 038;
+read linearization is the authorized materialized head/history snapshot under the
+same fence/epoch/head protection. A read result describes that point, not continuing
+permission when a later HTTP client receives it. Do not change the 038 contract to an
+earlier convenient permission query. No precomputed boolean may authorize a later CAS.
+
+**B2 OPEN:** current IdentityAuthorizationApplicationService chooses a different
+Instant.now per evaluate call; actor and Party calls also do not expose one operation
+time. User lock, grant/membership/attribute/policy/assertion intervals may change with
+no DB mutation. Two PERMIT results do not prove permission at head-write instant.
+The later owner contract must support one authoritative operation instant and a
+proven-valid interval through the actual linearization point, or evaluate the required
+time predicates at that point using a fully specified atomic technique. A validity
+horizon must consider future DENY/version/attribute activation and token expiry, not
+only the selected permitting grant; unsupported time expressions are indeterminate.
+No arbitrary grace period, transaction-start timestamp, final Java reread or fake
+clock token closes this gate. Current PermissionDecisionDto does not carry that proof.
+
+**B3 OPEN:** `src/main/java/dz/sh/hidra/platform/configuration/HidraTransactionConfiguration.java`
+only enables transaction management; it does not explicitly prove one JPA/JDBC
+physical connection. Candidate guards require an existing non-read-only transaction,
+READ COMMITTED, fresh owner persistence reads and transaction-bound invocation; no
+cached pre-fence managed entities or second-level/query cache evidence. Establish
+outer proxy interception/programmatic transaction explicitly and reject incompatible
+ambient transactions. Do not rely on an inner annotation overriding an outer isolation.
+JpaTransactionManager can combine JPA/JdbcTemplate with a matching DataSource/dialect;
+future integration tests must prove same backend transaction, connection/lock lifetime
+and rollback across all owner calls. open-in-view=false is useful, not that proof.
+
+Nested savepoint rollback can release locks acquired after a savepoint; prohibit
+partial rollback followed by continued protected work. No REQUIRES_NEW owner evaluation,
+async continuation, detached permit or nested authentication-outcome writer inside the
+fence. Existing REQUIRES_NEW login outcomes run outside protected operation boundaries.
+Potential deadlock/lock timeout/storage/decision-persistence failure aborts the whole
+operation, with no successful/denied-as-absence result or automatic retry changing
+expected generation. Commit uncertainty is an error; later registered exact replay
+handles retries after reauthorization. PostgreSQL's deadlock victim is not predetermined.
+
+Identity and Party own their guarded evidence/eligibility exports; Topology owns its
+facility/head orchestration. Public contracts use immutable JDK data and fail-closed
+outcomes, not private JPA/domain types or callback imports back into Topology. Platform
+may own technical transaction checks only. Exact public methods/files and any export
+allowlist change need separate registration; no names or migrations are fabricated here.
+
+### Synthetic race specification and prerequisite decomposition
+
+Future tests must use PostgreSQL 16, real owner evaluators/adapters, independent
+connections and barriers/latches with bounded waits, inspecting pg_locks or a confirmed
+statement-start barrier rather than sleeping. No result below is claimed executed.
+
+| Race / validation | Required observable result |
+|---|---|
+| Revocation commits before operation fence | New operation sees denied current evidence; no payload or publication side effect |
+| Operation acquires fence before revocation DML | Writer is demonstrably blocked; operation commit/rollback releases it; ordering matches contract |
+| Insert new DENY / delete permission / activate rule or mapping absent on earlier query | Same fence protection as updates, including phantom evidence; later operation denies or becomes indeterminate |
+| User lock/status/type, role/group/grant/membership/attribute/provider/link changes | Real corresponding current evidence path changes next call; no stale actor or assertion snapshot authority |
+| Future grant/DENY/version/attribute and assertion/token expiry during operation | Boundary-time proof rejects stale permission; both company/facility share the same authoritative instant |
+| Party suspension or Facility owner replacement | Current operation ordered under fence; next owner/epoch mismatch held; no cross-company payload inheritance |
+| Same-generation competing publications / first publish | Exactly one CAS winner; loser rolls back all new revision/event/request data |
+| Protected head/history/list and concurrent publish/transfer | Materialized result is authorized for one epoch/frozen generation, no cross-epoch count/cursor leakage |
+| Two users/companies/facilities | Scope isolation, exact derived owner and pair decisions; explicitly measure global evidence-writer blocking |
+| Native token provider disable/link removal/session logout and unsupported provenance | B1's real binding denies; no internal-grant fallback from an unbound JWT |
+| Missing transaction/wrong isolation/different DataSource, preloaded EntityManager/cache, savepoint escape | Guard rejects; JPA/JDBC rollback/lock-lifetime proof cannot pass on mocks |
+| Deadlock, lock timeout, persistence error, request conflict, commit uncertainty | Entire operation fails/rolls back where commit not established; no false success or silent retry |
+| Both-company transfer plus qualified predecessor/corrupt stored bytes | Explicit transfer policy and new epoch; integrity error remains error, existing V1 bytes unchanged |
+
+Required separately registered order:
+
+| Prerequisite area | Current disposition / necessary next evidence |
+|---|---|
+| B1 operation authentication provenance/session binding | OPEN; source-backed Identity design/execution preflight before token/schema compatibility choices |
+| B2 single operation-time evidence and boundary-time proof | OPEN; Identity evidence contract and bounded temporal semantics before authority is returned |
+| B3 transaction participation and owner-composed fences | OPEN; technical owner contracts, same-connection/rollback/cache/lock-lifetime tests; no publication API |
+| Database race and contention gate | NOT IMPLEMENTED; deterministic tests and bounded performance envelope after B1–B3 implementation acceptance |
+| Epoch/head/event/replay/transfer schema and Topology publication service | NOT REGISTERED; follow those gates, then separate F1 APIs/acceptance |
+
+Next eligible work after exact-head design Docs succeeds and separate owner Next is
+**recover/register the bounded B1/B2 Identity operation-evidence prerequisite**.
+If their source-backed scope needs splitting, register B1 first; do not bundle the
+whole authentication lifecycle, table fence and publication schema into one task.
+No next runtime code or later HPR is selected by this document. Source-compatible
+persisted-state fence is the chosen design direction; end-to-end runtime is BLOCKED,
+not solved. This disposition satisfies the registered preflight's blocker path.
+
+F1–F4/P2.5 OPEN; simulator/P3 DEFERRED. Retain gas-first/GZ2, Hidra own engine,
+steady/transient direction, dynamic versioned inputs and operator-controlled
+recommendations; synthetic development and owner-supplied deployment calibration.
+Version/release/deployment and closure unchanged. Design Completed in source;
+exact-head Docs acceptance PENDING. Validate only the registered two-document scope,
+publish one guarded direct-main commit, verify exact-head Docs startup and STOP
+without waiting for completion or advancing.
+
+
+HPR-P25-043 design publication validation: documentation-validator 10 and
+OpenAPI-validator 10 unit tests PASS; canonical docs PASS (98 documents, 5,306
+relative links, 24 modules, 13 P2 rows); offline OpenAPI PASS (263 operations,
+244 paths, 231 schemas); existing P1 closure evidence consistency PASS without
+executing closure. Exact two-document scope, 19 entity/repository source references,
+all cited production paths, preserved historical registration/reconciliation and
+whitespace checks PASS. PostgreSQL/Spring mechanics checked against linked primary
+documentation; selected protocol and B1/B2/B3 are design findings, not executed
+race/transaction/performance evidence. No Java/Maven/database execution or version/
+release/deployment/closure mutation. Design acceptance remains exact-head Docs PENDING.

@@ -17809,3 +17809,107 @@ acceptance claimed. Existing 047 draft remains outside main; no forbidden produc
 mapping edit, new dependency/workflow/schema/policy or version/release/deployment/
 closure change. Corrective registration complete in source, exact-head Docs PENDING;
 after success separate owner Next selects only HPR-P25-048's six-file correction.
+
+
+## 2026-10-12 — HPR-P25-048 provider and link JSONB ORM correction
+
+### Selection, source and exact scope
+
+Owner Fail selects the already registered HPR-P25-048 compatibility correction before
+resuming HPR-P25-047. Refreshed main is `408824d630ddc4c07aaada58e4d82a3cc03d0fdc`,
+parent `bfca4d01fbac465d18ec6159f5c19422f6452ac3`; exact-head
+[Docs #263](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38304785285)
+SUCCESS. Accepted runtime remains repaired `554f2a0` / Production #662.
+Failed temporary [CI #663](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38303187523)
+is the concrete prerequisite evidence: 1,756 tests, 0 failures, 2 errors, 0 skips;
+provider metadata and link snapshot were bound as VARCHAR to native jsonb columns.
+The temporary 047 probe and its generation SQL are not implementation on main.
+
+Exact message: `fix(identity): map provider and link jsonb attributes`.
+Exclusive six-file execution: UPDATE the two registered JPA entities, current database
+dictionary, this roadmap and reconciliation; CREATE only
+`src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/IdentityProviderLinkJsonbPostgresIntegrationTest.java`.
+DELETE none. No migration. The two production edits consist only of
+`@JdbcTypeCode(SqlTypes.JSON)`, its existing Hibernate imports and canonical UpdatedOn,
+following Identity's AuthorizationDecision mapping precedent. Existing Java String
+constructor/accessor shape, jsonb column names/type/nullability and all other mappings
+are retained. Stored metadata and profile snapshots confer no authentication or
+authorization authority; no JSON root/key restriction or business policy is added.
+
+### Executed proof and acceptance boundary
+
+The new nine-method PostgreSQL 16/Flyway/Spring test exercises the actual provider
+adapter and external-link JPA repository with transactions, flush, persistence-context
+clear and fresh reads. Synthetic object, array, number, boolean, string and JSON null
+payloads cover insert/merge/replace/clear and semantic jsonb equality/type assertions;
+SQL NULL remains distinct from a supplied JSON null String. Every unrelated persisted
+field is compared on reload. Malformed JSON insert/update SQLSTATE 22P02 and an injected
+failure after both owners flush prove atomic rollback. Provider code/active OIDC,
+LOCAL/directory uniqueness and link User/provider FKs are retained; fresh full Flyway
+validate/no pending and existing native jsonb types are checked.
+
+Pre-publication candidate `2fccd94c38f4f0b1976c264859c054982f6fb765` on
+`codex/hpr-p25-048-validation` contains only the two mappings and this new test, without
+047 source or finalized dictionary/docs. [CI #664](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38305954676)
+executes unchanged Java 21 full repository verification for real PostgreSQL proof and
+authentic current migrated catalog capture. The old dictionary source bundle is
+expected to differ until genuine candidate catalog evidence is rendered and reviewed.
+That expected draft-evidence mismatch is not full candidate CI acceptance.
+
+Local focused command attempted:
+`./mvnw -B -q -Dtest=IdentityProviderLinkJsonbPostgresIntegrationTest,IdentityProviderSemanticRemediationTest,LocalAuthenticationIntegrationTest,LdapAuthenticationProviderTest,IdentityOidcJwtAuthenticationConverterTest,AuthorizationAssertionTrustTest test`
+(using Java 21 and `bash ./mvnw` to preserve tracked executable mode).
+It cannot resolve Maven Surefire 3.5.6: Central hostname reports Temporary failure in
+name resolution. No local Maven/database PASS or Docker-skip PASS is claimed.
+Hosted full verification includes all six focused classes; exact results are recorded
+below when recovered. All 146 existing migration SQL files are byte-identical to
+current main; migration manifest SHA-256
+`14865e5e58859cd170fdfe024e73742eeee95b7e66cb504f65507515d6b13aab`.
+Current migration/JPA source bundle is
+`081cb4843e56dbfa7bcfb1828067250382cb8fe9aafd80cba345cfc3978f1ce1`.
+
+### Current disposition
+
+HPR-P25-048 is IN PROGRESS / CODE IMPLEMENTED; full exact-head Production and Docs
+SUCCESS remains the acceptance gate. Publication validates exact parent/tree/message,
+six-file allowlist and blob hashes, advances main with its expected-head guard and
+confirms required exact-head CI startup, then STOP without waiting or advancing.
+HPR-P25-047 remains BLOCKED / NOT IMPLEMENTED ON MAIN until accepted 048 and a separate
+owner Next select its unchanged seven-file generation registration. No generation
+transport/issuance/reader, binding store, B2/B3, publication or closure is selected.
+F1–F4/P2.5 remain OPEN; simulation/P3 remain DEFERRED. Gas-first/GZ2, Hidra own engine,
+steady/transient direction, versioned inputs/operator control, synthetic development
+and owner deployment calibration are preserved. No version, release or deployment change.
+
+
+HPR-P25-048 local source validation: all 37 validator unit checks PASS (10 docs,
+10 offline OpenAPI, 17 dictionary); canonical docs PASS (98 documents, 5,308 links,
+24 modules, 13 P2 rows); offline OpenAPI PASS (263 operations, 244 paths, 231 schemas);
+existing P1 evidence consistency PASS without closure execution. Entity edit envelope,
+new canonical nine-method test, preserved 146 SQL bytes, unchanged generator/ownership,
+append-only reconciliation, mirrored execution record and whitespace checks PASS.
+Hosted real database results and authentic dictionary evidence follow below; final
+exact-head acceptance remains PENDING.
+
+
+HPR-P25-048 hosted validation and dictionary review: candidate CI #664 Repository
+verification (`./mvnw -B -q clean verify -DforkCount=2 -DreuseForks=true`) PASS:
+1,763 tests, 0 failures, 0 errors, 0 skipped, including all nine real PostgreSQL JSONB
+methods and the six focused classes. Runtime deterministic OpenAPI publication and
+canonical snapshot equality PASS. Candidate overall CI is FAILURE at its draft
+dictionary gate (unchanged prior-source dictionary); subsequent compatibility-base
+and backward-compatibility steps are SKIPPED, not passed.
+
+Authentic C3D schema evidence recovered from completed job `114999946085`: all 98
+compressed catalog log parts contiguous; decoded document SHA-256
+`7bed59ad9eae28680899694f5458e6af3f086e5396d9355e6c837c76ddf30f47`,
+exact candidate SHA and source bundle verified without changing the capture. Unchanged
+current generator validates the document against the repair source, renders the
+registered dictionary and checks the replacement successfully. Dictionary SHA-256
+`ddbc99e6bd5a5c96cb65427103e74ce31cc3f003f8dafcdec54c5cd5df9425fb`;
+146 migrations, 470 JPA mappings, 490 catalog relations, 0 unresolved owners;
+actual server `16.15 (Debian 16.15-1.pgdg13+2)`. Diff is exactly capture SHA and source
+bundle SHA; all physical facts and server-build bytes remain identical. No fabricated
+collector identity, source artifact, changed ownership/generator or new migration.
+Final main-source scope, hashes, prior SQL/history preservation and whitespace are
+checked before guarded publication; full final exact-head CI acceptance is PENDING.

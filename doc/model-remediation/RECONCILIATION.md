@@ -16027,3 +16027,166 @@ whitespace checks PASS. PostgreSQL/Spring mechanics checked against linked prima
 documentation; selected protocol and B1/B2/B3 are design findings, not executed
 race/transaction/performance evidence. No Java/Maven/database execution or version/
 release/deployment/closure mutation. Design acceptance remains exact-head Docs PENDING.
+
+
+## 2026-10-12 — Register HPR-P25-044 operation-authentication provenance preflight
+
+### Selected registration and accepted design boundary
+
+Owner Next selects recovery/registration of 043's B1 prerequisite first, keeping B2
+operation-time evidence and B3 transaction/fences separate. Current main is
+`f6dabb6a4585c7c30203352f9f96a2892aa79a84`, tree
+`04eaaacc5033cf0d870c4ad44377774831358ac4`; exact-head
+[Docs #253](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38204661494)
+is SUCCESS. Latest Production #659 and Docs #251 on accepted 042 remain SUCCESS;
+043 changed only the two governance documents. Its coarse persisted-state fence,
+race specification and B1/B2/B3 disposition are accepted as design only. No runtime
+authentication, timing, concurrency, publication or SITE acceptance is inferred.
+
+Read AGENTS.md, PROJECT_STATE.md, active roadmap/reconciliation, actual completion,
+issuer/ports/models, native actor/assertion handling, session lifecycle/persistence,
+existing migrations/tests and accepted architecture export. 044 was absent from
+prior active/history/reconciliation registrations. HPR-P25-043 design acceptance is
+recorded in current tables; historical pending records remain preserved.
+
+Current-stage exact message:
+`docs(identity): register operation authentication provenance preflight`.
+Current-stage exclusive UPDATE allowlist is
+`doc/roadmap/ULTIMATE_ROADMAP.md` and `doc/model-remediation/RECONCILIATION.md`.
+CREATE/DELETE: none. This is registration only; no future task executes in this commit.
+
+### Recovered source and reason for the B1-only split
+
+| Current exact source | Observed behavior / bounded gap |
+|---|---|
+| `src/main/java/dz/sh/hidra/modules/identity/application/service/AuthenticationCompletionApplicationService.java` | Builds normalized principal, issues access token, then creates session; response returns both jti and sessionId but no persistent relation between them |
+| `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/HidraAccessTokenIssuer.java` | Generates signed sub/jti/expiry/authentication_type and optional identity_provider_id; no session or external-identity binding claim |
+| `src/main/java/dz/sh/hidra/modules/identity/application/port/out/AccessTokenIssuerPort.java` | issue accepts principal only; changing issuance inputs is an owner-contract compatibility decision |
+| `src/main/java/dz/sh/hidra/modules/identity/application/model/IssuedAccessToken.java` | Validates bearer material, jti and issued/expires interval; not a database session binding |
+| `src/main/java/dz/sh/hidra/modules/identity/domain/model/LoginSession.java` and `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/LoginSessionJpaEntity.java` | Exact session/user/provider/external identities, status, expiry, protocol and endedAt; no token jti field |
+| `src/main/java/dz/sh/hidra/modules/identity/application/port/out/LoginSessionRepositoryPort.java` and `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/repository/LoginSessionJpaRepository.java` | Save/exact session read and inherited CRUD; no exact token-to-session query |
+| `src/main/java/dz/sh/hidra/modules/identity/application/service/AuthenticationSessionLifecycleApplicationService.java` | ACTIVE/EXPIRED/REVOKED/LOGGED_OUT lifecycle; logout/revoke/expire persist status, but accepted actor lookup does not consume this session state |
+| `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/TopologyCurrentActorQueryAdapter.java` | Redecodes native token and resolves exact active/unlocked human User; does not expose session/source-provider/link proof |
+| `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/SpringAuthorizationContextAdapter.java` | Uses trusted HidraPrincipal/OIDC assertion; ordinary JWT principal does not yield that provider/link assertion |
+| `src/main/resources/db/migration/V20260611_001__create_identity_tables.sql` and `src/main/resources/db/migration/V20261006_012__hmr_087_login_session_evidence.sql` | Existing session schema and explicit protocol/endedAt integrity; no token binding is safely derivable from user/provider/time or correlationId |
+
+Existing source tests include
+`src/test/java/dz/sh/hidra/modules/identity/semantic/LoginSessionSemanticRemediationTest.java`,
+`src/test/java/dz/sh/hidra/modules/identity/semantic/LoginSessionIntegrityMigrationTest.java`,
+`src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/TopologyCurrentActorQueryAdapterTest.java`
+and `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/AuthorizationAssertionTrustTest.java`.
+They are read-only precedents, not proof of native token/session association or runtime
+atomic revocation. Existing accepted export prefix remains unchanged in
+`src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java`.
+
+The binding affects issuance order, failure/rollback, persisted uniqueness and legacy
+tokens; it cannot be safely treated as one more read-only boolean query. No raw token
+storage or guessed existing-session match is selected. B2/B3 are not solved by a new
+session ID claim. The next bounded step is the B1 policy/compatibility design, not
+an authentication rewrite or combined fence/publication implementation.
+
+### Registered next executable task — HPR-P25-044
+
+Exact policy-task message:
+`docs(identity): define operation authentication provenance policy`.
+State: PLANNED / REGISTERED / NOT EXECUTED. Passing exact-head registration Docs and
+separate owner Next select this solo documentation preflight. Recheck then-current
+main and latest CI; repair failed CI first.
+
+Exclusive policy-task allowlist:
+
+| Action | Exact path |
+|---|---|
+| UPDATE | `doc/roadmap/ULTIMATE_ROADMAP.md` |
+| UPDATE | `doc/model-remediation/RECONCILIATION.md` |
+
+CREATE/DELETE: none. Java/tests, schema/Flyway, token issuer/completion, session
+contracts/persistence/lifecycle, security configuration, permission evaluator, exports,
+API/OpenAPI, dictionary/configuration/dependencies, gap register, release/version,
+deployment and closure are read-only. No migration version or new Java filename is
+reserved. This registration and forthcoming policy are not runtime authorization.
+
+### Required B1 policy output and acceptance
+
+1. **Exact trusted provenance matrix.** Define operation eligibility for native
+   Hidra bearer minted through LOCAL/LDAP/ACTIVE_DIRECTORY/OIDC, their in-memory
+   trusted principal/assertion counterparts and unsupported contexts. Bind verified
+   issuer/audience/signature/subject, auth type, User, provider/link and session;
+   caller values and role/scope/name claims never supply missing proof. Preserve
+   current actual provider protocols; AD versus LDAP cannot be inferred only from
+   a session protocol label. Do not claim remote directory/issuer state is instantly
+   known when only locally persisted evidence is available.
+2. **Select one token/session association design.** Compare signed session identity
+   plus authoritative exact binding against persisted jti association, using current
+   issuer/model/storage limits. Choose uniqueness/cardinality, normalization/lengths,
+   expiry/protocol/provider/external-subject agreement, server-issued immutable IDs
+   and rollback/integrity behavior. No raw bearer/password storage or lookup by
+   approximate user/time/correlationId. Determine whether new dedicated binding
+   storage is required rather than silently overloading historical session fields.
+3. **Issuance/lifecycle and compatibility.** Define successful completion ordering,
+   one physical transaction for persistent binding/session work, token/signing and
+   session-save failure, retry/idempotency, concurrent logout/revoke, and when a
+   token may be returned. Specify legacy unbound tokens and non-active/missing/
+   mismatched sessions for future protected operations, keeping existing generic
+   actor/authorization behavior distinct until an explicitly registered integration.
+   Decide credential rotation/provider disable/link removal effects without imposing
+   a local password workflow on directory users. No automatic migration/backfill
+   pretending old tokens had trusted provenance. API/client compatibility and session
+   end-state preservation must be explicit; release/version remains unchanged here.
+4. **Owner contract boundary and remaining gates.** Define Identity-owned immutable
+   operation-authentication evidence with minimum provenance/validity, no reusable
+   grant or caller actor. Preserve original verified OIDC assertion handling and
+   current-evidence recheck; source snapshots/decoded unsigned claims are insufficient.
+   Identify new session/binding/credential reads that enlarge 043's fence registry.
+   B1 lookup remains subject to separately registered B2 temporal proof and B3 same
+   transaction/lock participation; neither an ID DTO nor an expiry timestamp proves
+   permission at the operation linearization point. No private cross-module imports
+   or callback cycle, session mutation from Topology, or user-facing publication API.
+5. **Synthetic verification specification.** Cover all accepted contexts, two
+   users/providers/links/sessions and independent companies/facilities; forged or
+   malformed claims, legacy/unbound token, swapped session/jti/subject, duplicate
+   issuance, missing/expired/revoked/logged-out session, disabled/locked/nonhuman user,
+   provider/link changes, credential policy and unsupported auth. Specify real
+   signature/issuer and PostgreSQL uniqueness/rollback tests and deterministic
+   concurrent issuance/logout/revocation barriers. No live provider, credentials,
+   real-data fixture or SITE commissioning prerequisite; owner calibration remains
+   a separate deployment input.
+6. **Bounded implementation decomposition.** Recover exact source-backed owners,
+   prerequisites, candidate mutation/test/migration/dictionary areas and compatibility
+   risks. If B1 needs additive binding storage before issuer/reader work, separate
+   those stages; do not combine them with B2, B3 or publication. A later separate
+   registration must assign exact HPR/message/file allowlists and acceptance gates.
+   Proposed areas in the policy do not approve files, migrations or execution. If a
+   policy choice cannot be justified from owner direction/source, record a concrete
+   blocker instead of guessing or enabling a fallback.
+
+Policy acceptance is a reviewable source-backed B1 design and prerequisite disposition,
+not schema/API/session-revocation functionality. Validate only the two-document scope,
+10 documentation-validator and 10 OpenAPI-validator unit tests, canonical docs/offline
+OpenAPI, existing P1 closure evidence consistency check, source/history/whitespace.
+No Maven/database/provider/race test or closure execution is claimed in this stage.
+
+| Task | Current status | Next |
+|---|---|---|
+| HPR-P25-043 | Completed design — Docs #253 SUCCESS | Persisted-state fence direction only; runtime B1/B2/B3 remain OPEN |
+| HPR-P25-044 registration | Completed in source; exact-head Docs acceptance PENDING | Publish exact two docs; verify startup and STOP |
+| HPR-P25-044 policy execution | Planned / REGISTERED / NOT EXECUTED | Passing registration Docs and separate owner Next select only this B1 policy preflight |
+| B1 runtime, B2 time evidence, B3 fences/transaction and publication/history/API | OPEN / NOT REGISTERED / NOT IMPLEMENTED | Separate source-backed registrations and runtime acceptance required |
+| F1–F4 / P2.5 | OPEN | No closure or PLATFORM/SITE acceptance |
+| Simulator / P3 | DEFERRED | Retain gas-first/GZ2 own-engine steady/transient and operator control |
+
+Dynamic versioned inputs, synthetic development and owner-supplied deployment
+calibration retained. Current version/release unchanged. Publish one guarded direct-main
+commit, verify exact parent/tree/two paths and exact-head Docs startup, then STOP
+without waiting for completion or selecting another stage.
+
+
+HPR-P25-044 registration publication validation: documentation-validator 10 and
+OpenAPI-validator 10 unit tests PASS; canonical docs PASS (98 documents, 5,306
+relative links, 24 modules, 13 P2 rows); offline OpenAPI PASS (263 operations,
+244 paths, 231 schemas); existing P1 closure evidence consistency PASS without
+executing closure. Exact two-document scope, absent prior 044 registration, all
+cited source/test/migration references, historical roadmap/reconciliation preservation
+and whitespace checks PASS. No Java/Maven/database/provider/race execution, token/
+session/schema mutation or release/version/deployment/closure change. Registration
+acceptance remains exact-head Docs PENDING; B1 policy execution is not selected here.

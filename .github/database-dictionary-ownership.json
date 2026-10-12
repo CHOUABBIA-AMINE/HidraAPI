@@ -63,6 +63,14 @@
     "owner": "hse",
     "purpose": "HSE-owned field-role to approved catalog-family metadata, intentionally unseeded by its migration."
   },
+  "public.hidra_identity_local_credential": {
+    "evidence": [
+      "src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/LocalCredentialJpaEntity.java",
+      "src/main/resources/db/migration/V20261012_001__p25_identity_local_credential_security_generation.sql"
+    ],
+    "owner": "identity",
+    "purpose": "Identity-owned LOCAL credentials with database-enforced monotonic security generations and retained credential identity; generation alone grants no token/session authority."
+  },
   "public.hidra_incident": {
     "evidence": [
       "src/main/java/dz/sh/hidra/modules/incident/infrastructure/persistence/entity/IncidentJpaEntity.java"

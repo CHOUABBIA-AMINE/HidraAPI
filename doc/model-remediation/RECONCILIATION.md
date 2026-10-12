@@ -17161,3 +17161,108 @@ historical detailed registrations/reconciliation, old migrations and whitespace 
 No Maven/database/provider/race execution or SQL/test/schema/token/runtime mutation,
 version/release/deployment/closure change. Registration acceptance exact-head Docs
 PENDING; separate owner Next after success selects the registered six-file implementation.
+
+
+## 2026-10-12 — Execute HPR-P25-046 LOCAL credential security generations
+
+### Selected scope and implementation
+
+Owner Next selects exact message `feat(identity): enforce local credential security generations`
+after registration [Docs #258](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38283017388)
+SUCCESS. Baseline main `05261930024bd202786ee5d23cc0af552497290a`, tree
+`2d91c0fdc8e241b260afda5bb72e276b5b030a02`; latest accepted runtime Production #659
+remains SUCCESS. AGENTS.md, PROJECT_STATE.md, roadmap/reconciliation, current source,
+registration and path/version/name collisions were rechecked. Execute only registered
+six-file area A; preserve every historical detailed registration and old SQL checksum.
+
+Created:
+`src/main/resources/db/migration/V20261012_001__p25_identity_local_credential_security_generation.sql`
+and
+`src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/LocalCredentialSecurityGenerationPostgresIntegrationTest.java`.
+Updated only `.github/database-dictionary-ownership.json`, `doc/database/DATA_DICTIONARY.md`
+and these two governance documents. No deletion or production Java change.
+
+The forward migration adds positive bigint security_version/default 1 without changing
+existing credential identity/hash/status/times. Database-owned guarded INSERT/UPDATE
+increments on hash/status/passwordChangedAt changes, retains neutral/unchanged writes,
+rejects supplied version or immutable identity/User/createdAt mutation, rejects overflow
+and DELETE/TRUNCATE. Functions use SECURITY INVOKER, fixed search_path and static SQL;
+no caller/role exception or session/provider side effect. Rotate-away-and-back cannot
+reset the version. Existing bootstrap and unmapped JPA writes remain supported within
+tested behavior. Version is not yet transported in LocalCredential or token claims.
+
+### Verification evidence and limits
+
+Local default wrapper execution was not executable; no tracked mode change was made.
+Initial `bash mvnw -B -q -Dtest=LocalCredentialSecurityGenerationPostgresIntegrationTest,LocalAuthenticationIntegrationTest test`
+was blocked before compilation by uncached Boot 4.1.1/DNS. Task-local Java 21 and a
+process-scoped Maven proxy then resolved dependencies. Focused Maven completed compiling
+both selected tests, but its 9 Testcontainers tests skipped because Docker is unavailable;
+those skips are NOT a passing behavioral result or runtime acceptance.
+
+To execute behavior without changing committed tests, temporary scratch launch copies
+removed only Testcontainers wiring and supplied the task-local PostgreSQL TCP address.
+Real Spring Boot 4.1.1, Hibernate/JPA, Flyway and the same committed test method bodies ran
+against PostgreSQL 16.15; temporary existing LOCAL regression also used that PostgreSQL 16
+instead of its committed PostgreSQL 18 container. Java 21 JUnit launcher completed normally:
+**9 tests executed, 9 successful, 0 skipped, 0 failed**. Initial upgrade fixture missed
+required failed_login_count; corrected to explicit synthetic zero and rerun successfully.
+No repository test/CI/profile rewrite or stubbed behavioral proof. New test source also
+compiled against the actual exact Maven test dependency classpath.
+
+Covered fresh full Flyway migration/validate, upgrade from actual 20261011.002 with
+existing credential and preserved prior checksums, default/neutral/security changes,
+rotate/disable/back and nullable change-time transitions, invalid versions/identity/
+delete/truncate, actual JPA saves and downstream rollback, first/idempotent bootstrap
+and incomplete-state refusal, native/bulk/COPY/MERGE/upsert guard execution, isolated
+rollback-only overflow fixture and independent backend row-lock observation with bounded
+waits plus rollback/version isolation. No sleep-based race or mock generation proof.
+Task-local DB uses a userspace UID view in the root-only execution namespace and TCP,
+without changing kernel credentials/permissions; this does not establish deployed host,
+role/privilege isolation, runtime performance or SITE acceptance. Ordinary trigger
+execution was tested; privileged DDL bypass remains 045's explicit external boundary.
+
+Dictionary facts were read from the actual Flyway-migrated local catalog using the
+unchanged generator's read-only CATALOG_SQL and validated source inventory. The hosted
+`--collect` entry point intentionally rejects non-Actions environments; no guard or
+script was weakened or Actions identity forged. Rendered/checked with supported
+`--input` mode and reviewed ownership. Capture source SHA is baseline 0526193 plus
+candidate source inventory bundle `d85260b4f2eae88875be2a706ffbfc0b376f2d69af356e4d2ed37cdfcfc2ae2f`,
+not a claimed exact-head hosted CI capture. Actual catalog: PostgreSQL 16.15 Ubuntu,
+146 migrations, 470 JPA mappings, 490 relations, 0 unresolved owners. The generator's
+standard disposable-CI label is unchanged; this recorded capture is local synthetic
+verification. Generated physical diff is only new credential version/comment/check/
+three trigger/function evidence, ownership links and provenance header; no invented
+physical metadata or real business data. Exact-head production CI must recheck its own
+migrated catalog against the reviewed dictionary.
+
+### Disposition and next boundary
+
+HPR-P25-046 CODE IMPLEMENTED / exact-head Production and Docs acceptance PENDING.
+Registration Docs #258 SUCCESS. Area A database generation alone grants no access and
+is not token/session provenance or global revocation. Provider/link generations, binding
+storage, trusted issuance/reader and B2/B3/publication remain separately unregistered
+runtime prerequisites. After required full exact-head CI succeeds and separate owner
+Next, recover/register area B provider/link database generations from accepted 045;
+do not implement it or choose later publication work now.
+
+F1–F4/P2.5 OPEN, simulator/P3 DEFERRED. Preserve gas-first/GZ2, Hidra own engine,
+steady/transient, dynamic versioned inputs, operator control, synthetic development
+and owner-supplied deployment calibration. Version/release/deployment/closure unchanged.
+Publish one guarded direct-main commit with exact parent/tree/six paths, confirm required
+exact-head CI startup and STOP without waiting for completion or advancing.
+
+
+HPR-P25-046 publication validation: 9 real PostgreSQL 16/Spring/JPA/Flyway tests
+executed successfully through temporary local launch wiring (0 skipped/failed);
+committed Testcontainers tests compiled, Docker execution remains exact-head CI gate.
+Documentation-validator 10, OpenAPI-validator 10 and dictionary-generator 17 unit
+checks PASS; canonical docs PASS (98 documents, 5,308 relative links, 24 modules,
+13 P2 rows); offline OpenAPI PASS (263 operations, 244 paths, 231 schemas); existing
+P1 evidence consistency PASS without closure execution. Actual read-only catalog
+and dictionary render/check PASS: 146 migrations, 470 mappings, 490 relations,
+0 unresolved owners. Exact six-file scope, 145 immutable old migration checksums,
+canonical new Java header, unchanged production Java/version/historical records,
+source references and whitespace PASS. Source implementation complete; required
+exact-head Production/Docs acceptance PENDING. No provider/link/binding/issuer/reader,
+B2/B3, publication, version/release/deployment/closure advancement.

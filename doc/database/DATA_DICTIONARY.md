@@ -6,10 +6,10 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `b0da4134248949b922af3e46904f2a8d27a66726`
-PostgreSQL server: `16.15 (Debian 16.15-1.pgdg13+2)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `78811d82a24ae8c1aee2cd3597f8d653c1bac78734ff07b7ec244701dcab4885`.
-Migrations: 145; JPA mappings: 470; catalog relations: 490; unresolved owners: 0.
+Captured source SHA: `05261930024bd202786ee5d23cc0af552497290a`
+PostgreSQL server: `16.15 (Ubuntu 16.15-0ubuntu0.24.04.1)`; disposable database: `hidra_test`.
+Generator format: 1; source bundle SHA-256: `d85260b4f2eae88875be2a706ffbfc0b376f2d69af356e4d2ed37cdfcfc2ae2f`.
+Migrations: 146; JPA mappings: 470; catalog relations: 490; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -8871,10 +8871,12 @@ None captured in this catalog category.
 
 Owner: **identity**; relation kind: `r`.
 
-Persisted LocalCredentialJpaEntity state; semantic authority remains with identity.
+Identity-owned LOCAL credentials with database-enforced monotonic security generations and retained credential identity; generation alone grants no token/session authority.
 
 - Evidence: [LocalCredentialJpaEntity.java](../../src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/LocalCredentialJpaEntity.java)
+- Evidence: [V20261012_001__p25_identity_local_credential_security_generation.sql](../../src/main/resources/db/migration/V20261012_001__p25_identity_local_credential_security_generation.sql)
 - Migration mention (not inferred introduction): [V20260915_001__create_identity_local_credential.sql](../../src/main/resources/db/migration/V20260915_001__create_identity_local_credential.sql)
+- Migration mention (not inferred introduction): [V20261012_001__p25_identity_local_credential_security_generation.sql](../../src/main/resources/db/migration/V20261012_001__p25_identity_local_credential_security_generation.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -8885,9 +8887,12 @@ Persisted LocalCredentialJpaEntity state; semantic authority remains with identi
 | password_changed_at | timestamp with time zone | True | None; identity=; generated= | passwordChangedAt: Instant; {}; columnDefinition=None | — |
 | created_at | timestamp with time zone | False | None; identity=; generated= | createdAt: Instant; {"nullable": "false"}; columnDefinition=None | — |
 | updated_at | timestamp with time zone | False | None; identity=; generated= | updatedAt: Instant; {"nullable": "false"}; columnDefinition=None | — |
+| security_version | bigint | False | 1; identity=; generated= | No current mapped Java column | Database-owned monotonic LOCAL credential security generation; not token or session authority. |
 
 #### Constraints
 
+- `ck_p25_local_credential_security_version`: CHECK (security_version &gt; 0)
+  - Catalog attributes: {"columns": ["security_version"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
 - `fk_hidra_identity_local_credential_user`: FOREIGN KEY (user_id) REFERENCES hidra_identity_user(id)
   - Catalog attributes: {"columns": ["user_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_identity_user"}, "type": "f", "validated": true}
 - `hidra_identity_local_credential_pkey`: PRIMARY KEY (id)
@@ -8908,7 +8913,15 @@ Persisted LocalCredentialJpaEntity state; semantic authority remains with identi
 
 #### Triggers
 
-None captured in this catalog category.
+- `trg_p25_local_credential_security_delete`: CREATE TRIGGER trg_p25_local_credential_security_delete BEFORE DELETE ON hidra_identity_local_credential FOR EACH ROW EXECUTE FUNCTION hidra_identity_local_credential_security_guard()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_identity_local_credential_security_guard()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_identity_local_credential_security_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'public'<br>AS $function$<br>BEGIN<br>    IF TG_OP IN ('DELETE', 'TRUNCATE') THEN<br>        RAISE EXCEPTION 'LOCAL credential identity must be retained; disable instead of deleting or truncating'<br>            USING ERRCODE = '23514';<br>    END IF;<br>    IF TG_OP = 'INSERT' THEN<br>        IF NEW.security_version IS DISTINCT FROM 1::bigint THEN<br>            RAISE EXCEPTION 'Initial LOCAL credential security generation must be 1'<br>                USING ERRCODE = '23514';<br>        END IF;<br>        RETURN NEW;<br>    END IF;<br>    IF NEW.id IS DISTINCT FROM OLD.id<br>        OR NEW.user_id IS DISTINCT FROM OLD.user_id<br>        OR NEW.created_at IS DISTINCT FROM OLD.created_at THEN<br>        RAISE EXCEPTION 'LOCAL credential identity and creation evidence are immutable'<br>            USING ERRCODE = '23514';<br>    END IF;<br>    IF NEW.security_version IS DISTINCT FROM OLD.security_version THEN<br>        RAISE EXCEPTION 'LOCAL credential security generation is database-owned'<br>            USING ERRCODE = '23514';<br>    END IF;<br>    IF NEW.password_hash IS DISTINCT FROM OLD.password_hash<br>        OR NEW.credential_status IS DISTINCT FROM OLD.credential_status<br>        OR NEW.password_changed_at IS DISTINCT FROM OLD.password_changed_at THEN<br>        IF OLD.security_version = 9223372036854775807::bigint THEN<br>            RAISE EXCEPTION 'LOCAL credential security generation is exhausted'<br>                USING ERRCODE = '22003';<br>        END IF;<br>        NEW.security_version := OLD.security_version + 1;<br>    ELSE<br>        NEW.security_version := OLD.security_version;<br>    END IF;<br>    RETURN NEW;<br>END;<br>$function$<br>
+- `trg_p25_local_credential_security_truncate`: CREATE TRIGGER trg_p25_local_credential_security_truncate BEFORE TRUNCATE ON hidra_identity_local_credential FOR EACH STATEMENT EXECUTE FUNCTION hidra_identity_local_credential_security_guard()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_identity_local_credential_security_guard()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_identity_local_credential_security_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'public'<br>AS $function$<br>BEGIN<br>    IF TG_OP IN ('DELETE', 'TRUNCATE') THEN<br>        RAISE EXCEPTION 'LOCAL credential identity must be retained; disable instead of deleting or truncating'<br>            USING ERRCODE = '23514';<br>    END IF;<br>    IF TG_OP = 'INSERT' THEN<br>        IF NEW.security_version IS DISTINCT FROM 1::bigint THEN<br>            RAISE EXCEPTION 'Initial LOCAL credential security generation must be 1'<br>                USING ERRCODE = '23514';<br>        END IF;<br>        RETURN NEW;<br>    END IF;<br>    IF NEW.id IS DISTINCT FROM OLD.id<br>        OR NEW.user_id IS DISTINCT FROM OLD.user_id<br>        OR NEW.created_at IS DISTINCT FROM OLD.created_at THEN<br>        RAISE EXCEPTION 'LOCAL credential identity and creation evidence are immutable'<br>            USING ERRCODE = '23514';<br>    END IF;<br>    IF NEW.security_version IS DISTINCT FROM OLD.security_version THEN<br>        RAISE EXCEPTION 'LOCAL credential security generation is database-owned'<br>            USING ERRCODE = '23514';<br>    END IF;<br>    IF NEW.password_hash IS DISTINCT FROM OLD.password_hash<br>        OR NEW.credential_status IS DISTINCT FROM OLD.credential_status<br>        OR NEW.password_changed_at IS DISTINCT FROM OLD.password_changed_at THEN<br>        IF OLD.security_version = 9223372036854775807::bigint THEN<br>            RAISE EXCEPTION 'LOCAL credential security generation is exhausted'<br>                USING ERRCODE = '22003';<br>        END IF;<br>        NEW.security_version := OLD.security_version + 1;<br>    ELSE<br>        NEW.security_version := OLD.security_version;<br>    END IF;<br>    RETURN NEW;<br>END;<br>$function$<br>
+- `trg_p25_local_credential_security_write`: CREATE TRIGGER trg_p25_local_credential_security_write BEFORE INSERT OR UPDATE ON hidra_identity_local_credential FOR EACH ROW EXECUTE FUNCTION hidra_identity_local_credential_security_guard()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_identity_local_credential_security_guard()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_identity_local_credential_security_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'public'<br>AS $function$<br>BEGIN<br>    IF TG_OP IN ('DELETE', 'TRUNCATE') THEN<br>        RAISE EXCEPTION 'LOCAL credential identity must be retained; disable instead of deleting or truncating'<br>            USING ERRCODE = '23514';<br>    END IF;<br>    IF TG_OP = 'INSERT' THEN<br>        IF NEW.security_version IS DISTINCT FROM 1::bigint THEN<br>            RAISE EXCEPTION 'Initial LOCAL credential security generation must be 1'<br>                USING ERRCODE = '23514';<br>        END IF;<br>        RETURN NEW;<br>    END IF;<br>    IF NEW.id IS DISTINCT FROM OLD.id<br>        OR NEW.user_id IS DISTINCT FROM OLD.user_id<br>        OR NEW.created_at IS DISTINCT FROM OLD.created_at THEN<br>        RAISE EXCEPTION 'LOCAL credential identity and creation evidence are immutable'<br>            USING ERRCODE = '23514';<br>    END IF;<br>    IF NEW.security_version IS DISTINCT FROM OLD.security_version THEN<br>        RAISE EXCEPTION 'LOCAL credential security generation is database-owned'<br>            USING ERRCODE = '23514';<br>    END IF;<br>    IF NEW.password_hash IS DISTINCT FROM OLD.password_hash<br>        OR NEW.credential_status IS DISTINCT FROM OLD.credential_status<br>        OR NEW.password_changed_at IS DISTINCT FROM OLD.password_changed_at THEN<br>        IF OLD.security_version = 9223372036854775807::bigint THEN<br>            RAISE EXCEPTION 'LOCAL credential security generation is exhausted'<br>                USING ERRCODE = '22003';<br>        END IF;<br>        NEW.security_version := OLD.security_version + 1;<br>    ELSE<br>        NEW.security_version := OLD.security_version;<br>    END IF;<br>    RETURN NEW;<br>END;<br>$function$<br>
 
 ### public.hidra_identity_login_session
 

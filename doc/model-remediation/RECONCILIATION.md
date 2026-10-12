@@ -17635,3 +17635,177 @@ preserved; whitespace PASS. Prior exact-head Production #662 and Docs #261 SUCCE
 verify area A; no Maven/database/provider/race execution or runtime/schema mutation
 in this registration. Registration Docs acceptance PENDING; separate owner Next
 after success selects only the seven-file HPR-P25-047 implementation.
+
+
+## 2026-10-12 — HPR-P25-047 compatibility blocker and HPR-P25-048 corrective registration
+
+### Attempted stage and exact failure evidence
+
+Owner Next selected registered 047, exact future message
+`feat(identity): enforce provider and link security generations`, at main
+`bfca4d01fbac465d18ec6159f5c19422f6452ac3`, tree
+`65e85d178397ac05461fc8f5d9ad7be9ebdbd973`. Registration
+[Docs #262](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38301532858)
+SUCCESS; prior full Production #662 accepted area A. AGENTS.md, PROJECT_STATE.md,
+roadmap/reconciliation, exact 047 allowlist and current source were read before changes.
+
+Local Java 21 was prepared, but Maven artifact transfers received HTTP 403, Docker is
+absent and the isolated runtime cannot change OS user identity or start PostgreSQL.
+No local Maven/database PASS is claimed. A temporary validation branch was used to
+obtain real hosted compatibility evidence before changing main; no PR, workflow edit,
+production promotion or deployment. Candidate commit
+`fee0fa0d908eea700e44d05b43c9731b0cf1aacd` on
+`codex/hpr-p25-047-validation` contains only the proposed new 047 SQL, two-method ORM
+probe at its registered test path and bounded LOCAL upgrade assertions. It is NOT main,
+NOT accepted 047 implementation and NOT the final complete acceptance suite.
+
+[CI #663](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38303187523),
+job 114990829763, FAILED repository verification: 1,756 tests, 0 failures, 2 errors,
+0 skipped. Both errors are the new real PostgreSQL 16/Spring/JPA saves, SQLSTATE 42804:
+
+| Real method / existing column | Observed failure |
+|---|---|
+| actualProviderAdapterPreservesGeneratedVersionAndRollsBack / provider.metadata | Column is jsonb but expression is character varying, including null input |
+| actualLinkRepositoryPreservesGeneratedVersionAndRollsBack / external_identity.external_attributes_snapshot | Column is jsonb but expression is character varying, including null input |
+
+The 1,754 preexisting tests, including the bounded LOCAL migration-aware assertions,
+have no failures/errors in that run. Actual schema evidence emitted during repository
+verification confirms 147 migrations and 490 relations, source bundle
+`efdf35838b8931b9b85c25f0de7021a010a154d03a58b3c0a64fc6daae2f0a1e`
+and catalog digest `d90bb043dc01167cc0114e1359b7af0f3313f3ca7981e6982b14ee0c489b4f33`.
+This shows migration execution, not full generation/ORM acceptance. Later standalone
+runtime OpenAPI/dictionary/compatibility steps were skipped after repository failure;
+no successful full CI or committed dictionary regeneration is claimed for this draft.
+
+### Source-backed root cause and scope disposition
+
+Existing `IdentityProviderJpaEntity.metadata` and
+`ExternalIdentityJpaEntity.externalAttributesSnapshot` are String fields with
+@Column(columnDefinition="jsonb") but no explicit Hibernate JSON JDBC mapping.
+Their production bytes are identical to main. The proposed generation SQL never
+changes either existing column's type. The observed statement type error arises
+before successful persistence/generation validation; it is a current ORM compatibility
+prerequisite, not permission to weaken the accepted generation contract.
+
+Exact existing owner precedent:
+`src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/AuthorizationDecisionJpaEntity.java`
+already combines String jsonb columns with @JdbcTypeCode(SqlTypes.JSON), using existing
+Hibernate dependencies. The [Hibernate JSON mapping guide](https://docs.hibernate.org/orm/6.6/userguide/html_single/#basic-mapping-json)
+describes explicit JDBC JSON mapping; current repository dependency/source and actual
+runtime proof govern the repair, not an unrelated library upgrade.
+
+047 expressly requires concrete blocker recovery and a separately registered correction
+when production mapping outside its seven-file envelope is needed. Therefore 047 is
+BLOCKED / NOT IMPLEMENTED ON MAIN. Its SQL/test/ownership drafts remain unpublished to
+main. No caller flag, VARCHAR cast workaround, JSON-to-text DDL, JPA exclusion, weakened
+ORM proof, new dependency or source-scope expansion is used to force it through.
+
+This is a correction of the existing 047 execution registration and prerequisite order,
+using its already registered documentation message:
+`docs(identity): register provider and link generation implementation`.
+Current UPDATE scope is exactly roadmap and reconciliation; CREATE/DELETE none.
+Record the blocker and register the required runtime repair only. No 048 implementation
+is executed in this commit; no additional design-only task is needed before its execution.
+
+### Registered next executable correction — HPR-P25-048
+
+Exact implementation commit message:
+`fix(identity): map provider and link jsonb attributes`.
+State: PLANNED / REGISTERED / NOT IMPLEMENTED. Dependencies: this registration exact-head
+Docs PASS, separate owner Next, refreshed main/source/CI and collision/scope recheck.
+Current main remains the accepted runtime source plus documentation. The failed probe
+is retained as evidence; repairing its cause precedes resuming 047. No batch selected.
+
+| Action | Exclusive exact future correction path |
+|---|---|
+| UPDATE | `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/IdentityProviderJpaEntity.java` |
+| UPDATE | `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/entity/ExternalIdentityJpaEntity.java` |
+| CREATE | `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/IdentityProviderLinkJsonbPostgresIntegrationTest.java` |
+| UPDATE | `doc/database/DATA_DICTIONARY.md` |
+| UPDATE | `doc/roadmap/ULTIMATE_ROADMAP.md` |
+| UPDATE | `doc/model-remediation/RECONCILIATION.md` |
+
+DELETE none. Six-file solo correction; no migration authorized. Entity edits are limited
+to explicit Hibernate JSON JDBC typing on those two existing attributes, required imports
+and canonical UpdatedOn. Preserve Java String constructor/accessor shape, existing column
+names/types/nullability and all other mappings. Follow the existing Identity-owned JSON
+mapping precedent. Do not introduce a converter, custom/global dialect/driver setting,
+new mapper/library, payload schema or additional String-to-JSON API policy.
+
+Domain/provider/link repository/adapter/mapper, assertion/security/authentication and
+session/binding/generation source, other jsonb attributes, ownership overrides, old SQL,
+CI/generator/build/dependencies, API/OpenAPI, release/version/deployment/closure remain
+read-only. Do not implement 047 SQL/guards or its full test in 048. No metadata/profile
+snapshot becomes authentication or authorization evidence. Generation transport, trusted
+issuance, B2/B3 and publication remain separate OPEN obligations.
+
+### Required correction proof and dictionary scope
+
+New canonical-header test must use real PostgreSQL 16, Flyway and Spring/JPA provider
+adapter plus external-link repository. Assert actual transaction+flush/read/clear behavior,
+not a mock or schema-only claim:
+
+- Null metadata/snapshot inserts and ordinary save/merge updates succeed against jsonb;
+  distinguish SQL NULL from a valid JSON null literal when supplied as String.
+- Non-null object, array and scalar JSON representative payloads persist/read as actual
+  JSON values without becoming a JSON string containing an encoded document. Verify with
+  jsonb_typeof and semantic JSON comparison. No new root-type/key restrictions or invented
+  business keys; use synthetic values and no secret/bearer/customer data.
+- Replace/clear existing JSON values, preserve provider/link identity and every unrelated
+  field/eligibility mapping. Preserve existing provider code/active-provider constraints
+  and link User/provider FKs. Failed malformed JSON/save or an injected downstream failure
+  rolls back atomically; original valid payload and owner state remain.
+- Real provider adapter and link repository reads still supply their existing Java shapes;
+  assertion/LDAP/OIDC and provider semantic regressions run read-only. Stored profile data
+  remains excluded from authority; do not change existing authorization behavior here.
+- Fresh current migration chain, Flyway validate/no pending migrations and all 146 prior
+  SQL checksums retained. No new schema/migration name, normalization/backfill or deployed
+  role/data-acceptance claim. Existing native physical columns remain jsonb.
+
+Focused command:
+`./mvnw -B -q -Dtest=IdentityProviderLinkJsonbPostgresIntegrationTest,IdentityProviderSemanticRemediationTest,LocalAuthenticationIntegrationTest,LdapAuthenticationProviderTest,IdentityOidcJwtAuthenticationConverterTest,AuthorizationAssertionTrustTest test`.
+Real PostgreSQL tests must actually execute in applicable exact-head CI; report local
+runtime/network limitations and never count Docker skips as PASS. Run the 37 validator
+unit checks, canonical docs/offline OpenAPI, existing P1 evidence consistency, exact
+six-file scope/source/history/checksum/whitespace checks. Regenerate/check the dictionary
+from a genuine migrated catalog with current source provenance and unchanged generator;
+physical schema facts must be preserved, only actual source-evidence differences admitted.
+No fake collector identity, altered server-build header or fabricated source artifact.
+Runtime acceptance requires full Production and Docs SUCCESS on the exact correction
+head. Publish direct main without PR, verify parent/tree/message/scope and exact-head
+required CI started, then STOP without waiting for completion or advancing.
+
+If explicit JSON typing fails current framework compatibility or requires forbidden
+source, record the exact new blocker and separately register it rather than expand scope.
+Do not weaken 047's real writer proof or silently add generation Java transport to 048.
+
+### Corrected current order
+
+| Stage | State / acceptance gate | Next |
+|---|---|---|
+| HPR-P25-046 area A | COMPLETED — repaired Production #662 / Docs #261 SUCCESS | Retained |
+| HPR-P25-047 provider/link generations | BLOCKED — current ORM jsonb binding fails CI #663 probe; no implementation on main | Resume same seven-file registration only after accepted 048 and a separate owner Next |
+| HPR-P25-048 correction registration | Completed in source; exact-head Docs PENDING | Publish only two docs and verify startup |
+| HPR-P25-048 jsonb ORM correction | PLANNED / REGISTERED / NOT IMPLEMENTED | Separate owner Next after this Docs PASS executes exact six-file correction |
+| Area C, generation transport/issuance/reader, B2/B3/publication | OPEN / not selected | Later bounded registrations; no advance |
+
+No new product/retention/security policy is selected. F1–F4/P2.5 OPEN; simulator/P3
+DEFERRED. Preserve gas-first/GZ2, Hidra own engine, steady/transient, dynamic versioned
+inputs/operator control, synthetic development and owner calibration. No version,
+release, deployment or closure change. One guarded documentation registration repair;
+exact two-file scope, exact-head Docs startup, then STOP before correction implementation.
+
+
+HPR-P25-047 blocked-execution / corrective-registration validation: all 37 validator
+unit checks, canonical docs (98 documents, 5,308 links, 24 modules, 13 P2 rows),
+offline OpenAPI (263 operations, 244 paths, 231 schemas) and existing P1 evidence
+consistency PASS without closure execution. Exact two-document scope, append-only
+reconciliation, mirrored registration, current Identity JSON JDBC precedent, unused
+048 test path/code and all 146 prior SQL bytes/source/history/whitespace PASS.
+Hosted CI #663 truly ran the two PostgreSQL ORM probes: 0 failures, 2 errors, 0 skips;
+full suite 1,756 tests/2 errors. Those failures block 047, not main's accepted runtime.
+No local Maven/database PASS, current dictionary regeneration or full generation
+acceptance claimed. Existing 047 draft remains outside main; no forbidden production
+mapping edit, new dependency/workflow/schema/policy or version/release/deployment/
+closure change. Corrective registration complete in source, exact-head Docs PENDING;
+after success separate owner Next selects only HPR-P25-048's six-file correction.

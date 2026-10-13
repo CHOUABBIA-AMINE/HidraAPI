@@ -18444,3 +18444,28 @@ No permission to drop oracle, fake cache measurements, skip classes, widen the
 thirteen-file CI-003 allowlist, complete CI-003, create new HPR IDs or start 050.
 This checkpoint changes only the authorized roadmap and append-only reconciliation
 and neither alters GitHub Actions workflows nor performs CI dispatch.
+
+
+## 2026-10-13 — HPR-CI-003 measured PostgreSQL scheduling candidate
+
+On existing `dab5e2522993358f875c5f89d2deebc8fbc889ec` with Docs #270 SUCCESS, preserve the ongoing
+HPR-CI-003 closed thirteen-file boundary and its exact task commit message.
+Raw successful #669–#673 PostgreSQL shard XML reports record five class
+durations for all 76 database/integration test classes. Reweight only
+`.github/ci-test-inventory.json` `baseline_seconds` with per-class
+five-run medians; no source/test/owner/lane/case/hash changes. The existing
+longest-first two-shard algorithm moves 27 complete test classes, changing
+estimated measured aggregate load from 327.792/375.875 seconds (old
+assignment re-evaluated with current medians) to 351.838/351.829 seconds
+(new candidate). These are projections from sum of class durations, not
+observed hosted improvements. No changed class identity, test class
+coverage, package/build files, migration or runtime/API artifacts.
+
+This is an explicit **shadow experiment** that retains the unrestricted
+full oracle as the mandatory job, unchanged fail-closed gate, and
+`optimized_adoption_eligible=false`. Verify the next main CI gate and
+actual shard durations; do not infer a median <=7m or representative
+revision/cold-cache/failure injection coverage. Only CI-003's existing
+inventory, roadmap and append-only reconciliation were updated. No
+new HPR ID, Java test method, workflow topology, release/deployment,
+branch, PR or claim of CI completion is authorized here.

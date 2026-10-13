@@ -84,6 +84,54 @@ with independent exact-SHA release-gate proof. No status closure, speedup or
 scope expansion is claimed by this checkpoint. No CI dispatch, implementation or
 new worktree/branch is part of this documentation checkpoint.
 
+### HPR-CI-003 empirical PostgreSQL partition refresh — 2026-10-13 (candidate only)
+
+**Predecessor:** five exact-SHA successes #669–#673 and Fast #2–#6 on
+`d4a3d99d0840a8791eb79e5b25f86bd377470b54`, after the documentation-only
+checkpoint `dab5e2522993358f875c5f89d2deebc8fbc889ec` (Docs #270 SUCCESS).
+The ten authenticated lane evidence ZIP archives for both PostgreSQL shards
+contain the raw `TEST-*.xml` suite timings. All **76 existing DB/integration
+classes** were present once per run, with five valid measured class durations
+each. The source/task membership, concrete class names, test invocation
+identities and test source hashes are preserved.
+
+**Only the `baseline_seconds` scheduling hints** of those 76 existing
+`.github/ci-test-inventory.json` records are recalibrated from the median
+of each class's five actual hosted durations (seconds, millisecond
+precision). The existing deterministic longest-measured-class-first
+assignment remains unchanged in algorithm. No test is added, dropped,
+split by method or forced to a fixed shard. Old manifest estimated shard
+weights 449.126/449.128 seconds using its earlier source-baseline timing;
+the *new five-run medians applied to the old split* yield 327.792/375.875
+seconds and to the **candidate** split 351.838/351.829 seconds. The candidate
+moves 27 complete classes across isolated PostgreSQL runner jobs. These sums
+are **test-suite duration estimates**, not hosted job wall times or proof of
+speedup. Each existing real PostgreSQL16/18 test fixture and the unchanged
+unrestricted-oracle job remain mandatory.
+
+Acceptance requires the next actual main-push Fast/Docs/Full workflows
+to pass under the candidate selection; specifically the Full Verification
+Gate must reconcile every one of 371 class/1,776 invocation identities
+(no failures/errors/skips) against the **same-run** unrestricted oracle,
+API compatibility and physical dictionary. Record new shard job durations
+before and after; if any isolation, coverage, selection or CI condition
+fails, follow the roadmap's same-ID Fail repair protocol. No Full
+<=7 minute target, code/security/migration/API representative revision,
+cold-cache proof, hosted failure-injection proof or optimized-only
+adoption is claimed. `optimized_adoption_eligible=false` and unrestricted
+fallback remain unchanged. No application Java, tests, Flyway, Maven,
+API snapshots, release workflow or deferred simulator work is changed.
+
+**Scope of this calibrated candidate:** UPDATE only
+`.github/ci-test-inventory.json`, this authoritative roadmap and
+append-only `doc/model-remediation/RECONCILIATION.md`; CREATE/DELETE none.
+All three files are already within HPR-CI-003's registered thirteen-file
+envelope. Exact existing task commit message:
+`ci: automate fast feedback and preserve full verification gates`.
+The next guarded direct-main push must be followed only by observing
+the triggered CI starts, then STOP; do not prematurely mark CI-003
+completed or start HPR-P25-050.
+
 ### Owner execution protocol — 2026-10-13 Fail correction
 
 Use existing main directly with an expected-head guard. No pull requests or new local

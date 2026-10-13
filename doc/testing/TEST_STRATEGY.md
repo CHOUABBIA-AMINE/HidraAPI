@@ -80,3 +80,32 @@ report-upload step, benchmark or policy gate is implemented here.
 ## HPR-P2-012 validation update
 
 Source parent `508337351eef03b82e2c6078a7c8523013efd063`, checked 2026-10-09. [Validation guide](../governance/DOCUMENTATION_VALIDATION.md) records the new Python suites and CI gates. The original Java test inventory/results retain HPR-P2-011 applicability. Current clean verify was attempted through Bash and blocked before compilation by Boot-parent/Maven Central DNS resolution; Java 17 is installed. New runtime CI remains pending after publication.
+
+
+## Current source and CI recovery — 2026-10-13
+
+Source `8c173f4942371b377f9155e7d99af4e4c5fc288c`, exact Production #666 and Docs #266
+SUCCESS. Current test-tree inventory is 371 Java files, including one abstract
+OrganizationMandatoryReferenceMigrationSupport and 370 actual executable classes.
+Recovered #666 artifact 11801709752 contains 370 XML suites / 1,763 tests /
+0 failures / 0 errors / 0 skips, matched to current source including inherited methods.
+Counts are source-dated observations, not fixed acceptance totals or coverage percentages.
+
+Current full CI retains raw Surefire XML and a timing/count summary; this supersedes the
+older no-report-upload claim only for current workflow behavior. Missing report upload
+still warns; the proposed fail-closed report/selection policy is not installed.
+Fast remains manual-only with two Topology tests. Full remains a sequential Java21 job,
+two reused JVM test forks and PostgreSQL16 service plus existing16/18 class fixtures;
+main Full/Docs may cancel superseded runs under current configuration. No selection
+profile, JUnit tag policy, Failsafe or JaCoCo gate is configured. Eight full application
+context source classes and one manual lightweight Spring context are retained as actual
+source paths in the roadmap inventory; inventories do not prove they can be replaced
+by narrower contexts without changing semantics.
+
+The [prospective development and CI baseline](../roadmap/ULTIMATE_ROADMAP.md#development-consolidation--authoritative-prospective-register-2026-10-13)
+contains the complete per-class candidate lane/timing inventory, obligation matrix,
+measured accepted runs, exact CI-003 scope, automatic triggers, partition/aggregate/
+release/cancellation design and equivalence/measurement acceptance. Runtime improvements
+are PLANNED, not implemented. Existing unrestricted full verify remains authoritative
+until same-SHA oracle equivalence succeeds. Generic PLATFORM and customer SITE remain
+separate; no simulator accuracy or customer commissioning is established by full CI.

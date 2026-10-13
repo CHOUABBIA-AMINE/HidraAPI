@@ -18084,3 +18084,90 @@ API/OpenAPI, build/dependencies/workflows, policy/session/binding/issuance/reade
 version/release/deployment/closure remain unchanged. F1–F4/P2.5 OPEN; simulation/P3
 DEFERRED. Gas-first/GZ2, Hidra own engine, steady/transient direction, versioned
 inputs/operator control, synthetic development and owner calibration are preserved.
+
+
+## 2026-10-13 — Development consolidation, CI design and conditional baseline control
+
+Owner's attached consolidation prompt authorizes documentation/planning only. Refreshed
+main `8c173f4942371b377f9155e7d99af4e4c5fc288c`, tree
+`23c35d20165dc35b53ebd3cd0790364a8d251691`; exact-head Production #666
+(run 38377242759) and Docs #266 (38377242705) SUCCESS. HPR-P25-049 is now
+COMPLETED / ACCEPTED, 1,763 tests / 370 XML suites / zero failures/errors/skips.
+HPR-P25-047's prerequisite is resolved; its frozen seven-file implementation remains
+PLANNED / REGISTERED / NOT IMPLEMENTED and is not executed here.
+
+Read ordered governance/history/state/version/POM/reconciliation sources, canonical
+architecture/security/database/module/API/testing documents, all 24 module source/test
+inventories, migrations/ownership metadata, four workflows and CI scripts. Static scan
+covered 3,973 production Java sources, 371 test-tree Java sources and all canonical
+Markdown; targeted semantic inspection covered current auth/authorization/owner/source/
+trust/monitoring paths and accepted design obligations. Source scanning is not proof
+of universal behavioral coverage or undisclosed product requirements. Retrieved live
+release metadata retains v0.6.0; development remains 0.7.0-SNAPSHOT. No release/deployment.
+
+Authoritative prospective table and full remaining definitions are at the beginning of
+ULTIMATE_ROADMAP. Original detailed registrations and all historical text remain;
+current dashboard updates only reflect actual 049 acceptance and unblocked 047.
+Existing history file is byte-identical. 144 existing numerical HPR identities and all
+planning references are classified with preserved bounded applicability; symbolic
+examples are not treated as registered tasks. Accepted design IDs are not reopened.
+
+One coherent closed-scope HPR-CI-003 is registered for automatic 24-module fast feedback,
+maintainable exact test selection, safe parallel full lanes/aggregation, release gate,
+diagnostics, oracle equivalence and repeated timings. HPR-P25-050–058 allocate previously
+unregistered B1/B2/B3, topology/operator/geometry, supplied product/equipment/history,
+baseline/exchange, telemetry/trust/replay, monitoring/action/outcome and integrated
+acceptance obligations. Existing planned HPR-P25-031 is reused for independent closure.
+Nine implementation IDs + one CI task replace future unbounded fragmented registrations;
+no product expansion or numerical implementation. Every predictable prerequisite and
+routine defect remains within an existing task via prior exact-scope amendment.
+
+The baseline is CONDITIONALLY READY and NOT FROZEN. D1–D5 are explicit internal contract/
+file-scope/decision gates; downstream CREATE/UPDATE authorization is withheld until
+same-ID scope closure. Atomic authorization-time proof and physical transaction/lock
+latency are not fabricated. Only already registered 047 and newly closed-scope CI-003
+are implementation-ready subject to exact Docs/source/owner selection gates. Owner
+baseline acceptance and closed downstream scopes are not inferred from this planning
+publication or Documentation CI. Existing frozen 047 scope is unchanged.
+
+Measured accepted full runs #662/#665/#666: workflow 10m55s/10m54s/9m49s; Maven
+8m29s/8m35s/7m31s. Actual #666 report artifact 11801709752 / ZIP digest
+sha256:7e7ab2c80e298bdaa14e4e77a2939f5bbee6e780502a0b6553be3fe35eec1fe2
+was downloaded and parsed: all 370 concrete classes matched current source, including
+inherited Organization tests. Proposed partition and exact per-class timings in the
+roadmap are evidence-based candidate lanes, not executed optimized CI. Retain existing
+PostgreSQL16 and18 fixtures. Latest 60-run sample includes validation branches and is
+not an all-time/main-only failure estimate. Workflow-list endpoint was rejected; actual
+workflow source and supported run/job/report endpoints supplied evidence. No fast timing,
+coverage percentage, achieved speedup or optimized full equivalence is invented.
+
+Current execution exact message:
+`docs(roadmap): consolidate development baseline and ci verification plan`.
+UPDATE only roadmap, append-only reconciliation and canonical TEST_STRATEGY with a
+source-dated current CI inventory pointer; CREATE/DELETE none. No Java/test/SQL/workflow/
+build/ownership/dictionary/OpenAPI/version/deployment or historical-file mutation.
+Final documentation/unit/OpenAPI/P1 consistency/scope/identity/checksum/dependency-DAG/
+coverage-matrix checks and actual results are recorded below before guarded publication.
+Exact-head Docs startup is observed; completion reported only if observed successful.
+STOP; no implementation or automatic advancement. Simulation/calibration/regulator/P3
+remain deferred; gas-first/GZ2, own engine, steady/transient direction, versioned inputs,
+operator control, synthetic development and owner deployment calibration are preserved.
+
+
+Consolidation validation actually executed: all 51 Python unit checks PASS (10 docs,
+10 offline OpenAPI, 17 dictionary, 14 base resolver). Canonical docs PASS: 98 documents,
+5,340 relative links, 24 modules, 13 P2 rows. Offline OpenAPI PASS: 263 operations,
+244 paths, 231 schemas. Existing P1 evidence consistency PASS without new closure or
+physical exercise. Exact three-document scope/whitespace PASS; all 12 prospective
+implementation/CI/closure nodes form an acyclic task graph; every recovered concrete
+#666 XML class/case and every 24-module owner has a planned full-verification lane.
+No missing baseline class: 370 suites/1,763 cases; abstract support inheritance preserved.
+Current source has 146 unique Flyway versions and 470 JPA table mappings. Migration
+SQL bytes, all production/test/workflow/build/ops/API/dictionary/history/version source,
+accepted detailed 037–049 records and original frozen 047 registration are unchanged.
+Reconciliation and TEST_STRATEGY are append-only. New 050–058/CI-003 identifiers were
+absent in the inspected authoritative prior registry. D1–D5 remain explicitly unresolved;
+no optimized equivalence/latency/fast PASS, platform freeze or implementation is claimed.
+No local Maven/DB run was needed or executed for this documentation-only consolidation;
+current accepted runtime evidence is recovered exact-SHA #666, not this new Docs head.
+Guarded publication and new-head Docs acceptance remain pending until observed.

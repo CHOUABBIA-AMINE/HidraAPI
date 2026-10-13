@@ -1,5 +1,1341 @@
 # HidraAPI — Ultimate Universal Platform Roadmap
 
+## Development consolidation — authoritative prospective register, 2026-10-13
+
+**Source baseline:** `8c173f4942371b377f9155e7d99af4e4c5fc288c`, tree
+`23c35d20165dc35b53ebd3cd0790364a8d251691`. [Production #666](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38377242759)
+and [Documentation #266](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38377242705)
+SUCCESS on that exact SHA. Repository development version is `0.7.0-SNAPSHOT`;
+latest formal release remains [v0.6.0](https://github.com/CHOUABBIA-AMINE/HidraAPI/releases/tag/v0.6.0)
+at `09bf1cbf82c20f19c50ebb1ff9e27047c7f34856`. No release/deployment occurs here.
+
+**Readiness: BASELINE CONDITIONALLY READY; NOT FROZEN.** Remaining approved requirements
+are assigned below, but D1–D5 prevent claiming that every downstream task has a closed
+implementation allowlist or fully decided contract. This is a complete prospective work
+inventory with explicit resolution work, not proof of complete runtime coverage. Only
+047 and the CI task have closed implementation scopes here; other new tasks remain
+PLANNED / REGISTERED with code blocked until their own decision gate and exact scope
+amendment are accepted. Owner approval of the final baseline is still required. Docs CI
+alone does not grant that approval or close any engineering, security, PLATFORM or SITE gate.
+
+This prospective register governs selection ahead of the older dated dashboard retained
+below. It does not rename/reopen completed IDs, rewrite historical evidence or widen the
+frozen 047 allowlist. Historical `NEXT`/PENDING language retains its original applicability.
+The original history file remains byte-identical. All old active-roadmap text is retained
+below, with current status corrections only in its dashboard. No implementation is selected
+by this planning commit. Current planning commit message:
+`docs(roadmap): consolidate development baseline and ci verification plan`.
+
+### Part A — Remaining development sequence
+
+The order is a valid topological order, not a mandatory artificial dependency between
+independent workstreams. Each listed dependency requires its own actual acceptance.
+CI-3 means current full `HidraAPI CI` until CI-003 is accepted; only then its verified
+aggregate may replace it. D1–D5 are internal gates, never new HPR task IDs.
+
+| Order | Code | Task | Module / owner | Status | Dependencies | Files | Testing | Acceptance | Track | Commit |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | HPR-CI-003 | Automatic fast suite and equivalent parallel full verification | CI / independent verification | PLANNED / REGISTERED; exact scope below | Accepted 049; this Docs PASS; owner selection | CI-003 closed list | Selection/report/release negative tests; shadow full verification | No lost cases; mandatory gate fail-closed; repeatable timing | CI | `ci: automate fast feedback and preserve full verification gates` |
+| 2 | HPR-P25-047 | Provider/link database security generations | Identity | PLANNED / REGISTERED; prerequisite blocker RESOLVED | Accepted 046/048/049; existing registration Docs; separate Next | Existing seven-file list, unchanged | Real writers, Flyway fresh/upgrade, native/bulk/race/rollback | Exact implementation Production + Docs SUCCESS | F1 | `feat(identity): enforce provider and link security generations` |
+| 3 | HPR-P25-050 | Immutable operation binding and trusted issuance/reader | Identity; Platform technical wiring | PLANNED / REGISTERED; D1 scope gate | 047; accepted 044/045 design | D1 then exact Identity list; no code authorization yet | LOCAL/LDAP/AD/OIDC, expiry, generation, rollback | B1 provenance and storage proof; no inferred B2/B3 | F1 | `feat(identity): bind protected operations to trusted authentication` |
+| 4 | HPR-P25-051 | Cross-owner revocation/time/transaction linearization | Identity / Party / Topology; Platform mechanics | BLOCKED on D2 atomic-time and transaction proof | 050; accepted 038/043; D2 | D2 then exact owner/export/fence list | Real PostgreSQL owner/race/expiry/connection tests | B2/B3 and writer ordering + bounded latency PASS | F1 | `feat(security): linearize cross owner protected operations` |
+| 5 | HPR-P25-052 | Topology authoring, route/profile and revision publication APIs | Topology; read-only foreign owner contracts | PLANNED / REGISTERED; D3 contract/scope gate | 051; accepted 018/019/020/032/034/036/037/038; D3 | D3 closed authoring/storage/API list | Actual API round trips, epochs/CAS/history/import-export | F1-02/03/04 within explicit supported topology scope | F1 | `feat(topology): expose governed engineering revision workflows` |
+| 6 | HPR-P25-053 | Product/property/method metadata authoring and history | Custody; source approval through Workflow | PLANNED / REGISTERED; D3 contract/scope gate | 051; accepted 018/022 design; D3 | D3 exact Custody/owner-export list | Multi-product metadata, unsupported shape, old GAS replay | F2-01 and product share of F2-03 | F2 | `feat(custody): govern versioned product engineering data` |
+| 7 | HPR-P25-054 | Installed-unit/asset and manufacturer-characteristic history | Topology installed configuration; Assets lifecycle; Party manufacturer; existing Simulation data store | PLANNED / REGISTERED; D3 contract/scope gate | 052; accepted 020/021 design; D3 | D3 exact per-owner list | Nine distinct units; curve/table/units/lifecycle/history | F2-02 and equipment share of F2-03; data only | F2 | `feat(engineering): govern installed units and characteristic revisions` |
+| 8 | HPR-P25-055 | Authoritative baseline freeze/read/compare and supported exchange | Topology coordinator; source owners retain authority | PLANNED / REGISTERED; D3 contract/scope gate | 052/053/054; accepted 028 design; D3 | D3 exact baseline/contracts/schema/test list | Frozen references, incomplete drafts, lossless exchange | F2-04; complete supported historical reconstruction | F2 | `feat(topology): freeze authoritative engineering baselines` |
+| 9 | HPR-P25-056 | Telemetry sources/bindings, trust, temporal quality and replay | Telemetry; Integration transport; Topology reference | PLANNED / REGISTERED; D4 source/policy/scope gate | 051/052; accepted 029 design; D4 | D4 exact binding/ingest/history/API list | Duplicates, late/stale/unknown, source loss, tenant denial | F3-01/02; no real SCADA prerequisite | F3 | `feat(telemetry): govern source bindings quality and replay` |
+| 10 | HPR-P25-057 | Monitoring observations and authenticated human action/outcome evidence | Monitoring / Workflow / Audit; Analytics consumer | PLANNED / REGISTERED; D4 observation/scope gate | 050/051/056; accepted 029 design; D4 | D4 exact per-owner evidence/API list | UNKNOWN/freshness, action vs observation, retry/rollback | F3-03/04; no causality/solver/OT inference | F3 | `feat(operations): separate observations actions and outcomes` |
+| 11 | HPR-P25-058 | Synthetic integrated PLATFORM matrix and verification | Independent testing; all 24 module owners | PLANNED / REGISTERED; D5 exact test-scope gate | CI-003; 052–057; accepted 030 design; D5 | D5 concrete operator/API/test paths | Both acceptance namespaces; Java21/Postgres/OpenAPI/security | F4-01/02 actual cases, exact-SHA raw evidence | F4 | `test(platform): verify engineering and operational acceptance` |
+| 12 | HPR-P25-031 | Independent engineering foundation closure audit | Independent governance; accountable source owners | PLANNED / REGISTERED; existing ID retained | 058; accepted F1–F3 scopes; explicit owner scope acceptance | Existing roadmap + append-only reconciliation | Read-only evidence audit; full CI on audited runtime SHA | F4-03 PASS/CLOSED only within proven foundation scope | F4 | `docs(roadmap): audit engineering foundation acceptance` |
+
+047 remains next **already authorized eligible implementation** when separately selected.
+CI-003 is scheduled early, and may be selected first after this registration Docs PASS
+and explicit owner choice; it is not an artificial prerequisite that blocks 047.
+This consolidation executes neither. New IDs 050–058 and CI-003 fill previously unregistered
+implementation obligations; accepted design IDs 018–030 and accepted CI-002 are retained.
+031 is reused rather than inventing another closure code. Further predictable discovery,
+design, regression and repair work stays inside these tasks by controlled same-ID amendment.
+
+### Decision gates and readiness limits
+
+| Gate | Accountable owner / affected task | Required resolution before code | Current source reason / limitation | Output / failure rule |
+|---|---|---|---|---|
+| D1 | Identity / 050 | Close exact generation-read/provenance transport, immutable binding files, session-writer compatibility and migration allocation | Completion currently issues a token before creating a session; accepted 045 binding relation is design only | Same-ID documentation amendment with exact CREATE/UPDATE/DELETE list, schema, trusted paths and tests; no authority backfill |
+| D2 | Identity + Topology + Party; technical transaction owner / 051 | Specify atomic head/read-time validity, all future DENY activation boundaries, same-connection transaction enforcement and bounded fence latency | Current evaluator uses per-call Instant.now; actor uses separate clock; transaction config only enables management | Independently reviewable B2 algorithm, B3 real DB proof and synthetic timing envelope; code BLOCKED if unsupported policy cannot fail closed |
+| D3 | Existing source owners / 052–055 | Close draft/published schemas, supported product/equipment/geometry coverage, permissions, export packages, API names, migrations and exact paths | Existing 018–022/028 designs explicitly left endpoint/class/file allocation unresolved; GAS-only/characteristic format limits remain | Per-task same-ID exact scope/contract appendix, collision scan and input/output acceptance fixtures; no arbitrary future filename presented as approved |
+| D4 | Telemetry / Integration / Monitoring / Workflow / Audit / 056–057 | Close configured freshness/clock-skew/binding time/units/trust and observation/action target policy, APIs and exact files | Existing trust service and Monitoring scalar lookup lack the complete approved monitoring/action contract | Explicit synthetic policies and UNKNOWN behavior; owner configuration at deployment; no assumed live protocol, physical threshold or causal truth |
+| D5 | Independent verification / 058 and 031 | Close exact integrated test endpoints/fixtures after D3/D4 and reconcile the two acceptance label namespaces | Current PLATFORM A–I and historical foundation A–G use different meanings | Versioned mapping and concrete test allowlist; missing case/contract evidence prevents closure |
+
+These are bounded internal acceptance steps, not additional preflight/registration task
+chains. Technical owners resolve routine choices from accepted policy; only genuinely new
+business policy requires owner approval. Amend exact allowlists before dependent mutation.
+Until D1–D5 are resolved, it would be false to call the entire plan implementation-ready.
+Conditional readiness means all known work is assigned, not that this baseline is frozen.
+
+### Part B — Common binding task contract
+
+Every new task below retains the same source baseline above, modular-monolith ownership,
+strict public-contract imports and [canonical Java header](../../AGENTS.md). Existing
+source snapshots, old SQL checksums and accepted evidence are read-only unless an exact
+future UPDATE list explicitly admits a backward-compatible edit. No generic directory
+allowlist, foreign JPA import, reflection Workbench write path or shared business kernel.
+
+Requirements common to 047 and 050–058: explicit company/network ownership; authenticated
+current actor; action-specific fail-closed authorization before resource existence/count/
+payload disclosure; pin exact owner revisions; missing vs corrupt vs transient failure
+kept distinct; no invented engineering defaults. Current eligibility is separate from
+authorized historical facts. API additions preserve aliases and prior wire behavior;
+new DTOs/validation/errors/security requirements and pagination must be in OpenAPI.
+
+For every schema-changing task, reserve a unique normalized forward Flyway version only
+after scanning live main and relevant parallel work. 047's already reserved
+`V20261012_002__p25_identity_provider_link_security_generations.sql` is preserved. No
+dates/versions are assigned speculatively to later schemas. Preserve 146 baseline SQL
+files and checksums; validate the actual current inventory after each future addition.
+Retain true pre-feature upgrade targets and captured prefix assertions, rather than
+blindly replacing every historical count. Required fresh/upgrade proof includes seeded
+synthetic old rows, actual Hibernate validation, immutable history/corruption/rollback,
+concurrent/idempotent owner writes and existing constraints. Refresh dictionary from
+authentic migrated PostgreSQL with unchanged generator unless CI-003 explicitly adds
+diagnostics; never fabricate source identity, server build or catalog facts.
+
+Ordinary failure aborts the protected owner transaction; no swallowed SQL errors, automatic
+retry with changed identities/expected generations, half-published baseline or detached
+authorization permit. Application rollback retains additive schema and old-format reads;
+there is no down migration, production clean/repair, privileged deletion or deployment
+authorization. Known migration-assertion corrections, export guardrails, dictionary,
+OpenAPI and concurrency tests belong in the same task's approved amendment, not a new ID.
+
+Task-local gates: unit/domain/application/policy/mapper/architecture tests appropriate to
+the actual diff; real PostgreSQL/Flyway/JPA and actual API/filter path tests for affected
+capabilities; exact source/environment/report identities; zero required skips; full
+exact-SHA CI-3 + Docs SUCCESS before runtime acceptance. Fast PASS never substitutes.
+Use synthetic multi-company/network/product fixtures; owner supplies deployment data and
+calibration. Preserve gas-first/GZ2 and Hidra's own steady/transient direction. No simulator,
+regulator algorithm, EOS, external engine, OT command or P3 development is selected.
+
+Standard validation (task-specific test selections must be closed at its gate):
+
+```bash
+python3 .github/scripts/test_validate_docs.py
+python3 .github/scripts/test_validate_openapi_snapshot.py
+python3 .github/scripts/test_generate_data_dictionary.py
+python3 .github/scripts/test_resolve_openapi_base.py
+python3 .github/scripts/validate_docs.py
+python3 .github/scripts/validate_openapi_snapshot.py
+python3 .github/scripts/validate_p1_closure.py
+bash ./mvnw -B -q -Dtest=<exact-task-test-class-list> test
+bash ./mvnw -B -q clean verify -DforkCount=2 -DreuseForks=true
+git diff --check
+```
+
+Placeholder class lists above are specification syntax, not executable commands or
+reported test results. CI-003 closes real lane selection; D1–D5 close each future focused
+list. Record local dependency/Docker limitations honestly. Every task is one registered
+commit code, with expected-head publication, actual parent/tree/message/blob/scope checks,
+required CI startup observation and STOP. Acceptance is separate from publication.
+
+#### HPR-CI-003 — Closed implementation scope and Definition of Done
+
+Owner: CI/test governance. Existing CI-001 two-fork optimization and CI-002 two-test manual
+lane remain accepted within their scope. Neither is renamed or reopened. This one new
+deliverable includes inventory, selection, automation, parallelization, release checks,
+diagnostics and equivalence; there are no separate discovery/design/repair IDs.
+
+Exact CREATE files (technical CI ownership is resolved):
+
+1. `.github/ci-test-inventory.json` — exact executable class manifest, owner, lane,
+   dependency reason and supporting/inherited-class associations; no name-pattern guesses.
+2. `.github/scripts/verify_ci_test_inventory.py` — selection and fail-closed class/partition
+   inventory verification, deterministic timing-balanced DB assignment and report checking.
+3. `.github/scripts/test_verify_ci_test_inventory.py` — missing/extra/overlap/duplicate,
+   inherited tests, unsupported source and wrong lane negative fixtures.
+4. `.github/scripts/verify_full_ci_evidence.py` — exact-SHA aggregate/report/artifact and
+   release eligibility verification, not a test PASS inferred from absent data.
+5. `.github/scripts/test_verify_full_ci_evidence.py` — wrong SHA/attempt, missing/empty/
+   skipped reports/jobs, cancelled runs, false fast acceptance and artifact mismatch.
+
+Exact UPDATE files:
+
+1. `.github/workflows/ci-fast-feedback.yml`
+2. `.github/workflows/ci.yml`
+3. `.github/workflows/docs.yml`
+4. `.github/workflows/release.yml`
+5. `doc/testing/TEST_STRATEGY.md`
+6. `doc/operations/CI_CD_RELEASE_GUIDE.md` — append current design/behavior, preserve dated evidence.
+7. `doc/roadmap/ULTIMATE_ROADMAP.md`
+8. `doc/model-remediation/RECONCILIATION.md`
+
+DELETE none. Application Java, test Java, SQL, ownership/dictionary, API/OpenAPI snapshots,
+POM/dependencies, wrapper, releases and deployment scripts are read-only. The explicit
+manifest selection uses existing Surefire `-Dtest` support, avoiding broad source tagging
+or a new Maven profile. If this cannot preserve lifecycle/discovery, amend this same ID
+before mutation rather than silently changing POM/tests or declaring equivalence.
+
+Binding behavior is specified in Part D. Validation includes the five new/current CI
+Python suites, all existing validators/base-resolver tests, shell/YAML parsing, exact
+manifest-to-source/report coverage, simulated trigger predicates, release-gate negative
+tests, real automatic push/PR/manual startup and actual full/fast shadow runs. CI3 retains
+Java 21, Maven enforcer, clean verify, all 370 baseline executable classes/1,763 cases
+(baseline counts, never fixed forever), PostgreSQL16 and existing18 tests, runtime
+OpenAPI/security/equality/base compatibility, physical dictionary and all ops checks.
+
+DoD: every discovered required class/case belongs once to the full-test partition;
+new/unclassified/missing reports fail; no required Docker skips; same-SHA oracle comparison
+passes before optimized acceptance becomes eligible; aggregate + release negative cases
+pass; diagnostics retained on failure; timing objective supported by repeated actual runs.
+Full verification fallback remains available and mandatory if equivalence/performance
+fails. Initial shadow duplication is deliberate validation only, not perpetual overlap.
+No assumed speedup, release or auto-deploy. Exact message is in Part A.
+
+#### HPR-P25-047 — Existing frozen seven-file task
+
+The complete original registration and acceptance requirements below remain binding.
+Blockers 048/049 are resolved by accepted #665/#666; current state is PLANNED / REGISTERED,
+not implementation completed. Exact CREATE: the registered generation SQL and
+`src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProviderLinkSecurityGenerationPostgresIntegrationTest.java`.
+Exact UPDATE: the registered LOCAL generation test, `.github/database-dictionary-ownership.json`,
+`doc/database/DATA_DICTIONARY.md`, this roadmap and reconciliation. DELETE none.
+All production Java remains excluded. Preserve per-field generation/neutral classifications,
+native/bulk/ORM/COPY/MERGE/UPSERT proofs, immutable IDs, overflow, FK/uniqueness, A/B/A,
+concurrency, rollback and JSONB saves. The bounded LOCAL-test inventory/prefix correction
+is already authorized; 049 preserves future JSONB full-chain compatibility.
+
+Focused command remains exactly the seven-class registration selection below. DoD is
+actual fresh/upgrade PostgreSQL16/JPA proof and authentic dictionary plus exact-head
+full Production/Docs SUCCESS. Migration failure rolls back without partial guards; old
+application rollback retains additive generated columns/guards. Generation transport,
+bound token/session issuance and B2/B3 are 050/051, never bundled into 047.
+
+#### HPR-P25-050 — Identity binding, issuance and operation reader
+
+Source: accepted 044/045 policy; current `AuthenticationCompletionApplicationService`,
+`AuthenticationSessionLifecycleApplicationService`, `AuthenticatedPrincipalInput`,
+`IssuedAccessToken`, `HidraAccessTokenIssuer`, LOCAL/LDAP/OIDC provider paths and
+`TopologyCurrentActorQueryAdapter`. Current token issuance precedes session save and
+does not persist the selected immutable operation association. 046/047 generations alone
+do not establish trustworthy transport or an authenticated session association.
+
+Deliverable: the accepted `hidra_identity_operation_binding` format and DB tuple guards;
+trusted monotonic version reads at successful authentication/completion; atomic logical
+session + immutable issuer/jti binding issuance; Identity-owned exact operation reader;
+session termination/immutable-field compatibility. LOCAL, LDAP, AD and OIDC provenance
+and native audience/issuer/sub/jti/deadline agreement must follow 044/045 exactly.
+Capture credentials/provider/link identity/generation from real trusted paths, not caller
+JSON, profile snapshots, roles or correlationId. No retrospective binding of old tokens;
+compatibility behavior for ordinary routes stays explicit, protected operations fail closed.
+
+D1 closes exact new model/port/JDBC/migration/test paths and enumerates every affected
+existing command/provider/session/issuer/reader/test file. Candidate UPDATE anchors are
+the exact sources above, not authority to mutate them yet. CREATE list unresolved at D1;
+UPDATE list unresolved at D1; DELETE none. Own immutable binding plus restrictive FKs,
+canonical UUID and exact issuer/audience/time/nullability tuple validation, append/replay/
+conflict and anti-mutation guards. Existing mapped sessions must not be merged into a
+state that invalidates immutable binding evidence. No retention period invented.
+
+Tests: authenticated paths for all four provider types, signature/issuer/audience/jti/sub
+mismatch, expired/assertion-capped deadlines, ended/changed sessions, credential/provider/
+link A/B/A, disabled/reactivated Users, duplicate same/different binding, native writer
+tuple rejection, malformed storage, SQL NULL branches, deletion/truncate rejection,
+completion/save/token failures and same transaction rollback. API regression covers
+native result shape, legacy unbound-token compatibility boundary and denial without leak.
+DoD: B1 real owner/SQL/JPA proof + common full gates; B2/B3 remain 051. Fail issuance
+atomically; never deliver a token claiming a committed binding after failed commit.
+
+#### HPR-P25-051 — Revocation, operation time and physical transaction fence
+
+Source: accepted 043 coarse persisted-state fencing and 038 head-write linearization;
+`IdentityAuthorizationApplicationService` currently selects separate Instants;
+`TopologyScopedAccessQueryService` supplies paired evidence, not atomic validity proof;
+`HidraTransactionConfiguration` merely enables transactions. Existing Identity/Party/
+Topology exports are scalar owner observations, not transaction-bound authorization.
+
+Deliverable: ordered owner fences covering inserts/deletes/updates/phantom DENY evidence;
+one actual READ COMMITTED non-read-only physical transaction; fresh post-fence owner reads;
+bound authentication and owner epoch; company+facility decisions valid at the guarded
+write/read linearization point. No async, REQUIRES_NEW, partial-savepoint continuation,
+cached permit, second-level evidence or private foreign JPA import. DB failures abort.
+
+D2 must select/prove the time technique. A Java reread, transaction-start timestamp or
+two earlier PERMITs is explicitly insufficient. Check all relevant future rule/DENY/
+grant/membership/attribute/assertion/token boundaries; unsupported temporal predicates
+deny/indeterminate. No grace interval is manufactured. Same backend/transaction/connection
+and fence lifetime must be observed through actual JPA/JDBC providers and rollback.
+Choose explicit timeout, maximum protected-work duration and synthetic contention
+threshold before accepting coarse writer-blocking costs; production capacity is unproven.
+
+CREATE/UPDATE exact paths are blocked pending D2 method/export/transaction design;
+candidate anchors are current Identity/Party/Topology contracts/services and Platform
+transaction mechanics. DELETE none. New DB fences/epoch storage only under exact forward
+schema scope; no alterations to unrelated security/retention policy. Tests cover revocation
+before/after fence, provider/link/User/grant/DENY insert/remove/A/B/A, clock-only expiry/
+activation during work, owner transfer, two-company opacity, actual lock waits/barriers,
+backend connection identity, lock timeout/deadlock/serialization and full rollback.
+DoD: B2+B3 and source-state ordering independently proven, with bounded synthetic lock
+hold/wait/auth-admin latency; unproven algorithm/participation blocks dependent APIs.
+
+#### HPR-P25-052 — Topology operator path, geometry and publication
+
+Source: accepted 018/019/020 designs; `FacilityApplicationService`,
+`SpringTopologyController`, `TopologyPhysicalNetworkRevision`, `StationInternalGraph`,
+`StationInternalGraphRevision`, their validators, repository ports/codecs/JDBC adapters,
+and 038 ownership-epoch/publication contract. Immutable storage is implemented; complete
+draft/history/publication/route-profile APIs are not established by that storage.
+
+Deliverable: owner-scoped draft create/read/update/validate; physical networks, branches,
+stations/ports and installed incidence; route/profile/physical sections with declared
+CRS/vertical datum/units/chainage/precision/source/evidence; immutable revision publish,
+exact read/history/effective lookup; expected predecessor/head CAS and immutable events/
+requests/cursor-generation/owner-epoch/transfer-hold semantics from 038. Preserve canonical
+V1/V2 bytes/readers and historical source identity. No mesh/numerical engine/PostGIS.
+
+D3 must close draft/published type/schema, source formats and permissions, concrete
+endpoint/error/DTO/export/write/test list and forward migration version. CREATE unresolved;
+UPDATE candidates are the exact Topology sources above plus ownership/dictionary/OpenAPI/
+architecture tests; no global write authorization. DELETE none. Keep strict immutable
+published models; incomplete draft geometry/refs remains explicitly incomplete and
+cannot become a complete publication. Assets/product/characteristic references use
+pre-existing pinned owner revisions; 054/055 perform integrated qualification later.
+
+Tests: two companies and networks; three station graphs, serial/parallel and invalid
+incidence, owner transfer/hold, unauthenticated/opaque denial, stale expected head,
+identical/conflicting replay, one concurrent CAS winner with full loser rollback,
+intermediate elevations and section boundaries retained after revise/reload, wrong
+CRS/datum/unit/chainage/date, hash-consistent corruption and exact history/list cursor.
+Versioned supported import/export dry-run/replay is specified locally; aggregate exchange
+is 055. DoD: actual configured API/filter path + persistent old/new history + common gates.
+
+#### HPR-P25-053 — Supplied product and method metadata
+
+Source: accepted 022; current `CustodyGasFluidRevision` (GAS-only, exact mole-fraction
+sum, supplied method/evidence/governance), Custody immutable JDBC source/qualification
+adapters and `CustodyGasFluidRevisionQueryService`; current planning product contract.
+Do not relabel GAS storage or loosen its old validation to claim arbitrary product physics.
+
+Deliverable: company-owned product identity/classification and independently versioned
+supplied composition/properties/units/reference basis/method applicability/source
+evidence; authorized draft/publish/read/history/effective selection and downstream data
+query. Support declared product metadata with explicit representational eligibility;
+unsupported composition/method/representation fails or remains incomplete. No EOS,
+real-gas/H2/liquid property calculator, normalization of unsupplied fractions or solver.
+
+D3 closes supported metadata schemas/formats and Custody owner exports plus exact
+CREATE/UPDATE/migration/API/test files. Existing GAS source/codec/query/qualification
+files are compatibility anchors, not a silent broad allowlist. DELETE none. Tests:
+two companies, multiple explicit synthetic product definitions, old GAS exact replay,
+revision/effective/provenance/hash preservation, wrong basis/units/unsupported method,
+missing fraction/property/evidence, synthetic non-promotion, denied read/publish/export,
+withdrawal vs historic read and parallel revision conflicts. DoD: supplied facts round
+trip without computation + common real storage/API/full gates.
+
+#### HPR-P25-054 — Installed units and manufacturer facts
+
+Source: accepted 020/021; Topology `Equipment` and station graph incidence; Assets
+`MaintainableAsset`/`AssetsApplicationService`; Party manufacturer/reference contracts;
+existing `SimulationEquipmentParameterRevision` and characteristic source repository/
+qualification stores. Simulation owns those accepted data bytes even while solver work
+is deferred. Do not move ownership or force general vendor facts into synthetic formulas.
+
+Deliverable: independently identified installed units and effective facility/configuration
+membership, series/parallel connectivity, serial/model/manufacturer/lifecycle; supplied
+manufacturer maps/tables/limits/units/reference conditions/origin/evidence as immutable
+data revisions; exact versioned installed-characteristic links and authorized history.
+D3 closes per-owner scalar contracts, accepted/supported data-shape coverage, schema/API/
+write/test lists; CREATE/UPDATE unresolved until then; DELETE none. No execution method,
+new interpolation physics, regulator behavior or automatic calibration.
+
+Tests: nine distinct synthetic units across three stations with independent model/source
+revision; manufacturer role/identity and wrong-kind rejection; install/retire/effective
+date conflicts; missing curve/axis/units/source remains unknown/incomplete; changed source
+does not alter previous station or baseline digest; malformed map/table, owner denial,
+rollback/race/idempotency and old formats still decode. DoD: actual owner API save/read/
+revise with precision/provenance/history and common full gates, without simulator calls.
+
+#### HPR-P25-055 — Exact authoritative baseline and exchange
+
+Source: accepted 028; reusable Topology physical/station, Custody fluid/method and existing
+characteristic immutable revision stores, Workflow revision approval contract. Baseline
+authority belongs to Topology, with no foreign authoritative record duplication.
+
+Deliverable: freeze/read/compare/reconstruct supported engineering configuration using
+exact route/profile/section/station/unit/characteristic/product/method/effective/source/
+approval references and digests; configured import/export dry-run/version/conflict/size/
+provenance rules. No numerical scenario overlay, calculation-run snapshot or provider state.
+D3 closes baseline identity/schema/reference/approval/permission/export/API/test paths
+and forward migration. CREATE/UPDATE unresolved; DELETE none. Publish only pre-existing
+pinned revisions after all owner checks; no undisclosed distributed transaction or partly
+complete baseline. Do not require a later baseline to author earlier owner sources.
+
+Tests: reconstruct old exact baseline after all owners revise; missing/withdrawn/currently
+ineligible vs authorized historical reference, wrong-effective/date/digest/owner,
+corruption/outage, partial capture, stale head, identical/conflicting concurrent freeze,
+versioned semantic exchange/precision/provenance, malformed/restricted/unknown-version
+package, dry-run without writes and atomic owner rollback. DoD: complete supported
+configuration round trip/replay; incomplete draft retains diagnostics and cannot freeze.
+
+#### HPR-P25-056 — Telemetry binding, trust and deterministic quality/replay
+
+Source: accepted 029 independent scope; `TelemetrySourceApplicationService`,
+`TelemetryPointApplicationService`, `TrustedTelemetryReadingApplicationService`,
+`MonitoringTrustedReadingReferenceQueryService`, actual MeasurementBinding entities,
+Telemetry trust/evidence/repositories and Integration exchange/job/dead-letter sources.
+Current trusted lookup exports only id/point/trust; source/reference/time quality is not
+the complete configured monitoring interface.
+
+Deliverable: configured company/network source adapter and point/tag/asset/unit bindings
+with effective history, authorized ingest identity, raw immutable provenance, assessed
+quality and trusted projection; configured freshness/clock-skew/out-of-order rules,
+UNKNOWN/stale handling, explicit duplicate/idempotency conflict and deterministic replay,
+source failure/recovery/dead-letter evidence. No prescribed SCADA protocol or live OT bridge.
+
+D4 closes policy/configuration semantics and concrete owner contract/schema/API/test lists.
+CREATE/UPDATE unresolved; DELETE none. Preserve optional reference/trust semantics from
+accepted HMRs; no universal ACTIVE-only historical rule. Units/source time/ingest time/
+effective binding must agree, and current authority is separate from historic attribution.
+Tests: two isolated companies/sources, invalid or cross-owner tag/point/asset/binding,
+unauthorized source, wrong units/time/skew, missing/stale/duplicate/late samples,
+same identity/different content conflict, rebind and history replay, outage/recovery,
+rollback/concurrent ingest and no trusted value from failed quality. DoD: actual API/DB
+path and raw evidence + common full gates; no fixed industrial latency claim.
+
+#### HPR-P25-057 — Monitoring, actions and observed outcomes
+
+Source: accepted 029; `DeviationApplicationService`/`DeviationReferenceValidation`,
+Telemetry monitoring exports, `WorkflowTargetTransitionApplicationService`, actual
+Audit owner evidence and Analytics consumer contracts. Existing deviations and workflow
+actions do not establish a complete independent observation/outcome pipeline.
+
+Deliverable: explicit measured/declared/estimated/UNKNOWN support envelope; monitoring
+condition/evidence read/history from eligible measurements and approved configurable
+thresholds; authenticated operator action declaration distinct from observed later data;
+observation window/source/quality/confounder metadata; owner-authorized audit/event/query
+and idempotent failure/recovery. Physical inference unavailable in this scope stays UNKNOWN.
+D4 closes target/action/observation authority and exact CREATE/UPDATE/schema/API/tests;
+DELETE none. No unsupported causal success, solver recommendation, autonomous learning
+promotion or OT execution. Existing Alarm/Incident/HSE/Risk integrations retain semantics.
+
+Tests: stale/unknown data never certainty; withdrawn owner permission; actor spoofing,
+allowed/denied transition; duplicate action/event, commit uncertainty and retry after
+reauthorization; missing/delayed/confounded observation; action without outcome and
+observation without action; denied cross-company history; all owner mutations roll back
+on downstream failure. DoD: actual non-simulation path + factual evidence/common full gates.
+
+#### HPR-P25-058 — Integrated synthetic verification and acceptance evidence
+
+Source: accepted 030 design, current [PLATFORM criteria](PLATFORM_ACCEPTANCE.md), historical
+foundation A–G and existing 24-module semantic/architecture/database tests. This task
+absorbs F1-04 integrated qualification plus F4-01/02, not fresh implementation of passed HMRs.
+
+Deliverable: versioned fixtures and actual operator/API/storage security/history/upgrade/
+replay/rollback/reference/concurrency tests covering both namespaces; published supported
+scope, exclusions and exact test/CI artifact traceability. D5 closes concrete endpoints,
+test CREATE/UPDATE paths and case-to-contract mapping; no guessed test files. DELETE none.
+Authorized canonical updates include PLATFORM_ACCEPTANCE, this roadmap/reconciliation;
+new implementation tests require D5's closed file list. Production Java/SQL/workflows
+read-only unless a same-ID defect amendment explicitly admits a necessary correction.
+
+Case mapping: historical A provisioning -> current B plus C/D/I; historical B manufacturer
+-> current D/H; historical C geography -> current B/D/H; historical D product -> current
+C/D; historical E baseline -> current D/H; historical F measurement -> current E/F;
+historical G invalid inputs -> current A/B/C/E/H/I. Current G additionally covers independent
+action/outcomes. These are explicit planned mappings, not identical case meanings.
+
+Tests must use actual supported owner APIs (SQL seeding alone is not an operator path),
+two companies/networks, multiple products, three stations/nine units, independent profile/
+section/source/manufacturer revisions, empty/incomplete/unknown cases, trusted/untrusted
+readings, action/observations, current/revoked/historical access and complete rollback.
+All 24 module baseline tests remain required non-regression; do not add a new feature
+to an unrelated accepted module based on file counts. DoD: raw real Java21/Postgres16/
+retained18 tests, Flyway/JPA/dictionary, full filter/API/OpenAPI/security and exact-SHA
+CI artifacts; explicitly unsupported cases remain open. No SITE/physics certification.
+
+#### HPR-P25-031 — Existing independent audit, prospectively clarified
+
+Retain original code, two-document allowlist and exact message. CREATE none; UPDATE only
+this roadmap and append-only reconciliation; DELETE none. Read actual accepted 052–058
+implementations, owner approvals, raw artifacts and audited exact runtime SHA; do not
+confuse this later documentation SHA with a full runtime run. Any closure requiring
+full verification of the documentation SHA must dispatch the unchanged current/full
+fallback explicitly and observe startup. Current planning performs no closure run.
+
+DoD: all supported foundation cases have evidence/limitations and independently accepted
+scope; no dangling/unowned contract, unsupported current-authority history, hidden partial
+publication, fake/default facts, missing real DB tests or absent/cancelled/stale full gate.
+Record PASS/CLOSED or BLOCKED with every exclusion. Foundation closure does not close
+the deferred original P2.5 simulator cycle, create a release, authorize imports or claim SITE.
+
+### Dependency and compatibility design
+
+```mermaid
+flowchart TD
+  G["047: generations"] --> B["050: binding and issuance"]
+  B --> L["051: linearization"]
+  L --> T["052: topology"]
+  L --> P["053: product"]
+  T --> E["054: units and characteristics"]
+  T --> F["055: baseline"]
+  P --> F
+  E --> F
+  T --> R["056: telemetry"]
+  L --> R
+  R --> O["057: observations and actions"]
+  B --> O
+  L --> O
+  F --> V["058: integrated verification"]
+  O --> V
+  T --> V
+  P --> V
+  E --> V
+  R --> V
+  C["CI-003: verified lanes"] --> V
+  V --> A["031: independent audit"]
+```
+
+No baseline->source-authoring edge: owners publish pre-existing immutable revisions, then
+Topology freezes references. This removes an avoidable cyclic engineering dependency.
+Existing module import graph does contain owner-consumer cycles (for example Topology/
+Party and Audit/Risk); import cycles are not proof of a runtime deadlock or a task cycle.
+Keep exports one-way per interaction and prove fixed lock order in 051. Do not turn a
+raw import graph into an invented business lifecycle. Gate DAG above has no cycle.
+
+Schema publication is serialized on main; versions are reserved immediately before
+the corresponding task's code and rechecked before publish. 052/053 may be designed
+independently; never batch their SQL versions without an admitted batch envelope.
+Shared dictionary, OpenAPI, architecture exports, test manifest and roadmap are explicit
+overlap points: merge/refresh against accepted predecessor; forbid last-writer overwrites.
+Each task must update the CI inventory when it adds tests, by same-ID scope amendment
+admitting that technical manifest path after CI-003; this is a foreseeable prerequisite.
+
+### Part C — Accepted and deferred history
+
+Accepted P0/P1/P2 foundations, all 57 HMRs and 123 semantic subjects retain bounded
+acceptance. HPR-CI-001/002 remain accepted in their focused scope. HPR-P25-032/034/036/037
+and 039/040/041/042 are implemented with retained exact CI references; 038/043/044/045
+are DESIGN COMPLETE, not runtime linearization. 046/048/049 are COMPLETED / ACCEPTED;
+049 specifically passed 1,763 tests with zero failures/errors/skips plus all contract/
+dictionary gates at #666. Historical failed #660/#661/#663/#664 retain original meaning.
+
+Design/preflight 018/019/020/021/022/028/029/030/033/035 remain DESIGN COMPLETE within
+recorded bounded scope. New implementation IDs deliver their unresolved work; no design
+ID is reused as a disguised code task. 031 remains planned closure. Existing completed
+input/solver subsets stay accepted within their synthetic evidence scope. Mixed parent
+002/C, 003–017 and 023–027 remain incomplete/deferred where simulator-dependent; independent
+data/monitoring obligations map to 052–058. No parent closed by successor planning.
+
+SIM-DEF/P3-DEF remain DEFERRED: numerical continuation, regulator Slice B/C, transient
+solver completion, internal/external provider registry, reference-engine studies, EOS,
+calibration/learning/automatic recommendations, TimescaleDB/PostGIS and industrial scale.
+Original IDs/messages/requirements survive in [history](history/ULTIMATE_ROADMAP_HISTORY.md).
+Private HDP import eligibility/G1 and SITE deployment/calibration remain separate owner
+workstreams; real datasets are not requirements for this synthetic PLATFORM plan.
+
+### Part D — CI baseline and target verification contract
+
+#### Actual current process and measured evidence
+
+Only four workflow sources exist: [Docs](../../.github/workflows/docs.yml),
+[Fast](../../.github/workflows/ci-fast-feedback.yml), [Full](../../.github/workflows/ci.yml)
+and [Release](../../.github/workflows/release.yml). POM has Surefire but no Failsafe,
+selection profiles, JUnit tags, JaCoCo or numeric coverage gate. All integration-named
+Test classes run through Surefire; existing method parallelism is not configured.
+Full CI uses two reused JVM forks and separate class containers, not parallel methods.
+Maven dependency caching is configured; compiled target directories are not cached.
+
+| Workflow | Verified triggers / execution | Current limitation |
+|---|---|---|
+| Docs | main push/PR doc/md/config/selected script/workflow paths + dispatch; Python only | Ref-level cancel-in-progress=true can cancel required Docs acceptance; no Maven/DB |
+| Fast | workflow_dispatch only; StationInternalGraphTest and StationInternalGraphValidatorTest | Only two Topology tests, no automatic changes/24-module suite |
+| Full | main push/PR except documentation-only paths + dispatch; single sequential job | cancel-in-progress=true on main; DB initialization before even static validation; all test/context/contract/dictionary/base stages sequential |
+| Release | manual dispatch with exact source_sha/change/schema/rollback declarations; production environment and artifact digest | Current lookup accepts successful workflow name without checking future aggregate evidence/job manifest; environment approval settings are not verified by source |
+
+Maven baseline #666 report ZIP artifact ID `11801709752`, digest
+`sha256:7e7ab2c80e298bdaa14e4e77a2939f5bbee6e780502a0b6553be3fe35eec1fe2`
+contains 370 XML suites, 1,763 executed cases, zero failures/errors/skips, each matched
+to a current source class. 371 Java test sources include one abstract inherited-test
+support class; inherited tests occur in three concrete Organization subclasses and
+must not be excluded by a naive annotation scan. Current source-level candidate
+partition: 291 fast classes/1,235 cases; 3 architecture classes/27 cases; 75 database/
+integration classes/457 cases; one lightweight manual Spring context class/44 cases.
+These are declared **candidate selections**, not a newly executed fast/parallel suite.
+No semantic coverage percentage is inferred from executed case counts.
+
+| Accepted run / exact SHA | Workflow start-to-updated | Job elapsed | Maven verification | Current API generation | Dictionary collect/check | Base API build/start |
+|---|---|---|---|---|---|---|
+| [#662](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38298596351) / `554f2a0` | 10m55s | 10m49s | 8m29s | 32s | 10s | 47s |
+| [#665](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38307434183) / `99cae14` | 10m54s | 10m50s | 8m35s | 31s | 10s | 51s |
+| [#666](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38377242759) / `8c173f4` | 9m49s | 9m45s | 7m31s | 29s | 9s | 47s |
+
+Workflow timing uses GitHub run_started_at to updated_at, includes scheduling/finalization;
+job/step times use actual start/end metadata, not inferred test CPU. #662 has 369 suites/
+1,754 tests; #665/#666 have 370/1,763. Summed #666 XML class elapsed times: fast candidates
+36.427s, architecture 12.282s, lightweight context 0.082s, database/integration 734.253s.
+These sums overlap under two forks and are NOT wall time or a promised speedup.
+OrganizationOperationalScopeSchemaMigrationTest (50.174s),
+OrganizationMultilingualTableRetirementMigrationTest (49.394s), and
+SimulationEquipmentParameterRevisionPostgresIntegrationTest (34.666s) lead #666.
+Migration/container/context cost is measured; repeated compilation/base startup is a
+smaller observable cost. Avoid risk-heavy cache redesign before measuring partitioning.
+
+The newest 60-run retrieved sample contains 18 Full runs (11 success, 7 failure), 42 Docs
+(38 success, 4 failure), includes validation branches, and is not an all-time or main-only
+failure rate. Direct job evidence: #660/#663 failed repository verification; #661/#664
+failed dictionary collection/check after repository verification passed. #663/664 are
+temporary validation-branch results. Complete failure categorization beyond retrieved
+job evidence is not claimed. No measured fast-workflow timing was recovered; current
+manual Fast has no entry in that sample. Workflow collection API was rejected by the
+connector; local workflow files and supported run/job endpoints are authoritative here.
+
+#### Target CI architecture — specification, not installed
+
+**CI-1 Docs:** retain current checks and documentation-only trigger behavior; additionally
+verify the baseline/manifest/report-helper unit policies when their sources change.
+Keep no Java/Postgres service. Preserve all existing doc script tests/checks. Update
+triggers for new CI manifest/helpers to avoid untested selection-policy changes.
+
+**CI-2 Fast:** automatic relevant pushes to main and PRs to main, plus dispatch. Relevant
+paths: `src/main/**`, `src/test/**`, `pom.xml`, `.mvn/**`, `mvnw`, `mvnw.cmd`, CI manifest,
+selection/evidence scripts and their tests, Fast/Full workflow sources. Include approved
+fast domain/application/mapper/validation/security/controller-mock/source/reflection and
+architecture classes across all applicable 24 modules, using exact FQCN manifest lists.
+Do not select by *Integration* naming. Inherited helper and actual runtime dependencies
+are checked. The lightweight context class is initially full-only until its isolation is
+independently verified; MockMvc standalone/mocked LDAP tests are not live-service proof.
+No Postgres/Docker/external source service; unusable service attempts fail the fast test.
+
+Proposed command: selection script emits sorted exact FQCNs; run `bash ./mvnw -B -q
+test -Dtest=<generated-fast-FQCN-list>` with Java21/Maven cache. Compile all sources;
+no skipTests or quiet absence acceptance. Manifest validator compares all concrete test
+classes, inherited cases and real reports against source; new unclassified class fails
+until reviewed. No Java tag changes or POM/profile required in this chosen design.
+
+**CI-3 Full:** keep the workflow identity `HidraAPI CI`; jobs static-validation,
+unit-architecture, postgres-integration matrix (two timing-balanced isolated shards),
+api-contract and an always-evaluated `Full Verification Gate`. Static runs all existing
+docs/base-resolver/ops scripts plus new selector/aggregate tests. Unit+architecture runs
+all exact manifest unit/source/architecture/lightweight-context cases. DB shards run
+each complete class once (inheritance preserved), using isolated runner Docker/containers;
+do not split methods or share mutable containers/databases. Preserve existing PostgreSQL16
+and all existing18 fixtures; do not pretend the baseline is uniformly16. Independent
+shards may not share host ports, persistent volumes or a mutable source/history catalog.
+
+Each test-owning job runs `clean verify` with its exact manifest class selection and
+retains POM enforcer/compiler/mapper/package/Boot lifecycle semantics. Start at one fork
+per DB shard; measured safe scheduling may permit two after capacity checks. Method-level
+JUnit concurrency remains off. Unit job needs no DB service. API job owns isolated
+PostgreSQL16, exact current build/start/security/snapshot equality, actual physical
+dictionary capture/check before base startup, compatibility-base resolution/tests,
+independent historical build/start and backward compatibility/artifact publication.
+It packages with tests explicitly omitted because test jobs own them; this omission
+is not itself verification. Compare the union to unrestricted clean verify before
+claiming equivalent lifecycle/test coverage. All existing non-test verify behavior must
+be accounted for; a missing plugin side effect blocks adoption.
+
+Current and historical app API boots use independent disposable DB state. Preserve the
+existing verified order of current dictionary capture before historical migration/app
+startup; if using separate DBs, prove identical intended current evidence. No shared
+artifact from a different SHA/attempt; no stale catalog/source bundle. Dependency cache
+may retain downloaded Maven artifacts keyed to actual build configuration; target jars,
+class outputs, reports and migrated DBs are not reusable acceptance caches. Reuse a base
+OpenAPI artifact only after independent provenance/integrity/base-selection verification;
+initial design retains actual base build. Setup-java cache and clean fallback remain.
+
+**Aggregate:** fail unless every mandatory job succeeds, exact SHA/run attempt/lane manifest
+agree, every required report/class/case is present once, no failures/errors/required skips,
+and required API/dictionary artifacts have verified provenance. `if: always()` evaluates
+the aggregate even when dependencies fail; failed/skipped/cancelled/timed-out needs fail.
+Missing reports fail rather than current warning-only upload/summary behavior. Preserve
+raw test failure details/logs and diagnostic artifacts even when later contract stages
+cannot run. A materialized evidence manifest contains SHA, attempt, classifier revision,
+job/lane IDs, source/test identities, counts, timing and hashes. Static checks cannot be
+replaced by Docs from an older SHA. No successful static or Fast badge substitutes.
+
+**CI-4 Release:** dispatch/control/env/ancestry/schema/rollback/digest protections retained.
+Retain `HidraAPI CI` identity; strengthen current inline release lookup with tested helper
+requiring completed successful full verification on exact candidate SHA and all aggregate
+jobs/evidence for that run/attempt. For pre-optimization candidates allow the recorded
+successful legacy full run only under an explicit legacy workflow-format discriminator;
+do not permit any same-name future fast/partial job. Pagination/ambiguous/missing/stale
+results fail closed. Fast success, PR merge-ref success for a different SHA, source-tree
+similarity or an earlier parent cannot qualify release. No automatic publication or
+deployment. Actual environment reviewer settings require owner/service evidence.
+
+**Cancellation:** mandatory main Full/Docs and release/exact-SHA dispatch never cancel
+for a newer commit. Use per-SHA acceptance concurrency with cancel=false. Superseded PR
+Fast/non-acceptance checks may cancel by PR/ref only; ordinary branch feedback is labelled
+non-acceptance. Rerun attempts must aggregate their own reports. Explicit user cancellation
+leaves acceptance unavailable; latest-fast feedback never erases required main evidence.
+
+**Equivalence transition:** keep unrestricted `clean verify -DforkCount=2 -DreuseForks=true`
+fallback. Before enabling partition aggregate as eligible, run same-SHA old/full oracle
+and proposed lanes on at least three representative revisions (code/security, migration,
+API) with identical dependency versions and fixtures. Compare all discovered suite/case
+identities, pass/fail/error/skip counts, verify plugin/lifecycle outcomes, API security/
+equality/base checks and dictionary evidence. Inject one omitted/failed/skipped/overlapping
+case, stale artifact and cancelled job to prove denial. Deliberate oracle duplication is
+only for transition/fallback; permanent full-test lane sets are disjoint. Deferred
+Simulation code/tests remain in non-regression verification. Equivalence NOT ESTABLISHED
+by this design, the current source partition or existing full acceptance.
+
+**Performance acceptance:** proposed objective after measured baseline: warm Fast median
+<=3 minutes; Full critical-path median <=7 minutes on comparable hosted runners. These
+are targets/estimates, not achieved timings. Record at least five comparable same-SHA/
+runner-class/cache-condition observations per configuration; publish range/median and
+slow classes, cold-cache behavior and failure/flake distribution. Parallel runner minutes
+may rise; no cost saving is asserted. Do not accept a favorable single run, excluded
+coverage, more skips or unsafe cache as performance. If equivalence fails, retain fallback;
+if speed target fails, amend scheduling within CI-003 and report unachieved objective.
+
+#### Mandatory validation obligation matrix
+
+| Obligation | Verified source/test location | Fast | Full owning job | Release exact-SHA | Isolation | Required evidence | Fail-closed behavior |
+|---|---|---|---|---|---|---|---|
+| Canonical docs/metadata/links | .github/scripts/validate_docs.py and tests | CI policy unit checks when relevant; Docs owns doc-only | static-validation | Yes for candidate full | Python/files | stdout + source SHA | Missing/error fails |
+| Offline OpenAPI metadata | validate_openapi_snapshot.py and tests | Excluded runtime; static available | static-validation | Yes | Python/snapshot | operation/path/schema counts | Invalid/stale snapshot fails |
+| P1 retained evidence consistency | validate_p1_closure.py | Excluded; not business unit | static-validation | Yes | Files | validator result; no new physical claim | Missing required retained evidence fails |
+| App/PG HA/backup/release/observability/DB ops artifacts | all six ops validators retained by ci.yml | Excluded | static-validation | Yes | Shell/files | each existing command/result | Omission/error fails |
+| Build/enforcer/mapstruct/Boot package lifecycle | pom.xml and mvnw | Java21 compile/test subset | every selected clean-verify test job; api package | Yes | clean JVM/workspace | commands/tool versions/exit | Skipped required verify behavior fails equivalence |
+| Unit/application/policy/mapper/source cases | exact class table below, 291 candidates | Included only approved reviewed subset | unit-architecture | Yes | mocks/in-memory/files | every source suite/case XML | Unclassified/missing/extra/failed/skipped fails |
+| Architecture/owner boundaries | exact three architecture sources below; source guardrails remain | Included after isolated proof | unit-architecture | Yes | ArchUnit/JVM/source | XML + export/source result | Boundary failure never waived |
+| Lightweight context behavior | TopologyCurrentActorQueryAdapterTest | Initially excluded pending isolated fast proof | unit-architecture | Yes | local AnnotationConfigApplicationContext | 44 baseline cases XML | Missing context coverage fails |
+| Database/Flyway/JPA/trust/race/rollback | exact 75 source classes below | Excluded; real DB cost | postgres-integration shards | Yes | own Postgres16/18 containers/connections | XML, history/checksum/race/error logs | No Docker/required skip/missing class fails |
+| Runtime OpenAPI/security equality | ci.yml runtime /v3/api-docs and canonical validator | Excluded | api-contract | Yes | disposable Postgres16 + exact app | current SHA contract/start logs | Boot/security/equality failure fails |
+| Physical dictionary/ownership/source drift | generate_data_dictionary.py; ownership.json; DATA_DICTIONARY | Python unit only, no catalog claim | api-contract | Yes | actual current migrated Postgres16 | schema.json/render/verification.json hashes | Wrong SHA/bundle/build/catalog or absent files fails |
+| Compatibility base provenance | resolve_openapi_base.py, 14 unit tests | Pure resolver unit fixtures where included | static unit + api-contract real lookup | Yes | owner API/git ancestry + base worktree | selected base SHA and lookup record | Absent/unverified base fails |
+| Historical OpenAPI compatibility | base package/start + openapi_compatibility.py | Excluded | api-contract | Yes | separate current/base app/DB | base/current JSON and diff | Break/failed generation fails |
+| Complete test/report selection | proposed manifest/helper scripts | Required selection consistency | all jobs + Full Verification Gate | Yes | immutable lane manifest | all class/case identities, counts, artifacts | Missing/duplicate/overlap/stale/required skip fails |
+| Release candidate eligibility | release.yml; proposed evidence helper | Never sufficient | Full Verification Gate; release prepare | Mandatory exact candidate | authenticated run metadata/ancestry/digest | eligible run+attempt+jobs+hashes | Fast/partial/absent/stale/ambiguous rejects |
+| SITE/physical exercise/deployment review | owner operational commissioning | Excluded | Not established by generic CI | Separately required when deploying | real approved operator environment | operator approvals/actual site evidence | CI never fabricates site acceptance |
+
+Full test-source and per-module inventories follow this consolidation block. Current
+reports cover every concrete baseline class; proposed runtime isolation/partitioning
+still requires the CI-003 campaign. No test exclusion is authorized by a table label.
+
+### Part E — Approved requirement completeness mapping
+
+| Approved requirement | Owner | Development task | Dependencies / gate | Files / contracts | Tests / CI | Acceptance |
+|---|---|---|---|---|---|---|
+| Provider/link ordinary-writer generations | Identity | 047 | 046/048/049 | Frozen seven paths | Generation PostgreSQL16/full | Registered full proof |
+| Trusted operation provenance/session/jti and generation transport | Identity | 050 | 047/D1 | D1 exact binding/issuance/reader | Four auth types, rollback, real DB | B1 provenance |
+| Revocation/phantom-DENY, common valid operation time, one connection | Identity/Party/Topology | 051 | 050/D2 | owner exports/fences/transaction boundary | real races/expiry/latency | B2/B3 fail-closed |
+| Owner epochs/history/publication/CAS | Topology | 051/052 | 038/051/D3 | pinned revision/head/event/request APIs | concurrent opaque owner/history tests | F1-02 |
+| Complete authoring, pipes/branches/route/profile/sections/ports | Topology | 052 | 018/019/020/D3 | draft/publish/geographic source formats | actual operator API round trip | F1-03/04; historical A/C/G |
+| Manufacturer/model/lifecycle, distinct units and characteristics | Topology/Assets/Party/existing source owner | 054 | 052/020/021/D3 | per-owner source references, no foreign JPA | nine units, history/invalid units | F2-02/03; historical A/B/G |
+| Company product/composition/supplied property/method facts | Custody | 053 | 022/051/D3 | supported metadata + immutable legacy GAS | multi-product, unsupported method, no compute | F2-01/03; historical D/G |
+| Frozen authoritative manifest/effective historical reconstruct | Topology/source owners | 055 | 052/053/054/028/D3 | exact immutable referenced owner versions | history, missing/corrupt, compare | F2-04; historical E |
+| Supported lossless import/export/dry-run | owner-local + Topology coordinator | 052/053/054/055 | D3; complete supported references | declared versions/units/evidence/permissions | malformed/conflict/replay/partial package | Actual supported exchange only |
+| Multi-company/network authorization and no metadata leakage | Identity + every owner | 050–057/058 | 051 + each exact scope | current paired grants and owner references | denied lookup/count/cursor/action/export | Current A/I and historical G |
+| Source/tag/point/asset/effective unit binding | Telemetry/Integration/Topology | 056 | 052/029/D4 | owner binding/ingest source contracts | cross-source/tenant/wrong unit/time | F3-01/E; historical F |
+| Raw trust/time/quality/freshness/UNKNOWN/replay | Telemetry | 056 | D4 | raw/assessment/trusted binding history | stale/late/duplicate/outage/recovery | F3-02/F |
+| Independent supported measured-state/condition evidence | Monitoring/Telemetry | 057 | 056/D4 | eligible non-solver observation view | unknown/stale/threshold/permission | F3-03/F |
+| Authenticated action vs observed outcome/confounders | Workflow/Audit/Monitoring/Analytics | 057 | 050/051/056/D4 | owner action/event/observation contracts | absent/late/duplicate/noncausal evidence | F3-04/G |
+| Domain lifecycle/invariants/ownership and all 123 accepted semantics | All 24 owners | CI-003/058 | existing accepted foundations | entire reviewed test inventory/owner exports | complete regression/architecture/full | Preserve accepted scope, no expansion |
+| Events/idempotency/transaction/conflict/failure recovery | respective write owners | 050–058 | per-task dependencies | explicit request/event IDs and real rollback | replay/race/failure/full | No hidden partial success |
+| Migration/API/dictionary/config/compatibility | schema/API/ops owners | each implementation + CI-003/058 | exact schema/order/collision gates | SQL/OpenAPI/ownership/genuine catalog | fresh/upgrade/JPA/API/base/ops | exact SHA evidence |
+| Synthetic foundation A–G and current PLATFORM A–I | Independent verification | 058 | 052–057/D5 | versioned mapping and concrete test paths | actual API+database+full gate | F4-01/02 |
+| Independent foundation closure | Independent governance | existing 031 | 058 + owner acceptance | roadmap/reconciliation read-only evidence audit | exact runtime SHA/full artifacts | F4-03 scoped closure |
+| Automatic fast, parallel equivalent full, diagnostics | CI | CI-003 | accepted baseline + owner selection | exact 13-file scope | real shadow/negative/performance campaign | equivalent full before adoption |
+| Controlled release eligibility and rollback safety | Release/ops owner | CI-003; existing retained release controls | exact full candidate evidence | release workflow/helper; unchanged deploy scripts | stale/fast/cancel/digest negative cases | Manual production controls retained |
+| Simulator/calibration/P3/real import/SITE | Existing respective owners | DEFERRED/separate workstreams | explicit future authorization | preserved historical IDs/code/formats | preserved regression; no new field claim | Not foundation closure |
+
+### Development Roadmap Baseline and Exceptional Change Control
+
+Once the owner accepts this consolidation **after unresolved gates and scopes are closed**,
+default is **no new development task IDs**. Implementation selects an eligible existing
+task; predictable prerequisites, omitted tests, routine defects, inventory updates,
+migration-aware assertion repairs, API/export/docs/dictionary changes stay within that
+task by controlled exact-scope amendment. Never silently exceed a frozen allowlist.
+Planning publication and Docs PASS are not retrospective owner baseline approval.
+
+Every same-ID amendment records original scope, verified new evidence, precise change,
+dependency/compatibility/security/CI impact, exact CREATE/UPDATE/DELETE list, migration
+identity when relevant, acceptance commands and owner authorization where required.
+Preserve accepted prior scope/evidence, do not reopen its history or fabricate approval.
+047's existing scope is unchanged by this consolidation. D1–D5 use this mechanism,
+not fresh discovery/registration/correction ID chains.
+
+A genuinely exceptional new ID requires evidence of a new obligation absent from this
+baseline; proof no existing unexecuted task can safely absorb it; impact/ownership/
+dependency/cycle/CI/security evaluation; closed file/migration/rollback/test scope;
+explicit repository-owner approval; and an explanation why amendment is insufficient.
+New business scope, simulator reactivation, destructive migration or release requires
+its own explicit authority. A failed CI alone is not a new product requirement.
+
+Current activation: **conditional plan delivered, freeze NOT activated**. D1–D5 remain
+explicit, prospective code scopes blocked. Next selection can execute the already
+registered 047; CI-003 is available for explicit early selection after Docs acceptance.
+This operation changes documentation only, verifies commit/Docs startup and STOPs.
+
+
+### Verified module review and preservation inventory
+
+All production Java and canonical documents were read by the inventory scan; imports, owner packages, service/API surfaces and executable test dependencies were recovered. Targeted semantic review used actual authentication/authorization, owner queries, immutable source models/codecs/stores, telemetry trust and monitoring writes plus accepted design/semantic obligations. This is source/evidence review, not proof that every possible business use case or undocumented requirement is complete. No new unrelated-module feature is inferred. Counts include package-info and support files where stated.
+
+| Module | Production Java files | Executable classes / #666 cases | Current owner evidence | Remaining approved obligation |
+|---|---|---|---|---|
+| alarm | 145 | 22 / 72 | [Canonical current owner](../modules/alarm.md); actual API/service/domain/persistence/export source and all test classes below | Accepted lifecycle/invariants/exports retained; CI-003 + 058 regression, no new product scope |
+| analytics | 180 | 7 / 25 | [Canonical current owner](../modules/analytics.md); actual API/service/domain/persistence/export source and all test classes below | 057 factual outcome consumer; no learning/solver expansion |
+| assets | 156 | 6 / 24 | [Canonical current owner](../modules/assets.md); actual API/service/domain/persistence/export source and all test classes below | 054 lifecycle/model/installed associations |
+| audit | 144 | 11 / 52 | [Canonical current owner](../modules/audit.md); actual API/service/domain/persistence/export source and all test classes below | 057 immutable action/event evidence; source owner audit exports |
+| configuration | 125 | 3 / 9 | [Canonical current owner](../modules/configuration.md); actual API/service/domain/persistence/export source and all test classes below | Accepted lifecycle/invariants/exports retained; CI-003 + 058 regression, no new product scope |
+| custody | 151 | 11 / 46 | [Canonical current owner](../modules/custody.md); actual API/service/domain/persistence/export source and all test classes below | 053 product/method; 055 exact source references |
+| documents | 140 | 11 / 40 | [Canonical current owner](../modules/documents.md); actual API/service/domain/persistence/export source and all test classes below | Accepted lifecycle/invariants/exports retained; CI-003 + 058 regression, no new product scope |
+| hse | 140 | 5 / 31 | [Canonical current owner](../modules/hse.md); actual API/service/domain/persistence/export source and all test classes below | Accepted lifecycle/invariants/exports retained; CI-003 + 058 regression, no new product scope |
+| identity | 284 | 47 / 243 | [Canonical current owner](../modules/identity.md); actual API/service/domain/persistence/export source and all test classes below | 047/050/051; 058 tenant/security proof |
+| incident | 117 | 6 / 35 | [Canonical current owner](../modules/incident.md); actual API/service/domain/persistence/export source and all test classes below | Accepted lifecycle/invariants/exports retained; CI-003 + 058 regression, no new product scope |
+| integration | 159 | 5 / 31 | [Canonical current owner](../modules/integration.md); actual API/service/domain/persistence/export source and all test classes below | 056 adapter/exchange/failure evidence |
+| integrity | 147 | 7 / 46 | [Canonical current owner](../modules/integrity.md); actual API/service/domain/persistence/export source and all test classes below | Accepted lifecycle/invariants/exports retained; CI-003 + 058 regression, no new product scope |
+| leakdetection | 121 | 5 / 24 | [Canonical current owner](../modules/leakdetection.md); actual API/service/domain/persistence/export source and all test classes below | Accepted lifecycle/invariants/exports retained; CI-003 + 058 regression, no new product scope |
+| monitoring | 110 | 4 / 17 | [Canonical current owner](../modules/monitoring.md); actual API/service/domain/persistence/export source and all test classes below | 057 observations/conditions |
+| notification | 157 | 6 / 22 | [Canonical current owner](../modules/notification.md); actual API/service/domain/persistence/export source and all test classes below | Accepted lifecycle/invariants/exports retained; CI-003 + 058 regression, no new product scope |
+| organization | 245 | 66 / 221 | [Canonical current owner](../modules/organization.md); actual API/service/domain/persistence/export source and all test classes below | Accepted lifecycle/invariants/exports retained; CI-003 + 058 regression, no new product scope |
+| party | 159 | 6 / 18 | [Canonical current owner](../modules/party.md); actual API/service/domain/persistence/export source and all test classes below | 051 eligibility ordering; 054 manufacturer references |
+| planning | 148 | 15 / 84 | [Canonical current owner](../modules/planning.md); actual API/service/domain/persistence/export source and all test classes below | Accepted lifecycle/invariants/exports retained; CI-003 + 058 regression, no new product scope |
+| reporting | 159 | 6 / 39 | [Canonical current owner](../modules/reporting.md); actual API/service/domain/persistence/export source and all test classes below | Accepted lifecycle/invariants/exports retained; CI-003 + 058 regression, no new product scope |
+| risk | 159 | 5 / 40 | [Canonical current owner](../modules/risk.md); actual API/service/domain/persistence/export source and all test classes below | Accepted lifecycle/invariants/exports retained; CI-003 + 058 regression, no new product scope |
+| simulation | 206 | 26 / 227 | [Canonical current owner](../modules/simulation.md); actual API/service/domain/persistence/export source and all test classes below | 054 data-store compatibility only; numerical work DEFERRED |
+| telemetry | 140 | 10 / 32 | [Canonical current owner](../modules/telemetry.md); actual API/service/domain/persistence/export source and all test classes below | 056 trust/binding/time/replay |
+| topology | 183 | 31 / 171 | [Canonical current owner](../modules/topology.md); actual API/service/domain/persistence/export source and all test classes below | 052/054/055; 051 owner fence; 058 verification |
+| workflow | 200 | 25 / 123 | [Canonical current owner](../modules/workflow.md); actual API/service/domain/persistence/export source and all test classes below | 050 session authority is Identity; 052–055 approval references; 057 authenticated actions |
+
+Every 24-module test owner retains full CI even if it has no new feature task. Kernel/platform/bootstrap counts are outside the 24-module rows. Import edges remain approved exports; module-reference cycles are not scheduled task cycles. Current SQL inventory is 146 unique normalized versions ending 20261012.001; 470 mapped JPA sources and accepted dictionary/catalog evidence retain their existing owner authority. No SQL, ownership or physical dictionary mutation occurs in this planning task.
+
+### Exact executable class / CI ownership inventory
+
+This table is derived from the actual #666 XML ZIP and current source, not a filename guess. “Candidate” Fast labels require CI-003 isolation/equivalence acceptance. Current Full owning job for every row is Java 21 Maven verification. Proposed Full owners are unit-architecture or the isolated postgres-integration shard selected from recorded timing; these are not installed workflows. All rows require exact-SHA release full success. Evidence is source identity + XML suite/cases/time; DB rows additionally require real container/history/transaction evidence. Any missing/failed/error/required-skip/duplicate/overlap class fails the proposed aggregate.
+
+| Exact source class path | Baseline cases | #666 elapsed seconds | Fast policy / isolation | Proposed Full owning job |
+|---|---|---|---|---|
+| `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java` | 15 | 3.908 | Candidate included; ArchUnit/JVM/source | unit-architecture |
+| `src/test/java/dz/sh/hidra/DomainInvariantGuardrailTest.java` | 1 | 0.257 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/DomainPersistenceMirrorGuardrailTest.java` | 1 | 0.077 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java` | 5 | 0.478 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/HidraApplicationTests.java` | 1 | 16.902 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/InternalReferenceIntegrityMigrationTest.java` | 2 | 13.585 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/GeneratedBoundaryMapperContractTest.java` | 1 | 0.399 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/alarm/api/rest/AlarmSuppressionApiExceptionHandlerTest.java` | 1 | 0.001 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/alarm/api/rest/controller/AlarmSuppressionControllerTest.java` | 1 | 0.233 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/alarm/api/rest/controller/AlarmSuppressionRoutePermissionTest.java` | 1 | 0.202 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/alarm/api/rest/controller/SpringAlarmControllerActorAttributionTest.java` | 2 | 0.003 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/alarm/api/rest/mapper/AlarmRestMapperTest.java` | 2 | 0.004 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/alarm/application/service/AlarmSuppressionApprovalServiceTest.java` | 3 | 0.105 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/alarm/domain/policy/AlarmSuppressionPolicyTest.java` | 9 | 0.005 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/alarm/infrastructure/persistence/AlarmAcknowledgementSemanticPostgresIntegrationTest.java` | 3 | 3.218 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/alarm/infrastructure/persistence/AlarmClosureSemanticPostgresIntegrationTest.java` | 5 | 4.302 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/alarm/infrastructure/persistence/AlarmSemanticPostgresIntegrationTest.java` | 6 | 4.269 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/alarm/infrastructure/persistence/AlarmShelvingSemanticPostgresIntegrationTest.java` | 13 | 11.215 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/alarm/infrastructure/persistence/AlarmSuppressionPersistenceMigrationTest.java` | 1 | 9.454 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/alarm/infrastructure/scheduling/AlarmShelvingExpiryJobTest.java` | 1 | 0.079 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/alarm/infrastructure/scheduling/AlarmShelvingExpiryOrchestratorTest.java` | 2 | 0.197 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/alarm/infrastructure/scheduling/AlarmSuppressionExpiryJobTest.java` | 1 | 0.082 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/alarm/infrastructure/scheduling/AlarmSuppressionExpiryOrchestratorTest.java` | 3 | 0.387 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/alarm/infrastructure/security/AlarmLifecycleActorAdapterTest.java` | 2 | 0.121 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/alarm/infrastructure/service/AlarmSuppressionApplicationAdapterTest.java` | 2 | 0.577 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/alarm/semantic/AlarmAcknowledgementSemanticRemediationTest.java` | 3 | 0.214 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/alarm/semantic/AlarmClosureSemanticRemediationTest.java` | 3 | 0.196 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/alarm/semantic/AlarmSemanticRemediationTest.java` | 4 | 0.236 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/alarm/semantic/AlarmShelvingSemanticRemediationTest.java` | 4 | 0.122 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/analytics/api/rest/mapper/AnalyticsRestMapperTest.java` | 2 | 0.256 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/analytics/semantic/AnalyticsDatasetVersionSemanticRemediationTest.java` | 3 | 0.154 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/analytics/semantic/AnalyticsInsightSemanticRemediationTest.java` | 4 | 1.666 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/analytics/semantic/AnalyticsProjectionRunSemanticRemediationTest.java` | 5 | 0.216 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/analytics/semantic/DigitalTwinReadinessAssessmentSemanticRemediationTest.java` | 4 | 0.095 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/analytics/semantic/MetricEvaluationRunSemanticRemediationTest.java` | 5 | 2.168 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/analytics/semantic/MetricValueSemanticRemediationTest.java` | 2 | 0.091 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/assets/api/rest/AssetsApiExceptionHandlerTest.java` | 1 | 0.005 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/assets/application/service/AssetsApplicationServiceConcurrencyTest.java` | 2 | 0.163 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/assets/infrastructure/persistence/MaintenanceWorkOrderSemanticPostgresIntegrationTest.java` | 6 | 3.338 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/assets/semantic/HseWorkOrderReferenceContractTest.java` | 2 | 0.058 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/assets/semantic/MaintainableAssetSemanticRemediationTest.java` | 2 | 0.160 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/assets/semantic/MaintenanceWorkOrderSemanticRemediationTest.java` | 11 | 0.078 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/audit/infrastructure/integration/AlarmSuppressionAuditContractAdapterTest.java` | 2 | 0.005 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/audit/infrastructure/integration/OrganizationResponsibilityAuditContractAdapterTest.java` | 2 | 0.004 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/audit/infrastructure/integration/RiskAssessmentAuditContractAdapterTest.java` | 3 | 0.010 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/audit/infrastructure/integration/RiskRegisterAuditContractAdapterTest.java` | 1 | 0.281 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/audit/infrastructure/integration/SimulationRecommendationAuditContractAdapterTest.java` | 3 | 0.007 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/audit/infrastructure/persistence/AuditSemanticPostgresIntegrationTest.java` | 17 | 8.133 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/audit/semantic/AuditAccessRecordSemanticRemediationTest.java` | 3 | 0.005 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/audit/semantic/AuditBeforeAfterValueSemanticRemediationTest.java` | 6 | 0.077 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/audit/semantic/AuditEventSemanticRemediationTest.java` | 5 | 0.008 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/audit/semantic/AuditExportRequestSemanticRemediationTest.java` | 8 | 0.033 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/audit/semantic/CustodyTicketAuditReferenceContractTest.java` | 2 | 0.083 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/configuration/semantic/ConfigurationDefinitionSemanticRemediationTest.java` | 3 | 0.138 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/configuration/semantic/ConfigurationValueSemanticRemediationTest.java` | 3 | 0.002 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/configuration/semantic/FeatureFlagSemanticRemediationTest.java` | 3 | 0.003 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/custody/application/service/CustodyGasFluidQualificationServiceTest.java` | 2 | 0.275 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/custody/application/service/CustodyGasFluidRevisionQueryServiceTest.java` | 3 | 0.004 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/custody/domain/model/CustodyGasFluidRevisionTest.java` | 3 | 0.002 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/custody/infrastructure/integration/PlanningProductReferenceQueryAdapterTest.java` | 2 | 0.402 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/custody/infrastructure/integration/SimulationProductCandidateQueryAdapterTest.java` | 7 | 0.009 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/custody/infrastructure/persistence/CustodyGasFluidRevisionPostgresIntegrationTest.java` | 6 | 26.616 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/custody/infrastructure/persistence/CustodyTransferTicketSemanticPostgresIntegrationTest.java` | 4 | 2.869 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/CustodyGasFluidRevisionCodecTest.java` | 3 | 0.024 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/custody/semantic/CustodyDiscrepancySemanticRemediationTest.java` | 2 | 0.002 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/custody/semantic/CustodyMeasurementPeriodSemanticRemediationTest.java` | 4 | 0.335 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/custody/semantic/CustodyTransferTicketSemanticRemediationTest.java` | 10 | 0.353 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/documents/api/rest/controller/SpringDocumentsControllerContentTransferTest.java` | 2 | 0.019 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/documents/application/service/AuditDocumentReferenceQueryServiceTest.java` | 1 | 0.004 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/documents/application/service/DocumentContentTransferServiceTest.java` | 6 | 0.013 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/documents/application/service/DocumentTargetLookupServiceTest.java` | 2 | 0.004 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/documents/application/service/ReportingDocumentReferenceQueryServiceTest.java` | 1 | 0.725 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/documents/infrastructure/persistence/DocumentsSemanticPostgresTest.java` | 12 | 7.716 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/documents/infrastructure/storage/LocalDocumentBinaryStorageAdapterTest.java` | 1 | 0.021 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/documents/semantic/DocumentSemanticRemediationTest.java` | 5 | 0.013 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/documents/semantic/DocumentStorageObjectSemanticRemediationTest.java` | 3 | 0.003 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/documents/semantic/DocumentTargetLinkSemanticRemediationTest.java` | 4 | 0.004 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/documents/semantic/DocumentVersionSemanticRemediationTest.java` | 3 | 0.004 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/hse/application/service/HseQueryApplicationServiceTest.java` | 3 | 0.130 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/hse/infrastructure/persistence/HseLifecycleSemanticPostgresIntegrationTest.java` | 13 | 7.125 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/hse/semantic/HseCaseSemanticRemediationTest.java` | 3 | 0.188 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/hse/semantic/HseClosureSemanticRemediationTest.java` | 4 | 0.348 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/hse/semantic/HseCorrectivePreventiveActionSemanticRemediationTest.java` | 8 | 0.486 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/identity/AuthenticationArchitectureAndSecretGuardrailTest.java` | 7 | 6.426 | Candidate included; ArchUnit/JVM/source | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/identity/api/rest/controller/IdentityAuthenticationControllerLdapApiTest.java` | 2 | 0.002 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/identity/api/rest/controller/IdentityAuthenticationControllerLocalApiTest.java` | 1 | 0.213 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/identity/api/rest/controller/IdentityAuthenticationControllerOidcApiTest.java` | 2 | 0.003 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/identity/api/rest/controller/IdentityOidcAuthorizationControllerTest.java` | 2 | 0.004 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/identity/api/rest/controller/SpringIdentityControllerPermissionScopeApiTest.java` | 1 | 0.102 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/identity/api/rest/mapper/IdentityRestMapperPermissionScopeTest.java` | 4 | 0.003 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/identity/application/service/DocumentsActorQueryServiceTest.java` | 1 | 0.004 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/identity/application/service/IdentityAdministrationCommandApplicationServiceTest.java` | 4 | 0.772 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/identity/application/service/IntegrationResolverQueryServiceTest.java` | 1 | 0.003 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/identity/application/service/PlanningCreatorQueryServiceTest.java` | 1 | 0.002 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/identity/application/service/ReportingAccessAuthorizationQueryServiceTest.java` | 1 | 0.135 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/identity/application/service/RiskActorQueryServiceTest.java` | 2 | 0.005 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/identity/application/service/TopologyScopedAccessPostgresIntegrationTest.java` | 11 | 6.619 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/identity/application/service/TopologyScopedAccessQueryServiceTest.java` | 34 | 0.062 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/IdentityProviderLinkJsonbPostgresIntegrationTest.java` | 9 | 16.588 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/LocalCredentialSecurityGenerationPostgresIntegrationTest.java` | 8 | 16.855 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/AuthorizationAssertionTrustTest.java` | 3 | 0.116 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/HidraAuthorizationOwnershipTest.java` | 2 | 0.336 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/IdentityAdministratorGrantServiceTest.java` | 8 | 0.229 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/IdentityAuthenticationRequestRouterTest.java` | 5 | 0.011 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/IdentityOidcJwtAuthenticationConverterTest.java` | 7 | 0.017 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/LdapAuthenticationProviderTest.java` | 9 | 0.020 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/LdapCredentialVerificationAdapterTest.java` | 4 | 0.185 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/LocalAuthenticationIntegrationTest.java` | 1 | 19.542 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/LocalAuthenticationProviderTest.java` | 7 | 1.352 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/TopologyCurrentActorQueryAdapterTest.java` | 44 | 0.082 | Initially excluded; local Spring context | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/identity/semantic/AuthorizationDecisionSemanticRemediationTest.java` | 10 | 0.009 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/identity/semantic/AuthorizationDelegationGrantIntegrityMigrationTest.java` | 2 | 2.409 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/identity/semantic/AuthorizationDelegationGrantSemanticRemediationTest.java` | 2 | 0.381 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/identity/semantic/AuthorizationEvidencePostgresTest.java` | 9 | 5.307 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/identity/semantic/CustodyTransferTicketActorReferenceContractTest.java` | 2 | 0.002 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/identity/semantic/HseActorContractTest.java` | 2 | 0.003 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/identity/semantic/IdentityProviderSemanticRemediationTest.java` | 6 | 0.007 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/identity/semantic/IncidentActorContractTest.java` | 2 | 0.003 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/identity/semantic/IntegrityAssessmentActorReferenceContractTest.java` | 2 | 0.001 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/identity/semantic/IntegrityCaseActorReferenceContractTest.java` | 2 | 0.002 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/identity/semantic/LoginSessionIntegrityMigrationTest.java` | 2 | 2.203 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/identity/semantic/LoginSessionSemanticRemediationTest.java` | 3 | 0.380 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/identity/semantic/MaintenanceWorkOrderActorReferenceContractTest.java` | 2 | 0.122 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/identity/semantic/PermissionSemanticRemediationTest.java` | 5 | 0.237 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/identity/semantic/RoleSemanticRemediationTest.java` | 1 | 0.002 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/identity/semantic/UserIntegrityMigrationTest.java` | 2 | 1.913 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/identity/semantic/UserPermissionGrantIntegrityMigrationTest.java` | 2 | 2.129 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/identity/semantic/UserPermissionGrantSemanticRemediationTest.java` | 2 | 0.003 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/identity/semantic/UserRoleGrantSemanticRemediationTest.java` | 2 | 0.110 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/identity/semantic/UserSemanticRemediationTest.java` | 2 | 0.111 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/incident/application/service/IncidentQueryApplicationServiceTest.java` | 2 | 0.090 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/incident/infrastructure/persistence/IncidentSemanticPostgresIntegrationTest.java` | 17 | 11.004 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/incident/semantic/IncidentClosureSemanticRemediationTest.java` | 5 | 0.531 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/incident/semantic/IncidentRelatedIncidentSemanticRemediationTest.java` | 3 | 0.007 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/incident/semantic/IncidentResponseActionSemanticRemediationTest.java` | 3 | 0.237 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/incident/semantic/IncidentSemanticRemediationTest.java` | 5 | 0.130 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/integration/infrastructure/persistence/IntegrationSemanticPostgresIntegrationTest.java` | 10 | 7.584 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/integration/semantic/ExternalSystemSemanticRemediationTest.java` | 2 | 0.241 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/integration/semantic/IntegrationDeadLetterRecordSemanticRemediationTest.java` | 8 | 0.735 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/integration/semantic/IntegrationExchangeMessageSemanticRemediationTest.java` | 5 | 0.328 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/integration/semantic/IntegrationJobRunSemanticRemediationTest.java` | 6 | 0.447 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/integrity/infrastructure/persistence/IntegrityAssessmentSemanticPostgresIntegrationTest.java` | 4 | 2.895 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/integrity/infrastructure/persistence/IntegrityCaseSemanticPostgresIntegrationTest.java` | 12 | 7.056 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/integrity/semantic/IntegrityAssessmentSemanticRemediationTest.java` | 9 | 0.123 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/integrity/semantic/IntegrityCaseSemanticRemediationTest.java` | 12 | 0.590 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/integrity/semantic/IntegrityProgramSemanticRemediationTest.java` | 4 | 0.759 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/integrity/semantic/MaintenanceRecommendationReferenceContractTest.java` | 1 | 0.125 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/integrity/semantic/PipelineDefectSemanticRemediationTest.java` | 4 | 0.242 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/leakdetection/application/service/LeakDetectionQueryApplicationServiceTest.java` | 3 | 0.152 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/leakdetection/semantic/LeakCandidateSemanticRemediationTest.java` | 7 | 0.508 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/leakdetection/semantic/LeakDetectionCaseSemanticRemediationTest.java` | 9 | 0.250 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/leakdetection/semantic/LeakEscalationReferenceIntegrityMigrationTest.java` | 2 | 1.781 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/leakdetection/semantic/LeakEscalationReferenceSemanticRemediationTest.java` | 3 | 0.097 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/monitoring/infrastructure/persistence/PlanActualDeviationSemanticPostgresIntegrationTest.java` | 8 | 4.886 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/monitoring/infrastructure/query/JpaMonitoringQueryAdapterTest.java` | 1 | 0.105 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/monitoring/semantic/MonitoringRuleSemanticRemediationTest.java` | 2 | 0.013 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/monitoring/semantic/PlanActualDeviationSemanticRemediationTest.java` | 6 | 0.334 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/notification/semantic/NotificationDeliveryAttemptIntegrityMigrationTest.java` | 4 | 2.034 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/notification/semantic/NotificationDeliveryAttemptSemanticRemediationTest.java` | 4 | 0.359 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/notification/semantic/NotificationMessageIntegrityMigrationTest.java` | 5 | 2.434 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/notification/semantic/NotificationMessageSemanticRemediationTest.java` | 3 | 0.307 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/notification/semantic/NotificationRequestSemanticRemediationTest.java` | 2 | 0.003 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/notification/semantic/NotificationTemplateSemanticRemediationTest.java` | 4 | 0.461 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/organization/OperationalScopeEvidenceInventoryTest.java` | 3 | 0.017 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/organization/OrganizationEmbeddedMultilingualIntegrityTest.java` | 5 | 1.948 | Candidate included; ArchUnit/JVM/source | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/organization/OrganizationModelValueIntegrityTest.java` | 7 | 0.020 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/organization/OrganizationPersistenceDriftGuardrailTest.java` | 5 | 0.008 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/organization/OrganizationTypedDependencyIntegrityTest.java` | 6 | 0.047 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/organization/api/rest/controller/OrganizationResponsibilityControllerTest.java` | 4 | 0.937 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/organization/api/rest/mapper/OrganizationRestMapperEmployeePersonalDataTest.java` | 2 | 0.003 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/organization/application/command/CreateOrganizationUnitCommandTest.java` | 3 | 0.003 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/organization/application/mapper/OrganizationApplicationMapperEmployeeDisplayNameTest.java` | 2 | 0.002 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/organization/application/port/out/OperationalScopeTargetResolverPortTest.java` | 3 | 0.008 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/organization/application/service/AssetsOrganizationUnitReferenceQueryServiceTest.java` | 1 | 0.001 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/organization/application/service/EmployeeApplicationServicePersonalDataTest.java` | 1 | 0.004 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/organization/application/service/IntegrationOrganizationUnitReferenceQueryServiceTest.java` | 1 | 0.195 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/organization/application/service/OperationalScopeApplicationServiceTest.java` | 3 | 0.004 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/organization/application/service/OperationalScopeQueryApplicationServiceTest.java` | 2 | 0.150 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/organization/application/service/OperationalScopeRegistrationValidatorTest.java` | 5 | 0.005 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/organization/application/service/OrganizationContactPointApplicationServiceTest.java` | 2 | 0.002 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/organization/application/service/OrganizationContactPointTargetValidatorTest.java` | 3 | 0.151 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/organization/application/service/OrganizationOperationalScopeEndToEndTest.java` | 2 | 0.007 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/organization/application/service/ReportingOrganizationUnitReferenceQueryServiceTest.java` | 1 | 0.001 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/organization/application/service/ResponsibilityAssignmentApplicationServiceTest.java` | 9 | 0.014 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/organization/application/service/ResponsibilityQueryApplicationServiceTest.java` | 2 | 0.068 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/organization/application/service/ResponsibilityReconciliationApplicationServiceTest.java` | 6 | 0.011 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/organization/application/service/ResponsibilityRevocationApplicationServiceTest.java` | 8 | 0.007 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/organization/application/service/RiskOrganizationReferenceQueryServiceTest.java` | 1 | 0.005 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/organization/domain/model/EmployeeContactOwnershipTest.java` | 3 | 0.004 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/organization/domain/model/EmployeeDisplayNameSemanticsTest.java` | 4 | 0.007 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/organization/domain/model/EmployeeTest.java` | 6 | 0.010 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/organization/domain/model/OperationalScopeTest.java` | 5 | 0.004 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/organization/domain/model/OrganizationDomainInvariantTest.java` | 8 | 0.012 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/organization/domain/model/ResponsibilityAssignmentTest.java` | 3 | 0.003 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/organization/domain/value/ContactPointTargetReferenceTest.java` | 2 | 0.002 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/organization/domain/value/OperationalScopeReferenceTest.java` | 6 | 0.005 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/organization/domain/value/OrganizationCodeAdoptionTest.java` | 2 | 0.003 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/organization/domain/value/OrganizationIdTest.java` | 4 | 0.004 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/organization/domain/value/ReportingSubjectReferenceTest.java` | 2 | 0.002 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/organization/domain/value/ResponsibilityAssigneeTypeTest.java` | 2 | 0.002 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/organization/infrastructure/adapter/AuthoritativeOperationalScopeTargetResolverAdapterTest.java` | 5 | 0.005 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/OrganizationCanonicalScopePersistenceMappingTest.java` | 3 | 0.008 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/OrganizationEmployeeBirthDataMigrationTest.java` | 2 | 21.286 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/OrganizationEmployeeContactBackfillMigrationTest.java` | 3 | 31.309 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/OrganizationGreenfieldScopePersistenceTest.java` | 2 | 21.119 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/OrganizationInternalReferenceIntegrityMigrationTest.java` | 3 | 21.231 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/OrganizationMultilingualCompatibilityRetirementMigrationTest.java` | 4 | 32.761 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/OrganizationMultilingualMigrationTest.java` | 5 | 34.641 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/OrganizationMultilingualTableRetirementMigrationTest.java` | 5 | 49.394 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/OrganizationOperationalScopeSchemaMigrationTest.java` | 5 | 50.174 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/OrganizationResponsibilityApiProvisioningMigrationTest.java` | 1 | 9.497 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/mapper/OperationalScopePersistenceMapperTest.java` | 2 | 0.002 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/mapper/OrganizationContactPointPersistenceMapperTest.java` | 1 | 0.002 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/mapper/OrganizationEmbeddedMultilingualPersistenceMapperTest.java` | 3 | 0.005 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/mapper/OrganizationPersistenceMapperEmployeeTest.java` | 1 | 0.004 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/mapper/ReportingLinePersistenceMapperTest.java` | 1 | 0.003 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/organization/infrastructure/query/PlanningResponsibleUnitQueryAdapterTest.java` | 1 | 0.003 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/organization/infrastructure/reference/JpaAnalyticsOrganizationScopeContractAdapterTest.java` | 1 | 0.077 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/organization/semantic/EmployeeAssignmentSemanticRemediationTest.java` | 8 | 0.110 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/organization/semantic/HseOrganizationReferenceContractTest.java` | 2 | 0.237 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/organization/semantic/IncidentOrganizationContractTest.java` | 1 | 0.002 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/organization/semantic/IntegrityOrganizationUnitReferenceContractTest.java` | 2 | 0.003 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/organization/semantic/OrganizationDelegationSemanticRemediationTest.java` | 3 | 1.750 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/organization/semantic/OrganizationHierarchySnapshotSemanticRemediationTest.java` | 3 | 1.858 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/organization/semantic/OrganizationUnitSemanticRemediationTest.java` | 4 | 0.117 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/organization/semantic/PositionSemanticRemediationTest.java` | 3 | 0.004 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/organization/semantic/ReportingLineSemanticRemediationTest.java` | 5 | 0.292 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/organization/semantic/ShiftAssignmentSemanticRemediationTest.java` | 3 | 1.896 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/organization/semantic/ShiftSemanticRemediationTest.java` | 5 | 0.006 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/party/application/service/AssetsPartyReferenceQueryServiceTest.java` | 1 | 0.152 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/party/application/service/TopologyPartyEligibilityQueryServiceTest.java` | 9 | 0.014 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/party/application/service/TopologyPartyReferenceQueryServiceTest.java` | 1 | 0.002 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/party/infrastructure/integration/PlanningPartyReferenceQueryAdapterTest.java` | 2 | 0.182 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/party/semantic/PartyRoleAssignmentSemanticRemediationTest.java` | 2 | 0.003 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/party/semantic/PartySemanticRemediationTest.java` | 3 | 0.004 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/planning/api/rest/PlanningRevisionApiExceptionHandlerTest.java` | 1 | 0.006 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/planning/api/rest/controller/PlanRevisionCommandControllerTest.java` | 1 | 0.003 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/planning/application/service/DocumentsPlanningTargetLookupTest.java` | 1 | 0.004 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/planning/application/service/PlanRevisionUpdateApplicationServiceTest.java` | 3 | 0.105 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/planning/application/service/PlanningApprovalApplicationServiceTest.java` | 4 | 0.018 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/planning/application/service/PlanningQueryApplicationServiceTest.java` | 3 | 0.006 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/planning/infrastructure/persistence/NominationSemanticPostgresIntegrationTest.java` | 13 | 28.282 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/planning/infrastructure/persistence/PlanTargetSemanticPostgresIntegrationTest.java` | 10 | 6.264 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/planning/infrastructure/persistence/PlanningSemanticPostgresTest.java` | 9 | 4.950 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/planning/semantic/MonitoringPlanTargetReferenceContractTest.java` | 1 | 0.061 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/planning/semantic/NominationSemanticRemediationTest.java` | 11 | 0.756 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/planning/semantic/OperationalPlanSemanticRemediationTest.java` | 8 | 0.027 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/planning/semantic/PlanRevisionSemanticRemediationTest.java` | 4 | 0.005 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/planning/semantic/PlanTargetSemanticRemediationTest.java` | 7 | 0.350 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/planning/semantic/PlanningPeriodSemanticRemediationTest.java` | 8 | 0.062 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/reporting/infrastructure/persistence/ReportingSemanticPostgresIntegrationTest.java` | 14 | 9.406 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/reporting/semantic/ReportDefinitionSemanticRemediationTest.java` | 5 | 0.229 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/reporting/semantic/ReportOutputArtifactSemanticRemediationTest.java` | 6 | 0.076 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/reporting/semantic/ReportQueueEvidenceSemanticTest.java` | 4 | 0.481 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/reporting/semantic/ReportRequestSemanticRemediationTest.java` | 2 | 0.006 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/reporting/semantic/ReportRunSemanticRemediationTest.java` | 8 | 0.268 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/risk/infrastructure/persistence/RiskGovernancePostgresIntegrationTest.java` | 10 | 18.264 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/risk/semantic/RiskAssessmentSemanticRemediationTest.java` | 7 | 1.145 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/risk/semantic/RiskEvidenceLinkSemanticRemediationTest.java` | 15 | 1.141 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/risk/semantic/RiskMatrixCellSemanticRemediationTest.java` | 5 | 0.039 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/risk/semantic/RiskRegisterSemanticRemediationTest.java` | 3 | 0.007 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/simulation/application/port/out/SimulationTrustedReadingEvidencePortTest.java` | 2 | 0.009 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/simulation/application/service/SimulationApplicationServiceTest.java` | 3 | 0.269 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/simulation/application/service/SimulationEquipmentParameterQualificationServiceTest.java` | 2 | 0.073 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/simulation/application/service/SimulationEquipmentParameterRevisionQueryServiceTest.java` | 5 | 0.268 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/simulation/domain/model/SimulationEquipmentParameterRevisionTest.java` | 6 | 0.009 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/simulation/domain/model/SimulationFluidEquipmentInputTest.java` | 20 | 0.027 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/simulation/domain/model/SimulationInputManifestTest.java` | 14 | 0.017 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/simulation/domain/model/SimulationPhysicalInputPayloadTest.java` | 21 | 0.040 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/simulation/domain/model/SimulationPhysicalNetworkInputTest.java` | 13 | 0.035 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/simulation/domain/model/SimulationRegulatorCharacteristicRevisionTest.java` | 5 | 0.014 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/simulation/domain/model/SimulationStateBoundaryInputTest.java` | 19 | 0.031 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/simulation/domain/model/SimulationSyntheticEquipmentNetworkInputTest.java` | 10 | 0.023 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/simulation/domain/service/SimulationEquipmentBehaviorEvaluatorTest.java` | 8 | 0.022 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/simulation/domain/service/SteadyStateGasSolverTest.java` | 32 | 0.063 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/simulation/infrastructure/integration/CustodyProductCandidateEvidenceQueryAdapterTest.java` | 7 | 0.010 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/simulation/infrastructure/integration/QualifiedFluidEquipmentDeliveryIntegrationTest.java` | 2 | 30.687 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/simulation/infrastructure/integration/TelemetryTrustedReadingEvidenceQueryAdapterTest.java` | 7 | 0.007 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/simulation/infrastructure/integration/TopologyScopeEvidenceQueryAdapterTest.java` | 8 | 0.008 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/SimulationEquipmentParameterRevisionPostgresIntegrationTest.java` | 11 | 34.666 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/SimulationSemanticPostgresIntegrationTest.java` | 8 | 8.633 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/adapter/SimulationEquipmentParameterRevisionCodecTest.java` | 6 | 0.322 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/simulation/semantic/SimulationCandidateChangeSemanticRemediationTest.java` | 4 | 0.222 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/simulation/semantic/SimulationModelSemanticRemediationTest.java` | 4 | 0.003 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/simulation/semantic/SimulationRecommendationSemanticRemediationTest.java` | 5 | 0.858 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/simulation/semantic/SimulationRunSemanticRemediationTest.java` | 2 | 0.004 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/simulation/semantic/SimulationScenarioSemanticRemediationTest.java` | 3 | 0.006 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/telemetry/application/service/MonitoringTelemetryPointReferenceQueryServiceTest.java` | 1 | 0.211 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/telemetry/application/service/SimulationTrustedReadingQueryServiceTest.java` | 7 | 0.028 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/telemetry/infrastructure/integration/PlanningUnitReferenceQueryAdapterTest.java` | 3 | 0.530 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/telemetry/semantic/MonitoringTrustedReadingReferenceContractTest.java` | 1 | 0.147 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/telemetry/semantic/PlanningTelemetryPointReferenceContractTest.java` | 1 | 0.010 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/telemetry/semantic/TelemetryPointSemanticRemediationTest.java` | 2 | 0.002 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/telemetry/semantic/TelemetryReadingSemanticRemediationTest.java` | 4 | 0.005 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/telemetry/semantic/TelemetrySourceSemanticRemediationTest.java` | 4 | 0.091 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/telemetry/semantic/TrustedTelemetryReadingIntegrityMigrationTest.java` | 5 | 2.354 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/telemetry/semantic/TrustedTelemetryReadingSemanticRemediationTest.java` | 4 | 0.102 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/topology/application/contract/simulation/SimulationPhysicalNetworkRevisionContractTest.java` | 5 | 0.024 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/topology/application/port/out/StationInternalGraphRevisionRepositoryPortTest.java` | 3 | 0.011 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/topology/application/service/AssetsTopologyReferenceQueryServiceTest.java` | 1 | 0.197 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/topology/application/service/DocumentsTopologyTargetLookupTest.java` | 2 | 0.011 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/topology/application/service/PlanningTopologyScopeQueryServiceTest.java` | 2 | 0.008 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/topology/application/service/RiskTopologyScopeReferenceQueryServiceTest.java` | 1 | 0.006 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/topology/application/service/StationRevisionOwnerQueryServiceTest.java` | 42 | 0.239 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/topology/application/service/TopologyOperationalScopeTargetQueryServiceTest.java` | 2 | 0.007 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/topology/application/service/TopologySimulationPhysicalNetworkRevisionQueryServiceTest.java` | 5 | 0.075 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/topology/application/service/TopologySimulationScopeQueryServiceTest.java` | 2 | 0.007 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/topology/domain/model/StationInternalGraphRevisionTest.java` | 3 | 0.009 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/topology/domain/model/StationInternalGraphTest.java` | 2 | 0.005 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/topology/domain/model/TopologyPhysicalNetworkRevisionTest.java` | 20 | 0.053 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/topology/domain/service/StationInternalGraphRevisionValidatorTest.java` | 3 | 0.006 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/topology/domain/service/StationInternalGraphValidatorTest.java` | 3 | 0.008 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/topology/infrastructure/integration/IntegrityCaseTopologyReferenceContractTest.java` | 3 | 0.020 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/topology/infrastructure/integration/PlanningTargetTopologyReferenceContractTest.java` | 1 | 0.244 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/topology/infrastructure/integration/SimulationTopologyTargetContractAdapterTest.java` | 1 | 0.005 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/StationInternalGraphRevisionPostgresIntegrationTest.java` | 14 | 13.812 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/TopologyPhysicalNetworkRevisionPostgresIntegrationTest.java` | 10 | 22.708 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/StationInternalGraphRevisionCodecTest.java` | 17 | 0.182 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/TopologyPhysicalNetworkRevisionCodecTest.java` | 7 | 0.036 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/topology/infrastructure/reference/JpaAnalyticsTopologyScopeContractAdapterTest.java` | 1 | 0.043 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/topology/infrastructure/reference/JpaLeakDetectionTopologyAssetContractAdapterTest.java` | 2 | 0.237 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/topology/semantic/EquipmentIntegrityMigrationTest.java` | 4 | 2.120 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/topology/semantic/EquipmentSemanticRemediationTest.java` | 3 | 0.083 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/topology/semantic/FacilitySemanticRemediationTest.java` | 1 | 0.002 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/topology/semantic/IncidentTopologyContractTest.java` | 1 | 0.010 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/topology/semantic/PipelineSemanticRemediationTest.java` | 2 | 0.006 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/topology/semantic/PipelineSystemSemanticRemediationTest.java` | 4 | 0.007 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/topology/semantic/TopologyConnectionSemanticRemediationTest.java` | 4 | 0.067 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/workflow/api/rest/controller/WorkflowTransitionControllerTest.java` | 1 | 0.087 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/workflow/application/service/AlarmSuppressionWorkflowContractAdapterTest.java` | 2 | 0.004 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/workflow/application/service/AuditWorkflowReferenceQueryServiceTest.java` | 1 | 0.192 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/workflow/application/service/DocumentsApprovalReferenceQueryServiceTest.java` | 1 | 0.003 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/workflow/application/service/OrganizationResponsibilityWorkflowContractAdapterTest.java` | 3 | 0.004 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/workflow/application/service/ReportingWorkflowApprovalQueryServiceTest.java` | 1 | 0.100 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/workflow/application/service/RevisionApprovalEvidenceQueryServiceTest.java` | 19 | 0.291 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/workflow/application/service/RiskAssessmentApprovalServiceTest.java` | 3 | 0.279 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/workflow/application/service/WorkflowTransitionApplicationServiceTest.java` | 5 | 0.929 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/workflow/infrastructure/persistence/RevisionApprovalEvidencePostgresIntegrationTest.java` | 1 | 28.263 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/workflow/semantic/CustodyTransferTicketWorkflowReferenceContractTest.java` | 7 | 0.010 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/workflow/semantic/HseWorkflowReferenceContractTest.java` | 9 | 0.036 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/workflow/semantic/IncidentWorkflowContractTest.java` | 2 | 0.607 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/workflow/semantic/IntegrityAssessmentWorkflowReferenceContractTest.java` | 7 | 0.010 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/workflow/semantic/IntegrityCaseWorkflowReferenceContractTest.java` | 7 | 0.023 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/workflow/semantic/MaintenanceWorkOrderWorkflowReferenceContractTest.java` | 7 | 0.022 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/workflow/semantic/WorkflowActionSemanticRemediationTest.java` | 5 | 0.017 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/workflow/semantic/WorkflowDefinitionSemanticRemediationTest.java` | 6 | 0.194 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/workflow/semantic/WorkflowExecutionPostgresTest.java` | 10 | 8.734 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/workflow/semantic/WorkflowInstanceSemanticRemediationTest.java` | 8 | 0.008 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/workflow/semantic/WorkflowStateHistorySemanticRemediationTest.java` | 4 | 0.020 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/modules/workflow/semantic/WorkflowStepAssignmentRuleSemanticRemediationTest.java` | 2 | 0.007 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/workflow/semantic/WorkflowStepSemanticRemediationTest.java` | 2 | 0.003 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/workflow/semantic/WorkflowTaskSemanticRemediationTest.java` | 7 | 0.014 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/modules/workflow/semantic/WorkflowTransitionSemanticRemediationTest.java` | 3 | 0.007 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/platform/configuration/HidraAdministratorJwtAuthorizationTest.java` | 2 | 0.256 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/platform/configuration/HidraAuthenticationManagerConfigurationTest.java` | 4 | 0.232 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/platform/configuration/HidraLdapSecurityConfigurationTest.java` | 5 | 0.039 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/platform/configuration/HidraOpenApiSecurityConfigurationTest.java` | 4 | 0.007 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/platform/configuration/HidraProductionStartupGuardTest.java` | 10 | 0.011 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/platform/configuration/HidraSecurityConfigurationTest.java` | 1 | 0.005 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/platform/configuration/HidraUnifiedJwtCompatibilityTest.java` | 4 | 0.021 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/platform/exception/HidraGlobalExceptionHandlerTest.java` | 2 | 0.002 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/platform/permissions/HidraRouteAuthorizationInterceptorTest.java` | 5 | 0.005 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/platform/realtime/HidraRealtimeConfigurationTest.java` | 1 | 0.001 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/platform/realtime/HidraRealtimeRestControllerTest.java` | 1 | 0.001 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/platform/security/HidraEffectivePermissionResolverTest.java` | 5 | 0.004 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/platform/security/HidraOidcContractControllerTest.java` | 2 | 0.002 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/platform/web/HidraRequestContextFilterTest.java` | 2 | 0.003 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/platform/workbench/HidraOperationalWorkbenchExposurePolicyTest.java` | 5 | 0.005 | Candidate included; mocks/JVM/files, no external service | unit-architecture |
+| `src/test/java/dz/sh/hidra/platform/workbench/HidraOperationalWorkbenchHttpExposureTest.java` | 5 | 1.091 | Excluded; actual DB/container/transaction | postgres-integration |
+| `src/test/java/dz/sh/hidra/platform/workbench/HidraOperationalWorkbenchServiceTest.java` | 7 | 0.022 | Excluded; actual DB/container/transaction | postgres-integration |
+
+`src/test/java/dz/sh/hidra/modules/organization/semantic/OrganizationMandatoryReferenceMigrationSupport.java` is abstract support, not an independently discovered suite. Its three inherited test methods execute in OrganizationDelegationSemanticRemediationTest, OrganizationHierarchySnapshotSemanticRemediationTest and ShiftAssignmentSemanticRemediationTest; all three are owned by postgres-integration. This explains 371 test-tree Java sources vs 370 actual executable suites. New classes/cases must refresh the manifest and this evidence; do not freeze 1,763 as a future total.
+
+### Existing HPR identity disposition inventory
+
+The table classifies every recovered numerical HPR identifier. Objective/message/allowlist/commit and exact historical acceptance remain in the unmodified source records; this index does not invent an exact commit for a design-only or placeholder row. “Recorded accepted” refers to the retained evidence scope, not a fresh audit of each historic CI artifact. All current source is additionally accepted by #666 full regression. Completed identifiers are never reopened.
+
+| Existing identifier | Prospective classification | Preserved evidence / remaining disposition |
+|---|---|---|
+| HPR-CI-001 | COMPLETED / ACCEPTED (recorded bounded scope) | P0/P1/P2/CI/release retained; original exact message/evidence, no reopening |
+| HPR-CI-002 | COMPLETED / ACCEPTED (recorded bounded scope) | P0/P1/P2/CI/release retained; original exact message/evidence, no reopening |
+| HPR-P0-001 | COMPLETED / ACCEPTED (recorded bounded scope) | P0/P1/P2/CI/release retained; original exact message/evidence, no reopening |
+| HPR-P0-002 | COMPLETED / ACCEPTED (recorded bounded scope) | P0/P1/P2/CI/release retained; original exact message/evidence, no reopening |
+| HPR-P0-003 | COMPLETED / ACCEPTED (recorded bounded scope) | P0/P1/P2/CI/release retained; original exact message/evidence, no reopening |
+| HPR-P0-004 | COMPLETED / ACCEPTED (recorded bounded scope) | P0/P1/P2/CI/release retained; original exact message/evidence, no reopening |
+| HPR-P0-005 | COMPLETED / ACCEPTED (recorded bounded scope) | P0/P1/P2/CI/release retained; original exact message/evidence, no reopening |
+| HPR-P0-006 | COMPLETED / ACCEPTED (recorded bounded scope) | P0/P1/P2/CI/release retained; original exact message/evidence, no reopening |
+| HPR-P0-007 | COMPLETED / ACCEPTED (recorded bounded scope) | P0/P1/P2/CI/release retained; original exact message/evidence, no reopening |
+| HPR-P0-008 | COMPLETED / ACCEPTED (recorded bounded scope) | P0/P1/P2/CI/release retained; original exact message/evidence, no reopening |
+| HPR-P0-009 | COMPLETED / ACCEPTED (recorded bounded scope) | P0/P1/P2/CI/release retained; original exact message/evidence, no reopening |
+| HPR-P0-010 | COMPLETED / ACCEPTED (recorded bounded scope) | P0/P1/P2/CI/release retained; original exact message/evidence, no reopening |
+| HPR-P0-011 | COMPLETED / ACCEPTED (recorded bounded scope) | P0/P1/P2/CI/release retained; original exact message/evidence, no reopening |
+| HPR-P0-012 | COMPLETED / ACCEPTED (recorded bounded scope) | P0/P1/P2/CI/release retained; original exact message/evidence, no reopening |
+| HPR-P0-013 | COMPLETED / ACCEPTED (recorded bounded scope) | P0/P1/P2/CI/release retained; original exact message/evidence, no reopening |
+| HPR-P0-014 | COMPLETED / ACCEPTED (recorded bounded scope) | P0/P1/P2/CI/release retained; original exact message/evidence, no reopening |
+| HPR-P0-015 | COMPLETED / ACCEPTED (recorded bounded scope) | P0/P1/P2/CI/release retained; original exact message/evidence, no reopening |
+| HPR-P1-001 | COMPLETED / ACCEPTED (recorded bounded scope) | P0/P1/P2/CI/release retained; original exact message/evidence, no reopening |
+| HPR-P1-002 | COMPLETED / ACCEPTED (recorded bounded scope) | P0/P1/P2/CI/release retained; original exact message/evidence, no reopening |
+| HPR-P1-003 | COMPLETED / ACCEPTED (recorded bounded scope) | P0/P1/P2/CI/release retained; original exact message/evidence, no reopening |
+| HPR-P1-004 | COMPLETED / ACCEPTED (recorded bounded scope) | P0/P1/P2/CI/release retained; original exact message/evidence, no reopening |
+| HPR-P1-005 | COMPLETED / ACCEPTED (recorded bounded scope) | P0/P1/P2/CI/release retained; original exact message/evidence, no reopening |
+| HPR-P1-006 | COMPLETED / ACCEPTED (recorded bounded scope) | P0/P1/P2/CI/release retained; original exact message/evidence, no reopening |
+| HPR-P1-007 | COMPLETED / ACCEPTED (recorded bounded scope) | P0/P1/P2/CI/release retained; original exact message/evidence, no reopening |
+| HPR-P1-008 | COMPLETED / ACCEPTED (recorded bounded scope) | P0/P1/P2/CI/release retained; original exact message/evidence, no reopening |
+| HPR-P1-009 | COMPLETED / ACCEPTED (recorded bounded scope) | P0/P1/P2/CI/release retained; original exact message/evidence, no reopening |
+| HPR-P1-010 | COMPLETED / ACCEPTED (recorded bounded scope) | P0/P1/P2/CI/release retained; original exact message/evidence, no reopening |
+| HPR-P1-011 | COMPLETED / ACCEPTED (recorded bounded scope) | P0/P1/P2/CI/release retained; original exact message/evidence, no reopening |
+| HPR-P1-012 | COMPLETED / ACCEPTED (recorded bounded scope) | P0/P1/P2/CI/release retained; original exact message/evidence, no reopening |
+| HPR-P1-013 | COMPLETED / ACCEPTED (recorded bounded scope) | P0/P1/P2/CI/release retained; original exact message/evidence, no reopening |
+| HPR-P1-014 | COMPLETED / ACCEPTED (recorded bounded scope) | P0/P1/P2/CI/release retained; original exact message/evidence, no reopening |
+| HPR-P1-015 | COMPLETED / ACCEPTED (recorded bounded scope) | P0/P1/P2/CI/release retained; original exact message/evidence, no reopening |
+| HPR-P1-016 | COMPLETED / ACCEPTED (recorded bounded scope) | P0/P1/P2/CI/release retained; original exact message/evidence, no reopening |
+| HPR-P1-017 | COMPLETED / ACCEPTED (recorded bounded scope) | P0/P1/P2/CI/release retained; original exact message/evidence, no reopening |
+| HPR-P1-018 | COMPLETED / ACCEPTED (recorded bounded scope) | P0/P1/P2/CI/release retained; original exact message/evidence, no reopening |
+| HPR-P1-019 | COMPLETED / ACCEPTED (recorded bounded scope) | P0/P1/P2/CI/release retained; original exact message/evidence, no reopening |
+| HPR-P1-020 | COMPLETED / ACCEPTED (recorded bounded scope) | P0/P1/P2/CI/release retained; original exact message/evidence, no reopening |
+| HPR-P1-021 | COMPLETED / ACCEPTED (recorded bounded scope) | P0/P1/P2/CI/release retained; original exact message/evidence, no reopening |
+| HPR-P1-022 | COMPLETED / ACCEPTED (recorded bounded scope) | P0/P1/P2/CI/release retained; original exact message/evidence, no reopening |
+| HPR-P1-023 | COMPLETED / ACCEPTED (recorded bounded scope) | P0/P1/P2/CI/release retained; original exact message/evidence, no reopening |
+| HPR-P1-024 | COMPLETED / ACCEPTED (recorded bounded scope) | P0/P1/P2/CI/release retained; original exact message/evidence, no reopening |
+| HPR-P1-025 | COMPLETED / ACCEPTED (recorded bounded scope) | P0/P1/P2/CI/release retained; original exact message/evidence, no reopening |
+| HPR-P1-026 | COMPLETED / ACCEPTED (recorded bounded scope) | P0/P1/P2/CI/release retained; original exact message/evidence, no reopening |
+| HPR-P1-027 | COMPLETED / ACCEPTED (recorded bounded scope) | P0/P1/P2/CI/release retained; original exact message/evidence, no reopening |
+| HPR-P1-028 | COMPLETED / ACCEPTED (recorded bounded scope) | P0/P1/P2/CI/release retained; original exact message/evidence, no reopening |
+| HPR-P1-029 | COMPLETED / ACCEPTED (recorded bounded scope) | P0/P1/P2/CI/release retained; original exact message/evidence, no reopening |
+| HPR-P2-001 | COMPLETED / ACCEPTED (recorded bounded scope) | P0/P1/P2/CI/release retained; original exact message/evidence, no reopening |
+| HPR-P2-002 | COMPLETED / ACCEPTED (recorded bounded scope) | P0/P1/P2/CI/release retained; original exact message/evidence, no reopening |
+| HPR-P2-003 | COMPLETED / ACCEPTED (recorded bounded scope) | P0/P1/P2/CI/release retained; original exact message/evidence, no reopening |
+| HPR-P2-004 | COMPLETED / ACCEPTED (recorded bounded scope) | P0/P1/P2/CI/release retained; original exact message/evidence, no reopening |
+| HPR-P2-005 | COMPLETED / ACCEPTED (recorded bounded scope) | P0/P1/P2/CI/release retained; original exact message/evidence, no reopening |
+| HPR-P2-006 | COMPLETED / ACCEPTED (recorded bounded scope) | P0/P1/P2/CI/release retained; original exact message/evidence, no reopening |
+| HPR-P2-007 | COMPLETED / ACCEPTED (recorded bounded scope) | P0/P1/P2/CI/release retained; original exact message/evidence, no reopening |
+| HPR-P2-008 | COMPLETED / ACCEPTED (recorded bounded scope) | P0/P1/P2/CI/release retained; original exact message/evidence, no reopening |
+| HPR-P2-009 | COMPLETED / ACCEPTED (recorded bounded scope) | P0/P1/P2/CI/release retained; original exact message/evidence, no reopening |
+| HPR-P2-010 | COMPLETED / ACCEPTED (recorded bounded scope) | P0/P1/P2/CI/release retained; original exact message/evidence, no reopening |
+| HPR-P2-011 | COMPLETED / ACCEPTED (recorded bounded scope) | P0/P1/P2/CI/release retained; original exact message/evidence, no reopening |
+| HPR-P2-012 | COMPLETED / ACCEPTED (recorded bounded scope) | P0/P1/P2/CI/release retained; original exact message/evidence, no reopening |
+| HPR-P2-013 | COMPLETED / ACCEPTED (recorded bounded scope) | P0/P1/P2/CI/release retained; original exact message/evidence, no reopening |
+| HPR-P25-000 | COMPLETED / ACCEPTED (recorded bounded scope) | 049 directly confirmed #666/#266; other accepted subsets retain original source/CI limits |
+| HPR-P25-001 | COMPLETED / ACCEPTED (recorded bounded scope) | 049 directly confirmed #666/#266; other accepted subsets retain original source/CI limits |
+| HPR-P25-002 | DEFERRED / retained incomplete mixed parent | Independent engineering/monitoring share mapped 052–058; original simulator remainder not closed |
+| HPR-P25-002A | COMPLETED / ACCEPTED (recorded bounded scope) | 049 directly confirmed #666/#266; other accepted subsets retain original source/CI limits |
+| HPR-P25-002B | COMPLETED / ACCEPTED (recorded bounded scope) | 049 directly confirmed #666/#266; other accepted subsets retain original source/CI limits |
+| HPR-P25-002B1 | COMPLETED / ACCEPTED (recorded bounded scope) | 049 directly confirmed #666/#266; other accepted subsets retain original source/CI limits |
+| HPR-P25-002B2 | COMPLETED / ACCEPTED (recorded bounded scope) | 049 directly confirmed #666/#266; other accepted subsets retain original source/CI limits |
+| HPR-P25-002B3 | COMPLETED / ACCEPTED (recorded bounded scope) | 049 directly confirmed #666/#266; other accepted subsets retain original source/CI limits |
+| HPR-P25-002B4 | COMPLETED / ACCEPTED (recorded bounded scope) | 049 directly confirmed #666/#266; other accepted subsets retain original source/CI limits |
+| HPR-P25-002C | DEFERRED / retained incomplete mixed parent | Independent engineering/monitoring share mapped 052–058; original simulator remainder not closed |
+| HPR-P25-002C1 | COMPLETED / ACCEPTED (recorded bounded scope) | 049 directly confirmed #666/#266; other accepted subsets retain original source/CI limits |
+| HPR-P25-002C2 | COMPLETED / ACCEPTED (recorded bounded scope) | 049 directly confirmed #666/#266; other accepted subsets retain original source/CI limits |
+| HPR-P25-002C3 | DEFERRED / retained partial delivery | Use original per-slice source/CI disposition; no aggregate acceptance inferred from source presence |
+| HPR-P25-002C3A | COMPLETED / ACCEPTED (recorded bounded scope) | 049 directly confirmed #666/#266; other accepted subsets retain original source/CI limits |
+| HPR-P25-002C3B | COMPLETED / ACCEPTED (recorded bounded scope) | 049 directly confirmed #666/#266; other accepted subsets retain original source/CI limits |
+| HPR-P25-002C3C | COMPLETED / ACCEPTED (recorded bounded scope) | 049 directly confirmed #666/#266; other accepted subsets retain original source/CI limits |
+| HPR-P25-002C3D | COMPLETED / ACCEPTED (recorded bounded scope) | 049 directly confirmed #666/#266; other accepted subsets retain original source/CI limits |
+| HPR-P25-002C3E | BLOCKED / retained simulator remainder DEFERRED | Qualified operating-state blocker retained; independent measurement/trust obligation assigned 056, no original aggregate completion |
+| HPR-P25-002C3F | DEFERRED / retained partial delivery | Use original per-slice source/CI disposition; no aggregate acceptance inferred from source presence |
+| HPR-P25-002D | DEFERRED / retained incomplete mixed parent | Independent engineering/monitoring share mapped 052–058; original simulator remainder not closed |
+| HPR-P25-002X | PLANNING REFERENCE | Illustrative decomposition marker; no independent implementation authority inferred |
+| HPR-P25-003 | DEFERRED / retained incomplete mixed parent | Independent engineering/monitoring share mapped 052–058; original simulator remainder not closed |
+| HPR-P25-004 | DEFERRED / retained incomplete mixed parent | Independent engineering/monitoring share mapped 052–058; original simulator remainder not closed |
+| HPR-P25-005 | DEFERRED / retained incomplete mixed parent | Independent engineering/monitoring share mapped 052–058; original simulator remainder not closed |
+| HPR-P25-006 | DEFERRED / retained incomplete mixed parent | Independent engineering/monitoring share mapped 052–058; original simulator remainder not closed |
+| HPR-P25-007 | DEFERRED / retained incomplete mixed parent | Independent engineering/monitoring share mapped 052–058; original simulator remainder not closed |
+| HPR-P25-008 | DEFERRED / retained incomplete mixed parent | Independent engineering/monitoring share mapped 052–058; original simulator remainder not closed |
+| HPR-P25-008A | DESIGN COMPLETE / ACCEPTED within numerical-design scope | Original numerical design/evidence retained; no runtime functionality inferred from design |
+| HPR-P25-008B | COMPLETED / ACCEPTED (recorded bounded scope) | 049 directly confirmed #666/#266; other accepted subsets retain original source/CI limits |
+| HPR-P25-008C | DEFERRED / retained incomplete mixed parent | Independent engineering/monitoring share mapped 052–058; original simulator remainder not closed |
+| HPR-P25-008D | DEFERRED / retained incomplete mixed parent | Independent engineering/monitoring share mapped 052–058; original simulator remainder not closed |
+| HPR-P25-008E | DEFERRED / retained incomplete mixed parent | Independent engineering/monitoring share mapped 052–058; original simulator remainder not closed |
+| HPR-P25-008F | DEFERRED / retained incomplete mixed parent | Independent engineering/monitoring share mapped 052–058; original simulator remainder not closed |
+| HPR-P25-008X | PLANNING REFERENCE | Illustrative decomposition marker; no independent implementation authority inferred |
+| HPR-P25-009 | DEFERRED / retained incomplete mixed parent | Independent engineering/monitoring share mapped 052–058; original simulator remainder not closed |
+| HPR-P25-010 | DEFERRED / retained incomplete mixed parent | Independent engineering/monitoring share mapped 052–058; original simulator remainder not closed |
+| HPR-P25-011 | DEFERRED / retained incomplete mixed parent | Independent engineering/monitoring share mapped 052–058; original simulator remainder not closed |
+| HPR-P25-012 | DEFERRED / retained incomplete mixed parent | Independent engineering/monitoring share mapped 052–058; original simulator remainder not closed |
+| HPR-P25-013 | DEFERRED / retained incomplete mixed parent | Independent engineering/monitoring share mapped 052–058; original simulator remainder not closed |
+| HPR-P25-014 | DEFERRED / retained incomplete mixed parent | Independent engineering/monitoring share mapped 052–058; original simulator remainder not closed |
+| HPR-P25-015 | DEFERRED / retained incomplete mixed parent | Independent engineering/monitoring share mapped 052–058; original simulator remainder not closed |
+| HPR-P25-016 | DEFERRED / retained incomplete mixed parent | Independent engineering/monitoring share mapped 052–058; original simulator remainder not closed |
+| HPR-P25-017 | DEFERRED / retained incomplete mixed parent | Independent engineering/monitoring share mapped 052–058; original simulator remainder not closed |
+| HPR-P25-018 | DESIGN COMPLETE | Future runtime assigned 050–058; design is not executable completion |
+| HPR-P25-019 | DESIGN COMPLETE | Future runtime assigned 050–058; design is not executable completion |
+| HPR-P25-020 | DESIGN COMPLETE | Future runtime assigned 050–058; design is not executable completion |
+| HPR-P25-021 | DESIGN COMPLETE | Future runtime assigned 050–058; design is not executable completion |
+| HPR-P25-022 | DESIGN COMPLETE | Future runtime assigned 050–058; design is not executable completion |
+| HPR-P25-023 | DEFERRED / retained incomplete mixed parent | Independent engineering/monitoring share mapped 052–058; original simulator remainder not closed |
+| HPR-P25-024 | DEFERRED / retained incomplete mixed parent | Independent engineering/monitoring share mapped 052–058; original simulator remainder not closed |
+| HPR-P25-025 | DEFERRED / retained incomplete mixed parent | Independent engineering/monitoring share mapped 052–058; original simulator remainder not closed |
+| HPR-P25-026 | DEFERRED / retained incomplete mixed parent | Independent engineering/monitoring share mapped 052–058; original simulator remainder not closed |
+| HPR-P25-027 | DEFERRED / retained incomplete mixed parent | Independent engineering/monitoring share mapped 052–058; original simulator remainder not closed |
+| HPR-P25-028 | DESIGN COMPLETE | Future runtime assigned 050–058; design is not executable completion |
+| HPR-P25-029 | DESIGN COMPLETE | Future runtime assigned 050–058; design is not executable completion |
+| HPR-P25-030 | DESIGN COMPLETE | Future runtime assigned 050–058; design is not executable completion |
+| HPR-P25-031 | PLANNED / REGISTERED | Existing independent closure ID and two-doc scope; after 058/owner scope acceptance |
+| HPR-P25-032 | COMPLETED / ACCEPTED (recorded bounded scope) | 049 directly confirmed #666/#266; other accepted subsets retain original source/CI limits |
+| HPR-P25-033 | DESIGN COMPLETE | Future runtime assigned 050–058; design is not executable completion |
+| HPR-P25-034 | COMPLETED / ACCEPTED (recorded bounded scope) | 049 directly confirmed #666/#266; other accepted subsets retain original source/CI limits |
+| HPR-P25-035 | DESIGN COMPLETE | Future runtime assigned 050–058; design is not executable completion |
+| HPR-P25-036 | COMPLETED / ACCEPTED (recorded bounded scope) | 049 directly confirmed #666/#266; other accepted subsets retain original source/CI limits |
+| HPR-P25-037 | COMPLETED / ACCEPTED (recorded bounded scope) | 049 directly confirmed #666/#266; other accepted subsets retain original source/CI limits |
+| HPR-P25-038 | DESIGN COMPLETE | Future runtime assigned 050–058; design is not executable completion |
+| HPR-P25-039 | COMPLETED / ACCEPTED (recorded bounded scope) | 049 directly confirmed #666/#266; other accepted subsets retain original source/CI limits |
+| HPR-P25-040 | COMPLETED / ACCEPTED (recorded bounded scope) | 049 directly confirmed #666/#266; other accepted subsets retain original source/CI limits |
+| HPR-P25-041 | COMPLETED / ACCEPTED (recorded bounded scope) | 049 directly confirmed #666/#266; other accepted subsets retain original source/CI limits |
+| HPR-P25-042 | COMPLETED / ACCEPTED (recorded bounded scope) | 049 directly confirmed #666/#266; other accepted subsets retain original source/CI limits |
+| HPR-P25-043 | DESIGN COMPLETE | Future runtime assigned 050–058; design is not executable completion |
+| HPR-P25-044 | DESIGN COMPLETE | Future runtime assigned 050–058; design is not executable completion |
+| HPR-P25-045 | DESIGN COMPLETE | Future runtime assigned 050–058; design is not executable completion |
+| HPR-P25-046 | COMPLETED / ACCEPTED (recorded bounded scope) | 049 directly confirmed #666/#266; other accepted subsets retain original source/CI limits |
+| HPR-P25-047 | PLANNED / REGISTERED | 048/049 blocker resolved; frozen seven-file task remains not implemented |
+| HPR-P25-048 | COMPLETED / ACCEPTED (recorded bounded scope) | 049 directly confirmed #666/#266; other accepted subsets retain original source/CI limits |
+| HPR-P25-049 | COMPLETED / ACCEPTED (recorded bounded scope) | 049 directly confirmed #666/#266; other accepted subsets retain original source/CI limits |
+| HPR-P3-001 | DEFERRED | Original P3 objective/message preserved; no foundation dependency |
+| HPR-P3-002 | DEFERRED | Original P3 objective/message preserved; no foundation dependency |
+| HPR-P3-003 | DEFERRED | Original P3 objective/message preserved; no foundation dependency |
+| HPR-P3-004 | DEFERRED | Original P3 objective/message preserved; no foundation dependency |
+| HPR-P3-005 | DEFERRED | Original P3 objective/message preserved; no foundation dependency |
+| HPR-P3-006 | DEFERRED | Original P3 objective/message preserved; no foundation dependency |
+| HPR-P3-007 | DEFERRED | Original P3 objective/message preserved; no foundation dependency |
+| HPR-P3-008 | DEFERRED | Original P3 objective/message preserved; no foundation dependency |
+| HPR-REL-001 | COMPLETED / ACCEPTED (recorded bounded scope) | P0/P1/P2/CI/release retained; original exact message/evidence, no reopening |
+| HPR-REL-002 | COMPLETED / ACCEPTED (recorded bounded scope) | P0/P1/P2/CI/release retained; original exact message/evidence, no reopening |
+
+Planning references F1-02/03/04 map to 051/052/058; F2-01/02/03/04 map to 053/054/055; F3-01/02/03/04 map to 056/057; F4-01/02/03 map to 058/existing031. SIM-DEF/P3-DEF/HIST-REQ preserve the original deferred/parent obligations. Symbolic HPR-P25-NNN is an example, not a registered code. HMR identities/123 semantic rules remain unchanged in their permanent register and reconciliation; no renumbering occurs.
+
+## Preserved pre-consolidation dashboard and exact task records
+
+The dated records below retain their original acceptance scope. The prospective consolidation above governs current selection; prior unregistered F references are now mapped to its fixed implementation IDs, subject to their explicit scope gates. Detailed original 047/049 registrations and accepted history are unchanged.
+
+
 > **Authoritative active execution document.** Complete CURRENT task table first, detailed REMAINING task descriptions second. Full completed-task actions, earlier exact task messages, historical tables, preflight records and CI evidence are preserved **verbatim** in [history/ULTIMATE_ROADMAP_HISTORY.md](history/ULTIMATE_ROADMAP_HISTORY.md). Live code, migrations, tests, `AGENTS.md` and exact-head CI outrank stale historical claims.
 
 ## 1. Control Status
@@ -24,9 +1360,9 @@ This is an execution-status summary of the authoritative task table below, **not
 | **HPR-P25-044 B1 operation-authentication provenance policy** | **DESIGN COMPLETED / DOCS #255 SUCCESS** | Dedicated issuer/jti session binding selected; runtime storage/issuance/reader and B2/B3 remain OPEN |
 | **HPR-P25-045 B1 storage preflight** | **DESIGN COMPLETED / DOCS #257 SUCCESS** | DB security generations and immutable binding design selected; runtime OPEN |
 | **HPR-P25-046 LOCAL credential generation** | **COMPLETED / PRODUCTION #662 AND DOCS #261 SUCCESS** | Accepted at repaired `554f2a0`; operation provenance runtime still OPEN |
-| **HPR-P25-047 provider/link generations** | **BLOCKED / NOT IMPLEMENTED ON MAIN** | JSONB mapping is accepted; newly introduced 048 test pins migration count/tail outside the seven-file scope; registered 049 correction required |
+| **HPR-P25-047 provider/link generations** | **PLANNED / REGISTERED / NOT IMPLEMENTED** | 048/049 accepted; frozen seven-file implementation remains separately selected |
 | **HPR-P25-048 provider/link jsonb correction** | **COMPLETED / PRODUCTION #665 AND DOCS #264 SUCCESS** | Accepted at `99cae14`; forward-migration test correction is separately registered as 049 |
-| **HPR-P25-049 JSONB test migration compatibility** | **IN PROGRESS / CODE IMPLEMENTED / CI PENDING** | Current SQL inventory equality replaces count/tail pins; full exact-head Production and Docs SUCCESS required before separate owner Next resumes 047 |
+| **HPR-P25-049 JSONB test migration compatibility** | **COMPLETED / ACCEPTED** | Exact-head Production #666 and Docs #266 SUCCESS at 8c173f4; separate owner Next may select 047 |
 | F1-02 through F1-04 publication, APIs and topology verification | PLANNED; subsequent implementation slices not registered | Register bounded HPRs before execution |
 | F2-01 through F2-04 product/equipment/engineering history | PLANNED; not registered | Dependent F1 ownership and history work |
 | F3-01 through F3-04 telemetry/monitoring/action evidence | PLANNED; not registered | Dependent topology and source-scope contracts |
@@ -39,7 +1375,7 @@ This is an execution-status summary of the authoritative task table below, **not
 
 **Product policy:** Hidra is universal, configurable and company/network/product independent. No real customer data, P&IDs, vendor curves or live SCADA are prerequisites for generic development. PLATFORM software testing uses explicit synthetic data; customer SITE commissioning is an entirely separate gate. Numerical simulation work is deferred.
 
-**Code discipline:** `HPR-P25-037` is implemented and CI accepted; `HPR-P25-038` policy design is accepted; `HPR-P25-039` Party eligibility is accepted; `HPR-P25-040` trusted Topology actor export is CI accepted; `HPR-P25-041` paired scoped permission export is CI accepted; `HPR-P25-042` live Facility/Party owner-reference query is CI accepted; `HPR-P25-043` cross-owner access linearization design is Docs accepted; `HPR-P25-044` B1 operation-authentication provenance policy is completed as design below; policy Docs #255 SUCCESS. `HPR-P25-045` additive binding/credential-security storage policy is completed as design below; policy Docs #257 SUCCESS. `HPR-P25-046` LOCAL credential generations and bounded CI repairs are accepted at repaired `554f2a0`: exact-head Production #662 and Docs #261 SUCCESS. `HPR-P25-048` is accepted at `99cae14`: exact-head Production #665 and Docs #264 SUCCESS. Its new JSONB test pins the current migration count/tail and therefore blocks the additive 047 migration outside the original seven-file envelope. `HPR-P25-049` implements the exact three-file test correction below after registration Docs #265 SUCCESS and owner selection; full exact-head Production and Docs acceptance remains PENDING. `HPR-P25-047` remains BLOCKED / NOT IMPLEMENTED ON MAIN until accepted 049 and a further owner Next resume the unchanged seven-file registration. Runtime provenance, common-time and transaction-participation gates remain OPEN. Subsequent runtime revocation/linearization and publication slices remain unregistered. Codes `F1-02` etc. are **planning references only** and MUST NOT be executed or treated as approved HPR codes before registration, exact commit message and exact create/update/delete file allowlists. Dependencies are minimum known gates, not blanket permission.
+**Code discipline:** `HPR-P25-037` is implemented and CI accepted; `HPR-P25-038` policy design is accepted; `HPR-P25-039` Party eligibility is accepted; `HPR-P25-040` trusted Topology actor export is CI accepted; `HPR-P25-041` paired scoped permission export is CI accepted; `HPR-P25-042` live Facility/Party owner-reference query is CI accepted; `HPR-P25-043` cross-owner access linearization design is Docs accepted; `HPR-P25-044` B1 operation-authentication provenance policy is completed as design below; policy Docs #255 SUCCESS. `HPR-P25-045` additive binding/credential-security storage policy is completed as design below; policy Docs #257 SUCCESS. `HPR-P25-046` LOCAL credential generations and bounded CI repairs are accepted at repaired `554f2a0`: exact-head Production #662 and Docs #261 SUCCESS. `HPR-P25-048` is accepted at `99cae14`: exact-head Production #665 and Docs #264 SUCCESS. Its original JSONB count/tail blocker is resolved by HPR-P25-049 at `8c173f4`, exact-head Production #666 and Docs #266 SUCCESS. `HPR-P25-047` is PLANNED / REGISTERED / NOT IMPLEMENTED; separate owner Next selects the unchanged seven-file implementation. Runtime provenance, common-time and transaction-participation gates remain OPEN. Subsequent runtime obligations are prospectively registered as 050–058 above, with code blocked until D1–D5 close exact contracts/scopes. Codes `F1-02` etc. remain **planning references only**, mapped to the prospective HPR IDs above. Select those HPR IDs only after their accepted exact create/update/delete scope and gate; a planning reference alone cannot authorize code. Dependencies are minimum known gates, not blanket permission.
 
 | Order | Code / planning reference | Task | Current status | Dependencies / gate | Track |
 |---|---|---|---|---|---|
@@ -54,8 +1390,8 @@ This is an execution-status summary of the authoritative task table below, **not
 | 2.7 | HPR-P25-045 | B1 binding and credential-security storage preflight | COMPLETED — design only; Docs #257 SUCCESS | Accepted at `8cb9c8560b57da14de43b3e391ec1808d2eb1395`; runtime A/B/C and B2/B3 OPEN | F1 |
 | 2.8 | HPR-P25-046 | LOCAL credential database security generation | COMPLETED — exact-head Production #662 and Docs #261 SUCCESS | Accepted at repaired `554f2a07c2ddb1147ea1517f331ac6b7b87652b6`; B1 runtime still OPEN | F1 |
 | 2.8a | HPR-P25-048 | Correct provider/link existing jsonb ORM binding | COMPLETED — exact-head Production #665 and Docs #264 SUCCESS | Accepted at `99cae14ab2aa1b752dca34686fb76cf76d666a27`; JSONB writer compatibility retained | F1 |
-| 2.8b | HPR-P25-049 | Make JSONB fresh-chain proof forward compatible | IN PROGRESS — CODE IMPLEMENTED / CI PENDING | Exact three-file correction; full exact-head Production and Docs SUCCESS required before separate owner Next resumes 047 | F1 |
-| 2.9 | HPR-P25-047 | Provider and external-link database security generations | BLOCKED — NOT IMPLEMENTED ON MAIN | JSONB mapping accepted at 99cae14; accepted 049 forward-migration test correction and separate owner Next required before resuming unchanged seven-file envelope | F1 |
+| 2.8b | HPR-P25-049 | Make JSONB fresh-chain proof forward compatible | COMPLETED — Production #666 / Docs #266 SUCCESS | Accepted at 8c173f4942371b377f9155e7d99af4e4c5fc288c; preserve nine real tests | F1 |
+| 2.9 | HPR-P25-047 | Provider and external-link database security generations | PLANNED / REGISTERED — NOT IMPLEMENTED | 048/049 accepted; separate owner Next and unchanged seven-file envelope | F1 |
 | 2a | F1-02 implementation | Station revision history / transactional publication | PLANNED — not registered or implemented | HPR-P25-038 policy design; exact implementation allowlist and subsequent owner Next | F1 |
 | 3 | F1-03 | Company-scoped authoring, topology APIs and exact-history access | PLANNED — needs HPR registration | F1-02; authorization/API contracts | F1 |
 | 4 | F1-04 | Synthetic multi-company topology validation | PLANNED — needs HPR registration | F1-03; registered acceptance test envelope | F1 |
@@ -5145,3 +6481,22 @@ API/OpenAPI, build/dependencies/workflows, policy/session/binding/issuance/reade
 version/release/deployment/closure remain unchanged. F1–F4/P2.5 OPEN; simulation/P3
 DEFERRED. Gas-first/GZ2, Hidra own engine, steady/transient direction, versioned
 inputs/operator control, synthetic development and owner calibration are preserved.
+
+
+Consolidation validation actually executed: all 51 Python unit checks PASS (10 docs,
+10 offline OpenAPI, 17 dictionary, 14 base resolver). Canonical docs PASS: 98 documents,
+5,340 relative links, 24 modules, 13 P2 rows. Offline OpenAPI PASS: 263 operations,
+244 paths, 231 schemas. Existing P1 evidence consistency PASS without new closure or
+physical exercise. Exact three-document scope/whitespace PASS; all 12 prospective
+implementation/CI/closure nodes form an acyclic task graph; every recovered concrete
+#666 XML class/case and every 24-module owner has a planned full-verification lane.
+No missing baseline class: 370 suites/1,763 cases; abstract support inheritance preserved.
+Current source has 146 unique Flyway versions and 470 JPA table mappings. Migration
+SQL bytes, all production/test/workflow/build/ops/API/dictionary/history/version source,
+accepted detailed 037–049 records and original frozen 047 registration are unchanged.
+Reconciliation and TEST_STRATEGY are append-only. New 050–058/CI-003 identifiers were
+absent in the inspected authoritative prior registry. D1–D5 remain explicitly unresolved;
+no optimized equivalence/latency/fast PASS, platform freeze or implementation is claimed.
+No local Maven/DB run was needed or executed for this documentation-only consolidation;
+current accepted runtime evidence is recovered exact-SHA #666, not this new Docs head.
+Guarded publication and new-head Docs acceptance remain pending until observed.

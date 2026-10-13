@@ -28,6 +28,18 @@ by this planning commit. Current planning commit message:
 
 
 
+
+### Owner-selected parallel continuation — HPR-P25-050 D1, 2026-10-13
+
+CI-003 remains IN PROGRESS with mandatory greenfield oracle and optimized adoption false.
+Owner explicitly selects further development while CI-003 remains IN PROGRESS.
+This permits the existing 050 D1 scope amendment, superseding old checkpoint-only
+"do not start 050" language; it does not close CI-003 or relax any acceptance gate.
+Current green main is 117d0d673a8ab8dcb069e95422ef52886a29f787 (Full #677/Fast #10/Docs #274).
+HPR-P25-050 is IN PROGRESS / D1 CLOSED IN SOURCE / DOCS PENDING / NOT IMPLEMENTED.
+The exact two-document amendment and separately selected future implementation list
+are recorded at the end. No new HPR ID; 051 and later stages remain unselected.
+
 ### Current execution checkpoint — HPR-CI-003, 2026-10-13
 
 Refreshed main `c1f25af77f2568c49db4fc740e3f502d3b43e6dc`, tree
@@ -222,7 +234,7 @@ aggregate may replace it. D1–D5 are internal gates, never new HPR task IDs.
 |---|---|---|---|---|---|---|---|---|---|---|
 | 1 | HPR-CI-003 | Automatic fast suite and equivalent parallel full verification | CI / independent verification | IN PROGRESS / SHADOW EQUIVALENT 5x SAME SHA; multi-revision/performance OPEN | Accepted 049; this Docs PASS; owner selection | CI-003 closed list | Selection/report/release negative tests; shadow full verification | No lost cases; mandatory gate fail-closed; repeatable timing | CI | `ci: automate fast feedback and preserve full verification gates` |
 | 2 | HPR-P25-047 | Provider/link database security generations | Identity | COMPLETED / CI ACCEPTED | Accepted 046/048/049; existing registration Docs; separate Next | Existing seven-file list, unchanged | Real writers, Flyway fresh/upgrade, native/bulk/race/rollback | Exact implementation Production + Docs SUCCESS | F1 | `feat(identity): enforce provider and link security generations` |
-| 3 | HPR-P25-050 | Immutable operation binding and trusted issuance/reader | Identity; Platform technical wiring | PLANNED / REGISTERED; D1 scope gate | 047; accepted 044/045 design | D1 then exact Identity list; no code authorization yet | LOCAL/LDAP/AD/OIDC, expiry, generation, rollback | B1 provenance and storage proof; no inferred B2/B3 | F1 | `feat(identity): bind protected operations to trusted authentication` |
+| 3 | HPR-P25-050 | Immutable operation binding and trusted issuance/reader | Identity; Platform technical wiring | IN PROGRESS / D1 SCOPE CLOSED; DOCS PENDING / NOT IMPLEMENTED | 047; accepted 044/045 design | D1 then exact Identity list; no code authorization yet | LOCAL/LDAP/AD/OIDC, expiry, generation, rollback | B1 provenance and storage proof; no inferred B2/B3 | F1 | `feat(identity): bind protected operations to trusted authentication` |
 | 4 | HPR-P25-051 | Cross-owner revocation/time/transaction linearization | Identity / Party / Topology; Platform mechanics | BLOCKED on D2 atomic-time and transaction proof | 050; accepted 038/043; D2 | D2 then exact owner/export/fence list | Real PostgreSQL owner/race/expiry/connection tests | B2/B3 and writer ordering + bounded latency PASS | F1 | `feat(security): linearize cross owner protected operations` |
 | 5 | HPR-P25-052 | Topology authoring, route/profile and revision publication APIs | Topology; read-only foreign owner contracts | PLANNED / REGISTERED; D3 contract/scope gate | 051; accepted 018/019/020/032/034/036/037/038; D3 | D3 closed authoring/storage/API list | Actual API round trips, epochs/CAS/history/import-export | F1-02/03/04 within explicit supported topology scope | F1 | `feat(topology): expose governed engineering revision workflows` |
 | 6 | HPR-P25-053 | Product/property/method metadata authoring and history | Custody; source approval through Workflow | PLANNED / REGISTERED; D3 contract/scope gate | 051; accepted 018/022 design; D3 | D3 exact Custody/owner-export list | Multi-product metadata, unsupported shape, old GAS replay | F2-01 and product share of F2-03 | F2 | `feat(custody): govern versioned product engineering data` |
@@ -245,7 +257,7 @@ design, regression and repair work stays inside these tasks by controlled same-I
 
 | Gate | Accountable owner / affected task | Required resolution before code | Current source reason / limitation | Output / failure rule |
 |---|---|---|---|---|
-| D1 | Identity / 050 | Close exact generation-read/provenance transport, immutable binding files, session-writer compatibility and migration allocation | Completion currently issues a token before creating a session; accepted 045 binding relation is design only | Same-ID documentation amendment with exact CREATE/UPDATE/DELETE list, schema, trusted paths and tests; no authority backfill |
+| D1 | Identity / 050 | CLOSED IN SOURCE / DOCS PENDING; exact allocation below | Actual implementation/runtime acceptance pending; no retrofit of unbound sessions | Accepted amendment Docs + separate Next selects closed 050 envelope; B2/B3 remain 051 |
 | D2 | Identity + Topology + Party; technical transaction owner / 051 | Specify atomic head/read-time validity, all future DENY activation boundaries, same-connection transaction enforcement and bounded fence latency | Current evaluator uses per-call Instant.now; actor uses separate clock; transaction config only enables management | Independently reviewable B2 algorithm, B3 real DB proof and synthetic timing envelope; code BLOCKED if unsupported policy cannot fail closed |
 | D3 | Existing source owners / 052–055 | Close draft/published schemas, supported product/equipment/geometry coverage, permissions, export packages, API names, migrations and exact paths | Existing 018–022/028 designs explicitly left endpoint/class/file allocation unresolved; GAS-only/characteristic format limits remain | Per-task same-ID exact scope/contract appendix, collision scan and input/output acceptance fixtures; no arbitrary future filename presented as approved |
 | D4 | Telemetry / Integration / Monitoring / Workflow / Audit / 056–057 | Close configured freshness/clock-skew/binding time/units/trust and observation/action target policy, APIs and exact files | Existing trust service and Monitoring scalar lookup lack the complete approved monitoring/action contract | Explicit synthetic policies and UNKNOWN behavior; owner configuration at deployment; no assumed live protocol, physical threshold or causal truth |
@@ -6932,3 +6944,327 @@ New workflow startup and all hosted shadow/equivalence/measurement acceptance re
 pending. Guarded direct-main publication verifies exact parent/tree/message/blob/scope,
 confirms Full/Fast/Docs startup on published SHA and STOP; no completion polling or
 later HPR implementation. No branch, PR, image, manual workflow dispatch or deployment.
+
+
+## 2026-10-13 — HPR-P25-050 D1 scope amendment; CI-003 stays in progress
+
+### Owner selection, exact source and stage boundary
+
+Owner direction is to go further while keeping HPR-CI-003 IN PROGRESS. This explicitly
+supersedes the prior CI-003 checkpoint's prohibition on selecting 050; it does not waive
+any CI equivalence, performance, cold-cache, representative-revision or negative-case
+requirement. `shadow-fallback-required`, the mandatory greenfield oracle and
+`optimized_adoption_eligible=false` stay unchanged. 050 depends on accepted 047 and
+044/045, not on CI-003 closure. Use the current full greenfield gate for runtime acceptance.
+
+Refreshed main `117d0d673a8ab8dcb069e95422ef52886a29f787`, tree
+`306c4126693eefc7843c894b122a6ee72f243643`: Production #677, Fast #10 and Docs #274
+SUCCESS on that exact SHA. Hosted Full Verification Gate reports 367 required concrete
+suites / 1,759 cases / zero failures/errors/skips and same-run partition/greenfield-oracle
+equivalence. Four owner-approved historical classes remain archived; all 147 SQL files
+still execute in fresh schema proof. No CI or greenfield-policy change is selected here.
+
+This commit closes the already registered D1 decision/scope prerequisite **in documentation**.
+Exclusive current UPDATE scope: `doc/roadmap/ULTIMATE_ROADMAP.md` and append-only
+`doc/model-remediation/RECONCILIATION.md`; CREATE/DELETE none. Exact amendment message:
+`docs(identity): close operation binding implementation scope`. This is one controlled
+same-ID amendment, not a new HPR or discovery chain. The existing implementation message
+remains `feat(identity): bind protected operations to trusted authentication`.
+Implementation is NOT performed by the amendment. D1 is CLOSED IN SOURCE / DOCS PENDING;
+050 remains IN PROGRESS / SCOPE CLOSED / NOT IMPLEMENTED. Successful amendment Docs
+and a separate owner Next select the exact implementation envelope below. Stop after
+this amendment's guarded main publication and required Docs startup; no automatic code.
+
+### Recovered current source constraints
+
+Completion is a final Spring service with no transaction boundary: it signs first, then
+calls session lifecycle. Lifecycle independently generates UUID/time and may merge a stale
+ACTIVE session. Direct authentication returns only HidraPrincipal; normalized completion
+input has no verification-time credential/provider/link generation. LOCAL password check
+uses an unmapped credential model; LDAP/AD resolves the selected provider before remote
+verification and the link after verification; OIDC converter receives a Jwt object and
+normalizes subject before its current provider/link lookup. Issuer independently chooses
+jti/time, trims configuration and returns no issuer/audience metadata. These are concrete
+implementation gaps, not new product requirements or proof that a constructor is trusted.
+
+The source-linked 044/045 binding column/types/nullability/512-byte native key/time contract
+remains binding in full. 046 and 047 already enforce their database generations; do not
+remap versions with JPA @Version or alter those migrations. Current LoginSession adapter
+uses repository.save and its model has no jti; retain its mapping and old unbound records.
+Accepted bootstrap creates a HUMAN administrator. The existing public Identity Topology
+contract prefix admits a new JDK-only export; no foreign private import or old actor/pair
+contract replacement is necessary. All completion/provider/issuer constructors, callers,
+session writers, ownership paths, tests and CI inventory were scanned at the pinned SHA.
+
+### D1 selected implementation contracts
+
+1. **Immutable owner storage.** `OperationAuthenticationBinding` is a validated JDK-only
+   immutable value for exactly 045 format_version=1. JDBC repository has append/exact
+   issuer+jti lookup; no mutable JPA binding entity, UPDATE/upsert rewrite or cascade.
+   Native issuer/jti and session uniqueness, all restrictive FKs, explicit NULL branches,
+   canonical new UUIDs, exact existing IDs, finite second-precision times and source-expiry
+   cap are enforced in the new transactionally applied migration. Current versions are
+   snapshots, not FKs to (id,version); security updates must invalidate without blocking.
+   Exact replay compares every immutable field and returns storage evidence only, including
+   when a stored session is terminal. Differing duplicates conflict. No catch-and-continue
+   after a PostgreSQL aborted statement: use conflict-safe INSERT/read or abort the owner
+   transaction. A replay never supplies a new authentication receipt or token delivery.
+2. **Verification-time capture.** New exact JDBC state queries read actual owner rows,
+   including generation and the tuple used by the verifier, not a preloaded EntityManager.
+   LOCAL password hash, credential ID and generation are captured atomically in the same
+   SQL row image; PasswordEncoder verifies that captured hash. The hash remains confined
+   to LocalCredentialVerificationState and is absent from handles, bindings, exports,
+   logs and errors. Provider generation is captured before LOCAL/directory verification;
+   LDAP/AD uses the actual selected provider type/configuration, then atomically captures
+   the verified exact subject's link/User/version image. Completion compares those
+   original generations; reading a new current version cannot legitimize an old password.
+   For OIDC, revalidate the original bearer with the qualified external decoder: capture
+   exact issuer/provider/link images before the final verification, compare exact verified
+   claim identities/deadline afterward, and keep the existing original assertion behavior.
+   Unsigned Jwt objects, trimmed subjects, caller provider selectors and claim snapshots
+   cannot mint trusted provenance. Remote directory/JWK work holds no completion/owner fence.
+3. **Server-only origin.** TrustedAuthenticationVerificationRegistry owns private producer
+   receipts minted only by actual successful LOCAL, LDAP/AD and OIDC paths. Direct adapter
+   carries an opaque unpredictable same-invocation handle through VerifiedDirectAuthenticationResult
+   and the internal AuthenticatedPrincipalInput overload. It does not expose a handle in
+   REST request/response, Authentication.details, correlationId, roles or permissions.
+   TrustedAuthenticationVerificationPort consumes and matches the private receipt, input
+   identity and invocation once. Arbitrary handle/DTO/principal/authenticated-token/Jwt
+   constructors deny. Direct scope is cleared on every completion/normalization/failure
+   exit; OIDC receipt stays on the actual converter-created token, with legacy constructors
+   producing no protected-operation receipt. No global reusable permission cache or async
+   handoff. Source guardrail tests enumerate the three permitted receipt producers.
+4. **One completion commit.** Remove completion's final proxy obstacle and make its public
+   entry execute through an actual proxied REQUIRED, READ_COMMITTED, non-read-only owner
+   transaction with rollback on every failure. Generate binding/session/jti UUIDs and one
+   UTC whole-second issuedAt, then finite expiresAt=min(issuedAt+positive configured TTL,
+   verified OIDC source deadline), flooring expiry toward the past. Require expiry still
+   after actual completion time. AccessTokenIssuerSettings supplies exact trusted configured
+   issuer/audience/TTL; AccessTokenIssuanceContext supplies the chosen jti/interval. New
+   bounded issuance overload must return exact agreeing issuer/audience/jti/sub/type/provider/
+   time metadata and cryptographically revalidated token. Keep legacy principal-only overload
+   for existing ordinary issuer fixtures; it never implies a binding. Create and flush the
+   exact-tuple session, sign, append binding and non-LOCAL session success event in the same
+   owner transaction. LOCAL credential-verification outcome retains its existing independent
+   meaning. Signing/save/flush/append/event/commit failure returns no token/receipt; after
+   a successful commit publish a private completion receipt for the actual producer-owned
+   in-memory authentication object. No self-invocation transaction assumption, REQUIRES_NEW,
+   partial savepoint continuation, automatic response retry or token material in diagnostics.
+5. **Session storage guards.** On a bound session all columns except last_seen_at/status/
+   ended_at are immutable. Only ACTIVE to the accepted terminal states with finite endedAt
+   >=startedAt is allowed; exact terminal no-op/read is permitted, resurrection/terminal
+   replacement/end-time rewrite and bound DELETE fail. Binding append locks exact provider,
+   link (external only), credential (LOCAL only), User and session in that fixed order;
+   native session mutation owns its session row and rechecks binding existence after any
+   wait. Binding/session mutation protocol requires READ_COMMITTED; reject unsupported
+   isolation on potentially bindable session mutations instead of reading an old repeatable
+   snapshot. This is an explicit bounded operational compatibility restriction: current
+   application writers declare no higher isolation; out-of-band writers are not certified.
+   Existing unbound row values/lifecycle remain unchanged; no orphan repair or time backfill.
+   LoginSession TRUNCATE's relation lock and fresh binding check serialize with append;
+   reject while bindings exist. Binding UPDATE/DELETE/TRUNCATE always reject. Native
+   append/mutate/delete/truncate, same-transaction bypass and wrong isolation need real
+   connection/statement/lock observations. Do not infer this ordering from annotations.
+6. **Identity B1 reader.** TopologyOperationAuthenticationContract exposes argument-free
+   `queryCurrentBoundAuthentication()` and nested immutable JDK-only result/evidence.
+   Eligible evidence contains binding/session/User/provider/type/generations, source IDs,
+   issuer/jti, observedAt and deadlines; no raw bearer/hash/claims snapshot/callback/PERMIT.
+   TopologyOperationAuthenticationQueryAdapter resolves the ambient original bearer with
+   qualified native decoder, exact configuration and strict type/UUID/issuer/audience/sub/
+   jti/iat/exp/provider checks, then current joined owner-state JDBC lookup. In-memory
+   counterparts require a producer-owned after-commit receipt; constructor-only and
+   converter-before-completion contexts deny. Locked/disabled/nonhuman User, ended/expired
+   session and provider/link/credential generation mismatch deny, including A/B/A. Native
+   OIDC-source token cannot recreate original external claims or substitute an internal
+   grant for an external-claim rule. Missing binding/ineligible authentication gives opaque
+   ACCESS_DENIED with no identities; corrupt tuple/storage/decoder infrastructure failure
+   is an operational error, never a successful absence. No grace beyond real expiry.
+   This is point-in-time B1 evidence only: old TopologyCurrentActorQueryAdapter, permission
+   exports/evaluator, Topology writes and B2/B3 time/fences remain read-only for 051.
+7. **Compatibility and bounded parsing.** Preserve existing AuthenticationLoginResponse,
+   AuthenticationResult, native claim names and ordinary legacy unbound-token routes;
+   no session claim/client input or global forced logout. Future protected-operation
+   reader denies legacy unbound tokens and requires fresh login. Bound issuance is for
+   the four accepted active HUMAN paths; do not silently emit an unbound success when
+   binding verification fails. Unsupported/nonhuman bound issuance fails explicitly.
+   New bound verification/signing has a 65,536-byte encoded-token default envelope,
+   configurable by `hidra.identity.bound-authentication.max-token-bytes`; reject oversize
+   input/output before trusted promotion, never truncate text or change old SQL columns.
+   Retain original assertion's existing 64/256/1024 claim bounds. Native issuer/audience
+   still obey accepted 512 UTF-8 bytes. Nonconforming deployment configuration/IDs fail
+   compatibility preflight; synthetic source defaults suffice for development and owner
+   supplies deployment facts. No new retention rule, remote introspection or permission.
+
+### Reserved schema and collision result
+
+Reserve only `src/main/resources/db/migration/V20261013_001__p25_identity_operation_binding.sql`
+(Flyway 20261013.001). Pinned source has 147 distinct prior versions, latest required
+predecessor 20261012.002; file/version and new binding relation/functions are absent.
+Immediately before implementation refresh inventory and reservations; a collision or
+changed predecessor requires same-ID amendment, never renaming applied SQL. The migration
+starts an EMPTY binding table and installs bound-session guards. All old SQL stays
+byte-identical; no baselining/squash/history deletion, authority backfill or calibration.
+Functions: `hidra_identity_operation_binding_guard`, `hidra_identity_bound_session_guard`,
+`hidra_identity_session_isolation_guard`; invoker, fixed pg_catalog/public search_path,
+static qualified SQL, no role/replication escape. Constraint prefix `p25_binding_`;
+trigger names `trg_p25_binding_insert`, `trg_p25_binding_update`, `trg_p25_binding_delete`,
+`trg_p25_binding_truncate`, `trg_p25_session_isolation`, `trg_p25_bound_session_update`,
+`trg_p25_bound_session_delete`, `trg_p25_bound_session_truncate`. Every name <=63 bytes;
+recheck exact object names at implementation. No privileged DDL-bypass/site-role proof.
+
+### Exclusive future HPR-P25-050 implementation allowlist
+
+The following concrete files resolve D1's previously unspecified CREATE/UPDATE lists.
+No wildcard/directory write permission. DELETE none. This table authorizes ONLY the
+separately selected implementation after amendment Docs acceptance, not this doc commit.
+
+| Action | Exact path |
+|---|---|
+| CREATE | `src/main/java/dz/sh/hidra/modules/identity/domain/model/OperationAuthenticationBinding.java` |
+| CREATE | `src/main/java/dz/sh/hidra/modules/identity/application/model/AuthenticationVerificationSnapshot.java` |
+| CREATE | `src/main/java/dz/sh/hidra/modules/identity/application/model/LocalCredentialVerificationState.java` |
+| CREATE | `src/main/java/dz/sh/hidra/modules/identity/application/model/VerifiedDirectAuthenticationResult.java` |
+| CREATE | `src/main/java/dz/sh/hidra/modules/identity/application/model/AccessTokenIssuerSettings.java` |
+| CREATE | `src/main/java/dz/sh/hidra/modules/identity/application/model/AccessTokenIssuanceContext.java` |
+| CREATE | `src/main/java/dz/sh/hidra/modules/identity/application/port/out/OperationAuthenticationBindingRepositoryPort.java` |
+| CREATE | `src/main/java/dz/sh/hidra/modules/identity/application/port/out/AuthenticationSecurityStateQueryPort.java` |
+| CREATE | `src/main/java/dz/sh/hidra/modules/identity/application/port/out/TrustedAuthenticationVerificationPort.java` |
+| CREATE | `src/main/java/dz/sh/hidra/modules/identity/application/service/OperationAuthenticationQueryApplicationService.java` |
+| CREATE | `src/main/java/dz/sh/hidra/modules/identity/application/contract/topology/TopologyOperationAuthenticationContract.java` |
+| CREATE | `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcOperationAuthenticationBindingRepositoryAdapter.java` |
+| CREATE | `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcAuthenticationSecurityStateQueryAdapter.java` |
+| CREATE | `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/TrustedAuthenticationVerificationRegistry.java` |
+| CREATE | `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/IdentityAuthenticationClockConfiguration.java` |
+| CREATE | `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/TopologyOperationAuthenticationQueryAdapter.java` |
+| CREATE | `src/main/resources/db/migration/V20261013_001__p25_identity_operation_binding.sql` |
+| CREATE | `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/OperationAuthenticationBindingPostgresIntegrationTest.java` |
+| CREATE | `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/BoundAuthenticationCompletionPostgresIntegrationTest.java` |
+| CREATE | `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/OperationAuthenticationQueryPostgresIntegrationTest.java` |
+| CREATE | `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/TrustedAuthenticationVerificationTest.java` |
+| CREATE | `src/test/java/dz/sh/hidra/modules/identity/OperationAuthenticationBoundaryGuardrailTest.java` |
+| UPDATE | `src/main/java/dz/sh/hidra/modules/identity/application/model/AuthenticatedPrincipalInput.java` |
+| UPDATE | `src/main/java/dz/sh/hidra/modules/identity/application/model/IssuedAccessToken.java` |
+| UPDATE | `src/main/java/dz/sh/hidra/modules/identity/application/port/out/DirectAuthenticationPort.java` |
+| UPDATE | `src/main/java/dz/sh/hidra/modules/identity/application/port/out/AccessTokenIssuerPort.java` |
+| UPDATE | `src/main/java/dz/sh/hidra/modules/identity/application/service/DirectAuthenticationApplicationService.java` |
+| UPDATE | `src/main/java/dz/sh/hidra/modules/identity/application/service/AuthenticationCompletionApplicationService.java` |
+| UPDATE | `src/main/java/dz/sh/hidra/modules/identity/application/service/AuthenticationSessionLifecycleApplicationService.java` |
+| UPDATE | `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaLoginSessionRepositoryAdapter.java` |
+| UPDATE | `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/LocalAuthenticationProvider.java` |
+| UPDATE | `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/LdapAuthenticationProvider.java` |
+| UPDATE | `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/IdentityOidcJwtAuthenticationConverter.java` |
+| UPDATE | `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/HidraOidcAuthenticationToken.java` |
+| UPDATE | `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/SpringDirectAuthenticationAdapter.java` |
+| UPDATE | `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/HidraAccessTokenIssuer.java` |
+| UPDATE | `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/LocalAuthenticationProviderTest.java` |
+| UPDATE | `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/LdapAuthenticationProviderTest.java` |
+| UPDATE | `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/IdentityOidcJwtAuthenticationConverterTest.java` |
+| UPDATE | `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/HidraAuthorizationOwnershipTest.java` |
+| UPDATE | `src/test/java/dz/sh/hidra/modules/identity/semantic/LoginSessionSemanticRemediationTest.java` |
+| UPDATE | `src/test/java/dz/sh/hidra/modules/identity/AuthenticationArchitectureAndSecretGuardrailTest.java` |
+| UPDATE | `.github/ci-test-inventory.json` |
+| UPDATE | `.github/database-dictionary-ownership.json` |
+| UPDATE | `doc/database/DATA_DICTIONARY.md` |
+| UPDATE | `doc/roadmap/ULTIMATE_ROADMAP.md` |
+| UPDATE | `doc/model-remediation/RECONCILIATION.md` |
+
+Existing test UPDATEs are restricted to affected constructor/provenance fixtures and
+new bounded checks; retain prior semantics/cases, original assertion tests and test headers.
+All current authentication controller API fixtures, LocalAuthenticationIntegrationTest,
+TopologyCurrentActorQueryAdapterTest, AuthorizationAssertionTrustTest, both platform issuer
+fixtures, existing session integrity tests and all 046/047/049 proofs remain mandatory
+read-only regression targets. No ownership change to foreign modules, Platform auth
+configuration, API/OpenAPI snapshot, build/dependencies/wrapper/workflows/generator,
+original roadmap history, release/deployment/version or simulator. New JDBC binding has
+explicit Identity dictionary ownership; only binding/session guard evidence is changed.
+Capture/render/check actual hosted source catalog; never fabricate a server/source line.
+
+CI inventory update is only exact new/affected source hashes/case identities and approved
+lane records. Three new Postgres classes are DB-only; new receipt/guardrail fixtures are
+Fast/unit only if they use no live service. Existing four historical archive decisions,
+all retained required classes/cases, partition/gate algorithm, timing hints, fallback and
+optimized=false remain unchanged. Unclassified or unexpectedly discovered case blocks
+publication; no broader CI redesign or test omission under 050.
+
+### Closed synthetic acceptance and remaining gates
+
+- OperationAuthenticationBindingPostgresIntegrationTest: real PostgreSQL16/Flyway fresh
+  and exact-predecessor upgrade; old checksums and unbound session fields unchanged;
+  complete inventoried chain, no pending/failed migration, actual FK/check/unique/index/
+  trigger/functions, canonical IDs, all SQL NULL branches, finite/whole-second/source
+  times, exact native 512-byte limits, COPY/MERGE/native insertion or guarded rejection,
+  same/different concurrent replay, immutable UPDATE/DELETE/TRUNCATE, original tuple
+  preservation and rollback of failed migration/append. No privileged fixture bypass PASS.
+- BoundAuthenticationCompletionPostgresIntegrationTest: actual Spring-proxied completion,
+  qualified real test-key JWT signing/decoding, JPA+JDBC session/binding/event same backend
+  and transaction, commit-before-return; LOCAL/LDAP/AD/OIDC producer paths, exact shared
+  IDs/timestamps/protocol/deadline, verification-time hash/version races, provider/link
+  A/B/A, source expiry, signing/save/flush/append/event/commit fault rollback, no token or
+  receipt delivery on failure, after-commit receipt and invocation cleanup. Directory
+  verifier may be a deterministic synthetic port; do not claim live directory proof.
+- OperationAuthenticationQueryPostgresIntegrationTest: native signature/algorithm/issuer/
+  audience/sub/jti/type/provider/iat/exp mismatches, generation/readback/cache failure,
+  source-deadline cap, missing/legacy/duplicate/corrupt binding, terminal/current User
+  eligibility, swapped users/providers/links/sessions and opaque denial before caller
+  payload; actual completion receipts vs forged constructors and old ordinary actor/API
+  compatibility. Binding append versus native/JPA session mutation/delete/truncate,
+  unsupported isolation and same-transaction bypass use independent backends, bounded
+  barriers and observed locks/SQL, never sleeps. B1 races do not claim 051 B2/B3.
+- TrustedAuthenticationVerificationTest and OperationAuthenticationBoundaryGuardrailTest:
+  permitted producer set, fake/replayed/cross-invocation handles, raw-ID whitespace/type
+  and byte envelopes, cleanup/failure/no secret transport, no constructor/details/roles/
+  correlation authority, JDK-only export/import directions and original assertion safety.
+  Unit mocks are not PostgreSQL generation/commit or signature acceptance.
+
+Focused implementation command:
+`bash ./mvnw -B -q -Dtest=OperationAuthenticationBindingPostgresIntegrationTest,BoundAuthenticationCompletionPostgresIntegrationTest,OperationAuthenticationQueryPostgresIntegrationTest,TrustedAuthenticationVerificationTest,OperationAuthenticationBoundaryGuardrailTest,LocalAuthenticationIntegrationTest,LocalAuthenticationProviderTest,LdapAuthenticationProviderTest,IdentityOidcJwtAuthenticationConverterTest,AuthorizationAssertionTrustTest,LoginSessionSemanticRemediationTest,LoginSessionIntegrityMigrationTest,IdentityAuthenticationControllerLocalApiTest,IdentityAuthenticationControllerLdapApiTest,IdentityAuthenticationControllerOidcApiTest,HidraUnifiedJwtCompatibilityTest,HidraAdministratorJwtAuthorizationTest,TopologyCurrentActorQueryAdapterTest,IdentityProviderLinkJsonbPostgresIntegrationTest,LocalCredentialSecurityGenerationPostgresIntegrationTest,ProviderLinkSecurityGenerationPostgresIntegrationTest test`.
+All current six Python policy suites, canonical docs/offline OpenAPI/P1 checks, actual
+dictionary and exact source/scope/history/whitespace checks are required. Current full
+greenfield oracle+partitions and Full Verification Gate plus Fast/Docs SUCCESS on the
+actual implementation SHA are acceptance; no fixed future global test count. Keep
+all B1 obligations within this one implementation code. A failed prerequisite outside
+this exact list blocks and requires explicit same-ID amendment, never silent widening.
+
+D1 source/contract allocation is closed; actual DB/producer/commit/parser/compatibility
+acceptance is NOT ESTABLISHED by these decisions. D2–D5/F1–F4 remain OPEN; no new protected
+Topology path is usable until 051's B2/B3 and later explicit API selection are accepted.
+CI-003 stays IN PROGRESS without blocking this D1 amendment or waiving its open evidence.
+Simulation/P3 remains deferred; gas-first/GZ2, own engine, steady/transient direction,
+versioned inputs/operator control, synthetic fixtures and owner deployment calibration
+persist. No release/deployment. Next after this amendment Docs PASS selects only 050
+implementation; no automatic advance. Main only, expected-head guard, no PR/branch/image;
+manual unsupported CI dispatch is handed to the owner BEFORE starting it.
+
+
+### D1 amendment validation and limitations
+
+Executed locally against the pinned source plus these two documentation edits:
+- `python3 .github/scripts/test_validate_docs.py`: 10 tests PASS.
+- `python3 .github/scripts/test_validate_openapi_snapshot.py`: 10 tests PASS.
+- `python3 .github/scripts/test_generate_data_dictionary.py`: 17 tests PASS.
+- `python3 .github/scripts/test_resolve_openapi_base.py`: 14 tests PASS (synthetic fixtures).
+- `python3 .github/scripts/test_verify_ci_test_inventory.py`: 22 tests PASS.
+- `python3 .github/scripts/test_verify_full_ci_evidence.py`: 25 tests PASS.
+- `python3 .github/scripts/validate_docs.py`: PASS, 98 documents / 5,346 relative links.
+- `python3 .github/scripts/validate_openapi_snapshot.py`: PASS, offline snapshot only,
+  263 operations / 244 paths / 231 schemas; no new live API capture.
+- `python3 .github/scripts/validate_p1_closure.py`: PASS.
+- `python3 .github/scripts/verify_ci_test_inventory.py`: PASS; inventory remains
+  `eac6f480b432c075e232ff55e91e81e2410473b322df0f243023c6e7963d14cc`.
+
+98 policy unit cases passed in total. Pinned archive contents were checked against
+all 4,805 Git tree blobs (mvnw.cmd archive CRLF export normalized for its Git blob hash).
+Only the two declared documents differ; reconciliation preserves its complete original
+prefix. All existing Java, SQL, workflow and inventory files are unchanged. Future
+22 CREATE / 25 UPDATE paths are unique, creates absent, updates present; 147 existing
+migration versions and all 13 reserved table/function/trigger/prefix symbols were checked
+for collision. Added-line whitespace PASS. No future runtime file was created.
+
+No Maven, live PostgreSQL, signature, producer or completion-transaction test was run for
+this documentation-only amendment. Full #677 is the accepted unchanged source baseline,
+not implementation proof for 050. These results close documentation/source allocation
+only; all newly registered runtime acceptance remains pending. Required publication CI
+is `HidraAPI Documentation Validation` (docs.yml), automatically selected by this exact
+two-document main push. Full/Fast push filters exclude this amendment; do not substitute
+an unnecessary manual dispatch for Docs. Record only startup on the published SHA and
+stop; Docs SUCCESS is not claimed in advance.

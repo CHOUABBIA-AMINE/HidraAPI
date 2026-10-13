@@ -29,6 +29,18 @@ by this planning commit. Current planning commit message:
 
 
 
+### Current execution checkpoint — HPR-P25-050 D1 persistent-origin correction, 2026-10-13
+
+Docs #276 accepted exact directory-subject transport at 2d08794d2e445328c3f99e0664209e5aa080f6bf.
+Owner Next selected corrected 050 implementation. Recovery and an isolated synthetic
+cryptographic/value proof found that native/legacy bearer lookup cannot distinguish
+trusted completion from an independently supplied valid structural binding tuple.
+The same-ID amendment at the end adds private producer authentication of persistent
+binding evidence within the unchanged 22 CREATE / 28 UPDATE union. No new HPR or path.
+050 remains IN PROGRESS / ORIGIN CONTRACT CORRECTED IN SOURCE / DOCS PENDING /
+NOT IMPLEMENTED. Successful correction Docs and a separate Next select runtime;
+CI-003 remains IN PROGRESS with its required oracle and optimized adoption false.
+
 ### Current execution checkpoint — HPR-P25-050 D1 transport correction, 2026-10-13
 
 Docs #275 accepted the initial D1 amendment at a847d4c3ee9cd10340c12364705f8ce6d388a8a5.
@@ -7417,3 +7429,209 @@ Required push CI remains HidraAPI Documentation Validation (docs.yml). Its publi
 startup is the stop boundary; do not poll completion or advance to runtime automatically.
 Full/Fast filters do not select these two documentation files. New Docs SUCCESS remains
 pending at preparation. Owner Next after Docs acceptance selects corrected 050 runtime.
+
+
+## 2026-10-13 — HPR-P25-050 D1 persistent producer-origin amendment
+
+### Selected implementation and concrete missing discriminator
+
+Owner Next selected 050 runtime after refreshed main
+`2d08794d2e445328c3f99e0664209e5aa080f6bf`, tree
+`a456d59d4fb0cbde7d935fa040db56a8df520c69`, and exact-head
+[Docs #276](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38416927717)
+SUCCESS. Accepted unchanged runtime remains `117d0d673a8ab8dcb069e95422ef52886a29f787`
+with Production #677 / Fast #10 / Docs #274 SUCCESS. AGENTS, current roadmap,
+reconciliation, PROJECT_STATE, source and corrected 50-path union were recovered.
+All 22 CREATE paths are absent, all 28 UPDATE paths exist, and 147 predecessor SQL
+files remain. No migration/version/object collision or new task was selected.
+
+The accepted native JWT envelope includes issuer/audience/sub/jti/type/provider/time,
+but no binding or verification generation. The D1 reader is to verify that original
+bearer and then read the persisted binding/current owner tuple. SQL append checks
+structural identity, current generations, eligibility and the newly supplied session;
+it expressly cannot prove that a password or external assertion was verified. The
+private after-commit receipt discriminates actual in-memory producer objects, but is
+not persistent evidence usable by a later native bearer request.
+
+Therefore a still-valid legacy native token and a newly fabricated session/binding
+with its same signed identity/time plus current owner generations would supply the
+same observations to that native reader as a legitimate completion. The former must
+be denied by the selected fresh-only policy. UUID shape, uniqueness, exact-row replay,
+current-generation equality and a claimed DTO cannot by themselves distinguish origin.
+A valid signature authenticates the JWT's existing claims; it does not authenticate
+these newly supplied generation/session associations. This is the precise remaining
+source-contract gap, not a claim of compromise, deployed exploitable code or failed CI.
+
+An isolated JDK17 proof constructed a real synthetic HS256 signature using the existing
+claim shape and a standalone value implementing the proposed format-one structural
+contract. It validated that signature, both identical independently constructed tuple
+values, and absence of a signed binding/generation discriminator. Output:
+`synthetic_hs256_signature_valid=true; binding_value_validation=true; producer_and_native_tuple_indistinguishable=true; signed_origin_discriminator=false`.
+No raw token/key/hash was printed. This proves the missing distinction in the proposed
+observable data; it is not execution of Nimbus, actual trusted completion, PostgreSQL
+append guards, Java21 or Spring. Those runtime proofs remain required below.
+
+The rule against silent contract widening applies before activation. Own uncommitted
+transport/registry/model drafts from this recovery were removed; every pinned runtime,
+test, SQL and CI source was restored byte-for-byte. No new runtime file is published.
+Current mutation is only roadmap and append-only reconciliation; CREATE/DELETE none.
+Use the existing same-ID message `docs(identity): close operation binding implementation scope`.
+No new HPR ID, branch, PR, image, release, deployment or calibration request.
+
+### Selected persistent-origin witness within existing 050 paths
+
+Keep the dedicated native issuer/jti association, original native JWT claim names and
+ordinary legacy routes. Do not add a signed session claim, client proof field, global
+forced logout, permission flag or DB role assumption as a substitute for producer proof.
+The not-yet-implemented format-one storage definition is explicitly amended before its
+first deployment: retain all 20 previously selected columns and add exactly:
+
+| Column | Exact type / constraints | Meaning |
+|---|---|---|
+| producer_authenticator | bytea NOT NULL; octet_length exactly 32; immutable | Private HMAC-SHA-256 authentication of the complete immutable binding tuple, minted only from consumed actual producer verification |
+
+Format_version remains exactly 1 under this explicit corrected initial definition;
+there are no existing binding rows, constructor clients or applied format-one migration
+to reinterpret. The dated 045/D1 twenty-column design is retained as history and is
+superseded only by this amendment for future 050. All ID/type/null/time/512-byte/FK/
+unique/index/session/generation rules remain required; the tag confers no PERMIT or
+permission. It is neither a bearer/password/hash snapshot nor an unkeyed tuple digest.
+SQL enforces tag presence/length and exact replay equality, but does not receive the
+key or claim cryptographic producer verification.
+
+Private key derivation uses existing effective native HS256 signing bytes from
+`hidra.platform.security.jwt.hmac-secret` with exactly the current loader semantics;
+no new deployment secret/property is required. Keep this material and the derived key
+inside Identity infrastructure; never put either in models/settings/handles/bindings,
+SQL/functions, exports, diagnostics, artifacts or responses. Native key validation and
+rotation behavior remain coupled to the existing qualified encoder/decoder; no new
+key-history/grace or legacy authority backfill is introduced.
+
+Use HKDF-SHA-256 extract-and-expand as defined by
+[RFC 5869](https://www.rfc-editor.org/info/rfc5869/). Fixed non-secret UTF-8 salt:
+`Hidra/identity/operation-binding/format-1/key`; expand info:
+`Hidra/identity/operation-binding/format-1/authenticator`; output length 32 bytes.
+The producer authenticator is HMAC-SHA-256 with that derived key over the canonical
+binding frame. These labels separate producer proof from native-token signing.
+Do not use a raw secret as public data or an unkeyed hash as an attestation.
+
+Canonical frame starts with the fixed UTF-8 domain
+`Hidra/identity/operation-binding/format-1/tuple` and a zero separator. Encode all
+20 preceding fields in the exact column order retained in 045, excluding the tag.
+Use explicit null/present markers, big-endian fixed-width numbers, length-prefixed
+strict UTF-8 strings preserving every byte/case, enum names as such strings, and
+finite timestamps as epoch seconds plus nanoseconds. Reject malformed Unicode or
+nonrepresentable source time before attestation; never normalize, round or truncate
+provenance to make proof succeed. Encode incrementally with bounded buffers; do not
+invent a smaller legacy subject/issuer column limit or allocate an unbounded combined
+frame. Define and test fixed vectors, null/type/time distinctions and every-field
+sensitivity. Verify tags with a constant-time comparison.
+
+Only the private TrustedAuthenticationVerificationRegistry consumed-receipt path may
+mint a tag, and only for the actual completion caller whose exact input/source snapshot
+matches that one-use receipt. A public constructor/DTO/handle alone cannot invoke
+attestation or turn an arbitrary supplied tuple into trusted evidence. Materialize the
+attested immutable binding before append in the same REQUIRED READ_COMMITTED owner
+completion transaction. All prior sign/flush/append/event/commit failure rollback and
+commit-before-return requirements remain; no tag/token/receipt delivery on failure.
+Publish the in-memory completion receipt only after successful commit.
+
+Every persistent native B1 lookup must validate the private authenticator over the
+stored full tuple before returning eligible evidence, in addition to qualified JWT
+verification and current joined owner eligibility. Missing/legacy binding still gives
+opaque ACCESS_DENIED. A missing/malformed/invalid stored tag is corrupt provenance:
+operational failure without identities or eligibility, not successful absence or a
+fallback to token roles/details/constructor state. An arbitrary structurally valid
+native insert with a random/copied tag remains storage data and cannot authenticate
+a caller. A copied genuine tag on a different session/jti/version/source fails.
+Exact authenticated storage replay remains read evidence only; it never mints a fresh
+private completion receipt or delivers another token.
+
+The domain value and JDBC read/append must defensively preserve immutable tag bytes;
+array mutation, shallow record equality or driver buffer reuse cannot change proof.
+Exact replay includes the tag. No raw tag, key or callback appears in the JDK-only
+Topology evidence/result or existing REST response. Keep the original assertion trust,
+LDAP exact authenticated-entry transport, native byte envelope and all ordinary API
+compatibility requirements. User/credential/provider/link invalidation and SQL guards
+remain independent checks; a valid MAC is not current eligibility or authorization.
+
+### Scope allocation and additional real acceptance
+
+The exact corrected union remains 22 CREATE / 28 UPDATE / zero DELETE, 50 unique paths.
+No path is added. Implement the witness in the already selected domain binding,
+verification snapshot/port, private registry, completion, JDBC adapters, B1 reader,
+reserved V20261013_001 migration and existing selected tests. Existing selected
+ownership/dictionary and test inventory updates carry only their genuine new evidence.
+Platform configuration/signing source, old 147 SQL, API/OpenAPI, original history,
+build/dependencies/workflows, CI-003 gate algorithm, release/version/deployment and
+051/foreign ownership remain read-only. No fourth producer or privileged DDL bypass.
+
+Add to the existing 050 acceptance obligations:
+- A valid real-key legacy native JWT plus an independently inserted structurally valid
+  session/binding and arbitrary 32-byte tag never yields B1 eligibility; demonstrate
+  actual private native decoding, JDBC lookup and fail-closed error/denial behavior.
+- Authentic producer completion, real signing and committed attested binding work for
+  LOCAL/LDAP/AD/OIDC. Independent signing/storage/commit faults return no token/receipt.
+- Every immutable field change, including all SQL NULL branches, exact subject Unicode/
+  case/whitespace, source deadline and generation A/B/A, changes or invalidates the tag.
+  Test copied tags, wrong key/domain, malformed/short/long tag and mutable byte arrays.
+- Storage replay after terminal/expiry stays identical and cannot promote provenance;
+  all DB/native/COPY/MERGE/concurrency/guard/session and older regression cases remain.
+- Source guardrails enumerate exactly the existing three receipt producers and actual
+  completion attestation caller; forged receipt/model/token constructors and details,
+  roles, correlation or untrusted handles cannot mint private attestation. Keys/tags
+  stay outside exports/diagnostics; private verifier failure never produces eligibility.
+
+Use the same focused Maven list including the last correction's LDAP verifier test,
+all six current Python policy suites, actual fresh/upgrade PostgreSQL and dictionary,
+exact source/hash/case inventory and full same-SHA oracle/partition/API/database gate
+plus Fast/Docs. Do not fix a future global test count or claim a JDK proof as runtime
+acceptance. A newly found out-of-contract prerequisite still requires same-ID amendment.
+
+### Disposition and stop boundary
+
+050 is IN PROGRESS / PERSISTENT ORIGIN CONTRACT CORRECTED IN SOURCE / DOCS PENDING /
+NOT IMPLEMENTED. Successful amendment Docs and separate owner Next select the same
+50-file runtime implementation with this witness; no automatic advance. CI-003 remains
+IN PROGRESS, shadow-fallback-required, mandatory unrestricted oracle and optimized
+adoption false. 051 B2/B3, D2–D5/F1–F4, runtime publication and PLATFORM/SITE gates remain
+OPEN. Simulation/P3 remains DEFERRED; preserve gas-first/GZ2, own engine, steady/transient,
+versioned inputs/operator control, synthetic development and owner deployment calibration.
+Project version/release/deployment/closure are unchanged. Publish only the two documents
+to existing main with exact-head guard, confirm automatic Docs CI startup and STOP.
+Unsupported manual CI dispatch is handed to the owner before starting it; no branch/PR/image.
+
+
+### Amendment validation and publication evidence boundary
+
+All six unchanged Python policy suites PASS: docs 10, offline OpenAPI 10, dictionary 17,
+resolve-base 14, CI inventory 22 and full CI evidence 25; 98 cases total. Canonical docs
+PASS (98 documents, 5,346 relative links, 24 modules, 13 P2 rows); offline OpenAPI PASS
+(263 operations, 244 paths, 231 schemas); P1 evidence consistency PASS without closure.
+Exact CI inventory validation PASS with unchanged digest
+`eac6f480b432c075e232ff55e91e81e2410473b322df0f243023c6e7963d14cc`.
+Synthetic resolver suite output is fixture evidence, not a newly recovered hosted base.
+
+All 4,805 pinned Git blobs checked (only mvnw.cmd checkout CRLF normalized for its Git
+blob identity). Exactly roadmap/reconciliation differ; complete reconciliation prefix
+preserved and amendment mirrored. Every production/test/147 SQL/dictionary/ownership/
+workflow/inventory/build/version/history blob is unchanged. Future 50-path union and
+reservation collisions remain unchanged; 22 CREATE absent, 28 UPDATE present. Added-line
+whitespace PASS. No partial runtime draft, branch/PR/image or temporary proof is published.
+
+Two isolated JDK17 proofs compiled/executed outside the repository. OriginProof showed
+a valid synthetic HS256 signature and identical structural tuple observations without
+an origin discriminator. AuthenticatorProof passed RFC5869 Appendix A.1's exact 42-byte
+SHA256 output vector, changed tags for all 20 individual field mutations in its synthetic
+frame, and rejected its zero/copied-tag fixtures. It uses small synthetic values, not
+the future bounded streaming implementation. Neither proof establishes actual producer
+capture, framework decoder, Java21, SQL enforcement, protected reader or rollback/commit
+acceptance. Those remain mandatory real exact-head runtime tests; no Maven/PostgreSQL
+execution, CI failure, new native bearer acceptance or deployment qualification claimed.
+
+Required publication CI is automatic HidraAPI Documentation Validation (docs.yml) on the
+published main SHA. Full/Fast filters do not select this exact two-document amendment.
+Verify exact parent/tree/message/path/blob scope, guarded ref update and Docs startup,
+then STOP without waiting for completion or advancing. Docs SUCCESS is PENDING at
+preparation. After acceptance, a separate owner Next selects corrected 050 runtime;
+CI-003 stays IN PROGRESS and all final PLATFORM/SITE/closure gates remain unchanged.

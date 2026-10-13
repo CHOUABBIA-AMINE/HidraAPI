@@ -73,11 +73,21 @@ class InventoryTest(unittest.TestCase):
         with self.assertRaises(ValueError): ci.validate(self.root, self.manifest)
 
     def test_archive_not_misreported_in_greenfield_oracle(self):
-        selected = next(e for e in self.manifest['classes'] if e['lane'] == 'postgres-integration')
-        selected['archived_for_greenfield'] = True
+        # Keep two runnable DB classes after archiving one: the scheduler
+        # correctly rejects an empty required shard.
+        path = source(self.root, 'ThirdDatabaseTest',
+                      'import org.testcontainers.containers.PostgreSQLContainer;\\nclass ThirdDatabaseTest {}\\n')
+        third = ci.discover(self.root)['example.ThirdDatabaseTest']
+        template = next(e for e in self.manifest['classes'] if e['lane'] == 'postgres-integration')
+        self.manifest['classes'].append(dict(template, **{
+            'class': 'example.ThirdDatabaseTest', 'path': third['path'],
+            'source_sha256': ci.digest(path.read_bytes()), 'baseline_seconds': 1.0,
+        }))
+        template['archived_for_greenfield'] = True
         lanes = ci.partitions(self.manifest)
-        self.assertEqual(lanes['historical'], [selected['class']])
-        self.assertNotIn(selected['class'], lanes['oracle'])
+        self.assertEqual(lanes['historical'], [template['class']])
+        self.assertNotIn(template['class'], lanes['oracle'])
+        self.assertTrue(lanes['postgres-0'] and lanes['postgres-1'])
         self.assertEqual(set(lanes['unit-architecture'] + lanes['postgres-0'] + lanes['postgres-1']),
                          set(lanes['oracle']))
 

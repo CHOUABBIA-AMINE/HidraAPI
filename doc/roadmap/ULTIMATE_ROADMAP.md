@@ -29,6 +29,15 @@ by this planning commit. Current planning commit message:
 
 
 
+### Current execution checkpoint — HPR-P25-050 D1 transport correction, 2026-10-13
+
+Docs #275 accepted the initial D1 amendment at a847d4c3ee9cd10340c12364705f8ce6d388a8a5.
+Owner Next selected implementation. Source recovery found lossy directory subject
+transport in two files omitted from the former allowlist. The same-ID correction at
+the end adds exactly those two files and the verifier test: future scope now totals
+22 CREATE / 28 UPDATE. Runtime is NOT IMPLEMENTED. Correction Docs acceptance plus
+a separate Next selects that corrected scope; CI-003 remains IN PROGRESS unchanged.
+
 ### Owner-selected parallel continuation — HPR-P25-050 D1, 2026-10-13
 
 CI-003 remains IN PROGRESS with mandatory greenfield oracle and optimized adoption false.
@@ -234,7 +243,7 @@ aggregate may replace it. D1–D5 are internal gates, never new HPR task IDs.
 |---|---|---|---|---|---|---|---|---|---|---|
 | 1 | HPR-CI-003 | Automatic fast suite and equivalent parallel full verification | CI / independent verification | IN PROGRESS / SHADOW EQUIVALENT 5x SAME SHA; multi-revision/performance OPEN | Accepted 049; this Docs PASS; owner selection | CI-003 closed list | Selection/report/release negative tests; shadow full verification | No lost cases; mandatory gate fail-closed; repeatable timing | CI | `ci: automate fast feedback and preserve full verification gates` |
 | 2 | HPR-P25-047 | Provider/link database security generations | Identity | COMPLETED / CI ACCEPTED | Accepted 046/048/049; existing registration Docs; separate Next | Existing seven-file list, unchanged | Real writers, Flyway fresh/upgrade, native/bulk/race/rollback | Exact implementation Production + Docs SUCCESS | F1 | `feat(identity): enforce provider and link security generations` |
-| 3 | HPR-P25-050 | Immutable operation binding and trusted issuance/reader | Identity; Platform technical wiring | IN PROGRESS / D1 SCOPE CLOSED; DOCS PENDING / NOT IMPLEMENTED | 047; accepted 044/045 design | D1 then exact Identity list; no code authorization yet | LOCAL/LDAP/AD/OIDC, expiry, generation, rollback | B1 provenance and storage proof; no inferred B2/B3 | F1 | `feat(identity): bind protected operations to trusted authentication` |
+| 3 | HPR-P25-050 | Immutable operation binding and trusted issuance/reader | Identity; Platform technical wiring | IN PROGRESS / D1 TRANSPORT SCOPE CORRECTED; DOCS PENDING / NOT IMPLEMENTED | 047; accepted 044/045 design | D1 then exact Identity list; no code authorization yet | LOCAL/LDAP/AD/OIDC, expiry, generation, rollback | B1 provenance and storage proof; no inferred B2/B3 | F1 | `feat(identity): bind protected operations to trusted authentication` |
 | 4 | HPR-P25-051 | Cross-owner revocation/time/transaction linearization | Identity / Party / Topology; Platform mechanics | BLOCKED on D2 atomic-time and transaction proof | 050; accepted 038/043; D2 | D2 then exact owner/export/fence list | Real PostgreSQL owner/race/expiry/connection tests | B2/B3 and writer ordering + bounded latency PASS | F1 | `feat(security): linearize cross owner protected operations` |
 | 5 | HPR-P25-052 | Topology authoring, route/profile and revision publication APIs | Topology; read-only foreign owner contracts | PLANNED / REGISTERED; D3 contract/scope gate | 051; accepted 018/019/020/032/034/036/037/038; D3 | D3 closed authoring/storage/API list | Actual API round trips, epochs/CAS/history/import-export | F1-02/03/04 within explicit supported topology scope | F1 | `feat(topology): expose governed engineering revision workflows` |
 | 6 | HPR-P25-053 | Product/property/method metadata authoring and history | Custody; source approval through Workflow | PLANNED / REGISTERED; D3 contract/scope gate | 051; accepted 018/022 design; D3 | D3 exact Custody/owner-export list | Multi-product metadata, unsupported shape, old GAS replay | F2-01 and product share of F2-03 | F2 | `feat(custody): govern versioned product engineering data` |
@@ -257,7 +266,7 @@ design, regression and repair work stays inside these tasks by controlled same-I
 
 | Gate | Accountable owner / affected task | Required resolution before code | Current source reason / limitation | Output / failure rule |
 |---|---|---|---|---|
-| D1 | Identity / 050 | CLOSED IN SOURCE / DOCS PENDING; exact allocation below | Actual implementation/runtime acceptance pending; no retrofit of unbound sessions | Accepted amendment Docs + separate Next selects closed 050 envelope; B2/B3 remain 051 |
+| D1 | Identity / 050 | TRANSPORT CORRECTION CLOSED IN SOURCE / DOCS PENDING; 50-file union below | Initial 47-file allocation missed exact LDAP transport; runtime acceptance pending | Correction Docs + separate Next selects corrected 050 envelope; B2/B3 remain 051 |
 | D2 | Identity + Topology + Party; technical transaction owner / 051 | Specify atomic head/read-time validity, all future DENY activation boundaries, same-connection transaction enforcement and bounded fence latency | Current evaluator uses per-call Instant.now; actor uses separate clock; transaction config only enables management | Independently reviewable B2 algorithm, B3 real DB proof and synthetic timing envelope; code BLOCKED if unsupported policy cannot fail closed |
 | D3 | Existing source owners / 052–055 | Close draft/published schemas, supported product/equipment/geometry coverage, permissions, export packages, API names, migrations and exact paths | Existing 018–022/028 designs explicitly left endpoint/class/file allocation unresolved; GAS-only/characteristic format limits remain | Per-task same-ID exact scope/contract appendix, collision scan and input/output acceptance fixtures; no arbitrary future filename presented as approved |
 | D4 | Telemetry / Integration / Monitoring / Workflow / Audit / 056–057 | Close configured freshness/clock-skew/binding time/units/trust and observation/action target policy, APIs and exact files | Existing trust service and Monitoring scalar lookup lack the complete approved monitoring/action contract | Explicit synthetic policies and UNKNOWN behavior; owner configuration at deployment; no assumed live protocol, physical threshold or causal truth |
@@ -7268,3 +7277,143 @@ is `HidraAPI Documentation Validation` (docs.yml), automatically selected by thi
 two-document main push. Full/Fast push filters exclude this amendment; do not substitute
 an unnecessary manual dispatch for Docs. Record only startup on the published SHA and
 stop; Docs SUCCESS is not claimed in advance.
+
+
+## 2026-10-13 — HPR-P25-050 D1 exact directory-subject transport correction
+
+### Selected stage, recovered prerequisite and source evidence
+
+Owner Next selected 050 implementation after Docs #275 SUCCESS on main
+`a847d4c3ee9cd10340c12364705f8ce6d388a8a5`, tree
+`c7088eef6f9a7ebcc3c261b283a8282a59d963e1`. Latest unchanged runtime source remains
+Production #677 / Fast #10 SUCCESS on `117d0d673a8ab8dcb069e95422ef52886a29f787`.
+The implementation recovery found an exact-file prerequisite omitted from D1. The
+registered rule applies: "A failed prerequisite outside this exact list blocks and
+requires explicit same-ID amendment, never silent widening."
+
+Concrete source chain at refreshed main:
+- `LdapCredentialVerificationAdapter.stringValue`, `binarySubject` (text branch) and
+  `firstNonBlank` normalize directory identity attributes with trim before selecting
+  the external subject. `verify` searches attributes, then separately authenticates
+  with the same filter; its result carries no untouched subject or authenticated-entry
+  association. The new producer proof must tie its identity to the actual verified
+  entry, not infer it from a separate search that can resolve a different entry.
+- `VerifiedDirectoryIdentity`'s canonical constructor uses require/normalize for
+  subject, trimming again. LdapAuthenticationProvider receives only this lossy value.
+  An atomic generation query added solely to the provider cannot recover lost bytes.
+- `LdapCredentialVerificationAdapterTest` currently asserts normalized profile
+  fields and canonical binary objectGUID presentation. Preserve all four existing
+  cases and those profile expectations while adding exact subject/entry evidence.
+
+044/045 and D1 require exact verified external subject/case and prohibit normalization
+to force a link match. The former 47-file list omitted the two transport files and
+their verifier test. This is a repair to that list, not a new product requirement,
+HPR ID, architecture stage or authorization to weaken the accepted policy. The prior
+D1 source closure was incomplete for directory identity transport; its Docs PASS
+validated documentation, not runtime sufficiency. No implementation has been made.
+
+### Exact bounded amendment and resulting implementation scope
+
+This amendment changes only `doc/roadmap/ULTIMATE_ROADMAP.md` and append-only
+`doc/model-remediation/RECONCILIATION.md`; CREATE/DELETE none. Use the already registered
+amendment message `docs(identity): close operation binding implementation scope`.
+The implementation message stays `feat(identity): bind protected operations to trusted authentication`.
+
+The prior 22 CREATE / 25 UPDATE allowlist is preserved and extended by exactly these
+three UPDATE paths. The authoritative future union is 22 CREATE / 28 UPDATE / zero
+DELETE, 50 unique exact paths. No directory wildcard or further file permission.
+
+| Action | Additional exact implementation path | Bounded purpose |
+|---|---|---|
+| UPDATE | `src/main/java/dz/sh/hidra/modules/identity/application/model/VerifiedDirectoryIdentity.java` | Transport an untouched verified subject alongside compatible normalized profile data |
+| UPDATE | `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/LdapCredentialVerificationAdapter.java` | Capture the exact identity attributes of the authenticated directory entry |
+| UPDATE | `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/LdapCredentialVerificationAdapterTest.java` | Preserve four prior cases and add raw-subject and authenticated-entry regression proof |
+
+
+Selected contract: add a JDK-only `verifiedSubject` transport accessor to
+VerifiedDirectoryIdentity with the existing five-argument constructor and normalized
+`subject`/username/profile accessors retained for source compatibility. The old subject
+accessor is not trusted input for new binding/link lookup. A DTO/accessor/constructor
+alone still cannot mint provenance: only the actual successful directory verifier and
+existing selected LdapAuthenticationProvider producer may do so. Do not add a fourth
+registry producer, public client field, token claim or exported permission/receipt.
+
+The actual verifier captures the raw subject from the entry whose credentials were
+verified, using the accepted objectGUID / entryUUID / userPrincipalName / distinguished
+name priority. Preserve binary objectGUID's deterministic Base64 + objectGUID: identity;
+do not trim text identifiers before exact transport. Profile normalization and escaped
+submitted-user filter behavior stay unchanged. Blank/missing/malformed identity fails
+closed; whitespace/case remains visible to exact source/link matching and compatibility
+checks. No fallback to submitted login text, second unrelated identity search, profile
+snapshot, claims or display name as authentication authority. The raw subject may never
+be converted to a normalized value merely to find an existing link. Existing unmappable
+normalized links require the owner's explicit data correction; no authority backfill.
+
+Real producer must bind the subject to the exact authenticated entry/DN, with directory
+resource cleanup on every path and existing timeouts/transport configuration preserved.
+Use synthetic context/verifier fixtures for deterministic tests; no live directory proof
+is claimed. Test distinct raw subjects, whitespace/case, missing identity, canonical
+binary GUID, authentication failure, entry switching between lookup and bind, and
+cleanup. LdapAuthenticationProviderTest and TrustedAuthenticationVerificationTest must
+prove exact lookup/captured link generation and rejection of normalized substitution.
+Add LdapCredentialVerificationAdapterTest to the already registered focused Maven list;
+preserve its existing four case identities and update only affected inventory source
+hashes/new cases under the unchanged lane/gate rules. Platform LDAP connection/config,
+LdapCredentialVerificationPort and other API/model contracts stay outside this amendment.
+
+All earlier 050 storage, generation, single completion commit, session guards, native
+decoder/parser, B1 reader, rollback, fresh-only migration and regression acceptance
+remain required. Migration reservation remains V20261013_001__p25_identity_operation_binding.sql,
+predecessor 20261012.002, 147 prior SQL files; no collision or runtime SQL change here.
+CI-003 remains IN PROGRESS, shadow-fallback-required, mandatory greenfield oracle,
+optimized adoption false. B2/B3 remain 051; simulation/P3 stays deferred. Gas-first/GZ2,
+own engine, steady/transient direction, versioned inputs/operator control, synthetic
+development fixtures and owner deployment calibration remain unchanged.
+
+050 remains IN PROGRESS / D1 CORRECTION CLOSED IN SOURCE / DOCS PENDING / NOT IMPLEMENTED.
+No runtime file was modified or created during this correction. Successful amendment
+Docs and a separate owner Next select the corrected 50-file implementation union.
+Guarded existing-main publication only, no PR/branch/image; observe required Docs startup
+on the published SHA and STOP. No runtime CI is required by this doc-only push's filters.
+
+### Recovered local evidence and execution limits
+
+A temporary synthetic SubjectProof compiled the unchanged VerifiedDirectoryIdentity via
+`java --module jdk.compiler/com.sun.tools.javac.Main`, then executed with Java17.
+It asserted that current inputs `entry-123` and ` entry-123 ` expose equal subjects,
+reproducing lost identity information. This is isolated source behavior, not Java21,
+Spring, LDAP credential verification, JWT, PostgreSQL, JPA or Flyway acceptance. Temporary
+proof sources/classes are outside the repository and will not be published. An initial
+`javac` command could not start because that executable is absent; the available compiler
+module was used successfully instead. No production/test Java source was changed.
+
+Baseline command `bash ./mvnw -B -q -DskipTests compile` failed before compilation:
+Spring Boot parent 4.1.1 could not resolve from repo.maven.apache.org (Temporary failure
+in name resolution). Local Java17 and absent Docker/psql additionally prevent claiming
+Java21/real PostgreSQL acceptance here. This was not a new code failure or hosted CI
+failure. Actual implementation validation remains pending; do not report a Maven PASS.
+
+
+### Correction validation and publication gate
+
+Executed all six unchanged Python policy suites: test_validate_docs.py (10),
+test_validate_openapi_snapshot.py (10), test_generate_data_dictionary.py (17),
+test_resolve_openapi_base.py (14), test_verify_ci_test_inventory.py (22) and
+test_verify_full_ci_evidence.py (25), each through `python3 .github/scripts/<name>`.
+98 cases PASS. `python3 .github/scripts/validate_docs.py` PASS (98 documents / 5,346
+relative links); `validate_openapi_snapshot.py` PASS (offline 263 operations / 244
+paths / 231 schemas); `validate_p1_closure.py` PASS; `verify_ci_test_inventory.py`
+PASS with unchanged inventory digest eac6f480b432c075e232ff55e91e81e2410473b322df0f243023c6e7963d14cc.
+Synthetic resolve-base suite output is fixture data, not a newly recovered hosted base.
+
+Source/scope check verified all 4,805 pinned Git tree blobs (archive CRLF normalization
+only for mvnw.cmd). Only roadmap/reconciliation differ; full reconciliation prefix
+preserved, all runtime/tests/147 SQL/inventory/workflows/dictionary unchanged. Corrected
+50-path union is unique; all 22 CREATE paths absent and all 28 UPDATE paths present.
+Reserved migration version/object collision checks and added-line whitespace PASS.
+No test case was omitted or runtime acceptance claimed. No new branch/PR/image or release.
+
+Required push CI remains HidraAPI Documentation Validation (docs.yml). Its published-SHA
+startup is the stop boundary; do not poll completion or advance to runtime automatically.
+Full/Fast filters do not select these two documentation files. New Docs SUCCESS remains
+pending at preparation. Owner Next after Docs acceptance selects corrected 050 runtime.

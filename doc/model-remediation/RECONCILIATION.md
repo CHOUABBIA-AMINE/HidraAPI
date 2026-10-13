@@ -18031,3 +18031,56 @@ generator/build/workflow/API/version sources and whitespace PASS. Current main C
 SUCCESS at 99cae14; no new runtime CI failure or generation acceptance is claimed.
 Registration complete in source; exact-head Docs PENDING. After Docs PASS, separate
 owner Next selects only the registered three-file HPR-P25-049 test correction.
+
+
+## 2026-10-13 — HPR-P25-049 forward-compatible JSONB migration proof
+
+Owner selects the registered HPR-P25-049 correction only. Refreshed GitHub main is
+`d8ad6c82801ac904398d85b87938b8ecce68de9f`, tree
+`ff503372e3dd51f923f61324946b22ce265ca0ab`; registration
+[Docs #265](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38346402828)
+is SUCCESS. Latest accepted runtime remains `99cae14ab2aa1b752dca34686fb76cf76d666a27`
+with Production #665 and Docs #264 SUCCESS. Current AGENTS, roadmap, reconciliation,
+registered test and configured Flyway migration location were read before mutation.
+
+Exact message: `test(identity): make jsonb migration checks forward compatible`.
+UPDATE only the registered IdentityProviderLinkJsonbPostgresIntegrationTest.java,
+roadmap and reconciliation; CREATE/DELETE none. The fresh-chain method enumerates
+all current `classpath:db/migration` versioned SQL resources and requires exact
+successful SQL history script equality, with no duplicates or empty source inventory.
+The fixed total/latest-version assertions are removed. Flyway validate (including
+checksum/missing-migration validation), zero pending migrations, zero failed history
+rows, successful presence of version `20261012.001` and physical native jsonb types
+remain required. No replacement total or future version is pinned or claimed applied.
+The existing nine test methods remain; all eight other test bodies, fixtures, writer
+paths, assertions and remaining test helpers are byte-identical. Java edits are limited
+to canonical UpdatedOn, necessary imports and the fresh-chain migration proof.
+
+Focused validation attempted with `bash ./mvnw -B -q
+-Dtest=IdentityProviderLinkJsonbPostgresIntegrationTest,IdentityProviderSemanticRemediationTest,LocalAuthenticationIntegrationTest,LdapAuthenticationProviderTest,IdentityOidcJwtAuthenticationConverterTest,AuthorizationAssertionTrustTest test`
+(the tracked wrapper has no executable bit). Maven fails before compilation: Spring
+Boot parent `4.1.1` cannot resolve because `repo.maven.apache.org` reports Temporary
+failure in name resolution. Local Java is 17 rather than required 21, and Docker is
+unavailable. No local Java/PostgreSQL PASS or Docker-skip PASS is claimed. Actual real
+PostgreSQL/Flyway/JPA execution remains required in exact-head hosted Production CI.
+
+Local validation PASS: 37 validator unit checks (10 docs, 10 offline OpenAPI,
+17 dictionary); canonical docs (98 documents, 5,308 links, 24 modules, 13 P2 rows);
+offline OpenAPI (263 operations, 244 paths, 231 schemas); existing P1 evidence
+consistency without closure execution. Exact three-file scope, eight preserved test
+bodies/fixtures/helpers, all 146 unchanged SQL blobs/checksums, prior history,
+append-only reconciliation, source-inventory pattern coverage and whitespace are
+checked before publication. No migration/JPA source bundle or physical dictionary
+change; no catalog regeneration, fabricated evidence or generation implementation.
+
+Disposition: HPR-P25-049 IN PROGRESS / CODE IMPLEMENTED / CI PENDING. Full Production
+and Docs SUCCESS on the published correction SHA is the acceptance gate. Guarded
+publication validates parent/tree/message/blob/scope, advances existing main using
+the expected head and confirms exact-head required CI startup, then STOP without
+waiting for completion or advancing. HPR-P25-047 remains BLOCKED / NOT IMPLEMENTED
+ON MAIN until accepted 049 and a separate owner Next select its unchanged seven-file
+registration. Production Java, SQL, LOCAL credential test, dictionary/generator,
+API/OpenAPI, build/dependencies/workflows, policy/session/binding/issuance/reader,
+version/release/deployment/closure remain unchanged. F1–F4/P2.5 OPEN; simulation/P3
+DEFERRED. Gas-first/GZ2, Hidra own engine, steady/transient direction, versioned
+inputs/operator control, synthetic development and owner calibration are preserved.

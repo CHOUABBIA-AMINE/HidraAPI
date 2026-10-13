@@ -7,7 +7,7 @@
  *
  * @Name        : IdentityProviderLinkJsonbPostgresIntegrationTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-12
+ * @UpdatedOn   : 2026-10-13
  *
  * @Type        : Class
  * @Layer       : Identity Test
@@ -29,16 +29,20 @@ import dz.sh.hidra.modules.identity.domain.value.ProviderType;
 import dz.sh.hidra.modules.identity.infrastructure.persistence.entity.ExternalIdentityJpaEntity;
 import dz.sh.hidra.modules.identity.infrastructure.persistence.repository.ExternalIdentityJpaRepository;
 import jakarta.persistence.EntityManager;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Stream;
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataAccessException;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -218,11 +222,17 @@ class IdentityProviderLinkJsonbPostgresIntegrationTest {
     }
 
     @Test
-    void freshFullMigrationChainValidatesExistingJsonbSchemaWithoutNewSql() {
+    void freshFullMigrationChainValidatesExistingJsonbSchemaWithoutNewSql() throws IOException {
         flyway.validate();
         assertEquals(0, flyway.info().pending().length);
-        assertEquals(146, jdbc.queryForObject("SELECT count(*) FROM flyway_schema_history WHERE success AND type='SQL'", Integer.class));
-        assertEquals("20261012.001", flyway.info().current().getVersion().getVersion());
+        List<String> currentSqlInventory = Stream.of(new PathMatchingResourcePatternResolver()
+                .getResources("classpath*:db/migration/V*__*.sql"))
+                .map(Resource::getFilename).toList();
+        assertThat(currentSqlInventory).isNotEmpty().doesNotHaveDuplicates();
+        assertThat(jdbc.queryForList("SELECT script FROM flyway_schema_history WHERE success AND type='SQL'", String.class))
+                .containsExactlyInAnyOrderElementsOf(currentSqlInventory);
+        assertEquals(0, jdbc.queryForObject("SELECT count(*) FROM flyway_schema_history WHERE NOT success", Integer.class));
+        assertEquals(1, jdbc.queryForObject("SELECT count(*) FROM flyway_schema_history WHERE success AND type='SQL' AND version='20261012.001'", Integer.class));
         for (String column : List.of("metadata", "external_attributes_snapshot")) {
             String table = column.equals("metadata") ? "hidra_identity_provider" : "hidra_identity_external_identity";
             assertEquals("jsonb", jdbc.queryForObject("SELECT udt_name FROM information_schema.columns WHERE table_schema='public' AND table_name=? AND column_name=?", String.class, table, column));

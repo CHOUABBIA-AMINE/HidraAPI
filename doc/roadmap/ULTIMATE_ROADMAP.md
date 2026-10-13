@@ -26,7 +26,7 @@ This is an execution-status summary of the authoritative task table below, **not
 | **HPR-P25-046 LOCAL credential generation** | **COMPLETED / PRODUCTION #662 AND DOCS #261 SUCCESS** | Accepted at repaired `554f2a0`; operation provenance runtime still OPEN |
 | **HPR-P25-047 provider/link generations** | **BLOCKED / NOT IMPLEMENTED ON MAIN** | JSONB mapping is accepted; newly introduced 048 test pins migration count/tail outside the seven-file scope; registered 049 correction required |
 | **HPR-P25-048 provider/link jsonb correction** | **COMPLETED / PRODUCTION #665 AND DOCS #264 SUCCESS** | Accepted at `99cae14`; forward-migration test correction is separately registered as 049 |
-| **HPR-P25-049 JSONB test migration compatibility** | **PLANNED / REGISTERED / NOT IMPLEMENTED** | Correct only the fresh-chain count/tail assertions before resuming 047; no generation source in this correction |
+| **HPR-P25-049 JSONB test migration compatibility** | **IN PROGRESS / CODE IMPLEMENTED / CI PENDING** | Current SQL inventory equality replaces count/tail pins; full exact-head Production and Docs SUCCESS required before separate owner Next resumes 047 |
 | F1-02 through F1-04 publication, APIs and topology verification | PLANNED; subsequent implementation slices not registered | Register bounded HPRs before execution |
 | F2-01 through F2-04 product/equipment/engineering history | PLANNED; not registered | Dependent F1 ownership and history work |
 | F3-01 through F3-04 telemetry/monitoring/action evidence | PLANNED; not registered | Dependent topology and source-scope contracts |
@@ -39,7 +39,7 @@ This is an execution-status summary of the authoritative task table below, **not
 
 **Product policy:** Hidra is universal, configurable and company/network/product independent. No real customer data, P&IDs, vendor curves or live SCADA are prerequisites for generic development. PLATFORM software testing uses explicit synthetic data; customer SITE commissioning is an entirely separate gate. Numerical simulation work is deferred.
 
-**Code discipline:** `HPR-P25-037` is implemented and CI accepted; `HPR-P25-038` policy design is accepted; `HPR-P25-039` Party eligibility is accepted; `HPR-P25-040` trusted Topology actor export is CI accepted; `HPR-P25-041` paired scoped permission export is CI accepted; `HPR-P25-042` live Facility/Party owner-reference query is CI accepted; `HPR-P25-043` cross-owner access linearization design is Docs accepted; `HPR-P25-044` B1 operation-authentication provenance policy is completed as design below; policy Docs #255 SUCCESS. `HPR-P25-045` additive binding/credential-security storage policy is completed as design below; policy Docs #257 SUCCESS. `HPR-P25-046` LOCAL credential generations and bounded CI repairs are accepted at repaired `554f2a0`: exact-head Production #662 and Docs #261 SUCCESS. `HPR-P25-048` is accepted at `99cae14`: exact-head Production #665 and Docs #264 SUCCESS. Its new JSONB test pins the current migration count/tail and therefore blocks the additive 047 migration outside the original seven-file envelope. `HPR-P25-049` registers the exact three-file test correction below; successful registration Docs and a separate owner Next select it. `HPR-P25-047` remains BLOCKED / NOT IMPLEMENTED ON MAIN until accepted 049 and a further owner Next resume the unchanged seven-file registration. Runtime provenance, common-time and transaction-participation gates remain OPEN. Subsequent runtime revocation/linearization and publication slices remain unregistered. Codes `F1-02` etc. are **planning references only** and MUST NOT be executed or treated as approved HPR codes before registration, exact commit message and exact create/update/delete file allowlists. Dependencies are minimum known gates, not blanket permission.
+**Code discipline:** `HPR-P25-037` is implemented and CI accepted; `HPR-P25-038` policy design is accepted; `HPR-P25-039` Party eligibility is accepted; `HPR-P25-040` trusted Topology actor export is CI accepted; `HPR-P25-041` paired scoped permission export is CI accepted; `HPR-P25-042` live Facility/Party owner-reference query is CI accepted; `HPR-P25-043` cross-owner access linearization design is Docs accepted; `HPR-P25-044` B1 operation-authentication provenance policy is completed as design below; policy Docs #255 SUCCESS. `HPR-P25-045` additive binding/credential-security storage policy is completed as design below; policy Docs #257 SUCCESS. `HPR-P25-046` LOCAL credential generations and bounded CI repairs are accepted at repaired `554f2a0`: exact-head Production #662 and Docs #261 SUCCESS. `HPR-P25-048` is accepted at `99cae14`: exact-head Production #665 and Docs #264 SUCCESS. Its new JSONB test pins the current migration count/tail and therefore blocks the additive 047 migration outside the original seven-file envelope. `HPR-P25-049` implements the exact three-file test correction below after registration Docs #265 SUCCESS and owner selection; full exact-head Production and Docs acceptance remains PENDING. `HPR-P25-047` remains BLOCKED / NOT IMPLEMENTED ON MAIN until accepted 049 and a further owner Next resume the unchanged seven-file registration. Runtime provenance, common-time and transaction-participation gates remain OPEN. Subsequent runtime revocation/linearization and publication slices remain unregistered. Codes `F1-02` etc. are **planning references only** and MUST NOT be executed or treated as approved HPR codes before registration, exact commit message and exact create/update/delete file allowlists. Dependencies are minimum known gates, not blanket permission.
 
 | Order | Code / planning reference | Task | Current status | Dependencies / gate | Track |
 |---|---|---|---|---|---|
@@ -54,7 +54,7 @@ This is an execution-status summary of the authoritative task table below, **not
 | 2.7 | HPR-P25-045 | B1 binding and credential-security storage preflight | COMPLETED — design only; Docs #257 SUCCESS | Accepted at `8cb9c8560b57da14de43b3e391ec1808d2eb1395`; runtime A/B/C and B2/B3 OPEN | F1 |
 | 2.8 | HPR-P25-046 | LOCAL credential database security generation | COMPLETED — exact-head Production #662 and Docs #261 SUCCESS | Accepted at repaired `554f2a07c2ddb1147ea1517f331ac6b7b87652b6`; B1 runtime still OPEN | F1 |
 | 2.8a | HPR-P25-048 | Correct provider/link existing jsonb ORM binding | COMPLETED — exact-head Production #665 and Docs #264 SUCCESS | Accepted at `99cae14ab2aa1b752dca34686fb76cf76d666a27`; JSONB writer compatibility retained | F1 |
-| 2.8b | HPR-P25-049 | Make JSONB fresh-chain proof forward compatible | PLANNED — REGISTERED / NOT IMPLEMENTED | Concrete 048 test count/tail blocker; exact three-file correction below; registration Docs PASS and separate owner Next | F1 |
+| 2.8b | HPR-P25-049 | Make JSONB fresh-chain proof forward compatible | IN PROGRESS — CODE IMPLEMENTED / CI PENDING | Exact three-file correction; full exact-head Production and Docs SUCCESS required before separate owner Next resumes 047 | F1 |
 | 2.9 | HPR-P25-047 | Provider and external-link database security generations | BLOCKED — NOT IMPLEMENTED ON MAIN | JSONB mapping accepted at 99cae14; accepted 049 forward-migration test correction and separate owner Next required before resuming unchanged seven-file envelope | F1 |
 | 2a | F1-02 implementation | Station revision history / transactional publication | PLANNED — not registered or implemented | HPR-P25-038 policy design; exact implementation allowlist and subsequent owner Next | F1 |
 | 3 | F1-03 | Company-scoped authoring, topology APIs and exact-history access | PLANNED — needs HPR registration | F1-02; authorization/API contracts | F1 |
@@ -5092,3 +5092,56 @@ generator/build/workflow/API/version sources and whitespace PASS. Current main C
 SUCCESS at 99cae14; no new runtime CI failure or generation acceptance is claimed.
 Registration complete in source; exact-head Docs PENDING. After Docs PASS, separate
 owner Next selects only the registered three-file HPR-P25-049 test correction.
+
+
+## 2026-10-13 — HPR-P25-049 forward-compatible JSONB migration proof
+
+Owner selects the registered HPR-P25-049 correction only. Refreshed GitHub main is
+`d8ad6c82801ac904398d85b87938b8ecce68de9f`, tree
+`ff503372e3dd51f923f61324946b22ce265ca0ab`; registration
+[Docs #265](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38346402828)
+is SUCCESS. Latest accepted runtime remains `99cae14ab2aa1b752dca34686fb76cf76d666a27`
+with Production #665 and Docs #264 SUCCESS. Current AGENTS, roadmap, reconciliation,
+registered test and configured Flyway migration location were read before mutation.
+
+Exact message: `test(identity): make jsonb migration checks forward compatible`.
+UPDATE only the registered IdentityProviderLinkJsonbPostgresIntegrationTest.java,
+roadmap and reconciliation; CREATE/DELETE none. The fresh-chain method enumerates
+all current `classpath:db/migration` versioned SQL resources and requires exact
+successful SQL history script equality, with no duplicates or empty source inventory.
+The fixed total/latest-version assertions are removed. Flyway validate (including
+checksum/missing-migration validation), zero pending migrations, zero failed history
+rows, successful presence of version `20261012.001` and physical native jsonb types
+remain required. No replacement total or future version is pinned or claimed applied.
+The existing nine test methods remain; all eight other test bodies, fixtures, writer
+paths, assertions and remaining test helpers are byte-identical. Java edits are limited
+to canonical UpdatedOn, necessary imports and the fresh-chain migration proof.
+
+Focused validation attempted with `bash ./mvnw -B -q
+-Dtest=IdentityProviderLinkJsonbPostgresIntegrationTest,IdentityProviderSemanticRemediationTest,LocalAuthenticationIntegrationTest,LdapAuthenticationProviderTest,IdentityOidcJwtAuthenticationConverterTest,AuthorizationAssertionTrustTest test`
+(the tracked wrapper has no executable bit). Maven fails before compilation: Spring
+Boot parent `4.1.1` cannot resolve because `repo.maven.apache.org` reports Temporary
+failure in name resolution. Local Java is 17 rather than required 21, and Docker is
+unavailable. No local Java/PostgreSQL PASS or Docker-skip PASS is claimed. Actual real
+PostgreSQL/Flyway/JPA execution remains required in exact-head hosted Production CI.
+
+Local validation PASS: 37 validator unit checks (10 docs, 10 offline OpenAPI,
+17 dictionary); canonical docs (98 documents, 5,308 links, 24 modules, 13 P2 rows);
+offline OpenAPI (263 operations, 244 paths, 231 schemas); existing P1 evidence
+consistency without closure execution. Exact three-file scope, eight preserved test
+bodies/fixtures/helpers, all 146 unchanged SQL blobs/checksums, prior history,
+append-only reconciliation, source-inventory pattern coverage and whitespace are
+checked before publication. No migration/JPA source bundle or physical dictionary
+change; no catalog regeneration, fabricated evidence or generation implementation.
+
+Disposition: HPR-P25-049 IN PROGRESS / CODE IMPLEMENTED / CI PENDING. Full Production
+and Docs SUCCESS on the published correction SHA is the acceptance gate. Guarded
+publication validates parent/tree/message/blob/scope, advances existing main using
+the expected head and confirms exact-head required CI startup, then STOP without
+waiting for completion or advancing. HPR-P25-047 remains BLOCKED / NOT IMPLEMENTED
+ON MAIN until accepted 049 and a separate owner Next select its unchanged seven-file
+registration. Production Java, SQL, LOCAL credential test, dictionary/generator,
+API/OpenAPI, build/dependencies/workflows, policy/session/binding/issuance/reader,
+version/release/deployment/closure remain unchanged. F1–F4/P2.5 OPEN; simulation/P3
+DEFERRED. Gas-first/GZ2, Hidra own engine, steady/transient direction, versioned
+inputs/operator control, synthetic development and owner calibration are preserved.

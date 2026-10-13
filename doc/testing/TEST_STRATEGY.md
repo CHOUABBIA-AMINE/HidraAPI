@@ -183,3 +183,40 @@ python3 .github/scripts/verify_ci_test_inventory.py --select historical --report
 Optimized-only acceptance remains disabled; this is an in-progress
 policy candidate pending real exact-head GitHub CI. No baseline
 SQL rewrite or application/release migration is authorized.
+
+
+## HPR-CI-003 bounded oracle concurrency candidate — 2026-10-13
+
+The owner-selected optimization uses completed [Production #677](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38406348730)
+on `117d0d673a8ab8dcb069e95422ef52886a29f787`: warm Maven cache, workflow 9m11s,
+mandatory oracle 8m53s (clean verify 6m23s), slowest DB shard 5m55s. Its digest-checked
+raw XML matches all current 367 required suites/1,759 cases, zero failures/errors/skips.
+Database/integration suite durations sum to 610.399 of 659.882 suite-seconds; summed
+class durations differ from concurrent wall time. The oracle already had two forks.
+
+For this candidate only, the oracle step measures Linux CPUs/RAM and selects at most
+four reused JVM forks. Each fork has a 2048 MiB heap cap; Maven has a 1024 MiB heap cap.
+The selector reserves 3072 MiB outside fork heaps for Maven, native memory and disposable
+database/runner work. This is a scheduling budget, not a measured peak-memory guarantee.
+It limits forks by both CPUs and memory, fails below one CPU/5120 MiB RAM, and records
+the detected budget in the job log and step summary. Four CPUs and >=11264 MiB RAM
+select four forks; two CPUs/7168 MiB select two. Resource/CLI negative tests execute
+with the existing selection policy suite in Full, Fast and Docs.
+
+```bash
+python3 .github/scripts/verify_ci_test_inventory.py --oracle-forks 4 15988
+```
+
+This changes process concurrency, with JUnit method concurrency explicitly disabled.
+The full exact-class selection and clean-verify lifecycle remain intact; class-owned
+Testcontainers databases keep their existing dynamic ports. The two isolated one-fork
+DB shards, unit/architecture lane, current/base OpenAPI and physical dictionary checks,
+same-run class/case equality, strict no-skip reports and release negative gates remain
+mandatory. No POM, Java fixture or reviewed inventory membership/timing is changed.
+
+CI-003 remains IN PROGRESS with mandatory greenfield oracle, shadow fallback and
+optimized adoption false. Runtime success, heap/isolation safety and the <=7m target
+need actual changed-head evidence; no speedup is inferred from extra forks. Compare
+the next run with #677 before selecting further adjustments, and qualify repeated
+comparable timings/cold cache/representative revisions separately. Stop after the
+changed-head push workflows start; do not dispatch another unchanged run.

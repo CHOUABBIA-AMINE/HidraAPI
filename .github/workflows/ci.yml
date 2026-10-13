@@ -471,11 +471,18 @@ jobs:
       run: chmod +x mvnw
     - name: Repository verification (greenfield schema, explicit exact-class oracle)
       shell: bash
+      env:
+        MAVEN_OPTS: -Xmx1024m
       run: |
         set -euo pipefail
         classes="$(python3 .github/scripts/verify_ci_test_inventory.py --select oracle)"
         test -n "${classes}"
-        ./mvnw -B -q clean verify -DforkCount=2 -DreuseForks=true "-Dtest=${classes}"
+        cpus="$(nproc)"
+        memory_mib="$(awk '/^MemTotal:/ { print int($2 / 1024) }' /proc/meminfo)"
+        forks="$(python3 .github/scripts/verify_ci_test_inventory.py --oracle-forks "${cpus}" "${memory_mib}")"
+        printf 'Oracle resources: %s CPUs, %s MiB RAM; %s reused forks, 2048 MiB heap each, 1024 MiB Maven heap.\n' "${cpus}" "${memory_mib}" "${forks}" | tee -a "${GITHUB_STEP_SUMMARY}"
+        ./mvnw -B -q clean verify "-DforkCount=${forks}" -DreuseForks=true \
+          '-DargLine=-Xmx2048m' -Djunit.jupiter.execution.parallel.enabled=false "-Dtest=${classes}"
     - name: Require every selected raw test report
       if: always()
       run: python3 .github/scripts/verify_ci_test_inventory.py --select oracle --reports target/surefire-reports --evidence target/ci/oracle/evidence.json

@@ -19327,3 +19327,88 @@ main SHA. Docs SUCCESS is PENDING at preparation. Verify exact message/parent/tr
 path/blob scope, expected-head ref update and new-head Docs startup, then STOP without
 waiting for completion or advancing. After acceptance, a separate owner Next selects
 050 runtime under the explicitly corrected TRUNCATE contract; all other gates remain open.
+
+
+## 2026-10-13 — HPR-CI-003 measured oracle resource candidate
+
+Owner directs a return to CI and analysis/optimization of existing >9m feedback before
+more runs. Main `29fa9e7ad8b4ae62a322d274cd298bd1ce461cba`, tree
+`e8cc31b067b83e289ce7c680978684d781c23da9`, is authoritative; Docs #278 SUCCESS.
+Runtime/workflow predecessor `117d0d673a8ab8dcb069e95422ef52886a29f787` has
+[Production #677](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38406348730)
+SUCCESS. No unchanged rerun or manual dispatch was started for this analysis.
+This is one bounded continuation of registered HPR-CI-003 with exact message
+`ci: automate fast feedback and preserve full verification gates`, within its frozen
+allowlist; no 050 runtime implementation or new HPR ID is selected.
+
+### Completed-run diagnosis
+
+GitHub timestamps show workflow 9m11s, mandatory Java21 oracle job 8m53s, its clean
+verify step 6m23s and current API/dictionary/base checks about 1m37s. Slowest isolated
+PostgreSQL shard: 5m55s; the shards are not the current critical path. Oracle log proves
+a Maven cache hit, two reused forks and 15,988 MB runner memory. Raw oracle artifact
+11818329420 has verified SHA256
+`7315b0cb251bbd1a76d4319bdb5a782b776a07c84987ce7970775800c74358cd`.
+All 367 suites and 1,759 case identities match current manifest/source exactly, with
+zero failures/errors/skips. Summed suite duration 659.882s comprises 610.399s DB/integration
+and 49.483s unit/architecture; sums are not concurrent elapsed-time measurements.
+Repeated cold PostgreSQL and Spring context setup dominate this already warm-cache
+run. Retain the separate API job and oracle API/catalog checks: the frozen full gate
+requires both independently sourced receipts, so their duplication is not removed.
+
+### Bounded implementation and pending acceptance
+
+Only the unpartitioned mandatory oracle receives a new resource budget. The existing
+inventory helper accepts an explicit CPU/RAM query and returns
+`min(4, CPUs, floor((RAM MiB - 3072) / 2048))`. Resource queries cannot replace/mix
+class selection, report validation or evidence generation. Require >=1 CPU/5120 MiB;
+budget 2048 MiB per test JVM plus 3072 MiB for Maven/native/database/runner work.
+The oracle workflow measures actual Linux resources, logs them, caps each fork heap
+at 2048 MiB/Maven at 1024 MiB, reuses JVMs and explicitly disables JUnit method
+concurrency. Smaller runners use fewer forks; four require >=4 CPUs/11264 MiB.
+The reserve is a conservative scheduling allowance, not measured peak-RAM proof.
+
+Exact UPDATE: `.github/workflows/ci.yml`, `.github/scripts/verify_ci_test_inventory.py`,
+`.github/scripts/test_verify_ci_test_inventory.py`, `doc/testing/TEST_STRATEGY.md`,
+roadmap and this append-only reconciliation. CREATE/DELETE none. All selections,
+DB shard assignments/one-fork isolation, per-class dynamic-port Testcontainers fixtures,
+clean verify, Java21, current/base OpenAPI, physical dictionary, static/ops checks,
+raw diagnostics, same-run strict class/case equality and release negative controls
+remain mandatory. The four historical classes retain their approved archived policy.
+CI-003 remains IN PROGRESS / ORACLE RESOURCE CANDIDATE, shadow-fallback-required,
+mandatory greenfield oracle and optimized_adoption_eligible=false. No timing improvement,
+<=7m acceptance, cold-cache proof, representative-revision qualification, heap/isolation
+runtime PASS, version/release/deployment or closure is claimed. Required publication:
+guard expected main, verify exact parent/tree/message/six changed blobs, observe
+automatic Full/Fast/Docs startup on the published SHA, then STOP without completion
+polling. Next CI step is review that changed-head outcome against #677 before another
+candidate; failure repairs take priority.
+
+### Local validation and exact publication boundary
+
+Actual six-suite policy validation PASS: docs 10, OpenAPI 10, dictionary 17, base
+resolver 14, inventory/resource policy 26 and full/release evidence 25, **102 tests**.
+Canonical docs PASS (98 documents/5,346 relative links/24 modules/13 P2 rows);
+offline OpenAPI PASS (263 operations/244 paths/231 schemas); P1 retained consistency
+and all six existing operational artifact/procedure validators PASS. These static
+checks do not establish a new physical exercise or close P1. actionlint v1.7.12
+(official release checksum verified), four-workflow YAML and all 68 embedded Bash
+steps PASS. Six changed-scope main-push/PR trigger predicates PASS. The actual oracle
+shell was exercised with a Maven argument-capture stub: unchanged exact 367-class
+selection/clean verify/heap/serial-method arguments and resource summary PASS; detected
+scratch resources 9 CPUs/9967 MiB select three forks. This is shell validation, not
+Java execution. The strict current classifier also replays #677 XML successfully:
+367 suites/1759 cases/zero failures/errors/skips; it does not claim new-head tests.
+
+Before edits the pinned local Git tree matched authoritative tree
+`e8cc31b067b83e289ce7c680978684d781c23da9` across 4,805 blobs. Exactly six allowed files
+now differ; all 4,799 others remain unchanged. Full reconciliation/strategy prefixes
+are preserved; workflow comparison confirms only the oracle execution step changed.
+Inventory digest remains
+`eac6f480b432c075e232ff55e91e81e2410473b322df0f243023c6e7963d14cc`.
+Whitespace PASS; no untracked source file, Java/test/SQL/POM/ownership/API/version or
+release/deployment change. Local Java17 and absent Docker/PostgreSQL prevent new
+Java21/database runtime validation; no such local PASS is asserted. Changed-head hosted
+Full/Fast/Docs success and measured speedup remain pending at publication. Guarded
+direct-main publication must verify exact message/parent/tree/path/blob scope and
+all three push-workflow starts, then STOP without waiting or selecting another stage.

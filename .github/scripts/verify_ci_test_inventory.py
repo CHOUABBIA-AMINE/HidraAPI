@@ -31,6 +31,13 @@ def digest(data):
     return hashlib.sha256(data).hexdigest()
 
 
+def oracle_forks(cpu_count, memory_mib):
+    """Bound test JVMs by CPUs and 2 GiB heaps, reserving 3 GiB for other work."""
+    if cpu_count < 1 or memory_mib < 5120:
+        raise ValueError('Oracle requires at least one CPU and 5120 MiB RAM')
+    return min(4, cpu_count, (memory_mib - 3072) // 2048)
+
+
 def read_manifest(root, path=None):
     path = path or root / '.github/ci-test-inventory.json'
     return json.loads(path.read_text()), digest(path.read_bytes())
@@ -207,8 +214,15 @@ def main():
     parser.add_argument('--select', choices=LANES)
     parser.add_argument('--reports', type=Path)
     parser.add_argument('--evidence', type=Path)
+    parser.add_argument('--oracle-forks', nargs=2, type=int, metavar=('CPUS', 'MEMORY_MIB'),
+                        help='Print the bounded oracle fork count for observed Linux resources')
     args = parser.parse_args()
     try:
+        if args.oracle_forks is not None:
+            if args.select or args.reports or args.evidence:
+                raise ValueError('Oracle resource query cannot replace selection or report checking')
+            print(oracle_forks(*args.oracle_forks))
+            return 0
         root = args.root.resolve()
         manifest, fingerprint = read_manifest(root)
         validate(root, manifest)

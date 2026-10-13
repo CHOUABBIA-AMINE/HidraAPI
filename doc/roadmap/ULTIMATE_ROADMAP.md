@@ -29,6 +29,47 @@ by this planning commit. Current planning commit message:
 
 
 
+### Current execution checkpoint — HPR-CI-003 oracle resource candidate, 2026-10-13
+
+Owner returns to CI after the completed >9m feedback and requests analysis/optimization
+before another run. Authoritative main is `29fa9e7ad8b4ae62a322d274cd298bd1ce461cba`,
+Docs #278 SUCCESS; its last changed runtime/workflow is
+`117d0d673a8ab8dcb069e95422ef52886a29f787`, [Production #677](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38406348730)
+SUCCESS. This selects one bounded continuation of existing HPR-CI-003, with exact message
+`ci: automate fast feedback and preserve full verification gates`; 050 is not advanced.
+
+Completed #677 has a warm Maven cache and workflow elapsed **9m11s**. The mandatory
+oracle job takes **8m53s**, including **6m23s** for clean verify and about **1m37s** for
+current API/dictionary/base verification. The slower DB shard takes **5m55s**. Digest-checked
+oracle artifact `11818329420` (SHA256
+`7315b0cb251bbd1a76d4319bdb5a782b776a07c84987ce7970775800c74358cd`)
+matches all **367 suites / 1,759 cases / zero failures/errors/skips** against current
+source. Summed suite durations are 659.882s, including 610.399s in database/integration
+classes; these sums are not workflow wall time. The oracle already uses two reused
+forks and its logs report 15,988 MB runner memory. More unchanged reruns or DB shards
+would not address this measured mandatory critical path.
+
+The candidate keeps one unpartitioned clean-verify oracle and changes only its resource
+budget: `min(4, detected CPUs, floor((RAM MiB - 3072) / 2048))` reused JVM forks,
+2048 MiB maximum heap per fork and 1024 MiB Maven heap. At least one CPU/5120 MiB RAM
+is required; insufficient resources fail before Maven. Four forks require four CPUs
+and at least 11264 MiB RAM; smaller runners select fewer. JUnit method concurrency is
+explicitly disabled. Existing per-class disposable PostgreSQL fixtures and every exact
+class/case selection, shard, API/dictionary/base check, report and release gate remain.
+The selected CPU/RAM/fork budget is printed in the hosted log and step summary.
+
+Exact UPDATE scope: `.github/workflows/ci.yml`,
+`.github/scripts/verify_ci_test_inventory.py`,
+`.github/scripts/test_verify_ci_test_inventory.py`, `doc/testing/TEST_STRATEGY.md`,
+this roadmap and append-only reconciliation; CREATE/DELETE none. All six files are
+inside the frozen CI-003 envelope. The inventory/Java/SQL/POM and other workflows are
+unchanged. Validation and publication evidence is appended to reconciliation.
+CI-003 remains **IN PROGRESS / ORACLE RESOURCE CANDIDATE**,
+`shadow-fallback-required`, mandatory greenfield oracle and
+`optimized_adoption_eligible=false`. New-head runtime/performance acceptance is pending;
+no <=7m, speedup, cold-cache or representative-revision PASS is claimed. Publish guarded
+main, confirm automatic Full/Fast/Docs startup on the exact commit and STOP.
+
 ### Current execution checkpoint — HPR-P25-050 session TRUNCATE compatibility, 2026-10-13
 
 Docs #277 accepted the producer-origin amendment at
@@ -266,7 +307,7 @@ aggregate may replace it. D1–D5 are internal gates, never new HPR task IDs.
 
 | Order | Code | Task | Module / owner | Status | Dependencies | Files | Testing | Acceptance | Track | Commit |
 |---|---|---|---|---|---|---|---|---|---|---|
-| 1 | HPR-CI-003 | Automatic fast suite and equivalent parallel full verification | CI / independent verification | IN PROGRESS / SHADOW EQUIVALENT 5x SAME SHA; multi-revision/performance OPEN | Accepted 049; this Docs PASS; owner selection | CI-003 closed list | Selection/report/release negative tests; shadow full verification | No lost cases; mandatory gate fail-closed; repeatable timing | CI | `ci: automate fast feedback and preserve full verification gates` |
+| 1 | HPR-CI-003 | Automatic fast suite and equivalent parallel full verification | CI / independent verification | IN PROGRESS / ORACLE RESOURCE CANDIDATE; prior 5x same-SHA equivalence retained; multi-revision/performance OPEN | Accepted 049; this Docs PASS; owner selection | CI-003 closed list | Selection/report/release negative tests; shadow full verification | No lost cases; mandatory gate fail-closed; repeatable timing | CI | `ci: automate fast feedback and preserve full verification gates` |
 | 2 | HPR-P25-047 | Provider/link database security generations | Identity | COMPLETED / CI ACCEPTED | Accepted 046/048/049; existing registration Docs; separate Next | Existing seven-file list, unchanged | Real writers, Flyway fresh/upgrade, native/bulk/race/rollback | Exact implementation Production + Docs SUCCESS | F1 | `feat(identity): enforce provider and link security generations` |
 | 3 | HPR-P25-050 | Immutable operation binding and trusted issuance/reader | Identity; Platform technical wiring | IN PROGRESS / TRUNCATE COMPATIBILITY CORRECTED; DOCS PENDING / NOT IMPLEMENTED | 047; accepted 044/045 design | D1 then exact Identity list; no code authorization yet | LOCAL/LDAP/AD/OIDC, expiry, generation, rollback | B1 provenance and storage proof; no inferred B2/B3 | F1 | `feat(identity): bind protected operations to trusted authentication` |
 | 4 | HPR-P25-051 | Cross-owner revocation/time/transaction linearization | Identity / Party / Topology; Platform mechanics | BLOCKED on D2 atomic-time and transaction proof | 050; accepted 038/043; D2 | D2 then exact owner/export/fence list | Real PostgreSQL owner/race/expiry/connection tests | B2/B3 and writer ordering + bounded latency PASS | F1 | `feat(security): linearize cross owner protected operations` |

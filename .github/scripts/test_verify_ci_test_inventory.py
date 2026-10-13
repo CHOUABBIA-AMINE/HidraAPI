@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 """Selection failures must not turn into silently reduced verification."""
 import copy
+import io
 import json
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import patch
 
 import verify_ci_test_inventory as ci
 
@@ -39,6 +41,40 @@ def report(directory, name='example.UnitTest', case='provesBehavior', outcome=''
     path.write_text(f'<testsuite name="{name}" time="1.2" {attributes}>'
                     f'<testcase classname="{name}" name="{case}">{"<" + outcome + "/>" if outcome else ""}</testcase></testsuite>')
     return path
+
+
+class OracleResourceTest(unittest.TestCase):
+    def test_public_runner_uses_four_forks_with_bounded_heap_budget(self):
+        self.assertEqual(ci.oracle_forks(4, 15988), 4)
+        self.assertEqual(ci.oracle_forks(64, 262144), 4)
+
+    def test_cpu_and_memory_each_limit_concurrency(self):
+        self.assertEqual(ci.oracle_forks(2, 16384), 2)
+        self.assertEqual(ci.oracle_forks(4, 7168), 2)
+        self.assertEqual(ci.oracle_forks(4, 5120), 1)
+        for cpus in (1, 2, 3, 4, 8):
+            for memory in (5120, 7167, 7168, 9216, 11263, 11264, 15988):
+                with self.subTest(cpus=cpus, memory=memory):
+                    forks = ci.oracle_forks(cpus, memory)
+                    self.assertGreaterEqual(forks, 1)
+                    self.assertLessEqual(forks, min(cpus, 4))
+                    self.assertLessEqual(forks * 2048 + 3072, memory)
+
+    def test_unusable_resources_fail_before_maven(self):
+        for cpus, memory in ((0, 16384), (-1, 16384), (4, 5119), (4, 0), (4, -1)):
+            with self.subTest(cpus=cpus, memory=memory):
+                with self.assertRaises(ValueError): ci.oracle_forks(cpus, memory)
+
+    def test_resource_cli_cannot_bypass_class_or_report_verification(self):
+        with patch('sys.argv', ['inventory', '--oracle-forks', '4', '15988']), \
+                patch('sys.stdout', new_callable=io.StringIO) as output:
+            self.assertEqual(ci.main(), 0)
+            self.assertEqual(output.getvalue(), '4\n')
+        for arguments in (['--select', 'oracle'], ['--reports', 'reports'], ['--evidence', 'receipt.json']):
+            with self.subTest(arguments=arguments), \
+                    patch('sys.argv', ['inventory', '--oracle-forks', '4', '15988'] + arguments), \
+                    patch('sys.stdout', new_callable=io.StringIO):
+                self.assertEqual(ci.main(), 1)
 
 
 class InventoryTest(unittest.TestCase):

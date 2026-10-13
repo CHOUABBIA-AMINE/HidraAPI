@@ -18171,3 +18171,132 @@ no optimized equivalence/latency/fast PASS, platform freeze or implementation is
 No local Maven/DB run was needed or executed for this documentation-only consolidation;
 current accepted runtime evidence is recovered exact-SHA #666, not this new Docs head.
 Guarded publication and new-head Docs acceptance remain pending until observed.
+
+
+## 2026-10-13 — HPR-P25-047 complete implementation candidate and catalog prerequisite
+
+Owner Next selects the existing HPR-P25-047 seven-file implementation. Refreshed main
+`08cc7269b87ddb6e3297bb2981d9de4ad6f470f6`, tree
+`798bfc3911c448b50f00035e4cd1b8bb4bfa31d2`; Docs #267 SUCCESS. Accepted executable
+baseline remains `8c173f4942371b377f9155e7d99af4e4c5fc288c`, Production #666 / Docs #266
+SUCCESS. The two heads differ only in three documentation files. Current AGENTS,
+roadmap/reconciliation and the complete unchanged 047 registration were read; 048/049
+resolve the prior JSONB/migration-assertion blockers. No 050/CI-003 implementation.
+
+Exact implementation message: `feat(identity): enforce provider and link security generations`.
+Prepared migration
+`V20261012_002__p25_identity_provider_link_security_generations.sql` is the reviewed
+registered area-B guard design: database-owned positive default generation, nineteen
+provider and seven link security fields, null-safe/semantic-jsonb comparisons, neutral
+field preservation, immutable id/created_at, forbidden caller generation/delete/truncate,
+anti-overflow and six invoker triggers. Old SQL bytes and all production Java remain
+unchanged. New two-table dictionary ownership entries cite current entity and new SQL;
+all existing entries remain identical. No generation transport or authentication policy.
+
+The new canonical ProviderLinkSecurityGenerationPostgresIntegrationTest contains thirteen
+real PostgreSQL16/Flyway/Spring/JPA methods: fresh complete source inventory, actual
+predecessor upgrade with every old field/checksum retained, unexpected-column collision
+and transactional migration rollback, every security/neutral field and applicable nullable
+transition, semantic jsonb/no-op/multi-field/A-B-A, tamper/deletion/reset/overflow,
+actual adapter/repository saves/flush/clear/fresh reload and joint downstream rollback,
+native/JPQL bulk writes, COPY/MERGE/UPSERT, independent backend lock observation/barriers,
+isolated owners and retained provider/FK constraints. Privileged overflow setup is an
+uncommitted disposable fixture with guards reenabled before protected writes. No sleeps,
+live credentials/provider/customer data, mock generation proof or skipped-DB PASS.
+
+Existing LOCAL credential test edits are limited to UpdatedOn and fresh/upgrade migration
+assertions: required 046 presence, no pending, all pending migrations executed and captured
+installed-rank prefix preserved. Its pre-046 target and all other methods are identical.
+Existing nine JSONB writer tests are untouched and remain forward-compatible after 049.
+
+Focused seven-class Maven command attempted through Bash. It fails before compilation:
+Spring Boot parent 4.1.1 cannot resolve from Maven Central (Temporary failure in name
+resolution). Local Java is17, no PostgreSQL/Docker is available. No local Java/database
+PASS. All37 validator unit tests, canonical docs (98 docs/5,340 links/24 modules/13 P2
+rows), offline OpenAPI (263 operations/244 paths/231 schemas), existing P1 consistency,
+exact guard field sets, old SQL/LOCAL bodies/ownership preservation and whitespace PASS.
+
+Final main publication still requires genuine current migrated catalog rendering and
+review through the unchanged generator. That collector explicitly restricts collection
+to the designated disposable Actions database and validates exact checkout/source facts;
+no fake Actions identity, rewritten server build or hand-authored dictionary is allowed.
+Therefore the current dictionary remains unchanged in the validation draft; its later
+full-CI drift gate is expected to differ until authentic evidence is recovered. That is
+not full candidate acceptance. Hosted test execution and schema-only catalog capture
+are needed before final seven-file publication. Retain the real runtime results and
+dictionary source/catalog/build provenance before rendering the final dictionary.
+
+Validation draft branch: `codex/hpr-p25-047-complete-validation`; exclusive six-file
+subset (new SQL/test, LOCAL test, ownership and these two docs), no dictionary fabrication,
+PR, main mutation, workflow/dependency change or deployment. Connector tools do not expose
+workflow dispatch. Hosted validation has NOT STARTED until a real run is observed.
+Candidate identity/scope/blob checks precede dispatch; do not claim candidate runtime
+acceptance. After real results, recover the catalog, render/check dictionary, validate
+final exact seven-file scope and expected-head main publication, observe required CI
+startup and STOP without waiting or selecting another code. HPR-P25-047 remains
+IN PROGRESS / VALIDATION DRAFT, NOT IMPLEMENTED ON MAIN. F1–F4 OPEN; simulator/P3 deferred.
+
+
+## 2026-10-13 — HPR-P25-047 CI #667 dictionary repair and final main publication
+
+Owner Fail selected repair of the same implementation; no later stage is selected.
+Fresh main remains `08cc7269b87ddb6e3297bb2981d9de4ad6f470f6` with Docs #267 SUCCESS;
+accepted executable baseline remains Production #666 at `8c173f4942371b377f9155e7d99af4e4c5fc288c`.
+No pull request was created. The previously authorized validation branch is historical;
+the owner's current instructions prohibit further branches and browser CI dispatch.
+
+[Production #667](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38384023883)
+on candidate `6928bb8ff3ecd4833118390e2d4c1ba1dd3c7739` FAILED only at
+**Capture current migrated database dictionary evidence** because the validation draft
+retained the prior reviewed dictionary. Repository verification actually PASSED:
+371 XML reports, 1,776 tests, zero failures/errors/skips, including all thirteen new
+real PostgreSQL/Flyway/Spring/JPA generation tests and unchanged existing JSONB tests.
+Runtime OpenAPI publication and canonical snapshot equality PASSED. Later dictionary
+artifact retention, compatibility base resolution, base OpenAPI generation and backward
+compatibility steps were SKIPPED; no full candidate acceptance is claimed.
+
+Recovered authentic catalog from that job's 99 contiguous C3D catalog parts; gzip
+decoding and emitted SHA-256 agree. Source SHA is the candidate above; source bundle
+SHA-256 `63223b19acc3c14ba216e899c4b72373acb0cb9344622fb1b72deecdc4dc48e5`;
+catalog SHA-256 `1ad4094287baadecb5d45081a20ba064e91a84219b0543aed92a89bb46a65268`.
+Unchanged generator input/render/check validates the actual current source inventory:
+147 migrations, 470 JPA mappings, 490 relations, zero unresolved owners, server
+`16.15 (Debian 16.15-1.pgdg13+2)`. No source facts, capture identity or server bytes
+were rewritten and no local CI/database collection was impersonated.
+Reviewed dictionary SHA-256 is
+`84c48e5054094c8cd169bd9e1f912c3bc48f536e3b5452352e7032079d21ad34`, matching
+the genuine job's emitted rendering hash. Physical changes are limited to the provider
+and external-link security columns, positive checks, six triggers/function evidence,
+ownership/migration links and capture/source inventory provenance. All other relation
+sections and physical facts are preserved. Final main has exactly the same migration/JPA
+source bundle as the tested candidate; its future capture SHA will differ legitimately.
+
+Final publication uses the original exact message
+`feat(identity): enforce provider and link security generations` and exactly the seven
+registered files (new migration/test; bounded LOCAL assertion update; ownership,
+dictionary, roadmap and append-only reconciliation). Production Java, all 146 prior SQL
+blobs, all other tests, generator, workflow/build/API/version/release/deployment sources
+remain unchanged. Local Maven remained blocked before compilation by unresolved Boot
+4.1.1 parent/DNS, with Java17 and no Docker; hosted candidate test execution supplies
+real runtime proof. Final validator/dictionary/scope checks are recorded below after execution.
+
+Disposition: HPR-P25-047 IN PROGRESS / CODE IMPLEMENTED / CI PENDING. Final main full
+Production and Docs SUCCESS, including the dictionary and OpenAPI compatibility gates,
+are still required. Guarded publication confirms exact-head CI startup, then STOP.
+Owner protocol is main only, no PR/new branches/proof images; if connector manual dispatch
+is unavailable, provide the workflow/ref/SHA/browser instructions BEFORE starting it
+and wait for feedback. No automatic browser dispatch, completion polling or advancement.
+HPR-CI-003 and 050–058 remain unexecuted; D1–D5 and F1–F4 remain OPEN. Simulation/P3
+is deferred. Gas-first/GZ2, Hidra's own engine, steady/transient direction, versioned
+inputs, operator control, synthetic development and owner deployment calibration persist.
+
+
+Final publication checks actually executed: all 37 validator unit tests PASS (10 docs,
+10 offline OpenAPI, 17 dictionary). Canonical docs PASS: 98 documents, 5,344 relative
+links, 24 modules, 13 P2 rows. Offline OpenAPI PASS: 263 operations, 244 paths,
+231 schemas. Existing P1 evidence consistency PASS without new closure execution.
+Authentic dictionary input/render/check PASS with exact server/source/catalog facts;
+reviewed_dictionary_checked=true, zero unresolved owners, matching emitted hash.
+Exact seven-file scope, all 146 prior migrations, candidate-tested four source/ownership
+blobs, unchanged other dictionary relation sections, append-only reconciliation and
+whitespace PASS. No local Java execution or final-main full CI SUCCESS is claimed.

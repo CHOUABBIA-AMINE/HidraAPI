@@ -75,8 +75,9 @@ class InventoryTest(unittest.TestCase):
     def test_archive_not_misreported_in_greenfield_oracle(self):
         # Keep two runnable DB classes after archiving one: the scheduler
         # correctly rejects an empty required shard.
-        path = source(self.root, 'ThirdDatabaseTest',
-                      'import org.testcontainers.containers.PostgreSQLContainer;\\nclass ThirdDatabaseTest {}\\n')
+        path = source(self.root, 'ThirdDatabaseTest', """import org.testcontainers.containers.PostgreSQLContainer;
+class ThirdDatabaseTest {}
+""")
         third = ci.discover(self.root)['example.ThirdDatabaseTest']
         template = next(e for e in self.manifest['classes'] if e['lane'] == 'postgres-integration')
         self.manifest['classes'].append(dict(template, **{

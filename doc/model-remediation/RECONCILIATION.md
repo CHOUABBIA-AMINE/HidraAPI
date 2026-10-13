@@ -19165,3 +19165,165 @@ Verify exact parent/tree/message/path/blob scope, guarded ref update and Docs st
 then STOP without waiting for completion or advancing. Docs SUCCESS is PENDING at
 preparation. After acceptance, a separate owner Next selects corrected 050 runtime;
 CI-003 stays IN PROGRESS and all final PLATFORM/SITE/closure gates remain unchanged.
+
+
+## 2026-10-13 — HPR-P25-050 session TRUNCATE compatibility amendment
+
+### Selected stage, exact recovery and uncovered compatibility boundary
+
+Owner Next selected corrected 050 runtime after refreshed main
+`5d76e35cbc06986fcfacdf58b53c5cb242ce55ed`, tree
+`ccf53b118ea1e0b8074d09733f18665612e842da`, and exact-head
+[Docs #277](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/38428510223)
+SUCCESS. Latest accepted runtime remains `117d0d673a8ab8dcb069e95422ef52886a29f787`
+with Production #677 / Fast #10 / Docs #274 SUCCESS. AGENTS, roadmap, reconciliation,
+all 4,805 pinned source blobs and the corrected future 50-path union were recovered.
+The 22 CREATE paths remain absent, 28 UPDATE paths exist, and 147 predecessor SQL
+files retain their exact Git identities. No migration/version/object collision was found.
+
+The inherited 045/050 storage contract requires a restrictive FK from the new binding
+relation to LoginSession and unconditional rejection of binding TRUNCATE, while session
+TRUNCATE text discusses a conditional binding-existence guard and preservation of
+unbound semantics. That language does not state the new empty-binding restriction.
+PostgreSQL checks referencing relations rather than scanning whether their FK rows
+exist: session-only TRUNCATE RESTRICT is rejected even when the binding relation is
+empty. Explicitly including the binding table, or CASCADE, reaches its unconditional
+TRUNCATE rejection. A BEFORE session trigger cannot make the RESTRICT command valid.
+Therefore the implementation cannot promise that old unbound-table TRUNCATE remains
+available merely because no binding has yet been created. This is a compatibility
+boundary of the selected schema, not a security incident or a failed hosted CI run.
+
+Primary evidence is [PostgreSQL 16 TRUNCATE](https://www.postgresql.org/docs/16/sql-truncate.html)
+and the reviewed PostgreSQL `REL_16_STABLE` sources:
+[heap.c](https://github.com/postgres/postgres/blob/REL_16_STABLE/src/backend/catalog/heap.c)
+(`heap_truncate_check_FKs`, constraint/relation dependency lookup with no row-emptiness
+exemption) and
+[tablecmds.c](https://github.com/postgres/postgres/blob/REL_16_STABLE/src/backend/commands/tablecmds.c)
+(`ExecuteTruncateGuts`, FK RESTRICT checking before `ExecBSTruncateTriggers`). The
+documentation establishes the database rule; applying it to the selected new FK and
+unconditional binding guard is the schema compatibility analysis. These source reads
+are not execution of Hidra's future migration or concurrency acceptance.
+
+Current Identity schema/protocol evidence remains
+`V20260611_001__create_identity_tables.sql` and
+`V20261006_012__hmr_087_login_session_evidence.sql`. A repository scan of production
+source, tests, ops and CI found no session-table TRUNCATE command/caller. Existing
+credential/provider/link TRUNCATE rejection tests retain their own applicability.
+This establishes the absence of an observed repository caller, not proof about owner
+or deployment scripts outside this repository.
+
+### Selected explicit restriction within the same implementation union
+
+After V20261013_001, reject session-table TRUNCATE for zero bindings, unbound-only
+sessions and bound sessions alike. Retain all restrictive NOT DEFERRABLE FKs and
+unconditional binding UPDATE/DELETE/TRUNCATE rejection. Do not add an empty-table
+exception, drop/recreate a FK, disable triggers, use a replication/role escape, or
+relax immutable evidence retention to manufacture old TRUNCATE compatibility.
+
+Keep the already reserved `trg_p25_bound_session_truncate` on LoginSession, using the
+already reserved owner guard function, but make its TRUNCATE branch unconditional.
+The session isolation statement guard and READ_COMMITTED requirement remain unchanged.
+A session-only RESTRICT command may be rejected first by PostgreSQL's FK check; do
+not assert that the custom trigger executed in that path. An explicit multi-table
+command or CASCADE must abort through an applicable unconditional truncate guard
+before any table is truncated. All tables/rows and transaction state must roll back
+when the statement fails; never catch and continue an aborted owner transaction.
+
+Preservation of unbound semantics means their existing field values and ordinary
+row-level create/update/terminal lifecycle, and unbound DELETE where otherwise allowed.
+It expressly excludes table TRUNCATE after this additive FK. Bound DELETE and immutable
+field/terminal resurrection protections remain mandatory. Ordinary legacy bearer/API
+compatibility is unchanged; no new retention period, cleanup endpoint, data purge,
+forced logout, deployment action or claim of production-role protection is introduced.
+This operational restriction is selected explicitly before the first binding migration
+is implemented or applied; it is not a silent reinterpretation of deployed schema.
+
+Future disposable test databases must be fresh or use their reviewed per-row setup.
+Do not reset them by bypassing the new guards. This does not authorize deletion or
+reset of a real database, request calibration data or modify any of the old 147 SQL.
+The reserved file/version/predecessor, table columns including producer_authenticator,
+HMAC/HKDF provenance, verification-time generation capture, completion transaction,
+B1 reader, byte envelopes and exact LDAP/OIDC transport requirements are unchanged.
+
+### Additional real acceptance in already selected tests
+
+Add the following cases within the three selected 050 PostgreSQL test files, preserving
+all earlier cases and test-inventory identities:
+- With an empty binding table, session-only TRUNCATE RESTRICT is rejected by FK dependency
+  enforcement; verify its real SQLSTATE and preserved unbound row values after rollback.
+  Repeat with no session rows and with populated unbound-only sessions.
+- Explicit session+binding TRUNCATE and session CASCADE reject with both empty and populated
+  binding tables. Observe the actual engine/trigger path and rollback; do not treat the
+  FK-only error as proof that a session or binding trigger fired.
+- With real committed bindings, preserve every session/binding tuple after all three
+  command forms. Independent append/mutation/TRUNCATE connections still require bounded
+  barriers and observed locks/statements; a rejection is not a successful reset or B3 proof.
+- Ordinary unbound row lifecycle remains valid, while the existing bound immutable/terminal,
+  deletion, same-transaction bypass and unsupported-isolation tests remain mandatory.
+
+No new file, producer, HPR ID, dependency, workflow, test omission or timing policy is
+admitted. Corrected future runtime scope remains exactly 22 CREATE / 28 UPDATE / zero
+DELETE, 50 unique paths. Dictionary/ownership and inventory updates must still use real
+catalog/source/case evidence; no synthetic catalog or fixed future global count is allowed.
+All focused Maven regressions, actual PostgreSQL16 fresh/predecessor upgrade, real
+Spring/JPA/JDBC/signature/rollback/lock proofs, and the same-SHA Full greenfield oracle,
+partitions, API/dictionary gate, Fast and Docs remain required for runtime acceptance.
+
+### Actual local observations and stage disposition
+
+No runtime/test/migration draft was created or published. The initial baseline command
+`bash ./mvnw -B -q -DskipTests compile` stopped at the Java enforcer because the installed
+runtime is Java17. A downloaded Java21 runtime starts, but its downloaded JDK package
+is truncated and lacks ct.sym; attempts under that incomplete toolchain fail with
+`release version 21 not supported`. These are environment/toolchain failures before
+successful compilation, not new code failures or hosted CI results. No Maven PASS is
+claimed. An isolated PostgreSQL16 installation was recovered, but initdb rejects the
+only available root identity; there is no Docker service or mapped unprivileged user.
+No root/UID/trigger bypass, PostgreSQL server, migration or catalog proof is claimed.
+Temporary toolchain/source artifacts remain outside the repository and are not published.
+
+The source-level compatibility issue is resolved by this explicit same-ID amendment;
+actual runtime acceptance remains pending. 050 is IN PROGRESS / TRUNCATE COMPATIBILITY
+CORRECTED IN SOURCE / DOCS PENDING / NOT IMPLEMENTED. CI-003 stays IN PROGRESS with
+mandatory greenfield oracle, shadow-fallback-required and optimized adoption false.
+B2/B3, D2–D5/F1–F4, runtime publication and final PLATFORM/SITE gates remain OPEN.
+Simulation/P3 remains DEFERRED; preserve gas-first/GZ2, own engine, steady/transient,
+versioned inputs/operator control, synthetic development and owner deployment calibration.
+Version/release/deployment/closure remain unchanged.
+
+Current exclusive UPDATE scope is roadmap and append-only reconciliation; CREATE/DELETE
+none. Use existing same-ID amendment message
+`docs(identity): close operation binding implementation scope`. Successful amendment Docs
+and separate owner Next select only corrected 050 runtime. Guarded existing-main publication,
+exact parent/tree/message/path/blob checks, automatic Docs startup on that SHA, then STOP.
+Full/Fast filters do not select these two documentation files. No PR, branch or image;
+unsupported manual CI dispatch is handed to the owner before starting it.
+
+
+### Amendment validation and publication evidence boundary
+
+All six unchanged Python policy suites PASS: test_validate_docs.py (10),
+test_validate_openapi_snapshot.py (10), test_generate_data_dictionary.py (17),
+test_resolve_openapi_base.py (14), test_verify_ci_test_inventory.py (22) and
+test_verify_full_ci_evidence.py (25), 98 cases total. Canonical docs PASS (98 documents,
+5,346 relative links, 24 modules, 13 P2 rows); offline OpenAPI PASS (263 operations,
+244 paths, 231 schemas); P1 evidence consistency PASS without closure. Exact CI
+inventory validation PASS with unchanged digest
+`eac6f480b432c075e232ff55e91e81e2410473b322df0f243023c6e7963d14cc`.
+Resolver test output is synthetic fixture data, not a newly recovered hosted base.
+
+All 4,805 pinned blobs were verified before edits; exactly the two governance documents
+differ afterward, with all 4,803 other pinned blobs unchanged. Full reconciliation
+prefix is preserved and the amendment is mirrored. Future 50-path union remains unique:
+22 CREATE absent, 28 UPDATE present. All 147 existing SQL, runtime/test, inventory,
+workflow/build/version/dictionary/ownership and original history blobs are unchanged.
+Migration reservation/object-collision and added-line whitespace checks PASS. No
+runtime draft, temporary toolchain file, PR, branch, image, release or deployment is
+published. The PostgreSQL source/documentation review is not actual migration or lock
+acceptance; Maven/PostgreSQL limitations above remain explicit.
+
+Required CI is automatic HidraAPI Documentation Validation (docs.yml) on the published
+main SHA. Docs SUCCESS is PENDING at preparation. Verify exact message/parent/tree/
+path/blob scope, expected-head ref update and new-head Docs startup, then STOP without
+waiting for completion or advancing. After acceptance, a separate owner Next selects
+050 runtime under the explicitly corrected TRUNCATE contract; all other gates remain open.

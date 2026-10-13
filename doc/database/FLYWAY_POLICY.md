@@ -19,6 +19,45 @@ spring.jpa.hibernate.ddl-auto=validate
 
 Production retains validation and clean-disabled behavior.
 
+## Greenfield routine CI selection — 2026-10-13
+
+The owner reports **no active production database**, but that report
+does not independently establish that there is no non-disposable
+staging, pilot or third-party database. This section governs only
+routine source-test scheduling. The full existing Flyway SQL chain
+still executes during **fresh empty PostgreSQL installation**;
+`validate-on-migrate=true`, `baseline-on-migrate=false`,
+`clean-disabled=true`, JPA validation and current physical dictionary
+and native database constraint checks remain mandatory. Do not
+delete, rebaseline, rewrite, squash, repair or skip Flyway SQL.
+
+These four historical Organization conversion/retirement test sources
+remain version-controlled, fully classified and compilable, but their
+17 historical backfill/retirement test invocations are excluded from
+the ordinary greenfield suite:
+- `OrganizationEmployeeContactBackfillMigrationTest`
+- `OrganizationMultilingualCompatibilityRetirementMigrationTest`
+- `OrganizationMultilingualMigrationTest`
+- `OrganizationMultilingualTableRetirementMigrationTest`
+
+All other database tests remain mandatory (including the other 15
+migration-named classes that protect current keys, checks, fresh
+provisioning, transactions and rollback). A fresh-schema catalog
+comparison alone cannot prove every invalid-write rejection, so
+real PostgreSQL constraints and negative write tests remain required.
+
+Historical tests can still be run explicitly, with Docker:
+```bash
+historical="$(python3 .github/scripts/verify_ci_test_inventory.py --select historical)"
+./mvnw -B -q test "-Dtest=${historical}"
+python3 .github/scripts/verify_ci_test_inventory.py --select historical --reports target/surefire-reports
+```
+Skipped tests are not success. Existing databases that require
+historical upgrades need a separate compatibility review and verified
+migration tests BEFORE deployment; greenfield-only CI is not an
+upgrade-support guarantee. All original forward-only migration
+policies and Database Operations approvals remain unchanged.
+
 ## Migration Authority
 
 Flyway is the only approved application-schema evolution authority.

@@ -18469,3 +18469,29 @@ revision/cold-cache/failure injection coverage. Only CI-003's existing
 inventory, roadmap and append-only reconciliation were updated. No
 new HPR ID, Java test method, workflow topology, release/deployment,
 branch, PR or claim of CI completion is authorized here.
+
+
+## 2026-10-13 — HPR-CI-003 owner-approved greenfield source-test policy
+
+The owner reports no active production database; external pilot/
+staging state remains unverified. This same-ID amendment changes only
+ordinary CI source-test selection: 4 explicitly classified historical
+Organization conversion/retirement classes (17 test cases) remain
+intact in source but are excluded from routine Full CI; other
+15 migration-named classes remain mandatory, including fresh
+PostgreSQL/schema/security/current constraint enforcement. Full
+Flyway SQL chain, JPA validation, physical dictionary, API and
+release controls do not change. Source/test Java, migrations,
+POM, historical audit and release workflow remain unchanged.
+
+Old hosted unrestricted suite 371/1776; new candidate greenfield
+367/1759 pending actual new-head workflow success. Source inventory
+rejects unapproved test exclusions; historical tests can be
+explicitly run by CLI `--select historical` with Docker and
+strict Surefire reports. Required full greenfield oracle continues
+to be mandatory with same-run partition equivalence and
+fail-closed evidence; optimized-only adoption remains disabled.
+`doc/database/FLYWAY_POLICY.md` admitted as exactly one added
+policy file to CI-003's existing thirteen-file scope.
+No Flyway baseline consolidation, SQL deletion, data migration,
+release/deployment or platform acceptance is implied.

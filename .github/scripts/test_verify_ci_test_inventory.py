@@ -55,6 +55,32 @@ class InventoryTest(unittest.TestCase):
         self.assertEqual(set(lanes['postgres-0']) & set(lanes['postgres-1']), set())
         self.assertEqual(lanes, ci.partitions(copy.deepcopy(self.manifest)))
 
+    def test_archive_without_policy_denies(self):
+        selected = next(e for e in self.manifest['classes'] if e['lane'] == 'postgres-integration')
+        selected['archived_for_greenfield'] = True
+        with self.assertRaises(ValueError): ci.validate(self.root, self.manifest)
+
+    def test_unapproved_archive_denies(self):
+        selected = next(e for e in self.manifest['classes'] if e['lane'] == 'postgres-integration')
+        selected['archived_for_greenfield'] = True
+        self.manifest['greenfield_policy'] = {'mode': 'fresh-schema',
+            'excluded_classes': [selected['class']], 'reason': 'synthetic'}
+        with self.assertRaises(ValueError): ci.validate(self.root, self.manifest)
+
+    def test_archive_requires_exact_agreed_set(self):
+        self.manifest['greenfield_policy'] = {'mode': 'fresh-schema',
+            'excluded_classes': sorted(ci.APPROVED_GREENFIELD_ARCHIVE), 'reason': 'synthetic'}
+        with self.assertRaises(ValueError): ci.validate(self.root, self.manifest)
+
+    def test_archive_not_misreported_in_greenfield_oracle(self):
+        selected = next(e for e in self.manifest['classes'] if e['lane'] == 'postgres-integration')
+        selected['archived_for_greenfield'] = True
+        lanes = ci.partitions(self.manifest)
+        self.assertEqual(lanes['historical'], [selected['class']])
+        self.assertNotIn(selected['class'], lanes['oracle'])
+        self.assertEqual(set(lanes['unit-architecture'] + lanes['postgres-0'] + lanes['postgres-1']),
+                         set(lanes['oracle']))
+
     def test_new_unclassified_source_denies(self):
         source(self.root, 'NewTest', 'class NewTest {}')
         with self.assertRaises(ValueError): ci.validate(self.root, self.manifest)

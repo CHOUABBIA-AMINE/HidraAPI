@@ -13,7 +13,13 @@ import shutil
 import subprocess
 import xml.etree.ElementTree as ET
 
-LANES = ('fast', 'unit-architecture', 'postgres-0', 'postgres-1', 'oracle')
+LANES = ('fast', 'unit-architecture', 'postgres-0', 'postgres-1', 'oracle', 'historical')
+APPROVED_GREENFIELD_ARCHIVE = frozenset({
+    'dz.sh.hidra.modules.organization.infrastructure.persistence.OrganizationEmployeeContactBackfillMigrationTest',
+    'dz.sh.hidra.modules.organization.infrastructure.persistence.OrganizationMultilingualCompatibilityRetirementMigrationTest',
+    'dz.sh.hidra.modules.organization.infrastructure.persistence.OrganizationMultilingualMigrationTest',
+    'dz.sh.hidra.modules.organization.infrastructure.persistence.OrganizationMultilingualTableRetirementMigrationTest',
+})
 SHA = re.compile(r'^[0-9a-f]{40}$')
 
 
@@ -63,6 +69,17 @@ def validate(root, manifest):
         raise ValueError('Unreviewed inventory format or optimized adoption')
     sources = discover(root)
     entries = manifest.get('classes', [])
+    policy = manifest.get('greenfield_policy')
+    archived = {e['class'] for e in entries if e.get('archived_for_greenfield')}
+    if policy is not None:
+        if (not isinstance(policy, dict) or policy.get('mode') != 'fresh-schema'
+                or policy.get('excluded_classes') != sorted(APPROVED_GREENFIELD_ARCHIVE)
+                or not isinstance(policy.get('reason'), str) or not policy['reason'].strip()
+                or archived != APPROVED_GREENFIELD_ARCHIVE):
+            raise ValueError('Unreviewed greenfield archive selection or policy')
+    elif archived:
+        raise ValueError('Historical test archived without approved greenfield policy')
+
     supports = manifest.get('supporting_classes', [])
     names = [entry['class'] for entry in entries + supports]
     if len(names) != len(set(names)) or set(names) != set(sources):
@@ -92,6 +109,9 @@ def validate(root, manifest):
         service = re.search(r'^import\s+org\.testcontainers\.|@SpringBootTest\b|@DataJpaTest\b', dependencies, re.M)
         if entry['lane'] == 'unit-architecture' and service:
             raise ValueError('Wrong lane for live service/context dependency')
+        if entry.get('archived_for_greenfield'):
+            if entry['class'] not in APPROVED_GREENFIELD_ARCHIVE or entry['lane'] != 'postgres-integration' or entry.get('fast'):
+                raise ValueError('Unapproved current-integrity class excluded from greenfield')
         if entry.get('fast'):
             if entry['lane'] != 'unit-architecture' or sources[entry['class']]['abstract']:
                 raise ValueError('Fast/DB overlap')
@@ -103,19 +123,21 @@ def validate(root, manifest):
 
 
 def partitions(manifest):
-    unit = sorted(e['class'] for e in manifest['classes'] if e['lane'] == 'unit-architecture')
-    fast = sorted(e['class'] for e in manifest['classes'] if e.get('fast'))
+    active = [e for e in manifest['classes'] if not e.get('archived_for_greenfield')]
+    historical = sorted(e['class'] for e in manifest['classes'] if e.get('archived_for_greenfield'))
+    unit = sorted(e['class'] for e in active if e['lane'] == 'unit-architecture')
+    fast = sorted(e['class'] for e in active if e.get('fast'))
     shards, totals = [[], []], [0.0, 0.0]
-    for entry in sorted((e for e in manifest['classes'] if e['lane'] == 'postgres-integration'),
+    for entry in sorted((e for e in active if e['lane'] == 'postgres-integration'),
                         key=lambda e: (-e['baseline_seconds'], e['class'])):
         index = min(range(2), key=lambda i: (totals[i], i))
         shards[index].append(entry['class'])
         totals[index] += entry['baseline_seconds']
     result = {'fast': fast, 'unit-architecture': unit,
               'postgres-0': sorted(shards[0]), 'postgres-1': sorted(shards[1]),
-              'oracle': sorted(e['class'] for e in manifest['classes'])}
+              'oracle': sorted(e['class'] for e in active), 'historical': historical}
     union = unit + shards[0] + shards[1]
-    if len(union) != len(set(union)) or set(union) != set(result['oracle']) or not all(result.values()):
+    if len(union) != len(set(union)) or set(union) != set(result['oracle']) or not all(result[lane] for lane in ('fast', 'unit-architecture', 'postgres-0', 'postgres-1', 'oracle')):
         raise ValueError('Empty, missing or overlapping full partition')
     return result
 

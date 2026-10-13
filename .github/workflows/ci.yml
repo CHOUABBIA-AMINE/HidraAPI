@@ -469,8 +469,13 @@ jobs:
         cache: maven
     - name: Ensure Maven wrapper is executable
       run: chmod +x mvnw
-    - name: Repository verification
-      run: ./mvnw -B -q clean verify -DforkCount=2 -DreuseForks=true
+    - name: Repository verification (greenfield schema, explicit exact-class oracle)
+      shell: bash
+      run: |
+        set -euo pipefail
+        classes="$(python3 .github/scripts/verify_ci_test_inventory.py --select oracle)"
+        test -n "${classes}"
+        ./mvnw -B -q clean verify -DforkCount=2 -DreuseForks=true "-Dtest=${classes}"
     - name: Require every selected raw test report
       if: always()
       run: python3 .github/scripts/verify_ci_test_inventory.py --select oracle --reports target/surefire-reports --evidence target/ci/oracle/evidence.json

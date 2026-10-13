@@ -3573,7 +3573,8 @@
       "owner": "organization",
       "path": "src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/OrganizationEmployeeContactBackfillMigrationTest.java",
       "source_sha256": "f2501be2637eea4075b793e521e783ddf1cec9eddc9887bd2eb7f87396c936e6",
-      "supports": []
+      "supports": [],
+      "archived_for_greenfield": true
     },
     {
       "baseline_seconds": 19.965,
@@ -3621,7 +3622,8 @@
       "owner": "organization",
       "path": "src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/OrganizationMultilingualCompatibilityRetirementMigrationTest.java",
       "source_sha256": "8818b62dced167349f196a4c41080c72e02faf42c2778341db4b364d60e7ef06",
-      "supports": []
+      "supports": [],
+      "archived_for_greenfield": true
     },
     {
       "baseline_seconds": 33.779,
@@ -3639,7 +3641,8 @@
       "owner": "organization",
       "path": "src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/OrganizationMultilingualMigrationTest.java",
       "source_sha256": "7466d1338b3abcefc1aa677d90be3da17974605f8bebeb25fa7e6a8adf2e08a6",
-      "supports": []
+      "supports": [],
+      "archived_for_greenfield": true
     },
     {
       "baseline_seconds": 45.889,
@@ -3657,7 +3660,8 @@
       "owner": "organization",
       "path": "src/test/java/dz/sh/hidra/modules/organization/infrastructure/persistence/OrganizationMultilingualTableRetirementMigrationTest.java",
       "source_sha256": "5069380a87077cf2c0936236fd2fca106cc616555de0afbda8d01feffe8ab491",
-      "supports": []
+      "supports": [],
+      "archived_for_greenfield": true
     },
     {
       "baseline_seconds": 50.261,
@@ -6638,5 +6642,15 @@
         "dz.sh.hidra.modules.organization.semantic.ShiftAssignmentSemanticRemediationTest"
       ]
     }
-  ]
+  ],
+  "greenfield_policy": {
+    "mode": "fresh-schema",
+    "excluded_classes": [
+      "dz.sh.hidra.modules.organization.infrastructure.persistence.OrganizationEmployeeContactBackfillMigrationTest",
+      "dz.sh.hidra.modules.organization.infrastructure.persistence.OrganizationMultilingualCompatibilityRetirementMigrationTest",
+      "dz.sh.hidra.modules.organization.infrastructure.persistence.OrganizationMultilingualMigrationTest",
+      "dz.sh.hidra.modules.organization.infrastructure.persistence.OrganizationMultilingualTableRetirementMigrationTest"
+    ],
+    "reason": "Owner-directed no-active-production-database development. Retain historical tests in source for manual compatibility verification. No SQL/Flyway changes."
+  }
 }

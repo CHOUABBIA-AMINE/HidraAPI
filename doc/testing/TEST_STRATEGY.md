@@ -153,3 +153,33 @@ claim reduced full wall time or runner cost. Java21/Docker prerequisites are unc
 Owner workflow procedure is main only, no PR/new branches/proof images; observe exact
 push CI startup then STOP. Unsupported manual dispatch is handed to the owner BEFORE
 starting it. PLATFORM regression proof remains separate from customer SITE commissioning.
+
+
+## Greenfield routine-CI selection (HPR-CI-003, 2026-10-13)
+
+The owner reports no active production database; other existing
+non-disposable environments have not been independently verified.
+Ordinary Full CI now proposes 367 required executable classes/1,759
+cases; four exact historical Organization data-conversion classes
+(17 invocations) are retained but excluded from the routine
+greenfield selection. The exact reviewed list appears in the
+[Flyway greenfield policy](../database/FLYWAY_POLICY.md#greenfield-routine-ci-selection--2026-10-13).
+The remaining 15 migration-named test classes, fresh PostgreSQL Flyway
+schema initialization, JPA/ORM validations, actual database constraints,
+physical dictionary, source security, rollback and API checks remain
+mandatory. All original Java test sources still compile.
+
+The unpartitioned greenfield full oracle is required for exact-SHA
+Full CI and release; it is not a substitute for separate historical
+upgrade support. Its raw XML suites/invocations must equal the
+disjoint mandatory greenfield partitions, with no required skips.
+The four historical tests can be run on demand in Docker-enabled
+PostgreSQL with strict Surefire report validation:
+```bash
+historical="$(python3 .github/scripts/verify_ci_test_inventory.py --select historical)"
+./mvnw -B -q test "-Dtest=${historical}"
+python3 .github/scripts/verify_ci_test_inventory.py --select historical --reports target/surefire-reports
+```
+Optimized-only acceptance remains disabled; this is an in-progress
+policy candidate pending real exact-head GitHub CI. No baseline
+SQL rewrite or application/release migration is authorized.

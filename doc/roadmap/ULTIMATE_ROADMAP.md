@@ -132,6 +132,63 @@ The next guarded direct-main push must be followed only by observing
 the triggered CI starts, then STOP; do not prematurely mark CI-003
 completed or start HPR-P25-050.
 
+### HPR-CI-003 greenfield-only routine migration-test policy — 2026-10-13
+
+**Owner direction:** no active production database. This is an explicit
+greenfield CI-only policy change, not evidence that no non-disposable
+staging, pilot or other database exists. No migration SQL or Flyway history
+is removed, rebased, squashed, edited, skipped at fresh application
+startup or executed against real production data.
+
+**Exact reviewed historical archive:** `OrganizationEmployeeContactBackfillMigrationTest`,
+`OrganizationMultilingualCompatibilityRetirementMigrationTest`,
+`OrganizationMultilingualMigrationTest`,
+`OrganizationMultilingualTableRetirementMigrationTest` (4 classes, 17
+historical backfill/translation/retirement cases). The source-linked
+manifest retains their filenames, hashes, source identities and cases,
+but routine Full CI only selects the **367 remaining concrete executable
+test classes / 1,759 cases**. Exactly 15 other migration-named classes
+remain required, including fresh provisioning, PK/FK/check/uniqueness
+integrity, native SQL/ORM writes and rollback. The fresh PostgreSQL
+Flyway chain, JPA schema validate, physical dictionary constraint
+inventory, release checks and real DB application tests remain
+mandatory. The four historical sources remain compiled and can be
+re-run by explicit `--select historical` and strict PostgreSQL-backed
+Surefire reports; additional excludes are denied by source-aware
+selector validation.
+
+**Same-ID scope amendment:** update exactly
+`.github/ci-test-inventory.json`,
+`.github/scripts/verify_ci_test_inventory.py`,
+`.github/scripts/test_verify_ci_test_inventory.py`,
+`.github/workflows/ci.yml`,
+`doc/roadmap/ULTIMATE_ROADMAP.md`, `doc/testing/TEST_STRATEGY.md`,
+`doc/model-remediation/RECONCILIATION.md`, and
+`doc/database/FLYWAY_POLICY.md` (one explicitly admitted new CI-003
+documentation file beyond its original thirteen). CREATE and DELETE none.
+Java application and tests, Flyway SQL, POM, physical dictionary,
+`.github/workflows/release.yml`, all other release/deployment artifacts,
+and original roadmap history are read-only.
+
+**Acceptance:** the mandatory unpartitioned *greenfield oracle* runs
+`clean verify` with all 367 required exact classes, not a historical
+all-source upgrade suite. Two isolated DB shards, full unit/architecture,
+canonical API/history comparison and the fail-closed aggregate must
+match the oracle's 1,759 cases on the **new exact SHA**, with zero
+skips/errors/failures. The oracle job stays mandatory for the release
+gate; `optimized_adoption_eligible=false` stays unchanged, and no
+speedup, 7m target acceptance, cold-cache/representative-revision
+qualification or platform/SITE closure is inferred. Existing full
+371/1,776 acceptance remains valid for its historical SHA, not a new
+full-greenfield acceptance claim. Greenfield results MUST NOT be used
+as proof of upgrading any real legacy database. The original
+unrestricted acceptance text below is dated reference and is
+superseded only for routine CI's four explicitly archived classes.
+
+**Stage:** HPR-CI-003 IN PROGRESS / GREENFIELD CANDIDATE; full new-head
+Production, Fast and Docs startup/verification required. Stop after
+observing exact-head workflow startup; do not start HPR-P25-050.
+
 ### Owner execution protocol — 2026-10-13 Fail correction
 
 Use existing main directly with an expected-head guard. No pull requests or new local

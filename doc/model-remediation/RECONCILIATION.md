@@ -18418,3 +18418,29 @@ New workflow startup and all hosted shadow/equivalence/measurement acceptance re
 pending. Guarded direct-main publication verifies exact parent/tree/message/blob/scope,
 confirms Full/Fast/Docs startup on published SHA and STOP; no completion polling or
 later HPR implementation. No branch, PR, image, manual workflow dispatch or deployment.
+
+
+## 2026-10-13 — HPR-CI-003 hosted five-run verification checkpoint (documentation only)
+
+Existing main `d4a3d99d0840a8791eb79e5b25f86bd377470b54` remains the accepted source for the current CI shadow
+configuration. Full CI #669–#673 and Fast Feedback #2–#6 all succeeded on that
+same source SHA. The five Full gate receipts report exactly 371 executable classes,
+1,776 invocations, zero failures/errors/skips and the same-run partition/oracle
+identity and API/dictionary verification. No distinct code/security, migration or
+API representative-source revisions were tested using this workflow configuration.
+
+Measured workflow median: Fast 1m24s (five), Full 11m26s (five, with #673
+serialized behind #672 and therefore not comparable as an independent wall-time
+measurement). Mandatory unrestricted oracle job median: 10m55s; slowest PostgreSQL
+shard median: 7m07s. The Full median target <=7m remains unachieved with the
+mandatory oracle. Even the partition critical path requires timing/isolation review
+before its own <=7m gate could be asserted.
+
+The CI-003 five-run evidence and remaining conditions are recorded at the front of
+the active Ultimate Roadmap. `shadow-fallback-required` and optimized adoption
+DISABLED remain authoritative. Required independent source-revision proofs,
+cold-cache and failure-mode qualification, and measured optimization are OPEN.
+No permission to drop oracle, fake cache measurements, skip classes, widen the
+thirteen-file CI-003 allowlist, complete CI-003, create new HPR IDs or start 050.
+This checkpoint changes only the authorized roadmap and append-only reconciliation
+and neither alters GitHub Actions workflows nor performs CI dispatch.

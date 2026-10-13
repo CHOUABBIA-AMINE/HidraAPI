@@ -36,10 +36,53 @@ and [Docs #268](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/3838617
 SUCCESS. HPR-P25-047 is accepted within its original area-B scope. Owner Next selects
 HPR-CI-003, exact message `ci: automate fast feedback and preserve full verification gates`,
 exclusive thirteen-file envelope below. CI-003 is IN PROGRESS / SHADOW IMPLEMENTED /
-HOSTED EQUIVALENCE AND PERFORMANCE PENDING. The prospective architecture is installed
+FIVE SAME-SHA HOSTED EQUIVALENCE RUNS PASSED; REPRESENTATIVE-REVISION, COLD-CACHE,
+FAILURE-MODE AND FULL PERFORMANCE ACCEPTANCE REMAIN OPEN. The prospective architecture is installed
 as a shadow transition with the unrestricted oracle REQUIRED; optimized acceptance is
 disabled. The older Part D timings and source inventory retain their original date.
 Current exact-source/report counts and implementation details are appended below.
+
+### HPR-CI-003 hosted qualification checkpoint — 2026-10-13 (five runs; not closed)
+
+**Verified exact source:** `d4a3d99d0840a8791eb79e5b25f86bd377470b54`, unchanged application/runtime/test
+sources. Full GitHub Actions #669–#673 and Fast Feedback #2–#6 all returned
+SUCCESS on this exact SHA. Full Verification Gate receipts for all five Full runs
+validate **371 concrete suites / 1,776 test executions**, zero failures/errors/skips,
+same-run disjoint partition versus unrestricted-oracle equivalence, and the required
+API, migration/dictionary and provenance facts. The five runs verify *repeatability
+on one workflow revision*, **not** the planned three distinct code/security,
+migration and API representative revisions.
+
+| Observation | Verified values | Disposition |
+|---|---|---|
+| Fast Feedback #2–#6 workflow elapsed | 1m22s, 1m14s, 1m24s, 1m24s, 1m56s; median **1m24s** | Five successes; observed median below 3m target, cold-cache conditions unqualified |
+| Full CI #669–#673 workflow elapsed | 11m56s, 10m41s, 11m26s, 10m44s, 21m46s | Median **11m26s**, above 7m target; #673 includes same-SHA runner serialization/wait and is **not** an independent comparable end-to-end timing |
+| Unrestricted oracle job elapsed | 11m32s, 10m19s, 11m05s, 10m23s, 10m55s | Median **10m55s**; presently the mandatory critical path |
+| Slowest PostgreSQL shard elapsed | 6m21s, 7m13s, 7m07s, 7m05s, 7m20s | Median **7m07s** before aggregate overhead; reassess class-level timing/isolation before rebalancing |
+| Exact raw equivalence | Full #669–#673 each: 371/1,776; 0 fail/error/skip; same-run equivalence true | **PASS within same-SHA shadow coverage**, not representative-change qualification |
+
+**Fail-closed disposition:** the currently hosted receipt has
+`mode=shadow-fallback-required`, `fallback_required=true` and
+`optimized_adoption_eligible=false`. These MUST remain unchanged while
+representative-revision qualification, verified cold-cache behavior, real hosted
+negative/failure-mode acceptance and Full critical-path median <=7m remain open.
+No release, delivery or PLATFORM/SITE acceptance is inferred.
+
+**Bounded continuation under existing HPR-CI-003, not a new task ID:**
+(1) review raw test-class and runner timings by shard before proposing a bounded
+schedule/fork adjustment within its frozen CI/test allowlist; keep every required
+class/case, isolation and unrestricted oracle;
+(2) obtain representative same-revision oracle/partition proofs when authorized
+code/security, migration and API revisions exist; do not manufacture unrelated
+code changes solely for the benchmark;
+(3) measure warm and cold-cache distributions and evidence of real failing/omitted/
+cancelled/stale acceptance denial without unsafe production alterations;
+(4) evaluate >=5 **comparable** hosted critical-path samples after each candidate
+configuration, including scheduling/queue context, and record objective PASS/FAIL;
+(5) only an accepted same-ID scope change may make optimized-only eligibility true,
+with independent exact-SHA release-gate proof. No status closure, speedup or
+scope expansion is claimed by this checkpoint. No CI dispatch, implementation or
+new worktree/branch is part of this documentation checkpoint.
 
 ### Owner execution protocol — 2026-10-13 Fail correction
 
@@ -72,7 +115,7 @@ aggregate may replace it. D1–D5 are internal gates, never new HPR task IDs.
 
 | Order | Code | Task | Module / owner | Status | Dependencies | Files | Testing | Acceptance | Track | Commit |
 |---|---|---|---|---|---|---|---|---|---|---|
-| 1 | HPR-CI-003 | Automatic fast suite and equivalent parallel full verification | CI / independent verification | IN PROGRESS / SHADOW IMPLEMENTED; equivalence/performance PENDING | Accepted 049; this Docs PASS; owner selection | CI-003 closed list | Selection/report/release negative tests; shadow full verification | No lost cases; mandatory gate fail-closed; repeatable timing | CI | `ci: automate fast feedback and preserve full verification gates` |
+| 1 | HPR-CI-003 | Automatic fast suite and equivalent parallel full verification | CI / independent verification | IN PROGRESS / SHADOW EQUIVALENT 5x SAME SHA; multi-revision/performance OPEN | Accepted 049; this Docs PASS; owner selection | CI-003 closed list | Selection/report/release negative tests; shadow full verification | No lost cases; mandatory gate fail-closed; repeatable timing | CI | `ci: automate fast feedback and preserve full verification gates` |
 | 2 | HPR-P25-047 | Provider/link database security generations | Identity | COMPLETED / CI ACCEPTED | Accepted 046/048/049; existing registration Docs; separate Next | Existing seven-file list, unchanged | Real writers, Flyway fresh/upgrade, native/bulk/race/rollback | Exact implementation Production + Docs SUCCESS | F1 | `feat(identity): enforce provider and link security generations` |
 | 3 | HPR-P25-050 | Immutable operation binding and trusted issuance/reader | Identity; Platform technical wiring | PLANNED / REGISTERED; D1 scope gate | 047; accepted 044/045 design | D1 then exact Identity list; no code authorization yet | LOCAL/LDAP/AD/OIDC, expiry, generation, rollback | B1 provenance and storage proof; no inferred B2/B3 | F1 | `feat(identity): bind protected operations to trusted authentication` |
 | 4 | HPR-P25-051 | Cross-owner revocation/time/transaction linearization | Identity / Party / Topology; Platform mechanics | BLOCKED on D2 atomic-time and transaction proof | 050; accepted 038/043; D2 | D2 then exact owner/export/fence list | Real PostgreSQL owner/race/expiry/connection tests | B2/B3 and writer ordering + bounded latency PASS | F1 | `feat(security): linearize cross owner protected operations` |
